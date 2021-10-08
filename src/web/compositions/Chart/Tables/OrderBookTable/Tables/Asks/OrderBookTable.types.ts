@@ -1,6 +1,6 @@
 import { Theme } from '@material-ui/core'
-import { OrderbookMode } from '../../OrderBookTableContainer.types'
 import { OrderbookSide, IExchange } from '@core/types/ChartTypes'
+import { OrderbookMode } from '../../OrderBookTableContainer.types'
 
 export interface IProps {
   onButtonClick: () => void

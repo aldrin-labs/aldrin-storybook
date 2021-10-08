@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 import { Theme } from '@material-ui/core'
-import { CSSProperties } from 'react'
 
 const Text = styled.span`
   color: ${(props) => props.theme.palette.red.main};

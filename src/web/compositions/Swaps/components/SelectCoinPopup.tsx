@@ -13,7 +13,6 @@ import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
-import { SelectSeveralAddressesPopup } from '../../Pools/components/Popups/SelectorForSeveralAddresses'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
@@ -22,6 +21,7 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
+import { SelectSeveralAddressesPopup } from '../../Pools/components/Popups/SelectorForSeveralAddresses'
 import { TokenLabel } from '../styles'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
@@ -128,7 +128,7 @@ export const SelectCoinPopup = ({
       PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       onEnter={() => {
         onChangeSearch('')
@@ -137,15 +137,15 @@ export const SelectCoinPopup = ({
       }}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
-        <Text fontSize={'2rem'}>Select Token</Text>
+      <RowContainer justify="space-between">
+        <Text fontSize="2rem">Select Token</Text>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer padding={'3rem 0'}>
+      <RowContainer padding="3rem 0">
         <SearchInputWithLoop
           searchValue={searchValue}
           onChangeSearch={onChangeSearch}
-          placeholder={'Search'}
+          placeholder="Search"
         />
       </RowContainer>
       <RowContainer>
@@ -163,7 +163,7 @@ export const SelectCoinPopup = ({
           }) => {
             return (
               <SelectorRow
-                justify={'space-between'}
+                justify="space-between"
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   const isSeveralCoinsWithSameAddress =
@@ -177,8 +177,8 @@ export const SelectCoinPopup = ({
                   }
                 }}
               >
-                <Row wrap={'nowrap'}>
-                  <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
+                <Row wrap="nowrap">
+                  <TokenIcon mint={mint} width="2rem" height="2rem" />
                   <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
                   {!quoteTokenMintAddress && !baseTokenMintAddress ? (
                     !isTokenInPool ? (
@@ -188,7 +188,7 @@ export const SelectCoinPopup = ({
                     <TokenLabel>Insufficient Liquidity</TokenLabel>
                   ) : null}
                 </Row>
-                <Row wrap={'nowrap'}>
+                <Row wrap="nowrap">
                   <StyledText>
                     {formatNumberToUSFormat(stripDigitPlaces(amount, 8))}
                   </StyledText>

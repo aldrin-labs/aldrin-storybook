@@ -27,7 +27,7 @@ export const OrderBook = ({
   terminalViewMode,
 }) => {
   return (
-    <OrderbookContainer key={`orderbook_table`} theme={theme}>
+    <OrderbookContainer key="orderbook_table" theme={theme}>
       <OrderBookTable
         {...{
           quote,

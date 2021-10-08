@@ -18,6 +18,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import SrmLogo from '@icons/srmLogo.svg'
 import RINLogo from '@icons/RINLogo.svg'
 
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import {
   Row,
   BlockContainer,
@@ -31,7 +32,6 @@ import {
 import PriceBlock from './tokenPriceBlock'
 import MarketCap from './tokenMarketCap'
 import { getCCAICirculationSupply } from '../CirculationSupply'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 
 export const ccaiData = {
   totalySupply: 50000000,
@@ -75,15 +75,15 @@ const TopBar = ({
     savePreviousPrice(CCAIPrice)
   }, [CCAIPrice])
 
-  let totalySupply = ccaiData.totalySupply - ccaiData.burned
+  const totalySupply = ccaiData.totalySupply - ccaiData.burned
   const CCAImarketcap = CCAICirculatingSupply * CCAIPrice
   return (
     <>
-      <Row height={'100%'}>
+      <Row height="100%">
         <SvgIcon
           style={{ marginRight: '1rem' }}
-          height={'50%'}
-          width={'auto'}
+          height="50%"
+          width="auto"
           src={RINLogo}
         />
         <TokenWhiteTitle theme={theme}>RIN</TokenWhiteTitle>
@@ -91,16 +91,20 @@ const TopBar = ({
           style={{ color: showGreen ? '#A5E898' : '#F26D68' }}
           theme={theme}
         >
-          {CCAIPrice === 0 ? '-' : `$${formatNumberToUSFormat(
-            roundAndFormatNumber(CCAIPrice, 4, false)
-          )}`}
+          {CCAIPrice === 0
+            ? '-'
+            : `$${formatNumberToUSFormat(
+                roundAndFormatNumber(CCAIPrice, 4, false)
+              )}`}
         </GreenTitle>
       </Row>
       <Row>
         <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>RIN Marketcap</TopBarTitle>{' '}
           <Text theme={theme}>
-            {CCAImarketcap === 0 ? '-' : `$${formatNumberToUSFormat(CCAImarketcap.toFixed(0))}`}
+            {CCAImarketcap === 0
+              ? '-'
+              : `$${formatNumberToUSFormat(CCAImarketcap.toFixed(0))}`}
           </Text>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>

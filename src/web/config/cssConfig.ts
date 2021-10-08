@@ -19,5 +19,5 @@ export const CSS_CONFIG = {
     content: {
       fontSize: '1.2rem',
     },
-  }
+  },
 }

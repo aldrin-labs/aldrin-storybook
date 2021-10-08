@@ -9,8 +9,8 @@ import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 
-import { StyledPaper } from '../index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { StyledPaper } from '../index.styles'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 54rem;
@@ -20,7 +20,7 @@ export const WarningSolPopup = ({
   theme,
   open,
   close,
-  createAdditionalSolAddress
+  createAdditionalSolAddress,
 }: {
   theme: Theme
   open: boolean
@@ -33,18 +33,18 @@ export const WarningSolPopup = ({
       PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
-        <Text fontSize={'2.3rem'} fontFamily={'Avenir Next Demi'}>
+      <RowContainer justify="space-between">
+        <Text fontSize="2.3rem" fontFamily="Avenir Next Demi">
           Confirm New SOL Address Creation
         </Text>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer direction={'column'} padding={'3rem 0'}>
-        <Text fontFamily={'Avenir Next Medium'}>
+      <RowContainer direction="column" padding="3rem 0">
+        <Text fontFamily="Avenir Next Medium">
           Due to the peculiarities of Solana, it is impossible to perform
           actions with the default SOL token address from the wallet. If you
           want to add SOL to this pool an additional SOL address will be created
@@ -52,14 +52,14 @@ export const WarningSolPopup = ({
         </Text>
         <Text
           style={{ marginTop: '2rem' }}
-          color={'#93A0B2'}
-          fontFamily={'Avenir Next Medium'}
+          color="#93A0B2"
+          fontFamily="Avenir Next Medium"
         >
           When you withdraw from the pool, the funds will return to the default
           address.
         </Text>
       </RowContainer>
-      <RowContainer justify={'space-between'}>
+      <RowContainer justify="space-between">
         <BtnCustom
           theme={theme}
           onClick={() => {
@@ -70,12 +70,12 @@ export const WarningSolPopup = ({
           height="100%"
           fontSize="1.4rem"
           borderRadius="1.6rem"
-          borderColor={'#f2fbfb'}
-          btnColor={'#f2fbfb'}
-          backgroundColor={'transparent'}
-          textTransform={'none'}
-          transition={'all .4s ease-out'}
-          padding={'1.5rem 2rem'}
+          borderColor="#f2fbfb"
+          btnColor="#f2fbfb"
+          backgroundColor="transparent"
+          textTransform="none"
+          transition="all .4s ease-out"
+          padding="1.5rem 2rem"
           style={{ whiteSpace: 'nowrap' }}
         >
           Cancel{' '}
@@ -89,11 +89,11 @@ export const WarningSolPopup = ({
           fontSize="1.4rem"
           borderRadius="1.6rem"
           borderColor={theme.palette.blue.serum}
-          btnColor={'#fff'}
+          btnColor="#fff"
           backgroundColor={theme.palette.blue.serum}
-          textTransform={'none'}
-          transition={'all .4s ease-out'}
-          padding={'1.5rem 2rem'}
+          textTransform="none"
+          transition="all .4s ease-out"
+          padding="1.5rem 2rem"
           style={{ whiteSpace: 'nowrap' }}
         >
           Confirm

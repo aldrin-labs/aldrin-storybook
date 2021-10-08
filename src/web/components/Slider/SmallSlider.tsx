@@ -4,7 +4,8 @@ import 'rc-tooltip/assets/bootstrap.css'
 import React from 'react'
 import styled from 'styled-components'
 import Slider, { createSliderWithTooltip } from 'rc-slider'
-const Handle = Slider.Handle
+
+const { Handle } = Slider
 const SliderWithTooltip = createSliderWithTooltip(Slider)
 
 const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
@@ -15,7 +16,8 @@ const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
     background-color: ${(props) => props.disabled && 'inherit;'};
 
     .rc-slider-tooltip-inner.rc-slider-tooltip-inner {
-      background-color: ${(props) => props.trackBeforeBackground || '#5C8CEA'} !important;
+      background-color: ${(props) =>
+        props.trackBeforeBackground || '#5C8CEA'} !important;
       border: .1rem solid #e0e5ec;
       min-height: auto;
       font-family: DM Sans;
@@ -44,7 +46,7 @@ const StyledSlider = styled(({ sliderContainerStyles, ...rest }) => (
 
       &-track {
         background-color: ${(props) =>
-    props.trackBeforeBackground || '#5C8CEA'};
+          props.trackBeforeBackground || '#5C8CEA'};
           background-color: ${(props) => props.disabled && '#ABBAD1;'};
       }
 
@@ -86,7 +88,7 @@ const handle = (props) => {
           width: '0.8rem',
           top: '0.2rem',
           height: '2rem',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
         value={value}
         {...restProps}
@@ -123,7 +125,7 @@ const RCSlider = ({
         defaultValue={defaultValue}
         onChange={onChange}
         trackBeforeBackground={trackBeforeBackground}
-        tipFormatter={v => `${v} ${valueSymbol}`}
+        tipFormatter={(v) => `${v} ${valueSymbol}`}
         handle={(props) =>
           handle({ ...props, valueSymbol, trackBeforeBackground })
         }

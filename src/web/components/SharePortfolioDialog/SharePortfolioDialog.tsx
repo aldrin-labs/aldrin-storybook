@@ -4,8 +4,8 @@ import { Dialog, Grid, FormControl } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
 // import MiniSuccessPopup from '@sb/components/MiniSuccessPopup'
 
-import { IProps, IState } from './SharePortfolioDialog.types'
 import { withTheme } from '@material-ui/styles'
+import { IProps, IState } from './SharePortfolioDialog.types'
 
 import {
   StyledDialogContent,
@@ -182,8 +182,9 @@ export default class SharePortfolioDialog extends React.Component<
   }
 
   scrollToDropdown = () => {
-    const container = document.getElementById('responsive-dialog-title')
-      .parentElement
+    const container = document.getElementById(
+      'responsive-dialog-title'
+    ).parentElement
     const toScroll = document.getElementById('share-dialog-content')
 
     // TODO: recreate this on refs
@@ -223,7 +224,7 @@ export default class SharePortfolioDialog extends React.Component<
         style={{ width: '75rem', margin: 'auto' }}
         fullScreen={false}
         onClose={handleCloseSharePortfolio}
-        maxWidth={'md'}
+        maxWidth="md"
         open={openSharePortfolioPopUp}
         aria-labelledby="responsive-dialog-title"
       >
@@ -253,7 +254,7 @@ export default class SharePortfolioDialog extends React.Component<
             </ButtonShare>
             <ButtonShare
               active={!shareWithSomeoneTab}
-              padding={'1.6rem 6.4rem'}
+              padding="1.6rem 6.4rem"
               onClick={this.toggleSharingTab}
             >
               {' '}
@@ -318,14 +319,14 @@ export default class SharePortfolioDialog extends React.Component<
                 <FormControl fullWidth required>
                   <Grid container justify="space-between">
                     <FormInputTemplate
-                      name={'Show my portfolio value'}
+                      name="Show my portfolio value"
                       handleChange={() => this.changeShowPortfolioValue(true)}
                     >
                       <SRadio checked={showPortfolioValue} />
                     </FormInputTemplate>
 
                     <FormInputTemplate
-                      name={'Show only % allocation'}
+                      name="Show only % allocation"
                       handleChange={() => this.changeShowPortfolioValue(false)}
                     >
                       <SRadio checked={!showPortfolioValue} />
@@ -351,7 +352,7 @@ export default class SharePortfolioDialog extends React.Component<
                 <Grid container justify="space-between">
                   <StyledSearch
                     width="80"
-                    isClearable={true}
+                    isClearable
                     value={
                       selectedUsername
                         ? [
@@ -463,14 +464,14 @@ export default class SharePortfolioDialog extends React.Component<
                 <FormControl fullWidth required>
                   <Grid container justify="space-between">
                     <FormInputTemplate
-                      name={'Show my portfolio value'}
+                      name="Show my portfolio value"
                       handleChange={() => this.changeShowPortfolioValue(true)}
                     >
                       <SRadio checked={showPortfolioValue} />
                     </FormInputTemplate>
 
                     <FormInputTemplate
-                      name={'Show only % allocation'}
+                      name="Show only % allocation"
                       handleChange={() => this.changeShowPortfolioValue(false)}
                     >
                       <SRadio checked={!showPortfolioValue} />
@@ -568,8 +569,8 @@ export default class SharePortfolioDialog extends React.Component<
                     wrap="nowrap"
                   >
                     <StyledInputTemplate
-                      value={'Free'}
-                      label={'Free'}
+                      value="Free"
+                      label="Free"
                       labelPlacement="start"
                       control={<SRadio checked={isPortfolioFree} />}
                       onChange={() => this.setState({ isPortfolioFree: true })}
@@ -592,8 +593,8 @@ export default class SharePortfolioDialog extends React.Component<
                         style={{ marginLeft: '0rem' }}
                       />
                       <StyledInputTemplate
-                        value={'/ Mo'}
-                        label={'/ Mo'}
+                        value="/ Mo"
+                        label="/ Mo"
                         labelPlacement="start"
                         control={<SRadio checked={!isPortfolioFree} />}
                         onChange={() =>
@@ -620,7 +621,7 @@ export default class SharePortfolioDialog extends React.Component<
           )}
         </StyledDialogContent>
         <DialogFooter id="customized-dialog-title">
-          <TypographyFooter to={'/portfolio/social'}>
+          <TypographyFooter to="/portfolio/social">
             Go to Social portfolio manager
           </TypographyFooter>
         </DialogFooter>

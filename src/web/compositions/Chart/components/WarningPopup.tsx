@@ -15,8 +15,8 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import Warning from '@icons/newWarning.svg'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { Row } from '../Inputs/PreferencesSelect/index.styles'
 import { Loading } from '@sb/components'
+import { Row } from '../Inputs/PreferencesSelect/index.styles'
 
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -47,7 +47,7 @@ export const BlueButton = styled(
     <BtnCustom textTransform={textTransform} {...props}>
       {showLoader ? (
         <Loading
-          color={'#fff'}
+          color="#fff"
           size={24}
           style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
         />
@@ -91,15 +91,15 @@ export const WarningPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={isUserConfident ? onClose : () => {}}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
+      <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
         <Title>Warning!</Title>
-        <SvgIcon src={Warning} width={'10%'} height={'auto'} />
+        <SvgIcon src={Warning} width="10%" height="auto" />
       </RowContainer>
-      <RowContainer direction={'column'} style={{ marginBottom: '2rem' }}>
+      <RowContainer direction="column" style={{ marginBottom: '2rem' }}>
         {isSwapPage ? (
           <>
             <WhiteText theme={theme}>
@@ -127,16 +127,16 @@ export const WarningPopup = ({
         )}
       </RowContainer>
       <RowContainer justify="space-between" style={{ marginBottom: '2rem' }}>
-        <Row width={'calc(45%)'} justify="flex-start" margin="2rem 0 0 0">
+        <Row width="calc(45%)" justify="flex-start" margin="2rem 0 0 0">
           <SCheckbox
-            id={'warning_checkbox'}
+            id="warning_checkbox"
             style={{ padding: 0, marginRight: '1rem' }}
             onChange={() => {
               userConfident(!isUserConfident)
             }}
             checked={isUserConfident}
           />
-          <label htmlFor={'warning_checkbox'}>
+          <label htmlFor="warning_checkbox">
             <WhiteText
               style={{
                 cursor: 'pointer',

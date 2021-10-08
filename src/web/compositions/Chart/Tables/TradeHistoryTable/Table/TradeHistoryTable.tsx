@@ -9,8 +9,8 @@ import 'react-virtualized/styles.css'
 
 import { rowStyles } from '@core/utils/chartPageUtils'
 
-import defaultRowRenderer from '../../OrderBookTable/utils'
 import useMobileSize from '@webhooks/useMobileSize'
+import defaultRowRenderer from '../../OrderBookTable/utils'
 
 const Wrapper = styled.div`
   height: calc(100% - 3rem);

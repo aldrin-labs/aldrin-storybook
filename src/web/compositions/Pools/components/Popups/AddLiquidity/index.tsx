@@ -3,12 +3,10 @@ import React, { useEffect, useState } from 'react'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { InputWithCoins, InputWithTotal } from '../components'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
@@ -18,9 +16,7 @@ import {
 } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import {
-  PublicKey,
-} from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -28,6 +24,8 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
 import AttentionComponent from '@sb/components/AttentionBlock'
+import { InputWithCoins, InputWithTotal } from '../components'
+import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 
 export const AddLiquidityPopup = ({
@@ -51,10 +49,8 @@ export const AddLiquidityPopup = ({
   const connection = useConnection()
 
   // if user has more than one token for one mint
-  const [
-    selectedBaseTokenAddressFromSeveral,
-    setBaseTokenAddressFromSeveral,
-  ] = useState<string>('')
+  const [selectedBaseTokenAddressFromSeveral, setBaseTokenAddressFromSeveral] =
+    useState<string>('')
   const [
     selectedQuoteTokenAddressFromSeveral,
     setQuoteTokenAddressFromSeveral,
@@ -208,23 +204,23 @@ export const AddLiquidityPopup = ({
         setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
         setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
       }}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <Row justify={'space-between'} width={'100%'}>
+      <Row justify="space-between" width="100%">
         <BoldHeader>Add Liquidity</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </Row>
       <RowContainer>
-        <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+        <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
           Enter the amount of the first coin you wish to add, the second coin
           will adjust according to the match of a pool ratio.
         </Text>
       </RowContainer>
       <RowContainer>
         <InputWithCoins
-          placeholder={''}
+          placeholder=""
           theme={theme}
           value={baseAmount}
           onChange={setBaseAmountWithQuote}
@@ -233,12 +229,12 @@ export const AddLiquidityPopup = ({
           maxBalance={maxBaseAmount}
         />
         <Row>
-          <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
+          <Text fontSize="4rem" fontFamily="Avenir Next Medium">
             +
           </Text>
         </Row>
         <InputWithCoins
-          placeholder={''}
+          placeholder=""
           theme={theme}
           value={quoteAmount}
           onChange={setQuoteAmountWithBase}
@@ -249,35 +245,27 @@ export const AddLiquidityPopup = ({
         <Line />
         <InputWithTotal theme={theme} value={total} />
       </RowContainer>
-      <Row margin={'2rem 0 1rem 0'} justify={'space-between'}>
-        <Row direction={'column'} align={'start'}>
-          <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+      <Row margin="2rem 0 1rem 0" justify="space-between">
+        <Row direction="column" align="start">
+          <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
             Projected fee earnings based on the past 24h
           </Text>
           <Row>
-            <Text
-              fontSize={'2rem'}
-              color={'#A5E898'}
-              fontFamily={'Avenir Next Demi'}
-            >
+            <Text fontSize="2rem" color="#A5E898" fontFamily="Avenir Next Demi">
               ${stripDigitPlaces(total * (selectedPool.apy24h / 100), 2)}
               &nbsp;
             </Text>
-            <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
+            <Text fontSize="2rem" fontFamily="Avenir Next Demi">
               / 24h
             </Text>
           </Row>
         </Row>
-        <Row direction={'column'}>
-          <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+        <Row direction="column">
+          <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
             APY (24h)
           </Text>
           <Row>
-            <Text
-              fontSize={'2rem'}
-              color={'#A5E898'}
-              fontFamily={'Avenir Next Demi'}
-            >
+            <Text fontSize="2rem" color="#A5E898" fontFamily="Avenir Next Demi">
               {stripDigitPlaces(selectedPool.apy24h, 6)}%
             </Text>
           </Row>
@@ -287,7 +275,7 @@ export const AddLiquidityPopup = ({
       {(isNeedToLeftSomeSOL ||
         baseAmount > maxBaseAmount ||
         quoteAmount > maxQuoteAmount) && (
-        <RowContainer margin={'2rem 0 0 0'}>
+        <RowContainer margin="2rem 0 0 0">
           <AttentionComponent
             text={
               isNeedToLeftSomeSOL
@@ -298,24 +286,24 @@ export const AddLiquidityPopup = ({
                 ? `You entered more token B amount than you have.`
                 : ''
             }
-            blockHeight={'8rem'}
+            blockHeight="8rem"
           />
         </RowContainer>
       )}
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Row
-          width={'60%'}
+          width="60%"
           justify="space-between"
-          wrap={'nowrap'}
-          padding={'0 2rem 0 0'}
+          wrap="nowrap"
+          padding="0 2rem 0 0"
         >
           <SCheckbox
-            id={'warning_checkbox'}
+            id="warning_checkbox"
             style={{ padding: 0, marginRight: '1rem' }}
             onChange={() => setWarningChecked(!warningChecked)}
             checked={warningChecked}
           />
-          <label htmlFor={'warning_checkbox'}>
+          <label htmlFor="warning_checkbox">
             <WhiteText
               style={{
                 cursor: 'pointer',
@@ -333,7 +321,7 @@ export const AddLiquidityPopup = ({
         <BlueButton
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
-          isUserConfident={true}
+          isUserConfident
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {

@@ -3,9 +3,8 @@ import React, { ReactElement, useMemo, useState } from 'react'
 import copy from 'clipboard-copy'
 import { PublicKey } from '@solana/web3.js'
 import { notify } from '@sb/dexUtils/notifications'
-import { MARKETS } from '@project-serum/serum'
+import { MARKETS, TokenInstructions } from '@project-serum/serum'
 import { useConnection, useAccountInfo } from '@sb/dexUtils/connection'
-import { TokenInstructions } from '@project-serum/serum'
 // import FloatingElement from '../components/layout/FloatingElement';
 import styled from 'styled-components'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -24,9 +23,9 @@ import {
   ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { InputRowContainer } from '../../components/SmartOrderTerminal/styles'
 import { PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewContactPopup'
 import { Loading } from '@sb/components'
+import { InputRowContainer } from '../../components/SmartOrderTerminal/styles'
 
 // const { Text, Title } = Typography;
 
@@ -108,7 +107,7 @@ export function useMintInput({
           accountInfo.owner.equals(TokenInstructions.TOKEN_PROGRAM_ID) &&
           accountInfo.data.length === 82
         ) {
-          let parsed = parseTokenMintData(accountInfo.data)
+          const parsed = parseTokenMintData(accountInfo.data)
           if (parsed.initialized) {
             validateStatus = 'success'
             mintInfo = {
@@ -135,10 +134,10 @@ export function useMintInput({
 
   const input = (
     <>
-      <FormInputContainer theme={theme} padding={'1.2rem 0 0 0'} title={title}>
+      <FormInputContainer theme={theme} padding="1.2rem 0 0 0" title={title}>
         <StyledInput
           theme={theme}
-          height={'4rem'}
+          height="4rem"
           value={address}
           onChange={(e) => setAddress(e.target.value.trim())}
           type="text"
@@ -161,7 +160,7 @@ export function useMintInput({
       </FormInputContainer>
       {validateStatus === 'error' && (
         <InputRowContainer>
-          <Text type={'danger'}>{help}</Text>
+          <Text type="danger">{help}</Text>
         </InputRowContainer>
       )}
     </>
@@ -248,7 +247,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
       style={{ width: '100rem', margin: 'auto' }}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -294,17 +293,17 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
               <InputRowContainer theme={theme}>
                 <InputRowContainer
                   style={{ marginRight: '1rem' }}
-                  width={'calc(50% - 1rem)'}
+                  width="calc(50% - 1rem)"
                   theme={theme}
                 >
                   <FormInputContainer
                     theme={theme}
-                    padding={'1.2rem 0 0 0'}
-                    title={`Minimum Order Size (Lot size in e.g. BTC)`}
+                    padding="1.2rem 0 0 0"
+                    title="Minimum Order Size (Lot size in e.g. BTC)"
                   >
                     <StyledInput
                       theme={theme}
-                      height={'4rem'}
+                      height="4rem"
                       value={lotSize}
                       onChange={(e) => setLotSize(e.target.value.trim())}
                       type="number"
@@ -317,16 +316,16 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                 <InputRowContainer
                   theme={theme}
                   style={{ marginLeft: '1rem' }}
-                  width={'calc(50% - 1rem)'}
+                  width="calc(50% - 1rem)"
                 >
                   <FormInputContainer
                     theme={theme}
-                    padding={'1.2rem 0 00'}
-                    title={`Tick Size (Price increment in e.g. USDT)`}
+                    padding="1.2rem 0 00"
+                    title="Tick Size (Price increment in e.g. USDT)"
                   >
                     <StyledInput
                       theme={theme}
-                      height={'4rem'}
+                      height="4rem"
                       value={tickSize}
                       onChange={(e) => setTickSize(e.target.value.trim())}
                       type="number"
@@ -337,14 +336,14 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                 </InputRowContainer>
               </InputRowContainer>
 
-              <InputRowContainer theme={theme} align={'flex-start'}>
+              <InputRowContainer theme={theme} align="flex-start">
                 <PurpleButton
                   theme={theme}
                   disabled={!canSubmit}
                   text={connected ? 'Submit' : 'Not connected to wallet'}
                   width={connected ? '12rem' : '25rem'}
-                  height={'4rem'}
-                  margin={'0 0 0 0'}
+                  height="4rem"
+                  margin="0 0 0 0"
                   onClick={onSubmit}
                   showLoader={submitting}
                 />
@@ -357,13 +356,13 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                 >
                   <StyledInput
                     theme={theme}
-                    height={'4rem'}
+                    height="4rem"
                     value={listedMarket ? listedMarket.toBase58() : ''}
                     type="text"
                     min="0"
                     step="any"
-                    disabled={true}
-                    placeholder={'Here will appear new market ID'}
+                    disabled
+                    placeholder="Here will appear new market ID"
                     style={{ paddingRight: '8rem' }}
                   />
                   {listedMarket && (
@@ -380,23 +379,23 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                   )}
                 </InputRowContainer>
               </InputRowContainer>
-              <InputRowContainer theme={theme} justify={'center'}>
+              <InputRowContainer theme={theme} justify="center">
                 <PurpleButton
                   theme={theme}
-                  text={'Close'}
+                  text="Close"
                   onClick={onClose}
-                  width={'12rem'}
-                  height={'4rem'}
+                  width="12rem"
+                  height="4rem"
                   margin={connected ? '0' : '0 1rem 0 0'}
                 />
                 {!connected && (
                   <PurpleButton
                     theme={theme}
-                    text={'Connect wallet'}
+                    text="Connect wallet"
                     onClick={wallet.connect}
-                    width={'20rem'}
-                    height={'4rem'}
-                    margin={'0 0 0 1rem'}
+                    width="20rem"
+                    height="4rem"
+                    margin="0 0 0 1rem"
                   />
                 )}
               </InputRowContainer>

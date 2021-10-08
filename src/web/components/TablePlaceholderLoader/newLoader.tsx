@@ -1,8 +1,7 @@
 import React from 'react'
 
 import ContentLoader from 'react-content-loader'
-import { Theme } from '@material-ui/core/styles'
-import { withTheme } from '@material-ui/styles'
+import { Theme, withTheme } from '@material-ui/core/styles'
 
 const random = () => Math.random() * (1 - 0.7) + 0.7
 
@@ -38,7 +37,7 @@ export default withTheme()(
     theme: Theme
     rows?: number
   }) => (
-    <React.Fragment>
+    <>
       {Array(rows)
         .fill('')
         .map((e, i) => (
@@ -48,6 +47,6 @@ export default withTheme()(
             style={{ opacity: Number(2 / i).toFixed(1) }}
           />
         ))}
-    </React.Fragment>
+    </>
   )
 )

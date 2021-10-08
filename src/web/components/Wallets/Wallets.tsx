@@ -1,16 +1,16 @@
 import React from 'react'
 import { Checkbox } from '@material-ui/core'
 
-import { IProps } from './Wallets.types'
 import {
   AccountName,
   AccountsList,
   AccountsListItem,
 } from '@sb/styles/selectorSharedStyles'
+import { IProps } from './Wallets.types'
 
 export default class Wallets extends React.PureComponent<IProps> {
   render() {
-    const { color, onWalletToggle, newWallets, login} = this.props
+    const { color, onWalletToggle, newWallets, login } = this.props
 
     return (
       <AccountsList>
@@ -27,7 +27,7 @@ export default class Wallets extends React.PureComponent<IProps> {
                 type="checkbox"
                 id={wallet.name}
                 checked={isChecked}
-                onClick={() => (login && onWalletToggle(wallet._id))}
+                onClick={() => login && onWalletToggle(wallet._id)}
               />
 
               <AccountName

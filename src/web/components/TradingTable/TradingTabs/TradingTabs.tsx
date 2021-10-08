@@ -1,6 +1,9 @@
 import React from 'react'
 
-import { IProps } from './TradingTabs.types'
+import SvgIcon from '@sb/components/SvgIcon'
+
+import ExpandTableIcon from '@icons/expandIcon.svg'
+import SqueezeTableIcon from '@icons/squeezeIcon.svg'
 import {
   TitleTab,
   TitleTabsGroup,
@@ -8,10 +11,7 @@ import {
   ExpandTableButton,
   StyledTitleTabForMobile,
 } from './TradingTabs.styles'
-import SvgIcon from '@sb/components/SvgIcon'
-
-import ExpandTableIcon from '@icons/expandIcon.svg'
-import SqueezeTableIcon from '@icons/squeezeIcon.svg'
+import { IProps } from './TradingTabs.types'
 
 const TradingTabs = ({
   tab,
@@ -75,8 +75,8 @@ const TradingTabs = ({
                 ? SqueezeTableIcon
                 : ExpandTableIcon
             }
-            width={'25%'}
-            height={'auto'}
+            width="25%"
+            height="auto"
           />
         </ExpandTableButton>
       </TitleTabsGroup>

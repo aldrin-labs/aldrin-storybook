@@ -18,20 +18,23 @@ import { Loading } from '@sb/components'
 import GreenCheckMark from '@icons/greenDoneMark.svg'
 import RedCross from '@icons/Cross.svg'
 
-import {
-  RebalancePopupStep,
-  TokensMapType,
-  TransactionType,
-} from '../../Rebalance.types'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { StyledPaper } from './styles'
 import Info from '@icons/inform.svg'
-
 import {
   MarketsMap,
   useAllMarketsList,
   useAllMarketsMapById,
 } from '@sb/dexUtils/markets'
+import { Placeholder } from '@sb/components/TraidingTerminal/styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import {
+  RebalancePopupStep,
+  TokensMapType,
+  TransactionType,
+} from '../../Rebalance.types'
+import { StyledPaper } from './styles'
+
 import { ReloadTimer } from '../ReloadTimer'
 import { TransactionComponent } from './TransactionComponent'
 import { PopupFooter } from './PopupFooter'
@@ -39,9 +42,6 @@ import { getTransactionsListWithPrices } from '../../utils/getTransactionsListWi
 import { placeAllOrders } from '../../utils/marketOrderProgram/placeAllOrders'
 import { loadMarketOrderProgram } from '../../utils/marketOrderProgram/loadProgram'
 import { LoadingWithHint } from './LoadingWithHint'
-import { Placeholder } from '@sb/components/TraidingTerminal/styles'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { getTransactionState } from '../../utils/getTransactionState'
 import { isTransactionWithError } from '../../utils/isTransactionWithError'
 
@@ -72,19 +72,14 @@ export const RebalancePopup = ({
 }) => {
   const allMarketsMapById = useAllMarketsMapById()
 
-  const [rebalanceStep, changeRebalanceStep] = useState<RebalancePopupStep>(
-    'pending'
-  )
+  const [rebalanceStep, changeRebalanceStep] =
+    useState<RebalancePopupStep>('pending')
 
-  const [
-    rebalanceTransactionsLoaded,
-    setRebalanceTransactionsLoaded,
-  ] = useState(false)
+  const [rebalanceTransactionsLoaded, setRebalanceTransactionsLoaded] =
+    useState(false)
 
-  const [
-    numberOfCompletedTransactions,
-    setNumberOfCompletedTransactions,
-  ] = useState(0)
+  const [numberOfCompletedTransactions, setNumberOfCompletedTransactions] =
+    useState(0)
 
   const [rebalanceTransactionsList, setRebalanceTransactionsList] = useState<
     TransactionType[]
@@ -106,15 +101,14 @@ export const RebalancePopup = ({
       allMarketsMap: MarketsMap
     }) => {
       // transactions with all prices
-      const rebalanceAllTransactionsListWithPrices = await getTransactionsListWithPrices(
-        {
+      const rebalanceAllTransactionsListWithPrices =
+        await getTransactionsListWithPrices({
           wallet,
           connection,
           tokensMap,
           allMarketsMap,
           allMarketsMapById,
-        }
-      )
+        })
 
       setRebalanceTransactionsList(rebalanceAllTransactionsListWithPrices)
       setRebalanceTransactionsLoaded(true)
@@ -172,8 +166,8 @@ export const RebalancePopup = ({
     })
   }, [])
 
-  const currentSOLAmount = tokensMap['SOL'].amount
-  const targetSOLAmount = tokensMap['SOL'].targetAmount
+  const currentSOLAmount = tokensMap.SOL.amount
+  const targetSOLAmount = tokensMap.SOL.targetAmount
 
   const totalFeesUSD = rebalanceTransactionsList.reduce(
     (acc, el) => el.feeUSD + acc,
@@ -213,7 +207,7 @@ export const RebalancePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
       id="rebalancePopup"
@@ -225,7 +219,7 @@ export const RebalancePopup = ({
       }}
     >
       <RowContainer
-        justify={'space-between'}
+        justify="space-between"
         style={{
           borderBottom: '0.1rem solid #383B45',
           padding: '0 2rem 2rem 2rem',
@@ -289,37 +283,25 @@ export const RebalancePopup = ({
       </RowContainer>
       <RowContainer>
         {rebalanceStep === 'initial' && (
-          <RowContainer direction={'column'}>
+          <RowContainer direction="column">
             {rebalanceTransactionsLoaded ? (
-              <RowContainer
-                padding={'2rem 2rem 2rem 2rem'}
-                direction={'column'}
-              >
+              <RowContainer padding="2rem 2rem 2rem 2rem" direction="column">
                 <PopupFooter
                   theme={theme}
                   totalFeesUSD={totalFeesUSD}
                   totalFeesSOL={totalFeesSOL}
                 />
-                <RowContainer margin={'2rem 0 0 0'}>
-                  <AttentionComponent
-                    text={
-                      'You will need to confirm multiple transactions in pop-ups from your wallet.'
-                    }
-                  />
+                <RowContainer margin="2rem 0 0 0">
+                  <AttentionComponent text="You will need to confirm multiple transactions in pop-ups from your wallet." />
                 </RowContainer>
               </RowContainer>
             ) : (
               <LoadingWithHint
                 hintTextStyles={{ minHeight: '6rem' }}
-                loadingText={
-                  'Your transactions are being processed. It may take up to 30 seconds.'
-                }
+                loadingText="Your transactions are being processed. It may take up to 30 seconds."
               />
             )}
-            <RowContainer
-              padding={'3rem 2rem 0 2rem'}
-              justify={'space-between'}
-            >
+            <RowContainer padding="3rem 2rem 0 2rem" justify="space-between">
               <BtnCustom
                 theme={theme}
                 onClick={() => {
@@ -332,11 +314,11 @@ export const RebalancePopup = ({
                 fontSize="1.4rem"
                 padding="1.5rem 8rem"
                 borderRadius="1.1rem"
-                borderColor={'#f2fbfb'}
-                btnColor={'#fff'}
-                backgroundColor={'none'}
-                textTransform={'none'}
-                transition={'all .4s ease-out'}
+                borderColor="#f2fbfb"
+                btnColor="#fff"
+                backgroundColor="none"
+                textTransform="none"
+                transition="all .4s ease-out"
                 style={{ whiteSpace: 'nowrap' }}
               >
                 Cancel
@@ -357,12 +339,12 @@ export const RebalancePopup = ({
                     </>
                   }
                 >
-                  <Row width={'calc(50% - 1rem)'}>
-                    <Placeholder height={'6rem'}>
+                  <Row width="calc(50% - 1rem)">
+                    <Placeholder height="6rem">
                       Insufficient{' '}
                       {currentSOLAmount < totalFeesSOL ? '' : 'target'} SOL
                       balance.
-                      <SvgIcon src={Info} width={'2rem'} />
+                      <SvgIcon src={Info} width="2rem" />
                     </Placeholder>
                   </Row>
                 </DarkTooltip>
@@ -378,10 +360,10 @@ export const RebalancePopup = ({
                   padding="1.5rem 0rem"
                   borderRadius="1.1rem"
                   borderColor={theme.palette.blue.serum}
-                  btnColor={'#fff'}
+                  btnColor="#fff"
                   backgroundColor={theme.palette.blue.serum}
-                  textTransform={'none'}
-                  transition={'all .4s ease-out'}
+                  textTransform="none"
+                  transition="all .4s ease-out"
                   style={{ whiteSpace: 'nowrap' }}
                 >
                   Start Rebalance
@@ -394,13 +376,9 @@ export const RebalancePopup = ({
         {rebalanceStep === 'pending' && (
           <RowContainer>
             {showConfirmTradeButton ? (
-              <RowContainer height={'100%'} direction={'column'}>
-                <RowContainer direction={'column'} margin={'0 0 2rem 0'}>
-                  <AttentionComponent
-                    text={
-                      'You will need to confirm multiple transactions in pop-ups from your wallet. If a pop-up didn’t appear – press the button below. After signing a transaction click outside the pop-up. Repeat until the last transaction.'
-                    }
-                  />
+              <RowContainer height="100%" direction="column">
+                <RowContainer direction="column" margin="0 0 2rem 0">
+                  <AttentionComponent text="You will need to confirm multiple transactions in pop-ups from your wallet. If a pop-up didn’t appear – press the button below. After signing a transaction click outside the pop-up. Repeat until the last transaction." />
                   <BtnCustom
                     theme={theme}
                     onClick={() => {
@@ -411,39 +389,35 @@ export const RebalancePopup = ({
                     height="auto"
                     fontSize="1.4rem"
                     padding="1.5rem 0rem"
-                    margin={'4rem 0 0 0'}
+                    margin="4rem 0 0 0"
                     borderRadius="1.1rem"
                     borderColor={theme.palette.blue.serum}
-                    btnColor={'#fff'}
+                    btnColor="#fff"
                     backgroundColor={theme.palette.blue.serum}
-                    textTransform={'none'}
-                    transition={'all .4s ease-out'}
+                    textTransform="none"
+                    transition="all .4s ease-out"
                     style={{ whiteSpace: 'nowrap' }}
                   >
                     Confirm Transaction
                   </BtnCustom>
                 </RowContainer>
-                <RowContainer direction={'column'} margin={'2rem 0'}>
-                  <Loading color={'#F29C38'} size={'6rem'} />
-                  <Text style={{ marginTop: '1rem' }} color={'#F29C38'}>
+                <RowContainer direction="column" margin="2rem 0">
+                  <Loading color="#F29C38" size="6rem" />
+                  <Text style={{ marginTop: '1rem' }} color="#F29C38">
                     Pending...
                   </Text>
                 </RowContainer>
               </RowContainer>
             ) : (
-              <RowContainer margin={'2rem 0 0 0'}>
-                <AttentionComponent
-                  text={
-                    'You will need to confirm multiple transactions in pop-ups from your wallet.'
-                  }
-                />
+              <RowContainer margin="2rem 0 0 0">
+                <AttentionComponent text="You will need to confirm multiple transactions in pop-ups from your wallet." />
               </RowContainer>
             )}
           </RowContainer>
         )}
         {rebalanceStep === 'done' && (
-          <RowContainer height={'100%'} margin={'4rem 0'} direction={'column'}>
-            <SvgIcon src={GreenCheckMark} width={'3rem'} height={'3rem'} />{' '}
+          <RowContainer height="100%" margin="4rem 0" direction="column">
+            <SvgIcon src={GreenCheckMark} width="3rem" height="3rem" />{' '}
             <Text
               color={theme.palette.green.main}
               style={{ marginTop: '1rem' }}
@@ -453,8 +427,8 @@ export const RebalancePopup = ({
           </RowContainer>
         )}
         {rebalanceStep === 'failed' && (
-          <RowContainer height={'100%'} margin={'4rem 0'} direction={'column'}>
-            <SvgIcon src={RedCross} width={'3rem'} height={'3rem'} />{' '}
+          <RowContainer height="100%" margin="4rem 0" direction="column">
+            <SvgIcon src={RedCross} width="3rem" height="3rem" />{' '}
             <Text color={theme.palette.red.main} style={{ marginTop: '1rem' }}>
               Failed
             </Text>

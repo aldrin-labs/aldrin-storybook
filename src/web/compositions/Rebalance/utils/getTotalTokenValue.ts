@@ -1,8 +1,6 @@
-import { TokenInfoWithValue } from "../Rebalance.types"
+import { TokenInfoWithValue } from '../Rebalance.types'
 
-export const getTotalTokenValue = (
-  tokens: TokenInfoWithValue[]
-) => {
+export const getTotalTokenValue = (tokens: TokenInfoWithValue[]) => {
   const totalTokensValue = tokens.reduce((acc, el) => {
     return acc + el.tokenValue
   }, 0)

@@ -48,16 +48,16 @@ export const InputWithSelectorForSwaps = ({
   const isSelectToken = symbol === 'Select token'
 
   return (
-    <Row style={{ position: 'relative' }} width={'100%'}>
+    <Row style={{ position: 'relative' }} width="100%">
       <StyledInput />
-      <TokenContainer left={'2rem'} top={'1rem'}>
+      <TokenContainer left="2rem" top="1rem">
         <Text color={theme.palette.grey.title}>
           {directionFrom ? 'From:' : 'To (Estimate):'}
         </Text>
       </TokenContainer>
-      <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'1rem'}>
+      <TokenContainer style={{ width: '80%' }} left="2rem" bottom="1rem">
         <InvisibleInput
-          type={'number'}
+          type="number"
           value={value}
           disabled={disabled}
           onChange={(e) => {
@@ -66,11 +66,7 @@ export const InputWithSelectorForSwaps = ({
           placeholder={placeholder}
         />
       </TokenContainer>
-      <TokenContainer
-        style={{ cursor: 'pointer' }}
-        right={'2rem'}
-        bottom={'1rem'}
-      >
+      <TokenContainer style={{ cursor: 'pointer' }} right="2rem" bottom="1rem">
         <Row
           style={{ flexWrap: 'nowrap' }}
           onClick={() => {
@@ -83,23 +79,23 @@ export const InputWithSelectorForSwaps = ({
         >
           <TokenIcon
             mint={getTokenMintAddressByName(symbol)}
-            width={'2rem'}
-            height={'2rem'}
+            width="2rem"
+            height="2rem"
           />
           <Text
             style={{ margin: '0 0.5rem' }}
-            fontSize={'2rem'}
-            fontFamily={'Avenir Next Demi'}
+            fontSize="2rem"
+            fontFamily="Avenir Next Demi"
           >
             {symbol}
           </Text>
-          <SvgIcon src={Arrow} width={'1rem'} height={'1rem'} />
+          <SvgIcon src={Arrow} width="1rem" height="1rem" />
         </Row>
       </TokenContainer>
       {!isSelectToken && (
-        <TokenContainer right={'2rem'} top={'1rem'}>
+        <TokenContainer right="2rem" top="1rem">
           <Row style={{ flexWrap: 'nowrap' }}>
-            <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
+            <Text color={theme.palette.grey.title} fontSize="1.2rem">
               &nbsp;Balance:
             </Text>
             &nbsp;

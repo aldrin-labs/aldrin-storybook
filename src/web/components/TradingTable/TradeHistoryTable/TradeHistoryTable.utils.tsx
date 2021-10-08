@@ -33,10 +33,7 @@ export const combineTradeHistoryTable = (
       symbol: marketName,
     })
 
-    const pair = marketName
-      .split('/')
-      .join('_')
-      .split('_')
+    const pair = marketName.split('/').join('_').split('_')
 
     return {
       id: `${orderId}_${size}_${price}`,
@@ -107,9 +104,9 @@ export const combineTradeHistoryTable = (
       },
       columnForMobile: {
         render: (
-          <RowContainer padding={'0 2rem'} direction={'column'} height="20rem">
-            <RowContainer justify={'space-between'}>
-              <StyledTitle color={'#fbf2f2'}>
+          <RowContainer padding="0 2rem" direction="column" height="20rem">
+            <RowContainer justify="space-between">
+              <StyledTitle color="#fbf2f2">
                 {pair[0]}/{pair[1]}
               </StyledTitle>
               <StyledTitle
@@ -124,22 +121,22 @@ export const combineTradeHistoryTable = (
                 {side}
               </StyledTitle>
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <StyledTitle>Price(USDC)</StyledTitle>{' '}
-              <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+              <StyledTitle color="#fbf2f2">{`${stripDigitPlaces(
                 price,
                 pricePrecision
               )}`}</StyledTitle>
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <StyledTitle>Amount (CCAI)</StyledTitle>
-              <StyledTitle color={'#fbf2f2'}>
+              <StyledTitle color="#fbf2f2">
                 {stripDigitPlaces(size, quantityPrecision)}
               </StyledTitle>
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <StyledTitle>Total (USDC)</StyledTitle>
-              <StyledTitle color={'#fbf2f2'}>
+              <StyledTitle color="#fbf2f2">
                 {stripDigitPlaces(size * price, quantityPrecision)}
               </StyledTitle>
             </RowContainer>

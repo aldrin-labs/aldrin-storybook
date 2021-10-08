@@ -4,9 +4,8 @@ import styled from 'styled-components'
 import { Button } from '@material-ui/core'
 import SvgIcon from '@sb/components/SvgIcon'
 import TelegramIcon from '@icons/uil-telegram.svg'
-import { BoldButton } from './Feedback.styles'
-
 import config from '@core/utils/linkConfig'
+import { BoldButton } from './Feedback.styles'
 
 export default class Feedback extends Component<{}, {}> {
   state = {
@@ -59,8 +58,8 @@ export default class Feedback extends Component<{}, {}> {
           >
             <SvgIcon
               src={TelegramIcon}
-              width={'2rem'}
-              height={'2rem'}
+              width="2rem"
+              height="2rem"
               style={{ marginRight: '5%' }}
             />
             Telegram

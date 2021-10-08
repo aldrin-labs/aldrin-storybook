@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { HeaderProperties, BlockProperties, InputRowProps } from './types'
 import Switch from '@material-ui/core/Switch'
+import { HeaderProperties, BlockProperties, InputRowProps } from './types'
 
 export const TerminalBlocksContainer = styled(Grid)`
   padding-top: 1rem;
@@ -167,7 +167,7 @@ export const AdditionalSettingsButton = styled(
   }) => (
     <BtnCustom
       btnWidth="calc(48.5%)"
-      height={'3rem'}
+      height="3rem"
       fontSize="1.2rem"
       fontWeight="normal"
       padding="0"
@@ -188,10 +188,10 @@ export const AdditionalSettingsButton = styled(
       hoverBackground={
         needHover ? theme.palette.blue.serum : theme.palette.grey.main
       }
-      transition={'all .25s ease-out'}
+      transition="all .25s ease-out"
       textTransform="none"
-      boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
-      margin={'0 3% 0 0'}
+      boxShadow="0px .2rem .3rem rgba(8, 22, 58, 0.15)"
+      margin="0 3% 0 0"
       {...rest}
     >
       {children}

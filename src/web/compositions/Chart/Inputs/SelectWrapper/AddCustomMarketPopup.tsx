@@ -28,13 +28,13 @@ import {
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import ListNewMarketPopup, { Input } from './ListNewMarketPopup'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { readQueryData, writeQueryData } from '@core/utils/TradingTable.utils'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexProgramIdByEndpoint } from '@core/config/dex'
+import ListNewMarketPopup, { Input } from './ListNewMarketPopup'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -176,7 +176,7 @@ const CustomMarketDialog = ({
       return
     }
 
-    let params = {
+    const params = {
       address: marketId,
       programId,
       name: marketLabel,
@@ -211,10 +211,11 @@ const CustomMarketDialog = ({
     if (resultOfAdding) {
       await addSerumCustomMarketMutation({
         variables: {
-          publicKey: publicKey,
-          symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency ||
-            quoteLabel}`.toUpperCase(),
-          isPrivate: isPrivate,
+          publicKey,
+          symbol: `${knownBaseCurrency || baseLabel}/${
+            knownQuoteCurrency || quoteLabel
+          }`.toUpperCase(),
+          isPrivate,
           marketId,
           programId,
         },
@@ -234,12 +235,13 @@ const CustomMarketDialog = ({
         getUserCustomMarkets: [
           ...getUserCustomMarketsQuery.getUserCustomMarkets,
           {
-            isPrivate: isPrivate,
-            marketId: marketId,
-            programId: programId,
-            publicKey: publicKey,
-            symbol: `${knownBaseCurrency || baseLabel}/${knownQuoteCurrency ||
-              quoteLabel}`.toUpperCase(),
+            isPrivate,
+            marketId,
+            programId,
+            publicKey,
+            symbol: `${knownBaseCurrency || baseLabel}/${
+              knownQuoteCurrency || quoteLabel
+            }`.toUpperCase(),
             __typename: 'SerumCustomMarket',
           },
         ],
@@ -252,8 +254,9 @@ const CustomMarketDialog = ({
     })
 
     await history.push(
-      `/chart/spot/${knownBaseCurrency || baseLabel}_${knownQuoteCurrency ||
-        quoteLabel}`
+      `/chart/spot/${knownBaseCurrency || baseLabel}_${
+        knownQuoteCurrency || quoteLabel
+      }`
     )
 
     await onDoClose()
@@ -274,7 +277,7 @@ const CustomMarketDialog = ({
       style={{ width: '85rem', margin: 'auto' }}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -309,12 +312,12 @@ const CustomMarketDialog = ({
         theme={theme}
         id="share-dialog-content"
       >
-        <RowContainer margin={'2rem 0 0 0'}>
+        <RowContainer margin="2rem 0 0 0">
           <PurpleButton
             theme={theme}
-            text={'List New Market'}
-            width={'20rem'}
-            height={'3.5rem'}
+            text="List New Market"
+            width="20rem"
+            height="3.5rem"
             color={theme.palette.grey.terminal}
             background={theme.palette.green.main}
             onClick={() => {
@@ -325,9 +328,9 @@ const CustomMarketDialog = ({
         <RowContainer>
           <CustomSwitcher
             theme={theme}
-            firstHalfText={'private'}
-            secondHalfText={'public'}
-            buttonHeight={'3rem'}
+            firstHalfText="private"
+            secondHalfText="public"
+            buttonHeight="3rem"
             containerStyles={{
               width: '100%',
               marginTop: '2rem',
@@ -351,7 +354,7 @@ const CustomMarketDialog = ({
         </RowContainer>
         {wellFormedMarketId ? (
           <>
-            <RowContainer margin={'2rem 0 0 0'}>
+            <RowContainer margin="2rem 0 0 0">
               {!market && !loadingMarket && (
                 <Text type="danger">Not a valid market</Text>
               )}
@@ -369,13 +372,13 @@ const CustomMarketDialog = ({
         ) : (
           <>
             {marketId && !wellFormedMarketId && (
-              <RowContainer margin={'2rem 0 0 0'}>
+              <RowContainer margin="2rem 0 0 0">
                 <Text type="danger">Invalid market ID</Text>
               </RowContainer>
             )}
           </>
         )}
-        <RowContainer margin={'2rem 0 0 0'}>
+        <RowContainer margin="2rem 0 0 0">
           <StyledInput
             theme={theme}
             placeholder="Market Id"
@@ -384,7 +387,7 @@ const CustomMarketDialog = ({
             // suffix={loadingMarket ? <Loading /> : null}
           />
         </RowContainer>
-        <RowContainer margin={'1rem 0 0 0'}>
+        <RowContainer margin="1rem 0 0 0">
           <StyledInput
             theme={theme}
             placeholder="Market Label"
@@ -393,11 +396,11 @@ const CustomMarketDialog = ({
             onChange={(e) => setMarketLabel(e.target.value)}
           />
         </RowContainer>
-        <RowContainer margin={'1rem 0 2rem 0'} align={'flex-start'}>
+        <RowContainer margin="1rem 0 2rem 0" align="flex-start">
           <Row
-            width={'calc(50% - .5rem)'}
-            margin={'0 .5rem 0 0'}
-            justify={'flex-start'}
+            width="calc(50% - .5rem)"
+            margin="0 .5rem 0 0"
+            justify="flex-start"
           >
             <StyledInput
               theme={theme}
@@ -413,9 +416,9 @@ const CustomMarketDialog = ({
             )}
           </Row>
           <Row
-            width={'calc(50% - .5rem)'}
-            margin={'0 0 0 .5rem'}
-            justify={'flex-start'}
+            width="calc(50% - .5rem)"
+            margin="0 0 0 .5rem"
+            justify="flex-start"
           >
             <StyledInput
               theme={theme}
@@ -431,13 +434,13 @@ const CustomMarketDialog = ({
             )}
           </Row>
         </RowContainer>
-        <RowContainer justify={'center'}>
+        <RowContainer justify="center">
           <PurpleButton
             theme={theme}
-            margin={'0 0 0 0rem'}
-            text={'Add Market'}
-            width={'20rem'}
-            height={'4rem'}
+            margin="0 0 0 0rem"
+            text="Add Market"
+            width="20rem"
+            height="4rem"
             showLoader={loading}
             onClick={async (e) => {
               e.preventDefault()

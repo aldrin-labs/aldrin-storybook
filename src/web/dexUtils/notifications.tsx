@@ -21,8 +21,8 @@ export const notify = ({
       <Link
         rel="noopener noreferrer"
         target="_blank"
-        to={'https://solanabeach.io/tx/' + txid}
-        href={'https://solanabeach.io/tx/' + txid}
+        to={`https://solanabeach.io/tx/${txid}`}
+        href={`https://solanabeach.io/tx/${txid}`}
       >
         {description ? (
           <div

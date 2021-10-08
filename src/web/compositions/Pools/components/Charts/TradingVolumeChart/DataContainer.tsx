@@ -7,8 +7,8 @@ const TradingVolumeChartDataContainer = ({ theme }: { theme: Theme }) => {
   return (
     <TradingVolumeChart
       theme={theme}
-      id={'TradingVolumeChart'}
-      title={'Trading Volume'}
+      id="TradingVolumeChart"
+      title="Trading Volume"
     />
   )
 }

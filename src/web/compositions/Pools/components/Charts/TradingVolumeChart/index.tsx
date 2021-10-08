@@ -11,7 +11,6 @@ import {
   RowContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { createTradingVolumeChart } from '../utils'
 import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
 import {
   dayDuration,
@@ -20,6 +19,7 @@ import {
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 
 import dayjs from 'dayjs'
+import { createTradingVolumeChart } from '../utils'
 import { Line } from '../../Popups/index.styles'
 
 const TradingVolumeChart = ({
@@ -49,8 +49,8 @@ const TradingVolumeChart = ({
 
   return (
     <>
-      <HeaderContainer theme={theme} justify={'space-between'}>
-        <RowContainer margin={'0 2rem 0 2rem'} style={{ flexWrap: 'nowrap' }}>
+      <HeaderContainer theme={theme} justify="space-between">
+        <RowContainer margin="0 2rem 0 2rem" style={{ flexWrap: 'nowrap' }}>
           <WhiteTitle
             style={{ marginRight: '2rem' }}
             theme={theme}
@@ -62,7 +62,7 @@ const TradingVolumeChart = ({
         </RowContainer>
       </HeaderContainer>
       <ChartContainer>
-        <canvas id="TradingVolumeChart"></canvas>
+        <canvas id="TradingVolumeChart" />
       </ChartContainer>
     </>
   )

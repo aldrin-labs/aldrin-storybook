@@ -1,11 +1,11 @@
 import React, { SyntheticEvent } from 'react'
 
-import TooltipCustom from '../components/TooltipCustom/TooltipCustom'
 import EditIcon from '@material-ui/icons/Edit'
 import SaveIcon from '@material-ui/icons/Save'
 import Replay from '@material-ui/icons/Replay'
 import ClearIcon from '@material-ui/icons/Clear'
 import SnapshotIcon from '@material-ui/icons/Camera'
+import TooltipCustom from '../components/TooltipCustom/TooltipCustom'
 
 export const getArrayOfActionElements = ({
   isEditModeEnabled,
@@ -33,7 +33,7 @@ export const getArrayOfActionElements = ({
             id: '11',
             icon: (
               <TooltipCustom
-                title={`Rebalance portfolio`}
+                title="Rebalance portfolio"
                 component={<EditIcon id="editButton" />}
               />
             ),
@@ -48,7 +48,7 @@ export const getArrayOfActionElements = ({
             id: '22',
             icon: (
               <TooltipCustom
-                title={`Update snapshot`}
+                title="Update snapshot"
                 component={<SnapshotIcon id="snapshotButton" />}
               />
             ),
@@ -59,7 +59,7 @@ export const getArrayOfActionElements = ({
             id: '33',
             icon: (
               <TooltipCustom
-                title={`Discard changes`}
+                title="Discard changes"
                 component={<ClearIcon id="discardChangesButton" />}
               />
             ),
@@ -70,7 +70,7 @@ export const getArrayOfActionElements = ({
             id: '44',
             icon: (
               <TooltipCustom
-                title={`Reset to initial portfolio`}
+                title="Reset to initial portfolio"
                 component={<Replay id="resetButton" />}
               />
             ),
@@ -81,7 +81,7 @@ export const getArrayOfActionElements = ({
             id: '55',
             icon: (
               <TooltipCustom
-                title={`Save changes`}
+                title="Save changes"
                 component={<SaveIcon id="saveButton" />}
               />
             ),

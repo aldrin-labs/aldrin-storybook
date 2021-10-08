@@ -1,8 +1,5 @@
 import React, { Component, ChangeEvent } from 'react'
 
-import OrderBookTable from './Tables/Asks/OrderBookTable'
-import SpreadTable from './Tables/Bids/SpreadTable'
-import LastTrade, { LastTradeMobile } from './Tables/LastTrade/LastTrade'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import {
   StyledSelect,
@@ -13,13 +10,16 @@ import SortByBoth from '@icons/SortByBoth.svg'
 import SortByAsks from '@icons/SortByAsks.svg'
 import SortByBids from '@icons/SortByBids.svg'
 
-import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
-
-import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
 import {
   getAggregationsFromMinPriceDigits,
   getAggregationsFromPricePrecision,
 } from '@core/utils/chartPageUtils'
+import { IProps, IState, OrderbookMode } from './OrderBookTableContainer.types'
+
+import { ModesContainer, SvgMode } from './OrderBookTableContainer.styles'
+import LastTrade, { LastTradeMobile } from './Tables/LastTrade/LastTrade'
+import SpreadTable from './Tables/Bids/SpreadTable'
+import OrderBookTable from './Tables/Asks/OrderBookTable'
 import { OrderBookStyledContainer } from './Tables/LastTrade/LastTrade.styles'
 
 class OrderBookTableContainer extends Component<IProps, IState> {
@@ -34,11 +34,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     const { getOpenOrderHistoryQuery, addOrderToOrderbookTree } = this.props
     const { getOpenOrderHistoryQuery: prevOpenOrderHistoryQuery } = prevProps
 
-    const {
-      getOpenOrderHistory = { orders: [], count: 0 },
-    } = getOpenOrderHistoryQuery || {
-      getOpenOrderHistory: { orders: [], count: 0 },
-    }
+    const { getOpenOrderHistory = { orders: [], count: 0 } } =
+      getOpenOrderHistoryQuery || {
+        getOpenOrderHistory: { orders: [], count: 0 },
+      }
 
     const {
       getOpenOrderHistory: prevOpenOrderHistory = { orders: [], count: 0 },
@@ -88,11 +87,10 @@ class OrderBookTableContainer extends Component<IProps, IState> {
     } = this.props
 
     const { mode } = this.state
-    const {
-      getOpenOrderHistory = { orders: [], count: 0 },
-    } = getOpenOrderHistoryQuery || {
-      getOpenOrderHistory: { orders: [], count: 0 },
-    }
+    const { getOpenOrderHistory = { orders: [], count: 0 } } =
+      getOpenOrderHistoryQuery || {
+        getOpenOrderHistory: { orders: [], count: 0 },
+      }
 
     const openOrders = getOpenOrderHistory.orders
     const aggregationModes = getAggregationsFromPricePrecision(pricePrecision)

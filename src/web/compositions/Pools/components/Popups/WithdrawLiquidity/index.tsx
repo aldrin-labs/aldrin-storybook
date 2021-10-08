@@ -3,12 +3,10 @@ import React, { useState } from 'react'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { SimpleInput, InputWithTotal } from '../components'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import {
   calculateWithdrawAmount,
@@ -23,6 +21,8 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { SimpleInput, InputWithTotal } from '../components'
+import { BoldHeader, Line, StyledPaper } from '../index.styles'
 
 export const WithdrawalPopup = ({
   theme,
@@ -31,7 +31,7 @@ export const WithdrawalPopup = ({
   selectedPool,
   allTokensData,
   close,
-  refreshAllTokensData
+  refreshAllTokensData,
 }: {
   theme: Theme
   open: boolean
@@ -129,21 +129,21 @@ export const WithdrawalPopup = ({
       fullScreen={false}
       onClose={close}
       onEnter={() => {
-        setBaseAmount('');
-        setQuoteAmount('');
-        setOperationLoading(false);
+        setBaseAmount('')
+        setQuoteAmount('')
+        setOperationLoading(false)
       }}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <Row justify={'space-between'} width={'100%'}>
+      <Row justify="space-between" width="100%">
         <BoldHeader>Withdraw Liquidity</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </Row>
       <RowContainer>
         <SimpleInput
-          placeholder={''}
+          placeholder=""
           theme={theme}
           symbol={baseSymbol}
           value={baseAmount}
@@ -151,12 +151,12 @@ export const WithdrawalPopup = ({
           maxBalance={withdrawAmountTokenA}
         />
         <Row>
-          <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
+          <Text fontSize="4rem" fontFamily="Avenir Next Medium">
             +
           </Text>
         </Row>
         <SimpleInput
-          placeholder={''}
+          placeholder=""
           theme={theme}
           symbol={quoteSymbol}
           value={quoteAmount}
@@ -167,11 +167,11 @@ export const WithdrawalPopup = ({
         <InputWithTotal theme={theme} value={total} />
       </RowContainer>
 
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <BlueButton
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
-          isUserConfident={true}
+          isUserConfident
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {

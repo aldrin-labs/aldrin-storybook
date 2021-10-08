@@ -32,7 +32,7 @@ const Text = styled(Typography)`
 
 const Progress = (props: any) => (
   <Wrapper>
-    <CircularProgress variant="static" thickness={6} size={'7rem'} {...props} />
+    <CircularProgress variant="static" thickness={6} size="7rem" {...props} />
     <Text>{props.text}</Text>
   </Wrapper>
 )

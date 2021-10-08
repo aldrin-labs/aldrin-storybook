@@ -1,4 +1,4 @@
 export type IProps = {
-    activeDateButton: any,
-    onDateButtonClick: any
+  activeDateButton: any
+  onDateButtonClick: any
 }

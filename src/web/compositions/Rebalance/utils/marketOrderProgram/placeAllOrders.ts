@@ -89,7 +89,6 @@ export const placeAllOrders = async ({
     const swapAmount = +(transaction.amount * 10 ** tokenADecimals).toFixed(0)
     const swapTotal = +(transaction.total * 10 ** tokenBDecimals).toFixed(0)
 
-
     const afterSwapTransaction = new Transaction()
 
     // create sol token account if native used - 160 weight

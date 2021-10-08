@@ -9,13 +9,6 @@ import {
   PhantomWalletAdapter,
   LedgerWalletAdapter,
 } from '@sb/dexUtils/adapters'
-import { notify } from './notifications'
-import {
-  useAccountInfo,
-  useConnection,
-  useConnectionConfig,
-} from './connection'
-import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
 import {
   Connection,
   PublicKey,
@@ -23,25 +16,32 @@ import {
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
+  clusterApiUrl,
 } from '@solana/web3.js'
 
-import { clusterApiUrl } from '@solana/web3.js'
 import { TokenListProvider } from '@solana/spl-token-registry'
 import { TokenInstructions } from '@project-serum/serum'
-import { useAsyncData } from './fetch-loop'
-import { getMaxWithdrawAmount } from './pools'
-import {
-  getTokenAccountInfo,
-  MINT_LAYOUT,
-  parseTokenAccountData,
-} from './tokens'
 import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
 import { MASTER_BUILD } from '@core/utils/config'
+import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
+import {
+  getTokenAccountInfo,
+  MINT_LAYOUT,
+  parseTokenAccountData,
+} from './tokens'
+import { getMaxWithdrawAmount } from './pools'
+import { useAsyncData } from './fetch-loop'
+import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
+import {
+  useAccountInfo,
+  useConnection,
+  useConnectionConfig,
+} from './connection'
+import { notify } from './notifications'
 import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
 import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
 
@@ -202,14 +202,18 @@ export function WalletProvider({ children }) {
     return wallet
   }, [provider, endpoint])
 
-  const connectWalletHash = useMemo(() => window.location.hash, [
-    wallet?.connected,
-  ])
+  const connectWalletHash = useMemo(
+    () => window.location.hash,
+    [wallet?.connected]
+  )
 
   useEffect(() => {
     if (wallet) {
       wallet.on('connect', async () => {
-        if (wallet?.publicKey && !wallet?.publicKey?.equals(SystemProgram.programId)) {
+        if (
+          wallet?.publicKey &&
+          !wallet?.publicKey?.equals(SystemProgram.programId)
+        ) {
           console.log('connected')
           setConnected(true)
           const walletPublicKey = wallet?.publicKey.toBase58()
@@ -226,7 +230,7 @@ export function WalletProvider({ children }) {
 
           notify({
             message: 'Wallet update',
-            description: 'Connected to wallet ' + keyToDisplay,
+            description: `Connected to wallet ${keyToDisplay}`,
           })
         }
       })
@@ -349,7 +353,7 @@ export function useMaxWithdrawalAmounts({
 }
 
 export function parseMintData(data) {
-  let { decimals } = MINT_LAYOUT.decode(data)
+  const { decimals } = MINT_LAYOUT.decode(data)
   return { decimals }
 }
 
@@ -449,11 +453,11 @@ export function parseMintData(data) {
 // }
 
 export function useBalanceInfo(publicKey) {
-  let [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey)
-  let { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
+  const [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey)
+  const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
     : {}
-  let [mintInfo, mintInfoLoaded] = useAccountInfo(mint)
+  const [mintInfo, mintInfoLoaded] = useAccountInfo(mint)
 
   if (!accountInfoLoaded) {
     return null
@@ -473,7 +477,7 @@ export function useBalanceInfo(publicKey) {
 
   if (mint && mintInfoLoaded) {
     try {
-      let { decimals } = parseMintData(mintInfo.data)
+      const { decimals } = parseMintData(mintInfo.data)
       return {
         amount,
         decimals,

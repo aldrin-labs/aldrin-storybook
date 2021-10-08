@@ -15,7 +15,7 @@ export const cancelOrdersForAllMarkets = async ({
   let transaction = new Transaction()
   let count = 0
 
-  for (let order of orders) {
+  for (const order of orders) {
     transaction.add(
       order.market.makeCancelOrderInstruction(
         connection,

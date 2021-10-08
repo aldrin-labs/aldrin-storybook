@@ -1,5 +1,3 @@
-import { notify } from './notifications'
-import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
 import {
   Account,
   Commitment,
@@ -27,8 +25,10 @@ import {
   Token,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token'
-import { getCache } from './fetch-loop'
 import { Metrics } from '@core/utils/metrics'
+import { getCache } from './fetch-loop'
+import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
+import { notify } from './notifications'
 import {
   getConnectionFromMultiConnections,
   getProviderNameFromUrl,
@@ -167,12 +167,21 @@ export async function getSettleFundsTransaction({
   }
 
   try {
-    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount, quoteTokenAccount, })
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({
+      wallet,
+      connection,
+      market,
+      baseTokenAccount,
+      quoteTokenAccount,
+    })
     if (!isTokenAccountsValid) {
       throw new Error('Error checking tokenAccounts validity')
     }
-  } catch(e) {
-    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+  } catch (e) {
+    console.log(
+      `[settleFunds] Check validity of tokenAccounts is failed, err: `,
+      e
+    )
     notify({ message: 'Sorry, validity of tokenAccounts is failed' })
     return
   }
@@ -200,7 +209,10 @@ export async function getSettleFundsTransaction({
     createAccountTransaction = result?.transaction
   }
 
-  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({ quoteMintAddress: market.quoteMintAddress, supportsReferralFees: market.supportsReferralFees })
+  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({
+    quoteMintAddress: market.quoteMintAddress,
+    supportsReferralFees: market.supportsReferralFees,
+  })
 
   const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
     await market.makeSettleFundsTransaction(
@@ -211,7 +223,7 @@ export async function getSettleFundsTransaction({
       referrerQuoteWallet
     )
 
-  let transaction = mergeTransactions([
+  const transaction = mergeTransactions([
     createAccountTransaction,
     settleFundsTransaction,
   ])
@@ -281,8 +293,8 @@ export async function settleFunds({
     params: {
       baseSymbol: baseCurrency,
       quoteSymbol: quoteCurrency,
-      baseUnsettled: baseUnsettled,
-      quoteUnsettled: quoteUnsettled,
+      baseUnsettled,
+      quoteUnsettled,
     },
     focusPopup,
   })
@@ -325,11 +337,11 @@ export const validateVariablesForPlacingOrder = ({
   wallet,
   pair,
 }) => {
-  let formattedMinOrderSize =
+  const formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||
     market?.minOrderSize
 
-  let formattedTickSize =
+  const formattedTickSize =
     market?.tickSize?.toFixed(getDecimalCount(market.tickSize)) ||
     market?.tickSize
 
@@ -424,12 +436,21 @@ export async function placeOrder({
   console.log('openOrdersAccount in placeOrder', openOrdersAccount)
 
   try {
-    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount: baseCurrencyAccount, quoteTokenAccount: quoteCurrencyAccount, })
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({
+      wallet,
+      connection,
+      market,
+      baseTokenAccount: baseCurrencyAccount,
+      quoteTokenAccount: quoteCurrencyAccount,
+    })
     if (!isTokenAccountsValid) {
       throw new Error('Error checking tokenAccounts validity')
     }
-  } catch(e) {
-    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+  } catch (e) {
+    console.log(
+      `[settleFunds] Check validity of tokenAccounts is failed, err: `,
+      e
+    )
     notify({ message: 'Sorry, validity of tokenAccounts is failed' })
     return
   }
@@ -484,9 +505,12 @@ export async function placeOrder({
   console.log(params)
 
   transaction.add(market.makeMatchOrdersTransaction(5))
-  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({ quoteMintAddress: market.quoteMintAddress, supportsReferralFees: market.supportsReferralFees })
+  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({
+    quoteMintAddress: market.quoteMintAddress,
+    supportsReferralFees: market.supportsReferralFees,
+  })
 
-  let {
+  const {
     transaction: placeOrderTx,
     signers,
     ...rest
@@ -500,8 +524,8 @@ export async function placeOrder({
 
   console.log('placeOrder transaction after add', transaction)
 
-  let baseCurrencyAccountPubkey = baseCurrencyAccount?.pubkey
-  let quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
+  const baseCurrencyAccountPubkey = baseCurrencyAccount?.pubkey
+  const quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
 
   if (isMarketOrder && openOrdersAccount) {
     const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
@@ -525,8 +549,8 @@ export async function placeOrder({
     sendingMessage: 'Sending order...',
     operationType: 'createOrder',
     params: {
-      side: side,
-      price: price,
+      side,
+      price,
       amount: size,
       baseSymbol: pair.split('_')[0],
       quoteSymbol: pair.split('_')[1],
@@ -590,19 +614,19 @@ export async function sendSignedTransaction({
           const line = simulateResult.logs[i]
           if (line.startsWith('Program log: ')) {
             throw new Error(
-              'Transaction failed: ' + line.slice('Program log: '.length)
+              `Transaction failed: ${line.slice('Program log: '.length)}`
             )
           }
         }
       }
       let parsedError
       if (
-        typeof simulateResult.err == 'object' &&
+        typeof simulateResult.err === 'object' &&
         'InstructionError' in simulateResult.err
       ) {
         const parsedErrorInfo = parseInstructionErrorResponse(
           signedTransaction,
-          simulateResult.err['InstructionError']
+          simulateResult.err.InstructionError
         )
         parsedError = parsedErrorInfo.error
       } else {
@@ -653,7 +677,7 @@ export async function signTransactions({
   wallet: WalletAdapter
   connection: Connection
 }) {
-  const blockhash = (await connection.getRecentBlockhash('max')).blockhash
+  const { blockhash } = await connection.getRecentBlockhash('max')
   transactionsAndSigners.forEach(({ transaction, signers = [] }) => {
     transaction.recentBlockhash = blockhash
     transaction.setSigners(wallet.publicKey, ...signers.map((s) => s.publicKey))
@@ -807,7 +831,7 @@ export async function listMarket({
     wallet,
     connection,
   })
-  for (let signedTransaction of signedTransactions) {
+  for (const signedTransaction of signedTransactions) {
     await sendSignedTransaction({
       signedTransaction,
       connection,
@@ -927,7 +951,7 @@ export async function sendTransaction({
   })()
 
   const rawConnection = getConnectionFromMultiConnections({
-    connection: connection,
+    connection,
   })
 
   let result = await awaitTransactionSignatureConfirmationWithNotifications({
@@ -944,7 +968,7 @@ export async function sendTransaction({
 
     // trying again for another 30s with probably another connection
     const rawConnectionForRetry = getConnectionFromMultiConnections({
-      connection: connection,
+      connection,
     })
 
     result = await awaitTransactionSignatureConfirmationWithNotifications({
@@ -1185,7 +1209,7 @@ async function simulateTransaction(
   // @ts-ignore
   const res = await connection._rpcRequest('simulateTransaction', args)
   if (res.error) {
-    throw new Error('failed to simulate transaction: ' + res.error.message)
+    throw new Error(`failed to simulate transaction: ${res.error.message}`)
   }
   return res.result
 }

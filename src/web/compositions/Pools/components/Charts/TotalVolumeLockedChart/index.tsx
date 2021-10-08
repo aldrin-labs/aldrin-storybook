@@ -19,8 +19,8 @@ import {
   RowContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { createTotalVolumeLockedChart } from '../utils'
 import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTotalVolumeLockedHistory'
+import { createTotalVolumeLockedChart } from '../utils'
 import { Line } from '../../Popups/index.styles'
 
 const TotalVolumeLockedChart = ({
@@ -46,8 +46,8 @@ const TotalVolumeLockedChart = ({
 
   return (
     <>
-      <HeaderContainer theme={theme} justify={'space-between'}>
-        <RowContainer margin={'0 2rem 0 2rem'} style={{ flexWrap: 'nowrap' }}>
+      <HeaderContainer theme={theme} justify="space-between">
+        <RowContainer margin="0 2rem 0 2rem" style={{ flexWrap: 'nowrap' }}>
           <WhiteTitle
             style={{ marginRight: '2rem' }}
             theme={theme}
@@ -59,7 +59,7 @@ const TotalVolumeLockedChart = ({
         </RowContainer>
       </HeaderContainer>
       <ChartContainer>
-        <canvas id="TotalVolumeLockedChart"></canvas>
+        <canvas id="TotalVolumeLockedChart" />
       </ChartContainer>
     </>
   )

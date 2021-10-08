@@ -23,7 +23,7 @@ const RenameKeyDialogComponent = ({
   renameMutation,
   closeMainPopup,
   isPortfolio = false,
-  theme
+  theme,
 }) => {
   const { name, _id: id } = data
   const target = isPortfolio ? 'portfolio' : 'account'
@@ -72,13 +72,15 @@ const RenameKeyDialogComponent = ({
 
   return (
     <>
-      <OpenRenameButton theme={theme} onClick={openDialog}>Rename</OpenRenameButton>
+      <OpenRenameButton theme={theme} onClick={openDialog}>
+        Rename
+      </OpenRenameButton>
       <Dialog
         PaperComponent={StyledPaper}
         style={{ width: '75rem', margin: 'auto' }}
         open={isOpen}
         onClose={closeDialog}
-        maxWidth={'md'}
+        maxWidth="md"
         style={{ transition: 'opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms' }}
         aria-labelledby="form-dialog-title"
       >

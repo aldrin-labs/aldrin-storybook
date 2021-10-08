@@ -1,14 +1,38 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-dayjs.extend(localizedFormat)
 
 import { Key, OrderType, TradeType } from '@core/types/ChartTypes'
-import { StyledTitle, TableButton } from './TradingTable.styles'
 
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
 import { cloneDeep } from 'lodash-es'
+
+import {
+  balancesColumnNames,
+  openOrdersColumnNames,
+  orderHistoryColumnNames,
+  tradeHistoryColumnNames,
+  feeTiersColumnNames,
+  feeDiscountsColumnNames,
+  strategiesHistoryColumnNames,
+  fundsBody,
+  positionsBody,
+  openOrdersBody,
+  orderHistoryBody,
+  tradeHistoryBody,
+} from '@sb/components/TradingTable/TradingTable.mocks'
+import {
+  roundAndFormatNumber,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { getPrecisionItem } from '@core/utils/getPrecisionItem'
+import { Theme } from '@sb/types/materialUI'
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { StyledTitle, TableButton } from './TradingTable.styles'
+
+dayjs.extend(localizedFormat)
 
 export const CloseButton = ({
   i,
@@ -25,7 +49,7 @@ export const CloseButton = ({
     <TableButton
       key={i}
       variant="outlined"
-      size={`small`}
+      size="small"
       disabled={isCancelled}
       style={{
         color: isCancelled ? 'grey' : '#F69894',
@@ -51,29 +75,6 @@ export const CloseButton = ({
     </TableButton>
   )
 }
-
-import {
-  balancesColumnNames,
-  openOrdersColumnNames,
-  orderHistoryColumnNames,
-  tradeHistoryColumnNames,
-  feeTiersColumnNames,
-  feeDiscountsColumnNames,
-  strategiesHistoryColumnNames,
-  fundsBody,
-  positionsBody,
-  openOrdersBody,
-  orderHistoryBody,
-  tradeHistoryBody,
-} from '@sb/components/TradingTable/TradingTable.mocks'
-import {
-  roundAndFormatNumber,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { getPrecisionItem } from '@core/utils/getPrecisionItem'
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
-import { Theme } from '@sb/types/materialUI'
 
 export const getTableBody = (tab: string) =>
   tab === 'openOrders'
@@ -111,33 +112,16 @@ export const getTableHead = (
 
 export const getStartDate = (stringDate: string): number =>
   stringDate === '1Day'
-    ? dayjs()
-        .startOf('day')
-        .valueOf()
+    ? dayjs().startOf('day').valueOf()
     : stringDate === '1Week'
-    ? dayjs()
-        .startOf('day')
-        .subtract(1, 'week')
-        .valueOf()
+    ? dayjs().startOf('day').subtract(1, 'week').valueOf()
     : stringDate === '2Weeks'
-    ? dayjs()
-        .startOf('day')
-        .subtract(2, 'week')
-        .valueOf()
+    ? dayjs().startOf('day').subtract(2, 'week').valueOf()
     : stringDate === '1Month'
-    ? dayjs()
-        .startOf('day')
-        .subtract(1, 'month')
-        .valueOf()
+    ? dayjs().startOf('day').subtract(1, 'month').valueOf()
     : stringDate === '3Month'
-    ? dayjs()
-        .startOf('day')
-        .subtract(3, 'month')
-        .valueOf()
-    : dayjs()
-        .startOf('day')
-        .subtract(6, 'month')
-        .valueOf()
+    ? dayjs().startOf('day').subtract(3, 'month').valueOf()
+    : dayjs().startOf('day').subtract(6, 'month').valueOf()
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
@@ -269,7 +253,11 @@ export const filterOpenOrders = ({
   order: OrderType
   canceledOrders: string[]
 }) => {
-  const { type = '', status = '', info = { orderId: '' } } = order || {
+  const {
+    type = '',
+    status = '',
+    info = { orderId: '' },
+  } = order || {
     type: '',
     status: '',
     info: { orderId: '' },
@@ -370,10 +358,10 @@ export const combineOpenOrdersTable = (
         id: `${orderId}${size}${price}`,
         columnForMobile: {
           render: (
-            <RowContainer height="20rem" padding={'0 2rem'}>
-              <RowContainer style={{ width: '65%' }} direction={'column'}>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle color={'#fbf2f2'}>
+            <RowContainer height="20rem" padding="0 2rem">
+              <RowContainer style={{ width: '65%' }} direction="column">
+                <RowContainer justify="space-between">
+                  <StyledTitle color="#fbf2f2">
                     {pair[0]}/{pair[1]}
                   </StyledTitle>
                   <StyledTitle
@@ -388,22 +376,22 @@ export const combineOpenOrdersTable = (
                     {side}
                   </StyledTitle>
                 </RowContainer>
-                <RowContainer justify={'space-between'}>
+                <RowContainer justify="space-between">
                   <StyledTitle>Price(USDC)</StyledTitle>{' '}
-                  <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+                  <StyledTitle color="#fbf2f2">{`${stripDigitPlaces(
                     price,
                     pricePrecision
                   )}`}</StyledTitle>
                 </RowContainer>
-                <RowContainer justify={'space-between'}>
+                <RowContainer justify="space-between">
                   <StyledTitle>Amount (CCAI)</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
+                  <StyledTitle color="#fbf2f2">
                     {stripDigitPlaces(size, quantityPrecision)}
                   </StyledTitle>
                 </RowContainer>
-                <RowContainer justify={'space-between'}>
+                <RowContainer justify="space-between">
                   <StyledTitle>Total (USDC)</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
+                  <StyledTitle color="#fbf2f2">
                     {stripDigitPlaces(+size * price, quantityPrecision)}
                   </StyledTitle>
                 </RowContainer>
@@ -460,7 +448,7 @@ export const combineOpenOrdersTable = (
                   letterSpacing: '1px',
                 }}
               >
-                {'limit'}
+                limit
               </span>
             </div>
           ),
@@ -636,9 +624,11 @@ export const combineOrderHistoryTable = (
       const isMakerOnlyOrder = orderType === 'maker-only'
       const type = (orderType || 'type').toLowerCase().replace('-', '_')
 
-      const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
-        ? info
-        : { orderId: 'id', stopPrice: 0, origQty: 0 }
+      const {
+        orderId = 'id',
+        stopPrice = 0,
+        origQty = '0',
+      } = info || { orderId: 'id', stopPrice: 0, origQty: 0 }
 
       const keyName = keys ? keys[keyId] : ''
 
@@ -658,7 +648,7 @@ export const combineOrderHistoryTable = (
       const isMarketOrMakerOrder =
         (!!type.match(/market/) && price === 0) || isMakerOnlyOrder
 
-      const qty = !!origQty ? origQty : filled
+      const qty = origQty || filled
 
       return {
         id: `${isMakerOnlyOrder ? _id : orderId}_${timestamp}_${qty}`,
@@ -717,7 +707,7 @@ export const combineOrderHistoryTable = (
         // },
         price: {
           render: isMarketOrMakerOrder
-            ? !!average
+            ? average
               ? `${stripDigitPlaces(average, pricePrecision)} ${pair[1]}`
               : 'market'
             : `${stripDigitPlaces(price, pricePrecision)} ${pair[1]}`,
@@ -846,23 +836,16 @@ export const combineTradeHistoryTable = (
         symbol: marketName,
       })
 
-      const pair = marketName
-        .split('/')
-        .join('_')
-        .split('_')
+      const pair = marketName.split('/').join('_').split('_')
       // const isSmallProfit = Math.abs(realizedPnl) < 0.01 && realizedPnl !== 0
 
       return {
         id: `${orderId}_${size}_${price}`,
         columnForMobile: {
           render: (
-            <RowContainer
-              padding={'0 2rem'}
-              direction={'column'}
-              height="20rem"
-            >
-              <RowContainer justify={'space-between'}>
-                <StyledTitle color={'#fbf2f2'}>
+            <RowContainer padding="0 2rem" direction="column" height="20rem">
+              <RowContainer justify="space-between">
+                <StyledTitle color="#fbf2f2">
                   {pair[0]}/{pair[1]}
                 </StyledTitle>
                 <StyledTitle
@@ -877,22 +860,22 @@ export const combineTradeHistoryTable = (
                   {side}
                 </StyledTitle>
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <StyledTitle>Price(USDC)</StyledTitle>{' '}
-                <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+                <StyledTitle color="#fbf2f2">{`${stripDigitPlaces(
                   price,
                   pricePrecision
                 )}`}</StyledTitle>
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <StyledTitle>Amount (CCAI)</StyledTitle>
-                <StyledTitle color={'#fbf2f2'}>
+                <StyledTitle color="#fbf2f2">
                   {stripDigitPlaces(size, quantityPrecision)}
                 </StyledTitle>
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <StyledTitle>Total (USDC)</StyledTitle>
-                <StyledTitle color={'#fbf2f2'}>
+                <StyledTitle color="#fbf2f2">
                   {stripDigitPlaces(size * price, quantityPrecision)}
                 </StyledTitle>
               </RowContainer>
@@ -1050,56 +1033,49 @@ export const combineBalancesTable = (
   const filtredFundsData = fundsData
 
   const processedFundsData = filtredFundsData.map((el: FundsType) => {
-    const {
-      marketName,
-      coin,
-      wallet,
-      orders,
-      unsettled,
-      market,
-      openOrders,
-    } = el
+    const { marketName, coin, wallet, orders, unsettled, market, openOrders } =
+      el
 
     return {
       id: `${coin}${wallet}`,
       coin: { render: coin || 'unknown', showOnMobile: false },
       columnForMobile: {
         render: (
-          <RowContainer height={'20rem'} padding={'0 2rem'}>
+          <RowContainer height="20rem" padding="0 2rem">
             <RowContainer
               style={{ width: showSettle ? '40%' : '100%' }}
-              direction={'column'}
+              direction="column"
             >
-              <RowContainer justify={'flex-start'}>
-                <StyledTitle color={'#fbf2f2'}>{coin}</StyledTitle>
+              <RowContainer justify="flex-start">
+                <StyledTitle color="#fbf2f2">{coin}</StyledTitle>
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <StyledTitle>Wallet</StyledTitle>
-                <StyledTitle color={'#fbf2f2'}>
+                <StyledTitle color="#fbf2f2">
                   {roundAndFormatNumber(wallet, 8, true) || '-'}
                 </StyledTitle>
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <StyledTitle>Unsettled</StyledTitle>
-                <StyledTitle color={'#fbf2f2'}>
+                <StyledTitle color="#fbf2f2">
                   {roundAndFormatNumber(unsettled, 8, true) || '-'}
                 </StyledTitle>
               </RowContainer>
             </RowContainer>
             {showSettle ? (
-              <RowContainer style={{ width: '60%' }} justify={'flex-end'}>
+              <RowContainer style={{ width: '60%' }} justify="flex-end">
                 <BtnCustom
-                  btnWidth={'50%'}
+                  btnWidth="50%"
                   height="auto"
                   fontSize="1.6rem"
-                  textTransform={'none'}
+                  textTransform="none"
                   padding=".5rem 1rem .4rem 1rem"
                   borderRadius="1.4rem"
                   btnColor={theme.palette.dark.main}
                   borderColor={theme.palette.blue.serum}
                   backgroundColor={theme.palette.blue.serum}
-                  transition={'all .4s ease-out'}
-                  margin={'0 0 0 2rem'}
+                  transition="all .4s ease-out"
+                  margin="0 0 0 2rem"
                   onClick={() => onSettleFunds(market, openOrders)}
                 >
                   Settle
@@ -1137,8 +1113,8 @@ export const combineBalancesTable = (
                   size="large"
                   onClick={() => onSettleFunds(market, openOrders)}
                   btnColor={theme.palette.blue.serum}
-                  btnWidth={'14rem'}
-                  height={'100%'}
+                  btnWidth="14rem"
+                  height="100%"
                 >
                   Settle
                 </BtnCustom>
@@ -1236,10 +1212,11 @@ export const updateStrategiesHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const strategyHasTheSameIndex = prev.getStrategiesHistory.strategies.findIndex(
-    (el: TradeType) =>
-      el._id === subscriptionData.data.listenActiveStrategies._id
-  )
+  const strategyHasTheSameIndex =
+    prev.getStrategiesHistory.strategies.findIndex(
+      (el: TradeType) =>
+        el._id === subscriptionData.data.listenActiveStrategies._id
+    )
   const tradeAlreadyExists = strategyHasTheSameIndex !== -1
 
   let result

@@ -1,24 +1,22 @@
-import { MarketsMap } from "@sb/dexUtils/markets"
-import { MarketData, TokenInfoWithPrice } from "../Rebalance.types"
-import { getAvailableTokensForRebalance } from "./getAvailableTokensForRebalance"
-import { getPercentageAllocationForTokens } from "./getPercentageAllocationForTokens"
-import { getSliderStepForTokens } from "./getSliderStepForTokens"
-import { getSortedTokensByValue } from "./getSortedTokensByValue"
-import { getTokensMap } from "./getTokensMap"
-import { getTokenValuesForTokens } from "./getTokenValuesForTokens"
-import { getTotalTokenValue } from "./getTotalTokenValue"
+import { MarketsMap } from '@sb/dexUtils/markets'
+import { MarketData, TokenInfoWithPrice } from '../Rebalance.types'
+import { getAvailableTokensForRebalance } from './getAvailableTokensForRebalance'
+import { getPercentageAllocationForTokens } from './getPercentageAllocationForTokens'
+import { getSliderStepForTokens } from './getSliderStepForTokens'
+import { getSortedTokensByValue } from './getSortedTokensByValue'
+import { getTokensMap } from './getTokensMap'
+import { getTokenValuesForTokens } from './getTokenValuesForTokens'
+import { getTotalTokenValue } from './getTotalTokenValue'
 
 export const processAllTokensData = ({
   tokensWithPrices,
-  allMarketsMap
+  allMarketsMap,
 }: {
   tokensWithPrices: TokenInfoWithPrice[]
-  allMarketsMap: MarketsMap,
+  allMarketsMap: MarketsMap
 }) => {
   const tokensWithTokenValue = getTokenValuesForTokens(tokensWithPrices)
-  const sortedTokensByTokenValue = getSortedTokensByValue(
-    tokensWithTokenValue
-  )
+  const sortedTokensByTokenValue = getSortedTokensByValue(tokensWithTokenValue)
 
   const totalTokenValue = getTotalTokenValue(sortedTokensByTokenValue)
 
@@ -38,7 +36,7 @@ export const processAllTokensData = ({
   )
   const availableTokensForRebalanceMap = getTokensMap({
     tokens: availableTokensForRebalance,
-    total: totalTokenValue
+    total: totalTokenValue,
   })
 
   return availableTokensForRebalanceMap

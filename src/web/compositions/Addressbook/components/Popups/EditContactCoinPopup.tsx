@@ -19,7 +19,12 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { editContactCoin } from '@core/graphql/mutations/chart/editContactCoin'
 
-import { createHash, Input, encrypt, decrypt } from '@sb/compositions/Addressbook/index'
+import {
+  createHash,
+  Input,
+  encrypt,
+  decrypt,
+} from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewContactPopup'
@@ -41,7 +46,9 @@ const EditContactCoinPopup = ({
   editContactCoinMutation,
   getUserAddressbookQueryRefetch,
 }) => {
-  const [address, updateAddress] = useState(decrypt(data.address, localPassword))
+  const [address, updateAddress] = useState(
+    decrypt(data.address, localPassword)
+  )
   const [showLoader, updateShowLoader] = useState(false)
   const [selectedCoin, setSelectedCoin] = useState({
     label: decrypt(data.symbol, localPassword),
@@ -55,7 +62,7 @@ const EditContactCoinPopup = ({
       style={{ width: '85rem', margin: 'auto' }}
       fullScreen={false}
       onClose={handleClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -101,7 +108,7 @@ const EditContactCoinPopup = ({
               },
             }}
             classNamePrefix="custom-select-box"
-            isSearchable={true}
+            isSearchable
             components={{
               Option: CoinOption,
               SingleValue: CoinSingleValue,
@@ -113,7 +120,7 @@ const EditContactCoinPopup = ({
             // menuIsOpen={true}
             // isOpen={true}
             value={selectedCoin}
-            needAdditionalFiltering={true}
+            needAdditionalFiltering
             additionalFiltering={(a: { symbol: string }) =>
               !a.symbol.endsWith('UP') && !a.symbol.endsWith('DOWN')
             }
@@ -208,10 +215,9 @@ const EditContactCoinPopup = ({
                 border: `0.1rem solid ${theme.palette.text.white}`,
                 outline: 'none',
                 paddingRight: '10rem',
-
               }}
-              id={'address'}
-              type={'text'}
+              id="address"
+              type="text"
               placeholder={`${selectedCoin.label} Address`}
               value={address}
               onChange={(e) => updateAddress(e.target.value)}
@@ -237,11 +243,11 @@ const EditContactCoinPopup = ({
             padding="1rem 2rem"
             borderRadius=".8rem"
             borderColor={theme.palette.blue.serum}
-            btnColor={'#fff'}
+            btnColor="#fff"
             backgroundColor={theme.palette.blue.serum}
-            textTransform={'none'}
-            margin={'1rem 0 0 0'}
-            transition={'all .4s ease-out'}
+            textTransform="none"
+            margin="1rem 0 0 0"
+            transition="all .4s ease-out"
             onClick={async () => {
               if (selectedCoin.label === '') {
                 notify({
@@ -292,9 +298,9 @@ const EditContactCoinPopup = ({
           >
             {showLoader ? (
               <Loading
-                color={'#fff'}
+                color="#fff"
                 size={16}
-                height={'16px'}
+                height="16px"
                 style={{ height: '16px' }}
               />
             ) : (

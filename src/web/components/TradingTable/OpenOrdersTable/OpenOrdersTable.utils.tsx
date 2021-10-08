@@ -15,7 +15,11 @@ export const filterOpenOrders = ({
   order: OrderType
   canceledOrders: string[]
 }) => {
-  const { type = '', status = '', info = { orderId: '' } } = order || {
+  const {
+    type = '',
+    status = '',
+    info = { orderId: '' },
+  } = order || {
     type: '',
     status: '',
     info: { orderId: '' },
@@ -103,10 +107,10 @@ export const combineOpenOrdersTable = (
         },
         columnForMobile: {
           render: (
-            <RowContainer height="20rem" padding={'0 2rem'}>
-              <RowContainer style={{ width: '65%' }} direction={'column'}>
-                <RowContainer justify={'space-between'}>
-                  <StyledTitle color={'#fbf2f2'}>
+            <RowContainer height="20rem" padding="0 2rem">
+              <RowContainer style={{ width: '65%' }} direction="column">
+                <RowContainer justify="space-between">
+                  <StyledTitle color="#fbf2f2">
                     {pair[0]}/{pair[1]}
                   </StyledTitle>
                   <StyledTitle
@@ -121,22 +125,22 @@ export const combineOpenOrdersTable = (
                     {side}
                   </StyledTitle>
                 </RowContainer>
-                <RowContainer justify={'space-between'}>
+                <RowContainer justify="space-between">
                   <StyledTitle>Price(USDC)</StyledTitle>{' '}
-                  <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+                  <StyledTitle color="#fbf2f2">{`${stripDigitPlaces(
                     price,
                     pricePrecision
                   )}`}</StyledTitle>
                 </RowContainer>
-                <RowContainer justify={'space-between'}>
+                <RowContainer justify="space-between">
                   <StyledTitle>Amount (CCAI)</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
+                  <StyledTitle color="#fbf2f2">
                     {stripDigitPlaces(size, quantityPrecision)}
                   </StyledTitle>
                 </RowContainer>
-                <RowContainer justify={'space-between'}>
+                <RowContainer justify="space-between">
                   <StyledTitle>Total (USDC)</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
+                  <StyledTitle color="#fbf2f2">
                     {stripDigitPlaces(+size * price, quantityPrecision)}
                   </StyledTitle>
                 </RowContainer>
@@ -175,7 +179,7 @@ export const combineOpenOrdersTable = (
                   letterSpacing: '1px',
                 }}
               >
-                {'limit'}
+                limit
               </span>
             </div>
           ),

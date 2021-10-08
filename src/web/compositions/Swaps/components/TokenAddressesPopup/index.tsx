@@ -44,11 +44,11 @@ export const TokenAddressesPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
+      <RowContainer justify="space-between">
         <Text>Selected tokens:</Text>
         <SvgIcon
           src={Close}
@@ -56,14 +56,14 @@ export const TokenAddressesPopup = ({
           onClick={() => close()}
         />
       </RowContainer>
-      <RowContainer margin={'2rem 0 1rem 0'} justify={'space-between'}>
+      <RowContainer margin="2rem 0 1rem 0" justify="space-between">
         <Row>
           {' '}
           <TokenIcon
             mint={baseTokenMintAddress}
-            width={'2rem'}
-            height={'2rem'}
-            margin={'0 1rem 0 0'}
+            width="2rem"
+            height="2rem"
+            margin="0 1rem 0 0"
           />{' '}
           <Text>{baseTokenMintAddress}</Text>
         </Row>
@@ -77,20 +77,20 @@ export const TokenAddressesPopup = ({
               })
             }}
             style={{ cursor: 'pointer' }}
-            color={'#366CE5'}
+            color="#366CE5"
           >
             Copy address
           </Text>
         </Row>
       </RowContainer>
-      <RowContainer margin={'1rem 0'} justify={'space-between'}>
+      <RowContainer margin="1rem 0" justify="space-between">
         <Row>
           {' '}
           <TokenIcon
             mint={quoteTokenMintAddress}
-            width={'2rem'}
-            height={'2rem'}
-            margin={'0 1rem 0 0'}
+            width="2rem"
+            height="2rem"
+            margin="0 1rem 0 0"
           />{' '}
           <Text>{quoteTokenMintAddress}</Text>
         </Row>{' '}
@@ -104,7 +104,7 @@ export const TokenAddressesPopup = ({
               })
             }}
             style={{ cursor: 'pointer' }}
-            color={'#366CE5'}
+            color="#366CE5"
           >
             Copy address
           </Text>

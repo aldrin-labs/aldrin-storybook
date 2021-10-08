@@ -6,7 +6,7 @@ export const LinkToTelegram = () => {
     <StyledLink
       target="_blank"
       rel="noopener noreferrer"
-      href={'https://t.me/Aldrin_Exchange'}
+      href="https://t.me/Aldrin_Exchange"
     >
       <svg
         width="100%"
@@ -70,38 +70,38 @@ export const LinkToDiscord = () => {
         <path
           d="M9.99998 12.6667C10.3682 12.6667 10.6666 12.3682 10.6666 12C10.6666 11.6318 10.3682 11.3333 9.99998 11.3333C9.63179 11.3333 9.33331 11.6318 9.33331 12C9.33331 12.3682 9.63179 12.6667 9.99998 12.6667Z"
           stroke="#EDF0F2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M14 12.6667C14.3682 12.6667 14.6666 12.3682 14.6666 12C14.6666 11.6318 14.3682 11.3333 14 11.3333C13.6318 11.3333 13.3333 11.6318 13.3333 12C13.3333 12.3682 13.6318 12.6667 14 12.6667Z"
           stroke="#EDF0F2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M9 9C11.3333 8.33333 12.6667 8.33333 15 9"
           stroke="#EDF0F2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M8.66663 15C11 15.6667 13 15.6667 15.3333 15"
           stroke="#EDF0F2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M14.3333 15.3333C14.3333 16 15.3333 17.3333 15.6666 17.3333C16.6666 17.3333 17.5553 16.222 18 15.3333C18.4446 14.222 18.3333 11.4447 17 7.66667C16.0286 6.99001 15 6.77334 14 6.66667L13.3333 8.33334"
           stroke="#EDF0F2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M9.66662 15.3333C9.66662 16 8.76262 17.3333 8.44529 17.3333C7.49262 17.3333 6.64662 16.222 6.22329 15.3333C5.79995 14.222 5.90595 11.4447 7.17529 7.66667C8.10062 6.99001 9.02995 6.77334 9.99995 6.66667L10.6666 8.33334"
           stroke="#EDF0F2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </svg>
     </StyledLink>

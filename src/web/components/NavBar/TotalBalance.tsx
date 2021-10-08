@@ -9,9 +9,9 @@ import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolio
 import {
   combineTableData,
   formatNumberToUSFormat,
+  stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils.ts'
 import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 const Title = styled.span`
   font-family: Avenir Next Demi;
@@ -34,9 +34,9 @@ const TotalBalance = ({ portfolioAssets, theme }) => {
   return (
     <Grid
       item
-      direction={'column'}
-      alignItems={'center'}
-      justify={'center'}
+      direction="column"
+      alignItems="center"
+      justify="center"
       style={{
         display: 'flex',
         height: '100%',

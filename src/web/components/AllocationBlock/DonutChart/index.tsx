@@ -22,8 +22,8 @@ const AllocationDonutChart = ({
     return () => window[`AllocationDonutChart-${id}`].destroy()
   }, [id, data, colors])
   return (
-    <ChartContainer height={'100%'}>
-      <canvas id={`AllocationDonutChart-${id}`}></canvas>
+    <ChartContainer height="100%">
+      <canvas id={`AllocationDonutChart-${id}`} />
     </ChartContainer>
   )
 }

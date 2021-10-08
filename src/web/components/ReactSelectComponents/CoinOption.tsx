@@ -39,8 +39,8 @@ const CoinContent = ({ data }: { data: ComponentData }) => (
         style={{
           marginRight: '.5rem',
         }}
-        width={`2rem`}
-        height={'2rem'}
+        width="2rem"
+        height="2rem"
         src={importCoinIcon(data.label)}
         onError={onErrorImportCoinUrl}
       />

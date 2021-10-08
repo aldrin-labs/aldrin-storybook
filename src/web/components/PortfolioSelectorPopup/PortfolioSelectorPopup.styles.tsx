@@ -17,7 +17,7 @@ export const PortfolioSelectorPopupMain = styled.div`
   text-align: center;
   font-size: 1.25rem;
   border-radius: 1.5rem;
-  background-color: ${props => props.theme.palette.white.block};
+  background-color: ${(props) => props.theme.palette.white.block};
   z-index: 1010;
   color: ${(props) => props.theme.palette.text.dark};
   display: block;

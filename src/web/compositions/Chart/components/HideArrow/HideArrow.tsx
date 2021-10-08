@@ -10,7 +10,7 @@ const HideArrowStyledBlock = styled(({ right, ...props }) => (
   position: absolute;
   cursor: pointer;
   top: 50%;
-  right: ${({ right }) => (right ? right : '-6px')};
+  right: ${({ right }) => right || '-6px'};
   transform: translate(-50%, -50%);
   height: 100%;
   display: flex;

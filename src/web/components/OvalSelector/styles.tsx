@@ -34,7 +34,7 @@ export const SelectContainer = styled.div`
 
   @media (max-width: 1440px) {
     & > div {
-      font-size: .9rem;
+      font-size: 0.9rem;
     }
 
     & svg {

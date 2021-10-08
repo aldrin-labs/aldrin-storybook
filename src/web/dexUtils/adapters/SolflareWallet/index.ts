@@ -23,8 +23,10 @@ interface SolflareExtensionProvider {
   request: (method: SolflareExtensionRequestMethod, params: any) => Promise<any>
 }
 
-export class SolflareExtensionWalletAdapter extends EventEmitter
-  implements WalletAdapter {
+export class SolflareExtensionWalletAdapter
+  extends EventEmitter
+  implements WalletAdapter
+{
   constructor() {
     super()
     this.connect = this.connect.bind(this)

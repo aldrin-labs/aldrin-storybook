@@ -7,12 +7,19 @@ type InjectedProvider = { postMessage: (params: unknown) => void }
 
 export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
   private _providerUrl: URL | undefined
+
   private _injectedProvider?: InjectedProvider
+
   private _publicKey: PublicKey | null = null
+
   private _popup: Window | null = null
+
   private _handlerAdded = false
+
   private _nextRequestId = 1
+
   private _autoApprove = false
+
   private _responsePromises: Map<
     number,
     [(value: string) => void, (reason: Error) => void]
@@ -88,17 +95,16 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
         void this.sendRequest('connect', {})
         resolve()
       })
-    } else {
-      window.name = 'parent'
-      this._popup = window.open(
-        this._providerUrl?.toString(),
-        'child',
-        'location,resizable,width=460,height=675'
-      )
-      return new Promise((resolve) => {
-        this.once('connect', resolve)
-      })
     }
+    window.name = 'parent'
+    this._popup = window.open(
+      this._providerUrl?.toString(),
+      'child',
+      'location,resizable,width=460,height=675'
+    )
+    return new Promise((resolve) => {
+      this.once('connect', resolve)
+    })
   }
 
   private handleDisconnect() {

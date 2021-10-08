@@ -19,7 +19,8 @@ export const Nav = styled(AppBar)`
     position: unset;
     box-shadow: none;
     /* padding: 0 3rem 0 6rem; */
-    background-color: ${(props) => props.theme.palette.white.background || '#f9fbfd'};
+    background-color: ${(props) =>
+      props.theme.palette.white.background || '#f9fbfd'};
     @media only screen and (max-width: 1024px) {
       /* padding: 0 2rem 0 4rem; */
     }

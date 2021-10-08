@@ -17,7 +17,7 @@ export const LoadingScreenWithHint = ({
       <LoadingScreenWithHintContainer justify="center">
         <LoadingWithHint
           loadingText={loadingText}
-          loaderSize={'16rem'}
+          loaderSize="16rem"
           loaderTextStyles={{
             fontFamily: 'Avenir Next Demi',
             fontSize: '2rem',

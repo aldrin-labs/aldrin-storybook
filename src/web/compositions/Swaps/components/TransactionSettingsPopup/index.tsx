@@ -77,11 +77,11 @@ export const TransactionSettingsPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
+      <RowContainer justify="space-between">
         <Text>Transaction Settings</Text>
         <SvgIcon
           src={Close}
@@ -89,10 +89,10 @@ export const TransactionSettingsPopup = ({
           onClick={() => close()}
         />
       </RowContainer>
-      <RowContainer justify={'flex-start'} margin={'2rem 0'}>
-        <Text fontFamily={'Avenir Next Demi'}>Slippage Tolerance</Text>
+      <RowContainer justify="flex-start" margin="2rem 0">
+        <Text fontFamily="Avenir Next Demi">Slippage Tolerance</Text>
       </RowContainer>
-      <RowContainer justify={'flex-start'}>
+      <RowContainer justify="flex-start">
         {slippageToleranceValues.map((el) => {
           return (
             <ValueButton
@@ -102,8 +102,7 @@ export const TransactionSettingsPopup = ({
                 close()
               }}
             >
-              {el.value}
-              {'%'}
+              {el.value}%
             </ValueButton>
           )
         })}
@@ -112,7 +111,7 @@ export const TransactionSettingsPopup = ({
             onChange={(e) => {
               setSlippageTolerance(e.target.value)
             }}
-            placeholder={'1.00'}
+            placeholder="1.00"
             theme={theme}
             onKeyDown={handleKeyDown}
           />

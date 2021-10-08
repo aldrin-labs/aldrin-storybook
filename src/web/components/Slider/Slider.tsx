@@ -1,6 +1,6 @@
 import React from 'react'
-import { StyledSlider, StyledLock } from './Slider.styles'
 import { TooltipCustom } from '@sb/components/index'
+import { StyledSlider, StyledLock } from './Slider.styles'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
 
 const Slider = (props: any) => (

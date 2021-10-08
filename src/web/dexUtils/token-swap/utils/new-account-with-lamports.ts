@@ -1,22 +1,22 @@
-import { Account, Connection } from "@solana/web3.js";
-import { sleep } from '../../utils';
+import { Account, Connection } from '@solana/web3.js'
+import { sleep } from '../../utils'
 
 export async function newAccountWithLamports(
   connection: Connection,
-  lamports: number = 1000000,
+  lamports: number = 1000000
 ): Promise<Account> {
-  const account = new Account();
+  const account = new Account()
 
-  let retries = 30;
-  await connection.requestAirdrop(account.publicKey, lamports);
+  let retries = 30
+  await connection.requestAirdrop(account.publicKey, lamports)
   for (;;) {
-    await sleep(500);
+    await sleep(500)
     if (lamports == (await connection.getBalance(account.publicKey))) {
-      return account;
+      return account
     }
     if (--retries <= 0) {
-      break;
+      break
     }
   }
-  throw new Error(`Airdrop of ${lamports} failed`);
+  throw new Error(`Airdrop of ${lamports} failed`)
 }

@@ -6,8 +6,8 @@ export default (
     Effective date: August 28, 2018
     <br />
     <br />
-    Aldrin.com Inc. ("us", "we", or "our") operates the
-    https://aldrin.com/ website (the "Service").
+    Aldrin.com Inc. ("us", "we", or "our") operates the https://aldrin.com/
+    website (the "Service").
     <br />
     <br />
     We use your data to provide and improve the Service. By using the Service,
@@ -17,14 +17,14 @@ export default (
     accessible from https://aldrin.com/
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h5">
+    <Typography gutterBottom variant="h5">
       Information Collection And Use
     </Typography>
     We collect several different types of information for various purposes to
     provide and improve our Service to you.
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h5">
+    <Typography gutterBottom variant="h5">
       Types of Data Collected
     </Typography>
     Personal Data
@@ -76,7 +76,7 @@ export default (
       </li>
       <li>Security Cookies. We use Security Cookies for security purposes.</li>
     </ul>
-    <Typography gutterBottom={true} variant="h5">
+    <Typography gutterBottom variant="h5">
       Use of Data
     </Typography>
     Aldrin.com Inc. uses the collected data for various purposes:
@@ -99,7 +99,7 @@ export default (
     </ul>
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h5">
+    <Typography gutterBottom variant="h5">
       Transfer Of Data
     </Typography>
     Your information, including Personal Data, may be transferred to — and
@@ -117,26 +117,24 @@ export default (
     information represents your agreement to that transfer.
     <br />
     <br />
-    Aldrin.com Inc. will take all steps reasonably necessary to ensure
-    that your data is treated securely and in accordance with this Privacy
-    Policy and no transfer of your Personal Data will take place to an
-    organization or a country unless there are adequate controls in place
-    including the security of your data and other personal information.
+    Aldrin.com Inc. will take all steps reasonably necessary to ensure that your
+    data is treated securely and in accordance with this Privacy Policy and no
+    transfer of your Personal Data will take place to an organization or a
+    country unless there are adequate controls in place including the security
+    of your data and other personal information.
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h5">
+    <Typography gutterBottom variant="h5">
       Disclosure Of Data
     </Typography>
-    <Typography gutterBottom={true} variant="h6">
+    <Typography gutterBottom variant="h6">
       Legal Requirements
     </Typography>
-    Aldrin.com Inc. may disclose your Personal Data in the good faith
-    belief that such action is necessary to:
+    Aldrin.com Inc. may disclose your Personal Data in the good faith belief
+    that such action is necessary to:
     <ul>
       <li>To comply with a legal obligation</li>
-      <li>
-        To protect and defend the rights or property of Aldrin.com Inc.
-      </li>
+      <li>To protect and defend the rights or property of Aldrin.com Inc.</li>
       <li>
         To prevent or investigate possible wrongdoing in connection with the
         Service
@@ -146,7 +144,7 @@ export default (
       </li>
       <li>To protect against legal liability</li>
     </ul>
-    <Typography gutterBottom={true} variant="h5">
+    <Typography gutterBottom variant="h5">
       Security Of Data
     </Typography>
     The security of your data is important to us, but remember that no method of
@@ -155,7 +153,7 @@ export default (
     Personal Data, we cannot guarantee its absolute security.
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h5">
+    <Typography gutterBottom variant="h5">
       Service Providers
     </Typography>
     We may employ third party companies and individuals to facilitate our
@@ -166,14 +164,14 @@ export default (
     use it for any other purpose.
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h6">
+    <Typography gutterBottom variant="h6">
       Analytics
     </Typography>
     We may use third-party Service Providers to monitor and analyze the use of
     our Service.
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h6">
+    <Typography gutterBottom variant="h6">
       Google Analytics
     </Typography>
     Google Analytics is a web analytics service offered by Google that tracks
@@ -189,7 +187,7 @@ export default (
     Privacy & Terms web page: https://policies.google.com/privacy?hl=en
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h6">
+    <Typography gutterBottom variant="h6">
       Links To Other Sites
     </Typography>
     Our Service may contain links to other sites that are not operated by us. If
@@ -199,7 +197,7 @@ export default (
     privacy policies or practices of any third party sites or services.
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h5">
+    <Typography gutterBottom variant="h5">
       Children's Privacy
     </Typography>
     Our Service does not address anyone under the age of 18 ("Children"). We do
@@ -211,7 +209,7 @@ export default (
     from our servers.
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h5">
+    <Typography gutterBottom variant="h5">
       Changes To This Privacy Policy
     </Typography>
     We may update our Privacy Policy from time to time. We will notify you of
@@ -223,11 +221,11 @@ export default (
     posted on this page.
     <br />
     <br />
-    <Typography gutterBottom={true} variant="h5" color="secondary">
+    <Typography gutterBottom variant="h5" color="secondary">
       Contact Us
     </Typography>
     If you have any questions about this Privacy Policy, please contact us:
-    <Typography gutterBottom={true} variant="h6" color="primary">
+    <Typography gutterBottom variant="h6" color="primary">
       By email: hkhan@cryptocurrencies.ai
     </Typography>
   </>

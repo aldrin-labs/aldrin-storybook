@@ -27,8 +27,8 @@ const LinearChart = ({
 
   return (
     <>
-      <ChartContainer height={'100%'}>
-        <canvas id="linearChart"></canvas>
+      <ChartContainer height="100%">
+        <canvas id="linearChart" />
         {/* <TooltipForAreaChart theme={theme} /> */}
       </ChartContainer>
     </>

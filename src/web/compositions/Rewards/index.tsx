@@ -9,9 +9,6 @@ import { SharePopup } from '@sb/compositions/Rewards/components/SharePopup'
 
 import dayjs from 'dayjs'
 
-const utc = require('dayjs/plugin/utc')
-dayjs.extend(utc)
-
 import { Loading } from '@sb/components/Loading/Loading'
 
 import SvgIcon from '@sb/components/SvgIcon'
@@ -35,7 +32,7 @@ import lightBird from '@icons/lightBird.svg'
 import shape from '@icons/shape.svg'
 
 import { withTheme } from '@material-ui/styles'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { useWallet, useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
@@ -49,16 +46,18 @@ import { Link } from 'react-router-dom'
 import { CircularProgressbar as Circle } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 
-import { useWallet } from '@sb/dexUtils/wallet'
-
-import { Styles } from './index.styles'
-import LinearChart from './components/Chart'
-
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
+import { Styles } from './index.styles'
+import LinearChart from './components/Chart'
+
 import { data } from '../Screener/Selector/selectsData'
+
+const utc = require('dayjs/plugin/utc')
+
+dayjs.extend(utc)
 
 export const BlockContainer = styled.div``
 
@@ -190,27 +189,11 @@ const LinkInput = styled.input`
 `
 
 export const srmVolumesInUSDT = [
-  100000,
-  600000,
-  1600000,
-  6600000,
-  16600000,
-  41600000,
-  91600000,
-  166600000,
-  266600000,
-  466600000,
+  100000, 600000, 1600000, 6600000, 16600000, 41600000, 91600000, 166600000,
+  266600000, 466600000,
 ]
 export const dcfiVolumes = [
-  200000,
-  400000,
-  600000,
-  800000,
-  1000000,
-  1200000,
-  1400000,
-  1600000,
-  1800000,
+  200000, 400000, 600000, 800000, 1000000, 1200000, 1400000, 1600000, 1800000,
   2000000,
 ]
 const volumeLabels = [
@@ -366,9 +349,8 @@ const RewardsRoute = (props) => {
     setTwittersLink(e.target.value)
   }
 
-  const {
-    getTopTwitterFarming: getTopTwitterFarmingData = [],
-  } = getTopTwitterFarmingQuery
+  const { getTopTwitterFarming: getTopTwitterFarmingData = [] } =
+    getTopTwitterFarmingQuery
 
   const { getUserRetweetsHistory = [] } = getUserRetweetsHistoryQuery || {
     getUserRetweetsHistory: [],
@@ -403,8 +385,8 @@ const RewardsRoute = (props) => {
       <Styles />
       <RowContainer
         style={{ width: '100%', padding: '4rem 2rem' }}
-        direction={'row'}
-        justify={'space-between'}
+        direction="row"
+        justify="space-between"
       >
         <Title
           style={{ paddingBottom: '1rem', color: theme.palette.text.black }}
@@ -414,9 +396,9 @@ const RewardsRoute = (props) => {
         </Title>
         <RowContainer style={{ width: '32%' }}>
           <a
-            rel="noopener noreferrel"
-            target={'_blank'}
-            href={'https://decefi.app/onePager'}
+            rel="noopener noreferrel noreferrer"
+            target="_blank"
+            href="https://decefi.app/onePager"
             style={{
               paddingBottom: '2rem',
               width: 'calc((100% - 4rem) / 2)',
@@ -429,20 +411,18 @@ const RewardsRoute = (props) => {
               btnColor={theme.palette.grey.main}
               backgroundColor={theme.palette.green.shine}
               hoverBackground={theme.palette.green.shine}
-              height={'5rem'}
-              fontSize={'1.6rem'}
-              btnWidth={'100%'}
-              textTransform={'none'}
+              height="5rem"
+              fontSize="1.6rem"
+              btnWidth="100%"
+              textTransform="none"
             >
               Decefi one-pager{' '}
             </BtnCustom>
           </a>
           <a
-            rel="noopener noreferrel"
-            target={'_blank'}
-            href={
-              'https://www.youtube.com/watch?v=yz5uaN0aCyw&feature=youtu.be'
-            }
+            rel="noopener noreferrel noreferrer"
+            target="_blank"
+            href="https://www.youtube.com/watch?v=yz5uaN0aCyw&feature=youtu.be"
             style={{
               paddingBottom: '2rem',
               width: 'calc((100% - 4rem) / 2)',
@@ -454,10 +434,10 @@ const RewardsRoute = (props) => {
               btnColor={theme.palette.grey.main}
               backgroundColor={theme.palette.green.shine}
               hoverBackground={theme.palette.green.shine}
-              height={'5rem'}
-              fontSize={'1.6rem'}
-              btnWidth={'100%'}
-              textTransform={'none'}
+              height="5rem"
+              fontSize="1.6rem"
+              btnWidth="100%"
+              textTransform="none"
             >
               How to farm DCFI
             </BtnCustom>
@@ -479,7 +459,7 @@ const RewardsRoute = (props) => {
             <SvgIcon src={serum} width="13%" height="auto" />
           </RowContainer>
           <RowContainer
-            justify={'space-around'}
+            justify="space-around"
             style={{
               height: '50%',
               flexDirection: 'column',
@@ -491,11 +471,11 @@ const RewardsRoute = (props) => {
               )}{' '}
               USDT
             </Value>{' '}
-            <CardText theme={theme} width={'auto'}>
+            <CardText theme={theme} width="auto">
               SRM traded in USDT
             </CardText>
             <Link
-              to={'/chart/spot/SRM_USDT'}
+              to="/chart/spot/SRM_USDT"
               style={{
                 width: '50%',
                 textDecoration: 'none',
@@ -507,11 +487,11 @@ const RewardsRoute = (props) => {
                 btnColor={theme.palette.grey.main}
                 backgroundColor={theme.palette.blue.serum}
                 hoverBackground={theme.palette.blue.serum}
-                padding={'1.5rem 0'}
-                height={'5rem'}
-                fontSize={'1.6rem'}
-                btnWidth={'100%'}
-                textTransform={'capitalize'}
+                padding="1.5rem 0"
+                height="5rem"
+                fontSize="1.6rem"
+                btnWidth="100%"
+                textTransform="capitalize"
               >
                 trade
               </BtnCustom>
@@ -536,7 +516,7 @@ const RewardsRoute = (props) => {
             />
           </RowContainer>
           <RowContainer
-            justify={'none'}
+            justify="none"
             style={{
               height: '55%',
               flexDirection: 'column',
@@ -545,7 +525,7 @@ const RewardsRoute = (props) => {
             <Value theme={theme}>{stripDigitPlaces(dcfiEarned, 3)}</Value>{' '}
             <CardText
               theme={theme}
-              width={'auto'}
+              width="auto"
               style={{ paddingBottom: '1rem' }}
             >
               DCFI earned
@@ -554,7 +534,7 @@ const RewardsRoute = (props) => {
               <HarvestPopup
                 isHarvestPopupOpen={isHarvestPopupOpen}
                 toggleIsOpen={toggleIsOpen}
-              ></HarvestPopup>
+              />
               <a
                 style={{
                   width: 'calc(50% - 2rem)',
@@ -568,11 +548,11 @@ const RewardsRoute = (props) => {
                   btnColor={theme.palette.grey.main}
                   backgroundColor={theme.palette.green.acid}
                   hoverBackground={theme.palette.green.acid}
-                  padding={'1.5rem 0'}
-                  height={'5rem'}
-                  fontSize={'1.6rem'}
-                  btnWidth={'100%'}
-                  textTransform={'none'}
+                  padding="1.5rem 0"
+                  height="5rem"
+                  fontSize="1.6rem"
+                  btnWidth="100%"
+                  textTransform="none"
                   onClick={() => {
                     toggleIsOpen()
                   }}
@@ -596,12 +576,12 @@ const RewardsRoute = (props) => {
                 btnColor={theme.palette.grey.main}
                 backgroundColor={theme.palette.blue.serum}
                 hoverBackground={theme.palette.blue.serum}
-                padding={'1.5rem 0 2.5rem 0'}
-                height={'5rem'}
-                fontSize={'1.6rem'}
-                btnWidth={'calc(50% - 2rem)'}
-                margin={'0 1rem'}
-                textTransform={'none'}
+                padding="1.5rem 0 2.5rem 0"
+                height="5rem"
+                fontSize="1.6rem"
+                btnWidth="calc(50% - 2rem)"
+                margin="0 1rem"
+                textTransform="none"
                 onClick={(e) => {
                   if (publicKey === '') {
                     notify({
@@ -617,8 +597,8 @@ const RewardsRoute = (props) => {
               >
                 <SvgIcon
                   src={isDarkTheme ? blackTwitter : lightBird}
-                  width={'2.5rem'}
-                  height={'2.5rem'}
+                  width="2.5rem"
+                  height="2.5rem"
                   style={{ marginRight: '1rem' }}
                 />{' '}
                 Share
@@ -642,12 +622,12 @@ const RewardsRoute = (props) => {
                       ? theme.palette.grey.text
                       : theme.palette.blue.serum
                   }
-                  height={'5rem'}
-                  btnWidth={'calc((100% - 4rem) / 2)'}
-                  fontSize={'1.6rem'}
-                  textTransform={'none'}
-                  btnHeight={'3rem'}
-                  margin={'0 0 0 1rem'}
+                  height="5rem"
+                  btnWidth="calc((100% - 4rem) / 2)"
+                  fontSize="1.6rem"
+                  textTransform="none"
+                  btnHeight="3rem"
+                  margin="0 0 0 1rem"
                   onClick={async (e) => {
                     if (publicKey === '') {
                       notify({
@@ -717,7 +697,7 @@ const RewardsRoute = (props) => {
                     <Loading
                       style={{ paddingTop: '0.7rem' }}
                       size={24}
-                      color={'#C7FFD0'}
+                      color="#C7FFD0"
                     />
                   ) : (
                     'Farm $DCFI for tweet'
@@ -743,17 +723,13 @@ const RewardsRoute = (props) => {
                         paddingBottom: '2rem',
                       }}
                     >
-                      <CardText fontWeight={'400'} theme={theme}>
+                      <CardText fontWeight="400" theme={theme}>
                         Share a tweet and earn $DCFI everyday
                       </CardText>
                     </RowContainer>
 
                     <RowContainer>
-                      <CardText
-                        theme={theme}
-                        fontSize={'2rem'}
-                        fontWeight={'400'}
-                      >
+                      <CardText theme={theme} fontSize="2rem" fontWeight="400">
                         Requirements
                       </CardText>
                     </RowContainer>
@@ -768,14 +744,14 @@ const RewardsRoute = (props) => {
                       >
                         <SvgIcon
                           src={greenTweet}
-                          width={'3rem'}
-                          height={'3rem'}
+                          width="3rem"
+                          height="3rem"
                           style={{ marginBottom: '2rem' }}
                         />
-                        <CardText theme={theme} fontSize={'2rem'}>
+                        <CardText theme={theme} fontSize="2rem">
                           At least 200 DCFI
                         </CardText>
-                        <CardText fontWeight={'400'} theme={theme}>
+                        <CardText fontWeight="400" theme={theme}>
                           should be farmed by trading SRM{' '}
                         </CardText>
                       </div>
@@ -789,14 +765,14 @@ const RewardsRoute = (props) => {
                       >
                         <SvgIcon
                           src={lightSub}
-                          width={'3rem'}
-                          height={'3rem'}
+                          width="3rem"
+                          height="3rem"
                           style={{ marginBottom: '2rem' }}
                         />
-                        <CardText theme={theme} fontSize={'2rem'}>
+                        <CardText theme={theme} fontSize="2rem">
                           At least 100 followers
                         </CardText>
-                        <CardText fontWeight={'400'} theme={theme}>
+                        <CardText fontWeight="400" theme={theme}>
                           should be on your Twitter account
                         </CardText>
                       </div>
@@ -809,7 +785,7 @@ const RewardsRoute = (props) => {
                       }}
                     >
                       <CardText
-                        fontWeight={'400'}
+                        fontWeight="400"
                         theme={theme}
                         style={{ width: '90%' }}
                       >
@@ -824,8 +800,8 @@ const RewardsRoute = (props) => {
               </CardText>
               <SvgIcon
                 src={greenArrow}
-                width={'1.3rem'}
-                height={'1.3rem'}
+                width="1.3rem"
+                height="1.3rem"
                 style={{ marginLeft: '1rem' }}
               />{' '}
             </RowContainer>
@@ -869,7 +845,7 @@ const RewardsRoute = (props) => {
             />
           </RowContainer>
           <RowContainer
-            justify={'space-around'}
+            justify="space-around"
             style={{
               height: '20%',
             }}
@@ -933,27 +909,27 @@ const RewardsRoute = (props) => {
           </RowContainer>
           <RowContainer style={{ height: '40%' }}>
             <Row
-              direction={'column'}
-              align={'flex-start'}
-              justify={'flex-start'}
-              wrap={'nowrap'}
-              width={'50%'}
-              height={'35%'}
+              direction="column"
+              align="flex-start"
+              justify="flex-start"
+              wrap="nowrap"
+              width="50%"
+              height="35%"
               style={{ paddingLeft: '1rem' }}
             >
               <DarkTooltip
-                delay={'50'}
-                placement={'top'}
-                title={'Farming Volume = Trade Volume + Twitter Points'}
+                delay="50"
+                placement="top"
+                title="Farming Volume = Trade Volume + Twitter Points"
               >
                 <CardSubTitle>Total Volume</CardSubTitle>
               </DarkTooltip>
               <CardSubValueForVolume theme={theme}>
-                <Row justify={'flex-start'} style={{ paddingBottom: '.5rem' }}>
+                <Row justify="flex-start" style={{ paddingBottom: '.5rem' }}>
                   <SvgIcon
                     src={greenDollar}
-                    width={'2.5rem'}
-                    height={'2.5rem'}
+                    width="2.5rem"
+                    height="2.5rem"
                     style={{ marginRight: '1rem' }}
                   />
                   <span>
@@ -974,8 +950,8 @@ const RewardsRoute = (props) => {
                   <Row>
                     <SvgIcon
                       src={greenTwitter}
-                      width={'2.5rem'}
-                      height={'2.5rem'}
+                      width="2.5rem"
+                      height="2.5rem"
                       style={{ marginRight: '1rem' }}
                     />
                     <span style={{ color: theme.palette.green.shine }}>
@@ -989,11 +965,11 @@ const RewardsRoute = (props) => {
               </CardSubValueForVolume>
             </Row>
             <Row
-              direction={'column'}
-              align={'flex-start'}
-              justify={'flex-start'}
-              width={'50%'}
-              height={'35%'}
+              direction="column"
+              align="flex-start"
+              justify="flex-start"
+              width="50%"
+              height="35%"
             >
               <CardSubTitle>Volume until next phase</CardSubTitle>
               <CardSubValue theme={theme}>
@@ -1004,11 +980,11 @@ const RewardsRoute = (props) => {
               </CardSubValue>
             </Row>
             <Row
-              direction={'column'}
-              align={'flex-start'}
-              justify={'flex-start'}
-              width={'50%'}
-              height={'35%'}
+              direction="column"
+              align="flex-start"
+              justify="flex-start"
+              width="50%"
+              height="35%"
               style={{ paddingLeft: '1rem' }}
             >
               <CardSubTitle>Total DCFI farmed</CardSubTitle>
@@ -1017,11 +993,11 @@ const RewardsRoute = (props) => {
               </CardSubValue>
             </Row>
             <Row
-              direction={'column'}
-              align={'flex-start'}
-              justify={'flex-start'}
-              width={'50%'}
-              height={'35%'}
+              direction="column"
+              align="flex-start"
+              justify="flex-start"
+              width="50%"
+              height="35%"
             >
               <CardSubTitle>DCFI until next phase</CardSubTitle>
               <CardSubValue theme={theme}>
@@ -1061,8 +1037,8 @@ const RewardsRoute = (props) => {
         </Card> */}
       </RowContainer>
       <RowContainer
-        direction={'column'}
-        align={'flex-start'}
+        direction="column"
+        align="flex-start"
         style={{ paddingBottom: '10rem' }}
       >
         <div
@@ -1121,14 +1097,11 @@ const RewardsRoute = (props) => {
               >
                 <Timer
                   initialTime={
-                    +dayjs
-                      .utc()
-                      .endOf('day')
-                      .valueOf() - +dayjs.utc().valueOf()
+                    +dayjs.utc().endOf('day').valueOf() - +dayjs.utc().valueOf()
                   }
                   formatValue={(value) => `${value < 10 ? `0${value}` : value}`}
                   direction="backward"
-                  startImmediately={true}
+                  startImmediately
                   checkpoints={[
                     {
                       time: 0,
@@ -1141,13 +1114,13 @@ const RewardsRoute = (props) => {
                   ]}
                 >
                   {() => (
-                    <React.Fragment>
+                    <>
                       <Timer.Hours />
-                      {':'}
+                      :
                       <Timer.Minutes />
-                      {':'}
+                      :
                       <Timer.Seconds />
-                    </React.Fragment>
+                    </>
                   )}
                 </Timer>
               </div>
@@ -1181,15 +1154,16 @@ const RewardsRoute = (props) => {
                           color: theme.palette.green.shine,
                           textDecoration: 'none',
                         }}
-                        href={'https://twitter.com/' + el.tweetUsername}
+                        href={`https://twitter.com/${el.tweetUsername}`}
                       >
-                        {'@' + el.tweetUsername}
+                        {`@${el.tweetUsername}`}
                       </a>
                     </Cell>
                     {/* <Cell theme={theme}>{el.userFollowersCount}</Cell> */}
                     <Cell theme={theme}>
-                      {(2000 / getTopTwitterFarmingData.length).toFixed(0) +
-                        ' DCFI'}
+                      {`${(2000 / getTopTwitterFarmingData.length).toFixed(
+                        0
+                      )} DCFI`}
                     </Cell>
                   </TableRow>
                 )
@@ -1235,7 +1209,7 @@ const RewardsRoute = (props) => {
                 {getUserRetweetsHistory
                   .reduce((acc, currentEl) => acc + currentEl.farmedDCFI, 0)
                   .toFixed(0)}{' '}
-                {'DCFI'}
+                DCFI
               </div>
             </CardSubTitle>
           </div>
@@ -1333,7 +1307,7 @@ const RewardsRoute = (props) => {
                 {getAllRetweetsHistory
                   .reduce((acc, currentEl) => acc + currentEl.farmedDCFI, 0)
                   .toFixed(0)}{' '}
-                {'DCFI'}
+                DCFI
               </div>
             </CardSubTitle>
           </div>
@@ -1365,9 +1339,9 @@ const RewardsRoute = (props) => {
                           color: theme.palette.green.shine,
                           textDecoration: 'none',
                         }}
-                        href={'https://twitter.com/' + el.tweetUsername}
+                        href={`https://twitter.com/${el.tweetUsername}`}
                       >
-                        {'@' + el.tweetUsername}
+                        {`@${el.tweetUsername}`}
                       </a>
                     </Cell>
                     {/* <Cell theme={theme}>{el.userFollowersCount}</Cell> */}

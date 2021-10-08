@@ -3,9 +3,9 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { client } from '@core/graphql/apolloClient'
-import { Props } from './ThemeWrapper.types'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { useQuery } from 'react-apollo'
+import { Props } from './ThemeWrapper.types'
 
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {
@@ -193,7 +193,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             grey: {
               custom: '#2E2E2E',
-              dark: '#2c2c34', //'#1F1F24',
+              dark: '#2c2c34', // '#1F1F24',
               light: '#D1DDEF',
               main: '#0E1016',
               background: '#2E2E2E',
@@ -219,7 +219,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#27272D',
             },
             secondary: {
-              main: '#165BE0', //'#48DCC6',
+              main: '#165BE0', // '#48DCC6',
             },
             action: {
               selected: 'rgba(255, 255, 255, 0.05)',
@@ -421,7 +421,7 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             grey: {
               custom: '#ABBAD1',
-              dark: '#8f9092', //'#7284A0',
+              dark: '#8f9092', // '#7284A0',
               light: '#7284A0',
               main: '#F2F4F6',
               backround: '#f2f4f6',

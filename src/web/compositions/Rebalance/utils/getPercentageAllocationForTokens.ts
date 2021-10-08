@@ -1,4 +1,4 @@
-import { TokenInfoWithPercentage, TokenInfoWithValue } from "../Rebalance.types"
+import { TokenInfoWithPercentage, TokenInfoWithValue } from '../Rebalance.types'
 
 export const getPercentageAllocationForTokens = (
   tokens: TokenInfoWithValue[],

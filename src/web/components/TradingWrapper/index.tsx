@@ -7,8 +7,6 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 
-import TraidingTerminal from '../TraidingTerminal'
-
 import { client } from '@core/graphql/apolloClient'
 
 import {
@@ -17,6 +15,20 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import Bell from '@icons/bell.svg'
 
+import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import SvgIcon from '@sb/components/SvgIcon'
+import TraidingTerminal, {
+  TradeInputContent,
+} from '@sb/components/TraidingTerminal/index'
+import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
+import {
+  InputRowContainer,
+  AdditionalSettingsButton,
+} from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import BlueSlider from '@sb/components/Slider/BlueSlider'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+import { TradingViewBotTerminalMemo } from './TradingViewBotTerminal'
 import {
   TerminalContainer,
   TerminalMainGrid,
@@ -31,26 +43,9 @@ import {
   TerminalComponentsContainer,
 } from './styles'
 
-import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import SvgIcon from '@sb/components/SvgIcon'
-import { TradeInputContent } from '@sb/components/TraidingTerminal/index'
-import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
-import {
-  InputRowContainer,
-  AdditionalSettingsButton,
-} from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
-import BlueSlider from '@sb/components/Slider/BlueSlider'
-import { TradingViewBotTerminalMemo } from './TradingViewBotTerminal'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-
 const generateToken = () =>
-  Math.random()
-    .toString(36)
-    .substring(2, 15) +
-  Math.random()
-    .toString(36)
-    .substring(2, 15)
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15)
 
 class SimpleTabs extends React.Component<any, any> {
   state: {
@@ -84,9 +79,8 @@ class SimpleTabs extends React.Component<any, any> {
       return {
         leverage: componentLeverage,
       }
-    } else {
-      return null
     }
+    return null
   }
 
   shouldComponentUpdate(nextProps) {
@@ -153,18 +147,14 @@ class SimpleTabs extends React.Component<any, any> {
       })
       .subscribe({
         next: (data: { loading: boolean; data: any }) => {
-          const {
-            type,
-            side,
-            amount,
-            price,
-          } = data.data.listenSerumOrdersByTVAlerts
+          const { type, side, amount, price } =
+            data.data.listenSerumOrdersByTVAlerts
 
           const variables =
             type === 'limit'
-              ? { limit: price, price, amount: amount }
+              ? { limit: price, price, amount }
               : type === 'market'
-              ? { amount: amount }
+              ? { amount }
               : {}
 
           that.props.placeOrder(side, type, variables, {
@@ -256,7 +246,7 @@ class SimpleTabs extends React.Component<any, any> {
       >
         <CustomCard theme={theme} style={{ borderTop: 0, overflow: 'unset' }}>
           <TerminalHeader
-            key={'spotTerminal'}
+            key="spotTerminal"
             // style={{ display: 'flex' }}
             theme={theme}
           >
@@ -311,10 +301,8 @@ class SimpleTabs extends React.Component<any, any> {
               >
                 {mode === 'market' ? (
                   <DarkTooltip
-                    maxWidth={'35rem'}
-                    title={
-                      'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading.'
-                    }
+                    maxWidth="35rem"
+                    title="A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading."
                   >
                     <FuturesSettings
                       theme={theme}
@@ -342,7 +330,7 @@ class SimpleTabs extends React.Component<any, any> {
 
                 {mode === 'limit' ? (
                   <TerminalHeader
-                    key={'futuresTerminal'}
+                    key="futuresTerminal"
                     style={{ display: 'flex', border: 'none' }}
                     theme={theme}
                   >
@@ -425,8 +413,8 @@ class SimpleTabs extends React.Component<any, any> {
                   {!TVAlertsBotIsActive && (
                     <SvgIcon
                       src={Bell}
-                      height={'100%'}
-                      width={'1.5rem'}
+                      height="100%"
+                      width="1.5rem"
                       style={{
                         position: 'absolute',
                         right: '12rem',
@@ -588,8 +576,8 @@ class SimpleTabs extends React.Component<any, any> {
                                   </p>
                                 </>
                               }
-                              title={'Buy SRM Each'}
-                              lineMargin={'0 1.2rem 0 1rem'}
+                              title="Buy SRM Each"
+                              lineMargin="0 1.2rem 0 1rem"
                               style={{
                                 borderBottom: theme.palette.border.main,
                                 padding: '1rem 0',
@@ -599,12 +587,12 @@ class SimpleTabs extends React.Component<any, any> {
                                 <InputRowContainer>
                                   <TradeInputContent
                                     theme={theme}
-                                    padding={'0 1.5% 0 0'}
-                                    width={'calc(50%)'}
-                                    symbol={'%'}
-                                    title={'TP'}
-                                    textAlign={'right'}
-                                    needTitle={true}
+                                    padding="0 1.5% 0 0"
+                                    width="calc(50%)"
+                                    symbol="%"
+                                    title="TP"
+                                    textAlign="right"
+                                    needTitle
                                     value={takeProfitPercentage}
                                     onChange={(e) => {
                                       this.setState({
@@ -648,7 +636,7 @@ class SimpleTabs extends React.Component<any, any> {
                                 </>
                               }
                               title={"Bot's lifetime"}
-                              lineMargin={'0 1.2rem 0 1rem'}
+                              lineMargin="0 1.2rem 0 1rem"
                               style={{
                                 borderBottom: theme.palette.border.main,
                                 padding: '1rem 0',
@@ -658,8 +646,8 @@ class SimpleTabs extends React.Component<any, any> {
                                 <TradeInputContent
                                   theme={theme}
                                   haveSelector
-                                  symbol={'min'}
-                                  width={'calc(50% - .4rem)'}
+                                  symbol="min"
+                                  width="calc(50% - .4rem)"
                                   value={tradingBotTotalTime}
                                   onChange={(e) => {
                                     if (+e.target.value > 720) {
@@ -681,7 +669,7 @@ class SimpleTabs extends React.Component<any, any> {
                                   theme={theme}
                                   showMarks={false}
                                   value={tradingBotTotalTime}
-                                  valueSymbol={'min'}
+                                  valueSymbol="min"
                                   min={0}
                                   max={720}
                                   sliderContainerStyles={{
@@ -706,8 +694,8 @@ class SimpleTabs extends React.Component<any, any> {
                         <TraidingTerminal
                           baseCurrencyAccount={baseCurrencyAccount}
                           quoteCurrencyAccount={quoteCurrencyAccount}
-                          byType={'sell'}
-                          sideType={'sell'}
+                          byType="sell"
+                          sideType="sell"
                           setAutoConnect={setAutoConnect}
                           providerUrl={providerUrl}
                           setProvider={setProvider}

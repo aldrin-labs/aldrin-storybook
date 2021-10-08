@@ -27,14 +27,11 @@ const CountButterflyChart = ({
       theme={theme}
       selectedPair={selectedPair}
       data={getSerumAvgTotalStatsQuery.getSerumAvgTotalStats}
-      id={
-        'getSerumAvgTotalStatsQuery' +
-        generateIDFromValues(getSerumAvgTotalStatsQuery.getSerumAvgTotalStats) +
-        selectedPair +
-        getSerumAvgTotalStatsQuery.loading
-      }
-      title={'Average Trade Value'}
-      needQuoteInLabel={true}
+      id={`getSerumAvgTotalStatsQuery${generateIDFromValues(
+        getSerumAvgTotalStatsQuery.getSerumAvgTotalStats
+      )}${selectedPair}${getSerumAvgTotalStatsQuery.loading}`}
+      title="Average Trade Value"
+      needQuoteInLabel
     />
   )
 }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import dayjs from 'dayjs'
-import TradeHistoryTable from './Table/TradeHistoryTable'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import {
   reduceArrayLength,
@@ -13,8 +12,9 @@ import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
 
 import { client } from '@core/graphql/apolloClient'
 
-import { IProps, IState } from './TableContainer.types'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { IProps, IState } from './TableContainer.types'
+import TradeHistoryTable from './Table/TradeHistoryTable'
 
 class TableContainer extends Component<IProps, IState> {
   state: IState = {

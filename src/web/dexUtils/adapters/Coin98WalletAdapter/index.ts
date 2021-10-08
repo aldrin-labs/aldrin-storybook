@@ -12,6 +12,7 @@ import {
 } from '@solana/wallet-adapter-base'
 import { PublicKey, Transaction } from '@solana/web3.js'
 import bs58 from 'bs58'
+
 interface SignTransactionResponse {
   signature: string
   publicKey: string
@@ -40,11 +41,16 @@ export interface Coin98WalletAdapterConfig {
   pollInterval?: number
   pollCount?: number
 }
-export class Coin98WalletAdapter extends EventEmitter<WalletAdapterEvents>
-  implements WalletAdapter {
+export class Coin98WalletAdapter
+  extends EventEmitter<WalletAdapterEvents>
+  implements WalletAdapter
+{
   private _connecting: boolean
+
   private _wallet: Coin98SolProvider | null
+
   private _publicKey: PublicKey | null
+
   constructor(config: Coin98WalletAdapterConfig = {}) {
     super()
     this?._connecting = false
@@ -55,21 +61,27 @@ export class Coin98WalletAdapter extends EventEmitter<WalletAdapterEvents>
     if (!this?.ready)
       pollUntilReady(this, config.pollInterval || 1000, config.pollCount || 3)
   }
+
   get publicKey(): PublicKey | null {
     return this?._publicKey
   }
+
   get ready(): boolean {
     return !!window.coin98
   }
+
   get connecting(): boolean {
     return this?._connecting
   }
+
   get connected(): boolean {
     return !!this?._wallet?.isConnected()
   }
+
   get autoApprove(): boolean {
     return false
   }
+
   async connect(): Promise<void> {
     try {
       if (this?.connected || this?.connecting) return
@@ -100,6 +112,7 @@ export class Coin98WalletAdapter extends EventEmitter<WalletAdapterEvents>
       this?._connecting = false
     }
   }
+
   async disconnect(): Promise<void> {
     if (this?._wallet) {
       this?._wallet.disconnect()
@@ -108,6 +121,7 @@ export class Coin98WalletAdapter extends EventEmitter<WalletAdapterEvents>
       this?.emit('disconnect')
     }
   }
+
   async signTransaction(transaction: Transaction): Promise<Transaction> {
     try {
       const wallet = this?._wallet
@@ -129,6 +143,7 @@ export class Coin98WalletAdapter extends EventEmitter<WalletAdapterEvents>
       throw error
     }
   }
+
   async signAllTransactions(
     transactions: Transaction[]
   ): Promise<Transaction[]> {

@@ -65,12 +65,12 @@ export const SingleChart = ({
   return (
     <Wrapper>
       <iframe
-        allowfullscreen="" // needed for fullscreen of chart to work
+        allowFullScreen="" // needed for fullscreen of chart to work
         style={{ borderWidth: 0 }}
         src={`https://${CHARTS_API_URL}${additionalUrl}&theme=${
           themeMode === 'light' ? 'light' : 'serum'
         }&isMobile=${isMobile}`}
-        height={'100%'}
+        height="100%"
         id={`${name}${themeMode}`}
         key={`${themeMode}${additionalUrl}`}
       />

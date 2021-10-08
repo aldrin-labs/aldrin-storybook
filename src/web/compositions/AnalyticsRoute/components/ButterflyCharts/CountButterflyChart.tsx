@@ -32,13 +32,10 @@ const CountButterflyChart = ({
       needQuoteInLabel={false}
       data={getSerumTradesCountStats}
       selectedPair={selectedPair}
-      id={
-        'getSerumTradesCountStatsQuery' +
-        generateIDFromValues(getSerumTradesCountStats) +
-        selectedPair +
-        getSerumTradesCountStatsQuery.loading
-      }
-      title={'Daily Trades Count'}
+      id={`getSerumTradesCountStatsQuery${generateIDFromValues(
+        getSerumTradesCountStats
+      )}${selectedPair}${getSerumTradesCountStatsQuery.loading}`}
+      title="Daily Trades Count"
     />
   )
 }

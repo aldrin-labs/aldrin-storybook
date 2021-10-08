@@ -45,7 +45,7 @@ class AnimatedCell extends Component<IProps> {
     const { animated } = this.state
 
     return (
-      <Cell animated={'none'} {...{ color, width }}>
+      <Cell animated="none" {...{ color, width }}>
         <Typography variant="body1" color="default">
           {value}
         </Typography>

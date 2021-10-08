@@ -37,7 +37,7 @@ interface INavButton {
 }
 
 export const NavButtonMobile: SFC<INavButton> = ({ link, title, ...props }) => (
-  <StyledNavLink to={link} activeClassName={'selected'} {...props}>
+  <StyledNavLink to={link} activeClassName="selected" {...props}>
     {title}
   </StyledNavLink>
 )

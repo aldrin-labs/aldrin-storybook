@@ -86,7 +86,7 @@ const InputWithEye = ({
   return (
     <InputWithComponent
       theme={theme}
-      autoFocus={true}
+      autoFocus
       ComponentToShow={
         <img
           style={{
@@ -209,10 +209,5 @@ const InputWithSearch = ({
   )
 }
 
-
-export {
-  InputWithEye,
-  InputWithPaste,
-  InputWithSearch,
-}
+export { InputWithEye, InputWithPaste, InputWithSearch }
 export default InputWithComponent

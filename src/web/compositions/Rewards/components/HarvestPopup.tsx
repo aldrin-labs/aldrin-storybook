@@ -31,7 +31,7 @@ export const HarvestPopup = (props) => {
             </RowContainer>
             <RowContainer>
               <CardText
-                fontWeight={'400'}
+                fontWeight="400"
                 theme={theme}
                 style={{ width: '90%', textAlign: 'left' }}
               >
@@ -41,18 +41,10 @@ export const HarvestPopup = (props) => {
               </CardText>
             </RowContainer>
             <RowContainer>
-              <CardText
-                fontWeight={'400'}
-                theme={theme}
-                style={{ width: '90%' }}
-              >
+              <CardText fontWeight="400" theme={theme} style={{ width: '90%' }}>
                 The start of award payments will be announced in
               </CardText>
-              <CardText
-                fontWeight={'400'}
-                theme={theme}
-                style={{ width: '90%' }}
-              >
+              <CardText fontWeight="400" theme={theme} style={{ width: '90%' }}>
                 <a
                   href="https://twitter.com/decefi_official"
                   style={{ textDecoration: 'none', color: '#c7ffd0' }}
@@ -73,12 +65,12 @@ export const HarvestPopup = (props) => {
               <BtnCustom
                 theme={theme}
                 btnColor={theme.palette.grey.main}
-                backgroundColor={'#C7FFD0'}
-                hoverBackground={'#C7FFD0'}
-                height={'5rem'}
-                fontSize={'1.6rem'}
-                btnWidth={'50%'}
-                textTransform={'none'}
+                backgroundColor="#C7FFD0"
+                hoverBackground="#C7FFD0"
+                height="5rem"
+                fontSize="1.6rem"
+                btnWidth="50%"
+                textTransform="none"
                 onClick={() => {
                   props.toggleIsOpen()
                 }}

@@ -1,7 +1,7 @@
 // import * as firebase from 'firebase'
 import { DeviceType } from '@core/types/DeviceTypes'
 
-//mock
+// mock
 const firebase = {
   messaging: {
     isSupported: () => false,
@@ -32,29 +32,31 @@ if (isSupportedFirebase) {
 }
 
 // https://stackoverflow.com/questions/9514179/how-to-find-the-operating-system-version-using-javascript
-const deviceInfoStats = (function() {
+const deviceInfoStats = (function () {
   {
-
-    const screen = window.screen
-    const swfobject = window.swfobject
-    var width, height
-    var unknown = '-'
+    const { screen } = window
+    const { swfobject } = window
+    let width
+    let height
+    const unknown = '-'
 
     // screen
     var screenSize = ''
     if (screen.width) {
       width = screen.width ? screen.width : ''
       height = screen.height ? screen.height : ''
-      screenSize += '' + width + ' x ' + height
+      screenSize += `${width} x ${height}`
     }
 
     // browser
-    var nVer = navigator.appVersion
-    var nAgt = navigator.userAgent
+    const nVer = navigator.appVersion
+    const nAgt = navigator.userAgent
     var browser = navigator.appName
-    var version = '' + parseFloat(navigator.appVersion)
+    var version = `${parseFloat(navigator.appVersion)}`
     var majorVersion = parseInt(navigator.appVersion, 10)
-    var nameOffset, verOffset, ix
+    let nameOffset
+    let verOffset
+    let ix
 
     // Opera
     if ((verOffset = nAgt.indexOf('Opera')) != -1) {
@@ -118,9 +120,9 @@ const deviceInfoStats = (function() {
     if ((ix = version.indexOf(' ')) != -1) version = version.substring(0, ix)
     if ((ix = version.indexOf(')')) != -1) version = version.substring(0, ix)
 
-    majorVersion = parseInt('' + version, 10)
+    majorVersion = parseInt(`${version}`, 10)
     if (isNaN(majorVersion)) {
-      version = '' + parseFloat(navigator.appVersion)
+      version = `${parseFloat(navigator.appVersion)}`
       majorVersion = parseInt(navigator.appVersion, 10)
     }
 
@@ -128,16 +130,16 @@ const deviceInfoStats = (function() {
     var mobile = /Mobile|mini|Fennec|Android|iP(ad|od|hone)/.test(nVer)
 
     // cookie
-    var cookieEnabled = navigator.cookieEnabled ? true : false
+    var cookieEnabled = !!navigator.cookieEnabled
 
-    if (typeof navigator.cookieEnabled == 'undefined' && !cookieEnabled) {
+    if (typeof navigator.cookieEnabled === 'undefined' && !cookieEnabled) {
       document.cookie = 'testcookie'
-      cookieEnabled = document.cookie.indexOf('testcookie') != -1 ? true : false
+      cookieEnabled = document.cookie.indexOf('testcookie') != -1
     }
 
     // system
     var os = unknown
-    var clientStrings = [
+    const clientStrings = [
       { s: 'Windows 10', r: /(Windows 10.0|Windows NT 10.0)/ },
       { s: 'Windows 8.1', r: /(Windows 8.1|Windows NT 6.3)/ },
       { s: 'Windows 8', r: /(Windows 8|Windows NT 6.2)/ },
@@ -169,8 +171,8 @@ const deviceInfoStats = (function() {
         r: /(nuhk|Googlebot|Yammybot|Openbot|Slurp|MSNBot|Ask Jeeves\/Teoma|ia_archiver)/,
       },
     ]
-    for (var id in clientStrings) {
-      var cs = clientStrings[id]
+    for (const id in clientStrings) {
+      const cs = clientStrings[id]
       if (cs.r.test(nAgt)) {
         os = cs.s
         break
@@ -195,17 +197,17 @@ const deviceInfoStats = (function() {
 
       case 'iOS':
         osVersion = /OS (\d+)_(\d+)_?(\d+)?/.exec(nVer)
-        osVersion = osVersion[1] + '.' + osVersion[2] + '.' + (osVersion[3] | 0)
+        osVersion = `${osVersion[1]}.${osVersion[2]}.${osVersion[3] | 0}`
         break
     }
 
     // flash (you'll need to include swfobject)
     /* script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" */
     var flashVersion = 'no check'
-    if (typeof swfobject != 'undefined') {
-      var fv = swfobject.getFlashPlayerVersion()
+    if (typeof swfobject !== 'undefined') {
+      const fv = swfobject.getFlashPlayerVersion()
       if (fv.major > 0) {
-        flashVersion = fv.major + '.' + fv.minor + ' r' + fv.release
+        flashVersion = `${fv.major}.${fv.minor} r${fv.release}`
       } else {
         flashVersion = unknown
       }
@@ -214,14 +216,14 @@ const deviceInfoStats = (function() {
 
   const stats = {
     screen: screenSize,
-    browser: browser,
+    browser,
     browserVersion: version,
     browserMajorVersion: majorVersion,
-    mobile: mobile,
-    os: os,
-    osVersion: osVersion,
+    mobile,
+    os,
+    osVersion,
     cookies: cookieEnabled,
-    flashVersion: flashVersion,
+    flashVersion,
   }
 
   return stats
@@ -247,10 +249,9 @@ const getFcmToken = async () => {
           console.log('An error occurred while retrieving token. ', err)
           return ''
         })
-    } else {
-      console.log('Unable to get permission to notify.')
-      return ''
     }
+    console.log('Unable to get permission to notify.')
+    return ''
   })
 }
 
@@ -289,7 +290,7 @@ const getDeviceInfo = async ({
     // fcmToken: isSupportedFirebase ? await getFcmToken() : '',
     fcmToken: '',
     macAddress: '',
-    ipAddress: ipAddress,
+    ipAddress,
     lastLoginTime: Date.now(),
     countryCode,
     lastGeo: '',

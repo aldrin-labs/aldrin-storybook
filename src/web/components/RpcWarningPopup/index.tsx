@@ -4,14 +4,14 @@ import { Theme } from '@material-ui/core'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import useMobileSize from '@webhooks/useMobileSize'
 
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import DarkLogo from '@icons/DarkLogo.svg'
 import {
   Container,
   Text,
   DemiText,
   BlackButton,
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import DarkLogo from '@icons/DarkLogo.svg'
 import SvgIcon from '../SvgIcon'
 
 export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
@@ -28,7 +28,7 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
 
   return (
     <Container
-      showOnTheTop={true}
+      showOnTheTop
       style={{ height: '64%', flexWrap: 'nowrap' }}
       direction="column"
       align="flex-start"
@@ -51,7 +51,7 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
       <RowContainer height="40%" align="flex-start" justify="space-between">
         <Row
           width="60%"
-          direction={'column'}
+          direction="column"
           justify="space-between"
           align="flex-start"
           height="100%"
@@ -99,7 +99,7 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
             <a
               target="_blank"
               rel="noopener noreferrer"
-              href={'https://status.solana.com/'}
+              href="https://status.solana.com/"
               style={{
                 fontFamily: 'Avenir Next Bold',
                 textDecoration: 'none',
@@ -110,8 +110,8 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
             </a>
           </Text>
         </Row>
-        <Row width={'40%'} height={'100%'}>
-          <SvgIcon width={'13rem'} height={'auto'} src={DarkLogo} />
+        <Row width="40%" height="100%">
+          <SvgIcon width="13rem" height="auto" src={DarkLogo} />
         </Row>
       </RowContainer>
       <Row
@@ -122,9 +122,9 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
         <BlackButton
           disabled={false}
           theme={theme}
-          hoverBackground={'#20292d'}
-          width={'auto'}
-          fontSize={'1.5rem'}
+          hoverBackground="#20292d"
+          width="auto"
+          fontSize="1.5rem"
           style={{ padding: '1rem 5rem', margin: '0 2rem 0 0' }}
           onClick={onClose}
         >
@@ -133,9 +133,9 @@ export const RpcCapacityWarningPopup = ({ theme }: { theme: Theme }) => {
         <BlackButton
           disabled={false}
           theme={theme}
-          hoverBackground={'#20292d'}
-          width={'auto'}
-          fontSize={'1.5rem'}
+          hoverBackground="#20292d"
+          width="auto"
+          fontSize="1.5rem"
           style={{ padding: '1rem 5rem' }}
           onClick={() => setIsPopupTemporaryHidden(true)}
         >

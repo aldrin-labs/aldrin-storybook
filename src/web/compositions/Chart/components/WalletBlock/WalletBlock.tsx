@@ -7,7 +7,6 @@ import Sollet from '@icons/sollet.svg'
 import Mathwallet from '@icons/mathwallet.svg'
 import Solong from '@icons/solong.svg'
 
-
 import useStateWithCallback from '@sb/utils/useStateWithCallback'
 
 const WalletBlockComponent = () => {
@@ -27,11 +26,11 @@ const WalletBlockComponent = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <BtnCustom
-        btnWidth={'12.5rem'}
-        height={'4rem'}
+        btnWidth="12.5rem"
+        height="4rem"
         btnColor={isSolongWallet ? '#AAF2C9' : '#ECF0F3'}
-        fontSize={'1.2rem'}
-        margin={'0 0.5rem 0 1rem'}
+        fontSize="1.2rem"
+        margin="0 0.5rem 0 1rem"
         borderColor={isSolongWallet ? '#AAF2C9' : '#3A475C'}
         style={{
           display: 'flex',
@@ -42,15 +41,15 @@ const WalletBlockComponent = () => {
           updateProviderUrl('https://solongwallet.com')
         }}
       >
-        <SvgIcon src={Solong} width={'20%'} height={'70%'} />
+        <SvgIcon src={Solong} width="20%" height="70%" />
         Solong
       </BtnCustom>
       <BtnCustom
-        btnWidth={'12.5rem'}
-        height={'4rem'}
+        btnWidth="12.5rem"
+        height="4rem"
         btnColor={isSolletActive ? '#AAF2C9' : '#ECF0F3'}
-        fontSize={'1.2rem'}
-        margin={'0 0.5rem 0 1rem'}
+        fontSize="1.2rem"
+        margin="0 0.5rem 0 1rem"
         borderColor={isSolletActive ? '#AAF2C9' : '#3A475C'}
         style={{
           display: 'flex',
@@ -61,14 +60,14 @@ const WalletBlockComponent = () => {
           updateProviderUrl('https://www.sollet.io')
         }}
       >
-        <SvgIcon src={Sollet} width={'20%'} height={'70%'} /> Sollet.io
+        <SvgIcon src={Sollet} width="20%" height="70%" /> Sollet.io
       </BtnCustom>
       <BtnCustom
-        btnWidth={'12.5rem'}
-        height={'4rem'}
+        btnWidth="12.5rem"
+        height="4rem"
         btnColor={isMathWalletActive ? '#AAF2C9' : '#ECF0F3'}
-        fontSize={'1.2rem'}
-        margin={'0 1rem 0 0.5rem'}
+        fontSize="1.2rem"
+        margin="0 1rem 0 0.5rem"
         borderColor={isMathWalletActive ? '#AAF2C9' : '#3A475C'}
         style={{
           display: 'flex',
@@ -79,7 +78,7 @@ const WalletBlockComponent = () => {
           updateProviderUrl('https://www.mathwallet.org')
         }}
       >
-        <SvgIcon src={Mathwallet} width={'20%'} height={'70%'} /> Math Wallet
+        <SvgIcon src={Mathwallet} width="20%" height="70%" /> Math Wallet
       </BtnCustom>
     </div>
   )

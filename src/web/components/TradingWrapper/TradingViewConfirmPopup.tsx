@@ -31,7 +31,7 @@ const TradingViewConfirmPopup = ({
       style={{ width: '85rem', margin: 'auto' }}
       fullScreen={false}
       onClose={handleClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -41,7 +41,7 @@ const TradingViewConfirmPopup = ({
         id="share-dialog-content"
       >
         <div style={{ paddingTop: '3rem' }}>
-          <SvgIcon src={Warning} width={'10rem'} height={'10rem'} />
+          <SvgIcon src={Warning} width="10rem" height="10rem" />
         </div>
         <div
           style={{
@@ -63,11 +63,11 @@ const TradingViewConfirmPopup = ({
           padding="1rem 2rem"
           borderRadius=".8rem"
           borderColor={theme.palette.blue.serum}
-          btnColor={'#fff'}
+          btnColor="#fff"
           backgroundColor={theme.palette.blue.serum}
-          textTransform={'none'}
-          margin={'1rem 0 0 0'}
-          transition={'all .4s ease-out'}
+          textTransform="none"
+          margin="1rem 0 0 0"
+          transition="all .4s ease-out"
           onClick={() => {
             handleClose()
             updateWrapperState('TVAlertsBotEnabled', false)

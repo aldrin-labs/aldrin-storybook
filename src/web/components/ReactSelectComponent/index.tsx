@@ -4,10 +4,10 @@ import AsyncSelect from 'react-select/lib/Async'
 import { OptionProps } from 'react-select/lib/types'
 
 import SvgIcon from '@sb/components/SvgIcon/'
-import dropDownIcon from '../../../icons/baseline-arrow_drop_down.svg'
-import { IProps } from './index.types'
 import { withTheme } from '@material-ui/styles'
 import ForwarderRefHoc from '@core/hoc/ForwarderRef'
+import dropDownIcon from '../../../icons/baseline-arrow_drop_down.svg'
+import { IProps } from './index.types'
 
 @withTheme()
 class ReactSelectComponent extends Component<IProps> {
@@ -37,7 +37,7 @@ class ReactSelectComponent extends Component<IProps> {
       ...otherProps
     } = this.props
     const textColor: string = theme.typography.body2.color
-    const fontFamily: string = theme.typography.fontFamily
+    const { fontFamily } = theme.typography
     const background: string = theme.palette.background.default
 
     const customStyles = {
@@ -73,14 +73,14 @@ class ReactSelectComponent extends Component<IProps> {
       }),
       menuList: (base: CSSProperties) => ({
         ...base,
-        ['::-webkit-scrollbar']: {
+        '::-webkit-scrollbar': {
           width: '3px',
           height: '6px',
         },
-        ['::-webkit-scrollbar-track']: {
+        '::-webkit-scrollbar-track': {
           background: '#303743',
         },
-        ['::-webkit-scrollbar-thumb']: {
+        '::-webkit-scrollbar-thumb': {
           background: theme.palette.secondary.main,
         },
         color: textColor,
@@ -91,7 +91,7 @@ class ReactSelectComponent extends Component<IProps> {
         ...base,
         color: textColor,
         fontSize: '1em',
-        fontFamily: fontFamily,
+        fontFamily,
         backgroundColor: state.isSelected
           ? theme.palette.action.selected
           : // ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.2)
@@ -99,7 +99,7 @@ class ReactSelectComponent extends Component<IProps> {
           ? theme.palette.action.hover
           : // ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.1)
             background,
-        [':active']: null,
+        ':active': null,
         ...optionStyles,
       }),
       clearIndicator: (base: CSSProperties) => {
@@ -147,7 +147,7 @@ class ReactSelectComponent extends Component<IProps> {
       }),
       multiValue: (base: CSSProperties) => ({
         ...base,
-        [':hover']: {
+        ':hover': {
           borderColor: theme.palette.secondary.main,
         },
         color: textColor,
@@ -163,7 +163,7 @@ class ReactSelectComponent extends Component<IProps> {
       }),
       multiValueRemove: (base: CSSProperties) => ({
         ...base,
-        [':hover']: {
+        ':hover': {
           color: textColor,
           backgroundColor: theme.palette.secondary.main,
           ...multiValueRemoveStyles,

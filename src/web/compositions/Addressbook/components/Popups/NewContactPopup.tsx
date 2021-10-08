@@ -11,14 +11,13 @@ import {
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
-import { Input } from '../../index'
 import { Loading } from '@sb/components/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { addWalletContact } from '@core/graphql/mutations/chart/addWalletContact'
 
 import { notify } from '@sb/dexUtils/notifications'
-import { encrypt, createHash } from '../../index'
+import { Input, encrypt, createHash } from '../../index'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -60,7 +59,7 @@ const NewContactPopup = ({
       }}
       fullScreen={false}
       onClose={handleClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -101,8 +100,8 @@ const NewContactPopup = ({
               border: `0.1rem solid ${theme.palette.text.white}`,
               outline: 'none',
             }}
-            type={'text'}
-            placeholder={'Name'}
+            type="text"
+            placeholder="Name"
             value={name}
             onChange={(e) => updateName(e.target.value)}
           />
@@ -114,8 +113,8 @@ const NewContactPopup = ({
               border: `0.1rem solid ${theme.palette.text.white}`,
               outline: 'none',
             }}
-            type={'email'}
-            placeholder={'Email'}
+            type="email"
+            placeholder="Email"
             value={email}
             onChange={(e) => updateEmail(e.target.value)}
           />
@@ -129,9 +128,9 @@ const NewContactPopup = ({
                 outline: 'none',
                 paddingRight: '10rem',
               }}
-              id={'address'}
-              type={'text'}
-              placeholder={'SOL Address'}
+              id="address"
+              type="text"
+              placeholder="SOL Address"
               value={address}
               onChange={(e) => updateAddress(e.target.value)}
             />
@@ -156,11 +155,11 @@ const NewContactPopup = ({
             padding="1rem 2rem"
             borderRadius=".8rem"
             borderColor={theme.palette.blue.serum}
-            btnColor={'#fff'}
+            btnColor="#fff"
             backgroundColor={theme.palette.blue.serum}
-            textTransform={'none'}
-            margin={'1rem 0 0 0'}
-            transition={'all .4s ease-out'}
+            textTransform="none"
+            margin="1rem 0 0 0"
+            transition="all .4s ease-out"
             onClick={async () => {
               if (name === '') {
                 notify({
@@ -213,9 +212,9 @@ const NewContactPopup = ({
             {showLoader ? (
               <Loading
                 theme={theme}
-                color={'#fff'}
+                color="#fff"
                 size={16}
-                height={'16px'}
+                height="16px"
                 style={{ height: '16px' }}
               />
             ) : (

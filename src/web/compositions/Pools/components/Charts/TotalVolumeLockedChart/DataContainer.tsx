@@ -7,8 +7,8 @@ const TotalVolumeLockedChartDataContainer = ({ theme }: { theme: Theme }) => {
   return (
     <TotalVolumeLockedChart
       theme={theme}
-      id={'TotalVolumeLockedChart'}
-      title={'Total Value Locked'}
+      id="TotalVolumeLockedChart"
+      title="Total Value Locked"
     />
   )
 }

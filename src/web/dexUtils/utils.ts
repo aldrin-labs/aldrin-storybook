@@ -36,7 +36,7 @@ export const percentFormat = new Intl.NumberFormat(undefined, {
 
 export const encode = (data) => {
   return Object.keys(data)
-    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
     .join('&')
 }
 
@@ -112,7 +112,7 @@ export function useListener(emitter, eventName) {
 
 export function abbreviateAddress(address) {
   const base58 = address.toBase58()
-  return base58.slice(0, 4) + '…' + base58.slice(-4)
+  return `${base58.slice(0, 4)}…${base58.slice(-4)}`
 }
 
 export function isEqual(obj1, obj2, keys) {
@@ -144,14 +144,16 @@ export function onlyUnique(value, index, self) {
   return self.indexOf(value) === index
 }
 
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined;
+export function notEmpty<TValue>(
+  value: TValue | null | undefined
+): value is TValue {
+  return value !== null && value !== undefined
 }
 
-function charCodeAt (c) {
+function charCodeAt(c) {
   return c.charCodeAt(0)
 }
 
 export function convertDataURIToBinary(base64: string) {
-  return new Buffer(base64, "base64")
+  return new Buffer(base64, 'base64')
 }

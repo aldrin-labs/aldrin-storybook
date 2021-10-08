@@ -1,6 +1,5 @@
 import React from 'react'
-import { withTheme } from '@material-ui/styles'
-import { Theme } from '@material-ui/core/styles'
+import { withTheme, Theme } from '@material-ui/styles'
 
 import { SButton } from './NavLinkButton.styles'
 
@@ -39,7 +38,7 @@ const NavLinkButton = ({
       grey={palette.grey.text}
       blue={palette.blue.light}
       borderColor={palette.grey.border}
-      btnWidth={'14rem'}
+      btnWidth="14rem"
       size="medium"
       color="default"
       variant="text"

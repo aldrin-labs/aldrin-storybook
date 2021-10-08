@@ -123,7 +123,7 @@ export default function defaultRowRenderer({
       : {}
 
   let needHighlightPrice = false
-  let needHighlightStopPrice = false
+  const needHighlightStopPrice = false
 
   const openOrders =
     (openOrderHistory &&
@@ -155,7 +155,7 @@ export default function defaultRowRenderer({
       }) !== -1
   }
 
-  let orderPercentage =
+  const orderPercentage =
     rowData.size > amountForBackground
       ? 100
       : rowData.size / (amountForBackground / 100)
@@ -243,7 +243,7 @@ export default function defaultRowRenderer({
             transform: 'translate(50%, -50%)',
             background: '#fff',
           }}
-        ></div>
+        />
       )}
       <div
         className="amountForBackground"
@@ -282,10 +282,8 @@ export const getRowHeight = ({
   if (isMobile) {
     if (isAsks) {
       return height / 6
-    } else {
-      return terminalViewMode === 'mobileChart' ? height / 6 : height / 5
     }
-  } else {
-    return mode === 'both' ? height / 8 : height / 18
+    return terminalViewMode === 'mobileChart' ? height / 6 : height / 5
   }
+  return mode === 'both' ? height / 8 : height / 18
 }

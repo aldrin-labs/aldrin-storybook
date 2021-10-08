@@ -59,7 +59,6 @@ const BalancesTable = (props) => {
         description: e.message,
         type: 'error',
       })
-      return
     }
   }
 

@@ -22,16 +22,16 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
     <>
       {data?.map((tokenData, i) => (
         <RowContainer
-          height={'20%'}
-          wrap={'nowrap'}
+          height="20%"
+          wrap="nowrap"
           key={`${tokenData.symbol}-${tokenData?.value}`}
         >
           <BarTitle theme={theme}>
             {formatSymbol({ symbol: tokenData?.symbol })}
           </BarTitle>
           <TokenAllocationProgressBarContainer
-            width={'calc(100% - 14rem)'}
-            justify={'flex-start'}
+            width="calc(100% - 14rem)"
+            justify="flex-start"
           >
             <TokenAllocationProgressBar
               // other bar has another color
@@ -40,7 +40,7 @@ const AllocationLegend = ({ data, colors, theme }: LegendProps) => {
                   ? '#365FBC'
                   : colors[i]
               }
-              height={'2.2rem'}
+              height="2.2rem"
               width={`${tokenData?.value}%`}
               variant="determinate"
               value={0}

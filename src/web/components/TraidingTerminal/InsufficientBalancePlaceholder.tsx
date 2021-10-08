@@ -1,11 +1,4 @@
 import React from 'react'
-import { DarkTooltip } from '../TooltipCustom/Tooltip'
-import { Placeholder, SendButton } from './styles'
-import {
-  costOfAddingToken,
-  costsOfTheFirstTrade,
-  SOLFeeForTrade,
-} from './utils'
 import SvgIcon from '@sb/components/SvgIcon'
 import Info from '@icons/inform.svg'
 import { Theme } from '@sb/types/materialUI'
@@ -14,6 +7,13 @@ import {
   useSelectedOpenOrdersAccount,
   useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
+import {
+  costOfAddingToken,
+  costsOfTheFirstTrade,
+  SOLFeeForTrade,
+} from './utils'
+import { Placeholder, SendButton } from './styles'
+import { DarkTooltip } from '../TooltipCustom/Tooltip'
 
 export const InsufficientBalancePlaceholder = ({
   pair,
@@ -81,7 +81,7 @@ export const InsufficientBalancePlaceholder = ({
           >
             <Placeholder>
               Insufficient SOL balance to complete the transaction.
-              <SvgIcon src={Info} width={'5%'} />
+              <SvgIcon src={Info} width="5%" />
             </Placeholder>
           </DarkTooltip>
         ) : needToAddToken && !isEnoughSOLForAddingToken ? (
@@ -112,7 +112,7 @@ export const InsufficientBalancePlaceholder = ({
           >
             <Placeholder>
               Insufficient SOL balance to complete the transaction.
-              <SvgIcon src={Info} width={'5%'} />
+              <SvgIcon src={Info} width="5%" />
             </Placeholder>
           </DarkTooltip>
         ) : (
@@ -129,7 +129,7 @@ export const InsufficientBalancePlaceholder = ({
           >
             <Placeholder>
               Insufficient SOL balance to complete the transaction.
-              <SvgIcon src={Info} width={'5%'} />
+              <SvgIcon src={Info} width="5%" />
             </Placeholder>
           </DarkTooltip>
         )

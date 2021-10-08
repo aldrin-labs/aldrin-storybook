@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
@@ -15,7 +15,6 @@ import {
 import MainLogo from '@icons/Aldrin.svg'
 import AustronautHelmet from '@icons/austronautHelmet.png'
 import { compose } from 'recompose'
-import { withTheme } from '@material-ui/core'
 
 const PaperForRebrandingPopup = styled(StyledPaper)`
   padding: 4rem;
@@ -39,17 +38,17 @@ const RebrandingPopup = ({
       PaperComponent={PaperForRebrandingPopup}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <Row width={'70%'} direction={'column'} padding={'0 2rem 0 0'}>
-        <RowContainer margin={'0 0 3rem 0'} justify={'flex-start'}>
+      <Row width="70%" direction="column" padding="0 2rem 0 0">
+        <RowContainer margin="0 0 3rem 0" justify="flex-start">
           <Title style={{ fontFamily: 'Avenir Next Bold', fontSize: '2.4rem' }}>
             Cryptocurrencies.Ai is Aldrin now!
           </Title>
         </RowContainer>
-        <RowContainer direction={'column'} align={'flex-start'}>
+        <RowContainer direction="column" align="flex-start">
           <WhiteText theme={theme} style={{ color: theme.palette.white.text }}>
             We are happy to announce that we have rebranded after a long and
             painstaking work and are ready to present you our new name – Aldrin!
@@ -72,23 +71,23 @@ const RebrandingPopup = ({
           </WhiteText>
         </RowContainer>
 
-        <RowContainer margin={'4rem 0 0 0'} justify="center">
+        <RowContainer margin="4rem 0 0 0" justify="center">
           <BlueButton
-            btnWidth={'100%'}
+            btnWidth="100%"
             disabled={false}
             theme={theme}
             onClick={onClose}
-            textTransform={'none'}
+            textTransform="none"
           >
             Got it, congrats to you guys!
           </BlueButton>
         </RowContainer>
       </Row>
       <Row
-        width={'30%'}
-        direction={'column'}
-        justify={'space-between'}
-        padding={'0 0 0 3rem'}
+        width="30%"
+        direction="column"
+        justify="space-between"
+        padding="0 0 0 3rem"
       >
         <img style={{ width: '100%' }} src={MainLogo} />
         <img style={{ width: '100%' }} src={AustronautHelmet} />

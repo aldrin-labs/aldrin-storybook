@@ -12,7 +12,6 @@ import SunnyLogo from '@icons/sunny_logo.jpg'
 import PTRLogo from '@icons/ptr_logo.png'
 import SYPLogo from '@icons/syp_logo.png'
 
-
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { CCAI_MINT } from '@sb/dexUtils/utils'
 import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
@@ -37,7 +36,7 @@ export const TokenIcon = ({
   const tokenMap = useTokenInfos()
 
   if (isAdditionalCustomUserMarket) {
-    return <SvgIcon width={'50%'} height={'auto'} src={Warning} />
+    return <SvgIcon width="50%" height="auto" src={Warning} />
   }
 
   if (!mint) {
@@ -46,7 +45,7 @@ export const TokenIcon = ({
         src={CoinPlaceholder}
         height={height}
         width={width}
-        style={{ margin: margin }}
+        style={{ margin }}
       />
     )
   }
@@ -89,9 +88,9 @@ export const TokenIcon = ({
   if (!token || !token.logoURI) {
     if (emojiIfNoLogo) {
       return isAwesomeMarket ? (
-        <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
+        <SvgIcon width="50%" height="auto" src={ThinkingFace} />
       ) : (
-        <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
+        <SvgIcon width="50%" height="auto" src={GreenCheckmark} />
       )
     }
 
@@ -100,7 +99,7 @@ export const TokenIcon = ({
         src={CoinPlaceholder}
         height={height}
         width={width}
-        style={{ margin: margin }}
+        style={{ margin }}
       />
     )
   }
@@ -108,7 +107,12 @@ export const TokenIcon = ({
   return (
     <img
       src={token.logoURI}
-      style={{ height, width, margin, borderRadius: mint === CCAI_MINT ? '0' : '50%' }}
+      style={{
+        height,
+        width,
+        margin,
+        borderRadius: mint === CCAI_MINT ? '0' : '50%',
+      }}
     />
   )
 }

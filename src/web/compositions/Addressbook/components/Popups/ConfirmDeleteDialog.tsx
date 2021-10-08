@@ -11,7 +11,6 @@ import {
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
-import { Input } from '../../index'
 import { Loading } from '@sb/components/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -19,7 +18,7 @@ import { deleteContact } from '@core/graphql/mutations/chart/deleteContact'
 import { deleteContactCoin } from '@core/graphql/mutations/chart/deleteContactCoin'
 
 import { notify } from '@sb/dexUtils/notifications'
-import { encrypt, createHash } from '../../index'
+import { Input, encrypt, createHash } from '../../index'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -52,7 +51,7 @@ const ConfirmDeleteDialog = ({
       }}
       fullScreen={false}
       onClose={handleClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -80,66 +79,69 @@ const ConfirmDeleteDialog = ({
         theme={theme}
         id="share-dialog-content"
       >
-          <BtnCustom
-            disabled={showLoader}
-            needMinWidth={false}
-            btnWidth="15rem"
-            height="4.5rem"
-            fontSize="1.4rem"
-            padding="1rem 2rem"
-            borderRadius=".8rem"
-            borderColor={theme.palette.blue.serum}
-            btnColor={'#fff'}
-            backgroundColor={theme.palette.blue.serum}
-            textTransform={'none'}
-            margin={'2.4rem 0 0 0'}
-            transition={'all .4s ease-out'}
-            onClick={async () => {
-              await updateShowLoader(true)
+        <BtnCustom
+          disabled={showLoader}
+          needMinWidth={false}
+          btnWidth="15rem"
+          height="4.5rem"
+          fontSize="1.4rem"
+          padding="1rem 2rem"
+          borderRadius=".8rem"
+          borderColor={theme.palette.blue.serum}
+          btnColor="#fff"
+          backgroundColor={theme.palette.blue.serum}
+          textTransform="none"
+          margin="2.4rem 0 0 0"
+          transition="all .4s ease-out"
+          onClick={async () => {
+            await updateShowLoader(true)
 
-              const mutation = isContact ? deleteContactMutation : deleteContactCoinMutation
+            const mutation = isContact
+              ? deleteContactMutation
+              : deleteContactCoinMutation
 
-              const variables = isContact ? {
-                publicKey: createHash(publicKey, localPassword),
-                contactPublicKey: contactPublicKey,
-              } : {
-                publicKey: createHash(publicKey, localPassword),
-                contactPublicKey: contactPublicKey,
-                address: data.address,
-              }
+            const variables = isContact
+              ? {
+                  publicKey: createHash(publicKey, localPassword),
+                  contactPublicKey,
+                }
+              : {
+                  publicKey: createHash(publicKey, localPassword),
+                  contactPublicKey,
+                  address: data.address,
+                }
 
-              // encrypt each field
-              const result = await mutation({
-                variables
-              })
+            // encrypt each field
+            const result = await mutation({
+              variables,
+            })
 
-              const resultData = isContact ? result.data.deleteContact : result.data.deleteContactCoin
+            const resultData = isContact
+              ? result.data.deleteContact
+              : result.data.deleteContactCoin
 
-              await getUserAddressbookQueryRefetch()
+            await getUserAddressbookQueryRefetch()
 
-              notify({
-                type:
-                resultData.status === 'ERR'
-                    ? 'error'
-                    : 'success',
-                message: resultData.message,
-              })
+            notify({
+              type: resultData.status === 'ERR' ? 'error' : 'success',
+              message: resultData.message,
+            })
 
-              await updateShowLoader(false)
-              await handleClose()
-            }}
-          >
-            {showLoader ? (
-              <Loading
-                color={'#fff'}
-                size={16}
-                height={'16px'}
-                style={{ height: '16px' }}
-              />
-            ) : (
-              'Confirm'
-            )}
-          </BtnCustom>
+            await updateShowLoader(false)
+            await handleClose()
+          }}
+        >
+          {showLoader ? (
+            <Loading
+              color="#fff"
+              size={16}
+              height="16px"
+              style={{ height: '16px' }}
+            />
+          ) : (
+            'Confirm'
+          )}
+        </BtnCustom>
       </StyledDialogContent>
     </DialogWrapper>
   )
@@ -148,5 +150,5 @@ const ConfirmDeleteDialog = ({
 // add mutation with graphql
 export default compose(
   graphql(deleteContact, { name: 'deleteContactMutation' }),
-  graphql(deleteContactCoin, { name: 'deleteContactCoinMutation' }),
+  graphql(deleteContactCoin, { name: 'deleteContactCoinMutation' })
 )(ConfirmDeleteDialog)

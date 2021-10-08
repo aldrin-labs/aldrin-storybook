@@ -13,7 +13,6 @@ import {
   WrapperForNotificationTour,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
-import DefaultView from './DefaultView/StatusWrapper'
 
 import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
@@ -37,9 +36,7 @@ import { getDecimalCount } from '@sb/dexUtils/utils'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { WarningPopup } from './components/WarningPopup'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import MarketBlock from './components/MarketBlock/MarketBlock'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 import { tokensToDelist } from '@core/config/dex'
@@ -50,13 +47,16 @@ import { AldrinIsOverCapacityPopup } from '@sb/components/AldrinIsOverCapacityPo
 import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup'
 import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
 import { useConnection } from '@sb/dexUtils/connection'
+import MarketBlock from './components/MarketBlock/MarketBlock'
+import { WarningPopup } from './components/WarningPopup'
+import DefaultView from './DefaultView/StatusWrapper'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
   if (arr1.length !== arr2.length) return false
 
   // Check if all items exist and are in the same order
-  for (var i = 0; i < arr1.length; i++) {
+  for (let i = 0; i < arr1.length; i++) {
     if (arr1[i].symbol !== arr2[i].symbol) return false
   }
 
@@ -148,7 +148,7 @@ function ChartPageComponent(props: any) {
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
   const setCorrectMarketAddress = async () => {
-    const pair = !!location.pathname.split('/')[3]
+    const pair = location.pathname.split('/')[3]
       ? location.pathname.split('/')[3]
       : 'RIN_USDC'
 
@@ -258,8 +258,8 @@ function ChartPageComponent(props: any) {
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
         prevButton={<a />}
-        showNavigationNumber={true}
-        showNavigation={true}
+        showNavigationNumber
+        showNavigation
         lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
         steps={tourConfig}
         accentColor={accentColor}
@@ -274,8 +274,8 @@ function ChartPageComponent(props: any) {
         updateTerminalViewMode={updateTerminalViewMode}
       />
       <DefaultView
-        id={'_id'}
-        view={'default'}
+        id="_id"
+        view="default"
         layout={layout}
         theme={theme}
         publicKey={publicKey}
@@ -293,7 +293,7 @@ function ChartPageComponent(props: any) {
         }
         themeMode={theme.palette.type}
         selectedKey={{ hedgeMode: false }}
-        activeExchange={'serum'}
+        activeExchange="serum"
         terminalViewMode={terminalViewMode}
         updateTerminalViewMode={(mode) => {
           if (mode === 'smartOrderMode') {

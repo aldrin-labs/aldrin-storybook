@@ -5,7 +5,6 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import { SearchInputWithLoop } from '../../Tables/components/index'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -14,8 +13,9 @@ import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
-import { StyledPaper } from '../index.styles'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { StyledPaper } from '../index.styles'
+import { SearchInputWithLoop } from '../../Tables/components/index'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 45rem;
@@ -53,22 +53,22 @@ export const SelectSeveralAddressesPopup = ({
       PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
-        <Text fontSize={'2rem'}>Select Token</Text>
+      <RowContainer justify="space-between">
+        <Text fontSize="2rem">Select Token</Text>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer justify={'flex-start'} margin={'3rem 0'}>
+      <RowContainer justify="flex-start" margin="3rem 0">
         <Text>You have several SOL addresses. Choose one of them.</Text>
       </RowContainer>
       <RowContainer>
         {tokens.map((token: TokenInfo) => {
           return (
             <SelectorRow
-              justify={'space-between'}
+              justify="space-between"
               style={{ cursor: 'pointer' }}
               onClick={() => {
                 selectTokenMintAddress(token.mint)
@@ -76,11 +76,11 @@ export const SelectSeveralAddressesPopup = ({
                 close()
               }}
             >
-              <Row wrap={'nowrap'}>
-                <TokenIcon mint={token.mint} width={'2rem'} height={'2rem'} />
+              <Row wrap="nowrap">
+                <TokenIcon mint={token.mint} width="2rem" height="2rem" />
                 <StyledText>{getTokenNameByMintAddress(token.mint)}</StyledText>
               </Row>
-              <Row wrap={'nowrap'}>
+              <Row wrap="nowrap">
                 <StyledText>
                   {token.amount} {getTokenNameByMintAddress(token.mint)}
                 </StyledText>

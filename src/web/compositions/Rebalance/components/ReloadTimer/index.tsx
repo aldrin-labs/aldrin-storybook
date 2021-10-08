@@ -44,7 +44,7 @@ export const ReloadTimer = ({
         key={rerenderCounter}
         size={size}
         strokeWidth={3}
-        isPlaying={true}
+        isPlaying
         duration={duration}
         colors={color}
         trailColor={trailColor}

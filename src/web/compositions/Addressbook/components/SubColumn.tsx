@@ -13,7 +13,7 @@ import {
   onErrorImportCoinUrl,
 } from '@core/utils/MarketCapUtils'
 
-import { AddBtn } from '@sb/compositions/Addressbook/index'
+import { AddBtn, decrypt } from '@sb/compositions/Addressbook/index'
 
 import {
   Card,
@@ -23,7 +23,6 @@ import {
   Table,
 } from '@sb/compositions/Rewards/index'
 import { notify } from '@sb/dexUtils/notifications'
-import { decrypt } from '../index'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
 const SubColumn = ({
@@ -93,15 +92,15 @@ const SubColumn = ({
                 style={{ paddingLeft: '2rem', fontSize: '2rem' }}
                 borderBottom={theme.palette.text.white}
               >
-                <LazyLoad once height={`1.7rem`}>
+                <LazyLoad once height="1.7rem">
                   <SvgIcon
                     style={{
                       marginRight: '1rem',
                       position: 'relative',
                       top: '0.275rem',
                     }}
-                    width={`1.7rem`}
-                    height={`1.7rem`}
+                    width="1.7rem"
+                    height="1.7rem"
                     src={importCoinIcon(decrypt(el.symbol, localPassword))}
                     onError={onErrorImportCoinUrl}
                   />
@@ -118,8 +117,8 @@ const SubColumn = ({
                 {decrypt(el.address, localPassword)}
                 <AddBtn
                   background={theme.palette.blue.serum}
-                  width={'auto'}
-                  padding={'0 1rem'}
+                  width="auto"
+                  padding="0 1rem"
                   style={{ marginLeft: '2rem' }}
                   onClick={() => {
                     copy(decrypt(el.address, localPassword))
@@ -133,8 +132,8 @@ const SubColumn = ({
                 </AddBtn>
                 <AddBtn
                   background={theme.palette.blue.serum}
-                  width={'auto'}
-                  padding={'0 2rem'}
+                  width="auto"
+                  padding="0 2rem"
                 >
                   <a
                     href={CCAIProviderURL}
@@ -178,8 +177,6 @@ const SubColumn = ({
                     })
 
                     setContactPublicKey(contactPublicKey)
-                    
-                    return
                   }}
                 >
                   <Icon

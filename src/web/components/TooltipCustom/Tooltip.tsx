@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
+import { Tooltip as MUTooltip } from '@material-ui/core'
+
 export const TooltipContainer = styled.div`
   & > div[datatype='tooltip'] {
     transform: scale(1, 0) translateZ(0px)
@@ -31,8 +33,6 @@ export const Tooltip = styled(({ ...props }) => (
   z-index: 10;
   font-size: 1.2rem;
 `
-
-import { Tooltip as MUTooltip } from '@material-ui/core'
 
 export const DarkTooltip = styled((props) => {
   return (

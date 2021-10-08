@@ -39,14 +39,14 @@ const AttentionComponent = ({
   return (
     <RowContainer>
       <ColorTextBlock
-        width={'100%'}
+        width="100%"
         height={blockHeight}
-        background={'rgba(242, 154, 54, 0.5)'}
+        background="rgba(242, 154, 54, 0.5)"
       >
         <SvgIcon
           src={Attention}
           height={`${parseInt(blockHeight) / 2}rem`}
-          width={'auto'}
+          width="auto"
           style={{ margin: '0 2rem 0 3rem', ...iconStyle }}
         />
         <span
@@ -59,8 +59,8 @@ const AttentionComponent = ({
           }}
         >
           <Title
-            fontSize={'1.4rem'}
-            textAlign={'inherit'}
+            fontSize="1.4rem"
+            textAlign="inherit"
             style={{ ...textStyle, paddingRight: '1rem' }}
           >
             {text}

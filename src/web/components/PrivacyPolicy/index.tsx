@@ -10,7 +10,7 @@ import {
 import policyText from './policyText'
 
 export default ({ open, onClick }: { open: boolean; onClick: () => void }) => (
-  <Dialog open={open} scroll={'paper'} aria-labelledby="scroll-dialog-title">
+  <Dialog open={open} scroll="paper" aria-labelledby="scroll-dialog-title">
     <DialogTitle id="scroll-dialog-title">Privacy Policy</DialogTitle>
     <DialogContent>
       <DialogContentText>{policyText}</DialogContentText>

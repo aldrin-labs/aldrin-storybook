@@ -7,11 +7,11 @@ import DisabledSunSvg from '@icons/sunDisabled.svg'
 import ActiveMoonSvg from '@icons/moonActive.svg'
 
 import SvgIcon from '@sb/components/SvgIcon'
+import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import {
   ExchangePair,
   SelectR,
 } from '../AutoSuggestSelect/AutoSuggestSelect.styles'
-import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { Text, Row } from './index.styles'
 
 class IntegrationReactSelect extends React.PureComponent {
@@ -79,7 +79,7 @@ class IntegrationReactSelect extends React.PureComponent {
             }}
           >
             <Row
-              width={'100%'}
+              width="100%"
               style={{
                 padding: '.5rem 0',
                 borderBottom: theme.palette.border.main,
@@ -200,7 +200,7 @@ class IntegrationReactSelect extends React.PureComponent {
               </Text>
             </Row>
             <Row
-              width={'100%'}
+              width="100%"
               style={{
                 padding: '.5rem 0',
               }}
@@ -244,8 +244,8 @@ class IntegrationReactSelect extends React.PureComponent {
             id={this.props.id}
             style={{ width: '100%' }}
             value={isClosed && value && { value, label: value }}
-            fullWidth={true}
-            isDisabled={true}
+            fullWidth
+            isDisabled
           />
         </ExchangePair>
       </>

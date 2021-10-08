@@ -26,7 +26,7 @@ const Popup = ({
   localPassword,
   getUserAddressbookQueryRefetch,
   publicKey,
-  contactPublicKey
+  contactPublicKey,
 }) => {
   const [showEditPopup, changeShowEditPopup] = useState(false)
   const [showDeletePopup, changeShowDeletePopup] = useState(false)
@@ -123,7 +123,7 @@ const ChooseActionPopup = ({
   publicKey,
   localPassword,
   contactPublicKey,
-  getUserAddressbookQueryRefetch
+  getUserAddressbookQueryRefetch,
 }) => {
   return (
     <>
@@ -145,7 +145,7 @@ const ChooseActionPopup = ({
                   closePopup,
                   localPassword,
                   contactPublicKey,
-                  getUserAddressbookQueryRefetch
+                  getUserAddressbookQueryRefetch,
                 }}
               />,
               document.body
@@ -165,7 +165,7 @@ const ChooseActionPopup = ({
                 closePopup,
                 localPassword,
                 contactPublicKey,
-                getUserAddressbookQueryRefetch
+                getUserAddressbookQueryRefetch,
               }}
             />
           )

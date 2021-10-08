@@ -3,7 +3,7 @@ import React from 'react'
 import OvalSelector from '@sb/components/OvalSelector'
 
 const FuturesWarsRoomSelectorComponent = ({ ...props }: IProps) => {
-  const {options, handleChange, selectStyles } = props
+  const { options, handleChange, selectStyles } = props
 
   return (
     <OvalSelector

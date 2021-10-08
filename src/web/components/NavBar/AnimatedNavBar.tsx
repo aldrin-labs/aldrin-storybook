@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react'
 import styled from 'styled-components'
 
-import { NavBar } from './NavBar'
-import CardsPanel  from '@sb/compositions/Chart/components/CardsPanel'
+import CardsPanel from '@sb/compositions/Chart/components/CardsPanel'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 import { withTheme } from '@material-ui/core'
 import { compose } from 'recompose'
+import { NavBar } from './NavBar'
 
 export interface Props {
   pathname: string
@@ -25,7 +25,7 @@ class AnimatedNavBar extends PureComponent<Props> {
     const { theme } = this.props
 
     return (
-      <ChartGridContainer theme={theme} >
+      <ChartGridContainer theme={theme}>
         <CardsPanel />
       </ChartGridContainer>
     )

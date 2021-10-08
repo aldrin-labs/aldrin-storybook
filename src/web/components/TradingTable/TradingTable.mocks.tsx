@@ -1,12 +1,15 @@
 import React from 'react'
-import { TableButton } from './TradingTable.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import TooltipCustom from '@sb/components/TooltipCustom/TooltipCustom'
 import Help from '@material-ui/icons/Help'
 import Reimport from '@icons/reimport.svg'
 import { Loading } from '@sb/components/index'
-import { TooltipContainer, Tooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import {
+  TooltipContainer,
+  Tooltip,
+  DarkTooltip,
+} from '@sb/components/TooltipCustom/Tooltip'
+import { TableButton } from './TradingTable.styles'
 
 const arrayOfSides = ['sell', 'buy']
 const arrayOfOrdersType = ['market', 'limit', 'stop']
@@ -37,8 +40,8 @@ export const positionsColumnNames = (
   {
     label: (
       <DarkTooltip
-        maxWidth={'30rem'}
-        title={`This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced.`}
+        maxWidth="30rem"
+        title="This indicator shows your position in the auto-deleverage queue. If all lights are lit, in the event of a liquidation, your position may be reduced."
       >
         <span>adl</span>
       </DarkTooltip>
@@ -49,7 +52,7 @@ export const positionsColumnNames = (
   { label: 'Pnl/Roe', id: 'pnlRoe' },
   {
     label: (
-      <DarkTooltip title={`Update positions`}>
+      <DarkTooltip title="Update positions">
         <div
           style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
         >
@@ -92,7 +95,7 @@ export const activeTradesColumnNames = [
   { label: 'Size', id: 'quantity' },
   {
     label: (
-      <DarkTooltip title={`Take a profit`}>
+      <DarkTooltip title="Take a profit">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           T-A-P
           <Help
@@ -170,7 +173,7 @@ export const strategiesHistoryColumnNames = [
   { label: 'Size', id: 'quantity' },
   {
     label: (
-      <DarkTooltip title={`Take a profit`}>
+      <DarkTooltip title="Take a profit">
         <div style={{ display: 'flex', alignItems: 'center' }}>
           T-A-P
           <Help
@@ -195,9 +198,11 @@ export const strategiesHistoryColumnNames = [
 export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
   id: i,
   date: new Date().toDateString(),
-  pair: `BTC_${String.fromCharCode(getRandomInt(65, 80)) +
+  pair: `BTC_${
     String.fromCharCode(getRandomInt(65, 80)) +
-    String.fromCharCode(getRandomInt(65, 80))}`,
+    String.fromCharCode(getRandomInt(65, 80)) +
+    String.fromCharCode(getRandomInt(65, 80))
+  }`,
   type: arrayOfOrdersType[getRandomInt(0, 3)],
   side: arrayOfSides[getRandomInt(0, 2)],
   price: getRandomInt(100, 3000),
@@ -207,7 +212,7 @@ export const positionsBody = new Array(13).fill(undefined).map((el, i) => ({
   triggerConditions: '-',
   cancel: {
     render: (
-      <TableButton key={i} variant="outlined" size={`small`}>
+      <TableButton key={i} variant="outlined" size="small">
         Cancel
       </TableButton>
     ),
@@ -224,7 +229,7 @@ export const openOrdersColumnNames = (
     { label: 'Side/Type', id: 'side' },
     { label: 'Price', id: 'price' },
     { label: 'Quantity', id: 'quantity' },
-    { label:  'Total', id: 'amount' },
+    { label: 'Total', id: 'amount' },
     // { label: 'Filled %', id: 'filled',  },
     // marketType === 0 ? { label: 'Size', id: 'amount' } : {},
     // { label: 'Trigger', id: 'triggerConditions' },
@@ -247,9 +252,11 @@ export const openOrdersColumnNames = (
 export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
   id: i,
   date: new Date().toDateString(),
-  pair: `BTC_${String.fromCharCode(getRandomInt(65, 80)) +
+  pair: `BTC_${
     String.fromCharCode(getRandomInt(65, 80)) +
-    String.fromCharCode(getRandomInt(65, 80))}`,
+    String.fromCharCode(getRandomInt(65, 80)) +
+    String.fromCharCode(getRandomInt(65, 80))
+  }`,
   type: arrayOfOrdersType[getRandomInt(0, 3)],
   side: arrayOfSides[getRandomInt(0, 2)],
   price: getRandomInt(100, 3000),
@@ -259,7 +266,7 @@ export const openOrdersBody = new Array(13).fill(undefined).map((el, i) => ({
   triggerConditions: '-',
   cancel: {
     render: (
-      <TableButton key={i} variant="outlined" size={`small`}>
+      <TableButton key={i} variant="outlined" size="small">
         Cancel
       </TableButton>
     ),
@@ -284,9 +291,11 @@ export const orderHistoryColumnNames = (marketType: number) =>
 
 export const orderHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
   date: new Date().toDateString(),
-  pair: `BTC_${String.fromCharCode(getRandomInt(65, 80)) +
+  pair: `BTC_${
     String.fromCharCode(getRandomInt(65, 80)) +
-    String.fromCharCode(getRandomInt(65, 80))}`,
+    String.fromCharCode(getRandomInt(65, 80)) +
+    String.fromCharCode(getRandomInt(65, 80))
+  }`,
   type: arrayOfOrdersType[getRandomInt(0, 3)],
   side: arrayOfSides[getRandomInt(0, 2)],
   average: getRandomInt(100, 50000),
@@ -314,9 +323,11 @@ export const tradeHistoryColumnNames = (marketType: number) =>
 
 export const tradeHistoryBody = new Array(13).fill(undefined).map((el, i) => ({
   time: new Date().toDateString(),
-  pair: `BTC_${String.fromCharCode(getRandomInt(65, 80)) +
+  pair: `BTC_${
     String.fromCharCode(getRandomInt(65, 80)) +
-    String.fromCharCode(getRandomInt(65, 80))}`,
+    String.fromCharCode(getRandomInt(65, 80)) +
+    String.fromCharCode(getRandomInt(65, 80))
+  }`,
   type: arrayOfOrdersType[getRandomInt(0, 3)],
   price: getRandomInt(100, 3000),
   quantity: { render: '100%' },
@@ -335,9 +346,11 @@ export const balancesColumnNames = (showSettle) =>
   ].filter((a) => !!a.label)
 
 export const fundsBody = new Array(13).fill(undefined).map((el, i) => ({
-  coin: `${String.fromCharCode(getRandomInt(65, 80)) +
+  coin: `${
     String.fromCharCode(getRandomInt(65, 80)) +
-    String.fromCharCode(getRandomInt(65, 80))}`,
+    String.fromCharCode(getRandomInt(65, 80)) +
+    String.fromCharCode(getRandomInt(65, 80))
+  }`,
   totalBalance: getRandomInt(100, 300000),
   totalQuantity: getRandomInt(100, 3000),
   availableBalance: getRandomInt(100, 3000),

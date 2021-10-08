@@ -12,7 +12,7 @@ const BlueSlider = ({
   showMarks = false,
   sliderContainerStyles,
   onChange,
-  onAfterChange
+  onAfterChange,
 }: {
   theme: Theme
   max?: number
@@ -36,12 +36,12 @@ const BlueSlider = ({
       marks={
         showMarks
           ? {
-            0: {},
-            25: {},
-            50: {},
-            75: {},
-            100: {},
-          }
+              0: {},
+              25: {},
+              50: {},
+              75: {},
+              100: {},
+            }
           : {}
       }
       onChange={onChange}

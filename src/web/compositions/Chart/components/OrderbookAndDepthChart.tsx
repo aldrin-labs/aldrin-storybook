@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import 'treemap-js'
 
 import { Grid } from '@material-ui/core'
-import { OrderBook } from '../components'
 import { useOrderbook, useMarkPrice } from '@sb/dexUtils/markets'
 
 import {
@@ -13,6 +12,7 @@ import {
 
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { OrderBook } from '.'
 
 const OrderbookAndDepthChart = (props) => {
   const {

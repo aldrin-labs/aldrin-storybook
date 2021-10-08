@@ -48,17 +48,17 @@ export const TokenDelistPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={isUserConfident ? onClose : () => {}}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
+      <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
         <Title style={{ fontSize: '1.7rem' }}>
           This project is high risk due to suspicious trading activity.
         </Title>
-        <SvgIcon src={Warning} width={'10%'} height={'auto'} />
+        <SvgIcon src={Warning} width="10%" height="auto" />
       </RowContainer>
-      <RowContainer direction={'column'} align={'flex-start'} margin={'2rem 0'}>
+      <RowContainer direction="column" align="flex-start" margin="2rem 0">
         {isExpired ? (
           <WhiteText theme={theme}>
             The {name} token will be delisted during next few hours.
@@ -75,19 +75,19 @@ export const TokenDelistPopup = ({
       </RowContainer>
       <RowContainer justify="space-between" margin="2rem 0 2rem 0">
         <Row
-          width={'calc(45%)'}
+          width="calc(45%)"
           justify="flex-start"
           style={{ flexWrap: 'nowrap' }}
         >
           <SCheckbox
-            id={'delist_warning_checkbox'}
+            id="delist_warning_checkbox"
             style={{ padding: 0, marginRight: '1rem' }}
             onChange={() => {
               userConfident(!isUserConfident)
             }}
             checked={isUserConfident}
           />
-          <label htmlFor={'delist_warning_checkbox'}>
+          <label htmlFor="delist_warning_checkbox">
             <WhiteText
               style={{
                 cursor: 'pointer',

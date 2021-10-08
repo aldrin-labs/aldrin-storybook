@@ -6,14 +6,16 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { BlueButton, Title } from '@sb/compositions/Chart/components/WarningPopup'
+import {
+  BlueButton,
+  Title,
+} from '@sb/compositions/Chart/components/WarningPopup'
 import { useMarket } from '@sb/dexUtils/markets'
 import CloseIcon from '@icons/closeIcon.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Link } from 'react-router-dom'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { StyledPaper } from './MarketDeprecatedPopup.styles'
-
 
 export const MarketDeprecatedPopup = ({
   theme,
@@ -25,14 +27,10 @@ export const MarketDeprecatedPopup = ({
   newMarketID: string
 }) => {
   const { market, baseCurrency, quoteCurrency } = useMarket()
-  const [
-    isDeprecatedMarketPopupOpen,
-    setIsDeprecatedMarketPopupOpen,
-  ] = useLocalStorageState(`isDeprecatedMarketPopupOpen-${oldMarketID}`, true)
-  const [
-    isUpdatedMarketPopupOpen,
-    setIsUpdatedMarketPopupOpen,
-  ] = useLocalStorageState(`isUpdatedMarketPopupOpen-${newMarketID}`, true)
+  const [isDeprecatedMarketPopupOpen, setIsDeprecatedMarketPopupOpen] =
+    useLocalStorageState(`isDeprecatedMarketPopupOpen-${oldMarketID}`, true)
+  const [isUpdatedMarketPopupOpen, setIsUpdatedMarketPopupOpen] =
+    useLocalStorageState(`isUpdatedMarketPopupOpen-${newMarketID}`, true)
 
   const currentMarketPublicKey = market?.publicKey?.toString()
   const isNewMarket = currentMarketPublicKey === newMarketID
@@ -55,21 +53,21 @@ export const MarketDeprecatedPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={() => {}} // close only by ok
-      maxWidth={'md'}
-      open={true}
+      maxWidth="md"
+      open
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '10rem' }} justify={'space-between'}>
+      <RowContainer style={{ marginBottom: '10rem' }} justify="space-between">
         <Title>{isNewMarket ? 'Market Updated' : 'Market Deprecated'}</Title>{' '}
         <SvgIcon
           onClick={() => onClose()}
           src={CloseIcon}
           style={{ cursor: 'pointer' }}
-          width={'2rem'}
-          height={'2rem'}
+          width="2rem"
+          height="2rem"
         />
       </RowContainer>
-      <RowContainer direction={'column'} style={{ marginBottom: '2rem' }}>
+      <RowContainer direction="column" style={{ marginBottom: '2rem' }}>
         <WhiteText style={{ fontSize: '1.7rem', marginBottom: '2rem' }}>
           {baseCurrency}/{quoteCurrency} is moved to a new market ID, liquidity
           is also moving.

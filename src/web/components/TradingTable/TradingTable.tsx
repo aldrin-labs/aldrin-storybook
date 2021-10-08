@@ -3,16 +3,16 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 
-import { IProps, IState, IStateKeys } from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import withMobileSize from '@core/hoc/withMobileSize'
+import { IProps, IState, IStateKeys } from './TradingTable.types'
 
 import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
 import Balances from './Balances/Balances'
 import FeeTiers from './Fee/FeeTiers'
 import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import withMobileSize from '@core/hoc/withMobileSize'
 import { OpenOrdersTableWrapper } from './OpenOrdersTable/OpenOrdersWrapper'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
@@ -28,14 +28,14 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   }
 
   handleChangePage = (tab: IStateKeys, value: number) => {
-    this.setState(({ [tab]: value } as unknown) as Pick<IState, keyof IState>)
+    this.setState({ [tab]: value } as unknown as Pick<IState, keyof IState>)
   }
 
   handleChangeRowsPerPage = (
     tab: IStateKeys,
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    this.setState(({ [tab]: +event.target.value } as unknown) as Pick<
+    this.setState({ [tab]: +event.target.value } as unknown as Pick<
       IState,
       keyof IState
     >)
@@ -67,12 +67,8 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   render() {
     const { tab, canceledOrders } = this.state
 
-    const {
-      theme,
-      marketType,
-      updateTerminalViewMode,
-      terminalViewMode,
-    } = this.props
+    const { theme, marketType, updateTerminalViewMode, terminalViewMode } =
+      this.props
 
     return (
       <div

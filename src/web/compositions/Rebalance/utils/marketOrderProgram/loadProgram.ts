@@ -3,6 +3,7 @@ import { Program, Provider } from '@project-serum/anchor'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 const LookupJSON = require('./lookup.json')
+
 const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'
 

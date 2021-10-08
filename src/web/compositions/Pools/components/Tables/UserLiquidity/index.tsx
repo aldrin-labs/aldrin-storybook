@@ -15,10 +15,6 @@ import {
   RowDataTdTopText,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
 
-import { BlockTemplate } from '../../../index.styles'
-
-import { TokenIconsContainer } from '../components/index'
-
 import TooltipIcon from '@icons/TooltipImg.svg'
 
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -41,8 +37,10 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { getTotalUserLiquidity } from './utils'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { TokenIconsContainer } from '../components/index'
+import { getTotalUserLiquidity } from './utils'
+import { BlockTemplate } from '../../../index.styles'
 
 const UserLiquitidyTable = ({
   theme,
@@ -82,17 +80,17 @@ const UserLiquitidyTable = ({
   return (
     <RowContainer>
       <BlockTemplate
-        width={'100%'}
-        height={'auto'}
+        width="100%"
+        height="auto"
         style={{ marginTop: '2rem' }}
-        align={'start'}
+        align="start"
         theme={theme}
-        direction={'column'}
-        justify={'end'}
+        direction="column"
+        justify="end"
       >
-        <RowContainer padding="2rem" justify={'space-between'} align="center">
+        <RowContainer padding="2rem" justify="space-between" align="center">
           <Text theme={theme}>Your Liquidity</Text>
-          <Row width={'33%'}>
+          <Row width="33%">
             <LiquidityDataContainer>
               <RowDataTdText theme={theme} color={theme.palette.grey.new}>
                 Liquidity (Including Fees)
@@ -100,7 +98,7 @@ const UserLiquitidyTable = ({
               <Text
                 theme={theme}
                 color={theme.palette.green.new}
-                fontFamily={'Avenir Next Demi'}
+                fontFamily="Avenir Next Demi"
               >
                 $
                 {formatNumberToUSFormat(
@@ -118,7 +116,7 @@ const UserLiquitidyTable = ({
               <Text
                 theme={theme}
                 color={theme.palette.green.new}
-                fontFamily={'Avenir Next Demi'}
+                fontFamily="Avenir Next Demi"
               >
                 $
                 {stripDigitPlaces(
@@ -137,15 +135,11 @@ const UserLiquitidyTable = ({
               <RowTd>Pool</RowTd>
               <RowTd>TVL</RowTd>
               <RowTd>
-                <DarkTooltip
-                  title={
-                    'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
-                  }
-                >
+                <DarkTooltip title="Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.">
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <SvgIcon
-                      width={'1.2rem'}
-                      height={'1.2rem'}
+                      width="1.2rem"
+                      height="1.2rem"
                       style={{ marginRight: '1rem' }}
                       src={TooltipIcon}
                     />
@@ -155,7 +149,7 @@ const UserLiquitidyTable = ({
               </RowTd>
               <RowTd>Your Liquidity (Including Fees)</RowTd>
               <RowTd>Total Fees Earned</RowTd>
-              <RowTd></RowTd>
+              <RowTd />
             </TableHeader>
             {usersPools
               .sort((poolA: PoolInfo, poolB: PoolInfo) => {
@@ -221,13 +215,11 @@ const UserLiquitidyTable = ({
                 const poolTokenAmount =
                   poolTokenRawAmount * 10 ** poolTokenDecimals
 
-                const [
-                  userAmountTokenA,
-                  userAmountTokenB,
-                ] = calculateWithdrawAmount({
-                  selectedPool: el,
-                  poolTokenAmount: poolTokenAmount,
-                })
+                const [userAmountTokenA, userAmountTokenB] =
+                  calculateWithdrawAmount({
+                    selectedPool: el,
+                    poolTokenAmount,
+                  })
 
                 const userLiquidityUSD =
                   baseTokenPrice * userAmountTokenA +
@@ -303,7 +295,7 @@ const UserLiquitidyTable = ({
                       </TextColumnContainer>
                     </RowDataTd>
                     <RowTd>
-                      <Row justify="flex-end" width={'100%'}>
+                      <Row justify="flex-end" width="100%">
                         <BorderButton
                           style={{ marginRight: '2rem' }}
                           onClick={() => {

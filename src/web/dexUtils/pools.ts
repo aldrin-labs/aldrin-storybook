@@ -11,6 +11,9 @@ import {
 import * as BufferLayout from 'buffer-layout'
 import Base58 from 'base-58'
 
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
 import {
   CurveType,
@@ -18,11 +21,8 @@ import {
   TOKEN_SWAP_PROGRAM_ID,
   TokenFarmingLayout,
 } from './token-swap/token-swap'
-import { WalletAdapter } from '@sb/dexUtils/types'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { notify } from './notifications'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 
 const OWNER: PublicKey = new PublicKey(
   '5rWKzCUY9ESdmobivjyjQzvdfHSePf37WouX39sMmfx9'
@@ -47,7 +47,7 @@ const CURVE_TYPE = CurveType.ConstantProduct
 
 function assert(condition: boolean, message?: string) {
   if (!condition) {
-    console.log(Error().stack + ':token-test.js')
+    console.log(`${Error().stack}:token-test.js`)
     throw message || 'Assertion failed'
   } else {
     console.log('Passed:', message)
@@ -118,11 +118,8 @@ export async function createTokenSwap({
     createTokenAccountPoolTransaction,
   ] = await tokenPoolMint.createAccount(wallet.publicKey)
 
-  const [
-    feeAccount,
-    feeAccountSignature,
-    createFeeAccountTransaction,
-  ] = await tokenPoolMint.createAccount(new PublicKey(ownerKey))
+  const [feeAccount, feeAccountSignature, createFeeAccountTransaction] =
+    await tokenPoolMint.createAccount(new PublicKey(ownerKey))
 
   const [
     tokenFreezeAccount,
@@ -130,10 +127,8 @@ export async function createTokenSwap({
     tokenFreezeAccountTransaction,
   ] = await tokenPoolMint.createAccount(authority)
 
-  const [
-    farmingStateAccount,
-    farmingStateTransaction,
-  ] = await createFarmingStateAccount({ wallet, connection })
+  const [farmingStateAccount, farmingStateTransaction] =
+    await createFarmingStateAccount({ wallet, connection })
 
   console.log('creating token A', mintA.toString())
   const mintTokenA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
@@ -453,11 +448,8 @@ export async function depositAllTokenTypes({
 
   // create new account for user only if it has no one for such pool mint
   if (!isUserAlreadyHasPoolTokenAccount) {
-    ;[
-      newAccountPool,
-      newAccountPoolSignature,
-      newAccountPoolTransaction,
-    ] = await tokenPool.createAccount(wallet.publicKey)
+    ;[newAccountPool, newAccountPoolSignature, newAccountPoolTransaction] =
+      await tokenPool.createAccount(wallet.publicKey)
   }
 
   const userPoolTokenAccount = isUserAlreadyHasPoolTokenAccount

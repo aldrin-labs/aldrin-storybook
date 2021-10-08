@@ -1,11 +1,16 @@
-import { MarketData } from '../Rebalance.types'
 import { Graph } from '@core/utils/graph/Graph'
 import { PublicKey } from '@solana/web3.js'
+import { MarketData } from '../Rebalance.types'
 
 export const getMarketsData = (
   allMarketsMap: Map<
     string,
-    { name: string; address: PublicKey; programId: PublicKey; deprecated: boolean }
+    {
+      name: string
+      address: PublicKey
+      programId: PublicKey
+      deprecated: boolean
+    }
   >
 ): MarketData[] => {
   const marketsDataArray = [...allMarketsMap.values()].map((el) => {

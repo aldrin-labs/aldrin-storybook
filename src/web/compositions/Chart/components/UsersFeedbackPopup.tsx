@@ -12,6 +12,9 @@ import CoolIcon from '@icons/coolIcon.svg'
 
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { encode } from '@sb/dexUtils/utils'
+import { notify } from '@sb/dexUtils/notifications'
+import useMobileSize from '@webhooks/useMobileSize'
+import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import {
   BlueButton,
   Form,
@@ -23,9 +26,6 @@ import {
   StyledLabel,
   StyledPaperMediumWidth,
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
-import { notify } from '@sb/dexUtils/notifications'
-import useMobileSize from '@webhooks/useMobileSize'
-import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { WhiteButton } from './TokenNotAdded'
 
 export const FeedbackPopup = ({
@@ -90,7 +90,7 @@ export const FeedbackPopup = ({
           contact: '',
         })
       }}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -107,13 +107,13 @@ export const FeedbackPopup = ({
           onClick={() => onClose()}
           src={CloseIcon}
           style={{ cursor: 'pointer', display: isMobile ? 'none' : 'auto' }}
-          width={'2rem'}
-          height={'2rem'}
+          width="2rem"
+          height="2rem"
         />
       </RowContainer>
       {isFeedbackSubmitted ? (
         <RowContainer
-          direction={'column'}
+          direction="column"
           justify={isMobile ? 'space-around' : 'center'}
         >
           <SvgIcon
@@ -123,7 +123,7 @@ export const FeedbackPopup = ({
             style={{ marginTop: isMobile ? '15rem' : '6rem' }}
           />
           <Text
-            padding={'0 1rem 0 0'}
+            padding="0 1rem 0 0"
             style={{
               width: '50%',
               marginTop: isMobile ? '6rem' : '2rem',
@@ -157,12 +157,12 @@ export const FeedbackPopup = ({
           onSubmit={handleSubmit}
           name="usersFeedback"
           data-netlify="true"
-          method={'post'}
+          method="post"
           action="/success"
         >
           <input type="hidden" name="form-name" value="usersFeedback" />
           <RowContainer>
-            <Row justify="flex-start" width={'50%'}>
+            <Row justify="flex-start" width="50%">
               <SRadio
                 checked={isProblemReport}
                 onChange={() => {
@@ -175,7 +175,7 @@ export const FeedbackPopup = ({
                 I want to report a problem.
               </StyledLabel>
             </Row>
-            <Row justify="flex-end" width={'50%'}>
+            <Row justify="flex-end" width="50%">
               <SRadio
                 checked={!isProblemReport}
                 onChange={() => {
@@ -190,24 +190,24 @@ export const FeedbackPopup = ({
             </Row>
           </RowContainer>
 
-          <StyledRowContainer margin={'1rem 0'}>
+          <StyledRowContainer margin="1rem 0">
             <RowContainer wrap="nowrap">
-              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+              <Text padding="0 1rem 0 0" whiteSpace="nowrap">
                 {isProblemReport
                   ? 'Tell us your problem'
                   : 'Tell us how we can improve'}
               </Text>
               <Line />
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <StyledTextArea
-                height={'20rem'}
+                height="20rem"
                 type="text"
                 name="messagge"
                 id="messagge"
                 autoComplete="off"
                 theme={theme}
-                placeholder={'Message'}
+                placeholder="Message"
                 value={feedbackData.messagge}
                 onChange={(e) =>
                   setData({
@@ -218,23 +218,23 @@ export const FeedbackPopup = ({
               />
             </RowContainer>
           </StyledRowContainer>
-          <RowContainer margin={'1rem 0'}>
+          <RowContainer margin="1rem 0">
             <RowContainer wrap="nowrap">
-              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+              <Text padding="0 1rem 0 0" whiteSpace="nowrap">
                 {isProblemReport
                   ? 'How we can contact you to help?'
                   : 'Would you like a representative to contact you? (optional)'}{' '}
               </Text>
               <Line />
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <TextField
                 type="text"
                 name="contact"
                 id="contact"
                 autoComplete="off"
                 theme={theme}
-                placeholder={'Specify a way to contact you'}
+                placeholder="Specify a way to contact you"
                 value={feedbackData.contact}
                 onChange={(e) =>
                   setData({

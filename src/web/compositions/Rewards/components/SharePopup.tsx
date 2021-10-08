@@ -66,7 +66,8 @@ const getHrefFromGifLink = (
 ): string => links(dcfiEarnedForTwitter)[gifLink]
 
 export const SharePopup = (props) => {
-  const { theme, isSharePopupOpen, dcfiEarnedForTwitter, publicKey, wallet } = props
+  const { theme, isSharePopupOpen, dcfiEarnedForTwitter, publicKey, wallet } =
+    props
   const [choosenPic, setChoosenPic] = useState('pic.twitter.com/upH1Fp3hkn')
   return (
     <DialogWrapper
@@ -109,7 +110,7 @@ export const SharePopup = (props) => {
               setChoosenPic('pic.twitter.com/upH1Fp3hkn')
             }}
           >
-            <Gif src={DecefiTemplate1}></Gif>
+            <Gif src={DecefiTemplate1} />
           </GifContainer>
           <GifContainer
             theme={theme}
@@ -118,7 +119,7 @@ export const SharePopup = (props) => {
               setChoosenPic('pic.twitter.com/DRi5iu3uTb')
             }}
           >
-            <Gif src={DecefiTemplate2}></Gif>
+            <Gif src={DecefiTemplate2} />
           </GifContainer>
           <RowContainer>
             <GifContainer
@@ -128,7 +129,7 @@ export const SharePopup = (props) => {
                 setChoosenPic('pic.twitter.com/3IyK2rW95D')
               }}
             >
-              <Gif src={DecefiTemplate3}></Gif>
+              <Gif src={DecefiTemplate3} />
             </GifContainer>
             <GifContainer
               theme={theme}
@@ -137,7 +138,7 @@ export const SharePopup = (props) => {
                 setChoosenPic('pic.twitter.com/qGH8wjbEXb')
               }}
             >
-              <Gif src={DecefiTemplate4}></Gif>
+              <Gif src={DecefiTemplate4} />
             </GifContainer>
           </RowContainer>
         </RowContainer>{' '}
@@ -166,14 +167,14 @@ export const SharePopup = (props) => {
             btnColor={theme.palette.grey.main}
             backgroundColor={theme.palette.blue.serum}
             hoverBackground={theme.palette.blue.serum}
-            padding={'1.5rem 0'}
-            height={'5rem'}
-            fontSize={'1.6rem'}
-            btnWidth={'34%'}
-            textTransform={'none'}
+            padding="1.5rem 0"
+            height="5rem"
+            fontSize="1.6rem"
+            btnWidth="34%"
+            textTransform="none"
             href={`https://twitter.com/intent/tweet?text=Decefi.%20Self-custodial%20perpetual%20futures%20exchange%20with%20deep%20centralized%20liquidity.%0A%0AJoin%20%24DCFI%20promo%20farming%3A%20https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3Dyz5uaN0aCyw%26feature%3Dyoutu.be%0A%0AProduct%20demo%20coming%20soon.%20Follow%20%40Decefi_official%20to%20stay%20tuned.%0A%0A%24SRM%20%24SOL%20%24FTT%20%24BNB%20%24CCAI%0A${choosenPic}`}
             rel="noopener noreferrel"
-            target={'_blank'}
+            target="_blank"
             onClick={(e) => {
               if (publicKey === '') {
                 e.preventDefault()
@@ -187,8 +188,8 @@ export const SharePopup = (props) => {
           >
             <SvgIcon
               src={blackTwitter}
-              width={'2.5rem'}
-              height={'2.5rem'}
+              width="2.5rem"
+              height="2.5rem"
               style={{ marginRight: '1rem' }}
             />{' '}
             Share

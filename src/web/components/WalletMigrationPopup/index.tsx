@@ -38,15 +38,15 @@ const WalletMigrationPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={() => {}}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <Row justify={'space-between'} width={'100%'}>
+      <Row justify="space-between" width="100%">
         <BoldHeader>CCAI Wallet is SunWallet now!</BoldHeader>
         <SvgIcon width="15rem" height="auto" src={SunLogo} />
       </Row>
-      <RowContainer margin={'3rem 0'} align={'start'} direction={'column'}>
+      <RowContainer margin="3rem 0" align="start" direction="column">
         <Text style={{ margin: '1.5rem 0' }}>
           Our wallet has changed its name and moved to a new domain:
           SunWallet.io
@@ -61,14 +61,14 @@ const WalletMigrationPopup = ({
           together!
         </Text>
       </RowContainer>
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <BlueButton
           style={{
             width: '48%',
             fontFamily: 'Avenir Next Medium',
             textTransform: 'none',
           }}
-          isUserConfident={true}
+          isUserConfident
           theme={theme}
           onClick={() => {
             close()
@@ -81,7 +81,7 @@ const WalletMigrationPopup = ({
           style={{ textDecoration: 'none', width: '48%' }}
           target="_blank"
           rel="noopener noreferrer"
-          href={''}
+          href=""
         >
           {' '}
           <BlueButton
@@ -90,7 +90,7 @@ const WalletMigrationPopup = ({
               fontFamily: 'Avenir Next Medium',
               textTransform: 'none',
             }}
-            isUserConfident={true}
+            isUserConfident
             theme={theme}
             onClick={() => {}}
           >

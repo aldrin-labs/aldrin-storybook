@@ -1,16 +1,8 @@
-import { notify } from './notifications'
-import {
-  Account,
-  Connection,
-  PublicKey,
-  SystemProgram,
-} from '@solana/web3.js'
-import {
-  Token,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token'
+import { Account, Connection, PublicKey, SystemProgram } from '@solana/web3.js'
+import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Market } from '@project-serum/serum'
 import { WalletAdapter } from '@sb/dexUtils/types'
+import { notify } from './notifications'
 
 export const isTokenAccountsForSettleValid = async ({
   baseTokenAccount,
@@ -19,11 +11,11 @@ export const isTokenAccountsForSettleValid = async ({
   wallet,
   market,
 }: {
-    market: Market
-    wallet: WalletAdapter,
-    connection: Connection,
-    baseTokenAccount: any,
-    quoteTokenAccount: any,
+  market: Market
+  wallet: WalletAdapter
+  connection: Connection
+  baseTokenAccount: any
+  quoteTokenAccount: any
 }): Promise<boolean> => {
   // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
   if (

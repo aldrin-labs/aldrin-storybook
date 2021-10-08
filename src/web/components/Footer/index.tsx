@@ -6,8 +6,6 @@ import { withTheme } from '@material-ui/styles'
 import Telegram from '@material-ui/icons/NearMeSharp'
 import { AppBar, IconButton, Switch, Typography } from '@material-ui/core'
 
-import { StyledButton, StyledTypography } from './index.styles'
-
 import { PrivacyPolicy } from '@sb/components/index'
 import Feedback from '@sb/components/Feedback'
 
@@ -15,6 +13,7 @@ import { MASTER_BUILD } from '@core/utils/config'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
 import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
+import { StyledButton, StyledTypography } from './index.styles'
 import Props from './index.types'
 
 const Footer = ({
@@ -23,7 +22,7 @@ const Footer = ({
   toggleThemeModeMutation,
   showFooter,
   isChartPage,
-  theme
+  theme,
 }: Props) => {
   const themeMode =
     getThemeModeQuery &&
@@ -40,21 +39,19 @@ const Footer = ({
     return null
   }
 
-  return (
-    null
-    // <Container
-    //   theme={theme}
-    //   position="static"
-    //   color="default"
-    //   fullscreenMode={fullscreenMode}
-    //   isChartPage={isChartPage}
-    // >
-    //   <RowContainer>
-    //     <Line theme={theme} bottom={'5.7rem'}/>
-    //     <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
-    //   </RowContainer>
-    // </Container>
-  )
+  return null
+  // <Container
+  //   theme={theme}
+  //   position="static"
+  //   color="default"
+  //   fullscreenMode={fullscreenMode}
+  //   isChartPage={isChartPage}
+  // >
+  //   <RowContainer>
+  //     <Line theme={theme} bottom={'5.7rem'}/>
+  //     <Link  href="https://cryptocurrencies.ai/">cryptocurrencies.ai</Link>
+  //   </RowContainer>
+  // </Container>
 }
 
 const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
@@ -73,9 +70,9 @@ const Container = styled(({ fullscreenMode, isChartPage, ...rest }) => (
 
   && {
     flex-direction: row;
-    background-color: ${props => props.theme.palette.grey.additional};
+    background-color: ${(props) => props.theme.palette.grey.additional};
     box-shadow: none;
-    border-top: ${props => props.theme.palette.border.main};
+    border-top: ${(props) => props.theme.palette.border.main};
   }
 
   height: 5.7rem;
@@ -99,23 +96,22 @@ const Row = styled.div`
   justify-content: ${(props) => props.justify || 'center'};
   flex-direction: ${(props) => props.direction || 'row'};
   align-items: ${(props) => props.align || 'center'};
-  
 `
 const RowContainer = styled(Row)`
   width: 100%;
 `
 const Line = styled.div`
-    position:absolute;
-    top:${(props) => props.top || 'none'};
-    bottom:${(props) => props.bottom || 'none'};
-    width: 100%;
-    height: .1rem;
-    background: ${(props) => props.background || theme.palette.grey.block};
+  position: absolute;
+  top: ${(props) => props.top || 'none'};
+  bottom: ${(props) => props.bottom || 'none'};
+  width: 100%;
+  height: 0.1rem;
+  background: ${(props) => props.background || theme.palette.grey.block};
 `
 const Link = styled.a`
-display: block;
+  display: block;
   width: fit-content;
-  color: ${(props)=>props.color || theme.palette.blue.serum};
+  color: ${(props) => props.color || theme.palette.blue.serum};
 
   text-decoration: none;
   text-transform: ${(props) => props.textTransform || 'uppercase'};

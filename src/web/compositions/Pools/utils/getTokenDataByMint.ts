@@ -10,7 +10,7 @@ export const getTokenDataByMint = (
     allTokensData.find(
       (tokenData) =>
         tokenData.mint === mint &&
-        (!!address ? address === tokenData.address : true)
+        (address ? address === tokenData.address : true)
     ) || {
       amount: 0,
       decimals: 0,

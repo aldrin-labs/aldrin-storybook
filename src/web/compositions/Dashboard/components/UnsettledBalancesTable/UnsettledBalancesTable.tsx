@@ -3,16 +3,16 @@ import { TableWithSort } from '@sb/components'
 
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
-import {
-  combineUnsettledBalances,
-  getUnsettledBalancesColumnNames,
-  UnsettledBalance,
-} from './UnsettledBalancesTable.utils'
 
 import { settleFunds } from '@sb/dexUtils/send'
 import { notify } from '@sb/dexUtils/notifications'
 import { Theme } from '@material-ui/core'
 import { TokenAccount } from '@sb/dexUtils/markets'
+import {
+  combineUnsettledBalances,
+  getUnsettledBalancesColumnNames,
+  UnsettledBalance,
+} from './UnsettledBalancesTable.utils'
 
 const UnsettledBalancesTable = ({
   theme,
@@ -76,8 +76,6 @@ const UnsettledBalancesTable = ({
         description: e.message,
         type: 'error',
       })
-
-      return
     }
   }
 
@@ -124,7 +122,7 @@ const UnsettledBalancesTable = ({
           boxShadow: 'none',
         },
       }}
-      emptyTableText={'All your balances are settled.'}
+      emptyTableText="All your balances are settled."
       data={{ body: unsettledBalancesProcessedData }}
       columnNames={getUnsettledBalancesColumnNames({ theme, onSettleAll })}
     />

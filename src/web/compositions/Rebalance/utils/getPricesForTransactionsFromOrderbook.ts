@@ -12,7 +12,7 @@ export const getPricesForTransactionsFromOrderbook = ({
   { symbol: string; price: number; isNotEnoughLiquidity: boolean }[],
   Orderbooks
 ] => {
-  let orderbooksClone = { ...orderbooks }
+  const orderbooksClone = { ...orderbooks }
 
   const rebalanceAllTransactionsPrices = transactionsList.map((transaction) => {
     const isBuy = transaction.side === 'buy'
@@ -21,12 +21,20 @@ export const getPricesForTransactionsFromOrderbook = ({
     const orderbookBySymbol = orderbooksClone[transaction.symbol]
 
     if (!orderbookBySymbol)
-      return { price: 0, symbol: transaction.symbol, isNotEnoughLiquidity: true }
+      return {
+        price: 0,
+        symbol: transaction.symbol,
+        isNotEnoughLiquidity: true,
+      }
 
     const orderbookBySide = orderbookBySymbol[orderbookSide]
 
     if (!orderbookBySide)
-      return { price: 0, symbol: transaction.symbol, isNotEnoughLiquidity: true }
+      return {
+        price: 0,
+        symbol: transaction.symbol,
+        isNotEnoughLiquidity: true,
+      }
 
     // delete best ask/bids because it may change quickly
     orderbookBySide.shift()
@@ -49,41 +57,38 @@ export const getPricesForTransactionsFromOrderbook = ({
             tempTransactionTotal -= rowValue
 
             return acc + rowAmount
-          } else {
-            // remove part
-            const transactionLeftAmount = tempTransactionTotal / rowPrice
-            const amount = acc + transactionLeftAmount
-
-            if (tempTransactionTotal > 0) {
-              obDataToModify = [
-                [rowPrice, rowAmount - transactionLeftAmount],
-                ...obDataToModify.slice(1),
-              ]
-            }
-
-            tempTransactionTotal = 0
-            return amount
           }
-        } else {
-          // for sell we have amount - need to determine total
-          if (tempTransactionAmount >= rowValue) {
-            obDataToModify.shift()
-            tempTransactionAmount -= rowValue
-            return acc + rowAmount * rowPrice
-          } else {
-            const total = acc + tempTransactionAmount * rowPrice
+          // remove part
+          const transactionLeftAmount = tempTransactionTotal / rowPrice
+          const amount = acc + transactionLeftAmount
 
-            if (tempTransactionAmount > 0) {
-              obDataToModify = [
-                [rowPrice, rowAmount - tempTransactionAmount],
-                ...obDataToModify.slice(1),
-              ]
-            }
-
-            tempTransactionAmount = 0
-            return total
+          if (tempTransactionTotal > 0) {
+            obDataToModify = [
+              [rowPrice, rowAmount - transactionLeftAmount],
+              ...obDataToModify.slice(1),
+            ]
           }
+
+          tempTransactionTotal = 0
+          return amount
         }
+        // for sell we have amount - need to determine total
+        if (tempTransactionAmount >= rowValue) {
+          obDataToModify.shift()
+          tempTransactionAmount -= rowValue
+          return acc + rowAmount * rowPrice
+        }
+        const total = acc + tempTransactionAmount * rowPrice
+
+        if (tempTransactionAmount > 0) {
+          obDataToModify = [
+            [rowPrice, rowAmount - tempTransactionAmount],
+            ...obDataToModify.slice(1),
+          ]
+        }
+
+        tempTransactionAmount = 0
+        return total
       },
       0
     )

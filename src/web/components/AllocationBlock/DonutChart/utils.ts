@@ -11,7 +11,7 @@ const lightenDarkenColor = (baseColor: string, amt: number) => {
     usePound = true
   }
 
-  let num = parseInt(baseColor, 16)
+  const num = parseInt(baseColor, 16)
 
   let r = (num >> 16) + amt
 
@@ -53,12 +53,10 @@ export const getRandomBlueColor = () => {
 }
 
 export const formatSymbol = ({ symbol }: { symbol: string }) => {
-  
   if (symbol.length > 15) {
     return `${symbol.slice(0, 3)}...${symbol.slice(symbol.length - 3)}`
-  } else {
-    return symbol
   }
+  return symbol
 }
 
 const createAllocationDonutChart = ({

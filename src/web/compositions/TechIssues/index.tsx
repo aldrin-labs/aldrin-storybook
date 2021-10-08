@@ -26,7 +26,7 @@ const TechIssues = () => {
         flexDirection: 'column',
       }}
     >
-      <SvgIcon src={TechSvg} width={'6rem'} height={'6rem'} />
+      <SvgIcon src={TechSvg} width="6rem" height="6rem" />
       <h3
         style={{
           fontFamily: 'DM Sans',
@@ -49,7 +49,7 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          href={'https://www.google.com/chrome/'}
+          href="https://www.google.com/chrome/"
           style={{ marginRight: '1.5rem' }}
         >
           <span
@@ -80,14 +80,14 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          href={'https://t.me/Aldrin_Exchange'}
+          href="https://t.me/Aldrin_Exchange"
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon
             src={TelegramSvg}
             style={{ marginRight: '.5rem' }}
-            width={'1.5rem'}
-            height={'1.5rem'}
+            width="1.5rem"
+            height="1.5rem"
           />
           <span
             style={{ fontFamily: 'DM Sans', fontSize: '2rem', color: '#fff' }}
@@ -98,15 +98,15 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          background={'#886AED'}
+          background="#886AED"
           href="https://discord.gg/4VZyNxT2WU"
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon
             src={DiscordSvg}
             style={{ marginRight: '.5rem' }}
-            width={'1.5rem'}
-            height={'1.5rem'}
+            width="1.5rem"
+            height="1.5rem"
           />
           <span
             style={{ fontFamily: 'DM Sans', fontSize: '2rem', color: '#fff' }}

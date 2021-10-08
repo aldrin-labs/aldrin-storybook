@@ -1,5 +1,17 @@
 import React from 'react'
 
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import newBanner from '@icons/newBanner.png'
+import newBannerForSmallScreens from '@icons/newBannerForSmallScreens.png'
+
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import {
+  LinkToDiscord,
+  LinkToMedium,
+  LinkToTelegram,
+  LinkToTwitter,
+  LinkToYouTube,
+} from './SocialsLinksComponents'
 import {
   LinksRow,
   MainContainer,
@@ -8,35 +20,19 @@ import {
   StyledImg,
   StyledPicture,
 } from './styles'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import newBanner from '@icons/newBanner.png'
-import newBannerForSmallScreens from '@icons/newBannerForSmallScreens.png'
-
-import {
-  LinkToDiscord,
-  LinkToMedium,
-  LinkToTelegram,
-  LinkToTwitter,
-  LinkToYouTube,
-} from './SocialsLinksComponents'
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
 
 export const Homepage = () => {
   return (
     <>
-      <MainContainer direction={'column'}>
-        <LinksRow
-          height={'15%'}
-          padding={'5rem 25rem'}
-          justify={'space-between'}
-        >
+      <MainContainer direction="column">
+        <LinksRow height="15%" padding="5rem 25rem" justify="space-between">
           <LinkToTwitter />
           <LinkToTelegram />
           <LinkToDiscord />
           <LinkToMedium />
           <LinkToYouTube />
         </LinksRow>
-        <RowContainer height={'70%'} padding={'0'}>
+        <RowContainer height="70%" padding="0">
           <StyledPicture>
             <source
               srcSet={newBannerForSmallScreens}
@@ -45,11 +41,7 @@ export const Homepage = () => {
             <StyledImg srcSet={newBanner} alt="My default image" />
           </StyledPicture>
         </RowContainer>
-        <LinksRow
-          height={'15%'}
-          padding={'5rem 25rem'}
-          justify={'space-between'}
-        >
+        <LinksRow height="15%" padding="5rem 25rem" justify="space-between">
           <NewLink to="/chart">Trading</NewLink>
           <StyledA
             href={CCAIProviderURL}

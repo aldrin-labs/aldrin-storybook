@@ -22,7 +22,9 @@ const TooltipCustom = ({
   }
 
   return (
-    <StyledTooltip {...{ enterDelay, leaveDelay, title: `${title}`, ...otherProps }}>
+    <StyledTooltip
+      {...{ enterDelay, leaveDelay, title: `${title}`, ...otherProps }}
+    >
       {component}
     </StyledTooltip>
   )

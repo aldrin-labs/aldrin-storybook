@@ -4,14 +4,14 @@ import { Theme } from '@material-ui/core'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
-import { Stroke, StyledTextColumnContainer } from './styles'
-import { BlockForCoins } from './BlockForCoins'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { Market } from '@project-serum/serum'
-import { RebalancePopupStep } from '../../Rebalance.types'
 import { Loading, SvgIcon } from '@sb/components'
 import GreenCheckMark from '@icons/greenDoneMark.svg'
 import RedCross from '@icons/Cross.svg'
+import { RebalancePopupStep } from '../../Rebalance.types'
+import { BlockForCoins } from './BlockForCoins'
+import { Stroke, StyledTextColumnContainer } from './styles'
 
 export const TransactionComponent = ({
   theme,
@@ -48,23 +48,23 @@ export const TransactionComponent = ({
   return (
     <Stroke showBorder={!isLastTransaction}>
       {transactionState && (
-        <Row width={'2rem'}>
+        <Row width="2rem">
           {transactionState === 'failed' || showError ? (
-            <SvgIcon src={RedCross} width={'2rem'} height={'2rem'} />
+            <SvgIcon src={RedCross} width="2rem" height="2rem" />
           ) : transactionState === 'pending' ? (
-            <Loading color={'#F29C38'} size={'2rem'} />
+            <Loading color="#F29C38" size="2rem" />
           ) : (
-            <SvgIcon src={GreenCheckMark} width={'2rem'} height={'2rem'} />
+            <SvgIcon src={GreenCheckMark} width="2rem" height="2rem" />
           )}
         </Row>
       )}
-      <Row width={'calc(45% - 4rem)'} margin={'0 0 0 2rem'}>
+      <Row width="calc(45% - 4rem)" margin="0 0 0 2rem">
         <BlockForCoins symbol={symbol} side={side} />
       </Row>
-      <Row width={'calc(55%)'} justify={'flex-end'} margin={'0 0 0 0rem'}>
+      <Row width="calc(55%)" justify="flex-end" margin="0 0 0 0rem">
         {showError ? (
           <StyledTextColumnContainer style={{ justifyContent: 'flex-end' }}>
-            <Row justify={'flex-end'} padding={'.3rem 0'}>
+            <Row justify="flex-end" padding=".3rem 0">
               <Text
                 color={theme.palette.red.main}
                 style={{
@@ -76,7 +76,7 @@ export const TransactionComponent = ({
                 {errorText}
               </Text>
             </Row>
-            <Row padding={'.3rem 0'}>
+            <Row padding=".3rem 0">
               <Text
                 color={theme.palette.red.main}
                 style={{
@@ -91,7 +91,7 @@ export const TransactionComponent = ({
           </StyledTextColumnContainer>
         ) : (
           <StyledTextColumnContainer style={{ justifyContent: 'flex-end' }}>
-            <Row justify={'flex-end'} padding={'.3rem 0'}>
+            <Row justify="flex-end" padding=".3rem 0">
               <Text
                 color={theme.palette.grey.new}
                 style={{
@@ -130,7 +130,7 @@ export const TransactionComponent = ({
                 </Text>
               </Text>
             </Row>
-            <Row justify={'flex-end'} padding={'.3rem 0'}>
+            <Row justify="flex-end" padding=".3rem 0">
               <Text
                 style={{
                   whiteSpace: 'nowrap',

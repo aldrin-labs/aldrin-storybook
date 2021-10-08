@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
-import { Row } from '../../../AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Text } from '@sb/compositions/Addressbook'
+import { Row } from '../../../AnalyticsRoute/index.styles'
 
 export const LiquidityDataContainer = styled(Row)`
   width: 50%;
@@ -46,13 +46,13 @@ export const RowTd = styled.td`
   padding: 0 2rem;
   font-family: 'Avenir Next';
   border-top: 0.2rem solid #383b45;
-  color: #f5f5fb; 
+  color: #f5f5fb;
   font-size: 1.5rem;
 `
 
 export const RowDataTd = styled(RowTd)`
-  padding-top: .5rem;
-  padding-bottom: .5rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 `
 
 export const RowDataTdText = styled(Text)`
@@ -60,7 +60,7 @@ export const RowDataTdText = styled(Text)`
 `
 
 export const RowDataTdTopText = styled(RowDataTdText)`
-  padding-bottom: .5rem;
+  padding-bottom: 0.5rem;
 `
 
 export const TextColumnContainer = styled(Row)`

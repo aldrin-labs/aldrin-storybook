@@ -5,7 +5,6 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import { SearchInputWithLoop } from '../../Tables/components/index'
 import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 import Close from '@icons/closeIcon.svg'
@@ -15,14 +14,15 @@ import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
-import { StyledPaper } from '../index.styles'
-import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
+import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
+import { StyledPaper } from '../index.styles'
+import { SearchInputWithLoop } from '../../Tables/components/index'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 45rem;
@@ -102,7 +102,7 @@ export const SelectCoinPopup = ({
       PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       onEnter={() => {
         onChangeSearch('')
@@ -111,15 +111,15 @@ export const SelectCoinPopup = ({
       }}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
-        <Text fontSize={'2rem'}>Select Token</Text>
+      <RowContainer justify="space-between">
+        <Text fontSize="2rem">Select Token</Text>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer padding={'3rem 0'}>
+      <RowContainer padding="3rem 0">
         <SearchInputWithLoop
           searchValue={searchValue}
           onChangeSearch={onChangeSearch}
-          placeholder={'Search'}
+          placeholder="Search"
         />
       </RowContainer>
       <RowContainer>
@@ -127,7 +127,7 @@ export const SelectCoinPopup = ({
           ({ mint, amount }: { mint: string; amount: number }) => {
             return (
               <SelectorRow
-                justify={'space-between'}
+                justify="space-between"
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   const isSeveralCoinsWithSameAddress =
@@ -141,8 +141,8 @@ export const SelectCoinPopup = ({
                   }
                 }}
               >
-                <Row wrap={'nowrap'}>
-                  <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
+                <Row wrap="nowrap">
+                  <TokenIcon mint={mint} width="2rem" height="2rem" />
                   <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
                   <a
                     target="_blank"
@@ -152,13 +152,13 @@ export const SelectCoinPopup = ({
                     {' '}
                     <SvgIcon
                       src={SolanaExplorerIcon}
-                      width={'2rem'}
-                      height={'2rem'}
+                      width="2rem"
+                      height="2rem"
                       style={{ marginLeft: '1rem' }}
                     />
                   </a>
                 </Row>
-                <Row wrap={'nowrap'}>
+                <Row wrap="nowrap">
                   <StyledText>
                     {formatNumberToUSFormat(stripDigitPlaces(amount, 8))}
                   </StyledText>

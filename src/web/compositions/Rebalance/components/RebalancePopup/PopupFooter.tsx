@@ -18,7 +18,7 @@ export const PopupFooter = ({
   totalFeesSOL: number
   theme: Theme
 }) => (
-  <RowContainer justify={'space-between'}>
+  <RowContainer justify="space-between">
     <Text
       theme={theme}
       color={theme.palette.grey.new}
@@ -31,7 +31,7 @@ export const PopupFooter = ({
     </Text>
 
     <DarkTooltip
-      maxWidth={'40rem'}
+      maxWidth="40rem"
       title={
         <div style={{ padding: '2rem' }}>
           <TooltipText>
@@ -67,8 +67,8 @@ export const PopupFooter = ({
       <Row>
         <Text
           theme={theme}
-          color={'#A5E898'}
-          fontFamily={'Avenir Next Demi'}
+          color="#A5E898"
+          fontFamily="Avenir Next Demi"
           style={{
             whiteSpace: 'nowrap',
             fontSize: '1.9rem',
@@ -78,7 +78,7 @@ export const PopupFooter = ({
         </Text>
         <Text
           theme={theme}
-          fontFamily={'Avenir Next Demi'}
+          fontFamily="Avenir Next Demi"
           style={{
             whiteSpace: 'nowrap',
             fontSize: '1.9rem',
@@ -90,8 +90,8 @@ export const PopupFooter = ({
 
         <Text
           theme={theme}
-          color={'#A5E898'}
-          fontFamily={'Avenir Next Demi'}
+          color="#A5E898"
+          fontFamily="Avenir Next Demi"
           style={{
             whiteSpace: 'nowrap',
             fontSize: '1.9rem',
@@ -101,8 +101,8 @@ export const PopupFooter = ({
         </Text>
         <SvgIcon
           src={Info}
-          width={'4rem'}
-          height={'4rem'}
+          width="4rem"
+          height="4rem"
           style={{ padding: '1rem' }}
         />
       </Row>

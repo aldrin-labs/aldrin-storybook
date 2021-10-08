@@ -32,7 +32,7 @@ export const loadOpenOrdersFromMarkets = async ({
     DEX_PID
   )
 
-  for (let marketData of loadedMarketsMap.values()) {
+  for (const marketData of loadedMarketsMap.values()) {
     const { market, marketName } = marketData
 
     const openOrders = openOrdersAccounts.filter((account) =>

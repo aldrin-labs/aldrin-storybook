@@ -4,13 +4,13 @@ import { Theme } from '@material-ui/core'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import useMobileSize from '@webhooks/useMobileSize'
 
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   Container,
   Text,
   DemiText,
   BlackButton,
 } from './TransactionsConfirmationWarningPopup.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const TransactionsConfirmationWarningPopup = ({
   theme,
@@ -29,9 +29,9 @@ export const TransactionsConfirmationWarningPopup = ({
   const onClose = () => setIsPopupOpen(false)
 
   return (
-    <Container showOnTheBottom={true} direction="column" padding="6rem 4rem">
+    <Container showOnTheBottom direction="column" padding="6rem 4rem">
       <RowContainer justify="space-between" margin="0 0 4rem 0">
-        <Row width="80%" direction={'column'}>
+        <Row width="80%" direction="column">
           <DemiText theme={theme} style={{ margin: '0 0 4rem 0' }}>
             Transaction confirmation pop-ups in the wallet may not work
             correctly.
@@ -49,7 +49,7 @@ export const TransactionsConfirmationWarningPopup = ({
         <BlackButton
           disabled={false}
           theme={theme}
-          hoverBackground={'#20292d'}
+          hoverBackground="#20292d"
           onClick={onClose}
         >
           Never show again.
@@ -57,7 +57,7 @@ export const TransactionsConfirmationWarningPopup = ({
         <BlackButton
           disabled={false}
           theme={theme}
-          hoverBackground={'#20292d'}
+          hoverBackground="#20292d"
           onClick={() => setIsPopupTemporaryHidden(true)}
         >
           Ok.

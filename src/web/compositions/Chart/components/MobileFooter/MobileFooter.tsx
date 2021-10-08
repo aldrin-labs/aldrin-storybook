@@ -16,7 +16,7 @@ export const MobileFooter = ({ pathname }) => {
   const [isFeedBackPopupOpen, setIsFeedBackPopupOpen] = useState(false)
 
   return (
-    <FooterComponent height={'11rem'} justify={'space-around'}>
+    <FooterComponent height="11rem" justify="space-around">
       <TradeLink isActive={pathname.includes('chart')} />
       <DashboardLink isActive={pathname.includes('dashboard')} />
       {/* <AnalyticsLink isActive={pathname.includes('analytics')} />

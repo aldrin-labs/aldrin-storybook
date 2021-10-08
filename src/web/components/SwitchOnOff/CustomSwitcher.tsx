@@ -33,11 +33,11 @@ const CustomSwitcher = ({
       <SwitcherHalf
         isFirstHalf
         theme={theme}
-        key={'firstHalf'}
+        key="firstHalf"
         isDisabled={!firstHalfIsActive}
         onClick={() => !firstHalfIsActive && changeHalf()}
         height={buttonHeight}
-        width={'50%'}
+        width="50%"
         needBorderRadius
         needBorder
         {...firstHalfStyleProperties}
@@ -46,11 +46,11 @@ const CustomSwitcher = ({
       </SwitcherHalf>
       <SwitcherHalf
         theme={theme}
-        key={'secondHalf'}
+        key="secondHalf"
         isDisabled={firstHalfIsActive}
         onClick={() => firstHalfIsActive && changeHalf()}
         height={buttonHeight}
-        width={'50%'}
+        width="50%"
         needBorderRadius
         needBorder
         {...secondHalfStyleProperties}

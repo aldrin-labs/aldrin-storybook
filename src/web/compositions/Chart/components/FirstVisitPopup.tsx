@@ -109,19 +109,19 @@ export default ({ closeChartPagePopup }) => {
           >
             learn more:
           </span>
-          <StyledLink href={'https://medium.com/@cryptocurrenies_ai'}>
-            <SvgIcon src={MediumIcon} width={'2rem'} />
+          <StyledLink href="https://medium.com/@cryptocurrenies_ai">
+            <SvgIcon src={MediumIcon} width="2rem" />
             <span style={{ paddingLeft: '1rem' }}>medium</span>
           </StyledLink>
-          <StyledLink
-            href={'https://www.youtube.com/channel/UCyUM72zWism4-LdA2J4bwew'}
-          >
-            <SvgIcon src={YoutubeIcon} width={'2rem'} />
+          <StyledLink href="https://www.youtube.com/channel/UCyUM72zWism4-LdA2J4bwew">
+            <SvgIcon src={YoutubeIcon} width="2rem" />
             <span style={{ paddingLeft: '1rem' }}>youtube</span>
           </StyledLink>
-          <CloseIcon onClick={() => {
-            closeChartPagePopup()
-          }} />
+          <CloseIcon
+            onClick={() => {
+              closeChartPagePopup()
+            }}
+          />
         </div>
       </div>
       <div
@@ -169,7 +169,7 @@ export default ({ closeChartPagePopup }) => {
           >
             trade smartly now:
           </span>
-          <SvgIcon src={BigRightArrow} width={'100%'} height={'5rem'} />
+          <SvgIcon src={BigRightArrow} width="100%" height="5rem" />
         </div>
       </div>
     </Container>

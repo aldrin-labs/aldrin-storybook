@@ -2,9 +2,6 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 
-dayjs.extend(timezone)
-dayjs.extend(utc)
-
 import {
   Chart,
   BarElement,
@@ -31,6 +28,9 @@ import {
   endOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 
+dayjs.extend(timezone)
+dayjs.extend(utc)
+
 Chart.register(
   BarElement,
   PointElement,
@@ -52,10 +52,7 @@ const getEmptyData = (
     dayDuration * NUMBER_OF_DAYS_TO_SHOW,
   lastTimestamp: number = endOfDayTimestamp()
 ) => {
-  let dayEndTimestamp: number = dayjs
-    .unix(lastTimestamp)
-    .startOf('day')
-    .unix()
+  let dayEndTimestamp: number = dayjs.unix(lastTimestamp).startOf('day').unix()
 
   const emptyData = []
 

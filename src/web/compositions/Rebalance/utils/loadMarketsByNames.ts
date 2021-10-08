@@ -1,12 +1,10 @@
 import { Market } from '@project-serum/serum'
 import { getTokenMintAddressByName, MarketsMap } from '@sb/dexUtils/markets'
-import {
-  notifyForDevelop,
-  notifyWithLog,
-} from '@sb/dexUtils/notifications'
+import { notifyForDevelop, notifyWithLog } from '@sb/dexUtils/notifications'
 import { notEmpty, onlyUnique } from '@sb/dexUtils/utils'
 import { Connection, PublicKey } from '@solana/web3.js'
 import { loadMintsDecimalsInfo } from './loadMintsDecimalsInfo'
+
 export interface LoadedMarket {
   market: Market
   marketName: string

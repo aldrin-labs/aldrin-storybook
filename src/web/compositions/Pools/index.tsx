@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { useConnection } from '@sb/dexUtils/connection'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { useInterval } from '@sb/dexUtils/useInterval'
 import { BlockTemplate } from './index.styles'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import UserLiquitidyTable from './components/Tables/UserLiquidity'
@@ -11,15 +17,9 @@ import {
   WithdrawalPopup,
   AddLiquidityPopup,
 } from './components/Popups'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { useConnection } from '@sb/dexUtils/connection'
 import { getAllTokensData } from '../Rebalance/utils'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { PoolInfo, DexTokensPrices } from './index.types'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { WarningPopup } from '../Chart/components/WarningPopup'
-import { useInterval } from '@sb/dexUtils/useInterval'
 
 const Pools = ({
   theme,
@@ -28,10 +28,8 @@ const Pools = ({
   theme: Theme
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
-  const [
-    refreshAllTokensDataCounter,
-    setRefreshAllTokensDataCounter,
-  ] = useState<number>(0)
+  const [refreshAllTokensDataCounter, setRefreshAllTokensDataCounter] =
+    useState<number>(0)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
@@ -59,26 +57,26 @@ const Pools = ({
       await setAllTokensData(allTokensData)
     }
 
-    if (!!wallet?.publicKey) {
+    if (wallet?.publicKey) {
       fetchData()
     }
   }, [wallet?.publicKey, refreshAllTokensDataCounter])
 
   return (
-    <RowContainer direction={'column'} padding={'2rem 3rem'}>
-      <RowContainer justify={'space-between'}>
+    <RowContainer direction="column" padding="2rem 3rem">
+      <RowContainer justify="space-between">
         <BlockTemplate
           theme={theme}
-          width={'calc(50% - 1rem)'}
-          height={'30rem'}
+          width="calc(50% - 1rem)"
+          height="30rem"
           style={{ position: 'relative' }}
         >
           <TotalVolumeLockedChart theme={theme} />
         </BlockTemplate>
         <BlockTemplate
           theme={theme}
-          width={'calc(50% - 1rem)'}
-          height={'30rem'}
+          width="calc(50% - 1rem)"
+          height="30rem"
           style={{ position: 'relative' }}
         >
           <TradingVolumeChart theme={theme} />
@@ -143,7 +141,7 @@ const Pools = ({
         theme={theme}
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
-        isPoolsPage={true}
+        isPoolsPage
       />
     </RowContainer>
   )

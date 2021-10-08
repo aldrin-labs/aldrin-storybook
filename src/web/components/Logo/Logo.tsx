@@ -1,11 +1,11 @@
 import React from 'react'
-import { StyledLogo } from './Logo.styles'
 import { Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
 
 import MainLogo from '@icons/Logo.svg'
 import MainLogoDark from '@icons/lightLogo.svg'
 import { Link } from 'react-router-dom'
+import { StyledLogo } from './Logo.styles'
 
 const Logo = ({
   theme: {

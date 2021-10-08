@@ -11,12 +11,12 @@ type ComponentData = {
 }
 
 interface ComponentIProps {
-    data: ComponentData
-    innerProps: any
-    innerRef: any
-  }
+  data: ComponentData
+  innerProps: any
+  innerRef: any
+}
 
-const AccountContent = ({ data }: { data: ComponentData })  => (
+const AccountContent = ({ data }: { data: ComponentData }) => (
   <>
     <Grid item style={{ alignSelf: 'center' }}>
       {data.label}

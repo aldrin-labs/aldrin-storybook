@@ -4,7 +4,6 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { Theme } from '@sb/types/materialUI'
-import { DisconnectButton, NavBarForSmallScreens } from './styles'
 import { Link } from 'react-router-dom'
 
 import SvgIcon from '@sb/components/SvgIcon'
@@ -29,6 +28,7 @@ import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
 import { useBalances } from '@sb/dexUtils/markets'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown'
+import { DisconnectButton, NavBarForSmallScreens } from './styles'
 import { MobileWalletDropdown } from './MobileWalletDropdown'
 
 export const MobileNavBar = ({
@@ -52,10 +52,10 @@ export const MobileNavBar = ({
   return (
     <NavBarForSmallScreens theme={theme}>
       <Link style={{ width: '30%' }} to="/">
-        <SvgIcon src={AldrinLogo} width={'100%'} height={'auto'} />
+        <SvgIcon src={AldrinLogo} width="100%" height="auto" />
       </Link>
       {pathname === '/' ? (
-        <Row justify={'space-between'} width={'50%'}>
+        <Row justify="space-between" width="50%">
           <LinkToTwitter />
           <LinkToTelegram />
           <LinkToDiscord />
@@ -67,13 +67,13 @@ export const MobileNavBar = ({
         >
           {wallet.connected ? (
             <RowContainer
-              justify={'flex-end'}
-              direction={'row'}
+              justify="flex-end"
+              direction="row"
               style={{ flexWrap: 'nowrap' }}
             >
               <SvgIcon src={WalletIcon} style={{ margin: '0 2rem 0 0' }} />
               <Row style={{ margin: '0 2rem 0 0' }}>
-                <Row align={'flex-start'} direction={'column'}>
+                <Row align="flex-start" direction="column">
                   <Title
                     fontSize="1.2rem"
                     fontFamily="Avenir Next Bold"
@@ -100,7 +100,7 @@ export const MobileNavBar = ({
                   </Title>
                   <Title
                     fontFamily="Avenir Next Medium"
-                    color={'rgb(147, 160, 178)'}
+                    color="rgb(147, 160, 178)"
                     fontSize="1.2rem"
                   >
                     {`${wallet?.publicKey
@@ -135,12 +135,12 @@ export const MobileNavBar = ({
               fontSize="1.6rem"
               padding="1.5rem 3.5rem"
               borderRadius="1.1rem"
-              borderColor={'#366CE5'}
-              btnColor={'#fff'}
-              backgroundColor={'#366CE5'}
-              textTransform={'none'}
-              margin={'0'}
-              transition={'all .4s ease-out'}
+              borderColor="#366CE5"
+              btnColor="#fff"
+              backgroundColor="#366CE5"
+              textTransform="none"
+              margin="0"
+              transition="all .4s ease-out"
               style={{ whiteSpace: 'nowrap' }}
             >
               Connect Wallet

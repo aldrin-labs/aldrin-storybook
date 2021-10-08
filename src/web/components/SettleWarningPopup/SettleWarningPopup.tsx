@@ -4,14 +4,14 @@ import { Theme } from '@material-ui/core'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import useMobileSize from '@webhooks/useMobileSize'
 
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import Arrow from '@icons/bigArrow.svg'
 import {
   Container,
   Text,
   DemiText,
   BlackButton,
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import Arrow from '@icons/bigArrow.svg'
 import SvgIcon from '../SvgIcon'
 
 export const SettleWarningPopup = ({ theme }: { theme: Theme }) => {
@@ -28,7 +28,7 @@ export const SettleWarningPopup = ({ theme }: { theme: Theme }) => {
 
   return (
     <Container
-      showOnTheTop={true}
+      showOnTheTop
       style={{ height: '64%' }}
       direction="column"
       align="flex-start"
@@ -61,13 +61,13 @@ export const SettleWarningPopup = ({ theme }: { theme: Theme }) => {
             right: '1.1%',
           }}
         >
-          <SvgIcon src={Arrow} width={'100%'} height={'auto'} />
+          <SvgIcon src={Arrow} width="100%" height="auto" />
         </div>
       </RowContainer>
       <RowContainer align="flex-start" justify="space-between">
         <Row
           width="80%"
-          direction={'column'}
+          direction="column"
           justify="flex-start"
           align="flex-start"
         >
@@ -129,9 +129,9 @@ export const SettleWarningPopup = ({ theme }: { theme: Theme }) => {
         <BlackButton
           disabled={false}
           theme={theme}
-          hoverBackground={'#20292d'}
-          width={'auto'}
-          fontSize={'1.5rem'}
+          hoverBackground="#20292d"
+          width="auto"
+          fontSize="1.5rem"
           style={{ padding: '1rem 5rem', margin: '0 2rem 0 0' }}
           onClick={onClose}
         >
@@ -140,9 +140,9 @@ export const SettleWarningPopup = ({ theme }: { theme: Theme }) => {
         <BlackButton
           disabled={false}
           theme={theme}
-          hoverBackground={'#20292d'}
-          width={'auto'}
-          fontSize={'1.5rem'}
+          hoverBackground="#20292d"
+          width="auto"
+          fontSize="1.5rem"
           style={{ padding: '1rem 5rem' }}
           onClick={() => setIsPopupTemporaryHidden(true)}
         >

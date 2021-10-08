@@ -11,27 +11,14 @@ import {
   jssPreset,
   withTheme,
 } from '@material-ui/core/styles'
-
-const generateClassName = createGenerateClassName({
-  dangerouslyUseGlobalCSS: false,
-  productionPrefix: 'c',
-})
-
-const jss = create(jssPreset())
-// We define a custom insertion point that JSS will look for injecting the styles in the DOM.
-jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 //
 
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import CssBaseline from '@material-ui/core/CssBaseline'
 // import Footer from '@sb/components/Footer'
 import AnimatedNavBar from '@sb/components/NavBar/AnimatedNavBar'
-import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
-import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
-import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 
-import { AppGridLayout, AppInnerContainer } from './App.styles'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
@@ -53,28 +40,43 @@ import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
 import WalletMigrationPopup from '@sb/components/WalletMigrationPopup'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
-import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
-import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 import useWindowSize from '@webhooks/useWindowSize'
 import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
+import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
+import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
+import { AppGridLayout, AppInnerContainer } from './App.styles'
+import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
+import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
+import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
+
+const generateClassName = createGenerateClassName({
+  dangerouslyUseGlobalCSS: false,
+  productionPrefix: 'c',
+})
+
+const jss = create(jssPreset())
+// We define a custom insertion point that JSS will look for injecting the styles in the DOM.
+jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 
 const version = `10.9.147-fix-open-orders`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
-  const isMeetRebalancePopupOpen = localStorage.getItem("isMeetRebalancePopupOpen")
-  const isNotificationDone = localStorage.getItem("isNotificationDone")
-  const isOnboardingDone = localStorage.getItem("isOnboardingDone")
-  const isRebrandingPopupOpen = localStorage.getItem("isRebrandingPopupOpen")
-  const isRpcWarningPopupOpen = localStorage.getItem("isRpcWarningPopupOpen")
+  const isMeetRebalancePopupOpen = localStorage.getItem(
+    'isMeetRebalancePopupOpen'
+  )
+  const isNotificationDone = localStorage.getItem('isNotificationDone')
+  const isOnboardingDone = localStorage.getItem('isOnboardingDone')
+  const isRebrandingPopupOpen = localStorage.getItem('isRebrandingPopupOpen')
+  const isRpcWarningPopupOpen = localStorage.getItem('isRpcWarningPopupOpen')
 
   localStorage.clear()
 
-  localStorage.setItem("isMeetRebalancePopupOpen", isMeetRebalancePopupOpen)
-  localStorage.setItem("isNotificationDone", isNotificationDone)
-  localStorage.setItem("isOnboardingDone", isOnboardingDone)
-  localStorage.setItem("isRebrandingPopupOpen", isRebrandingPopupOpen)
+  localStorage.setItem('isMeetRebalancePopupOpen', isMeetRebalancePopupOpen)
+  localStorage.setItem('isNotificationDone', isNotificationDone)
+  localStorage.setItem('isOnboardingDone', isOnboardingDone)
+  localStorage.setItem('isRebrandingPopupOpen', isRebrandingPopupOpen)
   // localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
 
   localStorage.setItem('version', version)
@@ -83,7 +85,7 @@ if (currentVersion !== version) {
 
 const DetermineMobileWindowHeight = () => {
   const { width, height } = useWindowSize()
-  let vh = height * 0.01
+  const vh = height * 0.01
   document.documentElement.style.setProperty('--vh', `${vh}px`)
   return null
 }
@@ -94,10 +96,8 @@ const AppRaw = ({
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
-  const [
-    isRebrandingPopupOpen,
-    setIsRebrandingPopupOpen,
-  ] = useLocalStorageState('isRebrandingPopupOpen', true)
+  const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
+    useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
   //   true
   // )
@@ -123,14 +123,14 @@ const AppRaw = ({
   const isRewards = currentPage.includes('rewards')
 
   const searchParamsObject = getSearchParamsObject({ search })
-  const isRefInUrlParamExist = !!searchParamsObject['ref']
+  const isRefInUrlParamExist = !!searchParamsObject.ref
   if (isRefInUrlParamExist) {
-    const ref = searchParamsObject['ref']
+    const { ref } = searchParamsObject
     syncStorage.setItem('ref', ref)
   }
-  const isDiscountCodeExist = !!searchParamsObject['code']
+  const isDiscountCodeExist = !!searchParamsObject.code
   if (isDiscountCodeExist) {
-    const code = searchParamsObject['code']
+    const { code } = searchParamsObject
     syncStorage.setItem('code', code)
   }
 
@@ -147,7 +147,7 @@ const AppRaw = ({
                   <WalletProvider>
                     <PreferencesProvider>
                       <AppGridLayout
-                        id={'react-notification'}
+                        id="react-notification"
                         showFooter={showFooter}
                         isRewards={isRewards}
                         isPNL={isPNL}
@@ -223,7 +223,7 @@ const Footer = (props) => {
         ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}),
       }}
     >
-      <Line bottom={'5.7rem'} />
+      <Line bottom="5.7rem" />
       <Link
         target="_blank"
         rel="noopener noreferrer"

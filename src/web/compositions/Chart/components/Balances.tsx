@@ -197,7 +197,7 @@ export const Balances = ({
 
       console.log('settleFunds result', result)
 
-      if (!!result) {
+      if (result) {
         notify({
           message: 'Settling funds successfully done',
           type: 'success',
@@ -245,7 +245,7 @@ export const Balances = ({
         style={{ borderRight: 'none', borderTop: '0' }}
       >
         <ChartCardHeader
-          padding={'0.6rem 0'}
+          padding="0.6rem 0"
           theme={theme}
           style={{
             display: 'flex',
@@ -278,7 +278,7 @@ export const Balances = ({
           container
           xs={12}
           direction="column"
-          wrap={'nowrap'}
+          wrap="nowrap"
           style={{
             height: 'calc(100% - 3rem)',
             padding: '0 .8rem .4rem .8rem',
@@ -308,7 +308,7 @@ export const Balances = ({
                 />
               </BalanceTitle> */}
               <BalanceValues>
-                <BalanceValuesContainer needMargin={true} theme={theme}>
+                <BalanceValuesContainer needMargin theme={theme}>
                   <BalanceFuturesTitle theme={theme}>
                     {pair[0]} Wallet
                   </BalanceFuturesTitle>
@@ -356,7 +356,7 @@ export const Balances = ({
                         borderColor={theme.palette.blue.serum}
                         backgroundColor={theme.palette.blue.serum}
                         // hoverBackground="#3992a9"
-                        transition={'all .4s ease-out'}
+                        transition="all .4s ease-out"
                         onClick={() => {
                           setShowTokenNotAdded(true)
                         }}
@@ -366,7 +366,7 @@ export const Balances = ({
                     ) : (
                       showSettle && (
                         <BtnCustom
-                          btnWidth={'100%'}
+                          btnWidth="100%"
                           height="2.5rem"
                           fontSize=".8rem"
                           padding=".5rem 0 .4rem 0;"
@@ -375,7 +375,7 @@ export const Balances = ({
                           borderColor={theme.palette.blue.serum}
                           backgroundColor={theme.palette.blue.serum}
                           // hoverBackground="#3992a9"
-                          transition={'all .4s ease-out'}
+                          transition="all .4s ease-out"
                           disabled={showLoading}
                           onClick={() => {
                             const { market, openOrders } = baseBalances
@@ -383,11 +383,7 @@ export const Balances = ({
                           }}
                         >
                           {showLoading ? (
-                            <Loading
-                              centerAligned={true}
-                              color={'#fff'}
-                              size={'1rem'}
-                            />
+                            <Loading centerAligned color="#fff" size="1rem" />
                           ) : (
                             'settle'
                           )}
@@ -416,7 +412,7 @@ export const Balances = ({
                 />
               </BalanceTitle> */}
               <BalanceValues>
-                <BalanceValuesContainer needMargin={true} theme={theme}>
+                <BalanceValuesContainer needMargin theme={theme}>
                   <BalanceFuturesTitle theme={theme}>
                     {pair[1]} Wallet
                   </BalanceFuturesTitle>
@@ -464,7 +460,7 @@ export const Balances = ({
                         borderColor={theme.palette.blue.serum}
                         backgroundColor={theme.palette.blue.serum}
                         // hoverBackground="#3992a9"
-                        transition={'all .4s ease-out'}
+                        transition="all .4s ease-out"
                         onClick={() => {
                           setShowTokenNotAdded(true)
                         }}
@@ -474,7 +470,7 @@ export const Balances = ({
                     ) : (
                       showSettle && (
                         <BtnCustom
-                          btnWidth={'100%'}
+                          btnWidth="100%"
                           height="2.5rem"
                           fontSize=".8rem"
                           padding=".5rem 0 .4rem 0;"
@@ -482,7 +478,7 @@ export const Balances = ({
                           btnColor={theme.palette.dark.main}
                           borderColor={theme.palette.blue.serum}
                           backgroundColor={theme.palette.blue.serum}
-                          transition={'all .4s ease-out'}
+                          transition="all .4s ease-out"
                           disabled={showLoading}
                           onClick={() => {
                             const { market, openOrders } = quoteBalances
@@ -490,11 +486,7 @@ export const Balances = ({
                           }}
                         >
                           {showLoading ? (
-                            <Loading
-                              centerAligned={true}
-                              color={'#fff'}
-                              size={'1rem'}
-                            />
+                            <Loading centerAligned color="#fff" size="1rem" />
                           ) : (
                             'settle'
                           )}

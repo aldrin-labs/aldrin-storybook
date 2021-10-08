@@ -1,6 +1,7 @@
 import React from 'react'
-import Table from '../'
 import { isObject, has } from 'lodash-es'
+import { SortDirection } from '@material-ui/core/TableCell'
+import Table from '..'
 
 import {
   Props as TableProps,
@@ -11,7 +12,6 @@ import {
   Content,
 } from '../index.types'
 import { SortState } from './index.types'
-import { SortDirection } from '@material-ui/core/TableCell'
 
 const stableSort = (
   array: ReadonlyArray<RowContent>,
@@ -60,9 +60,10 @@ export default class Sort extends React.Component<TableProps> {
     sortColumn: '',
     sortDirection: 'asc',
   }
+
   sortHandler = (column: string) => {
     this.setState((prevState: SortState) => {
-      let sortDirection = prevState.sortDirection
+      let { sortDirection } = prevState
       if (prevState.sortColumn !== column) {
         sortDirection = 'asc'
       } else {
@@ -98,7 +99,7 @@ export default class Sort extends React.Component<TableProps> {
       <Table
         {...{
           ...this.props,
-          onTrClick: onTrClick,
+          onTrClick,
           data: result.data,
           columnNames: result.head,
           sort: {

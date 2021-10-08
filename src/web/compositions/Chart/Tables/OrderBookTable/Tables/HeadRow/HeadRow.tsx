@@ -1,21 +1,16 @@
 import React, { memo } from 'react'
 
-import {
-  Head,
-  HeadCell,
-} from '@sb/components/OldTable/Table'
+import { Head, HeadCell } from '@sb/components/OldTable/Table'
 import { TypographyFullWidth } from '@sb/styles/cssUtils'
-import {
-  EmptyCell,
-} from '../../../SharedStyles'
+import { EmptyCell } from '../../../SharedStyles'
 import { TriggerRow } from './HeadRow.styles'
 
 export const HeadRow = memo(
   ({ primary, type, palette, quote, spread, digitsAfterDecimalForSpread }) => (
-    <Head background={primary[type]} style={{ height: '21px' }} border={'none'}>
-      <TriggerRow isHead={true} background={primary[type]}>
+    <Head background={primary[type]} style={{ height: '21px' }} border="none">
+      <TriggerRow isHead background={primary[type]}>
         <EmptyCell width="10%" />
-        <HeadCell width={'45%'}>
+        <HeadCell width="45%">
           <TypographyFullWidth
             textColor={palette.getContrastText(primary[type])}
             variant="body1"
@@ -24,7 +19,7 @@ export const HeadRow = memo(
             {quote || 'Fiat'} spread{' '}
           </TypographyFullWidth>
         </HeadCell>
-        <HeadCell width={'45%'}>
+        <HeadCell width="45%">
           <TypographyFullWidth
             textColor={palette.getContrastText(primary[type])}
             variant="body1"

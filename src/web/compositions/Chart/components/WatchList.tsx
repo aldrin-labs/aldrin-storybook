@@ -1,5 +1,6 @@
 import React from 'react'
 
+import ChartCardHeader from '@sb/components/ChartCardHeader'
 import {
   WatchListContainer,
   WatchItemWrapper,
@@ -8,8 +9,6 @@ import {
   WatchSubvalue,
   WatchLabel,
 } from '../Chart.styles'
-
-import ChartCardHeader from '@sb/components/ChartCardHeader'
 
 const WatchItem = ({
   label,
@@ -26,9 +25,9 @@ const WatchItem = ({
     <WatchItemWrapper>
       <WatchLabel>{label}</WatchLabel>
       <SubvaluesContainer>
-        <WatchSubvalue color={'#7284A0'}>{subvalues.price}</WatchSubvalue>
-        <WatchSubvalue color={'#2F7619'}>{subvalues.percentages}</WatchSubvalue>
-        <WatchSubvalue color={'#7284A0'}>{subvalues.total}</WatchSubvalue>
+        <WatchSubvalue color="#7284A0">{subvalues.price}</WatchSubvalue>
+        <WatchSubvalue color="#2F7619">{subvalues.percentages}</WatchSubvalue>
+        <WatchSubvalue color="#7284A0">{subvalues.total}</WatchSubvalue>
       </SubvaluesContainer>
     </WatchItemWrapper>
   )

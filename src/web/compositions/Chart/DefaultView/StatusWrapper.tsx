@@ -4,7 +4,6 @@ import { useSnackbar } from 'notistack'
 import React from 'react'
 import { DefaultView } from './DefaultView'
 
-
 const OrderStatusWrapper = (props) => {
   const { enqueueSnackbar } = useSnackbar()
 

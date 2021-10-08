@@ -9,11 +9,8 @@ import {
   useMarkPrice,
 } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
-import AutoSuggestSelect from '../../Inputs/AutoSuggestSelect/AutoSuggestSelect'
-import MarketStats from '../MarketStats/MarketStats'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import LinkToSolanaExp from '../LinkToSolanaExp'
 import BlueTwitterIcon from '@icons/blueTwitter.svg'
 import AnalyticsIcon from '@icons/analytics.svg'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -24,9 +21,12 @@ import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
 import NomicsIcon from '@icons/nomics.svg'
 import Inform from '@icons/inform.svg'
-import { MintsPopup } from '../../Inputs/SelectWrapper/MintsPopup'
 import ChartIcon from '@icons/chartIcon.svg'
 import ArrowLeft from '@icons/ArrowLeft.svg'
+import { MintsPopup } from '../../Inputs/SelectWrapper/MintsPopup'
+import LinkToSolanaExp from '../LinkToSolanaExp'
+import MarketStats from '../MarketStats/MarketStats'
+import AutoSuggestSelect from '../../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 
 import {
   ExclamationMark,
@@ -146,8 +146,8 @@ const MarketBlock = ({
             >
               <TokenIcon
                 mint={getTokenMintAddressByName(base)}
-                width={'50%'}
-                emojiIfNoLogo={true}
+                width="50%"
+                emojiIfNoLogo
                 isAwesomeMarket={isCustomUserMarket}
                 isAdditionalCustomUserMarket={isPrivateCustomMarket}
               />
@@ -159,7 +159,7 @@ const MarketBlock = ({
           >
             <AutoSuggestSelect
               value={pair}
-              id={'pairSelector'}
+              id="pairSelector"
               style={{ width: '20rem' }}
               activeExchange={activeExchange}
               selectStyles={{ ...selectStyles(theme) }}
@@ -183,36 +183,32 @@ const MarketBlock = ({
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
           />
-          <Row align={'baseline'}>
+          <Row align="baseline">
             <SvgIcon
               src={Inform}
               onClick={() => {
                 setIsMintsPopupOpen(true)
               }}
               style={{ margin: '0 1.5rem', cursor: 'pointer' }}
-              width={'2.3rem'}
-              height={'2.3rem'}
+              width="2.3rem"
+              height="2.3rem"
             />
             <LinkToSolanaExp marketAddress={marketAddress} />
-            <DarkTooltip title={'Show analytics for this market.'}>
+            <DarkTooltip title="Show analytics for this market.">
               <LinkToAnalytics to={`/analytics/${pair}`}>
-                <SvgIcon
-                  src={AnalyticsIcon}
-                  width={'2.3rem'}
-                  height={'2.3rem'}
-                />
+                <SvgIcon src={AnalyticsIcon} width="2.3rem" height="2.3rem" />
               </LinkToAnalytics>
             </DarkTooltip>
             {twitterLink !== '' && (
-              <DarkTooltip title={'Twitter profile of base token.'}>
+              <DarkTooltip title="Twitter profile of base token.">
                 <LinkToTwitter
                   target="_blank"
                   rel="noopener noreferrer"
                   href={twitterLink}
                 >
                   <SvgIcon
-                    width={'2.5rem'}
-                    height={'2.5rem'}
+                    width="2.5rem"
+                    height="2.5rem"
                     src={BlueTwitterIcon}
                   />
                 </LinkToTwitter>
@@ -225,17 +221,13 @@ const MarketBlock = ({
                 rel="noopener noreferrer"
                 href={marketCapLink}
               >
-                <SvgIcon
-                  width={'2.5rem'}
-                  height={'2.5rem'}
-                  src={marketCapIcon}
-                />
+                <SvgIcon width="2.5rem" height="2.5rem" src={marketCapIcon} />
               </a>
             )}
           </Row>
         </Row>
         <Row>
-          <Row align={'flex-start'} direction="column">
+          <Row align="flex-start" direction="column">
             <Title color={theme.palette.green.main}>
               You have to settle funds after each trade to transfer{' '}
             </Title>
@@ -245,7 +237,7 @@ const MarketBlock = ({
           </Row>
           <ExclamationMark
             theme={theme}
-            margin={'0 0 0 2rem'}
+            margin="0 0 0 2rem"
             fontSize="5rem"
             color={theme.palette.green.main}
           />
@@ -261,7 +253,7 @@ const MarketBlock = ({
       <MobileMarketStatsContainer theme={theme}>
         <AutoSuggestSelect
           value={pair}
-          id={'pairSelector'}
+          id="pairSelector"
           activeExchange={activeExchange}
           selectStyles={{ ...selectStyles(theme) }}
           marketType={marketType}
@@ -285,8 +277,8 @@ const MarketBlock = ({
           />
           <SvgIcon
             src={terminalViewMode === 'mobileChart' ? ArrowLeft : ChartIcon}
-            width={'5rem'}
-            height={'auto'}
+            width="5rem"
+            height="auto"
             style={{ margin: '0 0 0 2rem', padding: '1rem' }}
             onClick={() => {
               if (terminalViewMode === 'mobileChart') {

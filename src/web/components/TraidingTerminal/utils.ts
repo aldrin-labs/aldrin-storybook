@@ -1,4 +1,3 @@
-
 export const costOfAddingToken = 0.002039
 
 export const costsOfTheFirstTrade = 0.024

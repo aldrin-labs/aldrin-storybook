@@ -1,16 +1,12 @@
-import {
-  TokensMapType,
-  TransactionType,
-  Orderbooks,
-} from '../Rebalance.types'
 import { Graph } from '@core/utils/graph/Graph'
-import { REBALANCE_CONFIG } from '../Rebalance.config'
-import { getPricesForTransactionsFromOrderbook } from './getPricesForTransactionsFromOrderbook'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { getDecimalCount } from '@sb/dexUtils/utils'
+import { MarketsMap } from '@sb/dexUtils/markets'
+import { TokensMapType, TransactionType, Orderbooks } from '../Rebalance.types'
+import { REBALANCE_CONFIG } from '../Rebalance.config'
+import { getPricesForTransactionsFromOrderbook } from './getPricesForTransactionsFromOrderbook'
 import { getTokensToBuy } from './getTokensToBuy'
 import { getTokensToSell } from './getTokensToSell'
-import { MarketsMap } from '@sb/dexUtils/markets'
 import { getMarketsData } from './getMarketsData'
 import { LoadedMarketsWithVaultSignersAndOpenOrdersMap } from './loadMarketsWithDataForTransactions'
 
@@ -28,15 +24,15 @@ export const getTransactionsList = ({
   const marketsData = getMarketsData(allMarketsMap)
   const tokensToSell = getTokensToSell(tokensMap)
   const tokensToBuy = getTokensToBuy(tokensMap)
-  
-  // 
+
+  //
   const tokensToBuyClone = [...tokensToBuy]
 
   if (!tokensToSell || !tokensToBuyClone) {
     return []
   }
 
-  let allTransactions: TransactionType[] = []
+  const allTransactions: TransactionType[] = []
 
   // we'll change orderbook in each transaction
   let orderbooksClone = { ...orderbooks }
@@ -102,7 +98,7 @@ export const getTransactionsList = ({
         elSell.isSold = true
       }
 
-      let tempToken = { amount: 0 }
+      const tempToken = { amount: 0 }
       pathElement?.forEach(
         (pathSymbol: string, index: number, arr: string[]) => {
           const nextElement = arr[index + 1]
@@ -153,13 +149,11 @@ export const getTransactionsList = ({
 
           // we're getting price from ob here because price is required
           // to get total from amount for next rebalance chain element
-          let [
-            [{ price, isNotEnoughLiquidity }],
-            updatedOrderbooks,
-          ] = getPricesForTransactionsFromOrderbook({
-            orderbooks: orderbooksClone,
-            transactionsList: [{ side, amount: tokenAmount, symbol }],
-          })
+          let [[{ price, isNotEnoughLiquidity }], updatedOrderbooks] =
+            getPricesForTransactionsFromOrderbook({
+              orderbooks: orderbooksClone,
+              transactionsList: [{ side, amount: tokenAmount, symbol }],
+            })
 
           price = +stripDigitPlaces(
             price,
@@ -219,11 +213,11 @@ export const getTransactionsList = ({
             openOrders,
             vaultSigner,
             name: symbol,
-            feeUSD: feeUSD,
+            feeUSD,
             address: market?.address,
             isNotEnoughLiquidity,
             isIntermidiate,
-            priceIncludingCurveAndFees: priceIncludingCurveAndFees,
+            priceIncludingCurveAndFees,
             depthLevel: index,
           })
         }

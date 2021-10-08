@@ -13,12 +13,15 @@ import CopyIcon from '@icons/copyIcon.png'
 import { SvgIcon } from '@sb/components/index'
 
 import { Link } from 'react-router-dom'
-import FeesInfo from './FeesInfo'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 import { getIsNotUSDTQuote } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import { notify } from '@sb/dexUtils/notifications'
 
+import {
+  stripDigitPlaces,
+  formatNumberToUSFormat,
+} from '@core/utils/PortfolioTableUtils'
 import {
   Row,
   RowContainer,
@@ -31,10 +34,7 @@ import {
   BlockTemplate,
 } from '../../index.styles'
 
-import {
-  stripDigitPlaces,
-  formatNumberToUSFormat,
-} from '@core/utils/PortfolioTableUtils'
+import FeesInfo from './FeesInfo'
 
 const PairNameTitle = styled((props) => <WhiteTitle {...props} />)`
   font-size: 2.2rem;
@@ -163,7 +163,7 @@ const MarketInfo = ({
 
   const prevClosePrice = markPrice + lastPriceDiff * -1
 
-  const priceChangePercentage = !!markPrice
+  const priceChangePercentage = markPrice
     ? (markPrice - prevClosePrice) / (prevClosePrice / 100)
     : 0
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
@@ -172,14 +172,14 @@ const MarketInfo = ({
   return (
     <BlockTemplate
       theme={theme}
-      width={'100%'}
+      width="100%"
       height="calc(20rem - 0.8rem)"
       margin="0 0 .8rem 0"
       padding="3rem 6rem 4rem 6rem"
     >
-      <RowContainer justify="space-between" wrap={'nowrap'}>
-        <Row direction={'column'} align={'flex-start'}>
-          <RowContainer justify={'space-between'}>
+      <RowContainer justify="space-between" wrap="nowrap">
+        <Row direction="column" align="flex-start">
+          <RowContainer justify="space-between">
             <Row>
               {/* <SvgIcon
                 style={{
@@ -203,9 +203,13 @@ const MarketInfo = ({
 
           <RowContainer justify="space-between">
             <LastPrice theme={theme}>
-              {`${markPrice === 0 ? '--' : formatNumberToUSFormat(stripDigitPlaces(markPrice, pricePrecision))} ${
-                pair.split('/')[1]
-              }`}
+              {`${
+                markPrice === 0
+                  ? '--'
+                  : formatNumberToUSFormat(
+                      stripDigitPlaces(markPrice, pricePrecision)
+                    )
+              } ${pair.split('/')[1]}`}
             </LastPrice>
             <Row
               style={{
@@ -220,8 +224,8 @@ const MarketInfo = ({
                   margin: '0 .5rem 0 1rem',
                   transform: priceChangePercentage > 0 ? '' : 'rotate(180deg)',
                 }}
-                width={`1rem`}
-                height={'1rem'}
+                width="1rem"
+                height="1rem"
                 src={WhiteArrow}
               />
               <SmallTitle
@@ -238,28 +242,34 @@ const MarketInfo = ({
               </SmallTitle>
             </Row>
           </RowContainer>
-          <Row justify={'flex-start'}>
-            <Row margin={'0 1rem 0 0'}>
+          <Row justify="flex-start">
+            <Row margin="0 1rem 0 0">
               <SmallTitle theme={theme} style={{ paddingRight: '.5rem' }}>
                 24h Low:
               </SmallTitle>
-              <SmallBoldTitle theme={theme}>{`${
-                formatNumberToUSFormat(stripDigitPlaces(markPrice < minPrice ? markPrice : minPrice, pricePrecision))
-              } ${quote}`}</SmallBoldTitle>
+              <SmallBoldTitle theme={theme}>{`${formatNumberToUSFormat(
+                stripDigitPlaces(
+                  markPrice < minPrice ? markPrice : minPrice,
+                  pricePrecision
+                )
+              )} ${quote}`}</SmallBoldTitle>
             </Row>
             <Row>
               <SmallTitle theme={theme} style={{ paddingRight: '.5rem' }}>
                 24h High:
               </SmallTitle>
-              <SmallBoldTitle theme={theme}>{`${
-                formatNumberToUSFormat(stripDigitPlaces(markPrice > maxPrice ? markPrice : maxPrice, pricePrecision))
-              } ${quote}`}</SmallBoldTitle>
+              <SmallBoldTitle theme={theme}>{`${formatNumberToUSFormat(
+                stripDigitPlaces(
+                  markPrice > maxPrice ? markPrice : maxPrice,
+                  pricePrecision
+                )
+              )} ${quote}`}</SmallBoldTitle>
             </Row>
           </Row>
         </Row>
-        <Row wrap={'nowrap'}>
+        <Row wrap="nowrap">
           <Row padding="2rem 0">
-            <ValueBlock theme={theme} align={'flex-start'} direction={'column'}>
+            <ValueBlock theme={theme} align="flex-start" direction="column">
               <BlockTitle theme={theme}>Volume (24h)</BlockTitle>
               <BlockValue theme={theme}>{`${
                 isNotUSDTQuote ? '' : '$'
@@ -275,7 +285,7 @@ const MarketInfo = ({
             </ValueBlock>
           </Row> */}
           <Row padding="2rem 0" style={{ position: 'relative' }}>
-            <ValueBlock theme={theme} align={'flex-start'} direction={'column'}>
+            <ValueBlock theme={theme} align="flex-start" direction="column">
               <FeesInfo
                 isNotUSDTQuote={isNotUSDTQuote}
                 theme={theme}
@@ -284,8 +294,8 @@ const MarketInfo = ({
             </ValueBlock>
           </Row>
           <Row padding="2rem 0">
-            <ValueBlock theme={theme} align={'flex-start'} direction={'column'}>
-              <RowContainer justify={'space-between'}>
+            <ValueBlock theme={theme} align="flex-start" direction="column">
+              <RowContainer justify="space-between">
                 <BlockTitle theme={theme}>Address</BlockTitle>
                 <PurpleTitle
                   target="_blank"

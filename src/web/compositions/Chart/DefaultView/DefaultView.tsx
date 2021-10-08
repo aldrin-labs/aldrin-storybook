@@ -10,23 +10,19 @@ import { isEqual } from 'lodash-es'
 import React, { useEffect, useState } from 'react'
 import {
   BalancesContainer,
-
-
-  ChartAndOrderbookContainer, ChartsContainer, Container,
-
-
-
-
-
-  MobileTradingTabelContainer, TopChartsContainer, TradingTabelContainer,
-  TradingTerminalContainer
+  ChartAndOrderbookContainer,
+  ChartsContainer,
+  Container,
+  MobileTradingTabelContainer,
+  TopChartsContainer,
+  TradingTabelContainer,
+  TradingTerminalContainer,
 } from '../Chart.styles'
 import { OrderbookAndDepthChart, TradeHistory } from '../components'
 import {
   OrderBookGrid,
-  TradeHistoryGrid
+  TradeHistoryGrid,
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
-
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
@@ -39,18 +35,17 @@ const TerminalContainer = ({
   theme: Theme
   terminalViewMode: sting
 }) => (
-    <TablesBlockWrapper
-      item
-      container
-      theme={theme}
-      xs={isDefaultTerminalViewMode ? 5 : 12}
-      isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-      terminalViewMode={terminalViewMode}
-    >
-      {children}
-    </TablesBlockWrapper>
-  )
-
+  <TablesBlockWrapper
+    item
+    container
+    theme={theme}
+    xs={isDefaultTerminalViewMode ? 5 : 12}
+    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    terminalViewMode={terminalViewMode}
+  >
+    {children}
+  </TablesBlockWrapper>
+)
 
 // fix props type
 export const DefaultViewComponent = (

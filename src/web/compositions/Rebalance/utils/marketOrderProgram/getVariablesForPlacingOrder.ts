@@ -17,12 +17,12 @@ export const getVariablesForPlacingOrder = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-  market: Market,
-  vaultSigner: PublicKey | BN,
-  openOrders: OpenOrders[],
+  market: Market
+  vaultSigner: PublicKey | BN
+  openOrders: OpenOrders[]
   side: 'buy' | 'sell'
-  tokenAccountA: PublicKey,
-  tokenAccountB: PublicKey,
+  tokenAccountA: PublicKey
+  tokenAccountB: PublicKey
 }) => {
   const isBuySide = side === 'buy'
   const orderPayerTokenAccount = isBuySide ? tokenAccountB : tokenAccountA

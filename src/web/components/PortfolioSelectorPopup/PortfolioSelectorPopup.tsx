@@ -41,7 +41,7 @@ const Popup = ({
         <>
           <RenamePortfolioDialog
             data={data}
-            isPortfolio={true}
+            isPortfolio
             baseCoin={baseCoin}
             forceUpdateUserContainer={forceUpdateAccountContainer}
             closeMainPopup={closePopup}
@@ -49,8 +49,8 @@ const Popup = ({
           <DeletePortfolioDialog
             data={data}
             baseCoin={baseCoin}
-            isPortfolio={true}
-            disabled={true}
+            isPortfolio
+            disabled
             forceUpdateUserContainer={forceUpdateAccountContainer}
             closeMainPopup={closePopup}
           />

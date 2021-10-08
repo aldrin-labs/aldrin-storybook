@@ -1,6 +1,10 @@
 import { Theme } from '@material-ui/core'
 
-const values = [['short', 'long'], ['sell', 'buy'], ['market', 'limit']]
+const values = [
+  ['short', 'long'],
+  ['sell', 'buy'],
+  ['market', 'limit'],
+]
 
 export const getSecondValueFromFirst = (value: string): string => {
   const pairValues = values.find((arr) => {

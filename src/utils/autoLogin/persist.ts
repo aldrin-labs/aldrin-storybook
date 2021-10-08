@@ -1,34 +1,34 @@
 export const apolloCachePersist = {
   '$ROOT_QUERY.login.user': {
-    'email': 'nge@nge.nge',
-    'email_verified': false,
-    'name': 'nge@nge.nge',
-    'nickname': 'nge',
-    'picture': '',
-    'sub': 'auth0|5bfd48f0301a9f3aa493b8bf',
-    'updated_at': '2019-04-22T13:58:18.870Z',
-    '__typename': 'Profile'
+    email: 'nge@nge.nge',
+    email_verified: false,
+    name: 'nge@nge.nge',
+    nickname: 'nge',
+    picture: '',
+    sub: 'auth0|5bfd48f0301a9f3aa493b8bf',
+    updated_at: '2019-04-22T13:58:18.870Z',
+    __typename: 'Profile',
   },
   '$ROOT_QUERY.login': {
-    'user': {
-      'type': 'id',
-      'generated': true,
-      'id': '$ROOT_QUERY.login.user',
-      'typename': 'Profile'
+    user: {
+      type: 'id',
+      generated: true,
+      id: '$ROOT_QUERY.login.user',
+      typename: 'Profile',
     },
-    'loginStatus': true,
-    'modalIsOpen': false,
-    'modalLogging': false,
-    'authError': false,
-    'authErrorText': '',
-    '__typename': 'login'
+    loginStatus: true,
+    modalIsOpen: false,
+    modalLogging: false,
+    authError: false,
+    authErrorText: '',
+    __typename: 'login',
   },
-  'ROOT_QUERY': {
-    'login': {
-      'type': 'id',
-      'generated': true,
-      'id': '$ROOT_QUERY.login',
-      'typename': 'login'
+  ROOT_QUERY: {
+    login: {
+      type: 'id',
+      generated: true,
+      id: '$ROOT_QUERY.login',
+      typename: 'login',
     },
   },
 }
@@ -41,17 +41,17 @@ export const idTokens = [
 
 export const persistRoot = {
   user: JSON.stringify({
-    'check': 'lol',
-    'isShownMocks': false,
-    'showBinanceWarning': false,
-    'toolTip': {
-      'portfolioMain': false,
-      'portfolioIndustry': false,
-      'portfolioRebalance': false,
-      'portfolioCorrelation': false,
-      'portfolioOptimization': false,
-      'chartPage': false,
-      'multiChartPage': false,
+    check: 'lol',
+    isShownMocks: false,
+    showBinanceWarning: false,
+    toolTip: {
+      portfolioMain: false,
+      portfolioIndustry: false,
+      portfolioRebalance: false,
+      portfolioCorrelation: false,
+      portfolioOptimization: false,
+      chartPage: false,
+      multiChartPage: false,
     },
   }),
 }

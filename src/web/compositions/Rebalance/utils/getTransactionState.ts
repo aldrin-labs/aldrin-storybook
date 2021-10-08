@@ -1,4 +1,4 @@
-import { RebalancePopupStep } from "../Rebalance.types"
+import { RebalancePopupStep } from '../Rebalance.types'
 
 export const getTransactionState = ({
   rebalanceStep,
@@ -14,16 +14,14 @@ export const getTransactionState = ({
     case 'pending': {
       if (isTransactionCompleted) {
         return 'done'
-      } else {
-        return 'pending'
       }
+      return 'pending'
     }
     case 'failed': {
       if (isTransactionCompleted) {
         return 'done'
-      } else {
-        return 'failed'
       }
+      return 'failed'
     }
     case 'done': {
       return 'done'

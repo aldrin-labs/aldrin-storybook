@@ -17,6 +17,8 @@ import { useMarkPrice, useMarket } from '@sb/dexUtils/markets'
 
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 
+import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { getRandomInt } from '@core/utils/helpers'
 import {
   PanelCard,
   PanelCardTitle,
@@ -25,8 +27,7 @@ import {
   MobileMarketStatsContainer,
   MarketStatsContainer,
 } from '../../Chart.styles'
-import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { getRandomInt } from '@core/utils/helpers'
+
 export interface IProps {
   theme: Theme
   symbol: string

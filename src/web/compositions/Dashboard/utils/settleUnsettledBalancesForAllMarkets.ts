@@ -19,7 +19,7 @@ export const settleUnsettledBalancesForAllMarkets = async ({
   let signers = []
   let count = 0
 
-  for (let unsettledBalance of unsettledBalances) {
+  for (const unsettledBalance of unsettledBalances) {
     const { market, marketName, openOrders } = unsettledBalance
     const [baseCurrency, quoteCurrency] = marketName.split('_')
 
@@ -43,10 +43,8 @@ export const settleUnsettledBalancesForAllMarkets = async ({
 
     if (!settleFundsTransactionResult) continue
 
-    const [
-      settleFundsTransaction,
-      settleFundsSigners,
-    ] = settleFundsTransactionResult
+    const [settleFundsTransaction, settleFundsSigners] =
+      settleFundsTransactionResult
 
     transaction.add(settleFundsTransaction)
     signers.push(...settleFundsSigners)

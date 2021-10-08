@@ -25,16 +25,12 @@ import Inform from '@icons/inform.svg'
 
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
-import { ISelectData, SelectTabType } from './SelectWrapper.types'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
-import LinkToSolanaExp from '../../components/LinkToSolanaExp'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import {
-  LinkToAnalytics,
-  LinkToTwitter,
-} from '../../components/MarketBlock/MarketBlock.styles'
 import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
+import stableCoins from '@core/config/stableCoins'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
   IconContainer,
   StyledColumn,
@@ -42,8 +38,12 @@ import {
   StyledSymbol,
   StyledTokenName,
 } from './SelectWrapperStyles'
-import stableCoins from '@core/config/stableCoins'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import {
+  LinkToAnalytics,
+  LinkToTwitter,
+} from '../../components/MarketBlock/MarketBlock.styles'
+import LinkToSolanaExp from '../../components/LinkToSolanaExp'
+import { ISelectData, SelectTabType } from './SelectWrapper.types'
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favourite', isSortable: false },
@@ -121,7 +121,7 @@ export const filterSelectorDataByTab = ({
     }
 
     marketsCategoriesData?.forEach(([category, data]) => {
-      const tokens = data.tokens
+      const { tokens } = data
 
       if (tab === category) {
         processedData = processedData.filter((el) => {
@@ -445,8 +445,8 @@ export const combineSelectWrapperData = ({
           <IconContainer>
             <TokenIcon
               mint={mint}
-              width={'2.5rem'}
-              emojiIfNoLogo={true}
+              width="2.5rem"
+              emojiIfNoLogo
               isAwesomeMarket={isAwesomeMarket}
               isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
             />
@@ -455,7 +455,7 @@ export const combineSelectWrapperData = ({
       },
       symbol: {
         render: (
-          <Row direction={'column'} align={'initial'}>
+          <Row direction="column" align="initial">
             {baseTokenInfo && baseTokenInfo?.name && (
               <StyledSymbol>
                 {baseTokenInfo?.name === 'Cryptocurrencies.Ai'
@@ -677,8 +677,8 @@ export const combineSelectWrapperData = ({
         render: (
           <Row
             style={{ flexWrap: 'nowrap' }}
-            justify={'flex-start'}
-            align={'baseline'}
+            justify="flex-start"
+            align="baseline"
           >
             <SvgIcon
               onClick={(e) => {
@@ -688,33 +688,29 @@ export const combineSelectWrapperData = ({
               }}
               src={Inform}
               style={{ marginRight: '1.5rem', cursor: 'pointer' }}
-              width={'2.3rem'}
-              height={'2.3rem'}
+              width="2.3rem"
+              height="2.3rem"
             />
-            <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
-            <DarkTooltip title={'Show analytics for this market.'}>
+            <LinkToSolanaExp padding="0" marketAddress={marketAddress} />
+            <DarkTooltip title="Show analytics for this market.">
               <LinkToAnalytics
                 target="_blank"
                 rel="noopener noreferrer"
                 to={`/analytics/${symbol}`}
               >
-                <SvgIcon
-                  src={AnalyticsIcon}
-                  width={'2.3rem'}
-                  height={'2.3rem'}
-                />
+                <SvgIcon src={AnalyticsIcon} width="2.3rem" height="2.3rem" />
               </LinkToAnalytics>
             </DarkTooltip>
             {twitterLink !== '' && (
-              <DarkTooltip title={'Twitter profile of base token.'}>
+              <DarkTooltip title="Twitter profile of base token.">
                 <LinkToTwitter
                   target="_blank"
                   rel="noopener noreferrer"
                   href={twitterLink}
                 >
                   <SvgIcon
-                    width={'2.5rem'}
-                    height={'2.5rem'}
+                    width="2.5rem"
+                    height="2.5rem"
                     src={BlueTwitterIcon}
                   />
                 </LinkToTwitter>
@@ -727,11 +723,7 @@ export const combineSelectWrapperData = ({
                 rel="noopener noreferrer"
                 href={marketCapLink}
               >
-                <SvgIcon
-                  width={'2.5rem'}
-                  height={'2.5rem'}
-                  src={marketCapIcon}
-                />
+                <SvgIcon width="2.5rem" height="2.5rem" src={marketCapIcon} />
               </a>
             )}
           </Row>

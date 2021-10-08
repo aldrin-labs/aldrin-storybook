@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { Connection } from '@solana/web3.js'
@@ -7,21 +7,27 @@ import debounceRender from 'react-debounce-render'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { useConnection } from '@sb/dexUtils/connection'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
+import {
+  MarketsMap,
+  useAllMarketsList,
+  useAllMarketsMapById,
+} from '@sb/dexUtils/markets'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 import {
   getPricesForTokens,
   getTokenValuesForTokens,
   getTotalTokenValue,
   getAllTokensData,
 } from './utils'
-import { useConnection } from '@sb/dexUtils/connection'
 
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { TokensMapType, Colors } from './Rebalance.types'
 import RebalanceTable from './components/Tables'
 import RebalanceHeaderComponent from './components/Header'
-import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import { RebalancePopup } from './components/RebalancePopup/RebalancePopup'
 
@@ -29,20 +35,12 @@ import {
   generateLegendColors,
   generateChartColors,
 } from './utils/colorGenerating'
-import { useCallback } from 'react'
 import { processAllTokensData } from './utils/processAllTokensData'
-import {
-  MarketsMap,
-  useAllMarketsList,
-  useAllMarketsMapById,
-} from '@sb/dexUtils/markets'
 import { filterDuplicateTokensByAmount } from './utils/filterDuplicateTokensByAmount'
 import { resetTargetAllocation } from './utils/resetTargetAllocation'
 import { getTokensToSell } from './utils/getTokensToSell'
 import { getTokensToBuy } from './utils/getTokensToBuy'
 import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'
-import { useLocalStorageState } from '@sb/dexUtils/utils'
-import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
@@ -119,10 +117,8 @@ const RebalanceComposition = ({
   const allMarketsMap = useAllMarketsList()
 
   const [isRebalancePopupOpen, changeRebalancePopupState] = useState(false)
-  const [
-    isMeetRebalancePopupOpen,
-    setIsMeetRebalancePopupOpen,
-  ] = useLocalStorageState('isMeetRebalancePopupOpen', true)
+  const [isMeetRebalancePopupOpen, setIsMeetRebalancePopupOpen] =
+    useLocalStorageState('isMeetRebalancePopupOpen', true)
 
   const isWalletConnected = wallet.connected
 
@@ -149,9 +145,8 @@ const RebalanceComposition = ({
           connection
         )
 
-        const filteredAllTokensData = filterDuplicateTokensByAmount(
-          allTokensData
-        )
+        const filteredAllTokensData =
+          filterDuplicateTokensByAmount(allTokensData)
 
         // console.log('filteredAllTokensData', filteredAllTokensData)
         const tokensWithPrices = await getPricesForTokens(filteredAllTokensData)
@@ -258,13 +253,13 @@ const RebalanceComposition = ({
       {!isWalletConnected ? (
         <ConnectWalletScreen theme={theme} />
       ) : (
-        <RowContainer theme={theme} height="100%" padding={'6rem 0'}>
+        <RowContainer theme={theme} height="100%" padding="6rem 0">
           <Row
             height="100%"
-            direction={'column'}
-            width={'60%'}
-            margin={'0 2rem 0 0'}
-            justify={'space-between'}
+            direction="column"
+            width="60%"
+            margin="0 2rem 0 0"
+            justify="space-between"
             style={{ flexWrap: 'nowrap' }}
           >
             <DebouncedMemoizedRebalanceHeaderComponent
@@ -285,36 +280,28 @@ const RebalanceComposition = ({
             />
           </Row>
           <Row
-            height={'100%'}
-            width={'35%'}
+            height="100%"
+            width="35%"
             direction="column"
             justify="space-between"
             style={{ flexWrap: 'nowrap' }}
           >
-            <RowContainer height={'calc(85% - 2rem)'}>
+            <RowContainer height="calc(85% - 2rem)">
               <DebouncedMemoizedCurrentValueChartWithLegend
                 data={tokensMap}
                 colors={colors}
                 colorsForLegend={colorsForLegend}
-                id={'current'}
+                id="current"
               />
               <DebouncedMemoizedTargetValueChartWithLegend
                 data={tokensMap}
                 colors={colors}
                 colorsForLegend={colorsForLegend}
-                id={'target'}
+                id="target"
               />
             </RowContainer>
-            <RowContainer
-              justify={'space-between'}
-              align={'flex-end'}
-              height={'16%'}
-            >
-              <Row
-                align={'flex-end'}
-                height={'100%'}
-                width={'calc(45% - 1rem)'}
-              >
+            <RowContainer justify="space-between" align="flex-end" height="16%">
+              <Row align="flex-end" height="100%" width="calc(45% - 1rem)">
                 <DebouncedBalanceDistributedComponent
                   totalTokensValue={totalTokensValue}
                   leftToDistributeValue={leftToDistributeValue}
@@ -332,11 +319,11 @@ const RebalanceComposition = ({
                 fontSize="1.4rem"
                 borderRadius="1.6rem"
                 borderColor={theme.palette.blue.serum}
-                btnColor={'#fff'}
+                btnColor="#fff"
                 backgroundColor={theme.palette.blue.serum}
-                textTransform={'none'}
-                transition={'all .4s ease-out'}
-                padding={'2rem'}
+                textTransform="none"
+                transition="all .4s ease-out"
+                padding="2rem"
                 style={{ whiteSpace: 'nowrap' }}
                 disabled={isButtonDisabled}
               >

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
 
-import { InputRowContainer } from './styles'
-
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import HeightIcon from '@material-ui/icons/Height'
-import { SliderWithPriceAndPercentageFieldRowProps } from './types'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
+import { SliderWithPriceAndPercentageFieldRowProps } from './types'
+import { InputRowContainer } from './styles'
 import { Select, FormInputContainer } from './InputComponents'
 
 // component with slider + price + percentage fields
@@ -41,9 +40,9 @@ export const SliderWithPriceAndPercentageFieldRow = ({
       {needPriceField && (
         <Input
           theme={theme}
-          padding={'0'}
+          padding="0"
           width={sliderInTheBottom ? '65%' : 'calc(32.5%)'}
-          textAlign={'left'}
+          textAlign="left"
           symbol={pair[1]}
           value={
             pricePercentage !== value
@@ -72,10 +71,10 @@ export const SliderWithPriceAndPercentageFieldRow = ({
         width={
           sliderInTheBottom ? '35%' : needPriceField ? 'calc(17.5%)' : '50%'
         }
-        symbol={'%'}
+        symbol="%"
         preSymbol={percentagePreSymbol}
         textAlign={percentageTextAlign}
-        needPreSymbol={true}
+        needPreSymbol
         value={value}
         showErrors={showErrors}
         isValid={validateField(true, pricePercentage)}
@@ -104,7 +103,7 @@ export const SliderWithPriceAndPercentageFieldRow = ({
           onAfterChange={onAfterSliderChange}
         />
       ) : (
-        <InputRowContainer padding={'1.6rem 0 .8rem 0'}>
+        <InputRowContainer padding="1.6rem 0 .8rem 0">
           <BlueSlider
             theme={theme}
             value={value}
@@ -143,7 +142,7 @@ export const SliderWithTimeoutFieldRow = ({
       <Input
         theme={theme}
         haveSelector
-        width={'calc(75% - .4rem)'}
+        width="calc(75% - .4rem)"
         showErrors={showErrors}
         isValid={validateField(true, timeoutValue)}
         value={value}
@@ -155,7 +154,7 @@ export const SliderWithTimeoutFieldRow = ({
       />
       <Select
         theme={theme}
-        width={'calc(25% - .8rem)'}
+        width="calc(25% - .8rem)"
         value={timeoutMode}
         inputStyles={{
           borderTopLeftRadius: 0,
@@ -166,7 +165,7 @@ export const SliderWithTimeoutFieldRow = ({
         <option>sec</option>
         <option>min</option>
       </Select>
-      <InputRowContainer padding={'1.6rem 0 .8rem 0'}>
+      <InputRowContainer padding="1.6rem 0 .8rem 0">
         <BlueSlider
           theme={theme}
           max={60}
@@ -232,7 +231,7 @@ export const SliderWithAmountFieldRow = ({
           <FormInputContainer
             theme={theme}
             needLine={false}
-            needRightValue={true}
+            needRightValue
             rightValue={`${
               entryPoint.order.side === 'buy' || marketType === 1
                 ? stripDigitPlaces(
@@ -251,7 +250,7 @@ export const SliderWithAmountFieldRow = ({
           >
             <Input
               theme={theme}
-              type={'text'}
+              type="text"
               pattern={marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
               symbol={pair[0]}
               value={localAmount}
@@ -287,7 +286,7 @@ export const SliderWithAmountFieldRow = ({
           <FormInputContainer
             theme={theme}
             needLine={false}
-            needRightValue={true}
+            needRightValue
             rightValue={`${
               entryPoint.order.side === 'buy' || marketType === 1
                 ? stripDigitPlaces(maxAmount, marketType === 1 ? 0 : 2)
@@ -409,11 +408,11 @@ export const SliderWithAmountFieldRow = ({
       </InputRowContainer>
 
       {marketType === 1 && (
-        <InputRowContainer padding={'.8rem 0 0 0'}>
+        <InputRowContainer padding=".8rem 0 0 0">
           <FormInputContainer
             theme={theme}
             needLine={false}
-            needRightValue={true}
+            needRightValue
             rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${pair[1]}`}
             onValueClick={setMaxAmount}
             title={`cost / initial margin (${pair[1]})`}
@@ -470,8 +469,8 @@ export const SliderWithAmountFieldRowForBasic = ({
     <>
       <InputRowContainer
         direction="column"
-        key={'amount'}
-        padding={'.6rem 0'}
+        key="amount"
+        padding=".6rem 0"
         justify={priceType === 'market' ? 'flex-end' : 'center'}
       >
         {isSPOTMarket ? (
@@ -480,20 +479,20 @@ export const SliderWithAmountFieldRowForBasic = ({
             needTitle
             title={`${isSPOTMarket ? 'amount' : 'order quantity'} (${pair[0]})`}
             value={localAmount}
-            type={'text'}
+            type="text"
             pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
             onChange={onAmountChange}
             symbol={pair[0]}
           />
         ) : (
-          <InputRowContainer direction="row" padding={'0'}>
+          <InputRowContainer direction="row" padding="0">
             <div style={{ width: '50%', paddingRight: '1%' }}>
               <Input
                 theme={theme}
                 needTitle
-                title={`size`}
+                title="size"
                 value={localAmount}
-                type={'text'}
+                type="text"
                 pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
                 onChange={onAmountChange}
                 symbol={pair[0]}
@@ -502,10 +501,10 @@ export const SliderWithAmountFieldRowForBasic = ({
             <div style={{ width: '50%', paddingLeft: '1%' }}>
               <Input
                 theme={theme}
-                //disabled={false}
+                // disabled={false}
                 needTitle
-                title={`total`}
-                type={'text'}
+                title="total"
+                type="text"
                 value={localTotal === '' ? '' : localTotal}
                 onChange={onTotalChange}
                 symbol={pair[1]}
@@ -564,15 +563,11 @@ export const SliderWithAmountFieldRowForBasic = ({
       </InputRowContainer>
 
       {isSPOTMarket && (
-        <InputRowContainer
-          key={'total'}
-          padding={'.6rem 0'}
-          direction={'column'}
-        >
+        <InputRowContainer key="total" padding=".6rem 0" direction="column">
           <Input
             theme={theme}
             needTitle
-            type={'text'}
+            type="text"
             title={`total (${pair[1]})`}
             value={localTotal || ''}
             onChange={onTotalChange}
@@ -583,19 +578,19 @@ export const SliderWithAmountFieldRowForBasic = ({
 
       {!isSPOTMarket && (
         <InputRowContainer
-          key={'cost'}
-          padding={'.6rem 0'}
-          direction={'column'}
+          key="cost"
+          padding=".6rem 0"
+          direction="column"
           justify="flex-end"
         >
           <Input
             theme={theme}
             needTitle
-            //disabled={priceType === 'market'}
+            // disabled={priceType === 'market'}
             title={`margin (${pair[1]})`}
             value={localMargin || ''}
-            type={'text'}
-            pattern={'[0-9]+.[0-9]{2}'}
+            type="text"
+            pattern="[0-9]+.[0-9]{2}"
             onChange={onMarginChange}
             symbol={pair[1]}
           />

@@ -1,5 +1,5 @@
-import { Head, Data } from './index.types'
 import nanoid from 'nanoid'
+import { Head, Data } from './index.types'
 
 export const mock: { head: Head[]; data: Data } = {
   head: [

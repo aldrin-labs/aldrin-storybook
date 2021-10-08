@@ -5,7 +5,11 @@ import { compose } from 'recompose'
 import { Paper } from '@material-ui/core'
 
 import { notify } from '@sb/dexUtils//notifications'
-import { createAssociatedTokenAccount, useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
+import {
+  createAssociatedTokenAccount,
+  useBalanceInfo,
+  useWallet,
+} from '@sb/dexUtils/wallet'
 
 import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
@@ -23,11 +27,11 @@ import clipboardCopy from 'clipboard-copy'
 import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { useConnection } from '@sb/dexUtils/connection'
-import { BlueButton } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import SvgIcon from '@sb/components/SvgIcon'
 import greenDoneMark from '@icons/greenDoneMark.svg'
 import { createToken } from '@sb/dexUtils/createToken'
 import { createTokens } from '@sb/dexUtils/createTokens'
+import { BlueButton } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -37,9 +41,9 @@ const StyledPaper = styled(Paper)`
 export const VioletButton = styled((props) => (
   <BtnCustom
     btnWidth={props.width || 'calc(50% - .5rem)'}
-    fontSize={'1.4rem'}
-    height={'4.5rem'}
-    textTransform={'capitalize'}
+    fontSize="1.4rem"
+    height="4.5rem"
+    textTransform="capitalize"
     backgroundColor={
       props.disabled
         ? props.theme.palette.grey.dark
@@ -51,7 +55,7 @@ export const VioletButton = styled((props) => (
         : props.background || props.theme.palette.blue.serum
     }
     btnColor={props.color || props.theme.palette.white.main}
-    borderRadius={'1rem'}
+    borderRadius="1rem"
     border={props.border || 'none'}
     {...props}
   />
@@ -62,13 +66,13 @@ export const VioletButton = styled((props) => (
 export const WhiteButton = styled((props) => (
   <BtnCustom
     btnWidth={props.width || 'calc(50% - .5rem)'}
-    fontSize={'1.4rem'}
-    height={'4.5rem'}
-    textTransform={'capitalize'}
+    fontSize="1.4rem"
+    height="4.5rem"
+    textTransform="capitalize"
     backgroundColor={props.background || 'transparent'}
     borderColor={props.background || props.theme.palette.white.main}
     btnColor={props.color || props.theme.palette.white.main}
-    borderRadius={'1rem'}
+    borderRadius="1rem"
     border={props.border || 'none'}
     {...props}
   />
@@ -92,9 +96,8 @@ export const Text = styled.span`
 const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
   const { market } = useMarket()
   const { wallet, providerUrl } = useWallet()
-  const [isTokenSuccessfullyAdded, setIsTokenSuccessfullyAdded] = useState(
-    false
-  )
+  const [isTokenSuccessfullyAdded, setIsTokenSuccessfullyAdded] =
+    useState(false)
   const [tokenName, setTokenName] = useState('')
   const connection = useConnection()
   const isBaseCoinExistsInWallet = useSelectedBaseCurrencyAccount()
@@ -102,7 +105,7 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
   const balanceInfo = useBalanceInfo(wallet.publicKey)
   const isBothNotAdded = !isBaseCoinExistsInWallet && !isQuoteCoinExistsInWallet
 
-  let { amount, decimals } = balanceInfo || {
+  const { amount, decimals } = balanceInfo || {
     amount: 0,
     decimals: 8,
     mint: null,
@@ -130,7 +133,7 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
       style={{ width: '85rem', margin: 'auto' }}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       onEnter={() => setIsTokenSuccessfullyAdded(false)}
       aria-labelledby="responsive-dialog-title"
@@ -146,17 +149,17 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
         id="share-dialog-content"
       >
         {isTokenSuccessfullyAdded ? (
-          <RowContainer padding={'0 0 2rem 0'}>
-            <RowContainer margin={'2rem 0 5rem 0'}>
-              <SvgIcon src={greenDoneMark} width={'10rem'} height={'auto'} />
+          <RowContainer padding="0 0 2rem 0">
+            <RowContainer margin="2rem 0 5rem 0">
+              <SvgIcon src={greenDoneMark} width="10rem" height="auto" />
             </RowContainer>
-            <RowContainer margin={'0 0 5rem 0'}>
+            <RowContainer margin="0 0 5rem 0">
               <Text>
                 {tokenName} token has been successfully added to your wallet.
               </Text>
             </RowContainer>
             <BlueButton
-              color={'#17181A'}
+              color="#17181A"
               background="#A5E898"
               theme={theme}
               onClick={() => onClose()}
@@ -250,14 +253,18 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
                 theme={theme}
                 onClick={async () => {
                   try {
-                    await createAssociatedTokenAccount({ wallet, connection, splTokenMintAddress: new PublicKey(mint) })
+                    await createAssociatedTokenAccount({
+                      wallet,
+                      connection,
+                      splTokenMintAddress: new PublicKey(mint),
+                    })
                   } catch (e) {
                     notify({
                       message: 'Token was not added, please try again',
                       type: 'error',
                     })
 
-                    return 
+                    return
                   }
 
                   notify({

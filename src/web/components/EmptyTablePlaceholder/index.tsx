@@ -6,7 +6,7 @@ import { PTWrapper } from '@sb/styles/cssUtils'
 export default (props: { isEmpty: boolean; children: React.ReactChild }) => {
   if (props.isEmpty) {
     return (
-      <PTWrapper tableData={true}>
+      <PTWrapper tableData>
         <Typography variant="h2" color="textPrimary" align="center">
           Add account for Portfolio.
         </Typography>

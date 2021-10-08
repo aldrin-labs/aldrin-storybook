@@ -6,25 +6,16 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { Theme } from '@material-ui/core'
 
-import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { BlockTemplate } from '../Pools/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { ReloadTimer, TimerButton } from '../Rebalance/components/ReloadTimer'
-import { InputWithSelectorForSwaps } from './components/Inputs/index'
-import { Card } from './styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { notify } from '@sb/dexUtils/notifications'
 
-import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { getAllTokensData, getMarketsData } from '../Rebalance/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import Inform from '@icons/inform.svg'
 import Gear from '@icons/gear.svg'
 import Arrows from '@icons/switchArrows.svg'
-import { TokenInfo } from '../Rebalance/Rebalance.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import withTheme from '@material-ui/core/styles/withTheme'
@@ -35,15 +26,24 @@ import {
   getTokenNameByMintAddress,
   useAllMarketsList,
 } from '@sb/dexUtils/markets'
+import { withPublicKey } from '@core/hoc/withPublicKey'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
 import { filterDataBySymbolForDifferentDeviders } from '../Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import Pools from '../Pools/components/Tables/Pools'
 import { swap, swapWithHandleNativeSol } from '@sb/dexUtils/pools'
 import { PublicKey } from '@solana/web3.js'
 import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
+import { TokenInfo } from '../Rebalance/Rebalance.types'
+import { getAllTokensData, getMarketsData } from '../Rebalance/utils'
+import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
+import { SelectCoinPopup } from './components/SelectCoinPopup'
+import { Card } from './styles'
+import { InputWithSelectorForSwaps } from './components/Inputs/index'
+import { ReloadTimer, TimerButton } from '../Rebalance/components/ReloadTimer'
+import { BlockTemplate } from '../Pools/index.styles'
+import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { WarningPopup } from '../Chart/components/WarningPopup'
 
 const SwapsPage = ({
@@ -69,23 +69,17 @@ const SwapsPage = ({
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
-  const [
-    selectedBaseTokenAddressFromSeveral,
-    setBaseTokenAddressFromSeveral,
-  ] = useState<string>('')
+  const [selectedBaseTokenAddressFromSeveral, setBaseTokenAddressFromSeveral] =
+    useState<string>('')
   const [
     selectedQuoteTokenAddressFromSeveral,
     setQuoteTokenAddressFromSeveral,
   ] = useState<string>('')
-  const [
-    isTransactionSettingsPopupOpen,
-    openTransactionSettingsPopup,
-  ] = useState(false)
+  const [isTransactionSettingsPopupOpen, openTransactionSettingsPopup] =
+    useState(false)
 
-  const [
-    refreshAllTokensDataCounter,
-    setRefreshAllTokensDataCounter,
-  ] = useState<number>(0)
+  const [refreshAllTokensDataCounter, setRefreshAllTokensDataCounter] =
+    useState<number>(0)
 
   const refreshAllTokensData = () =>
     setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
@@ -94,14 +88,14 @@ const SwapsPage = ({
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
-    // const selectedTokens = marketsData.find(
+  // const selectedTokens = marketsData.find(
   //   (market) =>
   //     (market.tokenA === getTokenNameByMintAddress(baseTokenMintAddress) &&
   //       market.tokenB === getTokenNameByMintAddress(quoteTokenMintAddress)) ||
   //     market.tokenB === getTokenNameByMintAddress(baseTokenMintAddress) ||
   //       market.tokenB === getTokenNameByMintAddress(quoteTokenMintAddress)
   // )
-  
+
   const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
@@ -206,7 +200,7 @@ const SwapsPage = ({
       await setAllTokensData(allTokensData)
     }
 
-    if (!!wallet?.publicKey) {
+    if (wallet?.publicKey) {
       fetchData()
     }
   }, [wallet?.publicKey, refreshAllTokensDataCounter])
@@ -249,21 +243,21 @@ const SwapsPage = ({
   const isButtonDisabled = isTokenABalanceInsufficient || !selectedTokens
 
   return (
-    <RowContainer direction={'column'} height={'100%'}>
+    <RowContainer direction="column" height="100%">
       <>
         {' '}
         <BlockTemplate
           theme={theme}
-          width={'50rem'}
+          width="50rem"
           style={{ padding: '2rem', zIndex: '10' }}
         >
-          <RowContainer margin={'1rem 2rem'} justify={'space-between'}>
+          <RowContainer margin="1rem 2rem" justify="space-between">
             <Text>
               Slippage Tolerance: <strong>{slippageTolerance}%</strong>
             </Text>
             <Row>
               <ReloadTimer
-                marginRight={'1.5rem'}
+                marginRight="1.5rem"
                 callback={async () => {
                   await getDexTokensPricesQueryRefetch()
                   await getPoolsInfoQueryRefetch()
@@ -273,27 +267,27 @@ const SwapsPage = ({
               {baseTokenMintAddress && quoteTokenMintAddress && (
                 <TimerButton
                   onClick={() => openTokensAddressesPopup(true)}
-                  marginRight={'1.5rem'}
+                  marginRight="1.5rem"
                 >
-                  <SvgIcon src={Inform} width={'50%'} height={'50%'} />
+                  <SvgIcon src={Inform} width="50%" height="50%" />
                 </TimerButton>
               )}
               <SvgIcon
                 style={{ cursor: 'pointer' }}
                 onClick={() => openTransactionSettingsPopup(true)}
                 src={Gear}
-                width={'2.5rem'}
-                height={'2.5rem'}
+                width="2.5rem"
+                height="2.5rem"
               />
             </Row>
           </RowContainer>
-          <RowContainer margin={'2rem 0 1rem 0'}>
+          <RowContainer margin="2rem 0 1rem 0">
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'0.00'}
+              placeholder="0.00"
               theme={theme}
-              directionFrom={true}
+              directionFrom
               value={baseAmount}
               disabled={
                 !baseTokenMintAddress ||
@@ -309,22 +303,22 @@ const SwapsPage = ({
               }}
             />
           </RowContainer>
-          <RowContainer justify={'flex-start'} margin={'0 2rem'}>
+          <RowContainer justify="flex-start" margin="0 2rem">
             <SvgIcon
               style={{ cursor: 'pointer' }}
               src={Arrows}
-              width={'2.5rem'}
-              height={'2.5rem'}
+              width="2.5rem"
+              height="2.5rem"
               onClick={() => {
                 reverseTokens()
               }}
             />
           </RowContainer>
-          <RowContainer margin={'1rem 0 2rem 0'}>
+          <RowContainer margin="1rem 0 2rem 0">
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'0.00'}
+              placeholder="0.00"
               theme={theme}
               disabled={
                 !baseTokenMintAddress ||
@@ -343,15 +337,15 @@ const SwapsPage = ({
           </RowContainer>
 
           {selectedTokens && (
-            <RowContainer margin={'1rem 2rem'} justify={'space-between'}>
-              <Text color={'#93A0B2'}>Price:</Text>
+            <RowContainer margin="1rem 2rem" justify="space-between">
+              <Text color="#93A0B2">Price:</Text>
               <Text
-                fontSize={'1.5rem'}
-                color={'#A5E898'}
-                fontFamily={'Avenir Next Demi'}
+                fontSize="1.5rem"
+                color="#A5E898"
+                fontFamily="Avenir Next Demi"
               >
                 1{' '}
-                <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
+                <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
                   {baseSymbol}{' '}
                 </Text>
                 ={' '}
@@ -361,7 +355,7 @@ const SwapsPage = ({
                       +(+poolAmountTokenA / +poolAmountTokenB),
                       8
                     )}{' '}
-                <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
+                <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
                   {quoteSymbol}{' '}
                 </Text>
               </Text>
@@ -380,11 +374,11 @@ const SwapsPage = ({
                 padding="2rem 8rem"
                 borderRadius="1.1rem"
                 borderColor={theme.palette.blue.serum}
-                btnColor={'#fff'}
+                btnColor="#fff"
                 backgroundColor={theme.palette.blue.serum}
-                textTransform={'none'}
-                margin={'4rem 0 0 0'}
-                transition={'all .4s ease-out'}
+                textTransform="none"
+                margin="4rem 0 0 0"
+                transition="all .4s ease-out"
                 style={{ whiteSpace: 'nowrap' }}
               >
                 Connect wallet
@@ -396,16 +390,16 @@ const SwapsPage = ({
                 fontSize="1.4rem"
                 padding="1rem 2rem"
                 borderRadius=".8rem"
-                borderColor={'none'}
-                btnColor={'#fff'}
+                borderColor="none"
+                btnColor="#fff"
                 backgroundColor={
                   isButtonDisabled
                     ? '#3A475C'
                     : 'linear-gradient(90.62deg, #5EB6A8 0.11%, #3861C1 99.54%)'
                 }
-                textTransform={'none'}
-                margin={'1rem 0 0 0'}
-                transition={'all .4s ease-out'}
+                textTransform="none"
+                margin="1rem 0 0 0"
+                transition="all .4s ease-out"
                 disabled={isButtonDisabled}
                 onClick={async () => {
                   if (!selectedTokens) return
@@ -484,40 +478,40 @@ const SwapsPage = ({
             <Card
               style={{ padding: '2rem' }}
               theme={theme}
-              width={'45rem'}
-              height={'12rem'}
+              width="45rem"
+              height="12rem"
             >
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Minimum received</Text>
+              <RowContainer margin="0.5rem 0" justify="space-between">
+                <Text color="#93A0B2">Minimum received</Text>
                 <Row style={{ flexWrap: 'nowrap' }}>
                   <Text
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                    color={'#A5E898'}
+                    fontFamily="Avenir Next Bold"
+                    color="#A5E898"
                   >
                     {totalWithFees.toFixed(5)}{' '}
                   </Text>
-                  <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
+                  <Text fontFamily="Avenir Next Bold">{quoteSymbol}</Text>
                 </Row>
               </RowContainer>
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Price Impact</Text>
+              <RowContainer margin="0.5rem 0" justify="space-between">
+                <Text color="#93A0B2">Price Impact</Text>
                 <Row style={{ flexWrap: 'nowrap' }}>
                   <Text
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                    color={'#A5E898'}
+                    fontFamily="Avenir Next Bold"
+                    color="#A5E898"
                   >
                     {stripDigitPlaces(rawSlippage, 2)}%
                   </Text>
                 </Row>
               </RowContainer>{' '}
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Liquidity provider fee</Text>
+              <RowContainer margin="0.5rem 0" justify="space-between">
+                <Text color="#93A0B2">Liquidity provider fee</Text>
                 <Row style={{ flexWrap: 'nowrap' }}>
                   <Text
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
+                    fontFamily="Avenir Next Bold"
                   >
                     {REBALANCE_CONFIG.SLIPPAGE}%
                   </Text>
@@ -582,7 +576,7 @@ const SwapsPage = ({
         theme={theme}
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
-        isSwapPage={true}
+        isSwapPage
       />
     </RowContainer>
   )

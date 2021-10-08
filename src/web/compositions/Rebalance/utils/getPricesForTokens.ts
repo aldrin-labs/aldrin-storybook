@@ -44,7 +44,7 @@ export const getPricesForTokens = async (
       const price: number | null = tokensPrices.find(
         (tokenPrice) => tokenPrice.symbol === symbol
       )?.price
-      
+
       return { ...token, price }
     } catch (e) {
       return { ...token, price: null }

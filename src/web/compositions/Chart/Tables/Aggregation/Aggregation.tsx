@@ -4,8 +4,8 @@ import Typography from '@material-ui/core/Typography'
 import MdAddCircleOutline from '@material-ui/icons/AddCircleOutlined'
 
 import { Row, Table, Head, Cell, HeadCell } from '@sb/components/OldTable/Table'
-import { IProps } from './Aggregation.types'
 import { MASTER_BUILD } from '@core/utils/config'
+import { IProps } from './Aggregation.types'
 
 const Aggregation = (props: IProps) => {
   const {
@@ -16,15 +16,15 @@ const Aggregation = (props: IProps) => {
 
   return (
     <AggregationWrapper borderTopColor={palette.divider}>
-      <AggHead border={'transparent'} background={palette.background.paper}>
+      <AggHead border="transparent" background={palette.background.paper}>
         <Row background={palette.background.paper} isHead>
-          <Cell width={'10%'} />
-          <HeadCell width={'45%'}>
+          <Cell width="10%" />
+          <HeadCell width="45%">
             <Typography color="textPrimary" variant="caption">
               Aggregation
             </Typography>
           </HeadCell>
-          <HeadCell width={'20%'}>
+          <HeadCell width="20%">
             <Typography color="secondary" variant="caption">
               {aggregation.toFixed(2)}
             </Typography>
@@ -33,14 +33,14 @@ const Aggregation = (props: IProps) => {
             style={{
               zIndex: 1000,
             }}
-            width={'25%'}
+            width="25%"
           >
             {!MASTER_BUILD && (
               <Button>
                 <MdAddCircleOutline
                   onClick={onButtonClick}
                   style={{
-                    color: palette.primary['light'],
+                    color: palette.primary.light,
                     fontSize: '1.2rem',
                     cursor: 'pointer',
                     position: 'relative',

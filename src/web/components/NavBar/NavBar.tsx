@@ -7,22 +7,13 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import { client } from '@core/graphql/apolloClient'
 import { LoginComponent as Login } from '@sb/components/Login'
-import { WithTheme } from '@material-ui/core/styles'
-import { withTheme } from '@material-ui/styles'
+import { WithTheme, withTheme } from '@material-ui/core/styles'
 import { Grid, Typography } from '@material-ui/core'
 import { NavLink as Link } from 'react-router-dom'
 
 import { handleLogout, checkLoginStatus } from '@core/utils/loginUtils'
 import Hidden from '@material-ui/core/Hidden'
 import { syncStorage } from '@storage'
-
-import {
-  Nav,
-  StyledToolbar,
-  NavLinkButtonWrapper,
-  NavBarWrapper,
-  NavBreadcrumbTypography,
-} from './NavBar.styles'
 
 import Logo from '@sb/components/Logo/Logo'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
@@ -52,6 +43,13 @@ import {
 } from '@core/utils/prefetching'
 
 import { MASTER_BUILD } from '@core/utils/config'
+import {
+  Nav,
+  StyledToolbar,
+  NavLinkButtonWrapper,
+  NavBarWrapper,
+  NavBreadcrumbTypography,
+} from './NavBar.styles'
 
 export interface Props extends WithTheme {
   $hide?: boolean
@@ -191,13 +189,13 @@ const NavBarRaw: SFC<Props> = ({
         <Grid
           alignItems="center"
           style={{ height: '100%', width: '50%' }}
-          container={true}
+          container
           wrap="nowrap"
-          alignContent={'stretch'}
+          alignContent="stretch"
         >
           <Hidden only={['sm', 'xs']}>
             <Grid
-              item={true}
+              item
               style={{
                 display: 'flex',
                 height: '100%',
@@ -206,8 +204,8 @@ const NavBarRaw: SFC<Props> = ({
               }}
             >
               <Grid
-                container={true}
-                alignItems={'center'}
+                container
+                alignItems="center"
                 wrap="nowrap"
                 style={{
                   minWidth: '25rem',
@@ -222,8 +220,8 @@ const NavBarRaw: SFC<Props> = ({
             </Grid>
           </Hidden>
           <Grid
-            item={true}
-            container={true}
+            item
+            container
             style={{
               display: 'flex',
               justifyContent: 'space-between',
@@ -247,7 +245,7 @@ const NavBarRaw: SFC<Props> = ({
                     justifyContent: 'center',
                   }}
                 >
-                  {'Spot'}
+                  Spot
                 </div>
               }
               selectedMenu={selectedMenu}
@@ -305,7 +303,7 @@ const NavBarRaw: SFC<Props> = ({
               id="futures-page"
               key="futures-page"
               marketName="futures"
-              page={'futures'}
+              page="futures"
               buttonText={
                 <div
                   style={{
@@ -315,7 +313,7 @@ const NavBarRaw: SFC<Props> = ({
                     justifyContent: 'center',
                   }}
                 >
-                  {'Futures'}
+                  Futures
                 </div>
               }
               selectedMenu={selectedMenu}
@@ -398,8 +396,8 @@ const NavBarRaw: SFC<Props> = ({
             justifyContent: 'space-around',
             margin: 'auto auto',
           }}
-          item={true}
-          key={'navBarGrid'}
+          item
+          key="navBarGrid"
         >
           <NavBarWrapper>
             {/* <Dropdown
@@ -530,7 +528,7 @@ const NavBarRaw: SFC<Props> = ({
             >
               <NavLinkButton
                 key="trading"
-                page={`chart`}
+                page="chart"
                 component={Chart}
                 pathname={pathname}
               >
@@ -550,7 +548,7 @@ const NavBarRaw: SFC<Props> = ({
             >
               <NavLinkButton
                 key="portfolio"
-                page={`main`}
+                page="main"
                 component={Portfolio}
                 pathname={pathname}
               >
@@ -571,7 +569,7 @@ const NavBarRaw: SFC<Props> = ({
             >
               <NavLinkButton
                 key="performance"
-                page={`transactions`}
+                page="transactions"
                 component={Transactions}
                 pathname={pathname}
               >
@@ -592,7 +590,7 @@ const NavBarRaw: SFC<Props> = ({
               >
                 <NavLinkButton
                   key="rebalance"
-                  page={`rebalance`}
+                  page="rebalance"
                   component={Rebalance}
                   pathname={pathname}
                 >
@@ -621,13 +619,8 @@ const NavBarRaw: SFC<Props> = ({
           </>
         )}
 
-        <Grid item={true} style={{ display: 'flex', height: '100%' }}>
-          <Grid
-            justify="flex-end"
-            wrap="nowrap"
-            direction={'row'}
-            container={true}
-          >
+        <Grid item style={{ display: 'flex', height: '100%' }}>
+          <Grid justify="flex-end" wrap="nowrap" direction="row" container>
             {/* <Hidden only={['sm', 'xs']}>
                 <Feedback borderColor={fade(divider, 0.5)} />
               </Hidden> */}

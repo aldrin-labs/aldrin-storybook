@@ -2,17 +2,6 @@ import React from 'react'
 import { SvgIcon } from '@sb/components'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import {
-  RotatedContainer,
-  TransparentText,
-  Header,
-  LinkContainer,
-  VioletButton,
-  SpinAnimatedImage,
-  AnimatedImage,
-  GridContainer,
-  MobileImageContainer,
-} from './LiquidityPoolsMock.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
 import MediumIcon from '@icons/violetMedium.svg'
@@ -24,6 +13,17 @@ import KudelskiLogo from '@icons/kudelski.svg'
 import ComingSoonCircle from '@icons/comingSoonCircle.png'
 import AldrinLogo from '@icons/aldrinLogoWithShadow.svg'
 import useMobileSize from '@webhooks/useMobileSize'
+import {
+  RotatedContainer,
+  TransparentText,
+  Header,
+  LinkContainer,
+  VioletButton,
+  SpinAnimatedImage,
+  AnimatedImage,
+  GridContainer,
+  MobileImageContainer,
+} from './LiquidityPoolsMock.styles'
 import AMMAudit from './AldrinAMMAuditReport.pdf'
 
 export const LiquidityPoolsMock = ({}) => {
@@ -35,7 +35,7 @@ export const LiquidityPoolsMock = ({}) => {
         background: 'rgb(14, 16, 22)',
         position: 'relative',
       }}
-      height={'100%'}
+      height="100%"
     >
       <RotatedContainer>
         <TransparentText>AMM AMM AMM</TransparentText>
@@ -60,7 +60,7 @@ export const LiquidityPoolsMock = ({}) => {
           <LinkContainer
             target="_blank"
             rel="noopener noreferrer"
-            href={'https://t.me/Aldrin_Exchange'}
+            href="https://t.me/Aldrin_Exchange"
           >
             <SvgIcon width="100%" height="100%" src={TelegramIcon} />
           </LinkContainer>
@@ -114,7 +114,7 @@ export const LiquidityPoolsMock = ({}) => {
           <SpinAnimatedImage src={ComingSoonCircle} />
         </MobileImageContainer>
       </Row>
-      <GridContainer height={'100%'} width="40%" direction={'column'}>
+      <GridContainer height="100%" width="40%" direction="column">
         <Row width="100%" height="65%" justify="flex-start">
           <AnimatedImage src={AldrinLogo} />
         </Row>

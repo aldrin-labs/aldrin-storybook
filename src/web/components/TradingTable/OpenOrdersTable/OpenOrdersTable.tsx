@@ -44,8 +44,6 @@ const OpenOrdersTable = (props) => {
         description: e.message,
         type: 'error',
       })
-
-      return
     }
   }
 
@@ -64,7 +62,7 @@ const OpenOrdersTable = (props) => {
     cancelOrderWithStatus,
     theme,
     handlePairChange,
-    isCancellingAllOrders,
+    isCancellingAllOrders
   )
 
   return (

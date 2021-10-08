@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { Paper } from '@material-ui/core'
 
-
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 50rem;

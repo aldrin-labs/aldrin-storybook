@@ -4,8 +4,8 @@ import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.style
 import { Text } from '@sb/compositions/Addressbook/index'
 
 import HintIcon from '@icons/hint.svg'
-import SvgIcon from '../SvgIcon'
 import { useInterval } from '@sb/dexUtils/useInterval'
+import SvgIcon from '../SvgIcon'
 import { getRandomHint } from './hints'
 
 export const HintQuoteBlock = ({
@@ -24,12 +24,12 @@ export const HintQuoteBlock = ({
   }, 10000)
 
   return (
-    <RowContainer direction={'column'}>
-      <RowContainer justify={'space-between'}>
+    <RowContainer direction="column">
+      <RowContainer justify="space-between">
         <BoldHeader>Did you know?</BoldHeader>
-        <SvgIcon src={HintIcon} height={'3rem'} width={'3rem'} />
+        <SvgIcon src={HintIcon} height="3rem" width="3rem" />
       </RowContainer>
-      <RowContainer margin={'1rem 0 0 0'} style={{ ...hintTextStyles }}>
+      <RowContainer margin="1rem 0 0 0" style={{ ...hintTextStyles }}>
         <Text>{hintText}</Text>
       </RowContainer>
     </RowContainer>

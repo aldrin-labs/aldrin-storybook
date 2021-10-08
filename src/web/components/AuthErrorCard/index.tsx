@@ -16,14 +16,14 @@ class AuthErrorCard extends PureComponent<IProps> {
         >
           <StyledCard>
             <CardContent>
-              <Typography align="center" variant="h1" gutterBottom={true}>
+              <Typography align="center" variant="h1" gutterBottom>
                 <MdLockStyled />
               </Typography>
               <Typography
                 color="textSecondary"
                 align="center"
                 variant="h6"
-                gutterBottom={true}
+                gutterBottom
               >
                 You must confirm your email
               </Typography>

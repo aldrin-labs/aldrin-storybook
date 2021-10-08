@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react'
 
-import { InputProps } from './types'
 import {
   TradeInput,
   TradeSelect,
@@ -12,8 +11,9 @@ import {
 } from '@sb/components/TraidingTerminal/index'
 import { TooltipContainer, Tooltip } from '@sb/components/TooltipCustom/Tooltip'
 
-import { BeforeCharacter, InputRowContainer } from './styles'
 import { Theme } from '@material-ui/core'
+import { BeforeCharacter, InputRowContainer } from './styles'
+import { InputProps } from './types'
 
 export const Character = ({
   needCharacter,
@@ -47,7 +47,7 @@ export const Input = ({
   isValid = true,
   showErrors = false,
   inputStyles,
-  theme
+  theme,
 }: InputProps) => {
   return (
     <div
@@ -119,9 +119,9 @@ export const FormInputContainer = ({
   haveTooltip = false,
   tooltipText = '',
   tooltipStyles = {},
-  onValueClick = () => { },
+  onValueClick = () => {},
   theme,
-  style
+  style,
 }: {
   title: string
   children: ReactNode

@@ -16,17 +16,25 @@ export const mergeRebalanceTransactions = (transactions: TransactionType[]) => {
 
     if (isTransactionCanBeMerged) {
       const transactionToMergeWith = mergedTransactions[sameTransactionIndex]
-      
+
       const amount = transactionToMergeWith.amount + transactionToMerge.amount
       const total = transactionToMergeWith.total + transactionToMerge.total
-      const price = (transactionToMergeWith.price + transactionToMerge.price) / 2
+      const price =
+        (transactionToMergeWith.price + transactionToMerge.price) / 2
       const feeUSD = transactionToMergeWith.feeUSD + transactionToMerge.feeUSD
       const openOrdersAccount =
         transactionToMergeWith.openOrders?.length === 0
-        ? transactionToMerge.openOrders
-        : transactionToMergeWith.openOrders
+          ? transactionToMerge.openOrders
+          : transactionToMergeWith.openOrders
 
-      const mergedTransaction = { ...transactionToMergeWith, amount, total, price, openOrdersAccount, feeUSD }
+      const mergedTransaction = {
+        ...transactionToMergeWith,
+        amount,
+        total,
+        price,
+        openOrdersAccount,
+        feeUSD,
+      }
 
       mergedTransactions = [
         ...mergedTransactions.slice(0, sameTransactionIndex),

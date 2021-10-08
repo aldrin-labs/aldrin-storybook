@@ -22,13 +22,8 @@ const ConnectWalletDropdown = ({
   containerStyles?: CSSProperties
   buttonStyles?: CSSProperties
 }) => {
-  const {
-    connected,
-    wallet,
-    providerUrl,
-    setProvider,
-    setAutoConnect,
-  } = useWallet()
+  const { connected, wallet, providerUrl, setProvider, setAutoConnect } =
+    useWallet()
 
   return (
     <Dropdown

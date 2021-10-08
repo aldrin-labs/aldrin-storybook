@@ -14,12 +14,12 @@ import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 
 // import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
-import { IProps } from './AutoSuggestSeletec.types'
-import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
-import SelectWrapper from '../SelectWrapper/SelectWrapper'
 import useMobileSize from '@webhooks/useMobileSize'
+import { IProps } from './AutoSuggestSeletec.types'
+import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'
+import SelectWrapper from '../SelectWrapper/SelectWrapper'
 
 const IntegrationReactSelect = (props: IProps) => {
   const {
@@ -58,14 +58,12 @@ const IntegrationReactSelect = (props: IProps) => {
 
     closeMenu()
     history.push(`/chart/spot/${value}`)
-
-    return
   }
 
   return (
     <>
       <ExchangePair
-        id={'ExchangePair'}
+        id="ExchangePair"
         border={divider}
         selectStyles={selectStyles}
         fixed={isMenuOpen}
@@ -83,12 +81,12 @@ const IntegrationReactSelect = (props: IProps) => {
                 label: marketName,
               }
             }
-            fullWidth={true}
-            isDisabled={true}
+            fullWidth
+            isDisabled
           />
         </div>
         <SelectWrapper
-          id={'selectWrapper'}
+          id="selectWrapper"
           theme={theme}
           onSelectPair={handleChange}
           closeMenu={closeMenu}

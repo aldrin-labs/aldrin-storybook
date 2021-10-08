@@ -3,30 +3,31 @@ import { compose } from 'recompose'
 import { graphql } from 'react-apollo'
 import styled from 'styled-components'
 
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation, Link } from 'react-router-dom'
 import { MASTER_BUILD } from '@core/utils/config'
 
-import { useLocation, Link } from 'react-router-dom'
 import {
   RowContainer,
   Row,
   ReusableTitle as Title,
+  Line,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { WhiteButton } from '../../Homepage/styles'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
 import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
-import { PanelWrapper, CustomCard } from '../Chart.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
-import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
+import {
+  ChartGridContainer,
+  PanelWrapper,
+  CustomCard,
+} from '@sb/compositions/Chart/Chart.styles'
 
 import { DEFAULT_MARKET } from '@sb/dexUtils/markets'
 import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
-import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
 import OvalSelector from '@sb/components/OvalSelector'
 import AldrinLogo from '@icons/Aldrin.svg'
 
@@ -40,8 +41,9 @@ import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/N
 
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
-import { FeedbackPopup } from './UsersFeedbackPopup'
 import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
+import { WhiteButton } from '../../Homepage/styles'
+import { FeedbackPopup } from './UsersFeedbackPopup'
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
 
 export const NavBarLink = styled(({ style, ...props }) => (
@@ -97,13 +99,13 @@ const Token = styled.a`
 const RedButton = styled((props) => (
   <BtnCustom
     btnWidth={props.width || '50%'}
-    fontSize={'1.4rem'}
-    height={'4.5rem'}
-    textTransform={'capitalize'}
+    fontSize="1.4rem"
+    height="4.5rem"
+    textTransform="capitalize"
     backgroundColor={props.background || 'transparent'}
     borderColor={props.background || 'transparent'}
     btnColor={props.color || props.theme.palette.red.main}
-    borderRadius={'1rem'}
+    borderRadius="1rem"
     border={props.border || 'none'}
     {...props}
   />
@@ -114,9 +116,8 @@ const RedButton = styled((props) => (
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
   const [isFeedBackPopupOpen, setIsFeedBackPopupOpen] = useState(false)
-  const [isListingRequestPopupOpen, setIsListingRequestPopupOpen] = useState(
-    false
-  )
+  const [isListingRequestPopupOpen, setIsListingRequestPopupOpen] =
+    useState(false)
 
   const isDarkTheme = theme.palette.type === 'dark'
   const isAnalytics = location.pathname.includes('analytics')
@@ -137,7 +138,7 @@ export const CardsPanel = ({ theme }) => {
           }}
         >
           <Link
-            to={'/'}
+            to="/"
             style={{
               width: '13rem',
               height: '100%',
@@ -198,8 +199,8 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               pathname={location.pathname}
               to="/chart"
-              page={'chart'}
-              component={(props) => <Link to={`/chart`} {...props} />}
+              page="chart"
+              component={(props) => <Link to="/chart" {...props} />}
             >
               Trading
             </NavLinkButton>
@@ -216,9 +217,9 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               pathname={location.pathname}
               to="/rebalance"
-              page={'rebalance'}
+              page="rebalance"
               style={{ width: '13rem' }}
-              component={(props) => <Link to={`/rebalance`} {...props} />}
+              component={(props) => <Link to="/rebalance" {...props} />}
             >
               Rebalance
             </NavLinkButton>
@@ -226,9 +227,9 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               pathname={location.pathname}
               to="/dashboard"
-              page={'dashboard'}
+              page="dashboard"
               style={{ width: '13rem' }}
-              component={(props) => <Link to={`/dashboard`} {...props} />}
+              component={(props) => <Link to="/dashboard" {...props} />}
             >
               Dashboard
               <BetaLabel theme={theme} style={{ marginLeft: '.5rem' }} />
@@ -237,16 +238,16 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               data-tut="farming"
               pathname={location.pathname}
-              page={'wallet'}
+              page="wallet"
               component={(props) => <a href={CCAIProviderURL} {...props} />}
             >
               Wallet
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
-              page={'/pools'}
+              page="/pools"
               pathname={location.pathname}
-              component={(props) => <Link to={`/pools`} {...props} />}
+              component={(props) => <Link to="/pools" {...props} />}
             >
               Liquidity Pools
             </NavLinkButton>
@@ -277,7 +278,7 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               data-tut="token"
               pathname={location.pathname}
-              page={'token'}
+              page="token"
               component={(props) => (
                 <a
                   href="https://rin.aldrin.com/"
@@ -336,13 +337,13 @@ const TopBar = ({ theme }) => {
       </div>
 
       {!connected && (
-        <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap={'nowrap'}>
+        <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap="nowrap">
           <ConnectWalletDropdown
             theme={theme}
-            height={'4rem'}
-            id={'navBar'}
-            isNavBar={true}
-            showOnTop={true}
+            height="4rem"
+            id="navBar"
+            isNavBar
+            showOnTop
           />
         </Row>
       )}
@@ -377,7 +378,7 @@ const TopBar = ({ theme }) => {
             </Title>
             <Title
               fontFamily="Avenir Next"
-              color={'rgb(147, 160, 178)'}
+              color="rgb(147, 160, 178)"
               fontSize="1rem"
             >
               {wallet?.publicKey?.toBase58()}

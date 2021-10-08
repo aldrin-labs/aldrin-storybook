@@ -3,16 +3,13 @@ import React, { useState } from 'react'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, StyledPaper } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { InputWithSelector } from '../components'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { SelectCoinPopup } from '../SelectCoin'
 import { createTokenSwap } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -33,6 +30,9 @@ import {
   TokenSwapLayout,
   TOKEN_SWAP_PROGRAM_ID,
 } from '@sb/dexUtils/token-swap/token-swap'
+import { SelectCoinPopup } from '../SelectCoin'
+import { InputWithSelector } from '../components'
+import { BoldHeader, StyledPaper } from '../index.styles'
 
 export const CreatePoolPopup = ({
   theme,
@@ -55,10 +55,8 @@ export const CreatePoolPopup = ({
   const connection = useConnection()
 
   // if user has more than one token for one mint
-  const [
-    selectedBaseTokenAddressFromSeveral,
-    setBaseTokenAddressFromSeveral,
-  ] = useState<string>('')
+  const [selectedBaseTokenAddressFromSeveral, setBaseTokenAddressFromSeveral] =
+    useState<string>('')
   const [
     selectedQuoteTokenAddressFromSeveral,
     setQuoteTokenAddressFromSeveral,
@@ -191,22 +189,18 @@ export const CreatePoolPopup = ({
         setWarningChecked(false)
         setOperationLoading(false)
       }}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
+      <RowContainer justify="space-between">
         <BoldHeader>Create Pool</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer margin={'2rem 0'} justify={'space-between'}>
+      <RowContainer margin="2rem 0" justify="space-between">
         <Text color={theme.palette.grey.title}>Market Price:</Text>
         {baseTokenMintAddress && quoteTokenMintAddress && (
-          <Text
-            fontSize={'2rem'}
-            color={'#A5E898'}
-            fontFamily={'Avenir Next Demi'}
-          >
+          <Text fontSize="2rem" color="#A5E898" fontFamily="Avenir Next Demi">
             1 {baseSymbol} ={' '}
             {stripDigitPlaces(baseTokenPrice / quoteTokenPrice, 2)}{' '}
             {quoteSymbol}
@@ -227,7 +221,7 @@ export const CreatePoolPopup = ({
           }}
         />
         <Row>
-          <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
+          <Text fontSize="4rem" fontFamily="Avenir Next Medium">
             +
           </Text>
         </Row>
@@ -247,7 +241,7 @@ export const CreatePoolPopup = ({
       {(isNeedToLeftSomeSOL ||
         baseAmount > maxBaseAmount ||
         quoteAmount > maxQuoteAmount) && (
-        <RowContainer margin={'1rem 0 0 0'}>
+        <RowContainer margin="1rem 0 0 0">
           <AttentionComponent
             text={
               isNeedToLeftSomeSOL
@@ -258,24 +252,24 @@ export const CreatePoolPopup = ({
                 ? `You entered more token B amount than you have.`
                 : ''
             }
-            blockHeight={'8rem'}
+            blockHeight="8rem"
           />
         </RowContainer>
       )}
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Row
-          width={'60%'}
+          width="60%"
           justify="space-between"
-          wrap={'nowrap'}
-          padding={'0 2rem 0 0'}
+          wrap="nowrap"
+          padding="0 2rem 0 0"
         >
           <SCheckbox
-            id={'warning_checkbox'}
+            id="warning_checkbox"
             style={{ padding: 0, marginRight: '1rem' }}
             onChange={() => setWarningChecked(!warningChecked)}
             checked={warningChecked}
           />
-          <label htmlFor={'warning_checkbox'}>
+          <label htmlFor="warning_checkbox">
             <WhiteText
               style={{
                 cursor: 'pointer',
@@ -293,7 +287,7 @@ export const CreatePoolPopup = ({
         <BlueButton
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
-          isUserConfident={true}
+          isUserConfident
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {

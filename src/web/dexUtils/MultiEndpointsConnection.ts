@@ -15,7 +15,7 @@ class MultiEndpointsConnection implements Connection {
   private endpointsRequestsCounter: EndpointRequestsCounter[]
 
   constructor(endpoints: RateLimitedEndpoint[], commitment?: Commitment) {
-    this.commitment = commitment;
+    this.commitment = commitment
     this.endpointsRequestsCounter = endpoints.map(
       (endpoint: RateLimitedEndpoint) => ({
         endpoint,
@@ -25,7 +25,9 @@ class MultiEndpointsConnection implements Connection {
     )
 
     // go through all methods of connection
-    for (let functionName of Object.getOwnPropertyNames(Connection.prototype)) {
+    for (const functionName of Object.getOwnPropertyNames(
+      Connection.prototype
+    )) {
       // skip non-function
       if (typeof Connection.prototype[functionName] !== 'function') {
         // const connection = this.getConnection();
@@ -35,7 +37,7 @@ class MultiEndpointsConnection implements Connection {
 
       this[functionName] = (...args: any) => {
         // select connection, depending on RPS and load of connection, execute method of this connection
-        const connection = this.getConnection();
+        const connection = this.getConnection()
         return connection[functionName](...args)
       }
     }
@@ -50,8 +52,10 @@ class MultiEndpointsConnection implements Connection {
   getConnection(): Connection {
     const availableConnection = this.endpointsRequestsCounter.reduce(
       (prev, current) =>
-        prev.numberOfRequestsSent < current.numberOfRequestsSent ? prev : current
-    );
+        prev.numberOfRequestsSent < current.numberOfRequestsSent
+          ? prev
+          : current
+    )
 
     // objects pass by ref
     availableConnection.numberOfRequestsSent++
@@ -61,7 +65,7 @@ class MultiEndpointsConnection implements Connection {
 
   // initializing in constructor, but some libraries use connection._rpcRequest
   async _rpcRequest(...args) {
-    return await this.getConnection()._rpcRequest(...args);
+    return await this.getConnection()._rpcRequest(...args)
   }
 }
 

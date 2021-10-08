@@ -1,7 +1,4 @@
-import {
-  notifyForDevelop,
-  notifyWithLog,
-} from '@sb/dexUtils/notifications'
+import { notifyForDevelop, notifyWithLog } from '@sb/dexUtils/notifications'
 import { MINT_LAYOUT } from '@sb/dexUtils/tokens'
 import { Connection } from '@solana/web3.js'
 

@@ -7,8 +7,6 @@ import {
 import { TooltipMutationType, TooltipQueryType } from '@core/types/TooltipTypes'
 import { TooltipsType } from '@core/types/PortfolioTypes'
 
-
-
 export interface GetChartDataQueryInterface extends IGetMyProfile, IGetCharts {
   app: {
     themeMode: string

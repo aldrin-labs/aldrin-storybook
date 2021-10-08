@@ -15,16 +15,16 @@ export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
   return (
     <RowContainer
       direction="column"
-      height={'100%'}
+      height="100%"
       style={{ background: theme.palette.grey.additional }}
     >
-      <RowContainer margin={'0 0 4rem 0'}>
-        <SvgIcon src={LightLogo} width={'16rem'} height={'16rem'} />
+      <RowContainer margin="0 0 4rem 0">
+        <SvgIcon src={LightLogo} width="16rem" height="16rem" />
       </RowContainer>
-      <RowContainer margin={'0 0 2.4rem 0'}>
+      <RowContainer margin="0 0 2.4rem 0">
         <Title
-          fontFamily={'Avenir Next Demi'}
-          fontSize={'2.5rem'}
+          fontFamily="Avenir Next Demi"
+          fontSize="2.5rem"
           color={theme.palette.white.main}
         >
           Connect your wallet to begin.
@@ -32,9 +32,9 @@ export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
       </RowContainer>
       <RowContainer>
         <ConnectWalletDropdown
-          height={'6rem'}
+          height="6rem"
           theme={theme}
-          id={'Dashboard-Wallet-Connect'}
+          id="Dashboard-Wallet-Connect"
           showOnTop={false}
           containerStyles={{
             width: '30rem',

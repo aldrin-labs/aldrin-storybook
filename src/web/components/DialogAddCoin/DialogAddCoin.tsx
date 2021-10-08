@@ -1,9 +1,9 @@
 import React from 'react'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
-import CoinRow from './CoinRow'
 import SelectCoinList from '@core/components/SelectCoinList/SelectCoinList'
 import Add from '@material-ui/icons/Add'
+import CoinRow from './CoinRow'
 
 class DialogAddCoin extends React.Component {
   state = {
@@ -145,18 +145,18 @@ class DialogAddCoin extends React.Component {
             }}
           >
             <SelectCoinList
-              //ref={(ref) => this.setState({ ref })}
+              // ref={(ref) => this.setState({ ref })}
               isSearchable={false}
               key={JSON.stringify(this.state.selectedValue)}
               classNamePrefix="custom-select-box"
               controlShouldRenderValue={false}
-              isClearable={true}
-              isSearchable={true}
+              isClearable
+              isSearchable
               openMenuOnClick={false}
               filterOption={() => true}
-              //needAdditionalFiltering={true}
-              //additionalFiltering={this.filterCoins}
-              needAdditionalMapping={true}
+              // needAdditionalFiltering={true}
+              // additionalFiltering={this.filterCoins}
+              needAdditionalMapping
               additionalMapping={this.addExistCoinsLighting}
               changeRowToShow={this.changeRowToShow}
               // menuPortalTarget={document.body}
@@ -216,7 +216,7 @@ class DialogAddCoin extends React.Component {
               noOptionsMessageStyles={{
                 textAlign: 'left',
               }}
-              menuIsOpen={true}
+              menuIsOpen
               inputValue={this.state.inputValue}
               onInputChange={this.onInputChange}
               onChange={(

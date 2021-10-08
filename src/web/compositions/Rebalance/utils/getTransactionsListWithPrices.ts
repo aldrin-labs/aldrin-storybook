@@ -17,7 +17,7 @@ export const getTransactionsListWithPrices = async ({
   connection,
   tokensMap,
   allMarketsMap,
-  allMarketsMapById
+  allMarketsMapById,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -40,7 +40,7 @@ export const getTransactionsListWithPrices = async ({
     connection,
     marketsNames,
     allMarketsMap,
-    allMarketsMapById
+    allMarketsMapById,
   })
 
   const orderbooksMap = await getOrderbookForMarkets({
@@ -65,7 +65,10 @@ export const getTransactionsListWithPrices = async ({
     loadedMarketsMap,
   })
 
-  console.log('rebalanceAllTransactionsListWithPrices', rebalanceAllTransactionsListWithPrices)
+  console.log(
+    'rebalanceAllTransactionsListWithPrices',
+    rebalanceAllTransactionsListWithPrices
+  )
 
   const mergedRebalanceTransactions = mergeRebalanceTransactions(
     rebalanceAllTransactionsListWithPrices

@@ -27,15 +27,10 @@ const AreaVolumeChart = ({
       theme={theme}
       data={getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats}
       selectedPair={selectedPair}
-      id={
-        'getSerumQuoteTradeVolumeStatsQuery' +
-        generateIDFromValues(
-          getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats
-        ) +
-        selectedPair +
-        getSerumQuoteTradeVolumeStatsQuery.loading
-      }
-      title={'Volume'}
+      id={`getSerumQuoteTradeVolumeStatsQuery${generateIDFromValues(
+        getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats
+      )}${selectedPair}${getSerumQuoteTradeVolumeStatsQuery.loading}`}
+      title="Volume"
     />
   )
 }

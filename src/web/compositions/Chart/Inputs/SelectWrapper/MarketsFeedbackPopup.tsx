@@ -12,6 +12,7 @@ import CoolIcon from '@icons/coolIcon.svg'
 
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { encode } from '@sb/dexUtils/utils'
+import { notify } from '@sb/dexUtils/notifications'
 import {
   BlueButton,
   Form,
@@ -20,7 +21,6 @@ import {
   TextField,
   Title,
 } from './SelectWrapperStyles'
-import { notify } from '@sb/dexUtils/notifications'
 
 export const MarketsFeedbackPopup = ({
   theme,
@@ -73,11 +73,11 @@ export const MarketsFeedbackPopup = ({
       PaperComponent={StyledPaperMediumWidth}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
+      <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
         <Title>
           {isFeedbackSubmitted
             ? 'Feedback Submitted'
@@ -86,20 +86,20 @@ export const MarketsFeedbackPopup = ({
         <SvgIcon
           onClick={() => onClose()}
           src={CloseIcon}
-          width={'2rem'}
-          height={'2rem'}
+          width="2rem"
+          height="2rem"
         />
       </RowContainer>
       {isFeedbackSubmitted ? (
-        <RowContainer direction={'column'}>
+        <RowContainer direction="column">
           <SvgIcon
             src={CoolIcon}
-            width={'9rem'}
-            height={'10rem'}
+            width="9rem"
+            height="10rem"
             style={{ marginTop: '6rem' }}
           />
           <Text
-            padding={'0 1rem 0 0'}
+            padding="0 1rem 0 0"
             style={{
               width: '50%',
               marginTop: '2rem',
@@ -127,7 +127,7 @@ export const MarketsFeedbackPopup = ({
           onSubmit={handleSubmit}
           name="marketsCategoriesFeedback"
           data-netlify="true"
-          method={'post'}
+          method="post"
           action="/success"
         >
           <input
@@ -135,21 +135,21 @@ export const MarketsFeedbackPopup = ({
             name="form-name"
             value="marketsCategoriesFeedback"
           />
-          <RowContainer margin={'1rem 0'}>
+          <RowContainer margin="1rem 0">
             <RowContainer wrap="nowrap">
-              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+              <Text padding="0 1rem 0 0" whiteSpace="nowrap">
                 Token
               </Text>
               <Line />
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <TextField
                 type="text"
                 name="token"
                 id="token"
                 autoComplete="off"
                 theme={theme}
-                placeholder={'Input token name'}
+                placeholder="Input token name"
                 value={feedbackData.token}
                 onChange={(e) =>
                   setData({
@@ -160,21 +160,21 @@ export const MarketsFeedbackPopup = ({
               />
             </RowContainer>
           </RowContainer>
-          <RowContainer margin={'1rem 0'}>
+          <RowContainer margin="1rem 0">
             <RowContainer wrap="nowrap">
-              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+              <Text padding="0 1rem 0 0" whiteSpace="nowrap">
                 Stored in category
               </Text>
               <Line />
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <TextField
                 type="text"
                 name="wrongCategory"
                 id="wrongCategory"
                 autoComplete="off"
                 theme={theme}
-                placeholder={'Input category name'}
+                placeholder="Input category name"
                 value={feedbackData.wrongCategory}
                 onChange={(e) =>
                   setData({
@@ -185,21 +185,21 @@ export const MarketsFeedbackPopup = ({
               />
             </RowContainer>
           </RowContainer>
-          <RowContainer margin={'1rem 0'}>
+          <RowContainer margin="1rem 0">
             <RowContainer wrap="nowrap">
-              <Text padding={'0 1rem 0 0'} whiteSpace="nowrap">
+              <Text padding="0 1rem 0 0" whiteSpace="nowrap">
                 But should be in
               </Text>
               <Line />
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <TextField
                 type="text"
                 name="rightCategory"
                 id="rightCategory"
                 autoComplete="off"
                 theme={theme}
-                placeholder={'Input category name'}
+                placeholder="Input category name"
                 value={feedbackData.rightCategory}
                 onChange={(e) =>
                   setData({

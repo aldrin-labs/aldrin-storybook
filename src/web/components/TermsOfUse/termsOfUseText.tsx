@@ -3,23 +3,23 @@ import { Typography } from '@material-ui/core'
 
 export default (
   <>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       AGREEMENT TO TERMS
     </Typography>
     <Typography>
       These Terms of Use constitute a legally binding agreement made between
       you, whether personally or on behalf of an entity (&quot;you&quot;) and
-      Aldrin.com Inc. (&quot;Company&quot;, &quot;we&quot;,
-      &quot;us&quot;, or &quot;our&quot;), concerning your access to and use of
-      the https://aldrin.com website as well as any other media form, media
-      channel, mobile website or mobile application related, linked, or
-      otherwise connected thereto (collectively, the &quot;Site&quot;). You
-      agree that by accessing the Site, you have read, understood, and agree to
-      be bound by all of these Terms of Use. IF YOU DO NOT AGREE WITH ALL OF
-      THESE TERMS OF USE, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SITE
-      AND YOU MUST DISCONTINUE USE IMMEDIATELY.
+      Aldrin.com Inc. (&quot;Company&quot;, &quot;we&quot;, &quot;us&quot;, or
+      &quot;our&quot;), concerning your access to and use of the
+      https://aldrin.com website as well as any other media form, media channel,
+      mobile website or mobile application related, linked, or otherwise
+      connected thereto (collectively, the &quot;Site&quot;). You agree that by
+      accessing the Site, you have read, understood, and agree to be bound by
+      all of these Terms of Use. IF YOU DO NOT AGREE WITH ALL OF THESE TERMS OF
+      USE, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SITE AND YOU MUST
+      DISCONTINUE USE IMMEDIATELY.
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       Supplemental terms and conditions or documents that may be posted on the
       Site from time to time are hereby expressly incorporated herein by
       reference. We reserve the right, in our sole discretion, to make changes
@@ -32,7 +32,7 @@ export default (
       the changes in any revised Terms of Use by your continued use of the Site
       after the date such revised Terms of Use are posted.
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       The information provided on the Site is not intended for distribution to
       or use by any person or entity in any jurisdiction or country where such
       distribution or use would be contrary to law or regulation or which would
@@ -42,14 +42,14 @@ export default (
       for compliance with local laws, if and to the extent local laws are
       applicable.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       The Site is intended for users who are at least 18 years old. Persons
       under the age of 18 are not permitted to use or register for the Site.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       INTELLECTUAL PROPERTY RIGHTS
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       Unless otherwise indicated, the Site is our proprietary property and all
       source code, databases, functionality, software, website designs, audio,
       video, text, photographs, and graphics on the Site (collectively, the
@@ -66,17 +66,17 @@ export default (
       or otherwise exploited for any commercial purpose whatsoever, without our
       express prior written permission.
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       Provided that you are eligible to use the Site, you are granted a limited
       license to access and use the Site and to download or print a copy of any
       portion of the Content to which you have properly gained access solely for
       your personal, non-commercial use. We reserve all rights not expressly
       granted to you in and to the Site, the Content and the Marks.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       USER REPRESENTATIONS
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       By using the Site, you represent and warrant that: (1) all registration
       information you submit will be true, accurate, current, and complete; (2)
       you will maintain the accuracy of such information and promptly update
@@ -88,38 +88,36 @@ export default (
       unauthorized purpose; and (7) your use of the Site will not violate any
       applicable law or regulation.
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       If you provide any information that is untrue, inaccurate, not current, or
       incomplete, we have the right to suspend or terminate your account and
       refuse any and all current or future use of the Site (or any portion
       thereof).
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       USER REGISTRATION
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       You may be required to register with the Site. You agree to keep your
       password confidential and will be responsible for all use of your account
       and password. We reserve the right to remove, reclaim, or change a
       username you select if we determine, in our sole discretion, that such
       username is inappropriate, obscene, or otherwise objectionable.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       If you are unsatisfied with our services, please email us at&nbsp;
-      <a href="mailto:contact@aldrin.com">
-        contact@aldrin.com
-      </a>
+      <a href="mailto:contact@aldrin.com">contact@aldrin.com</a>
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       PROHIBITED ACTIVITIES
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       You may not access or use the Site for any purpose other than that for
       which we make the Site available. The Site may not be used in connection
       with any commercial endeavors except those that are specifically endorsed
       or approved by us.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       As a user of the Site, you agree not to:
     </Typography>
     <ol>
@@ -280,10 +278,10 @@ export default (
         </Typography>
       </li>
     </ol>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       SUBMISSIONS
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       You acknowledge and agree that any questions, comments, suggestions,
       ideas, feedback, or other information regarding the Site
       (&quot;Submissions&quot;) provided by you to us are non-confidential and
@@ -297,10 +295,10 @@ export default (
       recourse against us for any alleged or actual infringement or
       misappropriation of any proprietary right in your Submissions.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       THIRD-PARTY WEBSITES AND CONTENT
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       The Site may contain (or you may be sent via the Site) links to other
       websites (&quot;Third-Party Websites&quot;) as well as articles,
       photographs, text, graphics, pictures, designs, music, sound, video,
@@ -332,10 +330,10 @@ export default (
       any way from any Third-Party Content or any contact with Third-Party
       Websites.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       U.S. GOVERNMENT RIGHTS
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       Our services are &quot;commercial items&quot; as defined in Federal
       Acquisition Regulation (&quot;FAR&quot;) 2.101. If our services are
       acquired by or on behalf of any agency not within the Department of
@@ -350,10 +348,10 @@ export default (
       other FAR, DFARS, or other clause or provision that addresses government
       rights in computer software or technical data under these Terms of Use.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       SITE MANAGEMENT
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       We reserve the right, but not the obligation, to: (1) monitor the Site for
       violations of these Terms of Use; (2) take appropriate legal action
       against anyone who, in our sole discretion, violates the law or these
@@ -368,10 +366,10 @@ export default (
       protect our rights and property and to facilitate the proper functioning
       of the Site.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       PRIVACY POLICY
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       We care about data privacy and security. Please review our Privacy Policy
       on our website <a href="https://aldrin.com/">https://aldrin.com/</a>. By
       using the Site, you agree to be bound by our Privacy Policy, which is
@@ -390,10 +388,10 @@ export default (
       consent, we will delete that information from the Site as quickly as is
       reasonably practical.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       TERM AND TERMINATION
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       These Terms of Use shall remain in full force and effect while you use the
       Site. WITHOUT LIMITING ANY OTHER PROVISION OF THESE TERMS OF USE, WE
       RESERVE THE RIGHT TO, IN OUR SOLE DISCRETION AND WITHOUT NOTICE OR
@@ -405,7 +403,7 @@ export default (
       AND ANY CONTENT OR INFORMATION THAT YOU POSTED AT ANY TIME, WITHOUT
       WARNING, IN OUR SOLE DISCRETION.
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       If we terminate or suspend your account for any reason, you are prohibited
       from registering and creating a new account under your name, a fake or
       borrowed name, or the name of any third party, even if you may be acting
@@ -414,10 +412,10 @@ export default (
       including without limitation pursuing civil, criminal, and injunctive
       redress.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       MODIFICATIONS AND INTERRUPTIONS
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       We reserve the right to change, modify, or remove the contents of the Site
       at any time or for any reason at our sole discretion without notice.
       However, we have no obligation to update any information on our Site. We
@@ -426,7 +424,7 @@ export default (
       party for any modification, price change, suspension, or discontinuance of
       the Site.
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       We cannot guarantee the Site will be available at all times. We may
       experience hardware, software, or other problems or need to perform
       maintenance related to the Site, resulting in interruptions, delays, or
@@ -439,19 +437,19 @@ export default (
       support the Site or to supply any corrections, updates, or releases in
       connection therewith.
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       These Terms of Use and your use of the Site are governed by and construed
       in accordance with the laws of the State of Delaware applicable to
       agreements made and to be entirely performed within the State of Delaware,
       without regard to its conflict of law principles.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       DISPUTE RESOLUTION
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       Binding Arbitration
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       If the Parties are unable to resolve a Dispute through informal
       negotiations, the Dispute (except those Disputes expressly excluded below)
       will be finally and exclusively resolved by binding arbitration. YOU
@@ -475,7 +473,7 @@ export default (
       arbitration, or to confirm, modify, vacate, or enter judgment on the award
       entered by the arbitrator.
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       If for any reason, a Dispute proceeds in court rather than arbitration,
       the Dispute shall be commenced or prosecuted in the state and federal
       courts located in New York County, New York, and the Parties hereby
@@ -485,7 +483,7 @@ export default (
       Contracts for the International Sale of Goods and the the Uniform Computer
       Information Transaction Act (UCITA) are excluded from these Terms of Use.
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       In no event shall any Dispute brought by either Party related in any way
       to the Site be commenced more than one (1) years after the cause of action
       arose. If this provision is found to be illegal or unenforceable, then
@@ -495,10 +493,10 @@ export default (
       courts listed for jurisdiction above, and the Parties agree to submit to
       the personal jurisdiction of that court.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       Restrictions
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       The Parties agree that any arbitration shall be limited to the Dispute
       between the Parties individually. To the full extent permitted by law, (a)
       no arbitration shall be joined with any other proceeding; (b) there is no
@@ -508,10 +506,10 @@ export default (
       capacity on behalf of the general public or any other persons.
     </Typography>
 
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       Exceptions to Arbitration
     </Typography>
-    <Typography gutterBottom={true}>
+    <Typography gutterBottom>
       The Parties agree that the following Disputes are not subject to the above
       provisions concerning binding arbitration: (a) any Disputes seeking to
       enforce or protect, or concerning the validity of, any of the intellectual
@@ -524,7 +522,7 @@ export default (
       jurisdiction within the courts listed for jurisdiction above, and the
       Parties agree to submit to the personal jurisdiction of that court.
     </Typography>
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       CORRECTIONS
     </Typography>
     <Typography>
@@ -535,7 +533,7 @@ export default (
       Site at any time, without prior notice.
     </Typography>
 
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       DISCLAIMER
     </Typography>
     <Typography>
@@ -568,7 +566,7 @@ export default (
       CAUTION WHERE APPROPRIATE.
     </Typography>
 
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       LIMITATIONS OF LIABILITY
     </Typography>
     <Typography>
@@ -587,7 +585,7 @@ export default (
       AND YOU MAY HAVE ADDITIONAL RIGHTS.
     </Typography>
 
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       INDEMNIFICATION
     </Typography>
     <Typography>
@@ -609,7 +607,7 @@ export default (
       it.
     </Typography>
 
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       USER DATA
     </Typography>
     <Typography>
@@ -623,7 +621,7 @@ export default (
       such loss or corruption of such data.
     </Typography>
 
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       ELECTRONIC COMMUNICATIONS, TRANSACTIONS, AND SIGNATURES
     </Typography>
     <Typography>
@@ -642,7 +640,7 @@ export default (
       electronic means.
     </Typography>
 
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       MISCELLANEOUS
     </Typography>
     <Typography>
@@ -666,7 +664,7 @@ export default (
       lack of signing by the parties hereto to execute these Terms of Use.
     </Typography>
 
-    <Typography gutterBottom={true} variant="h5" style={{ padding: '2rem 0' }}>
+    <Typography gutterBottom variant="h5" style={{ padding: '2rem 0' }}>
       CONTACT US
     </Typography>
     <Typography>
@@ -675,9 +673,7 @@ export default (
     </Typography>
 
     <Typography>
-      <a href="mailto:contact@aldrin.com">
-        contact@aldrin.com{' '}
-      </a>
+      <a href="mailto:contact@aldrin.com">contact@aldrin.com </a>
     </Typography>
   </>
 )

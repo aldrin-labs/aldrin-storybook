@@ -12,16 +12,6 @@ import CoolIcon from '@icons/coolIcon.svg'
 
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { encode, isValidPublicKey } from '@sb/dexUtils/utils'
-import {
-  BlueButton,
-  Form,
-  StyledPaper,
-  SubmitButton,
-  TextField,
-  Title,
-  StyledLabel,
-  StyledTab,
-} from '../../Inputs/SelectWrapper/SelectWrapperStyles'
 import { notify } from '@sb/dexUtils/notifications'
 import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -40,6 +30,16 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { useHistory } from 'react-router-dom'
 import { Loading } from '@sb/components/Loading'
 import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
+import {
+  BlueButton,
+  Form,
+  StyledPaper,
+  SubmitButton,
+  TextField,
+  Title,
+  StyledLabel,
+  StyledTab,
+} from '../../Inputs/SelectWrapper/SelectWrapperStyles'
 import {
   categoriesOfMarkets,
   defaultRequestDataState,
@@ -124,7 +124,7 @@ const ListingRequestPopup = ({
     return true
   }
 
-  const publicKey = wallet.publicKey
+  const { publicKey } = wallet
 
   const wellFormedMarketId = isValidPublicKey(requestData.marketID)
 
@@ -216,7 +216,7 @@ const ListingRequestPopup = ({
       return
     }
 
-    let params = {
+    const params = {
       address: requestData.marketID,
       programId,
       name: marketLabel,
@@ -235,10 +235,10 @@ const ListingRequestPopup = ({
     if (resultOfAdding) {
       await addSerumCustomMarketMutation({
         variables: {
-          publicKey: publicKey,
-          symbol: `${knownBaseCurrency ||
-            requestData.baseTokenName}/${knownQuoteCurrency ||
-            requestData.quoteTokenName}`.toUpperCase(),
+          publicKey,
+          symbol: `${knownBaseCurrency || requestData.baseTokenName}/${
+            knownQuoteCurrency || requestData.quoteTokenName
+          }`.toUpperCase(),
           isPrivate: false,
           marketId: requestData.marketID,
           programId,
@@ -260,11 +260,11 @@ const ListingRequestPopup = ({
           {
             isPrivate: false,
             marketId: requestData.marketID,
-            programId: programId,
-            publicKey: publicKey,
-            symbol: `${knownBaseCurrency ||
-              requestData.baseTokenName}/${knownQuoteCurrency ||
-              requestData.quoteTokenName}`.toUpperCase(),
+            programId,
+            publicKey,
+            symbol: `${knownBaseCurrency || requestData.baseTokenName}/${
+              knownQuoteCurrency || requestData.quoteTokenName
+            }`.toUpperCase(),
             __typename: 'SerumCustomMarket',
           },
         ],
@@ -277,9 +277,9 @@ const ListingRequestPopup = ({
     })
 
     await history.push(
-      `/chart/spot/${knownBaseCurrency ||
-        requestData.baseTokenName}_${knownQuoteCurrency ||
-        requestData.quoteTokenName}`
+      `/chart/spot/${knownBaseCurrency || requestData.baseTokenName}_${
+        knownQuoteCurrency || requestData.quoteTokenName
+      }`
     )
     await submitRequest(true)
     await onDoClose()
@@ -300,11 +300,11 @@ const ListingRequestPopup = ({
         submitRequest(false)
         setRequestData(defaultRequestDataState)
       }}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '1rem' }} justify={'space-between'}>
+      <RowContainer style={{ marginBottom: '1rem' }} justify="space-between">
         <Title>
           {isRequestSubmitted ? 'Request Submitted!' : 'List New Market'}
         </Title>
@@ -312,20 +312,20 @@ const ListingRequestPopup = ({
           onClick={() => onClose()}
           src={CloseIcon}
           style={{ cursor: 'pointer' }}
-          width={'2rem'}
-          height={'2rem'}
+          width="2rem"
+          height="2rem"
         />
       </RowContainer>
       {isRequestSubmitted ? (
-        <RowContainer direction={'column'}>
+        <RowContainer direction="column">
           <SvgIcon
             src={CoolIcon}
-            width={'9rem'}
-            height={'10rem'}
+            width="9rem"
+            height="10rem"
             style={{ marginTop: '6rem' }}
           />
           <Text
-            padding={'0 1rem 0 0'}
+            padding="0 1rem 0 0"
             style={{
               width: '50%',
               marginTop: '2rem',
@@ -353,7 +353,7 @@ const ListingRequestPopup = ({
           onSubmit={handleSubmit}
           name="listingRequest"
           data-netlify="true"
-          method={'post'}
+          method="post"
           action="/success"
         >
           <input type="hidden" name="form-name" value="listingRequest" />
@@ -364,27 +364,27 @@ const ListingRequestPopup = ({
             id="category"
             style={{ display: 'none' }}
           />
-          <RowContainer justify="space-between" margin={'1rem 0'}>
-            <Row width={'49%'}>
+          <RowContainer justify="space-between" margin="1rem 0">
+            <Row width="49%">
               <RowContainer wrap="nowrap">
                 <Text
                   fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
+                  padding="0 1rem 0 0"
                   whiteSpace="nowrap"
                 >
                   Base Token Name <span style={{ color: '#FFBDAE' }}>*</span>
                 </Text>
                 <Line />
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <TextField
-                  height={'5rem'}
+                  height="5rem"
                   type="text"
                   name="baseTokenName"
                   id="baseTokenName"
                   autoComplete="off"
                   theme={theme}
-                  placeholder={'e.g. RIN'}
+                  placeholder="e.g. RIN"
                   value={requestData.baseTokenName}
                   onChange={(e) =>
                     setData({
@@ -395,26 +395,26 @@ const ListingRequestPopup = ({
                 />
               </RowContainer>
             </Row>
-            <Row width={'49%'}>
+            <Row width="49%">
               <RowContainer wrap="nowrap">
                 <Text
                   fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
+                  padding="0 1rem 0 0"
                   whiteSpace="nowrap"
                 >
                   Quote Token Name <span style={{ color: '#FFBDAE' }}>*</span>
                 </Text>
                 <Line />
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <TextField
-                  height={'5rem'}
+                  height="5rem"
                   type="text"
                   name="quoteTokenName"
                   id="quoteTokenName"
                   autoComplete="off"
                   theme={theme}
-                  placeholder={'e.g. USDC'}
+                  placeholder="e.g. USDC"
                   value={requestData.quoteTokenName}
                   onChange={(e) =>
                     setData({
@@ -426,13 +426,9 @@ const ListingRequestPopup = ({
               </RowContainer>
             </Row>
           </RowContainer>
-          <RowContainer margin={'1rem 0'}>
+          <RowContainer margin="1rem 0">
             <RowContainer wrap="nowrap">
-              <Text
-                fontSize="1.2rem"
-                padding={'0 1rem 0 0'}
-                whiteSpace="nowrap"
-              >
+              <Text fontSize="1.2rem" padding="0 1rem 0 0" whiteSpace="nowrap">
                 Market ID
                 <span style={{ color: '#FFBDAE', marginLeft: '0.5rem' }}>
                   *
@@ -451,7 +447,7 @@ const ListingRequestPopup = ({
               </Text>
               <Line />
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <TextField
                 height="5rem"
                 type="text"
@@ -459,9 +455,7 @@ const ListingRequestPopup = ({
                 id="marketID"
                 autoComplete="off"
                 theme={theme}
-                placeholder={
-                  'e.g. 7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'
-                }
+                placeholder="e.g. 7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa"
                 value={requestData.marketID}
                 onChange={(e) =>
                   setData({
@@ -473,7 +467,7 @@ const ListingRequestPopup = ({
             </RowContainer>
           </RowContainer>{' '}
           {wellFormedMarketId ? (
-            <RowContainer justify={'flex-start'}>
+            <RowContainer justify="flex-start">
               {!market && !loadingMarket && (
                 <Text style={{ color: '#F69894' }}>Not a valid market</Text>
               )}
@@ -494,7 +488,7 @@ const ListingRequestPopup = ({
               )}
             </RowContainer>
           ) : requestData.marketID && !wellFormedMarketId ? (
-            <RowContainer justify={'flex-start'} margin={'2rem 0 0 0'}>
+            <RowContainer justify="flex-start" margin="2rem 0 0 0">
               <Text style={{ color: '#F69894' }}>Invalid market ID</Text>
             </RowContainer>
           ) : (
@@ -504,27 +498,27 @@ const ListingRequestPopup = ({
               </Text>
             )
           )}
-          <RowContainer justify="space-between" margin={'1rem 0'}>
-            <Row width={'49%'}>
+          <RowContainer justify="space-between" margin="1rem 0">
+            <Row width="49%">
               <RowContainer wrap="nowrap">
                 <Text
                   fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
+                  padding="0 1rem 0 0"
                   whiteSpace="nowrap"
                 >
                   Twitter Link
                 </Text>
                 <Line />
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <TextField
-                  height={'5rem'}
+                  height="5rem"
                   type="url"
                   name="twitterLink"
                   id="twitterLink"
                   autoComplete="off"
                   theme={theme}
-                  placeholder={'e.g. https://twitter.com/Aldrin_Exchange'}
+                  placeholder="e.g. https://twitter.com/Aldrin_Exchange"
                   value={requestData.twitterLink}
                   onChange={(e) =>
                     setData({
@@ -535,28 +529,26 @@ const ListingRequestPopup = ({
                 />
               </RowContainer>
             </Row>
-            <Row width={'49%'}>
+            <Row width="49%">
               <RowContainer wrap="nowrap">
                 <Text
                   fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
+                  padding="0 1rem 0 0"
                   whiteSpace="nowrap"
                 >
                   Coinmarketcap or Coingecko Link{' '}
                 </Text>
                 <Line />
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <TextField
-                  height={'5rem'}
+                  height="5rem"
                   type="url"
                   name="coinMarketCapLink"
                   id="coinMarketCapLink"
                   autoComplete="off"
                   theme={theme}
-                  placeholder={
-                    'e.g. https://coinmarketcap.com/currencies/aldrin/'
-                  }
+                  placeholder="e.g. https://coinmarketcap.com/currencies/aldrin/"
                   value={requestData.coinMarketCapLink}
                   onChange={(e) =>
                     setData({
@@ -568,18 +560,14 @@ const ListingRequestPopup = ({
               </RowContainer>
             </Row>
           </RowContainer>
-          <RowContainer margin={'1rem 0'}>
+          <RowContainer margin="1rem 0">
             <RowContainer wrap="nowrap">
-              <Text
-                fontSize="1.2rem"
-                padding={'0 1rem 0 0'}
-                whiteSpace="nowrap"
-              >
+              <Text fontSize="1.2rem" padding="0 1rem 0 0" whiteSpace="nowrap">
                 Select the categories to which the project belongs
               </Text>
               <Line />
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               {categoriesOfMarkets.map((el) => {
                 return (
                   <StyledTab
@@ -610,12 +598,12 @@ const ListingRequestPopup = ({
               })}
             </RowContainer>
           </RowContainer>
-          <RowContainer justify="space-between" margin={'1rem 0'}>
-            <Row width={'49%'}>
+          <RowContainer justify="space-between" margin="1rem 0">
+            <Row width="49%">
               <RowContainer wrap="nowrap">
                 <Text
                   fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
+                  padding="0 1rem 0 0"
                   whiteSpace="nowrap"
                 >
                   How to contact the team{' '}
@@ -623,15 +611,15 @@ const ListingRequestPopup = ({
                 </Text>
                 <Line />
               </RowContainer>
-              <RowContainer justify={'space-between'}>
+              <RowContainer justify="space-between">
                 <TextField
-                  height={'5rem'}
+                  height="5rem"
                   type="text"
                   name="contact"
                   id="contact"
                   autoComplete="off"
                   theme={theme}
-                  placeholder={'e.g. contact@aldrin.com'}
+                  placeholder="e.g. contact@aldrin.com"
                   value={requestData.contact}
                   onChange={(e) =>
                     setData({
@@ -642,11 +630,11 @@ const ListingRequestPopup = ({
                 />
               </RowContainer>
             </Row>
-            <Row width={'49%'}>
+            <Row width="49%">
               <RowContainer wrap="nowrap">
                 <Text
                   fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
+                  padding="0 1rem 0 0"
                   whiteSpace="nowrap"
                 >
                   Would the team like to be interviewed on the{' '}
@@ -666,11 +654,11 @@ const ListingRequestPopup = ({
                 <Line />
               </RowContainer>
               <RowContainer
-                height={'6rem'}
-                justify={'flex-start'}
+                height="6rem"
+                justify="flex-start"
                 style={{ paddingTop: '1rem' }}
               >
-                <Row margin={'0 1.5rem 0 0'}>
+                <Row margin="0 1.5rem 0 0">
                   <SRadio
                     id="noDefiShow"
                     checked={requestData.defiShow === 'No'}
@@ -681,7 +669,7 @@ const ListingRequestPopup = ({
                       })
                     }
                   />
-                  <StyledLabel htmlFor="noDefiShow" color={'#fbf2f2'}>
+                  <StyledLabel htmlFor="noDefiShow" color="#fbf2f2">
                     No
                   </StyledLabel>
                 </Row>{' '}
@@ -696,7 +684,7 @@ const ListingRequestPopup = ({
                     }
                     checked={requestData.defiShow === 'Yes'}
                   />
-                  <StyledLabel htmlFor="yesDefiShow" color={'#fbf2f2'}>
+                  <StyledLabel htmlFor="yesDefiShow" color="#fbf2f2">
                     Yes
                   </StyledLabel>
                 </Row>

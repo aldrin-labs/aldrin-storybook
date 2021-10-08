@@ -7,9 +7,8 @@ export const sortRebalanceTransactions = (transactions: TransactionType[]) => {
       if (a.side === 'sell' && b.side === 'sell') return 0
       if (a.side === 'sell') return -1
       return 1
-    } else { // 0 depth should go first
-      return a.depthLevel - b.depthLevel
-    }
+    } // 0 depth should go first
+    return a.depthLevel - b.depthLevel
   })
 
   return sortedRebalanceTransactions

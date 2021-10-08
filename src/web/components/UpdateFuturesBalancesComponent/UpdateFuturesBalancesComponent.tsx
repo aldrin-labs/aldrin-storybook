@@ -3,9 +3,8 @@ import { Grid } from '@material-ui/core'
 
 import { Loading, TooltipCustom, SvgIcon } from '@sb/components'
 
-import { IProps } from './UpdateFuturesBalancesComponent.types'
-
 import Reimport from '@icons/reimport.svg'
+import { IProps } from './UpdateFuturesBalancesComponent.types'
 
 export const UpdateFuturesBalancesComponent = ({ ...props }: IProps) => {
   const [loading, setLoading] = useState(false)
@@ -19,7 +18,7 @@ export const UpdateFuturesBalancesComponent = ({ ...props }: IProps) => {
         <Grid>
           <TooltipCustom
             PopperProps={{ disablePortal: false }}
-            withSpan={true}
+            withSpan
             title="Update your futures balances"
             component={
               <SvgIcon

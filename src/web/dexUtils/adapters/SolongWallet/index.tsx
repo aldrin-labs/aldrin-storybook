@@ -3,8 +3,11 @@ import { PublicKey } from '@solana/web3.js'
 
 export class SolongWalletAdapter extends EventEmitter {
   _providerUrl: URL
+
   _publicKey: any
+
   _onProcess: boolean
+
   _autoApprove: boolean
 
   constructor(providerUrl: string, network: string) {
@@ -48,9 +51,8 @@ export class SolongWalletAdapter extends EventEmitter {
     }
 
     this._onProcess = true
-    console.log('solong helper select account');
-    
-    (window as any).solong
+    console.log('solong helper select account')
+    ;(window as any).solong
       .selectAccount()
       .then((account: any) => {
         this._publicKey = new PublicKey(account)

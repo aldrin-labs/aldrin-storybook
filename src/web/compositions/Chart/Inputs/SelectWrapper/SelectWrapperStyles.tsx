@@ -1,12 +1,11 @@
 import styled from 'styled-components'
 import React from 'react'
 
-import { Grid, Paper } from '@material-ui/core'
+import { Grid, Paper, Input } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/Loading'
 import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { Input } from '@material-ui/core'
 import { AutoSizer } from 'react-virtualized'
 
 export const StyledGrid = styled(Grid)`
@@ -189,7 +188,7 @@ export const BlueButton = styled(
     <BtnCustom {...props}>
       {showLoader ? (
         <Loading
-          color={'#fff'}
+          color="#fff"
           size={24}
           style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
         />

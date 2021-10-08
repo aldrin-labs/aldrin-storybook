@@ -27,7 +27,7 @@ export const loadVaultSignersFromMarkets = async ({
 
   console.time('vaultSigners')
 
-  for (let marketData of loadedMarketsMap.values()) {
+  for (const marketData of loadedMarketsMap.values()) {
     const { market, marketName } = marketData
 
     const [vaultSigner] = await getVaultOwnerAndNonce(

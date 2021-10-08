@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Paper, } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { TextColumnContainer } from '@sb/compositions/Pools/components/Tables/index.styles'
@@ -17,7 +17,8 @@ export const BlockForIcons = styled(Row)`
 
 export const Stroke = styled(RowContainer)`
   justify-content: space-between;
-  border-bottom: ${props => props.showBorder ? '0.1rem solid #383b45' : 'none'};
+  border-bottom: ${(props) =>
+    props.showBorder ? '0.1rem solid #383b45' : 'none'};
   padding: 1.5rem 2rem;
 `
 

@@ -14,10 +14,6 @@ import {
   RowDataTd,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
 
-import { BlockTemplate } from '../../../index.styles'
-
-import { TokenIconsContainer, SearchInputWithLoop } from '../components/index'
-
 import TooltipIcon from '@icons/TooltipImg.svg'
 
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -39,6 +35,8 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { TokenIconsContainer, SearchInputWithLoop } from '../components/index'
+import { BlockTemplate } from '../../../index.styles'
 
 const AllPoolsTable = ({
   theme,
@@ -80,25 +78,25 @@ const AllPoolsTable = ({
   return (
     <RowContainer>
       <BlockTemplate
-        width={'100%'}
-        height={'auto'}
+        width="100%"
+        height="auto"
         style={{ marginTop: '2rem' }}
-        align={'start'}
+        align="start"
         theme={theme}
-        direction={'column'}
-        justify={'end'}
+        direction="column"
+        justify="end"
       >
-        <RowContainer padding="2rem" justify={'space-between'} align="center">
+        <RowContainer padding="2rem" justify="space-between" align="center">
           <Text theme={theme}>All Pools</Text>
           <Row
             style={{ flexWrap: 'nowrap' }}
-            justify={'space-between'}
-            width={'34%'}
+            justify="space-between"
+            width="34%"
           >
             <SearchInputWithLoop
               searchValue={searchValue}
               onChangeSearch={onChangeSearch}
-              placeholder={'Search...'}
+              placeholder="Search..."
             />
             <BorderButton
               onClick={() => {
@@ -110,7 +108,7 @@ const AllPoolsTable = ({
               }}
               style={{ marginLeft: '2rem', whiteSpace: 'nowrap' }}
               padding={wallet.connected ? '0 2.6rem' : '0 2rem'}
-              borderColor={'#A5E898'}
+              borderColor="#A5E898"
             >
               {wallet.connected ? 'Create pool' : 'Connect wallet'}
             </BorderButton>
@@ -123,15 +121,11 @@ const AllPoolsTable = ({
               <RowTd>TVL</RowTd>
               <RowTd>Total Fees Paid</RowTd>
               <RowTd>
-                <DarkTooltip
-                  title={
-                    'Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.'
-                  }
-                >
+                <DarkTooltip title="Annualized, non-compounded return on investment based on the fees earned in the last 24 hours, relative to the size of the pool.">
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <SvgIcon
-                      width={'1.2rem'}
-                      height={'1.2rem'}
+                      width="1.2rem"
+                      height="1.2rem"
                       style={{ marginRight: '1rem' }}
                       src={TooltipIcon}
                     />
@@ -139,7 +133,7 @@ const AllPoolsTable = ({
                   </div>
                 </DarkTooltip>
               </RowTd>
-              <RowTd></RowTd>
+              <RowTd />
             </TableHeader>
             {filteredData
               .sort((poolA: PoolInfo, poolB: PoolInfo) => {
@@ -239,7 +233,7 @@ const AllPoolsTable = ({
                       </RowDataTdText>
                     </RowDataTd>
                     <RowTd>
-                      <Row justify={'flex-end'} width={'100%'}>
+                      <Row justify="flex-end" width="100%">
                         <BorderButton
                           onClick={() => {
                             if (wallet.connected) {
@@ -249,7 +243,7 @@ const AllPoolsTable = ({
                               wallet.connect()
                             }
                           }}
-                          borderColor={'#366CE5'}
+                          borderColor="#366CE5"
                         >
                           {wallet.connected
                             ? 'Add Liquidity'

@@ -1,37 +1,47 @@
-import { TokenInfoWithDisableReason, TokenInfoWithSliderStep } from '../Rebalance.types'
 import { MarketsMap } from '@sb/dexUtils/markets'
+import {
+  TokenInfoWithDisableReason,
+  TokenInfoWithSliderStep,
+} from '../Rebalance.types'
 
 import { getMarketsData } from './getMarketsData'
 
-
 export const getAvailableTokensForRebalance = (
   allMarketsMap: MarketsMap,
-  tokens: TokenInfoWithSliderStep[],
+  tokens: TokenInfoWithSliderStep[]
 ): TokenInfoWithDisableReason[] => {
   const marketsData = getMarketsData(allMarketsMap)
 
-  const availableTokens = Array.from(new Set(marketsData.reduce((acc: string[], el) => {
-    acc.push(el.tokenA)
-    acc.push(el.tokenB)
+  const availableTokens = Array.from(
+    new Set(
+      marketsData.reduce((acc: string[], el) => {
+        acc.push(el.tokenA)
+        acc.push(el.tokenB)
 
-    return acc
-  }, [])))
+        return acc
+      }, [])
+    )
+  )
 
-  const tokensWithPoolsAndLiquidity = tokens.map(el => {
+  const tokensWithPoolsAndLiquidity = tokens.map((el) => {
     const isTokenHasPrice = !!el.price
     const isTokenHasPool = availableTokens.includes(el.symbol)
 
     return {
-        ...el,
-        ...(isTokenHasPool ? { poolExists: true } : {
-          disabled: true,
-          disabledReason: "no market"
-        }),
-        ...(isTokenHasPrice ? {} : {
-          disabled: true,
-          disabledReason: "no price"
-        }),
-      }
+      ...el,
+      ...(isTokenHasPool
+        ? { poolExists: true }
+        : {
+            disabled: true,
+            disabledReason: 'no market',
+          }),
+      ...(isTokenHasPrice
+        ? {}
+        : {
+            disabled: true,
+            disabledReason: 'no price',
+          }),
+    }
   })
 
   return tokensWithPoolsAndLiquidity

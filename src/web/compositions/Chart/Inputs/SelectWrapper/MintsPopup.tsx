@@ -27,7 +27,7 @@ export const MintsPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >

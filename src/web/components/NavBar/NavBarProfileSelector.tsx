@@ -36,9 +36,9 @@ const NavBarProfileSelector = ({
   return (
     <Grid
       item
-      direction={'column'}
-      alignItems={'center'}
-      justify={'center'}
+      direction="column"
+      alignItems="center"
+      justify="center"
       style={{
         display: 'flex',
         height: '100%',
@@ -53,10 +53,19 @@ const NavBarProfileSelector = ({
         id="profile-page"
         key="profile-page"
         pathname={pathname}
-        page={`profile`}
+        page="profile"
         buttonText={
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <span style={{ maxWidth: '15rem', overflow: 'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{accountData.email}</span>
+            <span
+              style={{
+                maxWidth: '15rem',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {accountData.email}
+            </span>
             <SvgIcon
               width="1rem"
               height="1rem"

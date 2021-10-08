@@ -11,7 +11,6 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WhiteButton } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import { ListCard } from '../../Rebalance.styles'
 import { useConnection } from '@sb/dexUtils/connection'
 import { InputWithSearch } from '@sb/compositions/Chart/components/Inputs/Inputs'
 import {
@@ -20,6 +19,7 @@ import {
 } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { createTokens } from '@sb/dexUtils/createTokens'
+import { ListCard } from '../../Rebalance.styles'
 import { TokenListItem } from './TokenListItem'
 import { StyledPaper, WhiteText, GreenText } from './AddTokensPopup.styles'
 
@@ -73,7 +73,7 @@ export default function TokenDialog({
     <DialogWrapper
       theme={theme}
       PaperComponent={StyledPaper}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       onClose={onClose}
       onEnter={() => {
@@ -97,7 +97,7 @@ export default function TokenDialog({
             <RowContainer margin="2rem 0">
               <InputWithSearch
                 theme={theme}
-                type={'text'}
+                type="text"
                 value={searchValue}
                 onChange={(e) => {
                   if (
@@ -110,7 +110,7 @@ export default function TokenDialog({
                   setSearchValue(e.target.value)
                 }}
                 onSearchClick={() => {}}
-                placeholder={'Search'}
+                placeholder="Search"
               />
             </RowContainer>
             <ListCard>

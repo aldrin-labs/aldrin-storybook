@@ -3,13 +3,6 @@ import styled from 'styled-components'
 import { Dialog, Paper } from '@material-ui/core'
 import Clear from '@material-ui/icons/Clear'
 
-import {
-  getSecondValueFromFirst,
-  BlueSwitcherStyles,
-  GreenSwitcherStyles,
-  RedSwitcherStyles,
-} from './utils'
-
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { SendButton } from '@sb/components/TraidingTerminal/styles'
 import SmallSlider from '@sb/components/Slider/SmallSlider'
@@ -18,9 +11,14 @@ import GreenSwitcher from '@sb/components/SwitchOnOff/GreenSwitcher'
 import CloseIcon from '@material-ui/icons/Close'
 import HeightIcon from '@material-ui/icons/Height'
 
-import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import {
+  SCheckbox,
+  TypographyTitle,
+  StyledDialogContent,
+  ClearButton,
+  StyledDialogTitle,
+} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { FormInputContainer, Select } from './InputComponents'
 
 import {
   TradeInputContent as Input,
@@ -33,6 +31,7 @@ import { maxLeverage } from '@sb/compositions/Chart/mocks'
 
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
+import { FormInputContainer, Select } from './InputComponents'
 
 import {
   HeaderTitle,
@@ -46,11 +45,11 @@ import {
 } from './styles'
 
 import {
-  TypographyTitle,
-  StyledDialogContent,
-  ClearButton,
-  StyledDialogTitle,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+  getSecondValueFromFirst,
+  BlueSwitcherStyles,
+  GreenSwitcherStyles,
+  RedSwitcherStyles,
+} from './utils'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -218,7 +217,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
         style={{ width: '85rem', margin: 'auto' }}
         fullScreen={false}
         onClose={handleClose}
-        maxWidth={'md'}
+        maxWidth="md"
         open={open}
         aria-labelledby="responsive-dialog-title"
       >
@@ -227,9 +226,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
           disableTypography
           id="responsive-dialog-title"
         >
-          <TypographyTitle
-            theme={theme}
-          >{`Edit take a profit`}</TypographyTitle>
+          <TypographyTitle theme={theme}>Edit take a profit</TypographyTitle>
           <ClearButton>
             <Clear
               style={{ fontSize: '2rem' }}
@@ -239,12 +236,12 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
           </ClearButton>
         </StyledDialogTitle>
         <StyledDialogContent theme={theme} id="share-dialog-content">
-          <InputRowContainer justify="center" padding={'1rem 0 .6rem 0'}>
+          <InputRowContainer justify="center" padding="1rem 0 .6rem 0">
             <CustomSwitcher
               theme={theme}
-              firstHalfText={'limit'}
-              secondHalfText={'market'}
-              buttonHeight={'2.5rem'}
+              firstHalfText="limit"
+              secondHalfText="market"
+              buttonHeight="2.5rem"
               containerStyles={{ width: '100%' }}
               firstHalfStyleProperties={BlueSwitcherStyles(theme)}
               secondHalfStyleProperties={BlueSwitcherStyles(theme)}
@@ -258,10 +255,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
             />
           </InputRowContainer>
           <div>
-            <InputRowContainer
-              justify="flex-start"
-              padding={'.8rem 0 1.2rem 0'}
-            >
+            <InputRowContainer justify="flex-start" padding=".8rem 0 1.2rem 0">
               <AdditionalSettingsButton
                 theme={theme}
                 style={{ fontSize: '1rem' }}
@@ -322,20 +316,20 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {!this.state.isTrailingOn && (
               <InputRowContainer>
-                <FormInputContainer theme={theme} title={'stop price'}>
+                <FormInputContainer theme={theme} title="stop price">
                   <InputRowContainer>
                     <Input
                       theme={theme}
-                      textAlign={'left'}
-                      padding={'0'}
-                      width={'calc(32.5%)'}
+                      textAlign="left"
+                      padding="0"
+                      width="calc(32.5%)"
                       symbol={pair[1]}
                       value={this.state.takeProfitPrice}
                       inputStyles={{
                         paddingRight: '0',
                         paddingLeft: '1rem',
                       }}
-                      showErrors={true}
+                      showErrors
                       isValid={this.props.validateField(
                         true,
                         this.state.takeProfitPrice
@@ -357,11 +351,11 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                     />
                     <Input
                       theme={theme}
-                      padding={'0 .8rem 0 .8rem'}
-                      width={'calc(17.5%)'}
-                      preSymbol={'+'}
-                      textAlign={'left'}
-                      needPreSymbol={true}
+                      padding="0 .8rem 0 .8rem"
+                      width="calc(17.5%)"
+                      preSymbol="+"
+                      textAlign="left"
+                      needPreSymbol
                       inputStyles={{
                         paddingRight: '0',
                         paddingLeft: '2rem',
@@ -403,13 +397,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {this.state.isTrailingOn && (
               <>
-                <FormInputContainer theme={theme} title={`activate price`}>
+                <FormInputContainer theme={theme} title="activate price">
                   <InputRowContainer>
                     <Input
                       theme={theme}
-                      textAlign={'left'}
-                      padding={'0'}
-                      width={'calc(32.5%)'}
+                      textAlign="left"
+                      padding="0"
+                      width="calc(32.5%)"
                       symbol={pair[1]}
                       value={this.state.takeProfitPrice}
                       inputStyles={{
@@ -433,12 +427,12 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                     />
                     <Input
                       theme={theme}
-                      symbol={'%'}
-                      padding={'0 .8rem 0 .8rem'}
-                      width={'calc(17.5%)'}
-                      preSymbol={'+'}
-                      textAlign={'left'}
-                      needPreSymbol={true}
+                      symbol="%"
+                      padding="0 .8rem 0 .8rem"
+                      width="calc(17.5%)"
+                      preSymbol="+"
+                      textAlign="left"
+                      needPreSymbol
                       inputStyles={{
                         paddingRight: '0',
                         paddingLeft: '2rem',
@@ -464,15 +458,15 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   </InputRowContainer>
                 </FormInputContainer>
                 <InputRowContainer>
-                  <FormInputContainer theme={theme} title={'deviation'}>
+                  <FormInputContainer theme={theme} title="deviation">
                     <InputRowContainer>
                       <Input
                         theme={theme}
-                        padding={'0 .8rem 0 0'}
-                        width={'calc(50%)'}
-                        symbol={'%'}
+                        padding="0 .8rem 0 0"
+                        width="calc(50%)"
+                        symbol="%"
                         value={this.state.deviationPercentage}
-                        showErrors={true}
+                        showErrors
                         isValid={this.props.validateField(
                           this.state.isTrailingOn,
                           this.state.deviationPercentage
@@ -502,13 +496,13 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
             {this.state.isSplitTargetsOn && (
               <>
                 <InputRowContainer>
-                  <FormInputContainer theme={theme} title={'volume'}>
+                  <FormInputContainer theme={theme} title="volume">
                     <InputRowContainer>
                       <Input
                         theme={theme}
-                        padding={'0 .8rem 0 0'}
-                        width={'calc(55%)'}
-                        symbol={'%'}
+                        padding="0 .8rem 0 0"
+                        width="calc(55%)"
+                        symbol="%"
                         value={this.state.volumePercentage}
                         onChange={(e) => {
                           const occupiedVolume = this.state.targets.reduce(
@@ -557,17 +551,17 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                   }}
                 >
                   <BtnCustom
-                    btnColor={'#fff'}
-                    backgroundColor={'#F29C38'}
-                    borderColor={'#F29C38'}
-                    btnWidth={'100%'}
-                    height={'auto'}
-                    borderRadius={'1rem'}
-                    margin={'0'}
-                    padding={'.1rem 0'}
-                    fontSize={'1rem'}
-                    boxShadow={'0px .2rem .3rem rgba(8, 22, 58, 0.15)'}
-                    letterSpacing={'.05rem'}
+                    btnColor="#fff"
+                    backgroundColor="#F29C38"
+                    borderColor="#F29C38"
+                    btnWidth="100%"
+                    height="auto"
+                    borderRadius="1rem"
+                    margin="0"
+                    padding=".1rem 0"
+                    fontSize="1rem"
+                    boxShadow="0px .2rem .3rem rgba(8, 22, 58, 0.15)"
+                    letterSpacing=".05rem"
                     onClick={() => {
                       this.setState((prev) => ({
                         volumePercentage: 0,
@@ -655,11 +649,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
 
             {this.state.isTimeoutOn && (
               <>
-                <TradeInputHeader
-                  theme={theme}
-                  title={`timeout`}
-                  needLine={true}
-                />
+                <TradeInputHeader theme={theme} title="timeout" needLine />
                 <InputRowContainer>
                   <SubBlocksContainer>
                     <InputRowContainer>
@@ -681,7 +671,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       />
                       <Input
                         theme={theme}
-                        width={'calc(55% - .4rem)'}
+                        width="calc(55% - .4rem)"
                         value={this.state.whenProfitSec}
                         showErrors={this.state.whenProfitOn}
                         isValid={this.props.validateField(
@@ -699,7 +689,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       />
                       <Select
                         theme={theme}
-                        width={'calc(30% - .4rem)'}
+                        width="calc(30% - .4rem)"
                         value={this.state.whenProfitMode}
                         inputStyles={{
                           borderTopLeftRadius: 0,
@@ -736,7 +726,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       />
                       <Input
                         theme={theme}
-                        width={'calc(55% - .4rem)'}
+                        width="calc(55% - .4rem)"
                         value={this.state.whenProfitableSec}
                         showErrors={this.state.whenProfitableOn}
                         isValid={this.props.validateField(
@@ -754,7 +744,7 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                       />
                       <Select
                         theme={theme}
-                        width={'calc(30% - .4rem)'}
+                        width="calc(30% - .4rem)"
                         value={this.state.whenProfitableMode}
                         inputStyles={{
                           borderTopLeftRadius: 0,
@@ -773,9 +763,9 @@ export class EditTakeProfitPopup extends React.Component<IProps, ITAPState> {
                 </InputRowContainer>
               </>
             )}
-            <InputRowContainer padding={'2rem 0 0 0'}>
+            <InputRowContainer padding="2rem 0 0 0">
               <SendButton
-                type={'buy'}
+                type="buy"
                 onClick={() => {
                   const transformedState = transformProperties(this.state)
                   const isValid = validate(transformedState, true)
@@ -898,7 +888,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
         style={{ width: '85rem', margin: 'auto' }}
         fullScreen={false}
         onClose={handleClose}
-        maxWidth={'md'}
+        maxWidth="md"
         open={open}
         aria-labelledby="responsive-edit-stop-loss-dialog-title"
       >
@@ -907,7 +897,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
           disableTypography
           id="responsive-edit-stop-loss-dialog-title"
         >
-          <TypographyTitle theme={theme}>{`Edit stop loss`}</TypographyTitle>
+          <TypographyTitle theme={theme}>Edit stop loss</TypographyTitle>
           <ClearButton>
             <Clear
               style={{ fontSize: '2rem' }}
@@ -917,12 +907,12 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
           </ClearButton>
         </StyledDialogTitle>
         <StyledDialogContent theme={theme} id="edit-stop-loss-dialog-content">
-          <InputRowContainer justify="center" padding={'1rem 0 .6rem 0'}>
+          <InputRowContainer justify="center" padding="1rem 0 .6rem 0">
             <CustomSwitcher
               theme={theme}
-              firstHalfText={'limit'}
-              secondHalfText={'market'}
-              buttonHeight={'2.5rem'}
+              firstHalfText="limit"
+              secondHalfText="market"
+              buttonHeight="2.5rem"
               containerStyles={{ width: '100%' }}
               firstHalfStyleProperties={BlueSwitcherStyles(theme)}
               secondHalfStyleProperties={BlueSwitcherStyles(theme)}
@@ -935,10 +925,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
             />
           </InputRowContainer>
           <div>
-            <InputRowContainer
-              justify="flex-start"
-              padding={'.8rem 0 1.2rem 0'}
-            >
+            <InputRowContainer justify="flex-start" padding=".8rem 0 1.2rem 0">
               <AdditionalSettingsButton
                 theme={theme}
                 isActive={this.state.isTimeoutOn}
@@ -964,16 +951,16 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
             </InputRowContainer>
 
             <InputRowContainer>
-              <FormInputContainer theme={theme} title={'stop price'}>
+              <FormInputContainer theme={theme} title="stop price">
                 <InputRowContainer>
                   <Input
                     theme={theme}
-                    padding={'0'}
-                    width={'calc(32.5%)'}
-                    textAlign={'left'}
+                    padding="0"
+                    width="calc(32.5%)"
+                    textAlign="left"
                     symbol={pair[1]}
                     value={this.state.stopLossPrice}
-                    showErrors={true}
+                    showErrors
                     isValid={this.props.validateField(
                       true,
                       this.state.pricePercentage
@@ -999,13 +986,13 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
 
                   <Input
                     theme={theme}
-                    padding={'0 .8rem 0 .8rem'}
-                    width={'calc(17.5%)'}
-                    symbol={'%'}
-                    preSymbol={'-'}
-                    textAlign={'left'}
-                    needPreSymbol={true}
-                    showErrors={true}
+                    padding="0 .8rem 0 .8rem"
+                    width="calc(17.5%)"
+                    symbol="%"
+                    preSymbol="-"
+                    textAlign="left"
+                    needPreSymbol
+                    showErrors
                     value={this.state.pricePercentage}
                     isValid={this.props.validateField(
                       true,
@@ -1039,11 +1026,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
 
             {this.state.isTimeoutOn && (
               <>
-                <TradeInputHeader
-                  theme={theme}
-                  title={`timeout`}
-                  needLine={true}
-                />
+                <TradeInputHeader theme={theme} title="timeout" needLine />
                 <InputRowContainer>
                   {/* <SubBlocksContainer>
                     <InputRowContainer>
@@ -1117,7 +1100,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                       /> */}
                       <Input
                         theme={theme}
-                        width={'calc(75% - .4rem)'}
+                        width="calc(75% - .4rem)"
                         value={this.state.whenLossableSec}
                         showErrors={this.state.whenLossableOn}
                         isValid={this.props.validateField(
@@ -1135,7 +1118,7 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                       />
                       <Select
                         theme={theme}
-                        width={'calc(25% - .4rem)'}
+                        width="calc(25% - .4rem)"
                         value={this.state.whenLossableMode}
                         inputStyles={{
                           borderTopLeftRadius: 0,
@@ -1176,17 +1159,17 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
                 <InputRowContainer>
                   <FormInputContainer
                     theme={theme}
-                    title={'forced stop (loss %)'}
+                    title="forced stop (loss %)"
                   >
                     <InputRowContainer>
                       <Input
                         theme={theme}
-                        padding={'0'}
-                        width={'calc(32.5%)'}
-                        textAlign={'left'}
+                        padding="0"
+                        width="calc(32.5%)"
+                        textAlign="left"
                         symbol={pair[1]}
                         value={this.state.forcedLossPrice}
-                        showErrors={true}
+                        showErrors
                         isValid={this.props.validateField(
                           true,
                           this.state.forcedLossPrice
@@ -1212,21 +1195,21 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
 
                       <Input
                         theme={theme}
-                        showErrors={true}
+                        showErrors
                         isValid={this.props.validateField(
                           this.state.isForcedStopOn,
                           this.state.forcedPercentage
                         )}
-                        preSymbol={'-'}
-                        textAlign={'left'}
-                        needPreSymbol={true}
+                        preSymbol="-"
+                        textAlign="left"
+                        needPreSymbol
                         inputStyles={{
                           paddingLeft: '2rem',
                           paddingRight: 0,
                         }}
-                        padding={'0 .8rem 0 .8rem'}
-                        width={'calc(17.5%)'}
-                        symbol={'%'}
+                        padding="0 .8rem 0 .8rem"
+                        width="calc(17.5%)"
+                        symbol="%"
                         value={this.state.forcedPercentage}
                         onChange={(e) => {
                           this.setState({ forcedPercentage: e.target.value })
@@ -1252,9 +1235,9 @@ export class EditStopLossPopup extends React.Component<IProps, ISLState> {
               </>
             )}
 
-            <InputRowContainer padding={'2rem 0 0 0'}>
+            <InputRowContainer padding="2rem 0 0 0">
               <SendButton
-                type={'buy'}
+                type="buy"
                 onClick={() => {
                   const transformedState = transformProperties(this.state)
                   const isValid = validate(transformedState, true)
@@ -1302,7 +1285,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
         style={{ width: '85rem', margin: 'auto' }}
         fullScreen={false}
         onClose={handleClose}
-        maxWidth={'md'}
+        maxWidth="md"
         open={open}
         aria-labelledby="responsive-edit-hedge-dialog-title"
       >
@@ -1310,7 +1293,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
           disableTypography
           id="responsive-edit-hedge-dialog-title"
         >
-          <TypographyTitle>{`Edit hedge`}</TypographyTitle>
+          <TypographyTitle>Edit hedge</TypographyTitle>
           <ClearButton>
             <Clear
               style={{ fontSize: '2rem' }}
@@ -1320,7 +1303,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
           </ClearButton>
         </StyledDialogTitle>
         <StyledDialogContent id="edit-hedge-dialog-content">
-          <InputRowContainer padding={'1rem 0 .6rem 0'}>
+          <InputRowContainer padding="1rem 0 .6rem 0">
             <div>
               <GreenSwitcher
                 id="isHedgeDialogOn"
@@ -1335,12 +1318,12 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
             </div>
           </InputRowContainer>
           <InputRowContainer>
-            <FormInputContainer title={'hedge'}>
+            <FormInputContainer title="hedge">
               <CustomSwitcher
                 theme={theme}
-                firstHalfText={'long'}
-                secondHalfText={'short'}
-                buttonHeight={'2.5rem'}
+                firstHalfText="long"
+                secondHalfText="short"
+                buttonHeight="2.5rem"
                 containerStyles={{
                   width: '30%',
                   padding: '0 .4rem 0 0',
@@ -1357,7 +1340,7 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
               />
               <Input
                 padding="0 .8rem 0 .8rem"
-                width={'calc(40% - 1.6rem)'}
+                width="calc(40% - 1.6rem)"
                 symbol={pair[1]}
                 isDisabled={!this.state.isHedgeOn}
                 value={this.state.hedgePrice}
@@ -1372,8 +1355,8 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
               />
               <Select
                 theme={theme}
-                width={'18%'}
-                symbol={'LVRG.'}
+                width="18%"
+                symbol="LVRG."
                 isDisabled={!this.state.isHedgeOn}
                 value={this.state.hedgeIncrease}
                 showErrors={this.state.isHedgeOn}
@@ -1394,9 +1377,9 @@ export class EditHedgePopup extends React.Component<IProps, HedgeState> {
               </Select>
             </FormInputContainer>
           </InputRowContainer>
-          <InputRowContainer padding={'2rem 0 0 0'}>
+          <InputRowContainer padding="2rem 0 0 0">
             <SendButton
-              type={'buy'}
+              type="buy"
               onClick={() => {
                 const transformedState = this.state
                 const isValid = validate(transformedState, true)
@@ -1438,7 +1421,7 @@ export class EditEntryOrderPopup extends React.Component<
     if (state.side === '') {
       const { side, price, pricePrecision, leverage } = props
 
-      let priceForCalculate =
+      const priceForCalculate =
         props.derivedState.type === 'market' && !props.derivedState.isTrailingOn
           ? props.price
           : price
@@ -1474,11 +1457,12 @@ export class EditEntryOrderPopup extends React.Component<
     }
     return null
   }
+
   updateTrailingPrice = (deviationPercentage) => {
     const { type, isTrailingOn } = this.state
     const { side, price, pricePrecision } = this.props
 
-    let priceForCalculate =
+    const priceForCalculate =
       type === 'market' && !isTrailingOn ? this.props.price : price
 
     const trailingDeviationPrice =
@@ -1501,7 +1485,7 @@ export class EditEntryOrderPopup extends React.Component<
 
     let maxAmount = 0
 
-    let priceForCalculate =
+    const priceForCalculate =
       type === 'market' && !isTrailingOn ? this.props.price : price
 
     if (marketType === 0) {
@@ -1560,7 +1544,7 @@ export class EditEntryOrderPopup extends React.Component<
     } = this.state
 
     let maxAmount = 0
-    let priceForCalculate =
+    const priceForCalculate =
       type === 'market' && !isTrailingOn ? this.props.price : price
 
     if (marketType === 0) {
@@ -1576,7 +1560,7 @@ export class EditEntryOrderPopup extends React.Component<
         style={{ width: '85rem', margin: 'auto' }}
         fullScreen={false}
         onClose={handleClose}
-        maxWidth={'md'}
+        maxWidth="md"
         open={open}
         aria-labelledby="responsive-edit-entry-order-dialog-title"
       >
@@ -1585,7 +1569,7 @@ export class EditEntryOrderPopup extends React.Component<
           disableTypography
           id="responsive-edit-entry-order-dialog-title"
         >
-          <TypographyTitle theme={theme}>{`Edit entry point`}</TypographyTitle>
+          <TypographyTitle theme={theme}>Edit entry point</TypographyTitle>
           <div style={{ display: 'flex', alignItems: 'center', width: '60%' }}>
             <SmallSlider
               theme={theme}
@@ -1593,7 +1577,7 @@ export class EditEntryOrderPopup extends React.Component<
               max={maxLeverage}
               defaultValue={this.state.leverage}
               value={this.state.leverage}
-              valueSymbol={'X'}
+              valueSymbol="X"
               marks={
                 maxLeverage === 125
                   ? {
@@ -1669,9 +1653,9 @@ export class EditEntryOrderPopup extends React.Component<
         <StyledDialogContent theme={theme} id="edit-entry-order-dialog-content">
           <CustomSwitcher
             theme={theme}
-            firstHalfText={'buy'}
-            secondHalfText={'sell'}
-            buttonHeight={'2.5rem'}
+            firstHalfText="buy"
+            secondHalfText="sell"
+            buttonHeight="2.5rem"
             containerStyles={{ width: '100%', padding: '1.2rem 0 .6rem 0' }}
             firstHalfStyleProperties={GreenSwitcherStyles(theme)}
             secondHalfStyleProperties={RedSwitcherStyles(theme)}
@@ -1724,9 +1708,9 @@ export class EditEntryOrderPopup extends React.Component<
 
           <CustomSwitcher
             theme={theme}
-            firstHalfText={'limit'}
-            secondHalfText={'market'}
-            buttonHeight={'2.5rem'}
+            firstHalfText="limit"
+            secondHalfText="market"
+            buttonHeight="2.5rem"
             containerStyles={{
               width: '100%',
               paddingBottom: marketType === 1 ? '0' : '.6rem',
@@ -1753,7 +1737,7 @@ export class EditEntryOrderPopup extends React.Component<
             {marketType === 1 && (
               <InputRowContainer
                 justify="flex-start"
-                padding={'.6rem 0 1.2rem 0'}
+                padding=".6rem 0 1.2rem 0"
               >
                 <AdditionalSettingsButton
                   theme={theme}
@@ -1770,7 +1754,7 @@ export class EditEntryOrderPopup extends React.Component<
             )}
 
             <InputRowContainer>
-              <FormInputContainer theme={theme} title={'price'}>
+              <FormInputContainer theme={theme} title="price">
                 <Input
                   theme={theme}
                   symbol={pair[1]}
@@ -1784,7 +1768,7 @@ export class EditEntryOrderPopup extends React.Component<
                   value={
                     type === 'limit' ? price : isTrailingOn ? price : 'MARKET'
                   }
-                  showErrors={true}
+                  showErrors
                   isValid={this.props.validateField(true, price)}
                   disabled={type === 'market' && !isTrailingOn}
                   onChange={(e) => {
@@ -1802,16 +1786,16 @@ export class EditEntryOrderPopup extends React.Component<
             </InputRowContainer>
 
             {isTrailingOn && (
-              <FormInputContainer theme={theme} title={'price deviation'}>
+              <FormInputContainer theme={theme} title="price deviation">
                 <InputRowContainer>
                   <Input
                     theme={theme}
-                    padding={'0'}
-                    width={'calc(32.5%)'}
-                    textAlign={'left'}
+                    padding="0"
+                    width="calc(32.5%)"
+                    textAlign="left"
                     symbol={pair[1]}
                     value={this.state.trailingDeviationPrice}
-                    showErrors={true}
+                    showErrors
                     isValid={this.props.validateField(
                       true,
                       this.state.trailingDeviationPrice
@@ -1837,12 +1821,12 @@ export class EditEntryOrderPopup extends React.Component<
 
                   <Input
                     theme={theme}
-                    padding={'0 .8rem 0 .8rem'}
-                    width={'calc(17.5%)'}
-                    symbol={'%'}
-                    textAlign={'left'}
+                    padding="0 .8rem 0 .8rem"
+                    width="calc(17.5%)"
+                    symbol="%"
+                    textAlign="left"
                     value={deviationPercentage}
-                    showErrors={true}
+                    showErrors
                     isValid={this.props.validateField(
                       isTrailingOn,
                       deviationPercentage
@@ -1890,7 +1874,7 @@ export class EditEntryOrderPopup extends React.Component<
                 <FormInputContainer
                   theme={theme}
                   needLine={false}
-                  needRightValue={true}
+                  needRightValue
                   rightValue={`${
                     side === 'buy' || marketType === 1
                       ? (maxAmount / priceForCalculate).toFixed(
@@ -1907,13 +1891,13 @@ export class EditEntryOrderPopup extends React.Component<
                 >
                   <Input
                     theme={theme}
-                    type={'text'}
+                    type="text"
                     pattern={
                       marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'
                     }
                     symbol={pair[0]}
                     value={amount}
-                    showErrors={true}
+                    showErrors
                     isValid={this.props.validateField(true, +amount)}
                     onChange={(e) => {
                       const [maxAmount] = this.getMaxValues()
@@ -1964,7 +1948,7 @@ export class EditEntryOrderPopup extends React.Component<
                 <FormInputContainer
                   theme={theme}
                   needLine={false}
-                  needRightValue={true}
+                  needRightValue
                   rightValue={`${
                     side === 'buy' || marketType === 1
                       ? stripDigitPlaces(maxAmount, marketType === 1 ? 0 : 2)
@@ -2054,7 +2038,7 @@ export class EditEntryOrderPopup extends React.Component<
                 <FormInputContainer
                   theme={theme}
                   needLine={false}
-                  needRightValue={true}
+                  needRightValue
                   rightValue={`${stripDigitPlaces(funds[1].quantity, 2)} ${
                     pair[1]
                   }`}
@@ -2090,10 +2074,10 @@ export class EditEntryOrderPopup extends React.Component<
               </InputRowContainer>
             )}
 
-            <InputRowContainer padding={'2rem 0 0 0'}>
+            <InputRowContainer padding="2rem 0 0 0">
               <SendButton
                 theme={theme}
-                type={'buy'}
+                type="buy"
                 onClick={() => {
                   const percentage = this.props.openFromTerminal
                     ? this.state.deviationPercentage

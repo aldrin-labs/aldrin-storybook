@@ -2,9 +2,8 @@ import React, { useState } from 'react'
 import { TableWithSort } from '@sb/components'
 import styled from 'styled-components'
 import { AES, enc, MD5 } from 'crypto-js'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { BtnCustom, BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import SubColumn from './components/SubColumn'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
@@ -25,11 +24,11 @@ import { withAddressbookPassword } from '@core/hoc/withAddressbookPassword'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { compose } from 'recompose'
 import { addressBookColumnNames } from '@sb/components/TradingTable/TradingTable.mocks'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { getUserAddressbook } from '@core/graphql/queries/chart/getUserAddressbook'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
+import SubColumn from './components/SubColumn'
+import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils'
 
 import NewCoinPopup from './components/Popups/NewCoinPopup'
 import NewContactPopup from './components/Popups/NewContactPopup'
@@ -182,8 +181,6 @@ const combineContactsData = (
               })
 
               setContactPublicKey(el.publicKey)
-
-              return
             }}
           >
             <Icon
@@ -286,11 +283,11 @@ const AddressbookRoute = ({
               padding="1rem 2rem"
               borderRadius=".8rem"
               borderColor={theme.palette.blue.serum}
-              btnColor={'#fff'}
+              btnColor="#fff"
               backgroundColor={theme.palette.blue.serum}
-              textTransform={'none'}
-              margin={'4rem 0 0 0'}
-              transition={'all .4s ease-out'}
+              textTransform="none"
+              margin="4rem 0 0 0"
+              transition="all .4s ease-out"
               style={{ whiteSpace: 'nowrap' }}
             >
               Connect wallet
@@ -300,9 +297,9 @@ const AddressbookRoute = ({
           <>
             <CustomSwitcher
               theme={theme}
-              firstHalfText={'login'}
-              secondHalfText={'create'}
-              buttonHeight={'3rem'}
+              firstHalfText="login"
+              secondHalfText="create"
+              buttonHeight="3rem"
               containerStyles={{
                 width: '70%',
                 padding: '0 0 2rem 0',
@@ -330,22 +327,22 @@ const AddressbookRoute = ({
                 outline: 'none',
               }}
               value={password}
-              type={'password'}
+              type="password"
               onChange={(e) => updatePassword(e.target.value)}
-              placeholder={'Password'}
+              placeholder="Password"
             />
 
             {!isLoginStep && (
               <Input
                 theme={theme}
-                type={'password'}
+                type="password"
                 style={{
                   background: theme.palette.grey.input,
                   color: theme.palette.text.light,
                 }}
                 value={confirmPassword}
                 onChange={(e) => updateConfirmPassword(e.target.value)}
-                placeholder={'Confirm password'}
+                placeholder="Confirm password"
               />
             )}
 
@@ -363,8 +360,8 @@ const AddressbookRoute = ({
               }}
               btnColor={theme.palette.blue.serum}
               btnWidth={isLoginStep ? '14rem' : '18rem'}
-              height={'4rem'}
-              margin={'1rem 0 0 0'}
+              height="4rem"
+              margin="1rem 0 0 0"
             >
               {isLoginStep ? 'Confirm' : 'Create addressbook'}
             </BtnCustom>
@@ -410,7 +407,7 @@ const AddressbookRoute = ({
 
             <TableWithSort
               hideCommonCheckbox
-              expandableRows={true}
+              expandableRows
               rowsWithHover={false}
               expandedRows={expandedRows}
               onChange={(id) =>
@@ -468,7 +465,7 @@ const AddressbookRoute = ({
                   boxShadow: 'none',
                 },
               }}
-              emptyTableText={'No contacts'}
+              emptyTableText="No contacts"
               data={{
                 body: combineContactsData(
                   getUserAddressbookQuery.getUserAddressbook,
@@ -504,8 +501,8 @@ const AddressbookRoute = ({
         theme={theme}
         data={updatePopupData.data}
         isContact={updatePopupData.isUpdateContact}
-        needPortalPopup={true}
-        needPortalMask={true}
+        needPortalPopup
+        needPortalMask
         isPopupOpen={updatePopupData.isPopupOpen}
         closePopup={() =>
           changeUpdatePopupData({

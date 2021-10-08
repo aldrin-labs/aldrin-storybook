@@ -1,15 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 
 import RedPlanetImg from '@sb/images/red_planet.png'
 import { withTheme, Theme } from '@material-ui/core'
+import useMobileSize from '@webhooks/useMobileSize'
 import {
   LinkToDiscord,
   LinkToTelegram,
   LinkToTwitter,
 } from '../Homepage/SocialsLinksComponents'
-import useMobileSize from '@webhooks/useMobileSize'
+import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 
 const MainTitle = styled.h2`
   font-size: 2.4rem;

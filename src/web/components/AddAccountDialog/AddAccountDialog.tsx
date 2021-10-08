@@ -5,15 +5,6 @@ import { withTheme } from '@material-ui/core/styles'
 
 import { Grid } from '@material-ui/core'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import {
-  TypographyCustomHeading,
-  GridCustom,
-  InputBaseCustom,
-  DialogWrapper,
-  DialogTitleCustom,
-  Legend,
-  LinkCustom,
-} from './AddAccountDialog.styles'
 
 import { Loading } from '@sb/components/index'
 
@@ -37,13 +28,22 @@ import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
-import { IState, IProps } from './AddAccountDialog.types'
 
 import InfoDialog from '@sb/components/InfoDialog/InfoDialog'
 import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
 import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import { refetchOptionsOnKeyAddFunction } from '@sb/components/AddAccountDialog/AddAccountDialog.utils'
+import { IState, IProps } from './AddAccountDialog.types'
+import {
+  TypographyCustomHeading,
+  GridCustom,
+  InputBaseCustom,
+  DialogWrapper,
+  DialogTitleCustom,
+  Legend,
+  LinkCustom,
+} from './AddAccountDialog.styles'
 
 @withTheme()
 class AddAccountDialog extends React.Component<IProps, IState> {
@@ -149,7 +149,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         variables: {
           input: {
             isFuturesWarsKey: true,
-            roomId: roomId,
+            roomId,
           },
         },
       })
@@ -189,13 +189,11 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         variables,
       })
 
-      const {
-        status = 'ERR',
-        errorMessage = 'Something went wrong',
-      } = data.addExchangeKey || {
-        status: 'ERR',
-        errorMessage: 'Something went wrong',
-      }
+      const { status = 'ERR', errorMessage = 'Something went wrong' } =
+        data.addExchangeKey || {
+          status: 'ERR',
+          errorMessage: 'Something went wrong',
+        }
 
       if (status === 'ERR') {
         this.showAddingExchangeKeyStatus({ status, errorMessage })
@@ -327,14 +325,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
         ) : (
           !onboarding && (
             <BtnCustom
-              btnWidth={'auto'}
-              height={'auto'}
-              btnColor={'#165BE0'}
-              borderRadius={'1rem'}
-              color={'#165BE0'}
-              margin={'1.6rem 0 0 2rem'}
-              padding={'.5rem 1rem .5rem 0'}
-              fontSize={'1.4rem'}
+              btnWidth="auto"
+              height="auto"
+              btnColor="#165BE0"
+              borderRadius="1rem"
+              color="#165BE0"
+              margin="1.6rem 0 0 2rem"
+              padding=".5rem 1rem .5rem 0"
+              fontSize="1.4rem"
               letterSpacing="1px"
               onClick={this.handleClickOpen}
               style={{
@@ -391,8 +389,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             }}
           >
             <TypographyCustomHeading
-              fontWeight={'700'}
-              borderRadius={'1rem'}
+              fontWeight="700"
+              borderRadius="1rem"
               color={black.custom}
             >
               {isFuturesWars
@@ -423,12 +421,12 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 <GridCustom>
                   <Grid
                     container
-                    justify={'space-between'}
+                    justify="space-between"
                     style={{ padding: '3rem 0' }}
                   >
-                    <Grid container direction={'column'}>
+                    <Grid container direction="column">
                       <Typography
-                        align={`center`}
+                        align="center"
                         style={{
                           paddingTop: '1.4rem',
                           paddingBottom: '1.4rem',
@@ -442,17 +440,17 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <Grid
                       justify="center"
                       container
-                      direction={'column'}
+                      direction="column"
                       style={{ height: '4rem' }}
                     >
-                      <Typography align={`center`}>Select room:</Typography>
+                      <Typography align="center">Select room:</Typography>
                       <FuturesWarsRoomSelector
                         onChange={this.handleSelectRoomId}
                       />
                     </Grid>
-                    <Grid container direction={'column'}>
+                    <Grid container direction="column">
                       <Typography
-                        align={`center`}
+                        align="center"
                         style={{ paddingTop: '1.4rem', color: '#16253D' }}
                       >
                         In order to start the game you must go to the futures
@@ -460,7 +458,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                         list available from above
                       </Typography>
                       <Typography
-                        align={`center`}
+                        align="center"
                         style={{ paddingTop: '1.4rem', color: '#16253D' }}
                       >
                         You will need to transfer the set amount to your balance
@@ -470,14 +468,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                         trade as long as you want until the round is over.{' '}
                       </Typography>
                       <Typography
-                        align={`center`}
+                        align="center"
                         style={{ paddingTop: '1.4rem', color: '#16253D' }}
                       >
                         At the end of the round, the winner will receive the
                         bank.
                       </Typography>
                       <Typography
-                        align={`center`}
+                        align="center"
                         style={{ paddingTop: '1.4rem', color: '#16253D' }}
                       >
                         Statistics, rating and time to start and end of the
@@ -485,16 +483,16 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                       </Typography>
                     </Grid>
                   </Grid>
-                  <Grid container justify={'center'}>
+                  <Grid container justify="center">
                     <BtnCustom
-                      btnWidth={'45%'}
-                      borderRadius={'8px'}
-                      btnColor={'#165BE0'}
-                      borderColor={'#165BE0'}
-                      padding={'1.5rem'}
-                      height={'auto'}
-                      borderWidth={'2px'}
-                      fontSize={'1.2rem'}
+                      btnWidth="45%"
+                      borderRadius="8px"
+                      btnColor="#165BE0"
+                      borderColor="#165BE0"
+                      padding="1.5rem"
+                      height="auto"
+                      borderWidth="2px"
+                      fontSize="1.2rem"
                       disabled={!roomId}
                       onClick={this.handleGenerateFuturesWarsAccount}
                     >
@@ -508,9 +506,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <>
                       <GridCustom
                         container
-                        direction={'column'}
-                        alignItems={'center'}
-                        justify={'center'}
+                        direction="column"
+                        alignItems="center"
+                        justify="center"
                       >
                         <SvgIcon
                           src={CcaiBinanceLogo}
@@ -521,14 +519,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                       <GridCustom>
                         <Grid
                           container
-                          justify={'space-between'}
+                          justify="space-between"
                           style={{ padding: '3rem 0' }}
                         >
                           <Grid
                             container
-                            direction={'column'}
-                            justify={'center'}
-                            alignItems={'center'}
+                            direction="column"
+                            justify="center"
+                            alignItems="center"
                             style={{ maxWidth: '33%' }}
                           >
                             <Typography
@@ -543,7 +541,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             </Typography>
                             <SvgIcon src={free} width="40px" height="auto" />
                             <Typography
-                              align={`center`}
+                              align="center"
                               style={{ paddingTop: '1.4rem' }}
                             >
                               No extra fee, pay only Binance fee
@@ -551,9 +549,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                           </Grid>
                           <Grid
                             container
-                            direction={'column'}
-                            justify={'center'}
-                            alignItems={'center'}
+                            direction="column"
+                            justify="center"
+                            alignItems="center"
                             style={{ maxWidth: '33%' }}
                           >
                             <Typography
@@ -568,7 +566,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             </Typography>
                             <SvgIcon src={useful} width="40px" height="auto" />
                             <Typography
-                              align={`center`}
+                              align="center"
                               style={{ paddingTop: '1.4rem' }}
                             >
                               All features availiable with no limits
@@ -576,9 +574,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                           </Grid>
                           <Grid
                             container
-                            direction={'column'}
-                            justify={'center'}
-                            alignItems={'center'}
+                            direction="column"
+                            justify="center"
+                            alignItems="center"
                             style={{ maxWidth: '33%' }}
                           >
                             <Typography
@@ -593,7 +591,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             </Typography>
                             <SvgIcon src={secure} width="40px" height="auto" />
                             <Typography
-                              align={`center`}
+                              align="center"
                               style={{ paddingTop: '1.4rem' }}
                             >
                               All user funds custody remain with Binance at all
@@ -601,16 +599,16 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             </Typography>
                           </Grid>
                         </Grid>
-                        <Grid container justify={'center'}>
+                        <Grid container justify="center">
                           <BtnCustom
-                            btnWidth={'45%'}
-                            borderRadius={'8px'}
-                            btnColor={'#165BE0'}
-                            borderColor={'#165BE0'}
-                            padding={'1.5rem'}
-                            height={'auto'}
-                            borderWidth={'2px'}
-                            fontSize={'1.2rem'}
+                            btnWidth="45%"
+                            borderRadius="8px"
+                            btnColor="#165BE0"
+                            borderColor="#165BE0"
+                            padding="1.5rem"
+                            height="auto"
+                            borderWidth="2px"
+                            fontSize="1.2rem"
                             onClick={this.handleGenerateBrokerKey}
                           >
                             Create account
@@ -632,7 +630,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                       <GridCustom>
                         <Legend>Exchange</Legend>
                         <SelectExchangeList
-                          isClearable={true}
+                          isClearable
                           inputValue={exchange}
                           placeholder={exchange}
                           onChange={(e) => this.handleSelectExchange(e)}
@@ -669,7 +667,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                           name="apiKey"
                           label="API Key"
                           value={apiKey}
-                          autoComplete={'off'}
+                          autoComplete="off"
                           onChange={(e) => this.handleChange(e)}
                           placeholder="Enter API key here..."
                           // margin="normal"
@@ -682,7 +680,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                           name="secretOfApiKey"
                           label="Secret"
                           value={secretOfApiKey}
-                          autoComplete={'off'}
+                          autoComplete="off"
                           onChange={(e) => this.handleChange(e)}
                           placeholder="Enter secret key here..."
                           type="text"
@@ -694,14 +692,14 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 </Grid>
               ) : (
                 <div style={{ padding: '350px 0 0 0' }}>
-                  <Loading centerAligned={true} loaderColor={'#165BE0'} />
+                  <Loading centerAligned loaderColor="#165BE0" />
                 </div>
               )}
 
               {includeCommonBinanceKey && !isFuturesWars && !loadingRequest && (
                 <Grid container justify="space-between" alignItems="center">
                   <LinkCustom
-                    href={'#'}
+                    href="#"
                     onClick={(e) => {
                       e.preventDefault()
                       this.handleClickOpenGetKeys()
@@ -712,8 +710,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 
                   <BtnCustom
                     disabled={regularLoading}
-                    borderRadius={'8px'}
-                    btnColor={'#165BE0'}
+                    borderRadius="8px"
+                    btnColor="#165BE0"
                     fontSize="1.6rem"
                     padding="1rem"
                     height="auto"
@@ -742,9 +740,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             }
             this.updateWarningStatus(false)
           }}
-          text={
-            'Importing your trades from the exchange may take up to a few minutes.'
-          }
+          text="Importing your trades from the exchange may take up to a few minutes."
         />
       </>
     )

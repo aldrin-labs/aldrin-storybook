@@ -12,8 +12,6 @@ import {
   BlueSwitcherStyles,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/utils'
 
-import { SendButton } from '../TraidingTerminal/styles'
-
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { API_URL } from '@core/utils/config'
 import WebHookImg from '@sb/images/WebHookImg.png'
@@ -44,17 +42,14 @@ import {
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SliderWithPriceAndPercentageFieldRow } from '@sb/compositions/Chart/components/SmartOrderTerminal/SliderComponents'
 
+import { notify } from '@sb/dexUtils/notifications'
 import TradingViewConfirmPopup from './TradingViewConfirmPopup'
 import { SliderWithAmountFieldRow } from './AmountSlider'
-import { notify } from '@sb/dexUtils/notifications'
+import { SendButton } from '../TraidingTerminal/styles'
 
 const generateToken = () =>
-  Math.random()
-    .toString(36)
-    .substring(2, 15) +
-  Math.random()
-    .toString(36)
-    .substring(2, 15)
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15)
 
 const SwitcherContainer = styled.div`
   display: flex;
@@ -99,7 +94,7 @@ export const TradingViewBotTerminal = ({
     subscribeToTVAlert()
     changeShowPopup(true)
     updateWrapperState({ token: generateToken() })
-    window.onbeforeunload = function() {
+    window.onbeforeunload = function () {
       return 'Are you sure you want to leave?'
     }
   }
@@ -129,8 +124,8 @@ export const TradingViewBotTerminal = ({
     <TerminalBlock
       style={{ display: 'flex' }}
       theme={theme}
-      width={'100%'}
-      data-tut={'step1'}
+      width="100%"
+      data-tut="step1"
     >
       <TradingViewConfirmPopup
         theme={theme}
@@ -139,12 +134,12 @@ export const TradingViewBotTerminal = ({
         updateWrapperState={updateWrapperState}
       />
       <div style={{ margin: 'auto 0', width: '100%' }}>
-        <InputRowContainer padding={'1.2rem 0 .6rem 0'}>
+        <InputRowContainer padding="1.2rem 0 .6rem 0">
           <CustomSwitcher
             theme={theme}
-            firstHalfText={'buy'}
-            secondHalfText={'sell'}
-            buttonHeight={'3rem'}
+            firstHalfText="buy"
+            secondHalfText="sell"
+            buttonHeight="3rem"
             containerStyles={{
               width: '70%',
               padding: 0,
@@ -179,10 +174,10 @@ export const TradingViewBotTerminal = ({
           <Input
             theme={theme}
             needTitle
-            title={`plot_`}
-            type={'number'}
+            title="plot_"
+            type="number"
             textAlign="left"
-            width={'calc(20% - .8rem)'}
+            width="calc(20% - .8rem)"
             inputStyles={{
               paddingLeft: '4rem',
             }}
@@ -195,12 +190,12 @@ export const TradingViewBotTerminal = ({
             }}
           />
         </InputRowContainer>
-        <InputRowContainer padding={'.6rem 0 .6rem 0'}>
+        <InputRowContainer padding=".6rem 0 .6rem 0">
           <CustomSwitcher
             theme={theme}
-            firstHalfText={'limit'}
-            secondHalfText={'market'}
-            buttonHeight={'3rem'}
+            firstHalfText="limit"
+            secondHalfText="market"
+            buttonHeight="3rem"
             containerStyles={{
               width: '35%',
               padding: 0,
@@ -227,14 +222,14 @@ export const TradingViewBotTerminal = ({
           <div style={{ width: 'calc(35% - 1rem)', marginLeft: '1rem' }}>
             <Input
               theme={theme}
-              padding={'0'}
-              width={'calc(100%)'}
-              textAlign={'right'}
+              padding="0"
+              width="calc(100%)"
+              textAlign="right"
               symbol={pair[1]}
               value={orderType === 'market' ? 'Market' : price}
               needTitle
-              title={`price`}
-              type={'text'}
+              title="price"
+              type="text"
               disabled={pricePlotEnabled || orderType === 'market'}
               onChange={(e) => {
                 updatePrice(e.target.value)
@@ -252,11 +247,11 @@ export const TradingViewBotTerminal = ({
           </SwitcherContainer>
           <Input
             needTitle
-            title={`plot_`}
+            title="plot_"
             theme={theme}
-            type={'number'}
+            type="number"
             textAlign="left"
-            width={'calc(20% - .8rem)'}
+            width="calc(20% - .8rem)"
             inputStyles={{
               paddingLeft: '4rem',
             }}
@@ -335,11 +330,11 @@ export const TradingViewBotTerminal = ({
           changePlot={(e) => updateAmountPlot(e.target.value)}
         />
 
-        <InputRowContainer align={'flex-end'}>
+        <InputRowContainer align="flex-end">
           <FormInputContainer
             theme={theme}
-            padding={'0 0 0 0'}
-            haveTooltip={true}
+            padding="0 0 0 0"
+            haveTooltip
             style={{ width: 'calc(35% - 1rem)', marginRight: '1rem' }}
             title={
               <DarkTooltip
@@ -373,11 +368,11 @@ export const TradingViewBotTerminal = ({
               padding="1rem 2rem"
               borderRadius=".8rem"
               borderColor={theme.palette.blue.serum}
-              btnColor={'#fff'}
+              btnColor="#fff"
               backgroundColor={theme.palette.blue.serum}
-              textTransform={'none'}
-              margin={'1rem 0 0 0'}
-              transition={'all .4s ease-out'}
+              textTransform="none"
+              margin="1rem 0 0 0"
+              transition="all .4s ease-out"
               onClick={() => {
                 copy(`https://${API_URL}/createSerumOrderByTVAlert`)
               }}
@@ -389,8 +384,8 @@ export const TradingViewBotTerminal = ({
           <FormInputContainer
             theme={theme}
             style={{ width: 'calc(35%)' }}
-            padding={'0 0 0 0'}
-            haveTooltip={true}
+            padding="0 0 0 0"
+            haveTooltip
             title={
               <DarkTooltip
                 title={
@@ -423,11 +418,11 @@ export const TradingViewBotTerminal = ({
               padding="1rem 2rem"
               borderRadius=".8rem"
               borderColor={theme.palette.blue.serum}
-              btnColor={'#fff'}
+              btnColor="#fff"
               backgroundColor={theme.palette.blue.serum}
-              textTransform={'none'}
-              margin={'1rem 0 0 0'}
-              transition={'all .4s ease-out'}
+              textTransform="none"
+              margin="1rem 0 0 0"
+              transition="all .4s ease-out"
               onClick={() => {
                 copy(getEntryAlertJson())
               }}
@@ -436,13 +431,13 @@ export const TradingViewBotTerminal = ({
             </BtnCustom>
           </FormInputContainer>
           <InputRowContainer
-            padding={'0'}
+            padding="0"
             style={{ marginLeft: '1rem' }}
-            width={'30%'}
+            width="30%"
           >
             {' '}
             <SendButton
-              type={'buy'}
+              type="buy"
               theme={theme}
               onClick={() => {
                 // publicKey check

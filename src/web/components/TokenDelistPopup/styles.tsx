@@ -29,7 +29,7 @@ export const BlueButton = styled(
     <BtnCustom {...props}>
       {showLoader ? (
         <Loading
-          color={'#fff'}
+          color="#fff"
           size={24}
           style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
         />

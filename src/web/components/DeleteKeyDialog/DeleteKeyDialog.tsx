@@ -43,32 +43,38 @@ const DeleteAccountDialogComponent = ({
     closeMainPopup()
   }
 
-  const showDeleteKeyStatus = ({ status = 'ERR', errorMessage = 'Something went wrong with deleting your key' }: { status: "ERR" | "OK", errorMessage: string }) => {
+  const showDeleteKeyStatus = ({
+    status = 'ERR',
+    errorMessage = 'Something went wrong with deleting your key',
+  }: {
+    status: 'ERR' | 'OK'
+    errorMessage: string
+  }) => {
     if (status === 'OK') {
-      enqueueSnackbar(`Your key was successfully deleted`, { variant: 'success' })
+      enqueueSnackbar(`Your key was successfully deleted`, {
+        variant: 'success',
+      })
     } else {
       enqueueSnackbar(`Error: ${errorMessage}`, { variant: 'error' })
     }
   }
 
-
   const handleSubmit = async () => {
     if (checkName.toLowerCase() === name.toLowerCase()) {
       try {
         const response = await deleteMutation({
-          variables: { name: name, removeTrades: false },
+          variables: { name, removeTrades: false },
         })
         const { status, errorMessage } = response.data.deleteExchangeKey
 
         showDeleteKeyStatus({ status, errorMessage })
-        
+
         if (status !== 'OK') {
           setError('Something went wrong')
           return
         }
         closeDialog()
-
-      } catch(e) {
+      } catch (e) {
         setError('Something went wrong')
         showDeleteKeyStatus({ status: 'ERR', errorMessage: e.message })
       }
@@ -87,7 +93,7 @@ const DeleteAccountDialogComponent = ({
         style={{ width: '75rem', margin: 'auto' }}
         open={isOpen}
         onClose={closeDialog}
-        maxWidth={'md'}
+        maxWidth="md"
         style={{ transition: 'opacity 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms' }}
         aria-labelledby="form-dialog-title"
       >

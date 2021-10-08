@@ -12,6 +12,9 @@ import {
   ClearButton,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
+import { Query } from 'react-apollo'
+import { GET_SIGNAL_PROPERTIES } from '@core/graphql/queries/signals/getSignalProperties'
+import SwitchOnOff from '@sb/components/SwitchOnOff'
 import {
   SignalPropertyGrid,
   PropertyName,
@@ -21,10 +24,6 @@ import {
   RefreshButton,
   ErrorText,
 } from './SignalPreferencesDialog.styles'
-
-import { Query } from 'react-apollo'
-import { GET_SIGNAL_PROPERTIES } from '@core/graphql/queries/signals/getSignalProperties'
-import SwitchOnOff from '@sb/components/SwitchOnOff'
 
 const SignalPreferencesDialog = ({
   isDialogOpen,
@@ -105,7 +104,7 @@ const SignalPreferencesDialog = ({
       fetchPolicy="network-only"
     >
       {({ data, loading, error }) => {
-        let { getSignalInputs } = data
+        const { getSignalInputs } = data
 
         if (!getSignalInputs) return null
         const properties = JSON.parse(getSignalInputs)
@@ -116,7 +115,7 @@ const SignalPreferencesDialog = ({
             style={{ width: '100%', margin: 'auto' }}
             fullScreen={false}
             onClose={closeDialog}
-            maxWidth={'md'}
+            maxWidth="md"
             open={isDialogOpen}
             aria-labelledby="responsive-dialog-title"
           >

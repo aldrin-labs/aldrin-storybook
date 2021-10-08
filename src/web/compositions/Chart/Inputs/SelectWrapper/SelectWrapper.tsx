@@ -24,21 +24,14 @@ import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
 import {
   IProps,
-
   IPropsSelectPairListComponent,
   IStateSelectPairListComponent,
-  SelectTabType
+  SelectTabType,
 } from './SelectWrapper.types'
 import { combineSelectWrapperData } from './SelectWrapper.utils'
 import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
 import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
-
-
-
-
-
-
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -51,24 +44,13 @@ export const excludedPairs = [
 ]
 
 export const datesForQuery = {
-  startOfTime: () => dayjs()
-    .startOf('hour')
-    .subtract(24, 'hour')
-    .unix(),
+  startOfTime: () => dayjs().startOf('hour').subtract(24, 'hour').unix(),
 
-  endOfTime: () => dayjs()
-    .endOf('hour')
-    .unix(),
+  endOfTime: () => dayjs().endOf('hour').unix(),
 
-  prevStartTimestamp: () => dayjs()
-    .startOf('hour')
-    .subtract(48, 'hour')
-    .unix(),
+  prevStartTimestamp: () => dayjs().startOf('hour').subtract(48, 'hour').unix(),
 
-  prevEndTimestamp: () => dayjs()
-    .startOf('hour')
-    .subtract(24, 'hour')
-    .unix(),
+  prevEndTimestamp: () => dayjs().startOf('hour').subtract(24, 'hour').unix(),
 }
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
@@ -85,7 +67,7 @@ const SelectWrapper = (props: IProps) => {
   // )
 
   const selectorMode = 'basic'
-  const setSelectorMode = () => { }
+  const setSelectorMode = () => {}
 
   const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
     'favouriteMarkets',
@@ -114,12 +96,13 @@ const SelectWrapper = (props: IProps) => {
 
   const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
 
-  const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
-    (el) =>
-      el.symbol &&
-      !Array.isArray(el.symbol.match(fiatRegexp)) &&
-      !excludedPairs.includes(el.symbol)
-  )
+  const filtredMarketsByExchange =
+    getSerumMarketDataQuery.getSerumMarketData.filter(
+      (el) =>
+        el.symbol &&
+        !Array.isArray(el.symbol.match(fiatRegexp)) &&
+        !excludedPairs.includes(el.symbol)
+    )
 
   const favouritePairsMap = favouriteMarkets.reduce(
     (acc: Map<string, string>, el: string) => {
@@ -149,7 +132,7 @@ const SelectWrapper = (props: IProps) => {
 class SelectPairListComponent extends React.PureComponent<
   IPropsSelectPairListComponent,
   IStateSelectPairListComponent
-  > {
+> {
   state: IStateSelectPairListComponent = {
     processedSelectData: [],
     showAddMarketPopup: false,
@@ -197,12 +180,8 @@ class SelectPairListComponent extends React.PureComponent<
       .getElementById('ExchangePair')
       ?.getBoundingClientRect()
 
-    const {
-      sortBy,
-      sortDirection,
-      isMintsPopupOpen,
-      isFeedBackPopupOpen,
-    } = this.state
+    const { sortBy, sortDirection, isMintsPopupOpen, isFeedBackPopupOpen } =
+      this.state
 
     getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
       serumMarketsDataMap.set(el.pair, el)
@@ -259,12 +238,8 @@ class SelectPairListComponent extends React.PureComponent<
       onTabChange,
     } = nextProps
     const { data: prevPropsData } = this.props
-    const {
-      sortBy,
-      sortDirection,
-      isMintsPopupOpen,
-      isFeedBackPopupOpen,
-    } = this.state
+    const { sortBy, sortDirection, isMintsPopupOpen, isFeedBackPopupOpen } =
+      this.state
 
     const serumMarketsDataMap = new Map()
 
@@ -283,7 +258,7 @@ class SelectPairListComponent extends React.PureComponent<
       marketType,
       market,
       tokenMap,
-      serumMarketsDataMap: serumMarketsDataMap,
+      serumMarketsDataMap,
       allMarketsMap,
       isMintsPopupOpen,
       setIsMintsPopupOpen: this.setIsMintsPopupOpen,
@@ -301,7 +276,6 @@ class SelectPairListComponent extends React.PureComponent<
       processedSelectData: sortedData,
     })
   }
-
 
   _sortList = ({ sortBy, sortDirection, data, tab }) => {
     let dataToSort = data
@@ -328,11 +302,14 @@ class SelectPairListComponent extends React.PureComponent<
             pairObjectB.volume24hChange.contentToSort -
             pairObjectA.volume24hChange.contentToSort
           )
-        } else if (quoteA === 'USDT') {
+        }
+        if (quoteA === 'USDT') {
           return -1
-        } else if (quoteB === 'USDT') {
+        }
+        if (quoteB === 'USDT') {
           return 1
-        } else if (quoteA !== 'USDT' && quoteB !== 'USDT') {
+        }
+        if (quoteA !== 'USDT' && quoteB !== 'USDT') {
           return (
             pairObjectB.volume24hChange.contentToSort -
             pairObjectA.volume24hChange.contentToSort
@@ -441,7 +418,7 @@ class SelectPairListComponent extends React.PureComponent<
           <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
             <StyledInput
               placeholder="Search"
-              disableUnderline={true}
+              disableUnderline
               value={searchValue}
               onChange={onChangeSearch}
               inputProps={{
@@ -458,7 +435,7 @@ class SelectPairListComponent extends React.PureComponent<
                     cursor: 'pointer',
                     color: '#96999C',
                   }}
-                  disableTypography={true}
+                  disableTypography
                   position="end"
                   autoComplete="off"
                 >
@@ -572,7 +549,7 @@ export default compose(
     withOutSpinner: true,
     withTableLoader: false,
     showNoLoader: true,
-  }),
+  })
   // queryRendererHoc({
   //   query: getSerumTradesData,
   //   name: 'getSerumTradesDataQuery',
