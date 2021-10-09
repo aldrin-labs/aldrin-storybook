@@ -49,24 +49,6 @@ export async function redeemBasket({
     program.programId
   )
 
-  // const tickets = await loadUserTicketsPerPool({
-  //   wallet,
-  //   connection,
-  //   poolPublicKey,
-  // })
-
-  // const allUserTicketsPerPool = tickets.map((ticket) => {
-  //   const data = Buffer.from(ticket.account.data)
-  //   const ticketData = program.coder.accounts.decode('LPTicket', data)
-
-  //   return {
-  //     lpTicketAddress: ticket.pubkey.toString(),
-  //     lpTokens: ticketData.lpTokens.toNumber(),
-  //     pool: ticketData.pool.toString(),
-  //     userKey: ticketData.userKey.toString(),
-  //   }
-  // })
-
   const {
     baseTokenMint,
     baseTokenVault,
@@ -151,67 +133,34 @@ export async function redeemBasket({
         })
       }
 
-      // let leftToWithdrawPoolTokens = userPoolTokenAmount
-
-      // add creation of sol account if needed
       commonTransaction.add(transactionBeforeWithdraw)
 
-      // for (let ticketData of allUserTicketsPerPool) {
-      //   if (leftToWithdrawPoolTokens === 0) continue
+      const withdrawTransaction = await program.instruction.redeemBasket(
+        new BN(userPoolTokenAmount),
+        new BN(baseTokenAmountToWithdraw),
+        new BN(quoteTokenAmountToWithdraw),
+        {
+          accounts: {
+            pool: poolPublicKey,
+            poolMint: poolMint,
+            baseTokenVault,
+            quoteTokenVault,
+            poolSigner: vaultSigner,
+            userPoolTokenAccount,
+            userBaseTokenAccount,
+            userQuoteTokenAccount,
+            walletAuthority: wallet.publicKey,
+            userSolAccount: wallet.publicKey,
+            // lpTicket: ticketData.lpTicketAddress,
+            tokenProgram: TOKEN_PROGRAM_ID,
+            feeBaseAccount,
+            feeQuoteAccount,
+            clock: SYSVAR_CLOCK_PUBKEY,
+          },
+        }
+      )
 
-        // const poolTokensToWithdraw =
-        //   leftToWithdrawPoolTokens > ticketData.lpTokens
-        //     ? ticketData.lpTokens
-        //     : leftToWithdrawPoolTokens
-
-        // const percentageOfAllPoolTokensToWithdraw =
-        //   (poolTokensToWithdraw / userPoolTokenAmount) * 100
-
-        // const baseTokenAmountToWithdrawFromTicket =
-        //   (baseTokenAmountToWithdraw / 100) *
-        //   percentageOfAllPoolTokensToWithdraw
-
-        // const quoteTokenAmountToWithdrawFromTicket =
-        //   (quoteTokenAmountToWithdraw / 100) *
-        //   percentageOfAllPoolTokensToWithdraw
-
-        // console.log({
-        //   userPoolTokenAmount,
-        //   ticketData,
-        //   poolTokensToWithdraw,
-        //   percentageOfAllPoolTokensToWithdraw,
-        //   baseTokenAmountToWithdrawFromTicket,
-        //   quoteTokenAmountToWithdrawFromTicket,
-        // })
-
-        const withdrawTransaction = await program.instruction.redeemBasket(
-          new BN(userPoolTokenAmount),
-          new BN(baseTokenAmountToWithdraw),
-          new BN(quoteTokenAmountToWithdraw),
-          {
-            accounts: {
-              pool: poolPublicKey,
-              poolMint: poolMint,
-              baseTokenVault,
-              quoteTokenVault,
-              poolSigner: vaultSigner,
-              userPoolTokenAccount,
-              userBaseTokenAccount,
-              userQuoteTokenAccount,
-              walletAuthority: wallet.publicKey,
-              userSolAccount: wallet.publicKey,
-              // lpTicket: ticketData.lpTicketAddress,
-              tokenProgram: TOKEN_PROGRAM_ID,
-              feeBaseAccount,
-              feeQuoteAccount,
-              clock: SYSVAR_CLOCK_PUBKEY,
-            },
-          }
-        )
-
-        // leftToWithdrawPoolTokens -= poolTokensToWithdraw
-        commonTransaction.add(withdrawTransaction)
-      
+      commonTransaction.add(withdrawTransaction)
 
       // add close sol account if needed
       commonTransaction.add(transactionAfterWithdraw)
