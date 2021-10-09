@@ -213,6 +213,7 @@ export const combineAllPoolsData = ({
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
+  refreshAllTokensData,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
   setIsStakePopupOpen,
@@ -229,13 +230,14 @@ export const combineAllPoolsData = ({
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
+  refreshAllTokensData: () => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   const processedAllPoolsData = poolsInfo
-  // const processedAllPoolsData = mock
+    // const processedAllPoolsData = mock
     .filter((el) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
@@ -255,6 +257,14 @@ export const combineAllPoolsData = ({
       const fees = feesPerPoolMap.get(el.swapToken) || 0
       const apy = el.apy24h || 0
       const farmingState = el.farming && el.farming[0]
+      const dailyFarmingValue = farmingState
+        ? farmingState.tokensPerPeriod *
+          (dayDuration / farmingState.periodLength)
+        : 0
+
+      const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
+        ? dailyFarmingValue / (tvlUSD / 1000)
+        : 0
 
       return {
         id: `${el.name}${el.tvl}${el.poolTokenMint}`,
@@ -372,9 +382,7 @@ export const combineAllPoolsData = ({
                   <span style={{ color: '#A5E898' }}>
                     {formatNumberToUSFormat(
                       stripDigitPlaces(
-                        (farmingState.tokensPerPeriod *
-                          (dayDuration / farmingState.periodLength)) /
-                          (tvlUSD / 1000),
+                        dailyFarmingValuePerThousandDollarsLiquidity,
                         2
                       )
                     )}
@@ -422,6 +430,7 @@ export const combineAllPoolsData = ({
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
                   setIsStakePopupOpen={setIsStakePopupOpen}
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+                  refreshAllTokensData={refreshAllTokensData}
                   selectPool={selectPool}
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
                   farmingTicketsMap={farmingTicketsMap}

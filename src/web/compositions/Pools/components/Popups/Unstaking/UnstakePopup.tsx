@@ -99,10 +99,12 @@ export const UnstakePopup = ({
               message:
                 result === 'success'
                   ? 'Successfully unstaked.'
+                  : result === 'failed'
+                  ? 'Unstaking failed, please try again later or contact us in telegram.'
                   : 'Unstaking cancelled.',
             })
 
-            await refreshAllTokensData()
+            await setTimeout(() => refreshAllTokensData(), 10000)
 
             await close()
           }}

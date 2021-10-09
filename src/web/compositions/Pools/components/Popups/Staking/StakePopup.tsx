@@ -158,10 +158,12 @@ export const StakePopup = ({
               message:
                 result === 'success'
                   ? 'Successfully staked.'
+                  : result === 'failed'
+                  ? 'Staking failed, please try again later or contact us in telegram.'
                   : 'Staking cancelled.',
             })
 
-            await refreshAllTokensData()
+            await setTimeout(() => refreshAllTokensData(), 7500)
 
             await close()
           }}

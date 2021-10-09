@@ -19,7 +19,10 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
+import {
+  FarmingTicket,
+  filterClosedFarmingTickets,
+} from '@sb/dexUtils/pools/endFarming'
 import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
 import { getAvailableFarmingTokensForPool } from '@sb/dexUtils/pools/getAvailableFarmingTokensForPool'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
@@ -27,6 +30,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SvgIcon } from '@sb/components'
 import Info from '@icons/TooltipImg.svg'
+import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 
 export const UserLiquidityDetails = ({
   theme,
@@ -36,6 +40,7 @@ export const UserLiquidityDetails = ({
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
+  refreshAllTokensData,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
@@ -48,6 +53,7 @@ export const UserLiquidityDetails = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
+  refreshAllTokensData: () => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
@@ -63,8 +69,6 @@ export const UserLiquidityDetails = ({
     pool,
     farmingTicketsMap,
   })
-
-  console.log('farmingTicketsMap', farmingTicketsMap, pool)
 
   // if has pool tokens or staked
   const hasPoolTokens = poolTokenAmount > 0
@@ -95,6 +99,8 @@ export const UserLiquidityDetails = ({
     : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
+  const isUnstakeDisabled =
+    isUnstakeLocked || filterClosedFarmingTickets(farmingTickets).length === 0
 
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
@@ -279,7 +285,7 @@ export const UserLiquidityDetails = ({
           <RowContainer justify="flex-start" theme={theme}>
             {!hasFarming ? (
               <RowDataTdText>No farming available in this pool.</RowDataTdText>
-            ) : hasStakedTokens ? (
+            ) : hasStakedTokens || availableToClaimFarmingTokens > 0 ? (
               <RowContainer justify="space-between">
                 <GreenButton
                   onClick={() => {
@@ -294,30 +300,22 @@ export const UserLiquidityDetails = ({
                   theme={theme}
                   style={{ width: '48%' }}
                 >
-                  {!wallet.connected ? 'Connect Wallet' : 'Stake Pool Token'}
+                  Stake Pool Tokens
                 </GreenButton>
                 <GreenButton
                   theme={theme}
-                  disabled={isUnstakeLocked || !wallet.connected}
+                  disabled={isUnstakeDisabled}
                   style={{ width: '48%' }}
                   onClick={() => {
-                    if (!wallet.connected) {
-                      wallet.connect()
-                      return
-                    }
-
                     selectPool(pool)
                     setIsUnstakePopupOpen(true)
                   }}
                 >
-                  {!wallet.connected
-                    ? 'Connect Wallet'
-                    : isUnstakeLocked
-                    ? // todo test
-                      `Locked until ${dayjs
+                  {isUnstakeLocked
+                    ? `Locked until ${dayjs
                         .unix(unlockAvailableDate)
                         .format('MMM DD, YYYY')}`
-                    : 'Unstake Pool Token'}
+                    : 'Unstake Pool Tokens'}
                 </GreenButton>
               </RowContainer>
             ) : hasPoolTokens ? (
@@ -346,8 +344,17 @@ export const UserLiquidityDetails = ({
               fontFamily={'Avenir Next Medium'}
               style={{ marginBottom: '3.5rem' }}
             >
-              <DarkTooltip title={'farming'}>
-                <div style={{ display: 'inline'}}>
+              <DarkTooltip
+                title={
+                  <span>
+                    The founder has set up vesting. You will be able to claim
+                    33% of your daily reward every day, the remaining 67% will
+                    become available for withdrawal after{' '}
+                    {farmingState.vestingPeriod / dayDuration} days.
+                  </span>
+                }
+              >
+                <div style={{ display: 'inline' }}>
                   <SvgIcon
                     src={Info}
                     width={'1.5rem'}
@@ -365,11 +372,6 @@ export const UserLiquidityDetails = ({
               theme={theme}
               disabled={hasStakedTokens && availableToClaimFarmingTokens === 0}
               onClick={async () => {
-                if (!wallet.connected) {
-                  wallet.connect()
-                  return
-                }
-
                 if (availableToClaimFarmingTokens > 0) {
                   // add loader
                   await withdrawFarmed({
@@ -379,17 +381,17 @@ export const UserLiquidityDetails = ({
                     allTokensDataMap,
                     farmingTickets,
                   })
+
+                  await setTimeout(() => refreshAllTokensData(), 7500)
                 } else {
                   selectPool(pool)
                   setIsStakePopupOpen(true)
                 }
               }}
             >
-              {wallet.connected
-                ? hasStakedTokens
-                  ? 'Claim reward'
-                  : 'Stake Pool Token'
-                : 'Connect Wallet'}
+              {hasStakedTokens || availableToClaimFarmingTokens > 0
+                ? 'Claim reward'
+                : 'Stake Pool Token'}
             </GreenButton>
           </Row>
         )}

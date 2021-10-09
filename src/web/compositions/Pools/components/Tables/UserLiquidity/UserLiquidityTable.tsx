@@ -26,6 +26,7 @@ const UserLiquidityTableComponent = ({
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
+  refreshAllTokensData,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
@@ -39,6 +40,7 @@ const UserLiquidityTableComponent = ({
   farmingTicketsMap: Map<string, FarmingTicket[]>,
   earnedFeesInPoolForUserMap: Map<string, number>
   selectPool: (pool: PoolInfo) => void
+  refreshAllTokensData: () => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
@@ -62,6 +64,7 @@ const UserLiquidityTableComponent = ({
     farmingTicketsMap,
     earnedFeesInPoolForUserMap,
     selectPool,
+    refreshAllTokensData,
     setIsWithdrawalPopupOpen,
     setIsAddLiquidityPopupOpen,
     setIsStakePopupOpen,

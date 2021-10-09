@@ -12,9 +12,7 @@ import { InputWithCoins, InputWithTotal } from '../components'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import {
-  calculateWithdrawAmount,
-} from '@sb/dexUtils/pools'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PublicKey } from '@solana/web3.js'
@@ -381,7 +379,6 @@ export const AddLiquidityPopup = ({
               transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
             })
 
-            await refreshAllTokensData()
             await setOperationLoading(false)
 
             await notify({
@@ -393,6 +390,8 @@ export const AddLiquidityPopup = ({
                   ? 'Deposit failed, please try again later or contact us in telegram.'
                   : 'Deposit cancelled',
             })
+
+            await setTimeout(() => refreshAllTokensData(), 7500)
 
             await close()
           }}

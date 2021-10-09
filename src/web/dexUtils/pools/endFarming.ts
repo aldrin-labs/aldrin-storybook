@@ -149,9 +149,15 @@ export const endFarming = async ({
     poolPublicKey,
   })
 
+  const filteredUserFarmingTicketsPerPool = filterClosedFarmingTickets(allUserTicketsPerPool)
+
+  if (filteredUserFarmingTicketsPerPool.length === 0) {
+    return 'failed'
+  }
+
   const commonTransaction = new Transaction()
 
-  for (let ticketData of allUserTicketsPerPool) {
+  for (let ticketData of filteredUserFarmingTicketsPerPool) {
     const endFarmingTransaction = await program.instruction.endFarming({
       accounts: {
         pool: poolPublicKey,

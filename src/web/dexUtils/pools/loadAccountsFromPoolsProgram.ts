@@ -15,7 +15,6 @@ export const loadAccountsFromPoolsProgram = async ({
   return await connection.getProgramAccounts(
     new PublicKey(POOLS_PROGRAM_ADDRESS),
     {
-      commitment: 'finalized',
       filters,
     }
   )

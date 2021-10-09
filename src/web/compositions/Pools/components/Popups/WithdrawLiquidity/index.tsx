@@ -207,7 +207,6 @@ export const WithdrawalPopup = ({
               userQuoteTokenAccount: new PublicKey(userTokenAccountB),
             })
 
-            await refreshAllTokensData()
             await setOperationLoading(false)
 
             await notify({
@@ -219,6 +218,8 @@ export const WithdrawalPopup = ({
                   ? 'Withdrawal failed, please try again later or contact us in telegram.'
                   : 'Withdrawal cancelled',
             })
+
+            await setTimeout(() => refreshAllTokensData(), 7500)
 
             await close()
           }}

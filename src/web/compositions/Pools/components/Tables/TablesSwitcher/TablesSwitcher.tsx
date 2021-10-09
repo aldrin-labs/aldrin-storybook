@@ -182,6 +182,7 @@ const TablesSwitcher = ({
             farmingTicketsMap={farmingTicketsMap}
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
+            refreshAllTokensData={refreshAllTokensData}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
             setIsStakePopupOpen={setIsStakePopupOpen}
@@ -189,14 +190,15 @@ const TablesSwitcher = ({
           />
         ) : (
           <UserLiquitidyTable
-            allTokensDataMap={allTokensDataMap}
-            poolsInfo={getPoolsInfo}
             theme={theme}
             searchValue={searchValue}
+            poolsInfo={getPoolsInfo}
             dexTokensPricesMap={dexTokensPricesMap}
+            allTokensDataMap={allTokensDataMap}
             farmingTicketsMap={farmingTicketsMap}
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
+            refreshAllTokensData={refreshAllTokensData}
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
             setIsStakePopupOpen={setIsStakePopupOpen}

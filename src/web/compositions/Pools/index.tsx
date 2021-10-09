@@ -3,47 +3,15 @@ import { compose } from 'recompose'
 import { withTheme, Theme } from '@material-ui/core'
 
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
 
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import { BlockTemplate } from './index.styles'
 import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
-import { getPools } from '@sb/dexUtils/pools'
 import { useConnection } from '@sb/dexUtils/connection'
-import { PublicKey } from '@solana/web3.js'
-import { createBasketViaWallet } from '@sb/dexUtils/poolsTests'
-import { useWallet } from '@sb/dexUtils/wallet'
 
 const Pools = ({ theme }: { theme: Theme }) => {
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
-
-  const { wallet } = useWallet()
   const connection = useConnection()
-
-  useEffect(() => {
-    getPools(
-      connection,
-      new PublicKey('RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx')
-    )
-
-    // wallet &&
-    //   createBasketViaWallet({
-    //     wallet,
-    //     connection,
-    //     poolPublicKey: new PublicKey(
-    //       'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898'
-    //     ),
-    //     baseTokenAddress: new PublicKey(
-    //       'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m'
-    //     ),
-    //     quoteTokenAddress: new PublicKey(
-    //       'HwTyFCPy3xi842Be2PyU4ZPu3YmaxorV5RY4b77Pb898'
-    //     ),
-    //     userAmountTokenA: 0,
-    //     userAmountTokenB: 0,
-    //     userPoolTokenAccount: null,
-    //   })
-  }, [])
 
   return (
     <RowContainer
