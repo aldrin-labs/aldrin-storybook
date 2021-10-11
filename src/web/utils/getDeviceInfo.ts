@@ -1,4 +1,6 @@
 // import * as firebase from 'firebase'
+// Uncomment on demand
+/*
 import { DeviceType } from '@core/types/DeviceTypes'
 
 // mock
@@ -202,7 +204,7 @@ const deviceInfoStats = (function () {
     }
 
     // flash (you'll need to include swfobject)
-    /* script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" */
+    //  script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"
     var flashVersion = 'no check'
     if (typeof swfobject !== 'undefined') {
       const fv = swfobject.getFlashPlayerVersion()
@@ -305,3 +307,4 @@ const getDeviceInfo = async ({
 }
 
 export default getDeviceInfo
+*/

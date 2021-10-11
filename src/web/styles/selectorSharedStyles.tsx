@@ -22,7 +22,7 @@ export const AccountsListItem = styled.li`
   }
 `
 
-export const AccountsList = styled(({ isTransactions, ...rest }) => (
+export const AccountsList = styled(({ isTransactions: _i, ...rest }) => (
   <ul {...rest} />
 ))`
   list-style: none;
@@ -41,9 +41,12 @@ export const AccountsWalletsHeadingWrapper = styled.div`
   position: relative;
 `
 
-export const StyledIcon = styled(({ color, isSideNavOpen, ...rest }) => (
-  <Arrow {...rest} />
-))`
+export const StyledIcon = styled(
+  ({ color: _c, isSideNavOpen: _i, ...rest }) => (
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    <Arrow {...rest} />
+  )
+)`
   color: ${(props: { color: string }) => props.color};
   text-align: center;
   opacity: ${({ isSideNavOpen }: { isSideNavOpen: boolean }) =>
@@ -66,11 +69,11 @@ export const SelectAll = styled.div`
   display: flex;
 `
 
-export const AccountName = styled(({ textColor, lineHeight, ...rest }) => (
-  <div {...rest} />
-))`
+export const AccountName = styled(
+  ({ textColor: _t, lineHeight: _l, ...rest }) => <div {...rest} />
+)`
   height: 100%;
-  font-family: DM Sans;
+  font-family: DM Sans, sans-serif;
   font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: ${(props) => props.letterSpacing || '1.5px'};
@@ -89,7 +92,7 @@ export const AccountName = styled(({ textColor, lineHeight, ...rest }) => (
   overflow: hidden;
 `
 
-export const Headline = styled(({ color, isSideNavOpen, ...rest }) => (
+export const Headline = styled(({ color: _c, isSideNavOpen: _i, ...rest }) => (
   <div {...rest} />
 ))`
   color: ${(props: { color: string }) => props.color};
@@ -110,9 +113,10 @@ export const Headline = styled(({ color, isSideNavOpen, ...rest }) => (
 `
 
 export const TypographyTitle = styled(
+  // eslint-disable-next-line react/jsx-props-no-spreading
   ({ textColor, textPadding, lineHeight, ...rest }) => <Typography {...rest} />
 )`
-  font-family: DM Sans;
+  font-family: DM Sans, sans-serif;
   font-size: ${(props) => props.fontSize || `1.2rem`};
   line-height: ${(props) => props.lineHeight || '35px'};
   letter-spacing: 1.5px;
@@ -122,6 +126,7 @@ export const TypographyTitle = styled(
 `
 
 export const AddAccountButtonContainer = styled(({ ...rest }) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
   <Grid {...rest} />
 ))`
   padding: 0.5rem 0;

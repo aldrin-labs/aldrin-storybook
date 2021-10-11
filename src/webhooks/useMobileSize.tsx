@@ -2,7 +2,7 @@ import { maxMobileScreenResolution } from '@core/utils/config'
 import useWindowSize from './useWindowSize'
 
 function useMobileSize() {
-  const { width, height } = useWindowSize()
+  const { width } = useWindowSize()
 
   const isMobile = maxMobileScreenResolution > width
 

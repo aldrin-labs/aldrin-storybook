@@ -56,7 +56,12 @@ const arraysCustomMarketsMatch = (arr1, arr2) => {
   return true
 }
 
-function ChartPageComponent(props: any) {
+interface ChartPageProps {
+  selectedPair: string
+  marketType: 0 | 1
+}
+
+const ChartPageComponent: React.FC<ChartPageProps> = (props) => {
   const {
     theme,
     getTooltipSettingsQuery: {
@@ -412,7 +417,7 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
 })
 
 // TODO: combine all queries to one
-export default compose(
+export default compose<ChartPageProps, any>(
   withMarketUtilsHOC,
   withErrorFallback,
   withAuthStatus,

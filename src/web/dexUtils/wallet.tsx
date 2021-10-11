@@ -140,7 +140,7 @@ export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
 
 const WalletContext = React.createContext(null)
 
-export function WalletProvider({ children }) {
+export const WalletProvider: React.FC = ({ children }) => {
   const { endpoint } = useConnectionConfig()
 
   const [autoConnect, setAutoConnect] = useState(false)

@@ -117,6 +117,7 @@ export function useMintToTickers(): { [mint: string]: string } {
     const mintsToTickers = Object.fromEntries(
       TOKEN_MINTS.map((mint) => [mint.address.toBase58(), mint.name])
     )
+
     for (const market of markets || []) {
       const customMarketInfo = customMarkets.find(
         (customMarket) =>
@@ -136,6 +137,5 @@ export function useMintToTickers(): { [mint: string]: string } {
       }
     }
     return mintsToTickers
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markets?.length, customMarkets.length])
 }
