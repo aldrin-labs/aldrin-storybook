@@ -168,7 +168,7 @@ export const combineOpenOrdersTable = (
               >
                 {orderSide}
               </span>
-              <span
+              {/* <span
                 style={{
                   textTransform: 'capitalize',
                   color: theme.palette.grey.light,
@@ -176,7 +176,7 @@ export const combineOpenOrdersTable = (
                 }}
               >
                 {'limit'}
-              </span>
+              </span> */}
             </div>
           ),
           style: {
@@ -201,13 +201,13 @@ export const combineOpenOrdersTable = (
           contentToSort: price,
           showOnMobile: false,
         },
-        quantity: {
+        amount: {
           render: `${stripDigitPlaces(size, quantityPrecision)} ${pair[0]}`,
           contentToSort: +size,
           style: { opacity: needOpacity ? 0.75 : 1 },
           showOnMobile: false,
         },
-        amount: {
+        total: {
           // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
           render: !+price
             ? '-'

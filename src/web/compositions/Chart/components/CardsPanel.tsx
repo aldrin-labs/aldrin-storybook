@@ -41,8 +41,9 @@ import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/N
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import { FeedbackPopup } from './UsersFeedbackPopup'
-import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
+
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
+import { Label } from '@sb/components/Label/Label'
 
 export const NavBarLink = styled(({ style, ...props }) => (
   <NavLink {...props} />
@@ -231,7 +232,6 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to={`/dashboard`} {...props} />}
             >
               Dashboard
-              <BetaLabel theme={theme} style={{ marginLeft: '.5rem' }} />
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -243,12 +243,18 @@ export const CardsPanel = ({ theme }) => {
               Wallet
             </NavLinkButton>
             <NavLinkButton
+              style={{ width: '20rem', whiteSpace: 'nowrap' }}
               theme={theme}
               page={'/pools'}
               pathname={location.pathname}
               component={(props) => <Link to={`/pools`} {...props} />}
             >
               Liquidity Pools
+              <Label
+                text={'New'}
+                theme={theme}
+                style={{ marginLeft: '.5rem', color: '#A5E898' }}
+              />
             </NavLinkButton>
             {/* 
             {!MASTER_BUILD && (

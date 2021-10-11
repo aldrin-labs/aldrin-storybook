@@ -64,7 +64,7 @@ const OpenOrdersTable = (props) => {
     cancelOrderWithStatus,
     theme,
     handlePairChange,
-    isCancellingAllOrders,
+    isCancellingAllOrders
   )
 
   return (
@@ -86,15 +86,17 @@ const OpenOrdersTable = (props) => {
       tableStyles={{
         cell: {
           color: theme.palette.dark.main,
-          fontSize: '1rem', // 1.2 if bold
+          fontSize: '1.2rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
           borderBottom: theme.palette.border.main,
           backgroundColor: 'inherit',
           boxShadow: 'none',
+          fontFamily: 'Avenir Next Light',
         },
         heading: {
           backgroundColor: '#222429',
+          fontSize: '1.3rem',
         },
         tab: {
           padding: 0,
