@@ -7,6 +7,8 @@ import { Theme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { StyledTitle } from '../TradingTable.styles'
 import { CloseButton, isBuyTypeOrder } from '../TradingTable.utils'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 
 export const filterOpenOrders = ({
   order,
@@ -35,7 +37,8 @@ export const combineOpenOrdersTable = (
   cancelOrderFunc: (el: OrderType) => Promise<any>,
   theme: Theme,
   handlePairChange: (pair: string) => void,
-  isCancellingAllOrders: boolean
+  isCancellingAllOrders: boolean,
+  needShowValue: boolean
 ) => {
   if (!openOrdersData && !Array.isArray(openOrdersData)) {
     return []
@@ -168,7 +171,7 @@ export const combineOpenOrdersTable = (
               >
                 {orderSide}
               </span>
-              <span
+              {/* <span
                 style={{
                   textTransform: 'capitalize',
                   color: theme.palette.grey.light,
@@ -176,7 +179,7 @@ export const combineOpenOrdersTable = (
                 }}
               >
                 {'limit'}
-              </span>
+              </span> */}
             </div>
           ),
           style: {
@@ -185,6 +188,13 @@ export const combineOpenOrdersTable = (
               : theme.customPalette.red.main,
             opacity: needOpacity ? 0.75 : 1,
           },
+          showOnMobile: false,
+        },
+
+        amount: {
+          render: `${stripDigitPlaces(size, quantityPrecision)} ${pair[0]}`,
+          contentToSort: +size,
+          style: { opacity: needOpacity ? 0.75 : 1 },
           showOnMobile: false,
         },
         price: {
@@ -201,19 +211,11 @@ export const combineOpenOrdersTable = (
           contentToSort: price,
           showOnMobile: false,
         },
-        quantity: {
-          render: `${stripDigitPlaces(size, quantityPrecision)} ${pair[0]}`,
-          contentToSort: +size,
-          style: { opacity: needOpacity ? 0.75 : 1 },
-          showOnMobile: false,
-        },
-        amount: {
+        value: {
           // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
           render: !+price
             ? '-'
-            : `${stripDigitPlaces(+size * price, quantityPrecision)} ${
-                pair[1]
-              }`,
+            : `$${stripDigitPlaces(+size * price, quantityPrecision)}`,
           contentToSort: +size * price,
           style: { opacity: needOpacity ? 0.75 : 1 },
           showOnMobile: false,

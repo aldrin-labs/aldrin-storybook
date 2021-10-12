@@ -13,12 +13,14 @@ import { settleFunds } from '@sb/dexUtils/send'
 import { notify } from '@sb/dexUtils/notifications'
 import { Theme } from '@material-ui/core'
 import { TokenAccount } from '@sb/dexUtils/markets'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 
-const UnsettledBalancesTable = ({
+export const UnsettledBalancesTable = ({
   theme,
   userTokenAccountsMap,
   unsettledBalances,
   isSettlingAllBalances,
+  dexTokensPrices,
   onSettleAll,
   refreshUnsettledBalances,
 }: {
@@ -26,6 +28,7 @@ const UnsettledBalancesTable = ({
   userTokenAccountsMap: Map<string, TokenAccount>
   unsettledBalances: UnsettledBalance[]
   isSettlingAllBalances: boolean
+  dexTokensPrices: Map<string, DexTokensPrices>
   onSettleAll: () => void
   refreshUnsettledBalances: () => void
 }) => {
@@ -86,6 +89,7 @@ const UnsettledBalancesTable = ({
     theme,
     unsettledBalances,
     isSettlingAllBalances,
+    dexTokensPrices,
   })
 
   return (
@@ -106,7 +110,7 @@ const UnsettledBalancesTable = ({
       tableStyles={{
         cell: {
           color: theme.palette.dark.main,
-          fontSize: '1rem', // 1.2 if bold
+          fontSize: '1.2rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
           borderBottom: theme.palette.border.main,
@@ -114,10 +118,11 @@ const UnsettledBalancesTable = ({
           boxShadow: 'none',
           paddingTop: '1rem',
           paddingBottom: '1rem',
-          fontFamily: 'Avenir Next Medium',
+          fontFamily: 'Avenir Next Light',
         },
         heading: {
           backgroundColor: '#222429',
+          fontSize: '1.3rem', // 1.2 if bold
         },
         tab: {
           padding: 0,
@@ -131,5 +136,3 @@ const UnsettledBalancesTable = ({
   )
   // }
 }
-
-export default UnsettledBalancesTable
