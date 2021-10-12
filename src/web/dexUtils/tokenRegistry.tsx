@@ -10,7 +10,11 @@ export function useTokenInfos() {
   return tokenInfos
 }
 
-export function TokenRegistryProvider(props) {
+interface TokenRegistryProviderProps {}
+
+export const TokenRegistryProvider: React.FC<TokenRegistryProviderProps> = (
+  props
+) => {
   const { endpoint } = useConnectionConfig()
   const [tokenInfos, setTokenInfos] = useState(new Map())
 
@@ -20,15 +24,15 @@ export function TokenRegistryProvider(props) {
       const cluster = clusterForEndpoint(endpoint)
 
       const filteredTokenListContainer =
-        tokenListContainer?.filterByClusterSlug(cluster?.name)
+        tokenListContainer?.filterByClusterSlug(cluster?.name || '')
 
-      const tokenInfos =
+      const tokenInfosResult =
         tokenListContainer !== filteredTokenListContainer
           ? filteredTokenListContainer?.getList()
           : [] // Workaround for filter return all on unknown slug
 
       setTokenInfos(
-        tokenInfos.reduce((map, item) => {
+        tokenInfosResult.reduce((map, item) => {
           map.set(item.address, item)
           return map
         }, new Map())
@@ -36,9 +40,11 @@ export function TokenRegistryProvider(props) {
     })
   }, [endpoint])
 
+  const { children } = props
+
   return (
     <TokenListContext.Provider value={{ tokenInfos }}>
-      {props.children}
+      {children}
     </TokenListContext.Provider>
   )
 }

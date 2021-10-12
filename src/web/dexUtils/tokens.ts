@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import * as BufferLayout from 'buffer-layout'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
 import { TOKEN_MINTS } from '@project-serum/serum'
 import { useAllMarkets, useCustomMarkets } from '@sb/dexUtils/markets'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
@@ -19,7 +19,7 @@ export const MINT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(36),
 ])
 
-export function parseTokenAccountData(data) {
+export function parseTokenAccountData(data: Buffer) {
   const { mint, owner, amount } = ACCOUNT_LAYOUT.decode(data)
   return {
     mint: new PublicKey(mint),
@@ -28,12 +28,12 @@ export function parseTokenAccountData(data) {
   }
 }
 
-export function parseTokenMintData(data) {
+export function parseTokenMintData(data: Buffer) {
   const { decimals, initialized } = MINT_LAYOUT.decode(data)
   return { decimals, initialized }
 }
 
-export function getOwnedAccountsFilters(publicKey) {
+export function getOwnedAccountsFilters(publicKey: PublicKey) {
   return [
     {
       memcmp: {
@@ -72,7 +72,10 @@ export async function getTokenAccountsByOwner(
   )
 }
 
-export async function getOwnedTokenAccounts(connection, publicKey) {
+export async function getOwnedTokenAccounts(
+  connection: Connection,
+  publicKey: PublicKey
+) {
   const filters = getOwnedAccountsFilters(publicKey)
   const resp = await connection.getProgramAccounts(TOKEN_PROGRAM_ID, {
     filters,
@@ -90,19 +93,30 @@ export async function getOwnedTokenAccounts(connection, publicKey) {
   )
 }
 
-export async function getTokenAccountInfo(connection, ownerAddress) {
+interface AccInfo {
+  pubkey: PublicKey
+  account: AccountInfo<Buffer> | null
+  effectiveMint: PublicKey
+}
+
+export async function getTokenAccountInfo(
+  connection: Connection,
+  ownerAddress: PublicKey
+) {
   const [splAccounts, account] = await Promise.all([
     getTokenAccountsByOwner(connection, ownerAddress),
     connection.getAccountInfo(ownerAddress),
   ])
 
-  const parsedSplAccounts = splAccounts.map(({ publicKey, accountInfo }) => {
-    return {
-      pubkey: publicKey,
-      account: accountInfo,
-      effectiveMint: parseTokenAccountData(accountInfo.data).mint,
+  const parsedSplAccounts: AccInfo[] = splAccounts.map(
+    ({ publicKey, accountInfo }) => {
+      return {
+        pubkey: publicKey,
+        account: accountInfo,
+        effectiveMint: parseTokenAccountData(accountInfo.data).mint,
+      }
     }
-  })
+  )
   return parsedSplAccounts.concat({
     pubkey: ownerAddress,
     account,

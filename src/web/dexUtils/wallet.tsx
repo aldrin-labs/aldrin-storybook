@@ -9,7 +9,9 @@ import {
   LedgerWalletAdapter,
 } from '@sb/dexUtils/adapters'
 import {
+  Connection,
   PublicKey,
+  Signer,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
@@ -138,7 +140,16 @@ export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
 )
 
-const WalletContext = React.createContext(null)
+interface WalletContextType {
+  wallet: WalletAdapter
+  connected: boolean
+  providerUrl: string
+  setProviderUrl: React.Dispatch<React.SetStateAction<string>>
+  setAutoConnect: React.Dispatch<React.SetStateAction<boolean>>
+  providerName: string
+}
+
+const WalletContext = React.createContext<WalletContextType | null>(null)
 
 export const WalletProvider: React.FC = ({ children }) => {
   const { endpoint } = useConnectionConfig()
@@ -188,13 +199,9 @@ export const WalletProvider: React.FC = ({ children }) => {
 
   const [connected, setConnected] = useState(false)
 
-  const wallet = useMemo(() => {
-    const wallet = new (provider?.adapter || Wallet)(
-      providerUrl,
-      endpoint
-    ) as WalletAdapter
-
-    return wallet
+  const wallet = useMemo<WalletAdapter>(() => {
+    const ClassType = provider?.adapter || Wallet
+    return new ClassType(providerUrl, endpoint)
   }, [provider, endpoint])
 
   const connectWalletHash = useMemo(
@@ -347,7 +354,7 @@ export function useMaxWithdrawalAmounts({
   return [withdrawalAmounts, loaded]
 }
 
-export function parseMintData(data) {
+export function parseMintData(data: Buffer) {
   const { decimals } = MINT_LAYOUT.decode(data)
   return { decimals }
 }
@@ -447,14 +454,18 @@ export function parseMintData(data) {
 //   return { ...info };
 // }
 
-export function useBalanceInfo(publicKey) {
+export function useBalanceInfo(publicKey: PublicKey) {
   const [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey)
-  const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
-    ? parseTokenAccountData(accountInfo.data)
-    : {}
+
+  if (!accountInfo?.owner.equals(TOKEN_PROGRAM_ID)) {
+    return null
+  }
+
+  const { mint, owner, amount } = parseTokenAccountData(accountInfo.data)
+
   const [mintInfo, mintInfoLoaded] = useAccountInfo(mint)
 
-  if (!accountInfoLoaded) {
+  if (!accountInfoLoaded || !mintInfo) {
     return null
   }
 
@@ -511,13 +522,18 @@ export function useBalanceInfo(publicKey) {
 }
 
 export async function signAndSendTransaction(
-  connection,
-  transaction,
-  wallet,
-  signers,
+  connection: Connection,
+  transaction: Transaction,
+  wallet: WalletAdapter,
+  signers: Signer[],
   skipPreflight = false,
   focusPopup = false
 ) {
+  if (!wallet.publicKey) {
+    throw new Error(`Public key for wallet not found: ${wallet}`)
+  }
+
+  // eslint-disable-next-line no-param-reassign
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash
@@ -531,43 +547,37 @@ export async function signAndSendTransaction(
     transaction.partialSign(...signers)
   }
 
-  transaction = await wallet.signTransaction(transaction, focusPopup)
-  const rawTransaction = transaction.serialize()
-  return await connection.sendRawTransaction(rawTransaction, {
+  const rawTransaction = (
+    await wallet.signTransaction(transaction, focusPopup)
+  ).serialize()
+
+  return connection.sendRawTransaction(rawTransaction, {
     skipPreflight,
     preflightCommitment: 'single',
   })
 }
 
-export async function createAssociatedTokenAccount({
-  connection,
-  wallet,
-  splTokenMintAddress,
-}) {
-  const [ix, address] = await createAssociatedTokenAccountIx(
-    wallet.publicKey,
-    wallet.publicKey,
-    splTokenMintAddress
-  )
-  const tx = new Transaction()
-  tx.add(ix)
-  tx.feePayer = wallet.publicKey
-  const txSig = await signAndSendTransaction(
-    connection,
-    tx,
-    wallet,
-    [],
-    false,
-    true
-  )
-
-  return [address, txSig]
-}
-export async function createAssociatedTokenAccountIx(
-  fundingAddress,
-  walletAddress,
-  splTokenMintAddress
+export async function findAssociatedTokenAddress(
+  walletAddress: PublicKey,
+  tokenMintAddress: PublicKey
 ) {
+  return (
+    await PublicKey.findProgramAddress(
+      [
+        walletAddress.toBuffer(),
+        TokenInstructions.TOKEN_PROGRAM_ID.toBuffer(),
+        tokenMintAddress.toBuffer(),
+      ],
+      ASSOCIATED_TOKEN_PROGRAM_ID
+    )
+  )[0]
+}
+
+export async function createAssociatedTokenAccountIx(
+  fundingAddress: PublicKey,
+  walletAddress: PublicKey,
+  splTokenMintAddress: PublicKey
+): Promise<[TransactionInstruction, PublicKey]> {
   const associatedTokenAddress = await findAssociatedTokenAddress(
     walletAddress,
     splTokenMintAddress
@@ -618,18 +628,36 @@ export async function createAssociatedTokenAccountIx(
   return [ix, associatedTokenAddress]
 }
 
-export async function findAssociatedTokenAddress(
-  walletAddress,
-  tokenMintAddress
-) {
-  return (
-    await PublicKey.findProgramAddress(
-      [
-        walletAddress.toBuffer(),
-        TokenInstructions.TOKEN_PROGRAM_ID.toBuffer(),
-        tokenMintAddress.toBuffer(),
-      ],
-      ASSOCIATED_TOKEN_PROGRAM_ID
-    )
-  )[0]
+interface CreateTokenAccountData {
+  connection: Connection
+  wallet: WalletAdapter
+  splTokenMintAddress: PublicKey
+}
+
+export async function createAssociatedTokenAccount({
+  connection,
+  wallet,
+  splTokenMintAddress,
+}: CreateTokenAccountData) {
+  if (!wallet?.publicKey) {
+    throw new Error('Public key for wallet not found')
+  }
+  const [ix, address] = await createAssociatedTokenAccountIx(
+    wallet.publicKey,
+    wallet.publicKey,
+    splTokenMintAddress
+  )
+  const tx = new Transaction()
+  tx.add(ix)
+  tx.feePayer = wallet.publicKey
+  const txSig = await signAndSendTransaction(
+    connection,
+    tx,
+    wallet,
+    [],
+    false,
+    true
+  )
+
+  return [address, txSig]
 }

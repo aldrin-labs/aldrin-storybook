@@ -62,9 +62,9 @@ export function getDecimalCount(value: number) {
   return 0
 }
 
-export function useLocalStorageState(
+export function useLocalStorageState<T>(
   key: string,
-  defaultState = null,
+  defaultState: T,
   setIfNotChanged = false
 ) {
   const [state, setState] = useState(() => {

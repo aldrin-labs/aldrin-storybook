@@ -12,6 +12,6 @@ export function sendAndConfirmTransactionViaWallet(
   connection: Connection,
   transaction: Transaction,
   ...signers: Array<Account>
-): Promise<TransactionSignature> {
+): Promise<TransactionSignature | null> {
   return sendTransaction({ connection, transaction, signers, wallet })
 }

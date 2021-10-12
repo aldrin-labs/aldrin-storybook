@@ -9,5 +9,6 @@ import {
 
 export type WithTheme = WithThemeType
 export type Theme = ThemeType
-export type ConsistentWith = ConsistentWithType
+export type ConsistentWith<DecorationTargetProps, InjectedProps> =
+  ConsistentWithType<DecorationTargetProps, InjectedProps>
 export const withTheme = withThemeFunc

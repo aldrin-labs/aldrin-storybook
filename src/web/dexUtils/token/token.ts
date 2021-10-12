@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { Buffer } from 'buffer'
 import assert from 'assert'
 import BN from 'bn.js'
@@ -2077,10 +2078,11 @@ export class Token {
     ])
 
     const data = Buffer.alloc(dataLayout.span)
+    const a = typeof amount === 'number' ? new u64(amount) : amount
     dataLayout.encode(
       {
         instruction: 13, // ApproveChecked instruction
-        amount: new u64(amount).toBuffer(),
+        amount: a.toBuffer(),
         decimals,
       },
       data
@@ -2138,10 +2140,11 @@ export class Token {
     ])
 
     const data = Buffer.alloc(dataLayout.span)
+    const a = typeof amount === 'number' ? new u64(amount) : amount
     dataLayout.encode(
       {
         instruction: 14, // MintToChecked instruction
-        amount: new u64(amount).toBuffer(),
+        amount: a.toBuffer(),
         decimals,
       },
       data
@@ -2200,11 +2203,12 @@ export class Token {
       BufferLayout.u8('decimals'),
     ])
 
+    const a = typeof amount === 'number' ? new u64(amount) : amount
     const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 15, // BurnChecked instruction
-        amount: new u64(amount).toBuffer(),
+        amount: a.toBuffer(),
         decimals,
       },
       data

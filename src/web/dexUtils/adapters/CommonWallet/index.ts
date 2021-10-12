@@ -25,7 +25,7 @@ export class CommonWalletAdapter extends EventEmitter implements WalletAdapter {
     [(value: string) => void, (reason: Error) => void]
   > = new Map()
 
-  constructor(provider: unknown, private _network: string) {
+  constructor(provider: unknown, protected _network: string) {
     super()
     if (isInjectedProvider(provider)) {
       this._injectedProvider = provider
