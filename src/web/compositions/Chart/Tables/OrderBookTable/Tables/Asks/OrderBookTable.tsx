@@ -20,7 +20,7 @@ import { useOpenOrders } from '@sb/dexUtils/markets'
 const StyledTable = styled(Table)`
   & .ReactVirtualized__Grid__innerScrollContainer {
     top: ${(props) => {
-      const numberOfRows = props.mode === 'both' ? 9 : 18
+      const numberOfRows = props.mode === 'both' ? 8 : 16
 
       return props.rowCount < numberOfRows
         ? props.height - (props.height / numberOfRows) * (props.rowCount + 1)

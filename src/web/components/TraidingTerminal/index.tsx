@@ -571,6 +571,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       setProvider,
       baseCurrencyAccount,
       quoteCurrencyAccount,
+      isButtonLoaderShowing,
     } = this.props
 
     const needCreateOpenOrdersAccount = !openOrdersAccount
@@ -918,7 +919,10 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                   SOLAmount={SOLAmount}
                   sideType={sideType}
                   theme={theme}
-                  onClick={() => onSendOrder({ values, market, wallet })}
+                  isLoading={isButtonLoaderShowing}
+                  onClick={() => {
+                    onSendOrder({ values, market, wallet })
+                  }}
                 />
               )}
               <MobileWalletDropdown
@@ -955,6 +959,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 needCreateOpenOrdersAccount={needCreateOpenOrdersAccount}
                 validateForm={validateForm}
                 handleSubmit={handleSubmit}
+                setIsButtonLoaderShowing={(value) =>
+                  this.setState({ isLoading: value })
+                }
               />
             </Grid>
           </ButtonBlock>
@@ -1009,8 +1016,7 @@ const formikEnhancer = withFormik<IProps, FormValues>({
 
     const isBuyType = sideType === 'buy'
     const priceForCalculate =
-      priceType !== 'market' &&
-      priceType !== 'maker-only'
+      priceType !== 'market' && priceType !== 'maker-only'
         ? values.price
         : marketPrice
 

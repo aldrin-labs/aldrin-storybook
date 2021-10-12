@@ -221,10 +221,10 @@ export const openOrdersColumnNames = (
   [
     { label: 'Market', id: 'pair' },
     // { label: 'Type', id: 'type' },
-    { label: 'Side/Type', id: 'side' },
+    { label: 'Side', id: 'side' },
     { label: 'Price', id: 'price' },
-    { label: 'Quantity', id: 'quantity' },
-    { label:  'Total', id: 'amount' },
+    { label: 'Amount', id: 'amount' },
+    { label: 'Value', id: 'value' },
     // { label: 'Filled %', id: 'filled',  },
     // marketType === 0 ? { label: 'Size', id: 'amount' } : {},
     // { label: 'Trigger', id: 'triggerConditions' },

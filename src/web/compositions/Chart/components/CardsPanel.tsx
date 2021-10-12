@@ -90,7 +90,7 @@ export const CardsPanel = ({ theme }) => {
               style={NAV_LINK_STYLE}
               onClick={() => setIsFeedBackPopupOpen(true)}
             >
-              Leave feedback
+              Feedback & Support
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -157,7 +157,6 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to={`/rebalance`} {...props} />}
             >
               Rebalance
-              <BetaLabel theme={theme} style={{ marginLeft: '.5rem' }} />
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -168,7 +167,6 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to={`/dashboard`} {...props} />}
             >
               Dashboard
-              <BetaLabel theme={theme} style={{ marginLeft: '.5rem' }} />
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -254,15 +252,6 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <div data-tut="connection-dropdown">
-        <NetworkDropdown
-          endpoint={endpoint}
-          setEndpoint={setEndpoint}
-          theme={theme}
-          isWalletConnected={connected}
-        />
-      </div>
-
       {!connected && (
         <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap={'nowrap'}>
           <ConnectWalletDropdown

@@ -9,9 +9,10 @@ import {
   Text,
   DemiText,
   BlackButton,
+  TextButton,
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-
+import CloseIcon from '@icons/blackCloseIcon.svg'
 import {
   useBalances,
   useMarket,
@@ -21,9 +22,20 @@ import {
 } from '@sb/dexUtils/markets'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+import SvgIcon from '../SvgIcon'
 
 export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
-  const [isPopupOpen, setIsPopupOpen] = useState(false)
+  const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
+    'isSettlePopupOpen',
+    true
+  )
+  const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
+  const [unsettledBalances, setUnsettledBalances] = useState({
+    baseUnsettled: 0,
+    quoteUnsettled: 0,
+  })
+
   const balances = useBalances()
   const connection = useConnection()
   const { wallet } = useWallet()
@@ -33,26 +45,36 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
   const openOrders = useSelectedOpenOrdersAccount()
 
   const isBalanceUnsettled = balances[0]?.unsettled || balances[1]?.unsettled
+  const isUnsettledBalancesIncreased =
+    balances[0]?.unsettled > unsettledBalances.baseUnsettled ||
+    balances[1]?.unsettled > unsettledBalances.quoteUnsettled
 
-  // useEffect(() => {
-  //   setIsPopupOpen(isBalanceUnsettled)
-  // }, [isBalanceUnsettled])
+  useEffect(() => {
+    if (isUnsettledBalancesIncreased) {
+      setIsPopupTemporaryHidden(false)
+      setUnsettledBalances({
+        baseUnsettled: balances[0]?.unsettled,
+        quoteUnsettled: balances[1]?.unsettled,
+      })
+    }
+    setIsPopupTemporaryHidden(!isBalanceUnsettled)
+  }, [isBalanceUnsettled])
 
   const isMobile = useMobileSize()
 
-  if (!isPopupOpen) return null
+  if (!isPopupOpen || isPopupTemporaryHidden) return null
 
   return (
     <Container
       showOnTheTop={true}
       style={{
-        height: isMobile ? '38.5%' : '35.5%',
+        height: isMobile ? '38.5%' : '35%',
         top: 'auto',
         bottom: '0',
         width: isMobile ? '100%' : '42%',
-        right: '0',
-        zIndex: '10',
-        borderTopLeftRadius: isMobile ? '0' : '1rem',
+        left: '0',
+        zIndex: '100',
+        borderTopRightRadius: isMobile ? '0' : '1rem',
       }}
       direction="column"
       align="flex-start"
@@ -65,18 +87,30 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
         direction="column"
         height="100%"
       >
-        <DemiText
-          theme={theme}
-          style={{
-            lineHeight: '4rem',
-            marginBottom: '2rem',
-            fontSize: '3.5rem',
-            textAlign: 'left',
-            fontFamily: 'Avenir Next Demi',
-          }}
-        >
-          You have an unsettled balance.
-        </DemiText>
+        <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
+          {' '}
+          <DemiText
+            theme={theme}
+            style={{
+              lineHeight: '4rem',
+              fontSize: '3.5rem',
+              textAlign: 'left',
+              fontFamily: 'Avenir Next Demi',
+            }}
+          >
+            You have an unsettled balance.
+          </DemiText>
+          <SvgIcon
+            src={CloseIcon}
+            onClick={() => {
+              setIsPopupTemporaryHidden(true)
+            }}
+            style={{ cursor: 'pointer', padding: '1rem' }}
+            width="3.5rem"
+            height="auto"
+          />
+        </RowContainer>
+
         <RowContainer
           height={isMobile ? '18%' : 'auto'}
           align="flex-start"
@@ -114,31 +148,36 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
             </Text>
           </Row>
           {!isMobile ? (
-            <BlackButton
-              disabled={false}
-              theme={theme}
-              hoverBackground={'#20292d'}
-              width={'auto'}
-              fontSize={'1.5rem'}
-              style={{ padding: '1rem 5rem' }}
-              onClick={async () => {
-                await settleFunds({
-                  market,
-                  openOrders,
-                  connection,
-                  wallet,
-                  baseCurrency,
-                  quoteCurrency,
-                  baseTokenAccount,
-                  quoteTokenAccount,
-                  baseUnsettled: balances[0].unsettled,
-                  quoteUnsettled: balances[1].unsettled,
-                  focusPopup: true,
-                })
-              }}
-            >
-              Settle All
-            </BlackButton>
+            <Row>
+              <TextButton onClick={() => setIsPopupOpen(false)}>
+                Never show again.
+              </TextButton>
+              <BlackButton
+                disabled={false}
+                theme={theme}
+                hoverBackground={'#20292d'}
+                width={'auto'}
+                fontSize={'1.5rem'}
+                style={{ padding: '1rem 5rem' }}
+                onClick={async () => {
+                  await settleFunds({
+                    market,
+                    openOrders,
+                    connection,
+                    wallet,
+                    baseCurrency,
+                    quoteCurrency,
+                    baseTokenAccount,
+                    quoteTokenAccount,
+                    baseUnsettled: balances[0].unsettled,
+                    quoteUnsettled: balances[1].unsettled,
+                    focusPopup: true,
+                  })
+                }}
+              >
+                Settle All
+              </BlackButton>
+            </Row>
           ) : null}
         </RowContainer>
         {isMobile && (

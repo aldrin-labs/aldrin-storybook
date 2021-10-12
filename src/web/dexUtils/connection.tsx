@@ -1,16 +1,14 @@
-import { useLocalStorageState } from './utils'
+
 import {
   Account,
   AccountInfo,
   clusterApiUrl,
-  Connection,
   PublicKey,
 } from '@solana/web3.js'
-import React, { useContext, useEffect, useMemo, useRef } from 'react'
-import { refreshCache, setCache, useAsyncData } from './fetch-loop'
+import React, { useContext,  useRef } from 'react'
+import { useAsyncData } from './fetch-loop'
 import tuple from 'immutable-tuple'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
-import { useHistory } from 'react-router-dom'
 
 export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
@@ -18,114 +16,51 @@ export const ENDPOINTS = [
     name: 'mainnet-beta',
     endpoint: MAINNET_BETA_ENDPOINT,
   },
-  { name: 'testnet', endpoint: clusterApiUrl('testnet') },
-  { name: 'devnet', endpoint: 'https://api.devnet.solana.com' },
-  { name: 'localnet', endpoint: 'http://127.0.0.1:8899' },
 ]
 
-const ConnectionContext = React.createContext(null)
+const connection = new MultiEndpointsConnection(
+  [
+    { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 10 },
+    { url: 'https://aldrinexchange.genesysgo.net', RPS: 20 },
+  ],
+  'recent'
+)
 
-export function ConnectionProvider({ children }) {
-  const [endpoint, setEndpoint] = useLocalStorageState(
-    'connectionEndpts',
-    ENDPOINTS[0].endpoint
-  )
+connection.connections.forEach((c) => {
+  c.onSlotChange(() => null)
+  c.onAccountChange(new Account().publicKey, () => {})
+})
 
-  const history = useHistory()
-  const { pathname } = history.location
+const serumConnection = new MultiEndpointsConnection([
+  { url: 'https://solana-api.projectserum.com', RPS: 2 },
+])
 
-  console.log('pathname', pathname, pathname === '/dashboard')
-  // projectserum connection for dashboard
+const context = {
+  connection,
+  serumConnection,
+  endpoint: ENDPOINTS[0].endpoint,
+  setEndpoint: () => null // compatibility
+}
 
-  const connection = useMemo(
-    () =>
-      endpoint === MAINNET_BETA_ENDPOINT
-        ? // multi connection only for mainnet
-          new MultiEndpointsConnection(
-            [
-              // { url: 'https://solana-api.projectserum.com', RPS: 2 },
-              // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
-              { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
-            ],
-            'recent'
-          )
-        : new MultiEndpointsConnection(
-            [
-              {
-                url:
-                  ENDPOINTS.find(
-                    (endpointInfo) => endpointInfo.endpoint === endpoint
-                  )?.endpoint || MAINNET_BETA_ENDPOINT,
-                RPS: 20,
-              },
-            ],
-            'recent'
-          ),
-    [endpoint]
-  )
+const ConnectionContext = React.createContext(context)
 
-  const serumConnection = useMemo(
-    () =>
-      endpoint === MAINNET_BETA_ENDPOINT
-        ? new MultiEndpointsConnection(
-            [
-              { url: 'https://solana-api.projectserum.com', RPS: 2 },
-              // { url: 'https://api.mainnet-beta.solana.com', RPS: 4 },
-              // { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 20 },
-            ],
-            'recent'
-          )
-        : new MultiEndpointsConnection(
-            [
-              {
-                url:
-                  ENDPOINTS.find(
-                    (endpointInfo) => endpointInfo.endpoint === endpoint
-                  )?.endpoint || MAINNET_BETA_ENDPOINT,
-                RPS: 20,
-              },
-            ],
-            'recent'
-          ),
-    [endpoint]
-  )
 
-  // The websocket library solana/web3.js uses closes its websocket connection when the subscription list
-  // is empty after opening its first time, preventing subsequent subscriptions from receiving responses.
-  // This is a hack to prevent the list from every getting empty
-  useEffect(() => {
-    const rawConnection = connection.getConnection()
 
-    const id = rawConnection.onAccountChange(new Account().publicKey, () => {})
-
-    return () => {
-      rawConnection.removeAccountChangeListener(id)
-    }
-  }, [endpoint, connection])
-
-  useEffect(() => {
-    const rawConnection = connection.getConnection()
-
-    const id = rawConnection.onSlotChange(() => null)
-
-    return () => {
-      rawConnection.removeSlotChangeListener(id)
-    }
-  }, [endpoint, connection])
-
+export const ConnectionProvider: React.FC = ({ children }) => {
   return (
     <ConnectionContext.Provider
-      value={{ endpoint, setEndpoint, connection, serumConnection }}
+      value={context}
     >
       {children}
     </ConnectionContext.Provider>
   )
 }
-export function useConnection(): Connection {
+
+export function useConnection(): MultiEndpointsConnection {
   return useContext(ConnectionContext).connection
 }
 
-export function useSerumConnection(): Connection {
+export function useSerumConnection(): MultiEndpointsConnection {
   return useContext(ConnectionContext).serumConnection
 }
 

@@ -11,7 +11,11 @@ import RinLogo from '@icons/rin_logo.png'
 import SunnyLogo from '@icons/sunny_logo.jpg'
 import PTRLogo from '@icons/ptr_logo.png'
 import SYPLogo from '@icons/syp_logo.png'
-
+import CobanLogo from '@icons/coban_logo.png'
+import SfcnLogo from '@icons/sfcn_logo.png'
+import FriesLogo from '@icons/fries_logo.png'
+import AlmLogo from '@icons/alm_logo.png'
+import SobLogo from '@icons/sob_logo.png'
 
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { CCAI_MINT } from '@sb/dexUtils/utils'
@@ -86,6 +90,36 @@ export const TokenIcon = ({
     }
   }
 
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'COBAN') {
+    token = {
+      logoURI: CobanLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'SFCN') {
+    token = {
+      logoURI: SfcnLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'ALM') {
+    token = {
+      logoURI: AlmLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'FRIES') {
+    token = {
+      logoURI: FriesLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'SOB') {
+    token = {
+      logoURI: SobLogo,
+    }
+  }
+
   if (!token || !token.logoURI) {
     if (emojiIfNoLogo) {
       return isAwesomeMarket ? (
@@ -108,7 +142,12 @@ export const TokenIcon = ({
   return (
     <img
       src={token.logoURI}
-      style={{ height, width, margin, borderRadius: mint === CCAI_MINT ? '0' : '50%' }}
+      style={{
+        height,
+        width,
+        margin,
+        borderRadius: mint === CCAI_MINT ? '0' : '50%',
+      }}
     />
   )
 }

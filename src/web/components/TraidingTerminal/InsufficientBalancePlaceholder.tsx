@@ -14,18 +14,21 @@ import {
   useSelectedOpenOrdersAccount,
   useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
+import { Loader } from '../Loader/Loader'
 
 export const InsufficientBalancePlaceholder = ({
   pair,
   SOLAmount,
   theme,
   onClick,
+  isLoading,
   sideType,
 }: {
   pair: string
   SOLAmount: number
   theme: Theme
   onClick: any
+  isLoading: boolean
   sideType: string
 }) => {
   const isEnoughSOLForTransaction = SOLAmount < SOLFeeForTrade
@@ -135,7 +138,13 @@ export const InsufficientBalancePlaceholder = ({
         )
       ) : (
         <SendButton theme={theme} type={sideType} onClick={onClick}>
-          {sideType === 'buy' ? `buy ${pair[0]}` : `sell ${pair[0]}`}
+          {isLoading ? (
+            <Loader text={'Transaction Pending'} />
+          ) : sideType === 'buy' ? (
+            `buy ${pair[0]}`
+          ) : (
+            `sell ${pair[0]}`
+          )}
         </SendButton>
       )}
     </>
