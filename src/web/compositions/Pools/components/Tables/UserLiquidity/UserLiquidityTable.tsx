@@ -6,6 +6,7 @@ import { Theme } from '@material-ui/core'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 import {
   DexTokensPrices,
+  FeesEarned,
   PoolInfo,
 } from '@sb/compositions/Pools/index.types'
 import {
@@ -38,7 +39,7 @@ const UserLiquidityTableComponent = ({
   allTokensDataMap: Map<string, TokenInfo>
   dexTokensPricesMap: Map<string, DexTokensPrices>
   farmingTicketsMap: Map<string, FarmingTicket[]>,
-  earnedFeesInPoolForUserMap: Map<string, number>
+  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
   setIsWithdrawalPopupOpen: (value: boolean) => void

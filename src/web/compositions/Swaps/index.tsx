@@ -42,7 +42,6 @@ import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
 import { PublicKey } from '@solana/web3.js'
 import { WarningPopup } from '../Chart/components/WarningPopup'
 import { swap } from '@sb/dexUtils/pools/swap'
-import { mock } from '../Pools/components/Tables/AllPools/AllPoolsTable.utils'
 
 const SwapsPage = ({
   theme,
@@ -523,7 +522,7 @@ const SwapsPage = ({
       />
 
       <SelectCoinPopup
-        poolsInfo={mock}
+        poolsInfo={getPoolsInfo}
         theme={theme}
         // mints={swapTokens}
         mints={[...new Set(mints)]}

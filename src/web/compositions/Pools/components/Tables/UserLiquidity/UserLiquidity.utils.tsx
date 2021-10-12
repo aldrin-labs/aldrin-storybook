@@ -8,7 +8,11 @@ import {
 import { SvgIcon } from '@sb/components'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import { PoolInfo, DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import {
+  PoolInfo,
+  DexTokensPrices,
+  FeesEarned,
+} from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenIconsContainer } from '../components'
 import {
@@ -130,7 +134,7 @@ export const combineUserLiquidityData = ({
   expandedRows: string[]
   allTokensDataMap: Map<string, TokenInfo>
   farmingTicketsMap: Map<string, FarmingTicket[]>
-  earnedFeesInPoolForUserMap: Map<string, number>
+  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -139,7 +143,6 @@ export const combineUserLiquidityData = ({
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   const processedUserLiquidityData = usersPools
-    // const processedUserLiquidityData = mock
     .filter((el) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
@@ -175,6 +178,14 @@ export const combineUserLiquidityData = ({
 
       const userLiquidityUSD =
         baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
+
+      const feesEarnedByUserForPool = earnedFeesInPoolForUserMap.get(
+        el.swapToken
+      ) || { totalBaseTokenFee: 0, totalQuoteTokenFee: 0 }
+
+      const feesUsd =
+        feesEarnedByUserForPool.totalBaseTokenFee * baseTokenPrice +
+        feesEarnedByUserForPool.totalQuoteTokenFee * quoteTokenPrice
 
       return {
         id: `${el.name}${el.tvl}${el.poolTokenMint}`,
@@ -231,12 +242,27 @@ export const combineUserLiquidityData = ({
           render: (
             <TextColumnContainer>
               <RowDataTdTopText theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(userLiquidityUSD, 2))}
+                $
+                {formatNumberToUSFormat(
+                  stripDigitPlaces(userLiquidityUSD + feesUsd, 2)
+                )}
               </RowDataTdTopText>
               <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(userAmountTokenA, 2))}{' '}
+                {formatNumberToUSFormat(
+                  stripDigitPlaces(
+                    userAmountTokenA +
+                      feesEarnedByUserForPool.totalBaseTokenFee,
+                    8
+                  )
+                )}{' '}
                 {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(userAmountTokenB, 2))}{' '}
+                {formatNumberToUSFormat(
+                  stripDigitPlaces(
+                    userAmountTokenB +
+                      feesEarnedByUserForPool.totalQuoteTokenFee,
+                    8
+                  )
+                )}{' '}
                 {getTokenNameByMintAddress(el.tokenB)}
               </RowDataTdText>
             </TextColumnContainer>
@@ -245,11 +271,7 @@ export const combineUserLiquidityData = ({
         fees: {
           render: (
             <RowDataTdText theme={theme}>
-              $
-              {stripDigitPlaces(
-                earnedFeesInPoolForUserMap.get(el.swapToken) || 0,
-                6
-              )}
+              ${stripDigitPlaces(feesUsd || 0, 2)}
             </RowDataTdText>
           ),
         },

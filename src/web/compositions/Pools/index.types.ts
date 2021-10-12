@@ -33,5 +33,11 @@ export type DexTokensPrices = {
 
 export type FeesEarned = {
   pool: string // an address of pool or 'all'
-  earnedUSD: number
+  totalBaseTokenFee: number
+  totalQuoteTokenFee: number
+}
+
+export type TradingVolume = {
+  pool: string;
+  tradingVolume: number;
 }

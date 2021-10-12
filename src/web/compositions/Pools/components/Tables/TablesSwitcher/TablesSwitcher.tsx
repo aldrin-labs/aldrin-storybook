@@ -33,6 +33,7 @@ import {
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { addAmountToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountToClaimForFarmingTickets'
+import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 
 const TablesSwitcher = ({
   theme,
@@ -127,7 +128,7 @@ const TablesSwitcher = ({
   )
 
   const earnedFeesInPoolForUserMap = getFeesEarnedByAccount.reduce(
-    (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned.earnedUSD),
+    (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned),
     new Map()
   )
 
@@ -156,7 +157,14 @@ const TablesSwitcher = ({
               isActive={!isAllPoolsSelected}
               onClick={() => setSelectedTable('userLiquidity')}
             >
-              Your liquidity
+              Your liquidity (
+              {
+                getUserPoolsFromAll({
+                  poolsInfo: getPoolsInfo,
+                  allTokensDataMap,
+                }).length
+              }
+              )
             </TableModeButton>
           </Row>
           <Row

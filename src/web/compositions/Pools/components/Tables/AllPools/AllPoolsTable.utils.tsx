@@ -6,7 +6,11 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import {
+  DexTokensPrices,
+  FeesEarned,
+  PoolInfo,
+} from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { SvgIcon } from '@sb/components'
@@ -33,101 +37,6 @@ import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityD
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
-
-export const mock: PoolInfo[] = [
-  {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RIN_USDC',
-    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tvl: {
-      tokenA: 45,
-      tokenB: 2,
-    },
-    apy24h: 900, //%
-    supply: 120000,
-    liquidity: 9835570,
-    staked: 50,
-    locked: true,
-    executed: false,
-    farming: [],
-  },
-  {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RI8888N_U8SDC',
-    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLoxFcMd6z8ddCk5wp',
-    tvl: {
-      tokenA: 44,
-      tokenB: 765,
-    },
-    apy24h: 900, //%
-    supply: 120000,
-    liquidity: 0,
-    staked: 0,
-
-    locked: false,
-    executed: true,
-    farming: [],
-  },
-  {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RIN_USDC',
-    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYkDLCxFcMd6z8ddCk5wp',
-    tvl: {
-      tokenA: 44,
-      tokenB: 765,
-    },
-    apy24h: 900, //%
-    supply: 120000,
-    liquidity: 935570,
-    locked: false,
-    executed: false,
-    staked: 50,
-    farming: [],
-  },
-  {
-    name:
-      'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m_8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
-    parsedName: 'PTA_PTB',
-    tokenA: 'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m',
-    tokenB: '8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
-    swapToken: 'WsqPnvaF9jhFuJ7TSiQwdpYo9hSvvQGoJN4N8SV67cq',
-    poolTokenMint: '6U4vmQfbSd2Djvf8w18BJiNYXsGnpGrhFZz4DpQ4Cj3U',
-    tvl: {
-      tokenA: 1099,
-      tokenB: 4945509,
-    },
-    apy24h: 900, //%
-    supply: 1099002507,
-    liquidity: 935570,
-    staked: 60,
-    locked: false,
-    executed: true,
-    farming: [
-      {
-        farmingState: 'Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr',
-        farmingSnapshots: 'CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri',
-        farmingTokenVault: 'GsDrPKsNJRSEBChMFA6yuw2md41tLErcD4ymJ1PMqcFo',
-        periodLength: 3600 * 24 * 7,
-        tokensPerPeriod: 30,
-        tokensTotal: 1000,
-        tokensUnlocked: 500,
-        vestingPeriod: 10,
-      },
-    ],
-  },
-]
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -211,6 +120,7 @@ export const combineAllPoolsData = ({
   expandedRows,
   allTokensDataMap,
   farmingTicketsMap,
+  tradingVolumesMap,
   earnedFeesInPoolForUserMap,
   selectPool,
   refreshAllTokensData,
@@ -224,11 +134,12 @@ export const combineAllPoolsData = ({
   poolsInfo: PoolInfo[]
   searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  feesPerPoolMap: Map<string, number>
+  feesPerPoolMap: Map<string, FeesEarned>
   expandedRows: string[]
   allTokensDataMap: Map<string, TokenInfo>
   farmingTicketsMap: Map<string, FarmingTicket[]>
-  earnedFeesInPoolForUserMap: Map<string, number>
+  tradingVolumesMap: Map<string, { weekly: number; daily: number }>
+  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -237,7 +148,6 @@ export const combineAllPoolsData = ({
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   const processedAllPoolsData = poolsInfo
-    // const processedAllPoolsData = mock
     .filter((el) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
@@ -254,7 +164,19 @@ export const combineAllPoolsData = ({
       const tvlUSD =
         baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
 
-      const fees = feesPerPoolMap.get(el.swapToken) || 0
+      const feesEarnedByPool = feesPerPoolMap.get(el.swapToken) || {
+        totalBaseTokenFee: 0,
+        totalQuoteTokenFee: 0,
+      }
+
+      const feesUSDByPool =
+        feesEarnedByPool?.totalBaseTokenFee * baseTokenPrice +
+        feesEarnedByPool?.totalQuoteTokenFee * quoteTokenPrice
+
+      const tradingVolumes = tradingVolumesMap.get(el.swapToken) || {
+        weekly: 0,
+        daily: 0,
+      }
       const apy = el.apy24h || 0
       const farmingState = el.farming && el.farming[0]
       const dailyFarmingValue = farmingState
@@ -324,7 +246,10 @@ export const combineAllPoolsData = ({
         vol24h: {
           render: (
             <RowDataTdText theme={theme}>
-              ${formatNumberToUSFormat(stripDigitPlaces(2000000, 2))}
+              $
+              {formatNumberToUSFormat(
+                stripDigitPlaces(tradingVolumes.daily, 2)
+              )}
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
@@ -335,7 +260,10 @@ export const combineAllPoolsData = ({
         vol7d: {
           render: (
             <RowDataTdText theme={theme}>
-              ${formatNumberToUSFormat(stripDigitPlaces(2000000, 2))}
+              $
+              {formatNumberToUSFormat(
+                stripDigitPlaces(tradingVolumes.weekly, 2)
+              )}
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
@@ -345,7 +273,7 @@ export const combineAllPoolsData = ({
         fees: {
           render: (
             <RowDataTdText theme={theme}>
-              ${stripDigitPlaces(fees, 6)}
+              ${stripDigitPlaces(feesUSDByPool, 2)}
             </RowDataTdText>
           ),
         },

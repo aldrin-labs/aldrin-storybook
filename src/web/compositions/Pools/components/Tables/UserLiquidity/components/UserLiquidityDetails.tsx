@@ -11,7 +11,11 @@ import {
 } from '../../index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@material-ui/core'
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import {
+  DexTokensPrices,
+  FeesEarned,
+  PoolInfo,
+} from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import {
@@ -51,7 +55,7 @@ export const UserLiquidityDetails = ({
   allTokensDataMap: Map<string, TokenInfo>
   farmingTicketsMap: Map<string, FarmingTicket[]>
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  earnedFeesInPoolForUserMap: Map<string, number>
+  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -64,7 +68,7 @@ export const UserLiquidityDetails = ({
 
   const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
   const stakedTokens = getStakedTokensForPool({ pool, farmingTicketsMap })
-  const earnedFees = earnedFeesInPoolForUserMap.get(pool.swapToken) || 0
+
   const availableToClaimFarmingTokens = getAvailableFarmingTokensForPool({
     pool,
     farmingTicketsMap,
@@ -76,6 +80,7 @@ export const UserLiquidityDetails = ({
 
   const hasLiquidity = hasPoolTokens || hasStakedTokens
   const hasFarming = pool.farming && pool.farming.length > 0
+  const hasTokensToClaim = availableToClaimFarmingTokens > 0
 
   const [baseUserTokenAmount, quoteUserTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
@@ -107,6 +112,14 @@ export const UserLiquidityDetails = ({
 
   const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
   const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+
+  const earnedFeesInPoolForUser = earnedFeesInPoolForUserMap.get(
+    pool.swapToken
+  ) || { totalBaseTokenFee: 0, totalQuoteTokenFee: 0 }
+
+  const earnedFeesUSD =
+    earnedFeesInPoolForUser.totalBaseTokenFee * baseTokenPrice +
+    earnedFeesInPoolForUser.totalQuoteTokenFee * quoteTokenPrice
 
   const userLiquidityUSD =
     baseTokenPrice * baseUserTokenAmount +
@@ -171,12 +184,12 @@ export const UserLiquidityDetails = ({
                 fontFamily="Avenir Next Medium"
                 theme={theme}
               >
-                100{' '}
+                {earnedFeesInPoolForUser.totalBaseTokenFee}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText>{' '}
-                / 2{' '}
+                / {earnedFeesInPoolForUser.totalQuoteTokenFee}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
                 <WhiteText>$(</WhiteText>
-                {formatNumberToUSFormat(stripDigitPlaces(earnedFees, 2))}
+                {formatNumberToUSFormat(stripDigitPlaces(earnedFeesUSD, 2))}
                 <WhiteText>)</WhiteText>
               </RowDataTdText>
             </>
@@ -337,7 +350,7 @@ export const UserLiquidityDetails = ({
           </RowContainer>
         </Row>
 
-        {hasPoolTokens && hasFarming && (
+        {hasFarming && (hasPoolTokens || hasTokensToClaim) && (
           <Row direction="column" width="40%" align="flex-end">
             <RowDataTdText
               theme={theme}
@@ -370,9 +383,9 @@ export const UserLiquidityDetails = ({
             </RowDataTdText>
             <GreenButton
               theme={theme}
-              disabled={hasStakedTokens && availableToClaimFarmingTokens === 0}
+              disabled={hasStakedTokens && !hasTokensToClaim}
               onClick={async () => {
-                if (availableToClaimFarmingTokens > 0) {
+                if (hasTokensToClaim) {
                   // add loader
                   await withdrawFarmed({
                     wallet,
@@ -389,7 +402,7 @@ export const UserLiquidityDetails = ({
                 }
               }}
             >
-              {hasStakedTokens || availableToClaimFarmingTokens > 0
+              {hasStakedTokens || hasTokensToClaim
                 ? 'Claim reward'
                 : 'Stake Pool Token'}
             </GreenButton>
