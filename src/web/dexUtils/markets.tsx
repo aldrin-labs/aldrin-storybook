@@ -13,6 +13,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { getUniqueListBy, useLocalStorageState } from './utils'
 import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
 import {
+  getProviderNameFromUrl,
   useAccountData,
   useAccountInfo,
   useConnection,
@@ -33,6 +34,7 @@ import {
   Token,
   TOKEN_PROGRAM_ID,
 } from './token/token'
+import { Metrics } from '../../../../core/src/utils/metrics'
 
 export const ALL_TOKENS_MINTS = getUniqueListBy(
   [...TOKEN_MINTS, ...AWESOME_TOKENS],
@@ -417,7 +419,7 @@ export function MarketProvider({ children }) {
 
     setMarket(null)
 
-    if (!marketInfo || !marketInfo?.address) {
+    if (!marketInfo?.address) {
       notify({
         message: 'Error loading market',
         description: 'Please select a market from the dropdown',
@@ -439,6 +441,8 @@ export function MarketProvider({ children }) {
       })
       .catch((e) => {
         console.log('e', e)
+        const rpcUrl = getProviderNameFromUrl({ rawConnection: connection })
+        Metrics.sendMetrics({metricName: `error.rpc.${rpcUrl}.marketFetch`})
         notify({
           message: 'Error loading market',
           description: e.message,
@@ -1190,6 +1194,8 @@ export function useUnmigratedDeprecatedMarkets() {
         )
       } catch (e) {
         console.log('Failed loading market', marketInfo.name, e)
+        const rpcUrl = getProviderNameFromUrl({ rawConnection: connection })
+        Metrics.sendMetrics({metricName: `error.rpc.${rpcUrl}.unmigratedMarketFetch`})
         notify({
           message: 'Error loading market',
           description: e.message,
