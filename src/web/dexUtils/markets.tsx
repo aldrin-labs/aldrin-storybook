@@ -28,6 +28,7 @@ import {
   useAwesomeMarkets,
   AWESOME_TOKENS,
 } from '@core/utils/awesomeMarkets/serum'
+import { Metrics } from '@core/utils/metrics'
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,

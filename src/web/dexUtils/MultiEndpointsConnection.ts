@@ -1,5 +1,5 @@
 import { Commitment, Connection } from '@solana/web3.js'
-import { Metrics } from '../../../../core/src/utils/metrics'
+import { Metrics } from '@core/utils/metrics'
 import { getProviderNameFromUrl } from './connection'
 
 type RateLimitedEndpoint = {
@@ -49,6 +49,10 @@ class MultiEndpointsConnection implements Connection {
     //     endpointCounter.numberOfRequestsSent = 0
     //   })
     // }, 1500)
+  }
+
+  get connections(): Connection[] {
+    return this.endpointsRequestsCounter.map((_) => _.connection)
   }
 
   private processCall(call: Promise<any>, connection: Connection) {

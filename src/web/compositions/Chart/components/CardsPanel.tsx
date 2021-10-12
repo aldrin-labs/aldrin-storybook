@@ -36,7 +36,6 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import { withTheme } from '@material-ui/core'
 import WalletIcon from '@icons/walletIcon.svg'
-import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/NetworkDropdown'
 
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
@@ -332,15 +331,6 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <div data-tut="connection-dropdown">
-        <NetworkDropdown
-          endpoint={endpoint}
-          setEndpoint={setEndpoint}
-          theme={theme}
-          isWalletConnected={connected}
-        />
-      </div>
-
       {!connected && (
         <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap={'nowrap'}>
           <ConnectWalletDropdown
