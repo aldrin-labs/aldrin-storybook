@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 export const DropdownContainer = styled.div`
   height: 100%;
@@ -32,7 +33,7 @@ export const DropwodnItem = styled.div`
 export const MenuDropdown = styled.div`
   position: absolute;
   left: 0;
-  top: 4rem;
+  top: 0;
   width: 100%;
   display: none;
   z-index: 99;
@@ -40,7 +41,7 @@ export const MenuDropdown = styled.div`
 `
 
 export const MenuDropdownInner = styled.div`
-  margin-top: 0.9rem;
+  margin-top: 4.9rem;
   background: #0E1016;
   padding: 1rem;
   border: 0.2rem solid rgb(46, 46, 46);
@@ -51,4 +52,21 @@ export const MenuDropdownLink = styled.div`
   line-height: 3.5rem;
   width: 100%;
   text-align: center;
+`
+
+export const RedButton = styled((props) => (
+  <BtnCustom
+    btnWidth={props.width || '50%'}
+    fontSize={'1.4rem'}
+    height={'4.5rem'}
+    textTransform={'capitalize'}
+    backgroundColor={props.background || 'transparent'}
+    borderColor={props.background || 'transparent'}
+    btnColor={props.color || props.theme.palette.red.main}
+    borderRadius={'1rem'}
+    border={props.border || 'none'}
+    {...props}
+  />
+))`
+  outline: none;
 `

@@ -21,7 +21,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { compose } from 'recompose'
 import { CustomCard, PanelWrapper } from '../Chart.styles'
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
-import { DropdownContainer, DropwodnItem, MenuDropdown, MenuDropdownInner, MenuDropdownLink } from './styles'
+import { RedButton, DropdownContainer, DropwodnItem, MenuDropdown, MenuDropdownInner, MenuDropdownLink } from './styles'
 import { FeedbackPopup } from './UsersFeedbackPopup'
 
 export const CardsPanel = ({ theme }) => {
@@ -88,7 +88,7 @@ export const CardsPanel = ({ theme }) => {
               style={NAV_LINK_STYLE}
               onClick={() => setIsFeedBackPopupOpen(true)}
             >
-              Feedback & Support
+              Feedback &amp; Support
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -118,6 +118,7 @@ export const CardsPanel = ({ theme }) => {
               <MenuDropdown className="menu">
                 <MenuDropdownInner>
                   <NavLinkButton
+                    style={{width: '100%'}}
                     component={(props) => <Link to={`/chart`} {...props} />}
                   >
                     <MenuDropdownLink>
@@ -126,6 +127,7 @@ export const CardsPanel = ({ theme }) => {
 
                   </NavLinkButton>
                   <NavLinkButton
+                    style={{width: '100%'}}
                     component={(props) => <Link to={`/swaps`} {...props} />}
                   >
                     <MenuDropdownLink>
