@@ -26,6 +26,8 @@ const OpenOrdersTable = (props) => {
     styles = {},
     stylesForTable = {},
     tableBodyStyles = {},
+    dexTokensPrices,
+    needShowValue = false,
   } = props
 
   const onCancelOrder = async (order) => {
@@ -64,7 +66,8 @@ const OpenOrdersTable = (props) => {
     cancelOrderWithStatus,
     theme,
     handlePairChange,
-    isCancellingAllOrders
+    isCancellingAllOrders,
+    needShowValue
   )
 
   return (

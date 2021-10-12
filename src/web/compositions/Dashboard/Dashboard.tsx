@@ -276,6 +276,7 @@ const Dashboard = ({
             tab={'openOrders'}
             theme={theme}
             show={true}
+            needShowValue={true}
             isCancellingAllOrders={isCancellingAllOrders}
             cancelOrderCallback={refreshOpenOrders}
             onCancelAll={async () => {

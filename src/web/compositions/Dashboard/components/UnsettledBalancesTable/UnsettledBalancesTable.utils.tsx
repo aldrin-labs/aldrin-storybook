@@ -121,13 +121,9 @@ export const combineUnsettledBalances = ({
 
       const [base, quote] = marketName.split('_')
 
-      const baseValue = dexTokensPrices?.get(base)
-        ? baseUnsettled * dexTokensPrices?.get(base)?.price
-        : '-'
+      const baseValue = baseUnsettled * dexTokensPrices?.get(base)?.price
 
-      const quoteValue = dexTokensPrices?.get(quote)
-        ? quoteUnsettled * dexTokensPrices?.get(quote)?.price
-        : '-'
+      const quoteValue = quoteUnsettled * dexTokensPrices?.get(quote)?.price
 
       return {
         id: `${marketName}${baseUnsettled}${quoteUnsettled}`,
@@ -181,7 +177,9 @@ export const combineUnsettledBalances = ({
           showOnMobile: false,
         },
         baseValue: {
-          render: `$${roundAndFormatNumber(baseValue, 8, true)}`,
+          render: dexTokensPrices?.get(base)?.price
+            ? `$${roundAndFormatNumber(baseValue, 8, true)}`
+            : '-',
           style: { textAlign: 'left' },
           contentToSort: +quoteUnsettled,
           showOnMobile: false,
@@ -193,7 +191,9 @@ export const combineUnsettledBalances = ({
           showOnMobile: false,
         },
         quoteValue: {
-          render: `$${roundAndFormatNumber(quoteValue, 8, true)}`,
+          render: dexTokensPrices?.get(quote)?.price
+            ? `$${roundAndFormatNumber(quoteValue, 8, true)}`
+            : '-',
           style: { textAlign: 'left' },
           contentToSort: +quoteUnsettled,
           showOnMobile: false,

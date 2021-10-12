@@ -224,7 +224,7 @@ export const openOrdersColumnNames = (
     { label: 'Side', id: 'side' },
     { label: 'Price', id: 'price' },
     { label: 'Amount', id: 'amount' },
-    { label:  'Total', id: 'total' },
+    { label: 'Value', id: 'value' },
     // { label: 'Filled %', id: 'filled',  },
     // marketType === 0 ? { label: 'Size', id: 'amount' } : {},
     // { label: 'Trigger', id: 'triggerConditions' },

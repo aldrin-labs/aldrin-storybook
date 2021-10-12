@@ -137,6 +137,7 @@ export const ConfirmationPopup = ({
   validateForm,
   handleSubmit,
   spread,
+  setIsButtonLoaderShowing,
 }) => {
   const isSlippageHigh = spread > 2
   const [isAwareOfHighSlippage, confirmIsAwareOfHighSlippage] = useState(false)
