@@ -4,6 +4,7 @@ import styled from 'styled-components'
 
 const StyledButton = styled(Button)`
   font-size: 12px;
+  letter-spacing: 0.01rem;
 
   @media only screen and (max-width: 1100px) {
     font-size: 9px;
