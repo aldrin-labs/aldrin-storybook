@@ -15,6 +15,7 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
@@ -32,24 +33,26 @@ import { getAvailableFarmingTokensForPool } from '@sb/dexUtils/pools/getAvailabl
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { useConnection } from '@sb/dexUtils/connection'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { SvgIcon } from '@sb/components'
+import { Loading, SvgIcon } from '@sb/components'
 import Info from '@icons/TooltipImg.svg'
-import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { estimatedTime } from '@core/utils/dateUtils'
 import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
+import { Loader } from '@sb/components/Loader/Loader'
 
 export const UserLiquidityDetails = ({
   theme,
   pool,
+  poolWaitingForUpdateAfterOperation,
   allTokensDataMap,
   dexTokensPricesMap,
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
@@ -57,12 +60,14 @@ export const UserLiquidityDetails = ({
 }: {
   theme: Theme
   pool: PoolInfo
+  poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensDataMap: Map<string, TokenInfo>
   farmingTicketsMap: Map<string, FarmingTicket[]>
   dexTokensPricesMap: Map<string, DexTokensPrices>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
@@ -129,6 +134,26 @@ export const UserLiquidityDetails = ({
   const userLiquidityUSD =
     baseTokenPrice * baseUserTokenAmount +
     quoteTokenPrice * quoteUserTokenAmount
+
+  const { operation } = poolWaitingForUpdateAfterOperation
+
+  const isPoolWaitingForUpdateAfterOperation =
+    poolWaitingForUpdateAfterOperation.pool === pool.swapToken
+
+  const isPoolWaitingForUpdateAfterDeposit =
+    isPoolWaitingForUpdateAfterOperation && operation === 'deposit'
+
+  const isPoolWaitingForUpdateAfterWithdraw =
+    isPoolWaitingForUpdateAfterOperation && operation === 'withdraw'
+
+  const isPoolWaitingForUpdateAfterStake =
+    isPoolWaitingForUpdateAfterOperation && operation === 'stake'
+
+  const isPoolWaitingForUpdateAfterUnstake =
+    isPoolWaitingForUpdateAfterOperation && operation === 'unstake'
+
+  const isPoolWaitingForUpdateAfterClaim =
+    isPoolWaitingForUpdateAfterOperation && operation === 'claim'
 
   return (
     <RowContainer
@@ -236,6 +261,7 @@ export const UserLiquidityDetails = ({
             theme={theme}
             btnWidth={'100%'}
             style={{ marginBottom: hasLiquidity ? '1rem' : '0' }}
+            disabled={isPoolWaitingForUpdateAfterDeposit}
             onClick={() => {
               if (!wallet.connected) {
                 wallet.connect()
@@ -246,13 +272,22 @@ export const UserLiquidityDetails = ({
               setIsAddLiquidityPopupOpen(true)
             }}
           >
-            {wallet.connected ? 'Deposit Liquidity' : 'Connect Wallet'}
+            {wallet.connected ? (
+              isPoolWaitingForUpdateAfterDeposit ? (
+                <Loader />
+              ) : (
+                'Deposit Liquidity'
+              )
+            ) : (
+              'Connect Wallet'
+            )}
           </Button>
 
           {hasLiquidity && (
             <Button
               theme={theme}
               btnWidth={'100%'}
+              disabled={isPoolWaitingForUpdateAfterWithdraw}
               onClick={() => {
                 if (!wallet.connected) {
                   wallet.connect()
@@ -263,9 +298,11 @@ export const UserLiquidityDetails = ({
                 setIsWithdrawalPopupOpen(true)
               }}
             >
-              {!wallet.connected
-                ? 'Connect Wallet'
-                : 'Withdraw Liquidity + Fees'}
+              {isPoolWaitingForUpdateAfterWithdraw ? (
+                <Loader />
+              ) : (
+                'Withdraw Liquidity + Fees'
+              )}
             </Button>
           )}
         </Row>
@@ -307,6 +344,7 @@ export const UserLiquidityDetails = ({
               <RowContainer justify="space-between">
                 <Button
                   color="#651CE4"
+                  disabled={isPoolWaitingForUpdateAfterStake}
                   onClick={() => {
                     if (!wallet.connected) {
                       wallet.connect()
@@ -319,23 +357,33 @@ export const UserLiquidityDetails = ({
                   theme={theme}
                   style={{ width: '48%' }}
                 >
-                  Stake Pool Tokens
+                  {isPoolWaitingForUpdateAfterStake ? (
+                    <Loader />
+                  ) : (
+                    'Stake Pool Tokens'
+                  )}
                 </Button>
                 <Button
-                  color={'#D44C32'}
                   theme={theme}
-                  disabled={isUnstakeDisabled}
+                  color={'#D54D32'}
+                  disabled={
+                    isUnstakeDisabled || isPoolWaitingForUpdateAfterUnstake
+                  }
                   style={{ width: '48%' }}
                   onClick={() => {
                     selectPool(pool)
                     setIsUnstakePopupOpen(true)
                   }}
                 >
-                  {isUnstakeLocked
-                    ? `Locked until ${dayjs
-                        .unix(unlockAvailableDate)
-                        .format('MMM DD, YYYY')}`
-                    : 'Unstake Pool Tokens'}
+                  {isPoolWaitingForUpdateAfterUnstake ? (
+                    <Loader />
+                  ) : isUnstakeLocked ? (
+                    `Locked until ${dayjs
+                      .unix(unlockAvailableDate)
+                      .format('MMM DD, YYYY')}`
+                  ) : (
+                    'Unstake Pool Tokens'
+                  )}
                 </Button>
               </RowContainer>
             ) : hasPoolTokens ? (
@@ -357,50 +405,53 @@ export const UserLiquidityDetails = ({
           </RowContainer>
         </Row>
 
-        {hasFarming && (hasPoolTokens || hasTokensToClaim) && (
-          <Row direction="column" width="55%" align="flex-end">
-            <RowDataTdText
-              theme={theme}
-              fontFamily={'Avenir Next Medium'}
-              style={{ marginBottom: '3.5rem' }}
-            >
-              <DarkTooltip
-                title={
-                  <span>
-                    The founder has set up vesting. You will be able to claim
-                    33% of your daily reward every day, the remaining 67% will
-                    become available for withdrawal after{' '}
-                    {estimatedTime(farmingState.vestingPeriod)}.
-                  </span>
-                }
+        {hasFarming ? (
+          hasTokensToClaim ? (
+            <Row direction="column" width="55%" align="flex-end">
+              <RowDataTdText
+                theme={theme}
+                fontFamily={'Avenir Next Medium'}
+                style={{ marginBottom: '3.5rem' }}
               >
-                <div style={{ display: 'inline' }}>
-                  <SvgIcon
-                    src={Info}
-                    width={'1.5rem'}
-                    height={'auto'}
-                    style={{ marginRight: '1rem' }}
-                  />
-                </div>
-              </DarkTooltip>
-              Available to claim:
-              <AmountText style={{ padding: '0 0.5rem' }}>
-                {stripByAmountAndFormat(availableToClaimFarmingTokens)}
-              </AmountText>{' '}
-              {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
-            </RowDataTdText>
-            <Button
-              theme={theme}
-              btnWidth={'auto'}
-              padding={'0 2rem'}
-              color={
-                hasStakedTokens || hasTokensToClaim
-                  ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-                  : '#651CE4'
-              }
-              disabled={hasStakedTokens && !hasTokensToClaim}
-              onClick={async () => {
-                if (hasTokensToClaim) {
+                <DarkTooltip
+                  title={
+                    <span>
+                      The founder has set up vesting. You will be able to claim
+                      33% of your daily reward every day, the remaining 67% will
+                      become available for withdrawal after{' '}
+                      {estimatedTime(farmingState.vestingPeriod)}.
+                    </span>
+                  }
+                >
+                  <div style={{ display: 'inline' }}>
+                    <SvgIcon
+                      src={Info}
+                      width={'1.5rem'}
+                      height={'auto'}
+                      style={{ marginRight: '1rem' }}
+                    />
+                  </div>
+                </DarkTooltip>
+                Available to claim:
+                <AmountText style={{ padding: '0 0.5rem' }}>
+                  {stripByAmountAndFormat(availableToClaimFarmingTokens)}
+                </AmountText>{' '}
+                {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+              </RowDataTdText>
+              <Button
+                theme={theme}
+                btnWidth={'auto'}
+                padding={'0 2rem'}
+                color={
+                  hasStakedTokens || hasTokensToClaim
+                    ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+                    : '#651CE4'
+                }
+                disabled={
+                  (hasStakedTokens && !hasTokensToClaim) ||
+                  isPoolWaitingForUpdateAfterClaim
+                }
+                onClick={async () => {
                   // add loader
                   await withdrawFarmed({
                     wallet,
@@ -410,19 +461,49 @@ export const UserLiquidityDetails = ({
                     farmingTickets,
                   })
 
-                  await setTimeout(() => refreshAllTokensData(), 7500)
-                } else {
+                  await setPoolWaitingForUpdateAfterOperation({
+                    pool: pool.swapToken,
+                    operation: 'claim',
+                  })
+
+                  await setTimeout(async () => {
+                    await refreshAllTokensData()
+                    await await setPoolWaitingForUpdateAfterOperation({
+                      pool: '',
+                      operation: '',
+                    })
+                  }, 7500)
+                  await setTimeout(() => refreshAllTokensData(), 15000)
+                }}
+              >
+                {isPoolWaitingForUpdateAfterClaim ? (
+                  <Loading />
+                ) : (
+                  'Claim reward'
+                )}
+              </Button>
+            </Row>
+          ) : hasPoolTokens ? (
+            <Row direction="column" width="55%" align="flex-end">
+              <Button
+                theme={theme}
+                btnWidth={'auto'}
+                padding={'0 2rem'}
+                disabled={isPoolWaitingForUpdateAfterStake}
+                onClick={async () => {
                   selectPool(pool)
                   setIsStakePopupOpen(true)
-                }
-              }}
-            >
-              {hasStakedTokens || hasTokensToClaim
-                ? 'Claim reward'
-                : 'Stake Pool Token'}
-            </Button>
-          </Row>
-        )}
+                }}
+              >
+                {isPoolWaitingForUpdateAfterStake ? (
+                  <Loading />
+                ) : (
+                  'Stake Pool Token'
+                )}
+              </Button>
+            </Row>
+          ) : null
+        ) : null}
       </Row>
     </RowContainer>
   )

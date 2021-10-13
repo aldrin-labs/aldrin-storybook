@@ -11,7 +11,6 @@ import { useConnection } from '@sb/dexUtils/connection'
 
 const Pools = ({ theme }: { theme: Theme }) => {
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
-  const connection = useConnection()
 
   return (
     <RowContainer

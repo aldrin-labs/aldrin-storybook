@@ -5,9 +5,11 @@ import { Theme } from '@material-ui/core'
 
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 import {
+  DataSection,
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import {
   combineUserLiquidityData,
@@ -23,11 +25,13 @@ const UserLiquidityTableComponent = ({
   searchValue,
   allTokensDataMap,
   poolsInfo,
+  poolWaitingForUpdateAfterOperation,
   dexTokensPricesMap,
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
@@ -36,12 +40,14 @@ const UserLiquidityTableComponent = ({
   theme: Theme
   searchValue: string
   poolsInfo: PoolInfo[]
+  poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensDataMap: Map<string, TokenInfo>
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  farmingTicketsMap: Map<string, FarmingTicket[]>,
+  farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
@@ -53,13 +59,18 @@ const UserLiquidityTableComponent = ({
     expandRows(onCheckBoxClick(expandedRows, id))
   }
 
-  const usersPools = getUserPoolsFromAll({ poolsInfo, allTokensDataMap, farmingTicketsMap })
+  const usersPools = getUserPoolsFromAll({
+    poolsInfo,
+    allTokensDataMap,
+    farmingTicketsMap,
+  })
 
   const userLiquidityData = combineUserLiquidityData({
     theme,
     searchValue,
     usersPools,
     expandedRows,
+    poolWaitingForUpdateAfterOperation,
     allTokensDataMap,
     dexTokensPricesMap,
     farmingTicketsMap,
@@ -70,6 +81,7 @@ const UserLiquidityTableComponent = ({
     setIsAddLiquidityPopupOpen,
     setIsStakePopupOpen,
     setIsUnstakePopupOpen,
+    setPoolWaitingForUpdateAfterOperation,
   })
 
   return (
