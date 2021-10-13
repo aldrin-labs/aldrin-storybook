@@ -169,6 +169,7 @@ export const swap = async ({
         connection,
         transaction: commonTransaction,
         signers: commonSigners,
+        focusPopup: true,
       })
 
       if (tx) {

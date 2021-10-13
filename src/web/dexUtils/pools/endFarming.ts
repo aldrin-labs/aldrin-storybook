@@ -191,6 +191,7 @@ export const endFarming = async ({
         connection,
         transaction: commonTransaction,
         signers: [],
+        focusPopup: true,
       })
 
       if (tx) {

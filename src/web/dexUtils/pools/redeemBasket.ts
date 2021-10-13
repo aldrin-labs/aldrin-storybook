@@ -170,6 +170,7 @@ export async function redeemBasket({
         connection,
         transaction: commonTransaction,
         signers: commonSigners,
+        focusPopup: true,
       })
 
       if (tx) {

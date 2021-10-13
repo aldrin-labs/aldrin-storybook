@@ -130,14 +130,20 @@ export const GreenButton = styled(
 )`
   font-size: 1.4rem;
   height: 4.5rem;
+  border-radius: 1rem;
+
   background-color: ${(props: { disabled: boolean; theme: Theme }) =>
     !props.disabled ? '#A5E898' : props.theme.palette.grey.title};
-  border-radius: 1rem;
-  border-color: none;
-  cursor: pointer;
   color: ${(props: { disabled: boolean }) =>
     !props.disabled ? '#17181A' : '#fff'};
   border: none;
+
+  &:hover {
+    background-color: ${(props: { disabled: boolean; theme: Theme }) =>
+      !props.disabled ? '#A5E898' : props.theme.palette.grey.title};
+    color: ${(props: { disabled: boolean }) =>
+      !props.disabled ? '#17181A' : '#fff'};
+  }
 `
 
 export const TableContainer = styled(RowContainer)`

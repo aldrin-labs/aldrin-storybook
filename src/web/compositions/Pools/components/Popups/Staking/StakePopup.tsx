@@ -24,6 +24,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import dayjs from 'dayjs'
+import { estimatedTime } from '@core/utils/dateUtils'
 
 export const StakePopup = ({
   theme,
@@ -109,7 +110,7 @@ export const StakePopup = ({
           <Text style={{ margin: '0 0 1.5rem 0' }}>
             Pool tokens will be locked for{' '}
             <span style={{ color: '#A5E898' }}>
-              {farmingState.periodLength / dayDuration} days.
+              {estimatedTime(farmingState.periodLength)}.
             </span>{' '}
           </Text>
           <Text>

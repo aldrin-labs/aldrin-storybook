@@ -35,6 +35,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SvgIcon } from '@sb/components'
 import Info from '@icons/TooltipImg.svg'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
+import { estimatedTime } from '@core/utils/dateUtils'
 
 export const UserLiquidityDetails = ({
   theme,
@@ -136,9 +137,9 @@ export const UserLiquidityDetails = ({
           borderRight: `0.2rem solid #383B45`,
         }}
         justify="space-between"
-        width="60%"
+        width="55%"
       >
-        <Row align="flex-start" direction="column" width="40%">
+        <Row align="flex-start" direction="column" width="50%">
           <RowDataTdText
             theme={theme}
             color={theme.palette.grey.new}
@@ -213,7 +214,7 @@ export const UserLiquidityDetails = ({
         </Row>
 
         {hasLiquidity && (
-          <Row align="flex-start" direction="column" width="30%">
+          <Row align="flex-start" direction="column" width="25%">
             <RowDataTdText
               theme={theme}
               color={theme.palette.grey.new}
@@ -236,9 +237,10 @@ export const UserLiquidityDetails = ({
           </Row>
         )}
 
-        <Row direction="column" width="25%">
+        <Row direction="column" width="25%" style={{ paddingRight: '2rem' }}>
           <BlueButton
             theme={theme}
+            btnWidth={'100%'}
             style={{ marginBottom: hasLiquidity ? '1rem' : '0' }}
             onClick={() => {
               if (!wallet.connected) {
@@ -256,6 +258,7 @@ export const UserLiquidityDetails = ({
           {hasLiquidity && (
             <BlueButton
               theme={theme}
+              btnWidth={'100%'}
               onClick={() => {
                 if (!wallet.connected) {
                   wallet.connect()
@@ -273,8 +276,8 @@ export const UserLiquidityDetails = ({
           )}
         </Row>
       </Row>
-      <Row justify="space-between" width="40%" padding="0 0 0 4rem">
-        <Row align="flex-start" direction="column" width="60%">
+      <Row justify="space-between" width="45%" padding="0 1rem 0 2rem">
+        <Row align="flex-start" direction="column" width="45%">
           {hasStakedTokens && hasFarming ? (
             <RowDataTdText
               fontFamily={'Avenir Next Medium'}
@@ -359,7 +362,7 @@ export const UserLiquidityDetails = ({
         </Row>
 
         {hasFarming && (hasPoolTokens || hasTokensToClaim) && (
-          <Row direction="column" width="40%" align="flex-end">
+          <Row direction="column" width="55%" align="flex-end">
             <RowDataTdText
               theme={theme}
               fontFamily={'Avenir Next Medium'}
@@ -371,7 +374,7 @@ export const UserLiquidityDetails = ({
                     The founder has set up vesting. You will be able to claim
                     33% of your daily reward every day, the remaining 67% will
                     become available for withdrawal after{' '}
-                    {farmingState.vestingPeriod / dayDuration} days.
+                    {estimatedTime(farmingState.vestingPeriod)}.
                   </span>
                 }
               >
@@ -394,6 +397,8 @@ export const UserLiquidityDetails = ({
             </RowDataTdText>
             <GreenButton
               theme={theme}
+              btnWidth={'auto'}
+              padding={'0 2rem'}
               disabled={hasStakedTokens && !hasTokensToClaim}
               onClick={async () => {
                 if (hasTokensToClaim) {
