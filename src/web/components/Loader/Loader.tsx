@@ -7,12 +7,10 @@ import { Theme } from '@sb/types/materialUI'
 import DottedLoader from '@icons/dottedLoader.gif'
 
 export const Loader = ({
-  theme,
   width = '2.2rem',
   text = '',
   color = '#000',
 }: {
-  theme: Theme
   width?: string
   text?: string
   color?: string
@@ -20,16 +18,19 @@ export const Loader = ({
   return (
     <Row>
       <AnimatedImage width={width} height="auto" src={RinLogo} />
-      <Text
-        style={{ padding: '0 0 0 0.7rem' }}
-        fontSize={'1.3rem'}
-        fontFamily={'Avenir Next Light'}
-        color={color}
-        theme={theme}
-      >
-        {text}
-      </Text>
-      <img style={{ marginTop: '0.5rem' }} src={DottedLoader} width="4%" />
+      {text ? (
+        <Text
+          style={{ padding: '0 0 0 0.7rem' }}
+          fontSize={'1.3rem'}
+          fontFamily={'Avenir Next Light'}
+          color={color}
+        >
+          {text}
+        </Text>
+      ) : null}
+      {text ? (
+        <img style={{ marginTop: '0.5rem' }} src={DottedLoader} width="4%" />
+      ) : null}
     </Row>
   )
 }
