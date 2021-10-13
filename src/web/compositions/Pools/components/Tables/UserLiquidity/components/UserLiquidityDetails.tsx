@@ -440,8 +440,7 @@ export const UserLiquidityDetails = ({
               </RowDataTdText>
               <Button
                 theme={theme}
-                btnWidth={'auto'}
-                padding={'0 2rem'}
+                btnWidth={'14rem'}
                 color={
                   hasStakedTokens || hasTokensToClaim
                     ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
@@ -452,35 +451,47 @@ export const UserLiquidityDetails = ({
                   isPoolWaitingForUpdateAfterClaim
                 }
                 onClick={async () => {
-                  // add loader
-                  await withdrawFarmed({
-                    wallet,
-                    connection,
-                    pool,
-                    allTokensDataMap,
-                    farmingTickets,
-                  })
-
                   await setPoolWaitingForUpdateAfterOperation({
                     pool: pool.swapToken,
                     operation: 'claim',
                   })
 
-                  await setTimeout(async () => {
-                    await refreshAllTokensData()
-                    await await setPoolWaitingForUpdateAfterOperation({
+                  try {
+                    const result = await withdrawFarmed({
+                      wallet,
+                      connection,
+                      pool,
+                      allTokensDataMap,
+                      farmingTickets,
+                    })
+
+                    if (result !== 'success') {
+                      setPoolWaitingForUpdateAfterOperation({
+                        pool: '',
+                        operation: '',
+                      })
+                    } else {
+                      await setTimeout(async () => {
+                        await refreshAllTokensData()
+                        await setPoolWaitingForUpdateAfterOperation({
+                          pool: '',
+                          operation: '',
+                        })
+                      }, 7500)
+
+                      await setTimeout(() => refreshAllTokensData(), 15000)
+                    }
+                  } catch (e) {
+                    setPoolWaitingForUpdateAfterOperation({
                       pool: '',
                       operation: '',
                     })
-                  }, 7500)
-                  await setTimeout(() => refreshAllTokensData(), 15000)
+
+                    return
+                  }
                 }}
               >
-                {isPoolWaitingForUpdateAfterClaim ? (
-                  <Loading />
-                ) : (
-                  'Claim reward'
-                )}
+                {isPoolWaitingForUpdateAfterClaim ? <Loader /> : 'Claim reward'}
               </Button>
             </Row>
           ) : hasPoolTokens ? (
@@ -496,7 +507,7 @@ export const UserLiquidityDetails = ({
                 }}
               >
                 {isPoolWaitingForUpdateAfterStake ? (
-                  <Loading />
+                  <Loader />
                 ) : (
                   'Stake Pool Token'
                 )}
