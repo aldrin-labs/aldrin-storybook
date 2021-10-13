@@ -163,7 +163,7 @@ export const UserLiquidityDetails = ({
                   stripDigitPlaces(quoteUserTokenAmount, 8)
                 )}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
-                <WhiteText>$(</WhiteText>
+                <WhiteText>($</WhiteText>
                 <span>
                   {formatNumberToUSFormat(
                     stripDigitPlaces(userLiquidityUSD, 2)
@@ -184,11 +184,19 @@ export const UserLiquidityDetails = ({
                 fontFamily="Avenir Next Medium"
                 theme={theme}
               >
-                {earnedFeesInPoolForUser.totalBaseTokenFee}{' '}
+                {formatNumberToUSFormat(
+                  stripDigitPlaces(earnedFeesInPoolForUser.totalBaseTokenFee, 8)
+                )}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText>{' '}
-                / {earnedFeesInPoolForUser.totalQuoteTokenFee}{' '}
+                /{' '}
+                {formatNumberToUSFormat(
+                  stripDigitPlaces(
+                    earnedFeesInPoolForUser.totalQuoteTokenFee,
+                    8
+                  )
+                )}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
-                <WhiteText>$(</WhiteText>
+                <WhiteText>($</WhiteText>
                 {formatNumberToUSFormat(stripDigitPlaces(earnedFeesUSD, 2))}
                 <WhiteText>)</WhiteText>
               </RowDataTdText>
@@ -376,8 +384,11 @@ export const UserLiquidityDetails = ({
                   />
                 </div>
               </DarkTooltip>
+              Available to claim:
               <AmountText style={{ padding: '0 0.5rem' }}>
-                {availableToClaimFarmingTokens}
+                {formatNumberToUSFormat(
+                  stripDigitPlaces(availableToClaimFarmingTokens, 2)
+                )}
               </AmountText>{' '}
               {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
             </RowDataTdText>

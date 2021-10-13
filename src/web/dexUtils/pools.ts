@@ -1074,6 +1074,8 @@ export const calculateWithdrawAmount = ({
     tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB },
   } = selectedPool
 
+  if (supply === 0) return [0, 0]
+
   const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
   const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
 

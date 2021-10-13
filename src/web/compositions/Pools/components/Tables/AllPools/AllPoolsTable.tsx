@@ -82,13 +82,25 @@ const AllPoolsTableComponent = ({
     new Map()
   )
 
-  const dailyTradingVolumesMap = getDailyTradingVolumeForAllPoolsQuery.getTradingVolumeForAllPools.reduce(
+  const {
+    getTradingVolumeForAllPools: getDailyTradingVolumeForAllPools = [],
+  } = getDailyTradingVolumeForAllPoolsQuery || {
+    getTradingVolumeForAllPools: [],
+  }
+
+  const dailyTradingVolumesMap = getDailyTradingVolumeForAllPools.reduce(
     (acc, tradingVolume) =>
       acc.set(tradingVolume.pool, tradingVolume.tradingVolume),
     new Map()
   )
 
-  const tradingVolumesMap = getWeeklyTradingVolumeForAllPoolsQuery.getTradingVolumeForAllPools.reduce(
+  const {
+    getTradingVolumeForAllPools: getWeeklyTradingVolumeForAllPools = [],
+  } = getWeeklyTradingVolumeForAllPoolsQuery || {
+    getTradingVolumeForAllPools: [],
+  }
+
+  const tradingVolumesMap = getWeeklyTradingVolumeForAllPools.reduce(
     (acc, weeklyTradingVolume) => {
       const dailyVolume =
         dailyTradingVolumesMap.get(weeklyTradingVolume.pool) || 0
@@ -100,7 +112,7 @@ const AllPoolsTableComponent = ({
     },
     new Map()
   )
-  
+
   const allPoolsData = combineAllPoolsData({
     theme,
     wallet,

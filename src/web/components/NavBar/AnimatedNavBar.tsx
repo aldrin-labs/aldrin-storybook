@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import styled from 'styled-components'
 
-import { NavBar } from './NavBar'
 import CardsPanel  from '@sb/compositions/Chart/components/CardsPanel'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 import { withTheme } from '@material-ui/core'

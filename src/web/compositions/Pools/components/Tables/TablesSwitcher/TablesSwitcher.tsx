@@ -162,6 +162,7 @@ const TablesSwitcher = ({
                 getUserPoolsFromAll({
                   poolsInfo: getPoolsInfo,
                   allTokensDataMap,
+                  farmingTicketsMap,
                 }).length
               }
               )

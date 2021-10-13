@@ -100,7 +100,7 @@ const SwapsPage = ({
   // )
 
   // const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
-  const selectedTokens = mock.find(
+  const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
@@ -522,7 +522,7 @@ const SwapsPage = ({
       />
 
       <SelectCoinPopup
-        poolsInfo={getPoolsInfo}
+        poolsInfo={getPoolsInfoQuery.getPoolsInfo}
         theme={theme}
         // mints={swapTokens}
         mints={[...new Set(mints)]}
