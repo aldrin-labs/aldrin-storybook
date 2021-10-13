@@ -186,6 +186,7 @@ export async function createBasket({
         connection,
         transaction: commonTransaction,
         signers: commonSigners,
+        focusPopup: true,
       })
 
       if (tx) {

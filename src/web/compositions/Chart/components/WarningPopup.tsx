@@ -44,7 +44,12 @@ export const BlueButton = styled(
     textTransform = 'capitalize',
     ...props
   }) => (
-    <BtnCustom disabled={disabled} textTransform={textTransform} {...props}>
+    <BtnCustom
+      disabled={disabled}
+      textTransform={textTransform}
+      fontFamily={'Avenir Next'}
+      {...props}
+    >
       {showLoader ? (
         <Loading
           color={'#fff'}
@@ -59,16 +64,24 @@ export const BlueButton = styled(
 )`
   font-size: 1.4rem;
   height: 4.5rem;
+  border-radius: 1rem;
+  border: none;
+
   background-color: ${(props: { disabled: boolean; theme: Theme }) =>
     !props.disabled
       ? props.theme.palette.blue.serum
       : props.theme.palette.grey.title};
-  border-radius: 1rem;
-  border-color: none;
-  cursor: pointer;
   color: ${(props: { disabled: boolean }) =>
     !props.disabled ? '#f8faff' : '#fff'};
-  border: none;
+
+  &:hover {
+    background-color: ${(props: { disabled: boolean; theme: Theme }) =>
+      !props.disabled
+        ? props.theme.palette.blue.serum
+        : props.theme.palette.grey.title};
+    color: ${(props: { disabled: boolean }) =>
+      !props.disabled ? '#f8faff' : '#fff'};
+  }
 `
 
 export const WarningPopup = ({
