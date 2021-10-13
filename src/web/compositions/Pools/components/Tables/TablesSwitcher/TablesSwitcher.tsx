@@ -16,6 +16,7 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
@@ -62,6 +63,16 @@ const TablesSwitcher = ({
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
+
+  // after operation with pool we update data after some time
+  // and for better ux we need to show loader for button which was use for this operation
+  const [
+    poolWaitingForUpdateAfterOperation,
+    setPoolWaitingForUpdateAfterOperation,
+  ] = useState<PoolWithOperation>({
+    operation: '',
+    pool: '',
+  })
 
   const [
     refreshAllTokensDataCounter,
@@ -185,6 +196,9 @@ const TablesSwitcher = ({
           <AllPoolsTable
             theme={theme}
             searchValue={searchValue}
+            poolWaitingForUpdateAfterOperation={
+              poolWaitingForUpdateAfterOperation
+            }
             poolsInfo={getPoolsInfo}
             allTokensDataMap={allTokensDataMap}
             dexTokensPricesMap={dexTokensPricesMap}
@@ -192,6 +206,9 @@ const TablesSwitcher = ({
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
             refreshAllTokensData={refreshAllTokensData}
+            setPoolWaitingForUpdateAfterOperation={
+              setPoolWaitingForUpdateAfterOperation
+            }
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
             setIsStakePopupOpen={setIsStakePopupOpen}
@@ -202,12 +219,18 @@ const TablesSwitcher = ({
             theme={theme}
             searchValue={searchValue}
             poolsInfo={getPoolsInfo}
+            poolWaitingForUpdateAfterOperation={
+              poolWaitingForUpdateAfterOperation
+            }
             dexTokensPricesMap={dexTokensPricesMap}
             allTokensDataMap={allTokensDataMap}
             farmingTicketsMap={farmingTicketsMap}
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
             refreshAllTokensData={refreshAllTokensData}
+            setPoolWaitingForUpdateAfterOperation={
+              setPoolWaitingForUpdateAfterOperation
+            }
             setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
             setIsStakePopupOpen={setIsStakePopupOpen}
@@ -218,11 +241,14 @@ const TablesSwitcher = ({
         {selectedPool && isAddLiquidityPopupOpen && (
           <AddLiquidityPopup
             theme={theme}
+            open={isAddLiquidityPopupOpen}
             dexTokensPricesMap={dexTokensPricesMap}
             selectedPool={selectedPool}
             allTokensData={allTokensData}
+            setPoolWaitingForUpdateAfterOperation={
+              setPoolWaitingForUpdateAfterOperation
+            }
             close={() => setIsAddLiquidityPopupOpen(false)}
-            open={isAddLiquidityPopupOpen}
             refreshAllTokensData={refreshAllTokensData}
           />
         )}
@@ -236,6 +262,9 @@ const TablesSwitcher = ({
             close={() => setIsWithdrawalPopupOpen(false)}
             open={isWithdrawalPopupOpen}
             refreshAllTokensData={refreshAllTokensData}
+            setPoolWaitingForUpdateAfterOperation={
+              setPoolWaitingForUpdateAfterOperation
+            }
           />
         )}
 
@@ -243,10 +272,13 @@ const TablesSwitcher = ({
           <StakePopup
             theme={theme}
             open={isStakePopupOpen}
-            pool={selectedPool}
+            selectedPool={selectedPool}
             close={() => setIsStakePopupOpen(false)}
             allTokensData={allTokensData}
             refreshAllTokensData={refreshAllTokensData}
+            setPoolWaitingForUpdateAfterOperation={
+              setPoolWaitingForUpdateAfterOperation
+            }
           />
         )}
 
@@ -254,10 +286,13 @@ const TablesSwitcher = ({
           <UnstakePopup
             theme={theme}
             open={isUnstakePopupOpen}
-            pool={selectedPool}
+            selectedPool={selectedPool}
             close={() => setIsUnstakePopupOpen(false)}
             allTokensData={allTokensData}
             refreshAllTokensData={refreshAllTokensData}
+            setPoolWaitingForUpdateAfterOperation={
+              setPoolWaitingForUpdateAfterOperation
+            }
           />
         )}
       </BlockTemplate>

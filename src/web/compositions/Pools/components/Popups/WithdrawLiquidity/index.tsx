@@ -17,7 +17,11 @@ import {
 import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { PoolInfo, DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import {
+  PoolInfo,
+  DexTokensPrices,
+  PoolWithOperation,
+} from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -33,6 +37,7 @@ export const WithdrawalPopup = ({
   allTokensData,
   close,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
@@ -41,6 +46,7 @@ export const WithdrawalPopup = ({
   allTokensData: TokenInfo[]
   close: () => void
   refreshAllTokensData: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -208,6 +214,10 @@ export const WithdrawalPopup = ({
             })
 
             await setOperationLoading(false)
+            await setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'withdraw',
+            })
 
             await notify({
               type: result === 'success' ? 'success' : 'error',
@@ -219,7 +229,13 @@ export const WithdrawalPopup = ({
                   : 'Withdrawal cancelled',
             })
 
-            await setTimeout(() => refreshAllTokensData(), 7500)
+            await setTimeout(async () => {
+              await refreshAllTokensData()
+              await setPoolWaitingForUpdateAfterOperation({
+                pool: '',
+                operation: '',
+              })
+            }, 7500)
             await setTimeout(() => refreshAllTokensData(), 15000)
 
             await close()

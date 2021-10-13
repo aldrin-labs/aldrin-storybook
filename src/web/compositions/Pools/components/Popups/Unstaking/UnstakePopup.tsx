@@ -7,12 +7,11 @@ import { BoldHeader, StyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
 import SvgIcon from '@sb/components/SvgIcon'
-
 import Close from '@icons/closeIcon.svg'
 
 import { Button } from '../../Tables/index.styles'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
 
 import { endFarming } from '@sb/dexUtils/pools/endFarming'
 import { PublicKey } from '@solana/web3.js'
@@ -24,16 +23,18 @@ export const UnstakePopup = ({
   theme,
   open,
   allTokensData,
-  pool,
+  selectedPool,
   close,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
   allTokensData: any
-  pool: PoolInfo
+  selectedPool: PoolInfo
   close: () => void
   refreshAllTokensData: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -44,9 +45,9 @@ export const UnstakePopup = ({
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
     decimals: poolTokenDecimals,
-  } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
+  } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
 
-  const farmingState = pool.farming[0]
+  const farmingState = selectedPool.farming[0]
   if (!farmingState) return null
 
   return (
@@ -84,7 +85,7 @@ export const UnstakePopup = ({
             const result = await endFarming({
               wallet,
               connection,
-              poolPublicKey: new PublicKey(pool.swapToken),
+              poolPublicKey: new PublicKey(selectedPool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               farmingStatePublicKey: new PublicKey(farmingState.farmingState),
               snapshotQueuePublicKey: new PublicKey(
@@ -93,6 +94,10 @@ export const UnstakePopup = ({
             })
 
             await setOperationLoading(false)
+            await setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'unstake',
+            })
 
             await notify({
               type: result === 'success' ? 'success' : 'error',
@@ -104,7 +109,13 @@ export const UnstakePopup = ({
                   : 'Unstaking cancelled.',
             })
 
-            await setTimeout(() => refreshAllTokensData(), 7500)
+            await setTimeout(async () => {
+              await refreshAllTokensData()
+              await setPoolWaitingForUpdateAfterOperation({
+                pool: '',
+                operation: '',
+              })
+            }, 7500)
             await setTimeout(() => refreshAllTokensData(), 15000)
 
             await close()

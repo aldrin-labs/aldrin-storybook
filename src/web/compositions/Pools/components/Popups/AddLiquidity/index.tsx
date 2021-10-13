@@ -16,7 +16,11 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PublicKey } from '@solana/web3.js'
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import {
+  DexTokensPrices,
+  PoolInfo,
+  PoolWithOperation,
+} from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import {
   formatNumberToUSFormat,
@@ -39,6 +43,7 @@ export const AddLiquidityPopup = ({
   allTokensData,
   close,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
@@ -47,6 +52,7 @@ export const AddLiquidityPopup = ({
   allTokensData: TokenInfo[]
   close: () => void
   refreshAllTokensData: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -424,7 +430,10 @@ export const AddLiquidityPopup = ({
             })
 
             // start button loader
-
+            await setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'deposit',
+            })
             await setOperationLoading(false)
 
             await notify({
@@ -437,7 +446,13 @@ export const AddLiquidityPopup = ({
                   : 'Deposit cancelled',
             })
 
-            await setTimeout(() => refreshAllTokensData(), 7500)
+            await setTimeout(async () => {
+              await refreshAllTokensData()
+              await setPoolWaitingForUpdateAfterOperation({
+                pool: '',
+                operation: '',
+              })
+            }, 7500)
             // end button loader
 
             await setTimeout(() => refreshAllTokensData(), 15000)

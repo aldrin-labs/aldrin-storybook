@@ -41,3 +41,8 @@ export type TradingVolume = {
   pool: string;
   tradingVolume: number;
 }
+
+export type PoolWithOperation = {
+  pool: string;
+  operation: 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'claim' | '';
+}

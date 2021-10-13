@@ -12,6 +12,7 @@ import {
   PoolInfo,
   DexTokensPrices,
   FeesEarned,
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenIconsContainer } from '../components'
@@ -116,12 +117,14 @@ export const combineUserLiquidityData = ({
   searchValue,
   usersPools,
   expandedRows,
+  poolWaitingForUpdateAfterOperation,
   allTokensDataMap,
   dexTokensPricesMap,
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
@@ -132,11 +135,13 @@ export const combineUserLiquidityData = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: PoolInfo[]
   expandedRows: string[]
+  poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensDataMap: Map<string, TokenInfo>
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
@@ -228,12 +233,12 @@ export const combineUserLiquidityData = ({
               <RowDataTdTopText theme={theme}>
                 ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
               </RowDataTdTopText>
-              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+              {/* <RowDataTdText theme={theme} color={theme.palette.grey.new}>
                 {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
                 {getTokenNameByMintAddress(el.tokenA)} /{' '}
                 {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
                 {getTokenNameByMintAddress(el.tokenB)}
-              </RowDataTdText>
+              </RowDataTdText> */}
             </TextColumnContainer>
           ),
           showOnMobile: false,
@@ -360,11 +365,17 @@ export const combineUserLiquidityData = ({
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
                   refreshAllTokensData={refreshAllTokensData}
+                  setPoolWaitingForUpdateAfterOperation={
+                    setPoolWaitingForUpdateAfterOperation
+                  }
                   selectPool={selectPool}
                   farmingTicketsMap={farmingTicketsMap}
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
                   dexTokensPricesMap={dexTokensPricesMap}
                   allTokensDataMap={allTokensDataMap}
+                  poolWaitingForUpdateAfterOperation={
+                    poolWaitingForUpdateAfterOperation
+                  }
                   theme={theme}
                   pool={el}
                 />

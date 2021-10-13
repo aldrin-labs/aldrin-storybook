@@ -10,6 +10,7 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
@@ -123,6 +124,7 @@ export const combineAllPoolsData = ({
   wallet,
   poolsInfo,
   searchValue,
+  poolWaitingForUpdateAfterOperation,
   dexTokensPricesMap,
   feesPerPoolMap,
   expandedRows,
@@ -132,6 +134,7 @@ export const combineAllPoolsData = ({
   earnedFeesInPoolForUserMap,
   selectPool,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
   setIsStakePopupOpen,
@@ -141,6 +144,7 @@ export const combineAllPoolsData = ({
   wallet: WalletAdapter
   poolsInfo: PoolInfo[]
   searchValue: string
+  poolWaitingForUpdateAfterOperation: PoolWithOperation
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: Map<string, FeesEarned>
   expandedRows: string[]
@@ -150,6 +154,7 @@ export const combineAllPoolsData = ({
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
@@ -241,12 +246,12 @@ export const combineAllPoolsData = ({
               <RowDataTdTopText theme={theme}>
                 ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
               </RowDataTdTopText>
-              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+              {/* <RowDataTdText theme={theme} color={theme.palette.grey.new}>
                 {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
                 {getTokenNameByMintAddress(el.tokenA)} /{' '}
                 {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
                 {getTokenNameByMintAddress(el.tokenB)}
-              </RowDataTdText>
+              </RowDataTdText> */}
             </TextColumnContainer>
           ),
           showOnMobile: false,
@@ -366,8 +371,14 @@ export const combineAllPoolsData = ({
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
                   setIsStakePopupOpen={setIsStakePopupOpen}
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+                  setPoolWaitingForUpdateAfterOperation={
+                    setPoolWaitingForUpdateAfterOperation
+                  }
                   refreshAllTokensData={refreshAllTokensData}
                   selectPool={selectPool}
+                  poolWaitingForUpdateAfterOperation={
+                    poolWaitingForUpdateAfterOperation
+                  }
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
                   farmingTicketsMap={farmingTicketsMap}
                   dexTokensPricesMap={dexTokensPricesMap}

@@ -18,11 +18,10 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { startFarming } from '@sb/dexUtils/pools/startFarming'
 import { PublicKey } from '@solana/web3.js'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
-import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import dayjs from 'dayjs'
 import { estimatedTime } from '@core/utils/dateUtils'
 
@@ -30,22 +29,24 @@ export const StakePopup = ({
   theme,
   open,
   close,
-  pool,
+  selectedPool,
   allTokensData,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
   close: () => void
-  pool: PoolInfo
+  selectedPool: PoolInfo
   allTokensData: any
   refreshAllTokensData: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
     decimals: poolTokenDecimals,
-  } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
+  } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
   const [poolTokenAmount, setPoolTokenAmount] = useState(maxPoolTokenAmount)
   const [operationLoading, setOperationLoading] = useState(false)
 
@@ -53,7 +54,7 @@ export const StakePopup = ({
   const connection = useConnection()
 
   const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
-  const farmingState = pool.farming[0]
+  const farmingState = selectedPool.farming[0]
 
   if (!farmingState) return null
   return (
@@ -146,11 +147,15 @@ export const StakePopup = ({
               connection,
               poolTokenAmount: +poolTokenAmount,
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
-              poolPublicKey: new PublicKey(pool.swapToken),
+              poolPublicKey: new PublicKey(selectedPool.swapToken),
               farmingState: new PublicKey(farmingState.farmingState),
             })
 
             await setOperationLoading(false)
+            await setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'stake',
+            })
 
             await notify({
               type: result === 'success' ? 'success' : 'error',
@@ -162,7 +167,13 @@ export const StakePopup = ({
                   : 'Staking cancelled.',
             })
 
-            await setTimeout(() => refreshAllTokensData(), 7500)
+            await setTimeout(async () => {
+              await refreshAllTokensData()
+              await setPoolWaitingForUpdateAfterOperation({
+                pool: '',
+                operation: '',
+              })
+            }, 7500)
             await setTimeout(() => refreshAllTokensData(), 15000)
 
             await close()

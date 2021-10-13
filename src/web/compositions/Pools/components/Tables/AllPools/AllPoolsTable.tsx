@@ -11,6 +11,7 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
+  PoolWithOperation,
   TradingVolume,
 } from '@sb/compositions/Pools/index.types'
 import { compose } from 'recompose'
@@ -31,6 +32,7 @@ const AllPoolsTableComponent = ({
   searchValue,
   dexTokensPricesMap,
   poolsInfo,
+  poolWaitingForUpdateAfterOperation,
   getFeesEarnedByPoolQuery,
   getDailyTradingVolumeForAllPoolsQuery,
   getWeeklyTradingVolumeForAllPoolsQuery,
@@ -39,6 +41,7 @@ const AllPoolsTableComponent = ({
   earnedFeesInPoolForUserMap,
   selectPool,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
   setIsStakePopupOpen,
@@ -47,6 +50,7 @@ const AllPoolsTableComponent = ({
   theme: Theme
   searchValue: string
   poolsInfo: PoolInfo[]
+  poolWaitingForUpdateAfterOperation: PoolWithOperation
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
   getDailyTradingVolumeForAllPoolsQuery: {
     getTradingVolumeForAllPools: TradingVolume[]
@@ -60,6 +64,7 @@ const AllPoolsTableComponent = ({
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
@@ -117,6 +122,7 @@ const AllPoolsTableComponent = ({
     theme,
     wallet,
     poolsInfo,
+    poolWaitingForUpdateAfterOperation,
     searchValue,
     dexTokensPricesMap,
     feesPerPoolMap,
@@ -127,6 +133,7 @@ const AllPoolsTableComponent = ({
     earnedFeesInPoolForUserMap,
     selectPool,
     refreshAllTokensData,
+    setPoolWaitingForUpdateAfterOperation,
     setIsAddLiquidityPopupOpen,
     setIsWithdrawalPopupOpen,
     setIsStakePopupOpen,
