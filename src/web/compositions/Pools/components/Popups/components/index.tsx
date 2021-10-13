@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -12,6 +12,11 @@ import { Theme } from '@material-ui/core'
 import { BlueText } from './index.styles'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+
+import {
+  getNumberOfIntegersFromNumber,
+  getNumberOfDecimalsFromNumber,
+} from '@core/utils/chartPageUtils'
 
 export const InputWithCoins = ({
   theme,
@@ -42,7 +47,16 @@ export const InputWithCoins = ({
         <InvisibleInput
           type={'number'}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            if (
+              getNumberOfIntegersFromNumber(e.target.value) === 8 ||
+              getNumberOfDecimalsFromNumber(e.target.value) === 8
+            ) {
+              onChange(value)
+            } else {
+              onChange(e.target.value)
+            }
+          }}
           placeholder={placeholder}
         />
       </TokenContainer>
@@ -102,17 +116,17 @@ export const InputWithTotal = ({
   value: number
 }) => {
   return (
-    <Row style={{ position: 'relative' }} padding={'2rem 0'} width={'100%'}>
+    <Row style={{ position: 'relative' }} padding={'1rem 0'} width={'100%'}>
       <StyledInput />
-      <TokenContainer left={'2rem'} top={'3rem'}>
+      <TokenContainer left={'2rem'} top={'2rem'}>
         <Text color={theme.palette.grey.title}>Total</Text>
       </TokenContainer>
-      <TokenContainer left={'2rem'} bottom={'3rem'}>
+      <TokenContainer left={'2rem'} bottom={'2rem'}>
         <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
           {formatNumberToUSFormat(stripDigitPlaces(value, 2))}
         </Text>
       </TokenContainer>
-      <TokenContainer right={'2rem'} bottom={'3rem'}>
+      <TokenContainer right={'2rem'} bottom={'2rem'}>
         <Row>
           <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
             USD
