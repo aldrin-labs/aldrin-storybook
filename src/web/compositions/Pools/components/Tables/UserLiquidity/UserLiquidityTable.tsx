@@ -53,7 +53,7 @@ const UserLiquidityTableComponent = ({
     expandRows(onCheckBoxClick(expandedRows, id))
   }
 
-  const usersPools = getUserPoolsFromAll({ poolsInfo, allTokensDataMap })
+  const usersPools = getUserPoolsFromAll({ poolsInfo, allTokensDataMap, farmingTicketsMap })
 
   const userLiquidityData = combineUserLiquidityData({
     theme,

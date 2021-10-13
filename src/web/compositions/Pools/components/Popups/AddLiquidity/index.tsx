@@ -62,8 +62,11 @@ export const AddLiquidityPopup = ({
       +baseAmount * (poolAmountTokenB / poolAmountTokenA),
       8
     )
+
     setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
+    if (poolAmountTokenA !== 0 && poolAmountTokenB !== 0) {
+      setQuoteAmount(quoteAmount)
+    }
   }
 
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
@@ -72,7 +75,10 @@ export const AddLiquidityPopup = ({
       +quoteAmount * (poolAmountTokenA / poolAmountTokenB),
       8
     )
-    setBaseAmount(baseAmount)
+
+    if (poolAmountTokenA !== 0 && poolAmountTokenB !== 0) {
+      setBaseAmount(baseAmount)
+    }    
     setQuoteAmount(quoteAmount)
   }
 
