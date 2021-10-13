@@ -93,6 +93,7 @@ export const TokenIconContainer = styled.div`
 `
 
 export const SearchInput = styled.input`
+font-size: 1.7rem;
   color: #f2fbfb;
   background: #383b45;
   border: 0.1rem solid #3a475c;
@@ -102,9 +103,11 @@ export const SearchInput = styled.input`
   width: ${(props) => props.width || '100%'};
   padding: 0 2rem;
   outline: none;
+
   &::placeholder {
     font-size: 1.7rem;
     font-family: 'Avenir Next Thin';
+    color: #93A0B2;
   }
 `
 export const GreenButton = styled(

@@ -30,12 +30,12 @@ export const SearchInputWithLoop = ({
         }}
         placeholder={placeholder}
       />
-      {/* <SvgIcon
+      <SvgIcon
         src={Loop}
         height={'1.6rem'}
         width={'1.6rem'}
         style={{ position: 'absolute', right: '2rem', cursor: 'pointer' }}
-      /> */}
+      />
     </Row>
   )
 }

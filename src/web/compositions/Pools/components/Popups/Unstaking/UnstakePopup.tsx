@@ -104,7 +104,9 @@ export const UnstakePopup = ({
                   : 'Unstaking cancelled.',
             })
 
-            await setTimeout(() => refreshAllTokensData(), 10000)
+            await setTimeout(() => refreshAllTokensData(), 7500)
+            await setTimeout(() => refreshAllTokensData(), 15000)
+
 
             await close()
           }}

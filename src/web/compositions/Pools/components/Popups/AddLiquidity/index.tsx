@@ -400,6 +400,8 @@ export const AddLiquidityPopup = ({
               transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
             })
 
+            // start button loader
+
             await setOperationLoading(false)
 
             await notify({
@@ -413,6 +415,9 @@ export const AddLiquidityPopup = ({
             })
 
             await setTimeout(() => refreshAllTokensData(), 7500)
+            // end button loader
+            
+            await setTimeout(() => refreshAllTokensData(), 15000)
 
             await close()
           }}

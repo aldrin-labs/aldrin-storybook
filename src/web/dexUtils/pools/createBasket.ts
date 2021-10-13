@@ -83,6 +83,11 @@ export async function createBasket({
 
   poolTokenAmount *= 0.99
 
+  // first deposit
+  if (supply === 0) {
+    poolTokenAmount = 1 * (10 ** 8)
+  }
+
   const transactionBeforeDeposit = new Transaction()
   const commonSigners = []
 

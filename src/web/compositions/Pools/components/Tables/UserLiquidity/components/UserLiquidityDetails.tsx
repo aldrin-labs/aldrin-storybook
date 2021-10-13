@@ -139,7 +139,7 @@ export const UserLiquidityDetails = ({
         justify="space-between"
         width="55%"
       >
-        <Row align="flex-start" direction="column" width="50%">
+        <Row align="flex-start" direction="column" width="45%">
           <RowDataTdText
             theme={theme}
             color={theme.palette.grey.new}
@@ -214,7 +214,7 @@ export const UserLiquidityDetails = ({
         </Row>
 
         {hasLiquidity && (
-          <Row align="flex-start" direction="column" width="25%">
+          <Row align="flex-start" direction="column" width="30%">
             <RowDataTdText
               theme={theme}
               color={theme.palette.grey.new}
