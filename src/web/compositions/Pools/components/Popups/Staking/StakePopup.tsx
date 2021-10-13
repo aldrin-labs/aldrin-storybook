@@ -163,6 +163,7 @@ export const StakePopup = ({
             })
 
             await setTimeout(() => refreshAllTokensData(), 7500)
+            await setTimeout(() => refreshAllTokensData(), 15000)
 
             await close()
           }}
