@@ -10,7 +10,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
 
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
+import { Button } from '../../Tables/index.styles'
 import { InputWithCoins } from '../components'
 import { HintContainer } from './styles'
 import { ExclamationMark } from '@sb/compositions/Chart/components/MarketBlock/MarketBlock.styles'
@@ -132,7 +132,7 @@ export const StakePopup = ({
         </RowContainer>
       )}
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
-        <BlueButton
+        <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isNotEnoughPoolTokens || !poolTokenAmount}
           isUserConfident={true}
@@ -169,7 +169,7 @@ export const StakePopup = ({
           }}
         >
           Stake
-        </BlueButton>
+        </Button>
       </RowContainer>
     </DialogWrapper>
   )

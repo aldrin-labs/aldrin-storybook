@@ -9,7 +9,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { SimpleInput, InputWithTotal } from '../components'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
+import { Button } from '../../Tables/index.styles'
 import {
   calculateWithdrawAmount,
   withdrawAllTokenTypes,
@@ -167,7 +167,7 @@ export const WithdrawalPopup = ({
       </RowContainer>
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
-        <BlueButton
+        <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident={true}
@@ -226,7 +226,7 @@ export const WithdrawalPopup = ({
           }}
         >
           Withdraw
-        </BlueButton>
+        </Button>
       </RowContainer>
     </DialogWrapper>
   )

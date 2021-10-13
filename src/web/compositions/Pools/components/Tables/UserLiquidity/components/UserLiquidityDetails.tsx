@@ -5,7 +5,7 @@ import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import {
   AmountText,
-  GreenButton,
+  Button,
   RowDataTdText,
   WhiteText,
 } from '../../index.styles'
@@ -36,6 +36,10 @@ import { SvgIcon } from '@sb/components'
 import Info from '@icons/TooltipImg.svg'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { estimatedTime } from '@core/utils/dateUtils'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
 
 export const UserLiquidityDetails = ({
   theme,
@@ -155,14 +159,9 @@ export const UserLiquidityDetails = ({
                 fontFamily="Avenir Next Medium"
                 theme={theme}
               >
-                {formatNumberToUSFormat(
-                  stripDigitPlaces(baseUserTokenAmount, 8)
-                )}{' '}
+                {stripByAmountAndFormat(baseUserTokenAmount)}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText>{' '}
-                /{' '}
-                {formatNumberToUSFormat(
-                  stripDigitPlaces(quoteUserTokenAmount, 8)
-                )}{' '}
+                / {stripByAmountAndFormat(quoteUserTokenAmount)}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
                 <WhiteText>($</WhiteText>
                 <span>
@@ -185,16 +184,13 @@ export const UserLiquidityDetails = ({
                 fontFamily="Avenir Next Medium"
                 theme={theme}
               >
-                {formatNumberToUSFormat(
-                  stripDigitPlaces(earnedFeesInPoolForUser.totalBaseTokenFee, 8)
+                {stripByAmountAndFormat(
+                  earnedFeesInPoolForUser.totalBaseTokenFee
                 )}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText>{' '}
                 /{' '}
-                {formatNumberToUSFormat(
-                  stripDigitPlaces(
-                    earnedFeesInPoolForUser.totalQuoteTokenFee,
-                    8
-                  )
+                {stripByAmountAndFormat(
+                  earnedFeesInPoolForUser.totalQuoteTokenFee
                 )}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
                 <WhiteText>($</WhiteText>
@@ -228,17 +224,15 @@ export const UserLiquidityDetails = ({
               theme={theme}
             >
               <WhiteText>Total:</WhiteText>{' '}
-              {formatNumberToUSFormat(
-                stripDigitPlaces(poolTokenAmount + stakedTokens, 2)
-              )}{' '}
+              {stripByAmountAndFormat(poolTokenAmount + stakedTokens)}{' '}
               <WhiteText>Staked:</WhiteText>{' '}
-              {formatNumberToUSFormat(stripDigitPlaces(stakedTokens, 2))}
+              {stripByAmountAndFormat(stakedTokens)}
             </RowDataTdText>
           </Row>
         )}
 
         <Row direction="column" width="25%" style={{ paddingRight: '2rem' }}>
-          <BlueButton
+          <Button
             theme={theme}
             btnWidth={'100%'}
             style={{ marginBottom: hasLiquidity ? '1rem' : '0' }}
@@ -253,10 +247,10 @@ export const UserLiquidityDetails = ({
             }}
           >
             {wallet.connected ? 'Deposit Liquidity' : 'Connect Wallet'}
-          </BlueButton>
+          </Button>
 
           {hasLiquidity && (
-            <BlueButton
+            <Button
               theme={theme}
               btnWidth={'100%'}
               onClick={() => {
@@ -272,7 +266,7 @@ export const UserLiquidityDetails = ({
               {!wallet.connected
                 ? 'Connect Wallet'
                 : 'Withdraw Liquidity + Fees'}
-            </BlueButton>
+            </Button>
           )}
         </Row>
       </Row>
@@ -285,7 +279,7 @@ export const UserLiquidityDetails = ({
             >
               Staked:{' '}
               <AmountText style={{ padding: '0 0.5rem' }}>
-                {formatNumberToUSFormat(stripDigitPlaces(stakedTokens, 2))}
+                {stripByAmountAndFormat(stakedTokens)}
               </AmountText>{' '}
               <span>
                 Pool Tokens
@@ -311,7 +305,8 @@ export const UserLiquidityDetails = ({
               <RowDataTdText>No farming available in this pool.</RowDataTdText>
             ) : hasStakedTokens || availableToClaimFarmingTokens > 0 ? (
               <RowContainer justify="space-between">
-                <GreenButton
+                <Button
+                  color="#651CE4"
                   onClick={() => {
                     if (!wallet.connected) {
                       wallet.connect()
@@ -325,8 +320,9 @@ export const UserLiquidityDetails = ({
                   style={{ width: '48%' }}
                 >
                   Stake Pool Tokens
-                </GreenButton>
-                <GreenButton
+                </Button>
+                <Button
+                  color={'#D44C32'}
                   theme={theme}
                   disabled={isUnstakeDisabled}
                   style={{ width: '48%' }}
@@ -340,7 +336,7 @@ export const UserLiquidityDetails = ({
                         .unix(unlockAvailableDate)
                         .format('MMM DD, YYYY')}`
                     : 'Unstake Pool Tokens'}
-                </GreenButton>
+                </Button>
               </RowContainer>
             ) : hasPoolTokens ? (
               <RowDataTdText>
@@ -389,16 +385,19 @@ export const UserLiquidityDetails = ({
               </DarkTooltip>
               Available to claim:
               <AmountText style={{ padding: '0 0.5rem' }}>
-                {formatNumberToUSFormat(
-                  stripDigitPlaces(availableToClaimFarmingTokens, 2)
-                )}
+                {stripByAmountAndFormat(availableToClaimFarmingTokens)}
               </AmountText>{' '}
               {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
             </RowDataTdText>
-            <GreenButton
+            <Button
               theme={theme}
               btnWidth={'auto'}
               padding={'0 2rem'}
+              color={
+                hasStakedTokens || hasTokensToClaim
+                  ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+                  : '#651CE4'
+              }
               disabled={hasStakedTokens && !hasTokensToClaim}
               onClick={async () => {
                 if (hasTokensToClaim) {
@@ -421,7 +420,7 @@ export const UserLiquidityDetails = ({
               {hasStakedTokens || hasTokensToClaim
                 ? 'Claim reward'
                 : 'Stake Pool Token'}
-            </GreenButton>
+            </Button>
           </Row>
         )}
       </Row>

@@ -11,7 +11,6 @@ import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { InputWithCoins, InputWithTotal } from '../components'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -30,6 +29,7 @@ import AttentionComponent from '@sb/components/AttentionBlock'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { createBasket } from '@sb/dexUtils/pools/createBasket'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Button } from '../../Tables/index.styles'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -371,7 +371,7 @@ export const AddLiquidityPopup = ({
             </WhiteText>
           </label>
         </Row>
-        <BlueButton
+        <Button
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident={true}
@@ -439,14 +439,14 @@ export const AddLiquidityPopup = ({
 
             await setTimeout(() => refreshAllTokensData(), 7500)
             // end button loader
-            
+
             await setTimeout(() => refreshAllTokensData(), 15000)
 
             await close()
           }}
         >
           Deposit liquidity
-        </BlueButton>
+        </Button>
       </RowContainer>
       <SelectSeveralAddressesPopup
         theme={theme}

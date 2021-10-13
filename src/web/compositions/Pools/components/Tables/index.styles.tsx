@@ -93,7 +93,7 @@ export const TokenIconContainer = styled.div`
 `
 
 export const SearchInput = styled.input`
-font-size: 1.7rem;
+  font-size: 1.7rem;
   color: #f2fbfb;
   background: #383b45;
   border: 0.1rem solid #3a475c;
@@ -107,10 +107,10 @@ font-size: 1.7rem;
   &::placeholder {
     font-size: 1.7rem;
     font-family: 'Avenir Next Thin';
-    color: #93A0B2;
+    color: #93a0b2;
   }
 `
-export const GreenButton = styled(
+export const Button = styled(
   ({
     disabled,
     showLoader,
@@ -135,17 +135,29 @@ export const GreenButton = styled(
   height: 4.5rem;
   border-radius: 1rem;
 
-  background-color: ${(props: { disabled: boolean; theme: Theme }) =>
-    !props.disabled ? '#A5E898' : props.theme.palette.grey.title};
+  background: ${(props: { disabled: boolean; theme: Theme; color: string }) =>
+    !props.disabled
+      ? props.color
+        ? props.color
+        : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+      : props.theme.palette.grey.title};
   color: ${(props: { disabled: boolean }) =>
-    !props.disabled ? '#17181A' : '#fff'};
+    !props.disabled ? '#F8FAFF' : '#fff'};
   border: none;
 
   &:hover {
-    background-color: ${(props: { disabled: boolean; theme: Theme }) =>
-      !props.disabled ? '#A5E898' : props.theme.palette.grey.title};
+    background-color: ${(props: {
+      disabled: boolean
+      theme: Theme
+      color: string
+    }) =>
+      !props.disabled
+        ? props.color
+          ? props.color
+          : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+        : props.theme.palette.grey.title};
     color: ${(props: { disabled: boolean }) =>
-      !props.disabled ? '#17181A' : '#fff'};
+      !props.disabled ? '#F8FAFF' : '#fff'};
   }
 `
 

@@ -10,7 +10,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
 
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
+import { Button } from '../../Tables/index.styles'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 
@@ -72,7 +72,7 @@ export const UnstakePopup = ({
       </RowContainer>
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
-        <BlueButton
+        <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={false}
           isUserConfident={true}
@@ -107,12 +107,11 @@ export const UnstakePopup = ({
             await setTimeout(() => refreshAllTokensData(), 7500)
             await setTimeout(() => refreshAllTokensData(), 15000)
 
-
             await close()
           }}
         >
           Untake
-        </BlueButton>
+        </Button>
       </RowContainer>
     </DialogWrapper>
   )
