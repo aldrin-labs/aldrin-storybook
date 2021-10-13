@@ -1,7 +1,6 @@
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { fiatPairs } from '@core/config/stableCoins'
 import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import search from '@icons/search.svg'
@@ -530,7 +529,6 @@ class SelectPairListComponent extends React.PureComponent<
 export default compose(
   withMarketUtilsHOC,
   withRouter,
-  withAuthStatus,
   withPublicKey,
   withTheme(),
   queryRendererHoc({

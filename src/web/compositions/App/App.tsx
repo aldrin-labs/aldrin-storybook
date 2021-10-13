@@ -13,7 +13,6 @@ import {
 } from '@material-ui/core/styles'
 //
 
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import CssBaseline from '@material-ui/core/CssBaseline'
 // import Footer from '@sb/components/Footer'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
@@ -22,7 +21,6 @@ import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { syncStorage } from '@storage'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
@@ -289,18 +287,9 @@ const Link = styled.a`
 
 export const App = compose(
   withRouter,
-  withAuthStatus,
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
-    fetchPolicy: 'cache-and-network',
-  }),
-  queryRendererHoc({
-    skip: (props: any) => {
-      return !props.authenticated
-    },
-    query: getThemeMode,
-    name: 'getThemeModeQuery',
     fetchPolicy: 'cache-and-network',
   })
 )(AppRaw)

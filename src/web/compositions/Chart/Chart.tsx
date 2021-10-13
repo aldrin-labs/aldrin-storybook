@@ -20,7 +20,6 @@ import { finishJoyride } from '@core/utils/joyride'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 
@@ -88,7 +87,6 @@ const ChartPageComponent: React.FC<ChartPageProps> = (props) => {
     },
     marketType,
     selectedPair,
-    authenticated,
     changeChartLayoutMutation,
     setCustomMarkets,
     getUserCustomMarketsQuery = { getUserCustomMarkets: [] },
@@ -276,7 +274,6 @@ const ChartPageComponent: React.FC<ChartPageProps> = (props) => {
         layout={layout}
         theme={theme}
         publicKey={publicKey}
-        authenticated={authenticated}
         marketType={marketType}
         currencyPair={selectedPair}
         maxLeverage={initialLeverage}
@@ -420,7 +417,6 @@ const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
 export default compose<ChartPageProps, any>(
   withMarketUtilsHOC,
   withErrorFallback,
-  withAuthStatus,
   withTheme(),
   withPublicKey,
   withRouter,
