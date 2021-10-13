@@ -17,13 +17,15 @@ export const SearchInputWithLoop = ({
   placeholder,
   onChangeSearch,
   searchValue,
+  width = '40rem',
 }: {
   placeholder: string
   onChangeSearch: (value: string) => void
   searchValue: string
+  width: string
 }) => {
   return (
-    <Row style={{ position: 'relative' }} width={'40rem'}>
+    <Row style={{ position: 'relative' }} width={width}>
       <SearchInput
         onChange={(e) => {
           onChangeSearch(e.target.value)

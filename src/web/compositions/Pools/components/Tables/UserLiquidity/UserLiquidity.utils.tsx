@@ -278,7 +278,7 @@ export const combineUserLiquidityData = ({
         apy: {
           render: (
             <RowDataTdText
-              color={'#A5E898'}
+              color={'#53DF11'}
               fontFamily="Avenir Next Medium"
               theme={theme}
             >
@@ -305,7 +305,7 @@ export const combineUserLiquidityData = ({
                   {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
                 </RowDataTdText>
                 <RowDataTdText>
-                  <span style={{ color: '#A5E898' }}>
+                  <span style={{ color: '#53DF11' }}>
                     {formatNumberToUSFormat(
                       stripDigitPlaces(
                         (farmingState.tokensPerPeriod *
@@ -316,7 +316,7 @@ export const combineUserLiquidityData = ({
                     )}
                   </span>{' '}
                   {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
-                  Day for each $<span style={{ color: '#A5E898' }}>1000</span>
+                  Day for each $<span style={{ color: '#53DF11' }}>1000</span>
                 </RowDataTdText>
               </Row>
             </RowContainer>

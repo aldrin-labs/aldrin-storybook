@@ -329,9 +329,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             <BtnCustom
               btnWidth={'auto'}
               height={'auto'}
-              btnColor={'#165BE0'}
+              btnColor={'#651CE4'}
               borderRadius={'1rem'}
-              color={'#165BE0'}
+              color={'#651CE4'}
               margin={'1.6rem 0 0 2rem'}
               padding={'.5rem 1rem .5rem 0'}
               fontSize={'1.4rem'}
@@ -489,8 +489,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <BtnCustom
                       btnWidth={'45%'}
                       borderRadius={'8px'}
-                      btnColor={'#165BE0'}
-                      borderColor={'#165BE0'}
+                      btnColor={'#651CE4'}
+                      borderColor={'#651CE4'}
                       padding={'1.5rem'}
                       height={'auto'}
                       borderWidth={'2px'}
@@ -605,8 +605,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                           <BtnCustom
                             btnWidth={'45%'}
                             borderRadius={'8px'}
-                            btnColor={'#165BE0'}
-                            borderColor={'#165BE0'}
+                            btnColor={'#651CE4'}
+                            borderColor={'#651CE4'}
                             padding={'1.5rem'}
                             height={'auto'}
                             borderWidth={'2px'}
@@ -694,7 +694,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 </Grid>
               ) : (
                 <div style={{ padding: '350px 0 0 0' }}>
-                  <Loading centerAligned={true} loaderColor={'#165BE0'} />
+                  <Loading centerAligned={true} loaderColor={'#651CE4'} />
                 </div>
               )}
 
@@ -713,7 +713,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   <BtnCustom
                     disabled={regularLoading}
                     borderRadius={'8px'}
-                    btnColor={'#165BE0'}
+                    btnColor={'#651CE4'}
                     fontSize="1.6rem"
                     padding="1rem"
                     height="auto"

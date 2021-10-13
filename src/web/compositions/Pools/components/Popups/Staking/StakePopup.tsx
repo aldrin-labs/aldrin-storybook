@@ -93,8 +93,8 @@ export const StakePopup = ({
       <RowContainer justify={'space-between'}>
         <Text>Est. rewards:</Text>
         <Text>
-          <span style={{ color: '#A5E898' }}>12</span> RIN/Day for each $
-          <span style={{ color: '#A5E898' }}>1000</span>
+          <span style={{ color: '#53DF11' }}>12</span> RIN/Day for each $
+          <span style={{ color: '#53DF11' }}>1000</span>
         </Text>
       </RowContainer>
       <HintContainer justify={'flex-start'} margin="2rem 0">
@@ -109,13 +109,13 @@ export const StakePopup = ({
         <Row width="80%" align="flex-start" direction="column">
           <Text style={{ margin: '0 0 1.5rem 0' }}>
             Pool tokens will be locked for{' '}
-            <span style={{ color: '#A5E898' }}>
+            <span style={{ color: '#53DF11' }}>
               {estimatedTime(farmingState.periodLength)}.
             </span>{' '}
           </Text>
           <Text>
             Withdrawal will not be available until{' '}
-            <span style={{ color: '#A5E898' }}>
+            <span style={{ color: '#53DF11' }}>
               {dayjs
                 .unix(Date.now() / 1000 + farmingState.periodLength)
                 .format('MMM DD, YYYY')}

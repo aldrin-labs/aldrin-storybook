@@ -7,16 +7,30 @@ import { withTheme, MenuList } from '@material-ui/core'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import SvgIcon from '@sb/components/SvgIcon'
-import { ReusableTitle as Title, Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import {
+  ReusableTitle as Title,
+  Row,
+  RowContainer,
+} from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Link, useLocation } from 'react-router-dom'
 import { CustomCard, PanelWrapper } from '../Chart.styles'
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
-import { RedButton, DropdownContainer, DropwodnItem, MenuDropdownLink } from './styles'
+import {
+  RedButton,
+  DropdownContainer,
+  DropwodnItem,
+  MenuDropdownLink,
+} from './styles'
 import { FeedbackPopup } from './UsersFeedbackPopup'
-import { StyledDropdown, StyledPaper, StyledMenuItem } from '../../../components/Dropdown/Dropdown.styles'
+import {
+  StyledDropdown,
+  StyledPaper,
+  StyledMenuItem,
+} from '../../../components/Dropdown/Dropdown.styles'
+import color from '@material-ui/core/colors/amber'
 
 const CARD_STYLE: React.CSSProperties = {
   // position: 'relative',
@@ -24,7 +38,7 @@ const CARD_STYLE: React.CSSProperties = {
   maxWidth: '100%',
   flexGrow: 1,
   border: '0',
-  overflow: 'visible'
+  overflow: 'visible',
 }
 
 const LOGO_LINK_STYLE: React.CSSProperties = {
@@ -37,8 +51,14 @@ const NAV_LINK_STYLE: React.CSSProperties = { width: '13rem' }
 
 const MENU_ITEM_STYLE: React.CSSProperties = { background: '#0E1016' }
 const DROPDOWN_STYLE: React.CSSProperties = { height: '5rem' }
-const PAPER_STYLE: React.CSSProperties = { marginTop: '-1rem', marginLeft: '-1rem' }
-const NAV_LINK_DROPDOWN_STYLE: React.CSSProperties = { width: '100%', margin: '0.5rem 1rem' }
+const PAPER_STYLE: React.CSSProperties = {
+  marginTop: '-1rem',
+  marginLeft: '-1rem',
+}
+const NAV_LINK_DROPDOWN_STYLE: React.CSSProperties = {
+  width: '100%',
+  margin: '0.5rem 1rem',
+}
 
 interface DropdownProps {
   theme: { [c: string]: any } // TODO
@@ -49,11 +69,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
   return (
     <DropdownContainer>
       <StyledDropdown style={DROPDOWN_STYLE} theme={theme}>
-        <DropwodnItem
-          theme={theme}
-        >
-          Trading
-        </DropwodnItem>
+        <DropwodnItem theme={theme}>Trading</DropwodnItem>
         <StyledPaper style={PAPER_STYLE} theme={theme}>
           <MenuList style={{ padding: 0 }}>
             <StyledMenuItem
@@ -66,10 +82,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
                 style={NAV_LINK_DROPDOWN_STYLE}
                 component={(props) => <Link to={`/chart`} {...props} />}
               >
-                <MenuDropdownLink>
-                  Terminal
-                </MenuDropdownLink>
-
+                <MenuDropdownLink>Terminal</MenuDropdownLink>
               </NavLinkButton>
             </StyledMenuItem>
             <StyledMenuItem
@@ -82,9 +95,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
                 style={NAV_LINK_DROPDOWN_STYLE}
                 component={(props) => <Link to={`/swaps`} {...props} />}
               >
-                <MenuDropdownLink>
-                  Swap
-                </MenuDropdownLink>
+                <MenuDropdownLink>Swap</MenuDropdownLink>
               </NavLinkButton>
             </StyledMenuItem>
           </MenuList>
@@ -106,14 +117,8 @@ export const CardsPanel = ({ theme }) => {
   return (
     <ChartGridContainer theme={theme}>
       <PanelWrapper>
-        <CustomCard
-          theme={theme}
-          style={CARD_STYLE}
-        >
-          <Link
-            to={'/'}
-            style={LOGO_LINK_STYLE}
-          >
+        <CustomCard theme={theme} style={CARD_STYLE}>
+          <Link to={'/'} style={LOGO_LINK_STYLE}>
             <img
               style={{
                 width: '100%',
@@ -277,6 +282,11 @@ const TopBar = ({ theme }) => {
             id={'navBar'}
             isNavBar={true}
             showOnTop={true}
+            buttonStyles={{
+              background: theme.palette.blue.serum,
+              color: '#fff',
+              fontSize: '1.4rem',
+            }}
           />
         </Row>
       )}
@@ -306,8 +316,8 @@ const TopBar = ({ theme }) => {
               ) : isSolongWallet ? (
                 'Solong Wallet'
               ) : (
-                          'Wallet'
-                        )}
+                'Wallet'
+              )}
             </Title>
             <Title
               fontFamily="Avenir Next"

@@ -155,7 +155,7 @@ export const UserLiquidityDetails = ({
           {hasLiquidity ? (
             <>
               <RowDataTdText
-                color={'#A5E898'}
+                color={'#53DF11'}
                 fontFamily="Avenir Next Medium"
                 theme={theme}
               >
@@ -180,7 +180,7 @@ export const UserLiquidityDetails = ({
                 Fees Earned:
               </RowDataTdText>
               <RowDataTdText
-                color={'#A5E898'}
+                color={'#53DF11'}
                 fontFamily="Avenir Next Medium"
                 theme={theme}
               >
@@ -200,7 +200,7 @@ export const UserLiquidityDetails = ({
             </>
           ) : (
             <RowDataTdText
-              color={'#A5E898'}
+              color={'#53DF11'}
               fontFamily="Avenir Next Medium"
               theme={theme}
             >
@@ -219,7 +219,7 @@ export const UserLiquidityDetails = ({
               Pool Tokens:
             </RowDataTdText>
             <RowDataTdText
-              color={'#A5E898'}
+              color={'#53DF11'}
               fontFamily="Avenir Next Medium"
               theme={theme}
             >

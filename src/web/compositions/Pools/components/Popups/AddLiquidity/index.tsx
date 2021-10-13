@@ -284,7 +284,7 @@ export const AddLiquidityPopup = ({
             </Text>
             <Text
               fontSize={'1.5rem'}
-              color={'#A5E898'}
+              color={'#53DF11'}
               fontFamily={'Avenir Next Demi'}
               style={{ marginLeft: '1rem' }}
             >
@@ -316,7 +316,7 @@ export const AddLiquidityPopup = ({
           <Row>
             <Text
               fontSize={'1.5rem'}
-              color={'#A5E898'}
+              color={'#53DF11'}
               fontFamily={'Avenir Next Demi'}
             >
               {stripDigitPlaces(selectedPool.apy24h, 6)}%

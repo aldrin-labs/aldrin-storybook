@@ -204,7 +204,7 @@ export const CreatePoolPopup = ({
         {baseTokenMintAddress && quoteTokenMintAddress && (
           <Text
             fontSize={'2rem'}
-            color={'#A5E898'}
+            color={'#53DF11'}
             fontFamily={'Avenir Next Demi'}
           >
             1 {baseSymbol} ={' '}

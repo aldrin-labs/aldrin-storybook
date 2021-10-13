@@ -332,7 +332,7 @@ const SwapsPage = ({
               <Text color={'#93A0B2'}>Price:</Text>
               <Text
                 fontSize={'1.5rem'}
-                color={'#A5E898'}
+                color={'#53DF11'}
                 fontFamily={'Avenir Next Demi'}
               >
                 1{' '}
@@ -480,7 +480,7 @@ const SwapsPage = ({
                   <Text
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
                     fontFamily={'Avenir Next Bold'}
-                    color={'#A5E898'}
+                    color={'#53DF11'}
                   >
                     {totalWithFees.toFixed(5)}{' '}
                   </Text>
@@ -493,7 +493,7 @@ const SwapsPage = ({
                   <Text
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
                     fontFamily={'Avenir Next Bold'}
-                    color={'#A5E898'}
+                    color={'#53DF11'}
                   >
                     {stripDigitPlaces(rawSlippage, 2)}%
                   </Text>

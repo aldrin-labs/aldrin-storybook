@@ -158,7 +158,7 @@ export const GotItButton = styled.button`
   width: 184px;
   height: 40px;
 
-  background: #366ce5;
+  background: #651CE4;
   border-radius: 8px;
 `
 

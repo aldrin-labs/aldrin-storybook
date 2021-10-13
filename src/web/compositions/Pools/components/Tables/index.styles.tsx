@@ -168,7 +168,7 @@ export const TableContainer = styled(RowContainer)`
 `
 
 export const AmountText = styled.span`
-  color: #a5e898;
+  color: #53DF11;
 `
 
 export const WhiteText = styled.span`

@@ -17,7 +17,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #366CE5;
+    background: #651CE4;
   }
 
   /* Chrome, Safari, Edge, Opera */

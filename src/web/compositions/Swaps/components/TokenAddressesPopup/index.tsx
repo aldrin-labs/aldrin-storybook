@@ -77,7 +77,7 @@ export const TokenAddressesPopup = ({
               })
             }}
             style={{ cursor: 'pointer' }}
-            color={'#366CE5'}
+            color={'#651CE4'}
           >
             Copy address
           </Text>
@@ -104,7 +104,7 @@ export const TokenAddressesPopup = ({
               })
             }}
             style={{ cursor: 'pointer' }}
-            color={'#366CE5'}
+            color={'#651CE4'}
           >
             Copy address
           </Text>

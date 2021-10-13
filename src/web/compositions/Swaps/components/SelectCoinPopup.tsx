@@ -147,6 +147,7 @@ export const SelectCoinPopup = ({
           searchValue={searchValue}
           onChangeSearch={onChangeSearch}
           placeholder={'Search'}
+          width="100%"
         />
       </RowContainer>
       <RowContainer>

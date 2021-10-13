@@ -58,7 +58,7 @@ export const Line = styled.div`
   content: '';
   width: ${(props) => props.width || '100%'};
   background-color: ${(props) =>
-    props.sideType === 'buy' ? '#a5e898' : '#F69894'};
+    props.sideType === 'buy' ? '#53DF11' : '#F69894'};
   margin: 0 0 0 0rem;
   height: 0.1rem;
 `
@@ -67,7 +67,7 @@ const Title = styled.span`
   font-size: 2rem;
   text-align: center;
   letter-spacing: -0.653846px;
-  color: ${(props) => (props.sideType === 'buy' ? '#a5e898' : '#F69894')};
+  color: ${(props) => (props.sideType === 'buy' ? '#53DF11' : '#F69894')};
   margin: 0 2rem;
 `
 export const WhiteButton = styled((props) => (
@@ -173,7 +173,7 @@ export const ConfirmationPopup = ({
           <RowContainer justify="space-between" margin="0 0 2rem 0">
             <WhiteText>Spread Percentage:</WhiteText>
             <WhiteText style={{ fontFamily: 'Avenir Next Demi' }}>
-              <span style={{ color: isSlippageHigh ? '#F2ABB1' : '#a5e898' }}>
+              <span style={{ color: isSlippageHigh ? '#F2ABB1' : '#53DF11' }}>
                 {spread.toFixed(2)}
               </span>
               %
@@ -223,7 +223,7 @@ export const ConfirmationPopup = ({
         <RowContainer justify="space-between" margin="2rem 0 0 0">
           <WhiteText>Est. Fee:</WhiteText>
           <WhiteText style={{ fontFamily: 'Avenir Next Demi' }}>
-            <span style={{ color: '#a5e898', fontFamily: 'Avenir Next Demi' }}>
+            <span style={{ color: '#53DF11', fontFamily: 'Avenir Next Demi' }}>
               ≈&nbsp;
               {needCreateOpenOrdersAccount
                 ? costsOfTheFirstTrade

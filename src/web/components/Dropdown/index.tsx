@@ -18,7 +18,7 @@ import styled from 'styled-components'
 
 import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 
-const WalletStatusButton = ({ wallet, connected, theme, id }) => (
+const WalletStatusButton = ({ wallet, connected, theme, id, buttonStyles }) => (
   <BtnCustom
     onClick={connected ? wallet?.disconnect : wallet?.connect}
     btnColor={theme.palette.blue.serum}
@@ -33,6 +33,7 @@ const WalletStatusButton = ({ wallet, connected, theme, id }) => (
       display: 'flex',
       textTransform: 'none',
       padding: '1rem',
+      ...buttonStyles,
     }}
   >
     {!connected ? 'Connect wallet' : 'Disconnect'}
@@ -53,7 +54,7 @@ const ConnectWalletButton = ({
     btnColor={'#F8FAFF'}
     backgroundColor={theme.palette.blue.serum}
     btnWidth={'100%'}
-    borderColor={theme.palette.blue.serum}
+    borderColor={'pink'}
     textTransform={'capitalize'}
     height={height}
     borderRadius=".6rem"
@@ -117,6 +118,7 @@ export default class Dropdown extends React.Component<IProps> {
               connected={connected}
               theme={theme}
               id={id}
+              buttonStyles={buttonStyles}
             />
           ) : (
             <ConnectWalletButton
