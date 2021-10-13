@@ -83,7 +83,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
                 component={(props) => <Link to={`/swaps`} {...props} />}
               >
                 <MenuDropdownLink>
-                  Swaps
+                  Swap
                 </MenuDropdownLink>
               </NavLinkButton>
             </StyledMenuItem>
@@ -157,35 +157,6 @@ export const CardsPanel = ({ theme }) => {
             }}
           >
             <Dropdown theme={theme} />
-            {/* <DropdownContainer>
-              <DropwodnItem
-                theme={theme}
-              >
-                Trading
-              </DropwodnItem>
-              <MenuDropdown className="menu">
-                <MenuDropdownInner>
-                  <NavLinkButton
-                    style={{ width: '100%' }}
-                    component={(props) => <Link to={`/chart`} {...props} />}
-                  >
-                    <MenuDropdownLink>
-                      Terminal
-                    </MenuDropdownLink>
-
-                  </NavLinkButton>
-                  <NavLinkButton
-                    style={{ width: '100%' }}
-                    component={(props) => <Link to={`/swaps`} {...props} />}
-                  >
-                    <MenuDropdownLink>
-                      Swaps
-                    </MenuDropdownLink>
-                  </NavLinkButton>
-                </MenuDropdownInner>
-              </MenuDropdown>
-            </DropdownContainer> */}
-
 
             {/* <NavLinkButton
               theme={theme}
