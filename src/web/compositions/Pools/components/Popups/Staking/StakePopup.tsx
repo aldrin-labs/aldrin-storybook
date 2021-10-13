@@ -41,22 +41,21 @@ export const StakePopup = ({
   allTokensData: any
   refreshAllTokensData: () => void
 }) => {
-  const [poolTokenAmount, setPoolTokenAmount] = useState('')
-  const [operationLoading, setOperationLoading] = useState(false)
-
-  const { wallet } = useWallet()
-  const connection = useConnection()
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
     decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
+  const [poolTokenAmount, setPoolTokenAmount] = useState(maxPoolTokenAmount)
+  const [operationLoading, setOperationLoading] = useState(false)
+
+  const { wallet } = useWallet()
+  const connection = useConnection()
 
   const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
   const farmingState = pool.farming[0]
 
   if (!farmingState) return null
-
   return (
     <DialogWrapper
       theme={theme}
@@ -65,7 +64,6 @@ export const StakePopup = ({
       onClose={close}
       onEnter={() => {
         setOperationLoading(false)
-        setPoolTokenAmount('')
       }}
       maxWidth={'md'}
       open={open}

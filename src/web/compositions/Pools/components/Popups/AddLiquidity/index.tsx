@@ -81,7 +81,7 @@ export const AddLiquidityPopup = ({
 
     if (poolAmountTokenA !== 0 && poolAmountTokenB !== 0) {
       setBaseAmount(baseAmount)
-    }    
+    }
     setQuoteAmount(quoteAmount)
   }
 
@@ -219,7 +219,9 @@ export const AddLiquidityPopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <Row justify={'space-between'} width={'100%'}>
-        <BoldHeader>Deposit Liquidity</BoldHeader>
+        <BoldHeader style={{ margin: '0 0 2rem 0' }}>
+          Deposit Liquidity
+        </BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </Row>
       <RowContainer>
@@ -267,24 +269,26 @@ export const AddLiquidityPopup = ({
           <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
             Total Value Locked:
           </Text>
-          <Text
-            fontSize={'1.5rem'}
-            color={'#A5E898'}
-            fontFamily={'Avenir Next Demi'}
-            style={{ marginBottom: '1rem' }}
-          >
-            ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
-          </Text>
-          <Text fontSize={'1.5rem'}>
-            {formatNumberToUSFormat(
-              stripDigitPlaces(selectedPool.tvl.tokenA, 2)
-            )}{' '}
-            {getTokenNameByMintAddress(selectedPool.tokenA)} /{' '}
-            {formatNumberToUSFormat(
-              stripDigitPlaces(selectedPool.tvl.tokenB, 2)
-            )}{' '}
-            {getTokenNameByMintAddress(selectedPool.tokenB)}
-          </Text>
+          <Row>
+            <Text fontSize={'1.5rem'}>
+              {formatNumberToUSFormat(
+                stripDigitPlaces(selectedPool.tvl.tokenA, 2)
+              )}{' '}
+              {getTokenNameByMintAddress(selectedPool.tokenA)} /{' '}
+              {formatNumberToUSFormat(
+                stripDigitPlaces(selectedPool.tvl.tokenB, 2)
+              )}{' '}
+              {getTokenNameByMintAddress(selectedPool.tokenB)}
+            </Text>
+            <Text
+              fontSize={'1.5rem'}
+              color={'#A5E898'}
+              fontFamily={'Avenir Next Demi'}
+              style={{ marginLeft: '1rem' }}
+            >
+              ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+            </Text>
+          </Row>
         </Row>
         <Row direction={'column'}>
           <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
@@ -320,7 +324,7 @@ export const AddLiquidityPopup = ({
           />
         </RowContainer>
       )}
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin={'2rem 0 0 0'}>
         <Row
           width={'60%'}
           justify="space-between"
