@@ -120,6 +120,7 @@ export const SelectCoinPopup = ({
         isPoolExist: availablePools.includes(mint),
       }
     })
+    .filter((token) => token.isTokenInPool)
     .sort((a, b) => b.amount - a.amount)
 
   return (
@@ -180,11 +181,7 @@ export const SelectCoinPopup = ({
                 <Row wrap={'nowrap'}>
                   <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
                   <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
-                  {!quoteTokenMintAddress && !baseTokenMintAddress ? (
-                    !isTokenInPool ? (
-                      <TokenLabel>No Pools available</TokenLabel>
-                    ) : null
-                  ) : !isPoolExist ? (
+                  {!isPoolExist ? (
                     <TokenLabel>Insufficient Liquidity</TokenLabel>
                   ) : null}
                 </Row>

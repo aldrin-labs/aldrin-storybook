@@ -5,6 +5,7 @@ import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
+import Info from '@icons/TooltipImg.svg'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -28,6 +29,7 @@ import { notify } from '@sb/dexUtils/notifications'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { createBasket } from '@sb/dexUtils/pools/createBasket'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -290,10 +292,27 @@ export const AddLiquidityPopup = ({
             </Text>
           </Row>
         </Row>
-        <Row direction={'column'}>
-          <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-            APY (24h)
-          </Text>
+        <Row direction={'column'} align="flex-end">
+          <Row wrap="nowrap" margin={'0 0 1rem 0'}>
+            <Text style={{ whiteSpace: 'nowrap' }} fontSize={'1.4rem'}>
+              APY (24h){' '}
+            </Text>{' '}
+            <DarkTooltip
+              title={
+                'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h not taking into account the reward for farming.'
+              }
+            >
+              <div>
+                <SvgIcon
+                  src={Info}
+                  width={'1.5rem'}
+                  height={'auto'}
+                  style={{ marginLeft: '1rem' }}
+                />
+              </div>
+            </DarkTooltip>
+          </Row>
+
           <Row>
             <Text
               fontSize={'1.5rem'}

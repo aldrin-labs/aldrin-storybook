@@ -73,7 +73,11 @@ export const allPoolsTableColumnsNames = [
       <>
         <span>APY</span>{' '}
         <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
-        <DarkTooltip title={'apy'}>
+        <DarkTooltip
+          title={
+            'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h not taking into account the reward for farming.'
+          }
+        >
           <div>
             <SvgIcon
               src={Info}
@@ -91,7 +95,11 @@ export const allPoolsTableColumnsNames = [
     label: (
       <>
         Farming
-        <DarkTooltip title={'farming'}>
+        <DarkTooltip
+          title={
+            'You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit into the pool), receiving a reward in tokens allocated by the creator of the pool. The amount of reward specified in the pool info is the amount you will receive daily for each $1,000 deposited into the pool.'
+          }
+        >
           <div>
             <SvgIcon
               src={Info}
