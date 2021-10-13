@@ -18,7 +18,10 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { PublicKey } from '@solana/web3.js'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
@@ -168,15 +171,18 @@ export const AddLiquidityPopup = ({
     (
       dexTokensPricesMap.get(selectedPool.tokenA) ||
       dexTokensPricesMap.get(baseSymbol)
-    )?.price || 0
+    )?.price || 10
 
   const quoteTokenPrice =
     (
       dexTokensPricesMap.get(selectedPool.tokenB) ||
       dexTokensPricesMap.get(quoteSymbol)
-    )?.price || 0
+    )?.price || 10
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
+  const tvlUSD =
+    baseTokenPrice * selectedPool.tvl.tokenA +
+    quoteTokenPrice * selectedPool.tvl.tokenB
 
   return (
     <DialogWrapper
@@ -225,6 +231,7 @@ export const AddLiquidityPopup = ({
           symbol={baseSymbol}
           alreadyInPool={withdrawAmountTokenA}
           maxBalance={maxBaseAmount}
+          needAlreadyInPool={false}
         />
         <Row>
           <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
@@ -239,31 +246,39 @@ export const AddLiquidityPopup = ({
           symbol={quoteSymbol}
           alreadyInPool={withdrawAmountTokenB}
           maxBalance={maxQuoteAmount}
+          needAlreadyInPool={false}
         />
         <Line />
         <InputWithTotal theme={theme} value={total} />
       </RowContainer>
 
-      {/* TODO */}
-      {/* here should be tvl locked info, check design */}
-      <Row margin={'2rem 0 1rem 0'} justify={'space-between'}>
-        <Row direction={'column'} align={'start'}>
+      <Row
+        margin={'2rem 0 1rem 0'}
+        align={'flex-start'}
+        justify={'space-between'}
+      >
+        <Row direction={'column'} align={'flex-start'} justify="flex-start">
           <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-            Projected fee earnings based on the past 24h
+            Total Value Locked:
           </Text>
-          <Row>
-            <Text
-              fontSize={'2rem'}
-              color={'#A5E898'}
-              fontFamily={'Avenir Next Demi'}
-            >
-              ${stripDigitPlaces(total * (selectedPool.apy24h / 100), 2)}
-              &nbsp;
-            </Text>
-            <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
-              / 24h
-            </Text>
-          </Row>
+          <Text
+            fontSize={'1.5rem'}
+            color={'#A5E898'}
+            fontFamily={'Avenir Next Demi'}
+            style={{ marginBottom: '1rem' }}
+          >
+            ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+          </Text>
+          <Text fontSize={'1.5rem'}>
+            {formatNumberToUSFormat(
+              stripDigitPlaces(selectedPool.tvl.tokenA, 2)
+            )}{' '}
+            {getTokenNameByMintAddress(selectedPool.tokenA)} /{' '}
+            {formatNumberToUSFormat(
+              stripDigitPlaces(selectedPool.tvl.tokenB, 2)
+            )}{' '}
+            {getTokenNameByMintAddress(selectedPool.tokenB)}
+          </Text>
         </Row>
         <Row direction={'column'}>
           <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
@@ -271,7 +286,7 @@ export const AddLiquidityPopup = ({
           </Text>
           <Row>
             <Text
-              fontSize={'2rem'}
+              fontSize={'1.5rem'}
               color={'#A5E898'}
               fontFamily={'Avenir Next Demi'}
             >
@@ -290,9 +305,9 @@ export const AddLiquidityPopup = ({
               isNeedToLeftSomeSOL
                 ? 'Sorry, but you need to left some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
                 : baseAmount > maxBaseAmount
-                ? `You entered more token A amount than you have.`
+                ? `You entered more token ${baseSymbol} amount than you have.`
                 : quoteAmount > maxQuoteAmount
-                ? `You entered more token B amount than you have.`
+                ? `You entered more ${quoteSymbol} amount than you have.`
                 : ''
             }
             blockHeight={'8rem'}

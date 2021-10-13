@@ -33,12 +33,12 @@ export const InputWithCoins = ({
   onChange: (value: number | string) => void
 }) => {
   return (
-    <Row style={{ position: 'relative' }} padding={'2rem 0'} width={'100%'}>
+    <Row style={{ position: 'relative' }} padding={'1rem 0'} width={'100%'}>
       <StyledInput />
-      <TokenContainer left={'2rem'} top={'3rem'}>
+      <TokenContainer left={'2rem'} top={'2rem'}>
         <Text color={theme.palette.grey.title}>{symbol}</Text>
       </TokenContainer>
-      <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'3rem'}>
+      <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'2rem'}>
         <InvisibleInput
           type={'number'}
           value={value}
@@ -46,7 +46,7 @@ export const InputWithCoins = ({
           placeholder={placeholder}
         />
       </TokenContainer>
-      <TokenContainer right={'2rem'} bottom={'3rem'}>
+      <TokenContainer right={'2rem'} bottom={'2rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
           <TokenIcon
             mint={getTokenMintAddressByName(symbol)}
@@ -62,7 +62,7 @@ export const InputWithCoins = ({
           </Text>
         </Row>
       </TokenContainer>
-      <TokenContainer right={'2rem'} top={'3rem'}>
+      <TokenContainer right={'2rem'} top={'2rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
           {needAlreadyInPool && (
             <>
