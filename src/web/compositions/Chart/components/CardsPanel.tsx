@@ -1,28 +1,98 @@
-import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
-import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
-import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
+import React, { useState } from 'react'
 import { MASTER_BUILD } from '@core/utils/config'
 import AldrinLogo from '@icons/Aldrin.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import WalletIcon from '@icons/walletIcon.svg'
-import { withTheme } from '@material-ui/core'
+import { withTheme, MenuList } from '@material-ui/core'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import SvgIcon from '@sb/components/SvgIcon'
 import { ReusableTitle as Title, Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
-import { useConnectionConfig } from '@sb/dexUtils/connection'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useState } from 'react'
-import { graphql } from 'react-apollo'
 import { Link, useLocation } from 'react-router-dom'
-import { compose } from 'recompose'
 import { CustomCard, PanelWrapper } from '../Chart.styles'
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
-import { RedButton, DropdownContainer, DropwodnItem, MenuDropdown, MenuDropdownInner, MenuDropdownLink } from './styles'
+import { RedButton, DropdownContainer, DropwodnItem, MenuDropdownLink } from './styles'
 import { FeedbackPopup } from './UsersFeedbackPopup'
+import { StyledDropdown, StyledPaper, StyledMenuItem } from '../../../components/Dropdown/Dropdown.styles'
+
+const CARD_STYLE: React.CSSProperties = {
+  // position: 'relative',
+  display: 'flex',
+  maxWidth: '100%',
+  flexGrow: 1,
+  border: '0',
+  overflow: 'visible'
+}
+
+const LOGO_LINK_STYLE: React.CSSProperties = {
+  width: '13rem',
+  height: '100%',
+  marginRight: '4rem',
+}
+
+const NAV_LINK_STYLE: React.CSSProperties = { width: '13rem' }
+
+const MENU_ITEM_STYLE: React.CSSProperties = { background: '#0E1016' }
+const DROPDOWN_STYLE: React.CSSProperties = { height: '5rem' }
+const PAPER_STYLE: React.CSSProperties = { marginTop: '-1rem', marginLeft: '-1rem' }
+const NAV_LINK_DROPDOWN_STYLE: React.CSSProperties = { width: '100%', margin: '0.5rem 1rem' }
+
+interface DropdownProps {
+  theme: { [c: string]: any } // TODO
+}
+
+const Dropdown: React.FC<DropdownProps> = (props) => {
+  const { theme } = props
+  return (
+    <DropdownContainer>
+      <StyledDropdown style={DROPDOWN_STYLE} theme={theme}>
+        <DropwodnItem
+          theme={theme}
+        >
+          Trading
+        </DropwodnItem>
+        <StyledPaper style={PAPER_STYLE} theme={theme}>
+          <MenuList style={{ padding: 0 }}>
+            <StyledMenuItem
+              style={MENU_ITEM_STYLE}
+              theme={theme}
+              disableRipple
+              disableGutters={true}
+            >
+              <NavLinkButton
+                style={NAV_LINK_DROPDOWN_STYLE}
+                component={(props) => <Link to={`/chart`} {...props} />}
+              >
+                <MenuDropdownLink>
+                  Terminal
+                </MenuDropdownLink>
+
+              </NavLinkButton>
+            </StyledMenuItem>
+            <StyledMenuItem
+              theme={theme}
+              disableRipple
+              style={MENU_ITEM_STYLE}
+              disableGutters={true}
+            >
+              <NavLinkButton
+                style={NAV_LINK_DROPDOWN_STYLE}
+                component={(props) => <Link to={`/swaps`} {...props} />}
+              >
+                <MenuDropdownLink>
+                  Swaps
+                </MenuDropdownLink>
+              </NavLinkButton>
+            </StyledMenuItem>
+          </MenuList>
+        </StyledPaper>
+      </StyledDropdown>
+    </DropdownContainer>
+  )
+}
 
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
@@ -31,30 +101,7 @@ export const CardsPanel = ({ theme }) => {
     false
   )
 
-  const [tradingMenuOpen, setTradingMenuOpen] = useState(false)
-
-
-  const CARD_STYLE: React.CSSProperties = {
-    // position: 'relative',
-    display: 'flex',
-    maxWidth: '100%',
-    flexGrow: 1,
-    border: '0',
-    overflow: 'visible'
-  }
-
-  const LOGO_LINK_STYLE: React.CSSProperties = {
-    width: '13rem',
-    height: '100%',
-    marginRight: '4rem',
-  }
-
-  const NAV_LINK_STYLE: React.CSSProperties = { width: '13rem' }
-
   const isDarkTheme = theme.palette.type === 'dark'
-  // const isAnalytics = location.pathname.includes('analytics')
-  // const isChartPage = location.pathname.includes('chart')
-  // console.log('page', location.pathname)
 
   return (
     <ChartGridContainer theme={theme}>
@@ -109,7 +156,8 @@ export const CardsPanel = ({ theme }) => {
               alignItems: 'center',
             }}
           >
-            <DropdownContainer>
+            <Dropdown theme={theme} />
+            {/* <DropdownContainer>
               <DropwodnItem
                 theme={theme}
               >
@@ -118,7 +166,7 @@ export const CardsPanel = ({ theme }) => {
               <MenuDropdown className="menu">
                 <MenuDropdownInner>
                   <NavLinkButton
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     component={(props) => <Link to={`/chart`} {...props} />}
                   >
                     <MenuDropdownLink>
@@ -127,7 +175,7 @@ export const CardsPanel = ({ theme }) => {
 
                   </NavLinkButton>
                   <NavLinkButton
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     component={(props) => <Link to={`/swaps`} {...props} />}
                   >
                     <MenuDropdownLink>
@@ -136,7 +184,7 @@ export const CardsPanel = ({ theme }) => {
                   </NavLinkButton>
                 </MenuDropdownInner>
               </MenuDropdown>
-            </DropdownContainer>
+            </DropdownContainer> */}
 
 
             {/* <NavLinkButton
@@ -239,9 +287,7 @@ export const CardsPanel = ({ theme }) => {
 }
 
 const TopBar = ({ theme }) => {
-  const { connected, wallet, providerUrl, updateProviderUrl } = useWallet()
-
-  const { endpoint, setEndpoint } = useConnectionConfig()
+  const { connected, wallet, providerUrl } = useWallet()
 
   const isCCAIActive = providerUrl === CCAIProviderURL
   const isSolletActive = providerUrl === 'https://www.sollet.io'
@@ -325,12 +371,4 @@ const TopBar = ({ theme }) => {
 
 const MemoizedCardsPanel = React.memo(CardsPanel)
 
-export default compose(
-  withTheme(),
-  withApolloPersist,
-  graphql(TOGGLE_THEME_MODE, {
-    name: 'toggleThemeMode',
-  }),
-  graphql(changePositionMode, { name: 'changePositionModeMutation' }),
-  graphql(updateThemeMode, { name: 'updateThemeModeMutation' })
-)(MemoizedCardsPanel)
+export default withTheme()(MemoizedCardsPanel)

@@ -2,7 +2,8 @@ import { NavLink } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { Paper, MenuItem, Button } from '@material-ui/core'
 
-export const StyledLinkCss = css`
+
+export const StyledLink = styled(NavLink)`
   color: ${(props) => props.theme.palette.grey.text};
   padding: 1.5rem 0 1.5rem 10%;
   font-size: 1.2rem;
@@ -28,14 +29,6 @@ export const StyledLinkCss = css`
     font-size: 1.2rem;
     /* padding: 0.9rem 2.2rem 0.9rem 0.6rem; */
   }
-`
-
-// export const StyledSpan = styled(<span>)`
-// ${StyledLinkCss}
-// `
-
-export const StyledLink = styled(NavLink)`
-  ${StyledLinkCss}
 `
 
 export const StyledButton = styled(Button)`
