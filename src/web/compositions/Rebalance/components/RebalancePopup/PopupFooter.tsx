@@ -39,7 +39,7 @@ export const PopupFooter = ({
             the algorithm will find the best way through multiple markets.
           </TooltipText>
           <TooltipText>
-            For example: SOL{'>'}USDC, then USDC{'>'}CCAI.
+            For example: SOL &gt; USDC, then USDC &gt; RIN.
           </TooltipText>
           <TooltipText style={{ paddingTop: '2rem' }}>
             All fees required for this transaction are calculated as follows.

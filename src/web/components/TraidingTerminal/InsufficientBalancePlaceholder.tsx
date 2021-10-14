@@ -7,7 +7,14 @@ import {
   useSelectedOpenOrdersAccount,
   useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Loader } from '../Loader/Loader'
+import {
+  costOfAddingToken,
+  costsOfTheFirstTrade,
+  SOLFeeForTrade,
+} from './utils'
+import { Placeholder } from './styles'
 
 export const InsufficientBalancePlaceholder = ({
   pair,

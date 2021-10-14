@@ -11,7 +11,7 @@ export const loadMintsDecimalsInfo = async ({
 }) => {
   const mintsMap = new Map()
 
-  console.timeEnd('mints')
+  console.time('mints')
 
   const loadedMints = await connection._rpcRequest('getMultipleAccounts', [
     mints,

@@ -9,6 +9,10 @@ import { notify } from '@sb/dexUtils/notifications'
 import { Theme } from '@material-ui/core'
 import { TokenAccount } from '@sb/dexUtils/markets'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import {
+  combineUnsettledBalances,
+  getUnsettledBalancesColumnNames,
+} from './UnsettledBalancesTable.utils'
 
 export const UnsettledBalancesTable = ({
   theme,
