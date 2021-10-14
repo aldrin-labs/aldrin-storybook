@@ -1,4 +1,3 @@
-
 import {
   Account,
   AccountInfo,
@@ -6,9 +5,9 @@ import {
   Connection,
   PublicKey,
 } from '@solana/web3.js'
-import React, { useContext,  useRef } from 'react'
-import { useAsyncData } from './fetch-loop'
+import React, { useContext, useRef } from 'react'
 import tuple from 'immutable-tuple'
+import { useAsyncData } from './fetch-loop'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
 
 export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
@@ -19,13 +18,15 @@ export const ENDPOINTS = [
   },
 ]
 
-const connection = new MultiEndpointsConnection(
-  [
-    { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 10 },
-    // { url: 'https://aldrinexchange.genesysgo.net', RPS: 20 },
-  ],
-  'recent'
-)
+const connections = [
+  { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 10 },
+]
+// TODO: revert that after genesys will be fixed
+if (localStorage.getItem('ENABLE_GENESYS_RPC')) {
+  connections.push({ url: 'https://aldrinexchange.genesysgo.net', RPS: 20 })
+}
+
+const connection = new MultiEndpointsConnection(connections, 'recent')
 
 connection.connections.forEach((c) => {
   c.onSlotChange(() => null)
@@ -40,18 +41,14 @@ const context = {
   connection,
   serumConnection,
   endpoint: ENDPOINTS[0].endpoint,
-  setEndpoint: () => null // compatibility
+  setEndpoint: () => null, // compatibility
 }
 
 const ConnectionContext = React.createContext(context)
 
-
-
 export const ConnectionProvider: React.FC = ({ children }) => {
   return (
-    <ConnectionContext.Provider
-      value={context}
-    >
+    <ConnectionContext.Provider value={context}>
       {children}
     </ConnectionContext.Provider>
   )
