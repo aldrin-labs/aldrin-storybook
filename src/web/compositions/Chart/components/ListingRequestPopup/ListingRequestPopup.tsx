@@ -29,6 +29,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { useHistory } from 'react-router-dom'
 import { Loading } from '@sb/components/Loading'
 import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
+import { graphql } from 'react-apollo'
 import {
   BlueButton,
   Form,
@@ -43,7 +44,6 @@ import {
   categoriesOfMarkets,
   defaultRequestDataState,
 } from './ListingRequestPopup.config'
-import { graphql } from 'react-apollo'
 
 const ListingRequestPopup = ({
   theme,

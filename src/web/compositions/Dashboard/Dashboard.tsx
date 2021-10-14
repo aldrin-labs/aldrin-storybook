@@ -28,6 +28,7 @@ import { Loading } from '@sb/components'
 import { notifyWithLog } from '@sb/dexUtils/notifications'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { RowContainer, Title } from '../AnalyticsRoute/index.styles'
 
 import { UnsettledBalancesTable } from './components/UnsettledBalancesTable/UnsettledBalancesTable'
@@ -49,7 +50,6 @@ import { cancelOrdersForAllMarkets } from './utils/cancelOrdersForAllMarkets'
 import { settleUnsettledBalancesForAllMarkets } from './utils/settleUnsettledBalancesForAllMarkets'
 import LoadingText from './components/LoadingText/LoadingText'
 
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { DexTokensPrices } from '../Pools/index.types'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
