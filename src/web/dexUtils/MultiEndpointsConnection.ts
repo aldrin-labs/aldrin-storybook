@@ -13,6 +13,7 @@ type EndpointRequestsCounter = {
   numberOfRequestsSent: number
 }
 
+// TODO
 class MultiEndpointsConnection implements Connection {
   private endpointsRequestsCounter: EndpointRequestsCounter[]
 

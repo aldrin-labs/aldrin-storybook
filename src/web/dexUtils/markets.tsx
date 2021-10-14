@@ -188,7 +188,6 @@ export function useAllMarkets() {
   const marketInfos = getMarketInfos(customMarkets)
 
   const getAllMarkets = async () => {
-    const i = 0
     const markets: Array<{
       market: Market
       marketName: string
