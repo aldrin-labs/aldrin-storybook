@@ -19,7 +19,7 @@ export const MobileFooter = ({ pathname }) => {
       <PoolsLink isActive={pathname.includes('pools')} />
       <SwapsLink isActive={pathname.includes('swaps')} />
       <RebalanceLink isActive={pathname.includes('rebalance')} /> */}
-      <WalletLink />
+      <WalletLink isActive={pathname.includes('wallet')} />
       <FeedbackBtn
         onClick={() => {
           setIsFeedBackPopupOpen(true)

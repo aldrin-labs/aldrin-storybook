@@ -22,7 +22,6 @@ import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
 import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
 import { compose } from 'recompose'
 import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { graphql } from '@apollo/react-hoc'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
@@ -44,6 +43,7 @@ import {
   categoriesOfMarkets,
   defaultRequestDataState,
 } from './ListingRequestPopup.config'
+import { graphql } from 'react-apollo'
 
 const ListingRequestPopup = ({
   theme,

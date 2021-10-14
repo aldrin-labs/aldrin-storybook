@@ -1,40 +1,44 @@
-import React, { useState, useEffect } from 'react'
-import { compose } from 'recompose'
-
-import { Theme } from '@material-ui/core'
-
+import React, { useEffect, useState } from 'react'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
-
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
-import { getCCAICirculationSupply } from '@sb/compositions/AnalyticsRoute/components/CirculationSupply'
-
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
-
-import { useMarkPrice, useMarket } from '@sb/dexUtils/markets'
-
-import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
-
+import { Theme } from '@material-ui/core'
+import { getCCAICirculationSupply } from '@sb/compositions/AnalyticsRoute/components/CirculationSupply'
 import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { getRandomInt } from '@core/utils/helpers'
+import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
+import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
+import { compose } from 'recompose'
+import { useInterval } from '@sb/dexUtils/useInterval'
 import {
+  MarketStatsContainer,
+  MobileMarketStatsContainer,
   PanelCard,
+  PanelCardSubValue,
   PanelCardTitle,
   PanelCardValue,
-  PanelCardSubValue,
-  MobileMarketStatsContainer,
-  MarketStatsContainer,
 } from '../../Chart.styles'
 
-export interface IProps {
+interface MarketDataByTicker {
+  tradesCount: number
+  tradesDiff: number
+  volume: number
+  volumeChange: number
+  lastPriceDiff: number
+  minPrice: number
+  maxPrice: number
+}
+
+interface IProps {
   theme: Theme
   symbol: string
   marketType: number
   marketDataByTickersQuery: {
-    marketDataByTickers: {}
+    marketDataByTickers: MarketDataByTicker
   }
+  marketDataByTickersQueryRefetch: (variables: { [c: string]: any }) => void
   getMarketStatisticsByPairQuery: {
     getMarketStatisticsByPair: {
       exchange: string
@@ -70,57 +74,54 @@ export interface IProps {
   }
   quantityPrecision: number
   pricePrecision: number
+  isCCAIPair?: boolean
 }
 
-const MarketStats = (props) => {
+const generateDatesForRequest = () => ({
+  startTimestamp: `${datesForQuery.startOfTime()}`,
+  endTimestamp: `${datesForQuery.endOfTime()}`,
+  prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
+  prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
+})
+
+const MarketStats: React.FC<IProps> = (props) => {
   const {
-    getMarketStatisticsByPairQuery,
     marketDataByTickersQuery,
-    getFundingRateQuery,
+    marketDataByTickersQueryRefetch,
     symbol = ' _ ',
     theme,
     marketType,
-    getFundingRateQueryRefetch,
-    getPriceQuery,
-    getMarkPriceQuery,
-    quantityPrecision,
-    pricePrecision,
     isCCAIPair,
+    pricePrecision,
   } = props
 
   const {
     marketDataByTickers: {
-      // symbol = '',
-      tradesCount = 0,
-      tradesDiff = 0,
       volume = 0,
-      volumeChange = 0,
       lastPriceDiff = 0,
       minPrice = 0,
       maxPrice = 0,
-      // closePrice = 0
-    } = {
-      // symbol: '',
-      tradesCount: 0,
-      tradesDiff: 0,
-      volume: 0,
-      volumeChange: 0,
-      minPrice: 0,
-      maxPrice: 0,
-      // closePrice: 0
-    },
+    } = {},
   } = marketDataByTickersQuery || {
     marketDataByTickers: {
-      // symbol: '',
       tradesCount: 0,
       tradesDiff: 0,
       volume: 0,
       volumeChange: 0,
       minPrice: 0,
       maxPrice: 0,
-      // closePrice: 0
     },
   }
+
+  useInterval(() => {
+    const variables = {
+      symbol: props.symbol,
+      exchange: 'serum',
+      marketType: props.marketType,
+      ...generateDatesForRequest(),
+    }
+    marketDataByTickersQueryRefetch(variables)
+  }, 5 * 60 * 1000)
 
   const { market } = useMarket()
   const [previousPrice, savePreviousPrice] = useState(0)
@@ -297,17 +298,13 @@ export default compose(
   queryRendererHoc({
     query: marketDataByTickers,
     name: 'marketDataByTickersQuery',
-    variables: (props) => ({
+    variables: (props: IProps) => ({
       symbol: props.symbol,
       exchange: 'serum',
       marketType: props.marketType,
-      startTimestamp: `${datesForQuery.startOfTime()}`,
-      endTimestamp: `${datesForQuery.endOfTime()}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
+      ...generateDatesForRequest(),
     }),
     fetchPolicy: 'cache-and-network',
-    pollInterval: 60000 * getRandomInt(7, 10),
     withOutSpinner: true,
     withTableLoader: true,
     withoutLoading: true,

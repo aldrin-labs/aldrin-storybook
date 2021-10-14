@@ -15,9 +15,11 @@ import {
   AWESOME_TOKENS,
 } from '@core/utils/awesomeMarkets/serum'
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import { Metrics } from '@core/utils/metrics'
 import { getUniqueListBy, useLocalStorageState } from './utils'
 import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
 import {
+  getProviderNameFromUrl,
   useAccountData,
   useAccountInfo,
   useConnection,
@@ -416,7 +418,7 @@ export function MarketProvider({ children }) {
 
     setMarket(null)
 
-    if (!marketInfo || !marketInfo?.address) {
+    if (!marketInfo?.address) {
       notify({
         message: 'Error loading market',
         description: 'Please select a market from the dropdown',
@@ -438,6 +440,8 @@ export function MarketProvider({ children }) {
       })
       .catch((e) => {
         console.log('e', e)
+        const rpcUrl = getProviderNameFromUrl({ rawConnection: connection })
+        Metrics.sendMetrics({ metricName: `error.rpc.${rpcUrl}.marketFetch` })
         notify({
           message: 'Error loading market',
           description: e.message,
@@ -1190,6 +1194,10 @@ export function useUnmigratedDeprecatedMarkets() {
         )
       } catch (e) {
         console.log('Failed loading market', marketInfo.name, e)
+        const rpcUrl = getProviderNameFromUrl({ rawConnection: connection })
+        Metrics.sendMetrics({
+          metricName: `error.rpc.${rpcUrl}.unmigratedMarketFetch`,
+        })
         notify({
           message: 'Error loading market',
           description: e.message,

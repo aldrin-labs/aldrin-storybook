@@ -14,14 +14,23 @@ import { useConnection, useSerumConnection } from '@sb/dexUtils/connection'
 
 import { LoadingScreenWithHint } from '@sb/components/LoadingScreenWithHint/LoadingScreenWithHint'
 import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable'
-import { notEmpty, onlyUnique, sleep } from '@sb/dexUtils/utils'
+import {
+  notEmpty,
+  onlyUnique,
+  sleep,
+  notEmpty,
+  onlyUnique,
+  sleep,
+} from '@sb/dexUtils/utils'
 import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { Loading } from '@sb/components'
 import { notifyWithLog } from '@sb/dexUtils/notifications'
+import { compose } from 'recompose'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { RowContainer, Title } from '../AnalyticsRoute/index.styles'
 
-import UnsettledBalancesTable from './components/UnsettledBalancesTable/UnsettledBalancesTable'
+import { UnsettledBalancesTable } from './components/UnsettledBalancesTable/UnsettledBalancesTable'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import {
   LoadedMarketsMap,
@@ -40,10 +49,19 @@ import { cancelOrdersForAllMarkets } from './utils/cancelOrdersForAllMarkets'
 import { settleUnsettledBalancesForAllMarkets } from './utils/settleUnsettledBalancesForAllMarkets'
 import LoadingText from './components/LoadingText/LoadingText'
 
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { DexTokensPrices } from '../Pools/index.types'
+
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
 
-const Dashboard = ({ theme }: { theme: Theme }) => {
+const Dashboard = ({
+  theme,
+  getDexTokensPricesQuery,
+}: {
+  theme: Theme
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+}) => {
   const [isDataLoading, setIsDataLoading] = useState(false)
 
   const [openOrdersAccounts, setOpenOrdersAccounts] = useState<OpenOrders[]>([])
@@ -77,7 +95,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
   const [percentageOfLoadedOrderbooks, setPercentageOfLoadedOrderbooks] =
     useState(0)
 
-  // flags for operations with  settle/cancel all buttons
+  // flags for operations with settle/cancel all buttons
   const [isSettlingAllBalances, setIsSettlingAllBalances] = useState(false)
   const [isCancellingAllOrders, setsCancellingAllOrders] = useState(false)
 
@@ -222,6 +240,11 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
       />
     )
 
+  const dexTokensPrices = getDexTokensPricesQuery.getDexTokensPrices.reduce(
+    (acc, el) => acc.set(el.symbol, el),
+    new Map()
+  )
+
   return (
     <RowContainer
       height="100%"
@@ -234,52 +257,6 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
         padding: '0 0 6rem 0',
       }}
     >
-      <TableWithTitleContainer direction="column" margin="5rem 0 0 0">
-        <RowContainer
-          justify={isUnsettledBalancesUpdating ? 'space-between' : 'flex-start'}
-          margin="0 0 3rem 0"
-        >
-          <Title
-            color={theme.palette.white.primary}
-            fontFamily="Avenir Next Demi"
-            fontSize="3rem"
-          >
-            Unsettled Balances
-          </Title>
-          {isUnsettledBalancesUpdating && <Loading margin="0" size="3rem" />}
-        </RowContainer>
-        <TableContainer>
-          <UnsettledBalancesTable
-            theme={theme}
-            isSettlingAllBalances={isSettlingAllBalances}
-            onSettleAll={async () => {
-              setIsSettlingAllBalances(true)
-              try {
-                await settleUnsettledBalancesForAllMarkets({
-                  wallet,
-                  connection,
-                  unsettledBalances,
-                  userTokenAccountsMap,
-                })
-              } catch (e) {
-                notifyWithLog({
-                  message: 'Error settling all funds',
-                  e,
-                })
-
-                // removing loaders only in case of error
-                setIsSettlingAllBalances(false)
-              }
-              await sleep(5 * 1000)
-              await refreshUnsettledBalances()
-            }}
-            userTokenAccountsMap={userTokenAccountsMap}
-            unsettledBalances={unsettledBalances}
-            refreshUnsettledBalances={refreshUnsettledBalances}
-          />
-        </TableContainer>
-      </TableWithTitleContainer>
-
       <TableWithTitleContainer direction="column" margin="5rem 0 0 0">
         <RowContainer
           justify={isOpenOrdersUpdating ? 'space-between' : 'flex-start'}
@@ -299,6 +276,7 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             tab="openOrders"
             theme={theme}
             show
+            needShowValue
             isCancellingAllOrders={isCancellingAllOrders}
             cancelOrderCallback={refreshOpenOrders}
             onCancelAll={async () => {
@@ -329,9 +307,64 @@ const Dashboard = ({ theme }: { theme: Theme }) => {
             }}
           />
         </TableContainer>
+      </TableWithTitleContainer>{' '}
+      <TableWithTitleContainer direction="column" margin="5rem 0 0 0">
+        <RowContainer
+          justify={isUnsettledBalancesUpdating ? 'space-between' : 'flex-start'}
+          margin="0 0 3rem 0"
+        >
+          <Title
+            color={theme.palette.white.primary}
+            fontFamily="Avenir Next Demi"
+            fontSize="3rem"
+          >
+            Unsettled Balances
+          </Title>
+          {isUnsettledBalancesUpdating && <Loading margin="0" size="3rem" />}
+        </RowContainer>
+        <TableContainer>
+          <UnsettledBalancesTable
+            theme={theme}
+            dexTokensPrices={dexTokensPrices}
+            isSettlingAllBalances={isSettlingAllBalances}
+            onSettleAll={async () => {
+              setIsSettlingAllBalances(true)
+              try {
+                await settleUnsettledBalancesForAllMarkets({
+                  wallet,
+                  connection,
+                  unsettledBalances,
+                  userTokenAccountsMap,
+                })
+              } catch (e) {
+                notifyWithLog({
+                  message: 'Error settling all funds',
+                  e,
+                })
+
+                // removing loaders only in case of error
+                setIsSettlingAllBalances(false)
+              }
+              await sleep(5 * 1000)
+              await refreshUnsettledBalances()
+            }}
+            userTokenAccountsMap={userTokenAccountsMap}
+            unsettledBalances={unsettledBalances}
+            refreshUnsettledBalances={refreshUnsettledBalances}
+          />
+        </TableContainer>
       </TableWithTitleContainer>
     </RowContainer>
   )
 }
 
-export default withTheme()(Dashboard)
+export default compose(
+  withTheme(),
+  queryRendererHoc({
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
+  })
+)(Dashboard)

@@ -6,6 +6,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { StyledTitle } from '@sb/components/TradingTable/TradingTable.styles'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 
 const SettleButton = ({
   theme,
@@ -64,7 +65,9 @@ export const getUnsettledBalancesColumnNames = ({
 }) => [
   { label: 'Market', id: 'marketName' },
   { label: 'Base unsettled', id: 'baseUnsettled' },
+  { label: 'Base value', id: 'baseValue' },
   { label: 'Quote unsettled', id: 'quoteUnsettled' },
+  { label: 'Quote value', id: 'quoteValue' },
   {
     label: (
       <BtnCustom
@@ -97,6 +100,7 @@ export const combineUnsettledBalances = ({
   unsettledBalances,
   isSettlingAllBalances,
   onSettleFunds,
+  dexTokensPrices,
   theme,
 }: {
   unsettledBalances: UnsettledBalance[]
@@ -104,6 +108,7 @@ export const combineUnsettledBalances = ({
   onSettleFunds: (
     unsettledBalances: UnsettledBalance
   ) => Promise<string | null | undefined>
+  dexTokensPrices: Map<string, DexTokensPrices>
   theme: Theme
 }) => {
   if (!unsettledBalances && !Array.isArray(unsettledBalances)) {
@@ -115,6 +120,10 @@ export const combineUnsettledBalances = ({
       const { market, marketName, baseUnsettled, quoteUnsettled } = el
 
       const [base, quote] = marketName.split('_')
+
+      const baseValue = baseUnsettled * dexTokensPrices?.get(base)?.price
+
+      const quoteValue = quoteUnsettled * dexTokensPrices?.get(quote)?.price
 
       return {
         id: `${marketName}${baseUnsettled}${quoteUnsettled}`,
@@ -167,8 +176,24 @@ export const combineUnsettledBalances = ({
           contentToSort: +baseUnsettled,
           showOnMobile: false,
         },
+        baseValue: {
+          render: dexTokensPrices?.get(base)?.price
+            ? `$${roundAndFormatNumber(baseValue, 8, true)}`
+            : '-',
+          style: { textAlign: 'left' },
+          contentToSort: +quoteUnsettled,
+          showOnMobile: false,
+        },
         quoteUnsettled: {
           render: `${roundAndFormatNumber(quoteUnsettled, 8, true)} ${quote}`,
+          style: { textAlign: 'left' },
+          contentToSort: +quoteUnsettled,
+          showOnMobile: false,
+        },
+        quoteValue: {
+          render: dexTokensPrices?.get(quote)?.price
+            ? `$${roundAndFormatNumber(quoteValue, 8, true)}`
+            : '-',
           style: { textAlign: 'left' },
           contentToSort: +quoteUnsettled,
           showOnMobile: false,

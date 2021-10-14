@@ -1,4 +1,6 @@
 import { Commitment, Connection } from '@solana/web3.js'
+import { Metrics } from '@core/utils/metrics'
+import { getProviderNameFromUrl } from './connection'
 
 type RateLimitedEndpoint = {
   url: string
@@ -19,7 +21,7 @@ class MultiEndpointsConnection implements Connection {
     this.endpointsRequestsCounter = endpoints.map(
       (endpoint: RateLimitedEndpoint) => ({
         endpoint,
-        connection: new Connection(endpoint.url, commitment),
+        connection: new Connection(endpoint.url, { commitment }),
         numberOfRequestsSent: 0,
       })
     )
@@ -38,7 +40,7 @@ class MultiEndpointsConnection implements Connection {
       this[functionName] = (...args: any) => {
         // select connection, depending on RPS and load of connection, execute method of this connection
         const connection = this.getConnection()
-        return connection[functionName](...args)
+        return this.processCall(connection[functionName](...args), connection)
       }
     }
 
@@ -49,14 +51,34 @@ class MultiEndpointsConnection implements Connection {
     // }, 1500)
   }
 
-  getConnection(): Connection {
-    const availableConnection = this.endpointsRequestsCounter.reduce(
-      (prev, current) =>
-        prev.numberOfRequestsSent < current.numberOfRequestsSent
-          ? prev
-          : current
-    )
+  get connections(): Connection[] {
+    return this.endpointsRequestsCounter.map((_) => _.connection)
+  }
 
+  private processCall(call: Promise<any>, connection: Connection) {
+    call.then(
+      (d) => d,
+      (err: Error) => {
+        const rpcProvider = getProviderNameFromUrl({
+          rawConnection: connection,
+        })
+        const t = `${err}`.substr(0, 40).replace(/[: ]/g, '_').toLowerCase()
+        Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.${t}` })
+        console.error(err)
+      }
+    )
+    return call
+  }
+
+  getConnection(): Connection {
+    // const availableConnection = this.endpointsRequestsCounter.reduce(
+    //   (prev, current) =>
+    //     prev.numberOfRequestsSent < current.numberOfRequestsSent ? prev : current
+    // );
+
+    const len = this.endpointsRequestsCounter.length
+    const idx = Math.floor(Math.random() * len)
+    const availableConnection = this.endpointsRequestsCounter[idx]
     // objects pass by ref
     availableConnection.numberOfRequestsSent++
 
@@ -65,7 +87,8 @@ class MultiEndpointsConnection implements Connection {
 
   // initializing in constructor, but some libraries use connection._rpcRequest
   async _rpcRequest(...args) {
-    return await this.getConnection()._rpcRequest(...args)
+    const connection = this.getConnection()
+    return await this.processCall(connection._rpcRequest(...args), connection)
   }
 }
 

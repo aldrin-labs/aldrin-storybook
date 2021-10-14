@@ -13,7 +13,7 @@ import {
   StyledPaper,
   BlueButton,
 } from '@sb/compositions/Chart/components/WarningPopup'
-import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
+import { Label } from '@sb/components/Label/Label'
 import CloseIcon from '@icons/closeIcon.svg'
 
 const PaperForMeetRebalancePopup = styled(StyledPaper)`
@@ -42,7 +42,7 @@ export const MeetRebalancePopup = ({
       <RowContainer style={{ marginBottom: '3rem' }} justify="space-between">
         <Row>
           <Title>Meet Rebalance </Title>
-          <BetaLabel theme={theme} style={{ marginLeft: '1.5rem' }} />
+          <Label theme={theme} style={{ marginLeft: '1.5rem' }} />
         </Row>
         <SvgIcon
           src={CloseIcon}

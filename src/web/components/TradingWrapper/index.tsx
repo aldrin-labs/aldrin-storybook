@@ -226,6 +226,7 @@ class SimpleTabs extends React.Component<any, any> {
       terminalViewMode,
       baseCurrencyAccount,
       quoteCurrencyAccount,
+      isButtonLoaderShowing,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -483,6 +484,7 @@ class SimpleTabs extends React.Component<any, any> {
                   >
                     <TerminalContainer>
                       <TraidingTerminal
+                        isButtonLoaderShowing={isButtonLoaderShowing}
                         baseCurrencyAccount={baseCurrencyAccount}
                         quoteCurrencyAccount={quoteCurrencyAccount}
                         byType={side}
@@ -686,6 +688,7 @@ class SimpleTabs extends React.Component<any, any> {
                     <SellTerminal theme={theme} xs={6} item>
                       <TerminalContainer>
                         <TraidingTerminal
+                          isButtonLoaderShowing={isButtonLoaderShowing}
                           baseCurrencyAccount={baseCurrencyAccount}
                           quoteCurrencyAccount={quoteCurrencyAccount}
                           byType="sell"

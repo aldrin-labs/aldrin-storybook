@@ -31,12 +31,12 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import { withTheme } from '@material-ui/core'
 import WalletIcon from '@icons/walletIcon.svg'
-import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/NetworkDropdown'
 
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
-import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
+import { Label } from '@sb/components/Label/Label'
 import { FeedbackPopup } from './UsersFeedbackPopup'
+
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
 
 export const NavBarLink = styled(({ style, ...props }) => (
@@ -225,7 +225,6 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to="/dashboard" {...props} />}
             >
               Dashboard
-              <BetaLabel theme={theme} style={{ marginLeft: '.5rem' }} />
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -237,12 +236,18 @@ export const CardsPanel = ({ theme }) => {
               Wallet
             </NavLinkButton>
             <NavLinkButton
+              style={{ width: '20rem', whiteSpace: 'nowrap' }}
               theme={theme}
               page="/pools"
               pathname={location.pathname}
               component={(props) => <Link to="/pools" {...props} />}
             >
               Liquidity Pools
+              <Label
+                text="New"
+                theme={theme}
+                style={{ marginLeft: '.5rem', color: '#A5E898' }}
+              />
             </NavLinkButton>
             {/* 
             {!MASTER_BUILD && (
@@ -320,15 +325,6 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <div data-tut="connection-dropdown">
-        <NetworkDropdown
-          endpoint={endpoint}
-          setEndpoint={setEndpoint}
-          theme={theme}
-          isWalletConnected={connected}
-        />
-      </div>
-
       {!connected && (
         <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap="nowrap">
           <ConnectWalletDropdown

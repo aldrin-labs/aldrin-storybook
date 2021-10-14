@@ -148,7 +148,7 @@ export const RebalanceLink = ({ isActive }: { isActive: boolean }) => {
 
 export const WalletLink = ({ isActive }) => {
   return (
-    <StyledA href={CCAIProviderURL}>
+    <StyledA href={CCAIProviderURL} target="_blank">
       <svg
         width="100%"
         height="100%"

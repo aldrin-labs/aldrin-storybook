@@ -14,16 +14,18 @@ const Text = styled.span`
   ${(props) => props.style}
 `
 
-export const BetaLabel = ({
+export const Label = ({
   theme,
   style = {},
+  text = 'Beta',
 }: {
   theme: Theme
   style?: CSSProperties
+  text?: string
 }) => {
   return (
     <Text theme={theme} style={style}>
-      Beta
+      {text}
     </Text>
   )
 }
