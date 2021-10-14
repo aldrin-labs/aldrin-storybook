@@ -24,9 +24,6 @@ export const SnackbarUtilsConfigurator = () => {
 
 export default {
   success(msg: string, options: OptionsObject = {}) {
-    console.log('this: ', this)
-    console.log('this.toast: ', this.toast)
-
     this.toast(msg, { ...options, variant: 'success' })
   },
   warning(msg: string, options: OptionsObject = {}) {
