@@ -13,7 +13,6 @@ import {
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
-import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
@@ -406,9 +405,6 @@ const MemoizedCardsPanel = React.memo(CardsPanel)
 export default compose(
   withTheme(),
   withApolloPersist,
-  graphql(TOGGLE_THEME_MODE, {
-    name: 'toggleThemeMode',
-  }),
   graphql(changePositionMode, { name: 'changePositionModeMutation' }),
   graphql(updateThemeMode, { name: 'updateThemeModeMutation' })
 )(MemoizedCardsPanel)

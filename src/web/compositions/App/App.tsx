@@ -14,7 +14,6 @@ import {
 //
 
 import CssBaseline from '@material-ui/core/CssBaseline'
-// import Footer from '@sb/components/Footer'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'

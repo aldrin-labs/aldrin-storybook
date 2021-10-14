@@ -119,9 +119,6 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.minFuturesStep === next.minFuturesStep &&
     prev.initialLeverage === next.initialLeverage &&
     prev.theme.palette.type === next.theme.palette.type &&
-    prev.layout.hideDepthChart === next.layout.hideDepthChart &&
-    prev.layout.hideOrderbook === next.layout.hideOrderbook &&
-    prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&
     isEqual(prev.theme, next.theme)
     // false
   )

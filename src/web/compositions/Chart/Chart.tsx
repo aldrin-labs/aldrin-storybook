@@ -13,9 +13,7 @@ import {
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { CardsPanel } from './components'
 
-import { getChartLayout } from '@core/graphql/queries/chart/getChartLayout'
 import { updateTooltipSettings } from '@core/graphql/mutations/user/updateTooltipSettings'
-import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
 import { finishJoyride } from '@core/utils/joyride'
 // import JoyrideOnboarding from '@sb/components/JoyrideOnboarding/JoyrideOnboarding'
 
@@ -23,7 +21,6 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 
-import { checkLoginStatus } from '@core/utils/loginUtils'
 import { MainContainer } from '@sb/compositions/Chart/Chart.styles'
 
 import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
@@ -68,26 +65,8 @@ const ChartPageComponent: React.FC<ChartPageProps> = (props) => {
     } = {
       getTooltipSettings: { chartPage: false, chartPagePopup: false },
     },
-    getChartLayoutQuery: {
-      chart: { layout } = {
-        layout: {
-          hideDepthChart: false,
-          hideOrderbook: false,
-          hideTradeHistory: false,
-        },
-      },
-    } = {
-      chart: {
-        layout: {
-          hideDepthChart: false,
-          hideOrderbook: false,
-          hideTradeHistory: false,
-        },
-      },
-    },
     marketType,
     selectedPair,
-    changeChartLayoutMutation,
     setCustomMarkets,
     getUserCustomMarketsQuery = { getUserCustomMarkets: [] },
     location,
@@ -271,7 +250,6 @@ const ChartPageComponent: React.FC<ChartPageProps> = (props) => {
       <DefaultView
         id="_id"
         view="default"
-        layout={layout}
         theme={theme}
         publicKey={publicKey}
         marketType={marketType}
@@ -309,7 +287,6 @@ const ChartPageComponent: React.FC<ChartPageProps> = (props) => {
           !getTooltipSettings.chartPage
         }
         closeChartPagePopup={closeChartPagePopup}
-        changeChartLayoutMutation={changeChartLayoutMutation}
       />
 
       <WarningPopup
@@ -353,65 +330,7 @@ const ChartPageComponent: React.FC<ChartPageProps> = (props) => {
   )
 }
 
-const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
-  // console.log('memo func chart page', prev, next)
-
-  const isAuthenticatedUser = checkLoginStatus()
-
-  if (!isAuthenticatedUser) {
-    return false
-  }
-
-  const prevIsPairDataLoading =
-    prev.loading ||
-    !prev.pairPropertiesQuery.marketByName ||
-    !prev.pairPropertiesQuery.marketByName[0] ||
-    prev.pairPropertiesQuery.networkStatus === 2 ||
-    prev.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      prev.selectedPair.replace('_', '')
-
-  const nextIsPairDataLoading =
-    next.loading ||
-    !next.pairPropertiesQuery.marketByName ||
-    !next.pairPropertiesQuery.marketByName[0] ||
-    next.pairPropertiesQuery.networkStatus === 2 ||
-    next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      next.selectedPair.replace('_', '')
-
-  const tooltipQueryChanged =
-    (prev.getTooltipSettingsQuery.getTooltipSettings &&
-      prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
-    (prev.getTooltipSettingsQuery.getTooltipSettings &&
-      prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
-
-  return (
-    // prev.marketType === next.marketType &&
-    // prev.selectedPair === next.selectedPair &&
-    // prev.getChartDataQuery.getTradingSettings.selectedTradingKey ===
-    //   next.getChartDataQuery.getTradingSettings.selectedTradingKey &&
-    // prev.getChartDataQuery.getTradingSettings.hedgeMode ===
-    //   next.getChartDataQuery.getTradingSettings.hedgeMode &&
-    // prevIsPairDataLoading === nextIsPairDataLoading &&
-    // tooltipQueryChanged &&
-    // prev.getChartLayoutQuery.chart.layout.hideDepthChart ===
-    //   next.getChartLayoutQuery.chart.layout.hideDepthChart &&
-    // prev.getChartLayoutQuery.chart.layout.hideOrderbook ===
-    //   next.getChartLayoutQuery.chart.layout.hideOrderbook &&
-    // prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
-    //   next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
-    // prev.theme.palette.type === next.theme.palette.type &&
-    // isEqual(prev.theme, next.theme) &&
-    // isEqual(
-    //   prev.pairPropertiesQuery.marketByName[0].properties,
-    //   next.pairPropertiesQuery.marketByName[0].properties
-    // )
-    false
-  )
-})
+const ChartPage = ChartPageComponent
 
 // TODO: combine all queries to one
 export default compose<ChartPageProps, any>(
@@ -421,17 +340,6 @@ export default compose<ChartPageProps, any>(
   withPublicKey,
   withRouter,
   withRegionCheck,
-  // withAuth,
-  // queryRendererHoc({
-  //   skip: (props: any) => !props.authenticated,
-  //   query: getChartData,
-  //   name: 'getChartDataQuery',
-  //   // fetchPolicy: 'cache-and-network',
-  //   fetchPolicy: 'cache-first',
-  //   variables: {
-  //     marketType: 1, // hardcode here to get only futures marketIds'
-  //   },
-  // }),
   queryRendererHoc({
     query: getUserCustomMarkets,
     name: 'getUserCustomMarketsQuery',
@@ -440,34 +348,7 @@ export default compose<ChartPageProps, any>(
       publicKey: props.publicKey,
     }),
   }),
-  // queryRendererHoc({
-  //   skip: (props: any) => !props.authenticated,
-  //   query: GET_TOOLTIP_SETTINGS,
-  //   name: 'getTooltipSettingsQuery',
-  //   fetchPolicy: 'cache-first',
-  //   withOutSpinner: true,
-  //   withoutLoading: true,
-  // }),
-  // queryRendererHoc({
-  //   query: pairProperties,
-  //   name: 'pairPropertiesQuery',
-  //   fetchPolicy: 'cache-first',
-  //   withoutLoading: true,
-  //   variables: (props: IProps) => ({
-  //     marketName: props.selectedPair,
-  //     marketType: props.marketType,
-  //   }),
-  // }),
-  queryRendererHoc({
-    query: getChartLayout,
-    name: 'getChartLayoutQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-  }),
   graphql(updateTooltipSettings, {
     name: 'updateTooltipSettingsMutation',
-  }),
-  graphql(changeChartLayout, {
-    name: 'changeChartLayoutMutation',
   })
 )(ChartPage)
