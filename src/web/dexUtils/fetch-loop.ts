@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react'
-
+import { NodeTuple } from 'immutable-tuple'
 import assert from 'assert'
 
 const pageLoadTime = new Date()
@@ -7,7 +7,7 @@ const pageLoadTime = new Date()
 const globalCache: Map<any, any> = new Map()
 
 class FetchLoopListener<T = any> {
-  cacheKey: any
+  cacheKey: NodeTuple
 
   fn: () => Promise<T>
 
@@ -20,7 +20,7 @@ class FetchLoopListener<T = any> {
   cacheNullValues: Boolean = true
 
   constructor(
-    cacheKey: any,
+    cacheKey: NodeTuple,
     fn: () => Promise<T>,
     refreshInterval: number,
     refreshIntervalOnError: number | null,
@@ -37,7 +37,7 @@ class FetchLoopListener<T = any> {
 }
 
 class FetchLoopInternal<T = any> {
-  cacheKey: any
+  cacheKey: NodeTuple
 
   fn: () => Promise<T>
 
@@ -49,7 +49,11 @@ class FetchLoopInternal<T = any> {
 
   cacheNullValues: Boolean = true
 
-  constructor(cacheKey: any, fn: () => Promise<T>, cacheNullValues: Boolean) {
+  constructor(
+    cacheKey: NodeTuple,
+    fn: () => Promise<T>,
+    cacheNullValues: Boolean
+  ) {
     this.cacheKey = cacheKey
     this.fn = fn
     this.timeoutId = null
@@ -123,7 +127,7 @@ class FetchLoopInternal<T = any> {
       this.notifyListeners()
       return data
     } catch (error) {
-      ++this.errors
+      this.errors += 1
       console.warn(error)
       errored = true
     } finally {
@@ -165,7 +169,7 @@ class FetchLoopInternal<T = any> {
 }
 
 class FetchLoops {
-  loops = new Map()
+  loops = new Map<NodeTuple, FetchLoopInternal>()
 
   addListener<T>(listener: FetchLoopListener<T>) {
     if (!this.loops.has(listener.cacheKey)) {
@@ -178,21 +182,21 @@ class FetchLoops {
         )
       )
     }
-    this.loops.get(listener.cacheKey).addListener(listener)
+    this.loops.get(listener.cacheKey)?.addListener(listener)
   }
 
   removeListener<T>(listener: FetchLoopListener<T>) {
     const loop = this.loops.get(listener.cacheKey)
-    loop.removeListener(listener)
-    if (loop.stopped) {
+    loop?.removeListener(listener)
+    if (loop?.stopped) {
       this.loops.delete(listener.cacheKey)
       globalCache.delete(listener.cacheKey)
     }
   }
 
-  refresh(cacheKey) {
+  refresh(cacheKey: NodeTuple) {
     if (this.loops.has(cacheKey)) {
-      this.loops.get(cacheKey).refresh()
+      this.loops.get(cacheKey)?.refresh()
     }
   }
 
@@ -204,7 +208,7 @@ const globalLoops = new FetchLoops()
 
 export function useAsyncData<T = any>(
   asyncFn: () => Promise<T>,
-  cacheKey: any,
+  cacheKey: NodeTuple,
   { refreshInterval = 60000, refreshIntervalOnError = null } = {},
   cacheNullValues: Boolean = true
 ): [null | undefined | T, boolean] {
@@ -225,7 +229,6 @@ export function useAsyncData<T = any>(
     )
     globalLoops.addListener(listener)
     return () => globalLoops.removeListener(listener)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cacheKey, refreshInterval])
 
   if (!cacheKey) {
@@ -237,7 +240,7 @@ export function useAsyncData<T = any>(
   return [data, loaded]
 }
 
-export function refreshCache(cacheKey: any, clearCache = false): void {
+export function refreshCache(cacheKey: NodeTuple, clearCache = false): void {
   if (clearCache) {
     globalCache.delete(cacheKey)
   }
@@ -253,13 +256,11 @@ export function refreshCache(cacheKey: any, clearCache = false): void {
 }
 
 export function refreshAllCaches(): void {
-  for (const loop of globalLoops.loops.values()) {
-    loop.refresh()
-  }
+  Array.from(globalLoops.loops.values()).forEach((loop) => loop.refresh())
 }
 
 export function setCache(
-  cacheKey: any,
+  cacheKey: NodeTuple,
   value: any,
   { initializeOnly = false } = {}
 ): void {
@@ -274,6 +275,6 @@ export function setCache(
   }
 }
 
-export function getCache(cacheKey: any) {
+export function getCache(cacheKey: NodeTuple) {
   return globalCache.get(cacheKey)
 }
