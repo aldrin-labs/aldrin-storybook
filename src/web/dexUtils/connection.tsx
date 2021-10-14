@@ -22,7 +22,7 @@ export const ENDPOINTS = [
 const connection = new MultiEndpointsConnection(
   [
     { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 10 },
-    { url: 'https://aldrinexchange.genesysgo.net', RPS: 20 },
+    // { url: 'https://aldrinexchange.genesysgo.net', RPS: 20 },
   ],
   'recent'
 )
