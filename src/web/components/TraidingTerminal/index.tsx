@@ -72,6 +72,7 @@ import {
   SOLFeeForTrade,
 } from './utils'
 import { InsufficientBalancePlaceholder } from './InsufficientBalancePlaceholder'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -285,6 +286,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     priceFromOrderbook: null,
     isConfirmationPopupOpen: false,
     isWalletPopupOpen: false,
+    isConnectWalletPopupOpen: false,
   }
 
   componentDidUpdate(prevProps) {
@@ -885,11 +887,29 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               {!connected ? (
                 <>
                   <ConnectWalletDropdownContainer>
-                    <ConnectWalletDropdown
-                      theme={theme}
-                      height={'4rem'}
-                      id={`${sideType}-connectButton`}
-                    />
+                    <BtnCustom
+                      onClick={() => {
+                        this.setState({
+                          isConnectWalletPopupOpen: true,
+                        })
+                      }}
+                      btnColor={'#F8FAFF'}
+                      backgroundColor={theme.palette.blue.serum}
+                      btnWidth={'35rem'}
+                      borderColor={theme.palette.blue.serum}
+                      textTransform={'capitalize'}
+                      height={'4.5rem'}
+                      borderRadius="1rem"
+                      fontSize={'1.5rem'}
+                      style={{
+                        display: 'flex',
+                        textTransform: 'none',
+                        padding: '1rem',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      Connect wallet
+                    </BtnCustom>
                   </ConnectWalletDropdownContainer>
                   <ConnectWalletButtonContainer>
                     <BtnCustom
@@ -966,6 +986,11 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
             </Grid>
           </ButtonBlock>
         </TerminalGridContainer>
+        <ConnectWalletPopup
+          theme={theme}
+          open={this.state.isConnectWalletPopupOpen}
+          onClose={() => this.setState({ isConnectWalletPopupOpen: true })}
+        />
       </Container>
     )
   }

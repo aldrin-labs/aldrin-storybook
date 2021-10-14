@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown'
 import { SvgIcon } from '@sb/components'
 import {
   RowContainer,
@@ -10,8 +9,13 @@ import {
 import { Theme } from '@material-ui/core'
 
 import LightLogo from '@icons/lightLogo.svg'
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 
 export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] = useState(
+    false
+  )
   return (
     <RowContainer
       direction="column"
@@ -31,22 +35,33 @@ export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
         </Title>
       </RowContainer>
       <RowContainer>
-        <ConnectWalletDropdown
+        <BtnCustom
+          onClick={() => {
+            setIsConnectWalletPopupOpen(true)
+          }}
+          btnColor={'#F8FAFF'}
+          backgroundColor={theme.palette.blue.serum}
+          btnWidth={'35rem'}
+          borderColor={theme.palette.blue.serum}
+          textTransform={'capitalize'}
           height={'6rem'}
-          theme={theme}
-          id={'Dashboard-Wallet-Connect'}
-          showOnTop={false}
-          containerStyles={{
-            width: '30rem',
-            fontSize: '3rem',
+          borderRadius="1rem"
+          fontSize={'1.5rem'}
+          style={{
+            display: 'flex',
+            textTransform: 'none',
+            padding: '1rem',
+            whiteSpace: 'nowrap',
           }}
-          buttonStyles={{
-            borderRadius: '1.2rem',
-            fontSize: '1.6rem',
-            textTransform: 'capitalize',
-          }}
-        />
+        >
+          Connect wallet
+        </BtnCustom>
       </RowContainer>
+      <ConnectWalletPopup
+        theme={theme}
+        open={isConnectWalletPopupOpen}
+        onClose={() => setIsConnectWalletPopupOpen(false)}
+      />
     </RowContainer>
   )
 }

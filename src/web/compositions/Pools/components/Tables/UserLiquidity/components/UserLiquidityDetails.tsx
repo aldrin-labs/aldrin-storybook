@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
@@ -41,6 +41,7 @@ import {
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 import { Loader } from '@sb/components/Loader/Loader'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 
 export const UserLiquidityDetails = ({
   theme,
@@ -73,6 +74,9 @@ export const UserLiquidityDetails = ({
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] = useState(
+    false
+  )
   const { wallet } = useWallet()
   const connection = useConnection()
 
@@ -247,9 +251,17 @@ export const UserLiquidityDetails = ({
               color={'#53DF11'}
               fontFamily="Avenir Next Medium"
               theme={theme}
+              style={{ marginBottom: '1rem' }}
             >
               <WhiteText>Total:</WhiteText>{' '}
               {stripByAmountAndFormat(poolTokenAmount + stakedTokens)}{' '}
+            </RowDataTdText>
+            <RowDataTdText
+              color={'#53DF11'}
+              fontFamily="Avenir Next Medium"
+              theme={theme}
+            >
+              {' '}
               <WhiteText>Staked:</WhiteText>{' '}
               {stripByAmountAndFormat(stakedTokens)}
             </RowDataTdText>
@@ -264,7 +276,7 @@ export const UserLiquidityDetails = ({
             disabled={isPoolWaitingForUpdateAfterDeposit}
             onClick={() => {
               if (!wallet.connected) {
-                wallet.connect()
+                setIsConnectWalletPopupOpen(true)
                 return
               }
 
@@ -516,6 +528,11 @@ export const UserLiquidityDetails = ({
           ) : null
         ) : null}
       </Row>
+      <ConnectWalletPopup
+        theme={theme}
+        open={isConnectWalletPopupOpen}
+        onClose={() => setIsConnectWalletPopupOpen(false)}
+      />
     </RowContainer>
   )
 }

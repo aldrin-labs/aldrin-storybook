@@ -10,6 +10,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import {
   ReusableTitle as Title,
   Row,
+  Row,
   RowContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
@@ -31,6 +32,8 @@ import {
   StyledMenuItem,
 } from '../../../components/Dropdown/Dropdown.styles'
 import color from '@material-ui/core/colors/amber'
+import { ConnectWalletPopup } from './ConnectWalletPopup/ConnectWalletPopup'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 const CARD_STYLE: React.CSSProperties = {
   // position: 'relative',
@@ -263,6 +266,9 @@ export const CardsPanel = ({ theme }) => {
 }
 
 const TopBar = ({ theme }) => {
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] = useState(
+    false
+  )
   const { connected, wallet, providerUrl } = useWallet()
 
   const isCCAIActive = providerUrl === CCAIProviderURL
@@ -276,18 +282,27 @@ const TopBar = ({ theme }) => {
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
       {!connected && (
         <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap={'nowrap'}>
-          <ConnectWalletDropdown
-            theme={theme}
-            height={'4rem'}
-            id={'navBar'}
-            isNavBar={true}
-            showOnTop={true}
-            buttonStyles={{
-              background: theme.palette.blue.serum,
-              color: '#fff',
-              fontSize: '1.4rem',
+          <BtnCustom
+            onClick={() => {
+              setIsConnectWalletPopupOpen(true)
             }}
-          />
+            btnColor={'#F8FAFF'}
+            backgroundColor={theme.palette.blue.serum}
+            btnWidth={'14rem'}
+            borderColor={theme.palette.blue.serum}
+            textTransform={'capitalize'}
+            height={'3.5rem'}
+            borderRadius="0.8rem"
+            fontSize={'1.5rem'}
+            style={{
+              display: 'flex',
+              textTransform: 'none',
+              padding: '1rem',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Connect wallet
+          </BtnCustom>
         </Row>
       )}
       {connected && (
@@ -346,6 +361,11 @@ const TopBar = ({ theme }) => {
           </RedButton>
         </RowContainer>
       )}
+      <ConnectWalletPopup
+        theme={theme}
+        open={isConnectWalletPopupOpen}
+        onClose={() => setIsConnectWalletPopupOpen(false)}
+      />
     </div>
   )
 }
