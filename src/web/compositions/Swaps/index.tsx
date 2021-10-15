@@ -506,7 +506,7 @@ const SwapsPage = ({
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
                     fontFamily={'Avenir Next Bold'}
                   >
-                    {REBALANCE_CONFIG.SLIPPAGE}%
+                    0.03%
                   </Text>
                 </Row>
               </RowContainer>

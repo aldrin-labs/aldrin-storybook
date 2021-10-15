@@ -122,7 +122,7 @@ export const SelectCoinPopup = ({
     })
     .filter((token) => token.isTokenInPool)
     .sort((a, b) => b.amount - a.amount)
-
+console.log('choosenMint',choosenMint)
   return (
     <DialogWrapper
       theme={theme}

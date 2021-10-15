@@ -86,7 +86,7 @@ const createTotalVolumeLockedChart = ({
     ?.getContext('2d')
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(54, 108, 229, 0.84)')
+  gradient.addColorStop(0, 'rgba(101, 28, 228, 0.84)')
   gradient.addColorStop(0.55, 'rgba(115, 128, 235, 0)')
   gradient.addColorStop(1, '#222429')
 
@@ -239,7 +239,7 @@ const createTradingVolumeChart = ({
 }) => {
   const ctx = document.getElementById('TradingVolumeChart')?.getContext('2d')
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(165, 232, 152, 0.85)')
+  gradient.addColorStop(0, 'rgb(83, 223, 17, 0.85)')
   gradient.addColorStop(0.55, 'rgba(165, 232, 152, 0)')
   gradient.addColorStop(1, '#222429')
 

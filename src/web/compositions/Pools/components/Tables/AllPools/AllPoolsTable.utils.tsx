@@ -209,7 +209,12 @@ export const combineAllPoolsData = ({
               justify="flex-start"
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
-              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
+              <TokenIconsContainer
+                onClick={() => {}}
+                needHover={true}
+                tokenA={el.tokenA}
+                tokenB={el.tokenB}
+              />{' '}
               {el.locked ? (
                 <DarkTooltip title={'Founders liquidity locked.'}>
                   <div>

@@ -13,6 +13,7 @@ import Close from '@icons/closeIcon.svg'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { notify } from '@sb/dexUtils/notifications'
+import ExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 const StyledPaper = styled(Paper)`
   height: auto;
@@ -68,19 +69,13 @@ export const TokenAddressesPopup = ({
           <Text>{baseTokenMintAddress}</Text>
         </Row>
         <Row>
-          <Text
-            onClick={() => {
-              copy(baseTokenMintAddress)
-              notify({
-                message: 'Copied!',
-                type: 'success',
-              })
-            }}
-            style={{ cursor: 'pointer' }}
-            color={'#651CE4'}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`https://solanabeach.io/address/${baseTokenMintAddress}`}
           >
-            Copy address
-          </Text>
+            <SvgIcon style={{ cursor: 'pointer' }} src={ExplorerIcon} />
+          </a>
         </Row>
       </RowContainer>
       <RowContainer margin={'1rem 0'} justify={'space-between'}>
@@ -95,19 +90,13 @@ export const TokenAddressesPopup = ({
           <Text>{quoteTokenMintAddress}</Text>
         </Row>{' '}
         <Row>
-          <Text
-            onClick={() => {
-              copy(quoteTokenMintAddress)
-              notify({
-                message: 'Copied!',
-                type: 'success',
-              })
-            }}
-            style={{ cursor: 'pointer' }}
-            color={'#651CE4'}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href={`https://solanabeach.io/address/${quoteTokenMintAddress}`}
           >
-            Copy address
-          </Text>
+            <SvgIcon style={{ cursor: 'pointer' }} src={ExplorerIcon} />
+          </a>
         </Row>
       </RowContainer>
     </DialogWrapper>
