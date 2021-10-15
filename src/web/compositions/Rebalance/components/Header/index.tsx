@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { BalanceCard, Title, Header } from './styles'
 
 const TotalTokensValueComponent = ({

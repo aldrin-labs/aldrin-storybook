@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Text } from '@sb/compositions/Addressbook'
+import { Text } from '@sb/components/Typography'
 import { Row } from '../../../AnalyticsRoute/index.styles'
 
 export const LiquidityDataContainer = styled(Row)`

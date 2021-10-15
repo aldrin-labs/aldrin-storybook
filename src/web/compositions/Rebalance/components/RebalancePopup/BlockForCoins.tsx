@@ -2,7 +2,7 @@ import React from 'react'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Arrow from '@icons/smallBlueArrow.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { BlockForIcons } from './styles'

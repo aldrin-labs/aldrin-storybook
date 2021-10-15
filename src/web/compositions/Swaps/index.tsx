@@ -6,7 +6,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
 import { Theme } from '@material-ui/core'
 
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { notify } from '@sb/dexUtils/notifications'
 

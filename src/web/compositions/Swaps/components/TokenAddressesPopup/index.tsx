@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Paper, Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'

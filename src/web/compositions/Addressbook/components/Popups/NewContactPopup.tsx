@@ -22,17 +22,6 @@ const StyledPaper = styled(Paper)`
   width: 55rem;
 `
 
-export const PasteButton = styled.button`
-  position: absolute;
-  font-size: 1.8rem;
-  right: 0.5rem;
-  background: inherit;
-  border: 0;
-  color: ${(props) => props.theme.palette.blue.serum};
-  cursor: pointer;
-  padding: 1.5rem;
-`
-
 const NewContactPopup = ({
   theme,
   open,

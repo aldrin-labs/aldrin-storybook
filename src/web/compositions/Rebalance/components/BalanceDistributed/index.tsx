@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 import {
   TokenAllocationProgressBar,

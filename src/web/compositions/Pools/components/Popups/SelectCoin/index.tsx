@@ -8,7 +8,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 import Close from '@icons/closeIcon.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import {
   ALL_TOKENS_MINTS_MAP,

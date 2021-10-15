@@ -13,7 +13,7 @@ import { Loading } from '@sb/components/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { editContact } from '@core/graphql/mutations/chart/editContact'
-import { PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewContactPopup'
+import { PasteButton } from '@sb/components/Buttons'
 
 import { notify } from '@sb/dexUtils/notifications'
 import { Input, encrypt, decrypt, createHash } from '../../index'

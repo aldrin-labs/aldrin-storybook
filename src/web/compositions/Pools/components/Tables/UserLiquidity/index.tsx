@@ -17,7 +17,7 @@ import {
 
 import TooltipIcon from '@icons/TooltipImg.svg'
 
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import SvgIcon from '@sb/components/SvgIcon'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { queryRendererHoc } from '@core/components/QueryRenderer'

@@ -6,7 +6,7 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'

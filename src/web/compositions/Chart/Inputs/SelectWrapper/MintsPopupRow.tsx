@@ -3,7 +3,7 @@ import { notify } from '@sb/dexUtils/notifications'
 import copy from 'clipboard-copy'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 

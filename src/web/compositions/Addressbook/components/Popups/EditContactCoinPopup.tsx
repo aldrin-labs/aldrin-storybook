@@ -25,7 +25,7 @@ import {
 } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewContactPopup'
+import { PasteButton } from '@sb/components/Buttons'
 import { Loading } from '@sb/components/index'
 
 const StyledPaper = styled(Paper)`

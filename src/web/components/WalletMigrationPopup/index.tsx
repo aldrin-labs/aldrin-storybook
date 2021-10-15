@@ -8,7 +8,7 @@ import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.style
 import SvgIcon from '@sb/components/SvgIcon'
 import { withTheme } from '@material-ui/styles'
 
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import Paper from '@material-ui/core/Paper'
 import SunLogo from '@icons/SunLogo.svg'

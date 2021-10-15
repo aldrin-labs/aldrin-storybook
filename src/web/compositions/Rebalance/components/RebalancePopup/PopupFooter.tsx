@@ -2,7 +2,7 @@ import React from 'react'
 import { Theme } from '@material-ui/core'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { SvgIcon } from '@sb/components'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'

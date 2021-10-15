@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'

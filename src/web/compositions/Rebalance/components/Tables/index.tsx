@@ -6,7 +6,7 @@ import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import Slider from '@sb/components/Slider/Slider'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   RowTd,

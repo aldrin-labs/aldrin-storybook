@@ -1,7 +1,7 @@
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 
 import HintIcon from '@icons/hint.svg'
 import { useInterval } from '@sb/dexUtils/useInterval'

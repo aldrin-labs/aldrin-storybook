@@ -2,7 +2,7 @@ import React from 'react'
 import { SvgIcon } from '@sb/components'
 
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 
 import MediumIcon from '@icons/violetMedium.svg'
 import TelegramIcon from '@icons/violetTelegram.svg'

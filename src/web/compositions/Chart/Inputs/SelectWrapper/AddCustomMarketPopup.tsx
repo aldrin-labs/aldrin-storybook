@@ -26,7 +26,7 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
+import { PurpleButton } from '@sb/components/Buttons'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { withPublicKey } from '@core/hoc/withPublicKey'

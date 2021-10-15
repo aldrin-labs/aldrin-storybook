@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import Arrow from '@icons/arrowBottom.svg'

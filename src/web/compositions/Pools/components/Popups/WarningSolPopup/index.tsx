@@ -7,7 +7,7 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Close from '@icons/closeIcon.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { StyledPaper } from '../index.styles'

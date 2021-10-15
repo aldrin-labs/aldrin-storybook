@@ -1,6 +1,6 @@
 import React, { CSSProperties, ReactChild } from 'react'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { HintQuoteBlock } from '@sb/components/HintQuoteBlock/HintQuoteBlock'
 
 import LoadingLogo from '@icons/logo_loader.webp'

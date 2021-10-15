@@ -10,7 +10,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import AttentionComponent from '@sb/components/AttentionBlock'
 
 import Close from '@icons/closeIcon.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components'

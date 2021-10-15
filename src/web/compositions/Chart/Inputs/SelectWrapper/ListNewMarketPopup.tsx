@@ -15,14 +15,13 @@ import { parseTokenMintData } from '@sb/dexUtils/tokens'
 import { Paper } from '@material-ui/core'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { PurpleButton } from '@sb/compositions/Addressbook/components/Popups/NewCoinPopup'
+import { PurpleButton, PasteButton } from '@sb/components/Buttons'
 import Clear from '@material-ui/icons/Clear'
 import {
   StyledDialogContent,
   ClearButton,
   StyledDialogTitle,
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { PasteButton } from '@sb/compositions/Addressbook/components/Popups/NewContactPopup'
 import { InputRowContainer } from '../../components/SmartOrderTerminal/styles'
 
 // const { Text, Title } = Typography;
@@ -224,7 +223,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
         dexProgramId,
       })
 
-      await setListedMarket(marketAddress)
+      setListedMarket(marketAddress)
     } catch (e) {
       console.warn(e)
       console.log('e.message', e.message)
@@ -342,7 +341,7 @@ export default function ListNewMarketPopup({ theme, open, onClose }) {
                   width={connected ? '12rem' : '25rem'}
                   height="4rem"
                   margin="0 0 0 0"
-                  onClick={onSubmit}
+                  onClick={() => onSubmit()}
                   showLoader={submitting}
                 />
                 <InputRowContainer
