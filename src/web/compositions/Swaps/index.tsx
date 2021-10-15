@@ -386,7 +386,7 @@ const SwapsPage = ({
                 backgroundColor={
                   isButtonDisabled
                     ? '#3A475C'
-                    : 'linear-gradient(90.62deg, #5EB6A8 0.11%, #3861C1 99.54%)'
+                    : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
                 }
                 textTransform={'none'}
                 margin={'1rem 0 0 0'}

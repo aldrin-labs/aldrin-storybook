@@ -172,8 +172,8 @@ const AllPoolsTableComponent = ({
             borderBottom: theme.palette.border.main,
             backgroundColor: 'inherit',
             boxShadow: 'none',
-            paddingTop: '1rem',
-            paddingBottom: '1rem',
+            paddingTop: '2.5rem',
+            paddingBottom: '2.5rem',
             fontFamily: 'Avenir Next Medium',
           },
           heading: {
