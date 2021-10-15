@@ -17,16 +17,58 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { addContactCoin } from '@core/graphql/mutations/chart/addContactCoin'
 
-import { createHash, Input, encrypt } from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { PasteButton } from '@sb/components/Buttons'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/index'
-import { PasteButton } from '@sb/components/Buttons'
+import { createHash, Input, encrypt } from '../..'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
 `
+
+export const PurpleButton = ({
+  onClick,
+  showLoader,
+  theme,
+  text,
+  width,
+  height,
+  margin,
+  disabled,
+  background,
+  color,
+}) => (
+  <BtnCustom
+    disabled={showLoader || disabled}
+    needMinWidth={false}
+    btnWidth={width || '15rem'}
+    height={height || '4.5rem'}
+    fontSize="1.4rem"
+    padding="1rem 2rem"
+    borderRadius=".8rem"
+    borderColor={background || theme.palette.blue.serum}
+    btnColor={color || '#fff'}
+    backgroundColor={background || theme.palette.blue.serum}
+    textTransform="none"
+    margin={margin || '1rem 0 0 0'}
+    transition="all .4s ease-out"
+    onClick={onClick}
+  >
+    {showLoader ? (
+      <Loading
+        color="#fff"
+        size={16}
+        height="16px"
+        style={{ height: '16px' }}
+      />
+    ) : (
+      text
+    )}
+  </BtnCustom>
+)
+
 const NewCoinPopup = ({
   theme,
   open,

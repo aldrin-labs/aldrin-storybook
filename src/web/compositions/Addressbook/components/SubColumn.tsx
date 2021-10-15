@@ -12,8 +12,6 @@ import {
   onErrorImportCoinUrl,
 } from '@core/utils/MarketCapUtils'
 
-import { AddBtn, decrypt } from '@sb/compositions/Addressbook/index'
-
 import {
   Card,
   HeaderCell,
@@ -23,6 +21,7 @@ import {
 } from '@sb/compositions/Rewards/index'
 import { notify } from '@sb/dexUtils/notifications'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { AddBtn, decrypt } from '..'
 
 const SubColumn = ({
   theme,

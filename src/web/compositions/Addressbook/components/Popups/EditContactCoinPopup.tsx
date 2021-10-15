@@ -17,16 +17,11 @@ import {
 } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import { editContactCoin } from '@core/graphql/mutations/chart/editContactCoin'
 
-import {
-  createHash,
-  Input,
-  encrypt,
-  decrypt,
-} from '@sb/compositions/Addressbook/index'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PasteButton } from '@sb/components/Buttons'
 import { Loading } from '@sb/components/index'
+import { createHash, Input, encrypt, decrypt } from '../..'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
