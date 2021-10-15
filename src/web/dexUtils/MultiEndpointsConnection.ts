@@ -13,6 +13,29 @@ type EndpointRequestsCounter = {
   numberOfRequestsSent: number
 }
 
+
+const processCall = (call: Promise<any>, connection: Connection) => {
+  const rpcProvider = getProviderNameFromUrl({
+    rawConnection: connection,
+  })
+  const t = setTimeout(() => {
+    Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.timeout` })
+  }, 30 * 1000)
+  
+  return call.then(
+    (d) => {
+      clearTimeout(t)
+      return d
+    },
+    (err: Error) => {
+      clearTimeout(t)
+      const text = `${err}`.substr(0, 40).replace(/[: ]/g, '_').toLowerCase()
+      Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.${text}` })
+      console.error(err)
+    }
+  )
+}
+
 class MultiEndpointsConnection implements Connection {
   private endpointsRequestsCounter: EndpointRequestsCounter[]
 
@@ -31,43 +54,18 @@ class MultiEndpointsConnection implements Connection {
       Connection.prototype
     )) {
       // skip non-function
-      if (typeof Connection.prototype[functionName] !== 'function') {
-        // const connection = this.getConnection();
-        // this[functionName] = connection[functionName];
-        continue
-      }
-
-      this[functionName] = (...args: any) => {
-        // select connection, depending on RPS and load of connection, execute method of this connection
-        const connection = this.getConnection()
-        return this.processCall(connection[functionName](...args), connection)
+      if (typeof Connection.prototype[functionName] === 'function') {
+        this[functionName] = (...args: any) => {
+          // select connection, depending on RPS and load of connection, execute method of this connection
+          const connection = this.getConnection()
+          return processCall(connection[functionName](...args), connection)
+        }
       }
     }
-
-    // setInterval(() => {
-    //   this.endpointsRequestsCounter.forEach((endpointCounter) => {
-    //     endpointCounter.numberOfRequestsSent = 0
-    //   })
-    // }, 1500)
   }
 
   get connections(): Connection[] {
     return this.endpointsRequestsCounter.map((_) => _.connection)
-  }
-
-  private processCall(call: Promise<any>, connection: Connection) {
-    call.then(
-      (d) => d,
-      (err: Error) => {
-        const rpcProvider = getProviderNameFromUrl({
-          rawConnection: connection,
-        })
-        const t = `${err}`.substr(0, 40).replace(/[: ]/g, '_').toLowerCase()
-        Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.${t}` })
-        console.error(err)
-      }
-    )
-    return call
   }
 
   getConnection(): Connection {
@@ -88,7 +86,7 @@ class MultiEndpointsConnection implements Connection {
   // initializing in constructor, but some libraries use connection._rpcRequest
   async _rpcRequest(...args) {
     const connection = this.getConnection()
-    return await this.processCall(connection._rpcRequest(...args), connection)
+    return await processCall(connection._rpcRequest(...args), connection)
   }
 }
 
