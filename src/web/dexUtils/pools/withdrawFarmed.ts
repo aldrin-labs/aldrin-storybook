@@ -3,15 +3,15 @@ import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import {
+  Account,
   Connection,
+  Keypair,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
 
-import { notify } from '../notifications'
-import { NUMBER_OF_RETRIES } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
@@ -48,82 +48,13 @@ export const withdrawFarmed = async ({
 
   const createdTokensMap = new Map()
   const commonTransaction = new Transaction()
-  const commonSigners = []
+  const commonSigners: (Account | Keypair)[] = []
 
-  // check farmed for every ticket and withdrawFarmed for every farming state
-  for (let ticketData of farmingTickets) {
-    for (let farmingState of pool.farming) {
-      const farmingTokenAccountAddress = allTokensDataMap.get(
-        farmingState.farmingTokenMint
-      )?.address
+  let tx = null
 
-      let userFarmingTokenAccount = farmingTokenAccountAddress
-        ? new PublicKey(farmingTokenAccountAddress)
-        : null
-
-      // to not create same token several times
-      if (createdTokensMap.has(farmingState.farmingTokenMint)) {
-        userFarmingTokenAccount = createdTokensMap.get(
-          farmingState.farmingTokenMint
-        )
-      }
-
-      // create pool token account for user if not exist
-      if (!userFarmingTokenAccount) {
-        const poolToken = new Token(
-          wallet,
-          connection,
-          new PublicKey(farmingState.farmingTokenMint),
-          TOKEN_PROGRAM_ID
-        )
-
-        const [
-          newUserFarmingTokenAccount,
-          userPoolTokenAccountSignature,
-          userPoolTokenAccountTransaction,
-        ] = await poolToken.createAccount(wallet.publicKey)
-
-        userFarmingTokenAccount = newUserFarmingTokenAccount
-        createdTokensMap.set(
-          farmingState.farmingTokenMint,
-          newUserFarmingTokenAccount
-        )
-        commonTransaction.add(userPoolTokenAccountTransaction)
-        commonSigners.push(userPoolTokenAccountSignature)
-      }
-
-      const endFarmingTransaction = await program.instruction.withdrawFarmed({
-        accounts: {
-          pool: poolPublicKey,
-          farmingState: new PublicKey(farmingState.farmingState),
-          farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
-          farmingTicket: new PublicKey(ticketData.farmingTicket),
-          farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
-          poolSigner: vaultSigner,
-          userFarmingTokenAccount,
-          userKey: wallet.publicKey,
-          userSolAccount: wallet.publicKey,
-          tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-          clock: SYSVAR_CLOCK_PUBKEY,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
-      })
-
-      commonTransaction.add(endFarmingTransaction)
-    }
-  }
-
-  let counter = 0
-  while (counter < NUMBER_OF_RETRIES) {
+  const sendPartOfTransactions = async () => {
     try {
-      if (counter > 0) {
-        await notify({
-          type: 'error',
-          message: 'Unstaking failed. Please confirm transaction again.',
-        })
-      }
-
-      const tx = await sendTransaction({
+      tx = await sendTransaction({
         wallet,
         connection,
         transaction: commonTransaction,
@@ -131,20 +62,104 @@ export const withdrawFarmed = async ({
         focusPopup: true,
       })
 
-      if (tx) {
-        return 'success'
-      } else {
-        counter++
+      if (!tx) {
+        return 'failed'
       }
     } catch (e) {
       console.log('end farming catch error', e)
-      counter++
 
       if (e.message.includes('cancelled')) {
         return 'cancelled'
       }
     }
+
+    return 'success'
   }
 
-  return 'failed'
+  console.log('farmingTickets', farmingTickets)
+
+  // check farmed for every ticket and withdrawFarmed for every farming state
+  for (let ticketData of farmingTickets) {
+    if (ticketData.amountToClaim === 0) continue
+
+    console.log('ticketData', ticketData)
+
+    // const farmingState = pool.farming[0]
+
+    for (let farmingState of pool.farming) {
+    const farmingTokenAccountAddress = allTokensDataMap.get(
+      farmingState.farmingTokenMint
+    )?.address
+
+    let userFarmingTokenAccount = farmingTokenAccountAddress
+      ? new PublicKey(farmingTokenAccountAddress)
+      : null
+
+    // to not create same token several times
+    if (createdTokensMap.has(farmingState.farmingTokenMint)) {
+      userFarmingTokenAccount = createdTokensMap.get(
+        farmingState.farmingTokenMint
+      )
+    }
+
+    // create pool token account for user if not exist
+    if (!userFarmingTokenAccount) {
+      const poolToken = new Token(
+        wallet,
+        connection,
+        new PublicKey(farmingState.farmingTokenMint),
+        TOKEN_PROGRAM_ID
+      )
+
+      const [
+        newUserFarmingTokenAccount,
+        userPoolTokenAccountSignature,
+        userPoolTokenAccountTransaction,
+      ] = await poolToken.createAccount(wallet.publicKey)
+
+      userFarmingTokenAccount = newUserFarmingTokenAccount
+      createdTokensMap.set(
+        farmingState.farmingTokenMint,
+        newUserFarmingTokenAccount
+      )
+      commonTransaction.add(userPoolTokenAccountTransaction)
+      commonSigners.push(userPoolTokenAccountSignature)
+    }
+
+    const endFarmingTransaction = await program.instruction.withdrawFarmed({
+      accounts: {
+        pool: poolPublicKey,
+        farmingState: new PublicKey(farmingState.farmingState),
+        farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
+        farmingTicket: new PublicKey(ticketData.farmingTicket),
+        farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
+        poolSigner: vaultSigner,
+        userFarmingTokenAccount,
+        userKey: wallet.publicKey,
+        userSolAccount: wallet.publicKey,
+        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+        clock: SYSVAR_CLOCK_PUBKEY,
+        rent: SYSVAR_RENT_PUBKEY,
+      },
+    })
+
+    commonTransaction.add(endFarmingTransaction)
+
+    if (commonTransaction.instructions.length > 5) {
+      const result = await sendPartOfTransactions()
+      if (result !== 'success') {
+        return result
+      }
+    }
+    }
+  }
+
+  if (commonTransaction.instructions.length > 0) {
+    const result = await sendPartOfTransactions()
+    if (result !== 'success') {
+      return result
+    }
+  }
+
+  return 'success'
 }

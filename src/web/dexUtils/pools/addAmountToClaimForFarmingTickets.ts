@@ -75,7 +75,7 @@ export const addAmountToClaimForFarmingTickets = async ({
       ?.filter((log) => log.includes(START_OF_LOG_WITH_AMOUNT_TO_CLAIM))
       .map(
         (log, i) =>
-          parseFloat(log.replace(START_OF_LOG_WITH_AMOUNT_TO_CLAIM, '')) + i
+          parseFloat(log.replace(START_OF_LOG_WITH_AMOUNT_TO_CLAIM, ''))
       ) || []
 
   console.log('amountsToClaim', amountsToClaim)

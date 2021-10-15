@@ -35,6 +35,7 @@ import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarne
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { addAmountToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountToClaimForFarmingTickets'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
+import { takePoolsFarmingSnapshots } from '@sb/dexUtils/pools/takeSnapshots'
 
 const TablesSwitcher = ({
   theme,
@@ -119,6 +120,12 @@ const TablesSwitcher = ({
 
       await setAllTokensData(allTokensData)
       await setFarmingTicketsMap(farmingTicketsMap)
+
+      // await takePoolsFarmingSnapshots({
+      //   wallet,
+      //   connection,
+      //   pools: getPoolsInfo
+      // })
     }
 
     if (!!wallet?.publicKey) {
