@@ -989,7 +989,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
         <ConnectWalletPopup
           theme={theme}
           open={this.state.isConnectWalletPopupOpen}
-          onClose={() => this.setState({ isConnectWalletPopupOpen: true })}
+          onClose={() => this.setState({ isConnectWalletPopupOpen: false })}
         />
       </Container>
     )

@@ -70,6 +70,9 @@ export const Text = styled.span`
   white-space: ${(props) => props.whiteSpace || 'normal'};
   padding: ${(props) => props.padding || '0'};
   letter-spacing: 0.01rem;
+  &:hover {
+    text-decoration: ${(props) => (props.needHover ? 'underline' : 'none')};
+  }
 `
 
 export const Input = styled.input`

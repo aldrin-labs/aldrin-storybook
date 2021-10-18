@@ -425,7 +425,7 @@ export const UserLiquidityDetails = ({
                 fontFamily={'Avenir Next Medium'}
                 style={{ marginBottom: '3.5rem' }}
               >
-                <DarkTooltip
+                {/* <DarkTooltip
                   title={
                     <span>
                       The founder has set up vesting. You will be able to claim
@@ -443,7 +443,7 @@ export const UserLiquidityDetails = ({
                       style={{ marginRight: '1rem' }}
                     />
                   </div>
-                </DarkTooltip>
+                </DarkTooltip> */}
                 Available to claim:
                 <AmountText style={{ padding: '0 0.5rem' }}>
                   {stripByAmountAndFormat(availableToClaimFarmingTokens)}

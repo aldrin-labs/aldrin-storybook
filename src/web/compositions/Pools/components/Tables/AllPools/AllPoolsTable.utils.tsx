@@ -200,6 +200,9 @@ export const combineAllPoolsData = ({
       const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
         ? dailyFarmingValue / (tvlUSD / 1000)
         : 0
+      let swapUrl = new URL(
+        `http://localhost:3000/swaps?base=${baseSymbol}&quote=${quoteSymbol}`
+      )
 
       const isFarmingEnded =
         farmingState && farmingState.tokensTotal === farmingState.tokensUnlocked
@@ -212,7 +215,17 @@ export const combineAllPoolsData = ({
               justify="flex-start"
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
-              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
+              <a
+                href={swapUrl.toString()}
+                target="_blank"
+                style={{ textDecoration: 'none' }}
+              >
+                <TokenIconsContainer
+                  needHover={true}
+                  tokenA={el.tokenA}
+                  tokenB={el.tokenB}
+                />
+              </a>
               {el.locked ? (
                 <DarkTooltip title={'Founders liquidity locked.'}>
                   <div>

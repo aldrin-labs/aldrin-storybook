@@ -45,9 +45,11 @@ export const SearchInputWithLoop = ({
 export const TokenIconsContainer = ({
   tokenA,
   tokenB,
+  needHover,
 }: {
   tokenA: string
   tokenB: string
+  needHover: boolean
 }) => {
   return (
     <Row wrap="nowrap" justify={'end'}>
@@ -63,7 +65,11 @@ export const TokenIconsContainer = ({
           <TokenIcon width={'3rem'} height={'3rem'} mint={tokenB} />
         </TokenIconContainer>
       </IconsContainer>
-      <Text style={{ marginLeft: '2rem' }} fontFamily={'Avenir Next Demi'}>
+      <Text
+        style={{ marginLeft: '2rem' }}
+        needHover={needHover}
+        fontFamily={'Avenir Next Demi'}
+      >
         {getTokenNameByMintAddress(tokenA)}/{getTokenNameByMintAddress(tokenB)}
       </Text>
     </Row>

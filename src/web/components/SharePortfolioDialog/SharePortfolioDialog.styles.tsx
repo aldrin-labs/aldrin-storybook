@@ -57,7 +57,7 @@ export const StyledDialogTitle = styled(DialogTitle)`
 
 export const StyledPaper = styled(Paper)`
   &::-webkit-scrollbar-thumb {
-    background: #651CE4;
+    background: transparent;
   }
 
   border-radius: 2rem;
