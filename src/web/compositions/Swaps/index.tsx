@@ -144,14 +144,21 @@ const SwapsPage = ({
     setBaseAmount(baseAmount)
     setQuoteAmount(quoteAmount)
   }
-
-  const baseSymbol = baseTokenMintAddress
+  const urlParams = new URLSearchParams(window.location.search)
+  const baseFromPoolsRedirect = urlParams.get('base')
+  const quoteFromPoolsRedirect = urlParams.get('quote')
+  console.log('urlParams', urlParams.get('base'))
+  const baseSymbol = baseFromPoolsRedirect
+    ? baseFromPoolsRedirect
+    : baseTokenMintAddress
     ? getTokenNameByMintAddress(baseTokenMintAddress)
-    : 'Select token'
+    : 'RIN'
 
-  const quoteSymbol = quoteTokenMintAddress
+  const quoteSymbol = quoteFromPoolsRedirect
+    ? quoteFromPoolsRedirect
+    : quoteTokenMintAddress
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
-    : 'Select token'
+    : 'SOL'
 
   const isSwapBaseToQuote = selectedTokens?.tokenA === baseTokenMintAddress
 

@@ -50,7 +50,13 @@ export const ConnectWalletPopup = ({
     >
       <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
         <Title>Select Wallet</Title>
-        <SvgIcon src={Close} width={'2rem'} height={'auto'} />
+        <SvgIcon
+          src={Close}
+          width={'2rem'}
+          height={'auto'}
+          style={{ cursor: 'pointer' }}
+          onClick={() => onClose()}
+        />
       </RowContainer>
       <RowContainer direction={'column'}>
         {WALLET_PROVIDERS.map((provider) => {

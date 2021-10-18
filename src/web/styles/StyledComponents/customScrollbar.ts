@@ -9,5 +9,5 @@ export const customAquaScrollBar = `
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #4ed8da;
+    background: transparent;
   }`

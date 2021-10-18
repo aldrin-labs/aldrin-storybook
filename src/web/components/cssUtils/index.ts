@@ -11,7 +11,7 @@ export const customAquaScrollBar = `
   }
 
   &::-webkit-scrollbar-thumb {
-    background: #4ed8da;
+    background: transparent;
   }`
 
 //  https://stackoverflow.com/questions/21646738/convert-hex-to-rgba
