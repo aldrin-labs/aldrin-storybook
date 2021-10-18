@@ -3,6 +3,7 @@ import type { Transaction } from '@solana/web3.js';
 
 import EventEmitter from 'eventemitter3';
 import { PublicKey } from '@solana/web3.js';
+import TransportWebHid from '@ledgerhq/hw-transport-webhid';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { notify } from '../../notifications';
 import { getPublicKey, signTransaction } from './core';
@@ -67,15 +68,18 @@ export class LedgerWalletAdapter extends EventEmitter implements WalletAdapter {
 
     try {
       // @TODO: transport selection (WebUSB, WebHID, bluetooth, ...)
-      this._transport = await TransportWebUSB.create();
+      this._transport = await TransportWebHid.create();
       // @TODO: account selection
       this._publicKey = await getPublicKey(this._transport);
       this.emit('connect', this._publicKey);
     } catch (error) {
-      notify({
-        message: 'Ledger Error',
-        description: error.message,
-      });
+      if (error && error.statusCode === 0x6804) {
+        notify({ message: 'Unlock ledger device' });
+      } else {
+        notify({
+          message: 'Ledger Error',
+        });
+      }
       await this.disconnect();
     } finally {
       this._connecting = false;
