@@ -7,8 +7,6 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import { notify, notifyForDevelop } from '../notifications'
-import { NUMBER_OF_RETRIES } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
@@ -61,7 +59,7 @@ export type FarmingTicket = {
   startTime: number
   pool: string
   farmingTicket: string
-  amountToClaim: number
+  amountsToClaim: { amount: number, farmingState: string }[]
 }
 
 // closed farming tickets - which was unstaked
@@ -108,7 +106,7 @@ export const getParsedUserFarmingTickets = async ({
       startTime: ticketData.startTime.toString(),
       pool: ticketData.pool.toString(),
       farmingTicket: ticket.pubkey.toString(),
-      amountToClaim: 0,
+      amountsToClaim: [{ amount: 0, farmingState: '' }],
     }
   })
 
@@ -149,13 +147,40 @@ export const endFarming = async ({
     poolPublicKey,
   })
 
-  const filteredUserFarmingTicketsPerPool = filterClosedFarmingTickets(allUserTicketsPerPool)
+  const filteredUserFarmingTicketsPerPool = filterClosedFarmingTickets(
+    allUserTicketsPerPool
+  )
 
   if (filteredUserFarmingTicketsPerPool.length === 0) {
     return 'failed'
   }
 
   const commonTransaction = new Transaction()
+  let tx = null
+
+  const sendPartOfTransactions = async () => {
+    try {
+      tx = await sendTransaction({
+        wallet,
+        connection,
+        transaction: commonTransaction,
+        signers: [],
+        focusPopup: true,
+      })
+
+      if (!tx) {
+        return 'failed'
+      }
+    } catch (e) {
+      console.log('end farming catch error', e)
+
+      if (e.message.includes('cancelled')) {
+        return 'cancelled'
+      }
+    }
+
+    return 'success'
+  }
 
   for (let ticketData of filteredUserFarmingTicketsPerPool) {
     const endFarmingTransaction = await program.instruction.endFarming({
@@ -173,41 +198,23 @@ export const endFarming = async ({
         rent: SYSVAR_RENT_PUBKEY,
       },
     })
+
     commonTransaction.add(endFarmingTransaction)
-  }
 
-  let counter = 0
-  while (counter < NUMBER_OF_RETRIES) {
-    try {
-      if (counter > 0) {
-        await notify({
-          type: 'error',
-          message: 'Unstaking failed. Please confirm transaction again.',
-        })
-      }
-
-      const tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction: commonTransaction,
-        signers: [],
-        focusPopup: true,
-      })
-
-      if (tx) {
-        return 'success'
-      } else {
-        counter++
-      }
-    } catch (e) {
-      console.log('end farming catch error', e)
-      counter++
-
-      if (e.message.includes('cancelled')) {
-        return 'cancelled'
+    if (commonTransaction.instructions.length > 5) {
+      const result = await sendPartOfTransactions()
+      if (result !== 'success') {
+        return result
       }
     }
   }
 
-  return 'failed'
+  if (commonTransaction.instructions.length > 0) {
+    const result = await sendPartOfTransactions()
+    if (result !== 'success') {
+      return result
+    }
+  }
+
+  return 'success'
 }

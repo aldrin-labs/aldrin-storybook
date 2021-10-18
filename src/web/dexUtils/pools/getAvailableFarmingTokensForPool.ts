@@ -11,6 +11,6 @@ export const getAvailableFarmingTokensForPool = ({
   return (
     farmingTicketsMap
       .get(pool.swapToken)
-      ?.reduce((acc, ticket) => acc + ticket.amountToClaim, 0) || 0
+      ?.reduce((acc, ticket) => acc + ticket.amountsToClaim[0].amount, 0) || 0
   )
 }

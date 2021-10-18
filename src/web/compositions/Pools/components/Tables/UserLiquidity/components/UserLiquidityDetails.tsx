@@ -172,7 +172,7 @@ export const UserLiquidityDetails = ({
         justify="space-between"
         width="55%"
       >
-        <Row align="flex-start" direction="column" width="45%">
+        <Row align="flex-start" direction="column" width="50%">
           <RowDataTdText
             theme={theme}
             color={theme.palette.grey.new}
@@ -239,7 +239,7 @@ export const UserLiquidityDetails = ({
         </Row>
 
         {hasLiquidity && (
-          <Row align="flex-start" direction="column" width="30%">
+          <Row align="flex-start" direction="column" width="25%">
             <RowDataTdText
               theme={theme}
               color={theme.palette.grey.new}
@@ -418,7 +418,7 @@ export const UserLiquidityDetails = ({
         </Row>
 
         {hasFarming ? (
-          hasTokensToClaim ? (
+          hasTokensToClaim || (!hasTokensToClaim && hasStakedTokens) ? (
             <Row direction="column" width="55%" align="flex-end">
               <RowDataTdText
                 theme={theme}
@@ -506,7 +506,7 @@ export const UserLiquidityDetails = ({
                 {isPoolWaitingForUpdateAfterClaim ? <Loader /> : 'Claim reward'}
               </Button>
             </Row>
-          ) : hasPoolTokens ? (
+          ) : hasPoolTokens && !hasStakedTokens ? (
             <Row direction="column" width="55%" align="flex-end">
               <Button
                 theme={theme}
