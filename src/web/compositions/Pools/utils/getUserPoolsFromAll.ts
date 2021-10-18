@@ -26,7 +26,7 @@ export const getUserPoolsFromAll = ({
     const availableToClaimAmount =
       farmingTicketsMap
         .get(el.swapToken)
-        ?.reduce((acc, ticket) => acc + ticket.amountToClaim, 0) || 0
+        ?.reduce((acc, ticket) => acc + ticket.amountsToClaim[0].amount, 0) || 0
 
     return (
       poolTokenAmount > 0 ||

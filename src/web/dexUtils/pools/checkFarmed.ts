@@ -1,4 +1,4 @@
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { FarmingState } from '@sb/compositions/Pools/index.types'
 import {
   Connection,
   PublicKey,
@@ -13,13 +13,15 @@ import { FarmingTicket } from './endFarming'
 export const checkFarmed = async ({
   wallet,
   connection,
-  pool,
+  poolPublicKey,
   farmingTicket,
+  farming,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  pool: PoolInfo
-  farmingTicket: FarmingTicket
+  poolPublicKey: PublicKey
+  farmingTicket: PublicKey
+  farming: FarmingState
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -27,12 +29,9 @@ export const checkFarmed = async ({
     programAddress: POOLS_PROGRAM_ADDRESS,
   })
 
-  const { swapToken, farming } = pool
-  const poolPublicKey = new PublicKey(swapToken)
+  if (!farming) return null
 
-  if (farming && farming.length === 0) return null
-
-  const { farmingState, farmingSnapshots, farmingTokenVault } = farming[0]
+  const { farmingState, farmingSnapshots, farmingTokenVault } = farming
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
     [poolPublicKey.toBuffer()],
@@ -44,7 +43,7 @@ export const checkFarmed = async ({
       pool: poolPublicKey,
       farmingState: new PublicKey(farmingState),
       farmingSnapshots: new PublicKey(farmingSnapshots),
-      farmingTicket: new PublicKey(farmingTicket.farmingTicket),
+      farmingTicket: farmingTicket,
       farmingTokenVault: new PublicKey(farmingTokenVault),
       poolSigner: vaultSigner,
       clock: SYSVAR_CLOCK_PUBKEY,

@@ -17,6 +17,7 @@ import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
+import { checkFarmed } from './checkFarmed'
 import { FarmingTicket } from './endFarming'
 
 export const withdrawFarmed = async ({
@@ -76,17 +77,47 @@ export const withdrawFarmed = async ({
     return 'success'
   }
 
-  console.log('farmingTickets', farmingTickets)
+  // console.log('farmingTickets', farmingTickets)
 
   // check farmed for every ticket and withdrawFarmed for every farming state
   for (let ticketData of farmingTickets) {
-    if (ticketData.amountToClaim === 0) continue
+    // for (let i = 0; i < pool.farming.length; i++) {
+    // for now only for fisrt farming state
+    const farmingState = pool.farming[0]
 
-    console.log('ticketData', ticketData)
+    // find amount to claim for this farming state in tickets amounts
+    const amountToClaim =
+      ticketData.amountsToClaim.find(
+        (amountToClaim) =>
+          amountToClaim.farmingState === farmingState.farmingState
+      )?.amount || 0
 
-    // const farmingState = pool.farming[0]
+    // check amount for every farming state
+    if (amountToClaim === 0) continue
 
-    for (let farmingState of pool.farming) {
+    // console.log('amountToClaim', amountToClaim, ticketData.farmingTicket)
+    // if (
+    //   farmingState.farmingState ===
+    //     'HKP7u6F8iN7SZThjcE2E5nC3VLZELqwW1HKC8VSc52Kv' &&
+    //   ticketData.farmingTicket ===
+    //     'DfvB5qfSdzCBg87tmUfaCSe7adyQUP4Zrro4pkbyaNyX'
+    // ) {
+    //   await sendTransaction({
+    //     wallet,
+    //     connection,
+    //     transaction: new Transaction().add(
+    //       await checkFarmed({
+    //         wallet,
+    //         connection,
+    //         farming: farmingState,
+    //         farmingTicket: new PublicKey(ticketData.farmingTicket),
+    //         poolPublicKey: new PublicKey(pool.swapToken),
+    //       })
+    //     ),
+    //     signers: [],
+    //   })
+    // }
+
     const farmingTokenAccountAddress = allTokensDataMap.get(
       farmingState.farmingTokenMint
     )?.address
@@ -151,7 +182,7 @@ export const withdrawFarmed = async ({
         return result
       }
     }
-    }
+    // }
   }
 
   if (commonTransaction.instructions.length > 0) {

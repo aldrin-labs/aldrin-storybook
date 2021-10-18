@@ -59,7 +59,7 @@ export type FarmingTicket = {
   startTime: number
   pool: string
   farmingTicket: string
-  amountToClaim: number
+  amountsToClaim: { amount: number, farmingState: string }[]
 }
 
 // closed farming tickets - which was unstaked
@@ -106,7 +106,7 @@ export const getParsedUserFarmingTickets = async ({
       startTime: ticketData.startTime.toString(),
       pool: ticketData.pool.toString(),
       farmingTicket: ticket.pubkey.toString(),
-      amountToClaim: 0,
+      amountsToClaim: [{ amount: 0, farmingState: '' }],
     }
   })
 

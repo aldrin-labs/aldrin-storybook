@@ -33,9 +33,8 @@ import {
 } from '@sb/dexUtils/pools/endFarming'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { addAmountToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountToClaimForFarmingTickets'
+import { addAmountsToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountsToClaimForFarmingTickets'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
-import { takePoolsFarmingSnapshots } from '@sb/dexUtils/pools/takeSnapshots'
 
 const TablesSwitcher = ({
   theme,
@@ -94,7 +93,7 @@ const TablesSwitcher = ({
         connection,
       })
 
-      const allUserFarmingTicketsWithAmountToClaim = await addAmountToClaimForFarmingTickets(
+      const allUserFarmingTicketsWithAmountsToClaim = await addAmountsToClaimForFarmingTickets(
         {
           pools: getPoolsInfo,
           wallet,
@@ -103,7 +102,7 @@ const TablesSwitcher = ({
         }
       )
 
-      const farmingTicketsMap = allUserFarmingTicketsWithAmountToClaim.reduce(
+      const farmingTicketsMap = allUserFarmingTicketsWithAmountsToClaim.reduce(
         (acc, farmingTicket) => {
           const { pool } = farmingTicket
 
