@@ -92,7 +92,6 @@ const TablesSwitcher = ({
         wallet,
         connection,
       })
-
       const allUserFarmingTicketsWithAmountsToClaim = await addAmountsToClaimForFarmingTickets(
         {
           pools: getPoolsInfo,

@@ -317,7 +317,11 @@ export const combineUserLiquidityData = ({
                       )}
                     </span>{' '}
                     {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
-                    Day for each $<span style={{ color: '#53DF11' }}>1000</span>
+                    Day
+                  </RowDataTdText>{' '}
+                  <RowDataTdText>
+                    {' '}
+                    for each $<span style={{ color: '#53DF11' }}>1000</span>
                   </RowDataTdText>
                 </Row>
               </RowContainer>

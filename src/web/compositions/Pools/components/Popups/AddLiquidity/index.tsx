@@ -198,7 +198,7 @@ export const AddLiquidityPopup = ({
     baseTokenPrice * selectedPool.tvl.tokenA +
     quoteTokenPrice * selectedPool.tvl.tokenB
 
-  return (
+    return (
     <DialogWrapper
       theme={theme}
       PaperComponent={StyledPaper}

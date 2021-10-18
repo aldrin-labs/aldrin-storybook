@@ -18,7 +18,6 @@ export const addAmountsToClaimForFarmingTickets = async ({
   connection: Connection
   allUserFarmingTickets: FarmingTicket[]
 }): Promise<FarmingTicket[]> => {
-  const rewardsToClaimTransaction = new Transaction()
   const poolsMap = pools.reduce(
     (acc, pool) => acc.set(pool.swapToken, pool),
     new Map()
@@ -27,6 +26,10 @@ export const addAmountsToClaimForFarmingTickets = async ({
   const ticketsWithExistingPools = allUserFarmingTickets.filter((ticket) =>
     poolsMap.has(ticket.pool)
   )
+
+  let rewardsToClaimTransaction = new Transaction()
+  let ticketsCounter = 0
+  let commonValueLogs: string[] = []
 
   for (let ticket of ticketsWithExistingPools) {
     const pool = pools.find((pool) => pool.swapToken === ticket.pool)
@@ -49,34 +52,56 @@ export const addAmountsToClaimForFarmingTickets = async ({
         console.error(e)
         continue
       }
+      ticketsCounter++
 
       transaction && rewardsToClaimTransaction.add(transaction)
+
+      if (ticketsCounter >= 8) {
+        // @ts-ignore
+        rewardsToClaimTransaction.feePayer = wallet.publicKey
+
+        const { value } = await simulateTransaction(
+          connection,
+          rewardsToClaimTransaction,
+          connection.commitment ?? 'single'
+        )
+
+        // for through logs + use index to get ticket -> pool and add claim value
+        if (value.err) {
+          return ticketsWithExistingPools
+        }
+
+        commonValueLogs.concat(value.logs || [])
+        rewardsToClaimTransaction = new Transaction()
+        ticketsCounter = 0
+      }
     }
   }
 
   // if no tickets to check
-  if (rewardsToClaimTransaction.instructions.length === 0)
-    return ticketsWithExistingPools
+  if (rewardsToClaimTransaction.instructions.length > 0) {
+    // @ts-ignore
+    rewardsToClaimTransaction.feePayer = wallet.publicKey
 
-  // @ts-ignore
-  rewardsToClaimTransaction.feePayer = wallet.publicKey
+    const { value } = await simulateTransaction(
+      connection,
+      rewardsToClaimTransaction,
+      connection.commitment ?? 'single'
+    )
 
-  const { value } = await simulateTransaction(
-    connection,
-    rewardsToClaimTransaction,
-    connection.commitment ?? 'single'
-  )
+    console.log('value', value)
 
-  console.log('value', value)
+    // for through logs + use index to get ticket -> pool and add claim value
+    if (value.err) {
+      return ticketsWithExistingPools
+    }
 
-  // for through logs + use index to get ticket -> pool and add claim value
-  if (value.err) {
-    return ticketsWithExistingPools
+    commonValueLogs.concat(value.logs || [])
   }
 
   // match amounts via index (ticket for every farming state, then next ticket)
   const amountsToClaim =
-    value.logs
+    commonValueLogs
       ?.filter((log) => log.includes(START_OF_LOG_WITH_AMOUNT_TO_CLAIM))
       .map((log, i) =>
         parseFloat(log.replace(START_OF_LOG_WITH_AMOUNT_TO_CLAIM, ''))
@@ -93,8 +118,11 @@ export const addAmountsToClaimForFarmingTickets = async ({
 
     const amountsToClaimForTicket = pool.farming.map((farming, index) => {
       const amountForFarmingState = amountsToClaim[counter + index] || 0
-      return { farmingState: farming.farmingState, amount: amountForFarmingState }
-    });
+      return {
+        farmingState: farming.farmingState,
+        amount: amountForFarmingState,
+      }
+    })
 
     counter += pool.farming.length
 

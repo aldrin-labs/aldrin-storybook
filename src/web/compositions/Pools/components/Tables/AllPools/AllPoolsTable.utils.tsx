@@ -38,6 +38,7 @@ import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityD
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
+import { Link } from 'react-router-dom'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -200,9 +201,6 @@ export const combineAllPoolsData = ({
       const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
         ? dailyFarmingValue / (tvlUSD / 1000)
         : 0
-      let swapUrl = new URL(
-        `http://localhost:3000/swaps?base=${baseSymbol}&quote=${quoteSymbol}`
-      )
 
       const isFarmingEnded =
         farmingState && farmingState.tokensTotal === farmingState.tokensUnlocked
@@ -215,9 +213,8 @@ export const combineAllPoolsData = ({
               justify="flex-start"
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
-              <a
-                href={swapUrl.toString()}
-                target="_blank"
+              <Link
+                to={`/swaps?base=${baseSymbol}&quote=${quoteSymbol}`}
                 style={{ textDecoration: 'none' }}
               >
                 <TokenIconsContainer
@@ -225,7 +222,7 @@ export const combineAllPoolsData = ({
                   tokenA={el.tokenA}
                   tokenB={el.tokenB}
                 />
-              </a>
+              </Link>
               {el.locked ? (
                 <DarkTooltip title={'Founders liquidity locked.'}>
                   <div>
@@ -348,7 +345,11 @@ export const combineAllPoolsData = ({
                       )}
                     </span>{' '}
                     {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
-                    Day for each $<span style={{ color: '#53DF11' }}>1000</span>
+                    Day
+                  </RowDataTdText>
+                  <RowDataTdText>
+                    {' '}
+                    for each $<span style={{ color: '#53DF11' }}>1000</span>
                   </RowDataTdText>
                 </Row>
               </RowContainer>

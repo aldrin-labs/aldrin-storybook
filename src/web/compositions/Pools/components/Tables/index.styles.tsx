@@ -5,6 +5,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Text } from '@sb/compositions/Addressbook'
 import React from 'react'
 import { Loading } from '@sb/components/Loading'
+import { Loader } from '@sb/components/Loader/Loader'
 
 export const LiquidityDataContainer = styled(Row)`
   width: 50%;
@@ -119,15 +120,7 @@ export const Button = styled(
     ...props
   }) => (
     <BtnCustom disabled={disabled} textTransform={textTransform} {...props}>
-      {showLoader ? (
-        <Loading
-          color={'#fff'}
-          size={24}
-          style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
-        />
-      ) : (
-        children
-      )}
+      {showLoader ? <Loader /> : children}
     </BtnCustom>
   )
 )`
@@ -168,7 +161,7 @@ export const TableContainer = styled(RowContainer)`
 `
 
 export const AmountText = styled.span`
-  color: #53DF11;
+  color: #53df11;
 `
 
 export const WhiteText = styled.span`

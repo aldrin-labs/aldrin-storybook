@@ -326,10 +326,10 @@ export const UserLiquidityDetails = ({
               fontFamily={'Avenir Next Medium'}
               style={{ marginBottom: '3.5rem' }}
             >
-              Staked:{' '}
+              Staked:
               <AmountText style={{ padding: '0 0.5rem' }}>
                 {stripByAmountAndFormat(stakedTokens)}
-              </AmountText>{' '}
+              </AmountText>
               <span>
                 Pool Tokens
                 <AmountText style={{ padding: '0 0.5rem' }}>
@@ -447,7 +447,7 @@ export const UserLiquidityDetails = ({
                 Available to claim:
                 <AmountText style={{ padding: '0 0.5rem' }}>
                   {stripByAmountAndFormat(availableToClaimFarmingTokens)}
-                </AmountText>{' '}
+                </AmountText>
                 {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
               </RowDataTdText>
               <Button
