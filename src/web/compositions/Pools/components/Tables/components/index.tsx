@@ -29,10 +29,12 @@ export const SearchInputWithLoop = ({
         }}
         placeholder={placeholder}
       />
-      <SvgIcon
+      {/* <SvgIcon
         src={Loop}
+        height={'1.6rem'}
+        width={'1.6rem'}
         style={{ position: 'absolute', right: '2rem', cursor: 'pointer' }}
-      />
+      /> */}
     </Row>
   )
 }
@@ -45,7 +47,7 @@ export const TokenIconsContainer = ({
   tokenB: string
 }) => {
   return (
-    <Row justify="end">
+    <Row wrap="nowrap" justify={'end'}>
       <IconsContainer>
         <TokenIconContainer zIndex="1" left="0">
           <TokenIcon width="3rem" height="3rem" mint={tokenA} />

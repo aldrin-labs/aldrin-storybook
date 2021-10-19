@@ -16,9 +16,12 @@ import {
   TokenSwap,
   TOKEN_SWAP_PROGRAM_ID,
   TokenFarmingLayout,
+  TokenSwapLayout,
 } from './token-swap/token-swap'
 import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 import { notify } from './notifications'
+import { DEX_PID } from '@core/config/dex'
+import { MARKET_STATE_LAYOUT_V3 } from '@project-serum/serum'
 
 const OWNER: PublicKey = new PublicKey(
   '5rWKzCUY9ESdmobivjyjQzvdfHSePf37WouX39sMmfx9'
@@ -27,6 +30,7 @@ const OWNER: PublicKey = new PublicKey(
 const ownerKey = OWNER.toString()
 
 const SLIPPAGE_PERCENTAGE = 5
+export const NUMBER_OF_RETRIES = 5
 
 // Pool fees
 const TRADING_FEE_NUMERATOR = 25
@@ -969,68 +973,75 @@ export async function swapWithHandleNativeSol({
  *
  * @param wallet The Wallet that will sign transactions
  * @param connection The connection to use
- * @param tokenSwapPublicKey The token swap address
- * @param poolTokenAmount The amount of  user's pool tokens
- * @param tokenSwap Loaded TokenSwap interface
+ * @param poolTokenMint,
+ * @param baseTokenMint,
+ * @param quoteTokenMint,
+ * @param basePoolTokenPublicKey,
+ * @param quotePoolTokenPublicKey,
+ * @param poolPublicKey,
+ * @param poolTokenAmount,
  */
 export const getMaxWithdrawAmount = async ({
   wallet,
   connection,
-  tokenSwapPublicKey,
+  poolTokenMint,
+  baseTokenMint,
+  quoteTokenMint,
+  basePoolTokenPublicKey,
+  quotePoolTokenPublicKey,
+  poolPublicKey,
   poolTokenAmount,
-  tokenSwap,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  tokenSwapPublicKey: PublicKey
+  poolTokenMint: PublicKey
+  baseTokenMint: PublicKey
+  quoteTokenMint: PublicKey
+  basePoolTokenPublicKey: PublicKey
+  quotePoolTokenPublicKey: PublicKey
+  poolPublicKey: PublicKey
   poolTokenAmount: number
-  tokenSwap?: TokenSwap
 }): Promise<[number, number, number, number]> => {
-  let tokenSwapClass = tokenSwap
-
-  if (!tokenSwapClass) {
-    tokenSwapClass = await TokenSwap.loadTokenSwap(
-      wallet,
-      connection,
-      tokenSwapPublicKey,
-      TOKEN_SWAP_PROGRAM_ID
-    )
-  }
-
-  const {
-    tokenAccountA,
-    tokenAccountB,
-    mintA,
-    mintB,
-    poolToken: poolTokenMint,
-  } = tokenSwapClass
-
-  const tokenPool = new Token(
+  const poolToken = new Token(
     wallet,
     connection,
     poolTokenMint,
     TOKEN_PROGRAM_ID
   )
 
-  const poolMintInfo = await tokenPool.getMintInfo()
+  const poolMintInfo = await poolToken.getMintInfo()
   const supply = poolMintInfo.supply.toNumber()
 
-  const tokenMintA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
-  const poolTokenA = await tokenMintA.getAccountInfo(tokenAccountA)
-  const poolTokenAmountA = poolTokenA.amount.toNumber()
+  const basePoolToken = new Token(
+    wallet,
+    connection,
+    baseTokenMint,
+    TOKEN_PROGRAM_ID
+  )
+  const basePoolTokenInfo = await basePoolToken.getAccountInfo(
+    basePoolTokenPublicKey
+  )
+  const basePoolTokenAmount = basePoolTokenInfo.amount.toNumber()
 
-  const tokenMintB = new Token(wallet, connection, mintB, TOKEN_PROGRAM_ID)
-  const poolTokenB = await tokenMintB.getAccountInfo(tokenAccountB)
-  const poolTokenAmountB = poolTokenB.amount.toNumber()
+  const quotePoolToken = new Token(
+    wallet,
+    connection,
+    quoteTokenMint,
+    TOKEN_PROGRAM_ID
+  )
+  const quotePoolTokenInfo = await quotePoolToken.getAccountInfo(
+    quotePoolTokenPublicKey
+  )
+  const quotePoolTokenAmount = quotePoolTokenInfo.amount.toNumber()
 
-  const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
-  const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply
+  const withdrawAmountTokenA = (basePoolTokenAmount * poolTokenAmount) / supply
+  const withdrawAmountTokenB = (quotePoolTokenAmount * poolTokenAmount) / supply
 
   return [
     withdrawAmountTokenA,
     withdrawAmountTokenB,
-    poolTokenAmountA,
-    poolTokenAmountB,
+    basePoolTokenAmount,
+    quotePoolTokenAmount,
   ]
 }
 
@@ -1093,7 +1104,7 @@ export const createSOLAccountAndClose = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-}): Promise<[PublicKey, Transaction, Account, Transaction]> => {
+}): Promise<[Account, Transaction, Transaction]> => {
   // if SOL - create new token address
 
   const tokenMint = new Token(
@@ -1104,22 +1115,21 @@ export const createSOLAccountAndClose = async ({
   )
 
   const [
-    createdWrappedAccount,
-    createWrappedAccountSigner,
+    _,
+    createWrappedAccount,
     createWrappedAccountTransaction,
   ] = await tokenMint.createAccount(wallet.publicKey)
 
   const [closeAccountTransaction] = await tokenMint.closeAccount(
-    createdWrappedAccount,
+    createWrappedAccount.publicKey,
     wallet.publicKey,
     wallet.publicKey,
     []
   )
 
   return [
-    createdWrappedAccount,
+    createWrappedAccount,
     createWrappedAccountTransaction,
-    createWrappedAccountSigner,
     closeAccountTransaction,
   ]
 }
@@ -1136,7 +1146,7 @@ export const transferSOLToWrappedAccountAndClose = async ({
   wallet: WalletAdapter
   connection: Connection
   amount: number
-}): Promise<[PublicKey, Transaction, Account, Transaction]> => {
+}): Promise<[Account, Transaction, Transaction]> => {
   // if SOL - create new token address
 
   const tokenMint = new Token(
@@ -1147,9 +1157,9 @@ export const transferSOLToWrappedAccountAndClose = async ({
   )
 
   const [
-    createdWrappedAccount,
+    createdWrappedAccountPubkey,
     createWrappedAccountTransaction,
-    createWrappedAccountSigner,
+    createWrappedAccount,
   ] = await Token.createWrappedNativeAccount(
     wallet,
     connection,
@@ -1159,16 +1169,15 @@ export const transferSOLToWrappedAccountAndClose = async ({
   )
 
   const [closeAccountTransaction] = await tokenMint.closeAccount(
-    createdWrappedAccount,
+    createdWrappedAccountPubkey,
     wallet.publicKey,
     wallet.publicKey,
     []
   )
 
   return [
-    createdWrappedAccount,
+    createWrappedAccount,
     createWrappedAccountTransaction,
-    createWrappedAccountSigner,
     closeAccountTransaction,
   ]
 }
@@ -1217,4 +1226,34 @@ export const getParsedTransactionData = async ({
   } catch (e) {
     console.log('e', e)
   }
+}
+
+export const getPools = async (connection, tokenSwapProgramId) => {
+  const tokenSwapOwnedAccounts = await connection.getProgramAccounts(
+    tokenSwapProgramId,
+    'finalized'
+  )
+
+  console.log(
+    'tokenSwapOwnedAccounts',
+    tokenSwapOwnedAccounts
+      .filter((a) => a.account.data.length === 537)
+      .map((a) => a.pubkey.toString())
+  )
+}
+
+export const getMarketByTokens = async (
+  connection: Connection,
+  tokenA: PublicKey,
+  tokenB: PublicKey
+) => {
+  const markets = await connection.getProgramAccounts(DEX_PID, {
+    filters: [
+      { memcmp: { offset: MARKET_STATE_LAYOUT_V3.offsetOf('baseMint'), bytes: tokenA.toBase58() } },
+      { memcmp: { offset: MARKET_STATE_LAYOUT_V3.offsetOf('quoteMint'), bytes: tokenB.toBase58() } },
+    ],
+  })
+
+  // decode later
+  console.log('markets', markets)
 }

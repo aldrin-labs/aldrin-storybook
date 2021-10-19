@@ -1,8 +1,10 @@
 import styled from 'styled-components'
 
+import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Text } from '@sb/components/Typography'
-import { Row } from '../../../AnalyticsRoute/index.styles'
+import { Text } from '@sb/compositions/Addressbook'
+import React from 'react'
+import { Loading } from '@sb/components/Loading'
 
 export const LiquidityDataContainer = styled(Row)`
   width: 50%;
@@ -57,6 +59,8 @@ export const RowDataTd = styled(RowTd)`
 
 export const RowDataTdText = styled(Text)`
   white-space: nowrap;
+  font-family: ${(props: TextProps) => props.fontFamily || 'Avenir Next Thin'};
+  color: ${(props) => props.color || '#fbf2f2'};
 `
 
 export const RowDataTdTopText = styled(RowDataTdText)`
@@ -92,7 +96,7 @@ export const SearchInput = styled.input`
   color: #f2fbfb;
   background: #383b45;
   border: 0.1rem solid #3a475c;
-  border-radius: 1.5rem;
+  border-radius: 1.2rem;
   font-family: 'Avenir Next Thin';
   height: 4rem;
   width: ${(props) => props.width || '100%'};
@@ -102,4 +106,50 @@ export const SearchInput = styled.input`
     font-size: 1.7rem;
     font-family: 'Avenir Next Thin';
   }
+`
+export const GreenButton = styled(
+  ({
+    disabled,
+    showLoader,
+    children,
+    textTransform = 'capitalize',
+    ...props
+  }) => (
+    <BtnCustom disabled={disabled} textTransform={textTransform} {...props}>
+      {showLoader ? (
+        <Loading
+          color={'#fff'}
+          size={24}
+          style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
+        />
+      ) : (
+        children
+      )}
+    </BtnCustom>
+  )
+)`
+  font-size: 1.4rem;
+  height: 4.5rem;
+  background-color: ${(props: { disabled: boolean; theme: Theme }) =>
+    !props.disabled ? '#A5E898' : props.theme.palette.grey.title};
+  border-radius: 1rem;
+  border-color: none;
+  cursor: pointer;
+  color: ${(props: { disabled: boolean }) =>
+    !props.disabled ? '#17181A' : '#fff'};
+  border: none;
+`
+
+export const TableContainer = styled(RowContainer)`
+  align-items: flex-start;
+  min-height: 30rem;
+  position: relative;
+`
+
+export const AmountText = styled.span`
+  color: #a5e898;
+`
+
+export const WhiteText = styled.span`
+  color: #fbf2f2;
 `

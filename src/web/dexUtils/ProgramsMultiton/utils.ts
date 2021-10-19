@@ -1,0 +1,5 @@
+export const POOLS_PROGRAM_ADDRESS =
+  'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
+
+export const MARKET_ORDER_PROGRAM_ADDRESS =
+  'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'

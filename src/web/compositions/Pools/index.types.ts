@@ -1,3 +1,15 @@
+export type FarmingState = {
+  farmingState: string
+  farmingTokenVault: string
+  farmingTokenMint: string
+  farmingSnapshots: string
+  tokensUnlocked: number
+  tokensTotal: number
+  tokensPerPeriod: number
+  periodLength: number
+  vestingPeriod: number
+}
+
 export type PoolInfo = {
   name: string
   parsedName: string
@@ -5,15 +17,10 @@ export type PoolInfo = {
   tokenB: string
   swapToken: string
   poolTokenMint: string
+  farming: FarmingState[]
   tvl: {
     tokenA: number
     tokenB: number
-    USD: number
-  }
-  totalFeesPaid: {
-    tokenA: number
-    tokenB: number
-    USD: number
   }
   apy24h: number // %
   supply: number

@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import SvgIcon from '@sb/components/SvgIcon'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
-import { PoolInfo, PoolsPrices } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Theme } from '@material-ui/core'
 
 import { Text } from '@sb/components/Typography'
@@ -41,7 +41,11 @@ import { InputWithSelectorForSwaps } from './components/Inputs/index'
 import { ReloadTimer, TimerButton } from '../Rebalance/components/ReloadTimer'
 import { BlockTemplate } from '../Pools/index.styles'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
+import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
+import { PublicKey } from '@solana/web3.js'
 import { WarningPopup } from '../Chart/components/WarningPopup'
+import { swap } from '@sb/dexUtils/pools/swap'
+import { mock } from '../Pools/components/Tables/AllPools/AllPoolsTable.utils'
 
 const SwapsPage = ({
   theme,
@@ -54,7 +58,7 @@ const SwapsPage = ({
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
-  getDexTokensPricesQuery: { getDexTokensPrices: PoolsPrices[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   getPoolsInfoQueryRefetch: () => void
   getDexTokensPricesQueryRefetch: () => void
 }) => {
@@ -93,7 +97,8 @@ const SwapsPage = ({
   //       market.tokenB === getTokenNameByMintAddress(quoteTokenMintAddress)
   // )
 
-  const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
+  // const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
+  const selectedTokens = mock.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
@@ -146,24 +151,7 @@ const SwapsPage = ({
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
     : 'Select token'
 
-  const baseTokenPrice =
-    getDexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === baseTokenMintAddress ||
-        tokenInfo.symbol === baseSymbol
-    )?.price || 10
-
-  const quoteTokenPrice =
-    getDexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === quoteTokenMintAddress ||
-        tokenInfo.symbol === quoteSymbol
-    )?.price || 10
-
-  const swapTokens = ALL_TOKENS_MINTS.map((el) => el.address.toString())
-
-  const baseTokenSwap =
-    selectedTokens?.tokenA === baseTokenMintAddress ? 'tokenA' : 'tokenB'
+  const isSwapBaseToQuote = selectedTokens?.tokenA === baseTokenMintAddress
 
   const [poolAmountTokenA, poolAmountTokenB] = [
     selectedTokens?.tvl.tokenA,
@@ -217,10 +205,9 @@ const SwapsPage = ({
     await setQuoteAmount(baseAmount)
   }
 
-  const poolsAmountDiff =
-    baseTokenSwap === 'tokenA'
-      ? +poolAmountTokenA / +baseAmount
-      : +poolAmountTokenA / +quoteAmount
+  const poolsAmountDiff = isSwapBaseToQuote
+    ? +poolAmountTokenA / +baseAmount
+    : +poolAmountTokenA / +quoteAmount
 
   // price impact due to curve
   const rawSlippage = 100 / (poolsAmountDiff + 1)
@@ -240,9 +227,14 @@ const SwapsPage = ({
   const isButtonDisabled = isTokenABalanceInsufficient || !selectedTokens
 
   return (
-    <RowContainer direction="column" height="100%">
+    <RowContainer
+      direction={'column'}
+      height={'100%'}
+      style={{
+        background: theme.palette.grey.additional,
+      }}
+    >
       <>
-        {' '}
         <BlockTemplate
           theme={theme}
           width="50rem"
@@ -401,44 +393,46 @@ const SwapsPage = ({
                 onClick={async () => {
                   if (!selectedTokens) return
 
-                  const swapAmountInDecimals =
-                    baseTokenSwap === 'tokenA'
-                      ? baseTokenDecimals
-                      : quoteTokenDecimals
-
-                  const swapAmountOutDecimals =
-                    baseTokenSwap === 'tokenA'
-                      ? quoteTokenDecimals
-                      : baseTokenDecimals
-
-                  const userTokenAccountA =
-                    baseTokenSwap === 'tokenA'
-                      ? userBaseTokenAccount
-                      : userQuoteTokenAccount
-
-                  const userTokenAccountB =
-                    baseTokenSwap === 'tokenA'
-                      ? userQuoteTokenAccount
-                      : userBaseTokenAccount
-
-                  const [transaction, signers] = await swapWithHandleNativeSol({
-                    wallet,
-                    connection,
-                    userTokenAccountA: new PublicKey(userTokenAccountA),
-                    userTokenAccountB: new PublicKey(userTokenAccountB),
-                    tokenSwapPublicKey: new PublicKey(selectedTokens.swapToken),
-                    swapAmountIn: +baseAmount * 10 ** swapAmountInDecimals,
-                    swapAmountOut: +totalWithFees * 10 ** swapAmountOutDecimals,
-                    baseSwapToken: baseTokenSwap,
+                  console.log('baseTokenDecimals', {
+                    baseTokenDecimals,
+                    quoteTokenDecimals,
                   })
 
+                  const swapAmountIn = +baseAmount * 10 ** baseTokenDecimals
+                  const swapAmountOut =
+                    +totalWithFees * 10 ** quoteTokenDecimals
+
+                  // for cases with SOL token
+                  const isBaseTokenSOL = baseSymbol === 'SOL'
+                  const isQuoteTokenSOL = quoteSymbol === 'SOL'
+
+                  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
+
+                  const isNativeSOLSelected =
+                    allTokensData[0]?.address === userBaseTokenAccount ||
+                    allTokensData[0]?.address === userQuoteTokenAccount
+
                   try {
-                    const result = await sendAndConfirmTransactionViaWallet(
+                    const result = await swap({
                       wallet,
                       connection,
-                      transaction,
-                      ...signers
-                    )
+                      poolPublicKey: new PublicKey(selectedTokens.swapToken),
+                      userBaseTokenAccount: new PublicKey(
+                        isSwapBaseToQuote
+                          ? userBaseTokenAccount
+                          : userQuoteTokenAccount
+                      ),
+                      userQuoteTokenAccount: new PublicKey(
+                        isSwapBaseToQuote
+                          ? userQuoteTokenAccount
+                          : userBaseTokenAccount
+                      ),
+                      swapAmountIn,
+                      swapAmountOut,
+                      isSwapBaseToQuote,
+                      transferSOLToWrapped:
+                        isPoolWithSOLToken && isNativeSOLSelected,
+                    })
 
                     await notify({
                       type: result ? 'success' : 'error',
@@ -526,7 +520,7 @@ const SwapsPage = ({
       />
 
       <SelectCoinPopup
-        getPoolsInfoQuery={getPoolsInfoQuery}
+        poolsInfo={mock}
         theme={theme}
         // mints={swapTokens}
         mints={[...new Set(mints)]}
@@ -569,12 +563,12 @@ const SwapsPage = ({
         close={() => openTokensAddressesPopup(false)}
       />
 
-      <WarningPopup
+      {/* <WarningPopup
         theme={theme}
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
-        isSwapPage
-      />
+        isSwapPage={true}
+      /> */}
     </RowContainer>
   )
 }

@@ -2,6 +2,7 @@ import {
   Account,
   Commitment,
   Connection,
+  Keypair,
   PublicKey,
   RpcResponseAndContext,
   SimulatedTransactionResponse,
@@ -860,7 +861,7 @@ export async function sendTransaction({
 }: {
   transaction: Transaction
   wallet: WalletAdapter
-  signers: Account[]
+  signers: (Account | Keypair)[]
   connection: Connection
   sentMessage?: string
   successMessage?: string
@@ -873,7 +874,7 @@ export async function sendTransaction({
     await connection.getRecentBlockhash('max')
   ).blockhash
 
-  console.log('signers', signers)
+  console.log('signers', signers, wallet)
 
   transaction.setSigners(
     wallet.publicKey,

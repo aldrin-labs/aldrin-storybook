@@ -119,21 +119,20 @@ export const placeAllOrders = async ({
 
       // change account to use from native to wrapped
       const [
-        SOLTokenAddress,
+        wrappedAccount,
         createWrappedAccountTransaction,
-        createWrappedAccountTransactionSigner,
         closeAccountTransaction,
       ] = result
 
       // set new sol accout
       if (isSOLBaseAccount) {
-        tokenAccountA = SOLTokenAddress.toString()
+        tokenAccountA = wrappedAccount.publicKey.toString()
       } else {
-        tokenAccountB = SOLTokenAddress.toString()
+        tokenAccountB = wrappedAccount.publicKey.toString()
       }
 
       commonTransaction.add(createWrappedAccountTransaction)
-      commonSigners.push(createWrappedAccountTransactionSigner)
+      commonSigners.push(wrappedAccount)
 
       afterSwapTransaction.add(closeAccountTransaction)
     }

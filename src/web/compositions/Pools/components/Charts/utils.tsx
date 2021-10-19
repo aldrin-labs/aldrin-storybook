@@ -115,7 +115,7 @@ const createTotalVolumeLockedChart = ({
           borderWidth: 2,
           pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: transformedData.map((item, i) => ({ x: i, y: item.vol })),
+          data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
         },
       ],
     },
@@ -148,7 +148,7 @@ const createTotalVolumeLockedChart = ({
                 ? `$${stripDigitPlaces(value / 1000000, 2)}m`
                 : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
             color: '#F5F5FB',
-            stepSize: data[data.length - 1].vol / 5,
+            stepSize: data[data.length - 1]?.vol / 5,
             font: {
               size: +(width / 130).toFixed(0),
               family: 'Avenir Next',
@@ -266,7 +266,7 @@ const createTradingVolumeChart = ({
           borderWidth: 2,
           pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: transformedData.map((item, i) => ({ x: i, y: item.vol })),
+          data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
         },
       ],
     },

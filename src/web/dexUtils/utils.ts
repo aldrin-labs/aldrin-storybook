@@ -141,3 +141,7 @@ export function notEmpty<TValue>(
 ): value is TValue {
   return value !== null && value !== undefined
 }
+
+export function convertDataURIToBinary(base64: string) {
+  return new Buffer(base64, "base64")
+}
