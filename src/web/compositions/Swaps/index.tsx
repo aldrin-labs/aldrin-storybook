@@ -32,6 +32,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import {
   ALL_TOKENS_MINTS,
   ALL_TOKENS_MINTS_MAP,
+  getTokenMintAddressByName,
   getTokenNameByMintAddress,
   useAllMarketsList,
 } from '@sb/dexUtils/markets'
@@ -42,6 +43,9 @@ import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
 import { PublicKey } from '@solana/web3.js'
 import { WarningPopup } from '../Chart/components/WarningPopup'
 import { swap } from '@sb/dexUtils/pools/swap'
+
+const DEFAULT_BASE_TOKEN = 'RIN'
+const DEFAULT_QUOTE_TOKEN = 'SOL'
 
 const SwapsPage = ({
   theme,
@@ -87,19 +91,27 @@ const SwapsPage = ({
   const refreshAllTokensData = () =>
     setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
-  const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
-  const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
+  const urlParams = new URLSearchParams(window.location.search)
+  const baseFromPoolsRedirect = urlParams.get('base')
+  const quoteFromPoolsRedirect = urlParams.get('quote')
+
+  const defaultBaseTokenMint = baseFromPoolsRedirect
+    ? getTokenMintAddressByName(baseFromPoolsRedirect) || ''
+    : getTokenMintAddressByName(DEFAULT_BASE_TOKEN) || ''
+
+  const defaultQuoteTokenMint = quoteFromPoolsRedirect
+    ? getTokenMintAddressByName(quoteFromPoolsRedirect) || ''
+    : getTokenMintAddressByName(DEFAULT_QUOTE_TOKEN) || ''
+
+  const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>(
+    defaultBaseTokenMint
+  )
+  const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>(
+    defaultQuoteTokenMint
+  )
+
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
-  // const selectedTokens = marketsData.find(
-  //   (market) =>
-  //     (market.tokenA === getTokenNameByMintAddress(baseTokenMintAddress) &&
-  //       market.tokenB === getTokenNameByMintAddress(quoteTokenMintAddress)) ||
-  //     market.tokenB === getTokenNameByMintAddress(baseTokenMintAddress) ||
-  //       market.tokenB === getTokenNameByMintAddress(quoteTokenMintAddress)
-  // )
-
-  // const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
   const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
@@ -144,28 +156,20 @@ const SwapsPage = ({
     setBaseAmount(baseAmount)
     setQuoteAmount(quoteAmount)
   }
-  const urlParams = new URLSearchParams(window.location.search)
-  const baseFromPoolsRedirect = urlParams.get('base')
-  const quoteFromPoolsRedirect = urlParams.get('quote')
-  console.log('urlParams', urlParams.get('base'))
-  const baseSymbol = baseFromPoolsRedirect
-    ? baseFromPoolsRedirect
-    : baseTokenMintAddress
+
+  const baseSymbol = baseTokenMintAddress
     ? getTokenNameByMintAddress(baseTokenMintAddress)
     : 'RIN'
 
-  const quoteSymbol = quoteFromPoolsRedirect
-    ? quoteFromPoolsRedirect
-    : quoteTokenMintAddress
+  const quoteSymbol = quoteTokenMintAddress
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
     : 'SOL'
 
   const isSwapBaseToQuote = selectedTokens?.tokenA === baseTokenMintAddress
 
-  const [poolAmountTokenA, poolAmountTokenB] = [
-    selectedTokens?.tvl.tokenA,
-    selectedTokens?.tvl.tokenB,
-  ]
+  const [poolAmountTokenA, poolAmountTokenB] = selectedTokens
+    ? [selectedTokens.tvl.tokenA, selectedTokens.tvl.tokenB]
+    : [0, 0]
 
   const {
     address: userBaseTokenAccount,
@@ -226,14 +230,25 @@ const SwapsPage = ({
 
   const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
 
+  const balanceTokenA = isBaseTokenA ? baseAmount : quoteAmount
+  const balanceTokenB = isBaseTokenA ? quoteAmount : baseAmount
+
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
+  const isTokenBBalanceInsufficient = quoteAmount > +maxQuoteAmount
+
+  const isUserAmountMoreThanInPool =
+    poolAmountTokenA < balanceTokenA || poolAmountTokenB < balanceTokenB
 
   const InsufficientLiquidiy =
     baseSymbol !== 'Select token' &&
     quoteSymbol !== 'Select token' &&
     !selectedTokens
 
-  const isButtonDisabled = isTokenABalanceInsufficient || !selectedTokens
+  const isButtonDisabled =
+    isTokenABalanceInsufficient ||
+    isTokenBBalanceInsufficient ||
+    !selectedTokens ||
+    !selectedTokens.supply
 
   return (
     <RowContainer
@@ -462,8 +477,10 @@ const SwapsPage = ({
                   await refreshAllTokensData()
                 }}
               >
-                {isTokenABalanceInsufficient
-                  ? `Insufficient ${baseSymbol} Balance`
+                {isTokenABalanceInsufficient || isTokenBBalanceInsufficient
+                  ? `Insufficient ${
+                      isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
+                    } Balance`
                   : InsufficientLiquidiy
                   ? 'Insufficient liquidiy'
                   : 'Swap'}
@@ -523,6 +540,7 @@ const SwapsPage = ({
 
       <TransactionSettingsPopup
         theme={theme}
+        slippageTolerance={slippageTolerance}
         open={isTransactionSettingsPopupOpen}
         close={() => openTransactionSettingsPopup(false)}
         setSlippageTolerance={setSlippageTolerance}

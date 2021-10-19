@@ -278,6 +278,7 @@ const TablesSwitcher = ({
             theme={theme}
             open={isStakePopupOpen}
             selectedPool={selectedPool}
+            dexTokensPricesMap={dexTokensPricesMap}
             close={() => setIsStakePopupOpen(false)}
             allTokensData={allTokensData}
             refreshAllTokensData={refreshAllTokensData}
@@ -328,5 +329,6 @@ export default compose(
     }),
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
+    pollInterval: 60000 * 6,
   })
 )(TablesSwitcher)

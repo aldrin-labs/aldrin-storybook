@@ -7,7 +7,6 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 import { SvgIcon } from '@sb/components'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import {
   PoolInfo,
   DexTokensPrices,
@@ -17,7 +16,6 @@ import {
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenIconsContainer } from '../components'
 import {
-  GreenButton,
   RowDataTdText,
   RowDataTdTopText,
   TextColumnContainer,
@@ -28,11 +26,10 @@ import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 import ArrowToBottom from '@icons/greyArrow.svg'
 import ArrowToTop from '@icons/arrowToTop.svg'
 import Info from '@icons/TooltipImg.svg'
-import { mock } from '../AllPools/AllPoolsTable.utils'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { UserLiquidityDetails } from './components/UserLiquidityDetails'
+import { TablesDetails } from '../components/TablesDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
@@ -321,7 +318,7 @@ export const combineUserLiquidityData = ({
                   </RowDataTdText>{' '}
                   <RowDataTdText>
                     {' '}
-                    for each $<span style={{ color: '#53DF11' }}>1000</span>
+                    for each <span style={{ color: '#53DF11' }}>$1000</span>
                   </RowDataTdText>
                 </Row>
               </RowContainer>
@@ -360,7 +357,7 @@ export const combineUserLiquidityData = ({
           {
             row: {
               render: (
-                <UserLiquidityDetails
+                <TablesDetails
                   setIsStakePopupOpen={setIsStakePopupOpen}
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}

@@ -52,6 +52,16 @@ export const InputWithCoins = ({
               getNumberOfIntegersFromNumber(e.target.value) > 8 ||
               getNumberOfDecimalsFromNumber(e.target.value) > 8
             ) {
+              // if entered value is less than current
+              if (
+                getNumberOfIntegersFromNumber(e.target.value) <
+                  getNumberOfIntegersFromNumber(value) ||
+                getNumberOfDecimalsFromNumber(e.target.value) <
+                  getNumberOfDecimalsFromNumber(value)
+              ) {
+                onChange(e.target.value)
+                return
+              }
               onChange(value)
             } else {
               onChange(e.target.value)

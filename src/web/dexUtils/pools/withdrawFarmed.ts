@@ -80,8 +80,8 @@ export const withdrawFarmed = async ({
   // console.log('farmingTickets', farmingTickets)
 
   // check farmed for every ticket and withdrawFarmed for every farming state
-  for (let ticketData of farmingTickets) {
-    // for (let i = 0; i < pool.farming.length; i++) {
+  for (let ticketData of farmingTickets.reverse()) {
+    for (let i = 0; i < pool.farming.length; i++) {
     // for now only for fisrt farming state
     const farmingState = pool.farming[0]
 
@@ -98,9 +98,9 @@ export const withdrawFarmed = async ({
     // console.log('amountToClaim', amountToClaim, ticketData.farmingTicket)
     // if (
     //   farmingState.farmingState ===
-    //     'HKP7u6F8iN7SZThjcE2E5nC3VLZELqwW1HKC8VSc52Kv' &&
+    //     'FWbMz56rZfhVejnYbtxfx1qZc2zcFPN6Rt9rV2H6uEiz' &&
     //   ticketData.farmingTicket ===
-    //     'DfvB5qfSdzCBg87tmUfaCSe7adyQUP4Zrro4pkbyaNyX'
+    //     '8bVGGwV6xg7Wfhbk29A5djyrahVQsjohwhxiHJWwKm7A'
     // ) {
     //   await sendTransaction({
     //     wallet,
@@ -182,7 +182,7 @@ export const withdrawFarmed = async ({
         return result
       }
     }
-    // }
+    }
   }
 
   if (commonTransaction.instructions.length > 0) {

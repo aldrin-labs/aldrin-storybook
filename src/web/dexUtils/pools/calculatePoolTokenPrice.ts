@@ -20,8 +20,8 @@ export const calculatePoolTokenPrice = ({
   const base = getTokenNameByMintAddress(tokenA)
   const quote = getTokenNameByMintAddress(tokenB)
 
-  const baseTokenPrice = dexTokensPricesMap.get(base)?.price || 0
-  const quoteTokenPrice = dexTokensPricesMap.get(quote)?.price || 0
+  const baseTokenPrice = dexTokensPricesMap.get(base)?.price || 10
+  const quoteTokenPrice = dexTokensPricesMap.get(quote)?.price || 10
 
   return (
     baseTokenAmountForPoolToken * baseTokenPrice +

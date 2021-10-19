@@ -18,12 +18,19 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { startFarming } from '@sb/dexUtils/pools/startFarming'
 import { PublicKey } from '@solana/web3.js'
-import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
+import {
+  DexTokensPrices,
+  PoolInfo,
+  PoolWithOperation,
+} from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
 import dayjs from 'dayjs'
-import { estimatedTime } from '@core/utils/dateUtils'
+import { dayDuration, estimatedTime } from '@core/utils/dateUtils'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 
 export const StakePopup = ({
   theme,
@@ -31,6 +38,7 @@ export const StakePopup = ({
   close,
   selectedPool,
   allTokensData,
+  dexTokensPricesMap,
   refreshAllTokensData,
   setPoolWaitingForUpdateAfterOperation,
 }: {
@@ -38,7 +46,8 @@ export const StakePopup = ({
   open: boolean
   close: () => void
   selectedPool: PoolInfo
-  allTokensData: any
+  allTokensData: TokenInfo[]
+  dexTokensPricesMap: Map<string, DexTokensPrices>
   refreshAllTokensData: () => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
@@ -54,7 +63,26 @@ export const StakePopup = ({
   const connection = useConnection()
 
   const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
-  const farmingState = selectedPool.farming[0]
+
+  const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
+  const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
+
+  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
+  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+
+  const tvlUSD =
+    baseTokenPrice * selectedPool.tvl.tokenA +
+    quoteTokenPrice * selectedPool.tvl.tokenB
+
+  const farmingState = selectedPool.farming && selectedPool.farming[0]
+
+  const dailyFarmingValue = farmingState
+    ? farmingState.tokensPerPeriod * (dayDuration / farmingState.periodLength)
+    : 0
+
+  const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
+    ? dailyFarmingValue / (tvlUSD / 1000)
+    : 0
 
   if (!farmingState) return null
   return (
@@ -94,8 +122,18 @@ export const StakePopup = ({
       <RowContainer justify={'space-between'}>
         <Text>Est. rewards:</Text>
         <Text>
-          <span style={{ color: '#53DF11' }}>12</span> RIN/Day for each $
-          <span style={{ color: '#53DF11' }}>1000</span>
+          <Row align="flex-start">
+            <span style={{ color: '#53DF11', paddingRight: '.5rem' }}>
+              {stripByAmountAndFormat(
+                dailyFarmingValuePerThousandDollarsLiquidity
+              )}
+            </span>{' '}
+            {getTokenNameByMintAddress(farmingState.farmingTokenMint)} / Day for
+            each{' '}
+            <span style={{ color: '#53DF11', paddingLeft: '.5rem' }}>
+              $1000
+            </span>
+          </Row>
         </Text>
       </RowContainer>
       <HintContainer justify={'flex-start'} margin="2rem 0">

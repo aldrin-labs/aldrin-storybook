@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -9,6 +9,10 @@ import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import {
+  getNumberOfDecimalsFromNumber,
+  getNumberOfIntegersFromNumber,
+} from '@core/utils/chartPageUtils'
 
 const StyledPaper = styled(Paper)`
   height: auto;
@@ -59,13 +63,16 @@ export const TransactionSettingsPopup = ({
   theme,
   close,
   open,
+  slippageTolerance,
   setSlippageTolerance,
 }: {
   theme: Theme
   close: () => void
   open: boolean
+  slippageTolerance: number
   setSlippageTolerance: (arg: number) => void
 }) => {
+  const [localSlippage, setLocalSlippage] = useState('')
   const handleKeyDown = (event: any) => {
     if (event.key === 'Enter') {
       close()
@@ -110,8 +117,19 @@ export const TransactionSettingsPopup = ({
         <Row style={{ position: 'relative' }}>
           <ValueInput
             onChange={(e) => {
+              if (
+                getNumberOfIntegersFromNumber(e.target.value) > 2 ||
+                getNumberOfDecimalsFromNumber(e.target.value) > 2
+              ) {
+                setSlippageTolerance(slippageTolerance)
+                setLocalSlippage(slippageTolerance)
+                return
+              }
+
               setSlippageTolerance(e.target.value)
+              setLocalSlippage(e.target.value)
             }}
+            value={localSlippage}
             placeholder={'1.00'}
             theme={theme}
             onKeyDown={handleKeyDown}

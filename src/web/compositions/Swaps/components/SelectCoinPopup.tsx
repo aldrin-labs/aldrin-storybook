@@ -184,9 +184,9 @@ export const SelectCoinPopup = ({
                 <Row wrap={'nowrap'}>
                   <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
                   <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
-                  {!isPoolExist ? (
+                  {/* {!isPoolExist ? (
                     <TokenLabel>Insufficient Liquidity</TokenLabel>
-                  ) : null}
+                  ) : null} */}
                 </Row>
                 <Row wrap={'nowrap'}>
                   <StyledText>

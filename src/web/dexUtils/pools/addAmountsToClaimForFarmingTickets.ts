@@ -71,7 +71,7 @@ export const addAmountsToClaimForFarmingTickets = async ({
           return ticketsWithExistingPools
         }
 
-        commonValueLogs.concat(value.logs || [])
+        commonValueLogs = commonValueLogs.concat(value.logs || [])
         rewardsToClaimTransaction = new Transaction()
         ticketsCounter = 0
       }
@@ -96,7 +96,7 @@ export const addAmountsToClaimForFarmingTickets = async ({
       return ticketsWithExistingPools
     }
 
-    commonValueLogs.concat(value.logs || [])
+    commonValueLogs = commonValueLogs.concat(value.logs || [])
   }
 
   // match amounts via index (ticket for every farming state, then next ticket)
@@ -131,6 +131,8 @@ export const addAmountsToClaimForFarmingTickets = async ({
       amountsToClaim: amountsToClaimForTicket,
     }
   })
+
+  console.log({ticketsWithAmountsToClaim})
 
   return ticketsWithAmountsToClaim
 }

@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import {
   AmountText,
   Button,
   RowDataTdText,
   WhiteText,
-} from '../../index.styles'
+} from '@sb/compositions/Pools/components/Tables/index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@material-ui/core'
 import {
@@ -19,10 +18,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
+
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import {
   FarmingTicket,
@@ -32,18 +28,16 @@ import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPoo
 import { getAvailableFarmingTokensForPool } from '@sb/dexUtils/pools/getAvailableFarmingTokensForPool'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { useConnection } from '@sb/dexUtils/connection'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Loading, SvgIcon } from '@sb/components'
-import Info from '@icons/TooltipImg.svg'
-import { estimatedTime } from '@core/utils/dateUtils'
-import {
-  stripByAmount,
-  stripByAmountAndFormat,
-} from '@core/utils/chartPageUtils'
+
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { Loader } from '@sb/components/Loader/Loader'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { estimatedTime } from '@core/utils/dateUtils'
+import { SvgIcon } from '@sb/components'
+import Info from '@icons/inform.svg'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
-export const UserLiquidityDetails = ({
+export const TablesDetails = ({
   theme,
   pool,
   poolWaitingForUpdateAfterOperation,
@@ -192,12 +186,8 @@ export const UserLiquidityDetails = ({
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText>{' '}
                 / {stripByAmountAndFormat(quoteUserTokenAmount)}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
-                <WhiteText>($</WhiteText>
-                <span>
-                  {formatNumberToUSFormat(
-                    stripDigitPlaces(userLiquidityUSD, 2)
-                  )}
-                </span>
+                <WhiteText>(</WhiteText>
+                <span>${stripByAmountAndFormat(userLiquidityUSD)}</span>
                 <WhiteText>)</WhiteText>
               </RowDataTdText>
 
@@ -222,8 +212,7 @@ export const UserLiquidityDetails = ({
                   earnedFeesInPoolForUser.totalQuoteTokenFee
                 )}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
-                <WhiteText>($</WhiteText>
-                {formatNumberToUSFormat(stripDigitPlaces(earnedFeesUSD, 2))}
+                <WhiteText>(</WhiteText>${stripByAmountAndFormat(earnedFeesUSD)}
                 <WhiteText>)</WhiteText>
               </RowDataTdText>
             </>
@@ -333,8 +322,8 @@ export const UserLiquidityDetails = ({
               <span>
                 Pool Tokens
                 <AmountText style={{ padding: '0 0.5rem' }}>
-                  <WhiteText>($</WhiteText>
-                  {stakedTokens * poolTokenPrice}
+                  <WhiteText>(</WhiteText>$
+                  {stripByAmountAndFormat(stakedTokens * poolTokenPrice)}
                   <WhiteText>)</WhiteText>
                 </AmountText>
               </span>
@@ -425,7 +414,7 @@ export const UserLiquidityDetails = ({
                 fontFamily={'Avenir Next Medium'}
                 style={{ marginBottom: '3.5rem' }}
               >
-                {/* <DarkTooltip
+                {farmingState.vestingPeriod > 0 && <DarkTooltip
                   title={
                     <span>
                       The founder has set up vesting. You will be able to claim
@@ -443,7 +432,7 @@ export const UserLiquidityDetails = ({
                       style={{ marginRight: '1rem' }}
                     />
                   </div>
-                </DarkTooltip> */}
+                </DarkTooltip>}
                 Available to claim:
                 <AmountText style={{ padding: '0 0.5rem' }}>
                   {stripByAmountAndFormat(availableToClaimFarmingTokens)}
@@ -463,6 +452,12 @@ export const UserLiquidityDetails = ({
                   isPoolWaitingForUpdateAfterClaim
                 }
                 onClick={async () => {
+                  const removeLoader = () =>
+                    setPoolWaitingForUpdateAfterOperation({
+                      pool: '',
+                      operation: '',
+                    })
+
                   await setPoolWaitingForUpdateAfterOperation({
                     pool: pool.swapToken,
                     operation: 'claim',
@@ -478,26 +473,17 @@ export const UserLiquidityDetails = ({
                     })
 
                     if (result !== 'success') {
-                      setPoolWaitingForUpdateAfterOperation({
-                        pool: '',
-                        operation: '',
-                      })
+                      removeLoader()
                     } else {
                       await setTimeout(async () => {
                         await refreshAllTokensData()
-                        await setPoolWaitingForUpdateAfterOperation({
-                          pool: '',
-                          operation: '',
-                        })
+                        await removeLoader()
                       }, 7500)
 
                       await setTimeout(() => refreshAllTokensData(), 15000)
                     }
                   } catch (e) {
-                    setPoolWaitingForUpdateAfterOperation({
-                      pool: '',
-                      operation: '',
-                    })
+                    removeLoader()
 
                     return
                   }
