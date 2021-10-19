@@ -334,13 +334,13 @@ function ChartPageComponent(props: any) {
       <TransactionsConfirmationWarningPopup theme={theme} />
       {/* <SettleWarningPopup theme={theme} /> */}
       <ProposeToSettlePopup theme={theme} />
-      <MarketDeprecatedPopup
+      {/* <MarketDeprecatedPopup
         theme={theme}
         newMarketID={allMarketsMap.get('LIQ_USDC')?.address.toString()}
         oldMarketID={allMarketsMap
           .get('LIQ_USDC_deprecated')
           ?.address.toString()}
-      />
+      /> */}
       {/* <AldrinIsOverCapacityPopup theme={theme} /> */}
       {/* <RpcCapacityWarningPopup theme={theme} /> */}
 

@@ -185,10 +185,10 @@ const AppRaw = ({
                             }}
                           />
                         )}
-                        <RebrandingPopup
+                        {/* <RebrandingPopup
                           open={isRebrandingPopupOpen}
                           onClose={() => setIsRebrandingPopupOpen(false)}
-                        />
+                        /> */}
                         {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}
