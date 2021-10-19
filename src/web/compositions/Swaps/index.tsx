@@ -21,14 +21,12 @@ import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPric
 import withTheme from '@material-ui/core/styles/withTheme'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import {
-  ALL_TOKENS_MINTS,
   getTokenNameByMintAddress,
   useAllMarketsList,
 } from '@sb/dexUtils/markets'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { swapWithHandleNativeSol } from '@sb/dexUtils/pools'
-import { PublicKey } from '@solana/web3.js'
-import { sendAndConfirmTransactionViaWallet } from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet'
+import { PublicKey, PublicKey } from '@solana/web3.js'
+import { swap } from '@sb/dexUtils/pools/swap'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
@@ -41,10 +39,6 @@ import { InputWithSelectorForSwaps } from './components/Inputs/index'
 import { ReloadTimer, TimerButton } from '../Rebalance/components/ReloadTimer'
 import { BlockTemplate } from '../Pools/index.styles'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
-import { PublicKey } from '@solana/web3.js'
-import { WarningPopup } from '../Chart/components/WarningPopup'
-import { swap } from '@sb/dexUtils/pools/swap'
 import { mock } from '../Pools/components/Tables/AllPools/AllPoolsTable.utils'
 
 const SwapsPage = ({
@@ -228,8 +222,8 @@ const SwapsPage = ({
 
   return (
     <RowContainer
-      direction={'column'}
-      height={'100%'}
+      direction="column"
+      height="100%"
       style={{
         background: theme.palette.grey.additional,
       }}

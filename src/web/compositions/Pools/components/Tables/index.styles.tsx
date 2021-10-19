@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 
-import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Text } from '@sb/compositions/Addressbook'
+import { Text } from '@sb/components/Typography'
 import React from 'react'
 import { Loading } from '@sb/components/Loading'
+import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 
 export const LiquidityDataContainer = styled(Row)`
   width: 50%;
@@ -118,7 +118,7 @@ export const GreenButton = styled(
     <BtnCustom disabled={disabled} textTransform={textTransform} {...props}>
       {showLoader ? (
         <Loading
-          color={'#fff'}
+          color="#fff"
           size={24}
           style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
         />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Theme } from '@sb/types/materialUI'
 import {
   formatNumberToUSFormat,
@@ -11,14 +11,6 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { SvgIcon } from '@sb/components'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import { TokenIconsContainer } from '../components'
-import {
-  GreenButton,
-  RowDataTdText,
-  RowDataTdTopText,
-  TextColumnContainer,
-} from '../index.styles'
 
 import ArrowToBottom from '@icons/greyArrow.svg'
 import ArrowToTop from '@icons/arrowToTop.svg'
@@ -29,15 +21,20 @@ import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
+import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityDetails'
+import {
+  RowDataTdText,
+  RowDataTdTopText,
+  TextColumnContainer,
+} from '../index.styles'
+import { TokenIconsContainer } from '../components'
 
 export const mock: PoolInfo[] = [
   {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    name: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     parsedName: 'RIN_USDC',
     tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -47,7 +44,7 @@ export const mock: PoolInfo[] = [
       tokenA: 45,
       tokenB: 2,
     },
-    apy24h: 900, //%
+    apy24h: 900, // %
     supply: 120000,
     liquidity: 9835570,
     staked: 50,
@@ -56,8 +53,7 @@ export const mock: PoolInfo[] = [
     farming: [],
   },
   {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    name: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     parsedName: 'RI8888N_U8SDC',
     tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -67,7 +63,7 @@ export const mock: PoolInfo[] = [
       tokenA: 44,
       tokenB: 765,
     },
-    apy24h: 900, //%
+    apy24h: 900, // %
     supply: 120000,
     liquidity: 0,
     staked: 0,
@@ -77,8 +73,7 @@ export const mock: PoolInfo[] = [
     farming: [],
   },
   {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+    name: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
     parsedName: 'RIN_USDC',
     tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
     tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
@@ -88,7 +83,7 @@ export const mock: PoolInfo[] = [
       tokenA: 44,
       tokenB: 765,
     },
-    apy24h: 900, //%
+    apy24h: 900, // %
     supply: 120000,
     liquidity: 935570,
     locked: false,
@@ -97,8 +92,7 @@ export const mock: PoolInfo[] = [
     farming: [],
   },
   {
-    name:
-      'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m_8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
+    name: 'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m_8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
     parsedName: 'PTA_PTB',
     tokenA: 'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m',
     tokenB: '8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
@@ -108,7 +102,7 @@ export const mock: PoolInfo[] = [
       tokenA: 1099,
       tokenB: 4945509,
     },
-    apy24h: 900, //%
+    apy24h: 900, // %
     supply: 1099002507,
     liquidity: 935570,
     staked: 60,
@@ -164,12 +158,12 @@ export const allPoolsTableColumnsNames = [
       <>
         <span>APY</span>{' '}
         <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
-        <DarkTooltip title={'apy'}>
+        <DarkTooltip title="apy">
           <div>
             <SvgIcon
               src={Info}
-              width={'1.5rem'}
-              height={'auto'}
+              width="1.5rem"
+              height="auto"
               style={{ marginLeft: '1rem' }}
             />
           </div>
@@ -182,12 +176,12 @@ export const allPoolsTableColumnsNames = [
     label: (
       <>
         Farming
-        <DarkTooltip title={'farming'}>
+        <DarkTooltip title="farming">
           <div>
             <SvgIcon
               src={Info}
-              width={'1.5rem'}
-              height={'auto'}
+              width="1.5rem"
+              height="auto"
               style={{ marginLeft: '1rem' }}
             />
           </div>
@@ -276,7 +270,7 @@ export const combineAllPoolsData = ({
             >
               <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
               {el.locked ? (
-                <DarkTooltip title={'Founders liquidity locked.'}>
+                <DarkTooltip title="Founders liquidity locked.">
                   <div>
                     <SvgIcon
                       style={{ marginLeft: '1rem' }}
@@ -352,7 +346,7 @@ export const combineAllPoolsData = ({
         apy: {
           render: (
             <RowDataTdText
-              color={'#A5E898'}
+              color="#A5E898"
               fontFamily="Avenir Next Medium"
               theme={theme}
             >
@@ -366,7 +360,7 @@ export const combineAllPoolsData = ({
               <Row margin="0 1rem 0 0" justify="flex-start">
                 <TokenIcon
                   mint={farmingState.farmingTokenMint}
-                  width={'3rem'}
+                  width="3rem"
                   emojiIfNoLogo={false}
                 />
               </Row>
