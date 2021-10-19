@@ -34,7 +34,7 @@ export const BorderButton = styled(BtnCustom)`
   height: 4rem;
   text-transform: none;
   color: ${(props) => props.color || '#fbf2f2'};
-  border-radius: 1.5rem;
+  border-radius: ${(props) => props.borderRadius || '1.5rem'};
   font-size: 1.4rem;
 `
 export const TableBody = styled.tbody`

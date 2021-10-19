@@ -178,7 +178,7 @@ export const UserLiquidityDetails = ({
             color={theme.palette.grey.new}
             style={{ marginBottom: '1rem' }}
           >
-            Your Liquitity:
+            Your Liquidity:
           </RowDataTdText>
 
           {hasLiquidity ? (

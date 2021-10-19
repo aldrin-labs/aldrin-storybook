@@ -13,7 +13,10 @@ import {
   Row,
   RowContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
+import {
+  ChartGridContainer,
+  RoundButton,
+} from '@sb/compositions/Chart/Chart.styles'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Link, useLocation } from 'react-router-dom'
@@ -47,7 +50,6 @@ const CARD_STYLE: React.CSSProperties = {
 const LOGO_LINK_STYLE: React.CSSProperties = {
   width: '13rem',
   height: '100%',
-  marginRight: '4rem',
 }
 
 const NAV_LINK_STYLE: React.CSSProperties = { width: '13rem' }
@@ -130,6 +132,13 @@ export const CardsPanel = ({ theme }) => {
               src={isDarkTheme ? AldrinLogo : LightLogo}
             />
           </Link>
+          <RoundButton
+            pathname={location.pathname}
+            to="/staking"
+            page={'staking'}
+          >
+            Stake RIN
+          </RoundButton>
           <Row
             style={{
               borderLeft: theme.palette.border.new,
@@ -214,18 +223,6 @@ export const CardsPanel = ({ theme }) => {
                 Pools
               </NavLinkButton>
             )}
-            {/* {!MASTER_BUILD && (
-              <NavLinkButton
-                style={{ color: '#386DE6' }}
-                theme={theme}
-                data-tut="farming"
-                pathname={location.pathname}
-                page={'wallet'}
-                component={(props) => <a href={CCAIProviderURL} {...props} />}
-              >
-                SunWallet
-              </NavLinkButton>
-            )} */}
             <NavLinkButton
               theme={theme}
               data-tut="token"
