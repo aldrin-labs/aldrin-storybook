@@ -18,7 +18,7 @@ import { SvgIcon } from '@sb/components'
 import {
   ADAPTIVE_LOW_BLOCKS,
   ADAPTIVE_UPPER_BLOCKS,
-  CONTAINER,
+  Container,
   MAIN_BLOCK,
   RoundInput,
   StyledTextDiv,
@@ -34,7 +34,7 @@ const Staking = ({ theme }: { theme: Theme }) => {
   const isPriceIncreasing = true
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   return (
-    <RowContainer style={CONTAINER(isMobile)}>
+    <Container isMobile>
       <RowContainer
         direction={isMobile ? 'column' : 'row'}
         height={isMobile ? 'auto' : '65%'}
@@ -116,6 +116,7 @@ const Staking = ({ theme }: { theme: Theme }) => {
                   fontFamily={'Avenir Next Demi'}
                   fontSize={'1.8rem'}
                   padding={'0 0 2rem 0'}
+                  style={{ whiteSpace: 'nowrap' }}
                 >
                   Total Staked:
                 </Text>{' '}
@@ -123,6 +124,7 @@ const Staking = ({ theme }: { theme: Theme }) => {
                   color={'#96999C'}
                   fontFamily={'Avenir Next Demi'}
                   fontSize={'1.8rem'}
+                  style={{ whiteSpace: 'nowrap' }}
                 >
                   <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>
                     1,255
@@ -448,7 +450,7 @@ const Staking = ({ theme }: { theme: Theme }) => {
           />
         </BlockTemplate>
       </RowContainer>
-    </RowContainer>
+    </Container>
   )
 }
 

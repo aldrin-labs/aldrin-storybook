@@ -52,15 +52,14 @@ export const ADAPTIVE_UPPER_BLOCKS = ({
   }
 }
 
-export const CONTAINER = styled(RowContainer)`
+export const Container = styled(RowContainer)`
   padding: 5rem 13rem;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
   background: rgb(14, 16, 22);
   @media (max-width: 1300px) {
-    padding: 10rem 15rem;
-    height: auto;
+    padding: 8rem 15rem;
   }
   @media (max-width: 600px) {
     padding: 5rem;
@@ -112,4 +111,5 @@ export const RoundInput = styled.input`
   border-radius: 3rem;
   width: 100%;
   height: 5rem;
+  outline: none;
 `
