@@ -147,6 +147,6 @@ export const StatsCell = styled(StatsCellFull)`
 
 export const StatsCellSmall = styled(StatsCellFull)`
   @media(min-width: ${BREAKPOINTS.lg}) {
-    flex: 0 1 33%;
+    flex: 0 1 33.333%;
   }
 `

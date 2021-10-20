@@ -26,8 +26,8 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
             <BlockContent border>
               <RowContainer justify={'space-between'}>
                 <BlockTitle>
-                  Your RIN Staking&nbsp;
-            </BlockTitle>
+                  Your RIN Staking
+                </BlockTitle>
                 <Row>
                   <SvgIcon
                     src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
