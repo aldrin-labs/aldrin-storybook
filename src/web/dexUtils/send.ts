@@ -1,10 +1,31 @@
-import { notify } from './notifications'
-import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
+import { Metrics } from '@core/utils/metrics'
+import {
+  DexInstructions,
+  Market,
+  OpenOrders,
+  parseInstructionErrorResponse,
+  TokenInstructions,
+} from '@project-serum/serum'
+import { OrderParams } from '@project-serum/serum/lib/market'
+import {
+  AmendOrderParams,
+  CancelOrderParams,
+  Maybe,
+  PlaceOrder,
+  SendTransactionParams,
+  SignTransactionsParams,
+  ValidateOrderParams,
+  WalletAdapter,
+} from '@sb/dexUtils/types'
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token'
 import {
   Account,
   Commitment,
   Connection,
-  Keypair,
   PublicKey,
   RpcResponseAndContext,
   SimulatedTransactionResponse,
@@ -12,30 +33,16 @@ import {
   Transaction,
   TransactionSignature,
 } from '@solana/web3.js'
-import { BN } from 'bn.js'
-import {
-  DexInstructions,
-  Market,
-  TOKEN_MINTS,
-  TokenInstructions,
-  OpenOrders,
-  parseInstructionErrorResponse,
-} from '@project-serum/serum'
-
-import { WalletAdapter } from '@sb/dexUtils/types'
-import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token'
-import { getCache } from './fetch-loop'
-import { Metrics } from '@core/utils/metrics'
+import BN, { BN } from 'bn.js'
 import {
   getConnectionFromMultiConnections,
   getProviderNameFromUrl,
 } from './connection'
-import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
+import { getCache } from './fetch-loop'
 import { getReferrerQuoteWallet } from './getReferrerQuoteWallet'
+import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
+import { notify } from './notifications'
+import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -92,11 +99,9 @@ const getNotificationText = ({
 }
 
 export async function createTokenAccountTransaction({
-  connection,
   wallet,
   mintPublicKey,
 }: {
-  connection: Connection
   wallet: WalletAdapter
   mintPublicKey: PublicKey
 }): Promise<{
@@ -142,8 +147,8 @@ export async function getSettleFundsTransaction({
   openOrders: OpenOrders
   baseCurrency: string
   quoteCurrency: string
-  baseTokenAccount: any
-  quoteTokenAccount: any
+  baseTokenAccount: PublicKey
+  quoteTokenAccount: PublicKey
 }): Promise<[Transaction, Account[]] | null | undefined> {
   if (!wallet) {
     notify({ message: 'Please, connect wallet to settle funds' })
@@ -168,12 +173,21 @@ export async function getSettleFundsTransaction({
   }
 
   try {
-    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount, quoteTokenAccount, })
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({
+      wallet,
+      connection,
+      market,
+      baseTokenAccount,
+      quoteTokenAccount,
+    })
     if (!isTokenAccountsValid) {
       throw new Error('Error checking tokenAccounts validity')
     }
-  } catch(e) {
-    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+  } catch (e) {
+    console.log(
+      `[settleFunds] Check validity of tokenAccounts is failed, err: `,
+      e
+    )
     notify({ message: 'Sorry, validity of tokenAccounts is failed' })
     return
   }
@@ -184,7 +198,6 @@ export async function getSettleFundsTransaction({
 
   if (!baseCurrencyAccountPubkey) {
     const result = await createTokenAccountTransaction({
-      connection,
       wallet,
       mintPublicKey: market.baseMintAddress,
     })
@@ -193,7 +206,6 @@ export async function getSettleFundsTransaction({
   }
   if (!quoteCurrencyAccountPubkey) {
     const result = await createTokenAccountTransaction({
-      connection,
       wallet,
       mintPublicKey: market.quoteMintAddress,
     })
@@ -201,7 +213,10 @@ export async function getSettleFundsTransaction({
     createAccountTransaction = result?.transaction
   }
 
-  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({ quoteMintAddress: market.quoteMintAddress, supportsReferralFees: market.supportsReferralFees })
+  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({
+    quoteMintAddress: market.quoteMintAddress,
+    supportsReferralFees: market.supportsReferralFees,
+  })
 
   const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
     await market.makeSettleFundsTransaction(
@@ -212,7 +227,7 @@ export async function getSettleFundsTransaction({
       referrerQuoteWallet
     )
 
-  let transaction = mergeTransactions([
+  const transaction = mergeTransactions([
     createAccountTransaction,
     settleFundsTransaction,
   ])
@@ -282,42 +297,108 @@ export async function settleFunds({
     params: {
       baseSymbol: baseCurrency,
       quoteSymbol: quoteCurrency,
-      baseUnsettled: baseUnsettled,
-      quoteUnsettled: quoteUnsettled,
+      baseUnsettled,
+      quoteUnsettled,
     },
     focusPopup,
   })
 }
 
-export async function cancelOrder(params) {
-  return cancelOrders({ ...params, orders: [params.order] })
-}
-
-export async function cancelOrders({ market, wallet, connection, orders }) {
+export async function cancelOrder({
+  market,
+  wallet,
+  connection,
+  order,
+}: CancelOrderParams) {
+  if (!wallet.publicKey) {
+    throw new Error(`cancelOrders: no publicKey for wallet: ${wallet}`)
+  }
+  const { publicKey } = wallet
   const transaction = market.makeMatchOrdersTransaction(5)
-  orders.forEach((order) => {
-    transaction.add(
-      market.makeCancelOrderInstruction(connection, wallet.publicKey, order)
-    )
-  })
+
+  transaction.add(
+    market.makeCancelOrderInstruction(connection, publicKey, order)
+  )
+
   transaction.add(market.makeMatchOrdersTransaction(5))
 
-  return await sendTransaction({
+  return sendTransaction({
     transaction,
     wallet,
     connection,
     signers: [],
-    sendingMessage: 'Sending cancel...',
     params: {
-      baseSymbol: orders[0]?.marketName.split('/')[0],
-      quoteSymbol: orders[0]?.marketName.split('/')[1],
-      side: orders[0]?.side,
-      amount: orders[0]?.size,
-      price: orders[0]?.price,
+      baseSymbol: order.marketName.split('/')[0],
+      quoteSymbol: order.marketName.split('/')[1],
+      side: order.side,
+      amount: order.size,
+      price: order.price,
     },
     operationType: 'cancelOrder',
   })
 }
+
+export async function amendOrder(params: AmendOrderParams) {
+  const {
+    market,
+    wallet,
+    connection,
+    order,
+    amendOrder,
+    baseCurrencyAccount,
+    quoteCurrencyAccount,
+    openOrdersAccount,
+  } = params
+  if (!wallet.publicKey) {
+    throw new Error(`Wallet does not have public key: ${wallet}`)
+  }
+  const transaction = market.makeMatchOrdersTransaction(5)
+  transaction.add(
+    market.makeCancelOrderInstruction(connection, wallet.publicKey, order)
+  )
+  const p: PlaceOrder = {
+    side: order.side,
+    price: amendOrder.price || order.price,
+    size: amendOrder.size || order.size,
+    pair: order.marketName,
+    orderType: 'limit', // TODO: additional check?
+    isMarketOrder: false,
+    market: order.market,
+    wallet,
+    connection,
+    baseCurrencyAccount,
+    quoteCurrencyAccount,
+    openOrdersAccount,
+  }
+  const d = await generatePlacOrderTransactions(p)
+
+  if (!d) {
+    return null
+  }
+
+  const { transaction: placeTransaction, signers } = d
+
+  const t = mergeTransactions([transaction, placeTransaction])
+
+  return sendTransaction({
+    transaction: t,
+    wallet,
+    connection,
+    signers,
+    operationType: 'createOrder',
+    params: {
+      side: p.side,
+      price: p.price,
+      amount: p.size,
+      baseSymbol: p.pair.split('_')[0],
+      quoteSymbol: p.pair.split('_')[1],
+      orderType: 'limit',
+    },
+  })
+}
+
+const isIncrement = (num: number, step: number) =>
+  Math.abs((num / step) % 1) < 1e-5 || Math.abs(((num / step) % 1) - 1) < 1e-5
 
 export const validateVariablesForPlacingOrder = ({
   price,
@@ -325,12 +406,12 @@ export const validateVariablesForPlacingOrder = ({
   market,
   wallet,
   pair,
-}) => {
-  let formattedMinOrderSize =
+}: ValidateOrderParams): boolean => {
+  const formattedMinOrderSize =
     market?.minOrderSize?.toFixed(getDecimalCount(market.minOrderSize)) ||
     market?.minOrderSize
 
-  let formattedTickSize =
+  const formattedTickSize =
     market?.tickSize?.toFixed(getDecimalCount(market.tickSize)) ||
     market?.tickSize
 
@@ -339,71 +420,83 @@ export const validateVariablesForPlacingOrder = ({
       message: 'Please, wait until 2pm UTC time before trading CCAI',
       type: 'error',
     })
-    return
+    return false
   }
 
-  if (isNaN(price)) {
+  if (Number.isNaN(price)) {
     notify({ message: 'Invalid price', type: 'error' })
-    return
+    return false
   }
-  if (isNaN(size)) {
+  if (Number.isNaN(size)) {
     notify({ message: 'Invalid size', type: 'error' })
-    return
+    return false
   }
   if (!wallet || !wallet.publicKey) {
     notify({ message: 'Connect wallet', type: 'error' })
-    return
+    return false
   }
   if (!market) {
     notify({ message: 'Invalid  market', type: 'error' })
-    return
+    return false
   }
   if (!isIncrement(size, market.minOrderSize)) {
     notify({
       message: `Size must be an increment of ${formattedMinOrderSize}`,
       type: 'error',
     })
-    return
+    return false
   }
   if (size < market.minOrderSize) {
     notify({ message: 'Size too small', type: 'error' })
-    return
+    return false
   }
   if (!isIncrement(price, market.tickSize)) {
     notify({
       message: `Price must be an increment of ${formattedTickSize}`,
       type: 'error',
     })
-    return
+    return false
   }
   if (price < market.tickSize) {
     notify({ message: 'Price under tick size', type: 'error' })
-    return
+    return false
   }
 
   return true
 }
 
-const isIncrement = (num, step) =>
-  Math.abs((num / step) % 1) < 1e-5 || Math.abs(((num / step) % 1) - 1) < 1e-5
+const createTokenAccount = async (
+  mintPublicKey: PublicKey,
+  connection: Connection,
+  wallet: WalletAdapter,
+  transaction?: Transaction
+) => {
+  const { transaction: createAccountTransaction, newAccountPubkey } =
+    await createTokenAccountTransaction({
+      wallet,
+      mintPublicKey,
+    })
+  if (transaction) {
+    transaction.add(createAccountTransaction)
+  }
+  return { pubkey: newAccountPubkey }
+}
 
-export async function placeOrder({
-  side,
-  price,
-  size,
-  pair,
-  orderType,
-  market,
-  isMarketOrder,
-  connection,
-  wallet,
-  baseCurrencyAccount,
-  quoteCurrencyAccount,
-  openOrdersAccount,
-}: {
-  market: Market
-}) {
-  console.log('place ORDER', market?.minOrderSize, size)
+const generatePlacOrderTransactions = async (data: PlaceOrder) => {
+  const {
+    side,
+    price,
+    size,
+    pair,
+    orderType,
+    market,
+    isMarketOrder,
+    connection,
+    wallet,
+  } = data
+
+  let { baseCurrencyAccount, quoteCurrencyAccount, openOrdersAccount } = data
+  console.log('Place order', market?.minOrderSize, size)
   const isValidationSuccessfull = validateVariablesForPlacingOrder({
     price,
     size,
@@ -413,10 +506,14 @@ export async function placeOrder({
   })
 
   if (!isValidationSuccessfull) {
-    return
+    return null
   }
 
   const owner = wallet.publicKey
+
+  if (!owner) {
+    throw new Error(`No owner for wallet: ${wallet}`)
+  }
 
   const openOrdersAccountFromCache = getCache(
     `preCreatedOpenOrdersFor${market?.publicKey}`
@@ -425,38 +522,42 @@ export async function placeOrder({
   console.log('openOrdersAccount in placeOrder', openOrdersAccount)
 
   try {
-    const isTokenAccountsValid = await isTokenAccountsForSettleValid({ wallet, connection, market, baseTokenAccount: baseCurrencyAccount, quoteTokenAccount: quoteCurrencyAccount, })
+    const isTokenAccountsValid = await isTokenAccountsForSettleValid({
+      wallet,
+      connection,
+      market,
+      baseTokenAccount: baseCurrencyAccount,
+      quoteTokenAccount: quoteCurrencyAccount,
+    })
     if (!isTokenAccountsValid) {
       throw new Error('Error checking tokenAccounts validity')
     }
-  } catch(e) {
-    console.log(`[settleFunds] Check validity of tokenAccounts is failed, err: `, e)
+  } catch (e) {
+    console.error(
+      `[settleFunds] Check validity of tokenAccounts is failed, err: `,
+      e
+    )
     notify({ message: 'Sorry, validity of tokenAccounts is failed' })
-    return
+    return null
   }
 
   const transaction = new Transaction()
-
-  if (!baseCurrencyAccount) {
-    const { transaction: createAccountTransaction, newAccountPubkey } =
-      await createTokenAccountTransaction({
-        connection,
-        wallet,
-        mintPublicKey: market.baseMintAddress,
-      })
-    transaction.add(createAccountTransaction)
-    baseCurrencyAccount = { pubkey: newAccountPubkey }
-  }
-  if (!quoteCurrencyAccount) {
-    const { transaction: createAccountTransaction, newAccountPubkey } =
-      await createTokenAccountTransaction({
-        connection,
-        wallet,
-        mintPublicKey: market.quoteMintAddress,
-      })
-    transaction.add(createAccountTransaction)
-    quoteCurrencyAccount = { pubkey: newAccountPubkey }
-  }
+  baseCurrencyAccount =
+    baseCurrencyAccount ||
+    (await createTokenAccount(
+      market.baseMintAddress,
+      connection,
+      wallet,
+      transaction
+    ))
+  quoteCurrencyAccount =
+    quoteCurrencyAccount ||
+    (await createTokenAccount(
+      market.quoteMintAddress,
+      connection,
+      wallet,
+      transaction
+    ))
 
   const payer =
     side === 'sell' ? baseCurrencyAccount.pubkey : quoteCurrencyAccount.pubkey
@@ -466,10 +567,12 @@ export async function placeOrder({
       message: 'Need an SPL token account for cost currency',
       type: 'error',
     })
-    return
+    return null
   }
 
-  const params = {
+  openOrdersAccount = openOrdersAccount || openOrdersAccountFromCache
+
+  const params: OrderParams<PublicKey> = {
     owner,
     payer,
     side,
@@ -478,16 +581,16 @@ export async function placeOrder({
     pair,
     orderType,
     isMarketOrder,
-    ...(!openOrdersAccount
-      ? { openOrdersAccount: openOrdersAccountFromCache }
-      : { openOrdersAccount }),
+    openOrdersAccount,
   }
-  console.log(params)
 
   transaction.add(market.makeMatchOrdersTransaction(5))
-  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({ quoteMintAddress: market.quoteMintAddress, supportsReferralFees: market.supportsReferralFees })
+  const referrerQuoteWallet: PublicKey | null = getReferrerQuoteWallet({
+    quoteMintAddress: market.quoteMintAddress,
+    supportsReferralFees: market.supportsReferralFees,
+  })
 
-  let {
+  const {
     transaction: placeOrderTx,
     signers,
     ...rest
@@ -501,8 +604,8 @@ export async function placeOrder({
 
   console.log('placeOrder transaction after add', transaction)
 
-  let baseCurrencyAccountPubkey = baseCurrencyAccount?.pubkey
-  let quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
+  const baseCurrencyAccountPubkey = baseCurrencyAccount?.pubkey
+  const quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
 
   if (isMarketOrder && openOrdersAccount) {
     const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
@@ -518,20 +621,32 @@ export async function placeOrder({
     signers.push(...settleFundsSigners)
   }
 
-  return await sendTransaction({
+  return { transaction, signers }
+}
+
+export async function placeOrder(data: PlaceOrder) {
+  const d = await generatePlacOrderTransactions(data)
+
+  if (!d) {
+    return null
+  }
+
+  const { transaction, signers } = d
+  const { wallet, connection } = data
+
+  return sendTransaction({
     transaction,
     wallet,
     connection,
     signers,
-    sendingMessage: 'Sending order...',
     operationType: 'createOrder',
     params: {
-      side: side,
-      price: price,
-      amount: size,
-      baseSymbol: pair.split('_')[0],
-      quoteSymbol: pair.split('_')[1],
-      orderType: isMarketOrder ? 'market' : 'limit',
+      side: data.side,
+      price: data.price,
+      amount: data.size,
+      baseSymbol: data.pair.split('_')[0],
+      quoteSymbol: data.pair.split('_')[1],
+      orderType: data.isMarketOrder ? 'market' : 'limit',
     },
   })
 }
@@ -565,6 +680,7 @@ export async function sendSignedTransaction({
   console.log('Started awaiting confirmation for', txid)
 
   let done = false
+  // TODO: whats going on
   ;(async () => {
     while (!done && getUnixTs() - startTime < timeout) {
       connection.sendRawTransaction(rawTransaction, {
@@ -587,23 +703,23 @@ export async function sendSignedTransaction({
     } catch (e) {}
     if (simulateResult && simulateResult.err) {
       if (simulateResult.logs) {
-        for (let i = simulateResult.logs.length - 1; i >= 0; --i) {
+        for (let i = simulateResult.logs.length - 1; i >= 0; i -= 1) {
           const line = simulateResult.logs[i]
           if (line.startsWith('Program log: ')) {
             throw new Error(
-              'Transaction failed: ' + line.slice('Program log: '.length)
+              `Transaction failed: ${line.slice('Program log: '.length)}`
             )
           }
         }
       }
       let parsedError
       if (
-        typeof simulateResult.err == 'object' &&
+        typeof simulateResult.err === 'object' &&
         'InstructionError' in simulateResult.err
       ) {
         const parsedErrorInfo = parseInstructionErrorResponse(
           signedTransaction,
-          simulateResult.err['InstructionError']
+          simulateResult.err.InstructionError
         )
         parsedError = parsedErrorInfo.error
       } else {
@@ -621,48 +737,24 @@ export async function sendSignedTransaction({
   return txid
 }
 
-export async function signTransaction({
-  transaction,
-  wallet,
-  signers = [],
-  connection,
-}: {
-  transaction: Transaction
-  wallet: WalletAdapter
-  signers?: Array<Account>
-  connection: Connection
-}) {
-  transaction.recentBlockhash = (
-    await connection.getRecentBlockhash('max')
-  ).blockhash
-  transaction.setSigners(wallet.publicKey, ...signers.map((s) => s.publicKey))
-  if (signers.length > 0) {
-    transaction.partialSign(...signers)
-  }
-  return await wallet.signTransaction(transaction)
-}
-
 export async function signTransactions({
   transactionsAndSigners,
   wallet,
   connection,
-}: {
-  transactionsAndSigners: {
-    transaction: Transaction
-    signers?: Array<Account>
-  }[]
-  wallet: WalletAdapter
-  connection: Connection
-}) {
-  const blockhash = (await connection.getRecentBlockhash('max')).blockhash
+}: SignTransactionsParams) {
+  if (!wallet.publicKey) {
+    throw new Error(`No key for wallet: ${wallet}`)
+  }
+  const { publicKey } = wallet
+  const { blockhash } = await connection.getRecentBlockhash('max')
   transactionsAndSigners.forEach(({ transaction, signers = [] }) => {
     transaction.recentBlockhash = blockhash
-    transaction.setSigners(wallet.publicKey, ...signers.map((s) => s.publicKey))
+    transaction.setSigners(publicKey, ...signers.map((s) => s.publicKey))
     if (signers?.length > 0) {
       transaction.partialSign(...signers)
     }
   })
-  return await wallet.signAllTransactions(
+  return wallet.signAllTransactions(
     transactionsAndSigners.map(({ transaction }) => transaction),
     true
   )
@@ -695,21 +787,28 @@ export async function listMarket({
   const feeRateBps = 0
   const quoteDustThreshold = new BN(100)
 
-  async function getVaultOwnerAndNonce() {
-    const nonce = new BN(0)
-    while (true) {
-      try {
-        const vaultOwner = await PublicKey.createProgramAddress(
-          [market.publicKey.toBuffer(), nonce.toArrayLike(Buffer, 'le', 8)],
-          dexProgramId
-        )
-        return [vaultOwner, nonce]
-      } catch (e) {
-        nonce.iaddn(1)
-      }
+  async function getVaultOwnerAndNonce(
+    nonce = new BN(0)
+  ): Promise<[PublicKey, BN]> {
+    try {
+      const vaultOwner = await PublicKey.createProgramAddress(
+        [market.publicKey.toBuffer(), nonce.toArrayLike(Buffer, 'le', 8)],
+        dexProgramId
+      )
+      return [vaultOwner, nonce]
+    } catch (e) {
+      nonce.iaddn(1)
+      return getVaultOwnerAndNonce(nonce)
     }
   }
+
   const [vaultOwner, vaultSignerNonce] = await getVaultOwnerAndNonce()
+
+  if (!wallet.publicKey) {
+    throw new Error(`No publicKey for wallet: ${wallet}`)
+  }
+
+  // const fromPubkey = wallet.publicKey
 
   const tx1 = new Transaction()
   tx1.add(
@@ -808,12 +907,15 @@ export async function listMarket({
     wallet,
     connection,
   })
-  for (let signedTransaction of signedTransactions) {
-    await sendSignedTransaction({
-      signedTransaction,
-      connection,
-    })
-  }
+
+  await Promise.all(
+    signedTransactions.map((signedTransaction) =>
+      sendSignedTransaction({
+        signedTransaction,
+        connection,
+      })
+    )
+  )
 
   return market.publicKey
 }
@@ -835,23 +937,16 @@ export async function sendTransaction({
   operationType,
   params,
   focusPopup,
-}: {
-  transaction: Transaction
-  wallet: WalletAdapter
-  signers: (Account | Keypair)[]
-  connection: Connection
-  sentMessage?: string
-  successMessage?: string
-  timeout?: number
-  operationType?: string
-  params?: any
-  focusPopup?: boolean
-}): Promise<string | null> {
+}: SendTransactionParams): Promise<string | null> {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash
 
   console.log('signers', signers, wallet)
+
+  if (!wallet.publicKey) {
+    throw new Error(`No publicKey for wallet: ${wallet}`)
+  }
 
   transaction.setSigners(
     wallet.publicKey,
@@ -871,7 +966,7 @@ export async function sendTransaction({
 
   console.log('sendTransaction transactionFromWallet: ', transactionFromWallet)
 
-  const rawTransaction = await transactionFromWallet.serialize()
+  const rawTransaction = transactionFromWallet.serialize()
 
   console.log('sendTransaction rawTransaction: ', rawTransaction)
   const startTime = getUnixTs()
@@ -910,6 +1005,7 @@ export async function sendTransaction({
   console.log('Started awaiting confirmation for', txid)
 
   let done = false
+  // TODO
   ;(async () => {
     while (!done && getUnixTs() - startTime < timeout) {
       const resultOfSendingConfirm = connection.sendRawTransaction(
@@ -928,7 +1024,7 @@ export async function sendTransaction({
   })()
 
   const rawConnection = getConnectionFromMultiConnections({
-    connection: connection,
+    connection,
   })
 
   let result = await awaitTransactionSignatureConfirmationWithNotifications({
@@ -945,7 +1041,7 @@ export async function sendTransaction({
 
     // trying again for another 30s with probably another connection
     const rawConnectionForRetry = getConnectionFromMultiConnections({
-      connection: connection,
+      connection,
     })
 
     result = await awaitTransactionSignatureConfirmationWithNotifications({
@@ -1118,51 +1214,15 @@ async function awaitTransactionSignatureConfirmation({
   return result
 }
 
-function mergeTransactions(transactions) {
+function mergeTransactions(transactions: Maybe<Transaction>[]) {
   const transaction = new Transaction()
-  transactions
-    .filter((t) => t)
-    .forEach((t) => {
+  transactions.forEach((t) => {
+    if (t) {
       transaction.add(t)
-    })
+    }
+  })
   return transaction
 }
-
-// export async function sendTransaction({
-//   transaction,
-//   wallet,
-//   signers = [],
-//   connection,
-//   sendingMessage = 'Sending transaction...',
-//   sentMessage = 'Transaction sent',
-//   successMessage = 'Transaction confirmed',
-//   timeout = DEFAULT_TIMEOUT,
-// }: {
-//   transaction: Transaction;
-//   wallet: Wallet;
-//   signers?: Array<Account>;
-//   connection: Connection;
-//   sendingMessage?: string;
-//   sentMessage?: string;
-//   successMessage?: string;
-//   timeout?: number;
-// }) {
-//   const signedTransaction = await signTransaction({
-//     transaction,
-//     wallet,
-//     signers,
-//     connection,
-//   });
-
-//   return await sendSignedTransaction({
-//     signedTransaction,
-//     connection,
-//     sendingMessage,
-//     sentMessage,
-//     successMessage,
-//     timeout,
-//   });
-// }
 
 /** Copy of Connection.simulateTransaction that takes a commitment parameter. */
 async function simulateTransaction(
@@ -1186,7 +1246,7 @@ async function simulateTransaction(
   // @ts-ignore
   const res = await connection._rpcRequest('simulateTransaction', args)
   if (res.error) {
-    throw new Error('failed to simulate transaction: ' + res.error.message)
+    throw new Error(`failed to simulate transaction: ${res.error.message}`)
   }
   return res.result
 }
