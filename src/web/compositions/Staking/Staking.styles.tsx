@@ -85,6 +85,7 @@ export const StyledTextDiv = styled.div`
   letter-spacing: 0.01rem;
   padding: 1.2rem;
   margin: 1rem 0 0 0;
+  cursor: pointer;
 `
 export const RoundButton = styled.button`
   background-image: ${(props) =>

@@ -11,31 +11,37 @@ import { Container } from './Staking.styles'
 import { BlockWithHints } from './components/BlockWithHints'
 import { StakingComponent } from './components/StakingComponent'
 import { StatsComponent } from './components/StatsComponent'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
 
 const Staking = ({ theme }: { theme: Theme }) => {
+  const { wallet } = useWallet()
   const isMobile = useMobileSize()
   const isPriceIncreasing = true
-  const [isBalancesShowing, setIsBalancesShowing] = useState(true)
+  const isWalletConnected = wallet.connected
+
   return (
-    <Container isMobile={isMobile}>
-      <RowContainer
-        direction={isMobile ? 'column' : 'row'}
-        height={isMobile ? 'auto' : '65%'}
-        justify={'space-between'}
-      >
-        <StakingComponent
-          theme={theme}
-          isMobile={isMobile}
-          isBalancesShowing={isBalancesShowing}
-        />
-        <StatsComponent
-          isPriceIncreasing={isPriceIncreasing}
-          theme={theme}
-          isMobile={isMobile}
-        />
-      </RowContainer>
-      <BlockWithHints theme={theme} isMobile={isMobile} />
-    </Container>
+    <>
+      {!isWalletConnected ? (
+        <ConnectWalletScreen theme={theme} />
+      ) : (
+        <Container isMobile={isMobile}>
+          <RowContainer
+            direction={isMobile ? 'column' : 'row'}
+            height={isMobile ? 'auto' : '65%'}
+            justify={'space-between'}
+          >
+            <StakingComponent theme={theme} isMobile={isMobile} />
+            <StatsComponent
+              isPriceIncreasing={isPriceIncreasing}
+              theme={theme}
+              isMobile={isMobile}
+            />
+          </RowContainer>
+          <BlockWithHints theme={theme} isMobile={isMobile} />
+        </Container>
+      )}
+    </>
   )
 }
 

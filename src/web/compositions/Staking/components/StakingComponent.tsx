@@ -1,24 +1,52 @@
+import React, { useState, useEffect } from 'react'
+import copy from 'clipboard-copy'
+
+import { Theme } from '@sb/types/materialUI'
+
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 import { TextButton } from '@sb/compositions/Rebalance/Rebalance.styles'
-import React from 'react'
 import { RoundButton } from '../Staking.styles'
 import { RoundInputWithTokenName } from './Input'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { MAIN_BLOCK, StyledTextDiv } from '../Staking.styles'
-import { Theme } from '@sb/types/materialUI'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { SvgIcon } from '@sb/components'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { notify } from '@sb/dexUtils/notifications'
+import { useConnection } from '@sb/dexUtils/connection'
+import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { CCAI_MINT } from '@sb/dexUtils/utils'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 
 export const StakingComponent = ({
   isMobile,
   theme,
-  isBalancesShowing,
 }: {
   isMobile: boolean
   theme: Theme
-  isBalancesShowing: boolean
 }) => {
+  const [isBalancesShowing, setIsBalancesShowing] = useState(true)
+  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
+
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  const walletAddress = wallet?.publicKey.toString() || ''
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const allTokensData = await getAllTokensData(wallet.publicKey, connection)
+
+      setAllTokensData(allTokensData)
+    }
+    fetchData()
+  }, [])
+
+  const tokenData = allTokensData.find((token) => token.mint === CCAI_MINT)
+  console.log('tokenData', tokenData)
+
   return (
     <BlockTemplate
       direction={'column'}
@@ -41,7 +69,12 @@ export const StakingComponent = ({
             <Text fontFamily={'Avenir Next Demi'} fontSize={'2.3rem'}>
               Your RIN Staking{' '}
             </Text>
-            <Row>
+            <Row
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                setIsBalancesShowing(!isBalancesShowing)
+              }}
+            >
               <SvgIcon
                 src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
                 width={'2.7rem'}
@@ -49,8 +82,13 @@ export const StakingComponent = ({
               />
             </Row>
           </RowContainer>
-          <StyledTextDiv>
-            GHvybfUhsKxmWvrVZ5KDdWQGPCYSZoRKefWYyVyRHGYc
+          <StyledTextDiv
+            onClick={() => {
+              copy(walletAddress)
+              notify({ type: 'success', message: 'Copied!' })
+            }}
+          >
+            {isBalancesShowing ? walletAddress : '***'}
           </StyledTextDiv>
         </Row>
         <Row
@@ -73,7 +111,10 @@ export const StakingComponent = ({
             fontFamily={'Avenir Next Demi'}
             fontSize={'1.8rem'}
           >
-            <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>0</span> RIN
+            <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>
+              {isBalancesShowing ? stripByAmount(tokenData?.amount) : '***'}
+            </span>{' '}
+            RIN
           </Text>
         </Row>
       </RowContainer>{' '}
@@ -104,7 +145,7 @@ export const StakingComponent = ({
               style={{ whiteSpace: 'nowrap' }}
             >
               <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>
-                1,255
+                {isBalancesShowing ? '1,255' : '***'}
               </span>{' '}
               RIN
             </Text>
@@ -127,7 +168,7 @@ export const StakingComponent = ({
                 fontSize={'1.8rem'}
                 padding={'0 0 2rem 0'}
               >
-                Total Staked:
+                Rewards:
               </Text>{' '}
               <Text
                 color={'#96999C'}
@@ -135,7 +176,7 @@ export const StakingComponent = ({
                 fontSize={'1.8rem'}
               >
                 <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>
-                  1,255
+                  {isBalancesShowing ? '2,600' : '***'}
                 </span>{' '}
                 RIN
               </Text>
@@ -151,7 +192,7 @@ export const StakingComponent = ({
                 fontSize={'1.8rem'}
                 padding={'0 0 2rem 0'}
               >
-                Total Staked:
+                Available to claim:{' '}
               </Text>{' '}
               <Text
                 color={'#96999C'}
@@ -159,7 +200,7 @@ export const StakingComponent = ({
                 fontSize={'1.8rem'}
               >
                 <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>
-                  1,255
+                  {isBalancesShowing ? '2,100' : '***'}
                 </span>{' '}
                 RIN
               </Text>
