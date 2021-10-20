@@ -9,8 +9,8 @@ import { MAIN_BLOCK, } from '../Staking.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { SvgIcon } from '@sb/components'
 
-import { Row, RootRow, StatsCell, StyledTextDiv } from '../Staking.styles'
-import { Block, BlockTitle, BlockContent } from '../../../components/Block'
+import { Row, RootRow, StatsCell, StyledTextDiv, StatsCellFull, StatsCellSmall } from '../Staking.styles'
+import { Block, BlockTitle, BlockContent, } from '../../../components/Block'
 
 interface StakingComponentProps {
   isBalancesShowing: boolean
@@ -19,42 +19,54 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
   isBalancesShowing,
 }) => {
   return (
-    <RootRow>
-      <StatsCell>
-        <Block>
-          <BlockContent border>
-            <RowContainer justify={'space-between'}>
-              <BlockTitle>
-                Your RIN Staking&nbsp;
+    <>
+      <RootRow>
+        <StatsCell>
+          <Block>
+            <BlockContent border>
+              <RowContainer justify={'space-between'}>
+                <BlockTitle>
+                  Your RIN Staking&nbsp;
             </BlockTitle>
-              <Row>
-                <SvgIcon
-                  src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
-                  width={'2.7rem'}
-                  height={'auto'}
-                />
-              </Row>
-            </RowContainer>
-            <StyledTextDiv>
-              GHvybfUhsKxmWvrVZ5KDdWQGPCYSZoRKefWYyVyRHGYc
+                <Row>
+                  <SvgIcon
+                    src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
+                    width={'2.7rem'}
+                    height={'auto'}
+                  />
+                </Row>
+              </RowContainer>
+              <StyledTextDiv>
+                GHvybfUhsKxmWvrVZ5KDdWQGPCYSZoRKefWYyVyRHGYc
            </StyledTextDiv>
+            </BlockContent>
+            <BlockContent>
+              asd
           </BlockContent>
-          <BlockContent>
-            asd
-          </BlockContent>
-        </Block>
-      </StatsCell>
-      <StatsCell>
-        <Row>
-          <StatsCell>
-            <Block>Block 2</Block>
-          </StatsCell>
-          <StatsCell>
-            <Block>Block 3</Block>
-          </StatsCell>
-        </Row>
-      </StatsCell>
-    </RootRow>
+          </Block>
+        </StatsCell>
+        <StatsCell>
+          <Row>
+            <StatsCell>
+              <Block><BlockContent>Block 2</BlockContent></Block>
+            </StatsCell>
+            <StatsCell>
+              <Block><BlockContent>Block 3</BlockContent></Block>
+            </StatsCell>
+          </Row>
+          <Row>
+            <StatsCellFull>
+              <Block><BlockContent>Block 4</BlockContent></Block>
+            </StatsCellFull>
+          </Row>
+        </StatsCell>
+      </RootRow>
+      <RootRow>
+        <StatsCellSmall> <Block><BlockContent>Block 5</BlockContent></Block></StatsCellSmall>
+        <StatsCellSmall> <Block><BlockContent>Block 6</BlockContent></Block></StatsCellSmall>
+        <StatsCellSmall> <Block><BlockContent>Block 7</BlockContent></Block></StatsCellSmall>
+      </RootRow>
+    </>
     // <BlockTemplate
     //   direction={'column'}
     //   theme={theme}

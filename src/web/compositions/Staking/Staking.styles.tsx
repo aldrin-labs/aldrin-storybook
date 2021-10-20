@@ -132,21 +132,21 @@ export const RootRow = styled(Row)`
 `
 
 
-export const StatsCell = styled.div`
+export const StatsCellFull = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+`
 
+export const StatsCell = styled(StatsCellFull)`
   @media(min-width: ${BREAKPOINTS.lg}) {
     flex: 0 1 50%;
+  }
+`
 
-    &:first-child {
-      margin-left: 0;
-    }
-
-    &:last-child {
-      margin-right: 0;
-    }
+export const StatsCellSmall = styled(StatsCellFull)`
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    flex: 0 1 33%;
   }
 `
