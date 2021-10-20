@@ -77,7 +77,7 @@ class MultiEndpointsConnection implements Connection {
     let threshold = 0
     const connection = this.endpointsRequestsCounter.find((ep) => {
       threshold += ep.weight
-      return threshold <= rnd
+      return rnd <= threshold
     })
 
     return (
