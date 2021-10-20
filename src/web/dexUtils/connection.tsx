@@ -1,13 +1,13 @@
-
 import {
   Account,
   AccountInfo,
   clusterApiUrl,
   PublicKey,
+  Connection,
 } from '@solana/web3.js'
-import React, { useContext,  useRef } from 'react'
-import { useAsyncData } from './fetch-loop'
+import React, { useContext, useRef } from 'react'
 import tuple from 'immutable-tuple'
+import { useAsyncData } from './fetch-loop'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
 
 export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
@@ -20,8 +20,8 @@ export const ENDPOINTS = [
 
 const connection = new MultiEndpointsConnection(
   [
-    { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 10 },
-    { url: 'https://aldrinexchange.genesysgo.net', RPS: 20 },
+    { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 6 },
+    { url: 'https://aldrinexchange.genesysgo.net', weight: 20 },
   ],
   'recent'
 )
@@ -32,25 +32,21 @@ connection.connections.forEach((c) => {
 })
 
 const serumConnection = new MultiEndpointsConnection([
-  { url: 'https://solana-api.projectserum.com', RPS: 2 },
+  { url: 'https://solana-api.projectserum.com', weight: 2 },
 ])
 
 const context = {
   connection,
   serumConnection,
   endpoint: ENDPOINTS[0].endpoint,
-  setEndpoint: () => null // compatibility
+  setEndpoint: () => null, // compatibility
 }
 
 const ConnectionContext = React.createContext(context)
 
-
-
 export const ConnectionProvider: React.FC = ({ children }) => {
   return (
-    <ConnectionContext.Provider
-      value={context}
-    >
+    <ConnectionContext.Provider value={context}>
       {children}
     </ConnectionContext.Provider>
   )
@@ -60,8 +56,8 @@ export function useConnection(): MultiEndpointsConnection {
   return useContext(ConnectionContext).connection
 }
 
-export function useSerumConnection(): MultiEndpointsConnection {
-  return useContext(ConnectionContext).serumConnection
+export function useSerumConnection(): Connection {
+  return useContext(ConnectionContext).serumConnection as unknown as Connection
 }
 
 export function useConnectionConfig() {
