@@ -35,6 +35,7 @@ import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarne
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { addAmountsToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountsToClaimForFarmingTickets'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
+import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 
 const TablesSwitcher = ({
   theme,
@@ -47,6 +48,8 @@ const TablesSwitcher = ({
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
 }) => {
+  const getPoolsInfoData = getPoolsInfo.filter((pool) => ALL_TOKENS_MINTS_MAP[pool.tokenA] && ALL_TOKENS_MINTS_MAP[pool.tokenB])
+
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
 
   const [farmingTicketsMap, setFarmingTicketsMap] = useState<
@@ -118,12 +121,6 @@ const TablesSwitcher = ({
 
       await setAllTokensData(allTokensData)
       await setFarmingTicketsMap(farmingTicketsMap)
-
-      // await takePoolsFarmingSnapshots({
-      //   wallet,
-      //   connection,
-      //   pools: getPoolsInfo
-      // })
     }
 
     if (!!wallet?.publicKey) {
@@ -176,7 +173,7 @@ const TablesSwitcher = ({
               Your liquidity (
               {
                 getUserPoolsFromAll({
-                  poolsInfo: getPoolsInfo,
+                  poolsInfo: getPoolsInfoData,
                   allTokensDataMap,
                   farmingTicketsMap,
                 }).length
@@ -204,7 +201,7 @@ const TablesSwitcher = ({
             poolWaitingForUpdateAfterOperation={
               poolWaitingForUpdateAfterOperation
             }
-            poolsInfo={getPoolsInfo}
+            poolsInfo={getPoolsInfoData}
             allTokensDataMap={allTokensDataMap}
             dexTokensPricesMap={dexTokensPricesMap}
             farmingTicketsMap={farmingTicketsMap}
@@ -223,7 +220,7 @@ const TablesSwitcher = ({
           <UserLiquitidyTable
             theme={theme}
             searchValue={searchValue}
-            poolsInfo={getPoolsInfo}
+            poolsInfo={getPoolsInfoData}
             poolWaitingForUpdateAfterOperation={
               poolWaitingForUpdateAfterOperation
             }
@@ -319,7 +316,7 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
-    pollInterval: 60000,
+    pollInterval: 30000,
   }),
   queryRendererHoc({
     query: getFeesEarnedByAccount,
