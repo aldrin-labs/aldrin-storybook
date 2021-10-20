@@ -7,9 +7,14 @@ import LightLogo from '@icons/lightLogo.svg'
 import WalletIcon from '@icons/walletIcon.svg'
 import { withTheme } from '@material-ui/core'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
+import { Label } from '@sb/components/Label/Label'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import SvgIcon from '@sb/components/SvgIcon'
-import { ReusableTitle as Title, Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import {
+  ReusableTitle as Title,
+  Row,
+  RowContainer,
+} from '@sb/compositions/AnalyticsRoute/index.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 import { useConnectionConfig } from '@sb/dexUtils/connection'
@@ -21,7 +26,14 @@ import { Link, useLocation } from 'react-router-dom'
 import { compose } from 'recompose'
 import { CustomCard, PanelWrapper } from '../Chart.styles'
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
-import { RedButton, DropdownContainer, DropwodnItem, MenuDropdown, MenuDropdownInner, MenuDropdownLink } from './styles'
+import {
+  RedButton,
+  DropdownContainer,
+  DropwodnItem,
+  MenuDropdown,
+  MenuDropdownInner,
+  MenuDropdownLink,
+} from './styles'
 import { FeedbackPopup } from './UsersFeedbackPopup'
 
 export const CardsPanel = ({ theme }) => {
@@ -33,14 +45,13 @@ export const CardsPanel = ({ theme }) => {
 
   const [tradingMenuOpen, setTradingMenuOpen] = useState(false)
 
-
   const CARD_STYLE: React.CSSProperties = {
     // position: 'relative',
     display: 'flex',
     maxWidth: '100%',
     flexGrow: 1,
     border: '0',
-    overflow: 'visible'
+    overflow: 'visible',
   }
 
   const LOGO_LINK_STYLE: React.CSSProperties = {
@@ -59,14 +70,8 @@ export const CardsPanel = ({ theme }) => {
   return (
     <ChartGridContainer theme={theme}>
       <PanelWrapper>
-        <CustomCard
-          theme={theme}
-          style={CARD_STYLE}
-        >
-          <Link
-            to={'/'}
-            style={LOGO_LINK_STYLE}
-          >
+        <CustomCard theme={theme} style={CARD_STYLE}>
+          <Link to={'/'} style={LOGO_LINK_STYLE}>
             <img
               style={{
                 width: '100%',
@@ -109,36 +114,15 @@ export const CardsPanel = ({ theme }) => {
               alignItems: 'center',
             }}
           >
-            <DropdownContainer>
-              <DropwodnItem
-                theme={theme}
-              >
-                Trading
-              </DropwodnItem>
-              <MenuDropdown className="menu">
-                <MenuDropdownInner>
-                  <NavLinkButton
-                    style={{width: '100%'}}
-                    component={(props) => <Link to={`/chart`} {...props} />}
-                  >
-                    <MenuDropdownLink>
-                      Terminal
-                    </MenuDropdownLink>
-
-                  </NavLinkButton>
-                  <NavLinkButton
-                    style={{width: '100%'}}
-                    component={(props) => <Link to={`/swaps`} {...props} />}
-                  >
-                    <MenuDropdownLink>
-                      Swaps
-                    </MenuDropdownLink>
-                  </NavLinkButton>
-                </MenuDropdownInner>
-              </MenuDropdown>
-            </DropdownContainer>
-
-
+            <NavLinkButton
+              theme={theme}
+              pathname={location.pathname}
+              to="/chart"
+              page={'chart'}
+              component={(props) => <Link to={`/chart`} {...props} />}
+            >
+              Trading
+            </NavLinkButton>
             {/* <NavLinkButton
               theme={theme}
               data-tut="analytics"
@@ -153,7 +137,7 @@ export const CardsPanel = ({ theme }) => {
               pathname={location.pathname}
               to="/rebalance"
               page={'rebalance'}
-              style={NAV_LINK_STYLE}
+              style={{ width: '13rem' }}
               component={(props) => <Link to={`/rebalance`} {...props} />}
             >
               Rebalance
@@ -177,16 +161,20 @@ export const CardsPanel = ({ theme }) => {
             >
               Wallet
             </NavLinkButton>
-            {!MASTER_BUILD && (
-              <NavLinkButton
+            <NavLinkButton
+              theme={theme}
+              page={'/pools'}
+              pathname={location.pathname}
+              style={{ width: '17rem' }}
+              component={(props) => <Link to={`/pools`} {...props} />}
+            >
+              Liquidity Pools
+              <Label
+                text={'New'}
                 theme={theme}
-                page={'/pools'}
-                pathname={location.pathname}
-                component={(props) => <Link to={`/pools`} {...props} />}
-              >
-                Pools
-              </NavLinkButton>
-            )}
+                style={{ marginLeft: '.5rem', color: '#53DF11' }}
+              />
+            </NavLinkButton>
             {/* {!MASTER_BUILD && (
               <NavLinkButton
                 style={{ color: '#386DE6' }}
@@ -289,8 +277,8 @@ const TopBar = ({ theme }) => {
               ) : isSolongWallet ? (
                 'Solong Wallet'
               ) : (
-                          'Wallet'
-                        )}
+                'Wallet'
+              )}
             </Title>
             <Title
               fontFamily="Avenir Next"
