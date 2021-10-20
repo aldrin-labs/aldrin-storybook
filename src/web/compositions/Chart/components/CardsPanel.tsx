@@ -15,7 +15,7 @@ import {
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   ChartGridContainer,
-  RoundButton,
+  RoundLink,
 } from '@sb/compositions/Chart/Chart.styles'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -132,13 +132,13 @@ export const CardsPanel = ({ theme }) => {
               src={isDarkTheme ? AldrinLogo : LightLogo}
             />
           </Link>
-          <RoundButton
+          <RoundLink
             pathname={location.pathname}
             to="/staking"
             page={'staking'}
           >
             Stake RIN
-          </RoundButton>
+          </RoundLink>
           <Row
             style={{
               borderLeft: theme.palette.border.new,

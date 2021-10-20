@@ -565,7 +565,7 @@ export const ChartAndOrderbookContainer = styled(Grid)`
       props.terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
   }
 `
-export const RoundButton = styled(Link)`
+export const RoundLink = styled(Link)`
   background-image: url(${StakeBtn});
   border-radius: 3rem;
   height: 3.5rem;
