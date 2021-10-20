@@ -83,7 +83,7 @@ export const withdrawFarmed = async ({
   for (let ticketData of farmingTickets.reverse()) {
     for (let i = 0; i < pool.farming.length; i++) {
     // for now only for fisrt farming state
-    const farmingState = pool.farming[0]
+    const farmingState = pool.farming[i]
 
     // find amount to claim for this farming state in tickets amounts
     const amountToClaim =
