@@ -93,7 +93,7 @@ const AppRaw = ({
   getViewModeQuery,
   location: { pathname: currentPage, search },
 }: any) => {
-  const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
+  const [isDevUrlPopupOpen, openDevUrlPopup] = useLocalStorageState('isDevUrlPopupOpen', true)
   const [
     isRebrandingPopupOpen,
     setIsRebrandingPopupOpen,
