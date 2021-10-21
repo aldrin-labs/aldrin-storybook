@@ -33,16 +33,32 @@ import {
   RewardsBlock,
   BalanceRow,
   Digit,
+  BalanceWrap,
+  BigNumber,
+  Number,
 } from '../Staking.styles'
-import { Block, BlockTitle, BlockContent, BlockSubtitle } from '../../../components/Block'
+import {
+  Block,
+  BlockTitle,
+  BlockContent,
+  BlockContentStretched,
+  BlockSubtitle,
+} from '../../../components/Block'
 import { Row, Cell, StretchedBlock } from '../../../components/Layout'
 import { Button } from '../../../components/Button'
+import { SuccessText } from '../../../components/Typography'
 
-interface StakingComponentProps {
+interface UserBalanceProps {
+  value: number
+  visible: boolean
 }
+const UserBalance: React.FC<UserBalanceProps> = (props) => (
+  <BalanceRow>
+    <Digit>{props.visible ? stripByAmount(props.value) : '＊＊＊'}</Digit>&nbsp;RIN
+  </BalanceRow>
+)
 
-export const StakingComponent: React.FC<StakingComponentProps> = ({
-}) => {
+export const StakingComponent: React.FC = () => {
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
 
@@ -89,28 +105,41 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
                 </div>
                 <WalletBalanceBlock>
                   <BlockSubtitle>
-                    Available in wallet:  
+                    Available in wallet:
                   </BlockSubtitle>
-                  <BalanceRow>
-                    <Digit>{isBalancesShowing ? stripByAmount(tokenData?.amount) : '＊＊＊'}</Digit>
-                    &nbsp;RIN
-                  </BalanceRow>
+                  <BalanceWrap>
+                    <UserBalance visible={isBalancesShowing} value={tokenData?.amount || 0} />
+                  </BalanceWrap>
                 </WalletBalanceBlock>
               </WalletRow>
             </BlockContent>
             <BlockContent>
               <Row>
-                <Cell colLg={4}>
+                <Cell colMd={4} colLg={12} colXl={4}>
                   <TotalStakedBlock inner>
                     <BlockContent>
                       <BlockSubtitle>Total staked:</BlockSubtitle>
+                      <UserBalance visible={isBalancesShowing} value={1} />
                     </BlockContent>
                   </TotalStakedBlock>
                 </Cell>
-                <Cell colLg={8}>
+                <Cell colMd={8} colLg={12} colXl={8}>
                   <RewardsBlock inner>
                     <BlockContent>
-                      <BlockSubtitle>Rewards:</BlockSubtitle>
+                      <StretchedBlock>
+                        <div>
+                          <BlockSubtitle>Rewards:</BlockSubtitle>
+                          <UserBalance visible={isBalancesShowing} value={2} />
+                        </div>
+                        <div>
+                          <BlockSubtitle>Available to claim:</BlockSubtitle>
+                          <UserBalance visible={isBalancesShowing} value={33} />
+                        </div>
+                        <div>
+                          <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadis="xxl">Claim</Button>
+                        </div>
+                      </StretchedBlock>
+
                     </BlockContent>
                   </RewardsBlock>
                 </Cell>
@@ -125,16 +154,23 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
           <Row>
             <Cell colMd={6}>
               <Block icon={locksIcon}>
-                <BlockContent>
+                <BlockContentStretched>
                   <BlockTitle>Total Staked</BlockTitle>
-                </BlockContent>
+                  <BigNumber><SuccessText>10,000,000</SuccessText> RIN</BigNumber>
+                  <Number>$1.53b</Number>
+                </BlockContentStretched>
               </Block>
             </Cell>
             <Cell colMd={6}>
               <Block backgroundImage={pinkBackground}>
-                <BlockContent>
+                <BlockContentStretched>
                   <BlockTitle>Estimated Rewards</BlockTitle>
-                </BlockContent>
+                  <BigNumber>193%</BigNumber>
+                  <StretchedBlock>
+                    <Number>APY</Number>
+                    <div>Share</div>
+                  </StretchedBlock>
+                </BlockContentStretched>
               </Block>
             </Cell>
           </Row>

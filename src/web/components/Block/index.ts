@@ -63,3 +63,10 @@ export const BlockContent = styled.div<BlockContentProps>`
   position: relative;
   ${(props) => props.border ? `border-bottom: 1px solid ${COLORS.borderAlt}` : ''}
 `
+
+export const BlockContentStretched = styled(BlockContent)`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+`

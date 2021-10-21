@@ -14,6 +14,7 @@ export interface CellProps {
   colSm?: number
   colMd?: number
   colLg?: number
+  colXl?: number
 }
 
 export interface StretchedBlockProps {
