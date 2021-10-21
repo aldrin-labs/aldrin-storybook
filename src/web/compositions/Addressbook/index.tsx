@@ -142,7 +142,7 @@ const combineContactsData = (
               style={{
                 display: 'block',
                 color: theme.palette.dark.main,
-                fontFamily: 'DM Sans Medium',
+                fontFamily: 'Avenir Next',
               }}
             >
               {String(dayjs.unix(el.timestamp).format('ll'))}
@@ -150,7 +150,7 @@ const combineContactsData = (
             <span
               style={{
                 color: theme.palette.dark.main,
-                fontFamily: 'DM Sans Medium',
+                fontFamily: 'Avenir Next',
               }}
             >
               {dayjs.unix(el.timestamp).format('LT')}

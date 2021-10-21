@@ -9,7 +9,6 @@ import { TextButton } from '@sb/compositions/Rebalance/Rebalance.styles'
 import { RoundButton } from '../Staking.styles'
 import { RoundInputWithTokenName } from './Input'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
-import { MAIN_BLOCK } from '../Staking.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { SvgIcon } from '@sb/components'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -20,15 +19,16 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { CCAI_MINT } from '@sb/dexUtils/utils'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 
-import {
-  Row,
-  RootRow,
-  StatsCell,
-  StyledTextDiv,
-  StatsCellFull,
-  StatsCellSmall,
-} from '../Staking.styles'
-import { Block, BlockTitle, BlockContent } from '../../../components/Block'
+import pinkBackground from './assets/pinkBackground.png'
+import StakeBtn from '@icons/stakeBtn.png'
+
+
+import locksIcon from './assets/lockIcon.svg'
+
+import { RootRow, StyledTextDiv, WalletRow, WalletBalanceBlock } from '../Staking.styles'
+import { Block, BlockTitle, BlockContent, BlockSubtitle } from '../../../components/Block'
+import { Row, Cell, StretchedBlock } from '../../../components/Layout'
+import { Button } from '../../../components/Button'
 
 interface StakingComponentProps {
 }
@@ -41,7 +41,7 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const walletAddress = wallet?.publicKey.toString() || ''
+  const walletAddress = wallet?.publicKey?.toString() || ''
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,69 +57,72 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
   return (
     <>
       <RootRow>
-        <StatsCell>
+        <Cell col={12} colLg={6} >
           <Block>
             <BlockContent border>
-              <RowContainer justify={'space-between'}>
-                <BlockTitle>Your RIN Staking</BlockTitle>
-                <Row>
-                  <SvgIcon
-                    src={
-                      isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye
-                    }
-                    width={'2.7rem'}
-                    height={'auto'}
-                  />
-                </Row>
-              </RowContainer>
-              <StyledTextDiv>
-                GHvybfUhsKxmWvrVZ5KDdWQGPCYSZoRKefWYyVyRHGYc
-              </StyledTextDiv>
+              <WalletRow>
+                <div>
+                  <StretchedBlock align="center">
+                    <BlockTitle>
+                      Your RIN Staking
+                    </BlockTitle>
+                    <SvgIcon
+                      src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
+                      width={'1.5em'}
+                      height={'auto'}
+                    />
+                  </StretchedBlock>
+                  <StyledTextDiv>
+                    GHvybfUhsKxmWvrVZ5KDdWQGPCYSZoRKefWYyVyRHGYc
+                  </StyledTextDiv>
+                </div>
+                <WalletBalanceBlock>
+                  <BlockSubtitle>
+                    Available in wallet:
+                  </BlockSubtitle>
+                  <Text
+                    color={'#96999C'}
+                    fontFamily={'Avenir Next Demi'}
+                    fontSize={'1.8rem'}
+                  >
+                    <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>0</span> RIN
+                  </Text>
+                </WalletBalanceBlock>
+              </WalletRow>
             </BlockContent>
-            <BlockContent>asd</BlockContent>
+            <BlockContent>
+              <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
+              <Button backgroundImage={StakeBtn} disabled fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
+            </BlockContent>
           </Block>
-        </StatsCell>
-        <StatsCell>
+        </Cell>
+        <Cell col={12} colLg={6}>
           <Row>
-            <StatsCell>
-              <Block>
-                <BlockContent>Block 2</BlockContent>
+            <Cell colMd={6}>
+              <Block icon={locksIcon}>
+                <BlockContent>
+                  <BlockTitle>Total Staked</BlockTitle>
+                </BlockContent>
               </Block>
-            </StatsCell>
-            <StatsCell>
-              <Block>
-                <BlockContent>Block 3</BlockContent>
+            </Cell>
+            <Cell colMd={6}>
+              <Block backgroundImage={pinkBackground}>
+                <BlockContent>
+                  <BlockTitle>Estimated Rewards</BlockTitle>
+                </BlockContent>
               </Block>
-            </StatsCell>
+            </Cell>
           </Row>
           <Row>
-            <StatsCellFull>
+            <Cell>
               <Block>
-                <BlockContent>Block 4</BlockContent>
+                <BlockContent>
+                  <BlockTitle>RIN Stats</BlockTitle>
+                </BlockContent>
               </Block>
-            </StatsCellFull>
+            </Cell>
           </Row>
-        </StatsCell>
-      </RootRow>
-      <RootRow>
-        <StatsCellSmall>
-          {' '}
-          <Block>
-            <BlockContent>Block 5</BlockContent>
-          </Block>
-        </StatsCellSmall>
-        <StatsCellSmall>
-          {' '}
-          <Block>
-            <BlockContent>Block 6</BlockContent>
-          </Block>
-        </StatsCellSmall>
-        <StatsCellSmall>
-          {' '}
-          <Block>
-            <BlockContent>Block 7</BlockContent>
-          </Block>
-        </StatsCellSmall>
+        </Cell>
       </RootRow>
     </>
     // <BlockTemplate

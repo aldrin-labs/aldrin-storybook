@@ -1,18 +1,56 @@
 import styled from 'styled-components'
-import { COLORS, FONTS } from '../../../variables'
+import { COLORS } from '../../../variables'
 
-export const Block = styled.div`
+interface BlockProps {
+  backgroundImage?: string
+  icon?: string
+}
+
+export const Block = styled.div<BlockProps>`
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);
   background: ${COLORS.blockBackground}; 
   border-radius: 12px;
   margin: 10px;
   height: 100%;
+  position: relative;
+  ${({ backgroundImage }: BlockProps) => backgroundImage ? 
+  `
+    background-image: url(${backgroundImage});
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+  ` : ''}
+  ${({ icon }: BlockProps) => icon ? 
+  `
+  &:before {
+    content: "";
+    position: absolute;
+    right: 5%;
+    top: 5%;
+    height: 90%;
+    width: 90%;
+    background: url(${icon}) right center no-repeat;
+  }
+  ` : ''}
 `
 
+interface TitleProps {
+  color?: string
+}
+
 export const BlockTitle = styled.h2`
-  font-family: ${FONTS.mainDemi};
+  font-weight: 600;
   font-size: 1.25em;
+  line-height: 150%;
   margin: 0.25rem 0 0.5rem;
+`
+
+export const BlockSubtitle = styled.h3<TitleProps>`
+  font-weight: 600;
+  font-size: 1em;
+  line-height: 130%;
+  margin: 0 0 1em;
+  color: ${(props: TitleProps) => props.color || COLORS.hint};
 `
 
 interface BlockContentProps {
@@ -21,5 +59,6 @@ interface BlockContentProps {
 
 export const BlockContent = styled.div<BlockContentProps>`
   padding: 20px 24px;
-  ${(props) => props.border ? `border-bottom: 1px solid ${COLORS.border}` : ''}
+  position: relative;
+  ${(props) => props.border ? `border-bottom: 1px solid ${COLORS.borderAlt}` : ''}
 `

@@ -1,9 +1,6 @@
 import styled from 'styled-components'
 
-import greenBackground from '@icons/greenBack.png'
-import pinkBackground from '@icons/pinkBackground.png'
-import StakeBtn from '@icons/stakeBtn.png'
-import { Row as LRow } from '@sb/components/Layout'
+import { Row } from '@sb/components/Layout'
 import { BREAKPOINTS, FONTS, COLORS } from '../../../variables'
 import { RowContainer } from '../AnalyticsRoute/index.styles'
 
@@ -80,14 +77,13 @@ export const StyledTextDiv = styled.div`
   height: auto;
   width: 100%;
   font-size: 0.75em;
-  font-family: ${FONTS.mainLight};
+  font-weight: 500;
   color: ${COLORS.hint};
   border-radius: 1.5rem;
+  line-height: 1.25em;
   background: ${COLORS.background};
-  letter-spacing: 0.01rem;
-  cursor: pointer;
-  padding: 0.75rem;
-  margin: 0.75rem 0 0 0;
+  padding: 8px 12px;
+  margin: 12px 0 0 0;
 `
 export const RoundButton = styled.button`
   background-image: ${(props) =>
@@ -120,35 +116,28 @@ export const RoundInput = styled.input`
 
 
 
-export const Row = styled(LRow)`
-  flex-direction: column;
-
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    flex-direction: row;
-    align-items: stretch;
-    height: 100%;
-  }
-`
 export const RootRow = styled(Row)`
   margin: 50px 0;
 `
 
-
-export const StatsCellFull = styled.div`
-  width: 100%;
+export const WalletRow = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-`
 
-export const StatsCell = styled(StatsCellFull)`
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    flex: 0 1 50%;
+  @media(min-width: ${BREAKPOINTS.xl}) {
+    & {
+      flex-direction: row;
+      justify-content: space-between;
+    }
   }
 `
 
-export const StatsCellSmall = styled(StatsCellFull)`
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    flex: 0 1 33.333%;
+export const WalletBalanceBlock = styled.div`
+  margin-top: 20px;
+
+  @media(min-width: ${BREAKPOINTS.xl}) {
+    & {
+      margin-top: 8px;
+    }
   }
 `
