@@ -22,19 +22,27 @@ import { stripByAmount } from '@core/utils/chartPageUtils'
 import pinkBackground from './assets/pinkBackground.png'
 import StakeBtn from '@icons/stakeBtn.png'
 
-
 import locksIcon from './assets/lockIcon.svg'
 
-import { RootRow, StyledTextDiv, WalletRow, WalletBalanceBlock } from '../Staking.styles'
-import { Block, BlockTitle, BlockContent, BlockSubtitle } from '../../../components/Block'
+import {
+  RootRow,
+  StyledTextDiv,
+  WalletRow,
+  WalletBalanceBlock,
+} from '../Staking.styles'
+import {
+  Block,
+  BlockTitle,
+  BlockContent,
+  BlockSubtitle,
+} from '../../../components/Block'
 import { Row, Cell, StretchedBlock } from '../../../components/Layout'
 import { Button } from '../../../components/Button'
+import { BorderButton } from '@sb/compositions/Pools/components/Tables/index.styles'
 
-interface StakingComponentProps {
-}
+interface StakingComponentProps {}
 
-export const StakingComponent: React.FC<StakingComponentProps> = ({
-}) => {
+export const StakingComponent: React.FC<StakingComponentProps> = ({}) => {
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
 
@@ -57,17 +65,19 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
   return (
     <>
       <RootRow>
-        <Cell col={12} colLg={6} >
+        <Cell col={12} colLg={6}>
           <Block>
             <BlockContent border>
               <WalletRow>
                 <div>
                   <StretchedBlock align="center">
-                    <BlockTitle>
-                      Your RIN Staking
-                    </BlockTitle>
+                    <BlockTitle>Your RIN Staking</BlockTitle>
                     <SvgIcon
-                      src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
+                      src={
+                        isBalancesShowing
+                          ? ImagesPath.eye
+                          : ImagesPath.closedEye
+                      }
                       width={'1.5em'}
                       height={'auto'}
                     />
@@ -77,22 +87,38 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
                   </StyledTextDiv>
                 </div>
                 <WalletBalanceBlock>
-                  <BlockSubtitle>
-                    Available in wallet:
-                  </BlockSubtitle>
+                  <BlockSubtitle>Available in wallet:</BlockSubtitle>
                   <Text
                     color={'#96999C'}
                     fontFamily={'Avenir Next Demi'}
                     fontSize={'1.8rem'}
                   >
-                    <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>0</span> RIN
+                    <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>
+                      0
+                    </span>{' '}
+                    RIN
                   </Text>
                 </WalletBalanceBlock>
               </WalletRow>
             </BlockContent>
             <BlockContent>
-              <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
-              <Button backgroundImage={StakeBtn} disabled fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
+              <Button
+                backgroundImage={StakeBtn}
+                fontSize="xs"
+                padding="lg"
+                borderRadis="xxl"
+              >
+                Stake
+              </Button>
+              <Button
+                backgroundImage={StakeBtn}
+                disabled
+                fontSize="xs"
+                padding="lg"
+                borderRadis="xxl"
+              >
+                Stake
+              </Button>
             </BlockContent>
           </Block>
         </Cell>
@@ -117,7 +143,7 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
             <Cell>
               <Block>
                 <BlockContent>
-                  <BlockTitle>RIN Stats</BlockTitle>
+                  <BlockTitle>RIN Stats </BlockTitle>
                 </BlockContent>
               </Block>
             </Cell>

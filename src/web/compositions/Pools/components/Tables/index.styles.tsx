@@ -27,7 +27,7 @@ export const TableHeader = styled.thead`
     padding: 1rem 2rem;
   }
 `
-export const BorderButton = styled(BtnCustom)`
+export const BorderButton = styled.a`
   border: 0.1rem solid ${(props) => props.borderColor || '#41454E'};
   width: ${(props) => props.width || 'auto'};
   padding: ${(props) => props.padding || '0 2rem'};
