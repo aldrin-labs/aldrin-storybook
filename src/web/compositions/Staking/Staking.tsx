@@ -5,16 +5,11 @@ import { Content, Page } from '../../components/Layout'
 import { StakingComponent } from './components/StakingComponent'
 import { BlockWithHints } from './components/BlockWithHints'
 
-
-
 export const Staking = ({ theme }: { theme: Theme }) => {
-  const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   return (
     <Page>
       <Content>
-        <StakingComponent
-          isBalancesShowing={isBalancesShowing}
-        />
+        <StakingComponent />
         <BlockWithHints />
       </Content>
     </Page>
