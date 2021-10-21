@@ -4,6 +4,7 @@ import { RootRow } from '../Staking.styles'
 
 import locksIcon from './assets/lockIcon.svg'
 import poolIcon from './assets/poolIcon.svg'
+import rewardsIcon from './assets/rewards.svg'
 
 import greenBack from './assets/greenBack.png'
 
@@ -27,7 +28,7 @@ export const BlockWithHints = () => {
         </Block>
       </Cell>
       <Cell colLg={4}>
-        <Block>
+        <Block icon={rewardsIcon}>
           <BlockContent>
             <BlockSubtitle>Rewards:</BlockSubtitle>
             <Text maxWidth="95%" size="sm">

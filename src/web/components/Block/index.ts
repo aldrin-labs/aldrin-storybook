@@ -41,13 +41,14 @@ interface TitleProps {
 export const BlockTitle = styled.h2`
   font-weight: 600;
   font-size: 1.25em;
+  line-height: 150%;
   margin: 0.25rem 0 0.5rem;
 `
 
 export const BlockSubtitle = styled.h3<TitleProps>`
   font-weight: 600;
   font-size: 1em;
-  line-height: 1.25rem;
+  line-height: 130%;
   margin: 0 0 1em;
   color: ${(props: TitleProps) => props.color || COLORS.hint};
 `

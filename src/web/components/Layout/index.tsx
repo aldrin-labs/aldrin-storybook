@@ -31,16 +31,17 @@ export const Content = styled.div`
 
 export const Row = styled.div<RowProps>`
   display: flex;
-  flex-wrap: ${(props) => props.wrap || 'wrap'};
-  justify-content: ${(props) => props.justify || 'center'};
-  flex-direction: ${(props) => props.direction || 'row'};
-  align-items: ${(props) => props.align || 'center'};
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: stretch;
+  height: 100%;
 `
 
 
 interface CellProps {
   col?: number
   colSm?: number
+  colMd?: number
   colLg?: number
 }
 
@@ -51,11 +52,17 @@ export const Cell = styled.div<CellProps>`
   align-items: stretch;
   flex: 0 1 ${(props) => (props.col || 12) / LAYOUT_COL_NUMBER * 100}%;
   ${(props) => props.colSm ? `@media(min-width:${BREAKPOINTS.sm}) { flex: 0 1 ${props.colSm / LAYOUT_COL_NUMBER * 100}%  }` : ''}
+  ${(props) => props.colMd ? `@media(min-width:${BREAKPOINTS.md}) { flex: 0 1 ${props.colMd / LAYOUT_COL_NUMBER * 100}%  }` : ''}
   ${(props) => props.colLg ? `@media(min-width:${BREAKPOINTS.lg}) { flex: 0 1 ${props.colLg / LAYOUT_COL_NUMBER * 100}%  }` : ''}
 `
 
-export const StretchedBlock = styled.div`
+interface StretchedBlockProps {
+  align?: string
+}
+
+export const StretchedBlock = styled.div<StretchedBlockProps>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  ${(props: StretchedBlockProps) => props.align ? `align-items:${props.align};` : ''}
 `

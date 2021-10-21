@@ -1,9 +1,6 @@
 import styled from 'styled-components'
 
-import greenBackground from '@icons/greenBack.png'
-import pinkBackground from '@icons/pinkBackground.png'
-import StakeBtn from '@icons/stakeBtn.png'
-import { Row as LRow } from '@sb/components/Layout'
+import { Row } from '@sb/components/Layout'
 import { BREAKPOINTS, FONTS, COLORS } from '../../../variables'
 
 // export const ADAPTIVE_LOW_BLOCKS = ({
@@ -84,7 +81,6 @@ export const StyledTextDiv = styled.div`
   border-radius: 1.5rem;
   line-height: 1.25em;
   background: ${COLORS.background};
-  letter-spacing: 0.01rem;
   padding: 8px 12px;
   margin: 12px 0 0 0;
 `
@@ -119,15 +115,28 @@ export const StyledTextDiv = styled.div`
 
 
 
-export const Row = styled(LRow)`
-  flex-direction: column;
-
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    flex-direction: row;
-    align-items: stretch;
-    height: 100%;
-  }
-`
 export const RootRow = styled(Row)`
   margin: 50px 0;
+`
+
+export const WalletRow = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media(min-width: ${BREAKPOINTS.xl}) {
+    & {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+`
+
+export const WalletBalanceBlock = styled.div`
+  margin-top: 20px;
+
+  @media(min-width: ${BREAKPOINTS.xl}) {
+    & {
+      margin-top: 8px;
+    }
+  }
 `

@@ -7,17 +7,21 @@ import { RoundInputWithTokenName } from './Input'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { MAIN_BLOCK, } from '../Staking.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { SvgIcon } from '@sb/components'
+import { SvgIcon } from '@sb/components' 
 
 import pinkBackground from './assets/pinkBackground.png'
+import StakeBtn from '@icons/stakeBtn.png'
 
-import { Row, RootRow, StyledTextDiv } from '../Staking.styles'
+import { RootRow, StyledTextDiv, WalletRow, WalletBalanceBlock } from '../Staking.styles'
 import { Block, BlockTitle, BlockContent, BlockSubtitle } from '../../../components/Block'
-import { Cell, StretchedBlock } from '../../../components/Layout'
+import { Row, Cell, StretchedBlock } from '../../../components/Layout'
+import { Button } from '../../../components/Button'
 
 interface StakingComponentProps {
   isBalancesShowing: boolean
 }
+
+
 export const StakingComponent: React.FC<StakingComponentProps> = ({
   isBalancesShowing,
 }) => {
@@ -27,25 +31,23 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
         <Cell col={12} colLg={6} >
           <Block>
             <BlockContent border>
-              <StretchedBlock>
+              <WalletRow>
                 <div>
-                  <StretchedBlock>
+                  <StretchedBlock align="center">
                     <BlockTitle>
                       Your RIN Staking
-                  </BlockTitle>
-                    <Row>
-                      <SvgIcon
-                        src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
-                        width={'1.5em'}
-                        height={'auto'}
-                      />
-                    </Row>
+                    </BlockTitle>
+                    <SvgIcon
+                      src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
+                      width={'1.5em'}
+                      height={'auto'}
+                    />
                   </StretchedBlock>
                   <StyledTextDiv>
                     GHvybfUhsKxmWvrVZ5KDdWQGPCYSZoRKefWYyVyRHGYc
                   </StyledTextDiv>
                 </div>
-                <div>
+                <WalletBalanceBlock>
                   <BlockSubtitle>
                     Available in wallet:
                   </BlockSubtitle>
@@ -56,25 +58,25 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
                   >
                     <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>0</span> RIN
                   </Text>
-                </div>
-              </StretchedBlock>
-
+                </WalletBalanceBlock>
+              </WalletRow>
             </BlockContent>
             <BlockContent>
-              asd
-          </BlockContent>
+              <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
+              <Button backgroundImage={StakeBtn} disabled fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
+            </BlockContent>
           </Block>
         </Cell>
         <Cell col={12} colLg={6}>
           <Row>
-            <Cell colLg={6}>
+            <Cell colMd={6}>
               <Block>
                 <BlockContent>
                   <BlockTitle>Total Staked</BlockTitle>
                 </BlockContent>
               </Block>
             </Cell>
-            <Cell colLg={6}>
+            <Cell colMd={6}>
               <Block backgroundImage={pinkBackground}>
                 <BlockContent>
                   <BlockTitle>Estimated Rewards</BlockTitle>
