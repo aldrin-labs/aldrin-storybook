@@ -4,24 +4,25 @@ import { COLORS } from '../../../variables'
 interface BlockProps {
   backgroundImage?: string
   icon?: string
+  inner?: boolean
 }
 
 export const Block = styled.div<BlockProps>`
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);
-  background: ${COLORS.blockBackground}; 
+  background: ${(props: BlockProps) => props.inner ? COLORS.borderAlt : COLORS.blockBackground}; 
   border-radius: 12px;
   margin: 10px;
   height: 100%;
   position: relative;
-  ${({ backgroundImage }: BlockProps) => backgroundImage ? 
-  `
+  ${({ backgroundImage }: BlockProps) => backgroundImage ?
+    `
     background-image: url(${backgroundImage});
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
   ` : ''}
-  ${({ icon }: BlockProps) => icon ? 
-  `
+  ${({ icon }: BlockProps) => icon ?
+    `
   &:before {
     content: "";
     position: absolute;

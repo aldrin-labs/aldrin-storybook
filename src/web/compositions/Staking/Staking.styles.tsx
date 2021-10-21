@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 import { Row } from '@sb/components/Layout'
+import { Block } from '@sb/components/Block'
 import { BREAKPOINTS, FONTS, COLORS } from '../../../variables'
 
 // export const ADAPTIVE_LOW_BLOCKS = ({
@@ -139,4 +140,12 @@ export const WalletBalanceBlock = styled.div`
       margin-top: 8px;
     }
   }
+`
+
+export const TotalStakedBlock = styled(Block)`
+  margin: 18px 0 38px 0;
+`
+
+export const RewardsBlock = styled(Block)`
+  margin: 18px 0 38px 16px;
 `

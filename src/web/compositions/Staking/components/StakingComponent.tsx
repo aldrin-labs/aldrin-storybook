@@ -15,7 +15,7 @@ import StakeBtn from '@icons/stakeBtn.png'
 
 import locksIcon from './assets/lockIcon.svg'
 
-import { RootRow, StyledTextDiv, WalletRow, WalletBalanceBlock } from '../Staking.styles'
+import { RootRow, StyledTextDiv, WalletRow, WalletBalanceBlock, TotalStakedBlock, RewardsBlock } from '../Staking.styles'
 import { Block, BlockTitle, BlockContent, BlockSubtitle } from '../../../components/Block'
 import { Row, Cell, StretchedBlock } from '../../../components/Layout'
 import { Button } from '../../../components/Button'
@@ -65,6 +65,23 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
               </WalletRow>
             </BlockContent>
             <BlockContent>
+              <Row>
+                <Cell colLg={4}>
+                  <TotalStakedBlock inner>
+                    <BlockContent>
+                      <BlockSubtitle>Total staked:</BlockSubtitle>
+                    </BlockContent>
+                  </TotalStakedBlock>
+                </Cell>
+                <Cell colLg={8}>
+                  <RewardsBlock inner>
+                    <BlockContent>
+                      <BlockSubtitle>Rewards:</BlockSubtitle>
+                    </BlockContent>
+                  </RewardsBlock>
+                </Cell>
+              </Row>
+
               <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
               <Button backgroundImage={StakeBtn} disabled fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
             </BlockContent>
