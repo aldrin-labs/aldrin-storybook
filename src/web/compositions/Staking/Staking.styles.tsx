@@ -85,6 +85,10 @@ export const StyledTextDiv = styled.div`
   background: ${COLORS.background};
   padding: 8px 12px;
   margin: 12px 0 0 0;
+
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    min-width: 360px;
+  }
 `
 export const RoundButton = styled.button`
   background-image: ${(props) =>
@@ -144,9 +148,29 @@ export const WalletBalanceBlock = styled.div`
 `
 
 export const TotalStakedBlock = styled(Block)`
-  margin: 18px 0 38px 0;
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    margin: 18px 0 38px 0;    
+  }
 `
-
+ 
 export const RewardsBlock = styled(Block)`
-  margin: 18px 0 38px 16px;
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    margin: 18px 0 38px 16px;
+  }
+`
+export const BalanceRow = styled.div`
+  color: ${COLORS.hint};
+  font-size: 1.5em;
+  text-transform: lowercase;
+  font-variant: small-caps;
+
+  @media(min-width: ${BREAKPOINTS.xl}) {
+    text-align: right;
+    margin-top: 20px;
+  }
+`
+export const Digit = styled.span`
+  color: ${COLORS.white};
+  font-variant: initial;
+  font-weight: 600;
 `
