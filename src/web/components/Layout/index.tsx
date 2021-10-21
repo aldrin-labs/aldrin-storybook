@@ -5,6 +5,7 @@ import { RowProps, CellProps, StretchedBlockProps } from './types'
 export const Body = styled.div`
   font-family: ${FONTS.main};
   color: ${COLORS.white};
+  font-size: ${SIZE.fontSize};
 `
 
 export const Page = styled(Body)`
@@ -15,8 +16,6 @@ export const Page = styled(Body)`
 export const Content = styled.div`
   max-width: ${LAYOUT_WIDTH}px;
   margin: 0 auto;
-  font-size: ${SIZE.fontSize};
-
   @media(max-width: ${LAYOUT_WIDTH}px) {
     margin: 0 20px;
   }
