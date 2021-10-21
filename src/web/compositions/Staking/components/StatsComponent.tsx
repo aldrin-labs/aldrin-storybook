@@ -1,26 +1,49 @@
+import React, { useEffect, useState } from 'react'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Theme } from '@sb/types/materialUI'
 import { ADAPTIVE_UPPER_BLOCKS } from '../Staking.styles'
-import React from 'react'
 import { BlockTemplate } from '../../Pools/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { BorderButton } from '../../Pools/components/Tables/index.styles'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 import RedArrow from '@icons/redTriangle.svg'
 import GreenArrow from '@icons/greenTriangle.svg'
 import lightBird from '@icons/lightBird.svg'
 import locksIcon from '@icons/lockIcon.svg'
 import { SvgIcon } from '@sb/components'
+import { getCCAICirculationSupply } from '@sb/compositions/AnalyticsRoute/components/CirculationSupply'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
+import { compose } from 'recompose'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import { conformsTo } from 'lodash'
 
-export const StatsComponent = ({
+const StatsComponent = ({
   isMobile,
   theme,
-  isPriceIncreasing,
+  getDexTokensPricesQuery,
 }: {
   isMobile: boolean
   theme: Theme
-  isPriceIncreasing: boolean
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
+  const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
+  const isPriceIncreasing = true
+
+  useEffect(() => {
+    const getRINSupply = async () => {
+      const CCAICircSupplyValue = await getCCAICirculationSupply()
+      setCirculatingSupply(CCAICircSupplyValue)
+    }
+    getRINSupply()
+  }, [])
+
+  const tokenPrice = getDexTokensPricesQuery.getDexTokensPrices[0].price
+
   return (
     <Row
       direction={'column'}
@@ -107,7 +130,7 @@ export const StatsComponent = ({
                 fontSize={'2.3rem'}
                 padding={'0 1rem 0 0'}
               >
-                $6.12
+                ${stripByAmount(tokenPrice)}
               </Text>{' '}
               <SvgIcon
                 src={isPriceIncreasing ? GreenArrow : RedArrow}
@@ -129,7 +152,7 @@ export const StatsComponent = ({
               Circulating Supply
             </Text>
             <Text fontFamily={'Avenir Next Bold'} fontSize={'2.3rem'}>
-              16,122,523 RIN
+              {stripByAmountAndFormat(RINCirculatingSupply)} RIN
             </Text>
           </Row>
           <Row direction="column" width="30%" align="flex-start">
@@ -145,3 +168,14 @@ export const StatsComponent = ({
     </Row>
   )
 }
+
+export default compose(
+  queryRendererHoc({
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    variables: { symbols: ['RIN'] },
+    withoutLoading: true,
+    pollInterval: 60000,
+  })
+)(StatsComponent)

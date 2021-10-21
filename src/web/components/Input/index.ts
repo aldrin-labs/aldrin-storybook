@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 export const Input = styled.input`
-  margin: 0 1.6rem;
+  margin: 0 1.6rem; ${(props) => props.theme}
   box-sizing: border-box;
   background: transparent;
   border-top: none;

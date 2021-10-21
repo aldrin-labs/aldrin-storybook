@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import greenBackground from '@icons/greenBack.png'
 import pinkBackground from '@icons/pinkBackground.png'
 import StakeBtn from '@icons/stakeBtn.png'
+import { Row as LRow } from '@sb/components/Layout'
+import { BREAKPOINTS, FONTS, COLORS } from '../../../variables'
 import { RowContainer } from '../AnalyticsRoute/index.styles'
 
 export const ADAPTIVE_LOW_BLOCKS = ({
@@ -77,15 +79,15 @@ export const MAIN_BLOCK = (isMobile: boolean) => {
 export const StyledTextDiv = styled.div`
   height: auto;
   width: 100%;
-  font-size: 1.4rem;
-  font-family: Avenir Next Light;
-  color: #96999c;
-  border-radius: 2rem;
-  background: #383b45;
+  font-size: 0.75em;
+  font-family: ${FONTS.mainLight};
+  color: ${COLORS.hint};
+  border-radius: 1.5rem;
+  background: ${COLORS.background};
   letter-spacing: 0.01rem;
-  padding: 1.2rem;
-  margin: 1rem 0 0 0;
   cursor: pointer;
+  padding: 0.75rem;
+  margin: 0.75rem 0 0 0;
 `
 export const RoundButton = styled.button`
   background-image: ${(props) =>
@@ -113,4 +115,40 @@ export const RoundInput = styled.input`
   width: 100%;
   height: 5rem;
   outline: none;
+`
+
+
+
+
+export const Row = styled(LRow)`
+  flex-direction: column;
+
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    flex-direction: row;
+    align-items: stretch;
+    height: 100%;
+  }
+`
+export const RootRow = styled(Row)`
+  margin: 50px 0;
+`
+
+
+export const StatsCellFull = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+`
+
+export const StatsCell = styled(StatsCellFull)`
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    flex: 0 1 50%;
+  }
+`
+
+export const StatsCellSmall = styled(StatsCellFull)`
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    flex: 0 1 33.333%;
+  }
 `
