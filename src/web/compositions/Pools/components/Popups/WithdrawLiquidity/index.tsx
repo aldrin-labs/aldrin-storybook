@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
@@ -10,10 +10,7 @@ import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { SimpleInput, InputWithTotal } from '../components'
 import { Button } from '../../Tables/index.styles'
-import {
-  calculateWithdrawAmount,
-  withdrawAllTokenTypes,
-} from '@sb/dexUtils/pools'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -21,6 +18,7 @@ import {
   PoolInfo,
   DexTokensPrices,
   PoolWithOperation,
+  FeesEarned,
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
@@ -28,24 +26,37 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { redeemBasket } from '@sb/dexUtils/pools/redeemBasket'
+import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
 
 export const WithdrawalPopup = ({
   theme,
   open,
+  poolsInfo,
   dexTokensPricesMap,
+  farmingTicketsMap,
+  earnedFeesInPoolForUserMap,
   selectedPool,
   allTokensData,
   close,
+  selectPool,
   refreshAllTokensData,
+  getPoolsInfoQueryRefetch,
   setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
+  poolsInfo: PoolInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
+  farmingTicketsMap: Map<string, FarmingTicket[]>
+  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
+  selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
+  getPoolsInfoQueryRefetch: () => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
@@ -73,6 +84,27 @@ export const WithdrawalPopup = ({
 
   const [operationLoading, setOperationLoading] = useState<boolean>(false)
 
+  useEffect(() => {
+    if (!selectedPool) return
+    const updatedSelectedPool = poolsInfo.find(
+      (pool) => pool.swapToken === selectedPool.swapToken
+    )
+
+    if (updatedSelectedPool) {
+      selectPool(updatedSelectedPool)
+
+      const newQuote = stripDigitPlaces(
+        +baseAmount *
+          (updatedSelectedPool.tvl.tokenB / updatedSelectedPool.tvl.tokenA),
+        8
+      )
+
+      if (baseAmount && newQuote) {
+        setQuoteAmount(newQuote)
+      }
+    }
+  }, [poolsInfo])
+
   const { address: userTokenAccountA } = getTokenDataByMint(
     allTokensData,
     selectedPool.tokenA
@@ -92,27 +124,6 @@ export const WithdrawalPopup = ({
   const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
 
-  const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
-  const [poolAmountTokenA, poolAmountTokenB] = [
-    selectedPool.tvl.tokenA,
-    selectedPool.tvl.tokenB,
-  ]
-
-  const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
-    selectedPool,
-    poolTokenAmount,
-  })
-
-  const poolTokenAmountToWithdraw =
-    (+baseAmount / withdrawAmountTokenA) * poolTokenAmount
-
-  const isDisabled =
-    +baseAmount <= 0 ||
-    +quoteAmount <= 0 ||
-    operationLoading ||
-    !withdrawAmountTokenA ||
-    !withdrawAmountTokenB
-
   const baseTokenPrice =
     (
       dexTokensPricesMap.get(selectedPool.tokenA) ||
@@ -124,6 +135,42 @@ export const WithdrawalPopup = ({
       dexTokensPricesMap.get(selectedPool.tokenB) ||
       dexTokensPricesMap.get(quoteSymbol)
     )?.price || 0
+
+  const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
+  const stakedTokens = getStakedTokensForPool(farmingTickets)
+
+  const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
+  const [poolAmountTokenA, poolAmountTokenB] = [
+    selectedPool.tvl.tokenA,
+    selectedPool.tvl.tokenB,
+  ]
+
+  const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
+    selectedPool,
+    poolTokenAmount: poolTokenAmount + stakedTokens,
+  })
+
+  const poolTokenAmountToWithdraw =
+    (+baseAmount / withdrawAmountTokenA) * poolTokenAmount
+
+  // need to show in popup
+  const {
+    totalBaseTokenFee,
+    totalQuoteTokenFee,
+  } = earnedFeesInPoolForUserMap.get(selectedPool.swapToken) || {
+    totalBaseTokenFee: 0,
+    totalQuoteTokenFee: 0,
+  }
+
+  const feesUsd =
+    totalBaseTokenFee * baseTokenPrice + totalQuoteTokenFee * quoteTokenPrice
+
+  const isDisabled =
+    +baseAmount <= 0 ||
+    +quoteAmount <= 0 ||
+    operationLoading ||
+    !withdrawAmountTokenA ||
+    !withdrawAmountTokenB
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
 
@@ -144,7 +191,17 @@ export const WithdrawalPopup = ({
     >
       <Row justify={'space-between'} width={'100%'}>
         <BoldHeader>Withdraw Liquidity</BoldHeader>
-        <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+        <Row>
+          <ReloadTimer
+            marginRight={'1.5rem'}
+            callback={async () => {
+              if (!operationLoading) {
+                getPoolsInfoQueryRefetch()
+              }
+            }}
+          />
+          <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+        </Row>
       </Row>
       <RowContainer>
         <SimpleInput

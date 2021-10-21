@@ -27,29 +27,26 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { TableModeButton } from './TablesSwitcher.styles'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
-import {
-  FarmingTicket,
-  getParsedUserFarmingTickets,
-} from '@sb/dexUtils/pools/endFarming'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { addAmountsToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountsToClaimForFarmingTickets'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
-import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/getParsedUserFarmingTickets'
 
 const TablesSwitcher = ({
   theme,
   getPoolsInfoQuery: { getPoolsInfo = [] },
   getDexTokensPricesQuery: { getDexTokensPrices = [] },
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
+  getPoolsInfoQueryRefetch,
 }: {
   theme: Theme
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
+  getPoolsInfoQueryRefetch: () => void
 }) => {
-  const getPoolsInfoData = getPoolsInfo.filter((pool) => ALL_TOKENS_MINTS_MAP[pool.tokenA] && ALL_TOKENS_MINTS_MAP[pool.tokenB])
-
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
 
   const [farmingTicketsMap, setFarmingTicketsMap] = useState<
@@ -88,6 +85,7 @@ const TablesSwitcher = ({
   const refreshAllTokensData = () =>
     setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
 
+  // updates user token balances & farming tokens with amount to claim
   useEffect(() => {
     const fetchData = async () => {
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)
@@ -173,7 +171,7 @@ const TablesSwitcher = ({
               Your liquidity (
               {
                 getUserPoolsFromAll({
-                  poolsInfo: getPoolsInfoData,
+                  poolsInfo: getPoolsInfo,
                   allTokensDataMap,
                   farmingTicketsMap,
                 }).length
@@ -201,7 +199,7 @@ const TablesSwitcher = ({
             poolWaitingForUpdateAfterOperation={
               poolWaitingForUpdateAfterOperation
             }
-            poolsInfo={getPoolsInfoData}
+            poolsInfo={getPoolsInfo}
             allTokensDataMap={allTokensDataMap}
             dexTokensPricesMap={dexTokensPricesMap}
             farmingTicketsMap={farmingTicketsMap}
@@ -220,7 +218,7 @@ const TablesSwitcher = ({
           <UserLiquitidyTable
             theme={theme}
             searchValue={searchValue}
-            poolsInfo={getPoolsInfoData}
+            poolsInfo={getPoolsInfo}
             poolWaitingForUpdateAfterOperation={
               poolWaitingForUpdateAfterOperation
             }
@@ -243,6 +241,7 @@ const TablesSwitcher = ({
         {selectedPool && isAddLiquidityPopupOpen && (
           <AddLiquidityPopup
             theme={theme}
+            poolsInfo={getPoolsInfo}
             open={isAddLiquidityPopupOpen}
             dexTokensPricesMap={dexTokensPricesMap}
             selectedPool={selectedPool}
@@ -252,14 +251,19 @@ const TablesSwitcher = ({
             }
             close={() => setIsAddLiquidityPopupOpen(false)}
             refreshAllTokensData={refreshAllTokensData}
+            selectPool={selectPool}
+            getPoolsInfoQueryRefetch={getPoolsInfoQueryRefetch}
           />
         )}
 
         {selectedPool && isWithdrawalPopupOpen && (
           <WithdrawalPopup
             theme={theme}
+            poolsInfo={getPoolsInfo}
             selectedPool={selectedPool}
             dexTokensPricesMap={dexTokensPricesMap}
+            farmingTicketsMap={farmingTicketsMap}
+            earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             allTokensData={allTokensData}
             close={() => setIsWithdrawalPopupOpen(false)}
             open={isWithdrawalPopupOpen}
@@ -267,6 +271,8 @@ const TablesSwitcher = ({
             setPoolWaitingForUpdateAfterOperation={
               setPoolWaitingForUpdateAfterOperation
             }
+            selectPool={selectPool}
+            getPoolsInfoQueryRefetch={getPoolsInfoQueryRefetch}
           />
         )}
 
@@ -316,7 +322,7 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
-    pollInterval: 30000,
+    pollInterval: 60000,
   }),
   queryRendererHoc({
     query: getFeesEarnedByAccount,

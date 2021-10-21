@@ -34,24 +34,31 @@ import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { createBasket } from '@sb/dexUtils/pools/createBasket'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Button } from '../../Tables/index.styles'
+import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 
 export const AddLiquidityPopup = ({
   theme,
   open,
+  poolsInfo,
   dexTokensPricesMap,
   selectedPool,
   allTokensData,
   close,
+  selectPool,
   refreshAllTokensData,
+  getPoolsInfoQueryRefetch,
   setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
+  poolsInfo: PoolInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
+  selectPool: (pool: PoolInfo) => void
   refreshAllTokensData: () => void
+  getPoolsInfoQueryRefetch: () => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
@@ -173,6 +180,27 @@ export const AddLiquidityPopup = ({
     setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
   }, [])
 
+  useEffect(() => {
+    if (!selectedPool) return
+    const updatedSelectedPool = poolsInfo.find(
+      (pool) => pool.swapToken === selectedPool.swapToken
+    )
+
+    if (updatedSelectedPool) {
+      selectPool(updatedSelectedPool)
+
+      const newQuote = stripDigitPlaces(
+        +baseAmount *
+          (updatedSelectedPool.tvl.tokenB / updatedSelectedPool.tvl.tokenA),
+        8
+      )
+
+      if (baseAmount && newQuote) {
+        setQuoteAmount(newQuote)
+      }
+    }
+  }, [poolsInfo])
+
   const isDisabled =
     !warningChecked ||
     +baseAmount <= 0 ||
@@ -198,7 +226,7 @@ export const AddLiquidityPopup = ({
     baseTokenPrice * selectedPool.tvl.tokenA +
     quoteTokenPrice * selectedPool.tvl.tokenB
 
-    return (
+  return (
     <DialogWrapper
       theme={theme}
       PaperComponent={StyledPaper}
@@ -230,7 +258,17 @@ export const AddLiquidityPopup = ({
         <BoldHeader style={{ margin: '0 0 2rem 0' }}>
           Deposit Liquidity
         </BoldHeader>
-        <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+        <Row>
+          <ReloadTimer
+            marginRight={'1.5rem'}
+            callback={async () => {
+              if (!operationLoading) {
+                getPoolsInfoQueryRefetch()
+              }
+            }}
+          />
+          <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+        </Row>
       </Row>
       <RowContainer>
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
@@ -442,9 +480,11 @@ export const AddLiquidityPopup = ({
                 result === 'success'
                   ? 'Deposit successful'
                   : result === 'failed'
-                  ? 'Deposit failed, please try again later or contact us in telegram.'
+                  ? 'Deposit failed, please try again or contact us in telegram.'
                   : 'Deposit cancelled',
             })
+
+            await getPoolsInfoQueryRefetch()
 
             await setTimeout(async () => {
               await refreshAllTokensData()

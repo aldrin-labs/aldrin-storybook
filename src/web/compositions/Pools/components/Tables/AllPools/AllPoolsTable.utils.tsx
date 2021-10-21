@@ -35,9 +35,9 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { TablesDetails } from '../components/TablesDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 import { Link } from 'react-router-dom'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -188,7 +188,7 @@ export const combineAllPoolsData = ({
         daily: 0,
       }
       const apy = el.apy24h || 0
-      
+
       const tvlUSD =
         baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
 

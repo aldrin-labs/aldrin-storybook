@@ -33,8 +33,8 @@ import { TablesDetails } from '../components/TablesDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
 
 export const getTotalUserLiquidity = ({
   usersPools,

@@ -3,9 +3,8 @@ import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import { WalletAdapter } from '../types'
 import { checkFarmed } from './checkFarmed'
-import { FarmingTicket } from './endFarming'
-
-const START_OF_LOG_WITH_AMOUNT_TO_CLAIM = 'Program log: '
+import { START_OF_LOG_WITH_AMOUNT_TO_CLAIM } from './config'
+import { FarmingTicket } from './types'
 
 export const addAmountsToClaimForFarmingTickets = async ({
   pools,
@@ -89,8 +88,6 @@ export const addAmountsToClaimForFarmingTickets = async ({
       connection.commitment ?? 'single'
     )
 
-    console.log('value', value)
-
     // for through logs + use index to get ticket -> pool and add claim value
     if (value.err) {
       return ticketsWithExistingPools
@@ -106,8 +103,6 @@ export const addAmountsToClaimForFarmingTickets = async ({
       .map((log, i) =>
         parseFloat(log.replace(START_OF_LOG_WITH_AMOUNT_TO_CLAIM, ''))
       ) || []
-
-  console.log('amountsToClaim', amountsToClaim, ticketsWithExistingPools)
 
   let counter = 0
 
@@ -131,8 +126,6 @@ export const addAmountsToClaimForFarmingTickets = async ({
       amountsToClaim: amountsToClaimForTicket,
     }
   })
-
-  console.log({ticketsWithAmountsToClaim})
 
   return ticketsWithAmountsToClaim
 }

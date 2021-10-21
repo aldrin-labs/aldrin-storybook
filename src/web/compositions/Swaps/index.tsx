@@ -9,7 +9,7 @@ import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { ReloadTimer, TimerButton } from '../Rebalance/components/ReloadTimer'
+import { ReloadTimer, TimerButton } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { InputWithSelectorForSwaps } from './components/Inputs/index'
 import { Card } from './styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -234,7 +234,6 @@ const SwapsPage = ({
   const balanceTokenB = isBaseTokenA ? quoteAmount : baseAmount
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
-  const isTokenBBalanceInsufficient = quoteAmount > +maxQuoteAmount
 
   const isUserAmountMoreThanInPool =
     poolAmountTokenA < balanceTokenA || poolAmountTokenB < balanceTokenB
@@ -246,7 +245,6 @@ const SwapsPage = ({
 
   const isButtonDisabled =
     isTokenABalanceInsufficient ||
-    isTokenBBalanceInsufficient ||
     !selectedTokens ||
     !selectedTokens.supply
 
@@ -477,7 +475,7 @@ const SwapsPage = ({
                   await refreshAllTokensData()
                 }}
               >
-                {isTokenABalanceInsufficient || isTokenBBalanceInsufficient
+                {isTokenABalanceInsufficient
                   ? `Insufficient ${
                       isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                     } Balance`

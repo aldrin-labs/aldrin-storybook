@@ -20,10 +20,6 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import {
-  FarmingTicket,
-  filterClosedFarmingTickets,
-} from '@sb/dexUtils/pools/endFarming'
 import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
 import { getAvailableFarmingTokensForPool } from '@sb/dexUtils/pools/getAvailableFarmingTokensForPool'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
@@ -36,6 +32,8 @@ import { estimatedTime } from '@core/utils/dateUtils'
 import { SvgIcon } from '@sb/components'
 import Info from '@icons/inform.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { filterClosedFarmingTickets } from '@sb/dexUtils/pools/filterClosedFarmingTickets'
 
 export const TablesDetails = ({
   theme,
@@ -75,12 +73,12 @@ export const TablesDetails = ({
   const connection = useConnection()
 
   const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
-  const stakedTokens = getStakedTokensForPool({ pool, farmingTicketsMap })
+  const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 
-  const availableToClaimFarmingTokens = getAvailableFarmingTokensForPool({
-    pool,
-    farmingTicketsMap,
-  })
+  const stakedTokens = getStakedTokensForPool(farmingTickets)
+  const availableToClaimFarmingTokens = getAvailableFarmingTokensForPool(
+    farmingTickets
+  )
 
   // if has pool tokens or staked
   const hasPoolTokens = poolTokenAmount > 0
@@ -100,7 +98,6 @@ export const TablesDetails = ({
     dexTokensPricesMap,
   })
 
-  const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
   const lastFarmingTicket =
     farmingTickets.length > 0
       ? farmingTickets?.sort((a, b) => b.startTime - a.startTime)[0]
@@ -414,25 +411,27 @@ export const TablesDetails = ({
                 fontFamily={'Avenir Next Medium'}
                 style={{ marginBottom: '3.5rem' }}
               >
-                {farmingState.vestingPeriod > 0 && <DarkTooltip
-                  title={
-                    <span>
-                      The founder has set up vesting. You will be able to claim
-                      33% of your daily reward every day, the remaining 67% will
-                      become available for withdrawal after{' '}
-                      {estimatedTime(farmingState.vestingPeriod)}.
-                    </span>
-                  }
-                >
-                  <div style={{ display: 'inline' }}>
-                    <SvgIcon
-                      src={Info}
-                      width={'1.5rem'}
-                      height={'auto'}
-                      style={{ marginRight: '1rem' }}
-                    />
-                  </div>
-                </DarkTooltip>}
+                {farmingState.vestingPeriod > 0 && (
+                  <DarkTooltip
+                    title={
+                      <span>
+                        The founder has set up vesting. You will be able to
+                        claim 33% of your daily reward every day, the remaining
+                        67% will become available for withdrawal after{' '}
+                        {estimatedTime(farmingState.vestingPeriod)}.
+                      </span>
+                    }
+                  >
+                    <div style={{ display: 'inline' }}>
+                      <SvgIcon
+                        src={Info}
+                        width={'1.5rem'}
+                        height={'auto'}
+                        style={{ marginRight: '1rem' }}
+                      />
+                    </div>
+                  </DarkTooltip>
+                )}
                 Available to claim:
                 <AmountText style={{ padding: '0 0.5rem' }}>
                   {stripByAmountAndFormat(availableToClaimFarmingTokens)}

@@ -24,8 +24,8 @@ import {
 import { TableContainer } from '../index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
 
 const AllPoolsTableComponent = ({
   theme,
