@@ -100,7 +100,14 @@ const StatsComponent = ({
             <Text fontFamily={'Avenir Next Demi'} fontSize={'2.3rem'}>
               APY
             </Text>
-            <BorderButton borderColor={'#fbf2f2'} borderRadius="3rem">
+            <BorderButton
+              target="_blank"
+              href={
+                'https://twitter.com/intent/tweet?text=I+stake+my+%24RIN+on+%40Aldrin_Exchange+with+192%25+APY%21%0D%0A%0D%0ADon%27t+miss+your+chance%21'
+              }
+              borderColor={'#fbf2f2'}
+              borderRadius="3rem"
+            >
               Share
               <SvgIcon src={lightBird} style={{ marginLeft: '1rem' }} />
             </BorderButton>

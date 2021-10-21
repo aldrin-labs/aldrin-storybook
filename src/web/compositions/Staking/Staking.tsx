@@ -3,6 +3,7 @@ import React from 'react'
 import { Content, Page } from '../../components/Layout'
 import { StakingComponent } from './components/StakingComponent'
 import { BlockWithHints } from './components/BlockWithHints'
+import StatsComponent from './components/StatsComponent'
 
 export const Staking = ({ theme }: { theme: Theme }) => {
   return (

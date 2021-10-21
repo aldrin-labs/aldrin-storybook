@@ -2,11 +2,13 @@ import styled from 'styled-components'
 import { LAYOUT_WIDTH, COLORS, SIZE, FONTS, BREAKPOINTS, LAYOUT_COL_NUMBER } from '../../../variables'
 import { RowProps, CellProps, StretchedBlockProps } from './types'
 
-
-export const Page = styled.div`
-  background: ${COLORS.bodyBackground};
+export const Body = styled.div`
   font-family: ${FONTS.main};
   color: ${COLORS.white};
+`
+
+export const Page = styled(Body)`
+  background: ${COLORS.bodyBackground};
   flex: 1;
 `
 

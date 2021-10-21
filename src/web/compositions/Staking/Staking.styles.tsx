@@ -4,6 +4,7 @@ import { Row } from '@sb/components/Layout'
 import { Block } from '@sb/components/Block'
 import { BREAKPOINTS, FONTS, COLORS } from '../../../variables'
 import { RowContainer } from '../AnalyticsRoute/index.styles'
+import { Paper } from '@material-ui/core'
 
 export const ADAPTIVE_LOW_BLOCKS = ({
   isMobile,
@@ -86,7 +87,7 @@ export const StyledTextDiv = styled.div`
   padding: 8px 12px;
   margin: 12px 0 0 0;
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     min-width: 360px;
   }
 `
@@ -118,9 +119,6 @@ export const RoundInput = styled.input`
   outline: none;
 `
 
-
-
-
 export const RootRow = styled(Row)`
   margin: 50px 0;
 `
@@ -129,7 +127,7 @@ export const WalletRow = styled.div`
   display: flex;
   flex-direction: column;
 
-  @media(min-width: ${BREAKPOINTS.xl}) {
+  @media (min-width: ${BREAKPOINTS.xl}) {
     & {
       flex-direction: row;
       justify-content: space-between;
@@ -140,7 +138,7 @@ export const WalletRow = styled.div`
 export const WalletBalanceBlock = styled.div`
   margin-top: 20px;
 
-  @media(min-width: ${BREAKPOINTS.xl}) {
+  @media (min-width: ${BREAKPOINTS.xl}) {
     & {
       margin-top: 8px;
     }
@@ -152,30 +150,29 @@ const InnerBlock = styled(Block)`
 `
 
 export const TotalStakedBlock = styled(InnerBlock)`
-  @media(min-width: ${BREAKPOINTS.md}) {
-    margin: 18px 0 38px 0;    
+  @media (min-width: ${BREAKPOINTS.md}) {
+    margin: 18px 0 38px 0;
   }
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    margin: 10px 0;    
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin: 10px 0;
   }
 
-  @media(min-width: ${BREAKPOINTS.xl}) {
-    margin: 0;    
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    margin: 0;
   }
-
 `
- 
+
 export const RewardsBlock = styled(InnerBlock)`
   @media (min-width: ${BREAKPOINTS.md}) {
     margin: 18px 0 38px 16px;
   }
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    margin: 10px 0;    
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin: 10px 0;
   }
 
-  @media(min-width: ${BREAKPOINTS.xl}) {
+  @media (min-width: ${BREAKPOINTS.xl}) {
     margin: 0 0 0 16px;
   }
 `
@@ -189,8 +186,7 @@ export const BalanceRow = styled.div`
 `
 
 export const BalanceWrap = styled.div`
-
-  @media(min-width: ${BREAKPOINTS.xl}) {
+  @media (min-width: ${BREAKPOINTS.xl}) {
     text-align: right;
     padding-top: 5px;
   }
@@ -201,6 +197,14 @@ export const Digit = styled.span`
   font-weight: 600;
 `
 
+export const StyledPaper = styled(Paper)`
+  height: auto;
+  padding: 2rem;
+  width: 55rem;
+  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
+  background: #222429;
+  border-radius: 1.6rem;
+`
 export const BigNumber = styled.p`
   font-size: 2em;
   line-height: 1.3;
