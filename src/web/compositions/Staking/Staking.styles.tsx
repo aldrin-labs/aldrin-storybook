@@ -178,7 +178,7 @@ export const RewardsBlock = styled(InnerBlock)`
 `
 export const BalanceRow = styled.div`
   color: ${COLORS.hint};
-  font-size: 1.5em;
+  font-size: 1.3em;
   text-transform: lowercase;
   font-variant: small-caps;
   height: 1.25em;
@@ -195,6 +195,7 @@ export const Digit = styled.span`
   color: ${COLORS.white};
   font-variant: initial;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
 `
 
 export const StyledPaper = styled(Paper)`
@@ -216,4 +217,9 @@ export const Number = styled.p`
   font-size: 1.5em;
   line-height: 1.2;
   font-weight: bold;
+`
+
+export const Asterisks = styled.span`
+  position: relative;
+  top: 0.3em;
 `

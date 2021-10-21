@@ -12,7 +12,8 @@ import { Cell, Row, StretchedBlock } from '../../../components/Layout'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
   BalanceWrap, RewardsBlock, StyledTextDiv,
-  TotalStakedBlock, WalletBalanceBlock, WalletRow, BalanceRow, Digit
+  TotalStakedBlock, WalletBalanceBlock, WalletRow, BalanceRow, Digit,
+  Asterisks
 } from '../Staking.styles'
 import { useWallet } from '../../../dexUtils/wallet'
 import { useConnection } from '../../../dexUtils/connection'
@@ -27,11 +28,19 @@ interface UserBalanceProps {
   value: number
   visible: boolean
 }
-const UserBalance: React.FC<UserBalanceProps> = (props) => (
-  <BalanceRow>
-    <Digit>{props.visible ? stripByAmount(props.value) : '＊＊＊'}</Digit>&nbsp;RIN
-  </BalanceRow>
-)
+const UserBalance: React.FC<UserBalanceProps> = (props) => {
+  const formatted = stripByAmount(props.value)
+  const len = `${formatted}`.length
+  let asterisks = ''
+  for (let i = 0; i < len; i++) {
+    asterisks += '*'
+  }
+  return (
+    <BalanceRow>
+      <Digit>{props.visible ? formatted : <Asterisks>{asterisks}</Asterisks>}</Digit>&nbsp;RIN
+    </BalanceRow>
+  )
+}
 
 const UserStakingInfoContent: React.FC = () => {
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
@@ -92,7 +101,7 @@ const UserStakingInfoContent: React.FC = () => {
             <TotalStakedBlock inner>
               <BlockContent>
                 <BlockSubtitle>Total staked:</BlockSubtitle>
-                <UserBalance visible={isBalancesShowing} value={1} />
+                <UserBalance visible={isBalancesShowing} value={33000} />
               </BlockContent>
             </TotalStakedBlock>
           </Cell>
@@ -102,11 +111,11 @@ const UserStakingInfoContent: React.FC = () => {
                 <StretchedBlock>
                   <div>
                     <BlockSubtitle>Rewards:</BlockSubtitle>
-                    <UserBalance visible={isBalancesShowing} value={2} />
+                    <UserBalance visible={isBalancesShowing} value={1000} />
                   </div>
                   <div>
                     <BlockSubtitle>Available to claim:</BlockSubtitle>
-                    <UserBalance visible={isBalancesShowing} value={33} />
+                    <UserBalance visible={isBalancesShowing} value={400} />
                   </div>
                   <div>
                     <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadis="xxl">Claim</Button>

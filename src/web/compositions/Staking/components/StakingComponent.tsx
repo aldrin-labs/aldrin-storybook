@@ -49,16 +49,6 @@ import { SuccessText } from '../../../components/Typography'
 import { RestakePopup } from './RestakePopup'
 import { UserStakingInfo } from './UserStakingInfo'
 
-interface UserBalanceProps {
-  value: number
-  visible: boolean
-}
-const UserBalance: React.FC<UserBalanceProps> = (props) => (
-  <BalanceRow>
-    <Digit>{props.visible ? stripByAmount(props.value) : '＊＊＊'}</Digit>&nbsp;RIN
-  </BalanceRow>
-)
-
 export const StakingComponent: React.FC = () => {
   return (
     <>
