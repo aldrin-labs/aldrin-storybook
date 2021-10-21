@@ -273,7 +273,10 @@ export const SimpleInput = ({
             &nbsp;Max:
           </Text>
           &nbsp;
-          <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
+          <BlueText
+            theme={theme}
+            onClick={() => onChange(stripDigitPlaces(maxBalance, 8))}
+          >
             {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 2))} {symbol}
           </BlueText>
         </Row>

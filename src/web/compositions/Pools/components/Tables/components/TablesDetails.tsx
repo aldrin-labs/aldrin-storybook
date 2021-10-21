@@ -90,7 +90,7 @@ export const TablesDetails = ({
 
   const [baseUserTokenAmount, quoteUserTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
-    poolTokenAmount,
+    poolTokenAmount: poolTokenAmount + stakedTokens,
   })
 
   const poolTokenPrice = calculatePoolTokenPrice({

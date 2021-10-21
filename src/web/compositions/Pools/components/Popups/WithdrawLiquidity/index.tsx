@@ -237,6 +237,13 @@ export const WithdrawalPopup = ({
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
+
+            const [availableToWithdrawAmountTokenA, availableToWithdrawAmountTokenB] = calculateWithdrawAmount({
+              selectedPool,
+              poolTokenAmount: poolTokenAmount,
+            })
+
+
             if (
               !userTokenAccountA ||
               !userTokenAccountB ||
@@ -253,6 +260,15 @@ export const WithdrawalPopup = ({
                 userTokenAccountB,
                 userPoolTokenAccount,
                 poolTokenAmountToWithdraw,
+              })
+
+              return
+            }
+
+            if (+baseAmount > availableToWithdrawAmountTokenA || +quoteAmount > availableToWithdrawAmountTokenB) {
+              notify({
+                message: `Unstake your pool tokens to withdraw liquidity.`,
+                type: 'error',
               })
 
               return

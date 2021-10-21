@@ -224,7 +224,8 @@ export const combineAllPoolsData = ({
                   tokenB={el.tokenB}
                 />
               </Link>
-              {el.locked ? (
+              {/* TODO: show locked liquidity depending on backend data, not for all pools */}
+              {true ? (
                 <DarkTooltip title={'Founders liquidity locked.'}>
                   <div>
                     <SvgIcon
@@ -258,14 +259,14 @@ export const combineAllPoolsData = ({
           render: (
             <TextColumnContainer>
               <RowDataTdTopText theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+                ${stripByAmountAndFormat(tvlUSD)}
               </RowDataTdTopText>
-              {/* <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
+              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+                {stripByAmountAndFormat(el.tvl.tokenA)}{' '}
                 {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
+                {stripByAmountAndFormat(el.tvl.tokenB)}{' '}
                 {getTokenNameByMintAddress(el.tokenB)}
-              </RowDataTdText> */}
+              </RowDataTdText>
             </TextColumnContainer>
           ),
           showOnMobile: false,

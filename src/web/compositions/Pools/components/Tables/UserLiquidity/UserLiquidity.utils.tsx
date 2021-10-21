@@ -36,32 +36,6 @@ import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { FarmingTicket } from '@sb/dexUtils/pools/types'
 
-export const getTotalUserLiquidity = ({
-  usersPools,
-  dexTokensPrices,
-}: {
-  usersPools: PoolInfo[]
-  dexTokensPrices: DexTokensPrices[]
-}): number => {
-  return usersPools.reduce((acc: number, pool: PoolInfo) => {
-    const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
-    const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
-
-    const baseTokenPrice =
-      dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === baseSymbol)
-        ?.price || 10
-
-    const quoteTokenPrice =
-      dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === quoteSymbol)
-        ?.price || 10
-
-    const tvlUSDForPool =
-      baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
-
-    return acc + tvlUSDForPool
-  }, 0)
-}
-
 export const userLiquidityTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
   { label: 'Total Value Locked', id: 'tvl' },
@@ -201,14 +175,23 @@ export const combineUserLiquidityData = ({
               justify="flex-start"
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
-              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
-              {el.locked ? (
-                <SvgIcon
-                  style={{ marginLeft: '1rem' }}
-                  width="2rem"
-                  height="auto"
-                  src={CrownIcon}
-                />
+              <TokenIconsContainer
+                tokenA={el.tokenA}
+                tokenB={el.tokenB}
+                needHover={true}
+              />
+              {/* TODO: show locked liquidity depending on backend data, not for all pools */}
+              {true ? (
+                <DarkTooltip title={'Founders liquidity locked.'}>
+                  <div>
+                    <SvgIcon
+                      style={{ marginLeft: '1rem' }}
+                      width="2rem"
+                      height="auto"
+                      src={CrownIcon}
+                    />
+                  </div>
+                </DarkTooltip>
               ) : el.executed ? (
                 <DarkTooltip
                   title={
@@ -234,12 +217,12 @@ export const combineUserLiquidityData = ({
               <RowDataTdTopText theme={theme}>
                 ${stripByAmountAndFormat(tvlUSD)}
               </RowDataTdTopText>
-              {/* <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
+              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+                {stripByAmountAndFormat(el.tvl.tokenA)}{' '}
                 {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
+                {stripByAmountAndFormat(el.tvl.tokenB)}{' '}
                 {getTokenNameByMintAddress(el.tokenB)}
-              </RowDataTdText> */}
+              </RowDataTdText>
             </TextColumnContainer>
           ),
           showOnMobile: false,

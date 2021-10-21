@@ -45,7 +45,7 @@ export const SearchInputWithLoop = ({
 export const TokenIconsContainer = ({
   tokenA,
   tokenB,
-  needHover,
+  needHover = false,
 }: {
   tokenA: string
   tokenB: string
