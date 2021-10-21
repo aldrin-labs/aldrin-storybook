@@ -1,16 +1,7 @@
 import styled from 'styled-components'
 import { LAYOUT_WIDTH, COLORS, SIZE, FONTS, BREAKPOINTS, LAYOUT_COL_NUMBER } from '../../../variables'
+import { RowProps, CellProps, StretchedBlockProps } from './types'
 
-export interface RowProps {
-  wrap?: string
-  justify?: string
-  direction?: string
-  align?: string
-  width?: string
-  height?: string
-  margin?: string
-  padding?: string
-}
 
 export const Page = styled.div`
   background: ${COLORS.bodyBackground};
@@ -37,14 +28,6 @@ export const Row = styled.div<RowProps>`
   height: 100%;
 `
 
-
-interface CellProps {
-  col?: number
-  colSm?: number
-  colMd?: number
-  colLg?: number
-}
-
 export const Cell = styled.div<CellProps>`
   width: 100%;
   display: flex;
@@ -55,10 +38,6 @@ export const Cell = styled.div<CellProps>`
   ${(props) => props.colMd ? `@media(min-width:${BREAKPOINTS.md}) { flex: 0 1 ${props.colMd / LAYOUT_COL_NUMBER * 100}%  }` : ''}
   ${(props) => props.colLg ? `@media(min-width:${BREAKPOINTS.lg}) { flex: 0 1 ${props.colLg / LAYOUT_COL_NUMBER * 100}%  }` : ''}
 `
-
-interface StretchedBlockProps {
-  align?: string
-}
 
 export const StretchedBlock = styled.div<StretchedBlockProps>`
   display: flex;

@@ -5,12 +5,15 @@ import React from 'react'
 import { RoundButton } from '../Staking.styles'
 import { RoundInputWithTokenName } from './Input'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
-import { MAIN_BLOCK, } from '../Staking.styles'
+
 import { Text } from '@sb/compositions/Addressbook/index'
-import { SvgIcon } from '@sb/components' 
+import { SvgIcon } from '@sb/components'
 
 import pinkBackground from './assets/pinkBackground.png'
 import StakeBtn from '@icons/stakeBtn.png'
+
+
+import locksIcon from './assets/lockIcon.svg'
 
 import { RootRow, StyledTextDiv, WalletRow, WalletBalanceBlock } from '../Staking.styles'
 import { Block, BlockTitle, BlockContent, BlockSubtitle } from '../../../components/Block'
@@ -70,7 +73,7 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
         <Cell col={12} colLg={6}>
           <Row>
             <Cell colMd={6}>
-              <Block>
+              <Block icon={locksIcon}>
                 <BlockContent>
                   <BlockTitle>Total Staked</BlockTitle>
                 </BlockContent>

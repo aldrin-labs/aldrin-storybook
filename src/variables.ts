@@ -3,7 +3,7 @@ export const FONTS = {
 }
 
 export const COLORS = {
-  bodyBackground: 'rgb(14, 16, 22)',
+  bodyBackground: '#17181A',
   background: '#383b45',
   border: '#3a475c',
   white: '#ffffff',
