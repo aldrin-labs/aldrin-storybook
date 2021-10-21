@@ -29,6 +29,8 @@ import { redeemBasket } from '@sb/dexUtils/pools/redeemBasket'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
 import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
 export const WithdrawalPopup = ({
   theme,
@@ -40,9 +42,7 @@ export const WithdrawalPopup = ({
   selectedPool,
   allTokensData,
   close,
-  selectPool,
   refreshAllTokensData,
-  getPoolsInfoQueryRefetch,
   setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
@@ -54,13 +54,35 @@ export const WithdrawalPopup = ({
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
-  selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
-  getPoolsInfoQueryRefetch: () => void
+  refreshAllTokensData: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+
+  const [poolBalances, refreshPoolBalances] = usePoolBalances({
+    pool: selectedPool,
+    connection,
+  })
+
+  const {
+    baseTokenAmount: poolAmountTokenA,
+    quoteTokenAmount: poolAmountTokenB,
+  } = poolBalances
+
+  // update entered value on every pool ratio change
+  useEffect(() => {
+    if (!selectedPool) return
+
+    const newQuote = stripDigitPlaces(
+      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
+      8
+    )
+
+    if (baseAmount && newQuote) {
+      setQuoteAmount(newQuote)
+    }
+  }, [poolBalances])
 
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
@@ -83,27 +105,6 @@ export const WithdrawalPopup = ({
   }
 
   const [operationLoading, setOperationLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (!selectedPool) return
-    const updatedSelectedPool = poolsInfo.find(
-      (pool) => pool.swapToken === selectedPool.swapToken
-    )
-
-    if (updatedSelectedPool) {
-      selectPool(updatedSelectedPool)
-
-      const newQuote = stripDigitPlaces(
-        +baseAmount *
-          (updatedSelectedPool.tvl.tokenB / updatedSelectedPool.tvl.tokenA),
-        8
-      )
-
-      if (baseAmount && newQuote) {
-        setQuoteAmount(newQuote)
-      }
-    }
-  }, [poolsInfo])
 
   const { address: userTokenAccountA } = getTokenDataByMint(
     allTokensData,
@@ -140,11 +141,6 @@ export const WithdrawalPopup = ({
   const stakedTokens = getStakedTokensForPool(farmingTickets)
 
   const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
-  const [poolAmountTokenA, poolAmountTokenB] = [
-    selectedPool.tvl.tokenA,
-    selectedPool.tvl.tokenB,
-  ]
-
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
     selectedPool,
     poolTokenAmount: poolTokenAmount + stakedTokens,
@@ -196,7 +192,7 @@ export const WithdrawalPopup = ({
             marginRight={'1.5rem'}
             callback={async () => {
               if (!operationLoading) {
-                getPoolsInfoQueryRefetch()
+                refreshPoolBalances()
               }
             }}
           />
@@ -237,12 +233,13 @@ export const WithdrawalPopup = ({
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
-
-            const [availableToWithdrawAmountTokenA, availableToWithdrawAmountTokenB] = calculateWithdrawAmount({
+            const [
+              availableToWithdrawAmountTokenA,
+              availableToWithdrawAmountTokenB,
+            ] = calculateWithdrawAmount({
               selectedPool,
               poolTokenAmount: poolTokenAmount,
             })
-
 
             if (
               !userTokenAccountA ||
@@ -265,7 +262,10 @@ export const WithdrawalPopup = ({
               return
             }
 
-            if (+baseAmount > availableToWithdrawAmountTokenA || +quoteAmount > availableToWithdrawAmountTokenB) {
+            if (
+              +baseAmount > availableToWithdrawAmountTokenA ||
+              +quoteAmount > availableToWithdrawAmountTokenB
+            ) {
               notify({
                 message: `Unstake your pool tokens to withdraw liquidity.`,
                 type: 'error',
@@ -301,6 +301,8 @@ export const WithdrawalPopup = ({
                   ? 'Withdrawal failed, please try again later or contact us in telegram.'
                   : 'Withdrawal cancelled',
             })
+
+            await refreshPoolBalances()
 
             await setTimeout(async () => {
               await refreshAllTokensData()

@@ -6,3 +6,5 @@ export type FarmingTicket = {
   farmingTicket: string
   amountsToClaim: { amount: number; farmingState: string }[]
 }
+
+export type PoolAddress = string

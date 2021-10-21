@@ -22,7 +22,7 @@ export const SearchInputWithLoop = ({
   placeholder: string
   onChangeSearch: (value: string) => void
   searchValue: string
-  width: string
+  width?: string
 }) => {
   return (
     <Row style={{ position: 'relative' }} width={width}>

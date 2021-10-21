@@ -15,6 +15,8 @@ export type PoolInfo = {
   parsedName: string
   tokenA: string
   tokenB: string
+  poolTokenAccountA: string
+  poolTokenAccountB: string
   swapToken: string
   poolTokenMint: string
   farming: FarmingState[]

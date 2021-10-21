@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line, StyledPaper } from '../index.styles'
+import { BoldHeader, StyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
 import SvgIcon from '@sb/components/SvgIcon'
@@ -31,6 +31,7 @@ import { dayDuration, estimatedTime } from '@core/utils/dateUtils'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
 export const StakePopup = ({
   theme,
@@ -39,7 +40,7 @@ export const StakePopup = ({
   selectedPool,
   allTokensData,
   dexTokensPricesMap,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
@@ -48,13 +49,12 @@ export const StakePopup = ({
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
-    decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
   const [poolTokenAmount, setPoolTokenAmount] = useState(maxPoolTokenAmount)
   const [operationLoading, setOperationLoading] = useState(false)
@@ -206,13 +206,13 @@ export const StakePopup = ({
             })
 
             await setTimeout(async () => {
-              await refreshAllTokensData()
+              await refreshTokensWithFarmingTickets()
               await setPoolWaitingForUpdateAfterOperation({
                 pool: '',
                 operation: '',
               })
             }, 7500)
-            await setTimeout(() => refreshAllTokensData(), 15000)
+            await setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
 
             await close()
           }}

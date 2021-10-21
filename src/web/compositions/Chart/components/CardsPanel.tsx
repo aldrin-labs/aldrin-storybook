@@ -214,6 +214,16 @@ export const CardsPanel = ({ theme }) => {
                 Pools
               </NavLinkButton>
             )}
+            {!MASTER_BUILD && (
+              <NavLinkButton
+                theme={theme}
+                page={'/swap'}
+                pathname={location.pathname}
+                component={(props) => <Link to={`/swap`} {...props} />}
+              >
+                Swap
+              </NavLinkButton>
+            )}
             {/* {!MASTER_BUILD && (
               <NavLinkButton
                 style={{ color: '#386DE6' }}

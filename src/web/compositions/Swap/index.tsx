@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import SvgIcon from '@sb/components/SvgIcon'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -9,7 +9,10 @@ import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { ReloadTimer, TimerButton } from '@sb/compositions/Rebalance/components/ReloadTimer'
+import {
+  ReloadTimer,
+  TimerButton,
+} from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { InputWithSelectorForSwaps } from './components/Inputs/index'
 import { Card } from './styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -18,7 +21,6 @@ import { notify } from '@sb/dexUtils/notifications'
 
 import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { getAllTokensData, getMarketsData } from '../Rebalance/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import Inform from '@icons/inform.svg'
@@ -30,11 +32,8 @@ import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPric
 import withTheme from '@material-ui/core/styles/withTheme'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import {
-  ALL_TOKENS_MINTS,
-  ALL_TOKENS_MINTS_MAP,
   getTokenMintAddressByName,
   getTokenNameByMintAddress,
-  useAllMarketsList,
 } from '@sb/dexUtils/markets'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
@@ -43,53 +42,31 @@ import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
 import { PublicKey } from '@solana/web3.js'
 import { WarningPopup } from '../Chart/components/WarningPopup'
 import { swap } from '@sb/dexUtils/pools/swap'
+import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
+import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 
 const DEFAULT_BASE_TOKEN = 'RIN'
 const DEFAULT_QUOTE_TOKEN = 'SOL'
 
-const SwapsPage = ({
+const SwapPage = ({
   theme,
   publicKey,
   getPoolsInfoQuery,
   getDexTokensPricesQuery,
-  getPoolsInfoQueryRefetch,
   getDexTokensPricesQueryRefetch,
 }: {
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-  getPoolsInfoQueryRefetch: () => void
   getDexTokensPricesQueryRefetch: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
-  const allMarketsMap = useAllMarketsList()
-
-  const [slippageTolerance, setSlippageTolerance] = useState<number>(0.3)
-  const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
-  const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
-  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
-  const [
-    selectedBaseTokenAddressFromSeveral,
-    setBaseTokenAddressFromSeveral,
-  ] = useState<string>('')
-  const [
-    selectedQuoteTokenAddressFromSeveral,
-    setQuoteTokenAddressFromSeveral,
-  ] = useState<string>('')
-  const [
-    isTransactionSettingsPopupOpen,
-    openTransactionSettingsPopup,
-  ] = useState(false)
-
-  const [
-    refreshAllTokensDataCounter,
-    setRefreshAllTokensDataCounter,
-  ] = useState<number>(0)
-
-  const refreshAllTokensData = () =>
-    setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
+  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts({
+    wallet,
+    connection,
+  })
 
   const urlParams = new URLSearchParams(window.location.search)
   const baseFromPoolsRedirect = urlParams.get('base')
@@ -106,13 +83,12 @@ const SwapsPage = ({
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>(
     defaultBaseTokenMint
   )
+
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>(
     defaultQuoteTokenMint
   )
 
-  const [isWarningPopupOpen, openWarningPopup] = useState(true)
-
-  const selectedTokens = getPoolsInfoQuery.getPoolsInfo.find(
+  const selectedPool = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
@@ -120,10 +96,50 @@ const SwapsPage = ({
         pool?.tokenB === quoteTokenMintAddress)
   )
 
+  const [poolBalances, refreshPoolBalances] = usePoolBalances({
+    connection,
+    pool: {
+      poolTokenAccountA: selectedPool?.poolTokenAccountA,
+      poolTokenAccountB: selectedPool?.poolTokenAccountB,
+    },
+  })
+
+  // update entered value on every pool ratio change
+  useEffect(() => {
+    if (!selectedPool) return
+
+    const newQuote = stripDigitPlaces(
+      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
+      8
+    )
+
+    if (baseAmount && newQuote) {
+      setQuoteAmount(newQuote)
+    }
+  }, [poolBalances.baseTokenAmount, poolBalances.quoteTokenAmount])
+
+  const [slippageTolerance, setSlippageTolerance] = useState<number>(0.3)
+  const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
+  const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
+  const [isWarningPopupOpen, openWarningPopup] = useState(true)
+
+  const [
+    selectedBaseTokenAddressFromSeveral,
+    setBaseTokenAddressFromSeveral,
+  ] = useState<string>('')
+  const [
+    selectedQuoteTokenAddressFromSeveral,
+    setQuoteTokenAddressFromSeveral,
+  ] = useState<string>('')
+  const [
+    isTransactionSettingsPopupOpen,
+    openTransactionSettingsPopup,
+  ] = useState(false)
+
   const { getDexTokensPrices = [] } = getDexTokensPricesQuery || {
     getDexTokensPrices: [],
   }
-  const isBaseTokenA = selectedTokens?.tokenA === baseTokenMintAddress
+  const isBaseTokenA = selectedPool?.tokenA === baseTokenMintAddress
 
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const setQuoteAmountWithBase = (quoteAmount: string | number) => {
@@ -165,11 +181,12 @@ const SwapsPage = ({
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
     : 'SOL'
 
-  const isSwapBaseToQuote = selectedTokens?.tokenA === baseTokenMintAddress
+  const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
 
-  const [poolAmountTokenA, poolAmountTokenB] = selectedTokens
-    ? [selectedTokens.tvl.tokenA, selectedTokens.tvl.tokenB]
-    : [0, 0]
+  const {
+    baseTokenAmount: poolAmountTokenA,
+    quoteTokenAmount: poolAmountTokenB,
+  } = poolBalances
 
   const {
     address: userBaseTokenAccount,
@@ -191,18 +208,6 @@ const SwapsPage = ({
     selectedQuoteTokenAddressFromSeveral
   )
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const allTokensData = await getAllTokensData(wallet.publicKey, connection)
-
-      await setAllTokensData(allTokensData)
-    }
-
-    if (!!wallet?.publicKey) {
-      fetchData()
-    }
-  }, [wallet?.publicKey, refreshAllTokensDataCounter])
-
   const mints = allTokensData.map((tokenInfo: TokenInfo) => tokenInfo.mint)
 
   // const filteredMints = [...new Set(mints)]
@@ -211,11 +216,11 @@ const SwapsPage = ({
   //   allTokensData[0]?.address === userBaseTokenAccount ||
   //   allTokensData[0]?.address === userQuoteTokenAccount
 
-  const reverseTokens = async () => {
-    await setBaseTokenMintAddress(quoteTokenMintAddress)
-    await setQuoteTokenMintAddress(baseTokenMintAddress)
-    await setBaseAmount(quoteAmount)
-    await setQuoteAmount(baseAmount)
+  const reverseTokens = () => {
+    setBaseTokenMintAddress(quoteTokenMintAddress)
+    setQuoteTokenMintAddress(baseTokenMintAddress)
+    setBaseAmount(quoteAmount)
+    setQuoteAmount(baseAmount)
   }
 
   const poolsAmountDiff = isSwapBaseToQuote
@@ -230,23 +235,15 @@ const SwapsPage = ({
 
   const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
 
-  const balanceTokenA = isBaseTokenA ? baseAmount : quoteAmount
-  const balanceTokenB = isBaseTokenA ? quoteAmount : baseAmount
-
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
-
-  const isUserAmountMoreThanInPool =
-    poolAmountTokenA < balanceTokenA || poolAmountTokenB < balanceTokenB
 
   const InsufficientLiquidiy =
     baseSymbol !== 'Select token' &&
     quoteSymbol !== 'Select token' &&
-    !selectedTokens
+    !selectedPool
 
   const isButtonDisabled =
-    isTokenABalanceInsufficient ||
-    !selectedTokens ||
-    !selectedTokens.supply
+    isTokenABalanceInsufficient || !selectedPool || !selectedPool.supply
 
   return (
     <RowContainer
@@ -270,9 +267,9 @@ const SwapsPage = ({
               <ReloadTimer
                 marginRight={'1.5rem'}
                 callback={async () => {
-                  await getDexTokensPricesQueryRefetch()
-                  await getPoolsInfoQueryRefetch()
-                  await refreshAllTokensData()
+                  getDexTokensPricesQueryRefetch()
+                  refreshPoolBalances()
+                  refreshAllTokensData()
                 }}
               />
               {baseTokenMintAddress && quoteTokenMintAddress && (
@@ -347,7 +344,7 @@ const SwapsPage = ({
             />
           </RowContainer>
 
-          {selectedTokens && (
+          {selectedPool && (
             <RowContainer margin={'1rem 2rem'} justify={'space-between'}>
               <Text color={'#93A0B2'}>Price:</Text>
               <Text
@@ -413,7 +410,7 @@ const SwapsPage = ({
                 transition={'all .4s ease-out'}
                 disabled={isButtonDisabled}
                 onClick={async () => {
-                  if (!selectedTokens) return
+                  if (!selectedPool) return
 
                   console.log('baseTokenDecimals', {
                     baseTokenDecimals,
@@ -438,7 +435,7 @@ const SwapsPage = ({
                     const result = await swap({
                       wallet,
                       connection,
-                      poolPublicKey: new PublicKey(selectedTokens.swapToken),
+                      poolPublicKey: new PublicKey(selectedPool.swapToken),
                       userBaseTokenAccount: new PublicKey(
                         isSwapBaseToQuote
                           ? userBaseTokenAccount
@@ -613,4 +610,4 @@ export default compose(
     withoutLoading: true,
     pollInterval: 60000,
   })
-)(SwapsPage)
+)(SwapPage)

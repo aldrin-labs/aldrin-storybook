@@ -35,6 +35,8 @@ import { createBasket } from '@sb/dexUtils/pools/createBasket'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Button } from '../../Tables/index.styles'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -44,9 +46,7 @@ export const AddLiquidityPopup = ({
   selectedPool,
   allTokensData,
   close,
-  selectPool,
   refreshAllTokensData,
-  getPoolsInfoQueryRefetch,
   setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
@@ -56,23 +56,34 @@ export const AddLiquidityPopup = ({
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
-  selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
-  getPoolsInfoQueryRefetch: () => void
+  refreshAllTokensData: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+  const [poolBalances, refreshPoolBalances] = usePoolBalances({
+    pool: selectedPool,
+    connection,
+  })
 
-  // if user has more than one token for one mint
-  const [
-    selectedBaseTokenAddressFromSeveral,
-    setBaseTokenAddressFromSeveral,
-  ] = useState<string>('')
-  const [
-    selectedQuoteTokenAddressFromSeveral,
-    setQuoteTokenAddressFromSeveral,
-  ] = useState<string>('')
+  const {
+    baseTokenAmount: poolAmountTokenA,
+    quoteTokenAmount: poolAmountTokenB,
+  } = poolBalances
+
+  // update entered value on every pool ratio change
+  useEffect(() => {
+    if (!selectedPool) return
+
+    const newQuote = stripDigitPlaces(
+      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
+      8
+    )
+
+    if (baseAmount && newQuote) {
+      setQuoteAmount(newQuote)
+    }
+  }, [poolBalances])
 
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
@@ -100,6 +111,16 @@ export const AddLiquidityPopup = ({
     setQuoteAmount(quoteAmount)
   }
 
+  // if user has more than one token for one mint
+  const [
+    selectedBaseTokenAddressFromSeveral,
+    setBaseTokenAddressFromSeveral,
+  ] = useState<string>('')
+  const [
+    selectedQuoteTokenAddressFromSeveral,
+    setQuoteTokenAddressFromSeveral,
+  ] = useState<string>('')
+
   const [
     isSelectorForSeveralBaseAddressesOpen,
     setIsSelectorForSeveralBaseAddressesOpen,
@@ -108,6 +129,17 @@ export const AddLiquidityPopup = ({
     isSelectorForSeveralQuoteAddressesOpen,
     setIsSelectorForSeveralQuoteAddressesOpen,
   ] = useState(false)
+
+  useEffect(() => {
+    const isSeveralBaseAddresses =
+      allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1
+
+    const isSeveralQuoteAddresses =
+      allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1
+
+    setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
+    setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
+  }, [])
 
   const [warningChecked, setWarningChecked] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
@@ -158,48 +190,10 @@ export const AddLiquidityPopup = ({
       ? maxQuoteAmount - +quoteAmount < 0.1
       : false
 
-  const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
-  const [poolAmountTokenA, poolAmountTokenB] = [
-    selectedPool.tvl.tokenA,
-    selectedPool.tvl.tokenB,
-  ]
-
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
     selectedPool,
-    poolTokenAmount,
+    poolTokenAmount: poolTokenRawAmount * 10 ** poolTokenDecimals,
   })
-
-  useEffect(() => {
-    const isSeveralBaseAddresses =
-      allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1
-
-    const isSeveralQuoteAddresses =
-      allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1
-
-    setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
-    setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
-  }, [])
-
-  useEffect(() => {
-    if (!selectedPool) return
-    const updatedSelectedPool = poolsInfo.find(
-      (pool) => pool.swapToken === selectedPool.swapToken
-    )
-
-    if (updatedSelectedPool) {
-      selectPool(updatedSelectedPool)
-
-      const newQuote = stripDigitPlaces(
-        +baseAmount *
-          (updatedSelectedPool.tvl.tokenB / updatedSelectedPool.tvl.tokenA),
-        8
-      )
-
-      if (baseAmount && newQuote) {
-        setQuoteAmount(newQuote)
-      }
-    }
-  }, [poolsInfo])
 
   const isDisabled =
     !warningChecked ||
@@ -263,7 +257,7 @@ export const AddLiquidityPopup = ({
             marginRight={'1.5rem'}
             callback={async () => {
               if (!operationLoading) {
-                getPoolsInfoQueryRefetch()
+                refreshPoolBalances()
               }
             }}
           />
@@ -484,18 +478,20 @@ export const AddLiquidityPopup = ({
                   : 'Deposit cancelled',
             })
 
-            await getPoolsInfoQueryRefetch()
+            await refreshPoolBalances()
 
-            await setTimeout(async () => {
-              await refreshAllTokensData()
-              await setPoolWaitingForUpdateAfterOperation({
-                pool: '',
-                operation: '',
-              })
-            }, 7500)
-            // end button loader
+            if (result === 'success') {
+              await setTimeout(async () => {
+                await refreshAllTokensData()
+                await setPoolWaitingForUpdateAfterOperation({
+                  pool: '',
+                  operation: '',
+                })
+              }, 7500)
+              // end button loader
 
-            await setTimeout(() => refreshAllTokensData(), 15000)
+              await setTimeout(() => refreshAllTokensData(), 15000)
+            }
 
             await close()
           }}

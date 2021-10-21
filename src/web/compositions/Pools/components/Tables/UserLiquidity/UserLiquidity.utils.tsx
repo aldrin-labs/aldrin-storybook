@@ -153,6 +153,15 @@ export const combineUserLiquidityData = ({
 
       const farmingState = el.farming && el.farming[0]
 
+      const dailyFarmingValue = farmingState
+        ? farmingState.tokensPerPeriod *
+          (dayDuration / farmingState.periodLength)
+        : 0
+
+      const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
+        ? dailyFarmingValue / (tvlUSD / 1000)
+        : 0
+
       const userLiquidityUSD =
         baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
 
@@ -287,13 +296,8 @@ export const combineUserLiquidityData = ({
                   </RowDataTdText>
                   <RowDataTdText>
                     <span style={{ color: '#53DF11' }}>
-                      {formatNumberToUSFormat(
-                        stripDigitPlaces(
-                          (farmingState.tokensPerPeriod *
-                            (dayDuration / farmingState.periodLength)) /
-                            (tvlUSD / 1000),
-                          2
-                        )
+                      {stripByAmountAndFormat(
+                        dailyFarmingValuePerThousandDollarsLiquidity
                       )}
                     </span>{' '}
                     {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /

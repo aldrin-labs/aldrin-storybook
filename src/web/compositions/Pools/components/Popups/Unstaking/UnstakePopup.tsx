@@ -18,6 +18,7 @@ import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
 export const UnstakePopup = ({
   theme,
@@ -25,7 +26,7 @@ export const UnstakePopup = ({
   allTokensData,
   selectedPool,
   close,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
@@ -33,7 +34,7 @@ export const UnstakePopup = ({
   allTokensData: any
   selectedPool: PoolInfo
   close: () => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
@@ -41,11 +42,10 @@ export const UnstakePopup = ({
 
   const [operationLoading, setOperationLoading] = useState(false)
 
-  const {
-    amount: maxPoolTokenAmount,
-    address: userPoolTokenAccount,
-    decimals: poolTokenDecimals,
-  } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
+  const { address: userPoolTokenAccount } = getTokenDataByMint(
+    allTokensData,
+    selectedPool.poolTokenMint
+  )
 
   const farmingState = selectedPool.farming[0]
   if (!farmingState) return null
@@ -110,13 +110,13 @@ export const UnstakePopup = ({
             })
 
             await setTimeout(async () => {
-              await refreshAllTokensData()
+              await refreshTokensWithFarmingTickets()
               await setPoolWaitingForUpdateAfterOperation({
                 pool: '',
                 operation: '',
               })
             }, 7500)
-            await setTimeout(() => refreshAllTokensData(), 15000)
+            await setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
 
             await close()
           }}

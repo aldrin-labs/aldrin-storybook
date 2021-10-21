@@ -333,11 +333,8 @@ export const combineAllPoolsData = ({
                   </RowDataTdText>
                   <RowDataTdText>
                     <span style={{ color: '#53DF11' }}>
-                      {formatNumberToUSFormat(
-                        stripDigitPlaces(
-                          dailyFarmingValuePerThousandDollarsLiquidity,
-                          2
-                        )
+                      {stripByAmountAndFormat(
+                        dailyFarmingValuePerThousandDollarsLiquidity
                       )}
                     </span>{' '}
                     {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { Theme } from '@material-ui/core'
 
@@ -22,21 +22,18 @@ import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPric
 import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { TableModeButton } from './TablesSwitcher.styles'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { addAmountsToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountsToClaimForFarmingTickets'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
-import { FarmingTicket } from '@sb/dexUtils/pools/types'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/getParsedUserFarmingTickets'
+import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 
 const TablesSwitcher = ({
   theme,
-  getPoolsInfoQuery: { getPoolsInfo = [] },
+  getPoolsInfoQuery: { getPoolsInfo: pools = [] },
   getDexTokensPricesQuery: { getDexTokensPrices = [] },
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
   getPoolsInfoQueryRefetch,
@@ -47,12 +44,6 @@ const TablesSwitcher = ({
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
   getPoolsInfoQueryRefetch: () => void
 }) => {
-  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
-
-  const [farmingTicketsMap, setFarmingTicketsMap] = useState<
-    Map<string, FarmingTicket[]>
-  >(new Map())
-
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
   const [searchValue, onChangeSearch] = useState('')
   const [selectedTable, setSelectedTable] = useState<'all' | 'userLiquidity'>(
@@ -74,57 +65,24 @@ const TablesSwitcher = ({
     pool: '',
   })
 
-  const [
-    refreshAllTokensDataCounter,
-    setRefreshAllTokensDataCounter,
-  ] = useState<number>(0)
-
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const refreshAllTokensData = () =>
-    setRefreshAllTokensDataCounter(refreshAllTokensDataCounter + 1)
+  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts({
+    wallet,
+    connection,
+  })
 
-  // updates user token balances & farming tokens with amount to claim
-  useEffect(() => {
-    const fetchData = async () => {
-      const allTokensData = await getAllTokensData(wallet.publicKey, connection)
-      const allUserFarmingTickets = await getParsedUserFarmingTickets({
-        wallet,
-        connection,
-      })
-      const allUserFarmingTicketsWithAmountsToClaim = await addAmountsToClaimForFarmingTickets(
-        {
-          pools: getPoolsInfo,
-          wallet,
-          connection,
-          allUserFarmingTickets,
-        }
-      )
+  const [farmingTicketsMap, refreshFarmingTickets] = useFarmingTicketsMap({
+    wallet,
+    connection,
+    pools,
+  })
 
-      const farmingTicketsMap = allUserFarmingTicketsWithAmountsToClaim.reduce(
-        (acc, farmingTicket) => {
-          const { pool } = farmingTicket
-
-          if (acc.has(pool)) {
-            acc.set(pool, [...acc.get(pool), farmingTicket])
-          } else {
-            acc.set(pool, [farmingTicket])
-          }
-
-          return acc
-        },
-        new Map()
-      )
-
-      await setAllTokensData(allTokensData)
-      await setFarmingTicketsMap(farmingTicketsMap)
-    }
-
-    if (!!wallet?.publicKey) {
-      fetchData()
-    }
-  }, [wallet?.publicKey, refreshAllTokensDataCounter])
+  const refreshTokensWithFarmingTickets = () => {
+    refreshAllTokensData()
+    refreshFarmingTickets()
+  }
 
   const isAllPoolsSelected = selectedTable === 'all'
 
@@ -171,7 +129,7 @@ const TablesSwitcher = ({
               Your liquidity (
               {
                 getUserPoolsFromAll({
-                  poolsInfo: getPoolsInfo,
+                  poolsInfo: pools,
                   allTokensDataMap,
                   farmingTicketsMap,
                 }).length
@@ -199,7 +157,7 @@ const TablesSwitcher = ({
             poolWaitingForUpdateAfterOperation={
               poolWaitingForUpdateAfterOperation
             }
-            poolsInfo={getPoolsInfo}
+            poolsInfo={pools}
             allTokensDataMap={allTokensDataMap}
             dexTokensPricesMap={dexTokensPricesMap}
             farmingTicketsMap={farmingTicketsMap}
@@ -218,7 +176,7 @@ const TablesSwitcher = ({
           <UserLiquitidyTable
             theme={theme}
             searchValue={searchValue}
-            poolsInfo={getPoolsInfo}
+            poolsInfo={pools}
             poolWaitingForUpdateAfterOperation={
               poolWaitingForUpdateAfterOperation
             }
@@ -241,7 +199,7 @@ const TablesSwitcher = ({
         {selectedPool && isAddLiquidityPopupOpen && (
           <AddLiquidityPopup
             theme={theme}
-            poolsInfo={getPoolsInfo}
+            poolsInfo={pools}
             open={isAddLiquidityPopupOpen}
             dexTokensPricesMap={dexTokensPricesMap}
             selectedPool={selectedPool}
@@ -251,15 +209,13 @@ const TablesSwitcher = ({
             }
             close={() => setIsAddLiquidityPopupOpen(false)}
             refreshAllTokensData={refreshAllTokensData}
-            selectPool={selectPool}
-            getPoolsInfoQueryRefetch={getPoolsInfoQueryRefetch}
           />
         )}
 
         {selectedPool && isWithdrawalPopupOpen && (
           <WithdrawalPopup
             theme={theme}
-            poolsInfo={getPoolsInfo}
+            poolsInfo={pools}
             selectedPool={selectedPool}
             dexTokensPricesMap={dexTokensPricesMap}
             farmingTicketsMap={farmingTicketsMap}
@@ -271,8 +227,6 @@ const TablesSwitcher = ({
             setPoolWaitingForUpdateAfterOperation={
               setPoolWaitingForUpdateAfterOperation
             }
-            selectPool={selectPool}
-            getPoolsInfoQueryRefetch={getPoolsInfoQueryRefetch}
           />
         )}
 
@@ -284,7 +238,7 @@ const TablesSwitcher = ({
             dexTokensPricesMap={dexTokensPricesMap}
             close={() => setIsStakePopupOpen(false)}
             allTokensData={allTokensData}
-            refreshAllTokensData={refreshAllTokensData}
+            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
             setPoolWaitingForUpdateAfterOperation={
               setPoolWaitingForUpdateAfterOperation
             }
@@ -298,7 +252,7 @@ const TablesSwitcher = ({
             selectedPool={selectedPool}
             close={() => setIsUnstakePopupOpen(false)}
             allTokensData={allTokensData}
-            refreshAllTokensData={refreshAllTokensData}
+            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
             setPoolWaitingForUpdateAfterOperation={
               setPoolWaitingForUpdateAfterOperation
             }
