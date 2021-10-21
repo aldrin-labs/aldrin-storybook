@@ -1,8 +1,10 @@
 import styled from 'styled-components'
 
 import { Row } from '@sb/components/Layout'
+import { Block } from '@sb/components/Block'
 import { BREAKPOINTS, FONTS, COLORS } from '../../../variables'
 import { RowContainer } from '../AnalyticsRoute/index.styles'
+import { Paper } from '@material-ui/core'
 
 export const ADAPTIVE_LOW_BLOCKS = ({
   isMobile,
@@ -84,6 +86,10 @@ export const StyledTextDiv = styled.div`
   background: ${COLORS.background};
   padding: 8px 12px;
   margin: 12px 0 0 0;
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    min-width: 360px;
+  }
 `
 export const RoundButton = styled.button`
   background-image: ${(props) =>
@@ -113,9 +119,6 @@ export const RoundInput = styled.input`
   outline: none;
 `
 
-
-
-
 export const RootRow = styled(Row)`
   margin: 50px 0;
 `
@@ -124,7 +127,7 @@ export const WalletRow = styled.div`
   display: flex;
   flex-direction: column;
 
-  @media(min-width: ${BREAKPOINTS.xl}) {
+  @media (min-width: ${BREAKPOINTS.xl}) {
     & {
       flex-direction: row;
       justify-content: space-between;
@@ -135,9 +138,46 @@ export const WalletRow = styled.div`
 export const WalletBalanceBlock = styled.div`
   margin-top: 20px;
 
-  @media(min-width: ${BREAKPOINTS.xl}) {
+  @media (min-width: ${BREAKPOINTS.xl}) {
     & {
       margin-top: 8px;
     }
   }
+`
+
+export const TotalStakedBlock = styled(Block)`
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin: 18px 0 38px 0;
+  }
+`
+
+export const RewardsBlock = styled(Block)`
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin: 18px 0 38px 16px;
+  }
+`
+export const BalanceRow = styled.div`
+  color: ${COLORS.hint};
+  font-size: 1.5em;
+  text-transform: lowercase;
+  font-variant: small-caps;
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    text-align: right;
+    margin-top: 20px;
+  }
+`
+export const Digit = styled.span`
+  color: ${COLORS.white};
+  font-variant: initial;
+  font-weight: 600;
+`
+
+export const StyledPaper = styled(Paper)`
+  height: auto;
+  padding: 2rem;
+  width: 55rem;
+  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
+  background: #222429;
+  border-radius: 1.6rem;
 `

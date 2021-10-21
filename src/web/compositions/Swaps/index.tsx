@@ -191,7 +191,7 @@ const SwapsPage = ({
     const fetchData = async () => {
       const allTokensData = await getAllTokensData(wallet.publicKey, connection)
 
-      await setAllTokensData(allTokensData)
+      setAllTokensData(allTokensData)
     }
 
     if (!!wallet?.publicKey) {
@@ -208,10 +208,10 @@ const SwapsPage = ({
   //   allTokensData[0]?.address === userQuoteTokenAccount
 
   const reverseTokens = async () => {
-    await setBaseTokenMintAddress(quoteTokenMintAddress)
-    await setQuoteTokenMintAddress(baseTokenMintAddress)
-    await setBaseAmount(quoteAmount)
-    await setQuoteAmount(baseAmount)
+    setBaseTokenMintAddress(quoteTokenMintAddress)
+    setQuoteTokenMintAddress(baseTokenMintAddress)
+    setBaseAmount(quoteAmount)
+    setQuoteAmount(baseAmount)
   }
 
   const poolsAmountDiff = isSwapBaseToQuote

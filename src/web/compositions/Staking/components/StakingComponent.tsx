@@ -3,7 +3,6 @@ import copy from 'clipboard-copy'
 
 import { Theme } from '@sb/types/materialUI'
 
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 import { TextButton } from '@sb/compositions/Rebalance/Rebalance.styles'
 import { RoundButton } from '../Staking.styles'
@@ -29,6 +28,10 @@ import {
   StyledTextDiv,
   WalletRow,
   WalletBalanceBlock,
+  TotalStakedBlock,
+  RewardsBlock,
+  BalanceRow,
+  Digit,
 } from '../Staking.styles'
 import {
   Block,
@@ -39,11 +42,13 @@ import {
 import { Row, Cell, StretchedBlock } from '../../../components/Layout'
 import { Button } from '../../../components/Button'
 import { BorderButton } from '@sb/compositions/Pools/components/Tables/index.styles'
+import { RestakePopup } from './RestakePopup'
 
 interface StakingComponentProps {}
 
 export const StakingComponent: React.FC<StakingComponentProps> = ({}) => {
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
+  const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
 
   const { wallet } = useWallet()
@@ -80,33 +85,54 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({}) => {
                       }
                       width={'1.5em'}
                       height={'auto'}
+                      onClick={() => {
+                        setIsBalancesShowing(!isBalancesShowing)
+                      }}
                     />
                   </StretchedBlock>
                   <StyledTextDiv>
-                    GHvybfUhsKxmWvrVZ5KDdWQGPCYSZoRKefWYyVyRHGYc
+                    {isBalancesShowing ? walletAddress : '＊＊＊'}
                   </StyledTextDiv>
                 </div>
                 <WalletBalanceBlock>
                   <BlockSubtitle>Available in wallet:</BlockSubtitle>
-                  <Text
-                    color={'#96999C'}
-                    fontFamily={'Avenir Next Demi'}
-                    fontSize={'1.8rem'}
-                  >
-                    <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>
-                      0
-                    </span>{' '}
-                    RIN
-                  </Text>
+                  <BalanceRow>
+                    <Digit>
+                      {isBalancesShowing
+                        ? stripByAmount(tokenData?.amount)
+                        : '＊＊＊'}
+                    </Digit>
+                    &nbsp;RIN
+                  </BalanceRow>
                 </WalletBalanceBlock>
               </WalletRow>
             </BlockContent>
             <BlockContent>
+              <Row>
+                <Cell colLg={4}>
+                  <TotalStakedBlock inner>
+                    <BlockContent>
+                      <BlockSubtitle>Total staked:</BlockSubtitle>
+                    </BlockContent>
+                  </TotalStakedBlock>
+                </Cell>
+                <Cell colLg={8}>
+                  <RewardsBlock inner>
+                    <BlockContent>
+                      <BlockSubtitle>Rewards:</BlockSubtitle>
+                    </BlockContent>
+                  </RewardsBlock>
+                </Cell>
+              </Row>
+
               <Button
                 backgroundImage={StakeBtn}
                 fontSize="xs"
                 padding="lg"
                 borderRadis="xxl"
+                onClick={() => {
+                  setIsRestakePopupOpen(true)
+                }}
               >
                 Stake
               </Button>
@@ -149,6 +175,10 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({}) => {
             </Cell>
           </Row>
         </Cell>
+        <RestakePopup
+          open={isRestakePopupOpen}
+          close={() => setIsRestakePopupOpen(false)}
+        />
       </RootRow>
     </>
     // <BlockTemplate

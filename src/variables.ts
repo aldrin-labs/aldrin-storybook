@@ -13,6 +13,9 @@ export const COLORS = {
   borderAlt: '#383B45',
   main: '#fbf2f2',
   primary: '#651CE4',
+  success: '##53DF11',
+  error: '##F69894',
+
 }
 
 export const BORDER_RADIUS = {
