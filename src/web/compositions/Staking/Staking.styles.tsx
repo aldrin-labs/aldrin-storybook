@@ -145,15 +145,35 @@ export const WalletBalanceBlock = styled.div`
   }
 `
 
-export const TotalStakedBlock = styled(Block)`
-  @media (min-width: ${BREAKPOINTS.lg}) {
+const InnerBlock = styled(Block)`
+  margin: 10px 0;
+`
+
+export const TotalStakedBlock = styled(InnerBlock)`
+  @media (min-width: ${BREAKPOINTS.md}) {
     margin: 18px 0 38px 0;
+  }
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin: 10px 0;
+  }
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    margin: 0;
   }
 `
 
-export const RewardsBlock = styled(Block)`
-  @media (min-width: ${BREAKPOINTS.lg}) {
+export const RewardsBlock = styled(InnerBlock)`
+  @media (min-width: ${BREAKPOINTS.md}) {
     margin: 18px 0 38px 16px;
+  }
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin: 10px 0;
+  }
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    margin: 0 0 0 16px;
   }
 `
 export const BalanceRow = styled.div`
@@ -161,10 +181,14 @@ export const BalanceRow = styled.div`
   font-size: 1.5em;
   text-transform: lowercase;
   font-variant: small-caps;
+  height: 1.25em;
+  line-height: 1.25em;
+`
 
+export const BalanceWrap = styled.div`
   @media (min-width: ${BREAKPOINTS.xl}) {
     text-align: right;
-    margin-top: 20px;
+    padding-top: 5px;
   }
 `
 export const Digit = styled.span`
@@ -180,4 +204,16 @@ export const StyledPaper = styled(Paper)`
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
   background: #222429;
   border-radius: 1.6rem;
+`
+export const BigNumber = styled.p`
+  font-size: 2em;
+  line-height: 1.3;
+  font-weight: bold;
+  margin: 10px 0;
+`
+export const Number = styled.p`
+  margin: 10px 0 0;
+  font-size: 1.5em;
+  line-height: 1.2;
+  font-weight: bold;
 `

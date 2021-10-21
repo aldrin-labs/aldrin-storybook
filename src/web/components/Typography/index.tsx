@@ -18,3 +18,11 @@ export const Text = styled.p<TextProps>`
   margin: 10px 0 0 0;
   ${(props: TextProps) => props.maxWidth ? `max-width: ${props.maxWidth};` : ''} 
 `
+
+export const SuccessText = styled.span`
+  color: ${COLORS.success};
+`
+
+export const ErrorText = styled.span`
+  color: ${COLORS.error};
+`

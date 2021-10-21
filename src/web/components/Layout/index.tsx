@@ -37,6 +37,7 @@ export const Cell = styled.div<CellProps>`
   ${(props) => props.colSm ? `@media(min-width:${BREAKPOINTS.sm}) { flex: 0 1 ${props.colSm / LAYOUT_COL_NUMBER * 100}%  }` : ''}
   ${(props) => props.colMd ? `@media(min-width:${BREAKPOINTS.md}) { flex: 0 1 ${props.colMd / LAYOUT_COL_NUMBER * 100}%  }` : ''}
   ${(props) => props.colLg ? `@media(min-width:${BREAKPOINTS.lg}) { flex: 0 1 ${props.colLg / LAYOUT_COL_NUMBER * 100}%  }` : ''}
+  ${(props) => props.colXl ? `@media(min-width:${BREAKPOINTS.xl}) { flex: 0 1 ${props.colXl / LAYOUT_COL_NUMBER * 100}%  }` : ''}
 `
 
 export const StretchedBlock = styled.div<StretchedBlockProps>`
