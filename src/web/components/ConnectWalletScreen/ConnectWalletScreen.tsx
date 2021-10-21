@@ -6,23 +6,24 @@ import {
   Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 
 import LightLogo from '@icons/lightLogo.svg'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 
-export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
+interface WithTheme {
+  theme: Theme
+}
+
+const ConnectWalletContent: React.FC<WithTheme> = (props) => {
+  const { theme } = props
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] = useState(
     false
   )
   return (
-    <RowContainer
-      direction="column"
-      height={'100%'}
-      style={{ background: theme.palette.grey.additional }}
-    >
-      <RowContainer margin={'0 0 4rem 0'}>
+    <>
+      <RowContainer margin={'2rem 0 4rem 0'}>
         <SvgIcon src={LightLogo} width={'16rem'} height={'16rem'} />
       </RowContainer>
       <RowContainer margin={'0 0 2.4rem 0'}>
@@ -34,7 +35,7 @@ export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
           Connect your wallet to begin.
         </Title>
       </RowContainer>
-      <RowContainer>
+      <RowContainer  margin={'0 0 2rem 0'}>
         <BtnCustom
           onClick={() => {
             setIsConnectWalletPopupOpen(true)
@@ -62,6 +63,20 @@ export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
         open={isConnectWalletPopupOpen}
         onClose={() => setIsConnectWalletPopupOpen(false)}
       />
+    </>
+  )
+}
+
+export const ConnectWalletInner = withTheme()(ConnectWalletContent)
+
+export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
+  return (
+    <RowContainer
+      direction="column"
+      height={'100%'}
+      style={{ background: theme.palette.grey.additional }}
+    >
+      <ConnectWalletInner />
     </RowContainer>
   )
 }

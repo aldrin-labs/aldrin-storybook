@@ -19,6 +19,8 @@ import { useConnection } from '../../../dexUtils/connection'
 import { getAllTokensData } from '../../Rebalance/utils'
 import { TokenInfo } from '../../Rebalance/Rebalance.types'
 import { CCAI_MINT } from '../../../dexUtils/utils'
+import { RestakePopup } from './RestakePopup'
+import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 
 
 interface UserBalanceProps {
@@ -31,8 +33,9 @@ const UserBalance: React.FC<UserBalanceProps> = (props) => (
   </BalanceRow>
 )
 
-export const UserStakingInfo: React.FC = () => {
+const UserStakingInfoContent: React.FC = () => {
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
+  const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
 
   const { wallet } = useWallet()
@@ -52,7 +55,7 @@ export const UserStakingInfo: React.FC = () => {
   const tokenData = allTokensData?.find((token) => token.mint === CCAI_MINT)
 
   return (
-    <Block>
+    <>
       <BlockContent border>
         <WalletRow>
           <div>
@@ -115,9 +118,33 @@ export const UserStakingInfo: React.FC = () => {
           </Cell>
         </Row>
 
-        <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
-        <Button backgroundImage={StakeBtn} disabled fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button>
+        <Button
+          onClick={() => {
+            setIsRestakePopupOpen(true)
+          }}
+          backgroundImage={StakeBtn}
+          fontSize="xs"
+          padding="lg"
+          borderRadis="xxl"
+        >
+          Stake
+        </Button>
+        {/* <Button backgroundImage={StakeBtn} disabled fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button> */}
       </BlockContent>
+      <RestakePopup
+        open={isRestakePopupOpen}
+        close={() => setIsRestakePopupOpen(false)}
+      />
+    </>
+  )
+}
+
+export const UserStakingInfo = () => {
+  return (
+    <Block>
+      <ConnectWalletWrapper>
+        <UserStakingInfoContent />
+      </ConnectWalletWrapper>
     </Block>
   )
 }
