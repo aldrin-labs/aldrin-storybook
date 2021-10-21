@@ -79,13 +79,14 @@ export const StyledTextDiv = styled.div`
   height: auto;
   width: 100%;
   font-size: 0.75em;
-  font-family: ${FONTS.mainLight};
+  font-weight: 500;
   color: ${COLORS.hint};
   border-radius: 1.5rem;
+  line-height: 1.25em;
   background: ${COLORS.background};
   letter-spacing: 0.01rem;
-  padding: 0.75rem;
-  margin: 0.75rem 0 0 0;
+  padding: 8px 12px;
+  margin: 12px 0 0 0;
 `
 // export const RoundButton = styled.button`
 //   background-image: ${(props) =>
@@ -129,24 +130,4 @@ export const Row = styled(LRow)`
 `
 export const RootRow = styled(Row)`
   margin: 50px 0;
-`
-
-
-export const StatsCellFull = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-`
-
-export const StatsCell = styled(StatsCellFull)`
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    flex: 0 1 50%;
-  }
-`
-
-export const StatsCellSmall = styled(StatsCellFull)`
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    flex: 0 1 33.333%;
-  }
 `

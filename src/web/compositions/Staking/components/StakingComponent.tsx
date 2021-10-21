@@ -9,8 +9,11 @@ import { MAIN_BLOCK, } from '../Staking.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { SvgIcon } from '@sb/components'
 
-import { Row, RootRow, StatsCell, StyledTextDiv, StatsCellFull, StatsCellSmall } from '../Staking.styles'
-import { Block, BlockTitle, BlockContent, } from '../../../components/Block'
+import pinkBackground from './assets/pinkBackground.png'
+
+import { Row, RootRow, StyledTextDiv } from '../Staking.styles'
+import { Block, BlockTitle, BlockContent, BlockSubtitle } from '../../../components/Block'
+import { Cell, StretchedBlock } from '../../../components/Layout'
 
 interface StakingComponentProps {
   isBalancesShowing: boolean
@@ -21,50 +24,74 @@ export const StakingComponent: React.FC<StakingComponentProps> = ({
   return (
     <>
       <RootRow>
-        <StatsCell>
+        <Cell col={12} colLg={6} >
           <Block>
             <BlockContent border>
-              <RowContainer justify={'space-between'}>
-                <BlockTitle>
-                  Your RIN Staking
-                </BlockTitle>
-                <Row>
-                  <SvgIcon
-                    src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
-                    width={'2.7rem'}
-                    height={'auto'}
-                  />
-                </Row>
-              </RowContainer>
-              <StyledTextDiv>
-                GHvybfUhsKxmWvrVZ5KDdWQGPCYSZoRKefWYyVyRHGYc
-           </StyledTextDiv>
+              <StretchedBlock>
+                <div>
+                  <StretchedBlock>
+                    <BlockTitle>
+                      Your RIN Staking
+                  </BlockTitle>
+                    <Row>
+                      <SvgIcon
+                        src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
+                        width={'1.5em'}
+                        height={'auto'}
+                      />
+                    </Row>
+                  </StretchedBlock>
+                  <StyledTextDiv>
+                    GHvybfUhsKxmWvrVZ5KDdWQGPCYSZoRKefWYyVyRHGYc
+                  </StyledTextDiv>
+                </div>
+                <div>
+                  <BlockSubtitle>
+                    Available in wallet:
+                  </BlockSubtitle>
+                  <Text
+                    color={'#96999C'}
+                    fontFamily={'Avenir Next Demi'}
+                    fontSize={'1.8rem'}
+                  >
+                    <span style={{ color: '#fbf2f2', fontSize: '2.7rem' }}>0</span> RIN
+                  </Text>
+                </div>
+              </StretchedBlock>
+
             </BlockContent>
             <BlockContent>
               asd
           </BlockContent>
           </Block>
-        </StatsCell>
-        <StatsCell>
+        </Cell>
+        <Cell col={12} colLg={6}>
           <Row>
-            <StatsCell>
-              <Block><BlockContent>Block 2</BlockContent></Block>
-            </StatsCell>
-            <StatsCell>
-              <Block><BlockContent>Block 3</BlockContent></Block>
-            </StatsCell>
+            <Cell colLg={6}>
+              <Block>
+                <BlockContent>
+                  <BlockTitle>Total Staked</BlockTitle>
+                </BlockContent>
+              </Block>
+            </Cell>
+            <Cell colLg={6}>
+              <Block backgroundImage={pinkBackground}>
+                <BlockContent>
+                  <BlockTitle>Estimated Rewards</BlockTitle>
+                </BlockContent>
+              </Block>
+            </Cell>
           </Row>
           <Row>
-            <StatsCellFull>
-              <Block><BlockContent>Block 4</BlockContent></Block>
-            </StatsCellFull>
+            <Cell>
+              <Block>
+                <BlockContent>
+                  <BlockTitle>RIN Stats</BlockTitle>
+                </BlockContent>
+              </Block>
+            </Cell>
           </Row>
-        </StatsCell>
-      </RootRow>
-      <RootRow>
-        <StatsCellSmall> <Block><BlockContent>Block 5</BlockContent></Block></StatsCellSmall>
-        <StatsCellSmall> <Block><BlockContent>Block 6</BlockContent></Block></StatsCellSmall>
-        <StatsCellSmall> <Block><BlockContent>Block 7</BlockContent></Block></StatsCellSmall>
+        </Cell>
       </RootRow>
     </>
     // <BlockTemplate

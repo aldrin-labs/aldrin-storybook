@@ -1,8 +1,5 @@
 export const FONTS = {
   main: 'Avenir Next, sans-serif;',
-  mainDemi: 'Avenir Next Demi, sans-serif;',
-  mainLight: 'Avenir Next Light',
-  mainMedium: 'Avenir Next Medium',
 }
 
 export const COLORS = {
@@ -13,7 +10,8 @@ export const COLORS = {
   black: '#000000',
   hint: '#96999c',
   blockBackground: '#222429',
-  border: '#383B45',
+  borderAlt: '#383B45',
+  main: '#fbf2f2',
 }
 
 export const BREAKPOINTS = {
@@ -26,3 +24,4 @@ export const SIZE = {
 }
 
 export const LAYOUT_WIDTH = 1280
+export const LAYOUT_COL_NUMBER = 12
