@@ -1,24 +1,6 @@
 import { Chart } from 'chart.js'
-<<<<<<< HEAD:src/web/compositions/Staking/RewardsChart/CreateRewardsChart.tsx
-import { COLORS } from '../../../../variables'
-=======
 import { COLORS, FONTS } from '../../../../variables'
->>>>>>> beb7bb37f032c7003b04d830a55c5f04daf43776:src/web/compositions/Staking/components/CreateRewardsChart.tsx
 
-const Months = [
-  'Nov 27',
-  'Dec 27',
-  'Jan 27',
-  'Feb 27',
-  'Mar 27',
-  'Apr 27',
-  'May 27',
-  'Jun 27',
-  'Jul 27',
-  'Avg 27',
-  'Sep 27',
-  'Oct 27',
-]
 
 const MONTHS = [
   'Jan',
@@ -89,11 +71,7 @@ export const createRewardsChart = (canvas: HTMLCanvasElement) => {
           },
           ticks: {
             align: 'end',
-<<<<<<< HEAD:src/web/compositions/Staking/RewardsChart/CreateRewardsChart.tsx
             color: COLORS.main,
-=======
-            color: COLORS.textAlt,
->>>>>>> beb7bb37f032c7003b04d830a55c5f04daf43776:src/web/compositions/Staking/components/CreateRewardsChart.tsx
             font: {
               size: 16,
               family: FONTS.main,
