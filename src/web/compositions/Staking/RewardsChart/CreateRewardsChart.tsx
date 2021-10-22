@@ -1,4 +1,5 @@
 import { Chart } from 'chart.js'
+import { COLORS } from '../../../../variables'
 
 const Months = [
   'Nov 27',
@@ -54,7 +55,7 @@ export const createRewardsChart = ({ id }: { id: string }) => {
           },
           ticks: {
             align: 'end',
-            color: '#F5F5FB',
+            color: COLORS.main,
             font: {
               size: +(width / 145).toFixed(0),
               family: 'Avenir Next',

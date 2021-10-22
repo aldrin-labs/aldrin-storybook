@@ -15,7 +15,7 @@ export const COLORS = {
   primary: '#651CE4',
   success: '#53DF11',
   error: '##F69894',
-
+  lightBackground: '#383b42',
 }
 
 export const BORDER_RADIUS = {
@@ -41,7 +41,14 @@ export const BREAKPOINTS = {
 }
 
 export const SIZE = {
-  fontSize: '16px'
+  fontSize: '16px',
+}
+
+export const WIDTH = {
+  sm: '10%',
+  md: '30%',
+  lg: '60%',
+  xl: '100%',
 }
 
 export const LAYOUT_WIDTH = 1280

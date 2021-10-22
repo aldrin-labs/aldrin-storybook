@@ -32,7 +32,7 @@ export const RestakePopup = ({
           />
         </StretchedBlock>
         <StretchedBlock>
-          <Text maxWidth="100%" size="sm">
+          <Text size="sm">
             By restaking your reward you will get more rewards each month due to
             a compound percentage, that's how your rewards will grow:
           </Text>
@@ -40,27 +40,25 @@ export const RestakePopup = ({
         <RewardsChart id={'RewardsChart'} />
         <LeftBlock>
           {' '}
-          <FormItem>
-            <Button
-              onClick={() => {}}
-              fontSize="xs"
-              padding="lg"
-              borderRadis="xxl"
-            >
-              Claim Anyway
-            </Button>
-          </FormItem>{' '}
-          <FormItem>
-            <Button
-              onClick={() => {}}
-              backgroundImage={StakeBtn}
-              fontSize="xs"
-              padding="lg"
-              borderRadis="xxl"
-            >
-              Restake
-            </Button>
-          </FormItem>
+          <Button
+            onClick={() => {}}
+            fontSize="sm"
+            padding="lg"
+            borderRadius="xxl"
+            width={'md'}
+          >
+            Claim Anyway
+          </Button>
+          <Button
+            onClick={() => {}}
+            backgroundImage={StakeBtn}
+            fontSize="sm"
+            padding="lg"
+            borderRadius="xxl"
+            width={'lg'}
+          >
+            Restake
+          </Button>
         </LeftBlock>
       </PopupBody>
     </PopupWrapper>

@@ -114,7 +114,7 @@ export const StyledPaper = styled(Paper)`
   padding: 2rem;
   width: 70rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
+  background: ${COLORS.blockBackground};
   border-radius: 1.6rem;
 `
 export const BigNumber = styled.p`
@@ -159,7 +159,7 @@ export const FormWrap = styled.div`
   align-items: center;
   flex-wrap: wrap;
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     margin-top: 20px;
   }
 `
@@ -168,7 +168,7 @@ export const FormItem = styled.div`
 `
 
 export const ChartContainer = styled.div`
-  background: #383b42;
+  background: ${COLORS.lightBackground};
   border-radius: 2rem;
   padding: 2rem;
   margin-top: 2rem;
