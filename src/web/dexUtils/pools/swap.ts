@@ -140,7 +140,7 @@ export const swap = async ({
       const swapTransaction = await program.instruction.swap(
         new BN(swapAmountIn),
         new BN(swapAmountOut),
-        isSwapBaseToQuote ? SSde.Ask : Side.Bid,
+        isSwapBaseToQuote ? Side.Ask : Side.Bid,
         {
           accounts: {
             pool: poolPublicKey,
