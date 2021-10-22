@@ -1,15 +1,7 @@
 import React from 'react'
-import {
-  Block,
-  BlockContent,
-  BlockContentStretched,
-  BlockTitle,
-} from '../../../components/Block'
-import { Cell, Row, StretchedBlock } from '../../../components/Layout'
-import { SuccessText } from '../../../components/Typography'
-import { BigNumber, Number, RootRow } from '../Staking.styles'
-import locksIcon from './assets/lockIcon.svg'
-import pinkBackground from './assets/pinkBackground.png'
+import { Cell } from '../../../components/Layout'
+import { RootRow } from '../Staking.styles'
+import StatsComponent from './StatsComponent'
 import { UserStakingInfo } from './UserStakingInfo'
 
 export const StakingComponent: React.FC = () => {
@@ -17,43 +9,10 @@ export const StakingComponent: React.FC = () => {
     <>
       <RootRow>
         <Cell col={12} colLg={6}>
-          <UserStakingInfo></UserStakingInfo>
+          <UserStakingInfo />
         </Cell>
         <Cell col={12} colLg={6}>
-          <Row>
-            <Cell colMd={6}>
-              <Block icon={locksIcon}>
-                <BlockContentStretched>
-                  <BlockTitle>Total Staked</BlockTitle>
-                  <BigNumber>
-                    <SuccessText>10,000,000</SuccessText> RIN
-                  </BigNumber>
-                  <Number>$1.53b</Number>
-                </BlockContentStretched>
-              </Block>
-            </Cell>
-            <Cell colMd={6}>
-              <Block backgroundImage={pinkBackground}>
-                <BlockContentStretched>
-                  <BlockTitle>Estimated Rewards</BlockTitle>
-                  <BigNumber>193%</BigNumber>
-                  <StretchedBlock>
-                    <Number>APY</Number>
-                    <div>Share</div>
-                  </StretchedBlock>
-                </BlockContentStretched>
-              </Block>
-            </Cell>
-          </Row>
-          <Row>
-            <Cell>
-              <Block>
-                <BlockContent>
-                  <BlockTitle>RIN Stats </BlockTitle>
-                </BlockContent>
-              </Block>
-            </Cell>
-          </Row>
+          <StatsComponent />
         </Cell>
       </RootRow>
     </>
