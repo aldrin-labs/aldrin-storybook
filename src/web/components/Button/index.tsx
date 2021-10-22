@@ -18,7 +18,7 @@ const VARIANTS = {
 }
 
 const PADDINGS = {
-  md: '0 10px', // 16px
+  md: '4px 10px', // 16px
   lg: '8px 16px',
 }
 
