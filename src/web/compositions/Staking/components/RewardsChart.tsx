@@ -1,15 +1,21 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { StretchedBlock } from '@sb/components/Layout'
-import { ChartContainer, Chart } from '../Staking.styles'
+import { ChartContainer, Chart, ChartCanvas } from '../Staking.styles'
 import { Text } from '@sb/components/Typography'
 import { createRewardsChart } from './CreateRewardsChart'
-export const RewardsChart = ({ id }: { id: string }) => {
-  useEffect(() => {
-    createRewardsChart({ id })
 
-    // @ts-ignore - we set it in create chart function above
-    return () => window[`RewardsChart-${id}`].destroy()
-  }, [id])
+export const RewardsChart = () => {
+
+  const chartRef = useRef<HTMLCanvasElement | null>(null)
+
+  useEffect(() => {
+    if (!chartRef.current) {
+      return () => { return null }
+    }
+    const chart = createRewardsChart(chartRef.current)
+
+    return () => chart.destroy()
+  }, [])
 
   return (
     <>
@@ -18,12 +24,12 @@ export const RewardsChart = ({ id }: { id: string }) => {
           <Text maxWidth="100%" size="sm">
             Reward growth subject to restaking of rewards on a monthly basis.
           </Text>{' '}
-          <Text maxWidth="100%" size="sm">
+          <Text maxWidth="100%" noWrap size="sm">
             1 Y
           </Text>
         </StretchedBlock>
         <Chart>
-          <canvas id="RewardsChart"></canvas>
+          <ChartCanvas ref={chartRef}></ChartCanvas>
         </Chart>
       </ChartContainer>
     </>

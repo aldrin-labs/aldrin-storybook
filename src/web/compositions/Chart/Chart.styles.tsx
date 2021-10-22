@@ -4,7 +4,6 @@ import { CardTitle } from '@sb/components/ChartCardHeader/styles'
 import { Card, Grid, Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
 import StakeBtn from '@icons/stakeBtn.png'
-import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import { Link } from 'react-router-dom'
 
 export const MainContainer = styled.div`

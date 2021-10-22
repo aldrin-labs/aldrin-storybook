@@ -1,4 +1,5 @@
 import { Chart } from 'chart.js'
+import { COLORS, FONTS } from '../../../../variables'
 
 const Months = [
   'Nov 27',
@@ -15,32 +16,62 @@ const Months = [
   'Oct 27',
 ]
 
-export const createRewardsChart = ({ id }: { id: string }) => {
-  const ctx = document.getElementById('RewardsChart')?.getContext('2d')
+const MONTHS = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
+
+
+
+export const createRewardsChart = (canvas: HTMLCanvasElement) => {
+  const ctx = canvas.getContext('2d')
+  if (!ctx) {
+    throw Error('Not a canvas:')
+  }
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
   gradient.addColorStop(0, 'rgba(101, 28, 228, 0.84)')
   gradient.addColorStop(0.55, 'rgba(115, 128, 235, 0)')
   gradient.addColorStop(1, '#222429')
 
-  const width =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth
+  const data = [10]
+  const month = new Date().getMonth()
+  const year = new Date().getFullYear() - 2000
+  const labels = [`${MONTHS[month]} ${year}`]
 
-  window[`RewardsChart-${id}`] = new Chart(ctx, {
+
+  for (let i = month + 1; i < month + 12; i++) {
+    const m = i % 12
+    const addYear = Math.floor(i / 12)
+    const yearResult = year + addYear
+    labels.push(`${MONTHS[m]} ${yearResult}`)
+    const prevData = data[data.length - 1]
+    data.push(prevData * 1 + Math.random() * 0.7)
+  }
+
+  return new Chart(ctx, {
     type: 'line',
     data: {
-      labels: Months,
+      labels,
       datasets: [
         {
           fill: 'origin',
           tension: 0.3,
-          borderColor: '#651CE4',
+          borderColor: COLORS.primary,
           backgroundColor: gradient,
           borderWidth: 2,
           pointRadius: 0,
           hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: [0, 10, 20, 30, 40, 50, 60, 70, 80, 100, 110, 120],
+          data,
         },
       ],
     },
@@ -50,21 +81,21 @@ export const createRewardsChart = ({ id }: { id: string }) => {
           stacked: true,
           gridLines: {
             display: true,
-            color: '#4C4F59',
+            color: COLORS.chartGrid,
           },
           ticks: {
             align: 'end',
-            color: '#F5F5FB',
+            color: COLORS.textAlt,
             font: {
-              size: +(width / 145).toFixed(0),
-              family: 'Avenir Next',
+              size: 16,
+              family: FONTS.main,
             },
           },
         },
         y: {
           gridLines: {
             display: true,
-            color: '#4C4F59',
+            color: COLORS.chartGrid,
             drawBorder: false,
           },
           ticks: {
@@ -88,8 +119,8 @@ export const createRewardsChart = ({ id }: { id: string }) => {
       layout: {
         padding: {
           top: 25,
-          right: 25,
-          left: 25,
+          right: 0,
+          left: 0,
         },
       },
     },

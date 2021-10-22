@@ -16,7 +16,11 @@ export const Body = styled.div`
 `
 
 export const PopupBody = styled(Body)`
-  width: 75rem;
+  max-width: 65rem;
+
+  @media(min-width: ${BREAKPOINTS.md}) {
+    padding: 0 10px;
+  }
 `
 
 export const Page = styled(Body)`

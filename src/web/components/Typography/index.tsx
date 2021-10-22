@@ -7,6 +7,7 @@ interface TextProps {
   color?: keyof typeof COLORS
   weight?: 100 | 200 | 400 | 500 | 600 | 700
   maxWidth?: string
+  noWrap?: boolean
 }
 
 export const Text = styled.p<TextProps>`
@@ -17,6 +18,7 @@ export const Text = styled.p<TextProps>`
   letter-spacing: 0.7px;
   margin: 10px 0 0 0;
   ${(props: TextProps) => props.maxWidth ? `max-width: ${props.maxWidth};` : ''} 
+  ${(props: TextProps) => props.noWrap ? `white-space: nowrap;` : ''} 
 `
 
 interface InlineProps {
