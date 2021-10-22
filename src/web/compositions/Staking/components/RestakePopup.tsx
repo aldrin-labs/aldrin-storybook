@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
-
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { StyledPaper } from '../Staking.styles'
-import { StretchedBlock, Body } from '@sb/components/Layout'
-import { BlockTitle, Block } from '@sb/components/Block'
-import { SvgIcon } from '@sb/components'
 import CloseIcon from '@icons/closeIcon.svg'
+import { SvgIcon } from '@sb/components'
+import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { BlockTitle } from '@sb/components/Block'
+import { Body, StretchedBlock } from '@sb/components/Layout'
+import { Text } from '@sb/components/Typography'
+import React from 'react'
+import { StyledPaper } from '../Staking.styles'
 
 export const RestakePopup = ({
   open,
@@ -17,7 +15,6 @@ export const RestakePopup = ({
   close: () => void
 }) => {
   return (
-
     <DialogWrapper
       PaperComponent={StyledPaper}
       fullScreen={false}
@@ -25,8 +22,9 @@ export const RestakePopup = ({
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"
-    >  <Body>
-
+    >
+      {' '}
+      <Body>
         <StretchedBlock align="center">
           <BlockTitle>Your RIN Staking</BlockTitle>
           <SvgIcon
@@ -35,6 +33,14 @@ export const RestakePopup = ({
               close()
             }}
           />
+        </StretchedBlock>
+        <StretchedBlock>
+          {' '}
+          <Text maxWidth="100%" size="sm">
+            The reward is recalculated daily for the duration of the staking
+            period. But claim your you can reward after the first day of each
+            following month.
+          </Text>
         </StretchedBlock>
       </Body>
     </DialogWrapper>
