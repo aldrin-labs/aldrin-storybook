@@ -22,36 +22,36 @@ const ConnectWalletContent: React.FC<WithTheme> = (props) => {
     false
   )
   return (
-    <RowContainer margin={"auto 0"}>
+    <RowContainer style={{ fontSize: '16px' }} margin={"auto 0"}>
       <RowContainer margin={'2rem 0 4rem 0'}>
-        <SvgIcon src={LightLogo} width={'16rem'} height={'16rem'} />
+        <SvgIcon src={LightLogo} width={'8em'} height={'8em'} />
       </RowContainer>
       <RowContainer margin={'0 0 2.4rem 0'}>
         <Title
           fontFamily={'Avenir Next Demi'}
-          fontSize={'2.5rem'}
+          fontSize={'1.5em'}
           color={theme.palette.white.main}
         >
           Connect your wallet to begin.
         </Title>
       </RowContainer>
-      <RowContainer  margin={'0 0 2rem 0'}>
+      <RowContainer margin={'0 0 2rem 0'}>
         <BtnCustom
           onClick={() => {
             setIsConnectWalletPopupOpen(true)
           }}
           btnColor={'#F8FAFF'}
           backgroundColor={theme.palette.blue.serum}
-          btnWidth={'35rem'}
+          btnWidth={'12em'}
           borderColor={theme.palette.blue.serum}
           textTransform={'capitalize'}
-          height={'6rem'}
-          borderRadius="1rem"
-          fontSize={'1.5rem'}
+          height={'3em'}
+          borderRadius="0.5em"
+          fontSize={'1em'}
           style={{
             display: 'flex',
             textTransform: 'none',
-            padding: '1rem',
+            padding: '0.5em',
             whiteSpace: 'nowrap',
           }}
         >

@@ -1,80 +1,10 @@
 import styled from 'styled-components'
+import { Paper } from '@material-ui/core'
 
 import { Row, StretchedBlock } from '@sb/components/Layout'
 import { Block } from '@sb/components/Block'
 import { BREAKPOINTS, COLORS } from '../../../variables'
-import { RowContainer } from '../AnalyticsRoute/index.styles'
-import { Paper } from '@material-ui/core'
 
-export const ADAPTIVE_LOW_BLOCKS = ({
-  isMobile,
-  needBackground,
-}: {
-  isMobile: boolean
-  needBackground?: boolean
-}) => {
-  return {
-    width: isMobile ? '100%' : '32%',
-    height: 'auto',
-    minHeight: isMobile ? '30rem' : '15rem',
-    margin: isMobile ? '2rem 0' : '0',
-    flexDirection: 'column',
-    padding: '3rem',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    flexWrap: 'nowrap',
-    position: 'relative',
-    backgroundImage: needBackground ? `url(${greenBackground})` : 'none',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-  }
-}
-
-export const ADAPTIVE_UPPER_BLOCKS = ({
-  isMobile,
-  needBackground,
-}: {
-  isMobile: boolean
-  needBackground?: boolean
-}) => {
-  return {}
-  // return {
-  //   height: isMobile ? '30rem' : '100%',
-  //   width: isMobile ? '100%' : '48%',
-  //   margin: isMobile ? '2rem 0' : '0',
-  //   flexDirection: 'column',
-  //   padding: '3rem',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'flex-start',
-  //   flexWrap: 'nowrap',
-  //   position: 'relative',
-  //   backgroundImage: needBackground ? `url(${pinkBackground})` : 'none',
-  //   backgroundRepeat: 'no-repeat',
-  //   backgroundSize: 'cover',
-  // }
-}
-
-export const Container = styled(RowContainer)`
-  padding: 5rem 13rem;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-  background: rgb(14, 16, 22);
-  @media (max-width: 1300px) {
-    padding: 8rem 15rem;
-  }
-  @media (max-width: 600px) {
-    padding: 5rem;
-    height: auto;
-  }
-`
-
-export const MAIN_BLOCK = (isMobile: boolean) => {
-  return {
-    width: isMobile ? '100%' : '49%',
-    height: isMobile ? '60rem' : '100%',
-  }
-}
 
 export const StyledTextDiv = styled.div`
   height: auto;
@@ -91,25 +21,6 @@ export const StyledTextDiv = styled.div`
   @media (min-width: ${BREAKPOINTS.lg}) {
     min-width: 360px;
   }
-`
-export const RoundButton = styled.button`
-  background-image: ${(props) =>
-    props.needImage ? `url(${StakeBtn})` : 'none'};
-  border-radius: 3rem;
-  height: 3.6rem;
-  width: 9rem;
-  font-size: 1.2rem;
-  font-family: Avenir Next Medium;
-  color: #fff;
-  border: none;
-  background-size: cover;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  text-decoration: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #651ce4;
 `
 export const RoundInput = styled.input`
   background: #383b45;
@@ -228,6 +139,7 @@ export const Asterisks = styled.span`
 export const StatsBlock = styled(StretchedBlock)`
   flex-wrap: wrap;
 `
+
 export const StatsBlockItem = styled.div`
   margin: 20px 20px 0 0;
 
@@ -240,4 +152,14 @@ export const LastPrice = styled.div`
   display: flex;
   flex-direction: row;
   align-items: flex-start;
+`
+
+export const FormWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap
+`
+export const FormItem = styled.div`
+  margin: 10px 10px 0 0;
 `

@@ -1,35 +1,37 @@
+import { stripByAmount } from '@core/utils/chartPageUtils'
 import StakeBtn from '@icons/stakeBtn.png'
 import { SvgIcon } from '@sb/components'
-import React, { useState, useEffect } from 'react'
-import { stripByAmount } from '@core/utils/chartPageUtils'
 import {
   Block,
   BlockContent,
   BlockSubtitle,
-  BlockTitle,
-  BlockContentStretched
-} from '../../../components/Block'
-import { Button } from '../../../components/Button'
-import { Cell, Row, StretchedBlock } from '../../../components/Layout'
+  BlockTitle
+} from '@sb/components/Block'
+import { Button } from '@sb/components/Button'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
+import { Input } from '@sb/components/Input'
+import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
+import { useConnection } from '@sb/dexUtils/connection'
+import { CCAI_MINT } from '@sb/dexUtils/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+import React, { useEffect, useState } from 'react'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
-import {
-  BalanceWrap, RewardsBlock, StyledTextDiv,
-  TotalStakedBlock, WalletBalanceBlock, WalletRow, BalanceRow, Digit,
-  Asterisks
-} from '../Staking.styles'
-import { useWallet } from '../../../dexUtils/wallet'
-import { useConnection } from '../../../dexUtils/connection'
-import { getAllTokensData } from '../../Rebalance/utils'
 import { TokenInfo } from '../../Rebalance/Rebalance.types'
-import { CCAI_MINT } from '../../../dexUtils/utils'
+import { getAllTokensData } from '../../Rebalance/utils'
+import {
+  Asterisks, BalanceRow, BalanceWrap,
+  Digit,
+  FormItem, FormWrap, RewardsBlock, StyledTextDiv,
+  TotalStakedBlock, WalletBalanceBlock, WalletRow
+} from '../Staking.styles'
 import { RestakePopup } from './RestakePopup'
-import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 
 
 interface UserBalanceProps {
   value: number
   visible: boolean
 }
+
 const UserBalance: React.FC<UserBalanceProps> = (props) => {
   const formatted = stripByAmount(props.value)
   const len = `${formatted}`.length
@@ -45,6 +47,7 @@ const UserBalance: React.FC<UserBalanceProps> = (props) => {
 }
 
 const UserStakingInfoContent: React.FC = () => {
+  const [userInput, setUserInput] = useState(0)
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
   const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
@@ -53,6 +56,15 @@ const UserStakingInfoContent: React.FC = () => {
   const connection = useConnection()
 
   const walletAddress = wallet?.publicKey?.toString() || ''
+
+  const setAmount = (v: string) => {
+    const newValue = parseFloat(v)
+    if (Number.isNaN(newValue)) {
+      return false
+    }
+    setUserInput(newValue)
+    return true
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,24 +135,41 @@ const UserStakingInfoContent: React.FC = () => {
                     <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadis="xxl">Claim</Button>
                   </div>
                 </StretchedBlock>
-
               </BlockContent>
             </RewardsBlock>
           </Cell>
         </Row>
 
-        <Button
-          onClick={() => {
-            setIsRestakePopupOpen(true)
-          }}
-          backgroundImage={StakeBtn}
-          fontSize="xs"
-          padding="lg"
-          borderRadis="xxl"
-        >
-          Stake
-        </Button>
-        {/* <Button backgroundImage={StakeBtn} disabled fontSize="xs" padding="lg" borderRadis="xxl">Stake</Button> */}
+        <FormWrap>
+          <FormItem>
+            <Input placeholder="Enter amount..." value={`${userInput}`} onChange={setAmount} append="RIN" />
+          </FormItem>
+          <FormItem>
+            <Button
+              onClick={() => {
+                setIsRestakePopupOpen(true)
+              }}
+              backgroundImage={StakeBtn}
+              fontSize="xs"
+              padding="lg"
+              borderRadis="xxl"
+            >
+              Stake
+            </Button>
+          </FormItem>
+          <FormItem>
+            <Button
+              backgroundImage={StakeBtn}
+              fontSize="xs"
+              padding="lg"
+              borderRadis="xxl"
+              disabled
+            >
+              Unstake all
+            </Button>
+          </FormItem>
+        </FormWrap>
+
       </BlockContent>
       <RestakePopup
         open={isRestakePopupOpen}

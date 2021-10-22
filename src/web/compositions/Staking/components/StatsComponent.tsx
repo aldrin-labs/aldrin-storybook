@@ -1,23 +1,20 @@
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import { Theme } from '@sb/types/materialUI'
-import React, { useState, useEffect } from 'react'
-import { compose } from 'recompose'
-
-import { SvgIcon } from '@sb/components'
-
+import { stripByAmount, stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import lightBird from '@icons/lightBird.svg'
-
+import { SvgIcon } from '@sb/components'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
 import {
   Block,
   BlockContentStretched,
   BlockSubtitle, BlockTitle
-} from '../../../components/Block'
-import { Cell, StretchedBlock } from '../../../components/Layout'
-import { InlineText } from '../../../components/Typography'
+} from '@sb/components/Block'
+import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
+import { InlineText } from '@sb/components/Typography'
+import { BorderButton } from '../../Pools/components/Tables/index.styles'
 import {
   BigNumber,
   LastPrice, Number,
@@ -26,19 +23,16 @@ import {
 } from '../Staking.styles'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
-import { stripByAmountAndFormat, stripByAmount } from '@core/utils/chartPageUtils'
-import { BorderButton } from '../../Pools/components/Tables/index.styles'
 
 
-const StatsComponent = ({
-  isMobile,
-  theme,
-  getDexTokensPricesQuery,
-}: {
-  isMobile: boolean
-  theme: Theme
+interface StatsComponentProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-}) => {
+}
+
+const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProps) => {
+  const {
+    getDexTokensPricesQuery,
+  } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
   const isPriceIncreasing = true
 

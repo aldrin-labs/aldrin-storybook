@@ -10,7 +10,7 @@ export const StakingComponent: React.FC = () => {
     <>
       <RootRow>
         <Cell col={12} colLg={6}>
-          <UserStakingInfo></UserStakingInfo>
+          <UserStakingInfo />
         </Cell>
         <Cell col={12} colLg={6}>
           <StatsComponent />
