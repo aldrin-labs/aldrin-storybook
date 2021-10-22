@@ -22,7 +22,6 @@ const PADDINGS = {
   lg: '8px 16px',
 }
 
-
 interface ButtonProps {
   fontSize?: keyof typeof FONT_SIZES 
   variant?: keyof typeof VARIANTS
@@ -43,6 +42,7 @@ export const Button = styled.button<ButtonProps>`
   font-family: ${FONTS.main};
   border-radius: ${(props: ButtonProps) => BORDER_RADIUS[props.borderRadius || 'md']};
   cursor: pointer;
+  text-decoration: none;
 
   ${({ backgroundImage }: ButtonProps) => backgroundImage ? 
   `

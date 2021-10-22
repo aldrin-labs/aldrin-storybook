@@ -41,7 +41,8 @@ export const BREAKPOINTS = {
 }
 
 export const SIZE = {
-  fontSize: '16px'
+  fontSize: '16px',
+  defaultPadding: '10px',
 }
 
 export const LAYOUT_WIDTH = 1280
