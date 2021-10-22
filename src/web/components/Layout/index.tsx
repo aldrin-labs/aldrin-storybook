@@ -43,7 +43,8 @@ export const Cell = styled.div<CellProps>`
 
 export const StretchedBlock = styled.div<StretchedBlockProps>`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${(props: StretchedBlockProps) => props.direction || 'row'};
   justify-content: space-between;
   ${(props: StretchedBlockProps) => props.align ? `align-items:${props.align};` : ''}
+  ${(props: StretchedBlockProps) => props.direction === 'column' ? `min-height: 100%` : ''}
 `

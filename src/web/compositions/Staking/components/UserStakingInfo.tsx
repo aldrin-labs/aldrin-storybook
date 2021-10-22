@@ -5,7 +5,9 @@ import { stripByAmount } from '@core/utils/chartPageUtils'
 import {
   Block,
   BlockContent,
-  BlockSubtitle, BlockTitle
+  BlockSubtitle,
+  BlockTitle,
+  BlockContentStretched
 } from '../../../components/Block'
 import { Button } from '../../../components/Button'
 import { Cell, Row, StretchedBlock } from '../../../components/Layout'
@@ -151,9 +153,11 @@ const UserStakingInfoContent: React.FC = () => {
 export const UserStakingInfo = () => {
   return (
     <Block>
-      <ConnectWalletWrapper>
-        <UserStakingInfoContent />
-      </ConnectWalletWrapper>
+      <StretchedBlock direction="column">
+        <ConnectWalletWrapper>
+          <UserStakingInfoContent />
+        </ConnectWalletWrapper>
+      </StretchedBlock>
     </Block>
   )
 }

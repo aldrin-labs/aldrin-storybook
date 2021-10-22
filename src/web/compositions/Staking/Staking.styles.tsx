@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
-import { Row } from '@sb/components/Layout'
+import { Row, StretchedBlock } from '@sb/components/Layout'
 import { Block } from '@sb/components/Block'
-import { BREAKPOINTS, FONTS, COLORS } from '../../../variables'
+import { BREAKPOINTS, COLORS } from '../../../variables'
 import { RowContainer } from '../AnalyticsRoute/index.styles'
 import { Paper } from '@material-ui/core'
 
@@ -37,20 +37,21 @@ export const ADAPTIVE_UPPER_BLOCKS = ({
   isMobile: boolean
   needBackground?: boolean
 }) => {
-  return {
-    height: isMobile ? '30rem' : '100%',
-    width: isMobile ? '100%' : '48%',
-    margin: isMobile ? '2rem 0' : '0',
-    flexDirection: 'column',
-    padding: '3rem',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    flexWrap: 'nowrap',
-    position: 'relative',
-    backgroundImage: needBackground ? `url(${pinkBackground})` : 'none',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-  }
+  return {}
+  // return {
+  //   height: isMobile ? '30rem' : '100%',
+  //   width: isMobile ? '100%' : '48%',
+  //   margin: isMobile ? '2rem 0' : '0',
+  //   flexDirection: 'column',
+  //   padding: '3rem',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'flex-start',
+  //   flexWrap: 'nowrap',
+  //   position: 'relative',
+  //   backgroundImage: needBackground ? `url(${pinkBackground})` : 'none',
+  //   backgroundRepeat: 'no-repeat',
+  //   backgroundSize: 'cover',
+  // }
 }
 
 export const Container = styled(RowContainer)`
@@ -212,8 +213,8 @@ export const BigNumber = styled.p`
   font-weight: bold;
   margin: 10px 0;
 `
-export const Number = styled.p`
-  margin: 10px 0 0;
+export const Number = styled.span`
+  margin: 0 10px 0 0;
   font-size: 1.5em;
   line-height: 1.2;
   font-weight: bold;
@@ -222,4 +223,21 @@ export const Number = styled.p`
 export const Asterisks = styled.span`
   position: relative;
   top: 0.3em;
+`
+
+export const StatsBlock = styled(StretchedBlock)`
+  flex-wrap: wrap;
+`
+export const StatsBlockItem = styled.div`
+  margin: 20px 20px 0 0;
+
+  &:last-child {
+    margin-right: 0;
+  }
+`
+
+export const LastPrice = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
 `

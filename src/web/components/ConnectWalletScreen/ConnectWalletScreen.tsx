@@ -22,7 +22,7 @@ const ConnectWalletContent: React.FC<WithTheme> = (props) => {
     false
   )
   return (
-    <>
+    <RowContainer margin={"auto 0"}>
       <RowContainer margin={'2rem 0 4rem 0'}>
         <SvgIcon src={LightLogo} width={'16rem'} height={'16rem'} />
       </RowContainer>
@@ -63,7 +63,7 @@ const ConnectWalletContent: React.FC<WithTheme> = (props) => {
         open={isConnectWalletPopupOpen}
         onClose={() => setIsConnectWalletPopupOpen(false)}
       />
-    </>
+    </RowContainer>
   )
 }
 

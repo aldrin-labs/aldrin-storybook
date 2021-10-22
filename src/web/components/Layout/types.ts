@@ -19,4 +19,5 @@ export interface CellProps {
 
 export interface StretchedBlockProps {
   align?: string
+  direction?: 'row' | 'column'
 }

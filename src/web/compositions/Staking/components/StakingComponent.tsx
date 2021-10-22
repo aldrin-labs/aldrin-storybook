@@ -1,53 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import copy from 'clipboard-copy'
-
-import { Theme } from '@sb/types/materialUI'
-
-import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
-import { TextButton } from '@sb/compositions/Rebalance/Rebalance.styles'
-import { RoundButton } from '../Staking.styles'
-import { RoundInputWithTokenName } from './Input'
-import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
-import { Text } from '@sb/compositions/Addressbook/index'
-import { SvgIcon } from '@sb/components'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { notify } from '@sb/dexUtils/notifications'
-import { useConnection } from '@sb/dexUtils/connection'
-import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { CCAI_MINT } from '@sb/dexUtils/utils'
-import { stripByAmount } from '@core/utils/chartPageUtils'
-
-import pinkBackground from './assets/pinkBackground.png'
-import StakeBtn from '@icons/stakeBtn.png'
-
-import locksIcon from './assets/lockIcon.svg'
-
-import {
-  RootRow,
-  StyledTextDiv,
-  WalletRow,
-  WalletBalanceBlock,
-  TotalStakedBlock,
-  RewardsBlock,
-  BalanceRow,
-  Digit,
-  BalanceWrap,
-  BigNumber,
-  Number,
-} from '../Staking.styles'
-import {
-  Block,
-  BlockTitle,
-  BlockContent,
-  BlockContentStretched,
-  BlockSubtitle,
-} from '../../../components/Block'
-import { Row, Cell, StretchedBlock } from '../../../components/Layout'
-import { Button } from '../../../components/Button'
-import { SuccessText } from '../../../components/Typography'
-import { RestakePopup } from './RestakePopup'
+import React from 'react'
+import { Cell } from '../../../components/Layout'
+import { RootRow } from '../Staking.styles'
+import StatsComponent from './StatsComponent'
 import { UserStakingInfo } from './UserStakingInfo'
+
 
 export const StakingComponent: React.FC = () => {
   return (
@@ -57,38 +13,7 @@ export const StakingComponent: React.FC = () => {
           <UserStakingInfo></UserStakingInfo>
         </Cell>
         <Cell col={12} colLg={6}>
-          <Row>
-            <Cell colMd={6}>
-              <Block icon={locksIcon}>
-                <BlockContentStretched>
-                  <BlockTitle>Total Staked</BlockTitle>
-                  <BigNumber><SuccessText>10,000,000</SuccessText> RIN</BigNumber>
-                  <Number>$1.53b</Number>
-                </BlockContentStretched>
-              </Block>
-            </Cell>
-            <Cell colMd={6}>
-              <Block backgroundImage={pinkBackground}>
-                <BlockContentStretched>
-                  <BlockTitle>Estimated Rewards</BlockTitle>
-                  <BigNumber>193%</BigNumber>
-                  <StretchedBlock>
-                    <Number>APY</Number>
-                    <div>Share</div>
-                  </StretchedBlock>
-                </BlockContentStretched>
-              </Block>
-            </Cell>
-          </Row>
-          <Row>
-            <Cell>
-              <Block>
-                <BlockContent>
-                  <BlockTitle>RIN Stats </BlockTitle>
-                </BlockContent>
-              </Block>
-            </Cell>
-          </Row>
+          <StatsComponent />
         </Cell>
       </RootRow>
     </>

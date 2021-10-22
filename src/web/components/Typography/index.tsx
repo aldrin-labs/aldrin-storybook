@@ -19,10 +19,12 @@ export const Text = styled.p<TextProps>`
   ${(props: TextProps) => props.maxWidth ? `max-width: ${props.maxWidth};` : ''} 
 `
 
-export const SuccessText = styled.span`
-  color: ${COLORS.success};
-`
+interface InlineProps {
+  color?: keyof typeof COLORS
+  size?: keyof typeof FONT_SIZES
+}
 
-export const ErrorText = styled.span`
-  color: ${COLORS.error};
+export const InlineText = styled.span<InlineProps>`
+  ${(props: InlineProps) => props.color?  `color: ${COLORS[props.color]};` : ''}
+  ${(props: InlineProps) => props.size?  `font-size: ${FONT_SIZES[props.size]};` : ''}
 `
