@@ -1,15 +1,14 @@
 import CloseIcon from '@icons/closeIcon.svg'
+import StakeBtn from '@icons/stakeBtn.png'
 import { SvgIcon } from '@sb/components'
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { BlockTitle } from '@sb/components/Block'
-import { PopupBody, StretchedBlock, LeftBlock } from '@sb/components/Layout'
+import { Button } from '@sb/components/Button'
+import { LeftBlock, PopupBody, StretchedBlock } from '@sb/components/Layout'
 import { PopupWrapper } from '@sb/components/PopupWrapper/PopupWrapper'
 import { Text } from '@sb/components/Typography'
-import StakeBtn from '@icons/stakeBtn.png'
 import React from 'react'
-import { RewardsChart } from '../RewardsChart/RewardsChart'
-import { FormItem, StyledPaper } from '../Staking.styles'
-import { Button } from '@sb/components/Button'
+import { FormItem, RestakeButton } from '../Staking.styles'
+import { RewardsChart } from './RewardsChart'
 
 export const RestakePopup = ({
   open,
@@ -37,28 +36,28 @@ export const RestakePopup = ({
             a compound percentage, that's how your rewards will grow:
           </Text>
         </StretchedBlock>
-        <RewardsChart id={'RewardsChart'} />
+        <RewardsChart />
         <LeftBlock>
           {' '}
-          <Button
-            onClick={() => {}}
-            fontSize="sm"
-            padding="lg"
-            borderRadius="xxl"
-            width={'md'}
-          >
-            Claim Anyway
-          </Button>
-          <Button
-            onClick={() => {}}
+          <FormItem>
+            <Button
+              onClick={() => { }}
+              fontSize="xs"
+              padding="lg"
+              borderRadius="xxl"
+            >
+              Claim Anyway
+            </Button>
+          </FormItem>{' '}
+          <RestakeButton
+            onClick={() => { }}
             backgroundImage={StakeBtn}
-            fontSize="sm"
+            fontSize="xs"
             padding="lg"
             borderRadius="xxl"
-            width={'lg'}
           >
             Restake
-          </Button>
+          </RestakeButton>
         </LeftBlock>
       </PopupBody>
     </PopupWrapper>

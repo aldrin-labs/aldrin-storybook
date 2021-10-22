@@ -15,7 +15,9 @@ export const COLORS = {
   primary: '#651CE4',
   success: '#53DF11',
   error: '##F69894',
-  lightBackground: '#383b42',
+  gray: '#383b42',
+  chartGrid: '#4C4F59',
+  textAlt: '#F5F5FB',
 }
 
 export const BORDER_RADIUS = {
@@ -42,6 +44,7 @@ export const BREAKPOINTS = {
 
 export const SIZE = {
   fontSize: '16px',
+  defaultPadding: '10px',
 }
 
 export const WIDTH = {

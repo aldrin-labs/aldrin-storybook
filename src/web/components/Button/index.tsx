@@ -45,6 +45,7 @@ export const Button = styled.button<ButtonProps>`
     BORDER_RADIUS[props.borderRadius || 'md']};
   cursor: pointer;
   width: ${(props: ButtonProps) => WIDTH[props.width || '']};
+  text-decoration: none;
 
   ${({ backgroundImage }: ButtonProps) =>
     backgroundImage

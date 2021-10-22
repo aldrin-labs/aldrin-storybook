@@ -3,7 +3,8 @@ import { Paper } from '@material-ui/core'
 
 import { Row, StretchedBlock } from '@sb/components/Layout'
 import { Block } from '@sb/components/Block'
-import { BREAKPOINTS, COLORS } from '../../../variables'
+import { BREAKPOINTS, COLORS, BORDER_RADIUS } from '../../../variables'
+import { Button } from '../../components/Button'
 
 export const StyledTextDiv = styled.div`
   height: auto;
@@ -163,17 +164,29 @@ export const FormWrap = styled.div`
     margin-top: 20px;
   }
 `
+
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;
 `
 
 export const ChartContainer = styled.div`
-  background: ${COLORS.lightBackground};
-  border-radius: 2rem;
+  background: ${COLORS.gray};
+  border-radius: ${BORDER_RADIUS.md};
   padding: 2rem;
   margin-top: 2rem;
+`
+
+export const Chart = styled(StretchedBlock)`
   height: 30rem;
 `
-export const Chart = styled(StretchedBlock)`
-  height: 23rem;
+
+export const ChartCanvas = styled.canvas`
+  max-width: 100%;
+  margin: 0 auto;
+  width: 100%;
+`
+
+export const RestakeButton = styled(Button)`
+  flex: 1;
+  margin-top: 10px;
 `
