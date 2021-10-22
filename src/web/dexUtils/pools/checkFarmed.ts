@@ -8,7 +8,6 @@ import {
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
-import { FarmingTicket } from './endFarming'
 
 export const checkFarmed = async ({
   wallet,
@@ -31,7 +30,7 @@ export const checkFarmed = async ({
 
   if (!farming) return null
 
-  const { farmingState, farmingSnapshots, farmingTokenVault } = farming
+  const { farmingState, farmingSnapshots } = farming
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
     [poolPublicKey.toBuffer()],
@@ -44,7 +43,6 @@ export const checkFarmed = async ({
       farmingState: new PublicKey(farmingState),
       farmingSnapshots: new PublicKey(farmingSnapshots),
       farmingTicket: farmingTicket,
-      farmingTokenVault: new PublicKey(farmingTokenVault),
       poolSigner: vaultSigner,
       clock: SYSVAR_CLOCK_PUBKEY,
       rent: SYSVAR_RENT_PUBKEY,

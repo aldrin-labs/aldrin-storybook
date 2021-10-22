@@ -223,6 +223,18 @@ export const CardsPanel = ({ theme }) => {
                 Pools
               </NavLinkButton>
             )}
+            {/* {!MASTER_BUILD && (
+              <NavLinkButton
+                style={{ color: '#386DE6' }}
+                theme={theme}
+                data-tut="farming"
+                pathname={location.pathname}
+                page={'wallet'}
+                component={(props) => <a href={CCAIProviderURL} {...props} />}
+              >
+                SunWallet
+              </NavLinkButton>
+            )} */}
             <NavLinkButton
               theme={theme}
               data-tut="token"

@@ -7,7 +7,6 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 import { SvgIcon } from '@sb/components'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import {
   PoolInfo,
   DexTokensPrices,
@@ -17,7 +16,6 @@ import {
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenIconsContainer } from '../components'
 import {
-  GreenButton,
   RowDataTdText,
   RowDataTdTopText,
   TextColumnContainer,
@@ -28,42 +26,15 @@ import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 import ArrowToBottom from '@icons/greyArrow.svg'
 import ArrowToTop from '@icons/arrowToTop.svg'
 import Info from '@icons/TooltipImg.svg'
-import { mock } from '../AllPools/AllPoolsTable.utils'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { UserLiquidityDetails } from './components/UserLiquidityDetails'
+import { TablesDetails } from '../components/TablesDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-
-export const getTotalUserLiquidity = ({
-  usersPools,
-  dexTokensPrices,
-}: {
-  usersPools: PoolInfo[]
-  dexTokensPrices: DexTokensPrices[]
-}): number => {
-  return usersPools.reduce((acc: number, pool: PoolInfo) => {
-    const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
-    const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
-
-    const baseTokenPrice =
-      dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === baseSymbol)
-        ?.price || 10
-
-    const quoteTokenPrice =
-      dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === quoteSymbol)
-        ?.price || 10
-
-    const tvlUSDForPool =
-      baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
-
-    return acc + tvlUSDForPool
-  }, 0)
-}
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
 
 export const userLiquidityTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -182,6 +153,15 @@ export const combineUserLiquidityData = ({
 
       const farmingState = el.farming && el.farming[0]
 
+      const dailyFarmingValue = farmingState
+        ? farmingState.tokensPerPeriod *
+          (dayDuration / farmingState.periodLength)
+        : 0
+
+      const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
+        ? dailyFarmingValue / (tvlUSD / 1000)
+        : 0
+
       const userLiquidityUSD =
         baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
 
@@ -204,14 +184,23 @@ export const combineUserLiquidityData = ({
               justify="flex-start"
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
-              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
-              {el.locked ? (
-                <SvgIcon
-                  style={{ marginLeft: '1rem' }}
-                  width="2rem"
-                  height="auto"
-                  src={CrownIcon}
-                />
+              <TokenIconsContainer
+                tokenA={el.tokenA}
+                tokenB={el.tokenB}
+                needHover={true}
+              />
+              {/* TODO: show locked liquidity depending on backend data, not for all pools */}
+              {true ? (
+                <DarkTooltip title={'Founders liquidity locked.'}>
+                  <div>
+                    <SvgIcon
+                      style={{ marginLeft: '1rem' }}
+                      width="2rem"
+                      height="auto"
+                      src={CrownIcon}
+                    />
+                  </div>
+                </DarkTooltip>
               ) : el.executed ? (
                 <DarkTooltip
                   title={
@@ -237,12 +226,12 @@ export const combineUserLiquidityData = ({
               <RowDataTdTopText theme={theme}>
                 ${stripByAmountAndFormat(tvlUSD)}
               </RowDataTdTopText>
-              {/* <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
+              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+                {stripByAmountAndFormat(el.tvl.tokenA)}{' '}
                 {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
+                {stripByAmountAndFormat(el.tvl.tokenB)}{' '}
                 {getTokenNameByMintAddress(el.tokenB)}
-              </RowDataTdText> */}
+              </RowDataTdText>
             </TextColumnContainer>
           ),
           showOnMobile: false,
@@ -307,13 +296,8 @@ export const combineUserLiquidityData = ({
                   </RowDataTdText>
                   <RowDataTdText>
                     <span style={{ color: '#53DF11' }}>
-                      {formatNumberToUSFormat(
-                        stripDigitPlaces(
-                          (farmingState.tokensPerPeriod *
-                            (dayDuration / farmingState.periodLength)) /
-                            (tvlUSD / 1000),
-                          2
-                        )
+                      {stripByAmountAndFormat(
+                        dailyFarmingValuePerThousandDollarsLiquidity
                       )}
                     </span>{' '}
                     {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
@@ -321,7 +305,7 @@ export const combineUserLiquidityData = ({
                   </RowDataTdText>{' '}
                   <RowDataTdText>
                     {' '}
-                    for each $<span style={{ color: '#53DF11' }}>1000</span>
+                    for each <span style={{ color: '#53DF11' }}>$1000</span>
                   </RowDataTdText>
                 </Row>
               </RowContainer>
@@ -360,7 +344,7 @@ export const combineUserLiquidityData = ({
           {
             row: {
               render: (
-                <UserLiquidityDetails
+                <TablesDetails
                   setIsStakePopupOpen={setIsStakePopupOpen}
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}

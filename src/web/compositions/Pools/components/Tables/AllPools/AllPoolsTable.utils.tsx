@@ -16,10 +16,8 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { SvgIcon } from '@sb/components'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { TokenIconsContainer } from '../components'
 import {
-  GreenButton,
   RowDataTdText,
   RowDataTdTopText,
   TextColumnContainer,
@@ -34,11 +32,12 @@ import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityDetails'
+import { TablesDetails } from '../components/TablesDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 import { Link } from 'react-router-dom'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -175,9 +174,6 @@ export const combineAllPoolsData = ({
       const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
       const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
 
-      const tvlUSD =
-        baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
-
       const feesEarnedByPool = feesPerPoolMap.get(el.swapToken) || {
         totalBaseTokenFee: 0,
         totalQuoteTokenFee: 0,
@@ -192,7 +188,12 @@ export const combineAllPoolsData = ({
         daily: 0,
       }
       const apy = el.apy24h || 0
+
+      const tvlUSD =
+        baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
+
       const farmingState = el.farming && el.farming[0]
+
       const dailyFarmingValue = farmingState
         ? farmingState.tokensPerPeriod *
           (dayDuration / farmingState.periodLength)
@@ -223,7 +224,8 @@ export const combineAllPoolsData = ({
                   tokenB={el.tokenB}
                 />
               </Link>
-              {el.locked ? (
+              {/* TODO: show locked liquidity depending on backend data, not for all pools */}
+              {true ? (
                 <DarkTooltip title={'Founders liquidity locked.'}>
                   <div>
                     <SvgIcon
@@ -257,14 +259,14 @@ export const combineAllPoolsData = ({
           render: (
             <TextColumnContainer>
               <RowDataTdTopText theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+                ${stripByAmountAndFormat(tvlUSD)}
               </RowDataTdTopText>
-              {/* <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
+              <RowDataTdText theme={theme} color={theme.palette.grey.new}>
+                {stripByAmountAndFormat(el.tvl.tokenA)}{' '}
                 {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
+                {stripByAmountAndFormat(el.tvl.tokenB)}{' '}
                 {getTokenNameByMintAddress(el.tokenB)}
-              </RowDataTdText> */}
+              </RowDataTdText>
             </TextColumnContainer>
           ),
           showOnMobile: false,
@@ -272,10 +274,7 @@ export const combineAllPoolsData = ({
         vol24h: {
           render: (
             <RowDataTdText theme={theme}>
-              $
-              {formatNumberToUSFormat(
-                stripDigitPlaces(tradingVolumes.daily, 2)
-              )}
+              ${stripByAmountAndFormat(tradingVolumes.daily)}
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
@@ -286,10 +285,7 @@ export const combineAllPoolsData = ({
         vol7d: {
           render: (
             <RowDataTdText theme={theme}>
-              $
-              {formatNumberToUSFormat(
-                stripDigitPlaces(tradingVolumes.weekly, 2)
-              )}
+              ${stripByAmountAndFormat(tradingVolumes.weekly)}
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
@@ -299,7 +295,7 @@ export const combineAllPoolsData = ({
         fees: {
           render: (
             <RowDataTdText theme={theme}>
-              ${stripDigitPlaces(feesUSDByPool, 2)}
+              ${stripByAmountAndFormat(feesUSDByPool)}
             </RowDataTdText>
           ),
         },
@@ -310,7 +306,7 @@ export const combineAllPoolsData = ({
               fontFamily="Avenir Next Medium"
               theme={theme}
             >
-              {stripDigitPlaces(apy, 6)}%
+              {stripByAmountAndFormat(apy)}%
             </RowDataTdText>
           ),
         },
@@ -337,11 +333,8 @@ export const combineAllPoolsData = ({
                   </RowDataTdText>
                   <RowDataTdText>
                     <span style={{ color: '#53DF11' }}>
-                      {formatNumberToUSFormat(
-                        stripDigitPlaces(
-                          dailyFarmingValuePerThousandDollarsLiquidity,
-                          2
-                        )
+                      {stripByAmountAndFormat(
+                        dailyFarmingValuePerThousandDollarsLiquidity
                       )}
                     </span>{' '}
                     {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
@@ -349,7 +342,7 @@ export const combineAllPoolsData = ({
                   </RowDataTdText>
                   <RowDataTdText>
                     {' '}
-                    for each $<span style={{ color: '#53DF11' }}>1000</span>
+                    for each <span style={{ color: '#53DF11' }}>$1000</span>
                   </RowDataTdText>
                 </Row>
               </RowContainer>
@@ -387,7 +380,7 @@ export const combineAllPoolsData = ({
           {
             row: {
               render: (
-                <UserLiquidityDetails
+                <TablesDetails
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
                   setIsStakePopupOpen={setIsStakePopupOpen}

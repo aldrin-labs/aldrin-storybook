@@ -1,8 +1,6 @@
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import {
-  FarmingTicket,
-  filterClosedFarmingTickets,
-} from '@sb/dexUtils/pools/endFarming'
+import { filterClosedFarmingTickets } from '@sb/dexUtils/pools/filterClosedFarmingTickets'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
 import { PoolInfo } from '../index.types'
 
 export const getUserPoolsFromAll = ({

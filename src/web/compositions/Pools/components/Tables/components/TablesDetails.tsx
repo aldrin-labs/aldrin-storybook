@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import {
   AmountText,
   Button,
   RowDataTdText,
   WhiteText,
-} from '../../index.styles'
+} from '@sb/compositions/Pools/components/Tables/index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Theme } from '@material-ui/core'
 import {
@@ -19,31 +18,24 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
+
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import {
-  FarmingTicket,
-  filterClosedFarmingTickets,
-} from '@sb/dexUtils/pools/endFarming'
 import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
 import { getAvailableFarmingTokensForPool } from '@sb/dexUtils/pools/getAvailableFarmingTokensForPool'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { useConnection } from '@sb/dexUtils/connection'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Loading, SvgIcon } from '@sb/components'
-import Info from '@icons/TooltipImg.svg'
-import { estimatedTime } from '@core/utils/dateUtils'
-import {
-  stripByAmount,
-  stripByAmountAndFormat,
-} from '@core/utils/chartPageUtils'
+
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { Loader } from '@sb/components/Loader/Loader'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { estimatedTime } from '@core/utils/dateUtils'
+import { SvgIcon } from '@sb/components'
+import Info from '@icons/inform.svg'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { filterClosedFarmingTickets } from '@sb/dexUtils/pools/filterClosedFarmingTickets'
 
-export const UserLiquidityDetails = ({
+export const TablesDetails = ({
   theme,
   pool,
   poolWaitingForUpdateAfterOperation,
@@ -81,12 +73,12 @@ export const UserLiquidityDetails = ({
   const connection = useConnection()
 
   const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
-  const stakedTokens = getStakedTokensForPool({ pool, farmingTicketsMap })
+  const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 
-  const availableToClaimFarmingTokens = getAvailableFarmingTokensForPool({
-    pool,
-    farmingTicketsMap,
-  })
+  const stakedTokens = getStakedTokensForPool(farmingTickets)
+  const availableToClaimFarmingTokens = getAvailableFarmingTokensForPool(
+    farmingTickets
+  )
 
   // if has pool tokens or staked
   const hasPoolTokens = poolTokenAmount > 0
@@ -98,7 +90,7 @@ export const UserLiquidityDetails = ({
 
   const [baseUserTokenAmount, quoteUserTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
-    poolTokenAmount,
+    poolTokenAmount: poolTokenAmount + stakedTokens,
   })
 
   const poolTokenPrice = calculatePoolTokenPrice({
@@ -106,7 +98,6 @@ export const UserLiquidityDetails = ({
     dexTokensPricesMap,
   })
 
-  const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
   const lastFarmingTicket =
     farmingTickets.length > 0
       ? farmingTickets?.sort((a, b) => b.startTime - a.startTime)[0]
@@ -192,12 +183,8 @@ export const UserLiquidityDetails = ({
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenA)}</WhiteText>{' '}
                 / {stripByAmountAndFormat(quoteUserTokenAmount)}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
-                <WhiteText>($</WhiteText>
-                <span>
-                  {formatNumberToUSFormat(
-                    stripDigitPlaces(userLiquidityUSD, 2)
-                  )}
-                </span>
+                <WhiteText>(</WhiteText>
+                <span>${stripByAmountAndFormat(userLiquidityUSD)}</span>
                 <WhiteText>)</WhiteText>
               </RowDataTdText>
 
@@ -222,8 +209,7 @@ export const UserLiquidityDetails = ({
                   earnedFeesInPoolForUser.totalQuoteTokenFee
                 )}{' '}
                 <WhiteText>{getTokenNameByMintAddress(pool.tokenB)}</WhiteText>{' '}
-                <WhiteText>($</WhiteText>
-                {formatNumberToUSFormat(stripDigitPlaces(earnedFeesUSD, 2))}
+                <WhiteText>(</WhiteText>${stripByAmountAndFormat(earnedFeesUSD)}
                 <WhiteText>)</WhiteText>
               </RowDataTdText>
             </>
@@ -333,8 +319,8 @@ export const UserLiquidityDetails = ({
               <span>
                 Pool Tokens
                 <AmountText style={{ padding: '0 0.5rem' }}>
-                  <WhiteText>($</WhiteText>
-                  {stakedTokens * poolTokenPrice}
+                  <WhiteText>(</WhiteText>$
+                  {stripByAmountAndFormat(stakedTokens * poolTokenPrice)}
                   <WhiteText>)</WhiteText>
                 </AmountText>
               </span>
@@ -425,25 +411,27 @@ export const UserLiquidityDetails = ({
                 fontFamily={'Avenir Next Medium'}
                 style={{ marginBottom: '3.5rem' }}
               >
-                {/* <DarkTooltip
-                  title={
-                    <span>
-                      The founder has set up vesting. You will be able to claim
-                      33% of your daily reward every day, the remaining 67% will
-                      become available for withdrawal after{' '}
-                      {estimatedTime(farmingState.vestingPeriod)}.
-                    </span>
-                  }
-                >
-                  <div style={{ display: 'inline' }}>
-                    <SvgIcon
-                      src={Info}
-                      width={'1.5rem'}
-                      height={'auto'}
-                      style={{ marginRight: '1rem' }}
-                    />
-                  </div>
-                </DarkTooltip> */}
+                {farmingState.vestingPeriod > 0 && (
+                  <DarkTooltip
+                    title={
+                      <span>
+                        The founder has set up vesting. You will be able to
+                        claim 33% of your daily reward every day, the remaining
+                        67% will become available for withdrawal after{' '}
+                        {estimatedTime(farmingState.vestingPeriod)}.
+                      </span>
+                    }
+                  >
+                    <div style={{ display: 'inline' }}>
+                      <SvgIcon
+                        src={Info}
+                        width={'1.5rem'}
+                        height={'auto'}
+                        style={{ marginRight: '1rem' }}
+                      />
+                    </div>
+                  </DarkTooltip>
+                )}
                 Available to claim:
                 <AmountText style={{ padding: '0 0.5rem' }}>
                   {stripByAmountAndFormat(availableToClaimFarmingTokens)}
@@ -463,6 +451,12 @@ export const UserLiquidityDetails = ({
                   isPoolWaitingForUpdateAfterClaim
                 }
                 onClick={async () => {
+                  const removeLoader = () =>
+                    setPoolWaitingForUpdateAfterOperation({
+                      pool: '',
+                      operation: '',
+                    })
+
                   await setPoolWaitingForUpdateAfterOperation({
                     pool: pool.swapToken,
                     operation: 'claim',
@@ -478,26 +472,17 @@ export const UserLiquidityDetails = ({
                     })
 
                     if (result !== 'success') {
-                      setPoolWaitingForUpdateAfterOperation({
-                        pool: '',
-                        operation: '',
-                      })
+                      removeLoader()
                     } else {
                       await setTimeout(async () => {
                         await refreshAllTokensData()
-                        await setPoolWaitingForUpdateAfterOperation({
-                          pool: '',
-                          operation: '',
-                        })
+                        await removeLoader()
                       }, 7500)
 
                       await setTimeout(() => refreshAllTokensData(), 15000)
                     }
                   } catch (e) {
-                    setPoolWaitingForUpdateAfterOperation({
-                      pool: '',
-                      operation: '',
-                    })
+                    removeLoader()
 
                     return
                   }

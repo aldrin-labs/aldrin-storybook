@@ -75,5 +75,6 @@ export default compose(
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
+    pollInterval: 60000,
   })
 )(TotalVolumeLockedChart)

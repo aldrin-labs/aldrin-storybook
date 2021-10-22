@@ -1,15 +1,11 @@
-import { PoolInfo } from "@sb/compositions/Pools/index.types"
-import { FarmingTicket, filterClosedFarmingTickets } from "./endFarming"
+import { filterClosedFarmingTickets } from "./filterClosedFarmingTickets"
+import { FarmingTicket } from "./types"
 
-export const getStakedTokensForPool = ({
-  pool,
-  farmingTicketsMap
-}: {
-  pool: PoolInfo,
-  farmingTicketsMap: Map<string, FarmingTicket[]>
-}) => {
-  return filterClosedFarmingTickets(farmingTicketsMap.get(pool.swapToken)).reduce(
-    (acc, ticket) => acc + ticket.tokensFrozen,
-    0
-  ) || 0
+export const getStakedTokensForPool = (farmingTickets: FarmingTicket[]) => {
+  return (
+    filterClosedFarmingTickets(farmingTickets).reduce(
+      (acc, ticket) => acc + ticket.tokensFrozen,
+      0
+    ) || 0
+  )
 }

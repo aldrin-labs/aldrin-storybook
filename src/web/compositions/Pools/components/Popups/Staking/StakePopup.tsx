@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line, StyledPaper } from '../index.styles'
+import { BoldHeader, StyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
 import SvgIcon from '@sb/components/SvgIcon'
@@ -18,12 +18,20 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { startFarming } from '@sb/dexUtils/pools/startFarming'
 import { PublicKey } from '@solana/web3.js'
-import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
+import {
+  DexTokensPrices,
+  PoolInfo,
+  PoolWithOperation,
+} from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { notify } from '@sb/dexUtils/notifications'
 import dayjs from 'dayjs'
-import { estimatedTime } from '@core/utils/dateUtils'
+import { dayDuration, estimatedTime } from '@core/utils/dateUtils'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
 export const StakePopup = ({
   theme,
@@ -31,21 +39,22 @@ export const StakePopup = ({
   close,
   selectedPool,
   allTokensData,
-  refreshAllTokensData,
+  dexTokensPricesMap,
+  refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
   close: () => void
   selectedPool: PoolInfo
-  allTokensData: any
-  refreshAllTokensData: () => void
+  allTokensData: TokenInfo[]
+  dexTokensPricesMap: Map<string, DexTokensPrices>
+  refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
-    decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
   const [poolTokenAmount, setPoolTokenAmount] = useState(maxPoolTokenAmount)
   const [operationLoading, setOperationLoading] = useState(false)
@@ -54,7 +63,26 @@ export const StakePopup = ({
   const connection = useConnection()
 
   const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
-  const farmingState = selectedPool.farming[0]
+
+  const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
+  const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
+
+  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
+  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+
+  const tvlUSD =
+    baseTokenPrice * selectedPool.tvl.tokenA +
+    quoteTokenPrice * selectedPool.tvl.tokenB
+
+  const farmingState = selectedPool.farming && selectedPool.farming[0]
+
+  const dailyFarmingValue = farmingState
+    ? farmingState.tokensPerPeriod * (dayDuration / farmingState.periodLength)
+    : 0
+
+  const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
+    ? dailyFarmingValue / (tvlUSD / 1000)
+    : 0
 
   if (!farmingState) return null
   return (
@@ -94,8 +122,18 @@ export const StakePopup = ({
       <RowContainer justify={'space-between'}>
         <Text>Est. rewards:</Text>
         <Text>
-          <span style={{ color: '#53DF11' }}>12</span> RIN/Day for each $
-          <span style={{ color: '#53DF11' }}>1000</span>
+          <Row align="flex-start">
+            <span style={{ color: '#53DF11', paddingRight: '.5rem' }}>
+              {stripByAmountAndFormat(
+                dailyFarmingValuePerThousandDollarsLiquidity
+              )}
+            </span>{' '}
+            {getTokenNameByMintAddress(farmingState.farmingTokenMint)} / Day for
+            each{' '}
+            <span style={{ color: '#53DF11', paddingLeft: '.5rem' }}>
+              $1000
+            </span>
+          </Row>
         </Text>
       </RowContainer>
       <HintContainer justify={'flex-start'} margin="2rem 0">
@@ -168,13 +206,13 @@ export const StakePopup = ({
             })
 
             await setTimeout(async () => {
-              await refreshAllTokensData()
+              await refreshTokensWithFarmingTickets()
               await setPoolWaitingForUpdateAfterOperation({
                 pool: '',
                 operation: '',
               })
             }, 7500)
-            await setTimeout(() => refreshAllTokensData(), 15000)
+            await setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
 
             await close()
           }}

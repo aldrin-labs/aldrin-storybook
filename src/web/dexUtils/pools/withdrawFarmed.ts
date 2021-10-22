@@ -100,7 +100,7 @@ export const withdrawFarmed = async ({
     //   farmingState.farmingState ===
     //     'HKP7u6F8iN7SZThjcE2E5nC3VLZELqwW1HKC8VSc52Kv' &&
     //   ticketData.farmingTicket ===
-    //     'DfvB5qfSdzCBg87tmUfaCSe7adyQUP4Zrro4pkbyaNyX'
+    //     'A9oyHcg95N88G8AtyZhtPmSHS8U3rJBHiNswXu7aWT91'
     // ) {
     //   await sendTransaction({
     //     wallet,
@@ -182,8 +182,8 @@ export const withdrawFarmed = async ({
         return result
       }
     }
-    // }
-  }
+    }
+  // }
 
   if (commonTransaction.instructions.length > 0) {
     const result = await sendPartOfTransactions()

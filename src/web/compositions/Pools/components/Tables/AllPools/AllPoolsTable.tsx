@@ -24,8 +24,8 @@ import {
 import { TableContainer } from '../index.styles'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
 
 const AllPoolsTableComponent = ({
   theme,
@@ -202,14 +202,14 @@ export default compose(
     query: getFeesEarnedByPool,
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
-    pollInterval: 60000 * 5,
+    pollInterval: 60000 * 6,
   }),
   queryRendererHoc({
     name: 'getDailyTradingVolumeForAllPoolsQuery',
     query: getTradingVolumeForAllPools,
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
-    pollInterval: 60000 * 5,
+    pollInterval: 60000 * 6,
     variables: {
       timestampFrom: endOfDayTimestamp() - dayDuration,
       timestampTo: endOfDayTimestamp(),
@@ -220,7 +220,7 @@ export default compose(
     query: getTradingVolumeForAllPools,
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
-    pollInterval: 60000 * 5,
+    pollInterval: 60000 * 6,
     variables: {
       timestampFrom: endOfDayTimestamp() - dayDuration * 7,
       timestampTo: endOfDayTimestamp(),

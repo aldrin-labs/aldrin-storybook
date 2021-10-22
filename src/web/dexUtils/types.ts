@@ -9,3 +9,13 @@ export interface WalletAdapter {
   disconnect: () => any;
   on<T>(event: string, fn: () => void): this;
 }
+
+export interface TokenInfo {
+  symbol: string
+  amount: number
+  decimals: number
+  mint: string
+  address: string
+}
+
+export type RefreshFunction = () => void
