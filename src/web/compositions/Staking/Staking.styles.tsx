@@ -100,7 +100,7 @@ export const BalanceRow = styled.div`
 export const BalanceWrap = styled.div`
   @media (min-width: ${BREAKPOINTS.xl}) {
     text-align: right;
-    padding-top: 5px;
+    padding-top: 12px;
   }
 `
 export const Digit = styled.span`
@@ -133,7 +133,7 @@ export const Number = styled.span`
 
 export const Asterisks = styled.span`
   position: relative;
-  top: 0.3em;
+  top: 0.2em;
 `
 
 export const StatsBlock = styled(StretchedBlock)`
@@ -158,7 +158,11 @@ export const FormWrap = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  flex-wrap: wrap
+  flex-wrap: wrap;
+
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    margin-top: 20px;
+  }
 `
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;

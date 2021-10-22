@@ -132,7 +132,7 @@ const UserStakingInfoContent: React.FC = () => {
                     <UserBalance visible={isBalancesShowing} value={400} />
                   </div>
                   <div>
-                    <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadis="xxl">Claim</Button>
+                    <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadius="xxl">Claim</Button>
                   </div>
                 </StretchedBlock>
               </BlockContent>
@@ -152,7 +152,7 @@ const UserStakingInfoContent: React.FC = () => {
               backgroundImage={StakeBtn}
               fontSize="xs"
               padding="lg"
-              borderRadis="xxl"
+              borderRadius="xxl"
             >
               Stake
             </Button>
@@ -162,7 +162,7 @@ const UserStakingInfoContent: React.FC = () => {
               backgroundImage={StakeBtn}
               fontSize="xs"
               padding="lg"
-              borderRadis="xxl"
+              borderRadius="xxl"
               disabled
             >
               Unstake all
