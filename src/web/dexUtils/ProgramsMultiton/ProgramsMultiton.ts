@@ -4,10 +4,10 @@ import { notifyForDevelop } from '../notifications'
 import { WalletAdapter } from '../types'
 import { getIdlByProgramAddress } from './getIdlByProgramAddress'
 
-export class ProgramsMultiton {
-  [programAddress: string]: Program
+class ProgramsMultiton {
+  private cache: { [programAddress: string]: Program } = {}
 
-  static getProgramByAddress({
+  getProgramByAddress({
     wallet,
     connection,
     programAddress,
@@ -17,8 +17,8 @@ export class ProgramsMultiton {
     programAddress: string
   }) {
     // save program to key program-address
-    if (this[programAddress]) {
-      return this[programAddress]
+    if (this.cache[programAddress]) {
+      return this.cache[programAddress]
     }
 
     if (!wallet || !connection || !wallet.publicKey) {
@@ -28,8 +28,8 @@ export class ProgramsMultiton {
         connection,
         programAddress,
       })
-      
-      return null
+
+      throw Error('No wallet or connection in getProgramByAddress')
     }
 
     console.log('create program', wallet)
@@ -46,8 +46,12 @@ export class ProgramsMultiton {
       })
     )
 
-    this[programAddress] = poolsProgram
+    this.cache[programAddress] = poolsProgram
 
     return poolsProgram
   }
 }
+
+const instance = new ProgramsMultiton()
+
+export { instance as ProgramsMultiton }

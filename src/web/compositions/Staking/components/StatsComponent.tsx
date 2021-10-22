@@ -14,6 +14,7 @@ import {
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
+import { ShareButton } from '@sb/components/ShareButton'
 import { BorderButton } from '../../Pools/components/Tables/index.styles'
 import {
   BigNumber,
@@ -28,6 +29,10 @@ import pinkBackground from './assets/pinkBackground.png'
 interface StatsComponentProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }
+
+const SHARE_TEXT =
+  `I stake my $RIN on @Aldrin_Exchange with 192% APY!
+Don't miss your chance!`
 
 const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProps) => {
   const {
@@ -66,7 +71,8 @@ const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProp
               <StretchedBlock>
                 <Number>APY</Number>
                 <div>
-                  <BorderButton
+                  <ShareButton text={SHARE_TEXT}></ShareButton>
+                  {/* <BorderButton
                     target="_blank"
                     href={
                       'https://twitter.com/intent/tweet?text=I+stake+my+%24RIN+on+%40Aldrin_Exchange+with+192%25+APY%21%0D%0A%0D%0ADon%27t+miss+your+chance%21'
@@ -76,7 +82,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProp
                   >
                     Share
                     <SvgIcon src={lightBird} style={{ marginLeft: '1rem' }} />
-                  </BorderButton>
+                  </BorderButton> */}
 
                 </div>
               </StretchedBlock>
