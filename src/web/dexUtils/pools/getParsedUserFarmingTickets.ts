@@ -2,7 +2,7 @@ import { Connection, PublicKey } from '@solana/web3.js'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
-import { loadUserFarmingTickets } from './loadUserFarmingTickets'
+import { loadFarmingTickets } from './loadFarmingTickets'
 import { FarmingTicket } from './types'
 
 export const getParsedUserFarmingTickets = async ({
@@ -14,19 +14,22 @@ export const getParsedUserFarmingTickets = async ({
   connection: Connection
   poolPublicKey?: PublicKey
 }): Promise<FarmingTicket[]> => {
+  if (!wallet.publicKey) return []
+
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
     programAddress: POOLS_PROGRAM_ADDRESS,
   })
 
-  const tickets = await loadUserFarmingTickets({
+  const userTicketsPerPool = await loadFarmingTickets({
     wallet,
     connection,
     poolPublicKey,
+    walletPublicKey: wallet.publicKey,
   })
 
-  const allUserTicketsPerPool = tickets.map((ticket) => {
+  const parsedUserTicketsPerPool = userTicketsPerPool.map((ticket) => {
     const data = Buffer.from(ticket.account.data)
     const ticketData = program.coder.accounts.decode('FarmingTicket', data)
 
@@ -40,5 +43,5 @@ export const getParsedUserFarmingTickets = async ({
     }
   })
 
-  return allUserTicketsPerPool
+  return parsedUserTicketsPerPool
 }

@@ -32,6 +32,9 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 
 export const StakePopup = ({
   theme,
@@ -39,6 +42,7 @@ export const StakePopup = ({
   close,
   selectedPool,
   allTokensData,
+  farmingTicketsMap,
   dexTokensPricesMap,
   refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
@@ -48,6 +52,7 @@ export const StakePopup = ({
   close: () => void
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
+  farmingTicketsMap: Map<string, FarmingTicket[]>
   dexTokensPricesMap: Map<string, DexTokensPrices>
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
@@ -56,7 +61,7 @@ export const StakePopup = ({
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
-  const [poolTokenAmount, setPoolTokenAmount] = useState(maxPoolTokenAmount)
+  const [poolTokenAmount, setPoolTokenAmount] = useState<number | string>(maxPoolTokenAmount)
   const [operationLoading, setOperationLoading] = useState(false)
 
   const { wallet } = useWallet()
@@ -76,12 +81,30 @@ export const StakePopup = ({
 
   const farmingState = selectedPool.farming && selectedPool.farming[0]
 
+  const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
+  const stakedTokens = getStakedTokensForPool(farmingTickets)
+
+  const poolTokenPrice = calculatePoolTokenPrice({
+    pool: selectedPool,
+    dexTokensPricesMap,
+  })
+
+  const stakedWithEnteredPoolTokensUSD =
+    (stakedTokens + +poolTokenAmount) * poolTokenPrice
+
+    console.log({
+      tvlUSD,
+      stakedWithEnteredPoolTokensUSD,
+      tokensPerDay: farmingState.tokensPerPeriod * (dayDuration / farmingState.periodLength),
+    })
+
   const dailyFarmingValue = farmingState
     ? farmingState.tokensPerPeriod * (dayDuration / farmingState.periodLength)
     : 0
 
-  const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
-    ? dailyFarmingValue / (tvlUSD / 1000)
+  // daily rewards for staked liquidity in pool + entered
+  const dailyFarmingValuePerUserLiquidity = tvlUSD
+    ? dailyFarmingValue / (tvlUSD / stakedWithEnteredPoolTokensUSD)
     : 0
 
   if (!farmingState) return null
@@ -124,15 +147,9 @@ export const StakePopup = ({
         <Text>
           <Row align="flex-start">
             <span style={{ color: '#53DF11', paddingRight: '.5rem' }}>
-              {stripByAmountAndFormat(
-                dailyFarmingValuePerThousandDollarsLiquidity
-              )}
+              {stripByAmountAndFormat(dailyFarmingValuePerUserLiquidity)}
             </span>{' '}
-            {getTokenNameByMintAddress(farmingState.farmingTokenMint)} / Day for
-            each{' '}
-            <span style={{ color: '#53DF11', paddingLeft: '.5rem' }}>
-              $1000
-            </span>
+            {getTokenNameByMintAddress(farmingState.farmingTokenMint)} / Day
           </Row>
         </Text>
       </RowContainer>

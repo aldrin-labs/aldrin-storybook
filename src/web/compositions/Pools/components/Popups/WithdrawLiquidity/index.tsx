@@ -241,6 +241,15 @@ export const WithdrawalPopup = ({
               poolTokenAmount: poolTokenAmount,
             })
 
+            console.log({
+              baseAmount,
+              quoteAmount,
+              availableToWithdrawAmountTokenA,
+              availableToWithdrawAmountTokenB,
+              withdrawAmountTokenA, 
+              withdrawAmountTokenB
+            })
+
             if (
               !userTokenAccountA ||
               !userTokenAccountB ||
