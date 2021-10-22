@@ -50,5 +50,12 @@ export const SIZE = {
   defaultPadding: '10px',
 }
 
+export const WIDTH = {
+  sm: '10%',
+  md: '30%',
+  lg: '60%',
+  xl: '100%',
+}
+
 export const LAYOUT_WIDTH = 1280
 export const LAYOUT_COL_NUMBER = 12

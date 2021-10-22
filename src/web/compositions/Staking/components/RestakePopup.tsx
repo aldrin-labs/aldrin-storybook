@@ -31,7 +31,7 @@ export const RestakePopup = ({
           />
         </StretchedBlock>
         <StretchedBlock>
-          <Text maxWidth="100%" size="sm">
+          <Text size="sm">
             By restaking your reward you will get more rewards each month due to
             a compound percentage, that's how your rewards will grow:
           </Text>

@@ -6,6 +6,7 @@ import {
   FONTS,
   BREAKPOINTS,
   LAYOUT_COL_NUMBER,
+  WIDTH,
 } from '../../../variables'
 import { RowProps, CellProps, StretchedBlockProps } from './types'
 
@@ -83,7 +84,8 @@ export const StretchedBlock = styled.div<StretchedBlockProps>`
   ${(props: StretchedBlockProps) =>
     props.align ? `align-items:${props.align};` : ''}
   ${(props: StretchedBlockProps) =>
-    props.direction === 'column' ? `min-height: 100%` : ''}
+    props.direction === 'column' ? `min-height: 100%` : ''};
+  width: ${(props: StretchedBlockProps) => WIDTH[props.width || '']};
 `
 export const LeftBlock = styled.div<StretchedBlockProps>`
   display: flex;
@@ -92,5 +94,6 @@ export const LeftBlock = styled.div<StretchedBlockProps>`
   ${(props: StretchedBlockProps) =>
     props.align ? `align-items:${props.align};` : ''}
   ${(props: StretchedBlockProps) =>
-    props.direction === 'column' ? `min-height: 100%` : ''}
+    props.direction === 'column' ? `min-height: 100%` : ''};
+  width: ${(props: StretchedBlockProps) => WIDTH[props.width || '']};
 `
