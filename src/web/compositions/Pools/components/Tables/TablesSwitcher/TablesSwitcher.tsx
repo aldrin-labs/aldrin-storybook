@@ -236,6 +236,7 @@ const TablesSwitcher = ({
             open={isStakePopupOpen}
             selectedPool={selectedPool}
             dexTokensPricesMap={dexTokensPricesMap}
+            farmingTicketsMap={farmingTicketsMap}
             close={() => setIsStakePopupOpen(false)}
             allTokensData={allTokensData}
             refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
