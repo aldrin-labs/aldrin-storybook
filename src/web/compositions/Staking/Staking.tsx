@@ -1,8 +1,8 @@
-import { Theme } from '@sb/types/materialUI'
 import React from 'react'
+import { Theme } from '@sb/types/materialUI'
 import { Content, Page } from '../../components/Layout'
-import { StakingComponent } from './components/StakingComponent'
 import { BlockWithHints } from './components/BlockWithHints'
+import { StakingComponent } from './components/StakingComponent'
 
 export const Staking = ({ theme }: { theme: Theme }) => {
   return (

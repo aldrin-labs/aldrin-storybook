@@ -5,7 +5,6 @@ import { Row, StretchedBlock } from '@sb/components/Layout'
 import { Block } from '@sb/components/Block'
 import { BREAKPOINTS, COLORS } from '../../../variables'
 
-
 export const StyledTextDiv = styled.div`
   height: auto;
   width: 100%;
@@ -113,7 +112,7 @@ export const Digit = styled.span`
 export const StyledPaper = styled(Paper)`
   height: auto;
   padding: 2rem;
-  width: 55rem;
+  width: 70rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
   background: #222429;
   border-radius: 1.6rem;
@@ -166,4 +165,15 @@ export const FormWrap = styled.div`
 `
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;
+`
+
+export const ChartContainer = styled.div`
+  background: #383b42;
+  border-radius: 2rem;
+  padding: 2rem;
+  margin-top: 2rem;
+  height: 30rem;
+`
+export const Chart = styled(StretchedBlock)`
+  height: 23rem;
 `

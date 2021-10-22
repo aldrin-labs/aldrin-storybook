@@ -4,7 +4,6 @@ import { RootRow } from '../Staking.styles'
 import StatsComponent from './StatsComponent'
 import { UserStakingInfo } from './UserStakingInfo'
 
-
 export const StakingComponent: React.FC = () => {
   return (
     <>
