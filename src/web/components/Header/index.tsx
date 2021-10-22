@@ -59,8 +59,8 @@ export const Header = () => {
         </LinksBlock>
         <MainLinksBlock>
           <NavLink to="/rebalance">Rebalance</NavLink>
-          <NavLink to="/dasboard">Dashboard</NavLink>
-          <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">Dashboard</NavLink>
+          <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">Wallet</NavLink>
           <NavLink to="/pools">Liquidity Pools</NavLink>
           <NavLink as="a" target="_blank" href="https://rin.aldrin.com/">Token</NavLink>
         </MainLinksBlock>

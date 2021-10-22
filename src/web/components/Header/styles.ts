@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 // TODO: remove dat
 import { maxMobileScreenResolution } from '@core/utils/config'
 
-import { COLORS, SIZE, BORDER_RADIUS } from '../../../variables'
+import { COLORS, SIZE, BORDER_RADIUS, BREAKPOINTS } from '../../../variables'
 
 
 export const HeaderWrap = styled.header`
@@ -58,9 +58,9 @@ export const Logo = styled.img`
 
 export const NavLink = styled(Link)`
   text-decoration: none;
-  font-size: 0.9em;
-  padding: 8px;
-  margin: 0 5px;
+  font-size: 0.8em;
+  padding: 4px;
+  margin: 0 2px;
   border-radius: ${BORDER_RADIUS.md};
   color: ${COLORS.hint};
   background: ${COLORS.bodyBackground};
@@ -69,7 +69,15 @@ export const NavLink = styled(Link)`
   cursor: pointer;
 
   &:hover {
+    font-size: 0.9em;
     color: ${COLORS.navLinkActive};
     background: ${COLORS.navLinkActiveBg};
+  }
+
+  @media(min-width: ${BREAKPOINTS.xl}) {
+    & {
+      padding: 8px;
+      margin: 0 5px;
+    }
   }
 `
