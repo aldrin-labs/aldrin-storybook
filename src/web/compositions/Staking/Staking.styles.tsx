@@ -119,14 +119,14 @@ export const StyledPaper = styled(Paper)`
   border-radius: 1.6rem;
 `
 export const BigNumber = styled.p`
-  font-size: 2em;
+  font-size: 1.8em;
   line-height: 1.3;
   font-weight: bold;
   margin: 10px 0;
 `
 export const Number = styled.span`
   margin: 0 10px 0 0;
-  font-size: 1.5em;
+  font-size: 1.4em;
   line-height: 1.2;
   font-weight: bold;
 `

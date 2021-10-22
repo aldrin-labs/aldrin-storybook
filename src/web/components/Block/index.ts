@@ -11,7 +11,7 @@ export const Block = styled.div<BlockProps>`
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);
   background: ${(props: BlockProps) => props.inner ? COLORS.borderAlt : COLORS.blockBackground}; 
   border-radius: 12px;
-  margin: 10px;
+  margin: 8px;
   height: 100%;
   position: relative;
   ${({ backgroundImage }: BlockProps) => backgroundImage ?
@@ -59,7 +59,7 @@ interface BlockContentProps {
 }
 
 export const BlockContent = styled.div<BlockContentProps>`
-  padding: 20px 24px;
+  padding: 16px 20px;
   position: relative;
   ${(props) => props.border ? `border-bottom: 1px solid ${COLORS.borderAlt}` : ''}
 `

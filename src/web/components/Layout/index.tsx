@@ -54,26 +54,26 @@ export const Cell = styled.div<CellProps>`
   ${(props) =>
     props.colSm
       ? `@media(min-width:${BREAKPOINTS.sm}) { flex: 0 1 ${(props.colSm /
-          LAYOUT_COL_NUMBER) *
-          100}%  }`
+        LAYOUT_COL_NUMBER) *
+      100}%  }`
       : ''}
   ${(props) =>
     props.colMd
       ? `@media(min-width:${BREAKPOINTS.md}) { flex: 0 1 ${(props.colMd /
-          LAYOUT_COL_NUMBER) *
-          100}%  }`
+        LAYOUT_COL_NUMBER) *
+      100}%  }`
       : ''}
   ${(props) =>
     props.colLg
       ? `@media(min-width:${BREAKPOINTS.lg}) { flex: 0 1 ${(props.colLg /
-          LAYOUT_COL_NUMBER) *
-          100}%  }`
+        LAYOUT_COL_NUMBER) *
+      100}%  }`
       : ''}
   ${(props) =>
     props.colXl
       ? `@media(min-width:${BREAKPOINTS.xl}) { flex: 0 1 ${(props.colXl /
-          LAYOUT_COL_NUMBER) *
-          100}%  }`
+        LAYOUT_COL_NUMBER) *
+      100}%  }`
       : ''}
 `
 
@@ -85,15 +85,8 @@ export const StretchedBlock = styled.div<StretchedBlockProps>`
     props.align ? `align-items:${props.align};` : ''}
   ${(props: StretchedBlockProps) =>
     props.direction === 'column' ? `min-height: 100%` : ''};
-  width: ${(props: StretchedBlockProps) => WIDTH[props.width || '']};
+    ${(props: StretchedBlockProps) => props.width ? `width: ${WIDTH[props.width]}` : ''};
 `
-export const LeftBlock = styled.div<StretchedBlockProps>`
-  display: flex;
-  flex-direction: ${(props: StretchedBlockProps) => props.direction || 'row'};
+export const LeftBlock = styled(StretchedBlock)`
   justify-content: flex-start;
-  ${(props: StretchedBlockProps) =>
-    props.align ? `align-items:${props.align};` : ''}
-  ${(props: StretchedBlockProps) =>
-    props.direction === 'column' ? `min-height: 100%` : ''};
-  width: ${(props: StretchedBlockProps) => WIDTH[props.width || '']};
 `

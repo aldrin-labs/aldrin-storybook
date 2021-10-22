@@ -69,7 +69,6 @@ export const NavLink = styled(Link)`
   cursor: pointer;
 
   &:hover {
-    font-size: 0.9em;
     color: ${COLORS.navLinkActive};
     background: ${COLORS.navLinkActiveBg};
   }
@@ -78,6 +77,29 @@ export const NavLink = styled(Link)`
     & {
       padding: 8px;
       margin: 0 5px;
+      font-size: 0.9em;
     }
+  }
+`
+
+
+export const DropdownContent = styled.div`
+position: absolute;
+top: 100%;
+left: 0;
+background: red;
+flex-direction: column;
+display: none;
+`
+
+export const DropdownWrap = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  &:hover ${DropdownContent} {
+    display: flex;
   }
 `

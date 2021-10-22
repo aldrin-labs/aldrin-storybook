@@ -19,6 +19,8 @@ import {
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
 import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 
+import { DropDown } from './Dropdown'
+
 
 export const Header = () => {
 
@@ -58,6 +60,10 @@ export const Header = () => {
           </NavLink>
         </LinksBlock>
         <MainLinksBlock>
+          <DropDown text="Trading">
+            <NavLink to="/chart">Chart</NavLink>
+            <NavLink to="/swaps">Swap</NavLink>
+          </DropDown>
           <NavLink to="/rebalance">Rebalance</NavLink>
           <NavLink to="/dashboard">Dashboard</NavLink>
           <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">Wallet</NavLink>
