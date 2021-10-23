@@ -3,3 +3,6 @@ export const POOLS_PROGRAM_ADDRESS =
 
 export const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'
+
+export const STAKING_PROGRAM_ADDRESS =
+  'FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX'

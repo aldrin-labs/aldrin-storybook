@@ -27,8 +27,8 @@ import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { redeemBasket } from '@sb/dexUtils/pools/redeemBasket'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
-import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
-import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
 
@@ -138,7 +138,7 @@ export const WithdrawalPopup = ({
     )?.price || 0
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
-  const stakedTokens = getStakedTokensForPool(farmingTickets)
+  const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
 
   const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({

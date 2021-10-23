@@ -13,7 +13,7 @@ import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
-import { Side } from './config'
+import { Side } from '../common/config'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 

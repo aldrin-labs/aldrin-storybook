@@ -20,7 +20,7 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
+import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { getAvailableFarmingTokensForPool } from '@sb/dexUtils/pools/getAvailableFarmingTokensForPool'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -32,8 +32,8 @@ import { estimatedTime } from '@core/utils/dateUtils'
 import { SvgIcon } from '@sb/components'
 import Info from '@icons/inform.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { FarmingTicket } from '@sb/dexUtils/pools/types'
-import { filterClosedFarmingTickets } from '@sb/dexUtils/pools/filterClosedFarmingTickets'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 
 export const TablesDetails = ({
   theme,
@@ -75,7 +75,7 @@ export const TablesDetails = ({
   const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
   const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 
-  const stakedTokens = getStakedTokensForPool(farmingTickets)
+  const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
   const availableToClaimFarmingTokens = getAvailableFarmingTokensForPool(
     farmingTickets
   )
@@ -110,7 +110,7 @@ export const TablesDetails = ({
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
   const isUnstakeDisabled =
-    isUnstakeLocked || filterClosedFarmingTickets(farmingTickets).length === 0
+    isUnstakeLocked || filterOpenFarmingTickets(farmingTickets).length === 0
 
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)

@@ -16,20 +16,23 @@ class ProgramsMultiton {
     connection: Connection
     programAddress: string
   }) {
-    // save program to key program-address
-    if (this.cache[programAddress]) {
-      return this.cache[programAddress]
+    const cacheKey = `${programAddress}-${wallet.publicKey}`
+
+    // save program to key program-address-wallet (to load program after connecting wallet)
+    // in case of need in program for rpc-decode only
+    if (this.cache[cacheKey]) {
+      return this.cache[cacheKey]
     }
 
-    if (!wallet || !connection || !wallet.publicKey) {
+    if (!connection) {
       notifyForDevelop({
-        message: 'No wallet or connection in getProgramByAddress',
+        message: 'No connection in getProgramByAddress',
         wallet,
         connection,
         programAddress,
       })
 
-      throw Error('No wallet or connection in getProgramByAddress')
+      throw Error('No connection in getProgramByAddress')
     }
 
     console.log('create program', wallet)

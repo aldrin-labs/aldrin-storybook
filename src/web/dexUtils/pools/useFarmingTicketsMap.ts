@@ -4,7 +4,7 @@ import { RefreshFunction, WalletAdapter } from '../types'
 import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
 import { addAmountsToClaimForFarmingTickets } from './addAmountsToClaimForFarmingTickets'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { FarmingTicket, PoolAddress } from './types'
+import { FarmingTicket, PoolAddress } from '../common/types'
 
 export const useFarmingTicketsMap = ({
   wallet,

@@ -11,7 +11,7 @@ import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
-import { filterClosedFarmingTickets } from './filterClosedFarmingTickets'
+import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
 
 export const endFarming = async ({
@@ -48,7 +48,7 @@ export const endFarming = async ({
     poolPublicKey,
   })
 
-  const filteredUserFarmingTicketsPerPool = filterClosedFarmingTickets(
+  const filteredUserFarmingTicketsPerPool = filterOpenFarmingTickets(
     allUserTicketsPerPool
   )
 

@@ -37,7 +37,7 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { Link } from 'react-router-dom'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },

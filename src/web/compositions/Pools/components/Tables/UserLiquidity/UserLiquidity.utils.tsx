@@ -34,7 +34,7 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 
 export const userLiquidityTableColumnsNames = [
   { label: 'Pool', id: 'pool' },

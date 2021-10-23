@@ -32,8 +32,8 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { RefreshFunction } from '@sb/dexUtils/types'
-import { FarmingTicket } from '@sb/dexUtils/pools/types'
-import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 
 export const StakePopup = ({
@@ -82,7 +82,7 @@ export const StakePopup = ({
   const farmingState = selectedPool.farming && selectedPool.farming[0]
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
-  const stakedTokens = getStakedTokensForPool(farmingTickets)
+  const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
 
   const poolTokenPrice = calculatePoolTokenPrice({
     pool: selectedPool,

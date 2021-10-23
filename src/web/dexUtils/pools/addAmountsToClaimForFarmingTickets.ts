@@ -3,8 +3,8 @@ import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import { WalletAdapter } from '../types'
 import { checkFarmed } from './checkFarmed'
-import { START_OF_LOG_WITH_AMOUNT_TO_CLAIM } from './config'
-import { FarmingTicket } from './types'
+import { START_OF_LOG_WITH_AMOUNT_TO_CLAIM } from '../common/config'
+import { FarmingTicket } from '../common/types'
 
 export const addAmountsToClaimForFarmingTickets = async ({
   pools,

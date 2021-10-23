@@ -1,34 +1,20 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { WalletAdapter } from '../types'
 import {
-  FARMING_TICKET_OFFSET_OF_POOL_PUBLICKEY,
   FARMING_TICKET_OFFSET_OF_USER_PUBLICKEY,
   FARMING_TICKET_SIZE,
 } from '../common/config'
-import { loadAccountsFromPoolsProgram } from './loadAccountsFromPoolsProgram'
+import { loadAccountsFromStakingProgram } from './loadAccountsFromStakingProgram'
 
-export const loadFarmingTickets = async ({
+export const loadStakingFarmingTickets = async ({
   wallet,
   connection,
   walletPublicKey,
-  poolPublicKey,
 }: {
   wallet: WalletAdapter
   connection: Connection
   walletPublicKey?: PublicKey
-  poolPublicKey?: PublicKey
 }) => {
-  const filterByPoolPublicKey = poolPublicKey
-    ? [
-        {
-          memcmp: {
-            offset: FARMING_TICKET_OFFSET_OF_POOL_PUBLICKEY,
-            bytes: poolPublicKey.toBase58(),
-          },
-        },
-      ]
-    : []
-
   const filterByWalletPublicKey = walletPublicKey
     ? [
         {
@@ -40,14 +26,13 @@ export const loadFarmingTickets = async ({
       ]
     : []
 
-  return await loadAccountsFromPoolsProgram({
+  return await loadAccountsFromStakingProgram({
     connection,
     filters: [
       {
         dataSize: FARMING_TICKET_SIZE,
       },
       ...filterByWalletPublicKey,
-      ...filterByPoolPublicKey,
     ],
   })
 }

@@ -1,7 +1,10 @@
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { stripByAmount, stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
 import lightBird from '@icons/lightBird.svg'
 import { SvgIcon } from '@sb/components'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
@@ -10,7 +13,8 @@ import { compose } from 'recompose'
 import {
   Block,
   BlockContentStretched,
-  BlockSubtitle, BlockTitle
+  BlockSubtitle,
+  BlockTitle,
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
@@ -18,28 +22,37 @@ import { ShareButton } from '@sb/components/ShareButton'
 import { BorderButton } from '../../Pools/components/Tables/index.styles'
 import {
   BigNumber,
-  LastPrice, Number,
+  LastPrice,
+  Number,
   StatsBlock,
-  StatsBlockItem
+  StatsBlockItem,
 } from '../Staking.styles'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
-
+import { useTotalStakedTokens } from '@sb/dexUtils/staking/useTotalStakedTokens'
+import { useConnection } from '@sb/dexUtils/connection'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 interface StatsComponentProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }
 
-const SHARE_TEXT =
-  `I stake my $RIN on @Aldrin_Exchange with 192% APY!
+const SHARE_TEXT = `I stake my $RIN on @Aldrin_Exchange with 192% APY!
 Don't miss your chance!`
 
-const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProps) => {
-  const {
-    getDexTokensPricesQuery,
-  } = props
+const StatsComponent: React.FC<StatsComponentProps> = (
+  props: StatsComponentProps
+) => {
+  const { getDexTokensPricesQuery } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
+  const connection = useConnection()
+  const { wallet } = useWallet()
   const isPriceIncreasing = true
+
+  const [totalStaked, refreshTotalStaked] = useTotalStakedTokens({
+    wallet,
+    connection,
+  })
 
   useEffect(() => {
     const getRINSupply = async () => {
@@ -50,7 +63,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProp
   }, [])
 
   const tokenPrice = getDexTokensPricesQuery.getDexTokensPrices[0].price
-
+  const totalStakedUSD = tokenPrice * totalStaked
   return (
     <>
       <Row>
@@ -58,8 +71,13 @@ const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProp
           <Block icon={locksIcon}>
             <BlockContentStretched>
               <BlockTitle>Total Staked</BlockTitle>
-              <BigNumber><InlineText color="success">10,000,000</InlineText> RIN</BigNumber>
-              <Number>$1.53b</Number>
+              <BigNumber>
+                <InlineText color="success">
+                  {stripByAmountAndFormat(totalStaked)}
+                </InlineText>{' '}
+                RIN
+              </BigNumber>
+              <Number>{stripByAmountAndFormat(totalStakedUSD)}</Number>
             </BlockContentStretched>
           </Block>
         </Cell>
@@ -83,7 +101,6 @@ const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProp
                     Share
                     <SvgIcon src={lightBird} style={{ marginLeft: '1rem' }} />
                   </BorderButton> */}
-
                 </div>
               </StretchedBlock>
             </BlockContentStretched>
@@ -99,12 +116,14 @@ const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProp
                 <StatsBlockItem>
                   <BlockSubtitle>Price</BlockSubtitle>
                   <LastPrice>
-                    <Number>
-                      ${stripByAmount(tokenPrice)}
-                    </Number>
-                    <InlineText color={isPriceIncreasing ? 'success' : 'error'} size="xs">▲ 125.00%</InlineText>
+                    <Number>${stripByAmount(tokenPrice)}</Number>
+                    <InlineText
+                      color={isPriceIncreasing ? 'success' : 'error'}
+                      size="xs"
+                    >
+                      ▲ 125.00%
+                    </InlineText>
                   </LastPrice>
-
                 </StatsBlockItem>
                 <StatsBlockItem>
                   <BlockSubtitle>Circulating Supply</BlockSubtitle>
@@ -114,9 +133,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (props: StatsComponentProp
                 </StatsBlockItem>
                 <StatsBlockItem>
                   <BlockSubtitle>Daily Rewards</BlockSubtitle>
-                  <Number>
-                    112,252 RIN
-                  </Number>
+                  <Number>112,252 RIN</Number>
                 </StatsBlockItem>
               </StatsBlock>
             </BlockContentStretched>
