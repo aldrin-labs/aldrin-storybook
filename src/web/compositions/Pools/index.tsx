@@ -12,6 +12,13 @@ import { useConnection } from '@sb/dexUtils/connection'
 const Pools = ({ theme }: { theme: Theme }) => {
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
+  useEffect(() => {
+    document.title = 'Aldrin | Liquidity Pools'
+    return () => {
+      document.title = 'Aldrin'
+    }
+  }, [])
+
   return (
     <RowContainer
       direction={'column'}

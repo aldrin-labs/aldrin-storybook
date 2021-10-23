@@ -58,7 +58,11 @@ export async function createBasket({
     quoteTokenMint,
     quoteTokenVault,
     poolMint,
+    lpTokenFreezeVault,
+    ...rest
   } = await program.account.pool.fetch(poolPublicKey)
+
+  console.log('rest', rest)
 
   const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
 

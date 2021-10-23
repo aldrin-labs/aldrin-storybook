@@ -241,14 +241,17 @@ export const WithdrawalPopup = ({
               poolTokenAmount: poolTokenAmount,
             })
 
-            console.log({
-              baseAmount,
-              quoteAmount,
-              availableToWithdrawAmountTokenA,
-              availableToWithdrawAmountTokenB,
-              withdrawAmountTokenA, 
-              withdrawAmountTokenB
-            })
+            if (
+              +baseAmount > availableToWithdrawAmountTokenA ||
+              +quoteAmount > availableToWithdrawAmountTokenB
+            ) {
+              notify({
+                message: `Unstake your pool tokens to withdraw liquidity.`,
+                type: 'error',
+              })
+
+              return
+            }
 
             if (
               !userTokenAccountA ||
@@ -266,18 +269,6 @@ export const WithdrawalPopup = ({
                 userTokenAccountB,
                 userPoolTokenAccount,
                 poolTokenAmountToWithdraw,
-              })
-
-              return
-            }
-
-            if (
-              +baseAmount > availableToWithdrawAmountTokenA ||
-              +quoteAmount > availableToWithdrawAmountTokenB
-            ) {
-              notify({
-                message: `Unstake your pool tokens to withdraw liquidity.`,
-                type: 'error',
               })
 
               return
