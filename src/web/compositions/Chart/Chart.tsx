@@ -343,6 +343,8 @@ function ChartPageComponent(props: any) {
       />
       {/* <AldrinIsOverCapacityPopup theme={theme} /> */}
       {/* <RpcCapacityWarningPopup theme={theme} /> */}
+      {/* <SerumIssuesWarningPopup theme={theme} />
+      <MobileSerumIssueWarningPopup theme={theme} /> */}
 
       {/* )} */}
       {/* <JoyrideOnboarding
