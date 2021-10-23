@@ -85,7 +85,6 @@ export const combineOpenOrdersTable = (
         marketType: 0,
         symbol: marketName,
       })
-      console.log('aaaa', price, size)
       return {
         id: `${orderId}${size}${price}`,
         pair: {
