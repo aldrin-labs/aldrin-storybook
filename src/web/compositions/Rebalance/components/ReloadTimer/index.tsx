@@ -18,17 +18,21 @@ export const TimerButton = styled.div`
 export const ReloadTimer = ({
   size = 23,
   duration = 10,
+  initialRemainingTime = 0,
   color = '#651CE4',
   trailColor = '#383B45',
   callback,
   marginRight = '3rem',
+  rerenderOnClick = true,
 }: {
   size?: number
   duration?: number
+  initialRemainingTime?: number
   color?: string
   trailColor?: string
   callback: () => void
   marginRight?: string
+  rerenderOnClick?: boolean
 }) => {
   const [rerenderCounter, rerender] = useState(0)
 
@@ -37,7 +41,9 @@ export const ReloadTimer = ({
       marginRight={marginRight}
       onClick={() => {
         callback()
-        rerender(rerenderCounter + 1)
+        if (rerenderOnClick) {
+          rerender(rerenderCounter + 1)
+        }
       }}
     >
       <CountdownCircleTimer
@@ -46,6 +52,7 @@ export const ReloadTimer = ({
         strokeWidth={3}
         isPlaying={true}
         duration={duration}
+        initialRemainingTime={initialRemainingTime}
         colors={color}
         trailColor={trailColor}
         onComplete={() => {

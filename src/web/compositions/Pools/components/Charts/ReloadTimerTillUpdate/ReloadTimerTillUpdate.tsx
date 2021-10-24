@@ -5,8 +5,10 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 
 export const ReloadTimerTillUpdate = ({
+  duration,
   getSecondsTillNextUpdate,
 }: {
+  duration: number
   getSecondsTillNextUpdate: () => number
 }) => {
   const [secondsTillNextUpdate, setSecondsTillUpdate] = useState(0)
@@ -28,11 +30,15 @@ export const ReloadTimerTillUpdate = ({
 
   return (
     <DarkTooltip
-      title={`${estimatedTime(secondsTillNextUpdate)} till data update.`}
+      title={`${estimatedTime(
+        secondsTillNextUpdate
+      )} till data update. (every ${estimatedTime(duration)})`}
     >
       <span>
         <ReloadTimer
-          duration={secondsTillNextUpdate}
+          initialRemainingTime={secondsTillNextUpdate}
+          duration={duration}
+          rerenderOnClick={false}
           callback={refreshSecondsTillUpdate}
         />
       </span>
