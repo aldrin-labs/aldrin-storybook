@@ -34,6 +34,7 @@ import Info from '@icons/inform.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FarmingTicket } from '@sb/dexUtils/pools/types'
 import { filterClosedFarmingTickets } from '@sb/dexUtils/pools/filterClosedFarmingTickets'
+import { notify } from '@sb/dexUtils/notifications'
 
 export const TablesDetails = ({
   theme,
@@ -451,16 +452,16 @@ export const TablesDetails = ({
                   isPoolWaitingForUpdateAfterClaim
                 }
                 onClick={async () => {
-                  const removeLoader = () =>
+                  setPoolWaitingForUpdateAfterOperation({
+                    pool: pool.swapToken,
+                    operation: 'claim',
+                  })
+
+                  const clearPoolWaitingForUpdate = () =>
                     setPoolWaitingForUpdateAfterOperation({
                       pool: '',
                       operation: '',
                     })
-
-                  await setPoolWaitingForUpdateAfterOperation({
-                    pool: pool.swapToken,
-                    operation: 'claim',
-                  })
 
                   try {
                     const result = await withdrawFarmed({
@@ -471,18 +472,28 @@ export const TablesDetails = ({
                       farmingTickets,
                     })
 
+                    notify({
+                      type: result === 'success' ? 'success' : 'error',
+                      message:
+                        result === 'success'
+                          ? 'Successfully claimed rewards.'
+                          : result === 'failed'
+                          ? 'Claim rewards failed, please try again later or contact us in telegram.'
+                          : 'Claim rewards cancelled.',
+                    })
+
                     if (result !== 'success') {
-                      removeLoader()
+                      clearPoolWaitingForUpdate()
                     } else {
-                      await setTimeout(async () => {
-                        await refreshAllTokensData()
-                        await removeLoader()
+                      setTimeout(async () => {
+                        refreshAllTokensData()
+                        clearPoolWaitingForUpdate()
                       }, 7500)
 
-                      await setTimeout(() => refreshAllTokensData(), 15000)
+                      setTimeout(() => refreshAllTokensData(), 15000)
                     }
                   } catch (e) {
-                    removeLoader()
+                    clearPoolWaitingForUpdate()
 
                     return
                   }

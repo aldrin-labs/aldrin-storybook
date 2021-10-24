@@ -44,6 +44,8 @@ import { WarningPopup } from '../Chart/components/WarningPopup'
 import { swap } from '@sb/dexUtils/pools/swap'
 import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import { SLIPPAGE_PERCENTAGE } from './config'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 const DEFAULT_BASE_TOKEN = 'RIN'
 const DEFAULT_QUOTE_TOKEN = 'SOL'
@@ -108,10 +110,12 @@ const SwapPage = ({
   useEffect(() => {
     if (!selectedPool) return
 
-    const newQuote = stripDigitPlaces(
-      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
-      8
-    )
+    const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
+    const newRatio = isSwapBaseToQuote
+      ? poolAmountTokenB / poolAmountTokenA
+      : poolAmountTokenA / poolAmountTokenB
+
+    const newQuote = stripDigitPlaces(+baseAmount * newRatio, 8)
 
     if (baseAmount && newQuote) {
       setQuoteAmount(newQuote)
@@ -229,10 +233,7 @@ const SwapPage = ({
 
   // price impact due to curve
   const rawSlippage = 100 / (poolsAmountDiff + 1)
-
-  const sumFeesPercentages =
-    REBALANCE_CONFIG.SLIPPAGE + slippageTolerance + rawSlippage
-
+  const sumFeesPercentages = slippageTolerance + rawSlippage
   const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
@@ -431,45 +432,39 @@ const SwapPage = ({
                     allTokensData[0]?.address === userBaseTokenAccount ||
                     allTokensData[0]?.address === userQuoteTokenAccount
 
-                  try {
-                    const result = await swap({
-                      wallet,
-                      connection,
-                      poolPublicKey: new PublicKey(selectedPool.swapToken),
-                      userBaseTokenAccount: new PublicKey(
-                        isSwapBaseToQuote
-                          ? userBaseTokenAccount
-                          : userQuoteTokenAccount
-                      ),
-                      userQuoteTokenAccount: new PublicKey(
-                        isSwapBaseToQuote
-                          ? userQuoteTokenAccount
-                          : userBaseTokenAccount
-                      ),
-                      swapAmountIn,
-                      swapAmountOut,
-                      isSwapBaseToQuote,
-                      transferSOLToWrapped:
-                        isPoolWithSOLToken && isNativeSOLSelected,
-                    })
+                  const result = await swap({
+                    wallet,
+                    connection,
+                    poolPublicKey: new PublicKey(selectedPool.swapToken),
+                    userBaseTokenAccount: new PublicKey(
+                      isSwapBaseToQuote
+                        ? userBaseTokenAccount
+                        : userQuoteTokenAccount
+                    ),
+                    userQuoteTokenAccount: new PublicKey(
+                      isSwapBaseToQuote
+                        ? userQuoteTokenAccount
+                        : userBaseTokenAccount
+                    ),
+                    swapAmountIn,
+                    swapAmountOut,
+                    isSwapBaseToQuote,
+                    transferSOLToWrapped:
+                      isPoolWithSOLToken && isNativeSOLSelected,
+                  })
 
-                    await notify({
-                      type: result ? 'success' : 'error',
-                      message: result
+                  notify({
+                    type: result ? 'success' : 'error',
+                    message:
+                      result === 'success'
                         ? 'Swap executed successfully.'
-                        : 'Swap operation failed. Please, try to increase slippage tolerance.',
-                    })
-                  } catch (e) {
-                    console.error('swap error:', e)
-                    if (e.message.includes('cancelled')) {
-                      await notify({
-                        type: 'error',
-                        message: 'Swap operation cancelled.',
-                      })
-                    }
-                  }
+                        : result === 'failed'
+                        ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
+                        : 'Swap cancelled',
+                  })
 
-                  await refreshAllTokensData()
+                  refreshPoolBalances()
+                  refreshAllTokensData()
                 }}
               >
                 {isTokenABalanceInsufficient
@@ -525,7 +520,10 @@ const SwapPage = ({
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
                     fontFamily={'Avenir Next Bold'}
                   >
-                    0.03%
+                    {stripByAmountAndFormat(
+                      +baseAmount * (SLIPPAGE_PERCENTAGE / 100)
+                    )}{' '}
+                    {baseSymbol}
                   </Text>
                 </Row>
               </RowContainer>

@@ -22,6 +22,8 @@ import {
 import { createTotalVolumeLockedChart } from '../utils'
 import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTotalVolumeLockedHistory'
 import { Line } from '../../Popups/index.styles'
+import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
+import { msToNextHour } from '@core/utils/dateUtils'
 
 const TotalVolumeLockedChart = ({
   theme,
@@ -55,6 +57,9 @@ const TotalVolumeLockedChart = ({
           >
             {title}
           </WhiteTitle>
+          <ReloadTimerTillUpdate
+            getSecondsTillNextUpdate={() => msToNextHour() / 1000}
+          />
           <Line />
         </RowContainer>
       </HeaderContainer>

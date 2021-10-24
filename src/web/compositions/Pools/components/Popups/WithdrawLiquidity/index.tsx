@@ -274,7 +274,13 @@ export const WithdrawalPopup = ({
               return
             }
 
-            await setOperationLoading(true)
+            // loader in popup
+            setOperationLoading(true)
+            // loader in table button
+            setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'withdraw',
+            })
 
             const result = await redeemBasket({
               wallet,
@@ -286,13 +292,9 @@ export const WithdrawalPopup = ({
               userQuoteTokenAccount: new PublicKey(userTokenAccountB),
             })
 
-            await setOperationLoading(false)
-            await setPoolWaitingForUpdateAfterOperation({
-              pool: selectedPool.swapToken,
-              operation: 'withdraw',
-            })
+            setOperationLoading(false)
 
-            await notify({
+            notify({
               type: result === 'success' ? 'success' : 'error',
               message:
                 result === 'success'
@@ -302,18 +304,26 @@ export const WithdrawalPopup = ({
                   : 'Withdrawal cancelled',
             })
 
-            await refreshPoolBalances()
+            refreshPoolBalances()
 
-            await setTimeout(async () => {
-              await refreshAllTokensData()
-              await setPoolWaitingForUpdateAfterOperation({
+            const clearPoolWaitingForUpdate = () =>
+              setPoolWaitingForUpdateAfterOperation({
                 pool: '',
                 operation: '',
               })
-            }, 7500)
-            await setTimeout(() => refreshAllTokensData(), 15000)
 
-            await close()
+            if (result === 'success') {
+              setTimeout(async () => {
+                refreshAllTokensData()
+                clearPoolWaitingForUpdate()
+              }, 7500)
+
+              setTimeout(() => refreshAllTokensData(), 15000)
+            } else {
+              clearPoolWaitingForUpdate()
+            }
+
+            close()
           }}
         >
           Withdraw

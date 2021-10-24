@@ -34,6 +34,7 @@ import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { Link } from 'react-router-dom'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -188,6 +189,14 @@ export const combineAllPoolsData = ({
       const tvlUSD =
         baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
 
+      const poolTokenPrice = calculatePoolTokenPrice({
+        pool,
+        dexTokensPricesMap,
+      })
+
+      const totalStakedLpTokensUSD =
+        pool.lpTokenFreezeVaultBalance * poolTokenPrice
+
       const farmingState = pool.farming && pool.farming[0]
 
       const dailyFarmingValue = farmingState
@@ -195,8 +204,8 @@ export const combineAllPoolsData = ({
           (dayDuration / farmingState.periodLength)
         : 0
 
-      const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
-        ? dailyFarmingValue / (tvlUSD / 1000)
+      const dailyFarmingValuePerThousandDollarsLiquidity = totalStakedLpTokensUSD
+        ? dailyFarmingValue * (1000 / totalStakedLpTokensUSD)
         : 0
 
       const isFarmingEnded =
@@ -211,7 +220,7 @@ export const combineAllPoolsData = ({
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
               <Link
-                to={`/swaps?base=${baseSymbol}&quote=${quoteSymbol}`}
+                to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
                 style={{ textDecoration: 'none' }}
               >
                 <TokenIconsContainer

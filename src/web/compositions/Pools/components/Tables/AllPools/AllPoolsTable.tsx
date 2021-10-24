@@ -26,6 +26,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
 import { FarmingTicket } from '@sb/dexUtils/pools/types'
+import { endOfHourTimestamp } from '@core/utils/dateUtils'
 
 const AllPoolsTableComponent = ({
   theme,
@@ -211,8 +212,8 @@ export default compose(
     withoutLoading: true,
     pollInterval: 60000 * 6,
     variables: {
-      timestampFrom: endOfDayTimestamp() - dayDuration,
-      timestampTo: endOfDayTimestamp(),
+      timestampFrom: endOfHourTimestamp() - dayDuration,
+      timestampTo: endOfHourTimestamp(),
     },
   }),
   queryRendererHoc({
@@ -222,8 +223,8 @@ export default compose(
     withoutLoading: true,
     pollInterval: 60000 * 6,
     variables: {
-      timestampFrom: endOfDayTimestamp() - dayDuration * 7,
-      timestampTo: endOfDayTimestamp(),
+      timestampFrom: endOfHourTimestamp() - dayDuration * 7,
+      timestampTo: endOfHourTimestamp(),
     },
   })
 )(AllPoolsTableComponent)

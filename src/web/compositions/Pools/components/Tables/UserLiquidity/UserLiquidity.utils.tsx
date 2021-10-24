@@ -32,6 +32,7 @@ import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { FarmingTicket } from '@sb/dexUtils/pools/types'
 import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 
 export const userLiquidityTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -160,6 +161,14 @@ export const combineUserLiquidityData = ({
         poolTokenAmount: poolTokenAmount + stakedTokens,
       })
 
+      const poolTokenPrice = calculatePoolTokenPrice({
+        pool,
+        dexTokensPricesMap,
+      })
+
+      const totalStakedLpTokensUSD =
+        pool.lpTokenFreezeVaultBalance * poolTokenPrice
+
       const farmingState = pool.farming && pool.farming[0]
 
       const dailyFarmingValue = farmingState
@@ -167,8 +176,8 @@ export const combineUserLiquidityData = ({
           (dayDuration / farmingState.periodLength)
         : 0
 
-      const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
-        ? dailyFarmingValue / (tvlUSD / 1000)
+      const dailyFarmingValuePerThousandDollarsLiquidity = totalStakedLpTokensUSD
+        ? dailyFarmingValue * (1000 / totalStakedLpTokensUSD)
         : 0
 
       const userLiquidityUSD =

@@ -19,6 +19,7 @@ export type PoolInfo = {
   poolTokenAccountB: string
   swapToken: string
   poolTokenMint: string
+  lpTokenFreezeVaultBalance: number;
   farming: FarmingState[]
   tvl: {
     tokenA: number
