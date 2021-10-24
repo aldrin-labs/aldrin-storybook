@@ -67,7 +67,7 @@ export const createRewardsChart = (canvas: HTMLCanvasElement) => {
           },
           ticks: {
             align: 'end',
-            color: COLORS.textAlt,
+            color: COLORS.main,
             font: {
               size: 16,
               family: FONTS.main,

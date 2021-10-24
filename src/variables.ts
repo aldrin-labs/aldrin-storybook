@@ -18,6 +18,9 @@ export const COLORS = {
   gray: '#383b42',
   chartGrid: '#4C4F59',
   textAlt: '#F5F5FB',
+  navLink: 'rgb(114, 132, 160)',
+  navLinkActiveBg: 'rgb(46, 46, 46)',
+  navLinkActive: 'rgb(209, 221, 239)',
 }
 
 export const BORDER_RADIUS = {
@@ -46,6 +49,7 @@ export const SIZE = {
   fontSize: '16px',
   defaultPadding: '10px',
 }
+
 
 export const WIDTH = {
   sm: '10%',

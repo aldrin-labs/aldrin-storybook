@@ -1,3 +1,5 @@
+import { WIDTH } from "../../../variables";
+
 export interface RowProps {
   wrap?: string
   justify?: string
@@ -20,5 +22,5 @@ export interface CellProps {
 export interface StretchedBlockProps {
   align?: string
   direction?: 'row' | 'column'
-  width?: string
+  width?: keyof typeof WIDTH
 }

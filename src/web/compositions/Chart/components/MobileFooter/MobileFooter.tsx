@@ -32,7 +32,6 @@ export const MobileFooter = ({ pathname }) => {
         isActive={isFeedBackPopupOpen}
       />
       <FeedbackPopup
-        theme={theme}
         open={isFeedBackPopupOpen}
         onClose={() => {
           setIsFeedBackPopupOpen(false)
