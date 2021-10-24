@@ -1,15 +1,3 @@
-export type FarmingState = {
-  farmingState: string
-  farmingTokenVault: string
-  farmingTokenMint: string
-  farmingSnapshots: string
-  tokensUnlocked: number
-  tokensTotal: number
-  tokensPerPeriod: number
-  periodLength: number
-  vestingPeriod: number
-}
-
 export type PoolInfo = {
   name: string
   parsedName: string
@@ -40,11 +28,11 @@ export type FeesEarned = {
 }
 
 export type TradingVolume = {
-  pool: string;
-  tradingVolume: number;
+  pool: string
+  tradingVolume: number
 }
 
 export type PoolWithOperation = {
-  pool: string;
-  operation: 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'claim' | '';
+  pool: string
+  operation: 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'claim' | ''
 }

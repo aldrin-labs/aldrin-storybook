@@ -14,7 +14,7 @@ export const COLORS = {
   main: '#fbf2f2',
   primary: '#651CE4',
   success: '#53DF11',
-  error: '##F69894',
+  error: '#F69894',
   gray: '#383b42',
   chartGrid: '#4C4F59',
   textAlt: '#F5F5FB',

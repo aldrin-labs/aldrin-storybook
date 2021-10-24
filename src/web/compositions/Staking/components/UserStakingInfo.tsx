@@ -5,13 +5,14 @@ import {
   Block,
   BlockContent,
   BlockSubtitle,
-  BlockTitle
+  BlockTitle,
 } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Input } from '@sb/components/Input'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { useConnection } from '@sb/dexUtils/connection'
+import { useTotalStakedTokens } from '@sb/dexUtils/staking/useTotalStakedTokens'
 import { CCAI_MINT } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import React, { useEffect, useState } from 'react'
@@ -19,13 +20,19 @@ import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { TokenInfo } from '../../Rebalance/Rebalance.types'
 import { getAllTokensData } from '../../Rebalance/utils'
 import {
-  Asterisks, BalanceRow, BalanceWrap,
+  Asterisks,
+  BalanceRow,
+  BalanceWrap,
   Digit,
-  FormItem, FormWrap, RewardsBlock, StyledTextDiv,
-  TotalStakedBlock, WalletBalanceBlock, WalletRow
+  FormItem,
+  FormWrap,
+  RewardsBlock,
+  StyledTextDiv,
+  TotalStakedBlock,
+  WalletBalanceBlock,
+  WalletRow,
 } from '../Staking.styles'
 import { RestakePopup } from './RestakePopup'
-
 
 interface UserBalanceProps {
   value: number
@@ -41,7 +48,10 @@ const UserBalance: React.FC<UserBalanceProps> = (props) => {
   }
   return (
     <BalanceRow>
-      <Digit>{props.visible ? formatted : <Asterisks>{asterisks}</Asterisks>}</Digit>&nbsp;RIN
+      <Digit>
+        {props.visible ? formatted : <Asterisks>{asterisks}</Asterisks>}
+      </Digit>
+      &nbsp;RIN
     </BalanceRow>
   )
 }
@@ -56,6 +66,12 @@ const UserStakingInfoContent: React.FC = () => {
   const connection = useConnection()
 
   const walletAddress = wallet?.publicKey?.toString() || ''
+
+  const [totalStaked, refreshTotalStaked] = useTotalStakedTokens({
+    wallet,
+    connection,
+    walletPublicKey: wallet.publicKey,
+  })
 
   const setAmount = (v: string) => {
     const newValue = parseFloat(v)
@@ -83,9 +99,7 @@ const UserStakingInfoContent: React.FC = () => {
         <WalletRow>
           <div>
             <StretchedBlock align="center">
-              <BlockTitle>
-                Your RIN Staking
-              </BlockTitle>
+              <BlockTitle>Your RIN Staking</BlockTitle>
               <SvgIcon
                 src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
                 width={'1.5em'}
@@ -100,11 +114,12 @@ const UserStakingInfoContent: React.FC = () => {
             </StyledTextDiv>
           </div>
           <WalletBalanceBlock>
-            <BlockSubtitle>
-              Available in wallet:
-          </BlockSubtitle>
+            <BlockSubtitle>Available in wallet:</BlockSubtitle>
             <BalanceWrap>
-              <UserBalance visible={isBalancesShowing} value={tokenData?.amount || 0} />
+              <UserBalance
+                visible={isBalancesShowing}
+                value={tokenData?.amount || 0}
+              />
             </BalanceWrap>
           </WalletBalanceBlock>
         </WalletRow>
@@ -115,7 +130,7 @@ const UserStakingInfoContent: React.FC = () => {
             <TotalStakedBlock inner>
               <BlockContent>
                 <BlockSubtitle>Total staked:</BlockSubtitle>
-                <UserBalance visible={isBalancesShowing} value={33000} />
+                <UserBalance visible={isBalancesShowing} value={totalStaked} />
               </BlockContent>
             </TotalStakedBlock>
           </Cell>
@@ -132,7 +147,14 @@ const UserStakingInfoContent: React.FC = () => {
                     <UserBalance visible={isBalancesShowing} value={400} />
                   </div>
                   <div>
-                    <Button backgroundImage={StakeBtn} fontSize="xs" padding="lg" borderRadius="xxl">Claim</Button>
+                    <Button
+                      backgroundImage={StakeBtn}
+                      fontSize="xs"
+                      padding="lg"
+                      borderRadius="xxl"
+                    >
+                      Claim
+                    </Button>
                   </div>
                 </StretchedBlock>
               </BlockContent>
@@ -142,7 +164,12 @@ const UserStakingInfoContent: React.FC = () => {
 
         <FormWrap>
           <FormItem>
-            <Input placeholder="Enter amount..." value={`${userInput}`} onChange={setAmount} append="RIN" />
+            <Input
+              placeholder="Enter amount..."
+              value={`${userInput}`}
+              onChange={setAmount}
+              append="RIN"
+            />
           </FormItem>
           <FormItem>
             <Button
@@ -169,7 +196,6 @@ const UserStakingInfoContent: React.FC = () => {
             </Button>
           </FormItem>
         </FormWrap>
-
       </BlockContent>
       <RestakePopup
         open={isRestakePopupOpen}

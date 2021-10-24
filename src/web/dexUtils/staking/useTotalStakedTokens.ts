@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Connection } from '@solana/web3.js'
+import { Connection, PublicKey } from '@solana/web3.js'
 import { getStakedTokensFromOpenFarmingTickets } from '../common/getStakedTokensFromOpenFarmingTickets'
 import { RefreshFunction, WalletAdapter } from '../types'
 import { getParsedStakingFarmingTickets } from './getParsedStakingFarmingTickets'
@@ -7,9 +7,11 @@ import { getParsedStakingFarmingTickets } from './getParsedStakingFarmingTickets
 export const useTotalStakedTokens = ({
   wallet,
   connection,
+  walletPublicKey,
 }: {
   wallet: WalletAdapter
   connection: Connection
+  walletPublicKey?: PublicKey
 }): [number, RefreshFunction] => {
   const [totalStakedTokens, setTotalStakedTokens] = useState(0)
   const [refreshCounter, setRefreshCounter] = useState(0)
@@ -21,17 +23,18 @@ export const useTotalStakedTokens = ({
       const allStakingFarmingTickets = await getParsedStakingFarmingTickets({
         wallet,
         connection,
+        walletPublicKey,
       })
 
       const totalStakedTokens = getStakedTokensFromOpenFarmingTickets(
         allStakingFarmingTickets
       )
-      
+
       setTotalStakedTokens(totalStakedTokens)
     }
 
     loadStakingTickets()
-  }, [refreshCounter])
+  }, [refreshCounter, walletPublicKey])
 
   return [totalStakedTokens, refresh]
 }

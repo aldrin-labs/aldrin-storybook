@@ -17,7 +17,7 @@ import {
 } from '../../Chart.styles'
 import { getRINCirculationSupply } from '@core/api'
 
-interface MarketDataByTicker {
+export interface MarketDataByTicker {
   tradesCount: number
   tradesDiff: number
   volume: number
@@ -74,7 +74,7 @@ interface IProps {
   isCCAIPair?: boolean
 }
 
-const generateDatesForRequest = () => ({
+export const generateDatesForRequest = () => ({
   startTimestamp: `${datesForQuery.startOfTime()}`,
   endTimestamp: `${datesForQuery.endOfTime()}`,
   prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,

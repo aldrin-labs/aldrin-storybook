@@ -1,15 +1,14 @@
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
-import lightBird from '@icons/lightBird.svg'
+import GreenTriangle from '@icons/greenTriangle.svg'
+import RedTriangle from '@icons/redTriangle.svg'
 import { SvgIcon } from '@sb/components'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import React, { useEffect, useState } from 'react'
-import { compose } from 'recompose'
 import {
   Block,
   BlockContentStretched,
@@ -17,9 +16,21 @@ import {
   BlockTitle,
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
-import { InlineText } from '@sb/components/Typography'
 import { ShareButton } from '@sb/components/ShareButton'
-import { BorderButton } from '../../Pools/components/Tables/index.styles'
+import { InlineText } from '@sb/components/Typography'
+import {
+  generateDatesForRequest,
+  MarketDataByTicker,
+} from '@sb/compositions/Chart/components/MarketStats/MarketStats'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import { useConnection } from '@sb/dexUtils/connection'
+import { useMarkPrice } from '@sb/dexUtils/markets'
+import { useCurrentFarmingState } from '@sb/dexUtils/staking/useCurrentFarmingState'
+import { useTotalStakedTokens } from '@sb/dexUtils/staking/useTotalStakedTokens'
+import { useWallet } from '@sb/dexUtils/wallet'
+import dayjs from 'dayjs'
+import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
 import {
   BigNumber,
   LastPrice,
@@ -27,28 +38,27 @@ import {
   StatsBlock,
   StatsBlockItem,
 } from '../Staking.styles'
+import { getShareText } from '../Staking.utils.tsx/getShareText'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
-import { useTotalStakedTokens } from '@sb/dexUtils/staking/useTotalStakedTokens'
-import { useConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
 
 interface StatsComponentProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+  marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
 }
-
-const SHARE_TEXT = `I stake my $RIN on @Aldrin_Exchange with 192% APY!
-Don't miss your chance!`
 
 const StatsComponent: React.FC<StatsComponentProps> = (
   props: StatsComponentProps
 ) => {
-  const { getDexTokensPricesQuery } = props
+  const { getDexTokensPricesQuery, marketDataByTickersQuery } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
   const connection = useConnection()
   const { wallet } = useWallet()
-  const isPriceIncreasing = true
-
+  const [currentFarmingState, refresh] = useCurrentFarmingState({
+    connection,
+    wallet,
+  })
+  const markPrice = useMarkPrice() || 0
   const [totalStaked, refreshTotalStaked] = useTotalStakedTokens({
     wallet,
     connection,
@@ -62,8 +72,29 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     getRINSupply()
   }, [])
 
-  const tokenPrice = getDexTokensPricesQuery.getDexTokensPrices[0].price
+  const tokenPrice =
+    getDexTokensPricesQuery &&
+    getDexTokensPricesQuery.getDexTokensPrices &&
+    getDexTokensPricesQuery.getDexTokensPrices[0] &&
+    getDexTokensPricesQuery.getDexTokensPrices[0].price
+
+  const strippedLastPriceDiff = +stripByAmount(
+    marketDataByTickersQuery?.marketDataByTickers?.lastPriceDiff
+  )
+  const strippedMarkPrice = +stripByAmount(markPrice)
+  const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
+  const priceChangePercentage = !prevClosePrice
+    ? 0
+    : (markPrice - prevClosePrice) / (prevClosePrice / 100)
+  const isPriceIncreasing = priceChangePercentage > 0
+
   const totalStakedUSD = tokenPrice * totalStaked
+  const daysInMonth = dayjs().daysInMonth()
+  const dailyRewards = currentFarmingState.tokensTotal / daysInMonth
+  const apy = (currentFarmingState.tokensTotal / totalStaked) * 100 * 12
+
+  const SHARE_TEXT = getShareText(apy)
+
   return (
     <>
       <Row>
@@ -85,7 +116,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <BigNumber>193%</BigNumber>
+              <BigNumber>{apy}%</BigNumber>
               <StretchedBlock>
                 <Number>APY</Number>
                 <div>
@@ -121,7 +152,12 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                       color={isPriceIncreasing ? 'success' : 'error'}
                       size="xs"
                     >
-                      ▲ 125.00%
+                      <SvgIcon
+                        src={isPriceIncreasing ? GreenTriangle : RedTriangle}
+                        width={'1rem'}
+                        height={'1rem'}
+                      />{' '}
+                      {stripByAmount(priceChangePercentage)}%
                     </InlineText>
                   </LastPrice>
                 </StatsBlockItem>
@@ -133,7 +169,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                 </StatsBlockItem>
                 <StatsBlockItem>
                   <BlockSubtitle>Daily Rewards</BlockSubtitle>
-                  <Number>112,252 RIN</Number>
+                  <Number>{stripByAmountAndFormat(dailyRewards)} RIN</Number>
                 </StatsBlockItem>
               </StatsBlock>
             </BlockContentStretched>
@@ -152,5 +188,15 @@ export default compose(
     variables: { symbols: ['RIN'] },
     withoutLoading: true,
     pollInterval: 60000,
+  }),
+  queryRendererHoc({
+    query: marketDataByTickers,
+    name: 'marketDataByTickersQuery',
+    variables: (props) => ({
+      symbol: 'RIN_USDC',
+      exchange: 'serum',
+      marketType: 0,
+      ...generateDatesForRequest(),
+    }),
   })
 )(StatsComponent)

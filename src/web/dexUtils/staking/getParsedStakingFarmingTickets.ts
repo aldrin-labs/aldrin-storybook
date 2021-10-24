@@ -8,9 +8,11 @@ import { FarmingTicket } from '../common/types'
 export const getParsedStakingFarmingTickets = async ({
   wallet,
   connection,
+  walletPublicKey,
 }: {
   wallet: WalletAdapter
   connection: Connection
+  walletPublicKey?: PublicKey
 }): Promise<FarmingTicket[]> => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -21,6 +23,7 @@ export const getParsedStakingFarmingTickets = async ({
   const tickets = await loadStakingFarmingTickets({
     wallet,
     connection,
+    walletPublicKey,
   })
 
   const allUserTicketsPerPool = tickets.map((ticket) => {

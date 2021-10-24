@@ -8,3 +8,16 @@ export type FarmingTicket = {
 }
 
 export type PoolAddress = string
+
+export type FarmingState = {
+  farmingState: string
+  farmingTokenVault: string
+  farmingTokenMint: string
+  farmingSnapshots: string
+  tokensUnlocked: number
+  tokensTotal: number
+  startTime: number
+  tokensPerPeriod: number
+  periodLength: number
+  vestingPeriod: number
+}
