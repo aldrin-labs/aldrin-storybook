@@ -23,10 +23,13 @@ import {
   MarketDataByTicker,
 } from '@sb/compositions/Chart/components/MarketStats/MarketStats'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useMarkPrice } from '@sb/dexUtils/markets'
-import { useCurrentFarmingState } from '@sb/dexUtils/staking/useCurrentFarmingState'
-import { useTotalStakedTokens } from '@sb/dexUtils/staking/useTotalStakedTokens'
+import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
+import { getParsedStakingSnapshots } from '@sb/dexUtils/staking/getParsedStakingSnapshots'
+import { useAllFarmingStates } from '@sb/dexUtils/staking/useAllFarmingStates'
+import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useWallet } from '@sb/dexUtils/wallet'
 import dayjs from 'dayjs'
 import React, { useEffect, useState } from 'react'
@@ -54,16 +57,25 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
   const connection = useConnection()
   const { wallet } = useWallet()
-  const [currentFarmingState, refresh] = useCurrentFarmingState({
+  const [
+    allStakingFarmingStates,
+    refreshAllStakingFarmingStates,
+  ] = useAllFarmingStates({
     connection,
     wallet,
   })
   const markPrice = useMarkPrice() || 0
-  const [totalStaked, refreshTotalStaked] = useTotalStakedTokens({
+  const [allStakingFarmingTickets, refreshTotalStaked] = useAllStakingTickets({
     wallet,
     connection,
   })
 
+  const totalStaked = getStakedTokensFromOpenFarmingTickets(
+    allStakingFarmingTickets
+  )
+  const currentFarmingState = getCurrentFarmingStateFromAll(
+    allStakingFarmingStates
+  )
   useEffect(() => {
     const getRINSupply = async () => {
       const CCAICircSupplyValue = await getRINCirculationSupply()
@@ -90,8 +102,8 @@ const StatsComponent: React.FC<StatsComponentProps> = (
 
   const totalStakedUSD = tokenPrice * totalStaked
   const daysInMonth = dayjs().daysInMonth()
-  const dailyRewards = currentFarmingState.tokensTotal / daysInMonth
-  const apy = (currentFarmingState.tokensTotal / totalStaked) * 100 * 12
+  const dailyRewards = currentFarmingState?.tokensTotal / daysInMonth
+  const apy = (currentFarmingState?.tokensTotal / totalStaked) * 100 * 12
 
   const SHARE_TEXT = getShareText(apy)
 

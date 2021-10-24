@@ -1,10 +1,13 @@
+import { PublicKey } from '@solana/web3.js'
+
 export type FarmingTicket = {
   tokensFrozen: number
   endTime: string
-  startTime: number
+  startTime: string
   pool: string
   farmingTicket: string
   amountsToClaim: { amount: number; farmingState: string }[]
+  statesAttached?: { farmingState: string }[]
 }
 
 export type PoolAddress = string
@@ -20,4 +23,17 @@ export type FarmingState = {
   tokensPerPeriod: number
   periodLength: number
   vestingPeriod: number
+}
+
+export type StakingSnapshot = {
+  isInitialized: boolean
+  tokensFrozen: number
+  tokensTotal: number
+  time: number
+}
+
+export type StakingSnapshotQueue = {
+  publicKey: string
+  nextIndex: number
+  snapshots: StakingSnapshot[]
 }

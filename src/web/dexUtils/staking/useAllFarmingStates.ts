@@ -2,19 +2,18 @@ import { Connection } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
 import { FarmingState } from '../common/types'
 import { RefreshFunction, WalletAdapter } from '../types'
-import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
 import { getParsedStakingFarmingStates } from './getParsedStakingFarmingStates'
 
-export const useCurrentFarmingState = ({
+export const useAllFarmingStates = ({
   wallet,
   connection,
 }: {
   wallet: WalletAdapter
   connection: Connection
-}): [FarmingState, RefreshFunction] => {
-  const [currentStakingFarmingState, setCurrentStakingFarmingState] = useState(
-    <FarmingState>{}
-  )
+}): [FarmingState[], RefreshFunction] => {
+  const [allStakingFarmingStates, setAllStakingFarmingStates] = useState<
+    FarmingState[]
+  >([])
   const [refreshCounter, setRefreshCounter] = useState(0)
 
   const refresh: RefreshFunction = () => setRefreshCounter(refreshCounter + 1)
@@ -25,15 +24,12 @@ export const useCurrentFarmingState = ({
         wallet,
         connection,
       })
-      const currentStakingFarmingState = getCurrentFarmingStateFromAll(
-        allStakingFarmingStates
-      )
-      console.log('currentStakingFarmingState', currentStakingFarmingState)
-      setCurrentStakingFarmingState(currentStakingFarmingState)
+
+      setAllStakingFarmingStates(allStakingFarmingStates)
     }
 
     loadStakingFarmingStates()
   }, [refreshCounter])
 
-  return [currentStakingFarmingState, refresh]
+  return [allStakingFarmingStates, refresh]
 }

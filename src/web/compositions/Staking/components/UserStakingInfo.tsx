@@ -11,8 +11,9 @@ import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Input } from '@sb/components/Input'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
+import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
-import { useTotalStakedTokens } from '@sb/dexUtils/staking/useTotalStakedTokens'
+import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { CCAI_MINT } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import React, { useEffect, useState } from 'react'
@@ -67,12 +68,17 @@ const UserStakingInfoContent: React.FC = () => {
 
   const walletAddress = wallet?.publicKey?.toString() || ''
 
-  const [totalStaked, refreshTotalStaked] = useTotalStakedTokens({
+  const [
+    allStakingFarmingTickets,
+    refreshAllStakingFarmingTickets,
+  ] = useAllStakingTickets({
     wallet,
     connection,
     walletPublicKey: wallet.publicKey,
   })
-
+  const totalStaked = getStakedTokensFromOpenFarmingTickets(
+    allStakingFarmingTickets
+  )
   const setAmount = (v: string) => {
     const newValue = parseFloat(v)
     if (Number.isNaN(newValue)) {
