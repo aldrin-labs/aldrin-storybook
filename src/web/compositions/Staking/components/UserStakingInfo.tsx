@@ -114,9 +114,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   })
 
 
+  console.log('userRewards:', userRewards)
+
 
   const userAccount = allUserAccounts?.find((_) => _.mint === tokenMint)
-  console.log('userAccount: ', userAccount)
 
   const start = async () => {
 
@@ -193,10 +194,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <StretchedBlock>
                   <div>
                     <BlockSubtitle>Rewards:</BlockSubtitle>
-                    {/* <UserBalance
+                    <UserBalance
                       visible={isBalancesShowing}
                       value={userRewards}
-                    /> */}
+                    />
                   </div>
                   <div>
                     <BlockSubtitle>Available to claim:</BlockSubtitle>

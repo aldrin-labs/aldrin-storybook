@@ -16,7 +16,7 @@ export const StakingComponent: React.FC = () => {
   const MINT_ADDRESS = MASTER_BUILD ? RIN_MINT : 'BCP6eCN2W1Z918hVoF3q9xw79AxFHsVxM4RSPxxKXL2m'
 
   
-  const { wallet } = useWallet()
+  const { wallet, connected } = useWallet()
   const connection = useConnection()
 
   const [tokenData, setTokenData] = useState<TokenInfo|null>(null)
@@ -25,12 +25,16 @@ export const StakingComponent: React.FC = () => {
     const fetchData = async () => {
       const atd = await getAllTokensData(wallet.publicKey, connection)
       const tokenData = atd.find((token) => token.mint === MINT_ADDRESS)
+      console.log('tokenData', tokenData)
       if (tokenData) {
         setTokenData(tokenData)
       }
     }
-    fetchData()
-  }, [])
+    if (connected) {
+      console.log('Wallet: ', wallet)
+      fetchData()
+    }
+  }, [wallet, connected])
 
 
   return (
