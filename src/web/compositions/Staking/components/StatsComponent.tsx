@@ -45,10 +45,13 @@ import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
 import { TokenInfo } from '@sb/dexUtils/types'
 
-interface StatsComponentProps {
+interface InnerProps {
+  tokenData: TokenInfo | null
+}
+interface StatsComponentProps extends InnerProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
-  tokenData: TokenInfo | null
+ 
 }
 
 const StatsComponent: React.FC<StatsComponentProps> = (
@@ -196,7 +199,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   )
 }
 
-export default compose(
+export default compose<InnerProps, any>(
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
