@@ -130,7 +130,7 @@ export const combineAllPoolsData = ({
   tradingVolumesMap,
   earnedFeesInPoolForUserMap,
   selectPool,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
@@ -150,7 +150,7 @@ export const combineAllPoolsData = ({
   tradingVolumesMap: Map<string, { weekly: number; daily: number }>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: () => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -393,7 +393,9 @@ export const combineAllPoolsData = ({
                   setPoolWaitingForUpdateAfterOperation={
                     setPoolWaitingForUpdateAfterOperation
                   }
-                  refreshAllTokensData={refreshAllTokensData}
+                  refreshTokensWithFarmingTickets={
+                    refreshTokensWithFarmingTickets
+                  }
                   selectPool={selectPool}
                   poolWaitingForUpdateAfterOperation={
                     poolWaitingForUpdateAfterOperation

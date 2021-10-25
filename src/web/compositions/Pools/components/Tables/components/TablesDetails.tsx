@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -45,7 +45,7 @@ export const TablesDetails = ({
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -60,7 +60,7 @@ export const TablesDetails = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: () => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -486,11 +486,11 @@ export const TablesDetails = ({
                       clearPoolWaitingForUpdate()
                     } else {
                       setTimeout(async () => {
-                        refreshAllTokensData()
+                        refreshTokensWithFarmingTickets()
                         clearPoolWaitingForUpdate()
                       }, 7500)
 
-                      setTimeout(() => refreshAllTokensData(), 15000)
+                      setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
                     }
                   } catch (e) {
                     clearPoolWaitingForUpdate()

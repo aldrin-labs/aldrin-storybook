@@ -101,7 +101,7 @@ export const combineUserLiquidityData = ({
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
@@ -118,7 +118,7 @@ export const combineUserLiquidityData = ({
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: () => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
@@ -367,7 +367,7 @@ export const combineUserLiquidityData = ({
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                  refreshAllTokensData={refreshAllTokensData}
+                  refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
                   setPoolWaitingForUpdateAfterOperation={
                     setPoolWaitingForUpdateAfterOperation
                   }

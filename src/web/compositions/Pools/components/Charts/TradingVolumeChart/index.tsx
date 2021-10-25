@@ -63,11 +63,12 @@ const TradingVolumeChart = ({
           >
             {title}
           </WhiteTitle>
+          <Line />
           <ReloadTimerTillUpdate
             duration={3600}
+            margin={'0 0 0 2rem'}
             getSecondsTillNextUpdate={() => msToNextHour() / 1000}
           />
-          <Line />
         </RowContainer>
       </HeaderContainer>
       <ChartContainer>

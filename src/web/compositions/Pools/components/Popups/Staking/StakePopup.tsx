@@ -142,7 +142,7 @@ export const StakePopup = ({
           </Row>
         </Text>
       </RowContainer>
-      <HintContainer justify={'flex-start'} margin="2rem 0">
+      <HintContainer justify={'flex-start'} margin="5rem 0 2rem 0">
         <Row justify="flex-start" width="20%">
           <ExclamationMark
             theme={theme}

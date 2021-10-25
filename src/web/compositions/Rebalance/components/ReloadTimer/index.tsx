@@ -11,8 +11,8 @@ export const TimerButton = styled.div`
   background: #383b45;
   border-radius: 0.8rem;
   cursor: pointer;
-  margin-right: ${(props: { marginRight: string }) =>
-    props.marginRight || '3rem'};
+  margin: ${(props: { margin: string }) =>
+    props.margin || '0 3rem 0 0'};
 `
 
 export const ReloadTimer = ({
@@ -22,7 +22,7 @@ export const ReloadTimer = ({
   color = '#651CE4',
   trailColor = '#383B45',
   callback,
-  marginRight = '3rem',
+  margin = '0 3rem 0 0',
   rerenderOnClick = true,
 }: {
   size?: number
@@ -31,14 +31,14 @@ export const ReloadTimer = ({
   color?: string
   trailColor?: string
   callback: () => void
-  marginRight?: string
+  margin?: string
   rerenderOnClick?: boolean
 }) => {
   const [rerenderCounter, rerender] = useState(0)
 
   return (
     <TimerButton
-      marginRight={marginRight}
+      margin={margin}
       onClick={() => {
         callback()
         if (rerenderOnClick) {

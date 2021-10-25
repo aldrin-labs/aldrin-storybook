@@ -6,9 +6,11 @@ import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 
 export const ReloadTimerTillUpdate = ({
   duration,
+  margin,
   getSecondsTillNextUpdate,
 }: {
   duration: number
+  margin?: string 
   getSecondsTillNextUpdate: () => number
 }) => {
   const [secondsTillNextUpdate, setSecondsTillUpdate] = useState(0)
@@ -38,6 +40,7 @@ export const ReloadTimerTillUpdate = ({
         <ReloadTimer
           initialRemainingTime={secondsTillNextUpdate}
           duration={duration}
+          margin={margin}
           rerenderOnClick={false}
           callback={refreshSecondsTillUpdate}
         />

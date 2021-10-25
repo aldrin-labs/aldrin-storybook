@@ -266,7 +266,7 @@ const SwapPage = ({
             </Text>
             <Row>
               <ReloadTimer
-                marginRight={'1.5rem'}
+                margin={'0 1.5rem 0 0'}
                 callback={async () => {
                   getDexTokensPricesQueryRefetch()
                   refreshPoolBalances()
@@ -276,7 +276,7 @@ const SwapPage = ({
               {baseTokenMintAddress && quoteTokenMintAddress && (
                 <TimerButton
                   onClick={() => openTokensAddressesPopup(true)}
-                  marginRight={'1.5rem'}
+                  margin={'0 1.5rem 0 0'}
                 >
                   <SvgIcon src={Inform} width={'50%'} height={'50%'} />
                 </TimerButton>

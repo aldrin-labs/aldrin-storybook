@@ -41,7 +41,7 @@ const AllPoolsTableComponent = ({
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
@@ -64,7 +64,7 @@ const AllPoolsTableComponent = ({
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: () => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -133,7 +133,7 @@ const AllPoolsTableComponent = ({
     tradingVolumesMap,
     earnedFeesInPoolForUserMap,
     selectPool,
-    refreshAllTokensData,
+    refreshTokensWithFarmingTickets,
     setPoolWaitingForUpdateAfterOperation,
     setIsAddLiquidityPopupOpen,
     setIsWithdrawalPopupOpen,
@@ -222,9 +222,9 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * 6,
-    variables: {
+    variables:() => ({
       timestampFrom: endOfHourTimestamp() - dayDuration * 7,
       timestampTo: endOfHourTimestamp(),
-    },
+    }),
   })
 )(AllPoolsTableComponent)
