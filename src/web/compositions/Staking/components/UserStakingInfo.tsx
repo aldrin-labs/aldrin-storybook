@@ -5,7 +5,7 @@ import {
   Block,
   BlockContent,
   BlockSubtitle,
-  BlockTitle,
+  BlockTitle
 } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
@@ -13,13 +13,18 @@ import { Input } from '@sb/components/Input'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
+import { notify } from '@sb/dexUtils/notifications'
+import { calculateUserRewards } from '@sb/dexUtils/staking/calculateUserRewards'
+import { endStaking } from '@sb/dexUtils/staking/endStaking'
+import { startStaking } from '@sb/dexUtils/staking/startStaking'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
-import { RIN_MINT } from '@sb/dexUtils/utils'
+import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
+import { TokenInfo } from '@sb/dexUtils/types'
+import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useEffect, useState } from 'react'
+import { PublicKey } from '@solana/web3.js'
+import React, { useState } from 'react'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
-import { TokenInfo } from '../../Rebalance/Rebalance.types'
-import { getAllTokensData } from '../../Rebalance/utils'
 import {
   Asterisks,
   BalanceRow,
@@ -31,15 +36,10 @@ import {
   StyledTextDiv,
   TotalStakedBlock,
   WalletBalanceBlock,
-  WalletRow,
+  WalletRow
 } from '../Staking.styles'
 import { RestakePopup } from './RestakePopup'
-import { MASTER_BUILD } from '@core/utils/config'
-import { startStaking } from '@sb/dexUtils/staking/startStaking'
-import { endStaking } from '@sb/dexUtils/staking/endStaking'
-import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
-import { notify } from '@sb/dexUtils/notifications'
-import { PublicKey } from '@solana/web3.js'
+
 
 interface UserBalanceProps {
   value: number
@@ -97,16 +97,21 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     return true
   }
 
+  const [allUserAccounts] = useUserTokenAccounts({ wallet, connection })
+
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     allStakingFarmingTickets
   ) / Math.pow(10, tokenData?.decimals || 0)
 
-
-  const [allUserAccounts, refreshAllTokensData] = useUserTokenAccounts({
+  const [allStakingSnapshotQueues, refresh] = useStakingSnapshotQueues({
     wallet,
     connection,
   })
 
+  const userRewards = calculateUserRewards({
+    snapshotsQueues: allStakingSnapshotQueues,
+    allStakingFarmingTickets: allStakingFarmingTickets,
+  })
 
 
 
@@ -188,7 +193,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <StretchedBlock>
                   <div>
                     <BlockSubtitle>Rewards:</BlockSubtitle>
-                    <UserBalance visible={isBalancesShowing} value={1000} />
+                    {/* <UserBalance
+                      visible={isBalancesShowing}
+                      value={userRewards}
+                    /> */}
                   </div>
                   <div>
                     <BlockSubtitle>Available to claim:</BlockSubtitle>
