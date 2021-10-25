@@ -15,7 +15,7 @@ import {
   useConnection,
   useConnectionConfig,
 } from './connection'
-import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
+import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
 import {
   Connection,
   PublicKey,
@@ -50,7 +50,7 @@ export const WALLET_PROVIDERS = [
   {
     name: 'Wallet™',
     fullName: 'Wallet™ by Aldrin.com',
-    url: CCAIProviderURL,
+    url: RINProviderURL,
     adapter: CommonWalletAdapter,
     isExtension: false,
     showOnMobile: true,
@@ -160,7 +160,7 @@ export function WalletProvider({ children }) {
   const [autoConnect, setAutoConnect] = useState(false)
   const [providerUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
-    CCAIProviderURL
+    RINProviderURL
   )
 
   const provider = useMemo(
@@ -269,7 +269,7 @@ export function WalletProvider({ children }) {
 
   useEffect(() => {
     if (wallet && connectWalletHash === '#connect_wallet') {
-      setProviderUrl(CCAIProviderURL)
+      setProviderUrl(RINProviderURL)
       wallet?.connect()
     }
   }, [wallet])

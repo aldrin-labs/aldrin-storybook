@@ -1,4 +1,4 @@
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL } from '@sb/dexUtils/utils'
 import React from 'react'
 import { StyledLink, StyledA, StyledButton } from './styles'
 
@@ -148,7 +148,7 @@ export const RebalanceLink = ({ isActive }: { isActive: boolean }) => {
 
 export const WalletLink = ({ isActive }) => {
   return (
-    <StyledA href={CCAIProviderURL} target="_blank">
+    <StyledA href={RINProviderURL} target="_blank">
       <svg
         width="100%"
         height="100%"

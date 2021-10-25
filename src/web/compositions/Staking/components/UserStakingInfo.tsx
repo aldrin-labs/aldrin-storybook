@@ -14,7 +14,7 @@ import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
-import { CCAI_MINT } from '@sb/dexUtils/utils'
+import { RIN_MINT } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import React, { useEffect, useState } from 'react'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
@@ -97,7 +97,7 @@ const UserStakingInfoContent: React.FC = () => {
     fetchData()
   }, [])
 
-  const tokenData = allTokensData?.find((token) => token.mint === CCAI_MINT)
+  const tokenData = allTokensData?.find((token) => token.mint === RIN_MINT)
 
   return (
     <>
