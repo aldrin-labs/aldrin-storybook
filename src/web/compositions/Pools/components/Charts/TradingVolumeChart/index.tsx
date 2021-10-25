@@ -21,6 +21,10 @@ import {
 
 import dayjs from 'dayjs'
 import { Line } from '../../Popups/index.styles'
+import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { estimatedTime, msToNextHour } from '@core/utils/dateUtils'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
 
 const TradingVolumeChart = ({
   theme,
@@ -34,6 +38,7 @@ const TradingVolumeChart = ({
   getTradingVolumeHistoryQuery: any
 }) => {
   const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
+
   useEffect(() => {
     createTradingVolumeChart({
       theme,
@@ -59,6 +64,11 @@ const TradingVolumeChart = ({
             {title}
           </WhiteTitle>
           <Line />
+          <ReloadTimerTillUpdate
+            duration={3600}
+            margin={'0 0 0 2rem'}
+            getSecondsTillNextUpdate={() => msToNextHour() / 1000}
+          />
         </RowContainer>
       </HeaderContainer>
       <ChartContainer>

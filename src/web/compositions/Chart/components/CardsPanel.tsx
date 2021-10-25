@@ -98,7 +98,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
             >
               <NavLinkButton
                 style={NAV_LINK_DROPDOWN_STYLE}
-                component={(props) => <Link to={`/swaps`} {...props} />}
+                component={(props) => <Link to={`/swap`} {...props} />}
               >
                 <MenuDropdownLink>Swap</MenuDropdownLink>
               </NavLinkButton>

@@ -26,6 +26,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { endOfHourTimestamp } from '@core/utils/dateUtils'
 
 const AllPoolsTableComponent = ({
   theme,
@@ -40,7 +41,7 @@ const AllPoolsTableComponent = ({
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
@@ -63,7 +64,7 @@ const AllPoolsTableComponent = ({
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: () => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -132,7 +133,7 @@ const AllPoolsTableComponent = ({
     tradingVolumesMap,
     earnedFeesInPoolForUserMap,
     selectPool,
-    refreshAllTokensData,
+    refreshTokensWithFarmingTickets,
     setPoolWaitingForUpdateAfterOperation,
     setIsAddLiquidityPopupOpen,
     setIsWithdrawalPopupOpen,
@@ -211,8 +212,8 @@ export default compose(
     withoutLoading: true,
     pollInterval: 60000 * 6,
     variables: {
-      timestampFrom: endOfDayTimestamp() - dayDuration,
-      timestampTo: endOfDayTimestamp(),
+      timestampFrom: endOfHourTimestamp() - dayDuration,
+      timestampTo: endOfHourTimestamp(),
     },
   }),
   queryRendererHoc({
@@ -221,9 +222,9 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * 6,
-    variables: {
-      timestampFrom: endOfDayTimestamp() - dayDuration * 7,
-      timestampTo: endOfDayTimestamp(),
-    },
+    variables:() => ({
+      timestampFrom: endOfHourTimestamp() - dayDuration * 7,
+      timestampTo: endOfHourTimestamp(),
+    }),
   })
 )(AllPoolsTableComponent)

@@ -3,10 +3,8 @@ import { TokenInstructions } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 
-import { notify } from '../notifications'
 import {
   createSOLAccountAndClose,
-  NUMBER_OF_RETRIES,
   transferSOLToWrappedAccountAndClose,
 } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
@@ -124,67 +122,48 @@ export const swap = async ({
     }
   }
 
-  let counter = 0
   let commonTransaction = new Transaction()
 
-  while (counter < NUMBER_OF_RETRIES) {
-    try {
-      if (counter > 0) {
-        await notify({
-          type: 'error',
-          message:
-            'Swap failed, trying with bigger slippage. Please confirm transaction again.',
-        })
+  try {
+    const swapTransaction = await program.instruction.swap(
+      new BN(swapAmountIn),
+      new BN(swapAmountOut),
+      isSwapBaseToQuote ? Side.Ask : Side.Bid,
+      {
+        accounts: {
+          pool: poolPublicKey,
+          poolSigner: vaultSigner,
+          poolMint,
+          baseTokenVault,
+          quoteTokenVault,
+          feePoolTokenAccount: feePoolTokenAccount,
+          walletAuthority: wallet.publicKey,
+          userBaseTokenAccount,
+          userQuoteTokenAccount,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        },
       }
+    )
 
-      const swapTransaction = await program.instruction.swap(
-        new BN(swapAmountIn),
-        new BN(swapAmountOut),
-        isSwapBaseToQuote ? Side.Ask : Side.Bid,
-        {
-          accounts: {
-            pool: poolPublicKey,
-            poolSigner: vaultSigner,
-            poolMint,
-            baseTokenVault,
-            quoteTokenVault,
-            feePoolTokenAccount: feePoolTokenAccount,
-            walletAuthority: wallet.publicKey,
-            userBaseTokenAccount,
-            userQuoteTokenAccount,
-            tokenProgram: TOKEN_PROGRAM_ID,
-          },
-        }
-      )
+    commonTransaction.add(transactionBeforeSwap)
+    commonTransaction.add(swapTransaction)
+    commonTransaction.add(transactionAfterSwap)
 
-      commonTransaction.add(transactionBeforeSwap)
-      commonTransaction.add(swapTransaction)
-      commonTransaction.add(transactionAfterSwap)
+    const tx = await sendTransaction({
+      wallet,
+      connection,
+      transaction: commonTransaction,
+      signers: commonSigners,
+      focusPopup: true,
+    })
 
-      const tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction: commonTransaction,
-        signers: commonSigners,
-        focusPopup: true,
-      })
-
-      if (tx) {
-        return 'success'
-      } else {
-        commonTransaction = new Transaction()
-        counter++
-        swapAmountOut *= 0.99
-      }
-    } catch (e) {
-      console.log('deposit catch error', e)
-      commonTransaction = new Transaction()
-      counter++
-      swapAmountOut *= 0.99
-
-      if (e.message.includes('cancelled')) {
-        return 'cancelled'
-      }
+    if (tx) {
+      return 'success'
+    }
+  } catch (e) {
+    console.log('swap catch error', e)
+    if (e.message.includes('cancelled')) {
+      return 'cancelled'
     }
   }
 
