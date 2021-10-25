@@ -13,6 +13,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { getUniqueListBy, useLocalStorageState } from './utils'
 import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
 import {
+  getProviderNameFromUrl,
   useAccountData,
   useAccountInfo,
   useConnection,
@@ -27,12 +28,15 @@ import {
   useAwesomeMarkets,
   AWESOME_TOKENS,
 } from '@core/utils/awesomeMarkets/serum'
+import { Metrics } from '@core/utils/metrics'
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
   TOKEN_PROGRAM_ID,
 } from './token/token'
+import { OrderWithMarket } from '@sb/dexUtils/send'
+import { Metrics } from '@core/utils/metrics'
 
 export const ALL_TOKENS_MINTS = getUniqueListBy(
   [...TOKEN_MINTS, ...AWESOME_TOKENS],
@@ -48,7 +52,7 @@ export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   return acc
 }, {})
 
-export const REFFERER_ACCOUNT_ADDRESSES: {[key: string]: string | undefined}  = {
+export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } = {
   "USDT": process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
   "USDC": process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
   "SOL": process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
@@ -76,15 +80,15 @@ const _IGNORE_DEPRECATED = false
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
-      {
-        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-        name: 'RIN/USDC',
-        programId: new PublicKey(
-          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-        ),
-        deprecated: false,
-      },
-    ].concat(MARKETS)
+    {
+      address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+      name: 'RIN/USDC',
+      programId: new PublicKey(
+        '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+      ),
+      deprecated: false,
+    },
+  ].concat(MARKETS)
 // : MARKETS
 
 export interface RawMarketData {
@@ -417,7 +421,7 @@ export function MarketProvider({ children }) {
 
     setMarket(null)
 
-    if (!marketInfo || !marketInfo?.address) {
+    if (!marketInfo?.address) {
       notify({
         message: 'Error loading market',
         description: 'Please select a market from the dropdown',
@@ -439,6 +443,8 @@ export function MarketProvider({ children }) {
       })
       .catch((e) => {
         console.log('e', e)
+        const rpcUrl = getProviderNameFromUrl({ rawConnection: connection })
+        Metrics.sendMetrics({ metricName: `error.rpc.${rpcUrl}.marketFetch` })
         notify({
           message: 'Error loading market',
           description: e.message,
@@ -583,12 +589,12 @@ const useOpenOrdersPubkeys = (): string[] => {
         b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
       ) =>
         a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
-        a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+          a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
           ? -1
           : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
             a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
-          ? 1
-          : 0
+            ? 1
+            : 0
     )
 
     console.log(
@@ -830,7 +836,7 @@ export function useSelectedQuoteCurrencyAccount() {
   )
 
   // if not found in accounts, but token added as associated
-  if (!quoteTokenAddress && associatedTokenInfo) {
+  if (!quoteTokenAddress && associatedTokenInfo && associatedTokenAddress) {
     return {
       pubkey: associatedTokenAddress,
     }
@@ -886,7 +892,7 @@ export function useSelectedBaseCurrencyAccount() {
   )
 
   // if not found in accounts, but token added as associated
-  if (!baseTokenAddress && associatedTokenInfo) {
+  if (!baseTokenAddress && associatedTokenInfo && associatedTokenAddress) {
     return {
       pubkey: associatedTokenAddress,
     }
@@ -970,7 +976,7 @@ export function useSelectedBaseCurrencyBalances() {
   )
 }
 
-export function useOpenOrders() {
+export function useOpenOrders(): OrderWithMarket[] | null {
   const { market, marketName } = useMarket()
   const [openOrdersAccounts] = useOpenOrdersAccounts(false)
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
@@ -1047,7 +1053,7 @@ export function useBalances() {
     openOrders && openOrders.baseTokenTotal && openOrders.baseTokenFree
   const quoteExists =
     openOrders && openOrders.quoteTokenTotal && openOrders.quoteTokenFree
-  
+
   return [
     {
       market,
@@ -1057,8 +1063,8 @@ export function useBalances() {
       orders:
         baseExists && market
           ? market.baseSplSizeToNumber(
-              openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
-            )
+            openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
+          )
           : null,
       openOrders,
       unsettled:
@@ -1076,8 +1082,8 @@ export function useBalances() {
       orders:
         quoteExists && market
           ? market.quoteSplSizeToNumber(
-              openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
-            )
+            openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
+          )
           : null,
       unsettled:
         quoteExists && market
@@ -1190,6 +1196,8 @@ export function useUnmigratedDeprecatedMarkets() {
         )
       } catch (e) {
         console.log('Failed loading market', marketInfo.name, e)
+        const rpcUrl = getProviderNameFromUrl({ rawConnection: connection })
+        Metrics.sendMetrics({ metricName: `error.rpc.${rpcUrl}.unmigratedMarketFetch` })
         notify({
           message: 'Error loading market',
           description: e.message,

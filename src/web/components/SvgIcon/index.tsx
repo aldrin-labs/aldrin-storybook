@@ -14,7 +14,7 @@ interface Props {
 export default class SvgIcon extends React.Component<Props, {}> {
   render() {
     const {
-      src,
+      src = '',
       style,
       styledComponentsAdditionalStyle,
       animation,

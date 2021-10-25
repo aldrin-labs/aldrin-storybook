@@ -175,15 +175,15 @@ const styles = (theme: Theme) =>
     },
     rowExpanded: {
       height: theme.spacing.unit * 4,
-      backgroundColor: theme.palette.action.selected,
-      '&:hover': {
-        backgroundColor: theme.palette.action.hover,
-      },
-      '&:hover td': {
-        backgroundColor: `${
-          theme.palette.hover[theme.palette.type]
-        } !important`,
-      },
+      // backgroundColor: theme.palette.action.selected,
+      // '&:hover': {
+      //   backgroundColor: theme.palette.action.hover,
+      // },
+      // '&:hover td': {
+      //   backgroundColor: `${
+      //     theme.palette.hover[theme.palette.type]
+      //   } !important`,
+      // },
     },
     indeterminateCheckbox: {
       color: theme.palette.primary.main,
@@ -593,6 +593,7 @@ const CustomTable = (props: Props) => {
     tableBodyStyles = {},
     paperAdditionalStyle = '',
     hideCommonCheckbox = false,
+    hideRowsCheckboxes = false,
   } = props
 
   if (
@@ -834,7 +835,8 @@ const CustomTable = (props: Props) => {
                         }
                       >
                         {row.expandableContent &&
-                        row.expandableContent.length > 0 ? (
+                        row.expandableContent.length > 0 &&
+                        !hideRowsCheckboxes ? (
                           <CustomTableCell
                             padding="checkbox"
                             style={{
@@ -860,6 +862,7 @@ const CustomTable = (props: Props) => {
                             })}
                           </CustomTableCell>
                         ) : (
+                          !hideRowsCheckboxes &&
                           typeOfCheckbox !== null && (
                             <CustomTableCell
                               style={{
@@ -890,7 +893,9 @@ const CustomTable = (props: Props) => {
                             <TableRow
                               className={rowsWithHover && classes.rowExpanded}
                             >
-                              <CustomTableCell padding="checkbox" />
+                              {!hideRowsCheckboxes && (
+                                <CustomTableCell padding="checkbox" />
+                              )}
                               {renderCells({
                                 padding,
                                 tableStyles,

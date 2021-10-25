@@ -1,16 +1,28 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { compose } from 'recompose'
 import { withTheme } from '@material-ui/styles'
 import { Card } from '@material-ui/core'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
 import { TriggerTitle } from '@sb/components/ChartCardHeader/styles'
-import { CHARTS_API_URL, maxMobileScreenResolution } from '@core/utils/config'
-import { TerminalModeButton } from '@sb/components/TradingWrapper/styles'
+import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
+import { cancelOrder as cancel, amendOrder } from '@sb/dexUtils/send'
 import { useWallet } from '@sb/dexUtils/wallet'
 import useMobileSize from '@webhooks/useMobileSize'
+import BN from 'bn.js'
+import {
+  useOpenOrders,
+  useSelectedBaseCurrencyAccount,
+  useSelectedQuoteCurrencyAccount,
+  useSelectedOpenOrdersAccount,
+} from '../../dexUtils/markets'
+import { useSerumConnection } from '../../dexUtils/connection'
+import {
+  Order,
+  MESSAGE_TYPE,
+  SingleChartProps,
+  SingleChartWithButtonsProps,
+} from './Chart.types'
 
 const Wrapper = styled(Card)`
   display: flex;
@@ -22,152 +34,167 @@ const Wrapper = styled(Card)`
   border-radius: 0;
 `
 
-const marketsWithoutIndexChart = [
-  // 'ALEPH_USDT',
-  // 'ALTBEAR_USDT',
-  // 'ALTBULL_USDT',
-  // 'BEARSHIT_USDT',
-  // 'BULLSHIT_USDT',
-  // 'KEEP_USDT',
-  // 'KIN_USDT',
-  // 'MSRM_USDT',
-  // 'SWAG_USDT',
-  // 'SRM_SOL',
-]
+// TODO: types
+const orderToMessage = (order: any): Order => {
+  return {
+    orderId: order.orderId.toJSON(),
+    marketName: order.marketName,
+    price: order.price,
+    side: order.side,
+    size: order.size,
+  }
+}
 
-const marketsWithoutBinanceChart = [
-  // 'CREAM_USDT',
-  // 'FIDA_USDT',
-  // 'FRONT_USDT',
-  // 'HGET_USDT',
-  // 'HXRO_USDT',
-  // 'LUA_USDT',
-  // 'MATH_USDT',
-  // 'UBXT_USDT'
-]
+const round = (v: number, dec: number) => Math.round(v / dec) * dec
 
-const marketsWithUSDCCharts = ['BTC', 'LINK']
+type OrderCancel = (orderId: string) => void
+type OrderAmend = (orderId: string, price: number) => void
 
-export const SingleChart = ({
-  additionalUrl,
-  name,
-  themeMode,
-  customMarkets,
-  currencyPair,
-}: {
-  additionalUrl: string
-  name: string
-  themeMode: string
-  customMarkets: []
-  currencyPair: string
-}) => {
+export const SingleChart = (props: SingleChartProps) => {
+  const { additionalUrl, themeMode } = props
+  const { wallet } = useWallet()
   const isMobile = useMobileSize()
+  const openOrders = useOpenOrders()
+  const connection = useSerumConnection()
+
+  const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
+  const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
+  const openOrdersAccount = useSelectedOpenOrdersAccount(true)
+
+  const iframe = useRef<HTMLIFrameElement | null>(null)
+  const cancelCallback = useRef<OrderCancel | null>(null)
+  const amendCallback = useRef<OrderAmend | null>(null)
+
+  useEffect(() => {
+    cancelCallback.current = async (orderId: string) => {
+      const ordId = new BN(orderId, 16)
+      const order = openOrders?.find((_: any) => ordId.eq(_.orderId))
+      if (order) {
+        await cancel({
+          order,
+          market: order.market,
+          connection,
+          wallet,
+        })
+      }
+    }
+
+    amendCallback.current = async (orderId: string, price: number) => {
+      const ordId = new BN(orderId, 16)
+      const order = openOrders?.find((_: any) => ordId.eq(_.orderId))
+      if (
+        order &&
+        openOrdersAccount &&
+        baseCurrencyAccount &&
+        quoteCurrencyAccount
+      ) {
+        await amendOrder({
+          order,
+          market: order.market,
+          connection,
+          wallet,
+          amendOrder: { price: round(price, order.market.tickSize) },
+          baseCurrencyAccount,
+          quoteCurrencyAccount,
+          openOrdersAccount,
+        })
+      }
+    }
+  }, [
+    connection,
+    wallet,
+    openOrders,
+    baseCurrencyAccount,
+    quoteCurrencyAccount,
+    openOrdersAccount,
+  ])
+
+  useEffect(() => {
+    const listener = (e: MessageEvent) => {
+      const { data } = e
+      switch (data.messageType) {
+        case MESSAGE_TYPE.ORDER_CANCEL: {
+          const cancelOrder = cancelCallback.current
+          if (cancelOrder) {
+            cancelOrder(data.orderId)
+          }
+          return true
+        }
+        case MESSAGE_TYPE.ORDER_AMEND: {
+          const amend = amendCallback.current
+          if (amend) {
+            amend(data.orderId, data.price)
+          }
+          return true
+        }
+        default:
+          return false
+      }
+    }
+    window.addEventListener('message', listener)
+    return () => window.removeEventListener('message', listener)
+  }, [])
+
+  useEffect(() => {
+    if (openOrders && iframe.current) {
+      const orders = openOrders.map(orderToMessage)
+      const message = { messageType: MESSAGE_TYPE.ACCOUNT_ORDERS, orders }
+      iframe?.current.contentWindow?.postMessage(message, '*')
+    }
+  }, [openOrders])
+
   return (
     <Wrapper>
       <iframe
-        allowfullscreen="" // needed for fullscreen of chart to work
+        allowFullScreen
         style={{ borderWidth: 0 }}
-        src={`https://${CHARTS_API_URL}${additionalUrl}&theme=${
+        src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${
           themeMode === 'light' ? 'light' : 'serum'
         }&isMobile=${isMobile}`}
-        height={'100%'}
-        id={`${name}${themeMode}`}
+        height="100%"
+        id={`tv_chart_${themeMode}`}
+        title="Chart"
         key={`${themeMode}${additionalUrl}`}
+        ref={iframe}
       />
     </Wrapper>
   )
 }
 
-export const SingleChartWithButtons = ({
-  theme,
-  themeMode,
-  currencyPair,
-  base,
-  quote,
-  marketType,
-  customMarkets,
-}) => {
-  const { wallet } = useWallet()
-  const publicKey = wallet?.publicKey?.toBase58()
+const CARD_STYLE: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  borderRight: 'none',
+  borderTop: 'none',
+}
 
-  const isWithoutIndexChart =
-    (!marketsWithUSDCCharts.includes(currencyPair.split('_')[0]) &&
-      currencyPair.split('_')[1] === 'USDC') ||
-    marketsWithoutIndexChart.includes(currencyPair)
+const ChartTitle = styled.span`
+  width: calc(100% - 20rem);
+  white-space: pre-line;
+  text-align: left;
+  color: ${(props) => props.theme.palette.dark.main};
+  text-transform: capitalize;
+  font-size: 1.3rem;
+  line-height: 1rem;
+  padding: 0 1rem;
+`
 
-  const [chartExchange, updateChartExchange] = useState(
-    isWithoutIndexChart ? 'serum' : 'index'
-  )
-
-  const isCustomMarkets =
-    customMarkets.find((el) => el.name.split('/').join('_') === currencyPair) ||
-    marketsWithoutBinanceChart.includes(currencyPair)
-
-  useEffect(() => {
-    updateChartExchange(isWithoutIndexChart ? 'serum' : 'index')
-    return () => {}
-  }, [currencyPair])
+export const SingleChartWithButtons = (props: SingleChartWithButtonsProps) => {
+  const { theme, themeMode, currencyPair, base, quote, marketType } = props
 
   return (
-    <CustomCard
-      theme={theme}
-      id="tradingViewChart"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        borderRight: 'none',
-        borderTop: 'none',
-      }}
-    >
+    <CustomCard theme={theme} id="tradingViewChart" style={CARD_STYLE}>
       <TriggerTitle theme={theme}>
-        <span
-          style={{
-            width: 'calc(100% - 20rem)',
-            whiteSpace: 'pre-line',
-            textAlign: 'left',
-            color: theme.palette.dark.main,
-            textTransform: 'capitalize',
-            fontSize: '1.3rem',
-            lineHeight: '1rem',
-            // paddingLeft: '1rem',
-            padding: '0 1rem',
-          }}
-        >
-          Chart
-        </span>
-        {/* {isWithoutIndexChart ? null :
-        <TerminalModeButton
-          theme={theme}
-          active={chartExchange === 'index'}
-          themeMode
-          style={{ width: '10rem' }}
-          onClick={() => {
-            updateChartExchange('index')
-          }}
-        >
-          Index
-        </TerminalModeButton>
-}
-        <TerminalModeButton
-          theme={theme}
-          active={chartExchange === 'serum'}
-          style={{ width: '10rem' }}
-          onClick={() => updateChartExchange('serum')}
-        >
-          Serum
-        </TerminalModeButton> */}
+        <ChartTitle theme={theme}>Chart</ChartTitle>
       </TriggerTitle>
       <SingleChart
-        name=""
         key={`${themeMode}${base}/${quote}`}
         themeMode={themeMode}
         currencyPair={currencyPair}
-        additionalUrl={`/?symbol=${base}/${quote}&marketType=${String(
-          marketType
-        )}&exchange=serum&publicKey=${publicKey}&api_version=${2.1}`}
+        additionalUrl={`/?symbol=${base}/${quote}&marketType=${marketType}&exchange=serum`}
       />
     </CustomCard>
   )
 }
 
-export default compose(withMarketUtilsHOC, withTheme())(SingleChartWithButtons)
+export default withTheme()(SingleChartWithButtons)

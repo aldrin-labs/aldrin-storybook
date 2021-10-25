@@ -28,13 +28,13 @@ import {
   SerumWhiteTitle,
   Text,
   TopBarTitle,
-  BlockTemplate,
 } from '../../index.styles'
 
 import {
   stripDigitPlaces,
   formatNumberToUSFormat,
 } from '@core/utils/PortfolioTableUtils'
+import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 
 const PairNameTitle = styled((props) => <WhiteTitle {...props} />)`
   font-size: 2.2rem;

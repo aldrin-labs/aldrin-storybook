@@ -20,14 +20,16 @@ export const InputWithCoins = ({
   alreadyInPool,
   maxBalance,
   placeholder,
+  needAlreadyInPool = true,
   onChange,
 }: {
   theme: Theme
   value: string | number
   symbol: string
-  alreadyInPool: number
+  alreadyInPool?: number
   maxBalance: number
   placeholder: string
+  needAlreadyInPool: boolean
   onChange: (value: number | string) => void
 }) => {
   return (
@@ -62,18 +64,23 @@ export const InputWithCoins = ({
       </TokenContainer>
       <TokenContainer right={'2rem'} top={'3rem'}>
         <Row style={{ flexWrap: 'nowrap' }}>
-          <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
-            Already in pool:
-          </Text>
-          &nbsp;
-          <BlueText
-            theme={theme}
-            style={{ marginRight: '2rem' }}
-            onClick={() => onChange(alreadyInPool)}
-          >
-            {stripDigitPlaces(alreadyInPool, 2)} {symbol}
-          </BlueText>
-          &nbsp;
+          {needAlreadyInPool && (
+            <>
+              {' '}
+              <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
+                Already in pool:
+              </Text>
+              &nbsp;
+              <BlueText
+                theme={theme}
+                style={{ marginRight: '2rem' }}
+                onClick={() => onChange(alreadyInPool)}
+              >
+                {stripDigitPlaces(alreadyInPool, 2)} {symbol}
+              </BlueText>
+              &nbsp;
+            </>
+          )}
           <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
             &nbsp;Max:
           </Text>

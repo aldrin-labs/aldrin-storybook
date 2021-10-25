@@ -1,115 +1,40 @@
-import React, { useState } from 'react'
-import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
-import styled from 'styled-components'
-
-import { NavLink } from 'react-router-dom'
-import { MASTER_BUILD } from '@core/utils/config'
-
-import { useLocation, Link } from 'react-router-dom'
-import {
-  RowContainer,
-  Row,
-  ReusableTitle as Title,
-} from '@sb/compositions/AnalyticsRoute/index.styles'
-import { WhiteButton } from '../../Homepage/styles'
-
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
 import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
-import { PanelWrapper, CustomCard } from '../Chart.styles'
-import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
+import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
-import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
-
-import { DEFAULT_MARKET } from '@sb/dexUtils/markets'
-import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
-import { ENDPOINTS, useConnectionConfig } from '@sb/dexUtils/connection'
-import { Line } from '@sb/compositions/AnalyticsRoute/index.styles'
-import OvalSelector from '@sb/components/OvalSelector'
+import { MASTER_BUILD } from '@core/utils/config'
 import AldrinLogo from '@icons/Aldrin.svg'
-
-import SerumCCAILogo from '@icons/serumCCAILogo.svg'
 import LightLogo from '@icons/lightLogo.svg'
-import SvgIcon from '@sb/components/SvgIcon'
-
-import { withTheme } from '@material-ui/core'
 import WalletIcon from '@icons/walletIcon.svg'
-import NetworkDropdown from '@sb/compositions/Chart/components/NetworkDropdown/NetworkDropdown'
-
-import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
+import { withTheme } from '@material-ui/core'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
-import { FeedbackPopup } from './UsersFeedbackPopup'
-import { BetaLabel } from '@sb/components/BetaLabel/BetaLabel'
+import { Label } from '@sb/components/Label/Label'
+import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
+import SvgIcon from '@sb/components/SvgIcon'
+import {
+  ReusableTitle as Title,
+  Row,
+  RowContainer,
+} from '@sb/compositions/AnalyticsRoute/index.styles'
+import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
+import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
+import { useConnectionConfig } from '@sb/dexUtils/connection'
+import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+import React, { useState } from 'react'
+import { graphql } from 'react-apollo'
+import { Link, useLocation } from 'react-router-dom'
+import { compose } from 'recompose'
+import { CustomCard, PanelWrapper } from '../Chart.styles'
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
-
-export const NavBarLink = styled(({ style, ...props }) => (
-  <NavLink {...props} />
-))`
-  font-family: Avenir Next Demi;
-  text-transform: capitalize;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1.4rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  ${(props) => props.style};
-
-  &:hover {
-    color: ${(props) => props.theme.palette.blue.serum};
-  }
-`
-
-export const NavBarALink = styled(({ style, ...props }) => <a {...props} />)`
-  font-family: Avenir Next Demi;
-  text-transform: capitalize;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1.4rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  ${(props) => props.style};
-
-  &:hover {
-    color: ${(props) => props.theme.palette.blue.serum};
-  }
-`
-
-const Token = styled.a`
-  height: 100%;
-  width: 10rem;
-  border-radius: 0.7rem;
-  background: linear-gradient(106.89deg, #5eb5a8 17.87%, #3862c1 82.13%);
-  font-family: 'Avenir Next Demi';
-  color: #fff;
-  padding: 1rem 0;
-  text-align: center;
-  font-size: 1.2rem;
-`
-
-const RedButton = styled((props) => (
-  <BtnCustom
-    btnWidth={props.width || '50%'}
-    fontSize={'1.4rem'}
-    height={'4.5rem'}
-    textTransform={'capitalize'}
-    backgroundColor={props.background || 'transparent'}
-    borderColor={props.background || 'transparent'}
-    btnColor={props.color || props.theme.palette.red.main}
-    borderRadius={'1rem'}
-    border={props.border || 'none'}
-    {...props}
-  />
-))`
-  outline: none;
-`
+import {
+  RedButton,
+  DropdownContainer,
+  DropwodnItem,
+  MenuDropdown,
+  MenuDropdownInner,
+  MenuDropdownLink,
+} from './styles'
+import { FeedbackPopup } from './UsersFeedbackPopup'
 
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
@@ -118,32 +43,35 @@ export const CardsPanel = ({ theme }) => {
     false
   )
 
+  const [tradingMenuOpen, setTradingMenuOpen] = useState(false)
+
+  const CARD_STYLE: React.CSSProperties = {
+    // position: 'relative',
+    display: 'flex',
+    maxWidth: '100%',
+    flexGrow: 1,
+    border: '0',
+    overflow: 'visible',
+  }
+
+  const LOGO_LINK_STYLE: React.CSSProperties = {
+    width: '13rem',
+    height: '100%',
+    marginRight: '4rem',
+  }
+
+  const NAV_LINK_STYLE: React.CSSProperties = { width: '13rem' }
+
   const isDarkTheme = theme.palette.type === 'dark'
-  const isAnalytics = location.pathname.includes('analytics')
-  const isChartPage = location.pathname.includes('chart')
-  console.log('page', location.pathname)
+  // const isAnalytics = location.pathname.includes('analytics')
+  // const isChartPage = location.pathname.includes('chart')
+  // console.log('page', location.pathname)
 
   return (
-    <ChartGridContainer isChartPage={isChartPage} theme={theme}>
+    <ChartGridContainer theme={theme}>
       <PanelWrapper>
-        <CustomCard
-          theme={theme}
-          style={{
-            // position: 'relative',
-            display: 'flex',
-            maxWidth: '100%',
-            flexGrow: 1,
-            border: '0',
-          }}
-        >
-          <Link
-            to={'/'}
-            style={{
-              width: '13rem',
-              height: '100%',
-              marginRight: '4rem',
-            }}
-          >
+        <CustomCard theme={theme} style={CARD_STYLE}>
+          <Link to={'/'} style={LOGO_LINK_STYLE}>
             <img
               style={{
                 width: '100%',
@@ -162,14 +90,14 @@ export const CardsPanel = ({ theme }) => {
           >
             <NavLinkButton
               theme={theme}
-              style={{ width: '16rem' }}
+              style={NAV_LINK_STYLE}
               onClick={() => setIsFeedBackPopupOpen(true)}
             >
-              Feedback & Support
+              Feedback &amp; Support
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
-              style={{ width: '13rem' }}
+              style={NAV_LINK_STYLE}
               onClick={() => setIsListingRequestPopupOpen(true)}
             >
               Request listing
@@ -186,14 +114,6 @@ export const CardsPanel = ({ theme }) => {
               alignItems: 'center',
             }}
           >
-            {/* <NavLinkButton
-              theme={theme}
-              page={'/'}
-              pathname={location.pathname === '/' ? location.pathname : ''}
-              component={(props) => <Link to={`/`} {...props} />}
-            >
-              Home
-            </NavLinkButton> */}
             <NavLinkButton
               theme={theme}
               pathname={location.pathname}
@@ -231,7 +151,6 @@ export const CardsPanel = ({ theme }) => {
               component={(props) => <Link to={`/dashboard`} {...props} />}
             >
               Dashboard
-              <BetaLabel theme={theme} style={{ marginLeft: '.5rem' }} />
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
@@ -246,22 +165,17 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               page={'/pools'}
               pathname={location.pathname}
+              style={{ width: '17rem' }}
               component={(props) => <Link to={`/pools`} {...props} />}
             >
               Liquidity Pools
-            </NavLinkButton>
-            {/* 
-            {!MASTER_BUILD && (
-              <NavLinkButton
+              <Label
+                text={'New'}
                 theme={theme}
-                page={'/swaps'}
-                pathname={location.pathname}
-                component={(props) => <Link to={`/swaps`} {...props} />}
-              >
-                Swaps
-              </NavLinkButton>
-            )}
-            {!MASTER_BUILD && (
+                style={{ marginLeft: '.5rem', color: '#53DF11' }}
+              />
+            </NavLinkButton>
+            {/* {!MASTER_BUILD && (
               <NavLinkButton
                 style={{ color: '#386DE6' }}
                 theme={theme}
@@ -326,15 +240,6 @@ const TopBar = ({ theme }) => {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <div data-tut="connection-dropdown">
-        <NetworkDropdown
-          endpoint={endpoint}
-          setEndpoint={setEndpoint}
-          theme={theme}
-          isWalletConnected={connected}
-        />
-      </div>
-
       {!connected && (
         <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap={'nowrap'}>
           <ConnectWalletDropdown

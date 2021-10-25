@@ -45,7 +45,7 @@ export const SelectCoinPopup = ({
   mints,
   allTokensData,
   dexTokensPrices,
-  getPoolsInfoQuery,
+  poolsInfo,
   isBaseTokenSelecting,
   close,
   selectTokenMintAddress,
@@ -60,7 +60,7 @@ export const SelectCoinPopup = ({
   isBaseTokenSelecting: boolean
   allTokensData: TokenInfo[]
   dexTokensPrices: DexTokensPrices[]
-  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  poolsInfo: PoolInfo[]
   close: () => void
   selectTokenMintAddress: (address: string) => void
   quoteTokenMintAddress: string
@@ -96,8 +96,8 @@ export const SelectCoinPopup = ({
       )
     : usersMints
 
-  const poolsTokensA = getPoolsInfoQuery.getPoolsInfo.map((el) => el.tokenA)
-  const poolsTokensB = getPoolsInfoQuery.getPoolsInfo.map((el) => el.tokenB)
+  const poolsTokensA = poolsInfo.map((el) => el.tokenA)
+  const poolsTokensB = poolsInfo.map((el) => el.tokenB)
 
   const choosenMint =
     baseTokenMintAddress && quoteTokenMintAddress
@@ -106,7 +106,7 @@ export const SelectCoinPopup = ({
         : baseTokenMintAddress
       : baseTokenMintAddress || quoteTokenMintAddress
 
-  const availablePools = getPoolsInfoQuery.getPoolsInfo
+  const availablePools = poolsInfo
     .filter((el) => el.tokenA === choosenMint || el.tokenB === choosenMint)
     .map((el) => (el.tokenA === choosenMint ? el.tokenB : el.tokenA))
 

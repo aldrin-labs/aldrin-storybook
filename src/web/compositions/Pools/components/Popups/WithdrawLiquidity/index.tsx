@@ -23,19 +23,20 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { redeemBasket } from '@sb/dexUtils/pools/redeemBasket'
 
 export const WithdrawalPopup = ({
   theme,
   open,
-  dexTokensPrices,
+  dexTokensPricesMap,
   selectedPool,
   allTokensData,
   close,
-  refreshAllTokensData
+  refreshAllTokensData,
 }: {
   theme: Theme
   open: boolean
-  dexTokensPrices: DexTokensPrices[]
+  dexTokensPricesMap: Map<string, DexTokensPrices>
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
@@ -107,17 +108,15 @@ export const WithdrawalPopup = ({
     !withdrawAmountTokenB
 
   const baseTokenPrice =
-    dexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === selectedPool.tokenA ||
-        tokenInfo.symbol === baseSymbol
+    (
+      dexTokensPricesMap.get(selectedPool.tokenA) ||
+      dexTokensPricesMap.get(baseSymbol)
     )?.price || 0
 
   const quoteTokenPrice =
-    dexTokensPrices.find(
-      (tokenInfo) =>
-        tokenInfo.symbol === selectedPool.tokenB ||
-        tokenInfo.symbol === quoteSymbol
+    (
+      dexTokensPricesMap.get(selectedPool.tokenB) ||
+      dexTokensPricesMap.get(quoteSymbol)
     )?.price || 0
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
@@ -129,9 +128,9 @@ export const WithdrawalPopup = ({
       fullScreen={false}
       onClose={close}
       onEnter={() => {
-        setBaseAmount('');
-        setQuoteAmount('');
-        setOperationLoading(false);
+        setBaseAmount('')
+        setQuoteAmount('')
+        setOperationLoading(false)
       }}
       maxWidth={'md'}
       open={open}
@@ -143,7 +142,7 @@ export const WithdrawalPopup = ({
       </Row>
       <RowContainer>
         <SimpleInput
-          placeholder={''}
+          placeholder={'0'}
           theme={theme}
           symbol={baseSymbol}
           value={baseAmount}
@@ -156,7 +155,7 @@ export const WithdrawalPopup = ({
           </Text>
         </Row>
         <SimpleInput
-          placeholder={''}
+          placeholder={'0'}
           theme={theme}
           symbol={quoteSymbol}
           value={quoteAmount}
@@ -197,16 +196,17 @@ export const WithdrawalPopup = ({
             }
 
             await setOperationLoading(true)
-            const result = await withdrawAllTokenTypes({
+
+            const result = await redeemBasket({
               wallet,
               connection,
-              poolTokenAmount: poolTokenAmountToWithdraw,
-              tokenSwapPublicKey: new PublicKey(selectedPool.swapToken),
-              userTokenAccountA: new PublicKey(userTokenAccountA),
-              userTokenAccountB: new PublicKey(userTokenAccountB),
-              poolTokenAccount: new PublicKey(userPoolTokenAccount),
+              poolPublicKey: new PublicKey(selectedPool.swapToken),
+              userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+              userPoolTokenAmount: poolTokenAmountToWithdraw,
+              userBaseTokenAccount: new PublicKey(userTokenAccountA),
+              userQuoteTokenAccount: new PublicKey(userTokenAccountB),
             })
-            await refreshAllTokensData()
+
             await setOperationLoading(false)
 
             await notify({
@@ -218,6 +218,8 @@ export const WithdrawalPopup = ({
                   ? 'Withdrawal failed, please try again later or contact us in telegram.'
                   : 'Withdrawal cancelled',
             })
+
+            await setTimeout(() => refreshAllTokensData(), 7500)
 
             await close()
           }}
