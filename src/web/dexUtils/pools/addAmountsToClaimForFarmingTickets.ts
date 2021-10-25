@@ -113,9 +113,11 @@ export const addAmountsToClaimForFarmingTickets = async ({
 
     const amountsToClaimForTicket = pool.farming.map((farming, index) => {
       const amountForFarmingState = amountsToClaim[counter + index] || 0
+      const farmingTokenDecimals = farming.farmingTokenMintDecimals || 9 // for staking
+      const amountWithoutDecimals = amountForFarmingState * (1 / 10 ** farmingTokenDecimals)
       return {
         farmingState: farming.farmingState,
-        amount: amountForFarmingState,
+        amount: amountWithoutDecimals,
       }
     })
 

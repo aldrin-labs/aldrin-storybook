@@ -171,9 +171,13 @@ export const combineUserLiquidityData = ({
 
       const farmingState = pool.farming && pool.farming[0]
 
-      const dailyFarmingValue = farmingState
+      const tokensPerPeriod = farmingState
         ? farmingState.tokensPerPeriod *
-          (dayDuration / farmingState.periodLength)
+          (1 / 10 ** farmingState.farmingTokenMintDecimals)
+        : 0
+
+      const dailyFarmingValue = farmingState
+        ? tokensPerPeriod * (dayDuration / farmingState.periodLength)
         : 0
 
       const dailyFarmingValuePerThousandDollarsLiquidity = totalStakedLpTokensUSD
@@ -367,7 +371,9 @@ export const combineUserLiquidityData = ({
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                  refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+                  refreshTokensWithFarmingTickets={
+                    refreshTokensWithFarmingTickets
+                  }
                   setPoolWaitingForUpdateAfterOperation={
                     setPoolWaitingForUpdateAfterOperation
                   }

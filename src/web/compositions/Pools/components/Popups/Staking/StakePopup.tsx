@@ -60,6 +60,7 @@ export const StakePopup = ({
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
+    decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
   const [poolTokenAmount, setPoolTokenAmount] = useState<number | string>(
     maxPoolTokenAmount
@@ -86,8 +87,13 @@ export const StakePopup = ({
   const stakedWithEnteredPoolTokensUSD =
     (stakedTokens + +poolTokenAmount) * poolTokenPrice
 
+  const tokensPerPeriod = farmingState
+    ? farmingState.tokensPerPeriod *
+      (1 / 10 ** farmingState.farmingTokenMintDecimals)
+    : 0
+
   const dailyFarmingValue = farmingState
-    ? farmingState.tokensPerPeriod * (dayDuration / farmingState.periodLength)
+    ? tokensPerPeriod * (dayDuration / farmingState.periodLength)
     : 0
 
   // daily rewards for staked liquidity in pool + entered
@@ -192,10 +198,13 @@ export const StakePopup = ({
               operation: 'stake',
             })
 
+            const poolTokenAmountWithDecimals =
+              +poolTokenAmount * 10 ** poolTokenDecimals
+
             const result = await startFarming({
               wallet,
               connection,
-              poolTokenAmount: +poolTokenAmount,
+              poolTokenAmount: poolTokenAmountWithDecimals,
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               farmingState: new PublicKey(farmingState.farmingState),

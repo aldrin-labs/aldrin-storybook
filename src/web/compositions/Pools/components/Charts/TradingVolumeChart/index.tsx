@@ -50,7 +50,7 @@ const TradingVolumeChart = ({
 
     // @ts-ignore - we set it in create chart function above
     return () => window[`TradingVolumeChart-${id}`].destroy()
-  }, [id])
+  }, [id, JSON.stringify(data)])
 
   return (
     <>

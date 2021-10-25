@@ -44,7 +44,7 @@ const TotalVolumeLockedChart = ({
 
     // @ts-ignore - we set it in create chart function above
     return () => window[`TotalVolumeLockedChart-${id}`].destroy()
-  }, [id])
+  }, [id, JSON.stringify(data)])
 
   return (
     <>

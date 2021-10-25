@@ -198,10 +198,13 @@ export const combineAllPoolsData = ({
         pool.lpTokenFreezeVaultBalance * poolTokenPrice
 
       const farmingState = pool.farming && pool.farming[0]
+      const tokensPerPeriod = farmingState
+        ? farmingState.tokensPerPeriod *
+          (1 / 10 ** farmingState.farmingTokenMintDecimals)
+        : 0
 
       const dailyFarmingValue = farmingState
-        ? farmingState.tokensPerPeriod *
-          (dayDuration / farmingState.periodLength)
+        ? tokensPerPeriod * (dayDuration / farmingState.periodLength)
         : 0
 
       const dailyFarmingValuePerThousandDollarsLiquidity = totalStakedLpTokensUSD
