@@ -1,6 +1,6 @@
-import { FarmingTicket } from './endFarming'
+import { FarmingTicket } from '../common/types'
 
-export const getAvailableFarmingTokensForPool = (
+export const getAvailableToClaimFarmingTokens = (
   farmingTickets: FarmingTicket[]
 ) => {
   return (

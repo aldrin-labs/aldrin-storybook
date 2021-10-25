@@ -35,6 +35,8 @@ export const calculateUserRewards = ({
         }
       )
 
+      console.log({ snapshotsInTicketTimestampInterval, ticket })
+
       // @ts-ignore
       const userRewardsForTicket = snapshotsInTicketTimestampInterval.reduce(
         (
@@ -59,10 +61,12 @@ export const calculateUserRewards = ({
         { prevSnapshot: null, amount: 0 }
       )
 
-      return userRewardsForTicket
+      return userRewardsForTicket.amount
     },
     0
   )
+
+  console.log('userRewardsForAllTickets', userRewardsForAllTickets)
 
   return userRewardsForAllTickets
 }

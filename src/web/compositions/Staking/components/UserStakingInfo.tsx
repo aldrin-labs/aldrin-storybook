@@ -13,13 +13,18 @@ import { Input } from '@sb/components/Input'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
+import { addAmountsToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountsToClaimForFarmingTickets'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { calculateUserRewards } from '@sb/dexUtils/staking/calculateUserRewards'
+import { loadAccountsFromStakingProgram } from '@sb/dexUtils/staking/loadAccountsFromStakingProgram'
+import { useAllFarmingStates } from '@sb/dexUtils/staking/useAllFarmingStates'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { RIN_MINT } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 
 import {
@@ -75,8 +80,9 @@ const UserStakingInfoContent: React.FC = () => {
   ] = useAllStakingTickets({
     wallet,
     connection,
-    walletPublicKey: wallet.publicKey,
+    // walletPublicKey: wallet.publicKey,
   })
+
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     allStakingFarmingTickets
   )
@@ -91,7 +97,10 @@ const UserStakingInfoContent: React.FC = () => {
 
   const [allTokensData] = useUserTokenAccounts({ wallet, connection })
   const tokenData = allTokensData?.find((token) => token.mint === RIN_MINT)
-  const [allStakingSnapshotQueues, refresh] = useStakingSnapshotQueues({
+  const [
+    allStakingSnapshotQueues,
+    refreshAllStakingSnapshotQueues,
+  ] = useStakingSnapshotQueues({
     wallet,
     connection,
   })
@@ -100,6 +109,59 @@ const UserStakingInfoContent: React.FC = () => {
     snapshotsQueues: allStakingSnapshotQueues,
     allStakingFarmingTickets: allStakingFarmingTickets,
   })
+
+  const [allStakingStates, refresh] = useAllFarmingStates({
+    wallet,
+    connection,
+  })
+  
+  useEffect(() => {
+    const a = async () => {
+      const pool = await loadAccountsFromStakingProgram({
+        connection,
+        filters: [
+          {
+            dataSize: 137,
+          },
+        ],
+      })
+
+      const program = ProgramsMultiton.getProgramByAddress({
+        wallet,
+        connection,
+        programAddress: STAKING_PROGRAM_ADDRESS,
+      })
+
+      const stakingPool = pool[0]
+
+      const data = Buffer.from(stakingPool.account.data)
+      const poolData = program.coder.accounts.decode('StakingPool', data)
+
+      const parsedStakingPool = {
+        swapToken: stakingPool.pubkey.toString(),
+        poolToken: poolData.poolMint,
+        poolSigner: poolData.poolSigner,
+        stakingVault: poolData.stakingVault,
+        farming: allStakingStates,
+      }
+
+      console.log({
+        parsedStakingPool,
+      })
+
+      const availableToClaim = await addAmountsToClaimForFarmingTickets({
+        pools: [parsedStakingPool],
+        wallet,
+        connection,
+        allUserFarmingTickets: allStakingFarmingTickets,
+        programAddress: STAKING_PROGRAM_ADDRESS,
+      })
+
+      console.log('availableToClaim', availableToClaim)
+    }
+
+    a()
+  }, [allStakingStates.length])
 
   return (
     <>

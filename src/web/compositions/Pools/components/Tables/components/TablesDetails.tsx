@@ -21,7 +21,7 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { getAvailableFarmingTokensForPool } from '@sb/dexUtils/pools/getAvailableFarmingTokensForPool'
+import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { useConnection } from '@sb/dexUtils/connection'
 
@@ -77,7 +77,7 @@ export const TablesDetails = ({
   const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 
   const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
-  const availableToClaimFarmingTokens = getAvailableFarmingTokensForPool(
+  const availableToClaimFarmingTokens = getAvailableToClaimFarmingTokens(
     farmingTickets
   )
 

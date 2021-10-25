@@ -105,7 +105,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const apy = (currentFarmingState?.tokensTotal / totalStaked) * 100 * 12
 
   const SHARE_TEXT = getShareText(apy)
-
+  console.log('totalStaked', totalStaked)
   return (
     <>
       <Row>
@@ -127,7 +127,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <BigNumber>{apy}%</BigNumber>
+              <BigNumber>{stripByAmount(apy)}%</BigNumber>
               <StretchedBlock>
                 <Number>APY</Number>
                 <div>
