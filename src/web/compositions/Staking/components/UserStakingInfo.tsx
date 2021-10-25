@@ -13,13 +13,15 @@ import { Input } from '@sb/components/Input'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
+import { calculateUserRewards } from '@sb/dexUtils/staking/calculateUserRewards'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
+import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
+import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { CCAI_MINT } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
-import { TokenInfo } from '../../Rebalance/Rebalance.types'
-import { getAllTokensData } from '../../Rebalance/utils'
+
 import {
   Asterisks,
   BalanceRow,
@@ -61,7 +63,6 @@ const UserStakingInfoContent: React.FC = () => {
   const [userInput, setUserInput] = useState(0)
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
-  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -88,16 +89,17 @@ const UserStakingInfoContent: React.FC = () => {
     return true
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const atd = await getAllTokensData(wallet.publicKey, connection)
-
-      setAllTokensData(atd)
-    }
-    fetchData()
-  }, [])
-
+  const [allTokensData] = useUserTokenAccounts({ wallet, connection })
   const tokenData = allTokensData?.find((token) => token.mint === CCAI_MINT)
+  const [allStakingSnapshotQueues, refresh] = useStakingSnapshotQueues({
+    wallet,
+    connection,
+  })
+
+  const userRewards = calculateUserRewards({
+    snapshotsQueues: allStakingSnapshotQueues,
+    allStakingFarmingTickets: allStakingFarmingTickets,
+  })
 
   return (
     <>
@@ -146,7 +148,10 @@ const UserStakingInfoContent: React.FC = () => {
                 <StretchedBlock>
                   <div>
                     <BlockSubtitle>Rewards:</BlockSubtitle>
-                    <UserBalance visible={isBalancesShowing} value={1000} />
+                    <UserBalance
+                      visible={isBalancesShowing}
+                      value={userRewards}
+                    />
                   </div>
                   <div>
                     <BlockSubtitle>Available to claim:</BlockSubtitle>

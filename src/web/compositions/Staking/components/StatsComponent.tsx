@@ -27,7 +27,6 @@ import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getSt
 import { useConnection } from '@sb/dexUtils/connection'
 import { useMarkPrice } from '@sb/dexUtils/markets'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { getParsedStakingSnapshots } from '@sb/dexUtils/staking/getParsedStakingSnapshots'
 import { useAllFarmingStates } from '@sb/dexUtils/staking/useAllFarmingStates'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useWallet } from '@sb/dexUtils/wallet'

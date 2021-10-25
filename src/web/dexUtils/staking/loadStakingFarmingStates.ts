@@ -1,6 +1,5 @@
-import { Connection, PublicKey } from '@solana/web3.js'
-import { WalletAdapter } from '../types'
-import { STAKING_FARMING_TICKET_SIZE } from '../common/config'
+import { Connection } from '@solana/web3.js'
+import { STAKING_FARMING_STATE } from '../common/config'
 import { loadAccountsFromStakingProgram } from './loadAccountsFromStakingProgram'
 
 export const loadStakingFarmingStates = async ({
@@ -12,7 +11,7 @@ export const loadStakingFarmingStates = async ({
     connection,
     filters: [
       {
-        dataSize: STAKING_FARMING_TICKET_SIZE,
+        dataSize: STAKING_FARMING_STATE,
       },
     ],
   })

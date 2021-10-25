@@ -1,5 +1,9 @@
 import { DEFAULT_FARMING_TICKET_END_TIME } from '../common/config'
-import { FarmingTicket, StakingSnapshotQueue } from '../common/types'
+import {
+  FarmingTicket,
+  StakingSnapshot,
+  StakingSnapshotQueue,
+} from '../common/types'
 
 export const calculateUserRewards = ({
   snapshotsQueues,
@@ -31,13 +35,28 @@ export const calculateUserRewards = ({
         }
       )
 
+      // @ts-ignore
       const userRewardsForTicket = snapshotsInTicketTimestampInterval.reduce(
-        (acc, snapshot) => {
-          const userAllocation = ticket.tokensFrozen / snapshot.tokensTotal
-          const userTokensAllocation = userAllocation * snapshot.tokensFrozen
-          return userTokensAllocation + acc
+        (
+          acc: { prevSnapshot: StakingSnapshot | null; amount: number },
+          snapshot: StakingSnapshot
+        ) => {
+          const userAllocation = ticket.tokensFrozen / snapshot.tokensFrozen
+
+          if (acc.prevSnapshot === null) {
+            return { prevSnapshot: snapshot, amount: 0 }
+          }
+
+          const userTokensAllocation =
+            userAllocation *
+            (snapshot.tokensTotal - acc.prevSnapshot.tokensTotal)
+
+          return {
+            prevSnapshot: snapshot,
+            amount: userTokensAllocation + acc.amount,
+          }
         },
-        0
+        { prevSnapshot: null, amount: 0 }
       )
 
       return userRewardsForTicket
