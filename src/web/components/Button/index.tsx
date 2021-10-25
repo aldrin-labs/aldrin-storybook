@@ -15,6 +15,12 @@ const VARIANTS = {
     background: transparent;
     border-color: ${COLORS.white};
   `,
+
+  'link-error': css`
+    background: transparent;
+    border-color: transparent;
+    color: ${COLORS.error};
+  `,
 }
 
 const PADDINGS = {
@@ -28,7 +34,7 @@ interface ButtonProps {
   borderRadius?: keyof typeof BORDER_RADIUS
   padding?: keyof typeof PADDINGS
   backgroundImage?: string
-  width?: string
+  width?: keyof typeof WIDTH
 }
 
 export const Button = styled.button<ButtonProps>`
@@ -44,7 +50,7 @@ export const Button = styled.button<ButtonProps>`
   border-radius: ${(props: ButtonProps) =>
     BORDER_RADIUS[props.borderRadius || 'md']};
   cursor: pointer;
-  width: ${(props: ButtonProps) => WIDTH[props.width || '']};
+  ${(props: ButtonProps) => props.width ? ` width: ${WIDTH[props.width]};` : ''}
   text-decoration: none;
 
   ${({ backgroundImage }: ButtonProps) =>

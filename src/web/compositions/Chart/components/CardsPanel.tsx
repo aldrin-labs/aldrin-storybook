@@ -17,7 +17,7 @@ import {
   ChartGridContainer,
   RoundLink,
 } from '@sb/compositions/Chart/Chart.styles'
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { Link, useLocation } from 'react-router-dom'
 import { CustomCard, PanelWrapper } from '../Chart.styles'
@@ -98,7 +98,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
             >
               <NavLinkButton
                 style={NAV_LINK_DROPDOWN_STYLE}
-                component={(props) => <Link to={`/swaps`} {...props} />}
+                component={(props) => <Link to={`/swap`} {...props} />}
               >
                 <MenuDropdownLink>Swap</MenuDropdownLink>
               </NavLinkButton>
@@ -209,7 +209,7 @@ export const CardsPanel = ({ theme }) => {
               data-tut="farming"
               pathname={location.pathname}
               page={'wallet'}
-              component={(props) => <a href={CCAIProviderURL} {...props} />}
+              component={(props) => <a href={RINProviderURL} {...props} />}
             >
               Wallet
             </NavLinkButton>
@@ -279,7 +279,7 @@ const TopBar = ({ theme }) => {
   )
   const { connected, wallet, providerUrl } = useWallet()
 
-  const isCCAIActive = providerUrl === CCAIProviderURL
+  const isCCAIActive = providerUrl === RINProviderURL
   const isSolletActive = providerUrl === 'https://www.sollet.io'
   const isSolletExtensionActive =
     providerUrl === 'https://www.sollet.io/extension'

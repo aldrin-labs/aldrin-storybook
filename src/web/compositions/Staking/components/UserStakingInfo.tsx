@@ -17,7 +17,7 @@ import { calculateUserRewards } from '@sb/dexUtils/staking/calculateUserRewards'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
-import { CCAI_MINT } from '@sb/dexUtils/utils'
+import { RIN_MINT } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import React, { useState } from 'react'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
@@ -90,7 +90,7 @@ const UserStakingInfoContent: React.FC = () => {
   }
 
   const [allTokensData] = useUserTokenAccounts({ wallet, connection })
-  const tokenData = allTokensData?.find((token) => token.mint === CCAI_MINT)
+  const tokenData = allTokensData?.find((token) => token.mint === RIN_MINT)
   const [allStakingSnapshotQueues, refresh] = useStakingSnapshotQueues({
     wallet,
     connection,

@@ -163,7 +163,7 @@ const TablesSwitcher = ({
             farmingTicketsMap={farmingTicketsMap}
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
-            refreshAllTokensData={refreshAllTokensData}
+            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
             setPoolWaitingForUpdateAfterOperation={
               setPoolWaitingForUpdateAfterOperation
             }
@@ -185,7 +185,7 @@ const TablesSwitcher = ({
             farmingTicketsMap={farmingTicketsMap}
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}
-            refreshAllTokensData={refreshAllTokensData}
+            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
             setPoolWaitingForUpdateAfterOperation={
               setPoolWaitingForUpdateAfterOperation
             }

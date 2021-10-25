@@ -19,7 +19,7 @@ import {
   LinkToTwitter,
   LinkToYouTube,
 } from './SocialsLinksComponents'
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL } from '@sb/dexUtils/utils'
 
 export const Homepage = () => {
   return (
@@ -52,7 +52,7 @@ export const Homepage = () => {
         >
           <NewLink to="/chart">Trading</NewLink>
           <StyledA
-            href={CCAIProviderURL}
+            href={RINProviderURL}
             target="_blank"
             rel="noopener noreferrer"
           >

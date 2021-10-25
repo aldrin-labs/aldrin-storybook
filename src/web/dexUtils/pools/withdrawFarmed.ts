@@ -18,7 +18,7 @@ import { sendTransaction } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
 import { checkFarmed } from './checkFarmed'
-import { FarmingTicket } from './endFarming'
+import { FarmingTicket } from './types'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -81,9 +81,9 @@ export const withdrawFarmed = async ({
 
   // check farmed for every ticket and withdrawFarmed for every farming state
   for (let ticketData of farmingTickets) {
-    // for (let i = 0; i < pool.farming.length; i++) {
+    for (let i = 0; i < pool.farming.length; i++) {
     // for now only for fisrt farming state
-    const farmingState = pool.farming[0]
+    const farmingState = pool.farming[i]
 
     // find amount to claim for this farming state in tickets amounts
     const amountToClaim =
@@ -95,7 +95,7 @@ export const withdrawFarmed = async ({
     // check amount for every farming state
     if (amountToClaim === 0) continue
 
-    // console.log('amountToClaim', amountToClaim, ticketData.farmingTicket)
+    // check farmed for some ticket
     // if (
     //   farmingState.farmingState ===
     //     'HKP7u6F8iN7SZThjcE2E5nC3VLZELqwW1HKC8VSc52Kv' &&
@@ -183,7 +183,7 @@ export const withdrawFarmed = async ({
       }
     }
     }
-  // }
+  }
 
   if (commonTransaction.instructions.length > 0) {
     const result = await sendPartOfTransactions()

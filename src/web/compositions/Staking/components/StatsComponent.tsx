@@ -119,7 +119,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                 </InlineText>{' '}
                 RIN
               </BigNumber>
-              <Number>{stripByAmountAndFormat(totalStakedUSD)}</Number>
+              <Number>${stripByAmountAndFormat(totalStakedUSD)}</Number>
             </BlockContentStretched>
           </Block>
         </Cell>

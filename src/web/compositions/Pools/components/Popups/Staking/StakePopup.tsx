@@ -61,24 +61,15 @@ export const StakePopup = ({
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
-  const [poolTokenAmount, setPoolTokenAmount] = useState<number | string>(maxPoolTokenAmount)
+  const [poolTokenAmount, setPoolTokenAmount] = useState<number | string>(
+    maxPoolTokenAmount
+  )
   const [operationLoading, setOperationLoading] = useState(false)
 
   const { wallet } = useWallet()
   const connection = useConnection()
 
   const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
-
-  const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
-  const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-
-  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
-  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
-
-  const tvlUSD =
-    baseTokenPrice * selectedPool.tvl.tokenA +
-    quoteTokenPrice * selectedPool.tvl.tokenB
-
   const farmingState = selectedPool.farming && selectedPool.farming[0]
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
@@ -89,22 +80,20 @@ export const StakePopup = ({
     dexTokensPricesMap,
   })
 
+  const totalStakedLpTokensUSD =
+    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice
+
   const stakedWithEnteredPoolTokensUSD =
     (stakedTokens + +poolTokenAmount) * poolTokenPrice
-
-    console.log({
-      tvlUSD,
-      stakedWithEnteredPoolTokensUSD,
-      tokensPerDay: farmingState.tokensPerPeriod * (dayDuration / farmingState.periodLength),
-    })
 
   const dailyFarmingValue = farmingState
     ? farmingState.tokensPerPeriod * (dayDuration / farmingState.periodLength)
     : 0
 
   // daily rewards for staked liquidity in pool + entered
-  const dailyFarmingValuePerUserLiquidity = tvlUSD
-    ? dailyFarmingValue / (tvlUSD / stakedWithEnteredPoolTokensUSD)
+  const dailyFarmingValuePerUserLiquidity = totalStakedLpTokensUSD
+    ? dailyFarmingValue *
+      (stakedWithEnteredPoolTokensUSD / totalStakedLpTokensUSD)
     : 0
 
   if (!farmingState) return null
@@ -153,7 +142,7 @@ export const StakePopup = ({
           </Row>
         </Text>
       </RowContainer>
-      <HintContainer justify={'flex-start'} margin="2rem 0">
+      <HintContainer justify={'flex-start'} margin="5rem 0 2rem 0">
         <Row justify="flex-start" width="20%">
           <ExclamationMark
             theme={theme}
@@ -195,7 +184,13 @@ export const StakePopup = ({
           theme={theme}
           showLoader={operationLoading}
           onClick={async () => {
-            await setOperationLoading(true)
+            // loader in popup button
+            setOperationLoading(true)
+            // loader in table button
+            setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'stake',
+            })
 
             const result = await startFarming({
               wallet,
@@ -206,13 +201,9 @@ export const StakePopup = ({
               farmingState: new PublicKey(farmingState.farmingState),
             })
 
-            await setOperationLoading(false)
-            await setPoolWaitingForUpdateAfterOperation({
-              pool: selectedPool.swapToken,
-              operation: 'stake',
-            })
+            setOperationLoading(false)
 
-            await notify({
+            notify({
               type: result === 'success' ? 'success' : 'error',
               message:
                 result === 'success'
@@ -222,16 +213,25 @@ export const StakePopup = ({
                   : 'Staking cancelled.',
             })
 
-            await setTimeout(async () => {
-              await refreshTokensWithFarmingTickets()
-              await setPoolWaitingForUpdateAfterOperation({
+            const clearPoolWaitingForUpdate = () =>
+              setPoolWaitingForUpdateAfterOperation({
                 pool: '',
                 operation: '',
               })
-            }, 7500)
-            await setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
 
-            await close()
+            if (result === 'success') {
+              setTimeout(async () => {
+                refreshTokensWithFarmingTickets()
+                clearPoolWaitingForUpdate()
+              }, 7500)
+
+              // if not updated value returned after first refresh
+              setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+            } else {
+              clearPoolWaitingForUpdate()
+            }
+
+            close()
           }}
         >
           Stake

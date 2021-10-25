@@ -254,7 +254,7 @@ export const AddLiquidityPopup = ({
         </BoldHeader>
         <Row>
           <ReloadTimer
-            marginRight={'1.5rem'}
+            margin={'0 1.5rem 0 0'}
             callback={async () => {
               if (!operationLoading) {
                 refreshPoolBalances()
@@ -445,7 +445,14 @@ export const AddLiquidityPopup = ({
             }
 
             console.log('userPoolTokenAccount', userPoolTokenAccount)
-            await setOperationLoading(true)
+
+            // loader in popup button
+            setOperationLoading(true)
+            // loader in table button
+            setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'deposit',
+            })
 
             const result = await createBasket({
               wallet,
@@ -461,14 +468,9 @@ export const AddLiquidityPopup = ({
               transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
             })
 
-            // start button loader
-            await setPoolWaitingForUpdateAfterOperation({
-              pool: selectedPool.swapToken,
-              operation: 'deposit',
-            })
-            await setOperationLoading(false)
+            setOperationLoading(false)
 
-            await notify({
+            notify({
               type: result === 'success' ? 'success' : 'error',
               message:
                 result === 'success'
@@ -478,22 +480,27 @@ export const AddLiquidityPopup = ({
                   : 'Deposit cancelled',
             })
 
-            await refreshPoolBalances()
+            refreshPoolBalances()
+
+            const clearPoolWaitingForUpdate = () =>
+              setPoolWaitingForUpdateAfterOperation({
+                pool: '',
+                operation: '',
+              })
 
             if (result === 'success') {
-              await setTimeout(async () => {
-                await refreshAllTokensData()
-                await setPoolWaitingForUpdateAfterOperation({
-                  pool: '',
-                  operation: '',
-                })
+              setTimeout(async () => {
+                refreshAllTokensData()
+                clearPoolWaitingForUpdate()
               }, 7500)
               // end button loader
 
-              await setTimeout(() => refreshAllTokensData(), 15000)
+              setTimeout(() => refreshAllTokensData(), 15000)
+            } else {
+              clearPoolWaitingForUpdate()
             }
 
-            await close()
+            close()
           }}
         >
           Deposit liquidity

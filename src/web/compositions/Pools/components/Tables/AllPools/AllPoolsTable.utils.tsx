@@ -1,9 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Theme } from '@sb/types/materialUI'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
 import {
@@ -38,6 +34,7 @@ import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { Link } from 'react-router-dom'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -133,7 +130,7 @@ export const combineAllPoolsData = ({
   tradingVolumesMap,
   earnedFeesInPoolForUserMap,
   selectPool,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
@@ -153,7 +150,7 @@ export const combineAllPoolsData = ({
   tradingVolumesMap: Map<string, { weekly: number; daily: number }>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: () => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
@@ -161,20 +158,20 @@ export const combineAllPoolsData = ({
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   const processedAllPoolsData = poolsInfo
-    .filter((el) =>
+    .filter((pool) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
-        symbol: el.parsedName,
+        symbol: pool.parsedName,
       })
     )
-    .map((el) => {
-      const baseSymbol = getTokenNameByMintAddress(el.tokenA)
-      const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
+    .map((pool) => {
+      const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
+      const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
       const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
       const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
 
-      const feesEarnedByPool = feesPerPoolMap.get(el.swapToken) || {
+      const feesEarnedByPool = feesPerPoolMap.get(pool.swapToken) || {
         totalBaseTokenFee: 0,
         totalQuoteTokenFee: 0,
       }
@@ -183,31 +180,39 @@ export const combineAllPoolsData = ({
         feesEarnedByPool?.totalBaseTokenFee * baseTokenPrice +
         feesEarnedByPool?.totalQuoteTokenFee * quoteTokenPrice
 
-      const tradingVolumes = tradingVolumesMap.get(el.swapToken) || {
+      const tradingVolumes = tradingVolumesMap.get(pool.swapToken) || {
         weekly: 0,
         daily: 0,
       }
-      const apy = el.apy24h || 0
+      const apy = pool.apy24h || 0
 
       const tvlUSD =
-        baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
+        baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
 
-      const farmingState = el.farming && el.farming[0]
+      const poolTokenPrice = calculatePoolTokenPrice({
+        pool,
+        dexTokensPricesMap,
+      })
+
+      const totalStakedLpTokensUSD =
+        pool.lpTokenFreezeVaultBalance * poolTokenPrice
+
+      const farmingState = pool.farming && pool.farming[0]
 
       const dailyFarmingValue = farmingState
         ? farmingState.tokensPerPeriod *
           (dayDuration / farmingState.periodLength)
         : 0
 
-      const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
-        ? dailyFarmingValue / (tvlUSD / 1000)
+      const dailyFarmingValuePerThousandDollarsLiquidity = totalStakedLpTokensUSD
+        ? dailyFarmingValue * (1000 / totalStakedLpTokensUSD)
         : 0
 
       const isFarmingEnded =
         farmingState && farmingState.tokensTotal === farmingState.tokensUnlocked
 
       return {
-        id: `${el.name}${el.tvl}${el.poolTokenMint}`,
+        id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
         pool: {
           render: (
             <Row
@@ -215,13 +220,13 @@ export const combineAllPoolsData = ({
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
               <Link
-                to={`/swaps?base=${baseSymbol}&quote=${quoteSymbol}`}
+                to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
                 style={{ textDecoration: 'none' }}
               >
                 <TokenIconsContainer
                   needHover={true}
-                  tokenA={el.tokenA}
-                  tokenB={el.tokenB}
+                  tokenA={pool.tokenA}
+                  tokenB={pool.tokenB}
                 />
               </Link>
               {/* TODO: show locked liquidity depending on backend data, not for all pools */}
@@ -236,7 +241,7 @@ export const combineAllPoolsData = ({
                     />
                   </div>
                 </DarkTooltip>
-              ) : el.executed ? (
+              ) : pool.executed ? (
                 <DarkTooltip
                   title={
                     'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
@@ -262,10 +267,10 @@ export const combineAllPoolsData = ({
                 ${stripByAmountAndFormat(tvlUSD)}
               </RowDataTdTopText>
               <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {stripByAmountAndFormat(el.tvl.tokenA)}{' '}
-                {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {stripByAmountAndFormat(el.tvl.tokenB)}{' '}
-                {getTokenNameByMintAddress(el.tokenB)}
+                {stripByAmountAndFormat(pool.tvl.tokenA)}{' '}
+                {getTokenNameByMintAddress(pool.tokenA)} /{' '}
+                {stripByAmountAndFormat(pool.tvl.tokenB)}{' '}
+                {getTokenNameByMintAddress(pool.tokenB)}
               </RowDataTdText>
             </TextColumnContainer>
           ),
@@ -367,7 +372,7 @@ export const combineAllPoolsData = ({
                 height="auto"
                 src={
                   expandedRows.includes(
-                    `${el.name}${el.tvl}${el.poolTokenMint}`
+                    `${pool.name}${pool.tvl}${pool.poolTokenMint}`
                   )
                     ? ArrowToTop
                     : ArrowToBottom
@@ -388,7 +393,9 @@ export const combineAllPoolsData = ({
                   setPoolWaitingForUpdateAfterOperation={
                     setPoolWaitingForUpdateAfterOperation
                   }
-                  refreshAllTokensData={refreshAllTokensData}
+                  refreshTokensWithFarmingTickets={
+                    refreshTokensWithFarmingTickets
+                  }
                   selectPool={selectPool}
                   poolWaitingForUpdateAfterOperation={
                     poolWaitingForUpdateAfterOperation
@@ -398,7 +405,7 @@ export const combineAllPoolsData = ({
                   dexTokensPricesMap={dexTokensPricesMap}
                   allTokensDataMap={allTokensDataMap}
                   theme={theme}
-                  pool={el}
+                  pool={pool}
                 />
               ),
               colspan: 8,
@@ -408,5 +415,5 @@ export const combineAllPoolsData = ({
       }
     })
 
-  return processedAllPoolsData.filter((el) => !!el)
+  return processedAllPoolsData.filter((pool) => !!pool)
 }

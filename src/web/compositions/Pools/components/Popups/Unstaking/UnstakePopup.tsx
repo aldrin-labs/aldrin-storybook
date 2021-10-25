@@ -80,7 +80,13 @@ export const UnstakePopup = ({
           theme={theme}
           showLoader={operationLoading}
           onClick={async () => {
-            await setOperationLoading(true)
+            // loader in popup button
+            setOperationLoading(true)
+            // loader in table button
+            setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'unstake',
+            })
 
             const result = await endFarming({
               wallet,
@@ -93,13 +99,9 @@ export const UnstakePopup = ({
               ),
             })
 
-            await setOperationLoading(false)
-            await setPoolWaitingForUpdateAfterOperation({
-              pool: selectedPool.swapToken,
-              operation: 'unstake',
-            })
+            setOperationLoading(false)
 
-            await notify({
+            notify({
               type: result === 'success' ? 'success' : 'error',
               message:
                 result === 'success'
@@ -109,16 +111,23 @@ export const UnstakePopup = ({
                   : 'Unstaking cancelled.',
             })
 
-            await setTimeout(async () => {
-              await refreshTokensWithFarmingTickets()
-              await setPoolWaitingForUpdateAfterOperation({
+            const clearPoolWaitingForUpdate = () =>
+              setPoolWaitingForUpdateAfterOperation({
                 pool: '',
                 operation: '',
               })
-            }, 7500)
-            await setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
 
-            await close()
+            if (result === 'success') {
+              setTimeout(async () => {
+                refreshTokensWithFarmingTickets()
+                clearPoolWaitingForUpdate()
+              }, 7500)
+              setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+            } else {
+              clearPoolWaitingForUpdate()
+            }
+
+            close()
           }}
         >
           Untake
