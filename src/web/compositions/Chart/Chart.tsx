@@ -50,6 +50,8 @@ import { AldrinIsOverCapacityPopup } from '@sb/components/AldrinIsOverCapacityPo
 import { RpcCapacityWarningPopup } from '@sb/components/RpcWarningPopup'
 import { MarketDeprecatedPopup } from '@sb/components/MarketDeprecatedPopup/MarketDeprecatedPopup'
 import { useConnection } from '@sb/dexUtils/connection'
+import { SerumIssuesWarningPopup } from '@sb/components/SerumIssuesPopups/SerumIssuesWarningPopup'
+import { MobileSerumIssueWarningPopup } from '@sb/components/SerumIssuesPopups/MobileSerumIssuesWarningPopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -343,6 +345,8 @@ function ChartPageComponent(props: any) {
       /> */}
       {/* <AldrinIsOverCapacityPopup theme={theme} /> */}
       {/* <RpcCapacityWarningPopup theme={theme} /> */}
+      {/* <SerumIssuesWarningPopup theme={theme} />
+      <MobileSerumIssueWarningPopup theme={theme} /> */}
 
       {/* )} */}
       {/* <JoyrideOnboarding

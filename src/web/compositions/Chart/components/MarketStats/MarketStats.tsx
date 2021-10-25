@@ -232,12 +232,12 @@ const MarketStats: React.FC<IProps> = (props) => {
             {formatNumberToUSFormat(stripDigitPlaces(minPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardTitle theme={theme}>24h volume</PanelCardTitle>
+        {/* <PanelCard marketType={marketType} theme={theme}>
+          <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
           <PanelCardValue theme={theme}>
             {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
-        </PanelCard>
+        </PanelCard> */}
         {isCCAIPair && (
           <>
             <PanelCard marketType={marketType} theme={theme}>
