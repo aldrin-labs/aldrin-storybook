@@ -34,10 +34,21 @@ import {
   WalletRow,
 } from '../Staking.styles'
 import { RestakePopup } from './RestakePopup'
+import { MASTER_BUILD } from '@core/utils/config'
+import { startStaking } from '@sb/dexUtils/staking/startStaking'
+import { endStaking } from '@sb/dexUtils/staking/endStaking'
+import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import { notify } from '@sb/dexUtils/notifications'
+import { PublicKey } from '@solana/web3.js'
 
 interface UserBalanceProps {
   value: number
   visible: boolean
+}
+
+interface StakingInfoProps {
+  tokenData: TokenInfo | null
+  tokenMint: string
 }
 
 const UserBalance: React.FC<UserBalanceProps> = (props) => {
@@ -57,11 +68,11 @@ const UserBalance: React.FC<UserBalanceProps> = (props) => {
   )
 }
 
-const UserStakingInfoContent: React.FC = () => {
+const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
+  const { tokenData, tokenMint } = props
   const [userInput, setUserInput] = useState(0)
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
-  const [allTokensData, setAllTokensData] = useState<TokenInfo[]>([])
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -76,9 +87,7 @@ const UserStakingInfoContent: React.FC = () => {
     connection,
     walletPublicKey: wallet.publicKey,
   })
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(
-    allStakingFarmingTickets
-  )
+
   const setAmount = (v: string) => {
     const newValue = parseFloat(v)
     if (Number.isNaN(newValue)) {
@@ -88,17 +97,50 @@ const UserStakingInfoContent: React.FC = () => {
     return true
   }
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const atd = await getAllTokensData(wallet.publicKey, connection)
+  const totalStaked = getStakedTokensFromOpenFarmingTickets(
+    allStakingFarmingTickets
+  ) / Math.pow(10, tokenData?.decimals || 0)
 
-      setAllTokensData(atd)
+
+  const [allUserAccounts, refreshAllTokensData] = useUserTokenAccounts({
+    wallet,
+    connection,
+  })
+
+
+
+
+  const userAccount = allUserAccounts?.find((_) => _.mint === tokenMint)
+  console.log('userAccount: ', userAccount)
+
+  const start = async () => {
+
+    if (!userAccount?.address) {
+      notify({ message: 'Account does not exists' })
+      return false
     }
-    fetchData()
-  }, [])
+    if (tokenData) {
+      await startStaking({
+        connection,
+        wallet,
+        amount: 100,
+        userPoolTokenAccount: new PublicKey(userAccount.address),
+        tokenData,
+      })
+    }
+  }
 
-  const tokenData = allTokensData?.find((token) => token.mint === RIN_MINT)
-
+  const end = async () => {
+    if (!userAccount?.address) {
+      notify({ message: 'Account does not exists' })
+      return false
+    }
+    await endStaking({
+      connection,
+      wallet,
+      userPoolTokenAccount: new PublicKey(userAccount.address),
+    })
+  }
   return (
     <>
       <BlockContent border>
@@ -180,7 +222,8 @@ const UserStakingInfoContent: React.FC = () => {
           <FormItem>
             <Button
               onClick={() => {
-                setIsRestakePopupOpen(true)
+                // setIsRestakePopupOpen(true)
+                start()
               }}
               backgroundImage={StakeBtn}
               fontSize="xs"
@@ -196,7 +239,8 @@ const UserStakingInfoContent: React.FC = () => {
               fontSize="xs"
               padding="lg"
               borderRadius="xxl"
-              disabled
+              disabled={totalStaked === 0}
+              onClick={() => end()}
             >
               Unstake all
             </Button>
@@ -211,12 +255,13 @@ const UserStakingInfoContent: React.FC = () => {
   )
 }
 
-export const UserStakingInfo = () => {
+export const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
+  const { tokenMint, tokenData } = props
   return (
     <Block>
       <StretchedBlock direction="column">
         <ConnectWalletWrapper>
-          <UserStakingInfoContent />
+          <UserStakingInfoContent tokenData={tokenData} tokenMint={tokenMint} />
         </ConnectWalletWrapper>
       </StretchedBlock>
     </Block>

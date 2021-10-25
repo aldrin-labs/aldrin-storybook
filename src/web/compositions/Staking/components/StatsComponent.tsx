@@ -44,16 +44,18 @@ import {
 import { getShareText } from '../Staking.utils.tsx/getShareText'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
+import { TokenInfo } from '@sb/dexUtils/types'
 
 interface StatsComponentProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
+  tokenData: TokenInfo | null
 }
 
 const StatsComponent: React.FC<StatsComponentProps> = (
   props: StatsComponentProps
 ) => {
-  const { getDexTokensPricesQuery, marketDataByTickersQuery } = props
+  const { getDexTokensPricesQuery, marketDataByTickersQuery, tokenData } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
   const connection = useConnection()
   const { wallet } = useWallet()
@@ -70,9 +72,11 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     connection,
   })
 
+  const decDelimiter = Math.pow(10, tokenData?.decimals || 0)
+
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     allStakingFarmingTickets
-  )
+  ) / decDelimiter
   const currentFarmingState = getCurrentFarmingStateFromAll(
     allStakingFarmingStates
   )
@@ -101,9 +105,10 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const isPriceIncreasing = priceChangePercentage > 0
 
   const totalStakedUSD = tokenPrice * totalStaked
+  const tokensTotal = currentFarmingState?.tokensTotal / decDelimiter
   const daysInMonth = dayjs().daysInMonth()
-  const dailyRewards = currentFarmingState?.tokensTotal / daysInMonth
-  const apy = (currentFarmingState?.tokensTotal / totalStaked) * 100 * 12
+  const dailyRewards = tokensTotal / daysInMonth
+  const apy = (tokensTotal / totalStaked) * 100 * 12
 
   const SHARE_TEXT = getShareText(apy)
 
