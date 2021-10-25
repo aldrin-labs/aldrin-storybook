@@ -31,7 +31,7 @@ import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/I
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { getStakedTokensForPool } from '@sb/dexUtils/common/getStakedTokensForPool'
+import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 
 export const userLiquidityTableColumnsNames = [
