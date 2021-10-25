@@ -1,16 +1,22 @@
 import React from 'react'
-import { NavLink, DropdownWrap, DropdownContent } from './styles'
+import { NavLink, DropdownWrap, DropdownContent, DropdownInner } from './styles'
+import { BREAKPOINTS } from '../../../variables'
 
 interface DropdownProps {
   text: React.ReactNode
+  hide?: keyof typeof BREAKPOINTS
 }
 
 export const DropDown: React.FC<DropdownProps> = (props) => {
-  const { text, children } = props
+  const { text, children, hide } = props
   return (
-    <DropdownWrap>
+    <DropdownWrap hide={hide}>
       <NavLink>{text}</NavLink>
-      <DropdownContent>{children}</DropdownContent>
+      <DropdownContent>
+        <DropdownInner>
+          {children}
+        </DropdownInner>
+      </DropdownContent>
     </DropdownWrap>
   )
 }

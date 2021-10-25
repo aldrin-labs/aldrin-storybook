@@ -50,6 +50,7 @@ export const Cell = styled.div<CellProps>`
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  position: relative;
   flex: 0 1 ${(props) => ((props.col || 12) / LAYOUT_COL_NUMBER) * 100}%;
   ${(props) =>
     props.colSm
