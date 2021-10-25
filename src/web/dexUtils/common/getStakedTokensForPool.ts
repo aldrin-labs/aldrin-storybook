@@ -1,5 +1,5 @@
 import { filterClosedFarmingTickets } from "./filterClosedFarmingTickets"
-import { FarmingTicket } from "../common/types"
+import { FarmingTicket } from "./types"
 
 export const getStakedTokensForPool = (farmingTickets: FarmingTicket[]) => {
   return (
