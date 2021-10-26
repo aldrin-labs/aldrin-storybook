@@ -4,6 +4,7 @@ export type FarmingTicket = {
   startTime: string
   pool: string
   farmingTicket: string
+  userKey: string
   amountsToClaim: { amount: number; farmingState: string }[]
   statesAttached?: { farmingState: string }[]
 }

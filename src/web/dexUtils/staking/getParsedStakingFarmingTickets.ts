@@ -42,11 +42,13 @@ export const getParsedStakingFarmingTickets = async ({
       .filter((el) => el.lastWithdrawTime > 0)
 
     return {
-      tokensFrozen: ticketData.tokensFrozen.toNumber() / STAKING_FARMING_TOKEN_DIVIDER,
+      tokensFrozen:
+        ticketData.tokensFrozen.toNumber() / STAKING_FARMING_TOKEN_DIVIDER,
       endTime: ticketData.endTime.toString(),
       startTime: ticketData.startTime.toString(),
       pool: ticketData.pool.toString(),
       farmingTicket: ticket.pubkey.toString(),
+      userKey: ticketData.userKey.toString(),
       amountsToClaim: [{ amount: 0, farmingState: '' }],
       statesAttached,
     }

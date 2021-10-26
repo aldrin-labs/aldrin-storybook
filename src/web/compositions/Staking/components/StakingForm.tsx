@@ -29,10 +29,9 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
     loading,
     start,
     end,
-    // isUnstakeLocked,
+    isUnstakeLocked,
     unlockAvailableDate,
   } = props
-  const isUnstakeLocked = true
   const isUnstakeDisabled =
     isUnstakeLocked || totalStaked === 0 || loading.unstake
 
@@ -107,7 +106,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
             isUnstakeLocked
               ? `Locked until ${dayjs
                   .unix(unlockAvailableDate)
-                  .format('MMM DD, YYYY')}`
+                  .format('HH:mm:ss MMM DD, YYYY')}`
               : ''
           }
         >

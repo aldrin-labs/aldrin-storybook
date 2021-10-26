@@ -27,5 +27,6 @@ export const useStakingSnapshotQueues = ({
   useEffect(() => {
     loadStakingSnapshotQueues()
   }, [])
+  
   return [allStakingSnapshotQueues, loadStakingSnapshotQueues]
 }

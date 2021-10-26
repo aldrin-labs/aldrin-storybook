@@ -1,4 +1,4 @@
-import { stripByAmount } from '@core/utils/chartPageUtils'
+import { stripByAmount, stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import StakeBtn from '@icons/stakeBtn.png'
 import { SvgIcon } from '@sb/components'
 import {
@@ -48,6 +48,8 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { COLORS } from '@variables/variables'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { filterFarmingTicketsByUserKey } from '@sb/dexUtils/staking/filterFarmingTicketsByUserKey'
 
 interface UserBalanceProps {
   value: number
@@ -60,13 +62,15 @@ interface StakingInfoProps {
   tokenMint: string
   stakingPool: StakingPool
   refreshAllTokenData: RefreshFunction
+  allStakingFarmingTickets: FarmingTicket[]
+  refreshAllStakingFarmingTickets: RefreshFunction
 }
 
 const UserBalance: React.FC<UserBalanceProps> = (props) => {
   const { decimals, value } = props
   const formatted = decimals
     ? stripDigitPlaces(value, decimals)
-    : stripByAmount(props.value)
+    : stripByAmountAndFormat(props.value)
   const len = `${formatted}`.length
   let asterisks = ''
   for (let i = 0; i < len; i++) {
@@ -83,7 +87,14 @@ const UserBalance: React.FC<UserBalanceProps> = (props) => {
 }
 
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
-  const { tokenData, tokenMint, stakingPool, refreshAllTokenData } = props
+  const {
+    tokenData,
+    tokenMint,
+    stakingPool,
+    refreshAllTokenData,
+    allStakingFarmingTickets,
+    refreshAllStakingFarmingTickets,
+  } = props
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
   const [loading, setLoading] = useState({ stake: false, unstake: false })
@@ -93,12 +104,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const walletAddress = wallet?.publicKey?.toString() || ''
 
-  const [
-    allStakingFarmingTickets,
-    refreshAllStakingFarmingTickets,
-  ] = useAllStakingTickets({
-    wallet,
-    connection,
+  const userFarmingTickets = filterFarmingTicketsByUserKey({
+    allFarmingTickets: allStakingFarmingTickets,
     walletPublicKey: wallet.publicKey,
   })
 
@@ -110,13 +117,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
   })
 
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(
-    allStakingFarmingTickets
-  )
+  const totalStaked = getStakedTokensFromOpenFarmingTickets(userFarmingTickets)
 
   const userRewards = calculateUserRewards({
     snapshotsQueues: allStakingSnapshotQueues,
-    allStakingFarmingTickets: allStakingFarmingTickets,
+    allStakingFarmingTickets: userFarmingTickets,
   })
 
   const refreshAll = async () => {
@@ -134,62 +139,86 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         return false
       }
 
-      if (tokenData) {
-        setLoading({ stake: true, unstake: false })
-        await startStaking({
-          connection,
-          wallet,
-          amount,
-          userPoolTokenAccount: new PublicKey(tokenData.address),
-          stakingPool,
-        })
+      setLoading({ stake: true, unstake: false })
+      const result = await startStaking({
+        connection,
+        wallet,
+        amount,
+        userPoolTokenAccount: new PublicKey(tokenData.address),
+        stakingPool,
+      })
 
+      notify({
+        type: result === 'success' ? 'success' : 'error',
+        message:
+          result === 'success'
+            ? 'Successfully staked.'
+            : result === 'failed'
+            ? 'Staking failed, please try again later or contact us in telegram.'
+            : 'Staking cancelled.',
+      })
+
+      if (result === 'success') {
         await sleep(7500)
         await refreshAll()
-        setLoading({ stake: false, unstake: false })
-        return true
       }
-      return false
+
+      setLoading({ stake: false, unstake: false })
+      return true
     },
     [connection, wallet, tokenData, refreshAllStakingFarmingTickets]
   )
 
   const end = async () => {
     if (!tokenData?.address) {
-      notify({ message: 'Account does not exists' })
+      notify({ message: 'Create RIN token account please.' })
       return false
     }
+
     setLoading({ stake: false, unstake: true })
-    await endStaking({
+
+    const result = await endStaking({
       connection,
       wallet,
       userPoolTokenAccount: new PublicKey(tokenData.address),
-      farmingTickets: allStakingFarmingTickets,
+      farmingTickets: userFarmingTickets,
       stakingPool,
     })
 
-    await sleep(5000)
-    await refreshAll()
+    notify({
+      type: result === 'success' ? 'success' : 'error',
+      message:
+        result === 'success'
+          ? 'Successfully unstaked.'
+          : result === 'failed'
+          ? 'Unstaking failed, please try again later or contact us in telegram.'
+          : 'Unstaking cancelled.',
+    })
+
+    if (result === 'success') {
+      await sleep(5000)
+      await refreshAll()
+    }
+
     setLoading({ stake: false, unstake: false })
     return true
   }
 
   const [
     stakingTicketsWithAvailableToClaim,
-    refreshStakingTicketsWithAvailableToClaim,
   ] = useStakingTicketsWithAvailableToClaim({
     wallet,
     connection,
     walletPublicKey: wallet.publicKey,
     stakingPool,
-    allStakingFarmingTickets,
+    allStakingFarmingTickets: userFarmingTickets,
   })
 
   const availableToClaimTotal = calculateAvailableToClaim(
     stakingTicketsWithAvailableToClaim
   )
 
-  const lastFarmingTicket = allStakingFarmingTickets.sort(
+  const lastFarmingTicket = userFarmingTickets.sort(
     (ticketA, ticketB) => +ticketB.startTime - +ticketA.startTime
   )[0]
 
@@ -322,7 +351,14 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 }
 
 export const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
-  const { tokenMint, tokenData, stakingPool, refreshAllTokenData } = props
+  const {
+    tokenMint,
+    tokenData,
+    stakingPool,
+    refreshAllTokenData,
+    allStakingFarmingTickets,
+    refreshAllStakingFarmingTickets,
+  } = props
   return (
     <Block>
       <StretchedBlock direction="column">
@@ -332,6 +368,8 @@ export const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
             tokenData={tokenData}
             tokenMint={tokenMint}
             refreshAllTokenData={refreshAllTokenData}
+            allStakingFarmingTickets={allStakingFarmingTickets}
+            refreshAllStakingFarmingTickets={refreshAllStakingFarmingTickets}
           />
         </ConnectWalletWrapper>
       </StretchedBlock>

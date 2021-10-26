@@ -46,6 +46,7 @@ import { TokenInfo } from '@sb/dexUtils/types'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 
 interface InnerProps {
   tokenData: TokenInfo | null
@@ -54,6 +55,7 @@ interface StatsComponentProps extends InnerProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
   stakingPool: StakingPool
+  allStakingFarmingTickets: FarmingTicket[]
 }
 
 const StatsComponent: React.FC<StatsComponentProps> = (
@@ -62,20 +64,14 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const {
     getDexTokensPricesQuery,
     marketDataByTickersQuery,
-    tokenData,
     stakingPool,
+    allStakingFarmingTickets,
   } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
-  const connection = useConnection()
-  const { wallet } = useWallet()
 
   const allStakingFarmingStates = stakingPool?.farming || []
 
   const markPrice = useMarkPrice() || 0
-  const [allStakingFarmingTickets, refreshTotalStaked] = useAllStakingTickets({
-    wallet,
-    connection,
-  })
 
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     allStakingFarmingTickets

@@ -4,7 +4,6 @@ import { FarmingTicket } from '../common/types'
 import { addAmountsToClaimForFarmingTickets } from '../pools/addAmountsToClaimForFarmingTickets'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { RefreshFunction, WalletAdapter } from '../types'
-import { calculateAvailableToClaim } from './calculateAvailableToClaim'
 import { StakingPool } from './types'
 
 export const useStakingTicketsWithAvailableToClaim = ({
@@ -40,7 +39,7 @@ export const useStakingTicketsWithAvailableToClaim = ({
       setAvailableToClaim(availableToClaimFarmingTickets)
     }
     getAvailableToClaim()
-  }, [allStakingFarmingTickets])
+  }, [JSON.stringify(allStakingFarmingTickets), refreshCounter])
 
   return [availableToClaim, refresh]
 }

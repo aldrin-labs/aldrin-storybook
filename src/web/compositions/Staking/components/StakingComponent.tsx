@@ -3,6 +3,7 @@ import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool
 import { useConnection } from '@sb/dexUtils/connection'
 import { STAKING_FARMING_TOKEN_MINT_ADDRESS } from '@sb/dexUtils/staking/config'
 import { StakingPool } from '@sb/dexUtils/staking/types'
+import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
 import React from 'react'
@@ -20,7 +21,6 @@ const StakingComponent: React.FC<StakingComponentProps> = (
   props: StakingComponentProps
 ) => {
   const { getStakingPoolInfoQuery } = props
-
   const { wallet, connected } = useWallet()
   const connection = useConnection()
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts({
@@ -30,6 +30,10 @@ const StakingComponent: React.FC<StakingComponentProps> = (
   const tokenData = allTokenData.find(
     (token) => token.mint === STAKING_FARMING_TOKEN_MINT_ADDRESS
   )
+  const [allStakingFarmingTickets, refreshTotalStaked] = useAllStakingTickets({
+    wallet,
+    connection,
+  })
 
   return (
     <>
@@ -40,10 +44,13 @@ const StakingComponent: React.FC<StakingComponentProps> = (
             tokenMint={STAKING_FARMING_TOKEN_MINT_ADDRESS}
             tokenData={tokenData}
             refreshAllTokenData={refreshAllTokenData}
+            allStakingFarmingTickets={allStakingFarmingTickets}
+            refreshAllStakingFarmingTickets={refreshTotalStaked}
           />
         </Cell>
         <Cell col={12} colLg={6}>
           <StatsComponent
+            allStakingFarmingTickets={allStakingFarmingTickets}
             stakingPool={getStakingPoolInfoQuery.getStakingPoolInfo}
             tokenData={tokenData}
           />
