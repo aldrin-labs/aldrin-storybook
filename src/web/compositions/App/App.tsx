@@ -34,7 +34,6 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 // import './app.styles.global.css';
 import styled from 'styled-components'
-import { CardsPanel } from '../Chart/components'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'

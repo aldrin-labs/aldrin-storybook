@@ -74,13 +74,15 @@ export const Header = () => {
           <NavLink to="/rebalance">Rebalance</NavLink>
           <NavLink to="/dashboard">Dashboard</NavLink>
           <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">Wallet</NavLink>
-          <NavLink show="md" to="/pools">Liquidity Pools</NavLink>
-          <NavLink show="md" as="a" target="_blank" href="https://rin.aldrin.com/">Token</NavLink>
-          
+          <NavLink new show="md" to="/pools">
+            Pools
+          </NavLink>
+          <NavLink show="md" as="a" target="_blank" href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex">F.A.Q.</NavLink>
+
           <DropDown hide="lg" text="···">
             {feedbackLinks}
             <NavLink hide="md" to="/pools">Liquidity Pools</NavLink>
-            <NavLink hide="md" as="a" target="_blank" href="https://rin.aldrin.com/">Token</NavLink>
+            <NavLink hide="md" as="a" target="_blank" href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex">F.A.Q.</NavLink>
           </DropDown>
         </MainLinksBlock>
         <WalletContainer>

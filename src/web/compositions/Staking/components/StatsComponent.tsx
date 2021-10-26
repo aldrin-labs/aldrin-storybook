@@ -67,7 +67,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const connection = useConnection()
   const { wallet } = useWallet()
 
-  const allStakingFarmingStates = stakingPool.farming
+  const allStakingFarmingStates = stakingPool?.farming || []
 
   const markPrice = useMarkPrice() || 0
   const [allStakingFarmingTickets, refreshTotalStaked] = useAllStakingTickets({

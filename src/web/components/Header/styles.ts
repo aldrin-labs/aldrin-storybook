@@ -76,7 +76,11 @@ interface ShowHideProps {
   hide?: keyof typeof BREAKPOINTS
 }
 
-export const NavLink = styled(Link) <ShowHideProps>`
+interface LinkProps extends ShowHideProps {
+  new?: boolean
+}
+
+export const NavLink = styled(Link) <LinkProps>`
   text-decoration: none;
   font-size: 0.8em;
   padding: 6px;
@@ -95,7 +99,7 @@ export const NavLink = styled(Link) <ShowHideProps>`
     background: ${COLORS.navLinkActiveBg};
   }
 
-  ${(props: ShowHideProps) => props.show ? `
+  ${(props: LinkProps) => props.show ? `
     display: none;
 
     @media(min-width: ${BREAKPOINTS[props.show]}) {
@@ -103,9 +107,21 @@ export const NavLink = styled(Link) <ShowHideProps>`
     }
   ` : ''}
 
-  ${(props: ShowHideProps) => props.hide ? `
+  ${(props: LinkProps) => props.hide ? `
     @media(min-width: ${BREAKPOINTS[props.hide]}) {
       display: none;
+    }
+  ` : ''}
+
+  ${(props: LinkProps) => props.new ? `
+    &:after {
+      content: "NEW";
+      color: ${COLORS.success};
+      position: relative;
+      top: -5px;
+      font-weight: 600;
+      font-size: 0.7em;
+      padding-left: 5px;
     }
   ` : ''}
 `

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFormik } from 'formik'
 import { TokenInfo } from '@sb/dexUtils/types'
-import { FormWrap, FormItem } from '../Staking.styles'
+import { FormWrap, FormItem, FormItemFull } from '../Staking.styles'
 import { Input, INPUT_FORMATTERS } from '@sb/components/Input'
 import StakeBtn from '@icons/stakeBtn.png'
 
@@ -45,7 +45,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
 
   return (
     <FormWrap onSubmit={form.handleSubmit}>
-      <FormItem>
+      <FormItemFull>
         <Input
           placeholder="Enter amount..."
           value={form.values.amount}
@@ -57,7 +57,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           append="RIN"
           formatter={INPUT_FORMATTERS.DECIMAL}
         />
-      </FormItem>
+      </FormItemFull>
       <FormItem>
         <Button
           backgroundImage={StakeBtn}

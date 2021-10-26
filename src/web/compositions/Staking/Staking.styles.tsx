@@ -168,6 +168,9 @@ export const FormWrap = styled.form`
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;
 `
+export const FormItemFull = styled(FormItem)`
+  flex: 1;
+`
 
 export const ChartContainer = styled.div`
   background: ${COLORS.gray};

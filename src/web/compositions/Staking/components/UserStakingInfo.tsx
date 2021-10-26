@@ -42,7 +42,7 @@ import {
 } from '../Staking.styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
-import { sleep } from '../../../../../../core/src/utils/helpers'
+import { sleep } from '@core/utils/helpers'
 
 interface UserBalanceProps {
   value: number
