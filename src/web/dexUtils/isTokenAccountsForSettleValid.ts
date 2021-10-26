@@ -19,19 +19,17 @@ export const isTokenAccountsForSettleValid = async ({
   wallet,
   market,
 }: {
-    market: Market
-    wallet: WalletAdapter,
-    connection: Connection,
-    baseTokenAccount: any,
-    quoteTokenAccount: any,
+  market: Market
+  wallet: WalletAdapter,
+  connection: Connection,
+  baseTokenAccount: any,
+  quoteTokenAccount: any,
 }): Promise<boolean> => {
   // handling case when user might settle with 11111111111111111111111111111111 instead of the user's pubkey
   if (
-    (baseTokenAccount &&
-      baseTokenAccount.pubkey &&
+    (baseTokenAccount?.pubkey &&
       SystemProgram.programId.equals(baseTokenAccount.pubkey)) ||
-    (quoteTokenAccount &&
-      quoteTokenAccount.pubkey &&
+    (quoteTokenAccount?.pubkey &&
       SystemProgram.programId.equals(quoteTokenAccount.pubkey))
   ) {
     notify({

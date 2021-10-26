@@ -4,6 +4,7 @@ import {
   clusterApiUrl,
   Connection,
   PublicKey,
+  Connection,
 } from '@solana/web3.js'
 import React, { useContext, useRef } from 'react'
 import tuple from 'immutable-tuple'
@@ -18,12 +19,13 @@ export const ENDPOINTS = [
   },
 ]
 
-const connections = [
-  { url: 'https://api-cryptocurrencies-ai.rpcpool.com', RPS: 10 },
-  // { url: 'https://aldrinexchange.genesysgo.net', RPS: 20 },
-]
-
-const connection = new MultiEndpointsConnection(connections, 'recent')
+const connection = new MultiEndpointsConnection(
+  [
+    { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
+    { url: 'https://aldrinexchange.genesysgo.net', weight: 3 },
+  ],
+  'recent'
+)
 
 connection.connections.forEach((c) => {
   c.onSlotChange(() => null)
@@ -31,7 +33,7 @@ connection.connections.forEach((c) => {
 })
 
 const serumConnection = new MultiEndpointsConnection([
-  { url: 'https://solana-api.projectserum.com', RPS: 2 },
+  { url: 'https://solana-api.projectserum.com', weight: 2 },
 ])
 
 const context = {
@@ -56,7 +58,7 @@ export function useConnection(): Connection {
 }
 
 export function useSerumConnection(): Connection {
-  return useContext(ConnectionContext).serumConnection
+  return useContext(ConnectionContext).serumConnection as unknown as Connection
 }
 
 export function useConnectionConfig() {

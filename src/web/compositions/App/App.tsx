@@ -93,7 +93,7 @@ const AppRaw = ({
   getViewModeQuery,
   location: { pathname: currentPage, search },
 }: any) => {
-  const [isDevUrlPopupOpen, openDevUrlPopup] = useState(true)
+  const [isDevUrlPopupOpen, openDevUrlPopup] = useLocalStorageState('isDevUrlPopupOpen', true)
   const [
     isRebrandingPopupOpen,
     setIsRebrandingPopupOpen,
@@ -185,10 +185,10 @@ const AppRaw = ({
                             }}
                           />
                         )}
-                        <RebrandingPopup
+                        {/* <RebrandingPopup
                           open={isRebrandingPopupOpen}
                           onClose={() => setIsRebrandingPopupOpen(false)}
-                        />
+                        /> */}
                         {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}

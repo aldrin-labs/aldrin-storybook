@@ -5,14 +5,15 @@ import LightLogo from '@icons/lightLogo.svg'
 import WalletIcon from '@icons/walletIcon.svg'
 import { withTheme, MenuList } from '@material-ui/core'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
+import { Label } from '@sb/components/Label/Label'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import SvgIcon from '@sb/components/SvgIcon'
 import {
   ReusableTitle as Title,
   Row,
-  Row,
   RowContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
 import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -23,6 +24,8 @@ import {
   RedButton,
   DropdownContainer,
   DropwodnItem,
+  MenuDropdown,
+  MenuDropdownInner,
   MenuDropdownLink,
 } from './styles'
 import { FeedbackPopup } from './UsersFeedbackPopup'
@@ -115,6 +118,25 @@ export const CardsPanel = ({ theme }) => {
     false
   )
 
+  const [tradingMenuOpen, setTradingMenuOpen] = useState(false)
+
+  const CARD_STYLE: React.CSSProperties = {
+    // position: 'relative',
+    display: 'flex',
+    maxWidth: '100%',
+    flexGrow: 1,
+    border: '0',
+    overflow: 'visible',
+  }
+
+  const LOGO_LINK_STYLE: React.CSSProperties = {
+    width: '13rem',
+    height: '100%',
+    marginRight: '4rem',
+  }
+
+  const NAV_LINK_STYLE: React.CSSProperties = { width: '13rem' }
+
   const isDarkTheme = theme.palette.type === 'dark'
 
   return (
@@ -180,7 +202,7 @@ export const CardsPanel = ({ theme }) => {
               pathname={location.pathname}
               to="/rebalance"
               page={'rebalance'}
-              style={NAV_LINK_STYLE}
+              style={{ width: '13rem' }}
               component={(props) => <Link to={`/rebalance`} {...props} />}
             >
               Rebalance
@@ -204,16 +226,20 @@ export const CardsPanel = ({ theme }) => {
             >
               Wallet
             </NavLinkButton>
-            {!MASTER_BUILD && (
-              <NavLinkButton
+            <NavLinkButton
+              theme={theme}
+              page={'/pools'}
+              pathname={location.pathname}
+              style={{ width: '17rem' }}
+              component={(props) => <Link to={`/pools`} {...props} />}
+            >
+              Liquidity Pools
+              <Label
+                text={'New'}
                 theme={theme}
-                page={'/pools'}
-                pathname={location.pathname}
-                component={(props) => <Link to={`/pools`} {...props} />}
-              >
-                Pools
-              </NavLinkButton>
-            )}
+                style={{ marginLeft: '.5rem', color: '#53DF11' }}
+              />
+            </NavLinkButton>
             {/* {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
