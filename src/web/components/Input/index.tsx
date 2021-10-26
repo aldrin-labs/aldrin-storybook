@@ -48,8 +48,6 @@ export const INPUT_FORMATTERS = {
   NOP: (e: string, prevValue: string) => e,
   DECIMAL: (v: string, prevValue: string) => {
     const value = v ? v.replace(',', '.') : v;
-    console.log('DECIMAL:', v, prevValue, validateDecimal(value) )
-
     if (validateDecimal(value) || v === '') {
         return value
     }
@@ -103,3 +101,5 @@ export const Input: React.FC<InputProps> = (props) => {
 //     </Row>
 //   )
 // }
+
+export * from './utils'

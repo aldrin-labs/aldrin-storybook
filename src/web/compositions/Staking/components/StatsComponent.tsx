@@ -76,8 +76,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const decDelimiter = Math.pow(10, tokenData?.decimals || 0)
 
   const totalStaked =
-    getStakedTokensFromOpenFarmingTickets(allStakingFarmingTickets) /
-    decDelimiter
+    getStakedTokensFromOpenFarmingTickets(allStakingFarmingTickets) 
   const currentFarmingState = getCurrentFarmingStateFromAll(
     allStakingFarmingStates
   )

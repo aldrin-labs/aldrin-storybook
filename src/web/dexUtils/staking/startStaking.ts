@@ -30,44 +30,44 @@ export const startStaking = async (params: StartStakingParams) => {
     userPoolTokenAccount,
   } = params
 
-  console.log('Start staking: ', params)
-
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
     programAddress: STAKING_PROGRAM_ADDRESS,
   })
 
-  console.log('program', program)
   //заменить на пул с апи (аргументом)
   const pools = await program.account.stakingPool.all()
   const farmings = await program.account.farmingState.all()
 
   const pool: StakingPoolAccount = pools[0].account
 
-  console.log('R: ', pool, farmings, amount)
 
   const farmingTicket = Keypair.generate()
   const farmingTicketInstruction = await program.account.farmingTicket.createInstruction(
     farmingTicket
   )
 
+  const accounts = {
+    accounts: {
+      pool: pools[0].publicKey,
+      farmingState: farmings[0].publicKey,
+      farmingTicket: farmingTicket.publicKey,
+      stakingVault: pool.stakingVault,
+      userStakingTokenAccount: userPoolTokenAccount,
+      walletAuthority: wallet.publicKey,
+      userKey: wallet.publicKey,
+      tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+      clock: SYSVAR_CLOCK_PUBKEY,
+      rent: SYSVAR_RENT_PUBKEY,
+    },
+  }
+
+  // console.log('Accounts: ',accounts)
+
   const startStakingTransaction = await program.instruction.startFarming(
     new BN(amount),
-    {
-      accounts: {
-        pool: pools[0].publicKey,
-        farmingState: farmings[0].publicKey,
-        farmingTicket: farmingTicket.publicKey,
-        stakingVault: pool.stakingVault,
-        userStakingTokenAccount: userPoolTokenAccount,
-        walletAuthority: wallet.publicKey,
-        userKey: wallet.publicKey,
-        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-        clock: SYSVAR_CLOCK_PUBKEY,
-        rent: SYSVAR_RENT_PUBKEY,
-      },
-    }
+    accounts
   )
 
   const commonTransaction = new Transaction()

@@ -5,11 +5,10 @@ import {
   Block,
   BlockContent,
   BlockSubtitle,
-  BlockTitle,
+  BlockTitle
 } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
-import { Input, INPUT_FORMATTERS } from '@sb/components/Input'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -26,23 +25,24 @@ import { TokenInfo } from '@sb/dexUtils/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
   Asterisks,
   BalanceRow,
   BalanceWrap,
   Digit,
-  FormItem,
-  FormWrap,
+
+
   RewardsBlock,
   StyledTextDiv,
   TotalStakedBlock,
   WalletBalanceBlock,
-  WalletRow,
+  WalletRow
 } from '../Staking.styles'
 import { RestakePopup } from './RestakePopup'
-import { useFormik } from 'formik'
+import { StakingForm } from './StakingForm'
+import { sleep } from '../../../../../../core/src/utils/helpers'
 
 interface UserBalanceProps {
   value: number
@@ -76,6 +76,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const { tokenData, tokenMint, stakingPool } = props
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [availableToClaim, setAvailableToClaim] = useState(null)
 
   const { wallet } = useWallet()
@@ -100,11 +101,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
   })
 
-  const [allUserAccounts] = useUserTokenAccounts({ wallet, connection })
+  const [allUserAccounts, refreshUserTokens] = useUserTokenAccounts({ wallet, connection })
 
-  const totalStaked =
-    getStakedTokensFromOpenFarmingTickets(allStakingFarmingTickets) /
-    Math.pow(10, tokenData?.decimals || 0)
+  const totalStaked = getStakedTokensFromOpenFarmingTickets(allStakingFarmingTickets) / Math.pow(10, 9),
+
+
 
   const userRewards = calculateUserRewards({
     snapshotsQueues: allStakingSnapshotQueues,
@@ -137,41 +138,44 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     getAvailableToClaim()
   }, [])
 
-  // console.log('RERENDER: ', connection, wallet, userAccount?.address)
+
+  const refreshAll = async () => {
+    refreshAllStakingFarmingTickets()
+    refreshAllStakingSnapshotQueues()
+    refreshUserTokens()
+  }
 
   const start = useCallback(async (amount: number) => {
-    console.log('start cb:', userAccount)
+
     if (!userAccount?.address) {
       notify({ message: 'Account does not exists' })
       return false
     }
+
     if (tokenData) {
+      setLoading(true)
       await startStaking({
         connection,
         wallet,
         amount: amount * Math.pow(10, tokenData.decimals),
         userPoolTokenAccount: new PublicKey(userAccount.address),
       })
+
+      await sleep(2000)
+      refreshAll()
+      setLoading(false)
       return true
     }
     return false
-  }, [connection, wallet, userAccount, tokenData]) 
-
-  const form = useFormik({
-    initialValues: {
-      amount: `${tokenData?.amount || 0}`
-    },
-    onSubmit: (values) => {
-      console.log('SUBMIT:', start)
-      start(parseFloat(values.amount))
-    }
-  })
+  }, [connection, wallet, userAccount, tokenData, refreshAllStakingFarmingTickets])
 
   const end = async () => {
     if (!userAccount?.address) {
       notify({ message: 'Account does not exists' })
       return false
+
     }
+    setLoading(true)
     await endStaking({
       connection,
       wallet,
@@ -179,6 +183,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       farmingTickets: allStakingFarmingTickets,
       stakingPool,
     })
+
+
+    await sleep(2000)
+    refreshAll()
+    setLoading(false)
     return true
   }
   return (
@@ -252,45 +261,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </RewardsBlock>
           </Cell>
         </Row>
-
-        <FormWrap onSubmit={form.handleSubmit}>
-          <FormItem>
-            <Input
-              placeholder="Enter amount..."
-              value={form.values.amount}
-              onChange={(v) => form.setFieldValue('amount', v)}
-              name="amount"
-              append="RIN"
-              formatter={INPUT_FORMATTERS.DECIMAL}
-            />
-          </FormItem>
-          <FormItem>
-            <Button
-              onClick={() => {
-                form.submitForm()
-              }}
-              backgroundImage={StakeBtn}
-              fontSize="xs"
-              padding="lg"
-              borderRadius="xxl"
-            >
-              Stake
-            </Button>
-          </FormItem>
-          <FormItem>
-            <Button
-              backgroundImage={StakeBtn}
-              fontSize="xs"
-              padding="lg"
-              borderRadius="xxl"
-              disabled={totalStaked === 0}
-              onClick={() => end()}
-              type="button"
-            >
-              Unstake all
-            </Button>
-          </FormItem>
-        </FormWrap>
+        {tokenData &&
+          <StakingForm
+            tokenData={tokenData}
+            totalStaked={totalStaked}
+            start={start}
+            end={end}
+            loading={loading}
+          />
+        }
       </BlockContent>
       <RestakePopup
         open={isRestakePopupOpen}

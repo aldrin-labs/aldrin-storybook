@@ -35,7 +35,6 @@ class ProgramsMultiton {
       throw Error('No connection in getProgramByAddress')
     }
 
-    console.log('create program', wallet)
 
     const program_idl = getIdlByProgramAddress(programAddress)
     const programId = new PublicKey(programAddress)

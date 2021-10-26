@@ -37,13 +37,11 @@ const StakingComponent: React.FC<StakingComponentProps> = (
     const fetchData = async () => {
       const atd = await getAllTokensData(wallet.publicKey, connection)
       const tokenData = atd.find((token) => token.mint === MINT_ADDRESS)
-      console.log('tokenData', tokenData)
       if (tokenData) {
         setTokenData(tokenData)
       }
     }
     if (connected) {
-      console.log('Wallet: ', wallet)
       fetchData()
     }
   }, [wallet, connected])
