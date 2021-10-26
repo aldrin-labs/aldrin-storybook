@@ -2,13 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { COLORS, BORDER_RADIUS } from '../../../variables'
+import { validateDecimal } from './utils'
 
 interface InputProps {
   value?: string
-  onChange: (value: string) => void
+  onChange: (e: string) => void
+  formatter?: (e: string, prevValue: string) => string
   placeholder?: string
   append?: string
   size?: number // Input size
+  name: string
 }
 
 const InputWrap = styled.div`
@@ -38,15 +41,32 @@ const Append = styled.span`
   color: ${COLORS.hint};
   font-size: 1em;
 `
+
+
+
+export const INPUT_FORMATTERS = {
+  NOP: (e: string, prevValue: string) => e,
+  DECIMAL: (v: string, prevValue: string) => {
+    const value = v ? v.replace(',', '.') : v;
+    console.log('DECIMAL:', v, prevValue, validateDecimal(value) )
+
+    if (validateDecimal(value) || v === '') {
+        return value
+    }
+    return prevValue
+  }
+}
+
 export const Input: React.FC<InputProps> = (props) => {
-  const { placeholder, onChange, append, value = '', size = 8 } = props
+  const { placeholder, onChange, append, value = '', size = 8, name, formatter = INPUT_FORMATTERS.NOP } = props
   return (
     <InputWrap>
       <InputEl
         size={size}
         placeholder={placeholder}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => onChange(formatter(e.target.value, value))}
+        name={name}
       />
       {append &&
         <Append>{append}</Append>

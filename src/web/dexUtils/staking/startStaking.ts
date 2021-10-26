@@ -1,4 +1,4 @@
-import { WalletAdapter, TokenInfo } from "../types"
+import { WalletAdapter } from "../types"
 import { Connection, PublicKey, Keypair, SYSVAR_RENT_PUBKEY, SYSVAR_CLOCK_PUBKEY, Transaction } from "@solana/web3.js"
 import { ProgramsMultiton } from "../ProgramsMultiton/ProgramsMultiton"
 import { STAKING_PROGRAM_ADDRESS } from "../ProgramsMultiton/utils"
@@ -12,9 +12,7 @@ interface StartStakingParams {
   wallet: WalletAdapter
   connection: Connection
   amount: number
-  // poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey
-  tokenData: TokenInfo
 }
 
 interface StakingPoolAccount {
@@ -30,8 +28,9 @@ export const startStaking = async (params: StartStakingParams) => {
     connection,
     amount,
     userPoolTokenAccount,
-    tokenData,
   } = params
+
+  console.log('Start staking: ', params)
 
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -53,10 +52,8 @@ export const startStaking = async (params: StartStakingParams) => {
     farmingTicket
   )
 
-
-  console.log('Start staking: ', tokenData)
   const startStakingTransaction = await program.instruction.startFarming(
-    new BN(amount * Math.pow(10, tokenData.decimals)),
+    new BN(amount),
     {
       accounts: {
         pool: pools[0].publicKey,

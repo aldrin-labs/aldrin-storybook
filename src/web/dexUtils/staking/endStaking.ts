@@ -50,11 +50,9 @@ export const endStaking = async (params: EndstakingParams) => {
   )
 
   const commonTransaction = new Transaction()
-  let tx = null
-
   const sendPartOfTransactions = async () => {
     try {
-      tx = await sendTransaction({
+      const tx = await sendTransaction({
         wallet,
         connection,
         transaction: commonTransaction,
@@ -78,7 +76,6 @@ export const endStaking = async (params: EndstakingParams) => {
 
   const farmingState = stakingPool.farming[0]
 
-  console.log('farmingState', farmingState)
 
   for (let ticketData of openTickets) {
     const endFarmingTransaction = await program.instruction.endFarming({
