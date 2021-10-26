@@ -214,7 +214,7 @@ export const CardsPanel = ({ theme }) => {
                 Pools
               </NavLinkButton>
             )}
-            {!MASTER_BUILD && (
+            {/* {!MASTER_BUILD && (
               <NavLinkButton
                 theme={theme}
                 page={'/swap'}
@@ -223,7 +223,7 @@ export const CardsPanel = ({ theme }) => {
               >
                 Swap
               </NavLinkButton>
-            )}
+            )} */}
             {/* {!MASTER_BUILD && (
               <NavLinkButton
                 style={{ color: '#386DE6' }}
