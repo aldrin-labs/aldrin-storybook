@@ -1,5 +1,5 @@
-import { DexTokensPrices, PoolInfo } from "@sb/compositions/Pools/index.types"
-import { getTokenNameByMintAddress } from "@sb/dexUtils/markets"
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 export const getTotalUserLiquidity = ({
   usersPools,
@@ -14,11 +14,11 @@ export const getTotalUserLiquidity = ({
 
     const baseTokenPrice =
       dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === baseSymbol)
-        ?.price || 10
+        ?.price || 0
 
     const quoteTokenPrice =
       dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === quoteSymbol)
-        ?.price || 10
+        ?.price || 0
 
     const tvlUSDForPool =
       baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB

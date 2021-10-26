@@ -136,8 +136,8 @@ export const combineUserLiquidityData = ({
       const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
-      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
-      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
+      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
 
       const tvlUSD =
         baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
