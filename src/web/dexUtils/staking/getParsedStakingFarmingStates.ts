@@ -26,10 +26,11 @@ export const getParsedStakingFarmingStates = async ({
   const allUserStatesPerPool = states.map((state) => {
     const data = Buffer.from(state.account.data)
     const statesData = program.coder.accounts.decode('FarmingState', data)
-
     return {
       startTime: statesData.startTime.toNumber(),
       tokensTotal: statesData.tokensTotal.toNumber(),
+      farmingState: state.pubkey.toString(),
+      farmingSnapshots: statesData.farmingSnapshots.toString(),
     }
   })
 

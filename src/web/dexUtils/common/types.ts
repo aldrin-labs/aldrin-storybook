@@ -1,5 +1,3 @@
-import { PublicKey } from '@solana/web3.js'
-
 export type FarmingTicket = {
   tokensFrozen: number
   endTime: string

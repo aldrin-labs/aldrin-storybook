@@ -9,17 +9,29 @@ import { getAllTokensData } from '../../Rebalance/utils'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { TokenInfo } from '@sb/dexUtils/types'
+import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { compose } from 'recompose'
+import { StakingPool } from '@sb/dexUtils/staking/types'
 
-export const StakingComponent: React.FC = () => {
+interface StakingComponentProps {
+  getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
+}
+
+const StakingComponent: React.FC<StakingComponentProps> = (
+  props: StakingComponentProps
+) => {
+  const { getStakingPoolInfoQuery } = props
 
   // TODO: Remove on prod
-  const MINT_ADDRESS = MASTER_BUILD ? RIN_MINT : 'BCP6eCN2W1Z918hVoF3q9xw79AxFHsVxM4RSPxxKXL2m'
+  const MINT_ADDRESS = MASTER_BUILD
+    ? RIN_MINT
+    : 'BCP6eCN2W1Z918hVoF3q9xw79AxFHsVxM4RSPxxKXL2m'
 
-  
   const { wallet, connected } = useWallet()
   const connection = useConnection()
 
-  const [tokenData, setTokenData] = useState<TokenInfo|null>(null)
+  const [tokenData, setTokenData] = useState<TokenInfo | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,17 +48,31 @@ export const StakingComponent: React.FC = () => {
     }
   }, [wallet, connected])
 
-
   return (
     <>
       <RootRow>
         <Cell col={12} colLg={6}>
-          <UserStakingInfo tokenMint={MINT_ADDRESS} tokenData={tokenData} />
+          <UserStakingInfo
+            stakingPool={getStakingPoolInfoQuery.getStakingPoolInfo}
+            tokenMint={MINT_ADDRESS}
+            tokenData={tokenData}
+          />
         </Cell>
         <Cell col={12} colLg={6}>
-          <StatsComponent tokenData={tokenData} />
+          <StatsComponent
+            stakingPool={getStakingPoolInfoQuery.getStakingPoolInfo}
+            tokenData={tokenData}
+          />
         </Cell>
       </RootRow>
     </>
   )
 }
+
+export default compose(
+  queryRendererHoc({
+    query: getStakingPoolInfo,
+    name: 'getStakingPoolInfoQuery',
+    fetchPolicy: 'cache-and-network',
+  })
+)(StakingComponent)

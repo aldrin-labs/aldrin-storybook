@@ -40,6 +40,7 @@ export const startStaking = async (params: StartStakingParams) => {
   })
 
   console.log('program', program)
+  //заменить на пул с апи (аргументом)
   const pools = await program.account.stakingPool.all()
   const farmings = await program.account.farmingState.all()
 

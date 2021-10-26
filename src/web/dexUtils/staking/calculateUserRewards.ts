@@ -20,7 +20,6 @@ export const calculateUserRewards = (params: CalculateRewardsParams) => {
     snapshotsQueues,
     allStakingFarmingTickets,
   } = params
-  const initialState: CalculatedUserRewards =  { prevSnapshot: null, amount: 0 }
   const userRewardsForAllTickets = allStakingFarmingTickets.reduce(
     (acc, ticket) => {
       const filteredSnapshots = snapshotsQueues.filter(
@@ -36,7 +35,7 @@ export const calculateUserRewards = (params: CalculateRewardsParams) => {
         (snapshot) => snapshot.time >= +ticket.startTime && snapshot.time <= +ticket.endTime
       )
 
-      const r: CalculatedUserRewards = { prevSnapshot: null, amount: acc.amount }
+      const r: CalculatedUserRewards = { prevSnapshot: null, amount: acc }
 
       const userRewardsForTicket = snapshotsInTicketTimestampInterval.reduce(
         (
@@ -61,10 +60,11 @@ export const calculateUserRewards = (params: CalculateRewardsParams) => {
         r
       )
 
-      return userRewardsForTicket
+      return userRewardsForTicket.amount
     },
-    initialState
+    0
   )
+
 
   return userRewardsForAllTickets
 }

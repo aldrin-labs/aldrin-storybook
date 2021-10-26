@@ -51,7 +51,6 @@ interface InnerProps {
 interface StatsComponentProps extends InnerProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
- 
 }
 
 const StatsComponent: React.FC<StatsComponentProps> = (
@@ -76,9 +75,9 @@ const StatsComponent: React.FC<StatsComponentProps> = (
 
   const decDelimiter = Math.pow(10, tokenData?.decimals || 0)
 
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(
-    allStakingFarmingTickets
-  ) / decDelimiter
+  const totalStaked =
+    getStakedTokensFromOpenFarmingTickets(allStakingFarmingTickets) /
+    decDelimiter
   const currentFarmingState = getCurrentFarmingStateFromAll(
     allStakingFarmingStates
   )
@@ -113,7 +112,6 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const apy = (tokensTotal / totalStaked) * 100 * 12
 
   const SHARE_TEXT = getShareText(apy)
-
   return (
     <>
       <Row>
@@ -135,7 +133,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <BigNumber>{apy}%</BigNumber>
+              <BigNumber>{stripByAmount(apy)}%</BigNumber>
               <StretchedBlock>
                 <Number>APY</Number>
                 <div>

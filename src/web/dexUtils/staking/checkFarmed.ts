@@ -6,7 +6,7 @@ import {
   SYSVAR_RENT_PUBKEY,
 } from '@solana/web3.js'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 
 export const checkFarmed = async ({
@@ -25,7 +25,7 @@ export const checkFarmed = async ({
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
+    programAddress: STAKING_PROGRAM_ADDRESS,
   })
 
   if (!farming) return null

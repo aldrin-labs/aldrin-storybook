@@ -2,20 +2,23 @@ import { simulateTransaction } from '@project-serum/common'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import { WalletAdapter } from '../types'
-import { checkFarmed } from './checkFarmed'
+import { checkFarmed } from '../common/checkFarmed'
 import { START_OF_LOG_WITH_AMOUNT_TO_CLAIM } from '../common/config'
 import { FarmingTicket } from '../common/types'
+import { sendTransaction } from '../send'
 
 export const addAmountsToClaimForFarmingTickets = async ({
   pools,
   wallet,
   connection,
   allUserFarmingTickets,
+  programAddress,
 }: {
   pools: PoolInfo[]
   wallet: WalletAdapter
   connection: Connection
   allUserFarmingTickets: FarmingTicket[]
+  programAddress: string
 }): Promise<FarmingTicket[]> => {
   const poolsMap = pools.reduce(
     (acc, pool) => acc.set(pool.swapToken, pool),
@@ -25,7 +28,7 @@ export const addAmountsToClaimForFarmingTickets = async ({
   const ticketsWithExistingPools = allUserFarmingTickets.filter((ticket) =>
     poolsMap.has(ticket.pool)
   )
-
+  console.log('ticketsWithExistingPools', ticketsWithExistingPools)
   let rewardsToClaimTransaction = new Transaction()
   let ticketsCounter = 0
   let commonValueLogs: string[] = []
@@ -39,6 +42,7 @@ export const addAmountsToClaimForFarmingTickets = async ({
     let transaction = null
 
     for (let farming of pool.farming) {
+      console.log('ticket', ticket, 'farming', farming, 'pool', pool)
       try {
         transaction = await checkFarmed({
           wallet,
@@ -46,6 +50,7 @@ export const addAmountsToClaimForFarmingTickets = async ({
           poolPublicKey: new PublicKey(pool.swapToken),
           farmingTicket: new PublicKey(ticket.farmingTicket),
           farming,
+          programAddress,
         })
       } catch (e) {
         console.error(e)
@@ -64,7 +69,6 @@ export const addAmountsToClaimForFarmingTickets = async ({
           rewardsToClaimTransaction,
           connection.commitment ?? 'single'
         )
-
         // for through logs + use index to get ticket -> pool and add claim value
         if (value.err) {
           return ticketsWithExistingPools
