@@ -129,7 +129,9 @@ export const combineUserLiquidityData = ({
     .filter((pool) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
-        symbol: pool.parsedName,
+        symbol: `${getTokenNameByMintAddress(
+          pool.tokenA
+        )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
     .map((pool: PoolInfo) => {
