@@ -243,6 +243,7 @@ export const combineUserLiquidityData = ({
               ) : null}
             </Row>
           ),
+          contentToSort: `${baseSymbol}${quoteSymbol}`,
         },
         tvl: {
           render: (
@@ -259,6 +260,7 @@ export const combineUserLiquidityData = ({
             </TextColumnContainer>
           ),
           showOnMobile: false,
+          contentToSort: tvlUSD,
         },
         userLiquidity: {
           render: (
@@ -278,6 +280,7 @@ export const combineUserLiquidityData = ({
               </RowDataTdText>
             </TextColumnContainer>
           ),
+          contentToSort: userLiquidityUSD + feesUsd,
         },
         fees: {
           render: (
@@ -285,6 +288,7 @@ export const combineUserLiquidityData = ({
               ${stripByAmountAndFormat(feesUsd || 0)}
             </RowDataTdText>
           ),
+          contentToSort: feesUsd,
         },
         apy: {
           render: (
@@ -296,6 +300,7 @@ export const combineUserLiquidityData = ({
               {stripByAmountAndFormat(pool.apy24h)}%
             </RowDataTdText>
           ),
+          contentToSort: pool.apy24h,
         },
         farming: {
           render: farmingState ? (
@@ -337,6 +342,7 @@ export const combineUserLiquidityData = ({
           ) : (
             '-'
           ),
+          contentToSort: dailyFarmingValuePerThousandDollarsLiquidity,
         },
         details: {
           render: (

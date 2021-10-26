@@ -264,6 +264,7 @@ export const combineAllPoolsData = ({
               ) : null}
             </Row>
           ),
+          contentToSort: `${baseSymbol}${quoteSymbol}`,
         },
         tvl: {
           render: (
@@ -280,6 +281,7 @@ export const combineAllPoolsData = ({
             </TextColumnContainer>
           ),
           showOnMobile: false,
+          contentToSort: tvlUSD,
         },
         vol24h: {
           render: (
@@ -288,7 +290,7 @@ export const combineAllPoolsData = ({
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
-          contentToSort: '',
+          contentToSort: tradingVolumes.daily,
           showOnMobile: false,
         },
 
@@ -299,7 +301,7 @@ export const combineAllPoolsData = ({
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
-          contentToSort: '',
+          contentToSort: tradingVolumes.weekly,
           showOnMobile: false,
         },
         fees: {
@@ -308,6 +310,7 @@ export const combineAllPoolsData = ({
               ${stripByAmountAndFormat(feesUSDByPool)}
             </RowDataTdText>
           ),
+          contentToSort: feesUSDByPool,
         },
         apy: {
           render: (
@@ -319,6 +322,7 @@ export const combineAllPoolsData = ({
               {stripByAmountAndFormat(apy)}%
             </RowDataTdText>
           ),
+          contentToSort: apy,
         },
         farming: {
           render: farmingState ? (
@@ -360,6 +364,7 @@ export const combineAllPoolsData = ({
           ) : (
             '-'
           ),
+          contentToSort: dailyFarmingValuePerThousandDollarsLiquidity,
         },
         details: {
           render: (
