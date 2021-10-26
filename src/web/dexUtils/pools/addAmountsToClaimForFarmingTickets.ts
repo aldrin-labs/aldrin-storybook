@@ -6,6 +6,7 @@ import { checkFarmed } from '../common/checkFarmed'
 import { START_OF_LOG_WITH_AMOUNT_TO_CLAIM } from '../common/config'
 import { FarmingTicket } from '../common/types'
 import { sendTransaction } from '../send'
+import { StakingPool } from '../staking/types'
 
 export const addAmountsToClaimForFarmingTickets = async ({
   pools,
@@ -14,7 +15,7 @@ export const addAmountsToClaimForFarmingTickets = async ({
   allUserFarmingTickets,
   programAddress,
 }: {
-  pools: PoolInfo[]
+  pools: (PoolInfo|StakingPool)[]
   wallet: WalletAdapter
   connection: Connection
   allUserFarmingTickets: FarmingTicket[]

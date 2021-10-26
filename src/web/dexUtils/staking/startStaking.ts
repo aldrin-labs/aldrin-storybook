@@ -1,36 +1,28 @@
-import { WalletAdapter, TokenInfo } from '../types'
+import { TokenInstructions } from '@project-serum/serum'
 import {
   Connection,
-  PublicKey,
   Keypair,
-  SYSVAR_RENT_PUBKEY,
+  PublicKey,
   SYSVAR_CLOCK_PUBKEY,
+  SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import BN from 'bn.js'
-import { TokenInstructions } from '@project-serum/serum'
 import { NUMBER_OF_RETRIES } from '../common'
 import { notify } from '../notifications'
+import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
+import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
+import { WalletAdapter } from '../types'
+import { STAKING_FARMING_TOKEN_DECIMALS } from './config'
 import { StakingPool } from './types'
 
 interface StartStakingParams {
   wallet: WalletAdapter
   connection: Connection
   amount: number
-  // poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey
-  tokenData: TokenInfo
   stakingPool: StakingPool
-}
-
-interface StakingPoolAccount {
-  authority: PublicKey
-  poolMint: PublicKey
-  poolSigner: PublicKey
-  stakingVault: PublicKey
 }
 
 export const startStaking = async (params: StartStakingParams) => {
@@ -39,7 +31,6 @@ export const startStaking = async (params: StartStakingParams) => {
     connection,
     amount,
     userPoolTokenAccount,
-    tokenData,
     stakingPool,
   } = params
 
@@ -54,9 +45,8 @@ export const startStaking = async (params: StartStakingParams) => {
     farmingTicket
   )
 
-  console.log('Start staking: ', tokenData)
   const startStakingTransaction = await program.instruction.startFarming(
-    new BN(amount * Math.pow(10, tokenData.decimals)),
+    new BN(amount * 10 ** STAKING_FARMING_TOKEN_DECIMALS),
     {
       accounts: {
         pool: new PublicKey(stakingPool.swapToken),

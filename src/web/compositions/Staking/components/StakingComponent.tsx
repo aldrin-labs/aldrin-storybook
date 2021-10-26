@@ -27,7 +27,9 @@ const StakingComponent: React.FC<StakingComponentProps> = (
     wallet,
     connection,
   })
-  const tokenData = allTokenData.find((token) => token.mint === STAKING_FARMING_TOKEN_MINT_ADDRESS)
+  const tokenData = allTokenData.find(
+    (token) => token.mint === STAKING_FARMING_TOKEN_MINT_ADDRESS
+  )
 
   return (
     <>

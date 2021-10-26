@@ -8,9 +8,9 @@ import rewardsIcon from './assets/rewards.svg'
 
 import greenBack from './assets/greenBack.png'
 
-import { Cell } from '../../../components/Layout'
-import { Text } from '../../../components/Typography'
-import { Block, BlockContent, BlockSubtitle } from '../../../components/Block'
+import { Cell } from '@sb/components/Layout'
+import { Text } from '@sb/components/Typography'
+import { Block, BlockContent, BlockSubtitle } from '@sb/components/Block'
 import { COLORS } from '../../../../variables'
 
 export const BlockWithHints = () => {
@@ -21,8 +21,7 @@ export const BlockWithHints = () => {
           <BlockContent>
             <BlockSubtitle>Staking Lockup:</BlockSubtitle>
             <Text maxWidth="85%" size="sm">
-              Staking lockup lasts for one month from the date of deposit. You
-              will not be able to withdraw your RIN until the lock is lifted.
+              Staking lockup lasts for one hour from the time of deposit. You will not be able to withdraw your RIN until the lock is lifted.
             </Text>
           </BlockContent>
         </Block>
@@ -32,9 +31,7 @@ export const BlockWithHints = () => {
           <BlockContent>
             <BlockSubtitle>Rewards:</BlockSubtitle>
             <Text maxWidth="95%" size="sm">
-              The reward is recalculated daily for the duration of the staking
-              period. But claim your you can reward after the first day of each
-              following month.
+              RIN staking rewards are calculated hourly. These are then accumulated and paid out on the 27th of each month along with trading fee revenue.
             </Text>
           </BlockContent>
         </Block>
@@ -44,8 +41,8 @@ export const BlockWithHints = () => {
           <BlockContent>
             <BlockSubtitle color={COLORS.white}>Liquidity Mining:</BlockSubtitle>
             <Text maxWidth="85%" size="sm">
-              You can also deposit your funds in one of the liquidity pools
-              presented here, and farm RIN with your pool tokens staking. ⟶
+              You can also deposit your funds in one of the liquidity pools presented here, and farm RIN with by staking the LP tokens you receive from providing liquidity.
+              ⟶
             </Text>
           </BlockContent>
         </Block>

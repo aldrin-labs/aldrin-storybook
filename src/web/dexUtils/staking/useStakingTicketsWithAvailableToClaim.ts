@@ -11,13 +11,13 @@ export const useStakingTicketsWithAvailableToClaim = ({
   wallet,
   connection,
   walletPublicKey,
-  parsedStakingPool,
+  stakingPool,
   allStakingFarmingTickets,
 }: {
   wallet: WalletAdapter
   connection: Connection
   walletPublicKey?: PublicKey
-  parsedStakingPool: StakingPool
+  stakingPool: StakingPool
   allStakingFarmingTickets: FarmingTicket[]
 }): [FarmingTicket[], RefreshFunction] => {
   const [availableToClaim, setAvailableToClaim] = useState(<FarmingTicket[]>[])
@@ -29,7 +29,7 @@ export const useStakingTicketsWithAvailableToClaim = ({
     const getAvailableToClaim = async () => {
       const availableToClaimFarmingTickets = await addAmountsToClaimForFarmingTickets(
         {
-          pools: [parsedStakingPool],
+          pools: [stakingPool],
           wallet,
           connection,
           allUserFarmingTickets: allStakingFarmingTickets,

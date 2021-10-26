@@ -50,11 +50,9 @@ export const endStaking = async (params: EndstakingParams) => {
   )
 
   const commonTransaction = new Transaction()
-  let tx = null
-
   const sendPartOfTransactions = async () => {
     try {
-      tx = await sendTransaction({
+      const tx = await sendTransaction({
         wallet,
         connection,
         transaction: commonTransaction,

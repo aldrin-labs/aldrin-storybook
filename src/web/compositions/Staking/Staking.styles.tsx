@@ -154,7 +154,7 @@ export const LastPrice = styled.div`
   align-items: flex-start;
 `
 
-export const FormWrap = styled.div`
+export const FormWrap = styled.form`
   display: flex;
   flex-direction: row;
   align-items: center;

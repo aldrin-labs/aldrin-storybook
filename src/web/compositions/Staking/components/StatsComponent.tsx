@@ -111,7 +111,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
 
   const decDelimiter = Math.pow(10, tokenData?.decimals || 0)
   const tokensTotal = currentFarmingState?.tokensTotal / decDelimiter
-  
+
   const daysInMonth = dayjs().daysInMonth()
   const dailyRewards = tokensTotal / daysInMonth
   const apy = (tokensTotal / totalStaked) * 100 * 12

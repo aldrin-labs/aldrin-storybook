@@ -9,7 +9,6 @@ import {
 } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
-import { Input } from '@sb/components/Input'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -28,15 +27,13 @@ import { TokenInfo } from '@sb/dexUtils/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
-import { default as React, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
   Asterisks,
   BalanceRow,
   BalanceWrap,
   Digit,
-  FormItem,
-  FormWrap,
   RewardsBlock,
   StyledTextDiv,
   TotalStakedBlock,
@@ -44,6 +41,8 @@ import {
   WalletRow,
 } from '../Staking.styles'
 import { RestakePopup } from './RestakePopup'
+import { StakingForm } from './StakingForm'
+import { sleep } from '../../../../../../core/src/utils/helpers'
 
 interface UserBalanceProps {
   value: number
@@ -75,9 +74,9 @@ const UserBalance: React.FC<UserBalanceProps> = (props) => {
 
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const { tokenData, tokenMint, stakingPool } = props
-  const [userInput, setUserInput] = useState(0)
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [availableToClaim, setAvailableToClaim] = useState(null)
 
   const { wallet } = useWallet()
@@ -102,16 +101,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
   })
 
-  const [allUserAccounts] = useUserTokenAccounts({ wallet, connection })
-
-  const setAmount = (v: string) => {
-    const newValue = parseFloat(v)
-    if (Number.isNaN(newValue)) {
-      return false
-    }
-    setUserInput(newValue)
-    return true
-  }
+  const [allUserAccounts, refreshUserTokens] = useUserTokenAccounts({
+    wallet,
+    connection,
+  })
 
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     allStakingFarmingTickets
@@ -122,62 +115,65 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     allStakingFarmingTickets: allStakingFarmingTickets,
   })
 
-  console.log('userRewards:', userRewards)
-
   const userAccount = allUserAccounts?.find((_) => _.mint === tokenMint)
 
-  const parsedStakingPool = {
-    swapToken: stakingPool?.swapToken,
-    poolToken: stakingPool?.poolTokenMint,
-    poolSigner: stakingPool?.poolSigner,
-    stakingVault: stakingPool?.stakingVault,
-    farming: stakingPool?.farming,
+  const refreshAll = async () => {
+    refreshAllStakingFarmingTickets()
+    refreshAllStakingSnapshotQueues()
+    refreshUserTokens()
   }
 
-  useEffect(() => {
-    const getAvailableToClaim = async () => {
-      const availableToClaim = await addAmountsToClaimForFarmingTickets({
-        pools: [parsedStakingPool],
-        wallet,
-        connection,
-        allUserFarmingTickets: allStakingFarmingTickets,
-        programAddress: STAKING_PROGRAM_ADDRESS,
-      })
-      console.log('availableToClaim', availableToClaim)
-      setAvailableToClaim(availableToClaim)
-    }
-    getAvailableToClaim()
-  }, [])
+  const start = useCallback(
+    async (amount: number) => {
+      if (!userAccount?.address) {
+        notify({ message: 'Account does not exists' })
+        return false
+      }
 
-  const start = async () => {
-    if (!userAccount?.address) {
-      notify({ message: 'Account does not exists' })
+      if (tokenData) {
+        setLoading(true)
+        await startStaking({
+          connection,
+          wallet,
+          amount: amount * Math.pow(10, tokenData.decimals),
+          userPoolTokenAccount: new PublicKey(userAccount.address),
+          stakingPool,
+        })
+
+        await sleep(2000)
+        refreshAll()
+        setLoading(false)
+        return true
+      }
       return false
-    }
-    if (tokenData) {
-      await startStaking({
-        connection,
-        wallet,
-        amount: userInput,
-        userPoolTokenAccount: new PublicKey(userAccount.address),
-        tokenData,
-        stakingPool,
-      })
-    }
-  }
+    },
+    [
+      connection,
+      wallet,
+      userAccount,
+      tokenData,
+      refreshAllStakingFarmingTickets,
+    ]
+  )
 
   const end = async () => {
     if (!userAccount?.address) {
       notify({ message: 'Account does not exists' })
       return false
     }
+    setLoading(true)
     await endStaking({
       connection,
       wallet,
       userPoolTokenAccount: new PublicKey(userAccount.address),
       farmingTickets: allStakingFarmingTickets,
-      stakingPool: parsedStakingPool,
+      stakingPool,
     })
+
+    await sleep(2000)
+    refreshAll()
+    setLoading(false)
+    return true
   }
 
   const [
@@ -187,7 +183,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     wallet,
     connection,
     walletPublicKey: wallet.publicKey,
-    parsedStakingPool,
+    stakingPool,
     allStakingFarmingTickets,
   })
 
@@ -250,7 +246,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   </div>
                   <div>
                     <BlockSubtitle>Available to claim:</BlockSubtitle>
-                    <UserBalance visible={isBalancesShowing} value={availableToClaimTotal} />
+                    <UserBalance
+                      visible={isBalancesShowing}
+                      value={availableToClaimTotal}
+                    />
                   </div>
                   <div>
                     <Button
@@ -267,43 +266,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </RewardsBlock>
           </Cell>
         </Row>
-
-        <FormWrap>
-          <FormItem>
-            <Input
-              placeholder="Enter amount..."
-              value={`${userInput}`}
-              onChange={setAmount}
-              append="RIN"
-            />
-          </FormItem>
-          <FormItem>
-            <Button
-              onClick={() => {
-                // setIsRestakePopupOpen(true)
-                start()
-              }}
-              backgroundImage={StakeBtn}
-              fontSize="xs"
-              padding="lg"
-              borderRadius="xxl"
-            >
-              Stake
-            </Button>
-          </FormItem>
-          <FormItem>
-            <Button
-              backgroundImage={StakeBtn}
-              fontSize="xs"
-              padding="lg"
-              borderRadius="xxl"
-              disabled={totalStaked === 0}
-              onClick={() => end()}
-            >
-              Unstake all
-            </Button>
-          </FormItem>
-        </FormWrap>
+        {tokenData && (
+          <StakingForm
+            tokenData={tokenData}
+            totalStaked={totalStaked}
+            start={start}
+            end={end}
+            loading={loading}
+          />
+        )}
       </BlockContent>
       <RestakePopup
         open={isRestakePopupOpen}

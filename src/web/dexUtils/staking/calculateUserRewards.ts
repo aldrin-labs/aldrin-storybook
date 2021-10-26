@@ -5,13 +5,21 @@ import {
   StakingSnapshotQueue,
 } from '../common/types'
 
-export const calculateUserRewards = ({
-  snapshotsQueues,
-  allStakingFarmingTickets,
-}: {
+interface CalculateRewardsParams {
   snapshotsQueues: StakingSnapshotQueue[]
   allStakingFarmingTickets: FarmingTicket[]
-}) => {
+}
+
+interface CalculatedUserRewards {
+  prevSnapshot: StakingSnapshot | null
+  amount: number
+}
+
+export const calculateUserRewards = (params: CalculateRewardsParams) => {
+  const {
+    snapshotsQueues,
+    allStakingFarmingTickets,
+  } = params
   const userRewardsForAllTickets = allStakingFarmingTickets.reduce(
     (acc, ticket) => {
       const filteredSnapshots = snapshotsQueues.filter(
@@ -21,44 +29,35 @@ export const calculateUserRewards = ({
           )
       )
 
-      const snapshots = filteredSnapshots.map((el) => el.snapshots).flat()
+      const snapshots = filteredSnapshots.flatMap((el) => el.snapshots)
 
       const snapshotsInTicketTimestampInterval = snapshots.filter(
-        (snapshot) => {
-          const isTicketOpen =
-            ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME
-
-          return (
-            snapshot.time >= +ticket.startTime &&
-            (isTicketOpen || snapshot.time <= +ticket.endTime)
-          )
-        }
+        (snapshot) => snapshot.time >= +ticket.startTime && snapshot.time <= +ticket.endTime
       )
 
-      console.log({ snapshotsInTicketTimestampInterval, ticket })
+      const r: CalculatedUserRewards = { prevSnapshot: null, amount: acc }
 
-      // @ts-ignore
       const userRewardsForTicket = snapshotsInTicketTimestampInterval.reduce(
         (
-          acc: { prevSnapshot: StakingSnapshot | null; amount: number },
+          acc1,
           snapshot: StakingSnapshot
         ) => {
           const userAllocation = ticket.tokensFrozen / snapshot.tokensFrozen
 
-          if (acc.prevSnapshot === null) {
-            return { prevSnapshot: snapshot, amount: 0 }
+          if (acc1.prevSnapshot === null) {
+            return { prevSnapshot: snapshot, amount: acc1.amount }
           }
 
           const userTokensAllocation =
             userAllocation *
-            (snapshot.tokensTotal - acc.prevSnapshot.tokensTotal)
+            (snapshot.tokensTotal - acc1.prevSnapshot.tokensTotal)
 
           return {
             prevSnapshot: snapshot,
-            amount: userTokensAllocation + acc.amount,
+            amount: userTokensAllocation + acc1.amount,
           }
         },
-        { prevSnapshot: null, amount: 0 }
+        r
       )
 
       return userRewardsForTicket.amount
@@ -66,7 +65,6 @@ export const calculateUserRewards = ({
     0
   )
 
-  console.log('userRewardsForAllTickets', userRewardsForAllTickets)
 
   return userRewardsForAllTickets
 }
