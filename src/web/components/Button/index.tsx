@@ -60,7 +60,7 @@ export interface ButtonProps {
 export const Button = styled.button<ButtonProps>`
   background-color: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   background: ${(props: ButtonProps) => props.backgroundColor || 'none'};
-  min-width: 8rem;
+  min-width: 9rem;
   color: white;
   text-align: center;
   font-size: ${(props: ButtonProps) => FONT_SIZES[props.fontSize || 'md']};

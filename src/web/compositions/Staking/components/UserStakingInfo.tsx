@@ -56,7 +56,7 @@ interface UserBalanceProps {
 }
 
 interface StakingInfoProps {
-  tokenData: TokenInfo | null
+  tokenData: TokenInfo | undefined
   tokenMint: string
   stakingPool: StakingPool
   refreshAllTokenData: RefreshFunction
@@ -86,7 +86,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const { tokenData, tokenMint, stakingPool, refreshAllTokenData } = props
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState({ stake: false, unstake: false })
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -135,7 +135,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       }
 
       if (tokenData) {
-        setLoading(true)
+        setLoading({ stake: true, unstake: false })
         await startStaking({
           connection,
           wallet,
@@ -146,7 +146,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
         await sleep(7500)
         await refreshAll()
-        setLoading(false)
+        setLoading({ stake: false, unstake: false })
         return true
       }
       return false
@@ -159,7 +159,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       notify({ message: 'Account does not exists' })
       return false
     }
-    setLoading(true)
+    setLoading({ stake: false, unstake: true })
     await endStaking({
       connection,
       wallet,
@@ -170,7 +170,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
     await sleep(5000)
     await refreshAll()
-    setLoading(false)
+    setLoading({ stake: false, unstake: false })
     return true
   }
 

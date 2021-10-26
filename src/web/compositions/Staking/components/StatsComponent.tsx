@@ -139,7 +139,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <BigNumber>{stripByAmount(apy)}%</BigNumber>
+              <BigNumber>{stripByAmount(apy, 4)}%</BigNumber>
               <StretchedBlock>
                 <Number>APY</Number>
                 <div>

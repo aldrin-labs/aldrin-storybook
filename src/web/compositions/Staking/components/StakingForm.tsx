@@ -4,15 +4,17 @@ import { TokenInfo } from '@sb/dexUtils/types'
 import { FormWrap, FormItem, FormItemFull } from '../Staking.styles'
 import { Input, INPUT_FORMATTERS } from '@sb/components/Input'
 import StakeBtn from '@icons/stakeBtn.png'
+import InfoIcon from '@icons/inform.svg'
 
 import { Button } from '../../../components/Button'
 import { Loader } from '@sb/components/Loader/Loader'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import dayjs from 'dayjs'
+import { SvgIcon } from '@sb/components'
 
 interface StakingFormProps {
   tokenData: TokenInfo
-  loading: boolean
+  loading: { stake: boolean; unstake: boolean }
   start: (amount: number) => any
   end: () => any
   totalStaked: number
@@ -31,7 +33,8 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
     unlockAvailableDate,
   } = props
   const isUnstakeLocked = true
-  const isUnstakeDisabled = isUnstakeLocked || totalStaked === 0 || loading
+  const isUnstakeDisabled =
+    isUnstakeLocked || totalStaked === 0 || loading.unstake
 
   const form = useFormik({
     // validateOnMount: true,
@@ -79,12 +82,26 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           fontSize="xs"
           padding="lg"
           borderRadius="xxl"
-          disabled={Object.keys(form.errors).length !== 0 || loading}
+          disabled={Object.keys(form.errors).length !== 0 || loading.stake}
         >
-          {loading ? <Loader /> : 'Stake'}
+          {loading.stake ? <Loader /> : 'Stake'}
         </Button>
       </FormItem>
       <FormItem>
+        <div>
+          <Button
+            fontSize="xs"
+            padding="lg"
+            borderRadius="xxl"
+            onClick={() => end()}
+            disabled={isUnstakeDisabled}
+            type="button"
+          >
+            {loading.unstake ? <Loader /> : 'Unstake all'}
+          </Button>
+        </div>
+      </FormItem>
+      {isUnstakeLocked && (
         <DarkTooltip
           title={
             isUnstakeLocked
@@ -95,19 +112,15 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           }
         >
           <div>
-            <Button
-              fontSize="xs"
-              padding="lg"
-              borderRadius="xxl"
-              onClick={() => end()}
-              disabled={isUnstakeDisabled}
-              type="button"
-            >
-              {loading ? <Loader /> : 'Unstake all'}
-            </Button>
+            <SvgIcon
+              src={InfoIcon}
+              width={'1.5rem'}
+              height={'1.5rem'}
+              style={{ marginTop: '1.5rem' }}
+            />
           </div>
         </DarkTooltip>
-      </FormItem>
+      )}
     </FormWrap>
   )
 }
