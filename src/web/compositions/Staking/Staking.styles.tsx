@@ -169,6 +169,9 @@ export const FormWrap = styled.form`
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;
 `
+export const FormItemFull = styled(FormItem)`
+  flex: 1;
+`
 
 export const ChartContainer = styled.div`
   background: ${COLORS.gray};
@@ -195,4 +198,10 @@ export const RestakeButton = styled(Button)`
 export const StyledLink = styled(Link)`
   text-decoration: none;
   color: ${COLORS.main};
+`
+export const ClaimButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 `

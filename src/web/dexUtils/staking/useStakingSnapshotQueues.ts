@@ -1,7 +1,7 @@
 import { Connection } from '@solana/web3.js'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { StakingSnapshotQueue } from '../common/types'
-import { RefreshFunction, WalletAdapter } from '../types'
+import { WalletAdapter, AsyncRefreshFunction } from '../types'
 import { getParsedStakingSnapshots } from './getParsedStakingSnapshots'
 
 export const useStakingSnapshotQueues = ({
@@ -10,27 +10,22 @@ export const useStakingSnapshotQueues = ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-}): [StakingSnapshotQueue[], RefreshFunction] => {
+}): [StakingSnapshotQueue[], AsyncRefreshFunction] => {
   const [allStakingSnapshotQueues, setAllStakingSnapshotQueues] = useState<
     StakingSnapshotQueue[]
   >([])
-  const [refreshCounter, setRefreshCounter] = useState(0)
 
-  const refresh: RefreshFunction = () => setRefreshCounter(refreshCounter + 1)
+  const loadStakingSnapshotQueues = useCallback(async () => {
+    const allStakingSnapshotQueues = await getParsedStakingSnapshots({
+      wallet,
+      connection,
+    })
+    setAllStakingSnapshotQueues(allStakingSnapshotQueues)
+    return true
+  }, [])
 
   useEffect(() => {
-    const loadStakingSnapshotQueues = async () => {
-      const allStakingSnapshotQueues = await getParsedStakingSnapshots({
-        wallet,
-        connection,
-      })
-
-      setAllStakingSnapshotQueues(allStakingSnapshotQueues)
-    }
-
     loadStakingSnapshotQueues()
-  }, [refreshCounter])
-
-  console.log('allStakingSnapshotQueues', allStakingSnapshotQueues)
-  return [allStakingSnapshotQueues, refresh]
+  }, [])
+  return [allStakingSnapshotQueues, loadStakingSnapshotQueues]
 }

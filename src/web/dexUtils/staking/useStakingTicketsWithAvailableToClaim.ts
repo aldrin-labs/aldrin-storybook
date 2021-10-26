@@ -36,7 +36,6 @@ export const useStakingTicketsWithAvailableToClaim = ({
           programAddress: STAKING_PROGRAM_ADDRESS,
         }
       )
-      console.log('availableToClaim', availableToClaimFarmingTickets)
 
       setAvailableToClaim(availableToClaimFarmingTickets)
     }

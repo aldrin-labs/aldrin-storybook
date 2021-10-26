@@ -39,6 +39,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
             stakingPool={getStakingPoolInfoQuery.getStakingPoolInfo}
             tokenMint={STAKING_FARMING_TOKEN_MINT_ADDRESS}
             tokenData={tokenData}
+            refreshAllTokenData={refreshAllTokenData}
           />
         </Cell>
         <Cell col={12} colLg={6}>

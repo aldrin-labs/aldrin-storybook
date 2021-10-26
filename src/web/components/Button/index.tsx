@@ -14,6 +14,7 @@ const VARIANTS = {
 
     &:disabled {
       background: ${COLORS.hint};
+      border-color: ${COLORS.hint};
     }
   `,
 
@@ -27,6 +28,18 @@ const VARIANTS = {
     border-color: transparent;
     color: ${COLORS.error};
   `,
+
+  link: css`
+    background: transparent;
+    border-color: transparent;
+    color: ${COLORS.success};
+  `,
+
+  disabled: css`
+    background: ${COLORS.hint};
+    border-color: ${COLORS.hint};
+    cursor: not-allowed;
+  `,
 }
 
 const PADDINGS = {
@@ -34,29 +47,31 @@ const PADDINGS = {
   lg: '8px 16px',
 }
 
-interface ButtonProps {
+export interface ButtonProps {
   fontSize?: keyof typeof FONT_SIZES
   variant?: keyof typeof VARIANTS
   borderRadius?: keyof typeof BORDER_RADIUS
   padding?: keyof typeof PADDINGS
   backgroundImage?: string
   width?: keyof typeof WIDTH
+  backgroundColor?: string
 }
 
 export const Button = styled.button<ButtonProps>`
-  background: none;
+  background-color: ${(props: ButtonProps) => props.backgroundColor || 'none'};
+  background: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   min-width: 8rem;
   color: white;
   text-align: center;
   font-size: ${(props: ButtonProps) => FONT_SIZES[props.fontSize || 'md']};
   border: 1px solid transparent;
   line-height: 150%;
+  cursor: pointer;
   padding: ${(props: ButtonProps) => PADDINGS[props.padding || 'md']};
   ${(props: ButtonProps) => VARIANTS[props.variant || 'primary']};
   font-family: ${FONTS.main};
   border-radius: ${(props: ButtonProps) =>
     BORDER_RADIUS[props.borderRadius || 'md']};
-  cursor: pointer;
   ${(props: ButtonProps) =>
     props.width ? ` width: ${WIDTH[props.width]};` : ''}
   text-decoration: none;
@@ -72,7 +87,6 @@ export const Button = styled.button<ButtonProps>`
     background-size: cover;
   `
       : ''}
-
   &:disabled {
     cursor: not-allowed;
   }

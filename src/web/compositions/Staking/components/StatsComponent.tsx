@@ -44,6 +44,8 @@ import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
 import { TokenInfo } from '@sb/dexUtils/types'
 import { StakingPool } from '@sb/dexUtils/staking/types'
+import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 interface InnerProps {
   tokenData: TokenInfo | null
@@ -67,7 +69,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const connection = useConnection()
   const { wallet } = useWallet()
 
-  const allStakingFarmingStates = stakingPool.farming
+  const allStakingFarmingStates = stakingPool?.farming || []
 
   const markPrice = useMarkPrice() || 0
   const [allStakingFarmingTickets, refreshTotalStaked] = useAllStakingTickets({
@@ -108,15 +110,14 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const isPriceIncreasing = priceChangePercentage > 0
 
   const totalStakedUSD = tokenPrice * totalStaked
-
-  const decDelimiter = Math.pow(10, tokenData?.decimals || 0)
-  const tokensTotal = currentFarmingState?.tokensTotal / decDelimiter
-
+  const tokensTotal =
+    currentFarmingState?.tokensTotal / STAKING_FARMING_TOKEN_DIVIDER
   const daysInMonth = dayjs().daysInMonth()
   const dailyRewards = tokensTotal / daysInMonth
   const apy = (tokensTotal / totalStaked) * 100 * 12
 
-  const SHARE_TEXT = getShareText(apy)
+  const shareText = getShareText(stripByAmount(apy))
+
   return (
     <>
       <Row>
@@ -142,18 +143,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
               <StretchedBlock>
                 <Number>APY</Number>
                 <div>
-                  <ShareButton text={SHARE_TEXT}></ShareButton>
-                  {/* <BorderButton
-                    target="_blank"
-                    href={
-                      'https://twitter.com/intent/tweet?text=I+stake+my+%24RIN+on+%40Aldrin_Exchange+with+192%25+APY%21%0D%0A%0D%0ADon%27t+miss+your+chance%21'
-                    }
-                    borderColor={'#fbf2f2'}
-                    borderRadius="3rem"
-                  >
-                    Share
-                    <SvgIcon src={lightBird} style={{ marginLeft: '1rem' }} />
-                  </BorderButton> */}
+                  <ShareButton text={shareText}></ShareButton>
                 </div>
               </StretchedBlock>
             </BlockContentStretched>
@@ -179,7 +169,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                         width={'1rem'}
                         height={'1rem'}
                       />{' '}
-                      {stripByAmount(priceChangePercentage)}%
+                      {stripDigitPlaces(priceChangePercentage, 3)}%
                     </InlineText>
                   </LastPrice>
                 </StatsBlockItem>
@@ -206,7 +196,7 @@ export default compose<InnerProps, any>(
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-only',
     variables: { symbols: ['RIN'] },
     withoutLoading: true,
     pollInterval: 60000,
@@ -214,6 +204,7 @@ export default compose<InnerProps, any>(
   queryRendererHoc({
     query: marketDataByTickers,
     name: 'marketDataByTickersQuery',
+    fetchPolicy: 'cache-only',
     variables: (props) => ({
       symbol: 'RIN_USDC',
       exchange: 'serum',

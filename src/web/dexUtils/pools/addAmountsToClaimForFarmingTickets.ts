@@ -29,7 +29,6 @@ export const addAmountsToClaimForFarmingTickets = async ({
   const ticketsWithExistingPools = allUserFarmingTickets.filter((ticket) =>
     poolsMap.has(ticket.pool)
   )
-  console.log('ticketsWithExistingPools', ticketsWithExistingPools)
   let rewardsToClaimTransaction = new Transaction()
   let ticketsCounter = 0
   let commonValueLogs: string[] = []
@@ -43,7 +42,6 @@ export const addAmountsToClaimForFarmingTickets = async ({
     let transaction = null
 
     for (let farming of pool.farming) {
-      console.log('ticket', ticket, 'farming', farming, 'pool', pool)
       try {
         transaction = await checkFarmed({
           wallet,

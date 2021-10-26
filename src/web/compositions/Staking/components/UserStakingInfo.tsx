@@ -23,7 +23,7 @@ import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
 import { useStakingTicketsWithAvailableToClaim } from '@sb/dexUtils/staking/useStakingTicketsWithAvailableToClaim'
-import { TokenInfo } from '@sb/dexUtils/types'
+import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
@@ -39,25 +39,34 @@ import {
   TotalStakedBlock,
   WalletBalanceBlock,
   WalletRow,
+  ClaimButtonContainer,
 } from '../Staking.styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
-import { sleep } from '../../../../../../core/src/utils/helpers'
+import { sleep } from '@core/utils/helpers'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { COLORS } from '@variables/variables'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
+
 interface UserBalanceProps {
   value: number
   visible: boolean
+  decimals?: number
 }
 
 interface StakingInfoProps {
   tokenData: TokenInfo | null
   tokenMint: string
   stakingPool: StakingPool
+  refreshAllTokenData: RefreshFunction
 }
 
 const UserBalance: React.FC<UserBalanceProps> = (props) => {
-  const formatted = stripByAmount(props.value)
+  const { decimals, value } = props
+  const formatted = decimals
+    ? stripDigitPlaces(value, decimals)
+    : stripByAmount(props.value)
   const len = `${formatted}`.length
   let asterisks = ''
   for (let i = 0; i < len; i++) {
@@ -74,11 +83,10 @@ const UserBalance: React.FC<UserBalanceProps> = (props) => {
 }
 
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
-  const { tokenData, tokenMint, stakingPool } = props
+  const { tokenData, tokenMint, stakingPool, refreshAllTokenData } = props
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [availableToClaim, setAvailableToClaim] = useState(null)
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -102,11 +110,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
   })
 
-  const [allUserAccounts, refreshUserTokens] = useUserTokenAccounts({
-    wallet,
-    connection,
-  })
-
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     allStakingFarmingTickets
   )
@@ -116,17 +119,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     allStakingFarmingTickets: allStakingFarmingTickets,
   })
 
-  const userAccount = allUserAccounts?.find((_) => _.mint === tokenMint)
-
   const refreshAll = async () => {
-    refreshAllStakingFarmingTickets()
-    refreshAllStakingSnapshotQueues()
-    refreshUserTokens()
+    await Promise.all([
+      refreshAllStakingFarmingTickets(),
+      refreshAllStakingSnapshotQueues(),
+      refreshAllTokenData(),
+    ])
   }
 
   const start = useCallback(
     async (amount: number) => {
-      if (!userAccount?.address) {
+      if (!tokenData?.address) {
         notify({ message: 'Account does not exists' })
         return false
       }
@@ -137,28 +140,22 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           connection,
           wallet,
           amount,
-          userPoolTokenAccount: new PublicKey(userAccount.address),
+          userPoolTokenAccount: new PublicKey(tokenData.address),
           stakingPool,
         })
 
         await sleep(7500)
-        refreshAll()
+        await refreshAll()
         setLoading(false)
         return true
       }
       return false
     },
-    [
-      connection,
-      wallet,
-      userAccount,
-      tokenData,
-      refreshAllStakingFarmingTickets,
-    ]
+    [connection, wallet, tokenData, refreshAllStakingFarmingTickets]
   )
 
   const end = async () => {
-    if (!userAccount?.address) {
+    if (!tokenData?.address) {
       notify({ message: 'Account does not exists' })
       return false
     }
@@ -166,13 +163,13 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     await endStaking({
       connection,
       wallet,
-      userPoolTokenAccount: new PublicKey(userAccount.address),
+      userPoolTokenAccount: new PublicKey(tokenData.address),
       farmingTickets: allStakingFarmingTickets,
       stakingPool,
     })
 
     await sleep(5000)
-    refreshAll()
+    await refreshAll()
     setLoading(false)
     return true
   }
@@ -192,6 +189,18 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     stakingTicketsWithAvailableToClaim
   )
 
+  const lastFarmingTicket = allStakingFarmingTickets.sort(
+    (ticketA, ticketB) => +ticketB.startTime - +ticketA.startTime
+  )[0]
+
+  const currentFarmingState = getCurrentFarmingStateFromAll(stakingPool.farming)
+
+  const unlockAvailableDate = lastFarmingTicket
+    ? +lastFarmingTicket.startTime + +currentFarmingState?.periodLength
+    : 0
+
+  const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
+
   return (
     <>
       <BlockContent border>
@@ -200,6 +209,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             <StretchedBlock align="center">
               <BlockTitle>Your RIN Staking</BlockTitle>
               <SvgIcon
+                style={{ cursor: 'pointer' }}
                 src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
                 width={'1.5em'}
                 height={'auto'}
@@ -237,13 +247,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             <RewardsBlock inner>
               <BlockContent>
                 <StretchedBlock>
-                  <div>
-                    <BlockSubtitle>Rewards:</BlockSubtitle>
-                    <UserBalance
-                      visible={isBalancesShowing}
-                      value={userRewards}
-                    />
-                  </div>
+                  <DarkTooltip title={`${stripByAmount(userRewards)} RIN`}>
+                    <div>
+                      <BlockSubtitle>Rewards:</BlockSubtitle>
+                      <UserBalance
+                        visible={isBalancesShowing}
+                        value={userRewards}
+                        decimals={3}
+                      />
+                    </div>
+                  </DarkTooltip>
+
                   <div>
                     <BlockSubtitle>Available to claim:</BlockSubtitle>
                     <UserBalance
@@ -251,30 +265,37 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       value={availableToClaimTotal}
                     />
                   </div>
-                  <DarkTooltip
-                    title={
-                      <p>
-                        Rewards distribution takes place on the first day of
-                        each month, you will be able to claim your reward for
-                        this period on{' '}
-                        <span style={{ color: COLORS.success }}>
-                          27 November 2021.
-                        </span>
-                      </p>
-                    }
-                  >
-                    <div>
-                      <Button
-                        disabled={true}
-                        backgroundImage={StakeBtn}
-                        fontSize="xs"
-                        padding="lg"
-                        borderRadius="xxl"
-                      >
-                        Claim
-                      </Button>
-                    </div>
-                  </DarkTooltip>
+
+                  <ClaimButtonContainer>
+                    <DarkTooltip
+                      title={
+                        <>
+                          <p>
+                            Rewards distribution takes place on the first day of
+                            each month, you will be able to claim your reward
+                            for this period on{' '}
+                            <span style={{ color: COLORS.success }}>
+                              27 November 2021.
+                            </span>
+                          </p>
+                        </>
+                      }
+                    >
+                      <span>
+                        <Button
+                          variant={'disabled'}
+                          fontSize="xs"
+                          padding="lg"
+                          borderRadius="xxl"
+                        >
+                          Claim
+                        </Button>
+                      </span>
+                    </DarkTooltip>
+                    <Button fontSize="xs" padding="lg" variant="link" disabled>
+                      Restake
+                    </Button>
+                  </ClaimButtonContainer>
                 </StretchedBlock>
               </BlockContent>
             </RewardsBlock>
@@ -282,6 +303,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         </Row>
         {tokenData && (
           <StakingForm
+            isUnstakeLocked={isUnstakeLocked}
+            unlockAvailableDate={unlockAvailableDate}
             tokenData={tokenData}
             totalStaked={totalStaked}
             start={start}
@@ -299,7 +322,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 }
 
 export const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
-  const { tokenMint, tokenData, stakingPool } = props
+  const { tokenMint, tokenData, stakingPool, refreshAllTokenData } = props
   return (
     <Block>
       <StretchedBlock direction="column">
@@ -308,6 +331,7 @@ export const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
             stakingPool={stakingPool}
             tokenData={tokenData}
             tokenMint={tokenMint}
+            refreshAllTokenData={refreshAllTokenData}
           />
         </ConnectWalletWrapper>
       </StretchedBlock>

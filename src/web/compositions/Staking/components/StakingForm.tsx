@@ -1,13 +1,14 @@
 import React from 'react'
 import { useFormik } from 'formik'
 import { TokenInfo } from '@sb/dexUtils/types'
-import { FormWrap, FormItem } from '../Staking.styles'
+import { FormWrap, FormItem, FormItemFull } from '../Staking.styles'
 import { Input, INPUT_FORMATTERS } from '@sb/components/Input'
 import StakeBtn from '@icons/stakeBtn.png'
 
 import { Button } from '../../../components/Button'
 import { Loader } from '@sb/components/Loader/Loader'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import dayjs from 'dayjs'
 
 interface StakingFormProps {
   tokenData: TokenInfo
@@ -15,10 +16,22 @@ interface StakingFormProps {
   start: (amount: number) => any
   end: () => any
   totalStaked: number
+  isUnstakeLocked: boolean
+  unlockAvailableDate: number
 }
 
 export const StakingForm: React.FC<StakingFormProps> = (props) => {
-  const { tokenData, totalStaked, loading, start, end } = props
+  const {
+    tokenData,
+    totalStaked,
+    loading,
+    start,
+    end,
+    // isUnstakeLocked,
+    unlockAvailableDate,
+  } = props
+  const isUnstakeLocked = true
+  const isUnstakeDisabled = isUnstakeLocked || totalStaked === 0 || loading
 
   const form = useFormik({
     // validateOnMount: true,
@@ -47,7 +60,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
 
   return (
     <FormWrap onSubmit={form.handleSubmit}>
-      <FormItem>
+      <FormItemFull>
         <Input
           placeholder="Enter amount..."
           value={form.values.amount}
@@ -59,7 +72,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           append="RIN"
           formatter={INPUT_FORMATTERS.DECIMAL}
         />
-      </FormItem>
+      </FormItemFull>
       <FormItem>
         <Button
           backgroundImage={StakeBtn}
@@ -73,18 +86,26 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       </FormItem>
       <FormItem>
         <DarkTooltip
-          title={'You will be able to withdraw your funds in 43 min.'}
+          title={
+            isUnstakeLocked
+              ? `Locked until ${dayjs
+                  .unix(unlockAvailableDate)
+                  .format('MMM DD, YYYY')}`
+              : ''
+          }
         >
-          <Button
-            fontSize="xs"
-            padding="lg"
-            borderRadius="xxl"
-            disabled={totalStaked === 0 || loading}
-            onClick={() => end()}
-            type="button"
-          >
-            {loading ? <Loader /> : 'Unstake all'}
-          </Button>
+          <div>
+            <Button
+              fontSize="xs"
+              padding="lg"
+              borderRadius="xxl"
+              onClick={() => end()}
+              disabled={isUnstakeDisabled}
+              type="button"
+            >
+              {loading ? <Loader /> : 'Unstake all'}
+            </Button>
+          </div>
         </DarkTooltip>
       </FormItem>
     </FormWrap>

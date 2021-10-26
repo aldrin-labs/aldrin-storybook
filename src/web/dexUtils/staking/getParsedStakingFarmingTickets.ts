@@ -4,7 +4,7 @@ import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { loadStakingFarmingTickets } from './loadStakingFarmingTickets'
 import { FarmingTicket } from '../common/types'
-import { STAKING_FARMING_TOKEN_MULTIPLIER } from './config'
+import { STAKING_FARMING_TOKEN_DIVIDER } from './config'
 
 export const getParsedStakingFarmingTickets = async ({
   wallet,
@@ -42,7 +42,7 @@ export const getParsedStakingFarmingTickets = async ({
       .filter((el) => el.lastWithdrawTime > 0)
 
     return {
-      tokensFrozen: ticketData.tokensFrozen.toNumber() * STAKING_FARMING_TOKEN_MULTIPLIER,
+      tokensFrozen: ticketData.tokensFrozen.toNumber() / STAKING_FARMING_TOKEN_DIVIDER,
       endTime: ticketData.endTime.toString(),
       startTime: ticketData.startTime.toString(),
       pool: ticketData.pool.toString(),

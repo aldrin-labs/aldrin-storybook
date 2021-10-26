@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { COLORS } from '@variables/variables'
 
-interface BlockProps {
+export interface BlockProps {
   backgroundImage?: string
   icon?: string
   inner?: boolean

@@ -12,7 +12,6 @@ import { Cell } from '@sb/components/Layout'
 import { Text } from '@sb/components/Typography'
 import { Block, BlockContent, BlockSubtitle } from '@sb/components/Block'
 import { COLORS } from '@variables/variables'
-import { Link } from 'react-router-dom'
 
 export const BlockWithHints = () => {
   return (
@@ -50,12 +49,13 @@ export const BlockWithHints = () => {
             <BlockSubtitle color={COLORS.white}>
               Liquidity Mining:
             </BlockSubtitle>
-            <Text maxWidth="85%" size="sm">
-              You can also deposit your funds in one of the liquidity pools
-              presented here, and farm RIN with by staking the LP tokens you
-              receive from providing liquidity.{' '}
-              <StyledLink to="/pools">⟶</StyledLink>
-            </Text>
+            <StyledLink to="/pools">
+              <Text maxWidth="85%" size="sm">
+                You can also deposit your funds in one of the liquidity pools
+                presented here, and farm RIN with by staking the LP tokens you
+                receive from providing liquidity. ⟶
+              </Text>
+            </StyledLink>
           </BlockContent>
         </Block>
       </Cell>
