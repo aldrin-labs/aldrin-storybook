@@ -1,0 +1,11 @@
+import { MASTER_BUILD } from '@core/utils/config'
+import { RIN_MINT } from '../utils'
+
+export const STAKING_FARMING_TOKEN_MINT_ADDRESS = MASTER_BUILD
+  ? RIN_MINT
+  : 'BCP6eCN2W1Z918hVoF3q9xw79AxFHsVxM4RSPxxKXL2m'
+
+export const STAKING_FARMING_TOKEN_DECIMALS = 9
+
+export const STAKING_FARMING_TOKEN_MULTIPLIER =
+  1 / 10 ** STAKING_FARMING_TOKEN_DECIMALS

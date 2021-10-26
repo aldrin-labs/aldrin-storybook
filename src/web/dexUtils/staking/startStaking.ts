@@ -1,12 +1,20 @@
-import { WalletAdapter, TokenInfo } from "../types"
-import { Connection, PublicKey, Keypair, SYSVAR_RENT_PUBKEY, SYSVAR_CLOCK_PUBKEY, Transaction } from "@solana/web3.js"
-import { ProgramsMultiton } from "../ProgramsMultiton/ProgramsMultiton"
-import { STAKING_PROGRAM_ADDRESS } from "../ProgramsMultiton/utils"
-import BN from "bn.js"
-import { TokenInstructions } from "@project-serum/serum"
-import { NUMBER_OF_RETRIES } from "../common"
-import { notify } from "../notifications"
-import { sendTransaction } from "../send"
+import { WalletAdapter, TokenInfo } from '../types'
+import {
+  Connection,
+  PublicKey,
+  Keypair,
+  SYSVAR_RENT_PUBKEY,
+  SYSVAR_CLOCK_PUBKEY,
+  Transaction,
+} from '@solana/web3.js'
+import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
+import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import BN from 'bn.js'
+import { TokenInstructions } from '@project-serum/serum'
+import { NUMBER_OF_RETRIES } from '../common'
+import { notify } from '../notifications'
+import { sendTransaction } from '../send'
+import { StakingPool } from './types'
 
 interface StartStakingParams {
   wallet: WalletAdapter
@@ -15,6 +23,7 @@ interface StartStakingParams {
   // poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey
   tokenData: TokenInfo
+  stakingPool: StakingPool
 }
 
 interface StakingPoolAccount {
@@ -31,6 +40,7 @@ export const startStaking = async (params: StartStakingParams) => {
     amount,
     userPoolTokenAccount,
     tokenData,
+    stakingPool,
   } = params
 
   const program = ProgramsMultiton.getProgramByAddress({
@@ -39,30 +49,20 @@ export const startStaking = async (params: StartStakingParams) => {
     programAddress: STAKING_PROGRAM_ADDRESS,
   })
 
-  console.log('program', program)
-  //заменить на пул с апи (аргументом)
-  const pools = await program.account.stakingPool.all()
-  const farmings = await program.account.farmingState.all()
-
-  const pool: StakingPoolAccount = pools[0].account
-
-  console.log('R: ', pool, farmings, amount)
-
   const farmingTicket = Keypair.generate()
   const farmingTicketInstruction = await program.account.farmingTicket.createInstruction(
     farmingTicket
   )
-
 
   console.log('Start staking: ', tokenData)
   const startStakingTransaction = await program.instruction.startFarming(
     new BN(amount * Math.pow(10, tokenData.decimals)),
     {
       accounts: {
-        pool: pools[0].publicKey,
-        farmingState: farmings[0].publicKey,
+        pool: new PublicKey(stakingPool.swapToken),
+        farmingState: new PublicKey(stakingPool.farming[0].farmingState),
         farmingTicket: farmingTicket.publicKey,
-        stakingVault: pool.stakingVault,
+        stakingVault: new PublicKey(stakingPool.stakingVault),
         userStakingTokenAccount: userPoolTokenAccount,
         walletAuthority: wallet.publicKey,
         userKey: wallet.publicKey,

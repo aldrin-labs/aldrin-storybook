@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import { useConnection } from '@sb/dexUtils/connection'
+import { STAKING_FARMING_TOKEN_MINT_ADDRESS } from '@sb/dexUtils/staking/config'
+import { StakingPool } from '@sb/dexUtils/staking/types'
+import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import { useWallet } from '@sb/dexUtils/wallet'
+import React from 'react'
+import { compose } from 'recompose'
 import { Cell } from '../../../components/Layout'
 import { RootRow } from '../Staking.styles'
 import StatsComponent from './StatsComponent'
 import { UserStakingInfo } from './UserStakingInfo'
-import { MASTER_BUILD } from '@core/utils/config'
-import { RIN_MINT } from '@sb/dexUtils/utils'
-import { getAllTokensData } from '../../Rebalance/utils'
-import { useConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { TokenInfo } from '@sb/dexUtils/types'
-import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { compose } from 'recompose'
-import { StakingPool } from '@sb/dexUtils/staking/types'
 
 interface StakingComponentProps {
   getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
@@ -23,30 +21,13 @@ const StakingComponent: React.FC<StakingComponentProps> = (
 ) => {
   const { getStakingPoolInfoQuery } = props
 
-  // TODO: Remove on prod
-  const MINT_ADDRESS = MASTER_BUILD
-    ? RIN_MINT
-    : 'BCP6eCN2W1Z918hVoF3q9xw79AxFHsVxM4RSPxxKXL2m'
-
   const { wallet, connected } = useWallet()
   const connection = useConnection()
-
-  const [tokenData, setTokenData] = useState<TokenInfo | null>(null)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const atd = await getAllTokensData(wallet.publicKey, connection)
-      const tokenData = atd.find((token) => token.mint === MINT_ADDRESS)
-      console.log('tokenData', tokenData)
-      if (tokenData) {
-        setTokenData(tokenData)
-      }
-    }
-    if (connected) {
-      console.log('Wallet: ', wallet)
-      fetchData()
-    }
-  }, [wallet, connected])
+  const [allTokenData, refreshAllTokenData] = useUserTokenAccounts({
+    wallet,
+    connection,
+  })
+  const tokenData = allTokenData.find((token) => token.mint === STAKING_FARMING_TOKEN_MINT_ADDRESS)
 
   return (
     <>
@@ -54,7 +35,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
         <Cell col={12} colLg={6}>
           <UserStakingInfo
             stakingPool={getStakingPoolInfoQuery.getStakingPoolInfo}
-            tokenMint={MINT_ADDRESS}
+            tokenMint={STAKING_FARMING_TOKEN_MINT_ADDRESS}
             tokenData={tokenData}
           />
         </Cell>
@@ -73,6 +54,6 @@ export default compose(
   queryRendererHoc({
     query: getStakingPoolInfo,
     name: 'getStakingPoolInfoQuery',
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-only',
   })
 )(StakingComponent)

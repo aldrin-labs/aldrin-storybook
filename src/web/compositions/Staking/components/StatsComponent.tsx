@@ -27,7 +27,6 @@ import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getSt
 import { useConnection } from '@sb/dexUtils/connection'
 import { useMarkPrice } from '@sb/dexUtils/markets'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { useAllFarmingStates } from '@sb/dexUtils/staking/useAllFarmingStates'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useWallet } from '@sb/dexUtils/wallet'
 import dayjs from 'dayjs'
@@ -44,6 +43,7 @@ import { getShareText } from '../Staking.utils.tsx/getShareText'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
 import { TokenInfo } from '@sb/dexUtils/types'
+import { StakingPool } from '@sb/dexUtils/staking/types'
 
 interface InnerProps {
   tokenData: TokenInfo | null
@@ -51,36 +51,38 @@ interface InnerProps {
 interface StatsComponentProps extends InnerProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
+  stakingPool: StakingPool
 }
 
 const StatsComponent: React.FC<StatsComponentProps> = (
   props: StatsComponentProps
 ) => {
-  const { getDexTokensPricesQuery, marketDataByTickersQuery, tokenData } = props
+  const {
+    getDexTokensPricesQuery,
+    marketDataByTickersQuery,
+    tokenData,
+    stakingPool,
+  } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
   const connection = useConnection()
   const { wallet } = useWallet()
-  const [
-    allStakingFarmingStates,
-    refreshAllStakingFarmingStates,
-  ] = useAllFarmingStates({
-    connection,
-    wallet,
-  })
+
+  const allStakingFarmingStates = stakingPool.farming
+
   const markPrice = useMarkPrice() || 0
   const [allStakingFarmingTickets, refreshTotalStaked] = useAllStakingTickets({
     wallet,
     connection,
   })
 
-  const decDelimiter = Math.pow(10, tokenData?.decimals || 0)
+  const totalStaked = getStakedTokensFromOpenFarmingTickets(
+    allStakingFarmingTickets
+  )
 
-  const totalStaked =
-    getStakedTokensFromOpenFarmingTickets(allStakingFarmingTickets) /
-    decDelimiter
   const currentFarmingState = getCurrentFarmingStateFromAll(
     allStakingFarmingStates
   )
+
   useEffect(() => {
     const getRINSupply = async () => {
       const CCAICircSupplyValue = await getRINCirculationSupply()
@@ -106,7 +108,10 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const isPriceIncreasing = priceChangePercentage > 0
 
   const totalStakedUSD = tokenPrice * totalStaked
+
+  const decDelimiter = Math.pow(10, tokenData?.decimals || 0)
   const tokensTotal = currentFarmingState?.tokensTotal / decDelimiter
+  
   const daysInMonth = dayjs().daysInMonth()
   const dailyRewards = tokensTotal / daysInMonth
   const apy = (tokensTotal / totalStaked) * 100 * 12

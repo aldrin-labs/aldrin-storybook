@@ -16,12 +16,14 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { addAmountsToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountsToClaimForFarmingTickets'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { calculateAvailableToClaim } from '@sb/dexUtils/staking/calculateAvailableToClaim'
 import { calculateUserRewards } from '@sb/dexUtils/staking/calculateUserRewards'
 import { endStaking } from '@sb/dexUtils/staking/endStaking'
 import { startStaking } from '@sb/dexUtils/staking/startStaking'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
+import { useStakingTicketsWithAvailableToClaim } from '@sb/dexUtils/staking/useStakingTicketsWithAvailableToClaim'
 import { TokenInfo } from '@sb/dexUtils/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -111,9 +113,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     return true
   }
 
-  const totalStaked =
-    getStakedTokensFromOpenFarmingTickets(allStakingFarmingTickets) /
-    Math.pow(10, tokenData?.decimals || 0)
+  const totalStaked = getStakedTokensFromOpenFarmingTickets(
+    allStakingFarmingTickets
+  )
 
   const userRewards = calculateUserRewards({
     snapshotsQueues: allStakingSnapshotQueues,
@@ -159,6 +161,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         amount: userInput,
         userPoolTokenAccount: new PublicKey(userAccount.address),
         tokenData,
+        stakingPool,
       })
     }
   }
@@ -176,6 +179,23 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       stakingPool: parsedStakingPool,
     })
   }
+
+  const [
+    stakingTicketsWithAvailableToClaim,
+    refreshStakingTicketsWithAvailableToClaim,
+  ] = useStakingTicketsWithAvailableToClaim({
+    wallet,
+    connection,
+    walletPublicKey: wallet.publicKey,
+    parsedStakingPool,
+    allStakingFarmingTickets,
+  })
+
+  const availableToClaimTotal = calculateAvailableToClaim(
+    stakingTicketsWithAvailableToClaim
+  )
+
+  console.log('availableToClaimTotal', availableToClaimTotal)
   return (
     <>
       <BlockContent border>
@@ -193,7 +213,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               />
             </StretchedBlock>
             <StyledTextDiv>
-              {isBalancesShowing ? walletAddress : '＊＊＊'}
+              {isBalancesShowing ? walletAddress : '***'}
             </StyledTextDiv>
           </div>
           <WalletBalanceBlock>
@@ -230,7 +250,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   </div>
                   <div>
                     <BlockSubtitle>Available to claim:</BlockSubtitle>
-                    <UserBalance visible={isBalancesShowing} value={400} />
+                    <UserBalance visible={isBalancesShowing} value={availableToClaimTotal} />
                   </div>
                   <div>
                     <Button
