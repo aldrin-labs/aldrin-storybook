@@ -13,6 +13,7 @@ export const useUserTokenAccounts = ({
   const [userTokens, setUserTokens] = useState<TokenInfo[]>([])
 
   const loadUserTokens = useCallback(async () => {
+    console.log('Load user tokens: ', wallet.publicKey)
     if (!wallet || !wallet.publicKey) return false
     const userTokens = await getAllTokensData(wallet.publicKey, connection)
 

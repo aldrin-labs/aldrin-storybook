@@ -43,7 +43,6 @@ export const addAmountsToClaimForFarmingTickets = async ({
     let transaction = null
 
     for (let farming of pool.farming) {
-      console.log('ticket', ticket, 'farming', farming, 'pool', pool)
       try {
         transaction = await checkFarmed({
           wallet,

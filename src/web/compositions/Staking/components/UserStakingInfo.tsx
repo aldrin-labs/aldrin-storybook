@@ -51,7 +51,7 @@ interface UserBalanceProps {
 }
 
 interface StakingInfoProps {
-  tokenData: TokenInfo | null
+  tokenData: TokenInfo | undefined
   tokenMint: string
   stakingPool: StakingPool
 }
@@ -134,19 +134,25 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       }
 
       if (tokenData) {
-        setLoading(true)
-        await startStaking({
-          connection,
-          wallet,
-          amount,
-          userPoolTokenAccount: new PublicKey(userAccount.address),
-          stakingPool,
-        })
-
-        await sleep(7500)
-        await refreshAll()
-        setLoading(false)
-        return true
+        try {
+          setLoading(true)
+          await startStaking({
+            connection,
+            wallet,
+            amount,
+            userPoolTokenAccount: new PublicKey(userAccount.address),
+            stakingPool,
+          })
+  
+          await sleep(5_000)
+        }
+        finally {
+          await sleep(2_500)
+          await refreshAll()
+          setLoading(false)
+          return true
+        }
+       
       }
       return false
     },
@@ -164,19 +170,23 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       notify({ message: 'Account does not exists' })
       return false
     }
-    setLoading(true)
-    await endStaking({
-      connection,
-      wallet,
-      userPoolTokenAccount: new PublicKey(userAccount.address),
-      farmingTickets: allStakingFarmingTickets,
-      stakingPool,
-    })
-
-    await sleep(5000)
-    await refreshAll()
-    setLoading(false)
-    return true
+    try {
+      setLoading(true)
+      await endStaking({
+        connection,
+        wallet,
+        userPoolTokenAccount: new PublicKey(userAccount.address),
+        farmingTickets: allStakingFarmingTickets,
+        stakingPool,
+      })
+  
+      await sleep(5_000)
+    } finally {
+      await sleep(2_500)
+      await refreshAll()
+      setLoading(false)
+      return true
+    } 
   }
 
   const [
