@@ -119,9 +119,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const userAccount = allUserAccounts?.find((_) => _.mint === tokenMint)
 
   const refreshAll = async () => {
-    refreshAllStakingFarmingTickets()
-    refreshAllStakingSnapshotQueues()
-    refreshUserTokens()
+    await Promise.all([
+      refreshAllStakingFarmingTickets(),
+      refreshAllStakingSnapshotQueues(),
+      refreshUserTokens()
+    ])
   }
 
   const start = useCallback(
@@ -142,7 +144,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         })
 
         await sleep(7500)
-        refreshAll()
+        await refreshAll()
         setLoading(false)
         return true
       }
@@ -172,7 +174,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     })
 
     await sleep(5000)
-    refreshAll()
+    await refreshAll()
     setLoading(false)
     return true
   }
@@ -191,6 +193,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const availableToClaimTotal = calculateAvailableToClaim(
     stakingTicketsWithAvailableToClaim
   )
+
 
   return (
     <>
