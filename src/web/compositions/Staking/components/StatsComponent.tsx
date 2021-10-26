@@ -116,7 +116,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const dailyRewards = tokensTotal / daysInMonth
   const apy = (tokensTotal / totalStaked) * 100 * 12
 
-  const SHARE_TEXT = getShareText(apy)
+  const shareText = getShareText(apy)
   return (
     <>
       <Row>
@@ -142,18 +142,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
               <StretchedBlock>
                 <Number>APY</Number>
                 <div>
-                  <ShareButton text={SHARE_TEXT}></ShareButton>
-                  {/* <BorderButton
-                    target="_blank"
-                    href={
-                      'https://twitter.com/intent/tweet?text=I+stake+my+%24RIN+on+%40Aldrin_Exchange+with+192%25+APY%21%0D%0A%0D%0ADon%27t+miss+your+chance%21'
-                    }
-                    borderColor={'#fbf2f2'}
-                    borderRadius="3rem"
-                  >
-                    Share
-                    <SvgIcon src={lightBird} style={{ marginLeft: '1rem' }} />
-                  </BorderButton> */}
+                  <ShareButton text={shareText}></ShareButton>
                 </div>
               </StretchedBlock>
             </BlockContentStretched>
@@ -179,7 +168,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                         width={'1rem'}
                         height={'1rem'}
                       />{' '}
-                      {stripByAmount(priceChangePercentage)}%
+                      {stripByAmount(priceChangePercentage, 2)}%
                     </InlineText>
                   </LastPrice>
                 </StatsBlockItem>
@@ -206,7 +195,7 @@ export default compose<InnerProps, any>(
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-only',
     variables: { symbols: ['RIN'] },
     withoutLoading: true,
     pollInterval: 60000,
@@ -214,6 +203,7 @@ export default compose<InnerProps, any>(
   queryRendererHoc({
     query: marketDataByTickers,
     name: 'marketDataByTickersQuery',
+    fetchPolicy: 'cache-only',
     variables: (props) => ({
       symbol: 'RIN_USDC',
       exchange: 'serum',

@@ -14,6 +14,7 @@ const VARIANTS = {
 
     &:disabled {
       background: ${COLORS.hint};
+      border-color: ${COLORS.hint};
     }
   `,
 
@@ -27,6 +28,11 @@ const VARIANTS = {
     border-color: transparent;
     color: ${COLORS.error};
   `,
+
+  'link': css`
+    background: transparent;
+    border-color: transparent;
+  `,
 }
 
 const PADDINGS = {
@@ -34,7 +40,7 @@ const PADDINGS = {
   lg: '8px 16px',
 }
 
-interface ButtonProps {
+export interface ButtonProps {
   fontSize?: keyof typeof FONT_SIZES
   variant?: keyof typeof VARIANTS
   borderRadius?: keyof typeof BORDER_RADIUS

@@ -39,6 +39,7 @@ import {
   TotalStakedBlock,
   WalletBalanceBlock,
   WalletRow,
+  ClaimButtonContainer,
 } from '../Staking.styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
@@ -250,16 +251,25 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       value={availableToClaimTotal}
                     />
                   </div>
-                  <div>
+                  <ClaimButtonContainer>
                     <Button
                       backgroundImage={StakeBtn}
                       fontSize="xs"
                       padding="lg"
                       borderRadius="xxl"
+                      disabled
                     >
                       Claim
                     </Button>
-                  </div>
+                    <Button
+                      fontSize="xs"
+                      padding="lg"
+                      variant="link"
+                      disabled
+                    >
+                      Restake
+                    </Button>
+                  </ClaimButtonContainer>
                 </StretchedBlock>
               </BlockContent>
             </RewardsBlock>

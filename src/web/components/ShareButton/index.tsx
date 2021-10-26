@@ -8,6 +8,7 @@ import { Button } from '../Button'
 interface ShareButtonProps {
   url?: string
   text: string
+  addUrl?: boolean
 }
 
 const Img = styled.img`
@@ -18,8 +19,8 @@ const Img = styled.img`
 `
 
 export const ShareButton: React.FC<ShareButtonProps> = (props) => {
-  const { url = window.location.href, text } = props
-  const fullUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`
+  const { url = window.location.href, text, addUrl = false } = props
+  const fullUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}${addUrl ? `&url=${encodeURIComponent(url)}` : ''}`
   return (
     <Button
       borderRadius="lg"

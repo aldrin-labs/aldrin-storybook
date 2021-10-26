@@ -193,3 +193,10 @@ export const RestakeButton = styled(Button)`
   flex: 1;
   margin-top: 10px;
 `
+
+export const ClaimButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+`
