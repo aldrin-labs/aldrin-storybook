@@ -135,12 +135,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         await startStaking({
           connection,
           wallet,
-          amount: amount * Math.pow(10, tokenData.decimals),
+          amount,
           userPoolTokenAccount: new PublicKey(userAccount.address),
           stakingPool,
         })
 
-        await sleep(2000)
+        await sleep(7500)
         refreshAll()
         setLoading(false)
         return true
@@ -170,7 +170,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       stakingPool,
     })
 
-    await sleep(2000)
+    await sleep(5000)
     refreshAll()
     setLoading(false)
     return true
@@ -191,7 +191,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     stakingTicketsWithAvailableToClaim
   )
 
-  console.log('availableToClaimTotal', availableToClaimTotal)
   return (
     <>
       <BlockContent border>

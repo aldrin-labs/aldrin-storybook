@@ -31,5 +31,6 @@ export const useStakingSnapshotQueues = ({
     loadStakingSnapshotQueues()
   }, [refreshCounter])
 
+  console.log('allStakingSnapshotQueues', allStakingSnapshotQueues)
   return [allStakingSnapshotQueues, refresh]
 }

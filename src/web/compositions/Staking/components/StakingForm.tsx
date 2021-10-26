@@ -6,6 +6,7 @@ import { Input, INPUT_FORMATTERS } from '@sb/components/Input'
 import StakeBtn from '@icons/stakeBtn.png'
 
 import { Button } from '../../../components/Button'
+import { Loader } from '@sb/components/Loader/Loader'
 
 interface StakingFormProps {
   tokenData: TokenInfo
@@ -66,12 +67,11 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           borderRadius="xxl"
           disabled={Object.keys(form.errors).length !== 0 || loading}
         >
-          Stake
+          {loading ? <Loader /> : 'Stake'}
         </Button>
       </FormItem>
       <FormItem>
         <Button
-          backgroundImage={StakeBtn}
           fontSize="xs"
           padding="lg"
           borderRadius="xxl"
@@ -79,7 +79,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           onClick={() => end()}
           type="button"
         >
-          Unstake all
+          {loading ? <Loader /> : 'Unstake all'}
         </Button>
       </FormItem>
     </FormWrap>
