@@ -21,7 +21,9 @@ export const BlockWithHints = () => {
           <BlockContent>
             <BlockSubtitle>Staking Lockup:</BlockSubtitle>
             <Text maxWidth="85%" size="sm">
-              Staking lockup lasts for one hour from the time of deposit. You will not be able to withdraw your RIN until the lock is lifted.
+              Staking lockup lasts for <strong>one hour</strong> from the time
+              of deposit. You will not be able to withdraw your RIN until the
+              lock is lifted.{' '}
             </Text>
           </BlockContent>
         </Block>
@@ -31,7 +33,12 @@ export const BlockWithHints = () => {
           <BlockContent>
             <BlockSubtitle>Rewards:</BlockSubtitle>
             <Text maxWidth="95%" size="sm">
-              RIN staking rewards are calculated hourly. These are then accumulated and paid out on the 27th of each month along with trading fee revenue.
+              RIN staking rewards are calculated hourly. These are then
+              accumulated and{' '}
+              <strong>
+                paid out on the 27th of each month along with trading fee
+                revenue.
+              </strong>
             </Text>
           </BlockContent>
         </Block>
@@ -39,10 +46,13 @@ export const BlockWithHints = () => {
       <Cell colLg={4}>
         <Block backgroundImage={greenBack} icon={poolIcon}>
           <BlockContent>
-            <BlockSubtitle color={COLORS.white}>Liquidity Mining:</BlockSubtitle>
+            <BlockSubtitle color={COLORS.white}>
+              Liquidity Mining:
+            </BlockSubtitle>
             <Text maxWidth="85%" size="sm">
-              You can also deposit your funds in one of the liquidity pools presented here, and farm RIN with by staking the LP tokens you receive from providing liquidity.
-              ⟶
+              You can also deposit your funds in one of the liquidity pools
+              presented here, and farm RIN with by staking the LP tokens you
+              receive from providing liquidity.
             </Text>
           </BlockContent>
         </Block>

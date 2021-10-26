@@ -1,5 +1,11 @@
 import styled, { css } from 'styled-components'
-import { COLORS, FONT_SIZES, FONTS, BORDER_RADIUS, WIDTH } from '../../../variables'
+import {
+  COLORS,
+  FONT_SIZES,
+  FONTS,
+  BORDER_RADIUS,
+  WIDTH,
+} from '../../../variables'
 
 const VARIANTS = {
   primary: css`
@@ -39,6 +45,7 @@ interface ButtonProps {
 
 export const Button = styled.button<ButtonProps>`
   background: none;
+  min-width: 8rem;
   color: white;
   text-align: center;
   font-size: ${(props: ButtonProps) => FONT_SIZES[props.fontSize || 'md']};
@@ -50,13 +57,14 @@ export const Button = styled.button<ButtonProps>`
   border-radius: ${(props: ButtonProps) =>
     BORDER_RADIUS[props.borderRadius || 'md']};
   cursor: pointer;
-  ${(props: ButtonProps) => props.width ? ` width: ${WIDTH[props.width]};` : ''}
+  ${(props: ButtonProps) =>
+    props.width ? ` width: ${WIDTH[props.width]};` : ''}
   text-decoration: none;
 
   ${({ backgroundImage }: ButtonProps) =>
     backgroundImage
       ? `
-    background-color: transparent;
+    background-color: #a1458a;
     border-color: transparent;
     background-image: url(${backgroundImage});
     background-repeat: no-repeat;

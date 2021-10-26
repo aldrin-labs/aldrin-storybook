@@ -38,7 +38,7 @@ export const getParsedStakingSnapshots = async ({
           tokensFrozen:
             el?.tokensFrozen?.toNumber() * STAKING_FARMING_TOKEN_MULTIPLIER,
           tokensTotal:
-            el?.tokensTotal?.toNumber() * STAKING_FARMING_TOKEN_MULTIPLIER,
+            el?.farmingTokens?.toNumber() * STAKING_FARMING_TOKEN_MULTIPLIER,
         }
       })
       .filter((snapshot) => snapshot.isInitialized)
