@@ -3,8 +3,9 @@ import { Paper } from '@material-ui/core'
 
 import { Row, StretchedBlock } from '@sb/components/Layout'
 import { Block } from '@sb/components/Block'
-import { BREAKPOINTS, COLORS, BORDER_RADIUS } from '../../../variables'
+import { BREAKPOINTS, COLORS, BORDER_RADIUS } from '@variables/variables'
 import { Button } from '../../components/Button'
+import { Link } from 'react-router-dom'
 
 export const StyledTextDiv = styled.div`
   height: auto;
@@ -189,4 +190,9 @@ export const ChartCanvas = styled.canvas`
 export const RestakeButton = styled(Button)`
   flex: 1;
   margin-top: 10px;
+`
+
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: ${COLORS.main};
 `

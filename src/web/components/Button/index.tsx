@@ -5,7 +5,7 @@ import {
   FONTS,
   BORDER_RADIUS,
   WIDTH,
-} from '../../../variables'
+} from '@variables/variables'
 
 const VARIANTS = {
   primary: css`

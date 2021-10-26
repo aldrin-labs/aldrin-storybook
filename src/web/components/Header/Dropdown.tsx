@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink, DropdownWrap, DropdownContent, DropdownInner } from './styles'
-import { BREAKPOINTS } from '../../../variables'
+import { BREAKPOINTS } from '@variables/variables'
 
 interface DropdownProps {
   text: React.ReactNode

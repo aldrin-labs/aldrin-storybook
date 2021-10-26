@@ -1,5 +1,5 @@
 import { Chart } from 'chart.js'
-import { COLORS, FONTS } from '../../../../variables'
+import { COLORS, FONTS } from '@variables/variables'
 
 const MONTHS = [
   'Jan',

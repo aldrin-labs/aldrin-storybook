@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { COLORS, BORDER_RADIUS } from '../../../variables'
+import { COLORS, BORDER_RADIUS } from '@variables/variables'
 import { validateDecimal } from './utils'
 
 interface InputProps {

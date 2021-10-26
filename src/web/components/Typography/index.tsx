@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { COLORS, FONT_SIZES } from '../../../variables'
+import { COLORS, FONT_SIZES } from '@variables/variables'
 
 
 interface TextProps {

@@ -7,7 +7,7 @@ import {
   BREAKPOINTS,
   LAYOUT_COL_NUMBER,
   WIDTH,
-} from '../../../variables'
+} from '@variables/variables'
 import { RowProps, CellProps, StretchedBlockProps } from './types'
 
 export const Body = styled.div`

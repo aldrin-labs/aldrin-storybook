@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RootRow } from '../Staking.styles'
+import { RootRow, StyledLink } from '../Staking.styles'
 
 import locksIcon from './assets/lockIcon.svg'
 import poolIcon from './assets/poolIcon.svg'
@@ -11,7 +11,8 @@ import greenBack from './assets/greenBack.png'
 import { Cell } from '@sb/components/Layout'
 import { Text } from '@sb/components/Typography'
 import { Block, BlockContent, BlockSubtitle } from '@sb/components/Block'
-import { COLORS } from '../../../../variables'
+import { COLORS } from '@variables/variables'
+import { Link } from 'react-router-dom'
 
 export const BlockWithHints = () => {
   return (
@@ -52,7 +53,8 @@ export const BlockWithHints = () => {
             <Text maxWidth="85%" size="sm">
               You can also deposit your funds in one of the liquidity pools
               presented here, and farm RIN with by staking the LP tokens you
-              receive from providing liquidity.
+              receive from providing liquidity.{' '}
+              <StyledLink to="/pools">⟶</StyledLink>
             </Text>
           </BlockContent>
         </Block>

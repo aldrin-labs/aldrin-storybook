@@ -43,7 +43,8 @@ import {
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
 import { sleep } from '../../../../../../core/src/utils/helpers'
-
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { COLORS } from '@variables/variables'
 interface UserBalanceProps {
   value: number
   visible: boolean
@@ -250,16 +251,30 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       value={availableToClaimTotal}
                     />
                   </div>
-                  <div>
-                    <Button
-                      backgroundImage={StakeBtn}
-                      fontSize="xs"
-                      padding="lg"
-                      borderRadius="xxl"
-                    >
-                      Claim
-                    </Button>
-                  </div>
+                  <DarkTooltip
+                    title={
+                      <p>
+                        Rewards distribution takes place on the first day of
+                        each month, you will be able to claim your reward for
+                        this period on{' '}
+                        <span style={{ color: COLORS.success }}>
+                          27 November 2021.
+                        </span>
+                      </p>
+                    }
+                  >
+                    <div>
+                      <Button
+                        disabled={true}
+                        backgroundImage={StakeBtn}
+                        fontSize="xs"
+                        padding="lg"
+                        borderRadius="xxl"
+                      >
+                        Claim
+                      </Button>
+                    </div>
+                  </DarkTooltip>
                 </StretchedBlock>
               </BlockContent>
             </RewardsBlock>

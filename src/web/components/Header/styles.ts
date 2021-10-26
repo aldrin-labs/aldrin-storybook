@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 // TODO: remove dat
 import { maxMobileScreenResolution } from '@core/utils/config'
 
-import { COLORS, SIZE, BORDER_RADIUS, BREAKPOINTS } from '../../../variables'
+import { COLORS, SIZE, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import { Button } from '../Button'
 import { Text } from '../Typography'
 

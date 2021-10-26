@@ -7,6 +7,7 @@ import StakeBtn from '@icons/stakeBtn.png'
 
 import { Button } from '../../../components/Button'
 import { Loader } from '@sb/components/Loader/Loader'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 interface StakingFormProps {
   tokenData: TokenInfo
@@ -71,16 +72,20 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
         </Button>
       </FormItem>
       <FormItem>
-        <Button
-          fontSize="xs"
-          padding="lg"
-          borderRadius="xxl"
-          disabled={totalStaked === 0 || loading}
-          onClick={() => end()}
-          type="button"
+        <DarkTooltip
+          title={'You will be able to withdraw your funds in 43 min.'}
         >
-          {loading ? <Loader /> : 'Unstake all'}
-        </Button>
+          <Button
+            fontSize="xs"
+            padding="lg"
+            borderRadius="xxl"
+            disabled={totalStaked === 0 || loading}
+            onClick={() => end()}
+            type="button"
+          >
+            {loading ? <Loader /> : 'Unstake all'}
+          </Button>
+        </DarkTooltip>
       </FormItem>
     </FormWrap>
   )
