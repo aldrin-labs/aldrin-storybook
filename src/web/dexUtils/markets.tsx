@@ -35,7 +35,7 @@ import {
   Token,
   TOKEN_PROGRAM_ID,
 } from './token/token'
-import { Metrics } from '../../../../core/src/utils/metrics'
+import { Metrics } from '@core/utils/metrics'
 
 export const ALL_TOKENS_MINTS = getUniqueListBy(
   [...TOKEN_MINTS, ...AWESOME_TOKENS],

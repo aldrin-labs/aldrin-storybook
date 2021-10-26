@@ -10,11 +10,11 @@ import {
 } from '@solana/web3.js'
 
 import { notify } from '../notifications'
-import { NUMBER_OF_RETRIES } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
+import { NUMBER_OF_RETRIES } from '../common'
 
 export const startFarming = async ({
   wallet,
@@ -44,6 +44,8 @@ export const startFarming = async ({
     farmingTicket
   )
 
+
+ 
   const startFarmingTransaction = await program.instruction.startFarming(
     new BN(poolTokenAmount),
     {
@@ -62,6 +64,8 @@ export const startFarming = async ({
     }
   )
 
+  console.log('Start farming: ', poolTokenAmount, startFarmingTransaction)
+
   const commonTransaction = new Transaction()
   const commonSigners = []
 
@@ -73,7 +77,7 @@ export const startFarming = async ({
   while (counter < NUMBER_OF_RETRIES) {
     try {
       if (counter > 0) {
-        await notify({
+        notify({
           type: 'error',
           message: 'Staking failed. Please confirm transaction again.',
         })

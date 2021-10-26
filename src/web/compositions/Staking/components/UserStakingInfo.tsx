@@ -13,20 +13,21 @@ import { Input } from '@sb/components/Input'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
+import { notify } from '@sb/dexUtils/notifications'
 import { addAmountsToClaimForFarmingTickets } from '@sb/dexUtils/pools/addAmountsToClaimForFarmingTickets'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { calculateUserRewards } from '@sb/dexUtils/staking/calculateUserRewards'
-import { loadAccountsFromStakingProgram } from '@sb/dexUtils/staking/loadAccountsFromStakingProgram'
-import { useAllFarmingStates } from '@sb/dexUtils/staking/useAllFarmingStates'
+import { endStaking } from '@sb/dexUtils/staking/endStaking'
+import { startStaking } from '@sb/dexUtils/staking/startStaking'
+import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
+import { TokenInfo } from '@sb/dexUtils/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
-import { RIN_MINT } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useEffect, useState } from 'react'
+import { PublicKey } from '@solana/web3.js'
+import { default as React, useEffect, useState } from 'react'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
-
 import {
   Asterisks,
   BalanceRow,
@@ -47,6 +48,12 @@ interface UserBalanceProps {
   visible: boolean
 }
 
+interface StakingInfoProps {
+  tokenData: TokenInfo | null
+  tokenMint: string
+  stakingPool: StakingPool
+}
+
 const UserBalance: React.FC<UserBalanceProps> = (props) => {
   const formatted = stripByAmount(props.value)
   const len = `${formatted}`.length
@@ -64,10 +71,12 @@ const UserBalance: React.FC<UserBalanceProps> = (props) => {
   )
 }
 
-const UserStakingInfoContent: React.FC = () => {
+const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
+  const { tokenData, tokenMint, stakingPool } = props
   const [userInput, setUserInput] = useState(0)
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
+  const [availableToClaim, setAvailableToClaim] = useState(null)
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -80,12 +89,19 @@ const UserStakingInfoContent: React.FC = () => {
   ] = useAllStakingTickets({
     wallet,
     connection,
-    // walletPublicKey: wallet.publicKey,
+    walletPublicKey: wallet.publicKey,
   })
 
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(
-    allStakingFarmingTickets
-  )
+  const [
+    allStakingSnapshotQueues,
+    refreshAllStakingSnapshotQueues,
+  ] = useStakingSnapshotQueues({
+    wallet,
+    connection,
+  })
+
+  const [allUserAccounts] = useUserTokenAccounts({ wallet, connection })
+
   const setAmount = (v: string) => {
     const newValue = parseFloat(v)
     if (Number.isNaN(newValue)) {
@@ -95,60 +111,29 @@ const UserStakingInfoContent: React.FC = () => {
     return true
   }
 
-  const [allTokensData] = useUserTokenAccounts({ wallet, connection })
-  const tokenData = allTokensData?.find((token) => token.mint === RIN_MINT)
-  const [
-    allStakingSnapshotQueues,
-    refreshAllStakingSnapshotQueues,
-  ] = useStakingSnapshotQueues({
-    wallet,
-    connection,
-  })
+  const totalStaked =
+    getStakedTokensFromOpenFarmingTickets(allStakingFarmingTickets) /
+    Math.pow(10, tokenData?.decimals || 0)
 
   const userRewards = calculateUserRewards({
     snapshotsQueues: allStakingSnapshotQueues,
     allStakingFarmingTickets: allStakingFarmingTickets,
   })
 
-  const [allStakingStates, refresh] = useAllFarmingStates({
-    wallet,
-    connection,
-  })
-  
+  console.log('userRewards:', userRewards)
+
+  const userAccount = allUserAccounts?.find((_) => _.mint === tokenMint)
+
+  const parsedStakingPool = {
+    swapToken: stakingPool?.swapToken,
+    poolToken: stakingPool?.poolTokenMint,
+    poolSigner: stakingPool?.poolSigner,
+    stakingVault: stakingPool?.stakingVault,
+    farming: stakingPool?.farming,
+  }
+
   useEffect(() => {
-    const a = async () => {
-      const pool = await loadAccountsFromStakingProgram({
-        connection,
-        filters: [
-          {
-            dataSize: 137,
-          },
-        ],
-      })
-
-      const program = ProgramsMultiton.getProgramByAddress({
-        wallet,
-        connection,
-        programAddress: STAKING_PROGRAM_ADDRESS,
-      })
-
-      const stakingPool = pool[0]
-
-      const data = Buffer.from(stakingPool.account.data)
-      const poolData = program.coder.accounts.decode('StakingPool', data)
-
-      const parsedStakingPool = {
-        swapToken: stakingPool.pubkey.toString(),
-        poolToken: poolData.poolMint,
-        poolSigner: poolData.poolSigner,
-        stakingVault: poolData.stakingVault,
-        farming: allStakingStates,
-      }
-
-      console.log({
-        parsedStakingPool,
-      })
-
+    const getAvailableToClaim = async () => {
       const availableToClaim = await addAmountsToClaimForFarmingTickets({
         pools: [parsedStakingPool],
         wallet,
@@ -156,13 +141,41 @@ const UserStakingInfoContent: React.FC = () => {
         allUserFarmingTickets: allStakingFarmingTickets,
         programAddress: STAKING_PROGRAM_ADDRESS,
       })
-
       console.log('availableToClaim', availableToClaim)
+      setAvailableToClaim(availableToClaim)
     }
+    getAvailableToClaim()
+  }, [])
 
-    a()
-  }, [allStakingStates.length])
+  const start = async () => {
+    if (!userAccount?.address) {
+      notify({ message: 'Account does not exists' })
+      return false
+    }
+    if (tokenData) {
+      await startStaking({
+        connection,
+        wallet,
+        amount: userInput,
+        userPoolTokenAccount: new PublicKey(userAccount.address),
+        tokenData,
+      })
+    }
+  }
 
+  const end = async () => {
+    if (!userAccount?.address) {
+      notify({ message: 'Account does not exists' })
+      return false
+    }
+    await endStaking({
+      connection,
+      wallet,
+      userPoolTokenAccount: new PublicKey(userAccount.address),
+      farmingTickets: allStakingFarmingTickets,
+      stakingPool: parsedStakingPool,
+    })
+  }
   return (
     <>
       <BlockContent border>
@@ -247,7 +260,8 @@ const UserStakingInfoContent: React.FC = () => {
           <FormItem>
             <Button
               onClick={() => {
-                setIsRestakePopupOpen(true)
+                // setIsRestakePopupOpen(true)
+                start()
               }}
               backgroundImage={StakeBtn}
               fontSize="xs"
@@ -263,7 +277,8 @@ const UserStakingInfoContent: React.FC = () => {
               fontSize="xs"
               padding="lg"
               borderRadius="xxl"
-              disabled
+              disabled={totalStaked === 0}
+              onClick={() => end()}
             >
               Unstake all
             </Button>
@@ -278,12 +293,17 @@ const UserStakingInfoContent: React.FC = () => {
   )
 }
 
-export const UserStakingInfo = () => {
+export const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
+  const { tokenMint, tokenData, stakingPool } = props
   return (
     <Block>
       <StretchedBlock direction="column">
         <ConnectWalletWrapper>
-          <UserStakingInfoContent />
+          <UserStakingInfoContent
+            stakingPool={stakingPool}
+            tokenData={tokenData}
+            tokenMint={tokenMint}
+          />
         </ConnectWalletWrapper>
       </StretchedBlock>
     </Block>
