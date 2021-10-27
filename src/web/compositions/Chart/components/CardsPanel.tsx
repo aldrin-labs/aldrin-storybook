@@ -194,14 +194,14 @@ export const CardsPanel = ({ theme }) => {
               page={'token'}
               component={(props) => (
                 <a
-                  href="https://rin.aldrin.com/"
+                  href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
                   target="_blank"
                   rel="noopener noreferrer"
                   {...props}
                 />
               )}
             >
-              Token
+              FAQ
             </NavLinkButton>
           </div>
         </CustomCard>
