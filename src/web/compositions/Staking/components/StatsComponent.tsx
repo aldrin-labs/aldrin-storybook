@@ -126,7 +126,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
               <BlockTitle>Total Staked</BlockTitle>
               <BigNumber>
                 <InlineText color="success">
-                  {formatNumberToUSFormat(stripByAmount(totalStaked))}{' '}
+                  {formatNumberToUSFormat(stripByAmount(totalStaked, 0))}{' '}
                 </InlineText>{' '}
                 RIN
               </BigNumber>

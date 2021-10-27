@@ -16,8 +16,13 @@ export const WalletBlock = () => {
 
   return (
     <>
+      <SvgIcon
+        src={WalletIcon}
+        width="1em"
+        height="1em"
+        style={{ margin: '0 1em' }}
+      />
       {!connected && (
-
         <WalletButton
           onClick={() => {
             setIsConnectWalletPopupOpen(true)
@@ -28,28 +33,19 @@ export const WalletBlock = () => {
 
       )}
       {connected && (
-        <>
-          <SvgIcon
-            src={WalletIcon}
-            width="1em"
-            height="1em"
-            style={{ margin: '0 1em' }}
-          />
-          <WalletData>
-            <WalletName>{providerFullName || providerName}</WalletName>
-            <WalletAddress>{wallet.publicKey?.toBase58()}</WalletAddress>
-            <WalletDisconnectButton
-              onClick={() => {
-                wallet?.disconnect && wallet.disconnect()
-              }}
-            >
-              Disconnect
+        <WalletData>
+          <WalletName>{providerFullName || providerName}</WalletName>
+          <WalletAddress>{wallet.publicKey?.toBase58()}</WalletAddress>
+          <WalletDisconnectButton
+            onClick={() => {
+              wallet?.disconnect && wallet.disconnect()
+            }}
+          >
+            Disconnect
             </WalletDisconnectButton>
-          </WalletData>
-        </>
+        </WalletData>
       )}
       <ConnectWalletPopup
-        theme={theme}
         open={isConnectWalletPopupOpen}
         onClose={() => setIsConnectWalletPopupOpen(false)}
       />

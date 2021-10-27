@@ -8,11 +8,12 @@ import { Body } from '../Layout'
 import {
   HeaderWrap,
   LogoLink,
-  LinksBlock,
   LogoBlock,
   WalletContainer,
   Logo,
   NavLink,
+  MainLinksWrap,
+  LinksBlock,
   MainLinksBlock,
 } from './styles'
 // TODO: Refactor popup
@@ -30,7 +31,7 @@ export const Header = () => {
 
   const { pathname } = useLocation()
 
-  const isTradingActive = pathname.includes('/chart') || pathname.includes('/swaps') 
+  const isTradingActive = pathname.includes('/chart') || pathname.includes('/swaps')
 
   const feedbackLinks = (
     <>
@@ -70,25 +71,27 @@ export const Header = () => {
         <LinksBlock>
           {feedbackLinks}
         </LinksBlock>
-        <MainLinksBlock>
-          <DropDown text="Trading" isActive={isTradingActive}>
-            <NavLink to="/chart" activeClassName="selected">Chart</NavLink>
-            <NavLink to="/swaps" activeClassName="selected">Swap</NavLink>
-          </DropDown>
-          <NavLink to="/rebalance" activeClassName="selected">Rebalance</NavLink>
-          <NavLink to="/dashboard" activeClassName="selected">Dashboard</NavLink>
-          <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">Wallet</NavLink>
-          <NavLink new show="md" to="/pools" activeClassName="selected">
-            Pools
+        <MainLinksWrap>
+          <MainLinksBlock>
+            <DropDown text="Trading" isActive={isTradingActive}>
+              <NavLink to="/chart" activeClassName="selected">Terminal</NavLink>
+              <NavLink to="/swaps" activeClassName="selected">Swap</NavLink>
+            </DropDown>
+            <NavLink to="/rebalance" activeClassName="selected">Rebalance</NavLink>
+            <NavLink to="/dashboard" activeClassName="selected">Dashboard</NavLink>
+            <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">Wallet</NavLink>
+            <NavLink new show="md" to="/pools" activeClassName="selected">
+              Pools
           </NavLink>
-          <NavLink show="md" as="a" target="_blank" href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex">F.A.Q.</NavLink>
+            <NavLink show="md" as="a" target="_blank" href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex">FAQ</NavLink>
 
-          <DropDown hide="lg" text="···">
-            {feedbackLinks}
-            <NavLink hide="md" activeClassName="selected" to="/pools">Liquidity Pools</NavLink>
-            <NavLink hide="md" as="a" target="_blank" href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex">F.A.Q.</NavLink>
-          </DropDown>
-        </MainLinksBlock>
+            <DropDown hide="lg" text="···">
+              {feedbackLinks}
+              <NavLink hide="md" activeClassName="selected" to="/pools">Liquidity Pools</NavLink>
+              <NavLink hide="md" as="a" target="_blank" href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex">FAQ</NavLink>
+            </DropDown>
+          </MainLinksBlock>
+        </MainLinksWrap>
         <WalletContainer>
           <WalletBlock />
         </WalletContainer>

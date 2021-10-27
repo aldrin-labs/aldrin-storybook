@@ -30,49 +30,6 @@ export const LogoBlock = styled.div`
   margin: 8px 0;
 `
 
-export const LinksBlock = styled.div`
-  display: none;
-  flex-direction: row;
-  align-items: center;
-  padding: 0 5px;
-  border-right: 1px solid ${COLORS.border};
-  margin: 5px 0;
-
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    display: flex;
-  }
-  
-`
-
-export const MainLinksBlock = styled(LinksBlock)`
-  margin: 5px auto;
-  border-right: 0;
-  display: flex;
-  flex: 1;
-  flex-direction: row;
-  justify-content: center;
-`
-
-export const WalletContainer = styled.div`
-  margin: 5px 0 5px auto;
-  padding: 0 0 0 ${SIZE.defaultPadding};
-  border-left: 1px solid ${COLORS.border};
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  overflow: hidden;
-  flex: 0 1 auto;
-`
-
-export const LogoLink = styled(Link)`
-  display: block;
-  height: 100%;
-  margin-right: ${SIZE.defaultPadding};
-`
-
-export const Logo = styled.img`
-  height: 100%;
-`
 
 interface ShowHideProps {
   show?: keyof typeof BREAKPOINTS
@@ -86,7 +43,7 @@ interface LinkProps extends ShowHideProps {
 export const NavLink = styled(RouterNavLink) <LinkProps>`
   text-decoration: none;
   font-size: 0.7em;
-  padding: 8px;
+  padding: 8px 12px;
   margin: 0px 4px;
   text-align: center;
   border-radius: ${BORDER_RADIUS.md};
@@ -127,13 +84,59 @@ export const NavLink = styled(RouterNavLink) <LinkProps>`
       padding-left: 5px;
     }
   ` : ''}
-
-  @media(min-width: ${BREAKPOINTS.lg}) {
-    margin: 8px 24px;
-    padding: 8px 12px;
-  }
 `
 
+export const LinksBlock = styled.div`
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  padding: 0 5px;
+  border-right: 1px solid ${COLORS.border};
+  margin: 5px 0;
+
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    display: flex;
+  } 
+`
+
+export const MainLinksWrap = styled(LinksBlock)`
+  margin: 5px auto;
+  border-right: 0;
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+`
+
+export const MainLinksBlock = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  margin: 0 auto;
+  justify-content: space-between;
+  max-width: 600px;
+`
+
+
+export const WalletContainer = styled.div`
+  margin: 5px 0 5px auto;
+  padding: 0 0 0 ${SIZE.defaultPadding};
+  border-left: 1px solid ${COLORS.border};
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: hidden;
+  flex: 0 1 auto;
+`
+
+export const LogoLink = styled(Link)`
+  display: block;
+  height: 100%;
+  margin-right: ${SIZE.defaultPadding};
+`
+
+export const Logo = styled.img`
+  height: 100%;
+`
 
 export const DropdownContent = styled.div`
   position: absolute;
@@ -185,6 +188,10 @@ export const DropdownInner = styled.div`
 export const WalletButton = styled(Button)`
   padding: 4px 20px;
   font-size: 0.75em;
+
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    width: 238px;
+  }
 `
 
 export const WalletData = styled.div`
@@ -216,4 +223,5 @@ export const WalletDisconnectButton = styled(Button)`
     background: none;
     border: 0;
     margin-left: auto;
+    text-align: right;
 `
