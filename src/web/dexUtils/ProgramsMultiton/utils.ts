@@ -1,8 +1,8 @@
 export const POOLS_PROGRAM_ADDRESS =
-  'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
+  process.env.POOLS_PROGRAM_ADDRESS || 'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
 
 export const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'
 
 export const STAKING_PROGRAM_ADDRESS =
-  'FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX'
+  process.env.STAKING_PROGRAM_ADDRESS || 'FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX'
