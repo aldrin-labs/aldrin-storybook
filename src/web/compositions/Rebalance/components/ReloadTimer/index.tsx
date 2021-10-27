@@ -57,6 +57,7 @@ export const ReloadTimer = ({
         trailColor={trailColor}
         onComplete={() => {
           callback()
+          rerender(rerenderCounter + 1)
           return [true, 0]
         }}
       />

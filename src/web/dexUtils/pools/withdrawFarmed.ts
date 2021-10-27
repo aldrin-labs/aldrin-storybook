@@ -17,7 +17,6 @@ import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
-import { checkFarmed } from './checkFarmed'
 import { FarmingTicket } from './types'
 
 export const withdrawFarmed = async ({
@@ -77,12 +76,9 @@ export const withdrawFarmed = async ({
     return 'success'
   }
 
-  // console.log('farmingTickets', farmingTickets)
-
   // check farmed for every ticket and withdrawFarmed for every farming state
   for (let ticketData of farmingTickets) {
     for (let i = 0; i < pool.farming.length; i++) {
-    // for now only for fisrt farming state
     const farmingState = pool.farming[i]
 
     // find amount to claim for this farming state in tickets amounts
@@ -94,29 +90,6 @@ export const withdrawFarmed = async ({
 
     // check amount for every farming state
     if (amountToClaim === 0) continue
-
-    // check farmed for some ticket
-    // if (
-    //   farmingState.farmingState ===
-    //     'GhF4p1WVKBEL32fJJ36tScZedBTF5ipsQrZmq661ARGf'
-    //   // ticketData.farmingTicket ===
-    //   //   'A9oyHcg95N88G8AtyZhtPmSHS8U3rJBHiNswXu7aWT91'
-    // ) {
-    //   await sendTransaction({
-    //     wallet,
-    //     connection,
-    //     transaction: new Transaction().add(
-    //       await checkFarmed({
-    //         wallet,
-    //         connection,
-    //         farming: farmingState,
-    //         farmingTicket: new PublicKey(ticketData.farmingTicket),
-    //         poolPublicKey: new PublicKey(pool.swapToken),
-    //       })
-    //     ),
-    //     signers: [],
-    //   })
-    // }
 
     const farmingTokenAccountAddress = allTokensDataMap.get(
       farmingState.farmingTokenMint
