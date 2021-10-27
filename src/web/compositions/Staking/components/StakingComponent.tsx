@@ -4,6 +4,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { STAKING_FARMING_TOKEN_MINT_ADDRESS } from '@sb/dexUtils/staking/config'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
+import { useInterval } from '@sb/dexUtils/useInterval'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
 import React from 'react'
@@ -30,10 +31,17 @@ const StakingComponent: React.FC<StakingComponentProps> = (
   const tokenData = allTokenData.find(
     (token) => token.mint === STAKING_FARMING_TOKEN_MINT_ADDRESS
   )
-  const [allStakingFarmingTickets, refreshTotalStaked] = useAllStakingTickets({
+  const [
+    allStakingFarmingTickets,
+    refreshFarmingTickets,
+  ] = useAllStakingTickets({
     wallet,
     connection,
   })
+
+  useInterval(() => {
+    refreshFarmingTickets()
+  }, 60000)
 
   return (
     <>
@@ -45,7 +53,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
             tokenData={tokenData}
             refreshAllTokenData={refreshAllTokenData}
             allStakingFarmingTickets={allStakingFarmingTickets}
-            refreshAllStakingFarmingTickets={refreshTotalStaked}
+            refreshAllStakingFarmingTickets={refreshFarmingTickets}
           />
         </Cell>
         <Cell col={12} colLg={6}>

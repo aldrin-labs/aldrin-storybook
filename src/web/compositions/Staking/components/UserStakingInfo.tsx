@@ -53,6 +53,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { filterFarmingTicketsByUserKey } from '@sb/dexUtils/staking/filterFarmingTicketsByUserKey'
+import { useInterval } from '@sb/dexUtils/useInterval'
 
 interface UserBalanceProps {
   value: number
@@ -225,13 +226,20 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     (ticketA, ticketB) => +ticketB.startTime - +ticketA.startTime
   )[0]
 
-  const currentFarmingState = getCurrentFarmingStateFromAll(stakingPool.farming)
+  const currentFarmingState = getCurrentFarmingStateFromAll(
+    stakingPool?.farming || []
+  )
 
   const unlockAvailableDate = lastFarmingTicket
     ? +lastFarmingTicket.startTime + +currentFarmingState?.periodLength
     : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
+
+  useInterval(() => {
+    refreshAllStakingSnapshotQueues()
+    refreshAllTokenData()
+  }, 60000)
 
   return (
     <>
@@ -285,7 +293,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       <UserBalance
                         visible={isBalancesShowing}
                         value={userRewards}
-                        decimals={3}
+                        decimals={2}
                       />
                     </div>
                   </DarkTooltip>
