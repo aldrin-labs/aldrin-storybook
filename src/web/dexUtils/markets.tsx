@@ -62,6 +62,7 @@ export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } =
   "SRM": process.env.REACT_APP_SRM_REFERRAL_FEES_ADDRESS,
   "ETH": process.env.REACT_APP_ETH_REFERRAL_FEES_ADDRESS,
   "RAY": process.env.REACT_APP_RAY_REFERRAL_FEES_ADDRESS,
+  "mSOL": process.env.REACT_APP_MSOL_REFERRAL_FEES_ADDRESS,
 }
 
 
