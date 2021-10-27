@@ -37,6 +37,7 @@ import { filterClosedFarmingTickets } from '@sb/dexUtils/pools/filterClosedFarmi
 import { notify } from '@sb/dexUtils/notifications'
 import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 export const TablesDetails = ({
   theme,
@@ -464,9 +465,9 @@ export const TablesDetails = ({
                   return (
                     <>
                       <AmountText style={{ padding: '0 0.5rem' }}>
-                        {stripByAmountAndFormat(
-                          availableToClaimFromFarmingState
-                        )}
+                        {formatNumberToUSFormat(stripDigitPlaces(
+                          availableToClaimFromFarmingState, 2
+                        ))}
                       </AmountText>
                       {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
                       {i !== arr.length - 1 ? ' +' : ''}
