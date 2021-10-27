@@ -5,6 +5,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Text } from '@sb/compositions/Addressbook'
 import React from 'react'
 import { Loading } from '@sb/components/Loading'
+import { Loader } from '@sb/components/Loader/Loader'
 
 export const LiquidityDataContainer = styled(Row)`
   width: 50%;
@@ -26,14 +27,14 @@ export const TableHeader = styled.thead`
     padding: 1rem 2rem;
   }
 `
-export const BorderButton = styled(BtnCustom)`
+export const BorderButton = styled.a`
   border: 0.1rem solid ${(props) => props.borderColor || '#41454E'};
   width: ${(props) => props.width || 'auto'};
   padding: ${(props) => props.padding || '0 2rem'};
   height: 4rem;
   text-transform: none;
   color: ${(props) => props.color || '#fbf2f2'};
-  border-radius: 1.5rem;
+  border-radius: ${(props) => props.borderRadius || '1.5rem'};
   font-size: 1.4rem;
 `
 export const TableBody = styled.tbody`
@@ -93,6 +94,7 @@ export const TokenIconContainer = styled.div`
 `
 
 export const SearchInput = styled.input`
+  font-size: 1.7rem;
   color: #f2fbfb;
   background: #383b45;
   border: 0.1rem solid #3a475c;
@@ -102,12 +104,14 @@ export const SearchInput = styled.input`
   width: ${(props) => props.width || '100%'};
   padding: 0 2rem;
   outline: none;
+
   &::placeholder {
     font-size: 1.7rem;
     font-family: 'Avenir Next Thin';
+    color: #93a0b2;
   }
 `
-export const GreenButton = styled(
+export const Button = styled(
   ({
     disabled,
     showLoader,
@@ -116,28 +120,38 @@ export const GreenButton = styled(
     ...props
   }) => (
     <BtnCustom disabled={disabled} textTransform={textTransform} {...props}>
-      {showLoader ? (
-        <Loading
-          color={'#fff'}
-          size={24}
-          style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
-        />
-      ) : (
-        children
-      )}
+      {showLoader ? <Loader /> : children}
     </BtnCustom>
   )
 )`
   font-size: 1.4rem;
   height: 4.5rem;
-  background-color: ${(props: { disabled: boolean; theme: Theme }) =>
-    !props.disabled ? '#A5E898' : props.theme.palette.grey.title};
   border-radius: 1rem;
-  border-color: none;
-  cursor: pointer;
+
+  background: ${(props: { disabled: boolean; theme: Theme; color: string }) =>
+    !props.disabled
+      ? props.color
+        ? props.color
+        : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+      : props.theme.palette.grey.title};
   color: ${(props: { disabled: boolean }) =>
-    !props.disabled ? '#17181A' : '#fff'};
+    !props.disabled ? '#F8FAFF' : '#fff'};
   border: none;
+
+  &:hover {
+    background-color: ${(props: {
+      disabled: boolean
+      theme: Theme
+      color: string
+    }) =>
+      !props.disabled
+        ? props.color
+          ? props.color
+          : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+        : props.theme.palette.grey.title};
+    color: ${(props: { disabled: boolean }) =>
+      !props.disabled ? '#F8FAFF' : '#fff'};
+  }
 `
 
 export const TableContainer = styled(RowContainer)`
@@ -147,7 +161,7 @@ export const TableContainer = styled(RowContainer)`
 `
 
 export const AmountText = styled.span`
-  color: #a5e898;
+  color: #53df11;
 `
 
 export const WhiteText = styled.span`

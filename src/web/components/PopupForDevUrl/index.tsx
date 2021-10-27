@@ -62,7 +62,7 @@ const DevUrlPopup = ({
           <a
             style={{
               padding: '0 0 0 0.5rem',
-              color: '#A5E898',
+              color: '#53DF11',
               textDecoration: 'none',
             }}
             target="_blank"

@@ -1,0 +1,1 @@
+export const SLIPPAGE_PERCENTAGE = 0.3

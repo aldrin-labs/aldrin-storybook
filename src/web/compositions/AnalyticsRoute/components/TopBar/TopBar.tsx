@@ -1,37 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import { compose } from 'recompose'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-
-import { Theme } from '@material-ui/core'
-import { getSerumData } from '@core/graphql/queries/chart/getSerumData'
+import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
-
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   formatNumberToUSFormat,
-  roundAndFormatNumber,
-  stripDigitPlaces,
+  roundAndFormatNumber
 } from '@core/utils/PortfolioTableUtils'
-
-import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
-import { getDecimalCount } from '@sb/dexUtils/utils'
-import SvgIcon from '@sb/components/SvgIcon'
-import SrmLogo from '@icons/srmLogo.svg'
 import RINLogo from '@icons/RINLogo.svg'
-
+import { Theme } from '@material-ui/core'
+import SvgIcon from '@sb/components/SvgIcon'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import { useMarket } from '@sb/dexUtils/markets'
+import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
 import {
-  Row,
   BlockContainer,
-  GreenTitle,
-  TokenTitleBlockContainer,
+  GreenTitle, Row,
+  Text, TokenTitleBlockContainer,
   TokenWhiteTitle,
-  Text,
-  TopBarTitle,
+  TopBarTitle
 } from '../../index.styles'
 
-import PriceBlock from './tokenPriceBlock'
-import MarketCap from './tokenMarketCap'
-import { getCCAICirculationSupply } from '../CirculationSupply'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 
 export const ccaiData = {
   totalySupply: 50000000,
@@ -52,7 +40,7 @@ const TopBar = ({
 
   useEffect(() => {
     const getCCAISupply = async () => {
-      const CCAICircSupplyValue = await getCCAICirculationSupply()
+      const CCAICircSupplyValue = await getRINCirculationSupply()
       setCirculatingSupply(CCAICircSupplyValue)
     }
     getCCAISupply()
@@ -88,7 +76,7 @@ const TopBar = ({
         />
         <TokenWhiteTitle theme={theme}>RIN</TokenWhiteTitle>
         <GreenTitle
-          style={{ color: showGreen ? '#A5E898' : '#F26D68' }}
+          style={{ color: showGreen ? '#53DF11' : '#F26D68' }}
           theme={theme}
         >
           {CCAIPrice === 0 ? '-' : `$${formatNumberToUSFormat(

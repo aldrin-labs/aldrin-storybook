@@ -41,13 +41,13 @@ import { loadMarketOrderProgram } from '../../utils/marketOrderProgram/loadProgr
 import { LoadingWithHint } from './LoadingWithHint'
 import { Placeholder } from '@sb/components/TraidingTerminal/styles'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL } from '@sb/dexUtils/utils'
 import { getTransactionState } from '../../utils/getTransactionState'
 import { isTransactionWithError } from '../../utils/isTransactionWithError'
 
 export const isWebWallet = (providerUrl: string) => {
   return (
-    providerUrl === CCAIProviderURL || providerUrl === 'https://www.sollet.io'
+    providerUrl === RINProviderURL || providerUrl === 'https://www.sollet.io'
   )
 }
 

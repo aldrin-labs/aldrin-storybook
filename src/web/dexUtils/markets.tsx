@@ -36,7 +36,6 @@ import {
   TOKEN_PROGRAM_ID,
 } from './token/token'
 import { OrderWithMarket } from '@sb/dexUtils/send'
-import { Metrics } from '@core/utils/metrics'
 
 export const ALL_TOKENS_MINTS = getUniqueListBy(
   [...TOKEN_MINTS, ...AWESOME_TOKENS],

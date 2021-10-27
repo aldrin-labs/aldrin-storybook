@@ -16,7 +16,7 @@ const HideArrowStyledBlock = styled(({ right, ...props }) => (
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #165be0;
+  color: #651CE4;
   font-weight: bold;
   border: 1px solid #e0e5ec;
   z-index: 9;

@@ -6,7 +6,6 @@ import {
   stripDigitPlaces
 } from '@core/utils/PortfolioTableUtils'
 import { Theme } from '@material-ui/core'
-import { getCCAICirculationSupply } from '@sb/compositions/AnalyticsRoute/components/CirculationSupply'
 import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
@@ -16,8 +15,9 @@ import {
   MarketStatsContainer, MobileMarketStatsContainer, PanelCard, PanelCardSubValue, PanelCardTitle,
   PanelCardValue
 } from '../../Chart.styles'
+import { getRINCirculationSupply } from '@core/api'
 
-interface MarketDataByTicker {
+export interface MarketDataByTicker {
   tradesCount: number
   tradesDiff: number
   volume: number
@@ -74,7 +74,7 @@ interface IProps {
   isCCAIPair?: boolean
 }
 
-const generateDatesForRequest = () => ({
+export const generateDatesForRequest = () => ({
   startTimestamp: `${datesForQuery.startOfTime()}`,
   endTimestamp: `${datesForQuery.endOfTime()}`,
   prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
@@ -138,7 +138,7 @@ const MarketStats: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     const getCCAISupply = async () => {
-      const CCAICircSupplyValue = await getCCAICirculationSupply()
+      const CCAICircSupplyValue = await getRINCirculationSupply()
       setCirculatingSupply(CCAICircSupplyValue)
     }
     getCCAISupply()

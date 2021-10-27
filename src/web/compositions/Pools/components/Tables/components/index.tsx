@@ -17,25 +17,27 @@ export const SearchInputWithLoop = ({
   placeholder,
   onChangeSearch,
   searchValue,
+  width = '40rem',
 }: {
   placeholder: string
   onChangeSearch: (value: string) => void
   searchValue: string
+  width?: string
 }) => {
   return (
-    <Row style={{ position: 'relative' }} width={'40rem'}>
+    <Row style={{ position: 'relative' }} width={width}>
       <SearchInput
         onChange={(e) => {
           onChangeSearch(e.target.value)
         }}
         placeholder={placeholder}
       />
-      {/* <SvgIcon
+      <SvgIcon
         src={Loop}
         height={'1.6rem'}
         width={'1.6rem'}
         style={{ position: 'absolute', right: '2rem', cursor: 'pointer' }}
-      /> */}
+      />
     </Row>
   )
 }
@@ -43,9 +45,11 @@ export const SearchInputWithLoop = ({
 export const TokenIconsContainer = ({
   tokenA,
   tokenB,
+  needHover = false,
 }: {
   tokenA: string
   tokenB: string
+  needHover: boolean
 }) => {
   return (
     <Row wrap="nowrap" justify={'end'}>
@@ -61,7 +65,11 @@ export const TokenIconsContainer = ({
           <TokenIcon width={'3rem'} height={'3rem'} mint={tokenB} />
         </TokenIconContainer>
       </IconsContainer>
-      <Text style={{ marginLeft: '2rem' }} fontFamily={'Avenir Next Demi'}>
+      <Text
+        style={{ marginLeft: '2rem' }}
+        needHover={needHover}
+        fontFamily={'Avenir Next Demi'}
+      >
         {getTokenNameByMintAddress(tokenA)}/{getTokenNameByMintAddress(tokenB)}
       </Text>
     </Row>

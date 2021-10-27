@@ -25,7 +25,7 @@ import { compose } from 'recompose'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import WalletIcon from '@icons/walletIcon.svg'
 
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL } from '@sb/dexUtils/utils'
 import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
 import { useBalances } from '@sb/dexUtils/markets'
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown'
@@ -43,7 +43,7 @@ export const MobileNavBar = ({
   const { wallet, providerUrl, setAutoConnect, setProvider } = useWallet()
   const [isWalletsDropdownOpen, setIsWalletsDropdownOpen] = useState(false)
 
-  const isCCAIActive = providerUrl === CCAIProviderURL
+  const isCCAIActive = providerUrl === RINProviderURL
   const isSolletActive = providerUrl === 'https://www.sollet.io'
   const isSolletExtensionActive =
     providerUrl === 'https://www.sollet.io/extension'
@@ -135,9 +135,9 @@ export const MobileNavBar = ({
               fontSize="1.6rem"
               padding="1.5rem 3.5rem"
               borderRadius="1.1rem"
-              borderColor={'#366CE5'}
+              borderColor={'#651CE4'}
               btnColor={'#fff'}
-              backgroundColor={'#366CE5'}
+              backgroundColor={'#651CE4'}
               textTransform={'none'}
               margin={'0'}
               transition={'all .4s ease-out'}

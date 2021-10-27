@@ -14,7 +14,7 @@ export const Canvas = props => {
     TestImage.src = Img
     TestImage.onload = function() {
         context.drawImage(TestImage,0,0, context.canvas.width, context.canvas.height);
-        context.font = "70px Monaco";
+        context.font = "70px Avenir Next";
         context.fillStyle = "#E2FDE7";
         context.textAlign = 'center';
         context.textBaseline = 'middle';

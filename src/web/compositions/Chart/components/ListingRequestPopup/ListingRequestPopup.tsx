@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import { Text } from '@sb/compositions/Addressbook/index'
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -733,6 +733,7 @@ const ListingRequestPopup = ({
 
 export default compose(
   withMarketUtilsHOC,
+  withTheme(),
   queryRendererHoc({
     query: getUserCustomMarkets,
     name: 'getUserCustomMarketsQuery',

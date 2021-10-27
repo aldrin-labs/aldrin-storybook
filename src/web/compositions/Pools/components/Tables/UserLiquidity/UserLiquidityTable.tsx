@@ -5,8 +5,11 @@ import { Theme } from '@material-ui/core'
 
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 import {
+  DataSection,
   DexTokensPrices,
+  FeesEarned,
   PoolInfo,
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import {
   combineUserLiquidityData,
@@ -22,11 +25,13 @@ const UserLiquidityTableComponent = ({
   searchValue,
   allTokensDataMap,
   poolsInfo,
+  poolWaitingForUpdateAfterOperation,
   dexTokensPricesMap,
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
+  setPoolWaitingForUpdateAfterOperation,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
@@ -35,12 +40,14 @@ const UserLiquidityTableComponent = ({
   theme: Theme
   searchValue: string
   poolsInfo: PoolInfo[]
+  poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensDataMap: Map<string, TokenInfo>
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  farmingTicketsMap: Map<string, FarmingTicket[]>,
-  earnedFeesInPoolForUserMap: Map<string, number>
+  farmingTicketsMap: Map<string, FarmingTicket[]>
+  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
@@ -52,23 +59,29 @@ const UserLiquidityTableComponent = ({
     expandRows(onCheckBoxClick(expandedRows, id))
   }
 
-  const usersPools = getUserPoolsFromAll({ poolsInfo, allTokensDataMap })
+  const usersPools = getUserPoolsFromAll({
+    poolsInfo,
+    allTokensDataMap,
+    farmingTicketsMap,
+  })
 
   const userLiquidityData = combineUserLiquidityData({
     theme,
     searchValue,
     usersPools,
     expandedRows,
+    poolWaitingForUpdateAfterOperation,
     allTokensDataMap,
     dexTokensPricesMap,
     farmingTicketsMap,
     earnedFeesInPoolForUserMap,
     selectPool,
-    refreshAllTokensData,
+    refreshTokensWithFarmingTickets,
     setIsWithdrawalPopupOpen,
     setIsAddLiquidityPopupOpen,
     setIsStakePopupOpen,
     setIsUnstakePopupOpen,
+    setPoolWaitingForUpdateAfterOperation,
   })
 
   return (
@@ -103,8 +116,8 @@ const UserLiquidityTableComponent = ({
             borderBottom: theme.palette.border.main,
             backgroundColor: 'inherit',
             boxShadow: 'none',
-            paddingTop: '1rem',
-            paddingBottom: '1rem',
+            paddingTop: '2.5rem',
+            paddingBottom: '2.5rem',
             fontFamily: 'Avenir Next Medium',
           },
           heading: {

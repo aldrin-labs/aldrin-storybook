@@ -15,7 +15,7 @@ import {
   useConnection,
   useConnectionConfig,
 } from './connection'
-import { CCAIProviderURL, useLocalStorageState, useRefEqual } from './utils'
+import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
 import {
   Connection,
   PublicKey,
@@ -49,7 +49,8 @@ export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
   {
     name: 'Wallet™',
-    url: CCAIProviderURL,
+    fullName: 'Wallet™ by Aldrin.com',
+    url: RINProviderURL,
     adapter: CommonWalletAdapter,
     isExtension: false,
     showOnMobile: true,
@@ -65,6 +66,7 @@ export const WALLET_PROVIDERS = [
   // },
   {
     name: 'Sollet.io',
+    fullName: 'Wallet™ by Aldrin.com',
     url: 'https://www.sollet.io',
     adapter: CommonWalletAdapter,
     icon: Sollet,
@@ -73,6 +75,7 @@ export const WALLET_PROVIDERS = [
   },
   {
     name: 'Sollet Extension',
+    fullName: 'Sollet Extension Wallet',
     url: 'https://www.sollet.io/extension',
     adapter: SolletExtensionAdapter,
     icon: Sollet,
@@ -81,6 +84,7 @@ export const WALLET_PROVIDERS = [
   },
   {
     name: 'Ledger',
+    fullName: 'Ledger Wallet',
     url: 'https://www.ledger.com',
     icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg`,
     adapter: LedgerWalletAdapter,
@@ -89,6 +93,7 @@ export const WALLET_PROVIDERS = [
   },
   {
     name: 'Phantom',
+    fullName: 'Phantom Wallet',
     url: 'https://www.phantom.app',
     icon: `https://www.phantom.app/img/logo.png`,
     adapter: PhantomWalletAdapter,
@@ -97,6 +102,7 @@ export const WALLET_PROVIDERS = [
   },
   {
     name: 'MathWallet',
+    fullName: 'MathWallet',
     url: 'https://www.mathwallet.org',
     adapter: MathWalletAdapter,
     icon: Mathwallet,
@@ -105,6 +111,7 @@ export const WALLET_PROVIDERS = [
   },
   {
     name: 'Solong',
+    fullName: 'Solong Wallet',
     url: 'https://solongwallet.com',
     adapter: SolongWalletAdapter,
     icon: Solong,
@@ -113,6 +120,7 @@ export const WALLET_PROVIDERS = [
   },
   {
     name: 'Coin98',
+    fullName: 'Coin98 Wallet',
     url: 'https://wallet.coin98.com/',
     adapter: Coin98WalletAdapter,
     icon: `https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`,
@@ -121,6 +129,7 @@ export const WALLET_PROVIDERS = [
   },
   {
     name: 'Solflare',
+    fullName: 'Solflare Wallet',
     url: 'https://solflare.com/',
     adapter: SolflareExtensionWalletAdapter,
     icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/solflare.svg`,
@@ -151,7 +160,7 @@ export function WalletProvider({ children }) {
   const [autoConnect, setAutoConnect] = useState(false)
   const [providerUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
-    CCAIProviderURL
+    RINProviderURL
   )
 
   const provider = useMemo(
@@ -216,12 +225,12 @@ export function WalletProvider({ children }) {
           const keyToDisplay =
             walletPublicKey.length > 20
               ? `${walletPublicKey.substring(
-                  0,
-                  7
-                )}.....${walletPublicKey.substring(
-                  walletPublicKey.length - 7,
-                  walletPublicKey.length
-                )}`
+                0,
+                7
+              )}.....${walletPublicKey.substring(
+                walletPublicKey.length - 7,
+                walletPublicKey.length
+              )}`
               : walletPublicKey
 
           notify({
@@ -255,15 +264,17 @@ export function WalletProvider({ children }) {
       setAutoConnect(false)
     }
 
-    return () => {}
+    return () => { }
   }, [wallet, autoConnect])
 
   useEffect(() => {
     if (wallet && connectWalletHash === '#connect_wallet') {
-      setProviderUrl(CCAIProviderURL)
+      setProviderUrl(RINProviderURL)
       wallet?.connect()
     }
   }, [wallet])
+
+  const w = WALLET_PROVIDERS.find(({ url }) => url === providerUrl)
 
   return (
     <WalletContext.Provider
@@ -274,8 +285,10 @@ export function WalletProvider({ children }) {
         setProviderUrl,
         setAutoConnect,
         providerName:
-          WALLET_PROVIDERS.find(({ url }) => url === providerUrl)?.name ??
+          w?.name ??
           providerUrl,
+        providerFullName:
+          w?.fullName,
       }}
     >
       {children}
@@ -294,6 +307,7 @@ export function useWallet() {
     providerUrl: context.providerUrl,
     setProvider: context.setProviderUrl,
     providerName: context.providerName,
+    providerFullName: context.providerFullName,
     setAutoConnect: context.setAutoConnect,
   }
 }

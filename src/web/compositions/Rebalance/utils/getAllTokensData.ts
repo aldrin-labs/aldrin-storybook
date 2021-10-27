@@ -3,20 +3,20 @@ import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { TokenInfo } from '../Rebalance.types'
 
-import { MOCKED_MINTS_MAP } from '@sb/compositions/Rebalance/Rebalance.mock'
-
 export const getAllTokensData = async (
   owner: PublicKey,
   connection: Connection
 ): Promise<TokenInfo[]> => {
-  const parsedTokenAccounts = await connection.getParsedTokenAccountsByOwner(
-    owner,
-    { programId: TokenInstructions.TOKEN_PROGRAM_ID }
-  )
-  const solBalance = (await connection.getBalance(owner)) / LAMPORTS_PER_SOL
+  const [parsedTokenAccounts, solBalance] = await Promise.all([
+    connection.getParsedTokenAccountsByOwner(owner, {
+      programId: TokenInstructions.TOKEN_PROGRAM_ID,
+    }),
+    connection.getBalance(owner),
+  ])
+
   const SOLToken = {
     symbol: 'SOL',
-    amount: solBalance,
+    amount: solBalance / LAMPORTS_PER_SOL,
     decimals: 9,
     mint: TokenInstructions.WRAPPED_SOL_MINT.toString(),
     address: owner.toString(),
@@ -25,8 +25,6 @@ export const getAllTokensData = async (
   const parsedTokensData = parsedTokenAccounts.value.map((el) => {
     const symbol = ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint]
       ? ALL_TOKENS_MINTS_MAP[el.account.data.parsed.info.mint]
-      : MOCKED_MINTS_MAP[el.account.data.parsed.info.mint]
-      ? MOCKED_MINTS_MAP[el.account.data.parsed.info.mint]
       : el.account.data.parsed.info.mint
 
     return {

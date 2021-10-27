@@ -19,7 +19,7 @@ export const customAquaScrollBar = css`
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgb(39, 39, 45);
+    background: transparent;
   }
 `
 

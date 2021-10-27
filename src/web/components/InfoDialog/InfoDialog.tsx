@@ -41,7 +41,7 @@ const InfoDialog = ({
         <TextComponent>{text}</TextComponent>
         <BtnCustom
           borderRadius={'8px'}
-          btnColor={'#165BE0'}
+          btnColor={'#651CE4'}
           fontSize="1.5rem"
           padding="1rem"
           height="auto"

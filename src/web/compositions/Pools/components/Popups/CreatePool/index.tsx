@@ -204,7 +204,7 @@ export const CreatePoolPopup = ({
         {baseTokenMintAddress && quoteTokenMintAddress && (
           <Text
             fontSize={'2rem'}
-            color={'#A5E898'}
+            color={'#53DF11'}
             fontFamily={'Avenir Next Demi'}
           >
             1 {baseSymbol} ={' '}
@@ -253,9 +253,9 @@ export const CreatePoolPopup = ({
               isNeedToLeftSomeSOL
                 ? 'Sorry, but you need to left some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
                 : baseAmount > maxBaseAmount
-                ? `You entered more token A amount than you have.`
+                ? `You entered more ${baseSymbol} amount than you have.`
                 : quoteAmount > maxQuoteAmount
-                ? `You entered more token B amount than you have.`
+                ? `You entered more ${quoteSymbol} amount than you have.`
                 : ''
             }
             blockHeight={'8rem'}

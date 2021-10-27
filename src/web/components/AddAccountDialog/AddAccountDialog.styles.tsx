@@ -105,7 +105,7 @@ export const LinkCustom = styled(Link)`
   line-height: 114.5%;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #165be0;
+  color: #651CE4;
 `
 export const SearchIconCustom = styled(SearchIcon)`
   position: absolute;

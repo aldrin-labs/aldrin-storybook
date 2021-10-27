@@ -1,45 +1,44 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-interface Props {
+
+interface WebIconProps {
+  width?: string
+  height?: string
+}
+
+interface Props extends WebIconProps {
+  alt?: string
   src: string
-  styledComponentsAdditionalStyle?: string
-  style?: Object
-  width?: number | string
-  height?: number | string
+  style?: React.CSSProperties
   onClick?: (any: any) => any
   onError?: (e: React.ChangeEvent<HTMLImageElement>) => void
 }
 
-export default class SvgIcon extends React.Component<Props, {}> {
-  render() {
-    const {
-      src = '',
-      style,
-      styledComponentsAdditionalStyle,
-      animation,
-      onClick,
-      onError,
-      alt = '',
-    } = this.props
-    const width = this.props.width || 16
-    const height = this.props.height || 16
 
-    return (
-      <WebIcon
-        alt={alt}
-        styledComponentsAdditionalStyle={styledComponentsAdditionalStyle}
-        src={src.replace(/"/gi, '')}
-        style={{ ...style, width, height }}
-        onClick={onClick}
-        onError={onError}
-      />
-    )
-  }
+const WebIcon = styled.img<WebIconProps>`
+  object-fit: contain;
+  width: ${(props: WebIconProps) => props.width || '16px'};
+  height: ${(props: WebIconProps) => props.height || '16px'};
+`
+
+
+const SvgIcon: React.FC<Props> = (props) => {
+  const {
+    alt = '', src, onClick, onError, style, width, height
+  } = props
+  return (
+    <WebIcon
+      alt={alt}
+      src={src.replace(/"/gi, '')}
+      style={style}
+      onClick={onClick}
+      onError={onError}
+      width={width}
+      height={height}
+    />
+  )
 }
 
-const WebIcon = styled.img`
-  object-fit: contain;
-  ${(props: { styledComponentsAdditionalStyle: string }) =>
-    props.styledComponentsAdditionalStyle};
-`
+
+export default SvgIcon

@@ -88,7 +88,7 @@ export const createButterflyChart = (
   const ctx = document.getElementById(`butterflyChart-${id}`)?.getContext('2d')
 
   const topBarGradient = ctx.createLinearGradient(0, 0, 0, 400)
-  topBarGradient.addColorStop(0, '#A5E898')
+  topBarGradient.addColorStop(0, '#53DF11')
   topBarGradient.addColorStop(1, '#97E873')
 
   const width =
@@ -133,7 +133,7 @@ export const createButterflyChart = (
       datasets: [
         {
           barPercentage,
-          borderColor: '#A5E898',
+          borderColor: '#53DF11',
           label: 'data-1',
           backgroundColor: '#1C1D22',
           borderRadius: 50,

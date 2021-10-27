@@ -1,18 +1,17 @@
 import React from 'react'
 import { Theme } from '@sb/types/materialUI'
 
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
 import { SvgIcon } from '@sb/components'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import { PoolInfo, DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import {
+  PoolInfo,
+  DexTokensPrices,
+  FeesEarned,
+  PoolWithOperation,
+} from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenIconsContainer } from '../components'
 import {
-  GreenButton,
   RowDataTdText,
   RowDataTdTopText,
   TextColumnContainer,
@@ -23,41 +22,19 @@ import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 import ArrowToBottom from '@icons/greyArrow.svg'
 import ArrowToTop from '@icons/arrowToTop.svg'
 import Info from '@icons/TooltipImg.svg'
-import { mock } from '../AllPools/AllPoolsTable.utils'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { UserLiquidityDetails } from './components/UserLiquidityDetails'
+import { TablesDetails } from '../components/TablesDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
-
-export const getTotalUserLiquidity = ({
-  usersPools,
-  dexTokensPrices,
-}: {
-  usersPools: PoolInfo[]
-  dexTokensPrices: DexTokensPrices[]
-}): number => {
-  return usersPools.reduce((acc: number, pool: PoolInfo) => {
-    const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
-    const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
-
-    const baseTokenPrice =
-      dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === baseSymbol)
-        ?.price || 10
-
-    const quoteTokenPrice =
-      dexTokensPrices.find((tokenInfo) => tokenInfo.symbol === quoteSymbol)
-        ?.price || 10
-
-    const tvlUSDForPool =
-      baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
-
-    return acc + tvlUSDForPool
-  }, 0)
-}
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { getStakedTokensForPool } from '@sb/dexUtils/common/getStakedTokensForPool'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from './utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 
 export const userLiquidityTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -72,7 +49,11 @@ export const userLiquidityTableColumnsNames = [
       <>
         <span>APY</span>{' '}
         <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
-        <DarkTooltip title={'farming'}>
+        <DarkTooltip
+          title={
+            'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h not taking into account the reward for farming.'
+          }
+        >
           <div>
             <SvgIcon
               src={Info}
@@ -90,7 +71,11 @@ export const userLiquidityTableColumnsNames = [
     label: (
       <>
         Farming
-        <DarkTooltip title={'farming'}>
+        <DarkTooltip
+          title={
+            'You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit into the pool), receiving a reward in tokens allocated by the creator of the pool. The amount of reward specified in the pool info is the amount you will receive daily for each $1,000 deposited into the pool.'
+          }
+        >
           <div>
             <SvgIcon
               src={Info}
@@ -112,12 +97,14 @@ export const combineUserLiquidityData = ({
   searchValue,
   usersPools,
   expandedRows,
+  poolWaitingForUpdateAfterOperation,
   allTokensDataMap,
   dexTokensPricesMap,
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
+  setPoolWaitingForUpdateAfterOperation,
   setIsWithdrawalPopupOpen,
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
@@ -128,71 +115,106 @@ export const combineUserLiquidityData = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: PoolInfo[]
   expandedRows: string[]
+  poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensDataMap: Map<string, TokenInfo>
   farmingTicketsMap: Map<string, FarmingTicket[]>
-  earnedFeesInPoolForUserMap: Map<string, number>
+  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   const processedUserLiquidityData = usersPools
-    // const processedUserLiquidityData = mock
-    .filter((el) =>
+    .filter((pool) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
-        symbol: el.parsedName,
+        symbol: `${getTokenNameByMintAddress(
+          pool.tokenA
+        )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
-    .map((el: PoolInfo) => {
-      const baseSymbol = getTokenNameByMintAddress(el.tokenA)
-      const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
+    .map((pool: PoolInfo) => {
+      const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
+      const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
-      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
-      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
+      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
 
       const tvlUSD =
-        baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
+        baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
 
       const {
         amount: poolTokenRawAmount,
         decimals: poolTokenDecimals,
-      } = allTokensDataMap.get(el.poolTokenMint) || {
+      } = allTokensDataMap.get(pool.poolTokenMint) || {
         amount: 0,
         decimals: 0,
       }
 
+      const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
+
+      const stakedTokens = getStakedTokensForPool(farmingTickets)
+
       const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
 
       const [userAmountTokenA, userAmountTokenB] = calculateWithdrawAmount({
-        selectedPool: el,
-        poolTokenAmount: poolTokenAmount,
+        selectedPool: pool,
+        poolTokenAmount: poolTokenAmount + stakedTokens,
       })
 
-      const farmingState = el.farming && el.farming[0]
+      const poolTokenPrice = calculatePoolTokenPrice({
+        pool,
+        dexTokensPricesMap,
+      })
+
+      const totalStakedLpTokensUSD =
+        pool.lpTokenFreezeVaultBalance * poolTokenPrice
+
+      const isPoolWithFarming = pool.farming && pool.farming.length > 0
+      const openFarmings = isPoolWithFarming
+        ? filterOpenFarmingStates(pool.farming)
+        : []
 
       const userLiquidityUSD =
         baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
 
+      const feesEarnedByUserForPool = earnedFeesInPoolForUserMap.get(
+        pool.swapToken
+      ) || { totalBaseTokenFee: 0, totalQuoteTokenFee: 0 }
+
+      const feesUsd =
+        feesEarnedByUserForPool.totalBaseTokenFee * baseTokenPrice +
+        feesEarnedByUserForPool.totalQuoteTokenFee * quoteTokenPrice
+
       return {
-        id: `${el.name}${el.tvl}${el.poolTokenMint}`,
+        id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
         pool: {
           render: (
             <Row
               justify="flex-start"
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
-              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
-              {el.locked ? (
-                <SvgIcon
-                  style={{ marginLeft: '1rem' }}
-                  width="2rem"
-                  height="auto"
-                  src={CrownIcon}
-                />
-              ) : el.executed ? (
+              <TokenIconsContainer
+                tokenA={pool.tokenA}
+                tokenB={pool.tokenB}
+                needHover={true}
+              />
+              {/* TODO: show locked liquidity depending on backend data, not for all pools */}
+              {true ? (
+                <DarkTooltip title={'Founders liquidity locked.'}>
+                  <div>
+                    <SvgIcon
+                      style={{ marginLeft: '1rem' }}
+                      width="2rem"
+                      height="auto"
+                      src={CrownIcon}
+                    />
+                  </div>
+                </DarkTooltip>
+              ) : pool.executed ? (
                 <DarkTooltip
                   title={
                     'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
@@ -210,69 +232,79 @@ export const combineUserLiquidityData = ({
               ) : null}
             </Row>
           ),
+          contentToSort: `${baseSymbol}${quoteSymbol}`,
         },
         tvl: {
           render: (
             <TextColumnContainer>
               <RowDataTdTopText theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+                ${stripByAmountAndFormat(tvlUSD)}
               </RowDataTdTopText>
               <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenB)}
+                {stripByAmountAndFormat(pool.tvl.tokenA)}{' '}
+                {getTokenNameByMintAddress(pool.tokenA)} /{' '}
+                {stripByAmountAndFormat(pool.tvl.tokenB)}{' '}
+                {getTokenNameByMintAddress(pool.tokenB)}
               </RowDataTdText>
             </TextColumnContainer>
           ),
           showOnMobile: false,
+          contentToSort: tvlUSD,
         },
         userLiquidity: {
           render: (
             <TextColumnContainer>
               <RowDataTdTopText theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(userLiquidityUSD, 2))}
+                ${stripByAmountAndFormat(userLiquidityUSD + feesUsd)}
               </RowDataTdTopText>
               <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(userAmountTokenA, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(userAmountTokenB, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenB)}
+                {stripByAmountAndFormat(
+                  userAmountTokenA + feesEarnedByUserForPool.totalBaseTokenFee
+                )}{' '}
+                {getTokenNameByMintAddress(pool.tokenA)} /{' '}
+                {stripByAmountAndFormat(
+                  userAmountTokenB + feesEarnedByUserForPool.totalQuoteTokenFee
+                )}{' '}
+                {getTokenNameByMintAddress(pool.tokenB)}
               </RowDataTdText>
             </TextColumnContainer>
           ),
+          contentToSort: userLiquidityUSD + feesUsd,
         },
         fees: {
           render: (
             <RowDataTdText theme={theme}>
-              $
-              {stripDigitPlaces(
-                earnedFeesInPoolForUserMap.get(el.swapToken) || 0,
-                6
-              )}
+              ${stripByAmountAndFormat(feesUsd || 0)}
             </RowDataTdText>
           ),
+          contentToSort: feesUsd,
         },
         apy: {
           render: (
             <RowDataTdText
-              color={'#A5E898'}
+              color={'#53DF11'}
               fontFamily="Avenir Next Medium"
               theme={theme}
             >
-              {stripDigitPlaces(el.apy24h, 6)}%
+              {stripByAmountAndFormat(pool.apy24h)}%
             </RowDataTdText>
           ),
+          contentToSort: pool.apy24h,
         },
         farming: {
-          render: farmingState ? (
+          render: isPoolWithFarming ? (
             <RowContainer justify="flex-start" theme={theme}>
               <Row margin="0 1rem 0 0" justify="flex-start">
-                <TokenIcon
-                  mint={farmingState.farmingTokenMint}
-                  width={'3rem'}
-                  emojiIfNoLogo={false}
-                />
+                {/* every farming token mint logo, TODO: place them nicely, not one by one */}
+                {openFarmings.map((farmingState) => {
+                  return (
+                    <TokenIcon
+                      mint={farmingState.farmingTokenMint}
+                      width={'3rem'}
+                      emojiIfNoLogo={false}
+                    />
+                  )
+                })}
               </Row>
               <Row align="flex-start" direction="column">
                 <RowDataTdText
@@ -280,27 +312,59 @@ export const combineUserLiquidityData = ({
                   style={{ marginBottom: '1rem' }}
                   theme={theme}
                 >
-                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                  {openFarmings.map((farmingState, i, arr) => {
+                    return `${getTokenNameByMintAddress(
+                      farmingState.farmingTokenMint
+                    )} ${i !== arr.length - 1 ? 'X ' : ''}`
+                  })}
                 </RowDataTdText>
-                <RowDataTdText>
-                  <span style={{ color: '#A5E898' }}>
-                    {formatNumberToUSFormat(
-                      stripDigitPlaces(
-                        (farmingState.tokensPerPeriod *
-                          (dayDuration / farmingState.periodLength)) /
-                          (tvlUSD / 1000),
-                        2
-                      )
-                    )}
-                  </span>{' '}
-                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
-                  Day for each $<span style={{ color: '#A5E898' }}>1000</span>
-                </RowDataTdText>
+                {openFarmings.length === 0 ? (
+                  <RowDataTdText>
+                    <span style={{ color: '#53DF11' }}>Ended</span>
+                  </RowDataTdText>
+                ) : (
+                  openFarmings.map((farmingState, i, arr) => {
+                    const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                      { farmingState, totalStakedLpTokensUSD }
+                    )
+
+                    return (
+                      <RowDataTdText>
+                        <span style={{ color: '#53DF11' }}>
+                          {stripByAmountAndFormat(
+                            farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                          )}
+                        </span>{' '}
+                        {getTokenNameByMintAddress(
+                          farmingState.farmingTokenMint
+                        )}
+                        {/* + between every farming state token to be farmed, except last. for last - per day */}
+                        {i !== arr.length - 1 ? <span> + </span> : null}
+                        {i === arr.length - 1 ? <span> / Day</span> : null}
+                      </RowDataTdText>
+                    )
+                  })
+                )}
+                {openFarmings.length > 0 && (
+                  <RowDataTdText>
+                    {' '}
+                    for each <span style={{ color: '#53DF11' }}>$1000</span>
+                  </RowDataTdText>
+                )}
               </Row>
             </RowContainer>
           ) : (
             '-'
           ),
+          contentToSort: openFarmings.reduce((acc, farmingState) => {
+            return (
+              acc +
+              getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
+                farmingState,
+                totalStakedLpTokensUSD,
+              })
+            )
+          }, 0),
         },
         details: {
           render: (
@@ -319,7 +383,7 @@ export const combineUserLiquidityData = ({
                 src={
                   // separate to variable
                   expandedRows.includes(
-                    `${el.name}${el.tvl}${el.poolTokenMint}`
+                    `${pool.name}${pool.tvl}${pool.poolTokenMint}`
                   )
                     ? ArrowToTop
                     : ArrowToBottom
@@ -332,19 +396,27 @@ export const combineUserLiquidityData = ({
           {
             row: {
               render: (
-                <UserLiquidityDetails
+                <TablesDetails
                   setIsStakePopupOpen={setIsStakePopupOpen}
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                  refreshAllTokensData={refreshAllTokensData}
+                  refreshTokensWithFarmingTickets={
+                    refreshTokensWithFarmingTickets
+                  }
+                  setPoolWaitingForUpdateAfterOperation={
+                    setPoolWaitingForUpdateAfterOperation
+                  }
                   selectPool={selectPool}
                   farmingTicketsMap={farmingTicketsMap}
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
                   dexTokensPricesMap={dexTokensPricesMap}
                   allTokensDataMap={allTokensDataMap}
+                  poolWaitingForUpdateAfterOperation={
+                    poolWaitingForUpdateAfterOperation
+                  }
                   theme={theme}
-                  pool={el}
+                  pool={pool}
                 />
               ),
               colspan: 8,
@@ -354,5 +426,5 @@ export const combineUserLiquidityData = ({
       }
     })
 
-  return processedUserLiquidityData.filter((el) => !!el)
+  return processedUserLiquidityData.filter((pool) => !!pool)
 }
