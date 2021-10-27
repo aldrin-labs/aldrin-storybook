@@ -225,3 +225,51 @@ export const DashboardLink = ({ isActive }: { isActive: boolean }) => {
     </StyledLink>
   )
 }
+
+export const StakingLink = ({ isActive }: { isActive: boolean }) => {
+  return (
+    <StyledLink to={'/staking'}>
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 17 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="0.5"
+          y="12.5"
+          width="16"
+          height="3"
+          rx="1.5"
+          stroke={isActive ? '#651CE4' : '#F5F5FB'}
+        />
+        <rect
+          x="0.5"
+          y="8.5"
+          width="16"
+          height="3"
+          rx="1.5"
+          stroke={isActive ? '#651CE4' : '#F5F5FB'}
+        />
+        <rect
+          x="0.5"
+          y="4.5"
+          width="16"
+          height="3"
+          rx="1.5"
+          stroke={isActive ? '#651CE4' : '#F5F5FB'}
+        />
+        <rect
+          x="0.5"
+          y="0.5"
+          width="16"
+          height="3"
+          rx="1.5"
+          stroke={isActive ? '#651CE4' : '#F5F5FB'}
+        />
+      </svg>
+      <span style={{ color: isActive ? '#651CE4' : '#F5F5FB' }}>Staking</span>
+    </StyledLink>
+  )
+}

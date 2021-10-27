@@ -9,6 +9,7 @@ import {
   TradeLink,
   WalletLink,
   DashboardLink,
+  StakingLink,
 } from './NavIconsComponents'
 import { FooterComponent } from './styles'
 
@@ -23,11 +24,11 @@ export const MobileFooter = ({ pathname }) => {
       <PoolsLink isActive={pathname.includes('pools')} />
       <SwapsLink isActive={pathname.includes('swaps')} />
       <RebalanceLink isActive={pathname.includes('rebalance')} /> */}
+      <StakingLink isActive={pathname.includes('staking')} />
       <WalletLink isActive={pathname.includes('wallet')} />
       <FeedbackBtn
         onClick={() => {
           setIsFeedBackPopupOpen(true)
-          console.log('aa', isFeedBackPopupOpen)
         }}
         isActive={isFeedBackPopupOpen}
       />
