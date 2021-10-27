@@ -104,7 +104,7 @@ export const PoolsLink = ({ isActive }: { isActive: boolean }) => {
 
 export const SwapsLink = ({ isActive }: { isActive: boolean }) => {
   return (
-    <StyledLink to={'/swaps'}>
+    <StyledLink to={'/swap'}>
       <svg
         width="100%"
         height="100%"
@@ -119,7 +119,7 @@ export const SwapsLink = ({ isActive }: { isActive: boolean }) => {
           fill={isActive ? '#651CE4' : '#F8FAFF'}
         />
       </svg>
-      <span style={{ color: isActive ? '#651CE4' : '#F5F5FB' }}>Swaps</span>
+      <span style={{ color: isActive ? '#651CE4' : '#F5F5FB' }}>Swap</span>
     </StyledLink>
   )
 }

@@ -33,6 +33,7 @@ const VARIANTS = {
     background: transparent;
     border-color: transparent;
     color: ${COLORS.main};
+    padding: 0 10px;
   `,
 
   disabled: css`

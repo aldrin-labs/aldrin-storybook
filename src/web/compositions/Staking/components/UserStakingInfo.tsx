@@ -305,9 +305,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       title={
                         <>
                           <p>
-                            Rewards distribution takes place on the first day of
+                            Rewards distribution takes place on the 27th day of
                             each month, you will be able to claim your reward
-                            for this period on{' '}
+                            for this period on
                             <span style={{ color: COLORS.success }}>
                               27 November 2021.
                             </span>

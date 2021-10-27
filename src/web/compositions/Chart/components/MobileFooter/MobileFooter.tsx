@@ -21,9 +21,9 @@ export const MobileFooter = ({ pathname }) => {
       <TradeLink isActive={pathname.includes('chart')} />
       <DashboardLink isActive={pathname.includes('dashboard')} />
       {/* <AnalyticsLink isActive={pathname.includes('analytics')} />
-      <PoolsLink isActive={pathname.includes('pools')} />
-      <SwapsLink isActive={pathname.includes('swaps')} />
-      <RebalanceLink isActive={pathname.includes('rebalance')} /> */}
+      <PoolsLink isActive={pathname.includes('pools')} /> */}
+      <SwapsLink isActive={pathname.includes('swap')} />
+      {/* <RebalanceLink isActive={pathname.includes('rebalance')} /> */}
       <StakingLink isActive={pathname.includes('staking')} />
       <WalletLink isActive={pathname.includes('wallet')} />
       <FeedbackBtn
