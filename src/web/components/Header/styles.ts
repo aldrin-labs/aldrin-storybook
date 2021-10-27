@@ -28,6 +28,7 @@ export const LogoBlock = styled.div`
   border-right: 1px solid ${COLORS.border};
   padding-right: ${SIZE.defaultPadding};
   margin: 8px 0;
+  flex: 0 1 auto;
 `
 
 
@@ -125,17 +126,18 @@ export const WalletContainer = styled.div`
   flex-direction: row;
   align-items: center;
   overflow: hidden;
-  flex: 0 1 auto;
 `
 
 export const LogoLink = styled(Link)`
-  display: block;
   height: 100%;
   margin-right: ${SIZE.defaultPadding};
+  display: block;
 `
 
 export const Logo = styled.img`
-  height: 100%;
+  height: 31px;
+  display: block;
+  margin: 0;
 `
 
 export const DropdownContent = styled.div`

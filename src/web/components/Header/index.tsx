@@ -50,6 +50,7 @@ export const Header = () => {
     </>
   )
 
+
   return (
     <Body>
       <HeaderWrap>
@@ -57,7 +58,8 @@ export const Header = () => {
           <LogoLink to={'/'}>
             <Logo src={AldrinLogo} />
           </LogoLink>
-          <Button
+          
+           <Button
             backgroundImage={StakeBtn}
             as={Link}
             to="/staking"
