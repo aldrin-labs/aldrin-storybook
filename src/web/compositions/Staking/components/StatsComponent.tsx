@@ -1,34 +1,32 @@
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   stripByAmount,
-  stripByAmountAndFormat,
+  stripByAmountAndFormat
 } from '@core/utils/chartPageUtils'
-import GreenTriangle from '@icons/greenTriangle.svg'
-import RedTriangle from '@icons/redTriangle.svg'
-import { SvgIcon } from '@sb/components'
+import {
+  formatNumberToUSFormat
+} from '@core/utils/PortfolioTableUtils'
 import {
   Block,
   BlockContentStretched,
   BlockSubtitle,
-  BlockTitle,
+  BlockTitle
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import { InlineText } from '@sb/components/Typography'
 import {
-  generateDatesForRequest,
-  MarketDataByTicker,
+  MarketDataByTicker
 } from '@sb/compositions/Chart/components/MarketStats/MarketStats'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { useConnection } from '@sb/dexUtils/connection'
-import { useMarkPrice } from '@sb/dexUtils/markets'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { StakingPool } from '@sb/dexUtils/staking/types'
+import { TokenInfo } from '@sb/dexUtils/types'
 import dayjs from 'dayjs'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -37,19 +35,11 @@ import {
   LastPrice,
   Number,
   StatsBlock,
-  StatsBlockItem,
+  StatsBlockItem
 } from '../Staking.styles'
 import { getShareText } from '../Staking.utils.tsx/getShareText'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
-import { TokenInfo } from '@sb/dexUtils/types'
-import { StakingPool } from '@sb/dexUtils/staking/types'
-import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
 
 interface InnerProps {
   tokenData: TokenInfo | null
@@ -66,15 +56,12 @@ const StatsComponent: React.FC<StatsComponentProps> = (
 ) => {
   const {
     getDexTokensPricesQuery,
-    marketDataByTickersQuery,
     stakingPool,
     allStakingFarmingTickets,
   } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
 
   const allStakingFarmingStates = stakingPool?.farming || []
-
-  const markPrice = useMarkPrice() || 0
 
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     allStakingFarmingTickets
@@ -97,16 +84,6 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     getDexTokensPricesQuery.getDexTokensPrices &&
     getDexTokensPricesQuery.getDexTokensPrices[0] &&
     getDexTokensPricesQuery.getDexTokensPrices[0].price
-
-  const strippedLastPriceDiff = +stripByAmount(
-    marketDataByTickersQuery?.marketDataByTickers?.lastPriceDiff
-  )
-  const strippedMarkPrice = +stripByAmount(markPrice)
-  const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
-  const priceChangePercentage = !prevClosePrice
-    ? 0
-    : (markPrice - prevClosePrice) / (prevClosePrice / 100)
-  const isPriceIncreasing = priceChangePercentage > 0
 
   const totalStakedUSD = tokenPrice * totalStaked
   const tokensTotal =
@@ -166,7 +143,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                   <BlockSubtitle>Price</BlockSubtitle>
                   <LastPrice>
                     <Number>${stripByAmount(tokenPrice)}</Number>
-                    <InlineText
+                    {/* <InlineText
                       color={isPriceIncreasing ? 'success' : 'error'}
                       size="xs"
                     >
@@ -176,7 +153,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                         height={'1rem'}
                       />{' '}
                       {stripDigitPlaces(priceChangePercentage, 3)}%
-                    </InlineText>
+                    </InlineText> */}
                   </LastPrice>
                 </StatsBlockItem>
                 <StatsBlockItem>
@@ -202,20 +179,9 @@ export default compose<InnerProps, any>(
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
-    fetchPolicy: 'cache-only',
+    fetchPolicy: 'cache-and-network',
     variables: { symbols: ['RIN'] },
     withoutLoading: true,
     pollInterval: 60000,
-  }),
-  queryRendererHoc({
-    query: marketDataByTickers,
-    name: 'marketDataByTickersQuery',
-    fetchPolicy: 'cache-only',
-    variables: (props) => ({
-      symbol: 'RIN_USDC',
-      exchange: 'serum',
-      marketType: 0,
-      ...generateDatesForRequest(),
-    }),
   })
 )(StatsComponent)
