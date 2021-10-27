@@ -9,20 +9,24 @@ export interface BlockProps {
 
 export const Block = styled.div<BlockProps>`
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);
-  background: ${(props: BlockProps) => props.inner ? COLORS.borderAlt : COLORS.blockBackground}; 
+  background: ${(props: BlockProps) =>
+    props.inner ? COLORS.borderAlt : COLORS.blockBackground};
   border-radius: 12px;
   margin: 8px;
   height: 100%;
   position: relative;
-  ${({ backgroundImage }: BlockProps) => backgroundImage ?
-    `
+  ${({ backgroundImage }: BlockProps) =>
+    backgroundImage
+      ? `
     background-image: url(${backgroundImage});
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-  ` : ''}
-  ${({ icon }: BlockProps) => icon ?
-    `
+  `
+      : ''}
+  ${({ icon }: BlockProps) =>
+    icon
+      ? `
   &:before {
     content: "";
     position: absolute;
@@ -32,11 +36,13 @@ export const Block = styled.div<BlockProps>`
     width: 90%;
     background: url(${icon}) right center no-repeat;
   }
-  ` : ''}
+  `
+      : ''}
 `
 
 interface TitleProps {
   color?: string
+  margin?: string
 }
 
 export const BlockTitle = styled.h2`
@@ -50,7 +56,7 @@ export const BlockSubtitle = styled.h3<TitleProps>`
   font-weight: 600;
   font-size: 0.9em;
   line-height: 130%;
-  margin: 0 0 1em;
+  margin: ${(props) => props.margin || '0 0 1em'};
   color: ${(props: TitleProps) => props.color || COLORS.hint};
 `
 
@@ -61,7 +67,8 @@ interface BlockContentProps {
 export const BlockContent = styled.div<BlockContentProps>`
   padding: 16px 20px;
   position: relative;
-  ${(props) => props.border ? `border-bottom: 1px solid ${COLORS.borderAlt}` : ''}
+  ${(props) =>
+    props.border ? `border-bottom: 1px solid ${COLORS.borderAlt}` : ''}
 `
 
 export const BlockContentStretched = styled(BlockContent)`

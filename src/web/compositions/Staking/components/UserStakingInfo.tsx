@@ -1,4 +1,7 @@
-import { stripByAmount, stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
 import StakeBtn from '@icons/stakeBtn.png'
 import { SvgIcon } from '@sb/components'
 import {
@@ -154,8 +157,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           result === 'success'
             ? 'Successfully staked.'
             : result === 'failed'
-              ? 'Staking failed, please try again later or contact us in telegram.'
-              : 'Staking cancelled.',
+            ? 'Staking failed, please try again later or contact us in telegram.'
+            : 'Staking cancelled.',
       })
 
       if (result === 'success') {
@@ -191,8 +194,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         result === 'success'
           ? 'Successfully unstaked.'
           : result === 'failed'
-            ? 'Unstaking failed, please try again later or contact us in telegram.'
-            : 'Unstaking cancelled.',
+          ? 'Unstaking failed, please try again later or contact us in telegram.'
+          : 'Unstaking cancelled.',
     })
 
     if (result === 'success') {
@@ -267,7 +270,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           <Cell colMd={4} colLg={12} colXl={4}>
             <TotalStakedBlock inner>
               <BlockContent>
-                <BlockSubtitle>Total staked:</BlockSubtitle>
+                <BlockSubtitle margin={'0 0 2em'}>Total staked:</BlockSubtitle>
                 <UserBalance visible={isBalancesShowing} value={totalStaked} />
               </BlockContent>
             </TotalStakedBlock>
@@ -278,7 +281,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <StretchedBlock>
                   <DarkTooltip title={`${stripByAmount(userRewards)} RIN`}>
                     <div>
-                      <BlockSubtitle>Rewards:</BlockSubtitle>
+                      <BlockSubtitle margin={'0 0 2em'}>Rewards:</BlockSubtitle>
                       <UserBalance
                         visible={isBalancesShowing}
                         value={userRewards}
@@ -288,7 +291,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   </DarkTooltip>
 
                   <div>
-                    <BlockSubtitle>Available to claim:</BlockSubtitle>
+                    <BlockSubtitle margin={'0 0 2em'}>
+                      Available to claim:
+                    </BlockSubtitle>
                     <UserBalance
                       visible={isBalancesShowing}
                       value={availableToClaimTotal}
@@ -340,7 +345,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           end={end}
           loading={loading}
         />
-
       </BlockContent>
       <RestakePopup
         open={isRestakePopupOpen}

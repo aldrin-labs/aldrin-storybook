@@ -64,6 +64,6 @@ export default compose(
   queryRendererHoc({
     query: getStakingPoolInfo,
     name: 'getStakingPoolInfoQuery',
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-only',
   })
 )(StakingComponent)

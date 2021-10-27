@@ -45,7 +45,10 @@ import pinkBackground from './assets/pinkBackground.png'
 import { TokenInfo } from '@sb/dexUtils/types'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 
 interface InnerProps {
@@ -123,7 +126,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
               <BlockTitle>Total Staked</BlockTitle>
               <BigNumber>
                 <InlineText color="success">
-                  {stripByAmountAndFormat(totalStaked)}
+                  {formatNumberToUSFormat(stripByAmount(totalStaked))}{' '}
                 </InlineText>{' '}
                 RIN
               </BigNumber>

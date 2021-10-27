@@ -32,7 +32,7 @@ const VARIANTS = {
   link: css`
     background: transparent;
     border-color: transparent;
-    color: ${COLORS.success};
+    color: ${COLORS.main};
   `,
 
   disabled: css`
