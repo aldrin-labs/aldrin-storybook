@@ -31,7 +31,7 @@ export const Header = () => {
 
   const { pathname } = useLocation()
 
-  const isTradingActive = pathname.includes('/chart') || pathname.includes('/swaps')
+  const isTradingActive = pathname.includes('/chart') || pathname.includes('/swap')
 
   const feedbackLinks = (
     <>
@@ -75,7 +75,7 @@ export const Header = () => {
           <MainLinksBlock>
             <DropDown text="Trading" isActive={isTradingActive}>
               <NavLink to="/chart" activeClassName="selected">Terminal</NavLink>
-              <NavLink to="/swaps" activeClassName="selected">Swap</NavLink>
+              <NavLink to="/swap" activeClassName="selected">Swap</NavLink>
             </DropDown>
             <NavLink to="/rebalance" activeClassName="selected">Rebalance</NavLink>
             <NavLink to="/dashboard" activeClassName="selected">Dashboard</NavLink>
