@@ -61,6 +61,7 @@ export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } =
   "SRM": process.env.REACT_APP_SRM_REFERRAL_FEES_ADDRESS,
   "ETH": process.env.REACT_APP_ETH_REFERRAL_FEES_ADDRESS,
   "RAY": process.env.REACT_APP_RAY_REFERRAL_FEES_ADDRESS,
+  "mSOL": process.env.REACT_APP_MSOL_REFERRAL_FEES_ADDRESS,
 }
 
 
@@ -182,6 +183,7 @@ export function useCustomMarkets() {
     'customMarkets',
     []
   )
+
   return { customMarkets, setCustomMarkets }
 }
 
@@ -1235,10 +1237,12 @@ export function getMarketInfos(customMarkets) {
     programId: new PublicKey(m.programId),
   }))
 
+
+  const awesomeMarkets = useAwesomeMarkets()
   // TODO: we should use useMarketsList first to not find
   // pair from custom market by name (in this way we cover case when pair with
   // the same name will be in our market list and cusom markets)
-  return [...serumMarkets, ...customMarketsInfo]
+  return [...serumMarkets, ...customMarketsInfo, ...awesomeMarkets]
 }
 
 export function useSelectedTokenAccounts(): [
