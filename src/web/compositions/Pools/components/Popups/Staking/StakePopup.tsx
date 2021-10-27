@@ -35,6 +35,7 @@ import { RefreshFunction } from '@sb/dexUtils/types'
 import { FarmingTicket } from '@sb/dexUtils/pools/types'
 import { getStakedTokensForPool } from '@sb/dexUtils/pools/getStakedTokensForPool'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 
 export const StakePopup = ({
   theme,
@@ -87,22 +88,8 @@ export const StakePopup = ({
   const stakedWithEnteredPoolTokensUSD =
     (stakedTokens + +poolTokenAmount) * poolTokenPrice
 
-  const tokensPerPeriod = farmingState
-    ? farmingState.tokensPerPeriod *
-      (1 / 10 ** farmingState.farmingTokenMintDecimals)
-    : 0
-
-  const dailyFarmingValue = farmingState
-    ? tokensPerPeriod * (dayDuration / farmingState.periodLength)
-    : 0
-
-  // daily rewards for staked liquidity in pool + entered
-  const dailyFarmingValuePerUserLiquidity = totalStakedLpTokensUSD
-    ? dailyFarmingValue *
-      (stakedWithEnteredPoolTokensUSD / totalStakedLpTokensUSD)
-    : 0
-
   if (!farmingState) return null
+
   return (
     <DialogWrapper
       theme={theme}
@@ -141,10 +128,25 @@ export const StakePopup = ({
         <Text>Est. rewards:</Text>
         <Text>
           <Row align="flex-start">
-            <span style={{ color: '#53DF11', paddingRight: '.5rem' }}>
-              {stripByAmountAndFormat(dailyFarmingValuePerUserLiquidity)}
-            </span>{' '}
-            {getTokenNameByMintAddress(farmingState.farmingTokenMint)} / Day
+            {selectedPool.farming.map((farmingState, i, arr) => {
+              const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                { farmingState, totalStakedLpTokensUSD }
+              )
+
+              return (
+                <>
+                  <span style={{ color: '#53DF11', paddingRight: '.5rem' }}>
+                    {stripByAmountAndFormat(
+                      farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                    )}
+                  </span>{' '}
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                  <span style={{ padding: '0 .5rem' }}>
+                    {i === arr.length - 1 ? ' / Day' : '+'}
+                  </span>
+                </>
+              )
+            })}
           </Row>
         </Text>
       </RowContainer>

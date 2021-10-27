@@ -98,9 +98,9 @@ export const withdrawFarmed = async ({
     // check farmed for some ticket
     // if (
     //   farmingState.farmingState ===
-    //     'HKP7u6F8iN7SZThjcE2E5nC3VLZELqwW1HKC8VSc52Kv' &&
-    //   ticketData.farmingTicket ===
-    //     'A9oyHcg95N88G8AtyZhtPmSHS8U3rJBHiNswXu7aWT91'
+    //     'GhF4p1WVKBEL32fJJ36tScZedBTF5ipsQrZmq661ARGf'
+    //   // ticketData.farmingTicket ===
+    //   //   'A9oyHcg95N88G8AtyZhtPmSHS8U3rJBHiNswXu7aWT91'
     // ) {
     //   await sendTransaction({
     //     wallet,
