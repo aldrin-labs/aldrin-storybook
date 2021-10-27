@@ -18,6 +18,7 @@ import { sendTransaction } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
 import { FarmingTicket } from '../common/types'
+import { checkFarmed } from '../common/checkFarmed'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -90,6 +91,58 @@ export const withdrawFarmed = async ({
 
       // check amount for every farming state
       if (amountToClaim === 0) continue
+
+      // check famed if needed
+      // if (
+      //   farmingState.farmingState ===
+      //   '2iCYrRA6x8f7xa4nUPsHP3stVBffVBzqCFLd27UKLExx'
+      // ) {
+      //   console.log({
+      //     farmingState,
+      //     ticketData,
+      //   })
+
+      //   await sendTransaction({
+      //     wallet,
+      //     connection,
+      //     transaction: new Transaction()
+      //       .add(
+      //         await checkFarmed({
+      //           wallet,
+      //           connection,
+      //           farming: farmingState,
+      //           farmingTicket: new PublicKey(ticketData.farmingTicket),
+      //           poolPublicKey: new PublicKey(pool.swapToken),
+      //         })
+      //       )
+      // .add(
+      //   await program.instruction.withdrawFarmed({
+      //     accounts: {
+      //       pool: poolPublicKey,
+      //       farmingState: new PublicKey(farmingState.farmingState),
+      //       farmingSnapshots: new PublicKey(
+      //         farmingState.farmingSnapshots
+      //       ),
+      //       farmingTicket: new PublicKey(ticketData.farmingTicket),
+      //       farmingTokenVault: new PublicKey(
+      //         farmingState.farmingTokenVault
+      //       ),
+      //       poolSigner: vaultSigner,
+      //       userFarmingTokenAccount: new PublicKey(
+      //         allTokensDataMap.get(farmingState.farmingTokenMint)?.address
+      //       ),
+      //       userKey: wallet.publicKey,
+      //       userSolAccount: wallet.publicKey,
+      //       tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+      //       clock: SYSVAR_CLOCK_PUBKEY,
+      //       rent: SYSVAR_RENT_PUBKEY,
+      //     },
+      //   })
+      // )
+      // ,
+      //     signers: [],
+      //   })
+      // }
 
       const farmingTokenAccountAddress = allTokensDataMap.get(
         farmingState.farmingTokenMint

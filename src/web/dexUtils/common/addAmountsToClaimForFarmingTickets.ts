@@ -2,10 +2,9 @@ import { simulateTransaction } from '@project-serum/common'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import { WalletAdapter } from '../types'
-import { checkFarmed } from '../common/checkFarmed'
-import { START_OF_LOG_WITH_AMOUNT_TO_CLAIM } from '../common/config'
-import { FarmingTicket } from '../common/types'
-import { sendTransaction } from '../send'
+import { checkFarmed } from './checkFarmed'
+import { START_OF_LOG_WITH_AMOUNT_TO_CLAIM } from './config'
+import { FarmingTicket } from './types'
 import { StakingPool } from '../staking/types'
 
 export const addAmountsToClaimForFarmingTickets = async ({
@@ -15,11 +14,11 @@ export const addAmountsToClaimForFarmingTickets = async ({
   allUserFarmingTickets,
   programAddress,
 }: {
-  pools: (PoolInfo|StakingPool)[]
+  pools: (PoolInfo | StakingPool)[]
   wallet: WalletAdapter
   connection: Connection
   allUserFarmingTickets: FarmingTicket[]
-  programAddress: string
+  programAddress?: string
 }): Promise<FarmingTicket[]> => {
   const poolsMap = pools.reduce(
     (acc, pool) => acc.set(pool.swapToken, pool),
@@ -117,7 +116,8 @@ export const addAmountsToClaimForFarmingTickets = async ({
     const amountsToClaimForTicket = pool.farming.map((farming, index) => {
       const amountForFarmingState = amountsToClaim[counter + index] || 0
       const farmingTokenDecimals = farming.farmingTokenMintDecimals || 9 // for staking
-      const amountWithoutDecimals = amountForFarmingState * (1 / 10 ** farmingTokenDecimals)
+      const amountWithoutDecimals =
+        amountForFarmingState / 10 ** farmingTokenDecimals
       return {
         farmingState: farming.farmingState,
         amount: amountWithoutDecimals,
