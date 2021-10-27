@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useFormik } from 'formik'
 import { TokenInfo } from '@sb/dexUtils/types'
 import { FormWrap, FormItem, FormItemFull } from '../Staking.styles'
@@ -13,7 +13,7 @@ import dayjs from 'dayjs'
 import { SvgIcon } from '@sb/components'
 
 interface StakingFormProps {
-  tokenData: TokenInfo
+  tokenData: TokenInfo | undefined
   loading: { stake: boolean; unstake: boolean }
   start: (amount: number) => any
   end: () => any
@@ -60,6 +60,14 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
     },
   })
 
+  const prevTokenData = useRef(tokenData)
+
+  useEffect(() => {
+    if (!prevTokenData.current && tokenData) {
+      prevTokenData.current = tokenData
+      form.setFieldValue('amount', tokenData.amount)
+    }
+  }, [tokenData])
   return (
     <FormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
@@ -105,8 +113,8 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           title={
             isUnstakeLocked
               ? `Locked until ${dayjs
-                  .unix(unlockAvailableDate)
-                  .format('HH:mm:ss MMM DD, YYYY')}`
+                .unix(unlockAvailableDate)
+                .format('HH:mm:ss MMM DD, YYYY')}`
               : ''
           }
         >

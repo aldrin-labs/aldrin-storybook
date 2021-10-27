@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { COLORS, FONT_SIZES } from '@variables/variables'
 
 
-interface TextProps {
+export interface TextProps {
   size?: keyof typeof FONT_SIZES
   color?: keyof typeof COLORS
   weight?: 100 | 200 | 400 | 500 | 600 | 700

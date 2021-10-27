@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 // TODO: remove dat
 import { maxMobileScreenResolution } from '@core/utils/config'
 
@@ -27,7 +27,7 @@ export const LogoBlock = styled.div`
   align-items: center;
   border-right: 1px solid ${COLORS.border};
   padding-right: ${SIZE.defaultPadding};
-  margin: 5px 0;
+  margin: 8px 0;
 `
 
 export const LinksBlock = styled.div`
@@ -48,6 +48,9 @@ export const MainLinksBlock = styled(LinksBlock)`
   margin: 5px auto;
   border-right: 0;
   display: flex;
+  flex: 1;
+  flex-direction: row;
+  justify-content: center;
 `
 
 export const WalletContainer = styled.div`
@@ -80,11 +83,11 @@ interface LinkProps extends ShowHideProps {
   new?: boolean
 }
 
-export const NavLink = styled(Link) <LinkProps>`
+export const NavLink = styled(RouterNavLink) <LinkProps>`
   text-decoration: none;
-  font-size: 0.8em;
-  padding: 6px;
-  margin: 4px;
+  font-size: 0.7em;
+  padding: 8px;
+  margin: 0px 4px;
   text-align: center;
   border-radius: ${BORDER_RADIUS.md};
   color: ${COLORS.hint};
@@ -94,7 +97,7 @@ export const NavLink = styled(Link) <LinkProps>`
   cursor: pointer;
   white-space: nowrap;
 
-  &:hover {
+  &:hover, &.selected {
     color: ${COLORS.navLinkActive};
     background: ${COLORS.navLinkActiveBg};
   }
@@ -124,6 +127,11 @@ export const NavLink = styled(Link) <LinkProps>`
       padding-left: 5px;
     }
   ` : ''}
+
+  @media(min-width: ${BREAKPOINTS.lg}) {
+    margin: 8px 24px;
+    padding: 8px 12px;
+  }
 `
 
 
@@ -193,10 +201,12 @@ export const WalletName = styled(Text)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-weight: bold;
 `
 
 export const WalletAddress = styled(WalletName)`
     opacity: 0.5;
+    font-weight: normal;
 `
 
 export const WalletDisconnectButton = styled(Button)`

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import AldrinLogo from '@icons/Aldrin.svg'
 import StakeBtn from '@icons/stakeBtn.png'
 import { Button } from '../Button'
@@ -27,6 +27,10 @@ export const Header = () => {
 
   const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
   const [listingPopupOpen, setListingPopupOpen] = useState(false)
+
+  const { pathname } = useLocation()
+
+  const isTradingActive = pathname.includes('/chart') || pathname.includes('/swaps') 
 
   const feedbackLinks = (
     <>
@@ -67,21 +71,21 @@ export const Header = () => {
           {feedbackLinks}
         </LinksBlock>
         <MainLinksBlock>
-          <DropDown text="Trading">
-            <NavLink to="/chart">Chart</NavLink>
-            <NavLink to="/swaps">Swap</NavLink>
+          <DropDown text="Trading" isActive={isTradingActive}>
+            <NavLink to="/chart" activeClassName="selected">Chart</NavLink>
+            <NavLink to="/swaps" activeClassName="selected">Swap</NavLink>
           </DropDown>
-          <NavLink to="/rebalance">Rebalance</NavLink>
-          <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/rebalance" activeClassName="selected">Rebalance</NavLink>
+          <NavLink to="/dashboard" activeClassName="selected">Dashboard</NavLink>
           <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">Wallet</NavLink>
-          <NavLink new show="md" to="/pools">
+          <NavLink new show="md" to="/pools" activeClassName="selected">
             Pools
           </NavLink>
           <NavLink show="md" as="a" target="_blank" href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex">F.A.Q.</NavLink>
 
           <DropDown hide="lg" text="···">
             {feedbackLinks}
-            <NavLink hide="md" to="/pools">Liquidity Pools</NavLink>
+            <NavLink hide="md" activeClassName="selected" to="/pools">Liquidity Pools</NavLink>
             <NavLink hide="md" as="a" target="_blank" href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex">F.A.Q.</NavLink>
           </DropDown>
         </MainLinksBlock>

@@ -154,8 +154,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           result === 'success'
             ? 'Successfully staked.'
             : result === 'failed'
-            ? 'Staking failed, please try again later or contact us in telegram.'
-            : 'Staking cancelled.',
+              ? 'Staking failed, please try again later or contact us in telegram.'
+              : 'Staking cancelled.',
       })
 
       if (result === 'success') {
@@ -191,8 +191,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         result === 'success'
           ? 'Successfully unstaked.'
           : result === 'failed'
-          ? 'Unstaking failed, please try again later or contact us in telegram.'
-          : 'Unstaking cancelled.',
+            ? 'Unstaking failed, please try again later or contact us in telegram.'
+            : 'Unstaking cancelled.',
     })
 
     if (result === 'success') {
@@ -330,17 +330,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </RewardsBlock>
           </Cell>
         </Row>
-        {tokenData && (
-          <StakingForm
-            isUnstakeLocked={isUnstakeLocked}
-            unlockAvailableDate={unlockAvailableDate}
-            tokenData={tokenData}
-            totalStaked={totalStaked}
-            start={start}
-            end={end}
-            loading={loading}
-          />
-        )}
+
+        <StakingForm
+          isUnstakeLocked={isUnstakeLocked}
+          unlockAvailableDate={unlockAvailableDate}
+          tokenData={tokenData}
+          totalStaked={totalStaked}
+          start={start}
+          end={end}
+          loading={loading}
+        />
+
       </BlockContent>
       <RestakePopup
         open={isRestakePopupOpen}
