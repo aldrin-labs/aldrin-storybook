@@ -16,7 +16,7 @@ export const DropwodnItem = styled.div`
   color: #7284A0;
   font-family: Avenir Next Demi, sans-serif;
   font-size: 1.2rem;
-  display: flex;
+  display: block;
   align-items: center;
   width: 12rem;
   letter-spacing: 0.01rem;
@@ -27,24 +27,7 @@ export const DropwodnItem = styled.div`
   border-radius: 0.6rem;
   cursor: pointer;
   transition: 0.35s all;
-  padding-bottom: 0.2rem;
-`
-
-export const MenuDropdown = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  display: none;
-  z-index: 99;
-  background: rgba(0, 0, 0, 0.001);
-`
-
-export const MenuDropdownInner = styled.div`
-  margin-top: 4.9rem;
-  background: #0E1016;
-  padding: 1rem;
-  border: 0.2rem solid rgb(46, 46, 46);
+  padding: 0;
 `
 
 export const MenuDropdownLink = styled.div`

@@ -5,46 +5,111 @@ import { Theme } from '@material-ui/core'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
+import Info from '@icons/TooltipImg.svg'
 
 import Close from '@icons/closeIcon.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { InputWithCoins, InputWithTotal } from '../components'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PublicKey } from '@solana/web3.js'
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import {
+  DexTokensPrices,
+  PoolInfo,
+  PoolWithOperation,
+} from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { createBasket } from '@sb/dexUtils/pools/createBasket'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Button } from '../../Tables/index.styles'
+import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
 export const AddLiquidityPopup = ({
   theme,
   open,
+  poolsInfo,
   dexTokensPricesMap,
   selectedPool,
   allTokensData,
   close,
   refreshAllTokensData,
+  setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
+  poolsInfo: PoolInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
-  refreshAllTokensData: () => void
+  refreshAllTokensData: RefreshFunction
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+  const [poolBalances, refreshPoolBalances] = usePoolBalances({
+    pool: selectedPool,
+    connection,
+  })
+
+  const {
+    baseTokenAmount: poolAmountTokenA,
+    quoteTokenAmount: poolAmountTokenB,
+  } = poolBalances
+
+  // update entered value on every pool ratio change
+  useEffect(() => {
+    if (!selectedPool) return
+
+    const newQuote = stripDigitPlaces(
+      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
+      8
+    )
+
+    if (baseAmount && newQuote) {
+      setQuoteAmount(newQuote)
+    }
+  }, [poolBalances])
+
+  const [baseAmount, setBaseAmount] = useState<string | number>('')
+  const setBaseAmountWithQuote = (baseAmount: string | number) => {
+    const quoteAmount = stripDigitPlaces(
+      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
+      8
+    )
+
+    setBaseAmount(baseAmount)
+    if (poolAmountTokenA !== 0 && poolAmountTokenB !== 0) {
+      setQuoteAmount(quoteAmount)
+    }
+  }
+
+  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
+  const setQuoteAmountWithBase = (quoteAmount: string | number) => {
+    const baseAmount = stripDigitPlaces(
+      +quoteAmount * (poolAmountTokenA / poolAmountTokenB),
+      8
+    )
+
+    if (poolAmountTokenA !== 0 && poolAmountTokenB !== 0) {
+      setBaseAmount(baseAmount)
+    }
+    setQuoteAmount(quoteAmount)
+  }
 
   // if user has more than one token for one mint
   const [
@@ -56,26 +121,6 @@ export const AddLiquidityPopup = ({
     setQuoteTokenAddressFromSeveral,
   ] = useState<string>('')
 
-  const [baseAmount, setBaseAmount] = useState<string | number>('')
-  const setBaseAmountWithQuote = (baseAmount: string | number) => {
-    const quoteAmount = stripDigitPlaces(
-      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
-      8
-    )
-    setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
-  }
-
-  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
-  const setQuoteAmountWithBase = (quoteAmount: string | number) => {
-    const baseAmount = stripDigitPlaces(
-      +quoteAmount * (poolAmountTokenA / poolAmountTokenB),
-      8
-    )
-    setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
-  }
-
   const [
     isSelectorForSeveralBaseAddressesOpen,
     setIsSelectorForSeveralBaseAddressesOpen,
@@ -84,6 +129,17 @@ export const AddLiquidityPopup = ({
     isSelectorForSeveralQuoteAddressesOpen,
     setIsSelectorForSeveralQuoteAddressesOpen,
   ] = useState(false)
+
+  useEffect(() => {
+    const isSeveralBaseAddresses =
+      allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1
+
+    const isSeveralQuoteAddresses =
+      allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1
+
+    setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
+    setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
+  }, [])
 
   const [warningChecked, setWarningChecked] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
@@ -134,27 +190,10 @@ export const AddLiquidityPopup = ({
       ? maxQuoteAmount - +quoteAmount < 0.1
       : false
 
-  const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
-  const [poolAmountTokenA, poolAmountTokenB] = [
-    selectedPool.tvl.tokenA,
-    selectedPool.tvl.tokenB,
-  ]
-
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
     selectedPool,
-    poolTokenAmount,
+    poolTokenAmount: poolTokenRawAmount * 10 ** poolTokenDecimals,
   })
-
-  useEffect(() => {
-    const isSeveralBaseAddresses =
-      allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1
-
-    const isSeveralQuoteAddresses =
-      allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1
-
-    setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
-    setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
-  }, [])
 
   const isDisabled =
     !warningChecked ||
@@ -177,6 +216,9 @@ export const AddLiquidityPopup = ({
     )?.price || 0
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
+  const tvlUSD =
+    baseTokenPrice * selectedPool.tvl.tokenA +
+    quoteTokenPrice * selectedPool.tvl.tokenB
 
   return (
     <DialogWrapper
@@ -207,8 +249,20 @@ export const AddLiquidityPopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <Row justify={'space-between'} width={'100%'}>
-        <BoldHeader>Deposit Liquidity</BoldHeader>
-        <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+        <BoldHeader style={{ margin: '0 0 2rem 0' }}>
+          Deposit Liquidity
+        </BoldHeader>
+        <Row>
+          <ReloadTimer
+            margin={'0 1.5rem 0 0'}
+            callback={async () => {
+              if (!operationLoading) {
+                refreshPoolBalances()
+              }
+            }}
+          />
+          <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+        </Row>
       </Row>
       <RowContainer>
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
@@ -225,6 +279,7 @@ export const AddLiquidityPopup = ({
           symbol={baseSymbol}
           alreadyInPool={withdrawAmountTokenA}
           maxBalance={maxBaseAmount}
+          needAlreadyInPool={false}
         />
         <Row>
           <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
@@ -239,40 +294,67 @@ export const AddLiquidityPopup = ({
           symbol={quoteSymbol}
           alreadyInPool={withdrawAmountTokenB}
           maxBalance={maxQuoteAmount}
+          needAlreadyInPool={false}
         />
         <Line />
         <InputWithTotal theme={theme} value={total} />
       </RowContainer>
 
-      {/* TODO */}
-      {/* here should be tvl locked info, check design */}
-      <Row margin={'2rem 0 1rem 0'} justify={'space-between'}>
-        <Row direction={'column'} align={'start'}>
+      <Row
+        margin={'2rem 0 1rem 0'}
+        align={'flex-start'}
+        justify={'space-between'}
+      >
+        <Row direction={'column'} align={'flex-start'} justify="flex-start">
           <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-            Projected fee earnings based on the past 24h
+            Total Value Locked:
           </Text>
           <Row>
-            <Text
-              fontSize={'2rem'}
-              color={'#A5E898'}
-              fontFamily={'Avenir Next Demi'}
-            >
-              ${stripDigitPlaces(total * (selectedPool.apy24h / 100), 2)}
-              &nbsp;
+            <Text fontSize={'1.5rem'}>
+              {formatNumberToUSFormat(
+                stripDigitPlaces(selectedPool.tvl.tokenA, 2)
+              )}{' '}
+              {getTokenNameByMintAddress(selectedPool.tokenA)} /{' '}
+              {formatNumberToUSFormat(
+                stripDigitPlaces(selectedPool.tvl.tokenB, 2)
+              )}{' '}
+              {getTokenNameByMintAddress(selectedPool.tokenB)}
             </Text>
-            <Text fontSize={'2rem'} fontFamily={'Avenir Next Demi'}>
-              / 24h
+            <Text
+              fontSize={'1.5rem'}
+              color={'#53DF11'}
+              fontFamily={'Avenir Next Demi'}
+              style={{ marginLeft: '1rem' }}
+            >
+              ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
             </Text>
           </Row>
         </Row>
-        <Row direction={'column'}>
-          <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-            APY (24h)
-          </Text>
+        <Row direction={'column'} align="flex-end">
+          <Row wrap="nowrap" margin={'0 0 1rem 0'}>
+            <Text style={{ whiteSpace: 'nowrap' }} fontSize={'1.4rem'}>
+              APY (24h){' '}
+            </Text>{' '}
+            <DarkTooltip
+              title={
+                'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h not taking into account the reward for farming.'
+              }
+            >
+              <div>
+                <SvgIcon
+                  src={Info}
+                  width={'1.5rem'}
+                  height={'auto'}
+                  style={{ marginLeft: '1rem' }}
+                />
+              </div>
+            </DarkTooltip>
+          </Row>
+
           <Row>
             <Text
-              fontSize={'2rem'}
-              color={'#A5E898'}
+              fontSize={'1.5rem'}
+              color={'#53DF11'}
               fontFamily={'Avenir Next Demi'}
             >
               {stripDigitPlaces(selectedPool.apy24h, 6)}%
@@ -290,16 +372,16 @@ export const AddLiquidityPopup = ({
               isNeedToLeftSomeSOL
                 ? 'Sorry, but you need to left some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
                 : baseAmount > maxBaseAmount
-                ? `You entered more token A amount than you have.`
+                ? `You entered more token ${baseSymbol} amount than you have.`
                 : quoteAmount > maxQuoteAmount
-                ? `You entered more token B amount than you have.`
+                ? `You entered more ${quoteSymbol} amount than you have.`
                 : ''
             }
             blockHeight={'8rem'}
           />
         </RowContainer>
       )}
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin={'2rem 0 0 0'}>
         <Row
           width={'60%'}
           justify="space-between"
@@ -327,7 +409,7 @@ export const AddLiquidityPopup = ({
             </WhiteText>
           </label>
         </Row>
-        <BlueButton
+        <Button
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident={true}
@@ -363,7 +445,14 @@ export const AddLiquidityPopup = ({
             }
 
             console.log('userPoolTokenAccount', userPoolTokenAccount)
-            await setOperationLoading(true)
+
+            // loader in popup button
+            setOperationLoading(true)
+            // loader in table button
+            setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'deposit',
+            })
 
             const result = await createBasket({
               wallet,
@@ -379,25 +468,43 @@ export const AddLiquidityPopup = ({
               transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
             })
 
-            await setOperationLoading(false)
+            setOperationLoading(false)
 
-            await notify({
+            notify({
               type: result === 'success' ? 'success' : 'error',
               message:
                 result === 'success'
                   ? 'Deposit successful'
                   : result === 'failed'
-                  ? 'Deposit failed, please try again later or contact us in telegram.'
+                  ? 'Deposit failed, please try again or contact us in telegram.'
                   : 'Deposit cancelled',
             })
 
-            await setTimeout(() => refreshAllTokensData(), 7500)
+            refreshPoolBalances()
 
-            await close()
+            const clearPoolWaitingForUpdate = () =>
+              setPoolWaitingForUpdateAfterOperation({
+                pool: '',
+                operation: '',
+              })
+
+            if (result === 'success') {
+              setTimeout(async () => {
+                refreshAllTokensData()
+                clearPoolWaitingForUpdate()
+              }, 7500)
+              // end button loader
+
+              setTimeout(() => refreshAllTokensData(), 15000)
+            } else {
+              clearPoolWaitingForUpdate()
+            }
+
+            close()
           }}
         >
           Deposit liquidity
-        </BlueButton>
+        </Button>
       </RowContainer>
       <SelectSeveralAddressesPopup
         theme={theme}

@@ -21,7 +21,7 @@ import {
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL } from '@sb/dexUtils/utils'
 import { notify } from '@sb/dexUtils/notifications'
 
 import { Loading } from '@sb/components/Loading/Loading'
@@ -220,7 +220,7 @@ export const Balances = ({
   }
 
   const [baseBalances, quoteBalances] = balances
-  const isCCAIWallet = providerUrl === CCAIProviderURL
+  const isCCAIWallet = providerUrl === RINProviderURL
   const showSettle = !wallet.connected || !wallet.autoApprove
   const quote = pair[1].toUpperCase()
   const isQuoteUSDT =

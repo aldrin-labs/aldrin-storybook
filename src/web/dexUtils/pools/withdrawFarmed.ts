@@ -3,21 +3,21 @@ import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import {
+  Account,
   Connection,
+  Keypair,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
 
-import { notify } from '../notifications'
-import { NUMBER_OF_RETRIES } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
-import { FarmingTicket } from './endFarming'
+import { FarmingTicket } from '../common/types'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -48,11 +48,49 @@ export const withdrawFarmed = async ({
 
   const createdTokensMap = new Map()
   const commonTransaction = new Transaction()
-  const commonSigners = []
+  const commonSigners: (Account | Keypair)[] = []
+
+  let tx = null
+
+  const sendPartOfTransactions = async () => {
+    try {
+      tx = await sendTransaction({
+        wallet,
+        connection,
+        transaction: commonTransaction,
+        signers: commonSigners,
+        focusPopup: true,
+      })
+
+      if (!tx) {
+        return 'failed'
+      }
+    } catch (e) {
+      console.log('end farming catch error', e)
+
+      if (e.message.includes('cancelled')) {
+        return 'cancelled'
+      }
+    }
+
+    return 'success'
+  }
 
   // check farmed for every ticket and withdrawFarmed for every farming state
   for (let ticketData of farmingTickets) {
-    for (let farmingState of pool.farming) {
+    for (let i = 0; i < pool.farming.length; i++) {
+      const farmingState = pool.farming[i]
+
+      // find amount to claim for this farming state in tickets amounts
+      const amountToClaim =
+        ticketData.amountsToClaim.find(
+          (amountToClaim) =>
+            amountToClaim.farmingState === farmingState.farmingState
+        )?.amount || 0
+
+      // check amount for every farming state
+      if (amountToClaim === 0) continue
+
       const farmingTokenAccountAddress = allTokensDataMap.get(
         farmingState.farmingTokenMint
       )?.address
@@ -110,40 +148,22 @@ export const withdrawFarmed = async ({
       })
 
       commonTransaction.add(endFarmingTransaction)
-    }
-  }
 
-  let counter = 0
-  while (counter < NUMBER_OF_RETRIES) {
-    try {
-      if (counter > 0) {
-        await notify({
-          type: 'error',
-          message: 'Unstaking failed. Please confirm transaction again.',
-        })
-      }
-
-      const tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction: commonTransaction,
-        signers: commonSigners,
-      })
-
-      if (tx) {
-        return 'success'
-      } else {
-        counter++
-      }
-    } catch (e) {
-      console.log('end farming catch error', e)
-      counter++
-
-      if (e.message.includes('cancelled')) {
-        return 'cancelled'
+      if (commonTransaction.instructions.length > 5) {
+        const result = await sendPartOfTransactions()
+        if (result !== 'success') {
+          return result
+        }
       }
     }
   }
 
-  return 'failed'
+  if (commonTransaction.instructions.length > 0) {
+    const result = await sendPartOfTransactions()
+    if (result !== 'success') {
+      return result
+    }
+  }
+
+  return 'success'
 }

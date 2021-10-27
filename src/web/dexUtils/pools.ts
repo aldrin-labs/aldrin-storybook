@@ -34,7 +34,6 @@ const OWNER: PublicKey = new PublicKey(
 const ownerKey = OWNER.toString()
 
 const SLIPPAGE_PERCENTAGE = 5
-export const NUMBER_OF_RETRIES = 5
 
 // Pool fees
 const TRADING_FEE_NUMERATOR = 25
@@ -1073,6 +1072,8 @@ export const calculateWithdrawAmount = ({
     supply,
     tvl: { tokenA: poolTokenAmountA, tokenB: poolTokenAmountB },
   } = selectedPool
+
+  if (supply === 0) return [0, 0]
 
   const withdrawAmountTokenA = (poolTokenAmountA * poolTokenAmount) / supply
   const withdrawAmountTokenB = (poolTokenAmountB * poolTokenAmount) / supply

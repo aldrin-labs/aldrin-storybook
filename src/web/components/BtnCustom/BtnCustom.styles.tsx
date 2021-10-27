@@ -33,11 +33,12 @@ export const BtnCustom = styled(
   border-color: ${(props) =>
     props.borderColor || props.btnColor || props.color || '#333'};
   color: ${(props) => props.btnColor || props.color || '#333'};
+  font-family: ${props => props.fontFamily || 'Avenir Next'};
   font-size: ${(props) => props.fontSize || '1rem'};
-  font-weight: ${(props) => props.fontWeight || 700};
+  font-weight: ${(props) => props.fontWeight || 600};
   margin: ${(props) => props.margin || '0px'};
   padding: ${(props) => props.padding || '3px 0px'};
-  letter-spacing: ${(props) => props.letterSpacing || '0.1rem'};
+  letter-spacing: ${(props) => props.letterSpacing || '0.01rem'};
   background: ${(props) => props.backgroundColor || 'transparent'};
   min-width: ${(props) => !props.needMinWidth && 'auto'};
   text-transform: ${(props) => props.textTransform || 'uppercase'};

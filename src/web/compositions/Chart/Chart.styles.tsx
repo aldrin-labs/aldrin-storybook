@@ -3,7 +3,8 @@ import styled, { createGlobalStyle } from 'styled-components'
 import { CardTitle } from '@sb/components/ChartCardHeader/styles'
 import { Card, Grid, Button, Theme } from '@material-ui/core'
 import { CSS_CONFIG } from '@sb/config/cssConfig'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import StakeBtn from '@icons/stakeBtn.png'
+import { Link } from 'react-router-dom'
 
 export const MainContainer = styled.div`
   height: 100%;
@@ -562,4 +563,22 @@ export const ChartAndOrderbookContainer = styled(Grid)`
     flex-direction: ${(props) =>
       props.terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
   }
+`
+export const RoundLink = styled(Link)`
+  background-image: url(${StakeBtn});
+  border-radius: 3rem;
+  height: 3.5rem;
+  width: 13rem;
+  margin: auto 1.5rem;
+  font-size: 1.2rem;
+  font-family: Avenir Next Medium;
+  color: #fff;
+  border: none;
+  background-size: cover;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `

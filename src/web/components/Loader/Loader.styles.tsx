@@ -10,6 +10,10 @@ export const AnimatedImage = styled.img`
 
   @keyframes rotate {
     0% {
+      transform: rotate(0deg);
+    }
+
+    25% {
       transform: rotate(60deg);
     }
 
@@ -17,8 +21,12 @@ export const AnimatedImage = styled.img`
       transform: rotate(0deg);
     }
 
+    75% {
+      transform: rotate(-60deg);
+    }
+
     100% {
-      transform: rotate(60deg);
+      transform: rotate(0deg);
     }
   }
 `

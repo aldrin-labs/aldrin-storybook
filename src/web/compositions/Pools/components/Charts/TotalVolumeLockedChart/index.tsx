@@ -22,6 +22,8 @@ import {
 import { createTotalVolumeLockedChart } from '../utils'
 import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTotalVolumeLockedHistory'
 import { Line } from '../../Popups/index.styles'
+import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
+import { msToNextHour } from '@core/utils/dateUtils'
 
 const TotalVolumeLockedChart = ({
   theme,
@@ -42,7 +44,7 @@ const TotalVolumeLockedChart = ({
 
     // @ts-ignore - we set it in create chart function above
     return () => window[`TotalVolumeLockedChart-${id}`].destroy()
-  }, [id])
+  }, [id, JSON.stringify(data)])
 
   return (
     <>
@@ -56,6 +58,11 @@ const TotalVolumeLockedChart = ({
             {title}
           </WhiteTitle>
           <Line />
+          <ReloadTimerTillUpdate
+            duration={3600}
+            margin={'0 0 0 2rem'}
+            getSecondsTillNextUpdate={() => msToNextHour() / 1000}
+          />
         </RowContainer>
       </HeaderContainer>
       <ChartContainer>
@@ -75,5 +82,6 @@ export default compose(
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
+    pollInterval: 60000,
   })
 )(TotalVolumeLockedChart)

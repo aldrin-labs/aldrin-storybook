@@ -2,6 +2,7 @@ import {
   Account,
   AccountInfo,
   clusterApiUrl,
+  Connection,
   PublicKey,
   Connection,
 } from '@solana/web3.js'
@@ -52,7 +53,7 @@ export const ConnectionProvider: React.FC = ({ children }) => {
   )
 }
 
-export function useConnection(): MultiEndpointsConnection {
+export function useConnection(): Connection {
   return useContext(ConnectionContext).connection
 }
 

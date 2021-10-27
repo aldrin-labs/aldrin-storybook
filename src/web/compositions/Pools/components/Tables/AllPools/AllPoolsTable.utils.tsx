@@ -1,20 +1,19 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Theme } from '@sb/types/materialUI'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import {
+  DexTokensPrices,
+  FeesEarned,
+  PoolInfo,
+  PoolWithOperation,
+} from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { SvgIcon } from '@sb/components'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { TokenIconsContainer } from '../components'
 import {
-  GreenButton,
   RowDataTdText,
   RowDataTdTopText,
   TextColumnContainer,
@@ -29,105 +28,15 @@ import ForbiddenIcon from '@icons/fobiddenIcon.svg'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { UserLiquidityDetails } from '../UserLiquidity/components/UserLiquidityDetails'
+import { TablesDetails } from '../components/TablesDetails'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
-
-export const mock: PoolInfo[] = [
-  {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RIN_USDC',
-    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tvl: {
-      tokenA: 45,
-      tokenB: 2,
-    },
-    apy24h: 900, //%
-    supply: 120000,
-    liquidity: 9835570,
-    staked: 50,
-    locked: true,
-    executed: false,
-    farming: [],
-  },
-  {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RI8888N_U8SDC',
-    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLoxFcMd6z8ddCk5wp',
-    tvl: {
-      tokenA: 44,
-      tokenB: 765,
-    },
-    apy24h: 900, //%
-    supply: 120000,
-    liquidity: 0,
-    staked: 0,
-
-    locked: false,
-    executed: true,
-    farming: [],
-  },
-  {
-    name:
-      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp_EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    parsedName: 'RIN_USDC',
-    tokenA: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-    tokenB: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-    swapToken: '55',
-    poolTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYkDLCxFcMd6z8ddCk5wp',
-    tvl: {
-      tokenA: 44,
-      tokenB: 765,
-    },
-    apy24h: 900, //%
-    supply: 120000,
-    liquidity: 935570,
-    locked: false,
-    executed: false,
-    staked: 50,
-    farming: [],
-  },
-  {
-    name:
-      'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m_8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
-    parsedName: 'PTA_PTB',
-    tokenA: 'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m',
-    tokenB: '8wxoc2AnVsT6aLXDyA2G9PKfpx8mVT1Q5pPgvQLpCEVM',
-    swapToken: 'WsqPnvaF9jhFuJ7TSiQwdpYo9hSvvQGoJN4N8SV67cq',
-    poolTokenMint: '6U4vmQfbSd2Djvf8w18BJiNYXsGnpGrhFZz4DpQ4Cj3U',
-    tvl: {
-      tokenA: 1099,
-      tokenB: 4945509,
-    },
-    apy24h: 900, //%
-    supply: 1099002507,
-    liquidity: 935570,
-    staked: 60,
-    locked: false,
-    executed: true,
-    farming: [
-      {
-        farmingState: 'Hg4hHQ2QZjS7bAGHXg9Kijvyw2mxDuBuqRFLajfPBTcr',
-        farmingSnapshots: 'CieRc6NeDoE3cnTVqsThrHdUkCP5LGeT2ibsuEJv25ri',
-        farmingTokenVault: 'GsDrPKsNJRSEBChMFA6yuw2md41tLErcD4ymJ1PMqcFo',
-        periodLength: 3600 * 24 * 7,
-        tokensPerPeriod: 30,
-        tokensTotal: 1000,
-        tokensUnlocked: 500,
-        vestingPeriod: 10,
-      },
-    ],
-  },
-]
+import { Link } from 'react-router-dom'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -164,7 +73,11 @@ export const allPoolsTableColumnsNames = [
       <>
         <span>APY</span>{' '}
         <span style={{ color: '#96999C', padding: '0 0 0 0.5rem' }}> 24h</span>
-        <DarkTooltip title={'apy'}>
+        <DarkTooltip
+          title={
+            'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h not taking into account the reward for farming.'
+          }
+        >
           <div>
             <SvgIcon
               src={Info}
@@ -182,7 +95,11 @@ export const allPoolsTableColumnsNames = [
     label: (
       <>
         Farming
-        <DarkTooltip title={'farming'}>
+        <DarkTooltip
+          title={
+            'You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit into the pool), receiving a reward in tokens allocated by the creator of the pool. The amount of reward specified in the pool info is the amount you will receive daily for each $1,000 deposited into the pool.'
+          }
+        >
           <div>
             <SvgIcon
               src={Info}
@@ -206,14 +123,17 @@ export const combineAllPoolsData = ({
   wallet,
   poolsInfo,
   searchValue,
+  poolWaitingForUpdateAfterOperation,
   dexTokensPricesMap,
   feesPerPoolMap,
   expandedRows,
   allTokensDataMap,
   farmingTicketsMap,
+  tradingVolumesMap,
   earnedFeesInPoolForUserMap,
   selectPool,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
+  setPoolWaitingForUpdateAfterOperation,
   setIsAddLiquidityPopupOpen,
   setIsWithdrawalPopupOpen,
   setIsStakePopupOpen,
@@ -223,59 +143,89 @@ export const combineAllPoolsData = ({
   wallet: WalletAdapter
   poolsInfo: PoolInfo[]
   searchValue: string
+  poolWaitingForUpdateAfterOperation: PoolWithOperation
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  feesPerPoolMap: Map<string, number>
+  feesPerPoolMap: Map<string, FeesEarned>
   expandedRows: string[]
   allTokensDataMap: Map<string, TokenInfo>
   farmingTicketsMap: Map<string, FarmingTicket[]>
-  earnedFeesInPoolForUserMap: Map<string, number>
+  tradingVolumesMap: Map<string, { weekly: number; daily: number }>
+  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: () => void
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
 }) => {
   const processedAllPoolsData = poolsInfo
-    // const processedAllPoolsData = mock
-    .filter((el) =>
+    .filter((pool) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
-        symbol: el.parsedName,
+        symbol: `${getTokenNameByMintAddress(
+          pool.tokenA
+        )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
-    .map((el) => {
-      const baseSymbol = getTokenNameByMintAddress(el.tokenA)
-      const quoteSymbol = getTokenNameByMintAddress(el.tokenB)
+    .map((pool) => {
+      const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
+      const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
-      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
-      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
+      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
+
+      const feesEarnedByPool = feesPerPoolMap.get(pool.swapToken) || {
+        totalBaseTokenFee: 0,
+        totalQuoteTokenFee: 0,
+      }
+
+      const feesUSDByPool =
+        feesEarnedByPool?.totalBaseTokenFee * baseTokenPrice +
+        feesEarnedByPool?.totalQuoteTokenFee * quoteTokenPrice
+
+      const tradingVolumes = tradingVolumesMap.get(pool.swapToken) || {
+        weekly: 0,
+        daily: 0,
+      }
+      const apy = pool.apy24h || 0
 
       const tvlUSD =
-        baseTokenPrice * el.tvl.tokenA + quoteTokenPrice * el.tvl.tokenB
+        baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
 
-      const fees = feesPerPoolMap.get(el.swapToken) || 0
-      const apy = el.apy24h || 0
-      const farmingState = el.farming && el.farming[0]
-      const dailyFarmingValue = farmingState
-        ? farmingState.tokensPerPeriod *
-          (dayDuration / farmingState.periodLength)
-        : 0
+      const poolTokenPrice = calculatePoolTokenPrice({
+        pool,
+        dexTokensPricesMap,
+      })
 
-      const dailyFarmingValuePerThousandDollarsLiquidity = tvlUSD
-        ? dailyFarmingValue / (tvlUSD / 1000)
-        : 0
+      const totalStakedLpTokensUSD =
+        pool.lpTokenFreezeVaultBalance * poolTokenPrice
+
+      const isPoolWithFarming = pool.farming && pool.farming.length > 0
+      const openFarmings = isPoolWithFarming
+        ? filterOpenFarmingStates(pool.farming)
+        : []
 
       return {
-        id: `${el.name}${el.tvl}${el.poolTokenMint}`,
+        id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
         pool: {
           render: (
             <Row
               justify="flex-start"
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
-              <TokenIconsContainer tokenA={el.tokenA} tokenB={el.tokenB} />{' '}
-              {el.locked ? (
+              <Link
+                to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
+                style={{ textDecoration: 'none' }}
+              >
+                <TokenIconsContainer
+                  needHover={true}
+                  tokenA={pool.tokenA}
+                  tokenB={pool.tokenB}
+                />
+              </Link>
+              {/* TODO: show locked liquidity depending on backend data, not for all pools */}
+              {true ? (
                 <DarkTooltip title={'Founders liquidity locked.'}>
                   <div>
                     <SvgIcon
@@ -286,7 +236,7 @@ export const combineAllPoolsData = ({
                     />
                   </div>
                 </DarkTooltip>
-              ) : el.executed ? (
+              ) : pool.executed ? (
                 <DarkTooltip
                   title={
                     'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
@@ -304,71 +254,80 @@ export const combineAllPoolsData = ({
               ) : null}
             </Row>
           ),
+          contentToSort: `${baseSymbol}${quoteSymbol}`,
         },
         tvl: {
           render: (
             <TextColumnContainer>
               <RowDataTdTopText theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+                ${stripByAmountAndFormat(tvlUSD)}
               </RowDataTdTopText>
               <RowDataTdText theme={theme} color={theme.palette.grey.new}>
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenA, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenA)} /{' '}
-                {formatNumberToUSFormat(stripDigitPlaces(el.tvl.tokenB, 2))}{' '}
-                {getTokenNameByMintAddress(el.tokenB)}
+                {stripByAmountAndFormat(pool.tvl.tokenA)}{' '}
+                {getTokenNameByMintAddress(pool.tokenA)} /{' '}
+                {stripByAmountAndFormat(pool.tvl.tokenB)}{' '}
+                {getTokenNameByMintAddress(pool.tokenB)}
               </RowDataTdText>
             </TextColumnContainer>
           ),
           showOnMobile: false,
+          contentToSort: tvlUSD,
         },
         vol24h: {
           render: (
             <RowDataTdText theme={theme}>
-              ${formatNumberToUSFormat(stripDigitPlaces(2000000, 2))}
+              ${stripByAmountAndFormat(tradingVolumes.daily)}
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
-          contentToSort: '',
+          contentToSort: tradingVolumes.daily,
           showOnMobile: false,
         },
 
         vol7d: {
           render: (
             <RowDataTdText theme={theme}>
-              ${formatNumberToUSFormat(stripDigitPlaces(2000000, 2))}
+              ${stripByAmountAndFormat(tradingVolumes.weekly)}
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
-          contentToSort: '',
+          contentToSort: tradingVolumes.weekly,
           showOnMobile: false,
         },
         fees: {
           render: (
             <RowDataTdText theme={theme}>
-              ${stripDigitPlaces(fees, 6)}
+              ${stripByAmountAndFormat(feesUSDByPool)}
             </RowDataTdText>
           ),
+          contentToSort: feesUSDByPool,
         },
         apy: {
           render: (
             <RowDataTdText
-              color={'#A5E898'}
+              color={'#53DF11'}
               fontFamily="Avenir Next Medium"
               theme={theme}
             >
-              {stripDigitPlaces(apy, 6)}%
+              {stripByAmountAndFormat(apy)}%
             </RowDataTdText>
           ),
+          contentToSort: apy,
         },
         farming: {
-          render: farmingState ? (
+          render: isPoolWithFarming ? (
             <RowContainer justify="flex-start" theme={theme}>
               <Row margin="0 1rem 0 0" justify="flex-start">
-                <TokenIcon
-                  mint={farmingState.farmingTokenMint}
-                  width={'3rem'}
-                  emojiIfNoLogo={false}
-                />
+                {/* every farming token mint logo, TODO: place them nicely, not one by one */}
+                {openFarmings.map((farmingState) => {
+                  return (
+                    <TokenIcon
+                      mint={farmingState.farmingTokenMint}
+                      width={'3rem'}
+                      emojiIfNoLogo={false}
+                    />
+                  )
+                })}
               </Row>
               <Row align="flex-start" direction="column">
                 <RowDataTdText
@@ -376,25 +335,65 @@ export const combineAllPoolsData = ({
                   style={{ marginBottom: '1rem' }}
                   theme={theme}
                 >
-                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                  {openFarmings.map((farmingState, i, arr) => {
+                    return `${getTokenNameByMintAddress(
+                      farmingState.farmingTokenMint
+                    )} ${i !== arr.length - 1 ? 'X ' : ''}`
+                  })}
                 </RowDataTdText>
-                <RowDataTdText>
-                  <span style={{ color: '#A5E898' }}>
-                    {formatNumberToUSFormat(
-                      stripDigitPlaces(
-                        dailyFarmingValuePerThousandDollarsLiquidity,
-                        2
-                      )
-                    )}
-                  </span>{' '}
-                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
-                  Day for each $<span style={{ color: '#A5E898' }}>1000</span>
-                </RowDataTdText>
+                {openFarmings.length === 0 ? (
+                  <RowDataTdText>
+                    <span style={{ color: '#53DF11' }}>Ended</span>
+                  </RowDataTdText>
+                ) : (
+                  openFarmings.map((farmingState, i, arr) => {
+                    const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                      { farmingState, totalStakedLpTokensUSD }
+                    )
+
+                    console.log({
+                      pool,
+                      farmingState,
+                      totalStakedLpTokensUSD,
+                    })
+
+                    return (
+                      <RowDataTdText>
+                        <span style={{ color: '#53DF11' }}>
+                          {stripByAmountAndFormat(
+                            farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                          )}
+                        </span>{' '}
+                        {getTokenNameByMintAddress(
+                          farmingState.farmingTokenMint
+                        )}
+                        {/* + between every farming state token to be farmed, except last. for last - per day */}
+                        {i !== arr.length - 1 ? <span> + </span> : null}
+                        {i === arr.length - 1 ? <span> / Day</span> : null}
+                      </RowDataTdText>
+                    )
+                  })
+                )}
+                {openFarmings.length > 0 && (
+                  <RowDataTdText>
+                    {' '}
+                    for each <span style={{ color: '#53DF11' }}>$1000</span>
+                  </RowDataTdText>
+                )}
               </Row>
             </RowContainer>
           ) : (
             '-'
           ),
+          contentToSort: openFarmings.reduce((acc, farmingState) => {
+            return (
+              acc +
+              getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
+                farmingState,
+                totalStakedLpTokensUSD,
+              })
+            )
+          }, 0),
         },
         details: {
           render: (
@@ -412,7 +411,7 @@ export const combineAllPoolsData = ({
                 height="auto"
                 src={
                   expandedRows.includes(
-                    `${el.name}${el.tvl}${el.poolTokenMint}`
+                    `${pool.name}${pool.tvl}${pool.poolTokenMint}`
                   )
                     ? ArrowToTop
                     : ArrowToBottom
@@ -425,19 +424,27 @@ export const combineAllPoolsData = ({
           {
             row: {
               render: (
-                <UserLiquidityDetails
+                <TablesDetails
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
                   setIsStakePopupOpen={setIsStakePopupOpen}
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-                  refreshAllTokensData={refreshAllTokensData}
+                  setPoolWaitingForUpdateAfterOperation={
+                    setPoolWaitingForUpdateAfterOperation
+                  }
+                  refreshTokensWithFarmingTickets={
+                    refreshTokensWithFarmingTickets
+                  }
                   selectPool={selectPool}
+                  poolWaitingForUpdateAfterOperation={
+                    poolWaitingForUpdateAfterOperation
+                  }
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
                   farmingTicketsMap={farmingTicketsMap}
                   dexTokensPricesMap={dexTokensPricesMap}
                   allTokensDataMap={allTokensDataMap}
                   theme={theme}
-                  pool={el}
+                  pool={pool}
                 />
               ),
               colspan: 8,
@@ -447,5 +454,5 @@ export const combineAllPoolsData = ({
       }
     })
 
-  return processedAllPoolsData.filter((el) => !!el)
+  return processedAllPoolsData.filter((pool) => !!pool)
 }

@@ -8,12 +8,11 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import { notify } from '../notifications'
 import {
   createSOLAccountAndClose,
   getMaxWithdrawAmount,
-  NUMBER_OF_RETRIES,
 } from '../pools'
+
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
@@ -120,77 +119,57 @@ export async function redeemBasket({
     transactionAfterWithdraw.add(closeAccountTransaction)
   }
 
-  let counter = 0
   let commonTransaction = new Transaction()
 
-  while (counter < NUMBER_OF_RETRIES) {
-    try {
-      if (counter > 0) {
-        await notify({
-          type: 'error',
-          message:
-            'Withdraw failed, trying with bigger slippage. Please confirm transaction again.',
-        })
+  try {
+    commonTransaction.add(transactionBeforeWithdraw)
+
+    const withdrawTransaction = await program.instruction.redeemBasket(
+      new BN(userPoolTokenAmount),
+      new BN(baseTokenAmountToWithdraw),
+      new BN(quoteTokenAmountToWithdraw),
+      {
+        accounts: {
+          pool: poolPublicKey,
+          poolMint: poolMint,
+          baseTokenVault,
+          quoteTokenVault,
+          poolSigner: vaultSigner,
+          userPoolTokenAccount,
+          userBaseTokenAccount,
+          userQuoteTokenAccount,
+          walletAuthority: wallet.publicKey,
+          userSolAccount: wallet.publicKey,
+          // lpTicket: ticketData.lpTicketAddress,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          feeBaseAccount,
+          feeQuoteAccount,
+          clock: SYSVAR_CLOCK_PUBKEY,
+        },
       }
+    )
 
-      commonTransaction.add(transactionBeforeWithdraw)
+    commonTransaction.add(withdrawTransaction)
 
-      const withdrawTransaction = await program.instruction.redeemBasket(
-        new BN(userPoolTokenAmount),
-        new BN(baseTokenAmountToWithdraw),
-        new BN(quoteTokenAmountToWithdraw),
-        {
-          accounts: {
-            pool: poolPublicKey,
-            poolMint: poolMint,
-            baseTokenVault,
-            quoteTokenVault,
-            poolSigner: vaultSigner,
-            userPoolTokenAccount,
-            userBaseTokenAccount,
-            userQuoteTokenAccount,
-            walletAuthority: wallet.publicKey,
-            userSolAccount: wallet.publicKey,
-            // lpTicket: ticketData.lpTicketAddress,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            feeBaseAccount,
-            feeQuoteAccount,
-            clock: SYSVAR_CLOCK_PUBKEY,
-          },
-        }
-      )
+    // add close sol account if needed
+    commonTransaction.add(transactionAfterWithdraw)
 
-      commonTransaction.add(withdrawTransaction)
+    const tx = await sendTransaction({
+      wallet,
+      connection,
+      transaction: commonTransaction,
+      signers: commonSigners,
+      focusPopup: true,
+    })
 
-      // add close sol account if needed
-      commonTransaction.add(transactionAfterWithdraw)
+    if (tx) {
+      return 'success'
+    }
+  } catch (e) {
+    console.log('withdraw catch error', e)
 
-      const tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction: commonTransaction,
-        signers: commonSigners,
-      })
-
-      if (tx) {
-        return 'success'
-      } else {
-        commonTransaction = new Transaction()
-        counter++
-        baseTokenAmountToWithdraw *= 0.99
-        quoteTokenAmountToWithdraw *= 0.99
-      }
-    } catch (e) {
-      console.log('withdraw catch error', e)
-
-      commonTransaction = new Transaction()
-      counter++
-      baseTokenAmountToWithdraw *= 0.99
-      quoteTokenAmountToWithdraw *= 0.99
-
-      if (e.message.includes('cancelled')) {
-        return 'cancelled'
-      }
+    if (e.message.includes('cancelled')) {
+      return 'cancelled'
     }
   }
 

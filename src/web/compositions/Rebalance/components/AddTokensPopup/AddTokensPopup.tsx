@@ -167,7 +167,7 @@ export default function TokenDialog({
             <WhiteText
               theme={theme}
               style={{
-                color: isBalanceLowerCost ? '#F2ABB1' : '#A5E898',
+                color: isBalanceLowerCost ? '#F2ABB1' : '#53DF11',
               }}
             >
               {formatNumberToUSFormat(stripDigitPlaces(SOLBalance, 8))} SOL

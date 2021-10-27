@@ -57,7 +57,7 @@ export const SvgMode = styled(({ isActive, ...rest }) => (
     {...rest}
     width="2rem"
     height="2rem"
-    styledComponentsAdditionalStyle={{
+    style={{
       padding: '0.2rem',
       marginRight: '0.5rem',
       borderRadius: '.2rem',

@@ -22,8 +22,19 @@ export interface WalletAdapter {
   ) => Promise<Transaction[]>
   connect: () => any
   disconnect: () => any
-  on(event: string, fn: () => void): this
+  on<T>(event: string, fn: () => void): this
 }
+
+export interface TokenInfo {
+  symbol: string
+  amount: number
+  decimals: number
+  mint: string
+  address: string
+}
+
+export type RefreshFunction = () => void
+export type AsyncRefreshFunction = () => Promise<boolean>
 
 export interface ValidateOrderParams {
   price: number

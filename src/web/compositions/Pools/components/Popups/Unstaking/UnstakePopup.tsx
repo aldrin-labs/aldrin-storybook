@@ -7,46 +7,47 @@ import { BoldHeader, StyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
 import SvgIcon from '@sb/components/SvgIcon'
-
 import Close from '@icons/closeIcon.svg'
 
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
+import { Button } from '../../Tables/index.styles'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
 
 import { endFarming } from '@sb/dexUtils/pools/endFarming'
 import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
 export const UnstakePopup = ({
   theme,
   open,
   allTokensData,
-  pool,
+  selectedPool,
   close,
-  refreshAllTokensData,
+  refreshTokensWithFarmingTickets,
+  setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
   allTokensData: any
-  pool: PoolInfo
+  selectedPool: PoolInfo
   close: () => void
-  refreshAllTokensData: () => void
+  refreshTokensWithFarmingTickets: RefreshFunction
+  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
   const [operationLoading, setOperationLoading] = useState(false)
 
-  const {
-    amount: maxPoolTokenAmount,
-    address: userPoolTokenAccount,
-    decimals: poolTokenDecimals,
-  } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
+  const { address: userPoolTokenAccount } = getTokenDataByMint(
+    allTokensData,
+    selectedPool.poolTokenMint
+  )
 
-  const farmingState = pool.farming[0]
+  const farmingState = selectedPool.farming[0]
   if (!farmingState) return null
 
   return (
@@ -72,19 +73,25 @@ export const UnstakePopup = ({
       </RowContainer>
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
-        <BlueButton
+        <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={false}
           isUserConfident={true}
           theme={theme}
           showLoader={operationLoading}
           onClick={async () => {
-            await setOperationLoading(true)
+            // loader in popup button
+            setOperationLoading(true)
+            // loader in table button
+            setPoolWaitingForUpdateAfterOperation({
+              pool: selectedPool.swapToken,
+              operation: 'unstake',
+            })
 
             const result = await endFarming({
               wallet,
               connection,
-              poolPublicKey: new PublicKey(pool.swapToken),
+              poolPublicKey: new PublicKey(selectedPool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               farmingStatePublicKey: new PublicKey(farmingState.farmingState),
               snapshotQueuePublicKey: new PublicKey(
@@ -92,9 +99,9 @@ export const UnstakePopup = ({
               ),
             })
 
-            await setOperationLoading(false)
+            setOperationLoading(false)
 
-            await notify({
+            notify({
               type: result === 'success' ? 'success' : 'error',
               message:
                 result === 'success'
@@ -104,13 +111,27 @@ export const UnstakePopup = ({
                   : 'Unstaking cancelled.',
             })
 
-            await setTimeout(() => refreshAllTokensData(), 10000)
+            const clearPoolWaitingForUpdate = () =>
+              setPoolWaitingForUpdateAfterOperation({
+                pool: '',
+                operation: '',
+              })
 
-            await close()
+            if (result === 'success') {
+              setTimeout(async () => {
+                refreshTokensWithFarmingTickets()
+                clearPoolWaitingForUpdate()
+              }, 7500)
+              setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+            } else {
+              clearPoolWaitingForUpdate()
+            }
+
+            close()
           }}
         >
           Untake
-        </BlueButton>
+        </Button>
       </RowContainer>
     </DialogWrapper>
   )

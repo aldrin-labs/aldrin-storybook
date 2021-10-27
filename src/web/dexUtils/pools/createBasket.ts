@@ -9,9 +9,7 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import { notify } from '../notifications'
 import {
-  NUMBER_OF_RETRIES,
   transferSOLToWrappedAccountAndClose,
 } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
@@ -60,7 +58,11 @@ export async function createBasket({
     quoteTokenMint,
     quoteTokenVault,
     poolMint,
+    lpTokenFreezeVault,
+    ...rest
   } = await program.account.pool.fetch(poolPublicKey)
+
+  console.log('rest', rest)
 
   const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
 
@@ -82,6 +84,11 @@ export async function createBasket({
   )
 
   poolTokenAmount *= 0.99
+
+  // first deposit
+  if (supply === 0) {
+    poolTokenAmount = 1 * 10 ** 8
+  }
 
   const transactionBeforeDeposit = new Transaction()
   const commonSigners = []
@@ -142,68 +149,51 @@ export async function createBasket({
     transactionAfterDeposit.add(closeAccountTransaction)
   }
 
-  let counter = 0
   let commonTransaction = new Transaction()
 
-  while (counter < NUMBER_OF_RETRIES) {
-    try {
-      if (counter > 0) {
-        await notify({
-          type: 'error',
-          message:
-            'Deposit failed, trying with bigger slippage. Please confirm transaction again.',
-        })
+  try {
+    const createBasketTransaction = await program.instruction.createBasket(
+      new BN(poolTokenAmount),
+      new BN(userBaseTokenAmount),
+      new BN(userQuoteTokenAmount),
+      {
+        accounts: {
+          pool: poolPublicKey,
+          poolMint,
+          poolSigner: vaultSigner,
+          userBaseTokenAccount,
+          userQuoteTokenAccount,
+          baseTokenVault,
+          quoteTokenVault,
+          userPoolTokenAccount,
+          walletAuthority: wallet.publicKey,
+          tokenProgram: TOKEN_PROGRAM_ID,
+          clock: SYSVAR_CLOCK_PUBKEY,
+          rent: SYSVAR_RENT_PUBKEY,
+        },
       }
+    )
 
-      const createBasketTransaction = await program.instruction.createBasket(
-        new BN(poolTokenAmount),
-        new BN(userBaseTokenAmount),
-        new BN(userQuoteTokenAmount),
-        {
-          accounts: {
-            pool: poolPublicKey,
-            poolMint,
-            poolSigner: vaultSigner,
-            userBaseTokenAccount,
-            userQuoteTokenAccount,
-            baseTokenVault,
-            quoteTokenVault,
-            userPoolTokenAccount,
-            walletAuthority: wallet.publicKey,
-            tokenProgram: TOKEN_PROGRAM_ID,
-            clock: SYSVAR_CLOCK_PUBKEY,
-            rent: SYSVAR_RENT_PUBKEY,
-          },
-        }
-      )
+    commonTransaction.add(transactionBeforeDeposit)
+    commonTransaction.add(createBasketTransaction)
+    commonTransaction.add(transactionAfterDeposit)
 
-      commonTransaction.add(transactionBeforeDeposit)
-      commonTransaction.add(createBasketTransaction)
-      commonTransaction.add(transactionAfterDeposit)
+    const tx = await sendTransaction({
+      wallet,
+      connection,
+      transaction: commonTransaction,
+      signers: commonSigners,
+      focusPopup: true,
+    })
 
-      const tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction: commonTransaction,
-        signers: commonSigners,
-      })
+    if (tx) {
+      return 'success'
+    }
+  } catch (e) {
+    console.log('deposit catch error', e)
 
-      if (tx) {
-        return 'success'
-      } else {
-        commonTransaction = new Transaction()
-        counter++
-        poolTokenAmount *= 0.99
-      }
-    } catch (e) {
-      console.log('deposit catch error', e)
-      commonTransaction = new Transaction()
-      counter++
-      poolTokenAmount *= 0.99
-
-      if (e.message.includes('cancelled')) {
-        return 'cancelled'
-      }
+    if (e.message.includes('cancelled')) {
+      return 'cancelled'
     }
   }
 

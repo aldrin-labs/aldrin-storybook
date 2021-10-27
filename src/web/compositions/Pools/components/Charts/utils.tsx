@@ -86,7 +86,7 @@ const createTotalVolumeLockedChart = ({
     ?.getContext('2d')
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(54, 108, 229, 0.84)')
+  gradient.addColorStop(0, 'rgba(101, 28, 228, 0.84)')
   gradient.addColorStop(0.55, 'rgba(115, 128, 235, 0)')
   gradient.addColorStop(1, '#222429')
 
@@ -179,51 +179,51 @@ const createTotalVolumeLockedChart = ({
           left: 70,
         },
       },
-      onResize: () => {
-        if (!window[`TotalVolumeLockedChart-${id}`]) return
+      // onResize: () => {
+      //   if (!window[`TotalVolumeLockedChart-${id}`]) return
 
-        const width =
-          window.innerWidth ||
-          document.documentElement.clientWidth ||
-          document.body.clientWidth
+      //   const width =
+      //     window.innerWidth ||
+      //     document.documentElement.clientWidth ||
+      //     document.body.clientWidth
 
-        window[`TotalVolumeLockedChart-${id}`].options.scales = {
-          x: {
-            stacked: true,
-            gridLines: {
-              display: false,
-            },
-            ticks: {
-              align: 'end',
-              color: '#F5F5FB',
-              font: {
-                size: +(width / 130).toFixed(0),
-                family: 'Avenir Next',
-              },
-            },
-          },
-          y: {
-            position: 'right',
-            gridLines: {
-              display: false,
-              color: '#383B45',
-            },
-            ticks: {
-              padding: 15,
-              callback: (value) =>
-                value > 1000000
-                  ? `$${stripDigitPlaces(value / 1000000, 2)}m`
-                  : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
-              color: '#F5F5FB',
-              stepSize: data[data.length - 1]?.vol / 5,
-              font: {
-                size: +(width / 130).toFixed(0),
-                family: 'Avenir Next',
-              },
-            },
-          },
-        }
-      },
+      //   window[`TotalVolumeLockedChart-${id}`].options.scales = {
+      //     x: {
+      //       stacked: true,
+      //       gridLines: {
+      //         display: false,
+      //       },
+      //       ticks: {
+      //         align: 'end',
+      //         color: '#F5F5FB',
+      //         font: {
+      //           size: +(width / 130).toFixed(0),
+      //           family: 'Avenir Next',
+      //         },
+      //       },
+      //     },
+      //     y: {
+      //       position: 'right',
+      //       gridLines: {
+      //         display: false,
+      //         color: '#383B45',
+      //       },
+      //       ticks: {
+      //         padding: 15,
+      //         callback: (value) =>
+      //           value > 1000000
+      //             ? `$${stripDigitPlaces(value / 1000000, 2)}m`
+      //             : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+      //         color: '#F5F5FB',
+      //         stepSize: data[data.length - 1]?.vol / 5,
+      //         font: {
+      //           size: +(width / 130).toFixed(0),
+      //           family: 'Avenir Next',
+      //         },
+      //       },
+      //     },
+      //   }
+      // },
     },
   })
 }
@@ -239,7 +239,7 @@ const createTradingVolumeChart = ({
 }) => {
   const ctx = document.getElementById('TradingVolumeChart')?.getContext('2d')
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(165, 232, 152, 0.85)')
+  gradient.addColorStop(0, 'rgb(83, 223, 17, 0.85)')
   gradient.addColorStop(0.55, 'rgba(165, 232, 152, 0)')
   gradient.addColorStop(1, '#222429')
 
@@ -330,52 +330,52 @@ const createTradingVolumeChart = ({
           left: 70,
         },
       },
-      onResize: () => {
-        if (!window[`TradingVolumeChart-${id}`]) return
+      // onResize: () => {
+      //   if (!window[`TradingVolumeChart-${id}`]) return
 
-        const width =
-          window.innerWidth ||
-          document.documentElement.clientWidth ||
-          document.body.clientWidth
+      //   const width =
+      //     window.innerWidth ||
+      //     document.documentElement.clientWidth ||
+      //     document.body.clientWidth
 
-        window[`TradingVolumeChart-${id}`].options.scales = {
-          x: {
-            stacked: true,
-            gridLines: {
-              display: false,
-            },
-            ticks: {
-              align: 'end',
-              color: '#F5F5FB',
-              font: {
-                size: +(width / 130).toFixed(0),
-                family: 'Avenir Next',
-              },
-            },
-          },
-          y: {
-            position: 'right',
-            gridLines: {
-              display: false,
-              color: '#383B45',
-            },
-            ticks: {
-              padding: 15,
-              callback: (value) => {
-                return value > 1000000
-                  ? `$${stripDigitPlaces(value / 1000000, 2)}m`
-                  : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`
-              },
-              color: '#F5F5FB',
-              stepSize: data[data.length - 1]?.vol / 5,
-              font: {
-                size: +(width / 130).toFixed(0),
-                family: 'Avenir Next',
-              },
-            },
-          },
-        }
-      },
+      //   window[`TradingVolumeChart-${id}`].options.scales = {
+      //     x: {
+      //       stacked: true,
+      //       gridLines: {
+      //         display: false,
+      //       },
+      //       ticks: {
+      //         align: 'end',
+      //         color: '#F5F5FB',
+      //         font: {
+      //           size: +(width / 130).toFixed(0),
+      //           family: 'Avenir Next',
+      //         },
+      //       },
+      //     },
+      //     y: {
+      //       position: 'right',
+      //       gridLines: {
+      //         display: false,
+      //         color: '#383B45',
+      //       },
+      //       ticks: {
+      //         padding: 15,
+      //         callback: (value) => {
+      //           return value > 1000000
+      //             ? `$${stripDigitPlaces(value / 1000000, 2)}m`
+      //             : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`
+      //         },
+      //         color: '#F5F5FB',
+      //         stepSize: data[data.length - 1]?.vol / 5,
+      //         font: {
+      //           size: +(width / 130).toFixed(0),
+      //           family: 'Avenir Next',
+      //         },
+      //       },
+      //     },
+      //   }
+      // },
     },
   })
 }

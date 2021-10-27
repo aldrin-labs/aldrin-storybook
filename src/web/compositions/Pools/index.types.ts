@@ -2,6 +2,7 @@ export type FarmingState = {
   farmingState: string
   farmingTokenVault: string
   farmingTokenMint: string
+  farmingTokenMintDecimals: number
   farmingSnapshots: string
   tokensUnlocked: number
   tokensTotal: number
@@ -15,8 +16,11 @@ export type PoolInfo = {
   parsedName: string
   tokenA: string
   tokenB: string
+  poolTokenAccountA: string
+  poolTokenAccountB: string
   swapToken: string
   poolTokenMint: string
+  lpTokenFreezeVaultBalance: number;
   farming: FarmingState[]
   tvl: {
     tokenA: number
@@ -33,5 +37,16 @@ export type DexTokensPrices = {
 
 export type FeesEarned = {
   pool: string // an address of pool or 'all'
-  earnedUSD: number
+  totalBaseTokenFee: number
+  totalQuoteTokenFee: number
+}
+
+export type TradingVolume = {
+  pool: string
+  tradingVolume: number
+}
+
+export type PoolWithOperation = {
+  pool: string
+  operation: 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'claim' | ''
 }

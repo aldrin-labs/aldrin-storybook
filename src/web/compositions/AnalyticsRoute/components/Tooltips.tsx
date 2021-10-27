@@ -66,7 +66,7 @@ export const TooltipForButterflyChart = ({ id, theme, needQuoteInLabel }: { id: 
       <PopupInfoContainer>
         <PopupInfoBlock theme={theme} isFirstBlock>
           <PopupInfoValue id={`butterflyChart-tooltip-${id}-buy`}>{0}</PopupInfoValue>
-          <PopupInfoTitle style={{ color: '#A5E898' }}>{needQuoteInLabel ? 'Avg. Buy' : 'Buy Trades'}</PopupInfoTitle>
+          <PopupInfoTitle style={{ color: '#53DF11' }}>{needQuoteInLabel ? 'Avg. Buy' : 'Buy Trades'}</PopupInfoTitle>
         </PopupInfoBlock>
 
         <PopupInfoBlock theme={theme} isFirstBlock={false}>

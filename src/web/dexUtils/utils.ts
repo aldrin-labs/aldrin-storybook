@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, PublicKeyInitData } from '@solana/web3.js'
 import { MASTER_BUILD } from '@core/utils/config'
 
-export function isValidPublicKey(key) {
+export function isValidPublicKey(key: PublicKeyInitData) {
   if (!key) {
     return false
   }
@@ -14,9 +14,9 @@ export function isValidPublicKey(key) {
   }
 }
 
-export const CCAI_MINT: string = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
+export const RIN_MINT: string = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
 
-export const CCAIProviderURL = MASTER_BUILD
+export const RINProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'
   : 'https://develop.wallet.cryptocurrencies.ai/'
 
