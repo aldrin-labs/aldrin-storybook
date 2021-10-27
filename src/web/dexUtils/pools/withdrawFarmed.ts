@@ -82,43 +82,53 @@ export const withdrawFarmed = async ({
   // check farmed for every ticket and withdrawFarmed for every farming state
   for (let ticketData of farmingTickets) {
     for (let i = 0; i < pool.farming.length; i++) {
-      // for now only for fisrt farming state
-      const farmingState = pool.farming[i]
+    // for now only for fisrt farming state
+    const farmingState = pool.farming[i]
 
-      // find amount to claim for this farming state in tickets amounts
-      const amountToClaim =
-        ticketData.amountsToClaim.find(
-          (amountToClaim) =>
-            amountToClaim.farmingState === farmingState.farmingState
-        )?.amount || 0
+    // find amount to claim for this farming state in tickets amounts
+    const amountToClaim =
+      ticketData.amountsToClaim.find(
+        (amountToClaim) =>
+          amountToClaim.farmingState === farmingState.farmingState
+      )?.amount || 0
 
-      // check amount for every farming state
-      if (amountToClaim === 0) continue
+    // check amount for every farming state
+    if (amountToClaim === 0) continue
 
-      // check farmed for some ticket
-      // if (
-      //   farmingState.farmingState ===
-      //     'HKP7u6F8iN7SZThjcE2E5nC3VLZELqwW1HKC8VSc52Kv' &&
-      //   ticketData.farmingTicket ===
-      //     'A9oyHcg95N88G8AtyZhtPmSHS8U3rJBHiNswXu7aWT91'
-      // ) {
-      //   await sendTransaction({
-      //     wallet,
-      //     connection,
-      //     transaction: new Transaction().add(
-      //       await checkFarmed({
-      //         wallet,
-      //         connection,
-      //         farming: farmingState,
-      //         farmingTicket: new PublicKey(ticketData.farmingTicket),
-      //         poolPublicKey: new PublicKey(pool.swapToken),
-      //       })
-      //     ),
-      //     signers: [],
-      //   })
-      // }
+    // check farmed for some ticket
+    // if (
+    //   farmingState.farmingState ===
+    //     'GhF4p1WVKBEL32fJJ36tScZedBTF5ipsQrZmq661ARGf'
+    //   // ticketData.farmingTicket ===
+    //   //   'A9oyHcg95N88G8AtyZhtPmSHS8U3rJBHiNswXu7aWT91'
+    // ) {
+    //   await sendTransaction({
+    //     wallet,
+    //     connection,
+    //     transaction: new Transaction().add(
+    //       await checkFarmed({
+    //         wallet,
+    //         connection,
+    //         farming: farmingState,
+    //         farmingTicket: new PublicKey(ticketData.farmingTicket),
+    //         poolPublicKey: new PublicKey(pool.swapToken),
+    //       })
+    //     ),
+    //     signers: [],
+    //   })
+    // }
 
-      const farmingTokenAccountAddress = allTokensDataMap.get(
+    const farmingTokenAccountAddress = allTokensDataMap.get(
+      farmingState.farmingTokenMint
+    )?.address
+
+    let userFarmingTokenAccount = farmingTokenAccountAddress
+      ? new PublicKey(farmingTokenAccountAddress)
+      : null
+
+    // to not create same token several times
+    if (createdTokensMap.has(farmingState.farmingTokenMint)) {
+      userFarmingTokenAccount = createdTokensMap.get(
         farmingState.farmingTokenMint
       )?.address
 

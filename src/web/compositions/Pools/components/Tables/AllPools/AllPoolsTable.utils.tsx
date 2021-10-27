@@ -35,6 +35,8 @@ import { Link } from 'react-router-dom'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -161,15 +163,17 @@ export const combineAllPoolsData = ({
     .filter((pool) =>
       filterDataBySymbolForDifferentDeviders({
         searchValue,
-        symbol: pool.parsedName,
+        symbol: `${getTokenNameByMintAddress(
+          pool.tokenA
+        )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
     .map((pool) => {
       const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
-      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
-      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+      const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
+      const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
 
       const feesEarnedByPool = feesPerPoolMap.get(pool.swapToken) || {
         totalBaseTokenFee: 0,
@@ -197,19 +201,10 @@ export const combineAllPoolsData = ({
       const totalStakedLpTokensUSD =
         pool.lpTokenFreezeVaultBalance * poolTokenPrice
 
-      const farmingState = pool.farming && pool.farming[0]
-
-      const dailyFarmingValue = farmingState
-        ? farmingState.tokensPerPeriod *
-          (dayDuration / farmingState.periodLength)
-        : 0
-
-      const dailyFarmingValuePerThousandDollarsLiquidity = totalStakedLpTokensUSD
-        ? dailyFarmingValue * (1000 / totalStakedLpTokensUSD)
-        : 0
-
-      const isFarmingEnded =
-        farmingState && farmingState.tokensTotal === farmingState.tokensUnlocked
+      const isPoolWithFarming = pool.farming && pool.farming.length > 0
+      const openFarmings = isPoolWithFarming
+        ? filterOpenFarmingStates(pool.farming)
+        : []
 
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
@@ -259,6 +254,7 @@ export const combineAllPoolsData = ({
               ) : null}
             </Row>
           ),
+          contentToSort: `${baseSymbol}${quoteSymbol}`,
         },
         tvl: {
           render: (
@@ -275,6 +271,7 @@ export const combineAllPoolsData = ({
             </TextColumnContainer>
           ),
           showOnMobile: false,
+          contentToSort: tvlUSD,
         },
         vol24h: {
           render: (
@@ -283,7 +280,7 @@ export const combineAllPoolsData = ({
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
-          contentToSort: '',
+          contentToSort: tradingVolumes.daily,
           showOnMobile: false,
         },
 
@@ -294,7 +291,7 @@ export const combineAllPoolsData = ({
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
-          contentToSort: '',
+          contentToSort: tradingVolumes.weekly,
           showOnMobile: false,
         },
         fees: {
@@ -303,6 +300,7 @@ export const combineAllPoolsData = ({
               ${stripByAmountAndFormat(feesUSDByPool)}
             </RowDataTdText>
           ),
+          contentToSort: feesUSDByPool,
         },
         apy: {
           render: (
@@ -314,47 +312,88 @@ export const combineAllPoolsData = ({
               {stripByAmountAndFormat(apy)}%
             </RowDataTdText>
           ),
+          contentToSort: apy,
         },
         farming: {
-          render: farmingState ? (
-            isFarmingEnded ? (
-              'Ended'
-            ) : (
-              <RowContainer justify="flex-start" theme={theme}>
-                <Row margin="0 1rem 0 0" justify="flex-start">
-                  <TokenIcon
-                    mint={farmingState.farmingTokenMint}
-                    width={'3rem'}
-                    emojiIfNoLogo={false}
-                  />
-                </Row>
-                <Row align="flex-start" direction="column">
-                  <RowDataTdText
-                    fontFamily="Avenir Next Medium"
-                    style={{ marginBottom: '1rem' }}
-                    theme={theme}
-                  >
-                    {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
-                  </RowDataTdText>
+          render: isPoolWithFarming ? (
+            <RowContainer justify="flex-start" theme={theme}>
+              <Row margin="0 1rem 0 0" justify="flex-start">
+                {/* every farming token mint logo, TODO: place them nicely, not one by one */}
+                {openFarmings.map((farmingState) => {
+                  return (
+                    <TokenIcon
+                      mint={farmingState.farmingTokenMint}
+                      width={'3rem'}
+                      emojiIfNoLogo={false}
+                    />
+                  )
+                })}
+              </Row>
+              <Row align="flex-start" direction="column">
+                <RowDataTdText
+                  fontFamily="Avenir Next Medium"
+                  style={{ marginBottom: '1rem' }}
+                  theme={theme}
+                >
+                  {openFarmings.map((farmingState, i, arr) => {
+                    return `${getTokenNameByMintAddress(
+                      farmingState.farmingTokenMint
+                    )} ${i !== arr.length - 1 ? 'X ' : ''}`
+                  })}
+                </RowDataTdText>
+                {openFarmings.length === 0 ? (
                   <RowDataTdText>
-                    <span style={{ color: '#53DF11' }}>
-                      {stripByAmountAndFormat(
-                        dailyFarmingValuePerThousandDollarsLiquidity
-                      )}
-                    </span>{' '}
-                    {getTokenNameByMintAddress(farmingState.farmingTokenMint)} /
-                    Day
+                    <span style={{ color: '#53DF11' }}>Ended</span>
                   </RowDataTdText>
+                ) : (
+                  openFarmings.map((farmingState, i, arr) => {
+                    const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                      { farmingState, totalStakedLpTokensUSD }
+                    )
+
+                    console.log({
+                      pool,
+                      farmingState,
+                      totalStakedLpTokensUSD,
+                    })
+
+                    return (
+                      <RowDataTdText>
+                        <span style={{ color: '#53DF11' }}>
+                          {stripByAmountAndFormat(
+                            farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                          )}
+                        </span>{' '}
+                        {getTokenNameByMintAddress(
+                          farmingState.farmingTokenMint
+                        )}
+                        {/* + between every farming state token to be farmed, except last. for last - per day */}
+                        {i !== arr.length - 1 ? <span> + </span> : null}
+                        {i === arr.length - 1 ? <span> / Day</span> : null}
+                      </RowDataTdText>
+                    )
+                  })
+                )}
+                {openFarmings.length > 0 && (
                   <RowDataTdText>
                     {' '}
                     for each <span style={{ color: '#53DF11' }}>$1000</span>
                   </RowDataTdText>
-                </Row>
-              </RowContainer>
-            )
+                )}
+              </Row>
+            </RowContainer>
           ) : (
             '-'
           ),
+          contentToSort: openFarmings.reduce((acc, farmingState) => {
+            return (
+              acc +
+              getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
+                farmingState,
+                totalStakedLpTokensUSD,
+              })
+            )
+          }, 0),
         },
         details: {
           render: (

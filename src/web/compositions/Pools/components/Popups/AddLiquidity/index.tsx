@@ -207,13 +207,13 @@ export const AddLiquidityPopup = ({
     (
       dexTokensPricesMap.get(selectedPool.tokenA) ||
       dexTokensPricesMap.get(baseSymbol)
-    )?.price || 10
+    )?.price || 0
 
   const quoteTokenPrice =
     (
       dexTokensPricesMap.get(selectedPool.tokenB) ||
       dexTokensPricesMap.get(quoteSymbol)
-    )?.price || 10
+    )?.price || 0
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
   const tvlUSD =

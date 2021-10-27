@@ -146,8 +146,13 @@ export const WithdrawalPopup = ({
     poolTokenAmount: poolTokenAmount + stakedTokens,
   })
 
+  const [availableWithdrawAmountTokenA] = calculateWithdrawAmount({
+    selectedPool,
+    poolTokenAmount,
+  })
+
   const poolTokenAmountToWithdraw =
-    (+baseAmount / withdrawAmountTokenA) * poolTokenAmount
+    (+baseAmount / availableWithdrawAmountTokenA) * poolTokenAmount
 
   // need to show in popup
   const {

@@ -1,3 +1,16 @@
+export type FarmingState = {
+  farmingState: string
+  farmingTokenVault: string
+  farmingTokenMint: string
+  farmingTokenMintDecimals: number
+  farmingSnapshots: string
+  tokensUnlocked: number
+  tokensTotal: number
+  tokensPerPeriod: number
+  periodLength: number
+  vestingPeriod: number
+}
+
 export type PoolInfo = {
   name: string
   parsedName: string

@@ -85,7 +85,6 @@ export const combineOpenOrdersTable = (
         marketType: 0,
         symbol: marketName,
       })
-
       return {
         id: `${orderId}${size}${price}`,
         pair: {
@@ -190,13 +189,6 @@ export const combineOpenOrdersTable = (
           },
           showOnMobile: false,
         },
-
-        amount: {
-          render: `${stripDigitPlaces(size, quantityPrecision)} ${pair[0]}`,
-          contentToSort: +size,
-          style: { opacity: needOpacity ? 0.75 : 1 },
-          showOnMobile: false,
-        },
         price: {
           render: isMarketOrMakerOrder
             ? 'market'
@@ -211,6 +203,13 @@ export const combineOpenOrdersTable = (
           contentToSort: price,
           showOnMobile: false,
         },
+        amount: {
+          render: `${stripDigitPlaces(size, quantityPrecision)} ${pair[0]}`,
+          contentToSort: +size,
+          style: { opacity: needOpacity ? 0.75 : 1 },
+          showOnMobile: false,
+        },
+
         value: {
           // render: `${total} ${getCurrentCurrencySymbol(symbol, side)}`,
           render: !+price

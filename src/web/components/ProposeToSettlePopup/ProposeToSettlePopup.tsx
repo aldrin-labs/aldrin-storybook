@@ -85,6 +85,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
         justify="space-between"
         align={isMobile ? 'center' : 'baseline'}
         direction="column"
+        wrap="nowrap"
         height="100%"
       >
         <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">

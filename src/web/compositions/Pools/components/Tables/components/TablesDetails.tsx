@@ -35,6 +35,8 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { notify } from '@sb/dexUtils/notifications'
+import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 
 export const TablesDetails = ({
   theme,
@@ -104,10 +106,15 @@ export const TablesDetails = ({
       ? farmingTickets?.sort((a, b) => b.startTime - a.startTime)[0]
       : null
 
-  const farmingState = pool.farming && pool.farming[0]
-  const unlockAvailableDate = lastFarmingTicket
-    ? +lastFarmingTicket.startTime + +farmingState?.periodLength
-    : 0
+  const isPoolWithFarming = pool.farming && pool.farming.length > 0
+  const openFarmings = isPoolWithFarming
+    ? filterOpenFarmingStates(pool.farming)
+    : []
+
+  const unlockAvailableDate =
+    lastFarmingTicket && isPoolWithFarming
+      ? +lastFarmingTicket.startTime + +pool.farming[0].periodLength
+      : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
   const isUnstakeDisabled =
@@ -116,8 +123,8 @@ export const TablesDetails = ({
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
-  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 10
-  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 10
+  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
+  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
 
   const earnedFeesInPoolForUser = earnedFeesInPoolForUserMap.get(
     pool.swapToken
@@ -337,7 +344,9 @@ export const TablesDetails = ({
           )}
 
           <RowContainer justify="flex-start" theme={theme}>
-            {!hasFarming ? (
+            {!hasFarming ||
+            (openFarmings.length === 0 &&
+              !(hasStakedTokens || availableToClaimFarmingTokens > 0)) ? (
               <RowDataTdText>No farming available in this pool.</RowDataTdText>
             ) : hasStakedTokens || availableToClaimFarmingTokens > 0 ? (
               <RowContainer justify="space-between">
@@ -389,7 +398,12 @@ export const TablesDetails = ({
               <RowDataTdText>
                 Stake your pool tokens to start
                 <AmountText style={{ padding: '0 0.5rem' }}>
-                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                  {openFarmings.map(
+                    (farmingState, i, arr) =>
+                      `${getTokenNameByMintAddress(
+                        farmingState.farmingTokenMint
+                      )}${i !== arr.length - 1 ? ' + ' : ''}`
+                  )}
                 </AmountText>
                 farming
               </RowDataTdText>
@@ -397,7 +411,12 @@ export const TablesDetails = ({
               <RowDataTdText>
                 Deposit liquidity to farm{' '}
                 <AmountText>
-                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                  {openFarmings.map(
+                    (farmingState, i, arr) =>
+                      `${getTokenNameByMintAddress(
+                        farmingState.farmingTokenMint
+                      )}${i !== arr.length - 1 ? ' + ' : ''}`
+                  )}
                 </AmountText>
               </RowDataTdText>
             )}
@@ -412,7 +431,8 @@ export const TablesDetails = ({
                 fontFamily={'Avenir Next Medium'}
                 style={{ marginBottom: '3.5rem' }}
               >
-                {farmingState.vestingPeriod > 0 && (
+                {/* TODO: return later vesting with few farming states */}
+                {/* {farmingState.vestingPeriod > 0 && (
                   <DarkTooltip
                     title={
                       <span>
@@ -432,12 +452,27 @@ export const TablesDetails = ({
                       />
                     </div>
                   </DarkTooltip>
-                )}
+                )} */}
                 Available to claim:
-                <AmountText style={{ padding: '0 0.5rem' }}>
-                  {stripByAmountAndFormat(availableToClaimFarmingTokens)}
-                </AmountText>
-                {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                {pool.farming.map((farmingState, i, arr) => {
+                  const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
+                    {
+                      farmingTickets,
+                      farmingState: farmingState.farmingState,
+                    }
+                  )
+                  return (
+                    <>
+                      <AmountText style={{ padding: '0 0.5rem' }}>
+                        {stripByAmountAndFormat(
+                          availableToClaimFromFarmingState
+                        )}
+                      </AmountText>
+                      {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                      {i !== arr.length - 1 ? ' +' : ''}
+                    </>
+                  )
+                })}
               </RowDataTdText>
               <Button
                 theme={theme}

@@ -35,6 +35,7 @@ import { RefreshFunction } from '@sb/dexUtils/types'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 
 export const StakePopup = ({
   theme,
@@ -60,6 +61,7 @@ export const StakePopup = ({
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
+    decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
   console.log('selectedPool:',allTokensData, selectedPool)
   const [poolTokenAmount, setPoolTokenAmount] = useState<number | string>(
@@ -87,17 +89,8 @@ export const StakePopup = ({
   const stakedWithEnteredPoolTokensUSD =
     (stakedTokens + +poolTokenAmount) * poolTokenPrice
 
-  const dailyFarmingValue = farmingState
-    ? farmingState.tokensPerPeriod * (dayDuration / farmingState.periodLength)
-    : 0
-
-  // daily rewards for staked liquidity in pool + entered
-  const dailyFarmingValuePerUserLiquidity = totalStakedLpTokensUSD
-    ? dailyFarmingValue *
-      (stakedWithEnteredPoolTokensUSD / totalStakedLpTokensUSD)
-    : 0
-
   if (!farmingState) return null
+
   return (
     <DialogWrapper
       theme={theme}
@@ -136,10 +129,25 @@ export const StakePopup = ({
         <Text>Est. rewards:</Text>
         <Text>
           <Row align="flex-start">
-            <span style={{ color: '#53DF11', paddingRight: '.5rem' }}>
-              {stripByAmountAndFormat(dailyFarmingValuePerUserLiquidity)}
-            </span>{' '}
-            {getTokenNameByMintAddress(farmingState.farmingTokenMint)} / Day
+            {selectedPool.farming.map((farmingState, i, arr) => {
+              const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                { farmingState, totalStakedLpTokensUSD }
+              )
+
+              return (
+                <>
+                  <span style={{ color: '#53DF11', paddingRight: '.5rem' }}>
+                    {stripByAmountAndFormat(
+                      farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                    )}
+                  </span>{' '}
+                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                  <span style={{ padding: '0 .5rem' }}>
+                    {i === arr.length - 1 ? ' / Day' : '+'}
+                  </span>
+                </>
+              )
+            })}
           </Row>
         </Text>
       </RowContainer>
@@ -193,10 +201,13 @@ export const StakePopup = ({
               operation: 'stake',
             })
 
+            const poolTokenAmountWithDecimals =
+              +poolTokenAmount * 10 ** poolTokenDecimals
+
             const result = await startFarming({
               wallet,
               connection,
-              poolTokenAmount: +poolTokenAmount,
+              poolTokenAmount: poolTokenAmountWithDecimals,
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               farmingState: new PublicKey(farmingState.farmingState),
