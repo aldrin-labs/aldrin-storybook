@@ -115,6 +115,13 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const dailyRewards = tokensTotal / daysInMonth
   const apy = (tokensTotal / totalStaked) * 100 * 12
 
+  useEffect(() => {
+    document.title = `Aldrin | Stake RIN | ${stripByAmount(apy)}% APY`
+    return () => {
+      document.title = 'Aldrin'
+    }
+  }, [apy])
+
   const shareText = getShareText(stripByAmount(apy))
 
   return (
