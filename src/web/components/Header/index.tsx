@@ -70,7 +70,7 @@ export const Header = () => {
               <NavLink to="/swap" activeClassName="selected">Swap</NavLink>
             </DropDown> */}
             <NavLink to="/chart" activeClassName="selected">
-              Terminal
+              Trading
             </NavLink>
 
             <NavLink to="/rebalance" activeClassName="selected">
