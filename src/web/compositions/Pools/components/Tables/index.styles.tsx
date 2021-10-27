@@ -27,14 +27,14 @@ export const TableHeader = styled.thead`
     padding: 1rem 2rem;
   }
 `
-export const BorderButton = styled(BtnCustom)`
+export const BorderButton = styled.a`
   border: 0.1rem solid ${(props) => props.borderColor || '#41454E'};
   width: ${(props) => props.width || 'auto'};
   padding: ${(props) => props.padding || '0 2rem'};
   height: 4rem;
   text-transform: none;
   color: ${(props) => props.color || '#fbf2f2'};
-  border-radius: 1.5rem;
+  border-radius: ${(props) => props.borderRadius || '1.5rem'};
   font-size: 1.4rem;
 `
 export const TableBody = styled.tbody`

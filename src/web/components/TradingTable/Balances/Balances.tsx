@@ -16,7 +16,7 @@ import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { settleFunds } from '@sb/dexUtils/send'
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL } from '@sb/dexUtils/utils'
 import { combineBalancesTable } from './Balances.utils'
 
 const BalancesTable = (props) => {
@@ -31,7 +31,7 @@ const BalancesTable = (props) => {
   const baseTokenAccount = useSelectedBaseCurrencyAccount()
   const quoteTokenAccount = useSelectedQuoteCurrencyAccount()
 
-  const isCCAIWallet = providerUrl === CCAIProviderURL
+  const isCCAIWallet = providerUrl === RINProviderURL
   const showSettle = !isCCAIWallet || !wallet.connected || !wallet.autoApprove
 
   async function onSettleFunds(market, openOrders) {

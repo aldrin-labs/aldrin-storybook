@@ -34,7 +34,6 @@ const OWNER: PublicKey = new PublicKey(
 const ownerKey = OWNER.toString()
 
 const SLIPPAGE_PERCENTAGE = 5
-export const NUMBER_OF_RETRIES = 5
 
 // Pool fees
 const TRADING_FEE_NUMERATOR = 25

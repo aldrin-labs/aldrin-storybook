@@ -1,78 +1,46 @@
-import React, { PureComponent, SyntheticEvent, CSSProperties } from 'react'
-
-import { compose } from 'recompose'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withTheme } from '@material-ui/styles'
-import { withSnackbar } from 'notistack'
-import {
-  withFormik,
-  validateYupSchema,
-  yupToFormErrors,
-  FastField,
-} from 'formik'
-
-import { Grid, InputAdornment, Typography, Theme } from '@material-ui/core'
-import { Loading } from '@sb/components/index'
-import { ConfirmationPopup } from './ConfirmationPopup'
-
-import { isEqual, stubFalse, toNumber, toPairs } from 'lodash-es'
-import { traidingErrorMessages } from '@core/config/errorMessages'
-import { IProps, FormValues, IPropsWithFormik, priceType } from './types'
-import Info from '@icons/inform.svg'
-import SvgIcon from '@sb/components/SvgIcon'
-
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { Grid, Theme } from '@material-ui/core'
+import { withTheme } from '@material-ui/styles'
+import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
-import { notify } from '@sb/dexUtils/notifications'
-
-import {
-  Container,
-  GridContainer,
-  Coin,
-  UpdatedCoin,
-  InputTitle,
-  InputWrapper,
-  TradeInputBlock,
-  TitleForInput,
-  TradeInput,
-  BlueInputTitle,
-  SeparateInputTitle,
-  AbsoluteInputTitle,
-  Placeholder,
-  SwitchersContainer,
-  ConnectWalletButtonContainer,
-  ConnectWalletDropdownContainer,
-  ButtonContainer,
-  ButtonBlock,
-  TerminalGridContainer,
-} from './styles'
-import { SendButton } from '../TraidingTerminal/styles'
-import {
-  Line,
-  SCheckbox,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { MobileWalletDropdown } from '@sb/compositions/Chart/components/MobileNavbar/MobileWalletDropdown'
+import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import {
   InputRowContainer,
-  AdditionalSettingsButton,
-  InputsBlock,
+  InputsBlock
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
-import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
-import ConnectWalletDropdown from '../ConnectWalletDropdown/index'
+import { notify } from '@sb/dexUtils/notifications'
 import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
-import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { withFormik } from 'formik'
+import { toNumber } from 'lodash-es'
+import React, { CSSProperties, PureComponent, SyntheticEvent } from 'react'
+import { compose } from 'recompose'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
-import { MobileWalletDropdown } from '@sb/compositions/Chart/components/MobileNavbar/MobileWalletDropdown'
+import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
+import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
+import { ConfirmationPopup } from './ConfirmationPopup'
+import { InsufficientBalancePlaceholder } from './InsufficientBalancePlaceholder'
+import {
+  AbsoluteInputTitle, BlueInputTitle,
+  ButtonBlock, ConnectWalletButtonContainer,
+  ConnectWalletDropdownContainer, Container,
+  SeparateInputTitle,
+  SwitchersContainer,
+  TerminalGridContainer, TitleForInput,
+  TradeInput, UpdatedCoin
+} from './styles'
+import { FormValues, IProps, IPropsWithFormik } from './types'
 import {
   costOfAddingToken,
   costsOfTheFirstTrade,
   costsOfWrappingSOL,
-  SOLFeeForTrade,
+  SOLFeeForTrade
 } from './utils'
-import { InsufficientBalancePlaceholder } from './InsufficientBalancePlaceholder'
-import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+
+
 
 export const TradeInputHeader = ({
   title = 'Input',

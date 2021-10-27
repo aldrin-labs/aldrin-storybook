@@ -4,10 +4,10 @@ import { notifyForDevelop } from '../notifications'
 import { WalletAdapter } from '../types'
 import { getIdlByProgramAddress } from './getIdlByProgramAddress'
 
-export class ProgramsMultiton {
-  [programAddress: string]: Program
+class ProgramsMultiton {
+  private cache: { [programAddress: string]: Program } = {}
 
-  static getProgramByAddress({
+  getProgramByAddress({
     wallet,
     connection,
     programAddress,
@@ -16,23 +16,25 @@ export class ProgramsMultiton {
     connection: Connection
     programAddress: string
   }) {
-    // save program to key program-address
-    if (this[programAddress]) {
-      return this[programAddress]
+    const cacheKey = `${programAddress}-${wallet.publicKey}`
+
+    // save program to key program-address-wallet (to load program after connecting wallet)
+    // in case of need in program for rpc-decode only
+    if (this.cache[cacheKey]) {
+      return this.cache[cacheKey]
     }
 
-    if (!wallet || !connection || !wallet.publicKey) {
+    if (!connection) {
       notifyForDevelop({
-        message: 'No wallet or connection in getProgramByAddress',
+        message: 'No connection in getProgramByAddress',
         wallet,
         connection,
         programAddress,
       })
-      
-      return null
+
+      throw Error('No connection in getProgramByAddress')
     }
 
-    console.log('create program', wallet)
 
     const program_idl = getIdlByProgramAddress(programAddress)
     const programId = new PublicKey(programAddress)
@@ -46,8 +48,12 @@ export class ProgramsMultiton {
       })
     )
 
-    this[programAddress] = poolsProgram
+    this.cache[programAddress] = poolsProgram
 
     return poolsProgram
   }
 }
+
+const instance = new ProgramsMultiton()
+
+export { instance as ProgramsMultiton }

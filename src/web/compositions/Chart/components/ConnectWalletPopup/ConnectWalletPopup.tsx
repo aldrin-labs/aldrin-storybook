@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { Paper, Theme } from '@material-ui/core'
+import { Paper, Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -28,7 +28,7 @@ export const Title = styled(({ ...props }) => <MainTitle {...props} />)`
   margin-bottom: 0;
 `
 
-export const ConnectWalletPopup = ({
+const ConnectWalletPopup = ({
   theme,
   onClose,
   open,
@@ -77,3 +77,7 @@ export const ConnectWalletPopup = ({
     </DialogWrapper>
   )
 }
+
+const WithTheme = withTheme()(ConnectWalletPopup)
+
+export { WithTheme as ConnectWalletPopup }

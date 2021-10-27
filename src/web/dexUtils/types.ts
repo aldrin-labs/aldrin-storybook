@@ -34,6 +34,8 @@ export interface TokenInfo {
 }
 
 export type RefreshFunction = () => void
+export type AsyncRefreshFunction = () => Promise<boolean>
+
 export interface ValidateOrderParams {
   price: number
   size: number

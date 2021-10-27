@@ -3,7 +3,7 @@ import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { loadFarmingTickets } from './loadFarmingTickets'
-import { FarmingTicket } from './types'
+import { FarmingTicket } from '../common/types'
 
 export const getParsedUserFarmingTickets = async ({
   wallet,

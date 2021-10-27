@@ -4,7 +4,7 @@ import {
   FARMING_TICKET_OFFSET_OF_POOL_PUBLICKEY,
   FARMING_TICKET_OFFSET_OF_USER_PUBLICKEY,
   FARMING_TICKET_SIZE,
-} from './config'
+} from '../common/config'
 import { loadAccountsFromPoolsProgram } from './loadAccountsFromPoolsProgram'
 
 export const loadFarmingTickets = async ({

@@ -1,4 +1,4 @@
-import { CCAIProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL } from '@sb/dexUtils/utils'
 import React from 'react'
 import { StyledLink, StyledA, StyledButton } from './styles'
 
@@ -104,7 +104,7 @@ export const PoolsLink = ({ isActive }: { isActive: boolean }) => {
 
 export const SwapsLink = ({ isActive }: { isActive: boolean }) => {
   return (
-    <StyledLink to={'/swaps'}>
+    <StyledLink to={'/swap'}>
       <svg
         width="100%"
         height="100%"
@@ -119,7 +119,7 @@ export const SwapsLink = ({ isActive }: { isActive: boolean }) => {
           fill={isActive ? '#651CE4' : '#F8FAFF'}
         />
       </svg>
-      <span style={{ color: isActive ? '#651CE4' : '#F5F5FB' }}>Swaps</span>
+      <span style={{ color: isActive ? '#651CE4' : '#F5F5FB' }}>Swap</span>
     </StyledLink>
   )
 }
@@ -148,7 +148,7 @@ export const RebalanceLink = ({ isActive }: { isActive: boolean }) => {
 
 export const WalletLink = ({ isActive }) => {
   return (
-    <StyledA href={CCAIProviderURL} target="_blank">
+    <StyledA href={RINProviderURL} target="_blank">
       <svg
         width="100%"
         height="100%"
@@ -222,6 +222,54 @@ export const DashboardLink = ({ isActive }: { isActive: boolean }) => {
       </svg>
 
       <span style={{ color: isActive ? '#651CE4' : '#F5F5FB' }}>Dashboard</span>
+    </StyledLink>
+  )
+}
+
+export const StakingLink = ({ isActive }: { isActive: boolean }) => {
+  return (
+    <StyledLink to={'/staking'}>
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 17 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <rect
+          x="0.5"
+          y="12.5"
+          width="16"
+          height="3"
+          rx="1.5"
+          stroke={isActive ? '#651CE4' : '#F5F5FB'}
+        />
+        <rect
+          x="0.5"
+          y="8.5"
+          width="16"
+          height="3"
+          rx="1.5"
+          stroke={isActive ? '#651CE4' : '#F5F5FB'}
+        />
+        <rect
+          x="0.5"
+          y="4.5"
+          width="16"
+          height="3"
+          rx="1.5"
+          stroke={isActive ? '#651CE4' : '#F5F5FB'}
+        />
+        <rect
+          x="0.5"
+          y="0.5"
+          width="16"
+          height="3"
+          rx="1.5"
+          stroke={isActive ? '#651CE4' : '#F5F5FB'}
+        />
+      </svg>
+      <span style={{ color: isActive ? '#651CE4' : '#F5F5FB' }}>Staking</span>
     </StyledLink>
   )
 }

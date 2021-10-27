@@ -18,7 +18,7 @@ import AlmLogo from '@icons/alm_logo.png'
 import SobLogo from '@icons/sob_logo.png'
 
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { CCAI_MINT } from '@sb/dexUtils/utils'
+import { RIN_MINT } from '@sb/dexUtils/utils'
 import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 
 export const TokenIcon = ({
@@ -146,7 +146,7 @@ export const TokenIcon = ({
         height,
         width,
         margin,
-        borderRadius: mint === CCAI_MINT ? '0' : '50%',
+        borderRadius: mint === RIN_MINT ? '0' : '50%',
       }}
     />
   )

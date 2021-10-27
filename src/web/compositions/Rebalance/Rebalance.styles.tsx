@@ -98,8 +98,8 @@ export const TextButton = styled.button`
   letter-spacing: -0.457692px;
   color: ${(props) => props.color || '#f79894'};
   border: none;
-  background-color: #222429;
-  backgroung: #222429;
+  background-color: transparent;
+  backgroung: transparent;
   width: ${(props) => props.width || '50%'};
   outline: none;
   cursor: pointer;

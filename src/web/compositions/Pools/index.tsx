@@ -1,13 +1,12 @@
+import { Theme, withTheme } from '@material-ui/core'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
-import { withTheme, Theme } from '@material-ui/core'
-
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
-import { BlockTemplate } from './index.styles'
 import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
-import { useConnection } from '@sb/dexUtils/connection'
+import { BlockTemplate } from './index.styles'
+
+
 
 const Pools = ({ theme }: { theme: Theme }) => {
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
@@ -25,7 +24,6 @@ const Pools = ({ theme }: { theme: Theme }) => {
       padding={'2rem 13rem'}
       justify={'flex-start'}
       style={{
-        minHeight: '100%',
         background: theme.palette.grey.additional,
       }}
     >
