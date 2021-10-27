@@ -183,6 +183,7 @@ export function useCustomMarkets() {
     'customMarkets',
     []
   )
+
   return { customMarkets, setCustomMarkets }
 }
 
@@ -1236,10 +1237,12 @@ export function getMarketInfos(customMarkets) {
     programId: new PublicKey(m.programId),
   }))
 
+
+  const awesomeMarkets = useAwesomeMarkets()
   // TODO: we should use useMarketsList first to not find
   // pair from custom market by name (in this way we cover case when pair with
   // the same name will be in our market list and cusom markets)
-  return [...serumMarkets, ...customMarketsInfo]
+  return [...serumMarkets, ...customMarketsInfo, ...awesomeMarkets]
 }
 
 export function useSelectedTokenAccounts(): [
