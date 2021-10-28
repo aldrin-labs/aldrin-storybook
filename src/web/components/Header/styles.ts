@@ -185,6 +185,10 @@ export const DropdownInner = styled.div`
   flex-direction: column;
   margin-top: 5px;
   padding: 5px 0;
+
+  & ${NavLink} {
+    margin: 4px;
+  }
 ` 
 
 export const WalletButton = styled(Button)`
