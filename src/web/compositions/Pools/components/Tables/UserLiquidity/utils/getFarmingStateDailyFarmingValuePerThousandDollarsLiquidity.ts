@@ -16,8 +16,5 @@ export const getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity = ({
   const dailyFarmingValue =
     tokensPerPeriod * (dayDuration / farmingState.periodLength)
 
-  const dailyFarmingValuePerThousandDollarsLiquidity =
-    dailyFarmingValue * (1000 / totalStakedLpTokensUSD)
-
-  return dailyFarmingValuePerThousandDollarsLiquidity
+  return dailyFarmingValue
 }
