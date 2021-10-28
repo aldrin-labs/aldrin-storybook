@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import SvgIcon from '@sb/components/SvgIcon'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Theme } from '@material-ui/core'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
@@ -28,7 +28,6 @@ import Gear from '@icons/gear.svg'
 import Arrows from '@icons/switchArrows.svg'
 import { TokenInfo } from '../Rebalance/Rebalance.types'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import withTheme from '@material-ui/core/styles/withTheme'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import {
@@ -38,9 +37,7 @@ import {
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { REBALANCE_CONFIG } from '../Rebalance/Rebalance.config'
 import { PublicKey } from '@solana/web3.js'
-import { WarningPopup } from '../Chart/components/WarningPopup'
 import { swap } from '@sb/dexUtils/pools/swap'
 import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
@@ -54,14 +51,10 @@ const SwapPage = ({
   theme,
   publicKey,
   getPoolsInfoQuery,
-  getDexTokensPricesQuery,
-  getDexTokensPricesQueryRefetch,
 }: {
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-  getDexTokensPricesQueryRefetch: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -125,7 +118,6 @@ const SwapPage = ({
   const [slippageTolerance, setSlippageTolerance] = useState<number>(0.3)
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
-  const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
   const [
     selectedBaseTokenAddressFromSeveral,
@@ -140,9 +132,6 @@ const SwapPage = ({
     openTransactionSettingsPopup,
   ] = useState(false)
 
-  const { getDexTokensPrices = [] } = getDexTokensPricesQuery || {
-    getDexTokensPrices: [],
-  }
   const isBaseTokenA = selectedPool?.tokenA === baseTokenMintAddress
 
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
@@ -268,7 +257,6 @@ const SwapPage = ({
               <ReloadTimer
                 margin={'0 1.5rem 0 0'}
                 callback={async () => {
-                  getDexTokensPricesQueryRefetch()
                   refreshPoolBalances()
                   refreshAllTokensData()
                 }}
@@ -542,13 +530,11 @@ const SwapPage = ({
       <SelectCoinPopup
         poolsInfo={getPoolsInfoQuery.getPoolsInfo}
         theme={theme}
-        // mints={swapTokens}
         mints={[...new Set(mints)]}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
         allTokensData={allTokensData}
         open={isSelectCoinPopupOpen}
-        poolsPrices={getDexTokensPrices}
         isBaseTokenSelecting={isBaseTokenSelecting}
         setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
         setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
@@ -582,13 +568,6 @@ const SwapPage = ({
         open={isTokensAddressesPopupOpen}
         close={() => openTokensAddressesPopup(false)}
       />
-
-      {/* <WarningPopup
-        theme={theme}
-        open={isWarningPopupOpen}
-        onClose={() => openWarningPopup(false)}
-        isSwapPage={true}
-      /> */}
     </RowContainer>
   )
 }
@@ -600,12 +579,5 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
-  }),
-  queryRendererHoc({
-    query: getDexTokensPrices,
-    name: 'getDexTokensPricesQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000,
   })
 )(SwapPage)
