@@ -9,9 +9,10 @@ import {
 } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
+import { createTokenAccountTransaction, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { Side } from '../common/config'
+import { Token } from '../token/token'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -120,6 +121,33 @@ export const swap = async ({
       commonSigners.push(wrappedAccount)
       transactionAfterSwap.add(closeAccountTransaction)
     }
+  }
+
+  // create pool token account for user if not exist
+  if (!userBaseTokenAccount) {
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      wallet,
+      mintPublicKey: new PublicKey(baseTokenMint),
+    })
+
+    userBaseTokenAccount = newAccountPubkey
+    transactionBeforeSwap.add(createAccountTransaction)
+  }
+
+  if (!userQuoteTokenAccount) {
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      wallet,
+      mintPublicKey: new PublicKey(quoteTokenMint),
+    })
+
+    userQuoteTokenAccount = newAccountPubkey
+    transactionBeforeSwap.add(createAccountTransaction)
   }
 
   let commonTransaction = new Transaction()

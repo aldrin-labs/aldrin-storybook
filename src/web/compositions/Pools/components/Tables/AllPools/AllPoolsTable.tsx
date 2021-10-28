@@ -38,7 +38,7 @@ const AllPoolsTableComponent = ({
   getFeesEarnedByPoolQuery,
   getDailyTradingVolumeForAllPoolsQuery,
   getWeeklyTradingVolumeForAllPoolsQuery,
-  allTokensDataMap,
+  allTokensData,
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
   selectPool,
@@ -61,7 +61,7 @@ const AllPoolsTableComponent = ({
     getTradingVolumeForAllPools: TradingVolume[]
   }
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  allTokensDataMap: Map<string, TokenInfo>
+  allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
@@ -129,7 +129,7 @@ const AllPoolsTableComponent = ({
     dexTokensPricesMap,
     feesPerPoolMap,
     expandedRows,
-    allTokensDataMap,
+    allTokensData,
     farmingTicketsMap,
     tradingVolumesMap,
     earnedFeesInPoolForUserMap,
@@ -223,7 +223,7 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    variables:() => ({
+    variables: () => ({
       timestampFrom: endOfHourTimestamp() - dayDuration * 7,
       timestampTo: endOfHourTimestamp(),
     }),

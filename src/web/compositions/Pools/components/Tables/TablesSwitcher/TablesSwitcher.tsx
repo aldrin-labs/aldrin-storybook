@@ -92,11 +92,6 @@ const TablesSwitcher = ({
     new Map()
   )
 
-  const allTokensDataMap = allTokensData.reduce(
-    (acc, tokenData) => acc.set(tokenData.mint, tokenData),
-    new Map()
-  )
-
   const earnedFeesInPoolForUserMap = getFeesEarnedByAccount.reduce(
     (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned),
     new Map()
@@ -131,7 +126,7 @@ const TablesSwitcher = ({
               {
                 getUserPoolsFromAll({
                   poolsInfo: pools,
-                  allTokensDataMap,
+                  allTokensData,
                   farmingTicketsMap,
                 }).length
               }
@@ -159,7 +154,7 @@ const TablesSwitcher = ({
               poolWaitingForUpdateAfterOperation
             }
             poolsInfo={pools}
-            allTokensDataMap={allTokensDataMap}
+            allTokensData={allTokensData}
             dexTokensPricesMap={dexTokensPricesMap}
             farmingTicketsMap={farmingTicketsMap}
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
@@ -182,7 +177,7 @@ const TablesSwitcher = ({
               poolWaitingForUpdateAfterOperation
             }
             dexTokensPricesMap={dexTokensPricesMap}
-            allTokensDataMap={allTokensDataMap}
+            allTokensData={allTokensData}
             farmingTicketsMap={farmingTicketsMap}
             earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             selectPool={selectPool}

@@ -131,7 +131,7 @@ export const combineAllPoolsData = ({
   dexTokensPricesMap,
   feesPerPoolMap,
   expandedRows,
-  allTokensDataMap,
+  allTokensData,
   farmingTicketsMap,
   tradingVolumesMap,
   earnedFeesInPoolForUserMap,
@@ -151,7 +151,7 @@ export const combineAllPoolsData = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: Map<string, FeesEarned>
   expandedRows: string[]
-  allTokensDataMap: Map<string, TokenInfo>
+  allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   tradingVolumesMap: Map<string, { weekly: number; daily: number }>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
@@ -226,14 +226,6 @@ export const combineAllPoolsData = ({
           if (farmingTokenSymbol === 'MNDE') {
             farmingTokenPrice = 0.776352
           }
-          // console.log({
-          //   pool,
-          //   farmingTokenSymbol,
-          //   farmingStateDailyFarmingValuePerThousandDollarsLiquidity,
-          //   tvlUSD,
-          //   farmingTokenPrice,
-          //   mint: farmingState.farmingTokenMint,
-          // })
 
           const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
             farmingStateDailyFarmingValuePerThousandDollarsLiquidity *
@@ -246,7 +238,7 @@ export const combineAllPoolsData = ({
         0
       )
 
-      const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / tvlUSD) * 100
+      const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
 
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
@@ -474,7 +466,7 @@ export const combineAllPoolsData = ({
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
                   farmingTicketsMap={farmingTicketsMap}
                   dexTokensPricesMap={dexTokensPricesMap}
-                  allTokensDataMap={allTokensDataMap}
+                  allTokensData={allTokensData}
                   theme={theme}
                   pool={pool}
                 />

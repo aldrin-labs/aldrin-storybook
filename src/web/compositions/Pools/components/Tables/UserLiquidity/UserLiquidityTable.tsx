@@ -23,7 +23,7 @@ import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 const UserLiquidityTableComponent = ({
   theme,
   searchValue,
-  allTokensDataMap,
+  allTokensData,
   poolsInfo,
   poolWaitingForUpdateAfterOperation,
   dexTokensPricesMap,
@@ -41,7 +41,7 @@ const UserLiquidityTableComponent = ({
   searchValue: string
   poolsInfo: PoolInfo[]
   poolWaitingForUpdateAfterOperation: PoolWithOperation
-  allTokensDataMap: Map<string, TokenInfo>
+  allTokensData: TokenInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
@@ -61,7 +61,7 @@ const UserLiquidityTableComponent = ({
 
   const usersPools = getUserPoolsFromAll({
     poolsInfo,
-    allTokensDataMap,
+    allTokensData,
     farmingTicketsMap,
   })
 
@@ -71,7 +71,7 @@ const UserLiquidityTableComponent = ({
     usersPools,
     expandedRows,
     poolWaitingForUpdateAfterOperation,
-    allTokensDataMap,
+    allTokensData,
     dexTokensPricesMap,
     farmingTicketsMap,
     earnedFeesInPoolForUserMap,

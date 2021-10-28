@@ -14,21 +14,22 @@ import {
 
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
+import { createTokenAccountTransaction, sendTransaction } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
 import { FarmingTicket } from '../common/types'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
 export const withdrawFarmed = async ({
   wallet,
   connection,
-  allTokensDataMap,
+  allTokensData,
   farmingTickets,
   pool,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  allTokensDataMap: Map<string, TokenInfo>
+  allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
   pool: PoolInfo
 }) => {
@@ -91,9 +92,10 @@ export const withdrawFarmed = async ({
       // check amount for every farming state
       if (amountToClaim === 0) continue
 
-      const farmingTokenAccountAddress = allTokensDataMap.get(
+      const { address: farmingTokenAccountAddress } = getTokenDataByMint(
+        allTokensData,
         farmingState.farmingTokenMint
-      )?.address
+      )
 
       let userFarmingTokenAccount = farmingTokenAccountAddress
         ? new PublicKey(farmingTokenAccountAddress)
@@ -108,26 +110,17 @@ export const withdrawFarmed = async ({
 
       // create pool token account for user if not exist
       if (!userFarmingTokenAccount) {
-        const poolToken = new Token(
+        const {
+          transaction: createAccountTransaction,
+          newAccountPubkey,
+        } = await createTokenAccountTransaction({
           wallet,
-          connection,
-          new PublicKey(farmingState.farmingTokenMint),
-          TOKEN_PROGRAM_ID
-        )
+          mintPublicKey: new PublicKey(farmingState.farmingTokenMint),
+        })
 
-        const [
-          newUserFarmingTokenAccount,
-          userPoolTokenAccountSignature,
-          userPoolTokenAccountTransaction,
-        ] = await poolToken.createAccount(wallet.publicKey)
-
-        userFarmingTokenAccount = newUserFarmingTokenAccount
-        createdTokensMap.set(
-          farmingState.farmingTokenMint,
-          newUserFarmingTokenAccount
-        )
-        commonTransaction.add(userPoolTokenAccountTransaction)
-        commonSigners.push(userPoolTokenAccountSignature)
+        userFarmingTokenAccount = newAccountPubkey
+        createdTokensMap.set(farmingState.farmingTokenMint, newAccountPubkey)
+        commonTransaction.add(createAccountTransaction)
       }
 
       const endFarmingTransaction = await program.instruction.withdrawFarmed({

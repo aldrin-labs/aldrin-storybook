@@ -41,6 +41,7 @@ import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
+import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 
 export const StakePopup = ({
   theme,
@@ -114,15 +115,20 @@ export const StakePopup = ({
 
   const totalFarmingDailyRewardsUSD = openFarmings.reduce(
     (acc, farmingState) => {
-      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValue(
         { farmingState, totalStakedLpTokensUSD }
       )
 
       const farmingTokenSymbol = getTokenNameByMintAddress(
         farmingState.farmingTokenMint
       )
-      const farmingTokenPrice =
+
+      let farmingTokenPrice =
         dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
+
+      if (farmingTokenSymbol === 'MNDE') {
+        farmingTokenPrice = 0.776352
+      }
 
       const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
         farmingStateDailyFarmingValuePerThousandDollarsLiquidity *
@@ -133,7 +139,8 @@ export const StakePopup = ({
     0
   )
 
-  const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / tvlUSD) * 100
+  const farmingAPR =
+    ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
 
   return (
     <DialogWrapper
@@ -174,7 +181,7 @@ export const StakePopup = ({
         <Text>
           <Row align="flex-start">
             <span style={{ color: '#53DF11', fontFamily: 'Avenir Next Demi' }}>
-              {stripDigitPlaces(formatNumberToUSFormat(farmingAPR), 2)}% APR
+              {formatNumberToUSFormat(stripDigitPlaces(farmingAPR, 2))}% APR
             </span>
           </Row>
         </Text>

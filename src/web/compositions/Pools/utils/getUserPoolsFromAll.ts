@@ -1,21 +1,23 @@
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { getTokenDataByMint } from '.'
 import { PoolInfo } from '../index.types'
 
 export const getUserPoolsFromAll = ({
   poolsInfo,
-  allTokensDataMap,
+  allTokensData,
   farmingTicketsMap,
 }: {
-  allTokensDataMap: Map<string, TokenInfo>
+  allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   poolsInfo: PoolInfo[]
 }) => {
   return poolsInfo.filter((el) => {
-    const poolTokenAmount = allTokensDataMap.has(el.poolTokenMint)
-      ? allTokensDataMap.get(el.poolTokenMint).amount
-      : 0
+    const { amount: poolTokenAmount } = getTokenDataByMint(
+      allTokensData,
+      el.poolTokenMint
+    )
 
     const openFarmingTickets = filterOpenFarmingTickets(
       farmingTicketsMap.get(el.swapToken)

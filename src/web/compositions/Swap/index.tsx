@@ -420,20 +420,24 @@ const SwapPage = ({
                     allTokensData[0]?.address === userBaseTokenAccount ||
                     allTokensData[0]?.address === userQuoteTokenAccount
 
+                  const userPoolBaseTokenAccount = isSwapBaseToQuote
+                    ? userBaseTokenAccount
+                    : userQuoteTokenAccount
+
+                  const userPoolQuoteTokenAccount = isSwapBaseToQuote
+                    ? userQuoteTokenAccount
+                    : userBaseTokenAccount
+
                   const result = await swap({
                     wallet,
                     connection,
                     poolPublicKey: new PublicKey(selectedPool.swapToken),
-                    userBaseTokenAccount: new PublicKey(
-                      isSwapBaseToQuote
-                        ? userBaseTokenAccount
-                        : userQuoteTokenAccount
-                    ),
-                    userQuoteTokenAccount: new PublicKey(
-                      isSwapBaseToQuote
-                        ? userQuoteTokenAccount
-                        : userBaseTokenAccount
-                    ),
+                    userBaseTokenAccount: userPoolBaseTokenAccount
+                      ? new PublicKey(userPoolBaseTokenAccount)
+                      : null,
+                    userQuoteTokenAccount: userPoolQuoteTokenAccount
+                      ? new PublicKey(userPoolQuoteTokenAccount)
+                      : null,
                     swapAmountIn,
                     swapAmountOut,
                     isSwapBaseToQuote,
@@ -530,8 +534,8 @@ const SwapPage = ({
       <SelectCoinPopup
         poolsInfo={getPoolsInfoQuery.getPoolsInfo}
         theme={theme}
-        mints={[...new Set(mints)]}
-        // mints={[...new Set(getPoolsInfoQuery.getPoolsInfo.map(i => [i.tokenA, i.tokenB]).flat())]}
+        // mints={[...new Set(mints)]}
+        mints={[...new Set(getPoolsInfoQuery.getPoolsInfo.map(i => [i.tokenA, i.tokenB]).flat())]}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
         allTokensData={allTokensData}

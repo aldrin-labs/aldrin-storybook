@@ -9,12 +9,10 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import {
-  transferSOLToWrappedAccountAndClose,
-} from '../pools'
+import { transferSOLToWrappedAccountAndClose } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
+import { createTokenAccountTransaction, sendTransaction } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
 
@@ -97,15 +95,16 @@ export async function createBasket({
 
   // create pool token account for user if not exist
   if (!userPoolTokenAccount) {
-    const [
-      newUserPoolTokenAccount,
-      userPoolTokenAccountSignature,
-      userPoolTokenAccountTransaction,
-    ] = await poolToken.createAccount(wallet.publicKey)
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      wallet,
+      mintPublicKey: new PublicKey(poolMint),
+    })
 
-    userPoolTokenAccount = newUserPoolTokenAccount
-    transactionBeforeDeposit.add(userPoolTokenAccountTransaction)
-    commonSigners.push(userPoolTokenAccountSignature)
+    userPoolTokenAccount = newAccountPubkey
+    transactionBeforeDeposit.add(createAccountTransaction)
   }
 
   // if SOL - create new token address
