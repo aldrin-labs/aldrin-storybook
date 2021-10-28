@@ -15,6 +15,8 @@ import {
   useSelectedBaseCurrencyAccount,
   useSelectedQuoteCurrencyAccount,
   useSelectedOpenOrdersAccount,
+  useAllMarketsList,
+  MarketsMap,
 } from '../../dexUtils/markets'
 import { useSerumConnection } from '../../dexUtils/connection'
 import {
@@ -62,10 +64,21 @@ export const SingleChart = (props: SingleChartProps) => {
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const openOrdersAccount = useSelectedOpenOrdersAccount(true)
 
+  const allMarkets = useAllMarketsList()
+
+  // console.log('allMarkets: ', allMarkets)
+
   const iframe = useRef<HTMLIFrameElement | null>(null)
   const cancelCallback = useRef<OrderCancel | null>(null)
   const amendCallback = useRef<OrderAmend | null>(null)
   const sendOrders = useRef<SendOrders | null>(null)
+  const markets = useRef<MarketsMap | null>(null)
+
+  useEffect(() => {
+    if (allMarkets) {
+      markets.current = allMarkets
+    }
+  }, [allMarkets])
 
   useEffect(() => {
     cancelCallback.current = async (orderId: string) => {
@@ -136,6 +149,15 @@ export const SingleChart = (props: SingleChartProps) => {
             if (!amendResult && sendOrders.current) {
               sendOrders.current(true)
             }
+          }
+          return true
+        }
+        case MESSAGE_TYPE.GET_SYMBOLS: {
+          const marketsList = markets.current
+          if (marketsList) {
+            const symbols = [...marketsList.values()].map((_) => _.name)
+            const message = { messageType: MESSAGE_TYPE.SYMBOLS, symbols }
+            iframe.current?.contentWindow?.postMessage(message, '*')
           }
           return true
         }

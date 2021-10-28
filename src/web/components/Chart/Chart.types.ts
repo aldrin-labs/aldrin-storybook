@@ -2,6 +2,8 @@ import { Theme } from '@material-ui/core'
 
 export enum MESSAGE_TYPE {
   ACCOUNT_ORDERS = 'ACCOUNT_ORDERS',
+  GET_SYMBOLS = 'GET_SYMBOLS',
+  SYMBOLS = 'SYMBOLS',
   ORDER_AMEND = 'ORDER_AMEND',
   ORDER_CANCEL = 'ORDER_CANCEL',
 }
