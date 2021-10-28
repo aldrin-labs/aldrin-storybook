@@ -542,7 +542,7 @@ export const TablesDetails = ({
             <Row direction="column" width="55%" align="flex-end">
               <Button
                 theme={theme}
-                btnWidth={'auto'}
+                btnWidth={'14rem'}
                 padding={'0 2rem'}
                 disabled={isPoolWaitingForUpdateAfterStake}
                 onClick={async () => {
