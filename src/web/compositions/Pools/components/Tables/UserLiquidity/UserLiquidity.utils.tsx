@@ -221,7 +221,7 @@ export const combineUserLiquidityData = ({
         0
       )
 
-      const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / tvlUSD) * 100
+      const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
 
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,

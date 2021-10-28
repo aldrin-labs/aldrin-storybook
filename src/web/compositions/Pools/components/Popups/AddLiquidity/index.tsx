@@ -37,6 +37,11 @@ import { Button } from '../../Tables/index.styles'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -220,6 +225,49 @@ export const AddLiquidityPopup = ({
     baseTokenPrice * selectedPool.tvl.tokenA +
     quoteTokenPrice * selectedPool.tvl.tokenB
 
+  const isPoolWithFarming =
+    selectedPool.farming && selectedPool.farming.length > 0
+  const openFarmings = isPoolWithFarming
+    ? filterOpenFarmingStates(selectedPool.farming)
+    : []
+
+  const poolTokenPrice = calculatePoolTokenPrice({
+    pool: selectedPool,
+    dexTokensPricesMap,
+  })
+
+  const totalStakedLpTokensUSD =
+    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice
+
+  const totalFarmingDailyRewardsUSD = openFarmings.reduce(
+    (acc, farmingState) => {
+      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValue(
+        { farmingState, totalStakedLpTokensUSD }
+      )
+
+      const farmingTokenSymbol = getTokenNameByMintAddress(
+        farmingState.farmingTokenMint
+      )
+
+      let farmingTokenPrice =
+        dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
+
+      if (farmingTokenSymbol === 'MNDE') {
+        farmingTokenPrice = 0.776352
+      }
+
+      const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
+        farmingStateDailyFarmingValuePerThousandDollarsLiquidity *
+        farmingTokenPrice
+
+      return acc + farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD
+    },
+    0
+  )
+
+  const farmingAPR =
+    ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+
   return (
     <DialogWrapper
       theme={theme}
@@ -326,14 +374,14 @@ export const AddLiquidityPopup = ({
               fontFamily={'Avenir Next Demi'}
               style={{ marginLeft: '1rem' }}
             >
-              ${formatNumberToUSFormat(stripDigitPlaces(tvlUSD, 2))}
+              ${stripByAmountAndFormat(tvlUSD)}
             </Text>
           </Row>
         </Row>
         <Row direction={'column'} align="flex-end">
           <Row wrap="nowrap" margin={'0 0 1rem 0'}>
             <Text style={{ whiteSpace: 'nowrap' }} fontSize={'1.4rem'}>
-              APR (24h){' '}
+              APR{' '}
             </Text>{' '}
             <DarkTooltip
               title={
@@ -357,7 +405,10 @@ export const AddLiquidityPopup = ({
               color={'#53DF11'}
               fontFamily={'Avenir Next Demi'}
             >
-              {stripDigitPlaces(selectedPool.apy24h, 6)}%
+              {formatNumberToUSFormat(
+                stripDigitPlaces(+selectedPool.apy24h + farmingAPR, 2)
+              )}
+              %
             </Text>
           </Row>
         </Row>

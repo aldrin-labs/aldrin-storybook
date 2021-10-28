@@ -114,7 +114,7 @@ export const TablesDetails = ({
 
   const unlockAvailableDate =
     lastFarmingTicket && isPoolWithFarming
-      ? +lastFarmingTicket.startTime + +pool.farming[0].periodLength
+      ? +lastFarmingTicket.startTime + +pool.farming[0].periodLength + 60 * 20
       : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
