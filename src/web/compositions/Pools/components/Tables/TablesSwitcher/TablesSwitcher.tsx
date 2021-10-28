@@ -30,6 +30,7 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
+import { getRandomInt } from '@core/utils/helpers'
 
 const TablesSwitcher = ({
   theme,
@@ -271,13 +272,13 @@ export default compose(
     name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
-    pollInterval: 60000,
+    pollInterval: 60000 * getRandomInt(1, 3),
   }),
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
-    pollInterval: 60000,
+    pollInterval: 60000 * getRandomInt(1, 2),
   }),
   queryRendererHoc({
     query: getFeesEarnedByAccount,
@@ -287,6 +288,6 @@ export default compose(
     }),
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
-    pollInterval: 60000 * 6,
+    pollInterval: 60000 * getRandomInt(5, 10),
   })
 )(TablesSwitcher)
