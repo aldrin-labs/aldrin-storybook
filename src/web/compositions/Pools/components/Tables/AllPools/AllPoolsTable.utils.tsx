@@ -37,6 +37,10 @@ import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -74,7 +78,7 @@ export const allPoolsTableColumnsNames = [
         <span>APR</span>{' '}
         <DarkTooltip
           title={
-            'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h not taking into account the reward for farming.'
+            'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming rewards.'
           }
         >
           <div>
@@ -205,6 +209,44 @@ export const combineAllPoolsData = ({
         ? filterOpenFarmingStates(pool.farming)
         : []
 
+      const totalFarmingDailyRewardsUSD = openFarmings.reduce(
+        (acc, farmingState) => {
+          const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+            { farmingState, totalStakedLpTokensUSD }
+          )
+
+          const farmingTokenSymbol = getTokenNameByMintAddress(
+            farmingState.farmingTokenMint
+          )
+
+          let farmingTokenPrice =
+            dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
+
+          if (farmingTokenSymbol === 'MNDE') {
+            farmingTokenPrice = 0.776352
+          }
+          // console.log({
+          //   pool,
+          //   farmingTokenSymbol,
+          //   farmingStateDailyFarmingValuePerThousandDollarsLiquidity,
+          //   tvlUSD,
+          //   farmingTokenPrice,
+          //   mint: farmingState.farmingTokenMint,
+          // })
+
+          const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
+            farmingStateDailyFarmingValuePerThousandDollarsLiquidity *
+            farmingTokenPrice
+
+          return (
+            acc + farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD
+          )
+        },
+        0
+      )
+
+      const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / tvlUSD) * 100
+
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
         pool: {
@@ -224,7 +266,7 @@ export const combineAllPoolsData = ({
                 />
               </Link>
               {/* TODO: show locked liquidity depending on backend data, not for all pools */}
-              {true ? (
+              {/* {true ? (
                 <DarkTooltip title={'Founders liquidity locked.'}>
                   <div>
                     <SvgIcon
@@ -250,7 +292,7 @@ export const combineAllPoolsData = ({
                     />
                   </div>
                 </DarkTooltip>
-              ) : null}
+              ) : null} */}
             </Row>
           ),
           contentToSort: `${baseSymbol}${quoteSymbol}`,
@@ -308,10 +350,13 @@ export const combineAllPoolsData = ({
               fontFamily="Avenir Next Medium"
               theme={theme}
             >
-              {stripByAmountAndFormat(apy)}%
+              {formatNumberToUSFormat(
+                stripDigitPlaces(pool.apy24h + farmingAPR, 2)
+              )}
+              %
             </RowDataTdText>
           ),
-          contentToSort: apy,
+          contentToSort: pool.apy24h,
         },
         farming: {
           render: isPoolWithFarming ? (
@@ -345,32 +390,16 @@ export const combineAllPoolsData = ({
                     <span style={{ color: '#53DF11' }}>Ended</span>
                   </RowDataTdText>
                 ) : (
-                  openFarmings.map((farmingState, i, arr) => {
-                    const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
-                      { farmingState, totalStakedLpTokensUSD }
-                    )
-
-                    return (
-                      <RowDataTdText>
-                        <span style={{ color: '#53DF11' }}>
-                          {stripByAmountAndFormat(
-                            farmingStateDailyFarmingValuePerThousandDollarsLiquidity
-                          )}
-                        </span>{' '}
-                        {getTokenNameByMintAddress(
-                          farmingState.farmingTokenMint
-                        )}
-                        {/* + between every farming state token to be farmed, except last. for last - per day */}
-                        {i !== arr.length - 1 ? <span> + </span> : null}
-                        {i === arr.length - 1 ? <span> / Day</span> : null}
-                      </RowDataTdText>
-                    )
-                  })
-                )}
-                {openFarmings.length > 0 && (
                   <RowDataTdText>
-                    {' '}
-                    for each <span style={{ color: '#53DF11' }}>$1000</span>
+                    <span
+                      style={{
+                        color: '#53DF11',
+                        fontFamily: 'Avenir Next Demi',
+                      }}
+                    >
+                      {formatNumberToUSFormat(stripDigitPlaces(farmingAPR, 2))}%
+                    </span>{' '}
+                    APR
                   </RowDataTdText>
                 )}
               </Row>
@@ -378,15 +407,7 @@ export const combineAllPoolsData = ({
           ) : (
             '-'
           ),
-          contentToSort: openFarmings.reduce((acc, farmingState) => {
-            return (
-              acc +
-              getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
-                farmingState,
-                totalStakedLpTokensUSD,
-              })
-            )
-          }, 0),
+          contentToSort: farmingAPR,
         },
         details: {
           render: (

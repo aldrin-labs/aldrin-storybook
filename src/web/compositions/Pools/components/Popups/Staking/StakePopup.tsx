@@ -36,6 +36,11 @@ import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 export const StakePopup = ({
   theme,
@@ -63,7 +68,7 @@ export const StakePopup = ({
     address: userPoolTokenAccount,
     decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
-  console.log('selectedPool:',allTokensData, selectedPool)
+  console.log('selectedPool:', allTokensData, selectedPool)
   const [poolTokenAmount, setPoolTokenAmount] = useState<number | string>(
     maxPoolTokenAmount
   )
@@ -86,10 +91,49 @@ export const StakePopup = ({
   const totalStakedLpTokensUSD =
     selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice
 
+  const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
+  const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
+
+  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
+  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
+
+  const tvlUSD =
+    baseTokenPrice * selectedPool.tvl.tokenA +
+    quoteTokenPrice * selectedPool.tvl.tokenB
+
+  const isPoolWithFarming =
+    selectedPool.farming && selectedPool.farming.length > 0
+  const openFarmings = isPoolWithFarming
+    ? filterOpenFarmingStates(selectedPool.farming)
+    : []
+
   const stakedWithEnteredPoolTokensUSD =
     (stakedTokens + +poolTokenAmount) * poolTokenPrice
 
   if (!farmingState) return null
+
+  const totalFarmingDailyRewardsUSD = openFarmings.reduce(
+    (acc, farmingState) => {
+      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+        { farmingState, totalStakedLpTokensUSD }
+      )
+
+      const farmingTokenSymbol = getTokenNameByMintAddress(
+        farmingState.farmingTokenMint
+      )
+      const farmingTokenPrice =
+        dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
+
+      const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
+        farmingStateDailyFarmingValuePerThousandDollarsLiquidity *
+        farmingTokenPrice
+
+      return acc + farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD
+    },
+    0
+  )
+
+  const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / tvlUSD) * 100
 
   return (
     <DialogWrapper
@@ -129,25 +173,9 @@ export const StakePopup = ({
         <Text>Est. rewards:</Text>
         <Text>
           <Row align="flex-start">
-            {selectedPool.farming.map((farmingState, i, arr) => {
-              const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
-                { farmingState, totalStakedLpTokensUSD }
-              )
-
-              return (
-                <>
-                  <span style={{ color: '#53DF11', paddingRight: '.5rem' }}>
-                    {stripByAmountAndFormat(
-                      farmingStateDailyFarmingValuePerThousandDollarsLiquidity
-                    )}
-                  </span>{' '}
-                  {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
-                  <span style={{ padding: '0 .5rem' }}>
-                    {i === arr.length - 1 ? ' / Day' : '+'}
-                  </span>
-                </>
-              )
-            })}
+            <span style={{ color: '#53DF11', fontFamily: 'Avenir Next Demi' }}>
+              {stripDigitPlaces(formatNumberToUSFormat(farmingAPR), 2)}% APR
+            </span>
           </Row>
         </Text>
       </RowContainer>
