@@ -18,17 +18,18 @@ import { createTokenAccountTransaction, sendTransaction } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
 import { FarmingTicket } from '../common/types'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
 export const withdrawFarmed = async ({
   wallet,
   connection,
-  allTokensDataMap,
+  allTokensData,
   farmingTickets,
   pool,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  allTokensDataMap: Map<string, TokenInfo>
+  allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
   pool: PoolInfo
 }) => {
@@ -91,9 +92,10 @@ export const withdrawFarmed = async ({
       // check amount for every farming state
       if (amountToClaim === 0) continue
 
-      const farmingTokenAccountAddress = allTokensDataMap.get(
+      const { address: farmingTokenAccountAddress } = getTokenDataByMint(
+        allTokensData,
         farmingState.farmingTokenMint
-      )?.address
+      )
 
       let userFarmingTokenAccount = farmingTokenAccountAddress
         ? new PublicKey(farmingTokenAccountAddress)

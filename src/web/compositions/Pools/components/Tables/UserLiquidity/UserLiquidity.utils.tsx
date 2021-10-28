@@ -40,6 +40,7 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { getFarmingStateDailyFarmingValue } from './utils/getFarmingStateDailyFarmingValue'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
 export const userLiquidityTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -102,7 +103,7 @@ export const combineUserLiquidityData = ({
   usersPools,
   expandedRows,
   poolWaitingForUpdateAfterOperation,
-  allTokensDataMap,
+  allTokensData,
   dexTokensPricesMap,
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
@@ -120,7 +121,7 @@ export const combineUserLiquidityData = ({
   usersPools: PoolInfo[]
   expandedRows: string[]
   poolWaitingForUpdateAfterOperation: PoolWithOperation
-  allTokensDataMap: Map<string, TokenInfo>
+  allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
@@ -153,10 +154,7 @@ export const combineUserLiquidityData = ({
       const {
         amount: poolTokenRawAmount,
         decimals: poolTokenDecimals,
-      } = allTokensDataMap.get(pool.poolTokenMint) || {
-        amount: 0,
-        decimals: 0,
-      }
+      } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
 
       const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 
@@ -221,7 +219,8 @@ export const combineUserLiquidityData = ({
         0
       )
 
-      const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+      const farmingAPR =
+        ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
 
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
@@ -441,7 +440,7 @@ export const combineUserLiquidityData = ({
                   farmingTicketsMap={farmingTicketsMap}
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
                   dexTokensPricesMap={dexTokensPricesMap}
-                  allTokensDataMap={allTokensDataMap}
+                  allTokensData={allTokensData}
                   poolWaitingForUpdateAfterOperation={
                     poolWaitingForUpdateAfterOperation
                   }

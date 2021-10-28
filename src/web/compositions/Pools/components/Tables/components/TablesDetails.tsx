@@ -37,14 +37,17 @@ import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingT
 import { notify } from '@sb/dexUtils/notifications'
 import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
 export const TablesDetails = ({
   theme,
   pool,
   poolWaitingForUpdateAfterOperation,
-  allTokensDataMap,
+  allTokensData,
   dexTokensPricesMap,
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
@@ -59,7 +62,7 @@ export const TablesDetails = ({
   theme: Theme
   pool: PoolInfo
   poolWaitingForUpdateAfterOperation: PoolWithOperation
-  allTokensDataMap: Map<string, TokenInfo>
+  allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   dexTokensPricesMap: Map<string, DexTokensPrices>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
@@ -77,7 +80,10 @@ export const TablesDetails = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const poolTokenAmount = allTokensDataMap.get(pool.poolTokenMint)?.amount || 0
+  const { amount: poolTokenAmount } = getTokenDataByMint(
+    allTokensData,
+    pool.poolTokenMint
+  )
   const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 
   const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
@@ -466,9 +472,9 @@ export const TablesDetails = ({
                   return (
                     <>
                       <AmountText style={{ padding: '0 0.5rem' }}>
-                        {formatNumberToUSFormat(stripDigitPlaces(
-                          availableToClaimFromFarmingState, 2
-                        ))}
+                        {formatNumberToUSFormat(
+                          stripDigitPlaces(availableToClaimFromFarmingState, 2)
+                        )}
                       </AmountText>
                       {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
                       {i !== arr.length - 1 ? ' +' : ''}
@@ -505,7 +511,7 @@ export const TablesDetails = ({
                       wallet,
                       connection,
                       pool,
-                      allTokensDataMap,
+                      allTokensData,
                       farmingTickets,
                     })
 

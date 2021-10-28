@@ -131,7 +131,7 @@ export const combineAllPoolsData = ({
   dexTokensPricesMap,
   feesPerPoolMap,
   expandedRows,
-  allTokensDataMap,
+  allTokensData,
   farmingTicketsMap,
   tradingVolumesMap,
   earnedFeesInPoolForUserMap,
@@ -151,7 +151,7 @@ export const combineAllPoolsData = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: Map<string, FeesEarned>
   expandedRows: string[]
-  allTokensDataMap: Map<string, TokenInfo>
+  allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   tradingVolumesMap: Map<string, { weekly: number; daily: number }>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
@@ -466,7 +466,7 @@ export const combineAllPoolsData = ({
                   earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
                   farmingTicketsMap={farmingTicketsMap}
                   dexTokensPricesMap={dexTokensPricesMap}
-                  allTokensDataMap={allTokensDataMap}
+                  allTokensData={allTokensData}
                   theme={theme}
                   pool={pool}
                 />

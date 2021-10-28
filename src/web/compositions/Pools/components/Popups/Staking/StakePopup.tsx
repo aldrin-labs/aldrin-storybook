@@ -139,7 +139,8 @@ export const StakePopup = ({
     0
   )
 
-  const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+  const farmingAPR =
+    ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
 
   return (
     <DialogWrapper
@@ -180,7 +181,7 @@ export const StakePopup = ({
         <Text>
           <Row align="flex-start">
             <span style={{ color: '#53DF11', fontFamily: 'Avenir Next Demi' }}>
-              {stripDigitPlaces(formatNumberToUSFormat(farmingAPR), 2)}% APR
+              {formatNumberToUSFormat(stripDigitPlaces(farmingAPR, 2))}% APR
             </span>
           </Row>
         </Text>
