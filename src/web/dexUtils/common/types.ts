@@ -14,7 +14,8 @@ export type PoolAddress = string
 export type FarmingState = {
   farmingState: string
   farmingTokenVault: string
-  farmingTokenMint: string
+  farmingTokenMint?: string
+  farmingTokenMintDecimals?: number
   farmingSnapshots: string
   tokensUnlocked: number
   tokensTotal: number

@@ -1,7 +1,7 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { useState, useEffect } from 'react'
 import { FarmingTicket } from '../common/types'
-import { addAmountsToClaimForFarmingTickets } from '../pools/addAmountsToClaimForFarmingTickets'
+import { addAmountsToClaimForFarmingTickets } from '../common/addAmountsToClaimForFarmingTickets'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { RefreshFunction, WalletAdapter } from '../types'
 import { StakingPool } from './types'
