@@ -48,7 +48,8 @@ const orderToMessage = (order: any): Order => {
 const round = (v: number, dec: number) => Math.round(v / dec) * dec
 
 type OrderCancel = (orderId: string) => void
-type OrderAmend = (orderId: string, price: number) => void
+type OrderAmend = (orderId: string, price: number) => Promise<boolean>
+type SendOrders = (force: boolean) => void
 
 export const SingleChart = (props: SingleChartProps) => {
   const { additionalUrl, themeMode } = props
@@ -64,6 +65,7 @@ export const SingleChart = (props: SingleChartProps) => {
   const iframe = useRef<HTMLIFrameElement | null>(null)
   const cancelCallback = useRef<OrderCancel | null>(null)
   const amendCallback = useRef<OrderAmend | null>(null)
+  const sendOrders = useRef<SendOrders | null>(null)
 
   useEffect(() => {
     cancelCallback.current = async (orderId: string) => {
@@ -88,17 +90,24 @@ export const SingleChart = (props: SingleChartProps) => {
         baseCurrencyAccount &&
         quoteCurrencyAccount
       ) {
-        await amendOrder({
-          order,
-          market: order.market,
-          connection,
-          wallet,
-          amendOrder: { price: round(price, order.market.tickSize) },
-          baseCurrencyAccount,
-          quoteCurrencyAccount,
-          openOrdersAccount,
-        })
+        try {
+          await amendOrder({
+            order,
+            market: order.market,
+            connection,
+            wallet,
+            amendOrder: { price: round(price, order.market.tickSize) },
+            baseCurrencyAccount,
+            quoteCurrencyAccount,
+            openOrdersAccount,
+          })
+
+          return true
+        } catch (e) {
+          return false
+        }
       }
+      return false
     }
   }, [
     connection,
@@ -110,7 +119,7 @@ export const SingleChart = (props: SingleChartProps) => {
   ])
 
   useEffect(() => {
-    const listener = (e: MessageEvent) => {
+    const listener = async (e: MessageEvent) => {
       const { data } = e
       switch (data.messageType) {
         case MESSAGE_TYPE.ORDER_CANCEL: {
@@ -123,7 +132,10 @@ export const SingleChart = (props: SingleChartProps) => {
         case MESSAGE_TYPE.ORDER_AMEND: {
           const amend = amendCallback.current
           if (amend) {
-            amend(data.orderId, data.price)
+            const amendResult =  await amend(data.orderId, data.price)
+            if (!amendResult && sendOrders.current) {
+              sendOrders.current(true)
+            }
           }
           return true
         }
@@ -136,10 +148,13 @@ export const SingleChart = (props: SingleChartProps) => {
   }, [])
 
   useEffect(() => {
-    if (openOrders && iframe.current) {
-      const orders = openOrders.map(orderToMessage)
-      const message = { messageType: MESSAGE_TYPE.ACCOUNT_ORDERS, orders }
-      iframe?.current.contentWindow?.postMessage(message, '*')
+    if (openOrders) {
+      sendOrders.current = (force: boolean) => {
+        const orders = openOrders.map(orderToMessage)
+        const message = { messageType: MESSAGE_TYPE.ACCOUNT_ORDERS, orders, force }
+        iframe.current?.contentWindow?.postMessage(message, '*')
+      }
+      sendOrders.current(false)
     }
   }, [openOrders])
 
@@ -150,7 +165,7 @@ export const SingleChart = (props: SingleChartProps) => {
         style={{ borderWidth: 0 }}
         src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${
           themeMode === 'light' ? 'light' : 'serum'
-        }&isMobile=${isMobile}`}
+          }&isMobile=${isMobile}`}
         height="100%"
         id={`tv_chart_${themeMode}`}
         title="Chart"

@@ -496,7 +496,7 @@ const generatePlacOrderTransactions = async (data: PlaceOrder) => {
   } = data
 
   let { baseCurrencyAccount, quoteCurrencyAccount, openOrdersAccount } = data
-  console.log('Place order', market?.minOrderSize, size)
+
   const isValidationSuccessfull = validateVariablesForPlacingOrder({
     price,
     size,
