@@ -38,6 +38,7 @@ import { notify } from '@sb/dexUtils/notifications'
 import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
 export const TablesDetails = ({
   theme,

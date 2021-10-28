@@ -9,7 +9,7 @@ import {
 } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
+import { createTokenAccountTransaction, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { Side } from '../common/config'
 import { Token } from '../token/token'
@@ -125,41 +125,29 @@ export const swap = async ({
 
   // create pool token account for user if not exist
   if (!userBaseTokenAccount) {
-    const baseToken = new Token(
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
       wallet,
-      connection,
-      new PublicKey(baseTokenMint),
-      TOKEN_PROGRAM_ID
-    )
+      mintPublicKey: new PublicKey(baseTokenMint),
+    })
 
-    const [
-      newUserBaseTokenAccount,
-      userBaseAccountSignature,
-      userBaseAccountTransaction,
-    ] = await baseToken.createAccount(wallet.publicKey)
-
-    userBaseTokenAccount = newUserBaseTokenAccount
-    transactionBeforeSwap.add(userBaseAccountTransaction)
-    commonSigners.push(userBaseAccountSignature)
+    userBaseTokenAccount = newAccountPubkey
+    transactionBeforeSwap.add(createAccountTransaction)
   }
 
   if (!userQuoteTokenAccount) {
-    const quoteToken = new Token(
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
       wallet,
-      connection,
-      new PublicKey(quoteTokenMint),
-      TOKEN_PROGRAM_ID
-    )
+      mintPublicKey: new PublicKey(quoteTokenMint),
+    })
 
-    const [
-      newUserQuoteTokenAccount,
-      userQuoteAccountSignature,
-      userQuoteAccountTransaction,
-    ] = await quoteToken.createAccount(wallet.publicKey)
-
-    userQuoteTokenAccount = newUserQuoteTokenAccount
-    transactionBeforeSwap.add(userQuoteAccountTransaction)
-    commonSigners.push(userQuoteAccountSignature)
+    userQuoteTokenAccount = newAccountPubkey
+    transactionBeforeSwap.add(createAccountTransaction)
   }
 
   let commonTransaction = new Transaction()
