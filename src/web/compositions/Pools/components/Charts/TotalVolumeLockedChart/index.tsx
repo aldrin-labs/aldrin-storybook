@@ -24,6 +24,7 @@ import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTota
 import { Line } from '../../Popups/index.styles'
 import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
 import { msToNextHour } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
 
 const TotalVolumeLockedChart = ({
   theme,
@@ -82,6 +83,6 @@ export default compose(
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
-    pollInterval: 60000,
+    pollInterval: 60000 * getRandomInt(1, 3),
   })
 )(TotalVolumeLockedChart)
