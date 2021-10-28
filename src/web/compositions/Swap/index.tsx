@@ -530,7 +530,8 @@ const SwapPage = ({
       <SelectCoinPopup
         poolsInfo={getPoolsInfoQuery.getPoolsInfo}
         theme={theme}
-        mints={[...new Set(getPoolsInfoQuery.getPoolsInfo.map(i => [i.tokenA, i.tokenB]).flat())]}
+        mints={[...new Set(mints)]}
+        // mints={[...new Set(getPoolsInfoQuery.getPoolsInfo.map(i => [i.tokenA, i.tokenB]).flat())]}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
         allTokensData={allTokensData}
