@@ -47,7 +47,7 @@ export const userLiquidityTableColumnsNames = [
   {
     label: (
       <>
-        <span>APY</span>{' '}
+        <span>APR</span>{' '}
         <DarkTooltip
           title={
             'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h not taking into account the reward for farming.'
