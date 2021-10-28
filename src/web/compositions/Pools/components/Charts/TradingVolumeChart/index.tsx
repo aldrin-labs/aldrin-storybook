@@ -25,6 +25,7 @@ import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { estimatedTime, msToNextHour } from '@core/utils/dateUtils'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
+import { getRandomInt } from '@core/utils/helpers'
 
 const TradingVolumeChart = ({
   theme,
@@ -88,6 +89,6 @@ export default compose(
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
-    pollInterval: 60000,
+    pollInterval: 60000 * getRandomInt(1, 3),
   })
 )(TradingVolumeChart)

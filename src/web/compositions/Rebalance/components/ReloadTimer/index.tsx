@@ -18,7 +18,7 @@ export const TimerButton = styled.div`
 export const ReloadTimer = ({
   size = 23,
   duration = 10,
-  initialRemainingTime = 0,
+  initialRemainingTime = 10,
   color = '#651CE4',
   trailColor = '#383B45',
   callback,
@@ -57,6 +57,7 @@ export const ReloadTimer = ({
         trailColor={trailColor}
         onComplete={() => {
           callback()
+          rerender(rerenderCounter + 1)
           return [true, 0]
         }}
       />

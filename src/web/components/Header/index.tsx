@@ -65,13 +65,10 @@ export const Header = () => {
         <LinksBlock>{feedbackLinks}</LinksBlock>
         <MainLinksWrap>
           <MainLinksBlock>
-            {/* <DropDown text="Trading" isActive={isTradingActive}>
+            <DropDown text="Trading" isActive={isTradingActive}>
               <NavLink to="/chart" activeClassName="selected">Terminal</NavLink>
               <NavLink to="/swap" activeClassName="selected">Swap</NavLink>
-            </DropDown> */}
-            <NavLink to="/chart" activeClassName="selected">
-              Trading
-            </NavLink>
+            </DropDown>
 
             <NavLink to="/rebalance" activeClassName="selected">
               Rebalance

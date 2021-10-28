@@ -15,14 +15,13 @@ import {
 } from '@sb/dexUtils/markets'
 import { SelectSeveralAddressesPopup } from '../../Pools/components/Popups/SelectorForSeveralAddresses'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
-import { TokenLabel } from '../styles'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 55rem;
@@ -44,7 +43,6 @@ export const SelectCoinPopup = ({
   open,
   mints,
   allTokensData,
-  dexTokensPrices,
   poolsInfo,
   isBaseTokenSelecting,
   close,
@@ -59,7 +57,6 @@ export const SelectCoinPopup = ({
   mints: string[]
   isBaseTokenSelecting: boolean
   allTokensData: TokenInfo[]
-  dexTokensPrices: DexTokensPrices[]
   poolsInfo: PoolInfo[]
   close: () => void
   selectTokenMintAddress: (address: string) => void

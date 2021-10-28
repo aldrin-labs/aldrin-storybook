@@ -122,9 +122,9 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <BigNumber>{stripByAmount(apy, 4)}%</BigNumber>
+              <BigNumber>{stripByAmount(apy, 2)}%</BigNumber>
               <StretchedBlock>
-                <Number>APY</Number>
+                <Number>APR</Number>
                 <div>
                   <ShareButton text={shareText}></ShareButton>
                 </div>

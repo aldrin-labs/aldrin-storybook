@@ -37,6 +37,7 @@ import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingT
 import { notify } from '@sb/dexUtils/notifications'
 import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 export const TablesDetails = ({
   theme,
@@ -464,9 +465,9 @@ export const TablesDetails = ({
                   return (
                     <>
                       <AmountText style={{ padding: '0 0.5rem' }}>
-                        {stripByAmountAndFormat(
-                          availableToClaimFromFarmingState
-                        )}
+                        {formatNumberToUSFormat(stripDigitPlaces(
+                          availableToClaimFromFarmingState, 2
+                        ))}
                       </AmountText>
                       {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
                       {i !== arr.length - 1 ? ' +' : ''}
@@ -541,7 +542,7 @@ export const TablesDetails = ({
             <Row direction="column" width="55%" align="flex-end">
               <Button
                 theme={theme}
-                btnWidth={'auto'}
+                btnWidth={'14rem'}
                 padding={'0 2rem'}
                 disabled={isPoolWaitingForUpdateAfterStake}
                 onClick={async () => {

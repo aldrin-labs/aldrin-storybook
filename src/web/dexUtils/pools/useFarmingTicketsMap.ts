@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Connection } from '@solana/web3.js'
 import { RefreshFunction, WalletAdapter } from '../types'
 import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
-import { addAmountsToClaimForFarmingTickets } from './addAmountsToClaimForFarmingTickets'
+import { addAmountsToClaimForFarmingTickets } from '../common/addAmountsToClaimForFarmingTickets'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { FarmingTicket, PoolAddress } from '../common/types'
 
