@@ -1,7 +1,7 @@
 import { dayDuration } from '@core/utils/dateUtils'
 import { FarmingState } from '@sb/compositions/Pools/index.types'
 
-export const getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity = ({
+export const getFarmingStateDailyFarmingValue = ({
   farmingState,
   totalStakedLpTokensUSD,
 }: {
@@ -16,8 +16,5 @@ export const getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity = ({
   const dailyFarmingValue =
     tokensPerPeriod * (dayDuration / farmingState.periodLength)
 
-  const dailyFarmingValuePerThousandDollarsLiquidity =
-    dailyFarmingValue * (1000 / totalStakedLpTokensUSD)
-
-  return dailyFarmingValuePerThousandDollarsLiquidity
+  return dailyFarmingValue
 }
