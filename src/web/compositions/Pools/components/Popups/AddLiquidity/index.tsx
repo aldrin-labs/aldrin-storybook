@@ -333,7 +333,7 @@ export const AddLiquidityPopup = ({
         <Row direction={'column'} align="flex-end">
           <Row wrap="nowrap" margin={'0 0 1rem 0'}>
             <Text style={{ whiteSpace: 'nowrap' }} fontSize={'1.4rem'}>
-              APY (24h){' '}
+              APR (24h){' '}
             </Text>{' '}
             <DarkTooltip
               title={
