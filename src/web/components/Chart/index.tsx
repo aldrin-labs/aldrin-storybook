@@ -150,7 +150,7 @@ export const SingleChart = (props: SingleChartProps) => {
         style={{ borderWidth: 0 }}
         src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${
           themeMode === 'light' ? 'light' : 'serum'
-        }&isMobile=${isMobile}`}
+        }&isMobile=${isMobile}${wallet.connected ? `&user_id=${wallet.publicKey}` : ''}
         height="100%"
         id={`tv_chart_${themeMode}`}
         title="Chart"

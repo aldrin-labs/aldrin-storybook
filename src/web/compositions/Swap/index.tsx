@@ -132,38 +132,50 @@ const SwapPage = ({
     openTransactionSettingsPopup,
   ] = useState(false)
 
-  const isBaseTokenA = selectedPool?.tokenA === baseTokenMintAddress
+  const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
 
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
-  const setQuoteAmountWithBase = (quoteAmount: string | number) => {
-    const baseAmount = isBaseTokenA
-      ? stripDigitPlaces(
-          +quoteAmount * (+poolAmountTokenA / +poolAmountTokenB),
-          8
-        )
-      : stripDigitPlaces(
-          +quoteAmount * (+poolAmountTokenB / +poolAmountTokenA),
-          8
-        )
-    setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
+  const setQuoteAmountWithBase = (newQuoteAmount: string | number) => {
+    const poolsAmountDiff = isSwapBaseToQuote
+      ? +poolAmountTokenB / +newQuoteAmount
+      : +poolAmountTokenA / +newQuoteAmount
+
+    const priceImpact = 100 / (poolsAmountDiff + 1)
+    const newBaseAmount = isSwapBaseToQuote
+      ? +newQuoteAmount * (+poolAmountTokenA / +poolAmountTokenB)
+      : +newQuoteAmount * (+poolAmountTokenB / +poolAmountTokenA)
+
+    const newBaseAmountWithPriceImpact =
+      newBaseAmount - (newBaseAmount / 100) * priceImpact
+    const strippedBaseAmount = stripDigitPlaces(newBaseAmountWithPriceImpact, 8)
+
+    setBaseAmount(strippedBaseAmount)
+    setQuoteAmount(newQuoteAmount)
   }
 
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
 
-  const setBaseAmountWithQuote = (baseAmount: string | number) => {
-    const quoteAmount = isBaseTokenA
-      ? stripDigitPlaces(
-          +baseAmount * (+poolAmountTokenB / +poolAmountTokenA),
-          8
-        )
-      : stripDigitPlaces(
-          +baseAmount * (+poolAmountTokenA / +poolAmountTokenB),
-          8
-        )
-    setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
+  const setBaseAmountWithQuote = (newBaseAmount: string | number) => {
+    const poolsAmountDiff = isSwapBaseToQuote
+      ? +poolAmountTokenA / +newBaseAmount
+      : +poolAmountTokenB / +newBaseAmount
+
+    const priceImpact = 100 / (poolsAmountDiff + 1)
+    const newQuoteAmount = isSwapBaseToQuote
+      ? +newBaseAmount * (+poolAmountTokenA / +poolAmountTokenB)
+      : +newBaseAmount * (+poolAmountTokenB / +poolAmountTokenA)
+
+    const newQuoteAmountWithPriceImpact =
+      newQuoteAmount - (newQuoteAmount / 100) * priceImpact
+
+    const strippedQuoteAmount = stripDigitPlaces(
+      newQuoteAmountWithPriceImpact,
+      8
+    )
+
+    setBaseAmount(newBaseAmount)
+    setQuoteAmount(strippedQuoteAmount)
   }
 
   const baseSymbol = baseTokenMintAddress
@@ -173,8 +185,6 @@ const SwapPage = ({
   const quoteSymbol = quoteTokenMintAddress
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
     : 'SOL'
-
-  const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
 
   const {
     baseTokenAmount: poolAmountTokenA,
@@ -201,14 +211,6 @@ const SwapPage = ({
     selectedQuoteTokenAddressFromSeveral
   )
 
-  const mints = allTokensData.map((tokenInfo: TokenInfo) => tokenInfo.mint)
-
-  // const filteredMints = [...new Set(mints)]
-
-  // const isNativeSOLSelected =
-  //   allTokensData[0]?.address === userBaseTokenAccount ||
-  //   allTokensData[0]?.address === userQuoteTokenAccount
-
   const reverseTokens = () => {
     setBaseTokenMintAddress(quoteTokenMintAddress)
     setQuoteTokenMintAddress(baseTokenMintAddress)
@@ -222,19 +224,16 @@ const SwapPage = ({
 
   // price impact due to curve
   const rawSlippage = 100 / (poolsAmountDiff + 1)
-  const sumFeesPercentages = slippageTolerance + rawSlippage
-  const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
+  const totalWithFees = +quoteAmount - (+quoteAmount / 100) * slippageTolerance
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
 
-  const InsufficientLiquidiy =
-    baseSymbol !== 'Select token' &&
-    quoteSymbol !== 'Select token' &&
-    !selectedPool
-
   const isButtonDisabled =
-    isTokenABalanceInsufficient || !selectedPool || !selectedPool.supply
-
+    isTokenABalanceInsufficient ||
+    !selectedPool ||
+    !selectedPool.supply ||
+    !baseAmount ||
+    !quoteAmount
   return (
     <RowContainer
       direction={'column'}
@@ -346,7 +345,7 @@ const SwapPage = ({
                   {baseSymbol}{' '}
                 </Text>
                 ={' '}
-                {isBaseTokenA
+                {isSwapBaseToQuote
                   ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
                   : stripDigitPlaces(
                       +(+poolAmountTokenA / +poolAmountTokenB),
@@ -463,71 +462,72 @@ const SwapPage = ({
                   ? `Insufficient ${
                       isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                     } Balance`
-                  : InsufficientLiquidiy
-                  ? 'Insufficient liquidiy'
+                  : !selectedPool
+                  ? 'No pools available'
                   : 'Swap'}
               </BtnCustom>
             )}
           </RowContainer>
         </BlockTemplate>
-        {baseTokenMintAddress &&
-          quoteTokenMintAddress &&
-          baseAmount &&
-          quoteAmount && (
-            <Card
-              style={{ padding: '2rem' }}
-              theme={theme}
-              width={'45rem'}
-              height={'12rem'}
-            >
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Minimum received</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                    color={'#53DF11'}
-                  >
-                    {totalWithFees.toFixed(5)}{' '}
-                  </Text>
-                  <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
-                </Row>
-              </RowContainer>
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Price Impact</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                    color={'#53DF11'}
-                  >
-                    {stripDigitPlaces(rawSlippage, 2)}%
-                  </Text>
-                </Row>
-              </RowContainer>{' '}
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Liquidity provider fee</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                  >
-                    {stripByAmountAndFormat(
-                      +baseAmount * (SLIPPAGE_PERCENTAGE / 100)
-                    )}{' '}
-                    {baseSymbol}
-                  </Text>
-                </Row>
-              </RowContainer>
-            </Card>
-          )}
+        {selectedPool && baseAmount && quoteAmount && (
+          <Card
+            style={{ padding: '2rem' }}
+            theme={theme}
+            width={'45rem'}
+            height={'12rem'}
+          >
+            <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+              <Text color={'#93A0B2'}>Minimum received</Text>
+              <Row style={{ flexWrap: 'nowrap' }}>
+                <Text
+                  style={{ padding: '0 0.5rem 0 0.5rem' }}
+                  fontFamily={'Avenir Next Bold'}
+                  color={'#53DF11'}
+                >
+                  {totalWithFees.toFixed(5)}{' '}
+                </Text>
+                <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
+              </Row>
+            </RowContainer>
+            <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+              <Text color={'#93A0B2'}>Price Impact</Text>
+              <Row style={{ flexWrap: 'nowrap' }}>
+                <Text
+                  style={{ padding: '0 0.5rem 0 0.5rem' }}
+                  fontFamily={'Avenir Next Bold'}
+                  color={'#53DF11'}
+                >
+                  {stripDigitPlaces(rawSlippage, 2)}%
+                </Text>
+              </Row>
+            </RowContainer>{' '}
+            <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+              <Text color={'#93A0B2'}>Liquidity provider fee</Text>
+              <Row style={{ flexWrap: 'nowrap' }}>
+                <Text
+                  style={{ padding: '0 0.5rem 0 0.5rem' }}
+                  fontFamily={'Avenir Next Bold'}
+                >
+                  {stripByAmountAndFormat(
+                    +baseAmount * (SLIPPAGE_PERCENTAGE / 100)
+                  )}{' '}
+                  {baseSymbol}
+                </Text>
+              </Row>
+            </RowContainer>
+          </Card>
+        )}
       </>
 
       <TransactionSettingsPopup
         theme={theme}
         slippageTolerance={slippageTolerance}
         open={isTransactionSettingsPopupOpen}
-        close={() => openTransactionSettingsPopup(false)}
+        close={() => {
+          if (slippageTolerance >= 0.01) {
+            openTransactionSettingsPopup(false)
+          }
+        }}
         setSlippageTolerance={setSlippageTolerance}
       />
 
@@ -535,7 +535,13 @@ const SwapPage = ({
         poolsInfo={getPoolsInfoQuery.getPoolsInfo}
         theme={theme}
         // mints={[...new Set(mints)]}
-        mints={[...new Set(getPoolsInfoQuery.getPoolsInfo.map(i => [i.tokenA, i.tokenB]).flat())]}
+        mints={[
+          ...new Set(
+            getPoolsInfoQuery.getPoolsInfo
+              .map((i) => [i.tokenA, i.tokenB])
+              .flat()
+          ),
+        ]}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
         allTokensData={allTokensData}

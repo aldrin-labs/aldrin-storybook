@@ -27,6 +27,7 @@ export const SearchInputWithLoop = ({
   return (
     <Row style={{ position: 'relative' }} width={width}>
       <SearchInput
+        value={searchValue}
         onChange={(e) => {
           onChangeSearch(e.target.value)
         }}

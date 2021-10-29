@@ -73,11 +73,13 @@ export const TransactionSettingsPopup = ({
   setSlippageTolerance: (arg: number) => void
 }) => {
   const [localSlippage, setLocalSlippage] = useState('')
+
   const handleKeyDown = (event: any) => {
     if (event.key === 'Enter') {
       close()
     }
   }
+
   return (
     <DialogWrapper
       theme={theme}
@@ -119,7 +121,8 @@ export const TransactionSettingsPopup = ({
             onChange={(e) => {
               if (
                 getNumberOfIntegersFromNumber(e.target.value) > 2 ||
-                getNumberOfDecimalsFromNumber(e.target.value) > 2
+                getNumberOfDecimalsFromNumber(e.target.value) > 2 ||
+                isNaN(+e.target.value)
               ) {
                 setSlippageTolerance(slippageTolerance)
                 setLocalSlippage(slippageTolerance)

@@ -1,18 +1,17 @@
-import BN from 'bn.js'
 import { TokenInstructions } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
-
+import BN from 'bn.js'
+import { Side } from '../common/config'
 import {
   createSOLAccountAndClose,
-  transferSOLToWrappedAccountAndClose,
+  transferSOLToWrappedAccountAndClose
 } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { createTokenAccountTransaction, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
-import { Side } from '../common/config'
-import { Token } from '../token/token'
+
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -30,8 +29,8 @@ export const swap = async ({
   wallet: WalletAdapter
   connection: Connection
   poolPublicKey: PublicKey
-  userBaseTokenAccount: PublicKey
-  userQuoteTokenAccount: PublicKey
+  userBaseTokenAccount: PublicKey | null
+  userQuoteTokenAccount: PublicKey | null
   swapAmountIn: number
   swapAmountOut: number
   isSwapBaseToQuote: boolean

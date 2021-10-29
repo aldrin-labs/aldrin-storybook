@@ -130,7 +130,7 @@ export const UnstakePopup = ({
             close()
           }}
         >
-          Untake
+          Unstake
         </Button>
       </RowContainer>
     </DialogWrapper>
