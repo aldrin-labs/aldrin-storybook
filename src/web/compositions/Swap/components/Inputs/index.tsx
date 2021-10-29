@@ -74,11 +74,7 @@ export const InputWithSelectorForSwaps = ({
         <Row
           style={{ flexWrap: 'nowrap' }}
           onClick={() => {
-            if (!publicKey) {
-              wallet.connect()
-            } else {
-              openSelectCoinPopup()
-            }
+            openSelectCoinPopup()
           }}
         >
           <TokenIcon

@@ -227,14 +227,12 @@ const SwapPage = ({
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
 
-  const InsufficientLiquidiy =
-    baseSymbol !== 'Select token' &&
-    quoteSymbol !== 'Select token' &&
-    !selectedPool
-
   const isButtonDisabled =
-    isTokenABalanceInsufficient || !selectedPool || !selectedPool.supply
-
+    isTokenABalanceInsufficient ||
+    !selectedPool ||
+    !selectedPool.supply ||
+    !baseAmount ||
+    !quoteAmount
   return (
     <RowContainer
       direction={'column'}
@@ -463,71 +461,72 @@ const SwapPage = ({
                   ? `Insufficient ${
                       isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                     } Balance`
-                  : InsufficientLiquidiy
-                  ? 'Insufficient liquidiy'
+                  : !selectedPool
+                  ? 'No pools available'
                   : 'Swap'}
               </BtnCustom>
             )}
           </RowContainer>
         </BlockTemplate>
-        {baseTokenMintAddress &&
-          quoteTokenMintAddress &&
-          baseAmount &&
-          quoteAmount && (
-            <Card
-              style={{ padding: '2rem' }}
-              theme={theme}
-              width={'45rem'}
-              height={'12rem'}
-            >
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Minimum received</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                    color={'#53DF11'}
-                  >
-                    {totalWithFees.toFixed(5)}{' '}
-                  </Text>
-                  <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
-                </Row>
-              </RowContainer>
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Price Impact</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                    color={'#53DF11'}
-                  >
-                    {stripDigitPlaces(rawSlippage, 2)}%
-                  </Text>
-                </Row>
-              </RowContainer>{' '}
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Liquidity provider fee</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                  >
-                    {stripByAmountAndFormat(
-                      +baseAmount * (SLIPPAGE_PERCENTAGE / 100)
-                    )}{' '}
-                    {baseSymbol}
-                  </Text>
-                </Row>
-              </RowContainer>
-            </Card>
-          )}
+        {selectedPool && baseAmount && quoteAmount && (
+          <Card
+            style={{ padding: '2rem' }}
+            theme={theme}
+            width={'45rem'}
+            height={'12rem'}
+          >
+            <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+              <Text color={'#93A0B2'}>Minimum received</Text>
+              <Row style={{ flexWrap: 'nowrap' }}>
+                <Text
+                  style={{ padding: '0 0.5rem 0 0.5rem' }}
+                  fontFamily={'Avenir Next Bold'}
+                  color={'#53DF11'}
+                >
+                  {totalWithFees.toFixed(5)}{' '}
+                </Text>
+                <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
+              </Row>
+            </RowContainer>
+            <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+              <Text color={'#93A0B2'}>Price Impact</Text>
+              <Row style={{ flexWrap: 'nowrap' }}>
+                <Text
+                  style={{ padding: '0 0.5rem 0 0.5rem' }}
+                  fontFamily={'Avenir Next Bold'}
+                  color={'#53DF11'}
+                >
+                  {stripDigitPlaces(rawSlippage, 2)}%
+                </Text>
+              </Row>
+            </RowContainer>{' '}
+            <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+              <Text color={'#93A0B2'}>Liquidity provider fee</Text>
+              <Row style={{ flexWrap: 'nowrap' }}>
+                <Text
+                  style={{ padding: '0 0.5rem 0 0.5rem' }}
+                  fontFamily={'Avenir Next Bold'}
+                >
+                  {stripByAmountAndFormat(
+                    +baseAmount * (SLIPPAGE_PERCENTAGE / 100)
+                  )}{' '}
+                  {baseSymbol}
+                </Text>
+              </Row>
+            </RowContainer>
+          </Card>
+        )}
       </>
 
       <TransactionSettingsPopup
         theme={theme}
         slippageTolerance={slippageTolerance}
         open={isTransactionSettingsPopupOpen}
-        close={() => openTransactionSettingsPopup(false)}
+        close={() => {
+          if (slippageTolerance >= 0.01) {
+            openTransactionSettingsPopup(false)
+          }
+        }}
         setSlippageTolerance={setSlippageTolerance}
       />
 
@@ -535,7 +534,13 @@ const SwapPage = ({
         poolsInfo={getPoolsInfoQuery.getPoolsInfo}
         theme={theme}
         // mints={[...new Set(mints)]}
-        mints={[...new Set(getPoolsInfoQuery.getPoolsInfo.map(i => [i.tokenA, i.tokenB]).flat())]}
+        mints={[
+          ...new Set(
+            getPoolsInfoQuery.getPoolsInfo
+              .map((i) => [i.tokenA, i.tokenB])
+              .flat()
+          ),
+        ]}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
         allTokensData={allTokensData}
