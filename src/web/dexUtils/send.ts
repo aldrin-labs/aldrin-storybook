@@ -218,14 +218,16 @@ export async function getSettleFundsTransaction({
     supportsReferralFees: market.supportsReferralFees,
   })
 
-  const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
-    await market.makeSettleFundsTransaction(
-      connection,
-      openOrders,
-      baseCurrencyAccountPubkey,
-      quoteCurrencyAccountPubkey,
-      referrerQuoteWallet
-    )
+  const {
+    transaction: settleFundsTransaction,
+    signers: settleFundsSigners,
+  } = await market.makeSettleFundsTransaction(
+    connection,
+    openOrders,
+    baseCurrencyAccountPubkey,
+    quoteCurrencyAccountPubkey,
+    referrerQuoteWallet
+  )
 
   const transaction = mergeTransactions([
     createAccountTransaction,
@@ -471,11 +473,13 @@ const createTokenAccount = async (
   wallet: WalletAdapter,
   transaction?: Transaction
 ) => {
-  const { transaction: createAccountTransaction, newAccountPubkey } =
-    await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey,
-    })
+  const {
+    transaction: createAccountTransaction,
+    newAccountPubkey,
+  } = await createTokenAccountTransaction({
+    wallet,
+    mintPublicKey,
+  })
   if (transaction) {
     transaction.add(createAccountTransaction)
   }
@@ -570,8 +574,6 @@ const generatePlacOrderTransactions = async (data: PlaceOrder) => {
     return null
   }
 
-  openOrdersAccount = openOrdersAccount || openOrdersAccountFromCache
-
   const params: OrderParams<PublicKey> = {
     owner,
     payer,
@@ -581,7 +583,9 @@ const generatePlacOrderTransactions = async (data: PlaceOrder) => {
     pair,
     orderType,
     isMarketOrder,
-    openOrdersAccount,
+    ...(!openOrdersAccount
+      ? { openOrdersAccount: openOrdersAccountFromCache }
+      : { openOrdersAccount }),
   }
 
   transaction.add(market.makeMatchOrdersTransaction(5))
@@ -608,14 +612,16 @@ const generatePlacOrderTransactions = async (data: PlaceOrder) => {
   const quoteCurrencyAccountPubkey = quoteCurrencyAccount?.pubkey
 
   if (isMarketOrder && openOrdersAccount) {
-    const { transaction: settleFundsTransaction, signers: settleFundsSigners } =
-      await market.makeSettleFundsTransaction(
-        connection,
-        openOrdersAccount,
-        baseCurrencyAccountPubkey,
-        quoteCurrencyAccountPubkey,
-        referrerQuoteWallet
-      )
+    const {
+      transaction: settleFundsTransaction,
+      signers: settleFundsSigners,
+    } = await market.makeSettleFundsTransaction(
+      connection,
+      openOrdersAccount,
+      baseCurrencyAccountPubkey,
+      quoteCurrencyAccountPubkey,
+      referrerQuoteWallet
+    )
 
     transaction.add(settleFundsTransaction)
     signers.push(...settleFundsSigners)
@@ -680,7 +686,7 @@ export async function sendSignedTransaction({
   console.log('Started awaiting confirmation for', txid)
 
   let done = false
-  // TODO: whats going on
+    // TODO: whats going on
   ;(async () => {
     while (!done && getUnixTs() - startTime < timeout) {
       connection.sendRawTransaction(rawTransaction, {
@@ -1005,7 +1011,7 @@ export async function sendTransaction({
   console.log('Started awaiting confirmation for', txid)
 
   let done = false
-  // TODO
+    // TODO
   ;(async () => {
     while (!done && getUnixTs() - startTime < timeout) {
       const resultOfSendingConfirm = connection.sendRawTransaction(

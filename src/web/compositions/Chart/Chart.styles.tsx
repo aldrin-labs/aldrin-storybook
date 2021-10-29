@@ -150,7 +150,7 @@ export const PanelCardTitle = styled.span`
   display: block;
   padding: 0.1rem 1rem 0.3rem 1rem;
   font-size: 1.3rem;
-  font-family: Avenir Next;
+  font-family: Avenir Next Medium;
   color: ${(props) => props.theme.palette.grey.text};
   letter-spacing: 0.1rem;
 

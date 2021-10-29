@@ -388,7 +388,7 @@ export const SendButton = styled(StyledTab)`
   border-radius: 1rem;
   border: none;
   text-transform: capitalize;
-  font-family: Avenir Next;
+  font-family: Avenir Next Demi;
 
   &:hover {
     background-color: ${(props) =>
