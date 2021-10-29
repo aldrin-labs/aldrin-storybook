@@ -163,12 +163,11 @@ const SwapPage = ({
 
     const priceImpact = 100 / (poolsAmountDiff + 1)
     const newQuoteAmount = isSwapBaseToQuote
-      ? +newBaseAmount * (+poolAmountTokenA / +poolAmountTokenB)
-      : +newBaseAmount * (+poolAmountTokenB / +poolAmountTokenA)
+      ? +newBaseAmount * (+poolAmountTokenB / +poolAmountTokenA)
+      : +newBaseAmount * (+poolAmountTokenA / +poolAmountTokenB)
 
     const newQuoteAmountWithPriceImpact =
       newQuoteAmount - (newQuoteAmount / 100) * priceImpact
-
     const strippedQuoteAmount = stripDigitPlaces(
       newQuoteAmountWithPriceImpact,
       8
