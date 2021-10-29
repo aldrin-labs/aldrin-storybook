@@ -325,7 +325,7 @@ export const combineUserLiquidityData = ({
               %
             </RowDataTdText>
           ),
-          contentToSort: pool.apy24h,
+          contentToSort: pool.apy24h + farmingAPR,
         },
         farming: {
           render: isPoolWithFarming ? (
