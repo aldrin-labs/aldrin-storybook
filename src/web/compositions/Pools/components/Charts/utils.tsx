@@ -30,6 +30,7 @@ import {
   dayDuration,
   endOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 Chart.register(
   BarElement,
@@ -146,10 +147,7 @@ const createTotalVolumeLockedChart = ({
           },
           ticks: {
             padding: 15,
-            callback: (value) =>
-              value > 1000000
-                ? `$${stripDigitPlaces(value / 1000000, 2)}m`
-                : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+            callback: (value) => `$${stripByAmountAndFormat(value)}`,
             color: '#F5F5FB',
             stepSize: data[data.length - 1]?.vol / 5,
             font: {
@@ -297,10 +295,7 @@ const createTradingVolumeChart = ({
           },
           ticks: {
             padding: 15,
-            callback: (value) =>
-              value > 1000000
-                ? `$${stripDigitPlaces(value / 1000000, 2)}m`
-                : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
+            callback: (value) => `$${stripByAmountAndFormat(value)}`,
             color: '#F5F5FB',
             // stepSize: Math.max(data.map(d => d.vol)) / 5,
             font: {

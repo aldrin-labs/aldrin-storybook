@@ -29,8 +29,8 @@ export const swap = async ({
   wallet: WalletAdapter
   connection: Connection
   poolPublicKey: PublicKey
-  userBaseTokenAccount: PublicKey
-  userQuoteTokenAccount: PublicKey
+  userBaseTokenAccount: PublicKey | null
+  userQuoteTokenAccount: PublicKey | null
   swapAmountIn: number
   swapAmountOut: number
   isSwapBaseToQuote: boolean

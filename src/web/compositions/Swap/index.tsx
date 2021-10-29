@@ -132,38 +132,50 @@ const SwapPage = ({
     openTransactionSettingsPopup,
   ] = useState(false)
 
-  const isBaseTokenA = selectedPool?.tokenA === baseTokenMintAddress
+  const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
 
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
-  const setQuoteAmountWithBase = (quoteAmount: string | number) => {
-    const baseAmount = isBaseTokenA
-      ? stripDigitPlaces(
-          +quoteAmount * (+poolAmountTokenA / +poolAmountTokenB),
-          8
-        )
-      : stripDigitPlaces(
-          +quoteAmount * (+poolAmountTokenB / +poolAmountTokenA),
-          8
-        )
-    setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
+  const setQuoteAmountWithBase = (newQuoteAmount: string | number) => {
+    const poolsAmountDiff = isSwapBaseToQuote
+      ? +poolAmountTokenB / +newQuoteAmount
+      : +poolAmountTokenA / +newQuoteAmount
+
+    const priceImpact = 100 / (poolsAmountDiff + 1)
+    const newBaseAmount = isSwapBaseToQuote
+      ? +newQuoteAmount * (+poolAmountTokenA / +poolAmountTokenB)
+      : +newQuoteAmount * (+poolAmountTokenB / +poolAmountTokenA)
+
+    const newBaseAmountWithPriceImpact =
+      newBaseAmount - (newBaseAmount / 100) * priceImpact
+    const strippedBaseAmount = stripDigitPlaces(newBaseAmountWithPriceImpact, 8)
+
+    setBaseAmount(strippedBaseAmount)
+    setQuoteAmount(newQuoteAmount)
   }
 
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
 
-  const setBaseAmountWithQuote = (baseAmount: string | number) => {
-    const quoteAmount = isBaseTokenA
-      ? stripDigitPlaces(
-          +baseAmount * (+poolAmountTokenB / +poolAmountTokenA),
-          8
-        )
-      : stripDigitPlaces(
-          +baseAmount * (+poolAmountTokenA / +poolAmountTokenB),
-          8
-        )
-    setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
+  const setBaseAmountWithQuote = (newBaseAmount: string | number) => {
+    const poolsAmountDiff = isSwapBaseToQuote
+      ? +poolAmountTokenA / +newBaseAmount
+      : +poolAmountTokenB / +newBaseAmount
+
+    const priceImpact = 100 / (poolsAmountDiff + 1)
+    const newQuoteAmount = isSwapBaseToQuote
+      ? +newBaseAmount * (+poolAmountTokenA / +poolAmountTokenB)
+      : +newBaseAmount * (+poolAmountTokenB / +poolAmountTokenA)
+
+    const newQuoteAmountWithPriceImpact =
+      newQuoteAmount - (newQuoteAmount / 100) * priceImpact
+
+    const strippedQuoteAmount = stripDigitPlaces(
+      newQuoteAmountWithPriceImpact,
+      8
+    )
+
+    setBaseAmount(newBaseAmount)
+    setQuoteAmount(strippedQuoteAmount)
   }
 
   const baseSymbol = baseTokenMintAddress
@@ -173,8 +185,6 @@ const SwapPage = ({
   const quoteSymbol = quoteTokenMintAddress
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
     : 'SOL'
-
-  const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
 
   const {
     baseTokenAmount: poolAmountTokenA,
@@ -201,14 +211,6 @@ const SwapPage = ({
     selectedQuoteTokenAddressFromSeveral
   )
 
-  const mints = allTokensData.map((tokenInfo: TokenInfo) => tokenInfo.mint)
-
-  // const filteredMints = [...new Set(mints)]
-
-  // const isNativeSOLSelected =
-  //   allTokensData[0]?.address === userBaseTokenAccount ||
-  //   allTokensData[0]?.address === userQuoteTokenAccount
-
   const reverseTokens = () => {
     setBaseTokenMintAddress(quoteTokenMintAddress)
     setQuoteTokenMintAddress(baseTokenMintAddress)
@@ -222,8 +224,7 @@ const SwapPage = ({
 
   // price impact due to curve
   const rawSlippage = 100 / (poolsAmountDiff + 1)
-  const sumFeesPercentages = slippageTolerance + rawSlippage
-  const totalWithFees = +quoteAmount - (+quoteAmount / 100) * sumFeesPercentages
+  const totalWithFees = +quoteAmount - (+quoteAmount / 100) * slippageTolerance
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
 
@@ -344,7 +345,7 @@ const SwapPage = ({
                   {baseSymbol}{' '}
                 </Text>
                 ={' '}
-                {isBaseTokenA
+                {isSwapBaseToQuote
                   ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
                   : stripDigitPlaces(
                       +(+poolAmountTokenA / +poolAmountTokenB),
