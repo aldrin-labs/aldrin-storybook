@@ -57,8 +57,6 @@ const TablesSwitcher = ({
       return
     }
 
-    console.log(`${value}`.match(/[a-zA-Z1-9]/))
-
     setSearchValue(value)
   }
 
