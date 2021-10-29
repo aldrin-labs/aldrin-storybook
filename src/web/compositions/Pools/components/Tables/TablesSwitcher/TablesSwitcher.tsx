@@ -31,6 +31,7 @@ import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFr
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 import { getRandomInt } from '@core/utils/helpers'
+import { valueEventAriaMessage } from 'react-select/lib/accessibility'
 
 const TablesSwitcher = ({
   theme,
@@ -46,10 +47,20 @@ const TablesSwitcher = ({
   getPoolsInfoQueryRefetch: () => void
 }) => {
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
-  const [searchValue, onChangeSearch] = useState('')
+  const [searchValue, setSearchValue] = useState('')
   const [selectedTable, setSelectedTable] = useState<'all' | 'userLiquidity'>(
     'all'
   )
+
+  const onChangeSearch = (value: string) => {
+    if (!`${value}`.match(/[a-zA-Z1-9]/) && value !== '') {
+      return
+    }
+
+    console.log(`${value}`.match(/[a-zA-Z1-9]/))
+
+    setSearchValue(value)
+  }
 
   const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
