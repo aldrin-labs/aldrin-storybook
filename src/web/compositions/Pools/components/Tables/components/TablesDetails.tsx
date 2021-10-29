@@ -30,7 +30,7 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { estimatedTime } from '@core/utils/dateUtils'
 import { SvgIcon } from '@sb/components'
-import Info from '@icons/inform.svg'
+import InfoIcon from '@icons/inform.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
@@ -477,6 +477,23 @@ export const TablesDetails = ({
                         )}
                       </AmountText>
                       {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                      <DarkTooltip
+                        title={`${stripDigitPlaces(
+                          availableToClaimFromFarmingState,
+                          8
+                        )} ${getTokenNameByMintAddress(
+                          farmingState.farmingTokenMint
+                        )}`}
+                      >
+                        <span>
+                          <SvgIcon
+                            src={InfoIcon}
+                            width={'1.5rem'}
+                            height={'1.5rem'}
+                            style={{ marginLeft: '.5rem' }}
+                          />
+                        </span>
+                      </DarkTooltip>
                       {i !== arr.length - 1 ? ' +' : ''}
                     </>
                   )
