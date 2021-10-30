@@ -12,6 +12,10 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
 
+import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
+import KudelskiLogo from '@icons/kudelski.svg'
+import { Text } from '@sb/compositions/Addressbook/index'
+
 import {
   DexTokensPrices,
   FeesEarned,
@@ -32,6 +36,7 @@ import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 import { getRandomInt } from '@core/utils/helpers'
 import { valueEventAriaMessage } from 'react-select/lib/accessibility'
+import SvgIcon from '@sb/components/SvgIcon'
 
 const TablesSwitcher = ({
   theme,
@@ -145,13 +150,33 @@ const TablesSwitcher = ({
           <Row
             style={{ flexWrap: 'nowrap' }}
             justify={'flex-end'}
-            width={'calc(100% / 3)'}
+            width={'calc((100% / 3) + 14rem)'}
           >
             <SearchInputWithLoop
               searchValue={searchValue}
               onChangeSearch={onChangeSearch}
               placeholder={'Search...'}
-            />
+            />{' '}
+            <a
+              style={{ textDecoration: 'none' }}
+              href={AMMAudit}
+              target="_blank"
+            >
+              <Row
+                width="10rem"
+                direction="column"
+                align="flex-start"
+                margin={'0 0 0 3rem'}
+              >
+                <Text fontSize={'1.2rem'}>Audited by</Text>
+                <SvgIcon
+                  width="80%"
+                  height="auto"
+                  style={{ marginTop: '1rem' }}
+                  src={KudelskiLogo}
+                />
+              </Row>
+            </a>
           </Row>
         </RowContainer>
 

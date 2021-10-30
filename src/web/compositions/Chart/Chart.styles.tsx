@@ -150,9 +150,9 @@ export const PanelCardTitle = styled.span`
   display: block;
   padding: 0.1rem 1rem 0.3rem 1rem;
   font-size: 1.3rem;
-  font-family: Avenir Next Medium;
+  font-family: Avenir Next Light;
   color: ${(props) => props.theme.palette.grey.text};
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.01rem;
 
   @media (min-width: 1400px) {
     font-size: 1.2rem;
@@ -161,7 +161,7 @@ export const PanelCardTitle = styled.span`
 
 export const PanelCardValue = styled.span`
   white-space: pre-line;
-  font-family: Avenir Next Demi;
+  font-family: Avenir Next Medium;
   color: ${(props) => props.theme.palette.white.primary};
   font-size: 1.3rem;
   padding: 0.1rem 1rem;
@@ -176,7 +176,7 @@ export const PanelCardSubValue = styled.span`
   padding: 0.1rem 1rem;
   padding-left: 0.4rem;
   color: ${(props) => props.theme.palette.dark.main};
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.01rem;
   font-size: 1.3rem;
 
   @media (min-width: 1400px) {
