@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import SvgIcon from '@sb/components/SvgIcon'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Theme } from '@material-ui/core'
@@ -585,6 +586,7 @@ const SwapPage = ({
 export default compose(
   withTheme(),
   withPublicKey,
+  withRegionCheck,
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
