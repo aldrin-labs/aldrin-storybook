@@ -5,6 +5,8 @@ import { compose } from 'recompose'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
 import { BlockTemplate } from './index.styles'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
+
 
 
 
@@ -58,6 +60,9 @@ const Pools = ({ theme }: { theme: Theme }) => {
   )
 }
 
-const Wrapper = compose(withTheme())(Pools)
+const Wrapper = compose(
+  withTheme(),
+  withRegionCheck,
+)(Pools)
 
 export { Wrapper as PoolsComponent }
