@@ -7,7 +7,6 @@ import StakeBtn from '@icons/stakeBtn.png'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
 import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 
-
 import { Body } from '../Layout'
 import {
   HeaderWrap,
@@ -73,7 +72,9 @@ export const Header = () => {
             <NavLink to="/swap" activeClassName="selected">
               Swap
             </NavLink>
-
+            <NavLink new show="md" to="/pools" activeClassName="selected">
+              Pools
+            </NavLink>
             <NavLink to="/rebalance" activeClassName="selected">
               Rebalance
             </NavLink>
@@ -83,9 +84,6 @@ export const Header = () => {
             <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">
               Wallet
             </NavLink>
-            <NavLink new show="md" to="/pools" activeClassName="selected">
-              Pools
-            </NavLink>
             <NavLink
               show="lg"
               as="a"
@@ -94,7 +92,6 @@ export const Header = () => {
             >
               FAQ
             </NavLink>
-
             <DropDown hide="lg" text="···">
               {feedbackLinks}
               <NavLink hide="md" activeClassName="selected" to="/pools">

@@ -1,3 +1,7 @@
+import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
+import dayjs from 'dayjs'
+
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
@@ -5,7 +9,10 @@ import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
-import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import {
   Block,
   BlockContentStretched,
@@ -23,9 +30,8 @@ import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { TokenInfo } from '@sb/dexUtils/types'
-import dayjs from 'dayjs'
-import React, { useEffect, useState } from 'react'
-import { compose } from 'recompose'
+import { Text } from '@sb/components/Typography'
+
 import {
   BigNumber,
   LastPrice,
@@ -50,8 +56,11 @@ interface StatsComponentProps extends InnerProps {
 const StatsComponent: React.FC<StatsComponentProps> = (
   props: StatsComponentProps
 ) => {
-  const { getDexTokensPricesQuery, stakingPool, allStakingFarmingTickets } =
-    props
+  const {
+    getDexTokensPricesQuery,
+    stakingPool,
+    allStakingFarmingTickets,
+  } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
 
   const allStakingFarmingStates = stakingPool?.farming || []
@@ -94,6 +103,9 @@ const StatsComponent: React.FC<StatsComponentProps> = (
 
   const shareText = getShareText(stripByAmount(apy))
 
+  const totalStakedPercentageToCircSupply =
+    (totalStaked * 100) / RINCirculatingSupply
+
   return (
     <>
       <Row>
@@ -107,7 +119,15 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                 </InlineText>{' '}
                 RIN
               </BigNumber>
-              <Number>${stripByAmountAndFormat(totalStakedUSD)}</Number>
+              <StretchedBlock align={'flex-end'}>
+                <Number lineHeight={'85%'} margin={'0'}>
+                  ${stripByAmountAndFormat(totalStakedUSD)}
+                </Number>{' '}
+                <Text lineHeight={'100%'} margin={'0'} size="sm">
+                  {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
+                  circulating supply
+                </Text>
+              </StretchedBlock>
             </BlockContentStretched>
           </Block>
         </Cell>
