@@ -10,7 +10,7 @@ import { MobileWalletDropdown } from '@sb/compositions/Chart/components/MobileNa
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import {
   InputRowContainer,
-  InputsBlock
+  InputsBlock,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { notify } from '@sb/dexUtils/notifications'
 import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
@@ -24,23 +24,26 @@ import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { ConfirmationPopup } from './ConfirmationPopup'
 import { InsufficientBalancePlaceholder } from './InsufficientBalancePlaceholder'
 import {
-  AbsoluteInputTitle, BlueInputTitle,
-  ButtonBlock, ConnectWalletButtonContainer,
-  ConnectWalletDropdownContainer, Container,
+  AbsoluteInputTitle,
+  BlueInputTitle,
+  ButtonBlock,
+  ConnectWalletButtonContainer,
+  ConnectWalletDropdownContainer,
+  Container,
   SeparateInputTitle,
   SwitchersContainer,
-  TerminalGridContainer, TitleForInput,
-  TradeInput, UpdatedCoin
+  TerminalGridContainer,
+  TitleForInput,
+  TradeInput,
+  UpdatedCoin,
 } from './styles'
 import { FormValues, IProps, IPropsWithFormik } from './types'
 import {
   costOfAddingToken,
   costsOfTheFirstTrade,
   costsOfWrappingSOL,
-  SOLFeeForTrade
+  SOLFeeForTrade,
 } from './utils'
-
-
 
 export const TradeInputHeader = ({
   title = 'Input',
@@ -65,7 +68,7 @@ export const TradeInputHeader = ({
           {/* <TooltipContainer style={{ display: 'flex', cursor: 'pointer' }}> */}
           <DarkTooltip
             title={tooltipText}
-            maxWidth={'30rem'}
+            maxWidth="30rem"
             placement="top"
             enterDelay={10000}
           >
@@ -184,7 +187,7 @@ export const TradeInputContent = ({
         </AbsoluteInputTitle>
       )}
       {needPreSymbol ? (
-        <UpdatedCoin style={{ width: 0 }} left={'2rem'}>
+        <UpdatedCoin style={{ width: 0 }} left="2rem">
           {preSymbol}
         </UpdatedCoin>
       ) : null}
@@ -218,13 +221,13 @@ export const TradeInputContent = ({
         onChange={onChange}
         needPadding={symbol !== ''}
         haveSelector={haveSelector}
-        style={{ ...inputStyles, ...(fontSize ? { fontSize: fontSize } : {}) }}
+        style={{ ...inputStyles, ...(fontSize ? { fontSize } : {}) }}
         onClick={(e) => handleSelect(e)}
       />
       <UpdatedCoin
         theme={theme}
         right={
-          !!symbolRightIndent
+          symbolRightIndent
             ? symbolRightIndent
             : symbol.length <= 2
             ? '2.5rem'
@@ -411,7 +414,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       priceType !== 'market' && priceType !== 'maker-only' ? price : marketPrice
     const isBuyType = sideType === 'buy'
 
-    let maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
+    const maxAmount = isBuyType ? funds[1].quantity : funds[0].quantity
 
     const currentMaxAmount =
       isBuyType || !isSPOTMarket ? maxAmount / priceForCalculate : maxAmount
@@ -586,7 +589,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
     }
 
     return (
-      <Container background={'transparent'}>
+      <Container background="transparent">
         <TerminalGridContainer
           isBuyType={isBuyType}
           key={`${pair[0]}/${pair[1]}`}
@@ -594,10 +597,10 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
           <SwitchersContainer>
             <CustomSwitcher
               theme={theme}
-              firstHalfText={'buy'}
-              secondHalfText={'sell'}
-              buttonHeight={'3rem'}
-              needBorderRadius={true}
+              firstHalfText="buy"
+              secondHalfText="sell"
+              buttonHeight="3rem"
+              needBorderRadius
               needBorder={false}
               containerStyles={{
                 width: '100%',
@@ -636,10 +639,10 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
             />
             <CustomSwitcher
               theme={theme}
-              firstHalfText={'market'}
-              secondHalfText={'limit'}
-              buttonHeight={'3rem'}
-              needBorderRadius={true}
+              firstHalfText="market"
+              secondHalfText="limit"
+              buttonHeight="3rem"
+              needBorderRadius
               needBorder={false}
               containerStyles={{
                 width: '100%',
@@ -693,15 +696,15 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               priceType !== 'stop-market' &&
               priceType !== 'maker-only' ? (
                 <InputRowContainer
-                  key={'limit-price'}
-                  padding={'.6rem 0'}
-                  direction={'column'}
+                  key="limit-price"
+                  padding=".6rem 0"
+                  direction="column"
                 >
                   <TradeInputContent
                     theme={theme}
                     needTitle
-                    type={'text'}
-                    title={`price`}
+                    type="text"
+                    title="price"
                     value={values.price || ''}
                     onChange={this.onPriceChange}
                     symbol={pair[1]}
@@ -728,8 +731,8 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       </p>
                     </>
                   }
-                  title={'Buy SRM Each'}
-                  lineMargin={'0 1.2rem 0 1rem'}
+                  title="Buy SRM Each"
+                  lineMargin="0 1.2rem 0 1rem"
                   style={{
                     borderBottom: theme.palette.border.main,
                     padding: '1rem 0',
@@ -739,8 +742,8 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                     <TradeInputContent
                       theme={theme}
                       haveSelector
-                      symbol={'sec'}
-                      width={'calc(50% - .4rem)'}
+                      symbol="sec"
+                      width="calc(50% - .4rem)"
                       value={tradingBotInterval}
                       onChange={(e) => {
                         if (+e.target.value > 600) {
@@ -760,7 +763,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       theme={theme}
                       showMarks={false}
                       value={tradingBotInterval}
-                      valueSymbol={'sec'}
+                      valueSymbol="sec"
                       min={45}
                       max={600}
                       sliderContainerStyles={{
@@ -821,12 +824,12 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 <InputRowContainer>
                   <TradeInputContent
                     theme={theme}
-                    padding={'0 1.5% 0 0'}
-                    width={'calc(50%)'}
-                    symbol={'%'}
-                    title={'Take Profit'}
-                    textAlign={'right'}
-                    needTitle={true}
+                    padding="0 1.5% 0 0"
+                    width="calc(50%)"
+                    symbol="%"
+                    title="Take Profit"
+                    textAlign="right"
+                    needTitle
                     value={takeProfitPercentage}
                     onChange={(e) => {
                       updateWrapperState({
@@ -861,14 +864,14 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                           isConnectWalletPopupOpen: true,
                         })
                       }}
-                      btnColor={'#F8FAFF'}
+                      btnColor="#F8FAFF"
                       backgroundColor={theme.palette.blue.serum}
-                      btnWidth={'35rem'}
+                      btnWidth="35rem"
                       borderColor={theme.palette.blue.serum}
-                      textTransform={'capitalize'}
-                      height={'4.5rem'}
+                      textTransform="capitalize"
+                      height="4.5rem"
                       borderRadius="1rem"
-                      fontSize={'1.5rem'}
+                      fontSize="1.5rem"
                       style={{
                         display: 'flex',
                         textTransform: 'none',
@@ -890,11 +893,11 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       padding="2rem 8rem"
                       borderRadius="1.5rem"
                       borderColor={theme.palette.blue.serum}
-                      btnColor={'#fff'}
+                      btnColor="#fff"
                       backgroundColor={theme.palette.blue.serum}
-                      textTransform={'none'}
-                      margin={'1rem 0 0 0'}
-                      transition={'all .4s ease-out'}
+                      textTransform="none"
+                      margin="1rem 0 0 0"
+                      transition="all .4s ease-out"
                       style={{ whiteSpace: 'nowrap' }}
                     >
                       Connect wallet

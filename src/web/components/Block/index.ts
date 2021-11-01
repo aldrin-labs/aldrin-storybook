@@ -40,9 +40,8 @@ export const Block = styled.div<BlockProps>`
       : ''}
 `
 
-interface TitleProps {
+export interface TitleProps {
   color?: string
-  margin?: string
 }
 
 export const BlockTitle = styled.h2`
@@ -56,7 +55,7 @@ export const BlockSubtitle = styled.h3<TitleProps>`
   font-weight: 600;
   font-size: 0.9em;
   line-height: 130%;
-  margin: ${(props) => props.margin || '0 0 1em'};
+  margin: 0 0 1em;
   color: ${(props: TitleProps) => props.color || COLORS.hint};
 `
 

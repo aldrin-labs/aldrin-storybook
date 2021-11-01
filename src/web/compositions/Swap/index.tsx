@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import SvgIcon from '@sb/components/SvgIcon'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Theme } from '@material-ui/core'
@@ -44,8 +45,8 @@ import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { SLIPPAGE_PERCENTAGE } from './config'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
-const DEFAULT_BASE_TOKEN = 'RIN'
-const DEFAULT_QUOTE_TOKEN = 'SOL'
+const DEFAULT_BASE_TOKEN = 'SOL'
+const DEFAULT_QUOTE_TOKEN = 'RIN'
 
 const SwapPage = ({
   theme,
@@ -163,12 +164,11 @@ const SwapPage = ({
 
     const priceImpact = 100 / (poolsAmountDiff + 1)
     const newQuoteAmount = isSwapBaseToQuote
-      ? +newBaseAmount * (+poolAmountTokenA / +poolAmountTokenB)
-      : +newBaseAmount * (+poolAmountTokenB / +poolAmountTokenA)
+      ? +newBaseAmount * (+poolAmountTokenB / +poolAmountTokenA)
+      : +newBaseAmount * (+poolAmountTokenA / +poolAmountTokenB)
 
     const newQuoteAmountWithPriceImpact =
       newQuoteAmount - (newQuoteAmount / 100) * priceImpact
-
     const strippedQuoteAmount = stripDigitPlaces(
       newQuoteAmountWithPriceImpact,
       8
@@ -180,11 +180,11 @@ const SwapPage = ({
 
   const baseSymbol = baseTokenMintAddress
     ? getTokenNameByMintAddress(baseTokenMintAddress)
-    : 'RIN'
+    : DEFAULT_BASE_TOKEN
 
   const quoteSymbol = quoteTokenMintAddress
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
-    : 'SOL'
+    : DEFAULT_QUOTE_TOKEN
 
   const {
     baseTokenAmount: poolAmountTokenA,
@@ -232,8 +232,8 @@ const SwapPage = ({
     isTokenABalanceInsufficient ||
     !selectedPool ||
     !selectedPool.supply ||
-    !baseAmount ||
-    !quoteAmount
+    baseAmount == 0 ||
+    quoteAmount == 0
   return (
     <RowContainer
       direction={'column'}
@@ -586,6 +586,7 @@ const SwapPage = ({
 export default compose(
   withTheme(),
   withPublicKey,
+  withRegionCheck,
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,

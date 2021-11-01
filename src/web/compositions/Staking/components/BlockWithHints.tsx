@@ -1,17 +1,16 @@
 import React from 'react'
 
-import { RootRow, StyledLink } from '../Staking.styles'
+import { Cell } from '@sb/components/Layout'
+import { Text } from '@sb/components/Typography'
+import { Block, BlockContent, BlockSubtitle } from '@sb/components/Block'
+import { COLORS } from '@variables/variables'
+import { RootRow, StyledLink } from '../styles'
 
 import locksIcon from './assets/lockIcon.svg'
 import poolIcon from './assets/poolIcon.svg'
 import rewardsIcon from './assets/rewards.svg'
 
 import greenBack from './assets/greenBack.png'
-
-import { Cell } from '@sb/components/Layout'
-import { Text } from '@sb/components/Typography'
-import { Block, BlockContent, BlockSubtitle } from '@sb/components/Block'
-import { COLORS } from '@variables/variables'
 
 export const BlockWithHints = () => {
   return (
