@@ -37,6 +37,7 @@ import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 import { getRandomInt } from '@core/utils/helpers'
 import { valueEventAriaMessage } from 'react-select/lib/accessibility'
 import SvgIcon from '@sb/components/SvgIcon'
+import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
 
 const TablesSwitcher = ({
   theme,
@@ -88,10 +89,16 @@ const TablesSwitcher = ({
     connection,
   })
 
+  const [snapshotQueues, refreshSnapshotQueues] = useSnapshotQueues({
+    wallet,
+    connection
+  })
+
   const [farmingTicketsMap, refreshFarmingTickets] = useFarmingTicketsMap({
     wallet,
     connection,
     pools,
+    snapshotQueues,
   })
 
   const refreshTokensWithFarmingTickets = () => {

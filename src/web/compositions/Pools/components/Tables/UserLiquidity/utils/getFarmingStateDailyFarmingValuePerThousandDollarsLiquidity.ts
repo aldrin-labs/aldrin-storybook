@@ -1,5 +1,5 @@
 import { dayDuration } from '@core/utils/dateUtils'
-import { FarmingState } from '@sb/compositions/Pools/index.types'
+import { FarmingState } from '@sb/dexUtils/common/types'
 
 export const getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity = ({
   farmingState,

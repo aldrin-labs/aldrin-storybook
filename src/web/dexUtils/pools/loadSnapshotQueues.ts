@@ -1,13 +1,13 @@
 import { Connection } from '@solana/web3.js'
 import { SNAPSHOT_QUEUE_SIZE } from '../common/config'
-import { loadAccountsFromStakingProgram } from './loadAccountsFromStakingProgram'
+import { loadAccountsFromPoolsProgram } from './loadAccountsFromPoolsProgram'
 
-export const loadStakingSnapshots = async ({
+export const loadSnapshotQueues = async ({
   connection,
 }: {
   connection: Connection
 }) => {
-  return await loadAccountsFromStakingProgram({
+  return await loadAccountsFromPoolsProgram({
     connection,
     filters: [
       {
