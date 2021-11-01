@@ -2,7 +2,11 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import AldrinLogo from '@icons/Aldrin.svg'
 import StakeBtn from '@icons/stakeBtn.png'
-import { Button } from '../Button'
+
+// TODO: Refactor popup
+import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
+import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
+
 
 import { Body } from '../Layout'
 import {
@@ -15,10 +19,8 @@ import {
   MainLinksWrap,
   LinksBlock,
   MainLinksBlock,
+  StakeButton,
 } from './styles'
-// TODO: Refactor popup
-import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
-import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 
 import { DropDown } from './Dropdown'
 import { WalletBlock } from './WalletBlock'
@@ -47,11 +49,11 @@ export const Header = () => {
     <Body>
       <HeaderWrap>
         <LogoBlock>
-          <LogoLink to={'/'}>
+          <LogoLink to="/">
             <Logo src={AldrinLogo} />
           </LogoLink>
 
-          <Button
+          <StakeButton
             backgroundImage={StakeBtn}
             as={Link}
             to="/staking"
@@ -60,7 +62,7 @@ export const Header = () => {
             borderRadius="xxl"
           >
             Stake RIN
-          </Button>
+          </StakeButton>
         </LogoBlock>
         <LinksBlock>{feedbackLinks}</LinksBlock>
         <MainLinksWrap>
@@ -85,7 +87,7 @@ export const Header = () => {
               Pools
             </NavLink>
             <NavLink
-              show="md"
+              show="lg"
               as="a"
               target="_blank"
               href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
@@ -99,7 +101,7 @@ export const Header = () => {
                 Liquidity Pools
               </NavLink>
               <NavLink
-                hide="md"
+                hide="lg"
                 as="a"
                 target="_blank"
                 href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"

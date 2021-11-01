@@ -3,23 +3,19 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   stripByAmount,
-  stripByAmountAndFormat
+  stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
-import {
-  formatNumberToUSFormat
-} from '@core/utils/PortfolioTableUtils'
+import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 import {
   Block,
   BlockContentStretched,
   BlockSubtitle,
-  BlockTitle
+  BlockTitle,
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import { InlineText } from '@sb/components/Typography'
-import {
-  MarketDataByTicker
-} from '@sb/compositions/Chart/components/MarketStats/MarketStats'
+import { MarketDataByTicker } from '@sb/compositions/Chart/components/MarketStats/MarketStats'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
@@ -35,9 +31,9 @@ import {
   LastPrice,
   Number,
   StatsBlock,
-  StatsBlockItem
-} from '../Staking.styles'
-import { getShareText } from '../Staking.utils.tsx/getShareText'
+  StatsBlockItem,
+} from '../styles'
+import { getShareText } from '../utils'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
 
@@ -54,11 +50,8 @@ interface StatsComponentProps extends InnerProps {
 const StatsComponent: React.FC<StatsComponentProps> = (
   props: StatsComponentProps
 ) => {
-  const {
-    getDexTokensPricesQuery,
-    stakingPool,
-    allStakingFarmingTickets,
-  } = props
+  const { getDexTokensPricesQuery, stakingPool, allStakingFarmingTickets } =
+    props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
 
   const allStakingFarmingStates = stakingPool?.farming || []
@@ -126,7 +119,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
               <StretchedBlock>
                 <Number>APR</Number>
                 <div>
-                  <ShareButton text={shareText}></ShareButton>
+                  <ShareButton text={shareText} />
                 </div>
               </StretchedBlock>
             </BlockContentStretched>

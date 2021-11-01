@@ -51,7 +51,6 @@ export const SIZE = {
   defaultPadding: '10px',
 }
 
-
 export const WIDTH = {
   sm: '10%',
   md: '30%',
