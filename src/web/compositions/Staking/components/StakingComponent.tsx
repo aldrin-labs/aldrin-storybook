@@ -22,7 +22,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
   props: StakingComponentProps
 ) => {
   const { getStakingPoolInfoQuery } = props
-  const { wallet, connected } = useWallet()
+  const { wallet } = useWallet()
   const connection = useConnection()
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts({
     wallet,
