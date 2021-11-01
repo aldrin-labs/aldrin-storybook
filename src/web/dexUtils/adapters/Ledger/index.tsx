@@ -3,7 +3,7 @@ import type { Transaction } from '@solana/web3.js';
 
 import EventEmitter from 'eventemitter3';
 import { PublicKey } from '@solana/web3.js';
-import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { notify } from '../../notifications';
 import { getPublicKey, signTransaction } from './core';
 import { DEFAULT_PUBLIC_KEY, WalletAdapter } from '../types';
@@ -67,7 +67,7 @@ export class LedgerWalletAdapter extends EventEmitter implements WalletAdapter {
 
     try {
       // @TODO: transport selection (WebUSB, WebHID, bluetooth, ...)
-      this._transport = await TransportWebUSB.create();
+      this._transport = await TransportWebHID.create();
       // @TODO: account selection
       this._publicKey = await getPublicKey(this._transport);
       this.emit('connect', this._publicKey);
