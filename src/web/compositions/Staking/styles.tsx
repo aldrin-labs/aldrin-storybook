@@ -189,9 +189,9 @@ export const BigNumber = styled.p`
   margin: 10px 0;
 `
 export const Number = styled.span`
-  margin: 0 10px 0 0;
+  margin: ${(props) => props.margin || '0 10px 0 0'};
   font-size: 1.4em;
-  line-height: 1.2;
+  line-height: ${(props) => props.lineHeight || '1.2rem'};
   font-weight: bold;
 `
 
