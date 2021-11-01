@@ -1,11 +1,10 @@
 import styled from 'styled-components'
-import { Paper } from '@material-ui/core'
 
 import { Row, StretchedBlock } from '@sb/components/Layout'
-import { Block } from '@sb/components/Block'
+import { Block, BlockSubtitle } from '@sb/components/Block'
 import { BREAKPOINTS, COLORS, BORDER_RADIUS } from '@variables/variables'
-import { Button } from '../../components/Button'
 import { Link } from 'react-router-dom'
+import { Button } from '../../components/Button'
 
 export const StyledTextDiv = styled.div`
   height: auto;
@@ -18,6 +17,8 @@ export const StyledTextDiv = styled.div`
   background: ${COLORS.background};
   padding: 8px 12px;
   margin: 12px 0 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (min-width: ${BREAKPOINTS.lg}) {
     min-width: 360px;
@@ -36,6 +37,76 @@ export const RootRow = styled(Row)`
   margin: 50px 0;
 `
 
+export const RewardsStats = styled(StretchedBlock)`
+  flex-direction: column;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    flex-direction: row;
+  }
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    flex-direction: column;
+  }
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    flex-direction: row;
+  }
+`
+
+export const RewardsStatsRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+`
+
+export const RewardsTitle = styled(BlockSubtitle)`
+  margin: 0;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    margin-bottom: 2em;
+  }
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    margin-bottom: 2em;
+  }
+`
+
+export const WalletAvailableTitle = styled(BlockSubtitle)`
+  margin-bottom: 0;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    margin-bottom: 1em;
+  }
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    margin-bottom: 1em;
+  }
+`
+
 export const WalletRow = styled.div`
   display: flex;
   flex-direction: column;
@@ -48,7 +119,7 @@ export const WalletRow = styled.div`
   }
 `
 
-export const WalletBalanceBlock = styled.div`
+export const WalletBalanceBlock = styled(RewardsStatsRow)`
   margin-top: 20px;
 
   @media (min-width: ${BREAKPOINTS.xl}) {
@@ -111,14 +182,6 @@ export const Digit = styled.span`
   font-variant-numeric: tabular-nums;
 `
 
-export const StyledPaper = styled(Paper)`
-  height: auto;
-  padding: 2rem;
-  width: 70rem;
-  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: ${COLORS.blockBackground};
-  border-radius: 1.6rem;
-`
 export const BigNumber = styled.p`
   font-size: 1.8em;
   line-height: 1.3;
@@ -199,9 +262,19 @@ export const StyledLink = styled(Link)`
   text-decoration: none;
   color: ${COLORS.main};
 `
-export const ClaimButtonContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+
+export const ClaimButtonContainer = styled(RewardsStatsRow)`
+  margin-top: 20px;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    margin-top: 0;
+  }
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin-top: 20px;
+  }
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    margin-top: 0;
+  }
 `
