@@ -6,6 +6,7 @@ import {
   WalletLink,
   DashboardLink,
   StakingLink,
+  SwapsLink,
 } from './NavIconsComponents'
 import { FooterComponent } from './styles'
 
