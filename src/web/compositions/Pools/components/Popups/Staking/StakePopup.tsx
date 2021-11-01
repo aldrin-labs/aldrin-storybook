@@ -127,7 +127,7 @@ export const StakePopup = ({
         dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
 
       if (farmingTokenSymbol === 'MNDE') {
-        farmingTokenPrice = 0.776352
+        farmingTokenPrice = 0.727590
       }
 
       const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
