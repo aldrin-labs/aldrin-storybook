@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { useFormik } from 'formik'
 import { TokenInfo } from '@sb/dexUtils/types'
-import { FormWrap, FormItem, FormItemFull } from '../Staking.styles'
+import { FormWrap, FormItem, FormItemFull } from '../styles'
 import { Input, INPUT_FORMATTERS } from '@sb/components/Input'
 import StakeBtn from '@icons/stakeBtn.png'
 import InfoIcon from '@icons/inform.svg'

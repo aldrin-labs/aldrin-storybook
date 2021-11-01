@@ -1,25 +1,28 @@
+import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
+import dayjs from 'dayjs'
+
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   stripByAmount,
-  stripByAmountAndFormat
+  stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 import {
-  formatNumberToUSFormat
+  formatNumberToUSFormat,
+  stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import {
   Block,
   BlockContentStretched,
   BlockSubtitle,
-  BlockTitle
+  BlockTitle,
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import { InlineText } from '@sb/components/Typography'
-import {
-  MarketDataByTicker
-} from '@sb/compositions/Chart/components/MarketStats/MarketStats'
+import { MarketDataByTicker } from '@sb/compositions/Chart/components/MarketStats/MarketStats'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
@@ -27,17 +30,16 @@ import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { TokenInfo } from '@sb/dexUtils/types'
-import dayjs from 'dayjs'
-import React, { useEffect, useState } from 'react'
-import { compose } from 'recompose'
+import { Text } from '@sb/components/Typography'
+
 import {
   BigNumber,
   LastPrice,
   Number,
   StatsBlock,
-  StatsBlockItem
-} from '../Staking.styles'
-import { getShareText } from '../Staking.utils.tsx/getShareText'
+  StatsBlockItem,
+} from '../styles'
+import { getShareText } from '../utils'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
 
@@ -101,6 +103,9 @@ const StatsComponent: React.FC<StatsComponentProps> = (
 
   const shareText = getShareText(stripByAmount(apy))
 
+  const totalStakedPercentageToCircSupply =
+    (totalStaked * 100) / RINCirculatingSupply
+
   return (
     <>
       <Row>
@@ -114,7 +119,15 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                 </InlineText>{' '}
                 RIN
               </BigNumber>
-              <Number>${stripByAmountAndFormat(totalStakedUSD)}</Number>
+              <StretchedBlock align={'flex-end'}>
+                <Number lineHeight={'85%'} margin={'0'}>
+                  ${stripByAmountAndFormat(totalStakedUSD)}
+                </Number>{' '}
+                <Text lineHeight={'100%'} margin={'0'} size="sm">
+                  {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
+                  circulating supply
+                </Text>
+              </StretchedBlock>
             </BlockContentStretched>
           </Block>
         </Cell>
@@ -126,7 +139,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
               <StretchedBlock>
                 <Number>APR</Number>
                 <div>
-                  <ShareButton text={shareText}></ShareButton>
+                  <ShareButton text={shareText} />
                 </div>
               </StretchedBlock>
             </BlockContentStretched>

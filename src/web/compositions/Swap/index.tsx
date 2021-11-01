@@ -45,8 +45,8 @@ import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { SLIPPAGE_PERCENTAGE } from './config'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
-const DEFAULT_BASE_TOKEN = 'RIN'
-const DEFAULT_QUOTE_TOKEN = 'SOL'
+const DEFAULT_BASE_TOKEN = 'SOL'
+const DEFAULT_QUOTE_TOKEN = 'RIN'
 
 const SwapPage = ({
   theme,
@@ -180,11 +180,11 @@ const SwapPage = ({
 
   const baseSymbol = baseTokenMintAddress
     ? getTokenNameByMintAddress(baseTokenMintAddress)
-    : 'RIN'
+    : DEFAULT_BASE_TOKEN
 
   const quoteSymbol = quoteTokenMintAddress
     ? getTokenNameByMintAddress(quoteTokenMintAddress)
-    : 'SOL'
+    : DEFAULT_QUOTE_TOKEN
 
   const {
     baseTokenAmount: poolAmountTokenA,
@@ -232,8 +232,8 @@ const SwapPage = ({
     isTokenABalanceInsufficient ||
     !selectedPool ||
     !selectedPool.supply ||
-    !baseAmount ||
-    !quoteAmount
+    baseAmount == 0 ||
+    quoteAmount == 0
   return (
     <RowContainer
       direction={'column'}

@@ -8,11 +8,10 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import {
   createGenerateClassName,
   jssPreset,
-  withTheme
+  withTheme,
 } from '@material-ui/core/styles'
 import { Header } from '@sb/components/Header'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
-import { RebrandingPopup } from '@sb/components/RebrandingPopup/RebrandingPopup'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
@@ -27,7 +26,7 @@ import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 import { syncStorage } from '@storage'
 import useWindowSize from '@webhooks/useWindowSize'
 import { create } from 'jss'
-import React, { useState } from 'react'
+import React from 'react'
 // https://material-ui.com/customization/css-in-js/#other-html-element
 import JssProvider from 'react-jss/lib/JssProvider'
 import { withRouter } from 'react-router-dom'
@@ -35,7 +34,6 @@ import { compose } from 'recompose'
 // import './app.styles.global.css';
 import styled from 'styled-components'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
-import { MobileNavBar } from '../Chart/components/MobileNavbar/MobileNavbar'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import { AppGridLayout, AppInnerContainer } from './App.styles'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
@@ -51,23 +49,24 @@ const jss = create(jssPreset())
 // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
 jss.options.insertionPoint = document.getElementById('jss-insertion-point')
 
-
 const version = `10.9.147-fix-open-orders`
 const currentVersion = localStorage.getItem('version')
 
 if (currentVersion !== version) {
-  const isMeetRebalancePopupOpen = localStorage.getItem("isMeetRebalancePopupOpen")
-  const isNotificationDone = localStorage.getItem("isNotificationDone")
-  const isOnboardingDone = localStorage.getItem("isOnboardingDone")
-  const isRebrandingPopupOpen = localStorage.getItem("isRebrandingPopupOpen")
-  const isRpcWarningPopupOpen = localStorage.getItem("isRpcWarningPopupOpen")
+  const isMeetRebalancePopupOpen = localStorage.getItem(
+    'isMeetRebalancePopupOpen'
+  )
+  const isNotificationDone = localStorage.getItem('isNotificationDone')
+  const isOnboardingDone = localStorage.getItem('isOnboardingDone')
+  const isRebrandingPopupOpen = localStorage.getItem('isRebrandingPopupOpen')
+  const isRpcWarningPopupOpen = localStorage.getItem('isRpcWarningPopupOpen')
 
   localStorage.clear()
 
-  localStorage.setItem("isMeetRebalancePopupOpen", isMeetRebalancePopupOpen)
-  localStorage.setItem("isNotificationDone", isNotificationDone)
-  localStorage.setItem("isOnboardingDone", isOnboardingDone)
-  localStorage.setItem("isRebrandingPopupOpen", isRebrandingPopupOpen)
+  localStorage.setItem('isMeetRebalancePopupOpen', isMeetRebalancePopupOpen)
+  localStorage.setItem('isNotificationDone', isNotificationDone)
+  localStorage.setItem('isOnboardingDone', isOnboardingDone)
+  localStorage.setItem('isRebrandingPopupOpen', isRebrandingPopupOpen)
   // localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
 
   localStorage.setItem('version', version)
@@ -76,7 +75,7 @@ if (currentVersion !== version) {
 
 const DetermineMobileWindowHeight = () => {
   const { width, height } = useWindowSize()
-  let vh = height * 0.01
+  const vh = height * 0.01
   document.documentElement.style.setProperty('--vh', `${vh}px`)
   return null
 }
@@ -86,11 +85,12 @@ const AppRaw = ({
   getViewModeQuery,
   location: { pathname: currentPage, search },
 }: any) => {
-  const [isDevUrlPopupOpen, openDevUrlPopup] = useLocalStorageState('isDevUrlPopupOpen', true)
-  const [
-    isRebrandingPopupOpen,
-    setIsRebrandingPopupOpen,
-  ] = useLocalStorageState('isRebrandingPopupOpen', true)
+  const [isDevUrlPopupOpen, openDevUrlPopup] = useLocalStorageState(
+    'isDevUrlPopupOpen',
+    true
+  )
+  const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
+    useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
   //   true
   // )
@@ -116,14 +116,14 @@ const AppRaw = ({
   const isRewards = currentPage.includes('rewards')
 
   const searchParamsObject = getSearchParamsObject({ search })
-  const isRefInUrlParamExist = !!searchParamsObject['ref']
+  const isRefInUrlParamExist = !!searchParamsObject.ref
   if (isRefInUrlParamExist) {
-    const ref = searchParamsObject['ref']
+    const {ref} = searchParamsObject
     syncStorage.setItem('ref', ref)
   }
-  const isDiscountCodeExist = !!searchParamsObject['code']
+  const isDiscountCodeExist = !!searchParamsObject.code
   if (isDiscountCodeExist) {
-    const code = searchParamsObject['code']
+    const {code} = searchParamsObject
     syncStorage.setItem('code', code)
   }
 
@@ -140,21 +140,13 @@ const AppRaw = ({
                   <WalletProvider>
                     <PreferencesProvider>
                       <AppGridLayout
-                        id={'react-notification'}
+                        id="react-notification"
                         showFooter={showFooter}
                         isRewards={isRewards}
                         isPNL={isPNL}
                         isChartPage={isChartPage}
                       >
-                        <MobileNavBar pathname={currentPage} />
                         <Header />
-                        {/* {!pageIsRegistration && (
-                          <CardsPanel
-                            pathname={currentPage}
-                            hide={fullscreen}
-                            theme={theme}
-                          />
-                        )} */}
                         <AppInnerContainer
                           showFooter={showFooter}
                           isChartPage={isChartPage}
@@ -218,7 +210,7 @@ const Footer = (props) => {
         ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}),
       }}
     >
-      <Line bottom={'5.7rem'} />
+      <Line bottom="5.7rem" />
       <Link
         target="_blank"
         rel="noopener noreferrer"

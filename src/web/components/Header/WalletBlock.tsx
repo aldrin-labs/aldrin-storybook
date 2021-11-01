@@ -6,12 +6,17 @@ import WalletIcon from '@icons/walletIcon.svg'
 // TODO: move that
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { SvgIcon } from '..'
-import { WalletButton, WalletName, WalletAddress, WalletData, WalletDisconnectButton } from './styles'
+import {
+  WalletButton,
+  WalletName,
+  WalletAddress,
+  WalletData,
+  WalletDisconnectButton,
+} from './styles'
 
 export const WalletBlock = () => {
-  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] = useState(
-    false
-  )
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState(false)
   const { connected, wallet, providerName, providerFullName } = useWallet()
 
   return (
@@ -30,7 +35,6 @@ export const WalletBlock = () => {
         >
           Connect wallet
         </WalletButton>
-
       )}
       {connected && (
         <WalletData>
@@ -38,11 +42,13 @@ export const WalletBlock = () => {
           <WalletAddress>{wallet.publicKey?.toBase58()}</WalletAddress>
           <WalletDisconnectButton
             onClick={() => {
-              wallet?.disconnect && wallet.disconnect()
+              if (wallet?.disconnect) {
+                wallet.disconnect()
+              }
             }}
           >
             Disconnect
-            </WalletDisconnectButton>
+          </WalletDisconnectButton>
         </WalletData>
       )}
       <ConnectWalletPopup
