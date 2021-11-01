@@ -1,15 +1,13 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React from 'react'
 
-import { Paper, Theme } from '@material-ui/core'
+import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
-import { StyledPaper, WalletRowContainer } from './styles'
 import useMobileSize from '@webhooks/useMobileSize'
+import { StyledPaper, WalletRowContainer } from './styles'
 
 export const MobileWalletDropdown = ({
   theme,
@@ -35,11 +33,11 @@ export const MobileWalletDropdown = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer direction={'column'}>
+      <RowContainer direction="column">
         {WALLET_PROVIDERS.filter((el) => el.showOnMobile).map((provider) => {
           return (
             <WalletRowContainer
@@ -49,7 +47,7 @@ export const MobileWalletDropdown = ({
                 await onClose()
               }}
             >
-              <SvgIcon src={provider.icon} width={'6rem'} height={'100%'} />
+              <SvgIcon src={provider.icon} width="6rem" height="100%" />
               {provider.name}
             </WalletRowContainer>
           )

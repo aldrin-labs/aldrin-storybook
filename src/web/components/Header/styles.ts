@@ -1,36 +1,40 @@
 import styled from 'styled-components'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 // TODO: remove dat
-import { maxMobileScreenResolution } from '@core/utils/config'
 
 import { COLORS, SIZE, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import { Button } from '../Button'
 import { Text } from '../Typography'
 
-
 export const HeaderWrap = styled.header`
-  display: none;
+  display: flex;
   flex-direction: row;
   height: 48px;
   background: ${COLORS.bodyBackground};
   border-bottom: 1px solid ${COLORS.border};
   padding: 0 ${SIZE.defaultPadding};
-
-  @media(min-width: ${maxMobileScreenResolution}px) {
-    display: flex;
-  }
 `
 
 export const LogoBlock = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  border-right: 1px solid ${COLORS.border};
   padding-right: ${SIZE.defaultPadding};
   margin: 8px 0;
   flex: 0 1 auto;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    border-right: 1px solid ${COLORS.border};
+  }
 `
 
+export const StakeButton = styled(Button)`
+  display: none;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    display: block;
+  }
+`
 
 interface ShowHideProps {
   show?: keyof typeof BREAKPOINTS
@@ -41,7 +45,7 @@ interface LinkProps extends ShowHideProps {
   new?: boolean
 }
 
-export const NavLink = styled(RouterNavLink) <LinkProps>`
+export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
   font-size: 0.7em;
   padding: 8px 12px;
@@ -55,26 +59,35 @@ export const NavLink = styled(RouterNavLink) <LinkProps>`
   cursor: pointer;
   white-space: nowrap;
 
-  &:hover, &.selected {
+  &:hover,
+  &.selected {
     color: ${COLORS.navLinkActive};
     background: ${COLORS.navLinkActiveBg};
   }
 
-  ${(props: LinkProps) => props.show ? `
+  ${(props: LinkProps) =>
+    props.show
+      ? `
     display: none;
 
     @media(min-width: ${BREAKPOINTS[props.show]}) {
       display: inline;
     }
-  ` : ''}
+  `
+      : ''}
 
-  ${(props: LinkProps) => props.hide ? `
+  ${(props: LinkProps) =>
+    props.hide
+      ? `
     @media(min-width: ${BREAKPOINTS[props.hide]}) {
       display: none;
     }
-  ` : ''}
+  `
+      : ''}
 
-  ${(props: LinkProps) => props.new ? `
+  ${(props: LinkProps) =>
+    props.new
+      ? `
     &:after {
       content: "NEW";
       color: ${COLORS.success};
@@ -84,7 +97,8 @@ export const NavLink = styled(RouterNavLink) <LinkProps>`
       font-size: 0.7em;
       padding-left: 5px;
     }
-  ` : ''}
+  `
+      : ''}
 `
 
 export const LinksBlock = styled.div`
@@ -95,17 +109,21 @@ export const LinksBlock = styled.div`
   border-right: 1px solid ${COLORS.border};
   margin: 5px 0;
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     display: flex;
-  } 
+  }
 `
 
 export const MainLinksWrap = styled(LinksBlock)`
   margin: 5px auto;
   border-right: 0;
-  display: flex;
+  display: none;
   flex: 1;
   flex-direction: row;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    display: flex;
+  }
 `
 
 export const MainLinksBlock = styled.div`
@@ -117,15 +135,17 @@ export const MainLinksBlock = styled.div`
   max-width: 600px;
 `
 
-
 export const WalletContainer = styled.div`
   margin: 5px 0 5px auto;
   padding: 0 0 0 ${SIZE.defaultPadding};
-  border-left: 1px solid ${COLORS.border};
   display: flex;
   flex-direction: row;
   align-items: center;
   overflow: hidden;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    border-left: 1px solid ${COLORS.border};
+  }
 `
 
 export const LogoLink = styled(Link)`
@@ -146,9 +166,8 @@ export const DropdownContent = styled.div`
   flex-direction: column;
   display: none;
   z-index: 1;
-  background: rgba(0,0,0,0.001);
+  background: rgba(0, 0, 0, 0.001);
 `
-
 
 export const DropdownWrap = styled.div<ShowHideProps>`
   height: 100%;
@@ -161,20 +180,25 @@ export const DropdownWrap = styled.div<ShowHideProps>`
     display: flex;
   }
 
-
-  ${(props: ShowHideProps) => props.show ? `
+  ${(props: ShowHideProps) =>
+    props.show
+      ? `
     display: none;
 
     @media(min-width: ${BREAKPOINTS[props.show]}) {
       display: flex;
     }
-  ` : ''}
+  `
+      : ''}
 
-  ${(props: ShowHideProps) => props.hide ? `
+  ${(props: ShowHideProps) =>
+    props.hide
+      ? `
     @media(min-width: ${BREAKPOINTS[props.hide]}) {
       display: none;
     }
-  ` : ''}
+  `
+      : ''}
 `
 
 export const DropdownInner = styled.div`
@@ -189,45 +213,56 @@ export const DropdownInner = styled.div`
   & ${NavLink} {
     margin: 4px;
   }
-` 
+`
 
 export const WalletButton = styled(Button)`
   padding: 4px 20px;
   font-size: 0.75em;
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     width: 238px;
   }
 `
 
 export const WalletData = styled.div`
-    display: flex;
+  display: flex;
+  flex-direction: row;
+  width: calc(100% - 48px);
+  align-items: center;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
     flex-direction: column;
-    width: calc(100% - 48px);
+    align-items: flex-start;
+  }
 `
 
 export const WalletName = styled(Text)`
-    font-size: 0.6em;
-    line-height: 1.3;
-    margin: 0;
-    color: ${COLORS.primaryWhite};
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: bold;
+  font-size: 0.6em;
+  line-height: 1.3;
+  margin: 0;
+  color: ${COLORS.primaryWhite};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
 `
 
 export const WalletAddress = styled(WalletName)`
-    opacity: 0.5;
-    font-weight: normal;
+  opacity: 0.5;
+  font-weight: normal;
+  display: none;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    display: block;
+  }
 `
 
 export const WalletDisconnectButton = styled(Button)`
-    font-size: 0.6em;
-    padding: 0;
-    color: ${COLORS.error};
-    background: none;
-    border: 0;
-    margin-left: auto;
-    text-align: right;
+  font-size: 0.6em;
+  padding: 0;
+  color: ${COLORS.error};
+  background: none;
+  border: 0;
+  margin-left: auto;
+  text-align: right;
 `

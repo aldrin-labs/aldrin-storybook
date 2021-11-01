@@ -1,16 +1,17 @@
 import React, { useEffect, useRef } from 'react'
 import { StretchedBlock } from '@sb/components/Layout'
-import { ChartContainer, Chart, ChartCanvas } from '../Staking.styles'
 import { Text } from '@sb/components/Typography'
+import { ChartContainer, Chart, ChartCanvas } from '../styles'
 import { createRewardsChart } from './CreateRewardsChart'
 
 export const RewardsChart = () => {
-
   const chartRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
     if (!chartRef.current) {
-      return () => { return null }
+      return () => {
+        return null
+      }
     }
     const chart = createRewardsChart(chartRef.current)
 
@@ -29,7 +30,7 @@ export const RewardsChart = () => {
           </Text>
         </StretchedBlock>
         <Chart>
-          <ChartCanvas ref={chartRef}></ChartCanvas>
+          <ChartCanvas ref={chartRef} />
         </Chart>
       </ChartContainer>
     </>

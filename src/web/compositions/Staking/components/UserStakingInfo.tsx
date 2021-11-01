@@ -2,14 +2,8 @@ import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
-import StakeBtn from '@icons/stakeBtn.png'
 import { SvgIcon } from '@sb/components'
-import {
-  Block,
-  BlockContent,
-  BlockSubtitle,
-  BlockTitle,
-} from '@sb/components/Block'
+import { Block, BlockContent, BlockTitle } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
@@ -26,8 +20,17 @@ import { useStakingTicketsWithAvailableToClaim } from '@sb/dexUtils/staking/useS
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
-import React, { useCallback, useEffect, useState } from 'react'
-import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
+import React, { useCallback, useState } from 'react'
+import { sleep } from '@core/utils/helpers'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { COLORS } from '@variables/variables'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { filterFarmingTicketsByUserKey } from '@sb/dexUtils/staking/filterFarmingTicketsByUserKey'
+import { useInterval } from '@sb/dexUtils/useInterval'
+import { StakingForm } from './StakingForm'
+import { RestakePopup } from './RestakePopup'
 import {
   Asterisks,
   BalanceRow,
@@ -39,17 +42,12 @@ import {
   WalletBalanceBlock,
   WalletRow,
   ClaimButtonContainer,
-} from '../Staking.styles'
-import { RestakePopup } from './RestakePopup'
-import { StakingForm } from './StakingForm'
-import { sleep } from '@core/utils/helpers'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { COLORS } from '@variables/variables'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { filterFarmingTicketsByUserKey } from '@sb/dexUtils/staking/filterFarmingTicketsByUserKey'
-import { useInterval } from '@sb/dexUtils/useInterval'
+  RewardsStats,
+  RewardsStatsRow,
+  RewardsTitle,
+  WalletAvailableTitle,
+} from '../styles'
+import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 
 interface UserBalanceProps {
   value: number
@@ -59,7 +57,6 @@ interface UserBalanceProps {
 
 interface StakingInfoProps {
   tokenData: TokenInfo | undefined
-  tokenMint: string
   stakingPool: StakingPool
   refreshAllTokenData: RefreshFunction
   allStakingFarmingTickets: FarmingTicket[]
@@ -67,29 +64,50 @@ interface StakingInfoProps {
 }
 
 const UserBalance: React.FC<UserBalanceProps> = (props) => {
-  const { decimals, value } = props
+  const { decimals, value, visible } = props
   const formatted = decimals
     ? stripDigitPlaces(value, decimals)
-    : stripByAmountAndFormat(props.value)
+    : stripByAmountAndFormat(value)
   const len = `${formatted}`.length
   let asterisks = ''
-  for (let i = 0; i < len; i++) {
+  for (let i = 0; i < len; i += 1) {
     asterisks += '*'
   }
   return (
     <BalanceRow>
-      <Digit>
-        {props.visible ? formatted : <Asterisks>{asterisks}</Asterisks>}
-      </Digit>
+      <Digit>{visible ? formatted : <Asterisks>{asterisks}</Asterisks>}</Digit>
       &nbsp;RIN
     </BalanceRow>
   )
 }
 
+const resolveStakingNotification = (status: 'success' | 'failed' | string) => {
+  if (status === 'success') {
+    return 'Successfully staked.'
+  }
+  if (status === 'failed') {
+    return 'Staking failed, please try again later or contact us in telegram.'
+  }
+
+  return 'Staking cancelled.'
+}
+
+const resolveUnstakingNotification = (
+  status: 'success' | 'failed' | string
+) => {
+  if (status === 'success') {
+    return 'Successfully unstaked.'
+  }
+  if (status === 'failed') {
+    return 'Unstaking failed, please try again later or contact us in telegram.'
+  }
+
+  return 'Unstaking cancelled.'
+}
+
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
     tokenData,
-    tokenMint,
     stakingPool,
     refreshAllTokenData,
     allStakingFarmingTickets,
@@ -109,13 +127,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     walletPublicKey: wallet.publicKey,
   })
 
-  const [
-    allStakingSnapshotQueues,
-    refreshAllStakingSnapshotQueues,
-  ] = useStakingSnapshotQueues({
-    wallet,
-    connection,
-  })
+  const [allStakingSnapshotQueues, refreshAllStakingSnapshotQueues] =
+    useStakingSnapshotQueues({
+      wallet,
+      connection,
+    })
 
   const totalStaked = getStakedTokensFromOpenFarmingTickets(userFarmingTickets)
 
@@ -150,12 +166,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
       notify({
         type: result === 'success' ? 'success' : 'error',
-        message:
-          result === 'success'
-            ? 'Successfully staked.'
-            : result === 'failed'
-            ? 'Staking failed, please try again later or contact us in telegram.'
-            : 'Staking cancelled.',
+        message: resolveStakingNotification(result),
       })
 
       if (result === 'success') {
@@ -187,12 +198,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
     notify({
       type: result === 'success' ? 'success' : 'error',
-      message:
-        result === 'success'
-          ? 'Successfully unstaked.'
-          : result === 'failed'
-          ? 'Unstaking failed, please try again later or contact us in telegram.'
-          : 'Unstaking cancelled.',
+      message: resolveUnstakingNotification(result),
     })
 
     if (result === 'success') {
@@ -204,15 +210,14 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     return true
   }
 
-  const [
-    stakingTicketsWithAvailableToClaim,
-  ] = useStakingTicketsWithAvailableToClaim({
-    wallet,
-    connection,
-    walletPublicKey: wallet.publicKey,
-    stakingPool,
-    allStakingFarmingTickets: userFarmingTickets,
-  })
+  const [stakingTicketsWithAvailableToClaim] =
+    useStakingTicketsWithAvailableToClaim({
+      wallet,
+      connection,
+      walletPublicKey: wallet.publicKey,
+      stakingPool,
+      allStakingFarmingTickets: userFarmingTickets,
+    })
 
   const availableToClaimTotal = calculateAvailableToClaim(
     stakingTicketsWithAvailableToClaim
@@ -247,8 +252,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               <SvgIcon
                 style={{ cursor: 'pointer' }}
                 src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
-                width={'1.5em'}
-                height={'auto'}
+                width="1.5em"
+                height="auto"
                 onClick={() => {
                   setIsBalancesShowing(!isBalancesShowing)
                 }}
@@ -259,7 +264,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </StyledTextDiv>
           </div>
           <WalletBalanceBlock>
-            <BlockSubtitle>Available in wallet:</BlockSubtitle>
+            <WalletAvailableTitle>Available in wallet:</WalletAvailableTitle>
             <BalanceWrap>
               <UserBalance
                 visible={isBalancesShowing}
@@ -274,54 +279,55 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           <Cell colMd={4} colLg={12} colXl={4}>
             <TotalStakedBlock inner>
               <BlockContent>
-                <BlockSubtitle margin={'0 0 2em'}>Total staked:</BlockSubtitle>
-                <UserBalance visible={isBalancesShowing} value={totalStaked} />
+                <RewardsStatsRow>
+                  <RewardsTitle>Total staked:</RewardsTitle>
+                  <UserBalance
+                    visible={isBalancesShowing}
+                    value={totalStaked}
+                  />
+                </RewardsStatsRow>
               </BlockContent>
             </TotalStakedBlock>
           </Cell>
           <Cell colMd={8} colLg={12} colXl={8}>
             <RewardsBlock inner>
               <BlockContent>
-                <StretchedBlock>
+                <RewardsStats>
                   <DarkTooltip title={`${stripByAmount(userRewards)} RIN`}>
-                    <div>
-                      <BlockSubtitle margin={'0 0 2em'}>Rewards:</BlockSubtitle>
+                    <RewardsStatsRow>
+                      <RewardsTitle>Rewards:</RewardsTitle>
                       <UserBalance
                         visible={isBalancesShowing}
                         value={userRewards}
                         decimals={2}
                       />
-                    </div>
+                    </RewardsStatsRow>
                   </DarkTooltip>
 
-                  <div>
-                    <BlockSubtitle margin={'0 0 2em'}>
-                      Available to claim:
-                    </BlockSubtitle>
+                  <RewardsStatsRow>
+                    <RewardsTitle>Available to claim:</RewardsTitle>
                     <UserBalance
                       visible={isBalancesShowing}
                       value={availableToClaimTotal}
                     />
-                  </div>
+                  </RewardsStatsRow>
 
                   <ClaimButtonContainer>
                     <DarkTooltip
                       title={
-                        <>
-                          <p>
-                            Rewards distribution takes place on the 27th day of
-                            each month, you will be able to claim your reward
-                            for this period on{' '}
-                            <span style={{ color: COLORS.success }}>
-                              27 November 2021.
-                            </span>
-                          </p>
-                        </>
+                        <p>
+                          Rewards distribution takes place on the 27th day of
+                          each month, you will be able to claim your reward for
+                          this period on{' '}
+                          <span style={{ color: COLORS.success }}>
+                            27 November 2021.
+                          </span>
+                        </p>
                       }
                     >
                       <span>
                         <Button
-                          variant={'disabled'}
+                          variant="disabled"
                           fontSize="xs"
                           padding="lg"
                           borderRadius="xxl"
@@ -334,7 +340,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       Restake
                     </Button>
                   </ClaimButtonContainer>
-                </StretchedBlock>
+                </RewardsStats>
               </BlockContent>
             </RewardsBlock>
           </Cell>
@@ -360,7 +366,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
 export const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
   const {
-    tokenMint,
     tokenData,
     stakingPool,
     refreshAllTokenData,
@@ -374,7 +379,6 @@ export const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
           <UserStakingInfoContent
             stakingPool={stakingPool}
             tokenData={tokenData}
-            tokenMint={tokenMint}
             refreshAllTokenData={refreshAllTokenData}
             allStakingFarmingTickets={allStakingFarmingTickets}
             refreshAllStakingFarmingTickets={refreshAllStakingFarmingTickets}
