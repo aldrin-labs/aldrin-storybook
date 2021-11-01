@@ -7,7 +7,7 @@ import { LeftBlock, PopupBody, StretchedBlock } from '@sb/components/Layout'
 import { PopupWrapper } from '@sb/components/PopupWrapper/PopupWrapper'
 import { Text } from '@sb/components/Typography'
 import React from 'react'
-import { FormItem, RestakeButton } from '../Staking.styles'
+import { FormItem, RestakeButton } from '../styles'
 import { RewardsChart } from './RewardsChart'
 
 export const RestakePopup = ({
