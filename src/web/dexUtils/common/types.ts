@@ -5,11 +5,19 @@ export type FarmingTicket = {
   pool: string
   farmingTicket: string
   userKey: string
-  amountsToClaim: { amount: number; farmingState: string }[]
-  statesAttached?: { farmingState: string }[]
+  amountsToClaim: AmountToClaim[]
+  statesAttached: StateAttached[]
 }
 
 export type PoolAddress = string
+
+export type AmountToClaim = { amount: number; farmingState: string }
+
+export type StateAttached = {
+  farmingState: string
+  lastVestedWithdrawTime: number
+  lastWithdrawTime: number
+}
 
 export type FarmingState = {
   farmingState: string
@@ -20,20 +28,21 @@ export type FarmingState = {
   tokensUnlocked: number
   tokensTotal: number
   startTime: number
+  currentTime: number
   tokensPerPeriod: number
   periodLength: number
   vestingPeriod: number
 }
 
-export type StakingSnapshot = {
+export type Snapshot = {
   isInitialized: boolean
   tokensFrozen: number
   tokensTotal: number
   time: number
 }
 
-export type StakingSnapshotQueue = {
+export type SnapshotQueue = {
   publicKey: string
   nextIndex: number
-  snapshots: StakingSnapshot[]
+  snapshots: Snapshot[]
 }

@@ -1,15 +1,4 @@
-export type FarmingState = {
-  farmingState: string
-  farmingTokenVault: string
-  farmingTokenMint: string
-  farmingTokenMintDecimals: number
-  farmingSnapshots: string
-  tokensUnlocked: number
-  tokensTotal: number
-  tokensPerPeriod: number
-  periodLength: number
-  vestingPeriod: number
-}
+import { FarmingState } from "@sb/dexUtils/common/types"
 
 export type PoolInfo = {
   name: string

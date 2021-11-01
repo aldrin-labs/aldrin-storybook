@@ -1,5 +1,5 @@
 export const POOLS_PROGRAM_ADDRESS =
-  process.env.POOLS_PROGRAM_ADDRESS || 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
+  process.env.POOLS_PROGRAM_ADDRESS || 'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
 
 export const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'

@@ -25,9 +25,9 @@ export const StyledGrid = styled(Grid)`
   filter: drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2));
 
   @media (max-width: 600px) {
-    top: 21rem;
+    top: 19rem;
     width: 100%;
-    height: calc(100% - 32rem);
+    height: calc(100% - 30rem);
     border-radius: 0;
     filter: none;
     min-width: auto;

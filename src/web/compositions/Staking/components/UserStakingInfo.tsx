@@ -11,7 +11,7 @@ import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getSt
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateAvailableToClaim } from '@sb/dexUtils/staking/calculateAvailableToClaim'
-import { calculateUserRewards } from '@sb/dexUtils/staking/calculateUserRewards'
+import { calculateUserStakingRewards } from '@sb/dexUtils/staking/calculateUserStakingRewards'
 import { endStaking } from '@sb/dexUtils/staking/endStaking'
 import { startStaking } from '@sb/dexUtils/staking/startStaking'
 import { StakingPool } from '@sb/dexUtils/staking/types'
@@ -135,9 +135,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const totalStaked = getStakedTokensFromOpenFarmingTickets(userFarmingTickets)
 
-  const userRewards = calculateUserRewards({
-    snapshotsQueues: allStakingSnapshotQueues,
-    allStakingFarmingTickets: userFarmingTickets,
+  const userRewards = calculateUserStakingRewards({
+    snapshotQueues: allStakingSnapshotQueues,
+    farmingTickets: userFarmingTickets,
   })
 
   const refreshAll = async () => {
