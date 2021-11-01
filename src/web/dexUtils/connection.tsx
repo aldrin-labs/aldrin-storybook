@@ -147,7 +147,7 @@ export const getConnectionFromMultiConnections = ({ connection }) => {
 export const getProviderNameFromUrl = ({ rawConnection }) => {
   const rpcProvider = rawConnection._rpcEndpoint
     .replace('https://', '')
-    .replaceAll('.', '-')
+    .replace(/\./g, '-')
 
   return rpcProvider
 }
