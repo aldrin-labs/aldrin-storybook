@@ -6,8 +6,6 @@ import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
 import { BlockTemplate } from './index.styles'
 
-
-
 const Pools = ({ theme }: { theme: Theme }) => {
   const [isWarningPopupOpen, openWarningPopup] = useState(true)
 
@@ -25,6 +23,9 @@ const Pools = ({ theme }: { theme: Theme }) => {
       justify={'flex-start'}
       style={{
         background: theme.palette.grey.additional,
+        minHeight: '100%',
+        overflow: 'scroll',
+        flexWrap: 'nowrap',
       }}
     >
       <RowContainer justify={'space-between'}>

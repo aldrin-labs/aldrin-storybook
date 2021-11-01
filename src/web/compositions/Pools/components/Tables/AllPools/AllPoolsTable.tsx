@@ -161,7 +161,7 @@ const AllPoolsTableComponent = ({
           backgroundColor: '#222429',
         }}
         defaultSort={{
-          sortColumn: 'tvl',
+          sortColumn: 'apy',
           sortDirection: 'desc',
         }}
         withCheckboxes={false}

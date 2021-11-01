@@ -66,7 +66,7 @@ export const Header = () => {
         <MainLinksWrap>
           <MainLinksBlock>
             <NavLink to="/chart" activeClassName="selected">
-              Terminal
+              Trade
             </NavLink>
             <NavLink to="/swap" activeClassName="selected">
               Swap
