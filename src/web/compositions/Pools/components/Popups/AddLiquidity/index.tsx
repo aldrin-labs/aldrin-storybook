@@ -547,7 +547,9 @@ export const AddLiquidityPopup = ({
               setTimeout(async () => {
                 refreshAllTokensData()
                 clearPoolWaitingForUpdate()
-                setIsRemindToStakePopupOpen()
+                if (openFarmings.length > 0) {
+                  setIsRemindToStakePopupOpen()
+                }
               }, 7500)
               // end button loader
 
