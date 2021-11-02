@@ -1,34 +1,31 @@
-import React, { useState } from 'react'
-import { TableWithSort } from '@sb/components'
-
-import { Theme } from '@material-ui/core'
-import {
-  allPoolsTableColumnsNames,
-  combineAllPoolsData,
-} from './AllPoolsTable.utils'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
+import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
+import { endOfHourTimestamp } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
+import { Theme } from '@material-ui/core'
+import { TableWithSort } from '@sb/components'
+import {
+  dayDuration
+} from '@sb/compositions/AnalyticsRoute/components/utils'
 import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation,
-  TradingVolume,
+  PoolWithOperation
 } from '@sb/compositions/Pools/index.types'
-import { compose } from 'recompose'
-import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import {
-  dayDuration,
-  endOfDayTimestamp,
-} from '@sb/compositions/AnalyticsRoute/components/utils'
-import { TableContainer } from '../index.styles'
-import { useWallet } from '@sb/dexUtils/wallet'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { endOfHourTimestamp } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
-import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
+import { useWallet } from '@sb/dexUtils/wallet'
+import React, { useState } from 'react'
+import { compose } from 'recompose'
+import { TableContainer } from '../index.styles'
+import {
+  allPoolsTableColumnsNames,
+  combineAllPoolsData
+} from './AllPoolsTable.utils'
+
 
 const AllPoolsTableComponent = ({
   theme,

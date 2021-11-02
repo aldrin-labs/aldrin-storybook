@@ -192,14 +192,13 @@ export const combineAllPoolsData = ({
         feesEarnedByPool?.totalBaseTokenFee * baseTokenPrice +
         feesEarnedByPool?.totalQuoteTokenFee * quoteTokenPrice
 
-      const tradingVolumes = weeklyAndDailyTradingVolumes.find(
+      const tradingVolumes = weeklyAndDailyTradingVolumes?.find(
         (el) => el.pool === pool.swapToken
       ) || {
         dailyTradingVolume: 0,
         weeklyTradingVolume: 0,
       }
 
-      console.log('tradingVolumes', tradingVolumes)
       const apy = pool.apy24h || 0
 
       const tvlUSD =
