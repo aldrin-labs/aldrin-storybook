@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { Theme } from '@material-ui/core'
-import { COLORS, BREAKPOINTS } from '@variables/variables'
+import { COLORS, BREAKPOINTS, BORDER_RADIUS } from '@variables/variables'
+import { Input } from '@sb/components/Input'
 
 type TableModeButtonProps = {
   isActive: boolean
@@ -20,15 +21,18 @@ export const TableModeButton = styled.button`
   padding: 0.4rem 0;
   margin: 0 1.6rem 0 0;
   outline: none;
-  font-size: 1.4rem;
+  font-size: 0.9em;
   font-family: Avenir Next Demi;
   text-transform: capitalize;
   cursor: pointer;
 `
 
 export const TabContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+
     @media(min-width: ${BREAKPOINTS.md}) {
-      display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
@@ -38,4 +42,23 @@ export const TabContainer = styled.div`
 export const InputWrap = styled.div`
     display: flex;
     flex-direction: row;
+    margin-top: 20px;
+
+    @media(min-width: ${BREAKPOINTS.md}) {
+      margin-top: 0;
+    }
+`
+
+export const SearchInput = styled(Input)`
+    margin-right: 10px;
+    flex: 1;
+    border-radius: ${BORDER_RADIUS.lg};
+
+    @media(min-width: ${BREAKPOINTS.md}) {
+      min-width: 250px;
+    }
+`
+
+export const TableContainer = styled.div`
+    min-width: 600px;
 `

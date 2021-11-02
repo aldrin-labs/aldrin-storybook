@@ -110,7 +110,7 @@ const UserLiquidityTableComponent = ({
         tableStyles={{
           cell: {
             color: theme.palette.dark.main,
-            fontSize: '1rem',
+            fontSize: '1em',
             fontWeight: 'bold',
             letterSpacing: '.1rem',
             borderBottom: theme.palette.border.main,
@@ -125,7 +125,7 @@ const UserLiquidityTableComponent = ({
             backgroundColor: '#222429',
             fontFamily: 'Avenir Next Thin',
             color: '#fbf2f2',
-            fontSize: '1.3rem',
+            fontSize: '1.3em',
           },
           tab: {
             padding: 0,

@@ -10,8 +10,8 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 
 import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
 
+import Loop from '@icons/loop.svg'
 import KudelskiLogo from '@icons/kudelski.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
 
 import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
@@ -26,7 +26,7 @@ import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPric
 import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
-import { TableModeButton, TabContainer, InputWrap } from './TablesSwitcher.styles'
+import { TableModeButton, TabContainer, InputWrap, SearchInput, TableContainer } from './TablesSwitcher.styles'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
@@ -40,6 +40,7 @@ import { Block, BlockContent } from '@sb/components/Block'
 import { RemindToStakePopup } from '../../Popups/ReminderToStake/ReminderToStake'
 import { valueEventAriaMessage } from 'react-select/lib/accessibility'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
+import { Text } from '../../../../../components/Typography'
 
 const TablesSwitcher = ({
   theme,
@@ -148,21 +149,29 @@ const TablesSwitcher = ({
             </TableModeButton>
           </div>
           <InputWrap>
-            <SearchInputWithLoop
-              searchValue={searchValue}
-              onChangeSearch={onChangeSearch}
-              placeholder={'Search...'}
-            />{' '}
+            <SearchInput
+              name="search"
+              placeholder="Search"
+              value={searchValue}
+              onChange={onChangeSearch}
+              append={
+                <SvgIcon
+                  src={Loop}
+                  height={'1.6rem'}
+                  width={'1.6rem'}
+                />
+              }
+            />
             <a
               style={{ textDecoration: 'none' }}
               href={AMMAudit}
               target="_blank"
             >
               <div>
-                <Text fontSize={'1.2rem'}>Audited by</Text>
+                <Text margin="0" size="sm">Audited by</Text>
               </div>
               <SvgIcon
-                width="6em"
+                width="5em"
                 height="auto"
                 style={{ marginTop: '1rem' }}
                 src={KudelskiLogo}
@@ -170,7 +179,7 @@ const TablesSwitcher = ({
             </a>
           </InputWrap>
         </TabContainer>
-        <div>
+        <TableContainer>
           {selectedTable === 'all' ? (
             <AllPoolsTable
               theme={theme}
@@ -217,26 +226,26 @@ const TablesSwitcher = ({
               />
             )}
 
-        {selectedPool && isAddLiquidityPopupOpen && (
-          <AddLiquidityPopup
-            theme={theme}
-            poolsInfo={pools}
-            open={isAddLiquidityPopupOpen}
-            dexTokensPricesMap={dexTokensPricesMap}
-            selectedPool={selectedPool}
-            farmingTicketsMap={farmingTicketsMap}
-            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-            allTokensData={allTokensData}
-            setPoolWaitingForUpdateAfterOperation={
-              setPoolWaitingForUpdateAfterOperation
-            }
-            close={() => setIsAddLiquidityPopupOpen(false)}
-            refreshAllTokensData={refreshAllTokensData}
-            setIsRemindToStakePopupOpen={() =>
-              setIsRemindToStakePopupOpen(true)
-            }
-          />
-        )}
+          {selectedPool && isAddLiquidityPopupOpen && (
+            <AddLiquidityPopup
+              theme={theme}
+              poolsInfo={pools}
+              open={isAddLiquidityPopupOpen}
+              dexTokensPricesMap={dexTokensPricesMap}
+              selectedPool={selectedPool}
+              farmingTicketsMap={farmingTicketsMap}
+              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+              allTokensData={allTokensData}
+              setPoolWaitingForUpdateAfterOperation={
+                setPoolWaitingForUpdateAfterOperation
+              }
+              close={() => setIsAddLiquidityPopupOpen(false)}
+              refreshAllTokensData={refreshAllTokensData}
+              setIsRemindToStakePopupOpen={() =>
+                setIsRemindToStakePopupOpen(true)
+              }
+            />
+          )}
 
           {selectedPool && isWithdrawalPopupOpen && (
             <WithdrawalPopup
@@ -256,26 +265,26 @@ const TablesSwitcher = ({
             />
           )}
 
-        {selectedPool && (isStakePopupOpen || isRemindToStakePopupOpen) && (
-          <StakePopup
-            theme={theme}
-            open={isStakePopupOpen || isRemindToStakePopupOpen}
-            selectedPool={selectedPool}
-            dexTokensPricesMap={dexTokensPricesMap}
-            farmingTicketsMap={farmingTicketsMap}
-            close={() => {
-              isRemindToStakePopupOpen
-                ? setIsRemindToStakePopupOpen(false)
-                : setIsStakePopupOpen(false)
-            }}
-            allTokensData={allTokensData}
-            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-            setPoolWaitingForUpdateAfterOperation={
-              setPoolWaitingForUpdateAfterOperation
-            }
-            isReminderPopup={isRemindToStakePopupOpen}
-          />
-        )}
+          {selectedPool && (isStakePopupOpen || isRemindToStakePopupOpen) && (
+            <StakePopup
+              theme={theme}
+              open={isStakePopupOpen || isRemindToStakePopupOpen}
+              selectedPool={selectedPool}
+              dexTokensPricesMap={dexTokensPricesMap}
+              farmingTicketsMap={farmingTicketsMap}
+              close={() => {
+                isRemindToStakePopupOpen
+                  ? setIsRemindToStakePopupOpen(false)
+                  : setIsStakePopupOpen(false)
+              }}
+              allTokensData={allTokensData}
+              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+              setPoolWaitingForUpdateAfterOperation={
+                setPoolWaitingForUpdateAfterOperation
+              }
+              isReminderPopup={isRemindToStakePopupOpen}
+            />
+          )}
 
           {selectedPool && isUnstakePopupOpen && (
             <UnstakePopup
@@ -290,7 +299,7 @@ const TablesSwitcher = ({
               }
             />
           )}
-        </div>
+        </TableContainer>
       </BlockContent>
     </Block>
   )
