@@ -201,12 +201,8 @@ export const combineUserLiquidityData = ({
             farmingState.farmingTokenMint
           )
 
-          let farmingTokenPrice =
+          const farmingTokenPrice =
             dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
-
-          if (farmingTokenSymbol === 'MNDE') {
-            farmingTokenPrice = 0.727590
-          }
 
           const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
             farmingStateDailyFarmingValuePerThousandDollarsLiquidity *
