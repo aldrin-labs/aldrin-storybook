@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
@@ -25,8 +25,11 @@ import { Line } from '../../Popups/index.styles'
 import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
 import { msToNextHour } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
+import { Block, BlockContent, BlockTitle, BlockSubtitle } from '@sb/components/Block'
+import { Chart } from 'chart.js'
+import { TitleContainer, SubTitle } from '../styles'
 
-const TotalVolumeLockedChart = ({
+const Chart = ({
   theme,
   id,
   title,
@@ -40,16 +43,41 @@ const TotalVolumeLockedChart = ({
   const data =
     getTotalVolumeLockedHistoryQuery?.getTotalVolumeLockedHistory?.volumes
 
-  useEffect(() => {
-    createTotalVolumeLockedChart({ theme, id, data })
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const chartRef = useRef<Chart | null>(null)
 
-    // @ts-ignore - we set it in create chart function above
-    return () => window[`TotalVolumeLockedChart-${id}`].destroy()
-  }, [id, JSON.stringify(data)])
+
+  useEffect(() => {
+    if (!canvasRef.current) {
+      return () => {
+        return null
+      }
+    }
+    chartRef.current = createTotalVolumeLockedChart({
+      container: canvasRef.current,
+      data,
+      chart: chartRef.current
+    })
+
+    return () => chartRef.current?.destroy()
+  }, [JSON.stringify(data)])
 
   return (
-    <>
-      <HeaderContainer theme={theme} justify={'space-between'}>
+    <Block>
+      <BlockContent>
+        <TitleContainer>
+          <SubTitle>Total Value Locked</SubTitle>
+          <Line />
+          <ReloadTimerTillUpdate
+            duration={3600}
+            margin={'0 0 0 2rem'}
+            getSecondsTillNextUpdate={() => msToNextHour() / 1000}
+          />
+        </TitleContainer>
+        <div>
+          <canvas height="250" ref={canvasRef}></canvas>
+        </div>
+        {/* <HeaderContainer theme={theme} justify={'space-between'}>
         <RowContainer margin={'0 2rem 0 2rem'} style={{ flexWrap: 'nowrap' }}>
           <WhiteTitle
             style={{ marginRight: '2rem' }}
@@ -67,13 +95,16 @@ const TotalVolumeLockedChart = ({
         </RowContainer>
       </HeaderContainer>
       <ChartContainer>
-        <canvas id="TotalVolumeLockedChart"></canvas>
-      </ChartContainer>
-    </>
+        <canvas ref={chartRef}></canvas>
+      </ChartContainer> */}
+
+      </BlockContent>
+    </Block>
+
   )
 }
 
-export default compose(
+export const TotalVolumeLockedChart = compose(
   queryRendererHoc({
     query: getTotalVolumeLockedHistory,
     name: 'getTotalVolumeLockedHistoryQuery',
@@ -85,4 +116,4 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
   })
-)(TotalVolumeLockedChart)
+)(Chart)

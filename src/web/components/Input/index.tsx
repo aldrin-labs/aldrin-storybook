@@ -15,7 +15,7 @@ interface InputProps {
 }
 
 const InputWrap = styled.div`
-  background: ${COLORS.borderAlt};
+  background: ${COLORS.background};
   border: 1px solid ${COLORS.border};
   border-radius: ${BORDER_RADIUS.xxl};
   display: flex;

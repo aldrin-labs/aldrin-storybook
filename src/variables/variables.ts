@@ -10,7 +10,6 @@ export const COLORS = {
   black: '#000000',
   hint: '#96999c',
   blockBackground: '#222429',
-  borderAlt: '#383B45',
   main: '#fbf2f2',
   primary: '#651CE4',
   success: '#53DF11',

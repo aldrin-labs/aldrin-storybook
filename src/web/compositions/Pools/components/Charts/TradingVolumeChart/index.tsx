@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { Theme } from '@material-ui/core'
@@ -26,8 +26,11 @@ import { estimatedTime, msToNextHour } from '@core/utils/dateUtils'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
 import { getRandomInt } from '@core/utils/helpers'
+import { Chart } from 'chart.js'
+import { BlockContent, Block } from '@sb/components/Block'
+import { TitleContainer, SubTitle } from '../styles'
 
-const TradingVolumeChart = ({
+const ChartBlock = ({
   theme,
   id,
   title,
@@ -38,20 +41,47 @@ const TradingVolumeChart = ({
   title: string
   getTradingVolumeHistoryQuery: any
 }) => {
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const chartRef = useRef<Chart | null>(null)
+
+
   const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
 
   useEffect(() => {
-    createTradingVolumeChart({
-      theme,
-      id,
-      data: [...data].sort((a, b) => {
-        return dayjs(a.date).unix() - dayjs(b.date).unix()
-      }),
+    if (!canvasRef.current) {
+      return () => {
+        return null
+      }
+    }
+    chartRef.current = createTradingVolumeChart({
+      container: canvasRef.current,
+      data,
+      chart: chartRef.current,
     })
 
-    // @ts-ignore - we set it in create chart function above
-    return () => window[`TradingVolumeChart-${id}`].destroy()
-  }, [id, JSON.stringify(data)])
+    return () => chartRef.current?.destroy()
+  }, [JSON.stringify(data)])
+
+
+  return (
+    <Block>
+      <BlockContent>
+        <TitleContainer>
+          <SubTitle>Trading Volume</SubTitle>
+          <Line />
+          <ReloadTimerTillUpdate
+            duration={3600}
+            margin={'0 0 0 2rem'}
+            getSecondsTillNextUpdate={() => msToNextHour() / 1000}
+          />
+        </TitleContainer>
+        <div>
+          <canvas ref={canvasRef}></canvas>
+        </div>
+      </BlockContent>
+    </Block>
+  )
 
   return (
     <>
@@ -79,7 +109,7 @@ const TradingVolumeChart = ({
   )
 }
 
-export default compose(
+export const TradingVolumeChart = compose(
   queryRendererHoc({
     query: getTradingVolumeHistory,
     name: 'getTradingVolumeHistoryQuery',
@@ -91,4 +121,4 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
   })
-)(TradingVolumeChart)
+)(ChartBlock)

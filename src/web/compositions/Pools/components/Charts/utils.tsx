@@ -31,6 +31,7 @@ import {
   endOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { FONTS, FONT_SIZES, COLORS } from '@variables/variables'
 
 Chart.register(
   BarElement,
@@ -47,6 +48,78 @@ Chart.register(
 )
 
 const NUMBER_OF_DAYS_TO_SHOW = 6
+const CHART_HEIGHT = 220
+
+interface ChartParams<T = []> {
+  chart: Chart | null
+  data: T
+  container: HTMLCanvasElement
+}
+
+const createChart = (ctx: CanvasRenderingContext2D) =>
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [],
+    },
+    options: {
+      scales: {
+        x: {
+          stacked: true,
+          gridLines: {
+            display: false,
+          },
+          ticks: {
+            align: 'end',
+            color: COLORS.textAlt,
+            font: {
+              size: 12,
+              family: FONTS.main,
+            },
+          },
+        },
+        y: {
+          position: 'right',
+          gridLines: {
+            display: false,
+            color: COLORS.background,
+          },
+          ticks: {
+            padding: 15,
+            callback: (value) => `$${stripByAmountAndFormat(value)}`,
+            color: COLORS.textAlt,
+            // maxTicksLimit: 5,
+            // stepSize: 1,
+            font: {
+              size: 12,
+              family: FONTS.main,
+            },
+          },
+        },
+      },
+      maintainAspectRatio: false,
+      plugins: {
+        filler: {
+          propagate: true,
+        },
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          enabled: true,
+          intersect: false,
+        },
+      },
+      layout: {
+        padding: {
+          top: 0,
+          right: 0,
+          left: 0,
+        },
+      },
+    },
+  })
 
 const getEmptyData = (
   fisrtTimestamp: number = endOfDayTimestamp() -
@@ -74,27 +147,21 @@ const getEmptyData = (
 }
 
 const createTotalVolumeLockedChart = ({
-  id,
-  theme,
+  container,
   data,
-}: {
-  id: string
-  theme: Theme
-  data: []
-}) => {
-  const ctx = document
-    .getElementById('TotalVolumeLockedChart')
-    ?.getContext('2d')
+  chart
+}: ChartParams) => {
+  container.height = CHART_HEIGHT
+  const ctx = container.getContext('2d')
+
+  if (!ctx) {
+    throw Error('Not a canvas:')
+  }
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
   gradient.addColorStop(0, 'rgba(101, 28, 228, 0.84)')
   gradient.addColorStop(0.55, 'rgba(115, 128, 235, 0)')
-  gradient.addColorStop(1, '#222429')
-
-  const width =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth
+  gradient.addColorStop(1, COLORS.blockBackground)
 
   const transformedData = getEmptyData().map((value) => ({
     ...value,
@@ -104,147 +171,46 @@ const createTotalVolumeLockedChart = ({
       )?.vol || 0,
   }))
 
-  console.log('transformedData', transformedData)
+  const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), 0)
 
-  window[`TotalVolumeLockedChart-${id}`] = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
-      datasets: [
-        {
-          fill: 'origin',
-          tension: 0.5,
-          borderColor: '#7380EB',
-          backgroundColor: gradient,
-          borderWidth: 2,
-          pointRadius: 0,
-          hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
-        },
-      ],
-    },
-    options: {
-      scales: {
-        x: {
-          stacked: true,
-          gridLines: {
-            display: false,
-          },
-          ticks: {
-            align: 'end',
-            color: '#F5F5FB',
-            font: {
-              size: +(width / 130).toFixed(0),
-              family: 'Avenir Next',
-            },
-          },
-        },
-        y: {
-          position: 'right',
-          gridLines: {
-            display: false,
-            color: '#383B45',
-          },
-          ticks: {
-            padding: 15,
-            callback: (value) => `$${stripByAmountAndFormat(value)}`,
-            color: '#F5F5FB',
-            stepSize: data[data.length - 1]?.vol / 5,
-            font: {
-              size: +(width / 130).toFixed(0),
-              family: 'Avenir Next',
-            },
-          },
-        },
+  chart = chart || createChart(ctx)
+  chart.data = {
+    labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
+    datasets: [
+      {
+        fill: 'origin',
+        tension: 0.5,
+        borderColor: COLORS.primary,
+        backgroundColor: gradient,
+        borderWidth: 2,
+        pointRadius: 0,
+        hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
+        data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
       },
-      maintainAspectRatio: false,
-      plugins: {
-        filler: {
-          propagate: true,
-        },
-        legend: {
-          display: false,
-        },
-        tooltip: {
-          enabled: false,
-          intersect: false,
-        },
-      },
-      layout: {
-        padding: {
-          top: 25,
-          right: 15,
-          left: 70,
-        },
-      },
-      // onResize: () => {
-      //   if (!window[`TotalVolumeLockedChart-${id}`]) return
-
-      //   const width =
-      //     window.innerWidth ||
-      //     document.documentElement.clientWidth ||
-      //     document.body.clientWidth
-
-      //   window[`TotalVolumeLockedChart-${id}`].options.scales = {
-      //     x: {
-      //       stacked: true,
-      //       gridLines: {
-      //         display: false,
-      //       },
-      //       ticks: {
-      //         align: 'end',
-      //         color: '#F5F5FB',
-      //         font: {
-      //           size: +(width / 130).toFixed(0),
-      //           family: 'Avenir Next',
-      //         },
-      //       },
-      //     },
-      //     y: {
-      //       position: 'right',
-      //       gridLines: {
-      //         display: false,
-      //         color: '#383B45',
-      //       },
-      //       ticks: {
-      //         padding: 15,
-      //         callback: (value) =>
-      //           value > 1000000
-      //             ? `$${stripDigitPlaces(value / 1000000, 2)}m`
-      //             : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`,
-      //         color: '#F5F5FB',
-      //         stepSize: data[data.length - 1]?.vol / 5,
-      //         font: {
-      //           size: +(width / 130).toFixed(0),
-      //           family: 'Avenir Next',
-      //         },
-      //       },
-      //     },
-      //   }
-      // },
-    },
-  })
+    ],
+  }
+  chart.options.scales.y.ticks.stepSize = maxVol / 5
+  chart.update()
+  return chart
 }
 
 const createTradingVolumeChart = ({
-  id,
-  theme,
+  chart,
+  container,
   data,
-}: {
-  id: string
-  theme: Theme
-  data: []
-}) => {
-  const ctx = document.getElementById('TradingVolumeChart')?.getContext('2d')
+}: ChartParams) => {
+  const ctx = container.getContext('2d')
+
+  if (!ctx) {
+    throw Error('Not a canvas:')
+  }
+
+  container.height = CHART_HEIGHT
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
+
   gradient.addColorStop(0, 'rgb(83, 223, 17, 0.85)')
   gradient.addColorStop(0.55, 'rgba(165, 232, 152, 0)')
-  gradient.addColorStop(1, '#222429')
-
-  const width =
-    window.innerWidth ||
-    document.documentElement.clientWidth ||
-    document.body.clientWidth
+  gradient.addColorStop(1, COLORS.blockBackground)
 
   const transformedData = getEmptyData().map((value) => ({
     ...value,
@@ -254,125 +220,29 @@ const createTradingVolumeChart = ({
       )?.vol || 0,
   }))
 
-  window[`TradingVolumeChart-${id}`] = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
-      datasets: [
-        {
-          fill: 'origin',
-          tension: 0.5,
-          borderColor: theme.palette.green.new,
-          backgroundColor: gradient,
-          borderWidth: 2,
-          pointRadius: 0,
-          hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
-          data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
-        },
-      ],
-    },
-    options: {
-      scales: {
-        x: {
-          stacked: true,
-          gridLines: {
-            display: false,
-          },
-          ticks: {
-            align: 'end',
-            color: '#F5F5FB',
-            font: {
-              size: +(width / 130).toFixed(0),
-              family: 'Avenir Next',
-            },
-          },
-        },
-        y: {
-          position: 'right',
-          gridLines: {
-            display: false,
-            color: '#383B45',
-          },
-          ticks: {
-            padding: 15,
-            callback: (value) => `$${stripByAmountAndFormat(value)}`,
-            color: '#F5F5FB',
-            // stepSize: Math.max(data.map(d => d.vol)) / 5,
-            font: {
-              size: +(width / 130).toFixed(0),
-              family: 'Avenir Next',
-            },
-          },
-        },
-      },
-      maintainAspectRatio: false,
-      plugins: {
-        filler: {
-          propagate: true,
-        },
-        legend: {
-          display: false,
-        },
-        tooltip: {
-          enabled: false,
-          intersect: false,
-        },
-      },
-      layout: {
-        padding: {
-          top: 25,
-          right: 15,
-          left: 70,
-        },
-      },
-      // onResize: () => {
-      //   if (!window[`TradingVolumeChart-${id}`]) return
+  const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), 0)
 
-      //   const width =
-      //     window.innerWidth ||
-      //     document.documentElement.clientWidth ||
-      //     document.body.clientWidth
+  chart = chart || createChart(ctx)
+  chart.data = {
+    labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
+    datasets: [
+      {
+        fill: 'origin',
+        tension: 0.5,
+        borderColor: COLORS.success,
+        backgroundColor: gradient,
+        borderWidth: 2,
+        pointRadius: 0,
+        hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
+        data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
+      },
+    ],
+  }
 
-      //   window[`TradingVolumeChart-${id}`].options.scales = {
-      //     x: {
-      //       stacked: true,
-      //       gridLines: {
-      //         display: false,
-      //       },
-      //       ticks: {
-      //         align: 'end',
-      //         color: '#F5F5FB',
-      //         font: {
-      //           size: +(width / 130).toFixed(0),
-      //           family: 'Avenir Next',
-      //         },
-      //       },
-      //     },
-      //     y: {
-      //       position: 'right',
-      //       gridLines: {
-      //         display: false,
-      //         color: '#383B45',
-      //       },
-      //       ticks: {
-      //         padding: 15,
-      //         callback: (value) => {
-      //           return value > 1000000
-      //             ? `$${stripDigitPlaces(value / 1000000, 2)}m`
-      //             : `$${formatNumberToUSFormat(stripDigitPlaces(value, 0))}`
-      //         },
-      //         color: '#F5F5FB',
-      //         stepSize: data[data.length - 1]?.vol / 5,
-      //         font: {
-      //           size: +(width / 130).toFixed(0),
-      //           family: 'Avenir Next',
-      //         },
-      //       },
-      //     },
-      //   }
-      // },
-    },
-  })
+  chart.options.scales.y.ticks.stepSize = maxVol / 5
+  chart.update()
+  return chart
+
 }
 
 export { createTotalVolumeLockedChart, createTradingVolumeChart }

@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Theme } from '@material-ui/core'
+import { COLORS, BREAKPOINTS } from '@variables/variables'
 
 type TableModeButtonProps = {
   isActive: boolean
@@ -10,12 +11,12 @@ export const TableModeButton = styled.button`
   border: none;
   border-bottom: ${(props: TableModeButtonProps) =>
     props.isActive
-      ? `.3rem solid ${props.theme.palette.white.primary}`
-      : `.3rem solid ${props.theme.palette.dark.background}`};
+      ? `.3rem solid ${COLORS.white}`
+      : `.3rem solid ${COLORS.hint}`};
 
   background: inherit;
   color: ${(props: TableModeButtonProps) =>
-    props.isActive ? '#f5f5f5' : '#93A0B2'};
+    props.isActive ? COLORS.white : COLORS.hint};
   padding: 0.4rem 0;
   margin: 0 1.6rem 0 0;
   outline: none;
@@ -23,4 +24,18 @@ export const TableModeButton = styled.button`
   font-family: Avenir Next Demi;
   text-transform: capitalize;
   cursor: pointer;
+`
+
+export const TabContainer = styled.div`
+    @media(min-width: ${BREAKPOINTS.md}) {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+`
+
+export const InputWrap = styled.div`
+    display: flex;
+    flex-direction: row;
 `
