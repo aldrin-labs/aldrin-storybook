@@ -1,5 +1,6 @@
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+import { getTotalFarmingAmountToClaim } from '@sb/dexUtils/common/getTotalFarmingAmountToClaim'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenDataByMint } from '.'
 import { PoolInfo } from '../index.types'
@@ -26,7 +27,10 @@ export const getUserPoolsFromAll = ({
     const availableToClaimAmount =
       farmingTicketsMap
         .get(el.swapToken)
-        ?.reduce((acc, ticket) => acc + ticket.amountsToClaim[0].amount, 0) || 0
+        ?.reduce(
+          (acc, ticket) => acc + getTotalFarmingAmountToClaim(ticket),
+          0
+        ) || 0
 
     return (
       poolTokenAmount > 0 ||

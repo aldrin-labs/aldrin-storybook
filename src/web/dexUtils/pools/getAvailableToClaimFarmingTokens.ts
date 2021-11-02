@@ -1,3 +1,4 @@
+import { getTotalFarmingAmountToClaim } from '../common/getTotalFarmingAmountToClaim'
 import { FarmingTicket } from '../common/types'
 
 export const getAvailableToClaimFarmingTokens = (
@@ -5,7 +6,7 @@ export const getAvailableToClaimFarmingTokens = (
 ) => {
   return (
     farmingTickets.reduce(
-      (acc, ticket) => acc + ticket.amountsToClaim[0].amount,
+      (acc, ticket) => acc + getTotalFarmingAmountToClaim(ticket),
       0
     ) || 0
   )

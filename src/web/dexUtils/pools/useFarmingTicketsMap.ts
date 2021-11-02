@@ -2,18 +2,20 @@ import { useEffect, useState } from 'react'
 import { Connection } from '@solana/web3.js'
 import { RefreshFunction, WalletAdapter } from '../types'
 import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
-import { addAmountsToClaimForFarmingTickets } from '../common/addAmountsToClaimForFarmingTickets'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { FarmingTicket, PoolAddress } from '../common/types'
+import { FarmingTicket, PoolAddress, SnapshotQueue } from '../common/types'
+import { addFarmingRewardsToTickets } from './addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 
 export const useFarmingTicketsMap = ({
   wallet,
   connection,
   pools,
+  snapshotQueues,
 }: {
   wallet: WalletAdapter
   connection: Connection
   pools: PoolInfo[]
+  snapshotQueues: SnapshotQueue[]
 }): [Map<string, FarmingTicket[]>, RefreshFunction] => {
   const [farmingTicketsMap, setFarmingTicketsMap] = useState<
     Map<PoolAddress, FarmingTicket[]>
@@ -29,12 +31,11 @@ export const useFarmingTicketsMap = ({
         connection,
       })
 
-      const allUserFarmingTicketsWithAmountsToClaim = await addAmountsToClaimForFarmingTickets(
+      const allUserFarmingTicketsWithAmountsToClaim = addFarmingRewardsToTickets(
         {
           pools,
-          wallet,
-          connection,
-          allUserFarmingTickets,
+          farmingTickets: allUserFarmingTickets,
+          snapshotQueues,
         }
       )
 
@@ -56,10 +57,10 @@ export const useFarmingTicketsMap = ({
       setFarmingTicketsMap(farmingTicketsMap)
     }
 
-    if (pools && pools.length > 0 && wallet.publicKey) {
+    if (pools && pools.length > 0 && snapshotQueues && snapshotQueues.length > 0 && wallet.publicKey) {
       loadFarmingTickets()
     }
-  }, [wallet.publicKey, pools, refreshCounter])
+  }, [wallet.publicKey, pools, snapshotQueues, refreshCounter])
 
   return [farmingTicketsMap, refresh]
 }

@@ -8,12 +8,13 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
-import AllPoolsTable from '../AllPools/AllPoolsTable'
-import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
-
 import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
+
 import KudelskiLogo from '@icons/kudelski.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
+
+import AllPoolsTable from '../AllPools/AllPoolsTable'
+import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
 
 import {
   DexTokensPrices,
@@ -34,9 +35,11 @@ import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFr
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 import { getRandomInt } from '@core/utils/helpers'
-import { valueEventAriaMessage } from 'react-select/lib/accessibility'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Block, BlockContent } from '@sb/components/Block'
+import { RemindToStakePopup } from '../../Popups/ReminderToStake/ReminderToStake'
+import { valueEventAriaMessage } from 'react-select/lib/accessibility'
+import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
 
 const TablesSwitcher = ({
   theme,
@@ -69,6 +72,9 @@ const TablesSwitcher = ({
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
+  const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
+    false
+  )
 
   // after operation with pool we update data after some time
   // and for better ux we need to show loader for button which was use for this operation
@@ -88,10 +94,16 @@ const TablesSwitcher = ({
     connection,
   })
 
+  const [snapshotQueues, refreshSnapshotQueues] = useSnapshotQueues({
+    wallet,
+    connection,
+  })
+
   const [farmingTicketsMap, refreshFarmingTickets] = useFarmingTicketsMap({
     wallet,
     connection,
     pools,
+    snapshotQueues,
   })
 
   const refreshTokensWithFarmingTickets = () => {
@@ -205,21 +217,26 @@ const TablesSwitcher = ({
               />
             )}
 
-          {selectedPool && isAddLiquidityPopupOpen && (
-            <AddLiquidityPopup
-              theme={theme}
-              poolsInfo={pools}
-              open={isAddLiquidityPopupOpen}
-              dexTokensPricesMap={dexTokensPricesMap}
-              selectedPool={selectedPool}
-              allTokensData={allTokensData}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-              close={() => setIsAddLiquidityPopupOpen(false)}
-              refreshAllTokensData={refreshAllTokensData}
-            />
-          )}
+        {selectedPool && isAddLiquidityPopupOpen && (
+          <AddLiquidityPopup
+            theme={theme}
+            poolsInfo={pools}
+            open={isAddLiquidityPopupOpen}
+            dexTokensPricesMap={dexTokensPricesMap}
+            selectedPool={selectedPool}
+            farmingTicketsMap={farmingTicketsMap}
+            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+            allTokensData={allTokensData}
+            setPoolWaitingForUpdateAfterOperation={
+              setPoolWaitingForUpdateAfterOperation
+            }
+            close={() => setIsAddLiquidityPopupOpen(false)}
+            refreshAllTokensData={refreshAllTokensData}
+            setIsRemindToStakePopupOpen={() =>
+              setIsRemindToStakePopupOpen(true)
+            }
+          />
+        )}
 
           {selectedPool && isWithdrawalPopupOpen && (
             <WithdrawalPopup
@@ -239,21 +256,26 @@ const TablesSwitcher = ({
             />
           )}
 
-          {selectedPool && isStakePopupOpen && (
-            <StakePopup
-              theme={theme}
-              open={isStakePopupOpen}
-              selectedPool={selectedPool}
-              dexTokensPricesMap={dexTokensPricesMap}
-              farmingTicketsMap={farmingTicketsMap}
-              close={() => setIsStakePopupOpen(false)}
-              allTokensData={allTokensData}
-              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-            />
-          )}
+        {selectedPool && (isStakePopupOpen || isRemindToStakePopupOpen) && (
+          <StakePopup
+            theme={theme}
+            open={isStakePopupOpen || isRemindToStakePopupOpen}
+            selectedPool={selectedPool}
+            dexTokensPricesMap={dexTokensPricesMap}
+            farmingTicketsMap={farmingTicketsMap}
+            close={() => {
+              isRemindToStakePopupOpen
+                ? setIsRemindToStakePopupOpen(false)
+                : setIsStakePopupOpen(false)
+            }}
+            allTokensData={allTokensData}
+            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+            setPoolWaitingForUpdateAfterOperation={
+              setPoolWaitingForUpdateAfterOperation
+            }
+            isReminderPopup={isRemindToStakePopupOpen}
+          />
+        )}
 
           {selectedPool && isUnstakePopupOpen && (
             <UnstakePopup
