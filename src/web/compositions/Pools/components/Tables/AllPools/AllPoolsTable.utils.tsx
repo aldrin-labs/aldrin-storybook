@@ -133,7 +133,7 @@ export const combineAllPoolsData = ({
   expandedRows,
   allTokensData,
   farmingTicketsMap,
-  tradingVolumesMap,
+  weeklyAndDailyTradingVolumes,
   earnedFeesInPoolForUserMap,
   selectPool,
   refreshTokensWithFarmingTickets,
@@ -153,7 +153,11 @@ export const combineAllPoolsData = ({
   expandedRows: string[]
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
-  tradingVolumesMap: Map<string, { weekly: number; daily: number }>
+  weeklyAndDailyTradingVolumes: {
+    weeklyTradingVolume: number
+    dailyTradingVolume: number
+    pool: string
+  }[]
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectPool: (pool: PoolInfo) => void
   refreshTokensWithFarmingTickets: () => void
@@ -188,10 +192,13 @@ export const combineAllPoolsData = ({
         feesEarnedByPool?.totalBaseTokenFee * baseTokenPrice +
         feesEarnedByPool?.totalQuoteTokenFee * quoteTokenPrice
 
-      const tradingVolumes = tradingVolumesMap.get(pool.swapToken) || {
-        weekly: 0,
-        daily: 0,
+      const tradingVolumes = weeklyAndDailyTradingVolumes?.find(
+        (el) => el.pool === pool.swapToken
+      ) || {
+        dailyTradingVolume: 0,
+        weeklyTradingVolume: 0,
       }
+
       const apy = pool.apy24h || 0
 
       const tvlUSD =
@@ -240,14 +247,6 @@ export const combineAllPoolsData = ({
 
       const farmingAPR =
         ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
-      console.log(
-        'aaaa',
-        openFarmings.map((farmingState, i, arr) => {
-          return `${getTokenNameByMintAddress(farmingState.farmingTokenMint)} ${
-            i !== arr.length - 1 ? 'X ' : ''
-          }`
-        })
-      )
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
         pool: {
@@ -318,22 +317,22 @@ export const combineAllPoolsData = ({
         vol24h: {
           render: (
             <RowDataTdText theme={theme}>
-              ${stripByAmountAndFormat(tradingVolumes.daily)}
+              ${stripByAmountAndFormat(tradingVolumes.dailyTradingVolume)}
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
-          contentToSort: tradingVolumes.daily,
+          contentToSort: tradingVolumes.dailyTradingVolume,
           showOnMobile: false,
         },
 
         vol7d: {
           render: (
             <RowDataTdText theme={theme}>
-              ${stripByAmountAndFormat(tradingVolumes.weekly)}
+              ${stripByAmountAndFormat(tradingVolumes.weeklyTradingVolume)}
             </RowDataTdText>
           ),
           style: { textAlign: 'left' },
-          contentToSort: tradingVolumes.weekly,
+          contentToSort: tradingVolumes.weeklyTradingVolume,
           showOnMobile: false,
         },
         fees: {
