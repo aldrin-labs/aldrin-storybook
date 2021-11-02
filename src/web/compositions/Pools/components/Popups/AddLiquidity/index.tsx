@@ -43,6 +43,7 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { StakePopup } from '../Staking/StakePopup'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { sleep } from '@sb/dexUtils/utils'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -548,6 +549,7 @@ export const AddLiquidityPopup = ({
                 refreshAllTokensData()
                 clearPoolWaitingForUpdate()
                 if (openFarmings.length > 0) {
+                  await sleep(3000)
                   setIsRemindToStakePopupOpen()
                 }
               }, 7500)
