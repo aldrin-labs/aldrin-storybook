@@ -38,10 +38,11 @@ import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
+import { StakePopup } from '../Staking/StakePopup'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -53,6 +54,9 @@ export const AddLiquidityPopup = ({
   close,
   refreshAllTokensData,
   setPoolWaitingForUpdateAfterOperation,
+  farmingTicketsMap,
+  refreshTokensWithFarmingTickets,
+  setIsRemindToStakePopupOpen,
 }: {
   theme: Theme
   open: boolean
@@ -63,9 +67,13 @@ export const AddLiquidityPopup = ({
   close: () => void
   refreshAllTokensData: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
+  farmingTicketsMap: Map<string, FarmingTicket[]>
+  refreshTokensWithFarmingTickets: RefreshFunction
+  setIsRemindToStakePopupOpen: any
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+
   const [poolBalances, refreshPoolBalances] = usePoolBalances({
     pool: selectedPool,
     connection,
@@ -539,6 +547,7 @@ export const AddLiquidityPopup = ({
               setTimeout(async () => {
                 refreshAllTokensData()
                 clearPoolWaitingForUpdate()
+                setIsRemindToStakePopupOpen()
               }, 7500)
               // end button loader
 

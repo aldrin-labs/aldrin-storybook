@@ -243,7 +243,6 @@ export const combineAllPoolsData = ({
 
       const farmingAPR =
         ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
-
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
         pool: {
