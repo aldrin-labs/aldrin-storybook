@@ -1,7 +1,6 @@
 import { TokenInstructions } from '@project-serum/serum'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import {
   Account,
   Connection,
@@ -15,22 +14,25 @@ import {
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { createTokenAccountTransaction, sendTransaction } from '../send'
-import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
-import { FarmingTicket } from '../common/types'
+import { FarmingTicket, SnapshotQueue } from '../common/types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { getSnapshotsWithUnclaimedRewards } from './addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
+import { NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION } from '../common/config'
 
 export const withdrawFarmed = async ({
   wallet,
   connection,
   allTokensData,
   farmingTickets,
+  snapshotQueues,
   pool,
 }: {
   wallet: WalletAdapter
   connection: Connection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
+  snapshotQueues: SnapshotQueue[]
   pool: PoolInfo
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
@@ -142,7 +144,18 @@ export const withdrawFarmed = async ({
 
       commonTransaction.add(endFarmingTransaction)
 
-      if (commonTransaction.instructions.length > 5) {
+      // get number of snapshots, get number of iterations, send transaction n times
+      const unclaimedSnapshots = getSnapshotsWithUnclaimedRewards({
+        ticket: ticketData,
+        farmingState,
+        snapshotQueues,
+      })
+
+      const iterations = Math.ceil(
+        unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
+      )
+
+      for (let i = 1; i <= iterations; i++) {
         const result = await sendPartOfTransactions()
         if (result !== 'success') {
           return result
@@ -151,12 +164,12 @@ export const withdrawFarmed = async ({
     }
   }
 
-  if (commonTransaction.instructions.length > 0) {
-    const result = await sendPartOfTransactions()
-    if (result !== 'success') {
-      return result
-    }
-  }
+  // if (commonTransaction.instructions.length > 0) {
+  //   const result = await sendPartOfTransactions()
+  //   if (result !== 'success') {
+  //     return result
+  //   }
+  // }
 
   return 'success'
 }
