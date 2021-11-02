@@ -30,7 +30,8 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { estimatedTime } from '@core/utils/dateUtils'
 import { SvgIcon } from '@sb/components'
-import Info from '@icons/inform.svg'
+import InfoIcon from '@icons/inform.svg'
+import WhiteTech from '@icons/whiteTech.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
@@ -477,73 +478,114 @@ export const TablesDetails = ({
                         )}
                       </AmountText>
                       {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                      <DarkTooltip
+                        title={`${stripDigitPlaces(
+                          availableToClaimFromFarmingState,
+                          8
+                        )} ${getTokenNameByMintAddress(
+                          farmingState.farmingTokenMint
+                        )}`}
+                      >
+                        <span>
+                          <SvgIcon
+                            src={InfoIcon}
+                            width={'1.5rem'}
+                            height={'1.5rem'}
+                            style={{ marginLeft: '.5rem' }}
+                          />
+                        </span>
+                      </DarkTooltip>
                       {i !== arr.length - 1 ? ' +' : ''}
                     </>
                   )
                 })}
               </RowDataTdText>
-              <Button
-                theme={theme}
-                btnWidth={'14rem'}
-                color={
-                  hasStakedTokens || hasTokensToClaim
-                    ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-                    : '#651CE4'
+              <DarkTooltip
+                title={
+                  'Rewards withdrawal has been suspended due to maintenance. The reward continues to accrue. You will be able to withdraw all the rewards you have received in a couple of days.'
                 }
-                disabled={
-                  (hasStakedTokens && !hasTokensToClaim) ||
-                  isPoolWaitingForUpdateAfterClaim
-                }
-                onClick={async () => {
-                  setPoolWaitingForUpdateAfterOperation({
-                    pool: pool.swapToken,
-                    operation: 'claim',
-                  })
-
-                  const clearPoolWaitingForUpdate = () =>
-                    setPoolWaitingForUpdateAfterOperation({
-                      pool: '',
-                      operation: '',
-                    })
-
-                  try {
-                    const result = await withdrawFarmed({
-                      wallet,
-                      connection,
-                      pool,
-                      allTokensData,
-                      farmingTickets,
-                    })
-
-                    notify({
-                      type: result === 'success' ? 'success' : 'error',
-                      message:
-                        result === 'success'
-                          ? 'Successfully claimed rewards.'
-                          : result === 'failed'
-                          ? 'Claim rewards failed, please try again later or contact us in telegram.'
-                          : 'Claim rewards cancelled.',
-                    })
-
-                    if (result !== 'success') {
-                      clearPoolWaitingForUpdate()
-                    } else {
-                      setTimeout(async () => {
-                        refreshTokensWithFarmingTickets()
-                        clearPoolWaitingForUpdate()
-                      }, 7500)
-
-                      setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
-                    }
-                  } catch (e) {
-                    clearPoolWaitingForUpdate()
-
-                    return
-                  }
-                }}
               >
-                {isPoolWaitingForUpdateAfterClaim ? <Loader /> : 'Claim reward'}
-              </Button>
+                <span>
+                <Button
+                  theme={theme}
+                  btnWidth={'16rem'}
+                  color={
+                    hasStakedTokens || hasTokensToClaim
+                      ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+                      : '#651CE4'
+                  }
+                  disabled={
+                    true ||
+                    (hasStakedTokens && !hasTokensToClaim) ||
+                    isPoolWaitingForUpdateAfterClaim
+                  }
+                  onClick={async () => {
+                    setPoolWaitingForUpdateAfterOperation({
+                      pool: pool.swapToken,
+                      operation: 'claim',
+                    })
+
+                    const clearPoolWaitingForUpdate = () =>
+                      setPoolWaitingForUpdateAfterOperation({
+                        pool: '',
+                        operation: '',
+                      })
+
+                    try {
+                      const result = await withdrawFarmed({
+                        wallet,
+                        connection,
+                        pool,
+                        allTokensData,
+                        farmingTickets,
+                      })
+
+                      notify({
+                        type: result === 'success' ? 'success' : 'error',
+                        message:
+                          result === 'success'
+                            ? 'Successfully claimed rewards.'
+                            : result === 'failed'
+                            ? 'Claim rewards failed, please try again later or contact us in telegram.'
+                            : 'Claim rewards cancelled.',
+                      })
+
+                      if (result !== 'success') {
+                        clearPoolWaitingForUpdate()
+                      } else {
+                        setTimeout(async () => {
+                          refreshTokensWithFarmingTickets()
+                          clearPoolWaitingForUpdate()
+                        }, 7500)
+
+                        setTimeout(
+                          () => refreshTokensWithFarmingTickets(),
+                          15000
+                        )
+                      }
+                    } catch (e) {
+                      clearPoolWaitingForUpdate()
+
+                      return
+                    }
+                  }}
+                >
+                  {isPoolWaitingForUpdateAfterClaim ? (
+                    <Loader />
+                  ) : (
+                    <span style={{ display: 'flex' }}>
+                      <SvgIcon
+                        src={WhiteTech}
+                        width={'2rem'}
+                        height={'2rem'}
+                        style={{ marginRight: '1.5rem' }}
+                      />{' '}
+                      Claim reward
+                    </span>
+                  )}
+                </Button>
+                </span>
+              </DarkTooltip>
             </Row>
           ) : hasPoolTokens && !hasStakedTokens ? (
             <Row direction="column" width="55%" align="flex-end">

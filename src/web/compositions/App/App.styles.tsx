@@ -1,6 +1,5 @@
-import React from 'react'
-
-import styled, { createGlobalStyle } from 'styled-components'
+import styled from 'styled-components'
+import { BREAKPOINTS } from '../../../variables/variables'
 // put overflow-x hidden since
 // we dont need it to horizontal scrollbar
 // on whole page
@@ -25,9 +24,10 @@ export const AppGridLayout = styled.div`
 export const AppInnerContainer = styled.div`
   height: ${(props) =>
     props.showFooter ? 'calc(100% - 11.7rem)' : 'calc(100% - 48px)'};
-  overflow: ${(props) => (props.currentPage == '/' ? 'hidden' : 'auto')};
+  overflow: ${(props) => (props.currentPage === '/' ? 'hidden' : 'auto')};
   display: flex;
   flex-direction: column;
-  @media (max-width:600px){
-    height: calc(100% - 22rem);
+  @media (max-width: ${BREAKPOINTS.md}) {
+    height: calc(100% - 19rem);
+  }
 `

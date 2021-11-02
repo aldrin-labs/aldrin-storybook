@@ -1,47 +1,41 @@
-import React, { useState } from 'react'
-
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, StyledPaper } from '../index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
-
-import SvgIcon from '@sb/components/SvgIcon'
-
+import { estimatedTime } from '@core/utils/dateUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
-
-import { Button } from '../../Tables/index.styles'
-import { InputWithCoins } from '../components'
-import { HintContainer } from './styles'
-import { ExclamationMark } from '@sb/compositions/Chart/components/MarketBlock/MarketBlock.styles'
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { Theme } from '@material-ui/core'
+import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import AttentionComponent from '@sb/components/AttentionBlock'
-import { startFarming } from '@sb/dexUtils/pools/startFarming'
-import { PublicKey } from '@solana/web3.js'
+import SvgIcon from '@sb/components/SvgIcon'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { ExclamationMark } from '@sb/compositions/Chart/components/MarketBlock/MarketBlock.styles'
 import {
   DexTokensPrices,
   PoolInfo,
   PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
-import { useConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { notify } from '@sb/dexUtils/notifications'
-import dayjs from 'dayjs'
-import { dayDuration, estimatedTime } from '@core/utils/dateUtils'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { RefreshFunction } from '@sb/dexUtils/types'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { useConnection } from '@sb/dexUtils/connection'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
+import { startFarming } from '@sb/dexUtils/pools/startFarming'
+import { RefreshFunction } from '@sb/dexUtils/types'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { PublicKey } from '@solana/web3.js'
+import dayjs from 'dayjs'
+import React, { useState } from 'react'
+import { Button } from '../../Tables/index.styles'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
+import { InputWithCoins } from '../components'
+import { BoldHeader, StyledPaper } from '../index.styles'
+import { HintContainer } from './styles'
 
 export const StakePopup = ({
   theme,
@@ -53,6 +47,7 @@ export const StakePopup = ({
   dexTokensPricesMap,
   refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
+  isReminderPopup = false,
 }: {
   theme: Theme
   open: boolean
@@ -63,6 +58,7 @@ export const StakePopup = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
+  isReminderPopup?: boolean
 }) => {
   const {
     amount: maxPoolTokenAmount,
@@ -127,7 +123,7 @@ export const StakePopup = ({
         dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
 
       if (farmingTokenSymbol === 'MNDE') {
-        farmingTokenPrice = 0.776352
+        farmingTokenPrice = 0.72759
       }
 
       const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
@@ -141,6 +137,15 @@ export const StakePopup = ({
 
   const farmingAPR =
     ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+
+  const farmingTokens = selectedPool.farming
+    .map((farmingState, i, arr) => {
+      return `${getTokenNameByMintAddress(farmingState.farmingTokenMint)} ${
+        i !== arr.length - 1 ? 'X ' : ''
+      }`
+    })
+    .join(',')
+    .replace(',', '')
 
   return (
     <DialogWrapper
@@ -156,12 +161,18 @@ export const StakePopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
-        <BoldHeader>Stake Pool Tokens</BoldHeader>
+        <BoldHeader>
+          {!isReminderPopup
+            ? 'Stake Pool Tokens'
+            : 'Don’t forget to stake LP tokens'}
+        </BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer justify="flex-start">
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-          Stake your Pool Tokens to start farming RIN.
+          {!isReminderPopup
+            ? 'Stake your Pool Tokens to start farming RIN.'
+            : `Stake your LP tokens to start framing ${farmingTokens}.`}
         </Text>
       </RowContainer>
       <RowContainer>
@@ -176,42 +187,49 @@ export const StakePopup = ({
           needAlreadyInPool={false}
         />
       </RowContainer>
-      <RowContainer justify={'space-between'}>
-        <Text>Est. rewards:</Text>
-        <Text>
-          <Row align="flex-start">
-            <span style={{ color: '#53DF11', fontFamily: 'Avenir Next Demi' }}>
-              {formatNumberToUSFormat(stripDigitPlaces(farmingAPR, 2))}% APR
-            </span>
-          </Row>
-        </Text>
-      </RowContainer>
-      <HintContainer justify={'flex-start'} margin="5rem 0 2rem 0">
-        <Row justify="flex-start" width="20%">
-          <ExclamationMark
-            theme={theme}
-            margin={'0 0 0 2rem'}
-            fontSize="5rem"
-            color={'#fbf2f2'}
-          />
-        </Row>
-        <Row width="80%" align="flex-start" direction="column">
-          <Text style={{ margin: '0 0 1.5rem 0' }}>
-            Pool tokens will be locked for{' '}
-            <span style={{ color: '#53DF11' }}>
-              {estimatedTime(farmingState.periodLength)}.
-            </span>{' '}
-          </Text>
+      {isReminderPopup ? null : (
+        <RowContainer justify={'space-between'}>
+          <Text>Est. rewards:</Text>
           <Text>
-            Withdrawal will not be available until{' '}
-            <span style={{ color: '#53DF11' }}>
-              {dayjs
-                .unix(Date.now() / 1000 + farmingState.periodLength)
-                .format('MMM DD, YYYY')}
-            </span>
+            <Row align="flex-start">
+              <span
+                style={{ color: '#53DF11', fontFamily: 'Avenir Next Demi' }}
+              >
+                {formatNumberToUSFormat(stripDigitPlaces(farmingAPR, 2))}% APR
+              </span>
+            </Row>
           </Text>
-        </Row>
-      </HintContainer>
+        </RowContainer>
+      )}
+      {isReminderPopup ? null : (
+        <HintContainer justify={'flex-start'} margin="5rem 0 2rem 0">
+          <Row justify="flex-start" width="20%">
+            <ExclamationMark
+              theme={theme}
+              margin={'0 0 0 2rem'}
+              fontSize="5rem"
+              color={'#fbf2f2'}
+            />
+          </Row>
+          <Row width="80%" align="flex-start" direction="column">
+            <Text style={{ margin: '0 0 1.5rem 0' }}>
+              Pool tokens will be locked for{' '}
+              <span style={{ color: '#53DF11' }}>
+                {estimatedTime(farmingState.periodLength)}.
+              </span>{' '}
+            </Text>
+            <Text>
+              Withdrawal will not be available until{' '}
+              <span style={{ color: '#53DF11' }}>
+                {dayjs
+                  .unix(Date.now() / 1000 + farmingState.periodLength)
+                  .format('MMM DD, YYYY')}
+              </span>
+            </Text>
+          </Row>
+        </HintContainer>
+      )}
+
       {isNotEnoughPoolTokens && (
         <RowContainer margin={'2rem 0 0 0'}>
           <AttentionComponent

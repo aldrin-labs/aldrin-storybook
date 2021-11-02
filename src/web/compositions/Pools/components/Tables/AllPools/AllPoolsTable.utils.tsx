@@ -224,7 +224,7 @@ export const combineAllPoolsData = ({
             dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
 
           if (farmingTokenSymbol === 'MNDE') {
-            farmingTokenPrice = 0.776352
+            farmingTokenPrice = 0.72759
           }
 
           const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
@@ -238,8 +238,16 @@ export const combineAllPoolsData = ({
         0
       )
 
-      const farmingAPR = ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
-
+      const farmingAPR =
+        ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+      console.log(
+        'aaaa',
+        openFarmings.map((farmingState, i, arr) => {
+          return `${getTokenNameByMintAddress(farmingState.farmingTokenMint)} ${
+            i !== arr.length - 1 ? 'X ' : ''
+          }`
+        })
+      )
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
         pool: {

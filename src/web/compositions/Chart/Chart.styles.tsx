@@ -176,7 +176,7 @@ export const PanelCardSubValue = styled.span`
   padding: 0.1rem 1rem;
   padding-left: 0.4rem;
   color: ${(props) => props.theme.palette.dark.main};
-  letter-spacing: 0.1rem;
+  letter-spacing: 0.01rem;
   font-size: 1.3rem;
 
   @media (min-width: 1400px) {

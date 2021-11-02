@@ -9,6 +9,8 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 
+import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
+
 import KudelskiLogo from '@icons/kudelski.svg'
 import { Text } from '@sb/compositions/Addressbook/index'
 
@@ -35,8 +37,9 @@ import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 import { getRandomInt } from '@core/utils/helpers'
 import SvgIcon from '@sb/components/SvgIcon'
-import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
 import { RemindToStakePopup } from '../../Popups/ReminderToStake/ReminderToStake'
+import { valueEventAriaMessage } from 'react-select/lib/accessibility'
+import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
 
 const TablesSwitcher = ({
   theme,
@@ -52,10 +55,18 @@ const TablesSwitcher = ({
   getPoolsInfoQueryRefetch: () => void
 }) => {
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
-  const [searchValue, onChangeSearch] = useState('')
+  const [searchValue, setSearchValue] = useState('')
   const [selectedTable, setSelectedTable] = useState<'all' | 'userLiquidity'>(
     'all'
   )
+
+  const onChangeSearch = (value: string) => {
+    if (!`${value}`.match(/[a-zA-Z1-9]/) && value !== '') {
+      return
+    }
+
+    setSearchValue(value)
+  }
 
   const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
@@ -80,10 +91,16 @@ const TablesSwitcher = ({
     connection,
   })
 
+  const [snapshotQueues, refreshSnapshotQueues] = useSnapshotQueues({
+    wallet,
+    connection,
+  })
+
   const [farmingTicketsMap, refreshFarmingTickets] = useFarmingTicketsMap({
     wallet,
     connection,
     pools,
+    snapshotQueues,
   })
 
   const refreshTokensWithFarmingTickets = () => {
@@ -225,6 +242,8 @@ const TablesSwitcher = ({
             open={isAddLiquidityPopupOpen}
             dexTokensPricesMap={dexTokensPricesMap}
             selectedPool={selectedPool}
+            farmingTicketsMap={farmingTicketsMap}
+            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
             allTokensData={allTokensData}
             setPoolWaitingForUpdateAfterOperation={
               setPoolWaitingForUpdateAfterOperation
@@ -281,13 +300,6 @@ const TablesSwitcher = ({
             }
           />
         )}
-        <RemindToStakePopup
-          open={true}
-          close={() => {}}
-          theme={theme}
-          wallet={wallet}
-          connection={connection}
-        />
       </BlockTemplate>
     </RowContainer>
   )

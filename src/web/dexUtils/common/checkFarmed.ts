@@ -1,4 +1,3 @@
-import { FarmingState } from '@sb/compositions/Pools/index.types'
 import {
   Connection,
   PublicKey,
@@ -8,6 +7,7 @@ import {
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
+import { FarmingState } from './types'
 
 export const checkFarmed = async ({
   wallet,
