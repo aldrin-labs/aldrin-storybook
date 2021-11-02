@@ -65,7 +65,6 @@ export const StakePopup = ({
     address: userPoolTokenAccount,
     decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
-  console.log('selectedPool:', allTokensData, selectedPool)
   const [poolTokenAmount, setPoolTokenAmount] = useState<number | string>(
     maxPoolTokenAmount
   )

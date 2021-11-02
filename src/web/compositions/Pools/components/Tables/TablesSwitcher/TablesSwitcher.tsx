@@ -72,6 +72,9 @@ const TablesSwitcher = ({
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
+  const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
+    false
+  )
 
   // after operation with pool we update data after some time
   // and for better ux we need to show loader for button which was use for this operation
@@ -250,6 +253,9 @@ const TablesSwitcher = ({
             }
             close={() => setIsAddLiquidityPopupOpen(false)}
             refreshAllTokensData={refreshAllTokensData}
+            setIsRemindToStakePopupOpen={() =>
+              setIsRemindToStakePopupOpen(true)
+            }
           />
         )}
 
@@ -271,19 +277,24 @@ const TablesSwitcher = ({
           />
         )}
 
-        {selectedPool && isStakePopupOpen && (
+        {selectedPool && (isStakePopupOpen || isRemindToStakePopupOpen) && (
           <StakePopup
             theme={theme}
-            open={isStakePopupOpen}
+            open={isStakePopupOpen || isRemindToStakePopupOpen}
             selectedPool={selectedPool}
             dexTokensPricesMap={dexTokensPricesMap}
             farmingTicketsMap={farmingTicketsMap}
-            close={() => setIsStakePopupOpen(false)}
+            close={() => {
+              isRemindToStakePopupOpen
+                ? setIsRemindToStakePopupOpen(false)
+                : setIsStakePopupOpen(false)
+            }}
             allTokensData={allTokensData}
             refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
             setPoolWaitingForUpdateAfterOperation={
               setPoolWaitingForUpdateAfterOperation
             }
+            isReminderPopup={isRemindToStakePopupOpen}
           />
         )}
 

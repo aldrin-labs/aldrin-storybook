@@ -56,6 +56,7 @@ export const AddLiquidityPopup = ({
   setPoolWaitingForUpdateAfterOperation,
   farmingTicketsMap,
   refreshTokensWithFarmingTickets,
+  setIsRemindToStakePopupOpen,
 }: {
   theme: Theme
   open: boolean
@@ -68,10 +69,8 @@ export const AddLiquidityPopup = ({
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   farmingTicketsMap: Map<string, FarmingTicket[]>
   refreshTokensWithFarmingTickets: RefreshFunction
+  setIsRemindToStakePopupOpen: any
 }) => {
-  const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
-    false
-  )
   const { wallet } = useWallet()
   const connection = useConnection()
 
@@ -552,6 +551,7 @@ export const AddLiquidityPopup = ({
               setTimeout(async () => {
                 refreshAllTokensData()
                 clearPoolWaitingForUpdate()
+                setIsRemindToStakePopupOpen()
               }, 7500)
               // end button loader
 
@@ -561,7 +561,6 @@ export const AddLiquidityPopup = ({
             }
 
             close()
-            await setIsRemindToStakePopupOpen(true)
           }}
         >
           Deposit liquidity
@@ -582,20 +581,6 @@ export const AddLiquidityPopup = ({
         close={() => setIsSelectorForSeveralQuoteAddressesOpen(false)}
         selectTokenMintAddress={() => {}}
         selectTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
-      />
-      <StakePopup
-        theme={theme}
-        open={isRemindToStakePopupOpen}
-        selectedPool={selectedPool}
-        dexTokensPricesMap={dexTokensPricesMap}
-        farmingTicketsMap={farmingTicketsMap}
-        close={() => setIsRemindToStakePopupOpen(false)}
-        allTokensData={allTokensData}
-        refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-        setPoolWaitingForUpdateAfterOperation={
-          setPoolWaitingForUpdateAfterOperation
-        }
-        isReminderPopup={true}
       />
     </DialogWrapper>
   )
