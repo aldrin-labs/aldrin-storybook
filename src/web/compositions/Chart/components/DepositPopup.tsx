@@ -2,7 +2,14 @@ import React, { useState } from 'react'
 import { withSnackbar } from 'notistack'
 import { compose } from 'recompose'
 import copy from 'clipboard-copy'
-import { Grid, Typography, withTheme, Input, Link, Theme } from '@material-ui/core'
+import {
+  Grid,
+  Typography,
+  withTheme,
+  Input,
+  Link,
+  Theme,
+} from '@material-ui/core'
 import Timer from 'react-compound-timer'
 import { Loading } from '@sb/components/index'
 
@@ -31,11 +38,13 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import {
-    useSelectedBaseCurrencyAccount,
-    useMarket,
-    useSelectedQuoteCurrencyAccount,
-  } from '@sb/dexUtils/markets';
-  import { useWallet } from '@sb/dexUtils/wallet';
+  useSelectedBaseCurrencyAccount,
+  useMarket,
+  useSelectedQuoteCurrencyAccount,
+} from '@sb/dexUtils/markets'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { RemindToStakePopup } from '@sb/compositions/Pools/components/Popups/ReminderToStake/ReminderToStake'
+import { useConnection } from '@sb/dexUtils/connection'
 
 interface IProps {
   open: boolean
@@ -51,37 +60,37 @@ const TransferPopup = ({
   theme,
   baseOrQuote,
 }: IProps) => {
-    const { market, baseCurrency, quoteCurrency } = useMarket();
+  const { market, baseCurrency, quoteCurrency } = useMarket()
 
-    const { providerName, providerUrl } = useWallet();
-    const baseCurrencyAccount = useSelectedBaseCurrencyAccount();
-    const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount();
-    let coinMint;
-    let account;
-    let depositCoin;
+  const { providerName, providerUrl } = useWallet()
+  const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
+  const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
+  let coinMint
+  let account
+  let depositCoin
 
-    if (baseOrQuote === 'base') {
-      coinMint = market?.baseMintAddress;
-      account = baseCurrencyAccount;
-      depositCoin = baseCurrency;
-    } else if (baseOrQuote === 'quote') {
-      coinMint = market?.quoteMintAddress;
-      account = quoteCurrencyAccount;
-      depositCoin = quoteCurrency;
-    } else {
-      account = null;
-    }
-    if (!coinMint) {
-      return null;
-    }
+  if (baseOrQuote === 'base') {
+    coinMint = market?.baseMintAddress
+    account = baseCurrencyAccount
+    depositCoin = baseCurrency
+  } else if (baseOrQuote === 'quote') {
+    coinMint = market?.quoteMintAddress
+    account = quoteCurrencyAccount
+    depositCoin = quoteCurrency
+  } else {
+    account = null
+  }
+  if (!coinMint) {
+    return null
+  }
 
-    const copyMintAddress = () => {
-      copy(coinMint?.toBase58())
-    }
+  const copyMintAddress = () => {
+    copy(coinMint?.toBase58())
+  }
 
-    const copySPLAddress = () => {
-      copy(account?.pubkey?.toBase58())
-    }
+  const copySPLAddress = () => {
+    copy(account?.pubkey?.toBase58())
+  }
 
   return (
     <>
@@ -123,98 +132,112 @@ const TransferPopup = ({
         >
           <Grid>
             <Grid style={{ paddingBottom: '0', textAlign: 'left' }}>
-                  <Typography
-                    style={{
-                      textTransform: 'uppercase',
-                      color: '#818AA6',
-                      fontWeight: 'bold',
-                      fontSize: '1.6rem',
-                      letterSpacing: '1px',
-                      paddingBottom: '1rem',
-                    }}
-                  >
-                    Mint address (Don't send funds to this address):                   
-                  </Typography>
-                  <Typography
-                    style={{
-                        color: '#71E0EC',
-                        fontWeight: 'bold',
-                        fontSize: '1.6rem',
-                        paddingBottom: '4.4rem',
-                        letterSpacing: '1px',
-                    }}
-                  >
-                      {coinMint.toBase58()}
-                        <SvgIcon
-                          src={copyIcon}
-                          width="11px"
-                          height="auto"
-                          style={{ cursor: 'pointer', marginLeft: '0.5rem', fill: '#71E0EC' }}
-                          onClick={() => {
-                            enqueueSnackbar('Copied!', {
-                              variant: 'success',
-                            })
-                            copyMintAddress()
-                          }}
-                        />
-                  </Typography>
-                  <Typography
-                    style={{
-                      textTransform: 'uppercase',
-                      color: '#818AA6',
-                      fontWeight: 'bold',
-                      fontSize: '1.6rem',
-                      letterSpacing: '1px',
-                      paddingBottom: '1rem',
-                    }}
-                  >
-                    SPL Deposit address:
-                  </Typography>
-                  <Typography
-                    style={{
-                      color: account ? '#71E0EC' : theme.palette.type === 'light' ? '' : '#fff',
-                      fontWeight: 'bold',
-                      fontSize: '1.6rem',
-                      letterSpacing: '1px',
+              <Typography
+                style={{
+                  textTransform: 'uppercase',
+                  color: '#818AA6',
+                  fontWeight: 'bold',
+                  fontSize: '1.6rem',
+                  letterSpacing: '1px',
+                  paddingBottom: '1rem',
+                }}
+              >
+                Mint address (Don't send funds to this address):
+              </Typography>
+              <Typography
+                style={{
+                  color: '#71E0EC',
+                  fontWeight: 'bold',
+                  fontSize: '1.6rem',
+                  paddingBottom: '4.4rem',
+                  letterSpacing: '1px',
+                }}
+              >
+                {coinMint.toBase58()}
+                <SvgIcon
+                  src={copyIcon}
+                  width="11px"
+                  height="auto"
+                  style={{
+                    cursor: 'pointer',
+                    marginLeft: '0.5rem',
+                    fill: '#71E0EC',
                   }}
-                  >
-                    {account ? (
-                        <>
-                        {account.pubkey.toBase58()}
-                        <SvgIcon
-                          src={copyIcon}
-                          width="11px"
-                          height="auto"
-                          style={{ cursor: 'pointer', marginLeft: '0.5rem', fill: '#71E0EC' }}
-                          onClick={() => {
-                            enqueueSnackbar('Copied!', {
-                              variant: 'success',
-                            })
-                            copySPLAddress()
-                          }}
-                        />
-                        </>
-                    ) : (
-                    <>
+                  onClick={() => {
+                    enqueueSnackbar('Copied!', {
+                      variant: 'success',
+                    })
+                    copyMintAddress()
+                    setIsRemindToStakePopupOpen(true)
+                  }}
+                />
+              </Typography>
+              <Typography
+                style={{
+                  textTransform: 'uppercase',
+                  color: '#818AA6',
+                  fontWeight: 'bold',
+                  fontSize: '1.6rem',
+                  letterSpacing: '1px',
+                  paddingBottom: '1rem',
+                }}
+              >
+                SPL Deposit address:
+              </Typography>
+              <Typography
+                style={{
+                  color: account
+                    ? '#71E0EC'
+                    : theme.palette.type === 'light'
+                    ? ''
+                    : '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '1.6rem',
+                  letterSpacing: '1px',
+                }}
+              >
+                {account ? (
+                  <>
+                    {account.pubkey.toBase58()}
+                    <SvgIcon
+                      src={copyIcon}
+                      width="11px"
+                      height="auto"
+                      style={{
+                        cursor: 'pointer',
+                        marginLeft: '0.5rem',
+                        fill: '#71E0EC',
+                      }}
+                      onClick={() => {
+                        enqueueSnackbar('Copied!', {
+                          variant: 'success',
+                        })
+                        copySPLAddress()
+                      }}
+                    />
+                  </>
+                ) : (
+                  <>
                     Visit{' '}
-                    <Link style={{ color: '#71E0EC', textDecoration: 'none' }} rel="noopener noreferrer" target="_blank" to={providerUrl} href={providerUrl}>
-                        <span style={{ color: '#71E0EC' }}>
-                          {providerName}
-                        </span>  
+                    <Link
+                      style={{ color: '#71E0EC', textDecoration: 'none' }}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                      to={providerUrl}
+                      href={providerUrl}
+                    >
+                      <span style={{ color: '#71E0EC' }}>{providerName}</span>
                     </Link>{' '}
                     to create an account for this mint
-                     </>
-                    )}
-                  </Typography>
+                  </>
+                )}
+              </Typography>
             </Grid>
           </Grid>
-        </DialogContent>
+        </DialogContent>{' '}
       </DialogWrapper>
     </>
   )
 }
 
-export default compose(
-  withSnackbar,
-  withTheme(),
-)(TransferPopup)
+export default compose(withSnackbar, withTheme())(TransferPopup)

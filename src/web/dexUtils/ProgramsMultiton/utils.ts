@@ -1,12 +1,15 @@
-export const POOLS_PROGRAM_ADDRESS =
-  process.env.POOLS_PROGRAM_ADDRESS || 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
+import { MASTER_BUILD } from '@core/utils/config'
+
+export const POOLS_PROGRAM_ADDRESS = MASTER_BUILD
+  ? process.env.POOLS_PROGRAM_ADDRESS
+  : 'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
 
 export const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'
 
 export const STAKING_PROGRAM_ADDRESS =
-  process.env.STAKING_PROGRAM_ADDRESS || 'FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX'
-
+  process.env.STAKING_PROGRAM_ADDRESS ||
+  'FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX'
 
 console.log(`POOLS_PROGRAM_ADDRESS: ${POOLS_PROGRAM_ADDRESS}`)
 console.log(`STAKING_PROGRAM_ADDRESS: ${STAKING_PROGRAM_ADDRESS}`)

@@ -391,7 +391,7 @@ class SimpleTabs extends React.Component<any, any> {
                     </SettingsContainer>
                   </TerminalHeader>
                 ) : null}
-                <TerminalModeButton
+                {/* <TerminalModeButton
                   theme={theme}
                   style={{
                     width: 'auto',
@@ -436,7 +436,7 @@ class SimpleTabs extends React.Component<any, any> {
                     />
                   )}
                   {TVAlertsBotIsActive ? 'Stop Alert BOT' : 'Alert BOT'}
-                </TerminalModeButton>
+                </TerminalModeButton> */}
                 {/* {pair.join('_') === 'SRM_USDT' && (
                   <TerminalModeButton
                     theme={theme}

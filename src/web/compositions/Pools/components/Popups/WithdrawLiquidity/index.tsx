@@ -171,7 +171,9 @@ export const WithdrawalPopup = ({
     +quoteAmount <= 0 ||
     operationLoading ||
     !withdrawAmountTokenA ||
-    !withdrawAmountTokenB
+    !withdrawAmountTokenB ||
+    +baseAmount > withdrawAmountTokenA ||
+    +quoteAmount > withdrawAmountTokenB
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
 
@@ -243,7 +245,7 @@ export const WithdrawalPopup = ({
               availableToWithdrawAmountTokenB,
             ] = calculateWithdrawAmount({
               selectedPool,
-              poolTokenAmount: poolTokenAmount,
+              poolTokenAmount,
             })
 
             if (

@@ -1,33 +1,31 @@
-import React, { useState } from 'react'
-import { TableWithSort } from '@sb/components'
-
-import { Theme } from '@material-ui/core'
-import {
-  allPoolsTableColumnsNames,
-  combineAllPoolsData,
-} from './AllPoolsTable.utils'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
+import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
+import { endOfHourTimestamp } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
+import { Theme } from '@material-ui/core'
+import { TableWithSort } from '@sb/components'
+import {
+  dayDuration
+} from '@sb/compositions/AnalyticsRoute/components/utils'
 import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation,
-  TradingVolume,
+  PoolWithOperation
 } from '@sb/compositions/Pools/index.types'
-import { compose } from 'recompose'
-import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import {
-  dayDuration,
-  endOfDayTimestamp,
-} from '@sb/compositions/AnalyticsRoute/components/utils'
-import { TableContainer } from '../index.styles'
-import { useWallet } from '@sb/dexUtils/wallet'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { endOfHourTimestamp } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
+import { useWallet } from '@sb/dexUtils/wallet'
+import React, { useState } from 'react'
+import { compose } from 'recompose'
+import { TableContainer } from '../index.styles'
+import {
+  allPoolsTableColumnsNames,
+  combineAllPoolsData
+} from './AllPoolsTable.utils'
+
 
 const AllPoolsTableComponent = ({
   theme,
@@ -36,8 +34,7 @@ const AllPoolsTableComponent = ({
   poolsInfo,
   poolWaitingForUpdateAfterOperation,
   getFeesEarnedByPoolQuery,
-  getDailyTradingVolumeForAllPoolsQuery,
-  getWeeklyTradingVolumeForAllPoolsQuery,
+  getWeeklyAndDailyTradingVolumesForPoolsQuery,
   allTokensData,
   farmingTicketsMap,
   earnedFeesInPoolForUserMap,
@@ -54,11 +51,8 @@ const AllPoolsTableComponent = ({
   poolsInfo: PoolInfo[]
   poolWaitingForUpdateAfterOperation: PoolWithOperation
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
-  getDailyTradingVolumeForAllPoolsQuery: {
-    getTradingVolumeForAllPools: TradingVolume[]
-  }
-  getWeeklyTradingVolumeForAllPoolsQuery: {
-    getTradingVolumeForAllPools: TradingVolume[]
+  getWeeklyAndDailyTradingVolumesForPoolsQuery: {
+    getWeeklyAndDailyTradingVolumesForPools: any
   }
   dexTokensPricesMap: Map<string, DexTokensPrices>
   allTokensData: TokenInfo[]
@@ -89,36 +83,8 @@ const AllPoolsTableComponent = ({
     new Map()
   )
 
-  const {
-    getTradingVolumeForAllPools: getDailyTradingVolumeForAllPools = [],
-  } = getDailyTradingVolumeForAllPoolsQuery || {
-    getTradingVolumeForAllPools: [],
-  }
-
-  const dailyTradingVolumesMap = getDailyTradingVolumeForAllPools.reduce(
-    (acc, tradingVolume) =>
-      acc.set(tradingVolume.pool, tradingVolume.tradingVolume),
-    new Map()
-  )
-
-  const {
-    getTradingVolumeForAllPools: getWeeklyTradingVolumeForAllPools = [],
-  } = getWeeklyTradingVolumeForAllPoolsQuery || {
-    getTradingVolumeForAllPools: [],
-  }
-
-  const tradingVolumesMap = getWeeklyTradingVolumeForAllPools.reduce(
-    (acc, weeklyTradingVolume) => {
-      const dailyVolume =
-        dailyTradingVolumesMap.get(weeklyTradingVolume.pool) || 0
-
-      return acc.set(weeklyTradingVolume.pool, {
-        weekly: weeklyTradingVolume.tradingVolume,
-        daily: dailyVolume,
-      })
-    },
-    new Map()
-  )
+  const weeklyAndDailyTradingVolumes =
+    getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools
 
   const allPoolsData = combineAllPoolsData({
     theme,
@@ -131,7 +97,7 @@ const AllPoolsTableComponent = ({
     expandedRows,
     allTokensData,
     farmingTicketsMap,
-    tradingVolumesMap,
+    weeklyAndDailyTradingVolumes,
     earnedFeesInPoolForUserMap,
     selectPool,
     refreshTokensWithFarmingTickets,
@@ -207,25 +173,16 @@ export default compose(
     pollInterval: 60000 * getRandomInt(5, 10),
   }),
   queryRendererHoc({
-    name: 'getDailyTradingVolumeForAllPoolsQuery',
-    query: getTradingVolumeForAllPools,
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000 * getRandomInt(5, 10),
-    variables: {
-      timestampFrom: endOfHourTimestamp() - dayDuration,
-      timestampTo: endOfHourTimestamp(),
-    },
-  }),
-  queryRendererHoc({
-    name: 'getWeeklyTradingVolumeForAllPoolsQuery',
-    query: getTradingVolumeForAllPools,
+    name: 'getWeeklyAndDailyTradingVolumesForPoolsQuery',
+    query: getWeeklyAndDailyTradingVolumesForPools,
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
     variables: () => ({
-      timestampFrom: endOfHourTimestamp() - dayDuration * 7,
-      timestampTo: endOfHourTimestamp(),
+      dailyTimestampTo: endOfHourTimestamp(),
+      dailyTimestampFrom: endOfHourTimestamp() - dayDuration,
+      weeklyTimestampTo: endOfHourTimestamp(),
+      weeklyTimestampFrom: endOfHourTimestamp() - dayDuration * 7,
     }),
   })
 )(AllPoolsTableComponent)
