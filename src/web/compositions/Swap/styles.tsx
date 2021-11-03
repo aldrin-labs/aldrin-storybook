@@ -18,3 +18,4 @@ export const TokenLabel = styled.div`
   font-size: 1.4rem;
   margin-left: 1rem;
 `
+
