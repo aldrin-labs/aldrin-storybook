@@ -193,7 +193,6 @@ const createTradingVolumeChart = ({
 }: ChartParams) => {
   const ctx = container.getContext('2d')
 
-  console.log('Volume chart update', container, ctx)
   if (!ctx) {
     throw Error('Not a canvas:')
   }
