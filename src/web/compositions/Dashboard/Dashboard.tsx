@@ -340,7 +340,7 @@ const Dashboard = ({
                 })
               } catch (e) {
                 notifyWithLog({
-                  message: 'Error settling all funds',
+                  message: 'Insufficient SOL balance for settling.',
                   e,
                 })
 
