@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Theme } from '@material-ui/core'
 
@@ -41,6 +41,9 @@ import { RemindToStakePopup } from '../../Popups/ReminderToStake/ReminderToStake
 import { valueEventAriaMessage } from 'react-select/lib/accessibility'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
 import { ClaimRewards } from '../../Popups/ClaimRewards/ClaimRewards'
+import { checkFarmed } from '@sb/dexUtils/common/checkFarmed'
+import { PublicKey, Transaction } from '@solana/web3.js'
+import { sendTransaction } from '@sb/dexUtils/send'
 
 const TablesSwitcher = ({
   theme,

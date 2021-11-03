@@ -58,13 +58,12 @@ export const ClaimRewards = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
-        <BoldHeader>Claim rewards</BoldHeader>
+        <BoldHeader>Important Message</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer justify="flex-start">
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-          You need to unstake pool tokens to be able to withdraw liquidity. You
-          still be able to claim rewards in “Your Liquidity” tab.{' '}
+        You will need to confirm several transactions in your wallet. One for each day since the last claim.
         </Text>
       </RowContainer>
 
@@ -125,9 +124,11 @@ export const ClaimRewards = ({
 
               return
             }
+
+            close()
           }}
         >
-          Unstake
+          Ok, Got It
         </Button>
       </RowContainer>
     </DialogWrapper>

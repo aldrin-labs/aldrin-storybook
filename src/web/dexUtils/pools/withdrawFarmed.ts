@@ -19,6 +19,8 @@ import { FarmingTicket, SnapshotQueue } from '../common/types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getSnapshotsWithUnclaimedRewards } from './addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
 import { NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION } from '../common/config'
+import BN from 'bn.js'
+import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -50,18 +52,15 @@ export const withdrawFarmed = async ({
   )
 
   const createdTokensMap = new Map()
-  const commonTransaction = new Transaction()
-  const commonSigners: (Account | Keypair)[] = []
-
   let tx = null
 
-  const sendPartOfTransactions = async () => {
+  const sendPartOfTransactions = async (transaction: Transaction) => {
     try {
       tx = await sendTransaction({
         wallet,
         connection,
-        transaction: commonTransaction,
-        signers: commonSigners,
+        transaction,
+        signers: [],
         focusPopup: true,
       })
 
@@ -71,7 +70,7 @@ export const withdrawFarmed = async ({
     } catch (e) {
       console.log('end farming catch error', e)
 
-      if (e.message.includes('cancelled')) {
+      if (isCancelledTransactionError(e)) {
         return 'cancelled'
       }
     }
@@ -82,6 +81,8 @@ export const withdrawFarmed = async ({
   // check farmed for every ticket and withdrawFarmed for every farming state
   for (let ticketData of farmingTickets) {
     for (let i = 0; i < pool.farming.length; i++) {
+      let commonTransaction = new Transaction()
+
       const farmingState = pool.farming[i]
 
       // find amount to claim for this farming state in tickets amounts
@@ -125,24 +126,27 @@ export const withdrawFarmed = async ({
         commonTransaction.add(createAccountTransaction)
       }
 
-      const endFarmingTransaction = await program.instruction.withdrawFarmed({
-        accounts: {
-          pool: poolPublicKey,
-          farmingState: new PublicKey(farmingState.farmingState),
-          farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
-          farmingTicket: new PublicKey(ticketData.farmingTicket),
-          farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
-          poolSigner: vaultSigner,
-          userFarmingTokenAccount,
-          userKey: wallet.publicKey,
-          userSolAccount: wallet.publicKey,
-          tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-          clock: SYSVAR_CLOCK_PUBKEY,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
-      })
+      const withdrawFarmedTransaction = await program.instruction.withdrawFarmed(
+        new BN(NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION),
+        {
+          accounts: {
+            pool: poolPublicKey,
+            farmingState: new PublicKey(farmingState.farmingState),
+            farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
+            farmingTicket: new PublicKey(ticketData.farmingTicket),
+            farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
+            poolSigner: vaultSigner,
+            userFarmingTokenAccount,
+            userKey: wallet.publicKey,
+            userSolAccount: wallet.publicKey,
+            tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+            clock: SYSVAR_CLOCK_PUBKEY,
+            rent: SYSVAR_RENT_PUBKEY,
+          },
+        }
+      )
 
-      commonTransaction.add(endFarmingTransaction)
+      commonTransaction.add(withdrawFarmedTransaction)
 
       // get number of snapshots, get number of iterations, send transaction n times
       const unclaimedSnapshots = getSnapshotsWithUnclaimedRewards({
@@ -156,20 +160,16 @@ export const withdrawFarmed = async ({
       )
 
       for (let i = 1; i <= iterations; i++) {
-        const result = await sendPartOfTransactions()
+        const result = await sendPartOfTransactions(commonTransaction)
+
+        // reset create account, leave only withdrawFarmed for all transactions except first
+        commonTransaction = new Transaction().add(withdrawFarmedTransaction)
         if (result !== 'success') {
           return result
         }
       }
     }
   }
-
-  // if (commonTransaction.instructions.length > 0) {
-  //   const result = await sendPartOfTransactions()
-  //   if (result !== 'success') {
-  //     return result
-  //   }
-  // }
 
   return 'success'
 }
