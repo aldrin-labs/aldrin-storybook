@@ -530,12 +530,6 @@ export const TablesDetails = ({
                       <Loader />
                     ) : (
                       <span style={{ display: 'flex' }}>
-                        <SvgIcon
-                          src={WhiteTech}
-                          width={'2rem'}
-                          height={'2rem'}
-                          style={{ marginRight: '1.5rem' }}
-                        />{' '}
                         Claim reward
                       </span>
                     )}

@@ -122,6 +122,10 @@ export const ClaimRewards = ({
             } catch (e) {
               clearPoolWaitingForUpdate()
 
+              setTimeout(async () => {
+                refreshTokensWithFarmingTickets()
+              }, 7500)
+
               return
             }
 
