@@ -114,6 +114,7 @@ export const combineUserLiquidityData = ({
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
   setIsUnstakePopupOpen,
+  setIsClaimRewardsPopupOpen,
 }: {
   theme: Theme
   searchValue: string
@@ -131,6 +132,7 @@ export const combineUserLiquidityData = ({
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
+  setIsClaimRewardsPopupOpen: (value: boolean) => void
 }) => {
   const processedUserLiquidityData = usersPools
     .filter((pool) =>
@@ -426,6 +428,7 @@ export const combineUserLiquidityData = ({
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
                   setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+                  setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
                   refreshTokensWithFarmingTickets={
                     refreshTokensWithFarmingTickets
                   }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Theme } from '@material-ui/core'
 
@@ -40,6 +40,10 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { RemindToStakePopup } from '../../Popups/ReminderToStake/ReminderToStake'
 import { valueEventAriaMessage } from 'react-select/lib/accessibility'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
+import { ClaimRewards } from '../../Popups/ClaimRewards/ClaimRewards'
+import { checkFarmed } from '@sb/dexUtils/common/checkFarmed'
+import { PublicKey, Transaction } from '@solana/web3.js'
+import { sendTransaction } from '@sb/dexUtils/send'
 
 const TablesSwitcher = ({
   theme,
@@ -75,6 +79,7 @@ const TablesSwitcher = ({
   const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
     false
   )
+  const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
 
   // after operation with pool we update data after some time
   // and for better ux we need to show loader for button which was use for this operation
@@ -94,7 +99,7 @@ const TablesSwitcher = ({
     connection,
   })
 
-  const [snapshotQueues, refreshSnapshotQueues] = useSnapshotQueues({
+  const [snapshotQueues] = useSnapshotQueues({
     wallet,
     connection,
   })
@@ -213,6 +218,7 @@ const TablesSwitcher = ({
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
             setIsStakePopupOpen={setIsStakePopupOpen}
             setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+            setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
           />
         ) : (
           <UserLiquitidyTable
@@ -235,6 +241,7 @@ const TablesSwitcher = ({
             setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
             setIsStakePopupOpen={setIsStakePopupOpen}
             setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+            setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
           />
         )}
 
@@ -305,6 +312,22 @@ const TablesSwitcher = ({
             selectedPool={selectedPool}
             close={() => setIsUnstakePopupOpen(false)}
             allTokensData={allTokensData}
+            refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+            setPoolWaitingForUpdateAfterOperation={
+              setPoolWaitingForUpdateAfterOperation
+            }
+          />
+        )}
+
+        {selectedPool && isClaimRewardsPopupOpen && (
+          <ClaimRewards
+            theme={theme}
+            open={isClaimRewardsPopupOpen}
+            selectedPool={selectedPool}
+            farmingTicketsMap={farmingTicketsMap}
+            snapshotQueues={snapshotQueues}
+            allTokensData={allTokensData}
+            close={() => setIsClaimRewardsPopupOpen(false)}
             refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
             setPoolWaitingForUpdateAfterOperation={
               setPoolWaitingForUpdateAfterOperation

@@ -15,6 +15,7 @@ import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { NUMBER_OF_RETRIES } from '../common'
+import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 
 export const startFarming = async ({
   wallet,
@@ -100,7 +101,7 @@ export const startFarming = async ({
       console.log('start farming catch error', e)
       counter++
 
-      if (e.message.includes('cancelled')) {
+      if (isCancelledTransactionError(e)) {
         return 'cancelled'
       }
     }

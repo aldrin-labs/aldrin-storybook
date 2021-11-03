@@ -601,7 +601,12 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "maxSnapshots",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "checkFarmed",
@@ -642,7 +647,12 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "maxSnapshots",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "endFarming",
@@ -1162,9 +1172,13 @@
       "code": 318,
       "name": "CannotSnapshotNoTokensFrozen",
       "msg": "No tokens frozen"
+    },
+    {
+      "code": 319,
+      "name": "AttachedStatesLimitReached"
     }
   ],
-  "metadata": {
-    "address": "RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx"
-  }
+    "metadata": {
+        "address": "RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx"
+    }
 }

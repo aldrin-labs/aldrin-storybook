@@ -142,6 +142,7 @@ export const combineAllPoolsData = ({
   setIsWithdrawalPopupOpen,
   setIsStakePopupOpen,
   setIsUnstakePopupOpen,
+  setIsClaimRewardsPopupOpen,
 }: {
   theme: Theme
   wallet: WalletAdapter
@@ -166,6 +167,7 @@ export const combineAllPoolsData = ({
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
+  setIsClaimRewardsPopupOpen: (value: boolean) => void
 }) => {
   const processedAllPoolsData = poolsInfo
     .filter((pool) =>
@@ -456,6 +458,7 @@ export const combineAllPoolsData = ({
                   setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
                   setIsStakePopupOpen={setIsStakePopupOpen}
                   setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+                  setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
                   setPoolWaitingForUpdateAfterOperation={
                     setPoolWaitingForUpdateAfterOperation
                   }
