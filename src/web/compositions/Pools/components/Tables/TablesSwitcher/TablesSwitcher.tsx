@@ -40,7 +40,8 @@ import { Block, BlockContent } from '@sb/components/Block'
 import { RemindToStakePopup } from '../../Popups/ReminderToStake/ReminderToStake'
 import { valueEventAriaMessage } from 'react-select/lib/accessibility'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
-import { Text } from '../../../../../components/Typography'
+import { Text } from '@sb/components/Typography'
+import { PoolsTable } from '../PoolsTable'
 
 const TablesSwitcher = ({
   theme,
@@ -181,27 +182,35 @@ const TablesSwitcher = ({
         </TabContainer>
         <TableContainer>
           {selectedTable === 'all' ? (
-            <AllPoolsTable
-              theme={theme}
-              searchValue={searchValue}
-              poolWaitingForUpdateAfterOperation={
-                poolWaitingForUpdateAfterOperation
-              }
-              poolsInfo={pools}
-              allTokensData={allTokensData}
-              dexTokensPricesMap={dexTokensPricesMap}
-              farmingTicketsMap={farmingTicketsMap}
-              earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-              selectPool={selectPool}
-              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-              setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-              setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-              setIsStakePopupOpen={setIsStakePopupOpen}
-              setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-            />
+            <>
+              <AllPoolsTable
+                theme={theme}
+                searchValue={searchValue}
+                poolWaitingForUpdateAfterOperation={
+                  poolWaitingForUpdateAfterOperation
+                }
+                poolsInfo={pools}
+                allTokensData={allTokensData}
+                dexTokensPricesMap={dexTokensPricesMap}
+                farmingTicketsMap={farmingTicketsMap}
+                earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+                selectPool={selectPool}
+                refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+                setPoolWaitingForUpdateAfterOperation={
+                  setPoolWaitingForUpdateAfterOperation
+                }
+                setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+                setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+                setIsStakePopupOpen={setIsStakePopupOpen}
+                setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+              />
+              <br />
+              <PoolsTable
+                pools={pools}
+                tokenPrices={getDexTokensPrices}
+                feesByAccount={getFeesEarnedByAccount}
+              />
+            </>
           ) : (
               <UserLiquitidyTable
                 theme={theme}

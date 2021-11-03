@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/components/Typography'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -56,14 +56,14 @@ export const TokenIconsContainer = ({
     <Row wrap="nowrap" justify={'end'}>
       <IconsContainer>
         <TokenIconContainer zIndex={'1'} left={'0'}>
-          <TokenIcon width={'3rem'} height={'3rem'} mint={tokenA} />
+          <TokenIcon width={'1.5em'} height={'1.5em'} mint={tokenA} />
         </TokenIconContainer>
         <TokenIconContainer
           left={'0'}
           zIndex={'0'}
           style={{ transform: 'translateX(70%)' }}
         >
-          <TokenIcon width={'3rem'} height={'3rem'} mint={tokenB} />
+          <TokenIcon width={'1.5em'} height={'1.5em'} mint={tokenB} />
         </TokenIconContainer>
       </IconsContainer>
       <Text
