@@ -1,34 +1,22 @@
-import React, { useEffect, useRef } from 'react'
-import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { Theme } from '@material-ui/core'
-
-import {
-  WhiteTitle,
-  HeaderContainer,
-  Row,
-  ChartContainer,
-  RowContainer,
-} from '@sb/compositions/AnalyticsRoute/index.styles'
-
-import { createTradingVolumeChart } from '../utils'
 import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
+import { msToNextHour } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
+import { Theme } from '@material-ui/core'
+import { Block, BlockContent } from '@sb/components/Block'
 import {
   dayDuration,
   endOfDayTimestamp,
-  getTimezone,
+  getTimezone
 } from '@sb/compositions/AnalyticsRoute/components/utils'
-
-import dayjs from 'dayjs'
-import { Line } from '../../Popups/index.styles'
-import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
-import { estimatedTime, msToNextHour } from '@core/utils/dateUtils'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
-import { getRandomInt } from '@core/utils/helpers'
 import { Chart } from 'chart.js'
-import { BlockContent, Block } from '@sb/components/Block'
-import { TitleContainer, SubTitle } from '../styles'
+import React, { useEffect, useRef } from 'react'
+import { compose } from 'recompose'
+import { Line } from '../../Popups/index.styles'
+import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
+import { Canvas, SubTitle, TitleContainer } from '../styles'
+import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW} from '../utils'
+
 
 const ChartBlock = ({
   theme,
@@ -77,35 +65,10 @@ const ChartBlock = ({
           />
         </TitleContainer>
         <div>
-          <canvas ref={canvasRef}></canvas>
+          <Canvas ref={canvasRef}></Canvas>
         </div>
       </BlockContent>
     </Block>
-  )
-
-  return (
-    <>
-      <HeaderContainer theme={theme} justify={'space-between'}>
-        <RowContainer margin={'0 2rem 0 2rem'} style={{ flexWrap: 'nowrap' }}>
-          <WhiteTitle
-            style={{ marginRight: '2rem' }}
-            theme={theme}
-            color={theme.palette.white.text}
-          >
-            {title}
-          </WhiteTitle>
-          <Line />
-          <ReloadTimerTillUpdate
-            duration={3600}
-            margin={'0 0 0 2rem'}
-            getSecondsTillNextUpdate={() => msToNextHour() / 1000}
-          />
-        </RowContainer>
-      </HeaderContainer>
-      <ChartContainer>
-        <canvas id="TradingVolumeChart"></canvas>
-      </ChartContainer>
-    </>
   )
 }
 
@@ -115,7 +78,7 @@ export const TradingVolumeChart = compose(
     name: 'getTradingVolumeHistoryQuery',
     variables: {
       timezone: getTimezone(),
-      timestampFrom: endOfDayTimestamp() - dayDuration * 6,
+      timestampFrom: endOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',

@@ -40,7 +40,7 @@ const prepareCell = (params: {
   pool: PoolInfo,
   dexTokensPricesMap: Map<string, DexTokensPrices>,
   feesMap: Map<string, FeesEarned>
-}): DataCellValues => {
+}): DataCellValues<PoolInfo> => {
   const { pool, dexTokensPricesMap } = params
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
@@ -129,44 +129,49 @@ const prepareCell = (params: {
     ) : <span>-</span>
 
   return {
-    pool: {
-      rawValue: pool.parsedName,
-      rendered:
-        <Link
-          to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
-          style={{ textDecoration: 'none' }}
-        >
-          <TokenIconsContainer
-            needHover={true}
-            tokenA={pool.tokenA}
-            tokenB={pool.tokenB}
-          />
-        </Link>,
-    },
-    tvl: {
-      rawValue: tvlUSD,
-      rendered:
-        <TextColumnContainer>
-          <RowDataTdTopText >
-            ${stripByAmountAndFormat(tvlUSD)}
-          </RowDataTdTopText>
-          <RowDataTdText>
-            {stripByAmountAndFormat(pool.tvl.tokenA)}{' '}
-            {baseSymbol} /{' '}
-            {stripByAmountAndFormat(pool.tvl.tokenB)}{' '}
-            {quoteSymbol}
-          </RowDataTdText>
-        </TextColumnContainer>,
-    },
-    apr: {
-      rawValue: farmingAPR,
-    },
-    farming: {
-      rendered: farmingRendered,
-      rawValue: farmingAPR,
+    extra: pool,
+    fields: {
+      pool: {
+        rawValue: pool.parsedName,
+        rendered:
+          <Link
+            to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
+            style={{ textDecoration: 'none' }}
+          >
+            <TokenIconsContainer
+              needHover={true}
+              tokenA={pool.tokenA}
+              tokenB={pool.tokenB}
+            />
+          </Link>,
+      },
+      tvl: {
+        rawValue: tvlUSD,
+        rendered:
+          <TextColumnContainer>
+            <RowDataTdTopText >
+              ${stripByAmountAndFormat(tvlUSD)}
+            </RowDataTdTopText>
+            <RowDataTdText>
+              {stripByAmountAndFormat(pool.tvl.tokenA)}{' '}
+              {baseSymbol} /{' '}
+              {stripByAmountAndFormat(pool.tvl.tokenB)}{' '}
+              {quoteSymbol}
+            </RowDataTdText>
+          </TextColumnContainer>,
+      },
+      apr: {
+        rawValue: farmingAPR,
+      },
+      farming: {
+        rendered: farmingRendered,
+        rawValue: farmingAPR,
+      }
     }
+
   }
 }
+// TODO: Work in progress, do not change/use that
 
 export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
 
@@ -185,9 +190,37 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
   )
 
 
-  const data: DataCellValues[] = pools.map((pool) => prepareCell({ pool, dexTokensPricesMap, feesMap }))
+  const data = pools.map((pool) => prepareCell({ pool, dexTokensPricesMap, feesMap }))
 
   return (
-    <DataTable name="pools_table" data={data} cells={CELLS} />
+    <DataTable
+      name="pools_table"
+      data={data}
+      cells={CELLS}
+      expandableContent={(e) =>
+        <TablesDetails
+          setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+          setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+          setIsStakePopupOpen={setIsStakePopupOpen}
+          setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+          setPoolWaitingForUpdateAfterOperation={
+            setPoolWaitingForUpdateAfterOperation
+          }
+          refreshTokensWithFarmingTickets={
+            refreshTokensWithFarmingTickets
+          }
+          selectPool={selectPool}
+          poolWaitingForUpdateAfterOperation={
+            poolWaitingForUpdateAfterOperation
+          }
+          earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+          farmingTicketsMap={farmingTicketsMap}
+          dexTokensPricesMap={dexTokensPricesMap}
+          allTokensData={allTokensData}
+          theme={theme}
+          pool={pool}
+        />
+      }
+    />
   )
 }

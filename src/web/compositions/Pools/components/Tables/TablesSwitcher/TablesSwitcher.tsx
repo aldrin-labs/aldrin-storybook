@@ -1,47 +1,42 @@
-import React, { useState } from 'react'
-
-import { Theme } from '@material-ui/core'
-
-import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
-import { SearchInputWithLoop } from '../components'
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-
-import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
-
-import Loop from '@icons/loop.svg'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
+import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+import { getRandomInt } from '@core/utils/helpers'
 import KudelskiLogo from '@icons/kudelski.svg'
-
-import AllPoolsTable from '../AllPools/AllPoolsTable'
-import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
-
+import Loop from '@icons/loop.svg'
+import { Theme } from '@material-ui/core'
+import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
+import { Block, BlockContent } from '@sb/components/Block'
+import SvgIcon from '@sb/components/SvgIcon'
+import { Text } from '@sb/components/Typography'
 import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation,
+  PoolWithOperation
 } from '@sb/compositions/Pools/index.types'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
-import { TableModeButton, TabContainer, InputWrap, SearchInput, TableContainer } from './TablesSwitcher.styles'
+import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
+import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
+import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import { useWallet } from '@sb/dexUtils/wallet'
+import React, { useState } from 'react'
+import { compose } from 'recompose'
+import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
-import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
-import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
-import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
-import { getRandomInt } from '@core/utils/helpers'
-import SvgIcon from '@sb/components/SvgIcon'
-import { Block, BlockContent } from '@sb/components/Block'
-import { RemindToStakePopup } from '../../Popups/ReminderToStake/ReminderToStake'
-import { valueEventAriaMessage } from 'react-select/lib/accessibility'
-import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
-import { Text } from '@sb/components/Typography'
-import { PoolsTable } from '../PoolsTable'
+import AllPoolsTable from '../AllPools/AllPoolsTable'
+import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
+import { InputWrap, SearchInput, TabContainer, TableContainer, TableModeButton } from './TablesSwitcher.styles'
+
+
+
+
+
+
 
 const TablesSwitcher = ({
   theme,
@@ -204,12 +199,12 @@ const TablesSwitcher = ({
                 setIsStakePopupOpen={setIsStakePopupOpen}
                 setIsUnstakePopupOpen={setIsUnstakePopupOpen}
               />
-              <br />
+              {/* <br />
               <PoolsTable
                 pools={pools}
                 tokenPrices={getDexTokensPrices}
                 feesByAccount={getFeesEarnedByAccount}
-              />
+              /> */}
             </>
           ) : (
               <UserLiquitidyTable

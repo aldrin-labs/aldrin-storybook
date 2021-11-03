@@ -46,6 +46,7 @@ export const InputWrap = styled.div`
 
     @media(min-width: ${BREAKPOINTS.md}) {
       margin-top: 0;
+      align-items: center;
     }
 `
 
@@ -56,6 +57,7 @@ export const SearchInput = styled(Input)`
 
     @media(min-width: ${BREAKPOINTS.md}) {
       min-width: 250px;
+      height: 2.5em;
     }
 `
 

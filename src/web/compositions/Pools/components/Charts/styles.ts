@@ -19,3 +19,6 @@ export const SubTitle = styled(BlockSubtitle)`
 export const RootRow = styled(Row)`
   margin-top: 40px;
 `
+export const Canvas = styled.canvas`
+  margin-left: -10px;
+`

@@ -1,3 +1,16 @@
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  dayDuration,
+  endOfDayTimestamp
+} from '@sb/compositions/AnalyticsRoute/components/utils'
+import { COLORS, FONTS } from '@variables/variables'
+import {
+  BarController, BarElement,
+  BubbleController, CategoryScale, Chart,
+  ChartType, Filler, LinearScale,
+  LineController, LineElement, PointElement,
+  PolarAreaController, Tooltip
+} from 'chart.js'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -5,33 +18,6 @@ import utc from 'dayjs/plugin/utc'
 dayjs.extend(timezone)
 dayjs.extend(utc)
 
-import {
-  Chart,
-  BarElement,
-  PointElement,
-  BarController,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  LineElement,
-  LineController,
-  PolarAreaController,
-  Filler,
-  BubbleController,
-} from 'chart.js'
-
-import {
-  stripDigitPlaces,
-  formatNumberToUSFormat,
-} from '@core/utils/PortfolioTableUtils'
-
-import { Theme } from '@material-ui/core'
-import {
-  dayDuration,
-  endOfDayTimestamp,
-} from '@sb/compositions/AnalyticsRoute/components/utils'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { FONTS, FONT_SIZES, COLORS } from '@variables/variables'
 
 Chart.register(
   BarElement,
@@ -47,18 +33,18 @@ Chart.register(
   Filler
 )
 
-const NUMBER_OF_DAYS_TO_SHOW = 6
+export const NUMBER_OF_DAYS_TO_SHOW = 10
 const CHART_HEIGHT = 220
 
-interface ChartParams<T = []> {
+interface ChartParams<T = { date: number, vol?: number }[]> {
   chart: Chart | null
   data: T
   container: HTMLCanvasElement
 }
 
-const createChart = (ctx: CanvasRenderingContext2D) =>
+const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
   new Chart(ctx, {
-    type: 'line',
+    type,
     data: {
       labels: [],
       datasets: [],
@@ -71,7 +57,7 @@ const createChart = (ctx: CanvasRenderingContext2D) =>
             display: false,
           },
           ticks: {
-            align: 'end',
+            align: 'center',
             color: COLORS.textAlt,
             font: {
               size: 12,
@@ -122,11 +108,16 @@ const createChart = (ctx: CanvasRenderingContext2D) =>
   })
 
 const getEmptyData = (
-  fisrtTimestamp: number = endOfDayTimestamp() -
-    dayDuration * NUMBER_OF_DAYS_TO_SHOW,
+  fisrtTimestamp: number = endOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
   lastTimestamp: number = endOfDayTimestamp()
 ) => {
-  let dayEndTimestamp: number = dayjs
+
+  const tsFrom = dayjs
+    .unix(fisrtTimestamp)
+    .startOf('day')
+    .unix()
+
+  let tsTo = dayjs
     .unix(lastTimestamp)
     .startOf('day')
     .unix()
@@ -134,14 +125,14 @@ const getEmptyData = (
   const emptyData = []
 
   do {
-    const day = dayjs.unix(dayEndTimestamp).format('YYYY-MM-DD')
+    const date = dayjs.unix(tsTo).format('YYYY-MM-DD')
     emptyData.push({
-      date: day,
+      date,
       vol: 0,
     })
 
-    dayEndTimestamp -= dayDuration
-  } while (dayEndTimestamp >= fisrtTimestamp)
+    tsTo -= dayDuration
+  } while (tsTo >= tsFrom)
 
   return emptyData.reverse()
 }
@@ -169,7 +160,8 @@ const createTotalVolumeLockedChart = ({
       data.find(
         (item: { date: string; vol: number }) => item.date === value.date
       )?.vol || 0,
-  }))
+  }))// Remove last empty point to prevent drop on daystart
+    .filter((point, idx, arr) => !(idx === arr.length - 1 && point.vol === 0))
 
   const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), 0)
 
@@ -190,7 +182,7 @@ const createTotalVolumeLockedChart = ({
     ],
   }
   chart.options.scales.y.ticks.stepSize = maxVol / 5
-  chart.update()
+  setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
   return chart
 }
 
@@ -201,46 +193,44 @@ const createTradingVolumeChart = ({
 }: ChartParams) => {
   const ctx = container.getContext('2d')
 
+  console.log('Volume chart update', container, ctx)
   if (!ctx) {
     throw Error('Not a canvas:')
   }
 
   container.height = CHART_HEIGHT
-  const gradient = ctx.createLinearGradient(0, 0, 0, 400)
 
-  gradient.addColorStop(0, 'rgb(83, 223, 17, 0.85)')
-  gradient.addColorStop(0.55, 'rgba(165, 232, 152, 0)')
-  gradient.addColorStop(1, COLORS.blockBackground)
-
-  const transformedData = getEmptyData().map((value) => ({
-    ...value,
-    vol:
-      data.find(
-        (item: { date: string; vol: number }) => item.date === value.date
-      )?.vol || 0,
-  }))
+  const transformedData = getEmptyData()
+    .map((value) => ({
+      ...value,
+      vol:
+        data.find(
+          (item: { date: string; vol: number }) => item.date === value.date
+        )?.vol || 0,
+    })) // Remove last empty point to prevent drop on daystart
+    .filter((point, idx, arr) => !(idx === arr.length - 1 && point.vol === 0))
 
   const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), 0)
 
-  chart = chart || createChart(ctx)
+  chart = chart || createChart(ctx, 'bar')
   chart.data = {
     labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
     datasets: [
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: COLORS.success,
-        backgroundColor: gradient,
+        borderColor: COLORS.successAlt,
+        backgroundColor: COLORS.successAlt,
         borderWidth: 2,
         pointRadius: 0,
-        hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
         data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
       },
     ],
   }
 
   chart.options.scales.y.ticks.stepSize = maxVol / 5
-  chart.update()
+  setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
+
   return chart
 
 }

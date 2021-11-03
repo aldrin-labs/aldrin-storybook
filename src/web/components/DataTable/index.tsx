@@ -5,7 +5,7 @@ import { Hint } from './components/HInt'
 
 export * from './types'
 
-export const DataTable: React.FC<DataTableProps> = (props) => {
+export function DataTable<E>(props: DataTableProps<E>) {
   const { cells, data, name } = props
   return (
     <Table>
@@ -24,12 +24,11 @@ export const DataTable: React.FC<DataTableProps> = (props) => {
           <Tr key={`datatable_${name}_row_${idx}`}>
             {cells.map(({ key }) =>
               <Td key={`datatable_${name}_cell_${idx}_${key}`}>
-                {!!row[key] &&
+                {!!row.fields[key] &&
                   <>
-                    {row[key].rendered || row[key].rawValue}
+                    {row.fields[key].rendered || row.fields[key].rawValue}
                   </>
                 }
-
               </Td>
             )}
           </Tr>
