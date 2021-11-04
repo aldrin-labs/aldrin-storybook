@@ -76,7 +76,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             <Input
               theme={theme}
               needTitle
-              title={`amount`}
+              title={`Est. amount`}
               value={localAmount}
               type={'number'}
               pattern="\d*"
