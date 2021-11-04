@@ -385,7 +385,7 @@ const getPairFromLocation = () => {
   }
 
   // we have pairs in format base/quote in array
-  return pair.replaceAll('_', '/')
+  return pair.replace('_', '/')
 }
 
 export function MarketProvider({ children }) {
