@@ -9,7 +9,7 @@ import {
   BubbleController, CategoryScale, Chart,
   ChartType, Filler, LinearScale,
   LineController, LineElement, PointElement,
-  PolarAreaController, Tooltip
+  PolarAreaController, Tooltip, TooltipItem, TooltipModel
 } from 'chart.js'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -71,7 +71,7 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
             display: false,
             color: COLORS.background,
           },
-    
+
           ticks: {
             padding: 15,
             callback: (value) => `$${stripByAmountAndFormat(value)}`,
@@ -94,6 +94,11 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
         tooltip: {
           enabled: true,
           intersect: false,
+          callbacks: {
+            label: (model: any, item: TooltipItem) => {
+              return ` $${model.formattedValue || 0}`;
+            }
+          }
         },
       },
       layout: {
@@ -164,7 +169,10 @@ const createTotalVolumeLockedChart = ({
 
   const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), 0)
 
-  chart = chart || createChart(ctx)
+  if (chart) {
+    chart.destroy()
+  }
+  chart = createChart(ctx)
   chart.data = {
     labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
     datasets: [
@@ -210,6 +218,9 @@ const createTradingVolumeChart = ({
 
   const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), 0)
 
+  if (chart) {
+    chart.destroy()
+  }
   chart = chart || createChart(ctx, 'bar')
   chart.data = {
     labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
