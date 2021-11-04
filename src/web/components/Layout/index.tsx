@@ -42,6 +42,17 @@ export const Content = styled.div`
   }
 `
 
+export const WideContent = styled(Content)`
+  @media (min-width: ${LAYOUT_WIDTH}px) {
+    max-width: none;
+    margin: 0 10px;
+  }
+  @media (min-width: ${BREAKPOINTS.xxl}) {
+    max-width: ${BREAKPOINTS.xxl};
+    margin: 0 auto;
+  }
+`
+
 export const Row = styled.div<RowProps>`
   display: flex;
   flex-direction: row;

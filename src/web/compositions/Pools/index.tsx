@@ -6,7 +6,7 @@ import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
 import { BlockTemplate } from './index.styles'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { Page, Content, Row, Cell } from '@sb/components/Layout'
+import { Page, Content, Row, Cell, WideContent } from '@sb/components/Layout'
 import { RootRow } from './components/Charts/styles'
 
 
@@ -22,7 +22,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
 
   return (
     <Page>
-      <Content>
+      <WideContent>
         <RootRow>
           <Cell col={12} colLg={6}>
             <TotalVolumeLockedChart />
@@ -37,7 +37,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
             <TablesSwitcher theme={theme} />
           </Cell>
         </RootRow>
-      </Content>
+      </WideContent>
     </Page>
   )
 }

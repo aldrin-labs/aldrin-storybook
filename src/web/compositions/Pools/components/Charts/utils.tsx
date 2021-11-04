@@ -71,12 +71,11 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
             display: false,
             color: COLORS.background,
           },
+    
           ticks: {
             padding: 15,
             callback: (value) => `$${stripByAmountAndFormat(value)}`,
             color: COLORS.textAlt,
-            // maxTicksLimit: 5,
-            // stepSize: 1,
             font: {
               size: 12,
               family: FONTS.main,
@@ -218,10 +217,17 @@ const createTradingVolumeChart = ({
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: COLORS.successAlt,
-        backgroundColor: COLORS.successAlt,
-        borderWidth: 2,
+        borderColor: COLORS.success,
+        backgroundColor: COLORS.success,
+        borderWidth: 0,
         pointRadius: 0,
+        borderRadius: {
+          topLeft: 4,
+          topRight: 4,
+          bottomLeft: 4444,
+          bottomRight: 4444,
+        },
+
         data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
       },
     ],
