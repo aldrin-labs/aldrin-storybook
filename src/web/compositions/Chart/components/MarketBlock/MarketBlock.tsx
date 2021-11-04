@@ -102,9 +102,9 @@ const MarketBlock = ({
 
   const [base, quote] = pair.split('_')
 
-  const marketName = pair.name.replaceAll('_', '/')
+  const marketName = pair.replaceAll('_', '/')
   const currentMarket = customMarkets?.find(
-    (el) => el?.name.name.replaceAll('_', '/') === marketName
+    (el) => el?.name.replaceAll('_', '/') === marketName
   )
 
   const isCustomUserMarket = currentMarket?.isCustomUserMarket
