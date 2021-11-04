@@ -3,7 +3,7 @@ import {
   dayDuration,
   endOfDayTimestamp
 } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { COLORS, FONTS } from '@variables/variables'
+import { COLORS, FONTS, MAIN_FONT } from '@variables/variables'
 import {
   BarController, BarElement,
   BubbleController, CategoryScale, Chart,
@@ -61,7 +61,7 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
             color: COLORS.textAlt,
             font: {
               size: 12,
-              family: FONTS.main,
+              family: MAIN_FONT,
             },
           },
         },
@@ -78,7 +78,7 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
             color: COLORS.textAlt,
             font: {
               size: 12,
-              family: FONTS.main,
+              family: MAIN_FONT,
             },
           },
         },

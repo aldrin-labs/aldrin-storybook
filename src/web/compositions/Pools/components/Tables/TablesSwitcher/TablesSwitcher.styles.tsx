@@ -13,7 +13,7 @@ export const TableModeButton = styled.button`
   border-bottom: ${(props: TableModeButtonProps) =>
     props.isActive
       ? `.3rem solid ${COLORS.white}`
-      : `.3rem solid ${COLORS.hint}`};
+      : `.3rem solid transparent`};
 
   background: inherit;
   color: ${(props: TableModeButtonProps) =>

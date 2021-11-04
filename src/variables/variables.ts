@@ -1,5 +1,6 @@
+export const MAIN_FONT = 'Avenir Next'
 export const FONTS = {
-  main: 'Avenir Next, sans-serif;',
+  main: `${MAIN_FONT}, sans-serif;`,
 }
 
 export const COLORS = {
