@@ -1,7 +1,6 @@
 import { TokenInstructions } from '@project-serum/serum'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import {
   Account,
   Connection,
@@ -15,22 +14,27 @@ import {
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { createTokenAccountTransaction, sendTransaction } from '../send'
-import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
-import { FarmingTicket } from '../common/types'
+import { FarmingTicket, SnapshotQueue } from '../common/types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { getSnapshotsWithUnclaimedRewards } from './addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
+import { NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION } from '../common/config'
+import BN from 'bn.js'
+import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 
 export const withdrawFarmed = async ({
   wallet,
   connection,
   allTokensData,
   farmingTickets,
+  snapshotQueues,
   pool,
 }: {
   wallet: WalletAdapter
   connection: Connection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
+  snapshotQueues: SnapshotQueue[]
   pool: PoolInfo
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
@@ -48,18 +52,15 @@ export const withdrawFarmed = async ({
   )
 
   const createdTokensMap = new Map()
-  const commonTransaction = new Transaction()
-  const commonSigners: (Account | Keypair)[] = []
-
   let tx = null
 
-  const sendPartOfTransactions = async () => {
+  const sendPartOfTransactions = async (transaction: Transaction) => {
     try {
       tx = await sendTransaction({
         wallet,
         connection,
-        transaction: commonTransaction,
-        signers: commonSigners,
+        transaction,
+        signers: [],
         focusPopup: true,
       })
 
@@ -69,7 +70,7 @@ export const withdrawFarmed = async ({
     } catch (e) {
       console.log('end farming catch error', e)
 
-      if (e.message.includes('cancelled')) {
+      if (isCancelledTransactionError(e)) {
         return 'cancelled'
       }
     }
@@ -80,6 +81,8 @@ export const withdrawFarmed = async ({
   // check farmed for every ticket and withdrawFarmed for every farming state
   for (let ticketData of farmingTickets) {
     for (let i = 0; i < pool.farming.length; i++) {
+      let commonTransaction = new Transaction()
+
       const farmingState = pool.farming[i]
 
       // find amount to claim for this farming state in tickets amounts
@@ -123,38 +126,48 @@ export const withdrawFarmed = async ({
         commonTransaction.add(createAccountTransaction)
       }
 
-      const endFarmingTransaction = await program.instruction.withdrawFarmed({
-        accounts: {
-          pool: poolPublicKey,
-          farmingState: new PublicKey(farmingState.farmingState),
-          farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
-          farmingTicket: new PublicKey(ticketData.farmingTicket),
-          farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
-          poolSigner: vaultSigner,
-          userFarmingTokenAccount,
-          userKey: wallet.publicKey,
-          userSolAccount: wallet.publicKey,
-          tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-          clock: SYSVAR_CLOCK_PUBKEY,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
+      const withdrawFarmedTransaction = await program.instruction.withdrawFarmed(
+        new BN(NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION),
+        {
+          accounts: {
+            pool: poolPublicKey,
+            farmingState: new PublicKey(farmingState.farmingState),
+            farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
+            farmingTicket: new PublicKey(ticketData.farmingTicket),
+            farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
+            poolSigner: vaultSigner,
+            userFarmingTokenAccount,
+            userKey: wallet.publicKey,
+            userSolAccount: wallet.publicKey,
+            tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+            clock: SYSVAR_CLOCK_PUBKEY,
+            rent: SYSVAR_RENT_PUBKEY,
+          },
+        }
+      )
+
+      commonTransaction.add(withdrawFarmedTransaction)
+
+      // get number of snapshots, get number of iterations, send transaction n times
+      const unclaimedSnapshots = getSnapshotsWithUnclaimedRewards({
+        ticket: ticketData,
+        farmingState,
+        snapshotQueues,
       })
 
-      commonTransaction.add(endFarmingTransaction)
+      const iterations = Math.ceil(
+        unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
+      )
 
-      if (commonTransaction.instructions.length > 5) {
-        const result = await sendPartOfTransactions()
+      for (let i = 1; i <= iterations; i++) {
+        const result = await sendPartOfTransactions(commonTransaction)
+
+        // reset create account, leave only withdrawFarmed for all transactions except first
+        commonTransaction = new Transaction().add(withdrawFarmedTransaction)
         if (result !== 'success') {
           return result
         }
       }
-    }
-  }
-
-  if (commonTransaction.instructions.length > 0) {
-    const result = await sendPartOfTransactions()
-    if (result !== 'success') {
-      return result
     }
   }
 

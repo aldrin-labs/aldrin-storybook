@@ -206,7 +206,7 @@ export const Balances = ({
     } catch (e) {
       console.log('onSettleFunds e', e)
       notify({
-        message: 'Error settling funds',
+        message: 'Insufficient SOL balance for settling.',
         description: e.message,
         type: 'error',
       })

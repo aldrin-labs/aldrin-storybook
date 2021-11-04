@@ -45,6 +45,7 @@ const AllPoolsTableComponent = ({
   setIsWithdrawalPopupOpen,
   setIsStakePopupOpen,
   setIsUnstakePopupOpen,
+  setIsClaimRewardsPopupOpen,
 }: {
   theme: Theme
   searchValue: string
@@ -65,6 +66,7 @@ const AllPoolsTableComponent = ({
   setIsWithdrawalPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
+  setIsClaimRewardsPopupOpen: (value: boolean) => void
 }) => {
   const [expandedRows, expandRows] = useState<string[]>([])
 
@@ -106,6 +108,7 @@ const AllPoolsTableComponent = ({
     setIsWithdrawalPopupOpen,
     setIsStakePopupOpen,
     setIsUnstakePopupOpen,
+    setIsClaimRewardsPopupOpen,
   })
 
   return (

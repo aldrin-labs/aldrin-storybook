@@ -13,6 +13,7 @@ import { sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
+import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 
 export const endFarming = async ({
   wallet,
@@ -75,7 +76,7 @@ export const endFarming = async ({
     } catch (e) {
       console.log('end farming catch error', e)
 
-      if (e.message.includes('cancelled')) {
+      if (isCancelledTransactionError(e)) {
         return 'cancelled'
       }
     }
