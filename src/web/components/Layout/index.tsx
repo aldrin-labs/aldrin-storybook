@@ -48,7 +48,7 @@ export const WideContent = styled(Content)`
     margin: 0 10px;
   }
   @media (min-width: ${BREAKPOINTS.xxl}) {
-    max-width: ${BREAKPOINTS.xxl};
+    max-width: 90%;
     margin: 0 auto;
   }
 `
