@@ -13,7 +13,12 @@ import {
 
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { createTokenAccountTransaction, sendTransaction } from '../send'
+import {
+  createTokenAccountTransaction,
+  sendSignedTransaction,
+  sendTransaction,
+  signTransactions,
+} from '../send'
 import { WalletAdapter } from '../types'
 import { FarmingTicket, SnapshotQueue } from '../common/types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
@@ -52,31 +57,7 @@ export const withdrawFarmed = async ({
   )
 
   const createdTokensMap = new Map()
-  let tx = null
-
-  const sendPartOfTransactions = async (transaction: Transaction) => {
-    try {
-      tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction,
-        signers: [],
-        focusPopup: true,
-      })
-
-      if (!tx) {
-        return 'failed'
-      }
-    } catch (e) {
-      console.log('end farming catch error', e)
-
-      if (isCancelledTransactionError(e)) {
-        return 'cancelled'
-      }
-    }
-
-    return 'success'
-  }
+  const transactionsAndSigners = []
 
   // check farmed for every ticket and withdrawFarmed for every farming state
   for (let ticketData of farmingTickets) {
@@ -160,14 +141,36 @@ export const withdrawFarmed = async ({
       )
 
       for (let i = 1; i <= iterations; i++) {
-        const result = await sendPartOfTransactions(commonTransaction)
+        transactionsAndSigners.push({ transaction: commonTransaction })
 
         // reset create account, leave only withdrawFarmed for all transactions except first
         commonTransaction = new Transaction().add(withdrawFarmedTransaction)
-        if (result !== 'success') {
-          return result
-        }
       }
+    }
+  }
+
+  try {
+    const signedTransactions = await signTransactions({
+      wallet,
+      connection,
+      transactionsAndSigners,
+    })
+
+    if (!signedTransactions) {
+      return 'failed'
+    }
+
+    for (let signedTransaction of signedTransactions) {
+      const result = await sendSignedTransaction({
+        transaction: signedTransaction,
+        connection,
+      })
+    }
+  } catch (e) {
+    console.log('end farming catch error', e)
+
+    if (isCancelledTransactionError(e)) {
+      return 'cancelled'
     }
   }
 
