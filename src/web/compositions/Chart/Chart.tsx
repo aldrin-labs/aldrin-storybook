@@ -160,7 +160,7 @@ function ChartPageComponent(props: any) {
     const allMarkets = [...updatedMarkets, ...userMarkets]
 
     const selectedMarketFromUrl = allMarkets.find(
-      (el) => el.name.replace('_', '/') === pair.replace('_', '/')
+      (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
     )
 
     if (!selectedMarketFromUrl) {
@@ -169,11 +169,11 @@ function ChartPageComponent(props: any) {
     }
 
     const isCustomUsersMarket = updatedMarkets?.find(
-      (el) => el.name.replace('_', '/') === pair.replace('_', '/')
+      (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
     )
 
     const isPublicUsersMarket = userMarkets?.find(
-      (el) => el.name.replace('_', '/') === pair.replace('_', '/')
+      (el) => el.name.replaceAll('_', '/') === pair.replaceAll('_', '/')
     )
 
     if (isPublicUsersMarket !== undefined && !isCustomUsersMarket) {

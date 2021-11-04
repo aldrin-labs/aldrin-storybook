@@ -115,7 +115,7 @@ export function useAllMarketsList(): MarketsMap {
   const officialMarkets = [...serumMarkets, ...awesomeMarkets]
 
   officialMarkets?.forEach((market: RawMarketData) => {
-    const marketName = market.name.replace('/', '_')
+    const marketName = market.name.replaceAll('/', '_')
     allMarketsMapByName.set(marketName, { ...market, name: marketName })
     allMarketsMapById.set(market.address.toString(), {
       ...market,
@@ -124,7 +124,7 @@ export function useAllMarketsList(): MarketsMap {
   })
 
   const usersMarkets = customMarkets.filter((market: RawCustomMarketData) => {
-    const marketName = market.name.replace('/', '_')
+    const marketName = market.name.replaceAll('/', '_')
     const isCustomMarketAlreadyExistInOfficial = allMarketsMapById.has(
       market.address
     )
@@ -137,7 +137,7 @@ export function useAllMarketsList(): MarketsMap {
   })
 
   usersMarkets?.forEach((market: RawMarketData) => {
-    const marketName = market.name.replace('/', '_')
+    const marketName = market.name.replaceAll('/', '_')
 
     allMarketsMapByName.set(marketName, {
       ...market,
@@ -385,7 +385,7 @@ const getPairFromLocation = () => {
   }
 
   // we have pairs in format base/quote in array
-  return pair.replace('_', '/')
+  return pair.replaceAll('_', '/')
 }
 
 export function MarketProvider({ children }) {
