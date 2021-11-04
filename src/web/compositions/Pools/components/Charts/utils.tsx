@@ -39,7 +39,7 @@ const CHART_HEIGHT = 220
 interface ChartParams<T = { date: number, vol?: number }[]> {
   chart: Chart | null
   data: T
-  container: HTMLCanvasElement
+  container: HTMLCanvasElement | null
 }
 
 const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
@@ -146,8 +146,10 @@ const createTotalVolumeLockedChart = ({
   data,
   chart
 }: ChartParams) => {
-  container.height = CHART_HEIGHT
-  const ctx = container.getContext('2d')
+  if (container) {
+    container.height = CHART_HEIGHT
+  }
+  const ctx = container?.getContext('2d')
 
   if (!ctx) {
     throw Error('Not a canvas:')
@@ -198,14 +200,14 @@ const createTradingVolumeChart = ({
   container,
   data,
 }: ChartParams) => {
-  const ctx = container.getContext('2d')
+  const ctx = container?.getContext('2d')
 
   if (!ctx) {
     throw Error('Not a canvas:')
   }
-
-  container.height = CHART_HEIGHT
-
+  if (container) {
+    container.height = CHART_HEIGHT
+  }
   const transformedData = getEmptyData()
     .map((value) => ({
       ...value,
@@ -221,7 +223,7 @@ const createTradingVolumeChart = ({
   if (chart) {
     chart.destroy()
   }
-  chart = chart || createChart(ctx, 'bar')
+  chart = createChart(ctx, 'bar')
   chart.data = {
     labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
     datasets: [

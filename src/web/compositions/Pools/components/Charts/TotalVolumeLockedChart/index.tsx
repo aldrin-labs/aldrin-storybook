@@ -42,11 +42,22 @@ const Chart = ({
         return null
       }
     }
-    chartRef.current = createTotalVolumeLockedChart({
-      container: canvasRef.current,
-      data,
-      chart: chartRef.current
-    })
+    const reDraw = () => {
+      try {
+        chartRef.current = createTotalVolumeLockedChart({
+          container: canvasRef.current,
+          data,
+          chart: chartRef.current,
+        })
+      } catch (e) {
+        console.warn('Erorr on chart update:', e)
+        chartRef.current = null
+        setTimeout(reDraw, 1_000)
+      }
+    }
+
+    reDraw()
+
 
     return () => chartRef.current?.destroy()
   }, [JSON.stringify(data)])
@@ -82,6 +93,7 @@ export const TotalVolumeLockedChart = compose(
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
-    pollInterval: 60000 * getRandomInt(1, 3),
+    // pollInterval: 60000 * getRandomInt(1, 3),
+    pollInterval: 6000,
   })
 )(Chart)

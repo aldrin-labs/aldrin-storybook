@@ -15,7 +15,7 @@ import { compose } from 'recompose'
 import { Line } from '../../Popups/index.styles'
 import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
 import { Canvas, SubTitle, TitleContainer } from '../styles'
-import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW} from '../utils'
+import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from '../utils'
 
 
 const ChartBlock = ({
@@ -42,11 +42,23 @@ const ChartBlock = ({
         return null
       }
     }
-    chartRef.current = createTradingVolumeChart({
-      container: canvasRef.current,
-      data,
-      chart: chartRef.current,
-    })
+
+    const reDraw = () => {
+      try {
+        chartRef.current = createTradingVolumeChart({
+          container: canvasRef.current,
+          data,
+          chart: chartRef.current,
+        })
+      } catch (e) {
+        console.warn('Erorr on chart update:', e)
+        chartRef.current = null
+        setTimeout(reDraw, 1_000)
+      }
+    }
+
+    reDraw()
+
 
     return () => chartRef.current?.destroy()
   }, [JSON.stringify(data)])
