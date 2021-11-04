@@ -502,40 +502,31 @@ export const TablesDetails = ({
                   )
                 })}
               </RowDataTdText>
-              <DarkTooltip
-                title={
-                  'Rewards withdrawal has been suspended due to maintenance. The reward continues to accrue. You will be able to withdraw all the rewards you have received in a couple of days.'
+
+              <Button
+                theme={theme}
+                btnWidth={'16rem'}
+                color={
+                  hasStakedTokens || hasTokensToClaim
+                    ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+                    : '#651CE4'
                 }
+                disabled={
+                  // true ||
+                  (hasStakedTokens && !hasTokensToClaim) ||
+                  isPoolWaitingForUpdateAfterClaim
+                }
+                onClick={() => {
+                  selectPool(pool)
+                  setIsClaimRewardsPopupOpen(true)
+                }}
               >
-                <span>
-                  <Button
-                    theme={theme}
-                    btnWidth={'16rem'}
-                    color={
-                      hasStakedTokens || hasTokensToClaim
-                        ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-                        : '#651CE4'
-                    }
-                    disabled={
-                      // true ||
-                      (hasStakedTokens && !hasTokensToClaim) ||
-                      isPoolWaitingForUpdateAfterClaim
-                    }
-                    onClick={() => {
-                      selectPool(pool)
-                      setIsClaimRewardsPopupOpen(true)
-                    }}
-                  >
-                    {isPoolWaitingForUpdateAfterClaim ? (
-                      <Loader />
-                    ) : (
-                      <span style={{ display: 'flex' }}>
-                        Claim reward
-                      </span>
-                    )}
-                  </Button>
-                </span>
-              </DarkTooltip>
+                {isPoolWaitingForUpdateAfterClaim ? (
+                  <Loader />
+                ) : (
+                  <span style={{ display: 'flex' }}>Claim reward</span>
+                )}
+              </Button>
             </Row>
           ) : hasPoolTokens && !hasStakedTokens ? (
             <Row direction="column" width="55%" align="flex-end">
