@@ -93,7 +93,6 @@ export const TotalVolumeLockedChart = compose(
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
-    // pollInterval: 60000 * getRandomInt(1, 3),
-    pollInterval: 6000,
+    pollInterval: 60000 * getRandomInt(1, 3),
   })
 )(Chart)
