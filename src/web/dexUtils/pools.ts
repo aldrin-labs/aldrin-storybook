@@ -26,6 +26,7 @@ import { notify } from './notifications'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { DEX_PID } from '@core/config/dex'
 import { MARKET_STATE_LAYOUT_V3 } from '@project-serum/serum'
+import BN from 'bn.js'
 
 const OWNER: PublicKey = new PublicKey(
   '5rWKzCUY9ESdmobivjyjQzvdfHSePf37WouX39sMmfx9'
@@ -1012,7 +1013,7 @@ export const getMaxWithdrawAmount = async ({
   quotePoolTokenPublicKey: PublicKey
   poolPublicKey: PublicKey
   poolTokenAmount: number
-}): Promise<[number, number, number, number]> => {
+}): Promise<[number, number]> => {
   const poolToken = new Token(
     wallet,
     connection,
@@ -1021,7 +1022,7 @@ export const getMaxWithdrawAmount = async ({
   )
 
   const poolMintInfo = await poolToken.getMintInfo()
-  const supply = poolMintInfo.supply.toNumber()
+  const supply = poolMintInfo.supply
 
   const basePoolToken = new Token(
     wallet,
@@ -1032,7 +1033,7 @@ export const getMaxWithdrawAmount = async ({
   const basePoolTokenInfo = await basePoolToken.getAccountInfo(
     basePoolTokenPublicKey
   )
-  const basePoolTokenAmount = basePoolTokenInfo.amount.toNumber()
+  const basePoolTokenAmount = basePoolTokenInfo.amount
 
   const quotePoolToken = new Token(
     wallet,
@@ -1043,16 +1044,14 @@ export const getMaxWithdrawAmount = async ({
   const quotePoolTokenInfo = await quotePoolToken.getAccountInfo(
     quotePoolTokenPublicKey
   )
-  const quotePoolTokenAmount = quotePoolTokenInfo.amount.toNumber()
+  const quotePoolTokenAmount = quotePoolTokenInfo.amount
 
-  const withdrawAmountTokenA = (basePoolTokenAmount * poolTokenAmount) / supply
-  const withdrawAmountTokenB = (quotePoolTokenAmount * poolTokenAmount) / supply
+  const withdrawAmountTokenA = (basePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply).toNumber()
+  const withdrawAmountTokenB = (quotePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply).toNumber()
 
   return [
     withdrawAmountTokenA,
     withdrawAmountTokenB,
-    basePoolTokenAmount,
-    quotePoolTokenAmount,
   ]
 }
 
