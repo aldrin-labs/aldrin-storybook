@@ -9,7 +9,7 @@ import {
 
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
+import { isTransactionFailed, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
@@ -70,7 +70,7 @@ export const endFarming = async ({
         focusPopup: true,
       })
 
-      if (!tx) {
+      if (isTransactionFailed(tx)) {
         return 'failed'
       }
     } catch (e) {
