@@ -2,7 +2,7 @@ import { MASTER_BUILD } from '@core/utils/config'
 
 export const POOLS_PROGRAM_ADDRESS = MASTER_BUILD
   ? process.env.POOLS_PROGRAM_ADDRESS
-  : 'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
+  : 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
 
 export const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'

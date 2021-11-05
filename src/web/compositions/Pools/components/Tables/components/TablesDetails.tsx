@@ -169,6 +169,10 @@ export const TablesDetails = ({
   const isPoolWaitingForUpdateAfterClaim =
     isPoolWaitingForUpdateAfterOperation && operation === 'claim'
 
+  const disableRewards =
+    pool.swapToken !== 'Hv5F48Br7dbZvUpKFuyxxuaC4v95C1uyDGhdkFFCc9Gf' &&
+    pool.swapToken !== '6sKC96Z35vCNcDmA3ZbBd9Syx5gnTJdyNKVEdzpBE5uX'
+
   return (
     <RowContainer
       height="12rem"
@@ -522,25 +526,75 @@ export const TablesDetails = ({
                         : '#651CE4'
                     }
                     disabled={
-                      true ||
+                      disableRewards ||
                       (hasStakedTokens && !hasTokensToClaim) ||
                       isPoolWaitingForUpdateAfterClaim
                     }
-                    onClick={() => {
-                      selectPool(pool)
-                      setIsClaimRewardsPopupOpen(true)
+                    onClick={async () => {
+                      // selectPool(pool)
+                      // setIsClaimRewardsPopupOpen(true)
+                      setPoolWaitingForUpdateAfterOperation({
+                        pool: pool.swapToken,
+                        operation: 'claim',
+                      })
+
+                      const clearPoolWaitingForUpdate = () =>
+                        setPoolWaitingForUpdateAfterOperation({
+                          pool: '',
+                          operation: '',
+                        })
+
+                      try {
+                        const result = await withdrawFarmed({
+                          wallet,
+                          connection,
+                          pool,
+                          allTokensData,
+                          farmingTickets,
+                        })
+
+                        notify({
+                          type: result === 'success' ? 'success' : 'error',
+                          message:
+                            result === 'success'
+                              ? 'Successfully claimed rewards.'
+                              : result === 'failed'
+                              ? 'Claim rewards failed, please try again later or contact us in telegram.'
+                              : 'Claim rewards cancelled.',
+                        })
+
+                        if (result !== 'success') {
+                          clearPoolWaitingForUpdate()
+                        } else {
+                          setTimeout(async () => {
+                            refreshTokensWithFarmingTickets()
+                            clearPoolWaitingForUpdate()
+                          }, 7500)
+
+                          setTimeout(
+                            () => refreshTokensWithFarmingTickets(),
+                            15000
+                          )
+                        }
+                      } catch (e) {
+                        clearPoolWaitingForUpdate()
+
+                        return
+                      }
                     }}
                   >
                     {isPoolWaitingForUpdateAfterClaim ? (
                       <Loader />
                     ) : (
                       <>
-                        <SvgIcon
-                          src={WhiteTech}
-                          width={'1.5rem'}
-                          height={'1.5rem'}
-                          style={{ marginRight: '1.5rem' }}
-                        />
+                        {disableRewards && (
+                          <SvgIcon
+                            src={WhiteTech}
+                            width={'1.5rem'}
+                            height={'1.5rem'}
+                            style={{ marginRight: '1.5rem' }}
+                          />
+                        )}
                         <span style={{ display: 'flex' }}>Claim reward</span>
                       </>
                     )}
