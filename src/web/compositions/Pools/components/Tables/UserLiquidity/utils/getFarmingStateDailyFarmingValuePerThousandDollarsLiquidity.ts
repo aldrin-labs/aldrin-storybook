@@ -1,23 +1,15 @@
-import { dayDuration } from '@core/utils/dateUtils'
 import { FarmingState } from '@sb/dexUtils/common/types'
+import { getFarmingStateDailyFarmingValue } from './getFarmingStateDailyFarmingValue'
 
-export const getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity = ({
-  farmingState,
-  totalStakedLpTokensUSD,
-}: {
+export const getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity = (params: {
   farmingState?: FarmingState
   totalStakedLpTokensUSD?: number
 }) => {
-  if (!farmingState || !totalStakedLpTokensUSD) return 0
+  const { totalStakedLpTokensUSD } = params
 
-  const tokensPerPeriod =
-    farmingState.tokensPerPeriod / 10 ** farmingState.farmingTokenMintDecimals
+  if (!totalStakedLpTokensUSD) {
+    return 0
+  }
 
-  const dailyFarmingValue =
-    tokensPerPeriod * (dayDuration / farmingState.periodLength)
-
-  const dailyFarmingValuePerThousandDollarsLiquidity =
-    dailyFarmingValue * (1000 / totalStakedLpTokensUSD)
-
-  return dailyFarmingValuePerThousandDollarsLiquidity
+  return getFarmingStateDailyFarmingValue(params) / totalStakedLpTokensUSD * 1000
 }

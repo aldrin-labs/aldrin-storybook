@@ -440,7 +440,7 @@ export const TablesDetails = ({
               <RowDataTdText
                 theme={theme}
                 fontFamily={'Avenir Next Medium'}
-                style={{ marginBottom: '3.5rem' }}
+                style={{ marginBottom: '3.5rem', maxWidth: '100%', overflow: 'hidden' }}
               >
                 {/* TODO: return later vesting with few farming states */}
                 {/* {farmingState.vestingPeriod > 0 && (

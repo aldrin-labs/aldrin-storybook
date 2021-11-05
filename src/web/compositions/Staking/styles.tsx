@@ -24,17 +24,9 @@ export const StyledTextDiv = styled.div`
     min-width: 360px;
   }
 `
-export const RoundInput = styled.input`
-  background: #383b45;
-  border: 0.1rem solid #3a475c;
-  border-radius: 3rem;
-  width: 100%;
-  height: 5rem;
-  outline: none;
-`
 
 export const RootRow = styled(Row)`
-  margin: 50px 0;
+  margin: 40px 0;
 `
 
 export const RewardsStats = styled(StretchedBlock)`

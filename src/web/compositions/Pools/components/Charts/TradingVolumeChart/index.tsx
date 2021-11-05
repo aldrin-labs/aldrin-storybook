@@ -1,33 +1,24 @@
-import React, { useEffect } from 'react'
-import { compose } from 'recompose'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { Theme } from '@material-ui/core'
-
-import {
-  WhiteTitle,
-  HeaderContainer,
-  Row,
-  ChartContainer,
-  RowContainer,
-} from '@sb/compositions/AnalyticsRoute/index.styles'
-
-import { createTradingVolumeChart } from '../utils'
 import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
+import { msToNextHour } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
+import { Theme } from '@material-ui/core'
+import { Block, BlockContent } from '@sb/components/Block'
 import {
   dayDuration,
   endOfDayTimestamp,
-  getTimezone,
+  getTimezone
 } from '@sb/compositions/AnalyticsRoute/components/utils'
-
-import dayjs from 'dayjs'
+import { Chart } from 'chart.js'
+import React, { useEffect, useRef } from 'react'
+import { compose } from 'recompose'
 import { Line } from '../../Popups/index.styles'
-import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
-import { estimatedTime, msToNextHour } from '@core/utils/dateUtils'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
-import { getRandomInt } from '@core/utils/helpers'
+import { Canvas, SubTitle, TitleContainer } from '../styles'
+import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from '../utils'
 
-const TradingVolumeChart = ({
+
+const ChartBlock = ({
   theme,
   id,
   title,
@@ -38,57 +29,71 @@ const TradingVolumeChart = ({
   title: string
   getTradingVolumeHistoryQuery: any
 }) => {
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const chartRef = useRef<Chart | null>(null)
+
+
   const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
 
   useEffect(() => {
-    createTradingVolumeChart({
-      theme,
-      id,
-      data: [...data].sort((a, b) => {
-        return dayjs(a.date).unix() - dayjs(b.date).unix()
-      }),
-    })
+    if (!canvasRef.current) {
+      return () => {
+        return null
+      }
+    }
 
-    // @ts-ignore - we set it in create chart function above
-    return () => window[`TradingVolumeChart-${id}`].destroy()
-  }, [id, JSON.stringify(data)])
+    const reDraw = () => {
+      try {
+        chartRef.current = createTradingVolumeChart({
+          container: canvasRef.current,
+          data,
+          chart: chartRef.current,
+        })
+      } catch (e) {
+        console.warn('Erorr on chart update:', e)
+        chartRef.current = null
+        setTimeout(reDraw, 1_000)
+      }
+    }
+
+    reDraw()
+
+
+    return () => chartRef.current?.destroy()
+  }, [JSON.stringify(data)])
+
 
   return (
-    <>
-      <HeaderContainer theme={theme} justify={'space-between'}>
-        <RowContainer margin={'0 2rem 0 2rem'} style={{ flexWrap: 'nowrap' }}>
-          <WhiteTitle
-            style={{ marginRight: '2rem' }}
-            theme={theme}
-            color={theme.palette.white.text}
-          >
-            {title}
-          </WhiteTitle>
+    <Block>
+      <BlockContent>
+        <TitleContainer>
+          <SubTitle>Trading Volume</SubTitle>
           <Line />
           <ReloadTimerTillUpdate
             duration={3600}
             margin={'0 0 0 2rem'}
             getSecondsTillNextUpdate={() => msToNextHour() / 1000}
           />
-        </RowContainer>
-      </HeaderContainer>
-      <ChartContainer>
-        <canvas id="TradingVolumeChart"></canvas>
-      </ChartContainer>
-    </>
+        </TitleContainer>
+        <div>
+          <Canvas ref={canvasRef}></Canvas>
+        </div>
+      </BlockContent>
+    </Block>
   )
 }
 
-export default compose(
+export const TradingVolumeChart = compose(
   queryRendererHoc({
     query: getTradingVolumeHistory,
     name: 'getTradingVolumeHistoryQuery',
     variables: {
       timezone: getTimezone(),
-      timestampFrom: endOfDayTimestamp() - dayDuration * 6,
+      timestampFrom: endOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
   })
-)(TradingVolumeChart)
+)(ChartBlock)

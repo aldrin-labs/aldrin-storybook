@@ -6,6 +6,8 @@ import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
 import { BlockTemplate } from './index.styles'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { Page, Content, Row, Cell, WideContent } from '@sb/components/Layout'
+import { RootRow } from './components/Charts/styles'
 
 
 const Pools = ({ theme }: { theme: Theme }) => {
@@ -19,45 +21,24 @@ const Pools = ({ theme }: { theme: Theme }) => {
   }, [])
 
   return (
-    <RowContainer
-      direction={'column'}
-      padding={'2rem 13rem'}
-      justify={'flex-start'}
-      style={{
-        background: theme.palette.grey.additional,
-        minHeight: '100%',
-        overflow: 'scroll',
-        flexWrap: 'nowrap',
-      }}
-    >
-      <RowContainer justify={'space-between'}>
-        <BlockTemplate
-          theme={theme}
-          width={'calc(50% - 1rem)'}
-          height={'30rem'}
-          style={{ position: 'relative' }}
-        >
-          <TotalVolumeLockedChart theme={theme} />
-        </BlockTemplate>
-        <BlockTemplate
-          theme={theme}
-          width={'calc(50% - 1rem)'}
-          height={'30rem'}
-          style={{ position: 'relative' }}
-        >
-          <TradingVolumeChart theme={theme} />
-        </BlockTemplate>
-      </RowContainer>
+    <Page>
+      <WideContent>
+        <RootRow>
+          <Cell col={12} colLg={6}>
+            <TotalVolumeLockedChart />
 
-      <TablesSwitcher theme={theme} />
-
-      {/* <WarningPopup
-        theme={theme}
-        open={isWarningPopupOpen}
-        onClose={() => openWarningPopup(false)}
-        isPoolsPage={true}
-      /> */}
-    </RowContainer>
+          </Cell>
+          <Cell col={12} colLg={6}>
+            <TradingVolumeChart />
+          </Cell>
+        </RootRow>
+        <RootRow>
+          <Cell col={12}>
+            <TablesSwitcher theme={theme} />
+          </Cell>
+        </RootRow>
+      </WideContent>
+    </Page>
   )
 }
 
