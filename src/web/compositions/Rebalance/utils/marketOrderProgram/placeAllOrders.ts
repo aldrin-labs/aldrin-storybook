@@ -6,7 +6,7 @@ import {
   createSOLAccountAndClose,
   transferSOLToWrappedAccountAndClose,
 } from '@sb/dexUtils/pools'
-import { sendTransaction } from '@sb/dexUtils/send'
+import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
 import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 import { TokensMapType, TransactionType } from '../../Rebalance.types'
@@ -48,7 +48,7 @@ export const placeAllOrders = async ({
         focusPopup: true,
       })
 
-      if (!result) {
+      if (isTransactionFailed(result)) {
         throw Error('Error confirming transaction in rebalance')
       }
 

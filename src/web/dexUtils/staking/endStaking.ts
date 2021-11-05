@@ -10,7 +10,7 @@ import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { FarmingTicket } from '../common/types'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
+import { isTransactionFailed, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { StakingPool } from './types'
 
@@ -60,7 +60,7 @@ export const endStaking = async (params: EndstakingParams) => {
         focusPopup: true,
       })
 
-      if (!tx) {
+      if (isTransactionFailed(tx)) {
         return 'failed'
       }
     } catch (e) {

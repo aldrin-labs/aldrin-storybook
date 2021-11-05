@@ -40,9 +40,9 @@ export const getSnapshotsWithUnclaimedRewards = ({
 
   return snapshotQueue.snapshots.filter((snapshot) => {
     return (
-      snapshot.time >= +ticket.startTime &&
-      snapshot.time <= +ticket.endTime &&
-      (!stateAttached || snapshot.time >= stateAttached?.lastVestedWithdrawTime)
+      snapshot.time > +ticket.startTime &&
+      snapshot.time < +ticket.endTime &&
+      (!stateAttached || snapshot.time > stateAttached?.lastVestedWithdrawTime)
     )
   })
 }

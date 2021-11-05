@@ -88,7 +88,7 @@ export const startStaking = async (params: StartStakingParams) => {
         focusPopup: true,
       })
 
-      if (tx) {
+      if (!isTransactionFailed(tx)) {
         return 'success'
       } else {
         counter++
