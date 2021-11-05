@@ -12,7 +12,11 @@ import {
 import { transferSOLToWrappedAccountAndClose } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '../send'
+import {
+  createTokenAccountTransaction,
+  isTransactionFailed,
+  sendTransaction,
+} from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
@@ -66,7 +70,7 @@ export async function createBasket({
   const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
 
   const poolMintInfo = await poolToken.getMintInfo()
-  const supply = poolMintInfo.supply.toNumber()
+  const supply = poolMintInfo.supply
 
   const tokenMintA = new Token(
     wallet,
@@ -76,17 +80,17 @@ export async function createBasket({
   )
 
   const poolTokenA = await tokenMintA.getAccountInfo(baseTokenVault)
-  const poolTokenAmountA = poolTokenA.amount.toNumber()
+  const poolTokenAmountA = poolTokenA.amount
 
-  let poolTokenAmount = Math.floor(
-    (supply * userBaseTokenAmount) / poolTokenAmountA
-  )
-
-  poolTokenAmount *= 0.99
+  let poolTokenAmount = supply
+    .mul(new BN(userBaseTokenAmount))
+    .div(poolTokenAmountA)
+    .div(new BN(100))
+    .mul(new BN(99))
 
   // first deposit
-  if (supply === 0) {
-    poolTokenAmount = 1 * 10 ** 8
+  if (supply.eq(new BN(0))) {
+    poolTokenAmount = new BN(1 * 10 ** 8)
   }
 
   const transactionBeforeDeposit = new Transaction()
@@ -153,7 +157,7 @@ export async function createBasket({
 
   try {
     const createBasketTransaction = await program.instruction.createBasket(
-      new BN(poolTokenAmount),
+      poolTokenAmount,
       new BN(userBaseTokenAmount),
       new BN(userQuoteTokenAmount),
       {
