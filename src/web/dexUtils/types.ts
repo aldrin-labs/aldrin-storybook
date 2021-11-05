@@ -100,17 +100,23 @@ export interface AmendOrderParams {
   openOrdersAccount: OpenOrders
 }
 
-export interface SendTransactionParams {
-  transaction: Transaction
+export interface SendTransactionParams extends SendSignedTransactionParams {
   wallet: WalletAdapter
   signers: (Account | Keypair)[]
+  focusPopup?: boolean
+}
+
+export interface SendSignedTransactionParams {
+  transaction: Transaction
   connection: Connection
   sentMessage?: string
   successMessage?: string
   timeout?: number
   operationType?: string
   params?: any
-  focusPopup?: boolean
 }
+
+export type SendSignedTransactionResult = 'failed' | 'timeout' | string
+export type AsyncSendSignedTransactionResult = Promise<SendSignedTransactionResult>
 
 export type Maybe<T> = T | undefined

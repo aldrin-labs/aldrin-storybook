@@ -36,6 +36,7 @@ const UserLiquidityTableComponent = ({
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
   setIsUnstakePopupOpen,
+  setIsClaimRewardsPopupOpen,
 }: {
   theme: Theme
   searchValue: string
@@ -52,6 +53,7 @@ const UserLiquidityTableComponent = ({
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
+  setIsClaimRewardsPopupOpen: (value: boolean) => void
 }) => {
   const [expandedRows, expandRows] = useState([])
 
@@ -81,6 +83,7 @@ const UserLiquidityTableComponent = ({
     setIsAddLiquidityPopupOpen,
     setIsStakePopupOpen,
     setIsUnstakePopupOpen,
+    setIsClaimRewardsPopupOpen,
     setPoolWaitingForUpdateAfterOperation,
   })
 
@@ -103,7 +106,7 @@ const UserLiquidityTableComponent = ({
           backgroundColor: '#222429',
         }}
         defaultSort={{
-          sortColumn: 'apy',
+          sortColumn: 'tvl',
           sortDirection: 'desc',
         }}
         withCheckboxes={false}

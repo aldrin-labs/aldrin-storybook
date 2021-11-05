@@ -12,9 +12,10 @@ import {
 import { transferSOLToWrappedAccountAndClose } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { createTokenAccountTransaction, sendTransaction } from '../send'
+import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
+import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -185,16 +186,16 @@ export async function createBasket({
       focusPopup: true,
     })
 
-    if (tx) {
-      return 'success'
+    if (isTransactionFailed(tx)) {
+      return 'failed'
     }
   } catch (e) {
     console.log('deposit catch error', e)
 
-    if (e.message.includes('cancelled')) {
+    if (isCancelledTransactionError(e)) {
       return 'cancelled'
     }
   }
 
-  return 'failed'
+  return 'success'
 }

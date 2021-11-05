@@ -59,6 +59,7 @@ export const TablesDetails = ({
   setIsAddLiquidityPopupOpen,
   setIsStakePopupOpen,
   setIsUnstakePopupOpen,
+  setIsClaimRewardsPopupOpen,
 }: {
   theme: Theme
   pool: PoolInfo
@@ -74,6 +75,7 @@ export const TablesDetails = ({
   setIsAddLiquidityPopupOpen: (value: boolean) => void
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
+  setIsClaimRewardsPopupOpen: (value: boolean) => void
 }) => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] = useState(
     false
@@ -166,6 +168,10 @@ export const TablesDetails = ({
 
   const isPoolWaitingForUpdateAfterClaim =
     isPoolWaitingForUpdateAfterOperation && operation === 'claim'
+
+  const disableRewards =
+    pool.swapToken !== 'Hv5F48Br7dbZvUpKFuyxxuaC4v95C1uyDGhdkFFCc9Gf' &&
+    pool.swapToken !== '6sKC96Z35vCNcDmA3ZbBd9Syx5gnTJdyNKVEdzpBE5uX'
 
   return (
     <RowContainer
@@ -438,7 +444,11 @@ export const TablesDetails = ({
               <RowDataTdText
                 theme={theme}
                 fontFamily={'Avenir Next Medium'}
-                style={{ marginBottom: '3.5rem' }}
+                style={{
+                  marginBottom: '3.5rem',
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                }}
               >
                 {/* TODO: return later vesting with few farming states */}
                 {/* {farmingState.vestingPeriod > 0 && (
@@ -500,90 +510,95 @@ export const TablesDetails = ({
                   )
                 })}
               </RowDataTdText>
+
               <DarkTooltip
                 title={
                   'Rewards withdrawal has been suspended due to maintenance. The reward continues to accrue. You will be able to withdraw all the rewards you have received in a couple of days.'
                 }
               >
                 <span>
-                <Button
-                  theme={theme}
-                  btnWidth={'16rem'}
-                  color={
-                    hasStakedTokens || hasTokensToClaim
-                      ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-                      : '#651CE4'
-                  }
-                  disabled={
-                    true ||
-                    (hasStakedTokens && !hasTokensToClaim) ||
-                    isPoolWaitingForUpdateAfterClaim
-                  }
-                  onClick={async () => {
-                    setPoolWaitingForUpdateAfterOperation({
-                      pool: pool.swapToken,
-                      operation: 'claim',
-                    })
-
-                    const clearPoolWaitingForUpdate = () =>
-                      setPoolWaitingForUpdateAfterOperation({
-                        pool: '',
-                        operation: '',
-                      })
-
-                    try {
-                      const result = await withdrawFarmed({
-                        wallet,
-                        connection,
-                        pool,
-                        allTokensData,
-                        farmingTickets,
-                      })
-
-                      notify({
-                        type: result === 'success' ? 'success' : 'error',
-                        message:
-                          result === 'success'
-                            ? 'Successfully claimed rewards.'
-                            : result === 'failed'
-                            ? 'Claim rewards failed, please try again later or contact us in telegram.'
-                            : 'Claim rewards cancelled.',
-                      })
-
-                      if (result !== 'success') {
-                        clearPoolWaitingForUpdate()
-                      } else {
-                        setTimeout(async () => {
-                          refreshTokensWithFarmingTickets()
-                          clearPoolWaitingForUpdate()
-                        }, 7500)
-
-                        setTimeout(
-                          () => refreshTokensWithFarmingTickets(),
-                          15000
-                        )
-                      }
-                    } catch (e) {
-                      clearPoolWaitingForUpdate()
-
-                      return
+                  <Button
+                    theme={theme}
+                    btnWidth={'16rem'}
+                    color={
+                      hasStakedTokens || hasTokensToClaim
+                        ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+                        : '#651CE4'
                     }
-                  }}
-                >
-                  {isPoolWaitingForUpdateAfterClaim ? (
-                    <Loader />
-                  ) : (
-                    <span style={{ display: 'flex' }}>
-                      <SvgIcon
-                        src={WhiteTech}
-                        width={'2rem'}
-                        height={'2rem'}
-                        style={{ marginRight: '1.5rem' }}
-                      />{' '}
-                      Claim reward
-                    </span>
-                  )}
-                </Button>
+                    disabled={
+                      disableRewards ||
+                      (hasStakedTokens && !hasTokensToClaim) ||
+                      isPoolWaitingForUpdateAfterClaim
+                    }
+                    onClick={async () => {
+                      // selectPool(pool)
+                      // setIsClaimRewardsPopupOpen(true)
+                      setPoolWaitingForUpdateAfterOperation({
+                        pool: pool.swapToken,
+                        operation: 'claim',
+                      })
+
+                      const clearPoolWaitingForUpdate = () =>
+                        setPoolWaitingForUpdateAfterOperation({
+                          pool: '',
+                          operation: '',
+                        })
+
+                      try {
+                        const result = await withdrawFarmed({
+                          wallet,
+                          connection,
+                          pool,
+                          allTokensData,
+                          farmingTickets,
+                        })
+
+                        notify({
+                          type: result === 'success' ? 'success' : 'error',
+                          message:
+                            result === 'success'
+                              ? 'Successfully claimed rewards.'
+                              : result === 'failed'
+                              ? 'Claim rewards failed, please try again later or contact us in telegram.'
+                              : 'Claim rewards cancelled.',
+                        })
+
+                        if (result !== 'success') {
+                          clearPoolWaitingForUpdate()
+                        } else {
+                          setTimeout(async () => {
+                            refreshTokensWithFarmingTickets()
+                            clearPoolWaitingForUpdate()
+                          }, 7500)
+
+                          setTimeout(
+                            () => refreshTokensWithFarmingTickets(),
+                            15000
+                          )
+                        }
+                      } catch (e) {
+                        clearPoolWaitingForUpdate()
+
+                        return
+                      }
+                    }}
+                  >
+                    {isPoolWaitingForUpdateAfterClaim ? (
+                      <Loader />
+                    ) : (
+                      <>
+                        {disableRewards && (
+                          <SvgIcon
+                            src={WhiteTech}
+                            width={'1.5rem'}
+                            height={'1.5rem'}
+                            style={{ marginRight: '1.5rem' }}
+                          />
+                        )}
+                        <span style={{ display: 'flex' }}>Claim reward</span>
+                      </>
+                    )}
+                  </Button>
                 </span>
               </DarkTooltip>
             </Row>
@@ -591,7 +606,7 @@ export const TablesDetails = ({
             <Row direction="column" width="55%" align="flex-end">
               <Button
                 theme={theme}
-                btnWidth={'14rem'}
+                btnWidth={'16rem'}
                 padding={'0 2rem'}
                 disabled={isPoolWaitingForUpdateAfterStake}
                 onClick={async () => {

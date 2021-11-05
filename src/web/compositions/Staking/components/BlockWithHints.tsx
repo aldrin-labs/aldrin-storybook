@@ -51,7 +51,7 @@ export const BlockWithHints = () => {
             <StyledLink to="/pools">
               <Text maxWidth="80%" size="sm">
                 You can also deposit your funds in one of the liquidity pools
-                presented here, and farm RIN with by staking the LP tokens you
+                presented here, and farm RIN by staking the LP tokens you
                 receive from providing liquidity. ⟶
               </Text>
             </StyledLink>

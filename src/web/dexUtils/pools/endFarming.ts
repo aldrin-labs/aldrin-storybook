@@ -9,10 +9,11 @@ import {
 
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
+import { isTransactionFailed, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
+import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 
 export const endFarming = async ({
   wallet,
@@ -69,13 +70,13 @@ export const endFarming = async ({
         focusPopup: true,
       })
 
-      if (!tx) {
+      if (isTransactionFailed(tx)) {
         return 'failed'
       }
     } catch (e) {
       console.log('end farming catch error', e)
 
-      if (e.message.includes('cancelled')) {
+      if (isCancelledTransactionError(e)) {
         return 'cancelled'
       }
     }

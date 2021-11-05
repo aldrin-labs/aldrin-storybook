@@ -1,4 +1,4 @@
-import { dayDuration } from '@core/utils/dateUtils'
+import { DAY } from '@core/utils/dateUtils'
 import { FarmingState } from '@sb/dexUtils/common/types'
 
 export const getFarmingStateDailyFarmingValue = ({
@@ -11,10 +11,10 @@ export const getFarmingStateDailyFarmingValue = ({
   if (!farmingState || !totalStakedLpTokensUSD) return 0
 
   const tokensPerPeriod =
-    farmingState.tokensPerPeriod / 10 ** farmingState.farmingTokenMintDecimals
+    farmingState.tokensPerPeriod / (10 ** (farmingState.farmingTokenMintDecimals || 0))
 
   const dailyFarmingValue =
-    tokensPerPeriod * (dayDuration / farmingState.periodLength)
+    tokensPerPeriod * (DAY / farmingState.periodLength)
 
   return dailyFarmingValue
 }

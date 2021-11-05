@@ -42,6 +42,17 @@ export const Content = styled.div`
   }
 `
 
+export const WideContent = styled(Content)`
+  @media (min-width: ${LAYOUT_WIDTH}px) {
+    max-width: none;
+    margin: 0 10px;
+  }
+  @media (min-width: ${BREAKPOINTS.xxl}) {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+`
+
 export const Row = styled.div<RowProps>`
   display: flex;
   flex-direction: row;
@@ -59,27 +70,34 @@ export const Cell = styled.div<CellProps>`
   flex: 0 1 ${(props) => ((props.col || 12) / LAYOUT_COL_NUMBER) * 100}%;
   ${(props) =>
     props.colSm
-      ? `@media(min-width:${BREAKPOINTS.sm}) { flex: 0 1 ${
-          (props.colSm / LAYOUT_COL_NUMBER) * 100
-        }%  }`
+      ? `@media(min-width:${BREAKPOINTS.sm}) { 
+          flex: 0 1 ${(props.colSm / LAYOUT_COL_NUMBER) * 100}%;
+          max-width: ${(props.colSm / LAYOUT_COL_NUMBER) * 100}%;
+        }`
       : ''}
+
   ${(props) =>
     props.colMd
-      ? `@media(min-width:${BREAKPOINTS.md}) { flex: 0 1 ${
-          (props.colMd / LAYOUT_COL_NUMBER) * 100
-        }%  }`
+      ? `@media(min-width:${BREAKPOINTS.md}) { 
+          flex: 0 1 ${(props.colMd / LAYOUT_COL_NUMBER) * 100}%;
+          max-width: ${(props.colMd / LAYOUT_COL_NUMBER) * 100}%; 
+        }`
       : ''}
+
   ${(props) =>
     props.colLg
-      ? `@media(min-width:${BREAKPOINTS.lg}) { flex: 0 1 ${
-          (props.colLg / LAYOUT_COL_NUMBER) * 100
-        }%  }`
+      ? `@media(min-width:${BREAKPOINTS.lg}) { 
+          flex: 0 1 ${(props.colLg / LAYOUT_COL_NUMBER) * 100}%;
+          max-width: ${(props.colLg / LAYOUT_COL_NUMBER) * 100}%;
+        }`
       : ''}
+
   ${(props) =>
     props.colXl
-      ? `@media(min-width:${BREAKPOINTS.xl}) { flex: 0 1 ${
-          (props.colXl / LAYOUT_COL_NUMBER) * 100
-        }%  }`
+      ? `@media(min-width:${BREAKPOINTS.xl}) { 
+          flex: 0 1 ${(props.colXl / LAYOUT_COL_NUMBER) * 100}%;  
+          max-width: ${(props.colXl / LAYOUT_COL_NUMBER) * 100}%;
+        }`
       : ''}
 `
 

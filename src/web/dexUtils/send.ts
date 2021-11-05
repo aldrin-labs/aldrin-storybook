@@ -16,6 +16,9 @@ import {
   SignTransactionsParams,
   ValidateOrderParams,
   WalletAdapter,
+  SendSignedTransactionParams,
+  SendSignedTransactionResult,
+  AsyncSendSignedTransactionResult,
 } from '@sb/dexUtils/types'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -657,92 +660,6 @@ export async function placeOrder(data: PlaceOrder) {
   })
 }
 
-export async function sendSignedTransaction({
-  signedTransaction,
-  connection,
-  sendingMessage = 'Sending transaction...',
-  sentMessage = 'Transaction sent',
-  successMessage = 'Transaction confirmed',
-  timeout = DEFAULT_TIMEOUT,
-}: {
-  signedTransaction: Transaction
-  connection: Connection
-  sendingMessage?: string
-  sentMessage?: string
-  successMessage?: string
-  timeout?: number
-}): Promise<string> {
-  const rawTransaction = signedTransaction.serialize()
-  const startTime = getUnixTs()
-  notify({ message: sendingMessage })
-  const txid: TransactionSignature = await connection.sendRawTransaction(
-    rawTransaction,
-    {
-      skipPreflight: true,
-    }
-  )
-  notify({ message: sentMessage, type: 'success', txid })
-
-  console.log('Started awaiting confirmation for', txid)
-
-  let done = false
-    // TODO: whats going on
-  ;(async () => {
-    while (!done && getUnixTs() - startTime < timeout) {
-      connection.sendRawTransaction(rawTransaction, {
-        skipPreflight: true,
-      })
-      await sleep(700)
-    }
-  })()
-  try {
-    await awaitTransactionSignatureConfirmation({ txid, timeout, connection })
-  } catch (err) {
-    if (err.timeout) {
-      throw new Error('Timed out awaiting confirmation on transaction')
-    }
-    let simulateResult: SimulatedTransactionResponse | null = null
-    try {
-      simulateResult = (
-        await simulateTransaction(connection, signedTransaction, 'single')
-      ).value
-    } catch (e) {}
-    if (simulateResult && simulateResult.err) {
-      if (simulateResult.logs) {
-        for (let i = simulateResult.logs.length - 1; i >= 0; i -= 1) {
-          const line = simulateResult.logs[i]
-          if (line.startsWith('Program log: ')) {
-            throw new Error(
-              `Transaction failed: ${line.slice('Program log: '.length)}`
-            )
-          }
-        }
-      }
-      let parsedError
-      if (
-        typeof simulateResult.err === 'object' &&
-        'InstructionError' in simulateResult.err
-      ) {
-        const parsedErrorInfo = parseInstructionErrorResponse(
-          signedTransaction,
-          simulateResult.err.InstructionError
-        )
-        parsedError = parsedErrorInfo.error
-      } else {
-        parsedError = JSON.stringify(simulateResult.err)
-      }
-      throw new Error(parsedError)
-    }
-    throw new Error('Transaction failed')
-  } finally {
-    done = true
-  }
-  notify({ message: successMessage, type: 'success', txid })
-
-  console.log('Latency', txid, getUnixTs() - startTime)
-  return txid
-}
-
 export async function signTransactions({
   transactionsAndSigners,
   wallet,
@@ -917,7 +834,7 @@ export async function listMarket({
   await Promise.all(
     signedTransactions.map((signedTransaction) =>
       sendSignedTransaction({
-        signedTransaction,
+        transaction: signedTransaction,
         connection,
       })
     )
@@ -935,15 +852,15 @@ const DEFAULT_TIMEOUT = 30000
 export async function sendTransaction({
   transaction,
   wallet,
-  signers = [],
+  signers,
   connection,
-  sentMessage = 'Transaction sent',
-  successMessage = 'Transaction confirmed',
-  timeout = DEFAULT_TIMEOUT,
+  sentMessage,
+  successMessage,
+  timeout,
   operationType,
   params,
   focusPopup,
-}: SendTransactionParams): Promise<string | null> {
+}: SendTransactionParams): AsyncSendSignedTransactionResult {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash
@@ -970,11 +887,30 @@ export async function sendTransaction({
       return res
     })
 
-  console.log('sendTransaction transactionFromWallet: ', transactionFromWallet)
+  const tx = await sendSignedTransaction({
+    connection,
+    transaction: transactionFromWallet,
+    sentMessage,
+    successMessage,
+    timeout,
+    operationType,
+    params,
+  })
 
-  const rawTransaction = transactionFromWallet.serialize()
+  return tx
+}
 
-  console.log('sendTransaction rawTransaction: ', rawTransaction)
+export const sendSignedTransaction = async ({
+  connection,
+  transaction,
+  sentMessage = 'Transaction sent',
+  successMessage = 'Transaction confirmed',
+  timeout = DEFAULT_TIMEOUT,
+  operationType,
+  params,
+}: SendSignedTransactionParams): AsyncSendSignedTransactionResult => {
+  const rawTransaction = transaction.serialize()
+
   const startTime = getUnixTs()
 
   const txid = await connection.sendRawTransaction(rawTransaction, {
@@ -1070,12 +1006,21 @@ export async function sendTransaction({
   }
 
   done = true
-  if (result !== true) return null
+  if (result === null) {
+    return 'failed'
+  }
+
+  if (result === 'timeout') {
+    return result
+  }
 
   if (!operationType) notify({ message: successMessage, type: 'success', txid })
   console.log('Latency', txid, getUnixTs() - startTime)
   return txid
 }
+
+export const isTransactionFailed = (result: SendSignedTransactionResult) =>
+  result === 'failed' || result === 'timeout'
 
 const awaitTransactionSignatureConfirmationWithNotifications = async ({
   txid,

@@ -10,45 +10,42 @@ import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
 
 import { Button } from '../../Tables/index.styles'
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
 
-import { endFarming } from '@sb/dexUtils/pools/endFarming'
-import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
+import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
+import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 
-export const UnstakePopup = ({
+export const ClaimRewards = ({
   theme,
   open,
-  allTokensData,
   selectedPool,
+  allTokensData,
+  farmingTicketsMap,
+  snapshotQueues,
   close,
   refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
   open: boolean
-  allTokensData: TokenInfo[]
   selectedPool: PoolInfo
+  allTokensData: TokenInfo[]
+  farmingTicketsMap: Map<string, FarmingTicket[]>
+  snapshotQueues: SnapshotQueue[]
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+  const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
 
   const [operationLoading, setOperationLoading] = useState(false)
-
-  const { address: userPoolTokenAccount } = getTokenDataByMint(
-    allTokensData,
-    selectedPool.poolTokenMint
-  )
-
-  const farmingState = selectedPool.farming[0]
-  if (!farmingState) return null
+  const [showRetryMessage, setShowRetryMessage] = useState(false)
 
   return (
     <DialogWrapper
@@ -62,14 +59,23 @@ export const UnstakePopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
-        <BoldHeader>Unstake Pool Tokens</BoldHeader>
+        <BoldHeader>Important Message</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer justify="flex-start">
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-          You need to unstake pool tokens to be able to withdraw liquidity. You
-          still be able to claim rewards in “Your Liquidity” tab.{' '}
+          Several transactions will be carried out to make the Claim. Do not
+          close the page before this pop-up disappears. If an error occurs,
+          reload the page and try again.
         </Text>
+        {showRetryMessage && (
+          <Text
+            style={{ color: theme.palette.red.main, margin: '1rem 0' }}
+            fontSize={'1.8rem'}
+          >
+            Blockhash outdated, please claim rest rewards in a few seconds.
+          </Text>
+        )}
       </RowContainer>
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
@@ -80,57 +86,73 @@ export const UnstakePopup = ({
           theme={theme}
           showLoader={operationLoading}
           onClick={async () => {
+            setShowRetryMessage(false)
             // loader in popup button
             setOperationLoading(true)
             // loader in table button
             setPoolWaitingForUpdateAfterOperation({
               pool: selectedPool.swapToken,
-              operation: 'unstake',
+              operation: 'claim',
             })
 
-            const result = await endFarming({
-              wallet,
-              connection,
-              poolPublicKey: new PublicKey(selectedPool.swapToken),
-              userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
-              farmingStatePublicKey: new PublicKey(farmingState.farmingState),
-              snapshotQueuePublicKey: new PublicKey(
-                farmingState.farmingSnapshots
-              ),
-            })
-
-            setOperationLoading(false)
-
-            notify({
-              type: result === 'success' ? 'success' : 'error',
-              message:
-                result === 'success'
-                  ? 'Successfully unstaked.'
-                  : result === 'failed'
-                  ? 'Unstaking failed, please try again later or contact us in telegram.'
-                  : 'Unstaking cancelled.',
-            })
-
-            const clearPoolWaitingForUpdate = () =>
+            const clearPoolWaitingForUpdate = () => {
+              setOperationLoading(false)
               setPoolWaitingForUpdateAfterOperation({
                 pool: '',
                 operation: '',
               })
-
-            if (result === 'success') {
-              setTimeout(async () => {
-                refreshTokensWithFarmingTickets()
-                clearPoolWaitingForUpdate()
-              }, 7500)
-              setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
-            } else {
-              clearPoolWaitingForUpdate()
             }
 
-            close()
+            let result = null
+
+            try {
+              result = await withdrawFarmed({
+                wallet,
+                connection,
+                pool: selectedPool,
+                allTokensData,
+                farmingTickets,
+                snapshotQueues,
+              })
+
+              notify({
+                type: result === 'success' ? 'success' : 'error',
+                message:
+                  result === 'success'
+                    ? 'Successfully claimed rewards.'
+                    : result === 'failed'
+                    ? 'Claim rewards failed, please try again later or contact us in telegram.'
+                    : result === 'cancelled'
+                    ? 'Claim rewards cancelled.'
+                    : 'Blockhash outdated, please claim rest rewards in a few seconds.',
+              })
+
+              if (result === 'cancelled') {
+                clearPoolWaitingForUpdate()
+              } else {
+                setTimeout(async () => {
+                  refreshTokensWithFarmingTickets()
+                  clearPoolWaitingForUpdate()
+                }, 7500)
+
+                setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+              }
+            } catch (e) {
+              clearPoolWaitingForUpdate()
+
+              setTimeout(async () => {
+                refreshTokensWithFarmingTickets()
+              }, 7500)
+            }
+
+            if (result !== 'blockhash_outdated') {
+              close()
+            } else {
+              setShowRetryMessage(true)
+            }
           }}
         >
-          Unstake
+          Ok, Got It
         </Button>
       </RowContainer>
     </DialogWrapper>

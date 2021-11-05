@@ -15,8 +15,9 @@ import {
 
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
+import { isTransactionFailed, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
+import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -162,16 +163,16 @@ export async function redeemBasket({
       focusPopup: true,
     })
 
-    if (tx) {
-      return 'success'
+    if (isTransactionFailed(tx)) {
+      return 'failed'
     }
   } catch (e) {
     console.log('withdraw catch error', e)
 
-    if (e.message.includes('cancelled')) {
+    if (isCancelledTransactionError(e)) {
       return 'cancelled'
     }
   }
 
-  return 'failed'
+  return 'success'
 }

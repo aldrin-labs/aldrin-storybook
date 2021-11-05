@@ -281,7 +281,7 @@ const SwapPage = ({
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'0.00'}
+              placeholder={'Enter amount'}
               theme={theme}
               directionFrom={true}
               value={baseAmount}
@@ -314,7 +314,7 @@ const SwapPage = ({
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'0.00'}
+              placeholder={'Enter amount'}
               theme={theme}
               disabled={
                 !baseTokenMintAddress ||
