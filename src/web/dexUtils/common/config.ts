@@ -17,6 +17,8 @@ export const NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION = 25
 // staking
 export const STAKING_FARMING_STATE_SIZE = 170
 
+export const CREATE_FARMING_TICKET_SOL_FEE = 0.00495552
+
 export const START_OF_LOG_WITH_AMOUNT_TO_CLAIM = 'Program log: '
 
 export const Side = {
