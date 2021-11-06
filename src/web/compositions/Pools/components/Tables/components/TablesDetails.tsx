@@ -509,42 +509,41 @@ export const TablesDetails = ({
                   </DarkTooltip>{' '}
                   Available to claim:
                 </Row>
-                {pool.farming.map((farmingState, i, arr) => {
-                  const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
-                    {
-                      farmingTickets,
-                      farmingState: farmingState.farmingState,
-                    }
-                  )
-                  return (
-                    <>
-                      <AmountText style={{ padding: '0 0.5rem' }}>
-                        {formatNumberToUSFormat(
-                          stripDigitPlaces(availableToClaimFromFarmingState, 2)
-                        )}
-                      </AmountText>
-                      {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
-                      <DarkTooltip
-                        title={`${stripDigitPlaces(
-                          availableToClaimFromFarmingState,
-                          8
-                        )} ${getTokenNameByMintAddress(
+                <Row justify={'flex-end'}>
+                  {pool.farming.map((farmingState, i, arr) => {
+                    const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
+                      {
+                        farmingTickets,
+                        farmingState: farmingState.farmingState,
+                      }
+                    )
+                    return (
+                      <>
+                        <DarkTooltip
+                          title={`${stripDigitPlaces(
+                            availableToClaimFromFarmingState,
+                            8
+                          )} ${getTokenNameByMintAddress(
+                            farmingState.farmingTokenMint
+                          )}`}
+                        >
+                          <AmountText style={{ padding: '0 0.5rem' }}>
+                            {formatNumberToUSFormat(
+                              stripDigitPlaces(
+                                availableToClaimFromFarmingState,
+                                2
+                              )
+                            )}
+                          </AmountText>
+                        </DarkTooltip>
+                        {getTokenNameByMintAddress(
                           farmingState.farmingTokenMint
-                        )}`}
-                      >
-                        <span>
-                          <SvgIcon
-                            src={InfoIcon}
-                            width={'1.5rem'}
-                            height={'1.5rem'}
-                            style={{ marginLeft: '.5rem' }}
-                          />
-                        </span>
-                      </DarkTooltip>
-                      {i !== arr.length - 1 ? ' +' : ''}
-                    </>
-                  )
-                })}
+                        )}
+                        {i !== arr.length - 1 ? ' +' : ''}
+                      </>
+                    )
+                  })}
+                </Row>
               </RowDataTdText>
 
               <Row>
@@ -622,18 +621,20 @@ export const TablesDetails = ({
                     </>
                   )}
                 </Button>
-                <DarkTooltip
-                  title={`The “Claim” button will be unlocked once the audit for updates is updated.`}
-                >
-                  <span>
-                    <SvgIcon
-                      src={InfoIcon}
-                      width={'2rem'}
-                      height={'2rem'}
-                      style={{ marginLeft: '1rem' }}
-                    />
-                  </span>
-                </DarkTooltip>
+                {disableRewards && (
+                  <DarkTooltip
+                    title={`The “Claim” button will be unlocked once the audit for updates is updated.`}
+                  >
+                    <span>
+                      <SvgIcon
+                        src={InfoIcon}
+                        width={'2rem'}
+                        height={'2rem'}
+                        style={{ marginLeft: '1rem' }}
+                      />
+                    </span>
+                  </DarkTooltip>
+                )}
               </Row>
             </Row>
           ) : hasPoolTokens && !hasStakedTokens ? (
