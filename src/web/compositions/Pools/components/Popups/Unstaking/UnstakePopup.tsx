@@ -19,6 +19,8 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
+import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 
 export const UnstakePopup = ({
   theme,
@@ -70,6 +72,17 @@ export const UnstakePopup = ({
           You need to unstake pool tokens to be able to withdraw liquidity. You
           still be able to claim rewards in “Your Liquidity” tab.{' '}
         </Text>
+      </RowContainer>
+
+      <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+        <WhiteText>Gas Fees</WhiteText>
+        <WhiteText
+          style={{
+            color: theme.palette.green.main,
+          }}
+        >
+          {TRANSACTION_COMMON_SOL_FEE} SOL
+        </WhiteText>
       </RowContainer>
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>

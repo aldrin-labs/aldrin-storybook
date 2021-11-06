@@ -1,18 +1,14 @@
 import { Theme, withTheme } from '@material-ui/core'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
-import { BlockTemplate } from './index.styles'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { Page, Content, Row, Cell, WideContent } from '@sb/components/Layout'
 import { RootRow } from './components/Charts/styles'
-
+import { FarmingConditionsUpdateBanner } from './components/Popups/FarmingConditionsUpdateBanner'
 
 const Pools = ({ theme }: { theme: Theme }) => {
-  const [isWarningPopupOpen, openWarningPopup] = useState(true)
-
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
     return () => {
@@ -23,10 +19,10 @@ const Pools = ({ theme }: { theme: Theme }) => {
   return (
     <Page>
       <WideContent>
+        <FarmingConditionsUpdateBanner theme={theme} />
         <RootRow>
           <Cell col={12} colLg={6}>
             <TotalVolumeLockedChart />
-
           </Cell>
           <Cell col={12} colLg={6}>
             <TradingVolumeChart />
@@ -42,9 +38,6 @@ const Pools = ({ theme }: { theme: Theme }) => {
   )
 }
 
-const Wrapper = compose(
-  withTheme(),
-  withRegionCheck,
-)(Pools)
+const Wrapper = compose(withTheme(), withRegionCheck)(Pools)
 
 export { Wrapper as PoolsComponent }
