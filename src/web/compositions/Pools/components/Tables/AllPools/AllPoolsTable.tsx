@@ -6,14 +6,12 @@ import { getRandomInt } from '@core/utils/helpers'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
 import { Theme } from '@material-ui/core'
 import { TableWithSort } from '@sb/components'
-import {
-  dayDuration
-} from '@sb/compositions/AnalyticsRoute/components/utils'
+import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
@@ -23,9 +21,8 @@ import { compose } from 'recompose'
 import { TableContainer } from '../index.styles'
 import {
   allPoolsTableColumnsNames,
-  combineAllPoolsData
+  combineAllPoolsData,
 } from './AllPoolsTable.utils'
-
 
 const AllPoolsTableComponent = ({
   theme,
@@ -174,6 +171,10 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
+    variables: () => ({
+      timestampFrom: endOfHourTimestamp() - dayDuration,
+      timestampTo: endOfHourTimestamp(),
+    }),
   }),
   queryRendererHoc({
     name: 'getWeeklyAndDailyTradingVolumesForPoolsQuery',
