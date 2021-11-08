@@ -7,7 +7,7 @@ export const getTotalFeesFromPools = ({
   poolsFeesData: FeesEarned[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
 }) => {
-  return poolsFeesData.reduce((acc, current) => {
+  return poolsFeesData?.reduce((acc, current) => {
     const [baseSymbol, quoteSymbol] = current.poolSymbol.split('_')
 
     const basePrice = dexTokensPricesMap.get(baseSymbol)?.price || 0

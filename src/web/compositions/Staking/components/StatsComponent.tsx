@@ -97,7 +97,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     getRINSupply()
   }, [])
 
-  const dexTokensPricesMap = getDexTokensPricesQuery.getDexTokensPrices.reduce(
+  const dexTokensPricesMap = getDexTokensPricesQuery?.getDexTokensPrices?.reduce(
     (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
     new Map()
   )
@@ -107,7 +107,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     dexTokensPricesMap,
   })
 
-  const tokenPrice = dexTokensPricesMap.get('RIN').price || 0
+  const tokenPrice = dexTokensPricesMap?.get('RIN').price || 0
 
   const totalStakedUSD = tokenPrice * totalStaked
   const tokensTotal =
