@@ -14,7 +14,7 @@ export const getParsedUserFarmingTickets = async ({
   connection: Connection
   poolPublicKey?: PublicKey
 }): Promise<FarmingTicket[]> => {
-  // if (!wallet.publicKey) return []
+  if (!wallet.publicKey) return []
 
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -53,10 +53,6 @@ export const getParsedUserFarmingTickets = async ({
       amountsToClaim: [{ amount: 0, farmingState: '' }],
       statesAttached,
     }
-  })
-
-  console.log({
-    parsedUserTicketsPerPool
   })
 
   return parsedUserTicketsPerPool
