@@ -382,28 +382,36 @@ export const TablesDetails = ({
                     'Stake Pool Tokens'
                   )}
                 </Button>
-                <Button
-                  theme={theme}
-                  color={'#D54D32'}
-                  disabled={
-                    isUnstakeDisabled || isPoolWaitingForUpdateAfterUnstake
+                <DarkTooltip
+                  title={
+                    isUnstakeLocked
+                      ? `Until ${dayjs
+                          .unix(unlockAvailableDate)
+                          .format('MMM DD, YYYY')}`
+                      : null
                   }
-                  style={{ width: '48%' }}
-                  onClick={() => {
-                    selectPool(pool)
-                    setIsUnstakePopupOpen(true)
-                  }}
                 >
-                  {isPoolWaitingForUpdateAfterUnstake ? (
-                    <Loader />
-                  ) : isUnstakeLocked ? (
-                    `Locked until ${dayjs
-                      .unix(unlockAvailableDate)
-                      .format('MMM DD, YYYY')}`
-                  ) : (
-                    'Unstake Pool Tokens'
-                  )}
-                </Button>
+                  <Button
+                    theme={theme}
+                    color={'#D54D32'}
+                    disabled={
+                      isUnstakeDisabled || isPoolWaitingForUpdateAfterUnstake
+                    }
+                    style={{ width: '48%' }}
+                    onClick={() => {
+                      selectPool(pool)
+                      setIsUnstakePopupOpen(true)
+                    }}
+                  >
+                    {isPoolWaitingForUpdateAfterUnstake ? (
+                      <Loader />
+                    ) : isUnstakeLocked ? (
+                      `Locked`
+                    ) : (
+                      'Unstake Pool Tokens'
+                    )}
+                  </Button>
+                </DarkTooltip>
               </RowContainer>
             ) : hasPoolTokens ? (
               <RowDataTdText>

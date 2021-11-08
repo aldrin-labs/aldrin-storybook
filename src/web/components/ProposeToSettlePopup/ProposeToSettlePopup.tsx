@@ -24,6 +24,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import SvgIcon from '../SvgIcon'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 
 export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
@@ -132,7 +133,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
             >
               {balances[0].coin}:{' '}
               <span style={{ fontFamily: 'Avenir Next Demi' }}>
-                {balances[0].unsettled} {balances[0].coin}
+                {stripByAmount(balances[0].unsettled)} {balances[0].coin}
               </span>
             </Text>
             <Text
@@ -144,7 +145,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
             >
               {balances[1].coin}:{' '}
               <span style={{ fontFamily: 'Avenir Next Demi' }}>
-                {balances[1].unsettled} {balances[1].coin}
+                {stripByAmount(balances[1].unsettled)} {balances[1].coin}
               </span>
             </Text>
           </Row>
