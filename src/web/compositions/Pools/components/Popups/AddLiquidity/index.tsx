@@ -44,6 +44,7 @@ import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/uti
 import { StakePopup } from '../Staking/StakePopup'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { sleep } from '@sb/dexUtils/utils'
+import { costOfAddingToken } from '@sb/components/TraidingTerminal/utils'
 
 export const AddLiquidityPopup = ({
   theme,
@@ -352,6 +353,19 @@ export const AddLiquidityPopup = ({
         <Line />
         <InputWithTotal theme={theme} value={total} />
       </RowContainer>
+
+      {!userPoolTokenAccount && (
+        <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+          <WhiteText>Gas Fees</WhiteText>
+          <WhiteText
+            style={{
+              color: theme.palette.green.main,
+            }}
+          >
+            {costOfAddingToken} SOL
+          </WhiteText>
+        </RowContainer>
+      )}
 
       <Row
         margin={'2rem 0 1rem 0'}

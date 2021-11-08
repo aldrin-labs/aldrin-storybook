@@ -1,16 +1,14 @@
 import { Theme, withTheme } from '@material-ui/core'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
-import { BlockTemplate } from './index.styles'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-
+import { Page, Content, Row, Cell, WideContent } from '@sb/components/Layout'
+import { RootRow } from './components/Charts/styles'
+import { FarmingConditionsUpdateBanner } from './components/Popups/FarmingConditionsUpdateBanner'
 
 const Pools = ({ theme }: { theme: Theme }) => {
-  const [isWarningPopupOpen, openWarningPopup] = useState(true)
-
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
     return () => {
@@ -19,51 +17,27 @@ const Pools = ({ theme }: { theme: Theme }) => {
   }, [])
 
   return (
-    <RowContainer
-      direction={'column'}
-      padding={'2rem 13rem'}
-      justify={'flex-start'}
-      style={{
-        background: theme.palette.grey.additional,
-        minHeight: '100%',
-        overflow: 'scroll',
-        flexWrap: 'nowrap',
-      }}
-    >
-      <RowContainer justify={'space-between'}>
-        <BlockTemplate
-          theme={theme}
-          width={'calc(50% - 1rem)'}
-          height={'30rem'}
-          style={{ position: 'relative' }}
-        >
-          <TotalVolumeLockedChart theme={theme} />
-        </BlockTemplate>
-        <BlockTemplate
-          theme={theme}
-          width={'calc(50% - 1rem)'}
-          height={'30rem'}
-          style={{ position: 'relative' }}
-        >
-          <TradingVolumeChart theme={theme} />
-        </BlockTemplate>
-      </RowContainer>
-
-      <TablesSwitcher theme={theme} />
-
-      {/* <WarningPopup
-        theme={theme}
-        open={isWarningPopupOpen}
-        onClose={() => openWarningPopup(false)}
-        isPoolsPage={true}
-      /> */}
-    </RowContainer>
+    <Page>
+      <WideContent>
+        <FarmingConditionsUpdateBanner theme={theme} />
+        <RootRow>
+          <Cell col={12} colLg={6}>
+            <TotalVolumeLockedChart />
+          </Cell>
+          <Cell col={12} colLg={6}>
+            <TradingVolumeChart />
+          </Cell>
+        </RootRow>
+        <RootRow>
+          <Cell col={12}>
+            <TablesSwitcher theme={theme} />
+          </Cell>
+        </RootRow>
+      </WideContent>
+    </Page>
   )
 }
 
-const Wrapper = compose(
-  withTheme(),
-  withRegionCheck,
-)(Pools)
+const Wrapper = compose(withTheme(), withRegionCheck)(Pools)
 
 export { Wrapper as PoolsComponent }

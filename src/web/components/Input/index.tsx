@@ -1,21 +1,22 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 
 import { COLORS, BORDER_RADIUS } from '@variables/variables'
 import { validateDecimal } from './utils'
 
-interface InputProps {
+export interface InputProps {
   value?: string
   onChange: (e: string) => void
   formatter?: (e: string, prevValue: string) => string
   placeholder?: string
-  append?: string
+  append?: ReactNode
   size?: number // Input size
   name: string
+  className?: string
 }
 
 const InputWrap = styled.div`
-  background: ${COLORS.borderAlt};
+  background: ${COLORS.background};
   border: 1px solid ${COLORS.border};
   border-radius: ${BORDER_RADIUS.xxl};
   display: flex;
@@ -49,16 +50,26 @@ export const INPUT_FORMATTERS = {
   DECIMAL: (v: string, prevValue: string) => {
     const value = v ? v.replace(',', '.') : v;
     if (validateDecimal(value) || v === '') {
-        return value
+      return value
     }
     return prevValue
   }
 }
 
 export const Input: React.FC<InputProps> = (props) => {
-  const { placeholder, onChange, append, value = '', size = 8, name, formatter = INPUT_FORMATTERS.NOP } = props
+  const {
+    placeholder,
+    onChange,
+    append,
+    value = '',
+    size = 8,
+    name,
+    formatter = INPUT_FORMATTERS.NOP,
+    className = ''
+  } = props
+
   return (
-    <InputWrap>
+    <InputWrap className={className}>
       <InputEl
         size={size}
         placeholder={placeholder}

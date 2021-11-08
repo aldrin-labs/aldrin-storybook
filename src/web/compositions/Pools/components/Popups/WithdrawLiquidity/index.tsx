@@ -31,6 +31,11 @@ import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getSt
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import {
+  costOfAddingToken,
+  TRANSACTION_COMMON_SOL_FEE,
+} from '@sb/components/TraidingTerminal/utils'
 
 export const WithdrawalPopup = ({
   theme,
@@ -230,6 +235,17 @@ export const WithdrawalPopup = ({
         />
         <Line />
         <InputWithTotal theme={theme} value={total} />
+      </RowContainer>
+
+      <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+        <WhiteText>Gas Fees</WhiteText>
+        <WhiteText
+          style={{
+            color: theme.palette.green.main,
+          }}
+        >
+          {TRANSACTION_COMMON_SOL_FEE} SOL
+        </WhiteText>
       </RowContainer>
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>

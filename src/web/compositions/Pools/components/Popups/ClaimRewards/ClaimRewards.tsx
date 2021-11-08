@@ -45,6 +45,7 @@ export const ClaimRewards = ({
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
 
   const [operationLoading, setOperationLoading] = useState(false)
+  const [showRetryMessage, setShowRetryMessage] = useState(false)
 
   return (
     <DialogWrapper
@@ -63,8 +64,18 @@ export const ClaimRewards = ({
       </RowContainer>
       <RowContainer justify="flex-start">
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-        You will need to confirm several transactions in your wallet. One for each day since the last claim.
+          Several transactions will be carried out to make the Claim. Do not
+          close the page before this pop-up disappears. If an error occurs,
+          reload the page and try again.
         </Text>
+        {showRetryMessage && (
+          <Text
+            style={{ color: theme.palette.red.main, margin: '1rem 0' }}
+            fontSize={'1.8rem'}
+          >
+            Blockhash outdated, please claim rest rewards in a few seconds.
+          </Text>
+        )}
       </RowContainer>
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
@@ -75,6 +86,7 @@ export const ClaimRewards = ({
           theme={theme}
           showLoader={operationLoading}
           onClick={async () => {
+            setShowRetryMessage(false)
             // loader in popup button
             setOperationLoading(true)
             // loader in table button
@@ -83,14 +95,18 @@ export const ClaimRewards = ({
               operation: 'claim',
             })
 
-            const clearPoolWaitingForUpdate = () =>
+            const clearPoolWaitingForUpdate = () => {
+              setOperationLoading(false)
               setPoolWaitingForUpdateAfterOperation({
                 pool: '',
                 operation: '',
               })
+            }
+
+            let result = null
 
             try {
-              const result = await withdrawFarmed({
+              result = await withdrawFarmed({
                 wallet,
                 connection,
                 pool: selectedPool,
@@ -106,10 +122,12 @@ export const ClaimRewards = ({
                     ? 'Successfully claimed rewards.'
                     : result === 'failed'
                     ? 'Claim rewards failed, please try again later or contact us in telegram.'
-                    : 'Claim rewards cancelled.',
+                    : result === 'cancelled'
+                    ? 'Claim rewards cancelled.'
+                    : 'Blockhash outdated, please claim rest rewards in a few seconds.',
               })
 
-              if (result !== 'success') {
+              if (result === 'cancelled') {
                 clearPoolWaitingForUpdate()
               } else {
                 setTimeout(async () => {
@@ -125,11 +143,13 @@ export const ClaimRewards = ({
               setTimeout(async () => {
                 refreshTokensWithFarmingTickets()
               }, 7500)
-
-              return
             }
 
-            close()
+            if (result !== 'blockhash_outdated') {
+              close()
+            } else {
+              setShowRetryMessage(true)
+            }
           }}
         >
           Ok, Got It

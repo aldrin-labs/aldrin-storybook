@@ -32,6 +32,7 @@ import { estimatedTime } from '@core/utils/dateUtils'
 import { SvgIcon } from '@sb/components'
 import InfoIcon from '@icons/inform.svg'
 import WhiteTech from '@icons/whiteTech.svg'
+import WhiteClock from '@icons/whiteClock.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
@@ -169,6 +170,10 @@ export const TablesDetails = ({
   const isPoolWaitingForUpdateAfterClaim =
     isPoolWaitingForUpdateAfterOperation && operation === 'claim'
 
+  const disableRewards =
+    pool.swapToken !== 'Hv5F48Br7dbZvUpKFuyxxuaC4v95C1uyDGhdkFFCc9Gf' &&
+    pool.swapToken !== '6sKC96Z35vCNcDmA3ZbBd9Syx5gnTJdyNKVEdzpBE5uX'
+
   return (
     <RowContainer
       height="12rem"
@@ -242,7 +247,7 @@ export const TablesDetails = ({
             </RowDataTdText>
           )}
         </Row>
-
+        {/* 
         {hasLiquidity && (
           <Row align="flex-start" direction="column" width="25%">
             <RowDataTdText
@@ -271,7 +276,7 @@ export const TablesDetails = ({
               {stripByAmountAndFormat(stakedTokens)}
             </RowDataTdText>
           </Row>
-        )}
+        )} */}
 
         <Row direction="column" width="25%" style={{ paddingRight: '2rem' }}>
           <Button
@@ -326,24 +331,45 @@ export const TablesDetails = ({
       </Row>
       <Row justify="space-between" width="45%" padding="0 1rem 0 2rem">
         <Row align="flex-start" direction="column" width="45%">
-          {hasStakedTokens && hasFarming ? (
-            <RowDataTdText
-              fontFamily={'Avenir Next Medium'}
-              style={{ marginBottom: '3.5rem' }}
-            >
-              Staked:
-              <AmountText style={{ padding: '0 0.5rem' }}>
-                {stripByAmountAndFormat(stakedTokens)}
-              </AmountText>
-              <span>
-                Pool Tokens
+          {hasFarming && (hasStakedTokens || hasPoolTokens) ? (
+            <>
+              <RowDataTdText
+                fontFamily={'Avenir Next Medium'}
+                style={{ marginBottom: '1rem' }}
+              >
+                Total:
                 <AmountText style={{ padding: '0 0.5rem' }}>
-                  <WhiteText>(</WhiteText>$
-                  {stripByAmountAndFormat(stakedTokens * poolTokenPrice)}
-                  <WhiteText>)</WhiteText>
+                  {stripByAmountAndFormat(poolTokenAmount + stakedTokens)}
                 </AmountText>
-              </span>
-            </RowDataTdText>
+                <span>
+                  Pool Tokens
+                  <AmountText style={{ padding: '0 0.5rem' }}>
+                    <WhiteText>(</WhiteText>$
+                    {stripByAmountAndFormat(
+                      (poolTokenAmount + stakedTokens) * poolTokenPrice
+                    )}
+                    <WhiteText>)</WhiteText>
+                  </AmountText>
+                </span>
+              </RowDataTdText>
+              <RowDataTdText
+                fontFamily={'Avenir Next Medium'}
+                style={{ marginBottom: '3.5rem' }}
+              >
+                Staked:
+                <AmountText style={{ padding: '0 0.5rem' }}>
+                  {stripByAmountAndFormat(stakedTokens)}
+                </AmountText>
+                <span>
+                  Pool Tokens
+                  <AmountText style={{ padding: '0 0.5rem' }}>
+                    <WhiteText>(</WhiteText>$
+                    {stripByAmountAndFormat(stakedTokens * poolTokenPrice)}
+                    <WhiteText>)</WhiteText>
+                  </AmountText>
+                </span>
+              </RowDataTdText>
+            </>
           ) : (
             <RowDataTdText
               theme={theme}
@@ -440,7 +466,11 @@ export const TablesDetails = ({
               <RowDataTdText
                 theme={theme}
                 fontFamily={'Avenir Next Medium'}
-                style={{ marginBottom: '3.5rem' }}
+                style={{
+                  marginBottom: '3.5rem',
+                  maxWidth: '100%',
+                  overflow: 'hidden',
+                }}
               >
                 {/* TODO: return later vesting with few farming states */}
                 {/* {farmingState.vestingPeriod > 0 && (
@@ -464,69 +494,148 @@ export const TablesDetails = ({
                     </div>
                   </DarkTooltip>
                 )} */}
-                Available to claim:
-                {pool.farming.map((farmingState, i, arr) => {
-                  const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
-                    {
-                      farmingTickets,
-                      farmingState: farmingState.farmingState,
-                    }
-                  )
-                  return (
-                    <>
-                      <AmountText style={{ padding: '0 0.5rem' }}>
-                        {formatNumberToUSFormat(
-                          stripDigitPlaces(availableToClaimFromFarmingState, 2)
-                        )}
-                      </AmountText>
-                      {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
-                      <DarkTooltip
-                        title={`${stripDigitPlaces(
-                          availableToClaimFromFarmingState,
-                          8
-                        )} ${getTokenNameByMintAddress(
+                <Row justify={'flex-end'} margin={'0 0 1rem 0'}>
+                  <DarkTooltip
+                    title={'Rewards are updated once every 24 hours.'}
+                  >
+                    <span>
+                      <SvgIcon
+                        src={WhiteClock}
+                        width={'2rem'}
+                        height={'2rem'}
+                        style={{ marginRight: '1rem' }}
+                      />
+                    </span>
+                  </DarkTooltip>{' '}
+                  Available to claim:
+                </Row>
+                <Row justify={'flex-end'}>
+                  {pool.farming.map((farmingState, i, arr) => {
+                    const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
+                      {
+                        farmingTickets,
+                        farmingState: farmingState.farmingState,
+                      }
+                    )
+                    return (
+                      <>
+                        <DarkTooltip
+                          title={`${stripDigitPlaces(
+                            availableToClaimFromFarmingState,
+                            8
+                          )} ${getTokenNameByMintAddress(
+                            farmingState.farmingTokenMint
+                          )}`}
+                        >
+                          <AmountText style={{ padding: '0 0.5rem' }}>
+                            {formatNumberToUSFormat(
+                              stripDigitPlaces(
+                                availableToClaimFromFarmingState,
+                                2
+                              )
+                            )}
+                          </AmountText>
+                        </DarkTooltip>
+                        {getTokenNameByMintAddress(
                           farmingState.farmingTokenMint
-                        )}`}
-                      >
-                        <span>
-                          <SvgIcon
-                            src={InfoIcon}
-                            width={'1.5rem'}
-                            height={'1.5rem'}
-                            style={{ marginLeft: '.5rem' }}
-                          />
-                        </span>
-                      </DarkTooltip>
-                      {i !== arr.length - 1 ? ' +' : ''}
-                    </>
-                  )
-                })}
+                        )}
+                        {i !== arr.length - 1 ? ' +' : ''}
+                      </>
+                    )
+                  })}
+                </Row>
               </RowDataTdText>
 
-              <Button
-                theme={theme}
-                btnWidth={'16rem'}
-                color={
-                  hasStakedTokens || hasTokensToClaim
-                    ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-                    : '#651CE4'
-                }
-                disabled={
-                  // true ||
-                  (hasStakedTokens && !hasTokensToClaim) ||
-                  isPoolWaitingForUpdateAfterClaim
-                }
-                onClick={() => {
-                  selectPool(pool)
-                  setIsClaimRewardsPopupOpen(true)
-                }}
-              >
-                {isPoolWaitingForUpdateAfterClaim ? (
-                  <Loader />
-                ) : (
-                  <span style={{ display: 'flex' }}>Claim reward</span>
+              <Row>
+                <Button
+                  theme={theme}
+                  btnWidth={'16rem'}
+                  color={
+                    hasStakedTokens || hasTokensToClaim
+                      ? 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+                      : '#651CE4'
+                  }
+                  disabled={
+                    disableRewards ||
+                    (hasStakedTokens && !hasTokensToClaim) ||
+                    isPoolWaitingForUpdateAfterClaim
+                  }
+                  onClick={async () => {
+                    // selectPool(pool)
+                    // setIsClaimRewardsPopupOpen(true)
+                    setPoolWaitingForUpdateAfterOperation({
+                      pool: pool.swapToken,
+                      operation: 'claim',
+                    })
+
+                    const clearPoolWaitingForUpdate = () =>
+                      setPoolWaitingForUpdateAfterOperation({
+                        pool: '',
+                        operation: '',
+                      })
+
+                    try {
+                      const result = await withdrawFarmed({
+                        wallet,
+                        connection,
+                        pool,
+                        allTokensData,
+                        farmingTickets,
+                      })
+
+                      notify({
+                        type: result === 'success' ? 'success' : 'error',
+                        message:
+                          result === 'success'
+                            ? 'Successfully claimed rewards.'
+                            : result === 'failed'
+                            ? 'Claim rewards failed, please try again later or contact us in telegram.'
+                            : 'Claim rewards cancelled.',
+                      })
+
+                      if (result !== 'success') {
+                        clearPoolWaitingForUpdate()
+                      } else {
+                        setTimeout(async () => {
+                          refreshTokensWithFarmingTickets()
+                          clearPoolWaitingForUpdate()
+                        }, 7500)
+
+                        setTimeout(
+                          () => refreshTokensWithFarmingTickets(),
+                          15000
+                        )
+                      }
+                    } catch (e) {
+                      clearPoolWaitingForUpdate()
+
+                      return
+                    }
+                  }}
+                >
+                  {isPoolWaitingForUpdateAfterClaim ? (
+                    <Loader />
+                  ) : (
+                    <>
+                      <span style={{ display: 'flex' }}>Claim reward</span>
+                    </>
+                  )}
+                </Button>
+                {disableRewards && (
+                  <DarkTooltip
+                    title={`The “Claim” button will be unlocked once the audit for updates is updated.`}
+                  >
+                    <span>
+                      <SvgIcon
+                        src={InfoIcon}
+                        width={'2rem'}
+                        height={'2rem'}
+                        style={{ marginLeft: '1rem' }}
+                      />
+                    </span>
+                  </DarkTooltip>
                 )}
-              </Button>
+              </Row>
             </Row>
           ) : hasPoolTokens && !hasStakedTokens ? (
             <Row direction="column" width="55%" align="flex-end">

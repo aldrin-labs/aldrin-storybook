@@ -8,6 +8,7 @@ import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import SvgIcon from '@sb/components/SvgIcon'
+import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ExclamationMark } from '@sb/compositions/Chart/components/MarketBlock/MarketBlock.styles'
@@ -18,6 +19,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -196,6 +198,16 @@ export const StakePopup = ({
           </Text>
         </RowContainer>
       )}
+      <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+        <WhiteText>Gas Fees</WhiteText>
+        <WhiteText
+          style={{
+            color: theme.palette.green.main,
+          }}
+        >
+          {CREATE_FARMING_TICKET_SOL_FEE} SOL
+        </WhiteText>
+      </RowContainer>
       {isReminderPopup ? null : (
         <HintContainer justify={'flex-start'} margin="5rem 0 2rem 0">
           <Row justify="flex-start" width="20%">

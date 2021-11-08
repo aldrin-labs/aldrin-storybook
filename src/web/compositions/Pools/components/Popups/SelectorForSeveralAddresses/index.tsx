@@ -1,21 +1,17 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import SvgIcon from '@sb/components/SvgIcon'
-import { SearchInputWithLoop } from '../../Tables/components/index'
-
 import Close from '@icons/closeIcon.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Theme } from '@material-ui/core'
+import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import {
-  ALL_TOKENS_MINTS_MAP,
-  getTokenNameByMintAddress,
-} from '@sb/dexUtils/markets'
-import { StyledPaper } from '../index.styles'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import React from 'react'
+import styled from 'styled-components'
+import { StyledPaper } from '../index.styles'
+
+
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 45rem;

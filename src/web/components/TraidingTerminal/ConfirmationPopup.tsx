@@ -93,7 +93,7 @@ export const WhiteButton = styled((props) => (
   }
 `
 export const WhiteText = styled.span`
-  font-family: Avenir Next;
+  font-family: Avenir Next Medium;
   font-size: 1.5rem;
   display: flex;
   align-items: center;

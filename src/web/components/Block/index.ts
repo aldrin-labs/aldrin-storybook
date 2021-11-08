@@ -10,7 +10,7 @@ export interface BlockProps {
 export const Block = styled.div<BlockProps>`
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);
   background: ${(props: BlockProps) =>
-    props.inner ? COLORS.borderAlt : COLORS.blockBackground};
+    props.inner ? COLORS.background : COLORS.blockBackground};
   border-radius: 12px;
   margin: 8px;
   height: 100%;
@@ -66,8 +66,9 @@ interface BlockContentProps {
 export const BlockContent = styled.div<BlockContentProps>`
   padding: 16px 20px;
   position: relative;
+  overflow: hidden;
   ${(props) =>
-    props.border ? `border-bottom: 1px solid ${COLORS.borderAlt}` : ''}
+    props.border ? `border-bottom: 1px solid ${COLORS.background}` : ''}
 `
 
 export const BlockContentStretched = styled(BlockContent)`
