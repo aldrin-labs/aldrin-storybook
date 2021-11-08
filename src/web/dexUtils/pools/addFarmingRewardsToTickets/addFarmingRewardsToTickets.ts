@@ -20,6 +20,11 @@ export const addFarmingRewardsToTickets = (params: CalculateRewardsParams) => {
     new Map()
   )
 
+  console.log({
+    farmingTickets,
+    snapshotQueues
+  })
+
   // go through every ticket and calc amount to claim for every farming state
   const userRewardsForAllTickets = farmingTickets.reduce(
     (ticketsAcc: FarmingTicket[], ticket) => {

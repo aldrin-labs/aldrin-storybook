@@ -48,6 +48,7 @@ export const WithdrawalPopup = ({
   allTokensData,
   close,
   refreshAllTokensData,
+  setIsUnstakePopupOpen,
   setPoolWaitingForUpdateAfterOperation,
 }: {
   theme: Theme
@@ -60,6 +61,7 @@ export const WithdrawalPopup = ({
   allTokensData: TokenInfo[]
   close: () => void
   refreshAllTokensData: RefreshFunction
+  setIsUnstakePopupOpen: (isOpen: boolean) => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
 }) => {
   const { wallet } = useWallet()
@@ -263,6 +265,11 @@ export const WithdrawalPopup = ({
               selectedPool,
               poolTokenAmount,
             })
+
+            if (poolTokenAmount === 0) {
+              setIsUnstakePopupOpen(true)
+              return
+            }
 
             if (
               +baseAmount > availableToWithdrawAmountTokenA ||

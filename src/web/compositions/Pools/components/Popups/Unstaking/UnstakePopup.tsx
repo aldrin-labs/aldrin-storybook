@@ -134,13 +134,13 @@ export const UnstakePopup = ({
               setTimeout(async () => {
                 refreshTokensWithFarmingTickets()
                 clearPoolWaitingForUpdate()
+                close()
               }, 7500)
               setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
             } else {
               clearPoolWaitingForUpdate()
+              close()
             }
-
-            close()
           }}
         >
           Unstake

@@ -44,6 +44,9 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { getUniqueAmountsToClaimMap } from '../utils/getUniqueAmountsToClaimMap'
+import { PublicKey } from '@solana/web3.js'
+import { endFarming } from '@sb/dexUtils/pools/endFarming'
 
 export const TablesDetails = ({
   theme,
@@ -174,6 +177,11 @@ export const TablesDetails = ({
     pool.swapToken !== 'Hv5F48Br7dbZvUpKFuyxxuaC4v95C1uyDGhdkFFCc9Gf' &&
     pool.swapToken !== '6sKC96Z35vCNcDmA3ZbBd9Syx5gnTJdyNKVEdzpBE5uX'
 
+  const uniqueAmountsToClaimMap = getUniqueAmountsToClaimMap({
+    farmingTickets,
+    farmingStates: pool.farming,
+  })
+
   return (
     <RowContainer
       height="12rem"
@@ -247,37 +255,6 @@ export const TablesDetails = ({
             </RowDataTdText>
           )}
         </Row>
-        {/* 
-        {hasLiquidity && (
-          <Row align="flex-start" direction="column" width="25%">
-            <RowDataTdText
-              theme={theme}
-              color={theme.palette.grey.new}
-              style={{ marginBottom: '1rem' }}
-            >
-              Pool Tokens:
-            </RowDataTdText>
-            <RowDataTdText
-              color={'#53DF11'}
-              fontFamily="Avenir Next Medium"
-              theme={theme}
-              style={{ marginBottom: '1rem' }}
-            >
-              <WhiteText>Total:</WhiteText>{' '}
-              {stripByAmountAndFormat(poolTokenAmount + stakedTokens)}{' '}
-            </RowDataTdText>
-            <RowDataTdText
-              color={'#53DF11'}
-              fontFamily="Avenir Next Medium"
-              theme={theme}
-            >
-              {' '}
-              <WhiteText>Staked:</WhiteText>{' '}
-              {stripByAmountAndFormat(stakedTokens)}
-            </RowDataTdText>
-          </Row>
-        )} */}
-
         <Row direction="column" width="25%" style={{ paddingRight: '2rem' }}>
           <Button
             theme={theme}
@@ -415,9 +392,55 @@ export const TablesDetails = ({
                     isUnstakeDisabled || isPoolWaitingForUpdateAfterUnstake
                   }
                   style={{ width: '48%' }}
-                  onClick={() => {
-                    selectPool(pool)
-                    setIsUnstakePopupOpen(true)
+                  onClick={async () => {
+                    setPoolWaitingForUpdateAfterOperation({
+                      pool: pool.swapToken,
+                      operation: 'unstake',
+                    })
+
+                    const farmingState = openFarmings[0]
+                    const {
+                      address: userPoolTokenAccount,
+                    } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
+
+                    const result = await endFarming({
+                      wallet,
+                      connection,
+                      poolPublicKey: new PublicKey(pool.swapToken),
+                      userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+                      farmingStatePublicKey: new PublicKey(
+                        farmingState.farmingState
+                      ),
+                      snapshotQueuePublicKey: new PublicKey(
+                        farmingState.farmingSnapshots
+                      ),
+                    })
+
+                    notify({
+                      type: result === 'success' ? 'success' : 'error',
+                      message:
+                        result === 'success'
+                          ? 'Successfully unstaked.'
+                          : result === 'failed'
+                          ? 'Unstaking failed, please try again later or contact us in telegram.'
+                          : 'Unstaking cancelled.',
+                    })
+
+                    const clearPoolWaitingForUpdate = () =>
+                      setPoolWaitingForUpdateAfterOperation({
+                        pool: '',
+                        operation: '',
+                      })
+
+                    if (result === 'success') {
+                      setTimeout(async () => {
+                        refreshTokensWithFarmingTickets()
+                        clearPoolWaitingForUpdate()
+                      }, 7500)
+                      setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+                    } else {
+                      clearPoolWaitingForUpdate()
+                    }
                   }}
                 >
                   {isPoolWaitingForUpdateAfterUnstake ? (
@@ -510,39 +533,30 @@ export const TablesDetails = ({
                   Available to claim:
                 </Row>
                 <Row justify={'flex-end'}>
-                  {pool.farming.map((farmingState, i, arr) => {
-                    const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
-                      {
-                        farmingTickets,
-                        farmingState: farmingState.farmingState,
-                      }
-                    )
-                    return (
-                      <>
-                        <DarkTooltip
-                          title={`${stripDigitPlaces(
-                            availableToClaimFromFarmingState,
-                            8
-                          )} ${getTokenNameByMintAddress(
-                            farmingState.farmingTokenMint
-                          )}`}
-                        >
-                          <AmountText style={{ padding: '0 0.5rem' }}>
-                            {formatNumberToUSFormat(
-                              stripDigitPlaces(
-                                availableToClaimFromFarmingState,
-                                2
-                              )
-                            )}
-                          </AmountText>
-                        </DarkTooltip>
-                        {getTokenNameByMintAddress(
-                          farmingState.farmingTokenMint
-                        )}
-                        {i !== arr.length - 1 ? ' +' : ''}
-                      </>
-                    )
-                  })}
+                  {[...uniqueAmountsToClaimMap.values()].map(
+                    (amountToClaim, i, arr) => {
+                      const { amount, farmingTokenMint } = amountToClaim
+
+                      return (
+                        <>
+                          <DarkTooltip
+                            title={`${stripDigitPlaces(
+                              amount,
+                              8
+                            )} ${getTokenNameByMintAddress(farmingTokenMint)}`}
+                          >
+                            <AmountText style={{ padding: '0 0.5rem' }}>
+                              {formatNumberToUSFormat(
+                                stripDigitPlaces(amount, 2)
+                              )}
+                            </AmountText>
+                          </DarkTooltip>
+                          {getTokenNameByMintAddress(farmingTokenMint)}
+                          {i !== arr.length - 1 ? ' +' : ''}
+                        </>
+                      )
+                    }
+                  )}
                 </Row>
               </RowDataTdText>
 
