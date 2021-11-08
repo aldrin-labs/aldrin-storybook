@@ -15,7 +15,7 @@ import {
 
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
+import { isTransactionFailed, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 
@@ -163,8 +163,8 @@ export async function redeemBasket({
       focusPopup: true,
     })
 
-    if (tx) {
-      return 'success'
+    if (isTransactionFailed(tx)) {
+      return 'failed'
     }
   } catch (e) {
     console.log('withdraw catch error', e)
@@ -174,5 +174,5 @@ export async function redeemBasket({
     }
   }
 
-  return 'failed'
+  return 'success'
 }

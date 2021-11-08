@@ -9,7 +9,7 @@ import {
 } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { createTokenAccountTransaction, sendTransaction } from '../send'
+import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 
 
@@ -184,7 +184,7 @@ export const swap = async ({
       focusPopup: true,
     })
 
-    if (tx) {
+    if (!isTransactionFailed(tx)) {
       return 'success'
     }
   } catch (e) {

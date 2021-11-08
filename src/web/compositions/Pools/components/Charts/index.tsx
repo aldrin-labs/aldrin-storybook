@@ -1,2 +1,2 @@
-export * from './TotalVolumeLockedChart/DataContainer'
-export * from './TradingVolumeChart/DataContainer'
+export * from './TotalVolumeLockedChart'
+export * from './TradingVolumeChart'

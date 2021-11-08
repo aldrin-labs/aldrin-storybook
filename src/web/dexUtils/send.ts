@@ -11,13 +11,15 @@ import { OrderParams } from '@project-serum/serum/lib/market'
 import {
   AmendOrderParams,
   CancelOrderParams,
-  SendSignedTransactionResultParams,
   Maybe,
   PlaceOrder,
   SendTransactionParams,
   SignTransactionsParams,
   ValidateOrderParams,
   WalletAdapter,
+  SendSignedTransactionParams,
+  SendSignedTransactionResult,
+  AsyncSendSignedTransactionResult,
 } from '@sb/dexUtils/types'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -859,7 +861,7 @@ export async function sendTransaction({
   operationType,
   params,
   focusPopup,
-}: SendTransactionParams): Promise<string | null> {
+}: SendTransactionParams): AsyncSendSignedTransactionResult {
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash
@@ -907,7 +909,7 @@ export const sendSignedTransaction = async ({
   timeout = DEFAULT_TIMEOUT,
   operationType,
   params,
-}: SendSignedTransactionResultParams) => {
+}: SendSignedTransactionParams): AsyncSendSignedTransactionResult => {
   const rawTransaction = transaction.serialize()
 
   const startTime = getUnixTs()
@@ -1005,12 +1007,21 @@ export const sendSignedTransaction = async ({
   }
 
   done = true
-  if (result !== true) return null
+  if (result === null) {
+    return 'failed'
+  }
+
+  if (result === 'timeout') {
+    return result
+  }
 
   if (!operationType) notify({ message: successMessage, type: 'success', txid })
   console.log('Latency', txid, getUnixTs() - startTime)
   return txid
 }
+
+export const isTransactionFailed = (result: SendSignedTransactionResult) =>
+  result === 'failed' || result === 'timeout'
 
 const awaitTransactionSignatureConfirmationWithNotifications = async ({
   txid,
