@@ -214,122 +214,121 @@ const TablesSwitcher = ({
               setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
             />
           ) : (
-              <UserLiquitidyTable
-                theme={theme}
-                searchValue={searchValue}
-                includePermissionless={includePermissionless}
-                poolsInfo={pools}
-                poolWaitingForUpdateAfterOperation={
-                  poolWaitingForUpdateAfterOperation
-                }
-                dexTokensPricesMap={dexTokensPricesMap}
-                allTokensData={allTokensData}
-                farmingTicketsMap={farmingTicketsMap}
-                earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-                selectPool={selectPool}
-                refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-                setPoolWaitingForUpdateAfterOperation={
-                  setPoolWaitingForUpdateAfterOperation
-                }
-                setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-                setIsStakePopupOpen={setIsStakePopupOpen}
-                setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-                setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
-              />
-            )}
-
-
-          {selectedPool && isAddLiquidityPopupOpen && (
-            <AddLiquidityPopup
+            <UserLiquitidyTable
               theme={theme}
+              searchValue={searchValue}
+              includePermissionless={includePermissionless}
               poolsInfo={pools}
-              open={isAddLiquidityPopupOpen}
+              poolWaitingForUpdateAfterOperation={
+                poolWaitingForUpdateAfterOperation
+              }
               dexTokensPricesMap={dexTokensPricesMap}
-              selectedPool={selectedPool}
-              farmingTicketsMap={farmingTicketsMap}
-              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
               allTokensData={allTokensData}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-              close={() => setIsAddLiquidityPopupOpen(false)}
-              refreshAllTokensData={refreshAllTokensData}
-              setIsRemindToStakePopupOpen={() =>
-                setIsRemindToStakePopupOpen(true)
-              }
-            />
-          )}
-
-          {selectedPool && isWithdrawalPopupOpen && (
-            <WithdrawalPopup
-              theme={theme}
-              poolsInfo={pools}
-              selectedPool={selectedPool}
-              dexTokensPricesMap={dexTokensPricesMap}
               farmingTicketsMap={farmingTicketsMap}
               earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-              allTokensData={allTokensData}
-              close={() => setIsWithdrawalPopupOpen(false)}
-              open={isWithdrawalPopupOpen}
-              refreshAllTokensData={refreshAllTokensData}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-            />
-          )}
-
-          {selectedPool && (isStakePopupOpen || isRemindToStakePopupOpen) && (
-            <StakePopup
-              theme={theme}
-              open={isStakePopupOpen || isRemindToStakePopupOpen}
-              selectedPool={selectedPool}
-              dexTokensPricesMap={dexTokensPricesMap}
-              farmingTicketsMap={farmingTicketsMap}
-              close={() => {
-                isRemindToStakePopupOpen
-                  ? setIsRemindToStakePopupOpen(false)
-                  : setIsStakePopupOpen(false)
-              }}
-              allTokensData={allTokensData}
+              selectPool={selectPool}
               refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
               setPoolWaitingForUpdateAfterOperation={
                 setPoolWaitingForUpdateAfterOperation
               }
-              isReminderPopup={isRemindToStakePopupOpen}
+              setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+              setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+              setIsStakePopupOpen={setIsStakePopupOpen}
+              setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+              setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
             />
           )}
 
-          {selectedPool && isUnstakePopupOpen && (
-            <UnstakePopup
-              theme={theme}
-              open={isUnstakePopupOpen}
-              selectedPool={selectedPool}
-              close={() => setIsUnstakePopupOpen(false)}
-              allTokensData={allTokensData}
-              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-            />
-          )}
 
-          {selectedPool && isClaimRewardsPopupOpen && (
-            <ClaimRewards
-              theme={theme}
-              open={isClaimRewardsPopupOpen}
-              selectedPool={selectedPool}
-              farmingTicketsMap={farmingTicketsMap}
-              snapshotQueues={snapshotQueues}
-              allTokensData={allTokensData}
-              close={() => setIsClaimRewardsPopupOpen(false)}
-              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-            />
-          )}
-
+          {selectedPool &&
+            <>
+              {isAddLiquidityPopupOpen && (
+                <AddLiquidityPopup
+                  theme={theme}
+                  poolsInfo={pools}
+                  open={isAddLiquidityPopupOpen}
+                  dexTokensPricesMap={dexTokensPricesMap}
+                  selectedPool={selectedPool}
+                  farmingTicketsMap={farmingTicketsMap}
+                  refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+                  allTokensData={allTokensData}
+                  setPoolWaitingForUpdateAfterOperation={
+                    setPoolWaitingForUpdateAfterOperation
+                  }
+                  close={() => setIsAddLiquidityPopupOpen(false)}
+                  refreshAllTokensData={refreshAllTokensData}
+                  setIsRemindToStakePopupOpen={() =>
+                    setIsRemindToStakePopupOpen(true)
+                  }
+                />
+              )}
+              {isWithdrawalPopupOpen && (
+                <WithdrawalPopup
+                  theme={theme}
+                  poolsInfo={pools}
+                  selectedPool={selectedPool}
+                  dexTokensPricesMap={dexTokensPricesMap}
+                  farmingTicketsMap={farmingTicketsMap}
+                  earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+                  allTokensData={allTokensData}
+                  close={() => setIsWithdrawalPopupOpen(false)}
+                  open={isWithdrawalPopupOpen}
+                  refreshAllTokensData={refreshAllTokensData}
+                  setPoolWaitingForUpdateAfterOperation={
+                    setPoolWaitingForUpdateAfterOperation
+                  }
+                />
+              )}
+              {(isStakePopupOpen || isRemindToStakePopupOpen) && (
+                <StakePopup
+                  theme={theme}
+                  open={isStakePopupOpen || isRemindToStakePopupOpen}
+                  selectedPool={selectedPool}
+                  dexTokensPricesMap={dexTokensPricesMap}
+                  farmingTicketsMap={farmingTicketsMap}
+                  close={() => {
+                    isRemindToStakePopupOpen
+                      ? setIsRemindToStakePopupOpen(false)
+                      : setIsStakePopupOpen(false)
+                  }}
+                  allTokensData={allTokensData}
+                  refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+                  setPoolWaitingForUpdateAfterOperation={
+                    setPoolWaitingForUpdateAfterOperation
+                  }
+                  isReminderPopup={isRemindToStakePopupOpen}
+                />
+              )}
+              {isUnstakePopupOpen && (
+                <UnstakePopup
+                  theme={theme}
+                  open={isUnstakePopupOpen}
+                  selectedPool={selectedPool}
+                  close={() => setIsUnstakePopupOpen(false)}
+                  allTokensData={allTokensData}
+                  refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+                  setPoolWaitingForUpdateAfterOperation={
+                    setPoolWaitingForUpdateAfterOperation
+                  }
+                />
+              )}
+              {isClaimRewardsPopupOpen && (
+                <ClaimRewards
+                  theme={theme}
+                  open={isClaimRewardsPopupOpen}
+                  selectedPool={selectedPool}
+                  farmingTicketsMap={farmingTicketsMap}
+                  snapshotQueues={snapshotQueues}
+                  allTokensData={allTokensData}
+                  close={() => setIsClaimRewardsPopupOpen(false)}
+                  refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+                  setPoolWaitingForUpdateAfterOperation={
+                    setPoolWaitingForUpdateAfterOperation
+                  }
+                />
+              )}
+            </>
+          }
         </TableContainer>
       </BlockContent>
     </Block>
