@@ -44,7 +44,7 @@ import {
   defaultRequestDataState,
 } from './ListingRequestPopup.config'
 import { graphql } from 'react-apollo'
-import { BannerContainer, BT1, BT2, BT3, BT4, ApplyButton, Line as ApplyLine } from './styles'
+import { BannerContainer, BT1, BT2, BT3, BT4, BT5, ApplyButton, Line as ApplyLine } from './styles'
 import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../utils/config'
 
 const ListingRequestPopup = ({
@@ -360,7 +360,7 @@ const ListingRequestPopup = ({
             action="/success"
           >
             <RowContainer justify="space-between">
-              <Row width="calc(100% - 320px)">
+              <Row width="calc(100% - 390px)">
                 <input type="hidden" name="form-name" value="listingRequest" />
                 <input
                   type="text"
@@ -730,12 +730,13 @@ const ListingRequestPopup = ({
                   </SubmitButton>
                 </RowContainer>
               </Row>
-              <Row width="320px" style={{ alignSelf: 'flex-start' }}>
+              <Row width="390px" style={{ alignSelf: 'flex-start' }}>
                 <BannerContainer>
-                  <BT1>Create</BT1>
-                  <BT2>Liquidity</BT2>
-                  <BT3>pool on</BT3>
-                  <BT4>Aldrin</BT4>
+                  <BT1>CREATE</BT1>
+                  <BT2>LIQUIDITY</BT2>
+                  <BT3>POOL ON </BT3>
+                  <BT4>ALDRIN's</BT4>
+                  <BT5>AMM</BT5>
                   <ApplyButton as="a" href={LISTING_REQUEST_GOOGLE_FORM} target="_blank">
                     Click Here to Apply
                     <ApplyLine />

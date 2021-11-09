@@ -18,29 +18,33 @@ export const BannerContainer = styled.div`
 
 export const BannerText = styled(Text)`
   font-size: 58px;
-  text-transform: uppercase;
   text-align: justify;
   text-justify: inter-word;
   text-align-last:center;
   width: 100%;
-  padding: 21px 0;
+  padding: 16px 0;
 `
 
 export const BT1 = styled(BannerText)`
-  letter-spacing: 6px;
+  letter-spacing: 18px;
   font-weight: bold;
 `
 
 export const BT2 = styled(BannerText)`
-  letter-spacing: -3px;
+  letter-spacing: 6px;
 `
 
 export const BT3 = styled(BannerText)`
-  letter-spacing: -2px;
+  letter-spacing: 8px;
 `
 
 export const BT4 = styled(BannerText)`
   letter-spacing: 8px;
+`
+
+export const BT5 = styled(BannerText)`
+  letter-spacing: 79px;
+  margin-left: 32px;
 `
 
 export const ApplyButton = styled(Button)`
