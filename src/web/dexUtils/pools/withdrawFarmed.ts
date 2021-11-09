@@ -37,7 +37,7 @@ export const withdrawFarmed = async ({
   allTokensData,
   farmingTickets,
   pool,
-  programAddress,
+  programAddress = POOLS_PROGRAM_ADDRESS,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -49,7 +49,7 @@ export const withdrawFarmed = async ({
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
+    programAddress,
   })
 
   const { swapToken } = pool
