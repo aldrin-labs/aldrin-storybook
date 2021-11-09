@@ -19,11 +19,13 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/getParsedUserFarmingTickets'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useState } from 'react'
+import { PublicKey } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
 import { ClaimRewards } from '../../Popups/ClaimRewards/ClaimRewards'
@@ -31,9 +33,11 @@ import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
 import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
-import { InputWrap, SearchInput, TabContainer, TableContainer, TableModeButton } from './TablesSwitcher.styles'
+import { InputWrap, SearchInput, TabContainer, TableContainer, TableModeButton, AddPoolButton } from './TablesSwitcher.styles'
+import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
 
-
+import PlusIcon from './plus.svg'
+import { Checkbox } from '../../../../../components/Checkbox'
 
 const TablesSwitcher = ({
   theme,
@@ -66,6 +70,7 @@ const TablesSwitcher = ({
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
+  const [includePermissionless, setIncludePermissionless] = useState(true)
   const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
     false
   )
@@ -146,6 +151,12 @@ const TablesSwitcher = ({
             </TableModeButton>
           </div>
           <InputWrap>
+            <Checkbox
+              color="error"
+              label="Show Permissionless Pools"
+              checked={includePermissionless}
+              onChange={setIncludePermissionless}
+            />
             <SearchInput
               name="search"
               placeholder="Search"
@@ -159,6 +170,9 @@ const TablesSwitcher = ({
                 />
               }
             />
+            <AddPoolButton title="Create new pool" as="a" href={LISTING_REQUEST_GOOGLE_FORM} target="_blank">
+              <SvgIcon src={PlusIcon} width={'1.2em'} />
+            </AddPoolButton>
             <a
               style={{ textDecoration: 'none' }}
               href={AMMAudit}
@@ -184,6 +198,7 @@ const TablesSwitcher = ({
               poolWaitingForUpdateAfterOperation={
                 poolWaitingForUpdateAfterOperation
               }
+              includePermissionless={includePermissionless}
               poolsInfo={pools}
               allTokensData={allTokensData}
               dexTokensPricesMap={dexTokensPricesMap}
@@ -204,6 +219,7 @@ const TablesSwitcher = ({
               <UserLiquitidyTable
                 theme={theme}
                 searchValue={searchValue}
+                includePermissionless={includePermissionless}
                 poolsInfo={pools}
                 poolWaitingForUpdateAfterOperation={
                   poolWaitingForUpdateAfterOperation
@@ -258,6 +274,7 @@ const TablesSwitcher = ({
               allTokensData={allTokensData}
               close={() => setIsWithdrawalPopupOpen(false)}
               open={isWithdrawalPopupOpen}
+              setIsUnstakePopupOpen={setIsUnstakePopupOpen}
               refreshAllTokensData={refreshAllTokensData}
               setPoolWaitingForUpdateAfterOperation={
                 setPoolWaitingForUpdateAfterOperation

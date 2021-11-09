@@ -1,3 +1,4 @@
+import { stripByAmount } from '@core/utils/chartPageUtils'
 import { Metrics } from '@core/utils/metrics'
 import {
   DexInstructions,
@@ -68,8 +69,8 @@ const getNotificationText = ({
   orderType?: string
   operationType: string
 }): [string, string] => {
-  const baseSettleText = `${baseUnsettled} ${baseSymbol}`
-  const quoteSettleText = `${quoteUnsettled} ${quoteSymbol}`
+  const baseSettleText = `${stripByAmount(baseUnsettled)} ${baseSymbol}`
+  const quoteSettleText = `${stripByAmount(quoteUnsettled)} ${quoteSymbol}`
 
   const texts = {
     createOrder: [

@@ -38,6 +38,8 @@ export const FONT_SIZES = {
   xs: '0.6875em', // 11px
   sm: '0.8125em', // 13px
   md: '1em', // 16px
+  lg: '1.6em', // 16px
+  xxxl: '4em', // 64px
 }
 
 export const BREAKPOINTS = {
@@ -62,3 +64,5 @@ export const WIDTH = {
 
 export const LAYOUT_WIDTH = 1280
 export const LAYOUT_COL_NUMBER = 12
+
+export const TRANSITION = 'all ease-in 0.3s'

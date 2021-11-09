@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Connection } from '@solana/web3.js'
+import { Connection, PublicKey } from '@solana/web3.js'
 import { RefreshFunction, WalletAdapter } from '../types'
 import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
