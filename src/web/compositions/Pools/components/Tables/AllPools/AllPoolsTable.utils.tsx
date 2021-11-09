@@ -43,6 +43,8 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
+import { PERMISIONLESS_POOLS_MINTS } from '../UserLiquidity/UserLiquidity.utils'
+
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
   { label: 'Total Value Locked', id: 'tvl' },
@@ -143,6 +145,7 @@ export const combineAllPoolsData = ({
   setIsStakePopupOpen,
   setIsUnstakePopupOpen,
   setIsClaimRewardsPopupOpen,
+  includePermissionless,
 }: {
   theme: Theme
   wallet: WalletAdapter
@@ -168,6 +171,7 @@ export const combineAllPoolsData = ({
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
   setIsClaimRewardsPopupOpen: (value: boolean) => void
+  includePermissionless: boolean
 }) => {
   const processedAllPoolsData = poolsInfo
     .filter((pool) =>
@@ -178,6 +182,7 @@ export const combineAllPoolsData = ({
         )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
+    .filter((pool) => includePermissionless ? true : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint))
     .map((pool) => {
       const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
@@ -388,28 +393,28 @@ export const combineAllPoolsData = ({
                     <span style={{ color: '#53DF11' }}>Ended</span>
                   </RowDataTdText>
                 ) : (
-                  openFarmings.map((farmingState, i, arr) => {
-                    const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
-                      { farmingState, totalStakedLpTokensUSD }
-                    )
+                    openFarmings.map((farmingState, i, arr) => {
+                      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                        { farmingState, totalStakedLpTokensUSD }
+                      )
 
-                    return (
-                      <RowDataTdText>
-                        <span style={{ color: '#53DF11' }}>
-                          {stripByAmountAndFormat(
-                            farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                      return (
+                        <RowDataTdText>
+                          <span style={{ color: '#53DF11' }}>
+                            {stripByAmountAndFormat(
+                              farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                            )}
+                          </span>{' '}
+                          {getTokenNameByMintAddress(
+                            farmingState.farmingTokenMint
                           )}
-                        </span>{' '}
-                        {getTokenNameByMintAddress(
-                          farmingState.farmingTokenMint
-                        )}
-                        {/* + between every farming state token to be farmed, except last. for last - per day */}
-                        {i !== arr.length - 1 ? <span> + </span> : null}
-                        {i === arr.length - 1 ? <span> / Day</span> : null}
-                      </RowDataTdText>
-                    )
-                  })
-                )}
+                          {/* + between every farming state token to be farmed, except last. for last - per day */}
+                          {i !== arr.length - 1 ? <span> + </span> : null}
+                          {i === arr.length - 1 ? <span> / Day</span> : null}
+                        </RowDataTdText>
+                      )
+                    })
+                  )}
 
                 {openFarmings.length > 0 && (
                   <RowDataTdText>
@@ -420,8 +425,8 @@ export const combineAllPoolsData = ({
               </Row>
             </RowContainer>
           ) : (
-            '-'
-          ),
+              '-'
+            ),
           contentToSort: farmingAPR,
         },
         details: {

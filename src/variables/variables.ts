@@ -38,6 +38,8 @@ export const FONT_SIZES = {
   xs: '0.6875em', // 11px
   sm: '0.8125em', // 13px
   md: '1em', // 16px
+  lg: '1.6em', // 16px
+  xxxl: '4em', // 64px
 }
 
 export const BREAKPOINTS = {
