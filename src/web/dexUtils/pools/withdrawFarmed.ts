@@ -37,12 +37,14 @@ export const withdrawFarmed = async ({
   allTokensData,
   farmingTickets,
   pool,
+  programAddress,
 }: {
   wallet: WalletAdapter
   connection: Connection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
   pool: PoolInfo
+  programAddress?: string
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -171,7 +173,6 @@ export const withdrawFarmed = async ({
 
   return 'success'
 }
-
 
 // export const withdrawFarmed = async ({
 //   wallet,
