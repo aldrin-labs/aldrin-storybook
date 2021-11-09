@@ -37,12 +37,12 @@ const InputEl = styled.input`
   padding: 0.6em 1.5em;
   color: ${COLORS.white};
 `
+
 const Append = styled.span`
   padding: 0 1.5em;
   color: ${COLORS.hint};
   font-size: 1em;
 `
-
 
 
 export const INPUT_FORMATTERS = {

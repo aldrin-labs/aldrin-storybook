@@ -37,10 +37,12 @@ const UserLiquidityTableComponent = ({
   setIsStakePopupOpen,
   setIsUnstakePopupOpen,
   setIsClaimRewardsPopupOpen,
+  includePermissionless,
 }: {
   theme: Theme
   searchValue: string
   poolsInfo: PoolInfo[]
+  includePermissionless: boolean
   poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensData: TokenInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
@@ -85,6 +87,7 @@ const UserLiquidityTableComponent = ({
     setIsUnstakePopupOpen,
     setIsClaimRewardsPopupOpen,
     setPoolWaitingForUpdateAfterOperation,
+    includePermissionless,
   })
 
   return (

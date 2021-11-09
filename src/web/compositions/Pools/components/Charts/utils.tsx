@@ -33,7 +33,7 @@ Chart.register(
   Filler
 )
 
-export const NUMBER_OF_DAYS_TO_SHOW = 10
+export const NUMBER_OF_DAYS_TO_SHOW = 13
 const CHART_HEIGHT = 220
 
 interface ChartParams<T = { date: number, vol?: number }[]> {
