@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import { Theme } from '@material-ui/core'
-import { COLORS, BREAKPOINTS, BORDER_RADIUS } from '@variables/variables'
+import { COLORS, BREAKPOINTS, BORDER_RADIUS, FONT_SIZES } from '@variables/variables'
 import { Input } from '@sb/components/Input'
+import { Button } from '@sb/components/Button'
 
 type TableModeButtonProps = {
   isActive: boolean
@@ -63,4 +64,17 @@ export const SearchInput = styled(Input)`
 
 export const TableContainer = styled.div`
     min-width: 600px;
+`
+
+export const AddPoolButton = styled(Button)`
+    width: 42px;
+    height: 42px;
+    text-align: center;
+    margin-right: 20px;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: ${FONT_SIZES.lg};
 `

@@ -1,46 +1,46 @@
-import React from 'react'
-import { Theme } from '@sb/types/materialUI'
-
-import { SvgIcon } from '@sb/components'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
-  PoolInfo,
+  formatNumberToUSFormat,
+  stripDigitPlaces
+} from '@core/utils/PortfolioTableUtils'
+import ArrowToTop from '@icons/arrowToTop.svg'
+import ArrowToBottom from '@icons/greyArrow.svg'
+import Info from '@icons/TooltipImg.svg'
+import { SvgIcon } from '@sb/components'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import {
   DexTokensPrices,
-  FeesEarned,
-  PoolWithOperation,
+  FeesEarned, PoolInfo,
+  PoolWithOperation
 } from '@sb/compositions/Pools/index.types'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { getStakedTokensForPool } from '@sb/dexUtils/common/getStakedTokensForPool'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { Theme } from '@sb/types/materialUI'
+import React from 'react'
 import { TokenIconsContainer } from '../components'
+import { TablesDetails } from '../components/TablesDetails'
 import {
   RowDataTdText,
   RowDataTdTopText,
-  TextColumnContainer,
+  TextColumnContainer
 } from '../index.styles'
-
-import CrownIcon from '@icons/crownIcon.svg'
-import ForbiddenIcon from '@icons/fobiddenIcon.svg'
-import ArrowToBottom from '@icons/greyArrow.svg'
-import ArrowToTop from '@icons/arrowToTop.svg'
-import Info from '@icons/TooltipImg.svg'
-import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { TokenIcon } from '@sb/components/TokenIcon'
-import { TablesDetails } from '../components/TablesDetails'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
-import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { getStakedTokensForPool } from '@sb/dexUtils/common/getStakedTokensForPool'
-import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from './utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
 import { getFarmingStateDailyFarmingValue } from './utils/getFarmingStateDailyFarmingValue'
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from './utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
+
+export const PERMISIONLESS_POOLS_MINTS = [
+  '46EsyeSzs6tBoTRmFiGfDzGQe13LP337C7mMtdNMkgcU', // OOGI/USDC
+  'E3XeF4QCTMMo8P5yrgqNMvoRJMyVPTNHhWkbRCgoeAfC', // SLX/USDC
+]
+
 
 export const userLiquidityTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -115,6 +115,7 @@ export const combineUserLiquidityData = ({
   setIsStakePopupOpen,
   setIsUnstakePopupOpen,
   setIsClaimRewardsPopupOpen,
+  includePermissionless,
 }: {
   theme: Theme
   searchValue: string
@@ -133,6 +134,7 @@ export const combineUserLiquidityData = ({
   setIsStakePopupOpen: (value: boolean) => void
   setIsUnstakePopupOpen: (value: boolean) => void
   setIsClaimRewardsPopupOpen: (value: boolean) => void
+  includePermissionless: boolean
 }) => {
   const processedUserLiquidityData = usersPools
     .filter((pool) =>
@@ -143,6 +145,7 @@ export const combineUserLiquidityData = ({
         )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
+    .filter((pool) => includePermissionless ? true : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint))
     .map((pool: PoolInfo) => {
       const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
@@ -357,28 +360,28 @@ export const combineUserLiquidityData = ({
                     <span style={{ color: '#53DF11' }}>Ended</span>
                   </RowDataTdText>
                 ) : (
-                  openFarmings.map((farmingState, i, arr) => {
-                    const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
-                      { farmingState, totalStakedLpTokensUSD }
-                    )
+                    openFarmings.map((farmingState, i, arr) => {
+                      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                        { farmingState, totalStakedLpTokensUSD }
+                      )
 
-                    return (
-                      <RowDataTdText>
-                        <span style={{ color: '#53DF11' }}>
-                          {stripByAmountAndFormat(
-                            farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                      return (
+                        <RowDataTdText>
+                          <span style={{ color: '#53DF11' }}>
+                            {stripByAmountAndFormat(
+                              farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                            )}
+                          </span>{' '}
+                          {getTokenNameByMintAddress(
+                            farmingState.farmingTokenMint
                           )}
-                        </span>{' '}
-                        {getTokenNameByMintAddress(
-                          farmingState.farmingTokenMint
-                        )}
-                        {/* + between every farming state token to be farmed, except last. for last - per day */}
-                        {i !== arr.length - 1 ? <span> + </span> : null}
-                        {i === arr.length - 1 ? <span> / Day</span> : null}
-                      </RowDataTdText>
-                    )
-                  })
-                )}
+                          {/* + between every farming state token to be farmed, except last. for last - per day */}
+                          {i !== arr.length - 1 ? <span> + </span> : null}
+                          {i === arr.length - 1 ? <span> / Day</span> : null}
+                        </RowDataTdText>
+                      )
+                    })
+                  )}
 
                 {openFarmings.length > 0 && (
                   <RowDataTdText>
@@ -389,8 +392,8 @@ export const combineUserLiquidityData = ({
               </Row>
             </RowContainer>
           ) : (
-            '-'
-          ),
+              '-'
+            ),
           contentToSort: farmingAPR,
         },
         details: {

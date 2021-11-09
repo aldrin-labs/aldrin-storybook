@@ -36,7 +36,7 @@ import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCust
 import { writeQueryData } from '@core/utils/TradingTable.utils'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import { Loading } from '@sb/components/Loading'
 import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
 import {
@@ -44,6 +44,8 @@ import {
   defaultRequestDataState,
 } from './ListingRequestPopup.config'
 import { graphql } from 'react-apollo'
+import { BannerContainer, BT1, BT2, BT3, BT4, ApplyButton, Line as ApplyLine } from './styles'
+import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../utils/config'
 
 const ListingRequestPopup = ({
   theme,
@@ -278,8 +280,8 @@ const ListingRequestPopup = ({
 
     await history.push(
       `/chart/spot/${knownBaseCurrency ||
-        requestData.baseTokenName}_${knownQuoteCurrency ||
-        requestData.quoteTokenName}`
+      requestData.baseTokenName}_${knownQuoteCurrency ||
+      requestData.quoteTokenName}`
     )
     await submitRequest(true)
     await onDoClose()
@@ -296,11 +298,12 @@ const ListingRequestPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
+      PaperProps={{ width: '120rem' }}
       onEnter={() => {
         submitRequest(false)
         setRequestData(defaultRequestDataState)
       }}
-      maxWidth={'md'}
+      maxWidth={'lg'}
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -349,384 +352,399 @@ const ListingRequestPopup = ({
           </BlueButton>
         </RowContainer>
       ) : (
-        <Form
-          onSubmit={handleSubmit}
-          name="listingRequest"
-          data-netlify="true"
-          method={'post'}
-          action="/success"
-        >
-          <input type="hidden" name="form-name" value="listingRequest" />
-          <input
-            type="text"
-            name="category"
-            value={requestData.category.join(' ')}
-            id="category"
-            style={{ display: 'none' }}
-          />
-          <RowContainer justify="space-between" margin={'1rem 0'}>
-            <Row width={'49%'}>
-              <RowContainer wrap="nowrap">
-                <Text
-                  fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
-                  whiteSpace="nowrap"
-                >
-                  Base Token Name <span style={{ color: '#FFBDAE' }}>*</span>
-                </Text>
-                <Line />
-              </RowContainer>
-              <RowContainer justify={'space-between'}>
-                <TextField
-                  height={'5rem'}
+          <Form
+            onSubmit={handleSubmit}
+            name="listingRequest"
+            data-netlify="true"
+            method={'post'}
+            action="/success"
+          >
+            <RowContainer justify="space-between">
+              <Row width="calc(100% - 320px)">
+                <input type="hidden" name="form-name" value="listingRequest" />
+                <input
                   type="text"
-                  name="baseTokenName"
-                  id="baseTokenName"
-                  autoComplete="off"
-                  theme={theme}
-                  placeholder={'e.g. RIN'}
-                  value={requestData.baseTokenName}
-                  onChange={(e) =>
-                    setData({
-                      fieldName: 'baseTokenName',
-                      value: e.target.value,
-                    })
-                  }
+                  name="category"
+                  value={requestData.category.join(' ')}
+                  id="category"
+                  style={{ display: 'none' }}
                 />
-              </RowContainer>
-            </Row>
-            <Row width={'49%'}>
-              <RowContainer wrap="nowrap">
-                <Text
-                  fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
-                  whiteSpace="nowrap"
-                >
-                  Quote Token Name <span style={{ color: '#FFBDAE' }}>*</span>
-                </Text>
-                <Line />
-              </RowContainer>
-              <RowContainer justify={'space-between'}>
-                <TextField
-                  height={'5rem'}
-                  type="text"
-                  name="quoteTokenName"
-                  id="quoteTokenName"
-                  autoComplete="off"
-                  theme={theme}
-                  placeholder={'e.g. USDC'}
-                  value={requestData.quoteTokenName}
-                  onChange={(e) =>
-                    setData({
-                      fieldName: 'quoteTokenName',
-                      value: e.target.value,
-                    })
-                  }
-                />
-              </RowContainer>
-            </Row>
-          </RowContainer>
-          <RowContainer margin={'1rem 0'}>
-            <RowContainer wrap="nowrap">
-              <Text
-                fontSize="1.2rem"
-                padding={'0 1rem 0 0'}
-                whiteSpace="nowrap"
-              >
-                Market ID
-                <span style={{ color: '#FFBDAE', marginLeft: '0.5rem' }}>
-                  *
-                </span>{' '}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://docs.aldrin.com/dex/how-to-list-a-market-on-aldrin-dex"
-                  style={{
-                    color: theme.palette.blue.serum,
-                    textDecoration: 'none',
-                  }}
-                >
-                  Learn More
-                </a>
-              </Text>
-              <Line />
-            </RowContainer>
-            <RowContainer justify={'space-between'}>
-              <TextField
-                height="5rem"
-                type="text"
-                name="marketID"
-                id="marketID"
-                autoComplete="off"
-                theme={theme}
-                placeholder={
-                  'e.g. 7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'
-                }
-                value={requestData.marketID}
-                onChange={(e) =>
-                  setData({
-                    fieldName: 'marketID',
-                    value: e.target.value,
-                  })
-                }
-              />
-            </RowContainer>
-          </RowContainer>{' '}
-          {wellFormedMarketId ? (
-            <RowContainer justify={'flex-start'}>
-              {!market && !loadingMarket && (
-                <Text style={{ color: '#F69894' }}>Not a valid market</Text>
-              )}
-              {market && knownMarketById && (
-                <Text style={{ color: '#F69894' }}>
-                  This market already exists and cannot be duplicated.
-                </Text>
-              )}
-              {market && !knownProgram && (
-                <Text style={{ color: '#F69894' }}>
-                  Warning: unknown DEX program
-                </Text>
-              )}
-              {market && knownProgram && knownProgram.deprecated && (
-                <Text style={{ color: '#F69894' }}>
-                  Warning: deprecated DEX program.
-                </Text>
-              )}
-            </RowContainer>
-          ) : requestData.marketID && !wellFormedMarketId ? (
-            <RowContainer justify={'flex-start'} margin={'2rem 0 0 0'}>
-              <Text style={{ color: '#F69894' }}>Invalid market ID</Text>
-            </RowContainer>
-          ) : (
-            knownMarketByName && (
-              <Text style={{ color: '#F69894' }}>
-                Market with such name already exists and cannot be duplicated.
-              </Text>
-            )
-          )}
-          <RowContainer justify="space-between" margin={'1rem 0'}>
-            <Row width={'49%'}>
-              <RowContainer wrap="nowrap">
-                <Text
-                  fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
-                  whiteSpace="nowrap"
-                >
-                  Twitter Link
-                </Text>
-                <Line />
-              </RowContainer>
-              <RowContainer justify={'space-between'}>
-                <TextField
-                  height={'5rem'}
-                  type="url"
-                  name="twitterLink"
-                  id="twitterLink"
-                  autoComplete="off"
-                  theme={theme}
-                  placeholder={'e.g. https://twitter.com/Aldrin_Exchange'}
-                  value={requestData.twitterLink}
-                  onChange={(e) =>
-                    setData({
-                      fieldName: 'twitterLink',
-                      value: e.target.value,
-                    })
-                  }
-                />
-              </RowContainer>
-            </Row>
-            <Row width={'49%'}>
-              <RowContainer wrap="nowrap">
-                <Text
-                  fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
-                  whiteSpace="nowrap"
-                >
-                  Coinmarketcap or Coingecko Link{' '}
-                </Text>
-                <Line />
-              </RowContainer>
-              <RowContainer justify={'space-between'}>
-                <TextField
-                  height={'5rem'}
-                  type="url"
-                  name="coinMarketCapLink"
-                  id="coinMarketCapLink"
-                  autoComplete="off"
-                  theme={theme}
-                  placeholder={
-                    'e.g. https://coinmarketcap.com/currencies/aldrin/'
-                  }
-                  value={requestData.coinMarketCapLink}
-                  onChange={(e) =>
-                    setData({
-                      fieldName: 'coinMarketCapLink',
-                      value: e.target.value,
-                    })
-                  }
-                />
-              </RowContainer>
-            </Row>
-          </RowContainer>
-          <RowContainer margin={'1rem 0'}>
-            <RowContainer wrap="nowrap">
-              <Text
-                fontSize="1.2rem"
-                padding={'0 1rem 0 0'}
-                whiteSpace="nowrap"
-              >
-                Select the categories to which the project belongs
-              </Text>
-              <Line />
-            </RowContainer>
-            <RowContainer justify={'space-between'}>
-              {categoriesOfMarkets.map((el) => {
-                return (
-                  <StyledTab
-                    isSelected={requestData.category.includes(el)}
-                    onClick={() => {
-                      if (requestData.category.includes(el)) {
-                        const indexOfElement = requestData.category.findIndex(
-                          (category) => category === el
-                        )
+                <RowContainer justify="space-between" margin={'1rem 0'}>
+                  <Row width={'49%'}>
+                    <RowContainer wrap="nowrap">
+                      <Text
+                        fontSize="1.2rem"
+                        padding={'0 1rem 0 0'}
+                        whiteSpace="nowrap"
+                      >
+                        Base Token Name <span style={{ color: '#FFBDAE' }}>*</span>
+                      </Text>
+                      <Line />
+                    </RowContainer>
+                    <RowContainer justify={'space-between'}>
+                      <TextField
+                        height={'5rem'}
+                        type="text"
+                        name="baseTokenName"
+                        id="baseTokenName"
+                        autoComplete="off"
+                        theme={theme}
+                        placeholder={'e.g. RIN'}
+                        value={requestData.baseTokenName}
+                        onChange={(e) =>
+                          setData({
+                            fieldName: 'baseTokenName',
+                            value: e.target.value,
+                          })
+                        }
+                      />
+                    </RowContainer>
+                  </Row>
+                  <Row width={'49%'}>
+                    <RowContainer wrap="nowrap">
+                      <Text
+                        fontSize="1.2rem"
+                        padding={'0 1rem 0 0'}
+                        whiteSpace="nowrap"
+                      >
+                        Quote Token Name <span style={{ color: '#FFBDAE' }}>*</span>
+                      </Text>
+                      <Line />
+                    </RowContainer>
+                    <RowContainer justify={'space-between'}>
+                      <TextField
+                        height={'5rem'}
+                        type="text"
+                        name="quoteTokenName"
+                        id="quoteTokenName"
+                        autoComplete="off"
+                        theme={theme}
+                        placeholder={'e.g. USDC'}
+                        value={requestData.quoteTokenName}
+                        onChange={(e) =>
+                          setData({
+                            fieldName: 'quoteTokenName',
+                            value: e.target.value,
+                          })
+                        }
+                      />
+                    </RowContainer>
+                  </Row>
+                </RowContainer>
+                <RowContainer margin={'1rem 0'}>
+                  <RowContainer wrap="nowrap">
+                    <Text
+                      fontSize="1.2rem"
+                      padding={'0 1rem 0 0'}
+                      whiteSpace="nowrap"
+                    >
+                      Market ID
+                    <span style={{ color: '#FFBDAE', marginLeft: '0.5rem' }}>
+                        *
+                    </span>{' '}
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="https://docs.aldrin.com/dex/how-to-list-a-market-on-aldrin-dex"
+                        style={{
+                          color: theme.palette.blue.serum,
+                          textDecoration: 'none',
+                        }}
+                      >
+                        Learn More
+                    </a>
+                    </Text>
+                    <Line />
+                  </RowContainer>
+                  <RowContainer justify={'space-between'}>
+                    <TextField
+                      height="5rem"
+                      type="text"
+                      name="marketID"
+                      id="marketID"
+                      autoComplete="off"
+                      theme={theme}
+                      placeholder={
+                        'e.g. 7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'
+                      }
+                      value={requestData.marketID}
+                      onChange={(e) =>
                         setData({
-                          fieldName: 'category',
-                          value: [
-                            ...requestData.category.slice(0, indexOfElement),
-                            ...requestData.category.slice(indexOfElement + 1),
-                          ],
-                        })
-                      } else {
-                        setData({
-                          fieldName: 'category',
-                          value: [...requestData.category, el],
+                          fieldName: 'marketID',
+                          value: e.target.value,
                         })
                       }
-                    }}
+                    />
+                  </RowContainer>
+                </RowContainer>{' '}
+                {wellFormedMarketId ? (
+                  <RowContainer justify={'flex-start'}>
+                    {!market && !loadingMarket && (
+                      <Text style={{ color: '#F69894' }}>Not a valid market</Text>
+                    )}
+                    {market && knownMarketById && (
+                      <Text style={{ color: '#F69894' }}>
+                        This market already exists and cannot be duplicated.
+                      </Text>
+                    )}
+                    {market && !knownProgram && (
+                      <Text style={{ color: '#F69894' }}>
+                        Warning: unknown DEX program
+                      </Text>
+                    )}
+                    {market && knownProgram && knownProgram.deprecated && (
+                      <Text style={{ color: '#F69894' }}>
+                        Warning: deprecated DEX program.
+                      </Text>
+                    )}
+                  </RowContainer>
+                ) : requestData.marketID && !wellFormedMarketId ? (
+                  <RowContainer justify={'flex-start'} margin={'2rem 0 0 0'}>
+                    <Text style={{ color: '#F69894' }}>Invalid market ID</Text>
+                  </RowContainer>
+                ) : (
+                      knownMarketByName && (
+                        <Text style={{ color: '#F69894' }}>
+                          Market with such name already exists and cannot be duplicated.
+                        </Text>
+                      )
+                    )}
+                <RowContainer justify="space-between" margin={'1rem 0'}>
+                  <Row width={'49%'}>
+                    <RowContainer wrap="nowrap">
+                      <Text
+                        fontSize="1.2rem"
+                        padding={'0 1rem 0 0'}
+                        whiteSpace="nowrap"
+                      >
+                        Twitter Link
+                    </Text>
+                      <Line />
+                    </RowContainer>
+                    <RowContainer justify={'space-between'}>
+                      <TextField
+                        height={'5rem'}
+                        type="url"
+                        name="twitterLink"
+                        id="twitterLink"
+                        autoComplete="off"
+                        theme={theme}
+                        placeholder={'e.g. https://twitter.com/Aldrin_Exchange'}
+                        value={requestData.twitterLink}
+                        onChange={(e) =>
+                          setData({
+                            fieldName: 'twitterLink',
+                            value: e.target.value,
+                          })
+                        }
+                      />
+                    </RowContainer>
+                  </Row>
+                  <Row width={'49%'}>
+                    <RowContainer wrap="nowrap">
+                      <Text
+                        fontSize="1.2rem"
+                        padding={'0 1rem 0 0'}
+                        whiteSpace="nowrap"
+                      >
+                        Coinmarketcap or Coingecko Link{' '}
+                      </Text>
+                      <Line />
+                    </RowContainer>
+                    <RowContainer justify={'space-between'}>
+                      <TextField
+                        height={'5rem'}
+                        type="url"
+                        name="coinMarketCapLink"
+                        id="coinMarketCapLink"
+                        autoComplete="off"
+                        theme={theme}
+                        placeholder={
+                          'e.g. https://coinmarketcap.com/currencies/aldrin/'
+                        }
+                        value={requestData.coinMarketCapLink}
+                        onChange={(e) =>
+                          setData({
+                            fieldName: 'coinMarketCapLink',
+                            value: e.target.value,
+                          })
+                        }
+                      />
+                    </RowContainer>
+                  </Row>
+                </RowContainer>
+                <RowContainer margin={'1rem 0'}>
+                  <RowContainer wrap="nowrap">
+                    <Text
+                      fontSize="1.2rem"
+                      padding={'0 1rem 0 0'}
+                      whiteSpace="nowrap"
+                    >
+                      Select the categories to which the project belongs
+                  </Text>
+                    <Line />
+                  </RowContainer>
+                  <RowContainer justify={'space-between'}>
+                    {categoriesOfMarkets.map((el) => {
+                      return (
+                        <StyledTab
+                          isSelected={requestData.category.includes(el)}
+                          onClick={() => {
+                            if (requestData.category.includes(el)) {
+                              const indexOfElement = requestData.category.findIndex(
+                                (category) => category === el
+                              )
+                              setData({
+                                fieldName: 'category',
+                                value: [
+                                  ...requestData.category.slice(0, indexOfElement),
+                                  ...requestData.category.slice(indexOfElement + 1),
+                                ],
+                              })
+                            } else {
+                              setData({
+                                fieldName: 'category',
+                                value: [...requestData.category, el],
+                              })
+                            }
+                          }}
+                        >
+                          {el}
+                        </StyledTab>
+                      )
+                    })}
+                  </RowContainer>
+                </RowContainer>
+                <RowContainer justify="space-between" margin={'1rem 0'}>
+                  <Row width={'49%'}>
+                    <RowContainer wrap="nowrap">
+                      <Text
+                        fontSize="1.2rem"
+                        padding={'0 1rem 0 0'}
+                        whiteSpace="nowrap"
+                      >
+                        How to contact the team{' '}
+                        <span style={{ color: '#FFBDAE' }}>*</span>
+                      </Text>
+                      <Line />
+                    </RowContainer>
+                    <RowContainer justify={'space-between'}>
+                      <TextField
+                        height={'5rem'}
+                        type="text"
+                        name="contact"
+                        id="contact"
+                        autoComplete="off"
+                        theme={theme}
+                        placeholder={'e.g. contact@aldrin.com'}
+                        value={requestData.contact}
+                        onChange={(e) =>
+                          setData({
+                            fieldName: 'contact',
+                            value: e.target.value,
+                          })
+                        }
+                      />
+                    </RowContainer>
+                  </Row>
+                  <Row width={'45%'}>
+                    <RowContainer wrap="nowrap">
+                      <Text
+                        fontSize="1.2rem"
+                        padding={'0 1rem 0 0'}
+                      >
+                        Would the team like to be interviewed on the{' '}
+                        <a
+                          href="https://www.youtube.com/channel/UCO6TDGIdWPQsa6Dio7GFbUQ"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            color: theme.palette.blue.serum,
+                            textDecoration: 'none',
+                          }}
+                        >
+                          Simplifi DeFi show
+                      </a>
+                      ?
+                    </Text>
+                      <Line />
+                    </RowContainer>
+                    <RowContainer
+                      height={'6rem'}
+                      justify={'flex-start'}
+                      style={{ paddingTop: '1rem' }}
+                    >
+                      <Row margin={'0 1.5rem 0 0'}>
+                        <SRadio
+                          id="noDefiShow"
+                          checked={requestData.defiShow === 'No'}
+                          onChange={(e) =>
+                            setData({
+                              fieldName: 'defiShow',
+                              value: 'No',
+                            })
+                          }
+                        />
+                        <StyledLabel htmlFor="noDefiShow" color={'#fbf2f2'}>
+                          No
+                      </StyledLabel>
+                      </Row>{' '}
+                      <Row>
+                        <SRadio
+                          id="yesDefiShow"
+                          onChange={(e) =>
+                            setData({
+                              fieldName: 'defiShow',
+                              value: 'Yes',
+                            })
+                          }
+                          checked={requestData.defiShow === 'Yes'}
+                        />
+                        <StyledLabel htmlFor="yesDefiShow" color={'#fbf2f2'}>
+                          Yes
+                      </StyledLabel>
+                      </Row>
+                    </RowContainer>
+                  </Row>{' '}
+                </RowContainer>
+                {requestData.contact !== '' && !isContactValid && (
+                  <RowContainer justify="flex-start">
+                    <Text style={{ color: '#F69894' }}>
+                      Not valid contact. Please, use @username or left link to your
+                      contact.
+                  </Text>
+                  </RowContainer>
+                )}
+                <RowContainer>
+                  <SubmitButton
+                    isDisabled={isDisabled}
+                    disabled={isDisabled}
+                    theme={theme}
+                    type="submit"
                   >
-                    {el}
-                  </StyledTab>
-                )
-              })}
+                    {loading ? (
+                      <Loading size={16} style={{ height: '16px' }} />
+                    ) : (
+                        'Submit'
+                      )}
+                  </SubmitButton>
+                </RowContainer>
+              </Row>
+              <Row width="320px" style={{ alignSelf: 'flex-start' }}>
+                <BannerContainer>
+                  <BT1>Create</BT1>
+                  <BT2>Liquidity</BT2>
+                  <BT3>pool on</BT3>
+                  <BT4>Aldrin</BT4>
+                  <ApplyButton as="a" href={LISTING_REQUEST_GOOGLE_FORM} target="_blank">
+                    Click Here to Apply
+                    <ApplyLine />
+                  </ApplyButton>
+                </BannerContainer>
+              </Row>
             </RowContainer>
-          </RowContainer>
-          <RowContainer justify="space-between" margin={'1rem 0'}>
-            <Row width={'49%'}>
-              <RowContainer wrap="nowrap">
-                <Text
-                  fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
-                  whiteSpace="nowrap"
-                >
-                  How to contact the team{' '}
-                  <span style={{ color: '#FFBDAE' }}>*</span>
-                </Text>
-                <Line />
-              </RowContainer>
-              <RowContainer justify={'space-between'}>
-                <TextField
-                  height={'5rem'}
-                  type="text"
-                  name="contact"
-                  id="contact"
-                  autoComplete="off"
-                  theme={theme}
-                  placeholder={'e.g. contact@aldrin.com'}
-                  value={requestData.contact}
-                  onChange={(e) =>
-                    setData({
-                      fieldName: 'contact',
-                      value: e.target.value,
-                    })
-                  }
-                />
-              </RowContainer>
-            </Row>
-            <Row width={'49%'}>
-              <RowContainer wrap="nowrap">
-                <Text
-                  fontSize="1.2rem"
-                  padding={'0 1rem 0 0'}
-                  whiteSpace="nowrap"
-                >
-                  Would the team like to be interviewed on the{' '}
-                  <a
-                    href="https://www.youtube.com/channel/UCO6TDGIdWPQsa6Dio7GFbUQ"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      color: theme.palette.blue.serum,
-                      textDecoration: 'none',
-                    }}
-                  >
-                    Simplifi DeFi show
-                  </a>
-                  ?
-                </Text>
-                <Line />
-              </RowContainer>
-              <RowContainer
-                height={'6rem'}
-                justify={'flex-start'}
-                style={{ paddingTop: '1rem' }}
-              >
-                <Row margin={'0 1.5rem 0 0'}>
-                  <SRadio
-                    id="noDefiShow"
-                    checked={requestData.defiShow === 'No'}
-                    onChange={(e) =>
-                      setData({
-                        fieldName: 'defiShow',
-                        value: 'No',
-                      })
-                    }
-                  />
-                  <StyledLabel htmlFor="noDefiShow" color={'#fbf2f2'}>
-                    No
-                  </StyledLabel>
-                </Row>{' '}
-                <Row>
-                  <SRadio
-                    id="yesDefiShow"
-                    onChange={(e) =>
-                      setData({
-                        fieldName: 'defiShow',
-                        value: 'Yes',
-                      })
-                    }
-                    checked={requestData.defiShow === 'Yes'}
-                  />
-                  <StyledLabel htmlFor="yesDefiShow" color={'#fbf2f2'}>
-                    Yes
-                  </StyledLabel>
-                </Row>
-              </RowContainer>
-            </Row>{' '}
-          </RowContainer>
-          {requestData.contact !== '' && !isContactValid && (
-            <RowContainer justify="flex-start">
-              <Text style={{ color: '#F69894' }}>
-                Not valid contact. Please, use @username or left link to your
-                contact.
-              </Text>
-            </RowContainer>
-          )}
-          <RowContainer>
-            <SubmitButton
-              isDisabled={isDisabled}
-              disabled={isDisabled}
-              theme={theme}
-              type="submit"
-            >
-              {loading ? (
-                <Loading size={16} style={{ height: '16px' }} />
-              ) : (
-                'Submit'
-              )}
-            </SubmitButton>
-          </RowContainer>
-        </Form>
-      )}
+          </Form>
+        )}
     </DialogWrapper>
   )
 }

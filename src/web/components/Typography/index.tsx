@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { COLORS, FONT_SIZES } from '@variables/variables'
+import { COLORS, FONT_SIZES, FONTS } from '@variables/variables'
 
 export interface TextProps {
   size?: keyof typeof FONT_SIZES
@@ -12,6 +12,7 @@ export interface TextProps {
 }
 
 export const Text = styled.p<TextProps>`
+  font-family: ${FONTS.main}; 
   font-size: ${(props: TextProps) => FONT_SIZES[props.size || 'md']};
   line-height: ${(props: TextProps) => props.lineHeight || '150%'};
   color: ${(props: TextProps) => COLORS[props.color || 'white']};
