@@ -12,7 +12,7 @@ import { compose } from 'recompose'
 import { Cell } from '../../../components/Layout'
 import { RootRow } from '../styles'
 import StatsComponent from './StatsComponent'
-import { UserStakingInfo } from './UserStakingInfo'
+import UserStakingInfo from './UserStakingInfo'
 
 interface StakingComponentProps {
   getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
@@ -54,6 +54,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
             refreshAllTokenData={refreshAllTokenData}
             allStakingFarmingTickets={allStakingFarmingTickets}
             refreshAllStakingFarmingTickets={refreshFarmingTickets}
+            allTokenData={allTokenData}
           />
         </Cell>
         <Cell col={12} colLg={6}>

@@ -30,6 +30,7 @@ import BN from 'bn.js'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 import { sleep } from '../utils'
 import { getRandomInt } from '@core/utils/helpers'
+import { StakingPool } from '../staking/types'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -43,7 +44,7 @@ export const withdrawFarmed = async ({
   connection: Connection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
-  pool: PoolInfo
+  pool: PoolInfo | StakingPool
   programAddress?: string
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({

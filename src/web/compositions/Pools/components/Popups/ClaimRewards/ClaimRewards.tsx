@@ -18,6 +18,7 @@ import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
+import { StakingPool } from '@sb/dexUtils/staking/types'
 
 export const ClaimRewards = ({
   theme,
@@ -29,16 +30,20 @@ export const ClaimRewards = ({
   close,
   refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
+  programId,
+  callback,
 }: {
   theme: Theme
   open: boolean
-  selectedPool: PoolInfo
+  selectedPool: PoolInfo | StakingPool
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   snapshotQueues: SnapshotQueue[]
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
+  programId: string
+  callback?: () => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -133,21 +138,22 @@ export const ClaimRewards = ({
                 setTimeout(async () => {
                   refreshTokensWithFarmingTickets()
                   clearPoolWaitingForUpdate()
+                  await callback()
+                  close()
                 }, 7500)
 
                 setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
               }
             } catch (e) {
               clearPoolWaitingForUpdate()
+              close()
 
               setTimeout(async () => {
                 refreshTokensWithFarmingTickets()
               }, 7500)
             }
 
-            if (result !== 'blockhash_outdated') {
-              close()
-            } else {
+            if (result === 'blockhash_outdated') {
               setShowRetryMessage(true)
             }
           }}
