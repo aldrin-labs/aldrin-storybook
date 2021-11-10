@@ -167,7 +167,7 @@ export const StyledTab = styled(({ isSelected, ...props }) => (
     border-radius: 1.3rem;
     cursor: pointer;
     font-family: ${(props) =>
-    props.isSelected ? 'Avenir Next' : 'Avenir Next'};
+      props.isSelected ? 'Avenir Next' : 'Avenir Next'};
     font-size: 1.4rem;
     margin: 0.6rem 0.55rem;
     color: #fbf2f2;
@@ -194,8 +194,8 @@ export const BlueButton = styled(
           style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
         />
       ) : (
-          children
-        )}
+        children
+      )}
     </BtnCustom>
   )
 )`
@@ -302,7 +302,7 @@ export const SubmitButton = styled.button`
   color: #f8faff;
   border: none;
   font-family: Avenir Next Medium;
-  margin-top: 4rem;
+  margin-top: 3rem;
   transition: 0.3rem;
 
   @media (max-width: 600px) {
@@ -314,7 +314,7 @@ export const SubmitButton = styled.button`
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: ${(props) => props.width || '91rem'};
-  height: auto;
+  height: ${(props) => props.height || 'auto'};
   background: #222429;
   border: 0.1rem solid #3a475c;
   display: flex;
@@ -322,7 +322,7 @@ export const StyledPaper = styled(Paper)`
   align-items: center;
   margin: 2rem;
   padding: 3rem;
-
+  max-width: 1200px;
   @media (max-width: 600px) {
     border: 0;
     border-radius: 0;
