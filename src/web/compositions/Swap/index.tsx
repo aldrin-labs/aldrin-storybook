@@ -44,6 +44,10 @@ import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { SLIPPAGE_PERCENTAGE } from './config'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  costOfAddingToken,
+  TRANSACTION_COMMON_SOL_FEE,
+} from '@sb/components/TraidingTerminal/utils'
 
 const DEFAULT_BASE_TOKEN = 'SOL'
 const DEFAULT_QUOTE_TOKEN = 'RIN'
@@ -63,6 +67,8 @@ const SwapPage = ({
     wallet,
     connection,
   })
+
+  const nativeSOLTokenData = allTokensData[0]
 
   const urlParams = new URLSearchParams(window.location.search)
   const baseFromPoolsRedirect = urlParams.get('base')
@@ -191,7 +197,7 @@ const SwapPage = ({
     quoteTokenAmount: poolAmountTokenB,
   } = poolBalances
 
-  const {
+  let {
     address: userBaseTokenAccount,
     amount: maxBaseAmount,
     decimals: baseTokenDecimals,
@@ -200,6 +206,17 @@ const SwapPage = ({
     baseTokenMintAddress,
     selectedBaseTokenAddressFromSeveral
   )
+
+  // if we swap native sol to smth, we need to leave some SOL for covering fees
+  if (nativeSOLTokenData?.address === userBaseTokenAccount) {
+    const solFees = TRANSACTION_COMMON_SOL_FEE + costOfAddingToken
+
+    if (maxBaseAmount >= solFees) {
+      maxBaseAmount -= solFees
+    } else {
+      maxBaseAmount = 0
+    }
+  }
 
   const {
     address: userQuoteTokenAccount,
@@ -416,8 +433,8 @@ const SwapPage = ({
                   const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
 
                   const isNativeSOLSelected =
-                    allTokensData[0]?.address === userBaseTokenAccount ||
-                    allTokensData[0]?.address === userQuoteTokenAccount
+                    nativeSOLTokenData?.address === userBaseTokenAccount ||
+                    nativeSOLTokenData?.address === userQuoteTokenAccount
 
                   const userPoolBaseTokenAccount = isSwapBaseToQuote
                     ? userBaseTokenAccount
