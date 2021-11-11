@@ -52,10 +52,20 @@ export const ChartsIssuePopup = ({ theme }: { theme: Theme }) => {
         <Row
           width="60%"
           direction={'column'}
-          justify="space-between"
+          justify="flex-start"
           align="flex-start"
           height="100%"
         >
+          <Text
+            style={{
+              lineHeight: '3rem',
+              marginBottom: '4rem',
+              fontSize: '1.8rem',
+            }}
+            theme={theme}
+          >
+            We’re doing an upgrade which will impact our charts temporarily.
+          </Text>
           <Text
             style={{
               lineHeight: '3rem',
@@ -64,7 +74,6 @@ export const ChartsIssuePopup = ({ theme }: { theme: Theme }) => {
             }}
             theme={theme}
           >
-            We’re doing an upgrade which will impact our charts temporarily.
             Trading is not impacted by this but we encourage to trade once
             charts are fully functional.
           </Text>
@@ -73,10 +82,7 @@ export const ChartsIssuePopup = ({ theme }: { theme: Theme }) => {
           <SvgIcon width={'13rem'} height={'auto'} src={DarkLogo} />
         </Row>
       </RowContainer>
-      <Row
-        justify="space-between"
-        style={{ flexWrap: 'nowrap' }}
-      >
+      <Row justify="space-between" style={{ flexWrap: 'nowrap' }}>
         <BlackButton
           disabled={false}
           theme={theme}
