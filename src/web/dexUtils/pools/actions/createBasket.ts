@@ -9,20 +9,17 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import { transferSOLToWrappedAccountAndClose } from '../pools'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import {
-  getPoolsProgramAddress,
-  POOLS_PROGRAM_ADDRESS,
-} from '../ProgramsMultiton/utils'
+import { transferSOLToWrappedAccountAndClose } from '@sb/dexUtils/pools'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
   sendTransaction,
-} from '../send'
-import { Token } from '../token/token'
-import { WalletAdapter } from '../types'
-import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
+} from '@sb/dexUtils/send'
+import { Token } from '@sb/dexUtils/token/token'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -30,7 +27,7 @@ export async function createBasket({
   wallet,
   connection,
   poolPublicKey,
-  isStablePool,
+  curveType,
   userPoolTokenAccount,
   userBaseTokenAccount,
   userQuoteTokenAccount,
@@ -41,7 +38,7 @@ export async function createBasket({
   wallet: WalletAdapter
   connection: Connection
   poolPublicKey: PublicKey
-  isStablePool: boolean
+  curveType: number | null
   userPoolTokenAccount: PublicKey | null
   userBaseTokenAccount: PublicKey
   userQuoteTokenAccount: PublicKey
@@ -52,7 +49,7 @@ export async function createBasket({
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: getPoolsProgramAddress({ isStablePool }),
+    programAddress: getPoolsProgramAddress({ curveType }),
   })
 
   const [vaultSigner] = await PublicKey.findProgramAddress(

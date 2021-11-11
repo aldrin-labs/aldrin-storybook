@@ -25,11 +25,11 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { redeemBasket } from '@sb/dexUtils/pools/redeemBasket'
+import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import {
@@ -315,7 +315,7 @@ export const WithdrawalPopup = ({
             const result = await redeemBasket({
               wallet,
               connection,
-              isStablePool: selectedPool.isStablePool,
+              curveType: selectedPool.curveType,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               userPoolTokenAmount: poolTokenAmountToWithdraw,

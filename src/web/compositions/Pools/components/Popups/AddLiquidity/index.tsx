@@ -31,11 +31,11 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { notify } from '@sb/dexUtils/notifications'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
-import { createBasket } from '@sb/dexUtils/pools/createBasket'
+import { createBasket } from '@sb/dexUtils/pools/actions/createBasket'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Button } from '../../Tables/index.styles'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
-import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
@@ -527,7 +527,7 @@ export const AddLiquidityPopup = ({
             const result = await createBasket({
               wallet,
               connection,
-              isStablePool: selectedPool.isStablePool,
+              curveType: selectedPool.curveType,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userBaseTokenAmount,
               userQuoteTokenAmount,

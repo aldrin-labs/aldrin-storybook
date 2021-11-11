@@ -2,16 +2,19 @@ import { TokenInstructions } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
-import { Side } from '../common/config'
+import { Side } from '@sb/dexUtils/common/config'
 import {
   createSOLAccountAndClose,
-  transferSOLToWrappedAccountAndClose
-} from '../pools'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '../send'
-import { WalletAdapter } from '../types'
-
+  transferSOLToWrappedAccountAndClose,
+} from '@sb/dexUtils/pools'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import {
+  createTokenAccountTransaction,
+  isTransactionFailed,
+  sendTransaction,
+} from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 

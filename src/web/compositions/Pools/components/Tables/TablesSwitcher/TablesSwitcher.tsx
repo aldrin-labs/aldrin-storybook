@@ -15,16 +15,14 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/getParsedUserFarmingTickets'
-import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
-import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
+import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
+import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
@@ -33,7 +31,14 @@ import { StakePopup } from '../../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../../Popups/Unstaking/UnstakePopup'
 import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
-import { InputWrap, SearchInput, TabContainer, TableContainer, TableModeButton, AddPoolButton } from './TablesSwitcher.styles'
+import {
+  InputWrap,
+  SearchInput,
+  TabContainer,
+  TableContainer,
+  TableModeButton,
+  AddPoolButton,
+} from './TablesSwitcher.styles'
 import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
 
 import PlusIcon from './plus.svg'
@@ -75,9 +80,7 @@ const TablesSwitcher = ({
     false
   )
 
-
   const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
-
 
   // after operation with pool we update data after some time
   // and for better ux we need to show loader for button which was use for this operation
@@ -162,15 +165,14 @@ const TablesSwitcher = ({
               placeholder="Search"
               value={searchValue}
               onChange={onChangeSearch}
-              append={
-                <SvgIcon
-                  src={Loop}
-                  height={'1.6rem'}
-                  width={'1.6rem'}
-                />
-              }
+              append={<SvgIcon src={Loop} height={'1.6rem'} width={'1.6rem'} />}
             />
-            <AddPoolButton title="Create new pool" as="a" href={LISTING_REQUEST_GOOGLE_FORM} target="_blank">
+            <AddPoolButton
+              title="Create new pool"
+              as="a"
+              href={LISTING_REQUEST_GOOGLE_FORM}
+              target="_blank"
+            >
               <SvgIcon src={PlusIcon} width={'1.2em'} />
             </AddPoolButton>
             <a
@@ -179,7 +181,9 @@ const TablesSwitcher = ({
               target="_blank"
             >
               <div>
-                <Text margin="0" size="sm">Audited by</Text>
+                <Text margin="0" size="sm">
+                  Audited by
+                </Text>
               </div>
               <SvgIcon
                 width="5em"
@@ -216,31 +220,30 @@ const TablesSwitcher = ({
               setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
             />
           ) : (
-              <UserLiquitidyTable
-                theme={theme}
-                searchValue={searchValue}
-                includePermissionless={includePermissionless}
-                poolsInfo={pools}
-                poolWaitingForUpdateAfterOperation={
-                  poolWaitingForUpdateAfterOperation
-                }
-                dexTokensPricesMap={dexTokensPricesMap}
-                allTokensData={allTokensData}
-                farmingTicketsMap={farmingTicketsMap}
-                earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-                selectPool={selectPool}
-                refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-                setPoolWaitingForUpdateAfterOperation={
-                  setPoolWaitingForUpdateAfterOperation
-                }
-                setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-                setIsStakePopupOpen={setIsStakePopupOpen}
-                setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-                setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
-              />
-            )}
-
+            <UserLiquitidyTable
+              theme={theme}
+              searchValue={searchValue}
+              includePermissionless={includePermissionless}
+              poolsInfo={pools}
+              poolWaitingForUpdateAfterOperation={
+                poolWaitingForUpdateAfterOperation
+              }
+              dexTokensPricesMap={dexTokensPricesMap}
+              allTokensData={allTokensData}
+              farmingTicketsMap={farmingTicketsMap}
+              earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+              selectPool={selectPool}
+              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+              setPoolWaitingForUpdateAfterOperation={
+                setPoolWaitingForUpdateAfterOperation
+              }
+              setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+              setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+              setIsStakePopupOpen={setIsStakePopupOpen}
+              setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+              setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
+            />
+          )}
 
           {selectedPool && isAddLiquidityPopupOpen && (
             <AddLiquidityPopup
@@ -332,7 +335,6 @@ const TablesSwitcher = ({
               }
             />
           )}
-
         </TableContainer>
       </BlockContent>
     </Block>

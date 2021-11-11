@@ -2,7 +2,6 @@ import { simulateTransaction } from '@project-serum/common'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import { WalletAdapter } from '../types'
-import { checkFarmed } from './checkFarmed'
 import { START_OF_LOG_WITH_AMOUNT_TO_CLAIM } from './config'
 import { FarmingTicket } from './types'
 import { StakingPool } from '../staking/types'
@@ -42,14 +41,14 @@ export const addAmountsToClaimForFarmingTickets = async ({
 
     for (let farming of pool.farming) {
       try {
-        transaction = await checkFarmed({
-          wallet,
-          connection,
-          poolPublicKey: new PublicKey(pool.swapToken),
-          farmingTicket: new PublicKey(ticket.farmingTicket),
-          farming,
-          programAddress,
-        })
+        // transaction = await checkFarmed({
+        //   wallet,
+        //   connection,
+        //   poolPublicKey: new PublicKey(pool.swapToken),
+        //   farmingTicket: new PublicKey(ticket.farmingTicket),
+        //   farming,
+        //   programAddress,
+        // })
       } catch (e) {
         console.error(e)
         continue

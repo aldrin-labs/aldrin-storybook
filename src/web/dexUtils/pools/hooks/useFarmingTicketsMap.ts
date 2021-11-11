@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Connection, PublicKey } from '@solana/web3.js'
-import { RefreshFunction, WalletAdapter } from '../types'
-import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
+import { RefreshFunction, WalletAdapter } from '@sb/dexUtils/types'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { FarmingTicket, PoolAddress, SnapshotQueue } from '../common/types'
-import { addFarmingRewardsToTickets } from './addFarmingRewardsToTickets/addFarmingRewardsToTickets'
+import {
+  FarmingTicket,
+  PoolAddress,
+  SnapshotQueue,
+} from '@sb/dexUtils/common/types'
+import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 
 export const useFarmingTicketsMap = ({
   wallet,
@@ -57,7 +61,13 @@ export const useFarmingTicketsMap = ({
       setFarmingTicketsMap(farmingTicketsMap)
     }
 
-    if (pools && pools.length > 0 && snapshotQueues && snapshotQueues.length > 0 && wallet.publicKey) {
+    if (
+      pools &&
+      pools.length > 0 &&
+      snapshotQueues &&
+      snapshotQueues.length > 0 &&
+      wallet.publicKey
+    ) {
       loadFarmingTickets()
     }
   }, [wallet.publicKey, pools, snapshotQueues, refreshCounter])

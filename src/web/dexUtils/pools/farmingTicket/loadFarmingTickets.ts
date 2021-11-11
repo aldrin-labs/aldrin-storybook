@@ -1,22 +1,27 @@
 import { Connection, PublicKey } from '@solana/web3.js'
-import { WalletAdapter } from '../types'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   FARMING_TICKET_OFFSET_OF_POOL_PUBLICKEY,
   FARMING_TICKET_OFFSET_OF_USER_PUBLICKEY,
   FARMING_TICKET_SIZE,
-} from '../common/config'
-import { loadAccountsFromPoolsProgram } from './loadAccountsFromPoolsProgram'
+} from '@sb/dexUtils/common/config'
+
+import { loadAccountsFromPoolsProgram } from '@sb/dexUtils/pools/loadAccountsFromPoolsProgram'
+import { loadAccountsFromPoolsV2Program } from '@sb/dexUtils/pools/loadAccountsFromPoolsV2Program'
+import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 
 export const loadFarmingTickets = async ({
   wallet,
   connection,
   walletPublicKey,
   poolPublicKey,
+  programId = POOLS_PROGRAM_ADDRESS,
 }: {
   wallet: WalletAdapter
   connection: Connection
   walletPublicKey?: PublicKey
   poolPublicKey?: PublicKey
+  programId?: string
 }) => {
   const filterByPoolPublicKey = poolPublicKey
     ? [
@@ -40,7 +45,22 @@ export const loadFarmingTickets = async ({
       ]
     : []
 
-  return await loadAccountsFromPoolsProgram({
+  if (programId === POOLS_PROGRAM_ADDRESS) {
+    const poolsProgramV1FarmingTickets = await loadAccountsFromPoolsProgram({
+      connection,
+      filters: [
+        {
+          dataSize: FARMING_TICKET_SIZE,
+        },
+        ...filterByWalletPublicKey,
+        ...filterByPoolPublicKey,
+      ],
+    })
+
+    return poolsProgramV1FarmingTickets
+  }
+
+  const poolsProgramV2FarmingTickets = await loadAccountsFromPoolsV2Program({
     connection,
     filters: [
       {
@@ -50,4 +70,6 @@ export const loadFarmingTickets = async ({
       ...filterByPoolPublicKey,
     ],
   })
+
+  return poolsProgramV2FarmingTickets
 }

@@ -15,10 +15,10 @@ import {
   SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendTransaction } from '../send'
-import { WalletAdapter } from '../types'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { sendTransaction } from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
 
 const MAX_RETRY_COUNT = 6
 
@@ -33,16 +33,18 @@ export const takePoolsFarmingSnapshots = async ({
 }) => {
   const poolAuthority = Keypair.fromSecretKey(Buffer.from([]))
 
-  const program = ProgramsMultiton.getProgramByAddress({
-    wallet,
-    connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
-  })
-
   console.log('pools', pools)
 
   for (let i = 0; i < pools.length; i++) {
     const pool = pools[i]
+    const programId = getPoolsProgramAddress({ curveType: pool.curveType })
+
+    const program = ProgramsMultiton.getProgramByAddress({
+      wallet,
+      connection,
+      programAddress: programId,
+    })
+
     if (pool.farming) {
       for (let j = 0; j < pool.farming.length; j++) {
         const farming = pool.farming[j]

@@ -1,3 +1,5 @@
+import { AccountInfo, PublicKey } from '@solana/web3.js'
+
 export type FarmingTicket = {
   tokensFrozen: number
   endTime: string
@@ -46,3 +48,11 @@ export type SnapshotQueue = {
   nextIndex: number
   snapshots: Snapshot[]
 }
+
+export interface GetProgramAccountsResultItem {
+  pubkey: PublicKey
+  account: AccountInfo<Buffer>
+}
+
+export type GetProgramAccountsResult = Array<GetProgramAccountsResultItem>
+export type AsyncGetProgramAccountsResult = Promise<GetProgramAccountsResult>

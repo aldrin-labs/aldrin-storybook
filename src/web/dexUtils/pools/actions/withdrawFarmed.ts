@@ -12,23 +12,23 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
   sendSignedTransaction,
   sendTransaction,
   signTransactions,
-} from '../send'
-import { WalletAdapter } from '../types'
-import { FarmingTicket, SnapshotQueue } from '../common/types'
+} from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { getSnapshotsWithUnclaimedRewards } from './addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
-import { NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION } from '../common/config'
+import { getSnapshotsWithUnclaimedRewards } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
+import { NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION } from '@sb/dexUtils/common/config'
 import BN from 'bn.js'
-import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
-import { sleep } from '../utils'
+import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
+import { sleep } from '@sb/dexUtils/utils'
 import { getRandomInt } from '@core/utils/helpers'
 
 export const withdrawFarmed = async ({
@@ -171,7 +171,6 @@ export const withdrawFarmed = async ({
 
   return 'success'
 }
-
 
 // export const withdrawFarmed = async ({
 //   wallet,

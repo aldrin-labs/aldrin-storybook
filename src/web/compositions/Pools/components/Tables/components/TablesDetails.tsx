@@ -22,7 +22,7 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
-import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
+import { withdrawFarmed } from '@sb/dexUtils/pools/actions/withdrawFarmed'
 import { useConnection } from '@sb/dexUtils/connection'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
@@ -46,7 +46,7 @@ import {
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getUniqueAmountsToClaimMap } from '../utils/getUniqueAmountsToClaimMap'
 import { PublicKey } from '@solana/web3.js'
-import { endFarming } from '@sb/dexUtils/pools/endFarming'
+import { endFarming } from '@sb/dexUtils/pools/actions/endFarming'
 
 export const TablesDetails = ({
   theme,

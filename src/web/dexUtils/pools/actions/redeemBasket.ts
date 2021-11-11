@@ -8,23 +8,23 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import { createSOLAccountAndClose, getMaxWithdrawAmount } from '../pools'
-
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import {
-  getPoolsProgramAddress,
-  POOLS_PROGRAM_ADDRESS,
-} from '../ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction } from '../send'
-import { WalletAdapter } from '../types'
-import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
+  createSOLAccountAndClose,
+  getMaxWithdrawAmount,
+} from '@sb/dexUtils/pools'
+
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
 export async function redeemBasket({
   wallet,
   connection,
-  isStablePool,
+  curveType,
   poolPublicKey,
   userPoolTokenAccount,
   userBaseTokenAccount,
@@ -33,7 +33,7 @@ export async function redeemBasket({
 }: {
   wallet: WalletAdapter
   connection: Connection
-  isStablePool: boolean
+  curveType: number | null
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
   userBaseTokenAccount: PublicKey
@@ -43,7 +43,7 @@ export async function redeemBasket({
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: getPoolsProgramAddress({ isStablePool }),
+    programAddress: getPoolsProgramAddress({ curveType }),
   })
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
@@ -143,7 +143,6 @@ export async function redeemBasket({
           userQuoteTokenAccount,
           walletAuthority: wallet.publicKey,
           userSolAccount: wallet.publicKey,
-          // lpTicket: ticketData.lpTicketAddress,
           tokenProgram: TOKEN_PROGRAM_ID,
           feeBaseAccount,
           feeQuoteAccount,

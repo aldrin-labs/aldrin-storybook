@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Connection, PublicKey } from '@solana/web3.js'
-import { RefreshFunction } from '../types'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
 interface PoolTokens {
   poolTokenAccountA?: string

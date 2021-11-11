@@ -16,7 +16,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
-import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
+import { withdrawFarmed } from '@sb/dexUtils/pools/actions/withdrawFarmed'
 import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 
 export const ClaimRewards = ({

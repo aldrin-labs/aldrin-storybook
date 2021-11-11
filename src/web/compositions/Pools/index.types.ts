@@ -5,7 +5,7 @@ export type PoolInfo = {
   parsedName: string
   tokenA: string
   tokenB: string
-  isStablePool: boolean
+  curveType: number
   poolTokenAccountA: string
   poolTokenAccountB: string
   swapToken: string
