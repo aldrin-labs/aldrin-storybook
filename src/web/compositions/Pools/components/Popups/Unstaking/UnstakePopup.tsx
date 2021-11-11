@@ -105,8 +105,9 @@ export const UnstakePopup = ({
               wallet,
               connection,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
-              userPoolTokenAccount:
-                userPoolTokenAccount && new PublicKey(userPoolTokenAccount),
+              userPoolTokenAccount: userPoolTokenAccount
+                ? new PublicKey(userPoolTokenAccount)
+                : null,
               farmingStatePublicKey: new PublicKey(farmingState.farmingState),
               snapshotQueuePublicKey: new PublicKey(
                 farmingState.farmingSnapshots
