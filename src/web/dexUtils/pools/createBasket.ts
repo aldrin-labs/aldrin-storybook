@@ -11,7 +11,10 @@ import {
 
 import { transferSOLToWrappedAccountAndClose } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import {
+  getPoolsProgramAddress,
+  POOLS_PROGRAM_ADDRESS,
+} from '../ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
@@ -27,6 +30,7 @@ export async function createBasket({
   wallet,
   connection,
   poolPublicKey,
+  isStablePool,
   userPoolTokenAccount,
   userBaseTokenAccount,
   userQuoteTokenAccount,
@@ -37,6 +41,7 @@ export async function createBasket({
   wallet: WalletAdapter
   connection: Connection
   poolPublicKey: PublicKey
+  isStablePool: boolean
   userPoolTokenAccount: PublicKey | null
   userBaseTokenAccount: PublicKey
   userQuoteTokenAccount: PublicKey
@@ -47,7 +52,7 @@ export async function createBasket({
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
+    programAddress: getPoolsProgramAddress({ isStablePool }),
   })
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
@@ -82,15 +87,17 @@ export async function createBasket({
   const poolTokenA = await tokenMintA.getAccountInfo(baseTokenVault)
   const poolTokenAmountA = poolTokenA.amount
 
-  let poolTokenAmount = supply
-    .mul(new BN(userBaseTokenAmount))
-    .div(poolTokenAmountA)
-    .div(new BN(100))
-    .mul(new BN(99))
+  let poolTokenAmount
 
   // first deposit
   if (supply.eq(new BN(0))) {
     poolTokenAmount = new BN(1 * 10 ** 8)
+  } else {
+    poolTokenAmount = supply
+      .mul(new BN(userBaseTokenAmount))
+      .div(poolTokenAmountA)
+      .div(new BN(100))
+      .mul(new BN(99))
   }
 
   const transactionBeforeDeposit = new Transaction()

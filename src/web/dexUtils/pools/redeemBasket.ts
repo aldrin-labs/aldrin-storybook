@@ -8,13 +8,13 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import {
-  createSOLAccountAndClose,
-  getMaxWithdrawAmount,
-} from '../pools'
+import { createSOLAccountAndClose, getMaxWithdrawAmount } from '../pools'
 
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import {
+  getPoolsProgramAddress,
+  POOLS_PROGRAM_ADDRESS,
+} from '../ProgramsMultiton/utils'
 import { isTransactionFailed, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
@@ -24,6 +24,7 @@ const { TOKEN_PROGRAM_ID } = TokenInstructions
 export async function redeemBasket({
   wallet,
   connection,
+  isStablePool,
   poolPublicKey,
   userPoolTokenAccount,
   userBaseTokenAccount,
@@ -32,6 +33,7 @@ export async function redeemBasket({
 }: {
   wallet: WalletAdapter
   connection: Connection
+  isStablePool: boolean
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
   userBaseTokenAccount: PublicKey
@@ -41,7 +43,7 @@ export async function redeemBasket({
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
+    programAddress: getPoolsProgramAddress({ isStablePool }),
   })
 
   const [vaultSigner] = await PublicKey.findProgramAddress(

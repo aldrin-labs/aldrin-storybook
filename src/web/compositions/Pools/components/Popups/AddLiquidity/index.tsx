@@ -527,6 +527,7 @@ export const AddLiquidityPopup = ({
             const result = await createBasket({
               wallet,
               connection,
+              isStablePool: selectedPool.isStablePool,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userBaseTokenAmount,
               userQuoteTokenAmount,

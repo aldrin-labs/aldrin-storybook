@@ -315,6 +315,7 @@ export const WithdrawalPopup = ({
             const result = await redeemBasket({
               wallet,
               connection,
+              isStablePool: selectedPool.isStablePool,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               userPoolTokenAmount: poolTokenAmountToWithdraw,

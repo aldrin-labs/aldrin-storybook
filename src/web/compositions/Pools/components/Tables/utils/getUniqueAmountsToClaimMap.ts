@@ -3,11 +3,13 @@ import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/get
 
 export const getUniqueAmountsToClaimMap = ({
   farmingTickets,
-  farmingStates,
+  farmingStates = [],
 }: {
   farmingTickets: FarmingTicket[]
-  farmingStates: FarmingState[]
+  farmingStates?: FarmingState[]
 }) => {
+  if (!farmingStates) return new Map()
+  
   return farmingStates.reduce((acc, farmingState) => {
     const { farmingTokenMint } = farmingState
 
