@@ -16,7 +16,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
-import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
+import { withdrawFarmed, withdrawFarmedNew } from '@sb/dexUtils/pools/withdrawFarmed'
 import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 
@@ -111,13 +111,15 @@ export const ClaimRewards = ({
             let result = null
 
             try {
-              result = await withdrawFarmed({
+              console.log('farmingTickets', farmingTickets)
+              result = await withdrawFarmedNew({
                 wallet,
                 connection,
                 pool: selectedPool,
                 allTokensData,
                 farmingTickets,
                 snapshotQueues,
+                programAddress: programId,
               })
 
               notify({

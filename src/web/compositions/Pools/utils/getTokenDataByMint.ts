@@ -20,14 +20,14 @@ export const getTokenDataByMint = (
       ) || emptyResponse
     )
   } else {
-    const tokensByMint = allTokensData.filter(
+    const tokensByMint = allTokensData?.filter(
       (tokenData) => tokenData.mint === mint
     )
 
-    if (tokensByMint.length > 1) {
-      return tokensByMint.sort((a, b) => b.amount - a.amount)[0]
+    if (tokensByMint?.length > 1) {
+      return tokensByMint?.sort((a, b) => b.amount - a.amount)[0]
     } else {
-      return tokensByMint[0] || emptyResponse
+      return (tokensByMint && tokensByMint[0]) || emptyResponse
     }
   }
 }
