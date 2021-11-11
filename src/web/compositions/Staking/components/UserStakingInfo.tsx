@@ -17,6 +17,9 @@ import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
+import { getSnapshotsWithUnclaimedRewards } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
+import { isOpenFarmingState } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { calculateAvailableToClaim } from '@sb/dexUtils/staking/calculateAvailableToClaim'
@@ -146,11 +149,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   })
 
   const totalStaked = getStakedTokensFromOpenFarmingTickets(userFarmingTickets)
+  const stakingPoolWithClosedFarmings = {
+    ...stakingPool,
+    farming: stakingPool.farming.filter((state) => !isOpenFarmingState(state)),
+  }
 
-  const userRewards = calculateUserStakingRewards({
-    snapshotQueues: allStakingSnapshotQueues,
-    farmingTickets: userFarmingTickets,
-  })
+  console.log('stakingPoolWithClosedFarmings', stakingPoolWithClosedFarmings)
 
   const refreshAll = async () => {
     await Promise.all([
@@ -238,17 +242,28 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
     walletPublicKey: wallet.publicKey,
     stakingPool,
-    allStakingFarmingTickets: userFarmingTickets,
-  })
-
-  const allUserFarmingTicketsWithAmountsToClaim = addFarmingRewardsToTickets({
-    pools: [stakingPool],
-    farmingTickets: userFarmingTickets,
     snapshotQueues: allStakingSnapshotQueues,
+    allStakingFarmingTickets: userFarmingTickets.map((t) => ({
+      ...t,
+      tokensFrozen: t.tokensFrozen * 10 ** 9,
+    })),
   })
 
-  const availableToClaimTotal = calculateAvailableToClaim(
-    allUserFarmingTicketsWithAmountsToClaim
+  const userRewards = getAvailableToClaimFarmingTokens(
+    stakingTicketsWithAvailableToClaim
+  )
+
+  console.log('stakingTicketsWithAvailableToClaim', userFarmingTickets)
+
+  const availableToClaimTotal = getAvailableToClaimFarmingTokens(
+    addFarmingRewardsToTickets({
+      farmingTickets: userFarmingTickets.map((t) => ({
+        ...t,
+        tokensFrozen: t.tokensFrozen * 10 ** 9,
+      })),
+      pools: [stakingPoolWithClosedFarmings],
+      snapshotQueues: allStakingSnapshotQueues,
+    })
   )
 
   const lastFarmingTicket = userFarmingTickets.sort(
@@ -265,7 +280,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
 
-  const farmingTicketsMap = allUserFarmingTicketsWithAmountsToClaim.reduce(
+  const farmingTicketsMap = stakingTicketsWithAvailableToClaim.reduce(
     (acc, farmingTicket) => {
       const { pool } = farmingTicket
 
@@ -393,8 +408,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       fontSize="xs"
                       padding="lg"
                       variant="link"
-                      disabled
-                      onClick={() => {}}
+                      // disabled
+                      onClick={() => setIsClaimRewardsPopupOpen(true)}
                     >
                       Restake
                     </Button>

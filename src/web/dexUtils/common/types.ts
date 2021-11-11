@@ -22,8 +22,8 @@ export type StateAttached = {
 export type FarmingState = {
   farmingState: string
   farmingTokenVault: string
-  farmingTokenMint?: string
-  farmingTokenMintDecimals?: number
+  farmingTokenMint: string
+  farmingTokenMintDecimals: number
   farmingSnapshots: string
   tokensUnlocked: number
   tokensTotal: number
