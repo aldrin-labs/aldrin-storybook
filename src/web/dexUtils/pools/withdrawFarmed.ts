@@ -59,7 +59,7 @@ export const withdrawFarmed = async ({
   )
 
   const createdTokensMap = new Map()
-  const commonTransaction = new Transaction()
+  let commonTransaction = new Transaction()
   const commonSigners: (Account | Keypair)[] = []
 
   let tx = null
@@ -77,6 +77,8 @@ export const withdrawFarmed = async ({
       if (isTransactionFailed(tx)) {
         return 'failed'
       }
+
+      commonTransaction = new Transaction()
     } catch (e) {
       console.log('end farming catch error', e)
 
