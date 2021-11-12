@@ -8,7 +8,9 @@ import {
   transferSOLToWrappedAccountAndClose,
 } from '@sb/dexUtils/pools'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import {
+  getPoolsProgramAddress,
+} from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
@@ -28,6 +30,7 @@ export const swap = async ({
   swapAmountOut,
   isSwapBaseToQuote,
   transferSOLToWrapped,
+  curveType,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -38,11 +41,12 @@ export const swap = async ({
   swapAmountOut: number
   isSwapBaseToQuote: boolean
   transferSOLToWrapped: boolean
+  curveType: number | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
+    programAddress: getPoolsProgramAddress({ curveType }),
   })
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
