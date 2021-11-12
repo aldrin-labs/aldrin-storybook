@@ -8,7 +8,7 @@ import {
 } from '@solana/web3.js'
 
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
@@ -22,6 +22,7 @@ export const endFarming = async ({
   farmingStatePublicKey,
   snapshotQueuePublicKey,
   userPoolTokenAccount,
+  curveType
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -29,11 +30,12 @@ export const endFarming = async ({
   farmingStatePublicKey: PublicKey
   snapshotQueuePublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
+  curveType: number | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
+    programAddress: getPoolsProgramAddress({ curveType }),
   })
 
   const [vaultSigner] = await PublicKey.findProgramAddress(

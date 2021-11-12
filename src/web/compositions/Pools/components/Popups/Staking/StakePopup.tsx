@@ -271,6 +271,7 @@ export const StakePopup = ({
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               farmingState: new PublicKey(farmingState.farmingState),
+              curveType: selectedPool.curveType,
             })
 
             setOperationLoading(false)

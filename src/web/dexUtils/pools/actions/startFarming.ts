@@ -11,7 +11,7 @@ import {
 
 import { notify } from '@sb/dexUtils/notifications'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { NUMBER_OF_RETRIES } from '@sb/dexUtils/common'
@@ -24,6 +24,7 @@ export const startFarming = async ({
   poolPublicKey,
   userPoolTokenAccount,
   farmingState,
+  curveType
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -31,11 +32,12 @@ export const startFarming = async ({
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey
   farmingState: PublicKey
+  curveType: number | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
+    programAddress: getPoolsProgramAddress({ curveType }),
   })
 
   const { lpTokenFreezeVault } = await program.account.pool.fetch(poolPublicKey)

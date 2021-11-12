@@ -429,6 +429,7 @@ export const TablesDetails = ({
                           snapshotQueuePublicKey: new PublicKey(
                             farmingState.farmingSnapshots
                           ),
+                          curveType: pool.curveType,
                         })
 
                         notify({

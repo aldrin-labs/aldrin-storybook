@@ -112,6 +112,7 @@ export const UnstakePopup = ({
               snapshotQueuePublicKey: new PublicKey(
                 farmingState.farmingSnapshots
               ),
+              curveType: selectedPools.curveType,
             })
 
             setOperationLoading(false)
