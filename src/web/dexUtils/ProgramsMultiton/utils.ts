@@ -2,7 +2,7 @@ import { MASTER_BUILD } from '@core/utils/config'
 
 export const POOLS_PROGRAM_ADDRESS =
   process.env.POOLS_PROGRAM_ADDRESS ||
-  'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
+  'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
 
 export const POOLS_V2_PROGRAM_ADDRESS =
   process.env.POOLS_V2_PROGRAM_ADDRESS ||

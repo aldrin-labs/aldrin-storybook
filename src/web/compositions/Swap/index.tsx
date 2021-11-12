@@ -48,6 +48,7 @@ import {
   costOfAddingToken,
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
+import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 
 const DEFAULT_BASE_TOKEN = 'SOL'
 const DEFAULT_QUOTE_TOKEN = 'RIN'
@@ -97,6 +98,8 @@ const SwapPage = ({
       (pool?.tokenB === baseTokenMintAddress ||
         pool?.tokenB === quoteTokenMintAddress)
   )
+
+  const isStablePool = selectedPool?.curveType === 1
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances({
     connection,
@@ -251,6 +254,44 @@ const SwapPage = ({
     !selectedPool.supply ||
     baseAmount == 0 ||
     quoteAmount == 0
+
+  // for cases with SOL token
+  const isBaseTokenSOL = baseSymbol === 'SOL'
+  const isQuoteTokenSOL = quoteSymbol === 'SOL'
+
+  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
+
+  const isNativeSOLSelected =
+    nativeSOLTokenData?.address === userBaseTokenAccount ||
+    nativeSOLTokenData?.address === userQuoteTokenAccount
+
+  const userPoolBaseTokenAccount = isSwapBaseToQuote
+    ? userBaseTokenAccount
+    : userQuoteTokenAccount
+
+  const userPoolQuoteTokenAccount = isSwapBaseToQuote
+    ? userQuoteTokenAccount
+    : userBaseTokenAccount
+
+  useEffect(() => {
+    if (wallet.publicKey) {
+      const minimumReceivedAmountFromSwap = getMinimumReceivedAmountFromSwap({
+        wallet,
+        connection,
+        pool: selectedPool,
+        isSwapBaseToQuote,
+        swapAmountIn: +baseAmount,
+        userBaseTokenAccount: userPoolBaseTokenAccount
+          ? new PublicKey(userPoolBaseTokenAccount)
+          : null,
+        userQuoteTokenAccount: userPoolQuoteTokenAccount
+          ? new PublicKey(userPoolQuoteTokenAccount)
+          : null,
+        transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
+      })
+    }
+  }, [wallet.publicKey, allTokensData])
+
   return (
     <RowContainer
       direction={'column'}
@@ -425,24 +466,6 @@ const SwapPage = ({
                   const swapAmountIn = +baseAmount * 10 ** baseTokenDecimals
                   const swapAmountOut =
                     +totalWithFees * 10 ** quoteTokenDecimals
-
-                  // for cases with SOL token
-                  const isBaseTokenSOL = baseSymbol === 'SOL'
-                  const isQuoteTokenSOL = quoteSymbol === 'SOL'
-
-                  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
-
-                  const isNativeSOLSelected =
-                    nativeSOLTokenData?.address === userBaseTokenAccount ||
-                    nativeSOLTokenData?.address === userQuoteTokenAccount
-
-                  const userPoolBaseTokenAccount = isSwapBaseToQuote
-                    ? userBaseTokenAccount
-                    : userQuoteTokenAccount
-
-                  const userPoolQuoteTokenAccount = isSwapBaseToQuote
-                    ? userQuoteTokenAccount
-                    : userBaseTokenAccount
 
                   const result = await swap({
                     wallet,
