@@ -17,7 +17,7 @@ import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
-import { isOpenFarmingState } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
@@ -55,6 +55,7 @@ import {
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
+import { Loader } from '@sb/components/Loader/Loader'
 
 interface UserBalanceProps {
   value: number
@@ -132,6 +133,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     setIsClaimRewardsAndRestakePopupOpen,
   ] = useState(false)
   const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -152,12 +154,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   })
 
   const totalStaked = getStakedTokensFromOpenFarmingTickets(userFarmingTickets)
+
   const stakingPoolWithClosedFarmings = {
     ...stakingPool,
     farming: stakingPool.farming.filter((state) => !isOpenFarmingState(state)),
   }
-
-  // console.log('stakingPoolWithClosedFarmings', stakingPoolWithClosedFarmings)
 
   const refreshAll = async () => {
     await Promise.all([
@@ -296,11 +297,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     new Map()
   )
 
+  const isClaimDisabled = availableToClaimTotal == 0
+
   useInterval(() => {
     refreshAllStakingSnapshotQueues()
     refreshAllTokenData()
   }, 60000)
-
 
   return (
     <>
@@ -339,13 +341,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           <Cell colMd={4} colLg={12} colXl={4}>
             <TotalStakedBlock inner>
               <BlockContent>
-                <RewardsStatsRow>
-                  <RewardsTitle>Total staked:</RewardsTitle>
-                  <UserBalance
-                    visible={isBalancesShowing}
-                    value={totalStaked}
-                  />
-                </RewardsStatsRow>
+                <DarkTooltip title={`${totalStaked} RIN`}>
+                  <RewardsStatsRow>
+                    <RewardsTitle>Total staked:</RewardsTitle>
+                    <UserBalance
+                      visible={isBalancesShowing}
+                      value={totalStaked}
+                    />
+                  </RewardsStatsRow>
+                </DarkTooltip>
               </BlockContent>
             </TotalStakedBlock>
           </Cell>
@@ -363,15 +367,18 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       />
                     </RewardsStatsRow>
                   </DarkTooltip>
-
-                  <RewardsStatsRow>
-                    <RewardsTitle>Available to claim:</RewardsTitle>
-                    <UserBalance
-                      visible={isBalancesShowing}
-                      value={availableToClaimTotal}
-                    />
-                  </RewardsStatsRow>
-
+                  <DarkTooltip
+                    title={`${stripByAmount(availableToClaimTotal)} RIN`}
+                  >
+                    <RewardsStatsRow>
+                      <RewardsTitle>Available to claim:</RewardsTitle>
+                      <UserBalance
+                        visible={isBalancesShowing}
+                        value={availableToClaimTotal}
+                        decimals={2}
+                      />
+                    </RewardsStatsRow>
+                  </DarkTooltip>
                   <ClaimButtonContainer>
                     <DarkTooltip
                       title={
@@ -387,21 +394,25 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                     >
                       <span>
                         <Button
-                          // variant=""
+                          variant={isClaimDisabled ? 'disabled' : ''}
                           fontSize="xs"
                           padding="lg"
                           borderRadius="xxl"
-                          onClick={() => setIsClaimRewardsPopupOpen(true)}
+                          onClick={() => {
+                            isClaimDisabled
+                              ? null
+                              : setIsClaimRewardsPopupOpen(true)
+                          }}
                         >
-                          Claim
+                          {isLoading ? <Loader /> : 'Claim'}
                         </Button>
                       </span>
                     </DarkTooltip>
                     <Button
                       fontSize="xs"
                       padding="lg"
-                      variant="link"
-                      // disabled
+                      variant={isClaimDisabled ? 'disabledLink' : 'link'}
+                      disabled={isClaimDisabled}
                       onClick={() => setIsClaimRewardsAndRestakePopupOpen(true)}
                     >
                       Restake
@@ -440,18 +451,26 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         allTokensData={allTokenData}
         farmingTicketsMap={farmingTicketsMap}
         snapshotQueues={allStakingSnapshotQueues}
-        refreshTokensWithFarmingTickets={refreshAllStakingFarmingTickets}
-        setPoolWaitingForUpdateAfterOperation={() => {}}
-        callback={() => {
-          isClaimRewardsAndRestakePopupOpen
-            ? startStaking({
-                wallet,
-                connection,
-                amount: availableToClaimTotal,
-                userPoolTokenAccount: new PublicKey(tokenData.address),
-                stakingPool,
-              })
-            : null
+        refreshTokensWithFarmingTickets={refreshAll}
+        setPoolWaitingForUpdateAfterOperation={() => {
+          setIsLoading(!isLoading)
+        }}
+        callback={async () => {
+          console.log(
+            'isClaimRewardsAndRestakePopupOpen',
+            isClaimRewardsAndRestakePopupOpen
+          )
+          if (isClaimRewardsAndRestakePopupOpen) {
+            const result = await startStaking({
+              wallet,
+              connection,
+              amount: availableToClaimTotal,
+              userPoolTokenAccount: new PublicKey(tokenData.address),
+              stakingPool,
+            })
+
+            return result
+          }
         }}
       />
     </>

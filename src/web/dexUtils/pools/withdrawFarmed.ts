@@ -283,7 +283,7 @@ export const withdrawFarmedNew = async ({
         farmingState,
         snapshotQueues,
       })
-      console.log('unclaimedSnapshots',unclaimedSnapshots)
+      console.log('unclaimedSnapshots', unclaimedSnapshots)
 
       const iterations = Math.ceil(
         unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
@@ -349,7 +349,7 @@ export const withdrawFarmedNew = async ({
 
       if (result === 'timeout') {
         return 'blockhash_outdated'
-      } else {
+      } else if (result === 'failed') {
         return 'failed'
       }
 

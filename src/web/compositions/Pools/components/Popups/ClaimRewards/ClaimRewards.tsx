@@ -16,9 +16,13 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
-import { withdrawFarmed, withdrawFarmedNew } from '@sb/dexUtils/pools/withdrawFarmed'
+import {
+  withdrawFarmed,
+  withdrawFarmedNew,
+} from '@sb/dexUtils/pools/withdrawFarmed'
 import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 import { StakingPool } from '@sb/dexUtils/staking/types'
+import { times } from 'lodash'
 
 export const ClaimRewards = ({
   theme,
@@ -141,7 +145,7 @@ export const ClaimRewards = ({
                   refreshTokensWithFarmingTickets()
                   clearPoolWaitingForUpdate()
                   await callback()
-                  close()
+                  await close()
                 }, 7500)
 
                 setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
