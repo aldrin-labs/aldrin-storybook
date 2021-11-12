@@ -459,6 +459,7 @@ const SwapPage = ({
                     isSwapBaseToQuote,
                     transferSOLToWrapped:
                       isPoolWithSOLToken && isNativeSOLSelected,
+                    curveType: selectedPool.curveType,
                   })
 
                   notify({
