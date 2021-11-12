@@ -8,9 +8,7 @@ import {
   transferSOLToWrappedAccountAndClose,
 } from '@sb/dexUtils/pools'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import {
-  getPoolsProgramAddress,
-} from '@sb/dexUtils/ProgramsMultiton/utils'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
@@ -61,6 +59,7 @@ export const swap = async ({
     quoteTokenVault,
     poolMint,
     feePoolTokenAccount,
+    curve,
   } = await program.account.pool.fetch(poolPublicKey)
 
   const transactionBeforeSwap = new Transaction()
@@ -174,6 +173,7 @@ export const swap = async ({
           walletAuthority: wallet.publicKey,
           userBaseTokenAccount,
           userQuoteTokenAccount,
+          ...(curve ? { curve } : {}),
           tokenProgram: TOKEN_PROGRAM_ID,
         },
       }

@@ -90,13 +90,13 @@ const SwapPage = ({
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>(
     defaultQuoteTokenMint
   )
-
+    console.log('getPoolsInfoQuery.getPoolsInfo', getPoolsInfoQuery.getPoolsInfo)
   const selectedPool = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
       (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress)
+        pool?.tokenB === quoteTokenMintAddress) && pool?.curveType === 1
   )
 
   const isStablePool = selectedPool?.curveType === 1

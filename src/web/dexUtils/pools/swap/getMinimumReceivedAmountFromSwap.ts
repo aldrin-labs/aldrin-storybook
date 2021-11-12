@@ -54,6 +54,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
     feePoolTokenAccount,
     baseTokenMint,
     quoteTokenMint,
+    curve,
   } = await program.account.pool.fetch(poolPublicKey)
 
   const commonTransaction = new Transaction()
@@ -151,7 +152,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
     commonTransaction.add(createAccountTransaction)
   }
 
-  const swapAmountOut = 10 ** 9
+  const swapAmountOut = 0
 
   const swapTransaction = await program.instruction.swap(
     new BN(swapAmountIn),
@@ -168,6 +169,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
         walletAuthority: wallet.publicKey,
         userBaseTokenAccount,
         userQuoteTokenAccount,
+        ...(curve ? { curve } : {}),
         tokenProgram: TOKEN_PROGRAM_ID,
       },
     }
@@ -192,11 +194,11 @@ export const getMinimumReceivedAmountFromSwap = async ({
 
   commonTransaction.feePayer = wallet.publicKey
 
-  const { value } = await simulateTransaction(
+  const res = await simulateTransaction(
     connection,
     commonTransaction,
     connection.commitment ?? 'single'
   )
 
-  console.log('value', value)
+  console.log('value', res)
 }
