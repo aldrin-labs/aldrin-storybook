@@ -9,7 +9,7 @@ import {
 
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
+import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
@@ -28,7 +28,7 @@ export const endFarming = async ({
   poolPublicKey: PublicKey
   farmingStatePublicKey: PublicKey
   snapshotQueuePublicKey: PublicKey
-  userPoolTokenAccount: PublicKey
+  userPoolTokenAccount: PublicKey | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -41,7 +41,9 @@ export const endFarming = async ({
     program.programId
   )
 
-  const { lpTokenFreezeVault } = await program.account.pool.fetch(poolPublicKey)
+  const { poolMint, lpTokenFreezeVault } = await program.account.pool.fetch(
+    poolPublicKey
+  )
 
   const allUserTicketsPerPool = await getParsedUserFarmingTickets({
     wallet,
@@ -57,8 +59,22 @@ export const endFarming = async ({
     return 'failed'
   }
 
-  const commonTransaction = new Transaction()
+  let commonTransaction = new Transaction()
   let tx = null
+
+  // create pool token account for user if not exist
+  if (!userPoolTokenAccount) {
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      wallet,
+      mintPublicKey: poolMint,
+    })
+
+    userPoolTokenAccount = newAccountPubkey
+    commonTransaction.add(createAccountTransaction)
+  }
 
   const sendPartOfTransactions = async () => {
     try {
@@ -73,6 +89,7 @@ export const endFarming = async ({
       if (isTransactionFailed(tx)) {
         return 'failed'
       }
+      commonTransaction = new Transaction()
     } catch (e) {
       console.log('end farming catch error', e)
 

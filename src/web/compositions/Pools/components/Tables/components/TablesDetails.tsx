@@ -390,81 +390,86 @@ export const TablesDetails = ({
                     isUnstakeLocked
                       ? `Until ${dayjs
                           .unix(unlockAvailableDate)
-                          .format('MMM DD, YYYY')}`
+                          .format('HH:mm:ss MMM DD, YYYY')}`
                       : null
                   }
                 >
-                  <Button
-                    theme={theme}
-                    color={'#D54D32'}
-                    disabled={
-                      isUnstakeDisabled || isPoolWaitingForUpdateAfterUnstake
-                    }
-                    style={{ width: '48%' }}
-                    onClick={async () => {
-                      setPoolWaitingForUpdateAfterOperation({
-                        pool: pool.swapToken,
-                        operation: 'unstake',
-                      })
-
-                      const farmingState = openFarmings[0]
-                      const {
-                        address: userPoolTokenAccount,
-                      } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
-
-                      const result = await endFarming({
-                        wallet,
-                        connection,
-                        poolPublicKey: new PublicKey(pool.swapToken),
-                        userPoolTokenAccount: new PublicKey(
-                          userPoolTokenAccount
-                        ),
-                        farmingStatePublicKey: new PublicKey(
-                          farmingState.farmingState
-                        ),
-                        snapshotQueuePublicKey: new PublicKey(
-                          farmingState.farmingSnapshots
-                        ),
-                      })
-
-                      notify({
-                        type: result === 'success' ? 'success' : 'error',
-                        message:
-                          result === 'success'
-                            ? 'Successfully unstaked.'
-                            : result === 'failed'
-                            ? 'Unstaking failed, please try again later or contact us in telegram.'
-                            : 'Unstaking cancelled.',
-                      })
-
-                      const clearPoolWaitingForUpdate = () =>
+                  <div style={{ width: '48%' }}>
+                    <Button
+                      theme={theme}
+                      color={'#D54D32'}
+                      disabled={
+                        isUnstakeDisabled || isPoolWaitingForUpdateAfterUnstake
+                      }
+                      style={{ width: '100%' }}
+                      onClick={async () => {
                         setPoolWaitingForUpdateAfterOperation({
-                          pool: '',
-                          operation: '',
+                          pool: pool.swapToken,
+                          operation: 'unstake',
                         })
 
-                      if (result === 'success') {
-                        setTimeout(async () => {
-                          refreshTokensWithFarmingTickets()
-                          clearPoolWaitingForUpdate()
-                        }, 7500)
-                        setTimeout(
-                          () => refreshTokensWithFarmingTickets(),
-                          15000
+                        const farmingState = openFarmings[0]
+                        const {
+                          address: userPoolTokenAccount,
+                        } = getTokenDataByMint(
+                          allTokensData,
+                          pool.poolTokenMint
                         )
-                      } else {
-                        clearPoolWaitingForUpdate()
-                      }
-                    }}
-                  >
-                    {isPoolWaitingForUpdateAfterUnstake ? (
-                      <Loader />
-                    ) : isUnstakeLocked ? (
-                      `Locked`
-                    ) : (
-                      'Unstake Pool Tokens'
-                    )}
-                  </Button>
+
+                        const result = await endFarming({
+                          wallet,
+                          connection,
+                          poolPublicKey: new PublicKey(pool.swapToken),
+                          userPoolTokenAccount: userPoolTokenAccount
+                            ? new PublicKey(userPoolTokenAccount)
+                            : null,
+                          farmingStatePublicKey: new PublicKey(
+                            farmingState.farmingState
+                          ),
+                          snapshotQueuePublicKey: new PublicKey(
+                            farmingState.farmingSnapshots
+                          ),
+                        })
+
+                        notify({
+                          type: result === 'success' ? 'success' : 'error',
+                          message:
+                            result === 'success'
+                              ? 'Successfully unstaked.'
+                              : result === 'failed'
+                              ? 'Unstaking failed, please try again later or contact us in telegram.'
+                              : 'Unstaking cancelled.',
+                        })
+
+                        const clearPoolWaitingForUpdate = () =>
+                          setPoolWaitingForUpdateAfterOperation({
+                            pool: '',
+                            operation: '',
+                          })
+
+                        if (result === 'success') {
+                          setTimeout(async () => {
+                            refreshTokensWithFarmingTickets()
+                            clearPoolWaitingForUpdate()
+                          }, 7500)
+                          setTimeout(
+                            () => refreshTokensWithFarmingTickets(),
+                            15000
+                          )
+                        } else {
+                          clearPoolWaitingForUpdate()
+                        }
+                      }}
+                    >
+                      {isPoolWaitingForUpdateAfterUnstake ? (
+                        <Loader />
+                      ) : isUnstakeLocked ? (
+                        `Locked`
+                      ) : (
+                        'Unstake Pool Tokens'
+                      )}
+                    </Button>
+                  </div>
                 </DarkTooltip>
               </RowContainer>
             ) : hasPoolTokens ? (
