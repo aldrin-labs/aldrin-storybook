@@ -59,21 +59,24 @@ export const ClaimRewards = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
-        <BoldHeader>Important Message</BoldHeader>
+        <BoldHeader>Claim Rewards</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer justify="flex-start">
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-          Several transactions will be carried out to make the Claim. Do not
-          close the page before this pop-up disappears. If an error occurs,
-          reload the page and try again.
+          Do not close the page until this pop-up has closed. You will need to
+          sign several transactions to make a claim, the number depends on how
+          long it has been since you last reward claim. They will be signed with
+          a single action in the wallet, but may take some time to confirm in
+          the blockchain.
         </Text>
         {showRetryMessage && (
           <Text
             style={{ color: theme.palette.red.main, margin: '1rem 0' }}
             fontSize={'1.8rem'}
           >
-            Blockhash outdated, please claim rest rewards in a few seconds.
+            Blockhash outdated, press “Try Again” to complete the remaining
+            transactions.
           </Text>
         )}
       </RowContainer>
@@ -152,7 +155,7 @@ export const ClaimRewards = ({
             }
           }}
         >
-          Ok, Got It
+          {showRetryMessage ? 'Try Again' : "Ok, let's start"}
         </Button>
       </RowContainer>
     </DialogWrapper>

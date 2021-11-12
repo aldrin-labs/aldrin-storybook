@@ -537,7 +537,7 @@ export const TablesDetails = ({
                 )} */}
                 <Row justify={'flex-end'} margin={'0 0 1rem 0'}>
                   <DarkTooltip
-                    title={'Rewards are updated once every 24 hours.'}
+                    title={'Rewards are updated once every 20-40 minutes.'}
                   >
                     <span>
                       <SvgIcon
@@ -588,61 +588,13 @@ export const TablesDetails = ({
                       : '#651CE4'
                   }
                   disabled={
-                    disableRewards ||
+                    // disableRewards ||
                     (hasStakedTokens && !hasTokensToClaim) ||
                     isPoolWaitingForUpdateAfterClaim
                   }
                   onClick={async () => {
-                    // selectPool(pool)
-                    // setIsClaimRewardsPopupOpen(true)
-                    setPoolWaitingForUpdateAfterOperation({
-                      pool: pool.swapToken,
-                      operation: 'claim',
-                    })
-
-                    const clearPoolWaitingForUpdate = () =>
-                      setPoolWaitingForUpdateAfterOperation({
-                        pool: '',
-                        operation: '',
-                      })
-
-                    try {
-                      const result = await withdrawFarmed({
-                        wallet,
-                        connection,
-                        pool,
-                        allTokensData,
-                        farmingTickets,
-                      })
-
-                      notify({
-                        type: result === 'success' ? 'success' : 'error',
-                        message:
-                          result === 'success'
-                            ? 'Successfully claimed rewards.'
-                            : result === 'failed'
-                            ? 'Claim rewards failed, please try again later or contact us in telegram.'
-                            : 'Claim rewards cancelled.',
-                      })
-
-                      if (result !== 'success') {
-                        clearPoolWaitingForUpdate()
-                      } else {
-                        setTimeout(async () => {
-                          refreshTokensWithFarmingTickets()
-                          clearPoolWaitingForUpdate()
-                        }, 7500)
-
-                        setTimeout(
-                          () => refreshTokensWithFarmingTickets(),
-                          15000
-                        )
-                      }
-                    } catch (e) {
-                      clearPoolWaitingForUpdate()
-
-                      return
-                    }
+                    selectPool(pool)
+                    setIsClaimRewardsPopupOpen(true)
                   }}
                 >
                   {isPoolWaitingForUpdateAfterClaim ? (
