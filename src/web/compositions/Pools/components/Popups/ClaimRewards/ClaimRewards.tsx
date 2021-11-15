@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, StyledPaper } from '../index.styles'
+import { BoldHeader, ClaimRewardsStyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
 import SvgIcon from '@sb/components/SvgIcon'
@@ -63,10 +63,82 @@ export const ClaimRewards = ({
     (el) => el.farmingTokenMint === RIN_MINT
   )
 
+  const claimRewards = async (signAllTransactions: boolean) => {
+    setShowRetryMessage(false)
+    // loader in popup button
+    setOperationLoading(true)
+    // loader in table button
+    setPoolWaitingForUpdateAfterOperation({
+      pool: selectedPool.swapToken,
+      operation: 'claim',
+    })
+
+    const clearPoolWaitingForUpdate = () => {
+      setOperationLoading(false)
+      setPoolWaitingForUpdateAfterOperation({
+        pool: '',
+        operation: '',
+      })
+    }
+
+    let result = null
+
+    try {
+      result = await withdrawFarmed({
+        wallet,
+        connection,
+        pool: selectedPool,
+        allTokensData,
+        farmingTickets,
+        snapshotQueues,
+        signAllTransactions,
+      })
+
+      notify({
+        type: result === 'success' ? 'success' : 'error',
+        message:
+          result === 'success'
+            ? 'Successfully claimed rewards.'
+            : result === 'failed'
+            ? 'Claim rewards failed, please try again later or contact us in telegram.'
+            : result === 'cancelled'
+            ? 'Claim rewards cancelled.'
+            : 'Blockhash outdated, please claim rest rewards in a few seconds.',
+      })
+
+      if (result === 'cancelled') {
+        clearPoolWaitingForUpdate()
+      } else {
+        setTimeout(async () => {
+          refreshTokensWithFarmingTickets()
+          clearPoolWaitingForUpdate()
+        }, 7500)
+
+        setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+      }
+    } catch (e) {
+      clearPoolWaitingForUpdate()
+
+      setTimeout(async () => {
+        refreshTokensWithFarmingTickets()
+      }, 7500)
+    }
+
+    if (result !== 'blockhash_outdated') {
+      if (isFarmingRIN) {
+        setIsProposeToStakePopupOpen(true)
+      } else {
+        close()
+      }
+    } else {
+      setShowRetryMessage(true)
+    }
+  }
+
   return (
     <DialogWrapper
       theme={theme}
-      PaperComponent={StyledPaper}
+      PaperComponent={ClaimRewardsStyledPaper}
       fullScreen={false}
       onClose={close}
       onEnter={() => {}}
@@ -75,16 +147,17 @@ export const ClaimRewards = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
-        <BoldHeader>Claim Rewards</BoldHeader>
+        <BoldHeader style={{ fontSize: '3rem' }}>Claim Rewards</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer justify="flex-start">
-        <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+        <Text style={{ marginBottom: '1rem' }} fontSize={'1.6rem'}>
           Do not close the page until this pop-up has closed. You will need to
           sign several transactions to make a claim, the number depends on how
           long it has been since your last reward claim. They will be signed
-          with a single action in the wallet but may take some time to confirm
-          in the blockchain.
+          with a single action in the software wallet but may take some time to
+          confirm in the blockchain. If you use hardware wallet you have to
+          confirm every transaction manualy.
         </Text>
         {showRetryMessage && (
           <Text
@@ -99,83 +172,31 @@ export const ClaimRewards = ({
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Button
-          style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
+          fontSize={'1.5rem'}
+          style={{
+            width: 'calc(70% - 1rem)',
+            fontFamily: 'Avenir Next Medium',
+          }}
           disabled={false}
           isUserConfident={true}
           theme={theme}
           showLoader={operationLoading}
-          onClick={async () => {
-            setShowRetryMessage(false)
-            // loader in popup button
-            setOperationLoading(true)
-            // loader in table button
-            setPoolWaitingForUpdateAfterOperation({
-              pool: selectedPool.swapToken,
-              operation: 'claim',
-            })
-
-            const clearPoolWaitingForUpdate = () => {
-              setOperationLoading(false)
-              setPoolWaitingForUpdateAfterOperation({
-                pool: '',
-                operation: '',
-              })
-            }
-
-            let result = null
-
-            try {
-              result = await withdrawFarmed({
-                wallet,
-                connection,
-                pool: selectedPool,
-                allTokensData,
-                farmingTickets,
-                snapshotQueues,
-              })
-
-              notify({
-                type: result === 'success' ? 'success' : 'error',
-                message:
-                  result === 'success'
-                    ? 'Successfully claimed rewards.'
-                    : result === 'failed'
-                    ? 'Claim rewards failed, please try again later or contact us in telegram.'
-                    : result === 'cancelled'
-                    ? 'Claim rewards cancelled.'
-                    : 'Blockhash outdated, please claim rest rewards in a few seconds.',
-              })
-
-              if (result === 'cancelled') {
-                clearPoolWaitingForUpdate()
-              } else {
-                setTimeout(async () => {
-                  refreshTokensWithFarmingTickets()
-                  clearPoolWaitingForUpdate()
-                }, 7500)
-
-                setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
-              }
-            } catch (e) {
-              clearPoolWaitingForUpdate()
-
-              setTimeout(async () => {
-                refreshTokensWithFarmingTickets()
-              }, 7500)
-            }
-
-            if (result !== 'blockhash_outdated') {
-              if (isFarmingRIN) {
-                setIsProposeToStakePopupOpen(true)
-              } else {
-                close()
-              }
-            } else {
-              setShowRetryMessage(true)
-            }
-          }}
+          onClick={() => claimRewards(false)}
         >
-          {showRetryMessage ? 'Try Again' : "Ok, let's start"}
+          Claim Rewards with Hardware Wallet (e.g. Ledger)
+        </Button>
+        <Button
+          style={{
+            width: 'calc(30% - 1rem)',
+            fontFamily: 'Avenir Next Medium',
+          }}
+          disabled={false}
+          isUserConfident={true}
+          theme={theme}
+          showLoader={operationLoading}
+          onClick={() => claimRewards(true)}
+        >
+          {showRetryMessage ? 'Try Again' : 'Claim rewards'}
         </Button>
       </RowContainer>
       <ProposeToStakePopup
