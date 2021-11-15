@@ -10,7 +10,7 @@ import {
 import { getRandomInt } from '@core/utils/helpers'
 import { DexTokensPrices, FeesEarned } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
-import { STAKING_FARMING_TOKEN_MINT_ADDRESS } from '@sb/dexUtils/staking/config'
+import { STAKING_FARMING_TOKEN_MINT_ADDRESS, STAKING_PART_OF_AMM_FEES } from '@sb/dexUtils/staking/config'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useInterval } from '@sb/dexUtils/useInterval'
