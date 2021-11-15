@@ -18,6 +18,9 @@ import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
+import ProposeToStakePopup from '../../Popups/ProposeToStake'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { RIN_MINT } from '@sb/dexUtils/utils'
 
 export const ClaimRewards = ({
   theme,
@@ -46,6 +49,19 @@ export const ClaimRewards = ({
 
   const [operationLoading, setOperationLoading] = useState(false)
   const [showRetryMessage, setShowRetryMessage] = useState(false)
+  const [isProposeToStakePopupOpen, setIsProposeToStakePopupOpen] = useState(
+    false
+  )
+
+  const isPoolWithFarming =
+    selectedPool.farming && selectedPool.farming.length > 0
+  const openFarmings = isPoolWithFarming
+    ? filterOpenFarmingStates(selectedPool.farming)
+    : []
+
+  const isFarmingRIN = !!openFarmings.find(
+    (el) => el.farmingTokenMint === RIN_MINT
+  )
 
   return (
     <DialogWrapper
@@ -149,7 +165,11 @@ export const ClaimRewards = ({
             }
 
             if (result !== 'blockhash_outdated') {
-              close()
+              if (isFarmingRIN) {
+                setIsProposeToStakePopupOpen(true)
+              } else {
+                close()
+              }
             } else {
               setShowRetryMessage(true)
             }
@@ -158,6 +178,14 @@ export const ClaimRewards = ({
           {showRetryMessage ? 'Try Again' : "Ok, let's start"}
         </Button>
       </RowContainer>
+      <ProposeToStakePopup
+        theme={theme}
+        open={isProposeToStakePopupOpen}
+        close={() => {
+          close()
+          setIsProposeToStakePopupOpen(false)
+        }}
+      />
     </DialogWrapper>
   )
 }
