@@ -1,4 +1,5 @@
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { getTotalFarmingAmountToClaim } from '@sb/dexUtils/common/getTotalFarmingAmountToClaim'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
@@ -33,7 +34,7 @@ export const getUserPoolsFromAll = ({
         ) || 0
 
     return (
-      poolTokenAmount > 0 ||
+      poolTokenAmount > MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ||
       openFarmingTickets.length > 0 ||
       availableToClaimAmount > 0
     )

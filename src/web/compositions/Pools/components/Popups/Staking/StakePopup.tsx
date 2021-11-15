@@ -19,7 +19,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
+import { CREATE_FARMING_TICKET_SOL_FEE, MIN_POOL_TOKEN_AMOUNT_TO_STAKE } from '@sb/dexUtils/common/config'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -144,6 +144,9 @@ export const StakePopup = ({
     .join(',')
     .replace(',', '')
 
+  const isLessThanMinPoolTokenAmountToStake = poolTokenAmount < MIN_POOL_TOKEN_AMOUNT_TO_STAKE
+  const isDisabled = isNotEnoughPoolTokens || !poolTokenAmount || isLessThanMinPoolTokenAmountToStake
+
   return (
     <DialogWrapper
       theme={theme}
@@ -237,6 +240,15 @@ export const StakePopup = ({
         </HintContainer>
       )}
 
+      {isLessThanMinPoolTokenAmountToStake && (
+        <RowContainer margin={'2rem 0 0 0'}>
+          <AttentionComponent
+            text={`You need to stake at least ${MIN_POOL_TOKEN_AMOUNT_TO_STAKE} Pool tokens.`}
+            blockHeight={'8rem'}
+          />
+        </RowContainer>
+      )}
+
       {isNotEnoughPoolTokens && (
         <RowContainer margin={'2rem 0 0 0'}>
           <AttentionComponent
@@ -248,7 +260,7 @@ export const StakePopup = ({
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
-          disabled={isNotEnoughPoolTokens || !poolTokenAmount}
+          disabled={isDisabled}
           isUserConfident={true}
           theme={theme}
           showLoader={operationLoading}

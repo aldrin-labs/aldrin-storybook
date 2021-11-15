@@ -224,7 +224,7 @@ export const withdrawFarmed = async ({
         )?.amount || 0
 
       // check amount for every farming state
-      if (amountToClaim === 0) continue
+      if (amountToClaim === 0 || ticketData.tokensFrozen < MIN_POOL_TOKEN_AMOUNT_TO_STAKE) continue
 
       const { address: farmingTokenAccountAddress } = getTokenDataByMint(
         allTokensData,
