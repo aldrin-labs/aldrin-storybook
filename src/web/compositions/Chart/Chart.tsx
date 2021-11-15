@@ -19,11 +19,12 @@ import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/Propos
 // import { Grid, Hidden } from '@material-ui/core'
 import {
   FinishBtn,
-  tourConfig,
+  tourConfig
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
+import { MobileWarningPopup } from '@sb/components/WarningPopup/mobilePopup'
 import { MainContainer } from '@sb/compositions/Chart/Chart.styles'
 import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
@@ -36,8 +37,6 @@ import MarketBlock from './components/MarketBlock/MarketBlock'
 import { WarningPopup } from './components/WarningPopup'
 // import { CardsPanel } from './components'
 import DefaultView from './DefaultView/StatusWrapper'
-import { ChartsIssuePopup } from '@sb/components/WarningPopup/desktopPopup'
-import { MobileWarningPopup } from '@sb/components/WarningPopup/mobilePopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -322,7 +321,7 @@ function ChartPageComponent(props: any) {
 
       <TransactionsConfirmationWarningPopup theme={theme} />
       <ProposeToSettlePopup theme={theme} />
-      <ChartsIssuePopup theme={theme} />
+      {/* <ChartsIssuePopup theme={theme} /> */}
       <MobileWarningPopup theme={theme} />
       {/* <MarketDeprecatedPopup
         theme={theme}

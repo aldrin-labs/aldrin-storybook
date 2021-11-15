@@ -6,7 +6,8 @@ import { Theme } from '@material-ui/core'
 import { Block, BlockContent } from '@sb/components/Block'
 import {
   dayDuration, endOfDayTimestamp,
-  getTimezone
+  getTimezone,
+  startOfDayTimestamp
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { Chart } from 'chart.js'
 import React, { useEffect, useRef } from 'react'
@@ -89,7 +90,7 @@ export const TotalVolumeLockedChart = compose(
     name: 'getTotalVolumeLockedHistoryQuery',
     variables: {
       timezone: getTimezone(),
-      timestampFrom: endOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
+      timestampFrom: startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',

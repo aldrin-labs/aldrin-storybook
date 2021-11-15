@@ -3,13 +3,13 @@ import {
   dayDuration,
   endOfDayTimestamp
 } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { COLORS, FONTS, MAIN_FONT } from '@variables/variables'
+import { COLORS, MAIN_FONT } from '@variables/variables'
 import {
   BarController, BarElement,
   BubbleController, CategoryScale, Chart,
   ChartType, Filler, LinearScale,
   LineController, LineElement, PointElement,
-  PolarAreaController, Tooltip, TooltipItem, TooltipModel
+  PolarAreaController, Tooltip, TooltipItem
 } from 'chart.js'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -96,7 +96,8 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
           intersect: false,
           callbacks: {
             label: (model: any, item: TooltipItem) => {
-              return ` $${model.formattedValue || 0}`;
+              const [int, dec] = (model.formattedValue || '0').split('.')
+              return ` $${int}`;
             }
           }
         },
@@ -169,7 +170,8 @@ const createTotalVolumeLockedChart = ({
   }))// Remove last empty point to prevent drop on daystart
     .filter((point, idx, arr) => !(idx === arr.length - 1 && point.vol === 0))
 
-  const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), 0)
+  const minVol = transformedData.reduce((acc, item) => Math.min(acc, (item?.vol || Number.MAX_SAFE_INTEGER)), Number.MAX_SAFE_INTEGER)
+  const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), minVol)
 
   if (chart) {
     chart.destroy()
@@ -190,7 +192,7 @@ const createTotalVolumeLockedChart = ({
       },
     ],
   }
-  chart.options.scales.y.ticks.stepSize = maxVol / 5
+  chart.options.scales.y.ticks.stepSize = (maxVol - minVol) / 3
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
   return chart
 }
@@ -218,8 +220,9 @@ const createTradingVolumeChart = ({
     })) // Remove last empty point to prevent drop on daystart
     .filter((point, idx, arr) => !(idx === arr.length - 1 && point.vol === 0))
 
-  const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), 0)
-
+  const minVol = transformedData.reduce((acc, item) => Math.min(acc, (item?.vol || Number.MAX_SAFE_INTEGER)), Number.MAX_SAFE_INTEGER)
+  const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), minVol)
+  
   if (chart) {
     chart.destroy()
   }
@@ -246,7 +249,7 @@ const createTradingVolumeChart = ({
     ],
   }
 
-  chart.options.scales.y.ticks.stepSize = maxVol / 5
+  chart.options.scales.y.ticks.stepSize = (maxVol - minVol) / 3
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
 
   return chart
