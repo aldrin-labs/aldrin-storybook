@@ -1,8 +1,4 @@
-import {
-  queryRendererHoc,
-  queryRendererHoc,
-} from '@core/components/QueryRenderer'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { Paper, Theme } from '@material-ui/core'
@@ -24,10 +20,8 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { COLORS } from '@variables/variables'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { colors } from 'react-select/lib/theme'
 import { compose } from 'recompose'
 import styled from 'styled-components'
-import { DexTokensPrices } from '../../index.types'
 
 export const StyledPaper = styled(Paper)`
   border-radius: 1.5rem;
@@ -50,14 +44,11 @@ const ProposeToStakePopup = ({
   theme,
   close,
   open,
-  getDexTokensPricesQuery,
   getStakingPoolInfoQuery,
 }: {
   theme: Theme
   close: () => void
   open: boolean
-  apr: number
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
 }) => {
   const { wallet } = useWallet()
@@ -141,14 +132,6 @@ const ProposeToStakePopup = ({
 }
 
 export default compose(
-  queryRendererHoc({
-    query: getDexTokensPrices,
-    name: 'getDexTokensPricesQuery',
-    fetchPolicy: 'cache-and-network',
-    variables: { symbols: ['RIN'] },
-    withoutLoading: true,
-    pollInterval: 60000,
-  }),
   queryRendererHoc({
     query: getStakingPoolInfo,
     name: 'getStakingPoolInfoQuery',

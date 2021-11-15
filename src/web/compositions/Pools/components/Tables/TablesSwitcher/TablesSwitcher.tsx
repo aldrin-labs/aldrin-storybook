@@ -45,7 +45,6 @@ import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
 
 import PlusIcon from './plus.svg'
 import { Checkbox } from '../../../../../components/Checkbox'
-import ProposeToStakePopup from '../../Popups/ProposeToStake'
 
 const TablesSwitcher = ({
   theme,
@@ -81,9 +80,6 @@ const TablesSwitcher = ({
   const [includePermissionless, setIncludePermissionless] = useState(true)
   const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
     false
-  )
-  const [isProposeToStakePopupOpen, setIsProposeToStakePopupOpen] = useState(
-    true
   )
 
   const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
@@ -341,12 +337,6 @@ const TablesSwitcher = ({
               }
             />
           )}
-
-          <ProposeToStakePopup
-            theme={theme}
-            open={isProposeToStakePopupOpen}
-            close={() => setIsProposeToStakePopupOpen(false)}
-          />
         </TableContainer>
       </BlockContent>
     </Block>
