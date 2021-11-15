@@ -127,11 +127,13 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     walletPublicKey: wallet.publicKey,
   })
 
-  const [allStakingSnapshotQueues, refreshAllStakingSnapshotQueues] =
-    useStakingSnapshotQueues({
-      wallet,
-      connection,
-    })
+  const [
+    allStakingSnapshotQueues,
+    refreshAllStakingSnapshotQueues,
+  ] = useStakingSnapshotQueues({
+    wallet,
+    connection,
+  })
 
   const totalStaked = getStakedTokensFromOpenFarmingTickets(userFarmingTickets)
 
@@ -210,18 +212,19 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     return true
   }
 
-  const [stakingTicketsWithAvailableToClaim] =
-    useStakingTicketsWithAvailableToClaim({
-      wallet,
-      connection,
-      walletPublicKey: wallet.publicKey,
-      stakingPool,
-      allStakingFarmingTickets: userFarmingTickets,
-    })
+  // const [
+  //   stakingTicketsWithAvailableToClaim,
+  // ] = useStakingTicketsWithAvailableToClaim({
+  //   wallet,
+  //   connection,
+  //   walletPublicKey: wallet.publicKey,
+  //   stakingPool,
+  //   allStakingFarmingTickets: userFarmingTickets,
+  // })
 
-  const availableToClaimTotal = calculateAvailableToClaim(
-    stakingTicketsWithAvailableToClaim
-  )
+  // const availableToClaimTotal = calculateAvailableToClaim(
+  //   stakingTicketsWithAvailableToClaim
+  // )
 
   const lastFarmingTicket = userFarmingTickets.sort(
     (ticketA, ticketB) => +ticketB.startTime - +ticketA.startTime
@@ -308,7 +311,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                     <RewardsTitle>Available to claim:</RewardsTitle>
                     <UserBalance
                       visible={isBalancesShowing}
-                      value={availableToClaimTotal}
+                      value={0}
                     />
                   </RewardsStatsRow>
 

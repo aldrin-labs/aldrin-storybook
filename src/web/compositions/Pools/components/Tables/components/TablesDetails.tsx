@@ -44,6 +44,9 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { getUniqueAmountsToClaimMap } from '../utils/getUniqueAmountsToClaimMap'
+import { PublicKey } from '@solana/web3.js'
+import { endFarming } from '@sb/dexUtils/pools/endFarming'
 
 export const TablesDetails = ({
   theme,
@@ -170,9 +173,10 @@ export const TablesDetails = ({
   const isPoolWaitingForUpdateAfterClaim =
     isPoolWaitingForUpdateAfterOperation && operation === 'claim'
 
-  const disableRewards =
-    pool.swapToken !== 'Hv5F48Br7dbZvUpKFuyxxuaC4v95C1uyDGhdkFFCc9Gf' &&
-    pool.swapToken !== '6sKC96Z35vCNcDmA3ZbBd9Syx5gnTJdyNKVEdzpBE5uX'
+  const uniqueAmountsToClaimMap = getUniqueAmountsToClaimMap({
+    farmingTickets,
+    farmingStates: pool.farming,
+  })
 
   return (
     <RowContainer
@@ -247,37 +251,6 @@ export const TablesDetails = ({
             </RowDataTdText>
           )}
         </Row>
-        {/* 
-        {hasLiquidity && (
-          <Row align="flex-start" direction="column" width="25%">
-            <RowDataTdText
-              theme={theme}
-              color={theme.palette.grey.new}
-              style={{ marginBottom: '1rem' }}
-            >
-              Pool Tokens:
-            </RowDataTdText>
-            <RowDataTdText
-              color={'#53DF11'}
-              fontFamily="Avenir Next Medium"
-              theme={theme}
-              style={{ marginBottom: '1rem' }}
-            >
-              <WhiteText>Total:</WhiteText>{' '}
-              {stripByAmountAndFormat(poolTokenAmount + stakedTokens)}{' '}
-            </RowDataTdText>
-            <RowDataTdText
-              color={'#53DF11'}
-              fontFamily="Avenir Next Medium"
-              theme={theme}
-            >
-              {' '}
-              <WhiteText>Staked:</WhiteText>{' '}
-              {stripByAmountAndFormat(stakedTokens)}
-            </RowDataTdText>
-          </Row>
-        )} */}
-
         <Row direction="column" width="25%" style={{ paddingRight: '2rem' }}>
           <Button
             theme={theme}
@@ -413,30 +386,86 @@ export const TablesDetails = ({
                     isUnstakeLocked
                       ? `Until ${dayjs
                           .unix(unlockAvailableDate)
-                          .format('MMM DD, YYYY')}`
+                          .format('HH:mm:ss MMM DD, YYYY')}`
                       : null
                   }
                 >
-                  <Button
-                    theme={theme}
-                    color={'#D54D32'}
-                    disabled={
-                      isUnstakeDisabled || isPoolWaitingForUpdateAfterUnstake
-                    }
-                    style={{ width: '48%' }}
-                    onClick={() => {
-                      selectPool(pool)
-                      setIsUnstakePopupOpen(true)
-                    }}
-                  >
-                    {isPoolWaitingForUpdateAfterUnstake ? (
-                      <Loader />
-                    ) : isUnstakeLocked ? (
-                      `Locked`
-                    ) : (
-                      'Unstake Pool Tokens'
-                    )}
-                  </Button>
+                  <div style={{ width: '48%' }}>
+                    <Button
+                      theme={theme}
+                      color={'#D54D32'}
+                      disabled={
+                        isUnstakeDisabled || isPoolWaitingForUpdateAfterUnstake
+                      }
+                      style={{ width: '100%' }}
+                      onClick={async () => {
+                        setPoolWaitingForUpdateAfterOperation({
+                          pool: pool.swapToken,
+                          operation: 'unstake',
+                        })
+
+                        const farmingState = openFarmings[0]
+                        const {
+                          address: userPoolTokenAccount,
+                        } = getTokenDataByMint(
+                          allTokensData,
+                          pool.poolTokenMint
+                        )
+
+                        const result = await endFarming({
+                          wallet,
+                          connection,
+                          poolPublicKey: new PublicKey(pool.swapToken),
+                          userPoolTokenAccount: userPoolTokenAccount
+                            ? new PublicKey(userPoolTokenAccount)
+                            : null,
+                          farmingStatePublicKey: new PublicKey(
+                            farmingState.farmingState
+                          ),
+                          snapshotQueuePublicKey: new PublicKey(
+                            farmingState.farmingSnapshots
+                          ),
+                        })
+
+                        notify({
+                          type: result === 'success' ? 'success' : 'error',
+                          message:
+                            result === 'success'
+                              ? 'Successfully unstaked.'
+                              : result === 'failed'
+                              ? 'Unstaking failed, please try again later or contact us in telegram.'
+                              : 'Unstaking cancelled.',
+                        })
+
+                        const clearPoolWaitingForUpdate = () =>
+                          setPoolWaitingForUpdateAfterOperation({
+                            pool: '',
+                            operation: '',
+                          })
+
+                        if (result === 'success') {
+                          setTimeout(async () => {
+                            refreshTokensWithFarmingTickets()
+                            clearPoolWaitingForUpdate()
+                          }, 7500)
+                          setTimeout(
+                            () => refreshTokensWithFarmingTickets(),
+                            15000
+                          )
+                        } else {
+                          clearPoolWaitingForUpdate()
+                        }
+                      }}
+                    >
+                      {isPoolWaitingForUpdateAfterUnstake ? (
+                        <Loader />
+                      ) : isUnstakeLocked ? (
+                        `Locked`
+                      ) : (
+                        'Unstake Pool Tokens'
+                      )}
+                    </Button>
+                  </div>
                 </DarkTooltip>
               </RowContainer>
             ) : hasPoolTokens ? (
@@ -504,7 +533,15 @@ export const TablesDetails = ({
                 )} */}
                 <Row justify={'flex-end'} margin={'0 0 1rem 0'}>
                   <DarkTooltip
-                    title={'Rewards are updated once every 24 hours.'}
+                    title={
+                      <span>
+                        Rewards are updated once every{' '}
+                        <span style={{ color: theme.palette.green.main }}>
+                          60-80 minutes
+                        </span>
+                        .
+                      </span>
+                    }
                   >
                     <span>
                       <SvgIcon
@@ -518,39 +555,30 @@ export const TablesDetails = ({
                   Available to claim:
                 </Row>
                 <Row justify={'flex-end'}>
-                  {pool.farming.map((farmingState, i, arr) => {
-                    const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
-                      {
-                        farmingTickets,
-                        farmingState: farmingState.farmingState,
-                      }
-                    )
-                    return (
-                      <>
-                        <DarkTooltip
-                          title={`${stripDigitPlaces(
-                            availableToClaimFromFarmingState,
-                            8
-                          )} ${getTokenNameByMintAddress(
-                            farmingState.farmingTokenMint
-                          )}`}
-                        >
-                          <AmountText style={{ padding: '0 0.5rem' }}>
-                            {formatNumberToUSFormat(
-                              stripDigitPlaces(
-                                availableToClaimFromFarmingState,
-                                2
-                              )
-                            )}
-                          </AmountText>
-                        </DarkTooltip>
-                        {getTokenNameByMintAddress(
-                          farmingState.farmingTokenMint
-                        )}
-                        {i !== arr.length - 1 ? ' +' : ''}
-                      </>
-                    )
-                  })}
+                  {[...uniqueAmountsToClaimMap.values()].map(
+                    (amountToClaim, i, arr) => {
+                      const { amount, farmingTokenMint } = amountToClaim
+
+                      return (
+                        <>
+                          <DarkTooltip
+                            title={`${stripDigitPlaces(
+                              amount,
+                              8
+                            )} ${getTokenNameByMintAddress(farmingTokenMint)}`}
+                          >
+                            <AmountText style={{ padding: '0 0.5rem' }}>
+                              {formatNumberToUSFormat(
+                                stripDigitPlaces(amount, amount < 100 ? 4 : 2)
+                              )}
+                            </AmountText>
+                          </DarkTooltip>
+                          {getTokenNameByMintAddress(farmingTokenMint)}
+                          {i !== arr.length - 1 ? ' +' : ''}
+                        </>
+                      )
+                    }
+                  )}
                 </Row>
               </RowDataTdText>
 
@@ -564,61 +592,12 @@ export const TablesDetails = ({
                       : '#651CE4'
                   }
                   disabled={
-                    disableRewards ||
                     (hasStakedTokens && !hasTokensToClaim) ||
                     isPoolWaitingForUpdateAfterClaim
                   }
                   onClick={async () => {
-                    // selectPool(pool)
-                    // setIsClaimRewardsPopupOpen(true)
-                    setPoolWaitingForUpdateAfterOperation({
-                      pool: pool.swapToken,
-                      operation: 'claim',
-                    })
-
-                    const clearPoolWaitingForUpdate = () =>
-                      setPoolWaitingForUpdateAfterOperation({
-                        pool: '',
-                        operation: '',
-                      })
-
-                    try {
-                      const result = await withdrawFarmed({
-                        wallet,
-                        connection,
-                        pool,
-                        allTokensData,
-                        farmingTickets,
-                      })
-
-                      notify({
-                        type: result === 'success' ? 'success' : 'error',
-                        message:
-                          result === 'success'
-                            ? 'Successfully claimed rewards.'
-                            : result === 'failed'
-                            ? 'Claim rewards failed, please try again later or contact us in telegram.'
-                            : 'Claim rewards cancelled.',
-                      })
-
-                      if (result !== 'success') {
-                        clearPoolWaitingForUpdate()
-                      } else {
-                        setTimeout(async () => {
-                          refreshTokensWithFarmingTickets()
-                          clearPoolWaitingForUpdate()
-                        }, 7500)
-
-                        setTimeout(
-                          () => refreshTokensWithFarmingTickets(),
-                          15000
-                        )
-                      }
-                    } catch (e) {
-                      clearPoolWaitingForUpdate()
-
-                      return
-                    }
+                    selectPool(pool)
+                    setIsClaimRewardsPopupOpen(true)
                   }}
                 >
                   {isPoolWaitingForUpdateAfterClaim ? (
@@ -629,20 +608,6 @@ export const TablesDetails = ({
                     </>
                   )}
                 </Button>
-                {disableRewards && (
-                  <DarkTooltip
-                    title={`The “Claim” button will be unlocked once the audit for updates is updated.`}
-                  >
-                    <span>
-                      <SvgIcon
-                        src={InfoIcon}
-                        width={'2rem'}
-                        height={'2rem'}
-                        style={{ marginLeft: '1rem' }}
-                      />
-                    </span>
-                  </DarkTooltip>
-                )}
               </Row>
             </Row>
           ) : hasPoolTokens && !hasStakedTokens ? (

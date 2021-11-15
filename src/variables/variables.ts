@@ -64,3 +64,5 @@ export const WIDTH = {
 
 export const LAYOUT_WIDTH = 1280
 export const LAYOUT_COL_NUMBER = 12
+
+export const TRANSITION = 'all ease-in 0.3s'

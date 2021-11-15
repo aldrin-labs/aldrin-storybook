@@ -77,6 +77,10 @@ export const endOfDayTimestamp = () => moment()
   .endOf('day')
   .unix()
 
+export const startOfDayTimestamp = () => moment()
+  .startOf('day')
+  .unix()
+
 export const dayDuration = 24 * 60 * 60
 
 export const createButterflyChart = (

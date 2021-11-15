@@ -9,6 +9,8 @@ import ThinkingFace from '@icons/thinkingFace.png'
 import MangoLogo from '@icons/mango_logo.png'
 import RinLogo from '@icons/rin_logo.png'
 import SunnyLogo from '@icons/sunny_logo.jpg'
+import GMCoinLogo from '@icons/gmcoinIcon.jpg'
+import OTRLogo from '@icons/otrIcon.jpg'
 import PTRLogo from '@icons/ptr_logo.png'
 import SYPLogo from '@icons/syp_logo.png'
 import CobanLogo from '@icons/coban_logo.png'
@@ -117,6 +119,18 @@ export const TokenIcon = ({
   if (ALL_TOKENS_MINTS_MAP[mint] === 'SOB') {
     token = {
       logoURI: SobLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'GMCOIN') {
+    token = {
+      logoURI: GMCoinLogo,
+    }
+  }
+
+  if (ALL_TOKENS_MINTS_MAP[mint] === 'OTR') {
+    token = {
+      logoURI: OTRLogo,
     }
   }
 
