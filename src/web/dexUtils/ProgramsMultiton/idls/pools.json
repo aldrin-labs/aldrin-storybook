@@ -771,7 +771,7 @@
         },
         {
           "name": "farmingState",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -1177,8 +1177,5 @@
       "code": 319,
       "name": "AttachedStatesLimitReached"
     }
-  ],
-    "metadata": {
-        "address": "RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx"
-    }
+  ]
 }
