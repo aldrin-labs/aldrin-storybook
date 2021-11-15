@@ -177,10 +177,10 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    variables: () => ({
-      timestampFrom: endOfHourTimestamp() - dayDuration,
-      timestampTo: endOfHourTimestamp(),
-    }),
+    // variables: () => ({
+    //   timestampFrom: endOfHourTimestamp() - dayDuration,
+    //   timestampTo: endOfHourTimestamp(),
+    // }),
   }),
   queryRendererHoc({
     name: 'getWeeklyAndDailyTradingVolumesForPoolsQuery',
