@@ -82,9 +82,9 @@ export const ClaimRewards = ({
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
           Do not close the page until this pop-up has closed. You will need to
           sign several transactions to make a claim, the number depends on how
-          long it has been since you last reward claim. They will be signed with
-          a single action in the wallet, but may take some time to confirm in
-          the blockchain.
+          long it has been since your last reward claim. They will be signed
+          with a single action in the wallet but may take some time to confirm
+          in the blockchain.
         </Text>
         {showRetryMessage && (
           <Text

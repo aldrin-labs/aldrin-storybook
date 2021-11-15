@@ -93,9 +93,10 @@ const ProposeToStakePopup = ({
       </RowContainer>
       <RowContainer direction={'column'} style={{ marginBottom: '2rem' }}>
         <WhiteText theme={theme}>
-          Liquidity Providers on Aldrin’s AMM will receive 0.20%, 0.05% will go
-          to product development, while the remaining 0.05% will be used to buy
-          back and distribute RIN to RIN stakers.
+          Total trading fees on Aldrin’s AMM are 0.3%. Liquidity Providers will
+          receive 0.20%, 0.05% will go to product development, while the
+          remaining 0.05% will be used to buy back and distribute RIN to RIN
+          stakers.
         </WhiteText>
       </RowContainer>
       <RowContainer justify="space-between" style={{ margin: '3rem 0' }}>
