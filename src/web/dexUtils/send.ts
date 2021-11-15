@@ -1068,6 +1068,8 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
         err
       )}`,
     })
+    
+    if (err.timeout) return 'timeout'
     return null
   }
 

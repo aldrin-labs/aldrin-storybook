@@ -173,10 +173,6 @@ export const TablesDetails = ({
   const isPoolWaitingForUpdateAfterClaim =
     isPoolWaitingForUpdateAfterOperation && operation === 'claim'
 
-  const disableRewards =
-    pool.swapToken !== 'Hv5F48Br7dbZvUpKFuyxxuaC4v95C1uyDGhdkFFCc9Gf' &&
-    pool.swapToken !== '6sKC96Z35vCNcDmA3ZbBd9Syx5gnTJdyNKVEdzpBE5uX'
-
   const uniqueAmountsToClaimMap = getUniqueAmountsToClaimMap({
     farmingTickets,
     farmingStates: pool.farming,
@@ -537,7 +533,7 @@ export const TablesDetails = ({
                 )} */}
                 <Row justify={'flex-end'} margin={'0 0 1rem 0'}>
                   <DarkTooltip
-                    title={'Rewards are updated once every 24 hours.'}
+                    title={'Rewards are updated once every 20-40 minutes.'}
                   >
                     <span>
                       <SvgIcon
@@ -588,61 +584,12 @@ export const TablesDetails = ({
                       : '#651CE4'
                   }
                   disabled={
-                    disableRewards ||
                     (hasStakedTokens && !hasTokensToClaim) ||
                     isPoolWaitingForUpdateAfterClaim
                   }
                   onClick={async () => {
-                    // selectPool(pool)
-                    // setIsClaimRewardsPopupOpen(true)
-                    setPoolWaitingForUpdateAfterOperation({
-                      pool: pool.swapToken,
-                      operation: 'claim',
-                    })
-
-                    const clearPoolWaitingForUpdate = () =>
-                      setPoolWaitingForUpdateAfterOperation({
-                        pool: '',
-                        operation: '',
-                      })
-
-                    try {
-                      const result = await withdrawFarmed({
-                        wallet,
-                        connection,
-                        pool,
-                        allTokensData,
-                        farmingTickets,
-                      })
-
-                      notify({
-                        type: result === 'success' ? 'success' : 'error',
-                        message:
-                          result === 'success'
-                            ? 'Successfully claimed rewards.'
-                            : result === 'failed'
-                            ? 'Claim rewards failed, please try again later or contact us in telegram.'
-                            : 'Claim rewards cancelled.',
-                      })
-
-                      if (result !== 'success') {
-                        clearPoolWaitingForUpdate()
-                      } else {
-                        setTimeout(async () => {
-                          refreshTokensWithFarmingTickets()
-                          clearPoolWaitingForUpdate()
-                        }, 7500)
-
-                        setTimeout(
-                          () => refreshTokensWithFarmingTickets(),
-                          15000
-                        )
-                      }
-                    } catch (e) {
-                      clearPoolWaitingForUpdate()
-
-                      return
-                    }
+                    selectPool(pool)
+                    setIsClaimRewardsPopupOpen(true)
                   }}
                 >
                   {isPoolWaitingForUpdateAfterClaim ? (
@@ -653,20 +600,6 @@ export const TablesDetails = ({
                     </>
                   )}
                 </Button>
-                {disableRewards && (
-                  <DarkTooltip
-                    title={`The “Claim” button will be unlocked once the audit for updates is updated.`}
-                  >
-                    <span>
-                      <SvgIcon
-                        src={InfoIcon}
-                        width={'2rem'}
-                        height={'2rem'}
-                        style={{ marginLeft: '1rem' }}
-                      />
-                    </span>
-                  </DarkTooltip>
-                )}
               </Row>
             </Row>
           ) : hasPoolTokens && !hasStakedTokens ? (

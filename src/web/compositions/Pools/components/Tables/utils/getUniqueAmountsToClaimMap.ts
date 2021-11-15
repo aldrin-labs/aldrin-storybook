@@ -8,6 +8,7 @@ export const getUniqueAmountsToClaimMap = ({
   farmingTickets: FarmingTicket[]
   farmingStates: FarmingState[]
 }) => {
+  if (!farmingStates) return []
   return farmingStates.reduce((acc, farmingState) => {
     const { farmingTokenMint } = farmingState
 
