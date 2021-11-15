@@ -322,7 +322,7 @@ function ChartPageComponent(props: any) {
       <TransactionsConfirmationWarningPopup theme={theme} />
       <ProposeToSettlePopup theme={theme} />
       {/* <ChartsIssuePopup theme={theme} /> */}
-      <MobileWarningPopup theme={theme} />
+      {/* <MobileWarningPopup theme={theme} /> */}
       {/* <MarketDeprecatedPopup
         theme={theme}
         newMarketID={allMarketsMap.get('LIQ_USDC')?.address.toString()}
