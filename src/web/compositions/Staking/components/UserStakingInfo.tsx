@@ -1,3 +1,5 @@
+import React, { useCallback, useState } from 'react'
+import { compose } from 'recompose'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -10,6 +12,7 @@ import { Block, BlockContent, BlockTitle } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
+import { Loader } from '@sb/components/Loader/Loader'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { ClaimRewards } from '@sb/compositions/Pools/components/Popups/ClaimRewards/ClaimRewards'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
@@ -17,14 +20,13 @@ import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
-import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
-import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { endStaking } from '@sb/dexUtils/staking/endStaking'
 import { filterFarmingTicketsByUserKey } from '@sb/dexUtils/staking/filterFarmingTicketsByUserKey'
+import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { getParsedStakingFarmingStates } from '@sb/dexUtils/staking/getParsedStakingFarmingStates'
+import { getSnapshotQueueWithAMMFees } from '@sb/dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { startStaking } from '@sb/dexUtils/staking/startStaking'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
@@ -34,8 +36,6 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
-import React, { useCallback, useState } from 'react'
-import { compose } from 'recompose'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
   Asterisks,
@@ -55,7 +55,6 @@ import {
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
-import { Loader } from '@sb/components/Loader/Loader'
 
 interface UserBalanceProps {
   value: number
@@ -298,6 +297,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   )
 
   const isClaimDisabled = availableToClaimTotal == 0
+
+  const a = getSnapshotQueueWithAMMFees({
+    currentFarmingStateAddress: currentFarmingState.farmingState,
+    AMMfees,
+  })
 
   useInterval(() => {
     refreshAllStakingSnapshotQueues()

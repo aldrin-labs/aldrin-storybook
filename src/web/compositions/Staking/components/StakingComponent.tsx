@@ -1,5 +1,13 @@
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import {
+  dayDuration,
+  daysInMonth,
+  endOfHourTimestamp,
+} from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
+import { FeesEarned } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { STAKING_FARMING_TOKEN_MINT_ADDRESS } from '@sb/dexUtils/staking/config'
 import { StakingPool } from '@sb/dexUtils/staking/types'
@@ -16,12 +24,13 @@ import UserStakingInfo from './UserStakingInfo'
 
 interface StakingComponentProps {
   getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
+  getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
 }
 
 const StakingComponent: React.FC<StakingComponentProps> = (
   props: StakingComponentProps
 ) => {
-  const { getStakingPoolInfoQuery } = props
+  const { getStakingPoolInfoQuery, getFeesEarnedByPoolQuery } = props
   const { wallet } = useWallet()
   const connection = useConnection()
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts({
@@ -74,5 +83,16 @@ export default compose(
     query: getStakingPoolInfo,
     name: 'getStakingPoolInfoQuery',
     fetchPolicy: 'cache-and-network',
+  }),
+  queryRendererHoc({
+    name: 'getFeesEarnedByPoolQuery',
+    query: getFeesEarnedByPool,
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000 * getRandomInt(5, 10),
+    variables: () => ({
+      timestampFrom: endOfHourTimestamp() - dayDuration * daysInMonth,
+      timestampTo: endOfHourTimestamp(),
+    }),
   })
 )(StakingComponent)

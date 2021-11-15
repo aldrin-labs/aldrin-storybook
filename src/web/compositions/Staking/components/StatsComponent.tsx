@@ -1,17 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { compose } from 'recompose'
-import dayjs from 'dayjs'
-
 import { getRINCirculationSupply } from '@core/api'
-import {
-  queryRendererHoc,
-  queryRendererHoc,
-} from '@core/components/QueryRenderer'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
+import { daysInMonth } from '@core/utils/dateUtils'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -24,7 +18,7 @@ import {
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
-import { InlineText } from '@sb/components/Typography'
+import { InlineText, Text } from '@sb/components/Typography'
 import { MarketDataByTicker } from '@sb/compositions/Chart/components/MarketStats/MarketStats'
 import { DexTokensPrices, FeesEarned } from '@sb/compositions/Pools/index.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
@@ -36,8 +30,8 @@ import {
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { TokenInfo } from '@sb/dexUtils/types'
-import { Text } from '@sb/components/Typography'
-
+import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
 import {
   BigNumber,
   LastPrice,
@@ -46,16 +40,9 @@ import {
   StatsBlockItem,
 } from '../styles'
 import { getShareText } from '../utils'
+import { getTotalFeesFromPools } from '../utils/getTotalFeesFromPools'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
-import {
-  dayDuration,
-  daysInMonth,
-  endOfHourTimestamp,
-} from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
-import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
-import { getTotalFeesFromPools } from '../utils/getTotalFeesFromPools'
 
 interface InnerProps {
   tokenData: TokenInfo | null
@@ -102,10 +89,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     new Map()
   )
 
-  const totalFeesFromPools = getTotalFeesFromPools({
-    poolsFeesData: getFeesEarnedByPoolQuery.getFeesEarnedByPool,
-    dexTokensPricesMap,
-  })
+  
 
   const tokenPrice = dexTokensPricesMap?.get('RIN').price || 0
 
@@ -179,8 +163,8 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                 <StatsBlockItem>
                   <BlockSubtitle>Price</BlockSubtitle>
                   <LastPrice>
-                    <Number>${stripByAmount(tokenPrice)}</Number>
-                    {/* <InlineText
+                    {/* <Number>${stripByAmount(tokenPrice)}</Number>
+                    <InlineText
                       color={isPriceIncreasing ? 'success' : 'error'}
                       size="xs"
                     >
@@ -213,17 +197,6 @@ const StatsComponent: React.FC<StatsComponentProps> = (
 }
 
 export default compose(
-  queryRendererHoc({
-    name: 'getFeesEarnedByPoolQuery',
-    query: getFeesEarnedByPool,
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000 * getRandomInt(5, 10),
-    variables: () => ({
-      timestampFrom: endOfHourTimestamp() - dayDuration * daysInMonth,
-      timestampTo: endOfHourTimestamp(),
-    }),
-  }),
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
