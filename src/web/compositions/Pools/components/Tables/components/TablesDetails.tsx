@@ -533,7 +533,15 @@ export const TablesDetails = ({
                 )} */}
                 <Row justify={'flex-end'} margin={'0 0 1rem 0'}>
                   <DarkTooltip
-                    title={'Rewards are updated once every 20-40 minutes.'}
+                    title={
+                      <span>
+                        Rewards are updated once every{' '}
+                        <span style={{ color: theme.palette.green.main }}>
+                          60-80 minutes
+                        </span>
+                        .
+                      </span>
+                    }
                   >
                     <span>
                       <SvgIcon
@@ -561,7 +569,7 @@ export const TablesDetails = ({
                           >
                             <AmountText style={{ padding: '0 0.5rem' }}>
                               {formatNumberToUSFormat(
-                                stripDigitPlaces(amount, 2)
+                                stripDigitPlaces(amount, amount < 100 ? 4 : 2)
                               )}
                             </AmountText>
                           </DarkTooltip>
