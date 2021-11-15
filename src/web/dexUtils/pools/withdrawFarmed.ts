@@ -25,7 +25,10 @@ import { WalletAdapter } from '../types'
 import { FarmingTicket, SnapshotQueue } from '../common/types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getSnapshotsWithUnclaimedRewards } from './addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
-import { MIN_POOL_TOKEN_AMOUNT_TO_STAKE, NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION } from '../common/config'
+import {
+  MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
+  NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION,
+} from '../common/config'
 import BN from 'bn.js'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 import { sleep } from '../utils'
@@ -174,7 +177,6 @@ import { getRandomInt } from '@core/utils/helpers'
 //   return 'success'
 // }
 
-
 export const withdrawFarmed = async ({
   wallet,
   connection,
@@ -182,6 +184,7 @@ export const withdrawFarmed = async ({
   farmingTickets,
   snapshotQueues,
   pool,
+  signAllTransactions,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -189,6 +192,7 @@ export const withdrawFarmed = async ({
   farmingTickets: FarmingTicket[]
   snapshotQueues: SnapshotQueue[]
   pool: PoolInfo
+  signAllTransactions: boolean
 }) => {
   if (!wallet.publicKey) return 'failed'
 
@@ -224,7 +228,11 @@ export const withdrawFarmed = async ({
         )?.amount || 0
 
       // check amount for every farming state
-      if (amountToClaim === 0 || ticketData.tokensFrozen < MIN_POOL_TOKEN_AMOUNT_TO_STAKE) continue
+      if (
+        amountToClaim === 0 ||
+        ticketData.tokensFrozen < MIN_POOL_TOKEN_AMOUNT_TO_STAKE
+      )
+        continue
 
       const { address: farmingTokenAccountAddress } = getTokenDataByMint(
         allTokensData,
@@ -300,46 +308,65 @@ export const withdrawFarmed = async ({
         commonTransaction.add(withdrawFarmedTransaction)
         commonTransaction.add(transferTransaction)
 
-        transactionsAndSigners.push({ transaction: commonTransaction })
+        if (signAllTransactions) {
+          transactionsAndSigners.push({ transaction: commonTransaction })
+        } else {
+          const result = await sendTransaction({
+            wallet,
+            connection,
+            transaction: commonTransaction,
+            signers: [],
+          })
+
+          if (result === 'timeout') {
+            return 'blockhash_outdated'
+          } else if (result === 'failed') {
+            return 'failed'
+          }
+        }
         // reset create account, leave only withdrawFarmed for all transactions except first
         commonTransaction = new Transaction()
       }
     }
   }
 
-  try {
-    const signedTransactions = await signTransactions({
-      wallet,
-      connection,
-      transactionsAndSigners,
-    })
-
-    if (!signedTransactions) {
-      return 'failed'
-    }
-
-    for (let signedTransaction of signedTransactions) {
-      // send transaction and wait 1s before sending next
-      const result = await sendSignedTransaction({
-        transaction: signedTransaction,
+  if (signAllTransactions) {
+    try {
+      const signedTransactions = await signTransactions({
+        wallet,
         connection,
-        timeout: 10_000,
+        transactionsAndSigners,
       })
 
-      if (result === 'timeout') {
-        return 'blockhash_outdated'
-      } else if (result === 'failed') {
+      if (!signedTransactions) {
         return 'failed'
       }
 
-      // await sleep(2000)
-    }
-  } catch (e) {
-    console.log('end farming catch error', e)
+      for (let signedTransaction of signedTransactions) {
+        // send transaction and wait 1s before sending next
+        const result = await sendSignedTransaction({
+          transaction: signedTransaction,
+          connection,
+          timeout: 10_000,
+        })
 
-    if (isCancelledTransactionError(e)) {
-      return 'cancelled'
+        if (result === 'timeout') {
+          return 'blockhash_outdated'
+        } else if (result === 'failed') {
+          return 'failed'
+        }
+
+        // await sleep(2000)
+      }
+    } catch (e) {
+      console.log('end farming catch error', e)
+
+      if (isCancelledTransactionError(e)) {
+        return 'cancelled'
+      }
     }
+
+    return 'success'
   }
 
   return 'success'
