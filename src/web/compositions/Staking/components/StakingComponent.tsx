@@ -48,6 +48,12 @@ const StakingComponent: React.FC<StakingComponentProps> = (
     connection,
   })
 
+
+  const totalFeesFromPools = getTotalFeesFromPools({
+    poolsFeesData: getFeesEarnedByPoolQuery.getFeesEarnedByPool,
+    dexTokensPricesMap,
+  })
+
   useInterval(() => {
     refreshFarmingTickets()
   }, 60000)
