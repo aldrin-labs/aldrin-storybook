@@ -59,6 +59,8 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
           ticks: {
             align: 'center',
             color: COLORS.textAlt,
+            maxTicksLimit: 10,
+            maxRotation: 0,
             font: {
               size: 12,
               family: MAIN_FONT,
@@ -222,7 +224,7 @@ const createTradingVolumeChart = ({
 
   const minVol = transformedData.reduce((acc, item) => Math.min(acc, (item?.vol || Number.MAX_SAFE_INTEGER)), Number.MAX_SAFE_INTEGER)
   const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), minVol)
-  
+
   if (chart) {
     chart.destroy()
   }
