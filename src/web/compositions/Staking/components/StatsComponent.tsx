@@ -23,10 +23,7 @@ import { MarketDataByTicker } from '@sb/compositions/Chart/components/MarketStat
 import { DexTokensPrices, FeesEarned } from '@sb/compositions/Pools/index.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import {
-  STAKING_FARMING_TOKEN_DIVIDER,
-  STAKING_PART_OF_AMM_FEES,
-} from '@sb/dexUtils/staking/config'
+import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { TokenInfo } from '@sb/dexUtils/types'
@@ -40,12 +37,12 @@ import {
   StatsBlockItem,
 } from '../styles'
 import { getShareText } from '../utils'
-import { getTotalFeesFromPools } from '../utils/getTotalFeesFromPools'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
 
 interface InnerProps {
   tokenData: TokenInfo | null
+  poolsFees: number
 }
 interface StatsComponentProps extends InnerProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
@@ -89,17 +86,12 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     new Map()
   )
 
-  
-
   const tokenPrice = dexTokensPricesMap?.get('RIN').price || 0
 
   const totalStakedUSD = tokenPrice * totalStaked
   const tokensTotal =
     currentFarmingState?.tokensTotal / STAKING_FARMING_TOKEN_DIVIDER
 
-  const poolsFees = (totalFeesFromPools * STAKING_PART_OF_AMM_FEES) / tokenPrice
-
-  const dailyRewards = (tokensTotal + poolsFees) / daysInMonth
   const apy = (tokensTotal / totalStaked) * 100 * 12
 
   useEffect(() => {
