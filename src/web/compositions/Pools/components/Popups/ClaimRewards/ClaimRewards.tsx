@@ -21,6 +21,7 @@ import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 import ProposeToStakePopup from '../../Popups/ProposeToStake'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { RIN_MINT } from '@sb/dexUtils/utils'
+import LightLogo from '@icons/lightLogo.svg'
 
 export const ClaimRewards = ({
   theme,
@@ -150,16 +151,28 @@ export const ClaimRewards = ({
         <BoldHeader style={{ fontSize: '3rem' }}>Claim Rewards</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer justify="flex-start">
-        <Text style={{ marginBottom: '1rem' }} fontSize={'1.6rem'}>
-          Do not close the page until this pop-up has closed. You will need to
-          sign several transactions to make a claim, the number depends on how
-          long it has been since your last reward claim. They will be signed
-          with a single action in the software wallet but may take some time to
-          confirm in the blockchain. If you use hardware wallet you have to
-          confirm every transaction manualy.
+      <RowContainer justify="flex-start" wrap={'nowrap'}>
+        <SvgIcon
+          src={LightLogo}
+          height={'13rem'}
+          width={'13rem'}
+          style={{ marginRight: '3rem' }}
+        />
+        <Text
+          style={{ marginBottom: '1rem', fontFamily: 'Avenir Next' }}
+          fontSize={'1.6rem'}
+        >
+          Do not close this page until the pop-up closes. You will need to
+          confirm multiple transactions, depending on how long your last claim
+          was, in order to claim your rewards. Transactions will be signed in a
+          single action, but it may take some time to confirm them in the
+          blockchain. If you are using a hardware wallet (ex.: Ledger) you will
+          have to confirm each transaction manually.
         </Text>
-        {showRetryMessage && (
+      </RowContainer>
+
+      {showRetryMessage && (
+        <RowContainer justify="flex-start">
           <Text
             style={{ color: theme.palette.red.main, margin: '1rem 0' }}
             fontSize={'1.8rem'}
@@ -167,16 +180,16 @@ export const ClaimRewards = ({
             Blockhash outdated, press “Try Again” to complete the remaining
             transactions.
           </Text>
-        )}
-      </RowContainer>
+        </RowContainer>
+      )}
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Button
-          fontSize={'1.5rem'}
-          style={{
-            width: 'calc(70% - 1rem)',
-            fontFamily: 'Avenir Next Medium',
-          }}
+          color="inherit"
+          height="5.5rem"
+          borderColor="#fff"
+          fontSize="1.3rem"
+          btnWidth="calc(50% - 1rem)"
           disabled={false}
           isUserConfident={true}
           theme={theme}
@@ -186,10 +199,9 @@ export const ClaimRewards = ({
           Claim Rewards with Hardware Wallet (e.g. Ledger)
         </Button>
         <Button
-          style={{
-            width: 'calc(30% - 1rem)',
-            fontFamily: 'Avenir Next Medium',
-          }}
+          color="#651CE4"
+          height="5.5rem"
+          btnWidth="calc(50% - 1rem)"
           disabled={false}
           isUserConfident={true}
           theme={theme}
