@@ -10,7 +10,10 @@ import {
 import { getRandomInt } from '@core/utils/helpers'
 import { DexTokensPrices, FeesEarned } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
-import { STAKING_FARMING_TOKEN_MINT_ADDRESS, STAKING_PART_OF_AMM_FEES } from '@sb/dexUtils/staking/config'
+import {
+  STAKING_FARMING_TOKEN_MINT_ADDRESS,
+  STAKING_PART_OF_AMM_FEES,
+} from '@sb/dexUtils/staking/config'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useInterval } from '@sb/dexUtils/useInterval'
@@ -64,6 +67,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
     poolsFeesData: getFeesEarnedByPoolQuery.getFeesEarnedByPool,
     dexTokensPricesMap,
   })
+
   const poolsFees = (totalFeesFromPools * STAKING_PART_OF_AMM_FEES) / tokenPrice
 
   useInterval(() => {
@@ -75,6 +79,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
       <RootRow>
         <Cell col={12} colLg={6}>
           <UserStakingInfo
+            poolsFees={poolsFees}
             stakingPool={getStakingPoolInfoQuery.getStakingPoolInfo}
             tokenMint={STAKING_FARMING_TOKEN_MINT_ADDRESS}
             tokenData={tokenData}
@@ -86,6 +91,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
         </Cell>
         <Cell col={12} colLg={6}>
           <StatsComponent
+            poolsFees={poolsFees}
             allStakingFarmingTickets={allStakingFarmingTickets}
             stakingPool={getStakingPoolInfoQuery.getStakingPoolInfo}
             tokenData={tokenData}

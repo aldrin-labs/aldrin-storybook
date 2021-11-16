@@ -23,7 +23,10 @@ import { MarketDataByTicker } from '@sb/compositions/Chart/components/MarketStat
 import { DexTokensPrices, FeesEarned } from '@sb/compositions/Pools/index.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
+import {
+  STAKING_FARMING_TOKEN_DIVIDER,
+  STAKING_PART_OF_AMM_FEES,
+} from '@sb/dexUtils/staking/config'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { TokenInfo } from '@sb/dexUtils/types'
@@ -37,19 +40,19 @@ import {
   StatsBlockItem,
 } from '../styles'
 import { getShareText } from '../utils'
+import { getTotalFeesFromPools } from '../utils/getTotalFeesFromPools'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
 
 interface InnerProps {
   tokenData: TokenInfo | null
-  poolsFees: number
 }
 interface StatsComponentProps extends InnerProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
   stakingPool: StakingPool
   allStakingFarmingTickets: FarmingTicket[]
-  getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
+  poolsFees: number
 }
 
 const StatsComponent: React.FC<StatsComponentProps> = (
@@ -59,7 +62,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     getDexTokensPricesQuery,
     stakingPool,
     allStakingFarmingTickets,
-    getFeesEarnedByPoolQuery,
+    poolsFees,
   } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
 
@@ -92,6 +95,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const tokensTotal =
     currentFarmingState?.tokensTotal / STAKING_FARMING_TOKEN_DIVIDER
 
+  const dailyRewards = (tokensTotal + poolsFees) / daysInMonth
   const apy = (tokensTotal / totalStaked) * 100 * 12
 
   useEffect(() => {
@@ -137,7 +141,9 @@ const StatsComponent: React.FC<StatsComponentProps> = (
               <BlockTitle>Estimated Rewards</BlockTitle>
               <BigNumber>{stripByAmount(apy, 2)}%</BigNumber>
               <StretchedBlock>
-                <Number>APR</Number>
+                <Number style={{ lineHeight: 'normal', marginTop: '1rem' }}>
+                  APR
+                </Number>
                 <div>
                   <ShareButton text={shareText} />
                 </div>
@@ -155,8 +161,8 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                 <StatsBlockItem>
                   <BlockSubtitle>Price</BlockSubtitle>
                   <LastPrice>
-                    {/* <Number>${stripByAmount(tokenPrice)}</Number>
-                    <InlineText
+                    <Number>${stripByAmount(tokenPrice)}</Number>
+                    {/* <InlineText
                       color={isPriceIncreasing ? 'success' : 'error'}
                       size="xs"
                     >

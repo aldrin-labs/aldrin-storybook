@@ -90,7 +90,7 @@ export const ClaimRewards = ({
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
-          disabled={false}
+          disabled={operationLoading}
           isUserConfident={true}
           theme={theme}
           showLoader={operationLoading}
@@ -140,6 +140,7 @@ export const ClaimRewards = ({
 
               if (result === 'cancelled') {
                 clearPoolWaitingForUpdate()
+                close()
               } else {
                 setTimeout(async () => {
                   refreshTokensWithFarmingTickets()
