@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import {
   stripByAmount,
@@ -309,6 +309,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   useInterval(() => {
     refreshAllStakingSnapshotQueues()
     refreshAllTokenData()
+    refreshAll()
   }, 60000)
 
   return (

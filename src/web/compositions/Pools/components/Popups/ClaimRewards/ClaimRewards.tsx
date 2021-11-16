@@ -89,10 +89,10 @@ export const ClaimRewards = ({
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Button
+          theme={theme}
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={operationLoading}
           isUserConfident={true}
-          theme={theme}
           showLoader={operationLoading}
           onClick={async () => {
             setShowRetryMessage(false)
