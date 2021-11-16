@@ -32,6 +32,7 @@ export const getParsedUserFarmingTickets = async ({
   const parsedUserTicketsPerPool = userTicketsPerPool.map((ticket) => {
     const data = Buffer.from(ticket.account.data)
     const ticketData = program.coder.accounts.decode('FarmingTicket', data)
+    
 
     const statesAttached = ticketData.statesAttached
       .map((el) => {

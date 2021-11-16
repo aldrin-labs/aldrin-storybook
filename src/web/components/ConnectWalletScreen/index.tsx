@@ -11,41 +11,64 @@ import { Theme, withTheme } from '@material-ui/core'
 import LightLogo from '@icons/lightLogo.svg'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { COLORS } from '../../../variables/variables'
 
-interface WithTheme {
+interface ConnectWalletContentProps {
   theme: Theme
+  size?: 'md' | 'sm'
 }
 
-const ConnectWalletContent: React.FC<WithTheme> = (props) => {
-  const { theme } = props
+//TODO: styled-components
+const SIZES = {
+  md: {
+    icon: '8em',
+    logoRowMargin: '2rem 0 4rem 0',
+    btnContainerMargin: '0 0 2rem 0',
+    fontSize: '1.5em',
+    titleMargin: '0 0 2.4rem 0',
+    btnHeight: '3em',
+  },
+  sm: {
+    icon: '4em',
+    logoRowMargin: '0rem 0 1rem 0',
+    btnContainerMargin: '0',
+    fontSize: '1em',
+    titleMargin: '0 0 1em 0',
+    btnHeight: '2.3em',
+  }
+}
+
+const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
+  const { theme, size = 'md' } = props
+  const sizes = SIZES[size]
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
   return (
     <RowContainer style={{ fontSize: '16px' }} margin="auto 0">
-      <RowContainer margin="2rem 0 4rem 0">
-        <SvgIcon src={LightLogo} width="8em" height="8em" />
+      <RowContainer margin={sizes.logoRowMargin}>
+        <SvgIcon src={LightLogo} width={sizes.icon} height={sizes.icon} />
       </RowContainer>
-      <RowContainer margin="0 0 2.4rem 0">
+      <RowContainer margin={sizes.titleMargin}>
         <Title
           fontFamily="Avenir Next Demi"
-          fontSize="1.5em"
-          color={theme.palette.white.main}
+          fontSize={sizes.fontSize}
+          color={COLORS.primaryWhite}
           style={{ textAlign: 'center' }}
         >
           Connect your wallet to begin.
         </Title>
       </RowContainer>
-      <RowContainer margin="0 0 2rem 0">
+      <RowContainer margin={sizes.btnContainerMargin}>
         <BtnCustom
           onClick={() => {
             setIsConnectWalletPopupOpen(true)
           }}
           btnColor="#F8FAFF"
-          backgroundColor={theme.palette.blue.serum}
+          backgroundColor={COLORS.primary}
           btnWidth="12em"
-          borderColor={theme.palette.blue.serum}
+          borderColor={COLORS.primary}
           textTransform="capitalize"
-          height="3em"
+          height={sizes.btnHeight}
           borderRadius="0.5em"
           fontSize="1em"
           style={{

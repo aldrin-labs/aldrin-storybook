@@ -17,6 +17,25 @@ const VARIANTS = {
       border-color: ${COLORS.hint};
     }
   `,
+  secondary: css`
+    background: ${COLORS.background};
+    border-color: ${COLORS.background};
+
+    &:disabled {
+      background: ${COLORS.hint};
+      border-color: ${COLORS.hint};
+    }
+  `,
+
+  rainbow: css`
+    background: linear-gradient(91.8deg, ${COLORS.primary} 15.31%, ${COLORS.errorAlt} 89.64%);
+    border: 0;
+  `,
+
+  error: css`
+    background: ${COLORS.error};
+    border-color: ${COLORS.error};
+  `,
 
   'outline-white': css`
     background: transparent;
@@ -36,11 +55,14 @@ const VARIANTS = {
     padding: 0 10px;
   `,
 
+  // TODO: rewrite with [disabled] html attribute
   disabled: css`
     background: ${COLORS.hint};
     border-color: ${COLORS.hint};
     cursor: not-allowed;
   `,
+
+  
 }
 
 const PADDINGS = {
@@ -48,9 +70,11 @@ const PADDINGS = {
   lg: '8px 16px',
 }
 
+export type ButtonVariants = keyof typeof VARIANTS
+
 export interface ButtonProps {
   fontSize?: keyof typeof FONT_SIZES
-  variant?: keyof typeof VARIANTS
+  variant?: ButtonVariants
   borderRadius?: keyof typeof BORDER_RADIUS
   padding?: keyof typeof PADDINGS
   backgroundImage?: string

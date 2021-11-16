@@ -12,6 +12,7 @@ interface CalculatedUserRewards {
 
 export const calculateUserStakingRewards = (params: CalculateRewardsParams) => {
   const { snapshotQueues, farmingTickets } = params
+
   const userRewardsForAllTickets = farmingTickets.reduce((acc, ticket) => {
     const filteredSnapshots = snapshotQueues.filter(
       (snapshotQueue) =>

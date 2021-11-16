@@ -20,6 +20,7 @@ export const getFarmingRewardsFromFarmingStates = ({
 }): AmountToClaim[] => {
   const rewardsForFarmingStates = farmingStates.reduce(
     (farmingStatesAcc: AmountToClaim[], farmingState) => {
+
       // get snapshot queues for this farming state
       const snapshotQueue = snapshotQueues.find(
         (snapshotQueue) => snapshotQueue.publicKey === farmingState.farmingSnapshots
@@ -41,7 +42,7 @@ export const getFarmingRewardsFromFarmingStates = ({
       ) {
         return farmingStatesAcc
       }
-      
+
       const rewardsFromSnapshots = getFarmingRewardsFromSnapshots({
         ticket,
         farmingState,

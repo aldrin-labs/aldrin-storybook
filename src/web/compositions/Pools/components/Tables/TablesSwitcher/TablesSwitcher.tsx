@@ -26,7 +26,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import React, { useState } from 'react'
 import { compose } from 'recompose'
 import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
-import { Checkbox } from '../../../../../components/Checkbox'
 import { AddLiquidityPopup } from '../../Popups'
 import { ClaimRewards } from '../../Popups/ClaimRewards/ClaimRewards'
 import { StakePopup } from '../../Popups/Staking/StakePopup'
@@ -41,6 +40,10 @@ import {
   TableModeButton
 } from './TablesSwitcher.styles'
 
+import { Checkbox } from '@sb/components/Checkbox'
+import { DetailsModal } from '../../Popups/DetailsModal'
+import { Route } from 'react-router'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 
 const TablesSwitcher = ({
   theme,
@@ -61,6 +64,9 @@ const TablesSwitcher = ({
     'all'
   )
 
+  const history = useHistory()
+  const { path, url } = useRouteMatch()
+
   const onChangeSearch = (value: string) => {
     if (!`${value}`.match(/[a-zA-Z1-9]/) && value !== '') {
       return
@@ -73,12 +79,14 @@ const TablesSwitcher = ({
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
-  const [includePermissionless, setIncludePermissionless] = useState(true)
   const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
     false
   )
 
   const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
+  const [isDetailsModalOpen, setDetailsModalOpen] = useState(true)
+
+  const [includePermissionless, setIncludePermissionless] = useState(true)
 
   // after operation with pool we update data after some time
   // and for better ux we need to show loader for button which was use for this operation
@@ -218,30 +226,30 @@ const TablesSwitcher = ({
               setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
             />
           ) : (
-            <UserLiquitidyTable
-              theme={theme}
-              searchValue={searchValue}
-              includePermissionless={includePermissionless}
-              poolsInfo={pools}
-              poolWaitingForUpdateAfterOperation={
-                poolWaitingForUpdateAfterOperation
-              }
-              dexTokensPricesMap={dexTokensPricesMap}
-              allTokensData={allTokensData}
-              farmingTicketsMap={farmingTicketsMap}
-              earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-              selectPool={selectPool}
-              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-              setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-              setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-              setIsStakePopupOpen={setIsStakePopupOpen}
-              setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-              setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
-            />
-          )}
+              <UserLiquitidyTable
+                theme={theme}
+                searchValue={searchValue}
+                includePermissionless={includePermissionless}
+                poolsInfo={pools}
+                poolWaitingForUpdateAfterOperation={
+                  poolWaitingForUpdateAfterOperation
+                }
+                dexTokensPricesMap={dexTokensPricesMap}
+                allTokensData={allTokensData}
+                farmingTicketsMap={farmingTicketsMap}
+                earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+                selectPool={selectPool}
+                refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
+                setPoolWaitingForUpdateAfterOperation={
+                  setPoolWaitingForUpdateAfterOperation
+                }
+                setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+                setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+                setIsStakePopupOpen={setIsStakePopupOpen}
+                setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+                setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
+              />
+            )}
 
           {selectedPool && isAddLiquidityPopupOpen && (
             <AddLiquidityPopup
@@ -300,8 +308,13 @@ const TablesSwitcher = ({
               }
             />
           )}
+
+          {/* {isDetailsModalOpen && <DetailsModal onClose={() => setDetailsModalOpen(false)} />} */}
         </TableContainer>
       </BlockContent>
+      <Route path={`${path}/:pair`}>
+        <DetailsModal onClose={() => history.push('/pools')}></DetailsModal>
+      </Route>
     </Block>
   )
 }

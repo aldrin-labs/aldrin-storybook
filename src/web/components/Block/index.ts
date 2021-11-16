@@ -59,7 +59,7 @@ export const BlockSubtitle = styled.h3<TitleProps>`
   color: ${(props: TitleProps) => props.color || COLORS.hint};
 `
 
-interface BlockContentProps {
+export interface BlockContentProps {
   border?: true
 }
 

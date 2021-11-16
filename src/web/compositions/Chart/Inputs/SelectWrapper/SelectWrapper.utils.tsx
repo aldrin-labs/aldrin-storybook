@@ -1,49 +1,34 @@
-import React from 'react'
-import { SvgIcon } from '@sb/components'
-
 import { marketsByCategories } from '@core/config/marketsByCategories'
-
+import stableCoins from '@core/config/stableCoins'
+import tokensLinksMap from '@core/config/tokensTwitterLinks'
+import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
-  stripDigitPlaces,
-  reverseFor,
   roundAndFormatNumber,
+  stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
-
-import AnalyticsIcon from '@icons/analytics.svg'
-import BlueTwitterIcon from '@icons/blueTwitter.svg'
-
+import CoinGecko from '@icons/coingecko.svg'
+import Coinmarketcap from '@icons/coinmarketcap.svg'
 import favouriteSelected from '@icons/favouriteSelected.svg'
 import favouriteUnselected from '@icons/favouriteUnselected.svg'
-
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
-import Coinmarketcap from '@icons/coinmarketcap.svg'
-import CoinGecko from '@icons/coingecko.svg'
 import NomicsIcon from '@icons/nomics.svg'
-import Inform from '@icons/inform.svg'
-
-import tokensLinksMap from '@core/config/tokensTwitterLinks'
-
-import { ISelectData, SelectTabType } from './SelectWrapper.types'
+import { SvgIcon } from '@sb/components'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
-import LinkToSolanaExp from '../../components/LinkToSolanaExp'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import {
-  LinkToAnalytics,
-  LinkToTwitter,
-} from '../../components/MarketBlock/MarketBlock.styles'
-import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import React from 'react'
+import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
+import { ISelectData, SelectTabType } from './SelectWrapper.types'
 import {
   IconContainer,
   StyledColumn,
   StyledRow,
   StyledSymbol,
-  StyledTokenName,
+  StyledTokenName
 } from './SelectWrapperStyles'
-import stableCoins from '@core/config/stableCoins'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favourite', isSortable: false },
@@ -417,8 +402,8 @@ export const combineSelectWrapperData = ({
     const marketCapIcon = marketCapLink.includes('coinmarketcap')
       ? Coinmarketcap
       : marketCapLink.includes('coingecko')
-      ? CoinGecko
-      : NomicsIcon
+        ? CoinGecko
+        : NomicsIcon
 
     return {
       id: `${symbol}`,
@@ -490,8 +475,8 @@ export const combineSelectWrapperData = ({
                 {closePrice === 0
                   ? '-'
                   : formatNumberToUSFormat(
-                      stripDigitPlaces(closePrice, pricePrecision)
-                    )}
+                    stripDigitPlaces(closePrice, pricePrecision)
+                  )}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -506,8 +491,8 @@ export const combineSelectWrapperData = ({
                 {closePrice === 0
                   ? '-'
                   : formatNumberToUSFormat(
-                      stripDigitPlaces(closePrice, pricePrecision)
-                    )}
+                    stripDigitPlaces(closePrice, pricePrecision)
+                  )}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -528,8 +513,8 @@ export const combineSelectWrapperData = ({
                   +lastPriceDiff === 0
                     ? ''
                     : +lastPriceDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
               }}
             >
               {`${sign24hChange}${formatNumberToUSFormat(
@@ -546,8 +531,8 @@ export const combineSelectWrapperData = ({
                   +lastPriceDiff === 0
                     ? ''
                     : +lastPriceDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
               }}
             >
               <span>
@@ -593,8 +578,8 @@ export const combineSelectWrapperData = ({
                   +precentageTradesDiff === 0
                     ? ''
                     : +precentageTradesDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
               }}
             >
               {`${signTrades24hChange}${formatNumberToUSFormat(
@@ -680,60 +665,17 @@ export const combineSelectWrapperData = ({
             justify={'flex-start'}
             align={'baseline'}
           >
-            <SvgIcon
-              onClick={(e) => {
+            <TokenExternalLinks
+              tokenName={base}
+              marketAddress={marketAddress}
+              onInfoClick={(e) => {
                 e.stopPropagation()
                 changeChoosenMarketData({ symbol: marketName, marketAddress })
                 setIsMintsPopupOpen(true)
               }}
-              src={Inform}
-              style={{ marginRight: '1.5rem', cursor: 'pointer' }}
-              width={'2.3rem'}
-              height={'2.3rem'}
+              marketPair={symbol}
+
             />
-            <LinkToSolanaExp padding={'0'} marketAddress={marketAddress} />
-            <DarkTooltip title={'Show analytics for this market.'}>
-              <LinkToAnalytics
-                target="_blank"
-                rel="noopener noreferrer"
-                to={`/analytics/${symbol}`}
-              >
-                <SvgIcon
-                  src={AnalyticsIcon}
-                  width={'2.3rem'}
-                  height={'2.3rem'}
-                />
-              </LinkToAnalytics>
-            </DarkTooltip>
-            {twitterLink !== '' && (
-              <DarkTooltip title={'Twitter profile of base token.'}>
-                <LinkToTwitter
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={twitterLink}
-                >
-                  <SvgIcon
-                    width={'2.5rem'}
-                    height={'2.5rem'}
-                    src={BlueTwitterIcon}
-                  />
-                </LinkToTwitter>
-              </DarkTooltip>
-            )}
-            {marketCapLink !== '' && (
-              <a
-                style={{ marginLeft: '1.5rem' }}
-                target="_blank"
-                rel="noopener noreferrer"
-                href={marketCapLink}
-              >
-                <SvgIcon
-                  width={'2.5rem'}
-                  height={'2.5rem'}
-                  src={marketCapIcon}
-                />
-              </a>
-            )}
           </Row>
         ),
       },
@@ -743,8 +685,8 @@ export const combineSelectWrapperData = ({
           +volumeChange > 0 ? (
             <SvgIcon src={MoreVolumeArrow} width="1rem" height="auto" />
           ) : (
-            <SvgIcon src={LessVolumeArrow} width="1rem" height="auto" />
-          ),
+              <SvgIcon src={LessVolumeArrow} width="1rem" height="auto" />
+            ),
       },
     }
   })
