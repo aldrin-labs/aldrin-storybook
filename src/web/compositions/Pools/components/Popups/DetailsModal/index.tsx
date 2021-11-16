@@ -199,7 +199,6 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
               <PoolStatsData>
                 <PoolStatsText>
                   $100,000,000
-                  <PoolStatsNumber>125.00%</PoolStatsNumber>
                 </PoolStatsText>
               </PoolStatsData>
             </PoolStatsBlock>
@@ -208,7 +207,6 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
               <PoolStatsData>
                 <PoolStatsText>
                   ${stripByAmountAndFormat(tvlUsd)}
-                  <PoolStatsNumber>125.00%</PoolStatsNumber>
                 </PoolStatsText>
               </PoolStatsData>
             </PoolStatsBlock>
