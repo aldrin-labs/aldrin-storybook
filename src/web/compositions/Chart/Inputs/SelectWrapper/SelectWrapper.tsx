@@ -363,15 +363,6 @@ class SelectPairListComponent extends React.PureComponent<
       }
     }
 
-    if (sortBy === 'volume24hChange') {
-      newList.sort((pairObjectA, pairObjectB) => {
-        const idxA = TOP_LIST.indexOf(pairObjectA.id)
-        const idxB = TOP_LIST.indexOf(pairObjectB.id)
-        console.log('idxa: ', idxA, idxB)
-        return idxA - idxB
-      })
-    }
-
     const topList = sortBy === 'volume24hChange' ? [...PINNED_LIST, ...TOP_LIST] : PINNED_LIST
 
     const topMarkets = newList
