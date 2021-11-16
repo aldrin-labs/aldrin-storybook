@@ -36,9 +36,22 @@ import { TableInner } from './TableInner'
 
 
 
+const PINNED_LIST = [
+  'RIN_USDC',
+]
 
 
-
+// TODO: clear that after db volume will be OK
+const TOP_LIST = [
+  'SOL_USDC',
+  'mSOL_USDC',
+  'BTC_USDT',
+  'SOL_USDT',
+  'ETH_USDC',
+  'SRM_USDC',
+  'RAY_USDC',
+  'ATLAS_USDC',
+]
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -304,6 +317,8 @@ class SelectPairListComponent extends React.PureComponent<
 
 
   _sortList = ({ sortBy, sortDirection, data, tab }) => {
+
+
     let dataToSort = data
 
     if (!dataToSort) {
@@ -317,6 +332,8 @@ class SelectPairListComponent extends React.PureComponent<
     }
 
     // const CCAIMarket = newList.find(v => v.symbol.contentToSort === 'RIN_USDC')
+
+
 
     if (this.props.marketType === 0 && sortBy === 'volume24hChange') {
       newList.sort((pairObjectA, pairObjectB) => {
@@ -346,15 +363,31 @@ class SelectPairListComponent extends React.PureComponent<
       }
     }
 
+    if (sortBy === 'volume24hChange') {
+      newList.sort((pairObjectA, pairObjectB) => {
+        const idxA = TOP_LIST.indexOf(pairObjectA.id)
+        const idxB = TOP_LIST.indexOf(pairObjectB.id)
+        console.log('idxa: ', idxA, idxB)
+        return idxA - idxB
+      })
+    }
+
+    const topList = sortBy === 'volume24hChange' ? [...PINNED_LIST, ...TOP_LIST] : PINNED_LIST
+
+    const topMarkets = newList
+      .filter((v) => topList.includes(v.id))
+      .sort((a, b) => topList.indexOf(a.id) - topList.indexOf(b.id))
+
+    const withoutTop = newList.filter((v) => !topList.includes(v.id))
+
     const ccaiIndex = newList.findIndex(
       (v) => v.symbol.contentToSort === 'RIN_USDC'
     )
     if (ccaiIndex === -1) return newList
 
     const updatedList = [
-      newList[ccaiIndex],
-      ...newList.slice(0, ccaiIndex),
-      ...newList.slice(ccaiIndex + 1),
+      ...topMarkets,
+      ...withoutTop,
     ]
 
     return updatedList
