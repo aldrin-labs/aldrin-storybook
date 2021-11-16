@@ -10,10 +10,12 @@ import {
 import { getRandomInt } from '@core/utils/helpers'
 import { DexTokensPrices, FeesEarned } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import {
   STAKING_FARMING_TOKEN_MINT_ADDRESS,
   STAKING_PART_OF_AMM_FEES,
 } from '@sb/dexUtils/staking/config'
+import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useInterval } from '@sb/dexUtils/useInterval'
@@ -47,9 +49,8 @@ const StakingComponent: React.FC<StakingComponentProps> = (
     wallet,
     connection,
   })
-  const tokenData = allTokenData.find(
-    (token) => token.mint === STAKING_FARMING_TOKEN_MINT_ADDRESS
-  )
+
+  // get balance from lp token holder account
   const [
     allStakingFarmingTickets,
     refreshFarmingTickets,
@@ -61,14 +62,31 @@ const StakingComponent: React.FC<StakingComponentProps> = (
     (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
     new Map()
   )
-  const tokenPrice = dexTokensPricesMap?.get('RIN').price || 0
 
   const totalFeesFromPools = getTotalFeesFromPools({
     poolsFeesData: getFeesEarnedByPoolQuery.getFeesEarnedByPool,
     dexTokensPricesMap,
   })
 
-  const poolsFees = (totalFeesFromPools * STAKING_PART_OF_AMM_FEES) / tokenPrice
+  const stakingPool = getStakingPoolInfoQuery.getStakingPoolInfo || {}
+  const allStakingFarmingStates = stakingPool.farming || []
+
+  const currentFarmingState = getCurrentFarmingStateFromAll(
+    allStakingFarmingStates
+  )
+
+  const tokenData = allTokenData.find(
+    (token) => token.mint === currentFarmingState.farmingTokenMint
+  )
+
+  const tokenPrice =
+    dexTokensPricesMap?.get(
+      getTokenNameByMintAddress(currentFarmingState.farmingTokenMint)
+    ).price || 0
+
+  const poolsFees =
+    ((totalFeesFromPools * STAKING_PART_OF_AMM_FEES) / tokenPrice) *
+    10 ** currentFarmingState.farmingTokenMintDecimals
 
   useInterval(() => {
     refreshFarmingTickets()
@@ -80,8 +98,8 @@ const StakingComponent: React.FC<StakingComponentProps> = (
         <Cell col={12} colLg={6}>
           <UserStakingInfo
             poolsFees={poolsFees}
-            stakingPool={getStakingPoolInfoQuery.getStakingPoolInfo}
-            tokenMint={STAKING_FARMING_TOKEN_MINT_ADDRESS}
+            stakingPool={stakingPool}
+            currentFarmingState={currentFarmingState}
             tokenData={tokenData}
             refreshAllTokenData={refreshAllTokenData}
             allStakingFarmingTickets={allStakingFarmingTickets}
@@ -93,7 +111,8 @@ const StakingComponent: React.FC<StakingComponentProps> = (
           <StatsComponent
             poolsFees={poolsFees}
             allStakingFarmingTickets={allStakingFarmingTickets}
-            stakingPool={getStakingPoolInfoQuery.getStakingPoolInfo}
+            stakingPool={stakingPool}
+            currentFarmingState={currentFarmingState}
             tokenData={tokenData}
           />
         </Cell>

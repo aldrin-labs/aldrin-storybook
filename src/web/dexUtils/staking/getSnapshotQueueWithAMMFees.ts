@@ -1,5 +1,4 @@
 import { SnapshotQueue } from '../common/types'
-import { notifyForDevelop } from '../notifications'
 
 export const getSnapshotQueueWithAMMFees = ({
   farmingSnapshotsQueueAddress,
@@ -16,22 +15,21 @@ export const getSnapshotQueueWithAMMFees = ({
     ) || 0
 
   if (currentSnapshotQueueIndex === -1) {
-    notifyForDevelop({ message: 'No current snapshot', type: 'error' })
+    return snapshotQueues
   }
 
   const currentSnapshotsQueue = snapshotQueues[currentSnapshotQueueIndex]
   const currentSnapshots = currentSnapshotsQueue?.snapshots
-
   const feesForOneSnapshot = poolsFees / currentSnapshots?.length
 
   let feesAdded = feesForOneSnapshot
+
   const snapshotsWithFees = currentSnapshots?.map((el) => {
     const snapshotWithFees = {
-      tokensTotal: Math.floor(el.tokensTotal + feesAdded),
-      isInitialized: el.isInitialized,
-      tokensFrozen: el.tokensFrozen,
-      time: el.time,
+      ...el,
+      tokensTotal: el.tokensTotal + feesAdded,
     }
+
     feesAdded += feesForOneSnapshot
 
     return snapshotWithFees

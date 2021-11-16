@@ -20,15 +20,13 @@ import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import { InlineText, Text } from '@sb/components/Typography'
 import { MarketDataByTicker } from '@sb/compositions/Chart/components/MarketStats/MarketStats'
-import { DexTokensPrices, FeesEarned } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
-import {
-  STAKING_FARMING_TOKEN_DIVIDER,
-  STAKING_PART_OF_AMM_FEES,
-} from '@sb/dexUtils/staking/config'
-import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { StakingPool } from '@sb/dexUtils/staking/types'
+import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
+import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
+
 import { TokenInfo } from '@sb/dexUtils/types'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -40,7 +38,6 @@ import {
   StatsBlockItem,
 } from '../styles'
 import { getShareText } from '../utils'
-import { getTotalFeesFromPools } from '../utils/getTotalFeesFromPools'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
 
@@ -50,7 +47,7 @@ interface InnerProps {
 interface StatsComponentProps extends InnerProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
-  stakingPool: StakingPool
+  currentFarmingState: FarmingState
   allStakingFarmingTickets: FarmingTicket[]
   poolsFees: number
 }
@@ -60,21 +57,11 @@ const StatsComponent: React.FC<StatsComponentProps> = (
 ) => {
   const {
     getDexTokensPricesQuery,
-    stakingPool,
+    currentFarmingState,
     allStakingFarmingTickets,
     poolsFees,
   } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
-
-  const allStakingFarmingStates = stakingPool?.farming || []
-
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(
-    allStakingFarmingTickets
-  )
-
-  const currentFarmingState = getCurrentFarmingStateFromAll(
-    allStakingFarmingStates
-  )
 
   useEffect(() => {
     const getRINSupply = async () => {
@@ -89,23 +76,38 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     new Map()
   )
 
-  const tokenPrice = dexTokensPricesMap?.get('RIN').price || 0
+  const tokenPrice =
+    dexTokensPricesMap?.get(
+      getTokenNameByMintAddress(currentFarmingState.farmingTokenMint)
+    ).price || 0
 
-  const totalStakedUSD = tokenPrice * totalStaked
   const tokensTotal =
     currentFarmingState?.tokensTotal / STAKING_FARMING_TOKEN_DIVIDER
 
-  const dailyRewards = (tokensTotal + poolsFees) / daysInMonth
-  const apy = (tokensTotal / totalStaked) * 100 * 12
+  const poolsFeesWithoutDecimals = poolsFees / STAKING_FARMING_TOKEN_DIVIDER
+  const totalTokensToBeDistributed = tokensTotal + poolsFeesWithoutDecimals
+
+  const dailyRewards = totalTokensToBeDistributed / daysInMonth
+
+  const totalStaked = getStakedTokensFromOpenFarmingTickets(
+    getTicketsWithUiValues({
+      tickets: allStakingFarmingTickets,
+      farmingTokenMintDecimals: currentFarmingState.farmingTokenMintDecimals,
+    })
+  )
+  const totalStakedUSD = tokenPrice * totalStaked
+
+  const APR = (totalTokensToBeDistributed / totalStaked) * 100 * 12
+  const formattedAPR = APR ? stripByAmount(APR, 2) : '--'
 
   useEffect(() => {
-    document.title = `Aldrin | Stake RIN | ${stripByAmount(apy)}% APY`
+    document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`
     return () => {
       document.title = 'Aldrin'
     }
-  }, [apy])
+  }, [APR])
 
-  const shareText = getShareText(stripByAmount(apy))
+  const shareText = getShareText(formattedAPR)
 
   const totalStakedPercentageToCircSupply =
     (totalStaked * 100) / RINCirculatingSupply
@@ -139,7 +141,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <BigNumber>{stripByAmount(apy, 2)}%</BigNumber>
+              <BigNumber>{formattedAPR}%</BigNumber>
               <StretchedBlock>
                 <Number style={{ lineHeight: 'normal', marginTop: '1rem' }}>
                   APR

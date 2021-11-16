@@ -19,7 +19,7 @@ export const useStakingTicketsWithAvailableToClaim = ({
   connection: Connection
   walletPublicKey?: PublicKey
   stakingPool: StakingPool
-  snapshotQueues: SnapshotQueue
+  snapshotQueues: SnapshotQueue[]
   allStakingFarmingTickets: FarmingTicket[]
 }): [FarmingTicket[], RefreshFunction] => {
   const [availableToClaim, setAvailableToClaim] = useState(<FarmingTicket[]>[])
@@ -38,7 +38,13 @@ export const useStakingTicketsWithAvailableToClaim = ({
       setAvailableToClaim(availableToClaimFarmingTickets)
     }
     getAvailableToClaim()
-  }, [JSON.stringify(allStakingFarmingTickets), refreshCounter])
+  }, [
+    JSON.stringify(allStakingFarmingTickets),
+    refreshCounter,
+    JSON.stringify(stakingPool),
+    JSON.stringify(snapshotQueues),
+    wallet.publicKey,
+  ])
 
   return [availableToClaim, refresh]
 }

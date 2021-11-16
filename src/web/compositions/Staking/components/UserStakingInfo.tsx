@@ -16,7 +16,7 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { ClaimRewards } from '@sb/compositions/Pools/components/Popups/ClaimRewards/ClaimRewards'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
@@ -55,6 +55,7 @@ import {
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
+import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 
 interface UserBalanceProps {
   value: number
@@ -71,6 +72,7 @@ interface StakingInfoProps {
   refreshAllStakingFarmingTickets: RefreshFunction
   theme: Theme
   poolsFees: number
+  currentFarmingState: FarmingState
 }
 
 const UserBalance: React.FC<UserBalanceProps> = (props) => {
@@ -125,6 +127,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     allTokenData,
     theme,
     poolsFees,
+    currentFarmingState,
   } = props
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
@@ -154,7 +157,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
   })
 
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(userFarmingTickets)
+  const totalStaked = getStakedTokensFromOpenFarmingTickets(
+    getTicketsWithUiValues({
+      tickets: userFarmingTickets,
+      farmingTokenMintDecimals: currentFarmingState.farmingTokenMintDecimals,
+    })
+  )
 
   const stakingPoolWithClosedFarmings = {
     ...stakingPool,
@@ -240,10 +248,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     return true
   }
 
-  const currentFarmingState = getCurrentFarmingStateFromAll(
-    stakingPool?.farming || []
-  )
-
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
     farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
     poolsFees,
@@ -258,10 +262,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     walletPublicKey: wallet.publicKey,
     stakingPool,
     snapshotQueues: snapshotQueueWithAMMFees,
-    allStakingFarmingTickets: userFarmingTickets.map((t) => ({
-      ...t,
-      tokensFrozen: t.tokensFrozen * 10 ** 9,
-    })),
+    allStakingFarmingTickets: userFarmingTickets,
   })
 
   const userRewards = getAvailableToClaimFarmingTokens(
@@ -270,10 +271,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const availableToClaimTotal = getAvailableToClaimFarmingTokens(
     addFarmingRewardsToTickets({
-      farmingTickets: userFarmingTickets.map((t) => ({
-        ...t,
-        tokensFrozen: t.tokensFrozen * 10 ** 9,
-      })),
+      farmingTickets: userFarmingTickets,
       pools: [stakingPoolWithClosedFarmings],
       snapshotQueues: snapshotQueueWithAMMFees,
     })
@@ -487,6 +485,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
             return result
           }
+
+          return true
         }}
       />
     </>
@@ -495,6 +495,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
 const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
   const {
+    theme,
     tokenData,
     stakingPool,
     refreshAllTokenData,
@@ -502,16 +503,19 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
     refreshAllStakingFarmingTickets,
     allTokenData,
     poolsFees,
+    currentFarmingState,
   } = props
   return (
     <Block>
       <StretchedBlock direction="column">
-        <ConnectWalletWrapper>
+        <ConnectWalletWrapper theme={theme}>
           <UserStakingInfoContent
+            theme={theme}
             poolsFees={poolsFees}
             allTokenData={allTokenData}
             stakingPool={stakingPool}
             tokenData={tokenData}
+            currentFarmingState={currentFarmingState}
             refreshAllTokenData={refreshAllTokenData}
             allStakingFarmingTickets={allStakingFarmingTickets}
             refreshAllStakingFarmingTickets={refreshAllStakingFarmingTickets}
