@@ -90,13 +90,13 @@ const SwapPage = ({
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>(
     defaultQuoteTokenMint
   )
-    console.log('getPoolsInfoQuery.getPoolsInfo', getPoolsInfoQuery.getPoolsInfo)
   const selectedPool = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
       (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress) && pool?.curveType === 1
+        pool?.tokenB === quoteTokenMintAddress) &&
+      pool?.curveType === 1 // TODO: remove
   )
 
   const isStablePool = selectedPool?.curveType === 1
@@ -274,13 +274,14 @@ const SwapPage = ({
     : userBaseTokenAccount
 
   useEffect(() => {
-    if (wallet.publicKey) {
+    if (wallet.publicKey && selectedPool) {
       const minimumReceivedAmountFromSwap = getMinimumReceivedAmountFromSwap({
         wallet,
         connection,
         pool: selectedPool,
         isSwapBaseToQuote,
         swapAmountIn: +baseAmount,
+        allTokensData,
         userBaseTokenAccount: userPoolBaseTokenAccount
           ? new PublicKey(userPoolBaseTokenAccount)
           : null,
@@ -290,7 +291,7 @@ const SwapPage = ({
         transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
       })
     }
-  }, [wallet.publicKey, allTokensData])
+  }, [wallet.publicKey, allTokensData, baseAmount])
 
   return (
     <RowContainer

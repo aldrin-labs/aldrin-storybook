@@ -1,5 +1,6 @@
 import { simulateTransaction } from '@project-serum/common'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { Side } from '@sb/dexUtils/common/config'
 import {
   transferSOLToWrappedAccountAndClose,
@@ -8,10 +9,14 @@ import {
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '@sb/dexUtils/send'
-import { TOKEN_PROGRAM_ID } from '@sb/dexUtils/tokens'
-import { WalletAdapter } from '@sb/dexUtils/types'
+import {
+  parseTokenAccountData,
+  parseTokenMintData,
+  TOKEN_PROGRAM_ID,
+} from '@sb/dexUtils/tokens'
+import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
-import { Connection, PublicKey, Transaction } from '@solana/web3.js'
+import { Connection, PublicKey, Transaction, Signer } from '@solana/web3.js'
 import BN from 'bn.js'
 
 export const getMinimumReceivedAmountFromSwap = async ({
@@ -23,6 +28,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
   userBaseTokenAccount,
   userQuoteTokenAccount,
   transferSOLToWrapped,
+  allTokensData,
 }: {
   swapAmountIn: number
   isSwapBaseToQuote: boolean
@@ -32,6 +38,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
   transferSOLToWrapped: boolean
+  allTokensData: TokenInfo[]
 }) => {
   const { curveType, swapToken } = pool
 
@@ -174,19 +181,6 @@ export const getMinimumReceivedAmountFromSwap = async ({
       },
     }
   )
-  console.log('swapAmountIn', swapAmountIn)
-  console.log('args', {
-    pool: poolPublicKey,
-    poolSigner: vaultSigner,
-    poolMint,
-    baseTokenVault,
-    quoteTokenVault,
-    feePoolTokenAccount,
-    walletAuthority: wallet.publicKey,
-    userBaseTokenAccount,
-    userQuoteTokenAccount,
-    tokenProgram: TOKEN_PROGRAM_ID,
-  })
 
   commonTransaction.add(transactionBeforeSwap)
   commonTransaction.add(swapTransaction)
@@ -194,11 +188,37 @@ export const getMinimumReceivedAmountFromSwap = async ({
 
   commonTransaction.feePayer = wallet.publicKey
 
-  const res = await simulateTransaction(
-    connection,
+  const { value } = await connection.simulateTransaction(
     commonTransaction,
-    connection.commitment ?? 'single'
+    undefined,
+    [isSwapBaseToQuote ? userQuoteTokenAccount : userBaseTokenAccount]
   )
 
-  console.log('value', res)
+  console.log('userQuoteTokenAccount', userQuoteTokenAccount.toString())
+
+  const postUserQuoteTokenAccountData = Buffer.from(
+    value.accounts[0].data[0],
+    'base64'
+  )
+
+  console.log({
+    postUserQuoteTokenAccountData: postUserQuoteTokenAccountData,
+  })
+  const parsedQuote = parseTokenAccountData(postUserQuoteTokenAccountData)
+  console.log('parsedQuote', parsedQuote, parsedQuote.mint.toString())
+
+  // узнать сколько у юзера в квоте или бейзе до транзакции - f
+  let {
+    amount: maxBaseAmount,
+    decimals: baseTokenDecimals,
+  } = getTokenDataByMint(allTokensData, parsedQuote.mint.toString())
+
+сщтые
+
+  // из парседДата достать эмаунт и поделить на децималс
+  // отнять новый от прошлого - f
+  // отрефакторить: разбить своп на две функции (1 формирует транзу - 2 отправляет) + заюзать тут ту что формирует и просимулировать ее - 1h
+  // правильно отдавать сколько юзер получит независимо от curveType - 2h
+
+  // console.log('value', value)
 }
