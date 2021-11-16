@@ -31,7 +31,8 @@ import { TablesDetails } from '../components/TablesDetails'
 import {
   RowDataTdText,
   RowDataTdTopText,
-  TextColumnContainer
+  TextColumnContainer,
+  DetailsLink
 } from '../index.styles'
 import { getFarmingStateDailyFarmingValue } from './utils/getFarmingStateDailyFarmingValue'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from './utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
@@ -101,7 +102,6 @@ export const combineUserLiquidityData = ({
   theme,
   searchValue,
   usersPools,
-  expandedRows,
   poolWaitingForUpdateAfterOperation,
   allTokensData,
   dexTokensPricesMap,
@@ -121,7 +121,6 @@ export const combineUserLiquidityData = ({
   searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: PoolInfo[]
-  expandedRows: string[]
   poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
@@ -147,6 +146,9 @@ export const combineUserLiquidityData = ({
     )
     .filter((pool) => includePermissionless ? true : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint))
     .map((pool: PoolInfo) => {
+      const poolName = `${getTokenNameByMintAddress(
+        pool.tokenA
+      )}_${getTokenNameByMintAddress(pool.tokenB)}`
       const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
@@ -398,62 +400,41 @@ export const combineUserLiquidityData = ({
         },
         details: {
           render: (
-            <Row>
-              <RowDataTdText
-                theme={theme}
-                color={theme.palette.grey.new}
-                fontFamily="Avenir Next Medium"
-                style={{ marginRight: '1rem' }}
-              >
-                Details
-              </RowDataTdText>
-              <SvgIcon
-                width="1rem"
-                height="auto"
-                src={
-                  // separate to variable
-                  expandedRows.includes(
-                    `${pool.name}${pool.tvl}${pool.poolTokenMint}`
-                  )
-                    ? ArrowToTop
-                    : ArrowToBottom
-                }
-              />
-            </Row>
+            <DetailsLink to={`/pools/${poolName}`}>Details</DetailsLink>
           ),
         },
-        expandableContent: [
-          {
-            row: {
-              render: (
-                <TablesDetails
-                  setIsStakePopupOpen={setIsStakePopupOpen}
-                  setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-                  setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-                  setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                  setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
-                  refreshTokensWithFarmingTickets={
-                    refreshTokensWithFarmingTickets
-                  }
-                  setPoolWaitingForUpdateAfterOperation={
-                    setPoolWaitingForUpdateAfterOperation
-                  }
-                  selectPool={selectPool}
-                  farmingTicketsMap={farmingTicketsMap}
-                  earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-                  dexTokensPricesMap={dexTokensPricesMap}
-                  allTokensData={allTokensData}
-                  poolWaitingForUpdateAfterOperation={
-                    poolWaitingForUpdateAfterOperation
-                  }
-                  theme={theme}
-                  pool={pool}
-                />
-              ),
-              colspan: 8,
-            },
-          },
-        ],
+        // expandableContent: [
+        //   {
+        //     row: {
+        //       render: (
+        //         <TablesDetails
+        //           setIsStakePopupOpen={setIsStakePopupOpen}
+        //           setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+        //           setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+        //           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+        //           setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
+        //           refreshTokensWithFarmingTickets={
+        //             refreshTokensWithFarmingTickets
+        //           }
+        //           setPoolWaitingForUpdateAfterOperation={
+        //             setPoolWaitingForUpdateAfterOperation
+        //           }
+        //           selectPool={selectPool}
+        //           farmingTicketsMap={farmingTicketsMap}
+        //           earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+        //           dexTokensPricesMap={dexTokensPricesMap}
+        //           allTokensData={allTokensData}
+        //           poolWaitingForUpdateAfterOperation={
+        //             poolWaitingForUpdateAfterOperation
+        //           }
+        //           theme={theme}
+        //           pool={pool}
+        //         />
+        //       ),
+        //       colspan: 8,
+        //     },
+        //   },
+        // ],
       }
     })
 

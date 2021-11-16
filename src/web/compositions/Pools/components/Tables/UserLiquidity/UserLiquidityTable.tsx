@@ -57,11 +57,6 @@ const UserLiquidityTableComponent = ({
   setIsUnstakePopupOpen: (value: boolean) => void
   setIsClaimRewardsPopupOpen: (value: boolean) => void
 }) => {
-  const [expandedRows, expandRows] = useState([])
-
-  const setExpandedRows = (id: string) => {
-    expandRows(onCheckBoxClick(expandedRows, id))
-  }
 
   const usersPools = getUserPoolsFromAll({
     poolsInfo,
@@ -73,7 +68,6 @@ const UserLiquidityTableComponent = ({
     theme,
     searchValue,
     usersPools,
-    expandedRows,
     poolWaitingForUpdateAfterOperation,
     allTokensData,
     dexTokensPricesMap,
@@ -96,9 +90,6 @@ const UserLiquidityTableComponent = ({
       <TableWithSort
         hideCommonCheckbox={true}
         hideRowsCheckboxes={true}
-        expandableRows={true}
-        expandedRows={expandedRows}
-        onChange={setExpandedRows}
         style={{
           overflowX: 'hidden',
           height: '100%',

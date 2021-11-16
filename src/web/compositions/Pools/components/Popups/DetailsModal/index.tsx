@@ -6,7 +6,7 @@ import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import SwapIcon from './icons/swapIcon.svg'
 import {
   ModalBlock,
@@ -21,7 +21,7 @@ import {
   PoolStatsBlock,
   PoolStatsData,
   PoolStatsTitle,
-  PoolInfo,
+  PoolInfoBlock,
   TokenIcons,
   ButtonsContainer,
   PoolStatsRow,
@@ -40,112 +40,150 @@ import {
 } from './styles'
 import { Row, Cell } from '@sb/components/Layout'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
+import { PoolInfo, DexTokensPrices } from '../../../index.types'
+import { stripByAmountAndFormat, stripByAmount } from '@core/utils/chartPageUtils'
+import { formatNumberToUSFormat } from '../../../../../../../../core/src/utils/PortfolioTableUtils'
 
 interface DetailsModalProps {
-  onClose: () => void
+  pools?: PoolInfo[]
+  prices: Map<string, DexTokensPrices>
 }
 export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
-  const { onClose } = props
+
+  const { pools, prices } = props
+  const history = useHistory()
+  const { symbol } = useParams()
+
+  const [base, quote] = (symbol as string).split('_')
+
+  const goBack = () => history.push('/pools')
+
+  const pool = pools?.find((p) => p.parsedName === symbol)
+
+  if (!pool) {
+    return null
+  }
+
+  const basePrice = pool.tvl.tokenB / pool.tvl.tokenA
+  const quotePrice = pool.tvl.tokenA / pool.tvl.tokenB
+
+  const baseUsdPrice = prices.get(base)
+  const quoteUsdPrice = prices.get(quote)
+
+  const tvlUsd = pool.tvl.tokenA * (baseUsdPrice?.price || 0) + pool.tvl.tokenB * (quoteUsdPrice?.price || 0)
+
+  console.log('pool: ', pool)
+
   return (
-    <Modal open onClose={onClose}>
+    <Modal open onClose={goBack}>
       <ModalBlock border>
         <div>
-          <Button variant="secondary" onClick={onClose} borderRadius="lg">⟵ Close</Button>
+          <Button variant="secondary" onClick={goBack} borderRadius="lg">⟵ Close</Button>
         </div>
         <TokenInfo>
           <TokenInfoRow>
             <TokenIcon
-              mint={'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'}
+              mint={pool.tokenA}
               width={'1.2em'}
               height={'1.2em'}
             />
             <InlineText color="success">1</InlineText>
-            <InlineText>SOL &nbsp;=&nbsp;</InlineText>
+            <InlineText>{base}&nbsp;=&nbsp;</InlineText>
 
             <TokenIcon
-              mint={'BXXkv6z8ykpG1yuvUDPgh732wzVHB69RnB9YgSYh3itW'}
+              mint={pool.tokenB}
               width={'1.2em'}
               height={'1.2em'}
             />
-            <InlineText color="success">33</InlineText>
-            <InlineText>RIN</InlineText>
+            <InlineText color="success">{stripByAmountAndFormat(basePrice, 4)}</InlineText>
+            <InlineText>{quote}</InlineText>
 
           </TokenInfoRow>
         </TokenInfo>
         <TokenInfo>
           <TokenInfoRow>
             <TokenIcon
-              mint={'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'}
+              mint={pool.tokenB}
               width={'1.2em'}
               height={'1.2em'}
             />
             <InlineText color="success">1</InlineText>
-            <InlineText>SOL &nbsp;=&nbsp;</InlineText>
+            <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
 
             <TokenIcon
-              mint={'BXXkv6z8ykpG1yuvUDPgh732wzVHB69RnB9YgSYh3itW'}
+              mint={pool.tokenA}
               width={'1.2em'}
               height={'1.2em'}
             />
-            <InlineText color="success">33</InlineText>
-            <InlineText>RIN</InlineText>
+            <InlineText color="success">{stripByAmountAndFormat(quotePrice, 4)}</InlineText>
+            <InlineText>{base}</InlineText>
           </TokenInfoRow>
         </TokenInfo>
         <TokenGlobalInfo>
           <TokenInfoRow>
             <TokenIcon
-              mint={'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'}
+              mint={pool.tokenA}
               width={'1.2em'}
               height={'1.2em'}
             />
             <TokenInfoTextWrap>
-              <TokenInfoText weight={700}>SOL</TokenInfoText>
-              <TokenPrice>$6.03</TokenPrice>
+              <TokenInfoText weight={700}>{base}</TokenInfoText>
+              <TokenPrice>
+                {baseUsdPrice ? `$${stripByAmount(baseUsdPrice.price, 4)}` : '-'}
+              </TokenPrice>
             </TokenInfoTextWrap>
-            <TokenExternalLinks tokenName="RIN" marketAddress="E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp" />
+            <TokenExternalLinks
+              tokenName={base}
+              marketAddress={pool.tokenA}
+            />
           </TokenInfoRow>
         </TokenGlobalInfo>
         <TokenGlobalInfo>
           <TokenInfoRow>
             <TokenIcon
-              mint={'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'}
+              mint={pool.tokenB}
               width={'1.2em'}
               height={'1.2em'}
             />
             <TokenInfoTextWrap>
-              <TokenInfoText weight={700}>SOL <TokenInfoName>Solana</TokenInfoName></TokenInfoText>
-              <TokenPrice>$6.03</TokenPrice>
+              <TokenInfoText weight={700}>{quote}<TokenInfoName>Solana</TokenInfoName></TokenInfoText>
+              <TokenPrice>
+                {quoteUsdPrice ? `$${stripByAmount(quoteUsdPrice.price, 4)}` : '-'}
+              </TokenPrice>
             </TokenInfoTextWrap>
-            <TokenExternalLinks tokenName="RIN" marketAddress="E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp" />
+            <TokenExternalLinks
+              tokenName={quote}
+              marketAddress={pool.tokenB}
+            />
           </TokenInfoRow>
         </TokenGlobalInfo>
       </ModalBlock>
       <ModalBlock border>
         <PoolRow>
           {/* Pool name */}
-          <PoolInfo>
+          <PoolInfoBlock>
             <Row>
               <TokenIcons>
                 <TokenIcon
-                  mint="E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
+                  mint={pool.tokenA}
                   width={'4em'}
                   emojiIfNoLogo={false}
                   margin="0 0.5em 0 0"
                 /> /
               <TokenIcon
-                  mint="BXXkv6z8ykpG1yuvUDPgh732wzVHB69RnB9YgSYh3itW"
+                  mint={pool.tokenB}
                   width={'4em'}
                   emojiIfNoLogo={false}
                   margin="0 0 0 0.5em"
                 />
               </TokenIcons>
               <div>
-                <TokenSymbols>RIN/SOL</TokenSymbols>
+                <TokenSymbols>{base}/{quote}</TokenSymbols>
                 <TokenNames>Aldrin/USD Coin</TokenNames>
               </div>
             </Row>
             <ButtonsContainer>
-              <SwapButton borderRadius="xl" as={Link} to={`/swap?base=RIN&quote=USDC`}>
+              <SwapButton borderRadius="xl" as={Link} to={`/swap?base=${base}&quote=${quote}`}>
                 <SwapButtonIcon>
                   <SvgIcon src={SwapIcon}></SvgIcon>
                 </SwapButtonIcon>
@@ -153,7 +191,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
             </SwapButton>
               <ShareButton iconFirst variant="primary" text="Aldrin's pool is amazing!" />
             </ButtonsContainer>
-          </PoolInfo>
+          </PoolInfoBlock>
           {/* Pool stats */}
           <PoolStatsRow>
             <PoolStatsBlock>
@@ -169,7 +207,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
               <PoolStatsTitle>Total Value Locked</PoolStatsTitle>
               <PoolStatsData>
                 <PoolStatsText>
-                  $100,000,000,000
+                  ${stripByAmountAndFormat(tvlUsd)}
                   <PoolStatsNumber>125.00%</PoolStatsNumber>
                 </PoolStatsText>
               </PoolStatsData>

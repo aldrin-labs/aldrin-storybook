@@ -70,11 +70,6 @@ const AllPoolsTableComponent = ({
   setIsUnstakePopupOpen: (value: boolean) => void
   setIsClaimRewardsPopupOpen: (value: boolean) => void
 }) => {
-  const [expandedRows, expandRows] = useState<string[]>([])
-
-  const setExpandedRows = (id: string) => {
-    expandRows(onCheckBoxClick(expandedRows, id))
-  }
 
   const { wallet } = useWallet()
 
@@ -98,7 +93,6 @@ const AllPoolsTableComponent = ({
     searchValue,
     dexTokensPricesMap,
     feesPerPoolMap,
-    expandedRows,
     allTokensData,
     farmingTicketsMap,
     weeklyAndDailyTradingVolumes,
@@ -120,9 +114,6 @@ const AllPoolsTableComponent = ({
       <TableWithSort
         hideCommonCheckbox={true}
         hideRowsCheckboxes={true}
-        expandableRows={true}
-        expandedRows={expandedRows}
-        onChange={setExpandedRows}
         style={{
           overflowX: 'hidden',
           height: '100%',

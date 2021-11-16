@@ -1,49 +1,39 @@
-import React from 'react'
-import { Theme } from '@sb/types/materialUI'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces
+} from '@core/utils/PortfolioTableUtils'
+import Info from '@icons/TooltipImg.svg'
+import { SvgIcon } from '@sb/components'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
-
 import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation,
+  PoolWithOperation
 } from '@sb/compositions/Pools/index.types'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-
-import { SvgIcon } from '@sb/components'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { Theme } from '@sb/types/materialUI'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import { TokenIconsContainer } from '../components'
 import {
-  RowDataTdText,
+  DetailsLink, RowDataTdText,
   RowDataTdTopText,
-  TextColumnContainer,
+  TextColumnContainer
 } from '../index.styles'
-
-import ArrowToBottom from '@icons/greyArrow.svg'
-import ArrowToTop from '@icons/arrowToTop.svg'
-import Info from '@icons/TooltipImg.svg'
-import CrownIcon from '@icons/crownIcon.svg'
-import ForbiddenIcon from '@icons/fobiddenIcon.svg'
-
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { TokenIcon } from '@sb/components/TokenIcon'
-import { TablesDetails } from '../components/TablesDetails'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { Link } from 'react-router-dom'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-import { getFarmingStateDailyFarmingValue } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValue'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
-
 import { PERMISIONLESS_POOLS_MINTS } from '../UserLiquidity/UserLiquidity.utils'
+import { getFarmingStateDailyFarmingValue } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValue'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
+
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -132,7 +122,6 @@ export const combineAllPoolsData = ({
   poolWaitingForUpdateAfterOperation,
   dexTokensPricesMap,
   feesPerPoolMap,
-  expandedRows,
   allTokensData,
   farmingTicketsMap,
   weeklyAndDailyTradingVolumes,
@@ -154,7 +143,6 @@ export const combineAllPoolsData = ({
   poolWaitingForUpdateAfterOperation: PoolWithOperation
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: Map<string, FeesEarned>
-  expandedRows: string[]
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   weeklyAndDailyTradingVolumes: {
@@ -184,6 +172,9 @@ export const combineAllPoolsData = ({
     )
     .filter((pool) => includePermissionless ? true : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint))
     .map((pool) => {
+      const poolName = `${getTokenNameByMintAddress(
+        pool.tokenA
+      )}_${getTokenNameByMintAddress(pool.tokenB)}`
       const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
@@ -431,61 +422,41 @@ export const combineAllPoolsData = ({
         },
         details: {
           render: (
-            <Row>
-              <RowDataTdText
-                theme={theme}
-                color={theme.palette.grey.new}
-                fontFamily="Avenir Next Medium"
-                style={{ marginRight: '1rem' }}
-              >
-                Details
-              </RowDataTdText>
-              <SvgIcon
-                width="1rem"
-                height="auto"
-                src={
-                  expandedRows.includes(
-                    `${pool.name}${pool.tvl}${pool.poolTokenMint}`
-                  )
-                    ? ArrowToTop
-                    : ArrowToBottom
-                }
-              />
-            </Row>
+            <DetailsLink to={`/pools/${poolName}`}>Details</DetailsLink>
           ),
         },
-        expandableContent: [
-          {
-            row: {
-              render: (
-                <TablesDetails
-                  setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-                  setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                  setIsStakePopupOpen={setIsStakePopupOpen}
-                  setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-                  setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
-                  setPoolWaitingForUpdateAfterOperation={
-                    setPoolWaitingForUpdateAfterOperation
-                  }
-                  refreshTokensWithFarmingTickets={
-                    refreshTokensWithFarmingTickets
-                  }
-                  selectPool={selectPool}
-                  poolWaitingForUpdateAfterOperation={
-                    poolWaitingForUpdateAfterOperation
-                  }
-                  earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-                  farmingTicketsMap={farmingTicketsMap}
-                  dexTokensPricesMap={dexTokensPricesMap}
-                  allTokensData={allTokensData}
-                  theme={theme}
-                  pool={pool}
-                />
-              ),
-              colspan: 8,
-            },
-          },
-        ],
+        // expandableContent: [
+        //   {
+        //     row: {
+        //       render: (
+        //         <TablesDetails
+        //           setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
+        //           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
+        //           setIsStakePopupOpen={setIsStakePopupOpen}
+        //           setIsUnstakePopupOpen={setIsUnstakePopupOpen}
+        //           setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
+        //           setPoolWaitingForUpdateAfterOperation={
+        //             setPoolWaitingForUpdateAfterOperation
+        //           }
+        //           refreshTokensWithFarmingTickets={
+        //             refreshTokensWithFarmingTickets
+        //           }
+        //           selectPool={selectPool}
+        //           poolWaitingForUpdateAfterOperation={
+        //             poolWaitingForUpdateAfterOperation
+        //           }
+        //           earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+        //           farmingTicketsMap={farmingTicketsMap}
+        //           dexTokensPricesMap={dexTokensPricesMap}
+        //           allTokensData={allTokensData}
+        //           theme={theme}
+        //           pool={pool}
+        //         />
+        //       ),
+        //       colspan: 8,
+        //     },
+        //   },
+        // ],
       }
     })
 

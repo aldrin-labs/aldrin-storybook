@@ -1,11 +1,10 @@
-import styled from 'styled-components'
 import { BlockContent } from '@sb/components/Block'
-import { BREAKPOINTS, COLORS, BORDER_RADIUS, FONT_SIZES } from '@variables/variables'
-import { InlineText, Text } from '@sb/components/Typography'
-import { TokenIcon } from '@sb/components/TokenIcon'
 import { Button } from '@sb/components/Button'
-import { SvgIcon } from '@sb/components'
 import { Row, StretchedBlock } from '@sb/components/Layout'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { InlineText, Text } from '@sb/components/Typography'
+import { BORDER_RADIUS, BREAKPOINTS, COLORS, FONT_SIZES } from '@variables/variables'
+import styled from 'styled-components'
 
 export const ModalBlock = styled(BlockContent)`
   display: flex;
@@ -14,15 +13,15 @@ export const ModalBlock = styled(BlockContent)`
   align-items: center;
 
   @media(min-width: ${BREAKPOINTS.md}) {
-    padding-left: 48px;
-    padding-right: 48px;
+    padding-left: 40px;
+    padding-right: 40px;
   }
 `
 
 export const TokenInfo = styled.div`
   background: ${COLORS.background};
   border-radius: ${BORDER_RADIUS.lg};
-  margin: 0 0 0 24px;
+  margin: 0 0 0 12px;
   padding: 16px 12px;
   height: 70px;
   display: flex;
@@ -110,10 +109,10 @@ export const PoolRow = styled(StretchedBlock)`
   flex: 1;
 `
 
-export const PoolInfo = styled.div`
+export const PoolInfoBlock = styled.div`
   display: flex;
   flex-direction: column;
-  margin-right: 40px;
+  margin-right: 20px;
 `
 
 export const TokenIcons = styled.div`
@@ -128,11 +127,11 @@ export const ButtonsContainer = styled.div`
 `
 
 export const PoolStatsRow = styled(Row)`
-  margin-left: auto;
+  margin: auto auto auto 0;
 `
 
 export const PoolStatsBlock = styled.div`
-  margin-left: 36px;
+  margin-left: 26px;
 `
 
 export const PoolStatsTitle = styled.h4`
@@ -140,7 +139,7 @@ export const PoolStatsTitle = styled.h4`
   font-weight: bold;
   line-height: 1.25;
   letter-spacing: -0.63px;
-  margin: 20px 0;
+  margin: 0 0 20px;
 
   span {
     font-weight: normal;
@@ -223,7 +222,6 @@ export const LiquidityButton = styled(Button)`
   padding: 10px 0;
   margin-top: 20px;
 `
-
 
 export const FarmingButton = styled(LiquidityButton)`
   width: 110px;
