@@ -116,18 +116,28 @@ export const Button = styled(
     disabled,
     showLoader,
     children,
+    border = 'none',
+    height = '4.5rem',
+    fontSize = '1.4rem',
+    borderRadius = '1rem',
+    borderColor = 'inherit',
     textTransform = 'capitalize',
     ...props
   }) => (
-    <BtnCustom disabled={disabled} textTransform={textTransform} {...props}>
+    <BtnCustom
+      disabled={disabled}
+      textTransform={textTransform}
+      height={height}
+      borderColor={borderColor}
+      borderRadius={borderRadius}
+      fontSize={fontSize}
+      border={border}
+      {...props}
+    >
       {showLoader ? <Loader /> : children}
     </BtnCustom>
   )
 )`
-  font-size: 1.4rem;
-  height: 4.5rem;
-  border-radius: 1rem;
-
   background: ${(props: { disabled: boolean; theme: Theme; color: string }) =>
     !props.disabled
       ? props.color
@@ -136,7 +146,6 @@ export const Button = styled(
       : props.theme.palette.grey.title};
   color: ${(props: { disabled: boolean }) =>
     !props.disabled ? '#F8FAFF' : '#fff'};
-  border: none;
 
   &:hover {
     background-color: ${(props: {
@@ -152,6 +161,8 @@ export const Button = styled(
     color: ${(props: { disabled: boolean }) =>
       !props.disabled ? '#F8FAFF' : '#fff'};
   }
+
+  ${(props) => props.style};
 `
 
 export const TableContainer = styled(RowContainer)`

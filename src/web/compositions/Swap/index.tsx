@@ -462,7 +462,7 @@ const SwapPage = ({
                   })
 
                   notify({
-                    type: result ? 'success' : 'error',
+                    type: result === 'success' ? 'success' : 'error',
                     message:
                       result === 'success'
                         ? 'Swap executed successfully.'
