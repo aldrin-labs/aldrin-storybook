@@ -188,37 +188,45 @@ export const getMinimumReceivedAmountFromSwap = async ({
 
   commonTransaction.feePayer = wallet.publicKey
 
-  const { value } = await connection.simulateTransaction(
+  if (swapAmountIn === 0 || swapAmountIn === '') {
+    return 0
+  }
+
+  console.log('args', {
+    pool: poolPublicKey,
+    poolSigner: vaultSigner,
+    poolMint,
+    baseTokenVault,
+    quoteTokenVault,
+    feePoolTokenAccount,
+    walletAuthority: wallet.publicKey,
+    userBaseTokenAccount,
+    userQuoteTokenAccount,
+    ...(curve ? { curve } : {}),
+    tokenProgram: TOKEN_PROGRAM_ID,
+  })
+
+  const response = await connection.simulateTransaction(
     commonTransaction,
     undefined,
     [isSwapBaseToQuote ? userQuoteTokenAccount : userBaseTokenAccount]
   )
 
-  console.log('userQuoteTokenAccount', userQuoteTokenAccount.toString())
+  console.log('responce', response)
 
   const postUserQuoteTokenAccountData = Buffer.from(
     value.accounts[0].data[0],
     'base64'
   )
 
-  console.log({
-    postUserQuoteTokenAccountData: postUserQuoteTokenAccountData,
-  })
   const parsedQuote = parseTokenAccountData(postUserQuoteTokenAccountData)
-  console.log('parsedQuote', parsedQuote, parsedQuote.mint.toString())
 
-  // узнать сколько у юзера в квоте или бейзе до транзакции - f
   let {
-    amount: maxBaseAmount,
-    decimals: baseTokenDecimals,
+    amount: quoteAmount,
+    decimals: quoteTokenDecimals,
   } = getTokenDataByMint(allTokensData, parsedQuote.mint.toString())
 
-сщтые
+  const quoteAmountAfterSwap = parsedQuote.amount / 10 ** quoteTokenDecimals
 
-  // из парседДата достать эмаунт и поделить на децималс
-  // отнять новый от прошлого - f
-  // отрефакторить: разбить своп на две функции (1 формирует транзу - 2 отправляет) + заюзать тут ту что формирует и просимулировать ее - 1h
-  // правильно отдавать сколько юзер получит независимо от curveType - 2h
-
-  // console.log('value', value)
+  const swapAmount = quoteAmountAfterSwap - quoteAmount
 }

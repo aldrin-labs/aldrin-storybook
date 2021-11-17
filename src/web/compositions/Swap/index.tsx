@@ -95,8 +95,8 @@ const SwapPage = ({
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
       (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress) &&
-      pool?.curveType === 1 // TODO: remove
+        pool?.tokenB === quoteTokenMintAddress) 
+      // pool?.curveType === 1 // TODO: remove
   )
 
   const isStablePool = selectedPool?.curveType === 1
