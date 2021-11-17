@@ -14,10 +14,20 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import DarkLogo from '@icons/DarkLogo.svg'
 import SvgIcon from '../SvgIcon'
 
-export const ChartsIssuePopup = ({ theme }: { theme: Theme }) => {
+export const DesktopBanner = ({
+  theme,
+  localStorageProperty = '',
+  title = 'Important note!',
+  notification = [''],
+}: {
+  theme: Theme
+  localStorageProperty: string
+  title: string
+  notification: string[]
+}) => {
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
-    'isChartsIssueBannerOpen',
+    localStorageProperty,
     true
   )
   const isMobile = useMobileSize()
@@ -45,7 +55,7 @@ export const ChartsIssuePopup = ({ theme }: { theme: Theme }) => {
             fontFamily: 'Avenir Next Bold',
           }}
         >
-          Important note!
+          {title}
         </DemiText>
       </RowContainer>
       <RowContainer height="40%" align="flex-start" justify="space-between">
@@ -56,27 +66,18 @@ export const ChartsIssuePopup = ({ theme }: { theme: Theme }) => {
           align="flex-start"
           height="100%"
         >
-          <Text
-            style={{
-              lineHeight: '3rem',
-              marginBottom: '4rem',
-              fontSize: '1.8rem',
-            }}
-            theme={theme}
-          >
-            We’re doing an upgrade which will impact our charts temporarily.
-          </Text>
-          <Text
-            style={{
-              lineHeight: '3rem',
-              marginBottom: '1rem',
-              fontSize: '1.8rem',
-            }}
-            theme={theme}
-          >
-            Trading is not impacted by this but we encourage to trade once
-            charts are fully functional.
-          </Text>
+          {notification.map((el) => (
+            <Text
+              style={{
+                lineHeight: '3rem',
+                marginBottom: '3rem',
+                fontSize: '1.8rem',
+              }}
+              theme={theme}
+            >
+              {el}
+            </Text>
+          ))}
         </Row>
         <Row width={'40%'} height={'100%'}>
           <SvgIcon width={'13rem'} height={'auto'} src={DarkLogo} />

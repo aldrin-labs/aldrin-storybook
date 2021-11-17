@@ -92,6 +92,14 @@ export const Header = () => {
             >
               FAQ
             </NavLink>
+            <NavLink
+              show="lg"
+              as="a"
+              target="_blank"
+              href="https://github.com/aldrin-exchange/aldrin-sdk"
+            >
+              SDK{' '}
+            </NavLink>
             <DropDown hide="lg" text="···">
               {feedbackLinks}
               <NavLink hide="md" activeClassName="selected" to="/pools">
@@ -104,6 +112,14 @@ export const Header = () => {
                 href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
               >
                 FAQ
+              </NavLink>{' '}
+              <NavLink
+                hide="lg"
+                as="a"
+                target="_blank"
+                href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
+              >
+                SDK
               </NavLink>
             </DropDown>
           </MainLinksBlock>
