@@ -95,8 +95,8 @@ const SwapPage = ({
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
       (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress) 
-      // pool?.curveType === 1 // TODO: remove
+        pool?.tokenB === quoteTokenMintAddress) &&
+      pool?.curveType === 1 // TODO: remove
   )
 
   const isStablePool = selectedPool?.curveType === 1
@@ -145,47 +145,8 @@ const SwapPage = ({
   const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
 
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
-  const setQuoteAmountWithBase = (newQuoteAmount: string | number) => {
-    const poolsAmountDiff = isSwapBaseToQuote
-      ? +poolAmountTokenB / +newQuoteAmount
-      : +poolAmountTokenA / +newQuoteAmount
-
-    const priceImpact = 100 / (poolsAmountDiff + 1)
-    const newBaseAmount = isSwapBaseToQuote
-      ? +newQuoteAmount * (+poolAmountTokenA / +poolAmountTokenB)
-      : +newQuoteAmount * (+poolAmountTokenB / +poolAmountTokenA)
-
-    const newBaseAmountWithPriceImpact =
-      newBaseAmount - (newBaseAmount / 100) * priceImpact
-    const strippedBaseAmount = stripDigitPlaces(newBaseAmountWithPriceImpact, 8)
-
-    setBaseAmount(strippedBaseAmount)
-    setQuoteAmount(newQuoteAmount)
-  }
-
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
-
-  const setBaseAmountWithQuote = (newBaseAmount: string | number) => {
-    const poolsAmountDiff = isSwapBaseToQuote
-      ? +poolAmountTokenA / +newBaseAmount
-      : +poolAmountTokenB / +newBaseAmount
-
-    const priceImpact = 100 / (poolsAmountDiff + 1)
-    const newQuoteAmount = isSwapBaseToQuote
-      ? +newBaseAmount * (+poolAmountTokenB / +poolAmountTokenA)
-      : +newBaseAmount * (+poolAmountTokenA / +poolAmountTokenB)
-
-    const newQuoteAmountWithPriceImpact =
-      newQuoteAmount - (newQuoteAmount / 100) * priceImpact
-    const strippedQuoteAmount = stripDigitPlaces(
-      newQuoteAmountWithPriceImpact,
-      8
-    )
-
-    setBaseAmount(newBaseAmount)
-    setQuoteAmount(strippedQuoteAmount)
-  }
 
   const baseSymbol = baseTokenMintAddress
     ? getTokenNameByMintAddress(baseTokenMintAddress)
@@ -265,33 +226,88 @@ const SwapPage = ({
     nativeSOLTokenData?.address === userBaseTokenAccount ||
     nativeSOLTokenData?.address === userQuoteTokenAccount
 
+  const transferSOLToWrapped = isPoolWithSOLToken && isNativeSOLSelected
+
   const userPoolBaseTokenAccount = isSwapBaseToQuote
     ? userBaseTokenAccount
     : userQuoteTokenAccount
+
+  const userPoolBaseTokenPublicKey = userPoolBaseTokenAccount
+    ? new PublicKey(userPoolBaseTokenAccount)
+    : null
 
   const userPoolQuoteTokenAccount = isSwapBaseToQuote
     ? userQuoteTokenAccount
     : userBaseTokenAccount
 
-  useEffect(() => {
-    if (wallet.publicKey && selectedPool) {
-      const minimumReceivedAmountFromSwap = getMinimumReceivedAmountFromSwap({
-        wallet,
-        connection,
-        pool: selectedPool,
-        isSwapBaseToQuote,
-        swapAmountIn: +baseAmount,
-        allTokensData,
-        userBaseTokenAccount: userPoolBaseTokenAccount
-          ? new PublicKey(userPoolBaseTokenAccount)
-          : null,
-        userQuoteTokenAccount: userPoolQuoteTokenAccount
-          ? new PublicKey(userPoolQuoteTokenAccount)
-          : null,
-        transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
-      })
-    }
-  }, [wallet.publicKey, allTokensData, baseAmount])
+  const userPoolQuoteTokenPublicKey = userPoolQuoteTokenAccount
+    ? new PublicKey(userPoolQuoteTokenAccount)
+    : null
+
+  const setBaseAmountWithQuote = async (newBaseAmount: string | number) => {
+    const swapAmountOut = await getMinimumReceivedAmountFromSwap({
+      swapAmountIn: +newBaseAmount,
+      isSwapBaseToQuote,
+      pool: selectedPool,
+      wallet,
+      connection,
+      userBaseTokenAccount: userPoolBaseTokenPublicKey,
+      userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
+      transferSOLToWrapped,
+      allTokensData,
+      poolBalances,
+    })
+
+    setBaseAmount(newBaseAmount)
+    setQuoteAmount(swapAmountOut)
+  }
+
+  const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
+    const isSwapBaseToQuoteForQuoteChange = !isSwapBaseToQuote
+
+    const swapAmountOut = await getMinimumReceivedAmountFromSwap({
+      swapAmountIn: +newQuoteAmount,
+      isSwapBaseToQuote: isSwapBaseToQuoteForQuoteChange,
+      pool: selectedPool,
+      wallet,
+      connection,
+      userBaseTokenAccount: userPoolBaseTokenPublicKey,
+      userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
+      transferSOLToWrapped,
+      allTokensData,
+      poolBalances,
+    })
+
+    setQuoteAmount(newQuoteAmount)
+    setBaseAmount(swapAmountOut)
+  }
+
+  // useEffect(() => {
+  //   if (wallet.publicKey && selectedPool) {
+  //     const load = async () => {
+  //       const minimumReceivedAmountFromSwap = await getMinimumReceivedAmountFromSwap(
+  //         {
+  //           wallet,
+  //           connection,
+  //           pool: selectedPool,
+  //           isSwapBaseToQuote,
+  //           swapAmountIn: +baseAmount * 10 ** baseTokenDecimals,
+  //           allTokensData,
+  //           userBaseTokenAccount: userPoolBaseTokenPublicKey,
+  //           userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
+  //           transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
+  //         }
+  //       )
+
+  //       console.log(
+  //         'minimumReceivedAmountFromSwap',
+  //         minimumReceivedAmountFromSwap
+  //       )
+  //     }
+
+  //     load()
+  //   }
+  // }, [wallet.publicKey, allTokensData, baseAmount])
 
   return (
     <RowContainer

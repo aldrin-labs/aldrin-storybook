@@ -7,7 +7,7 @@ interface PoolTokens {
   poolTokenAccountB?: string
 }
 
-interface PoolBalances {
+export interface PoolBalances {
   baseTokenAmount: number
   quoteTokenAmount: number
 }
