@@ -105,7 +105,9 @@ export const UnstakePopup = ({
               wallet,
               connection,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
-              userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+              userPoolTokenAccount: userPoolTokenAccount
+                ? new PublicKey(userPoolTokenAccount)
+                : null,
               farmingStatePublicKey: new PublicKey(farmingState.farmingState),
               snapshotQueuePublicKey: new PublicKey(
                 farmingState.farmingSnapshots
@@ -134,13 +136,13 @@ export const UnstakePopup = ({
               setTimeout(async () => {
                 refreshTokensWithFarmingTickets()
                 clearPoolWaitingForUpdate()
+                close()
               }, 7500)
               setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
             } else {
               clearPoolWaitingForUpdate()
+              close()
             }
-
-            close()
           }}
         >
           Unstake

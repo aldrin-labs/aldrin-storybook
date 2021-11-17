@@ -43,6 +43,7 @@ const AllPoolsTableComponent = ({
   setIsStakePopupOpen,
   setIsUnstakePopupOpen,
   setIsClaimRewardsPopupOpen,
+  includePermissionless,
 }: {
   theme: Theme
   searchValue: string
@@ -52,6 +53,7 @@ const AllPoolsTableComponent = ({
   getWeeklyAndDailyTradingVolumesForPoolsQuery: {
     getWeeklyAndDailyTradingVolumesForPools: any
   }
+  includePermissionless: boolean
   dexTokensPricesMap: Map<string, DexTokensPrices>
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
@@ -106,6 +108,7 @@ const AllPoolsTableComponent = ({
     setIsStakePopupOpen,
     setIsUnstakePopupOpen,
     setIsClaimRewardsPopupOpen,
+    includePermissionless,
   })
 
   return (

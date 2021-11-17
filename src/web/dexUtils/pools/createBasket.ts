@@ -82,15 +82,16 @@ export async function createBasket({
   const poolTokenA = await tokenMintA.getAccountInfo(baseTokenVault)
   const poolTokenAmountA = poolTokenA.amount
 
-  let poolTokenAmount = supply
+  let poolTokenAmount = new BN(0)
+  // first deposit
+  if (supply.eq(new BN(0))) {
+    poolTokenAmount = new BN(1 * 10 ** 8)
+  } else {
+    poolTokenAmount = supply
     .mul(new BN(userBaseTokenAmount))
     .div(poolTokenAmountA)
     .div(new BN(100))
     .mul(new BN(99))
-
-  // first deposit
-  if (supply.eq(new BN(0))) {
-    poolTokenAmount = new BN(1 * 10 ** 8)
   }
 
   const transactionBeforeDeposit = new Transaction()

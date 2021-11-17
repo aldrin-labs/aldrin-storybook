@@ -25,7 +25,10 @@ import { WalletAdapter } from '../types'
 import { FarmingTicket, SnapshotQueue } from '../common/types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getSnapshotsWithUnclaimedRewards } from './addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
-import { NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION } from '../common/config'
+import {
+  MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
+  NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION,
+} from '../common/config'
 import BN from 'bn.js'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 import { sleep } from '../utils'
@@ -37,178 +40,19 @@ export const withdrawFarmed = async ({
   connection,
   allTokensData,
   farmingTickets,
-  pool,
-  programAddress = POOLS_PROGRAM_ADDRESS,
-}: {
-  wallet: WalletAdapter
-  connection: Connection
-  allTokensData: TokenInfo[]
-  farmingTickets: FarmingTicket[]
-  pool: PoolInfo | StakingPool
-  programAddress?: string
-}) => {
-  const program = ProgramsMultiton.getProgramByAddress({
-    wallet,
-    connection,
-    programAddress,
-  })
-
-  const { swapToken } = pool
-  const poolPublicKey = new PublicKey(swapToken)
-
-  const [vaultSigner] = await PublicKey.findProgramAddress(
-    [poolPublicKey.toBuffer()],
-    program.programId
-  )
-
-  const createdTokensMap = new Map()
-  const commonTransaction = new Transaction()
-  const commonSigners: (Account | Keypair)[] = []
-
-  let tx = null
-
-  const sendPartOfTransactions = async () => {
-    try {
-      tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction: commonTransaction,
-        signers: commonSigners,
-        focusPopup: true,
-      })
-
-      if (isTransactionFailed(tx)) {
-        return 'failed'
-      }
-    } catch (e) {
-      console.log('end farming catch error', e)
-
-      if (e.message.includes('cancelled')) {
-        return 'cancelled'
-      }
-    }
-
-    return 'success'
-  }
-
-  // check farmed for every ticket and withdrawFarmed for every farming state
-  for (let ticketData of farmingTickets) {
-    for (let i = 0; i < pool.farming.length; i++) {
-      const farmingState = pool.farming[i]
-
-      // find amount to claim for this farming state in tickets amounts
-      const amountToClaim =
-        ticketData.amountsToClaim.find(
-          (amountToClaim) =>
-            amountToClaim.farmingState === farmingState.farmingState
-        )?.amount || 0
-
-      // check amount for every farming state
-      if (amountToClaim === 0) continue
-
-      const { address: farmingTokenAccountAddress } = getTokenDataByMint(
-        allTokensData,
-        farmingState.farmingTokenMint
-      )
-
-      let userFarmingTokenAccount = farmingTokenAccountAddress
-        ? new PublicKey(farmingTokenAccountAddress)
-        : null
-
-      // to not create same token several times
-      if (createdTokensMap.has(farmingState.farmingTokenMint)) {
-        userFarmingTokenAccount = createdTokensMap.get(
-          farmingState.farmingTokenMint
-        )
-      }
-
-      // create pool token account for user if not exist
-      if (!userFarmingTokenAccount) {
-        const {
-          transaction: createAccountTransaction,
-          newAccountPubkey,
-        } = await createTokenAccountTransaction({
-          wallet,
-          mintPublicKey: new PublicKey(farmingState.farmingTokenMint),
-        })
-
-        userFarmingTokenAccount = newAccountPubkey
-        createdTokensMap.set(farmingState.farmingTokenMint, newAccountPubkey)
-        commonTransaction.add(createAccountTransaction)
-      }
-
-      console.log(
-        'args',
-        {
-          pool: poolPublicKey,
-          farmingState: new PublicKey(farmingState.farmingState),
-          farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
-          farmingTicket: new PublicKey(ticketData.farmingTicket),
-          farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
-          poolSigner: vaultSigner,
-          userFarmingTokenAccount,
-          userKey: wallet.publicKey,
-          userSolAccount: wallet.publicKey,
-          tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-          clock: SYSVAR_CLOCK_PUBKEY,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
-        program
-      )
-      const endFarmingTransaction = await program.instruction.withdrawFarmed({
-        accounts: {
-          pool: poolPublicKey,
-          farmingState: new PublicKey(farmingState.farmingState),
-          farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
-          farmingTicket: new PublicKey(ticketData.farmingTicket),
-          farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
-          poolSigner: vaultSigner,
-          userFarmingTokenAccount,
-          userKey: wallet.publicKey,
-          userSolAccount: wallet.publicKey,
-          tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-          clock: SYSVAR_CLOCK_PUBKEY,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
-      })
-
-      commonTransaction.add(endFarmingTransaction)
-
-      if (commonTransaction.instructions.length > 5) {
-        const result = await sendPartOfTransactions()
-        if (result !== 'success') {
-          return result
-        }
-      }
-    }
-  }
-
-  if (commonTransaction.instructions.length > 0) {
-    const result = await sendPartOfTransactions()
-    if (result !== 'success') {
-      return result
-    }
-  }
-
-  return 'success'
-}
-
-export const withdrawFarmedNew = async ({
-  wallet,
-  connection,
-  allTokensData,
-  farmingTickets,
   snapshotQueues,
   pool,
   programAddress = POOLS_PROGRAM_ADDRESS,
+  signAllTransactions,
 }: {
   wallet: WalletAdapter
   connection: Connection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
-  snapshotQueues: SnapshotQueue[]
   pool: PoolInfo | StakingPool
   programAddress?: string
+  snapshotQueues: SnapshotQueue[]
+  signAllTransactions: boolean
 }) => {
   if (!wallet.publicKey) return 'failed'
 
@@ -244,7 +88,11 @@ export const withdrawFarmedNew = async ({
         )?.amount || 0
 
       // check amount for every farming state
-      if (amountToClaim === 0) continue
+      if (
+        amountToClaim === 0 ||
+        ticketData.tokensFrozen < MIN_POOL_TOKEN_AMOUNT_TO_STAKE
+      )
+        continue
 
       const { address: farmingTokenAccountAddress } = getTokenDataByMint(
         allTokensData,
@@ -283,7 +131,6 @@ export const withdrawFarmedNew = async ({
         farmingState,
         snapshotQueues,
       })
-      console.log('unclaimedSnapshots', unclaimedSnapshots)
 
       const iterations = Math.ceil(
         unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
@@ -321,46 +168,65 @@ export const withdrawFarmedNew = async ({
         commonTransaction.add(withdrawFarmedTransaction)
         commonTransaction.add(transferTransaction)
 
-        transactionsAndSigners.push({ transaction: commonTransaction })
+        if (signAllTransactions) {
+          transactionsAndSigners.push({ transaction: commonTransaction })
+        } else {
+          const result = await sendTransaction({
+            wallet,
+            connection,
+            transaction: commonTransaction,
+            signers: [],
+          })
+
+          if (result === 'timeout') {
+            return 'blockhash_outdated'
+          } else if (result === 'failed') {
+            return 'failed'
+          }
+        }
         // reset create account, leave only withdrawFarmed for all transactions except first
         commonTransaction = new Transaction()
       }
     }
   }
 
-  try {
-    const signedTransactions = await signTransactions({
-      wallet,
-      connection,
-      transactionsAndSigners,
-    })
-
-    if (!signedTransactions) {
-      return 'failed'
-    }
-
-    for (let signedTransaction of signedTransactions) {
-      // send transaction and wait 1s before sending next
-      const result = await sendSignedTransaction({
-        transaction: signedTransaction,
+  if (signAllTransactions) {
+    try {
+      const signedTransactions = await signTransactions({
+        wallet,
         connection,
-        timeout: 5_000,
+        transactionsAndSigners,
       })
 
-      if (result === 'timeout') {
-        return 'blockhash_outdated'
-      } else if (result === 'failed') {
+      if (!signedTransactions) {
         return 'failed'
       }
 
-      // await sleep(2000)
-    }
-  } catch (e) {
-    console.log('end farming catch error', e)
+      for (let signedTransaction of signedTransactions) {
+        // send transaction and wait 1s before sending next
+        const result = await sendSignedTransaction({
+          transaction: signedTransaction,
+          connection,
+          timeout: 10_000,
+        })
 
-    if (isCancelledTransactionError(e)) {
-      return 'cancelled'
+        if (result === 'timeout') {
+          return 'blockhash_outdated'
+        } else if (result === 'failed') {
+          return 'failed'
+        }
+
+        // await sleep(2000)
+      }
+    } catch (e) {
+      console.log('end farming catch error', e)
+
+      if (isCancelledTransactionError(e)) {
+        return 'cancelled'
+      }
     }
+
+    return 'success'
   }
 
   return 'success'

@@ -302,7 +302,7 @@ export const SubmitButton = styled.button`
   color: #f8faff;
   border: none;
   font-family: Avenir Next Medium;
-  margin-top: 4rem;
+  margin-top: 3rem;
   transition: 0.3rem;
 
   @media (max-width: 600px) {
@@ -313,8 +313,8 @@ export const SubmitButton = styled.button`
 `
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
-  width: 91rem;
-  height: auto;
+  width: ${(props) => props.width || '91rem'};
+  height: ${(props) => props.height || 'auto'};
   background: #222429;
   border: 0.1rem solid #3a475c;
   display: flex;
@@ -322,7 +322,7 @@ export const StyledPaper = styled(Paper)`
   align-items: center;
   margin: 2rem;
   padding: 3rem;
-
+  max-width: 1200px;
   @media (max-width: 600px) {
     border: 0;
     border-radius: 0;
