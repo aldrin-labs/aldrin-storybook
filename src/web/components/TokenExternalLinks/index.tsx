@@ -11,7 +11,7 @@ import BlueTwitterIcon from '@icons/blueTwitter.svg'
 
 import Inform from '@icons/inform.svg'
 
-import { Container, Anchor, Icon } from './styles'
+import { Container, Anchor, Icon, AnalyticsIcon as AnalyticsIconComponent } from './styles'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
 import { Link } from 'react-router-dom'
 
@@ -53,22 +53,24 @@ export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) =>
 
 export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (props) => {
   const { tokenName, marketAddress, marketPair, onInfoClick } = props
-  const token = tokensLinksMap.get(tokenName) || { marketCapLink: '', twitterLink: '' }
+  const token = tokensLinksMap.get(tokenName.toLowerCase()) || { marketCapLink: '', twitterLink: '' }
   const { twitterLink = '', marketCapLink = '' } = token
 
   return (
     <Container>
       {onInfoClick &&
-        <Icon
-          src={Inform}
-          onClick={onInfoClick}
-        />
+        <Anchor as="span" >
+          <Icon
+            src={Inform}
+            onClick={onInfoClick}
+          />
+        </Anchor>
       }
       <SolExplorerLink mint={marketAddress || ''} />
       {marketPair &&
         <DarkTooltip title={'Show analytics for this market.'}>
           <Anchor as={Link} to={`/analytics/${marketPair}`}>
-            <Icon
+            <AnalyticsIconComponent
               src={AnalyticsIcon}
             />
           </Anchor>

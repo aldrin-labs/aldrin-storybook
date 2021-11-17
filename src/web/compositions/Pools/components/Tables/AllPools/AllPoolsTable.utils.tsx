@@ -13,14 +13,11 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation
+  TradingVolumeStats
 } from '@sb/compositions/Pools/index.types'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { WalletAdapter } from '@sb/dexUtils/types'
 import { Theme } from '@sb/types/materialUI'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -114,53 +111,28 @@ export const allPoolsTableColumnsNames = [
 
 export type Pools = {}
 
-export const combineAllPoolsData = ({
-  theme,
-  wallet,
-  poolsInfo,
-  searchValue,
-  poolWaitingForUpdateAfterOperation,
-  dexTokensPricesMap,
-  feesPerPoolMap,
-  allTokensData,
-  farmingTicketsMap,
-  weeklyAndDailyTradingVolumes,
-  earnedFeesInPoolForUserMap,
-  selectPool,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-  setIsAddLiquidityPopupOpen,
-  setIsWithdrawalPopupOpen,
-  setIsStakePopupOpen,
-  setIsUnstakePopupOpen,
-  setIsClaimRewardsPopupOpen,
-  includePermissionless,
-}: {
+interface CombineAllPoolsDataParams {
   theme: Theme
-  wallet: WalletAdapter
   poolsInfo: PoolInfo[]
   searchValue: string
-  poolWaitingForUpdateAfterOperation: PoolWithOperation
   dexTokensPricesMap: Map<string, DexTokensPrices>
   feesPerPoolMap: Map<string, FeesEarned>
-  allTokensData: TokenInfo[]
-  farmingTicketsMap: Map<string, FarmingTicket[]>
-  weeklyAndDailyTradingVolumes: {
-    weeklyTradingVolume: number
-    dailyTradingVolume: number
-    pool: string
-  }[]
-  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
-  selectPool: (pool: PoolInfo) => void
-  refreshTokensWithFarmingTickets: () => void
-  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  setIsAddLiquidityPopupOpen: (value: boolean) => void
-  setIsWithdrawalPopupOpen: (value: boolean) => void
-  setIsStakePopupOpen: (value: boolean) => void
-  setIsUnstakePopupOpen: (value: boolean) => void
-  setIsClaimRewardsPopupOpen: (value: boolean) => void
+  weeklyAndDailyTradingVolumes: TradingVolumeStats[]
   includePermissionless: boolean
-}) => {
+}
+
+export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
+
+  const {
+    theme,
+    poolsInfo,
+    searchValue,
+    dexTokensPricesMap,
+    feesPerPoolMap,
+    weeklyAndDailyTradingVolumes,
+    includePermissionless,
+  } = params
+
   const processedAllPoolsData = poolsInfo
     .filter((pool) =>
       filterDataBySymbolForDifferentDeviders({
@@ -212,7 +184,7 @@ export const combineAllPoolsData = ({
 
       const isPoolWithFarming = pool.farming && pool.farming.length > 0
       const openFarmings = isPoolWithFarming
-        ? filterOpenFarmingStates(pool.farming)
+        ? filterOpenFarmingStates(pool.farming || [])
         : []
 
       const totalFarmingDailyRewardsUSD = openFarmings.reduce(
@@ -221,9 +193,7 @@ export const combineAllPoolsData = ({
             { farmingState, totalStakedLpTokensUSD }
           )
 
-          const farmingTokenSymbol = getTokenNameByMintAddress(
-            farmingState.farmingTokenMint
-          )
+          const farmingTokenSymbol = getTokenNameByMintAddress(farmingState.farmingTokenMint)
 
           const farmingTokenPrice =
             dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0

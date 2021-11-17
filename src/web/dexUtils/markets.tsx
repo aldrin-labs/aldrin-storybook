@@ -1260,7 +1260,7 @@ export const getTokenMintAddressByName = (name: string): string | null => {
   return ALL_TOKENS_MINTS_MAP[name]?.toString()
 }
 
-export const getTokenNameByMintAddress = (address: string): string => {
+export const getTokenNameByMintAddress = (address?: string): string => {
   if (!address) {
     return '--'
   }

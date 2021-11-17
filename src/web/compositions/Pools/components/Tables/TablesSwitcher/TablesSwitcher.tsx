@@ -16,7 +16,8 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation
+  PoolWithOperation,
+  TradingVolumeStats
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -43,21 +44,31 @@ import {
   TableContainer,
   TableModeButton
 } from './TablesSwitcher.styles'
+import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
+import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
+import { endOfHourTimestamp, DAY } from '@core/utils/dateUtils'
 
-
-const TablesSwitcher = ({
-  theme,
-  getPoolsInfoQuery: { getPoolsInfo: pools = [] },
-  getDexTokensPricesQuery: { getDexTokensPrices = [] },
-  getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
-  getPoolsInfoQueryRefetch,
-}: {
+interface TableSwitcherProps {
   theme: Theme
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
-  getPoolsInfoQueryRefetch: () => void
-}) => {
+  getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
+  getWeeklyAndDailyTradingVolumesForPoolsQuery: {
+    getWeeklyAndDailyTradingVolumesForPools?: TradingVolumeStats[]
+  }
+}
+
+const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
+  const {
+    theme,
+    getPoolsInfoQuery: { getPoolsInfo: pools = [] },
+    getDexTokensPricesQuery: { getDexTokensPrices = [] },
+    getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
+    getFeesEarnedByPoolQuery: { getFeesEarnedByPool = [] },
+    getWeeklyAndDailyTradingVolumesForPoolsQuery
+  } = props
+
   const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
   const [searchValue, setSearchValue] = useState('')
   const [selectedTable, setSelectedTable] = useState<'all' | 'userLiquidity'>(
@@ -76,7 +87,6 @@ const TablesSwitcher = ({
 
   const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
   const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
-  const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
   const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
     false
@@ -137,6 +147,8 @@ const TablesSwitcher = ({
     allTokensData,
     farmingTicketsMap,
   }).length
+
+  const tradingVolumes = getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools || []
 
   return (
     <Block>
@@ -202,25 +214,11 @@ const TablesSwitcher = ({
             <AllPoolsTable
               theme={theme}
               searchValue={searchValue}
-              poolWaitingForUpdateAfterOperation={
-                poolWaitingForUpdateAfterOperation
-              }
               includePermissionless={includePermissionless}
               poolsInfo={pools}
-              allTokensData={allTokensData}
               dexTokensPricesMap={dexTokensPricesMap}
-              farmingTicketsMap={farmingTicketsMap}
-              earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-              selectPool={selectPool}
-              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-              setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-              setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-              setIsStakePopupOpen={setIsStakePopupOpen}
-              setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-              setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
+              feesByPool={getFeesEarnedByPool}
+              tradingVolumes={tradingVolumes}
             />
           ) : (
               <UserLiquitidyTable
@@ -313,6 +311,8 @@ const TablesSwitcher = ({
         <DetailsModal
           pools={pools}
           prices={dexTokensPricesMap}
+          tradingVolumes={tradingVolumes}
+          fees={getFeesEarnedByPool}
         />
       </Route>
     </Block>
@@ -343,5 +343,29 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
+  }),
+  queryRendererHoc({
+    name: 'getFeesEarnedByPoolQuery',
+    query: getFeesEarnedByPool,
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000 * getRandomInt(5, 10),
+    // variables: () => ({
+    //   timestampFrom: endOfHourTimestamp() - dayDuration,
+    //   timestampTo: endOfHourTimestamp(),
+    // }),
+  }),
+  queryRendererHoc({
+    name: 'getWeeklyAndDailyTradingVolumesForPoolsQuery',
+    query: getWeeklyAndDailyTradingVolumesForPools,
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000 * getRandomInt(5, 10),
+    variables: () => ({
+      dailyTimestampTo: endOfHourTimestamp(),
+      dailyTimestampFrom: endOfHourTimestamp() - DAY,
+      weeklyTimestampTo: endOfHourTimestamp(),
+      weeklyTimestampFrom: endOfHourTimestamp() - DAY * 7,
+    }),
   })
 )(TablesSwitcher)

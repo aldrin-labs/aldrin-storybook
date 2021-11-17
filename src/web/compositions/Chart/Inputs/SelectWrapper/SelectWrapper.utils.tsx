@@ -1,25 +1,21 @@
 import { marketsByCategories } from '@core/config/marketsByCategories'
 import stableCoins from '@core/config/stableCoins'
-import tokensLinksMap from '@core/config/tokensTwitterLinks'
 import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
   roundAndFormatNumber,
-  stripDigitPlaces,
+  stripDigitPlaces
 } from '@core/utils/PortfolioTableUtils'
-import CoinGecko from '@icons/coingecko.svg'
-import Coinmarketcap from '@icons/coinmarketcap.svg'
 import favouriteSelected from '@icons/favouriteSelected.svg'
 import favouriteUnselected from '@icons/favouriteUnselected.svg'
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
-import NomicsIcon from '@icons/nomics.svg'
 import { SvgIcon } from '@sb/components'
+import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import React from 'react'
-import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { ISelectData, SelectTabType } from './SelectWrapper.types'
 import {
   IconContainer,
@@ -396,14 +392,6 @@ export const combineSelectWrapperData = ({
 
     const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
     const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0
-
-    const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
-    const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
-    const marketCapIcon = marketCapLink.includes('coinmarketcap')
-      ? Coinmarketcap
-      : marketCapLink.includes('coingecko')
-        ? CoinGecko
-        : NomicsIcon
 
     return {
       id: `${symbol}`,

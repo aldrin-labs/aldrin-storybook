@@ -11,6 +11,8 @@ export const Container = styled.div`
 
 export const Anchor = styled.a`
   cursor: pointer;
+  display: block;
+  height: 24px;
 `
 
 export const Icon = styled(SvgIcon)`
@@ -21,4 +23,9 @@ export const Icon = styled(SvgIcon)`
   background: ${COLORS.primary};
   background: radial-gradient(circle, rgba(255,255,255,1) 60%,  rgba(101,28,228,1) 61%,  rgba(101,28,228,1) 100%);
   border-radius: 50%;
+`
+
+export const AnalyticsIcon = styled(Icon)`
+  border-radius: 0;
+  background: none;
 `

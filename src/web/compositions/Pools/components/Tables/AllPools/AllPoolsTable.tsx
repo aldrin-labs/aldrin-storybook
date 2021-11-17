@@ -1,25 +1,13 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
-import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
-import { endOfHourTimestamp } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
-import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { TableWithSort } from '@sb/components'
-import {
-  dayDuration
-} from '@sb/compositions/AnalyticsRoute/components/utils'
 import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation
+  TradingVolumeStats
 } from '@sb/compositions/Pools/index.types'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useState } from 'react'
-import { compose } from 'recompose'
+import { COLORS } from '@variables/variables'
+import React from 'react'
 import { TableContainer } from '../index.styles'
 import {
   allPoolsTableColumnsNames,
@@ -27,84 +15,41 @@ import {
 } from './AllPoolsTable.utils'
 
 
-const AllPoolsTableComponent = ({
-  theme,
-  searchValue,
-  dexTokensPricesMap,
-  poolsInfo,
-  poolWaitingForUpdateAfterOperation,
-  getFeesEarnedByPoolQuery,
-  getWeeklyAndDailyTradingVolumesForPoolsQuery,
-  allTokensData,
-  farmingTicketsMap,
-  earnedFeesInPoolForUserMap,
-  selectPool,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-  setIsAddLiquidityPopupOpen,
-  setIsWithdrawalPopupOpen,
-  setIsStakePopupOpen,
-  setIsUnstakePopupOpen,
-  setIsClaimRewardsPopupOpen,
-  includePermissionless,
-}: {
+interface AllPoolsProps {
   theme: Theme
   searchValue: string
   poolsInfo: PoolInfo[]
-  poolWaitingForUpdateAfterOperation: PoolWithOperation
-  getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
-  getWeeklyAndDailyTradingVolumesForPoolsQuery: {
-    getWeeklyAndDailyTradingVolumesForPools: any
-  }
   includePermissionless: boolean
   dexTokensPricesMap: Map<string, DexTokensPrices>
-  allTokensData: TokenInfo[]
-  farmingTicketsMap: Map<string, FarmingTicket[]>
-  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
-  selectPool: (pool: PoolInfo) => void
-  refreshTokensWithFarmingTickets: () => void
-  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  setIsAddLiquidityPopupOpen: (value: boolean) => void
-  setIsWithdrawalPopupOpen: (value: boolean) => void
-  setIsStakePopupOpen: (value: boolean) => void
-  setIsUnstakePopupOpen: (value: boolean) => void
-  setIsClaimRewardsPopupOpen: (value: boolean) => void
-}) => {
+  feesByPool: FeesEarned[]
+  tradingVolumes: TradingVolumeStats[]
+}
 
-  const { wallet } = useWallet()
+const AllPoolsTableComponent: React.FC<AllPoolsProps> = (props) => {
+  const {
+    theme,
+    searchValue,
+    dexTokensPricesMap,
+    poolsInfo,
+    feesByPool,
+    tradingVolumes,
+    includePermissionless,
+  } = props
 
-  const { getFeesEarnedByPool = [] } = getFeesEarnedByPoolQuery || {
-    getFeesEarnedByPool: [],
-  }
-
-  const feesPerPoolMap = getFeesEarnedByPool.reduce(
+  const feesPerPoolMap = feesByPool.reduce(
     (acc, feeEarnedByPool) => acc.set(feeEarnedByPool.pool, feeEarnedByPool),
     new Map()
   )
 
-  const weeklyAndDailyTradingVolumes =
-    getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools
+  const weeklyAndDailyTradingVolumes = tradingVolumes
 
   const allPoolsData = combineAllPoolsData({
     theme,
-    wallet,
     poolsInfo,
-    poolWaitingForUpdateAfterOperation,
     searchValue,
     dexTokensPricesMap,
     feesPerPoolMap,
-    allTokensData,
-    farmingTicketsMap,
     weeklyAndDailyTradingVolumes,
-    earnedFeesInPoolForUserMap,
-    selectPool,
-    refreshTokensWithFarmingTickets,
-    setPoolWaitingForUpdateAfterOperation,
-    setIsAddLiquidityPopupOpen,
-    setIsWithdrawalPopupOpen,
-    setIsStakePopupOpen,
-    setIsUnstakePopupOpen,
-    setIsClaimRewardsPopupOpen,
     includePermissionless,
   })
 
@@ -130,7 +75,7 @@ const AllPoolsTableComponent = ({
         withCheckboxes={false}
         tableStyles={{
           cell: {
-            color: theme.palette.dark.main,
+            color: COLORS.main,
             fontSize: '1rem',
             fontWeight: 'bold',
             letterSpacing: '.1rem',
@@ -161,29 +106,4 @@ const AllPoolsTableComponent = ({
   )
 }
 
-export default compose(
-  queryRendererHoc({
-    name: 'getFeesEarnedByPoolQuery',
-    query: getFeesEarnedByPool,
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000 * getRandomInt(5, 10),
-    // variables: () => ({
-    //   timestampFrom: endOfHourTimestamp() - dayDuration,
-    //   timestampTo: endOfHourTimestamp(),
-    // }),
-  }),
-  queryRendererHoc({
-    name: 'getWeeklyAndDailyTradingVolumesForPoolsQuery',
-    query: getWeeklyAndDailyTradingVolumesForPools,
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000 * getRandomInt(5, 10),
-    variables: () => ({
-      dailyTimestampTo: endOfHourTimestamp(),
-      dailyTimestampFrom: endOfHourTimestamp() - dayDuration,
-      weeklyTimestampTo: endOfHourTimestamp(),
-      weeklyTimestampFrom: endOfHourTimestamp() - dayDuration * 7,
-    }),
-  })
-)(AllPoolsTableComponent)
+export default withTheme()(AllPoolsTableComponent)

@@ -48,10 +48,6 @@ export const TokenInfoRow = styled.div`
   ${InlineText} {
     margin: 0 3px;
   }
-
-  ${TokenIcon} {
-    margin-right: 5px;
-  }
 `
 
 export const TokenInfoTextWrap = styled.div`
@@ -127,11 +123,15 @@ export const ButtonsContainer = styled.div`
 `
 
 export const PoolStatsRow = styled(Row)`
-  margin: auto auto auto 0;
+  margin: auto 0 auto auto;
 `
 
 export const PoolStatsBlock = styled.div`
-  margin-left: 26px;
+  margin-left: 35px;
+  max-width: 170px;
+  min-width: 75px;
+  display: flex;
+  flex-direction: column;
 `
 
 export const PoolStatsTitle = styled.h4`
@@ -139,7 +139,7 @@ export const PoolStatsTitle = styled.h4`
   font-weight: bold;
   line-height: 1.25;
   letter-spacing: -0.63px;
-  margin: 0 0 20px;
+  margin: 17px 0 20px;
 
   span {
     font-weight: normal;
@@ -147,10 +147,25 @@ export const PoolStatsTitle = styled.h4`
 `
 
 export const PoolStatsData = styled.div`
-  height: 50px;
+  margin: auto 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
+`
+
+export const FarmingData = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+export const FarmingDataIcons = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+`
+
+export const FarmingIconWrap = styled.span`
+  margin-bottom: 5px;
 `
 
 export const PoolStatsText = styled(InlineText)`
