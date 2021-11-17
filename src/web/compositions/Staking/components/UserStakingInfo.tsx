@@ -25,7 +25,7 @@ import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { endStaking } from '@sb/dexUtils/staking/endStaking'
 import { filterFarmingTicketsByUserKey } from '@sb/dexUtils/staking/filterFarmingTicketsByUserKey'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
-import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
+import InfoIcon from '@icons/inform.svg'
 import { getSnapshotQueueWithAMMFees } from '@sb/dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { startStaking } from '@sb/dexUtils/staking/startStaking'
 import { StakingPool } from '@sb/dexUtils/staking/types'
@@ -364,13 +364,23 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               <BlockContent>
                 <RewardsStats>
                   <RewardsStatsRow>
-                    <DarkTooltip
-                      title={
-                        'Staking awards are calculated based on AMM commissions earned. RIN buyback occurs every 27th of the month at market price. Estimated Rewards are based on the market price at the time of check, so may be different at the time of payment.'
-                      }
-                    >
-                      <RewardsTitle>Est.Rewards:</RewardsTitle>
-                    </DarkTooltip>
+                    <RewardsTitle style={{ display: 'flex' }}>
+                      Est.Rewards:
+                      <DarkTooltip
+                        title={
+                          'Staking awards are calculated based on AMM commissions earned. RIN buyback occurs every 27th of the month at market price. Estimated Rewards are based on the market price at the time of check, so may be different at the time of payment.'
+                        }
+                      >
+                        <div>
+                          <SvgIcon
+                            src={InfoIcon}
+                            width={'1.2rem'}
+                            height={'1.2rem'}
+                            style={{ marginLeft: '0.75rem' }}
+                          />
+                        </div>
+                      </DarkTooltip>
+                    </RewardsTitle>
                     <DarkTooltip title={`${stripByAmount(userRewards)} RIN`}>
                       <div>
                         <UserBalance
