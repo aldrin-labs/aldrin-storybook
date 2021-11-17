@@ -50,6 +50,9 @@ import {
 } from '@sb/components/TraidingTerminal/utils'
 import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 
+import ScalesIcon from '@icons/scales.svg'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
 const DEFAULT_BASE_TOKEN = 'SOL'
 const DEFAULT_QUOTE_TOKEN = 'RIN'
 
@@ -95,8 +98,8 @@ const SwapPage = ({
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
       (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress) 
-      // pool?.curveType === 1 // TODO: remove
+        pool?.tokenB === quoteTokenMintAddress)
+    // pool?.curveType === 1 // TODO: remove
   )
 
   const isStablePool = selectedPool?.curveType === 1
@@ -358,16 +361,27 @@ const SwapPage = ({
               }}
             />
           </RowContainer>
-          <RowContainer justify={'flex-start'} margin={'0 2rem'}>
+          <RowContainer justify={'space-between'} margin={'0 2rem'}>
             <SvgIcon
               style={{ cursor: 'pointer' }}
               src={Arrows}
-              width={'2.5rem'}
-              height={'2.5rem'}
+              width={'2rem'}
+              height={'2rem'}
               onClick={() => {
                 reverseTokens()
               }}
             />
+            {isStablePool ? (
+              <DarkTooltip
+                title={
+                  'This pool uses the stable curve, which provides better rates for swapping stablecoins.'
+                }
+              >
+                <div>
+                  <SvgIcon src={ScalesIcon} width={'2rem'} height={'2rem'} />
+                </div>
+              </DarkTooltip>
+            ) : null}
           </RowContainer>
           <RowContainer margin={'1rem 0 2rem 0'}>
             <InputWithSelectorForSwaps
@@ -559,6 +573,7 @@ const SwapPage = ({
             </RowContainer>
           </Card>
         )}
+        <RowContainer>f</RowContainer>
       </>
 
       <TransactionSettingsPopup

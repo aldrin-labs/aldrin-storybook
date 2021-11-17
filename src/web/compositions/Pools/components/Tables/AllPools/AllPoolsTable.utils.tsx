@@ -43,6 +43,8 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
+import ScalesIcon from '@icons/scales.svg'
+
 import { PERMISIONLESS_POOLS_MINTS } from '../UserLiquidity/UserLiquidity.utils'
 
 export const allPoolsTableColumnsNames = [
@@ -182,7 +184,11 @@ export const combineAllPoolsData = ({
         )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
-    .filter((pool) => includePermissionless ? true : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint))
+    .filter((pool) =>
+      includePermissionless
+        ? true
+        : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint)
+    )
     .map((pool) => {
       const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
@@ -250,6 +256,7 @@ export const combineAllPoolsData = ({
 
       const farmingAPR =
         ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
         pool: {
@@ -267,7 +274,18 @@ export const combineAllPoolsData = ({
                   tokenA={pool.tokenA}
                   tokenB={pool.tokenB}
                 />
-              </Link>
+              </Link>{' '}
+              {pool.curveType === 1 ? (
+                <DarkTooltip
+                  title={
+                    'This pool uses the stable curve, which provides better rates for swapping stablecoins.'
+                  }
+                >
+                  <div>
+                    <SvgIcon style={{ marginLeft: '1rem' }} src={ScalesIcon} />
+                  </div>
+                </DarkTooltip>
+              ) : null}
               {/* TODO: show locked liquidity depending on backend data, not for all pools */}
               {/* {true ? (
                 <DarkTooltip title={'Founders liquidity locked.'}>
@@ -393,28 +411,28 @@ export const combineAllPoolsData = ({
                     <span style={{ color: '#53DF11' }}>Ended</span>
                   </RowDataTdText>
                 ) : (
-                    openFarmings.map((farmingState, i, arr) => {
-                      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
-                        { farmingState, totalStakedLpTokensUSD }
-                      )
+                  openFarmings.map((farmingState, i, arr) => {
+                    const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                      { farmingState, totalStakedLpTokensUSD }
+                    )
 
-                      return (
-                        <RowDataTdText>
-                          <span style={{ color: '#53DF11' }}>
-                            {stripByAmountAndFormat(
-                              farmingStateDailyFarmingValuePerThousandDollarsLiquidity
-                            )}
-                          </span>{' '}
-                          {getTokenNameByMintAddress(
-                            farmingState.farmingTokenMint
+                    return (
+                      <RowDataTdText>
+                        <span style={{ color: '#53DF11' }}>
+                          {stripByAmountAndFormat(
+                            farmingStateDailyFarmingValuePerThousandDollarsLiquidity
                           )}
-                          {/* + between every farming state token to be farmed, except last. for last - per day */}
-                          {i !== arr.length - 1 ? <span> + </span> : null}
-                          {i === arr.length - 1 ? <span> / Day</span> : null}
-                        </RowDataTdText>
-                      )
-                    })
-                  )}
+                        </span>{' '}
+                        {getTokenNameByMintAddress(
+                          farmingState.farmingTokenMint
+                        )}
+                        {/* + between every farming state token to be farmed, except last. for last - per day */}
+                        {i !== arr.length - 1 ? <span> + </span> : null}
+                        {i === arr.length - 1 ? <span> / Day</span> : null}
+                      </RowDataTdText>
+                    )
+                  })
+                )}
 
                 {openFarmings.length > 0 && (
                   <RowDataTdText>
@@ -425,8 +443,8 @@ export const combineAllPoolsData = ({
               </Row>
             </RowContainer>
           ) : (
-              '-'
-            ),
+            '-'
+          ),
           contentToSort: farmingAPR,
         },
         details: {
