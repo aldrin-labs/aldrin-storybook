@@ -19,12 +19,11 @@ import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/Propos
 // import { Grid, Hidden } from '@material-ui/core'
 import {
   FinishBtn,
-  tourConfig
+  tourConfig,
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
-import { MobileWarningPopup } from '@sb/components/WarningPopup/mobilePopup'
 import { MainContainer } from '@sb/compositions/Chart/Chart.styles'
 import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
@@ -319,10 +318,9 @@ function ChartPageComponent(props: any) {
         tokenToDelist={tokenToDelist}
       />
 
-      <TransactionsConfirmationWarningPopup theme={theme} />
+      {/* <TransactionsConfirmationWarningPopup theme={theme} /> */}
       <ProposeToSettlePopup theme={theme} />
-      {/* <ChartsIssuePopup theme={theme} /> */}
-      {/* <MobileWarningPopup theme={theme} /> */}
+
       {/* <MarketDeprecatedPopup
         theme={theme}
         newMarketID={allMarketsMap.get('LIQ_USDC')?.address.toString()}
