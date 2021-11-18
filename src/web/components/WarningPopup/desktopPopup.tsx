@@ -39,7 +39,7 @@ export const DesktopBanner = ({
   return (
     <Container
       showOnTheTop={true}
-      style={{ height: '64%', flexWrap: 'nowrap' }}
+      style={{ height: '64%', flexWrap: 'nowrap', zIndex: '100' }}
       direction="column"
       align="flex-start"
       justify="space-between"
