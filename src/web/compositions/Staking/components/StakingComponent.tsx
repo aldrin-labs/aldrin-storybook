@@ -18,7 +18,6 @@ import {
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
-import { useBuybackAccountForAdditionalRewards } from '@sb/dexUtils/staking/useBuybackAccountForAdditionalRewards'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -80,13 +79,14 @@ const StakingComponent: React.FC<StakingComponentProps> = (
     (token) => token.mint === currentFarmingState.farmingTokenMint
   )
 
-  const [accountBalance] =
-    useBuybackAccountForAdditionalRewards({
-      connection,
-    }) || 0
+  const tokenPrice =
+    dexTokensPricesMap?.get(
+      getTokenNameByMintAddress(currentFarmingState.farmingTokenMint)
+    ).price || 0
 
   const poolsFees =
-    +accountBalance * 10 ** currentFarmingState.farmingTokenMintDecimals
+    ((totalFeesFromPools * STAKING_PART_OF_AMM_FEES) / tokenPrice) *
+    10 ** currentFarmingState.farmingTokenMintDecimals
 
   useInterval(() => {
     refreshFarmingTickets()
