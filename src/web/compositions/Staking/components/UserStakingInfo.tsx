@@ -370,7 +370,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       Est.Rewards:
                       <DarkTooltip
                         title={
-                          'Staking awards are calculated based on AMM commissions earned. RIN buyback occurs every 27th of the month at market price. Estimated Rewards are based on the market price at the time of check, so may be different at the time of payment.'
+                          'Staking rewards are calculated based on AMM commissions earned. RIN buyback occurs every 27th of the month at market price. Estimated Rewards are based on the market price at the time of check, so may be different at the time of payment.'
                         }
                       >
                         <div>
