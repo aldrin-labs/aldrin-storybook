@@ -337,7 +337,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               <UserBalance
                 visible={isBalancesShowing}
                 value={tokenData?.amount || 0}
-              />
+              /> 
             </BalanceWrap>
           </WalletBalanceBlock>
         </WalletRow>
