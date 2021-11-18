@@ -1,9 +1,11 @@
+import { withTheme } from '@material-ui/core'
 import { Theme } from '@sb/types/materialUI'
 import React from 'react'
+import { compose } from 'recompose'
 import { DesktopBanner } from './desktopPopup'
 import { MobileBanner } from './mobilePopup'
 
-export const WarningBanner = ({
+const WarningBanner = ({
   theme,
   localStorageProperty = '',
   title = 'Important note!',
@@ -35,3 +37,5 @@ export const WarningBanner = ({
     </>
   )
 }
+
+export default compose(withTheme())(WarningBanner)

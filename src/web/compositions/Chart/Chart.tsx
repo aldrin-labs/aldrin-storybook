@@ -24,7 +24,6 @@ import {
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
-import { WarningBanner } from '@sb/components/WarningPopup/warningPopupsWrapper'
 import { MainContainer } from '@sb/compositions/Chart/Chart.styles'
 import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
@@ -322,15 +321,6 @@ function ChartPageComponent(props: any) {
       {/* <TransactionsConfirmationWarningPopup theme={theme} /> */}
       <ProposeToSettlePopup theme={theme} />
 
-      <WarningBanner
-        theme={theme}
-        localStorageProperty={'isPhantomIssuesPopupOpen'}
-        notification={[
-          'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
-          'In the meantime, you can import your Seed Phrase into Aldrin Wallet or any other wallet and interact with DEX using it.',
-        ]}
-        needMobile={false}
-      />
       {/* <MarketDeprecatedPopup
         theme={theme}
         newMarketID={allMarketsMap.get('LIQ_USDC')?.address.toString()}
