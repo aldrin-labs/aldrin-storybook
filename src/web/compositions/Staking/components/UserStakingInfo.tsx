@@ -310,6 +310,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     refreshAll()
   }, 60000)
 
+  console.log('poolsFees', poolsFees)
+
   return (
     <>
       <BlockContent border>
