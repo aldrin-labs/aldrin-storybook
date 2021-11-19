@@ -1,41 +1,35 @@
-import { useMemo } from 'react'
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import { AWESOME_TOKENS, useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
+import { Metrics } from '@core/utils/metrics'
 import {
   Market,
-  Orderbook,
-  decodeEventQueue,
-  TokenInstructions,
   MARKETS,
-  TOKEN_MINTS,
-  OpenOrders,
+  OpenOrders, Orderbook,
+  TokenInstructions,
+  TOKEN_MINTS
 } from '@project-serum/serum'
+import { OrderWithMarket } from '@sb/dexUtils/send'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
-import React, { useContext, useEffect, useState } from 'react'
-import { getUniqueListBy, useLocalStorageState } from './utils'
-import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
+import { BN } from 'bn.js'
+import tuple from 'immutable-tuple'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import {
   getProviderNameFromUrl,
   useAccountData,
   useAccountInfo,
   useConnection,
-  useConnectionConfig,
+  useConnectionConfig
 } from './connection'
-import { useWallet } from './wallet'
-import tuple from 'immutable-tuple'
+import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
 import { notify } from './notifications'
-import { BN } from 'bn.js'
-import { getTokenAccountInfo } from './tokens'
-import {
-  useAwesomeMarkets,
-  AWESOME_TOKENS,
-} from '@core/utils/awesomeMarkets/serum'
-import { Metrics } from '@core/utils/metrics'
-import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
-  TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID
 } from './token/token'
-import { OrderWithMarket } from '@sb/dexUtils/send'
+import { getTokenAccountInfo } from './tokens'
+import { getUniqueListBy, useLocalStorageState } from './utils'
+import { useWallet } from './wallet'
 
 export const ALL_TOKENS_MINTS = getUniqueListBy(
   [...TOKEN_MINTS, ...AWESOME_TOKENS],

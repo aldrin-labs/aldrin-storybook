@@ -7,6 +7,9 @@ import {
   TradingVolumeStats
 } from '@sb/compositions/Pools/index.types'
 import { COLORS } from '@variables/variables'
+
+import { useHistory, Link } from 'react-router-dom'
+
 import React from 'react'
 import { TableContainer } from '../index.styles'
 import {
@@ -36,6 +39,8 @@ const AllPoolsTableComponent: React.FC<AllPoolsProps> = (props) => {
     includePermissionless,
   } = props
 
+  const history = useHistory()
+
   const feesPerPoolMap = feesByPool.reduce(
     (acc, feeEarnedByPool) => acc.set(feeEarnedByPool.pool, feeEarnedByPool),
     new Map()
@@ -55,10 +60,10 @@ const AllPoolsTableComponent: React.FC<AllPoolsProps> = (props) => {
 
   return (
     <TableContainer>
-      {/* @ts-ignore */}
       <TableWithSort
         hideCommonCheckbox={true}
         hideRowsCheckboxes={true}
+        onTrClick={(row) => history.push(`/pools/${row.pool.contentToSort}`)}
         style={{
           overflowX: 'hidden',
           height: '100%',

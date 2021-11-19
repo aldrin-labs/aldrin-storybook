@@ -254,7 +254,7 @@ export const combineUserLiquidityData = (params: CombineUserLiquidityParams) => 
               ) : null} */}
             </Row>
           ),
-          contentToSort: `${baseSymbol}${quoteSymbol}`,
+          contentToSort: `${baseSymbol}_${quoteSymbol}`,
         },
         tvl: {
           render: (

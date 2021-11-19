@@ -220,6 +220,9 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
               style={{ width: '18rem', flexWrap: 'nowrap' }}
             >
               <Link
+                onClick={(e) => {
+                  e.stopPropagation()
+                }}
                 to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
                 style={{ textDecoration: 'none' }}
               >
@@ -259,7 +262,7 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
               ) : null} */}
             </Row>
           ),
-          contentToSort: `${baseSymbol}${quoteSymbol}`,
+          contentToSort: `${baseSymbol}_${quoteSymbol}`,
         },
         tvl: {
           render: (

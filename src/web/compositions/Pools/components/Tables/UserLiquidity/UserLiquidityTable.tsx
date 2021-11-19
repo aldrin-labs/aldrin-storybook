@@ -62,6 +62,7 @@ const UserLiquidityTableComponent: React.FC<LiquidityTableProps> = (props) => {
       <TableWithSort
         hideCommonCheckbox={true}
         hideRowsCheckboxes={true}
+        onTrClick={(row) => history.push(`/pools/${row.pool.contentToSort}`)}
         style={{
           overflowX: 'hidden',
           height: '100%',

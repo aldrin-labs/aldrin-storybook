@@ -1,49 +1,41 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import Mathwallet from '@icons/mathwallet.svg'
+import WalletAldrin from '@icons/RINLogo.svg'
+import Sollet from '@icons/sollet.svg'
+import Solong from '@icons/solong.svg'
+import { TokenInstructions } from '@project-serum/serum'
 import Wallet from '@project-serum/sol-wallet-adapter'
 import {
-  SolongWalletAdapter,
-  SolletExtensionAdapter,
-  MathWalletAdapter,
   CommonWalletAdapter,
-  CcaiExtensionAdapter,
-  PhantomWalletAdapter,
-  LedgerWalletAdapter,
+  LedgerWalletAdapter, MathWalletAdapter,
+  PhantomWalletAdapter, SolletExtensionAdapter, SolongWalletAdapter
 } from '@sb/dexUtils/adapters'
-import { notify } from './notifications'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import {
-  useAccountInfo,
-  useConnection,
-  useConnectionConfig,
-} from './connection'
-import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
-import {
-  Connection,
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  TransactionInstruction,
+  TransactionInstruction
 } from '@solana/web3.js'
-
-import { clusterApiUrl } from '@solana/web3.js'
-import { TokenListProvider } from '@solana/spl-token-registry'
-import { TokenInstructions } from '@project-serum/serum'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
+import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
+import {
+  useAccountInfo,
+  useConnection,
+  useConnectionConfig
+} from './connection'
 import { useAsyncData } from './fetch-loop'
+import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
+import { notify } from './notifications'
 import { getMaxWithdrawAmount } from './pools'
 import {
   getTokenAccountInfo,
   MINT_LAYOUT,
-  parseTokenAccountData,
+  parseTokenAccountData
 } from './tokens'
-import Sollet from '@icons/sollet.svg'
-import Mathwallet from '@icons/mathwallet.svg'
-import Solong from '@icons/solong.svg'
-import WalletAldrin from '@icons/RINLogo.svg'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
-import { MASTER_BUILD } from '@core/utils/config'
-import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
-import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
+import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
+
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },

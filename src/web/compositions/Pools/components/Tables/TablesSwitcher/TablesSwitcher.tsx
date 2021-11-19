@@ -1,8 +1,11 @@
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
+import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
@@ -30,10 +33,7 @@ import { Route } from 'react-router'
 import { useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
 import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
-import { AddLiquidityPopup } from '../../Popups'
-import { ClaimRewards } from '../../Popups/ClaimRewards/ClaimRewards'
 import { DetailsModal } from '../../Popups/DetailsModal'
-import { StakePopup } from '../../Popups/Staking/StakePopup'
 import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
 import PlusIcon from './plus.svg'
@@ -44,9 +44,6 @@ import {
   TableContainer,
   TableModeButton
 } from './TablesSwitcher.styles'
-import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
-import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
-import { endOfHourTimestamp, DAY } from '@core/utils/dateUtils'
 
 interface TableSwitcherProps {
   theme: Theme

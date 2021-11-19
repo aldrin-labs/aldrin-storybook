@@ -74,17 +74,9 @@ const VARIANTS = {
     background: transparent;
     border-color: transparent;
     color: ${COLORS.success};
-    padding: 0 10px;
-  `,
-
-  disabledLink: css`
-    background: transparent;
-    border-color: transparent;
-    color: ${COLORS.main};
 
     &:disabled {
       color: ${COLORS.hint};
-      border-color: ${COLORS.hint};
     }
   `,
 
@@ -160,7 +152,6 @@ export const Button = styled.button<ButtonProps>`
   ${(props: ButtonProps) =>
     props.width ? ` width: ${WIDTH[props.width]};` : ''}
   text-decoration: none;
-
   ${rotate}
 
   ${({ $backgroundImage: backgroundImage }: ButtonProps) => backgroundImage ?
@@ -174,6 +165,7 @@ export const Button = styled.button<ButtonProps>`
   ` : ''}
 
   &:disabled {
+    pointer-events: none;
     cursor: not-allowed;
   }
 
