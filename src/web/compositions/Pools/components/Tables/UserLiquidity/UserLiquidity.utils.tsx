@@ -219,34 +219,6 @@ export const combineUserLiquidityData = (params: CombineUserLiquidityParams) => 
                 tokenB={pool.tokenB}
                 needHover={true}
               />
-              {/* TODO: show locked liquidity depending on backend data, not for all pools */}
-              {/* {true ? (
-                <DarkTooltip title={'Founders liquidity locked.'}>
-                  <div>
-                    <SvgIcon
-                      style={{ marginLeft: '1rem' }}
-                      width="2rem"
-                      height="auto"
-                      src={CrownIcon}
-                    />
-                  </div>
-                </DarkTooltip>
-              ) : pool.executed ? (
-                <DarkTooltip
-                  title={
-                    'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
-                  }
-                >
-                  <div>
-                    <SvgIcon
-                      style={{ marginLeft: '1rem' }}
-                      width="2rem"
-                      height="auto"
-                      src={ForbiddenIcon}
-                    />
-                  </div>
-                </DarkTooltip>
-              ) : null} */}
             </Row>
           ),
           contentToSort: `${baseSymbol}_${quoteSymbol}`,
@@ -384,38 +356,6 @@ export const combineUserLiquidityData = (params: CombineUserLiquidityParams) => 
             <DetailsLink to={`/pools/${poolName}`}>Details</DetailsLink>
           ),
         },
-        // expandableContent: [
-        //   {
-        //     row: {
-        //       render: (
-        //         <TablesDetails
-        //           setIsStakePopupOpen={setIsStakePopupOpen}
-        //           setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-        //           setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-        //           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-        //           setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
-        //           refreshTokensWithFarmingTickets={
-        //             refreshTokensWithFarmingTickets
-        //           }
-        //           setPoolWaitingForUpdateAfterOperation={
-        //             setPoolWaitingForUpdateAfterOperation
-        //           }
-        //           selectPool={selectPool}
-        //           farmingTicketsMap={farmingTicketsMap}
-        //           earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-        //           dexTokensPricesMap={dexTokensPricesMap}
-        //           allTokensData={allTokensData}
-        //           poolWaitingForUpdateAfterOperation={
-        //             poolWaitingForUpdateAfterOperation
-        //           }
-        //           theme={theme}
-        //           pool={pool}
-        //         />
-        //       ),
-        //       colspan: 8,
-        //     },
-        //   },
-        // ],
       }
     })
 

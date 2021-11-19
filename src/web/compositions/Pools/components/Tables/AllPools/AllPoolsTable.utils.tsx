@@ -232,34 +232,6 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
                   tokenB={pool.tokenB}
                 />
               </Link>
-              {/* TODO: show locked liquidity depending on backend data, not for all pools */}
-              {/* {true ? (
-                <DarkTooltip title={'Founders liquidity locked.'}>
-                  <div>
-                    <SvgIcon
-                      style={{ marginLeft: '1rem' }}
-                      width="2rem"
-                      height="auto"
-                      src={CrownIcon}
-                    />
-                  </div>
-                </DarkTooltip>
-              ) : pool.executed ? (
-                <DarkTooltip
-                  title={
-                    'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
-                  }
-                >
-                  <div>
-                    <SvgIcon
-                      style={{ marginLeft: '1rem' }}
-                      width="2rem"
-                      height="auto"
-                      src={ForbiddenIcon}
-                    />
-                  </div>
-                </DarkTooltip>
-              ) : null} */}
             </Row>
           ),
           contentToSort: `${baseSymbol}_${quoteSymbol}`,
@@ -399,38 +371,6 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
             <DetailsLink to={`/pools/${poolName}`}>Details</DetailsLink>
           ),
         },
-        // expandableContent: [
-        //   {
-        //     row: {
-        //       render: (
-        //         <TablesDetails
-        //           setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-        //           setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-        //           setIsStakePopupOpen={setIsStakePopupOpen}
-        //           setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-        //           setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
-        //           setPoolWaitingForUpdateAfterOperation={
-        //             setPoolWaitingForUpdateAfterOperation
-        //           }
-        //           refreshTokensWithFarmingTickets={
-        //             refreshTokensWithFarmingTickets
-        //           }
-        //           selectPool={selectPool}
-        //           poolWaitingForUpdateAfterOperation={
-        //             poolWaitingForUpdateAfterOperation
-        //           }
-        //           earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-        //           farmingTicketsMap={farmingTicketsMap}
-        //           dexTokensPricesMap={dexTokensPricesMap}
-        //           allTokensData={allTokensData}
-        //           theme={theme}
-        //           pool={pool}
-        //         />
-        //       ),
-        //       colspan: 8,
-        //     },
-        //   },
-        // ],
       }
     })
 
