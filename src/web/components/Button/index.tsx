@@ -73,6 +73,13 @@ const VARIANTS = {
   link: css`
     background: transparent;
     border-color: transparent;
+    color: ${COLORS.success};
+    padding: 0 10px;
+  `,
+
+  disabledLink: css`
+    background: transparent;
+    border-color: transparent;
     color: ${COLORS.main};
 
     &:disabled {

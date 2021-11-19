@@ -14,6 +14,7 @@ import {
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
+import { DAY } from '@core/utils/dateUtils'
 
 dayjs.extend(timezone)
 dayjs.extend(utc)
@@ -33,7 +34,8 @@ Chart.register(
   Filler
 )
 
-export const NUMBER_OF_DAYS_TO_SHOW = 13
+const POOLS_EPOCH = 1635292800 // 27 Oct 2021
+export const NUMBER_OF_DAYS_TO_SHOW = Math.ceil(((Date.now() / 1000) - POOLS_EPOCH) / DAY) // Show full history from pools start
 const CHART_HEIGHT = 220
 
 interface ChartParams<T = { date: number, vol?: number }[]> {
@@ -194,7 +196,8 @@ const createTotalVolumeLockedChart = ({
       },
     ],
   }
-  chart.options.scales.y.ticks.stepSize = (maxVol - minVol) / 3
+  chart.options.scales.y.ticks.stepSize = (maxVol - (maxVol * 0.2)) / 5
+  chart.options.scales.y.suggestedMin = 0
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
   return chart
 }

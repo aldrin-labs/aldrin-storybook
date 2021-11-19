@@ -18,24 +18,26 @@ import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
 import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
+import { StakingPool } from '@sb/dexUtils/staking/types'
 import ProposeToStakePopup from '../../Popups/ProposeToStake'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { RIN_MINT } from '@sb/dexUtils/utils'
 import LightLogo from '@icons/lightLogo.svg'
 import { COLORS } from '@variables/variables'
 
-interface ClaimRewardsProps {
+interface ClaimRewardProps {
   theme: Theme
-  selectedPool: PoolInfo
+  selectedPool: PoolInfo | StakingPool
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   snapshotQueues: SnapshotQueue[]
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
+  callback?: () => void
 }
 
-const Popup: React.FC<ClaimRewardsProps> = (props) => {
+const Popup = (props: ClaimRewardProps) => {
   const {
     theme,
     selectedPool,
@@ -45,8 +47,8 @@ const Popup: React.FC<ClaimRewardsProps> = (props) => {
     close,
     refreshTokensWithFarmingTickets,
     setPoolWaitingForUpdateAfterOperation,
+    callback,
   } = props
-
   const { wallet } = useWallet()
   const connection = useConnection()
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
@@ -116,12 +118,18 @@ const Popup: React.FC<ClaimRewardsProps> = (props) => {
         setTimeout(async () => {
           refreshTokensWithFarmingTickets()
           clearPoolWaitingForUpdate()
+          if (callback) {
+            await callback()
+
+            await close()
+          }
         }, 7500)
 
         setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
       }
     } catch (e) {
       clearPoolWaitingForUpdate()
+      close()
 
       setTimeout(async () => {
         refreshTokensWithFarmingTickets()
@@ -131,7 +139,9 @@ const Popup: React.FC<ClaimRewardsProps> = (props) => {
     if (result !== 'blockhash_outdated') {
       if (isFarmingRIN) {
         setIsProposeToStakePopupOpen(true)
-      } else {
+      }
+
+      if (!callback) {
         close()
       }
     } else {
@@ -207,7 +217,6 @@ const Popup: React.FC<ClaimRewardsProps> = (props) => {
           btnWidth="calc(50% - 1rem)"
           disabled={false}
           isUserConfident={true}
-          theme={theme}
           showLoader={operationLoading}
           onClick={() => claimRewards(true)}
         >

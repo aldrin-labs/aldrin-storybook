@@ -11,6 +11,7 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import dayjs from 'dayjs'
 import { SvgIcon } from '@sb/components'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 
 interface StakingFormProps {
   tokenData: TokenInfo | undefined
@@ -65,7 +66,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
   useEffect(() => {
     if (!prevTokenData.current && tokenData) {
       prevTokenData.current = tokenData
-      form.setFieldValue('amount', tokenData.amount)
+      form.setFieldValue('amount', stripByAmount(tokenData.amount))
     }
   }, [tokenData])
   return (
@@ -113,8 +114,8 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           title={
             isUnstakeLocked
               ? `Locked until ${dayjs
-                .unix(unlockAvailableDate)
-                .format('HH:mm:ss MMM DD, YYYY')}`
+                  .unix(unlockAvailableDate)
+                  .format('HH:mm:ss MMM DD, YYYY')}`
               : ''
           }
         >

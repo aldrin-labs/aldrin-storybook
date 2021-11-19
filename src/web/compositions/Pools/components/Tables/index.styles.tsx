@@ -1,13 +1,13 @@
-import styled from 'styled-components'
-
-import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Text } from '@sb/compositions/Addressbook'
-import React from 'react'
-import { Loading } from '@sb/components/Loading'
 import { Loader } from '@sb/components/Loader/Loader'
-import { COLORS } from '../../../../../variables/variables'
+import { Text } from '@sb/compositions/Addressbook'
+import { Theme } from '@sb/types/materialUI'
+import { COLORS } from '@variables/variables'
+import React from 'react'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
+
 
 export const LiquidityDataContainer = styled(Row)`
   width: 50%;
@@ -145,7 +145,7 @@ export const Button = styled(
       ? props.color
         ? props.color
         : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-      : props.theme.palette.grey.title};
+      : '#93A0B2'};
   color: ${(props: { disabled: boolean }) =>
     !props.disabled ? '#F8FAFF' : '#fff'};
 
@@ -159,7 +159,7 @@ export const Button = styled(
         ? props.color
           ? props.color
           : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-        : props.theme.palette.grey.title};
+        : '#93A0B2'};
     color: ${(props: { disabled: boolean }) =>
       !props.disabled ? '#F8FAFF' : '#fff'};
   }

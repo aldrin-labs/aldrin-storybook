@@ -245,12 +245,14 @@ const SwapPage = ({
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
 
+  const needEnterAmount = baseAmount == 0 || quoteAmount == 0
+
   const isButtonDisabled =
     isTokenABalanceInsufficient ||
     !selectedPool ||
     !selectedPool.supply ||
-    baseAmount == 0 ||
-    quoteAmount == 0
+    needEnterAmount
+
   return (
     <RowContainer
       direction={'column'}
@@ -298,7 +300,7 @@ const SwapPage = ({
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'Enter amount'}
+              placeholder={'0.00'}
               theme={theme}
               directionFrom={true}
               value={baseAmount}
@@ -331,7 +333,7 @@ const SwapPage = ({
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'Enter amount'}
+              placeholder={'0.00'}
               theme={theme}
               disabled={
                 !baseTokenMintAddress ||
@@ -481,6 +483,8 @@ const SwapPage = ({
                     } Balance`
                   : !selectedPool
                   ? 'No pools available'
+                  : needEnterAmount
+                  ? 'Enter amount'
                   : 'Swap'}
               </BtnCustom>
             )}

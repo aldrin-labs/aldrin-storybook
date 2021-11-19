@@ -31,6 +31,7 @@ export const getParsedStakingFarmingStates = async ({
       tokensTotal: statesData.tokensTotal.toNumber(),
       farmingState: state.pubkey.toString(),
       farmingSnapshots: statesData.farmingSnapshots.toString(),
+      feesDistributed: statesData.feesDistributed,
     }
   })
 

@@ -1,21 +1,29 @@
-import React, { useState } from 'react'
 import { Theme } from '@material-ui/core'
-
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import useMobileSize from '@webhooks/useMobileSize'
-
+import React, { useState } from 'react'
 import {
-  Container,
-  Text,
-  DemiText,
   BlackButton,
+  Container,
+  DemiText,
+  Text,
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-export const MobileWarningPopup = ({ theme }: { theme: Theme }) => {
+export const MobileBanner = ({
+  theme,
+  localStorageProperty = '',
+  title = 'Important note!',
+  notification = [''],
+}: {
+  theme: Theme
+  localStorageProperty: string
+  title: string
+  notification: string[]
+}) => {
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
-    'isChartsIssueBannerOpen',
+    localStorageProperty,
     true
   )
   const isMobile = useMobileSize()
@@ -29,13 +37,9 @@ export const MobileWarningPopup = ({ theme }: { theme: Theme }) => {
       <RowContainer justify="space-between" margin="0 0 4rem 0">
         <Row width="80%" direction={'column'} align={'flex-start'}>
           <DemiText theme={theme} style={{ margin: '0 0 4rem 0' }}>
-            Important note!
+            {title}
           </DemiText>
-          <Text theme={theme}>
-            We’re doing an upgrade which will impact our charts temporarily.
-            Trading is not impacted by this but we encourage to trade once
-            charts are fully functional.
-          </Text>
+          <Text theme={theme}>{notification.join()}</Text>
         </Row>
         <Row>
           <DemiText style={{ fontSize: '14rem' }}>!</DemiText>
