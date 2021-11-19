@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BoldHeader, ClaimRewardsStyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -22,20 +22,10 @@ import ProposeToStakePopup from '../../Popups/ProposeToStake'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { RIN_MINT } from '@sb/dexUtils/utils'
 import LightLogo from '@icons/lightLogo.svg'
+import { COLORS } from '@variables/variables'
 
-export const ClaimRewards = ({
-  theme,
-  open,
-  selectedPool,
-  allTokensData,
-  farmingTicketsMap,
-  snapshotQueues,
-  close,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-}: {
+interface ClaimRewardsProps {
   theme: Theme
-  open: boolean
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
@@ -43,7 +33,20 @@ export const ClaimRewards = ({
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-}) => {
+}
+
+const Popup: React.FC<ClaimRewardsProps> = (props) => {
+  const {
+    theme,
+    selectedPool,
+    allTokensData,
+    farmingTicketsMap,
+    snapshotQueues,
+    close,
+    refreshTokensWithFarmingTickets,
+    setPoolWaitingForUpdateAfterOperation,
+  } = props
+
   const { wallet } = useWallet()
   const connection = useConnection()
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
@@ -101,10 +104,10 @@ export const ClaimRewards = ({
           result === 'success'
             ? 'Successfully claimed rewards.'
             : result === 'failed'
-            ? 'Claim rewards failed, please try again later or contact us in telegram.'
-            : result === 'cancelled'
-            ? 'Claim rewards cancelled.'
-            : 'Blockhash outdated, please claim rest rewards in a few seconds.',
+              ? 'Claim rewards failed, please try again later or contact us in telegram.'
+              : result === 'cancelled'
+                ? 'Claim rewards cancelled.'
+                : 'Blockhash outdated, please claim rest rewards in a few seconds.',
       })
 
       if (result === 'cancelled') {
@@ -142,9 +145,9 @@ export const ClaimRewards = ({
       PaperComponent={ClaimRewardsStyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => {}}
+      onEnter={() => { }}
       maxWidth={'md'}
-      open={open}
+      open
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
@@ -187,7 +190,7 @@ export const ClaimRewards = ({
         <Button
           color="inherit"
           height="5.5rem"
-          borderColor="#fff"
+          borderColor={COLORS.white}
           fontSize="1.3rem"
           btnWidth="calc(50% - 1rem)"
           disabled={false}
@@ -199,7 +202,7 @@ export const ClaimRewards = ({
           Claim Rewards with Hardware Wallet (e.g. Ledger)
         </Button>
         <Button
-          color="#651CE4"
+          color={COLORS.primary}
           height="5.5rem"
           btnWidth="calc(50% - 1rem)"
           disabled={false}
@@ -222,3 +225,6 @@ export const ClaimRewards = ({
     </DialogWrapper>
   )
 }
+
+
+export const ClaimRewards = withTheme()(Popup)

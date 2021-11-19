@@ -85,7 +85,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       </FormItemFull>
       <FormItem>
         <Button
-          backgroundImage={StakeBtn}
+          $backgroundImage={StakeBtn}
           fontSize="xs"
           padding="lg"
           borderRadius="xxl"

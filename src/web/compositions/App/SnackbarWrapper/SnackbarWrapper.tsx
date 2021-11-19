@@ -50,7 +50,6 @@ const snackStyeles = (theme) => ({
 });
 
 const IntegrationNotistack = ({ ...props }) => {
-	console.log('snackbar rerender', props);
 	return (
 		<SnackbarProvider
 			domRoot={document.getElementById('react-notification')}

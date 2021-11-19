@@ -333,6 +333,7 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
                       mint={farmingState.farmingTokenMint}
                       width={'3rem'}
                       emojiIfNoLogo={false}
+                      key={`all_pools_token_${farmingState.farmingTokenMint}`}
                     />
                   )
                 })}

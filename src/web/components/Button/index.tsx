@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import {
   COLORS,
   FONT_SIZES,
@@ -6,6 +6,8 @@ import {
   BORDER_RADIUS,
   WIDTH,
 } from '@variables/variables'
+
+import RinLogo from '@icons/DarkLogo.svg'
 
 const VARIANTS = {
   primary: css`
@@ -30,29 +32,53 @@ const VARIANTS = {
   rainbow: css`
     background: linear-gradient(91.8deg, ${COLORS.primary} 15.31%, ${COLORS.errorAlt} 89.64%);
     border: 0;
+
+    &:disabled {
+      background: ${COLORS.hint};
+      border-color: ${COLORS.hint};
+    }
   `,
 
   error: css`
     background: ${COLORS.error};
     border-color: ${COLORS.error};
+
+    &:disabled {
+      background: ${COLORS.hint};
+      border-color: ${COLORS.hint};
+    }
   `,
 
   'outline-white': css`
     background: transparent;
     border-color: ${COLORS.white};
+
+    &:disabled {
+      color: ${COLORS.hint};
+      border-color: ${COLORS.hint};
+    }
   `,
 
   'link-error': css`
     background: transparent;
     border-color: transparent;
     color: ${COLORS.error};
+
+    &:disabled {
+      color: ${COLORS.hint};
+      border-color: ${COLORS.hint};
+    }
   `,
 
   link: css`
     background: transparent;
     border-color: transparent;
     color: ${COLORS.main};
-    padding: 0 10px;
+
+    &:disabled {
+      color: ${COLORS.hint};
+      border-color: ${COLORS.hint};
+    }
   `,
 
   // TODO: rewrite with [disabled] html attribute
@@ -62,7 +88,6 @@ const VARIANTS = {
     cursor: not-allowed;
   `,
 
-  
 }
 
 const PADDINGS = {
@@ -77,12 +102,40 @@ export interface ButtonProps {
   variant?: ButtonVariants
   borderRadius?: keyof typeof BORDER_RADIUS
   padding?: keyof typeof PADDINGS
-  backgroundImage?: string
+  $backgroundImage?: string
   width?: keyof typeof WIDTH
   backgroundColor?: string
+  $loading?: boolean
 }
 
-export const Button = styled.button<ButtonProps>`
+const rotate = css`
+@keyframes button-rotate-loading {
+  0% {
+    transform: rotate(0deg);
+  }
+  
+  25% {
+    transform: rotate(60deg);
+  }
+  
+  50% {
+    transform: rotate(0deg);
+  }
+  
+  75% {
+    transform: rotate(-60deg);
+  }
+  
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+`
+
+// console.log('animationStyle: ', animationStyle)
+
+export const Button = styled.button<ButtonProps>` 
   background-color: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   background: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   min-width: 9rem;
@@ -101,18 +154,38 @@ export const Button = styled.button<ButtonProps>`
     props.width ? ` width: ${WIDTH[props.width]};` : ''}
   text-decoration: none;
 
-  ${({ backgroundImage }: ButtonProps) =>
-    backgroundImage
-      ? `
-    background-color: #a1458a;
+  ${rotate}
+
+  ${({ $backgroundImage: backgroundImage }: ButtonProps) => backgroundImage ?
+    `
+    background-color: ${COLORS.buttonAltPink};
     border-color: transparent;
     background-image: url(${backgroundImage});
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-  `
-      : ''}
+  ` : ''}
+
   &:disabled {
     cursor: not-allowed;
   }
-`
+
+  ${({ $loading: loading }: ButtonProps) => loading ?
+    `
+    color: transparent;
+    position: relative;
+    &:before {
+      animation: 5s button-rotate-loading infinite linear;
+      content: "";
+      width: 80%;
+      height: 70%;
+      background: url(${RinLogo}) center center no-repeat;
+      position: absolute;
+      left: 10%;
+      top: 15%;
+      background-size: contain;
+
+     
+    }
+  ` : ''}
+  `

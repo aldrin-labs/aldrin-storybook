@@ -17,6 +17,7 @@ export const COLORS = {
   successAlt: '#2E5223',
   error: '#F69894',
   errorAlt: '#D44C32',
+  buttonAltPink: '#a1458a',
   gray: '#383b42',
   chartGrid: '#4C4F59',
   textAlt: '#F5F5FB',

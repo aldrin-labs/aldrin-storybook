@@ -108,7 +108,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts({
+  const [userTokensData, refreshUserTokensData] = useUserTokenAccounts({
     wallet,
     connection,
   })
@@ -125,8 +125,8 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     snapshotQueues,
   })
 
-  const refreshTokensWithFarmingTickets = () => {
-    refreshAllTokensData()
+  const refreshAll = () => {
+    refreshUserTokensData()
     refreshFarmingTickets()
   }
 
@@ -144,7 +144,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
 
   const userLiquidityPools = getUserPoolsFromAll({
     poolsInfo: pools,
-    allTokensData,
+    allTokensData: userTokensData,
     farmingTicketsMap,
   }).length
 
@@ -226,85 +226,13 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
                 searchValue={searchValue}
                 includePermissionless={includePermissionless}
                 poolsInfo={pools}
-                poolWaitingForUpdateAfterOperation={
-                  poolWaitingForUpdateAfterOperation
-                }
                 dexTokensPricesMap={dexTokensPricesMap}
-                allTokensData={allTokensData}
+                allTokensData={userTokensData}
                 farmingTicketsMap={farmingTicketsMap}
                 earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-                selectPool={selectPool}
-                refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-                setPoolWaitingForUpdateAfterOperation={
-                  setPoolWaitingForUpdateAfterOperation
-                }
-                setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-                setIsStakePopupOpen={setIsStakePopupOpen}
-                setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-                setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
               />
             )}
 
-          {selectedPool && isAddLiquidityPopupOpen && (
-            <AddLiquidityPopup
-              theme={theme}
-              searchValue={searchValue}
-              includePermissionless={includePermissionless}
-              poolsInfo={pools}
-              poolWaitingForUpdateAfterOperation={
-                poolWaitingForUpdateAfterOperation
-              }
-              dexTokensPricesMap={dexTokensPricesMap}
-              allTokensData={allTokensData}
-              close={() => setIsWithdrawalPopupOpen(false)}
-              open={isWithdrawalPopupOpen}
-              setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-              refreshAllTokensData={refreshAllTokensData}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-            />
-          )}
-
-          {selectedPool && (isStakePopupOpen || isRemindToStakePopupOpen) && (
-            <StakePopup
-              theme={theme}
-              open={isStakePopupOpen || isRemindToStakePopupOpen}
-              selectedPool={selectedPool}
-              dexTokensPricesMap={dexTokensPricesMap}
-              farmingTicketsMap={farmingTicketsMap}
-              earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-              selectPool={selectPool}
-              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-              setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-              setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-              setIsStakePopupOpen={setIsStakePopupOpen}
-              setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-              setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
-            />
-          )}
-
-          {selectedPool && isClaimRewardsPopupOpen && (
-            <ClaimRewards
-              theme={theme}
-              open={isClaimRewardsPopupOpen}
-              selectedPool={selectedPool}
-              farmingTicketsMap={farmingTicketsMap}
-              snapshotQueues={snapshotQueues}
-              allTokensData={allTokensData}
-              close={() => setIsClaimRewardsPopupOpen(false)}
-              refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
-              setPoolWaitingForUpdateAfterOperation={
-                setPoolWaitingForUpdateAfterOperation
-              }
-            />
-          )}
-
-          {/* {isDetailsModalOpen && <DetailsModal onClose={() => setDetailsModalOpen(false)} />} */}
         </TableContainer>
       </BlockContent>
       <Route path={`${path}/:symbol`}>
@@ -313,6 +241,12 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
           prices={dexTokensPricesMap}
           tradingVolumes={tradingVolumes}
           fees={getFeesEarnedByPool}
+          farmingTickets={farmingTicketsMap}
+          userTokensData={userTokensData}
+          earnedFees={earnedFeesInPoolForUserMap}
+          refreshUserTokensData={refreshUserTokensData}
+          refreshAll={refreshAll}
+          snapshotQueues={snapshotQueues}
         />
       </Route>
     </Block>

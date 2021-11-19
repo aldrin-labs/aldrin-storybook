@@ -1,18 +1,15 @@
-import { Paper } from '@material-ui/core'
-import styled from 'styled-components'
+import { SvgIcon } from '@sb/components'
+import styled, { keyframes } from 'styled-components'
 import { Block, BlockContent } from '../Block'
 import { Page } from '../Layout'
-import { SvgIcon } from '@sb/components'
-import { COLORS } from '../../../variables/variables'
 
-export const StyledPaper = styled(Paper)`
-  height: auto;
-  padding: 2rem;
-  max-width: 100%;
-  min-width: auto;
-  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
-  border-radius: 1.6rem;
+const kf = keyframes`
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 `
 
 export const ModalContainer = styled(Page)`
@@ -28,11 +25,16 @@ export const ModalContainer = styled(Page)`
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(30px);
+
+    animation: 0.1s ${kf} ease-out;
 `
 
 export const ModalBody = styled(Block)`
   height: auto;
   max-width: 80em;
+  max-height: 95vh;
+  overflow: auto;
+
 `
 
 export const ModalContent = styled(BlockContent)`

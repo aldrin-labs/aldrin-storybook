@@ -1,48 +1,37 @@
 import { stripByAmount, stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { SvgIcon } from '@sb/components'
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, Row } from '@sb/components/Layout'
 import { Modal } from "@sb/components/Modal"
-import { ShareButton } from '@sb/components/ShareButton'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
-import React from 'react'
-import { Link, useHistory, useParams } from 'react-router-dom'
-import { DexTokensPrices, FeesEarned, PoolInfo, TradingVolumeStats } from '../../../index.types'
-import SwapIcon from './icons/swapIcon.svg'
-import { PoolStats } from './PoolStats'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { RefreshFunction, TokenInfo as TokenInfoType } from '@sb/dexUtils/types'
+import React, { useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
+import { DexTokensPrices, FeesEarned, PoolInfo, PoolWithOperation, TradingVolumeStats } from '../../../index.types'
+import { AddLiquidityPopup } from '../AddLiquidity'
+import { ClaimRewards } from '../ClaimRewards/ClaimRewards'
+import { StakePopup } from '../Staking/StakePopup'
+import { UnstakePopup } from '../Unstaking/UnstakePopup'
+import { WithdrawalPopup } from '../WithdrawLiquidity'
+import { PoolStatsBlock, trimTo } from './PoolStats'
 import {
-  ButtonsContainer,
-  FarmingBlock,
-  FarmingButton,
-  FarmingButtonsContainer, LiquidityBlock,
-  LiquidityButton, LiquidityItem,
-  LiquidityText, LiquidityTitle, LiquidityWrap, ModalBlock,
-  PoolInfoBlock,
-  PoolRow, PoolStatsBlock,
-  PoolStatsData,
-  PoolStatsRow,
-  PoolStatsText, PoolStatsTitle, SwapButton,
-  SwapButtonIcon, TokenGlobalInfo,
-  TokenIcons, TokenInfo,
+  LiquidityWrap,
+  ModalBlock,
+  PoolRow,
+  TokenGlobalInfo,
+  TokenInfo,
   TokenInfoName, TokenInfoRow,
   TokenInfoText,
   TokenInfoTextWrap,
-  TokenNames, TokenPrice,
-  TokenSymbols,
-  FarmingData,
-  FarmingDataIcons,
-  FarmingIconWrap
+  TokenPrice,
+  TokenInfos,
 } from './styles'
-import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
-import { getTokenNameByMintAddress } from '../../../../../dexUtils/markets'
-import { stripDigitPlaces, formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
-import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-import { useTokenInfos } from '../../../../../dexUtils/tokenRegistry'
+import { UserFarmingBlock } from './UserFarmingBlock'
+import { UserLiquidityBlock } from './UserLiquidityBlock'
 
 
 interface DetailsModalProps {
@@ -50,26 +39,48 @@ interface DetailsModalProps {
   prices: Map<string, DexTokensPrices>
   tradingVolumes: TradingVolumeStats[]
   fees: FeesEarned[]
+  userTokensData: TokenInfoType[]
+  farmingTickets: Map<string, FarmingTicket[]>
+  earnedFees: Map<string, FeesEarned>
+  refreshUserTokensData: RefreshFunction
+  refreshAll: RefreshFunction
+  snapshotQueues: SnapshotQueue[]
 }
 
-const trimTo = (str: string, maxLength = 13) => {
-  const trimmedSuffix = '...'
-  const trLength = trimmedSuffix.length
 
-  if (str.length > maxLength + trLength) {
-    return `${str.substr(0, maxLength)}${trimmedSuffix}`
-  }
 
-  return str
-}
+const nop = () => { }
+
+type ModalType = '' | 'deposit' | 'withdraw' | 'stake' | 'claim' | 'remindToStake' | 'unstake'
 
 export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
 
-  const { pools, prices, tradingVolumes, fees } = props
+  const {
+    pools,
+    prices,
+    tradingVolumes,
+    fees,
+    userTokensData,
+    farmingTickets,
+    earnedFees,
+    snapshotQueues,
+    refreshUserTokensData,
+    refreshAll,
+  } = props
+
   const history = useHistory()
   const { symbol } = useParams()
 
   const tokenMap = useTokenInfos()
+
+  const [openedPopup, setOpenedPopup] = useState<ModalType>('')
+
+  const [poolUpdateOperation, setPoolUpdateOperation] = useState<PoolWithOperation>({ pool: '', operation: '' })
+
+  const liquidityProcessing = poolUpdateOperation.operation === 'deposit' || poolUpdateOperation.operation === 'withdraw'
+  const farmingProcessing = poolUpdateOperation.operation === 'claim' || poolUpdateOperation.operation === 'stake' || poolUpdateOperation.operation === 'unstake'
+
+  const closePopup = () => setOpenedPopup('')
 
   const [base, quote] = (symbol as string).split('_')
 
@@ -81,323 +92,209 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
     return null
   }
 
+  const baseDoubleTrimmed = trimTo(tokenMap.get(pool.tokenA)?.name || '', 7)
+  const quoteDoubleTrimmed = trimTo(tokenMap.get(pool.tokenB)?.name || '', 7)
 
-
-  const baseTokenInfo = tokenMap.get(pool.tokenA)
-  const quoteTokenInfo = tokenMap.get(pool.tokenB)
-
-  const baseTokenName = trimTo(baseTokenInfo?.name || '')
-  const quoteTokenName = trimTo(quoteTokenInfo?.name || '')
-
-
-  const tradingVolume = tradingVolumes.find((tv) => tv.pool === pool.swapToken) || {
-    dailyTradingVolume: 0,
-    weeklyTradingVolume: 0,
-  }
-
-  const feesForPool = fees.find((f) => f.pool === pool.swapToken) || {
-    totalBaseTokenFee: 0,
-    totalQuoteTokenFee: 0,
-  }
 
   const basePrice = pool.tvl.tokenB / pool.tvl.tokenA
   const quotePrice = pool.tvl.tokenA / pool.tvl.tokenB
 
-  const baseUsdPrice = prices.get(base)
-  const quoteUsdPrice = prices.get(quote)
+  const baseUsdPrice = prices.get(base) || { price: 0 }
+  const quoteUsdPrice = prices.get(quote) || { price: 0 }
 
-
-  const feesUsd = feesForPool.totalBaseTokenFee * basePrice + feesForPool.totalQuoteTokenFee * quotePrice
-
-  const tvlUsd = pool.tvl.tokenA * (baseUsdPrice?.price || 0) + pool.tvl.tokenB * (quoteUsdPrice?.price || 0)
-
-  const lpTokenPrice = calculatePoolTokenPrice({
-    pool,
-    dexTokensPricesMap: prices
-  })
-
-  const lpUsdValue = lpTokenPrice * pool.lpTokenFreezeVaultBalance
-
-  const farmings = filterOpenFarmingStates(pool.farming || [])
-  const dailyUsdReward = farmings.reduce(
-    (acc, farmingState) => {
-      const dailyRewardPerThousand = getFarmingStateDailyFarmingValue({ farmingState, totalStakedLpTokensUSD: lpUsdValue })
-
-      const farmingTokenSymbol = getTokenNameByMintAddress(farmingState.farmingTokenMint)
-
-      const farmingTokenPrice = prices.get(farmingTokenSymbol)?.price || 0
-
-      const dailyUsdRewardPerThousand = dailyRewardPerThousand * farmingTokenPrice
-
-      return acc + dailyUsdRewardPerThousand
-    },
-    0
-  )
-
-  const farmingAPR = ((dailyUsdReward * 365) / lpUsdValue) * 100
-
-  const totalApr = farmingAPR + pool.apy24h
-
-  const aprFormatted = formatNumberToUSFormat(stripDigitPlaces(totalApr, 2))
-
-  const shareText = `I farm on ${base}/${quote} liquidity pool with ${aprFormatted}% APR on @aldrin_exchange
-Don't miss your chance.`
 
   return (
-    <Modal open onClose={goBack}>
+    <Modal open onClose={nop}>
       <ModalBlock border>
         <div>
           <Button variant="secondary" onClick={goBack} borderRadius="lg">⟵ Close</Button>
         </div>
-        <TokenInfo>
-          <TokenInfoRow>
-            <TokenIcon
-              mint={pool.tokenA}
-              width={'1.2em'}
-              height={'1.2em'}
-            />
-            <InlineText color="success">1</InlineText>
-            <InlineText>{base}&nbsp;=&nbsp;</InlineText>
-
-            <TokenIcon
-              mint={pool.tokenB}
-              width={'1.2em'}
-              height={'1.2em'}
-            />
-            <InlineText color="success">{stripByAmountAndFormat(basePrice, 4)}</InlineText>
-            <InlineText>{quote}</InlineText>
-
-          </TokenInfoRow>
-        </TokenInfo>
-        <TokenInfo>
-          <TokenInfoRow>
-            <TokenIcon
-              mint={pool.tokenB}
-              width={'1.2em'}
-              height={'1.2em'}
-            />
-            <InlineText color="success">1</InlineText>
-            <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
-
-            <TokenIcon
-              mint={pool.tokenA}
-              width={'1.2em'}
-              height={'1.2em'}
-            />
-            <InlineText color="success">{stripByAmountAndFormat(quotePrice, 4)}</InlineText>
-            <InlineText>{base}</InlineText>
-          </TokenInfoRow>
-        </TokenInfo>
-        <TokenGlobalInfo>
-          <TokenInfoRow>
-            <TokenIcon
-              mint={pool.tokenA}
-              width={'1.2em'}
-              height={'1.2em'}
-            />
-            <TokenInfoTextWrap>
-              <TokenInfoText weight={700}>{base}<TokenInfoName>{baseTokenName}</TokenInfoName></TokenInfoText>
-              <TokenPrice>
-                {baseUsdPrice ? `$${stripByAmount(baseUsdPrice.price, 4)}` : '-'}
-              </TokenPrice>
-            </TokenInfoTextWrap>
-            <TokenExternalLinks
-              tokenName={base}
-              marketAddress={pool.tokenA}
-            />
-          </TokenInfoRow>
-        </TokenGlobalInfo>
-        <TokenGlobalInfo>
-          <TokenInfoRow>
-            <TokenIcon
-              mint={pool.tokenB}
-              width={'1.2em'}
-              height={'1.2em'}
-            />
-            <TokenInfoTextWrap>
-              <TokenInfoText weight={700}>{quote}<TokenInfoName>{quoteTokenName}</TokenInfoName></TokenInfoText>
-              <TokenPrice>
-                {quoteUsdPrice ? `$${stripByAmount(quoteUsdPrice.price, 4)}` : '-'}
-              </TokenPrice>
-            </TokenInfoTextWrap>
-            <TokenExternalLinks
-              tokenName={quote}
-              marketAddress={pool.tokenB}
-            />
-          </TokenInfoRow>
-        </TokenGlobalInfo>
+        <TokenInfos>
+          <TokenInfo>
+            <TokenInfoRow>
+              <TokenIcon
+                mint={pool.tokenA}
+                width={'1.2em'}
+                height={'1.2em'}
+              />
+              <InlineText color="success">1</InlineText>
+              <InlineText>{base}&nbsp;=&nbsp;</InlineText>
+              <TokenIcon
+                mint={pool.tokenB}
+                width={'1.2em'}
+                height={'1.2em'}
+              />
+              <InlineText color="success">{stripByAmountAndFormat(basePrice, 4)}</InlineText>
+              <InlineText>{quote}</InlineText>
+            </TokenInfoRow>
+          </TokenInfo>
+          <TokenInfo>
+            <TokenInfoRow>
+              <TokenIcon
+                mint={pool.tokenB}
+                width={'1.2em'}
+                height={'1.2em'}
+              />
+              <InlineText color="success">1</InlineText>
+              <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
+              <TokenIcon
+                mint={pool.tokenA}
+                width={'1.2em'}
+                height={'1.2em'}
+              />
+              <InlineText color="success">{stripByAmountAndFormat(quotePrice, 4)}</InlineText>
+              <InlineText>{base}</InlineText>
+            </TokenInfoRow>
+          </TokenInfo>
+          <TokenGlobalInfo>
+            <TokenInfoRow>
+              <TokenIcon
+                mint={pool.tokenA}
+                width={'1.2em'}
+                height={'1.2em'}
+              />
+              <TokenInfoTextWrap>
+                <TokenInfoText weight={700}>{base}<TokenInfoName>{baseDoubleTrimmed}</TokenInfoName></TokenInfoText>
+                <TokenPrice>
+                  {baseUsdPrice ? `$${stripByAmount(baseUsdPrice.price, 4)}` : '-'}
+                </TokenPrice>
+              </TokenInfoTextWrap>
+              <TokenExternalLinks
+                tokenName={base}
+                marketAddress={pool.tokenA}
+              />
+            </TokenInfoRow>
+          </TokenGlobalInfo>
+          <TokenGlobalInfo>
+            <TokenInfoRow>
+              <TokenIcon
+                mint={pool.tokenB}
+                width={'1.2em'}
+                height={'1.2em'}
+              />
+              <TokenInfoTextWrap>
+                <TokenInfoText weight={700}>{quote}<TokenInfoName>{quoteDoubleTrimmed}</TokenInfoName></TokenInfoText>
+                <TokenPrice>
+                  {quoteUsdPrice ? `$${stripByAmount(quoteUsdPrice.price, 4)}` : '-'}
+                </TokenPrice>
+              </TokenInfoTextWrap>
+              <TokenExternalLinks
+                tokenName={quote}
+                marketAddress={pool.tokenB}
+              />
+            </TokenInfoRow>
+          </TokenGlobalInfo>
+        </TokenInfos>
       </ModalBlock>
       <ModalBlock border>
-        <PoolRow>
-          {/* Pool name */}
-          <PoolInfoBlock>
-            <Row>
-              <TokenIcons>
-                <TokenIcon
-                  mint={pool.tokenA}
-                  width={'3em'}
-                  emojiIfNoLogo={false}
-                  margin="0 0.5em 0 0"
-                /> /
-              <TokenIcon
-                  mint={pool.tokenB}
-                  width={'3em'}
-                  emojiIfNoLogo={false}
-                  margin="0 0 0 0.5em"
-                />
-              </TokenIcons>
-              <div>
-                <TokenSymbols>{base}/{quote}</TokenSymbols>
-                {!!baseTokenName && !!quoteTokenName &&
-                  <TokenNames>{baseTokenName}/{quoteTokenName}</TokenNames>
-                }
 
-              </div>
-            </Row>
-            <ButtonsContainer>
-              <SwapButton borderRadius="xl" as={Link} to={`/swap?base=${base}&quote=${quote}`}>
-                <SwapButtonIcon>
-                  <SvgIcon src={SwapIcon}></SvgIcon>
-                </SwapButtonIcon>
-              Swap
-            </SwapButton>
-              <ShareButton iconFirst variant="primary" text={shareText} />
-            </ButtonsContainer>
-          </PoolInfoBlock>
-          {/* Pool stats */}
-          <PoolStatsRow>
-            <PoolStats title={<>Volume <span>24h</span></>} value={tradingVolume.dailyTradingVolume} />
-            <PoolStats title="Total Value Locked" value={tvlUsd} />
-            <PoolStats title={<>Fees <span>24h</span></>} value={feesUsd} />
-            <PoolStatsBlock>
-              <PoolStatsTitle>APR</PoolStatsTitle>
-              <PoolStatsData>
-                <PoolStatsText color="success">
-                  {aprFormatted}%
-                </PoolStatsText>
-              </PoolStatsData>
-            </PoolStatsBlock>
-            <PoolStatsBlock>
-              <PoolStatsTitle>Farming</PoolStatsTitle>
-              <PoolStatsData>
-                <FarmingData>
-                  <FarmingDataIcons>
-                    {farmings.map((farmingState) => {
-                      return (
-                        <FarmingIconWrap
-                          key={`farming_icon_${farmingState.farmingTokenMint}`}
-                        >
-                          <TokenIcon
-                            mint={farmingState.farmingTokenMint}
-                            width={'1.3em'}
-                            emojiIfNoLogo={false}
-                          />
-                        </FarmingIconWrap>
-                      )
-                    })}
-                  </FarmingDataIcons>
-                  <div>
-                    <PoolStatsText>
-                      {farmings.map((farmingState, i, arr) => {
-                        const tokensPerThousand = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
-                          farmingState, totalStakedLpTokensUSD: lpUsdValue
-                        })
-                        return (
-                          <PoolStatsText key={`fs_reward_${farmingState.farmingTokenMint}`}>
-                            {i > 0 ? ' + ' : ''}
-                            <PoolStatsText color="success">
-                              {stripByAmountAndFormat(tokensPerThousand)}&nbsp;
-                            </PoolStatsText>
-                            {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
-                          </PoolStatsText>
-                        )
-                      })} / Day
-                    </PoolStatsText>
-                    <div>
-                      <PoolStatsText>
-                        Per each  <PoolStatsText color="success">$1000</PoolStatsText>
-                      </PoolStatsText>
-                    </div>
-                  </div>
-                </FarmingData>
-
-              </PoolStatsData>
-            </PoolStatsBlock>
-          </PoolStatsRow>
-        </PoolRow>
+        <PoolStatsBlock
+          pool={pool}
+          tradingVolumes={tradingVolumes}
+          fees={fees}
+          baseUsdPrice={baseUsdPrice.price}
+          quoteUsdPrice={quoteUsdPrice.price}
+          prices={prices}
+        />
       </ModalBlock>
       <ModalBlock>
         <LiquidityWrap>
           <ConnectWalletWrapper size="sm">
             <Row>
-              <Cell col={6}>
-                <LiquidityBlock>
-                  <LiquidityItem>
-                    <LiquidityTitle>Your Liquidity:</LiquidityTitle>
-                    <div>
-                      <LiquidityText weight={600}>
-                        <LiquidityText color="success">12345.23</LiquidityText> RIN
-                        <LiquidityText color="success"> / 15.8234</LiquidityText> SOL
-                      </LiquidityText>
-                    </div>
-                    <div>
-                      <LiquidityText color="success">$1000,000.00</LiquidityText>
-                    </div>
-                    <LiquidityButton variant="rainbow">Deposit Liquidity</LiquidityButton>
-                  </LiquidityItem>
-                  <LiquidityItem>
-                    <LiquidityTitle>Fees Earned:</LiquidityTitle>
-                    <div>
-                      <LiquidityText weight={600}>
-                        <LiquidityText color="success">12345.23</LiquidityText> RIN
-                        <LiquidityText color="success"> / 15.8234</LiquidityText> SOL
-                      </LiquidityText>
-                    </div>
-                    <div>
-                      <LiquidityText color="success">$1000,000.00</LiquidityText>
-                    </div>
-                    <LiquidityButton>Withdraw Liquidity + Fees</LiquidityButton>
-                  </LiquidityItem>
-                </LiquidityBlock>
+              <Cell col={12} colLg={6}>
+                <UserLiquidityBlock
+                  pool={pool}
+                  userTokensData={userTokensData}
+                  farmingTickets={farmingTickets}
+                  basePrice={baseUsdPrice.price}
+                  quotePrice={quoteUsdPrice.price}
+                  earnedFees={earnedFees}
+                  onDepositClick={() => setOpenedPopup('deposit')}
+                  onWithdrawClick={() => setOpenedPopup('withdraw')}
+                  processing={liquidityProcessing}
+                />
               </Cell>
-              <Cell col={6}>
-                <FarmingBlock>
-                  <LiquidityItem>
-                    <LiquidityTitle>Stake LP Tokens</LiquidityTitle>
-                    <div>
-                      <LiquidityText weight={600}>
-                        <LiquidityText color="success">12345.23</LiquidityText> RIN
-                        <LiquidityText color="success"> / 15.8234</LiquidityText> SOL
-                      </LiquidityText>
-                    </div>
-                    <div>
-                      <LiquidityText color="success">$1000,000.00</LiquidityText>
-                    </div>
-                    <FarmingButtonsContainer>
-                      <FarmingButton>Stake LP Tokens</FarmingButton>
-                      <FarmingButton variant="error">Unstake LP Tokens</FarmingButton>
-                    </FarmingButtonsContainer>
-                  </LiquidityItem>
-                  <LiquidityItem>
-                    <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
-                    <div>
-                      <LiquidityText weight={600}>
-                        <LiquidityText color="success">12345.23</LiquidityText> RIN
-                        <LiquidityText color="success"> / 15.8234</LiquidityText> SOL
-                      </LiquidityText>
-                    </div>
-                    <div>
-                      <LiquidityText color="success">$1000,000.00</LiquidityText>
-                    </div>
-                    <FarmingButton variant="rainbow">Claim</FarmingButton>
-                  </LiquidityItem>
-                </FarmingBlock>
+              <Cell col={12} colLg={6}>
+                <UserFarmingBlock
+                  pool={pool}
+                  farmingTickets={farmingTickets}
+                  userTokensData={userTokensData}
+                  prices={prices}
+                  onStakeClick={() => setOpenedPopup('stake')}
+                  onClaimClick={() => setOpenedPopup('claim')}
+                  onUnstakeClick={() => setOpenedPopup('unstake')}
+                  processing={farmingProcessing}
+                />
               </Cell>
             </Row>
           </ConnectWalletWrapper>
         </LiquidityWrap>
-
       </ModalBlock>
-    </Modal >
+
+      {openedPopup === 'deposit' &&
+        <AddLiquidityPopup
+          dexTokensPricesMap={prices}
+          allTokensData={userTokensData}
+          close={closePopup}
+          refreshAllTokensData={refreshUserTokensData}
+          setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
+          setIsRemindToStakePopupOpen={() => {
+            setOpenedPopup('remindToStake')
+          }}
+          selectedPool={pool}
+        />
+      }
+
+      {openedPopup === 'withdraw' &&
+        <WithdrawalPopup
+          selectedPool={pool}
+          dexTokensPricesMap={prices}
+          farmingTicketsMap={farmingTickets}
+          earnedFeesInPoolForUserMap={earnedFees}
+          allTokensData={userTokensData}
+          close={closePopup}
+          setIsUnstakePopupOpen={() => setOpenedPopup('unstake')}
+          refreshAllTokensData={refreshUserTokensData}
+          setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
+        />
+      }
+
+      {(openedPopup === 'stake' || openedPopup === 'remindToStake') &&
+        <StakePopup
+          selectedPool={pool}
+          dexTokensPricesMap={prices}
+          farmingTicketsMap={farmingTickets}
+          refreshTokensWithFarmingTickets={refreshAll}
+          setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
+          isReminderPopup={openedPopup === 'remindToStake'}
+          allTokensData={userTokensData}
+          close={closePopup}
+        />
+      }
+
+      {openedPopup === 'unstake' && (
+        <UnstakePopup
+          selectedPool={pool}
+          close={closePopup}
+          allTokensData={userTokensData}
+          refreshTokensWithFarmingTickets={refreshAll}
+          setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
+        />
+      )}
+
+      {openedPopup === 'claim' && (
+        <ClaimRewards
+          selectedPool={pool}
+          farmingTicketsMap={farmingTickets}
+          snapshotQueues={snapshotQueues}
+          allTokensData={userTokensData}
+          close={closePopup}
+          refreshTokensWithFarmingTickets={refreshAll}
+          setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
+        />
+      )}
+
+
+    </Modal>
   )
 }

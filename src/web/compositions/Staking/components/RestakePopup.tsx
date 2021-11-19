@@ -41,7 +41,7 @@ export const RestakePopup = ({
         </FormItem>{' '}
         <RestakeButton
           onClick={() => { }}
-          backgroundImage={StakeBtn}
+          $backgroundImage={StakeBtn}
           fontSize="xs"
           padding="lg"
           borderRadius="xxl"

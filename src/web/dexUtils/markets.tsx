@@ -850,7 +850,7 @@ const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
   const { connected, wallet } = useWallet()
 
   async function getAssociatedTokenAddress() {
-    if (!connected) {
+    if (!connected || !mint) {
       return null
     }
 
@@ -858,7 +858,7 @@ const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
       return null
     }
 
-    return await Token.getAssociatedTokenAddress(
+    return Token.getAssociatedTokenAddress(
       ASSOCIATED_TOKEN_PROGRAM_ID,
       TOKEN_PROGRAM_ID,
       mint,

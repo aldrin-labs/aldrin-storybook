@@ -46,6 +46,7 @@ import {
   RewardsStatsRow,
   RewardsTitle,
   WalletAvailableTitle,
+  UserFormRestakeButton,
 } from '../styles'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 
@@ -339,9 +340,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         </Button>
                       </span>
                     </DarkTooltip>
-                    <Button fontSize="xs" padding="lg" variant="link" disabled>
+                    <UserFormRestakeButton fontSize="xs" padding="lg" variant="link" disabled>
                       Restake
-                    </Button>
+                    </UserFormRestakeButton>
                   </ClaimButtonContainer>
                 </RewardsStats>
               </BlockContent>

@@ -270,3 +270,7 @@ export const ClaimButtonContainer = styled(RewardsStatsRow)`
     margin-top: 0;
   }
 `
+
+export const UserFormRestakeButton = styled(Button)`
+  padding: 0 10px;
+`

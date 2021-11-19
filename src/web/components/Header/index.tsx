@@ -53,7 +53,7 @@ export const Header = () => {
           </LogoLink>
 
           <StakeButton
-            backgroundImage={StakeBtn}
+            $backgroundImage={StakeBtn}
             as={Link}
             to="/staking"
             fontSize="xs"

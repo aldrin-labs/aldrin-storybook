@@ -98,43 +98,29 @@ export const userLiquidityTableColumnsNames = [
   { label: '', id: 'details' },
 ]
 
-export const combineUserLiquidityData = ({
-  theme,
-  searchValue,
-  usersPools,
-  poolWaitingForUpdateAfterOperation,
-  allTokensData,
-  dexTokensPricesMap,
-  farmingTicketsMap,
-  earnedFeesInPoolForUserMap,
-  selectPool,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-  setIsWithdrawalPopupOpen,
-  setIsAddLiquidityPopupOpen,
-  setIsStakePopupOpen,
-  setIsUnstakePopupOpen,
-  setIsClaimRewardsPopupOpen,
-  includePermissionless,
-}: {
+interface CombineUserLiquidityParams {
   theme: Theme
   searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: PoolInfo[]
-  poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
-  selectPool: (pool: PoolInfo) => void
-  refreshTokensWithFarmingTickets: () => void
-  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  setIsWithdrawalPopupOpen: (value: boolean) => void
-  setIsAddLiquidityPopupOpen: (value: boolean) => void
-  setIsStakePopupOpen: (value: boolean) => void
-  setIsUnstakePopupOpen: (value: boolean) => void
-  setIsClaimRewardsPopupOpen: (value: boolean) => void
   includePermissionless: boolean
-}) => {
+}
+
+export const combineUserLiquidityData = (params: CombineUserLiquidityParams) => {
+  const {
+    theme,
+    searchValue,
+    usersPools,
+    allTokensData,
+    dexTokensPricesMap,
+    farmingTicketsMap,
+    earnedFeesInPoolForUserMap,
+    includePermissionless,
+  } = params
+  
   const processedUserLiquidityData = usersPools
     .filter((pool) =>
       filterDataBySymbolForDifferentDeviders({
