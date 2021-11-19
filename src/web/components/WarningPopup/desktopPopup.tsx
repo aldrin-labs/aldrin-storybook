@@ -65,12 +65,13 @@ export const DesktopBanner = ({
           justify="flex-start"
           align="flex-start"
           height="100%"
+          wrap={'nowrap'}
         >
           {notification.map((el) => (
             <Text
               style={{
                 lineHeight: '3rem',
-                marginBottom: '3rem',
+                marginBottom: '2rem',
                 fontSize: '1.8rem',
               }}
               theme={theme}

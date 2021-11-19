@@ -180,6 +180,7 @@ const AppRaw = ({
                           notification={[
                             'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
                             'In the meantime, you can import your Seed Phrase into Aldrin Wallet or any other wallet and interact with DEX using it.',
+                            'UPD: The Phantom team has reported that they have already sent the corrected version to the Chrome shop for moderation and everything will be fine again as soon as the version passes moderation.',
                           ]}
                           needMobile={false}
                         />
