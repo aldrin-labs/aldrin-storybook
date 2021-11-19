@@ -34,7 +34,7 @@ Chart.register(
   Filler
 )
 
-const POOLS_EPOCH = 1635292800 // 27 Oct 2021
+const POOLS_EPOCH = 1635465600 // 29 Oct 2021
 export const NUMBER_OF_DAYS_TO_SHOW = Math.ceil(((Date.now() / 1000) - POOLS_EPOCH) / DAY) // Show full history from pools start
 const CHART_HEIGHT = 220
 
