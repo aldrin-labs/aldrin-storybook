@@ -3,8 +3,6 @@ import {
   formatNumberToUSFormat,
   stripDigitPlaces
 } from '@core/utils/PortfolioTableUtils'
-import ArrowToTop from '@icons/arrowToTop.svg'
-import ArrowToBottom from '@icons/greyArrow.svg'
 import Info from '@icons/TooltipImg.svg'
 import { SvgIcon } from '@sb/components'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -13,8 +11,7 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import {
   DexTokensPrices,
-  FeesEarned, PoolInfo,
-  PoolWithOperation
+  FeesEarned, PoolInfo
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
@@ -27,12 +24,10 @@ import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingSta
 import { Theme } from '@sb/types/materialUI'
 import React from 'react'
 import { TokenIconsContainer } from '../components'
-import { TablesDetails } from '../components/TablesDetails'
 import {
-  RowDataTdText,
+  DetailsLink, RowDataTdText,
   RowDataTdTopText,
-  TextColumnContainer,
-  DetailsLink
+  TextColumnContainer
 } from '../index.styles'
 import { getFarmingStateDailyFarmingValue } from './utils/getFarmingStateDailyFarmingValue'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from './utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'

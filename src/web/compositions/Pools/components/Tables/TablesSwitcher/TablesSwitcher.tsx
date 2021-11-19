@@ -36,7 +36,7 @@ import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
 import { DetailsModal } from '../../Popups/DetailsModal'
 import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
-import PlusIcon from './plus.svg'
+import PlusIcon from './icons/plus.svg'
 import {
   AddPoolButton, InputWrap,
   SearchInput,
@@ -66,7 +66,6 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     getWeeklyAndDailyTradingVolumesForPoolsQuery
   } = props
 
-  const [selectedPool, selectPool] = useState<PoolInfo | null>(null)
   const [searchValue, setSearchValue] = useState('')
   const [selectedTable, setSelectedTable] = useState<'all' | 'userLiquidity'>(
     'all'
@@ -82,25 +81,8 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     setSearchValue(value)
   }
 
-  const [isAddLiquidityPopupOpen, setIsAddLiquidityPopupOpen] = useState(false)
-  const [isWithdrawalPopupOpen, setIsWithdrawalPopupOpen] = useState(false)
-  const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
-  const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
-    false
-  )
-
-  const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
   const [includePermissionless, setIncludePermissionless] = useState(true)
 
-  // after operation with pool we update data after some time
-  // and for better ux we need to show loader for button which was use for this operation
-  const [
-    poolWaitingForUpdateAfterOperation,
-    setPoolWaitingForUpdateAfterOperation,
-  ] = useState<PoolWithOperation>({
-    operation: '',
-    pool: '',
-  })
 
   const { wallet } = useWallet()
   const connection = useConnection()
