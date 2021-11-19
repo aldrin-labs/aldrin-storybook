@@ -33,7 +33,7 @@ import { Route } from 'react-router'
 import { useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
 import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
-import { DetailsModal } from '../../Popups/DetailsModal'
+import { PoolPage } from '../../PoolPage'
 import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
 import PlusIcon from './icons/plus.svg'
@@ -215,7 +215,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
         </TableContainer>
       </BlockContent>
       <Route path={`${path}/:symbol`}>
-        <DetailsModal
+        <PoolPage
           pools={pools}
           prices={dexTokensPricesMap}
           tradingVolumes={tradingVolumes}

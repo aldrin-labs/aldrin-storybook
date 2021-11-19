@@ -11,30 +11,31 @@ import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { RefreshFunction, TokenInfo as TokenInfoType } from '@sb/dexUtils/types'
 import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { DexTokensPrices, FeesEarned, PoolInfo, PoolWithOperation, TradingVolumeStats } from '../../../index.types'
-import { AddLiquidityPopup } from '../AddLiquidity'
-import { ClaimRewards } from '../ClaimRewards/ClaimRewards'
-import { StakePopup } from '../Staking/StakePopup'
-import { UnstakePopup } from '../Unstaking/UnstakePopup'
-import { WithdrawalPopup } from '../WithdrawLiquidity'
+import { DexTokensPrices, FeesEarned, PoolInfo, PoolWithOperation, TradingVolumeStats } from '../../index.types'
+import { AddLiquidityPopup } from '../Popups/AddLiquidity'
+import { ClaimRewards } from '../Popups/ClaimRewards/ClaimRewards'
+import { StakePopup } from '../Popups/Staking/StakePopup'
+import { UnstakePopup } from '../Popups/Unstaking/UnstakePopup'
+import { WithdrawalPopup } from '../Popups/WithdrawLiquidity'
 import { PoolStatsBlock, trimTo } from './PoolStats'
+
+
 import {
   LiquidityWrap,
   ModalBlock,
-  PoolRow,
   TokenGlobalInfo,
   TokenInfo,
   TokenInfoName, TokenInfoRow,
-  TokenInfoText,
+  TokenInfos, TokenInfoText,
   TokenInfoTextWrap,
-  TokenPrice,
-  TokenInfos,
+  TokenPrice
 } from './styles'
 import { UserFarmingBlock } from './UserFarmingBlock'
 import { UserLiquidityBlock } from './UserLiquidityBlock'
+import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
 
 
-interface DetailsModalProps {
+interface PoolPageProps {
   pools?: PoolInfo[]
   prices: Map<string, DexTokensPrices>
   tradingVolumes: TradingVolumeStats[]
@@ -53,7 +54,7 @@ const nop = () => { }
 
 type ModalType = '' | 'deposit' | 'withdraw' | 'stake' | 'claim' | 'remindToStake' | 'unstake'
 
-export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
+export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const {
     pools,
@@ -82,7 +83,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
 
   const closePopup = () => setOpenedPopup('')
 
-  const [base, quote] = (symbol as string).split('_')
+
 
   const goBack = () => history.push('/pools')
 
@@ -92,15 +93,26 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
     return null
   }
 
-  const baseDoubleTrimmed = trimTo(tokenMap.get(pool.tokenA)?.name || '', 7)
-  const quoteDoubleTrimmed = trimTo(tokenMap.get(pool.tokenB)?.name || '', 7)
+  const baseInfo = tokenMap.get(pool.tokenA)
+  const quoteInfo = tokenMap.get(pool.tokenB)
+
+  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
+  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
+
+
+  const baseTokenName = trimTo(baseInfo?.symbol || '')
+  const quoteTokenName = trimTo(quoteInfo?.name || '')
+
+
+  const baseDoubleTrimmed = trimTo(baseInfo?.name || '', 7)
+  const quoteDoubleTrimmed = trimTo(quoteInfo?.name || '', 7)
 
 
   const basePrice = pool.tvl.tokenB / pool.tvl.tokenA
   const quotePrice = pool.tvl.tokenA / pool.tvl.tokenB
 
-  const baseUsdPrice = prices.get(base) || { price: 0 }
-  const quoteUsdPrice = prices.get(quote) || { price: 0 }
+  const baseUsdPrice = prices.get(baseTokenName) || { price: 0 }
+  const quoteUsdPrice = prices.get(quoteTokenName) || { price: 0 }
 
 
   return (
@@ -160,7 +172,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
                 </TokenPrice>
               </TokenInfoTextWrap>
               <TokenExternalLinks
-                tokenName={base}
+                tokenName={baseTokenName}
                 marketAddress={pool.tokenA}
               />
             </TokenInfoRow>
@@ -179,7 +191,7 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
                 </TokenPrice>
               </TokenInfoTextWrap>
               <TokenExternalLinks
-                tokenName={quote}
+                tokenName={quoteTokenName}
                 marketAddress={pool.tokenB}
               />
             </TokenInfoRow>
@@ -187,7 +199,6 @@ export const DetailsModal: React.FC<DetailsModalProps> = (props) => {
         </TokenInfos>
       </ModalBlock>
       <ModalBlock border>
-
         <PoolStatsBlock
           pool={pool}
           tradingVolumes={tradingVolumes}

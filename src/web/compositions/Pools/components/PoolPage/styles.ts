@@ -14,8 +14,8 @@ export const ModalBlock = styled(BlockContent)`
 
   @media(min-width: ${BREAKPOINTS.lg}) {
     flex-direction: row;
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: 30px;
+    padding-right: 30px;
   }
 
   @media(min-width: ${BREAKPOINTS.xxl}) {

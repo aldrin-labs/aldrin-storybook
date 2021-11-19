@@ -27,7 +27,7 @@ import {
   RowDataTdTopText,
   TextColumnContainer
 } from '../index.styles'
-import { PERMISIONLESS_POOLS_MINTS } from '../UserLiquidity/UserLiquidity.utils'
+import { AUTHORIZED_POOLS } from '../UserLiquidity/UserLiquidity.utils'
 import { getFarmingStateDailyFarmingValue } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 
@@ -142,7 +142,7 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
         )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
-    .filter((pool) => includePermissionless ? true : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint))
+    .filter((pool) => includePermissionless ? true : AUTHORIZED_POOLS.includes(pool.poolTokenMint))
     .map((pool) => {
       const poolName = `${getTokenNameByMintAddress(
         pool.tokenA

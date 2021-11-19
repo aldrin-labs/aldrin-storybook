@@ -1,12 +1,12 @@
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { TokenInfo } from '@sb/dexUtils/types'
 import React from 'react'
-import { PoolInfo, FeesEarned } from '../../../index.types'
-import { getTokenDataByMint } from '../../../utils'
+import { PoolInfo, FeesEarned } from '../../index.types'
+import { getTokenDataByMint } from '../../utils'
 import { LiquidityBlock, LiquidityButton, LiquidityItem, LiquidityText, LiquidityTitle } from './styles'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { stripByAmountAndFormat } from '@core//utils/chartPageUtils'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 interface UserLiquidityBlockProps {

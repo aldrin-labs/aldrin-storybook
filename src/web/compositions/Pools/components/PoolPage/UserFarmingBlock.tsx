@@ -1,26 +1,24 @@
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { SvgIcon } from '@sb/components'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/dexUtils/types'
 import React from 'react'
-import { DexTokensPrices, PoolInfo } from '../../../index.types'
-import { getTokenDataByMint } from '../../../utils'
-import { getUniqueAmountsToClaimMap } from '../../Tables/utils/getUniqueAmountsToClaimMap'
+import { DexTokensPrices, PoolInfo } from '../../index.types'
+import { getTokenDataByMint } from '../../utils'
+import { getUniqueAmountsToClaimMap } from '../Tables/utils/getUniqueAmountsToClaimMap'
+import ClockIcon from './icons/whiteClock.svg'
 import {
   FarmingBlock,
   FarmingButton,
   FarmingButtonsContainer,
-  LiquidityItem,
+  FarmingButtonWrap, LiquidityItem,
   LiquidityText,
   LiquidityTitle,
-  NoFarmingBlock,
-  FarmingButtonWrap
+  NoFarmingBlock
 } from './styles'
-import ClockIcon from './icons/whiteClock.svg'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { SvgIcon } from '@sb/components'
-import { Text } from '@sb/components/Typography'
 import { ClaimTimeTooltip } from './Tooltips'
 
 interface UserFarmingBlockProps {

@@ -1,40 +1,33 @@
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { formatNumberToUSFormat, stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { SvgIcon } from '@sb/components'
+import { ShareButton } from '@sb/components/ShareButton'
+import { TokenIcon } from '@sb/components/TokenIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import React from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { FeesEarned, PoolInfo, TradingVolumeStats, DexTokensPrices } from '../../../index.types'
-import {
-  PoolStatsData,
-  PoolStatsText,
-  PoolStatsTitle,
-  PoolStatsWrap,
-  PoolInfoBlock,
-  TokenIcons,
-  TokenSymbols,
-  TokenNames,
-  ButtonsContainer,
-  SwapButton,
-  SwapButtonIcon,
-  PoolStatsRow,
-  FarmingData,
-  FarmingDataIcons,
-  FarmingIconWrap,
-  PoolRow,
-  PoolName,
-} from './styles'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { Row } from '@sb/components/Layout'
-import { TokenIcon } from '@sb/components/TokenIcon'
-import { SvgIcon } from '@sb/components'
-
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import React from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { DexTokensPrices, FeesEarned, PoolInfo, TradingVolumeStats } from '../../index.types'
+import { getFarmingStateDailyFarmingValue } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 import SwapIcon from './icons/swapicon.svg'
-import { ShareButton } from '@sb/components/ShareButton'
-import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
+import {
+  ButtonsContainer,
+  FarmingData,
+  FarmingDataIcons,
+  FarmingIconWrap, PoolInfoBlock,
+  PoolName, PoolRow, PoolStatsData,
+  PoolStatsRow, PoolStatsText,
+  PoolStatsTitle,
+  PoolStatsWrap,
+  SwapButton,
+  SwapButtonIcon, TokenIcons,
+  TokenNames, TokenSymbols
+} from './styles'
+
 
 interface PoolStatsProps {
   title: React.ReactNode
@@ -83,7 +76,6 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
   const { tradingVolumes, pool, fees, baseUsdPrice, quoteUsdPrice, prices } = props
 
   const tokenMap = useTokenInfos()
-  const { symbol } = useParams()
 
   const tradingVolume = tradingVolumes.find((tv) => tv.pool === pool.swapToken) || {
     dailyTradingVolume: 0,
@@ -96,8 +88,14 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
     totalQuoteTokenFee: 0,
   }
 
-  const [base, quote] = (symbol as string).split('_')
+  const baseInfo = tokenMap.get(pool.tokenA)
+  const quoteInfo = tokenMap.get(pool.tokenB)
+  // const [base, quote] = (symbol as string).split('_')
 
+  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
+  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
+
+  // console.log('basequote: ', base, quote)
 
   const feesUsd = feesForPool.totalBaseTokenFee * baseUsdPrice + feesForPool.totalQuoteTokenFee * quoteUsdPrice
 
