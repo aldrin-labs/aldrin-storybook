@@ -34,15 +34,15 @@ export const getParsedSnapshotQueues = async ({
         return {
           time: el.time.toNumber(),
           isInitialized: el.isInitialized,
-          tokensFrozen: el?.tokensFrozen?.toNumber(),
-          tokensTotal: el?.farmingTokens?.toNumber(),
+          tokensFrozen: parseFloat(el?.tokensFrozen?.toSring()),
+          tokensTotal: parseFloat(el?.farmingTokens?.toString()),
         }
       })
       .filter((snapshot: Snapshot) => snapshot.isInitialized)
 
     return {
       publicKey: snapshot.pubkey.toString(),
-      nextIndex: snapshotQueueData.nextIndex.toNumber(),
+      nextIndex: parseFloat(snapshotQueueData.nextIndex.toNumber()),
       snapshots: parsedSnapshots,
     }
   })
