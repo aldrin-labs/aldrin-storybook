@@ -35,7 +35,7 @@ export const getParsedSnapshotQueues = async ({
         return {
           time: el.time.toNumber(),
           isInitialized: el.isInitialized,
-          tokensFrozen: parseFloat(el?.tokensFrozen?.toSring()),
+          tokensFrozen: parseFloat(el?.tokensFrozen?.toString()),
           tokensTotal: parseFloat(el?.farmingTokens?.toString()),
         }
       })
