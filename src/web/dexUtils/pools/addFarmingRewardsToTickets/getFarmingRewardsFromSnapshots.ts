@@ -91,7 +91,7 @@ export const getFarmingRewardsFromSnapshots = ({
       }
 
       const unlockedUserSnapshotRewardWithoutDecimals =
-        unlockedUserSnapshotReward.toNumber() / 10 ** farmingTokenMintDecimals
+        parseFloat(unlockedUserSnapshotReward.toString()) / 10 ** farmingTokenMintDecimals
 
       return {
         prevSnapshot: snapshot,

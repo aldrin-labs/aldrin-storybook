@@ -44,7 +44,7 @@ export const getParsedUserFarmingTickets = async ({
       .filter((el) => el.lastWithdrawTime > 0)
 
     return {
-      tokensFrozen: ticketData.tokensFrozen.toNumber(),
+      tokensFrozen: parseFloat(ticketData.tokensFrozen.toString()),
       endTime: ticketData.endTime.toString(),
       startTime: ticketData.startTime.toString(),
       pool: ticketData.pool.toString(),
