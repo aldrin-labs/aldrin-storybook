@@ -35,8 +35,8 @@ export const getParsedStakingSnapshots = async ({
         return {
           time: el.time.toNumber(),
           isInitialized: el.isInitialized,
-          tokensFrozen: el?.tokensFrozen?.toNumber(),
-          tokensTotal: el?.farmingTokens?.toNumber(),
+          tokensFrozen: parseFloat(el?.tokensFrozen?.toString()),
+          tokensTotal: parseFloat(el?.farmingTokens?.toString()),
         }
       })
       .filter((snapshot) => snapshot.isInitialized)

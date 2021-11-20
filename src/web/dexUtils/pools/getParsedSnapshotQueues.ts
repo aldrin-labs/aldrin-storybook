@@ -43,7 +43,7 @@ export const getParsedSnapshotQueues = async ({
 
     return {
       publicKey: snapshot.pubkey.toString(),
-      nextIndex: parseFloat(snapshotQueueData.nextIndex.toNumber()),
+      nextIndex: snapshotQueueData.nextIndex.toNumber(),
       snapshots: parsedSnapshots,
     }
   })
