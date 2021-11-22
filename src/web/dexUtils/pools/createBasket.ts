@@ -88,10 +88,10 @@ export async function createBasket({
     poolTokenAmount = new BN(1 * 10 ** 8)
   } else {
     poolTokenAmount = supply
-    .mul(new BN(userBaseTokenAmount))
-    .div(poolTokenAmountA)
-    .div(new BN(100))
-    .mul(new BN(99))
+      .mul(new BN(userBaseTokenAmount))
+      .div(poolTokenAmountA)
+      .div(new BN(100))
+      .mul(new BN(99))
   }
 
   const transactionBeforeDeposit = new Transaction()

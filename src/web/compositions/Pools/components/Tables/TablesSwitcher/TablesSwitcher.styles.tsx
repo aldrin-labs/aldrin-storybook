@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Theme } from '@material-ui/core'
-import { COLORS, BREAKPOINTS, BORDER_RADIUS, FONT_SIZES } from '@variables/variables'
+import { COLORS, BREAKPOINTS, BORDER_RADIUS, FONT_SIZES, FONTS } from '@variables/variables'
 import { Input } from '@sb/components/Input'
 import { Button } from '@sb/components/Button'
 
@@ -22,8 +22,10 @@ export const TableModeButton = styled.button`
   padding: 0.4rem 0;
   margin: 0 1.6rem 0 0;
   outline: none;
-  font-size: 0.9em;
-  font-family: Avenir Next Demi;
+  font-size: 13px;
+  line-height: 20px;
+  font-weight: 600;
+  font-family: ${FONTS.main}
   text-transform: capitalize;
   cursor: pointer;
 `

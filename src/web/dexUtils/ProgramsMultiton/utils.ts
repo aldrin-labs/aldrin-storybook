@@ -2,7 +2,8 @@ import { MASTER_BUILD } from '@core/utils/config'
 
 const poolProgramAddress = MASTER_BUILD
   ? process.env.POOLS_PROGRAM_ADDRESS
-  : 'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
+  // : 'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
+  : 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
 
 if (!poolProgramAddress) {
   throw new Error('Pool address not provided')

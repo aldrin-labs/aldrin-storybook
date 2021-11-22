@@ -149,12 +149,12 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
             </TableModeButton>
           </div>
           <InputWrap>
-            <Checkbox
+            {/* <Checkbox
               color="error"
               label="Show Permissionless Pools"
               checked={includePermissionless}
               onChange={setIncludePermissionless}
-            />
+            /> */}
             <SearchInput
               name="search"
               placeholder="Search"
@@ -270,10 +270,11 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    // variables: () => ({
-    //   timestampFrom: endOfHourTimestamp() - dayDuration,
-    //   timestampTo: endOfHourTimestamp(),
-    // }),
+    // TODO: Comment before merge
+    variables: () => ({
+      timestampFrom: endOfHourTimestamp() - DAY,
+      timestampTo: endOfHourTimestamp(),
+    }),
   }),
   queryRendererHoc({
     name: 'getWeeklyAndDailyTradingVolumesForPoolsQuery',
