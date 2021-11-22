@@ -3,7 +3,7 @@ import { createMintInstructions, createTokenAccountInstrs } from "@project-serum
 import { TokenInstructions } from "@project-serum/serum";
 import { Connection, Keypair, PublicKey, SYSVAR_RENT_PUBKEY, Transaction, TransactionInstruction, Account } from "@solana/web3.js";
 import { ProgramsMultiton } from "../../ProgramsMultiton/ProgramsMultiton";
-import { FEE_OWNER_ACCOUNT, POOLS_PROGRAM_ADDRESS, POOL_AUTHORITY } from "../../ProgramsMultiton/utils";
+import { FEE_OWNER_ACCOUNT, POOLS_PROGRAM_ADDRESS, POOL_AUTHORITY, POOLS_V2_PROGRAM_ADDRESS } from "../../ProgramsMultiton/utils";
 import { signTransactions } from "../../send";
 import { WalletAdapter } from "../../types";
 import { createBasketTransaction } from "./createBasket";
@@ -21,6 +21,7 @@ interface CreatePoolParams {
   baseTokenMint: string
   quoteTokenMint: string
   firstDeposit?: CreatePoolDeposit
+  curveType?: CURVE
 }
 
 interface PoolLike {
@@ -51,6 +52,11 @@ const walletAdapterToWallet = (w: WalletAdapter): WalletLike => {
   return { ...w, publicKey }
 }
 
+enum CURVE {
+  PRODUCT = 0,
+  // STABLE = 1,
+}
+
 interface CreatePoolTransactionsResponse {
   createAccounts: Transaction
   setAuthorities: Transaction
@@ -59,7 +65,7 @@ interface CreatePoolTransactionsResponse {
 }
 
 export const createPoolTransactions = async (params: CreatePoolParams): Promise<CreatePoolTransactionsResponse> => {
-  const { wallet, connection, baseTokenMint, quoteTokenMint, firstDeposit } = params
+  const { wallet, connection, baseTokenMint, quoteTokenMint, firstDeposit, curveType = CURVE.PRODUCT } = params
 
   if (baseTokenMint === quoteTokenMint) {
     throw new Error('Base token mint should be differ than quote token mint')
@@ -71,13 +77,21 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
     programAddress: POOLS_PROGRAM_ADDRESS,
   })
 
+  const program2 = ProgramsMultiton.getProgramByAddress({
+    wallet,
+    connection,
+    programAddress: POOLS_V2_PROGRAM_ADDRESS,
+  })
+
+
 
   const mintBase = new PublicKey(baseTokenMint)
   const mintQuote = new PublicKey(quoteTokenMint)
 
   const allPools = await program.account.pool.all()
+  const allPools2 = await program2.account.pool.all()
 
-  const existingPool = allPools.find((p: ProgramAccount<PoolLike>) =>
+  const existingPool = [...allPools, ...allPools2].find((p: ProgramAccount<PoolLike>) =>
     (p.account.baseTokenMint.equals(mintBase) && p.account.quoteTokenMint.equals(mintQuote)) ||
     (p.account.baseTokenMint.equals(mintQuote) && p.account.quoteTokenMint.equals(mintBase))
   )
@@ -111,6 +125,8 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
   const poolFeeVault = Keypair.generate()
   const lpTokenFreezeAccount = Keypair.generate()
 
+  const curve = Keypair.generate()
+  
   const provider = new Provider(connection, walletWithPk, Provider.defaultOptions())
 
   mintAccounts.add(...(await createMintInstructions(provider, creatorPk, poolMint.publicKey)))
@@ -170,24 +186,45 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
     })
   )
 
-  const createPoolInstruction: TransactionInstruction = await program.instruction.initialize(
-    new BN(vaultSignerNonce), {
+
+  const createCurveInstr: TransactionInstruction = await program2.account.productCurve.createInstruction(
+    curve
+  )
+
+  createPoolTx.add(createCurveInstr)
+
+  const initializeCurveInstr: TransactionInstruction = await program2.instruction.initializeConstProductCurve({
     accounts: {
-      pool: pool.publicKey,
-      poolMint: poolMint.publicKey,
-      lpTokenFreezeVault: lpTokenFreezeAccount.publicKey,
-      baseTokenVault: baseTokenVault.publicKey,
-      quoteTokenVault: quoteTokenVault.publicKey,
-      poolSigner: vaultSigner,
-      initializer: poolInitializer.publicKey,
-      poolAuthority: new PublicKey(POOL_AUTHORITY),
-      feeBaseAccount: baseFeeVault.publicKey,
-      feeQuoteAccount: quoteFeeVault.publicKey,
-      feePoolTokenAccount: poolFeeVault.publicKey,
-      tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+      curve: curve.publicKey,
       rent: SYSVAR_RENT_PUBKEY,
     },
   })
+
+  createPoolTx.add(initializeCurveInstr)
+
+  const createPoolInstruction: TransactionInstruction = await program2.instruction.initialize(
+    new BN(vaultSignerNonce),
+    new BN(curveType),
+    {
+      accounts: {
+        pool: pool.publicKey,
+        poolMint: poolMint.publicKey,
+        lpTokenFreezeVault: lpTokenFreezeAccount.publicKey,
+        baseTokenVault: baseTokenVault.publicKey,
+        quoteTokenVault: quoteTokenVault.publicKey,
+        poolSigner: vaultSigner,
+        initializer: poolInitializer.publicKey,
+        poolAuthority: new PublicKey(POOL_AUTHORITY),
+        // poolAuthority: wallet.publicKey,
+        feeBaseAccount: baseFeeVault.publicKey,
+        feeQuoteAccount: quoteFeeVault.publicKey,
+        feePoolTokenAccount: poolFeeVault.publicKey,
+        curve: curve.publicKey,
+        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+        rent: SYSVAR_RENT_PUBKEY,
+      }
+    })
+
 
   createPoolTx.add(createPoolInstruction)
 
@@ -214,6 +251,7 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
       transaction: createPoolTx,
       signers: [
         poolInitializer,
+        curve,
       ],
     }
   ]

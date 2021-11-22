@@ -30,7 +30,7 @@ import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { waitForTransactionConfirmation } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 import React, { useState } from 'react'
 import { Route } from 'react-router'
@@ -126,6 +126,12 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
         userQuoteTokenAccount: new PublicKey('HL27Cs4HboiZB3xuYeaaKqqEc5h84AbHpWnAMxhFRaE1')
       }
     })
+
+    // Object.keys(generatedTransactions).forEach((k) => {
+    //   const transaction: Transaction = generatedTransactions[k]
+
+    //   console.log(`Transaction ${k}:` , transaction.serialize())
+    // })
 
 
     console.log('Create accounts...', connection, generatedTransactions.createAccounts)
