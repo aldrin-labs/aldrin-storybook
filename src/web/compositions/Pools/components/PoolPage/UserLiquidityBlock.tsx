@@ -74,7 +74,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (props) => 
         <LiquidityButton
           disabled={processing}
           $loading={processing}
-          variant="rainbow"
+          $variant="rainbow"
           onClick={onDepositClick}
         >
           Deposit Liquidity

@@ -48,7 +48,7 @@ export class u64 extends BN {
   /**
    * Convert to Buffer representation
    */
-  toBuffer(): typeof Buffer {
+  toBuffer(): Buffer {
     const a = super.toArray().reverse();
     const b = Buffer.from(a);
     if (b.length === 8) {

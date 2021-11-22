@@ -19,7 +19,6 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation,
   TradingVolumeStats
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
@@ -44,6 +43,8 @@ import {
   TableContainer,
   TableModeButton
 } from './TablesSwitcher.styles'
+import { Button } from '@sb/components/Button'
+import { createPool } from '@sb/dexUtils/pools/createPool'
 
 interface TableSwitcherProps {
   theme: Theme
@@ -169,6 +170,12 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
             >
               <SvgIcon src={PlusIcon} width={'1.2em'} />
             </AddPoolButton>
+            <Button onClick={() => createPool({
+              wallet,
+              connection,
+              baseTokenMint: '3j3Xb5gbMWayifZEyenjuK1aUWfBVgFU3FasekeF3GLd',
+              quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+            })}>ADD POOL</Button>
             <a
               style={{ textDecoration: 'none' }}
               href={AMMAudit}

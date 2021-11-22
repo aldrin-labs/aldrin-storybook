@@ -424,12 +424,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                     >
                       <span>
                         <Button
-                          variant="primary"
-                          fontSize="xs"
-                          padding="lg"
+                          $variant="primary"
+                          $fontSize="xs"
+                          $padding="lg"
                           disabled={isClaimDisabled}
                           $loading={isLoading}
-                          borderRadius="xxl"
+                          $borderRadius="xxl"
                           onClick={() => setIsClaimRewardsPopupOpen(true)}
                         >
                           Claim
@@ -437,9 +437,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       </span>
                     </DarkTooltip>
                     <UserFormRestakeButton
-                      fontSize="xs"
-                      padding="lg"
-                      variant="link"
+                      $fontSize="xs"
+                      $padding="lg"
+                      $variant="link"
                       disabled={isClaimDisabled}
                       onClick={() => setIsClaimRewardsAndRestakePopupOpen(true)}
                     >

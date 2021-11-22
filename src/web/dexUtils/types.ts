@@ -66,7 +66,7 @@ export interface PlaceOrder {
 export interface SignTransactionsParams {
   transactionsAndSigners: {
     transaction: Transaction
-    signers?: Array<Account>
+    signers?: Array<Account | Keypair>
   }[]
   wallet: WalletAdapter
   connection: Connection
@@ -102,7 +102,7 @@ export interface AmendOrderParams {
 
 export interface SendTransactionParams extends SendSignedTransactionParams {
   wallet: WalletAdapter
-  signers: (Account | Keypair)[]
+  signers: (Keypair | Account)[]
   focusPopup?: boolean
 }
 

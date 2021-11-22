@@ -78,7 +78,7 @@ const getNotificationText = ({
         1
       )} order placed.`,
       `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed${
-        orderType === 'market' ? '' : ` at ${price} ${quoteSymbol}`
+      orderType === 'market' ? '' : ` at ${price} ${quoteSymbol}`
       }.`,
     ],
     cancelOrder: [
@@ -88,9 +88,9 @@ const getNotificationText = ({
     settleFunds: [
       `Funds Settled.`,
       `${
-        baseUnsettled > 0 && quoteUnsettled > 0
-          ? `${baseSettleText} and ${quoteSettleText}`
-          : baseUnsettled > 0
+      baseUnsettled > 0 && quoteUnsettled > 0
+        ? `${baseSettleText} and ${quoteSettleText}`
+        : baseUnsettled > 0
           ? baseSettleText
           : quoteSettleText
       } has been successfully settled in your wallet.`,
@@ -850,18 +850,20 @@ const getUnixTs = () => {
 
 const DEFAULT_TIMEOUT = 30000
 
-export async function sendTransaction({
-  transaction,
-  wallet,
-  signers,
-  connection,
-  sentMessage,
-  successMessage,
-  timeout,
-  operationType,
-  params,
-  focusPopup,
-}: SendTransactionParams): AsyncSendSignedTransactionResult {
+export async function sendTransaction(p: SendTransactionParams): AsyncSendSignedTransactionResult {
+  const {
+    transaction,
+    wallet,
+    signers,
+    connection,
+    sentMessage,
+    successMessage,
+    timeout,
+    operationType,
+    params,
+    focusPopup,
+  } = p
+
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash
@@ -949,22 +951,22 @@ export const sendSignedTransaction = async ({
 
   let done = false
     // TODO
-  ;(async () => {
-    while (!done && getUnixTs() - startTime < timeout) {
-      const resultOfSendingConfirm = connection.sendRawTransaction(
-        rawTransaction,
-        {
-          skipPreflight: true,
-        }
-      )
+    ; (async () => {
+      while (!done && getUnixTs() - startTime < timeout) {
+        const resultOfSendingConfirm = connection.sendRawTransaction(
+          rawTransaction,
+          {
+            skipPreflight: true,
+          }
+        )
 
-      console.log(
-        'sendTransaction resultOfSendingConfirm',
-        resultOfSendingConfirm
-      )
-      await sleep(1200)
-    }
-  })()
+        console.log(
+          'sendTransaction resultOfSendingConfirm',
+          resultOfSendingConfirm
+        )
+        await sleep(1200)
+      }
+    })()
 
   const rawConnection = getConnectionFromMultiConnections({
     connection,
@@ -1068,7 +1070,7 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
         err
       )}`,
     })
-    
+
     if (err.timeout) return 'timeout'
     return null
   }
@@ -1089,7 +1091,7 @@ async function awaitTransactionSignatureConfirmation({
 }) {
   let done = false
   const result = await new Promise((resolve, reject) => {
-    ;(async () => {
+    ; (async () => {
       setTimeout(() => {
         if (done) {
           return
@@ -1119,7 +1121,7 @@ async function awaitTransactionSignatureConfirmation({
       }
       while (!done) {
         // eslint-disable-next-line no-loop-func
-        ;(async () => {
+        ; (async () => {
           const rpcProvider = getProviderNameFromUrl({
             rawConnection: connection,
           })

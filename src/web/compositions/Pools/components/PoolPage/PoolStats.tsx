@@ -170,7 +170,7 @@ Don't miss your chance.`
           </div>
         </PoolName>
         <ButtonsContainer>
-          <SwapButton borderRadius="xl" as={Link} to={`/swap?base=${base}&quote=${quote}`}>
+          <SwapButton $borderRadius="xl" as={Link} to={`/swap?base=${base}&quote=${quote}`}>
             <SwapButtonIcon>
               <SvgIcon src={SwapIcon} />
             </SwapButtonIcon>

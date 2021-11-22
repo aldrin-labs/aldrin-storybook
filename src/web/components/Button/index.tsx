@@ -97,13 +97,13 @@ const PADDINGS = {
 export type ButtonVariants = keyof typeof VARIANTS
 
 export interface ButtonProps {
-  fontSize?: keyof typeof FONT_SIZES
-  variant?: ButtonVariants
-  borderRadius?: keyof typeof BORDER_RADIUS
-  padding?: keyof typeof PADDINGS
+  $fontSize?: keyof typeof FONT_SIZES
+  $variant?: ButtonVariants
+  $borderRadius?: keyof typeof BORDER_RADIUS
+  $padding?: keyof typeof PADDINGS
   $backgroundImage?: string
-  width?: keyof typeof WIDTH
-  backgroundColor?: string
+  $width?: keyof typeof WIDTH
+  $backgroundColor?: string
   $loading?: boolean
 }
 
@@ -135,22 +135,22 @@ const rotate = css`
 // console.log('animationStyle: ', animationStyle)
 
 export const Button = styled.button<ButtonProps>` 
-  background-color: ${(props: ButtonProps) => props.backgroundColor || 'none'};
-  background: ${(props: ButtonProps) => props.backgroundColor || 'none'};
+  background-color: ${(props: ButtonProps) => props.$backgroundColor || 'none'};
+  background: ${(props: ButtonProps) => props.$backgroundColor || 'none'};
   min-width: 9rem;
   color: white;
   text-align: center;
-  font-size: ${(props: ButtonProps) => FONT_SIZES[props.fontSize || 'md']};
+  font-size: ${(props: ButtonProps) => FONT_SIZES[props.$fontSize || 'md']};
   border: 1px solid transparent;
   line-height: 150%;
   cursor: pointer;
-  padding: ${(props: ButtonProps) => PADDINGS[props.padding || 'md']};
-  ${(props: ButtonProps) => VARIANTS[props.variant || 'primary']};
+  padding: ${(props: ButtonProps) => PADDINGS[props.$padding || 'md']};
+  ${(props: ButtonProps) => VARIANTS[props.$variant || 'primary']};
   font-family: ${FONTS.main};
   border-radius: ${(props: ButtonProps) =>
-    BORDER_RADIUS[props.borderRadius || 'md']};
+    BORDER_RADIUS[props.$borderRadius || 'md']};
   ${(props: ButtonProps) =>
-    props.width ? ` width: ${WIDTH[props.width]};` : ''}
+    props.$width ? ` width: ${WIDTH[props.$width]};` : ''}
   text-decoration: none;
   ${rotate}
 

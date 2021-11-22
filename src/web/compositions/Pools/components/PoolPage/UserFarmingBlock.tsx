@@ -110,12 +110,12 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             disabled={!hasUnstaked || processing}
             $loading={processing}
             onClick={onStakeClick}
-            variant="rainbow"
+            $variant="rainbow"
           >
             Stake LP Tokens
              </FarmingButton>
           <FarmingButton
-            variant="error"
+            $variant="error"
             disabled={!hasStaked || processing || unstakeLocked}
             $loading={processing}
             onClick={onUnstakeClick}
@@ -142,7 +142,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
         </div>
         <FarmingButtonWrap>
           <FarmingButton
-            variant="rainbow"
+            $variant="rainbow"
             disabled={availableToClaimUsd === 0 || processing}
             $loading={processing}
             onClick={onClaimClick}

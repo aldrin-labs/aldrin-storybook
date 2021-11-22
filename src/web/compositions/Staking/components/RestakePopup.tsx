@@ -32,9 +32,9 @@ export const RestakePopup = ({
         <FormItem>
           <Button
             onClick={() => { }}
-            fontSize="xs"
-            padding="lg"
-            borderRadius="xxl"
+            $fontSize="xs"
+            $padding="lg"
+            $borderRadius="xxl"
           >
             Claim Anyway
           </Button>
@@ -42,9 +42,9 @@ export const RestakePopup = ({
         <RestakeButton
           onClick={() => { }}
           $backgroundImage={StakeBtn}
-          fontSize="xs"
-          padding="lg"
-          borderRadius="xxl"
+          $fontSize="xs"
+          $padding="lg"
+          $borderRadius="xxl"
         >
           Restake
         </RestakeButton>

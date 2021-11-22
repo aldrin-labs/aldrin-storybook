@@ -56,9 +56,9 @@ export const Header = () => {
             $backgroundImage={StakeBtn}
             as={Link}
             to="/staking"
-            fontSize="xs"
-            padding="md"
-            borderRadius="xxl"
+            $fontSize="xs"
+            $padding="md"
+            $borderRadius="xxl"
           >
             Stake RIN
           </StakeButton>

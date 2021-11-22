@@ -25,8 +25,8 @@ export const ShareButton: React.FC<ShareButtonProps> = (props) => {
   const fullUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}${addUrl ? `&url=${encodeURIComponent(url)}` : ''}`
   return (
     <Button
-      borderRadius="lg"
-      variant={variant}
+      $borderRadius="lg"
+      $variant={variant}
       onClick={() => window.open(fullUrl, 'Twitter Share', 'height=600,width=550,resizable=1')}
     >
       {iconFirst && <Img iconFirst src={lightBird.replace(/"/gi, '')} />}
