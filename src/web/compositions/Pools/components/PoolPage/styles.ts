@@ -286,6 +286,8 @@ export const LiquidityText = styled(PoolStatsText)`
 
 export const LiquidityItem = styled.div`
   margin: 0 40px 20px 0;
+  display: flex;
+  flex-direction: column;
 
   @media(min-width: ${BREAKPOINTS.lg}) {
     margin: 0 40px 0 0;
@@ -316,7 +318,7 @@ export const FarmingButtonWrap = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  margin-top: auto;
 `
 
 

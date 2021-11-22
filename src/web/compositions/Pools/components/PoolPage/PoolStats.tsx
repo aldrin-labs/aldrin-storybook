@@ -132,8 +132,9 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
     0
   )
 
-  const farmingAPR = ((dailyUsdReward * 365) / lpUsdValue) * 100
+  const farmingAPR = (((dailyUsdReward * 365) / lpUsdValue) * 100) || 0
 
+  console.log('farmingAPR:', dailyUsdReward, pool.lpTokenFreezeVaultBalance, lpUsdValue, pool.apy24h)
   const totalApr = farmingAPR + pool.apy24h
 
   const aprFormatted = formatNumberToUSFormat(stripDigitPlaces(totalApr, 2))
@@ -196,44 +197,52 @@ Don't miss your chance.`
           <PoolStatsTitle>Farming</PoolStatsTitle>
           <PoolStatsData>
             <FarmingData>
-              <FarmingDataIcons>
-                {farmings.map((farmingState) => {
-                  return (
-                    <FarmingIconWrap
-                      key={`farming_icon_${farmingState.farmingTokenMint}`}
-                    >
-                      <TokenIcon
-                        mint={farmingState.farmingTokenMint}
-                        width={'1.3em'}
-                        emojiIfNoLogo={false}
-                      />
-                    </FarmingIconWrap>
-                  )
-                })}
-              </FarmingDataIcons>
-              <div>
-                <PoolStatsText>
-                  {farmings.map((farmingState, i, arr) => {
-                    const tokensPerThousand = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
-                      farmingState, totalStakedLpTokensUSD: lpUsdValue
-                    })
-                    return (
-                      <PoolStatsText key={`fs_reward_${farmingState.farmingTokenMint}`}>
-                        {i > 0 ? ' + ' : ''}
-                        <PoolStatsText color="success">
-                          {stripByAmountAndFormat(tokensPerThousand)}&nbsp;
+              {farmings.length > 0 ?
+                <>
+                  <FarmingDataIcons>
+                    {farmings.map((farmingState) => {
+                      return (
+                        <FarmingIconWrap
+                          key={`farming_icon_${farmingState.farmingTokenMint}`}
+                        >
+                          <TokenIcon
+                            mint={farmingState.farmingTokenMint}
+                            width={'1.3em'}
+                            emojiIfNoLogo={false}
+                          />
+                        </FarmingIconWrap>
+                      )
+                    })}
+                  </FarmingDataIcons>
+                  <div>
+                    <PoolStatsText>
+                      {farmings.map((farmingState, i, arr) => {
+                        const tokensPerThousand = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
+                          farmingState, totalStakedLpTokensUSD: lpUsdValue
+                        })
+                        return (
+                          <PoolStatsText key={`fs_reward_${farmingState.farmingTokenMint}`}>
+                            {i > 0 ? ' + ' : ''}
+                            <PoolStatsText color="success">
+                              {stripByAmountAndFormat(tokensPerThousand)}&nbsp;
                   </PoolStatsText>
-                        {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
-                      </PoolStatsText>
-                    )
-                  })} / Day
+                            {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                          </PoolStatsText>
+                        )
+                      })} / Day
                 </PoolStatsText>
+                    <div>
+                      <PoolStatsText>
+                        Per each  <PoolStatsText color="success">$1000</PoolStatsText>
+                      </PoolStatsText>
+                    </div>
+                  </div>
+                </>
+                :
                 <div>
-                  <PoolStatsText>
-                    Per each  <PoolStatsText color="success">$1000</PoolStatsText>
-                  </PoolStatsText>
+                  <PoolStatsText>Ended</PoolStatsText>
                 </div>
-              </div>
+              }
             </FarmingData>
           </PoolStatsData>
         </PoolStatsWrap>
