@@ -275,7 +275,7 @@ export const combineAllPoolsData = ({
                   tokenB={pool.tokenB}
                 />
               </Link>{' '}
-              {pool.curveType === 1 ? (
+              {pool.curveType !== 1 ? (
                 <DarkTooltip
                   title={
                     'This pool uses the stable curve, which provides better rates for swapping stablecoins.'

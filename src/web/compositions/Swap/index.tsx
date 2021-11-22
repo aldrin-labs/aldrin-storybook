@@ -15,7 +15,7 @@ import {
   TimerButton,
 } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { InputWithSelectorForSwaps } from './components/Inputs/index'
-import { Card } from './styles'
+import { Card, InfoBox } from './styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { notify } from '@sb/dexUtils/notifications'
@@ -49,6 +49,10 @@ import {
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
 import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
+
+import RedBox from '@icons/redBox.png' 
+import GreenBox from '@icons/greenBox.png'
+import PinkBox from '@icons/pinkBox.png'
 
 import ScalesIcon from '@icons/scales.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
@@ -573,7 +577,19 @@ const SwapPage = ({
             </RowContainer>
           </Card>
         )}
-        <RowContainer>f</RowContainer>
+        <Row justify={'space-between'} width={'50rem'} margin={'3rem 0 0 0'}>
+          <InfoBox image={PinkBox}> 
+            <Text
+            style={{ margin: '0 0.5rem' }}
+            fontSize={'2rem'}
+            fontFamily={'Avenir Next Demi'}
+            >
+              aaa 
+            </Text>
+          </InfoBox>
+          <InfoBox image={GreenBox}>d</InfoBox>
+          <InfoBox image={RedBox}>d</InfoBox>
+        </Row>
       </>
 
       <TransactionSettingsPopup

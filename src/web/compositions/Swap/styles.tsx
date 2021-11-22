@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Row } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 
 export const Card = styled(BlockTemplate)`
@@ -19,3 +20,11 @@ export const TokenLabel = styled.div`
   margin-left: 1rem;
 `
 
+export const InfoBox = styled(Row)`
+width:30%;
+height: 10rem;
+background-image:${props=>`url(${props.image})`};
+background-size: cover;
+background-repeat: no-repeat;
+border-radius: 2rem;π 
+`
