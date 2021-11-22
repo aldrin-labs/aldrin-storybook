@@ -1,18 +1,26 @@
 import { BN, ProgramAccount, Provider } from "@project-serum/anchor";
 import { createMintInstructions, createTokenAccountInstrs } from "@project-serum/common";
 import { TokenInstructions } from "@project-serum/serum";
-import { Connection, Keypair, PublicKey, SYSVAR_RENT_PUBKEY, Transaction, TransactionInstruction } from "@solana/web3.js";
-import { isCancelledTransactionError } from "../common/isCancelledTransactionError";
+import { Connection, Keypair, PublicKey, SYSVAR_RENT_PUBKEY, Transaction, TransactionInstruction, Account } from "@solana/web3.js";
 import { ProgramsMultiton } from "../ProgramsMultiton/ProgramsMultiton";
 import { FEE_OWNER_ACCOUNT, POOLS_PROGRAM_ADDRESS, POOL_AUTHORITY } from "../ProgramsMultiton/utils";
 import { signTransactions } from "../send";
 import { WalletAdapter } from "../types";
+import { createBasketTransaction } from "./createBasket";
+
+interface CreatePoolDeposit {
+  baseTokenAmount: BN
+  quoteTokenAmount: BN
+  userBaseTokenAccount: PublicKey
+  userQuoteTokenAccount: PublicKey
+}
 
 interface CreatePoolParams {
   wallet: WalletAdapter
   connection: Connection
   baseTokenMint: string
   quoteTokenMint: string
+  firstDeposit?: CreatePoolDeposit
 }
 
 interface PoolLike {
@@ -43,8 +51,15 @@ const walletAdapterToWallet = (w: WalletAdapter): WalletLike => {
   return { ...w, publicKey }
 }
 
-export const createPool = async (params: CreatePoolParams) => {
-  const { wallet, connection, baseTokenMint, quoteTokenMint } = params
+interface CreatePoolTransactionsResponse {
+  createAccounts: Transaction
+  setAuthorities: Transaction
+  createPool: Transaction
+  firstDeposit?: Transaction
+}
+
+export const createPoolTransactions = async (params: CreatePoolParams): Promise<CreatePoolTransactionsResponse> => {
+  const { wallet, connection, baseTokenMint, quoteTokenMint, firstDeposit } = params
 
   if (baseTokenMint === quoteTokenMint) {
     throw new Error('Base token mint should be differ than quote token mint')
@@ -84,10 +99,10 @@ export const createPool = async (params: CreatePoolParams) => {
 
   const creatorPk = walletWithPk.publicKey
 
-
   const mintAccounts = new Transaction()
+  const setAuthorities = new Transaction()
+  const createPoolTx = new Transaction()
 
-  // const poolMint = Keypair.generate()
   const poolMint = Keypair.generate()
   const baseTokenVault = Keypair.generate()
   const quoteTokenVault = Keypair.generate()
@@ -104,13 +119,13 @@ export const createPool = async (params: CreatePoolParams) => {
   mintAccounts.add(...(await createTokenAccountInstrs(provider, quoteTokenVault.publicKey, mintQuote, creatorPk)))
   mintAccounts.add(...(await createTokenAccountInstrs(provider, baseFeeVault.publicKey, mintBase, creatorPk)))
   mintAccounts.add(...(await createTokenAccountInstrs(provider, quoteFeeVault.publicKey, mintQuote, creatorPk)))
-  mintAccounts.add(...(await createTokenAccountInstrs(provider, poolFeeVault.publicKey, poolMint.publicKey, creatorPk)))
-  mintAccounts.add(...(await createTokenAccountInstrs(provider, lpTokenFreezeAccount.publicKey, poolMint.publicKey, creatorPk)))
+  setAuthorities.add(...(await createTokenAccountInstrs(provider, poolFeeVault.publicKey, poolMint.publicKey, creatorPk)))
+  setAuthorities.add(...(await createTokenAccountInstrs(provider, lpTokenFreezeAccount.publicKey, poolMint.publicKey, creatorPk)))
 
 
   const feeOwner = new PublicKey(FEE_OWNER_ACCOUNT)
 
-  const setAuthorities = new Transaction().add(
+  setAuthorities.add(
     TokenInstructions.setAuthority({
       target: poolMint.publicKey,
       currentAuthority: creatorPk,
@@ -155,16 +170,14 @@ export const createPool = async (params: CreatePoolParams) => {
     })
   )
 
-  const createPoolTx: TransactionInstruction = await program.instruction.initialize(
+  const createPoolInstruction: TransactionInstruction = await program.instruction.initialize(
     new BN(vaultSignerNonce), {
     accounts: {
       pool: pool.publicKey,
       poolMint: poolMint.publicKey,
       lpTokenFreezeVault: lpTokenFreezeAccount.publicKey,
       baseTokenVault: baseTokenVault.publicKey,
-      baseTokenMint: mintBase,
       quoteTokenVault: quoteTokenVault.publicKey,
-      quoteTokenMint: mintQuote,
       poolSigner: vaultSigner,
       initializer: poolInitializer.publicKey,
       poolAuthority: new PublicKey(POOL_AUTHORITY),
@@ -176,37 +189,71 @@ export const createPool = async (params: CreatePoolParams) => {
     },
   })
 
-  setAuthorities.add(createPoolTx)
+  createPoolTx.add(createPoolInstruction)
 
-  // console.log('createPoolTx: ', createPoolTx)
+  const transactionsAndSigners: { transaction: Transaction, signers: (Keypair | Account)[] }[] = [
+    {
+      transaction: mintAccounts,
+      signers: [
+        poolMint,
+        baseTokenVault,
+        quoteTokenVault,
+        baseFeeVault,
+        quoteFeeVault,
+      ],
+    },
+    {
+      transaction: setAuthorities,
+      signers: [
+        poolMint,
+        poolFeeVault,
+        lpTokenFreezeAccount,
+      ],
+    },
+    {
+      transaction: createPoolTx,
+      signers: [
+        poolInitializer,
+      ],
+    }
+  ]
 
-  try {
-    const signedTransactions = await signTransactions({
+  if (firstDeposit) {
+    const [transaction, signers] = await createBasketTransaction({
       wallet,
       connection,
-      transactionsAndSigners: [
-        {
-          transaction: mintAccounts, signers: [
-            poolMint,
-            baseTokenVault,
-            quoteTokenVault,
-            baseFeeVault,
-            quoteFeeVault,
-            poolFeeVault,
-            lpTokenFreezeAccount,
-          ]
-        },
-        { transaction: setAuthorities, signers: [poolInitializer] },
-      ]
+      baseTokenMint: mintBase,
+      baseTokenVault: baseTokenVault.publicKey,
+      quoteTokenMint: mintQuote,
+      quoteTokenVault: quoteTokenVault.publicKey,
+      poolMint: poolMint.publicKey,
+      lpTokenFreezeVault: lpTokenFreezeAccount.publicKey,
+      program,
+      supply: new BN(0),
+      poolTokenAmountA: new BN(0),
+      poolPublicKey: pool.publicKey,
+      userBaseTokenAccount: firstDeposit.userBaseTokenAccount,
+      userQuoteTokenAccount: firstDeposit.userQuoteTokenAccount,
+      userBaseTokenAmount: firstDeposit.baseTokenAmount.toNumber(),
+      userQuoteTokenAmount: firstDeposit.quoteTokenAmount.toNumber(),
+      transferSOLToWrapped: false,
     })
 
-    console.log('signedTransactions: ', signedTransactions)
-
-  } catch (e) {
-    console.log('Pool creation error', e)
-
-    if (isCancelledTransactionError(e)) {
-      return 'cancelled'
-    }
+    transactionsAndSigners.push({ transaction, signers })
   }
+
+  const [createAccounts, setAuthoritiesTx, createPool, ...rest] = await signTransactions({
+    wallet,
+    connection,
+    transactionsAndSigners
+  })
+
+  return {
+    createAccounts,
+    setAuthorities: setAuthoritiesTx,
+    createPool,
+    firstDeposit: rest[0],
+  }
+
+
 }

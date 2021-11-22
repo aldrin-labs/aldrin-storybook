@@ -972,7 +972,7 @@ export const sendSignedTransaction = async ({
     connection,
   })
 
-  let result = await awaitTransactionSignatureConfirmationWithNotifications({
+  let result = await waitForTransactionConfirmation({
     txid,
     timeout,
     connection: rawConnection,
@@ -989,7 +989,7 @@ export const sendSignedTransaction = async ({
       connection,
     })
 
-    result = await awaitTransactionSignatureConfirmationWithNotifications({
+    result = await waitForTransactionConfirmation({
       txid,
       timeout,
       connection: rawConnectionForRetry,
@@ -1025,7 +1025,7 @@ export const sendSignedTransaction = async ({
 export const isTransactionFailed = (result: SendSignedTransactionResult) =>
   result === 'failed' || result === 'timeout'
 
-const awaitTransactionSignatureConfirmationWithNotifications = async ({
+export const waitForTransactionConfirmation = async ({
   txid,
   timeout,
   interval,

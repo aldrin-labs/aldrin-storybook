@@ -1,101 +1,94 @@
-import BN from 'bn.js'
+import { Program } from '@project-serum/anchor'
 import { TokenInstructions } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import {
-  Connection,
+  Account, Connection,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
-  Transaction,
+  Transaction
 } from '@solana/web3.js'
-
+import BN from 'bn.js'
+import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 import { transferSOLToWrappedAccountAndClose } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
-  sendTransaction,
+  sendTransaction
 } from '../send'
 import { Token } from '../token/token'
 import { WalletAdapter } from '../types'
-import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
+
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
-export async function createBasket({
-  wallet,
-  connection,
-  poolPublicKey,
-  userPoolTokenAccount,
-  userBaseTokenAccount,
-  userQuoteTokenAccount,
-  userBaseTokenAmount,
-  userQuoteTokenAmount,
-  transferSOLToWrapped,
-}: {
-  wallet: WalletAdapter
-  connection: Connection
+interface CreateBasketBase {
   poolPublicKey: PublicKey
-  userPoolTokenAccount: PublicKey | null
+  userPoolTokenAccount?: PublicKey | null
   userBaseTokenAccount: PublicKey
   userQuoteTokenAccount: PublicKey
   userBaseTokenAmount: number
   userQuoteTokenAmount: number
   transferSOLToWrapped: boolean
-}) {
-  const program = ProgramsMultiton.getProgramByAddress({
+  wallet: WalletAdapter
+  connection: Connection
+}
+
+export interface CreateBasketTransactionParams extends CreateBasketBase {
+  baseTokenMint: PublicKey
+  baseTokenVault: PublicKey
+  quoteTokenMint: PublicKey
+  quoteTokenVault: PublicKey
+  poolMint: PublicKey
+  lpTokenFreezeVault: PublicKey
+  program: Program
+  supply: BN
+  poolTokenAmountA: BN
+}
+
+
+export async function createBasketTransaction(params: CreateBasketTransactionParams): Promise<[Transaction, Account[]]> {
+  const {
+    program,
+    poolPublicKey,
+    userBaseTokenAmount,
+    userQuoteTokenAmount,
+    transferSOLToWrapped,
+    supply,
+    poolTokenAmountA,
     wallet,
+    poolMint,
+    baseTokenMint,
     connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
-  })
+    quoteTokenMint,
+    baseTokenVault,
+    quoteTokenVault,
+  } = params
+
+  let {
+    userPoolTokenAccount,
+    userBaseTokenAccount,
+    userQuoteTokenAccount,
+  } = params
+
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
     [poolPublicKey.toBuffer()],
     program.programId
   )
 
-  const {
-    baseTokenMint,
-    baseTokenVault,
-    quoteTokenMint,
-    quoteTokenVault,
-    poolMint,
-    lpTokenFreezeVault,
-    ...rest
-  } = await program.account.pool.fetch(poolPublicKey)
-
-  console.log('rest', rest)
-
-  const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
-
-  const poolMintInfo = await poolToken.getMintInfo()
-  const supply = poolMintInfo.supply
-
-  const tokenMintA = new Token(
-    wallet,
-    connection,
-    baseTokenMint,
-    TOKEN_PROGRAM_ID
-  )
-
-  const poolTokenA = await tokenMintA.getAccountInfo(baseTokenVault)
-  const poolTokenAmountA = poolTokenA.amount
-
-  let poolTokenAmount = new BN(0)
-  // first deposit
-  if (supply.eq(new BN(0))) {
-    poolTokenAmount = new BN(1 * 10 ** 8)
-  } else {
-    poolTokenAmount = supply
-    .mul(new BN(userBaseTokenAmount))
-    .div(poolTokenAmountA)
-    .div(new BN(100))
-    .mul(new BN(99))
-  }
+  const poolTokenAmount = /* first deposit */ supply.eqn(0) ?
+    new BN(1 * 10 ** 8) :
+    supply
+      .mul(new BN(userBaseTokenAmount))
+      .div(poolTokenAmountA)
+      .muln(99)
+      .divn(100)
 
   const transactionBeforeDeposit = new Transaction()
-  const commonSigners = []
+  const commonSigners: Account[] = []
 
   const transactionAfterDeposit = new Transaction()
 
@@ -156,32 +149,90 @@ export async function createBasket({
 
   let commonTransaction = new Transaction()
 
+  const createBasketTransaction = await program.instruction.createBasket(
+    poolTokenAmount,
+    new BN(userBaseTokenAmount),
+    new BN(userQuoteTokenAmount),
+    {
+      accounts: {
+        pool: poolPublicKey,
+        poolMint,
+        poolSigner: vaultSigner,
+        userBaseTokenAccount,
+        userQuoteTokenAccount,
+        baseTokenVault,
+        quoteTokenVault,
+        userPoolTokenAccount,
+        walletAuthority: wallet.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: SYSVAR_CLOCK_PUBKEY,
+        rent: SYSVAR_RENT_PUBKEY,
+      },
+    }
+  )
+
+  commonTransaction.add(transactionBeforeDeposit)
+  commonTransaction.add(createBasketTransaction)
+  commonTransaction.add(transactionAfterDeposit)
+
+
+  return [commonTransaction, commonSigners]
+
+}
+
+
+export interface CreateBasketParams extends CreateBasketBase {
+
+}
+
+export async function createBasket(params: CreateBasketParams) {
+  const { wallet, connection, poolPublicKey } = params
   try {
-    const createBasketTransaction = await program.instruction.createBasket(
-      poolTokenAmount,
-      new BN(userBaseTokenAmount),
-      new BN(userQuoteTokenAmount),
-      {
-        accounts: {
-          pool: poolPublicKey,
-          poolMint,
-          poolSigner: vaultSigner,
-          userBaseTokenAccount,
-          userQuoteTokenAccount,
-          baseTokenVault,
-          quoteTokenVault,
-          userPoolTokenAccount,
-          walletAuthority: wallet.publicKey,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          clock: SYSVAR_CLOCK_PUBKEY,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
-      }
+
+    const program = ProgramsMultiton.getProgramByAddress({
+      wallet,
+      connection,
+      programAddress: POOLS_PROGRAM_ADDRESS,
+    })
+
+
+    const {
+      baseTokenMint,
+      baseTokenVault,
+      quoteTokenMint,
+      quoteTokenVault,
+      poolMint,
+      lpTokenFreezeVault,
+    } = await program.account.pool.fetch(poolPublicKey)
+
+
+    const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
+
+    const poolMintInfo = await poolToken.getMintInfo()
+    const supply = poolMintInfo.supply
+
+    const tokenMintA = new Token(
+      wallet,
+      connection,
+      baseTokenMint,
+      TOKEN_PROGRAM_ID
     )
 
-    commonTransaction.add(transactionBeforeDeposit)
-    commonTransaction.add(createBasketTransaction)
-    commonTransaction.add(transactionAfterDeposit)
+    const poolTokenA = await tokenMintA.getAccountInfo(baseTokenVault)
+    const poolTokenAmountA = poolTokenA.amount
+
+    const [commonTransaction, commonSigners] = await createBasketTransaction({
+      ...params,
+      baseTokenMint,
+      baseTokenVault,
+      quoteTokenMint,
+      quoteTokenVault,
+      poolMint,
+      lpTokenFreezeVault,
+      supply,
+      poolTokenAmountA,
+      program,
+    })
 
     const tx = await sendTransaction({
       wallet,

@@ -26,5 +26,30 @@ if (!stakingProgramAddress) {
 export const STAKING_PROGRAM_ADDRESS = stakingProgramAddress
 
 
+const feesOwnerAccount = MASTER_BUILD
+  ? process.env.FEE_OWNER_ACCOUNT
+  : '9VHVV44zDSmmdDMUHk4fwotXioimN78yzNDgzaVUP5Fb'
+
+
+if (!feesOwnerAccount) {
+  throw new Error('Fees owner account not provided')
+}
+
+export const FEE_OWNER_ACCOUNT = feesOwnerAccount
+
+
+const poolAuthority = MASTER_BUILD
+  ? process.env.POOL_AUTHORITY
+  : 'EAWfgtTAFe2pYbDsTN57t6yoZyxWSBEWoszxQe8PSbvC'
+
+
+if (!poolAuthority) {
+  throw new Error('Pool authority public key not provided')
+}
+
+export const POOL_AUTHORITY = poolAuthority
+
+
+
 console.log(`POOLS_PROGRAM_ADDRESS: ${POOLS_PROGRAM_ADDRESS}`)
 console.log(`STAKING_PROGRAM_ADDRESS: ${STAKING_PROGRAM_ADDRESS}`)

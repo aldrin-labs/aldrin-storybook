@@ -5,7 +5,7 @@ import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedBy
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
+import { DAY, endOfHourTimestamp, MINUTE } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
@@ -44,7 +44,10 @@ import {
   TableModeButton
 } from './TablesSwitcher.styles'
 import { Button } from '@sb/components/Button'
-import { createPool } from '@sb/dexUtils/pools/createPool'
+import { createPoolTransactions } from '@sb/dexUtils/pools/createPool'
+import BN from 'bn.js'
+import { PublicKey } from '@solana/web3.js'
+import { waitForTransactionConfirmation } from '@sb/dexUtils/send'
 
 interface TableSwitcherProps {
   theme: Theme
@@ -110,6 +113,80 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     refreshFarmingTickets()
   }
 
+  const onPoolCreateClick = async () => {
+    const generatedTransactions = await createPoolTransactions({
+      wallet,
+      connection,
+      baseTokenMint: 'Hn6FuAT9w7iHRc4M74c3xrtzPWBq4gGositr92NxaAs',
+      quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      firstDeposit: {
+        baseTokenAmount: new BN(1_000_000),
+        userBaseTokenAccount: new PublicKey('C6kK8bCXFUdFmSdu1W9bvh8cc6kcFXWdWRfwjnkFnt6y'),
+        quoteTokenAmount: new BN(5_000_000),
+        userQuoteTokenAccount: new PublicKey('HL27Cs4HboiZB3xuYeaaKqqEc5h84AbHpWnAMxhFRaE1')
+      }
+    })
+
+
+    console.log('Create accounts...', connection, generatedTransactions.createAccounts)
+    const createAccountsTxId = await connection.sendRawTransaction(generatedTransactions.createAccounts.serialize(), {
+      skipPreflight: true,
+    })
+
+    console.log('createAccountsTxId: ', createAccountsTxId)
+    await waitForTransactionConfirmation({
+      txid: createAccountsTxId,
+      timeout: 60_000,
+      connection: connection.getConnection(),
+      showErrorForTimeout: true,
+    })
+    console.log('createAccountsTxId: ', createAccountsTxId)
+
+    console.log('Set authorities...')
+    const setAuthoritiesTxId = await connection.sendRawTransaction(generatedTransactions.setAuthorities.serialize(), {
+      skipPreflight: true,
+    })
+    await waitForTransactionConfirmation({
+      txid: setAuthoritiesTxId,
+      timeout: 60_000,
+      connection: connection.getConnection(),
+      showErrorForTimeout: true,
+    })
+
+    console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
+
+    console.log('Initialize pool...')
+    const initPoolTxId = await connection.sendRawTransaction(generatedTransactions.createPool.serialize(), {
+      skipPreflight: true,
+    })
+
+    await waitForTransactionConfirmation({
+      txid: initPoolTxId,
+      timeout: 60_000,
+      connection: connection.getConnection(),
+      showErrorForTimeout: true,
+    })
+
+    console.log('initPoolTxId: ', initPoolTxId)
+
+    if (generatedTransactions.firstDeposit) {
+      console.log('First deposit...')
+      const firstDepositTxId = await connection.sendRawTransaction(generatedTransactions.firstDeposit.serialize(), {
+        skipPreflight: true,
+      })
+      await waitForTransactionConfirmation({
+        txid: firstDepositTxId,
+        timeout: 60_000,
+        connection: connection.getConnection(),
+        showErrorForTimeout: true,
+      })
+
+      console.log('firstDepositTxId: ', firstDepositTxId)
+    }
+
+    // console.log('generatedTransactions: ', generatedTransactions)
+  }
+
   const isAllPoolsSelected = selectedTable === 'all'
 
   const dexTokensPricesMap = getDexTokensPrices.reduce(
@@ -170,12 +247,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
             >
               <SvgIcon src={PlusIcon} width={'1.2em'} />
             </AddPoolButton>
-            {/* <Button onClick={() => createPool({
-              wallet,
-              connection,
-              baseTokenMint: '3j3Xb5gbMWayifZEyenjuK1aUWfBVgFU3FasekeF3GLd',
-              quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-            })}>ADD POOL</Button> */}
+            <Button onClick={onPoolCreateClick}>ADD POOL</Button>
             <a
               style={{ textDecoration: 'none' }}
               href={AMMAudit}
