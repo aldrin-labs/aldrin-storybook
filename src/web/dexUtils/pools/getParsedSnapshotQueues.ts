@@ -5,6 +5,7 @@ import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { loadSnapshotQueues } from './loadSnapshotQueues'
 
+//TODO: Refactor all toNumber() calls
 export const getParsedSnapshotQueues = async ({
   wallet,
   connection,
@@ -34,8 +35,8 @@ export const getParsedSnapshotQueues = async ({
         return {
           time: el.time.toNumber(),
           isInitialized: el.isInitialized,
-          tokensFrozen: el?.tokensFrozen?.toNumber(),
-          tokensTotal: el?.farmingTokens?.toNumber(),
+          tokensFrozen: parseFloat(el?.tokensFrozen?.toString()),
+          tokensTotal: parseFloat(el?.farmingTokens?.toString()),
         }
       })
       .filter((snapshot: Snapshot) => snapshot.isInitialized)
