@@ -13,7 +13,7 @@ import { Link, useParams } from 'react-router-dom'
 import { DexTokensPrices, FeesEarned, PoolInfo, TradingVolumeStats } from '../../index.types'
 import { getFarmingStateDailyFarmingValue } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-import SwapIcon from './icons/swapicon.svg'
+import SwapIcon from './icons/swapIcon.svg'
 import {
   ButtonsContainer,
   FarmingData,
@@ -134,7 +134,6 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
 
   const farmingAPR = (((dailyUsdReward * 365) / lpUsdValue) * 100) || 0
 
-  console.log('farmingAPR:', dailyUsdReward, pool.lpTokenFreezeVaultBalance, lpUsdValue, pool.apy24h)
   const totalApr = farmingAPR + pool.apy24h
 
   const aprFormatted = formatNumberToUSFormat(stripDigitPlaces(totalApr, 2))

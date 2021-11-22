@@ -8,6 +8,10 @@ import {
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+
+
+import { useHistory } from 'react-router-dom'
+
 import React from 'react'
 import { TableContainer } from '../index.styles'
 import {
@@ -28,6 +32,8 @@ interface LiquidityTableProps {
 }
 
 const UserLiquidityTableComponent: React.FC<LiquidityTableProps> = (props) => {
+
+  const history = useHistory()
 
   const {
     theme,
