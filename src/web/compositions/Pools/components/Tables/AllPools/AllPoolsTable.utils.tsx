@@ -32,6 +32,7 @@ import { getFarmingStateDailyFarmingValue } from '../UserLiquidity/utils/getFarm
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 import { FarmingState } from '../../../../../dexUtils/common/types'
 
+import ScalesIcon from '@icons/scales.svg'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -222,6 +223,7 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
 
       const farmingAPR =
         ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
         pool: {
@@ -243,6 +245,17 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
                   tokenB={pool.tokenB}
                 />
               </Link>
+              {pool.curveType === 1 ? (
+                <DarkTooltip
+                  title={
+                    'This pool uses the stable curve, which provides better rates for swapping stablecoins.'
+                  }
+                >
+                  <div>
+                    <SvgIcon style={{ marginLeft: '1rem' }} src={ScalesIcon} />
+                  </div>
+                </DarkTooltip>
+              ) : null}
             </Row>
           ),
           contentToSort: `${baseSymbol}_${quoteSymbol}`,
@@ -342,7 +355,6 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
                   </RowDataTdText>
                 ) : (
                     openFarmingsKeys.map((fsMint, i, arr) => {
-
                       const farmingStates = openFarmingsMap.get(fsMint) || []
                       const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = farmingStates.reduce((acc, farmingState) => {
                         return acc = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(

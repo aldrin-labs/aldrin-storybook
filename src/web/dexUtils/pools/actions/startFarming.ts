@@ -9,13 +9,13 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import { notify } from '../notifications'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction } from '../send'
-import { WalletAdapter } from '../types'
-import { NUMBER_OF_RETRIES } from '../common'
-import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
+import { notify } from '@sb/dexUtils/notifications'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { NUMBER_OF_RETRIES } from '@sb/dexUtils/common'
+import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 
 export const startFarming = async ({
   wallet,
@@ -45,8 +45,6 @@ export const startFarming = async ({
     farmingTicket
   )
 
-
- 
   const startFarmingTransaction = await program.instruction.startFarming(
     new BN(poolTokenAmount),
     {

@@ -13,7 +13,7 @@ import { Button } from '../../Tables/index.styles'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
 
-import { endFarming } from '@sb/dexUtils/pools/endFarming'
+import { endFarming } from '@sb/dexUtils/pools/actions/endFarming'
 import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'

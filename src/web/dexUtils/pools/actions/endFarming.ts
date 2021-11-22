@@ -7,17 +7,13 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import {
-  createTokenAccountTransaction,
-  isTransactionFailed,
-  sendTransaction,
-} from '../send'
-import { WalletAdapter } from '../types'
-import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
-import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
-import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
+import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 
 export const endFarming = async ({
   wallet,

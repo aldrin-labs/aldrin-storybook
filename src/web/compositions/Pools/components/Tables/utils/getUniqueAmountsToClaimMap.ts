@@ -8,7 +8,7 @@ interface FamingStateClaimable {
 
 export const getUniqueAmountsToClaimMap = ({
   farmingTickets,
-  farmingStates,
+  farmingStates = [],
 }: {
   farmingTickets: FarmingTicket[]
   farmingStates?: FarmingState[]

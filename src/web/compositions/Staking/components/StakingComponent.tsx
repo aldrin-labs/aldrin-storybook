@@ -5,16 +5,13 @@ import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool
 import {
   dayDuration,
   daysInMonth,
-  endOfHourTimestamp,
+  endOfHourTimestamp
 } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 import { DexTokensPrices, FeesEarned } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import {
-  STAKING_FARMING_TOKEN_MINT_ADDRESS,
-  STAKING_PART_OF_AMM_FEES,
-} from '@sb/dexUtils/staking/config'
+import { STAKING_PART_OF_AMM_FEES } from '@sb/dexUtils/staking/config'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'

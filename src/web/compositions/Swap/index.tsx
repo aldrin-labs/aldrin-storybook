@@ -39,8 +39,8 @@ import { getTokenDataByMint } from '../Pools/utils'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { PublicKey } from '@solana/web3.js'
-import { swap } from '@sb/dexUtils/pools/swap'
-import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
+import { swap } from '@sb/dexUtils/pools/actions/swap'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { SLIPPAGE_PERCENTAGE } from './config'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
@@ -48,6 +48,10 @@ import {
   costOfAddingToken,
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
+import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
+
+import ScalesIcon from '@icons/scales.svg'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 const DEFAULT_BASE_TOKEN = 'SOL'
 const DEFAULT_QUOTE_TOKEN = 'RIN'
@@ -89,14 +93,16 @@ const SwapPage = ({
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>(
     defaultQuoteTokenMint
   )
-
   const selectedPool = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
       (pool?.tokenB === baseTokenMintAddress ||
         pool?.tokenB === quoteTokenMintAddress)
+    // pool?.curveType === 1 // TODO: remove
   )
+
+  const isStablePool = selectedPool?.curveType === 1
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances({
     connection,
@@ -251,7 +257,46 @@ const SwapPage = ({
     isTokenABalanceInsufficient ||
     !selectedPool ||
     !selectedPool.supply ||
-    needEnterAmount
+    baseAmount == 0 ||
+    quoteAmount == 0
+
+  // for cases with SOL token
+  const isBaseTokenSOL = baseSymbol === 'SOL'
+  const isQuoteTokenSOL = quoteSymbol === 'SOL'
+
+  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
+
+  const isNativeSOLSelected =
+    nativeSOLTokenData?.address === userBaseTokenAccount ||
+    nativeSOLTokenData?.address === userQuoteTokenAccount
+
+  const userPoolBaseTokenAccount = isSwapBaseToQuote
+    ? userBaseTokenAccount
+    : userQuoteTokenAccount
+
+  const userPoolQuoteTokenAccount = isSwapBaseToQuote
+    ? userQuoteTokenAccount
+    : userBaseTokenAccount
+
+  useEffect(() => {
+    if (wallet.publicKey && selectedPool) {
+      const minimumReceivedAmountFromSwap = getMinimumReceivedAmountFromSwap({
+        wallet,
+        connection,
+        pool: selectedPool,
+        isSwapBaseToQuote,
+        swapAmountIn: +baseAmount,
+        allTokensData,
+        userBaseTokenAccount: userPoolBaseTokenAccount
+          ? new PublicKey(userPoolBaseTokenAccount)
+          : null,
+        userQuoteTokenAccount: userPoolQuoteTokenAccount
+          ? new PublicKey(userPoolQuoteTokenAccount)
+          : null,
+        transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
+      })
+    }
+  }, [wallet.publicKey, allTokensData, baseAmount])
 
   return (
     <RowContainer
@@ -318,16 +363,27 @@ const SwapPage = ({
               }}
             />
           </RowContainer>
-          <RowContainer justify={'flex-start'} margin={'0 2rem'}>
+          <RowContainer justify={'space-between'} margin={'0 2rem'}>
             <SvgIcon
               style={{ cursor: 'pointer' }}
               src={Arrows}
-              width={'2.5rem'}
-              height={'2.5rem'}
+              width={'2rem'}
+              height={'2rem'}
               onClick={() => {
                 reverseTokens()
               }}
             />
+            {isStablePool ? (
+              <DarkTooltip
+                title={
+                  'This pool uses the stable curve, which provides better rates for swapping stablecoins.'
+                }
+              >
+                <div>
+                  <SvgIcon src={ScalesIcon} width={'2rem'} height={'2rem'} />
+                </div>
+              </DarkTooltip>
+            ) : null}
           </RowContainer>
           <RowContainer margin={'1rem 0 2rem 0'}>
             <InputWithSelectorForSwaps
@@ -428,24 +484,6 @@ const SwapPage = ({
                   const swapAmountOut =
                     +totalWithFees * 10 ** quoteTokenDecimals
 
-                  // for cases with SOL token
-                  const isBaseTokenSOL = baseSymbol === 'SOL'
-                  const isQuoteTokenSOL = quoteSymbol === 'SOL'
-
-                  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
-
-                  const isNativeSOLSelected =
-                    nativeSOLTokenData?.address === userBaseTokenAccount ||
-                    nativeSOLTokenData?.address === userQuoteTokenAccount
-
-                  const userPoolBaseTokenAccount = isSwapBaseToQuote
-                    ? userBaseTokenAccount
-                    : userQuoteTokenAccount
-
-                  const userPoolQuoteTokenAccount = isSwapBaseToQuote
-                    ? userQuoteTokenAccount
-                    : userBaseTokenAccount
-
                   const result = await swap({
                     wallet,
                     connection,
@@ -461,6 +499,7 @@ const SwapPage = ({
                     isSwapBaseToQuote,
                     transferSOLToWrapped:
                       isPoolWithSOLToken && isNativeSOLSelected,
+                    curveType: selectedPool.curveType,
                   })
 
                   notify({
@@ -538,6 +577,7 @@ const SwapPage = ({
             </RowContainer>
           </Card>
         )}
+        <RowContainer>f</RowContainer>
       </>
 
       <TransactionSettingsPopup

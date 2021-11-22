@@ -5,6 +5,7 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
 import Info from '@icons/TooltipImg.svg'
+import { Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
@@ -34,14 +35,13 @@ import { RefreshFunction } from '@sb/dexUtils/types'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
+import { COLORS } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
-import { COLORS } from '../../../../../../variables/variables'
 import { Button } from '../../Tables/index.styles'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { InputWithCoins, InputWithTotal } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
-import { withTheme, Theme } from '@material-ui/core'
 
 
 interface AddLiquidityPopupProps {
@@ -513,6 +513,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
             const result = await createBasket({
               wallet,
               connection,
+              curveType: selectedPool.curveType,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userBaseTokenAmount,
               userQuoteTokenAmount,

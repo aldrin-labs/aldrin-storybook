@@ -5,13 +5,14 @@ import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedBy
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { DAY, endOfHourTimestamp, MINUTE } from '@core/utils/dateUtils'
+import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
 import { Theme } from '@material-ui/core'
 import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
 import { Block, BlockContent } from '@sb/components/Block'
+import { Button } from '@sb/components/Button'
 import { Checkbox } from '@sb/components/Checkbox'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/components/Typography'
@@ -23,10 +24,14 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
+import { createPoolTransactions } from '@sb/dexUtils/pools/createPool'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
+import { waitForTransactionConfirmation } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { PublicKey } from '@solana/web3.js'
+import BN from 'bn.js'
 import React, { useState } from 'react'
 import { Route } from 'react-router'
 import { useRouteMatch } from 'react-router-dom'
@@ -43,11 +48,7 @@ import {
   TableContainer,
   TableModeButton
 } from './TablesSwitcher.styles'
-import { Button } from '@sb/components/Button'
-import { createPoolTransactions } from '@sb/dexUtils/pools/createPool'
-import BN from 'bn.js'
-import { PublicKey } from '@solana/web3.js'
-import { waitForTransactionConfirmation } from '@sb/dexUtils/send'
+
 
 interface TableSwitcherProps {
   theme: Theme
@@ -86,7 +87,6 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
   }
 
   const [includePermissionless, setIncludePermissionless] = useState(true)
-
 
   const { wallet } = useWallet()
   const connection = useConnection()

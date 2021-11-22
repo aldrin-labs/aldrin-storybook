@@ -1,60 +1,70 @@
-import { TokenInstructions } from '@project-serum/serum'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
-import { Connection, PublicKey, Transaction } from '@solana/web3.js'
-import BN from 'bn.js'
-import { Side } from '../common/config'
+import { simulateTransaction } from '@project-serum/common'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { Side } from '@sb/dexUtils/common/config'
 import {
+  transferSOLToWrappedAccountAndClose,
   createSOLAccountAndClose,
-  transferSOLToWrappedAccountAndClose
-} from '../pools'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '../send'
-import { WalletAdapter } from '../types'
+} from '@sb/dexUtils/pools'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { createTokenAccountTransaction } from '@sb/dexUtils/send'
+import {
+  parseTokenAccountData,
+  parseTokenMintData,
+  TOKEN_PROGRAM_ID,
+} from '@sb/dexUtils/tokens'
+import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
+import { WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
+import { Connection, PublicKey, Transaction, Signer } from '@solana/web3.js'
+import BN from 'bn.js'
 
-
-const { TOKEN_PROGRAM_ID } = TokenInstructions
-
-export const swap = async ({
+export const getMinimumReceivedAmountFromSwap = async ({
+  swapAmountIn,
+  isSwapBaseToQuote,
+  pool,
   wallet,
   connection,
-  poolPublicKey,
   userBaseTokenAccount,
   userQuoteTokenAccount,
-  swapAmountIn,
-  swapAmountOut,
-  isSwapBaseToQuote,
   transferSOLToWrapped,
+  allTokensData,
 }: {
+  swapAmountIn: number
+  isSwapBaseToQuote: boolean
+  pool: PoolInfo
   wallet: WalletAdapter
   connection: Connection
-  poolPublicKey: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
-  swapAmountIn: number
-  swapAmountOut: number
-  isSwapBaseToQuote: boolean
   transferSOLToWrapped: boolean
+  allTokensData: TokenInfo[]
 }) => {
+  const { curveType, swapToken } = pool
+
+  const poolPublicKey = new PublicKey(swapToken)
+
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: POOLS_PROGRAM_ADDRESS,
+    programAddress: getPoolsProgramAddress({ curveType }),
   })
-
   const [vaultSigner] = await PublicKey.findProgramAddress(
     [poolPublicKey.toBuffer()],
     program.programId
   )
 
   const {
-    baseTokenMint,
     baseTokenVault,
-    quoteTokenMint,
     quoteTokenVault,
     poolMint,
     feePoolTokenAccount,
+    baseTokenMint,
+    quoteTokenMint,
+    curve,
   } = await program.account.pool.fetch(poolPublicKey)
+
+  const commonTransaction = new Transaction()
 
   const transactionBeforeSwap = new Transaction()
   const commonSigners = []
@@ -133,7 +143,7 @@ export const swap = async ({
     })
 
     userBaseTokenAccount = newAccountPubkey
-    transactionBeforeSwap.add(createAccountTransaction)
+    commonTransaction.add(createAccountTransaction)
   }
 
   if (!userQuoteTokenAccount) {
@@ -146,53 +156,77 @@ export const swap = async ({
     })
 
     userQuoteTokenAccount = newAccountPubkey
-    transactionBeforeSwap.add(createAccountTransaction)
+    commonTransaction.add(createAccountTransaction)
   }
 
-  let commonTransaction = new Transaction()
+  const swapAmountOut = 0
 
-  try {
-    const swapTransaction = await program.instruction.swap(
-      new BN(swapAmountIn),
-      new BN(swapAmountOut),
-      isSwapBaseToQuote ? Side.Ask : Side.Bid,
-      {
-        accounts: {
-          pool: poolPublicKey,
-          poolSigner: vaultSigner,
-          poolMint,
-          baseTokenVault,
-          quoteTokenVault,
-          feePoolTokenAccount: feePoolTokenAccount,
-          walletAuthority: wallet.publicKey,
-          userBaseTokenAccount,
-          userQuoteTokenAccount,
-          tokenProgram: TOKEN_PROGRAM_ID,
-        },
-      }
-    )
-
-    commonTransaction.add(transactionBeforeSwap)
-    commonTransaction.add(swapTransaction)
-    commonTransaction.add(transactionAfterSwap)
-
-    const tx = await sendTransaction({
-      wallet,
-      connection,
-      transaction: commonTransaction,
-      signers: commonSigners,
-      focusPopup: true,
-    })
-
-    if (!isTransactionFailed(tx)) {
-      return 'success'
+  const swapTransaction = await program.instruction.swap(
+    new BN(swapAmountIn),
+    new BN(swapAmountOut),
+    isSwapBaseToQuote ? Side.Ask : Side.Bid,
+    {
+      accounts: {
+        pool: poolPublicKey,
+        poolSigner: vaultSigner,
+        poolMint,
+        baseTokenVault,
+        quoteTokenVault,
+        feePoolTokenAccount,
+        walletAuthority: wallet.publicKey,
+        userBaseTokenAccount,
+        userQuoteTokenAccount,
+        ...(curve ? { curve } : {}),
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
     }
-  } catch (e) {
-    console.log('swap catch error', e)
-    if (e.message.includes('cancelled')) {
-      return 'cancelled'
-    }
+  )
+
+  commonTransaction.add(transactionBeforeSwap)
+  commonTransaction.add(swapTransaction)
+  commonTransaction.add(transactionAfterSwap)
+
+  commonTransaction.feePayer = wallet.publicKey
+
+  if (swapAmountIn === 0 || swapAmountIn === '') {
+    return 0
   }
 
-  return 'failed'
+  console.log('args', {
+    pool: poolPublicKey,
+    poolSigner: vaultSigner,
+    poolMint,
+    baseTokenVault,
+    quoteTokenVault,
+    feePoolTokenAccount,
+    walletAuthority: wallet.publicKey,
+    userBaseTokenAccount,
+    userQuoteTokenAccount,
+    ...(curve ? { curve } : {}),
+    tokenProgram: TOKEN_PROGRAM_ID,
+  })
+
+  const response = await connection.simulateTransaction(
+    commonTransaction,
+    undefined,
+    [isSwapBaseToQuote ? userQuoteTokenAccount : userBaseTokenAccount]
+  )
+
+  console.log('responce', response)
+
+  const postUserQuoteTokenAccountData = Buffer.from(
+    value.accounts[0].data[0],
+    'base64'
+  )
+
+  const parsedQuote = parseTokenAccountData(postUserQuoteTokenAccountData)
+
+  let {
+    amount: quoteAmount,
+    decimals: quoteTokenDecimals,
+  } = getTokenDataByMint(allTokensData, parsedQuote.mint.toString())
+
+  const quoteAmountAfterSwap = parsedQuote.amount / 10 ** quoteTokenDecimals
+
+  const swapAmount = quoteAmountAfterSwap - quoteAmount
 }

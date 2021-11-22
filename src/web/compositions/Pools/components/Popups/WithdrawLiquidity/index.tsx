@@ -9,9 +9,7 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   DexTokensPrices,
-
   FeesEarned, PoolInfo,
-
   PoolWithOperation
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
@@ -23,17 +21,16 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
-import { redeemBasket } from '@sb/dexUtils/pools/redeemBasket'
+import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
+import { COLORS } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
-import { COLORS } from '@variables/variables'
-
 
 
 interface WithdrawalProps {
@@ -313,6 +310,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
             const result = await redeemBasket({
               wallet,
               connection,
+              curveType: selectedPool.curveType,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               userPoolTokenAmount: poolTokenAmountToWithdraw,

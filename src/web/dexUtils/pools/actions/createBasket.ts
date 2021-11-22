@@ -2,11 +2,12 @@ import { Program } from '@project-serum/anchor'
 import { TokenInstructions } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import {
-  Account, Connection,
+  Account,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
-  Transaction
+  Transaction,
+  Connection
 } from '@solana/web3.js'
 import BN from 'bn.js'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
@@ -19,21 +20,20 @@ import {
   sendTransaction
 } from '../send'
 import { Token } from '../token/token'
-import { WalletAdapter } from '../types'
-
+import { WalletAdapter } from '../../types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
+
 
 interface CreateBasketBase {
   poolPublicKey: PublicKey
   userPoolTokenAccount?: PublicKey | null
-  userBaseTokenAccount: PublicKey
-  userQuoteTokenAccount: PublicKey
-  userBaseTokenAmount: number
-  userQuoteTokenAmount: number
-  transferSOLToWrapped: boolean
   wallet: WalletAdapter
   connection: Connection
+  userBaseTokenAmount: BN
+  userQuoteTokenAmount: BN
+  userBaseTokenAccount: PublicKey
+  userQuoteTokenAccount: PublicKey
 }
 
 export interface CreateBasketTransactionParams extends CreateBasketBase {
@@ -46,6 +46,7 @@ export interface CreateBasketTransactionParams extends CreateBasketBase {
   program: Program
   supply: BN
   poolTokenAmountA: BN
+  transferSOLToWrapped?: boolean
 }
 
 
