@@ -2,10 +2,10 @@ import { BN, ProgramAccount, Provider } from "@project-serum/anchor";
 import { createMintInstructions, createTokenAccountInstrs } from "@project-serum/common";
 import { TokenInstructions } from "@project-serum/serum";
 import { Connection, Keypair, PublicKey, SYSVAR_RENT_PUBKEY, Transaction, TransactionInstruction, Account } from "@solana/web3.js";
-import { ProgramsMultiton } from "../ProgramsMultiton/ProgramsMultiton";
-import { FEE_OWNER_ACCOUNT, POOLS_PROGRAM_ADDRESS, POOL_AUTHORITY } from "../ProgramsMultiton/utils";
-import { signTransactions } from "../send";
-import { WalletAdapter } from "../types";
+import { ProgramsMultiton } from "../../ProgramsMultiton/ProgramsMultiton";
+import { FEE_OWNER_ACCOUNT, POOLS_PROGRAM_ADDRESS, POOL_AUTHORITY } from "../../ProgramsMultiton/utils";
+import { signTransactions } from "../../send";
+import { WalletAdapter } from "../../types";
 import { createBasketTransaction } from "./createBasket";
 
 interface CreatePoolDeposit {

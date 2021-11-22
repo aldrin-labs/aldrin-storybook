@@ -10,16 +10,16 @@ import {
   Connection
 } from '@solana/web3.js'
 import BN from 'bn.js'
-import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
-import { transferSOLToWrappedAccountAndClose } from '../pools'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { isCancelledTransactionError } from '../../common/isCancelledTransactionError'
+import { transferSOLToWrappedAccountAndClose } from '../../pools'
+import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { POOLS_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
   sendTransaction
-} from '../send'
-import { Token } from '../token/token'
+} from '../../send'
+import { Token } from '../../token/token'
 import { WalletAdapter } from '../../types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
