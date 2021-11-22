@@ -13,7 +13,7 @@ import BN from 'bn.js'
 import { isCancelledTransactionError } from '../../common/isCancelledTransactionError'
 import { transferSOLToWrappedAccountAndClose } from '../../pools'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
+import { POOLS_PROGRAM_ADDRESS, getPoolsProgramAddress } from '../../ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
@@ -183,7 +183,7 @@ export async function createBasketTransaction(params: CreateBasketTransactionPar
 
 
 export interface CreateBasketParams extends CreateBasketBase {
-
+  curveType: number | null
 }
 
 export async function createBasket(params: CreateBasketParams) {
@@ -193,7 +193,7 @@ export async function createBasket(params: CreateBasketParams) {
     const program = ProgramsMultiton.getProgramByAddress({
       wallet,
       connection,
-      programAddress: POOLS_PROGRAM_ADDRESS,
+      programAddress: getPoolsProgramAddress({ curveType: params.curveType }),
     })
 
 
