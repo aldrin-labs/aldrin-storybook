@@ -231,6 +231,10 @@ const SwapPage = ({
   const reverseTokens = () => {
     setBaseTokenMintAddress(quoteTokenMintAddress)
     setQuoteTokenMintAddress(baseTokenMintAddress)
+
+    setBaseTokenAddressFromSeveral(selectedQuoteTokenAddressFromSeveral)
+    setQuoteTokenAddressFromSeveral(selectedBaseTokenAddressFromSeveral)
+
     setBaseAmount(quoteAmount)
     setQuoteAmount(baseAmount)
   }
@@ -576,6 +580,11 @@ const SwapPage = ({
                 if (quoteTokenMintAddress === address) {
                   setQuoteTokenMintAddress('')
                 }
+
+                if (selectedBaseTokenAddressFromSeveral) {
+                  setBaseTokenAddressFromSeveral('')
+                }
+
                 setBaseTokenMintAddress(address)
                 setIsSelectCoinPopupOpen(false)
               }
@@ -583,6 +592,11 @@ const SwapPage = ({
                 if (baseTokenMintAddress === address) {
                   setBaseTokenMintAddress('')
                 }
+
+                if (selectedQuoteTokenAddressFromSeveral) {
+                  setQuoteTokenAddressFromSeveral('')
+                }
+
                 setQuoteTokenMintAddress(address)
                 setIsSelectCoinPopupOpen(false)
               }
