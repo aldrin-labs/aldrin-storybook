@@ -82,7 +82,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
   const tokenPrice =
     dexTokensPricesMap?.get(
       getTokenNameByMintAddress(currentFarmingState.farmingTokenMint)
-    ).price || 0
+    )?.price || 0
 
   const poolsFees =
     ((totalFeesFromPools * STAKING_PART_OF_AMM_FEES) / tokenPrice) *

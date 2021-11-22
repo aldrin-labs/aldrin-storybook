@@ -337,7 +337,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               <UserBalance
                 visible={isBalancesShowing}
                 value={tokenData?.amount || 0}
-              /> 
+              />
             </BalanceWrap>
           </WalletBalanceBlock>
         </WalletRow>
@@ -368,14 +368,14 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       Est.Rewards:
                       <DarkTooltip
                         title={
-                          'Staking rewards are calculated with an estimation based on AMM fees earned. RIN buyback occurs once per day at market price. Estimated Rewards are based on the market price at the time of check, so may be different at the time of payment due to daily price moving.'
+                          'Staking rewards are paid every 27th of the month based on RIN daily buy-backs on 1/6th of AMM fees . Estimated rewards are updated hourly based on fees received and the RIN price at the time of snapshot, so may be slightly different from the actual number received on the 27th.'
                         }
                       >
                         <div>
                           <SvgIcon
                             src={InfoIcon}
-                            width={'1.2rem'}
-                            height={'1.2rem'}
+                            width={'1.75rem'}
+                            height={'1.75rem'}
                             style={{ marginLeft: '0.75rem' }}
                           />
                         </div>
