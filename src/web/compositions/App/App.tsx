@@ -175,14 +175,14 @@ const AppRaw = ({
                             }}
                           />
                         )}
-                        <WarningBanner
+                        {/* <WarningBanner
                           localStorageProperty={'isPhantomIssuesPopupOpen'}
                           notification={[
                             'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
                             'In the meantime, you can import your Seed Phrase into Aldrin Wallet or any other wallet and interact with DEX using it.',
                           ]}
                           needMobile={false}
-                        />
+                        /> */}
                         {/* <RebrandingPopup
                           open={isRebrandingPopupOpen}
                           onClose={() => setIsRebrandingPopupOpen(false)}
