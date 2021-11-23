@@ -5,7 +5,7 @@ import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
-import { daysInMonth } from '@core/utils/dateUtils'
+import { dayDuration } from '@core/utils/dateUtils'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -21,11 +21,15 @@ import { ShareButton } from '@sb/components/ShareButton'
 import { InlineText, Text } from '@sb/components/Typography'
 import { MarketDataByTicker } from '@sb/compositions/Chart/components/MarketStats/MarketStats'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
+import { FarmingState } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
-import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
+import {
+  DAYS_TO_CHECK_BUY_BACK,
+  STAKING_FARMING_TOKEN_DIVIDER,
+} from '@sb/dexUtils/staking/config'
+
+import { SvgIcon } from '@sb/components'
+import Info from '@icons/TooltipImg.svg'
 
 import { TokenInfo } from '@sb/dexUtils/types'
 import React, { useEffect, useState } from 'react'
@@ -40,6 +44,7 @@ import {
 import { getShareText } from '../utils'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 interface InnerProps {
   tokenData: TokenInfo | null
@@ -48,8 +53,8 @@ interface StatsComponentProps extends InnerProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
   currentFarmingState: FarmingState
-  allStakingFarmingTickets: FarmingTicket[]
-  poolsFees: number
+  buyBackAmount: number
+  totalStaked: number
 }
 
 const StatsComponent: React.FC<StatsComponentProps> = (
@@ -58,8 +63,8 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const {
     getDexTokensPricesQuery,
     currentFarmingState,
-    allStakingFarmingTickets,
-    poolsFees,
+    buyBackAmount,
+    totalStaked,
   } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
 
@@ -79,33 +84,43 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const tokenPrice =
     dexTokensPricesMap?.get(
       getTokenNameByMintAddress(currentFarmingState.farmingTokenMint)
-    ).price || 0
+    )?.price || 0
 
-  const tokensTotal =
-    currentFarmingState?.tokensTotal / STAKING_FARMING_TOKEN_DIVIDER
-
-  const poolsFeesWithoutDecimals = poolsFees / STAKING_FARMING_TOKEN_DIVIDER
-  const totalTokensToBeDistributed = tokensTotal + poolsFeesWithoutDecimals
-
-  const dailyRewards = totalTokensToBeDistributed / daysInMonth
-
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(
-    getTicketsWithUiValues({
-      tickets: allStakingFarmingTickets,
-      farmingTokenMintDecimals: currentFarmingState.farmingTokenMintDecimals,
-    })
-  )
   const totalStakedUSD = tokenPrice * totalStaked
 
-  const APR = (totalTokensToBeDistributed / totalStaked) * 100 * 12
-  const formattedAPR = APR ? stripByAmount(APR, 2) : '--'
+  const buyBackAmountWithoutDecimals =
+    buyBackAmount / STAKING_FARMING_TOKEN_DIVIDER
+
+  const buyBackAPR =
+    (buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK / totalStaked) *
+    365 *
+    100
+
+  const dailyRewards =
+    (currentFarmingState.tokensPerPeriod / STAKING_FARMING_TOKEN_DIVIDER) *
+    (dayDuration / currentFarmingState.periodLength)
+
+  const treasuryAPR = (dailyRewards / totalStaked) * 365 * 100
+
+  const formattedBuyBackAPR = isFinite(buyBackAPR)
+    ? stripByAmount(buyBackAPR, 2)
+    : '--'
+
+  const formattedTreasuryAPR = isFinite(treasuryAPR)
+    ? stripByAmount(treasuryAPR, 2)
+    : '--'
+
+  const formattedAPR =
+    isFinite(buyBackAPR) && isFinite(treasuryAPR)
+      ? stripByAmount(buyBackAPR + treasuryAPR, 2)
+      : '--'
 
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`
     return () => {
       document.title = 'Aldrin'
     }
-  }, [APR])
+  }, [formattedAPR])
 
   const shareText = getShareText(formattedAPR)
 
@@ -141,11 +156,39 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <BigNumber>{formattedAPR}%</BigNumber>
+              <BigNumber>
+                {formattedTreasuryAPR}% + {formattedBuyBackAPR}%
+              </BigNumber>
               <StretchedBlock>
-                <Number style={{ lineHeight: 'normal', marginTop: '1rem' }}>
-                  APR
-                </Number>
+                <div>
+                  <DarkTooltip
+                    title={
+                      <span>
+                        <div style={{ marginBottom: '1rem' }}>
+                          First APR is calculated based on fixed “treasury”
+                          rewards.
+                        </div>
+                        <div style={{ marginBottom: '1rem' }}>
+                          Second APR is calculated based on the current RIN
+                          price and the average AMM fees for the past 30d.
+                        </div>
+                        <div>Rewards are credited with both.</div>
+                      </span>
+                    }
+                  >
+                    <span>
+                      <SvgIcon
+                        src={Info}
+                        width={'2rem'}
+                        height={'auto'}
+                        style={{ marginRight: '1rem' }}
+                      />
+                    </span>
+                  </DarkTooltip>
+                  <Number style={{ lineHeight: 'normal', marginTop: '1rem' }}>
+                    APR <InlineText style={{ fontWeight: 400 }}>30d</InlineText>
+                  </Number>
+                </div>
                 <div>
                   <ShareButton text={shareText} />
                 </div>
