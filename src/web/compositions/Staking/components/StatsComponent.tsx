@@ -156,37 +156,40 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <BigNumber>
-                {formattedTreasuryAPR}% + {formattedBuyBackAPR}%
-              </BigNumber>
+              <div style={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'nowrap' }}>
+                <BigNumber>
+                  {formattedTreasuryAPR}% + {formattedBuyBackAPR}%
+                </BigNumber>
+                <DarkTooltip
+                  title={
+                    <span>
+                      <div style={{ marginBottom: '1rem' }}>
+                        First APR is calculated based on fixed “treasury”
+                        rewards.
+                      </div>
+                      <div style={{ marginBottom: '1rem' }}>
+                        Second APR is calculated based on the current RIN price
+                        and the average AMM fees for the past 30d.
+                      </div>
+                      <div>Rewards are credited with both.</div>
+                    </span>
+                  }
+                >
+                  <span style={{ marginBottom: '1rem' }}>
+                    <SvgIcon
+                      src={Info}
+                      width={'2rem'}
+                      height={'auto'}
+                      style={{ marginLeft: '1rem' }}
+                    />
+                  </span>
+                </DarkTooltip>
+              </div>
+
               <StretchedBlock>
                 <div>
-                  <DarkTooltip
-                    title={
-                      <span>
-                        <div style={{ marginBottom: '1rem' }}>
-                          First APR is calculated based on fixed “treasury”
-                          rewards.
-                        </div>
-                        <div style={{ marginBottom: '1rem' }}>
-                          Second APR is calculated based on the current RIN
-                          price and the average AMM fees for the past 30d.
-                        </div>
-                        <div>Rewards are credited with both.</div>
-                      </span>
-                    }
-                  >
-                    <span>
-                      <SvgIcon
-                        src={Info}
-                        width={'2rem'}
-                        height={'auto'}
-                        style={{ marginRight: '1rem' }}
-                      />
-                    </span>
-                  </DarkTooltip>
                   <Number style={{ lineHeight: 'normal', marginTop: '1rem' }}>
-                    APR <InlineText style={{ fontWeight: 400 }}>30d</InlineText>
+                    APR
                   </Number>
                 </div>
                 <div>
