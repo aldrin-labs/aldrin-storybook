@@ -153,6 +153,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     const setAuthoritiesTxId = await connection.sendRawTransaction(generatedTransactions.setAuthorities.serialize(), {
       skipPreflight: true,
     })
+
     await waitForTransactionConfirmation({
       txid: setAuthoritiesTxId,
       timeout: 60_000,
@@ -176,20 +177,20 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
 
     console.log('initPoolTxId: ', initPoolTxId)
 
-    if (generatedTransactions.firstDeposit) {
-      console.log('First deposit...')
-      const firstDepositTxId = await connection.sendRawTransaction(generatedTransactions.firstDeposit.serialize(), {
-        skipPreflight: true,
-      })
-      await waitForTransactionConfirmation({
-        txid: firstDepositTxId,
-        timeout: 60_000,
-        connection: connection.getConnection(),
-        showErrorForTimeout: true,
-      })
+    // if (generatedTransactions.firstDeposit) {
+    //   console.log('First deposit...')
+    //   const firstDepositTxId = await connection.sendRawTransaction(generatedTransactions.firstDeposit.serialize(), {
+    //     skipPreflight: true,
+    //   })
+    //   await waitForTransactionConfirmation({
+    //     txid: firstDepositTxId,
+    //     timeout: 60_000,
+    //     connection: connection.getConnection(),
+    //     showErrorForTimeout: true,
+    //   })
 
-      console.log('firstDepositTxId: ', firstDepositTxId)
-    }
+    //   console.log('firstDepositTxId: ', firstDepositTxId)
+    // }
 
     // console.log('generatedTransactions: ', generatedTransactions)
   }

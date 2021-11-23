@@ -105,7 +105,7 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
 
   const [vaultSigner, vaultSignerNonce] = await PublicKey.findProgramAddress(
     [pool.publicKey.toBuffer()],
-    program.programId
+    program2.programId
   )
 
   const walletWithPk = walletAdapterToWallet(wallet)
@@ -202,6 +202,7 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
 
   createPoolTx.add(initializeCurveInstr)
 
+  program2.rpc.initialize()
   const createPoolInstruction: TransactionInstruction = await program2.instruction.initialize(
     new BN(vaultSignerNonce),
     new BN(curveType),
@@ -214,8 +215,8 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
         quoteTokenVault: quoteTokenVault.publicKey,
         poolSigner: vaultSigner,
         initializer: poolInitializer.publicKey,
-        poolAuthority: new PublicKey(POOL_AUTHORITY),
-        // poolAuthority: wallet.publicKey,
+        // poolAuthority: new PublicKey(POOL_AUTHORITY),
+        poolAuthority: wallet.publicKey,
         feeBaseAccount: baseFeeVault.publicKey,
         feeQuoteAccount: quoteFeeVault.publicKey,
         feePoolTokenAccount: poolFeeVault.publicKey,
