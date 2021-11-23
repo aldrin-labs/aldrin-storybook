@@ -113,7 +113,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
 
   return (
-    <Modal open onClose={close}>
+    <Modal open onClose={goBack}>
       <ModalBlock border>
         <div>
           <Button $variant="secondary" onClick={goBack} $borderRadius="lg">⟵ Close</Button>
