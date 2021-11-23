@@ -5,7 +5,7 @@ import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
-import { dayDuration, daysInMonth } from '@core/utils/dateUtils'
+import { dayDuration } from '@core/utils/dateUtils'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
@@ -23,12 +23,14 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText, Text } from '@sb/components/Typography'
 import { MarketDataByTicker } from '@sb/compositions/Chart/components/MarketStats/MarketStats'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
+import { FarmingState } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
-import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
-import InfoIcon from '@icons/inform.svg'
+import {
+  DAYS_TO_CHECK_BUY_BACK,
+  STAKING_FARMING_TOKEN_DIVIDER,
+} from '@sb/dexUtils/staking/config'
+
+import Info from '@icons/TooltipImg.svg'
 
 import { TokenInfo } from '@sb/dexUtils/types'
 import React, { useEffect, useState } from 'react'
@@ -51,8 +53,8 @@ interface StatsComponentProps extends InnerProps {
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
   currentFarmingState: FarmingState
-  allStakingFarmingTickets: FarmingTicket[]
-  poolsFees: number
+  buyBackAmount: number
+  totalStaked: number
 }
 
 const StatsComponent: React.FC<StatsComponentProps> = (
@@ -61,8 +63,8 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   const {
     getDexTokensPricesQuery,
     currentFarmingState,
-    allStakingFarmingTickets,
-    poolsFees,
+    buyBackAmount,
+    totalStaked,
   } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
 
@@ -84,45 +86,44 @@ const StatsComponent: React.FC<StatsComponentProps> = (
       getTokenNameByMintAddress(currentFarmingState.farmingTokenMint)
     )?.price || 0
 
-  const tokensTotal =
-    currentFarmingState?.tokensTotal / STAKING_FARMING_TOKEN_DIVIDER
-
-  const poolsFeesWithoutDecimals = poolsFees / STAKING_FARMING_TOKEN_DIVIDER
-  const totalTokensToBeDistributed = tokensTotal + poolsFeesWithoutDecimals
-
-  const dailyRewards = totalTokensToBeDistributed / daysInMonth
-
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(
-    getTicketsWithUiValues({
-      tickets: allStakingFarmingTickets,
-      farmingTokenMintDecimals: currentFarmingState.farmingTokenMintDecimals,
-    })
-  )
   const totalStakedUSD = tokenPrice * totalStaked
 
-  // const APR = (totalTokensToBeDistributed / totalStaked) * 100 * 12
+  const buyBackAmountWithoutDecimals =
+    buyBackAmount / STAKING_FARMING_TOKEN_DIVIDER
+
+  const buyBackAPR =
+    (buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK / totalStaked) *
+    365 *
+    100
+
+  const dailyRewards =
+    (currentFarmingState.tokensPerPeriod / STAKING_FARMING_TOKEN_DIVIDER) *
+    (dayDuration / currentFarmingState.periodLength)
+
+  const treasuryAPR = (dailyRewards / totalStaked) * 365 * 100
+
+  const formattedBuyBackAPR = isFinite(buyBackAPR)
+    ? stripByAmount(buyBackAPR, 2)
+    : '--'
 
   const totalStakedPercentageToCircSupply =
     (totalStaked * 100) / RINCirculatingSupply
 
-  const tokensPerDay =
-    ((dayDuration / currentFarmingState.periodLength) *
-      currentFarmingState.tokensPerPeriod) /
-    10 ** currentFarmingState.farmingTokenMintDecimals
+  const formattedTreasuryAPR = isFinite(treasuryAPR)
+    ? stripByAmount(treasuryAPR, 2)
+    : '--'
 
-  const ammFeesPerDay =
-    poolsFees / 10 ** currentFarmingState.farmingTokenMintDecimals / 7
-
-  const APR = ((tokensPerDay + ammFeesPerDay) / totalStaked) * 365 * 100
-
-  const formattedAPR = APR !== Infinity ? stripByAmount(APR, 2) : '--'
+  const formattedAPR =
+    isFinite(buyBackAPR) && isFinite(treasuryAPR)
+      ? stripByAmount(buyBackAPR + treasuryAPR, 2)
+      : '--'
 
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`
     return () => {
       document.title = 'Aldrin'
     }
-  }, [APR])
+  }, [formattedAPR])
 
   const shareText = getShareText(formattedAPR)
 
@@ -155,35 +156,39 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <BigNumber>{formattedAPR}%</BigNumber>
+              <BigNumber>
+                {formattedTreasuryAPR}% + {formattedBuyBackAPR}%
+              </BigNumber>
               <StretchedBlock>
-                <Row>
+                <div>
                   <DarkTooltip
                     title={
-                      'APR is calculated based on the current RIN price and the average AMM fees for the past week.'
+                      <span>
+                        <div style={{ marginBottom: '1rem' }}>
+                          First APR is calculated based on fixed “treasury”
+                          rewards.
+                        </div>
+                        <div style={{ marginBottom: '1rem' }}>
+                          Second APR is calculated based on the current RIN
+                          price and the average AMM fees for the past 30d.
+                        </div>
+                        <div>Rewards are credited with both.</div>
+                      </span>
                     }
                   >
-                    <Row width="2rem">
+                    <span>
                       <SvgIcon
-                        src={InfoIcon}
-                        width={'100%'}
+                        src={Info}
+                        width={'2rem'}
                         height={'auto'}
-                        style={{ margin: '0.75rem 0.75rem 0 0' }}
+                        style={{ marginRight: '1rem' }}
                       />
-                    </Row>
+                    </span>
                   </DarkTooltip>
                   <Number style={{ lineHeight: 'normal', marginTop: '1rem' }}>
-                    APR
+                    APR <InlineText style={{ fontWeight: 400 }}>30d</InlineText>
                   </Number>
-                  <Text
-                    lineHeight={'100%'}
-                    margin={'0'}
-                    size="md"
-                    style={{ padding: '2rem 0 0 0' }}
-                  >
-                    30d
-                  </Text>
-                </Row>
+                </div>
                 <div>
                   <ShareButton text={shareText} />
                 </div>

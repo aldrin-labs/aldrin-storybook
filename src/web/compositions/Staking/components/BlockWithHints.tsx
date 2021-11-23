@@ -38,7 +38,14 @@ export const BlockWithHints = () => {
               <BlockSubtitle margin={'0'}>Rewards: </BlockSubtitle>
               <DarkTooltip
                 title={
-                  'Staking rewards are paid every 27th of the month based on RIN daily buy-backs on 1/6th of AMM fees . Estimated rewards are updated hourly based on fees received and the RIN price at the time of snapshot, so may be slightly different from the actual number received on the 27th.'
+                  <p>
+                    Staking rewards are paid{' '}
+                    <strong>every 27th of the month</strong> based on RIN daily
+                    buy-backs on 1/6th of AMM fees . Estimated rewards are
+                    updated hourly based on fees received and the RIN price at
+                    the time of snapshot, so may be slightly different from the
+                    actual number received on the 27th.
+                  </p>
                 }
               >
                 <div>
@@ -53,12 +60,9 @@ export const BlockWithHints = () => {
             </RowContainer>
 
             <Text maxWidth="95%" size="sm">
-              RIN staking rewards are calculated hourly. These are then
-              accumulated and{' '}
-              <strong>
-                paid out on the 27th of each month along with trading fee
-                revenue.
-              </strong>
+              Staking rewards are paid <strong>every 27th of the month</strong>.
+              Estimated rewards may be slightly different from the actual number
+              received on the 27th.
             </Text>
           </BlockContent>
         </Block>

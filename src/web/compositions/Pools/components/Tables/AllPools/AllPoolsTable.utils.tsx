@@ -393,28 +393,28 @@ export const combineAllPoolsData = ({
                     <span style={{ color: '#53DF11' }}>Ended</span>
                   </RowDataTdText>
                 ) : (
-                    openFarmings.map((farmingState, i, arr) => {
-                      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
-                        { farmingState, totalStakedLpTokensUSD }
-                      )
+                  openFarmings.map((farmingState, i, arr) => {
+                    const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                      { farmingState, totalStakedLpTokensUSD }
+                    )
 
-                      return (
-                        <RowDataTdText>
-                          <span style={{ color: '#53DF11' }}>
-                            {stripByAmountAndFormat(
-                              farmingStateDailyFarmingValuePerThousandDollarsLiquidity
-                            )}
-                          </span>{' '}
-                          {getTokenNameByMintAddress(
-                            farmingState.farmingTokenMint
+                    return (
+                      <RowDataTdText>
+                        <span style={{ color: '#53DF11' }}>
+                          {stripByAmountAndFormat(
+                            farmingStateDailyFarmingValuePerThousandDollarsLiquidity
                           )}
-                          {/* + between every farming state token to be farmed, except last. for last - per day */}
-                          {i !== arr.length - 1 ? <span> + </span> : null}
-                          {i === arr.length - 1 ? <span> / Day</span> : null}
-                        </RowDataTdText>
-                      )
-                    })
-                  )}
+                        </span>{' '}
+                        {getTokenNameByMintAddress(
+                          farmingState.farmingTokenMint
+                        )}
+                        {/* + between every farming state token to be farmed, except last. for last - per day */}
+                        {i !== arr.length - 1 ? <span> + </span> : null}
+                        {i === arr.length - 1 ? <span> / Day</span> : null}
+                      </RowDataTdText>
+                    )
+                  })
+                )}
 
                 {openFarmings.length > 0 && (
                   <RowDataTdText>
@@ -425,8 +425,8 @@ export const combineAllPoolsData = ({
               </Row>
             </RowContainer>
           ) : (
-              '-'
-            ),
+            '-'
+          ),
           contentToSort: farmingAPR,
         },
         details: {
