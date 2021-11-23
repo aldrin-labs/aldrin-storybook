@@ -195,15 +195,7 @@ export const FarmingData = styled.div`
   flex-direction: row;
 `
 
-export const FarmingDataIcons = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-right: 10px;
-`
 
-export const FarmingIconWrap = styled.span`
-  margin-bottom: 5px;
-`
 
 export const PoolStatsText = styled(InlineText)`
   font-size: 12px;

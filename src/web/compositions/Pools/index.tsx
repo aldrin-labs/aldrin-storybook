@@ -1,12 +1,12 @@
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { Theme, withTheme } from '@material-ui/core'
-import React, { useEffect, useState } from 'react'
+import { Cell, Page, WideContent } from '@sb/components/Layout'
+import React, { useEffect } from 'react'
 import { compose } from 'recompose'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
-import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { Page, Content, Row, Cell, WideContent } from '@sb/components/Layout'
 import { RootRow } from './components/Charts/styles'
 import { FarmingConditionsUpdateBanner } from './components/Popups/FarmingConditionsUpdateBanner'
+import TablesSwitcher from './components/Tables/TablesSwitcher'
 
 const Pools = ({ theme }: { theme: Theme }) => {
   useEffect(() => {
@@ -30,7 +30,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
         </RootRow>
         <RootRow>
           <Cell col={12}>
-            <TablesSwitcher theme={theme} />
+            <TablesSwitcher />
           </Cell>
         </RootRow>
       </WideContent>

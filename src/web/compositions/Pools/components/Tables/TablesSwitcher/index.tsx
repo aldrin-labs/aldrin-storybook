@@ -38,8 +38,8 @@ import { useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
 import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
 import { PoolPage } from '../../PoolPage'
-import AllPoolsTable from '../AllPools/AllPoolsTable'
-import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
+import { AllPoolsTable } from '../AllPools'
+import { UserLiquidityTable } from '../UserLiquidity'
 import PlusIcon from './icons/plus.svg'
 import {
   AddPoolButton, InputWrap,
@@ -47,7 +47,8 @@ import {
   TabContainer,
   TableContainer,
   TableModeButton
-} from './TablesSwitcher.styles'
+} from './styles'
+import { PoolsTable } from '../PoolsTable'
 
 
 interface TableSwitcherProps {
@@ -200,6 +201,12 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     new Map<string, DexTokensPrices>()
   )
 
+
+  const feesByPoolMap = getFeesEarnedByPool.reduce(
+    (acc, fees) => acc.set(fees.pool, fees),
+    new Map<string, FeesEarned>()
+  )
+
   const earnedFeesInPoolForUserMap = getFeesEarnedByAccount.reduce(
     (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned),
     new Map<string, FeesEarned>()
@@ -209,9 +216,14 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     poolsInfo: pools,
     allTokensData: userTokensData,
     farmingTicketsMap,
-  }).length
+  })
 
   const tradingVolumes = getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools || []
+
+  const tradingVolumesMap = tradingVolumes.reduce(
+    (acc, tv) => acc.set(tv.pool, tv),
+    new Map<string, TradingVolumeStats>()
+  )
 
   return (
     <Block>
@@ -228,7 +240,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
               isActive={!isAllPoolsSelected}
               onClick={() => setSelectedTable('userLiquidity')}
             >
-              Your liquidity ({userLiquidityPools})
+              Your liquidity ({userLiquidityPools.length})
             </TableModeButton>
           </div>
           <InputWrap>
@@ -275,35 +287,31 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
         </TabContainer>
         <TableContainer>
           {selectedTable === 'all' ? (
+
             <AllPoolsTable
-              theme={theme}
               searchValue={searchValue}
-              includePermissionless={includePermissionless}
-              poolsInfo={pools}
+              pools={pools}
               dexTokensPricesMap={dexTokensPricesMap}
-              feesByPool={getFeesEarnedByPool}
-              tradingVolumes={tradingVolumes}
+              feesByPool={feesByPoolMap}
+              tradingVolumes={tradingVolumesMap}
             />
           ) : (
-              <UserLiquitidyTable
-                theme={theme}
+              <UserLiquidityTable
                 searchValue={searchValue}
-                includePermissionless={includePermissionless}
-                poolsInfo={pools}
+                pools={userLiquidityPools}
                 dexTokensPricesMap={dexTokensPricesMap}
                 allTokensData={userTokensData}
                 farmingTicketsMap={farmingTicketsMap}
-                earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+                feesByPoolForUser={earnedFeesInPoolForUserMap}
               />
             )}
-
         </TableContainer>
       </BlockContent>
       <Route path={`${path}/:symbol`}>
         <PoolPage
           pools={pools}
           prices={dexTokensPricesMap}
-          tradingVolumes={tradingVolumes}
+          tradingVolumes={tradingVolumesMap}
           fees={getFeesEarnedByPool}
           farmingTickets={farmingTicketsMap}
           userTokensData={userTokensData}
@@ -348,10 +356,10 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    // variables: () => ({
-    //   timestampFrom: endOfHourTimestamp() - dayDuration,
-    //   timestampTo: endOfHourTimestamp(),
-    // }),
+    variables: () => ({
+      timestampFrom: endOfHourTimestamp() - DAY,
+      timestampTo: endOfHourTimestamp(),
+    }),
   }),
   queryRendererHoc({
     name: 'getWeeklyAndDailyTradingVolumesForPoolsQuery',

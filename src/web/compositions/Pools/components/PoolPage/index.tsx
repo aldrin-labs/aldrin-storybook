@@ -38,7 +38,7 @@ import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
 interface PoolPageProps {
   pools?: PoolInfo[]
   prices: Map<string, DexTokensPrices>
-  tradingVolumes: TradingVolumeStats[]
+  tradingVolumes: Map<string, TradingVolumeStats>
   fees: FeesEarned[]
   userTokensData: TokenInfoType[]
   farmingTickets: Map<string, FarmingTicket[]>

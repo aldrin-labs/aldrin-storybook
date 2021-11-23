@@ -27,6 +27,7 @@ import {
   SwapButtonIcon, TokenIcons,
   TokenNames, TokenSymbols
 } from './styles'
+import { FarmingRewards } from '../FarminRewards'
 
 
 interface PoolStatsProps {
@@ -53,7 +54,7 @@ export const PoolStats: React.FC<PoolStatsProps> = (props) => {
 
 interface PoolStatsBlockProps {
   pool: PoolInfo
-  tradingVolumes: TradingVolumeStats[]
+  tradingVolumes: Map<string, TradingVolumeStats>
   baseUsdPrice: number
   quoteUsdPrice: number
   fees: FeesEarned[]
@@ -77,7 +78,7 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
 
   const tokenMap = useTokenInfos()
 
-  const tradingVolume = tradingVolumes.find((tv) => tv.pool === pool.swapToken) || {
+  const tradingVolume = tradingVolumes.get(pool.swapToken) || {
     dailyTradingVolume: 0,
     weeklyTradingVolume: 0,
   }
@@ -113,13 +114,13 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
     dexTokensPricesMap: prices
   })
 
-  const lpUsdValue = lpTokenPrice * pool.lpTokenFreezeVaultBalance
+  const farmingUsdValue = lpTokenPrice * pool.lpTokenFreezeVaultBalance
 
   const farmings = filterOpenFarmingStates(pool.farming || [])
 
   const dailyUsdReward = farmings.reduce(
     (acc, farmingState) => {
-      const dailyRewardPerThousand = getFarmingStateDailyFarmingValue({ farmingState, totalStakedLpTokensUSD: lpUsdValue })
+      const dailyRewardPerThousand = getFarmingStateDailyFarmingValue({ farmingState, totalStakedLpTokensUSD: farmingUsdValue })
 
       const farmingTokenSymbol = getTokenNameByMintAddress(farmingState.farmingTokenMint)
 
@@ -132,7 +133,7 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
     0
   )
 
-  const farmingAPR = (((dailyUsdReward * 365) / lpUsdValue) * 100) || 0
+  const farmingAPR = (((dailyUsdReward * 365) / farmingUsdValue) * 100) || 0
 
   const totalApr = farmingAPR + pool.apy24h
 
@@ -189,59 +190,14 @@ Don't miss your chance.`
           <PoolStatsData>
             <PoolStatsText color="success">
               {aprFormatted}%
-      </PoolStatsText>
+        </PoolStatsText>
           </PoolStatsData>
         </PoolStatsWrap>
         <PoolStatsWrap>
           <PoolStatsTitle>Farming</PoolStatsTitle>
           <PoolStatsData>
             <FarmingData>
-              {farmings.length > 0 ?
-                <>
-                  <FarmingDataIcons>
-                    {farmings.map((farmingState) => {
-                      return (
-                        <FarmingIconWrap
-                          key={`farming_icon_${farmingState.farmingTokenMint}`}
-                        >
-                          <TokenIcon
-                            mint={farmingState.farmingTokenMint}
-                            width={'1.3em'}
-                            emojiIfNoLogo={false}
-                          />
-                        </FarmingIconWrap>
-                      )
-                    })}
-                  </FarmingDataIcons>
-                  <div>
-                    <PoolStatsText>
-                      {farmings.map((farmingState, i, arr) => {
-                        const tokensPerThousand = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
-                          farmingState, totalStakedLpTokensUSD: lpUsdValue
-                        })
-                        return (
-                          <PoolStatsText key={`fs_reward_${farmingState.farmingTokenMint}`}>
-                            {i > 0 ? ' + ' : ''}
-                            <PoolStatsText color="success">
-                              {stripByAmountAndFormat(tokensPerThousand)}&nbsp;
-                  </PoolStatsText>
-                            {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
-                          </PoolStatsText>
-                        )
-                      })} / Day
-                </PoolStatsText>
-                    <div>
-                      <PoolStatsText>
-                        Per each  <PoolStatsText color="success">$1000</PoolStatsText>
-                      </PoolStatsText>
-                    </div>
-                  </div>
-                </>
-                :
-                <div>
-                  <PoolStatsText>Ended</PoolStatsText>
-                </div>
-              }
+              <FarmingRewards pool={pool} farmingUsdValue={farmingUsdValue} />
             </FarmingData>
           </PoolStatsData>
         </PoolStatsWrap>

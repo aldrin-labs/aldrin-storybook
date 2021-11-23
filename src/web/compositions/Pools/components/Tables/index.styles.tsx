@@ -1,7 +1,6 @@
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loader } from '@sb/components/Loader/Loader'
 import { Text } from '@sb/compositions/Addressbook'
-import { Theme } from '@sb/types/materialUI'
 import { COLORS } from '@variables/variables'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -9,56 +8,6 @@ import styled from 'styled-components'
 import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 
 
-export const LiquidityDataContainer = styled(Row)`
-  width: 50%;
-  border-right: 0.1rem solid #383b45;
-  height: 6rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding-right: 2rem;
-  justify-content: space-around;
-`
-export const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  // table-layout: fixed;
-`
-export const TableHeader = styled.thead`
-  td {
-    padding: 1rem 2rem;
-  }
-`
-export const BorderButton = styled.a`
-  border: 0.1rem solid ${(props) => props.borderColor || '#41454E'};
-  width: ${(props) => props.width || 'auto'};
-  padding: ${(props) => props.padding || '0 2rem'};
-  height: 4rem;
-  text-transform: none;
-  color: ${(props) => props.color || '#fbf2f2'};
-  border-radius: ${(props) => props.borderRadius || '1.5rem'};
-  font-size: 1.4rem;
-`
-export const TableBody = styled.tbody`
-  height: 90%;
-  overflow: auto;
-`
-
-export const TableRow = styled.tr``
-
-export const RowTd = styled.td`
-  width: auto;
-  padding: 0 2rem;
-  font-family: 'Avenir Next';
-  border-top: 0.2rem solid #383b45;
-  color: #f5f5fb;
-  font-size: 1.5rem;
-`
-
-export const RowDataTd = styled(RowTd)`
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-`
 
 export const RowDataTdText = styled(Text)`
   white-space: nowrap;
@@ -126,21 +75,21 @@ export const Button = styled(
     textTransform = 'capitalize',
     ...props
   }) => (
-    <BtnCustom
-      disabled={disabled}
-      textTransform={textTransform}
-      height={height}
-      borderColor={borderColor}
-      borderRadius={borderRadius}
-      fontSize={fontSize}
-      border={border}
-      {...props}
-    >
-      {showLoader ? <Loader /> : children}
-    </BtnCustom>
-  )
+      <BtnCustom
+        disabled={disabled}
+        textTransform={textTransform}
+        height={height}
+        borderColor={borderColor}
+        borderRadius={borderRadius}
+        fontSize={fontSize}
+        border={border}
+        {...props}
+      >
+        {showLoader ? <Loader /> : children}
+      </BtnCustom>
+    )
 )`
-  background: ${(props: { disabled: boolean; theme: Theme; color: string }) =>
+  background: ${(props: { disabled: boolean; color: string }) =>
     !props.disabled
       ? props.color
         ? props.color
@@ -152,16 +101,15 @@ export const Button = styled(
   &:hover {
     background-color: ${(props: {
       disabled: boolean
-      theme: Theme
       color: string
     }) =>
-      !props.disabled
+    !props.disabled
+      ? props.color
         ? props.color
-          ? props.color
-          : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-        : '#93A0B2'};
+        : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+      : '#93A0B2'};
     color: ${(props: { disabled: boolean }) =>
-      !props.disabled ? '#F8FAFF' : '#fff'};
+    !props.disabled ? '#F8FAFF' : '#fff'};
   }
 
   ${(props) => props.style};
@@ -173,17 +121,10 @@ export const TableContainer = styled(RowContainer)`
   position: relative;
 `
 
-export const AmountText = styled.span`
-  color: ${COLORS.success};
-`
-
-export const WhiteText = styled.span`
-  color: ${COLORS.primaryWhite};
-`
-
-
 export const DetailsLink = styled(Link)`
   color: ${COLORS.hint};
   font-size: 13px;
   text-decoration: none;
 `
+
+// export const FarmingReward
