@@ -156,44 +156,55 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           <Block backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
-              <div style={{ display: 'flex', alignItems: 'flex-end', flexWrap: 'nowrap' }}>
-                <BigNumber>
-                  {formattedTreasuryAPR}% + {formattedBuyBackAPR}%
-                </BigNumber>
-                <DarkTooltip
-                  title={
-                    <span>
-                      <div style={{ marginBottom: '1rem' }}>
-                        First APR is calculated based on fixed “treasury”
-                        rewards.
-                      </div>
-                      <div style={{ marginBottom: '1rem' }}>
-                        Second APR is calculated based on the current RIN price
-                        and the average AMM fees for the past 30d.
-                      </div>
-                      <div>Rewards are credited with both.</div>
-                    </span>
-                  }
-                >
-                  <span style={{ marginBottom: '1rem' }}>
-                    <SvgIcon
-                      src={Info}
-                      width={'2rem'}
-                      height={'auto'}
-                      style={{ marginLeft: '1rem' }}
-                    />
-                  </span>
-                </DarkTooltip>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  flexWrap: 'nowrap',
+                }}
+              >
+                <BigNumber>{formattedAPR}% APR</BigNumber>
               </div>
 
               <StretchedBlock>
-                <div>
-                  <Number style={{ lineHeight: 'normal', marginTop: '1rem' }}>
-                    APR
+                <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+                  <Number
+                    style={{
+                      lineHeight: 'normal',
+                      marginTop: '1rem',
+                      fontSize: '.9em',
+                      fontWeight: 400,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {formattedTreasuryAPR}% + {formattedBuyBackAPR}%
                   </Number>
+                  <DarkTooltip
+                    title={
+                      <span>
+                        <div style={{ marginBottom: '1rem' }}>
+                          Total APR is calculated based on:
+                        </div>
+                        <div style={{ marginBottom: '1rem' }}>
+                          1st APR = fixed treasury rewards for stakers
+                        </div>
+                        <div>
+                          2nd APR = 16.66% of AMM fees are used to buy back RIN
+                          and distributed to stakers (based on 30 day average)
+                        </div>
+                      </span>
+                    }
+                  >
+                    <div style={{ display: 'flex' }}>
+                      <SvgIcon src={Info} width={'1.2em'} height={'auto'} />
+                    </div>
+                  </DarkTooltip>
                 </div>
                 <div>
-                  <ShareButton text={shareText} />
+                  <ShareButton
+                    text={shareText}
+                    buttonStyle={{ minWidth: 'auto' }}
+                  />
                 </div>
               </StretchedBlock>
             </BlockContentStretched>
