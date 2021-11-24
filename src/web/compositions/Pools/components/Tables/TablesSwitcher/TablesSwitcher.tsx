@@ -315,6 +315,7 @@ const TablesSwitcher = ({
               selectedPool={selectedPool}
               close={() => setIsUnstakePopupOpen(false)}
               allTokensData={allTokensData}
+              farmingTicketsMap={farmingTicketsMap}
               refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
               setPoolWaitingForUpdateAfterOperation={
                 setPoolWaitingForUpdateAfterOperation

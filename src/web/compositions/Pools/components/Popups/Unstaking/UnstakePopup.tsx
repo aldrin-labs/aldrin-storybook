@@ -21,12 +21,17 @@ import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import dayjs from 'dayjs'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 export const UnstakePopup = ({
   theme,
   open,
   allTokensData,
   selectedPool,
+  farmingTicketsMap,
   close,
   refreshTokensWithFarmingTickets,
   setPoolWaitingForUpdateAfterOperation,
@@ -35,6 +40,7 @@ export const UnstakePopup = ({
   open: boolean
   allTokensData: TokenInfo[]
   selectedPool: PoolInfo
+  farmingTicketsMap: Map<string, FarmingTicket>
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
@@ -50,7 +56,31 @@ export const UnstakePopup = ({
   )
 
   const farmingState = selectedPool.farming[0]
+
   if (!farmingState) return null
+
+  const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
+
+  const isPoolWithFarming =
+    selectedPool.farming && selectedPool.farming.length > 0
+
+  const lastFarmingTicket =
+    farmingTickets.length > 0
+      ? farmingTickets?.sort((a, b) => b.startTime - a.startTime)[0]
+      : null
+
+  const unlockAvailableDate =
+    lastFarmingTicket && isPoolWithFarming
+      ? +lastFarmingTicket.startTime +
+      +selectedPool.farming[0].periodLength +
+      60 * 20
+      : 0
+
+  const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
+  const isUnstakeDisabled =
+    isUnstakeLocked ||
+    filterOpenFarmingTickets(farmingTickets).length === 0 ||
+    operationLoading
 
   return (
     <DialogWrapper
@@ -58,7 +88,7 @@ export const UnstakePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => {}}
+      onEnter={() => { }}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"
@@ -86,67 +116,81 @@ export const UnstakePopup = ({
       </RowContainer>
 
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
-        <Button
-          style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
-          disabled={false}
-          isUserConfident={true}
-          theme={theme}
-          showLoader={operationLoading}
-          onClick={async () => {
-            // loader in popup button
-            setOperationLoading(true)
-            // loader in table button
-            setPoolWaitingForUpdateAfterOperation({
-              pool: selectedPool.swapToken,
-              operation: 'unstake',
-            })
-
-            const result = await endFarming({
-              wallet,
-              connection,
-              poolPublicKey: new PublicKey(selectedPool.swapToken),
-              userPoolTokenAccount: userPoolTokenAccount
-                ? new PublicKey(userPoolTokenAccount)
-                : null,
-              farmingStatePublicKey: new PublicKey(farmingState.farmingState),
-              snapshotQueuePublicKey: new PublicKey(
-                farmingState.farmingSnapshots
-              ),
-            })
-
-            setOperationLoading(false)
-
-            notify({
-              type: result === 'success' ? 'success' : 'error',
-              message:
-                result === 'success'
-                  ? 'Successfully unstaked.'
-                  : result === 'failed'
-                  ? 'Unstaking failed, please try again later or contact us in telegram.'
-                  : 'Unstaking cancelled.',
-            })
-
-            const clearPoolWaitingForUpdate = () =>
-              setPoolWaitingForUpdateAfterOperation({
-                pool: '',
-                operation: '',
-              })
-
-            if (result === 'success') {
-              setTimeout(async () => {
-                refreshTokensWithFarmingTickets()
-                clearPoolWaitingForUpdate()
-                close()
-              }, 7500)
-              setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
-            } else {
-              clearPoolWaitingForUpdate()
-              close()
-            }
-          }}
+        <DarkTooltip
+          title={
+            isUnstakeLocked
+              ? `Until ${dayjs
+                .unix(unlockAvailableDate)
+                .format('HH:mm:ss MMM DD, YYYY')}`
+              : null
+          }
         >
-          Unstake
-        </Button>
+          <div style={{ width: '100%' }}>
+            <Button
+              style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
+              disabled={isUnstakeDisabled}
+              isUserConfident={true}
+              theme={theme}
+              showLoader={operationLoading}
+              onClick={async () => {
+                // loader in popup button
+                setOperationLoading(true)
+                // loader in table button
+                setPoolWaitingForUpdateAfterOperation({
+                  pool: selectedPool.swapToken,
+                  operation: 'unstake',
+                })
+
+                const result = await endFarming({
+                  wallet,
+                  connection,
+                  poolPublicKey: new PublicKey(selectedPool.swapToken),
+                  userPoolTokenAccount: userPoolTokenAccount
+                    ? new PublicKey(userPoolTokenAccount)
+                    : null,
+                  farmingStatePublicKey: new PublicKey(
+                    farmingState.farmingState
+                  ),
+                  snapshotQueuePublicKey: new PublicKey(
+                    farmingState.farmingSnapshots
+                  ),
+                })
+
+                setOperationLoading(false)
+
+                notify({
+                  type: result === 'success' ? 'success' : 'error',
+                  message:
+                    result === 'success'
+                      ? 'Successfully unstaked.'
+                      : result === 'failed'
+                        ? 'Unstaking failed, please try again later or contact us in telegram.'
+                        : 'Unstaking cancelled.',
+                })
+
+                const clearPoolWaitingForUpdate = () =>
+                  setPoolWaitingForUpdateAfterOperation({
+                    pool: '',
+                    operation: '',
+                  })
+
+                if (result === 'success') {
+                  setTimeout(async () => {
+                    refreshTokensWithFarmingTickets()
+                    clearPoolWaitingForUpdate()
+                    close()
+                  }, 7500)
+                  setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+                } else {
+                  clearPoolWaitingForUpdate()
+                  close()
+                }
+              }}
+            >
+              {isUnstakeLocked ? 'Locked' : 'Unstake'}
+            </Button>
+          </div>
+        </DarkTooltip>
       </RowContainer>
     </DialogWrapper>
   )
