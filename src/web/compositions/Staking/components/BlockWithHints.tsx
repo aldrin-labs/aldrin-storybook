@@ -9,8 +9,12 @@ import { RootRow, StyledLink } from '../styles'
 import locksIcon from './assets/lockIcon.svg'
 import poolIcon from './assets/poolIcon.svg'
 import rewardsIcon from './assets/rewards.svg'
+import InfoIcon from '@icons/inform.svg'
 
 import greenBack from './assets/greenBack.png'
+import { SvgIcon } from '@sb/components'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const BlockWithHints = () => {
   return (
@@ -30,14 +34,35 @@ export const BlockWithHints = () => {
       <Cell colLg={4}>
         <Block icon={rewardsIcon}>
           <BlockContent>
-            <BlockSubtitle>Rewards:</BlockSubtitle>
+            <RowContainer margin={'0 0 1rem'} justify={'flex-start'}>
+              <BlockSubtitle margin={'0'}>Rewards: </BlockSubtitle>
+              <DarkTooltip
+                title={
+                  <p>
+                    Staking rewards are paid{' '}
+                    <strong>every 27th of the month</strong> based on RIN daily
+                    buy-backs on 1/6th of AMM fees . Estimated rewards are
+                    updated hourly based on fees received and the RIN price at
+                    the time of snapshot, so may be slightly different from the
+                    actual number received on the 27th.
+                  </p>
+                }
+              >
+                <div>
+                  <SvgIcon
+                    src={InfoIcon}
+                    width={'1.5rem'}
+                    height={'2.5rem'}
+                    style={{ marginLeft: '0.75rem' }}
+                  />
+                </div>
+              </DarkTooltip>
+            </RowContainer>
+
             <Text maxWidth="95%" size="sm">
-              RIN staking rewards are calculated hourly. These are then
-              accumulated and{' '}
-              <strong>
-                paid out on the 27th of each month along with trading fee
-                revenue.
-              </strong>
+              Staking rewards are paid <strong>every 27th of the month</strong>.
+              Estimated rewards may be slightly different from the actual number
+              received on the 27th.
             </Text>
           </BlockContent>
         </Block>

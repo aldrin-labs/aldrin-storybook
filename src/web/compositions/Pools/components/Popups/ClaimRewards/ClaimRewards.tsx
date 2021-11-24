@@ -106,10 +106,10 @@ export const ClaimRewards = ({
           result === 'success'
             ? 'Successfully claimed rewards.'
             : result === 'failed'
-            ? 'Claim rewards failed, please try again later or contact us in telegram.'
-            : result === 'cancelled'
-            ? 'Claim rewards cancelled.'
-            : 'Blockhash outdated, please claim rest rewards in a few seconds.',
+              ? 'Claim rewards failed, please try again later or contact us in telegram.'
+              : result === 'cancelled'
+                ? 'Claim rewards cancelled.'
+                : 'Blockhash outdated, please claim rest rewards in a few seconds.',
       })
 
       if (result === 'cancelled') {
@@ -155,7 +155,7 @@ export const ClaimRewards = ({
       PaperComponent={ClaimRewardsStyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => {}}
+      onEnter={() => { }}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"

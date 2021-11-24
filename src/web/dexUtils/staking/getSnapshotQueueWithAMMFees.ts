@@ -3,11 +3,11 @@ import { SnapshotQueue } from '../common/types'
 export const getSnapshotQueueWithAMMFees = ({
   farmingSnapshotsQueueAddress,
   snapshotQueues,
-  poolsFees,
+  buyBackAmount,
 }: {
   farmingSnapshotsQueueAddress: string
   snapshotQueues: SnapshotQueue[]
-  poolsFees: number
+  buyBackAmount: number
 }) => {
   const currentSnapshotQueueIndex =
     snapshotQueues.findIndex(
@@ -20,7 +20,7 @@ export const getSnapshotQueueWithAMMFees = ({
 
   const currentSnapshotsQueue = snapshotQueues[currentSnapshotQueueIndex]
   const currentSnapshots = currentSnapshotsQueue?.snapshots
-  const feesForOneSnapshot = poolsFees / currentSnapshots?.length
+  const feesForOneSnapshot = buyBackAmount / currentSnapshots?.length
 
   let feesAdded = feesForOneSnapshot
 
