@@ -44,7 +44,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     processing,
   } = props
 
-  const hasFarming = pool.farming?.length !== 0
+  const hasFarming = (pool.farming?.length || 0) > 0
 
   if (!hasFarming) {
     return (

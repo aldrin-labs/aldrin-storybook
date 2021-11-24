@@ -11,7 +11,7 @@ export type PoolInfo = {
   swapToken: string
   poolTokenMint: string
   lpTokenFreezeVaultBalance: number;
-  farming?: FarmingState[]
+  farming: FarmingState[] | null
   tvl: {
     tokenA: number
     tokenB: number

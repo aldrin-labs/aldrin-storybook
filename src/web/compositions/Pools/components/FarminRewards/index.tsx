@@ -17,9 +17,10 @@ interface FarmingRewardsProps {
 }
 
 export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
-  const { farmingUsdValue, pool: { poolTokenMint, farming = [] } } = props
+  const { farmingUsdValue, pool: { poolTokenMint, farming} } = props
 
-  const farmingsMap = farming.reduce((acc, of) => {
+  const farmings = farming || []
+  const farmingsMap = farmings.reduce((acc, of) => {
     const fs: FarmingState[] = acc.get(of.farmingTokenMint) || []
 
     acc.set(of.farmingTokenMint, [...fs, of])
@@ -28,7 +29,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
 
   const openFarmingsKeys = Array.from(farmingsMap.keys())
 
-  return farming.length > 0 ?
+  return farmings.length > 0 ?
     <>
       <FarmingDataIcons>
         {openFarmingsKeys.map((farmingStateMint) => {

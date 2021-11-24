@@ -64,6 +64,19 @@ interface CreatePoolTransactionsResponse {
   firstDeposit?: Transaction
 }
 
+interface TransactionAndSign {
+  transaction: Transaction
+  signers: (Keypair | Account)[]
+}
+
+// interface CreatePoolTransactionsResponse {
+//   createAccounts: TransactionAndSign
+//   setAuthorities: TransactionAndSign
+//   createPool: TransactionAndSign
+//   firstDeposit?: TransactionAndSign
+// }
+
+
 export const createPoolTransactions = async (params: CreatePoolParams): Promise<CreatePoolTransactionsResponse> => {
   const { wallet, connection, baseTokenMint, quoteTokenMint, firstDeposit, curveType = CURVE.PRODUCT } = params
 
@@ -91,6 +104,14 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
   const allPools = await program.account.pool.all()
   const allPools2 = await program2.account.pool.all()
 
+  console.log('allPools2:', allPools, allPools2)
+
+  allPools2.forEach((p) => console.log(
+    'Pool: ', p.publicKey.toBase58(),
+    'poolMint: ', p.account.poolMint.toBase58(),
+    'baseMint: ', p.account.baseTokenMint.toBase58(),
+    'quoteMint: ', p.account.quoteTokenMint.toBase58()))
+
   const existingPool = [...allPools, ...allPools2].find((p: ProgramAccount<PoolLike>) =>
     (p.account.baseTokenMint.equals(mintBase) && p.account.quoteTokenMint.equals(mintQuote)) ||
     (p.account.baseTokenMint.equals(mintQuote) && p.account.quoteTokenMint.equals(mintBase))
@@ -100,8 +121,6 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
     throw new Error('Pool already exists')
   }
   const pool = Keypair.generate()
-  const poolInitializer = Keypair.generate()
-
 
   const [vaultSigner, vaultSignerNonce] = await PublicKey.findProgramAddress(
     [pool.publicKey.toBuffer()],
@@ -109,6 +128,8 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
   )
 
   const walletWithPk = walletAdapterToWallet(wallet)
+
+  const feeOwner = new PublicKey(FEE_OWNER_ACCOUNT)
 
 
   const creatorPk = walletWithPk.publicKey
@@ -126,20 +147,23 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
   const lpTokenFreezeAccount = Keypair.generate()
 
   const curve = Keypair.generate()
-  
+
   const provider = new Provider(connection, walletWithPk, Provider.defaultOptions())
 
   mintAccounts.add(...(await createMintInstructions(provider, creatorPk, poolMint.publicKey)))
 
-  mintAccounts.add(...(await createTokenAccountInstrs(provider, baseTokenVault.publicKey, mintBase, creatorPk)))
-  mintAccounts.add(...(await createTokenAccountInstrs(provider, quoteTokenVault.publicKey, mintQuote, creatorPk)))
-  mintAccounts.add(...(await createTokenAccountInstrs(provider, baseFeeVault.publicKey, mintBase, creatorPk)))
-  mintAccounts.add(...(await createTokenAccountInstrs(provider, quoteFeeVault.publicKey, mintQuote, creatorPk)))
+  mintAccounts.add(...(await createTokenAccountInstrs(provider, baseTokenVault.publicKey, mintBase, vaultSigner)))
+  mintAccounts.add(...(await createTokenAccountInstrs(provider, quoteTokenVault.publicKey, mintQuote, vaultSigner)))
+  mintAccounts.add(...(await createTokenAccountInstrs(provider, baseFeeVault.publicKey, mintBase, feeOwner)))
+  mintAccounts.add(...(await createTokenAccountInstrs(provider, quoteFeeVault.publicKey, mintQuote, feeOwner)))
+
+  const poolInstruction = await program2.account.pool.createInstruction(pool)
+
+  setAuthorities.add(poolInstruction)
+
   setAuthorities.add(...(await createTokenAccountInstrs(provider, poolFeeVault.publicKey, poolMint.publicKey, creatorPk)))
-  setAuthorities.add(...(await createTokenAccountInstrs(provider, lpTokenFreezeAccount.publicKey, poolMint.publicKey, creatorPk)))
+  setAuthorities.add(...(await createTokenAccountInstrs(provider, lpTokenFreezeAccount.publicKey, poolMint.publicKey, vaultSigner)))
 
-
-  const feeOwner = new PublicKey(FEE_OWNER_ACCOUNT)
 
   setAuthorities.add(
     TokenInstructions.setAuthority({
@@ -148,36 +172,36 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
       newAuthority: vaultSigner,
       authorityType: AuthorityType.Mint,
     }),
-    TokenInstructions.setAuthority({
-      target: baseFeeVault.publicKey,
-      authorityType: AuthorityType.Close,
-      currentAuthority: creatorPk,
-      newAuthority: vaultSigner,
-    }),
-    TokenInstructions.setAuthority({
-      target: quoteFeeVault.publicKey,
-      authorityType: AuthorityType.Close,
-      currentAuthority: creatorPk,
-      newAuthority: vaultSigner,
-    }),
+    // TokenInstructions.setAuthority({
+    //   target: baseFeeVault.publicKey,
+    //   authorityType: AuthorityType.Close,
+    //   currentAuthority: creatorPk,
+    //   newAuthority: vaultSigner,
+    // }),
+    // TokenInstructions.setAuthority({
+    //   target: quoteFeeVault.publicKey,
+    //   authorityType: AuthorityType.Close,
+    //   currentAuthority: creatorPk,
+    //   newAuthority: vaultSigner,
+    // }),
     TokenInstructions.setAuthority({
       target: poolFeeVault.publicKey,
       authorityType: AuthorityType.Close,
       currentAuthority: creatorPk,
       newAuthority: vaultSigner,
     }),
-    TokenInstructions.setAuthority({
-      target: baseFeeVault.publicKey,
-      authorityType: AuthorityType.Owner,
-      currentAuthority: creatorPk,
-      newAuthority: feeOwner,
-    }),
-    TokenInstructions.setAuthority({
-      target: quoteFeeVault.publicKey,
-      authorityType: AuthorityType.Owner,
-      currentAuthority: creatorPk,
-      newAuthority: feeOwner,
-    }),
+    // TokenInstructions.setAuthority({
+    //   target: baseFeeVault.publicKey,
+    //   authorityType: AuthorityType.Owner,
+    //   currentAuthority: creatorPk,
+    //   newAuthority: feeOwner,
+    // }),
+    // TokenInstructions.setAuthority({
+    //   target: quoteFeeVault.publicKey,
+    //   authorityType: AuthorityType.Owner,
+    //   currentAuthority: creatorPk,
+    //   newAuthority: feeOwner,
+    // }),
     TokenInstructions.setAuthority({
       target: poolFeeVault.publicKey,
       authorityType: AuthorityType.Owner,
@@ -187,9 +211,7 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
   )
 
 
-  const createCurveInstr: TransactionInstruction = await program2.account.productCurve.createInstruction(
-    curve
-  )
+  const createCurveInstr = await program2.account.productCurve.createInstruction(curve)
 
   createPoolTx.add(createCurveInstr)
 
@@ -202,7 +224,6 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
 
   createPoolTx.add(initializeCurveInstr)
 
-  program2.rpc.initialize()
   const createPoolInstruction: TransactionInstruction = await program2.instruction.initialize(
     new BN(vaultSignerNonce),
     new BN(curveType),
@@ -214,9 +235,8 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
         baseTokenVault: baseTokenVault.publicKey,
         quoteTokenVault: quoteTokenVault.publicKey,
         poolSigner: vaultSigner,
-        initializer: poolInitializer.publicKey,
-        // poolAuthority: new PublicKey(POOL_AUTHORITY),
-        poolAuthority: wallet.publicKey,
+        initializer: wallet.publicKey,
+        poolAuthority: new PublicKey(POOL_AUTHORITY),
         feeBaseAccount: baseFeeVault.publicKey,
         feeQuoteAccount: quoteFeeVault.publicKey,
         feePoolTokenAccount: poolFeeVault.publicKey,
@@ -246,12 +266,12 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
         poolMint,
         poolFeeVault,
         lpTokenFreezeAccount,
+        pool,
       ],
     },
     {
       transaction: createPoolTx,
       signers: [
-        poolInitializer,
         curve,
       ],
     }
@@ -267,14 +287,14 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
       quoteTokenVault: quoteTokenVault.publicKey,
       poolMint: poolMint.publicKey,
       lpTokenFreezeVault: lpTokenFreezeAccount.publicKey,
-      program,
+      program: program2,
       supply: new BN(0),
       poolTokenAmountA: new BN(0),
       poolPublicKey: pool.publicKey,
       userBaseTokenAccount: firstDeposit.userBaseTokenAccount,
       userQuoteTokenAccount: firstDeposit.userQuoteTokenAccount,
-      userBaseTokenAmount: firstDeposit.baseTokenAmount.toNumber(),
-      userQuoteTokenAmount: firstDeposit.quoteTokenAmount.toNumber(),
+      userBaseTokenAmount: firstDeposit.baseTokenAmount,
+      userQuoteTokenAmount: firstDeposit.quoteTokenAmount,
       transferSOLToWrapped: false,
     })
 
@@ -282,10 +302,11 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
   }
 
   const [createAccounts, setAuthoritiesTx, createPool, ...rest] = await signTransactions({
+    transactionsAndSigners,
     wallet,
     connection,
-    transactionsAndSigners
   })
+
 
   return {
     createAccounts,

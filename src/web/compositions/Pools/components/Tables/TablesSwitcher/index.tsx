@@ -27,7 +27,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
-import { waitForTransactionConfirmation } from '@sb/dexUtils/send'
+import { waitForTransactionConfirmation, signTransactions } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey, Transaction } from '@solana/web3.js'
@@ -49,6 +49,7 @@ import {
   TableModeButton
 } from './styles'
 import { PoolsTable } from '../PoolsTable'
+import { sleep } from '@project-serum/common'
 
 
 interface TableSwitcherProps {
@@ -119,26 +120,30 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
       wallet,
       connection,
       baseTokenMint: 'Hn6FuAT9w7iHRc4M74c3xrtzPWBq4gGositr92NxaAs',
-      quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      // quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      // quoteTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
+      quoteTokenMint: 'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m',
       firstDeposit: {
         baseTokenAmount: new BN(1_000_000),
         userBaseTokenAccount: new PublicKey('C6kK8bCXFUdFmSdu1W9bvh8cc6kcFXWdWRfwjnkFnt6y'),
-        quoteTokenAmount: new BN(5_000_000),
-        userQuoteTokenAccount: new PublicKey('HL27Cs4HboiZB3xuYeaaKqqEc5h84AbHpWnAMxhFRaE1')
+        quoteTokenAmount: new BN(1_000_000),
+        // userQuoteTokenAccount: new PublicKey('HL27Cs4HboiZB3xuYeaaKqqEc5h84AbHpWnAMxhFRaE1')
+        // userQuoteTokenAccount: new PublicKey('7fFd5qspmMEfoZ5EGDamBLZQXHNwX65SfPMHP7ASZXCB')
+        userQuoteTokenAccount: new PublicKey('7Zr9QPy4BUXXUrb378zZQ492vufgZGx663S8VfewBX6F')
       }
     })
 
     // Object.keys(generatedTransactions).forEach((k) => {
     //   const transaction: Transaction = generatedTransactions[k]
 
-    //   console.log(`Transaction ${k}:` , transaction.serialize())
+    //   console.log(`Transaction ${k}:` , transaction.serialize().byteLength)
     // })
 
 
     console.log('Create accounts...', connection, generatedTransactions.createAccounts)
-    const createAccountsTxId = await connection.sendRawTransaction(generatedTransactions.createAccounts.serialize(), {
-      skipPreflight: true,
-    })
+
+
+    const createAccountsTxId = await connection.sendRawTransaction(generatedTransactions.createAccounts.serialize(), { skipPreflight: true })
 
     console.log('createAccountsTxId: ', createAccountsTxId)
     await waitForTransactionConfirmation({
@@ -147,12 +152,13 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
       connection: connection.getConnection(),
       showErrorForTimeout: true,
     })
+
     console.log('createAccountsTxId: ', createAccountsTxId)
 
     console.log('Set authorities...')
-    const setAuthoritiesTxId = await connection.sendRawTransaction(generatedTransactions.setAuthorities.serialize(), {
-      skipPreflight: true,
-    })
+    // await sleep(1000)
+
+    const setAuthoritiesTxId = await connection.sendRawTransaction(generatedTransactions.setAuthorities.serialize(), { skipPreflight: true })
 
     await waitForTransactionConfirmation({
       txid: setAuthoritiesTxId,
@@ -164,9 +170,9 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
 
     console.log('Initialize pool...')
-    const initPoolTxId = await connection.sendRawTransaction(generatedTransactions.createPool.serialize(), {
-      skipPreflight: true,
-    })
+    // await sleep(1000)
+
+    const initPoolTxId = await connection.sendRawTransaction(generatedTransactions.createPool.serialize(), { skipPreflight: true })
 
     await waitForTransactionConfirmation({
       txid: initPoolTxId,
@@ -177,20 +183,20 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
 
     console.log('initPoolTxId: ', initPoolTxId)
 
-    // if (generatedTransactions.firstDeposit) {
-    //   console.log('First deposit...')
-    //   const firstDepositTxId = await connection.sendRawTransaction(generatedTransactions.firstDeposit.serialize(), {
-    //     skipPreflight: true,
-    //   })
-    //   await waitForTransactionConfirmation({
-    //     txid: firstDepositTxId,
-    //     timeout: 60_000,
-    //     connection: connection.getConnection(),
-    //     showErrorForTimeout: true,
-    //   })
+    if (generatedTransactions.firstDeposit) {
+      console.log('First deposit...')
+      const firstDepositTxId = await connection.sendRawTransaction(generatedTransactions.firstDeposit.serialize(), {
+        skipPreflight: true,
+      })
+      await waitForTransactionConfirmation({
+        txid: firstDepositTxId,
+        timeout: 60_000,
+        connection: connection.getConnection(),
+        showErrorForTimeout: true,
+      })
 
-    //   console.log('firstDepositTxId: ', firstDepositTxId)
-    // }
+      console.log('firstDepositTxId: ', firstDepositTxId)
+    }
 
     // console.log('generatedTransactions: ', generatedTransactions)
   }

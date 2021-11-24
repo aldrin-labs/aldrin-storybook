@@ -1073,9 +1073,10 @@ export const waitForTransactionConfirmation = async ({
 
     if (err.timeout) return 'timeout'
     return null
+  } finally {
+    return true
   }
 
-  return true
 }
 
 async function awaitTransactionSignatureConfirmation({
