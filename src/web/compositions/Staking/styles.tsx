@@ -181,10 +181,16 @@ export const BigNumber = styled.p`
   margin: 10px 0;
   white-space: nowrap;
 `
-export const Number = styled.span`
-  margin: ${(props) => props.margin || '0 10px 0 0'};
+
+interface NumberProps {
+  margin?: string
+  lineHeight?: string
+}
+
+export const Number = styled.span<NumberProps>`
+  margin: ${(props: NumberProps) => props.margin || '0 10px 0 0'};
   font-size: 1.4em;
-  line-height: ${(props) => props.lineHeight || '1.2rem'};
+  line-height: ${(props: NumberProps) => props.lineHeight || '1.2rem'};
   font-weight: bold;
 `
 
