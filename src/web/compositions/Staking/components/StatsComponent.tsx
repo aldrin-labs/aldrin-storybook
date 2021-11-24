@@ -3,18 +3,17 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   stripByAmount,
-  stripByAmountAndFormat,
+  stripByAmountAndFormat
 } from '@core/utils/chartPageUtils'
-import { daysInMonth } from '@core/utils/dateUtils'
 import {
   formatNumberToUSFormat,
-  stripDigitPlaces,
+  stripDigitPlaces
 } from '@core/utils/PortfolioTableUtils'
 import {
   Block,
   BlockContentStretched,
   BlockSubtitle,
-  BlockTitle,
+  BlockTitle
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
@@ -26,7 +25,6 @@ import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
-
 import { TokenInfo } from '@sb/dexUtils/types'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -35,11 +33,12 @@ import {
   LastPrice,
   Number,
   StatsBlock,
-  StatsBlockItem,
+  StatsBlockItem
 } from '../styles'
 import { getShareText } from '../utils'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
+
 
 interface InnerProps {
   tokenData: TokenInfo | null
