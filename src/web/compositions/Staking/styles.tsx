@@ -154,7 +154,7 @@ export const RewardsBlock = styled(InnerBlock)`
 `
 export const BalanceRow = styled.div`
   color: ${COLORS.hint};
-  font-size: 1.3em;
+  font-size: 1em;
   text-transform: lowercase;
   font-variant: small-caps;
   height: 1.25em;
@@ -269,4 +269,9 @@ export const ClaimButtonContainer = styled(RewardsStatsRow)`
   @media (min-width: ${BREAKPOINTS.xl}) {
     margin-top: 0;
   }
+`
+
+export const UserFormRestakeButton = styled(Button)`
+  margin-top: 10px;
+  padding: 0 10px;
 `

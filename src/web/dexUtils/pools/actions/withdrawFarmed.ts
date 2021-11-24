@@ -1,35 +1,26 @@
 import { TokenInstructions } from '@project-serum/serum'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import {
-  Account,
-  Connection,
-  Keypair,
-  PublicKey,
-  SystemProgram,
-  SYSVAR_CLOCK_PUBKEY,
-  SYSVAR_RENT_PUBKEY,
-  Transaction,
-} from '@solana/web3.js'
-
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
-  sendSignedTransaction,
-  sendTransaction,
-  signTransactions,
+  sendTransaction
 } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { getSnapshotsWithUnclaimedRewards } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
-import { NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION } from '@sb/dexUtils/common/config'
-import BN from 'bn.js'
-import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
-import { sleep } from '@sb/dexUtils/utils'
-import { getRandomInt } from '@core/utils/helpers'
+import {
+  Account,
+  Connection,
+  Keypair,
+  PublicKey,
+  SYSVAR_CLOCK_PUBKEY,
+  SYSVAR_RENT_PUBKEY,
+  Transaction
+} from '@solana/web3.js'
+
 
 export const withdrawFarmed = async ({
   wallet,

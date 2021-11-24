@@ -4,7 +4,7 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -19,7 +19,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
+import { CREATE_FARMING_TICKET_SOL_FEE, MIN_POOL_TOKEN_AMOUNT_TO_STAKE } from '@sb/dexUtils/common/config'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -39,20 +39,8 @@ import { InputWithCoins } from '../components'
 import { BoldHeader, StyledPaper } from '../index.styles'
 import { HintContainer } from './styles'
 
-export const StakePopup = ({
-  theme,
-  open,
-  close,
-  selectedPool,
-  allTokensData,
-  farmingTicketsMap,
-  dexTokensPricesMap,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-  isReminderPopup = false,
-}: {
+interface StakePopupProps {
   theme: Theme
-  open: boolean
   close: () => void
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
@@ -60,8 +48,21 @@ export const StakePopup = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  isReminderPopup?: boolean
-}) => {
+  isReminderPopup: boolean
+}
+
+const Popup = (props: StakePopupProps) => {
+  const {
+    theme,
+    close,
+    selectedPool,
+    allTokensData,
+    farmingTicketsMap,
+    dexTokensPricesMap,
+    refreshTokensWithFarmingTickets,
+    setPoolWaitingForUpdateAfterOperation,
+    isReminderPopup,
+  } = props
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
@@ -95,18 +96,11 @@ export const StakePopup = ({
   const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
   const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
 
-  const tvlUSD =
-    baseTokenPrice * selectedPool.tvl.tokenA +
-    quoteTokenPrice * selectedPool.tvl.tokenB
-
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0
   const openFarmings = isPoolWithFarming
     ? filterOpenFarmingStates(selectedPool.farming)
     : []
-
-  const stakedWithEnteredPoolTokensUSD =
-    (stakedTokens + +poolTokenAmount) * poolTokenPrice
 
   if (!farmingState) return null
 
@@ -139,10 +133,13 @@ export const StakePopup = ({
     .map((farmingState, i, arr) => {
       return `${getTokenNameByMintAddress(farmingState.farmingTokenMint)} ${
         i !== arr.length - 1 ? 'X ' : ''
-      }`
+        }`
     })
     .join(',')
     .replace(',', '')
+
+  const isLessThanMinPoolTokenAmountToStake = poolTokenAmount < MIN_POOL_TOKEN_AMOUNT_TO_STAKE
+  const isDisabled = isNotEnoughPoolTokens || !poolTokenAmount || isLessThanMinPoolTokenAmountToStake
 
   return (
     <DialogWrapper
@@ -150,11 +147,11 @@ export const StakePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
+      open
       onEnter={() => {
         setOperationLoading(false)
       }}
       maxWidth={'md'}
-      open={open}
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
@@ -237,6 +234,15 @@ export const StakePopup = ({
         </HintContainer>
       )}
 
+      {isLessThanMinPoolTokenAmountToStake && (
+        <RowContainer margin={'2rem 0 0 0'}>
+          <AttentionComponent
+            text={`You need to stake at least ${MIN_POOL_TOKEN_AMOUNT_TO_STAKE} Pool tokens.`}
+            blockHeight={'8rem'}
+          />
+        </RowContainer>
+      )}
+
       {isNotEnoughPoolTokens && (
         <RowContainer margin={'2rem 0 0 0'}>
           <AttentionComponent
@@ -248,7 +254,7 @@ export const StakePopup = ({
       <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
         <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
-          disabled={isNotEnoughPoolTokens || !poolTokenAmount}
+          disabled={isDisabled}
           isUserConfident={true}
           theme={theme}
           showLoader={operationLoading}
@@ -281,8 +287,8 @@ export const StakePopup = ({
                 result === 'success'
                   ? 'Successfully staked.'
                   : result === 'failed'
-                  ? 'Staking failed, please try again later or contact us in telegram.'
-                  : 'Staking cancelled.',
+                    ? 'Staking failed, please try again later or contact us in telegram.'
+                    : 'Staking cancelled.',
             })
 
             const clearPoolWaitingForUpdate = () =>
@@ -312,3 +318,6 @@ export const StakePopup = ({
     </DialogWrapper>
   )
 }
+
+
+export const StakePopup = withTheme()(Popup)

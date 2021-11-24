@@ -1,49 +1,41 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import Mathwallet from '@icons/mathwallet.svg'
+import WalletAldrin from '@icons/RINLogo.svg'
+import Sollet from '@icons/sollet.svg'
+import Solong from '@icons/solong.svg'
+import { TokenInstructions } from '@project-serum/serum'
 import Wallet from '@project-serum/sol-wallet-adapter'
 import {
-  SolongWalletAdapter,
-  SolletExtensionAdapter,
-  MathWalletAdapter,
   CommonWalletAdapter,
-  CcaiExtensionAdapter,
-  PhantomWalletAdapter,
-  LedgerWalletAdapter,
+  LedgerWalletAdapter, MathWalletAdapter,
+  PhantomWalletAdapter, SolletExtensionAdapter, SolongWalletAdapter
 } from '@sb/dexUtils/adapters'
-import { notify } from './notifications'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import {
-  useAccountInfo,
-  useConnection,
-  useConnectionConfig,
-} from './connection'
-import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
-import {
-  Connection,
   PublicKey,
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  TransactionInstruction,
+  TransactionInstruction
 } from '@solana/web3.js'
-
-import { clusterApiUrl } from '@solana/web3.js'
-import { TokenListProvider } from '@solana/spl-token-registry'
-import { TokenInstructions } from '@project-serum/serum'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
+import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
+import {
+  useAccountInfo,
+  useConnection,
+  useConnectionConfig
+} from './connection'
 import { useAsyncData } from './fetch-loop'
+import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
+import { notify } from './notifications'
 import { getMaxWithdrawAmount } from './pools'
 import {
   getTokenAccountInfo,
   MINT_LAYOUT,
-  parseTokenAccountData,
+  parseTokenAccountData
 } from './tokens'
-import Sollet from '@icons/sollet.svg'
-import Mathwallet from '@icons/mathwallet.svg'
-import Solong from '@icons/solong.svg'
-import WalletAldrin from '@icons/RINLogo.svg'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
-import { MASTER_BUILD } from '@core/utils/config'
-import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
-import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
+import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
+
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -152,12 +144,27 @@ export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
 )
 
-const WalletContext = React.createContext(null)
+export interface WalletContextType {
+  wallet: WalletAdapter
+  connected: boolean
+  providerUrl: string
+  setProviderUrl: (newState: string) => void
+  setAutoConnect: (autoConnect: boolean) => void
+  providerName: string
+  providerFullName?: string
+}
 
-export function WalletProvider({ children }) {
+
+
+const WalletContext = React.createContext<WalletContextType | null>(null)
+
+export const WalletProvider: React.FC = ({ children }) => {
   const { endpoint } = useConnectionConfig()
 
-  const [autoConnect, setAutoConnect] = useState(false)
+  const [connectedPersist, setConnectedPersist] = useLocalStorageState('walletConnected', false)
+  const [connected, setConnected] = useState(false)
+  const [autoConnect, setAutoConnect] = useState(connectedPersist)
+
   const [providerUrl, setProviderUrl] = useLocalStorageState(
     'walletProvider',
     RINProviderURL
@@ -168,39 +175,6 @@ export function WalletProvider({ children }) {
     [providerUrl]
   )
 
-  // let [wallet, setWallet] = useState<WalletAdapter | undefined>(
-  //   new Wallet(providerUrl, endpoint)
-  // )
-
-  // useEffect(() => {
-  //   if (provider) {
-  //     const updateWallet = () => {
-  //       // hack to also update wallet synchronously in case it disconnects
-  //       // eslint-disable-next-line react-hooks/exhaustive-deps
-  //       wallet = new (provider.adapter || Wallet)(
-  //         providerUrl,
-  //         endpoint
-  //       ) as WalletAdapter
-  //       setWallet(wallet)
-  //     }
-
-  //     if (document.readyState !== 'complete') {
-  //       // wait to ensure that browser extensions are loaded
-  //       const listener = () => {
-  //         updateWallet()
-  //         window.removeEventListener('load', listener)
-  //       }
-  //       window.addEventListener('load', listener)
-  //       return () => window.removeEventListener('load', listener)
-  //     } else {
-  //       updateWallet()
-  //     }
-  //   }
-
-  //   return () => {}
-  // }, [provider, providerUrl, endpoint])
-
-  const [connected, setConnected] = useState(false)
 
   const wallet = useMemo(() => {
     const wallet = new (provider?.adapter || Wallet)(
@@ -219,8 +193,11 @@ export function WalletProvider({ children }) {
     if (wallet) {
       wallet.on('connect', async () => {
         if (wallet?.publicKey && !wallet?.publicKey?.equals(SystemProgram.programId)) {
-          console.log('connected')
+          console.log('Wallet connected')
+
+          setConnectedPersist(true)
           setConnected(true)
+
           const walletPublicKey = wallet?.publicKey.toBase58()
           const keyToDisplay =
             walletPublicKey.length > 20
@@ -240,31 +217,39 @@ export function WalletProvider({ children }) {
         }
       })
 
-      wallet.on('disconnect', () => {
-        setConnected(false)
-        notify({
-          message: 'Wallet update',
-          description: 'Disconnected from wallet',
-        })
+      wallet.on('disconnect', (...args) => {
+        setTimeout(() => { // Prevent execution on tab close/reload
+          setConnectedPersist(false)
+          setConnected(false)
+          notify({
+            message: 'Wallet update',
+            description: 'Disconnected from wallet',
+          })
+        }, 300)
+
       })
     }
 
-    return () => {
-      setConnected(false)
-      if (wallet && wallet.disconnect) {
-        wallet.disconnect()
-        setConnected(false)
-      }
-    }
+
+    // Disable disconnect - it happens only on tab close/page reload, let's save last connection
+    // return () => {
+    //   setConnected(false)
+    //   if (wallet?.disconnect) {
+    //     wallet.disconnect()
+    //   }
+    // }
   }, [wallet])
 
   useEffect(() => {
-    if (wallet && autoConnect) {
-      wallet.connect()
-      setAutoConnect(false)
-    }
+    setTimeout(() => { // Allow app to start (initialize) properly
+      if (wallet && autoConnect) {
+        if (!wallet.connected) {
+          wallet.connect()
+        }
+        setAutoConnect(false)
+      }
+    }, 300)
 
-    return () => { }
   }, [wallet, autoConnect])
 
   useEffect(() => {
@@ -276,20 +261,22 @@ export function WalletProvider({ children }) {
 
   const w = WALLET_PROVIDERS.find(({ url }) => url === providerUrl)
 
+
+  const context: WalletContextType = {
+    wallet,
+    connected,
+    providerUrl,
+    setProviderUrl,
+    setAutoConnect,
+    providerName:
+      w?.name ??
+      providerUrl,
+    providerFullName:
+      w?.fullName,
+  }
   return (
     <WalletContext.Provider
-      value={{
-        wallet,
-        connected,
-        providerUrl,
-        setProviderUrl,
-        setAutoConnect,
-        providerName:
-          w?.name ??
-          providerUrl,
-        providerFullName:
-          w?.fullName,
-      }}
+      value={context}
     >
       {children}
     </WalletContext.Provider>

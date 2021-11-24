@@ -31,6 +31,7 @@ export const TokenIcon = ({
   emojiIfNoLogo = false,
   isAwesomeMarket = false,
   isAdditionalCustomUserMarket = false,
+  className,
 }: {
   mint?: string | null
   height?: string
@@ -39,11 +40,12 @@ export const TokenIcon = ({
   emojiIfNoLogo?: boolean
   isAwesomeMarket?: boolean
   isAdditionalCustomUserMarket?: boolean
+  className?: string
 }) => {
   const tokenMap = useTokenInfos()
 
   if (isAdditionalCustomUserMarket) {
-    return <SvgIcon width={'50%'} height={'auto'} src={Warning} />
+    return <SvgIcon className={className} width={'50%'} height={'auto'} src={Warning} />
   }
 
   if (!mint) {
@@ -53,6 +55,7 @@ export const TokenIcon = ({
         height={height}
         width={width}
         style={{ margin: margin }}
+        className={className}
       />
     )
   }
@@ -137,10 +140,10 @@ export const TokenIcon = ({
   if (!token || !token.logoURI) {
     if (emojiIfNoLogo) {
       return isAwesomeMarket ? (
-        <SvgIcon width={'50%'} height={'auto'} src={ThinkingFace} />
+        <SvgIcon className={className} width={'50%'} height={'auto'} src={ThinkingFace} />
       ) : (
-        <SvgIcon width={'50%'} height={'auto'} src={GreenCheckmark} />
-      )
+          <SvgIcon className={className} width={'50%'} height={'auto'} src={GreenCheckmark} />
+        )
     }
 
     return (
@@ -149,6 +152,7 @@ export const TokenIcon = ({
         height={height}
         width={width}
         style={{ margin: margin }}
+        className={className}
       />
     )
   }
@@ -162,6 +166,7 @@ export const TokenIcon = ({
         margin,
         borderRadius: mint === RIN_MINT ? '0' : '50%',
       }}
+      className={className}
     />
   )
 }

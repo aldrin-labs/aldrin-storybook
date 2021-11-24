@@ -3,32 +3,35 @@ import styled from 'styled-components'
 
 import lightBird from '@icons/lightBird.svg'
 
-import { Button } from '../Button'
+import { Button, ButtonVariants } from '../Button'
 
 interface ShareButtonProps {
   url?: string
   text: string
   addUrl?: boolean
+  variant?: ButtonVariants
+  iconFirst?: true
 }
 
-const Img = styled.img`
+const Img = styled.img<{ iconFirst?: true }>`
   height: 0.8em;
-  margin-left: 1em;
+  margin: ${(props: { iconFirst?: true }) => props.iconFirst ? '0 1em 0 0' : '0 0 0 1em'};
   position: relative;
   top: 1px;
 `
 
 export const ShareButton: React.FC<ShareButtonProps> = (props) => {
-  const { url = window.location.href, text, addUrl = false } = props
+  const { url = window.location.href, text, addUrl = false, variant = "outline-white", iconFirst } = props
   const fullUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}${addUrl ? `&url=${encodeURIComponent(url)}` : ''}`
   return (
     <Button
-      borderRadius="lg"
-      variant="outline-white"
+      $borderRadius="lg"
+      $variant={variant}
       onClick={() => window.open(fullUrl, 'Twitter Share', 'height=600,width=550,resizable=1')}
     >
+      {iconFirst && <Img iconFirst src={lightBird.replace(/"/gi, '')} />}
       Share
-      <Img src={lightBird.replace(/"/gi, '')} />
+      {!iconFirst && <Img src={lightBird.replace(/"/gi, '')} />}
     </Button>
   )
 }

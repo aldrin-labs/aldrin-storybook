@@ -1,9 +1,11 @@
-import { TokenListProvider } from '@solana/spl-token-registry'
+import { TokenListProvider, TokenInfo } from '@solana/spl-token-registry'
 import React, { useContext, useEffect, useState } from 'react'
 import { clusterForEndpoint } from './clusters'
 import { useConnectionConfig } from './connection'
 
-const TokenListContext = React.createContext({})
+const TokenListContext = React.createContext({
+  tokenInfos: new Map<string, TokenInfo>()
+})
 
 export function useTokenInfos() {
   const { tokenInfos } = useContext(TokenListContext)
@@ -30,9 +32,13 @@ export function TokenRegistryProvider(props) {
 
       setTokenInfos(
         tokenInfos.reduce((map, item) => {
-          map.set(item.address, item)
+          const parsedItem = {
+            ...item,
+            name: item.name.replace('Cryptocurrencies.Ai', 'Aldrin').replace('(Sollet)', ''),
+          }
+          map.set(item.address, parsedItem)
           return map
-        }, new Map())
+        }, new Map<string, TokenInfo>())
       )
     })
   }, [endpoint])

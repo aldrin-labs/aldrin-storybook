@@ -4,7 +4,6 @@ import {
   clusterApiUrl,
   Connection,
   PublicKey,
-  Connection,
 } from '@solana/web3.js'
 import React, { useContext, useRef } from 'react'
 import tuple from 'immutable-tuple'

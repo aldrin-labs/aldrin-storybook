@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core/styles'
 import { Header } from '@sb/components/Header'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import WarningBanner from '@sb/components/WarningPopup/warningPopupsWrapper'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
@@ -89,8 +90,10 @@ const AppRaw = ({
     'isDevUrlPopupOpen',
     true
   )
-  const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
-    useLocalStorageState('isRebrandingPopupOpen', true)
+  const [
+    isRebrandingPopupOpen,
+    setIsRebrandingPopupOpen,
+  ] = useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
   //   true
   // )
@@ -118,12 +121,12 @@ const AppRaw = ({
   const searchParamsObject = getSearchParamsObject({ search })
   const isRefInUrlParamExist = !!searchParamsObject.ref
   if (isRefInUrlParamExist) {
-    const {ref} = searchParamsObject
+    const { ref } = searchParamsObject
     syncStorage.setItem('ref', ref)
   }
   const isDiscountCodeExist = !!searchParamsObject.code
   if (isDiscountCodeExist) {
-    const {code} = searchParamsObject
+    const { code } = searchParamsObject
     syncStorage.setItem('code', code)
   }
 
@@ -172,6 +175,14 @@ const AppRaw = ({
                             }}
                           />
                         )}
+                        <WarningBanner
+                          localStorageProperty={'isPhantomIssuesPopupOpen'}
+                          notification={[
+                            'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
+                            'In the meantime, you can import your Seed Phrase into Aldrin Wallet or any other wallet and interact with DEX using it.',
+                          ]}
+                          needMobile={false}
+                        />
                         {/* <RebrandingPopup
                           open={isRebrandingPopupOpen}
                           onClose={() => setIsRebrandingPopupOpen(false)}

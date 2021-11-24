@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { COLORS } from '@variables/variables'
 
 export interface BlockProps {
-  backgroundImage?: string
+  $backgroundImage?: string
   icon?: string
   inner?: boolean
 }
@@ -15,7 +15,7 @@ export const Block = styled.div<BlockProps>`
   margin: 8px;
   height: 100%;
   position: relative;
-  ${({ backgroundImage }: BlockProps) =>
+  ${({ $backgroundImage: backgroundImage }: BlockProps) =>
     backgroundImage
       ? `
     background-image: url(${backgroundImage});
@@ -53,13 +53,13 @@ export const BlockTitle = styled.h2`
 
 export const BlockSubtitle = styled.h3<TitleProps>`
   font-weight: 600;
-  font-size: 0.9em;
+  font-size: 0.8em;
   line-height: 130%;
   margin: 0 0 1em;
   color: ${(props: TitleProps) => props.color || COLORS.hint};
 `
 
-interface BlockContentProps {
+export interface BlockContentProps {
   border?: true
 }
 

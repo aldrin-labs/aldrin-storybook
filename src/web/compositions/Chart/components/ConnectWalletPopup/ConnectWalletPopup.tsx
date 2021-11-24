@@ -62,6 +62,7 @@ const ConnectWalletPopup = ({
         {WALLET_PROVIDERS.map((provider) => {
           return (
             <WalletSelectorRow
+              key={`wallet_${provider.providerName}`}
               onClick={async () => {
                 await setProvider(provider.url)
                 await setAutoConnect(true)

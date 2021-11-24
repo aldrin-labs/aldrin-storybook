@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 import { COLORS, FONT_SIZES, FONTS } from '@variables/variables'
 
+type Weight = 100 | 200 | 400 | 500 | 600 | 700
 export interface TextProps {
   size?: keyof typeof FONT_SIZES
   color?: keyof typeof COLORS
-  weight?: 100 | 200 | 400 | 500 | 600 | 700
+  weight?: Weight
   maxWidth?: string
   noWrap?: boolean
   margin?: string
@@ -24,9 +25,10 @@ export const Text = styled.p<TextProps>`
   ${(props: TextProps) => (props.noWrap ? `white-space: nowrap;` : '')}
 `
 
-interface InlineProps {
+export interface InlineProps {
   color?: keyof typeof COLORS
   size?: keyof typeof FONT_SIZES
+  weight?: Weight
 }
 
 export const InlineText = styled.span<InlineProps>`
@@ -34,4 +36,5 @@ export const InlineText = styled.span<InlineProps>`
     props.color ? `color: ${COLORS[props.color]};` : ''}
   ${(props: InlineProps) =>
     props.size ? `font-size: ${FONT_SIZES[props.size]};` : ''}
+  ${(props: TextProps) => props.weight ? `font-weight: ${props.weight};` : ''};
 `
