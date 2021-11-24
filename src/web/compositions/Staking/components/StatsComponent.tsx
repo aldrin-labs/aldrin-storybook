@@ -101,7 +101,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     (dayDuration / currentFarmingState.periodLength)
 
   const buyBackDailyRewards =
-    uyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK
+    buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK
 
   const dailyRewards = treasuryDailyRewards + buyBackDailyRewards
 
