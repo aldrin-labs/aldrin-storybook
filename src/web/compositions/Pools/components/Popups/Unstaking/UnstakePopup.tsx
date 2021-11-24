@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BoldHeader, StyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -21,24 +21,26 @@ import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
+import { COLORS } from '@variables/variables'
 
-export const UnstakePopup = ({
-  theme,
-  open,
-  allTokensData,
-  selectedPool,
-  close,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-}: {
+interface UnstakePopupProps {
   theme: Theme
-  open: boolean
   allTokensData: TokenInfo[]
   selectedPool: PoolInfo
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-}) => {
+}
+
+const Popup: React.FC<UnstakePopupProps> = (props) => {
+  const {
+    theme,
+    allTokensData,
+    selectedPool,
+    close,
+    refreshTokensWithFarmingTickets,
+    setPoolWaitingForUpdateAfterOperation,
+  } = props
   const { wallet } = useWallet()
   const connection = useConnection()
 
@@ -58,9 +60,9 @@ export const UnstakePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => {}}
+      onEnter={() => { }}
       maxWidth={'md'}
-      open={open}
+      open
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
@@ -78,7 +80,7 @@ export const UnstakePopup = ({
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
-            color: theme.palette.green.main,
+            color: COLORS.success,
           }}
         >
           {TRANSACTION_COMMON_SOL_FEE} SOL
@@ -123,8 +125,8 @@ export const UnstakePopup = ({
                 result === 'success'
                   ? 'Successfully unstaked.'
                   : result === 'failed'
-                  ? 'Unstaking failed, please try again later or contact us in telegram.'
-                  : 'Unstaking cancelled.',
+                    ? 'Unstaking failed, please try again later or contact us in telegram.'
+                    : 'Unstaking cancelled.',
             })
 
             const clearPoolWaitingForUpdate = () =>
@@ -152,3 +154,6 @@ export const UnstakePopup = ({
     </DialogWrapper>
   )
 }
+
+
+export const UnstakePopup = withTheme()(Popup)

@@ -1,67 +1,50 @@
-import React, { useState } from 'react'
-import { TableWithSort } from '@sb/components'
-
 import { Theme } from '@material-ui/core'
-
-import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
+import { TableWithSort } from '@sb/components'
 import {
-  DataSection,
   DexTokensPrices,
   FeesEarned,
-  PoolInfo,
-  PoolWithOperation,
+  PoolInfo
 } from '@sb/compositions/Pools/index.types'
+import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+
+
+import { useHistory } from 'react-router-dom'
+
+import React from 'react'
+import { TableContainer } from '../index.styles'
 import {
   combineUserLiquidityData,
-  userLiquidityTableColumnsNames,
+  userLiquidityTableColumnsNames
 } from './UserLiquidity.utils'
-import { TableContainer } from '../index.styles'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
-import { FarmingTicket } from '@sb/dexUtils/pools/endFarming'
 
-const UserLiquidityTableComponent = ({
-  theme,
-  searchValue,
-  allTokensData,
-  poolsInfo,
-  poolWaitingForUpdateAfterOperation,
-  dexTokensPricesMap,
-  farmingTicketsMap,
-  earnedFeesInPoolForUserMap,
-  selectPool,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-  setIsWithdrawalPopupOpen,
-  setIsAddLiquidityPopupOpen,
-  setIsStakePopupOpen,
-  setIsUnstakePopupOpen,
-  setIsClaimRewardsPopupOpen,
-  includePermissionless,
-}: {
+
+interface LiquidityTableProps {
   theme: Theme
   searchValue: string
   poolsInfo: PoolInfo[]
   includePermissionless: boolean
-  poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensData: TokenInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
-  selectPool: (pool: PoolInfo) => void
-  refreshTokensWithFarmingTickets: () => void
-  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  setIsWithdrawalPopupOpen: (value: boolean) => void
-  setIsAddLiquidityPopupOpen: (value: boolean) => void
-  setIsStakePopupOpen: (value: boolean) => void
-  setIsUnstakePopupOpen: (value: boolean) => void
-  setIsClaimRewardsPopupOpen: (value: boolean) => void
-}) => {
-  const [expandedRows, expandRows] = useState([])
+}
 
-  const setExpandedRows = (id: string) => {
-    expandRows(onCheckBoxClick(expandedRows, id))
-  }
+const UserLiquidityTableComponent: React.FC<LiquidityTableProps> = (props) => {
+
+  const history = useHistory()
+
+  const {
+    theme,
+    searchValue,
+    allTokensData,
+    poolsInfo,
+    dexTokensPricesMap,
+    farmingTicketsMap,
+    earnedFeesInPoolForUserMap,
+    includePermissionless,
+  } = props
 
   const usersPools = getUserPoolsFromAll({
     poolsInfo,
@@ -73,32 +56,19 @@ const UserLiquidityTableComponent = ({
     theme,
     searchValue,
     usersPools,
-    expandedRows,
-    poolWaitingForUpdateAfterOperation,
     allTokensData,
     dexTokensPricesMap,
     farmingTicketsMap,
     earnedFeesInPoolForUserMap,
-    selectPool,
-    refreshTokensWithFarmingTickets,
-    setIsWithdrawalPopupOpen,
-    setIsAddLiquidityPopupOpen,
-    setIsStakePopupOpen,
-    setIsUnstakePopupOpen,
-    setIsClaimRewardsPopupOpen,
-    setPoolWaitingForUpdateAfterOperation,
     includePermissionless,
   })
 
   return (
     <TableContainer>
-      {/* @ts-ignore */}
       <TableWithSort
         hideCommonCheckbox={true}
         hideRowsCheckboxes={true}
-        expandableRows={true}
-        expandedRows={expandedRows}
-        onChange={setExpandedRows}
+        onTrClick={(row) => history.push(`/pools/${row.pool.contentToSort}`)}
         style={{
           overflowX: 'hidden',
           height: '100%',

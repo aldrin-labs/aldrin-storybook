@@ -1,41 +1,30 @@
-import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
-import { compose } from 'recompose'
+import ArrowLeft from '@icons/ArrowLeft.svg'
+import ChartIcon from '@icons/chartIcon.svg'
 import { Theme, withTheme } from '@material-ui/core'
-import { useLocation } from 'react-router-dom'
+import SvgIcon from '@sb/components/SvgIcon'
+import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   getTokenMintAddressByName,
-  useMarket,
-  useMarkPrice,
+  useMarket
 } from '@sb/dexUtils/markets'
-import { getDecimalCount } from '@sb/dexUtils/utils'
-import AutoSuggestSelect from '../../Inputs/AutoSuggestSelect/AutoSuggestSelect'
-import MarketStats from '../MarketStats/MarketStats'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import LinkToSolanaExp from '../LinkToSolanaExp'
-import BlueTwitterIcon from '@icons/blueTwitter.svg'
-import AnalyticsIcon from '@icons/analytics.svg'
-import SvgIcon from '@sb/components/SvgIcon'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { TokenIcon } from '@sb/components/TokenIcon'
-import tokensLinksMap from '@core/config/tokensTwitterLinks'
-import Coinmarketcap from '@icons/coinmarketcap.svg'
-import CoinGecko from '@icons/coingecko.svg'
-import NomicsIcon from '@icons/nomics.svg'
-import Inform from '@icons/inform.svg'
+import { getDecimalCount } from '@sb/dexUtils/utils'
+import React, { useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { compose } from 'recompose'
+import AutoSuggestSelect from '../../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import { MintsPopup } from '../../Inputs/SelectWrapper/MintsPopup'
-import ChartIcon from '@icons/chartIcon.svg'
-import ArrowLeft from '@icons/ArrowLeft.svg'
-
+import MarketStats from '../MarketStats/MarketStats'
 import {
   ExclamationMark,
-  LinkToAnalytics,
-  LinkToTwitter,
   MarketStatsContainer,
   MobileMarketStatsContainer,
-  Title,
+  Title
 } from './MarketBlock.styles'
+
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -115,14 +104,6 @@ const MarketBlock = ({
   const isCCAIPair =
     pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket
 
-  const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
-  const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
-  const marketCapIcon = marketCapLink.includes('coinmarketcap')
-    ? Coinmarketcap
-    : marketCapLink.includes('coingecko')
-    ? CoinGecko
-    : NomicsIcon
-
   return (
     <>
       <MarketStatsContainer theme={theme}>
@@ -132,8 +113,8 @@ const MarketBlock = ({
               isPrivateCustomMarket
                 ? 'This is an unofficial custom market. Use at your own risk.'
                 : isCustomUserMarket
-                ? 'This is curated but unofficial market.'
-                : 'This is the official market.'
+                  ? 'This is curated but unofficial market.'
+                  : 'This is the official market.'
             }
           >
             <div
@@ -184,54 +165,14 @@ const MarketBlock = ({
             pricePrecision={pricePrecision}
           />
           <Row align={'baseline'}>
-            <SvgIcon
-              src={Inform}
-              onClick={() => {
+            <TokenExternalLinks
+              tokenName={base}
+              marketAddress={marketAddress}
+              marketPair={pair}
+              onInfoClick={() => {
                 setIsMintsPopupOpen(true)
               }}
-              style={{ margin: '0 1.5rem', cursor: 'pointer' }}
-              width={'2.3rem'}
-              height={'2.3rem'}
             />
-            <LinkToSolanaExp marketAddress={marketAddress} />
-            <DarkTooltip title={'Show analytics for this market.'}>
-              <LinkToAnalytics to={`/analytics/${pair}`}>
-                <SvgIcon
-                  src={AnalyticsIcon}
-                  width={'2.3rem'}
-                  height={'2.3rem'}
-                />
-              </LinkToAnalytics>
-            </DarkTooltip>
-            {twitterLink !== '' && (
-              <DarkTooltip title={'Twitter profile of base token.'}>
-                <LinkToTwitter
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={twitterLink}
-                >
-                  <SvgIcon
-                    width={'2.5rem'}
-                    height={'2.5rem'}
-                    src={BlueTwitterIcon}
-                  />
-                </LinkToTwitter>
-              </DarkTooltip>
-            )}
-            {marketCapLink !== '' && (
-              <a
-                style={{ marginLeft: '1.5rem' }}
-                target="_blank"
-                rel="noopener noreferrer"
-                href={marketCapLink}
-              >
-                <SvgIcon
-                  width={'2.5rem'}
-                  height={'2.5rem'}
-                  src={marketCapIcon}
-                />
-              </a>
-            )}
           </Row>
         </Row>
         <Row>

@@ -1,4 +1,4 @@
-import { FarmingState } from "@sb/dexUtils/common/types"
+import { FarmingState } from '@sb/dexUtils/common/types'
 
 export type PoolInfo = {
   name: string
@@ -11,7 +11,7 @@ export type PoolInfo = {
   swapToken: string
   poolTokenMint: string
   lpTokenFreezeVaultBalance: number;
-  farming: FarmingState[]
+  farming?: FarmingState[]
   tvl: {
     tokenA: number
     tokenB: number
@@ -27,8 +27,15 @@ export type DexTokensPrices = {
 
 export type FeesEarned = {
   pool: string // an address of pool or 'all'
+  poolSymbol: string
   totalBaseTokenFee: number
   totalQuoteTokenFee: number
+}
+
+export interface TradingVolumeStats {
+  weeklyTradingVolume: number
+  dailyTradingVolume: number
+  pool: string
 }
 
 export type TradingVolume = {

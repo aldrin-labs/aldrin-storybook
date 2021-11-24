@@ -9,13 +9,13 @@ import { Theme } from '@material-ui/core'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { StyledLink, Text } from '@sb/compositions/Addressbook/index'
 import {
   ReloadTimer,
   TimerButton,
 } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { InputWithSelectorForSwaps } from './components/Inputs/index'
-import { Card } from './styles'
+import { Card, InfoBox } from './styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { notify } from '@sb/dexUtils/notifications'
@@ -50,6 +50,15 @@ import {
 } from '@sb/components/TraidingTerminal/utils'
 import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 
+import RedBox from '@icons/redBox.png'
+import GreenBox from '@icons/greenBox.png'
+import PinkBox from '@icons/pinkBox.png'
+
+import ScalesIcon from '@icons/scales.svg'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import WhiteArrow from '@icons/longWhiteArrow.svg'
+import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/TablesSwitcher.styles'
+import { Selector } from './components/Selector/Selector'
 const DEFAULT_BASE_TOKEN = 'SOL'
 const DEFAULT_QUOTE_TOKEN = 'RIN'
 
@@ -68,6 +77,9 @@ const SwapPage = ({
     wallet,
     connection,
   })
+  const [isStableSwapTabActive, setIsStableSwapTabActive] = useState<boolean>(
+    false
+  )
 
   const nativeSOLTokenData = allTokensData[0]
 
@@ -95,8 +107,8 @@ const SwapPage = ({
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
       (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress) &&
-      pool?.curveType === 1 // TODO: remove
+        pool?.tokenB === quoteTokenMintAddress)
+    // pool?.curveType === 1 // TODO: remove
   )
 
   const isStablePool = selectedPool?.curveType === 1
@@ -209,6 +221,8 @@ const SwapPage = ({
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
 
+  const needEnterAmount = baseAmount == 0 || quoteAmount == 0
+
   const isButtonDisabled =
     isTokenABalanceInsufficient ||
     !selectedPool ||
@@ -309,6 +323,9 @@ const SwapPage = ({
   //   }
   // }, [wallet.publicKey, allTokensData, baseAmount])
 
+  const stablePoolsData = getPoolsInfoQuery.getPoolsInfo.filter(
+    (pool) => pool.curveType === 1
+  )
   return (
     <RowContainer
       direction={'column'}
@@ -318,12 +335,39 @@ const SwapPage = ({
       }}
     >
       <>
+        <Row width={'50rem'} justify={'flex-start'} margin={'2rem 1rem'}>
+          <TableModeButton
+            isActive={!isStableSwapTabActive}
+            onClick={() => setIsStableSwapTabActive(false)}
+            fontSize={'1.5rem'}
+          >
+            All
+          </TableModeButton>
+          <TableModeButton
+            isActive={isStableSwapTabActive}
+            onClick={() => setIsStableSwapTabActive(true)}
+            fontSize={'1.5rem'}
+          >
+            Stable Swap
+          </TableModeButton>
+        </Row>
+        <Row width={'50rem'} justify={'flex-start'} margin={'0 0 2rem 0'}>
+          <Selector
+            data={
+              isStableSwapTabActive
+                ? stablePoolsData
+                : getPoolsInfoQuery.getPoolsInfo
+            }
+            setBaseTokenMintAddress={setBaseTokenMintAddress}
+            setQuoteTokenMintAddress={setQuoteTokenMintAddress}
+          />
+        </Row>
         <BlockTemplate
           theme={theme}
           width={'50rem'}
           style={{ padding: '2rem', zIndex: '10' }}
         >
-          <RowContainer margin={'1rem 2rem'} justify={'space-between'}>
+          <RowContainer margin={'1rem 0'} justify={'space-between'}>
             <Text>
               Slippage Tolerance: <strong>{slippageTolerance}%</strong>
             </Text>
@@ -343,20 +387,19 @@ const SwapPage = ({
                   <SvgIcon src={Inform} width={'50%'} height={'50%'} />
                 </TimerButton>
               )}
-              <SvgIcon
-                style={{ cursor: 'pointer' }}
+              <TimerButton
+                margin={'0'}
                 onClick={() => openTransactionSettingsPopup(true)}
-                src={Gear}
-                width={'2.5rem'}
-                height={'2.5rem'}
-              />
+              >
+                <SvgIcon src={Gear} width={'50%'} height={'50%'} />
+              </TimerButton>
             </Row>
           </RowContainer>
           <RowContainer margin={'2rem 0 1rem 0'}>
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'Enter amount'}
+              placeholder={'0.00'}
               theme={theme}
               directionFrom={true}
               value={baseAmount}
@@ -374,22 +417,33 @@ const SwapPage = ({
               }}
             />
           </RowContainer>
-          <RowContainer justify={'flex-start'} margin={'0 2rem'}>
+          <RowContainer justify={'space-between'} margin={'0 2rem'}>
             <SvgIcon
               style={{ cursor: 'pointer' }}
               src={Arrows}
-              width={'2.5rem'}
-              height={'2.5rem'}
+              width={'2rem'}
+              height={'2rem'}
               onClick={() => {
                 reverseTokens()
               }}
             />
+            {isStablePool ? (
+              <DarkTooltip
+                title={
+                  'This pool uses the stable curve, which provides better rates for swapping stablecoins.'
+                }
+              >
+                <div>
+                  <SvgIcon src={ScalesIcon} width={'2rem'} height={'2rem'} />
+                </div>
+              </DarkTooltip>
+            ) : null}
           </RowContainer>
           <RowContainer margin={'1rem 0 2rem 0'}>
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'Enter amount'}
+              placeholder={'0.00'}
               theme={theme}
               disabled={
                 !baseTokenMintAddress ||
@@ -423,9 +477,9 @@ const SwapPage = ({
                 {isSwapBaseToQuote
                   ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
                   : stripDigitPlaces(
-                      +(+poolAmountTokenA / +poolAmountTokenB),
-                      8
-                    )}{' '}
+                    +(+poolAmountTokenA / +poolAmountTokenB),
+                    8
+                  )}{' '}
                 <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
                   {quoteSymbol}{' '}
                 </Text>
@@ -503,13 +557,13 @@ const SwapPage = ({
                   })
 
                   notify({
-                    type: result ? 'success' : 'error',
+                    type: result === 'success' ? 'success' : 'error',
                     message:
                       result === 'success'
                         ? 'Swap executed successfully.'
                         : result === 'failed'
-                        ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
-                        : 'Swap cancelled',
+                          ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
+                          : 'Swap cancelled',
                   })
 
                   refreshPoolBalances()
@@ -517,12 +571,12 @@ const SwapPage = ({
                 }}
               >
                 {isTokenABalanceInsufficient
-                  ? `Insufficient ${
-                      isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
-                    } Balance`
+                  ? `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol} Balance`
                   : !selectedPool
-                  ? 'No pools available'
-                  : 'Swap'}
+                    ? 'No pools available'
+                    : needEnterAmount
+                      ? 'Enter amount'
+                      : 'Swap'}
               </BtnCustom>
             )}
           </RowContainer>
@@ -575,6 +629,87 @@ const SwapPage = ({
             </RowContainer>
           </Card>
         )}
+        <Row justify={'space-between'} width={'50rem'} margin={'3rem 0 0 0'}>
+          <InfoBox image={PinkBox}>
+            <Text
+              fontSize={'1.7rem'}
+              fontFamily={'Avenir Next Bold'}
+              whiteSpace="nowrap"
+            >
+              Stake RIN
+            </Text>
+            <Text
+              fontSize={'1.4rem'}
+              fontFamily={'Avenir Next Bold'}
+              whiteSpace="nowrap"
+            >
+              <span style={{ fontFamily: 'Avenir Next Light' }}>with</span> 34%
+              APR!
+            </Text>
+            <StyledLink
+              to={'/staking'}
+              needHover
+              fontSize={'1.7rem'}
+              fontFamily={'Avenir Next Bold'}
+              whiteSpace="nowrap"
+            >
+              Stake Now{' '}
+              <SvgIcon width={'3rem'} height={'0.75rem'} src={WhiteArrow} />
+            </StyledLink>
+          </InfoBox>
+          <InfoBox image={GreenBox}>
+            <Text
+              fontSize={'1.7rem'}
+              fontFamily={'Avenir Next Bold'}
+              whiteSpace="nowrap"
+            >
+              Add Liquidity
+            </Text>
+            <Text
+              fontSize={'1.4rem'}
+              fontFamily={'Avenir Next Light'}
+              whiteSpace="nowrap"
+            >
+              and farm rewards!
+            </Text>
+            <StyledLink
+              to={'/pools'}
+              needHover
+              fontSize={'1.7rem'}
+              fontFamily={'Avenir Next Bold'}
+              whiteSpace="nowrap"
+            >
+              View Pools{' '}
+              <SvgIcon width={'3rem'} height={'0.75rem'} src={WhiteArrow} />
+            </StyledLink>
+          </InfoBox>
+          <InfoBox image={RedBox}>
+            <Text
+              fontSize={'1.7rem'}
+              fontFamily={'Avenir Next Bold'}
+              whiteSpace="nowrap"
+            >
+              200+ Markets
+            </Text>
+            <Text
+              fontSize={'1.4rem'}
+              fontFamily={'Avenir Next Light'}
+              whiteSpace="nowrap"
+            >
+              on orderbook DEX!
+            </Text>
+            <StyledLink
+              to={'/chart'}
+              needHover
+              fontSize={'1.7rem'}
+              fontFamily={'Avenir Next Bold'}
+              whiteSpace="nowrap"
+            >
+              Trade Now{' '}
+              <SvgIcon width={'3rem'} height={'0.75rem'} src={WhiteArrow} />
+            </StyledLink>
+          </InfoBox>
+        </Row>
       </>
 
       <TransactionSettingsPopup
@@ -610,19 +745,19 @@ const SwapPage = ({
         selectTokenMintAddress={(address: string) => {
           const select = isBaseTokenSelecting
             ? () => {
-                if (quoteTokenMintAddress === address) {
-                  setQuoteTokenMintAddress('')
-                }
-                setBaseTokenMintAddress(address)
-                setIsSelectCoinPopupOpen(false)
+              if (quoteTokenMintAddress === address) {
+                setQuoteTokenMintAddress('')
               }
+              setBaseTokenMintAddress(address)
+              setIsSelectCoinPopupOpen(false)
+            }
             : () => {
-                if (baseTokenMintAddress === address) {
-                  setBaseTokenMintAddress('')
-                }
-                setQuoteTokenMintAddress(address)
-                setIsSelectCoinPopupOpen(false)
+              if (baseTokenMintAddress === address) {
+                setBaseTokenMintAddress('')
               }
+              setQuoteTokenMintAddress(address)
+              setIsSelectCoinPopupOpen(false)
+            }
 
           select()
         }}

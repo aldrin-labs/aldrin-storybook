@@ -1,5 +1,5 @@
 import { Connection } from '@solana/web3.js'
-import { STAKING_FARMING_STATE } from '../common/config'
+import { STAKING_FARMING_STATE_SIZE } from '../common/config'
 import { loadAccountsFromStakingProgram } from './loadAccountsFromStakingProgram'
 
 export const loadStakingFarmingStates = async ({
@@ -11,7 +11,7 @@ export const loadStakingFarmingStates = async ({
     connection,
     filters: [
       {
-        dataSize: STAKING_FARMING_STATE,
+        dataSize: STAKING_FARMING_STATE_SIZE,
       },
     ],
   })

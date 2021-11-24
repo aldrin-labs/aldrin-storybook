@@ -21,7 +21,7 @@ import {
   loadMarketsByNames,
 } from '../Rebalance/utils/loadMarketsByNames'
 import { TableContainer, TableWithTitleContainer } from './Dashboard.styles'
-import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
+import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen'
 import { UnsettledBalance } from './components/UnsettledBalancesTable/UnsettledBalancesTable.utils'
 import { getOpenOrdersAccountsMapByMarketId } from './utils/getOpenOrdersAccountsMapByMarketId'
 import { getUnsettledBalances } from './utils/getUnsettledBalances'

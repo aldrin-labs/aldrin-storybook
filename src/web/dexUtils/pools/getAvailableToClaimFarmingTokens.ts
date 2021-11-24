@@ -8,6 +8,6 @@ export const getAvailableToClaimFarmingTokens = (
     farmingTickets.reduce(
       (acc, ticket) => acc + getTotalFarmingAmountToClaim(ticket),
       0
-    ) || 0
+    )
   )
 }

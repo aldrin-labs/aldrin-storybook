@@ -1,15 +1,16 @@
 import React from 'react'
-import { Content, Page } from '../../components/Layout'
+import { Content } from '../../components/Layout'
 import { BlockWithHints } from './components/BlockWithHints'
 import StakingComponent from './components/StakingComponent'
+import { CenteredPage } from './styles'
 
 export const Staking = () => {
   return (
-    <Page>
+    <CenteredPage>
       <Content>
         <StakingComponent />
         <BlockWithHints />
       </Content>
-    </Page>
+    </CenteredPage>
   )
 }

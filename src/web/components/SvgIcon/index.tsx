@@ -7,12 +7,13 @@ interface WebIconProps {
   height?: string
 }
 
-interface Props extends WebIconProps {
+export interface Props extends WebIconProps {
   alt?: string
   src: string
   style?: React.CSSProperties
   onClick?: (any: any) => any
   onError?: (e: React.ChangeEvent<HTMLImageElement>) => void
+  className?: string
 }
 
 
@@ -25,12 +26,13 @@ const WebIcon = styled.img<WebIconProps>`
 
 const SvgIcon: React.FC<Props> = (props) => {
   const {
-    alt = '', src, onClick, onError, style, width, height
+    alt = '', src, onClick, onError, style, width, height, className
   } = props
   return (
     <WebIcon
+      className={className}
       alt={alt}
-      src={src.replace(/"/gi, '')}
+      src={src?.replace(/"/gi, '')}
       style={style}
       onClick={onClick}
       onError={onError}

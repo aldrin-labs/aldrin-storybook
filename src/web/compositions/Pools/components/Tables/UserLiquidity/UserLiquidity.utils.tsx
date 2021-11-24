@@ -3,8 +3,6 @@ import {
   formatNumberToUSFormat,
   stripDigitPlaces
 } from '@core/utils/PortfolioTableUtils'
-import ArrowToTop from '@icons/arrowToTop.svg'
-import ArrowToBottom from '@icons/greyArrow.svg'
 import Info from '@icons/TooltipImg.svg'
 import { SvgIcon } from '@sb/components'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -13,8 +11,7 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import {
   DexTokensPrices,
-  FeesEarned, PoolInfo,
-  PoolWithOperation
+  FeesEarned, PoolInfo
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
@@ -27,18 +24,24 @@ import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingSta
 import { Theme } from '@sb/types/materialUI'
 import React from 'react'
 import { TokenIconsContainer } from '../components'
-import { TablesDetails } from '../components/TablesDetails'
 import {
-  RowDataTdText,
+  DetailsLink, RowDataTdText,
   RowDataTdTopText,
   TextColumnContainer
 } from '../index.styles'
 import { getFarmingStateDailyFarmingValue } from './utils/getFarmingStateDailyFarmingValue'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from './utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 
-export const PERMISIONLESS_POOLS_MINTS = [
-  '46EsyeSzs6tBoTRmFiGfDzGQe13LP337C7mMtdNMkgcU', // OOGI/USDC
-  'E3XeF4QCTMMo8P5yrgqNMvoRJMyVPTNHhWkbRCgoeAfC', // SLX/USDC
+export const AUTHORIZED_POOLS = [
+  '4KeZGuXPq9fyZdt5sfzHMM36mxTf3oSkDaa4Y4gHm9Hz', // mSOL_ETH
+  'Gathk79qZfJ4G36M7hiL3Ef1P5SDt7Xhm2C1vPhtWkrw', // RIN_USDC
+  'EotLYRsnRVqR3euN24P9PMXCqJv1WLsV8kJxR9o1y4U7', // mSOL_MNGO
+  'H37kHxy82uLoF8t86wK414KzpVJy7uVJ9Kvt5wYsTGPh', // mSOL_USDC
+  '3sbMDzGtyHAzJqzxE7DPdLMhrsxQASYoKLkHMYJPuWkp', // SOL_USDC
+  '77qHkg6TEe4FuZAr35bthTEadmT4ueWe1xomFFZkwiGQ', // mSOL_USDT
+  '9hkYqNM8QSx2vTwspaNg5VvW1LBxKWWgud8pCVdxKYZU', // mSOL_BTC
+  'HFNv9CeUtKFKm7gPoX1QG1NnrPnDhA5W6xqHGxmV6kxX', // RIN_SOL
+  'BE7eTJ8DB7xTu6sKsch4gWDCXbD48PLGesRLx7E1Qce4', // mSol_wUst
 ]
 
 
@@ -97,45 +100,29 @@ export const userLiquidityTableColumnsNames = [
   { label: '', id: 'details' },
 ]
 
-export const combineUserLiquidityData = ({
-  theme,
-  searchValue,
-  usersPools,
-  expandedRows,
-  poolWaitingForUpdateAfterOperation,
-  allTokensData,
-  dexTokensPricesMap,
-  farmingTicketsMap,
-  earnedFeesInPoolForUserMap,
-  selectPool,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-  setIsWithdrawalPopupOpen,
-  setIsAddLiquidityPopupOpen,
-  setIsStakePopupOpen,
-  setIsUnstakePopupOpen,
-  setIsClaimRewardsPopupOpen,
-  includePermissionless,
-}: {
+interface CombineUserLiquidityParams {
   theme: Theme
   searchValue: string
   dexTokensPricesMap: Map<string, DexTokensPrices>
   usersPools: PoolInfo[]
-  expandedRows: string[]
-  poolWaitingForUpdateAfterOperation: PoolWithOperation
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
-  selectPool: (pool: PoolInfo) => void
-  refreshTokensWithFarmingTickets: () => void
-  setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  setIsWithdrawalPopupOpen: (value: boolean) => void
-  setIsAddLiquidityPopupOpen: (value: boolean) => void
-  setIsStakePopupOpen: (value: boolean) => void
-  setIsUnstakePopupOpen: (value: boolean) => void
-  setIsClaimRewardsPopupOpen: (value: boolean) => void
   includePermissionless: boolean
-}) => {
+}
+
+export const combineUserLiquidityData = (params: CombineUserLiquidityParams) => {
+  const {
+    theme,
+    searchValue,
+    usersPools,
+    allTokensData,
+    dexTokensPricesMap,
+    farmingTicketsMap,
+    earnedFeesInPoolForUserMap,
+    includePermissionless,
+  } = params
+  
   const processedUserLiquidityData = usersPools
     .filter((pool) =>
       filterDataBySymbolForDifferentDeviders({
@@ -145,8 +132,11 @@ export const combineUserLiquidityData = ({
         )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
-    .filter((pool) => includePermissionless ? true : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint))
+    .filter((pool) => includePermissionless ? true : AUTHORIZED_POOLS.includes(pool.poolTokenMint))
     .map((pool: PoolInfo) => {
+      const poolName = `${getTokenNameByMintAddress(
+        pool.tokenA
+      )}_${getTokenNameByMintAddress(pool.tokenB)}`
       const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
       const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
@@ -236,37 +226,9 @@ export const combineUserLiquidityData = ({
                 tokenB={pool.tokenB}
                 needHover={true}
               />
-              {/* TODO: show locked liquidity depending on backend data, not for all pools */}
-              {/* {true ? (
-                <DarkTooltip title={'Founders liquidity locked.'}>
-                  <div>
-                    <SvgIcon
-                      style={{ marginLeft: '1rem' }}
-                      width="2rem"
-                      height="auto"
-                      src={CrownIcon}
-                    />
-                  </div>
-                </DarkTooltip>
-              ) : pool.executed ? (
-                <DarkTooltip
-                  title={
-                    'RIN token founders complained about this pool, it will be excluded from the catalog and AMM. You can withdraw liquidity and deposit it in the official pool at "All Pools" tab.'
-                  }
-                >
-                  <div>
-                    <SvgIcon
-                      style={{ marginLeft: '1rem' }}
-                      width="2rem"
-                      height="auto"
-                      src={ForbiddenIcon}
-                    />
-                  </div>
-                </DarkTooltip>
-              ) : null} */}
             </Row>
           ),
-          contentToSort: `${baseSymbol}${quoteSymbol}`,
+          contentToSort: `${baseSymbol}_${quoteSymbol}`,
         },
         tvl: {
           render: (
@@ -398,62 +360,9 @@ export const combineUserLiquidityData = ({
         },
         details: {
           render: (
-            <Row>
-              <RowDataTdText
-                theme={theme}
-                color={theme.palette.grey.new}
-                fontFamily="Avenir Next Medium"
-                style={{ marginRight: '1rem' }}
-              >
-                Details
-              </RowDataTdText>
-              <SvgIcon
-                width="1rem"
-                height="auto"
-                src={
-                  // separate to variable
-                  expandedRows.includes(
-                    `${pool.name}${pool.tvl}${pool.poolTokenMint}`
-                  )
-                    ? ArrowToTop
-                    : ArrowToBottom
-                }
-              />
-            </Row>
+            <DetailsLink to={`/pools/${poolName}`}>Details</DetailsLink>
           ),
         },
-        expandableContent: [
-          {
-            row: {
-              render: (
-                <TablesDetails
-                  setIsStakePopupOpen={setIsStakePopupOpen}
-                  setIsUnstakePopupOpen={setIsUnstakePopupOpen}
-                  setIsWithdrawalPopupOpen={setIsWithdrawalPopupOpen}
-                  setIsAddLiquidityPopupOpen={setIsAddLiquidityPopupOpen}
-                  setIsClaimRewardsPopupOpen={setIsClaimRewardsPopupOpen}
-                  refreshTokensWithFarmingTickets={
-                    refreshTokensWithFarmingTickets
-                  }
-                  setPoolWaitingForUpdateAfterOperation={
-                    setPoolWaitingForUpdateAfterOperation
-                  }
-                  selectPool={selectPool}
-                  farmingTicketsMap={farmingTicketsMap}
-                  earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-                  dexTokensPricesMap={dexTokensPricesMap}
-                  allTokensData={allTokensData}
-                  poolWaitingForUpdateAfterOperation={
-                    poolWaitingForUpdateAfterOperation
-                  }
-                  theme={theme}
-                  pool={pool}
-                />
-              ),
-              colspan: 8,
-            },
-          },
-        ],
       }
     })
 

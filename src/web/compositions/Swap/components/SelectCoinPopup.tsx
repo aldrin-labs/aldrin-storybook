@@ -27,12 +27,14 @@ const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 55rem;
 `
 
-const SelectorRow = styled(({ ...props }) => <RowContainer {...props} />)`
+export const SelectorRow = styled(({ ...props }) => (
+  <RowContainer {...props} />
+))`
   border-bottom: 0.1rem solid #383b45;
   height: 5rem;
 `
 
-const StyledText = styled(({ ...props }) => <Text {...props} />)`
+export const StyledText = styled(({ ...props }) => <Text {...props} />)`
   margin: 0 0.5rem;
   font-size: 2rem;
   font-family: Avenir Next Demi;
@@ -75,8 +77,8 @@ export const SelectCoinPopup = ({
 
   const usersMints = needKnownMints
     ? mints.filter(
-        (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
-      )
+      (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
+    )
     : mints
 
   const sortedAllTokensData = new Map()
@@ -87,10 +89,10 @@ export const SelectCoinPopup = ({
 
   const filteredMints = searchValue
     ? usersMints.filter((mint) =>
-        getTokenNameByMintAddress(mint)
-          .toLowerCase()
-          .includes(searchValue.toLowerCase())
-      )
+      getTokenNameByMintAddress(mint)
+        .toLowerCase()
+        .includes(searchValue.toLowerCase())
+    )
     : usersMints
 
   const poolsTokensA = poolsInfo.map((el) => el.tokenA)

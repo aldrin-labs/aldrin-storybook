@@ -36,8 +36,6 @@ import MarketBlock from './components/MarketBlock/MarketBlock'
 import { WarningPopup } from './components/WarningPopup'
 // import { CardsPanel } from './components'
 import DefaultView from './DefaultView/StatusWrapper'
-import { ChartsIssuePopup } from '@sb/components/WarningPopup/desktopPopup'
-import { MobileWarningPopup } from '@sb/components/WarningPopup/mobilePopup'
 
 const arraysCustomMarketsMatch = (arr1, arr2) => {
   // Check if the arrays are the same length
@@ -320,10 +318,9 @@ function ChartPageComponent(props: any) {
         tokenToDelist={tokenToDelist}
       />
 
-      <TransactionsConfirmationWarningPopup theme={theme} />
+      {/* <TransactionsConfirmationWarningPopup theme={theme} /> */}
       <ProposeToSettlePopup theme={theme} />
-      <ChartsIssuePopup theme={theme} />
-      <MobileWarningPopup theme={theme} />
+
       {/* <MarketDeprecatedPopup
         theme={theme}
         newMarketID={allMarketsMap.get('LIQ_USDC')?.address.toString()}
