@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Row, StretchedBlock } from '@sb/components/Layout'
+import { Row, StretchedBlock, Page } from '@sb/components/Layout'
 import { Block, BlockSubtitle } from '@sb/components/Block'
 import { BREAKPOINTS, COLORS, BORDER_RADIUS } from '@variables/variables'
 import { Link } from 'react-router-dom'
@@ -274,4 +274,9 @@ export const ClaimButtonContainer = styled(RewardsStatsRow)`
 export const UserFormRestakeButton = styled(Button)`
   margin-top: 10px;
   padding: 0 10px;
+`
+
+export const CenteredPage = styled(Page)`
+  display: flex;
+  align-items: center;
 `
