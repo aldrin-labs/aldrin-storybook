@@ -16,6 +16,7 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
+import dayjs from 'dayjs'
 import React from 'react'
 import { compose } from 'recompose'
 import { Cell } from '../../../components/Layout'
@@ -104,10 +105,15 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    variables: () => ({
-      timestampFrom:
-        endOfHourTimestamp() - dayDuration * DAYS_TO_CHECK_BUY_BACK,
-      timestampTo: endOfHourTimestamp(),
-    }),
+    variables: () => {
+      const startOfDay = dayjs()
+        .startOf('day')
+        .unix()
+
+      return {
+        timestampFrom: startOfDay - dayDuration * DAYS_TO_CHECK_BUY_BACK,
+        timestampTo: startOfDay,
+      }
+    },
   })
 )(StakingComponent)
