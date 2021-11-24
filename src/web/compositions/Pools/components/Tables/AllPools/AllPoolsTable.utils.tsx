@@ -30,8 +30,8 @@ import {
 import { AUTHORIZED_POOLS } from '../UserLiquidity/UserLiquidity.utils'
 import { getFarmingStateDailyFarmingValue } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-import { FarmingState } from '../../../../../dexUtils/common/types'
-
+import { FarmingState } from '@sb/dexUtils/common/types'
+import ScalesIcon from '@icons/scales.svg'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },
@@ -243,7 +243,7 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
                   tokenA={pool.tokenA}
                   tokenB={pool.tokenB}
                 />
-              </Link>
+              </Link>{' '}
               {pool.curveType === 1 ? (
                 <DarkTooltip
                   title={
@@ -387,8 +387,8 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
               </Row>
             </RowContainer>
           ) : (
-            '-'
-          ),
+              '-'
+            ),
           contentToSort: farmingAPR,
         },
         details: {
