@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, ReactNode } from 'react'
 import {
   ModalContainer,
   ModalBody,
@@ -12,7 +12,7 @@ import CloseIconImg from '@icons/closeIcon.svg'
 interface ModalProps {
   open: boolean
   onClose: () => void
-  title?: React.ReactChild
+  title?: ReactNode
 }
 
 export const Modal: React.FC<ModalProps> = (props) => {

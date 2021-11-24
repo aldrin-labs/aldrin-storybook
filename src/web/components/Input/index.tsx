@@ -15,7 +15,7 @@ export interface InputProps {
   className?: string
 }
 
-const InputWrap = styled.div`
+export const InputWrap = styled.div`
   background: ${COLORS.background};
   border: 1px solid ${COLORS.border};
   border-radius: ${BORDER_RADIUS.xxl};
@@ -83,34 +83,5 @@ export const Input: React.FC<InputProps> = (props) => {
     </InputWrap>
   )
 }
-
-// export const RoundInputWithTokenName = ({
-//   text,
-//   width = '70%',
-//   placeholder,
-// }: {
-//   text: string
-//   width?: string
-//   placeholder?: string
-// }) => {
-//   return (
-//     <Row style={{ position: 'relative' }} width={width}>
-//       <RoundInput placeholder={placeholder} />
-//       <Text
-//         color={'#96999C'}
-//         fontSize="1.8rem"
-//         fontFamily="Avenir Next Light"
-//         style={{
-//           position: 'absolute',
-//           top: '2.5rem',
-//           right: '3rem',
-//           transform: 'translateY(-50%)',
-//         }}
-//       >
-//         {text}
-//       </Text>
-//     </Row>
-//   )
-// }
 
 export * from './utils'

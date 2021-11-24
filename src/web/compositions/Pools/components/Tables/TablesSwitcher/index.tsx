@@ -47,6 +47,7 @@ import {
   TableContainer,
   TableModeButton
 } from './styles'
+import { CreatePoolModal } from '../../Popups'
 
 
 interface TableSwitcherProps {
@@ -325,6 +326,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
           snapshotQueues={snapshotQueues}
         />
       </Route>
+      <CreatePoolModal onClose={() => { }} />
     </Block>
   )
 }
