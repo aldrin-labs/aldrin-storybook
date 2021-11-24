@@ -50,8 +50,6 @@ interface PoolPageProps {
 
 
 
-const nop = () => { }
-
 type ModalType = '' | 'deposit' | 'withdraw' | 'stake' | 'claim' | 'remindToStake' | 'unstake'
 
 export const PoolPage: React.FC<PoolPageProps> = (props) => {
@@ -84,7 +82,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const closePopup = () => setOpenedPopup('')
 
 
-
   const goBack = () => history.push('/pools')
 
   const pool = pools?.find((p) => p.parsedName === symbol)
@@ -101,7 +98,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
 
   const baseTokenName = trimTo(baseInfo?.symbol || '')
-  const quoteTokenName = trimTo(quoteInfo?.name || '')
+  const quoteTokenName = trimTo(quoteInfo?.symbol || '')
 
 
   const baseDoubleTrimmed = trimTo(baseInfo?.name || '', 7)
@@ -116,7 +113,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
 
   return (
-    <Modal open onClose={nop}>
+    <Modal open onClose={goBack}>
       <ModalBlock border>
         <div>
           <Button $variant="secondary" onClick={goBack} $borderRadius="lg">⟵ Close</Button>

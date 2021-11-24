@@ -12,7 +12,7 @@ export const ClaimTimeTooltip: React.FC<ClaimTimeTooltipProps> = (props) => {
 
   return (
     <div>
-      <TooltipText>Rewards are updated once every <InlineText color="success"> 1-3 hours.</InlineText> </TooltipText>
+      <TooltipText>Rewards are updated once every <InlineText color="success"> 60-80 minutes.</InlineText> </TooltipText>
       {hasVesting &&
         <>
           <TooltipText>

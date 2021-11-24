@@ -75,6 +75,8 @@ export const TokenInfoText = styled(Text)`
   padding: 0;
   line-height: 110%;
   font-weight: 600;
+  font-size: 14px;
+  line-height: 1.5;
 `
 
 export const TokenPrice = styled(TokenInfoText)`
@@ -198,8 +200,9 @@ export const FarmingData = styled.div`
 
 
 export const PoolStatsText = styled(InlineText)`
-  font-size: 12px;
+  font-size: 13px;
   line-height: 26px;
+  font-weight: 600;
 `
 
 export const PoolStatsNumber = styled(PoolStatsText)`

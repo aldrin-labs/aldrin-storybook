@@ -93,6 +93,14 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const availableToClaimUsd = availableToClaim.reduce((acc, atc) => acc + atc.usdValue, 0)
 
+  const tokenNames = Array.from(
+    new Set(
+      (pool.farming || []).map((fs) => getTokenNameByMintAddress(fs.farmingTokenMint))
+    ).values()
+  ).join(' and ')
+
+  const tooltipText = `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
+
   return (
     <FarmingBlock>
       <LiquidityItem>
@@ -103,25 +111,35 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
         </LiquidityText>
         </div>
         <div>
-          <LiquidityText color="success">{stripByAmountAndFormat(stakedAmount)}</LiquidityText> Staked
+          <LiquidityText weight={600}>
+            <LiquidityText color="success">{stripByAmountAndFormat(stakedAmount)}</LiquidityText> Staked
+          </LiquidityText>
         </div>
         <FarmingButtonsContainer>
-          <FarmingButton
-            disabled={!hasUnstaked || processing}
-            $loading={processing}
-            onClick={onStakeClick}
-            $variant="rainbow"
-          >
-            Stake LP Tokens
-             </FarmingButton>
-          <FarmingButton
-            $variant="error"
-            disabled={!hasStaked || processing || unstakeLocked}
-            $loading={processing}
-            onClick={onUnstakeClick}
-          >
-            Unstake LP Tokens
-          </FarmingButton>
+          <DarkTooltip title={tooltipText}>
+            <span>
+              <FarmingButton
+                disabled={!hasUnstaked || processing}
+                $loading={processing}
+                onClick={onStakeClick}
+                $variant="rainbow"
+              >
+                Stake LP Tokens
+            </FarmingButton>
+            </span>
+          </DarkTooltip>
+          <DarkTooltip title={tooltipText}>
+            <span>
+              <FarmingButton
+                $variant="error"
+                disabled={!hasStaked || processing || unstakeLocked}
+                $loading={processing}
+                onClick={onUnstakeClick}
+              >
+                Unstake LP Tokens
+            </FarmingButton>
+            </span>
+          </DarkTooltip>
         </FarmingButtonsContainer>
       </LiquidityItem>
       <LiquidityItem>
@@ -141,14 +159,18 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
           <LiquidityText color="success">${stripByAmountAndFormat(availableToClaimUsd, 2)}</LiquidityText>
         </div>
         <FarmingButtonWrap>
-          <FarmingButton
-            $variant="rainbow"
-            disabled={availableToClaimUsd === 0 || processing}
-            $loading={processing}
-            onClick={onClaimClick}
-          >
-            Claim
-        </FarmingButton>
+          <DarkTooltip title={tooltipText}>
+            <span>
+              <FarmingButton
+                $variant="rainbow"
+                disabled={availableToClaimUsd === 0 || processing}
+                $loading={processing}
+                onClick={onClaimClick}
+              >
+                Claim
+            </FarmingButton>
+            </span>
+          </DarkTooltip>
           <DarkTooltip title={<ClaimTimeTooltip farmingState={farming} />}>
             <div style={{ height: '1em' }}>
               <SvgIcon

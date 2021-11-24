@@ -13,7 +13,6 @@ import { Theme } from '@material-ui/core'
 import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
 import { Block, BlockContent } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
-import { Checkbox } from '@sb/components/Checkbox'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/components/Typography'
 import {
@@ -27,10 +26,10 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
-import { waitForTransactionConfirmation, signTransactions } from '@sb/dexUtils/send'
+import { waitForTransactionConfirmation } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey, Transaction } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
 import React, { useState } from 'react'
 import { Route } from 'react-router'
@@ -48,8 +47,6 @@ import {
   TableContainer,
   TableModeButton
 } from './styles'
-import { PoolsTable } from '../PoolsTable'
-import { sleep } from '@project-serum/common'
 
 
 interface TableSwitcherProps {
@@ -251,12 +248,12 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
             </TableModeButton>
           </div>
           <InputWrap>
-            <Checkbox
+            {/* <Checkbox
               color="error"
               label="Show Permissionless Pools"
               checked={includePermissionless}
               onChange={setIncludePermissionless}
-            />
+            /> */}
             <SearchInput
               name="search"
               placeholder="Search"
@@ -363,6 +360,7 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
+    // TODO: Comment before merge
     variables: () => ({
       timestampFrom: endOfHourTimestamp() - DAY,
       timestampTo: endOfHourTimestamp(),
