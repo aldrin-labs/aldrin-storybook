@@ -1,7 +1,7 @@
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
-  stripDigitPlaces
+  stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import Info from '@icons/TooltipImg.svg'
 import { SvgIcon } from '@sb/components'
@@ -13,7 +13,7 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  TradingVolumeStats
+  TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
@@ -23,9 +23,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { TokenIconsContainer } from '../components'
 import {
-  DetailsLink, RowDataTdText,
+  DetailsLink,
+  RowDataTdText,
   RowDataTdTopText,
-  TextColumnContainer
+  TextColumnContainer,
 } from '../index.styles'
 import { AUTHORIZED_POOLS } from '../UserLiquidity/UserLiquidity.utils'
 import { getFarmingStateDailyFarmingValue } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValue'
@@ -68,10 +69,8 @@ export const allPoolsTableColumnsNames = [
       <>
         <span>APR</span>{' '}
         <DarkTooltip
-          title={
-            `Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming 
-            rewards.`
-          }
+          title={`Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming 
+            rewards.`}
         >
           <div>
             <SvgIcon
@@ -91,11 +90,9 @@ export const allPoolsTableColumnsNames = [
       <>
         Farming
         <DarkTooltip
-          title={
-            `You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit 
+          title={`You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit 
               into the pool), receiving a reward in tokens allocated by the creator of the pool. The amount of reward specified in the pool 
-              info is the amount you will receive daily for each $1,000 deposited into the pool.`
-          }
+              info is the amount you will receive daily for each $1,000 deposited into the pool.`}
         >
           <div>
             <SvgIcon
@@ -126,7 +123,6 @@ interface CombineAllPoolsDataParams {
 }
 
 export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
-
   const {
     theme,
     poolsInfo,
@@ -146,7 +142,11 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
         )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
-    .filter((pool) => includePermissionless ? true : AUTHORIZED_POOLS.includes(pool.poolTokenMint))
+    .filter((pool) =>
+      includePermissionless
+        ? true
+        : AUTHORIZED_POOLS.includes(pool.poolTokenMint)
+    )
     .map((pool) => {
       const poolName = `${getTokenNameByMintAddress(
         pool.tokenA
@@ -204,7 +204,9 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
             { farmingState, totalStakedLpTokensUSD }
           )
 
-          const farmingTokenSymbol = getTokenNameByMintAddress(farmingState.farmingTokenMint)
+          const farmingTokenSymbol = getTokenNameByMintAddress(
+            farmingState.farmingTokenMint
+          )
 
           const farmingTokenPrice =
             dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
@@ -353,30 +355,35 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
                     <span style={{ color: '#53DF11' }}>Ended</span>
                   </RowDataTdText>
                 ) : (
-                    openFarmingsKeys.map((fsMint, i, arr) => {
-
-                      const farmingStates = openFarmingsMap.get(fsMint) || []
-                      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = farmingStates.reduce((acc, farmingState) => {
-                        return acc = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                  openFarmingsKeys.map((farmingTokenMint, i, arr) => {
+                    const farmingStates =
+                      openFarmingsMap.get(farmingTokenMint) || []
+                    const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = farmingStates.reduce(
+                      (acc, farmingState) => {
+                        return (acc = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
                           { farmingState, totalStakedLpTokensUSD }
-                        )
-                      }, 0)
+                        ))
+                      },
+                      0
+                    )
 
-                      return (
-                        <RowDataTdText key={`open_farming_reward_${pool.poolTokenMint}_${fsMint}`}>
-                          <span style={{ color: '#53DF11' }}>
-                            {stripByAmountAndFormat(
-                              farmingStateDailyFarmingValuePerThousandDollarsLiquidity
-                            )}
-                          </span>{' '}
-                          {getTokenNameByMintAddress(fsMint)}
-                          {/* + between every farming state token to be farmed, except last. for last - per day */}
-                          {i !== arr.length - 1 ? <span> + </span> : null}
-                          {i === arr.length - 1 ? <span> / Day</span> : null}
-                        </RowDataTdText>
-                      )
-                    })
-                  )}
+                    return (
+                      <RowDataTdText
+                        key={`open_farming_reward_${pool.poolTokenMint}_${farmingTokenMint}`}
+                      >
+                        <span style={{ color: '#53DF11' }}>
+                          {stripByAmountAndFormat(
+                            farmingStateDailyFarmingValuePerThousandDollarsLiquidity
+                          )}
+                        </span>{' '}
+                        {getTokenNameByMintAddress(farmingTokenMint)}
+                        {/* + between every farming state token to be farmed, except last. for last - per day */}
+                        {i !== arr.length - 1 ? <span> + </span> : null}
+                        {i === arr.length - 1 ? <span> / Day</span> : null}
+                      </RowDataTdText>
+                    )
+                  })
+                )}
 
                 {openFarmings.length > 0 && (
                   <RowDataTdText>
@@ -387,14 +394,12 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
               </Row>
             </RowContainer>
           ) : (
-              '-'
-            ),
+            '-'
+          ),
           contentToSort: farmingAPR,
         },
         details: {
-          render: (
-            <DetailsLink to={`/pools/${poolName}`}>Details</DetailsLink>
-          ),
+          render: <DetailsLink to={`/pools/${poolName}`}>Details</DetailsLink>,
         },
       }
     })

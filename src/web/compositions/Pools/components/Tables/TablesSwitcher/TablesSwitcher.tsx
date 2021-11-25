@@ -203,17 +203,17 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
               tradingVolumes={tradingVolumes}
             />
           ) : (
-              <UserLiquitidyTable
-                theme={theme}
-                searchValue={searchValue}
-                includePermissionless={includePermissionless}
-                poolsInfo={pools}
-                dexTokensPricesMap={dexTokensPricesMap}
-                allTokensData={userTokensData}
-                farmingTicketsMap={farmingTicketsMap}
-                earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
-              />
-            )}
+            <UserLiquitidyTable
+              theme={theme}
+              searchValue={searchValue}
+              includePermissionless={includePermissionless}
+              poolsInfo={pools}
+              dexTokensPricesMap={dexTokensPricesMap}
+              allTokensData={userTokensData}
+              farmingTicketsMap={farmingTicketsMap}
+              earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+            />
+          )}
 
         </TableContainer>
       </BlockContent>

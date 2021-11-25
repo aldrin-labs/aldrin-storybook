@@ -1,18 +1,19 @@
-import { Connection, PublicKey } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import { useCallback, useEffect, useState } from 'react'
-import { BUY_BACK_RIN_ACCOUNT_ADDRESS } from './config'
+import { useConnection } from '../connection'
+import { AsyncRefreshVoidFunction } from '../types'
 
-export const useBuybackAccountForAdditionalRewards = ({
-  connection,
+export const useAccountBalance = ({
+  publicKey,
 }: {
-  connection: Connection
-}) => {
+  publicKey: PublicKey
+}): [number, AsyncRefreshVoidFunction] => {
   const [accountBalance, setAccountBalance] = useState(0)
 
+  const connection = useConnection()
+
   const loadAccountBalance = useCallback(async () => {
-    const accountBalance = await connection.getTokenAccountBalance(
-      new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS)
-    )
+    const accountBalance = await connection.getTokenAccountBalance(publicKey)
 
     const accountTokenAmount = accountBalance?.value?.uiAmount || 0
     setAccountBalance(accountTokenAmount)

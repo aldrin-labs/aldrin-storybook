@@ -175,10 +175,11 @@ export const Digit = styled.span`
 `
 
 export const BigNumber = styled.p`
-  font-size: 1.8em;
+  font-size: 1.6em;
   line-height: 1.3;
   font-weight: bold;
   margin: 10px 0;
+  white-space: nowrap;
 `
 export const Number = styled.span`
   margin: ${(props) => props.margin || '0 10px 0 0'};

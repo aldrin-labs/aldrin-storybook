@@ -207,6 +207,10 @@ const SwapPage = ({
   const reverseTokens = () => {
     setBaseTokenMintAddress(quoteTokenMintAddress)
     setQuoteTokenMintAddress(baseTokenMintAddress)
+
+    setBaseTokenAddressFromSeveral(selectedQuoteTokenAddressFromSeveral)
+    setQuoteTokenAddressFromSeveral(selectedBaseTokenAddressFromSeveral)
+
     setBaseAmount(quoteAmount)
     setQuoteAmount(baseAmount)
   }
@@ -744,23 +748,29 @@ const SwapPage = ({
         setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
         setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
         selectTokenMintAddress={(address: string) => {
-          const select = isBaseTokenSelecting
-            ? () => {
-              if (quoteTokenMintAddress === address) {
-                setQuoteTokenMintAddress('')
-              }
-              setBaseTokenMintAddress(address)
-              setIsSelectCoinPopupOpen(false)
-            }
-            : () => {
-              if (baseTokenMintAddress === address) {
-                setBaseTokenMintAddress('')
-              }
-              setQuoteTokenMintAddress(address)
-              setIsSelectCoinPopupOpen(false)
+          if (isBaseTokenSelecting) {
+            if (quoteTokenMintAddress === address) {
+              setQuoteTokenMintAddress('')
             }
 
-          select()
+            if (selectedBaseTokenAddressFromSeveral) {
+              setBaseTokenAddressFromSeveral('')
+            }
+
+            setBaseTokenMintAddress(address)
+            setIsSelectCoinPopupOpen(false)
+          } else {
+            if (baseTokenMintAddress === address) {
+              setBaseTokenMintAddress('')
+            }
+
+            if (selectedQuoteTokenAddressFromSeveral) {
+              setQuoteTokenAddressFromSeveral('')
+            }
+
+            setQuoteTokenMintAddress(address)
+            setIsSelectCoinPopupOpen(false)
+          }
         }}
         close={() => setIsSelectCoinPopupOpen(false)}
       />

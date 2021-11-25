@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
 
 import lightBird from '@icons/lightBird.svg'
@@ -11,6 +11,7 @@ interface ShareButtonProps {
   addUrl?: boolean
   variant?: ButtonVariants
   iconFirst?: true
+  buttonStyle: CSSProperties
 }
 
 const Img = styled.img<{ iconFirst?: true }>`
@@ -21,12 +22,13 @@ const Img = styled.img<{ iconFirst?: true }>`
 `
 
 export const ShareButton: React.FC<ShareButtonProps> = (props) => {
-  const { url = window.location.href, text, addUrl = false, variant = "outline-white", iconFirst } = props
+  const { url = window.location.href, text, addUrl = false, variant = "outline-white", iconFirst, buttonStyle } = props
   const fullUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}${addUrl ? `&url=${encodeURIComponent(url)}` : ''}`
   return (
     <Button
       $borderRadius="lg"
       $variant={variant}
+      style={buttonStyle}
       onClick={() => window.open(fullUrl, 'Twitter Share', 'height=600,width=550,resizable=1')}
     >
       {iconFirst && <Img iconFirst src={lightBird.replace(/"/gi, '')} />}
