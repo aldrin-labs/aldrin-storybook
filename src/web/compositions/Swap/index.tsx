@@ -102,13 +102,13 @@ const SwapPage = ({
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>(
     defaultQuoteTokenMint
   )
+
   const selectedPool = getPoolsInfoQuery.getPoolsInfo.find(
     (pool) =>
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
       (pool?.tokenB === baseTokenMintAddress ||
         pool?.tokenB === quoteTokenMintAddress)
-    // pool?.curveType === 1 // TODO: remove
   )
 
   const isStablePool = selectedPool?.curveType === 1
@@ -571,7 +571,8 @@ const SwapPage = ({
                 }}
               >
                 {isTokenABalanceInsufficient
-                  ? `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol} Balance`
+                  ? `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
+                  } Balance`
                   : !selectedPool
                     ? 'No pools available'
                     : needEnterAmount
@@ -689,7 +690,7 @@ const SwapPage = ({
               fontFamily={'Avenir Next Bold'}
               whiteSpace="nowrap"
             >
-              200+ Markets
+              250+ Markets
             </Text>
             <Text
               fontSize={'1.4rem'}
