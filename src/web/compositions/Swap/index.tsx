@@ -108,8 +108,7 @@ const SwapPage = ({
       (pool?.tokenA === baseTokenMintAddress ||
         pool?.tokenA === quoteTokenMintAddress) &&
       (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress) &&
-      (isStableSwapTabActive ? pool.curveType === 1 : true)
+        pool?.tokenB === quoteTokenMintAddress)
   )
 
   const isStablePool = selectedPool?.curveType === 1
