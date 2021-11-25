@@ -86,15 +86,10 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     setSearchValue(value)
   }
 
-  const [includePermissionless, setIncludePermissionless] = useState(true)
-
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [userTokensData, refreshUserTokensData] = useUserTokenAccounts({
-    wallet,
-    connection,
-  })
+  const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
   const [snapshotQueues, refreshSnapshotQueues] = useSnapshotQueues({
     wallet,

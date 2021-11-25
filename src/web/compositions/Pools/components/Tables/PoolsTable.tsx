@@ -6,7 +6,7 @@ import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPr
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import React, { useState, ReactNode } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import { FlexBLock } from '@sb/components/Layout'
+import { FlexBlock } from '@sb/components/Layout'
 import { DexTokensPrices, PoolInfo } from '../../index.types'
 import { FarmingRewards } from '../FarminRewards'
 import { TokenIconsContainer } from './components'
@@ -127,9 +127,9 @@ const prepareCell = (params: {
       },
       farming: {
         rendered:
-          <FlexBLock alignItems="center">
+          <FlexBlock alignItems="center">
             <FarmingRewards pool={pool} farmingUsdValue={totalStakedLpTokensUSD} />
-          </FlexBLock>,
+          </FlexBlock>,
         rawValue: farmingAPR,
       },
       ...prepareMore(pool),

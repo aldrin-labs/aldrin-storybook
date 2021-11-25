@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { FONTS, COLORS, TRANSITION } from '@variables/variables'
-import { FlexBLock } from '../Layout'
+import { FlexBlock } from '../Layout'
 
 
 export const Table = styled.table`
@@ -55,7 +55,7 @@ export const ArrowContainer = styled.div`
   text-align: center;
 `
 
-export const NoDataBlock = styled(FlexBLock)`
+export const NoDataBlock = styled(FlexBlock)`
   font-size: 24px;
   padding: 40px 0;
   font-weight: 600;

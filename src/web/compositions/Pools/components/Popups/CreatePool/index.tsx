@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
-import { Modal } from '@sb/components/Modal'
-import { CoinSelector } from '@sb/components/CoinSelector'
-import { Footer, Title, Body } from './styles'
-import { Button } from '@sb/components/Button'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
+import { Loader } from '@sb/components/Loader/Loader'
+import { Modal, ModalTitleBlock } from '@sb/components/Modal'
+import { usePools } from '@sb/dexUtils/pools/hooks/userPools'
+import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import React from 'react'
+import { CreatePoolForm } from './CreatePoolForm'
+import { Body, Title } from './styles'
 
 interface CreatePoolProps {
   onClose: () => void
@@ -11,32 +14,52 @@ interface CreatePoolProps {
 const steps = [
   'Set up a Pool',
   'Add Initial Liquidity',
-  'Set Up Farming'
+  'Set Up Farming',
+  'Confirm Pool Creation',
 ]
 
-export const CreatePoolModal: React.FC<CreatePoolProps> = (props) => {
+const PoolModal: React.FC<CreatePoolProps> = (props) => {
   const { onClose } = props
-  const [step, setStep] = useState(1)
-  const stepsSize = steps.length
+  const [userTokens, refreshUserTokens] = useUserTokenAccounts()
+  const [pools, refreshPools] = usePools()
+
+  if (!userTokens.length) {
+    return <Loader />
+  }
+
+
+  return (userTokens.length && pools.length) ?
+    <CreatePoolForm
+      pools={pools}
+      userTokens={userTokens}
+      onClose={onClose}
+    /> :
+    <>
+      <ModalTitleBlock
+        title={
+
+          <Title>
+            Please wait...
+          </Title>
+        }
+        onClose={onClose}
+      />
+      <Body>
+        <Loader />
+      </Body>
+    </>
+
+}
+
+export const CreatePoolModal: React.FC<CreatePoolProps> = (props) => {
   return (
     <Modal
-      title={
-        <Title>
-          Step {step}/{stepsSize} <span>{steps[step - 1]}</span>
-        </Title>
-      }
       open
-      onClose={onClose}
+      onClose={props.onClose}
     >
-      <Body>
-        Modal
-      <CoinSelector></CoinSelector>
-        <Footer>
-          <Button $variant="outline-white">Cancel</Button>
-          <Button>Next</Button>
-        </Footer>
-      </Body>
-
+      <ConnectWalletWrapper>
+        <PoolModal onClose={props.onClose} />
+      </ConnectWalletWrapper>
     </Modal>
   )
 }

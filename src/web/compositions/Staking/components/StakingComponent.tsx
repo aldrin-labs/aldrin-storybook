@@ -7,13 +7,12 @@ import {
 } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import { useConnection } from '@sb/dexUtils/connection'
+import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
-import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import React from 'react'
 import { compose } from 'recompose'
@@ -21,7 +20,6 @@ import { Cell } from '../../../components/Layout'
 import { RootRow } from '../styles'
 import StatsComponent from './StatsComponent'
 import UserStakingInfo from './UserStakingInfo'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 
 
 interface StakingComponentProps {
@@ -34,12 +32,8 @@ const StakingComponent: React.FC<StakingComponentProps> = (
   props: StakingComponentProps
 ) => {
   const { getStakingPoolInfoQuery, getBuyBackAmountForPeriodQuery } = props
-  const { wallet } = useWallet()
-  const connection = useConnection()
-  const [allTokenData, refreshAllTokenData] = useUserTokenAccounts({
-    wallet,
-    connection,
-  })
+
+  const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
   const stakingPool = getStakingPoolInfoQuery.getStakingPoolInfo || {}
 

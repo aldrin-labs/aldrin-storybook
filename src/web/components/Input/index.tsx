@@ -1,28 +1,42 @@
 import React, { ReactNode } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { COLORS, BORDER_RADIUS } from '@variables/variables'
 import { validateDecimal } from './utils'
+import { useField, FieldValidator } from 'formik'
 
-export interface InputProps {
-  value?: string
-  onChange: (e: string) => void
-  formatter?: (e: string, prevValue: string) => string
-  placeholder?: string
-  append?: ReactNode
-  size?: number // Input size
-  name: string
-  className?: string
+
+const VARIANTS = {
+  default: css`
+    background: ${COLORS.background};
+    border: 1px solid ${COLORS.border};
+  `,
+  'outline-white': css`
+    border: 1px solid ${COLORS.white};
+  `,
+  'outline': css`
+    border: 1px solid ${COLORS.border};
+  `,
 }
 
-export const InputWrap = styled.div`
-  background: ${COLORS.background};
-  border: 1px solid ${COLORS.border};
-  border-radius: ${BORDER_RADIUS.xxl};
+interface WrapProps {
+  $borderRadius: keyof typeof BORDER_RADIUS
+  $variant: keyof typeof VARIANTS
+  $disabled?: boolean
+}
+
+
+
+
+export const InputWrap = styled.div<WrapProps>`
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
+  border-radius: ${(props: WrapProps) => BORDER_RADIUS[props.$borderRadius]};
+
+  ${(props: WrapProps) => VARIANTS[props.$variant]}
+  ${(props: WrapProps) => props.$disabled ? 'opacity: 0.6;' : ''}
 `
 
 const InputEl = styled.input`
@@ -36,6 +50,10 @@ const InputEl = styled.input`
   font-weight: 600;
   padding: 0.6em 1.5em;
   color: ${COLORS.white};
+
+  &:disabled {
+    color: ${COLORS.hint};
+  }
 `
 
 const Append = styled.span`
@@ -44,6 +62,23 @@ const Append = styled.span`
   font-size: 1em;
 `
 
+interface InputBase {
+  formatter?: (e: string, prevValue: string) => string
+  placeholder?: string
+  append?: ReactNode
+  size?: number // Input size
+  name: string
+  className?: string
+  variant?: keyof typeof VARIANTS
+  borderRadius?: keyof typeof BORDER_RADIUS
+  disabled?: boolean
+}
+
+export interface InputProps extends InputBase {
+  value?: string
+  onChange: (e: string) => void
+
+}
 
 export const INPUT_FORMATTERS = {
   NOP: (e: string, prevValue: string) => e,
@@ -65,17 +100,26 @@ export const Input: React.FC<InputProps> = (props) => {
     size = 8,
     name,
     formatter = INPUT_FORMATTERS.NOP,
-    className = ''
+    className = '',
+    variant = 'default',
+    borderRadius = 'xxl',
+    disabled,
   } = props
 
   return (
-    <InputWrap className={className}>
+    <InputWrap
+      $borderRadius={borderRadius}
+      $variant={variant}
+      className={className}
+      $disabled={disabled}
+    >
       <InputEl
         size={size}
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(formatter(e.target.value, value))}
         name={name}
+        disabled={disabled}
       />
       {append &&
         <Append>{append}</Append>
@@ -83,5 +127,28 @@ export const Input: React.FC<InputProps> = (props) => {
     </InputWrap>
   )
 }
+
+
+// Formik Wrapper
+
+export interface InputFieldProps extends InputBase {
+  validate?: FieldValidator
+}
+
+export const InputField: React.FC<InputFieldProps> = (props) => {
+  const [field, meta, helpers] = useField(props)
+
+  return (
+    <Input
+      {...props}
+      value={field.value}
+      onChange={(value) => {
+        helpers.setTouched(true, true);
+        helpers.setValue(value, true);
+      }}
+    />
+  )
+}
+
 
 export * from './utils'

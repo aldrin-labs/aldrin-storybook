@@ -124,8 +124,11 @@ export interface FlexBlockProps {
   alignItems?: Alignment
 }
 
-export const FlexBLock = styled.div<FlexBlockProps>`
+export const Flex = styled.div`
   display: flex;
+`
+
+export const FlexBlock = styled(Flex)<FlexBlockProps>`
   flex-direction: ${(props: FlexBlockProps) => props.direction || 'row'};
   justify-content: ${(props: FlexBlockProps) => props.justifyContent || 'normal'};
   align-items: ${(props: FlexBlockProps) => props.alignItems || 'normal'};

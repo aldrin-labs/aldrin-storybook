@@ -1,5 +1,5 @@
 import { SvgIcon } from '@sb/components'
-import styled, { keyframes } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import { Block, BlockContent } from '../Block'
 import { Page } from '../Layout'
 
@@ -12,21 +12,38 @@ const kf = keyframes`
   }
 `
 
-export const ModalContainer = styled(Page)`
+const BackdropStyle = {
+  blur: css`
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(30px);
+  `,
+  dark: css`
+    background: rgba(0,0,0,0.5);
+  `,
+  none: css``
+}
+
+export type ModalBackdropStyle = keyof typeof BackdropStyle
+
+interface ModalContainerProps {
+  backdrop: ModalBackdropStyle
+}
+
+export const ModalContainer = styled(Page)<ModalContainerProps>`
     position: fixed;
     left: 0;
     top: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0,0,0,0.5);
+    
     z-index: 100;
     display: flex;
     flex: 1;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(30px);
-
     animation: 0.1s ${kf} ease-out;
+
+    ${(props: ModalContainerProps) => BackdropStyle[props.backdrop]}
 `
 
 export const ModalBody = styled(Block)`

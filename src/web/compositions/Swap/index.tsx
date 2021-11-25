@@ -67,10 +67,7 @@ const SwapPage = ({
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
-  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts({
-    wallet,
-    connection,
-  })
+  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
 
   const nativeSOLTokenData = allTokensData[0]
 
