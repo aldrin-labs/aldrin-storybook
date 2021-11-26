@@ -6,10 +6,7 @@ import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import {
-  getTokenMintAddressByName,
-  useMarket
-} from '@sb/dexUtils/markets'
+import { getTokenMintAddressByName, useMarket } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import React, { useState } from 'react'
@@ -22,9 +19,8 @@ import {
   ExclamationMark,
   MarketStatsContainer,
   MobileMarketStatsContainer,
-  Title
+  Title,
 } from './MarketBlock.styles'
-
 
 const selectStyles = (theme: Theme) => ({
   height: '100%',
@@ -101,8 +97,8 @@ const MarketBlock = ({
   const isPrivateCustomMarket =
     currentMarket?.isPrivateCustomMarket !== undefined && !isCustomUserMarket
 
-  const isCCAIPair =
-    pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket
+  const isRINPair =
+    pair.includes('RIN') && !isPrivateCustomMarket && !isCustomUserMarket
 
   return (
     <>
@@ -156,7 +152,7 @@ const MarketBlock = ({
           </div>
 
           <MarketStats
-            isCCAIPair={isCCAIPair}
+            isRINPair={isRINPair}
             theme={theme}
             symbol={pair}
             marketType={marketType}
@@ -216,7 +212,7 @@ const MarketBlock = ({
         />
         <Row>
           <MarketStats
-            isCCAIPair={isCCAIPair}
+            isRINPair={isRINPair}
             theme={theme}
             symbol={pair}
             marketType={marketType}

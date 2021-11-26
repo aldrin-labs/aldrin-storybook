@@ -18,10 +18,11 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  TradingVolumeStats
+  TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
+import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
@@ -36,11 +37,12 @@ import AllPoolsTable from '../AllPools/AllPoolsTable'
 import UserLiquitidyTable from '../UserLiquidity/UserLiquidityTable'
 import PlusIcon from './icons/plus.svg'
 import {
-  AddPoolButton, InputWrap,
+  AddPoolButton,
+  InputWrap,
   SearchInput,
   TabContainer,
   TableContainer,
-  TableModeButton
+  TableModeButton,
 } from './TablesSwitcher.styles'
 
 interface TableSwitcherProps {
@@ -61,13 +63,13 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     getDexTokensPricesQuery: { getDexTokensPrices = [] },
     getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
     getFeesEarnedByPoolQuery: { getFeesEarnedByPool = [] },
-    getWeeklyAndDailyTradingVolumesForPoolsQuery
+    getWeeklyAndDailyTradingVolumesForPoolsQuery,
   } = props
 
   const [searchValue, setSearchValue] = useState('')
-  const [selectedTable, setSelectedTable] = useState<'all' | 'userLiquidity'>(
-    'all'
-  )
+  const [selectedTable, setSelectedTable] = useState<
+    'all' | 'stablePools' | 'userLiquidity'
+  >('all')
 
   const { path } = useRouteMatch()
 
@@ -107,6 +109,8 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
   }
 
   const isAllPoolsSelected = selectedTable === 'all'
+  const isStablePoolsSelected = selectedTable === 'stablePools'
+  const isUserLiquiditySelected = selectedTable === 'userLiquidity'
 
   const dexTokensPricesMap = getDexTokensPrices.reduce(
     (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
@@ -124,7 +128,13 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     farmingTicketsMap,
   }).length
 
-  const tradingVolumes = getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools || []
+  const stablePools = pools.filter(checkIsPoolStable)
+
+  const tradingVolumes =
+    getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools ||
+    []
+
+  const poolsToShow = isStablePoolsSelected ? stablePools : pools
 
   return (
     <Block>
@@ -138,10 +148,16 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
               All Pools
             </TableModeButton>
             <TableModeButton
-              isActive={!isAllPoolsSelected}
+              isActive={isStablePoolsSelected}
+              onClick={() => setSelectedTable('stablePools')}
+            >
+              Stable Pools ({stablePools.length})
+            </TableModeButton>
+            <TableModeButton
+              isActive={isUserLiquiditySelected}
               onClick={() => setSelectedTable('userLiquidity')}
             >
-              Your liquidity ({userLiquidityPools})
+              Your Liquidity ({userLiquidityPools})
             </TableModeButton>
           </div>
           <InputWrap>
@@ -192,12 +208,12 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
           </InputWrap>
         </TabContainer>
         <TableContainer>
-          {selectedTable === 'all' ? (
+          {selectedTable !== 'userLiquidity' ? (
             <AllPoolsTable
               theme={theme}
               searchValue={searchValue}
               includePermissionless={includePermissionless}
-              poolsInfo={pools}
+              poolsInfo={poolsToShow}
               dexTokensPricesMap={dexTokensPricesMap}
               feesByPool={getFeesEarnedByPool}
               tradingVolumes={tradingVolumes}
@@ -207,19 +223,18 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
               theme={theme}
               searchValue={searchValue}
               includePermissionless={includePermissionless}
-              poolsInfo={pools}
+              poolsInfo={poolsToShow}
               dexTokensPricesMap={dexTokensPricesMap}
               allTokensData={userTokensData}
               farmingTicketsMap={farmingTicketsMap}
               earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
             />
           )}
-
         </TableContainer>
       </BlockContent>
       <Route path={`${path}/:symbol`}>
         <PoolPage
-          pools={pools}
+          pools={poolsToShow}
           prices={dexTokensPricesMap}
           tradingVolumes={tradingVolumes}
           fees={getFeesEarnedByPool}

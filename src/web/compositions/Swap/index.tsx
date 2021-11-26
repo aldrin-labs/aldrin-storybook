@@ -9,13 +9,13 @@ import { Theme } from '@material-ui/core'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
-import { StyledLink, Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/compositions/Addressbook/index'
 import {
   ReloadTimer,
   TimerButton,
 } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { InputWithSelectorForSwaps } from './components/Inputs/index'
-import { Card, InfoBox } from './styles'
+import { Card, SwapPageContainer } from './styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { notify } from '@sb/dexUtils/notifications'
@@ -27,7 +27,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import Inform from '@icons/inform.svg'
 import Gear from '@icons/gear.svg'
 import Arrows from '@icons/switchArrows.svg'
-import { TokenInfo } from '../Rebalance/Rebalance.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import withTheme from '@material-ui/core/styles/withTheme'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -50,17 +49,18 @@ import {
 } from '@sb/components/TraidingTerminal/utils'
 import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 
-import RedBox from '@icons/redBox.png'
-import GreenBox from '@icons/greenBox.png'
-import PinkBox from '@icons/pinkBox.png'
-
 import ScalesIcon from '@icons/scales.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import WhiteArrow from '@icons/longWhiteArrow.svg'
 import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/TablesSwitcher.styles'
 import { Selector } from './components/Selector/Selector'
-const DEFAULT_BASE_TOKEN = 'SOL'
-const DEFAULT_QUOTE_TOKEN = 'RIN'
+import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
+import {
+  getPoolsForSwapActiveTab,
+  getSelectedPoolForSwap,
+  getDefaultBaseToken,
+  getDefaultQuoteToken,
+} from '@sb/dexUtils/pools/swap'
+import { Cards } from './components/Cards/Cards'
 
 const SwapPage = ({
   theme,
@@ -77,41 +77,85 @@ const SwapPage = ({
     wallet,
     connection,
   })
+
+  const allPools = getPoolsInfoQuery.getPoolsInfo
+  const nativeSOLTokenData = allTokensData[0]
+
   const [isStableSwapTabActive, setIsStableSwapTabActive] = useState<boolean>(
     false
   )
 
-  const nativeSOLTokenData = allTokensData[0]
+  useEffect(() => {
+    const updatedPoolsList = getPoolsForSwapActiveTab({
+      pools: allPools,
+      isStableSwapTabActive,
+    })
 
-  const urlParams = new URLSearchParams(window.location.search)
-  const baseFromPoolsRedirect = urlParams.get('base')
-  const quoteFromPoolsRedirect = urlParams.get('quote')
+    const isPoolExistInNewTab = getSelectedPoolForSwap({
+      pools: updatedPoolsList,
+      baseTokenMintAddress,
+      quoteTokenMintAddress,
+    })
 
-  const defaultBaseTokenMint = baseFromPoolsRedirect
-    ? getTokenMintAddressByName(baseFromPoolsRedirect) || ''
-    : getTokenMintAddressByName(DEFAULT_BASE_TOKEN) || ''
+    // set tokens to default one if pool with selected tokens
+    // does not exist in new tab
+    if (!isPoolExistInNewTab) {
+      const defaultBaseTokenMint =
+        getTokenMintAddressByName(getDefaultBaseToken(isStableSwapTabActive)) ||
+        ''
 
-  const defaultQuoteTokenMint = quoteFromPoolsRedirect
-    ? getTokenMintAddressByName(quoteFromPoolsRedirect) || ''
-    : getTokenMintAddressByName(DEFAULT_QUOTE_TOKEN) || ''
+      const defaultQuoteTokenMint =
+        getTokenMintAddressByName(
+          getDefaultQuoteToken(isStableSwapTabActive)
+        ) || ''
 
-  const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>(
-    defaultBaseTokenMint
-  )
+      setBaseTokenMintAddress(defaultBaseTokenMint)
+      setQuoteTokenMintAddress(defaultQuoteTokenMint)
+    }
+  }, [isStableSwapTabActive])
 
-  const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>(
-    defaultQuoteTokenMint
-  )
+  const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
+  const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
 
-  const selectedPool = getPoolsInfoQuery.getPoolsInfo.find(
-    (pool) =>
-      (pool?.tokenA === baseTokenMintAddress ||
-        pool?.tokenA === quoteTokenMintAddress) &&
-      (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress)
-  )
+  // set values from redirect or default one
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
 
-  const isStablePool = selectedPool?.curveType === 1
+    const baseFromRedirect = urlParams.get('base')
+    const quoteFromRedirect = urlParams.get('quote')
+    const isStableSwapFromRedirect = urlParams.get('isStablePool') === 'true'
+
+    const baseTokenMint = baseFromRedirect
+      ? getTokenMintAddressByName(baseFromRedirect) || ''
+      : getTokenMintAddressByName(
+        getDefaultBaseToken(isStableSwapFromRedirect)
+      ) || ''
+
+    setBaseTokenMintAddress(baseTokenMint)
+
+    const quoteTokenMint = quoteFromRedirect
+      ? getTokenMintAddressByName(quoteFromRedirect) || ''
+      : getTokenMintAddressByName(
+        getDefaultQuoteToken(isStableSwapFromRedirect)
+      ) || ''
+
+    setQuoteTokenMintAddress(quoteTokenMint)
+
+    setIsStableSwapTabActive(isStableSwapFromRedirect)
+  }, [])
+
+  const pools = getPoolsForSwapActiveTab({
+    pools: allPools,
+    isStableSwapTabActive,
+  })
+
+  const selectedPool = getSelectedPoolForSwap({
+    pools,
+    baseTokenMintAddress,
+    quoteTokenMintAddress,
+  })
+
+  const isSelectedPoolStable = checkIsPoolStable(selectedPool)
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances({
     connection,
@@ -160,13 +204,8 @@ const SwapPage = ({
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
 
-  const baseSymbol = baseTokenMintAddress
-    ? getTokenNameByMintAddress(baseTokenMintAddress)
-    : DEFAULT_BASE_TOKEN
-
-  const quoteSymbol = quoteTokenMintAddress
-    ? getTokenNameByMintAddress(quoteTokenMintAddress)
-    : DEFAULT_QUOTE_TOKEN
+  const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
+  const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
 
   const {
     baseTokenAmount: poolAmountTokenA,
@@ -300,44 +339,8 @@ const SwapPage = ({
     setBaseAmount(swapAmountOut)
   }
 
-  // useEffect(() => {
-  //   if (wallet.publicKey && selectedPool) {
-  //     const load = async () => {
-  //       const minimumReceivedAmountFromSwap = await getMinimumReceivedAmountFromSwap(
-  //         {
-  //           wallet,
-  //           connection,
-  //           pool: selectedPool,
-  //           isSwapBaseToQuote,
-  //           swapAmountIn: +baseAmount * 10 ** baseTokenDecimals,
-  //           allTokensData,
-  //           userBaseTokenAccount: userPoolBaseTokenPublicKey,
-  //           userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
-  //           transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
-  //         }
-  //       )
-
-  //       console.log(
-  //         'minimumReceivedAmountFromSwap',
-  //         minimumReceivedAmountFromSwap
-  //       )
-  //     }
-
-  //     load()
-  //   }
-  // }, [wallet.publicKey, allTokensData, baseAmount])
-
-  const stablePoolsData = getPoolsInfoQuery.getPoolsInfo.filter(
-    (pool) => pool.curveType === 1
-  )
   return (
-    <RowContainer
-      direction={'column'}
-      height={'100%'}
-      style={{
-        background: theme.palette.grey.additional,
-      }}
-    >
+    <SwapPageContainer direction={'column'} height={'100%'} wrap={'nowrap'}>
       <>
         <Row width={'50rem'} justify={'flex-start'} margin={'2rem 1rem'}>
           <TableModeButton
@@ -357,11 +360,7 @@ const SwapPage = ({
         </Row>
         <Row width={'50rem'} justify={'flex-start'} margin={'0 0 2rem 0'}>
           <Selector
-            data={
-              isStableSwapTabActive
-                ? stablePoolsData
-                : getPoolsInfoQuery.getPoolsInfo
-            }
+            data={pools}
             setBaseTokenMintAddress={setBaseTokenMintAddress}
             setQuoteTokenMintAddress={setQuoteTokenMintAddress}
           />
@@ -388,14 +387,14 @@ const SwapPage = ({
                   onClick={() => openTokensAddressesPopup(true)}
                   margin={'0 1.5rem 0 0'}
                 >
-                  <SvgIcon src={Inform} width={'50%'} height={'50%'} />
+                  <SvgIcon src={Inform} width={'60%'} height={'60%'} />
                 </TimerButton>
               )}
               <TimerButton
                 margin={'0'}
                 onClick={() => openTransactionSettingsPopup(true)}
               >
-                <SvgIcon src={Gear} width={'50%'} height={'50%'} />
+                <SvgIcon src={Gear} width={'60%'} height={'60%'} />
               </TimerButton>
             </Row>
           </RowContainer>
@@ -431,7 +430,7 @@ const SwapPage = ({
                 reverseTokens()
               }}
             />
-            {isStablePool ? (
+            {isSelectedPoolStable ? (
               <DarkTooltip
                 title={
                   'This pool uses the stable curve, which provides better rates for swapping stablecoins.'
@@ -634,87 +633,7 @@ const SwapPage = ({
             </RowContainer>
           </Card>
         )}
-        <Row justify={'space-between'} width={'50rem'} margin={'3rem 0 0 0'}>
-          <InfoBox image={PinkBox}>
-            <Text
-              fontSize={'1.7rem'}
-              fontFamily={'Avenir Next Bold'}
-              whiteSpace="nowrap"
-            >
-              Stake RIN
-            </Text>
-            <Text
-              fontSize={'1.4rem'}
-              fontFamily={'Avenir Next Bold'}
-              whiteSpace="nowrap"
-            >
-              <span style={{ fontFamily: 'Avenir Next Light' }}>with</span> 34%
-              APR!
-            </Text>
-            <StyledLink
-              to={'/staking'}
-              needHover
-              fontSize={'1.7rem'}
-              fontFamily={'Avenir Next Bold'}
-              whiteSpace="nowrap"
-            >
-              Stake Now{' '}
-              <SvgIcon width={'3rem'} height={'0.75rem'} src={WhiteArrow} />
-            </StyledLink>
-          </InfoBox>
-          <InfoBox image={GreenBox}>
-            <Text
-              fontSize={'1.7rem'}
-              fontFamily={'Avenir Next Bold'}
-              whiteSpace="nowrap"
-            >
-              Add Liquidity
-            </Text>
-            <Text
-              fontSize={'1.4rem'}
-              fontFamily={'Avenir Next Light'}
-              whiteSpace="nowrap"
-            >
-              and farm rewards!
-            </Text>
-            <StyledLink
-              to={'/pools'}
-              needHover
-              fontSize={'1.7rem'}
-              fontFamily={'Avenir Next Bold'}
-              whiteSpace="nowrap"
-            >
-              View Pools{' '}
-              <SvgIcon width={'3rem'} height={'0.75rem'} src={WhiteArrow} />
-            </StyledLink>
-          </InfoBox>
-          <InfoBox image={RedBox}>
-            <Text
-              fontSize={'1.7rem'}
-              fontFamily={'Avenir Next Bold'}
-              whiteSpace="nowrap"
-            >
-              250+ Markets
-            </Text>
-            <Text
-              fontSize={'1.4rem'}
-              fontFamily={'Avenir Next Light'}
-              whiteSpace="nowrap"
-            >
-              on orderbook DEX!
-            </Text>
-            <StyledLink
-              to={'/chart'}
-              needHover
-              fontSize={'1.7rem'}
-              fontFamily={'Avenir Next Bold'}
-              whiteSpace="nowrap"
-            >
-              Trade Now{' '}
-              <SvgIcon width={'3rem'} height={'0.75rem'} src={WhiteArrow} />
-            </StyledLink>
-          </InfoBox>
-        </Row>
+        <Cards />
       </>
 
       <TransactionSettingsPopup
@@ -730,16 +649,10 @@ const SwapPage = ({
       />
 
       <SelectCoinPopup
-        poolsInfo={getPoolsInfoQuery.getPoolsInfo}
+        poolsInfo={pools}
         theme={theme}
         // mints={[...new Set(mints)]}
-        mints={[
-          ...new Set(
-            getPoolsInfoQuery.getPoolsInfo
-              .map((i) => [i.tokenA, i.tokenB])
-              .flat()
-          ),
-        ]}
+        mints={[...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
         allTokensData={allTokensData}
@@ -783,7 +696,7 @@ const SwapPage = ({
         open={isTokensAddressesPopupOpen}
         close={() => openTokensAddressesPopup(false)}
       />
-    </RowContainer>
+    </SwapPageContainer>
   )
 }
 

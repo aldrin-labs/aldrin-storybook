@@ -4,16 +4,13 @@ import {
     SearchInputWithLoop,
     TokenIconsContainer,
 } from '@sb/compositions/Pools/components/Tables/components'
-import {
-    formatNumberToUSFormat,
-    stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
-import { TokenIcon } from '@sb/components/TokenIcon'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+
 import { SelectorRow, StyledText } from '../SelectCoinPopup'
 import styled from 'styled-components'
 import { COLORS } from '@variables/variables'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 const options = [
     { value: 'chocolate', label: 'Chocolate' },
@@ -56,11 +53,20 @@ export const Selector = ({
     setQuoteTokenMintAddress,
 }: {
     data: PoolInfo[]
-    setBaseTokenMintAddress: any
-    setQuoteTokenMintAddress: any
+    setBaseTokenMintAddress: (mint: string) => void
+    setQuoteTokenMintAddress: (mint: string) => void
 }) => {
     const [searchValue, onChangeSearch] = useState<string>('')
     const [isListOpen, setIsListOpen] = useState<boolean>(false)
+
+    const filteredPools = data.filter((pool) =>
+        filterDataBySymbolForDifferentDeviders({
+            searchValue,
+            symbol: `${getTokenNameByMintAddress(
+                pool.tokenA
+            )}_${getTokenNameByMintAddress(pool.tokenB)}`,
+        })
+    )
 
     return (
         <RowContainer style={{ position: 'relative' }} direction={'column'}>
@@ -74,7 +80,7 @@ export const Selector = ({
             />
             {isListOpen ? (
                 <SelectorRowsContainer>
-                    {data.map((el) => (
+                    {filteredPools.map((el) => (
                         <StyledSelectorRow
                             onClick={async (e) => {
                                 setBaseTokenMintAddress(el.tokenA)

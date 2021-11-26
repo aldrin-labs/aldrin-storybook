@@ -25,7 +25,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
 }: {
   swapAmountIn: number
   isSwapBaseToQuote: boolean
-  pool: PoolInfo
+  pool?: PoolInfo
   wallet: WalletAdapter
   connection: Connection
   userBaseTokenAccount: PublicKey | null
@@ -34,6 +34,9 @@ export const getMinimumReceivedAmountFromSwap = async ({
   allTokensData: TokenInfo[]
   poolBalances: PoolBalances
 }) => {
+
+  if (!pool) return 0
+
   const { curveType } = pool
 
   let swapAmountOut = 0

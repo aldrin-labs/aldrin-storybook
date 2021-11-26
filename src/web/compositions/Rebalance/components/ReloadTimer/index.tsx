@@ -16,7 +16,7 @@ export const TimerButton = styled.div`
 `
 
 export const ReloadTimer = ({
-  size = 14,
+  size = 21,
   duration = 10,
   initialRemainingTime = 10,
   color = '#651CE4',
@@ -49,7 +49,7 @@ export const ReloadTimer = ({
       <CountdownCircleTimer
         key={rerenderCounter}
         size={size}
-        strokeWidth={2}
+        strokeWidth={3}
         isPlaying={true}
         duration={duration}
         initialRemainingTime={initialRemainingTime}

@@ -53,7 +53,7 @@ export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) =>
 
 export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (props) => {
   const { tokenName, marketAddress, marketPair, onInfoClick } = props
-  const token = tokensLinksMap.get(tokenName.toLowerCase()) || { marketCapLink: '', twitterLink: '' }
+  const token = tokensLinksMap.get(tokenName.toUpperCase()) || { marketCapLink: '', twitterLink: '' }
   const { twitterLink = '', marketCapLink = '' } = token
 
   return (
@@ -67,7 +67,7 @@ export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (props) => 
         </Anchor>
       }
       <SolExplorerLink mint={marketAddress || ''} />
-      {marketPair &&
+      {/* {marketPair &&
         <DarkTooltip title={'Show analytics for this market.'}>
           <Anchor as={Link} to={`/analytics/${marketPair}`}>
             <AnalyticsIconComponent
@@ -75,7 +75,7 @@ export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (props) => 
             />
           </Anchor>
         </DarkTooltip>
-      }
+      } */}
 
       {twitterLink && (
         <DarkTooltip title={'Twitter profile of the token.'}>

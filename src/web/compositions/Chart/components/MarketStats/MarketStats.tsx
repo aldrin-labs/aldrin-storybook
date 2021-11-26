@@ -35,7 +35,7 @@ interface IProps {
   marketDataByTickersQuery: {
     marketDataByTickers: MarketDataByTicker
   }
-  marketDataByTickersQueryRefetch: (variables: {[c:string]: any}) => void
+  marketDataByTickersQueryRefetch: (variables: { [c: string]: any }) => void
   getMarketStatisticsByPairQuery: {
     getMarketStatisticsByPair: {
       exchange: string
@@ -71,7 +71,7 @@ interface IProps {
   }
   quantityPrecision: number
   pricePrecision: number
-  isCCAIPair?: boolean
+  isRINPair?: boolean
 }
 
 export const generateDatesForRequest = () => ({
@@ -88,7 +88,7 @@ const MarketStats: React.FC<IProps> = (props) => {
     symbol = ' _ ',
     theme,
     marketType,
-    isCCAIPair,
+    isRINPair,
     pricePrecision,
   } = props
 
@@ -238,15 +238,15 @@ const MarketStats: React.FC<IProps> = (props) => {
             {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
         </PanelCard> */}
-        {isCCAIPair && (
+        {isRINPair && (
           <>
-            <PanelCard marketType={marketType} theme={theme}>
+            {/* <PanelCard marketType={marketType} theme={theme}>
               <PanelCardTitle theme={theme}>Circulating Supply</PanelCardTitle>
               <PanelCardValue theme={theme}>
                 {formatNumberToUSFormat(stripDigitPlaces(circulatingSupply, 2))}{' '}
                 CCAI
               </PanelCardValue>
-            </PanelCard>
+            </PanelCard> */}
             <PanelCard marketType={marketType} theme={theme}>
               <PanelCardTitle theme={theme}>Marketcap</PanelCardTitle>
               <PanelCardValue theme={theme}>
