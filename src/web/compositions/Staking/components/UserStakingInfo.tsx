@@ -321,6 +321,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     refreshAll()
   }, 30000)
 
+  const toggleIsLoading = useCallback(() => {
+    setIsLoading(!isLoading)
+  }, [isLoading])
+
   return (
     <>
       <BlockContent border>
@@ -499,9 +503,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         farmingTicketsMap={farmingTicketsMap}
         snapshotQueues={snapshotQueueWithAMMFees}
         refreshTokensWithFarmingTickets={refreshAll}
-        setPoolWaitingForUpdateAfterOperation={() => {
-          setIsLoading(!isLoading)
-        }}
+        setPoolWaitingForUpdateAfterOperation={toggleIsLoading}
         callback={async () => {
           if (isClaimRewardsAndRestakePopupOpen) {
             const result = await startStaking({
