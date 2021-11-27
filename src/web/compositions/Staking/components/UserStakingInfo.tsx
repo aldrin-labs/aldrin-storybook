@@ -445,7 +445,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                     >
                       <span>
                         <Button
-                          variant={''}
+                          variant={isClaimDisabled ? 'disabled' : ''}
                           fontSize="xs"
                           padding="lg"
                           borderRadius="xxl"
