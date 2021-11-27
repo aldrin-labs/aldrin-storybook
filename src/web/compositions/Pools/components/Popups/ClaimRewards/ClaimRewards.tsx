@@ -122,7 +122,6 @@ export const ClaimRewards = ({
           clearPoolWaitingForUpdate()
           if (callback) {
             await callback()
-
             await close()
           }
         }, 7500)

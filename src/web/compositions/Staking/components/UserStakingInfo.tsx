@@ -445,7 +445,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                     >
                       <span>
                         <Button
-                          variant={isClaimDisabled ? 'disabled' : ''}
+                          variant={''}
                           fontSize="xs"
                           padding="lg"
                           borderRadius="xxl"
@@ -455,11 +455,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                               : setIsClaimRewardsPopupOpen(true)
                           }}
                         >
-                          {isLoading ? <Loader /> : 'Claim'}
+                          {'Claim'}
                         </Button>
                       </span>
                     </DarkTooltip>
-                    <Button
+                    {/* <Button
                       fontSize="xs"
                       padding="lg"
                       variant={isClaimDisabled ? 'disabledLink' : 'link'}
@@ -467,7 +467,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       onClick={() => setIsClaimRewardsAndRestakePopupOpen(true)}
                     >
                       Restake
-                    </Button>
+                    </Button> */}
                   </ClaimButtonContainer>
                 </RewardsStats>
               </BlockContent>
@@ -504,8 +504,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         snapshotQueues={snapshotQueueWithAMMFees}
         refreshTokensWithFarmingTickets={refreshAll}
         setPoolWaitingForUpdateAfterOperation={toggleIsLoading}
-        callback={async () => {
-          if (isClaimRewardsAndRestakePopupOpen) {
+        callback={
+          isClaimRewardsAndRestakePopupOpen ? async () => {
             const result = await startStaking({
               wallet,
               connection,
@@ -515,10 +515,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             })
 
             return result
-          }
-
-          return true
-        }}
+          } : undefined
+        }
       />
     </>
   )
