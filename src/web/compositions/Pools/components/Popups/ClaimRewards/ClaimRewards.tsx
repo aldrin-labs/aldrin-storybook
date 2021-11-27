@@ -23,6 +23,7 @@ import ProposeToStakePopup from '../../Popups/ProposeToStake'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { RIN_MINT } from '@sb/dexUtils/utils'
 import LightLogo from '@icons/lightLogo.svg'
+import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 
 export const ClaimRewards = ({
   theme,
@@ -98,6 +99,7 @@ export const ClaimRewards = ({
         farmingTickets,
         snapshotQueues,
         signAllTransactions,
+        programAddress: programId
       })
 
       notify({
@@ -120,7 +122,6 @@ export const ClaimRewards = ({
           clearPoolWaitingForUpdate()
           if (callback) {
             await callback()
-
             await close()
           }
         }, 7500)
@@ -137,7 +138,7 @@ export const ClaimRewards = ({
     }
 
     if (result !== 'blockhash_outdated') {
-      if (isFarmingRIN) {
+      if (isFarmingRIN && programId !== STAKING_PROGRAM_ADDRESS) {
         setIsProposeToStakePopupOpen(true)
       }
 

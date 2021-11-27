@@ -261,6 +261,7 @@ export const ClaimButtonContainer = styled(RewardsStatsRow)`
 
   @media (min-width: ${BREAKPOINTS.md}) {
     margin-top: 0;
+    justify-content: center;
   }
 
   @media (min-width: ${BREAKPOINTS.lg}) {
