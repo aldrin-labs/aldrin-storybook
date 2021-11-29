@@ -34,7 +34,7 @@ export type FarmingState = {
   tokensPerPeriod: number
   periodLength: number
   vestingPeriod: number
-  // feesDistributed: boolean
+  feesDistributed: boolean
 }
 
 export type Snapshot = {

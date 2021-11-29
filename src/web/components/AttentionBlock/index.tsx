@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import Attention from '@icons/attention.svg'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { SvgIcon } from '..'
 
 export const ColorTextBlock = styled.div`
@@ -32,9 +32,11 @@ export const Title = styled(
 
 const AttentionComponent = ({
   blockHeight = '12rem',
+  iconSrc = Attention,
   iconStyle = {},
   textStyle = {},
   text = '',
+  header,
 }) => {
   return (
     <RowContainer>
@@ -44,20 +46,35 @@ const AttentionComponent = ({
         background={'rgba(242, 154, 54, 0.5)'}
       >
         <SvgIcon
-          src={Attention}
+          src={iconSrc}
           height={`${parseInt(blockHeight) / 2}rem`}
           width={'auto'}
           style={{ margin: '0 2rem 0 3rem', ...iconStyle }}
         />
-        <span
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '85%',
-            justifyContent: 'space-around',
+        <Row
+          direction='column'
+          width='85%'
+          margin={'0 0 0 5rem'}
+          justify='space-around'
+          align={'flex-start'}
+          style={{     
             padding: '.5rem 0',
           }}
         >
+          {header && 
+            <Title
+            fontSize={'2rem'}
+            textAlign={'inherit'} 
+            style={{
+              ...textStyle,
+              paddingRight: '1rem',
+              fontFamily: 'Avenir Next Bold',
+              margin: '0 0 1rem 0'
+              }}
+              >
+              {header}
+            </Title>
+              }
           <Title
             fontSize={'1.4rem'}
             textAlign={'inherit'}
@@ -65,7 +82,7 @@ const AttentionComponent = ({
           >
             {text}
           </Title>
-        </span>
+        </Row>
       </ColorTextBlock>
     </RowContainer>
   )

@@ -322,6 +322,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     refreshAll()
   }, 30000)
 
+  const toggleIsLoading = useCallback(() => {
+    setIsLoading(!isLoading)
+  }, [isLoading])
+
   return (
     <>
       <BlockContent border>
@@ -430,15 +434,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         !isClaimDisabled ? (
                           ''
                         ) : (
-                            <p>
-                              Rewards distribution takes place on the 27th day of
-                              each month, you will be able to claim your reward
+                          <p>
+                            Rewards distribution takes place on the 27th day of
+                            each month, you will be able to claim your reward
                             for this period on{' '}
-                              <span style={{ color: COLORS.success }}>
-                                27 November 2021.
+                            <span style={{ color: COLORS.success }}>
+                              27 November 2021.
                             </span>
-                            </p>
-                          )
+                          </p>
+                        )
                       }
                     >
                       <span>
@@ -451,19 +455,19 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                           $borderRadius="xxl"
                           onClick={() => setIsClaimRewardsPopupOpen(true)}
                         >
-                          Claim
-                      </Button>
+                          {'Claim'}
+                        </Button>
                       </span>
                     </DarkTooltip>
-                    <UserFormRestakeButton
-                      $fontSize="xs"
-                      $padding="lg"
-                      $variant="link"
+                    {/* <Button
+                      fontSize="xs"
+                      padding="lg"
+                      variant={isClaimDisabled ? 'disabledLink' : 'link'}
                       disabled={isClaimDisabled}
                       onClick={() => setIsClaimRewardsAndRestakePopupOpen(true)}
                     >
                       Restake
-                    </UserFormRestakeButton>
+                    </Button> */}
                   </ClaimButtonContainer>
                 </RewardsStats>
               </BlockContent>
@@ -485,39 +489,35 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         open={isRestakePopupOpen}
         close={() => setIsRestakePopupOpen(false)}
       />
-      {(isClaimRewardsPopupOpen || isClaimRewardsAndRestakePopupOpen) &&
-        <ClaimRewards
-          close={() => {
-            isClaimRewardsPopupOpen
-              ? setIsClaimRewardsPopupOpen(false)
-              : setIsClaimRewardsAndRestakePopupOpen(false)
-          }}
-          selectedPool={stakingPoolWithClosedFarmings}
-          allTokensData={allTokenData}
-          farmingTicketsMap={farmingTicketsMap}
-          snapshotQueues={snapshotQueueWithAMMFees}
-          refreshTokensWithFarmingTickets={refreshAll}
-          setPoolWaitingForUpdateAfterOperation={() => {
-            setIsLoading(!isLoading)
-          }}
-          callback={async () => {
-            if (isClaimRewardsAndRestakePopupOpen) {
-              const result = await startStaking({
-                wallet,
-                connection,
-                amount: availableToClaimTotal,
-                userPoolTokenAccount: new PublicKey(tokenData.address),
-                stakingPool,
-              })
+      <ClaimRewards
+        theme={theme}
+        open={isClaimRewardsPopupOpen || isClaimRewardsAndRestakePopupOpen}
+        close={() => {
+          isClaimRewardsPopupOpen
+            ? setIsClaimRewardsPopupOpen(false)
+            : setIsClaimRewardsAndRestakePopupOpen(false)
+        }}
+        selectedPool={stakingPoolWithClosedFarmings}
+        programId={STAKING_PROGRAM_ADDRESS}
+        allTokensData={allTokenData}
+        farmingTicketsMap={farmingTicketsMap}
+        snapshotQueues={snapshotQueueWithAMMFees}
+        refreshTokensWithFarmingTickets={refreshAll}
+        setPoolWaitingForUpdateAfterOperation={toggleIsLoading}
+        callback={
+          isClaimRewardsAndRestakePopupOpen ? async () => {
+            const result = await startStaking({
+              wallet,
+              connection,
+              amount: availableToClaimTotal,
+              userPoolTokenAccount: new PublicKey(tokenData.address),
+              stakingPool,
+            })
 
-              return result
-            }
-
-            return true
-          }}
-        />
-      }
-
+            return result
+          } : undefined
+        }
+      />
     </>
   )
 }
