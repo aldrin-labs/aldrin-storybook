@@ -169,16 +169,27 @@ const SwapPage = ({
   useEffect(() => {
     if (!selectedPool) return
 
-    const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
-    const newRatio = isSwapBaseToQuote
-      ? poolAmountTokenB / poolAmountTokenA
-      : poolAmountTokenA / poolAmountTokenB
+    const updateQuoteAmount = async () => {
+      const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
+      const swapAmountOut = await getMinimumReceivedAmountFromSwap({
+        swapAmountIn: +baseAmount,
+        isSwapBaseToQuote: isSwapBaseToQuote,
+        pool: selectedPool,
+        wallet,
+        connection,
+        userBaseTokenAccount: userPoolBaseTokenPublicKey,
+        userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
+        transferSOLToWrapped,
+        allTokensData,
+        poolBalances,
+      })
 
-    const newQuote = stripDigitPlaces(+baseAmount * newRatio, 8)
-
-    if (baseAmount && newQuote) {
-      setQuoteAmount(newQuote)
+      if (baseAmount && swapAmountOut) {
+        setQuoteAmount(swapAmountOut)
+      }
     }
+
+    updateQuoteAmount()
   }, [poolBalances.baseTokenAmount, poolBalances.quoteTokenAmount])
 
   const [slippageTolerance, setSlippageTolerance] = useState<number>(0.3)
@@ -315,6 +326,10 @@ const SwapPage = ({
       poolBalances,
     })
 
+    console.log({
+      swapAmountOut,
+    })
+
     setBaseAmount(newBaseAmount)
     setQuoteAmount(swapAmountOut)
   }
@@ -333,6 +348,10 @@ const SwapPage = ({
       transferSOLToWrapped,
       allTokensData,
       poolBalances,
+    })
+
+    console.log({
+      swapAmountOut,
     })
 
     setQuoteAmount(newQuoteAmount)
@@ -600,23 +619,27 @@ const SwapPage = ({
                   fontFamily={'Avenir Next Bold'}
                   color={'#53DF11'}
                 >
-                  {totalWithFees.toFixed(5)}{' '}
+                  {isSelectedPoolStable
+                    ? (+quoteAmount).toFixed(5)
+                    : totalWithFees.toFixed(5)}{' '}
                 </Text>
                 <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
               </Row>
             </RowContainer>
-            <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-              <Text color={'#93A0B2'}>Price Impact</Text>
-              <Row style={{ flexWrap: 'nowrap' }}>
-                <Text
-                  style={{ padding: '0 0.5rem 0 0.5rem' }}
-                  fontFamily={'Avenir Next Bold'}
-                  color={'#53DF11'}
-                >
-                  {stripDigitPlaces(rawSlippage, 2)}%
-                </Text>
-              </Row>
-            </RowContainer>{' '}
+            {!isSelectedPoolStable && (
+              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
+                <Text color={'#93A0B2'}>Price Impact</Text>
+                <Row style={{ flexWrap: 'nowrap' }}>
+                  <Text
+                    style={{ padding: '0 0.5rem 0 0.5rem' }}
+                    fontFamily={'Avenir Next Bold'}
+                    color={'#53DF11'}
+                  >
+                    {stripDigitPlaces(rawSlippage, 2)}%
+                  </Text>
+                </Row>
+              </RowContainer>
+            )}
             <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
               <Text color={'#93A0B2'}>Liquidity provider fee</Text>
               <Row style={{ flexWrap: 'nowrap' }}>

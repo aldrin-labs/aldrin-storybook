@@ -90,6 +90,16 @@ const Popup = (props: ClaimRewardProps) => {
     let result = null
 
     try {
+      console.log({
+        wallet,
+        connection,
+        pool: selectedPool,
+        allTokensData,
+        farmingTickets,
+        snapshotQueues,
+        signAllTransactions,
+      })
+
       result = await withdrawFarmed({
         wallet,
         connection,

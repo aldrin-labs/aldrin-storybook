@@ -99,7 +99,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     ).values()
   ).join(' and ')
 
-  const tooltipText = `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
+  const tooltipText = !hasUnstaked && !hasStaked ? `Deposit Liquidity and stake pool tokens to farm ${tokenNames}` : null
 
   return (
     <FarmingBlock>
@@ -108,7 +108,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
         <div>
           <LiquidityText weight={600}>
             <LiquidityText color="success">{stripByAmountAndFormat(poolTokenAmount)}</LiquidityText> Unstaked
-        </LiquidityText>
+          </LiquidityText>
         </div>
         <div>
           <LiquidityText weight={600}>
@@ -125,7 +125,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                 $variant="rainbow"
               >
                 Stake LP Tokens
-            </FarmingButton>
+              </FarmingButton>
             </span>
           </DarkTooltip>
           <DarkTooltip title={tooltipText}>
@@ -137,7 +137,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                 onClick={onUnstakeClick}
               >
                 Unstake LP Tokens
-            </FarmingButton>
+              </FarmingButton>
             </span>
           </DarkTooltip>
         </FarmingButtonsContainer>
@@ -168,7 +168,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                 onClick={onClaimClick}
               >
                 Claim
-            </FarmingButton>
+              </FarmingButton>
             </span>
           </DarkTooltip>
           <DarkTooltip title={<ClaimTimeTooltip farmingState={farming} />}>

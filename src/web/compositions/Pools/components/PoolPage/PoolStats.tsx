@@ -4,6 +4,7 @@ import { SvgIcon } from '@sb/components'
 import { ShareButton } from '@sb/components/ShareButton'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { FarmingState } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
@@ -116,6 +117,15 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
   const lpUsdValue = lpTokenPrice * pool.lpTokenFreezeVaultBalance
 
   const farmings = filterOpenFarmingStates(pool.farming || [])
+  const openFarmingsMap = farmings.reduce((acc, of) => {
+    const fs: FarmingState[] = acc.get(of.farmingTokenMint) || []
+
+    acc.set(of.farmingTokenMint, [...fs, of])
+    return acc
+  }, new Map<string, FarmingState[]>())
+
+  const openFarmingsKeys = Array.from(openFarmingsMap.keys())
+
 
   const dailyUsdReward = farmings.reduce(
     (acc, farmingState) => {
@@ -155,7 +165,7 @@ Don't miss your chance.`
               emojiIfNoLogo={false}
               margin="0 0.5em 0 0"
             /> /
-              <TokenIcon
+            <TokenIcon
               mint={pool.tokenB}
               width={'3em'}
               emojiIfNoLogo={false}
@@ -174,8 +184,8 @@ Don't miss your chance.`
             <SwapButtonIcon>
               <SvgIcon src={SwapIcon} />
             </SwapButtonIcon>
-              Swap
-            </SwapButton>
+            Swap
+          </SwapButton>
           <ShareButton iconFirst variant="primary" text={shareText} />
         </ButtonsContainer>
       </PoolInfoBlock>
@@ -189,7 +199,7 @@ Don't miss your chance.`
           <PoolStatsData>
             <PoolStatsText color="success">
               {aprFormatted}%
-      </PoolStatsText>
+            </PoolStatsText>
           </PoolStatsData>
         </PoolStatsWrap>
         <PoolStatsWrap>
@@ -199,13 +209,13 @@ Don't miss your chance.`
               {farmings.length > 0 ?
                 <>
                   <FarmingDataIcons>
-                    {farmings.map((farmingState) => {
+                    {openFarmingsKeys.map((farmingTokenMint) => {
                       return (
                         <FarmingIconWrap
-                          key={`farming_icon_${farmingState.farmingTokenMint}`}
+                          key={`farming_icon_${farmingTokenMint}`}
                         >
                           <TokenIcon
-                            mint={farmingState.farmingTokenMint}
+                            mint={farmingTokenMint}
                             width={'1.3em'}
                             emojiIfNoLogo={false}
                           />
@@ -215,21 +225,32 @@ Don't miss your chance.`
                   </FarmingDataIcons>
                   <div>
                     <PoolStatsText>
-                      {farmings.map((farmingState, i, arr) => {
-                        const tokensPerThousand = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
-                          farmingState, totalStakedLpTokensUSD: lpUsdValue
-                        })
+                      {openFarmingsKeys.map((farmingTokenMint, i, arr) => {
+                        const farmingStates =
+                          openFarmingsMap.get(farmingTokenMint) || []
+                        const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = farmingStates.reduce(
+                          (acc, farmingState) => {
+                            return (
+                              acc +
+                              getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                                { farmingState, totalStakedLpTokensUSD: lpUsdValue }
+                              )
+                            )
+                          },
+                          0
+                        )
+
                         return (
-                          <PoolStatsText key={`fs_reward_${farmingState.farmingTokenMint}`}>
+                          <PoolStatsText key={`fs_reward_${farmingTokenMint}`}>
                             {i > 0 ? ' + ' : ''}
                             <PoolStatsText color="success">
-                              {stripByAmountAndFormat(tokensPerThousand)}&nbsp;
-                  </PoolStatsText>
-                            {getTokenNameByMintAddress(farmingState.farmingTokenMint)}
+                              {stripByAmountAndFormat(farmingStateDailyFarmingValuePerThousandDollarsLiquidity)}&nbsp;
+                            </PoolStatsText>
+                            {getTokenNameByMintAddress(farmingTokenMint)}
                           </PoolStatsText>
                         )
                       })} / Day
-                </PoolStatsText>
+                    </PoolStatsText>
                     <div>
                       <PoolStatsText>
                         Per each  <PoolStatsText color="success">$1000</PoolStatsText>

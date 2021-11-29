@@ -245,7 +245,7 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
                   tokenA={pool.tokenA}
                   tokenB={pool.tokenB}
                 />
-              </Link>{' '}
+              </Link>
               {pool.curveType === 1 ? (
                 <DarkTooltip
                   title={
@@ -327,13 +327,13 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
             <RowContainer justify="flex-start" theme={theme}>
               <Row margin="0 1rem 0 0" justify="flex-start">
                 {/* every farming token mint logo, TODO: place them nicely, not one by one */}
-                {openFarmingsKeys.map((farmingStateMint) => {
+                {openFarmingsKeys.map((farmingTokenMint) => {
                   return (
                     <TokenIcon
-                      mint={farmingStateMint}
+                      mint={farmingTokenMint}
                       width={'3rem'}
                       emojiIfNoLogo={false}
-                      key={`all_pools_token_${pool.poolTokenMint}_${farmingStateMint}`}
+                      key={`all_pools_token_${pool.poolTokenMint}_${farmingTokenMint}`}
                     />
                   )
                 })}
@@ -344,10 +344,9 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
                   style={{ marginBottom: '1rem' }}
                   theme={theme}
                 >
-                  {openFarmings.map((farmingState, i, arr) => {
-                    return `${getTokenNameByMintAddress(
-                      farmingState.farmingTokenMint
-                    )} ${i !== arr.length - 1 ? 'X ' : ''}`
+                  {openFarmingsKeys.map((farmingTokenMint, i, arr) => {
+                    return `${getTokenNameByMintAddress(farmingTokenMint)} ${i !== arr.length - 1 ? 'X ' : ''
+                      }`
                   })}
                 </RowDataTdText>
                 {openFarmings.length === 0 ? (
@@ -360,9 +359,12 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
                       openFarmingsMap.get(farmingTokenMint) || []
                     const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = farmingStates.reduce(
                       (acc, farmingState) => {
-                        return (acc = getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
-                          { farmingState, totalStakedLpTokensUSD }
-                        ))
+                        return (
+                          acc +
+                          getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
+                            { farmingState, totalStakedLpTokensUSD }
+                          )
+                        )
                       },
                       0
                     )

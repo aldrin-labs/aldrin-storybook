@@ -1,6 +1,7 @@
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { sendTransaction } from '@sb/dexUtils/send'
 
 import { parseTokenAccountData } from '@sb/dexUtils/tokens'
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
@@ -44,9 +45,19 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
   )
 
   console.log({
+    isSwapBaseToQuote,
+    wallet,
+    connection,
+    poolPublicKey,
     userBaseTokenAccount,
     userQuoteTokenAccount,
+    swapAmountIn: swapAmountIn * 10 ** basePoolTokenDecimals,
+    swapAmountOut,
+    transferSOLToWrapped,
+    unwrapWrappedSOL: false,
+    curveType,
   })
+
 
   const swapTransactionAndSigners = await getSwapTransaction({
     wallet,
@@ -78,6 +89,10 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
 
   let response = null
 
+  console.log({
+    swapTransaction,
+  })
+
   try {
     response = await connection.simulateTransaction(
       swapTransaction,
@@ -92,8 +107,6 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
     console.error('error simulate transaction', e)
   }
 
-  console.log('response', response)
-
   if (
     !response ||
     !response.value ||
@@ -103,14 +116,10 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
     return 0
   }
 
-  console.log('response 2', response)
-
   const postUserQuoteTokenAccountData = Buffer.from(
     response.value.accounts[0].data[0],
     'base64'
   )
-
-  console.log('postUserQuoteTokenAccountData', postUserQuoteTokenAccountData)
 
   const parsedQuote = parseTokenAccountData(postUserQuoteTokenAccountData)
   const quotePoolTokenMint = parsedQuote.mint.toString()
@@ -122,11 +131,6 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
 
   const quoteAmountAfterSwap = parsedQuote.amount / 10 ** quoteTokenDecimals
 
-  console.log({
-    quoteAmount,
-    quoteAmountAfterSwap,
-  })
-
   let swapAmount = 0
 
   if (quotePoolTokenMint === WRAPPED_SOL_MINT.toString()) {
@@ -136,8 +140,6 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
   } else {
     swapAmount = quoteAmountAfterSwap - quoteAmount
   }
-
-  console.log('swapAmount', swapAmount)
 
   return swapAmount
 }
