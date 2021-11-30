@@ -167,7 +167,7 @@ const SwapPage = ({
 
   // update entered value on every pool ratio change
   useEffect(() => {
-    if (!selectedPool) return
+    if (!selectedPool || !+baseAmount) return
 
     const updateQuoteAmount = async () => {
       await setBaseAmountWithQuote(+baseAmount)
