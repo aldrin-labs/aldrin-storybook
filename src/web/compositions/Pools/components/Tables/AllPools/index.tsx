@@ -51,8 +51,8 @@ const prepareCell = (pool: PoolInfo, tokenPrices: TokenPricesMap, feesByPool: Fe
   return {
     vol24h: {
       rendered: (
-        <Text>
-          ${stripByAmountAndFormat(volume.dailyTradingVolume)}
+        <Text size="sm">
+          ${stripByAmountAndFormat(volume.dailyTradingVolume, 2)}
         </Text>
       ),
       rawValue: volume.dailyTradingVolume
@@ -60,8 +60,8 @@ const prepareCell = (pool: PoolInfo, tokenPrices: TokenPricesMap, feesByPool: Fe
     },
     vol7d: {
       rendered: (
-        <Text>
-          ${stripByAmountAndFormat(volume.weeklyTradingVolume)}
+        <Text size="sm">
+          ${stripByAmountAndFormat(volume.weeklyTradingVolume, 2)}
         </Text>
       ),
       rawValue: volume.dailyTradingVolume
@@ -69,7 +69,7 @@ const prepareCell = (pool: PoolInfo, tokenPrices: TokenPricesMap, feesByPool: Fe
     },
     fees: {
       rendered: (
-        <Text>
+        <Text size="sm">
           ${stripByAmountAndFormat(feesInUSD, 2)}
         </Text>
       ),

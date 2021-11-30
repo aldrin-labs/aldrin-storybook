@@ -10,9 +10,9 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import React from 'react'
 import { getTokenDataByMint } from '../../../utils'
 import { PoolsTable } from '../PoolsTable'
-import { ConnectWalletWrapper } from '../../../../../components/ConnectWalletWrapper'
-import { stripByAmountAndFormat } from '../../../../../../../../core/src/utils/chartPageUtils'
-import { Text } from '../../../../../components/Typography'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { Text } from '@sb/components/Typography'
 
 
 interface LiquidityTableProps {
@@ -86,10 +86,10 @@ const prepareCell = (params: PrepareCellParams): { [c: string]: DataCellValue } 
     userLiquidity: {
       rendered: (
         <>
-          <Text>
+          <Text size="sm">
             ${stripByAmountAndFormat(userLiquidityUSD + feesUsd, 4)}
           </Text>
-          <Text color="hint" margin="10px 0">
+          <Text color="hint" size="sm" margin="10px 0">
             {stripByAmountAndFormat(
               userAmountTokenA + feesEarnedByUserForPool.totalBaseTokenFee
             )}{' '}
@@ -107,7 +107,7 @@ const prepareCell = (params: PrepareCellParams): { [c: string]: DataCellValue } 
     },
     feesEarned: {
       rendered:
-        <Text>
+        <Text size="sm">
           ${stripByAmountAndFormat(feesUsd, 4)}
         </Text>,
 

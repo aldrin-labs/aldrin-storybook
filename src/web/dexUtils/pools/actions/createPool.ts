@@ -75,10 +75,6 @@ interface TransactionAndSign {
   signers: (Keypair | Account)[]
 }
 
-
-const mintSpace = 82
-const accountSpace = 165
-
 export const createPoolTransactions = async (params: CreatePoolParams): Promise<CreatePoolTransactionsResponse> => {
   const {
     wallet,
@@ -186,8 +182,7 @@ export const createPoolTransactions = async (params: CreatePoolParams): Promise<
 
   if (curveType === CURVE.PRODUCT) {
     createPoolTx.add(await program2.account.productCurve.createInstruction(curve))
-  }
-  if (curveType === CURVE.STABLE) {
+  } else if (curveType === CURVE.STABLE) {
     createPoolTx.add(await program2.account.stableCurve.createInstruction(curve))
   }
 

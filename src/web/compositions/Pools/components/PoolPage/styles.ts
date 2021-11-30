@@ -324,6 +324,8 @@ export const ExtendFarmingButton = styled(FarmingButton)`
   max-width: 380px;
   flex: 1;
   margin-right: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
 `
 
 
@@ -343,7 +345,7 @@ export const FarmingButtonsContainer = styled.div`
 export const NoFarmingBlock = styled.div`
   flex: 1;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   text-align: center;
   justify-content: center;

@@ -43,15 +43,19 @@ export const SearchInputWithLoop = ({
   )
 }
 
-export const TokenIconsContainer = ({
-  tokenA,
-  tokenB,
-  needHover = false,
-}: {
+interface TokenIconContainerProps {
   tokenA: string
   tokenB: string
-  needHover: boolean
-}) => {
+  needHover?: boolean
+}
+
+export const TokenIconsContainer: React.FC<TokenIconContainerProps> = (props) => {
+  const {
+    tokenA,
+    tokenB,
+    needHover = false,
+    children,
+  } = props
   return (
     <Row wrap="nowrap" justify={'end'}>
       <IconsContainer>
@@ -66,13 +70,16 @@ export const TokenIconsContainer = ({
           <TokenIcon width={'3rem'} height={'3rem'} mint={tokenB} />
         </TokenIconContainer>
       </IconsContainer>
-      <Text
-        style={{ marginLeft: '2rem' }}
-        needHover={needHover}
-        fontFamily={'Avenir Next Demi'}
-      >
-        {getTokenNameByMintAddress(tokenA)}/{getTokenNameByMintAddress(tokenB)}
-      </Text>
+      <div style={{ marginLeft: '2rem' }}>
+        <Text
+          needHover={needHover}
+          fontFamily={'Avenir Next Demi'}
+        >
+          {getTokenNameByMintAddress(tokenA)}/{getTokenNameByMintAddress(tokenB)}
+        </Text>
+        {children}
+      </div>
+
     </Row>
   )
 }

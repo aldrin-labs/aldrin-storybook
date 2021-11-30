@@ -108,31 +108,33 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
 
       const tokensPerPeriod = parseFloat(values.farming.tokenAmount) * HOUR / DAY / parseFloat(values.farming.farmingPeriod)
 
-      const generatedTransactions = await createPoolTransactions({
-        wallet,
-        connection,
-        baseTokenMint: new PublicKey(values.baseToken.mint),
-        quoteTokenMint: new PublicKey(values.quoteToken.mint),
-        firstDeposit: {
-          baseTokenAmount: new BN(parseFloat(values.firstDeposit.baseTokenAmount) * 10 ** (selectedBaseAccount?.decimals || 0)),
-          userBaseTokenAccount: new PublicKey(values.baseToken.account || ''),
-          quoteTokenAmount: new BN(parseFloat(values.firstDeposit.quoteTokenAmount) * 10 ** (selectedQuoteAccount?.decimals || 0)),
-          userQuoteTokenAccount: new PublicKey(values.quoteToken.account || ''),
-        },
-        farming: values.farmingEnabled ? {
-          farmingTokenMint: new PublicKey(values.farming.token.mint),
-          farmingTokenAccount: new PublicKey(values.farming.token.account || ''),
-          tokenAmount: new BN(parseFloat(values.farming.tokenAmount) * 10 ** (farmingRewardAccount?.decimals || 0)),
-          periodLength: new BN(HOUR),
-          tokensPerPeriod: new BN(tokensPerPeriod),
-          noWithdrawPeriodSeconds: new BN(0),
-          vestingPeriodSeconds: values.farming.vestingEnabled ?
-            new BN((parseFloat(values.farming.vestingPeriod || '0')) * DAY) : new BN(0),
-        } : undefined,
-        curveType: values.stableCurve ? CURVE.STABLE : CURVE.PRODUCT,
-      })
-
+      const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
       try {
+        const generatedTransactions = await createPoolTransactions({
+          wallet,
+          connection,
+          baseTokenMint: new PublicKey(values.baseToken.mint),
+          quoteTokenMint: new PublicKey(values.quoteToken.mint),
+          firstDeposit: {
+            baseTokenAmount: new BN(parseFloat(values.firstDeposit.baseTokenAmount) * 10 ** (selectedBaseAccount?.decimals || 0)),
+            userBaseTokenAccount: new PublicKey(values.baseToken.account || ''),
+            quoteTokenAmount: new BN(parseFloat(values.firstDeposit.quoteTokenAmount) * 10 ** (selectedQuoteAccount?.decimals || 0)),
+            userQuoteTokenAccount: new PublicKey(values.quoteToken.account || ''),
+          },
+          farming: values.farmingEnabled ? {
+            farmingTokenMint: new PublicKey(values.farming.token.mint),
+            farmingTokenAccount: new PublicKey(values.farming.token.account || ''),
+            tokenAmount: new BN(parseFloat(values.farming.tokenAmount) * tokensMultiplier),
+            periodLength: new BN(HOUR),
+            tokensPerPeriod: new BN(tokensPerPeriod * tokensMultiplier),
+            noWithdrawPeriodSeconds: new BN(0),
+            vestingPeriodSeconds: values.farming.vestingEnabled ?
+              new BN((parseFloat(values.farming.vestingPeriod || '0')) * DAY) : new BN(0),
+          } : undefined,
+          curveType: values.stableCurve ? CURVE.STABLE : CURVE.PRODUCT,
+        })
+
+
         setProcessingStep(1)
         console.log('Create accounts...')
         const createAccountsTxId = await sendAndWaitSignedTransaction(generatedTransactions.createAccounts, connection)

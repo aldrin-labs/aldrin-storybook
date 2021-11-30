@@ -8,6 +8,7 @@ import { createTokenAccountInstrs } from "@project-serum/common"
 import { Provider } from "@project-serum/anchor"
 
 import { walletAdapterToWallet } from './createPool'
+import { signTransactions } from "../../send"
 
 export interface InitializeFarmingBase {
   farmingTokenMint: PublicKey
@@ -99,5 +100,22 @@ export const initializeFarmingInstructions = async (params: InitializeFarmingPar
       farmingTokenVault,
     ]
   ]
+}
 
+
+/**
+ * 
+ * @param params InitializeFarmingParams
+ * @returns Signed transaction
+ */
+export const initializeFarmingTransaction = async (params: InitializeFarmingParams): Promise<Transaction> => {
+  console.log('params: ', params)
+  const [transaction, signers] = await initializeFarmingInstructions(params)
+  const [tx] = await signTransactions({
+    transactionsAndSigners: [{ transaction, signers }],
+    wallet: params.wallet,
+    connection: params.connection,
+  })
+
+  return tx
 }

@@ -13,6 +13,8 @@ import { TokenIconsContainer } from './components'
 import { getFarmingStateDailyFarmingValue } from './UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { symbolIncludesSearch } from './utils'
 import { NoDataBlock } from '@sb/components/DataTable'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { PublicKey } from '@solana/web3.js'
 
 export interface PoolsTableProps {
   pools: PoolInfo[]
@@ -47,8 +49,9 @@ const prepareCell = (params: {
   pool: PoolInfo,
   tokenPrices: Map<string, DexTokensPrices>,
   prepareMore: (pool: PoolInfo) => { [c: string]: DataCellValue }
+  walletPk: string
 }): DataCellValues<PoolInfo> => {
-  const { pool, tokenPrices, prepareMore } = params
+  const { pool, tokenPrices, prepareMore, walletPk } = params
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
@@ -95,25 +98,33 @@ const prepareCell = (params: {
       pool: {
         rawValue: pool.parsedName,
         rendered:
-          <Link
-            to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
-            style={{ textDecoration: 'none' }}
-          >
-            <TokenIconsContainer
-              needHover={true}
-              tokenA={pool.tokenA}
-              tokenB={pool.tokenB}
-            />
-          </Link>,
+          <div>
+            <Link
+              to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
+              style={{ textDecoration: 'none' }}
+            >
+              <TokenIconsContainer
+                needHover={true}
+                tokenA={pool.tokenA}
+                tokenB={pool.tokenB}
+              >
+                {!!walletPk && walletPk === pool.initializerAccount &&
+                  <Text color="success" size="sm">Your pool</Text>
+                }
+              </TokenIconsContainer>
+            </Link>
+
+          </div>
+        ,
       },
       tvl: {
         rawValue: tvlUSD,
         rendered:
           <>
-            <Text>
+            <Text size="sm">
               ${stripByAmountAndFormat(tvlUSD)}
             </Text>
-            <Text margin="10px 0" color="hint">
+            <Text size="sm" margin="10px 0" color="hint">
               {stripByAmountAndFormat(pool.tvl.tokenA)} {baseSymbol} / {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteSymbol}
             </Text>
           </>,
@@ -121,7 +132,7 @@ const prepareCell = (params: {
       apr: {
         rawValue: farmingAPR,
         rendered:
-          <Text color="success" weight={700}>
+          <Text color="success" size="sm" weight={700}>
             {stripByAmount(farmingAPR, 2)}%
           </Text>,
       },
@@ -137,7 +148,6 @@ const prepareCell = (params: {
 
   }
 }
-// TODO: Work in progress, do not change/use that
 
 export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
 
@@ -154,13 +164,16 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
   const [columns] = useState(mergeColumns(addColumns))
 
 
+  const wallet = useWallet()
   const history = useHistory()
+
+  const walletPk = wallet.wallet.publicKey?.toBase58() || ''
 
   const data = pools
     .filter((pool) =>
       symbolIncludesSearch(`${getTokenNameByMintAddress(pool.tokenA)}_${getTokenNameByMintAddress(pool.tokenB)}`, searchValue)
     )
-    .map((pool) => prepareCell({ pool, tokenPrices, prepareMore }))
+    .map((pool) => prepareCell({ pool, tokenPrices, prepareMore, walletPk }))
 
   return (
     <DataTable

@@ -10,6 +10,7 @@ import {
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { PoolInfo } from '../../index.types'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 
 interface FarmingRewardsProps {
   pool: PoolInfo
@@ -17,9 +18,9 @@ interface FarmingRewardsProps {
 }
 
 export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
-  const { farmingUsdValue, pool: { poolTokenMint, farming} } = props
+  const { farmingUsdValue, pool: { poolTokenMint, farming } } = props
 
-  const farmings = farming || []
+  const farmings = filterOpenFarmingStates(farming || [])
   const farmingsMap = farmings.reduce((acc, of) => {
     const fs: FarmingState[] = acc.get(of.farmingTokenMint) || []
 

@@ -8,6 +8,7 @@ export type PoolInfo = {
   curveType: number
   poolTokenAccountA: string
   poolTokenAccountB: string
+  initializerAccount: string
   swapToken: string
   poolTokenMint: string
   lpTokenFreezeVaultBalance: number;
