@@ -306,7 +306,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       <RowContainer>
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
           Enter the amount of the first coin you wish to add, the second coin
-          will adjust according to the match of a pool ratio.
+          will adjust according to the match of the pool ratio.
         </Text>
       </RowContainer>
       <RowContainer>
@@ -389,7 +389,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
             </Text>{' '}
             <DarkTooltip
               title={
-                'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h not taking into account the reward for farming.'
+                'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming rewards.'
               }
             >
               <div>
@@ -481,8 +481,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               !userQuoteTokenAmount
             ) {
               notify({
-                message: `Sorry, something went wrong with your amount of ${
-                  !userTokenAccountA ? 'tokenA' : 'tokenB'
+                message: `Sorry, something went wrong with your amount of ${!userTokenAccountA ? 'tokenA' : 'tokenB'
                   }`,
                 type: 'error',
               })

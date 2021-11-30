@@ -359,8 +359,8 @@ export const TablesDetails = ({
 
           <RowContainer justify="flex-start" theme={theme}>
             {!hasFarming ||
-            (openFarmings.length === 0 &&
-              !(hasStakedTokens || availableToClaimFarmingTokens > 0)) ? (
+              (openFarmings.length === 0 &&
+                !(hasStakedTokens || availableToClaimFarmingTokens > 0)) ? (
               <RowDataTdText>No farming available in this pool.</RowDataTdText>
             ) : hasStakedTokens || availableToClaimFarmingTokens > 0 ? (
               <RowContainer justify="space-between">
@@ -389,8 +389,8 @@ export const TablesDetails = ({
                   title={
                     isUnstakeLocked
                       ? `Until ${dayjs
-                          .unix(unlockAvailableDate)
-                          .format('HH:mm:ss MMM DD, YYYY')}`
+                        .unix(unlockAvailableDate)
+                        .format('HH:mm:ss MMM DD, YYYY')}`
                       : null
                   }
                 >
@@ -408,7 +408,17 @@ export const TablesDetails = ({
                           operation: 'unstake',
                         })
 
-                        const farmingState = openFarmings[0]
+                        const farmingState = isPoolWithFarming ? pool.farming[0] : null
+
+                        if (!farmingState) {
+                          notify({
+                            message: `No farming exists for ${pool.parsedName} pool.`,
+                            type: 'error'
+                          })
+
+                          return
+                        }
+
                         const {
                           address: userPoolTokenAccount,
                         } = getTokenDataByMint(
@@ -438,8 +448,8 @@ export const TablesDetails = ({
                             result === 'success'
                               ? 'Successfully unstaked.'
                               : result === 'failed'
-                              ? 'Unstaking failed, please try again later or contact us in telegram.'
-                              : 'Unstaking cancelled.',
+                                ? 'Unstaking failed, please try again later or contact us in telegram.'
+                                : 'Unstaking cancelled.',
                         })
 
                         const clearPoolWaitingForUpdate = () =>
