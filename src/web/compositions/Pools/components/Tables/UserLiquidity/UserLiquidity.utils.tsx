@@ -156,6 +156,8 @@ export const combineUserLiquidityData = (
       const tvlUSD =
         baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
 
+      const feesAPR = pool.apy24h || 0
+
       const {
         amount: poolTokenRawAmount,
         decimals: poolTokenDecimals,
@@ -230,7 +232,8 @@ export const combineUserLiquidityData = (
       const openFarmingsKeys = Array.from(openFarmingsMap.keys())
 
       const farmingAPR =
-        ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+        ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100 ||
+        0
 
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
@@ -321,12 +324,12 @@ export const combineUserLiquidityData = (
               theme={theme}
             >
               {formatNumberToUSFormat(
-                stripDigitPlaces(pool.apy24h + farmingAPR, 2)
+                stripDigitPlaces(feesAPR + farmingAPR, 2)
               )}
               %
             </RowDataTdText>
           ),
-          contentToSort: pool.apy24h + farmingAPR,
+          contentToSort: feesAPR + farmingAPR,
         },
         farming: {
           render: isPoolWithFarming ? (

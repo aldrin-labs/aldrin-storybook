@@ -223,7 +223,8 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
       )
 
       const farmingAPR =
-        ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+        ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100 ||
+        0
 
       return {
         id: `${pool.name}${pool.tvl}${pool.poolTokenMint}`,
@@ -314,13 +315,10 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
               fontFamily="Avenir Next Medium"
               theme={theme}
             >
-              {formatNumberToUSFormat(
-                stripDigitPlaces(pool.apy24h + farmingAPR, 2)
-              )}
-              %
+              {formatNumberToUSFormat(stripDigitPlaces(apy + farmingAPR, 2))}%
             </RowDataTdText>
           ),
-          contentToSort: pool.apy24h + farmingAPR,
+          contentToSort: apy + farmingAPR,
         },
         farming: {
           render: isPoolWithFarming ? (

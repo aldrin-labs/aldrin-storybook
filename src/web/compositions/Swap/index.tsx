@@ -170,23 +170,7 @@ const SwapPage = ({
     if (!selectedPool) return
 
     const updateQuoteAmount = async () => {
-      const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
-      const swapAmountOut = await getMinimumReceivedAmountFromSwap({
-        swapAmountIn: +baseAmount,
-        isSwapBaseToQuote: isSwapBaseToQuote,
-        pool: selectedPool,
-        wallet,
-        connection,
-        userBaseTokenAccount: userPoolBaseTokenPublicKey,
-        userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
-        transferSOLToWrapped,
-        allTokensData,
-        poolBalances,
-      })
-
-      if (baseAmount && swapAmountOut) {
-        setQuoteAmount(swapAmountOut)
-      }
+      await setBaseAmountWithQuote(+baseAmount)
     }
 
     updateQuoteAmount()
@@ -254,15 +238,17 @@ const SwapPage = ({
     selectedQuoteTokenAddressFromSeveral
   )
 
-  const reverseTokens = () => {
+  const reverseTokens = async () => {
     setBaseTokenMintAddress(quoteTokenMintAddress)
     setQuoteTokenMintAddress(baseTokenMintAddress)
 
     setBaseTokenAddressFromSeveral(selectedQuoteTokenAddressFromSeveral)
     setQuoteTokenAddressFromSeveral(selectedBaseTokenAddressFromSeveral)
 
-    setBaseAmount(quoteAmount)
-    setQuoteAmount(baseAmount)
+    await setBaseAmountWithQuote(
+      quoteAmount,
+      selectedPool?.tokenA === quoteTokenMintAddress
+    )
   }
 
   const poolsAmountDiff = isSwapBaseToQuote
@@ -312,10 +298,13 @@ const SwapPage = ({
     ? new PublicKey(userPoolQuoteTokenAccount)
     : null
 
-  const setBaseAmountWithQuote = async (newBaseAmount: string | number) => {
+  const setBaseAmountWithQuote = async (
+    newBaseAmount: string | number,
+    isSwapBaseToQuoteFromArgs?: boolean
+  ) => {
     const swapAmountOut = await getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newBaseAmount,
-      isSwapBaseToQuote,
+      isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
       pool: selectedPool,
       wallet,
       connection,
@@ -324,10 +313,6 @@ const SwapPage = ({
       transferSOLToWrapped,
       allTokensData,
       poolBalances,
-    })
-
-    console.log({
-      swapAmountOut,
     })
 
     setBaseAmount(newBaseAmount)
@@ -421,10 +406,14 @@ const SwapPage = ({
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'0.00'}
+              placeholder={
+                +baseAmount === 0 && +quoteAmount !== 0 && isSelectedPoolStable
+                  ? 'Insufficient Balance'
+                  : '0.00'
+              }
               theme={theme}
               directionFrom={true}
-              value={baseAmount}
+              value={+baseAmount || +quoteAmount === 0 ? baseAmount : ''}
               disabled={
                 !baseTokenMintAddress ||
                 !quoteTokenMintAddress ||
@@ -465,14 +454,18 @@ const SwapPage = ({
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={'0.00'}
+              placeholder={
+                +quoteAmount === 0 && +baseAmount !== 0 && isSelectedPoolStable
+                  ? 'Insufficient Balance'
+                  : '0.00'
+              }
               theme={theme}
               disabled={
                 !baseTokenMintAddress ||
                 !quoteTokenMintAddress ||
                 (!baseTokenMintAddress && !quoteTokenMintAddress)
               }
-              value={quoteAmount}
+              value={+quoteAmount || +baseAmount === 0 ? quoteAmount : ''}
               onChange={setQuoteAmountWithBase}
               symbol={quoteSymbol}
               maxBalance={maxQuoteAmount}
@@ -485,7 +478,7 @@ const SwapPage = ({
 
           {selectedPool && (
             <RowContainer margin={'1rem 2rem'} justify={'space-between'}>
-              <Text color={'#93A0B2'}>Price:</Text>
+              <Text color={'#93A0B2'}>Est. Price:</Text>
               <Text
                 fontSize={'1.5rem'}
                 color={'#53DF11'}
@@ -496,12 +489,14 @@ const SwapPage = ({
                   {baseSymbol}{' '}
                 </Text>
                 ={' '}
-                {isSwapBaseToQuote
-                  ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
-                  : stripDigitPlaces(
-                    +(+poolAmountTokenA / +poolAmountTokenB),
-                    8
-                  )}{' '}
+                {isSelectedPoolStable
+                  ? 1
+                  : isSwapBaseToQuote
+                    ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
+                    : stripDigitPlaces(
+                      +(+poolAmountTokenA / +poolAmountTokenB),
+                      8
+                    )}{' '}
                 <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
                   {quoteSymbol}{' '}
                 </Text>

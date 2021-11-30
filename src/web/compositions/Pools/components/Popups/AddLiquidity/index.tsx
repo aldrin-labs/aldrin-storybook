@@ -1,7 +1,7 @@
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
-  stripDigitPlaces
+  stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
 import Info from '@icons/TooltipImg.svg'
@@ -18,7 +18,7 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   DexTokensPrices,
   PoolInfo,
-  PoolWithOperation
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
@@ -78,7 +78,6 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     quoteTokenAmount: poolAmountTokenB,
   } = poolBalances
 
-
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
 
@@ -95,7 +94,6 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       setQuoteAmount(newQuote)
     }
   }, [poolBalances])
-
 
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
     const quoteAmount = stripDigitPlaces(
@@ -134,13 +132,16 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   const [
     isSelectorForSeveralBaseAddressesOpen,
     setIsSelectorForSeveralBaseAddressesOpen,
-  ] = useState(allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1)
+  ] = useState(
+    allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1
+  )
 
   const [
     isSelectorForSeveralQuoteAddressesOpen,
     setIsSelectorForSeveralQuoteAddressesOpen,
-  ] = useState(allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1)
-
+  ] = useState(
+    allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1
+  )
 
   const [warningChecked, setWarningChecked] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
@@ -258,7 +259,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   )
 
   const farmingAPR =
-    ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+    ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100 || 0
 
   return (
     <DialogWrapper
@@ -364,11 +365,11 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           <Row>
             <Text fontSize={'1.5rem'}>
               {formatNumberToUSFormat(
-                stripDigitPlaces(selectedPool.tvl.tokenA, 2)
+                stripDigitPlaces(poolAmountTokenA, 2)
               )}{' '}
               {getTokenNameByMintAddress(selectedPool.tokenA)} /{' '}
               {formatNumberToUSFormat(
-                stripDigitPlaces(selectedPool.tvl.tokenB, 2)
+                stripDigitPlaces(poolAmountTokenB, 2)
               )}{' '}
               {getTokenNameByMintAddress(selectedPool.tokenB)}
             </Text>
@@ -585,9 +586,6 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   )
 }
 
-
 const WithTheme = withTheme()(AddLiquidityPopup)
 
-export {
-  WithTheme as AddLiquidityPopup
-}
+export { WithTheme as AddLiquidityPopup }

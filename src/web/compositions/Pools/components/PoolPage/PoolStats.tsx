@@ -142,9 +142,10 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
     0
   )
 
+  const feesAPR = pool.apy24h || 0
   const farmingAPR = (((dailyUsdReward * 365) / lpUsdValue) * 100) || 0
 
-  const totalApr = farmingAPR + pool.apy24h
+  const totalApr = farmingAPR + feesAPR
 
   const aprFormatted = formatNumberToUSFormat(stripDigitPlaces(totalApr, 2))
 
