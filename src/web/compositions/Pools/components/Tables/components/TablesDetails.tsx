@@ -411,6 +411,8 @@ export const TablesDetails = ({
                             message: `No farming exists for ${pool.parsedName} pool.`,
                             type: 'error'
                           })
+
+                          return
                         }
 
                         const {

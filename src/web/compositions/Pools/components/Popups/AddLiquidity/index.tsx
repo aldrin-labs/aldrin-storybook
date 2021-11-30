@@ -202,8 +202,8 @@ export const AddLiquidityPopup = ({
     isBaseTokenSOL && isNativeSOLSelected
       ? maxBaseAmount - +baseAmount < 0.1
       : isQuoteTokenSOL && isNativeSOLSelected
-      ? maxQuoteAmount - +quoteAmount < 0.1
-      : false
+        ? maxQuoteAmount - +quoteAmount < 0.1
+        : false
 
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
     selectedPool,
@@ -321,7 +321,7 @@ export const AddLiquidityPopup = ({
       <RowContainer>
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
           Enter the amount of the first coin you wish to add, the second coin
-          will adjust according to the match of a pool ratio.
+          will adjust according to the match of the pool ratio.
         </Text>
       </RowContainer>
       <RowContainer>
@@ -404,7 +404,7 @@ export const AddLiquidityPopup = ({
             </Text>{' '}
             <DarkTooltip
               title={
-                'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h not taking into account the reward for farming.'
+                'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming rewards.'
               }
             >
               <div>
@@ -436,21 +436,21 @@ export const AddLiquidityPopup = ({
       {(isNeedToLeftSomeSOL ||
         baseAmount > maxBaseAmount ||
         quoteAmount > maxQuoteAmount) && (
-        <RowContainer margin={'2rem 0 0 0'}>
-          <AttentionComponent
-            text={
-              isNeedToLeftSomeSOL
-                ? 'Sorry, but you need to leave some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
-                : baseAmount > maxBaseAmount
-                ? `You entered more token ${baseSymbol} amount than you have.`
-                : quoteAmount > maxQuoteAmount
-                ? `You entered more ${quoteSymbol} amount than you have.`
-                : ''
-            }
-            blockHeight={'8rem'}
-          />
-        </RowContainer>
-      )}
+          <RowContainer margin={'2rem 0 0 0'}>
+            <AttentionComponent
+              text={
+                isNeedToLeftSomeSOL
+                  ? 'Sorry, but you need to leave some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
+                  : baseAmount > maxBaseAmount
+                    ? `You entered more token ${baseSymbol} amount than you have.`
+                    : quoteAmount > maxQuoteAmount
+                      ? `You entered more ${quoteSymbol} amount than you have.`
+                      : ''
+              }
+              blockHeight={'8rem'}
+            />
+          </RowContainer>
+        )}
       <RowContainer justify="space-between" margin={'2rem 0 0 0'}>
         <Row
           width={'60%'}
@@ -496,9 +496,8 @@ export const AddLiquidityPopup = ({
               !userQuoteTokenAmount
             ) {
               notify({
-                message: `Sorry, something went wrong with your amount of ${
-                  !userTokenAccountA ? 'tokenA' : 'tokenB'
-                }`,
+                message: `Sorry, something went wrong with your amount of ${!userTokenAccountA ? 'tokenA' : 'tokenB'
+                  }`,
                 type: 'error',
               })
 
@@ -546,8 +545,8 @@ export const AddLiquidityPopup = ({
                 result === 'success'
                   ? 'Deposit successful'
                   : result === 'failed'
-                  ? 'Deposit failed, please try again or contact us in telegram.'
-                  : 'Deposit cancelled',
+                    ? 'Deposit failed, please try again or contact us in telegram.'
+                    : 'Deposit cancelled',
             })
 
             refreshPoolBalances()
@@ -585,7 +584,7 @@ export const AddLiquidityPopup = ({
         tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenA)}
         open={isSelectorForSeveralBaseAddressesOpen}
         close={() => setIsSelectorForSeveralBaseAddressesOpen(false)}
-        selectTokenMintAddress={() => {}}
+        selectTokenMintAddress={() => { }}
         selectTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
       />
       <SelectSeveralAddressesPopup
@@ -593,7 +592,7 @@ export const AddLiquidityPopup = ({
         tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenB)}
         open={isSelectorForSeveralQuoteAddressesOpen}
         close={() => setIsSelectorForSeveralQuoteAddressesOpen(false)}
-        selectTokenMintAddress={() => {}}
+        selectTokenMintAddress={() => { }}
         selectTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
       />
     </DialogWrapper>
