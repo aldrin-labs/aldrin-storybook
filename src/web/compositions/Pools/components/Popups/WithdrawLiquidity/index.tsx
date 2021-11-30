@@ -283,14 +283,20 @@ export const WithdrawalPopup = ({
               return
             }
 
+            if (!userPoolTokenAccount) {
+              notify({
+                message: `No pool token account`,
+                type: 'error',
+              })
+
+              return
+            }
+
             if (
-              !userTokenAccountA ||
-              !userTokenAccountB ||
-              !userPoolTokenAccount ||
               !poolTokenAmountToWithdraw
             ) {
               notify({
-                message: `Sorry, something went wrong with your amount of pool token amount to withdraw`,
+                message: `Something went wrong with your pool token amount to withdraw`,
                 type: 'error',
               })
 

@@ -19,7 +19,10 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { CREATE_FARMING_TICKET_SOL_FEE, MIN_POOL_TOKEN_AMOUNT_TO_STAKE } from '@sb/dexUtils/common/config'
+import {
+  CREATE_FARMING_TICKET_SOL_FEE,
+  MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
+} from '@sb/dexUtils/common/config'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -135,17 +138,24 @@ export const StakePopup = ({
   const farmingAPR =
     ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
 
-  const farmingTokens = selectedPool.farming
-    .map((farmingState, i, arr) => {
-      return `${getTokenNameByMintAddress(farmingState.farmingTokenMint)} ${
-        i !== arr.length - 1 ? 'X ' : ''
-      }`
+  const farmingTokens = [
+    ...new Set(
+      selectedPool.farming.map((farmingState) => farmingState.farmingTokenMint)
+    ),
+  ]
+    .map((farmingTokenMint, i, arr) => {
+      return `${getTokenNameByMintAddress(farmingTokenMint)} ${i !== arr.length - 1 ? 'X ' : ''
+        }`
     })
-    .join(',')
+    .join('')
     .replace(',', '')
 
-  const isLessThanMinPoolTokenAmountToStake = poolTokenAmount < MIN_POOL_TOKEN_AMOUNT_TO_STAKE
-  const isDisabled = isNotEnoughPoolTokens || !poolTokenAmount || isLessThanMinPoolTokenAmountToStake
+  const isLessThanMinPoolTokenAmountToStake =
+    poolTokenAmount < MIN_POOL_TOKEN_AMOUNT_TO_STAKE
+  const isDisabled =
+    isNotEnoughPoolTokens ||
+    !poolTokenAmount ||
+    isLessThanMinPoolTokenAmountToStake
 
   return (
     <DialogWrapper
@@ -225,7 +235,7 @@ export const StakePopup = ({
             <Text style={{ margin: '0 0 1.5rem 0' }}>
               Pool tokens will be locked for{' '}
               <span style={{ color: '#53DF11' }}>
-                {estimatedTime(farmingState.periodLength)}.
+                {estimatedTime(farmingState.periodLength + 20 * 60)}.
               </span>{' '}
             </Text>
             <Text>
@@ -293,8 +303,8 @@ export const StakePopup = ({
                 result === 'success'
                   ? 'Successfully staked.'
                   : result === 'failed'
-                  ? 'Staking failed, please try again later or contact us in telegram.'
-                  : 'Staking cancelled.',
+                    ? 'Staking failed, please try again later or contact us in telegram.'
+                    : 'Staking cancelled.',
             })
 
             const clearPoolWaitingForUpdate = () =>
