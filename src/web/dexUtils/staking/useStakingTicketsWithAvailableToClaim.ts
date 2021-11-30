@@ -38,7 +38,7 @@ export const useStakingTicketsWithAvailableToClaim = ({
 
     getAvailableToClaim()
   }, [
-    allStakingFarmingTickets.length,
+    JSON.stringify(allStakingFarmingTickets),
     refreshCounter,
     JSON.stringify(stakingPool),
     JSON.stringify(snapshotQueues),

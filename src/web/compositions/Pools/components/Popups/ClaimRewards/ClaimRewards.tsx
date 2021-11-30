@@ -8,6 +8,7 @@ import { Text } from '@sb/compositions/Addressbook/index'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
+import GearIcon from '@icons/cogwheel.svg'
 
 import { Button } from '../../Tables/index.styles'
 import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
@@ -24,6 +25,8 @@ import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingSta
 import { RIN_MINT } from '@sb/dexUtils/utils'
 import LightLogo from '@icons/lightLogo.svg'
 import { COLORS } from '@variables/variables'
+import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import AttentionComponent from '@sb/components/AttentionBlock'
 
 interface ClaimRewardProps {
   theme: Theme
@@ -98,6 +101,7 @@ const Popup = (props: ClaimRewardProps) => {
         farmingTickets,
         snapshotQueues,
         signAllTransactions,
+        programAddress: programId
       })
 
       notify({
@@ -120,7 +124,6 @@ const Popup = (props: ClaimRewardProps) => {
           clearPoolWaitingForUpdate()
           if (callback) {
             await callback()
-
             await close()
           }
         }, 7500)
@@ -137,7 +140,7 @@ const Popup = (props: ClaimRewardProps) => {
     }
 
     if (result !== 'blockhash_outdated') {
-      if (isFarmingRIN) {
+      if (isFarmingRIN && programId !== STAKING_PROGRAM_ADDRESS) {
         setIsProposeToStakePopupOpen(true)
       }
 
@@ -163,6 +166,13 @@ const Popup = (props: ClaimRewardProps) => {
       <RowContainer justify={'space-between'} width={'100%'}>
         <BoldHeader style={{ fontSize: '3rem' }}>Claim Rewards</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+      </RowContainer>
+      <RowContainer margin={'0 0 3rem 0'}>
+        <AttentionComponent
+          header={`The issue below is currently being fixed.`}
+          text={'You can wait approx few weeks and claim rewards without any issues then.'}
+          blockHeight={'9rem'}
+          iconSrc={GearIcon} />
       </RowContainer>
       <RowContainer justify="flex-start" wrap={'nowrap'}>
         <SvgIcon

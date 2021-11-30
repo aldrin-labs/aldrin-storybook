@@ -96,11 +96,16 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     365 *
     100
 
-  const dailyRewards =
+  const treasuryDailyRewards =
     (currentFarmingState.tokensPerPeriod / STAKING_FARMING_TOKEN_DIVIDER) *
     (dayDuration / currentFarmingState.periodLength)
 
-  const treasuryAPR = (dailyRewards / totalStaked) * 365 * 100
+  const buyBackDailyRewards =
+    buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK
+
+  const dailyRewards = treasuryDailyRewards + buyBackDailyRewards
+
+  const treasuryAPR = (treasuryDailyRewards / totalStaked) * 365 * 100
 
   const formattedBuyBackAPR = isFinite(buyBackAPR)
     ? stripByAmount(buyBackAPR, 2)

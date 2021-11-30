@@ -14,6 +14,7 @@ import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { PublicKey } from '@solana/web3.js'
+import dayjs from 'dayjs'
 import React from 'react'
 import { compose } from 'recompose'
 import { Cell } from '../../../components/Layout'
@@ -98,10 +99,17 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    variables: () => ({
-      timestampFrom:
-        endOfHourTimestamp() - dayDuration * DAYS_TO_CHECK_BUY_BACK,
-      timestampTo: endOfHourTimestamp(),
-    }),
+    variables: () => {
+      // we're using endOfDay only for first day of staking with buy back
+      // TODO: remove it once we'll have records for more than one day
+      const endOfDay = dayjs()
+        .endOf('day')
+        .unix()
+
+      return {
+        timestampFrom: endOfDay - dayDuration * DAYS_TO_CHECK_BUY_BACK,
+        timestampTo: endOfDay,
+      }
+    },
   })
 )(StakingComponent)

@@ -36,8 +36,8 @@ export async function redeemBasket({
   curveType: number | null
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
-  userBaseTokenAccount: PublicKey
-  userQuoteTokenAccount: PublicKey
+  userBaseTokenAccount: PublicKey | null
+  userQuoteTokenAccount: PublicKey | null
   userPoolTokenAmount: number
 }) {
   const program = ProgramsMultiton.getProgramByAddress({
@@ -120,6 +120,32 @@ export async function redeemBasket({
     commonSigners.push(wrappedAccount)
 
     transactionAfterWithdraw.add(closeAccountTransaction)
+  }
+
+  if (!userBaseTokenAccount) {
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      wallet,
+      mintPublicKey: new PublicKey(baseTokenMint),
+    })
+
+    userBaseTokenAccount = newAccountPubkey
+    transactionBeforeWithdraw.add(createAccountTransaction)
+  }
+
+  if (!userQuoteTokenAccount) {
+    const {
+      transaction: createAccountTransaction,
+      newAccountPubkey,
+    } = await createTokenAccountTransaction({
+      wallet,
+      mintPublicKey: new PublicKey(quoteTokenMint),
+    })
+
+    userQuoteTokenAccount = newAccountPubkey
+    transactionBeforeWithdraw.add(createAccountTransaction)
   }
 
   let commonTransaction = new Transaction()
