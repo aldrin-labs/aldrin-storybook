@@ -63,6 +63,9 @@ import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiVal
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { BUY_BACK_RIN_ACCOUNT_ADDRESS } from '@sb/dexUtils/staking/config'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
+import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
+import { daysInMonth } from '@core/utils/dateUtils'
+import dayjs from 'dayjs'
 
 interface UserBalanceProps {
   value: number
@@ -325,6 +328,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     setIsLoading(!isLoading)
   }, [isLoading])
 
+  const claimUnlockDataTimestamp = dayjs.unix(currentFarmingState.startTime + dayDuration * daysInMonth)
+  const claimUnlockDtata =  dayjs(claimUnlockDataTimestamp).format("D-MMMM-YYYY").replaceAll('-', ' ')
+
+
   return (
     <>
       <BlockContent border>
@@ -437,7 +444,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                             each month, you will be able to claim your reward
                             for this period on{' '}
                             <span style={{ color: COLORS.success }}>
-                              27 November 2021.
+                              {claimUnlockDtata}.
                             </span>
                           </p>
                         )
