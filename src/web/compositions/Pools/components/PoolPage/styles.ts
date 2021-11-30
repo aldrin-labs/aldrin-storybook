@@ -258,7 +258,7 @@ export const FarmingBlock = styled(LiquidityBlock)`
     margin-top: 0;
     border-top: 0;
     padding-top: 0px;
-    flex-direction: row;
+   
 
     &:before {
       left: -30px;
@@ -266,6 +266,11 @@ export const FarmingBlock = styled(LiquidityBlock)`
     }
     
   }
+`
+
+export const FarmingBlockInner = styled.div`
+  display: flex;
+  flex-direction: row;
 `
 
 export const LiquidityTitle = styled(PoolStatsTitle)`
@@ -301,8 +306,6 @@ export const LiquidityButton = styled(Button)`
   margin-top: 20px;
 `
 
-
-
 export const FarmingButton = styled(LiquidityButton)`
   width: 110px;
   margin-top: 0;
@@ -314,6 +317,13 @@ export const FarmingButtonWrap = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
+`
+
+export const ExtendFarmingButton = styled(FarmingButton)`
+  width: auto;
+  max-width: 380px;
+  flex: 1;
+  margin-right: 20px;
 `
 
 

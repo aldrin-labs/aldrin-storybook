@@ -1,10 +1,9 @@
-import styled from 'styled-components'
-import { Flex } from '@sb/components/Layout'
-import { Button } from '@sb/components/Button'
 import { BlockContent } from '@sb/components/Block'
+import { Button } from '@sb/components/Button'
+import { Flex } from '@sb/components/Layout'
 import { Text } from '@sb/components/Typography'
-import { InputField, Input } from '../../../../../components/Input'
-import { COLORS } from '../../../../../../variables/variables'
+import { COLORS, BORDER_RADIUS } from '@variables/variables'
+import styled from 'styled-components'
 
 export const Title = styled.span`
   font-size: 32px;
@@ -17,7 +16,7 @@ export const Title = styled.span`
 `
 
 export const Footer = styled(Flex)`
-  margin: 20px 0 0 0;
+  margin: 30px 0 0 0;
   flex-direction: row;
 
   ${Button} {
@@ -70,8 +69,14 @@ export const CheckboxWrap = styled.div`
   align-items: center;
 `
 
+export const RadioGroupContainer = styled(Flex)`
+  align-items: center;
+  min-height: 72px;
+  margin-bottom: auto;
+`
+
 export const Error = styled(Text)`
-  margin: 20px 0;
+  margin: 5px 0;
 `
 
 export const InputAppendContainer = styled.div`
@@ -97,12 +102,63 @@ export const Centered = styled.div`
   padding: 5px 0;
 `
 
-export const NumberInputField = styled(InputField)`
+export const NumberInputContainer = styled.div`
   flex: 1;
   margin-left: 10px;
+
+  &:first-child {
+    margin-left: 0;
+  }
 `
 
-export const NumberInput = styled(Input)`
-  flex: 1;
-  margin-left: 10px;
+interface ConfirmationBlockProps {
+  border?: boolean
+}
+
+export const ConfirmationBlock = styled.div<ConfirmationBlockProps>`
+  padding: 10px 24px;
+  ${(props: ConfirmationBlockProps) => props.border ? `
+  border-radius: ${BORDER_RADIUS.lg};
+  border: 1px solid ${COLORS.border};
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.45);
+  ` : ''}
+`
+// export const ConfirmationBlock = styled.div``
+
+export const ConfirmationRow =  styled(Flex)`
+  padding: 10px 0;
+  justify-content: space-between;
+  align-items: center;
+`
+
+export const SvgIconContainer = styled.span`
+  padding-left: 6px;
+  position: relative;
+  top: 2px;
+`
+
+export const Warning = styled(Flex)`
+  padding: 22px 44px;
+  margin-bottom: 20px;
+  background: ${COLORS.warningDark};
+  border-radius: ${BORDER_RADIUS.lg};
+`
+
+export const WarningIcon = styled.div`
+  margin-right: 20px;
+`
+
+export const PoolProcessingBlock = styled(BlockContent)`
+  width: 100vw;
+  max-width: 400px;
+`
+export const PoolProcessingContent = styled(Flex)`
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+export const PoolProcessingButton = styled(Button)`
+  margin-top: 40px;
 `

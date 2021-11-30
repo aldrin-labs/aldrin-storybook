@@ -63,7 +63,6 @@ interface TableSwitcherProps {
 
 const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
   const {
-    theme,
     getPoolsInfoQuery: { getPoolsInfo: pools = [] },
     getDexTokensPricesQuery: { getDexTokensPrices = [] },
     getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
@@ -71,6 +70,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     getWeeklyAndDailyTradingVolumesForPoolsQuery
   } = props
 
+  const [createPoolModalOpened, setCreatePoolModalOpened] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [selectedTable, setSelectedTable] = useState<'all' | 'userLiquidity'>(
     'all'
@@ -265,7 +265,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
             >
               <SvgIcon src={PlusIcon} width={'1.2em'} />
             </AddPoolButton>
-            <Button onClick={onPoolCreateClick}>ADD POOL</Button>
+            <Button onClick={() => setCreatePoolModalOpened(true)}>ADD POOL</Button>
             <a
               style={{ textDecoration: 'none' }}
               href={AMMAudit}
@@ -321,7 +321,8 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
           snapshotQueues={snapshotQueues}
         />
       </Route>
-      <CreatePoolModal onClose={() => { }} />
+      {createPoolModalOpened && <CreatePoolModal onClose={() => setCreatePoolModalOpened(false)} />}
+
     </Block>
   )
 }

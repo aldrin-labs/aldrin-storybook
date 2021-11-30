@@ -116,7 +116,7 @@ export const LeftBlock = styled(StretchedBlock)`
   justify-content: flex-start;
 `
 
-type Alignment = 'normal' | 'center' | 'flex-start' | 'end' | 'flex-start' | 'flex-end' | 'left' | 'right'
+type Alignment = 'normal' | 'center' | 'flex-start' | 'end' | 'flex-start' | 'flex-end' | 'left' | 'right' | 'space-between'
 
 export interface FlexBlockProps {
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse'
@@ -128,7 +128,7 @@ export const Flex = styled.div`
   display: flex;
 `
 
-export const FlexBlock = styled(Flex)<FlexBlockProps>`
+export const FlexBlock = styled(Flex) <FlexBlockProps>`
   flex-direction: ${(props: FlexBlockProps) => props.direction || 'row'};
   justify-content: ${(props: FlexBlockProps) => props.justifyContent || 'normal'};
   align-items: ${(props: FlexBlockProps) => props.alignItems || 'normal'};

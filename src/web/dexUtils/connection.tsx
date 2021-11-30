@@ -56,6 +56,10 @@ export function useConnection(): Connection {
   return useContext(ConnectionContext).connection
 }
 
+export function useMultiEndpointConnection(): MultiEndpointsConnection {
+  return useContext(ConnectionContext).connection
+}
+
 export function useSerumConnection(): Connection {
   return useContext(ConnectionContext).serumConnection as unknown as Connection
 }

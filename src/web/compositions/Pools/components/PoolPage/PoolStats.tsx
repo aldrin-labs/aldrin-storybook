@@ -9,16 +9,15 @@ import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPr
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import React from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { DexTokensPrices, FeesEarned, PoolInfo, TradingVolumeStats } from '../../index.types'
+import { FarmingRewards } from '../FarminRewards'
 import { getFarmingStateDailyFarmingValue } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
-import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 import SwapIcon from './icons/swapIcon.svg'
 import {
   ButtonsContainer,
   FarmingData,
-  FarmingDataIcons,
-  FarmingIconWrap, PoolInfoBlock,
+  PoolInfoBlock,
   PoolName, PoolRow, PoolStatsData,
   PoolStatsRow, PoolStatsText,
   PoolStatsTitle,
@@ -27,8 +26,6 @@ import {
   SwapButtonIcon, TokenIcons,
   TokenNames, TokenSymbols
 } from './styles'
-import { FarmingRewards } from '../FarminRewards'
-
 
 interface PoolStatsProps {
   title: React.ReactNode

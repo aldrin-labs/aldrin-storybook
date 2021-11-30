@@ -74,6 +74,6 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
     </>
     :
     <div>
-      <PoolStatsText>Ended</PoolStatsText>
+      <PoolStatsText>No farming</PoolStatsText>
     </div>
 }

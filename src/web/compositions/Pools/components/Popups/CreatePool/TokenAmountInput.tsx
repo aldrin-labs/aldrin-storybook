@@ -1,30 +1,36 @@
-import React from 'react'
-import { InputField, INPUT_FORMATTERS } from '@sb/components/Input'
+import React, { ReactNode } from 'react'
+import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
 import { InputAppendContainer, TokensAvailableText } from './styles'
 import { InlineText } from '@sb/components/Typography'
 import { TokenIconWithName } from '@sb/components/TokenIcon'
 
-interface TokenAmountInputProps {
+interface TokenAmountInputFieldProps {
   name: string
   available?: number
   mint: string
-  setFieldValue?: (field: string, value: any) => Promise<any>;
+  setFieldValue?: (field: string, value: any) => void
+  disabled?: boolean
 }
 
-export const validateNumber = (v?: number) => {
-  if ((v || 0) <= 0) {
+export const validateNumber = (v?: number, max?: number) => {
+  const value = v || 0
+  if (typeof max !== 'undefined' && value > max) {
+    return 'Entered value greater than available balance.'
+  }
+  if (value <= 0) {
     return 'Wrong value'
   }
   return
 }
 
-export const TokenAmountInput: React.FC<TokenAmountInputProps> = (props) => {
-  const { name, available, setFieldValue, mint } = props
+export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (props) => {
+  const { name, available, setFieldValue, mint, disabled = false } = props
   return (
     <InputField
       borderRadius="lg"
       variant="outline"
       name={name}
+      disabled={disabled}
       append={
         <InputAppendContainer>
           <div>
@@ -41,7 +47,36 @@ export const TokenAmountInput: React.FC<TokenAmountInputProps> = (props) => {
         </InputAppendContainer>
       }
       formatter={INPUT_FORMATTERS.DECIMAL}
-      validate={validateNumber}
+      validate={(v) => validateNumber(v, available)}
+    />
+  )
+}
+
+
+interface TokenAmountInputProps {
+  name: string
+  mint: string
+  value: ReactNode
+}
+
+
+export const TokenAmountInput: React.FC<TokenAmountInputProps> = (props) => {
+  const { name, mint, value } = props
+  return (
+    <Input
+      onChange={() => { }}
+      borderRadius="lg"
+      variant="outline"
+      name={name}
+      value={value}
+      disabled
+      append={
+        <InputAppendContainer>
+          <TokenIconWithName mint={mint} />
+        </InputAppendContainer>
+      }
+      formatter={INPUT_FORMATTERS.DECIMAL}
+
     />
   )
 }

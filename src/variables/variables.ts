@@ -26,6 +26,8 @@ export const COLORS = {
   navLinkActive: 'rgb(209, 221, 239)',
   primaryWhite: '#F8FAFF',
   tableHover: '#383a3d',
+  warning: '#F29C38',
+  warningDark: 'rgb(132, 97, 56)',
 }
 
 export const BORDER_RADIUS = {

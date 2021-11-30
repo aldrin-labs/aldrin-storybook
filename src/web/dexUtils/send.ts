@@ -47,6 +47,7 @@ import { getReferrerQuoteWallet } from './getReferrerQuoteWallet'
 import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
 import { notify } from './notifications'
 import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
+import MultiEndpointsConnection from './MultiEndpointsConnection'
 
 const getNotificationText = ({
   baseSymbol = 'CCAI',
@@ -1025,6 +1026,31 @@ export const sendSignedTransaction = async ({
 export const isTransactionFailed = (result: SendSignedTransactionResult) =>
   result === 'failed' || result === 'timeout'
 
+export const sendAndWaitSignedTransaction = async (
+  signedTransaction: Transaction,
+  connection: MultiEndpointsConnection,
+  timeout = 60_000
+) => {
+  const txid = await connection
+    .getConnection()
+    .sendRawTransaction(signedTransaction.serialize(), { skipPreflight: true })
+
+  const txResult = await waitForTransactionConfirmation({
+    txid,
+    timeout,
+    connection: connection.getConnection(),
+    showErrorForTimeout: true,
+  })
+
+  console.log('txResult: ', txResult)
+
+  if (!txResult) {
+    throw new Error(`Transaction failed: ${txid}`)
+  }
+
+  return txid
+}
+
 export const waitForTransactionConfirmation = async ({
   txid,
   timeout,
@@ -1047,6 +1073,7 @@ export const waitForTransactionConfirmation = async ({
     })
 
     console.log('sendTransaction resultOfSignature', resultOfSignature)
+    return true
   } catch (err) {
     console.log('sendTransaction error', err)
     if (err.timeout && !showErrorForTimeout) {
@@ -1072,9 +1099,7 @@ export const waitForTransactionConfirmation = async ({
     })
 
     if (err.timeout) return 'timeout'
-    return null
-  } finally {
-    return true
+    return false
   }
 
 }

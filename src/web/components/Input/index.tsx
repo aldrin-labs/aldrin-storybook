@@ -33,6 +33,7 @@ export const InputWrap = styled.div<WrapProps>`
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
+  flex: 1;
   border-radius: ${(props: WrapProps) => BORDER_RADIUS[props.$borderRadius]};
 
   ${(props: WrapProps) => VARIANTS[props.$variant]}
@@ -77,7 +78,6 @@ interface InputBase {
 export interface InputProps extends InputBase {
   value?: string
   onChange: (e: string) => void
-
 }
 
 export const INPUT_FORMATTERS = {
