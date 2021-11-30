@@ -31,6 +31,7 @@ import { COLORS } from '@variables/variables'
 interface ClaimRewardProps {
   theme: Theme
   programId?: string
+  open: boolean
   selectedPool: PoolInfo | StakingPool
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
@@ -38,12 +39,12 @@ interface ClaimRewardProps {
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  callback?: () => void
 }
 
 const Popup = (props: ClaimRewardProps) => {
   const {
     theme,
+    open,
     programId,
     selectedPool,
     allTokensData,
@@ -52,7 +53,6 @@ const Popup = (props: ClaimRewardProps) => {
     close,
     refreshTokensWithFarmingTickets,
     setPoolWaitingForUpdateAfterOperation,
-    callback,
   } = props
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -113,7 +113,7 @@ const Popup = (props: ClaimRewardProps) => {
         farmingTickets,
         snapshotQueues,
         signAllTransactions,
-        programAddress: programId
+        programAddress: programId,
       })
 
       notify({
@@ -127,21 +127,6 @@ const Popup = (props: ClaimRewardProps) => {
                 ? 'Claim rewards cancelled.'
                 : 'Blockhash outdated, please claim rest rewards in a few seconds.',
       })
-
-      if (result === 'cancelled') {
-        clearPoolWaitingForUpdate()
-      } else {
-        setTimeout(async () => {
-          refreshTokensWithFarmingTickets()
-          clearPoolWaitingForUpdate()
-          if (callback) {
-            await callback()
-            await close()
-          }
-        }, 7500)
-
-        setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
-      }
     } catch (e) {
       clearPoolWaitingForUpdate()
       close()
@@ -151,16 +136,35 @@ const Popup = (props: ClaimRewardProps) => {
       }, 7500)
     }
 
-    if (result !== 'blockhash_outdated') {
-      if (isFarmingRIN && programId !== STAKING_PROGRAM_ADDRESS) {
-        setIsProposeToStakePopupOpen(true)
+    switch (result) {
+      // if blockhash outdated - update data & ask user to try again (and update blockhash via new sign)
+      case 'blockhash_outdated': {
+        setShowRetryMessage(true)
+        break
       }
-
-      if (!callback) {
+      // for cancelled - close right away
+      case 'cancelled': {
+        clearPoolWaitingForUpdate()
         close()
+        break
       }
-    } else {
-      setShowRetryMessage(true)
+      // otherwise update data
+      default: {
+        setTimeout(async () => {
+          refreshTokensWithFarmingTickets()
+          clearPoolWaitingForUpdate()
+        }, 7500)
+
+        setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+
+        // show restake popup for not staking claim and if farmed rin
+        if (isFarmingRIN && programId !== STAKING_PROGRAM_ADDRESS) {
+          setIsProposeToStakePopupOpen(true)
+        } else {
+          close()
+        }
+        break;
+      }
     }
   }
 
@@ -172,7 +176,7 @@ const Popup = (props: ClaimRewardProps) => {
       onClose={close}
       onEnter={() => { }}
       maxWidth={'md'}
-      open
+      open={open}
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
@@ -182,9 +186,12 @@ const Popup = (props: ClaimRewardProps) => {
       <RowContainer margin={'0 0 3rem 0'}>
         <AttentionComponent
           header={`The issue below is currently being fixed.`}
-          text={'You can wait approx few weeks and claim rewards without any issues then.'}
+          text={
+            'You can wait approx few weeks and claim rewards without any issues then.'
+          }
           blockHeight={'9rem'}
-          iconSrc={GearIcon} />
+          iconSrc={GearIcon}
+        />
       </RowContainer>
       <RowContainer justify="flex-start" wrap={'nowrap'}>
         <SvgIcon
@@ -256,6 +263,5 @@ const Popup = (props: ClaimRewardProps) => {
     </DialogWrapper>
   )
 }
-
 
 export const ClaimRewards = withTheme()(Popup)
