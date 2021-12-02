@@ -19,7 +19,7 @@ import { PublicKey } from '@solana/web3.js'
 import dayjs from 'dayjs'
 import React from 'react'
 import { compose } from 'recompose'
-import { Cell } from '../../../components/Layout'
+import { Cell } from '@sb/components/Layout'
 import { RootRow } from '../styles'
 
 import StatsComponent from './StatsComponent'
