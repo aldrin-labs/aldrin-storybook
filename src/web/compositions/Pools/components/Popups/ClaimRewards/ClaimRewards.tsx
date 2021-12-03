@@ -26,6 +26,7 @@ import { RIN_MINT } from '@sb/dexUtils/utils'
 import LightLogo from '@icons/lightLogo.svg'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import AttentionComponent from '@sb/components/AttentionBlock'
+import { WithdrawStakedParams } from '@sb/dexUtils/staking/withdrawStaked'
 
 export const ClaimRewards = ({
   theme,
@@ -39,6 +40,7 @@ export const ClaimRewards = ({
   setPoolWaitingForUpdateAfterOperation,
   programId,
   callback,
+  withdrawFunction = withdrawFarmed,
 }: {
   theme: Theme
   open: boolean
@@ -51,6 +53,7 @@ export const ClaimRewards = ({
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   programId: string
   callback?: () => void
+  withdrawFunction?: (params: WithdrawStakedParams) => Promise<string>
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -93,7 +96,7 @@ export const ClaimRewards = ({
     let result = null
 
     try {
-      result = await withdrawFarmed({
+      result = await withdrawFunction({
         wallet,
         connection,
         pool: selectedPool,
@@ -123,8 +126,8 @@ export const ClaimRewards = ({
           refreshTokensWithFarmingTickets()
           clearPoolWaitingForUpdate()
           if (callback) {
-            await callback()
-            await close()
+            callback()
+            close()
           }
         }, 7500)
 

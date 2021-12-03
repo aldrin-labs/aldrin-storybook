@@ -12,10 +12,15 @@ import { NUMBER_OF_RETRIES } from '../common'
 import { notify } from '../notifications'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction } from '../send'
+import { isTransactionFailed, sendTransaction, signTransactions, sendPartOfTransactions } from '../send'
 import { WalletAdapter } from '../types'
 import { STAKING_FARMING_TOKEN_DECIMALS } from './config'
 import { StakingPool } from './types'
+import { FarmingTicket } from '../common/types'
+import { endStakingInstructions } from './endStaking'
+import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
+import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
+import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
 
 interface StartStakingParams {
   wallet: WalletAdapter
@@ -23,6 +28,7 @@ interface StartStakingParams {
   amount: number
   userPoolTokenAccount: PublicKey
   stakingPool: StakingPool
+  farmingTickets: FarmingTicket[]
 }
 
 export const startStaking = async (params: StartStakingParams) => {
@@ -32,6 +38,7 @@ export const startStaking = async (params: StartStakingParams) => {
     amount,
     userPoolTokenAccount,
     stakingPool,
+    farmingTickets,
   } = params
 
   const program = ProgramsMultiton.getProgramByAddress({
@@ -40,13 +47,33 @@ export const startStaking = async (params: StartStakingParams) => {
     programAddress: STAKING_PROGRAM_ADDRESS,
   })
 
+  const instructionChunks = await endStakingInstructions(params)
+
+  const farmingState = getCurrentFarmingStateFromAll(stakingPool.farming)
+
+  const openTickets = getTicketsAvailableToClose(
+    {
+      farmingState,
+      tickets: filterOpenFarmingTickets(farmingTickets),
+    }
+  )
+
+
+  const totalTokens = openTickets.reduce((acc, ticket) => acc.add(new BN(`${ticket.tokensFrozen}`)), new BN(0))
+
+  const endFarmingTransactions = instructionChunks.map((instr) => new Transaction().add(...instr))
+
+  const totalToStake = totalTokens.add(new BN(amount * 10 ** STAKING_FARMING_TOKEN_DECIMALS))
+
+  console.log('totalToStake: ', totalToStake.toString())
+
   const farmingTicket = Keypair.generate()
   const farmingTicketInstruction = await program.account.farmingTicket.createInstruction(
     farmingTicket
   )
 
   const startStakingTransaction = await program.instruction.startFarming(
-    new BN(amount * 10 ** STAKING_FARMING_TOKEN_DECIMALS),
+    totalToStake,
     {
       accounts: {
         pool: new PublicKey(stakingPool.swapToken),
@@ -63,45 +90,51 @@ export const startStaking = async (params: StartStakingParams) => {
     }
   )
 
+  const farmingCalc = Keypair.generate()
+
   const commonTransaction = new Transaction()
-  const commonSigners = []
-
-  commonSigners.push(farmingTicket)
-  commonTransaction.add(farmingTicketInstruction)
-  commonTransaction.add(startStakingTransaction)
-
-  let counter = 0
-  while (counter < NUMBER_OF_RETRIES) {
-    try {
-      if (counter > 0) {
-        notify({
-          type: 'error',
-          message: 'Staking failed. Please confirm transaction again.',
-        })
+    .add(farmingTicketInstruction)
+    .add(startStakingTransaction)
+    .add(await program.account.farmingCalc.createInstruction(farmingCalc))
+    .add(await program.instruction.initializeFarmingCalc(
+      {
+        accounts: {
+          farmingCalc: farmingCalc.publicKey,
+          farmingTicket: farmingTicket.publicKey,
+          farmingState: new PublicKey(stakingPool.farming[0].farmingState),
+          userKey: wallet.publicKey,
+          initializer: wallet.publicKey,
+          rent: SYSVAR_RENT_PUBKEY,
+        }
       }
+    ))
+  const commonSigners = [farmingCalc, farmingTicket]
 
-      const tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction: commonTransaction,
-        signers: commonSigners,
-        focusPopup: true,
-      })
+  try {
+    const signedTransactions = await signTransactions({
+      transactionsAndSigners: [
+        ...endFarmingTransactions.map((transaction) => ({ transaction, signers: [] })),
+        { transaction: commonTransaction, signers: commonSigners }
+      ],
+      wallet,
+      connection,
+    })
 
-      if (!isTransactionFailed(tx)) {
-        return 'success'
-      } else {
-        counter++
-      }
-    } catch (e) {
-      console.log('start farming catch error', e)
-      counter++
 
-      if (e.message.includes('cancelled')) {
-        return 'cancelled'
+
+    for (let transaction of signedTransactions) {
+      const result = await sendPartOfTransactions(connection, transaction)
+      if (result !== 'success') {
+        return result
       }
     }
+
+    return 'success'
+  } catch (e) {
+    console.warn('Error sign or send transaction: ', e)
+    return 'failed'
   }
 
-  return 'failed'
+
+
 }

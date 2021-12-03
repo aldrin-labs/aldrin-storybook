@@ -200,6 +200,11 @@
           "isSigner": false
         },
         {
+          "name": "userKey",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "farmingState",
           "isMut": false,
           "isSigner": false
@@ -231,7 +236,7 @@
           "isSigner": false
         },
         {
-          "name": "userKey",
+          "name": "signer",
           "isMut": false,
           "isSigner": true
         },
@@ -752,11 +757,15 @@
         "kind": "struct",
         "fields": [
           {
+            "name": "farmingState",
+            "type": "publicKey"
+          },
+          {
             "name": "farmingTicket",
             "type": "publicKey"
           },
           {
-            "name": "farmingState",
+            "name": "userKey",
             "type": "publicKey"
           },
           {
@@ -908,6 +917,11 @@
       "code": 320,
       "name": "NonZeroOutstandingBalance",
       "msg": "Cannot close farming calc while it's not empty"
+    },
+    {
+      "code": 321,
+      "name": "NoNewSnapshotsProcessed",
+      "msg": "No new snapshots can be processed for this ticket for this farming"
     }
   ]
 }

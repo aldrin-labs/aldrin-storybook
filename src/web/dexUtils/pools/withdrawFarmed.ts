@@ -10,6 +10,7 @@ import {
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
+  WithdrawStakeParams,
 } from '@solana/web3.js'
 
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
@@ -33,7 +34,7 @@ import BN from 'bn.js'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 import { sleep } from '../utils'
 import { getRandomInt } from '@core/utils/helpers'
-import { StakingPool } from '../staking/types'
+import { WithdrawStakedParams } from '../staking/withdrawStaked'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -44,16 +45,7 @@ export const withdrawFarmed = async ({
   pool,
   programAddress = POOLS_PROGRAM_ADDRESS,
   signAllTransactions,
-}: {
-  wallet: WalletAdapter
-  connection: Connection
-  allTokensData: TokenInfo[]
-  farmingTickets: FarmingTicket[]
-  pool: PoolInfo | StakingPool
-  programAddress?: string
-  snapshotQueues: SnapshotQueue[]
-  signAllTransactions: boolean
-}) => {
+}: WithdrawStakedParams) => {
   if (!wallet.publicKey) return 'failed'
 
   const program = ProgramsMultiton.getProgramByAddress({

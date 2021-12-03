@@ -78,7 +78,7 @@ const getNotificationText = ({
         1
       )} order placed.`,
       `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed${
-        orderType === 'market' ? '' : ` at ${price} ${quoteSymbol}`
+      orderType === 'market' ? '' : ` at ${price} ${quoteSymbol}`
       }.`,
     ],
     cancelOrder: [
@@ -88,9 +88,9 @@ const getNotificationText = ({
     settleFunds: [
       `Funds Settled.`,
       `${
-        baseUnsettled > 0 && quoteUnsettled > 0
-          ? `${baseSettleText} and ${quoteSettleText}`
-          : baseUnsettled > 0
+      baseUnsettled > 0 && quoteUnsettled > 0
+        ? `${baseSettleText} and ${quoteSettleText}`
+        : baseUnsettled > 0
           ? baseSettleText
           : quoteSettleText
       } has been successfully settled in your wallet.`,
@@ -909,6 +909,7 @@ export const sendSignedTransaction = async ({
   timeout = DEFAULT_TIMEOUT,
   operationType,
   params,
+  showNotification = true
 }: SendSignedTransactionParams): AsyncSendSignedTransactionResult => {
   const rawTransaction = transaction.serialize()
 
@@ -918,53 +919,55 @@ export const sendSignedTransaction = async ({
     skipPreflight: true,
   })
 
-  if (operationType) {
-    const [title, text] = getNotificationText({
-      baseSymbol: params?.baseSymbol || '',
-      quoteSymbol: params?.quoteSymbol || '',
-      quoteUnsettled: params?.quoteUnsettled || 0,
-      baseUnsettled: params?.baseUnsettled || 0,
-      price: params?.price || 0,
-      amount: params?.amount || 0,
-      side: params?.side || '',
-      orderType: params?.orderType || 'limit',
-      operationType,
-    })
+  if (showNotification) {
+    if (operationType) {
+      const [title, text] = getNotificationText({
+        baseSymbol: params?.baseSymbol || '',
+        quoteSymbol: params?.quoteSymbol || '',
+        quoteUnsettled: params?.quoteUnsettled || 0,
+        baseUnsettled: params?.baseUnsettled || 0,
+        price: params?.price || 0,
+        amount: params?.amount || 0,
+        side: params?.side || '',
+        orderType: params?.orderType || 'limit',
+        operationType,
+      })
 
-    notify({
-      message: title,
-      description: text,
-      type: 'success',
-      txid,
-    })
-  } else {
-    notify({
-      message: sentMessage,
-      type: 'success',
-      txid,
-    })
+      notify({
+        message: title,
+        description: text,
+        type: 'success',
+        txid,
+      })
+    } else {
+      notify({
+        message: sentMessage,
+        type: 'success',
+        txid,
+      })
+    }
   }
 
   console.log('Started awaiting confirmation for', txid)
 
   let done = false
     // TODO
-  ;(async () => {
-    while (!done && getUnixTs() - startTime < timeout) {
-      const resultOfSendingConfirm = connection.sendRawTransaction(
-        rawTransaction,
-        {
-          skipPreflight: true,
-        }
-      )
+    ; (async () => {
+      while (!done && getUnixTs() - startTime < timeout) {
+        const resultOfSendingConfirm = connection.sendRawTransaction(
+          rawTransaction,
+          {
+            skipPreflight: true,
+          }
+        )
 
-      console.log(
-        'sendTransaction resultOfSendingConfirm',
-        resultOfSendingConfirm
-      )
-      await sleep(1200)
-    }
-  })()
+        console.log(
+          'sendTransaction resultOfSendingConfirm',
+          resultOfSendingConfirm
+        )
+        await sleep(1200)
+      }
+    })()
 
   const rawConnection = getConnectionFromMultiConnections({
     connection,
@@ -1068,7 +1071,7 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
         err
       )}`,
     })
-    
+
     if (err.timeout) return 'timeout'
     return null
   }
@@ -1089,7 +1092,7 @@ async function awaitTransactionSignatureConfirmation({
 }) {
   let done = false
   const result = await new Promise((resolve, reject) => {
-    ;(async () => {
+    ; (async () => {
       setTimeout(() => {
         if (done) {
           return
@@ -1119,7 +1122,7 @@ async function awaitTransactionSignatureConfirmation({
       }
       while (!done) {
         // eslint-disable-next-line no-loop-func
-        ;(async () => {
+        ; (async () => {
           const rpcProvider = getProviderNameFromUrl({
             rawConnection: connection,
           })
@@ -1203,4 +1206,27 @@ async function simulateTransaction(
     throw new Error(`failed to simulate transaction: ${res.error.message}`)
   }
   return res.result
+}
+
+
+
+export const sendPartOfTransactions = async (connection: Connection, transaction: Transaction) => {
+  try {
+    const tx = await sendSignedTransaction({
+      connection,
+      transaction,
+    })
+
+    if (isTransactionFailed(tx)) {
+      return 'failed'
+    }
+  } catch (e) {
+    console.log('end farming catch error', e)
+
+    if (e.message.includes('cancelled')) {
+      return 'cancelled'
+    }
+  }
+
+  return 'success'
 }
