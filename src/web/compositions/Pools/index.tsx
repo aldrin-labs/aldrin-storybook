@@ -19,7 +19,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
   return (
     <Page>
       <WideContent>
-        <Banner theme={theme} />
+        {/* <Banner theme={theme} /> */}
         <RootRow>
           <Cell col={12} colLg={6}>
             <TotalVolumeLockedChart />
