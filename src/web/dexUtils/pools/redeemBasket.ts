@@ -15,7 +15,7 @@ import {
 
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction } from '../send'
+import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '../send'
 import { WalletAdapter } from '../types'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 
