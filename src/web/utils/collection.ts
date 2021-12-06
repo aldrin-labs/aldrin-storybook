@@ -7,3 +7,10 @@ export const splitBy = <T>(list: T[], chunkSize: number): T[][] => {
 
   return result
 }
+
+export const toMap = <T>(list: T[], keyFn: (el: T) => string): Map<string, T> => {
+  return list.reduce(
+    (acc, elem) => acc.set(keyFn(elem), elem),
+    new Map<string, T>()
+  )
+}

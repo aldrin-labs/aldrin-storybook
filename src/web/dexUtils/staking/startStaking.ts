@@ -5,22 +5,20 @@ import {
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
-  Transaction,
+  Transaction
 } from '@solana/web3.js'
 import BN from 'bn.js'
-import { NUMBER_OF_RETRIES } from '../common'
-import { notify } from '../notifications'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction, signTransactions, sendPartOfTransactions } from '../send'
-import { WalletAdapter } from '../types'
-import { STAKING_FARMING_TOKEN_DECIMALS } from './config'
-import { StakingPool } from './types'
-import { FarmingTicket } from '../common/types'
-import { endStakingInstructions } from './endStaking'
 import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
+import { FarmingTicket } from '../common/types'
+import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
+import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { sendPartOfTransactions, signTransactions } from '../send'
+import { WalletAdapter } from '../types'
+import { STAKING_FARMING_TOKEN_DECIMALS } from './config'
+import { endStakingInstructions } from './endStaking'
 import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
+import { StakingPool } from './types'
 
 interface StartStakingParams {
   wallet: WalletAdapter
@@ -65,8 +63,6 @@ export const startStaking = async (params: StartStakingParams) => {
 
   const totalToStake = totalTokens.add(new BN(amount * 10 ** STAKING_FARMING_TOKEN_DECIMALS))
 
-  console.log('totalToStake: ', totalToStake.toString())
-
   const farmingTicket = Keypair.generate()
   const farmingTicketInstruction = await program.account.farmingTicket.createInstruction(
     farmingTicket
@@ -108,6 +104,7 @@ export const startStaking = async (params: StartStakingParams) => {
         }
       }
     ))
+    
   const commonSigners = [farmingCalc, farmingTicket]
 
   try {
