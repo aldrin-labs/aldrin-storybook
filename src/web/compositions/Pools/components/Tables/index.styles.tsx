@@ -1,13 +1,12 @@
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loader } from '@sb/components/Loader/Loader'
-import { Text } from '@sb/compositions/Addressbook'
+import { Text, TextProps } from '@sb/compositions/Addressbook'
 import { COLORS } from '@variables/variables'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
-
-
 
 export const RowDataTdText = styled(Text)`
   white-space: nowrap;
@@ -62,6 +61,7 @@ export const SearchInput = styled.input`
     color: #93a0b2;
   }
 `
+
 export const Button = styled(
   ({
     disabled,
@@ -75,41 +75,29 @@ export const Button = styled(
     textTransform = 'capitalize',
     ...props
   }) => (
-      <BtnCustom
-        disabled={disabled}
-        textTransform={textTransform}
-        height={height}
-        borderColor={borderColor}
-        borderRadius={borderRadius}
-        fontSize={fontSize}
-        border={border}
-        {...props}
-      >
-        {showLoader ? <Loader /> : children}
-      </BtnCustom>
-    )
+    <BtnCustom
+      disabled={disabled}
+      textTransform={textTransform}
+      height={height}
+      borderColor={borderColor}
+      borderRadius={borderRadius}
+      fontSize={fontSize}
+      border={border}
+      {...props}
+    >
+      {showLoader ? <Loader /> : children}
+    </BtnCustom>
+  )
 )`
-  background: ${(props: { disabled: boolean; color: string }) =>
-    !props.disabled
-      ? props.color
-        ? props.color
-        : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-      : '#93A0B2'};
-  color: ${(props: { disabled: boolean }) =>
-    !props.disabled ? '#F8FAFF' : '#fff'};
-
+  &,
   &:hover {
-    background-color: ${(props: {
-      disabled: boolean
-      color: string
-    }) =>
-    !props.disabled
-      ? props.color
-        ? props.color
-        : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-      : '#93A0B2'};
+    background: ${(props: { disabled: boolean; color: string }) =>
+      props.disabled
+        ? COLORS.disabledGray
+        : props.color ||
+          `linear-gradient(91.8deg, ${COLORS.primary} 15.31%, ${COLORS.error} 89.64%)`};
     color: ${(props: { disabled: boolean }) =>
-    !props.disabled ? '#F8FAFF' : '#fff'};
+      !props.disabled ? COLORS.primaryWhite : COLORS.white};
   }
 
   ${(props) => props.style};
@@ -127,4 +115,8 @@ export const DetailsLink = styled(Link)`
   text-decoration: none;
 `
 
-// export const FarmingReward
+export const PoolName = styled(InlineText)`
+  &:hover {
+    text-decoration: underline;
+  }
+`

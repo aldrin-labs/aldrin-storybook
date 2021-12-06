@@ -1,13 +1,10 @@
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { Theme, withTheme } from '@material-ui/core'
 import { Cell, Page, WideContent } from '@sb/components/Layout'
 import React, { useEffect } from 'react'
-import { compose } from 'recompose'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import { RootRow } from './components/Charts/styles'
-import TablesSwitcher from './components/Tables/TablesSwitcher'
+import { TableSwitcher } from './components/Tables/TablesSwitcher'
 
-const Pools = ({ theme }: { theme: Theme }) => {
+export const PoolsComponent: React.FC = () => {
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
     return () => {
@@ -29,14 +26,10 @@ const Pools = ({ theme }: { theme: Theme }) => {
         </RootRow>
         <RootRow>
           <Cell col={12}>
-            <TablesSwitcher />
+            <TableSwitcher />
           </Cell>
         </RootRow>
       </WideContent>
     </Page>
   )
 }
-
-const Wrapper = compose(withTheme(), withRegionCheck)(Pools)
-
-export { Wrapper as PoolsComponent }

@@ -1,5 +1,15 @@
-import { stripByAmount, stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { DataCellValues, DataHeadColumn, DataTable, SORT_ORDER, DataCellValue } from '@sb/components/DataTable'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
+import {
+  DataCellValues,
+  DataHeadColumn,
+  DataTable,
+  SORT_ORDER,
+  DataCellValue,
+  NoDataBlock,
+} from '@sb/components/DataTable'
 import { Text } from '@sb/components/Typography'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
@@ -7,14 +17,12 @@ import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingSta
 import React, { useState, ReactNode } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { FlexBlock } from '@sb/components/Layout'
+import { useWallet } from '@sb/dexUtils/wallet'
 import { DexTokensPrices, PoolInfo } from '../../index.types'
 import { FarmingRewards } from '../FarminRewards'
 import { TokenIconsContainer } from './components'
 import { getFarmingStateDailyFarmingValue } from './UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { symbolIncludesSearch } from './utils'
-import { NoDataBlock } from '@sb/components/DataTable'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
 
 export interface PoolsTableProps {
   pools: PoolInfo[]
@@ -40,21 +48,19 @@ const mergeColumns = (columns: DataHeadColumn[]) => [
     key: 'farming',
     title: 'Farming',
     sortable: true,
-    hint: 'You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit into the pool), receiving a reward in tokens allocated by the creator of the pool. The amount of reward specified in the pool info is the amount you will receive daily for each $1,000 deposited into the pool.'
+    hint: 'You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit into the pool), receiving a reward in tokens allocated by the creator of the pool. The amount of reward specified in the pool info is the amount you will receive daily for each $1,000 deposited into the pool.',
   },
 ]
 
-
 const prepareCell = (params: {
-  pool: PoolInfo,
-  tokenPrices: Map<string, DexTokensPrices>,
+  pool: PoolInfo
+  tokenPrices: Map<string, DexTokensPrices>
   prepareMore: (pool: PoolInfo) => { [c: string]: DataCellValue }
   walletPk: string
 }): DataCellValues<PoolInfo> => {
   const { pool, tokenPrices, prepareMore, walletPk } = params
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
-
 
   const baseTokenPrice = tokenPrices.get(baseSymbol)?.price || 0
   const quoteTokenPrice = tokenPrices.get(quoteSymbol)?.price || 0
@@ -71,86 +77,85 @@ const prepareCell = (params: {
 
   const openFarmings = filterOpenFarmingStates(pool.farming || [])
 
-  const totalDailyRewardUsd = openFarmings.reduce(
-    (acc, farmingState) => {
-      const dailyReward = getFarmingStateDailyFarmingValue(
-        { farmingState, totalStakedLpTokensUSD }
-      )
+  const totalDailyRewardUsd = openFarmings.reduce((acc, farmingState) => {
+    const dailyReward = getFarmingStateDailyFarmingValue({
+      farmingState,
+      totalStakedLpTokensUSD,
+    })
 
-      const farmingTokenSymbol = getTokenNameByMintAddress(farmingState.farmingTokenMint || '')
+    const farmingTokenSymbol = getTokenNameByMintAddress(
+      farmingState.farmingTokenMint || ''
+    )
 
-      const farmingTokenPrice = tokenPrices.get(farmingTokenSymbol)?.price || 0
+    const farmingTokenPrice = tokenPrices.get(farmingTokenSymbol)?.price || 0
 
-      const dailyRewardUsd = dailyReward * farmingTokenPrice
+    const dailyRewardUsd = dailyReward * farmingTokenPrice
 
-      return (
-        acc + dailyRewardUsd
-      )
-    },
-    0
-  )
+    return acc + dailyRewardUsd
+  }, 0)
 
-  const farmingAPR = (totalDailyRewardUsd * 365) / totalStakedLpTokensUSD * 100
+  const farmingAPR =
+    ((totalDailyRewardUsd * 365) / totalStakedLpTokensUSD) * 100
 
   return {
     extra: pool,
     fields: {
       pool: {
         rawValue: pool.parsedName,
-        rendered:
+        rendered: (
           <div>
             <Link
               to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
               style={{ textDecoration: 'none' }}
             >
-              <TokenIconsContainer
-                needHover={true}
-                tokenA={pool.tokenA}
-                tokenB={pool.tokenB}
-              >
-                {!!walletPk && walletPk === pool.initializerAccount &&
-                  <Text color="success" size="sm">Your pool</Text>
-                }
+              <TokenIconsContainer tokenA={pool.tokenA} tokenB={pool.tokenB}>
+                {!!walletPk && walletPk === pool.initializerAccount && (
+                  <Text color="success" size="sm">
+                    Your pool
+                  </Text>
+                )}
               </TokenIconsContainer>
             </Link>
-
           </div>
-        ,
+        ),
       },
       tvl: {
         rawValue: tvlUSD,
-        rendered:
+        rendered: (
           <>
-            <Text size="sm">
-              ${stripByAmountAndFormat(tvlUSD)}
-            </Text>
+            <Text size="sm">${stripByAmountAndFormat(tvlUSD)}</Text>
             <Text size="sm" margin="10px 0" color="hint">
-              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseSymbol} / {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteSymbol}
+              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseSymbol} /{' '}
+              {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteSymbol}
             </Text>
-          </>,
+          </>
+        ),
       },
       apr: {
         rawValue: farmingAPR,
-        rendered:
+        rendered: (
           <Text color="success" size="sm" weight={700}>
             {stripByAmount(farmingAPR, 2)}%
-          </Text>,
+          </Text>
+        ),
       },
       farming: {
-        rendered:
+        rendered: (
           <FlexBlock alignItems="center">
-            <FarmingRewards pool={pool} farmingUsdValue={totalStakedLpTokensUSD} />
-          </FlexBlock>,
+            <FarmingRewards
+              pool={pool}
+              farmingUsdValue={totalStakedLpTokensUSD}
+            />
+          </FlexBlock>
+        ),
         rawValue: farmingAPR,
       },
       ...prepareMore(pool),
-    }
-
+    },
   }
 }
 
 export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
-
   const {
     pools,
     tokenPrices,
@@ -158,11 +163,10 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
     searchValue = '',
     prepareCell: prepareMore,
     suffix,
-    noDataText
+    noDataText,
   } = props
 
   const [columns] = useState(mergeColumns(addColumns))
-
 
   const wallet = useWallet()
   const history = useHistory()
@@ -171,7 +175,12 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
 
   const data = pools
     .filter((pool) =>
-      symbolIncludesSearch(`${getTokenNameByMintAddress(pool.tokenA)}_${getTokenNameByMintAddress(pool.tokenB)}`, searchValue)
+      symbolIncludesSearch(
+        `${getTokenNameByMintAddress(pool.tokenA)}_${getTokenNameByMintAddress(
+          pool.tokenB
+        )}`,
+        searchValue
+      )
     )
     .map((pool) => prepareCell({ pool, tokenPrices, prepareMore, walletPk }))
 
@@ -185,9 +194,12 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
       onRowClick={(e, row) => {
         e.preventDefault()
         history.push(`/pools/${row.extra.parsedName}`)
-        row.extra
       }}
-      noDataText={noDataText || <NoDataBlock justifyContent="center">No pools available.</NoDataBlock>}
+      noDataText={
+        noDataText || (
+          <NoDataBlock justifyContent="center">No pools available.</NoDataBlock>
+        )
+      }
     />
   )
 }

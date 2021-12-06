@@ -1,15 +1,13 @@
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { getFeesEarnedByAccount } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
-import { getFeesEarnedByPool } from '@core/graphql/queries/pools/getFeesEarnedByPool'
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { getWeeklyAndDailyTradingVolumesForPools } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
+import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql/queries/pools/getFeesEarnedByPool'
+import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
+import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
-import { Theme } from '@material-ui/core'
 import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
 import { Block, BlockContent } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
@@ -19,39 +17,35 @@ import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  TradingVolumeStats
+  TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
-import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
-import { waitForTransactionConfirmation } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
-import BN from 'bn.js'
 import React, { useState } from 'react'
 import { Route } from 'react-router'
 import { useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
+import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
 import { PoolPage } from '../../PoolPage'
 import { AllPoolsTable } from '../AllPools'
 import { UserLiquidityTable } from '../UserLiquidity'
 import PlusIcon from './icons/plus.svg'
 import {
-  AddPoolButton, InputWrap,
+  AddPoolButton,
+  InputWrap,
   SearchInput,
   TabContainer,
   TableContainer,
-  TableModeButton
+  TableModeButton,
 } from './styles'
 import { CreatePoolModal } from '../../Popups'
 
-
 interface TableSwitcherProps {
-  theme: Theme
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
@@ -61,13 +55,13 @@ interface TableSwitcherProps {
   }
 }
 
-const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
+const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const {
     getPoolsInfoQuery: { getPoolsInfo: pools = [] },
     getDexTokensPricesQuery: { getDexTokensPrices = [] },
     getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
     getFeesEarnedByPoolQuery: { getFeesEarnedByPool = [] },
-    getWeeklyAndDailyTradingVolumesForPoolsQuery
+    getWeeklyAndDailyTradingVolumesForPoolsQuery,
   } = props
 
   const [createPoolModalOpened, setCreatePoolModalOpened] = useState(false)
@@ -108,99 +102,12 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     refreshFarmingTickets()
   }
 
-  const onPoolCreateClick = async () => {
-    const generatedTransactions = await createPoolTransactions({
-      wallet,
-      connection,
-      baseTokenMint: 'Hn6FuAT9w7iHRc4M74c3xrtzPWBq4gGositr92NxaAs',
-      // quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-      // quoteTokenMint: 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp',
-      quoteTokenMint: 'A1BsqP5rH3HXhoFK6xLK6EFv9KsUzgR1UwBQhzMW9D2m',
-      firstDeposit: {
-        baseTokenAmount: new BN(1_000_000),
-        userBaseTokenAccount: new PublicKey('C6kK8bCXFUdFmSdu1W9bvh8cc6kcFXWdWRfwjnkFnt6y'),
-        quoteTokenAmount: new BN(1_000_000),
-        // userQuoteTokenAccount: new PublicKey('HL27Cs4HboiZB3xuYeaaKqqEc5h84AbHpWnAMxhFRaE1')
-        // userQuoteTokenAccount: new PublicKey('7fFd5qspmMEfoZ5EGDamBLZQXHNwX65SfPMHP7ASZXCB')
-        userQuoteTokenAccount: new PublicKey('7Zr9QPy4BUXXUrb378zZQ492vufgZGx663S8VfewBX6F')
-      }
-    })
-
-    // Object.keys(generatedTransactions).forEach((k) => {
-    //   const transaction: Transaction = generatedTransactions[k]
-
-    //   console.log(`Transaction ${k}:` , transaction.serialize().byteLength)
-    // })
-
-
-    console.log('Create accounts...', connection, generatedTransactions.createAccounts)
-
-
-    const createAccountsTxId = await connection.sendRawTransaction(generatedTransactions.createAccounts.serialize(), { skipPreflight: true })
-
-    console.log('createAccountsTxId: ', createAccountsTxId)
-    await waitForTransactionConfirmation({
-      txid: createAccountsTxId,
-      timeout: 60_000,
-      connection: connection.getConnection(),
-      showErrorForTimeout: true,
-    })
-
-    console.log('createAccountsTxId: ', createAccountsTxId)
-
-    console.log('Set authorities...')
-    // await sleep(1000)
-
-    const setAuthoritiesTxId = await connection.sendRawTransaction(generatedTransactions.setAuthorities.serialize(), { skipPreflight: true })
-
-    await waitForTransactionConfirmation({
-      txid: setAuthoritiesTxId,
-      timeout: 60_000,
-      connection: connection.getConnection(),
-      showErrorForTimeout: true,
-    })
-
-    console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
-
-    console.log('Initialize pool...')
-    // await sleep(1000)
-
-    const initPoolTxId = await connection.sendRawTransaction(generatedTransactions.createPool.serialize(), { skipPreflight: true })
-
-    await waitForTransactionConfirmation({
-      txid: initPoolTxId,
-      timeout: 60_000,
-      connection: connection.getConnection(),
-      showErrorForTimeout: true,
-    })
-
-    console.log('initPoolTxId: ', initPoolTxId)
-
-    if (generatedTransactions.firstDeposit) {
-      console.log('First deposit...')
-      const firstDepositTxId = await connection.sendRawTransaction(generatedTransactions.firstDeposit.serialize(), {
-        skipPreflight: true,
-      })
-      await waitForTransactionConfirmation({
-        txid: firstDepositTxId,
-        timeout: 60_000,
-        connection: connection.getConnection(),
-        showErrorForTimeout: true,
-      })
-
-      console.log('firstDepositTxId: ', firstDepositTxId)
-    }
-
-    // console.log('generatedTransactions: ', generatedTransactions)
-  }
-
   const isAllPoolsSelected = selectedTable === 'all'
 
   const dexTokensPricesMap = getDexTokensPrices.reduce(
     (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
     new Map<string, DexTokensPrices>()
   )
-
 
   const feesByPoolMap = getFeesEarnedByPool.reduce(
     (acc, fees) => acc.set(fees.pool, fees),
@@ -218,7 +125,9 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     farmingTicketsMap,
   })
 
-  const tradingVolumes = getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools || []
+  const tradingVolumes =
+    getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools ||
+    []
 
   const tradingVolumesMap = tradingVolumes.reduce(
     (acc, tv) => acc.set(tv.pool, tv),
@@ -255,7 +164,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
               placeholder="Search"
               value={searchValue}
               onChange={onChangeSearch}
-              append={<SvgIcon src={Loop} height={'1.6rem'} width={'1.6rem'} />}
+              append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
             />
             <AddPoolButton
               title="Create new pool"
@@ -263,13 +172,16 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
               href={LISTING_REQUEST_GOOGLE_FORM}
               target="_blank"
             >
-              <SvgIcon src={PlusIcon} width={'1.2em'} />
+              <SvgIcon src={PlusIcon} width="1.2em" />
             </AddPoolButton>
-            <Button onClick={() => setCreatePoolModalOpened(true)}>ADD POOL</Button>
+            <Button onClick={() => setCreatePoolModalOpened(true)}>
+              ADD POOL
+            </Button>
             <a
               style={{ textDecoration: 'none' }}
               href={AMMAudit}
               target="_blank"
+              rel="noreferrer"
             >
               <div>
                 <Text margin="0" size="sm">
@@ -287,7 +199,6 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
         </TabContainer>
         <TableContainer>
           {selectedTable === 'all' ? (
-
             <AllPoolsTable
               searchValue={searchValue}
               pools={pools}
@@ -296,15 +207,15 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
               tradingVolumes={tradingVolumesMap}
             />
           ) : (
-              <UserLiquidityTable
-                searchValue={searchValue}
-                pools={userLiquidityPools}
-                dexTokensPricesMap={dexTokensPricesMap}
-                allTokensData={userTokensData}
-                farmingTicketsMap={farmingTicketsMap}
-                feesByPoolForUser={earnedFeesInPoolForUserMap}
-              />
-            )}
+            <UserLiquidityTable
+              searchValue={searchValue}
+              pools={userLiquidityPools}
+              dexTokensPricesMap={dexTokensPricesMap}
+              allTokensData={userTokensData}
+              farmingTicketsMap={farmingTicketsMap}
+              feesByPoolForUser={earnedFeesInPoolForUserMap}
+            />
+          )}
         </TableContainer>
       </BlockContent>
       <Route path={`${path}/:symbol`}>
@@ -321,16 +232,17 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
           snapshotQueues={snapshotQueues}
         />
       </Route>
-      {createPoolModalOpened && <CreatePoolModal onClose={() => setCreatePoolModalOpened(false)} />}
-
+      {createPoolModalOpened && (
+        <CreatePoolModal onClose={() => setCreatePoolModalOpened(false)} />
+      )}
     </Block>
   )
 }
 
-export default compose(
+export const TableSwitcher = compose<TableSwitcherProps, any>(
   withPublicKey,
   queryRendererHoc({
-    query: getDexTokensPrices,
+    query: getDexTokensPricesRequest,
     name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
@@ -338,12 +250,12 @@ export default compose(
   }),
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
-    query: getPoolsInfo,
+    query: getPoolsInfoRequest,
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 2),
   }),
   queryRendererHoc({
-    query: getFeesEarnedByAccount,
+    query: getFeesEarnedByAccountRequest,
     name: 'getFeesEarnedByAccountQuery',
     variables: (props) => ({
       account: props.wallet.publicKey?.toString() || '',
@@ -354,7 +266,7 @@ export default compose(
   }),
   queryRendererHoc({
     name: 'getFeesEarnedByPoolQuery',
-    query: getFeesEarnedByPool,
+    query: getFeesEarnedByPoolRequest,
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
@@ -366,7 +278,7 @@ export default compose(
   }),
   queryRendererHoc({
     name: 'getWeeklyAndDailyTradingVolumesForPoolsQuery',
-    query: getWeeklyAndDailyTradingVolumesForPools,
+    query: getWeeklyAndDailyTradingVolumesForPoolsRequest,
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
@@ -377,4 +289,4 @@ export default compose(
       weeklyTimestampFrom: endOfHourTimestamp() - DAY * 7,
     }),
   })
-)(TablesSwitcher)
+)(TableSwitcherComponent)

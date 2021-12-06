@@ -28,6 +28,7 @@ export const COLORS = {
   tableHover: '#383a3d',
   warning: '#F29C38',
   warningDark: 'rgb(132, 97, 56)',
+  disabledGray: '#93A0B2',
 }
 
 export const BORDER_RADIUS = {
