@@ -117,8 +117,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
   })
 
   const ticketsToClaim = farmingTickets
-    .filter((ft) => ft.tokensFrozen > MIN_POOL_TOKEN_AMOUNT_TO_STAKE)
-    .filter((ticket) => ticket.amountsToClaim.find((atc) => atc.amount > 0))
+    .filter((ft) => ft.tokensFrozen > MIN_POOL_TOKEN_AMOUNT_TO_STAKE && ft.amountsToClaim.find((atc) => atc.amount > 0))
 
   const tokenAccountsToCreate = pool.farming.reduce((acc, farming) => {
     const amountToClaim = ticketsToClaim
