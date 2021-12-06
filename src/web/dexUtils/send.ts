@@ -1060,6 +1060,17 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
 
       return 'timeout'
     }
+    if (err.InstructionError) {
+      if (Array.isArray(err.InstructionError)) {
+        const insufficientBalance = (err.InstructionError as []).findIndex((el) => el === 1) // Insufficient lamports instruction error
+        if (insufficientBalance >= 0) {
+          notify({
+            message: 'Not enough SOL',
+            type: 'error',
+          })
+        }
+      }
+    }
 
     notify({ message: 'Transaction failed', type: 'error' })
     const rpcProvider = getProviderNameFromUrl({
