@@ -509,6 +509,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         refreshTokensWithFarmingTickets={refreshAll}
         setPoolWaitingForUpdateAfterOperation={toggleIsLoading}
         withdrawFunction={withdrawStaked}
+        hideMaintenanceWarning
         callback={
           isClaimRewardsAndRestakePopupOpen ? async () => {
             const result = await startStaking({

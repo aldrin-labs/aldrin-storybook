@@ -32,8 +32,6 @@ export const addFarmingRewardsToTickets = (params: CalculateRewardsParams) => {
         ticket,
       })
 
-      console.log('amountsToClaim: ', amountsToClaim)
-
       return [...ticketsAcc, { ...ticket, amountsToClaim }]
     },
     []
