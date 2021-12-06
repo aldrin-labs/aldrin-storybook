@@ -230,6 +230,10 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
       setStep(step - 1)
     }
     e.preventDefault()
+
+    // Validate next step after render
+    setTimeout(() => form.validateForm())
+
     return false
   }
   const nextStep = (e: EventLike, farmingEnabled = true) => {

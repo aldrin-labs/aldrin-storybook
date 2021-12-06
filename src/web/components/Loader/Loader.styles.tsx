@@ -1,6 +1,7 @@
 import styled from 'styled-components'
+import { COLORS } from '../../../variables/variables'
 
-export const AnimatedImage = styled.img`
+export const AnimatedImage = styled.svg`
   width: ${(props) => props.width || '2.5rem'};
   height: auto;
   animation-name: rotate;
@@ -28,5 +29,9 @@ export const AnimatedImage = styled.img`
     100% {
       transform: rotate(0deg);
     }
+  }
+  
+  .with-fill {
+    fill: ${(props) => props.color || COLORS.black};
   }
 `

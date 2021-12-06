@@ -2,7 +2,6 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
 import { msToNextHour } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
-import { Theme } from '@material-ui/core'
 import { Block, BlockContent } from '@sb/components/Block'
 import {
   dayDuration,
@@ -13,29 +12,28 @@ import {
 import { Chart } from 'chart.js'
 import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
-import { Line } from '../../Popups/index.styles'
-import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
-import { Canvas, SubTitle, TitleContainer } from '../styles'
-import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from '../utils'
+import { Line } from '../Popups/index.styles'
+import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate/ReloadTimerTillUpdate'
+import { Canvas, DataContainer, SubTitle, TitleContainer } from './styles'
+import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
 
-const ChartBlock = ({
-  theme,
-  id,
-  title,
-  getTradingVolumeHistoryQuery,
-}: {
-  theme: Theme
-  id: string
-  title: string
-  getTradingVolumeHistoryQuery: any
-}) => {
 
+interface ChartProps {
+  getTradingVolumeHistoryQuery: {
+    getTradingVolumeHistory: {
+      volumes: { date: number, vol?: number }[]
+    }
+  }
+}
+
+
+const ChartBlockInner: React.FC<ChartProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const chartRef = useRef<Chart | null>(null)
 
 
-  const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
+  const data = props.getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -64,7 +62,30 @@ const ChartBlock = ({
     return () => chartRef.current?.destroy()
   }, [JSON.stringify(data)])
 
+  return (
+    <div>
+      <Canvas height="250" ref={canvasRef}></Canvas>
+    </div>
+  )
+}
 
+
+export const ChartBlockInnerWithData = compose(
+  queryRendererHoc({
+    query: getTradingVolumeHistory,
+    name: 'getTradingVolumeHistoryQuery',
+    variables: {
+      timezone: getTimezone(),
+      timestampFrom: startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
+      timestampTo: endOfDayTimestamp(),
+    },
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 60000 * getRandomInt(1, 3),
+  })
+)(ChartBlockInner)
+
+
+export const TradingVolumeChart = () => {
   return (
     <Block>
       <BlockContent>
@@ -77,24 +98,10 @@ const ChartBlock = ({
             getSecondsTillNextUpdate={() => msToNextHour() / 1000}
           />
         </TitleContainer>
-        <div>
-          <Canvas ref={canvasRef}></Canvas>
-        </div>
+        <DataContainer>
+          <ChartBlockInnerWithData />
+        </DataContainer>
       </BlockContent>
     </Block>
   )
 }
-
-export const TradingVolumeChart = compose(
-  queryRendererHoc({
-    query: getTradingVolumeHistory,
-    name: 'getTradingVolumeHistoryQuery',
-    variables: {
-      timezone: getTimezone(),
-      timestampFrom: startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
-      timestampTo: endOfDayTimestamp(),
-    },
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 60000 * getRandomInt(1, 3),
-  })
-)(ChartBlock)

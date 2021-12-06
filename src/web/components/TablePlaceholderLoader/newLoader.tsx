@@ -38,16 +38,16 @@ export default withTheme()(
     theme: Theme
     rows?: number
   }) => (
-    <React.Fragment>
-      {Array(rows)
-        .fill('')
-        .map((e, i) => (
-          <Loader
-            key={i}
-            color={{ primary, secondary }}
-            style={{ opacity: Number(2 / i).toFixed(1) }}
-          />
-        ))}
-    </React.Fragment>
-  )
+      <React.Fragment>
+        {Array(rows)
+          .fill('')
+          .map((e, i) => (
+            <Loader
+              key={i}
+              color={{ primary, secondary }}
+              style={{ opacity: Number(2 / i).toFixed(1) }}
+            />
+          ))}
+      </React.Fragment>
+    )
 )

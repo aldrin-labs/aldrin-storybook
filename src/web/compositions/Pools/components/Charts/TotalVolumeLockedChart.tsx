@@ -2,7 +2,6 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTotalVolumeLockedHistory'
 import { msToNextHour } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
-import { Theme } from '@material-ui/core'
 import { Block, BlockContent } from '@sb/components/Block'
 import {
   dayDuration, endOfDayTimestamp,
@@ -12,24 +11,25 @@ import {
 import { Chart } from 'chart.js'
 import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
-import { Line } from '../../Popups/index.styles'
-import { ReloadTimerTillUpdate } from '../ReloadTimerTillUpdate/ReloadTimerTillUpdate'
-import { Canvas, SubTitle, TitleContainer } from '../styles'
-import { createTotalVolumeLockedChart, NUMBER_OF_DAYS_TO_SHOW } from '../utils'
+import { Line } from '../Popups/index.styles'
+import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate/ReloadTimerTillUpdate'
+import { Canvas, SubTitle, TitleContainer, DataContainer } from './styles'
+import { createTotalVolumeLockedChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
 
+interface ChartProps {
+  getTotalVolumeLockedHistoryQuery: {
+    getTotalVolumeLockedHistory: {
+      volumes: { date: number, vol?: number }[]
+    }
+  }
+}
 
-const Chart = ({
-  theme,
-  id,
-  title,
-  getTotalVolumeLockedHistoryQuery,
-}: {
-  theme: Theme
-  id: string
-  title: string
-  getTotalVolumeLockedHistoryQuery: any
-}) => {
+const ChartInner: React.FC<ChartProps> = (props) => {
+  const {
+    getTotalVolumeLockedHistoryQuery,
+  } = props
+
   const data =
     getTotalVolumeLockedHistoryQuery?.getTotalVolumeLockedHistory?.volumes
 
@@ -63,6 +63,30 @@ const Chart = ({
     return () => chartRef.current?.destroy()
   }, [JSON.stringify(data)])
 
+
+  return (
+    <div>
+      <Canvas height="250" ref={canvasRef}></Canvas>
+    </div>
+  )
+}
+
+const TotalVolumeLockedChartInner = compose(
+  queryRendererHoc({
+    query: getTotalVolumeLockedHistory,
+    name: 'getTotalVolumeLockedHistoryQuery',
+    variables: {
+      timezone: getTimezone(),
+      timestampFrom: startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
+      timestampTo: endOfDayTimestamp(),
+    },
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 60000 * getRandomInt(1, 3),
+  })
+)(ChartInner)
+
+
+export const TotalVolumeLockedChart: React.FC = () => {
   return (
     <Block>
       <BlockContent>
@@ -75,25 +99,12 @@ const Chart = ({
             getSecondsTillNextUpdate={() => msToNextHour() / 1000}
           />
         </TitleContainer>
-        <div>
-          <Canvas height="250" ref={canvasRef}></Canvas>
-        </div>
+        <DataContainer>
+          <TotalVolumeLockedChartInner />
+        </DataContainer>
       </BlockContent>
     </Block>
 
   )
 }
 
-export const TotalVolumeLockedChart = compose(
-  queryRendererHoc({
-    query: getTotalVolumeLockedHistory,
-    name: 'getTotalVolumeLockedHistoryQuery',
-    variables: {
-      timezone: getTimezone(),
-      timestampFrom: startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
-      timestampTo: endOfDayTimestamp(),
-    },
-    fetchPolicy: 'cache-and-network',
-    pollInterval: 60000 * getRandomInt(1, 3),
-  })
-)(Chart)

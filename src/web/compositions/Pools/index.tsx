@@ -5,7 +5,6 @@ import React, { useEffect } from 'react'
 import { compose } from 'recompose'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import { RootRow } from './components/Charts/styles'
-import { FarmingConditionsUpdateBanner } from './components/Popups/FarmingConditionsUpdateBanner'
 import TablesSwitcher from './components/Tables/TablesSwitcher'
 
 const Pools = ({ theme }: { theme: Theme }) => {
