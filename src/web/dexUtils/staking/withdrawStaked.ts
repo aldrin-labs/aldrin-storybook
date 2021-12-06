@@ -302,9 +302,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
   })
   )
 
-  const allTransactions = withdrawTransactions
-    .flatMap((_) => _)
-    .flatMap((_) => _)
+  const allTransactions = withdrawTransactions.flat(2)
 
 
 
