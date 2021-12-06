@@ -120,7 +120,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     .filter((ft) => ft.tokensFrozen > MIN_POOL_TOKEN_AMOUNT_TO_STAKE)
     .filter((ticket) => ticket.amountsToClaim.find((atc) => atc.amount > 0))
 
-  console.log('ticketsToClaim: ', ticketsToClaim)
   const tokenAccountsToCreate = pool.farming.reduce((acc, farming) => {
     const amountToClaim = ticketsToClaim
       .reduce((acc, ft) => {
@@ -161,15 +160,12 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     })
   )
 
-  console.log('asdasd', ticketsToClaim, pool.farming)
-
   const withdrawTransactions = await Promise.all(ticketsToClaim.map((ticket) => {
     return Promise.all(
       pool.farming
         .filter((fs) => {
           const amountToClaim =
             ticket.amountsToClaim.find((amountToClaim) => amountToClaim.farmingState === fs.farmingState)?.amount || 0
-          console.log('amountToClaim: ', fs, ticket.amountsToClaim)
           return amountToClaim > 0
         })
         .map(async (fs) => {
@@ -312,7 +308,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     .flatMap((_) => _)
 
 
-  console.log('allTransactions: ', allTransactions)
+
   // Merge with new account instructions 
   if (createdAccounts.length && allTransactions.length) {
     const firstTx = allTransactions[0]
