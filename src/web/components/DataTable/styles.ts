@@ -1,7 +1,11 @@
 import styled from 'styled-components'
 import { FONTS, COLORS, TRANSITION } from '@variables/variables'
-import { FlexBlock } from '../Layout'
+import { FlexBlock, Body } from '../Layout'
 
+export const TableBody = styled(Body)`
+  width: 100%;
+  overflow: auto;
+`
 
 export const Table = styled.table`
   width: 100%;
@@ -9,9 +13,7 @@ export const Table = styled.table`
   border-collapse: collapse;
 `
 
-export const Thead = styled.thead`
-
-`
+export const Thead = styled.thead``
 export const Tr = styled.tr`
   border-top: 1px solid ${COLORS.border};
   border-bottom: 1px solid ${COLORS.border};
@@ -38,7 +40,6 @@ export const Th = styled.th`
     cursor: pointer;
   }
 `
-
 
 export const Tbody = styled.tbody`
   ${Tr}:not(.no-hover):hover {

@@ -1,19 +1,24 @@
-import { DataCellValue, DataHeadColumn, NoDataBlock } from '@sb/components/DataTable'
 import {
-  FarmingTicketsMap, FeesMap, PoolInfo,
-  TokenPricesMap
+  DataCellValue,
+  DataHeadColumn,
+  NoDataBlock,
+} from '@sb/components/DataTable'
+import {
+  FarmingTicketsMap,
+  FeesMap,
+  PoolInfo,
+  TokenPricesMap,
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getStakedTokensForPool } from '@sb/dexUtils/common/getStakedTokensForPool'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import React from 'react'
-import { getTokenDataByMint } from '../../../utils'
-import { PoolsTable } from '../PoolsTable'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { Text } from '@sb/components/Typography'
-
+import { PoolsTable } from '../PoolsTable'
+import { getTokenDataByMint } from '../../../utils'
 
 interface LiquidityTableProps {
   searchValue: string
@@ -24,12 +29,14 @@ interface LiquidityTableProps {
   feesByPoolForUser: FeesMap
 }
 
-
 const COLUMNS: DataHeadColumn[] = [
-  { key: 'userLiquidity', title: 'Your liquidity (Incl. Fees)', sortable: true },
+  {
+    key: 'userLiquidity',
+    title: 'Your liquidity (Incl. Fees)',
+    sortable: true,
+  },
   { key: 'feesEarned', title: 'Fees Earned', sortable: true },
 ]
-
 
 interface PrepareCellParams {
   pool: PoolInfo
@@ -38,15 +45,11 @@ interface PrepareCellParams {
   feesByPool: FeesMap
   farmingTicketsMap: FarmingTicketsMap
 }
-const prepareCell = (params: PrepareCellParams): { [c: string]: DataCellValue } => {
-  const {
-    pool,
-    tokenPrices,
-    allTokensData,
-    farmingTicketsMap,
-    feesByPool,
-  } = params
-
+const prepareCell = (
+  params: PrepareCellParams
+): { [c: string]: DataCellValue } => {
+  const { pool, tokenPrices, allTokensData, farmingTicketsMap, feesByPool } =
+    params
 
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
@@ -54,10 +57,8 @@ const prepareCell = (params: PrepareCellParams): { [c: string]: DataCellValue } 
   const baseTokenPrice = tokenPrices.get(baseSymbol)?.price || 0
   const quoteTokenPrice = tokenPrices.get(quoteSymbol)?.price || 0
 
-  const {
-    amount: poolTokenRawAmount,
-    decimals: poolTokenDecimals,
-  } = getTokenDataByMint(allTokensData, pool.poolTokenMint)
+  const { amount: poolTokenRawAmount, decimals: poolTokenDecimals } =
+    getTokenDataByMint(allTokensData, pool.poolTokenMint)
 
   const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 
@@ -70,13 +71,13 @@ const prepareCell = (params: PrepareCellParams): { [c: string]: DataCellValue } 
     poolTokenAmount: poolTokenAmount + stakedTokens,
   })
 
-
   const userLiquidityUSD =
     baseTokenPrice * userAmountTokenA + quoteTokenPrice * userAmountTokenB
 
-  const feesEarnedByUserForPool = feesByPool.get(
-    pool.swapToken
-  ) || { totalBaseTokenFee: 0, totalQuoteTokenFee: 0 }
+  const feesEarnedByUserForPool = feesByPool.get(pool.swapToken) || {
+    totalBaseTokenFee: 0,
+    totalQuoteTokenFee: 0,
+  }
 
   const feesUsd =
     feesEarnedByUserForPool.totalBaseTokenFee * baseTokenPrice +
@@ -99,27 +100,19 @@ const prepareCell = (params: PrepareCellParams): { [c: string]: DataCellValue } 
             )}{' '}
             {getTokenNameByMintAddress(pool.tokenB)}
           </Text>
-
         </>
       ),
-      rawValue: userLiquidityUSD + feesUsd
-
+      rawValue: userLiquidityUSD + feesUsd,
     },
     feesEarned: {
-      rendered:
-        <Text size="sm">
-          ${stripByAmountAndFormat(feesUsd, 4)}
-        </Text>,
+      rendered: <Text size="sm">${stripByAmountAndFormat(feesUsd, 4)}</Text>,
 
-      rawValue: feesUsd
-
+      rawValue: feesUsd,
     },
   }
 }
 
-
 export const UserLiquidityTable: React.FC<LiquidityTableProps> = (props) => {
-
   const {
     searchValue,
     dexTokensPricesMap,
@@ -135,13 +128,15 @@ export const UserLiquidityTable: React.FC<LiquidityTableProps> = (props) => {
       pools={pools}
       tokenPrices={dexTokensPricesMap}
       searchValue={searchValue}
-      prepareCell={(pool) => prepareCell({
-        pool,
-        feesByPool: feesByPoolForUser,
-        tokenPrices: dexTokensPricesMap,
-        allTokensData,
-        farmingTicketsMap: farmingTicketsMap
-      })}
+      prepareCell={(pool) =>
+        prepareCell({
+          pool,
+          feesByPool: feesByPoolForUser,
+          tokenPrices: dexTokensPricesMap,
+          allTokensData,
+          farmingTicketsMap,
+        })
+      }
       noDataText={
         <ConnectWalletWrapper>
           <NoDataBlock>No pools available</NoDataBlock>
@@ -151,4 +146,3 @@ export const UserLiquidityTable: React.FC<LiquidityTableProps> = (props) => {
     />
   )
 }
-

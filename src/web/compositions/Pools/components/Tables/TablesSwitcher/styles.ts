@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Theme } from '@material-ui/core'
-import { COLORS, BREAKPOINTS, BORDER_RADIUS, FONT_SIZES, FONTS } from '@variables/variables'
+import { COLORS, BREAKPOINTS, BORDER_RADIUS, FONTS } from '@variables/variables'
 import { Input } from '@sb/components/Input'
 import { Button } from '@sb/components/Button'
 
@@ -12,9 +12,7 @@ type TableModeButtonProps = {
 export const TableModeButton = styled.button`
   border: none;
   border-bottom: ${(props: TableModeButtonProps) =>
-    props.isActive
-      ? `.3rem solid ${COLORS.white}`
-      : `.3rem solid transparent`};
+    props.isActive ? `.3rem solid ${COLORS.white}` : `.3rem solid transparent`};
 
   background: inherit;
   color: ${(props: TableModeButtonProps) =>
@@ -31,52 +29,51 @@ export const TableModeButton = styled.button`
 `
 
 export const TabContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
 
-    @media(min-width: ${BREAKPOINTS.md}) {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-    }
+  @media (min-width: ${BREAKPOINTS.md}) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 `
 
 export const InputWrap = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  align-items: center;
 
-    @media(min-width: ${BREAKPOINTS.md}) {
-      margin-top: 0;
-      align-items: center;
-    }
+  @media (min-width: ${BREAKPOINTS.md}) {
+    margin-top: 0;
+    align-items: center;
+  }
 `
 
 export const SearchInput = styled(Input)`
-    margin-right: 10px;
-    flex: 1;
-    border-radius: ${BORDER_RADIUS.lg};
+  margin-right: 10px;
+  flex: 1;
+  border-radius: ${BORDER_RADIUS.lg};
 
-    @media(min-width: ${BREAKPOINTS.md}) {
-      min-width: 250px;
-      height: 2.5em;
-    }
+  @media (min-width: ${BREAKPOINTS.md}) {
+    min-width: 250px;
+    height: 2.5em;
+  }
 `
 
 export const TableContainer = styled.div`
-    min-width: 600px;
+  min-width: 600px;
 `
 
 export const AddPoolButton = styled(Button)`
-    width: 42px;
-    height: 42px;
-    text-align: center;
-    margin-right: 20px;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: ${FONT_SIZES.lg};
+  height: 42px;
+  text-align: center;
+  margin-right: 20px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: normal;
 `

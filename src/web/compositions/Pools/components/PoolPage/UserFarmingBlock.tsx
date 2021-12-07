@@ -6,6 +6,10 @@ import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/dexUtils/types'
 import React, { useState } from 'react'
+import { estimateTime } from '@core/utils/dateUtils'
+import pluralize from 'pluralize'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { Text } from '@sb/components/Typography'
 import { DexTokensPrices, PoolInfo } from '../../index.types'
 import { getTokenDataByMint } from '../../utils'
 import { getUniqueAmountsToClaimMap } from '../Tables/utils/getUniqueAmountsToClaimMap'
@@ -14,20 +18,16 @@ import {
   FarmingBlock,
   FarmingButton,
   FarmingButtonsContainer,
-  FarmingButtonWrap, LiquidityItem,
+  FarmingButtonWrap,
+  LiquidityItem,
   LiquidityText,
   LiquidityTitle,
   NoFarmingBlock,
   FarmingBlockInner,
-  ExtendFarmingButton
+  ExtendFarmingButton,
 } from './styles'
 import { ClaimTimeTooltip } from './Tooltips'
-import { estimateTime } from '@core/utils/dateUtils'
-import pluralize from 'pluralize'
-import { Button } from '@sb/components/Button'
 import { ExtendFarmingModal } from './ExtendFarmingModal'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { Text } from '@sb/components/Typography'
 import { filterOpenFarmingStates } from '../../../../dexUtils/pools/filterOpenFarmingStates'
 
 interface UserFarmingBlockProps {
@@ -73,30 +73,27 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     return (
       <FarmingBlock>
         <NoFarmingBlock>
-          <Text>
-            This pool does not have farming.
-          </Text>
-          {isPoolOwner &&
+          <Text>This pool does not have farming.</Text>
+          {isPoolOwner && (
             <FarmingButtonsContainer>
               <ExtendFarmingButton
                 onClick={() => setExtendFarmingModalOpen(true)}
               >
                 Create Farming
-            </ExtendFarmingButton>
+              </ExtendFarmingButton>
             </FarmingButtonsContainer>
-          }
+          )}
         </NoFarmingBlock>
-        {extendFarmingModalOpen &&
+        {extendFarmingModalOpen && (
           <ExtendFarmingModal
             pool={pool}
             onClose={() => setExtendFarmingModalOpen(false)}
             title="Create Farming"
           />
-        }
+        )}
       </FarmingBlock>
     )
   }
-
 
   const { amount: poolTokenAmount } = getTokenDataByMint(
     userTokensData,
@@ -105,11 +102,14 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const ticketsForPool = farmingTickets.get(pool.swapToken) || []
 
+  const lastFarmingTicket = ticketsForPool.sort(
+    (a, b) => parseInt(b.startTime) - parseInt(a.startTime)
+  )[0]
 
-  const lastFarmingTicket = ticketsForPool.sort((a, b) => parseInt(b.startTime) - parseInt(a.startTime))[0]
-
-  const claimAvailableTs = lastFarmingTicket && farming ?
-    parseInt(lastFarmingTicket.startTime) + farming.periodLength + 60 * 20 : 0
+  const claimAvailableTs =
+    lastFarmingTicket && farming
+      ? parseInt(lastFarmingTicket.startTime) + farming.periodLength + 60 * 20
+      : 0
 
   const now = Date.now() / 1000
 
@@ -119,21 +119,25 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const availableToClaimMap = getUniqueAmountsToClaimMap({
     farmingTickets: ticketsForPool,
-    farmingStates: (pool.farming || []),
+    farmingStates: pool.farming || [],
   })
 
   const hasUnstaked = poolTokenAmount > 0
   const hasStaked = stakedAmount > 0
 
-  const availableToClaim = Array.from(availableToClaimMap.values()).map((atc) => {
-    const name = getTokenNameByMintAddress(atc.farmingTokenMint)
-    const usdValue = (prices.get(name)?.price || 0) * atc.amount
+  const availableToClaim = Array.from(availableToClaimMap.values()).map(
+    (atc) => {
+      const name = getTokenNameByMintAddress(atc.farmingTokenMint)
+      const usdValue = (prices.get(name)?.price || 0) * atc.amount
 
-    return { ...atc, name, usdValue }
-  })
+      return { ...atc, name, usdValue }
+    }
+  )
 
-  const availableToClaimUsd = availableToClaim.reduce((acc, atc) => acc + atc.usdValue, 0)
-
+  const availableToClaimUsd = availableToClaim.reduce(
+    (acc, atc) => acc + atc.usdValue,
+    0
+  )
 
   const tokenNames = Array.from(
     new Set(
@@ -144,12 +148,17 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const tooltipText = `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
 
   const farmingRemain = farmings.reduce((acc, fs) => {
-    const value = acc.get(fs.farmingTokenMint) || { timeRemain: 0, tokensRemain: 0 }
+    const value = acc.get(fs.farmingTokenMint) || {
+      timeRemain: 0,
+      tokensRemain: 0,
+    }
 
     const tokensRemain = fs.tokensTotal - fs.tokensUnlocked
-    const timeRemain = Math.round(tokensRemain / fs.tokensPerPeriod) * fs.periodLength
+    const timeRemain =
+      Math.round(tokensRemain / fs.tokensPerPeriod) * fs.periodLength
 
-    value.tokensRemain = tokensRemain / (10 ** fs.farmingTokenMintDecimals) + value.tokensRemain
+    value.tokensRemain =
+      tokensRemain / 10 ** fs.farmingTokenMintDecimals + value.tokensRemain
     value.timeRemain = Math.max(value.timeRemain, timeRemain)
 
     acc.set(fs.farmingTokenMint, value)
@@ -158,46 +167,63 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const farmingTokens = Array.from(farmingRemain.keys())
 
-  const timesRemain = Array.from(farmingRemain.values()).map((fr) => fr.timeRemain)
+  const timesRemain = Array.from(farmingRemain.values()).map(
+    (fr) => fr.timeRemain
+  )
   const timeRemainMax = Math.max(...timesRemain)
 
   const estimatedTime = estimateTime(timeRemainMax)
 
   // Have pool ending soon
-  const prolongationEnabled = !!farmings.find((fs) => fs.tokensTotal - fs.tokensUnlocked < fs.tokensPerPeriod)
+  const prolongationEnabled = !!farmings.find(
+    (fs) => fs.tokensTotal - fs.tokensUnlocked < fs.tokensPerPeriod
+  )
 
   return (
     <FarmingBlock>
-      {isPoolOwner ?
+      {isPoolOwner ? (
         <>
           <FarmingBlockInner>
             <LiquidityItem>
               <LiquidityTitle>Remaining Supply</LiquidityTitle>
-              {farmingTokens.map((mint) =>
+              {farmingTokens.map((mint) => (
                 <div key={`farming_reward_${mint}`}>
                   <LiquidityText weight={600}>
-                    <LiquidityText color="success">{stripByAmountAndFormat(farmingRemain.get(mint)?.tokensRemain || 0)} </LiquidityText>
+                    <LiquidityText color="success">
+                      {stripByAmountAndFormat(
+                        farmingRemain.get(mint)?.tokensRemain || 0
+                      )}{' '}
+                    </LiquidityText>
                     {getTokenNameByMintAddress(mint)}
                   </LiquidityText>
                 </div>
-              )}
+              ))}
             </LiquidityItem>
             <LiquidityItem>
               <LiquidityTitle>Remaining Time</LiquidityTitle>
 
               <div>
-                {!!estimatedTime.days &&
+                {!!estimatedTime.days && (
                   <LiquidityText>
-                    <LiquidityText color="success">{estimatedTime.days} </LiquidityText>
-                    <LiquidityText>{pluralize('day', estimatedTime.days)}</LiquidityText>
+                    <LiquidityText color="success">
+                      {estimatedTime.days}{' '}
+                    </LiquidityText>
+                    <LiquidityText>
+                      {pluralize('day', estimatedTime.days)}
+                    </LiquidityText>
                   </LiquidityText>
-                }
-                {!!estimatedTime.hours &&
+                )}
+                {!!estimatedTime.hours && (
                   <LiquidityText>
-                    <LiquidityText color="success"> {estimatedTime.hours} </LiquidityText>
-                    <LiquidityText>{pluralize('hour', estimatedTime.hours)}</LiquidityText>
+                    <LiquidityText color="success">
+                      {' '}
+                      {estimatedTime.hours}{' '}
+                    </LiquidityText>
+                    <LiquidityText>
+                      {pluralize('hour', estimatedTime.hours)}
+                    </LiquidityText>
                   </LiquidityText>
-                }
+                )}
               </div>
             </LiquidityItem>
           </FarmingBlockInner>
@@ -208,33 +234,33 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             >
               Extend Farming
             </ExtendFarmingButton>
-            {!prolongationEnabled &&
-              <DarkTooltip
-                title="The option to extend will be unlocked one hour before the end of the farming period."
-              >
+            {!prolongationEnabled && (
+              <DarkTooltip title="The option to extend will be unlocked one hour before the end of the farming period.">
                 <div style={{ height: '1em' }}>
-                  <SvgIcon
-                    src={ClockIcon}
-                    width={'1em'}
-                    height={'1em'}
-                  />
+                  <SvgIcon src={ClockIcon} width="1em" height="1em" />
                 </div>
               </DarkTooltip>
-            }
-
+            )}
           </FarmingButtonWrap>
-        </> :
+        </>
+      ) : (
         <FarmingBlockInner>
           <LiquidityItem>
             <LiquidityTitle>Stake LP Tokens</LiquidityTitle>
             <div>
               <LiquidityText weight={600}>
-                <LiquidityText color="success">{stripByAmountAndFormat(poolTokenAmount)}</LiquidityText> Unstaked
+                <LiquidityText color="success">
+                  {stripByAmountAndFormat(poolTokenAmount)}
+                </LiquidityText>{' '}
+                Unstaked
               </LiquidityText>
             </div>
             <div>
               <LiquidityText weight={600}>
-                <LiquidityText color="success">{stripByAmountAndFormat(stakedAmount)}</LiquidityText> Staked
+                <LiquidityText color="success">
+                  {stripByAmountAndFormat(stakedAmount)}
+                </LiquidityText>{' '}
+                Staked
               </LiquidityText>
             </div>
             <FarmingButtonsContainer>
@@ -247,7 +273,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                     $variant="rainbow"
                   >
                     Stake LP Tokens
-              </FarmingButton>
+                  </FarmingButton>
                 </span>
               </DarkTooltip>
               <DarkTooltip title={tooltipText}>
@@ -259,7 +285,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                     onClick={onUnstakeClick}
                   >
                     Unstake LP Tokens
-            </FarmingButton>
+                  </FarmingButton>
                 </span>
               </DarkTooltip>
             </FarmingButtonsContainer>
@@ -268,17 +294,24 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
             <div>
               <LiquidityText weight={600}>
-                {Array.from(availableToClaim.values()).map((atc, idx) =>
-                  <React.Fragment key={`farming_available_to_claim_${atc.farmingTokenMint}`}>
+                {Array.from(availableToClaim.values()).map((atc, idx) => (
+                  <React.Fragment
+                    key={`farming_available_to_claim_${atc.farmingTokenMint}`}
+                  >
                     {idx !== 0 ? ' + ' : ''}
-                    <LiquidityText color="success">{stripByAmountAndFormat(atc.amount, 6)}</LiquidityText>&nbsp;
-                {getTokenNameByMintAddress(atc.farmingTokenMint)}
+                    <LiquidityText color="success">
+                      {stripByAmountAndFormat(atc.amount, 6)}
+                    </LiquidityText>
+                    &nbsp;
+                    {getTokenNameByMintAddress(atc.farmingTokenMint)}
                   </React.Fragment>
-                )}
+                ))}
               </LiquidityText>
             </div>
             <div>
-              <LiquidityText color="success">${stripByAmountAndFormat(availableToClaimUsd, 2)}</LiquidityText>
+              <LiquidityText color="success">
+                ${stripByAmountAndFormat(availableToClaimUsd, 2)}
+              </LiquidityText>
             </div>
             <FarmingButtonWrap>
               <DarkTooltip title={tooltipText}>
@@ -290,26 +323,25 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                     onClick={onClaimClick}
                   >
                     Claim
-            </FarmingButton>
+                  </FarmingButton>
                 </span>
               </DarkTooltip>
               <DarkTooltip title={<ClaimTimeTooltip farmingState={farming} />}>
                 <div style={{ height: '1em' }}>
-                  <SvgIcon
-                    src={ClockIcon}
-                    width={'1em'}
-                    height={'1em'}
-                  />
+                  <SvgIcon src={ClockIcon} width="1em" height="1em" />
                 </div>
               </DarkTooltip>
             </FarmingButtonWrap>
           </LiquidityItem>
         </FarmingBlockInner>
-      }
+      )}
 
-      {extendFarmingModalOpen &&
-        <ExtendFarmingModal pool={pool} onClose={() => setExtendFarmingModalOpen(false)} />
-      }
+      {extendFarmingModalOpen && (
+        <ExtendFarmingModal
+          pool={pool}
+          onClose={() => setExtendFarmingModalOpen(false)}
+        />
+      )}
     </FarmingBlock>
   )
 }

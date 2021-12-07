@@ -2,15 +2,15 @@ import React from 'react'
 import { FarmingState } from '@sb/dexUtils/common/types'
 import { TokenIcon } from '@sb/components/TokenIcon'
 
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { FarmingIconWrap, FarmingDataIcons, FarmingText } from './styles'
 import { PoolStatsText } from '../PoolPage/styles'
 import {
   getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity,
 } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { PoolInfo } from '../../index.types'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 
 interface FarmingRewardsProps {
   pool: PoolInfo
@@ -18,7 +18,10 @@ interface FarmingRewardsProps {
 }
 
 export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
-  const { farmingUsdValue, pool: { poolTokenMint, farming } } = props
+  const {
+    farmingUsdValue,
+    pool: { poolTokenMint, farming },
+  } = props
 
   const farmings = filterOpenFarmingStates(farming || [])
   const farmingsMap = farmings.reduce((acc, of) => {
@@ -30,7 +33,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
 
   const openFarmingsKeys = Array.from(farmingsMap.keys())
 
-  return farmings.length > 0 ?
+  return farmings.length > 0 ? (
     <>
       <FarmingDataIcons>
         {openFarmingsKeys.map((farmingStateMint) => {
@@ -40,7 +43,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
             >
               <TokenIcon
                 mint={farmingStateMint}
-                width={'1.3em'}
+                width="1.3em"
                 emojiIfNoLogo={false}
               />
             </FarmingIconWrap>
@@ -50,13 +53,22 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
       <div>
         <FarmingText>
           {openFarmingsKeys.map((farmingStateMint, i, arr) => {
-            const rewardPerK = (farmingsMap.get(farmingStateMint) || []).reduce((acc, farmingState) => {
-              return acc + getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity(
-                { farmingState, totalStakedLpTokensUSD: farmingUsdValue }
-              )
-            }, 0)
+            const rewardPerK = (farmingsMap.get(farmingStateMint) || []).reduce(
+              (acc, farmingState) => {
+                return (
+                  acc +
+                  getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
+                    farmingState,
+                    totalStakedLpTokensUSD: farmingUsdValue,
+                  })
+                )
+              },
+              0
+            )
             return (
-              <FarmingText key={`fs_reward_${poolTokenMint}_${farmingStateMint}`}>
+              <FarmingText
+                key={`fs_reward_${poolTokenMint}_${farmingStateMint}`}
+              >
                 {i > 0 ? ' + ' : ''}
                 <FarmingText color="success">
                   {stripByAmountAndFormat(rewardPerK)}&nbsp;
@@ -64,17 +76,21 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
                 {getTokenNameByMintAddress(farmingStateMint)}
               </FarmingText>
             )
-          })} / Day
+          })}{' '}
+          / Day
         </FarmingText>
         <div>
           <FarmingText>
-            Per each  <FarmingText color="success">$1000</FarmingText>
+            Per each <FarmingText color="success">$1000</FarmingText>
           </FarmingText>
         </div>
       </div>
     </>
-    :
+  ) : (
     <div>
-      <PoolStatsText>No farming</PoolStatsText>
+      <PoolStatsText>
+        {!farming || !farming.length ? 'No farming available' : 'Farming ended'}
+      </PoolStatsText>
     </div>
+  )
 }

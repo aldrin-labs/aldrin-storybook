@@ -2,7 +2,12 @@ import { FlexBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
 import { Text } from '@sb/components/Typography'
 import React from 'react'
-import { PoolProcessingBlock, PoolProcessingButton, PoolProcessingContent, Title } from './styles'
+import {
+  PoolProcessingBlock,
+  PoolProcessingButton,
+  PoolProcessingContent,
+  Title,
+} from './styles'
 
 export type TransactionStatus = 'processing' | 'success' | 'error'
 
@@ -19,37 +24,49 @@ const steps = [
   'Create liquidity pool...',
   'Deposit initial liquidity...',
   'Setup farming...',
+  'Checking for new pools...',
 ]
 
-export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (props) => {
+export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
+  props
+) => {
   const { step, onClose, status } = props
 
   return (
-    <Modal backdrop="dark" open onClose={() => { }}>
+    <Modal backdrop="dark" open onClose={() => {}}>
       <PoolProcessingBlock>
         <FlexBlock justifyContent="space-between">
           <Title>Pool creating...</Title>
         </FlexBlock>
         <PoolProcessingContent>
-          {status === 'processing' &&
+          {status === 'processing' && (
             <>
               <Text>{steps[step]}</Text>
               <Text size="sm">Please do not close browser window.</Text>
             </>
-          }
-          {status === 'success' &&
+          )}
+          {status === 'success' && (
             <>
               <Text>Pool has been created</Text>
               <Text size="sm">Now you can close the window.</Text>
             </>
-          }
-          {status === 'error' &&
+          )}
+          {status === 'error' && (
             <>
               <Text>Pool creation failed.</Text>
-              <Text size="sm">Please check your transactions or contact us via <a href="https://t.me/Aldrin_Exchange" target="_blank">Telegram</a>.</Text>
+              <Text size="sm">
+                Please check your transactions or contact us via{' '}
+                <a
+                  href="https://t.me/Aldrin_Exchange"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Telegram
+                </a>
+                .
+              </Text>
             </>
-          }
-
+          )}
 
           <PoolProcessingButton
             $loading={status === 'processing'}

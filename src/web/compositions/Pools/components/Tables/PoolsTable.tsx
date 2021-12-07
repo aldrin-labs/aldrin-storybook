@@ -10,6 +10,7 @@ import {
   DataCellValue,
   NoDataBlock,
 } from '@sb/components/DataTable'
+import ScalesIcon from '@icons/scales.svg'
 import { Text } from '@sb/components/Typography'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
@@ -18,11 +19,17 @@ import React, { useState, ReactNode } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { FlexBlock } from '@sb/components/Layout'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { useVesting } from '@sb/dexUtils/vesting'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { SvgIcon } from '@sb/components'
+import { toMap } from '@sb/utils'
 import { DexTokensPrices, PoolInfo } from '../../index.types'
 import { FarmingRewards } from '../FarminRewards'
 import { TokenIconsContainer } from './components'
 import { getFarmingStateDailyFarmingValue } from './UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { symbolIncludesSearch } from './utils'
+import { STABLE_POOLS_TOOLTIP } from '../Popups/CreatePool/PoolConfirmationData'
+import { Vesting } from '../../../../dexUtils/vesting/types'
 
 export interface PoolsTableProps {
   pools: PoolInfo[]
@@ -57,8 +64,9 @@ const prepareCell = (params: {
   tokenPrices: Map<string, DexTokensPrices>
   prepareMore: (pool: PoolInfo) => { [c: string]: DataCellValue }
   walletPk: string
+  vestings: Map<string, Vesting>
 }): DataCellValues<PoolInfo> => {
-  const { pool, tokenPrices, prepareMore, walletPk } = params
+  const { pool, tokenPrices, prepareMore, walletPk, vestings } = params
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
@@ -94,6 +102,8 @@ const prepareCell = (params: {
     return acc + dailyRewardUsd
   }, 0)
 
+  const vesting = vestings.get(pool.poolTokenMint)
+
   const farmingAPR =
     ((totalDailyRewardUsd * 365) / totalStakedLpTokensUSD) * 100
 
@@ -103,10 +113,11 @@ const prepareCell = (params: {
       pool: {
         rawValue: pool.parsedName,
         rendered: (
-          <div>
+          <FlexBlock alignItems="center">
             <Link
               to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
               style={{ textDecoration: 'none' }}
+              onClick={(e) => e.stopPropagation()}
             >
               <TokenIconsContainer tokenA={pool.tokenA} tokenB={pool.tokenB}>
                 {!!walletPk && walletPk === pool.initializerAccount && (
@@ -116,7 +127,13 @@ const prepareCell = (params: {
                 )}
               </TokenIconsContainer>
             </Link>
-          </div>
+            {pool.curveType === 1 && (
+              <DarkTooltip title={STABLE_POOLS_TOOLTIP}>
+                <SvgIcon src={ScalesIcon} width="15px" height="15px" />
+              </DarkTooltip>
+            )}
+            {!!vesting && '👑'}
+          </FlexBlock>
         ),
       },
       tvl: {
@@ -171,6 +188,10 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
   const wallet = useWallet()
   const history = useHistory()
 
+  const { data: vestings = [] } = useVesting()
+
+  const vestingsByMint = toMap(vestings, (v) => v.mint.toBase58())
+
   const walletPk = wallet.wallet.publicKey?.toBase58() || ''
 
   const data = pools
@@ -182,7 +203,15 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
         searchValue
       )
     )
-    .map((pool) => prepareCell({ pool, tokenPrices, prepareMore, walletPk }))
+    .map((pool) =>
+      prepareCell({
+        pool,
+        tokenPrices,
+        prepareMore,
+        walletPk,
+        vestings: vestingsByMint,
+      })
+    )
 
   return (
     <DataTable

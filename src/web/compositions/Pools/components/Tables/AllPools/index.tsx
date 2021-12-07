@@ -5,7 +5,7 @@ import {
   FeesMap,
   PoolInfo,
   TokenPricesMap,
-  VolumesMap
+  VolumesMap,
 } from '@sb/compositions/Pools/index.types'
 
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -21,13 +21,41 @@ interface AllPoolsProps {
 }
 
 const COLUMNS: DataHeadColumn[] = [
-  { key: 'vol24h', title: <InlineText>Volume <InlineText color="hint">24h</InlineText></InlineText>, sortable: true },
-  { key: 'vol7d', title: <InlineText>Volume <InlineText color="hint">7d</InlineText></InlineText>, sortable: true },
-  { key: 'fees', title: <InlineText>Fees <InlineText color="hint">24h</InlineText></InlineText>, sortable: true },
+  {
+    key: 'vol24h',
+    title: (
+      <InlineText>
+        Volume <InlineText color="hint">24h</InlineText>
+      </InlineText>
+    ),
+    sortable: true,
+  },
+  {
+    key: 'vol7d',
+    title: (
+      <InlineText>
+        Volume <InlineText color="hint">7d</InlineText>
+      </InlineText>
+    ),
+    sortable: true,
+  },
+  {
+    key: 'fees',
+    title: (
+      <InlineText>
+        Fees <InlineText color="hint">24h</InlineText>
+      </InlineText>
+    ),
+    sortable: true,
+  },
 ]
 
-const prepareCell = (pool: PoolInfo, tokenPrices: TokenPricesMap, feesByPool: FeesMap, tradingVolumes: VolumesMap): { [c: string]: DataCellValue } => {
-
+const prepareCell = (
+  pool: PoolInfo,
+  tokenPrices: TokenPricesMap,
+  feesByPool: FeesMap,
+  tradingVolumes: VolumesMap
+): { [c: string]: DataCellValue } => {
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
@@ -55,8 +83,7 @@ const prepareCell = (pool: PoolInfo, tokenPrices: TokenPricesMap, feesByPool: Fe
           ${stripByAmountAndFormat(volume.dailyTradingVolume, 2)}
         </Text>
       ),
-      rawValue: volume.dailyTradingVolume
-
+      rawValue: volume.dailyTradingVolume,
     },
     vol7d: {
       rendered: (
@@ -64,29 +91,18 @@ const prepareCell = (pool: PoolInfo, tokenPrices: TokenPricesMap, feesByPool: Fe
           ${stripByAmountAndFormat(volume.weeklyTradingVolume, 2)}
         </Text>
       ),
-      rawValue: volume.dailyTradingVolume
-
+      rawValue: volume.dailyTradingVolume,
     },
     fees: {
-      rendered: (
-        <Text size="sm">
-          ${stripByAmountAndFormat(feesInUSD, 2)}
-        </Text>
-      ),
-      rawValue: feesInUSD
-
+      rendered: <Text size="sm">${stripByAmountAndFormat(feesInUSD, 2)}</Text>,
+      rawValue: feesInUSD,
     },
   }
 }
 
 export const AllPoolsTable: React.FC<AllPoolsProps> = (props) => {
-  const {
-    searchValue,
-    dexTokensPricesMap,
-    pools,
-    feesByPool,
-    tradingVolumes,
-  } = props
+  const { searchValue, dexTokensPricesMap, pools, feesByPool, tradingVolumes } =
+    props
 
   return (
     <PoolsTable
@@ -94,7 +110,9 @@ export const AllPoolsTable: React.FC<AllPoolsProps> = (props) => {
       pools={pools}
       tokenPrices={dexTokensPricesMap}
       searchValue={searchValue}
-      prepareCell={(pool) => prepareCell(pool, dexTokensPricesMap, feesByPool, tradingVolumes)}
+      prepareCell={(pool) =>
+        prepareCell(pool, dexTokensPricesMap, feesByPool, tradingVolumes)
+      }
       suffix="all"
     />
   )

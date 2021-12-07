@@ -1,4 +1,4 @@
-import { ReactNode, SyntheticEvent } from "react";
+import { ReactNode, SyntheticEvent } from 'react'
 
 export interface DataHeadColumn {
   key: string
@@ -15,7 +15,7 @@ export interface DataCellValue {
 export enum SORT_ORDER {
   ASC = 'ASC',
   DESC = 'DESC',
-  NONE = 'NONE'
+  NONE = 'NONE',
 }
 
 export type DataCellValues<E = undefined> = {
@@ -23,14 +23,18 @@ export type DataCellValues<E = undefined> = {
   extra: E
 }
 
-export interface DataTableProps<E> { // TODO: extract column names & pass to values 
+export interface DataTableProps<E> {
+  // TODO: extract column names & pass to values
   columns: DataHeadColumn[]
   data: DataCellValues<E>[]
   defaultSortColumn?: string
   defaultSortOrder?: SORT_ORDER
   name: string
   expandableContent?: (row: DataCellValues<E>) => ReactNode
-  onRowClick?: (e: SyntheticEvent<HTMLTableRowElement>, row: DataCellValues<E>) => void
+  onRowClick?: (
+    e: SyntheticEvent<HTMLTableRowElement>,
+    row: DataCellValues<E>
+  ) => void
   noDataText?: ReactNode
 }
 

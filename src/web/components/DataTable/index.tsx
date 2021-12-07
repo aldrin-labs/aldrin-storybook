@@ -1,15 +1,23 @@
 import React, { useState } from 'react'
 import { DataTableProps, DataTableState, SORT_ORDER } from './types'
-import { Table, Thead, Tbody, Th, Tr, Td, ThContent, NoDataBlock } from './styles'
-import { Hint } from './components'
+import {
+  Table,
+  Thead,
+  Tbody,
+  Th,
+  Tr,
+  Td,
+  ThContent,
+  NoDataBlock,
+  TableBody,
+} from './styles'
+import { Hint, SortButton } from './components'
 import { useLocalStorageState } from '../../dexUtils/utils'
-import { SortButton } from './components'
 import { sortData, nextSortOrder } from './utils'
-import { Body } from '../Layout'
 
 export * from './types'
 
-const nop = () => { }
+const nop = () => {}
 
 export function DataTable<E>(props: DataTableProps<E>) {
   const {
@@ -22,9 +30,10 @@ export function DataTable<E>(props: DataTableProps<E>) {
     onRowClick = nop,
     noDataText,
   } = props
-  const [state, setState] = useLocalStorageState<DataTableState>(`dt_${name}`,
-    { sortColumn: defaultSortColumn, sortOrder: defaultSortOrder }
-  )
+  const [state, setState] = useLocalStorageState<DataTableState>(`dt_${name}`, {
+    sortColumn: defaultSortColumn,
+    sortOrder: defaultSortOrder,
+  })
 
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
 
@@ -52,64 +61,69 @@ export function DataTable<E>(props: DataTableProps<E>) {
   const cols = columns.length + (isExpandable ? 1 : 0)
 
   return (
-    <Body>
+    <TableBody>
       <Table>
         <Thead>
           <Tr>
-            {columns.map((c) =>
-              <Th className={`${c.sortable ? 'sortable ' : ''}`} key={`datatable_${name}_head_${c.key}`}>
+            {columns.map((c) => (
+              <Th
+                className={`${c.sortable ? 'sortable ' : ''}`}
+                key={`datatable_${name}_head_${c.key}`}
+              >
                 <ThContent onClick={c.sortable ? () => setSort(c.key) : nop}>
                   {c.title}
                   {c.hint && <Hint text={c.hint} />}
-                  {c.sortable &&
+                  {c.sortable && (
                     <SortButton
                       sortOrder={state.sortOrder}
                       sortColumn={state.sortColumn}
                       columnName={c.key}
-                    />}
+                    />
+                  )}
                 </ThContent>
               </Th>
-            )}
+            ))}
             {isExpandable && <Th />}
           </Tr>
         </Thead>
         <Tbody>
-          {sortedData.map((row, idx) =>
+          {sortedData.map((row, idx) => (
+            // eslint-disable-next-line react/no-array-index-key
             <React.Fragment key={`datatable_${name}_row_${idx}`}>
               <Tr onClick={(e) => onRowClick(e, row)}>
-                {columns.map(({ key }) =>
+                {columns.map(({ key }) => (
+                  // eslint-disable-next-line react/no-array-index-key
                   <Td key={`datatable_${name}_cell_${idx}_${key}`}>
-                    {!!row.fields[key] &&
+                    {!!row.fields[key] && (
                       <>
                         {row.fields[key].rendered || row.fields[key].rawValue}
                       </>
-                    }
+                    )}
                   </Td>
-                )}
-                {isExpandable &&
+                ))}
+                {isExpandable && (
                   <Td onClick={() => setExpanded(idx)}>Details</Td>
-                }
+                )}
               </Tr>
-              {!!expandableContent && expandedIdx === idx &&
+              {!!expandableContent && expandedIdx === idx && (
                 <Tr>
-                  <Td colSpan={cols}>
-                    {expandableContent(row)}
-                  </Td>
+                  <Td colSpan={cols}>{expandableContent(row)}</Td>
                 </Tr>
-              }
+              )}
             </React.Fragment>
-          )}
-          {sortedData.length === 0 &&
+          ))}
+          {sortedData.length === 0 && (
             <Tr className="no-hover">
               <Td colSpan={cols}>
-                {noDataText || <NoDataBlock justifyContent="center">No data</NoDataBlock>
-                }
+                {noDataText || (
+                  <NoDataBlock justifyContent="center">No data</NoDataBlock>
+                )}
               </Td>
             </Tr>
-          }
+          )}
         </Tbody>
       </Table>
-    </Body>
+    </TableBody>
   )
 }
 

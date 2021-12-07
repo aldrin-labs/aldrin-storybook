@@ -5,6 +5,7 @@ import {
   Transaction,
   Account,
   Keypair,
+  Signer,
 } from '@solana/web3.js'
 import { Order } from '@project-serum/serum/lib/market'
 
@@ -67,7 +68,7 @@ export interface PlaceOrder {
 export interface SignTransactionsParams {
   transactionsAndSigners: {
     transaction: Transaction
-    signers?: Array<Account | Keypair>
+    signers?: Array<Account | Keypair | Signer>
   }[]
   wallet: WalletAdapter
   connection: Connection
@@ -118,6 +119,7 @@ export interface SendSignedTransactionParams {
 }
 
 export type SendSignedTransactionResult = 'failed' | 'timeout' | string
-export type AsyncSendSignedTransactionResult = Promise<SendSignedTransactionResult>
+export type AsyncSendSignedTransactionResult =
+  Promise<SendSignedTransactionResult>
 
 export type Maybe<T> = T | undefined

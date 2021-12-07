@@ -7,23 +7,22 @@ import {
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  Connection
+  Connection,
 } from '@solana/web3.js'
 import BN from 'bn.js'
 import { isCancelledTransactionError } from '../../common/isCancelledTransactionError'
 import { transferSOLToWrappedAccountAndClose } from '../../pools'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS, getPoolsProgramAddress } from '../../ProgramsMultiton/utils'
+import { getPoolsProgramAddress } from '../../ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
-  sendTransaction
+  sendTransaction,
 } from '../../send'
 import { Token } from '../../token/token'
 import { WalletAdapter } from '../../types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
-
 
 interface CreateBasketBase {
   poolPublicKey: PublicKey
@@ -49,8 +48,9 @@ export interface CreateBasketTransactionParams extends CreateBasketBase {
   transferSOLToWrapped?: boolean
 }
 
-
-export async function createBasketTransaction(params: CreateBasketTransactionParams): Promise<[Transaction, Account[]]> {
+export async function createBasketTransaction(
+  params: CreateBasketTransactionParams
+): Promise<[Transaction, Account[]]> {
   const {
     program,
     poolPublicKey,
@@ -68,25 +68,21 @@ export async function createBasketTransaction(params: CreateBasketTransactionPar
     quoteTokenVault,
   } = params
 
-  let {
-    userPoolTokenAccount,
-    userBaseTokenAccount,
-    userQuoteTokenAccount,
-  } = params
-
+  let { userPoolTokenAccount, userBaseTokenAccount, userQuoteTokenAccount } =
+    params
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
     [poolPublicKey.toBuffer()],
     program.programId
   )
 
-  const poolTokenAmount = /* first deposit */ supply.eqn(0) ?
-    new BN(1 * 10 ** 8) :
-    supply
-      .mul(new BN(userBaseTokenAmount))
-      .div(poolTokenAmountA)
-      .muln(99)
-      .divn(100)
+  const poolTokenAmount = /* first deposit */ supply.eqn(0)
+    ? new BN(1 * 10 ** 8)
+    : supply
+        .mul(new BN(userBaseTokenAmount))
+        .div(poolTokenAmountA)
+        .muln(99)
+        .divn(100)
 
   const transactionBeforeDeposit = new Transaction()
   const commonSigners: Account[] = []
@@ -95,13 +91,11 @@ export async function createBasketTransaction(params: CreateBasketTransactionPar
 
   // create pool token account for user if not exist
   if (!userPoolTokenAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey: new PublicKey(poolMint),
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: new PublicKey(poolMint),
+      })
 
     userPoolTokenAccount = newAccountPubkey
     transactionBeforeDeposit.add(createAccountTransaction)
@@ -148,9 +142,9 @@ export async function createBasketTransaction(params: CreateBasketTransactionPar
     transactionAfterDeposit.add(closeAccountTransaction)
   }
 
-  let commonTransaction = new Transaction()
+  const commonTransaction = new Transaction()
 
-  const createBasketTransaction = await program.instruction.createBasket(
+  const createBasketTx = await program.instruction.createBasket(
     poolTokenAmount,
     new BN(userBaseTokenAmount),
     new BN(userQuoteTokenAmount),
@@ -173,14 +167,11 @@ export async function createBasketTransaction(params: CreateBasketTransactionPar
   )
 
   commonTransaction.add(transactionBeforeDeposit)
-  commonTransaction.add(createBasketTransaction)
+  commonTransaction.add(createBasketTx)
   commonTransaction.add(transactionAfterDeposit)
 
-
   return [commonTransaction, commonSigners]
-
 }
-
 
 export interface CreateBasketParams extends CreateBasketBase {
   curveType: number | null
@@ -189,13 +180,11 @@ export interface CreateBasketParams extends CreateBasketBase {
 export async function createBasket(params: CreateBasketParams) {
   const { wallet, connection, poolPublicKey } = params
   try {
-
     const program = ProgramsMultiton.getProgramByAddress({
       wallet,
       connection,
       programAddress: getPoolsProgramAddress({ curveType: params.curveType }),
     })
-
 
     const {
       baseTokenMint,
@@ -204,13 +193,13 @@ export async function createBasket(params: CreateBasketParams) {
       quoteTokenVault,
       poolMint,
       lpTokenFreezeVault,
-    } = await program.account.pool.fetch(poolPublicKey)
-
-
+    } = (await program.account.pool.fetch(poolPublicKey)) as {
+      [c: string]: PublicKey
+    }
     const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
 
     const poolMintInfo = await poolToken.getMintInfo()
-    const supply = poolMintInfo.supply
+    const { supply } = poolMintInfo
 
     const tokenMintA = new Token(
       wallet,

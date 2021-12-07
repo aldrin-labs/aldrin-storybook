@@ -21,7 +21,7 @@ const processCall = (call: Promise<any>, connection: Connection) => {
   const t = setTimeout(() => {
     Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.timeout` })
   }, 30 * 1000)
-  
+
   return call.then(
     (d) => {
       clearTimeout(t)

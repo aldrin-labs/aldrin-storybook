@@ -10,7 +10,6 @@ import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
 import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
 import { Block, BlockContent } from '@sb/components/Block'
-import { Button } from '@sb/components/Button'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/components/Typography'
 import {
@@ -30,7 +29,7 @@ import { Route } from 'react-router'
 import { useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
 import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
-import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
+import { ApolloQueryResult } from 'apollo-client'
 import { PoolPage } from '../../PoolPage'
 import { AllPoolsTable } from '../AllPools'
 import { UserLiquidityTable } from '../UserLiquidity'
@@ -45,8 +44,10 @@ import {
 } from './styles'
 import { CreatePoolModal } from '../../Popups'
 
+export type PoolsInfo = { getPoolsInfo: PoolInfo[] }
 interface TableSwitcherProps {
-  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  getPoolsInfoQueryRefetch: () => Promise<ApolloQueryResult<PoolsInfo>>
+  getPoolsInfoQuery: PoolsInfo
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   getFeesEarnedByAccountQuery: { getFeesEarnedByAccount: FeesEarned[] }
   getFeesEarnedByPoolQuery: { getFeesEarnedByPool: FeesEarned[] }
@@ -57,6 +58,7 @@ interface TableSwitcherProps {
 
 const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const {
+    getPoolsInfoQueryRefetch,
     getPoolsInfoQuery: { getPoolsInfo: pools = [] },
     getDexTokensPricesQuery: { getDexTokensPrices = [] },
     getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
@@ -85,7 +87,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
-  const [snapshotQueues, refreshSnapshotQueues] = useSnapshotQueues({
+  const [snapshotQueues] = useSnapshotQueues({
     wallet,
     connection,
   })
@@ -166,17 +168,11 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
               onChange={onChangeSearch}
               append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
             />
-            <AddPoolButton
-              title="Create new pool"
-              as="a"
-              href={LISTING_REQUEST_GOOGLE_FORM}
-              target="_blank"
-            >
+            <AddPoolButton onClick={() => setCreatePoolModalOpened(true)}>
               <SvgIcon src={PlusIcon} width="1.2em" />
+              &nbsp;New Pool
             </AddPoolButton>
-            <Button onClick={() => setCreatePoolModalOpened(true)}>
-              ADD POOL
-            </Button>
+
             <a
               style={{ textDecoration: 'none' }}
               href={AMMAudit}
@@ -233,7 +229,10 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         />
       </Route>
       {createPoolModalOpened && (
-        <CreatePoolModal onClose={() => setCreatePoolModalOpened(false)} />
+        <CreatePoolModal
+          refetchPools={getPoolsInfoQueryRefetch}
+          onClose={() => setCreatePoolModalOpened(false)}
+        />
       )}
     </Block>
   )
