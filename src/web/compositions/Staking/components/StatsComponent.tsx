@@ -188,14 +188,13 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                     title={
                       <span>
                         <div style={{ marginBottom: '1rem' }}>
-                          Total APR is calculated based on:
-                        </div>
-                        <div style={{ marginBottom: '1rem' }}>
-                          1st APR = fixed treasury rewards for stakers
+                        First APR is calculated based on fixed “treasury” rewards. 
+                        These rewards estimation are updated hourly.
                         </div>
                         <div>
-                          2nd APR = 16.66% of AMM fees are used to buy back RIN
-                          and distributed to stakers (based on 30 day average)
+                        Second APR is calculated based on the current RIN price and 
+                        the average AMM fees for the past 7d. This rewards estimation 
+                        are updated weekly.
                         </div>
                       </span>
                     }
@@ -223,7 +222,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
               <BlockTitle>RIN Stats </BlockTitle>
               <StatsBlock>
                 <StatsBlockItem>
-                  <BlockSubtitle>Price</BlockSubtitle>
+                  <BlockSubtitle margin={'0 0 3rem 0'}>Price</BlockSubtitle>
                   <LastPrice>
                     <Number>${stripByAmount(tokenPrice)}</Number>
                     {/* <InlineText
@@ -240,13 +239,13 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                   </LastPrice>
                 </StatsBlockItem>
                 <StatsBlockItem>
-                  <BlockSubtitle>Circulating Supply</BlockSubtitle>
+                  <BlockSubtitle margin={'0 0 3rem 0'}>Circulating Supply</BlockSubtitle>
                   <Number>
                     {stripByAmountAndFormat(RINCirculatingSupply)} RIN
                   </Number>
                 </StatsBlockItem>
                 <StatsBlockItem>
-                  <BlockSubtitle>Daily Rewards</BlockSubtitle>
+                  <BlockSubtitle margin={'0 0 3rem 0'}>Daily Rewards</BlockSubtitle>
                   <Number>{stripByAmountAndFormat(dailyRewards)} RIN</Number>
                 </StatsBlockItem>
               </StatsBlock>
