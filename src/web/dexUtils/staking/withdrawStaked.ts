@@ -34,6 +34,7 @@ import { StakingPool } from './types'
 import { PoolInfo } from '../../compositions/Pools/index.types'
 import { u64 } from '../token/token'
 import { getCalcAccounts } from './getCalcAccountsForWallet'
+import { groupBy } from '../../utils/collection'
 
 
 export interface WithdrawStakedParams {
@@ -54,9 +55,6 @@ interface FarmingCalc {
   initializer: PublicKey
   tokenAmount: u64
 }
-
-const USER_KEY_SPAN = 72
-const CALC_ACCOUNT_SIZE = 144
 
 export const withdrawStaked = async (params: WithdrawStakedParams) => {
   const {
@@ -92,17 +90,25 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
   const calcAccounts = await getCalcAccounts(program, wallet.publicKey)
 
+  const accountsByTicket = groupBy(calcAccounts, (ca) => ca.farmingTicket.toBase58())
+
   const ticketsToClaim = farmingTickets
-    .filter((ft) => ft.tokensFrozen > MIN_POOL_TOKEN_AMOUNT_TO_STAKE && ft.amountsToClaim.find((atc) => atc.amount > 0))
+    .filter((ft) => {
+      const accForTicket = accountsByTicket.get(ft.farmingTicket) || []
+      const calcWithAmount = accForTicket.find((ca) => ca.tokenAmount.gten(0))
+      return !!calcWithAmount || ft.tokensFrozen > MIN_POOL_TOKEN_AMOUNT_TO_STAKE && ft.amountsToClaim.find((atc) => atc.amount > 0)
+    })
 
   const tokenAccountsToCreate = pool.farming.reduce((acc, farming) => {
     const amountToClaim = ticketsToClaim
       .reduce((acc, ft) => {
+        const accForTicket = accountsByTicket.get(ft.farmingTicket) || []
+        const calcWithAmount = accForTicket.find((ca) => ca.tokenAmount.gten(0))
         const toClaim = ft.amountsToClaim.find(
           (amountToClaim) => amountToClaim.farmingState === farming.farmingState
         )?.amount || 0
 
-        return toClaim + acc
+        return toClaim + acc + parseFloat(calcWithAmount?.tokenAmount.toString() || '0')
       }, 0)
 
     if (amountToClaim > 0) {
@@ -135,13 +141,17 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     })
   )
 
+  console.log('ticketsToClaim', ticketsToClaim, pool.farming)
+
   const withdrawTransactions = await Promise.all(ticketsToClaim.map((ticket) => {
     return Promise.all(
       pool.farming
         .filter((fs) => {
+          const accForTicket = accountsByTicket.get(ticket.farmingTicket) || []
+          const calcForState = accForTicket.find((ca) => ca.tokenAmount.gten(0) && ca.farmingState.toBase58() === fs.farmingState)
           const amountToClaim =
             ticket.amountsToClaim.find((amountToClaim) => amountToClaim.farmingState === fs.farmingState)?.amount || 0
-          return amountToClaim > 0
+          return amountToClaim > 0 || calcForState?.tokenAmount.gten(0)
         })
         .map(async (fs) => {
           if (!wallet.publicKey) {
@@ -229,6 +239,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
             transactions.push({ transaction: tx })
           }
 
+          console.log(' farmingTokenAccounts.get(fs.farmingTokenMint): ', farmingTokenAccounts, farmingTokenAccounts.get(fs.farmingTokenMint), fs.farmingTokenMint)
           // Withdraw farmed
           transactions.push(
             {
@@ -281,6 +292,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
   const allTransactions = withdrawTransactions.flat(2)
 
 
+  console.log('allTransactions:', allTransactions)
 
   // Merge with new account instructions 
   if (createdAccounts.length && allTransactions.length) {

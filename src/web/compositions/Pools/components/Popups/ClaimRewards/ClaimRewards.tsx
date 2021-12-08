@@ -142,6 +142,7 @@ export const ClaimRewards = ({
       setTimeout(async () => {
         refreshTokensWithFarmingTickets()
       }, 7500)
+      console.warn('Error withdraw farming: ', e)
     }
 
     if (result !== 'blockhash_outdated') {
