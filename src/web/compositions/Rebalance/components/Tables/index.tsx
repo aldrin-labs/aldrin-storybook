@@ -34,7 +34,7 @@ import AddTokenDialog from '../AddTokensPopup/AddTokensPopup'
 
 const tooltipTexts = {
   'no market':
-    "It's currently impossible to buy or sell this token because no markets available for such token.",
+    "It's currently impossible to buy or sell this token because no Markets available for such token.",
   'no price':
     "It's currently impossible to buy or sell this token because this token is not supported.",
 }

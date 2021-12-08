@@ -33,9 +33,9 @@ const _sortList = ({ sortBy, sortDirection, data }) => {
   const isASCSort = sortDirection === SortDirection.ASC
 
   newList.sort((pairObjectA, pairObjectB) => {
-    if (pairObjectA.symbol.contentToSort === 'All markets')
+    if (pairObjectA.symbol.contentToSort === 'All Markets')
       return isASCSort ? 1 : -1
-    if (pairObjectB.symbol.contentToSort === 'All markets')
+    if (pairObjectB.symbol.contentToSort === 'All Markets')
       return isASCSort ? -1 : 1
 
     if (pairObjectA.symbol.contentToSort === 'RIN_USDC')
@@ -208,7 +208,7 @@ const PairSelector = ({
         }
       },
       {
-        symbol: 'All markets',
+        symbol: 'All Markets',
         volume: 0,
         tradesCount: 0,
         tradesDiff: 0,
@@ -243,7 +243,7 @@ const PairSelector = ({
     const processedSelectData = combineSelectWrapperData({
       data: filtredMarketsByExchange,
       onSelectPair: ({ value }) =>
-        history.push(`/analytics/${value === 'All markets' ? 'all' : value}`),
+        history.push(`/analytics/${value === 'All Markets' ? 'all' : value}`),
       theme,
       searchValue,
       tab: 'all',

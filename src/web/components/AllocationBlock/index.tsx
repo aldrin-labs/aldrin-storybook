@@ -85,7 +85,7 @@ const DonutChartWithLegend = ({
               {id === 'target' ? (
                 <DarkTooltip
                   title={
-                    'The final distribution may differ slightly from the set distribution due to differences in min. order size values in different markets, as well as market movements.'
+                    'The final distribution may differ slightly from the set distribution due to differences in min. order size values in different Markets, as well as market movements.'
                   }
                 >
                   <Row wrap={'nowrap'}>

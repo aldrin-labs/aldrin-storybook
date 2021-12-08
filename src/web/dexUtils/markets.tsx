@@ -292,7 +292,7 @@ export function useUnmigratedOpenOrdersAccounts() {
         )
       } catch (e) {
         console.log(
-          'Error loading deprecated markets',
+          'Error loading deprecated Markets',
           programId?.toBase58(),
           e.message
         )
@@ -408,7 +408,7 @@ export function MarketProvider({ children }) {
   }
 
   const [market, setMarket] = useState()
-  // add state for markets
+  // add state for Markets
   // add useEffect for customMarkets
   useEffect(() => {
     if (
@@ -1241,7 +1241,7 @@ export function getMarketInfos(customMarkets) {
   const awesomeMarkets = useAwesomeMarkets()
   // TODO: we should use useMarketsList first to not find
   // pair from custom market by name (in this way we cover case when pair with
-  // the same name will be in our market list and cusom markets)
+  // the same name will be in our market list and cusom Markets)
   return [...serumMarkets, ...customMarketsInfo, ...awesomeMarkets]
 }
 

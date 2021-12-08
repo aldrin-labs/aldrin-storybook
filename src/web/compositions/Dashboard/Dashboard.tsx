@@ -84,7 +84,7 @@ const Dashboard = ({
     refreshUnsettledBalances()
   }
 
-  // percentage of markets loaded, percentage of ob loaded, name of market/ob loading
+  // percentage of Markets loaded, percentage of ob loaded, name of market/ob loading
   const [percentageOfLoadedMarkets, setPercentageOfLoadedMarkets] = useState(0)
   const [
     percentageOfLoadedOrderbooks,
@@ -122,7 +122,7 @@ const Dashboard = ({
         openOrdersAccounts
       )
 
-      // by using open orders accounts we can know unique markets that need to be loadad
+      // by using open orders accounts we can know unique Markets that need to be loadad
       const uniqueMarketsIds = openOrdersAccounts
         .map((el) => el.market.toString())
         .filter(onlyUnique)

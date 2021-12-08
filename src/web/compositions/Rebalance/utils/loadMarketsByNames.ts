@@ -49,7 +49,7 @@ export const loadMarketsByNames = async ({
   if (loadedMarkets.result.error || !loadedMarkets.result.value) {
     notifyWithLog({
       message:
-        'Something went wrong while loading markets, please try again later.',
+        'Something went wrong while loading Markets, please try again later.',
       result: loadedMarkets.result,
     })
 

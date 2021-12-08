@@ -25,7 +25,7 @@ export const getTransactionsListWithPrices = async ({
   allMarketsMap: MarketsMap
   allMarketsMapById: MarketsMap
 }): Promise<TransactionType[]> => {
-  // getting names of markets to load
+  // getting names of Markets to load
   const rebalanceTransactionsList = getTransactionsList({
     orderbooks: {},
     tokensMap,

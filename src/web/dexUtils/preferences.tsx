@@ -30,7 +30,7 @@ export function PreferencesProvider({ children }) {
 
   useInterval(() => {
     const autoSettle = async () => {
-      // const markets = (marketList || []).map((m) => m.market);
+      // const Markets = (marketList || []).map((m) => m.market);
       try {
         const selectedOpenOrders = openOrdersAccount
 
