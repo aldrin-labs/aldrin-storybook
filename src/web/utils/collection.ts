@@ -14,3 +14,16 @@ export const toMap = <T>(list: T[], keyFn: (el: T) => string): Map<string, T> =>
     new Map<string, T>()
   )
 }
+
+
+export const groupBy = <T>(list: T[], keyFn: (el: T) => string): Map<string, T[]> => {
+  return list.reduce(
+    (acc, elem) => {
+      const group = acc.get(keyFn(elem)) || []
+      group.push(elem)
+      acc.set(keyFn(elem), group) 
+      return acc
+    },
+    new Map<string, T[]>()
+  )
+}

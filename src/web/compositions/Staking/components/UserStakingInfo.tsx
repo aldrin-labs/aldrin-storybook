@@ -166,6 +166,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const calculatedReward = calcAccounts.reduce((acc, ca) => { return acc.add(new BN(ca.tokenAmount.toString())) }, new BN(0))
   const calculatedRewardN = parseFloat(calculatedReward.toString()) / (10 ** currentFarmingState.farmingTokenMintDecimals)
+  
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
   })
@@ -300,7 +301,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       farmingTickets: userFarmingTickets,
       pools: [stakingPoolWithClosedFarmings],
       snapshotQueues: snapshotQueueWithAMMFees,
-    })
+    }),
+    calcAccounts,
+    currentFarmingState.farmingTokenMintDecimals,
   )
 
   const lastFarmingTicket = userFarmingTickets.sort(
@@ -439,7 +442,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       <RewardsTitle>Available to claim:</RewardsTitle>
                       <UserBalance
                         visible={isBalancesShowing}
-                        value={availableToClaimTotal + calculatedRewardN}
+                        value={availableToClaimTotal}
                         decimals={2}
                       />
                     </RewardsStatsRow>
