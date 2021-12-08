@@ -279,8 +279,8 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
           )
 
-          // Close calc accounts for closed tickets
-          if (new BN(ticket.endTime).lt(new BN(DEFAULT_FARMING_TICKET_END_TIME))) {
+          // Close calc accounts for closed tickets or finished farmings
+          if (new BN(ticket.endTime).lt(new BN(DEFAULT_FARMING_TICKET_END_TIME)) || fs.tokensUnlocked === fs.tokensTotal) {
             const closeCalcTx = new Transaction()
               .add(await program.instruction.closeFarmingCalc(
                 {
