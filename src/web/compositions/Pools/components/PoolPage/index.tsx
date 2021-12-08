@@ -16,6 +16,8 @@ import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { CURVE } from '@sb/dexUtils/pools/actions/createPool'
+
+import { Vesting } from '@sb/dexUtils/vesting/types'
 import {
   DexTokensPrices,
   FeesEarned,
@@ -56,6 +58,7 @@ interface PoolPageProps {
   refreshUserTokensData: RefreshFunction
   refreshAll: RefreshFunction
   snapshotQueues: SnapshotQueue[]
+  vestingsForWallet: Map<string, Vesting>
 }
 
 type ModalType =
@@ -79,6 +82,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     snapshotQueues,
     refreshUserTokensData,
     refreshAll,
+    vestingsForWallet,
   } = props
 
   const history = useHistory()
@@ -105,6 +109,8 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const goBack = () => history.push('/pools')
 
   const pool = pools?.find((p) => p.parsedName === symbol)
+
+  const vesting = vestingsForWallet.get(pool?.poolTokenMint)
 
   if (!pool) {
     return null
@@ -230,6 +236,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
                   onDepositClick={() => setOpenedPopup('deposit')}
                   onWithdrawClick={() => setOpenedPopup('withdraw')}
                   processing={liquidityProcessing}
+                  vesting={vesting}
                 />
               </Cell>
               <Cell col={12} colLg={6}>
@@ -268,12 +275,13 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           selectedPool={pool}
           dexTokensPricesMap={prices}
           farmingTicketsMap={farmingTickets}
-          earnedFeesInPoolForUserMap={earnedFees}
+          // earnedFeesInPoolForUserMap={earnedFees}
           allTokensData={userTokensData}
           close={closePopup}
           setIsUnstakePopupOpen={() => setOpenedPopup('unstake')}
           refreshAllTokensData={refreshUserTokensData}
           setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
+          vesting={vesting}
         />
       )}
 

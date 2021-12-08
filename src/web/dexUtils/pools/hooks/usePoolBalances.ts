@@ -31,17 +31,15 @@ export const usePoolBalances = ({
     const loadPoolBalances = async () => {
       if (!pool.poolTokenAccountA || !pool.poolTokenAccountB) return
 
-      const [
-        baseTokenBalanceInPool,
-        quoteTokenBalanceInPool,
-      ] = await Promise.all([
-        connection.getTokenAccountBalance(
-          new PublicKey(pool.poolTokenAccountA)
-        ),
-        connection.getTokenAccountBalance(
-          new PublicKey(pool.poolTokenAccountB)
-        ),
-      ])
+      const [baseTokenBalanceInPool, quoteTokenBalanceInPool] =
+        await Promise.all([
+          connection.getTokenAccountBalance(
+            new PublicKey(pool.poolTokenAccountA)
+          ),
+          connection.getTokenAccountBalance(
+            new PublicKey(pool.poolTokenAccountB)
+          ),
+        ])
 
       const baseTokenAmount = baseTokenBalanceInPool?.value?.uiAmount || 0
       const quoteTokenAmount = quoteTokenBalanceInPool?.value?.uiAmount || 0

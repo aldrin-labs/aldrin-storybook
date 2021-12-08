@@ -1,13 +1,20 @@
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { TokenInfo } from '@sb/dexUtils/types'
 import React from 'react'
-import { PoolInfo, FeesEarned } from '../../index.types'
-import { getTokenDataByMint } from '../../utils'
-import { LiquidityBlock, LiquidityButton, LiquidityItem, LiquidityText, LiquidityTitle } from './styles'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { Vesting } from '@sb/dexUtils/vesting/types'
+import {
+  LiquidityBlock,
+  LiquidityButton,
+  LiquidityItem,
+  LiquidityText,
+  LiquidityTitle,
+} from './styles'
+import { getTokenDataByMint } from '../../utils'
+import { PoolInfo, FeesEarned } from '../../index.types'
 
 interface UserLiquidityBlockProps {
   pool: PoolInfo
@@ -19,10 +26,12 @@ interface UserLiquidityBlockProps {
   processing: boolean
   onDepositClick: () => void
   onWithdrawClick: () => void
+  vesting?: Vesting
 }
 
-export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (props) => {
-
+export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
+  props
+) => {
   const {
     userTokensData,
     pool,
@@ -33,30 +42,42 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (props) => 
     onDepositClick,
     onWithdrawClick,
     processing,
+    vesting,
   } = props
 
-  const { amount: poolTokenAmount } = getTokenDataByMint(userTokensData, pool.poolTokenMint)
+  const { amount: poolTokenAmount } = getTokenDataByMint(
+    userTokensData,
+    pool.poolTokenMint
+  )
 
   const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 
-
   const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
-
-  const hasLiquidity = stakedTokens > 0 || poolTokenAmount > 0
 
   const [baseUserTokenAmount, quoteUserTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
-    poolTokenAmount: poolTokenAmount + stakedTokens,
+    poolTokenAmount:
+      poolTokenAmount +
+      stakedTokens +
+      parseFloat(vesting?.startBalance.toString() || '0'),
   })
+
+  const hasLiquidity = baseUserTokenAmount > 0 || quoteUserTokenAmount > 0
 
   const baseTokenName = getTokenNameByMintAddress(pool.tokenA)
   const quoteTokenName = getTokenNameByMintAddress(pool.tokenB)
 
-  const userLiquidityUsd = basePrice * baseUserTokenAmount + quotePrice * quoteUserTokenAmount
+  const userLiquidityUsd =
+    basePrice * baseUserTokenAmount + quotePrice * quoteUserTokenAmount
 
-  const earnedPoolFees = earnedFees.get(pool.swapToken) || { totalBaseTokenFee: 0, totalQuoteTokenFee: 0 }
+  const earnedPoolFees = earnedFees.get(pool.swapToken) || {
+    totalBaseTokenFee: 0,
+    totalQuoteTokenFee: 0,
+  }
 
-  const earnedFeesUd = earnedPoolFees.totalBaseTokenFee * basePrice + earnedPoolFees.totalQuoteTokenFee * quotePrice
+  const earnedFeesUd =
+    earnedPoolFees.totalBaseTokenFee * basePrice +
+    earnedPoolFees.totalQuoteTokenFee * quotePrice
 
   return (
     <LiquidityBlock>
@@ -64,12 +85,21 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (props) => 
         <LiquidityTitle>Your Liquidity:</LiquidityTitle>
         <div>
           <LiquidityText weight={600}>
-            <LiquidityText color="success">{stripByAmountAndFormat(baseUserTokenAmount, 6)}</LiquidityText> {baseTokenName}
-            <LiquidityText color="success"> / {stripByAmountAndFormat(quoteUserTokenAmount, 6)}</LiquidityText> {quoteTokenName}
+            <LiquidityText color="success">
+              {stripByAmountAndFormat(baseUserTokenAmount, 6)}
+            </LiquidityText>{' '}
+            {baseTokenName}
+            <LiquidityText color="success">
+              {' '}
+              / {stripByAmountAndFormat(quoteUserTokenAmount, 6)}
+            </LiquidityText>{' '}
+            {quoteTokenName}
           </LiquidityText>
         </div>
         <div>
-          <LiquidityText color="success">${stripByAmountAndFormat(userLiquidityUsd, 2)}</LiquidityText>
+          <LiquidityText color="success">
+            ${stripByAmountAndFormat(userLiquidityUsd, 2)}
+          </LiquidityText>
         </div>
         <LiquidityButton
           disabled={processing}
@@ -84,12 +114,21 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (props) => 
         <LiquidityTitle>Fees Earned:</LiquidityTitle>
         <div>
           <LiquidityText weight={600}>
-            <LiquidityText color="success">{stripByAmountAndFormat(earnedPoolFees.totalBaseTokenFee, 6)}</LiquidityText>  {baseTokenName}
-            <LiquidityText color="success"> /{stripByAmountAndFormat(earnedPoolFees.totalQuoteTokenFee, 6)}</LiquidityText> {quoteTokenName}
+            <LiquidityText color="success">
+              {stripByAmountAndFormat(earnedPoolFees.totalBaseTokenFee, 6)}
+            </LiquidityText>{' '}
+            {baseTokenName}
+            <LiquidityText color="success">
+              {' '}
+              /{stripByAmountAndFormat(earnedPoolFees.totalQuoteTokenFee, 6)}
+            </LiquidityText>{' '}
+            {quoteTokenName}
           </LiquidityText>
         </div>
         <div>
-          <LiquidityText color="success">${stripByAmountAndFormat(earnedFeesUd, 2)}</LiquidityText>
+          <LiquidityText color="success">
+            ${stripByAmountAndFormat(earnedFeesUd, 2)}
+          </LiquidityText>
         </div>
         <LiquidityButton
           disabled={processing || !hasLiquidity}
@@ -98,7 +137,6 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (props) => 
         >
           Withdraw Liquidity + Fees
         </LiquidityButton>
-
       </LiquidityItem>
     </LiquidityBlock>
   )
