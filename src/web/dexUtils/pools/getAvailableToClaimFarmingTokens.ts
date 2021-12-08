@@ -17,7 +17,7 @@ export const getAvailableToClaimFarmingTokens = (
       .reduce(
         (acc, ticket) => {
           const calculatedReward = (calcByTicket.get(ticket.farmingTicket) || [])
-            .filter((cft) => ticket.amountsToClaim.find((atc) => atc.farmingState === cft.farmingTicket.toBase58()))
+            .filter((cft) => ticket.amountsToClaim.find((atc) => atc.farmingState === cft.farmingState.toBase58()))
             .reduce((acc, cft) => { return acc.add(new BN(cft.tokenAmount.toString())) }, new BN(0))
 
           const calculatedRewardNum = parseFloat(calculatedReward.toString()) / (10 ** farmingDecimals)
