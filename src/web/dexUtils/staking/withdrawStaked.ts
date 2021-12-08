@@ -141,8 +141,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     })
   )
 
-  console.log('ticketsToClaim', ticketsToClaim, pool.farming)
-
   const withdrawTransactions = await Promise.all(ticketsToClaim.map((ticket) => {
     return Promise.all(
       pool.farming
@@ -239,7 +237,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
             transactions.push({ transaction: tx })
           }
 
-          console.log(' farmingTokenAccounts.get(fs.farmingTokenMint): ', farmingTokenAccounts, farmingTokenAccounts.get(fs.farmingTokenMint), fs.farmingTokenMint)
           // Withdraw farmed
           transactions.push(
             {
