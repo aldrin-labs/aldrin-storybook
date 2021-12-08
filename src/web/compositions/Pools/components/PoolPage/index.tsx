@@ -17,7 +17,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { CURVE } from '@sb/dexUtils/pools/actions/createPool'
 
-import { Vesting } from '@sb/dexUtils/vesting/types'
+import { VestingWithPk } from '@sb/dexUtils/vesting/types'
 import {
   DexTokensPrices,
   FeesEarned,
@@ -58,7 +58,7 @@ interface PoolPageProps {
   refreshUserTokensData: RefreshFunction
   refreshAll: RefreshFunction
   snapshotQueues: SnapshotQueue[]
-  vestingsForWallet: Map<string, Vesting>
+  vestingsForWallet: Map<string, VestingWithPk>
 }
 
 type ModalType =
@@ -110,7 +110,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const pool = pools?.find((p) => p.parsedName === symbol)
 
-  const vesting = vestingsForWallet.get(pool?.poolTokenMint)
+  const vesting = vestingsForWallet.get(pool?.poolTokenMint || '')
 
   if (!pool) {
     return null

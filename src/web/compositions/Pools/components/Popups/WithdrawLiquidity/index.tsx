@@ -27,7 +27,7 @@ import { RefreshFunction } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
-import { Vesting } from '@sb/dexUtils/vesting/types'
+import { VestingWithPk } from '@sb/dexUtils/vesting/types'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
@@ -44,7 +44,7 @@ interface WithdrawalProps {
   refreshAllTokensData: RefreshFunction
   setIsUnstakePopupOpen: (isOpen: boolean) => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  vesting?: Vesting
+  vesting?: VestingWithPk
 }
 
 const resolveWithdrawStatus = (result: string) => {
@@ -158,12 +158,20 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
 
   const [availableWithdrawAmountTokenA] = calculateWithdrawAmount({
     selectedPool,
-    poolTokenAmount,
+    poolTokenAmount: poolTokenAmount + lockedTokens,
   })
 
   const poolTokenAmountToWithdraw =
-    (+baseAmount / availableWithdrawAmountTokenA) * poolTokenAmount
+    (+baseAmount / availableWithdrawAmountTokenA) *
+    (poolTokenAmount + lockedTokens)
 
+  console.log(
+    'poolTokenAmountToWithdraw: ',
+    baseAmount,
+    availableWithdrawAmountTokenA,
+    poolTokenAmount,
+    poolTokenAmountToWithdraw
+  )
   // need to show in popup
   // const { totalBaseTokenFee, totalQuoteTokenFee } =
   //   earnedFeesInPoolForUserMap.get(selectedPool.swapToken) || {
@@ -326,6 +334,10 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               userPoolTokenAmount: poolTokenAmountToWithdraw,
               userBaseTokenAccount: new PublicKey(userTokenAccountA),
               userQuoteTokenAccount: new PublicKey(userTokenAccountB),
+              unlockVesting:
+                poolTokenAmountToWithdraw > poolTokenAmount
+                  ? vesting
+                  : undefined,
             })
 
             setOperationLoading(false)

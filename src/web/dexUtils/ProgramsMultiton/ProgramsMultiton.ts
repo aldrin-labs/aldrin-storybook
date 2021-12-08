@@ -12,7 +12,7 @@ import { VESTING_PROGRAM_ADDRESS } from './utils'
 import { walletAdapterToWallet } from '../common'
 
 class ProgramsMultiton {
-  private cache: { [programAddress: string]: Program | Program03 } = {}
+  private cache: { [programAddress: string]: Program } = {}
 
   getProgramByAddress({
     wallet,
@@ -47,7 +47,7 @@ class ProgramsMultiton {
 
     const poolsProgram =
       programAddress === VESTING_PROGRAM_ADDRESS
-        ? new Program03(
+        ? (new Program03(
             programIdl as Idl03,
             new PublicKey(VESTING_PROGRAM_ADDRESS),
             new Provider03(
@@ -55,7 +55,7 @@ class ProgramsMultiton {
               walletAdapterToWallet(wallet),
               Provider.defaultOptions()
             )
-          )
+          ) as any as Program) // TODO
         : new Program(
             programIdl,
             programId,

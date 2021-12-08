@@ -18,6 +18,7 @@ import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
+import { VestingWithPk } from '../../vesting/types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -39,6 +40,7 @@ export async function redeemBasket({
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
   userPoolTokenAmount: number
+  unlockVesting?: VestingWithPk
 }) {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -61,20 +63,18 @@ export async function redeemBasket({
     feeQuoteAccount,
   } = await program.account.pool.fetch(poolPublicKey)
 
-  let [
-    baseTokenAmountToWithdraw,
-    quoteTokenAmountToWithdraw,
-  ] = await getMaxWithdrawAmount({
-    wallet,
-    connection,
-    poolPublicKey,
-    baseTokenMint,
-    quoteTokenMint,
-    basePoolTokenPublicKey: baseTokenVault,
-    quotePoolTokenPublicKey: quoteTokenVault,
-    poolTokenMint: poolMint,
-    poolTokenAmount: userPoolTokenAmount,
-  })
+  let [baseTokenAmountToWithdraw, quoteTokenAmountToWithdraw] =
+    await getMaxWithdrawAmount({
+      wallet,
+      connection,
+      poolPublicKey,
+      baseTokenMint,
+      quoteTokenMint,
+      basePoolTokenPublicKey: baseTokenVault,
+      quotePoolTokenPublicKey: quoteTokenVault,
+      poolTokenMint: poolMint,
+      poolTokenAmount: userPoolTokenAmount,
+    })
 
   baseTokenAmountToWithdraw *= 0.99
   quoteTokenAmountToWithdraw *= 0.99
@@ -123,32 +123,28 @@ export async function redeemBasket({
   }
 
   if (!userBaseTokenAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey: new PublicKey(baseTokenMint),
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: new PublicKey(baseTokenMint),
+      })
 
     userBaseTokenAccount = newAccountPubkey
     transactionBeforeWithdraw.add(createAccountTransaction)
   }
 
   if (!userQuoteTokenAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey: new PublicKey(quoteTokenMint),
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: new PublicKey(quoteTokenMint),
+      })
 
     userQuoteTokenAccount = newAccountPubkey
     transactionBeforeWithdraw.add(createAccountTransaction)
   }
 
-  let commonTransaction = new Transaction()
+  const commonTransaction = new Transaction()
 
   try {
     commonTransaction.add(transactionBeforeWithdraw)
@@ -160,7 +156,7 @@ export async function redeemBasket({
       {
         accounts: {
           pool: poolPublicKey,
-          poolMint: poolMint,
+          poolMint,
           baseTokenVault,
           quoteTokenVault,
           poolSigner: vaultSigner,
