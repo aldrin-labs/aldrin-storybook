@@ -1,8 +1,11 @@
-import { stripByAmount, stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, Row } from '@sb/components/Layout'
-import { Modal } from "@sb/components/Modal"
+import { Modal } from '@sb/components/Modal'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
@@ -11,7 +14,15 @@ import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { RefreshFunction, TokenInfo as TokenInfoType } from '@sb/dexUtils/types'
 import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { DexTokensPrices, FeesEarned, PoolInfo, PoolWithOperation, TradingVolumeStats } from '../../index.types'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { CURVE } from '@sb/dexUtils/pools/actions/createPool'
+import {
+  DexTokensPrices,
+  FeesEarned,
+  PoolInfo,
+  PoolWithOperation,
+  TradingVolumeStats,
+} from '../../index.types'
 import { AddLiquidityPopup } from '../Popups/AddLiquidity'
 import { ClaimRewards } from '../Popups/ClaimRewards/ClaimRewards'
 import { StakePopup } from '../Popups/Staking/StakePopup'
@@ -19,21 +30,20 @@ import { UnstakePopup } from '../Popups/Unstaking/UnstakePopup'
 import { WithdrawalPopup } from '../Popups/WithdrawLiquidity'
 import { PoolStatsBlock, trimTo } from './PoolStats'
 
-
 import {
   LiquidityWrap,
   ModalBlock,
   TokenGlobalInfo,
   TokenInfo,
-  TokenInfoName, TokenInfoRow,
-  TokenInfos, TokenInfoText,
+  TokenInfoName,
+  TokenInfoRow,
+  TokenInfos,
+  TokenInfoText,
   TokenInfoTextWrap,
-  TokenPrice
+  TokenPrice,
 } from './styles'
 import { UserFarmingBlock } from './UserFarmingBlock'
 import { UserLiquidityBlock } from './UserLiquidityBlock'
-import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
-
 
 interface PoolPageProps {
   pools?: PoolInfo[]
@@ -48,12 +58,16 @@ interface PoolPageProps {
   snapshotQueues: SnapshotQueue[]
 }
 
-
-
-type ModalType = '' | 'deposit' | 'withdraw' | 'stake' | 'claim' | 'remindToStake' | 'unstake'
+type ModalType =
+  | ''
+  | 'deposit'
+  | 'withdraw'
+  | 'stake'
+  | 'claim'
+  | 'remindToStake'
+  | 'unstake'
 
 export const PoolPage: React.FC<PoolPageProps> = (props) => {
-
   const {
     pools,
     prices,
@@ -74,13 +88,19 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const [openedPopup, setOpenedPopup] = useState<ModalType>('')
 
-  const [poolUpdateOperation, setPoolUpdateOperation] = useState<PoolWithOperation>({ pool: '', operation: '' })
+  const [poolUpdateOperation, setPoolUpdateOperation] =
+    useState<PoolWithOperation>({ pool: '', operation: '' })
 
-  const liquidityProcessing = poolUpdateOperation.operation === 'deposit' || poolUpdateOperation.operation === 'withdraw'
-  const farmingProcessing = poolUpdateOperation.operation === 'claim' || poolUpdateOperation.operation === 'stake' || poolUpdateOperation.operation === 'unstake'
+  const liquidityProcessing =
+    poolUpdateOperation.operation === 'deposit' ||
+    poolUpdateOperation.operation === 'withdraw'
+
+  const farmingProcessing =
+    poolUpdateOperation.operation === 'claim' ||
+    poolUpdateOperation.operation === 'stake' ||
+    poolUpdateOperation.operation === 'unstake'
 
   const closePopup = () => setOpenedPopup('')
-
 
   const goBack = () => history.push('/pools')
 
@@ -96,76 +116,65 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
   const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
 
-
   const baseTokenName = trimTo(baseInfo?.symbol || '')
   const quoteTokenName = trimTo(quoteInfo?.symbol || '')
-
 
   const baseDoubleTrimmed = trimTo(baseInfo?.name || '', 7)
   const quoteDoubleTrimmed = trimTo(quoteInfo?.name || '', 7)
 
-
-  const basePrice = pool.tvl.tokenB / pool.tvl.tokenA
-  const quotePrice = pool.tvl.tokenA / pool.tvl.tokenB
+  const basePrice =
+    pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenB / pool.tvl.tokenA
+  const quotePrice =
+    pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenA / pool.tvl.tokenB
 
   const baseUsdPrice = prices.get(baseTokenName) || { price: 0 }
   const quoteUsdPrice = prices.get(quoteTokenName) || { price: 0 }
-
 
   return (
     <Modal open onClose={goBack}>
       <ModalBlock border>
         <div>
-          <Button $variant="secondary" onClick={goBack} $borderRadius="lg">⟵ Close</Button>
+          <Button $variant="secondary" onClick={goBack} $borderRadius="lg">
+            ⟵ Close
+          </Button>
         </div>
         <TokenInfos>
           <TokenInfo>
             <TokenInfoRow>
-              <TokenIcon
-                mint={pool.tokenA}
-                width={'1.2em'}
-                height={'1.2em'}
-              />
+              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
               <InlineText color="success">1</InlineText>
               <InlineText>{base}&nbsp;=&nbsp;</InlineText>
-              <TokenIcon
-                mint={pool.tokenB}
-                width={'1.2em'}
-                height={'1.2em'}
-              />
-              <InlineText color="success">{stripByAmountAndFormat(basePrice, 4)}</InlineText>
+              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
+              <InlineText color="success">
+                {stripByAmountAndFormat(basePrice, 4)}
+              </InlineText>
               <InlineText>{quote}</InlineText>
             </TokenInfoRow>
           </TokenInfo>
           <TokenInfo>
             <TokenInfoRow>
-              <TokenIcon
-                mint={pool.tokenB}
-                width={'1.2em'}
-                height={'1.2em'}
-              />
+              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
               <InlineText color="success">1</InlineText>
               <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
-              <TokenIcon
-                mint={pool.tokenA}
-                width={'1.2em'}
-                height={'1.2em'}
-              />
-              <InlineText color="success">{stripByAmountAndFormat(quotePrice, 4)}</InlineText>
+              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
+              <InlineText color="success">
+                {stripByAmountAndFormat(quotePrice, 4)}
+              </InlineText>
               <InlineText>{base}</InlineText>
             </TokenInfoRow>
           </TokenInfo>
           <TokenGlobalInfo>
             <TokenInfoRow>
-              <TokenIcon
-                mint={pool.tokenA}
-                width={'1.2em'}
-                height={'1.2em'}
-              />
+              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
               <TokenInfoTextWrap>
-                <TokenInfoText weight={700}>{base}<TokenInfoName>{baseDoubleTrimmed}</TokenInfoName></TokenInfoText>
+                <TokenInfoText weight={700}>
+                  {base}
+                  <TokenInfoName>{baseDoubleTrimmed}</TokenInfoName>
+                </TokenInfoText>
                 <TokenPrice>
-                  {baseUsdPrice ? `$${stripByAmount(baseUsdPrice.price, 4)}` : '-'}
+                  {baseUsdPrice
+                    ? `$${stripByAmount(baseUsdPrice.price, 4)}`
+                    : '-'}
                 </TokenPrice>
               </TokenInfoTextWrap>
               <TokenExternalLinks
@@ -176,15 +185,16 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenGlobalInfo>
           <TokenGlobalInfo>
             <TokenInfoRow>
-              <TokenIcon
-                mint={pool.tokenB}
-                width={'1.2em'}
-                height={'1.2em'}
-              />
+              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
               <TokenInfoTextWrap>
-                <TokenInfoText weight={700}>{quote}<TokenInfoName>{quoteDoubleTrimmed}</TokenInfoName></TokenInfoText>
+                <TokenInfoText weight={700}>
+                  {quote}
+                  <TokenInfoName>{quoteDoubleTrimmed}</TokenInfoName>
+                </TokenInfoText>
                 <TokenPrice>
-                  {quoteUsdPrice ? `$${stripByAmount(quoteUsdPrice.price, 4)}` : '-'}
+                  {quoteUsdPrice
+                    ? `$${stripByAmount(quoteUsdPrice.price, 4)}`
+                    : '-'}
                 </TokenPrice>
               </TokenInfoTextWrap>
               <TokenExternalLinks
@@ -239,7 +249,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
         </LiquidityWrap>
       </ModalBlock>
 
-      {openedPopup === 'deposit' &&
+      {openedPopup === 'deposit' && (
         <AddLiquidityPopup
           dexTokensPricesMap={prices}
           allTokensData={userTokensData}
@@ -251,9 +261,9 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           }}
           selectedPool={pool}
         />
-      }
+      )}
 
-      {openedPopup === 'withdraw' &&
+      {openedPopup === 'withdraw' && (
         <WithdrawalPopup
           selectedPool={pool}
           dexTokensPricesMap={prices}
@@ -265,9 +275,9 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           refreshAllTokensData={refreshUserTokensData}
           setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
         />
-      }
+      )}
 
-      {(openedPopup === 'stake' || openedPopup === 'remindToStake') &&
+      {(openedPopup === 'stake' || openedPopup === 'remindToStake') && (
         <StakePopup
           selectedPool={pool}
           dexTokensPricesMap={prices}
@@ -278,7 +288,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           allTokensData={userTokensData}
           close={closePopup}
         />
-      }
+      )}
 
       {openedPopup === 'unstake' && (
         <UnstakePopup
@@ -301,8 +311,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
         />
       )}
-
-
     </Modal>
   )
 }

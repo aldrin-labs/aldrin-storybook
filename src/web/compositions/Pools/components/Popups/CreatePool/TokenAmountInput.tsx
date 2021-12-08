@@ -1,15 +1,16 @@
-import React, { ReactNode } from 'react'
+import React, { ChangeEventHandler } from 'react'
 import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
-import { InputAppendContainer, TokensAvailableText } from './styles'
 import { InlineText } from '@sb/components/Typography'
 import { TokenIconWithName } from '@sb/components/TokenIcon'
+import { InputAppendContainer, TokensAvailableText } from './styles'
 
-interface TokenAmountInputFieldProps {
+type TokenAmountInputFieldProps = {
   name: string
   available?: number
   mint: string
   setFieldValue?: (field: string, value: any) => void
   disabled?: boolean
+  onChange?: (value: string) => void
 }
 
 export const validateNumber = (v?: number, max?: number) => {
@@ -20,28 +21,37 @@ export const validateNumber = (v?: number, max?: number) => {
   if (value <= 0) {
     return 'Wrong value'
   }
-  return
 }
 
-export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (props) => {
-  const { name, available, setFieldValue, mint, disabled = false } = props
+export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
+  props
+) => {
+  const {
+    name,
+    available,
+    setFieldValue,
+    mint,
+    disabled = false,
+    onChange,
+  } = props
   return (
     <InputField
       borderRadius="lg"
       variant="outline"
       name={name}
       disabled={disabled}
+      onChange={onChange}
       append={
         <InputAppendContainer>
           <div>
-            {typeof available !== 'undefined' && setFieldValue &&
+            {typeof available !== 'undefined' && setFieldValue && (
               <TokensAvailableText
                 onClick={() => setFieldValue(name, available)}
               >
-                Available:&nbsp; <InlineText color="success">{available}</InlineText>
+                Available:&nbsp;{' '}
+                <InlineText color="success">{available}</InlineText>
               </TokensAvailableText>
-            }
-
+            )}
           </div>
           <TokenIconWithName mint={mint} />
         </InputAppendContainer>
@@ -52,19 +62,17 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (prop
   )
 }
 
-
 interface TokenAmountInputProps {
   name: string
   mint: string
-  value: ReactNode
+  value: string
 }
-
 
 export const TokenAmountInput: React.FC<TokenAmountInputProps> = (props) => {
   const { name, mint, value } = props
   return (
     <Input
-      onChange={() => { }}
+      onChange={() => {}}
       borderRadius="lg"
       variant="outline"
       name={name}
@@ -76,7 +84,6 @@ export const TokenAmountInput: React.FC<TokenAmountInputProps> = (props) => {
         </InputAppendContainer>
       }
       formatter={INPUT_FORMATTERS.DECIMAL}
-
     />
   )
 }

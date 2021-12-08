@@ -318,6 +318,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
     parseFloat(farming.farmingPeriod) > 0
       ? parseFloat(farming.tokenAmount) / parseFloat(farming.farmingPeriod)
       : 0
+
   const farmingRewardFormatted = stripByAmount(farmingRewardPerDay)
 
   const selectedBaseAccount = userTokens.find(
@@ -479,7 +480,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                   <NumberInputContainer>
                     <TokenAmountInput
                       name="price"
-                      value={priceFormatted}
+                      value={`${priceFormatted}`}
                       mint={form.values.quoteToken.mint}
                     />
                   </NumberInputContainer>
@@ -492,6 +493,11 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                     setFieldValue={form.setFieldValue}
                     available={selectedBaseAccount.amount}
                     mint={form.values.baseToken.mint}
+                    onChange={(v) => {
+                      if (values.stableCurve) {
+                        form.setFieldValue('firstDeposit.quoteTokenAmount', v)
+                      }
+                    }}
                   />
                 </Centered>
 
@@ -508,6 +514,11 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                     setFieldValue={form.setFieldValue}
                     available={selectedQuoteAccount.amount}
                     mint={form.values.quoteToken.mint}
+                    onChange={(v) => {
+                      if (values.stableCurve) {
+                        form.setFieldValue('firstDeposit.baseTokenAmount', v)
+                      }
+                    }}
                   />
                 </Centered>
                 {form.errors.firstDeposit?.quoteTokenAmount &&
@@ -520,7 +531,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
             )}
             {step === 3 && (
               <FarmingForm
-                farmingRewardFormatted={farmingRewardFormatted}
+                farmingRewardFormatted={`${farmingRewardFormatted}`}
                 tokens={tokens}
                 userTokens={userTokens}
               />

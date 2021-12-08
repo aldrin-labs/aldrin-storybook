@@ -7,10 +7,9 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { FarmingIconWrap, FarmingDataIcons, FarmingText } from './styles'
 import { PoolStatsText } from '../PoolPage/styles'
-import {
-  getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity,
-} from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
+import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 import { PoolInfo } from '../../index.types'
+import { InlineText } from '../../../../components/Typography'
 
 interface FarmingRewardsProps {
   pool: PoolInfo
@@ -89,7 +88,11 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
   ) : (
     <div>
       <PoolStatsText>
-        {!farming || !farming.length ? 'No farming available' : 'Farming ended'}
+        {!farming || !farming.length ? (
+          'No farming available'
+        ) : (
+          <InlineText color="success">Farming ended</InlineText>
+        )}
       </PoolStatsText>
     </div>
   )

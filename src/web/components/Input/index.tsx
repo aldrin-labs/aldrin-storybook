@@ -2,9 +2,9 @@ import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 
 import { COLORS, BORDER_RADIUS } from '@variables/variables'
-import { validateDecimal } from './utils'
 import { useField, FieldValidator } from 'formik'
-
+import { noop } from 'lodash-es'
+import { validateDecimal } from './utils'
 
 const VARIANTS = {
   default: css`
@@ -14,7 +14,7 @@ const VARIANTS = {
   'outline-white': css`
     border: 1px solid ${COLORS.white};
   `,
-  'outline': css`
+  outline: css`
     border: 1px solid ${COLORS.border};
   `,
 }
@@ -25,9 +25,6 @@ interface WrapProps {
   $disabled?: boolean
 }
 
-
-
-
 export const InputWrap = styled.div<WrapProps>`
   display: flex;
   flex-direction: row;
@@ -37,7 +34,7 @@ export const InputWrap = styled.div<WrapProps>`
   border-radius: ${(props: WrapProps) => BORDER_RADIUS[props.$borderRadius]};
 
   ${(props: WrapProps) => VARIANTS[props.$variant]}
-  ${(props: WrapProps) => props.$disabled ? 'opacity: 0.6;' : ''}
+  ${(props: WrapProps) => (props.$disabled ? 'opacity: 0.6;' : '')}
 `
 
 const InputEl = styled.input`
@@ -81,14 +78,14 @@ export interface InputProps extends InputBase {
 }
 
 export const INPUT_FORMATTERS = {
-  NOP: (e: string, prevValue: string) => e,
+  NOP: (e: string) => e,
   DECIMAL: (v: string, prevValue: string) => {
-    const value = v ? v.replace(',', '.') : v;
+    const value = v ? v.replace(',', '.') : v
     if (validateDecimal(value) || v === '') {
       return value
     }
     return prevValue
-  }
+  },
 }
 
 export const Input: React.FC<InputProps> = (props) => {
@@ -121,13 +118,10 @@ export const Input: React.FC<InputProps> = (props) => {
         name={name}
         disabled={disabled}
       />
-      {append &&
-        <Append>{append}</Append>
-      }
+      {append && <Append>{append}</Append>}
     </InputWrap>
   )
 }
-
 
 // Formik Wrapper
 
@@ -135,20 +129,24 @@ export interface InputFieldProps extends InputBase {
   validate?: FieldValidator
 }
 
-export const InputField: React.FC<InputFieldProps> = (props) => {
-  const [field, meta, helpers] = useField(props)
+export type FieldProps = InputFieldProps & {
+  onChange?: (v: string) => void
+}
 
+export const InputField: React.FC<FieldProps> = (props) => {
+  const { onChange = noop, ...rest } = props
+  const [field, _meta, helpers] = useField(rest)
   return (
     <Input
-      {...props}
+      {...rest}
       value={field.value}
       onChange={(value) => {
-        helpers.setTouched(true, true);
-        helpers.setValue(value, true);
+        helpers.setTouched(true, true)
+        helpers.setValue(value, true)
+        onChange(value)
       }}
     />
   )
 }
-
 
 export * from './utils'

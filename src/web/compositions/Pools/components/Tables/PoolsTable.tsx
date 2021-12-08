@@ -10,6 +10,7 @@ import {
   DataCellValue,
   NoDataBlock,
 } from '@sb/components/DataTable'
+import CrownIcon from '@icons/crownIcon.svg'
 import ScalesIcon from '@icons/scales.svg'
 import { Text } from '@sb/components/Typography'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -23,13 +24,17 @@ import { useVesting } from '@sb/dexUtils/vesting'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SvgIcon } from '@sb/components'
 import { toMap } from '@sb/utils'
+
+import dayjs from 'dayjs'
+import { BN } from 'bn.js'
+import { Vesting } from '@sb/dexUtils/vesting/types'
 import { DexTokensPrices, PoolInfo } from '../../index.types'
 import { FarmingRewards } from '../FarminRewards'
 import { TokenIconsContainer } from './components'
 import { getFarmingStateDailyFarmingValue } from './UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { symbolIncludesSearch } from './utils'
 import { STABLE_POOLS_TOOLTIP } from '../Popups/CreatePool/PoolConfirmationData'
-import { Vesting } from '../../../../dexUtils/vesting/types'
+import { PoolsTableIcons } from './index.styles'
 
 export interface PoolsTableProps {
   pools: PoolInfo[]
@@ -59,6 +64,11 @@ const mergeColumns = (columns: DataHeadColumn[]) => [
   },
 ]
 
+const EMPTY_VESTING = {
+  endTs: 0,
+  startBalance: new BN(0),
+}
+
 const prepareCell = (params: {
   pool: PoolInfo
   tokenPrices: Map<string, DexTokensPrices>
@@ -76,10 +86,11 @@ const prepareCell = (params: {
   const tvlUSD =
     baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
 
-  const poolTokenPrice = calculatePoolTokenPrice({
-    pool,
-    dexTokensPricesMap: tokenPrices,
-  })
+  const poolTokenPrice =
+    calculatePoolTokenPrice({
+      pool,
+      dexTokensPricesMap: tokenPrices,
+    }) || 0
 
   const totalStakedLpTokensUSD = pool.lpTokenFreezeVaultBalance * poolTokenPrice
 
@@ -102,7 +113,10 @@ const prepareCell = (params: {
     return acc + dailyRewardUsd
   }, 0)
 
-  const vesting = vestings.get(pool.poolTokenMint)
+  const vesting = vestings.get(pool.poolTokenMint) || EMPTY_VESTING
+
+  const hasLockedFunds = vesting.endTs * 1000 > Date.now()
+  const lockedFundsValue = vesting.startBalance.muln(poolTokenPrice)
 
   const farmingAPR =
     ((totalDailyRewardUsd * 365) / totalStakedLpTokensUSD) * 100
@@ -127,12 +141,26 @@ const prepareCell = (params: {
                 )}
               </TokenIconsContainer>
             </Link>
-            {pool.curveType === 1 && (
-              <DarkTooltip title={STABLE_POOLS_TOOLTIP}>
-                <SvgIcon src={ScalesIcon} width="15px" height="15px" />
-              </DarkTooltip>
-            )}
-            {!!vesting && '👑'}
+            <PoolsTableIcons>
+              {pool.curveType === 1 && (
+                <DarkTooltip title={STABLE_POOLS_TOOLTIP}>
+                  <span>
+                    <SvgIcon src={ScalesIcon} width="15px" height="15px" />
+                  </span>
+                </DarkTooltip>
+              )}
+              {hasLockedFunds && (
+                <DarkTooltip
+                  title={`Pool owner locked $${lockedFundsValue} liquidity until ${dayjs
+                    .unix(vesting.endTs)
+                    .format('YYYY-MM-DD')} `}
+                >
+                  <span>
+                    <SvgIcon src={CrownIcon} width="15px" height="15px" />
+                  </span>
+                </DarkTooltip>
+              )}
+            </PoolsTableIcons>
           </FlexBlock>
         ),
       },
