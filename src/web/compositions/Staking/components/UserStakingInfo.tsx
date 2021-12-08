@@ -425,7 +425,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         </div>
                       </DarkTooltip>
                     </RewardsTitle>
-                    <DarkTooltip title={`${stripByAmount(userRewards)} RIN`}>
+                    <DarkTooltip title={`${stripByAmount(userRewards + calculatedRewardN)} RIN`}>
                       <div>
                         <UserBalance
                           visible={isBalancesShowing}
