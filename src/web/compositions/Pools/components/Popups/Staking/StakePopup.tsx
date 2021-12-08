@@ -182,7 +182,7 @@ export const StakePopup = ({
         <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
           {!isReminderPopup
             ? 'Stake your Pool Tokens to start farming RIN.'
-            : `Stake your LP tokens to start framing ${farmingTokens}.`}
+            : `Stake your LP tokens to start farming ${farmingTokens}.`}
         </Text>
       </RowContainer>
       <RowContainer>

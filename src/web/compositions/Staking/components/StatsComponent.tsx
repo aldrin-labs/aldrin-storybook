@@ -76,6 +76,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     getRINSupply()
   }, [])
 
+
   const dexTokensPricesMap = getDexTokensPricesQuery?.getDexTokensPrices?.reduce(
     (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
     new Map()
@@ -131,6 +132,8 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   }, [formattedAPR])
 
   const shareText = getShareText(formattedAPR)
+
+  const RINMarketcap = RINCirculatingSupply * tokenPrice
 
   return (
     <>
@@ -188,13 +191,12 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                     title={
                       <span>
                         <div style={{ marginBottom: '1rem' }}>
-                        First APR is calculated based on fixed “treasury” rewards. 
-                        These rewards estimation are updated hourly.
+                          The first APR is calculated based on fixed “treasury” rewards. 
+                          These rewards estimation are updated hourly.
                         </div>
                         <div>
-                        Second APR is calculated based on the current RIN price and 
-                        the average AMM fees for the past 7d. This rewards estimation 
-                        are updated weekly.
+                          The second APR is calculated based on the current RIN price and the 
+                          average AMM fees for the past 7d. The reward estimations are updated weekly.
                         </div>
                       </span>
                     }
@@ -245,8 +247,8 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                   </Number>
                 </StatsBlockItem>
                 <StatsBlockItem>
-                  <BlockSubtitle margin={'0 0 3rem 0'}>Daily Rewards</BlockSubtitle>
-                  <Number>{stripByAmountAndFormat(dailyRewards)} RIN</Number>
+                  <BlockSubtitle margin={'0 0 3rem 0'}>Marketcap</BlockSubtitle>
+                  <Number>${stripByAmountAndFormat(RINMarketcap)}</Number>
                 </StatsBlockItem>
               </StatsBlock>
             </BlockContentStretched>
