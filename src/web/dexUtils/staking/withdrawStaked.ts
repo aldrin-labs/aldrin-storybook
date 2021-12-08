@@ -33,6 +33,7 @@ import { WalletAdapter } from '../types'
 import { StakingPool } from './types'
 import { PoolInfo } from '../../compositions/Pools/index.types'
 import { u64 } from '../token/token'
+import { getCalcAccounts } from './getCalcAccountsForWallet'
 
 
 export interface WithdrawStakedParams {
@@ -89,32 +90,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
   const farmingTokenAccounts = new Map<string, PublicKey>()
 
-  const calcAccountsData = await connection.getProgramAccounts(
-    new PublicKey(STAKING_PROGRAM_ADDRESS),
-    {
-      commitment: 'finalized',
-      filters: [
-        {
-          dataSize: CALC_ACCOUNT_SIZE,
-        },
-        {
-          memcmp: {
-            offset: USER_KEY_SPAN,
-            bytes: wallet.publicKey.toBase58(),
-          },
-        },
-      ],
-    }
-  )
-
-
-  const calcAccounts = calcAccountsData.map((ca) => {
-    const data = Buffer.from(ca.account.data)
-    return {
-      ...program.coder.accounts.decode<FarmingCalc>('FarmingCalc', data),
-      publicKey: ca.pubkey
-    }
-  })
+  const calcAccounts = await getCalcAccounts(program, wallet.publicKey)
 
   const ticketsToClaim = farmingTickets
     .filter((ft) => ft.tokensFrozen > MIN_POOL_TOKEN_AMOUNT_TO_STAKE && ft.amountsToClaim.find((atc) => atc.amount > 0))

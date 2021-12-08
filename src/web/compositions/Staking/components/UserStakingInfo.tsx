@@ -65,6 +65,8 @@ import {
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
+import { useCalcAccounts } from '../../../dexUtils/staking/useCalcAccounts'
+import BN from 'bn.js'
 
 interface UserBalanceProps {
   value: number
@@ -156,6 +158,14 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     walletPublicKey: wallet.publicKey,
   })
 
+  const [calcAccounts] = useCalcAccounts({
+    wallet,
+    connection,
+    walletPublicKey: wallet.publicKey,
+  })
+
+  const calculatedReward = calcAccounts.reduce((acc, ca) => { return acc.add(new BN(ca.tokenAmount.toString())) }, new BN(0))
+  const calculatedRewardN = parseFloat(calculatedReward.toString()) / (10 ** currentFarmingState.farmingTokenMintDecimals)
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
   })
@@ -416,7 +426,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       <div>
                         <UserBalance
                           visible={isBalancesShowing}
-                          value={userRewards}
+                          value={userRewards + calculatedRewardN}
                           decimals={2}
                         />
                       </div>
@@ -429,7 +439,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       <RewardsTitle>Available to claim:</RewardsTitle>
                       <UserBalance
                         visible={isBalancesShowing}
-                        value={availableToClaimTotal}
+                        value={availableToClaimTotal + calculatedRewardN}
                         decimals={2}
                       />
                     </RewardsStatsRow>
