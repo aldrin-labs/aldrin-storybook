@@ -55,7 +55,7 @@ interface FarmingCalc {
 }
 
 const USER_KEY_SPAN = 72
-const CALC_ACCOUNT_SIZE = 200
+const CALC_ACCOUNT_SIZE = 144
 
 export const withdrawStaked = async (params: WithdrawStakedParams) => {
   const {
