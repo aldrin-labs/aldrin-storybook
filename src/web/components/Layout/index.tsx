@@ -26,6 +26,9 @@ export const PopupBody = styled(Body)`
 
 export const Page = styled(Body)`
   background: ${COLORS.bodyBackground};
+  flex: 1;
+`
+export const StakingPage = styled(Page)`
   display: flex;
   justify-content: center;
   align-items: center;
