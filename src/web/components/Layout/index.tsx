@@ -26,7 +26,10 @@ export const PopupBody = styled(Body)`
 
 export const Page = styled(Body)`
   background: ${COLORS.bodyBackground};
-  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 `
 
 export const Content = styled.div`
