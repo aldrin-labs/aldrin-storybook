@@ -389,7 +389,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       <DarkTooltip
                         title={
                           <p>
-                            Staking rewards are paid on the <strong>27th of the every month</strong> 
+                            Staking rewards are paid on the <strong>27th of the every month</strong>{' '}
                             based on RIN weekly buy-backs on 1/6th of AMM fees . Estimated rewards 
                             are updated <strong>hourly based on treasury rewards</strong> and 
                             <strong>weekly based on RIN buyback</strong>. 
