@@ -288,35 +288,26 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
         )
 
 
-        // If farming ended - close calc for all tickets, otherwise - close calc only for closed tickets
-        const closedTickets = (!fs || fs.tokensUnlocked === fs.tokensTotal) ?
-          ticketsToCalc : ticketsToCalc.filter((t) => t.endTime !== DEFAULT_FARMING_TICKET_END_TIME)
+        // If farming ended - close calc, otherwise - close calc only when all tickets are closed 
+        const closeCalc = (fs && fs.tokensUnlocked === fs.tokensTotal) ? true :
+          !!ticketsToCalc.find((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
 
-        const closeCalcInstr = await Promise.all(
-          splitBy(closedTickets, 5).map(async (ctGroup) => {
-
-            const instructions = await Promise.all(
-              ctGroup.map((ct) =>
-                program.instruction.closeFarmingCalc(
-                  {
-                    accounts: {
-                      farmingCalc: calcAccount.publicKey,
-                      farmingTicket: new PublicKey(ct.farmingTicket),
-                      signer: creatorPk,
-                      initializer: calcAccount.initializer,
-                    }
+        if (closeCalc) {
+          transactions.push({
+            transaction: new Transaction().add(
+              await program.instruction.closeFarmingCalc(
+                {
+                  accounts: {
+                    farmingCalc: calcAccount.publicKey,
+                    farmingTicket: new PublicKey(ticketsToCalc[0].farmingTicket),
+                    signer: creatorPk,
+                    initializer: calcAccount.initializer,
                   }
-                ) as Promise<TransactionInstruction>
+                }
               )
             )
-            return {
-              transaction: new Transaction().add(...instructions)
-            }
           })
-        )
-
-        return [...transactions, ...closeCalcInstr]
-
+        }
       }
 
       return transactions
