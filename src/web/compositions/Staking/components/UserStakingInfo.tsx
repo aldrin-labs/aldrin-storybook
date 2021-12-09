@@ -2,7 +2,7 @@ import {
   stripByAmount,
   stripByAmountAndFormat
 } from '@core/utils/chartPageUtils'
-import { daysInMonth } from '@core/utils/dateUtils'
+import { daysInMonthForDate } from '@core/utils/dateUtils'
 import { sleep } from '@core/utils/helpers'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import InfoIcon from '@icons/inform.svg'
@@ -43,9 +43,11 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
+import BN from 'bn.js'
 import dayjs from 'dayjs'
 import React, { useCallback, useState } from 'react'
 import { compose } from 'recompose'
+import { useCalcAccounts } from '../../../dexUtils/staking/useCalcAccounts'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
   Asterisks,
@@ -65,15 +67,6 @@ import {
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
-import { useCalcAccounts } from '../../../dexUtils/staking/useCalcAccounts'
-import BN from 'bn.js'
-import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
-import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
-import { BUY_BACK_RIN_ACCOUNT_ADDRESS } from '@sb/dexUtils/staking/config'
-import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
-import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { daysInMonth, daysInMonthForDate } from '@core/utils/dateUtils'
-import dayjs from 'dayjs'
 
 interface UserBalanceProps {
   value: number
