@@ -16,4 +16,4 @@ export const STAKING_FARMING_TOKEN_DIVIDER =
 export const BUY_BACK_RIN_ACCOUNT_ADDRESS =
   'BbC4UNcWkssrTscVAN4xzxfKpRfSXcz9wvrKStwGNwy1'
 
-export const DAYS_TO_CHECK_BUY_BACK = 30
+export const DAYS_TO_CHECK_BUY_BACK = 14

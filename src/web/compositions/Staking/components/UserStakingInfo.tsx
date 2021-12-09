@@ -67,6 +67,13 @@ import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
 import { useCalcAccounts } from '../../../dexUtils/staking/useCalcAccounts'
 import BN from 'bn.js'
+import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
+import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
+import { BUY_BACK_RIN_ACCOUNT_ADDRESS } from '@sb/dexUtils/staking/config'
+import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
+import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
+import { daysInMonth, daysInMonthForDate } from '@core/utils/dateUtils'
+import dayjs from 'dayjs'
 
 interface UserBalanceProps {
   value: number
@@ -166,7 +173,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const calculatedReward = calcAccounts.reduce((acc, ca) => { return acc.add(new BN(ca.tokenAmount.toString())) }, new BN(0))
   const calculatedRewardN = parseFloat(calculatedReward.toString()) / (10 ** currentFarmingState.farmingTokenMintDecimals)
-  
+
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
   })
@@ -343,10 +350,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     setIsLoading(!isLoading)
   }, [isLoading])
 
-  const claimUnlockDataTimestamp = dayjs.unix(currentFarmingState.startTime + dayDuration * daysInMonth)
-  const claimUnlockDtata = dayjs(claimUnlockDataTimestamp).format("D-MMMM-YYYY").replaceAll('-', ' ')
-
-
+  const claimUnlockDataTimestamp = dayjs.unix(currentFarmingState.startTime + dayDuration * daysInMonthForDate(currentFarmingState.startTime))
+  const claimUnlockData = dayjs(claimUnlockDataTimestamp).format("D-MMMM-YYYY").replaceAll('-', ' ')
   return (
     <>
       <BlockContent border>
@@ -406,13 +411,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       <DarkTooltip
                         title={
                           <p>
-                            Staking rewards are paid{' '}
-                            <strong>every 27th of the month</strong> based on
-                            RIN daily buy-backs on 1/6th of AMM fees . Estimated
-                            rewards are updated hourly based on fees received
-                            and the RIN price at the time of snapshot, so may be
-                            slightly different from the actual number received
-                            on the 27th.
+                            Staking rewards are paid on the <strong>27th of the every month</strong>{' '}
+                            based on RIN weekly buy-backs on 1/6th of AMM fees . Estimated rewards
+                            are updated <strong>hourly based on treasury rewards</strong> and
+                            <strong>weekly based on RIN buyback</strong>.
                           </p>
                         }
                       >
@@ -459,7 +461,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                               each month, you will be able to claim your reward
                             for this period on{' '}
                               <span style={{ color: COLORS.success }}>
-                                {claimUnlockDtata}.
+                                {claimUnlockData}.
                             </span>
                             </p>
                           )

@@ -324,8 +324,8 @@ export const WithdrawalPopup = ({
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               userPoolTokenAmount: poolTokenAmountToWithdraw,
-              userBaseTokenAccount: new PublicKey(userTokenAccountA),
-              userQuoteTokenAccount: new PublicKey(userTokenAccountB),
+              userBaseTokenAccount: userTokenAccountA ? new PublicKey(userTokenAccountA) : null,
+              userQuoteTokenAccount: userTokenAccountB ? new PublicKey(userTokenAccountB) : null,
             })
 
             setOperationLoading(false)
@@ -336,8 +336,8 @@ export const WithdrawalPopup = ({
                 result === 'success'
                   ? 'Withdrawal successful'
                   : result === 'failed'
-                  ? 'Withdrawal failed, please try again later or contact us in telegram.'
-                  : 'Withdrawal cancelled',
+                    ? 'Withdrawal failed, please try again later or contact us in telegram.'
+                    : 'Withdrawal cancelled',
             })
 
             refreshPoolBalances()
