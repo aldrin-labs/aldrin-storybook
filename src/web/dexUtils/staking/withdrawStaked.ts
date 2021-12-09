@@ -66,6 +66,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
   }
 
   const creatorPk = wallet.publicKey
+  // const creatorPk = new PublicKey('Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5')
 
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -262,31 +263,36 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
       const fs = pool.farming.find((farming) => farming.farmingState === calcAccount.farmingState.toBase58())
       // console.log('fs: ', fs, calcAccount.tokenAmount.toString())
-      if (fs && calcAccount.tokenAmount.gtn(0)) {
+      if (fs) {
         // Withdraw farmed
-        transactions.push(
-          {
-            transaction:
-              new Transaction().add(
-                await program.instruction.withdrawFarmed(
-                  {
-                    accounts: {
-                      pool: poolPublicKey,
-                      farmingState: calcAccount.farmingState,
-                      farmingCalc: calcAccount.publicKey,
-                      farmingTokenVault: new PublicKey(fs.farmingTokenVault),
-                      poolSigner: vaultSigner,
-                      userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
-                      userKey: creatorPk,
-                      tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-                      clock: SYSVAR_CLOCK_PUBKEY,
-                    },
-                  }
-                )
-              )
-          }
-        )
 
+        if (calcAccount.tokenAmount.gtn(0)) {
+
+
+          transactions.push(
+            {
+              transaction:
+                new Transaction().add(
+                  await program.instruction.withdrawFarmed(
+                    {
+                      accounts: {
+                        pool: poolPublicKey,
+                        farmingState: calcAccount.farmingState,
+                        farmingCalc: calcAccount.publicKey,
+                        farmingTokenVault: new PublicKey(fs.farmingTokenVault),
+                        poolSigner: vaultSigner,
+                        userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
+                        userKey: creatorPk,
+                        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+                        clock: SYSVAR_CLOCK_PUBKEY,
+                      },
+                    }
+                  )
+                )
+            }
+          )
+
+        }
 
         // If farming ended - close calc, otherwise - close calc only when all tickets are closed 
         const closeCalc = (fs && fs.tokensUnlocked === fs.tokensTotal) ? true :
@@ -316,7 +322,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
   const allTransactions: { transaction: Transaction, signers?: (Keypair | Account)[] }[] = [...calculateTransactions.flat(2), ...withdrawTransactions.flat()]
 
-  // console.log('allTransactions: ', allTransactions)
+  console.log('allTransactions: ', allTransactions)
   // Merge with new account instructions 
   if (createdAccounts.length && allTransactions.length) {
     const firstTx = allTransactions[0]
