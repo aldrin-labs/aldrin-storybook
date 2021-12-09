@@ -3,7 +3,7 @@ import {ProgramsMultiton} from '../ProgramsMultiton/ProgramsMultiton'
 import {BORROW_LENDING_PROGRAM_ADDRESS} from '../ProgramsMultiton/utils'
 import {WalletAdapter} from '../types'
 
-export const getLendingMarket = async ({
+export const getReserve = async ({
     wallet,
     connection,
     programAddress = BORROW_LENDING_PROGRAM_ADDRESS,
@@ -18,9 +18,7 @@ export const getLendingMarket = async ({
         programAddress,
     })
 
-    console.log(program)
+    console.log(program.account.reserve)
 
-    console.log(program.account.lendingMarket)
-
-    return await program.account.lendingMarket.fetch(new PublicKey('6zstoyUpKZ7iiuDND8th19BQHXrUmZ3auqxN2Ujq5vuz'));
+    return await program.account.reserve.fetch(new PublicKey('DSTQScWV8B9zxLrhGoopULVvqneVb2rkyhZNu5keEtrr'));
 }

@@ -1,47 +1,43 @@
-import React, {useEffect} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import { PublicKey } from '@solana/web3.js';
 import {Content, Page} from '@sb/components/Layout';
-import {loadBorrowLendingProgram} from './utils/loadProgram';
 import {useWallet} from '@sb/dexUtils/wallet';
 import {useConnection} from '@sb/dexUtils/connection';
 import {initReserve} from '@sb/dexUtils/borrow-lending/initReserve';
 import {getLendingMarket} from '@sb/dexUtils/borrow-lending/getLendingMarket';
+import {getReserve} from '@sb/dexUtils/borrow-lending/getReserve';
 
 import Markets from './Markets/Markets';
 
-const BorrowLending = () => {
+const BorrowLending: FC = () => {
+    const [reserves, setReserves] = useState<any>([])
     const { wallet } = useWallet()
     const connection = useConnection()
 
     useEffect(() => {
-        lendingMarket()
+        lendingMarket();
     }, [])
 
     const lendingMarket = async () => {
-        try {
-            console.log(connection, "connection")
-            const lendingMarket = getLendingMarket({
-                wallet,
-                connection,
-            });
+        const reserve = getReserve({
+            wallet,
+            connection,
+        }).then(res => {
+            setReserves([
+                ...reserves,
+                res,
+            ])
+        }).catch(error => {
+            console.log('error')
+        });
+    }
 
-            console.log(lendingMarket, 'lendingMarket')
-            // const result = initReserve({
-            //     wallet,
-            //     connection,
-            // });
-            // console.log(result)
-        } catch (e) {
-            console.log('errorc', e)
-        }
+    if(reserves.length === 0) {
+        return null;
     }
 
     return (
-        <Page>
-            <Content>
-                <Markets />
-            </Content>
-        </Page>
+        <Markets reserves={reserves} />
     );
 };
 
