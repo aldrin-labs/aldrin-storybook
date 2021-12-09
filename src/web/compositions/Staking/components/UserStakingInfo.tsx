@@ -158,7 +158,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     walletPublicKey: wallet.publicKey,
   })
 
-  const [calcAccounts] = useCalcAccounts({
+  const [calcAccounts, reloadCalcAccounts] = useCalcAccounts({
     wallet,
     connection,
     walletPublicKey: wallet.publicKey,
@@ -200,6 +200,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       refreshUserFarmingTickets(),
       refreshAllStakingSnapshotQueues(),
       refreshAllTokenData(),
+      reloadCalcAccounts(),
     ])
   }
 
@@ -235,7 +236,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       })
 
       if (result === 'success') {
-        await sleep(2000)
+        await sleep(7000)
         await refreshAll()
       }
 
@@ -267,7 +268,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     })
 
     if (result === 'success') {
-      await sleep(2000)
+      await sleep(7000)
       await refreshAll()
     }
 

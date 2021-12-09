@@ -8,30 +8,25 @@ import {
   SystemProgram,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
-  Transaction,
-  TransactionInstruction
+  Transaction
 } from '@solana/web3.js'
 import BN from 'bn.js'
 import { PoolInfo } from '../../compositions/Pools/index.types'
-import { splitBy } from '../../utils/collection'
 import {
   DEFAULT_FARMING_TICKET_END_TIME, MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
   NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
 } from '../common/config'
-
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 import { FarmingTicket, SnapshotQueue } from '../common/types'
 import { getSnapshotsWithUnclaimedRewards } from '../pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-
 import {
   createTokenAccountTransaction,
   sendSignedTransaction,
   sendTransaction,
   signTransactions
 } from '../send'
-
 import { u64 } from '../token/token'
 import { WalletAdapter } from '../types'
 import { getCalcAccounts } from './getCalcAccountsForWallet'
@@ -266,28 +261,25 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
       if (fs) {
         // Withdraw farmed
 
+        const tx = new Transaction()
+
         if (calcAccount.tokenAmount.gtn(0)) {
-          transactions.push(
-            {
-              transaction:
-                new Transaction().add(
-                  await program.instruction.withdrawFarmed(
-                    {
-                      accounts: {
-                        pool: poolPublicKey,
-                        farmingState: calcAccount.farmingState,
-                        farmingCalc: calcAccount.publicKey,
-                        farmingTokenVault: new PublicKey(fs.farmingTokenVault),
-                        poolSigner: vaultSigner,
-                        userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
-                        userKey: creatorPk,
-                        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-                        clock: SYSVAR_CLOCK_PUBKEY,
-                      },
-                    }
-                  )
-                )
-            }
+          tx.add(
+            await program.instruction.withdrawFarmed(
+              {
+                accounts: {
+                  pool: poolPublicKey,
+                  farmingState: calcAccount.farmingState,
+                  farmingCalc: calcAccount.publicKey,
+                  farmingTokenVault: new PublicKey(fs.farmingTokenVault),
+                  poolSigner: vaultSigner,
+                  userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
+                  userKey: creatorPk,
+                  tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+                  clock: SYSVAR_CLOCK_PUBKEY,
+                },
+              }
+            )
           )
 
         }
@@ -297,21 +289,24 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
           !!ticketsToCalc.find((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
 
         if (closeCalc) {
-          transactions.push({
-            transaction: new Transaction().add(
-              await program.instruction.closeFarmingCalc(
-                {
-                  accounts: {
-                    farmingCalc: calcAccount.publicKey,
-                    farmingTicket: new PublicKey(ticketsToCalc[0].farmingTicket),
-                    signer: creatorPk,
-                    initializer: calcAccount.initializer,
-                  }
+          tx.add(
+            await program.instruction.closeFarmingCalc(
+              {
+                accounts: {
+                  farmingCalc: calcAccount.publicKey,
+                  farmingTicket: new PublicKey(ticketsToCalc[0].farmingTicket),
+                  signer: creatorPk,
+                  initializer: calcAccount.initializer,
                 }
-              )
+              }
             )
-          })
+          )
         }
+
+        if (tx.instructions.length) {
+          transactions.push({ transaction: tx })
+        }
+
       }
 
       return transactions
@@ -320,7 +315,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
   const allTransactions: { transaction: Transaction, signers?: (Keypair | Account)[] }[] = [...calculateTransactions.flat(2), ...withdrawTransactions.flat()]
 
-  console.log('allTransactions: ', allTransactions)
+  // console.log('allTransactions: ', allTransactions)
   // Merge with new account instructions 
   if (createdAccounts.length && allTransactions.length) {
     const firstTx = allTransactions[0]
