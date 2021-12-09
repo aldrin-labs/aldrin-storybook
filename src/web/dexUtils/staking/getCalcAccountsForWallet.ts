@@ -2,9 +2,10 @@ import { Program } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { STAKING_PROGRAM_ADDRESS } from "../ProgramsMultiton/utils";
 import { u64 } from "../token/token";
+// import { memCmpFiltersToBuf } from "../../utils/buffer";
 
 
-const USER_KEY_SPAN = 72
+const USER_KEY_SPAN = 40
 const CALC_ACCOUNT_SIZE = 112
 
 
@@ -37,11 +38,30 @@ export const getCalcAccounts = async (program: Program, userPublicKey: PublicKey
   )
 
 
-  return calcAccountsData.map((ca) => {
+  // console.log('asdasd: ', new PublicKey('Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5').toBase58(), new PublicKey('Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5').toBuffer())
+  // const programAccounts = await program.account.farmingCalc.all(
+  //   memCmpFiltersToBuf([
+  //     {
+  //       memcmp: {
+  //         offset: 32,
+  //         bytes: new PublicKey('Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5').toBase58()
+  //       },
+  //     },
+  //   ])
+  // )
+
+
+
+  const calcAccounts = calcAccountsData.map((ca) => {
     const data = Buffer.from(ca.account.data)
     return {
       ...program.coder.accounts.decode<FarmingCalc>('FarmingCalc', data),
       publicKey: ca.pubkey
     }
   })
+
+  // console.log('programAccounts: ', programAccounts, calcAccounts)
+
+  return calcAccounts
+
 }
