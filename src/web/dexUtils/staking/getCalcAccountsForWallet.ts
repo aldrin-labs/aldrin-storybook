@@ -1,16 +1,15 @@
-import { Connection, PublicKey } from "@solana/web3.js";
 import { Program } from "@project-serum/anchor";
+import { PublicKey } from "@solana/web3.js";
 import { STAKING_PROGRAM_ADDRESS } from "../ProgramsMultiton/utils";
 import { u64 } from "../token/token";
 
 
 const USER_KEY_SPAN = 72
-const CALC_ACCOUNT_SIZE = 144
+const CALC_ACCOUNT_SIZE = 112
 
 
 export interface FarmingCalc {
   farmingState: PublicKey
-  farmingTicket: PublicKey
   userKey: PublicKey
   initializer: PublicKey
   tokenAmount: u64

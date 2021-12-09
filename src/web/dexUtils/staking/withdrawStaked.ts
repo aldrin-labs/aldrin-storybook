@@ -3,25 +3,26 @@ import { TokenInstructions } from '@project-serum/serum'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import {
-  Connection,
-  PublicKey,
+  Account, Connection,
+  Keypair, PublicKey,
   SystemProgram,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  Keypair
+  TransactionInstruction
 } from '@solana/web3.js'
 import BN from 'bn.js'
+import { PoolInfo } from '../../compositions/Pools/index.types'
+import { groupBy, splitBy } from '../../utils/collection'
 import {
-  MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
-  NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION,
-  DEFAULT_FARMING_TICKET_END_TIME
+  DEFAULT_FARMING_TICKET_END_TIME, MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
+  NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
 } from '../common/config'
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 import { FarmingTicket, SnapshotQueue } from '../common/types'
 import { getSnapshotsWithUnclaimedRewards } from '../pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { POOLS_PROGRAM_ADDRESS, STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
 
@@ -29,12 +30,10 @@ import {
   sendTransaction,
   signTransactions
 } from '../send'
-import { WalletAdapter } from '../types'
-import { StakingPool } from './types'
-import { PoolInfo } from '../../compositions/Pools/index.types'
 import { u64 } from '../token/token'
+import { WalletAdapter } from '../types'
 import { getCalcAccounts } from './getCalcAccountsForWallet'
-import { groupBy } from '../../utils/collection'
+import { StakingPool } from './types'
 
 
 export interface WithdrawStakedParams {
@@ -46,14 +45,6 @@ export interface WithdrawStakedParams {
   programAddress?: string
   snapshotQueues: SnapshotQueue[]
   signAllTransactions: boolean
-}
-
-interface FarmingCalc {
-  farmingState: PublicKey
-  farmingTicket: PublicKey
-  userKey: PublicKey
-  initializer: PublicKey
-  tokenAmount: u64
 }
 
 export const withdrawStaked = async (params: WithdrawStakedParams) => {
@@ -90,25 +81,24 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
   const calcAccounts = await getCalcAccounts(program, wallet.publicKey)
 
-  const accountsByTicket = groupBy(calcAccounts, (ca) => ca.farmingTicket.toBase58())
+  const calcsByState = groupBy(calcAccounts, (ca) => ca.farmingState.toBase58())
 
-  const ticketsToClaim = farmingTickets
+  console.log('calcsByState: ', calcsByState)
+
+  const ticketsToCalc = farmingTickets
     .filter((ft) => {
-      const accForTicket = accountsByTicket.get(ft.farmingTicket) || []
-      const calcWithAmount = accForTicket.find((ca) => ca.tokenAmount.gten(0))
-      return !!calcWithAmount || ft.tokensFrozen > MIN_POOL_TOKEN_AMOUNT_TO_STAKE && ft.amountsToClaim.find((atc) => atc.amount > 0)
+      return ft.tokensFrozen > MIN_POOL_TOKEN_AMOUNT_TO_STAKE && ft.amountsToClaim.find((atc) => atc.amount > 0)
     })
 
+  // Check token accounts for rewards
   const tokenAccountsToCreate = pool.farming.reduce((acc, farming) => {
-    const amountToClaim = ticketsToClaim
+    const amountToClaim = ticketsToCalc
       .reduce((acc, ft) => {
-        const accForTicket = accountsByTicket.get(ft.farmingTicket) || []
-        const calcWithAmount = accForTicket.find((ca) => ca.tokenAmount.gten(0))
         const toClaim = ft.amountsToClaim.find(
           (amountToClaim) => amountToClaim.farmingState === farming.farmingState
         )?.amount || 0
 
-        return toClaim + acc + parseFloat(calcWithAmount?.tokenAmount.toString() || '0')
+        return toClaim + acc
       }, 0)
 
     if (amountToClaim > 0) {
@@ -129,8 +119,32 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     return acc
   }, new Set<string>())
 
+  const tokenAccountsWithCalcs = calcAccounts.reduce((acc, ca) => {
+    if (ca.tokenAmount.gten(0)) {
+      const farming = pool.farming.find((fs) => fs.farmingState === ca.farmingState.toBase58())
+      if (farming) {
+        // Looking for existing account
+        const { address: farmingTokenAccountAddress } = getTokenDataByMint(
+          allTokensData,
+          farming.farmingTokenMint
+        )
+
+        // Token account does not exists
+        if (!farmingTokenAccountAddress) {
+          // Mark account to create
+          acc.add(farming.farmingTokenMint)
+        } else {
+          farmingTokenAccounts.set(farming.farmingTokenMint, new PublicKey(farmingTokenAccountAddress))
+        }
+      }
+
+    }
+    return acc
+  }, tokenAccountsToCreate)
+
+
   const createdAccounts = await Promise.all(
-    [...tokenAccountsToCreate].map(async (mint) => {
+    [...tokenAccountsWithCalcs].map(async (mint) => {
       const result = await createTokenAccountTransaction({
         wallet,
         mintPublicKey: new PublicKey(mint),
@@ -141,15 +155,13 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     })
   )
 
-  const withdrawTransactions = await Promise.all(ticketsToClaim.map((ticket) => {
+  const calculateTransactions = await Promise.all(ticketsToCalc.map((ticket) => {
     return Promise.all(
       pool.farming
         .filter((fs) => {
-          const accForTicket = accountsByTicket.get(ticket.farmingTicket) || []
-          const calcForState = accForTicket.find((ca) => ca.tokenAmount.gten(0) && ca.farmingState.toBase58() === fs.farmingState)
           const amountToClaim =
             ticket.amountsToClaim.find((amountToClaim) => amountToClaim.farmingState === fs.farmingState)?.amount || 0
-          return amountToClaim > 0 || calcForState?.tokenAmount.gten(0)
+          return amountToClaim > 0
         })
         .map(async (fs) => {
           if (!wallet.publicKey) {
@@ -170,8 +182,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
           // Looking for FarmingCalc account / create if not exists
           let calcAccount = calcAccounts.find(
-            (ca) => ca.farmingState.toBase58() === fs.farmingState &&
-              ca.farmingTicket.toBase58() === ticket.farmingTicket
+            (ca) => ca.farmingState.toBase58() === fs.farmingState
           )?.publicKey
 
           if (!calcAccount) {
@@ -198,7 +209,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
             calcAccounts.push({
               publicKey: calcAccount,
               farmingState: new PublicKey(fs.farmingState),
-              farmingTicket: new PublicKey(ticket.farmingTicket),
               userKey: wallet.publicKey,
               initializer: wallet.publicKey,
               tokenAmount: new u64(0),
@@ -237,60 +247,86 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
             transactions.push({ transaction: tx })
           }
 
-          // Withdraw farmed
-          transactions.push(
-            {
-              transaction:
-                new Transaction().add(
-                  await program.instruction.withdrawFarmed(
-                    {
-                      accounts: {
-                        pool: poolPublicKey,
-                        farmingState: new PublicKey(fs.farmingState),
-                        farmingCalc: calcAccount,
-                        farmingTicket: new PublicKey(ticket.farmingTicket),
-                        farmingTokenVault: new PublicKey(fs.farmingTokenVault),
-                        poolSigner: vaultSigner,
-                        userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
-                        userKey: wallet.publicKey,
-                        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-                        clock: SYSVAR_CLOCK_PUBKEY,
-                      },
-                    }
-                  )
-                )
-            }
-
-          )
-
-          // Close calc accounts for closed tickets or finished farmings
-          if (new BN(ticket.endTime).lt(new BN(DEFAULT_FARMING_TICKET_END_TIME)) || fs.tokensUnlocked === fs.tokensTotal) {
-            const closeCalcTx = new Transaction()
-              .add(await program.instruction.closeFarmingCalc(
-                {
-                  accounts: {
-                    farmingCalc: calcAccount,
-                    farmingTicket: new PublicKey(ticket.farmingTicket),
-                    signer: wallet.publicKey,
-                    initializer: wallet.publicKey,
-                  }
-                }
-              ))
-
-            transactions.push({ transaction: closeCalcTx })
-          }
-
           return transactions
         })
     )
   })
   )
 
-  const allTransactions = withdrawTransactions.flat(2)
+
+  // Generate withdrawFarmed transactions for calcs
+  const withdrawTransactions = await Promise.all(
+    calcAccounts.map(async (calcAccount) => {
+      const transactions: { transaction: Transaction, signers?: Keypair[] }[] = []
+
+      const fs = pool.farming.find((farming) => farming.farmingState === calcAccount.farmingState.toBase58())
+      if (fs) {
+        console.log('Withdraw farmed: ', fs.farmingState, calcAccount, calcAccount.tokenAmount.toString())
+        // Withdraw farmed
+        transactions.push(
+          {
+            transaction:
+              new Transaction().add(
+                await program.instruction.withdrawFarmed(
+                  {
+                    accounts: {
+                      pool: poolPublicKey,
+                      farmingState: calcAccount.farmingState,
+                      farmingCalc: calcAccount.publicKey,
+                      farmingTokenVault: new PublicKey(fs.farmingTokenVault),
+                      poolSigner: vaultSigner,
+                      userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
+                      userKey: wallet.publicKey,
+                      tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+                      clock: SYSVAR_CLOCK_PUBKEY,
+                    },
+                  }
+                )
+              )
+          }
+        )
 
 
-  console.log('allTransactions:', allTransactions)
+        // If farming ended = close calc for all tickets, otherwise - close calc only for closed tickets
+        const closedTickets = fs.tokensUnlocked === fs.tokensTotal ? ticketsToCalc : ticketsToCalc.filter((t) => t.endTime !== DEFAULT_FARMING_TICKET_END_TIME)
 
+        const closeCalcInstr = await Promise.all(
+          splitBy(closedTickets, 5).map(async (ctGroup) => {
+            const instructions = await Promise.all(
+              ctGroup.map((ct) =>
+                program.instruction.closeFarmingCalc(
+                  {
+                    accounts: {
+                      farmingCalc: calcAccount,
+                      farmingTicket: new PublicKey(ct.farmingTicket),
+                      signer: wallet.publicKey,
+                      initializer: wallet.publicKey,
+                    }
+                  }
+                ) as Promise<TransactionInstruction>
+              )
+            )
+            return {
+              transaction:
+                new Transaction()
+                  .add(...instructions)
+            }
+          })
+        )
+
+        return [...transactions, ...closeCalcInstr]
+
+      }
+
+      return transactions
+
+
+    })
+  )
+
+  const allTransactions: { transaction: Transaction, signers?: (Keypair | Account)[] }[] = [...calculateTransactions.flat(2), ...withdrawTransactions.flat()]
+
+  console.log('calculateTransactions: ', calculateTransactions, withdrawTransactions)
   // Merge with new account instructions 
   if (createdAccounts.length && allTransactions.length) {
     const firstTx = allTransactions[0]
@@ -300,7 +336,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     })
     newFirstTx.add(firstTx.transaction)
 
-    allTransactions[0] = { transaction: newFirstTx, signers: firstTx.signers || [] }
+    allTransactions[0] = { transaction: newFirstTx, signers: [] }
   }
 
   if (signAllTransactions) {
@@ -328,8 +364,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
         } else if (result === 'failed') {
           return 'failed'
         }
-
-        // await sleep(2000)
       }
     } catch (e) {
       console.log('end farming catch error', e)

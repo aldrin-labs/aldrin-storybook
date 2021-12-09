@@ -308,11 +308,6 @@
           "isSigner": false
         },
         {
-          "name": "farmingTicket",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "farmingTokenVault",
           "isMut": true,
           "isSigner": false
@@ -761,10 +756,6 @@
             "type": "publicKey"
           },
           {
-            "name": "farmingTicket",
-            "type": "publicKey"
-          },
-          {
             "name": "userKey",
             "type": "publicKey"
           },
@@ -923,5 +914,8 @@
       "name": "NoNewSnapshotsProcessed",
       "msg": "No new snapshots can be processed for this ticket for this farming"
     }
-  ]
+  ],
+  "metadata": {
+    "address": "FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX"
+  }
 }
