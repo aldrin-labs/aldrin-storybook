@@ -65,6 +65,8 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     return 'failed'
   }
 
+  const creatorPk = wallet.publicKey
+
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
@@ -79,9 +81,10 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     program.programId
   )
 
+
   const farmingTokenAccounts = new Map<string, PublicKey>()
 
-  const calcAccounts = await getCalcAccounts(program, wallet.publicKey)
+  const calcAccounts = await getCalcAccounts(program, creatorPk)
 
   const ticketsToCalc = farmingTickets
     .filter((ft) => {
@@ -162,7 +165,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
           return amountToClaim > 0
         })
         .map(async (fs) => {
-          if (!wallet.publicKey) {
+          if (!creatorPk) {
             throw new Error('No public key for wallet!')
           }
 
@@ -194,8 +197,8 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
                       farmingCalc: farmingCalc.publicKey,
                       farmingTicket: new PublicKey(ticket.farmingTicket),
                       farmingState: new PublicKey(fs.farmingState),
-                      userKey: wallet.publicKey,
-                      initializer: wallet.publicKey,
+                      userKey: creatorPk,
+                      initializer: creatorPk,
                       rent: SYSVAR_RENT_PUBKEY,
                     }
                   }
@@ -207,8 +210,8 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
             calcAccounts.push({
               publicKey: calcAccount,
               farmingState: new PublicKey(fs.farmingState),
-              userKey: wallet.publicKey,
-              initializer: wallet.publicKey,
+              userKey: creatorPk,
+              initializer: creatorPk,
               tokenAmount: new u64(0),
             })
           }
@@ -236,8 +239,8 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
                 // due to same transaction data for calculateFarmed we need add transaction with random
                 // lamports amount to get random transaction hash every time
                 SystemProgram.transfer({
-                  fromPubkey: wallet.publicKey,
-                  toPubkey: wallet.publicKey,
+                  fromPubkey: creatorPk,
+                  toPubkey: creatorPk,
                   lamports: getRandomInt(1, 1000),
                 })
 
@@ -258,6 +261,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
       const transactions: { transaction: Transaction, signers?: Keypair[] }[] = []
 
       const fs = pool.farming.find((farming) => farming.farmingState === calcAccount.farmingState.toBase58())
+      // console.log('fs: ', fs, calcAccount.tokenAmount.toString())
       if (fs && calcAccount.tokenAmount.gtn(0)) {
         // Withdraw farmed
         transactions.push(
@@ -273,7 +277,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
                       farmingTokenVault: new PublicKey(fs.farmingTokenVault),
                       poolSigner: vaultSigner,
                       userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
-                      userKey: wallet.publicKey,
+                      userKey: creatorPk,
                       tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
                       clock: SYSVAR_CLOCK_PUBKEY,
                     },
@@ -282,43 +286,46 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
               )
           }
         )
+
+
+        // If farming ended - close calc for all tickets, otherwise - close calc only for closed tickets
+        const closedTickets = (!fs || fs.tokensUnlocked === fs.tokensTotal) ?
+          ticketsToCalc : ticketsToCalc.filter((t) => t.endTime !== DEFAULT_FARMING_TICKET_END_TIME)
+
+        const closeCalcInstr = await Promise.all(
+          splitBy(closedTickets, 5).map(async (ctGroup) => {
+
+            const instructions = await Promise.all(
+              ctGroup.map((ct) =>
+                program.instruction.closeFarmingCalc(
+                  {
+                    accounts: {
+                      farmingCalc: calcAccount.publicKey,
+                      farmingTicket: new PublicKey(ct.farmingTicket),
+                      signer: creatorPk,
+                      initializer: calcAccount.initializer,
+                    }
+                  }
+                ) as Promise<TransactionInstruction>
+              )
+            )
+            return {
+              transaction: new Transaction().add(...instructions)
+            }
+          })
+        )
+
+        return [...transactions, ...closeCalcInstr]
+
       }
 
-
-      // If farming ended - close calc for all tickets, otherwise - close calc only for closed tickets
-      const closedTickets = (!fs || fs.tokensUnlocked === fs.tokensTotal) ?
-        ticketsToCalc : ticketsToCalc.filter((t) => t.endTime !== DEFAULT_FARMING_TICKET_END_TIME)
-
-      const closeCalcInstr = await Promise.all(
-        splitBy(closedTickets, 5).map(async (ctGroup) => {
-          
-          const instructions = await Promise.all(
-            ctGroup.map((ct) =>
-              program.instruction.closeFarmingCalc(
-                {
-                  accounts: {
-                    farmingCalc: calcAccount.publicKey,
-                    farmingTicket: new PublicKey(ct.farmingTicket),
-                    signer: wallet.publicKey,
-                    initializer: wallet.publicKey,
-                  }
-                }
-              ) as Promise<TransactionInstruction>
-            )
-          )
-          return {
-            transaction: new Transaction().add(...instructions)
-          }
-        })
-      )
-
-      return [...transactions, ...closeCalcInstr]
-
+      return transactions
     })
   )
 
   const allTransactions: { transaction: Transaction, signers?: (Keypair | Account)[] }[] = [...calculateTransactions.flat(2), ...withdrawTransactions.flat()]
 
+  // console.log('allTransactions: ', allTransactions)
   // Merge with new account instructions 
   if (createdAccounts.length && allTransactions.length) {
     const firstTx = allTransactions[0]
