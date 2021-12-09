@@ -258,67 +258,61 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
       const transactions: { transaction: Transaction, signers?: Keypair[] }[] = []
 
       const fs = pool.farming.find((farming) => farming.farmingState === calcAccount.farmingState.toBase58())
-      if (fs) {
-        if (calcAccount.tokenAmount.gtn(0)) {
-          // Withdraw farmed
-          transactions.push(
-            {
-              transaction:
-                new Transaction().add(
-                  await program.instruction.withdrawFarmed(
-                    {
-                      accounts: {
-                        pool: poolPublicKey,
-                        farmingState: calcAccount.farmingState,
-                        farmingCalc: calcAccount.publicKey,
-                        farmingTokenVault: new PublicKey(fs.farmingTokenVault),
-                        poolSigner: vaultSigner,
-                        userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
-                        userKey: wallet.publicKey,
-                        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-                        clock: SYSVAR_CLOCK_PUBKEY,
-                      },
-                    }
-                  )
-                )
-            }
-          )
-        }
-
-        // If farming ended = close calc for all tickets, otherwise - close calc only for closed tickets
-        const closedTickets = fs.tokensUnlocked === fs.tokensTotal ? ticketsToCalc : ticketsToCalc.filter((t) => t.endTime !== DEFAULT_FARMING_TICKET_END_TIME)
-
-        const closeCalcInstr = await Promise.all(
-          splitBy(closedTickets, 5).map(async (ctGroup) => {
-            // console.log('closedTickets: ', closedTickets)
-            const instructions = await Promise.all(
-              ctGroup.map((ct) =>
-                program.instruction.closeFarmingCalc(
+      if (fs && calcAccount.tokenAmount.gtn(0)) {
+        // Withdraw farmed
+        transactions.push(
+          {
+            transaction:
+              new Transaction().add(
+                await program.instruction.withdrawFarmed(
                   {
                     accounts: {
+                      pool: poolPublicKey,
+                      farmingState: calcAccount.farmingState,
                       farmingCalc: calcAccount.publicKey,
-                      farmingTicket: new PublicKey(ct.farmingTicket),
-                      signer: wallet.publicKey,
-                      initializer: wallet.publicKey,
-                    }
+                      farmingTokenVault: new PublicKey(fs.farmingTokenVault),
+                      poolSigner: vaultSigner,
+                      userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
+                      userKey: wallet.publicKey,
+                      tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+                      clock: SYSVAR_CLOCK_PUBKEY,
+                    },
                   }
-                ) as Promise<TransactionInstruction>
+                )
               )
-            )
-            return {
-              transaction:
-                new Transaction()
-                  .add(...instructions)
-            }
-          })
+          }
         )
-
-        return [...transactions, ...closeCalcInstr]
-
       }
 
-      return transactions
 
+      // If farming ended - close calc for all tickets, otherwise - close calc only for closed tickets
+      const closedTickets = (!fs || fs.tokensUnlocked === fs.tokensTotal) ?
+        ticketsToCalc : ticketsToCalc.filter((t) => t.endTime !== DEFAULT_FARMING_TICKET_END_TIME)
+
+      const closeCalcInstr = await Promise.all(
+        splitBy(closedTickets, 5).map(async (ctGroup) => {
+          
+          const instructions = await Promise.all(
+            ctGroup.map((ct) =>
+              program.instruction.closeFarmingCalc(
+                {
+                  accounts: {
+                    farmingCalc: calcAccount.publicKey,
+                    farmingTicket: new PublicKey(ct.farmingTicket),
+                    signer: wallet.publicKey,
+                    initializer: wallet.publicKey,
+                  }
+                }
+              ) as Promise<TransactionInstruction>
+            )
+          )
+          return {
+            transaction: new Transaction().add(...instructions)
+          }
+        })
+      )
+
+      return [...transactions, ...closeCalcInstr]
 
     })
   )
@@ -355,7 +349,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
         const result = await sendSignedTransaction({
           transaction: signedTransaction,
           connection,
-          timeout: 10_000,
+          timeout: 30_000,
         })
 
         if (result === 'timeout') {
