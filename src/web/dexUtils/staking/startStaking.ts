@@ -19,6 +19,7 @@ import { STAKING_FARMING_TOKEN_DECIMALS } from './config'
 import { endStakingInstructions } from './endStaking'
 import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
 import { StakingPool } from './types'
+import { getCalcAccounts } from './getCalcAccountsForWallet'
 
 interface StartStakingParams {
   wallet: WalletAdapter
@@ -45,6 +46,12 @@ export const startStaking = async (params: StartStakingParams) => {
     programAddress: STAKING_PROGRAM_ADDRESS,
   })
 
+  const creatorPk = wallet.publicKey
+  if (!creatorPk) {
+    throw new Error('no wallet!')
+  }
+
+  const calcAccounts = await getCalcAccounts(program, creatorPk)
   const instructionChunks = await endStakingInstructions(params)
 
   const farmingState = getCurrentFarmingStateFromAll(stakingPool.farming)
@@ -86,26 +93,39 @@ export const startStaking = async (params: StartStakingParams) => {
     }
   )
 
-  const farmingCalc = Keypair.generate()
+
 
   const commonTransaction = new Transaction()
     .add(farmingTicketInstruction)
     .add(startStakingTransaction)
-    .add(await program.account.farmingCalc.createInstruction(farmingCalc))
-    .add(await program.instruction.initializeFarmingCalc(
-      {
-        accounts: {
-          farmingCalc: farmingCalc.publicKey,
-          farmingTicket: farmingTicket.publicKey,
-          farmingState: new PublicKey(stakingPool.farming[0].farmingState),
-          userKey: wallet.publicKey,
-          initializer: wallet.publicKey,
-          rent: SYSVAR_RENT_PUBKEY,
+
+  const existingCalc = calcAccounts.find((ca) => ca.farmingState.toBase58() === stakingPool.farming[0].farmingState)
+
+  const commonSigners = [
+    farmingTicket,
+  ]
+
+  if (!existingCalc) {
+    const farmingCalc = Keypair.generate()
+
+    commonTransaction
+      .add(await program.account.farmingCalc.createInstruction(farmingCalc))
+      .add(await program.instruction.initializeFarmingCalc(
+        {
+          accounts: {
+            farmingCalc: farmingCalc.publicKey,
+            farmingTicket: farmingTicket.publicKey,
+            farmingState: new PublicKey(stakingPool.farming[0].farmingState),
+            userKey: wallet.publicKey,
+            initializer: wallet.publicKey,
+            rent: SYSVAR_RENT_PUBKEY,
+          }
         }
-      }
-    ))
-    
-  const commonSigners = [farmingCalc, farmingTicket]
+      ))
+
+    commonSigners.push(farmingCalc)
+  }
+
 
   try {
     const signedTransactions = await signTransactions({
@@ -131,7 +151,5 @@ export const startStaking = async (params: StartStakingParams) => {
     console.warn('Error sign or send transaction: ', e)
     return 'failed'
   }
-
-
 
 }

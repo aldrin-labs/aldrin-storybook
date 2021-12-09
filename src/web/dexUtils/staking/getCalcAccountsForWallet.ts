@@ -13,11 +13,12 @@ export interface FarmingCalc {
   farmingState: PublicKey
   userKey: PublicKey
   initializer: PublicKey
+  publicKey: PublicKey
   tokenAmount: u64
 }
 
 
-export const getCalcAccounts = async (program: Program, userPublicKey: PublicKey) => {
+export const getCalcAccounts = async (program: Program, userPublicKey: PublicKey): Promise<FarmingCalc[]> => {
 
   const calcAccountsData = await program.provider.connection.getProgramAccounts(
     new PublicKey(STAKING_PROGRAM_ADDRESS),

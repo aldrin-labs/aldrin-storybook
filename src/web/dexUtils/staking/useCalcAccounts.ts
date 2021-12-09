@@ -29,7 +29,7 @@ export const useCalcAccounts = ({
 
       return true
     },
-    [walletPublicKey],
+    [walletPublicKey?.toBase58()],
   )
 
   useEffect(() => {

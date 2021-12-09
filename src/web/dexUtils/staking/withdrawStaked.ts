@@ -267,8 +267,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
         // Withdraw farmed
 
         if (calcAccount.tokenAmount.gtn(0)) {
-
-
           transactions.push(
             {
               transaction:

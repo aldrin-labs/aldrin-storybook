@@ -27,6 +27,5 @@ export const getAvailableToClaimFarmingTokens = (
     .filter((ca) => ticketsAmount.states.has(ca.farmingState.toBase58()))
     .reduce((acc, cft) => { return acc.add(new BN(cft.tokenAmount.toString())) }, new BN(0))
 
-
   return parseFloat(calculatedAmount.toString()) / (10 ** farmingDecimals) + ticketsAmount.total
 }
