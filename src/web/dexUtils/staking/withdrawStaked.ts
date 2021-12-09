@@ -13,23 +13,25 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 import { PoolInfo } from '../../compositions/Pools/index.types'
-import { groupBy, splitBy } from '../../utils/collection'
+import { splitBy } from '../../utils/collection'
 import {
   DEFAULT_FARMING_TICKET_END_TIME, MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
   NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
 } from '../common/config'
+
 import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 import { FarmingTicket, SnapshotQueue } from '../common/types'
 import { getSnapshotsWithUnclaimedRewards } from '../pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+
 import {
   createTokenAccountTransaction,
-
   sendSignedTransaction,
   sendTransaction,
   signTransactions
 } from '../send'
+
 import { u64 } from '../token/token'
 import { WalletAdapter } from '../types'
 import { getCalcAccounts } from './getCalcAccountsForWallet'
@@ -80,10 +82,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
   const farmingTokenAccounts = new Map<string, PublicKey>()
 
   const calcAccounts = await getCalcAccounts(program, wallet.publicKey)
-
-  // const calcsByState = groupBy(calcAccounts, (ca) => ca.farmingState.toBase58())
-
-  console.log('calcsByState: ', calcAccounts)
 
   const ticketsToCalc = farmingTickets
     .filter((ft) => {
@@ -327,7 +325,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
   const allTransactions: { transaction: Transaction, signers?: (Keypair | Account)[] }[] = [...calculateTransactions.flat(2), ...withdrawTransactions.flat()]
 
-  console.log('calculateTransactions: ', allTransactions, calculateTransactions, withdrawTransactions)
   // Merge with new account instructions 
   if (createdAccounts.length && allTransactions.length) {
     const firstTx = allTransactions[0]
@@ -340,7 +337,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     allTransactions[0] = { transaction: newFirstTx, signers: [] }
   }
 
-  console.log('allTransactions2: ', allTransactions)
 
   if (signAllTransactions) {
     try {

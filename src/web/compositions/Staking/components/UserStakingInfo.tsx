@@ -466,7 +466,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                     >
                       <span>
                         <Button
-                          // disabled={isClaimDisabled}
+                          disabled={isClaimDisabled}
                           fontSize="xs"
                           padding="lg"
                           borderRadius="xxl"
