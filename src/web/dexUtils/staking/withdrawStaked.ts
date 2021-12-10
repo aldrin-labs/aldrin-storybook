@@ -289,13 +289,16 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
           const closeCalc = (fs && fs.tokensUnlocked === fs.tokensTotal) ? true :
             !ticketsToCalc.find((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
 
+
+          // console.log('farmingTickets: ', farmingTickets, ticketsToCalc)
+          const ticket = farmingTickets.find((ft) => ft.amountsToClaim.find((atc) => atc.farmingState === fs.farmingState))
           if (closeCalc) {
             tx.add(
               await program.instruction.closeFarmingCalc(
                 {
                   accounts: {
                     farmingCalc: calcAccount.publicKey,
-                    farmingTicket: new PublicKey(ticketsToCalc[0].farmingTicket),
+                    farmingTicket: new PublicKey(ticket?.farmingTicket || ''),
                     signer: creatorPk,
                     initializer: calcAccount.initializer,
                   }
