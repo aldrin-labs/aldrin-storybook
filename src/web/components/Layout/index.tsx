@@ -33,6 +33,9 @@ export const StakingPage = styled(Page)`
   justify-content: center;
   align-items: center;
   height: 100%;
+  @media (max-width: ${BREAKPOINTS.md}) {
+    align-items: flex-start;
+  }
 `
 
 export const Content = styled.div`

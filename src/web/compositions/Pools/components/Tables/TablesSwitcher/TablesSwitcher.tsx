@@ -137,6 +137,8 @@ const TablesSwitcher = ({
     farmingTicketsMap,
   }).length
 
+  console.log({farmingTicketsMap, pools})
+
   return (
     <Block>
       <BlockContent>
