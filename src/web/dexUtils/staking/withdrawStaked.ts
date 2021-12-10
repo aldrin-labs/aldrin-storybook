@@ -286,7 +286,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
         // If farming ended - close calc, otherwise - close calc only when all tickets are closed 
         const closeCalc = (fs && fs.tokensUnlocked === fs.tokensTotal) ? true :
-          !!ticketsToCalc.find((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
+          !ticketsToCalc.find((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
 
         if (closeCalc) {
           tx.add(

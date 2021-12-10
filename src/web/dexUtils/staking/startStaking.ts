@@ -5,7 +5,8 @@ import {
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
-  Transaction
+  Transaction,
+  TransactionInstruction
 } from '@solana/web3.js'
 import BN from 'bn.js'
 import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
@@ -20,6 +21,7 @@ import { endStakingInstructions } from './endStaking'
 import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
 import { StakingPool } from './types'
 import { getCalcAccounts } from './getCalcAccountsForWallet'
+import { splitBy } from '../../utils/collection'
 
 interface StartStakingParams {
   wallet: WalletAdapter
@@ -99,39 +101,54 @@ export const startStaking = async (params: StartStakingParams) => {
     .add(farmingTicketInstruction)
     .add(startStakingTransaction)
 
-  const existingCalc = calcAccounts.find((ca) => ca.farmingState.toBase58() === stakingPool.farming[0].farmingState)
-
   const commonSigners = [
     farmingTicket,
   ]
 
-  if (!existingCalc) {
-    const farmingCalc = Keypair.generate()
 
-    commonTransaction
-      .add(await program.account.farmingCalc.createInstruction(farmingCalc))
-      .add(await program.instruction.initializeFarmingCalc(
-        {
-          accounts: {
-            farmingCalc: farmingCalc.publicKey,
-            farmingTicket: farmingTicket.publicKey,
-            farmingState: new PublicKey(stakingPool.farming[0].farmingState),
-            userKey: wallet.publicKey,
-            initializer: wallet.publicKey,
-            rent: SYSVAR_RENT_PUBKEY,
-          }
+  const farmingsWithoutCalc = stakingPool.farming
+    .filter((f) => f.tokensTotal !== f.tokensUnlocked) // Open farmings
+    .filter((f) => !calcAccounts.find((ca) => ca.farmingState.toBase58() !== f.farmingState))
+
+  const createCalcs = await Promise.all(
+    splitBy(farmingsWithoutCalc, 4).map(async (calcs) => {
+      const transaction = new Transaction()
+
+      const instructionsPromises = await Promise.all(calcs.map(async (ca) => {
+        const farmingCalc = Keypair.generate()
+        return {
+          instructions: Promise.all([
+            program.account.farmingCalc.createInstruction(farmingCalc),
+            program.instruction.initializeFarmingCalc(
+              {
+                accounts: {
+                  farmingCalc: farmingCalc.publicKey,
+                  farmingTicket: farmingTicket.publicKey,
+                  farmingState: new PublicKey(stakingPool.farming[0].farmingState),
+                  userKey: wallet.publicKey,
+                  initializer: wallet.publicKey,
+                  rent: SYSVAR_RENT_PUBKEY,
+                }
+              }
+            ) as Promise<TransactionInstruction>
+          ]),
+          farmingCalc,
         }
-      ))
+      })
+      )
 
-    commonSigners.push(farmingCalc)
-  }
+      const instructions = (await Promise.all(instructionsPromises.map((_) => _.instructions))).flat()
 
+      return { transaction: transaction.add(...instructions), signers: instructionsPromises.map((_) => _.farmingCalc) }
+    })
+  )
 
   try {
     const signedTransactions = await signTransactions({
       transactionsAndSigners: [
         ...endFarmingTransactions.map((transaction) => ({ transaction, signers: [] })),
-        { transaction: commonTransaction, signers: commonSigners }
+        { transaction: commonTransaction, signers: commonSigners },
+        ...createCalcs,
       ],
       wallet,
       connection,
