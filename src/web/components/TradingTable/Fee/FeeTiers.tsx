@@ -8,7 +8,7 @@ import {
 import { useFeeDiscountKeys } from '@sb/dexUtils/markets'
 
 export const feeTiers = [
-  { feeTier: 0, taker: 0.22, maker: -0.03, token: '', balance: '' },
+  { feeTier: 0, taker: 0.04, maker: -0.03, token: '', balance: '' },
   { feeTier: 1, taker: 0.2, maker: -0.03, token: 'SRM', balance: 100 },
   { feeTier: 2, taker: 0.18, maker: -0.03, token: 'SRM', balance: 1000 },
   { feeTier: 3, taker: 0.16, maker: -0.03, token: 'SRM', balance: 10000 },
