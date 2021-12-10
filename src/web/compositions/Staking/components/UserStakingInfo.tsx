@@ -45,7 +45,7 @@ import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import BN from 'bn.js'
 import dayjs from 'dayjs'
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState } from 'react'
 import { compose } from 'recompose'
 import { useCalcAccounts } from '../../../dexUtils/staking/useCalcAccounts'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
@@ -67,9 +67,6 @@ import {
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
-import { Program } from '@project-serum/anchor'
-import { ProgramsMultiton } from '../../../dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { FarmingCalc } from '../../../dexUtils/staking/getCalcAccountsForWallet'
 
 interface UserBalanceProps {
   value: number
@@ -177,7 +174,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const buyBackAmountWithDecimals =
     buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
-  
+
   const [
     allStakingSnapshotQueues,
     refreshAllStakingSnapshotQueues,
@@ -299,15 +296,13 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const userRewards = getAvailableToClaimFarmingTokens(
     stakingTicketsWithAvailableToClaim,
-    calcAccounts,
-    currentFarmingState.farmingTokenMintDecimals,
   )
 
   const availableToClaimTotal = getAvailableToClaimFarmingTokens(
     addFarmingRewardsToTickets({
       farmingTickets: userFarmingTickets,
       pools: [stakingPoolWithClosedFarmings],
-      snapshotQueues: snapshotQueueWithAMMFees,
+      snapshotQueues: allStakingSnapshotQueues,
     }),
     calcAccounts,
     currentFarmingState.farmingTokenMintDecimals,
