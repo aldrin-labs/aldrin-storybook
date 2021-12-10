@@ -342,7 +342,9 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
       const signedTransactions = await signTransactions({
         wallet,
         connection,
-        transactionsAndSigners: allTransactions.map(({ transaction, signers = [] }) => ({ transaction, signers })),
+        transactionsAndSigners: allTransactions
+          .filter(({ transaction }) => transaction.instructions.length > 0)
+          .map(({ transaction, signers = [] }) => ({ transaction, signers })),
       })
 
       if (!signedTransactions) {
