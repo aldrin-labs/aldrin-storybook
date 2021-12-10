@@ -68,7 +68,7 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
 
   const lastFarmingTicket =
     farmingTickets.length > 0
-      ? farmingTickets?.sort((a, b) => b.startTime - a.startTime)[0]
+      ? farmingTickets?.sort((a, b) => +b.startTime - +a.startTime)[0]
       : null
 
   const unlockAvailableDate =

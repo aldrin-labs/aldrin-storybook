@@ -1,37 +1,33 @@
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { estimateTime } from '@core/utils/dateUtils'
 import { SvgIcon } from '@sb/components'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Text } from '@sb/components/Typography'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/dexUtils/types'
-import React, { useState } from 'react'
-import { estimateTime } from '@core/utils/dateUtils'
-import pluralize from 'pluralize'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { Text } from '@sb/components/Typography'
+import pluralize from 'pluralize'
+import React, { useState } from 'react'
+import { filterOpenFarmingStates } from '../../../../dexUtils/pools/filterOpenFarmingStates'
 import { DexTokensPrices, PoolInfo } from '../../index.types'
 import { getTokenDataByMint } from '../../utils'
 import { getUniqueAmountsToClaimMap } from '../Tables/utils/getUniqueAmountsToClaimMap'
+import { ExtendFarmingModal } from './ExtendFarmingModal'
 import ClockIcon from './icons/whiteClock.svg'
-import LightLogo from '@icons/lightLogo.svg'
-
 import {
-  FarmingBlock,
-  FarmingButton,
+  ExtendFarmingButton, FarmingBlock,
+  FarmingBlockInner, FarmingButton,
   FarmingButtonsContainer,
   FarmingButtonWrap,
   LiquidityItem,
   LiquidityText,
   LiquidityTitle,
-  NoFarmingBlock,
-  FarmingBlockInner,
-  ExtendFarmingButton,
+  NoFarmingBlock
 } from './styles'
 import { ClaimTimeTooltip } from './Tooltips'
-import { ExtendFarmingModal } from './ExtendFarmingModal'
-import { filterOpenFarmingStates } from '../../../../dexUtils/pools/filterOpenFarmingStates'
+
 
 interface UserFarmingBlockProps {
   pool: PoolInfo
