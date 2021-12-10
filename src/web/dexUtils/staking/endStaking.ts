@@ -5,18 +5,18 @@ import {
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  TransactionInstruction,
+  TransactionInstruction
 } from '@solana/web3.js'
+import { splitBy } from '../../utils/collection'
 import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
+import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
 import { FarmingTicket } from '../common/types'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction, signTransactions, sendSignedTransaction, sendPartOfTransactions } from '../send'
+import { sendPartOfTransactions, signTransactions } from '../send'
 import { WalletAdapter } from '../types'
-import { StakingPool } from './types'
-import { splitBy } from '../../utils/collection'
-import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
 import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
+import { StakingPool } from './types'
 
 interface EndstakingParams {
   wallet: WalletAdapter
@@ -51,6 +51,8 @@ export const endStakingInstructions = async (params: EndstakingParams): Promise<
       tickets: filterOpenFarmingTickets(farmingTickets),
     }
   )
+
+  console.log('openTickets: ', openTickets, farmingState)
 
 
   const [poolSigner] = await PublicKey.findProgramAddress(

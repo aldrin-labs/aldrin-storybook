@@ -143,12 +143,21 @@ export const startStaking = async (params: StartStakingParams) => {
     })
   )
 
+  const [create, ...createRest] = createCalcs
+
+  if (create) {
+    commonTransaction.add(create.transaction)
+    commonSigners.push(...create.signers)
+  }
   try {
     const signedTransactions = await signTransactions({
       transactionsAndSigners: [
         ...endFarmingTransactions.map((transaction) => ({ transaction, signers: [] })),
-        { transaction: commonTransaction, signers: commonSigners },
-        ...createCalcs,
+        {
+          transaction: commonTransaction,
+          signers: commonSigners,
+        },
+        ...createRest,
       ],
       wallet,
       connection,

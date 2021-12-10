@@ -179,6 +179,8 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
             unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
           )
 
+          // console.log('iterations: ', unclaimedSnapshots.length, iterations)
+
           // Looking for FarmingCalc account / create if not exists
           let calcAccount = calcAccounts.find(
             (ca) => ca.farmingState.toBase58() === fs.farmingState
@@ -205,6 +207,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
             transactions.push({ transaction: createCalcTx, signers: [farmingCalc] })
             calcAccount = farmingCalc.publicKey
+            // const tokenAmount = ticket.amountsToClaim.find((atc) => )
             calcAccounts.push({
               publicKey: calcAccount,
               farmingState: new PublicKey(fs.farmingState),
@@ -216,6 +219,12 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
           // Create calculateFarmed transactions
           for (let i = 1; i <= iterations; i++) {
+            if (calcAccount) {
+              const ca = calcAccounts.find((ca1) => ca1.publicKey.toBase58() === calcAccount?.toBase58())
+              if (ca) {
+                ca.tokenAmount = new u64(1) // Just to mark for withdraw on next iter
+              }
+            }
             const tx = new Transaction()
             tx
               .add(
@@ -265,6 +274,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
           const tx = new Transaction()
 
           if (calcAccount.tokenAmount.gtn(0)) {
+            // console.log('calculate: ', calcAccount.tokenAmount.toString())
             tx.add(
               await program.instruction.withdrawFarmed(
                 {
@@ -285,20 +295,26 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
           }
 
+
+          const calcTickets = farmingTickets.filter((ft) => ft.amountsToClaim.find((atc) => atc.farmingState === fs.farmingState))
           // If farming ended - close calc, otherwise - close calc only when all tickets are closed 
           const closeCalc = (fs && fs.tokensUnlocked === fs.tokensTotal) ? true :
-            !ticketsToCalc.find((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
+            !calcTickets.find((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
 
 
           // console.log('farmingTickets: ', farmingTickets, ticketsToCalc)
           const ticket = farmingTickets.find((ft) => ft.amountsToClaim.find((atc) => atc.farmingState === fs.farmingState))
+          if (!ticket) {
+            throw new Error('no ticket!')
+          }
           if (closeCalc) {
+            // console.log('closeCalc: ', calcAccount.publicKey.toBase58())
             tx.add(
               await program.instruction.closeFarmingCalc(
                 {
                   accounts: {
                     farmingCalc: calcAccount.publicKey,
-                    farmingTicket: new PublicKey(ticket?.farmingTicket || ''),
+                    farmingTicket: new PublicKey(ticket.farmingTicket),
                     signer: creatorPk,
                     initializer: calcAccount.initializer,
                   }
@@ -323,8 +339,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
   const allTransactions: { transaction: Transaction, signers?: (Keypair | Account)[] }[] = [...calculateTransactions.flat(2), ...withdrawTransactions.flat()]
 
-  // console.log('allTransactions: ', allTransactions)
-  // Merge with new account instructions 
+  // console.log('allTrans: ', calculateTransactions, withdrawTransactions)
   if (createdAccounts.length && allTransactions.length) {
     const firstTx = allTransactions[0]
     const newFirstTx = new Transaction()
