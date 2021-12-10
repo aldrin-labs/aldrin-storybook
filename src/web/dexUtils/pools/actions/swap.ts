@@ -1,6 +1,6 @@
 import { TokenInstructions } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
-import { Connection, PublicKey, Transaction } from '@solana/web3.js'
+import { Connection, PublicKey, Signer, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 import { Side } from '@sb/dexUtils/common/config'
 import {
@@ -18,7 +18,7 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
-export const swap = async ({
+export const getSwapTransaction = async ({
   wallet,
   connection,
   poolPublicKey,
@@ -28,6 +28,7 @@ export const swap = async ({
   swapAmountOut,
   isSwapBaseToQuote,
   transferSOLToWrapped,
+  unwrapWrappedSOL = true,
   curveType,
 }: {
   wallet: WalletAdapter
@@ -39,8 +40,9 @@ export const swap = async ({
   swapAmountOut: number
   isSwapBaseToQuote: boolean
   transferSOLToWrapped: boolean
+  unwrapWrappedSOL?: boolean
   curveType: number | null
-}) => {
+}): Promise<[Transaction, Signer[], PublicKey, PublicKey] | null> => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
@@ -101,7 +103,9 @@ export const swap = async ({
 
       transactionBeforeSwap.add(createWrappedAccountTransaction)
       commonSigners.push(wrappedAccount)
-      transactionAfterSwap.add(closeAccountTransaction)
+      if (unwrapWrappedSOL) {
+        transactionAfterSwap.add(closeAccountTransaction)
+      }
     } else {
       // otherwise we need only to create wrapped sol account
       const result = await createSOLAccountAndClose({
@@ -124,7 +128,9 @@ export const swap = async ({
 
       transactionBeforeSwap.add(createWrappedAccountTransaction)
       commonSigners.push(wrappedAccount)
-      transactionAfterSwap.add(closeAccountTransaction)
+      if (unwrapWrappedSOL) {
+        transactionAfterSwap.add(closeAccountTransaction)
+      }
     }
   }
 
@@ -183,11 +189,65 @@ export const swap = async ({
     commonTransaction.add(swapTransaction)
     commonTransaction.add(transactionAfterSwap)
 
+    return [
+      commonTransaction,
+      commonSigners,
+      userBaseTokenAccount,
+      userQuoteTokenAccount,
+    ]
+  } catch (e) {
+    return null
+  }
+}
+
+export const swap = async ({
+  wallet,
+  connection,
+  poolPublicKey,
+  userBaseTokenAccount,
+  userQuoteTokenAccount,
+  swapAmountIn,
+  swapAmountOut,
+  isSwapBaseToQuote,
+  transferSOLToWrapped,
+  curveType,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  poolPublicKey: PublicKey
+  userBaseTokenAccount: PublicKey | null
+  userQuoteTokenAccount: PublicKey | null
+  swapAmountIn: number
+  swapAmountOut: number
+  isSwapBaseToQuote: boolean
+  transferSOLToWrapped: boolean
+  curveType: number | null
+}) => {
+  const swapTransactionAndSigners = await getSwapTransaction({
+    wallet,
+    connection,
+    poolPublicKey,
+    userBaseTokenAccount,
+    userQuoteTokenAccount,
+    swapAmountIn,
+    swapAmountOut,
+    isSwapBaseToQuote,
+    transferSOLToWrapped,
+    curveType,
+  })
+
+  if (!swapTransactionAndSigners) {
+    return 'failed'
+  }
+
+  const [swapTransaction, signers] = swapTransactionAndSigners
+
+  try {
     const tx = await sendTransaction({
       wallet,
       connection,
-      transaction: commonTransaction,
-      signers: commonSigners,
+      transaction: swapTransaction,
+      signers,
       focusPopup: true,
     })
 

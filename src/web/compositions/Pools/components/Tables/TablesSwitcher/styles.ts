@@ -1,12 +1,13 @@
-import styled from 'styled-components'
 import { Theme } from '@material-ui/core'
-import { COLORS, BREAKPOINTS, BORDER_RADIUS, FONTS } from '@variables/variables'
-import { Input } from '@sb/components/Input'
 import { Button } from '@sb/components/Button'
+import { Input } from '@sb/components/Input'
+import { BORDER_RADIUS, BREAKPOINTS, COLORS, FONT_SIZES } from '@variables/variables'
+import styled from 'styled-components'
 
 type TableModeButtonProps = {
   isActive: boolean
   theme: Theme
+  fontSize?: string
 }
 
 export const TableModeButton = styled.button`
@@ -20,10 +21,8 @@ export const TableModeButton = styled.button`
   padding: 0.4rem 0;
   margin: 0 1.6rem 0 0;
   outline: none;
-  font-size: 13px;
-  line-height: 20px;
-  font-weight: 600;
-  font-family: ${FONTS.main}
+  font-size: ${(props: TableModeButtonProps) => props.fontSize || '0.9em'};
+  font-family: Avenir Next Demi;
   text-transform: capitalize;
   cursor: pointer;
 `
@@ -44,7 +43,6 @@ export const InputWrap = styled.div`
   display: flex;
   flex-direction: row;
   margin-top: 20px;
-  align-items: center;
 
   @media (min-width: ${BREAKPOINTS.md}) {
     margin-top: 0;
@@ -68,6 +66,7 @@ export const TableContainer = styled.div`
 `
 
 export const AddPoolButton = styled(Button)`
+  width: 42px;
   height: 42px;
   text-align: center;
   margin-right: 20px;
@@ -75,5 +74,6 @@ export const AddPoolButton = styled(Button)`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: normal;
+  font-weight: bold;
+  font-size: ${FONT_SIZES.lg};
 `

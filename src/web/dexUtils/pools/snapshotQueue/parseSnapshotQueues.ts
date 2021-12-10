@@ -21,8 +21,8 @@ const parseSnapshotQueue = ({
       return {
         time: el.time.toNumber(),
         isInitialized: el.isInitialized,
-        tokensFrozen: parseFloat(el.tokensFrozen?.toString()),
-        tokensTotal: parseFloat(el.farmingTokens?.toString()),
+        tokensFrozen: parseFloat(el?.tokensFrozen?.toString()),
+        tokensTotal: parseFloat(el?.farmingTokens?.toString()),
       }
     })
     .filter((snapshot: Snapshot) => snapshot.isInitialized)

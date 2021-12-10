@@ -1,6 +1,7 @@
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { SvgIcon } from '@sb/components'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -14,6 +15,8 @@ import { DexTokensPrices, PoolInfo } from '../../index.types'
 import { getTokenDataByMint } from '../../utils'
 import { getUniqueAmountsToClaimMap } from '../Tables/utils/getUniqueAmountsToClaimMap'
 import ClockIcon from './icons/whiteClock.svg'
+import LightLogo from '@icons/lightLogo.svg'
+
 import {
   FarmingBlock,
   FarmingButton,
@@ -67,11 +70,25 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const isPoolOwner = wallet.publicKey?.toString() === pool.initializerAccount
 
-  const farming = pool.farming ? pool.farming[0] : null
+  const farming = farmings[0]
 
   if (!hasFarming) {
     return (
       <FarmingBlock>
+        {/* 
+        TODO:
+        <RowContainer>
+            <SvgIcon
+              src={LightLogo}
+              height={'7rem'}
+              width={'7rem'}
+            />
+          </RowContainer>
+          <LiquidityTitle style={{ padding: '1rem 0' }}>
+            No farming available for this pool now.
+          </LiquidityTitle>
+          <span>But it can be added by pool owner anytime.</span>
+           */}
         <NoFarmingBlock>
           <Text>This pool does not have farming.</Text>
           {isPoolOwner && (
@@ -145,7 +162,10 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     ).values()
   ).join(' and ')
 
-  const tooltipText = `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
+  const tooltipText =
+    !hasUnstaked && !hasStaked
+      ? `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
+      : null
 
   const farmingRemain = farmings.reduce((acc, fs) => {
     const value = acc.get(fs.farmingTokenMint) || {

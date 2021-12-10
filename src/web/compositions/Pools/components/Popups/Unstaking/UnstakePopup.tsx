@@ -22,17 +22,16 @@ import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { COLORS } from '@variables/variables'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import dayjs from 'dayjs'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-
 
 interface UnstakePopupProps {
   theme: Theme
   allTokensData: TokenInfo[]
   selectedPool: PoolInfo
-  farmingTicketsMap: Map<string, FarmingTicket>
+  farmingTicketsMap: Map<string, FarmingTicket[]>
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
@@ -43,6 +42,7 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
     theme,
     allTokensData,
     selectedPool,
+    farmingTicketsMap,
     close,
     refreshTokensWithFarmingTickets,
     setPoolWaitingForUpdateAfterOperation,
@@ -57,7 +57,7 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
     selectedPool.poolTokenMint
   )
 
-  const farmingState = selectedPool.farming[0]
+  const farmingState = selectedPool.farming && selectedPool.farming[0]
 
   if (!farmingState) return null
 
@@ -73,9 +73,7 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
 
   const unlockAvailableDate =
     lastFarmingTicket && isPoolWithFarming
-      ? +lastFarmingTicket.startTime +
-      +selectedPool.farming[0].periodLength +
-      60 * 20
+      ? +lastFarmingTicket.startTime + +farmingState.periodLength + 60 * 20
       : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
@@ -156,6 +154,7 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
                   snapshotQueuePublicKey: new PublicKey(
                     farmingState.farmingSnapshots
                   ),
+                  curveType: selectedPool.curveType,
                 })
 
                 setOperationLoading(false)
@@ -197,6 +196,5 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
     </DialogWrapper>
   )
 }
-
 
 export const UnstakePopup = withTheme()(Popup)

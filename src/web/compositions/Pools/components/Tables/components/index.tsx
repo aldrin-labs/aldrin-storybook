@@ -1,28 +1,33 @@
-import React from 'react'
+import Loop from '@icons/loop.svg'
+import SvgIcon from '@sb/components/SvgIcon'
+import { TokenIcon } from '@sb/components/TokenIcon'
 // import { Text } from '@sb/compositions/Addressƒbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import SvgIcon from '@sb/components/SvgIcon'
-
-import Loop from '@icons/loop.svg'
-import { TokenIcon } from '@sb/components/TokenIcon'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import React from 'react'
 import {
-  SearchInput,
   IconsContainer,
-  TokenIconContainer,
-  PoolName,
+
+  PoolName, SearchInput,
+
+  TokenIconContainer
 } from '../index.styles'
+
 
 export const SearchInputWithLoop = ({
   placeholder,
   onChangeSearch,
   searchValue,
   width = '40rem',
+  onFocus,
+  onBlur,
 }: {
   placeholder: string
   onChangeSearch: (value: string) => void
   searchValue: string
   width?: string
+  onFocus?: () => {}
+  onBlur?: () => {}
 }) => {
   return (
     <Row style={{ position: 'relative' }} width={width}>
@@ -32,6 +37,8 @@ export const SearchInputWithLoop = ({
           onChangeSearch(e.target.value)
         }}
         placeholder={placeholder}
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
       <SvgIcon
         src={Loop}

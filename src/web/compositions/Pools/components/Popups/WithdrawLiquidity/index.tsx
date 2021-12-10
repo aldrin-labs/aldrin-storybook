@@ -10,7 +10,7 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   DexTokensPrices,
   PoolInfo,
-  PoolWithOperation,
+  PoolWithOperation
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
@@ -24,14 +24,15 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import { VestingWithPk } from '@sb/dexUtils/vesting/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
-import { VestingWithPk } from '@sb/dexUtils/vesting/types'
 import React, { useEffect, useState } from 'react'
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
+
 
 interface WithdrawalProps {
   theme: Theme

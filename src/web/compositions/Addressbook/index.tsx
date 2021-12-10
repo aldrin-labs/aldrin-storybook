@@ -26,6 +26,7 @@ import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils
 import NewCoinPopup from './components/Popups/NewCoinPopup'
 import NewContactPopup from './components/Popups/NewContactPopup'
 import UpdatePopup from './components/Popups/ChooseActionPopup'
+import { Link } from 'react-router-dom'
 
 export const AddBtn = styled.button`
   background: ${(props) => props.background || '#1ba492'};
@@ -50,6 +51,10 @@ export type TextProps = {
   fontSize?: string
   paddingBottom?: string
   fontFamily?: string
+  color?: string
+  whiteSpace?: string
+  padding?: string
+  needHover?: boolean
 }
 
 export const Text = styled.span`
@@ -59,11 +64,30 @@ export const Text = styled.span`
   font-family: ${(props: TextProps) =>
     props.fontFamily || 'Avenir Next Medium'};
   color: ${(props: TextProps) => props.color || '#ecf0f3'};
-  white-space: ${(props) => props.whiteSpace || 'normal'};
-  padding: ${(props) => props.padding || '0'};
+  white-space: ${(props: TextProps) => props.whiteSpace || 'normal'};
+  padding: ${(props: TextProps) => props.padding || '0'};
   letter-spacing: 0.01rem;
   &:hover {
-    text-decoration: ${(props) => (props.needHover ? 'underline' : 'none')};
+    text-decoration: ${(props: TextProps) =>
+    props.needHover ? 'underline' : 'none'};
+  }
+`
+
+export const StyledLink = styled(Link)`
+  font-size: ${(props: TextProps) => props.fontSize || '1.5rem'};
+  padding-bottom: ${(props) => props.paddingBottom || '0'};
+  text-transform: none;
+  font-family: ${(props: TextProps) =>
+    props.fontFamily || 'Avenir Next Medium'};
+  color: ${(props: TextProps) => props.color || '#ecf0f3'};
+  white-space: ${(props: TextProps) => props.whiteSpace || 'normal'};
+  padding: ${(props: TextProps) => props.padding || '0'};
+  letter-spacing: 0.01rem;
+  cursor: pointer;
+  text-decoration: none;
+  &:hover {
+    text-decoration: ${(props: TextProps) =>
+    props.needHover ? 'underline' : 'none'};
   }
 `
 

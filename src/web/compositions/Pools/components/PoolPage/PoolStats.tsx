@@ -4,6 +4,7 @@ import { SvgIcon } from '@sb/components'
 import { ShareButton } from '@sb/components/ShareButton'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { FarmingState } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
@@ -114,6 +115,13 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
   const farmingUsdValue = lpTokenPrice * pool.lpTokenFreezeVaultBalance
 
   const farmings = filterOpenFarmingStates(pool.farming || [])
+  const openFarmingsMap = farmings.reduce((acc, of) => {
+    const fs: FarmingState[] = acc.get(of.farmingTokenMint) || []
+
+    acc.set(of.farmingTokenMint, [...fs, of])
+    return acc
+  }, new Map<string, FarmingState[]>())
+
 
   const dailyUsdReward = farmings.reduce(
     (acc, farmingState) => {
@@ -131,8 +139,9 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
   )
 
   const farmingAPR = (((dailyUsdReward * 365) / farmingUsdValue) * 100) || 0
+  const feesAPR = pool.apy24h || 0
 
-  const totalApr = farmingAPR + pool.apy24h
+  const totalApr = farmingAPR + feesAPR
 
   const aprFormatted = formatNumberToUSFormat(stripDigitPlaces(totalApr, 2))
 
@@ -153,7 +162,7 @@ Don't miss your chance.`
               emojiIfNoLogo={false}
               margin="0 0.5em 0 0"
             /> /
-              <TokenIcon
+            <TokenIcon
               mint={pool.tokenB}
               width={'3em'}
               emojiIfNoLogo={false}
@@ -172,8 +181,8 @@ Don't miss your chance.`
             <SwapButtonIcon>
               <SvgIcon src={SwapIcon} />
             </SwapButtonIcon>
-              Swap
-            </SwapButton>
+            Swap
+          </SwapButton>
           <ShareButton iconFirst variant="primary" text={shareText} />
         </ButtonsContainer>
       </PoolInfoBlock>

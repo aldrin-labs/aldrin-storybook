@@ -439,15 +439,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         !isClaimDisabled ? (
                           ''
                         ) : (
-                            <p>
-                              Rewards distribution takes place on the 27th day of
-                              each month, you will be able to claim your reward
+                          <p>
+                            Rewards distribution takes place on the 27th day of
+                            each month, you will be able to claim your reward
                             for this period on{' '}
                               <span style={{ color: COLORS.success }}>
                                 {claimUnlockDtata}.
                             </span>
-                            </p>
-                          )
+                          </p>
+                        )
                       }
                     >
                       <span>
