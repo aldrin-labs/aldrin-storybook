@@ -25,12 +25,14 @@ import {
   createTokenAccountTransaction,
   sendSignedTransaction,
   sendTransaction,
-  signTransactions
+  signTransactions,
+  mergeTransactions,
 } from '../send'
 import { u64 } from '../token/token'
 import { WalletAdapter } from '../types'
 import { getCalcAccounts } from './getCalcAccountsForWallet'
 import { StakingPool } from './types'
+import { splitBy } from '../../utils/collection'
 
 
 export interface WithdrawStakedParams {
@@ -253,63 +255,66 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
   // Generate withdrawFarmed transactions for calcs
   const withdrawTransactions = await Promise.all(
-    calcAccounts.map(async (calcAccount) => {
-      const transactions: { transaction: Transaction, signers?: Keypair[] }[] = []
+    splitBy(calcAccounts, 4).map(async (calcAccountChunck) => {
+      const calcs = calcAccountChunck.map(async (calcAccount) => {
+        const fs = pool.farming.find((farming) => farming.farmingState === calcAccount.farmingState.toBase58())
+        // console.log('fs: ', fs, calcAccount.tokenAmount.toString())
+        if (fs) {
+          // Withdraw farmed
 
-      const fs = pool.farming.find((farming) => farming.farmingState === calcAccount.farmingState.toBase58())
-      // console.log('fs: ', fs, calcAccount.tokenAmount.toString())
-      if (fs) {
-        // Withdraw farmed
+          const tx = new Transaction()
 
-        const tx = new Transaction()
-
-        if (calcAccount.tokenAmount.gtn(0)) {
-          tx.add(
-            await program.instruction.withdrawFarmed(
-              {
-                accounts: {
-                  pool: poolPublicKey,
-                  farmingState: calcAccount.farmingState,
-                  farmingCalc: calcAccount.publicKey,
-                  farmingTokenVault: new PublicKey(fs.farmingTokenVault),
-                  poolSigner: vaultSigner,
-                  userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
-                  userKey: creatorPk,
-                  tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-                  clock: SYSVAR_CLOCK_PUBKEY,
-                },
-              }
-            )
-          )
-
-        }
-
-        // If farming ended - close calc, otherwise - close calc only when all tickets are closed 
-        const closeCalc = (fs && fs.tokensUnlocked === fs.tokensTotal) ? true :
-          !ticketsToCalc.find((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
-
-        if (closeCalc) {
-          tx.add(
-            await program.instruction.closeFarmingCalc(
-              {
-                accounts: {
-                  farmingCalc: calcAccount.publicKey,
-                  farmingTicket: new PublicKey(ticketsToCalc[0].farmingTicket),
-                  signer: creatorPk,
-                  initializer: calcAccount.initializer,
+          if (calcAccount.tokenAmount.gtn(0)) {
+            tx.add(
+              await program.instruction.withdrawFarmed(
+                {
+                  accounts: {
+                    pool: poolPublicKey,
+                    farmingState: calcAccount.farmingState,
+                    farmingCalc: calcAccount.publicKey,
+                    farmingTokenVault: new PublicKey(fs.farmingTokenVault),
+                    poolSigner: vaultSigner,
+                    userFarmingTokenAccount: farmingTokenAccounts.get(fs.farmingTokenMint),
+                    userKey: creatorPk,
+                    tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+                    clock: SYSVAR_CLOCK_PUBKEY,
+                  },
                 }
-              }
+              )
             )
-          )
+
+          }
+
+          // If farming ended - close calc, otherwise - close calc only when all tickets are closed 
+          const closeCalc = (fs && fs.tokensUnlocked === fs.tokensTotal) ? true :
+            !ticketsToCalc.find((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
+
+          if (closeCalc) {
+            tx.add(
+              await program.instruction.closeFarmingCalc(
+                {
+                  accounts: {
+                    farmingCalc: calcAccount.publicKey,
+                    farmingTicket: new PublicKey(ticketsToCalc[0].farmingTicket),
+                    signer: creatorPk,
+                    initializer: calcAccount.initializer,
+                  }
+                }
+              )
+            )
+          }
+
+          return tx
+
         }
 
-        if (tx.instructions.length) {
-          transactions.push({ transaction: tx })
-        }
+        return new Transaction()
+      })
 
-      }
+      const allTransactions = await Promise.all(calcs)
 
-      return transactions
+
+      return { transaction: mergeTransactions(allTransactions) }
     })
   )
 

@@ -1182,7 +1182,7 @@ async function awaitTransactionSignatureConfirmation({
   return result
 }
 
-function mergeTransactions(transactions: Maybe<Transaction>[]) {
+export function mergeTransactions(transactions: Maybe<Transaction>[]) {
   const transaction = new Transaction()
   transactions.forEach((t) => {
     if (t) {
