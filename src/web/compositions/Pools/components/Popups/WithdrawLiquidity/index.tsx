@@ -276,7 +276,7 @@ export const WithdrawalPopup = ({
               +quoteAmount > availableToWithdrawAmountTokenB
             ) {
               notify({
-                message: ` your pool tokens to withdraw liquidity.`,
+                message: `Unstake your pool tokens to withdraw liquidity.`,
                 type: 'error',
               })
 
