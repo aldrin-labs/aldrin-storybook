@@ -32,7 +32,7 @@ export const StakingPage = styled(Page)`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  // height: 100%;
   @media (max-width: ${BREAKPOINTS.lg}) {
     align-items: flex-start;
   }
