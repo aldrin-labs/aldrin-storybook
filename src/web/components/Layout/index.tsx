@@ -33,7 +33,7 @@ export const StakingPage = styled(Page)`
   justify-content: center;
   align-items: center;
   height: 100%;
-  @media (max-width: ${BREAKPOINTS.md}) {
+  @media (max-width: ${BREAKPOINTS.lg}) {
     align-items: flex-start;
   }
 `
