@@ -303,7 +303,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     stakingTicketsWithAvailableToClaim,
   )
 
-  console.log('userFarmingTickets: ', userRewards, stakingTicketsWithAvailableToClaim, userFarmingTickets)
+  // console.log('userFarmingTickets: ', currentFarmingState.farmingSnapshots, snapshotQueueWithAMMFees, userRewards, stakingTicketsWithAvailableToClaim, userFarmingTickets)
 
   const availableToClaimTotal = getAvailableToClaimFarmingTokens(
     addFarmingRewardsToTickets({
