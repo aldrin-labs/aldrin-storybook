@@ -297,7 +297,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   })
 
   const userRewards = getAvailableToClaimFarmingTokens(
-    stakingTicketsWithAvailableToClaim
+    stakingTicketsWithAvailableToClaim,
+    calcAccounts,
+    currentFarmingState.farmingTokenMintDecimals,
   )
 
   const availableToClaimTotal = getAvailableToClaimFarmingTokens(
