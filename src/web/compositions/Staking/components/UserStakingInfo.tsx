@@ -183,6 +183,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
   })
 
+
+  // calcAccounts.forEach((ca) => console.log('ca: ', ca.publicKey.toBase58(), ca.tokenAmount.toString()))
+  // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
+  // console.log('allStakingSnapshotQueues: ', allStakingSnapshotQueues)
+
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     getTicketsWithUiValues({
       tickets: userFarmingTickets,
@@ -297,6 +302,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const userRewards = getAvailableToClaimFarmingTokens(
     stakingTicketsWithAvailableToClaim,
   )
+
+  console.log('userFarmingTickets: ', userRewards, stakingTicketsWithAvailableToClaim, userFarmingTickets)
 
   const availableToClaimTotal = getAvailableToClaimFarmingTokens(
     addFarmingRewardsToTickets({
