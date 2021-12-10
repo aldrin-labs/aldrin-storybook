@@ -32,7 +32,6 @@ import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
-import { useStakingTicketsWithAvailableToClaim } from '@sb/dexUtils/staking/useStakingTicketsWithAvailableToClaim'
 import { withdrawStaked } from '@sb/dexUtils/staking/withdrawStaked'
 import {
   AsyncRefreshVoidFunction,
@@ -67,6 +66,7 @@ import {
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
+import { groupBy } from '../../../utils/collection'
 
 interface UserBalanceProps {
   value: number
@@ -183,11 +183,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
   })
 
-
-  // calcAccounts.forEach((ca) => console.log('ca: ', ca.publicKey.toBase58(), ca.tokenAmount.toString()))
-  // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
-  // console.log('allStakingSnapshotQueues: ', allStakingSnapshotQueues)
-
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     getTicketsWithUiValues({
       tickets: userFarmingTickets,
@@ -288,29 +283,28 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     snapshotQueues: allStakingSnapshotQueues,
   })
 
-  const [
-    stakingTicketsWithAvailableToClaim,
-  ] = useStakingTicketsWithAvailableToClaim({
-    wallet,
-    connection,
-    walletPublicKey: wallet.publicKey,
-    stakingPool,
-    snapshotQueues: snapshotQueueWithAMMFees,
-    allStakingFarmingTickets: userFarmingTickets,
-  })
 
-  const userRewards = getAvailableToClaimFarmingTokens(
-    stakingTicketsWithAvailableToClaim,
-  )
-
-  // console.log('userFarmingTickets: ', currentFarmingState.farmingSnapshots, snapshotQueueWithAMMFees, userRewards, stakingTicketsWithAvailableToClaim, userFarmingTickets)
-
-  const availableToClaimTotal = getAvailableToClaimFarmingTokens(
+  // Total rewards, include not finished state
+  const estimatedRewards = getAvailableToClaimFarmingTokens(
     addFarmingRewardsToTickets({
       farmingTickets: userFarmingTickets,
-      pools: [stakingPoolWithClosedFarmings],
-      snapshotQueues: allStakingSnapshotQueues,
+      pools: [stakingPool],
+      snapshotQueues: snapshotQueueWithAMMFees,
     }),
+    calcAccounts,
+    currentFarmingState.farmingTokenMintDecimals,
+  )
+
+
+  // Available to claim rewards
+  const availableToClaimTickets = addFarmingRewardsToTickets({
+    farmingTickets: userFarmingTickets,
+    pools: [stakingPoolWithClosedFarmings],
+    snapshotQueues: allStakingSnapshotQueues,
+  })
+
+  const availableToClaimTotal = getAvailableToClaimFarmingTokens(
+    availableToClaimTickets,
     calcAccounts,
     currentFarmingState.farmingTokenMintDecimals,
   )
@@ -326,20 +320,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
 
-  const farmingTicketsMap = stakingTicketsWithAvailableToClaim.reduce(
-    (acc, farmingTicket) => {
-      const { pool } = farmingTicket
-
-      if (acc.has(pool)) {
-        acc.set(pool, [...acc.get(pool), farmingTicket])
-      } else {
-        acc.set(pool, [farmingTicket])
-      }
-
-      return acc
-    },
-    new Map()
-  )
+  const farmingTicketsMap = groupBy(availableToClaimTickets, (ticket) => ticket.pool)
 
   const isClaimDisabled = availableToClaimTotal == 0
 
@@ -429,11 +410,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         </div>
                       </DarkTooltip>
                     </RewardsTitle>
-                    <DarkTooltip title={`${stripByAmount(userRewards + calculatedRewardN)} RIN`}>
+                    <DarkTooltip title={`${stripByAmount(estimatedRewards + calculatedRewardN)} RIN`}>
                       <div>
                         <UserBalance
                           visible={isBalancesShowing}
-                          value={userRewards + calculatedRewardN}
+                          value={estimatedRewards + calculatedRewardN}
                           decimals={2}
                         />
                       </div>
