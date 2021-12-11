@@ -8,7 +8,6 @@ export const getAvailableToClaimFarmingTokens = (
   farmingTickets: FarmingTicket[],
   calcAccounts: FarmingCalc[] = [],
   farmingDecimals = 0,
-  f = false,
 ) => {
 
   const ticketsAmount = farmingTickets
