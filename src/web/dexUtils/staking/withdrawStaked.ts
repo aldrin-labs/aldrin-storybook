@@ -332,6 +332,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
       const allTransactions = await Promise.all(calcs)
 
+      //TODO: check merging
 
       return { transaction: mergeTransactions(allTransactions) }
     })
