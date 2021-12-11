@@ -67,8 +67,10 @@ export const startStaking = async (params: StartStakingParams) => {
 
 
   const totalTokens = openTickets.reduce((acc, ticket) => acc.add(new BN(`${ticket.tokensFrozen}`)), new BN(0))
+  // const totalTokens = new BN(0)
 
   const endFarmingTransactions = instructionChunks.map((instr) => new Transaction().add(...instr))
+  // const endFarmingTransactions: Transaction[] = instructionChunks.map((instr) => new Transaction().add(...instr))
 
   const totalToStake = totalTokens.add(new BN(amount * 10 ** STAKING_FARMING_TOKEN_DECIMALS))
 
@@ -107,11 +109,11 @@ export const startStaking = async (params: StartStakingParams) => {
 
 
   const farmingsWithoutCalc = stakingPool.farming
-    .filter((f) => f.tokensTotal !== f.tokensUnlocked) // Open farmings
+    .filter((f) => f.tokensTotal !== f.tokensUnlocked && !f.feesDistributed) // Open farmings
     .filter((f) => !calcAccounts.find((ca) => ca.farmingState.toBase58() !== f.farmingState))
 
   const createCalcs = await Promise.all(
-    splitBy(farmingsWithoutCalc, 4).map(async (calcs) => {
+    splitBy(farmingsWithoutCalc, 3).map(async (calcs) => {
       const transaction = new Transaction()
 
       const instructionsPromises = await Promise.all(calcs.map(async (ca) => {
@@ -143,6 +145,7 @@ export const startStaking = async (params: StartStakingParams) => {
     })
   )
 
+  // const createCalcs: { transaction: Transaction, signers: Keypair[] }[] = []
   const [create, ...createRest] = createCalcs
 
   if (create) {

@@ -164,7 +164,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     walletPublicKey: wallet.publicKey,
   })
 
-
   const calculatedReward = calcAccounts.reduce((acc, ca) => { return acc.add(new BN(ca.tokenAmount.toString())) }, new BN(0))
   const calculatedRewardN = parseFloat(calculatedReward.toString()) / (10 ** currentFarmingState.farmingTokenMintDecimals)
 
