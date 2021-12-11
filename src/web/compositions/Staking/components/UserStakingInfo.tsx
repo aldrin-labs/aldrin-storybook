@@ -126,8 +126,6 @@ const resolveUnstakingNotification = (
   return 'Unstaking cancelled.'
 }
 
-const pk = new PublicKey('6foEm3bCdAit5J9fyYnevS5FrMKd8c5D1LHDS5bvTnRw')
-
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
     tokenData,
@@ -157,20 +155,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const [userFarmingTickets, refreshUserFarmingTickets] = useAllStakingTickets({
     wallet,
     connection,
-    // walletPublicKey: wallet.publicKey,
-    walletPublicKey: pk,
+    walletPublicKey: wallet.publicKey,
   })
 
 
   const [calcAccounts, reloadCalcAccounts] = useCalcAccounts({
     wallet,
     connection,
-    // walletPublicKey: wallet.publicKey,
-    walletPublicKey: pk,
+    walletPublicKey: wallet.publicKey,
   })
-
-  const calculatedReward = calcAccounts.reduce((acc, ca) => { return acc.add(new BN(ca.tokenAmount.toString())) }, new BN(0))
-  const calculatedRewardN = parseFloat(calculatedReward.toString()) / (10 ** currentFarmingState.farmingTokenMintDecimals)
 
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
