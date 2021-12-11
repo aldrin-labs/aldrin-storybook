@@ -43,7 +43,7 @@ export interface WithdrawStakedParams {
   pool: StakingPool | PoolInfo
   programAddress?: string
   snapshotQueues: SnapshotQueue[]
-  signAllTransactions: boolean
+  signAllTransactions: boolean // Ledger compability
 }
 
 export const withdrawStaked = async (params: WithdrawStakedParams) => {
@@ -348,6 +348,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
 
   if (signAllTransactions) {
+    // Process transactions with software wallets 
     try {
       const signedTransactions = await signTransactions({
         wallet,
@@ -385,6 +386,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
     return 'success'
   } else {
+    // Process ledger transactions
     for (let i = 0; i < allTransactions.length; i++) {
       const result = await sendTransaction({
         wallet,
