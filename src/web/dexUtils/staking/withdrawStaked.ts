@@ -63,7 +63,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
   }
 
   const creatorPk = wallet.publicKey
-  // const creatorPk = new PublicKey('Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5')
 
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -179,8 +178,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
             unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
           )
 
-          // console.log('iterations: ', unclaimedSnapshots.length, iterations)
-
           // Looking for FarmingCalc account / create if not exists
           let calcAccount = calcAccounts.find(
             (ca) => ca.farmingState.toBase58() === fs.farmingState
@@ -207,7 +204,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
             transactions.push({ transaction: createCalcTx, signers: [farmingCalc] })
             calcAccount = farmingCalc.publicKey
-            // const tokenAmount = ticket.amountsToClaim.find((atc) => )
+
             calcAccounts.push({
               publicKey: calcAccount,
               farmingState: new PublicKey(fs.farmingState),
@@ -267,14 +264,12 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     splitBy(calcAccounts, 4).map(async (calcAccountChunck) => {
       const calcs = calcAccountChunck.map(async (calcAccount) => {
         const fs = pool.farming.find((farming) => farming.farmingState === calcAccount.farmingState.toBase58())
-        // console.log('fs: ', fs, calcAccount.tokenAmount.toString())
         if (fs) {
           // Withdraw farmed
 
           const tx = new Transaction()
 
           if (calcAccount.tokenAmount.gtn(0)) {
-            // console.log('calculate: ', calcAccount.tokenAmount.toString())
             tx.add(
               await program.instruction.withdrawFarmed(
                 {
@@ -333,7 +328,6 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
       const allTransactions = await Promise.all(calcs)
 
       //TODO: check merging
-
       return { transaction: mergeTransactions(allTransactions) }
     })
   )
