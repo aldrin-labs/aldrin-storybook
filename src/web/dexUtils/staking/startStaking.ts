@@ -67,10 +67,8 @@ export const startStaking = async (params: StartStakingParams) => {
 
 
   const totalTokens = openTickets.reduce((acc, ticket) => acc.add(new BN(`${ticket.tokensFrozen}`)), new BN(0))
-  // const totalTokens = new BN(0)
 
   const endFarmingTransactions = instructionChunks.map((instr) => new Transaction().add(...instr))
-  // const endFarmingTransactions: Transaction[] = instructionChunks.map((instr) => new Transaction().add(...instr))
 
   const totalToStake = totalTokens.add(new BN(amount * 10 ** STAKING_FARMING_TOKEN_DECIMALS))
 
@@ -145,7 +143,6 @@ export const startStaking = async (params: StartStakingParams) => {
     })
   )
 
-  // const createCalcs: { transaction: Transaction, signers: Keypair[] }[] = []
   const [create, ...createRest] = createCalcs
 
   if (create) {
