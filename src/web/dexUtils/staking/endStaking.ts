@@ -52,9 +52,6 @@ export const endStakingInstructions = async (params: EndstakingParams): Promise<
     }
   )
 
-  console.log('openTickets: ', openTickets, farmingState)
-
-
   const [poolSigner] = await PublicKey.findProgramAddress(
     [new PublicKey(stakingPool.swapToken).toBuffer()],
     program.programId
