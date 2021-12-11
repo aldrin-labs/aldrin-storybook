@@ -126,6 +126,8 @@ const resolveUnstakingNotification = (
   return 'Unstaking cancelled.'
 }
 
+const pk = new PublicKey('6foEm3bCdAit5J9fyYnevS5FrMKd8c5D1LHDS5bvTnRw')
+
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
     tokenData,
@@ -155,13 +157,16 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const [userFarmingTickets, refreshUserFarmingTickets] = useAllStakingTickets({
     wallet,
     connection,
-    walletPublicKey: wallet.publicKey,
+    // walletPublicKey: wallet.publicKey,
+    walletPublicKey: pk,
   })
+
 
   const [calcAccounts, reloadCalcAccounts] = useCalcAccounts({
     wallet,
     connection,
-    walletPublicKey: wallet.publicKey,
+    // walletPublicKey: wallet.publicKey,
+    walletPublicKey: pk,
   })
 
   const calculatedReward = calcAccounts.reduce((acc, ca) => { return acc.add(new BN(ca.tokenAmount.toString())) }, new BN(0))
@@ -284,15 +289,21 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
 
   // Total rewards, include not finished state
+  const estimateRewardsTickets = addFarmingRewardsToTickets({
+    farmingTickets: userFarmingTickets,
+    pools: [stakingPool],
+    snapshotQueues: snapshotQueueWithAMMFees,
+  })
+
   const estimatedRewards = getAvailableToClaimFarmingTokens(
-    addFarmingRewardsToTickets({
-      farmingTickets: userFarmingTickets,
-      pools: [stakingPool],
-      snapshotQueues: snapshotQueueWithAMMFees,
-    }),
+    estimateRewardsTickets,
     calcAccounts,
     currentFarmingState.farmingTokenMintDecimals,
   )
+
+  // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
+  // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
+
 
 
   // Available to claim rewards
@@ -409,11 +420,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         </div>
                       </DarkTooltip>
                     </RewardsTitle>
-                    <DarkTooltip title={`${stripByAmount(estimatedRewards + calculatedRewardN)} RIN`}>
+                    <DarkTooltip title={`${stripByAmount(estimatedRewards)} RIN`}>
                       <div>
                         <UserBalance
                           visible={isBalancesShowing}
-                          value={estimatedRewards + calculatedRewardN}
+                          value={estimatedRewards}
                           decimals={2}
                         />
                       </div>
