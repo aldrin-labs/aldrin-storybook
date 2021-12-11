@@ -60,7 +60,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
 
   const buyBackAmount =
     getBuyBackAmountForPeriodQuery.getBuyBackAmountForPeriod *
-    10 ** currentFarmingState.farmingTokenMintDecimals
+    10 ** currentFarmingState?.farmingTokenMintDecimals
 
   useInterval(() => {
     refreshTotalStaked()
