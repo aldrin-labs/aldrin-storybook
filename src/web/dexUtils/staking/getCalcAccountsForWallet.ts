@@ -38,21 +38,6 @@ export const getCalcAccounts = async (program: Program, userPublicKey: PublicKey
     }
   )
 
-
-  // console.log('asdasd: ', new PublicKey('Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5').toBase58(), new PublicKey('Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5').toBuffer())
-  // const programAccounts = await program.account.farmingCalc.all(
-  //   memCmpFiltersToBuf([
-  //     {
-  //       memcmp: {
-  //         offset: 32,
-  //         bytes: new PublicKey('Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5').toBase58()
-  //       },
-  //     },
-  //   ])
-  // )
-
-
-
   const calcAccounts = calcAccountsData.map((ca) => {
     const data = Buffer.from(ca.account.data)
     return {
@@ -60,8 +45,6 @@ export const getCalcAccounts = async (program: Program, userPublicKey: PublicKey
       publicKey: ca.pubkey
     }
   })
-
-  // console.log('programAccounts: ', programAccounts, calcAccounts)
 
   return calcAccounts
 
