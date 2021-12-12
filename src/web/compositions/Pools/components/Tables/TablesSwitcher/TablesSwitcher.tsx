@@ -21,13 +21,14 @@ import {
   TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
+import { restakeAll } from '@sb/compositions/Pools/utils/restakeAll'
 import { useConnection } from '@sb/dexUtils/connection'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Route } from 'react-router'
 import { useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
@@ -135,6 +136,26 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
     []
 
   const poolsToShow = isStablePoolsSelected ? stablePools : pools
+
+  // delete
+  useEffect(() => {
+    const a = async () => {
+      const res = await restakeAll({
+        wallet,
+        connection,
+        allPoolsData: pools,
+        farmingTicketsMap,
+        allTokensData: userTokensData,
+      })
+      console.log({
+        farmingTicketsMap,
+        pools,
+        snapshotQueues,
+        // res,
+      })
+    }
+    a()
+  }, [wallet.publicKey, JSON.stringify([...farmingTicketsMap.entries()])])
 
   return (
     <Block>

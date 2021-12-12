@@ -88,7 +88,7 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => { }}
+      onEnter={() => {}}
       maxWidth={'md'}
       open
       aria-labelledby="responsive-dialog-title"
@@ -120,8 +120,8 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
           title={
             isUnstakeLocked
               ? `Until ${dayjs
-                .unix(unlockAvailableDate)
-                .format('HH:mm:ss MMM DD, YYYY')}`
+                  .unix(unlockAvailableDate)
+                  .format('HH:mm:ss MMM DD, YYYY')}`
               : null
           }
         >
@@ -165,8 +165,8 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
                     result === 'success'
                       ? 'Successfully unstaked.'
                       : result === 'failed'
-                        ? 'Unstaking failed, please try again later or contact us in telegram.'
-                        : 'Unstaking cancelled.',
+                      ? 'Unstaking failed, please try again later or contact us in telegram.'
+                      : 'Unstaking cancelled.',
                 })
 
                 const clearPoolWaitingForUpdate = () =>

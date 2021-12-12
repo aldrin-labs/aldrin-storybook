@@ -1,16 +1,17 @@
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
+import { TransactionAndSigner } from '@sb/dexUtils/common/types'
 import { sendSignedTransaction, signTransactions } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { Connection } from '@solana/web3.js'
 
-export const singAndSendTransaction = async ({
+export const signAndSendTransaction = async ({
   wallet,
   connection,
   transactionsAndSigners,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  transactionsAndSigners: any[]
+  transactionsAndSigners: TransactionAndSigner[]
 }) => {
   try {
     const signedTransactions = await signTransactions({
@@ -46,4 +47,6 @@ export const singAndSendTransaction = async ({
       return 'cancelled'
     }
   }
+
+  return 'success'
 }

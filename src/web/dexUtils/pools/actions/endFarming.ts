@@ -1,4 +1,11 @@
 import { TokenInstructions } from '@project-serum/serum'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+import { TransactionAndSigner } from '@sb/dexUtils/common/types'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { createTokenAccountTransaction } from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   Connection,
   PublicKey,
@@ -6,20 +13,9 @@ import {
   SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
+import { signAndSendTransaction } from './signAndSendTransaction'
 
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
-import {
-  createTokenAccountTransaction,
-  isTransactionFailed,
-  sendTransaction,
-} from '@sb/dexUtils/send'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
-import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
-
-export const endFarming = async ({
+export const getEndFarmingTransactions = async ({
   wallet,
   connection,
   poolPublicKey,
@@ -35,7 +31,7 @@ export const endFarming = async ({
   snapshotQueuePublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
   curveType: number | null
-}) => {
+}): Promise<TransactionAndSigner[]> => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
@@ -62,7 +58,7 @@ export const endFarming = async ({
   )
 
   if (filteredUserFarmingTicketsPerPool.length === 0) {
-    return 'failed'
+    return []
   }
 
   let commonTransaction = new Transaction()
@@ -114,6 +110,38 @@ export const endFarming = async ({
   return transactionsAndSigners
 }
 
-//разбить на две функции
-// - первая создаст массив транзакций и подписей (их нет)
-// - вторая - взять этот массив, взять код  клейма который подписывает все транзы и отправляет по одной
+export const endFarming = async ({
+  wallet,
+  connection,
+  poolPublicKey,
+  farmingStatePublicKey,
+  snapshotQueuePublicKey,
+  userPoolTokenAccount,
+  curveType,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  poolPublicKey: PublicKey
+  farmingStatePublicKey: PublicKey
+  snapshotQueuePublicKey: PublicKey
+  userPoolTokenAccount: PublicKey | null
+  curveType: number | null
+}) => {
+  const transactionsAndSigners = await getEndFarmingTransactions({
+    wallet,
+    connection,
+    poolPublicKey,
+    farmingStatePublicKey,
+    snapshotQueuePublicKey,
+    userPoolTokenAccount,
+    curveType,
+  })
+
+  const result = await signAndSendTransaction({
+    wallet,
+    connection,
+    transactionsAndSigners,
+  })
+
+  return result
+}

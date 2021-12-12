@@ -47,20 +47,16 @@ import {
   costOfAddingToken,
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
-import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 
 import ScalesIcon from '@icons/scales.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/TablesSwitcher.styles'
 import { Selector } from './components/Selector/Selector'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
-import {
-  getPoolsForSwapActiveTab,
-  getSelectedPoolForSwap,
-  getDefaultBaseToken,
-  getDefaultQuoteToken,
-} from '@sb/dexUtils/pools/swap'
+
 import { Cards } from './components/Cards/Cards'
+import { getPoolsForSwapActiveTab, getSelectedPoolForSwap, getDefaultBaseToken, getDefaultQuoteToken } from '@sb/dexUtils/pools/swap'
+import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 
 const SwapPage = ({
   theme,
@@ -128,16 +124,16 @@ const SwapPage = ({
     const baseTokenMint = baseFromRedirect
       ? getTokenMintAddressByName(baseFromRedirect) || ''
       : getTokenMintAddressByName(
-        getDefaultBaseToken(isStableSwapFromRedirect)
-      ) || ''
+          getDefaultBaseToken(isStableSwapFromRedirect)
+        ) || ''
 
     setBaseTokenMintAddress(baseTokenMint)
 
     const quoteTokenMint = quoteFromRedirect
       ? getTokenMintAddressByName(quoteFromRedirect) || ''
       : getTokenMintAddressByName(
-        getDefaultQuoteToken(isStableSwapFromRedirect)
-      ) || ''
+          getDefaultQuoteToken(isStableSwapFromRedirect)
+        ) || ''
 
     setQuoteTokenMintAddress(quoteTokenMint)
 
@@ -492,8 +488,8 @@ const SwapPage = ({
                 {isSelectedPoolStable
                   ? 1
                   : isSwapBaseToQuote
-                    ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
-                    : stripDigitPlaces(
+                  ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
+                  : stripDigitPlaces(
                       +(+poolAmountTokenA / +poolAmountTokenB),
                       8
                     )}{' '}
@@ -579,8 +575,8 @@ const SwapPage = ({
                       result === 'success'
                         ? 'Swap executed successfully.'
                         : result === 'failed'
-                          ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
-                          : 'Swap cancelled',
+                        ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
+                        : 'Swap cancelled',
                   })
 
                   refreshPoolBalances()
@@ -588,13 +584,14 @@ const SwapPage = ({
                 }}
               >
                 {isTokenABalanceInsufficient
-                  ? `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
-                  } Balance`
+                  ? `Insufficient ${
+                      isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
+                    } Balance`
                   : !selectedPool
-                    ? 'No pools available'
-                    : needEnterAmount
-                      ? 'Enter amount'
-                      : 'Swap'}
+                  ? 'No pools available'
+                  : needEnterAmount
+                  ? 'Enter amount'
+                  : 'Swap'}
               </BtnCustom>
             )}
           </RowContainer>
