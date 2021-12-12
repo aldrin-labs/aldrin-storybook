@@ -18,14 +18,15 @@ import {
   PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
+import { restakeAll } from '@sb/compositions/Pools/utils/restakeAll'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/getParsedUserFarmingTickets'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useState } from 'react'
+
 import { compose } from 'recompose'
 import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
 import { ClaimRewards } from '../../Popups/ClaimRewards/ClaimRewards'

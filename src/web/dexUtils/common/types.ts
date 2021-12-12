@@ -1,3 +1,5 @@
+import { Transaction, Signer } from '@solana/web3.js'
+
 export type FarmingTicket = {
   tokensFrozen: number
   endTime: string
@@ -46,4 +48,9 @@ export type SnapshotQueue = {
   publicKey: string
   nextIndex: number
   snapshots: Snapshot[]
+}
+
+export type TransactionAndSigner = {
+  transaction: Transaction
+  signers?: Signer[]
 }

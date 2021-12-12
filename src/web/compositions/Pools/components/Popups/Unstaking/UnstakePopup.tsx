@@ -88,7 +88,7 @@ export const UnstakePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => { }}
+      onEnter={() => {}}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"
@@ -120,8 +120,8 @@ export const UnstakePopup = ({
           title={
             isUnstakeLocked
               ? `Until ${dayjs
-                .unix(unlockAvailableDate)
-                .format('HH:mm:ss MMM DD, YYYY')}`
+                  .unix(unlockAvailableDate)
+                  .format('HH:mm:ss MMM DD, YYYY')}`
               : null
           }
         >
@@ -164,8 +164,8 @@ export const UnstakePopup = ({
                     result === 'success'
                       ? 'Successfully unstaked.'
                       : result === 'failed'
-                        ? 'Unstaking failed, please try again later or contact us in telegram.'
-                        : 'Unstaking cancelled.',
+                      ? 'Unstaking failed, please try again later or contact us in telegram.'
+                      : 'Unstaking cancelled.',
                 })
 
                 const clearPoolWaitingForUpdate = () =>
