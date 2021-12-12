@@ -1,45 +1,52 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { compose } from 'recompose'
 import {
   stripByAmount,
-  stripByAmountAndFormat,
+  stripByAmountAndFormat
 } from '@core/utils/chartPageUtils'
+import { daysInMonthForDate } from '@core/utils/dateUtils'
 import { sleep } from '@core/utils/helpers'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import InfoIcon from '@icons/inform.svg'
 import { Theme, withTheme } from '@material-ui/core/styles'
 import { SvgIcon } from '@sb/components'
 import { Block, BlockContent, BlockTitle } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
-import { Loader } from '@sb/components/Loader/Loader'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { ClaimRewards } from '@sb/compositions/Pools/components/Popups/ClaimRewards/ClaimRewards'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
+import { FarmingState } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { BUY_BACK_RIN_ACCOUNT_ADDRESS } from '@sb/dexUtils/staking/config'
 import { endStaking } from '@sb/dexUtils/staking/endStaking'
-import { filterFarmingTicketsByUserKey } from '@sb/dexUtils/staking/filterFarmingTicketsByUserKey'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
-import InfoIcon from '@icons/inform.svg'
 import { getSnapshotQueueWithAMMFees } from '@sb/dexUtils/staking/getSnapshotQueueWithAMMFees'
+import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { startStaking } from '@sb/dexUtils/staking/startStaking'
 import { StakingPool } from '@sb/dexUtils/staking/types'
+import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
+import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
-import { useStakingTicketsWithAvailableToClaim } from '@sb/dexUtils/staking/useStakingTicketsWithAvailableToClaim'
+import { withdrawStaked } from '@sb/dexUtils/staking/withdrawStaked'
 import {
   AsyncRefreshVoidFunction,
   RefreshFunction,
-  TokenInfo,
+  TokenInfo
 } from '@sb/dexUtils/types'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
+import BN from 'bn.js'
+import dayjs from 'dayjs'
+import React, { useCallback, useState } from 'react'
+import { compose } from 'recompose'
+import { useCalcAccounts } from '../../../dexUtils/staking/useCalcAccounts'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
   Asterisks,
@@ -55,17 +62,11 @@ import {
   TotalStakedBlock,
   WalletAvailableTitle,
   WalletBalanceBlock,
-  WalletRow,
+  WalletRow
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
-import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
-import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
-import { BUY_BACK_RIN_ACCOUNT_ADDRESS } from '@sb/dexUtils/staking/config'
-import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
-import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { daysInMonth, daysInMonthForDate } from '@core/utils/dateUtils'
-import dayjs from 'dayjs'
+import { groupBy } from '../../../utils/collection'
 
 interface UserBalanceProps {
   value: number
@@ -157,6 +158,13 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     walletPublicKey: wallet.publicKey,
   })
 
+
+  const [calcAccounts, reloadCalcAccounts] = useCalcAccounts({
+    wallet,
+    connection,
+    walletPublicKey: wallet.publicKey,
+  })
+
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
   })
@@ -190,6 +198,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       refreshUserFarmingTickets(),
       refreshAllStakingSnapshotQueues(),
       refreshAllTokenData(),
+      reloadCalcAccounts(),
     ])
   }
 
@@ -216,6 +225,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         amount,
         userPoolTokenAccount: new PublicKey(tokenData.address),
         stakingPool,
+        farmingTickets: userFarmingTickets,
       })
 
       notify({
@@ -224,7 +234,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       })
 
       if (result === 'success') {
-        await sleep(7500)
+        await sleep(7000)
         await refreshAll()
       }
 
@@ -256,7 +266,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     })
 
     if (result === 'success') {
-      await sleep(5000)
+      await sleep(7000)
       await refreshAll()
     }
 
@@ -270,32 +280,42 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     snapshotQueues: allStakingSnapshotQueues,
   })
 
-  const [
-    stakingTicketsWithAvailableToClaim,
-  ] = useStakingTicketsWithAvailableToClaim({
-    wallet,
-    connection,
-    walletPublicKey: wallet.publicKey,
-    stakingPool,
+
+  // Total rewards, include not finished state
+  const estimateRewardsTickets = addFarmingRewardsToTickets({
+    farmingTickets: userFarmingTickets,
+    pools: [stakingPool],
     snapshotQueues: snapshotQueueWithAMMFees,
-    allStakingFarmingTickets: userFarmingTickets,
   })
 
-  const userRewards = getAvailableToClaimFarmingTokens(
-    stakingTicketsWithAvailableToClaim
+  const estimatedRewards = getAvailableToClaimFarmingTokens(
+    estimateRewardsTickets,
+    calcAccounts,
+    currentFarmingState.farmingTokenMintDecimals,
   )
 
+  // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
+  // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
+
+
+
+  // Available to claim rewards
+  const availableToClaimTickets = addFarmingRewardsToTickets({
+    farmingTickets: userFarmingTickets,
+    pools: [stakingPoolWithClosedFarmings],
+    snapshotQueues: allStakingSnapshotQueues,
+  })
+
   const availableToClaimTotal = getAvailableToClaimFarmingTokens(
-    addFarmingRewardsToTickets({
-      farmingTickets: userFarmingTickets,
-      pools: [stakingPoolWithClosedFarmings],
-      snapshotQueues: snapshotQueueWithAMMFees,
-    })
+    availableToClaimTickets,
+    calcAccounts,
+    currentFarmingState.farmingTokenMintDecimals,
   )
 
   const lastFarmingTicket = userFarmingTickets.sort(
     (ticketA, ticketB) => +ticketB.startTime - +ticketA.startTime
   )[0]
+
 
   const unlockAvailableDate = lastFarmingTicket
     ? +lastFarmingTicket.startTime + +currentFarmingState?.periodLength
@@ -303,20 +323,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
 
-  const farmingTicketsMap = stakingTicketsWithAvailableToClaim.reduce(
-    (acc, farmingTicket) => {
-      const { pool } = farmingTicket
-
-      if (acc.has(pool)) {
-        acc.set(pool, [...acc.get(pool), farmingTicket])
-      } else {
-        acc.set(pool, [farmingTicket])
-      }
-
-      return acc
-    },
-    new Map()
-  )
+  const farmingTicketsMap = groupBy(availableToClaimTickets, (ticket) => ticket.pool)
 
   const isClaimDisabled = availableToClaimTotal == 0
 
@@ -329,7 +336,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   }, [isLoading])
 
   const claimUnlockDataTimestamp = dayjs.unix(currentFarmingState.startTime + dayDuration * daysInMonthForDate(currentFarmingState.startTime))
-  const claimUnlockData =  dayjs(claimUnlockDataTimestamp).format("D-MMMM-YYYY").replaceAll('-', ' ')
+  const claimUnlockData = dayjs(claimUnlockDataTimestamp).format("D-MMMM-YYYY").replaceAll('-', ' ')
   return (
     <>
       <BlockContent border>
@@ -389,10 +396,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       <DarkTooltip
                         title={
                           <p>
-                            Staking rewards are paid on the <strong>27th of the every month</strong>{' '}
-                            based on RIN weekly buy-backs on 1/6th of AMM fees . Estimated rewards 
-                            are updated <strong>hourly based on treasury rewards</strong> and 
-                            <strong>weekly based on RIN buyback</strong>. 
+                            Staking rewards are paid on the <strong> 27th of the every month</strong>{' '}
+                            based on RIN weekly buy-backs on 1/6th of AMM fees . Estimated rewards
+                            are updated <strong>hourly based on treasury rewards</strong> and&nbsp;
+                            <strong>weekly based on RIN buyback</strong>.
                           </p>
                         }
                       >
@@ -406,11 +413,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         </div>
                       </DarkTooltip>
                     </RewardsTitle>
-                    <DarkTooltip title={`${stripByAmount(userRewards)} RIN`}>
+                    <DarkTooltip title={`${stripByAmount(estimatedRewards)} RIN`}>
                       <div>
                         <UserBalance
                           visible={isBalancesShowing}
-                          value={userRewards}
+                          value={estimatedRewards}
                           decimals={2}
                         />
                       </div>
@@ -434,30 +441,26 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         !isClaimDisabled ? (
                           ''
                         ) : (
-                          <p>
-                            Rewards distribution takes place on the 27th day of
-                            each month, you will be able to claim your reward
+                            <p>
+                              Rewards distribution takes place on the 27th day of
+                              each month, you will be able to claim your reward
                             for this period on{' '}
-                            <span style={{ color: COLORS.success }}>
-                              {claimUnlockData}.
+                              <span style={{ color: COLORS.success }}>
+                                {claimUnlockData}.
                             </span>
-                          </p>
-                        )
+                            </p>
+                          )
                       }
                     >
                       <span>
                         <Button
-                          variant={isClaimDisabled ? 'disabled' : ''}
+                          disabled={isClaimDisabled}
                           fontSize="xs"
                           padding="lg"
                           borderRadius="xxl"
-                          onClick={() => {
-                            isClaimDisabled
-                              ? null
-                              : setIsClaimRewardsPopupOpen(true)
-                          }}
+                          onClick={() => setIsClaimRewardsPopupOpen(true)}
                         >
-                          {'Claim'}
+                          Claim
                         </Button>
                       </span>
                     </DarkTooltip>
@@ -506,6 +509,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         snapshotQueues={snapshotQueueWithAMMFees}
         refreshTokensWithFarmingTickets={refreshAll}
         setPoolWaitingForUpdateAfterOperation={toggleIsLoading}
+        withdrawFunction={withdrawStaked}
+        hideMaintenanceWarning
         callback={
           isClaimRewardsAndRestakePopupOpen ? async () => {
             const result = await startStaking({
@@ -514,6 +519,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               amount: availableToClaimTotal,
               userPoolTokenAccount: new PublicKey(tokenData.address),
               stakingPool,
+              farmingTickets: userFarmingTickets,
             })
 
             return result
