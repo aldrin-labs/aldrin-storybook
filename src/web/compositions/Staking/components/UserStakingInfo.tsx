@@ -126,6 +126,8 @@ const resolveUnstakingNotification = (
   return 'Unstaking cancelled.'
 }
 
+// const walletPublicKey = new PublicKey('6foEm3bCdAit5J9fyYnevS5FrMKd8c5D1LHDS5bvTnRw')
+
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
     tokenData,
@@ -156,6 +158,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     wallet,
     connection,
     walletPublicKey: wallet.publicKey,
+    // walletPublicKey,
   })
 
 
@@ -163,6 +166,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     wallet,
     connection,
     walletPublicKey: wallet.publicKey,
+    // walletPublicKey,
   })
 
   const [buyBackAmountOnAccount] = useAccountBalance({
@@ -306,12 +310,18 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     snapshotQueues: allStakingSnapshotQueues,
   })
 
-  const availableToClaimTotal = getAvailableToClaimFarmingTokens(
+  const availableToClaimTotal1 = getAvailableToClaimFarmingTokens(
     availableToClaimTickets,
     calcAccounts,
     currentFarmingState.farmingTokenMintDecimals,
   )
 
+  // TODO: FIx dat
+  const availableToClaimTotal2 = getAvailableToClaimFarmingTokens(
+    availableToClaimTickets,
+  )
+
+  const availableToClaimTotal = availableToClaimTotal1 - availableToClaimTotal2
   const lastFarmingTicket = userFarmingTickets.sort(
     (ticketA, ticketB) => +ticketB.startTime - +ticketA.startTime
   )[0]

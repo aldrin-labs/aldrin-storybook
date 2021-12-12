@@ -153,110 +153,114 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     })
   )
 
-  const calculateTransactions = await Promise.all(ticketsToCalc.map((ticket) => {
-    return Promise.all(
-      pool.farming
-        .filter((fs) => {
-          const amountToClaim =
-            ticket.amountsToClaim.find((amountToClaim) => amountToClaim.farmingState === fs.farmingState)?.amount || 0
-          return amountToClaim > 0
-        })
-        .map(async (fs) => {
-          if (!creatorPk) {
-            throw new Error('No public key for wallet!')
-          }
 
-          const unclaimedSnapshots = getSnapshotsWithUnclaimedRewards({
-            ticket,
-            farmingState: fs,
-            snapshotQueues,
-          })
+  // TODO: uncomment that when backend will be fixed?
 
-          const transactions: { transaction: Transaction, signers?: Keypair[] }[] = []
+  // Run calculateFarmed if backend not started
+  // const calculateTransactions = await Promise.all(ticketsToCalc.map((ticket) => {
+  //   return Promise.all(
+  //     pool.farming
+  //       .filter((fs) => {
+  //         const amountToClaim =
+  //           ticket.amountsToClaim.find((amountToClaim) => amountToClaim.farmingState === fs.farmingState)?.amount || 0
+  //         return amountToClaim > 0
+  //       })
+  //       .map(async (fs) => {
+  //         if (!creatorPk) {
+  //           throw new Error('No public key for wallet!')
+  //         }
 
-          const iterations = Math.ceil(
-            unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
-          )
+  //         const unclaimedSnapshots = getSnapshotsWithUnclaimedRewards({
+  //           ticket,
+  //           farmingState: fs,
+  //           snapshotQueues,
+  //         })
 
-          // Looking for FarmingCalc account / create if not exists
-          let calcAccount = calcAccounts.find(
-            (ca) => ca.farmingState.toBase58() === fs.farmingState
-          )?.publicKey
+  //         const transactions: { transaction: Transaction, signers?: Keypair[] }[] = []
 
-          if (!calcAccount) {
-            const farmingCalc = Keypair.generate()
-            const createCalcTx = new Transaction()
-              .add(await program.account.farmingCalc.createInstruction(farmingCalc))
-              .add(
-                await program.instruction.initializeFarmingCalc(
-                  {
-                    accounts: {
-                      farmingCalc: farmingCalc.publicKey,
-                      farmingTicket: new PublicKey(ticket.farmingTicket),
-                      farmingState: new PublicKey(fs.farmingState),
-                      userKey: creatorPk,
-                      initializer: creatorPk,
-                      rent: SYSVAR_RENT_PUBKEY,
-                    }
-                  }
-                )
-              )
+  //         const iterations = Math.ceil(
+  //           unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
+  //         )
 
-            transactions.push({ transaction: createCalcTx, signers: [farmingCalc] })
-            calcAccount = farmingCalc.publicKey
+  //         // Looking for FarmingCalc account / create if not exists
+  //         let calcAccount = calcAccounts.find(
+  //           (ca) => ca.farmingState.toBase58() === fs.farmingState
+  //         )?.publicKey
 
-            calcAccounts.push({
-              publicKey: calcAccount,
-              farmingState: new PublicKey(fs.farmingState),
-              userKey: creatorPk,
-              initializer: creatorPk,
-              tokenAmount: new u64(0),
-            })
-          }
+  //         if (!calcAccount) {
+  //           const farmingCalc = Keypair.generate()
+  //           const createCalcTx = new Transaction()
+  //             .add(await program.account.farmingCalc.createInstruction(farmingCalc))
+  //             .add(
+  //               await program.instruction.initializeFarmingCalc(
+  //                 {
+  //                   accounts: {
+  //                     farmingCalc: farmingCalc.publicKey,
+  //                     farmingTicket: new PublicKey(ticket.farmingTicket),
+  //                     farmingState: new PublicKey(fs.farmingState),
+  //                     userKey: creatorPk,
+  //                     initializer: creatorPk,
+  //                     rent: SYSVAR_RENT_PUBKEY,
+  //                   }
+  //                 }
+  //               )
+  //             )
 
-          // Create calculateFarmed transactions
-          for (let i = 1; i <= iterations; i++) {
-            if (calcAccount) {
-              const ca = calcAccounts.find((ca1) => ca1.publicKey.toBase58() === calcAccount?.toBase58())
-              if (ca) {
-                ca.tokenAmount = new u64(1) // Just to mark for withdraw on next iter
-              }
-            }
-            const tx = new Transaction()
-            tx
-              .add(
-                await program.instruction.calculateFarmed(
-                  new BN(NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION),
-                  {
-                    accounts: {
-                      pool: poolPublicKey,
-                      farmingState: new PublicKey(fs.farmingState),
-                      farmingSnapshots: new PublicKey(fs.farmingSnapshots),
-                      farmingCalc: calcAccount,
-                      farmingTicket: new PublicKey(ticket.farmingTicket),
-                      clock: SYSVAR_CLOCK_PUBKEY,
-                    },
-                  }
-                )
-              )
-              .add(
-                // due to same transaction data for calculateFarmed we need add transaction with random
-                // lamports amount to get random transaction hash every time
-                SystemProgram.transfer({
-                  fromPubkey: creatorPk,
-                  toPubkey: creatorPk,
-                  lamports: getRandomInt(1, 1000),
-                })
+  //           transactions.push({ transaction: createCalcTx, signers: [farmingCalc] })
+  //           calcAccount = farmingCalc.publicKey
 
-              )
-            transactions.push({ transaction: tx })
-          }
+  //           calcAccounts.push({
+  //             publicKey: calcAccount,
+  //             farmingState: new PublicKey(fs.farmingState),
+  //             userKey: creatorPk,
+  //             initializer: creatorPk,
+  //             tokenAmount: new u64(0),
+  //           })
+  //         }
 
-          return transactions
-        })
-    )
-  })
-  )
+  //         // Create calculateFarmed transactions
+  //         for (let i = 1; i <= iterations; i++) {
+  //           if (calcAccount) {
+  //             const ca = calcAccounts.find((ca1) => ca1.publicKey.toBase58() === calcAccount?.toBase58())
+  //             if (ca) {
+  //               ca.tokenAmount = new u64(1) // Just to mark for withdraw on next iter
+  //             }
+  //           }
+  //           const tx = new Transaction()
+  //           tx
+  //             .add(
+  //               await program.instruction.calculateFarmed(
+  //                 new BN(NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION),
+  //                 {
+  //                   accounts: {
+  //                     pool: poolPublicKey,
+  //                     farmingState: new PublicKey(fs.farmingState),
+  //                     farmingSnapshots: new PublicKey(fs.farmingSnapshots),
+  //                     farmingCalc: calcAccount,
+  //                     farmingTicket: new PublicKey(ticket.farmingTicket),
+  //                     clock: SYSVAR_CLOCK_PUBKEY,
+  //                   },
+  //                 }
+  //               )
+  //             )
+  //             .add(
+  //               // due to same transaction data for calculateFarmed we need add transaction with random
+  //               // lamports amount to get random transaction hash every time
+  //               SystemProgram.transfer({
+  //                 fromPubkey: creatorPk,
+  //                 toPubkey: creatorPk,
+  //                 lamports: getRandomInt(1, 1000),
+  //               })
+
+  //             )
+  //           transactions.push({ transaction: tx })
+  //         }
+
+  //         return transactions
+  //       })
+  //   )
+  // })
+  // )
 
 
   // Generate withdrawFarmed transactions for calcs
@@ -332,7 +336,10 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
     })
   )
 
-  const allTransactions: { transaction: Transaction, signers?: (Keypair | Account)[] }[] = [...calculateTransactions.flat(2), ...withdrawTransactions.flat()]
+  const allTransactions: { transaction: Transaction, signers?: (Keypair | Account)[] }[] = [
+    // ...calculateTransactions.flat(2),
+    ...withdrawTransactions.flat(),
+  ]
 
   // console.log('allTrans: ', calculateTransactions, withdrawTransactions)
   if (createdAccounts.length && allTransactions.length) {
