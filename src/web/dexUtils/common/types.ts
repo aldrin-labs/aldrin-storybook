@@ -28,7 +28,7 @@ export type FarmingState = {
   tokensUnlocked: number
   tokensTotal: number
   startTime: number
-  currentTime: number
+  currentTime: number | null
   tokensPerPeriod: number
   periodLength: number
   vestingPeriod: number

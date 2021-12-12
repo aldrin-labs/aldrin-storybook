@@ -67,7 +67,7 @@ export interface PlaceOrder {
 export interface SignTransactionsParams {
   transactionsAndSigners: {
     transaction: Transaction
-    signers?: Array<Account>
+    signers?: Array<Account | Keypair>
   }[]
   wallet: WalletAdapter
   connection: Connection
@@ -115,6 +115,7 @@ export interface SendSignedTransactionParams {
   timeout?: number
   operationType?: string
   params?: any
+  showNotification?: boolean
 }
 
 export type SendSignedTransactionResult = 'failed' | 'timeout' | string
