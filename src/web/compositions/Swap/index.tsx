@@ -55,7 +55,7 @@ import { Selector } from './components/Selector/Selector'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 
 import { Cards } from './components/Cards/Cards'
-import { getPoolsForSwapActiveTab, getSelectedPoolForSwap, getDefaultBaseToken, getDefaultQuoteToken } from '@sb/dexUtils/pools/swap'
+import { getPoolsForSwapActiveTab, getSelectedPoolForSwap, getDefaultBaseToken, getDefaultQuoteToken } from '@sb/dexUtils/pools/swap/index'
 import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 
 const SwapPage = ({

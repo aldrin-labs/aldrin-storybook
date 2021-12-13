@@ -6,7 +6,6 @@ import { PoolInfo } from '../index.types'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import {
   endFarming,
-  getEndFarmingTransactions,
 } from '@sb/dexUtils/pools/actions/endFarming'
 import { getTokenDataByMint } from '.'
 import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
