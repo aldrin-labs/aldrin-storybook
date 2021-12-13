@@ -914,8 +914,5 @@
       "name": "NoNewSnapshotsProcessed",
       "msg": "No new snapshots can be processed for this ticket for this farming"
     }
-  ],
-  "metadata": {
-    "address": "FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX"
-  }
+  ]
 }
