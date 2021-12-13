@@ -72,8 +72,8 @@ export const UnstakePopup = ({
   const unlockAvailableDate =
     lastFarmingTicket && isPoolWithFarming
       ? +lastFarmingTicket.startTime +
-      +selectedPool.farming[0].periodLength +
-      60 * 20
+        +selectedPool.farming[0].periodLength +
+        60 * 20
       : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
@@ -148,12 +148,7 @@ export const UnstakePopup = ({
                   userPoolTokenAccount: userPoolTokenAccount
                     ? new PublicKey(userPoolTokenAccount)
                     : null,
-                  farmingStatePublicKey: new PublicKey(
-                    farmingState.farmingState
-                  ),
-                  snapshotQueuePublicKey: new PublicKey(
-                    farmingState.farmingSnapshots
-                  ),
+                  farmingState: farmingState,
                 })
 
                 setOperationLoading(false)

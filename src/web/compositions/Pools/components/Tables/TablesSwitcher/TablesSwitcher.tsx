@@ -46,6 +46,7 @@ import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
 
 import PlusIcon from './plus.svg'
 import { Checkbox } from '../../../../../components/Checkbox'
+import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
 
 const TablesSwitcher = ({
   theme,
@@ -79,9 +80,8 @@ const TablesSwitcher = ({
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
   const [includePermissionless, setIncludePermissionless] = useState(true)
-  const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
-    false
-  )
+  const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(true)
+  const [isRestakeAllPopupOpen, setIsRestakeAllPopupOpen] = useState(true)
 
   const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
 
@@ -336,6 +336,21 @@ const TablesSwitcher = ({
               refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
               setPoolWaitingForUpdateAfterOperation={
                 setPoolWaitingForUpdateAfterOperation
+              }
+            />
+          )}
+          {wallet.publicKey && (
+            <RestakeAllPopup
+              theme={theme}
+              open={isRestakeAllPopupOpen}
+              close={() => setIsRestakeAllPopupOpen(false)}
+              wallet={wallet}
+              connection={connection}
+              allPoolsData={pools}
+              allTokensData={allTokensData}
+              farmingTicketsMap={farmingTicketsMap}
+              refreshTokensWithFarmingTickets={() =>
+                refreshTokensWithFarmingTickets()
               }
             />
           )}
