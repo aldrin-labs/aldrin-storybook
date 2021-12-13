@@ -10,7 +10,7 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   DexTokensPrices,
   PoolInfo,
-  PoolWithOperation
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
@@ -32,7 +32,6 @@ import React, { useEffect, useState } from 'react'
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
-
 
 interface WithdrawalProps {
   theme: Theme
@@ -166,13 +165,6 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     (+baseAmount / availableWithdrawAmountTokenA) *
     (poolTokenAmount + lockedTokens)
 
-  console.log(
-    'poolTokenAmountToWithdraw: ',
-    baseAmount,
-    availableWithdrawAmountTokenA,
-    poolTokenAmount,
-    poolTokenAmountToWithdraw
-  )
   // need to show in popup
   // const { totalBaseTokenFee, totalQuoteTokenFee } =
   //   earnedFeesInPoolForUserMap.get(selectedPool.swapToken) || {
@@ -337,8 +329,12 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
                 poolTokenAmountToWithdraw > poolTokenAmount
                   ? vesting
                   : undefined,
-              userBaseTokenAccount: userTokenAccountA ? new PublicKey(userTokenAccountA) : null,
-              userQuoteTokenAccount: userTokenAccountB ? new PublicKey(userTokenAccountB) : null,
+              userBaseTokenAccount: userTokenAccountA
+                ? new PublicKey(userTokenAccountA)
+                : null,
+              userQuoteTokenAccount: userTokenAccountB
+                ? new PublicKey(userTokenAccountB)
+                : null,
             })
 
             setOperationLoading(false)

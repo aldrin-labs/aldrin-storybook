@@ -5,25 +5,14 @@ import {
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  Account,
 } from '@solana/web3.js'
 import BN from 'bn.js'
 import { createTokenAccountInstrs } from '@project-serum/common'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { WalletAdapter } from '../types'
-import MultiEndpointsConnection from '../MultiEndpointsConnection'
 import { VESTING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
+import { CreateVestingParams } from './types'
 
-interface CreateVestingParams {
-  vestingPeriod: BN // seconds
-  depositorAccount: PublicKey
-  wallet: WalletAdapter
-  depositAmount: BN
-  connection: MultiEndpointsConnection
-  tokenMint: PublicKey
-  accountLamports?: number
-}
 export const createVestingTransaction = async (
   params: CreateVestingParams
 ): Promise<[Transaction, Signer[]]> => {
@@ -36,6 +25,7 @@ export const createVestingTransaction = async (
     depositorAccount,
     accountLamports,
   } = params
+
   const unlockTs = new BN(Date.now() / 1000).add(vestingPeriod)
 
   const program = ProgramsMultiton.getProgramByAddress({
@@ -44,7 +34,7 @@ export const createVestingTransaction = async (
     wallet,
   })
 
-  const vestingAccount = new Account()
+  const vestingAccount = Keypair.generate()
   const vestingVault = Keypair.generate()
 
   const [vestingSigner, vaultSignerNonce] = await PublicKey.findProgramAddress(

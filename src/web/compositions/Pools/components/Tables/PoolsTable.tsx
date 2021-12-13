@@ -103,7 +103,10 @@ const prepareCell = (params: {
       dexTokensPricesMap: tokenPrices,
     }) || 0
 
-  const totalStakedLpTokensUSD = pool.lpTokenFreezeVaultBalance * poolTokenPrice
+  const totalStakedLpTokensUSD = Math.max(
+    pool.lpTokenFreezeVaultBalance * poolTokenPrice,
+    1000
+  ) // When no liquidity staked - estimate APR for $1000
 
   const openFarmings = filterOpenFarmingStates(pool.farming || [])
 
@@ -126,12 +129,12 @@ const prepareCell = (params: {
 
   const vesting = vestings.get(pool.poolTokenMint) || EMPTY_VESTING
 
-  const hasLockedFunds = vesting.endTs * 1000 > Date.now()
+  // const hasLockedFunds = vesting.endTs * 1000 > Date.now()
+  const hasLockedFunds = !!vesting.endTs
   const lockedFundsValue = vesting.startBalance.muln(poolTokenPrice)
 
   const farmingAPR =
-    ((totalDailyRewardUsd * 365) / Math.max(totalStakedLpTokensUSD, 1)) * 100 ||
-    0
+    ((totalDailyRewardUsd * 365) / totalStakedLpTokensUSD) * 100 || 0
 
   const ticketsForPool = farmingTicketsMap.get(pool.swapToken) || []
 

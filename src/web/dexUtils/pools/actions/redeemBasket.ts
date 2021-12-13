@@ -3,44 +3,61 @@ import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 import {
   createSOLAccountAndClose,
-  getMaxWithdrawAmount
+  getMaxWithdrawAmount,
 } from '@sb/dexUtils/pools'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
+import {
+  isTransactionFailed,
+  sendTransaction,
+  createTokenAccountTransaction,
+} from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   Connection,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
-  Transaction
+  Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
 import { VestingWithPk } from '../../vesting/types'
-import { createTokenAccountTransaction } from '../../send'
+import { withrawVestingInstruction } from '../../vesting/withdrawVesting'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
-export async function redeemBasket({
-  wallet,
-  connection,
-  curveType,
-  poolPublicKey,
-  userPoolTokenAccount,
-  userBaseTokenAccount,
-  userQuoteTokenAccount,
-  userPoolTokenAmount,
-}: {
+interface Pool {
+  baseTokenMint: PublicKey
+  baseTokenVault: PublicKey
+  quoteTokenMint: PublicKey
+  quoteTokenVault: PublicKey
+  poolMint: PublicKey
+  feeBaseAccount: PublicKey
+  feeQuoteAccount: PublicKey
+}
+
+export async function redeemBasket(params: {
   wallet: WalletAdapter
   connection: Connection
   curveType: number | null
   poolPublicKey: PublicKey
-  userPoolTokenAccount: PublicKey | null
+  userPoolTokenAccount: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
   userPoolTokenAmount: number
   unlockVesting?: VestingWithPk
 }) {
+  const {
+    wallet,
+    connection,
+    curveType,
+    poolPublicKey,
+    userPoolTokenAccount,
+    userPoolTokenAmount,
+    unlockVesting,
+  } = params
+
+  let { userBaseTokenAccount, userQuoteTokenAccount } = params
+
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
@@ -60,7 +77,7 @@ export async function redeemBasket({
     poolMint,
     feeBaseAccount,
     feeQuoteAccount,
-  } = await program.account.pool.fetch(poolPublicKey)
+  } = (await program.account.pool.fetch(poolPublicKey)) as Pool
 
   let [baseTokenAmountToWithdraw, quoteTokenAmountToWithdraw] =
     await getMaxWithdrawAmount({
@@ -141,6 +158,17 @@ export async function redeemBasket({
 
     userQuoteTokenAccount = newAccountPubkey
     transactionBeforeWithdraw.add(createAccountTransaction)
+  }
+
+  if (unlockVesting) {
+    transactionAfterWithdraw.add(
+      await withrawVestingInstruction({
+        wallet,
+        connection,
+        vesting: unlockVesting,
+        withdrawAccount: userPoolTokenAccount,
+      })
+    )
   }
 
   const commonTransaction = new Transaction()

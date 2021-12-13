@@ -1,5 +1,7 @@
-import { PublicKey } from '@solana/web3.js'
+import { Connection, PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
+import { WalletAdapter } from '../types'
+import MultiEndpointsConnection from '../MultiEndpointsConnection'
 
 export interface Vesting {
   beneficiary: PublicKey
@@ -22,4 +24,21 @@ export interface Vesting {
 
 export interface VestingWithPk extends Vesting {
   vesting: PublicKey
+}
+
+export interface CreateVestingParams {
+  vestingPeriod: BN // seconds
+  depositorAccount: PublicKey
+  wallet: WalletAdapter
+  depositAmount: BN
+  connection: MultiEndpointsConnection
+  tokenMint: PublicKey
+  accountLamports?: number
+}
+
+export interface WithdrawVestingParams {
+  vesting: VestingWithPk
+  withdrawAccount: PublicKey
+  connection: Connection
+  wallet: WalletAdapter
 }
