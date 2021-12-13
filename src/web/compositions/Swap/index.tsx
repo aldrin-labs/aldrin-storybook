@@ -61,6 +61,7 @@ import {
   getDefaultQuoteToken,
 } from '@sb/dexUtils/pools/swap'
 import { Cards } from './components/Cards/Cards'
+import { Loader } from '@sb/components/Loader/Loader'
 
 const SwapPage = ({
   theme,
@@ -198,6 +199,7 @@ const SwapPage = ({
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
+  const [isSwapInProgress, setIsSwapInProgress] = useState(false)
 
   const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
   const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
@@ -268,7 +270,8 @@ const SwapPage = ({
     !selectedPool ||
     !selectedPool.supply ||
     baseAmount == 0 ||
-    quoteAmount == 0
+    quoteAmount == 0 ||
+    isSwapInProgress
 
   // for cases with SOL token
   const isBaseTokenSOL = baseSymbol === 'SOL'
@@ -546,6 +549,8 @@ const SwapPage = ({
                 onClick={async () => {
                   if (!selectedPool) return
 
+                  setIsSwapInProgress(true)
+
                   console.log('baseTokenDecimals', {
                     baseTokenDecimals,
                     quoteTokenDecimals,
@@ -583,18 +588,31 @@ const SwapPage = ({
                           : 'Swap cancelled',
                   })
 
+                  // refresh data
                   refreshPoolBalances()
                   refreshAllTokensData()
+
+                  // reset fields
+                  if (result === 'success') {
+                    setBaseAmountWithQuote(0)
+                  }
+
+                  // remove loader
+                  setIsSwapInProgress(false)
                 }}
               >
-                {isTokenABalanceInsufficient
-                  ? `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
+                {isSwapInProgress ? (
+                  <Loader />
+                ) : isTokenABalanceInsufficient ? (
+                  `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                   } Balance`
-                  : !selectedPool
-                    ? 'No pools available'
-                    : needEnterAmount
-                      ? 'Enter amount'
-                      : 'Swap'}
+                ) : !selectedPool ? (
+                  'No pools available'
+                ) : needEnterAmount ? (
+                  'Enter amount'
+                ) : (
+                  'Swap'
+                )}
               </BtnCustom>
             )}
           </RowContainer>

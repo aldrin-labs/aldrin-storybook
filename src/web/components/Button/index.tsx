@@ -167,6 +167,7 @@ export const Button = styled.button<ButtonProps>`
   &:disabled {
     pointer-events: none;
     cursor: not-allowed;
+    pointer-events: none;
   }
 
   ${({ $loading: loading }: ButtonProps) => loading ?

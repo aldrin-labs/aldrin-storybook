@@ -24,6 +24,7 @@ import {
   NoFarmingBlock,
 } from './styles'
 import { ClaimTimeTooltip } from './Tooltips'
+import dayjs from 'dayjs'
 
 interface UserFarmingBlockProps {
   pool: PoolInfo
@@ -55,11 +56,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
       <FarmingBlock>
         <RowContainer direction="column">
           <RowContainer>
-            <SvgIcon
-              src={LightLogo}
-              height={'7rem'}
-              width={'7rem'}
-            />
+            <SvgIcon src={LightLogo} height={'7rem'} width={'7rem'} />
           </RowContainer>
           <LiquidityTitle style={{ padding: '1rem 0' }}>
             No farming available for this pool now.
@@ -129,6 +126,12 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
       ? `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
       : null
 
+  const unstakeTooltipText = unstakeLocked
+    ? `Locked until ${dayjs
+      .unix(claimAvailableTs)
+      .format('HH:mm:ss MMM DD, YYYY')}`
+    : tooltipText
+
   return (
     <FarmingBlock>
       <LiquidityItem>
@@ -162,7 +165,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               </FarmingButton>
             </span>
           </DarkTooltip>
-          <DarkTooltip title={tooltipText}>
+          <DarkTooltip title={unstakeTooltipText}>
             <span>
               <FarmingButton
                 $variant="error"

@@ -289,8 +289,8 @@ const ListingRequestPopup = ({
 
     await history.push(
       `/chart/spot/${knownBaseCurrency ||
-        requestData.baseTokenName}_${knownQuoteCurrency ||
-        requestData.quoteTokenName}`
+      requestData.baseTokenName}_${knownQuoteCurrency ||
+      requestData.quoteTokenName}`
     )
     await submitRequest(true)
     await onDoClose()
@@ -756,10 +756,9 @@ const ListingRequestPopup = ({
             >
               <BannerContainer>
                 <BT1>CREATE</BT1>
-                <BT2>LIQUIDITY</BT2>
+                <BT2>A LIQUIDITY</BT2>
                 <BT3>POOL ON </BT3>
-                <BT4>ALDRIN's</BT4>
-                <BT5>AMM</BT5>
+                <BT4>OUR AMM</BT4>
                 <ApplyButton
                   as="a"
                   href={LISTING_REQUEST_GOOGLE_FORM}

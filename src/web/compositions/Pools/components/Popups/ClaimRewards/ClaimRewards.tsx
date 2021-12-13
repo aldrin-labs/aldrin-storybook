@@ -26,11 +26,25 @@ import { RIN_MINT } from '@sb/dexUtils/utils'
 import LightLogo from '@icons/lightLogo.svg'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import AttentionComponent from '@sb/components/AttentionBlock'
+import { WithdrawFarmedParams } from '@sb/dexUtils/staking/withdrawStaked'
 import { COLORS } from '@variables/variables'
 
-interface ClaimRewardProps {
+const Popup = ({
+  theme,
+  open,
+  selectedPool,
+  allTokensData,
+  farmingTicketsMap,
+  snapshotQueues,
+  close,
+  refreshTokensWithFarmingTickets,
+  setPoolWaitingForUpdateAfterOperation,
+  programId,
+  callback,
+  withdrawFunction = withdrawFarmed,
+  hideMaintenanceWarning = false
+}: {
   theme: Theme
-  programId?: string
   open: boolean
   selectedPool: PoolInfo | StakingPool
   allTokensData: TokenInfo[]
@@ -39,21 +53,11 @@ interface ClaimRewardProps {
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-}
-
-const Popup = (props: ClaimRewardProps) => {
-  const {
-    theme,
-    open,
-    programId,
-    selectedPool,
-    allTokensData,
-    farmingTicketsMap,
-    snapshotQueues,
-    close,
-    refreshTokensWithFarmingTickets,
-    setPoolWaitingForUpdateAfterOperation,
-  } = props
+  programId: string
+  callback?: () => void
+  withdrawFunction?: (params: WithdrawFarmedParams) => Promise<string>
+  hideMaintenanceWarning?: boolean
+}) => {
   const { wallet } = useWallet()
   const connection = useConnection()
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
@@ -95,17 +99,7 @@ const Popup = (props: ClaimRewardProps) => {
     let result = null
 
     try {
-      console.log({
-        wallet,
-        connection,
-        pool: selectedPool,
-        allTokensData,
-        farmingTickets,
-        snapshotQueues,
-        signAllTransactions,
-      })
-
-      result = await withdrawFarmed({
+      result = await withdrawFunction({
         wallet,
         connection,
         pool: selectedPool,
@@ -127,6 +121,21 @@ const Popup = (props: ClaimRewardProps) => {
                 ? 'Claim rewards cancelled.'
                 : 'Blockhash outdated, please claim rest rewards in a few seconds.',
       })
+
+      if (result === 'cancelled') {
+        clearPoolWaitingForUpdate()
+      } else {
+        setTimeout(async () => {
+          refreshTokensWithFarmingTickets()
+          clearPoolWaitingForUpdate()
+          if (callback) {
+            callback()
+            close()
+          }
+        }, 7500)
+
+        setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+      }
     } catch (e) {
       clearPoolWaitingForUpdate()
       close()
@@ -134,6 +143,7 @@ const Popup = (props: ClaimRewardProps) => {
       setTimeout(async () => {
         refreshTokensWithFarmingTickets()
       }, 7500)
+      console.warn('Error withdraw farming: ', e)
     }
 
     switch (result) {
@@ -183,16 +193,16 @@ const Popup = (props: ClaimRewardProps) => {
         <BoldHeader style={{ fontSize: '3rem' }}>Claim Rewards</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer margin={'0 0 3rem 0'}>
-        <AttentionComponent
-          header={`The issue below is currently being fixed.`}
-          text={
-            'You can wait approx few weeks and claim rewards without any issues then.'
-          }
-          blockHeight={'9rem'}
-          iconSrc={GearIcon}
-        />
-      </RowContainer>
+      {!hideMaintenanceWarning &&
+        <RowContainer margin={'0 0 3rem 0'}>
+          <AttentionComponent
+            header={`The issue below is currently being fixed.`}
+            text={'You can wait approx few weeks and claim rewards without any issues then.'}
+            blockHeight={'9rem'}
+            iconSrc={GearIcon} />
+        </RowContainer>
+      }
+
       <RowContainer justify="flex-start" wrap={'nowrap'}>
         <SvgIcon
           src={LightLogo}

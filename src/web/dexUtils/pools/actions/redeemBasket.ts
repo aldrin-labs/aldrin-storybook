@@ -15,7 +15,7 @@ import {
 
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
+import { createTokenAccountTransaction, isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 

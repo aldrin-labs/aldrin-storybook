@@ -4,6 +4,7 @@ import {
   Snapshot,
   SnapshotQueue,
 } from '@sb/dexUtils/common/types'
+import BN from 'bn.js'
 
 /**
  * Return unclaimed snapshots for farming state related to farming ticket
@@ -12,10 +13,12 @@ export const getSnapshotsWithUnclaimedRewards = ({
   ticket,
   snapshotQueues,
   farmingState,
+  calculatedAmount = new BN(0)
 }: {
   ticket: FarmingTicket
   snapshotQueues: SnapshotQueue[]
   farmingState: FarmingState
+  calculatedAmount?: BN
 }): Snapshot[] => {
   const snapshotQueue = snapshotQueues.find(
     (snapshotQueue) => snapshotQueue.publicKey === farmingState.farmingSnapshots

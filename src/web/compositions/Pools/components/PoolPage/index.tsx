@@ -33,6 +33,7 @@ import {
 import { UserFarmingBlock } from './UserFarmingBlock'
 import { UserLiquidityBlock } from './UserLiquidityBlock'
 import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
+import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 
 
 interface PoolPageProps {
@@ -105,8 +106,8 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const quoteDoubleTrimmed = trimTo(quoteInfo?.name || '', 7)
 
 
-  const basePrice = pool.tvl.tokenB / pool.tvl.tokenA
-  const quotePrice = pool.tvl.tokenA / pool.tvl.tokenB
+  const basePrice = checkIsPoolStable(pool) ? 1 : pool.tvl.tokenB / pool.tvl.tokenA
+  const quotePrice = checkIsPoolStable(pool) ? 1 : pool.tvl.tokenA / pool.tvl.tokenB
 
   const baseUsdPrice = prices.get(baseTokenName) || { price: 0 }
   const quoteUsdPrice = prices.get(quoteTokenName) || { price: 0 }

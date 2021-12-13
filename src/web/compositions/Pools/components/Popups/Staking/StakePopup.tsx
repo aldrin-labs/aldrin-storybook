@@ -109,9 +109,11 @@ const Popup = (props: StakePopupProps) => {
 
   const totalFarmingDailyRewardsUSD = openFarmings.reduce(
     (acc, farmingState) => {
-      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValue(
-        { farmingState, totalStakedLpTokensUSD }
-      )
+      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity =
+        getFarmingStateDailyFarmingValue({
+          farmingState,
+          totalStakedLpTokensUSD,
+        })
 
       const farmingTokenSymbol = getTokenNameByMintAddress(
         farmingState.farmingTokenMint
@@ -161,10 +163,11 @@ const Popup = (props: StakePopupProps) => {
       onEnter={() => {
         setOperationLoading(false)
       }}
-      maxWidth={'md'}
+      maxWidth="md"
+      open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'} width={'100%'}>
+      <RowContainer justify="space-between" width="100%">
         <BoldHeader>
           {!isReminderPopup
             ? 'Stake Pool Tokens'
@@ -173,26 +176,26 @@ const Popup = (props: StakePopupProps) => {
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer justify="flex-start">
-        <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+        <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
           {!isReminderPopup
             ? 'Stake your Pool Tokens to start farming RIN.'
-            : `Stake your LP tokens to start framing ${farmingTokens}.`}
+            : `Stake your LP tokens to start farming ${farmingTokens}.`}
         </Text>
       </RowContainer>
       <RowContainer>
         <InputWithCoins
-          placeholder={'0'}
+          placeholder="0"
           theme={theme}
           onChange={setPoolTokenAmount}
           value={poolTokenAmount}
-          symbol={'Pool Tokens'}
+          symbol="Pool Tokens"
           // alreadyInPool={0}
           maxBalance={maxPoolTokenAmount}
           needAlreadyInPool={false}
         />
       </RowContainer>
       {isReminderPopup ? null : (
-        <RowContainer justify={'space-between'}>
+        <RowContainer justify="space-between">
           <Text>Est. rewards:</Text>
           <Text>
             <Row align="flex-start">
@@ -205,7 +208,7 @@ const Popup = (props: StakePopupProps) => {
           </Text>
         </RowContainer>
       )}
-      <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+      <RowContainer justify="space-between" margin="2rem 0 0 0">
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
@@ -216,13 +219,13 @@ const Popup = (props: StakePopupProps) => {
         </WhiteText>
       </RowContainer>
       {isReminderPopup ? null : (
-        <HintContainer justify={'flex-start'} margin="5rem 0 2rem 0">
+        <HintContainer justify="flex-start" margin="5rem 0 2rem 0">
           <Row justify="flex-start" width="20%">
             <ExclamationMark
               theme={theme}
-              margin={'0 0 0 2rem'}
+              margin="0 0 0 2rem"
               fontSize="5rem"
-              color={'#fbf2f2'}
+              color="#fbf2f2"
             />
           </Row>
           <Row width="80%" align="flex-start" direction="column">
@@ -245,27 +248,27 @@ const Popup = (props: StakePopupProps) => {
       )}
 
       {isLessThanMinPoolTokenAmountToStake && (
-        <RowContainer margin={'2rem 0 0 0'}>
+        <RowContainer margin="2rem 0 0 0">
           <AttentionComponent
             text={`You need to stake at least ${MIN_POOL_TOKEN_AMOUNT_TO_STAKE} Pool tokens.`}
-            blockHeight={'8rem'}
+            blockHeight="8rem"
           />
         </RowContainer>
       )}
 
       {isNotEnoughPoolTokens && (
-        <RowContainer margin={'2rem 0 0 0'}>
+        <RowContainer margin="2rem 0 0 0">
           <AttentionComponent
-            text={`You entered more Pool tokens than you have.`}
-            blockHeight={'8rem'}
+            text="You entered more Pool tokens than you have."
+            blockHeight="8rem"
           />
         </RowContainer>
       )}
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
-          isUserConfident={true}
+          isUserConfident
           theme={theme}
           showLoader={operationLoading}
           onClick={async () => {

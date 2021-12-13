@@ -911,6 +911,7 @@ export const sendSignedTransaction = async ({
   timeout = DEFAULT_TIMEOUT,
   operationType,
   params,
+  showNotification = true
 }: SendSignedTransactionParams): AsyncSendSignedTransactionResult => {
   const rawTransaction = transaction.serialize()
 
@@ -920,31 +921,33 @@ export const sendSignedTransaction = async ({
     skipPreflight: true,
   })
 
-  if (operationType) {
-    const [title, text] = getNotificationText({
-      baseSymbol: params?.baseSymbol || '',
-      quoteSymbol: params?.quoteSymbol || '',
-      quoteUnsettled: params?.quoteUnsettled || 0,
-      baseUnsettled: params?.baseUnsettled || 0,
-      price: params?.price || 0,
-      amount: params?.amount || 0,
-      side: params?.side || '',
-      orderType: params?.orderType || 'limit',
-      operationType,
-    })
+  if (showNotification) {
+    if (operationType) {
+      const [title, text] = getNotificationText({
+        baseSymbol: params?.baseSymbol || '',
+        quoteSymbol: params?.quoteSymbol || '',
+        quoteUnsettled: params?.quoteUnsettled || 0,
+        baseUnsettled: params?.baseUnsettled || 0,
+        price: params?.price || 0,
+        amount: params?.amount || 0,
+        side: params?.side || '',
+        orderType: params?.orderType || 'limit',
+        operationType,
+      })
 
-    notify({
-      message: title,
-      description: text,
-      type: 'success',
-      txid,
-    })
-  } else {
-    notify({
-      message: sentMessage,
-      type: 'success',
-      txid,
-    })
+      notify({
+        message: title,
+        description: text,
+        type: 'success',
+        txid,
+      })
+    } else {
+      notify({
+        message: sentMessage,
+        type: 'success',
+        txid,
+      })
+    }
   }
 
   console.log('Started awaiting confirmation for', txid)
@@ -1059,6 +1062,17 @@ const awaitTransactionSignatureConfirmationWithNotifications = async ({
 
       return 'timeout'
     }
+    // if (err.InstructionError) {
+    //   if (Array.isArray(err.InstructionError)) {
+    //     const insufficientBalance = (err.InstructionError as []).findIndex((el) => el === 1) // Insufficient lamports instruction error
+    //     if (insufficientBalance >= 0) {
+    //       notify({
+    //         message: 'Not enough SOL',
+    //         type: 'error',
+    //       })
+    //     }
+    //   }
+    // }
 
     notify({ message: 'Transaction failed', type: 'error' })
     const rpcProvider = getProviderNameFromUrl({
@@ -1170,7 +1184,7 @@ async function awaitTransactionSignatureConfirmation({
   return result
 }
 
-function mergeTransactions(transactions: Maybe<Transaction>[]) {
+export function mergeTransactions(transactions: Maybe<Transaction>[]) {
   const transaction = new Transaction()
   transactions.forEach((t) => {
     if (t) {
@@ -1205,4 +1219,27 @@ async function simulateTransaction(
     throw new Error(`failed to simulate transaction: ${res.error.message}`)
   }
   return res.result
+}
+
+
+
+export const sendPartOfTransactions = async (connection: Connection, transaction: Transaction) => {
+  try {
+    const tx = await sendSignedTransaction({
+      connection,
+      transaction,
+    })
+
+    if (isTransactionFailed(tx)) {
+      return 'failed'
+    }
+  } catch (e) {
+    console.log('end farming catch error', e)
+
+    if (e.message.includes('cancelled')) {
+      return 'cancelled'
+    }
+  }
+
+  return 'success'
 }

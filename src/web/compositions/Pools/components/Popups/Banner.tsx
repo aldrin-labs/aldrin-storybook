@@ -7,13 +7,12 @@ import { RootRow } from '@sb/compositions/Pools/components/Charts/styles'
 
 import { SvgIcon } from '@sb/components'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-export const FarmingConditionsUpdateBanner = ({ theme }) => {
+export const Banner = ({ theme }) => {
   const [isWarningPopupOpen, openWarningPopup] = useLocalStorageState(
-    'farmingConditionsUpdateBanner',
+    'volumeChartUpdateBanner',
     true
   )
 
@@ -34,21 +33,8 @@ export const FarmingConditionsUpdateBanner = ({ theme }) => {
           <WhiteText
             style={{ fontSize: '2rem', fontFamily: 'Avenir Next Demi' }}
           >
-            Please, read the important announcement about the farming conditions
-            update.
+            Fee and volume data may not display correctly in UI for a couple of hours.
           </WhiteText>
-          <BtnCustom
-            color={'#fff'}
-            target={'_blank'}
-            height={'100%'}
-            textTransform={'capitalize'}
-            fontSize={'1.5rem'}
-            href={
-              'https://blog.aldrin.com/important-update-in-farming-terms-249e188e307a'
-            }
-          >
-            Read
-          </BtnCustom>
           <SvgIcon
             height={'2rem'}
             width={'auto'}

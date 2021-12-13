@@ -359,7 +359,7 @@ export const combineUserLiquidityData = (
                 </RowDataTdText>
                 {openFarmings.length === 0 ? (
                   <RowDataTdText>
-                    <span style={{ color: '#53DF11' }}>Ended</span>
+                    <span style={{ color: '#53DF11' }}>Farming Ended</span>
                   </RowDataTdText>
                 ) : (
                   openFarmingsKeys.map((farmingTokenMint, i, arr) => {

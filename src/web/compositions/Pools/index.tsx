@@ -6,7 +6,7 @@ import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { Page, Content, Row, Cell, WideContent } from '@sb/components/Layout'
 import { RootRow } from './components/Charts/styles'
-import { FarmingConditionsUpdateBanner } from './components/Popups/FarmingConditionsUpdateBanner'
+import { Banner } from './components/Popups/Banner'
 
 const Pools = ({ theme }: { theme: Theme }) => {
   useEffect(() => {
@@ -19,7 +19,7 @@ const Pools = ({ theme }: { theme: Theme }) => {
   return (
     <Page>
       <WideContent>
-        {/* <FarmingConditionsUpdateBanner theme={theme} /> */}
+        {/* <Banner theme={theme} /> */}
         <RootRow>
           <Cell col={12} colLg={6}>
             <TotalVolumeLockedChart />

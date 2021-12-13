@@ -28,6 +28,15 @@ export const Page = styled(Body)`
   background: ${COLORS.bodyBackground};
   flex: 1;
 `
+export const StakingPage = styled(Page)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // height: 100%;
+  @media (max-width: ${BREAKPOINTS.lg}) {
+    align-items: flex-start;
+  }
+`
 
 export const Content = styled.div`
   margin: 0 10px;
