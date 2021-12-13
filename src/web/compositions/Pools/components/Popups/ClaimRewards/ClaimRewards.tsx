@@ -26,6 +26,7 @@ import { RIN_MINT } from '@sb/dexUtils/utils'
 import LightLogo from '@icons/lightLogo.svg'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import AttentionComponent from '@sb/components/AttentionBlock'
+import { WithdrawStakedParams } from '@sb/dexUtils/staking/withdrawStaked'
 
 export const ClaimRewards = ({
   theme,
@@ -39,6 +40,8 @@ export const ClaimRewards = ({
   setPoolWaitingForUpdateAfterOperation,
   programId,
   callback,
+  withdrawFunction = withdrawFarmed,
+  hideMaintenanceWarning = false
 }: {
   theme: Theme
   open: boolean
@@ -51,6 +54,8 @@ export const ClaimRewards = ({
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   programId: string
   callback?: () => void
+  withdrawFunction?: (params: WithdrawStakedParams) => Promise<string>
+  hideMaintenanceWarning?: boolean
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -93,7 +98,7 @@ export const ClaimRewards = ({
     let result = null
 
     try {
-      result = await withdrawFarmed({
+      result = await withdrawFunction({
         wallet,
         connection,
         pool: selectedPool,
@@ -123,8 +128,8 @@ export const ClaimRewards = ({
           refreshTokensWithFarmingTickets()
           clearPoolWaitingForUpdate()
           if (callback) {
-            await callback()
-            await close()
+            callback()
+            close()
           }
         }, 7500)
 
@@ -137,6 +142,7 @@ export const ClaimRewards = ({
       setTimeout(async () => {
         refreshTokensWithFarmingTickets()
       }, 7500)
+      console.warn('Error withdraw farming: ', e)
     }
 
     if (result !== 'blockhash_outdated') {
@@ -167,13 +173,16 @@ export const ClaimRewards = ({
         <BoldHeader style={{ fontSize: '3rem' }}>Claim Rewards</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer margin={'0 0 3rem 0'}>
-        <AttentionComponent
-          header={`The issue below is currently being fixed.`}
-          text={'You can wait approx few weeks and claim rewards without any issues then.'}
-          blockHeight={'9rem'}
-          iconSrc={GearIcon} />
-      </RowContainer>
+      {!hideMaintenanceWarning &&
+        <RowContainer margin={'0 0 3rem 0'}>
+          <AttentionComponent
+            header={`The issue below is currently being fixed.`}
+            text={'You can wait approx few weeks and claim rewards without any issues then.'}
+            blockHeight={'9rem'}
+            iconSrc={GearIcon} />
+        </RowContainer>
+      }
+
       <RowContainer justify="flex-start" wrap={'nowrap'}>
         <SvgIcon
           src={LightLogo}

@@ -36,6 +36,14 @@ const InputEl = styled.input`
   font-weight: 600;
   padding: 0.6em 1.5em;
   color: ${COLORS.white};
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover, 
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill {
+    -webkit-text-fill-color: ${COLORS.white};
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
 `
 
 const Append = styled.span`

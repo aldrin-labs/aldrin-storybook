@@ -97,5 +97,6 @@ export const Button = styled.button<ButtonProps>`
       : ''}
   &:disabled {
     cursor: not-allowed;
+    pointer-events: none;
   }
 `

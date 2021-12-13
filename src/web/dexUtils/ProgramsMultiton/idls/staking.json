@@ -187,7 +187,69 @@
       ]
     },
     {
-      "name": "withdrawFarmed",
+      "name": "initializeFarmingCalc",
+      "accounts": [
+        {
+          "name": "farmingCalc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmingTicket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "userKey",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmingState",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "initializer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "closeFarmingCalc",
+      "accounts": [
+        {
+          "name": "farmingCalc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmingTicket",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "signer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "initializer",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "calculateFarmed",
       "accounts": [
         {
           "name": "pool",
@@ -205,7 +267,43 @@
           "isSigner": false
         },
         {
+          "name": "farmingCalc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "farmingTicket",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "clock",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "maxSnapshots",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawFarmed",
+      "accounts": [
+        {
+          "name": "pool",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmingState",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmingCalc",
           "isMut": true,
           "isSigner": false
         },
@@ -230,11 +328,6 @@
           "isSigner": true
         },
         {
-          "name": "userSolAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
@@ -243,19 +336,9 @@
           "name": "clock",
           "isMut": false,
           "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "maxSnapshots",
-          "type": "u64"
-        }
-      ]
+      "args": []
     },
     {
       "name": "checkFarmed",
@@ -281,17 +364,7 @@
           "isSigner": false
         },
         {
-          "name": "poolSigner",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "clock",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -475,7 +548,7 @@
           "isSigner": false
         },
         {
-          "name": "stakingVault",
+          "name": "farmingTokenVault",
           "isMut": true,
           "isSigner": false
         },
@@ -672,6 +745,30 @@
           }
         ]
       }
+    },
+    {
+      "name": "FarmingCalc",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "farmingState",
+            "type": "publicKey"
+          },
+          {
+            "name": "userKey",
+            "type": "publicKey"
+          },
+          {
+            "name": "initializer",
+            "type": "publicKey"
+          },
+          {
+            "name": "tokenAmount",
+            "type": "u64"
+          }
+        ]
+      }
     }
   ],
   "types": [
@@ -806,6 +903,16 @@
     {
       "code": 319,
       "name": "AttachedStatesLimitReached"
+    },
+    {
+      "code": 320,
+      "name": "NonZeroOutstandingBalance",
+      "msg": "Cannot close farming calc while it's not empty"
+    },
+    {
+      "code": 321,
+      "name": "NoNewSnapshotsProcessed",
+      "msg": "No new snapshots can be processed for this ticket for this farming"
     }
   ]
 }
