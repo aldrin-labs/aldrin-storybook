@@ -12,11 +12,12 @@ import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { Connection } from '@solana/web3.js'
 import { PoolInfo } from '../../index.types'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 export const RestakeAllPopup = ({
   theme,
-  open,
-  close,
+  //   open,
+  //   close,
   wallet,
   connection,
   allPoolsData,
@@ -25,8 +26,8 @@ export const RestakeAllPopup = ({
   refreshTokensWithFarmingTickets,
 }: {
   theme: Theme
-  open: boolean
-  close: () => void
+  //   open: boolean
+  //   close: () => void
   wallet: WalletAdapter
   connection: Connection
   allPoolsData: PoolInfo[]
@@ -34,6 +35,11 @@ export const RestakeAllPopup = ({
   allTokensData: TokenInfo[]
   refreshTokensWithFarmingTickets: RefreshFunction
 }) => {
+  const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
+  const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
+    'showRestakePopup',
+    true
+  )
   const [showRetryMessage, setShowRetryMessage] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
 
@@ -61,19 +67,21 @@ export const RestakeAllPopup = ({
       setOperationLoading(false)
     } else if (result === 'success') {
       refreshTokensWithFarmingTickets()
-      close()
+      setIsPopupOpen(false)
     }
   }
+
+  if (!isPopupOpen || isPopupTemporaryHidden) return null
 
   return (
     <DialogWrapper
       theme={theme}
       PaperComponent={ClaimRewardsStyledPaper}
       fullScreen={false}
-      onClose={close}
+      onClose={() => setIsPopupTemporaryHidden(true)}
       onEnter={() => {}}
       maxWidth={'md'}
-      open={open}
+      open={isPopupOpen || !isPopupTemporaryHidden}
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer
@@ -116,7 +124,9 @@ export const RestakeAllPopup = ({
           disabled={false}
           isUserConfident={true}
           theme={theme}
-          onClick={() => close()}
+          onClick={() => {
+            setIsPopupTemporaryHidden(true)
+          }}
         >
           Remind me later
         </Button>

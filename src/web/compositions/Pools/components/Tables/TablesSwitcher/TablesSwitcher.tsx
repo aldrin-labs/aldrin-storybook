@@ -81,7 +81,7 @@ const TablesSwitcher = ({
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
   const [includePermissionless, setIncludePermissionless] = useState(true)
   const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(true)
-  const [isRestakeAllPopupOpen, setIsRestakeAllPopupOpen] = useState(true)
+  // const [isRestakeAllPopupOpen, setIsRestakeAllPopupOpen] = useState(true)
 
   const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
 
@@ -342,8 +342,8 @@ const TablesSwitcher = ({
           {wallet.publicKey && (
             <RestakeAllPopup
               theme={theme}
-              open={isRestakeAllPopupOpen}
-              close={() => setIsRestakeAllPopupOpen(false)}
+              // open={isRestakeAllPopupOpen}
+              // close={() => setIsRestakeAllPopupOpen(false)}
               wallet={wallet}
               connection={connection}
               allPoolsData={pools}
