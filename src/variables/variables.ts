@@ -7,6 +7,7 @@ export const COLORS = {
   bodyBackground: '#17181A',
   background: '#383b45',
   border: '#3a475c',
+  borderDark: '#2e2e2e',
   white: '#ffffff',
   black: '#000000',
   hint: '#96999c',

@@ -9,7 +9,6 @@ import { getRandomInt } from '@core/utils/helpers'
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
 import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
-import { Block, BlockContent } from '@sb/components/Block'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/components/Typography'
 import {
@@ -32,6 +31,7 @@ import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/g
 import { ApolloQueryResult } from 'apollo-client'
 import { useVesting } from '@sb/dexUtils/vesting'
 import { toMap } from '@sb/utils'
+import { COLORS } from '@variables/variables'
 import { PoolPage } from '../../PoolPage'
 import { AllPoolsTable } from '../AllPools'
 import { UserLiquidityTable } from '../UserLiquidity'
@@ -149,83 +149,77 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   )
 
   return (
-    <Block>
-      <BlockContent>
-        <TabContainer>
-          <div>
-            <TableModeButton
-              isActive={isAllPoolsSelected}
-              onClick={() => setSelectedTable('all')}
-            >
-              All Pools
-            </TableModeButton>
-            <TableModeButton
-              isActive={!isAllPoolsSelected}
-              onClick={() => setSelectedTable('userLiquidity')}
-            >
-              Your liquidity ({userLiquidityPools.length})
-            </TableModeButton>
-          </div>
-          <InputWrap>
-            {/* <Checkbox
-              color="error"
-              label="Show Permissionless Pools"
-              checked={includePermissionless}
-              onChange={setIncludePermissionless}
-            /> */}
-            <SearchInput
-              name="search"
-              placeholder="Search"
-              value={searchValue}
-              onChange={onChangeSearch}
-              append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
-            />
-            <AddPoolButton onClick={() => setCreatePoolModalOpened(true)}>
-              <SvgIcon src={PlusIcon} width="1.2em" />
-              &nbsp;New Pool
-            </AddPoolButton>
+    <>
+      <TabContainer>
+        <div>
+          <TableModeButton
+            isActive={isAllPoolsSelected}
+            onClick={() => setSelectedTable('all')}
+          >
+            All Pools
+          </TableModeButton>
+          <TableModeButton
+            isActive={!isAllPoolsSelected}
+            onClick={() => setSelectedTable('userLiquidity')}
+          >
+            Your liquidity ({userLiquidityPools.length})
+          </TableModeButton>
+        </div>
+        <InputWrap>
+          <SearchInput
+            name="search"
+            placeholder="Search"
+            value={searchValue}
+            onChange={onChangeSearch}
+            append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
+          />
+          <AddPoolButton onClick={() => setCreatePoolModalOpened(true)}>
+            <SvgIcon src={PlusIcon} width="1.2em" />
+            &nbsp;Create a Pool
+          </AddPoolButton>
 
-            <a
-              style={{ textDecoration: 'none' }}
-              href={AMMAudit}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div>
-                <Text margin="0" size="sm">
-                  Audited by
-                </Text>
-              </div>
-              <SvgIcon
-                width="5em"
-                height="auto"
-                style={{ marginTop: '1rem' }}
-                src={KudelskiLogo}
-              />
-            </a>
-          </InputWrap>
-        </TabContainer>
-        <TableContainer>
-          {selectedTable === 'all' ? (
-            <AllPoolsTable
-              searchValue={searchValue}
-              pools={pools}
-              dexTokensPricesMap={dexTokensPricesMap}
-              feesByPool={feesByPoolMap}
-              tradingVolumes={tradingVolumesMap}
+          <a
+            style={{ textDecoration: 'none' }}
+            href={AMMAudit}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div>
+              <Text margin="0" size="sm">
+                Audited by
+              </Text>
+            </div>
+            <SvgIcon
+              width="5em"
+              height="auto"
+              style={{ marginTop: '1rem' }}
+              src={KudelskiLogo}
             />
-          ) : (
-            <UserLiquidityTable
-              searchValue={searchValue}
-              pools={userLiquidityPools}
-              dexTokensPricesMap={dexTokensPricesMap}
-              allTokensData={userTokensData}
-              farmingTicketsMap={farmingTicketsMap}
-              feesByPoolForUser={earnedFeesInPoolForUserMap}
-            />
-          )}
-        </TableContainer>
-      </BlockContent>
+          </a>
+        </InputWrap>
+      </TabContainer>
+      <TableContainer>
+        {selectedTable === 'all' ? (
+          <AllPoolsTable
+            searchValue={searchValue}
+            pools={pools}
+            dexTokensPricesMap={dexTokensPricesMap}
+            feesByPool={feesByPoolMap}
+            tradingVolumes={tradingVolumesMap}
+            farmingTicketsMap={farmingTicketsMap}
+          />
+        ) : (
+          <UserLiquidityTable
+            searchValue={searchValue}
+            pools={userLiquidityPools}
+            dexTokensPricesMap={dexTokensPricesMap}
+            allTokensData={userTokensData}
+            farmingTicketsMap={farmingTicketsMap}
+            feesByPoolForUser={earnedFeesInPoolForUserMap}
+          />
+        )}
+      </TableContainer>
+
       <Route path={`${path}/:symbol`}>
         <PoolPage
           pools={pools}
@@ -247,7 +241,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           onClose={() => setCreatePoolModalOpened(false)}
         />
       )}
-    </Block>
+    </>
   )
 }
 
@@ -259,12 +253,14 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(1, 3),
+    loaderColor: COLORS.white,
   }),
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfoRequest,
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 2),
+    loaderColor: COLORS.white,
   }),
   queryRendererHoc({
     query: getFeesEarnedByAccountRequest,
@@ -275,6 +271,7 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
+    loaderColor: COLORS.white,
   }),
   queryRendererHoc({
     name: 'getFeesEarnedByPoolQuery',
@@ -282,6 +279,7 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
+    loaderColor: COLORS.white,
     // TODO: Comment before merge
     variables: () => ({
       timestampFrom: endOfHourTimestamp() - DAY,
@@ -294,6 +292,7 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
+    loaderColor: COLORS.white,
     variables: () => ({
       dailyTimestampTo: endOfHourTimestamp(),
       dailyTimestampFrom: endOfHourTimestamp() - DAY,

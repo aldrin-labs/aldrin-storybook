@@ -1,7 +1,12 @@
 import { Theme } from '@material-ui/core'
 import { Button } from '@sb/components/Button'
 import { Input } from '@sb/components/Input'
-import { BORDER_RADIUS, BREAKPOINTS, COLORS, FONT_SIZES } from '@variables/variables'
+import {
+  BORDER_RADIUS,
+  BREAKPOINTS,
+  COLORS,
+  FONT_SIZES,
+} from '@variables/variables'
 import styled from 'styled-components'
 
 type TableModeButtonProps = {
@@ -66,7 +71,6 @@ export const TableContainer = styled.div`
 `
 
 export const AddPoolButton = styled(Button)`
-  width: 42px;
   height: 42px;
   text-align: center;
   margin-right: 20px;
@@ -75,5 +79,5 @@ export const AddPoolButton = styled(Button)`
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: ${FONT_SIZES.lg};
+  font-size: ${FONT_SIZES.md};
 `

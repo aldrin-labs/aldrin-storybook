@@ -1,4 +1,4 @@
-import { Token } from "@sb/components/TokenSelector/SelectTokenModal";
+import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 
 export interface WithFarming {
   farming: {
@@ -9,7 +9,6 @@ export interface WithFarming {
     vestingPeriod?: string
   }
 }
-
 
 interface FirstDepositType {
   baseTokenAmount: string
@@ -23,10 +22,11 @@ export interface FarmingFormType extends WithFarming {
 }
 
 export interface CreatePoolFormType extends WithFarming {
+  price: string
   baseToken: Token
   quoteToken: Token
   stableCurve: boolean
-  lockInitialLiquidity: boolean,
+  lockInitialLiquidity: boolean
   initialLiquidityLockPeriod: string
   firstDeposit: FirstDepositType
   farmingEnabled: boolean

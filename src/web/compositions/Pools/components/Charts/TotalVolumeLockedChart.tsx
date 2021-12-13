@@ -4,9 +4,10 @@ import { msToNextHour } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 import { Block, BlockContent } from '@sb/components/Block'
 import {
-  dayDuration, endOfDayTimestamp,
+  dayDuration,
+  endOfDayTimestamp,
   getTimezone,
-  startOfDayTimestamp
+  startOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { Chart } from 'chart.js'
 import React, { useEffect, useRef } from 'react'
@@ -16,26 +17,22 @@ import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate/ReloadTimerTillUp
 import { Canvas, SubTitle, TitleContainer, DataContainer } from './styles'
 import { createTotalVolumeLockedChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
-
 interface ChartProps {
   getTotalVolumeLockedHistoryQuery: {
     getTotalVolumeLockedHistory: {
-      volumes: { date: number, vol?: number }[]
+      volumes: { date: number; vol?: number }[]
     }
   }
 }
 
 const ChartInner: React.FC<ChartProps> = (props) => {
-  const {
-    getTotalVolumeLockedHistoryQuery,
-  } = props
+  const { getTotalVolumeLockedHistoryQuery } = props
 
   const data =
     getTotalVolumeLockedHistoryQuery?.getTotalVolumeLockedHistory?.volumes
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const chartRef = useRef<Chart | null>(null)
-
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -59,14 +56,12 @@ const ChartInner: React.FC<ChartProps> = (props) => {
 
     reDraw()
 
-
     return () => chartRef.current?.destroy()
   }, [JSON.stringify(data)])
 
-
   return (
     <div>
-      <Canvas height="250" ref={canvasRef}></Canvas>
+      <Canvas height="250" ref={canvasRef} />
     </div>
   )
 }
@@ -77,14 +72,14 @@ const TotalVolumeLockedChartInner = compose(
     name: 'getTotalVolumeLockedHistoryQuery',
     variables: {
       timezone: getTimezone(),
-      timestampFrom: startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
+      timestampFrom:
+        startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
   })
 )(ChartInner)
-
 
 export const TotalVolumeLockedChart: React.FC = () => {
   return (
@@ -95,7 +90,7 @@ export const TotalVolumeLockedChart: React.FC = () => {
           <Line />
           <ReloadTimerTillUpdate
             duration={3600}
-            margin={'0 0 0 2rem'}
+            margin="0 0 0 2rem"
             getSecondsTillNextUpdate={() => msToNextHour() / 1000}
           />
         </TitleContainer>
@@ -104,7 +99,5 @@ export const TotalVolumeLockedChart: React.FC = () => {
         </DataContainer>
       </BlockContent>
     </Block>
-
   )
 }
-

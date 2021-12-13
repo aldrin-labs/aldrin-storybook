@@ -1,5 +1,6 @@
 import { Cell, Page, WideContent } from '@sb/components/Layout'
 import React, { useEffect } from 'react'
+import { Block, BlockContent } from '../../components/Block'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import { RootRow } from './components/Charts/styles'
 import { TableSwitcher } from './components/Tables/TablesSwitcher'
@@ -26,7 +27,11 @@ export const PoolsComponent: React.FC = () => {
         </RootRow>
         <RootRow>
           <Cell col={12}>
-            <TableSwitcher />
+            <Block>
+              <BlockContent>
+                <TableSwitcher />
+              </BlockContent>
+            </Block>
           </Cell>
         </RootRow>
       </WideContent>

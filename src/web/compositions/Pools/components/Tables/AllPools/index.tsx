@@ -6,6 +6,7 @@ import {
   PoolInfo,
   TokenPricesMap,
   VolumesMap,
+  FarmingTicketsMap
 } from '@sb/compositions/Pools/index.types'
 
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -18,6 +19,7 @@ interface AllPoolsProps {
   dexTokensPricesMap: TokenPricesMap
   feesByPool: FeesMap
   tradingVolumes: VolumesMap
+  farmingTicketsMap: FarmingTicketsMap
 }
 
 const COLUMNS: DataHeadColumn[] = [
@@ -101,13 +103,14 @@ const prepareCell = (
 }
 
 export const AllPoolsTable: React.FC<AllPoolsProps> = (props) => {
-  const { searchValue, dexTokensPricesMap, pools, feesByPool, tradingVolumes } =
+  const { farmingTicketsMap, searchValue, dexTokensPricesMap, pools, feesByPool, tradingVolumes } =
     props
 
   return (
     <PoolsTable
       addColumns={COLUMNS}
       pools={pools}
+      farmingTicketsMap={farmingTicketsMap}
       tokenPrices={dexTokensPricesMap}
       searchValue={searchValue}
       prepareCell={(pool) =>

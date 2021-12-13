@@ -47,7 +47,7 @@ import {
   Slash,
   Title,
 } from './styles'
-import { TokenAmountInput, TokenAmountInputField } from './TokenAmountInput'
+import { TokenAmountInputField } from './TokenAmountInput'
 import { CreatePoolFormType } from './types'
 
 interface CreatePoolProps {
@@ -96,6 +96,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
   const [processingStatus, setProcessingStatus] =
     useState<TransactionStatus>('processing')
   const [processingStep, setProcessingStep] = useState(0)
+  const [priceTouched, setPriceTouched] = useState(false)
   const stepsSize = steps.length
 
   const { wallet } = useWallet()
@@ -112,20 +113,21 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
   const form = useFormik<CreatePoolFormType>({
     validateOnMount: true,
     initialValues: {
+      price: '1',
       baseToken: tokens[0],
       quoteToken: tokens[1],
       stableCurve: false,
-      lockInitialLiquidity: true,
-      initialLiquidityLockPeriod: '180',
+      lockInitialLiquidity: false,
+      initialLiquidityLockPeriod: '',
       firstDeposit: {
-        baseTokenAmount: '0',
-        quoteTokenAmount: '0',
+        baseTokenAmount: '',
+        quoteTokenAmount: '',
       },
       farmingEnabled: true,
       farming: {
         token: tokens[0],
         vestingEnabled: true,
-        tokenAmount: '0',
+        tokenAmount: '',
         farmingPeriod: '14',
         vestingPeriod: '7',
       },
@@ -378,6 +380,42 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
 
   const priceFormatted = stripByAmount(price)
 
+  const onBaseAmountChange = (value: string) => {
+    if (values.stableCurve) {
+      form.setFieldValue('firstDeposit.quoteTokenAmount', value)
+    } else if (priceTouched) {
+      const userDefinedPrice = parseFloat(values.price || '1')
+      const newPrice = parseFloat(value) * userDefinedPrice
+      if (newPrice) {
+        form.setFieldValue('firstDeposit.quoteTokenAmount', newPrice)
+      }
+    } else {
+      const newPrice =
+        parseFloat(value) / parseFloat(values.firstDeposit.quoteTokenAmount)
+      if (newPrice) {
+        form.setFieldValue('price', stripByAmount(newPrice))
+      }
+    }
+  }
+
+  const onQuoteAmountChange = (value: string) => {
+    if (values.stableCurve) {
+      form.setFieldValue('firstDeposit.baseTokenAmount', value)
+    } else if (priceTouched) {
+      const userDefinedPrice = parseFloat(values.price || '1')
+      const newPrice = parseFloat(value) / userDefinedPrice
+      if (newPrice) {
+        form.setFieldValue('firstDeposit.baseTokenAmount', newPrice)
+      }
+    } else {
+      const newPrice =
+        parseFloat(values.firstDeposit.baseTokenAmount) / parseFloat(value)
+      if (newPrice) {
+        form.setFieldValue('price', stripByAmount(newPrice))
+      }
+    }
+  }
+
   return (
     <>
       <ModalTitleBlock
@@ -443,6 +481,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                   </RadioGroupContainer>
                   <div>
                     <InputField
+                      placeholder="0"
                       borderRadius="lg"
                       variant="outline"
                       name="initialLiquidityLockPeriod"
@@ -478,10 +517,14 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                     &nbsp;=
                   </FlexBlock>
                   <NumberInputContainer>
-                    <TokenAmountInput
+                    <TokenAmountInputField
+                      disabled={values.stableCurve}
                       name="price"
-                      value={`${priceFormatted}`}
+                      available={selectedBaseAccount.amount}
                       mint={form.values.quoteToken.mint}
+                      onChange={() => {
+                        setPriceTouched(true)
+                      }}
                     />
                   </NumberInputContainer>
                 </FlexBlock>
@@ -490,14 +533,13 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.baseTokenAmount"
-                    setFieldValue={form.setFieldValue}
+                    setFieldValue={(field: string, value: string) => {
+                      form.setFieldValue(field, value)
+                      onBaseAmountChange(value)
+                    }}
                     available={selectedBaseAccount.amount}
                     mint={form.values.baseToken.mint}
-                    onChange={(v) => {
-                      if (values.stableCurve) {
-                        form.setFieldValue('firstDeposit.quoteTokenAmount', v)
-                      }
-                    }}
+                    onChange={onBaseAmountChange}
                   />
                 </Centered>
 
@@ -511,14 +553,13 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.quoteTokenAmount"
-                    setFieldValue={form.setFieldValue}
+                    setFieldValue={(field: string, value: string) => {
+                      form.setFieldValue(field, value)
+                      onQuoteAmountChange(value)
+                    }}
                     available={selectedQuoteAccount.amount}
                     mint={form.values.quoteToken.mint}
-                    onChange={(v) => {
-                      if (values.stableCurve) {
-                        form.setFieldValue('firstDeposit.baseTokenAmount', v)
-                      }
-                    }}
+                    onChange={onQuoteAmountChange}
                   />
                 </Centered>
                 {form.errors.firstDeposit?.quoteTokenAmount &&
@@ -595,9 +636,12 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
           <PoolProcessingModal
             status={processingStatus}
             step={processingStep}
-            onClose={() => {
+            onSuccess={() => {
               setProcessing(false)
               onClose()
+            }}
+            onError={() => {
+              setProcessing(false)
             }}
           />
         )}

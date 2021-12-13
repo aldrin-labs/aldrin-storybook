@@ -10,24 +10,29 @@ import { TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 import pluralize from 'pluralize'
 import React, { useState } from 'react'
+import LightLogo from '@icons/lightLogo.svg'
+
 import { filterOpenFarmingStates } from '../../../../dexUtils/pools/filterOpenFarmingStates'
 import { DexTokensPrices, PoolInfo } from '../../index.types'
 import { getTokenDataByMint } from '../../utils'
 import { getUniqueAmountsToClaimMap } from '../Tables/utils/getUniqueAmountsToClaimMap'
 import { ExtendFarmingModal } from './ExtendFarmingModal'
 import ClockIcon from './icons/whiteClock.svg'
+
 import {
-  ExtendFarmingButton, FarmingBlock,
-  FarmingBlockInner, FarmingButton,
+  ExtendFarmingButton,
+  FarmingBlock,
+  FarmingBlockInner,
+  FarmingButton,
   FarmingButtonsContainer,
   FarmingButtonWrap,
   LiquidityItem,
   LiquidityText,
   LiquidityTitle,
-  NoFarmingBlock
+  NoFarmingBlock,
 } from './styles'
 import { ClaimTimeTooltip } from './Tooltips'
-
+import { UserFarmingRewards } from '../Tables/UserFarmingRewards'
 
 interface UserFarmingBlockProps {
   pool: PoolInfo
@@ -63,50 +68,11 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const farmings = filterOpenFarmingStates(pool.farming || [])
   const hasFarming = farmings.length > 0
+  const hadFarming = (pool.farming || []).length > 0
 
   const isPoolOwner = wallet.publicKey?.toString() === pool.initializerAccount
 
   const farming = farmings[0]
-
-  if (!hasFarming) {
-    return (
-      <FarmingBlock>
-        {/* 
-        TODO:
-        <RowContainer>
-            <SvgIcon
-              src={LightLogo}
-              height={'7rem'}
-              width={'7rem'}
-            />
-          </RowContainer>
-          <LiquidityTitle style={{ padding: '1rem 0' }}>
-            No farming available for this pool now.
-          </LiquidityTitle>
-          <span>But it can be added by pool owner anytime.</span>
-           */}
-        <NoFarmingBlock>
-          <Text>This pool does not have farming.</Text>
-          {isPoolOwner && (
-            <FarmingButtonsContainer>
-              <ExtendFarmingButton
-                onClick={() => setExtendFarmingModalOpen(true)}
-              >
-                Create Farming
-              </ExtendFarmingButton>
-            </FarmingButtonsContainer>
-          )}
-        </NoFarmingBlock>
-        {extendFarmingModalOpen && (
-          <ExtendFarmingModal
-            pool={pool}
-            onClose={() => setExtendFarmingModalOpen(false)}
-            title="Create Farming"
-          />
-        )}
-      </FarmingBlock>
-    )
-  }
 
   const { amount: poolTokenAmount } = getTokenDataByMint(
     userTokensData,
@@ -116,12 +82,14 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const ticketsForPool = farmingTickets.get(pool.swapToken) || []
 
   const lastFarmingTicket = ticketsForPool.sort(
-    (a, b) => parseInt(b.startTime) - parseInt(a.startTime)
+    (a, b) => parseInt(b.startTime, 10) - parseInt(a.startTime, 10)
   )[0]
 
   const claimAvailableTs =
     lastFarmingTicket && farming
-      ? parseInt(lastFarmingTicket.startTime) + farming.periodLength + 60 * 20
+      ? parseInt(lastFarmingTicket.startTime, 10) +
+        farming.periodLength +
+        60 * 20
       : 0
 
   const now = Date.now() / 1000
@@ -151,6 +119,41 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     (acc, atc) => acc + atc.usdValue,
     0
   )
+
+  if (
+    !hadFarming || // No farming were created
+    (!hasFarming && !availableToClaimUsd && !hasStaked) // Farming ended and nothing to withdraw/claim
+  ) {
+    return (
+      <FarmingBlock>
+        <NoFarmingBlock>
+          <div>
+            <SvgIcon src={LightLogo} height="6rem" width="6rem" />
+          </div>
+          <Text> No farming available for this pool now.</Text>
+
+          {isPoolOwner ? (
+            <FarmingButtonsContainer>
+              <ExtendFarmingButton
+                onClick={() => setExtendFarmingModalOpen(true)}
+              >
+                Create Farming
+              </ExtendFarmingButton>
+            </FarmingButtonsContainer>
+          ) : (
+            <Text size="sm"> But it can be added by pool owner anytime.</Text>
+          )}
+        </NoFarmingBlock>
+        {extendFarmingModalOpen && (
+          <ExtendFarmingModal
+            pool={pool}
+            onClose={() => setExtendFarmingModalOpen(false)}
+            title="Create Farming"
+          />
+        )}
+      </FarmingBlock>
+    )
+  }
 
   const tokenNames = Array.from(
     new Set(
@@ -283,7 +286,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               <DarkTooltip title={tooltipText}>
                 <span>
                   <FarmingButton
-                    disabled={!hasUnstaked || processing}
+                    disabled={!hasUnstaked || processing || !hasFarming}
                     $loading={processing}
                     onClick={onStakeClick}
                     $variant="rainbow"
@@ -308,27 +311,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
           </LiquidityItem>
           <LiquidityItem>
             <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
-            <div>
-              <LiquidityText weight={600}>
-                {Array.from(availableToClaim.values()).map((atc, idx) => (
-                  <React.Fragment
-                    key={`farming_available_to_claim_${atc.farmingTokenMint}`}
-                  >
-                    {idx !== 0 ? ' + ' : ''}
-                    <LiquidityText color="success">
-                      {stripByAmountAndFormat(atc.amount, 6)}
-                    </LiquidityText>
-                    &nbsp;
-                    {getTokenNameByMintAddress(atc.farmingTokenMint)}
-                  </React.Fragment>
-                ))}
-              </LiquidityText>
-            </div>
-            <div>
-              <LiquidityText color="success">
-                ${stripByAmountAndFormat(availableToClaimUsd, 2)}
-              </LiquidityText>
-            </div>
+            <UserFarmingRewards availableToClaim={availableToClaim} />
             <FarmingButtonWrap>
               <DarkTooltip title={tooltipText}>
                 <span>

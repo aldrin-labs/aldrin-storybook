@@ -101,7 +101,7 @@ export const filterSelectorDataByTab = ({
     }
 
     marketsCategoriesData?.forEach(([category, data]) => {
-      const {tokens} = data
+      const { tokens } = data
 
       if (tab === category) {
         processedData = processedData.filter((el) => {
@@ -175,6 +175,35 @@ export const filterSelectorDataByTab = ({
   }
 
   return processedData
+}
+
+export const filterDataBySymbolForDifferentDeviders = ({
+  searchValue,
+  symbol,
+}: {
+  searchValue: string
+  symbol: string
+}) => {
+  if (searchValue) {
+    let updatedSearchValue = searchValue
+
+    const slashInSearch = updatedSearchValue.includes('/')
+    if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
+
+    const spaceInSeach = updatedSearchValue.includes(' ')
+    if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
+
+    const dashInSeach = updatedSearchValue.includes('-')
+    if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
+
+    const underlineInSearch = updatedSearchValue.includes('_')
+
+    return new RegExp(`${updatedSearchValue}`, 'gi').test(
+      underlineInSearch ? symbol : symbol.replace('_', '')
+    )
+  }
+
+  return true
 }
 
 export const getIsNotUSDTQuote = (symbol) => {

@@ -15,8 +15,8 @@ export const Table = styled.table`
 
 export const Thead = styled.thead``
 export const Tr = styled.tr`
-  border-top: 1px solid ${COLORS.border};
-  border-bottom: 1px solid ${COLORS.border};
+  border-top: 1px solid ${COLORS.borderDark};
+  border-bottom: 1px solid ${COLORS.borderDark};
   background: rgba(0, 0, 0, 0);
   transition: ${TRANSITION};
 `
@@ -31,8 +31,8 @@ export const Th = styled.th`
   font-size: 0.8em;
   font-weight: normal;
   text-align: left;
-  border-bottom: 1px solid ${COLORS.border};
-  border-top: 1px solid ${COLORS.border};
+  border-bottom: 1px solid ${COLORS.borderDark};
+  border-top: 1px solid ${COLORS.borderDark};
   padding: 4px 8px;
 
   &.sortable {

@@ -47,8 +47,8 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
     <div>
       <ConfirmationBlock border>
         <ConfirmationRow>
-          <InlineText>Pool:</InlineText>
-          <InlineText weight={600}>
+          <InlineText size="sm">Pool:</InlineText>
+          <InlineText size="sm" weight={600}>
             {baseName}/{quoteName}
             {values.stableCurve && (
               <DarkTooltip title={STABLE_POOLS_TOOLTIP}>
@@ -60,21 +60,21 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
           </InlineText>
         </ConfirmationRow>
         <ConfirmationRow>
-          <InlineText>Initial Price:</InlineText>
-          <InlineText weight={600}>
+          <InlineText size="sm">Initial Price:</InlineText>
+          <InlineText size="sm" weight={600}>
             1 {baseName} = {price} {quoteName}
           </InlineText>
         </ConfirmationRow>
         <ConfirmationRow>
-          <InlineText>Initial Liquidity:</InlineText>
-          <InlineText weight={600}>
+          <InlineText size="sm">Initial Liquidity:</InlineText>
+          <InlineText size="sm" weight={600}>
             {firstDeposit.baseTokenAmount} {baseName} +{' '}
             {firstDeposit.quoteTokenAmount} {quoteName}
           </InlineText>
         </ConfirmationRow>
         <ConfirmationRow>
-          <InlineText>Initial Liquidity Lock period:</InlineText>
-          <InlineText weight={600}>
+          <InlineText size="sm">Initial Liquidity Lock period:</InlineText>
+          <InlineText size="sm" weight={600}>
             {lockInitialLiquidity ? (
               <>
                 {initialLiquidityLockPeriod}&nbsp;
@@ -86,20 +86,20 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
           </InlineText>
         </ConfirmationRow>
         <ConfirmationRow>
-          <InlineText>Farming Token:</InlineText>
-          <InlineText weight={600}>
+          <InlineText size="sm">Farming Token:</InlineText>
+          <InlineText size="sm" weight={600}>
             {values.farmingEnabled ? farmingTokenName : '-'}
           </InlineText>
         </ConfirmationRow>
         <ConfirmationRow>
-          <InlineText>Farming Period:</InlineText>
-          <InlineText weight={600}>
+          <InlineText size="sm">Farming Period:</InlineText>
+          <InlineText size="sm" weight={600}>
             {values.farmingEnabled ? `${farming.farmingPeriod} days` : '-'}
           </InlineText>
         </ConfirmationRow>
         <ConfirmationRow>
-          <InlineText>Farming Supply:</InlineText>
-          <InlineText weight={600}>
+          <InlineText size="sm">Farming Supply:</InlineText>
+          <InlineText size="sm" weight={600}>
             {values.farmingEnabled ? (
               <>
                 {farming.tokenAmount} {farmingTokenName} ({farmingRewardPerDay}{' '}
@@ -111,8 +111,8 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
           </InlineText>
         </ConfirmationRow>
         <ConfirmationRow>
-          <InlineText>Vesting:</InlineText>
-          <InlineText weight={600}>
+          <InlineText size="sm">Vesting:</InlineText>
+          <InlineText size="sm" weight={600}>
             {values.farmingEnabled && values.farming.vestingEnabled ? (
               <>33.3% per day + 66.6% after {farming.vestingPeriod} days</>
             ) : (
@@ -123,12 +123,12 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
       </ConfirmationBlock>
       <ConfirmationBlock>
         <ConfirmationRow>
-          <InlineText>Est. pool creation fee:</InlineText>
-          <InlineText weight={600}>
-            <InlineText color="success">
+          <InlineText size="sm">Est. pool creation fee:</InlineText>
+          <InlineText size="sm" weight={600}>
+            <InlineText size="sm" color="success">
               {values.farmingEnabled ? '0.3' : '0.03'}
             </InlineText>
-            <InlineText> SOL</InlineText>
+            <InlineText size="sm"> SOL</InlineText>
           </InlineText>
         </ConfirmationRow>
       </ConfirmationBlock>
@@ -137,7 +137,7 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
         <WarningIcon>
           <SvgIcon src={Attention} height="40px" />
         </WarningIcon>
-        <InlineText>
+        <InlineText size="sm">
           Please make sure you have enough SOL to proceed transaction. You will
           need to sign several transactions, and then your pool will appear in
           the list of pools and in the &quot;Your Liquidity&quot; tab.

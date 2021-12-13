@@ -13,7 +13,7 @@ export interface TextProps {
 }
 
 export const Text = styled.p<TextProps>`
-  font-family: ${FONTS.main}; 
+  font-family: ${FONTS.main};
   font-size: ${(props: TextProps) => FONT_SIZES[props.size || 'md']};
   line-height: ${(props: TextProps) => props.lineHeight || '150%'};
   color: ${(props: TextProps) => COLORS[props.color || 'white']};
@@ -36,5 +36,6 @@ export const InlineText = styled.span<InlineProps>`
     props.color ? `color: ${COLORS[props.color]};` : ''}
   ${(props: InlineProps) =>
     props.size ? `font-size: ${FONT_SIZES[props.size]};` : ''}
-  ${(props: TextProps) => props.weight ? `font-weight: ${props.weight};` : ''};
+  ${(props: TextProps) =>
+    props.weight ? `font-weight: ${props.weight};` : ''};
 `

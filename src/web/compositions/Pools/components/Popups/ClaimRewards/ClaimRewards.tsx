@@ -27,10 +27,10 @@ import AttentionComponent from '@sb/components/AttentionBlock'
 import { WithdrawStakedParams } from '@sb/dexUtils/staking/withdrawStaked'
 import { Button } from '../../Tables/index.styles'
 import ProposeToStakePopup from '../ProposeToStake'
+import { BoldHeader, ClaimRewardsStyledPaper } from '../index.styles'
 
-export const ClaimRewards = ({
+export const Popup = ({
   theme,
-  open,
   selectedPool,
   allTokensData,
   farmingTicketsMap,
@@ -41,7 +41,7 @@ export const ClaimRewards = ({
   programId,
   callback,
   withdrawFunction = withdrawFarmed,
-  hideMaintenanceWarning = false
+  hideMaintenanceWarning = false,
 }: {
   theme: Theme
   programId?: string
@@ -124,10 +124,10 @@ export const ClaimRewards = ({
           result === 'success'
             ? 'Successfully claimed rewards.'
             : result === 'failed'
-              ? 'Claim rewards failed, please try again later or contact us in telegram.'
-              : result === 'cancelled'
-                ? 'Claim rewards cancelled.'
-                : 'Blockhash outdated, please claim rest rewards in a few seconds.',
+            ? 'Claim rewards failed, please try again later or contact us in telegram.'
+            : result === 'cancelled'
+            ? 'Claim rewards cancelled.'
+            : 'Blockhash outdated, please claim rest rewards in a few seconds.',
       })
 
       if (result === 'cancelled') {
@@ -181,7 +181,7 @@ export const ClaimRewards = ({
         } else {
           close()
         }
-        break;
+        break
       }
     }
   }
@@ -192,7 +192,7 @@ export const ClaimRewards = ({
       PaperComponent={ClaimRewardsStyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => { }}
+      onEnter={() => {}}
       maxWidth="md"
       open
       aria-labelledby="responsive-dialog-title"
@@ -201,17 +201,18 @@ export const ClaimRewards = ({
         <BoldHeader style={{ fontSize: '3rem' }}>Claim Rewards</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      {!hideMaintenanceWarning &&
-        <RowContainer margin={'0 0 3rem 0'}>
+      {!hideMaintenanceWarning && (
+        <RowContainer margin="0 0 3rem 0">
           <AttentionComponent
-            header={`The issue below is currently being fixed.`}
-            text={'You can wait approx few weeks and claim rewards without any issues then.'}
-            blockHeight={'9rem'}
-            iconSrc={GearIcon} />
+            header="The issue below is currently being fixed."
+            text="You can wait approx few weeks and claim rewards without any issues then."
+            blockHeight="9rem"
+            iconSrc={GearIcon}
+          />
         </RowContainer>
-      }
+      )}
 
-      <RowContainer justify="flex-start" wrap={'nowrap'}>
+      <RowContainer justify="flex-start" wrap="nowrap">
         <SvgIcon
           src={LightLogo}
           height="13rem"

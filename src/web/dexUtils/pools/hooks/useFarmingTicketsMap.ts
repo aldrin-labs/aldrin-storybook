@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { Connection } from '@solana/web3.js'
 import { RefreshFunction, WalletAdapter } from '@sb/dexUtils/types'
 import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
@@ -9,7 +9,13 @@ import {
   SnapshotQueue,
 } from '@sb/dexUtils/common/types'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
+import { groupBy } from '../../../utils'
 
+/**
+ *
+ * @param
+ * @returns tickets groupped by pool address
+ */
 export const useFarmingTicketsMap = ({
   wallet,
   connection,
@@ -21,9 +27,9 @@ export const useFarmingTicketsMap = ({
   pools: PoolInfo[]
   snapshotQueues: SnapshotQueue[]
 }): [Map<string, FarmingTicket[]>, RefreshFunction] => {
-  const [farmingTicketsMap, setFarmingTicketsMap] = useState<
-    Map<PoolAddress, FarmingTicket[]>
-  >(new Map())
+  const [farmingTicketsMap, setFarmingTicketsMap] = useState(
+    new Map<PoolAddress, FarmingTicket[]>()
+  )
 
   const [refreshCounter, setRefreshCounter] = useState(0)
   const refresh: RefreshFunction = () => setRefreshCounter(refreshCounter + 1)
@@ -35,30 +41,19 @@ export const useFarmingTicketsMap = ({
         connection,
       })
 
-      const allUserFarmingTicketsWithAmountsToClaim = addFarmingRewardsToTickets(
-        {
+      const allUserFarmingTicketsWithAmountsToClaim =
+        addFarmingRewardsToTickets({
           pools,
           farmingTickets: allUserFarmingTickets,
           snapshotQueues,
-        }
+        })
+
+      const ticketMap = groupBy(
+        allUserFarmingTicketsWithAmountsToClaim,
+        (ticket) => ticket.pool
       )
 
-      const farmingTicketsMap = allUserFarmingTicketsWithAmountsToClaim.reduce(
-        (acc, farmingTicket) => {
-          const { pool } = farmingTicket
-
-          if (acc.has(pool)) {
-            acc.set(pool, [...acc.get(pool), farmingTicket])
-          } else {
-            acc.set(pool, [farmingTicket])
-          }
-
-          return acc
-        },
-        new Map()
-      )
-
-      setFarmingTicketsMap(farmingTicketsMap)
+      setFarmingTicketsMap(ticketMap)
     }
 
     if (

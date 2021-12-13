@@ -12,7 +12,7 @@ import {
 } from '@sb/components/DataTable'
 import CrownIcon from '@icons/crownIcon.svg'
 import ScalesIcon from '@icons/scales.svg'
-import { Text } from '@sb/components/Typography'
+import { InlineText, Text } from '@sb/components/Typography'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
@@ -23,18 +23,20 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useVesting } from '@sb/dexUtils/vesting'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SvgIcon } from '@sb/components'
-import { toMap } from '@sb/utils'
+import { toMap, groupBy } from '@sb/utils'
 
 import dayjs from 'dayjs'
 import { BN } from 'bn.js'
 import { Vesting } from '@sb/dexUtils/vesting/types'
-import { DexTokensPrices, PoolInfo } from '../../index.types'
-import { FarmingRewards } from '../FarminRewards'
+import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
+import { DexTokensPrices, FarmingTicketsMap, PoolInfo } from '../../index.types'
+import { FarmingRewards, FarmingRewardsIcons } from '../FarminRewards'
 import { TokenIconsContainer } from './components'
 import { getFarmingStateDailyFarmingValue } from './UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { symbolIncludesSearch } from './utils'
 import { STABLE_POOLS_TOOLTIP } from '../Popups/CreatePool/PoolConfirmationData'
 import { PoolsTableIcons } from './index.styles'
+import { getUniqueAmountsToClaimMap } from './utils/getUniqueAmountsToClaimMap'
 
 export interface PoolsTableProps {
   pools: PoolInfo[]
@@ -44,6 +46,7 @@ export interface PoolsTableProps {
   prepareCell: (pool: PoolInfo) => { [c: string]: DataCellValue }
   suffix: string
   noDataText?: ReactNode
+  farmingTicketsMap: FarmingTicketsMap
 }
 
 const mergeColumns = (columns: DataHeadColumn[]) => [
@@ -75,8 +78,16 @@ const prepareCell = (params: {
   prepareMore: (pool: PoolInfo) => { [c: string]: DataCellValue }
   walletPk: string
   vestings: Map<string, Vesting>
+  farmingTicketsMap: FarmingTicketsMap
 }): DataCellValues<PoolInfo> => {
-  const { pool, tokenPrices, prepareMore, walletPk, vestings } = params
+  const {
+    pool,
+    tokenPrices,
+    prepareMore,
+    walletPk,
+    vestings,
+    farmingTicketsMap,
+  } = params
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
@@ -119,7 +130,38 @@ const prepareCell = (params: {
   const lockedFundsValue = vesting.startBalance.muln(poolTokenPrice)
 
   const farmingAPR =
-    ((totalDailyRewardUsd * 365) / totalStakedLpTokensUSD) * 100
+    ((totalDailyRewardUsd * 365) / Math.max(totalStakedLpTokensUSD, 1)) * 100 ||
+    0
+
+  const ticketsForPool = farmingTicketsMap.get(pool.swapToken) || []
+
+  const availableToClaimMap = getUniqueAmountsToClaimMap({
+    farmingTickets: ticketsForPool,
+    farmingStates: pool.farming || [],
+  })
+
+  const availableToClaim = Array.from(availableToClaimMap.values()).map(
+    (atc) => {
+      const name = getTokenNameByMintAddress(atc.farmingTokenMint)
+      const usdValue = (tokenPrices.get(name)?.price || 0) * atc.amount
+
+      return { ...atc, name, usdValue }
+    }
+  )
+
+  const availableToClaimUsd = availableToClaim.reduce(
+    (acc, atc) => acc + atc.usdValue,
+    0
+  )
+
+  const userInFarming =
+    !!ticketsForPool.find(
+      (t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME
+    ) || availableToClaimUsd > 0
+
+  const farmingsMap = groupBy(openFarmings, (f) => f.farmingTokenMint)
+
+  const openFarmingsKeys = Array.from(farmingsMap.keys())
 
   return {
     extra: pool,
@@ -187,10 +229,41 @@ const prepareCell = (params: {
       farming: {
         rendered: (
           <FlexBlock alignItems="center">
-            <FarmingRewards
-              pool={pool}
-              farmingUsdValue={totalStakedLpTokensUSD}
-            />
+            {userInFarming ? (
+              <>
+                <FarmingRewardsIcons
+                  poolMint={pool.swapToken}
+                  mints={openFarmingsKeys}
+                />
+                <div>
+                  <InlineText size="sm">
+                    {openFarmingsKeys
+                      .map((ft) => getTokenNameByMintAddress(ft))
+                      .join(' x ')}
+                  </InlineText>
+                  <div>
+                    <InlineText size="sm">Available to claim:</InlineText>
+                  </div>
+                  <div>
+                    <InlineText size="sm" color="success">
+                      {availableToClaim
+                        .map(
+                          (atc) =>
+                            `${stripByAmountAndFormat(atc.amount, 4)} ${
+                              atc.name
+                            }`
+                        )
+                        .join(' + ')}
+                    </InlineText>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <FarmingRewards
+                pool={pool}
+                farmingUsdValue={totalStakedLpTokensUSD}
+              />
+            )}
           </FlexBlock>
         ),
         rawValue: farmingAPR,
@@ -209,6 +282,7 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
     prepareCell: prepareMore,
     suffix,
     noDataText,
+    farmingTicketsMap,
   } = props
 
   const [columns] = useState(mergeColumns(addColumns))
@@ -238,6 +312,7 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
         prepareMore,
         walletPk,
         vestings: vestingsByMint,
+        farmingTicketsMap,
       })
     )
 

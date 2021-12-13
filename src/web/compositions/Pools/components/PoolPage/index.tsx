@@ -311,7 +311,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
       {openedPopup === 'claim' && (
         <ClaimRewards
-          open={true}
           selectedPool={pool}
           farmingTicketsMap={farmingTickets}
           snapshotQueues={snapshotQueues}

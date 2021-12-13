@@ -13,7 +13,8 @@ export type TransactionStatus = 'processing' | 'success' | 'error'
 
 interface PoolProcessingModalProps {
   step: number
-  onClose: () => void
+  onSuccess: () => void
+  onError: () => void
   status: TransactionStatus
 }
 
@@ -30,7 +31,7 @@ const steps = [
 export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
   props
 ) => {
-  const { step, onClose, status } = props
+  const { step, onSuccess, onError, status } = props
 
   return (
     <Modal backdrop="dark" open onClose={() => {}}>
@@ -71,7 +72,7 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
           <PoolProcessingButton
             $loading={status === 'processing'}
             disabled={status === 'processing'}
-            onClick={onClose}
+            onClick={status === 'error' ? onError : onSuccess}
           >
             OK
             {status === 'error' && ' :('}

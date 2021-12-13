@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler } from 'react'
+import React from 'react'
 import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
 import { InlineText } from '@sb/components/Typography'
 import { TokenIconWithName } from '@sb/components/TokenIcon'
@@ -41,6 +41,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
       name={name}
       disabled={disabled}
       onChange={onChange}
+      placeholder="0"
       append={
         <InputAppendContainer>
           <div>
@@ -75,6 +76,7 @@ export const TokenAmountInput: React.FC<TokenAmountInputProps> = (props) => {
       onChange={() => {}}
       borderRadius="lg"
       variant="outline"
+      placeholder="0"
       name={name}
       value={value}
       disabled

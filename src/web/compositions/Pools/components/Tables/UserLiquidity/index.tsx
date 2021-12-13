@@ -128,6 +128,7 @@ export const UserLiquidityTable: React.FC<LiquidityTableProps> = (props) => {
       pools={pools}
       tokenPrices={dexTokensPricesMap}
       searchValue={searchValue}
+      farmingTicketsMap={farmingTicketsMap}
       prepareCell={(pool) =>
         prepareCell({
           pool,
