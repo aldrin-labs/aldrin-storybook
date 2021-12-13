@@ -116,6 +116,7 @@ export interface SendSignedTransactionParams {
   timeout?: number
   operationType?: string
   params?: any
+  showNotification?: boolean
 }
 
 export type SendSignedTransactionResult = 'failed' | 'timeout' | string

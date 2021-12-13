@@ -15,7 +15,7 @@ export const PoolsComponent: React.FC = () => {
   return (
     <Page>
       <WideContent>
-        {/* <FarmingConditionsUpdateBanner theme={theme} /> */}
+        {/* <Banner theme={theme} /> */}
         <RootRow>
           <Cell col={12} colLg={6}>
             <TotalVolumeLockedChart />

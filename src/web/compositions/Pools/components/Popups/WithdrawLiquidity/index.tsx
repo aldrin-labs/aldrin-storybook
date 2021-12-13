@@ -333,12 +333,12 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               userPoolTokenAmount: poolTokenAmountToWithdraw,
-              userBaseTokenAccount: new PublicKey(userTokenAccountA),
-              userQuoteTokenAccount: new PublicKey(userTokenAccountB),
               unlockVesting:
                 poolTokenAmountToWithdraw > poolTokenAmount
                   ? vesting
                   : undefined,
+              userBaseTokenAccount: userTokenAccountA ? new PublicKey(userTokenAccountA) : null,
+              userQuoteTokenAccount: userTokenAccountB ? new PublicKey(userTokenAccountB) : null,
             })
 
             setOperationLoading(false)

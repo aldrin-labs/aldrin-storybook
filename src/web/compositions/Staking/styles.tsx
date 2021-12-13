@@ -201,7 +201,7 @@ export const Asterisks = styled.span`
 
 export const StatsBlock = styled(StretchedBlock)`
   flex-wrap: wrap;
-`
+  `
 
 export const StatsBlockItem = styled.div`
   margin: 20px 20px 0 0;

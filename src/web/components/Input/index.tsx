@@ -52,6 +52,14 @@ const InputEl = styled.input`
   &:disabled {
     color: ${COLORS.hint};
   }
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover, 
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill {
+    -webkit-text-fill-color: ${COLORS.white};
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
 `
 
 const Append = styled.span`
