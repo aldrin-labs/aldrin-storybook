@@ -9,10 +9,48 @@ import { Button } from '../Tables/index.styles'
 import { Theme } from '@sb/types/materialUI'
 import { restakeAll } from '../../utils/restakeAll'
 import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
-import { Connection } from '@solana/web3.js'
+import { Connection, PublicKey } from '@solana/web3.js'
 import { PoolInfo } from '../../index.types'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
+import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/getParsedUserFarmingTickets'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
+import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
+const getSOLFeesAmountToRestake = ({
+  allPoolsData,
+  farmingTicketsMap,
+}: {
+  allPoolsData: PoolInfo[]
+  farmingTicketsMap: Map<string, FarmingTicket[]>
+}) => {
+  let SOLFees = 0
+
+  for (let pool of allPoolsData) {
+    const farmingStates = pool.farming || []
+
+    const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
+
+    if (farmingStates.length === 0 || farmingTickets.length === 0) {
+      continue
+    }
+
+    const availableToUnstakeTickets = filterTicketsAvailableForUnstake(
+      farmingTickets,
+      farmingStates[0]
+    )
+
+    SOLFees += TRANSACTION_COMMON_SOL_FEE * availableToUnstakeTickets.length
+    SOLFees += CREATE_FARMING_TICKET_SOL_FEE + TRANSACTION_COMMON_SOL_FEE * 2
+  }
+
+  return SOLFees
+}
 
 export const RestakeAllPopup = ({
   theme,
@@ -37,11 +75,24 @@ export const RestakeAllPopup = ({
 }) => {
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
-    'showRestakePopup',
+    `showRestakePopup-${wallet.publicKey}`,
     true
   )
   const [showRetryMessage, setShowRetryMessage] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
+  const [isTransactionFailed, setIsTransactionFailed] = useState(false)
+
+  // first result for sol mint is native sol account which is using to cover fees
+  const { amount: userSOLAmount } = allTokensData.find(
+    (tokenInfo) => tokenInfo.mint === WRAPPED_SOL_MINT.toString()
+  ) || { amount: 0 }
+
+  const SOLFeesForRestake = getSOLFeesAmountToRestake({
+    allPoolsData,
+    farmingTicketsMap,
+  })
+
+  const isNotEnoughSOL = userSOLAmount < SOLFeesForRestake
 
   const restake = async () => {
     setOperationLoading(true)
@@ -62,7 +113,13 @@ export const RestakeAllPopup = ({
       }, 7500)
       setOperationLoading(false)
     } else if (result === 'failed') {
-      console.log(`failed`)
+      setIsTransactionFailed(true)
+      setShowRetryMessage(true)
+      setOperationLoading(true)
+      setTimeout(async () => {
+        refreshTokensWithFarmingTickets()
+      }, 7500)
+      setOperationLoading(false)
     } else if (result === 'cancelled') {
       setOperationLoading(false)
     } else if (result === 'success') {
@@ -109,11 +166,23 @@ export const RestakeAllPopup = ({
             style={{ color: theme.palette.red.main, margin: '1rem 0' }}
             fontSize={'1.8rem'}
           >
-            Blockhash outdated, press “Try Again” to complete the remaining
-            transactions.
+            {isTransactionFailed
+              ? 'Restake failed, please try again later or contact us in telegram.'
+              : 'Blockhash outdated, press “Try Again” to complete the remaining transactions.'}
           </Text>
         </RowContainer>
       )}
+      <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+        <WhiteText>Gas Fees</WhiteText>
+        <WhiteText
+          style={{
+            color: theme.palette.green.main,
+          }}
+        >
+          {stripDigitPlaces(SOLFeesForRestake, 8)} SOL
+        </WhiteText>
+      </RowContainer>
+
       <RowContainer justify="space-between" margin={'7rem 0 2rem 0'}>
         <Button
           color="inherit"
@@ -135,14 +204,19 @@ export const RestakeAllPopup = ({
           height="5.5rem"
           fontSize="1.7rem"
           btnWidth="calc(65% - 1rem)"
-          disabled={operationLoading}
+          disabled={operationLoading || isNotEnoughSOL}
           isUserConfident={true}
           showLoader={operationLoading}
           onClick={async () => {
+            setIsTransactionFailed(false)
             await restake()
           }}
         >
-          {showRetryMessage ? 'Try Again' : 'Restake Now!'}
+          {isNotEnoughSOL
+            ? 'Insufficient SOL Balance'
+            : showRetryMessage
+            ? 'Try Again'
+            : 'Restake Now!'}
         </Button>
       </RowContainer>
     </DialogWrapper>
