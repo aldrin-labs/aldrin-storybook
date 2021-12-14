@@ -182,6 +182,8 @@ export const combineAllPoolsData = ({
         )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
+    // remove MUTANT from all pools only for now, leave in ur liq.
+    .filter(pool => pool.swapToken !== 'C1ZyqeefJTN4u9aCrtUNn9xGeqRLENdUuoUz15YAGYBW')
     .filter((pool) => includePermissionless ? true : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint))
     .map((pool) => {
       const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
