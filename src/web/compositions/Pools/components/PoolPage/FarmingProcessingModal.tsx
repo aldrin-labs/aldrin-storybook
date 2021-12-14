@@ -8,22 +8,17 @@ import {
   PoolProcessingContent,
   Title,
 } from '../Popups/CreatePool/styles'
+import { FarmingProcessingModalProps } from './types'
 
-export type TransactionStatus = 'processing' | 'success' | 'error'
-
-interface FarmingProcessingModalProps {
-  onClose: () => void
-  status: TransactionStatus
-}
-
-
-export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (props) => {
+export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
+  props
+) => {
   const { onClose, status } = props
 
   return (
-    <Modal backdrop="dark" open onClose={() => { }}>
+    <Modal backdrop="dark" open onClose={() => {}}>
       <PoolProcessingBlock>
-        {status === 'processing' &&
+        {status === 'processing' && (
           <>
             <FlexBlock justifyContent="space-between">
               <Title>Setup Farming...</Title>
@@ -32,27 +27,40 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (pr
               <Text size="sm">Please do not close browser window.</Text>
             </PoolProcessingContent>
           </>
-        }
-        {status === 'success' &&
+        )}
+        {status === 'success' && (
           <>
             <FlexBlock justifyContent="space-between">
               <Title>Farming prolonged</Title>
             </FlexBlock>
             <PoolProcessingContent>
-              <Text size="sm">The new farming will appear in the interface within a couple of minutes.</Text>
+              <Text size="sm">
+                The new farming will appear in the interface within a couple of
+                minutes.
+              </Text>
             </PoolProcessingContent>
           </>
-        }
-        {status === 'error' &&
+        )}
+        {status === 'error' && (
           <>
             <FlexBlock justifyContent="space-between">
               <Title>Farming prolongation failed...</Title>
             </FlexBlock>
             <PoolProcessingContent>
-              <Text size="sm">Please check your transactions or contact us via <a href="https://t.me/Aldrin_Exchange" target="_blank">Telegram</a>.</Text>
+              <Text size="sm">
+                Please check your transactions or contact us via{' '}
+                <a
+                  href="https://t.me/Aldrin_Exchange"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Telegram
+                </a>
+                .
+              </Text>
             </PoolProcessingContent>
           </>
-        }
+        )}
         <PoolProcessingContent>
           <PoolProcessingButton
             $loading={status === 'processing'}
@@ -63,7 +71,6 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (pr
             {status === 'error' && ' :('}
           </PoolProcessingButton>
         </PoolProcessingContent>
-
       </PoolProcessingBlock>
     </Modal>
   )

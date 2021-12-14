@@ -45,7 +45,6 @@ export const Popup = ({
 }: {
   theme: Theme
   programId?: string
-  open: boolean
   selectedPool: PoolInfo | StakingPool
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>

@@ -14,19 +14,12 @@ import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
 import { COLORS } from '@variables/variables'
 import { Line } from '../Popups/index.styles'
-import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate/ReloadTimerTillUpdate'
+import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate'
 import { Canvas, SubTitle, TitleContainer, DataContainer } from './styles'
 import { createTotalVolumeLockedChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
+import { TotalVolumeLockedChartProps } from './types'
 
-interface ChartProps {
-  getTotalVolumeLockedHistoryQuery: {
-    getTotalVolumeLockedHistory: {
-      volumes: { date: number; vol?: number }[]
-    }
-  }
-}
-
-const ChartInner: React.FC<ChartProps> = (props) => {
+const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
   const { getTotalVolumeLockedHistoryQuery } = props
 
   const data =
@@ -37,9 +30,7 @@ const ChartInner: React.FC<ChartProps> = (props) => {
 
   useEffect(() => {
     if (!canvasRef.current) {
-      return () => {
-        return null
-      }
+      return () => {}
     }
     const reDraw = () => {
       try {
@@ -57,7 +48,9 @@ const ChartInner: React.FC<ChartProps> = (props) => {
 
     reDraw()
 
-    return () => chartRef.current?.destroy()
+    return () => {
+      chartRef.current?.destroy()
+    }
   }, [JSON.stringify(data)])
 
   return (

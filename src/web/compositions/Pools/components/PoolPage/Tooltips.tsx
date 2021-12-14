@@ -1,11 +1,7 @@
 import React from 'react'
-import { FarmingState } from '@sb/dexUtils/common/types'
 import { InlineText } from '@sb/components/Typography'
 import { TooltipText } from './styles'
-
-interface ClaimTimeTooltipProps {
-  farmingState?: FarmingState | null
-}
+import { ClaimTimeTooltipProps } from './types'
 
 export const ClaimTimeTooltip: React.FC<ClaimTimeTooltipProps> = (props) => {
   const { farmingState } = props

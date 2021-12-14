@@ -4,22 +4,13 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { InlineText } from '@sb/components/Typography'
 import { FarmingIconWrap, FarmingDataIcons, FarmingText } from './styles'
 import { PoolStatsText } from '../PoolPage/styles'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-import { PoolInfo } from '../../index.types'
-import { InlineText } from '../../../../components/Typography'
+
 import { groupBy } from '../../../../utils'
-
-interface FarmingRewardsProps {
-  pool: PoolInfo
-  farmingUsdValue: number
-}
-
-interface FarmingRewardsIconsProps {
-  mints: string[]
-  poolMint: string
-}
+import { FarmingRewardsIconsProps, FarmingRewardsProps } from './types'
 
 export const FarmingRewardsIcons: React.FC<FarmingRewardsIconsProps> = (
   props

@@ -39,11 +39,8 @@ import {
   TokenNames,
   TokenSymbols,
 } from './styles'
+import { PoolStatsProps } from './types'
 
-interface PoolStatsProps {
-  title: React.ReactNode
-  value: number
-}
 export const PoolStats: React.FC<PoolStatsProps> = (props) => {
   const { title, value } = props
   return (
@@ -98,12 +95,9 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
 
   const baseInfo = tokenMap.get(pool.tokenA)
   const quoteInfo = tokenMap.get(pool.tokenB)
-  // const [base, quote] = (symbol as string).split('_')
 
   const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
   const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
-
-  // console.log('basequote: ', base, quote)
 
   const feesUsd =
     feesForPool.totalBaseTokenFee * baseUsdPrice +

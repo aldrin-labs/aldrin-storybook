@@ -4,17 +4,14 @@ import { SvgIcon } from '@sb/components'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Text } from '@sb/components/Typography'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 import pluralize from 'pluralize'
 import React, { useState } from 'react'
 import LightLogo from '@icons/lightLogo.svg'
 
-import { filterOpenFarmingStates } from '../../../../dexUtils/pools/filterOpenFarmingStates'
-import { DexTokensPrices, PoolInfo } from '../../index.types'
-import { getTokenDataByMint } from '../../utils'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { getTokenDataByMint } from '@sb/utils'
 import { getUniqueAmountsToClaimMap } from '../Tables/utils/getUniqueAmountsToClaimMap'
 import { ExtendFarmingModal } from './ExtendFarmingModal'
 import ClockIcon from './icons/whiteClock.svg'
@@ -33,22 +30,7 @@ import {
 } from './styles'
 import { ClaimTimeTooltip } from './Tooltips'
 import { UserFarmingRewards } from '../Tables/UserFarmingRewards'
-
-interface UserFarmingBlockProps {
-  pool: PoolInfo
-  farmingTickets: Map<string, FarmingTicket[]>
-  userTokensData: TokenInfo[]
-  prices: Map<string, DexTokensPrices>
-  onStakeClick: () => void
-  onClaimClick: () => void
-  onUnstakeClick: () => void
-  processing: boolean
-}
-
-interface PoolRewardRemain {
-  timeRemain: number // Seconds
-  tokensRemain: number
-}
+import { PoolRewardRemain, UserFarmingBlockProps } from './types'
 
 export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const {

@@ -14,19 +14,12 @@ import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
 import { COLORS } from '@variables/variables'
 import { Line } from '../Popups/index.styles'
-import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate/ReloadTimerTillUpdate'
+import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate'
 import { Canvas, DataContainer, SubTitle, TitleContainer } from './styles'
 import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
+import { TradingVolumeChartProps } from './types'
 
-interface ChartProps {
-  getTradingVolumeHistoryQuery: {
-    getTradingVolumeHistory: {
-      volumes: { date: number; vol?: number }[]
-    }
-  }
-}
-
-const ChartBlockInner: React.FC<ChartProps> = (props) => {
+const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const chartRef = useRef<Chart | null>(null)
 

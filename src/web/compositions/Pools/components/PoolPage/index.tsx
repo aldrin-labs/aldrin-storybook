@@ -9,22 +9,13 @@ import { Modal } from '@sb/components/Modal'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
-import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { RefreshFunction, TokenInfo as TokenInfoType } from '@sb/dexUtils/types'
 import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { CURVE } from '@sb/dexUtils/pools/actions/createPool'
 
-import { VestingWithPk } from '@sb/dexUtils/vesting/types'
-import {
-  DexTokensPrices,
-  FeesEarned,
-  PoolInfo,
-  PoolWithOperation,
-  TradingVolumeStats,
-} from '../../index.types'
+import { PoolWithOperation } from '../../index.types'
 import { AddLiquidityPopup } from '../Popups/AddLiquidity'
 import { ClaimRewards } from '../Popups/ClaimRewards/ClaimRewards'
 import { StakePopup } from '../Popups/Staking/StakePopup'
@@ -46,29 +37,7 @@ import {
 } from './styles'
 import { UserFarmingBlock } from './UserFarmingBlock'
 import { UserLiquidityBlock } from './UserLiquidityBlock'
-
-interface PoolPageProps {
-  pools?: PoolInfo[]
-  prices: Map<string, DexTokensPrices>
-  tradingVolumes: Map<string, TradingVolumeStats>
-  fees: FeesEarned[]
-  userTokensData: TokenInfoType[]
-  farmingTickets: Map<string, FarmingTicket[]>
-  earnedFees: Map<string, FeesEarned>
-  refreshUserTokensData: RefreshFunction
-  refreshAll: RefreshFunction
-  snapshotQueues: SnapshotQueue[]
-  vestingsForWallet: Map<string, VestingWithPk>
-}
-
-type ModalType =
-  | ''
-  | 'deposit'
-  | 'withdraw'
-  | 'stake'
-  | 'claim'
-  | 'remindToStake'
-  | 'unstake'
+import { ModalType, PoolPageProps } from './types'
 
 export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const {
@@ -86,7 +55,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   } = props
 
   const history = useHistory()
-  const { symbol } = useParams()
+  const { symbol } = useParams<{ symbol: string }>()
 
   const tokenMap = useTokenInfos()
 

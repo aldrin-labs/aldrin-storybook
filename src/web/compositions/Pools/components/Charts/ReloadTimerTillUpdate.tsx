@@ -10,22 +10,20 @@ export const ReloadTimerTillUpdate = ({
   getSecondsTillNextUpdate,
 }: {
   duration: number
-  margin?: string 
+  margin?: string
   getSecondsTillNextUpdate: () => number
 }) => {
   const [secondsTillNextUpdate, setSecondsTillUpdate] = useState(0)
-  const [
-    refreshSecondsTillUpdateCounter,
-    setRefreshSecondsTillUpdateCounter,
-  ] = useState(0)
+  const [refreshSecondsTillUpdateCounter, setRefreshSecondsTillUpdateCounter] =
+    useState(0)
 
   const refreshSecondsTillUpdate = () =>
     setRefreshSecondsTillUpdateCounter(refreshSecondsTillUpdateCounter + 1)
 
   useEffect(() => {
-    const secondsTillNextUpdate = getSecondsTillNextUpdate()
+    const secondsToUpdate = getSecondsTillNextUpdate()
 
-    setSecondsTillUpdate(secondsTillNextUpdate)
+    setSecondsTillUpdate(secondsToUpdate)
   }, [refreshSecondsTillUpdateCounter])
 
   if (!secondsTillNextUpdate) return null

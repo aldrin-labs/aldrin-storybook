@@ -1,11 +1,8 @@
-import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { TokenInfo } from '@sb/dexUtils/types'
 import React from 'react'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { Vesting } from '@sb/dexUtils/vesting/types'
 import {
   LiquidityBlock,
   LiquidityButton,
@@ -14,20 +11,7 @@ import {
   LiquidityTitle,
 } from './styles'
 import { getTokenDataByMint } from '../../utils'
-import { PoolInfo, FeesEarned } from '../../index.types'
-
-interface UserLiquidityBlockProps {
-  pool: PoolInfo
-  userTokensData: TokenInfo[]
-  farmingTickets: Map<string, FarmingTicket[]>
-  earnedFees: Map<string, FeesEarned>
-  basePrice: number
-  quotePrice: number
-  processing: boolean
-  onDepositClick: () => void
-  onWithdrawClick: () => void
-  vesting?: Vesting
-}
+import { UserLiquidityBlockProps } from './types'
 
 export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
   props

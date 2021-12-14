@@ -1,16 +1,10 @@
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
   dayDuration,
-  endOfDayTimestamp
+  endOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { COLORS, MAIN_FONT } from '@variables/variables'
-import {
-  BarController, BarElement,
-  BubbleController, CategoryScale, Chart,
-  ChartType, Filler, LinearScale,
-  LineController, LineElement, PointElement,
-  PolarAreaController, Tooltip, TooltipItem
-} from 'chart.js'
+import { Chart, ChartType, TooltipItem } from 'chart.js'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -19,26 +13,13 @@ import { DAY } from '@core/utils/dateUtils'
 dayjs.extend(timezone)
 dayjs.extend(utc)
 
-
-Chart.register(
-  BarElement,
-  PointElement,
-  BarController,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  LineElement,
-  LineController,
-  PolarAreaController,
-  BubbleController,
-  Filler
-)
-
 const POOLS_EPOCH = 1636070400 // 5 Nov 2021
-export const NUMBER_OF_DAYS_TO_SHOW = Math.ceil(((Date.now() / 1000) - POOLS_EPOCH) / DAY) // Show full history from pools start
+export const NUMBER_OF_DAYS_TO_SHOW = Math.ceil(
+  (Date.now() / 1000 - POOLS_EPOCH) / DAY
+) // Show full history from pools start
 const CHART_HEIGHT = 220
 
-interface ChartParams<T = { date: number, vol?: number }[]> {
+interface ChartParams<T = { date: number; vol?: number }[]> {
   chart: Chart | null
   data: T
   container: HTMLCanvasElement | null
@@ -101,9 +82,9 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
           callbacks: {
             label: (model: any, item: TooltipItem) => {
               const [int, dec] = (model.formattedValue || '0').split('.')
-              return ` $${int}`;
-            }
-          }
+              return ` $${int}`
+            },
+          },
         },
       },
       layout: {
@@ -117,19 +98,13 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
   })
 
 const getEmptyData = (
-  fisrtTimestamp: number = endOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
+  fisrtTimestamp: number = endOfDayTimestamp() -
+    dayDuration * NUMBER_OF_DAYS_TO_SHOW,
   lastTimestamp: number = endOfDayTimestamp()
 ) => {
+  const tsFrom = dayjs.unix(fisrtTimestamp).startOf('day').unix()
 
-  const tsFrom = dayjs
-    .unix(fisrtTimestamp)
-    .startOf('day')
-    .unix()
-
-  let tsTo = dayjs
-    .unix(lastTimestamp)
-    .startOf('day')
-    .unix()
+  let tsTo = dayjs.unix(lastTimestamp).startOf('day').unix()
 
   const emptyData = []
 
@@ -149,7 +124,7 @@ const getEmptyData = (
 const createTotalVolumeLockedChart = ({
   container,
   data,
-  chart
+  chart,
 }: ChartParams) => {
   if (container) {
     container.height = CHART_HEIGHT
@@ -165,17 +140,24 @@ const createTotalVolumeLockedChart = ({
   gradient.addColorStop(0.55, 'rgba(115, 128, 235, 0)')
   gradient.addColorStop(1, COLORS.blockBackground)
 
-  const transformedData = getEmptyData().map((value) => ({
-    ...value,
-    vol:
-      data.find(
-        (item: { date: string; vol: number }) => item.date === value.date
-      )?.vol || 0,
-  }))// Remove last empty point to prevent drop on daystart
+  const transformedData = getEmptyData()
+    .map((value) => ({
+      ...value,
+      vol:
+        data.find(
+          (item: { date: string; vol: number }) => item.date === value.date
+        )?.vol || 0,
+    })) // Remove last empty point to prevent drop on daystart
     .filter((point, idx, arr) => !(idx === arr.length - 1 && point.vol === 0))
 
-  const minVol = transformedData.reduce((acc, item) => Math.min(acc, (item?.vol || Number.MAX_SAFE_INTEGER)), Number.MAX_SAFE_INTEGER)
-  const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), minVol)
+  const minVol = transformedData.reduce(
+    (acc, item) => Math.min(acc, item?.vol || Number.MAX_SAFE_INTEGER),
+    Number.MAX_SAFE_INTEGER
+  )
+  const maxVol = transformedData.reduce(
+    (acc, item) => Math.max(acc, item?.vol || 0),
+    minVol
+  )
 
   if (chart) {
     chart.destroy()
@@ -196,17 +178,13 @@ const createTotalVolumeLockedChart = ({
       },
     ],
   }
-  chart.options.scales.y.ticks.stepSize = (maxVol - (maxVol * 0.2)) / 5
+  chart.options.scales.y.ticks.stepSize = (maxVol - maxVol * 0.2) / 5
   chart.options.scales.y.suggestedMin = 0
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
   return chart
 }
 
-const createTradingVolumeChart = ({
-  chart,
-  container,
-  data,
-}: ChartParams) => {
+const createTradingVolumeChart = ({ chart, container, data }: ChartParams) => {
   const ctx = container?.getContext('2d')
 
   if (!ctx) {
@@ -225,8 +203,14 @@ const createTradingVolumeChart = ({
     })) // Remove last empty point to prevent drop on daystart
     .filter((point, idx, arr) => !(idx === arr.length - 1 && point.vol === 0))
 
-  const minVol = transformedData.reduce((acc, item) => Math.min(acc, (item?.vol || Number.MAX_SAFE_INTEGER)), Number.MAX_SAFE_INTEGER)
-  const maxVol = transformedData.reduce((acc, item) => Math.max(acc, (item?.vol || 0)), minVol)
+  const minVol = transformedData.reduce(
+    (acc, item) => Math.min(acc, item?.vol || Number.MAX_SAFE_INTEGER),
+    Number.MAX_SAFE_INTEGER
+  )
+  const maxVol = transformedData.reduce(
+    (acc, item) => Math.max(acc, item?.vol || 0),
+    minVol
+  )
 
   if (chart) {
     chart.destroy()
@@ -258,7 +242,6 @@ const createTradingVolumeChart = ({
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
 
   return chart
-
 }
 
 export { createTotalVolumeLockedChart, createTradingVolumeChart }
