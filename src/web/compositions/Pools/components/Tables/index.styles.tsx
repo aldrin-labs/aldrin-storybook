@@ -26,8 +26,8 @@ export const TextColumnContainer = styled(Row)`
 `
 export const IconsContainer = styled.div`
   position: relative;
-  height: 3rem;
-  width: 5rem;
+  height: 1.5em;
+  width: 3em;
 `
 
 type TokenIconContainerProps = {

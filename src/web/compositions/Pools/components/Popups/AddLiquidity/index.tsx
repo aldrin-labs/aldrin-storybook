@@ -68,10 +68,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [poolBalances, refreshPoolBalances] = usePoolBalances({
-    pool: selectedPool,
-    connection,
-  })
+  const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
   const {
     baseTokenAmount: poolAmountTokenA,

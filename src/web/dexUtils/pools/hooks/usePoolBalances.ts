@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
+import useSwr from 'swr'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import { useConnection } from '../../connection'
 
 interface PoolTokens {
   poolTokenAccountA?: string
@@ -12,48 +13,46 @@ export interface PoolBalances {
   quoteTokenAmount: number
 }
 
-export const usePoolBalances = ({
-  pool,
-  connection,
-}: {
+const EMPTY_POOL: PoolBalances = {
+  baseTokenAmount: 0,
+  quoteTokenAmount: 0,
+}
+
+export const usePoolBalances = (
   pool: PoolTokens
-  connection: Connection
-}): [PoolBalances, RefreshFunction] => {
-  const [poolBalances, setPoolBalances] = useState<PoolBalances>({
-    baseTokenAmount: 0,
-    quoteTokenAmount: 0,
-  })
-  const [refreshCounter, setRefreshCounter] = useState(0)
-
-  const refresh: RefreshFunction = () => setRefreshCounter(refreshCounter + 1)
-
-  useEffect(() => {
-    const loadPoolBalances = async () => {
-      if (!pool.poolTokenAccountA || !pool.poolTokenAccountB) return
-
-      const [baseTokenBalanceInPool, quoteTokenBalanceInPool] =
-        await Promise.all([
-          connection.getTokenAccountBalance(
-            new PublicKey(pool.poolTokenAccountA)
-          ),
-          connection.getTokenAccountBalance(
-            new PublicKey(pool.poolTokenAccountB)
-          ),
-        ])
-
-      const baseTokenAmount = baseTokenBalanceInPool?.value?.uiAmount || 0
-      const quoteTokenAmount = quoteTokenBalanceInPool?.value?.uiAmount || 0
-
-      setPoolBalances({
-        baseTokenAmount,
-        quoteTokenAmount,
-      })
+): [PoolBalances, RefreshFunction] => {
+  const connection = useConnection()
+  const fetcher = async () => {
+    if (!pool.poolTokenAccountA || !pool.poolTokenAccountB) {
+      return EMPTY_POOL
     }
 
-    if (pool.poolTokenAccountA && pool.poolTokenAccountB) {
-      loadPoolBalances()
-    }
-  }, [pool.poolTokenAccountA, pool.poolTokenAccountB, refreshCounter])
+    const [baseTokenBalanceInPool, quoteTokenBalanceInPool] = await Promise.all(
+      [
+        connection.getTokenAccountBalance(
+          new PublicKey(pool.poolTokenAccountA)
+        ),
+        connection.getTokenAccountBalance(
+          new PublicKey(pool.poolTokenAccountB)
+        ),
+      ]
+    )
 
-  return [poolBalances, refresh]
+    const baseTokenAmount = baseTokenBalanceInPool?.value?.uiAmount || 0
+    const quoteTokenAmount = quoteTokenBalanceInPool?.value?.uiAmount || 0
+
+    return {
+      baseTokenAmount,
+      quoteTokenAmount,
+    }
+  }
+
+  const { data, mutate } = useSwr(
+    `pool-balance-${pool.poolTokenAccountA || ''}-${
+      pool.poolTokenAccountB || ''
+    }`,
+    fetcher
+  )
+
+  return [data || EMPTY_POOL, mutate]
 }

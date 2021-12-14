@@ -11,7 +11,7 @@ import React, { useState } from 'react'
 import LightLogo from '@icons/lightLogo.svg'
 
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { getTokenDataByMint } from '@sb/utils'
+import { getTokenDataByMint } from '../../utils'
 import { getUniqueAmountsToClaimMap } from '../Tables/utils/getUniqueAmountsToClaimMap'
 import { ExtendFarmingModal } from './ExtendFarmingModal'
 import ClockIcon from './icons/whiteClock.svg'

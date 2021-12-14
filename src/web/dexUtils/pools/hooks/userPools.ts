@@ -1,6 +1,7 @@
+import useSwr from 'swr'
 import { Pool, PoolV2 } from '@sb/dexUtils/common/types'
-import { AsyncRefreshFunction } from '@sb/dexUtils/types'
-import { useCallback, useEffect, useState } from 'react'
+import { RefreshFunction } from '@sb/dexUtils/types'
+import { useCallback } from 'react'
 import { useConnection } from '../../connection'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import {
@@ -9,12 +10,13 @@ import {
 } from '../../ProgramsMultiton/utils'
 import { useWallet } from '../../wallet'
 
-export const usePools = (): [(Pool | PoolV2)[], AsyncRefreshFunction] => {
+export const usePools = (): [(Pool | PoolV2)[], RefreshFunction] => {
+  // TODO: rewrite layout parsing without wallet usage,
+  // move connection out of context
   const { wallet } = useWallet()
   const connection = useConnection()
-  const [allPools, setAllPools] = useState<(Pool | PoolV2)[]>([])
 
-  const loadPools = useCallback(async () => {
+  const fetcher = useCallback(async () => {
     const program = ProgramsMultiton.getProgramByAddress({
       wallet,
       connection,
@@ -37,14 +39,10 @@ export const usePools = (): [(Pool | PoolV2)[], AsyncRefreshFunction] => {
       ...v2pools.map((p) => p.account as PoolV2),
     ]
 
-    setAllPools(allPoolsList)
-
-    return true
+    return allPoolsList
   }, [])
 
-  useEffect(() => {
-    loadPools()
-  }, [])
+  const pools = useSwr('ammpools', fetcher)
 
-  return [allPools, loadPools]
+  return [pools.data || [], pools.mutate]
 }

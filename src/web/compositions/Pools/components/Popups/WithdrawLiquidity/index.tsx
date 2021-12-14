@@ -74,10 +74,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [poolBalances, refreshPoolBalances] = usePoolBalances({
-    pool: selectedPool,
-    connection,
-  })
+  const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')

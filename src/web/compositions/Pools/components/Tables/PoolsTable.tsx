@@ -20,7 +20,7 @@ import React, { useState, ReactNode } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { FlexBlock } from '@sb/components/Layout'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { useVesting } from '@sb/dexUtils/vesting'
+import { useVestings } from '@sb/dexUtils/vesting'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SvgIcon } from '@sb/components'
 import { toMap, groupBy } from '@sb/utils'
@@ -293,7 +293,7 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
   const wallet = useWallet()
   const history = useHistory()
 
-  const { data: vestings = [] } = useVesting()
+  const [vestings] = useVestings()
 
   const vestingsByMint = toMap(vestings, (v) => v.mint.toBase58())
 

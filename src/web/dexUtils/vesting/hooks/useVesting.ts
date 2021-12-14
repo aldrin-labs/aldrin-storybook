@@ -5,6 +5,7 @@ import { useMultiEndpointConnection } from '../../connection'
 import { publicKey, uint64 } from '../../layout'
 import { Vesting, VestingWithPk } from '../types'
 import { VESTING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
+import { RefreshFunction } from '../../types'
 
 const vestingAddress = new PublicKey(VESTING_PROGRAM_ADDRESS)
 
@@ -25,7 +26,7 @@ const VESTING_LAYOUT = struct([
   struct([publicKey('program'), publicKey('metadata')], 'realizor'),
 ])
 
-export const useVesting = () => {
+export const useVestings = (): [VestingWithPk[], RefreshFunction] => {
   const connection = useMultiEndpointConnection()
 
   // Since program has only type of accounts, we don't need some filters
@@ -45,5 +46,8 @@ export const useVesting = () => {
       })
       .filter((vesting) => vesting.createdTs > 0)
   }
-  return useSWR('vestings', fetcher, { refreshInterval: 60_000 })
+  const { data, mutate } = useSWR('vestings', fetcher, {
+    refreshInterval: 60_000,
+  })
+  return [data || [], mutate]
 }

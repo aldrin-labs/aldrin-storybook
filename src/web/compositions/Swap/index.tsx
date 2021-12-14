@@ -155,11 +155,8 @@ const SwapPage = ({
   const isSelectedPoolStable = checkIsPoolStable(selectedPool)
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances({
-    connection,
-    pool: {
-      poolTokenAccountA: selectedPool?.poolTokenAccountA,
-      poolTokenAccountB: selectedPool?.poolTokenAccountB,
-    },
+    poolTokenAccountA: selectedPool?.poolTokenAccountA,
+    poolTokenAccountB: selectedPool?.poolTokenAccountB,
   })
 
   // update entered value on every pool ratio change

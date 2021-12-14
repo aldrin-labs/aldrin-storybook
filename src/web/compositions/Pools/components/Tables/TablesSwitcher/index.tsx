@@ -29,7 +29,7 @@ import { useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
 import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { ApolloQueryResult } from 'apollo-client'
-import { useVesting } from '@sb/dexUtils/vesting'
+import { useVestings } from '@sb/dexUtils/vesting'
 import { toMap } from '@sb/utils'
 import { COLORS } from '@variables/variables'
 import { PoolPage } from '../../PoolPage'
@@ -89,6 +89,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
+  console.log('userTokensData: ', userTokensData, [refreshUserTokensData])
+
   const [snapshotQueues] = useSnapshotQueues({
     wallet,
     connection,
@@ -123,7 +125,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     new Map<string, FeesEarned>()
   )
 
-  const { data: vestings = [] } = useVesting()
+  const [vestings] = useVestings()
 
   const vestingsByMintForUser = toMap(
     vestings.filter((v) =>

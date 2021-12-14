@@ -29,7 +29,7 @@ const processCall = (call: Promise<any>, connection: Connection) => {
     },
     (err: Error) => {
       clearTimeout(t)
-      const text = `${err}`.substr(0, 40).replace(/[: ]/g, '_').toLowerCase()
+      const text = `${err}`.substring(0, 40).replace(/[: ]/g, '_').toLowerCase()
       Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.${text}` })
       console.error(err)
     }

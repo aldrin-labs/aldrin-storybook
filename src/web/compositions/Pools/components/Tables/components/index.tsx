@@ -7,12 +7,10 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import React from 'react'
 import {
   IconsContainer,
-
-  PoolName, SearchInput,
-
-  TokenIconContainer
+  PoolName,
+  SearchInput,
+  TokenIconContainer,
 } from '../index.styles'
-
 
 export const SearchInputWithLoop = ({
   placeholder,
@@ -63,14 +61,14 @@ export const TokenIconsContainer: React.FC<TokenIconContainerProps> = (
     <Row wrap="nowrap" justify="end">
       <IconsContainer>
         <TokenIconContainer zIndex="1" left="0">
-          <TokenIcon width="3rem" height="3rem" mint={tokenA} />
+          <TokenIcon width="1.5em" height="1.5em" mint={tokenA} />
         </TokenIconContainer>
         <TokenIconContainer
           left="0"
           zIndex="0"
           style={{ transform: 'translateX(70%)' }}
         >
-          <TokenIcon width="3rem" height="3rem" mint={tokenB} />
+          <TokenIcon width="1.5em" height="1.5em" mint={tokenB} />
         </TokenIconContainer>
       </IconsContainer>
       <div style={{ marginLeft: '2rem' }}>

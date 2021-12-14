@@ -51,7 +51,6 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
     },
     onSubmit: async (values) => {
       setFarmingTransactionStatus('processing')
-      console.log('Values: ', values)
       const farmingRewardAccount = userTokens.find(
         (ut) => ut.address === values.farming.token.account
       )

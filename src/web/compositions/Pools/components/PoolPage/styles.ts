@@ -109,7 +109,7 @@ export const SwapButtonIcon = styled.span`
 
 export const TokenSymbols = styled.h2`
   font-weight: bold;
-  font-size: ${FONT_SIZES.xl};
+  font-size: ${FONT_SIZES.lg};
   line-height: 1.6;
   color: ${COLORS.white};
   margin: 0 0 0 20px;
