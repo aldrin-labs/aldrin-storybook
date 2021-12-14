@@ -1,4 +1,8 @@
 import { TokenInstructions } from '@project-serum/serum'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { createTokenAccountTransaction } from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   Connection,
   PublicKey,
@@ -6,34 +10,28 @@ import {
   SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
-
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
+import { FarmingState, TransactionAndSigner } from '../common/types'
 import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import {
-  createTokenAccountTransaction,
-  isTransactionFailed,
-  sendTransaction,
-} from '../send'
-import { WalletAdapter } from '../types'
-import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
+import { filterTicketsAvailableForUnstake } from './filterTicketsAvailableForUnstake'
 import { getParsedUserFarmingTickets } from './getParsedUserFarmingTickets'
-import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
+import { signAndSendTransaction } from './signAndSendTransaction'
 
-export const endFarming = async ({
+export const getEndFarmingTransactions = async ({
   wallet,
   connection,
   poolPublicKey,
-  farmingStatePublicKey,
-  snapshotQueuePublicKey,
+  farmingState,
   userPoolTokenAccount,
 }: {
   wallet: WalletAdapter
   connection: Connection
   poolPublicKey: PublicKey
-  farmingStatePublicKey: PublicKey
-  snapshotQueuePublicKey: PublicKey
+  farmingState: FarmingState
   userPoolTokenAccount: PublicKey | null
-}) => {
+}): Promise<TransactionAndSigner[]> => {
+  const farmingStatePublicKey = new PublicKey(farmingState.farmingState)
+  const snapshotQueuePublicKey = new PublicKey(farmingState.farmingSnapshots)
+  
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
@@ -54,17 +52,20 @@ export const endFarming = async ({
     connection,
     poolPublicKey,
   })
+  const availableToUnstakeTickets = filterTicketsAvailableForUnstake(
+    allUserTicketsPerPool,
+    farmingState
+  )
 
   const filteredUserFarmingTicketsPerPool = filterOpenFarmingTickets(
-    allUserTicketsPerPool
+    availableToUnstakeTickets
   )
 
   if (filteredUserFarmingTicketsPerPool.length === 0) {
-    return 'failed'
+    return []
   }
 
   let commonTransaction = new Transaction()
-  let tx = null
 
   // create pool token account for user if not exist
   if (!userPoolTokenAccount) {
@@ -80,30 +81,7 @@ export const endFarming = async ({
     commonTransaction.add(createAccountTransaction)
   }
 
-  const sendPartOfTransactions = async () => {
-    try {
-      tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction: commonTransaction,
-        signers: [],
-        focusPopup: true,
-      })
-
-      if (isTransactionFailed(tx)) {
-        return 'failed'
-      }
-      commonTransaction = new Transaction()
-    } catch (e) {
-      console.log('end farming catch error', e)
-
-      if (isCancelledTransactionError(e)) {
-        return 'cancelled'
-      }
-    }
-
-    return 'success'
-  }
+  const transactionsAndSigners = []
 
   for (let ticketData of filteredUserFarmingTicketsPerPool) {
     const endFarmingTransaction = await program.instruction.endFarming({
@@ -125,19 +103,43 @@ export const endFarming = async ({
     commonTransaction.add(endFarmingTransaction)
 
     if (commonTransaction.instructions.length > 5) {
-      const result = await sendPartOfTransactions()
-      if (result !== 'success') {
-        return result
-      }
+      transactionsAndSigners.push({ transaction: commonTransaction })
     }
   }
 
   if (commonTransaction.instructions.length > 0) {
-    const result = await sendPartOfTransactions()
-    if (result !== 'success') {
-      return result
-    }
+    transactionsAndSigners.push({ transaction: commonTransaction })
   }
 
-  return 'success'
+  return transactionsAndSigners
+}
+
+export const endFarming = async ({
+  wallet,
+  connection,
+  poolPublicKey,
+  farmingState,
+  userPoolTokenAccount,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  poolPublicKey: PublicKey
+  farmingState: FarmingState
+  userPoolTokenAccount: PublicKey | null
+}) => {
+  const transactionsAndSigners = await getEndFarmingTransactions({
+    wallet,
+    connection,
+    poolPublicKey,
+    farmingState,
+    userPoolTokenAccount,
+  })
+
+  const result = await signAndSendTransaction({
+    wallet,
+    connection,
+    transactionsAndSigners,
+  })
+
+  return result
 }

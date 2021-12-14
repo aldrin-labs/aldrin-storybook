@@ -72,8 +72,8 @@ export const UnstakePopup = ({
   const unlockAvailableDate =
     lastFarmingTicket && isPoolWithFarming
       ? +lastFarmingTicket.startTime +
-      +selectedPool.farming[0].periodLength +
-      60 * 20
+        +selectedPool.farming[0].periodLength +
+        60 * 20
       : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
@@ -88,7 +88,7 @@ export const UnstakePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => { }}
+      onEnter={() => {}}
       maxWidth={'md'}
       open={open}
       aria-labelledby="responsive-dialog-title"
@@ -120,8 +120,8 @@ export const UnstakePopup = ({
           title={
             isUnstakeLocked
               ? `Until ${dayjs
-                .unix(unlockAvailableDate)
-                .format('HH:mm:ss MMM DD, YYYY')}`
+                  .unix(unlockAvailableDate)
+                  .format('HH:mm:ss MMM DD, YYYY')}`
               : null
           }
         >
@@ -148,12 +148,7 @@ export const UnstakePopup = ({
                   userPoolTokenAccount: userPoolTokenAccount
                     ? new PublicKey(userPoolTokenAccount)
                     : null,
-                  farmingStatePublicKey: new PublicKey(
-                    farmingState.farmingState
-                  ),
-                  snapshotQueuePublicKey: new PublicKey(
-                    farmingState.farmingSnapshots
-                  ),
+                  farmingState: farmingState,
                 })
 
                 setOperationLoading(false)
@@ -164,8 +159,8 @@ export const UnstakePopup = ({
                     result === 'success'
                       ? 'Successfully unstaked.'
                       : result === 'failed'
-                        ? 'Unstaking failed, please try again later or contact us in telegram.'
-                        : 'Unstaking cancelled.',
+                      ? 'Unstaking failed, please try again later or contact us in telegram.'
+                      : 'Unstaking cancelled.',
                 })
 
                 const clearPoolWaitingForUpdate = () =>

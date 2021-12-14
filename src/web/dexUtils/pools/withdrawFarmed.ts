@@ -183,6 +183,7 @@ export const withdrawFarmed = async ({
   }
 
   if (signAllTransactions) {
+    // replace to separate function 
     try {
       const signedTransactions = await signTransactions({
         wallet,
@@ -217,7 +218,7 @@ export const withdrawFarmed = async ({
         return 'cancelled'
       }
     }
-
+    
     return 'success'
   }
 

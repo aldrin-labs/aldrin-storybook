@@ -18,14 +18,15 @@ import {
   PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
+import { restakeAll } from '@sb/compositions/Pools/utils/restakeAll'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/getParsedUserFarmingTickets'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/useSnapshotQueues'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useState } from 'react'
+
 import { compose } from 'recompose'
 import { AddLiquidityPopup, WithdrawalPopup } from '../../Popups'
 import { ClaimRewards } from '../../Popups/ClaimRewards/ClaimRewards'
@@ -45,6 +46,7 @@ import { LISTING_REQUEST_GOOGLE_FORM } from '../../../../../../utils/config'
 
 import PlusIcon from './plus.svg'
 import { Checkbox } from '../../../../../components/Checkbox'
+import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
 
 const TablesSwitcher = ({
   theme,
@@ -78,9 +80,8 @@ const TablesSwitcher = ({
   const [isUnstakePopupOpen, setIsUnstakePopupOpen] = useState(false)
   const [isStakePopupOpen, setIsStakePopupOpen] = useState(false)
   const [includePermissionless, setIncludePermissionless] = useState(true)
-  const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(
-    false
-  )
+  const [isRemindToStakePopupOpen, setIsRemindToStakePopupOpen] = useState(true)
+  // const [isRestakeAllPopupOpen, setIsRestakeAllPopupOpen] = useState(true)
 
   const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
 
@@ -335,6 +336,21 @@ const TablesSwitcher = ({
               refreshTokensWithFarmingTickets={refreshTokensWithFarmingTickets}
               setPoolWaitingForUpdateAfterOperation={
                 setPoolWaitingForUpdateAfterOperation
+              }
+            />
+          )}
+          {wallet.publicKey && (
+            <RestakeAllPopup
+              theme={theme}
+              // open={isRestakeAllPopupOpen}
+              // close={() => setIsRestakeAllPopupOpen(false)}
+              wallet={wallet}
+              connection={connection}
+              allPoolsData={pools}
+              allTokensData={allTokensData}
+              farmingTicketsMap={farmingTicketsMap}
+              refreshTokensWithFarmingTickets={() =>
+                refreshTokensWithFarmingTickets()
               }
             />
           )}
