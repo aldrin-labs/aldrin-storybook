@@ -130,7 +130,7 @@ const prepareCell = (params: {
   const vesting = vestings.get(pool.poolTokenMint) || EMPTY_VESTING
 
   const hasLockedFunds = vesting.endTs * 1000 > Date.now()
-  // const hasLockedFunds = !!vesting.endTs
+
   const lockedFundsValue = vesting.startBalance.muln(poolTokenPrice)
 
   const farmingAPR =

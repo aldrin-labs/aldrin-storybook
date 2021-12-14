@@ -123,4 +123,8 @@ export const PoolName = styled(InlineText)`
 
 export const PoolsTableIcons = styled.div`
   margin: 5px 0 0 10px;
+  width: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `
