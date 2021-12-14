@@ -29,7 +29,7 @@ export const signAndSendTransaction = async ({
       const result = await sendSignedTransaction({
         transaction: signedTransaction,
         connection,
-        timeout: 10_000,
+        timeout: 20_000,
       })
 
       if (result === 'timeout') {
