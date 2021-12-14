@@ -8,25 +8,25 @@ import {
 import { useFeeDiscountKeys } from '@sb/dexUtils/markets'
 
 export const feeTiers = [
-  { feeTier: 0, taker: 0.04, maker: -0.03, token: '', balance: '' },
-  { feeTier: 1, taker: 0.039, maker: -0.03, token: 'SRM', balance: 100 },
-  { feeTier: 2, taker: 0.038, maker: -0.03, token: 'SRM', balance: 1000 },
-  { feeTier: 3, taker: 0.036, maker: -0.03, token: 'SRM', balance: 10000 },
+  { feeTier: 0, taker: 0.04, maker: 0, token: '', balance: '' },
+  { feeTier: 1, taker: 0.039, maker: 0, token: 'SRM', balance: 100 },
+  { feeTier: 2, taker: 0.038, maker: 0, token: 'SRM', balance: 1000 },
+  { feeTier: 3, taker: 0.036, maker: 0, token: 'SRM', balance: 10000 },
   {
     feeTier: 4,
     taker: 0.034,
-    maker: -0.03,
+    maker: 0,
     token: 'SRM',
     balance: 100000,
   },
   {
     feeTier: 5,
     taker: 0.032,
-    maker: -0.03,
+    maker: 0,
     token: 'SRM',
     balance: 1000000,
   },
-  { feeTier: 6, taker: 0.03, maker: -0.05, token: 'MSRM', balance: 1 },
+  { feeTier: 6, taker: 0.03, maker: 0, token: 'MSRM', balance: 1 },
 ]
 
 export const combineFeeTiers = (feeTiers, feeAccounts) => {

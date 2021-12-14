@@ -95,6 +95,9 @@ export const RestakeAllPopup = ({
   const isNotEnoughSOL = userSOLAmount < SOLFeesForRestake
 
   const restake = async () => {
+    setShowRetryMessage(false)
+    setIsTransactionFailed(false)
+
     setOperationLoading(true)
 
     const result = await restakeAll({
@@ -167,7 +170,7 @@ export const RestakeAllPopup = ({
             fontSize={'1.8rem'}
           >
             {isTransactionFailed
-              ? 'Restake failed, please try again later or contact us in telegram.'
+              ? 'Restake failed, please try again or contact us in telegram.'
               : 'Blockhash outdated, press “Try Again” to complete the remaining transactions.'}
           </Text>
         </RowContainer>
@@ -208,7 +211,6 @@ export const RestakeAllPopup = ({
           isUserConfident={true}
           showLoader={operationLoading}
           onClick={async () => {
-            setIsTransactionFailed(false)
             await restake()
           }}
         >
