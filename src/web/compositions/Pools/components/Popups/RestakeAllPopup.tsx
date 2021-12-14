@@ -159,8 +159,7 @@ export const RestakeAllPopup = ({
           To move to the next farming era, you need to click Restake below and
           confirm all transactions in your wallet. This shouldn't take long. If
           you do not restake your LP tokens, they will cease to be credited
-          within a week until the restake is made. (ex.: Ledger) you will have
-          to confirm each transaction manually.
+          within a week until the restake is made.
         </Text>
       </RowContainer>
       {showRetryMessage && (
