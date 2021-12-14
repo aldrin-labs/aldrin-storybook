@@ -1,0 +1,108 @@
+import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
+import { Connection, PublicKey } from '@solana/web3.js'
+import { PoolInfo } from '../index.types'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+
+import { getTokenDataByMint } from '.'
+import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
+import { getEndFarmingTransactions } from '@sb/dexUtils/pools/endFarming'
+import { getStartFarmingTransactions } from '@sb/dexUtils/pools/startFarming'
+import { signAndSendTransaction } from '@sb/dexUtils/pools/signAndSendTransaction'
+import { sleep } from '@sb/dexUtils/utils'
+import { MIN_POOL_TOKEN_AMOUNT_TO_STAKE } from '@sb/dexUtils/common/config'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+
+export const restakeAll = async ({
+  wallet,
+  connection,
+  allPoolsData,
+  farmingTicketsMap,
+  allTokensData,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  allPoolsData: PoolInfo[]
+  farmingTicketsMap: Map<string, FarmingTicket[]>
+  allTokensData: TokenInfo[]
+}) => {
+  const endFarmingTransactions = []
+
+  for (let pool of allPoolsData) {
+    const farmingStates = pool.farming || []
+
+    const isPoolWithFarming = pool.farming && pool.farming.length > 0
+    const openFarmings = isPoolWithFarming
+      ? filterOpenFarmingStates(farmingStates)
+      : []
+
+    if (openFarmings.length === 0) {
+      continue
+    }
+
+    const { address: userPoolTokenAccount } = getTokenDataByMint(
+      allTokensData,
+      pool.poolTokenMint
+    )
+    const hasFarmingTicket = farmingTicketsMap.get(pool.swapToken)
+
+    if (hasFarmingTicket) {
+      const transactionsAndSigners = await getEndFarmingTransactions({
+        wallet,
+        connection,
+        poolPublicKey: new PublicKey(pool.swapToken),
+        farmingState: openFarmings[0],
+        userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+      })
+
+      endFarmingTransactions.push(...transactionsAndSigners)
+    }
+  }
+
+  const resultEndFarming = await signAndSendTransaction({
+    wallet,
+    connection,
+    transactionsAndSigners: endFarmingTransactions,
+  })
+
+  if (resultEndFarming !== 'success') {
+    return resultEndFarming
+  }
+
+  await sleep(7500)
+
+  const userTokens = await getAllTokensData(wallet?.publicKey, connection)
+
+  const startFarmingTransactions = []
+
+  for (let pool of allPoolsData) {
+    const farming = pool.farming || []
+    const {
+      address: userPoolTokenAccount,
+      amount: poolTokenAmount,
+    } = getTokenDataByMint(userTokens, pool.poolTokenMint)
+
+    const hasPoolTokenAccount =
+      userPoolTokenAccount && poolTokenAmount > MIN_POOL_TOKEN_AMOUNT_TO_STAKE
+
+    if (hasPoolTokenAccount) {
+      const transactionsAndSigners = await getStartFarmingTransactions({
+        wallet,
+        connection,
+        poolTokenAmount,
+        poolPublicKey: new PublicKey(pool.swapToken),
+        userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+        farmingState: new PublicKey(farming[0].farmingState),
+      })
+
+      startFarmingTransactions.push(...transactionsAndSigners)
+    }
+  }
+
+  const resultStartFarming = await signAndSendTransaction({
+    wallet,
+    connection,
+    transactionsAndSigners: startFarmingTransactions,
+  })
+
+  return resultStartFarming
+}
