@@ -262,6 +262,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
       }
     },
     validate: async (values) => {
+      console.log('Run validate')
       const {
         baseToken: { mint: baseTokenMint },
         quoteToken: { mint: quoteTokenMint },
@@ -396,6 +397,8 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
         form.setFieldValue('price', stripByAmount(newPrice))
       }
     }
+
+    setTimeout(() => form.validateForm())
   }
 
   const onQuoteAmountChange = (value: string) => {
@@ -414,6 +417,8 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
         form.setFieldValue('price', stripByAmount(newPrice))
       }
     }
+
+    setTimeout(() => form.validateForm())
   }
 
   return (
@@ -523,6 +528,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                       available={selectedBaseAccount.amount}
                       mint={form.values.quoteToken.mint}
                       onChange={() => {
+                        console.log('Price changed!!!!')
                         setPriceTouched(true)
                       }}
                     />
@@ -553,11 +559,11 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.quoteTokenAmount"
-                    setFieldValue={(field: string, value: string) => {
-                      form.setFieldValue(field, value)
-                      onQuoteAmountChange(value)
-                    }}
-                    available={selectedQuoteAccount.amount}
+                    // setFieldValue={(field: string, value: string) => {
+                    //   form.setFieldValue(field, value)
+                    //   onQuoteAmountChange(value)
+                    // }}
+                    // available={selectedQuoteAccount.amount}
                     mint={form.values.quoteToken.mint}
                     onChange={onQuoteAmountChange}
                   />

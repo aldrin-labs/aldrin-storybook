@@ -40,7 +40,7 @@ export async function redeemBasket(params: {
   connection: Connection
   curveType: number | null
   poolPublicKey: PublicKey
-  userPoolTokenAccount: PublicKey
+  userPoolTokenAccount?: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
   userPoolTokenAmount: number
@@ -51,10 +51,11 @@ export async function redeemBasket(params: {
     connection,
     curveType,
     poolPublicKey,
-    userPoolTokenAccount,
     userPoolTokenAmount,
     unlockVesting,
   } = params
+
+  let { userPoolTokenAccount } = params
 
   let { userBaseTokenAccount, userQuoteTokenAccount } = params
 
@@ -161,14 +162,14 @@ export async function redeemBasket(params: {
   }
 
   if (unlockVesting) {
-    transactionAfterWithdraw.add(
-      await withrawVestingInstruction({
-        wallet,
-        connection,
-        vesting: unlockVesting,
-        withdrawAccount: userPoolTokenAccount,
-      })
-    )
+    const [tx, poolTokenAccount] = await withrawVestingInstruction({
+      wallet,
+      connection,
+      vesting: unlockVesting,
+      withdrawAccount: userPoolTokenAccount,
+    })
+    transactionBeforeWithdraw.add(tx)
+    userPoolTokenAccount = poolTokenAccount
   }
 
   const commonTransaction = new Transaction()

@@ -12,6 +12,7 @@ import {
 import { Chart } from 'chart.js'
 import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
+import { COLORS } from '@variables/variables'
 import { Line } from '../Popups/index.styles'
 import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate/ReloadTimerTillUpdate'
 import { Canvas, SubTitle, TitleContainer, DataContainer } from './styles'
@@ -78,6 +79,7 @@ const TotalVolumeLockedChartInner = compose(
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
+    loaderColor: COLORS.white,
   })
 )(ChartInner)
 

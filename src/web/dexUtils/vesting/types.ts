@@ -38,7 +38,7 @@ export interface CreateVestingParams {
 
 export interface WithdrawVestingParams {
   vesting: VestingWithPk
-  withdrawAccount: PublicKey
+  withdrawAccount?: PublicKey
   connection: Connection
   wallet: WalletAdapter
 }

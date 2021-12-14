@@ -7,39 +7,36 @@ import {
   dayDuration,
   endOfDayTimestamp,
   getTimezone,
-  startOfDayTimestamp
+  startOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { Chart } from 'chart.js'
 import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
+import { COLORS } from '@variables/variables'
 import { Line } from '../Popups/index.styles'
 import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate/ReloadTimerTillUpdate'
 import { Canvas, DataContainer, SubTitle, TitleContainer } from './styles'
 import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
-
-
 interface ChartProps {
   getTradingVolumeHistoryQuery: {
     getTradingVolumeHistory: {
-      volumes: { date: number, vol?: number }[]
+      volumes: { date: number; vol?: number }[]
     }
   }
 }
-
 
 const ChartBlockInner: React.FC<ChartProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const chartRef = useRef<Chart | null>(null)
 
+  const { getTradingVolumeHistoryQuery } = props
 
-  const data = props.getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
+  const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
 
   useEffect(() => {
     if (!canvasRef.current) {
-      return () => {
-        return null
-      }
+      return () => {}
     }
 
     const reDraw = () => {
@@ -58,17 +55,17 @@ const ChartBlockInner: React.FC<ChartProps> = (props) => {
 
     reDraw()
 
-
-    return () => chartRef.current?.destroy()
+    return () => {
+      chartRef.current?.destroy()
+    }
   }, [JSON.stringify(data)])
 
   return (
     <div>
-      <Canvas height="250" ref={canvasRef}></Canvas>
+      <Canvas height="250" ref={canvasRef} />
     </div>
   )
 }
-
 
 export const ChartBlockInnerWithData = compose(
   queryRendererHoc({
@@ -76,14 +73,15 @@ export const ChartBlockInnerWithData = compose(
     name: 'getTradingVolumeHistoryQuery',
     variables: {
       timezone: getTimezone(),
-      timestampFrom: startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
+      timestampFrom:
+        startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
       timestampTo: endOfDayTimestamp(),
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
+    loaderColor: COLORS.white,
   })
 )(ChartBlockInner)
-
 
 export const TradingVolumeChart = () => {
   return (
@@ -94,7 +92,7 @@ export const TradingVolumeChart = () => {
           <Line />
           <ReloadTimerTillUpdate
             duration={3600}
-            margin={'0 0 0 2rem'}
+            margin="0 0 0 2rem"
             getSecondsTillNextUpdate={() => msToNextHour() / 1000}
           />
         </TitleContainer>

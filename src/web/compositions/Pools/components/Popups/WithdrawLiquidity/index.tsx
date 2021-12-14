@@ -285,7 +285,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               return
             }
 
-            if (!userPoolTokenAccount) {
+            if (!userPoolTokenAccount && !vesting) {
               notify({
                 message: `No pool token account`,
                 type: 'error',
@@ -323,7 +323,9 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               connection,
               curveType: selectedPool.curveType,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
-              userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+              userPoolTokenAccount: userPoolTokenAccount
+                ? new PublicKey(userPoolTokenAccount)
+                : undefined,
               userPoolTokenAmount: poolTokenAmountToWithdraw,
               unlockVesting:
                 poolTokenAmountToWithdraw > poolTokenAmount

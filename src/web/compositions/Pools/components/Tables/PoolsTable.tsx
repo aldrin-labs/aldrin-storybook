@@ -129,8 +129,8 @@ const prepareCell = (params: {
 
   const vesting = vestings.get(pool.poolTokenMint) || EMPTY_VESTING
 
-  // const hasLockedFunds = vesting.endTs * 1000 > Date.now()
-  const hasLockedFunds = !!vesting.endTs
+  const hasLockedFunds = vesting.endTs * 1000 > Date.now()
+  // const hasLockedFunds = !!vesting.endTs
   const lockedFundsValue = vesting.startBalance.muln(poolTokenPrice)
 
   const farmingAPR =
@@ -198,7 +198,7 @@ const prepareCell = (params: {
                 <DarkTooltip
                   title={`Pool owner locked $${lockedFundsValue} liquidity until ${dayjs
                     .unix(vesting.endTs)
-                    .format('YYYY-MM-DD')} `}
+                    .format('MMM DD, YYYY')} `}
                 >
                   <span>
                     <SvgIcon src={CrownIcon} width="15px" height="15px" />
