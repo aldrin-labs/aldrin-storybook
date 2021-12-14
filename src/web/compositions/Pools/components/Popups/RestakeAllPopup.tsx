@@ -154,12 +154,22 @@ export const RestakeAllPopup = ({
         </BoldHeader>
       </RowContainer>
 
-      <RowContainer justify="flex-start" wrap={'nowrap'}>
+      <RowContainer
+        direction={'column'}
+        justify="flex-start"
+        wrap={'nowrap'}
+        align={'flex-start'}
+      >
+        <Text
+          style={{ fontFamily: 'Avenir Next', marginBottom: '1rem' }}
+          fontSize={'1.6rem'}
+        >
+          We have made some modifications to our pools and require you to click
+          ‘Restake’ below.
+        </Text>
         <Text style={{ fontFamily: 'Avenir Next' }} fontSize={'1.6rem'}>
-          To move to the next farming era, you need to click Restake below and
-          confirm all transactions in your wallet. This shouldn't take long. If
-          you do not restake your LP tokens, they will cease to be credited
-          within a week until the restake is made.
+          It is important that you confirm all transactions in order to continue
+          receiving rewards. Please do this as soon as posible.
         </Text>
       </RowContainer>
       {showRetryMessage && (
