@@ -143,10 +143,10 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     ).values()
   ).join(' and ')
 
-  const tooltipText =
-    !hasUnstaked && !hasStaked
-      ? `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
-      : null
+  const showTooltip = !hasUnstaked && !hasStaked
+  const tooltipText = showTooltip
+    ? `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
+    : null
 
   const farmingRemain = farmings.reduce((acc, fs) => {
     const value = acc.get(fs.farmingTokenMint) || {
@@ -225,6 +225,17 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                     </LiquidityText>
                   </LiquidityText>
                 )}
+                {!!estimatedTime.minutes && (
+                  <LiquidityText>
+                    <LiquidityText color="success">
+                      {' '}
+                      {estimatedTime.minutes}{' '}
+                    </LiquidityText>
+                    <LiquidityText>
+                      {pluralize('minute', estimatedTime.minutes)}
+                    </LiquidityText>
+                  </LiquidityText>
+                )}
               </div>
             </LiquidityItem>
           </FarmingBlockInner>
@@ -265,7 +276,12 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               </LiquidityText>
             </div>
             <FarmingButtonsContainer>
-              <DarkTooltip title={tooltipText}>
+              <DarkTooltip
+                disableHoverListener={!showTooltip}
+                disableFocusListener={!showTooltip}
+                disableTouchListener={!showTooltip}
+                title={tooltipText}
+              >
                 <span>
                   <FarmingButton
                     disabled={!hasUnstaked || processing || !hasFarming}
@@ -277,7 +293,12 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                   </FarmingButton>
                 </span>
               </DarkTooltip>
-              <DarkTooltip title={tooltipText}>
+              <DarkTooltip
+                disableHoverListener={!showTooltip}
+                disableFocusListener={!showTooltip}
+                disableTouchListener={!showTooltip}
+                title={tooltipText}
+              >
                 <span>
                   <FarmingButton
                     $variant="error"
@@ -295,7 +316,12 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
             <UserFarmingRewards availableToClaim={availableToClaim} />
             <FarmingButtonWrap>
-              <DarkTooltip title={tooltipText}>
+              <DarkTooltip
+                disableHoverListener={!showTooltip}
+                disableFocusListener={!showTooltip}
+                disableTouchListener={!showTooltip}
+                title={tooltipText}
+              >
                 <span>
                   <FarmingButton
                     $variant="rainbow"
@@ -308,7 +334,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                 </span>
               </DarkTooltip>
               <DarkTooltip title={<ClaimTimeTooltip farmingState={farming} />}>
-                <div style={{ height: '1em' }}>
+                <div style={{ height: '1em', cursor: 'help' }}>
                   <SvgIcon src={ClockIcon} width="1em" height="1em" />
                 </div>
               </DarkTooltip>

@@ -270,6 +270,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
         })
 
         history.push(`/pools/${createdPool.parsedName}`)
+        onClose()
       } catch (e) {
         console.error('Unable to create pool: ', e)
         setProcessingStatus('error')
@@ -303,23 +304,23 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
         }
       }
 
-      if (
-        values.lockInitialLiquidity &&
-        !(parseFloat(values.initialLiquidityLockPeriod) > 0)
-      ) {
-        return {
-          initialLiquidityLockPeriod: 'Please enter a valid lock duration.',
-        }
-      }
+      // if (
+      //   values.lockInitialLiquidity &&
+      //   !(parseFloat(values.initialLiquidityLockPeriod) > 0)
+      // ) {
+      //   return {
+      //     initialLiquidityLockPeriod: 'Please enter a valid lock duration.',
+      //   }
+      // }
 
-      if (
-        values.farming.vestingEnabled &&
-        !(parseFloat(values.farming.vestingPeriod || '0') > 0)
-      ) {
-        return {
-          farming: { vestingPeriod: 'Please enter a valid vesting period.' },
-        }
-      }
+      // if (
+      //   values.farming.vestingEnabled &&
+      //   !(parseFloat(values.farming.vestingPeriod || '0') > 0)
+      // ) {
+      //   return {
+      //     farming: { vestingPeriod: 'Please enter a valid vesting period.' },
+      //   }
+      // }
 
       return null
     },

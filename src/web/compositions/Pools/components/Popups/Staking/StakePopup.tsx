@@ -90,8 +90,10 @@ const Popup = (props: StakePopupProps) => {
     dexTokensPricesMap,
   })
 
-  const totalStakedLpTokensUSD =
-    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice
+  const totalStakedLpTokensUSD = Math.max(
+    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice,
+    1000
+  )
 
   const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
@@ -164,7 +166,7 @@ const Popup = (props: StakePopupProps) => {
       onEnter={() => {
         setOperationLoading(false)
       }}
-      maxWidth={'md'}
+      maxWidth="md"
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify="space-between" width="100%">
@@ -332,6 +334,5 @@ const Popup = (props: StakePopupProps) => {
     </DialogWrapper>
   )
 }
-
 
 export const StakePopup = withTheme()(Popup)

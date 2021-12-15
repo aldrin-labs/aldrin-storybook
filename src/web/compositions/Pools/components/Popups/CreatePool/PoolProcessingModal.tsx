@@ -25,7 +25,7 @@ const steps = [
   'Create liquidity pool...',
   'Deposit initial liquidity...',
   'Setup farming...',
-  'Final touches 🎉 . It may takes up to 3 minutes',
+  'Final touches 🎉 . It may takes up to 3 minutes.',
 ]
 
 export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
@@ -43,13 +43,13 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
           {status === 'processing' && (
             <>
               <Text>{steps[step]}</Text>
-              <Text size="sm">Please do not close browser window.</Text>
+              <Text size="sm">Please do not close browser tab.</Text>
             </>
           )}
           {status === 'success' && (
             <>
               <Text>Pool has been created</Text>
-              <Text size="sm">Now you can close the window.</Text>
+              <Text size="sm">Now you can close the tab.</Text>
             </>
           )}
           {status === 'error' && (

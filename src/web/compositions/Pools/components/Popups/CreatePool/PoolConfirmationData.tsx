@@ -94,7 +94,9 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
         <ConfirmationRow>
           <InlineText size="sm">Farming Period:</InlineText>
           <InlineText size="sm" weight={600}>
-            {values.farmingEnabled ? `${farming.farmingPeriod} days` : '-'}
+            {values.farmingEnabled
+              ? `${pluralize('day', parseInt(farming.farmingPeriod, 10))} `
+              : '-'}
           </InlineText>
         </ConfirmationRow>
         <ConfirmationRow>

@@ -307,7 +307,6 @@ export const LiquidityButton = styled(Button)`
 export const FarmingButton = styled(LiquidityButton)`
   width: 110px;
   margin-top: 0;
-  cursor: help;
 `
 
 export const FarmingButtonWrap = styled.div`

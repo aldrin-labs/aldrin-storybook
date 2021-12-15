@@ -87,6 +87,7 @@ export const startFarming = async ({
   poolPublicKey,
   userPoolTokenAccount,
   farmingState,
+  curveType,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -94,6 +95,7 @@ export const startFarming = async ({
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
   farmingState: PublicKey
+  curveType?: number | null
 }) => {
   const transactionsAndSigners = await getStartFarmingTransactions({
     wallet,
@@ -102,6 +104,7 @@ export const startFarming = async ({
     poolPublicKey,
     userPoolTokenAccount,
     farmingState,
+    curveType,
   })
 
   const result = await signAndSendTransaction({
