@@ -61,6 +61,7 @@ import {
   StyledTextDiv,
   TotalStakedBlock,
   WalletAvailableTitle,
+  UserFormRestakeButton,
   WalletBalanceBlock,
   WalletRow
 } from '../styles'
@@ -447,19 +448,20 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   </DarkTooltip>
                   <ClaimButtonContainer>
                     <DarkTooltip
+                      delay={0}
                       title={
                         !isClaimDisabled ? (
                           ''
                         ) : (
-                            <p>
-                              Rewards distribution takes place on the 27th day of
-                              each month, you will be able to claim your reward
+                          <p>
+                            Rewards distribution takes place on the 27th day of
+                            each month, you will be able to claim your reward
                             for this period on{' '}
-                              <span style={{ color: COLORS.success }}>
-                                {claimUnlockData}.
+                            <span style={{ color: COLORS.success }}>
+                              {claimUnlockData}.
                             </span>
-                            </p>
-                          )
+                          </p>
+                        )
                       }
                     >
                       <span>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BoldHeader, ClaimRewardsStyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -17,7 +17,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
-import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
+import { withdrawFarmed } from '@sb/dexUtils/pools/actions/withdrawFarmed'
 import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import ProposeToStakePopup from '../../Popups/ProposeToStake'
@@ -26,9 +26,10 @@ import { RIN_MINT } from '@sb/dexUtils/utils'
 import LightLogo from '@icons/lightLogo.svg'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import AttentionComponent from '@sb/components/AttentionBlock'
-import { WithdrawStakedParams } from '@sb/dexUtils/staking/withdrawStaked'
+import { WithdrawFarmedParams } from '@sb/dexUtils/staking/withdrawStaked'
+import { COLORS } from '@variables/variables'
 
-export const ClaimRewards = ({
+const Popup = ({
   theme,
   open,
   selectedPool,
@@ -54,7 +55,7 @@ export const ClaimRewards = ({
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   programId: string
   callback?: () => void
-  withdrawFunction?: (params: WithdrawStakedParams) => Promise<string>
+  withdrawFunction?: (params: WithdrawFarmedParams) => Promise<string>
   hideMaintenanceWarning?: boolean
 }) => {
   const { wallet } = useWallet()
@@ -106,7 +107,7 @@ export const ClaimRewards = ({
         farmingTickets,
         snapshotQueues,
         signAllTransactions,
-        programAddress: programId
+        programAddress: programId,
       })
 
       notify({
@@ -145,16 +146,35 @@ export const ClaimRewards = ({
       console.warn('Error withdraw farming: ', e)
     }
 
-    if (result !== 'blockhash_outdated') {
-      if (isFarmingRIN && programId !== STAKING_PROGRAM_ADDRESS) {
-        setIsProposeToStakePopupOpen(true)
+    switch (result) {
+      // if blockhash outdated - update data & ask user to try again (and update blockhash via new sign)
+      case 'blockhash_outdated': {
+        setShowRetryMessage(true)
+        break
       }
-
-      if (!callback) {
+      // for cancelled - close right away
+      case 'cancelled': {
+        clearPoolWaitingForUpdate()
         close()
+        break
       }
-    } else {
-      setShowRetryMessage(true)
+      // otherwise update data
+      default: {
+        setTimeout(async () => {
+          refreshTokensWithFarmingTickets()
+          clearPoolWaitingForUpdate()
+        }, 7500)
+
+        setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+
+        // show restake popup for not staking claim and if farmed rin
+        if (isFarmingRIN && programId !== STAKING_PROGRAM_ADDRESS) {
+          setIsProposeToStakePopupOpen(true)
+        } else {
+          close()
+        }
+        break;
+      }
     }
   }
 
@@ -219,7 +239,7 @@ export const ClaimRewards = ({
         <Button
           color="inherit"
           height="5.5rem"
-          borderColor="#fff"
+          borderColor={COLORS.white}
           fontSize="1.3rem"
           btnWidth="calc(50% - 1rem)"
           disabled={false}
@@ -231,7 +251,7 @@ export const ClaimRewards = ({
           Claim Rewards with Hardware Wallet (e.g. Ledger)
         </Button>
         <Button
-          color="#651CE4"
+          color={COLORS.primary}
           height="5.5rem"
           btnWidth="calc(50% - 1rem)"
           disabled={false}
@@ -253,3 +273,5 @@ export const ClaimRewards = ({
     </DialogWrapper>
   )
 }
+
+export const ClaimRewards = withTheme()(Popup)

@@ -1,16 +1,27 @@
 import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
 import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
 
+interface FamingStateClaimable {
+  farmingTokenMint: string
+  amount: number
+}
+
 export const getUniqueAmountsToClaimMap = ({
   farmingTickets,
-  farmingStates,
+  farmingStates = [],
 }: {
   farmingTickets: FarmingTicket[]
-  farmingStates: FarmingState[]
+  farmingStates?: FarmingState[]
 }) => {
-  if (!farmingStates) return []
+  if (!farmingStates) {
+    return new Map<string, FamingStateClaimable>()
+  }
   return farmingStates.reduce((acc, farmingState) => {
     const { farmingTokenMint } = farmingState
+
+    if (!farmingTokenMint) {
+      return acc
+    }
 
     const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
       {
@@ -19,19 +30,16 @@ export const getUniqueAmountsToClaimMap = ({
       }
     )
 
-    if (acc.has(farmingTokenMint)) {
-      const { amount, ...rest } = acc.get(farmingTokenMint)
-      acc.set(farmingTokenMint, {
-        ...rest,
-        amount: amount + availableToClaimFromFarmingState,
-      })
-    } else {
-      acc.set(farmingTokenMint, {
-        farmingTokenMint,
-        amount: availableToClaimFromFarmingState,
-      })
+    const state = acc.get(farmingTokenMint) || {
+      farmingTokenMint,
+      amount: 0,
     }
 
+    acc.set(farmingTokenMint, {
+      farmingTokenMint,
+      amount: state.amount + availableToClaimFromFarmingState,
+    })
+
     return acc
-  }, new Map())
+  }, new Map<string, FamingStateClaimable>())
 }

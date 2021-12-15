@@ -850,18 +850,20 @@ const getUnixTs = () => {
 
 const DEFAULT_TIMEOUT = 30000
 
-export async function sendTransaction({
-  transaction,
-  wallet,
-  signers,
-  connection,
-  sentMessage,
-  successMessage,
-  timeout,
-  operationType,
-  params,
-  focusPopup,
-}: SendTransactionParams): AsyncSendSignedTransactionResult {
+export async function sendTransaction(p: SendTransactionParams): AsyncSendSignedTransactionResult {
+  const {
+    transaction,
+    wallet,
+    signers,
+    connection,
+    sentMessage,
+    successMessage,
+    timeout,
+    operationType,
+    params,
+    focusPopup,
+  } = p
+
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash('max')
   ).blockhash

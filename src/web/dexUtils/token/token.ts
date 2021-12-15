@@ -48,7 +48,7 @@ export class u64 extends BN {
   /**
    * Convert to Buffer representation
    */
-  toBuffer(): typeof Buffer {
+  toBuffer(): Buffer {
     const a = super.toArray().reverse();
     const b = Buffer.from(a);
     if (b.length === 8) {
@@ -2254,6 +2254,7 @@ export class Token {
     if (!PublicKey.isOnCurve(owner.toBuffer())) {
       throw new Error(`Owner cannot sign: ${owner.toString()}`);
     }
+
     return (
       await PublicKey.findProgramAddress(
         [owner.toBuffer(), programId.toBuffer(), mint.toBuffer()],

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BoldHeader, StyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -13,7 +13,7 @@ import { Button } from '../../Tables/index.styles'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
 
-import { endFarming } from '@sb/dexUtils/pools/endFarming'
+import { endFarming } from '@sb/dexUtils/pools/actions/endFarming'
 import { PublicKey } from '@solana/web3.js'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -21,30 +21,32 @@ import { notify } from '@sb/dexUtils/notifications'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+import { COLORS } from '@variables/variables'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import dayjs from 'dayjs'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
-export const UnstakePopup = ({
-  theme,
-  open,
-  allTokensData,
-  selectedPool,
-  farmingTicketsMap,
-  close,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-}: {
+interface UnstakePopupProps {
   theme: Theme
-  open: boolean
   allTokensData: TokenInfo[]
   selectedPool: PoolInfo
-  farmingTicketsMap: Map<string, FarmingTicket>
+  farmingTicketsMap: Map<string, FarmingTicket[]>
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-}) => {
+}
+
+const Popup: React.FC<UnstakePopupProps> = (props) => {
+  const {
+    theme,
+    allTokensData,
+    selectedPool,
+    farmingTicketsMap,
+    close,
+    refreshTokensWithFarmingTickets,
+    setPoolWaitingForUpdateAfterOperation,
+  } = props
   const { wallet } = useWallet()
   const connection = useConnection()
 
@@ -55,7 +57,7 @@ export const UnstakePopup = ({
     selectedPool.poolTokenMint
   )
 
-  const farmingState = selectedPool.farming[0]
+  const farmingState = selectedPool.farming && selectedPool.farming[0]
 
   if (!farmingState) return null
 
@@ -71,9 +73,7 @@ export const UnstakePopup = ({
 
   const unlockAvailableDate =
     lastFarmingTicket && isPoolWithFarming
-      ? +lastFarmingTicket.startTime +
-        +selectedPool.farming[0].periodLength +
-        60 * 20
+      ? +lastFarmingTicket.startTime + +farmingState.periodLength + 60 * 20
       : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
@@ -88,9 +88,9 @@ export const UnstakePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => {}}
+      onEnter={() => { }}
       maxWidth={'md'}
-      open={open}
+      open
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify={'space-between'} width={'100%'}>
@@ -108,7 +108,7 @@ export const UnstakePopup = ({
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
-            color: theme.palette.green.main,
+            color: COLORS.success,
           }}
         >
           {TRANSACTION_COMMON_SOL_FEE} SOL
@@ -120,8 +120,8 @@ export const UnstakePopup = ({
           title={
             isUnstakeLocked
               ? `Until ${dayjs
-                  .unix(unlockAvailableDate)
-                  .format('HH:mm:ss MMM DD, YYYY')}`
+                .unix(unlockAvailableDate)
+                .format('HH:mm:ss MMM DD, YYYY')}`
               : null
           }
         >
@@ -148,6 +148,7 @@ export const UnstakePopup = ({
                   userPoolTokenAccount: userPoolTokenAccount
                     ? new PublicKey(userPoolTokenAccount)
                     : null,
+                  curveType: selectedPool.curveType,
                   farmingState: farmingState,
                 })
 
@@ -159,8 +160,8 @@ export const UnstakePopup = ({
                     result === 'success'
                       ? 'Successfully unstaked.'
                       : result === 'failed'
-                      ? 'Unstaking failed, please try again later or contact us in telegram.'
-                      : 'Unstaking cancelled.',
+                        ? 'Unstaking failed, please try again later or contact us in telegram.'
+                        : 'Unstaking cancelled.',
                 })
 
                 const clearPoolWaitingForUpdate = () =>
@@ -190,3 +191,5 @@ export const UnstakePopup = ({
     </DialogWrapper>
   )
 }
+
+export const UnstakePopup = withTheme()(Popup)

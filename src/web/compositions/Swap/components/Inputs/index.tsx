@@ -17,6 +17,7 @@ import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import Arrow from '@icons/arrowBottom.svg'
+import { stripInputNumber } from '@sb/dexUtils/utils'
 
 export const InputWithSelectorForSwaps = ({
   theme,
@@ -57,11 +58,11 @@ export const InputWithSelectorForSwaps = ({
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'1rem'}>
         <InvisibleInput
-          type={'number'}
+          type={'text'}
           value={value}
           disabled={disabled}
           onChange={(e) => {
-            onChange(e.target.value)
+            onChange(stripInputNumber(e, value))
           }}
           placeholder={placeholder}
         />

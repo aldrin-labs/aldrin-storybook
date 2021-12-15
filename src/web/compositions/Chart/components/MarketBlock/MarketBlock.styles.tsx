@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { Link } from 'react-router-dom'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -28,17 +27,7 @@ export const Title = styled(
   text-align: ${(props) => props.textAlign || 'center'};
   margin: ${(props) => props.margin || '0'};
 `
-export const LinkToAnalytics = styled(Link)`
-  font-size: 2rem;
-  cursor: pointer;
-  margin-left: 1.5rem;
-`
 
-export const LinkToTwitter = styled.a`
-  font-size: 2rem;
-  cursor: pointer;
-  margin-left: 1.5rem;
-`
 export const MarketStatsContainer = styled.div`
   display: flex;
   flex-direction: row;

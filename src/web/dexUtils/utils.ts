@@ -61,9 +61,9 @@ export function getDecimalCount(value) {
   return 0
 }
 
-export function useLocalStorageState(
-  key,
-  defaultState = null,
+export function useLocalStorageState<T>(
+  key: string,
+  defaultState: T|null = null,
   setIfNotChanged = false
 ) {
   const [state, setState] = useState(() => {
@@ -150,4 +150,24 @@ export function notEmpty<TValue>(value: TValue | null | undefined): value is TVa
 
 export function convertDataURIToBinary(base64: string) {
   return new Buffer(base64, "base64")
+}
+
+export const stripInputNumber = (e: React.ChangeEvent<HTMLInputElement>, prevValue: number | string) => {
+  let value = `${e.target.value}`
+
+  // change comma to dot
+  value = value.replaceAll(',', '.')
+
+  // check numbers only and 1 dot
+  if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
+    return prevValue
+  }
+
+  // add 0 if first symbol is dot
+  if (value[0] === '.') {
+    value = `0${value}`
+  }
+
+  // change comma to dot
+  return value.replace(',', '.')
 }

@@ -1,6 +1,7 @@
 import {
   Account,
   Connection,
+  Keypair,
   LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
@@ -1116,7 +1117,7 @@ export const createSOLAccountAndClose = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-}): Promise<[Account, Transaction, Transaction]> => {
+}): Promise<[Keypair, Transaction, Transaction]> => {
   // if SOL - create new token address
 
   const tokenMint = new Token(
@@ -1140,7 +1141,7 @@ export const createSOLAccountAndClose = async ({
   )
 
   return [
-    createWrappedAccount,
+    Keypair.fromSecretKey(createWrappedAccount.secretKey),
     createWrappedAccountTransaction,
     closeAccountTransaction,
   ]

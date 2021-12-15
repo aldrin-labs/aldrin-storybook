@@ -3,20 +3,20 @@ import styled from 'styled-components'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 export const TimerButton = styled.div`
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #383b45;
+  background: #17181A;
   border-radius: 0.8rem;
   cursor: pointer;
-  margin: ${(props: { margin: string }) =>
+  margin: ${(props: { margin?: string }) =>
     props.margin || '0 3rem 0 0'};
 `
 
 export const ReloadTimer = ({
-  size = 23,
+  size = 21,
   duration = 10,
   initialRemainingTime = 10,
   color = '#651CE4',

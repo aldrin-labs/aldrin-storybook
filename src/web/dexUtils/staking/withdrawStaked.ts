@@ -35,7 +35,7 @@ import { StakingPool } from './types'
 import { splitBy } from '../../utils/collection'
 
 
-export interface WithdrawStakedParams {
+export interface WithdrawFarmedParams {
   wallet: WalletAdapter
   connection: Connection
   allTokensData: TokenInfo[]
@@ -46,7 +46,7 @@ export interface WithdrawStakedParams {
   signAllTransactions: boolean // Ledger compability
 }
 
-export const withdrawStaked = async (params: WithdrawStakedParams) => {
+export const withdrawStaked = async (params: WithdrawFarmedParams) => {
   const {
     wallet,
     connection,
