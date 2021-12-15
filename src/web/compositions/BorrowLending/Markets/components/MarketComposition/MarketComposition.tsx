@@ -10,7 +10,7 @@ type MarketCompositionProps = {
 const MarketComposition = ({values}: MarketCompositionProps) => {
 
     const renderReservesValues = (reservesValues: MarketCompositionProps['values']) => {
-        return values.map((value) => {
+        return reservesValues.map((value) => {
             return (
                 <li key={value.asset}>
                     <a

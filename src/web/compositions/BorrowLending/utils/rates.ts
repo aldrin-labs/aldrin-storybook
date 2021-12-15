@@ -9,7 +9,6 @@ export const calculateBorrowApy = (
     minBorrowRate: number,
     maxBorrowRate: number
 ) => {
-    console.log({utilizationRate, optimalUtilizationRate, optimalBorrowRate, minBorrowRate, maxBorrowRate});
     let depositApy = 0;
     if(utilizationRate < optimalUtilizationRate) {
         depositApy = (utilizationRate/optimalUtilizationRate) * (optimalBorrowRate - minBorrowRate) + minBorrowRate;

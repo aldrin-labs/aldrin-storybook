@@ -124,4 +124,4 @@ const Markets = ({theme, reserves}: MarketsProps) => {
 	);
 };
 
-export default compose(withTheme())(Markets)
+export default compose(withTheme())(Markets);

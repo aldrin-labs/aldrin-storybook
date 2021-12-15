@@ -7,8 +7,6 @@ import {
     Table,
     TableBody,
     TableHeader,
-    TableRow,
-    TextColumnContainer
 } from '@sb/compositions/Pools/components/Tables/index.styles';
 import {BlockTemplate} from '@sb/compositions/Pools/index.styles';
 import {Row, RowContainer} from '@sb/compositions/AnalyticsRoute/index.styles';
@@ -45,6 +43,8 @@ const TableMarkets = ({theme, reserves}: TableMarketsProps) => {
             const reserveMarketPrice = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString());
             const tokenSupply = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).add(reserve.liquidity.availableAmount).toString());
             const tokenSupplyWorth = tokenSupply * reserveMarketPrice;
+            const reserveAvailableLiq = parseInt(reserve.liquidity.availableAmount.toString());
+            const reserveAvailableLiqWorth = reserveAvailableLiq * reserveMarketPrice;
             const reserveBorrowedAmount = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString());
             const reserveBorrowedAmountWorth = reserveBorrowedAmount * reserveMarketPrice;
             const utilizationRate = calculateUtilizationRate(
@@ -63,31 +63,47 @@ const TableMarkets = ({theme, reserves}: TableMarketsProps) => {
             console.log('borrowApy', borrowApy)
             console.log('depositApy', borrowApy)
 
-            return <tr
-                onClick={() => setReserveStatusOpen(true)}
-                style={{cursor: "pointer"}}
-            >
-                <td>
-                    <a
-                        href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
-                        target="_blank"
-                        style={{display: 'block'}}
-                    >
-                        {reserve.liquidity.mint.toString()}
-                    </a>
-                    <span>{tokenPrice}</span>
-                </td>
-                <td>
-                    <p style={{margin: 0}}>{tokenSupply}</p>
-                    <span>{toNumberWithDecimals(tokenSupplyWorth, 2)}</span>
-                </td>
-                <td>
-                    <p style={{margin: 0}}>{reserveBorrowedAmount}</p>
-                    <span>${toNumberWithDecimals(reserveBorrowedAmountWorth, 2)}</span>
-                </td>
-                <td>{depositApy % 1 !== 0 ? depositApy.toFixed(2) : depositApy}%</td>
-                <td>{borrowApy % 1 !== 0 ? borrowApy.toFixed(2) : borrowApy}%</td>
-            </tr>
+            return <>
+                <tr
+                    onClick={() => setReserveStatusOpen(true)}
+                    style={{cursor: "pointer"}}
+                >
+                    <td>
+                        <a
+                            href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
+                            target="_blank"
+                            style={{display: 'block'}}
+                        >
+                            {reserve.liquidity.mint.toString()}
+                        </a>
+                        <span>{tokenPrice}</span>
+                    </td>
+                    <td>
+                        <p style={{margin: 0}}>{tokenSupply}</p>
+                        <span>{toNumberWithDecimals(tokenSupplyWorth, 2)}</span>
+                    </td>
+                    <td>
+                        <p style={{margin: 0}}>{reserveBorrowedAmount}</p>
+                        <span>${toNumberWithDecimals(reserveBorrowedAmountWorth, 2)}</span>
+                    </td>
+                    <td>{depositApy % 1 !== 0 ? depositApy.toFixed(2) : depositApy}%</td>
+                    <td>{borrowApy % 1 !== 0 ? borrowApy.toFixed(2) : borrowApy}%</td>
+                </tr>
+                <ReserveStatusPopup
+                    theme={theme}
+                    open={reserveStatusOpen}
+                    onClose={closeReserveStatus}
+                    availableLiq={reserveAvailableLiq}
+                    availableLiqWorth={reserveAvailableLiqWorth}
+                    borrowedAmount={reserveBorrowedAmount}
+                    borrowedAmountWorth={reserveBorrowedAmountWorth}
+                    utilization={utilizationRate}
+                    maxLTV={reserve.config.loanToValueRatio.percent}
+                    liquidationThreshold={reserve.config.liquidationThreshold.percent}
+                    liquidationBonus={reserve.config.liquidationBonus.percent}
+                    depositApy={depositApy}
+                />
+            </>
         })
     }
 
@@ -123,11 +139,6 @@ const TableMarkets = ({theme, reserves}: TableMarketsProps) => {
                     </RowContainer>
                 </BlockTemplate>
             </RowContainer>
-            <ReserveStatusPopup
-                theme={theme}
-                open={reserveStatusOpen}
-                onClose={closeReserveStatus}
-            />
         </RowContainer>
     );
 };

@@ -7,7 +7,7 @@ import {
 export const loadAccountsFromProgram = async ({
   connection,
   filters,
-  programAddress
+  programAddress,
 }: {
   connection: Connection
   filters: GetProgramAccountsFilter[]
