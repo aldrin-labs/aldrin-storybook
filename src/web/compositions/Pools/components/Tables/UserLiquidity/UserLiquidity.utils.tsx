@@ -36,18 +36,7 @@ import {
 } from '../index.styles'
 import { getFarmingStateDailyFarmingValue } from './utils/getFarmingStateDailyFarmingValue'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from './utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-
-export const AUTHORIZED_POOLS = [
-  '4KeZGuXPq9fyZdt5sfzHMM36mxTf3oSkDaa4Y4gHm9Hz', // mSOL_ETH
-  'Gathk79qZfJ4G36M7hiL3Ef1P5SDt7Xhm2C1vPhtWkrw', // RIN_USDC
-  'EotLYRsnRVqR3euN24P9PMXCqJv1WLsV8kJxR9o1y4U7', // mSOL_MNGO
-  'H37kHxy82uLoF8t86wK414KzpVJy7uVJ9Kvt5wYsTGPh', // mSOL_USDC
-  '3sbMDzGtyHAzJqzxE7DPdLMhrsxQASYoKLkHMYJPuWkp', // SOL_USDC
-  '77qHkg6TEe4FuZAr35bthTEadmT4ueWe1xomFFZkwiGQ', // mSOL_USDT
-  '9hkYqNM8QSx2vTwspaNg5VvW1LBxKWWgud8pCVdxKYZU', // mSOL_BTC
-  'HFNv9CeUtKFKm7gPoX1QG1NnrPnDhA5W6xqHGxmV6kxX', // RIN_SOL
-  'BE7eTJ8DB7xTu6sKsch4gWDCXbD48PLGesRLx7E1Qce4', // mSol_wUst
-]
+import { AUTHORIZED_POOLS } from '@core/config/dex'
 
 export const userLiquidityTableColumnsNames = [
   { label: 'Pool', id: 'pool' },

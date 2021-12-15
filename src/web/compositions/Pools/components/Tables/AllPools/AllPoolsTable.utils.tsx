@@ -28,11 +28,11 @@ import {
   RowDataTdTopText,
   TextColumnContainer,
 } from '../index.styles'
-import { AUTHORIZED_POOLS } from '../UserLiquidity/UserLiquidity.utils'
 import { getFarmingStateDailyFarmingValue } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 import { FarmingState } from '@sb/dexUtils/common/types'
 import ScalesIcon from '@icons/scales.svg'
+import { AUTHORIZED_POOLS } from '@core/config/dex'
 
 export const allPoolsTableColumnsNames = [
   { label: 'Pool', id: 'pool' },

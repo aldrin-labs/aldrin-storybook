@@ -281,7 +281,6 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    // TODO: Comment before merge
     variables: () => ({
       timestampFrom: endOfHourTimestamp() - DAY,
       timestampTo: endOfHourTimestamp(),
