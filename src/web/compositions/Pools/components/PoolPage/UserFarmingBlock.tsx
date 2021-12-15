@@ -1,5 +1,5 @@
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { estimateTime } from '@core/utils/dateUtils'
+import { estimateTime, MINUTE } from '@core/utils/dateUtils'
 import { SvgIcon } from '@sb/components'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Text } from '@sb/components/Typography'
@@ -104,7 +104,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   if (
     !hadFarming || // No farming were created
-    (!hasFarming && !availableToClaimUsd && !hasStaked) // Farming ended and nothing to withdraw/claim
+    (!hasFarming && !availableToClaimUsd && !hasStaked && !isPoolOwner) // Farming ended and nothing to withdraw/claim
   ) {
     return (
       <FarmingBlock>
@@ -204,6 +204,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               <LiquidityTitle>Remaining Time</LiquidityTitle>
 
               <div>
+                {timeRemainMax < MINUTE && <LiquidityText>Ended</LiquidityText>}
                 {!!estimatedTime.days && (
                   <LiquidityText>
                     <LiquidityText color="success">

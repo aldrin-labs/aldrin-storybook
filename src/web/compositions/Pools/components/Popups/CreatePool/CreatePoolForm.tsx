@@ -1,5 +1,5 @@
 import { stripByAmount } from '@core/utils/chartPageUtils'
-import { DAY, HOUR, MINUTE } from '@core/utils/dateUtils'
+import { DAY, HOUR } from '@core/utils/dateUtils'
 import { Button } from '@sb/components/Button'
 import {
   CheckboxField,
@@ -195,7 +195,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                   tokenAmount: new BN(
                     parseFloat(values.farming.tokenAmount) * tokensMultiplier
                   ),
-                  periodLength: new BN(MINUTE),
+                  periodLength: new BN(HOUR),
                   tokensPerPeriod: new BN(tokensPerPeriod * tokensMultiplier),
                   noWithdrawPeriodSeconds: new BN(0),
                   vestingPeriodSeconds: values.farming.vestingEnabled

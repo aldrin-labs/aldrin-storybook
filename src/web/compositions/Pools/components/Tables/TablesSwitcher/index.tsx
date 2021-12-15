@@ -32,6 +32,7 @@ import { ApolloQueryResult } from 'apollo-client'
 import { useVestings } from '@sb/dexUtils/vesting'
 import { toMap } from '@sb/utils'
 import { COLORS } from '@variables/variables'
+import { CURVE } from '@sb/dexUtils/pools/actions/createPool'
 import { PoolPage } from '../../PoolPage'
 import { AllPoolsTable } from '../AllPools'
 import { UserLiquidityTable } from '../UserLiquidity'
@@ -46,9 +47,21 @@ import {
 } from './styles'
 import { CreatePoolModal } from '../../Popups'
 import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
-import { takePoolsFarmingSnapshots } from '../../../../../dexUtils/pools/actions/takeSnapshots'
 
 export type PoolsInfo = { getPoolsInfo: PoolInfo[] }
+
+const AUTHORIZED_POOLS = [
+  'Gubmyfw5Ekdp4pkXk9be5yNckSgCdgd7JEThx8SFzCQQ', // RIN_USDC
+  '7nrkzur3LUxgfxr3TBj9GpUsiABCwMgzwtNhHKG4hPYz', // RIN_SOL
+  'FC4sYMpsMvdsq8hHMEtmWA8xN25W71t2c7RycU5juX35', // mSOL_USDT
+  '2JANvFVV2M8dv7twzL1EF3PhEJaoJpvSt6PhnjW6AHG6', // mSOL_ETH
+  '13FjT6LMUH9LQLQn6KGjJ1GNXKvgzoDSdxvHvAd4hcan', // mSOL_BTC
+  'Af4TpzGpo8Yc61bCNwactPKH9F951tHPzp8XGxWRLNE1', // mSOL_USDC
+  '4GUniSDrCAZR3sKtLa1AWC8oyYubZeKJQ8KraQmy3Wt5', // SOL_USDC
+  'EnKhda5n5LYbZjPv7d7WChkSXzo5RgV8eSVVkGCXsQUn', // mSOL_UST
+  'CAHchWN1xoxNvXmqmmj6U834ip585rXZbh9NkvE9vTea', // mSOL_MNGO
+]
+
 interface TableSwitcherProps {
   getPoolsInfoQueryRefetch: () => Promise<ApolloQueryResult<PoolsInfo>>
   getPoolsInfoQuery: PoolsInfo
@@ -72,9 +85,9 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   const [createPoolModalOpened, setCreatePoolModalOpened] = useState(false)
   const [searchValue, setSearchValue] = useState('')
-  const [selectedTable, setSelectedTable] = useState<'all' | 'userLiquidity'>(
-    'all'
-  )
+  const [selectedTable, setSelectedTable] = useState<
+    'all' | 'userLiquidity' | 'stablePools' | 'permissionlessPools'
+  >('all')
 
   const { path } = useRouteMatch()
 
@@ -108,8 +121,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     refreshFarmingTickets()
   }
 
-  const isAllPoolsSelected = selectedTable === 'all'
-
   const dexTokensPricesMap = getDexTokensPrices.reduce(
     (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
     new Map<string, DexTokensPrices>()
@@ -141,6 +152,11 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     vestings: vestingsByMintForUser,
   })
 
+  const stablePools = pools.filter((pool) => pool.curveType === CURVE.STABLE)
+  const permPools = pools.filter(
+    (pool) => !AUTHORIZED_POOLS.includes(pool.swapToken)
+  )
+
   const tradingVolumes =
     getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools ||
     []
@@ -152,14 +168,14 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   return (
     <>
-      <button
+      {/* <button
         type="button"
         onClick={() =>
           takePoolsFarmingSnapshots({
             pools: pools.filter(
               (p) =>
                 p.name ===
-                '4dmKkXNHdgYsXqBHCuMikNQWwVomZURhYvkkX5c4pQ7y_5jFnsfx36DyGk8uVGrbXnVUMTsBkPXGpx6e69BiGFzko'
+                '4wjPQJ6PrkC4dHhYghwJzGBVP78DkBzA2U3kHoFNBuhj_8upjSpvjcdpuzhfR1zriwg5NXkwDruejqNE9WNbPRtyA'
             ),
             wallet,
             connection,
@@ -167,17 +183,29 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         }
       >
         Take snapshots
-      </button>
+      </button> */}
       <TabContainer>
         <div>
           <TableModeButton
-            isActive={isAllPoolsSelected}
+            isActive={selectedTable === 'all'}
             onClick={() => setSelectedTable('all')}
           >
             All Pools
           </TableModeButton>
           <TableModeButton
-            isActive={!isAllPoolsSelected}
+            isActive={selectedTable === 'stablePools'}
+            onClick={() => setSelectedTable('stablePools')}
+          >
+            Stable Pools
+          </TableModeButton>
+          <TableModeButton
+            isActive={selectedTable === 'permissionlessPools'}
+            onClick={() => setSelectedTable('permissionlessPools')}
+          >
+            Permissionless Pools
+          </TableModeButton>
+          <TableModeButton
+            isActive={selectedTable === 'userLiquidity'}
             onClick={() => setSelectedTable('userLiquidity')}
           >
             Your liquidity ({userLiquidityPools.length})
@@ -217,7 +245,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         </InputWrap>
       </TabContainer>
       <TableContainer>
-        {selectedTable === 'all' ? (
+        {selectedTable === 'all' && (
           <AllPoolsTable
             searchValue={searchValue}
             pools={pools}
@@ -226,7 +254,28 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             tradingVolumes={tradingVolumesMap}
             farmingTicketsMap={farmingTicketsMap}
           />
-        ) : (
+        )}
+        {selectedTable === 'stablePools' && (
+          <AllPoolsTable
+            searchValue={searchValue}
+            pools={stablePools}
+            dexTokensPricesMap={dexTokensPricesMap}
+            feesByPool={feesByPoolMap}
+            tradingVolumes={tradingVolumesMap}
+            farmingTicketsMap={farmingTicketsMap}
+          />
+        )}
+        {selectedTable === 'permissionlessPools' && (
+          <AllPoolsTable
+            searchValue={searchValue}
+            pools={permPools}
+            dexTokensPricesMap={dexTokensPricesMap}
+            feesByPool={feesByPoolMap}
+            tradingVolumes={tradingVolumesMap}
+            farmingTicketsMap={farmingTicketsMap}
+          />
+        )}
+        {selectedTable === 'userLiquidity' && (
           <UserLiquidityTable
             searchValue={searchValue}
             pools={userLiquidityPools}
