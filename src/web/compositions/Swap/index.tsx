@@ -62,6 +62,7 @@ import {
 } from '@sb/dexUtils/pools/swap'
 import { Cards } from './components/Cards/Cards'
 import { Loader } from '@sb/components/Loader/Loader'
+import { sleep } from '@sb/dexUtils/utils'
 
 const SwapPage = ({
   theme,
@@ -591,6 +592,8 @@ const SwapPage = ({
                   })
 
                   // refresh data
+                  await sleep(2 * 1000)
+
                   refreshPoolBalances()
                   refreshAllTokensData()
 
