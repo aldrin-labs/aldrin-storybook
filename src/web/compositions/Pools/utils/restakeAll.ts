@@ -52,6 +52,7 @@ export const restakeAll = async ({
         poolPublicKey: new PublicKey(pool.swapToken),
         farmingState: openFarmings[0],
         userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+        curveType: pool.curveType,
       })
 
       endFarmingTransactions.push(...transactionsAndSigners)
@@ -92,6 +93,7 @@ export const restakeAll = async ({
         poolPublicKey: new PublicKey(pool.swapToken),
         userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
         farmingState: new PublicKey(farming[0].farmingState),
+        curveType: pool.curveType
       })
 
       startFarmingTransactions.push(...transactionsAndSigners)
