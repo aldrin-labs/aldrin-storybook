@@ -305,6 +305,8 @@ const SwapPage = ({
     newBaseAmount: string | number,
     isSwapBaseToQuoteFromArgs?: boolean
   ) => {
+    setBaseAmount(newBaseAmount)
+
     const swapAmountOut = await getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newBaseAmount,
       isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
@@ -318,12 +320,13 @@ const SwapPage = ({
       poolBalances,
     })
 
-    setBaseAmount(newBaseAmount)
     setQuoteAmount(swapAmountOut)
   }
 
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
     const isSwapBaseToQuoteForQuoteChange = !isSwapBaseToQuote
+
+    setQuoteAmount(newQuoteAmount)
 
     const swapAmountOut = await getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newQuoteAmount,
@@ -342,7 +345,6 @@ const SwapPage = ({
       swapAmountOut,
     })
 
-    setQuoteAmount(newQuoteAmount)
     setBaseAmount(swapAmountOut)
   }
 
@@ -594,7 +596,8 @@ const SwapPage = ({
 
                   // reset fields
                   if (result === 'success') {
-                    setBaseAmountWithQuote(0)
+                    setBaseAmount('')
+                    setQuoteAmount('')
                   }
 
                   // remove loader
