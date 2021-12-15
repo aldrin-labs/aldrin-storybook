@@ -1,5 +1,6 @@
-import BN from 'bn.js'
 import { TokenInstructions } from '@project-serum/serum'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   Connection,
   Keypair,
@@ -8,23 +9,19 @@ import {
   SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
+import BN from 'bn.js'
 
-import { notify } from '@sb/dexUtils/notifications'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { NUMBER_OF_RETRIES } from '@sb/dexUtils/common'
-import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
+import { signAndSendTransaction } from '../signAndSendTransaction'
 
-export const startFarming = async ({
+export const getStartFarmingTransactions = async ({
   wallet,
   connection,
   poolTokenAmount,
   poolPublicKey,
   userPoolTokenAccount,
   farmingState,
-  curveType
+  curveType,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -43,9 +40,10 @@ export const startFarming = async ({
   const { lpTokenFreezeVault } = await program.account.pool.fetch(poolPublicKey)
 
   const farmingTicket = Keypair.generate()
-  const farmingTicketInstruction = await program.account.farmingTicket.createInstruction(
-    farmingTicket
-  )
+  const farmingTicketInstruction =
+    await program.account.farmingTicket.createInstruction(farmingTicket)
+
+  const transactionsAndSigners = []
 
   const startFarmingTransaction = await program.instruction.startFarming(
     new BN(poolTokenAmount),
@@ -54,7 +52,7 @@ export const startFarming = async ({
         pool: poolPublicKey,
         farmingState,
         farmingTicket: farmingTicket.publicKey,
-        lpTokenFreezeVault: lpTokenFreezeVault,
+        lpTokenFreezeVault,
         userLpTokenAccount: userPoolTokenAccount,
         walletAuthority: wallet.publicKey,
         userKey: wallet.publicKey,
@@ -74,38 +72,43 @@ export const startFarming = async ({
   commonTransaction.add(farmingTicketInstruction)
   commonTransaction.add(startFarmingTransaction)
 
-  let counter = 0
-  while (counter < NUMBER_OF_RETRIES) {
-    try {
-      if (counter > 0) {
-        notify({
-          type: 'error',
-          message: 'Staking failed. Please confirm transaction again.',
-        })
-      }
+  transactionsAndSigners.push({
+    transaction: commonTransaction,
+    signers: commonSigners,
+  })
 
-      const tx = await sendTransaction({
-        wallet,
-        connection,
-        transaction: commonTransaction,
-        signers: commonSigners,
-        focusPopup: true,
-      })
+  return transactionsAndSigners
+}
 
-      if (!isTransactionFailed(tx)) {
-        return 'success'
-      } else {
-        counter++
-      }
-    } catch (e) {
-      console.log('start farming catch error', e)
-      counter++
+export const startFarming = async ({
+  wallet,
+  connection,
+  poolTokenAmount,
+  poolPublicKey,
+  userPoolTokenAccount,
+  farmingState,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  poolTokenAmount: number
+  poolPublicKey: PublicKey
+  userPoolTokenAccount: PublicKey | null
+  farmingState: PublicKey
+}) => {
+  const transactionsAndSigners = await getStartFarmingTransactions({
+    wallet,
+    connection,
+    poolTokenAmount,
+    poolPublicKey,
+    userPoolTokenAccount,
+    farmingState,
+  })
 
-      if (isCancelledTransactionError(e)) {
-        return 'cancelled'
-      }
-    }
-  }
+  const result = await signAndSendTransaction({
+    wallet,
+    connection,
+    transactionsAndSigners,
+  })
 
-  return 'failed'
+  return result
 }

@@ -45,6 +45,7 @@ import {
   TableModeButton,
 } from './styles'
 import { CreatePoolModal } from '../../Popups'
+import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
 
 export type PoolsInfo = { getPoolsInfo: PoolInfo[] }
 interface TableSwitcherProps {
@@ -89,7 +90,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
-  console.log('userTokensData: ', userTokensData, [refreshUserTokensData])
+  // console.log('userTokensData: ', userTokensData, [refreshUserTokensData])
 
   const [snapshotQueues] = useSnapshotQueues({
     wallet,
@@ -241,6 +242,18 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         <CreatePoolModal
           refetchPools={getPoolsInfoQueryRefetch}
           onClose={() => setCreatePoolModalOpened(false)}
+        />
+      )}
+      {wallet.publicKey && (
+        <RestakeAllPopup
+          // open={isRestakeAllPopupOpen}
+          // close={() => setIsRestakeAllPopupOpen(false)}
+          wallet={wallet}
+          connection={connection}
+          allPoolsData={pools}
+          allTokensData={userTokensData}
+          farmingTicketsMap={farmingTicketsMap}
+          refreshTokensWithFarmingTickets={refreshAll}
         />
       )}
     </>

@@ -68,7 +68,7 @@ export interface PlaceOrder {
 export interface SignTransactionsParams {
   transactionsAndSigners: {
     transaction: Transaction
-    signers?: Array<Account | Keypair | Signer>
+    signers?: Array<Signer>
   }[]
   wallet: WalletAdapter
   connection: Connection

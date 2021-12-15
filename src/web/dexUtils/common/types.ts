@@ -1,4 +1,4 @@
-import { AccountInfo, PublicKey } from '@solana/web3.js'
+import { AccountInfo, PublicKey, Transaction, Signer } from '@solana/web3.js'
 import BN from 'bn.js'
 
 export type FarmingTicket = {
@@ -83,8 +83,11 @@ export interface Pool {
   fees: PoolFees
 }
 
-
 export interface PoolV2 extends Pool {
   curveType: BN
   curve: PublicKey
+}
+export type TransactionAndSigner = {
+  transaction: Transaction
+  signers?: Signer[]
 }

@@ -3,13 +3,11 @@ import React, { useState } from 'react'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Theme, withTheme } from '@material-ui/core'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, StyledPaper } from '../index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
 
-import { Button } from '../../Tables/index.styles'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
 
@@ -26,6 +24,8 @@ import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import dayjs from 'dayjs'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Button } from '../../Tables/index.styles'
+import { BoldHeader, StyledPaper } from '../index.styles'
 
 interface UnstakePopupProps {
   theme: Theme
@@ -73,7 +73,9 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
 
   const unlockAvailableDate =
     lastFarmingTicket && isPoolWithFarming
-      ? +lastFarmingTicket.startTime + +farmingState.periodLength + 60 * 20
+      ? +lastFarmingTicket.startTime +
+        +selectedPool.farming[0].periodLength +
+        60 * 20
       : 0
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
@@ -88,23 +90,23 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => { }}
-      maxWidth={'md'}
+      onEnter={() => {}}
+      maxWidth="md"
       open
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'} width={'100%'}>
+      <RowContainer justify="space-between" width="100%">
         <BoldHeader>Unstake Pool Tokens</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer justify="flex-start">
-        <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+        <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
           You need to unstake pool tokens to be able to withdraw liquidity. You
           still be able to claim rewards in “Your Liquidity” tab.{' '}
         </Text>
       </RowContainer>
 
-      <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+      <RowContainer justify="space-between" margin="2rem 0 0 0">
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
@@ -115,13 +117,13 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
         </WhiteText>
       </RowContainer>
 
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <DarkTooltip
           title={
             isUnstakeLocked
               ? `Until ${dayjs
-                .unix(unlockAvailableDate)
-                .format('HH:mm:ss MMM DD, YYYY')}`
+                  .unix(unlockAvailableDate)
+                  .format('HH:mm:ss MMM DD, YYYY')}`
               : null
           }
         >
@@ -129,7 +131,7 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
             <Button
               style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
               disabled={isUnstakeDisabled}
-              isUserConfident={true}
+              isUserConfident
               theme={theme}
               showLoader={operationLoading}
               onClick={async () => {
@@ -148,13 +150,11 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
                   userPoolTokenAccount: userPoolTokenAccount
                     ? new PublicKey(userPoolTokenAccount)
                     : null,
-                  farmingStatePublicKey: new PublicKey(
-                    farmingState.farmingState
-                  ),
                   snapshotQueuePublicKey: new PublicKey(
                     farmingState.farmingSnapshots
                   ),
                   curveType: selectedPool.curveType,
+                  farmingState,
                 })
 
                 setOperationLoading(false)
@@ -165,8 +165,8 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
                     result === 'success'
                       ? 'Successfully unstaked.'
                       : result === 'failed'
-                        ? 'Unstaking failed, please try again later or contact us in telegram.'
-                        : 'Unstaking cancelled.',
+                      ? 'Unstaking failed, please try again later or contact us in telegram.'
+                      : 'Unstaking cancelled.',
                 })
 
                 const clearPoolWaitingForUpdate = () =>
