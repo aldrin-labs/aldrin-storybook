@@ -127,7 +127,7 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
               : null
           }
         >
-          <div style={{ width: '100%' }}>
+          <div style={{ width: '100%', cursor: 'help' }}>
             <Button
               style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
               disabled={isUnstakeDisabled}

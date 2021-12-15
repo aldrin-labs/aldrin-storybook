@@ -1,16 +1,16 @@
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { Connection, PublicKey } from '@solana/web3.js'
-import { PoolInfo } from '../index.types'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 
-import { getTokenDataByMint } from '.'
 import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
-import { getEndFarmingTransactions } from '@sb/dexUtils/pools/endFarming'
-import { getStartFarmingTransactions } from '@sb/dexUtils/pools/startFarming'
+import { getEndFarmingTransactions } from '@sb/dexUtils/pools/actions/endFarming'
+import { getStartFarmingTransactions } from '@sb/dexUtils/pools/actions/startFarming'
 import { signAndSendTransaction } from '@sb/dexUtils/pools/signAndSendTransaction'
 import { sleep } from '@sb/dexUtils/utils'
 import { MIN_POOL_TOKEN_AMOUNT_TO_STAKE } from '@sb/dexUtils/common/config'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { getTokenDataByMint } from '.'
+import { PoolInfo } from '../index.types'
 
 export const restakeAll = async ({
   wallet,
@@ -27,7 +27,7 @@ export const restakeAll = async ({
 }) => {
   const endFarmingTransactions = []
 
-  for (let pool of allPoolsData) {
+  for (const pool of allPoolsData) {
     const farmingStates = pool.farming || []
 
     const isPoolWithFarming = pool.farming && pool.farming.length > 0
@@ -74,12 +74,10 @@ export const restakeAll = async ({
 
   const startFarmingTransactions = []
 
-  for (let pool of allPoolsData) {
+  for (const pool of allPoolsData) {
     const farming = pool.farming || []
-    const {
-      address: userPoolTokenAccount,
-      amount: poolTokenAmount,
-    } = getTokenDataByMint(userTokens, pool.poolTokenMint)
+    const { address: userPoolTokenAccount, amount: poolTokenAmount } =
+      getTokenDataByMint(userTokens, pool.poolTokenMint)
 
     const hasPoolTokenAccount =
       userPoolTokenAccount && poolTokenAmount > MIN_POOL_TOKEN_AMOUNT_TO_STAKE

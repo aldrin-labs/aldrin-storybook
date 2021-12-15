@@ -1,8 +1,8 @@
 import { BlockContent } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { Flex } from '@sb/components/Layout'
-import { Text } from '@sb/components/Typography'
-import { COLORS, BORDER_RADIUS } from '@variables/variables'
+import { InlineText, Text } from '@sb/components/Typography'
+import { COLORS, BORDER_RADIUS, SIZE } from '@variables/variables'
 import styled from 'styled-components'
 
 export const Title = styled.span`
@@ -22,7 +22,6 @@ export const Footer = styled(Flex)`
   ${Button} {
     flex: 1;
     margin: 0 10px;
-
 
     &:first-child {
       margin-left: 0;
@@ -94,7 +93,6 @@ export const TokensAvailableText = styled.div`
   line-height: 1.2;
   padding: 4px 0;
   cursor: pointer;
-
 `
 
 export const Centered = styled.div`
@@ -117,15 +115,18 @@ interface ConfirmationBlockProps {
 
 export const ConfirmationBlock = styled.div<ConfirmationBlockProps>`
   padding: 10px 24px;
-  ${(props: ConfirmationBlockProps) => props.border ? `
+  ${(props: ConfirmationBlockProps) =>
+    props.border
+      ? `
   border-radius: ${BORDER_RADIUS.lg};
   border: 1px solid ${COLORS.border};
   box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.45);
-  ` : ''}
+  `
+      : ''}
 `
 // export const ConfirmationBlock = styled.div``
 
-export const ConfirmationRow =  styled(Flex)`
+export const ConfirmationRow = styled(Flex)`
   padding: 10px 0;
   justify-content: space-between;
   align-items: center;
@@ -135,6 +136,7 @@ export const SvgIconContainer = styled.span`
   padding-left: 6px;
   position: relative;
   top: 2px;
+  cursor: help;
 `
 
 export const Warning = styled(Flex)`
@@ -161,4 +163,17 @@ export const PoolProcessingContent = styled(Flex)`
 
 export const PoolProcessingButton = styled(Button)`
   margin-top: 40px;
+`
+
+export const VestingExplanation = styled.div`
+  border: 1px solid ${COLORS.background};
+  padding: ${SIZE.defaultPadding} 30px;
+  margin-top: ${SIZE.defaultPadding};
+  border-radius: ${BORDER_RADIUS.md};
+  display: flex;
+  flex-direction: row;
+
+  ${InlineText} {
+    margin-left: 30px;
+  }
 `

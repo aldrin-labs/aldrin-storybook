@@ -46,6 +46,7 @@ import {
 } from './styles'
 import { CreatePoolModal } from '../../Popups'
 import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
+import { takePoolsFarmingSnapshots } from '../../../../../dexUtils/pools/actions/takeSnapshots'
 
 export type PoolsInfo = { getPoolsInfo: PoolInfo[] }
 interface TableSwitcherProps {
@@ -89,8 +90,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const connection = useConnection()
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
-
-  // console.log('userTokensData: ', userTokensData, [refreshUserTokensData])
 
   const [snapshotQueues] = useSnapshotQueues({
     wallet,
@@ -153,6 +152,22 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   return (
     <>
+      <button
+        type="button"
+        onClick={() =>
+          takePoolsFarmingSnapshots({
+            pools: pools.filter(
+              (p) =>
+                p.name ===
+                '4dmKkXNHdgYsXqBHCuMikNQWwVomZURhYvkkX5c4pQ7y_5jFnsfx36DyGk8uVGrbXnVUMTsBkPXGpx6e69BiGFzko'
+            ),
+            wallet,
+            connection,
+          })
+        }
+      >
+        Take snapshots
+      </button>
       <TabContainer>
         <div>
           <TableModeButton

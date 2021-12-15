@@ -38,6 +38,21 @@ export type FarmingState = {
   feesDistributed: boolean
 }
 
+export type BlockchainFarmingState = {
+  currentTime: BN
+  farmingSnapshots: PublicKey
+  farmingTokenVault: PublicKey
+  noWithdrawalTime: BN
+  periodLength: BN
+  pool: PublicKey
+  startTime: BN
+  tokensPerPeriod: BN
+  tokensTotal: BN
+  tokensUnlocked: BN
+  vestingPeriod: BN
+  farmingState: PublicKey
+}
+
 export type Snapshot = {
   isInitialized: boolean
   tokensFrozen: number

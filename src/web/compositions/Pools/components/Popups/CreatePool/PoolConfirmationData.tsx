@@ -21,7 +21,7 @@ interface PoolConfirmationDataProps {
   farmingRewardPerDay: ReactNode
 }
 
-export const STABLE_POOLS_TOOLTIP = `Stable pools are designed specifically for pegged assets that trade at a similar price. e.g. 
+export const STABLE_POOLS_TOOLTIP = `Stable pools are designed specifically for pegged assets that trade at a similar price. e.g.
 mSOL/SOL (SOL-pegged), USDC/USDT (USD-pegged) etc.`
 
 export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (

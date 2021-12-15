@@ -29,6 +29,7 @@ export interface InlineProps {
   color?: keyof typeof COLORS
   size?: keyof typeof FONT_SIZES
   weight?: Weight
+  cursor?: 'pointer' | 'help' | 'auto' | 'default' | 'none'
 }
 
 export const InlineText = styled.span<InlineProps>`
@@ -36,6 +37,7 @@ export const InlineText = styled.span<InlineProps>`
     props.color ? `color: ${COLORS[props.color]};` : ''}
   ${(props: InlineProps) =>
     props.size ? `font-size: ${FONT_SIZES[props.size]};` : ''}
-  ${(props: TextProps) =>
+  ${(props: InlineProps) =>
     props.weight ? `font-weight: ${props.weight};` : ''};
+  ${(props: InlineProps) => (props.cursor ? `cursor: ${props.cursor};` : '')}
 `

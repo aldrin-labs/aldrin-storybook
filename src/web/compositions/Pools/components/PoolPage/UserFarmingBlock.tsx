@@ -237,7 +237,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             </ExtendFarmingButton>
             {!prolongationEnabled && (
               <DarkTooltip title="The option to extend will be unlocked one hour before the end of the farming period.">
-                <div style={{ height: '1em' }}>
+                <div style={{ height: '1em', cursor: 'help' }}>
                   <SvgIcon src={ClockIcon} width="1em" height="1em" />
                 </div>
               </DarkTooltip>

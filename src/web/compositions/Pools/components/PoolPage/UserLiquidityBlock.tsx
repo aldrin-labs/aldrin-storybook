@@ -38,15 +38,16 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
 
   const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
 
+  const vestingFinishTs = vesting?.endTs * 1000 || Date.now()
+  const vestingFinished = vestingFinishTs <= Date.now()
+  const vestedTokens = parseFloat(vesting?.startBalance.toString() || '0')
   const [baseUserTokenAmount, quoteUserTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
-    poolTokenAmount:
-      poolTokenAmount +
-      stakedTokens +
-      parseFloat(vesting?.startBalance.toString() || '0'),
+    poolTokenAmount: poolTokenAmount + stakedTokens + vestedTokens,
   })
 
-  const hasLiquidity = baseUserTokenAmount > 0 || quoteUserTokenAmount > 0
+  const availableTowithdraw =
+    poolTokenAmount + stakedTokens + (vestingFinished ? vestedTokens : 0)
 
   const baseTokenName = getTokenNameByMintAddress(pool.tokenA)
   const quoteTokenName = getTokenNameByMintAddress(pool.tokenB)
@@ -115,7 +116,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
           </LiquidityText>
         </div>
         <LiquidityButton
-          disabled={processing || !hasLiquidity}
+          disabled={processing || availableTowithdraw === 0}
           onClick={onWithdrawClick}
           $loading={processing}
         >

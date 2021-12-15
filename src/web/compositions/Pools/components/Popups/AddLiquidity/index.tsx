@@ -117,10 +117,8 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   }
 
   // if user has more than one token for one mint
-  const [
-    selectedBaseTokenAddressFromSeveral,
-    setBaseTokenAddressFromSeveral,
-  ] = useState<string>('')
+  const [selectedBaseTokenAddressFromSeveral, setBaseTokenAddressFromSeveral] =
+    useState<string>('')
   const [
     selectedQuoteTokenAddressFromSeveral,
     setQuoteTokenAddressFromSeveral,
@@ -186,8 +184,8 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     isBaseTokenSOL && isNativeSOLSelected
       ? maxBaseAmount - +baseAmount < 0.1
       : isQuoteTokenSOL && isNativeSOLSelected
-        ? maxQuoteAmount - +quoteAmount < 0.1
-        : false
+      ? maxQuoteAmount - +quoteAmount < 0.1
+      : false
 
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
     selectedPool,
@@ -235,9 +233,11 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
 
   const totalFarmingDailyRewardsUSD = openFarmings.reduce(
     (acc, farmingState) => {
-      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValue(
-        { farmingState, totalStakedLpTokensUSD }
-      )
+      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity =
+        getFarmingStateDailyFarmingValue({
+          farmingState,
+          totalStakedLpTokensUSD,
+        })
 
       const farmingTokenSymbol = getTokenNameByMintAddress(
         farmingState.farmingTokenMint
@@ -281,17 +281,17 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
         setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
       }}
-      maxWidth={'md'}
+      maxWidth="md"
       open
       aria-labelledby="responsive-dialog-title"
     >
-      <Row justify={'space-between'} width={'100%'}>
+      <Row justify="space-between" width="100%">
         <BoldHeader style={{ margin: '0 0 2rem 0' }}>
           Deposit Liquidity
         </BoldHeader>
         <Row>
           <ReloadTimer
-            margin={'0 1.5rem 0 0'}
+            margin="0 1.5rem 0 0"
             callback={async () => {
               if (!operationLoading) {
                 refreshPoolBalances()
@@ -302,14 +302,14 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         </Row>
       </Row>
       <RowContainer>
-        <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+        <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
           Enter the amount of the first coin you wish to add, the second coin
           will adjust according to the match of the pool ratio.
         </Text>
       </RowContainer>
       <RowContainer>
         <InputWithCoins
-          placeholder={'0'}
+          placeholder="0"
           theme={theme}
           value={baseAmount}
           onChange={setBaseAmountWithQuote}
@@ -319,12 +319,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           needAlreadyInPool={false}
         />
         <Row>
-          <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
+          <Text fontSize="4rem" fontFamily="Avenir Next Medium">
             +
           </Text>
         </Row>
         <InputWithCoins
-          placeholder={'0'}
+          placeholder="0"
           theme={theme}
           value={quoteAmount}
           onChange={setQuoteAmountWithBase}
@@ -338,7 +338,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       </RowContainer>
 
       {!userPoolTokenAccount && (
-        <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+        <RowContainer justify="space-between" margin="2rem 0 0 0">
           <WhiteText>Gas Fees</WhiteText>
           <WhiteText
             style={{
@@ -350,52 +350,40 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         </RowContainer>
       )}
 
-      <Row
-        margin={'2rem 0 1rem 0'}
-        align={'flex-start'}
-        justify={'space-between'}
-      >
-        <Row direction={'column'} align={'flex-start'} justify="flex-start">
-          <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+      <Row margin="2rem 0 1rem 0" align="flex-start" justify="space-between">
+        <Row direction="column" align="flex-start" justify="flex-start">
+          <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
             Total Value Locked:
           </Text>
           <Row>
-            <Text fontSize={'1.5rem'}>
-              {formatNumberToUSFormat(
-                stripDigitPlaces(poolAmountTokenA, 2)
-              )}{' '}
+            <Text fontSize="1.5rem">
+              {formatNumberToUSFormat(stripDigitPlaces(poolAmountTokenA, 2))}{' '}
               {getTokenNameByMintAddress(selectedPool.tokenA)} /{' '}
-              {formatNumberToUSFormat(
-                stripDigitPlaces(poolAmountTokenB, 2)
-              )}{' '}
+              {formatNumberToUSFormat(stripDigitPlaces(poolAmountTokenB, 2))}{' '}
               {getTokenNameByMintAddress(selectedPool.tokenB)}
             </Text>
             <Text
-              fontSize={'1.5rem'}
-              color={'#53DF11'}
-              fontFamily={'Avenir Next Demi'}
+              fontSize="1.5rem"
+              color="#53DF11"
+              fontFamily="Avenir Next Demi"
               style={{ marginLeft: '1rem' }}
             >
               ${stripByAmountAndFormat(tvlUSD)}
             </Text>
           </Row>
         </Row>
-        <Row direction={'column'} align="flex-end">
-          <Row wrap="nowrap" margin={'0 0 1rem 0'}>
-            <Text style={{ whiteSpace: 'nowrap' }} fontSize={'1.4rem'}>
+        <Row direction="column" align="flex-end">
+          <Row wrap="nowrap" margin="0 0 1rem 0">
+            <Text style={{ whiteSpace: 'nowrap' }} fontSize="1.4rem">
               APR{' '}
             </Text>{' '}
-            <DarkTooltip
-              title={
-                'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming rewards.'
-              }
-            >
+            <DarkTooltip title="Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming rewards.">
               <div>
                 <SvgIcon
                   src={Info}
-                  width={'1.5rem'}
-                  height={'auto'}
-                  style={{ marginLeft: '1rem' }}
+                  width="1.5rem"
+                  height="auto"
+                  style={{ marginLeft: '1rem', cursor: 'help' }}
                 />
               </div>
             </DarkTooltip>
@@ -403,9 +391,9 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
 
           <Row>
             <Text
-              fontSize={'1.5rem'}
-              color={'#53DF11'}
-              fontFamily={'Avenir Next Demi'}
+              fontSize="1.5rem"
+              color="#53DF11"
+              fontFamily="Avenir Next Demi"
             >
               {formatNumberToUSFormat(
                 stripDigitPlaces(+selectedPool.apy24h + farmingAPR, 2)
@@ -419,35 +407,35 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       {(isNeedToLeftSomeSOL ||
         baseAmount > maxBaseAmount ||
         quoteAmount > maxQuoteAmount) && (
-          <RowContainer margin={'2rem 0 0 0'}>
-            <AttentionComponent
-              text={
-                isNeedToLeftSomeSOL
-                  ? 'Sorry, but you need to leave some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
-                  : baseAmount > maxBaseAmount
-                    ? `You entered more token ${baseSymbol} amount than you have.`
-                    : quoteAmount > maxQuoteAmount
-                      ? `You entered more ${quoteSymbol} amount than you have.`
-                      : ''
-              }
-              blockHeight={'8rem'}
-            />
-          </RowContainer>
-        )}
-      <RowContainer justify="space-between" margin={'2rem 0 0 0'}>
+        <RowContainer margin="2rem 0 0 0">
+          <AttentionComponent
+            text={
+              isNeedToLeftSomeSOL
+                ? 'Sorry, but you need to leave some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
+                : baseAmount > maxBaseAmount
+                ? `You entered more token ${baseSymbol} amount than you have.`
+                : quoteAmount > maxQuoteAmount
+                ? `You entered more ${quoteSymbol} amount than you have.`
+                : ''
+            }
+            blockHeight="8rem"
+          />
+        </RowContainer>
+      )}
+      <RowContainer justify="space-between" margin="2rem 0 0 0">
         <Row
-          width={'60%'}
+          width="60%"
           justify="space-between"
-          wrap={'nowrap'}
-          padding={'0 2rem 0 0'}
+          wrap="nowrap"
+          padding="0 2rem 0 0"
         >
           <SCheckbox
-            id={'warning_checkbox'}
+            id="warning_checkbox"
             style={{ padding: 0, marginRight: '1rem' }}
             onChange={() => setWarningChecked(!warningChecked)}
             checked={warningChecked}
           />
-          <label htmlFor={'warning_checkbox'}>
+          <label htmlFor="warning_checkbox">
             <WhiteText
               style={{
                 cursor: 'pointer',
@@ -465,7 +453,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         <Button
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
-          isUserConfident={true}
+          isUserConfident
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
@@ -479,8 +467,9 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               !userQuoteTokenAmount
             ) {
               notify({
-                message: `Sorry, something went wrong with your amount of ${!userTokenAccountA ? 'tokenA' : 'tokenB'
-                  }`,
+                message: `Sorry, something went wrong with your amount of ${
+                  !userTokenAccountA ? 'tokenA' : 'tokenB'
+                }`,
                 type: 'error',
               })
 
@@ -529,8 +518,8 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
                 result === 'success'
                   ? 'Deposit successful'
                   : result === 'failed'
-                    ? 'Deposit failed, please try again or contact us in telegram.'
-                    : 'Deposit cancelled',
+                  ? 'Deposit failed, please try again or contact us in telegram.'
+                  : 'Deposit cancelled',
             })
 
             refreshPoolBalances()
@@ -568,7 +557,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenA)}
         open={isSelectorForSeveralBaseAddressesOpen}
         close={() => setIsSelectorForSeveralBaseAddressesOpen(false)}
-        selectTokenMintAddress={() => { }}
+        selectTokenMintAddress={() => {}}
         selectTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
       />
       <SelectSeveralAddressesPopup
@@ -576,7 +565,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenB)}
         open={isSelectorForSeveralQuoteAddressesOpen}
         close={() => setIsSelectorForSeveralQuoteAddressesOpen(false)}
-        selectTokenMintAddress={() => { }}
+        selectTokenMintAddress={() => {}}
         selectTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
       />
     </DialogWrapper>
@@ -585,6 +574,4 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
 
 const WithTheme = withTheme()(AddLiquidityPopup)
 
-export {
-  WithTheme as AddLiquidityPopup
-}
+export { WithTheme as AddLiquidityPopup }

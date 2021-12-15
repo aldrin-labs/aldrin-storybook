@@ -1,5 +1,5 @@
 import { stripByAmount } from '@core/utils/chartPageUtils'
-import { DAY, HOUR } from '@core/utils/dateUtils'
+import { DAY, HOUR, MINUTE } from '@core/utils/dateUtils'
 import { Button } from '@sb/components/Button'
 import {
   CheckboxField,
@@ -16,6 +16,9 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { Pool, PoolV2 } from '@sb/dexUtils/common/types'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
+import { SvgIcon } from '@sb/components'
+import CrownIcon from '@icons/crownIcon.svg'
+import AttentionIcon from '@icons/attentionWhite.svg'
 import {
   createPoolTransactions,
   CURVE,
@@ -29,6 +32,7 @@ import BN from 'bn.js'
 import { FormikProvider, useFormik } from 'formik'
 import React, { useState } from 'react'
 import { sleep } from '@sb/dexUtils/utils'
+import { useHistory } from 'react-router'
 import { PoolInfo } from '../../../index.types'
 import { FarmingForm, YES_NO } from './FarmingForm'
 import { PoolConfirmationData } from './PoolConfirmationData'
@@ -46,9 +50,11 @@ import {
   RadioGroupContainer,
   Slash,
   Title,
+  VestingExplanation,
 } from './styles'
 import { TokenAmountInputField } from './TokenAmountInput'
 import { CreatePoolFormType } from './types'
+import { notify } from '../../../../../dexUtils/notifications'
 
 interface CreatePoolProps {
   onClose: () => void
@@ -74,7 +80,7 @@ const STABLE_POOLS_TOOLTIP =
 const checkPoolCreated = async (
   pool: PublicKey,
   refetch: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>
-): Promise<boolean> => {
+): Promise<PoolInfo> => {
   const poolStr = pool.toBase58()
   const data = await refetch()
 
@@ -84,9 +90,9 @@ const checkPoolCreated = async (
   const createdPool = getPoolsInfo.find((p) => p.swapToken === poolStr)
   if (!createdPool) {
     await sleep(20_000)
-    await checkPoolCreated(pool, refetch)
+    return checkPoolCreated(pool, refetch)
   }
-  return true
+  return createdPool
 }
 
 export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
@@ -101,6 +107,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
+  const history = useHistory()
 
   const tokens: Token[] = userTokens
     .map((ut) => ({
@@ -188,7 +195,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                   tokenAmount: new BN(
                     parseFloat(values.farming.tokenAmount) * tokensMultiplier
                   ),
-                  periodLength: new BN(HOUR),
+                  periodLength: new BN(MINUTE),
                   tokensPerPeriod: new BN(tokensPerPeriod * tokensMultiplier),
                   noWithdrawPeriodSeconds: new BN(0),
                   vestingPeriodSeconds: values.farming.vestingEnabled
@@ -252,17 +259,23 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
         setProcessingStep(6)
 
         // TODO: timeout?
-        await checkPoolCreated(pool, refetchPools)
+        const createdPool = await checkPoolCreated(pool, refetchPools)
 
         setProcessingStep(-1)
         setProcessingStatus('success')
+
+        notify({
+          message: 'Pool succesfully created',
+          type: 'success',
+        })
+
+        history.push(`/pools/${createdPool.parsedName}`)
       } catch (e) {
         console.error('Unable to create pool: ', e)
         setProcessingStatus('error')
       }
     },
     validate: async (values) => {
-      console.log('Run validate')
       const {
         baseToken: { mint: baseTokenMint },
         quoteToken: { mint: quoteTokenMint },
@@ -470,7 +483,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                   />
 
                   <DarkTooltip title={STABLE_POOLS_TOOLTIP}>
-                    <InlineText color="success" size="sm">
+                    <InlineText cursor="help" color="success" size="sm">
                       What is stable curve?
                     </InlineText>
                   </DarkTooltip>
@@ -508,6 +521,22 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                       )}
                   </div>
                 </CheckboxWrap>
+
+                <VestingExplanation>
+                  <SvgIcon src={AttentionIcon} width="11px" height="47px" />
+                  <InlineText size="sm">
+                    Pools with locked liquidity will be marked with an
+                    additional&nbsp;
+                    <SvgIcon
+                      src={CrownIcon}
+                      width="15px"
+                      style={{ paddingTop: '1px' }}
+                      height="15px"
+                    />
+                    &nbsp; in the list, which will increase people&apos;s
+                    confidence in the pool, and consequently its popularity.
+                  </InlineText>
+                </VestingExplanation>
               </>
             )}
             {step === 2 && (
@@ -527,9 +556,28 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                       name="price"
                       available={selectedBaseAccount.amount}
                       mint={form.values.quoteToken.mint}
-                      onChange={() => {
-                        console.log('Price changed!!!!')
+                      onChange={(v) => {
                         setPriceTouched(true)
+                        if (v) {
+                          const newPrice = parseFloat(v)
+                          const {
+                            firstDeposit: { baseTokenAmount: bta = '0' },
+                          } = values
+
+                          const baseAmount = parseFloat(bta)
+                          if (baseAmount) {
+                            form.setFieldValue(
+                              'firstDeposit.quoteTokenAmount',
+                              baseAmount * newPrice
+                            )
+                            form.setTouched({
+                              firstDeposit: {
+                                quoteTokenAmount: true,
+                              },
+                            })
+                            setTimeout(() => form.validateForm())
+                          }
+                        }
                       }}
                     />
                   </NumberInputContainer>

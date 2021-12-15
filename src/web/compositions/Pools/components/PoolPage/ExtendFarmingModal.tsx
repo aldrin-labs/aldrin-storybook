@@ -13,11 +13,11 @@ import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
 import { FormikProvider, useFormik } from 'formik'
 import React, { useState } from 'react'
+import { sendAndWaitSignedTransaction } from '@sb/dexUtils/send'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
 import { FarmingProcessingModal } from './FarmingProcessingModal'
-import { sendAndWaitSignedTransaction } from '../../../../dexUtils/send'
 import {
   ExtendFarmingModalProps,
   FarmingModalProps,
@@ -26,12 +26,18 @@ import {
 
 const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const { userTokens, onClose, title, pool } = props
+
+  const farmingTokens = (pool.farming || []).map((fs) => fs.farmingTokenMint)
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
 
   const [farmingTransactionStatus, setFarmingTransactionStatus] =
     useState<TransactionStatus | null>(null)
   const tokens: Token[] = userTokens
+    .filter(
+      (ut) =>
+        farmingTokens.length === 0 ? true : farmingTokens.includes(ut.mint) // Limit token select with already existing mints
+    )
     .map((ut) => ({
       mint: ut.mint,
       account: ut.address,
