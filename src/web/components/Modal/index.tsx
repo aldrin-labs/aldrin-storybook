@@ -59,17 +59,4 @@ export const Modal: React.FC<ModalProps> = (props) => {
       </ModalBody>
     </ModalContainer >
   )
-
-  // return (
-  //   <DialogWrapper
-  //     PaperComponent={StyledPaper}
-  //     fullScreen={false}
-  //     onClose={onClose}
-  //     maxWidth={'md'}
-  //     open={open}
-  //     aria-labelledby="responsive-dialog-title"
-  //   >
-  //     {children}
-  //   </DialogWrapper>
-  // )
 }
