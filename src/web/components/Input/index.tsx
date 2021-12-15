@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import { COLORS, BORDER_RADIUS } from '@variables/variables'
 import { useField, FieldValidator } from 'formik'
 import { noop } from 'lodash-es'
-import { validateDecimal } from './utils'
+import { validateDecimal, validateNatural } from './utils'
 
 const VARIANTS = {
   default: css`
@@ -53,13 +53,12 @@ const InputEl = styled.input`
     color: ${COLORS.hint};
   }
   &:-webkit-autofill,
-  &:-webkit-autofill:hover, 
+  &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
   &:-webkit-autofill {
     -webkit-text-fill-color: ${COLORS.white};
     transition: background-color 5000s ease-in-out 0s;
   }
-
 `
 
 const Append = styled.span`
@@ -91,6 +90,12 @@ export const INPUT_FORMATTERS = {
     const value = v ? v.replace(',', '.') : v
     if (validateDecimal(value) || v === '') {
       return value
+    }
+    return prevValue
+  },
+  NATURAL: (v: string, prevValue: string) => {
+    if (validateNatural(v) || v === '') {
+      return v
     }
     return prevValue
   },

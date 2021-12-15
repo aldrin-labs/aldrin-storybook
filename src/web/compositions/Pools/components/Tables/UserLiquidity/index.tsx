@@ -32,7 +32,7 @@ interface LiquidityTableProps {
 const COLUMNS: DataHeadColumn[] = [
   {
     key: 'userLiquidity',
-    title: 'Your liquidity (Incl. Fees)',
+    title: 'Your liquidity (Including Fees)',
     sortable: true,
   },
   { key: 'feesEarned', title: 'Fees Earned', sortable: true },

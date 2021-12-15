@@ -104,7 +104,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
                 </InlineText>
               </InputAppendContainer>
             }
-            formatter={INPUT_FORMATTERS.DECIMAL}
+            formatter={INPUT_FORMATTERS.NATURAL}
           />
         </NumberInputContainer>
         <NumberInputContainer>

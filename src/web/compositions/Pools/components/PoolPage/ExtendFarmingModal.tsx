@@ -16,12 +16,13 @@ import React, { useState } from 'react'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
-import {
-  FarmingProcessingModal,
-  TransactionStatus,
-} from './FarmingProcessingModal'
+import { FarmingProcessingModal } from './FarmingProcessingModal'
 import { sendAndWaitSignedTransaction } from '../../../../dexUtils/send'
-import { ExtendFarmingModalProps, FarmingModalProps } from './types'
+import {
+  ExtendFarmingModalProps,
+  FarmingModalProps,
+  TransactionStatus,
+} from './types'
 
 const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const { userTokens, onClose, title, pool } = props
@@ -97,6 +98,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           farming: { vestingPeriod: 'Please enter a valid vesting period.' },
         }
       }
+      return null
     },
   })
 
@@ -107,7 +109,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
     parseFloat(farming.farmingPeriod) > 0
       ? parseFloat(farming.tokenAmount) / parseFloat(farming.farmingPeriod)
       : 0
-  const farmingRewardFormatted = stripByAmount(farmingRewardPerDay)
+  const farmingRewardFormatted = `${stripByAmount(farmingRewardPerDay)}`
 
   return (
     <>

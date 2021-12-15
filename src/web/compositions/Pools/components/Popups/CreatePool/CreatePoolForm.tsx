@@ -466,7 +466,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                   <CheckboxField
                     label="Use Stable Curve for this pool. ATTENTION, ADVANCED USERS ONLY."
                     name="stableCurve"
-                    color="error"
+                    color="primaryWhite"
                   />
 
                   <DarkTooltip title={STABLE_POOLS_TOOLTIP}>
@@ -497,7 +497,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                           </InlineText>
                         </InputAppendContainer>
                       }
-                      formatter={INPUT_FORMATTERS.DECIMAL}
+                      formatter={INPUT_FORMATTERS.NATURAL}
                       disabled={!form.values.lockInitialLiquidity}
                     />
                     {form.errors.initialLiquidityLockPeriod &&
@@ -559,11 +559,11 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.quoteTokenAmount"
-                    // setFieldValue={(field: string, value: string) => {
-                    //   form.setFieldValue(field, value)
-                    //   onQuoteAmountChange(value)
-                    // }}
-                    // available={selectedQuoteAccount.amount}
+                    setFieldValue={(field: string, value: string) => {
+                      form.setFieldValue(field, value)
+                      onQuoteAmountChange(value)
+                    }}
+                    available={selectedQuoteAccount.amount}
                     mint={form.values.quoteToken.mint}
                     onChange={onQuoteAmountChange}
                   />

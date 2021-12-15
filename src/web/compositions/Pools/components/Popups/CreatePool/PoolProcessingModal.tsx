@@ -25,7 +25,7 @@ const steps = [
   'Create liquidity pool...',
   'Deposit initial liquidity...',
   'Setup farming...',
-  'Checking for new pools...',
+  'Final touches 🎉 . It may takes up to 3 minutes',
 ]
 
 export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
