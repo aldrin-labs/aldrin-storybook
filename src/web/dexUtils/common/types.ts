@@ -1,4 +1,4 @@
-import { AccountInfo, PublicKey } from '@solana/web3.js'
+import { AccountInfo, PublicKey, Transaction, Signer } from '@solana/web3.js'
 
 export type FarmingTicket = {
   tokensFrozen: number
@@ -57,3 +57,7 @@ export interface GetProgramAccountsResultItem {
 
 export type GetProgramAccountsResult = Array<GetProgramAccountsResultItem>
 export type AsyncGetProgramAccountsResult = Promise<GetProgramAccountsResult>
+export type TransactionAndSigner = {
+  transaction: Transaction
+  signers?: Signer[]
+}

@@ -21,6 +21,7 @@ import {
   TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
+import { restakeAll } from '@sb/compositions/Pools/utils/restakeAll'
 import { useConnection } from '@sb/dexUtils/connection'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
@@ -44,6 +45,8 @@ import {
   TableContainer,
   TableModeButton,
 } from './TablesSwitcher.styles'
+
+import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
 
 interface TableSwitcherProps {
   theme: Theme
@@ -222,6 +225,20 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
               allTokensData={userTokensData}
               farmingTicketsMap={farmingTicketsMap}
               earnedFeesInPoolForUserMap={earnedFeesInPoolForUserMap}
+            />
+          )}
+          {wallet.publicKey && (
+            <RestakeAllPopup
+              theme={theme}
+              wallet={wallet}
+              connection={connection}
+              allPoolsData={pools}
+              allTokensData={userTokensData}
+              farmingTicketsMap={farmingTicketsMap}
+              refreshTokensWithFarmingTickets={() => {
+                refreshUserTokensData()
+                refreshFarmingTickets()
+              }}
             />
           )}
         </TableContainer>

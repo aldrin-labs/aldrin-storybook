@@ -148,13 +148,8 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
                   userPoolTokenAccount: userPoolTokenAccount
                     ? new PublicKey(userPoolTokenAccount)
                     : null,
-                  farmingStatePublicKey: new PublicKey(
-                    farmingState.farmingState
-                  ),
-                  snapshotQueuePublicKey: new PublicKey(
-                    farmingState.farmingSnapshots
-                  ),
                   curveType: selectedPool.curveType,
+                  farmingState: farmingState,
                 })
 
                 setOperationLoading(false)

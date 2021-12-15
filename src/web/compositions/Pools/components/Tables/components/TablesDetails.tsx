@@ -1,47 +1,52 @@
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces
-} from '@core/utils/PortfolioTableUtils'
-import WhiteClock from '@icons/whiteClock.svg'
-import { Theme } from '@material-ui/core'
-import { SvgIcon } from '@sb/components'
-import { Loader } from '@sb/components/Loader/Loader'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import React, { useEffect, useState } from 'react'
+import dayjs from 'dayjs'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import {
   AmountText,
   Button,
   RowDataTdText,
-  WhiteText
+  WhiteText,
 } from '@sb/compositions/Pools/components/Tables/index.styles'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { Theme } from '@material-ui/core'
 import {
   DexTokensPrices,
   FeesEarned,
   PoolInfo,
-  PoolWithOperation
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { useConnection } from '@sb/dexUtils/connection'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { endFarming } from '@sb/dexUtils/pools/actions/endFarming'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
-import dayjs from 'dayjs'
-import React, { useState } from 'react'
+import { useConnection } from '@sb/dexUtils/connection'
+
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { Loader } from '@sb/components/Loader/Loader'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { estimatedTime } from '@core/utils/dateUtils'
+import { SvgIcon } from '@sb/components'
+import InfoIcon from '@icons/inform.svg'
+import WhiteTech from '@icons/whiteTech.svg'
+import WhiteClock from '@icons/whiteClock.svg'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+import { notify } from '@sb/dexUtils/notifications'
+import { endFarming } from '@sb/dexUtils/pools/actions/endFarming'
+import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getUniqueAmountsToClaimMap } from '../utils/getUniqueAmountsToClaimMap'
-
-
+import { PublicKey } from '@solana/web3.js'
+import { withdrawFarmed } from '@sb/dexUtils/pools/actions/withdrawFarmed'
 
 export const TablesDetails = ({
   theme,
@@ -399,12 +404,14 @@ export const TablesDetails = ({
                           operation: 'unstake',
                         })
 
-                        const farmingState = isPoolWithFarming ? pool.farming[0] : null
+                        const farmingState = isPoolWithFarming
+                          ? pool.farming[0]
+                          : null
 
                         if (!farmingState) {
                           notify({
                             message: `No farming exists for ${pool.parsedName} pool.`,
-                            type: 'error'
+                            type: 'error',
                           })
 
                           return
@@ -424,13 +431,8 @@ export const TablesDetails = ({
                           userPoolTokenAccount: userPoolTokenAccount
                             ? new PublicKey(userPoolTokenAccount)
                             : null,
-                          farmingStatePublicKey: new PublicKey(
-                            farmingState.farmingState
-                          ),
-                          snapshotQueuePublicKey: new PublicKey(
-                            farmingState.farmingSnapshots
-                          ),
                           curveType: pool.curveType,
+                          farmingState: farmingState,
                         })
 
                         notify({

@@ -142,11 +142,9 @@ export const combineAllPoolsData = (params: CombineAllPoolsDataParams) => {
         )}_${getTokenNameByMintAddress(pool.tokenB)}`,
       })
     )
-    .filter((pool) =>
-      includePermissionless
-        ? true
-        : AUTHORIZED_POOLS.includes(pool.poolTokenMint)
-    )
+    // remove MUTANT from all pools only for now, leave in ur liq.
+    .filter(pool => pool.swapToken !== 'C1ZyqeefJTN4u9aCrtUNn9xGeqRLENdUuoUz15YAGYBW')
+    .filter((pool) => includePermissionless ? true : !PERMISIONLESS_POOLS_MINTS.includes(pool.poolTokenMint))
     .map((pool) => {
       const poolName = `${getTokenNameByMintAddress(
         pool.tokenA
