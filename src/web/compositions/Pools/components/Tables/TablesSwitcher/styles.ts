@@ -67,7 +67,7 @@ export const SearchInput = styled(Input)`
 `
 
 export const TableContainer = styled.div`
-  min-width: 600px;
+  overflow: auto;
 `
 
 export const AddPoolButton = styled(Button)`
