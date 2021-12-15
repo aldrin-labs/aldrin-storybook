@@ -182,12 +182,6 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
             >
               <SvgIcon src={PlusIcon} width={'1.2em'} />
             </AddPoolButton>
-            {/* <Button onClick={() => createPool({
-              wallet,
-              connection,
-              baseTokenMint: '3j3Xb5gbMWayifZEyenjuK1aUWfBVgFU3FasekeF3GLd',
-              quoteTokenMint: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-            })}>ADD POOL</Button> */}
             <a
               style={{ textDecoration: 'none' }}
               href={AMMAudit}
