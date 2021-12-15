@@ -342,10 +342,6 @@ const SwapPage = ({
       poolBalances,
     })
 
-    console.log({
-      swapAmountOut,
-    })
-
     setBaseAmount(swapAmountOut)
   }
 
