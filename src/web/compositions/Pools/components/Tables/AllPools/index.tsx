@@ -6,12 +6,12 @@ import {
   PoolInfo,
   TokenPricesMap,
   VolumesMap,
-  FarmingTicketsMap
+  FarmingTicketsMap,
 } from '@sb/compositions/Pools/index.types'
 
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import React from 'react'
-import { PoolsTable } from '../PoolsTable'
+import { PoolsTable, HIDE_POOLS } from '../PoolsTable'
 
 interface AllPoolsProps {
   searchValue: string
@@ -103,13 +103,19 @@ const prepareCell = (
 }
 
 export const AllPoolsTable: React.FC<AllPoolsProps> = (props) => {
-  const { farmingTicketsMap, searchValue, dexTokensPricesMap, pools, feesByPool, tradingVolumes } =
-    props
+  const {
+    farmingTicketsMap,
+    searchValue,
+    dexTokensPricesMap,
+    pools,
+    feesByPool,
+    tradingVolumes,
+  } = props
 
   return (
     <PoolsTable
       addColumns={COLUMNS}
-      pools={pools}
+      pools={pools.filter((pool) => !HIDE_POOLS.includes(pool.swapToken))}
       farmingTicketsMap={farmingTicketsMap}
       tokenPrices={dexTokensPricesMap}
       searchValue={searchValue}

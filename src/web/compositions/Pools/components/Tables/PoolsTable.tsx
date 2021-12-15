@@ -72,6 +72,10 @@ const EMPTY_VESTING = {
   startBalance: new BN(0),
 }
 
+export const HIDE_POOLS = [
+  'C1ZyqeefJTN4u9aCrtUNn9xGeqRLENdUuoUz15YAGYBW', // MUTANT rugpull
+]
+
 const prepareCell = (params: {
   pool: PoolInfo
   tokenPrices: Map<string, DexTokensPrices>
