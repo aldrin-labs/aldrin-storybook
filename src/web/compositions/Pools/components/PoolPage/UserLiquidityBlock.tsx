@@ -1,8 +1,11 @@
 import React from 'react'
+
+import dayjs from 'dayjs'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
   LiquidityBlock,
   LiquidityButton,
@@ -38,7 +41,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
 
   const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
 
-  const vestingFinishTs = vesting?.endTs * 1000 || Date.now()
+  const vestingFinishTs = (vesting?.endTs || 0) * 1000
   const vestingFinished = vestingFinishTs <= Date.now()
   const vestedTokens = parseFloat(vesting?.startBalance.toString() || '0')
   const [baseUserTokenAmount, quoteUserTokenAmount] = calculateWithdrawAmount({
@@ -115,13 +118,24 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
             ${stripByAmountAndFormat(earnedFeesUd, 2)}
           </LiquidityText>
         </div>
-        <LiquidityButton
-          disabled={processing || availableTowithdraw === 0}
-          onClick={onWithdrawClick}
-          $loading={processing}
+
+        <DarkTooltip
+          title={
+            vestingFinished
+              ? null
+              : `Liquidity locked until ${dayjs
+                  .unix(vestingFinishTs / 1000)
+                  .format('MMM DD, YYYY')} `
+          }
         >
-          Withdraw Liquidity + Fees
-        </LiquidityButton>
+          <LiquidityButton
+            disabled={processing || availableTowithdraw === 0}
+            onClick={onWithdrawClick}
+            $loading={processing}
+          >
+            Withdraw Liquidity + Fees
+          </LiquidityButton>
+        </DarkTooltip>
       </LiquidityItem>
     </LiquidityBlock>
   )
