@@ -24,22 +24,22 @@ import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
 import {
   IProps,
-
   IPropsSelectPairListComponent,
   IStateSelectPairListComponent,
-  SelectTabType
+  SelectTabType,
 } from './SelectWrapper.types'
 import { combineSelectWrapperData } from './SelectWrapper.utils'
 import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
 import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
+import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
+import { dayDuration } from '@core/utils/dateUtils'
+import {
+  getTimezone,
+  endOfDayTimestamp,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
 
-
-
-const PINNED_LIST = [
-  'RIN_USDC',
-]
-
+const PINNED_LIST = ['RIN_USDC']
 
 // TODO: clear that after db volume will be OK
 const TOP_LIST = [
@@ -64,24 +64,28 @@ export const excludedPairs = [
 ]
 
 export const datesForQuery = {
-  startOfTime: () => dayjs()
-    .startOf('hour')
-    .subtract(24, 'hour')
-    .unix(),
+  startOfTime: () =>
+    dayjs()
+      .startOf('hour')
+      .subtract(24, 'hour')
+      .unix(),
 
-  endOfTime: () => dayjs()
-    .endOf('hour')
-    .unix(),
+  endOfTime: () =>
+    dayjs()
+      .endOf('hour')
+      .unix(),
 
-  prevStartTimestamp: () => dayjs()
-    .startOf('hour')
-    .subtract(48, 'hour')
-    .unix(),
+  prevStartTimestamp: () =>
+    dayjs()
+      .startOf('hour')
+      .subtract(48, 'hour')
+      .unix(),
 
-  prevEndTimestamp: () => dayjs()
-    .startOf('hour')
-    .subtract(24, 'hour')
-    .unix(),
+  prevEndTimestamp: () =>
+    dayjs()
+      .startOf('hour')
+      .subtract(24, 'hour')
+      .unix(),
 }
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
@@ -92,13 +96,13 @@ const SelectWrapper = (props: IProps) => {
 
   // TODO: Uncomment once Postgres HA deployed
 
-  // const [selectorMode, setSelectorMode] = useLocalStorageState(
-  //   'selectorMode',
-  //   'basic'
-  // )
+  const [selectorMode, setSelectorMode] = useLocalStorageState(
+    'selectorMode',
+    'basic'
+  )
 
-  const selectorMode = 'basic'
-  const setSelectorMode = () => { }
+  // const selectorMode = 'advanced'
+  // const setSelectorMode = () => { }
 
   const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
     'favouriteMarkets',
@@ -126,7 +130,6 @@ const SelectWrapper = (props: IProps) => {
   }
 
   const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
-
   const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
     (el) =>
       el.symbol &&
@@ -162,7 +165,7 @@ const SelectWrapper = (props: IProps) => {
 class SelectPairListComponent extends React.PureComponent<
   IPropsSelectPairListComponent,
   IStateSelectPairListComponent
-  > {
+> {
   state: IStateSelectPairListComponent = {
     processedSelectData: [],
     showAddMarketPopup: false,
@@ -284,6 +287,7 @@ class SelectPairListComponent extends React.PureComponent<
     getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
       serumMarketsDataMap?.set(el.pair, el)
     )
+
     const processedSelectData = combineSelectWrapperData({
       data,
       toggleFavouriteMarket,
@@ -315,10 +319,7 @@ class SelectPairListComponent extends React.PureComponent<
     })
   }
 
-
   _sortList = ({ sortBy, sortDirection, data, tab }) => {
-
-
     let dataToSort = data
 
     if (!dataToSort) {
@@ -332,8 +333,6 @@ class SelectPairListComponent extends React.PureComponent<
     }
 
     // const CCAIMarket = newList.find(v => v.symbol.contentToSort === 'RIN_USDC')
-
-
 
     if (this.props.marketType === 0 && sortBy === 'volume24hChange') {
       newList.sort((pairObjectA, pairObjectB) => {
@@ -363,7 +362,8 @@ class SelectPairListComponent extends React.PureComponent<
       }
     }
 
-    const topList = sortBy === 'volume24hChange' ? [...PINNED_LIST, ...TOP_LIST] : PINNED_LIST
+    const topList =
+      sortBy === 'volume24hChange' ? [...PINNED_LIST, ...TOP_LIST] : PINNED_LIST
 
     const topMarkets = newList
       .filter((v) => topList.includes(v.id))
@@ -376,10 +376,7 @@ class SelectPairListComponent extends React.PureComponent<
     )
     if (ccaiIndex === -1) return newList
 
-    const updatedList = [
-      ...topMarkets,
-      ...withoutTop,
-    ]
+    const updatedList = [...topMarkets, ...withoutTop]
 
     return updatedList
   }
@@ -443,6 +440,15 @@ class SelectPairListComponent extends React.PureComponent<
       console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
+    console.log({
+      exchange: 'serum',
+      publicKey: 'Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5',
+      marketType: 0,
+      startTimestamp: `${datesForQuery.startOfTime()}`,
+      endTimestamp: `${datesForQuery.endOfTime()}`,
+      prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
+      prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
+    })
 
     return (
       <>
@@ -597,18 +603,18 @@ export default compose(
     withTableLoader: false,
     showNoLoader: true,
   }),
-  // queryRendererHoc({
-  //   query: getSerumTradesData,
-  //   name: 'getSerumTradesDataQuery',
-  //   variables: (props) => ({
-  //     timezone: getTimezone(),
-  //     timestampTo: endOfDayTimestamp(),
-  //     timestampFrom: endOfDayTimestamp() - dayDuration * 14,
-  //   }),
-  //   withoutLoading: true,
-  //   withOutSpinner: true,
-  //   withTableLoader: false,
-  //   showNoLoader: true,
-  //   fetchPolicy: 'cache-and-network',
-  // })
+  queryRendererHoc({
+    query: getSerumTradesData,
+    name: 'getSerumTradesDataQuery',
+    variables: (props) => ({
+      timezone: getTimezone(),
+      timestampTo: endOfDayTimestamp(),
+      timestampFrom: endOfDayTimestamp() - dayDuration * 14,
+    }),
+    withoutLoading: true,
+    withOutSpinner: true,
+    withTableLoader: false,
+    showNoLoader: true,
+    fetchPolicy: 'cache-and-network',
+  })
 )(SelectWrapper)

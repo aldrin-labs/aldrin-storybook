@@ -112,8 +112,8 @@ const MarketBlock = ({
   const isPrivateCustomMarket =
     currentMarket?.isPrivateCustomMarket !== undefined && !isCustomUserMarket
 
-  const isCCAIPair =
-    pair.includes('CCAI') && !isPrivateCustomMarket && !isCustomUserMarket
+  const isRINPair =
+    pair.includes('RIN') && !isPrivateCustomMarket && !isCustomUserMarket
 
   const twitterLink = tokensLinksMap?.get(base)?.twitterLink || ''
   const marketCapLink = tokensLinksMap?.get(base)?.marketCapLink || ''
@@ -175,7 +175,7 @@ const MarketBlock = ({
           </div>
 
           <MarketStats
-            isCCAIPair={isCCAIPair}
+            isRINPair={isRINPair}
             theme={theme}
             symbol={pair}
             marketType={marketType}
@@ -275,7 +275,7 @@ const MarketBlock = ({
         />
         <Row>
           <MarketStats
-            isCCAIPair={isCCAIPair}
+            isRINPair={isRINPair}
             theme={theme}
             symbol={pair}
             marketType={marketType}

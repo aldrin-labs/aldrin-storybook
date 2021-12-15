@@ -419,7 +419,6 @@ export const combineSelectWrapperData = ({
       : marketCapLink.includes('coingecko')
       ? CoinGecko
       : NomicsIcon
-
     return {
       id: `${symbol}`,
       favourite: {
