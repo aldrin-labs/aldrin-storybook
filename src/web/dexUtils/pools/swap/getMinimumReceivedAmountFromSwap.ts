@@ -16,6 +16,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
   isSwapBaseToQuote,
   pool,
   wallet,
+  tokensMap,
   connection,
   userBaseTokenAccount,
   userQuoteTokenAccount,
@@ -27,6 +28,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
   isSwapBaseToQuote: boolean
   pool?: PoolInfo
   wallet: WalletAdapter
+  tokensMap: Map<string, TokenInfo>,
   connection: Connection
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
@@ -54,6 +56,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
       isSwapBaseToQuote,
       pool,
       wallet,
+      tokensMap,
       connection,
       userBaseTokenAccount,
       userQuoteTokenAccount,

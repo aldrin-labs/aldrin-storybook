@@ -2,9 +2,11 @@ import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { sendTransaction } from '@sb/dexUtils/send'
+import { Token } from '@sb/dexUtils/token/token'
 
 import { parseTokenAccountData } from '@sb/dexUtils/tokens'
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, Keypair, PublicKey } from '@solana/web3.js'
 import { getSwapTransaction } from '../actions/swap'
 
@@ -13,6 +15,7 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
   isSwapBaseToQuote,
   pool,
   wallet,
+  tokensMap,
   connection,
   userBaseTokenAccount,
   userQuoteTokenAccount,
@@ -23,6 +26,7 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
   isSwapBaseToQuote: boolean
   pool: PoolInfo
   wallet: WalletAdapter
+  tokensMap: Map<string, TokenInfo>
   connection: Connection
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
@@ -109,9 +113,25 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
   const quotePoolTokenMint = parsedQuote.mint.toString()
 
   let {
+    address: userQuoteTokenAddress,
     amount: quoteAmount,
     decimals: quoteTokenDecimals,
   } = getTokenDataByMint(allTokensData, quotePoolTokenMint)
+
+  // if user doesn't have quote token account
+  if (!userQuoteTokenAddress) {
+    const isTokenInTokensMap = tokensMap.has(quotePoolTokenMint)
+
+    // rpc request only if no token in map
+    if (isTokenInTokensMap) {
+      const { decimals } = tokensMap.get(quotePoolTokenMint)
+      quoteTokenDecimals = decimals
+    } else {
+      const quoteToken = new Token(wallet, connection, parsedQuote.mint, TOKEN_PROGRAM_ID)
+      const { decimals } = await quoteToken.getMintInfo()
+      quoteTokenDecimals = decimals
+    }
+  }
 
   const quoteAmountAfterSwap = parsedQuote.amount / 10 ** quoteTokenDecimals
 

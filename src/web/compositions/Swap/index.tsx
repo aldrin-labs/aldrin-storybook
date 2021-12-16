@@ -63,6 +63,7 @@ import {
 import { Cards } from './components/Cards/Cards'
 import { Loader } from '@sb/components/Loader/Loader'
 import { sleep } from '@sb/dexUtils/utils'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
 const SwapPage = ({
   theme,
@@ -75,6 +76,8 @@ const SwapPage = ({
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+  const tokensMap = useTokenInfos()
+
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts({
     wallet,
     connection,
@@ -313,6 +316,7 @@ const SwapPage = ({
       isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
       pool: selectedPool,
       wallet,
+      tokensMap,
       connection,
       userBaseTokenAccount: userPoolBaseTokenPublicKey,
       userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
@@ -334,6 +338,7 @@ const SwapPage = ({
       isSwapBaseToQuote: isSwapBaseToQuoteForQuoteChange,
       pool: selectedPool,
       wallet,
+      tokensMap,
       connection,
       userBaseTokenAccount: userPoolBaseTokenPublicKey,
       userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
