@@ -113,7 +113,7 @@ const AppRaw = ({
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
   // const pageIsRegistration = currentPage.includes('regist')
-  // const isRewards = currentPage.includes('rewards')
+  const isRewards = currentPage.includes('rewards')
 
   const searchParamsObject = getSearchParamsObject({ search })
   const isRefInUrlParamExist = !!searchParamsObject.ref

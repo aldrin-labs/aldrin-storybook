@@ -13,7 +13,7 @@ import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import React, { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { CURVE } from '@sb/dexUtils/pools/actions/createPool'
+import { CURVE } from '@sb/dexUtils/pools/types'
 
 import { PoolWithOperation } from '../../index.types'
 import { AddLiquidityPopup } from '../Popups/AddLiquidity'

@@ -1,10 +1,7 @@
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 import { Button } from '@sb/components/Button'
-import {
-  GroupLabel,
-  RadioGroupField,
-} from '@sb/components/FormElements'
+import { GroupLabel, RadioGroupField } from '@sb/components/FormElements'
 import { InputField, INPUT_FORMATTERS } from '@sb/components/Input'
 import { FlexBlock } from '@sb/components/Layout'
 import { ModalTitleBlock } from '@sb/components/Modal'
@@ -17,10 +14,7 @@ import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { SvgIcon } from '@sb/components'
 import CrownIcon from '@icons/crownIcon.svg'
 import AttentionIcon from '@icons/attentionWhite.svg'
-import {
-  createPoolTransactions,
-  CURVE,
-} from '@sb/dexUtils/pools/actions/createPool'
+import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { sendAndWaitSignedTransaction } from '@sb/dexUtils/send'
 import { TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -31,6 +25,8 @@ import { FormikProvider, useFormik } from 'formik'
 import React, { useState } from 'react'
 import { sleep } from '@sb/dexUtils/utils'
 import { useHistory } from 'react-router'
+import { notify } from '@sb/dexUtils/notifications'
+import { CURVE } from '@sb/dexUtils/pools/types'
 import { PoolInfo } from '../../../index.types'
 import { FarmingForm, YES_NO } from './FarmingForm'
 import { PoolConfirmationData } from './PoolConfirmationData'
@@ -52,7 +48,6 @@ import {
 } from './styles'
 import { TokenAmountInputField } from './TokenAmountInput'
 import { CreatePoolFormType } from './types'
-import { notify } from '../../../../../dexUtils/notifications'
 
 interface CreatePoolProps {
   onClose: () => void

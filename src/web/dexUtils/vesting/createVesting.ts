@@ -64,9 +64,9 @@ export const createVestingTransaction = async (
         creatorPk,
         depositAmount,
         vaultSignerNonce,
-        unlockTs,
-        unlockTs.addn(1),
-        new BN(1),
+        unlockTs, // unlock start
+        unlockTs.addn(1), // unlock end
+        new BN(1), // Leave empty
         null,
         {
           accounts: {

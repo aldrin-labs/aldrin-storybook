@@ -20,61 +20,17 @@ import {
   POOLS_V2_PROGRAM_ADDRESS,
 } from '../../ProgramsMultiton/utils'
 import { signTransactions, createTokenAccountTransaction } from '../../send'
-import { WalletAdapter } from '../../types'
 import { createBasketTransaction } from './createBasket'
-import {
-  InitializeFarmingBase,
-  initializeFarmingInstructions,
-} from './initializeFarming'
-import MultiEndpointsConnection from '../../MultiEndpointsConnection'
+import { initializeFarmingInstructions } from './initializeFarming'
 import { createVestingTransaction } from '../../vesting'
 import { walletAdapterToWallet } from '../../common'
-
-interface CreatePoolDeposit {
-  baseTokenAmount: BN
-  quoteTokenAmount: BN
-  userBaseTokenAccount: PublicKey
-  userQuoteTokenAccount: PublicKey
-  vestingPeriod?: BN // seconds
-}
-
-interface CreatePoolParams {
-  wallet: WalletAdapter
-  connection: MultiEndpointsConnection
-  baseTokenMint: PublicKey
-  quoteTokenMint: PublicKey
-  firstDeposit: CreatePoolDeposit
-  curveType?: CURVE
-  farming?: InitializeFarmingBase
-}
-
-interface PoolLike {
-  baseTokenMint: PublicKey
-  quoteTokenMint: PublicKey
-}
-
-enum AUTHORITY_TYPE {
-  MINT = 0,
-  FREEZE = 1,
-  OWNER = 2,
-  CLOSE = 3,
-}
-
-export enum CURVE {
-  PRODUCT = 0,
-  STABLE = 1,
-}
-
-interface CreatePoolTransactionsResponse {
-  transactions: {
-    createAccounts: Transaction
-    setAuthorities: Transaction
-    createPool: Transaction
-    firstDeposit: Transaction
-    farming?: Transaction
-  }
-  pool: PublicKey
-}
+import {
+  AUTHORITY_TYPE,
+  CreatePoolParams,
+  CreatePoolTransactionsResponse,
+  CURVE,
+  PoolLike,
+} from '../types'
 
 export const createPoolTransactions = async (
   params: CreatePoolParams
