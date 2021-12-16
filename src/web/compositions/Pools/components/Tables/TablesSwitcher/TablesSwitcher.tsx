@@ -10,7 +10,6 @@ import { getRandomInt } from '@core/utils/helpers'
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
 import { Theme } from '@material-ui/core'
-import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
 import { Block, BlockContent } from '@sb/components/Block'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/components/Typography'
@@ -47,6 +46,7 @@ import {
 } from './TablesSwitcher.styles'
 
 import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
+import { AMMAuditPopup } from '../../Popups/AMMAuditPopup/AMMAuditPopup'
 
 interface TableSwitcherProps {
   theme: Theme
@@ -85,6 +85,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
   }
 
   const [includePermissionless, setIncludePermissionless] = useState(true)
+  const [isAuditPopupOpen, setIsAuditPopupOpen] = useState(false)
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -185,10 +186,9 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
             >
               <SvgIcon src={PlusIcon} width={'1.2em'} />
             </AddPoolButton>
-            <a
-              style={{ textDecoration: 'none' }}
-              href={AMMAudit}
-              target="_blank"
+            <span
+              onClick={() => setIsAuditPopupOpen(true)}
+              style={{ textDecoration: 'none', cursor: 'pointer' }}
             >
               <div>
                 <Text margin="0" size="sm">
@@ -201,7 +201,7 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
                 style={{ marginTop: '1rem' }}
                 src={KudelskiLogo}
               />
-            </a>
+            </span>
           </InputWrap>
         </TabContainer>
         <TableContainer>
@@ -241,6 +241,10 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
               }}
             />
           )}
+          <AMMAuditPopup
+            open={isAuditPopupOpen}
+            close={() => setIsAuditPopupOpen(false)}
+          />
         </TableContainer>
       </BlockContent>
       <Route path={`${path}/:symbol`}>
