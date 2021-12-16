@@ -50,6 +50,8 @@ import {
   getDefaultBaseToken,
   getDefaultQuoteToken,
 } from '@sb/dexUtils/pools/swap'
+import { Loader } from '@sb/components/Loader/Loader'
+import { sleep } from '@sb/dexUtils/utils'
 import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/styles'
 import { Selector } from './components/Selector/Selector'
 import { SLIPPAGE_PERCENTAGE } from './config'
@@ -188,6 +190,7 @@ const SwapPage = ({
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
+  const [isSwapInProgress, setIsSwapInProgress] = useState(false)
 
   const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
   const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
@@ -258,7 +261,8 @@ const SwapPage = ({
     !selectedPool ||
     !selectedPool.supply ||
     baseAmount == 0 ||
-    quoteAmount == 0
+    quoteAmount == 0 ||
+    isSwapInProgress
 
   // for cases with SOL token
   const isBaseTokenSOL = baseSymbol === 'SOL'
@@ -292,6 +296,8 @@ const SwapPage = ({
     newBaseAmount: string | number,
     isSwapBaseToQuoteFromArgs?: boolean
   ) => {
+    setBaseAmount(newBaseAmount)
+
     const swapAmountOut = await getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newBaseAmount,
       isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
@@ -305,12 +311,13 @@ const SwapPage = ({
       poolBalances,
     })
 
-    setBaseAmount(newBaseAmount)
     setQuoteAmount(swapAmountOut)
   }
 
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
     const isSwapBaseToQuoteForQuoteChange = !isSwapBaseToQuote
+
+    setQuoteAmount(newQuoteAmount)
 
     const swapAmountOut = await getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newQuoteAmount,
@@ -325,11 +332,6 @@ const SwapPage = ({
       poolBalances,
     })
 
-    console.log({
-      swapAmountOut,
-    })
-
-    setQuoteAmount(newQuoteAmount)
     setBaseAmount(swapAmountOut)
   }
 
@@ -532,6 +534,8 @@ const SwapPage = ({
                 onClick={async () => {
                   if (!selectedPool) return
 
+                  setIsSwapInProgress(true)
+
                   console.log('baseTokenDecimals', {
                     baseTokenDecimals,
                     quoteTokenDecimals,
@@ -569,19 +573,35 @@ const SwapPage = ({
                         : 'Swap cancelled',
                   })
 
+                  // refresh data
+                  await sleep(2 * 1000)
+
                   refreshPoolBalances()
                   refreshAllTokensData()
+
+                  // reset fields
+                  if (result === 'success') {
+                    setBaseAmount('')
+                    setQuoteAmount('')
+                  }
+
+                  // remove loader
+                  setIsSwapInProgress(false)
                 }}
               >
-                {isTokenABalanceInsufficient
-                  ? `Insufficient ${
-                      isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
-                    } Balance`
-                  : !selectedPool
-                  ? 'No pools available'
-                  : needEnterAmount
-                  ? 'Enter amount'
-                  : 'Swap'}
+                {isSwapInProgress ? (
+                  <Loader />
+                ) : isTokenABalanceInsufficient ? (
+                  `Insufficient ${
+                    isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
+                  } Balance`
+                ) : !selectedPool ? (
+                  'No pools available'
+                ) : needEnterAmount ? (
+                  'Enter amount'
+                ) : (
+                  'Swap'
+                )}
               </BtnCustom>
             )}
           </RowContainer>

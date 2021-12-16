@@ -44,21 +44,6 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
     basePoolTokenMint
   )
 
-  console.log({
-    isSwapBaseToQuote,
-    wallet,
-    connection,
-    poolPublicKey,
-    userBaseTokenAccount,
-    userQuoteTokenAccount,
-    swapAmountIn: swapAmountIn * 10 ** basePoolTokenDecimals,
-    swapAmountOut,
-    transferSOLToWrapped,
-    unwrapWrappedSOL: false,
-    curveType,
-  })
-
-
   const swapTransactionAndSigners = await getSwapTransaction({
     wallet,
     connection,
@@ -84,7 +69,6 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
     userQuoteTokenAccountUsedInSwap,
   ] = swapTransactionAndSigners
 
-  // TODO: check with not SOL
   swapTransaction.feePayer = wallet.publicKey
 
   let response = null

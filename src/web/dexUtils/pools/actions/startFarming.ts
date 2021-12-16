@@ -27,7 +27,7 @@ export const getStartFarmingTransactions = async ({
   connection: Connection
   poolTokenAmount: number
   poolPublicKey: PublicKey
-  userPoolTokenAccount: PublicKey
+  userPoolTokenAccount: PublicKey | null
   farmingState: PublicKey
   curveType: number | null
 }) => {

@@ -8,6 +8,7 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useWallet } from '@sb/dexUtils/wallet'
 import pluralize from 'pluralize'
 import React, { useState } from 'react'
+import dayjs from 'dayjs'
 import LightLogo from '@icons/lightLogo.svg'
 
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
@@ -180,6 +181,12 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     (fs) => fs.tokensTotal - fs.tokensUnlocked < fs.tokensPerPeriod
   )
 
+  const unstakeTooltipText = unstakeLocked
+    ? `Locked until ${dayjs
+        .unix(claimAvailableTs)
+        .format('HH:mm:ss MMM DD, YYYY')}`
+    : tooltipText
+
   return (
     <FarmingBlock>
       {isPoolOwner ? (
@@ -289,7 +296,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                   </FarmingButton>
                 </span>
               </DarkTooltip>
-              <DarkTooltip title={tooltipText}>
+              <DarkTooltip title={unstakeTooltipText}>
                 <span>
                   <FarmingButton
                     $variant="error"

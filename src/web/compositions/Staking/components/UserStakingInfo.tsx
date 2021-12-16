@@ -6,7 +6,6 @@ import { daysInMonthForDate } from '@core/utils/dateUtils'
 import { sleep } from '@core/utils/helpers'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import InfoIcon from '@icons/inform.svg'
-import { Theme, withTheme } from '@material-ui/core/styles'
 import { SvgIcon } from '@sb/components'
 import { Block, BlockContent, BlockTitle } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
@@ -44,7 +43,6 @@ import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
 import React, { useCallback, useState } from 'react'
-import { compose } from 'recompose'
 import { useCalcAccounts } from '../../../dexUtils/staking/useCalcAccounts'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
@@ -79,7 +77,6 @@ interface StakingInfoProps {
   stakingPool: StakingPool
   refreshAllTokenData: RefreshFunction
   refreshTotalStaked: AsyncRefreshVoidFunction
-  theme: Theme
   currentFarmingState: FarmingState
 }
 
@@ -134,7 +131,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     refreshAllTokenData,
     refreshTotalStaked,
     allTokenData,
-    theme,
     currentFarmingState,
   } = props
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
@@ -330,7 +326,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     (ticket) => ticket.pool
   )
 
-  const isClaimDisabled = availableToClaimTotal == 0
+  const isClaimDisabled = availableToClaimTotal === 0
 
   useInterval(() => {
     refreshAll()
@@ -514,12 +510,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       />
       {(isClaimRewardsPopupOpen || isClaimRewardsAndRestakePopupOpen) && (
         <ClaimRewards
-          theme={theme}
-          open={}
           close={() => {
-            isClaimRewardsPopupOpen
-              ? setIsClaimRewardsPopupOpen(false)
-              : setIsClaimRewardsAndRestakePopupOpen(false)
+            if (isClaimRewardsPopupOpen) {
+              setIsClaimRewardsPopupOpen(false)
+            } else {
+              setIsClaimRewardsAndRestakePopupOpen(false)
+            }
           }}
           selectedPool={stakingPoolWithClosedFarmings}
           programId={STAKING_PROGRAM_ADDRESS}
@@ -533,6 +529,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           callback={
             isClaimRewardsAndRestakePopupOpen
               ? async () => {
+                  if (!tokenData) {
+                    throw new Error('No token data!')
+                  }
                   const result = await startStaking({
                     wallet,
                     connection,
@@ -554,7 +553,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
 const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
   const {
-    theme,
     tokenData,
     stakingPool,
     refreshAllTokenData,
@@ -565,9 +563,8 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
   return (
     <Block>
       <StretchedBlock direction="column">
-        <ConnectWalletWrapper theme={theme}>
+        <ConnectWalletWrapper>
           <UserStakingInfoContent
-            theme={theme}
             allTokenData={allTokenData}
             stakingPool={stakingPool}
             tokenData={tokenData}
@@ -581,4 +578,4 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
   )
 }
 
-export default compose(withTheme())(UserStakingInfo)
+export default UserStakingInfo

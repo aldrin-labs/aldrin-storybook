@@ -23,7 +23,6 @@ import {
   CREATE_FARMING_TICKET_SOL_FEE,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
 } from '@sb/dexUtils/common/config'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -83,7 +82,6 @@ const Popup = (props: StakePopupProps) => {
   const farmingState = selectedPool.farming && selectedPool.farming[0]
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
-  const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
 
   const poolTokenPrice = calculatePoolTokenPrice({
     pool: selectedPool,
@@ -97,9 +95,6 @@ const Popup = (props: StakePopupProps) => {
 
   const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-
-  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
-  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
 
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0

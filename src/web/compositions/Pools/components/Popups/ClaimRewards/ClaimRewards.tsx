@@ -24,12 +24,12 @@ import LightLogo from '@icons/lightLogo.svg'
 import { COLORS } from '@variables/variables'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import AttentionComponent from '@sb/components/AttentionBlock'
-import { WithdrawStakedParams } from '@sb/dexUtils/staking/withdrawStaked'
+import { WithdrawFarmedParams } from '@sb/dexUtils/staking/withdrawStaked'
 import { Button } from '../../Tables/index.styles'
 import ProposeToStakePopup from '../ProposeToStake'
 import { BoldHeader, ClaimRewardsStyledPaper } from '../index.styles'
 
-export const Popup = ({
+const Popup = ({
   theme,
   selectedPool,
   allTokensData,
@@ -53,7 +53,7 @@ export const Popup = ({
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
   callback?: () => void
-  withdrawFunction?: (params: WithdrawStakedParams) => Promise<string>
+  withdrawFunction?: (params: WithdrawFarmedParams) => Promise<string>
   hideMaintenanceWarning?: boolean
 }) => {
   const { wallet } = useWallet()
@@ -96,16 +96,6 @@ export const Popup = ({
     let result = null
 
     try {
-      console.log({
-        wallet,
-        connection,
-        pool: selectedPool,
-        allTokensData,
-        farmingTickets,
-        snapshotQueues,
-        signAllTransactions,
-      })
-
       result = await withdrawFunction({
         wallet,
         connection,
@@ -271,7 +261,6 @@ export const Popup = ({
         </Button>
       </RowContainer>
       <ProposeToStakePopup
-        theme={theme}
         open={isProposeToStakePopupOpen}
         close={() => {
           close()

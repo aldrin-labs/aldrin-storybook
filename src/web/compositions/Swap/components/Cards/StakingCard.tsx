@@ -103,8 +103,6 @@ export default compose(
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
     variables: () => {
-      // we're using endOfDay only for first day of staking with buy back
-      // TODO: remove it once we'll have records for more than one day
       const endOfDay = dayjs()
         .endOf('day')
         .unix()

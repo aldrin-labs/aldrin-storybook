@@ -16,6 +16,7 @@ import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { withTheme } from '@material-ui/core'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { Button } from '../Tables/index.styles'
 import { BoldHeader, ClaimRewardsStyledPaper } from './index.styles'
 import { PoolInfo } from '../../index.types'
@@ -130,7 +131,12 @@ const Popup = ({
     }
   }
 
-  if (!isPopupOpen || isPopupTemporaryHidden) return null
+  const openFarmings = filterOpenFarmingTickets(
+    [...farmingTicketsMap.values()].flat()
+  )
+
+  if (!isPopupOpen || isPopupTemporaryHidden || openFarmings.length === 0)
+    return null
 
   return (
     <DialogWrapper
