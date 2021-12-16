@@ -44,6 +44,7 @@ export const DarkTooltip = styled((props) => {
       classes={{ popper: props.className, tooltip: 'tooltip' }}
       style={{ opacity: '1' }}
       enterDelay={props.delay || 100}
+      title={title}
       {...p}
     >
       {children}
