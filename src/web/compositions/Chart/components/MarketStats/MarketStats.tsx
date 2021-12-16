@@ -241,7 +241,7 @@ const MarketStats: React.FC<IProps> = (props) => {
             {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
         </PanelCard>
-        {isRINPair && (
+        {/* {isRINPair && (
           <>
             <PanelCard marketType={marketType} theme={theme}>
               <PanelCardTitle theme={theme}>Circulating Supply</PanelCardTitle>
@@ -257,7 +257,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               </PanelCardValue>
             </PanelCard>
           </>
-        )}
+        )} */}
       </MarketStatsContainer>
       <MobileMarketStatsContainer>
         <Title
