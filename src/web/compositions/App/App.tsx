@@ -74,7 +74,7 @@ if (currentVersion !== version) {
 }
 
 const DetermineMobileWindowHeight = () => {
-  const { width, height } = useWindowSize()
+  const { height = 0 } = useWindowSize()
   const vh = height * 0.01
   document.documentElement.style.setProperty('--vh', `${vh}px`)
   return null
@@ -89,8 +89,8 @@ const AppRaw = ({
     'isDevUrlPopupOpen',
     true
   )
-  const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
-    useLocalStorageState('isRebrandingPopupOpen', true)
+  // const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
+  //   useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
   //   true
   // )
@@ -104,16 +104,16 @@ const AppRaw = ({
     localStorage.setItem('themeMode', 'dark')
   }
 
-  const chartPageView =
-    getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
+  // const chartPageView =
+  //   getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
-  const fullscreen: boolean = isChartPage && chartPageView !== 'default'
+  // const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
-  const pageIsRegistration = currentPage.includes('regist')
-  const isRewards = currentPage.includes('rewards')
+  // const pageIsRegistration = currentPage.includes('regist')
+  // const isRewards = currentPage.includes('rewards')
 
   const searchParamsObject = getSearchParamsObject({ search })
   const isRefInUrlParamExist = !!searchParamsObject.ref
@@ -154,9 +154,9 @@ const AppRaw = ({
                         >
                           {children}
                         </AppInnerContainer>
-                        {showFooter && (
+                        {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
-                        )}
+                        )} */}
                         <MobileFooter pathname={currentPage} />
                         {/*
                     <Footer
