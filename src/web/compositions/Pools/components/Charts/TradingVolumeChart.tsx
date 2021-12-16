@@ -46,7 +46,9 @@ const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
       }
     }
 
-    reDraw()
+    if (data.length > 0) {
+      reDraw()
+    }
 
     return () => {
       chartRef.current?.destroy()

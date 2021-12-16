@@ -46,7 +46,9 @@ const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
       }
     }
 
-    reDraw()
+    if (data.length > 0) {
+      reDraw()
+    }
 
     return () => {
       chartRef.current?.destroy()
