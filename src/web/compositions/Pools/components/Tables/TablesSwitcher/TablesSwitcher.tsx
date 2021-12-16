@@ -47,6 +47,7 @@ import {
 
 import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
 import { AMMAuditPopup } from '../../Popups/AMMAuditPopup/AMMAuditPopup'
+import { Checkbox } from '@sb/components/Checkbox'
 
 interface TableSwitcherProps {
   theme: Theme
@@ -165,12 +166,12 @@ const TablesSwitcher: React.FC<TableSwitcherProps> = (props) => {
             </TableModeButton>
           </div>
           <InputWrap>
-            {/* <Checkbox
+            <Checkbox
               color="error"
               label="Show Permissionless Pools"
               checked={includePermissionless}
               onChange={setIncludePermissionless}
-            /> */}
+            />
             <SearchInput
               name="search"
               placeholder="Search"
