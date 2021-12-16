@@ -86,10 +86,10 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       </FormItemFull>
       <FormItem>
         <Button
-          backgroundImage={StakeBtn}
-          fontSize="xs"
-          padding="lg"
-          borderRadius="xxl"
+          $backgroundImage={StakeBtn}
+          $fontSize="xs"
+          $padding="lg"
+          $borderRadius="xxl"
           disabled={Object.keys(form.errors).length !== 0 || loading.stake}
         >
           {loading.stake ? <Loader /> : 'Stake'}
@@ -98,9 +98,9 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       <FormItem>
         <div>
           <Button
-            fontSize="xs"
-            padding="lg"
-            borderRadius="xxl"
+            $fontSize="xs"
+            $padding="lg"
+            $borderRadius="xxl"
             onClick={() => end()}
             disabled={isUnstakeDisabled}
             type="button"

@@ -36,6 +36,7 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { notify } from '@sb/dexUtils/notifications'
+import { endFarming } from '@sb/dexUtils/pools/actions/endFarming'
 import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import {
@@ -45,8 +46,7 @@ import {
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getUniqueAmountsToClaimMap } from '../utils/getUniqueAmountsToClaimMap'
 import { PublicKey } from '@solana/web3.js'
-import { endFarming } from '@sb/dexUtils/pools/endFarming'
-import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
+import { withdrawFarmed } from '@sb/dexUtils/pools/actions/withdrawFarmed'
 
 export const TablesDetails = ({
   theme,
@@ -355,8 +355,8 @@ export const TablesDetails = ({
 
           <RowContainer justify="flex-start" theme={theme}>
             {!hasFarming ||
-            (openFarmings.length === 0 &&
-              !(hasStakedTokens || availableToClaimFarmingTokens > 0)) ? (
+              (openFarmings.length === 0 &&
+                !(hasStakedTokens || availableToClaimFarmingTokens > 0)) ? (
               <RowDataTdText>No farming available in this pool.</RowDataTdText>
             ) : hasStakedTokens || availableToClaimFarmingTokens > 0 ? (
               <RowContainer justify="space-between">
@@ -385,8 +385,8 @@ export const TablesDetails = ({
                   title={
                     isUnstakeLocked
                       ? `Until ${dayjs
-                          .unix(unlockAvailableDate)
-                          .format('HH:mm:ss MMM DD, YYYY')}`
+                        .unix(unlockAvailableDate)
+                        .format('HH:mm:ss MMM DD, YYYY')}`
                       : null
                   }
                 >
@@ -431,6 +431,7 @@ export const TablesDetails = ({
                           userPoolTokenAccount: userPoolTokenAccount
                             ? new PublicKey(userPoolTokenAccount)
                             : null,
+                          curveType: pool.curveType,
                           farmingState: farmingState,
                         })
 
@@ -440,8 +441,8 @@ export const TablesDetails = ({
                             result === 'success'
                               ? 'Successfully unstaked.'
                               : result === 'failed'
-                              ? 'Unstaking failed, please try again later or contact us in telegram.'
-                              : 'Unstaking cancelled.',
+                                ? 'Unstaking failed, please try again later or contact us in telegram.'
+                                : 'Unstaking cancelled.',
                         })
 
                         const clearPoolWaitingForUpdate = () =>
@@ -595,8 +596,56 @@ export const TablesDetails = ({
                     isPoolWaitingForUpdateAfterClaim
                   }
                   onClick={async () => {
-                    selectPool(pool)
-                    setIsClaimRewardsPopupOpen(true)
+                    // selectPool(pool)
+                    // setIsClaimRewardsPopupOpen(true)
+                    setPoolWaitingForUpdateAfterOperation({
+                      pool: pool.swapToken,
+                      operation: 'claim',
+                    })
+
+                    const clearPoolWaitingForUpdate = () =>
+                      setPoolWaitingForUpdateAfterOperation({
+                        pool: '',
+                        operation: '',
+                      })
+
+                    try {
+                      const result = await withdrawFarmed({
+                        wallet,
+                        connection,
+                        pool,
+                        allTokensData,
+                        farmingTickets,
+                      })
+
+                      notify({
+                        type: result === 'success' ? 'success' : 'error',
+                        message:
+                          result === 'success'
+                            ? 'Successfully claimed rewards.'
+                            : result === 'failed'
+                              ? 'Claim rewards failed, please try again later or contact us in telegram.'
+                              : 'Claim rewards cancelled.',
+                      })
+
+                      if (result !== 'success') {
+                        clearPoolWaitingForUpdate()
+                      } else {
+                        setTimeout(async () => {
+                          refreshTokensWithFarmingTickets()
+                          clearPoolWaitingForUpdate()
+                        }, 7500)
+
+                        setTimeout(
+                          () => refreshTokensWithFarmingTickets(),
+                          15000
+                        )
+                      }
+                    } catch (e) {
+                      clearPoolWaitingForUpdate()
+
+                      return
+                    }
                   }}
                 >
                   {isPoolWaitingForUpdateAfterClaim ? (

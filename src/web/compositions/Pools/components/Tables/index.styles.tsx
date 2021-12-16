@@ -1,12 +1,13 @@
-import styled from 'styled-components'
-
-import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Text } from '@sb/compositions/Addressbook'
-import React from 'react'
-import { Loading } from '@sb/components/Loading'
 import { Loader } from '@sb/components/Loader/Loader'
+import { Text } from '@sb/compositions/Addressbook'
 import { Theme } from '@sb/types/materialUI'
+import { COLORS } from '@variables/variables'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
+
 
 export const LiquidityDataContainer = styled(Row)`
   width: 50%;
@@ -173,9 +174,16 @@ export const TableContainer = styled(RowContainer)`
 `
 
 export const AmountText = styled.span`
-  color: #53df11;
+  color: ${COLORS.success};
 `
 
 export const WhiteText = styled.span`
-  color: #fbf2f2;
+  color: ${COLORS.primaryWhite};
+`
+
+
+export const DetailsLink = styled(Link)`
+  color: ${COLORS.hint};
+  font-size: 13px;
+  text-decoration: none;
 `

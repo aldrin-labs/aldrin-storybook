@@ -1,78 +1,70 @@
-import React, { useEffect, useState } from 'react'
-
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line, StyledPaper } from '../index.styles'
-import SvgIcon from '@sb/components/SvgIcon'
-import Info from '@icons/TooltipImg.svg'
-
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
-import { InputWithCoins, InputWithTotal } from '../components'
+import Info from '@icons/TooltipImg.svg'
+import { Theme, withTheme } from '@material-ui/core'
+import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import AttentionComponent from '@sb/components/AttentionBlock'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { useConnection } from '@sb/dexUtils/connection'
-import { PublicKey } from '@solana/web3.js'
+import { costOfAddingToken } from '@sb/components/TraidingTerminal/utils'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   DexTokensPrices,
   PoolInfo,
   PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { notify } from '@sb/dexUtils/notifications'
-import AttentionComponent from '@sb/components/AttentionBlock'
-import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
-import { createBasket } from '@sb/dexUtils/pools/createBasket'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Button } from '../../Tables/index.styles'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
-import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
-import { RefreshFunction } from '@sb/dexUtils/types'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { useConnection } from '@sb/dexUtils/connection'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { createBasket } from '@sb/dexUtils/pools/actions/createBasket'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
-import { StakePopup } from '../Staking/StakePopup'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { RefreshFunction } from '@sb/dexUtils/types'
 import { sleep } from '@sb/dexUtils/utils'
-import { costOfAddingToken } from '@sb/components/TraidingTerminal/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { PublicKey } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
+import { COLORS } from '@variables/variables'
+import { Button } from '../../Tables/index.styles'
+import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
+import { InputWithCoins, InputWithTotal } from '../components'
+import { BoldHeader, Line, StyledPaper } from '../index.styles'
+import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 
-export const AddLiquidityPopup = ({
-  theme,
-  open,
-  poolsInfo,
-  dexTokensPricesMap,
-  selectedPool,
-  allTokensData,
-  close,
-  refreshAllTokensData,
-  setPoolWaitingForUpdateAfterOperation,
-  farmingTicketsMap,
-  refreshTokensWithFarmingTickets,
-  setIsRemindToStakePopupOpen,
-}: {
+interface AddLiquidityPopupProps {
   theme: Theme
-  open: boolean
-  poolsInfo: PoolInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
   refreshAllTokensData: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  farmingTicketsMap: Map<string, FarmingTicket[]>
-  refreshTokensWithFarmingTickets: RefreshFunction
-  setIsRemindToStakePopupOpen: any
-}) => {
+  setIsRemindToStakePopupOpen: () => void
+}
+
+const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
+  const {
+    dexTokensPricesMap,
+    selectedPool,
+    allTokensData,
+    close,
+    refreshAllTokensData,
+    setPoolWaitingForUpdateAfterOperation,
+    setIsRemindToStakePopupOpen,
+    theme,
+  } = props
   const { wallet } = useWallet()
   const connection = useConnection()
 
@@ -85,6 +77,9 @@ export const AddLiquidityPopup = ({
     baseTokenAmount: poolAmountTokenA,
     quoteTokenAmount: poolAmountTokenB,
   } = poolBalances
+
+  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
+  const [baseAmount, setBaseAmount] = useState<string | number>('')
 
   // update entered value on every pool ratio change
   useEffect(() => {
@@ -100,7 +95,6 @@ export const AddLiquidityPopup = ({
     }
   }, [poolBalances])
 
-  const [baseAmount, setBaseAmount] = useState<string | number>('')
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
     const quoteAmount = stripDigitPlaces(
       +baseAmount * (poolAmountTokenB / poolAmountTokenA),
@@ -113,7 +107,6 @@ export const AddLiquidityPopup = ({
     }
   }
 
-  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const setQuoteAmountWithBase = (quoteAmount: string | number) => {
     const baseAmount = stripDigitPlaces(
       +quoteAmount * (poolAmountTokenA / poolAmountTokenB),
@@ -139,22 +132,16 @@ export const AddLiquidityPopup = ({
   const [
     isSelectorForSeveralBaseAddressesOpen,
     setIsSelectorForSeveralBaseAddressesOpen,
-  ] = useState(false)
+  ] = useState(
+    allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1
+  )
+
   const [
     isSelectorForSeveralQuoteAddressesOpen,
     setIsSelectorForSeveralQuoteAddressesOpen,
-  ] = useState(false)
-
-  useEffect(() => {
-    const isSeveralBaseAddresses =
-      allTokensData.filter((el) => el.mint === selectedPool.tokenA).length > 1
-
-    const isSeveralQuoteAddresses =
-      allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1
-
-    setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
-    setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
-  }, [])
+  ] = useState(
+    allTokensData.filter((el) => el.mint === selectedPool.tokenB).length > 1
+  )
 
   const [warningChecked, setWarningChecked] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
@@ -272,11 +259,10 @@ export const AddLiquidityPopup = ({
   )
 
   const farmingAPR =
-    ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+    ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100 || 0
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -299,7 +285,7 @@ export const AddLiquidityPopup = ({
         setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
       }}
       maxWidth={'md'}
-      open={open}
+      open
       aria-labelledby="responsive-dialog-title"
     >
       <Row justify={'space-between'} width={'100%'}>
@@ -359,7 +345,7 @@ export const AddLiquidityPopup = ({
           <WhiteText>Gas Fees</WhiteText>
           <WhiteText
             style={{
-              color: theme.palette.green.main,
+              color: COLORS.success,
             }}
           >
             {costOfAddingToken} SOL
@@ -379,11 +365,11 @@ export const AddLiquidityPopup = ({
           <Row>
             <Text fontSize={'1.5rem'}>
               {formatNumberToUSFormat(
-                stripDigitPlaces(selectedPool.tvl.tokenA, 2)
+                stripDigitPlaces(poolAmountTokenA, 2)
               )}{' '}
               {getTokenNameByMintAddress(selectedPool.tokenA)} /{' '}
               {formatNumberToUSFormat(
-                stripDigitPlaces(selectedPool.tvl.tokenB, 2)
+                stripDigitPlaces(poolAmountTokenB, 2)
               )}{' '}
               {getTokenNameByMintAddress(selectedPool.tokenB)}
             </Text>
@@ -526,6 +512,7 @@ export const AddLiquidityPopup = ({
             const result = await createBasket({
               wallet,
               connection,
+              curveType: selectedPool.curveType,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userBaseTokenAmount,
               userQuoteTokenAmount,
@@ -598,3 +585,7 @@ export const AddLiquidityPopup = ({
     </DialogWrapper>
   )
 }
+
+const WithTheme = withTheme()(AddLiquidityPopup)
+
+export { WithTheme as AddLiquidityPopup }

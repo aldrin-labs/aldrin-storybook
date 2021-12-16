@@ -65,7 +65,7 @@ export const BlockWithHints = () => {
         </Block>
       </Cell>
       <Cell colLg={4}>
-        <Block backgroundImage={greenBack} icon={poolIcon}>
+        <Block $backgroundImage={greenBack} icon={poolIcon}>
           <BlockContent>
             <BlockSubtitle color={COLORS.white}>
               Liquidity Mining:

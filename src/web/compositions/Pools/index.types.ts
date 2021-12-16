@@ -5,12 +5,13 @@ export type PoolInfo = {
   parsedName: string
   tokenA: string
   tokenB: string
+  curveType: number
   poolTokenAccountA: string
   poolTokenAccountB: string
   swapToken: string
   poolTokenMint: string
-  lpTokenFreezeVaultBalance: number
-  farming: FarmingState[]
+  lpTokenFreezeVaultBalance: number;
+  farming?: FarmingState[]
   tvl: {
     tokenA: number
     tokenB: number
@@ -29,6 +30,12 @@ export type FeesEarned = {
   poolSymbol: string
   totalBaseTokenFee: number
   totalQuoteTokenFee: number
+}
+
+export interface TradingVolumeStats {
+  weeklyTradingVolume: number
+  dailyTradingVolume: number
+  pool: string
 }
 
 export type TradingVolume = {

@@ -5,8 +5,8 @@ import { FarmingTicket } from '@sb/dexUtils/common/types'
 
 import { getTokenDataByMint } from '.'
 import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
-import { getEndFarmingTransactions } from '@sb/dexUtils/pools/endFarming'
-import { getStartFarmingTransactions } from '@sb/dexUtils/pools/startFarming'
+import { getEndFarmingTransactions } from '@sb/dexUtils/pools/actions/endFarming'
+import { getStartFarmingTransactions } from '@sb/dexUtils/pools/actions/startFarming'
 import { signAndSendTransaction } from '@sb/dexUtils/pools/signAndSendTransaction'
 import { sleep } from '@sb/dexUtils/utils'
 import { MIN_POOL_TOKEN_AMOUNT_TO_STAKE } from '@sb/dexUtils/common/config'
@@ -52,6 +52,7 @@ export const restakeAll = async ({
         poolPublicKey: new PublicKey(pool.swapToken),
         farmingState: openFarmings[0],
         userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+        curveType: pool.curveType,
       })
 
       endFarmingTransactions.push(...transactionsAndSigners)
@@ -92,6 +93,7 @@ export const restakeAll = async ({
         poolPublicKey: new PublicKey(pool.swapToken),
         userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
         farmingState: new PublicKey(farming[0].farmingState),
+        curveType: pool.curveType
       })
 
       startFarmingTransactions.push(...transactionsAndSigners)

@@ -1,59 +1,40 @@
-import React, { useState, useEffect } from 'react'
-
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, Line, StyledPaper } from '../index.styles'
-import SvgIcon from '@sb/components/SvgIcon'
-
-import Close from '@icons/closeIcon.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
-import { SimpleInput, InputWithTotal } from '../components'
-import { Button } from '../../Tables/index.styles'
-import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
-import { PublicKey } from '@solana/web3.js'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { useConnection } from '@sb/dexUtils/connection'
-import {
-  PoolInfo,
-  DexTokensPrices,
-  PoolWithOperation,
-  FeesEarned,
-} from '@sb/compositions/Pools/index.types'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { notify } from '@sb/dexUtils/notifications'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { redeemBasket } from '@sb/dexUtils/pools/redeemBasket'
+import Close from '@icons/closeIcon.svg'
+import { Theme, withTheme } from '@material-ui/core'
+import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import SvgIcon from '@sb/components/SvgIcon'
+import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import {
+  DexTokensPrices,
+  FeesEarned, PoolInfo,
+  PoolWithOperation
+} from '@sb/compositions/Pools/index.types'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { usePoolBalances } from '@sb/dexUtils/pools/usePoolBalances'
+import { useConnection } from '@sb/dexUtils/connection'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
-import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import {
-  costOfAddingToken,
-  TRANSACTION_COMMON_SOL_FEE,
-} from '@sb/components/TraidingTerminal/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { PublicKey } from '@solana/web3.js'
+import { COLORS } from '@variables/variables'
+import React, { useEffect, useState } from 'react'
+import { Button } from '../../Tables/index.styles'
+import { InputWithTotal, SimpleInput } from '../components'
+import { BoldHeader, Line, StyledPaper } from '../index.styles'
 
-export const WithdrawalPopup = ({
-  theme,
-  open,
-  poolsInfo,
-  dexTokensPricesMap,
-  farmingTicketsMap,
-  earnedFeesInPoolForUserMap,
-  selectedPool,
-  allTokensData,
-  close,
-  refreshAllTokensData,
-  setIsUnstakePopupOpen,
-  setPoolWaitingForUpdateAfterOperation,
-}: {
+
+interface WithdrawalProps {
   theme: Theme
-  open: boolean
-  poolsInfo: PoolInfo[]
   dexTokensPricesMap: Map<string, DexTokensPrices>
   farmingTicketsMap: Map<string, FarmingTicket[]>
   earnedFeesInPoolForUserMap: Map<string, FeesEarned>
@@ -63,7 +44,21 @@ export const WithdrawalPopup = ({
   refreshAllTokensData: RefreshFunction
   setIsUnstakePopupOpen: (isOpen: boolean) => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-}) => {
+}
+
+const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
+  const {
+    theme,
+    dexTokensPricesMap,
+    farmingTicketsMap,
+    earnedFeesInPoolForUserMap,
+    selectedPool,
+    allTokensData,
+    close,
+    refreshAllTokensData,
+    setIsUnstakePopupOpen,
+    setPoolWaitingForUpdateAfterOperation,
+  } = props
   const { wallet } = useWallet()
   const connection = useConnection()
 
@@ -196,7 +191,7 @@ export const WithdrawalPopup = ({
         setOperationLoading(false)
       }}
       maxWidth={'md'}
-      open={open}
+      open
       aria-labelledby="responsive-dialog-title"
     >
       <Row justify={'space-between'} width={'100%'}>
@@ -243,7 +238,7 @@ export const WithdrawalPopup = ({
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
-            color: theme.palette.green.main,
+            color: COLORS.success,
           }}
         >
           {TRANSACTION_COMMON_SOL_FEE} SOL
@@ -321,6 +316,7 @@ export const WithdrawalPopup = ({
             const result = await redeemBasket({
               wallet,
               connection,
+              curveType: selectedPool.curveType,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               userPoolTokenAmount: poolTokenAmountToWithdraw,
@@ -367,4 +363,11 @@ export const WithdrawalPopup = ({
       </RowContainer>
     </DialogWrapper>
   )
+}
+
+
+const WithTheme = withTheme()(WithdrawalPopup)
+
+export {
+  WithTheme as WithdrawalPopup
 }

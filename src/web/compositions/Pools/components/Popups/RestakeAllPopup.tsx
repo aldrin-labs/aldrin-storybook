@@ -21,6 +21,7 @@ import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 
 const getSOLFeesAmountToRestake = ({
   allPoolsData,
@@ -131,7 +132,12 @@ export const RestakeAllPopup = ({
     }
   }
 
-  if (!isPopupOpen || isPopupTemporaryHidden) return null
+  const openFarmings = filterOpenFarmingTickets(
+    [...farmingTicketsMap.values()].flat()
+  )
+
+  if (!isPopupOpen || isPopupTemporaryHidden || openFarmings.length === 0)
+    return null
 
   return (
     <DialogWrapper

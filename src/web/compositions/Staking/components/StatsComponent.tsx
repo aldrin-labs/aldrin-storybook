@@ -3,19 +3,19 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   stripByAmount,
-  stripByAmountAndFormat,
+  stripByAmountAndFormat
 } from '@core/utils/chartPageUtils'
 import { dayDuration } from '@core/utils/dateUtils'
 import {
   formatNumberToUSFormat,
-  stripDigitPlaces,
+  stripDigitPlaces
 } from '@core/utils/PortfolioTableUtils'
 import { SvgIcon } from '@sb/components'
 import {
   Block,
   BlockContentStretched,
   BlockSubtitle,
-  BlockTitle,
+  BlockTitle
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
@@ -40,11 +40,12 @@ import {
   LastPrice,
   Number,
   StatsBlock,
-  StatsBlockItem,
+  StatsBlockItem
 } from '../styles'
 import { getShareText } from '../utils'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
+
 
 interface InnerProps {
   tokenData: TokenInfo | null
@@ -161,7 +162,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
           </Block>
         </Cell>
         <Cell colMd={6}>
-          <Block backgroundImage={pinkBackground}>
+          <Block $backgroundImage={pinkBackground}>
             <BlockContentStretched>
               <BlockTitle>Estimated Rewards</BlockTitle>
               <div

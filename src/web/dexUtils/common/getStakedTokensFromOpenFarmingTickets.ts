@@ -5,9 +5,10 @@ export const getStakedTokensFromOpenFarmingTickets = (
   farmingTickets: FarmingTicket[]
 ) => {
   return (
-    filterOpenFarmingTickets(farmingTickets).reduce(
-      (acc, ticket) => acc + ticket.tokensFrozen,
-      0
-    ) || 0
+    filterOpenFarmingTickets(farmingTickets)
+      .reduce(
+        (acc, ticket) => acc + ticket.tokensFrozen,
+        0
+      )
   )
 }
