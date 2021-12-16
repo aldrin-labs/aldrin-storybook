@@ -6,6 +6,7 @@ import { StyledPaper } from '../index.styles'
 import { Theme, withTheme } from '@material-ui/core'
 
 import AMMAudit from '@sb/AMMAudit/AldrinAMMAuditReport.pdf'
+import AMMV2_Audit from '@sb/AMMAudit/StableSwapAMMAudit.pdf'
 
 const Popup = ({
   theme,
@@ -16,7 +17,6 @@ const Popup = ({
   open: boolean
   close: () => void
 }) => {
-  console.log('theme', theme)
   return (
     <DialogWrapper
       theme={theme}
@@ -41,7 +41,7 @@ const Popup = ({
         <Button
           style={{ width: 'calc(50% - 1rem)', fontFamily: 'Avenir Next Medium' }}
           isUserConfident={true}
-          href={AMMAudit}
+          href={AMMV2_Audit}
           target="_blank"
           theme={theme}
           color={theme.palette.blue.serum}
