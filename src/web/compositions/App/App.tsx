@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core/styles'
 import { Header } from '@sb/components/Header'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
-import WarningBanner from '@sb/components/WarningPopup/warningPopupsWrapper'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
@@ -90,10 +89,8 @@ const AppRaw = ({
     'isDevUrlPopupOpen',
     true
   )
-  const [
-    isRebrandingPopupOpen,
-    setIsRebrandingPopupOpen,
-  ] = useLocalStorageState('isRebrandingPopupOpen', true)
+  const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
+    useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
   //   true
   // )
@@ -161,7 +158,7 @@ const AppRaw = ({
                           <FooterWithTheme isRewards={isRewards} />
                         )}
                         <MobileFooter pathname={currentPage} />
-                        {/* 
+                        {/*
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}

@@ -24,8 +24,8 @@ import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
 import { useWallet } from '@sb/dexUtils/wallet'
 import React, { useState } from 'react'
-import { Route } from 'react-router'
-import { useRouteMatch } from 'react-router-dom'
+import { Route, useHistory } from 'react-router'
+import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
 import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { ApolloQueryResult } from 'apollo-client'
@@ -47,6 +47,7 @@ import {
 } from './styles'
 import { CreatePoolModal } from '../../Popups'
 import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
+import { takePoolsFarmingSnapshots } from '../../../../../dexUtils/pools/actions/takeSnapshots'
 
 export type PoolsInfo = { getPoolsInfo: PoolInfo[] }
 
@@ -83,7 +84,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     getWeeklyAndDailyTradingVolumesForPoolsQuery,
   } = props
 
-  const [createPoolModalOpened, setCreatePoolModalOpened] = useState(false)
   const [searchValue, setSearchValue] = useState('')
   const [selectedTable, setSelectedTable] = useState<
     'all' | 'userLiquidity' | 'stablePools' | 'permissionlessPools'
@@ -101,6 +101,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useConnection()
+  const history = useHistory()
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
@@ -168,7 +169,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   return (
     <>
-      {/* <button
+      <button
         type="button"
         onClick={() =>
           takePoolsFarmingSnapshots({
@@ -183,7 +184,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         }
       >
         Take snapshots
-      </button> */}
+      </button>
       <TabContainer>
         <div>
           <TableModeButton
@@ -219,7 +220,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             onChange={onChangeSearch}
             append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
           />
-          <AddPoolButton onClick={() => setCreatePoolModalOpened(true)}>
+          <AddPoolButton as={Link} to={`${path}/create`}>
             <SvgIcon src={PlusIcon} width="1.2em" />
             &nbsp;Create a Pool
           </AddPoolButton>
@@ -287,6 +288,12 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         )}
       </TableContainer>
 
+      <Route path={`${path}/create`}>
+        <CreatePoolModal
+          refetchPools={getPoolsInfoQueryRefetch}
+          onClose={() => history.push(`${path}`)}
+        />
+      </Route>
       <Route path={`${path}/:symbol`}>
         <PoolPage
           pools={pools}
@@ -302,16 +309,9 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           vestingsForWallet={vestingsByMintForUser}
         />
       </Route>
-      {createPoolModalOpened && (
-        <CreatePoolModal
-          refetchPools={getPoolsInfoQueryRefetch}
-          onClose={() => setCreatePoolModalOpened(false)}
-        />
-      )}
+
       {wallet.publicKey && (
         <RestakeAllPopup
-          // open={isRestakeAllPopupOpen}
-          // close={() => setIsRestakeAllPopupOpen(false)}
           wallet={wallet}
           connection={connection}
           allPoolsData={pools}

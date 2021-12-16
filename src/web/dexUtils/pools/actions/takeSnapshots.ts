@@ -20,7 +20,7 @@ import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { sendTransaction } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-const MAX_RETRY_COUNT = 1
+const MAX_RETRY_COUNT = 0
 
 export const takePoolsFarmingSnapshots = async ({
   pools,

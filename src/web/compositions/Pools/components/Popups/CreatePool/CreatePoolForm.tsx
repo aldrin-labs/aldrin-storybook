@@ -2,7 +2,6 @@ import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 import { Button } from '@sb/components/Button'
 import {
-  CheckboxField,
   GroupLabel,
   RadioGroupField,
 } from '@sb/components/FormElements'
@@ -12,7 +11,6 @@ import { ModalTitleBlock } from '@sb/components/Modal'
 import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { Pool, PoolV2 } from '@sb/dexUtils/common/types'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
@@ -476,7 +474,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                 {form.errors.baseToken && (
                   <Error color="error">{form.errors.baseToken}</Error>
                 )}
-                <CheckboxWrap>
+                {/* <CheckboxWrap>
                   <CheckboxField
                     label="Use Stable Curve for this pool. ATTENTION, ADVANCED USERS ONLY."
                     name="stableCurve"
@@ -488,7 +486,7 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
                       What is stable curve?
                     </InlineText>
                   </DarkTooltip>
-                </CheckboxWrap>
+                </CheckboxWrap> */}
 
                 <GroupLabel label="Do you want to lock your initial liquidity for some time?" />
                 <CheckboxWrap>
