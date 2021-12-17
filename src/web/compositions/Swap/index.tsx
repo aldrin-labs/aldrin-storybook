@@ -639,9 +639,7 @@ const SwapPage = ({
                   fontFamily={'Avenir Next Bold'}
                   color={'#53DF11'}
                 >
-                  {isSelectedPoolStable
-                    ? (+quoteAmount).toFixed(5)
-                    : totalWithFees.toFixed(5)}{' '}
+                  {totalWithFees.toFixed(5)}{' '}
                 </Text>
                 <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
               </Row>
