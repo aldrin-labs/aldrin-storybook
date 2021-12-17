@@ -1,4 +1,8 @@
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
+import { ApolloQueryResult } from 'apollo-client'
+import { Pool, PoolV2 } from '@sb/dexUtils/common/types'
+import { TokenInfo } from '@sb/dexUtils/types'
+import { DexTokensPrices, PoolInfo } from '../../../index.types'
 
 export interface WithFarming {
   farming: {
@@ -30,4 +34,18 @@ export interface CreatePoolFormType extends WithFarming {
   initialLiquidityLockPeriod: string
   firstDeposit: FirstDepositType
   farmingEnabled: boolean
+}
+
+export interface CreatePoolProps {
+  onClose: () => void
+  refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>
+  dexTokensPricesMap: Map<string, DexTokensPrices>
+}
+
+export interface CreatePoolFormProps {
+  onClose: () => void
+  userTokens: TokenInfo[]
+  pools: (Pool | PoolV2)[]
+  refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>
+  dexTokensPricesMap: Map<string, DexTokensPrices>
 }

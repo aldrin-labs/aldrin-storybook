@@ -179,7 +179,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const estimatedTime = estimateTime(timeRemainMax)
 
   // Have pool ending soon
-  const prolongationEnabled = !!farmings.find(
+  const prolongationEnabled = !!(pool.farming || []).find(
     (fs) => fs.tokensTotal - fs.tokensUnlocked < fs.tokensPerPeriod
   )
 
@@ -196,6 +196,9 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
           <FarmingBlockInner>
             <LiquidityItem>
               <LiquidityTitle>Remaining Supply</LiquidityTitle>
+              {farmingTokens.length === 0 && (
+                <LiquidityText weight={600}>-</LiquidityText>
+              )}
               {farmingTokens.map((mint) => (
                 <div key={`farming_reward_${mint}`}>
                   <LiquidityText weight={600}>
@@ -213,38 +216,43 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               <LiquidityTitle>Remaining Time</LiquidityTitle>
 
               <div>
-                {timeRemainMax < MINUTE && <LiquidityText>Ended</LiquidityText>}
-                {!!estimatedTime.days && (
-                  <LiquidityText>
-                    <LiquidityText color="success">
-                      {estimatedTime.days}{' '}
-                    </LiquidityText>
-                    <LiquidityText>
-                      {pluralize('day', estimatedTime.days)}
-                    </LiquidityText>
-                  </LiquidityText>
-                )}
-                {!!estimatedTime.hours && (
-                  <LiquidityText>
-                    <LiquidityText color="success">
-                      {' '}
-                      {estimatedTime.hours}{' '}
-                    </LiquidityText>
-                    <LiquidityText>
-                      {pluralize('hour', estimatedTime.hours)}
-                    </LiquidityText>
-                  </LiquidityText>
-                )}
-                {!!estimatedTime.minutes && (
-                  <LiquidityText>
-                    <LiquidityText color="success">
-                      {' '}
-                      {estimatedTime.minutes}{' '}
-                    </LiquidityText>
-                    <LiquidityText>
-                      {pluralize('minute', estimatedTime.minutes)}
-                    </LiquidityText>
-                  </LiquidityText>
+                {timeRemainMax < MINUTE ? (
+                  <LiquidityText>Ended</LiquidityText>
+                ) : (
+                  <>
+                    {!!estimatedTime.days && (
+                      <LiquidityText>
+                        <LiquidityText color="success">
+                          {estimatedTime.days}{' '}
+                        </LiquidityText>
+                        <LiquidityText>
+                          {pluralize('day', estimatedTime.days)}
+                        </LiquidityText>
+                      </LiquidityText>
+                    )}
+                    {!!estimatedTime.hours && (
+                      <LiquidityText>
+                        <LiquidityText color="success">
+                          {' '}
+                          {estimatedTime.hours}{' '}
+                        </LiquidityText>
+                        <LiquidityText>
+                          {pluralize('hour', estimatedTime.hours)}
+                        </LiquidityText>
+                      </LiquidityText>
+                    )}
+                    {!!estimatedTime.minutes && (
+                      <LiquidityText>
+                        <LiquidityText color="success">
+                          {' '}
+                          {estimatedTime.minutes}{' '}
+                        </LiquidityText>
+                        <LiquidityText>
+                          {pluralize('minute', estimatedTime.minutes)}
+                        </LiquidityText>
+                      </LiquidityText>
+                    )}
+                  </>
                 )}
               </div>
             </LiquidityItem>

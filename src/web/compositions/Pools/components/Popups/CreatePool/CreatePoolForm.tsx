@@ -9,14 +9,12 @@ import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { InlineText } from '@sb/components/Typography'
-import { Pool, PoolV2 } from '@sb/dexUtils/common/types'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { SvgIcon } from '@sb/components'
 import CrownIcon from '@icons/crownIcon.svg'
 import AttentionIcon from '@icons/attentionWhite.svg'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { sendAndWaitSignedTransaction } from '@sb/dexUtils/send'
-import { TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import { ApolloQueryResult } from 'apollo-client'
@@ -47,14 +45,8 @@ import {
   VestingExplanation,
 } from './styles'
 import { TokenAmountInputField } from './TokenAmountInput'
-import { CreatePoolFormType } from './types'
-
-interface CreatePoolProps {
-  onClose: () => void
-  userTokens: TokenInfo[]
-  pools: (Pool | PoolV2)[]
-  refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>
-}
+import { CreatePoolFormType, CreatePoolFormProps } from './types'
+import { getTokenNameByMintAddress } from '../../../../../dexUtils/markets'
 
 const steps = [
   'Set up a Pool',
@@ -67,8 +59,8 @@ interface EventLike {
   preventDefault: () => void
 }
 
-const STABLE_POOLS_TOOLTIP =
-  'Stable pools are designed specifically for pegged assets that trade at a similar price. e.g. mSOL/SOL (SOL-pegged), USDC/USDT (USD-pegged) etc.'
+// const STABLE_POOLS_TOOLTIP =
+//   'Stable pools are designed specifically for pegged assets that trade at a similar price. e.g. mSOL/SOL (SOL-pegged), USDC/USDT (USD-pegged) etc.'
 
 const checkPoolCreated = async (
   pool: PublicKey,
@@ -88,8 +80,8 @@ const checkPoolCreated = async (
   return createdPool
 }
 
-export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
-  const { onClose, userTokens, pools, refetchPools } = props
+export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
+  const { onClose, userTokens, pools, refetchPools, dexTokensPricesMap } = props
   const [step, setStep] = useState(1)
   const [processing, setProcessing] = useState(false)
   const [processingStatus, setProcessingStatus] =
@@ -274,6 +266,19 @@ export const CreatePoolForm: React.FC<CreatePoolProps> = (props) => {
         baseToken: { mint: baseTokenMint },
         quoteToken: { mint: quoteTokenMint },
       } = values
+
+      const basePrice = dexTokensPricesMap.get(
+        getTokenNameByMintAddress(baseTokenMint)
+      )
+      const quotePrice = dexTokensPricesMap.get(
+        getTokenNameByMintAddress(quoteTokenMint)
+      )
+
+      console.log('basePrice: ', basePrice, quotePrice)
+
+      if (!basePrice && !quotePrice) {
+        return { baseToken: 'No price for selected tokens' }
+      }
 
       if (baseTokenMint === quoteTokenMint) {
         return { baseToken: 'Same token selected' }

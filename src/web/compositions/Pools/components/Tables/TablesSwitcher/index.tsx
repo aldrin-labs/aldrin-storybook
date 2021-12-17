@@ -116,6 +116,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     snapshotQueues,
   })
 
+
   const refreshAll = () => {
     refreshUserTokensData()
     refreshFarmingTickets()
@@ -150,6 +151,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     allTokensData: userTokensData,
     farmingTicketsMap,
     vestings: vestingsByMintForUser,
+    walletPublicKey: wallet.publicKey,
   })
 
   const stablePools = pools.filter((pool) => pool.curveType === CURVE.STABLE)
@@ -291,6 +293,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         <CreatePoolModal
           refetchPools={getPoolsInfoQueryRefetch}
           onClose={() => history.push(`${path}`)}
+          dexTokensPricesMap={dexTokensPricesMap}
         />
       </Route>
       <Route path={`${path}/:symbol`}>

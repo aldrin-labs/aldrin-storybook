@@ -3,19 +3,13 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal, ModalTitleBlock } from '@sb/components/Modal'
 import { usePools } from '@sb/dexUtils/pools/hooks/userPools'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
-import { ApolloQueryResult } from 'apollo-client'
 import React from 'react'
-import { PoolInfo } from '../../../index.types'
 import { CreatePoolForm } from './CreatePoolForm'
 import { Body, Title } from './styles'
-
-interface CreatePoolProps {
-  onClose: () => void
-  refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>
-}
+import { CreatePoolProps } from './types'
 
 const PoolModal: React.FC<CreatePoolProps> = (props) => {
-  const { onClose, refetchPools } = props
+  const { onClose, refetchPools, dexTokensPricesMap } = props
   const [userTokens] = useUserTokenAccounts()
   const [pools] = usePools()
 
@@ -29,6 +23,7 @@ const PoolModal: React.FC<CreatePoolProps> = (props) => {
       userTokens={userTokens}
       onClose={onClose}
       refetchPools={refetchPools}
+      dexTokensPricesMap={dexTokensPricesMap}
     />
   ) : (
     <>
@@ -44,11 +39,15 @@ const PoolModal: React.FC<CreatePoolProps> = (props) => {
 }
 
 export const CreatePoolModal: React.FC<CreatePoolProps> = (props) => {
-  const { onClose, refetchPools } = props
+  const { onClose, refetchPools, dexTokensPricesMap } = props
   return (
     <Modal open onClose={onClose}>
       <ConnectWalletWrapper>
-        <PoolModal onClose={onClose} refetchPools={refetchPools} />
+        <PoolModal
+          onClose={onClose}
+          refetchPools={refetchPools}
+          dexTokensPricesMap={dexTokensPricesMap}
+        />
       </ConnectWalletWrapper>
     </Modal>
   )
