@@ -1,13 +1,13 @@
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
-  getPoolsProgramAddress,
   POOLS_PROGRAM_ADDRESS,
 } from '@sb/dexUtils/ProgramsMultiton/utils'
 
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { Connection, PublicKey } from '@solana/web3.js'
 import { PoolBalances } from '../hooks/usePoolBalances'
+import { CURVE } from '../types'
 import { getMinimumReceivedFromProductCurve } from './getMinimumReceivedFromProductCurve'
 import { getMinimumReceivedFromStableCurveForSwap } from './getMinimumReceivedFromStableCurve'
 
@@ -34,21 +34,20 @@ export const getMinimumReceivedAmountFromSwap = async ({
   allTokensData: TokenInfo[]
   poolBalances: PoolBalances
 }) => {
-
   if (!pool) return 0
 
-  const { curveType } = pool
+  const { curveType = CURVE.PRODUCT } = pool
 
   let swapAmountOut = 0
 
-  if (getPoolsProgramAddress({ curveType }) === POOLS_PROGRAM_ADDRESS) {
+  if (curveType === CURVE.PRODUCT) {
     swapAmountOut = getMinimumReceivedFromProductCurve({
       swapAmountIn,
       isSwapBaseToQuote,
       poolBalances,
     })
   } else {
-    // program v2
+    // program v2 stable pool
     swapAmountOut = await getMinimumReceivedFromStableCurveForSwap({
       swapAmountIn,
       isSwapBaseToQuote,
