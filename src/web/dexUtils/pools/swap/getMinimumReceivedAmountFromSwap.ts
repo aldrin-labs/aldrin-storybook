@@ -1,8 +1,5 @@
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import {
-  POOLS_PROGRAM_ADDRESS,
-} from '@sb/dexUtils/ProgramsMultiton/utils'
 
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { Connection, PublicKey } from '@solana/web3.js'
