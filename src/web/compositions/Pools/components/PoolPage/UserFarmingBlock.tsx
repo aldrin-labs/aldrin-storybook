@@ -9,11 +9,14 @@ import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getSt
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useWallet } from '@sb/dexUtils/wallet'
 import pluralize from 'pluralize'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import LightLogo from '@icons/lightLogo.svg'
 
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { LoadingBlock } from '@sb/components/Loader/LoadingBlock'
+import { sleep } from '@core/utils/helpers'
+import { ApolloQueryResult } from 'apollo-client'
 import { getTokenDataByMint } from '../../utils'
 import { getUniqueAmountsToClaimMap } from '../Tables/utils/getUniqueAmountsToClaimMap'
 import { ExtendFarmingModal } from './ExtendFarmingModal'
@@ -34,7 +37,25 @@ import {
 import { ClaimTimeTooltip } from './Tooltips'
 import { UserFarmingRewards } from '../Tables/UserFarmingRewards'
 import { PoolRewardRemain, UserFarmingBlockProps } from './types'
+import { PoolInfo } from '../../index.types'
 
+const waitForPoolsUpdate = async (
+  refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
+  poolSwapToken: string,
+  statesSize: number
+): Promise<boolean> => {
+  const {
+    data: { getPoolsInfo },
+  } = await refetchPools()
+  const newSize =
+    getPoolsInfo.find((p) => p.swapToken === poolSwapToken)?.farming?.length ||
+    0
+  if (newSize > statesSize) {
+    return true
+  }
+  await sleep(20_000)
+  return waitForPoolsUpdate(refetchPools, poolSwapToken, statesSize)
+}
 export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const {
     pool,
@@ -45,10 +66,12 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     onClaimClick,
     onUnstakeClick,
     processing,
+    refetchPools,
   } = props
 
   const { wallet } = useWallet()
 
+  const [farmingExtending, setFarmingExtending] = useState(false)
   const [extendFarmingModalOpen, setExtendFarmingModalOpen] = useState(false)
 
   const farmings = filterOpenFarmingStates(pool.farming || [])
@@ -105,37 +128,52 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     0
   )
 
+  const onExtendSuccess = async () => {
+    setFarmingExtending(true)
+    const totalFarmings = (pool.farming || []).length
+    // Refetch backend until states does not updated
+    await waitForPoolsUpdate(refetchPools, pool.swapToken, totalFarmings)
+    setFarmingExtending(false)
+  }
+
+  useEffect(() => {
+    onExtendSuccess()
+  }, [])
+
   if (
     !hadFarming || // No farming were created
     (!hasFarming && !availableToClaimUsd && !hasStaked && !isPoolOwner) // Farming ended and nothing to withdraw/claim
   ) {
     return (
       <FarmingBlock>
-        <NoFarmingBlock>
-          <div>
-            <SvgIcon src={LightLogo} height="6rem" width="6rem" />
-          </div>
-          <Text> No farming available for this pool now.</Text>
+        <LoadingBlock loading={farmingExtending}>
+          <NoFarmingBlock>
+            <div>
+              <SvgIcon src={LightLogo} height="6rem" width="6rem" />
+            </div>
+            <Text> No farming available for this pool now.</Text>
 
-          {isPoolOwner ? (
-            <FarmingButtonsContainer>
-              <ExtendFarmingButton
-                onClick={() => setExtendFarmingModalOpen(true)}
-              >
-                Create Farming
-              </ExtendFarmingButton>
-            </FarmingButtonsContainer>
-          ) : (
-            <Text size="sm"> But it can be added by pool owner anytime.</Text>
+            {isPoolOwner ? (
+              <FarmingButtonsContainer>
+                <ExtendFarmingButton
+                  onClick={() => setExtendFarmingModalOpen(true)}
+                >
+                  Create Farming
+                </ExtendFarmingButton>
+              </FarmingButtonsContainer>
+            ) : (
+              <Text size="sm"> But it can be added by pool owner anytime.</Text>
+            )}
+          </NoFarmingBlock>
+          {extendFarmingModalOpen && (
+            <ExtendFarmingModal
+              pool={pool}
+              onClose={() => setExtendFarmingModalOpen(false)}
+              title="Create Farming"
+              onExtend={onExtendSuccess}
+            />
           )}
-        </NoFarmingBlock>
-        {extendFarmingModalOpen && (
-          <ExtendFarmingModal
-            pool={pool}
-            onClose={() => setExtendFarmingModalOpen(false)}
-            title="Create Farming"
-          />
-        )}
+        </LoadingBlock>
       </FarmingBlock>
     )
   }
@@ -191,167 +229,172 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   return (
     <FarmingBlock>
-      {isPoolOwner ? (
-        <>
+      <LoadingBlock loading={farmingExtending}>
+        {isPoolOwner ? (
+          <>
+            <FarmingBlockInner>
+              <LiquidityItem>
+                <LiquidityTitle>Remaining Supply</LiquidityTitle>
+                {farmingTokens.length === 0 && (
+                  <LiquidityText>Ended</LiquidityText>
+                )}
+                {farmingTokens.map((mint) => (
+                  <div key={`farming_reward_${mint}`}>
+                    <LiquidityText weight={600}>
+                      <LiquidityText color="success">
+                        {stripByAmountAndFormat(
+                          farmingRemain.get(mint)?.tokensRemain || 0
+                        )}{' '}
+                      </LiquidityText>
+                      {getTokenNameByMintAddress(mint)}
+                    </LiquidityText>
+                  </div>
+                ))}
+              </LiquidityItem>
+              <LiquidityItem>
+                <LiquidityTitle>Remaining Time</LiquidityTitle>
+
+                <div>
+                  {timeRemainMax < MINUTE ? (
+                    <LiquidityText>Ended</LiquidityText>
+                  ) : (
+                    <>
+                      {!!estimatedTime.days && (
+                        <LiquidityText>
+                          <LiquidityText color="success">
+                            {estimatedTime.days}{' '}
+                          </LiquidityText>
+                          <LiquidityText>
+                            {pluralize('day', estimatedTime.days)}
+                          </LiquidityText>
+                        </LiquidityText>
+                      )}
+                      {!!estimatedTime.hours && (
+                        <LiquidityText>
+                          <LiquidityText color="success">
+                            {' '}
+                            {estimatedTime.hours}{' '}
+                          </LiquidityText>
+                          <LiquidityText>
+                            {pluralize('hour', estimatedTime.hours)}
+                          </LiquidityText>
+                        </LiquidityText>
+                      )}
+                      {!!estimatedTime.minutes && (
+                        <LiquidityText>
+                          <LiquidityText color="success">
+                            {' '}
+                            {estimatedTime.minutes}{' '}
+                          </LiquidityText>
+                          <LiquidityText>
+                            {pluralize('minute', estimatedTime.minutes)}
+                          </LiquidityText>
+                        </LiquidityText>
+                      )}
+                    </>
+                  )}
+                </div>
+              </LiquidityItem>
+            </FarmingBlockInner>
+            <FarmingButtonWrap>
+              <ExtendFarmingButton
+                disabled={!prolongationEnabled}
+                onClick={() => setExtendFarmingModalOpen(true)}
+              >
+                Extend Farming
+              </ExtendFarmingButton>
+              {!prolongationEnabled && (
+                <DarkTooltip title="The option to extend will be unlocked one hour before the end of the farming period.">
+                  <div style={{ height: '1em', cursor: 'help' }}>
+                    <SvgIcon src={ClockIcon} width="1em" height="1em" />
+                  </div>
+                </DarkTooltip>
+              )}
+            </FarmingButtonWrap>
+          </>
+        ) : (
           <FarmingBlockInner>
             <LiquidityItem>
-              <LiquidityTitle>Remaining Supply</LiquidityTitle>
-              {farmingTokens.length === 0 && (
-                <LiquidityText>Ended</LiquidityText>
-              )}
-              {farmingTokens.map((mint) => (
-                <div key={`farming_reward_${mint}`}>
-                  <LiquidityText weight={600}>
-                    <LiquidityText color="success">
-                      {stripByAmountAndFormat(
-                        farmingRemain.get(mint)?.tokensRemain || 0
-                      )}{' '}
-                    </LiquidityText>
-                    {getTokenNameByMintAddress(mint)}
-                  </LiquidityText>
-                </div>
-              ))}
+              <LiquidityTitle>Stake LP Tokens</LiquidityTitle>
+              <div>
+                <LiquidityText weight={600}>
+                  <LiquidityText color="success">
+                    {stripByAmountAndFormat(poolTokenAmount)}
+                  </LiquidityText>{' '}
+                  Unstaked
+                </LiquidityText>
+              </div>
+              <div>
+                <LiquidityText weight={600}>
+                  <LiquidityText color="success">
+                    {stripByAmountAndFormat(stakedAmount)}
+                  </LiquidityText>{' '}
+                  Staked
+                </LiquidityText>
+              </div>
+              <FarmingButtonsContainer>
+                <DarkTooltip title={tooltipText}>
+                  <span>
+                    <FarmingButton
+                      disabled={!hasUnstaked || processing || !hasFarming}
+                      $loading={processing}
+                      onClick={onStakeClick}
+                      $variant="rainbow"
+                    >
+                      Stake LP Tokens
+                    </FarmingButton>
+                  </span>
+                </DarkTooltip>
+                <DarkTooltip title={unstakeTooltipText}>
+                  <span>
+                    <FarmingButton
+                      $variant="error"
+                      disabled={!hasStaked || processing || unstakeLocked}
+                      $loading={processing}
+                      onClick={onUnstakeClick}
+                    >
+                      Unstake LP Tokens
+                    </FarmingButton>
+                  </span>
+                </DarkTooltip>
+              </FarmingButtonsContainer>
             </LiquidityItem>
             <LiquidityItem>
-              <LiquidityTitle>Remaining Time</LiquidityTitle>
-
-              <div>
-                {timeRemainMax < MINUTE ? (
-                  <LiquidityText>Ended</LiquidityText>
-                ) : (
-                  <>
-                    {!!estimatedTime.days && (
-                      <LiquidityText>
-                        <LiquidityText color="success">
-                          {estimatedTime.days}{' '}
-                        </LiquidityText>
-                        <LiquidityText>
-                          {pluralize('day', estimatedTime.days)}
-                        </LiquidityText>
-                      </LiquidityText>
-                    )}
-                    {!!estimatedTime.hours && (
-                      <LiquidityText>
-                        <LiquidityText color="success">
-                          {' '}
-                          {estimatedTime.hours}{' '}
-                        </LiquidityText>
-                        <LiquidityText>
-                          {pluralize('hour', estimatedTime.hours)}
-                        </LiquidityText>
-                      </LiquidityText>
-                    )}
-                    {!!estimatedTime.minutes && (
-                      <LiquidityText>
-                        <LiquidityText color="success">
-                          {' '}
-                          {estimatedTime.minutes}{' '}
-                        </LiquidityText>
-                        <LiquidityText>
-                          {pluralize('minute', estimatedTime.minutes)}
-                        </LiquidityText>
-                      </LiquidityText>
-                    )}
-                  </>
-                )}
-              </div>
+              <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
+              <UserFarmingRewards availableToClaim={availableToClaim} />
+              <FarmingButtonWrap>
+                <DarkTooltip title={tooltipText}>
+                  <span>
+                    <FarmingButton
+                      $variant="rainbow"
+                      disabled={availableToClaimUsd === 0 || processing}
+                      $loading={processing}
+                      onClick={onClaimClick}
+                    >
+                      Claim
+                    </FarmingButton>
+                  </span>
+                </DarkTooltip>
+                <DarkTooltip
+                  title={<ClaimTimeTooltip farmingState={farming} />}
+                >
+                  <div style={{ height: '1em', cursor: 'help' }}>
+                    <SvgIcon src={ClockIcon} width="1em" height="1em" />
+                  </div>
+                </DarkTooltip>
+              </FarmingButtonWrap>
             </LiquidityItem>
           </FarmingBlockInner>
-          <FarmingButtonWrap>
-            <ExtendFarmingButton
-              disabled={!prolongationEnabled}
-              onClick={() => setExtendFarmingModalOpen(true)}
-            >
-              Extend Farming
-            </ExtendFarmingButton>
-            {!prolongationEnabled && (
-              <DarkTooltip title="The option to extend will be unlocked one hour before the end of the farming period.">
-                <div style={{ height: '1em', cursor: 'help' }}>
-                  <SvgIcon src={ClockIcon} width="1em" height="1em" />
-                </div>
-              </DarkTooltip>
-            )}
-          </FarmingButtonWrap>
-        </>
-      ) : (
-        <FarmingBlockInner>
-          <LiquidityItem>
-            <LiquidityTitle>Stake LP Tokens</LiquidityTitle>
-            <div>
-              <LiquidityText weight={600}>
-                <LiquidityText color="success">
-                  {stripByAmountAndFormat(poolTokenAmount)}
-                </LiquidityText>{' '}
-                Unstaked
-              </LiquidityText>
-            </div>
-            <div>
-              <LiquidityText weight={600}>
-                <LiquidityText color="success">
-                  {stripByAmountAndFormat(stakedAmount)}
-                </LiquidityText>{' '}
-                Staked
-              </LiquidityText>
-            </div>
-            <FarmingButtonsContainer>
-              <DarkTooltip title={tooltipText}>
-                <span>
-                  <FarmingButton
-                    disabled={!hasUnstaked || processing || !hasFarming}
-                    $loading={processing}
-                    onClick={onStakeClick}
-                    $variant="rainbow"
-                  >
-                    Stake LP Tokens
-                  </FarmingButton>
-                </span>
-              </DarkTooltip>
-              <DarkTooltip title={unstakeTooltipText}>
-                <span>
-                  <FarmingButton
-                    $variant="error"
-                    disabled={!hasStaked || processing || unstakeLocked}
-                    $loading={processing}
-                    onClick={onUnstakeClick}
-                  >
-                    Unstake LP Tokens
-                  </FarmingButton>
-                </span>
-              </DarkTooltip>
-            </FarmingButtonsContainer>
-          </LiquidityItem>
-          <LiquidityItem>
-            <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
-            <UserFarmingRewards availableToClaim={availableToClaim} />
-            <FarmingButtonWrap>
-              <DarkTooltip title={tooltipText}>
-                <span>
-                  <FarmingButton
-                    $variant="rainbow"
-                    disabled={availableToClaimUsd === 0 || processing}
-                    $loading={processing}
-                    onClick={onClaimClick}
-                  >
-                    Claim
-                  </FarmingButton>
-                </span>
-              </DarkTooltip>
-              <DarkTooltip title={<ClaimTimeTooltip farmingState={farming} />}>
-                <div style={{ height: '1em', cursor: 'help' }}>
-                  <SvgIcon src={ClockIcon} width="1em" height="1em" />
-                </div>
-              </DarkTooltip>
-            </FarmingButtonWrap>
-          </LiquidityItem>
-        </FarmingBlockInner>
-      )}
+        )}
 
-      {extendFarmingModalOpen && (
-        <ExtendFarmingModal
-          pool={pool}
-          onClose={() => setExtendFarmingModalOpen(false)}
-        />
-      )}
+        {extendFarmingModalOpen && (
+          <ExtendFarmingModal
+            pool={pool}
+            onClose={() => setExtendFarmingModalOpen(false)}
+            onExtend={onExtendSuccess}
+          />
+        )}
+      </LoadingBlock>
     </FarmingBlock>
   )
 }

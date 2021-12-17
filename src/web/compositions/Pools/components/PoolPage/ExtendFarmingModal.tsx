@@ -14,6 +14,7 @@ import BN from 'bn.js'
 import { FormikProvider, useFormik } from 'formik'
 import React, { useState } from 'react'
 import { sendAndWaitSignedTransaction } from '@sb/dexUtils/send'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
@@ -23,10 +24,9 @@ import {
   FarmingModalProps,
   TransactionStatus,
 } from './types'
-import { getPoolsProgramAddress } from '../../../../dexUtils/ProgramsMultiton/utils'
 
 const FarmingModal: React.FC<FarmingModalProps> = (props) => {
-  const { userTokens, onClose, title, pool } = props
+  const { userTokens, onClose, onExtend, title, pool } = props
 
   const farmingTokens = (pool.farming || []).map((fs) => fs.farmingTokenMint)
   const { wallet } = useWallet()
@@ -91,6 +91,8 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         })
 
         await sendAndWaitSignedTransaction(transaction, connection)
+
+        onExtend()
 
         setFarmingTransactionStatus('success')
       } catch (e) {
@@ -161,7 +163,7 @@ export const ExtendFarmingModal: React.FC<ExtendFarmingModalProps> = (
   props
 ) => {
   const [userTokens] = useUserTokenAccounts()
-  const { title = 'Extend Farming', onClose, pool } = props
+  const { title = 'Extend Farming', onClose, onExtend, pool } = props
 
   return (
     <Modal open onClose={onClose} title={title}>
@@ -174,6 +176,7 @@ export const ExtendFarmingModal: React.FC<ExtendFarmingModalProps> = (
             onClose={onClose}
             pool={pool}
             title={title}
+            onExtend={onExtend}
           />
         )}
       </Body>

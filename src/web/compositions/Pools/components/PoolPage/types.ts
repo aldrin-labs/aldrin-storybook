@@ -10,6 +10,7 @@ import {
   FarmingTicket,
   SnapshotQueue,
 } from '@sb/dexUtils/common/types'
+import { ApolloQueryResult } from 'apollo-client'
 import {
   DexTokensPrices,
   FeesEarned,
@@ -19,6 +20,7 @@ import {
 
 export interface ExtendFarmingModalProps {
   onClose: () => void
+  onExtend: () => void
   pool: PoolInfo
   title?: string
 }
@@ -47,6 +49,7 @@ export interface PoolPageProps {
   refreshAll: RefreshFunction
   snapshotQueues: SnapshotQueue[]
   vestingsForWallet: Map<string, VestingWithPk>
+  refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>
 }
 
 export type ModalType =
@@ -75,6 +78,7 @@ export interface UserFarmingBlockProps {
   onStakeClick: () => void
   onClaimClick: () => void
   onUnstakeClick: () => void
+  refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>
   processing: boolean
 }
 

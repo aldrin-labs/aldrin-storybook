@@ -52,6 +52,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     refreshUserTokensData,
     refreshAll,
     vestingsForWallet,
+    refetchPools,
   } = props
 
   const history = useHistory()
@@ -218,6 +219,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
                   onClaimClick={() => setOpenedPopup('claim')}
                   onUnstakeClick={() => setOpenedPopup('unstake')}
                   processing={farmingProcessing}
+                  refetchPools={refetchPools}
                 />
               </Cell>
             </Row>

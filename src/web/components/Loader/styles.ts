@@ -30,8 +30,24 @@ export const AnimatedImage = styled.svg`
       transform: rotate(0deg);
     }
   }
-  
+
   .with-fill {
     fill: ${(props) => props.color || COLORS.black};
+  }
+`
+
+export const LoaderBlockInner = styled.div``
+
+export const LoaderBlockWrap = styled.div`
+  position: relative;
+
+  ${LoaderBlockInner} {
+    opacity: 0;
+  }
+
+  .with-loader {
+    position: absolute;
+    left: calc(50% - 1.5em);
+    top: calc(50% - 1.5em);
   }
 `
