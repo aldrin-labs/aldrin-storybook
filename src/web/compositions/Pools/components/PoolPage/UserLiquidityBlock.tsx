@@ -1,6 +1,8 @@
 import React from 'react'
 
 import dayjs from 'dayjs'
+
+import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
@@ -32,10 +34,11 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
     vesting,
   } = props
 
-  const { amount: poolTokenAmount } = getTokenDataByMint(
-    userTokensData,
-    pool.poolTokenMint
-  )
+  const { amount } = getTokenDataByMint(userTokensData, pool.poolTokenMint)
+
+  // Hide tiny balances (we cannot withdraw all LP tokens so...)
+  const poolTokenAmount =
+    amount <= MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ? 0 : amount
 
   const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 

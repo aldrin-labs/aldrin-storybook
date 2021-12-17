@@ -19,8 +19,6 @@ import { RootRow } from '../styles'
 import StatsComponent from './StatsComponent'
 import UserStakingInfo from './UserStakingInfo'
 
-
-
 interface StakingComponentProps {
   getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
   getBuyBackAmountForPeriodQuery: { getBuyBackAmountForPeriod: number }
@@ -98,9 +96,7 @@ export default compose(
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
     variables: () => {
-      const endOfDay = dayjs()
-        .endOf('day')
-        .unix()
+      const endOfDay = dayjs().endOf('day').unix()
 
       return {
         timestampFrom: endOfDay - dayDuration * DAYS_TO_CHECK_BUY_BACK,

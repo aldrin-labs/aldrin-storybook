@@ -5,15 +5,13 @@ import Coinmarketcap from '@icons/coinmarketcap.svg'
 import CoinGecko from '@icons/coingecko.svg'
 import Nomics from '@icons/nomics.svg'
 import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
-import AnalyticsIcon from '@icons/analytics.svg'
 
 import BlueTwitterIcon from '@icons/blueTwitter.svg'
 
 import Inform from '@icons/inform.svg'
 
-import { Container, Anchor, Icon, AnalyticsIcon as AnalyticsIconComponent } from './styles'
+import { Container, Anchor, Icon } from './styles'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
-import { Link } from 'react-router-dom'
 
 interface TokenExternalLinksProps {
   tokenName: string
@@ -22,11 +20,9 @@ interface TokenExternalLinksProps {
   onInfoClick?: (e: React.SyntheticEvent) => void
 }
 
-
 interface SolExplorerLinkProps {
   mint: string
 }
-
 
 const resolveExplorerIcon = (link: string) => {
   if (link.includes('coinmarketcap')) {
@@ -39,33 +35,33 @@ const resolveExplorerIcon = (link: string) => {
   return Nomics
 }
 
-export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) =>
+export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => (
   <Anchor
     href={`https://solscan.io/account/${props.mint}`}
     rel="noopener noreferrer"
     target="_blank"
   >
-    <Icon
-      alt="View on Solan explorer"
-      src={SolanaExplorerIcon}
-    />
+    <Icon alt="View on Solan explorer" src={SolanaExplorerIcon} />
   </Anchor>
+)
 
-export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (props) => {
+export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (
+  props
+) => {
   const { tokenName, marketAddress, marketPair, onInfoClick } = props
-  const token = tokensLinksMap.get(tokenName.toUpperCase()) || { marketCapLink: '', twitterLink: '' }
+  const token = tokensLinksMap.get(tokenName.toUpperCase()) || {
+    marketCapLink: '',
+    twitterLink: '',
+  }
   const { twitterLink = '', marketCapLink = '' } = token
 
   return (
     <Container>
-      {onInfoClick &&
-        <Anchor as="span" >
-          <Icon
-            src={Inform}
-            onClick={onInfoClick}
-          />
+      {onInfoClick && (
+        <Anchor as="span">
+          <Icon src={Inform} onClick={onInfoClick} />
         </Anchor>
-      }
+      )}
       <SolExplorerLink mint={marketAddress || ''} />
       {/* {marketPair &&
         <DarkTooltip title={'Show analytics for this market.'}>
@@ -78,27 +74,15 @@ export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (props) => 
       } */}
 
       {twitterLink && (
-        <DarkTooltip title={'Twitter profile of the token.'}>
-          <Anchor
-            target="_blank"
-            rel="noopener noreferrer"
-            href={twitterLink}
-          >
-            <Icon
-              src={BlueTwitterIcon}
-            />
+        <DarkTooltip title="Twitter profile of the token.">
+          <Anchor target="_blank" rel="noopener noreferrer" href={twitterLink}>
+            <Icon src={BlueTwitterIcon} />
           </Anchor>
         </DarkTooltip>
       )}
       {marketCapLink && (
-        <Anchor
-          target="_blank"
-          rel="noopener noreferrer"
-          href={marketCapLink}
-        >
-          <Icon
-            src={resolveExplorerIcon(marketCapLink)}
-          />
+        <Anchor target="_blank" rel="noopener noreferrer" href={marketCapLink}>
+          <Icon src={resolveExplorerIcon(marketCapLink)} />
         </Anchor>
       )}
     </Container>

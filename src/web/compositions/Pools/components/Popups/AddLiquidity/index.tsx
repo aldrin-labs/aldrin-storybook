@@ -23,7 +23,7 @@ import {
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
@@ -32,11 +32,12 @@ import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPr
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
-import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
+import { BN } from 'bn.js'
 import React, { useEffect, useState } from 'react'
+import { sleep } from '../../../../../dexUtils/utils'
 import { Button } from '../../Tables/index.styles'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { InputWithCoins, InputWithTotal } from '../components'
@@ -66,7 +67,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     theme,
   } = props
   const { wallet } = useWallet()
-  const connection = useConnection()
+  const connection = useMultiEndpointConnection()
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
@@ -500,14 +501,14 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               connection,
               curveType: selectedPool.curveType,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
-              userBaseTokenAmount,
-              userQuoteTokenAmount,
+              userBaseTokenAmount: new BN(userBaseTokenAmount),
+              userQuoteTokenAmount: new BN(userQuoteTokenAmount),
               userBaseTokenAccount: new PublicKey(userTokenAccountA),
               userQuoteTokenAccount: new PublicKey(userTokenAccountB),
-              ...(userPoolTokenAccount
-                ? { userPoolTokenAccount: new PublicKey(userPoolTokenAccount) }
-                : { userPoolTokenAccount: null }),
-              transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
+              userPoolTokenAccount: userPoolTokenAccount
+                ? new PublicKey(userPoolTokenAccount)
+                : null,
+              // transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
             })
 
             setOperationLoading(false)
@@ -535,13 +536,10 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
                 refreshAllTokensData()
                 clearPoolWaitingForUpdate()
                 if (openFarmings.length > 0) {
-                  await sleep(3000)
+                  await sleep(1000)
                   setIsRemindToStakePopupOpen()
                 }
-              }, 7500)
-              // end button loader
-
-              setTimeout(() => refreshAllTokensData(), 15000)
+              })
             } else {
               clearPoolWaitingForUpdate()
             }

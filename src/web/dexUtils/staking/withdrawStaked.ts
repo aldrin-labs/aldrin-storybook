@@ -23,12 +23,12 @@ import {
   sendSignedTransaction,
   sendTransaction,
   signTransactions,
-  mergeTransactions,
 } from '../send'
 import { WalletAdapter } from '../types'
 import { getCalcAccounts } from './getCalcAccountsForWallet'
 import { StakingPool } from './types'
 import { splitBy } from '../../utils/collection'
+import { mergeTransactions } from '../transactions'
 
 export interface WithdrawFarmedParams {
   wallet: WalletAdapter

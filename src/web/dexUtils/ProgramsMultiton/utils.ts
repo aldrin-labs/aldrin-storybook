@@ -1,9 +1,12 @@
+import { MASTER_BUILD } from '@core/utils/config'
+
 export const POOLS_PROGRAM_ADDRESS =
   process.env.POOLS_PROGRAM_ADDRESS ||
   'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
 
-export const POOLS_V2_PROGRAM_ADDRESS =
-  'STBLHfddQjdNbDkTbXCgN7oJ9pjC5cCZb6FTN5TYjNc'
+export const POOLS_V2_PROGRAM_ADDRESS = MASTER_BUILD
+  ? 'STBLHfddQjdNbDkTbXCgN7oJ9pjC5cCZb6FTN5TYjNc'
+  : 'RinFPaym3xbnndu4SfQPAt1NzQWTfqL34cvf9eafakk'
 
 export const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'
@@ -30,7 +33,7 @@ console.log(`POOLS_V2_PROGRAM_ADDRESS: ${POOLS_V2_PROGRAM_ADDRESS}`)
 export const getPoolsProgramAddress = ({
   curveType,
 }: {
-  curveType: number | null
+  curveType?: number | null
 }) => {
   if (curveType !== null && curveType !== undefined) {
     return POOLS_V2_PROGRAM_ADDRESS

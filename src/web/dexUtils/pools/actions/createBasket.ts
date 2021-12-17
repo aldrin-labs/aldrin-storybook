@@ -7,19 +7,16 @@ import {
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  Connection,
 } from '@solana/web3.js'
 import BN from 'bn.js'
 import { isCancelledTransactionError } from '../../common/isCancelledTransactionError'
+import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { transferSOLToWrappedAccountAndClose } from '../../pools'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '../../ProgramsMultiton/utils'
-import {
-  createTokenAccountTransaction,
-  isTransactionFailed,
-  sendTransaction,
-} from '../../send'
+import { createTokenAccountTransaction } from '../../send'
 import { Token } from '../../token/token'
+import { sendTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
@@ -28,7 +25,7 @@ interface CreateBasketBase {
   poolPublicKey: PublicKey
   userPoolTokenAccount?: PublicKey | null
   wallet: WalletAdapter
-  connection: Connection
+  connection: MultiEndpointsConnection
   userBaseTokenAmount: BN
   userQuoteTokenAmount: BN
   userBaseTokenAccount: PublicKey
@@ -105,7 +102,7 @@ export async function createBasketTransaction(
   if (baseTokenMint.equals(WRAPPED_SOL_MINT) && transferSOLToWrapped) {
     const result = await transferSOLToWrappedAccountAndClose({
       wallet,
-      connection,
+      connection: connection.getConnection(),
       amount: userBaseTokenAmount,
     })
 
@@ -124,7 +121,7 @@ export async function createBasketTransaction(
   } else if (quoteTokenMint.equals(WRAPPED_SOL_MINT) && transferSOLToWrapped) {
     const result = await transferSOLToWrappedAccountAndClose({
       wallet,
-      connection,
+      connection: connection.getConnection(),
       amount: userQuoteTokenAmount,
     })
 
@@ -182,7 +179,7 @@ export async function createBasket(params: CreateBasketParams) {
   try {
     const program = ProgramsMultiton.getProgramByAddress({
       wallet,
-      connection,
+      connection: connection.getConnection(),
       programAddress: getPoolsProgramAddress({ curveType: params.curveType }),
     })
 
@@ -196,14 +193,19 @@ export async function createBasket(params: CreateBasketParams) {
     } = (await program.account.pool.fetch(poolPublicKey)) as {
       [c: string]: PublicKey
     }
-    const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
+    const poolToken = new Token(
+      wallet,
+      connection.getConnection(),
+      poolMint,
+      TOKEN_PROGRAM_ID
+    )
 
     const poolMintInfo = await poolToken.getMintInfo()
     const { supply } = poolMintInfo
 
     const tokenMintA = new Token(
       wallet,
-      connection,
+      connection.getConnection(),
       baseTokenMint,
       TOKEN_PROGRAM_ID
     )
@@ -224,24 +226,18 @@ export async function createBasket(params: CreateBasketParams) {
       program,
     })
 
-    const tx = await sendTransaction({
+    return sendTransaction({
       wallet,
       connection,
-      transaction: commonTransaction,
       signers: commonSigners,
-      focusPopup: true,
+      transaction: commonTransaction,
     })
-
-    if (isTransactionFailed(tx)) {
-      return 'failed'
-    }
   } catch (e) {
     console.log('deposit catch error', e)
 
     if (isCancelledTransactionError(e)) {
       return 'cancelled'
     }
+    return 'failed'
   }
-
-  return 'success'
 }

@@ -29,7 +29,7 @@ export const getStartFarmingTransactions = async ({
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
   farmingState: PublicKey
-  curveType: number | null
+  curveType?: number | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,

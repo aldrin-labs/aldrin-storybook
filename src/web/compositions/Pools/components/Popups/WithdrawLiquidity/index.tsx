@@ -355,9 +355,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               setTimeout(async () => {
                 refreshAllTokensData()
                 clearPoolWaitingForUpdate()
-              }, 7500)
-
-              setTimeout(() => refreshAllTokensData(), 15000)
+              })
             } else {
               clearPoolWaitingForUpdate()
             }

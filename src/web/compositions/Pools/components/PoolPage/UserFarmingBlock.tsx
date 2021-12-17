@@ -2,6 +2,8 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { estimateTime, MINUTE } from '@core/utils/dateUtils'
 import { SvgIcon } from '@sb/components'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+
+import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
 import { Text } from '@sb/components/Typography'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -57,11 +59,11 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const farming = farmings[0]
 
-  const { amount: poolTokenAmount } = getTokenDataByMint(
-    userTokensData,
-    pool.poolTokenMint
-  )
+  const { amount } = getTokenDataByMint(userTokensData, pool.poolTokenMint)
 
+  // Hide tiny balances (we cannot withdraw all LP tokens so...)
+  const poolTokenAmount =
+    amount <= MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ? 0 : amount
   const ticketsForPool = farmingTickets.get(pool.swapToken) || []
 
   const lastFarmingTicket = ticketsForPool.sort(

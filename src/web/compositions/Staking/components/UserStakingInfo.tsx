@@ -16,7 +16,7 @@ import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { ClaimRewards } from '@sb/compositions/Pools/components/Popups/ClaimRewards/ClaimRewards'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingState } from '@sb/dexUtils/common/types'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
@@ -133,6 +133,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     allTokenData,
     currentFarmingState,
   } = props
+
+  console.log('tokenData: ', allTokenData, tokenData)
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
   const [loading, setLoading] = useState({ stake: false, unstake: false })
@@ -145,7 +147,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const { wallet } = useWallet()
-  const connection = useConnection()
+  const connection = useMultiEndpointConnection()
 
   const walletAddress = wallet?.publicKey?.toString() || ''
 
@@ -230,7 +232,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       })
 
       if (result === 'success') {
-        await sleep(7000)
+        // await sleep(7000)
         await refreshAll()
       }
 

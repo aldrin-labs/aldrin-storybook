@@ -47,7 +47,6 @@ import {
 } from './styles'
 import { CreatePoolModal } from '../../Popups'
 import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
-import { takePoolsFarmingSnapshots } from '../../../../../dexUtils/pools/actions/takeSnapshots'
 
 export type PoolsInfo = { getPoolsInfo: PoolInfo[] }
 
@@ -169,7 +168,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   return (
     <>
-      <button
+      {/* <button
         type="button"
         onClick={() =>
           takePoolsFarmingSnapshots({
@@ -184,7 +183,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         }
       >
         Take snapshots
-      </button>
+      </button> */}
       <TabContainer>
         <div>
           <TableModeButton
