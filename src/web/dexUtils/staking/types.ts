@@ -1,4 +1,4 @@
-import { Connection, PublicKey } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import { PoolInfo } from '../../compositions/Pools/index.types'
 import { FarmingState, FarmingTicket, SnapshotQueue } from '../common/types'
 import MultiEndpointsConnection from '../MultiEndpointsConnection'
@@ -14,7 +14,7 @@ export type StakingPool = {
 
 export interface WithdrawFarmedParams {
   wallet: WalletAdapter
-  connection: Connection
+  connection: MultiEndpointsConnection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
   pool: StakingPool | PoolInfo

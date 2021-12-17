@@ -11,7 +11,6 @@ import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
-  sendSignedTransaction,
   sendTransaction,
   signTransactions,
 } from '@sb/dexUtils/send'
@@ -25,6 +24,7 @@ import BN from 'bn.js'
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 import { getRandomInt } from '@core/utils/helpers'
 import { WithdrawFarmedParams } from '@sb/dexUtils/staking/types'
+import { sendSignedTransactions } from '../../transactions'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -55,8 +55,9 @@ export const withdrawFarmed = async ({
   const transactionsAndSigners = []
 
   // check farmed for every ticket and withdrawFarmed for every farming state
-  for (const ticketData of farmingTickets) {
-    for (let i = 0; i < pool.farming.length; i++) {
+  for (let j = 0; j < farmingTickets.length; j += 1) {
+    const ticketData = farmingTickets[j]
+    for (let i = 0; i < pool.farming.length; i += 1) {
       let commonTransaction = new Transaction()
 
       const farmingState = pool.farming[i]
@@ -64,8 +65,7 @@ export const withdrawFarmed = async ({
       // find amount to claim for this farming state in tickets amounts
       const amountToClaim =
         ticketData.amountsToClaim.find(
-          (amountToClaim) =>
-            amountToClaim.farmingState === farmingState.farmingState
+          (atc) => atc.farmingState === farmingState.farmingState
         )?.amount || 0
 
       // check amount for every farming state
@@ -115,7 +115,7 @@ export const withdrawFarmed = async ({
         unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
       )
 
-      for (let i = 1; i <= iterations; i++) {
+      for (let k = 1; k <= iterations; k += 1) {
         const withdrawFarmedTransaction =
           await program.instruction.withdrawFarmed(
             new BN(NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION),
@@ -155,7 +155,7 @@ export const withdrawFarmed = async ({
         } else {
           const result = await sendTransaction({
             wallet,
-            connection,
+            connection: connection.getConnection(),
             transaction: commonTransaction,
             signers: [],
           })
@@ -177,7 +177,7 @@ export const withdrawFarmed = async ({
     try {
       const signedTransactions = await signTransactions({
         wallet,
-        connection,
+        connection: connection.getConnection(),
         transactionsAndSigners,
       })
 
@@ -185,23 +185,7 @@ export const withdrawFarmed = async ({
         return 'failed'
       }
 
-      for (const signedTransaction of signedTransactions) {
-        // send transaction and wait 1s before sending next
-        const result = await sendSignedTransaction({
-          transaction: signedTransaction,
-          connection,
-          timeout: 10_000,
-        })
-
-        if (result === 'timeout') {
-          return 'blockhash_outdated'
-        }
-        if (result === 'failed') {
-          return 'failed'
-        }
-
-        // await sleep(2000)
-      }
+      return sendSignedTransactions(signedTransactions, connection)
     } catch (e) {
       console.log('end farming catch error', e)
 
