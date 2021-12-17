@@ -23,6 +23,7 @@ import {
   FarmingModalProps,
   TransactionStatus,
 } from './types'
+import { getPoolsProgramAddress } from '../../../../dexUtils/ProgramsMultiton/utils'
 
 const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const { userTokens, onClose, title, pool } = props
@@ -86,6 +87,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           pool: new PublicKey(pool.swapToken),
           wallet,
           connection: connection.getConnection(),
+          programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
         })
 
         await sendAndWaitSignedTransaction(transaction, connection)

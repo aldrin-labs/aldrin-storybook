@@ -82,7 +82,9 @@ const prepareCell = (
     vol24h: {
       rendered: (
         <Text size="sm">
-          ${stripByAmountAndFormat(volume.dailyTradingVolume, 2)}
+          {volume.dailyTradingVolume > 0
+            ? `$${stripByAmountAndFormat(volume.dailyTradingVolume, 2)}`
+            : '-'}
         </Text>
       ),
       rawValue: volume.dailyTradingVolume,
@@ -90,13 +92,21 @@ const prepareCell = (
     vol7d: {
       rendered: (
         <Text size="sm">
-          ${stripByAmountAndFormat(volume.weeklyTradingVolume, 2)}
+          {volume.weeklyTradingVolume > 0
+            ? `$${stripByAmountAndFormat(volume.weeklyTradingVolume, 2)}`
+            : '-'}
         </Text>
       ),
       rawValue: volume.dailyTradingVolume,
     },
     fees: {
-      rendered: <Text size="sm">${stripByAmountAndFormat(feesInUSD, 2)}</Text>,
+      rendered: (
+        <Text size="sm">
+          {volume.weeklyTradingVolume > 0
+            ? `$${stripByAmountAndFormat(feesInUSD, 2)}`
+            : '-'}
+        </Text>
+      ),
       rawValue: feesInUSD,
     },
   }

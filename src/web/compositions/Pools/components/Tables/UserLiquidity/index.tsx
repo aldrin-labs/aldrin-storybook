@@ -83,12 +83,14 @@ const prepareCell = (
     feesEarnedByUserForPool.totalBaseTokenFee * baseTokenPrice +
     feesEarnedByUserForPool.totalQuoteTokenFee * quoteTokenPrice
 
+  const feesTotal = userLiquidityUSD + feesUsd
+
   return {
     userLiquidity: {
       rendered: (
         <>
           <Text size="sm">
-            ${stripByAmountAndFormat(userLiquidityUSD + feesUsd, 4)}
+            {feesTotal > 0 ? `$${stripByAmountAndFormat(feesTotal, 4)}` : '-'}
           </Text>
           <Text color="hint" size="sm" margin="10px 0">
             {stripByAmountAndFormat(
@@ -105,7 +107,11 @@ const prepareCell = (
       rawValue: userLiquidityUSD + feesUsd,
     },
     feesEarned: {
-      rendered: <Text size="sm">${stripByAmountAndFormat(feesUsd, 4)}</Text>,
+      rendered: (
+        <Text size="sm">
+          {feesUsd > 0 ? `$${stripByAmountAndFormat(feesUsd, 4)}` : '-'}
+        </Text>
+      ),
 
       rawValue: feesUsd,
     },

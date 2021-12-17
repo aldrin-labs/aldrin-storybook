@@ -32,6 +32,7 @@ interface InitializeFarmingParams extends InitializeFarmingBase {
   pool: PublicKey
   wallet: WalletAdapter
   connection: Connection
+  programAddress?: string
 }
 
 export const initializeFarmingInstructions = async (
@@ -49,6 +50,7 @@ export const initializeFarmingInstructions = async (
     farmingTokenMint: farmingToken,
     pool,
     accountLamports,
+    programAddress = POOLS_V2_PROGRAM_ADDRESS,
   } = params
 
   const farmingState = Keypair.generate()
@@ -58,7 +60,7 @@ export const initializeFarmingInstructions = async (
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: POOLS_V2_PROGRAM_ADDRESS,
+    programAddress,
   })
 
   const walletWithPk = walletAdapterToWallet(wallet)

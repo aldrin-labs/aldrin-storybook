@@ -217,7 +217,9 @@ const prepareCell = (params: {
         rawValue: tvlUSD,
         rendered: (
           <>
-            <Text size="sm">${stripByAmountAndFormat(tvlUSD)}</Text>
+            <Text size="sm">
+              {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD)}` : '-'}
+            </Text>
             <Text size="sm" margin="10px 0" color="hint">
               {stripByAmountAndFormat(pool.tvl.tokenA)} {baseSymbol} /{' '}
               {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteSymbol}
@@ -229,7 +231,7 @@ const prepareCell = (params: {
         rawValue: farmingAPR,
         rendered: (
           <Text color="success" size="sm" weight={700}>
-            {stripByAmount(farmingAPR, 2)}%
+            {farmingAPR > 0 ? `${stripByAmount(farmingAPR, 2)}%` : '-'}
           </Text>
         ),
       },
