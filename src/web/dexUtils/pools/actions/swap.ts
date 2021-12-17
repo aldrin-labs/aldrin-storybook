@@ -181,20 +181,6 @@ export const getSwapTransaction = async ({
       }
     )
 
-    console.log('asd:', {
-      pool: poolPublicKey,
-      poolSigner: vaultSigner,
-      poolMint,
-      baseTokenVault,
-      quoteTokenVault,
-      feePoolTokenAccount,
-      walletAuthority: wallet.publicKey,
-      userBaseTokenAccount,
-      userQuoteTokenAccount,
-      ...(curve ? { curve } : {}),
-      tokenProgram: TOKEN_PROGRAM_ID,
-    })
-
     commonTransaction.add(transactionBeforeSwap)
     commonTransaction.add(swapTransaction)
     commonTransaction.add(transactionAfterSwap)
