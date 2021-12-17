@@ -148,7 +148,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             <div>
               <SvgIcon src={LightLogo} height="6rem" width="6rem" />
             </div>
-            <Text> No farming available for this pool now.</Text>
+            <Text>No farming available for this pool now.</Text>
 
             {isPoolOwner ? (
               <FarmingButtonsContainer>
