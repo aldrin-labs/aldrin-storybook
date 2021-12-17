@@ -9,10 +9,10 @@ import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getSt
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useWallet } from '@sb/dexUtils/wallet'
 import pluralize from 'pluralize'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import dayjs from 'dayjs'
 import LightLogo from '@icons/lightLogo.svg'
-
+import { uniq } from '@sb/utils/collection'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { LoadingBlock } from '@sb/components/Loader/LoadingBlock'
 import { sleep } from '@core/utils/helpers'
@@ -56,6 +56,7 @@ const waitForPoolsUpdate = async (
   await sleep(20_000)
   return waitForPoolsUpdate(refetchPools, poolSwapToken, statesSize)
 }
+
 export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const {
     pool,
@@ -136,10 +137,6 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     setFarmingExtending(false)
   }
 
-  useEffect(() => {
-    onExtendSuccess()
-  }, [])
-
   if (
     !hadFarming || // No farming were created
     (!hasFarming && !availableToClaimUsd && !hasStaked && !isPoolOwner) // Farming ended and nothing to withdraw/claim
@@ -178,10 +175,8 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     )
   }
 
-  const tokenNames = Array.from(
-    new Set(
-      farmings.map((fs) => getTokenNameByMintAddress(fs.farmingTokenMint))
-    ).values()
+  const tokenNames = uniq(
+    farmings.map((fs) => getTokenNameByMintAddress(fs.farmingTokenMint))
   ).join(' and ')
 
   const showTooltip = !hasUnstaked && !hasStaked
@@ -218,7 +213,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   // Have pool ending soon
   const prolongationEnabled = !!(pool.farming || []).find(
-    (fs) => fs.tokensTotal - fs.tokensUnlocked < fs.tokensPerPeriod
+    (fs) => fs.tokensTotal - fs.tokensUnlocked <= fs.tokensPerPeriod
   )
 
   const unstakeTooltipText = unstakeLocked
