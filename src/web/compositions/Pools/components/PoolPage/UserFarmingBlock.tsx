@@ -197,7 +197,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             <LiquidityItem>
               <LiquidityTitle>Remaining Supply</LiquidityTitle>
               {farmingTokens.length === 0 && (
-                <LiquidityText weight={600}>-</LiquidityText>
+                <LiquidityText>Ended</LiquidityText>
               )}
               {farmingTokens.map((mint) => (
                 <div key={`farming_reward_${mint}`}>

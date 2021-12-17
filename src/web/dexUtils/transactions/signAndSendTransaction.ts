@@ -27,16 +27,26 @@ export const signAndSendTransaction = async (params: SendTransactionParams) => {
     transaction.partialSign(...signers)
   }
 
-  const signedTransaction = await wallet.signTransaction(
-    transaction,
-    focusPopup
-  )
-  // Return focus
-  window.focus()
+  try {
+    const signedTransaction = await wallet.signTransaction(
+      transaction,
+      focusPopup
+    )
+    // Return focus
+    window.focus()
 
-  return sendSignedTransaction({
-    ...params,
-    transaction: signedTransaction,
-    commitment,
-  })
+    return sendSignedTransaction({
+      ...params,
+      transaction: signedTransaction,
+      commitment,
+    })
+  } catch (e) {
+    console.warn('Error sign/send transaction:', e)
+    if (e instanceof Error) {
+      const errorText = e.message
+      if (errorText.includes('rejected')) {
+        return 'cancelled'
+      }
+    }
+  }
 }
