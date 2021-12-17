@@ -1,5 +1,5 @@
 export * from './mergeTransactions'
-export * from './sendTransaction'
+export * from './signAndSendTransaction'
 export * from './sendSignedTransaction'
 export * from './sendSignedTransactions'
 export * from './waitTransactionConfirmation'

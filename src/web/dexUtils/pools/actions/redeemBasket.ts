@@ -8,7 +8,7 @@ import {
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '@sb/dexUtils/send'
-import { sendTransaction } from '@sb/dexUtils/transactions'
+import { signAndSendTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { PublicKey, SYSVAR_CLOCK_PUBKEY, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
@@ -200,7 +200,7 @@ export async function redeemBasket(params: {
     // add close sol account if needed
     commonTransaction.add(transactionAfterWithdraw)
 
-    return sendTransaction({
+    return signAndSendTransaction({
       wallet,
       connection,
       transaction: commonTransaction,

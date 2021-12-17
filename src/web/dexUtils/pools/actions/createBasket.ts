@@ -16,7 +16,7 @@ import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '../../ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '../../send'
 import { Token } from '../../token/token'
-import { sendTransaction } from '../../transactions'
+import { signAndSendTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
@@ -226,7 +226,7 @@ export async function createBasket(params: CreateBasketParams) {
       program,
     })
 
-    return sendTransaction({
+    return signAndSendTransaction({
       wallet,
       connection,
       signers: commonSigners,

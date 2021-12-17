@@ -1,13 +1,14 @@
 import { SendTransactionParams } from './types'
 import { sendSignedTransaction } from './sendSignedTransaction'
 
-export const sendTransaction = async (params: SendTransactionParams) => {
+export const signAndSendTransaction = async (params: SendTransactionParams) => {
   const {
     transaction,
     connection,
     wallet,
     signers = [],
     focusPopup = true,
+    commitment = 'finalized',
   } = params
 
   transaction.recentBlockhash = (
@@ -36,6 +37,6 @@ export const sendTransaction = async (params: SendTransactionParams) => {
   return sendSignedTransaction({
     ...params,
     transaction: signedTransaction,
-    commitment: 'finalized',
+    commitment,
   })
 }
