@@ -22,9 +22,12 @@ import {withTheme} from '@material-ui/core/styles';
 import {initObligation} from '@sb/dexUtils/borrow-lending/initObligation';
 import {depositObligationCollateral} from '@sb/dexUtils/borrow-lending/depositObligationCollateral';
 import TableAssets from './components/TableAssets';
-import {toNumberWithDecimals, u192ToBN} from "@sb/dexUtils/borrow-lending/U192-converting";
-import {MarketCompType, WalletAccountsType} from "@sb/compositions/BorrowLending/Markets/types";
-import {NumberValue} from "@sb/compositions/BorrowLending/Dashboard/Dashboard.styles";
+import {toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
+import {MarketCompType, ObligationType, WalletAccountsType} from '@sb/compositions/BorrowLending/Markets/types';
+import {NumberValue} from '@sb/compositions/BorrowLending/Dashboard/Dashboard.styles';
+import {getObligation} from '@sb/dexUtils/borrow-lending/getObligation';
+import {withdrawCollateral} from "@sb/dexUtils/borrow-lending/withdrawCollateral";
+import {withdrawLiquidity} from "@sb/dexUtils/borrow-lending/withdrawLiquidity";
 
 type SupplyProps = {
     theme: Theme,
@@ -32,7 +35,7 @@ type SupplyProps = {
     obligations: any,
     walletAccounts: WalletAccountsType | [],
     userSummary: any,
-    lendingMarket: () => void,
+    handleGetReservesAccounts: () => void,
 }
 
 const Supply = ({
@@ -41,24 +44,44 @@ const Supply = ({
     obligations,
     walletAccounts,
     userSummary,
-    lendingMarket,
+    handleGetReservesAccounts,
 }: SupplyProps) => {
+    const [obligationDetails, setObligationDetails] = useState<ObligationType | null>(null);
+
     const { wallet } = useWallet()
     const connection = useConnection()
+
+    useEffect(() => {
+        if(obligations && obligations.length > 0) {
+            handleGetObligation();
+        }
+    }, [obligations])
+
+    const handleGetObligation = () => {
+        getObligation({
+            wallet,
+            connection,
+            obligationPk: obligations[0].pubkey,
+        }).then((obligation: ObligationType) => {
+            setObligationDetails(obligation)
+        }).catch(error => console.log(error))
+    }
 
     const generateDepositCompositionArr = (reservesList: []): MarketCompType[] => {
         const depositCompArr: MarketCompType[] = [];
         if(walletAccounts && walletAccounts.length > 0 && userSummary) {
             reservesList.forEach(reserve => {
                 const tokenAccount = walletAccounts.find(account => account.account.data.parsed.info.mint === reserve.collateral.mint.toString());
-                const tokenAmount = tokenAccount.account.data.parsed.info.tokenAmount.amount;
-                const tokenWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()) * tokenAmount;
-                const totalAmountWorth = userSummary.totalDeposit;
+                const tokenAmount = tokenAccount?.account.data.parsed.info.tokenAmount.amount;
+                const tokenWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()/Math.pow(10, 18)) * tokenAmount/Math.pow(10, 9);
+                const totalAmountWorth = userSummary.totalDeposit/Math.pow(10, 18);
                 const reserveDepositPercent = parseInt(totalAmountWorth/tokenWorth) * 100;
+
+                console.log(tokenWorth)
 
                 depositCompArr.push({
                     asset: reserve.collateral.mint.toString(),
-                    value: reserveDepositPercent,
+                    value: reserveDepositPercent || 0,
                 })
             })
         }
@@ -66,12 +89,12 @@ const Supply = ({
         return depositCompArr;
     }
 
-    const handleDepositLiq = async (reserve, amount = new BN(10)) => {
+    const handleDepositLiq = async (reserve: any, amount: amount, asCollateral: boolean) => {
         depositLiquidity({
             wallet,
             connection,
             reserve,
-            amount,
+            amount: new BN(amount),
         })
             .then(res => {
                 console.log('handleDepositLiq', res)
@@ -86,18 +109,53 @@ const Supply = ({
                     }).catch(error => console.log('initObligationError', error));
                 }
 
-                lendingMarket()
+                handleGetReservesAccounts()
 
                 console.log('deposit obligation', newObligation)
-                depositObligationCollateral({
-                    wallet,
-                    connection,
-                    obligation: obligations[0] || newObligation,
-                    reserve,
-                    amount,
-                })
+                if(asCollateral) {
+                    depositObligationCollateral({
+                        wallet,
+                        connection,
+                        obligation: obligations[0] || newObligation,
+                        reserve,
+                        amount: new BN(amount),
+                    }).then(depositObligationCollateralRes => {
+                        handleGetObligation()
+                    })
+                }
             })
             .catch(error => console.log('handleDepositLiqError', error))
+    }
+
+    const handleWithdrawCollateral = async (reserve, amount) => {
+        withdrawCollateral({
+            wallet,
+            connection,
+            reserve,
+            obligation: obligations[0],
+            obligationDetails,
+            amount: new BN(amount),
+        }).then(res => {
+            console.log('withdrawCollateral', res)
+            handleGetReservesAccounts()
+            handleGetObligation()
+        })
+            .catch(error => console.log(error))
+    }
+
+    const handleWithdrawLiquidity = async (reserve, amount) => {
+        withdrawLiquidity({
+            wallet,
+            connection,
+            reserve,
+            obligation: obligations[0],
+            obligationDetails,
+            amount: new BN(amount),
+        }).then(res => {
+            console.log('withdrawLiquidity', res)
+            handleGetReservesAccounts()
+        })
+            .catch(error => console.log(error))
     }
 
     const depositCompValues = generateDepositCompositionArr(reserves);
@@ -125,9 +183,6 @@ const Supply = ({
     return (
         <Page>
             <WideContent>
-                <RootRow>
-                    <button onClick={() => handleDepositLiq(reserves[0])}>Deposit liquidity</button>
-                </RootRow>
                 <RootRow>
                     <Cell col={12}>
                         <Block>
@@ -194,7 +249,16 @@ const Supply = ({
                 <RootRow>
                     <Cell col={12}>
                         <Block style={{paddingTop: '2rem', paddingBottom: '2rem'}}>
-                            <TableAssets theme={theme} walletAccounts={walletAccounts} reserves={reserves} />
+                            <TableAssets
+                                theme={theme}
+                                walletAccounts={walletAccounts}
+                                reserves={reserves}
+                                obligations={obligations}
+                                handleDepositLiq={handleDepositLiq}
+                                handleWithdrawCollateral={handleWithdrawCollateral}
+                                handleWithdrawLiquidity={handleWithdrawLiquidity}
+                                obligationDetails={obligationDetails}
+                            />
                         </Block>
                     </Cell>
                 </RootRow>

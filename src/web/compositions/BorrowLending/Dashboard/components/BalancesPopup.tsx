@@ -30,7 +30,7 @@ const BalancesPopup = ({
     walletBalance,
     depositApy,
     borrowApy,
-    depositAmount,
+    depositAmountUI,
 }: {
     theme: Theme
     onClose: () => void
@@ -38,7 +38,7 @@ const BalancesPopup = ({
     walletBalance: number,
     depositApy: number,
     borrowApy: number,
-    depositAmount: number,
+    depositAmountUI: number,
 }) => {
 
     return (
@@ -80,7 +80,7 @@ const BalancesPopup = ({
                 <Cell col={12} colLg={6}>
                     <TextBlock>
                         <TitleBlock>Deposited Amount</TitleBlock>
-                        <DescriptionBlock>{depositAmount}</DescriptionBlock>
+                        <DescriptionBlock>{depositAmountUI}</DescriptionBlock>
                     </TextBlock>
                 </Cell>
             </RowContainer>

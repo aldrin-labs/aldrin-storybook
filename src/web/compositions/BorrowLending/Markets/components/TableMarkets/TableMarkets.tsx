@@ -65,7 +65,7 @@ const TableMarkets = ({theme, reserves}: TableMarketsProps) => {
 
             return <>
                 <tr
-                    onClick={() => setReserveStatusOpen(true)}
+                    onClick={() => setReserveStatusOpen(index)}
                     style={{cursor: "pointer"}}
                 >
                     <td>
@@ -91,7 +91,7 @@ const TableMarkets = ({theme, reserves}: TableMarketsProps) => {
                 </tr>
                 <ReserveStatusPopup
                     theme={theme}
-                    open={reserveStatusOpen}
+                    open={reserveStatusOpen === index}
                     onClose={closeReserveStatus}
                     availableLiq={reserveAvailableLiq}
                     availableLiqWorth={reserveAvailableLiqWorth}

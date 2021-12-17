@@ -7,10 +7,12 @@ export const getObligation = async ({
     wallet,
     connection,
     programAddress = BORROW_LENDING_PROGRAM_ADDRESS,
+    obligationPk,
 }: {
     wallet: WalletAdapter
     connection: Connection
-    programAddress?: string
+    programAddress?: string,
+    obligationPk: PublicKey
 }) => {
     const program = ProgramsMultiton.getProgramByAddress({
         wallet,
@@ -20,5 +22,5 @@ export const getObligation = async ({
 
     console.log(program.account.obligation)
 
-    return await program.account.obligation.fetch(new PublicKey('Au28UYbAAYmn7NRwMiUmf43PhFf1r3sVXYagGtkr4sye'));
+    return await program.account.obligation.fetch(obligationPk);
 }

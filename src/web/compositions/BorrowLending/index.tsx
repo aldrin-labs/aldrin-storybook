@@ -14,7 +14,9 @@ import {getMintFromWallet} from '@sb/dexUtils/borrow-lending/getMintFromWallet';
 import {WalletAccountsType, WalletReserveMapType} from '@sb/compositions/BorrowLending/Markets/types';
 import {TokenInstructions} from '@project-serum/serum';
 import {u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
-import Supply from "./Supply/Supply";
+import Supply from './Supply/Supply';
+import {Token} from '@solana/spl-token';
+import {getReserves} from '@sb/dexUtils/borrow-lending/getReserves';
 
 type MatchParams = {
     section: string;
@@ -25,18 +27,20 @@ type BorrowLendingProps = {
 }
 
 const BorrowLending: FC = ({match}: BorrowLendingProps) => {
+    const [reservesPKs, setReservesPKs] = useState([])
     const [reserves, setReserves] = useState<any>([])
     const [obligations, setObligations] = useState<any>(null)
     const [walletAccounts, setWalletAccounts] = useState<WalletAccountsType | [] | null>(null);
     const [walletReserveMap, setWalletReserveMap] = useState<WalletReserveMapType | []>([]);
     const [userSummary, setUserSummary] = useState(null);
-    const [lendingMarketRefreshCount, setLendingMarketRefreshCount] = useState(0);
+    const [reservesRefreshCount, setReservesRefreshCount] = useState(0);
 
     const { wallet } = useWallet()
     const connection = useConnection()
 
     useEffect(() => {
-        lendingMarket();
+        // handleGetReservesAccounts()
+        handleGetReservesAccounts();
     }, [])
 
     useEffect(() => {
@@ -58,10 +62,10 @@ const BorrowLending: FC = ({match}: BorrowLendingProps) => {
 
             getWalletAccounts();
         }
-    }, [wallet.publicKey, lendingMarketRefreshCount])
+    }, [wallet.publicKey, reservesRefreshCount])
 
     useEffect(() => {
-        let summary = {};
+        const summary = {};
         let totalDeposit = 0;
         if(walletAccounts && walletAccounts.length > 0) {
             reserves.forEach(reserve => {
@@ -87,16 +91,38 @@ const BorrowLending: FC = ({match}: BorrowLendingProps) => {
         })
     }
 
-    const lendingMarket = () => {
-        console.log(wallet, 'mywallet')
-        const reserve = getReserve({
+    const handleGetReservesAccounts = () => {
+        getReserves({
             wallet,
             connection,
-        }).then(res => {
-            setReserves([res])
+        })
+            .then(reservesAccounts => {
+                const tempReservesPKs = reservesAccounts.map(reserve => reserve.pubkey);
+                setReservesPKs(tempReservesPKs);
+                const promiseArr = [];
+                reservesAccounts.forEach((reserve) => {
+                    promiseArr.push(getReserve({
+                        wallet,
+                        connection,
+                        reservePK: reserve.pubkey,
+                    }));
+                });
+                Promise.all(promiseArr)
+                    .then((values) => {
 
-            setLendingMarketRefreshCount(lendingMarketRefreshCount + 1);
-        }).catch(error => {
+                        // Merge reserve results with PK results
+                        const reservesMerged = [];
+                        values.forEach((value, index) => {
+                            reservesMerged.push({
+                                publicKey: tempReservesPKs[index],
+                                ...value,
+                            })
+                        })
+                        setReserves(reservesMerged);
+                        setReservesRefreshCount(reservesRefreshCount + 1);
+                    }).catch(promiseArrError => console.log('promiseArrError', promiseArrError))
+            })
+            .catch(error => {
             console.log('error')
         });
     }
@@ -118,6 +144,8 @@ const BorrowLending: FC = ({match}: BorrowLendingProps) => {
                 {dataSize: program.account.obligation.size },
             ],
         };
+
+        console.log(program.account)
 
         loadAccountsFromProgram({
             connection,
@@ -154,7 +182,7 @@ const BorrowLending: FC = ({match}: BorrowLendingProps) => {
                                 obligations={obligations}
                                 userSummary={userSummary}
                                 walletAccounts={walletAccounts}
-                                lendingMarket={lendingMarket}
+                                handleGetReservesAccounts={handleGetReservesAccounts}
                             />
                         : null
             }

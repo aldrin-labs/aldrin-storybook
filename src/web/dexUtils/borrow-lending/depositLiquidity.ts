@@ -14,11 +14,13 @@ export const depositLiquidity = async ({
     connection,
     programAddress = BORROW_LENDING_PROGRAM_ADDRESS,
     reserve,
+    amount,
 }: {
     wallet: WalletAdapter
     connection: Connection
     programAddress?: string,
-    reserve: any
+    reserve: any,
+    amount: BN
 }) => {
     const program = ProgramsMultiton.getProgramByAddress({
         wallet,
@@ -40,17 +42,17 @@ export const depositLiquidity = async ({
 
     const refreshReserveInstruction = program.instruction.refreshReserve({
         accounts: {
-            reserve: new PublicKey('DSTQScWV8B9zxLrhGoopULVvqneVb2rkyhZNu5keEtrr'),
+            reserve: reserve.publicKey,
             oraclePrice: reserve.liquidity.oracle,
             clock: SYSVAR_CLOCK_PUBKEY,
         },
     })
 
-    const depositReserveInstruction = program.instruction.depositReserveLiquidity(lendingMarketBumpSeed, new BN(10), {
+    const depositReserveInstruction = program.instruction.depositReserveLiquidity(lendingMarketBumpSeed, amount, {
         accounts: {
             funder: wallet.publicKey,
             lendingMarketPda: lendingMarketPda,            // from the snippet above
-            reserve: new PublicKey('DSTQScWV8B9zxLrhGoopULVvqneVb2rkyhZNu5keEtrr'),
+            reserve: reserve.publicKey,
             reserveCollateralMint: reserve.collateral.mint,                              // reserve.collateral.mint
             reserveLiquidityWallet: reserve.liquidity.supply,                       // reserve.liquidity.supply wallet
             sourceLiquidityWallet: sourceLiquidityWallet,                                    // this is your liquidity wallet that we've just created with that ritual

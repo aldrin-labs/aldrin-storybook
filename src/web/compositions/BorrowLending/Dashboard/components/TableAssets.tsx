@@ -21,9 +21,10 @@ const TableAssets = ({theme, reserves, walletAccounts}: TableAssetsProps) => {
     }
 
     const renderRows = () => {
-        return reserves.map(reserve => {
+        return reserves.map((reserve, index) => {
             let tokenPrice = 0;
             let depositAmount = 0;
+            let depositAmountUI = 0;
             let depositWorth = 0;
 
             // BalancesPopup values
@@ -37,6 +38,7 @@ const TableAssets = ({theme, reserves, walletAccounts}: TableAssetsProps) => {
                 if(depositTokenAccount) {
                     tokenPrice = toNumberWithDecimals(parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()), 5);
                     depositAmount = depositTokenAccount.account.data.parsed.info.tokenAmount.uiAmount;
+                    depositAmountUI = depositTokenAccount.account.data.parsed.info.tokenAmount.uiAmountString;
                     depositWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()) * depositAmount;
                 }
 
@@ -62,8 +64,9 @@ const TableAssets = ({theme, reserves, walletAccounts}: TableAssetsProps) => {
             return (
                 <>
                     <TableRow
-                        onClick={() => setBalancesOpen(true)}
+                        onClick={() => setBalancesOpen(index)}
                         style={{cursor: 'pointer'}}
+                        key={index}
                     >
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
                             <a
@@ -76,7 +79,7 @@ const TableAssets = ({theme, reserves, walletAccounts}: TableAssetsProps) => {
                             <span>${tokenPrice}</span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
-                            <p style={{margin: 0}}><strong>{depositAmount}</strong></p>
+                            <p style={{margin: 0}}><strong>{depositAmountUI}</strong></p>
                             <span>${toNumberWithDecimals(depositWorth, 2)}</span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
@@ -90,12 +93,12 @@ const TableAssets = ({theme, reserves, walletAccounts}: TableAssetsProps) => {
                     </TableRow>
                     <BalancesPopup
                         theme={theme}
-                        open={balancesOpen}
+                        open={balancesOpen === index}
                         onClose={closeBalances}
                         walletBalance={walletBalance}
                         borrowApy={borrowApy}
                         depositApy={depositApy}
-                        depositAmount={depositAmount}
+                        depositAmountUI={depositAmountUI}
                     />
                 </>
             )

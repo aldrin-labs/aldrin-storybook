@@ -377,7 +377,7 @@ export class Token {
    * @param freezeAuthority Optional account or multisig that can freeze token accounts
    * @param decimals Location of the decimal place
    * @param programId Optional token programId, uses the system programId by default
-  //  * @param transaction Transaction that will used for adding new transactions 
+  //  * @param transaction Transaction that will used for adding new transactions
    * @return Token object for the newly minted token
    */
   static async createMint(
@@ -470,7 +470,7 @@ export class Token {
       ),
     );
 
-    // Send the two instructions
+    //Send the two instructions
     // await sendAndConfirmTransactionViaWallet(
     //   this.wallet,
     //   this.connection,

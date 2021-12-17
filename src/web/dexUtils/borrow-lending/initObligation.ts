@@ -4,7 +4,6 @@ import {
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { BORROW_LENDING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
-import {sendAndConfirmTransactionViaWallet} from '@sb/dexUtils/token/utils/send-and-confirm-transaction-via-wallet';
 import {sendTransaction} from "@sb/dexUtils/send";
 
 export const initObligation = async ({

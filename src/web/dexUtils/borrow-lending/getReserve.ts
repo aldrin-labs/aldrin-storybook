@@ -7,10 +7,12 @@ export const getReserve = async ({
     wallet,
     connection,
     programAddress = BORROW_LENDING_PROGRAM_ADDRESS,
+    reservePK,
 }: {
     wallet: WalletAdapter
     connection: Connection
     programAddress?: string
+    reservePK: PublicKey
 }) => {
     const program = ProgramsMultiton.getProgramByAddress({
         wallet,
@@ -20,5 +22,5 @@ export const getReserve = async ({
 
     console.log(program.account.reserve)
 
-    return await program.account.reserve.fetch(new PublicKey('DSTQScWV8B9zxLrhGoopULVvqneVb2rkyhZNu5keEtrr'));
+    return await program.account.reserve.fetch(reservePK);
 }

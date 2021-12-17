@@ -11,3 +11,7 @@ export type WalletReserveMapItemType = {
 }
 
 export type WalletReserveMapType = WalletReserveMapItemType[];
+
+export type ObligationType = {
+    [key: string]: any;
+}
