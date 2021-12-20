@@ -3,13 +3,15 @@ import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBac
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
 import { dayDuration } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useInterval } from '@sb/dexUtils/useInterval'
-import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import {
+  useUserTokenAccounts,
+  useAssociatedTokenAccount,
+} from '@sb/dexUtils/token/hooks'
 import { PublicKey } from '@solana/web3.js'
 import dayjs from 'dayjs'
 import React from 'react'
@@ -22,7 +24,6 @@ import UserStakingInfo from './UserStakingInfo'
 interface StakingComponentProps {
   getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
   getBuyBackAmountForPeriodQuery: { getBuyBackAmountForPeriod: number }
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }
 
 const StakingComponent: React.FC<StakingComponentProps> = (
@@ -34,7 +35,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
 
   const stakingPool = getStakingPoolInfoQuery.getStakingPoolInfo || {}
 
-  const [totalStaked, refreshTotalStaked] = useAccountBalance({
+  const [_totalStaked, refreshTotalStaked] = useAccountBalance({
     publicKey: new PublicKey(stakingPool.stakingVault),
   })
 
@@ -44,8 +45,8 @@ const StakingComponent: React.FC<StakingComponentProps> = (
     allStakingFarmingStates
   )
 
-  const tokenData = allTokenData.find(
-    (token) => token.mint === currentFarmingState.farmingTokenMint
+  const tokenData = useAssociatedTokenAccount(
+    currentFarmingState.farmingTokenMint
   )
 
   const buyBackAmount =
@@ -64,7 +65,6 @@ const StakingComponent: React.FC<StakingComponentProps> = (
             stakingPool={stakingPool}
             currentFarmingState={currentFarmingState}
             tokenData={tokenData}
-            totalStaked={totalStaked}
             refreshAllTokenData={refreshAllTokenData}
             refreshTotalStaked={refreshTotalStaked}
             allTokenData={allTokenData}
@@ -73,7 +73,6 @@ const StakingComponent: React.FC<StakingComponentProps> = (
         <Cell col={12} colLg={6}>
           <StatsComponent
             buyBackAmount={buyBackAmount}
-            totalStaked={totalStaked}
             currentFarmingState={currentFarmingState}
             tokenData={tokenData}
           />

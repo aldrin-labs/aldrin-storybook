@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import { COLORS, BORDER_RADIUS } from '@variables/variables'
 import { useField, FieldValidator } from 'formik'
 import { noop } from 'lodash-es'
-import { validateDecimal, validateNatural } from './utils'
+import { validateDecimal, validateNatural, validateRegexp } from './utils'
 
 const VARIANTS = {
   default: css`
@@ -86,6 +86,7 @@ export interface InputProps extends InputBase {
 
 export const INPUT_FORMATTERS = {
   NOP: (e: string) => e,
+
   DECIMAL: (v: string, prevValue: string) => {
     const value = v ? v.replace(',', '.') : v
     if (validateDecimal(value) || v === '') {
@@ -100,6 +101,16 @@ export const INPUT_FORMATTERS = {
     return prevValue
   },
 }
+
+export const REGEXP_FORMATTER =
+  (regexp: RegExp, allowEmpty: boolean = true) =>
+  (v: string, prevValue: string) => {
+    const isAllowedEmpty = allowEmpty && v === ''
+    if (validateRegexp(regexp, v) || isAllowedEmpty) {
+      return v
+    }
+    return prevValue
+  }
 
 export const Input: React.FC<InputProps> = (props) => {
   const {

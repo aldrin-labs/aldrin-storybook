@@ -39,11 +39,11 @@ const SettleButton = ({
         }
       }}
       btnColor={theme.palette.green.main}
-      btnWidth={'10rem'}
-      height={'3.5rem'}
-      borderRadius={'1.8rem'}
-      textTransform={'capitalize'}
-      fontSize={'1.2rem'}
+      btnWidth="10rem"
+      height="3.5rem"
+      borderRadius="1.8rem"
+      textTransform="capitalize"
+      fontSize="1.2rem"
     >
       {isBalancesSettling || showLoader ? (
         <div>
@@ -73,18 +73,19 @@ export const getUnsettledBalancesColumnNames = ({
       <BtnCustom
         onClick={() => onSettleAll()}
         btnColor={theme.palette.green.main}
-        btnWidth={'12rem'}
-        height={'3.5rem'}
-        borderRadius={'1.8rem'}
-        textTransform={'capitalize'}
-        fontSize={'1.2rem'}
-        margin={'1rem 0'}
+        btnWidth="12rem"
+        height="3.5rem"
+        borderRadius="1.8rem"
+        textTransform="capitalize"
+        fontSize="1.2rem"
+        margin="1rem 0"
       >
         Settle All
       </BtnCustom>
     ),
     id: 'settle',
     isNumber: true,
+    isSortable: false,
   },
 ]
 
@@ -133,22 +134,22 @@ export const combineUnsettledBalances = ({
         },
         columnForMobile: {
           render: (
-            <RowContainer height={'20rem'} padding={'0 2rem'}>
-              <RowContainer style={{ width: '40%' }} direction={'column'}>
-                <RowContainer justify={'flex-start'}>
-                  <StyledTitle color={'#fbf2f2'}>
+            <RowContainer height="20rem" padding="0 2rem">
+              <RowContainer style={{ width: '40%' }} direction="column">
+                <RowContainer justify="flex-start">
+                  <StyledTitle color="#fbf2f2">
                     {marketName.replace('_', '/')}
                   </StyledTitle>
                 </RowContainer>
-                <RowContainer justify={'space-between'}>
+                <RowContainer justify="space-between">
                   <StyledTitle>Base unsettled:</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
+                  <StyledTitle color="#fbf2f2">
                     {`${roundAndFormatNumber(baseUnsettled, 8, true)} ${base}`}
                   </StyledTitle>
                 </RowContainer>
-                <RowContainer justify={'space-between'}>
+                <RowContainer justify="space-between">
                   <StyledTitle>Quote unsettled:</StyledTitle>
-                  <StyledTitle color={'#fbf2f2'}>
+                  <StyledTitle color="#fbf2f2">
                     {`${roundAndFormatNumber(
                       quoteUnsettled,
                       8,
@@ -158,7 +159,7 @@ export const combineUnsettledBalances = ({
                 </RowContainer>
               </RowContainer>
 
-              <RowContainer style={{ width: '60%' }} justify={'flex-end'}>
+              <RowContainer style={{ width: '60%' }} justify="flex-end">
                 <SettleButton
                   theme={theme}
                   el={el}

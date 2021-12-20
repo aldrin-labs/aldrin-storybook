@@ -1,18 +1,13 @@
 export const DOUBLE_REGEXP = /^\d+(\.?)\d{0,}$/
 export const INT_REGEXP = /^\d{0,}$/
 
-export const validateDecimal = (v: string) => {
-  const isNumber = !!v.match(DOUBLE_REGEXP)
-  if (!isNumber) {
+export const validateRegexp = (regexp: RegExp, v: string) => {
+  const isValid = !!v.match(regexp)
+  if (!isValid) {
     return false
   }
   return true
 }
 
-export const validateNatural = (v: string) => {
-  const isNumber = !!v.match(INT_REGEXP)
-  if (!isNumber) {
-    return false
-  }
-  return true
-}
+export const validateDecimal = (v: string) => validateRegexp(DOUBLE_REGEXP, v)
+export const validateNatural = (v: string) => validateRegexp(INT_REGEXP, v)

@@ -32,7 +32,7 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { PublicKey } from '@solana/web3.js'
 import { swap } from '@sb/dexUtils/pools/actions/swap'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
-import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
   costOfAddingToken,

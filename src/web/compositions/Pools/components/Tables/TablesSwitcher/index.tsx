@@ -21,7 +21,7 @@ import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFr
 import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
-import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 import React, { useState } from 'react'
 import { Route, useHistory } from 'react-router'
@@ -115,7 +115,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     pools,
     snapshotQueues,
   })
-
 
   const refreshAll = () => {
     refreshUserTokensData()

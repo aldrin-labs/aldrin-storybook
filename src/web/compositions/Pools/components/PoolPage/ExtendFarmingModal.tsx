@@ -7,7 +7,7 @@ import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { initializeFarmingTransaction } from '@sb/dexUtils/pools/actions/initializeFarming'
 
-import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'

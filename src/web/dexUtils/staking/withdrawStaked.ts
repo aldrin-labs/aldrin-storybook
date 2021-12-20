@@ -29,6 +29,7 @@ import { getCalcAccounts } from './getCalcAccountsForWallet'
 import { StakingPool } from './types'
 import { splitBy } from '../../utils/collection'
 import { mergeTransactions } from '../transactions'
+import { findTokenAccount } from '../token/utils/findTokenAccount'
 
 export interface WithdrawFarmedParams {
   wallet: WalletAdapter
@@ -84,37 +85,40 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
     )
   })
 
+  const tokenAccountsToCreate = new Set<string>()
   // Check token accounts for rewards
-  const tokenAccountsToCreate = (pool.farming || []).reduce((acc, farming) => {
-    const amountToClaim = ticketsToCalc.reduce((acc1, ft) => {
-      const toClaim =
-        ft.amountsToClaim.find(
-          (atc) => atc.farmingState === farming.farmingState
-        )?.amount || 0
+  await Promise.all(
+    (pool.farming || []).map(async (farming) => {
+      const amountToClaim = ticketsToCalc.reduce((acc1, ft) => {
+        const toClaim =
+          ft.amountsToClaim.find(
+            (atc) => atc.farmingState === farming.farmingState
+          )?.amount || 0
 
-      return toClaim + acc1
-    }, 0)
+        return toClaim + acc1
+      }, 0)
 
-    if (amountToClaim > 0) {
-      // Looking for existing account
-      const { address: farmingTokenAccountAddress } = getTokenDataByMint(
-        allTokensData,
-        farming.farmingTokenMint
-      )
-
-      // Token account does not exists
-      if (!farmingTokenAccountAddress) {
-        // Mark account to create
-        acc.add(farming.farmingTokenMint)
-      } else {
-        farmingTokenAccounts.set(
-          farming.farmingTokenMint,
-          new PublicKey(farmingTokenAccountAddress)
+      if (amountToClaim > 0) {
+        // Looking for existing account
+        const tokenAccount = await findTokenAccount(
+          allTokensData,
+          creatorPk,
+          farming.farmingTokenMint
         )
+        // Token account does not exists
+        if (!tokenAccount?.address) {
+          // Mark account to create
+          tokenAccountsToCreate.add(farming.farmingTokenMint)
+        } else {
+          farmingTokenAccounts.set(
+            farming.farmingTokenMint,
+            new PublicKey(tokenAccount.address)
+          )
+        }
       }
-    }
-    return acc
-  }, new Set<string>())
+      return farming
+    })
+  )
 
   const tokenAccountsWithCalcs = calcAccounts.reduce((acc, ca) => {
     if (ca.tokenAmount.gtn(0)) {

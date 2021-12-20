@@ -1,8 +1,8 @@
 import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
 import useSWR from 'swr'
-import { useConnection } from './connection'
-import { RefreshFunction, TokenInfo } from './types'
-import { useWallet } from './wallet'
+import { useConnection } from '../../connection'
+import { RefreshFunction, TokenInfo } from '../../types'
+import { useWallet } from '../../wallet'
 
 export const useUserTokenAccounts = (): [TokenInfo[], RefreshFunction] => {
   const { wallet } = useWallet()
