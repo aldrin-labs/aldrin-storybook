@@ -15,7 +15,6 @@ export const buildTransactions = (
   feePayer: PublicKey,
   signers: Signer[] = []
 ): TransactionAndSigners[] => {
-  console.log('Build instructions: ', instructions, feePayer, signers)
   const result = [
     { transaction: new Transaction(), signers: new Map<string, Signer>() },
   ]
@@ -75,6 +74,7 @@ export const buildTransactions = (
     newKeys.forEach((nk) => lastTxKeys.add(nk))
   }
 
+  console.log('Result building: ', result)
   return result.map((t) => ({
     transaction: t.transaction,
     signers: [...t.signers.values()],

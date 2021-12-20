@@ -11,9 +11,9 @@ export const POOLS_V2_PROGRAM_ADDRESS = MASTER_BUILD
 export const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'
 
-export const STAKING_PROGRAM_ADDRESS =
-  process.env.STAKING_PROGRAM_ADDRESS ||
-  'rinajRPUgiiW2rG6uieXvcNNQNaWr9ZcMmqo28VvXfa'
+export const STAKING_PROGRAM_ADDRESS = MASTER_BUILD
+  ? 'rinajRPUgiiW2rG6uieXvcNNQNaWr9ZcMmqo28VvXfa'
+  : 'FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX'
 
 export const VESTING_PROGRAM_ADDRESS =
   process.env.VESTING_PROGRAM_ADDRESS ||

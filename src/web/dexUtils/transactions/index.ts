@@ -1,3 +1,4 @@
+export * from './buildTransactions'
 export * from './mergeTransactions'
 export * from './signAndSendTransaction'
 export * from './sendSignedTransaction'
