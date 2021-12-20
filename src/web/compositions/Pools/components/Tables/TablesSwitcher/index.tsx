@@ -33,6 +33,7 @@ import { useVestings } from '@sb/dexUtils/vesting'
 import { toMap } from '@sb/utils'
 import { COLORS } from '@variables/variables'
 import { CURVE } from '@sb/dexUtils/pools/types'
+import { FlexBlock } from '@sb/components/Layout'
 import { PoolPage } from '../../PoolPage'
 import { AllPoolsTable } from '../AllPools'
 import { UserLiquidityTable } from '../UserLiquidity'
@@ -44,6 +45,7 @@ import {
   TabContainer,
   TableContainer,
   TableModeButton,
+  AuditInfo,
 } from './styles'
 import { CreatePoolModal } from '../../Popups'
 import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
@@ -213,36 +215,39 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           </TableModeButton>
         </div>
         <InputWrap>
-          <SearchInput
-            name="search"
-            placeholder="Search"
-            value={searchValue}
-            onChange={onChangeSearch}
-            append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
-          />
-          <AddPoolButton as={Link} to={`${path}/create`}>
-            <SvgIcon src={PlusIcon} width="1.2em" />
-            &nbsp;Create a Pool
-          </AddPoolButton>
-
-          <a
-            style={{ textDecoration: 'none' }}
-            href={AMMAudit}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <div>
-              <Text margin="0" size="sm">
-                Audited by
-              </Text>
-            </div>
-            <SvgIcon
-              width="5em"
-              height="auto"
-              style={{ marginTop: '1rem' }}
-              src={KudelskiLogo}
+          <FlexBlock alignItems="center">
+            <SearchInput
+              name="search"
+              placeholder="Search"
+              value={searchValue}
+              onChange={onChangeSearch}
+              append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
             />
-          </a>
+            <AddPoolButton as={Link} to={`${path}/create`}>
+              <SvgIcon src={PlusIcon} width="1.2em" />
+              &nbsp;Create a Pool
+            </AddPoolButton>
+          </FlexBlock>
+          <AuditInfo>
+            <a
+              style={{ textDecoration: 'none' }}
+              href={AMMAudit}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <div>
+                <Text margin="0" size="sm">
+                  Audited by
+                </Text>
+              </div>
+              <SvgIcon
+                width="5em"
+                height="auto"
+                style={{ marginTop: '1rem' }}
+                src={KudelskiLogo}
+              />
+            </a>
+          </AuditInfo>
         </InputWrap>
       </TabContainer>
       <TableContainer>

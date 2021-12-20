@@ -1,9 +1,10 @@
 import { Cell, Page, WideContent } from '@sb/components/Layout'
 import React, { useEffect } from 'react'
-import { Block, BlockContent } from '../../components/Block'
+import { Block, BlockContent } from '@sb/components/Block'
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import { RootRow } from './components/Charts/styles'
 import { TableSwitcher } from './components/Tables/TablesSwitcher'
+import { TableSwitcherWrap } from './index.styles'
 
 export const PoolsComponent: React.FC = () => {
   useEffect(() => {
@@ -29,7 +30,9 @@ export const PoolsComponent: React.FC = () => {
           <Cell col={12}>
             <Block>
               <BlockContent>
-                <TableSwitcher />
+                <TableSwitcherWrap>
+                  <TableSwitcher />
+                </TableSwitcherWrap>
               </BlockContent>
             </Block>
           </Cell>

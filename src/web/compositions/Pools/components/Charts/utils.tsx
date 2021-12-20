@@ -42,7 +42,6 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
           ticks: {
             align: 'center',
             color: COLORS.textAlt,
-            maxTicksLimit: 10,
             maxRotation: 0,
             font: {
               size: 12,

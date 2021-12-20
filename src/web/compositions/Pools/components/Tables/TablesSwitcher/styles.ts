@@ -37,21 +37,29 @@ export const TabContainer = styled.div`
   flex-direction: column;
   margin-bottom: 30px;
 
-  @media (min-width: ${BREAKPOINTS.md}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
 `
 
+export const AuditInfo = styled.div`
+  margin-top: 20px;
+  @media (min-width: ${BREAKPOINTS.md}) {
+    margin-top: 0;
+  }
+`
+
 export const InputWrap = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-top: 20px;
 
   @media (min-width: ${BREAKPOINTS.md}) {
     margin-top: 0;
     align-items: center;
+    flex-direction: row;
   }
 `
 
@@ -73,11 +81,14 @@ export const TableContainer = styled.div`
 export const AddPoolButton = styled(Button)`
   height: 42px;
   text-align: center;
-  margin-right: 20px;
   min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: ${FONT_SIZES.md};
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    margin-right: 20px;
+  }
 `
