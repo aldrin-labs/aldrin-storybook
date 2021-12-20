@@ -6,13 +6,9 @@ import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Paper, Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
-import copy from 'clipboard-copy'
-
 import SvgIcon from '@sb/components/SvgIcon'
 import Close from '@icons/closeIcon.svg'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { notify } from '@sb/dexUtils/notifications'
 import ExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 const StyledPaper = styled(Paper)`
@@ -45,11 +41,11 @@ export const TokenAddressesPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
+      <RowContainer justify="space-between">
         <Text>Selected tokens:</Text>
         <SvgIcon
           src={Close}
@@ -57,14 +53,14 @@ export const TokenAddressesPopup = ({
           onClick={() => close()}
         />
       </RowContainer>
-      <RowContainer margin={'2rem 0 1rem 0'} justify={'space-between'}>
+      <RowContainer margin="2rem 0 1rem 0" justify="space-between">
         <Row>
           {' '}
           <TokenIcon
             mint={baseTokenMintAddress}
-            width={'2rem'}
-            height={'2rem'}
-            margin={'0 1rem 0 0'}
+            width="2rem"
+            height="2rem"
+            margin="0 1rem 0 0"
           />{' '}
           <Text>{baseTokenMintAddress}</Text>
         </Row>
@@ -72,20 +68,20 @@ export const TokenAddressesPopup = ({
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href={`https://solanabeach.io/address/${baseTokenMintAddress}`}
+            href={`https://solscan.io/address/${baseTokenMintAddress}`}
           >
             <SvgIcon style={{ cursor: 'pointer' }} src={ExplorerIcon} />
           </a>
         </Row>
       </RowContainer>
-      <RowContainer margin={'1rem 0'} justify={'space-between'}>
+      <RowContainer margin="1rem 0" justify="space-between">
         <Row>
           {' '}
           <TokenIcon
             mint={quoteTokenMintAddress}
-            width={'2rem'}
-            height={'2rem'}
-            margin={'0 1rem 0 0'}
+            width="2rem"
+            height="2rem"
+            margin="0 1rem 0 0"
           />{' '}
           <Text>{quoteTokenMintAddress}</Text>
         </Row>{' '}
@@ -93,7 +89,7 @@ export const TokenAddressesPopup = ({
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href={`https://solanabeach.io/address/${quoteTokenMintAddress}`}
+            href={`https://solscan.io/address/${quoteTokenMintAddress}`}
           >
             <SvgIcon style={{ cursor: 'pointer' }} src={ExplorerIcon} />
           </a>
