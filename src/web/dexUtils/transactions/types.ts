@@ -1,4 +1,9 @@
-import { Commitment, Signer, Transaction } from '@solana/web3.js'
+import {
+  Commitment,
+  Signer,
+  Transaction,
+  TransactionInstruction,
+} from '@solana/web3.js'
 import MultiEndpointsConnection from '../MultiEndpointsConnection'
 import { WalletAdapter } from '../types'
 
@@ -34,3 +39,13 @@ export interface SendTransactionParams extends SendSignedTransactionParams {
 export type SendSignedTransactionResult = 'failed' | 'timeout' | 'success'
 export type AsyncSendSignedTransactionResult =
   Promise<SendSignedTransactionResult>
+
+export interface TransactionAndSigners {
+  transaction: Transaction
+  signers: Signer[]
+}
+
+export interface InstructionWithLamports {
+  instruction: TransactionInstruction
+  lamports?: number
+}

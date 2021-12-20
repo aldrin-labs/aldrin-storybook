@@ -134,7 +134,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     currentFarmingState,
   } = props
 
-  console.log('tokenData: ', allTokenData, tokenData)
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
   const [loading, setLoading] = useState({ stake: false, unstake: false })
