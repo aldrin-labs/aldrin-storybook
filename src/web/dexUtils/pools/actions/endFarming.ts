@@ -104,7 +104,7 @@ export const getEndFarmingTransactions = async ({
 
     commonTransaction.add(endFarmingTransaction)
 
-    if (commonTransaction.instructions.length > 5) {
+    if (commonTransaction.instructions.length > 2) {
       transactionsAndSigners.push({ transaction: commonTransaction })
     }
   }

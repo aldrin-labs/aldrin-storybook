@@ -51,7 +51,7 @@ export const restakeAll = async ({
         connection,
         poolPublicKey: new PublicKey(pool.swapToken),
         farmingState: openFarmings[0],
-        userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+        userPoolTokenAccount: userPoolTokenAccount ? new PublicKey(userPoolTokenAccount) : null,
         curveType: pool.curveType,
       })
 
@@ -76,7 +76,7 @@ export const restakeAll = async ({
   const startFarmingTransactions = []
 
   for (let pool of allPoolsData) {
-    const farming = pool.farming || []
+    const farmings = pool.farming || []
     const {
       address: userPoolTokenAccount,
       amount: poolTokenAmount,
@@ -85,6 +85,10 @@ export const restakeAll = async ({
     const hasPoolTokenAccount =
       userPoolTokenAccount && poolTokenAmount > MIN_POOL_TOKEN_AMOUNT_TO_STAKE
 
+    if (farmings.length === 0) {
+      continue
+    }
+
     if (hasPoolTokenAccount) {
       const transactionsAndSigners = await getStartFarmingTransactions({
         wallet,
@@ -92,7 +96,7 @@ export const restakeAll = async ({
         poolTokenAmount,
         poolPublicKey: new PublicKey(pool.swapToken),
         userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
-        farmingState: new PublicKey(farming[0].farmingState),
+        farmingState: new PublicKey(farmings[0].farmingState),
         curveType: pool.curveType
       })
 
