@@ -2,10 +2,11 @@ import { PublicKey, Signer, Transaction } from '@solana/web3.js'
 import { toMap } from '../../utils'
 import { TransactionAndSigners, InstructionWithLamports } from './types'
 
-const MAX_TX_SIZE = 1232 // Solana restrictions
+const MAX_TX_SIZE = 1232 // Solana/MTU restrictions
 const KEY_SIZE = 32
 const MAX_LAMPORTS = 200000
 const LAMPORTS_PER_SIG = 50
+
 /**
  * Build transactions and signers from instructions list
  * Group all instructions one by one to transactions limited to 1232 bytes
