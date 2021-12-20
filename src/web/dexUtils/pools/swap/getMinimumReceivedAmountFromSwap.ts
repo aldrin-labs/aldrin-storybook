@@ -37,13 +37,7 @@ export const getMinimumReceivedAmountFromSwap = async ({
 
   let swapAmountOut = 0
 
-  if (curveType === CURVE.PRODUCT) {
-    swapAmountOut = getMinimumReceivedFromProductCurve({
-      swapAmountIn,
-      isSwapBaseToQuote,
-      poolBalances,
-    })
-  } else {
+  if (curveType === CURVE.STABLE) {
     // program v2 stable pool
     swapAmountOut = await getMinimumReceivedFromStableCurveForSwap({
       swapAmountIn,
@@ -55,6 +49,12 @@ export const getMinimumReceivedAmountFromSwap = async ({
       userQuoteTokenAccount,
       transferSOLToWrapped,
       allTokensData,
+    })
+  } else {
+    swapAmountOut = getMinimumReceivedFromProductCurve({
+      swapAmountIn,
+      isSwapBaseToQuote,
+      poolBalances,
     })
   }
 

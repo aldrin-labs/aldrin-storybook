@@ -2,12 +2,17 @@ import Mathwallet from '@icons/mathwallet.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
 import Sollet from '@icons/sollet.svg'
 import Solong from '@icons/solong.svg'
+import Slope from '@icons/slope.svg'
 import { TokenInstructions } from '@project-serum/serum'
 import Wallet from '@project-serum/sol-wallet-adapter'
 import {
   CommonWalletAdapter,
-  LedgerWalletAdapter, MathWalletAdapter,
-  PhantomWalletAdapter, SolletExtensionAdapter, SolongWalletAdapter
+  LedgerWalletAdapter,
+  MathWalletAdapter,
+  PhantomWalletAdapter,
+  SolletExtensionAdapter,
+  SolongWalletAdapter,
+  SlopeWalletAdapter,
 } from '@sb/dexUtils/adapters'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import {
@@ -15,7 +20,7 @@ import {
   SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  TransactionInstruction
+  TransactionInstruction,
 } from '@solana/web3.js'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
@@ -23,7 +28,7 @@ import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
 import {
   useAccountInfo,
   useConnection,
-  useConnectionConfig
+  useConnectionConfig,
 } from './connection'
 import { useAsyncData } from './fetch-loop'
 import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
@@ -32,10 +37,9 @@ import { getMaxWithdrawAmount } from './pools'
 import {
   getTokenAccountInfo,
   MINT_LAYOUT,
-  parseTokenAccountData
+  parseTokenAccountData,
 } from './tokens'
 import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
-
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -128,6 +132,15 @@ export const WALLET_PROVIDERS = [
     isExtension: true,
     showOnMobile: true,
   },
+  {
+    name: 'Slope',
+    fullName: 'Slope Wallet',
+    url: 'https://slope.finance/',
+    adapter: SlopeWalletAdapter,
+    icon: Slope,
+    isExtension: true,
+    showOnMobile: false,
+  },
 ]
 
 export const TOKEN_PROGRAM_ID = new PublicKey(
@@ -154,14 +167,15 @@ export interface WalletContextType {
   providerFullName?: string
 }
 
-
-
 const WalletContext = React.createContext<WalletContextType | null>(null)
 
 export const WalletProvider: React.FC = ({ children }) => {
   const { endpoint } = useConnectionConfig()
 
-  const [connectedPersist, setConnectedPersist] = useLocalStorageState('walletConnected', false)
+  const [connectedPersist, setConnectedPersist] = useLocalStorageState(
+    'walletConnected',
+    false
+  )
   const [connected, setConnected] = useState(false)
   const [autoConnect, setAutoConnect] = useState(connectedPersist)
 
@@ -175,7 +189,6 @@ export const WalletProvider: React.FC = ({ children }) => {
     [providerUrl]
   )
 
-
   const wallet = useMemo(() => {
     const wallet = new (provider?.adapter || Wallet)(
       providerUrl,
@@ -185,14 +198,18 @@ export const WalletProvider: React.FC = ({ children }) => {
     return wallet
   }, [provider, endpoint])
 
-  const connectWalletHash = useMemo(() => window.location.hash, [
-    wallet?.connected,
-  ])
+  const connectWalletHash = useMemo(
+    () => window.location.hash,
+    [wallet?.connected]
+  )
 
   useEffect(() => {
     if (wallet) {
       wallet.on('connect', async () => {
-        if (wallet?.publicKey && !wallet?.publicKey?.equals(SystemProgram.programId)) {
+        if (
+          wallet?.publicKey &&
+          !wallet?.publicKey?.equals(SystemProgram.programId)
+        ) {
           console.log('Wallet connected')
 
           setConnectedPersist(true)
@@ -202,34 +219,33 @@ export const WalletProvider: React.FC = ({ children }) => {
           const keyToDisplay =
             walletPublicKey.length > 20
               ? `${walletPublicKey.substring(
-                0,
-                7
-              )}.....${walletPublicKey.substring(
-                walletPublicKey.length - 7,
-                walletPublicKey.length
-              )}`
+                  0,
+                  7
+                )}.....${walletPublicKey.substring(
+                  walletPublicKey.length - 7,
+                  walletPublicKey.length
+                )}`
               : walletPublicKey
 
           notify({
             message: 'Wallet update',
-            description: 'Connected to wallet ' + keyToDisplay,
+            description: `Connected to wallet ${keyToDisplay}`,
           })
         }
       })
 
       wallet.on('disconnect', (...args) => {
-        setTimeout(() => { // Prevent execution on tab close/reload
+        setConnected(false)
+        setTimeout(() => {
+          // Prevent execution on tab close/reload
           setConnectedPersist(false)
-          setConnected(false)
           notify({
             message: 'Wallet update',
             description: 'Disconnected from wallet',
           })
         }, 300)
-
       })
     }
-
 
     // Disable disconnect - it happens only on tab close/page reload, let's save last connection
     // return () => {
@@ -241,7 +257,8 @@ export const WalletProvider: React.FC = ({ children }) => {
   }, [wallet])
 
   useEffect(() => {
-    setTimeout(() => { // Allow app to start (initialize) properly
+    setTimeout(() => {
+      // Allow app to start (initialize) properly
       if (wallet && autoConnect) {
         if (!wallet.connected) {
           wallet.connect()
@@ -249,7 +266,6 @@ export const WalletProvider: React.FC = ({ children }) => {
         setAutoConnect(false)
       }
     }, 300)
-
   }, [wallet, autoConnect])
 
   useEffect(() => {
@@ -261,25 +277,17 @@ export const WalletProvider: React.FC = ({ children }) => {
 
   const w = WALLET_PROVIDERS.find(({ url }) => url === providerUrl)
 
-
   const context: WalletContextType = {
     wallet,
     connected,
     providerUrl,
     setProviderUrl,
     setAutoConnect,
-    providerName:
-      w?.name ??
-      providerUrl,
-    providerFullName:
-      w?.fullName,
+    providerName: w?.name ?? providerUrl,
+    providerFullName: w?.fullName,
   }
   return (
-    <WalletContext.Provider
-      value={context}
-    >
-      {children}
-    </WalletContext.Provider>
+    <WalletContext.Provider value={context}>{children}</WalletContext.Provider>
   )
 }
 
@@ -350,7 +358,7 @@ export function useMaxWithdrawalAmounts({
 }
 
 export function parseMintData(data) {
-  let { decimals } = MINT_LAYOUT.decode(data)
+  const { decimals } = MINT_LAYOUT.decode(data)
   return { decimals }
 }
 
@@ -450,11 +458,11 @@ export function parseMintData(data) {
 // }
 
 export function useBalanceInfo(publicKey) {
-  let [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey)
-  let { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
+  const [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey)
+  const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
     : {}
-  let [mintInfo, mintInfoLoaded] = useAccountInfo(mint)
+  const [mintInfo, mintInfoLoaded] = useAccountInfo(mint)
 
   if (!accountInfoLoaded) {
     return null
@@ -474,7 +482,7 @@ export function useBalanceInfo(publicKey) {
 
   if (mint && mintInfoLoaded) {
     try {
-      let { decimals } = parseMintData(mintInfo.data)
+      const { decimals } = parseMintData(mintInfo.data)
       return {
         amount,
         decimals,

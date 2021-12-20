@@ -44,32 +44,32 @@ const ConnectWalletPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
+      <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
         <Title>Select Wallet</Title>
         <SvgIcon
           src={Close}
-          width={'2rem'}
-          height={'auto'}
+          width="2rem"
+          height="auto"
           style={{ cursor: 'pointer' }}
           onClick={() => onClose()}
         />
       </RowContainer>
-      <RowContainer direction={'column'}>
+      <RowContainer direction="column">
         {WALLET_PROVIDERS.map((provider) => {
           return (
             <WalletSelectorRow
-              key={`wallet_${provider.providerName}`}
+              key={`wallet_${provider.providerName || provider.name}`}
               onClick={async () => {
                 await setProvider(provider.url)
                 await setAutoConnect(true)
                 await onClose()
               }}
             >
-              <SvgIcon src={provider.icon} width={'3rem'} height={'100%'} />
+              <SvgIcon src={provider.icon} width="3rem" height="100%" />
               {provider.name}
             </WalletSelectorRow>
           )

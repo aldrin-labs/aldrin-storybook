@@ -850,11 +850,11 @@ const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
   const { connected, wallet } = useWallet()
 
   async function getAssociatedTokenAddress() {
-    if (!connected || !mint) {
+    if (!connected || !mint || !wallet.publicKey) {
       return null
     }
 
-    if (wallet.publicKey.equals(SystemProgram.programId)) {
+    if (wallet.publicKey?.equals(SystemProgram.programId)) {
       return null
     }
 
