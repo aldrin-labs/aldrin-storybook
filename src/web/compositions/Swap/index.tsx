@@ -41,7 +41,7 @@ import { PublicKey } from '@solana/web3.js'
 import { swap } from '@sb/dexUtils/pools/actions/swap'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
-import { SLIPPAGE_PERCENTAGE } from './config'
+import { getLiquidityProviderFee, SLIPPAGE_PERCENTAGE } from './config'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
   costOfAddingToken,
@@ -666,7 +666,7 @@ const SwapPage = ({
                   fontFamily={'Avenir Next Bold'}
                 >
                   {stripByAmountAndFormat(
-                    +baseAmount * (SLIPPAGE_PERCENTAGE / 100)
+                    +baseAmount * (getLiquidityProviderFee(selectedPool.curveType) / 100)
                   )}{' '}
                   {baseSymbol}
                 </Text>
