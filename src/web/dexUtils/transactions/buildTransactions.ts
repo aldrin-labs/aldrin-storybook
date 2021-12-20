@@ -74,7 +74,6 @@ export const buildTransactions = (
     newKeys.forEach((nk) => lastTxKeys.add(nk))
   }
 
-  console.log('Result building: ', result)
   return result.map((t) => ({
     transaction: t.transaction,
     signers: [...t.signers.values()],
