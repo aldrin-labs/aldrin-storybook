@@ -1255,21 +1255,39 @@ export class Token {
     return await sendAndConfirmTransaction(
       'TransferChecked',
       this.connection,
-      new Transaction().add(
-        Token.createTransferCheckedInstruction(
-          this.programId,
-          source,
-          this.publicKey,
-          destination,
-          ownerPublicKey,
-          multiSigners,
-          amount,
-          decimals,
-        ),
+      this.getTransferCheckedInstruction(
+        source,
+        destination,
+        owner,
+        multiSigners,
+        amount,
+        decimals
       ),
       this.payer,
       ...signers,
     );
+  }
+
+  getTransferCheckedInstruction(
+    source: PublicKey,
+    destination: PublicKey,
+    owner: any,
+    multiSigners: Array<Account>,
+    amount: number | u64,
+    decimals: number,
+  ): Transaction {
+    return new Transaction().add(
+      Token.createTransferCheckedInstruction(
+        this.programId,
+        source,
+        this.publicKey,
+        destination,
+        owner,
+        multiSigners,
+        amount,
+        decimals,
+      ),
+    )
   }
 
   /**

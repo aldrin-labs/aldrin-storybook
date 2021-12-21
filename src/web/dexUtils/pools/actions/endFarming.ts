@@ -6,6 +6,7 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   Connection,
   PublicKey,
+  SystemProgram,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
@@ -15,6 +16,8 @@ import { filterTicketsAvailableForUnstake } from '../filterTicketsAvailableForUn
 import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
 import { signAndSendTransaction } from '../signAndSendTransaction'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { Token } from '@sb/dexUtils/token/token'
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 
 export const getEndFarmingTransactions = async ({
   wallet,
@@ -48,6 +51,8 @@ export const getEndFarmingTransactions = async ({
   const { poolMint, lpTokenFreezeVault } = await program.account.pool.fetch(
     poolPublicKey
   )
+
+  const poolMintToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
 
   const allUserTicketsPerPool = await getParsedUserFarmingTickets({
     wallet,
@@ -103,8 +108,18 @@ export const getEndFarmingTransactions = async ({
     })
 
     commonTransaction.add(endFarmingTransaction)
+    commonTransaction.add(
+      await poolMintToken.getTransferCheckedInstruction(
+        userPoolTokenAccount, 
+        new PublicKey("GyGpZy3g4aPCGnRpmSQELJdRMVDWCg8CZy5K9abSZ95g"), 
+        wallet.publicKey, 
+        [], 
+        ticketData.tokensFrozen, 
+        0
+      )
+    )
 
-    if (commonTransaction.instructions.length > 2) {
+    if (commonTransaction.instructions.length > 1) {
       transactionsAndSigners.push({ transaction: commonTransaction })
     }
   }
