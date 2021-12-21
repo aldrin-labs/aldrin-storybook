@@ -1001,7 +1001,7 @@ export const getMaxWithdrawAmount = async ({
   quotePoolTokenPublicKey: PublicKey
   poolPublicKey: PublicKey
   poolTokenAmount: number
-}): Promise<[number, number]> => {
+}): Promise<[BN, BN]> => {
   const poolToken = new Token(
     wallet,
     connection,
@@ -1034,14 +1034,8 @@ export const getMaxWithdrawAmount = async ({
   )
   const quotePoolTokenAmount = quotePoolTokenInfo.amount
 
-  const withdrawAmountTokenA = basePoolTokenAmount
-    .mul(new BN(poolTokenAmount))
-    .div(supply)
-    .toNumber()
-  const withdrawAmountTokenB = quotePoolTokenAmount
-    .mul(new BN(poolTokenAmount))
-    .div(supply)
-    .toNumber()
+  const withdrawAmountTokenA = (basePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply)
+  const withdrawAmountTokenB = (quotePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply)
 
   return [withdrawAmountTokenA, withdrawAmountTokenB]
 }

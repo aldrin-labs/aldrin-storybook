@@ -87,8 +87,8 @@ export async function redeemBasket(params: {
       poolTokenAmount: userPoolTokenAmount,
     })
 
-  baseTokenAmountToWithdraw *= 0.997
-  quoteTokenAmountToWithdraw *= 0.997
+  baseTokenAmountToWithdraw = baseTokenAmountToWithdraw.divn(1000).muln(997)
+  quoteTokenAmountToWithdraw = quoteTokenAmountToWithdraw.divn(1000).muln(997)
 
   const commonSigners = []
   const transactionBeforeWithdraw = new Transaction()
@@ -173,8 +173,8 @@ export async function redeemBasket(params: {
 
     const withdrawTransaction = await program.instruction.redeemBasket(
       new BN(userPoolTokenAmount),
-      new BN(baseTokenAmountToWithdraw),
-      new BN(quoteTokenAmountToWithdraw),
+      baseTokenAmountToWithdraw,
+      quoteTokenAmountToWithdraw,
       {
         accounts: {
           pool: poolPublicKey,
