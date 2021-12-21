@@ -39,3 +39,16 @@ export function toNumberWithDecimals(bigNumber: number, decimalsNumber: number):
     const y = x / Math.pow(10, 18);
     return (y).toFixed(y % 1 !== 0 ? decimalsNumber : 0);
 }
+
+export function removeTrailingZeros(value) {
+    // if not containing a dot, we do not need to do anything
+    if (value.indexOf('.') === -1) {
+        return value;
+    }
+
+    // as long as the last character is a 0 or a dot, remove it
+    while((value.slice(-1) === '0' || value.slice(-1) === '.') && value.indexOf('.') !== -1) {
+        value = value.substr(0, value.length - 1);
+    }
+    return value;
+}

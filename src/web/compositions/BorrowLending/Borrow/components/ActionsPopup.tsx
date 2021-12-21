@@ -14,9 +14,8 @@ import {
     BlockSupply,
     AmountCard,
     MaxAmount,
-    CustomSlider,
-    ButtonGroup, AmountInput
-} from './ActionsPopup.styles';
+    ButtonGroup
+} from '../../Supply/components/ActionsPopup.styles';
 
 import CloseIcon from '@icons/closeIcon.svg'
 
@@ -31,28 +30,28 @@ import {removeTrailingZeros} from '@sb/dexUtils/borrow-lending/U192-converting';
 import NumberFormat from 'react-number-format';
 
 const ActionsPopup = ({
-    theme,
-    onClose,
-    open,
-    reserve,
-    reserveObligation,
-    token,
-    tokenPrice,
-    walletBalance,
-    tokenDecimals,
-    depositAmount,
-    collateralDeposit,
-    collateralWorth,
-    reserveBorrowedLiquidity,
-    reserveAvailableLiquidity,
-    mintedCollateralTotal,
-    maxLtv,
-    remainingBorrow,
-    handleDepositLiq,
-    handleWithdrawCollateral,
-    handleWithdrawLiquidity,
-    calcCollateralWorth,
-}: {
+                          theme,
+                          onClose,
+                          open,
+                          reserve,
+                          reserveObligation,
+                          token,
+                          tokenPrice,
+                          walletBalance,
+                          tokenDecimals,
+                          depositAmount,
+                          collateralDeposit,
+                          collateralWorth,
+                          reserveBorrowedLiquidity,
+                          reserveAvailableLiquidity,
+                          mintedCollateralTotal,
+                          maxLtv,
+                          remainingBorrow,
+                          handleDepositLiq,
+                          handleWithdrawCollateral,
+                          handleWithdrawLiquidity,
+                          calcCollateralWorth,
+                      }: {
     theme: Theme
     onClose: () => void
     open: boolean,
@@ -230,22 +229,22 @@ const ActionsPopup = ({
                                 <BlockSupply>
                                     <TitleBlock>Wallet Balance</TitleBlock>
                                     {walletBalance} <a
-                                        href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
-                                        target="_blank"
-                                        style={{display: 'block'}}
-                                    >
-                                        Token name
-                                    </a>
+                                    href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
+                                    target="_blank"
+                                    style={{display: 'block'}}
+                                >
+                                    Token name
+                                </a>
                                 </BlockSupply>
                                 <BlockSupply>
                                     <TitleBlock>Deposited Amount</TitleBlock>
                                     {depositAmount} <a
-                                        href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
-                                        target="_blank"
-                                        style={{display: 'block'}}
-                                    >
-                                        Token name
-                                    </a>
+                                    href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
+                                    target="_blank"
+                                    style={{display: 'block'}}
+                                >
+                                    Token name
+                                </a>
                                 </BlockSupply>
                                 <BlockSupply>
                                     <TitleBlock>Risk Factor</TitleBlock>
@@ -318,7 +317,7 @@ const ActionsPopup = ({
                                             fixedDecimalScale={true}
                                             thousandSeparator={true}
                                             prefix={'$'} />
-                                            :
+                                        :
                                         (asCollateral ?
                                                 <NumberFormat
                                                     value={remainingBorrowAfterDeposit}

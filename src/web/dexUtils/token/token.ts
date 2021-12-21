@@ -471,12 +471,12 @@ export class Token {
     );
 
     //Send the two instructions
-    // await sendAndConfirmTransactionViaWallet(
-    //   this.wallet,
-    //   this.connection,
-    //   transaction,
-    //   newAccount,
-    // );
+    await sendAndConfirmTransactionViaWallet(
+      this.wallet,
+      this.connection,
+      transaction,
+      newAccount,
+    );
 
     return [newAccount.publicKey, newAccount, transaction];
   }

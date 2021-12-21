@@ -60,7 +60,7 @@ export const withdrawCollateral = async ({
         }));
     })
 
-    transaction.add(program.instruction.refreshObligation({
+    const refreshObligationInstruction = program.instruction.refreshObligation({
         accounts: {
             obligation: obligation.pubkey,
             clock: SYSVAR_CLOCK_PUBKEY,
@@ -68,7 +68,9 @@ export const withdrawCollateral = async ({
         remainingAccounts: reservesPkToRefresh.map(pubkey => ({
             pubkey, isSigner: false, isWritable: false,
         })),
-    }));
+    });
+
+    transaction.add(refreshObligationInstruction);
 
     transaction.add(program.instruction.withdrawObligationCollateral(lendingMarketBumpSeed, amount, {
         accounts: {
@@ -82,6 +84,8 @@ export const withdrawCollateral = async ({
             clock: SYSVAR_CLOCK_PUBKEY,
         },
     }));
+
+    transaction.add(refreshObligationInstruction);
 
     return await sendTransaction({
         transaction: transaction,

@@ -18,6 +18,7 @@ import {depositObligationCollateral} from '@sb/dexUtils/borrow-lending/depositOb
 import TableAssets from './components/TableAssets';
 import {toNumberWithDecimals} from "@sb/dexUtils/borrow-lending/U192-converting";
 import {WalletAccountsType} from "@sb/compositions/BorrowLending/Markets/types";
+import NumberFormat from "react-number-format";
 
 type DashboardProps = {
     theme: Theme,
@@ -52,7 +53,18 @@ const Dashboard = ({
                                     <Cell col={12} colLg={4}>
                                         <BlockNumber>
                                             <TitleBlock>Deposit Value</TitleBlock>
-                                            <NumberValue>${userSummary?.totalDeposit ? toNumberWithDecimals(userSummary.totalDeposit, 2) : 0}</NumberValue>
+                                            <NumberValue>
+                                                {userSummary?.totalDepositWorth ?
+                                                    <NumberFormat
+                                                        value={userSummary.totalDepositWorth}
+                                                        displayType={'text'}
+                                                        decimalScale={2}
+                                                        fixedDecimalScale={true}
+                                                        thousandSeparator={true}
+                                                        prefix={'$'}
+                                                    />
+                                                : 0}
+                                            </NumberValue>
                                         </BlockNumber>
                                     </Cell>
                                     <Cell col={12} colLg={4}>

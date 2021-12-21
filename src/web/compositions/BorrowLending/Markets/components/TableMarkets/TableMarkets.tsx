@@ -76,11 +76,11 @@ const TableMarkets = ({theme, reserves}: TableMarketsProps) => {
                         >
                             {reserve.liquidity.mint.toString()}
                         </a>
-                        <span>{tokenPrice}</span>
+                        <span>${tokenPrice}</span>
                     </td>
                     <td>
                         <p style={{margin: 0}}>{tokenSupply}</p>
-                        <span>{toNumberWithDecimals(tokenSupplyWorth, 2)}</span>
+                        <span>${toNumberWithDecimals(tokenSupplyWorth, 2)}</span>
                     </td>
                     <td>
                         <p style={{margin: 0}}>{reserveBorrowedAmount}</p>

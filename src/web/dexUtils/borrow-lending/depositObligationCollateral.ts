@@ -15,6 +15,7 @@ export const depositObligationCollateral = async ({
     programAddress = BORROW_LENDING_PROGRAM_ADDRESS,
     reserve,
     obligation,
+    obligationDetails,
     amount,
 }: {
     wallet: WalletAdapter
@@ -22,6 +23,7 @@ export const depositObligationCollateral = async ({
     programAddress?: string,
     reserve: any,
     obligation: any,
+    obligationDetails: any,
     amount: BN
 }) => {
     const program = ProgramsMultiton.getProgramByAddress({
@@ -32,12 +34,26 @@ export const depositObligationCollateral = async ({
 
     const collateralWallet = await checkAccountForMint({wallet, connection, mint: reserve.collateral.mint, create: false});
 
-    const refreshReserveInstruction = program.instruction.refreshReserve({
-        accounts: {
-            reserve: reserve.publicKey,
-            oraclePrice: reserve.liquidity.oracle,
-            clock: SYSVAR_CLOCK_PUBKEY,
-        },
+    const transaction = new Transaction();
+
+    let reservesPkToRefresh: PublicKey[] | [] = obligationDetails.reserves.map((r) => {
+        return r.collateral?.inner.depositReserve || r.liquidity?.inner.borrowReserve
+    }).filter(Boolean);
+
+    if(!reservesPkToRefresh.includes(reserve.publicKey)) {
+        reservesPkToRefresh.push(reserve.publicKey)
+    }
+
+    console.log('reservesPkToRefresh', reservesPkToRefresh)
+
+    reservesPkToRefresh.forEach((reservePk: PublicKey) => {
+        transaction.add(program.instruction.refreshReserve({
+            accounts: {
+                reserve: reservePk,
+                oraclePrice: reserve.liquidity.oracle,
+                clock: SYSVAR_CLOCK_PUBKEY,
+            },
+        }));
     })
 
     const refreshObligationInstruction = program.instruction.refreshObligation({
@@ -45,14 +61,14 @@ export const depositObligationCollateral = async ({
             obligation: obligation.pubkey,
             clock: SYSVAR_CLOCK_PUBKEY,
         },
-        remainingAccounts: [{
-            pubkey: reserve.publicKey,
-            isSigner: false,
-            isWritable: false,
-        }],
-    })
+        remainingAccounts: reservesPkToRefresh.map(pubkey => ({
+            pubkey, isSigner: false, isWritable: false,
+        })),
+    });
 
-    const depositObligationInstruction = program.instruction.depositObligationCollateral(amount, {
+    transaction.add(refreshObligationInstruction);
+
+    transaction.add(program.instruction.depositObligationCollateral(amount, {
         accounts: {
             borrower: wallet.publicKey,
             obligation: obligation.pubkey,
@@ -62,10 +78,12 @@ export const depositObligationCollateral = async ({
             tokenProgram: TOKEN_PROGRAM_ID,
             clock: SYSVAR_CLOCK_PUBKEY,
         },
-    });
+    }))
+
+    transaction.add(refreshObligationInstruction);
 
     return await sendTransaction({
-        transaction: new Transaction().add(refreshReserveInstruction).add(refreshObligationInstruction).add(depositObligationInstruction),
+        transaction: transaction,
         wallet,
         signers: [],
         connection,

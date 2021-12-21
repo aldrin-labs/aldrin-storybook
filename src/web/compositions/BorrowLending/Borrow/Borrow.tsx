@@ -16,7 +16,7 @@ import {
     RewardCard,
     BlockReward,
     DescriptionBlock, Description, List, ListItem
-} from './Supply.styles';
+} from '../Supply/Supply.styles';
 import {compose} from 'recompose';
 import {withTheme} from '@material-ui/core/styles';
 import {initObligation} from '@sb/dexUtils/borrow-lending/initObligation';
@@ -29,7 +29,7 @@ import {withdrawCollateral} from '@sb/dexUtils/borrow-lending/withdrawCollateral
 import {withdrawLiquidity} from '@sb/dexUtils/borrow-lending/withdrawLiquidity';
 import {PublicKey} from '@solana/web3.js';
 
-type SupplyProps = {
+type BorrowProps = {
     theme: Theme,
     reserves: any,
     reservesPKs: PublicKey[],
@@ -41,7 +41,7 @@ type SupplyProps = {
     handleGetObligation: () => void,
 }
 
-const Supply = ({
+const Borrow = ({
     theme,
     reserves,
     reservesPKs,
@@ -51,7 +51,7 @@ const Supply = ({
     userSummary,
     handleGetReservesAccounts,
     handleGetObligation,
-}: SupplyProps) => {
+}: BorrowProps) => {
     const { wallet } = useWallet()
     const connection = useConnection()
     let totalRemainingBorrow = 0;
@@ -211,7 +211,7 @@ const Supply = ({
                                 <RowContainer align={'center'}>
                                     <Cell col={12} colLg={6}>
                                         <BlockNumber>
-                                            <TitleBlock>Deposit</TitleBlock>
+                                            <TitleBlock>Collaterals</TitleBlock>
 
                                             <DescriptionBlock>
                                                 <Description>Total:
@@ -232,7 +232,7 @@ const Supply = ({
 
                                     <Cell col={12} colLg={6}>
                                         <BlockNumber>
-                                            <TitleBlock>Projected Yields</TitleBlock>
+                                            <TitleBlock>Loans</TitleBlock>
 
                                             <DescriptionBlock>
                                                 <Description>Total: $9,659.78</Description>
@@ -305,4 +305,4 @@ const Supply = ({
     );
 };
 
-export default compose(withTheme())(Supply);
+export default compose(withTheme())(Borrow);

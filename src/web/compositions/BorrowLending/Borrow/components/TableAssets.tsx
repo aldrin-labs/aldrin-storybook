@@ -5,7 +5,7 @@ import {Theme} from '@material-ui/core';
 import {toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
 import {ObligationType, WalletAccountsType} from '@sb/compositions/BorrowLending/Markets/types';
 import {calculateBorrowApy, calculateUtilizationRate} from '@sb/compositions/BorrowLending/utils/rates';
-import ActionsPopup from '@sb/compositions/BorrowLending/Supply/components/ActionsPopup';
+import ActionsPopup from '@sb/compositions/BorrowLending/Borrow/components/ActionsPopup';
 import {PublicKey} from '@solana/web3.js';
 import BN from 'bn.js';
 import NumberFormat from "react-number-format";
@@ -147,7 +147,7 @@ const TableAssets = ({
                             <span>${toNumberWithDecimals(depositWorth, 2)}</span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
-                            <p style={{margin: 0}}><strong>{depositApy % 1 !== 0 ? depositApy.toFixed(2) : depositApy}%</strong></p>
+                            <p style={{margin: 0}}><strong>{borrowApy % 1 !== 0 ? borrowApy.toFixed(2) : borrowApy}%</strong></p>
                         </RowTd>
                     </TableRow>
                     {
@@ -187,9 +187,9 @@ const TableAssets = ({
             <TableHeader>
                 <TableRow>
                     <RowTd style={{borderTop: 'none'}}>Asset</RowTd>
-                    <RowTd style={{borderTop: 'none'}}>Your Wallet Balance</RowTd>
-                    <RowTd style={{borderTop: 'none'}}>Deposited Amount	</RowTd>
-                    <RowTd style={{borderTop: 'none'}}>Deposit APY</RowTd>
+                    <RowTd style={{borderTop: 'none'}}>Available for You</RowTd>
+                    <RowTd style={{borderTop: 'none'}}>Borrowed Amount</RowTd>
+                    <RowTd style={{borderTop: 'none'}}>Borrow APY</RowTd>
                 </TableRow>
             </TableHeader>
             <TableBody>
