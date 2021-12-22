@@ -1,33 +1,36 @@
-import { marketsByCategories } from '@core/config/marketsByCategories'
-import stableCoins from '@core/config/stableCoins'
-import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
-import {
-  formatNumberToUSFormat,
-  roundAndFormatNumber,
-  stripDigitPlaces
-} from '@core/utils/PortfolioTableUtils'
-import favouriteSelected from '@icons/favouriteSelected.svg'
-import favouriteUnselected from '@icons/favouriteUnselected.svg'
-import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
-import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+import React from 'react'
+
 import { SvgIcon } from '@sb/components'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
-import React from 'react'
+
+import { marketsByCategories } from '@core/config/marketsByCategories'
+import stableCoins from '@core/config/stableCoins'
+import {
+  getNumberOfDecimalsFromNumber,
+  stripByAmount,
+} from '@core/utils/chartPageUtils'
+import {
+  formatNumberToUSFormat,
+  roundAndFormatNumber,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+
+import favouriteSelected from '@icons/favouriteSelected.svg'
+import favouriteUnselected from '@icons/favouriteUnselected.svg'
+import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
+import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+
 import { ISelectData, SelectTabType } from './SelectWrapper.types'
 import {
   IconContainer,
   StyledColumn,
   StyledRow,
   StyledSymbol,
-  StyledTokenName
+  StyledTokenName,
 } from './SelectWrapperStyles'
-
-
-
-
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favourite', isSortable: false },
@@ -465,9 +468,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(
-                      stripByAmount(closePrice)
-                    )}
+                  : formatNumberToUSFormat(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -481,9 +482,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(
-                      stripByAmount(closePrice)
-                    )}
+                  : formatNumberToUSFormat(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}

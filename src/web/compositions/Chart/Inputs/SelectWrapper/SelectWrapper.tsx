@@ -1,25 +1,38 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { fiatPairs } from '@core/config/stableCoins'
-import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import search from '@icons/search.svg'
-import { sortBy as sort } from 'lodash-es'
 import { Grid, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
+import dayjs from 'dayjs'
+import { sortBy as sort } from 'lodash-es'
+import React, { useState } from 'react'
+import { withRouter } from 'react-router'
+import { SortDirection } from 'react-virtualized'
+
 import { SvgIcon } from '@sb/components'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
 import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
 import { notify } from '@sb/dexUtils/notifications'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
-import dayjs from 'dayjs'
-import React, { useState } from 'react'
-import { withRouter } from 'react-router'
-import { SortDirection } from 'react-virtualized'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { fiatPairs } from '@core/config/stableCoins'
+import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+
+import search from '@icons/search.svg'
+
 import 'react-virtualized/styles.css'
 import { compose } from 'recompose'
+
+import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
+import { dayDuration } from '@core/utils/dateUtils'
+
+import {
+  getTimezone,
+  endOfDayTimestamp,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
+
 import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
 import {
@@ -32,15 +45,8 @@ import { combineSelectWrapperData } from './SelectWrapper.utils'
 import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
 import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
-import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
-import { dayDuration } from '@core/utils/dateUtils'
-import {
-  getTimezone,
-  endOfDayTimestamp,
-} from '@sb/compositions/AnalyticsRoute/components/utils'
 
 const PINNED_LIST = ['RIN_USDC']
-
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -53,28 +59,13 @@ export const excludedPairs = [
 ]
 
 export const datesForQuery = {
-  startOfTime: () =>
-    dayjs()
-      .startOf('hour')
-      .subtract(24, 'hour')
-      .unix(),
+  startOfTime: () => dayjs().startOf('hour').subtract(24, 'hour').unix(),
 
-  endOfTime: () =>
-    dayjs()
-      .endOf('hour')
-      .unix(),
+  endOfTime: () => dayjs().endOf('hour').unix(),
 
-  prevStartTimestamp: () =>
-    dayjs()
-      .startOf('hour')
-      .subtract(48, 'hour')
-      .unix(),
+  prevStartTimestamp: () => dayjs().startOf('hour').subtract(48, 'hour').unix(),
 
-  prevEndTimestamp: () =>
-    dayjs()
-      .startOf('hour')
-      .subtract(24, 'hour')
-      .unix(),
+  prevEndTimestamp: () => dayjs().startOf('hour').subtract(24, 'hour').unix(),
 }
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
@@ -119,12 +110,13 @@ const SelectWrapper = (props: IProps) => {
   }
 
   const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
-  const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
-    (el) =>
-      el.symbol &&
-      !Array.isArray(el.symbol.match(fiatRegexp)) &&
-      !excludedPairs.includes(el.symbol)
-  )
+  const filtredMarketsByExchange =
+    getSerumMarketDataQuery.getSerumMarketData.filter(
+      (el) =>
+        el.symbol &&
+        !Array.isArray(el.symbol.match(fiatRegexp)) &&
+        !excludedPairs.includes(el.symbol)
+    )
 
   const favouritePairsMap = favouriteMarkets.reduce(
     (acc: Map<string, string>, el: string) => {
@@ -202,12 +194,8 @@ class SelectPairListComponent extends React.PureComponent<
       .getElementById('ExchangePair')
       ?.getBoundingClientRect()
 
-    const {
-      sortBy,
-      sortDirection,
-      isMintsPopupOpen,
-      isFeedBackPopupOpen,
-    } = this.state
+    const { sortBy, sortDirection, isMintsPopupOpen, isFeedBackPopupOpen } =
+      this.state
 
     getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
       serumMarketsDataMap.set(el.pair, el)
@@ -264,12 +252,8 @@ class SelectPairListComponent extends React.PureComponent<
       onTabChange,
     } = nextProps
     const { data: prevPropsData } = this.props
-    const {
-      sortBy,
-      sortDirection,
-      isMintsPopupOpen,
-      isFeedBackPopupOpen,
-    } = this.state
+    const { sortBy, sortDirection, isMintsPopupOpen, isFeedBackPopupOpen } =
+      this.state
 
     const serumMarketsDataMap = new Map()
 
@@ -289,7 +273,7 @@ class SelectPairListComponent extends React.PureComponent<
       marketType,
       market,
       tokenMap,
-      serumMarketsDataMap: serumMarketsDataMap,
+      serumMarketsDataMap,
       allMarketsMap,
       isMintsPopupOpen,
       setIsMintsPopupOpen: this.setIsMintsPopupOpen,
@@ -333,11 +317,14 @@ class SelectPairListComponent extends React.PureComponent<
             pairObjectB.volume24hChange.contentToSort -
             pairObjectA.volume24hChange.contentToSort
           )
-        } else if (quoteA === 'USDT') {
+        }
+        if (quoteA === 'USDT') {
           return -1
-        } else if (quoteB === 'USDT') {
+        }
+        if (quoteB === 'USDT') {
           return 1
-        } else if (quoteA !== 'USDT' && quoteB !== 'USDT') {
+        }
+        if (quoteA !== 'USDT' && quoteB !== 'USDT') {
           return (
             pairObjectB.volume24hChange.contentToSort -
             pairObjectA.volume24hChange.contentToSort
@@ -459,7 +446,7 @@ class SelectPairListComponent extends React.PureComponent<
           <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
             <StyledInput
               placeholder="Search"
-              disableUnderline={true}
+              disableUnderline
               value={searchValue}
               onChange={onChangeSearch}
               inputProps={{
@@ -476,7 +463,7 @@ class SelectPairListComponent extends React.PureComponent<
                     cursor: 'pointer',
                     color: '#96999C',
                   }}
-                  disableTypography={true}
+                  disableTypography
                   position="end"
                   autoComplete="off"
                 >
