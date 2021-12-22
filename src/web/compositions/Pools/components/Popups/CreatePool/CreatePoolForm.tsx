@@ -144,7 +144,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       farmingEnabled: true,
       farming: {
         token: tokens[0],
-        vestingEnabled: true,
+        vestingEnabled: false,
         tokenAmount: '',
         farmingPeriod: '14',
         vestingPeriod: '7',
