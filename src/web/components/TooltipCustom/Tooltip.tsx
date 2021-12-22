@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
+
+import { Tooltip as MUTooltip } from '@material-ui/core'
 
 export const TooltipContainer = styled.div`
   & > div[datatype='tooltip'] {
@@ -32,16 +34,21 @@ export const Tooltip = styled(({ ...props }) => (
   font-size: 1.2rem;
 `
 
-import { Tooltip as MUTooltip } from '@material-ui/core'
-
 export const DarkTooltip = styled((props) => {
+  const { children, title, ...p } = props
+  if (!title) {
+    return children
+  }
   return (
     <MUTooltip
       classes={{ popper: props.className, tooltip: 'tooltip' }}
       style={{ opacity: '1' }}
       enterDelay={props.delay || 100}
-      {...props}
-    />
+      title={title}
+      {...p}
+    >
+      {children}
+    </MUTooltip>
   )
 })`
   & .tooltip {

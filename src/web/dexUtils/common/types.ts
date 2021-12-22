@@ -1,4 +1,5 @@
-import { Transaction, Signer } from '@solana/web3.js'
+import { AccountInfo, PublicKey, Transaction, Signer } from '@solana/web3.js'
+import BN from 'bn.js'
 
 export type FarmingTicket = {
   tokensFrozen: number
@@ -37,6 +38,21 @@ export type FarmingState = {
   feesDistributed: boolean
 }
 
+export type BlockchainFarmingState = {
+  currentTime: BN
+  farmingSnapshots: PublicKey
+  farmingTokenVault: PublicKey
+  noWithdrawalTime: BN
+  periodLength: BN
+  pool: PublicKey
+  startTime: BN
+  tokensPerPeriod: BN
+  tokensTotal: BN
+  tokensUnlocked: BN
+  vestingPeriod: BN
+  farmingState: PublicKey
+}
+
 export type Snapshot = {
   isInitialized: boolean
   tokensFrozen: number
@@ -50,6 +66,42 @@ export type SnapshotQueue = {
   snapshots: Snapshot[]
 }
 
+export interface GetProgramAccountsResultItem {
+  pubkey: PublicKey
+  account: AccountInfo<Buffer>
+}
+
+export type GetProgramAccountsResult = Array<GetProgramAccountsResultItem>
+export type AsyncGetProgramAccountsResult = Promise<GetProgramAccountsResult>
+
+interface PoolFees {
+  tradeFeeNumerator: BN
+  tradeFeeDenominator: BN
+  ownerTradeFeeNumerator: BN
+  ownerTradeFeeDenominator: BN
+  ownerWithdrawFeeDenominator: BN
+}
+
+export interface Pool {
+  lpTokenFreezeVault: PublicKey
+  poolMint: PublicKey
+  baseTokenVault: PublicKey
+  baseTokenMint: PublicKey
+  quoteTokenMint: PublicKey
+  poolSigner: PublicKey
+  poolSignerNonce: BN
+  authority: PublicKey
+  initializerAccount: PublicKey
+  feeBaseAccount: PublicKey
+  feeQuoteAccount: PublicKey
+  feePoolTokenAccount: PublicKey
+  fees: PoolFees
+}
+
+export interface PoolV2 extends Pool {
+  curveType: BN
+  curve: PublicKey
+}
 export type TransactionAndSigner = {
   transaction: Transaction
   signers?: Signer[]

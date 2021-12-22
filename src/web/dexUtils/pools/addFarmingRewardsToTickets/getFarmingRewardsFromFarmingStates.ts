@@ -20,6 +20,7 @@ export const getFarmingRewardsFromFarmingStates = ({
 }): AmountToClaim[] => {
   const rewardsForFarmingStates = farmingStates.reduce(
     (farmingStatesAcc: AmountToClaim[], farmingState) => {
+
       // get snapshot queues for this farming state
       const snapshotQueue = snapshotQueues.find(
         (snapshotQueue) =>

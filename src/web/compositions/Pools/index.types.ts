@@ -1,16 +1,18 @@
-import { FarmingState } from '@sb/dexUtils/common/types'
+import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
 
 export type PoolInfo = {
   name: string
   parsedName: string
   tokenA: string
   tokenB: string
+  curveType: number
   poolTokenAccountA: string
   poolTokenAccountB: string
+  initializerAccount: string
   swapToken: string
   poolTokenMint: string
-  lpTokenFreezeVaultBalance: number
-  farming: FarmingState[]
+  lpTokenFreezeVaultBalance: number;
+  farming: FarmingState[] | null
   tvl: {
     tokenA: number
     tokenB: number
@@ -31,6 +33,12 @@ export type FeesEarned = {
   totalQuoteTokenFee: number
 }
 
+export interface TradingVolumeStats {
+  weeklyTradingVolume: number
+  dailyTradingVolume: number
+  pool: string
+}
+
 export type TradingVolume = {
   pool: string
   tradingVolume: number
@@ -40,3 +48,9 @@ export type PoolWithOperation = {
   pool: string
   operation: 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'claim' | ''
 }
+
+
+export type TokenPricesMap = Map<string, DexTokensPrices>
+export type FeesMap = Map<string, FeesEarned>
+export type VolumesMap = Map<string, TradingVolumeStats>
+export type FarmingTicketsMap = Map<string, FarmingTicket[]>

@@ -1,63 +1,12 @@
-import styled from 'styled-components'
-
-import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Text } from '@sb/compositions/Addressbook'
-import React from 'react'
-import { Loading } from '@sb/components/Loading'
 import { Loader } from '@sb/components/Loader/Loader'
-import { Theme } from '@sb/types/materialUI'
-
-export const LiquidityDataContainer = styled(Row)`
-  width: 50%;
-  border-right: 0.1rem solid #383b45;
-  height: 6rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding-right: 2rem;
-  justify-content: space-around;
-`
-export const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  // table-layout: fixed;
-`
-export const TableHeader = styled.thead`
-  td {
-    padding: 1rem 2rem;
-  }
-`
-export const BorderButton = styled.a`
-  border: 0.1rem solid ${(props) => props.borderColor || '#41454E'};
-  width: ${(props) => props.width || 'auto'};
-  padding: ${(props) => props.padding || '0 2rem'};
-  height: 4rem;
-  text-transform: none;
-  color: ${(props) => props.color || '#fbf2f2'};
-  border-radius: ${(props) => props.borderRadius || '1.5rem'};
-  font-size: 1.4rem;
-`
-export const TableBody = styled.tbody`
-  height: 90%;
-  overflow: auto;
-`
-
-export const TableRow = styled.tr``
-
-export const RowTd = styled.td`
-  width: auto;
-  padding: 0 2rem;
-  font-family: 'Avenir Next';
-  border-top: 0.2rem solid #383b45;
-  color: #f5f5fb;
-  font-size: 1.5rem;
-`
-
-export const RowDataTd = styled(RowTd)`
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-`
+import { Text, TextProps } from '@sb/compositions/Addressbook'
+import { COLORS } from '@variables/variables'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { InlineText } from '@sb/components/Typography'
+import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 
 export const RowDataTdText = styled(Text)`
   white-space: nowrap;
@@ -77,8 +26,8 @@ export const TextColumnContainer = styled(Row)`
 `
 export const IconsContainer = styled.div`
   position: relative;
-  height: 3rem;
-  width: 5rem;
+  height: 1.5em;
+  width: 3em;
 `
 
 type TokenIconContainerProps = {
@@ -112,6 +61,7 @@ export const SearchInput = styled.input`
     color: #93a0b2;
   }
 `
+
 export const Button = styled(
   ({
     disabled,
@@ -139,28 +89,15 @@ export const Button = styled(
     </BtnCustom>
   )
 )`
-  background: ${(props: { disabled: boolean; theme: Theme; color: string }) =>
-    !props.disabled
-      ? props.color
-        ? props.color
-        : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-      : '#93A0B2'};
-  color: ${(props: { disabled: boolean }) =>
-    !props.disabled ? '#F8FAFF' : '#fff'};
-
+  &,
   &:hover {
-    background-color: ${(props: {
-      disabled: boolean
-      theme: Theme
-      color: string
-    }) =>
-      !props.disabled
-        ? props.color
-          ? props.color
-          : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-        : '#93A0B2'};
+    background: ${(props: { disabled: boolean; color: string }) =>
+      props.disabled
+        ? COLORS.disabledGray
+        : props.color ||
+          `linear-gradient(91.8deg, ${COLORS.primary} 15.31%, ${COLORS.error} 89.64%)`};
     color: ${(props: { disabled: boolean }) =>
-      !props.disabled ? '#F8FAFF' : '#fff'};
+      !props.disabled ? COLORS.primaryWhite : COLORS.white};
   }
 
   ${(props) => props.style};
@@ -172,10 +109,22 @@ export const TableContainer = styled(RowContainer)`
   position: relative;
 `
 
-export const AmountText = styled.span`
-  color: #53df11;
+export const DetailsLink = styled(Link)`
+  color: ${COLORS.hint};
+  font-size: 13px;
+  text-decoration: none;
 `
 
-export const WhiteText = styled.span`
-  color: #fbf2f2;
+export const PoolName = styled(InlineText)`
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+export const PoolsTableIcons = styled.div`
+  margin: 5px 0 0 10px;
+  width: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 `

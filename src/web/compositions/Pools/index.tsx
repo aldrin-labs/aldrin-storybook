@@ -1,14 +1,12 @@
-import { Theme, withTheme } from '@material-ui/core'
-import React, { useEffect, useState } from 'react'
-import { compose } from 'recompose'
-import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
-import TablesSwitcher from './components/Tables/TablesSwitcher/TablesSwitcher'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { Page, Content, Row, Cell, WideContent } from '@sb/components/Layout'
+import { Cell, Page, WideContent } from '@sb/components/Layout'
+import React, { useEffect } from 'react'
+import { Block, BlockContent } from '@sb/components/Block'
+import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts/TotalVolumeLockedChart'
 import { RootRow } from './components/Charts/styles'
-import { Banner } from './components/Popups/Banner'
+import { TableSwitcher } from './components/Tables/TablesSwitcher'
+import { TableSwitcherWrap } from './index.styles'
 
-const Pools = ({ theme }: { theme: Theme }) => {
+export const PoolsComponent: React.FC = () => {
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
     return () => {
@@ -30,14 +28,16 @@ const Pools = ({ theme }: { theme: Theme }) => {
         </RootRow>
         <RootRow>
           <Cell col={12}>
-            <TablesSwitcher theme={theme} />
+            <Block>
+              <BlockContent>
+                <TableSwitcherWrap>
+                  <TableSwitcher />
+                </TableSwitcherWrap>
+              </BlockContent>
+            </Block>
           </Cell>
         </RootRow>
       </WideContent>
     </Page>
   )
 }
-
-const Wrapper = compose(withTheme(), withRegionCheck)(Pools)
-
-export { Wrapper as PoolsComponent }

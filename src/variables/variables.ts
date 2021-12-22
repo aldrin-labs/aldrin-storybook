@@ -7,6 +7,7 @@ export const COLORS = {
   bodyBackground: '#17181A',
   background: '#383b45',
   border: '#3a475c',
+  borderDark: '#2e2e2e',
   white: '#ffffff',
   black: '#000000',
   hint: '#96999c',
@@ -16,6 +17,8 @@ export const COLORS = {
   success: '#53DF11',
   successAlt: '#2E5223',
   error: '#F69894',
+  errorAlt: '#D44C32',
+  buttonAltPink: '#a1458a',
   gray: '#383b42',
   chartGrid: '#4C4F59',
   textAlt: '#F5F5FB',
@@ -23,6 +26,10 @@ export const COLORS = {
   navLinkActiveBg: 'rgb(46, 46, 46)',
   navLinkActive: 'rgb(209, 221, 239)',
   primaryWhite: '#F8FAFF',
+  tableHover: '#383a3d',
+  warning: '#F29C38',
+  warningDark: 'rgb(132, 97, 56)',
+  disabledGray: '#93A0B2',
 }
 
 export const BORDER_RADIUS = {
@@ -38,7 +45,8 @@ export const FONT_SIZES = {
   xs: '0.6875em', // 11px
   sm: '0.8125em', // 13px
   md: '1em', // 16px
-  lg: '1.6em', // 16px
+  lg: '1.6em', // 26px
+  xl: '2em', // 16px
   xxxl: '4em', // 64px
 }
 
@@ -65,4 +73,4 @@ export const WIDTH = {
 export const LAYOUT_WIDTH = 1280
 export const LAYOUT_COL_NUMBER = 12
 
-export const TRANSITION = 'all ease-in 0.3s'
+export const TRANSITION = 'all ease-in 0.2s'

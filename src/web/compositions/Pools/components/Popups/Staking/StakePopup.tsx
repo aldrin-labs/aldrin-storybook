@@ -4,7 +4,7 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -23,14 +23,13 @@ import {
   CREATE_FARMING_TICKET_SOL_FEE,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
 } from '@sb/dexUtils/common/config'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { startFarming } from '@sb/dexUtils/pools/startFarming'
+import { startFarming } from '@sb/dexUtils/pools/actions/startFarming'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
@@ -42,20 +41,8 @@ import { InputWithCoins } from '../components'
 import { BoldHeader, StyledPaper } from '../index.styles'
 import { HintContainer } from './styles'
 
-export const StakePopup = ({
-  theme,
-  open,
-  close,
-  selectedPool,
-  allTokensData,
-  farmingTicketsMap,
-  dexTokensPricesMap,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-  isReminderPopup = false,
-}: {
+interface StakePopupProps {
   theme: Theme
-  open: boolean
   close: () => void
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
@@ -63,8 +50,21 @@ export const StakePopup = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  isReminderPopup?: boolean
-}) => {
+  isReminderPopup: boolean
+}
+
+const Popup = (props: StakePopupProps) => {
+  const {
+    theme,
+    close,
+    selectedPool,
+    allTokensData,
+    farmingTicketsMap,
+    dexTokensPricesMap,
+    refreshTokensWithFarmingTickets,
+    setPoolWaitingForUpdateAfterOperation,
+    isReminderPopup,
+  } = props
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
@@ -82,34 +82,25 @@ export const StakePopup = ({
   const farmingState = selectedPool.farming && selectedPool.farming[0]
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
-  const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
 
   const poolTokenPrice = calculatePoolTokenPrice({
     pool: selectedPool,
     dexTokensPricesMap,
   })
 
-  const totalStakedLpTokensUSD =
-    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice
+  const totalStakedLpTokensUSD = Math.max(
+    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice,
+    1000
+  )
 
   const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-
-  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
-  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
-
-  const tvlUSD =
-    baseTokenPrice * selectedPool.tvl.tokenA +
-    quoteTokenPrice * selectedPool.tvl.tokenB
 
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0
   const openFarmings = isPoolWithFarming
     ? filterOpenFarmingStates(selectedPool.farming)
     : []
-
-  const stakedWithEnteredPoolTokensUSD =
-    (stakedTokens + +poolTokenAmount) * poolTokenPrice
 
   if (!farmingState) return null
 
@@ -166,11 +157,11 @@ export const StakePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
+      open
       onEnter={() => {
         setOperationLoading(false)
       }}
       maxWidth="md"
-      open={open}
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify="space-between" width="100%">
@@ -296,6 +287,7 @@ export const StakePopup = ({
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
               poolPublicKey: new PublicKey(selectedPool.swapToken),
               farmingState: new PublicKey(farmingState.farmingState),
+              curveType: selectedPool.curveType,
             })
 
             setOperationLoading(false)
@@ -337,3 +329,5 @@ export const StakePopup = ({
     </DialogWrapper>
   )
 }
+
+export const StakePopup = withTheme()(Popup)

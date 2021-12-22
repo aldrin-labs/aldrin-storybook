@@ -1,36 +1,35 @@
+import { Theme, withTheme } from '@material-ui/core'
+import { COLORS } from '@variables/variables'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader, ClaimRewardsStyledPaper } from '../index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
-
+import AttentionComponent from '@sb/components/AttentionBlock'
 import SvgIcon from '@sb/components/SvgIcon'
-import Close from '@icons/closeIcon.svg'
-import GearIcon from '@icons/cogwheel.svg'
-
-import { Button } from '../../Tables/index.styles'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
-
-import { useWallet } from '@sb/dexUtils/wallet'
+import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
-import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
-import { withdrawFarmed } from '@sb/dexUtils/pools/withdrawFarmed'
-import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
-import { StakingPool } from '@sb/dexUtils/staking/types'
-import ProposeToStakePopup from '../../Popups/ProposeToStake'
+import { withdrawFarmed } from '@sb/dexUtils/pools/actions/withdrawFarmed'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { RIN_MINT } from '@sb/dexUtils/utils'
-import LightLogo from '@icons/lightLogo.svg'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
-import AttentionComponent from '@sb/components/AttentionBlock'
-import { WithdrawStakedParams } from '@sb/dexUtils/staking/withdrawStaked'
+import { StakingPool } from '@sb/dexUtils/staking/types'
+import { WithdrawFarmedParams } from '@sb/dexUtils/staking/withdrawStaked'
+import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
+import { RIN_MINT } from '@sb/dexUtils/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
 
-export const ClaimRewards = ({
+import Close from '@icons/closeIcon.svg'
+import GearIcon from '@icons/cogwheel.svg'
+import LightLogo from '@icons/lightLogo.svg'
+
+import { Button } from '../../Tables/index.styles'
+import { BoldHeader, ClaimRewardsStyledPaper } from '../index.styles'
+import ProposeToStakePopup from '../ProposeToStake'
+
+const Popup = ({
   theme,
-  open,
   selectedPool,
   allTokensData,
   farmingTicketsMap,
@@ -41,10 +40,10 @@ export const ClaimRewards = ({
   programId,
   callback,
   withdrawFunction = withdrawFarmed,
-  hideMaintenanceWarning = false
+  hideMaintenanceWarning = false,
 }: {
   theme: Theme
-  open: boolean
+  programId?: string
   selectedPool: PoolInfo | StakingPool
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
@@ -52,9 +51,8 @@ export const ClaimRewards = ({
   close: () => void
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  programId: string
   callback?: () => void
-  withdrawFunction?: (params: WithdrawStakedParams) => Promise<string>
+  withdrawFunction?: (params: WithdrawFarmedParams) => Promise<string>
   hideMaintenanceWarning?: boolean
 }) => {
   const { wallet } = useWallet()
@@ -63,9 +61,8 @@ export const ClaimRewards = ({
 
   const [operationLoading, setOperationLoading] = useState(false)
   const [showRetryMessage, setShowRetryMessage] = useState(false)
-  const [isProposeToStakePopupOpen, setIsProposeToStakePopupOpen] = useState(
-    false
-  )
+  const [isProposeToStakePopupOpen, setIsProposeToStakePopupOpen] =
+    useState(false)
 
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0
@@ -106,7 +103,7 @@ export const ClaimRewards = ({
         farmingTickets,
         snapshotQueues,
         signAllTransactions,
-        programAddress: programId
+        programAddress: programId,
       })
 
       notify({
@@ -115,10 +112,10 @@ export const ClaimRewards = ({
           result === 'success'
             ? 'Successfully claimed rewards.'
             : result === 'failed'
-              ? 'Claim rewards failed, please try again later or contact us in telegram.'
-              : result === 'cancelled'
-                ? 'Claim rewards cancelled.'
-                : 'Blockhash outdated, please claim rest rewards in a few seconds.',
+            ? 'Claim rewards failed, please try again later or contact us in telegram.'
+            : result === 'cancelled'
+            ? 'Claim rewards cancelled.'
+            : 'Blockhash outdated, please claim rest rewards in a few seconds.',
       })
 
       if (result === 'cancelled') {
@@ -145,16 +142,35 @@ export const ClaimRewards = ({
       console.warn('Error withdraw farming: ', e)
     }
 
-    if (result !== 'blockhash_outdated') {
-      if (isFarmingRIN && programId !== STAKING_PROGRAM_ADDRESS) {
-        setIsProposeToStakePopupOpen(true)
+    switch (result) {
+      // if blockhash outdated - update data & ask user to try again (and update blockhash via new sign)
+      case 'blockhash_outdated': {
+        setShowRetryMessage(true)
+        break
       }
-
-      if (!callback) {
+      // for cancelled - close right away
+      case 'cancelled': {
+        clearPoolWaitingForUpdate()
         close()
+        break
       }
-    } else {
-      setShowRetryMessage(true)
+      // otherwise update data
+      default: {
+        setTimeout(async () => {
+          refreshTokensWithFarmingTickets()
+          clearPoolWaitingForUpdate()
+        }, 7500)
+
+        setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+
+        // show restake popup for not staking claim and if farmed rin
+        if (isFarmingRIN && programId !== STAKING_PROGRAM_ADDRESS) {
+          setIsProposeToStakePopupOpen(true)
+        } else {
+          close()
+        }
+        break
+      }
     }
   }
 
@@ -164,35 +180,36 @@ export const ClaimRewards = ({
       PaperComponent={ClaimRewardsStyledPaper}
       fullScreen={false}
       onClose={close}
-      onEnter={() => { }}
-      maxWidth={'md'}
-      open={open}
+      onEnter={() => {}}
+      maxWidth="md"
+      open
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'} width={'100%'}>
+      <RowContainer justify="space-between" width="100%">
         <BoldHeader style={{ fontSize: '3rem' }}>Claim Rewards</BoldHeader>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      {!hideMaintenanceWarning &&
-        <RowContainer margin={'0 0 3rem 0'}>
+      {!hideMaintenanceWarning && (
+        <RowContainer margin="0 0 3rem 0">
           <AttentionComponent
-            header={`The issue below is currently being fixed.`}
-            text={'You can wait approx few weeks and claim rewards without any issues then.'}
-            blockHeight={'9rem'}
-            iconSrc={GearIcon} />
+            header="The issue below is currently being fixed."
+            text="You can wait approx few weeks and claim rewards without any issues then."
+            blockHeight="9rem"
+            iconSrc={GearIcon}
+          />
         </RowContainer>
-      }
+      )}
 
-      <RowContainer justify="flex-start" wrap={'nowrap'}>
+      <RowContainer justify="flex-start" wrap="nowrap">
         <SvgIcon
           src={LightLogo}
-          height={'13rem'}
-          width={'13rem'}
+          height="13rem"
+          width="13rem"
           style={{ marginRight: '3rem' }}
         />
         <Text
           style={{ marginBottom: '1rem', fontFamily: 'Avenir Next' }}
-          fontSize={'1.6rem'}
+          fontSize="1.6rem"
         >
           Do not close this page until the pop-up closes. You will need to
           confirm multiple transactions, depending on how long your last claim
@@ -207,7 +224,7 @@ export const ClaimRewards = ({
         <RowContainer justify="flex-start">
           <Text
             style={{ color: theme.palette.red.main, margin: '1rem 0' }}
-            fontSize={'1.8rem'}
+            fontSize="1.8rem"
           >
             Blockhash outdated, press “Try Again” to complete the remaining
             transactions.
@@ -215,15 +232,15 @@ export const ClaimRewards = ({
         </RowContainer>
       )}
 
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
           color="inherit"
           height="5.5rem"
-          borderColor="#fff"
+          borderColor={COLORS.white}
           fontSize="1.3rem"
           btnWidth="calc(50% - 1rem)"
           disabled={false}
-          isUserConfident={true}
+          isUserConfident
           theme={theme}
           showLoader={operationLoading}
           onClick={() => claimRewards(false)}
@@ -231,11 +248,11 @@ export const ClaimRewards = ({
           Claim Rewards with Hardware Wallet (e.g. Ledger)
         </Button>
         <Button
-          color="#651CE4"
+          color={COLORS.primary}
           height="5.5rem"
           btnWidth="calc(50% - 1rem)"
           disabled={false}
-          isUserConfident={true}
+          isUserConfident
           showLoader={operationLoading}
           onClick={() => claimRewards(true)}
         >
@@ -243,7 +260,6 @@ export const ClaimRewards = ({
         </Button>
       </RowContainer>
       <ProposeToStakePopup
-        theme={theme}
         open={isProposeToStakePopupOpen}
         close={() => {
           close()
@@ -253,3 +269,5 @@ export const ClaimRewards = ({
     </DialogWrapper>
   )
 }
+
+export const ClaimRewards = withTheme()(Popup)

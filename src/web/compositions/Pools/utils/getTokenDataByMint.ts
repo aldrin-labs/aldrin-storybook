@@ -5,7 +5,7 @@ export const getTokenDataByMint = (
   mint: string,
   address?: string
 ): TokenInfo => {
-  const emptyResponse = {
+  const emptyResponse: TokenInfo = {
     amount: 0,
     decimals: 0,
     mint: '',
@@ -19,15 +19,11 @@ export const getTokenDataByMint = (
         (tokenData) => tokenData.mint === mint && address === tokenData.address
       ) || emptyResponse
     )
-  } else {
-    const tokensByMint = allTokensData?.filter(
-      (tokenData) => tokenData.mint === mint
-    )
-
-    if (tokensByMint?.length > 1) {
-      return tokensByMint?.sort((a, b) => b.amount - a.amount)[0]
-    } else {
-      return (tokensByMint && tokensByMint[0]) || emptyResponse
-    }
   }
+
+  return (
+    allTokensData
+      .filter((tokenData) => tokenData.mint === mint)
+      .sort((a, b) => b.amount - a.amount)[0] || emptyResponse
+  )
 }

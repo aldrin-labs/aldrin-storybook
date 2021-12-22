@@ -241,15 +241,15 @@ const MarketStats: React.FC<IProps> = (props) => {
             {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
         </PanelCard>
-        {/* {isRINPair && (
+        {isRINPair && (
           <>
-            <PanelCard marketType={marketType} theme={theme}>
+            {/* <PanelCard marketType={marketType} theme={theme}>
               <PanelCardTitle theme={theme}>Circulating Supply</PanelCardTitle>
               <PanelCardValue theme={theme}>
                 {formatNumberToUSFormat(stripDigitPlaces(circulatingSupply, 2))}{' '}
                 CCAI
               </PanelCardValue>
-            </PanelCard>
+            </PanelCard> */}
             <PanelCard marketType={marketType} theme={theme}>
               <PanelCardTitle theme={theme}>Marketcap</PanelCardTitle>
               <PanelCardValue theme={theme}>
@@ -257,7 +257,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               </PanelCardValue>
             </PanelCard>
           </>
-        )} */}
+        )} 
       </MarketStatsContainer>
       <MobileMarketStatsContainer>
         <Title

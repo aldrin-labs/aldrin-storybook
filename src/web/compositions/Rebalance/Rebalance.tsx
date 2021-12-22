@@ -42,7 +42,7 @@ import { getTokensToSell } from './utils/getTokensToSell'
 import { getTokensToBuy } from './utils/getTokensToBuy'
 import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
-import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen/ConnectWalletScreen'
+import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
