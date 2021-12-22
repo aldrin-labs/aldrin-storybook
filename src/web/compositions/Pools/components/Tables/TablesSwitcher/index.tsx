@@ -152,10 +152,10 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const stablePools = pools.filter((pool) => pool.curveType === CURVE.STABLE)
 
   const authorizedPools = pools.filter((pool) =>
-    AUTHORIZED_POOLS.includes(pool.swapToken)
+    AUTHORIZED_POOLS.includes(pool.poolTokenMint)
   )
   const nonAuthorizedPools = pools.filter(
-    (pool) => !AUTHORIZED_POOLS.includes(pool.swapToken)
+    (pool) => !AUTHORIZED_POOLS.includes(pool.poolTokenMint)
   )
 
   const tradingVolumes =
