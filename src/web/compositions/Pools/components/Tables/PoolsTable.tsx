@@ -1,7 +1,6 @@
-import {
-  stripByAmount,
-  stripByAmountAndFormat,
-} from '@core/utils/chartPageUtils'
+import { BN } from 'bn.js'
+import dayjs from 'dayjs'
+import React, { useState, ReactNode } from 'react'
 import {
   DataCellValues,
   DataHeadColumn,
@@ -10,14 +9,20 @@ import {
   DataCellValue,
   NoDataBlock,
 } from '@sb/components/DataTable'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
 import CrownIcon from '@icons/crownIcon.svg'
 import ScalesIcon from '@icons/scales.svg'
+
 import { InlineText, Text } from '@sb/components/Typography'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import React, { useState, ReactNode } from 'react'
+
 import { Link, useHistory } from 'react-router-dom'
+
 import { FlexBlock } from '@sb/components/Layout'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { useVestings } from '@sb/dexUtils/vesting'
@@ -25,17 +30,17 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SvgIcon } from '@sb/components'
 import { toMap, groupBy } from '@sb/utils'
 
-import dayjs from 'dayjs'
-import { BN } from 'bn.js'
+
 import { Vesting } from '@sb/dexUtils/vesting/types'
 import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
+
 import { DexTokensPrices, FarmingTicketsMap, PoolInfo } from '../../index.types'
 import { FarmingRewards, FarmingRewardsIcons } from '../FarminRewards'
+import { STABLE_POOLS_TOOLTIP } from '../Popups/CreatePool/PoolConfirmationData'
 import { TokenIconsContainer } from './components'
+import { PoolsTableIcons } from './index.styles'
 import { getFarmingStateDailyFarmingValue } from './UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { symbolIncludesSearch } from './utils'
-import { STABLE_POOLS_TOOLTIP } from '../Popups/CreatePool/PoolConfirmationData'
-import { PoolsTableIcons } from './index.styles'
 import { getUniqueAmountsToClaimMap } from './utils/getUniqueAmountsToClaimMap'
 
 export interface PoolsTableProps {
@@ -71,7 +76,6 @@ const EMPTY_VESTING = {
   endTs: 0,
   startBalance: new BN(0),
 }
-
 
 const prepareCell = (params: {
   pool: PoolInfo
@@ -132,7 +136,16 @@ const prepareCell = (params: {
 
   const hasLockedFunds = vesting.endTs * 1000 > Date.now()
 
-  const lockedFundsValue = vesting.startBalance.muln(poolTokenPrice)
+  if (hasLockedFunds) {
+    console.log(
+      'poolTokenPrice: ',
+      poolTokenPrice,
+      vesting.startBalance.toString()
+    )
+  }
+
+  const lockedFundsValue =
+    parseFloat(vesting.startBalance.toString()) * poolTokenPrice
 
   const farmingAPR =
     ((totalDailyRewardUsd * 365) / totalStakedLpTokensUSD) * 100 || 0
@@ -197,7 +210,10 @@ const prepareCell = (params: {
               )}
               {hasLockedFunds && (
                 <DarkTooltip
-                  title={`Pool owner locked $${lockedFundsValue} liquidity until ${dayjs
+                  title={`Pool owner locked $${stripByAmountAndFormat(
+                    lockedFundsValue,
+                    2
+                  )} liquidity until ${dayjs
                     .unix(vesting.endTs)
                     .format('MMM DD, YYYY')} `}
                 >

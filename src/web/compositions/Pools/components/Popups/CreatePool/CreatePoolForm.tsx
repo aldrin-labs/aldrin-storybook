@@ -503,7 +503,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   </DarkTooltip>
                 </CheckboxWrap> */}
 
-                <GroupLabel label="Do you want to lock your initial liquidity for some time?" />
+                <GroupLabel label="Do you want to lock your initial liquidity for a set period of time?" />
                 <CheckboxWrap>
                   <RadioGroupContainer>
                     <RadioGroupField
