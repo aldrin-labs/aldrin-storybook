@@ -41,17 +41,6 @@ import {
 
 const PINNED_LIST = ['RIN_USDC']
 
-// TODO: clear that after db volume will be OK
-const TOP_LIST = [
-  'SOL_USDC',
-  'mSOL_USDC',
-  'BTC_USDT',
-  'SOL_USDT',
-  'ETH_USDC',
-  'SRM_USDC',
-  'RAY_USDC',
-  'ATLAS_USDC',
-]
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -362,8 +351,7 @@ class SelectPairListComponent extends React.PureComponent<
       }
     }
 
-    const topList =
-      sortBy === 'volume24hChange' ? [...PINNED_LIST, ...TOP_LIST] : PINNED_LIST
+    const topList = PINNED_LIST
 
     const topMarkets = newList
       .filter((v) => topList.includes(v.id))
