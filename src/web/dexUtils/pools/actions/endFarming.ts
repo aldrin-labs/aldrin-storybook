@@ -99,7 +99,7 @@ export const getEndFarmingTransactions = async (params: {
     )
   )
 
-  const [firstTx, ...transactions] = splitBy(endFarmingInstructions, 6).map(
+  const [firstTx, ...transactions] = splitBy(endFarmingInstructions, 4).map(
     (instr) => ({
       transaction: new Transaction().add(...instr),
     })
