@@ -1,5 +1,5 @@
-import styled from 'styled-components'
 import { COLORS, FONT_SIZES, FONTS } from '@variables/variables'
+import styled from 'styled-components'
 
 type Weight = 100 | 200 | 400 | 500 | 600 | 700
 export interface TextProps {
@@ -33,6 +33,7 @@ export interface InlineProps {
 }
 
 export const InlineText = styled.span<InlineProps>`
+  font-family: ${FONTS.main};
   ${(props: InlineProps) =>
     props.color ? `color: ${COLORS[props.color]};` : ''}
   ${(props: InlineProps) =>

@@ -418,7 +418,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       }
     } else {
       const newPrice =
-        parseFloat(value) / parseFloat(values.firstDeposit.quoteTokenAmount)
+        parseFloat(values.firstDeposit.quoteTokenAmount) / parseFloat(value)
 
       if (newPrice) {
         form.setFieldValue('price', stripByAmount(newPrice))
@@ -439,7 +439,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       }
     } else {
       const newPrice =
-        parseFloat(values.firstDeposit.baseTokenAmount) / parseFloat(value)
+        parseFloat(value) / parseFloat(values.firstDeposit.baseTokenAmount)
       if (newPrice) {
         form.setFieldValue('price', stripByAmount(newPrice))
       }

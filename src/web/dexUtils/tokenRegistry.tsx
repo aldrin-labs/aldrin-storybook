@@ -1,5 +1,6 @@
 import { TokenListProvider, TokenInfo } from '@solana/spl-token-registry'
 import React, { useContext, useEffect, useState } from 'react'
+
 import { clusterForEndpoint } from './clusters'
 import { useConnectionConfig } from './connection'
 
@@ -33,9 +34,10 @@ export function TokenRegistryProvider(props) {
         tokenInfos.reduce((map, item) => {
           const parsedItem = {
             ...item,
+            ...(item.symbol === 'soETH' ? { symbol: 'ETH' } : {}),
             name: item.name
               .replace('Cryptocurrencies.Ai', 'Aldrin')
-              .replace('(Sollet)', ''),
+              .replace('(Sollet)', ''), // TODO: found better way to resolve token names
           }
           map.set(item.address, parsedItem)
           return map

@@ -39,6 +39,10 @@ export const getMinimumReceivedAmountFromSwap = async ({
 
   let swapAmountOut = 0
 
+  if (swapAmountIn === 0) {
+    return 0
+  }
+
   if (curveType === CURVE.STABLE) {
     // program v2 stable pool
     swapAmountOut = await getMinimumReceivedFromStableCurveForSwap({

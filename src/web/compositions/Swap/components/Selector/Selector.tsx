@@ -1,3 +1,6 @@
+import { COLORS } from '@variables/variables'
+import React, { useState } from 'react'
+
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { filterDataBySymbolForDifferentDeviders } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import {
@@ -6,8 +9,7 @@ import {
 } from '@sb/compositions/Pools/components/Tables/components'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { COLORS } from '@variables/variables'
-import React, { useState } from 'react'
+
 import { StyledText } from '../SelectCoinPopup'
 import { SelectorRowsContainer, StyledSelectorRow } from './Selector.styles'
 
@@ -39,7 +41,10 @@ export const Selector = ({
   )
 
   return (
-    <RowContainer style={{ position: 'relative' }} direction="column">
+    <RowContainer
+      style={{ fontSize: '16px', position: 'relative' }}
+      direction="column"
+    >
       <SearchInputWithLoop
         searchValue={searchValue}
         onChangeSearch={onChangeSearch}

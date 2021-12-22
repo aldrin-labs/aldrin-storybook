@@ -38,7 +38,7 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
   const poolPublicKey = new PublicKey(swapToken)
   const swapAmountOut = 0
 
-  if (swapAmountIn === 0 || (transferSOLToWrapped && !wallet.publicKey)) {
+  if (!wallet.publicKey) {
     return 0
   }
 
