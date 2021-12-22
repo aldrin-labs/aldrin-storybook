@@ -1,14 +1,12 @@
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { sendTransaction } from '@sb/dexUtils/send'
+import { computeOutputAmountWithoutFee } from '@sb/dexUtils/stablecurve/stableCurve'
 import { Token } from '@sb/dexUtils/token/token'
 
-import { parseTokenAccountData } from '@sb/dexUtils/tokens'
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { Connection, Keypair, PublicKey } from '@solana/web3.js'
-import { getSwapTransaction } from '../actions/swap'
+import { TOKEN_PROGRAM_ID, u64 } from '@solana/spl-token'
+import { Connection, PublicKey } from '@solana/web3.js'
+import BN from 'bn.js'
 
 export const getMinimumReceivedFromStableCurveForSwap = async ({
   swapAmountIn,
@@ -33,88 +31,39 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
   transferSOLToWrapped: boolean
   allTokensData: TokenInfo[]
 }) => {
-  const { curveType, swapToken } = pool
+  const {
+    amp,
+    tvl: { tokenA, tokenB },
+    fees: {
+      tradeFeeDenominator,
+      ownerTradeFeeDenominator,
+      tradeFeeNumerator,
+      ownerTradeFeeNumerator,
+    },
+  } = pool
 
-  const poolPublicKey = new PublicKey(swapToken)
-  const swapAmountOut = 0
+  console.log({
+    tokenA,
+    tokenB,
+    swapAmountIn,
+    isSwapBaseToQuote,
+  })
 
   if (swapAmountIn === 0 || (transferSOLToWrapped && !wallet.publicKey)) {
-    return 0
+    return ''
   }
 
-  const basePoolTokenMint = isSwapBaseToQuote ? pool.tokenA : pool.tokenB
+  const [basePoolTokenMint, quotePoolTokenMint] = isSwapBaseToQuote
+    ? [pool.tokenA, pool.tokenB]
+    : [pool.tokenB, pool.tokenA]
+
   const { decimals: basePoolTokenDecimals } = getTokenDataByMint(
     allTokensData,
     basePoolTokenMint
   )
 
-  const swapTransactionAndSigners = await getSwapTransaction({
-    wallet,
-    connection,
-    poolPublicKey,
-    userBaseTokenAccount,
-    userQuoteTokenAccount,
-    swapAmountIn: swapAmountIn * 10 ** basePoolTokenDecimals,
-    swapAmountOut,
-    isSwapBaseToQuote,
-    transferSOLToWrapped,
-    unwrapWrappedSOL: false,
-    curveType,
-  })
-
-  if (!swapTransactionAndSigners) {
-    return 0
-  }
-
-  const [
-    swapTransaction,
-    _,
-    userBaseTokenAccountUsedInSwap,
-    userQuoteTokenAccountUsedInSwap,
-  ] = swapTransactionAndSigners
-
-  swapTransaction.feePayer = wallet.publicKey
-
-  let response = null
-
-  console.log({
-    swapTransaction,
-  })
-
-  try {
-    response = await connection.simulateTransaction(
-      swapTransaction,
-      undefined,
-      [
-        isSwapBaseToQuote
-          ? userQuoteTokenAccountUsedInSwap
-          : userBaseTokenAccountUsedInSwap,
-      ]
-    )
-  } catch (e) {
-    console.error('error simulate transaction', e)
-  }
-
-  if (
-    !response ||
-    !response.value ||
-    !response.value.accounts ||
-    response.value.err
-  ) {
-    return 0
-  }
-
-  const postUserQuoteTokenAccountData = Buffer.from(
-    response.value.accounts[0].data[0],
-    'base64'
-  )
-
-  const parsedQuote = parseTokenAccountData(postUserQuoteTokenAccountData)
-  const quotePoolTokenMint = parsedQuote.mint.toString()
-
   let {
     address: userQuoteTokenAddress,
-    amount: quoteAmount,
     decimals: quoteTokenDecimals,
   } = getTokenDataByMint(allTokensData, quotePoolTokenMint)
 
@@ -127,23 +76,49 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
       const { decimals } = tokensMap.get(quotePoolTokenMint)
       quoteTokenDecimals = decimals
     } else {
-      const quoteToken = new Token(wallet, connection, parsedQuote.mint, TOKEN_PROGRAM_ID)
+      const quoteToken = new Token(
+        wallet,
+        connection,
+        new PublicKey(quotePoolTokenMint),
+        TOKEN_PROGRAM_ID
+      )
       const { decimals } = await quoteToken.getMintInfo()
       quoteTokenDecimals = decimals
     }
   }
 
-  const quoteAmountAfterSwap = parsedQuote.amount / 10 ** quoteTokenDecimals
+  const [inputPoolAmount, outputPoolAmount] = isSwapBaseToQuote
+    ? [
+        new u64(tokenA * 10 ** basePoolTokenDecimals),
+        new u64(tokenB * 10 ** quoteTokenDecimals),
+      ]
+    : [
+        new u64(tokenB * 10 ** quoteTokenDecimals),
+        new u64(tokenA * 10 ** basePoolTokenDecimals),
+      ]
 
-  let swapAmount = 0
+  const poolFeesMultiplicator = new BN(tradeFeeNumerator)
+    .div(new BN(ownerTradeFeeNumerator))
+    .div(new BN(tradeFeeDenominator).div(new BN(ownerTradeFeeDenominator)))
+    .toNumber()
 
-  if (quotePoolTokenMint === WRAPPED_SOL_MINT.toString()) {
-    // because we checking the wrapped sol account which is not closed,
-    // so we receive exactly what we got from swap on this account
-    swapAmount = quoteAmountAfterSwap
-  } else {
-    swapAmount = quoteAmountAfterSwap - quoteAmount
-  }
+  console.log({
+    tradeFeeDenominator,
+    ownerTradeFeeDenominator,
+    tradeFeeNumerator,
+    ownerTradeFeeNumerator,
+  })
 
-  return swapAmount
+  const swapAmountOut = computeOutputAmountWithoutFee(
+    new u64(swapAmountIn * 10 ** 6),
+    inputPoolAmount,
+    outputPoolAmount,
+    // poolFeesMultiplicator,
+    // amp
+  )
+
+  const swapAmountOutWithoutDecimals =
+    +swapAmountOut.toString() / 10 ** quoteTokenDecimals
+
+  return swapAmountOutWithoutDecimals
 }
