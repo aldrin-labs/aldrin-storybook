@@ -12,7 +12,8 @@ import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendPartOfTransactions, signTransactions } from '../send'
+import { signTransactions } from '../send'
+import { sendSignedTransactions } from '../transactions'
 import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
 import { EndstakingParams } from './types'
 
@@ -86,12 +87,5 @@ export const endStaking = async (params: EndstakingParams) => {
     connection,
   })
 
-  for (const transaction of signedTransactions) {
-    const result = await sendPartOfTransactions(connection, transaction)
-    if (result !== 'success') {
-      return result
-    }
-  }
-
-  return 'success'
+  return sendSignedTransactions(signedTransactions, connection)
 }

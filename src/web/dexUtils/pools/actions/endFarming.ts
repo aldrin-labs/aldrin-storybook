@@ -1,10 +1,4 @@
 import { TokenInstructions } from '@project-serum/serum'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { createTokenAccountTransaction } from '@sb/dexUtils/send'
-import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   Connection,
   PublicKey,
@@ -13,10 +7,18 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
+
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { FarmingState, TransactionAndSigner } from '@sb/dexUtils/common/types'
-import { filterTicketsAvailableForUnstake } from '../filterTicketsAvailableForUnstake'
-import { signAndSendTransaction } from '../signAndSendTransaction'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { createTokenAccountTransaction } from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
 import { splitBy } from '../../../utils'
+import { signAndSendTransactions } from '../../transactions'
+import { filterTicketsAvailableForUnstake } from '../filterTicketsAvailableForUnstake'
 
 export const getEndFarmingTransactions = async (params: {
   wallet: WalletAdapter
@@ -135,7 +137,7 @@ export const endFarming = async ({
     curveType,
   })
 
-  const result = await signAndSendTransaction({
+  const result = await signAndSendTransactions({
     wallet,
     connection,
     transactionsAndSigners,

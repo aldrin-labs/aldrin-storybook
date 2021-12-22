@@ -4,11 +4,13 @@ import {
   SignatureResult,
   SignatureStatus,
 } from '@solana/web3.js'
+
 import { Metrics } from '@core/utils/metrics'
-import { WaitConfirmationParams } from './types'
+
 import { getProviderNameFromUrl } from '../connection'
 import MultiEndpointsConnection from '../MultiEndpointsConnection'
 import { sleep } from '../utils'
+import { WaitConfirmationParams } from './types'
 
 /**
  * Promisify timeout, add cancel function
@@ -174,7 +176,7 @@ export const waitTransactionConfirmation = async (
 
   try {
     const result = await Promise.race([tPromise, pollPromise, wsPromise])
-    console.log(`Transaction ${txId} confirmation result: `, result)
+    console.log(`Transaction ${txId} confirmation result: `, result, commitment)
     if (result === 'timeout') {
       cancelAll()
       const rpcProvider = getProviderNameFromUrl({ rawConnection: connection })

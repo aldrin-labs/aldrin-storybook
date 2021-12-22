@@ -116,7 +116,7 @@ export interface SendSignedTransactionParams {
   successMessage?: string
   timeout?: number
   showNotification?: boolean
-  commitments?: Commitment
+  commitment?: Commitment
   skipPreflight?: boolean // Default: true
 }
 

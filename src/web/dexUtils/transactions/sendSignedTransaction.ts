@@ -1,9 +1,9 @@
 import { notify } from '../notifications'
+import { DEFAULT_CONFIRMATION_TIMEOUT } from './constants'
 import {
   AsyncSendSignedTransactionResult,
   SendSignedTransactionParams,
 } from './types'
-import { DEFAULT_CONFIRMATION_TIMEOUT } from './constants'
 import { waitTransactionConfirmation } from './waitTransactionConfirmation'
 
 export const sendSignedTransaction = async (
@@ -30,15 +30,20 @@ export const sendSignedTransaction = async (
       skipPreflight,
     })
 
+  const message = Array.isArray(sentMessage) ? sentMessage[0] : sentMessage
+  const description = Array.isArray(sentMessage) ? sentMessage[1] : undefined
+
   if (showNotification) {
     notify({
-      message: sentMessage,
+      message,
+      description,
       type: 'success',
       txid: txId,
     })
   }
 
   console.log('Started awaiting confirmation for', txId)
+
   const confirmationResult = await waitTransactionConfirmation({
     txId,
     connection,
@@ -47,7 +52,19 @@ export const sendSignedTransaction = async (
   })
 
   if (confirmationResult === 'success') {
-    notify({ message: successMessage, type: 'success', txid: txId })
+    const smessage = Array.isArray(successMessage)
+      ? successMessage[0]
+      : successMessage
+    const sdescription = Array.isArray(successMessage)
+      ? successMessage[1]
+      : undefined
+
+    notify({
+      message: smessage,
+      description: sdescription,
+      type: 'success',
+      txid: txId,
+    })
   }
 
   console.log('Confirmation time: ', txId, `${Date.now() - startTime}ms`)

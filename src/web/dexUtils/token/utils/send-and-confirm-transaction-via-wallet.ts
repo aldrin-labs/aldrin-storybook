@@ -4,8 +4,10 @@ import type {
   Transaction,
   TransactionSignature,
 } from '@solana/web3.js'
+
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { sendTransaction } from '../../send'
+
+import { signAndSendTransaction } from '../../transactions'
 
 export function sendAndConfirmTransactionViaWallet(
   wallet: WalletAdapter,
@@ -13,5 +15,5 @@ export function sendAndConfirmTransactionViaWallet(
   transaction: Transaction,
   ...signers: Array<Account>
 ): Promise<TransactionSignature> {
-  return sendTransaction({ connection, transaction, signers, wallet })
+  return signAndSendTransaction({ connection, transaction, signers, wallet })
 }

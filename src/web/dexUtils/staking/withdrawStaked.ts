@@ -1,7 +1,6 @@
 import { TokenInstructions } from '@project-serum/serum'
 import {
   Account,
-  Connection,
   Keypair,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
@@ -17,25 +16,24 @@ import {
   DEFAULT_FARMING_TICKET_END_TIME,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
 } from '../common/config'
-import { isCancelledTransactionError } from '../common/isCancelledTransactionError'
 import { FarmingTicket, SnapshotQueue } from '../common/types'
+import MultiEndpointsConnection from '../MultiEndpointsConnection'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import {
-  createTokenAccountTransaction,
-  sendSignedTransaction,
-  sendTransaction,
-  signTransactions,
-} from '../send'
+import { createTokenAccountTransaction } from '../send'
 import { findTokenAccount } from '../token/utils/findTokenAccount'
-import { mergeTransactions } from '../transactions'
+import {
+  mergeTransactions,
+  signAndSendTransaction,
+  signAndSendTransactions,
+} from '../transactions'
 import { WalletAdapter } from '../types'
 import { getCalcAccounts } from './getCalcAccountsForWallet'
 import { StakingPool } from './types'
 
 export interface WithdrawFarmedParams {
   wallet: WalletAdapter
-  connection: Connection
+  connection: MultiEndpointsConnection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
   pool: StakingPool | PoolInfo
@@ -64,7 +62,7 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
 
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
-    connection,
+    connection: connection.getConnection(),
     programAddress,
   })
 
@@ -372,50 +370,19 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
 
   if (signAllTransactions) {
     // Process transactions with software wallets
-    try {
-      const signedTransactions = await signTransactions({
-        wallet,
-        connection,
-        transactionsAndSigners: allTransactions
-          .filter(({ transaction }) => transaction.instructions.length > 0)
-          .map(({ transaction, signers = [] }) => ({ transaction, signers })),
-      })
-
-      if (!signedTransactions) {
-        return 'failed'
-      }
-
-      for (let i = 0; i < signedTransactions.length; i += 1) {
-        const signedTransaction = signedTransactions[i]
-        // send transaction and wait 1s before sending next
-        // eslint-disable-next-line no-await-in-loop
-        const result = await sendSignedTransaction({
-          transaction: signedTransaction,
-          connection,
-          timeout: 30_000,
-        })
-
-        if (result === 'timeout') {
-          return 'blockhash_outdated'
-        }
-        if (result === 'failed') {
-          return 'failed'
-        }
-      }
-    } catch (e) {
-      console.log('end farming catch error', e)
-
-      if (isCancelledTransactionError(e)) {
-        return 'cancelled'
-      }
-    }
-
-    return 'success'
+    return signAndSendTransactions({
+      wallet,
+      connection,
+      transactionsAndSigners: allTransactions
+        .filter(({ transaction }) => transaction.instructions.length > 0)
+        .map(({ transaction, signers = [] }) => ({ transaction, signers })),
+    })
   }
+
   // Process ledger transactions
   for (let i = 0; i < allTransactions.length; i += 1) {
     // eslint-disable-next-line no-await-in-loop
-    const result = await sendTransaction({
+    const result = await signAndSendTransaction({
       wallet,
       connection,
       transaction: allTransactions[i].transaction,
@@ -423,7 +390,7 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
     })
 
     if (result === 'timeout') {
-      return 'blockhash_outdated'
+      return 'timeout'
     }
     if (result === 'failed') {
       return 'failed'

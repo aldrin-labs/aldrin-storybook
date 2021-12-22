@@ -1,21 +1,21 @@
+import { Provider } from '@project-serum/anchor'
+import { createTokenAccountInstrs } from '@project-serum/common'
+import { TokenInstructions } from '@project-serum/serum'
 import {
   Keypair,
   PublicKey,
-  Connection,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
-import { TokenInstructions } from '@project-serum/serum'
-import { createTokenAccountInstrs } from '@project-serum/common'
-import { Provider } from '@project-serum/anchor'
-import { POOLS_V2_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
-import { WalletAdapter } from '../../types'
 
-import { signTransactions } from '../../send'
 import { walletAdapterToWallet } from '../../common'
+import MultiEndpointsConnection from '../../MultiEndpointsConnection'
+import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { POOLS_V2_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
+import { signAndSendTransaction } from '../../transactions'
+import { WalletAdapter } from '../../types'
 
 export interface InitializeFarmingBase {
   farmingTokenMint: PublicKey
@@ -31,7 +31,7 @@ export interface InitializeFarmingBase {
 interface InitializeFarmingParams extends InitializeFarmingBase {
   pool: PublicKey
   wallet: WalletAdapter
-  connection: Connection
+  connection: MultiEndpointsConnection
   programAddress?: string
 }
 
@@ -66,7 +66,7 @@ export const initializeFarmingInstructions = async (
   const walletWithPk = walletAdapterToWallet(wallet)
 
   const provider = new Provider(
-    connection,
+    connection.getConnection(),
     walletWithPk,
     Provider.defaultOptions()
   )
@@ -117,20 +117,13 @@ export const initializeFarmingInstructions = async (
   return [transaction, [snapshots, farmingState, farmingTokenVault]]
 }
 
-/**
- *
- * @param params InitializeFarmingParams
- * @returns Signed transaction
- */
-export const initializeFarmingTransaction = async (
-  params: InitializeFarmingParams
-): Promise<Transaction> => {
+export const initializeFaming = async (params: InitializeFarmingParams) => {
   const [transaction, signers] = await initializeFarmingInstructions(params)
-  const [tx] = await signTransactions({
-    transactionsAndSigners: [{ transaction, signers }],
-    wallet: params.wallet,
-    connection: params.connection,
-  })
 
-  return tx
+  return signAndSendTransaction({
+    transaction,
+    connection: params.connection,
+    wallet: params.wallet,
+    signers,
+  })
 }

@@ -23,7 +23,7 @@ import {
 import { notify } from '@sb/dexUtils/notifications'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
-import { sendAndWaitSignedTransaction } from '@sb/dexUtils/send'
+import { sendSignedTransaction } from '@sb/dexUtils/transactions'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -226,49 +226,55 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(1)
         console.log('Create accounts...')
-        const createAccountsTxId = await sendAndWaitSignedTransaction(
-          generatedTransactions.createAccounts,
+        const createAccountsTxId = await sendSignedTransaction({
+          transaction: generatedTransactions.createAccounts,
           connection,
-          { sleepAfter: 1000 }
-        )
+          commitment: 'recent',
+        })
         console.log('createAccountsTxId: ', createAccountsTxId)
+        await sleep(1000)
 
         setProcessingStep(2)
         console.log('Set authorities...')
-        const setAuthoritiesTxId = await sendAndWaitSignedTransaction(
-          generatedTransactions.setAuthorities,
+        const setAuthoritiesTxId = await sendSignedTransaction({
+          transaction: generatedTransactions.setAuthorities,
           connection,
-          { sleepAfter: 1000 }
-        )
+          commitment: 'recent',
+        })
         console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
+        await sleep(1000)
 
         console.log('Initialize pool...')
         setProcessingStep(3)
-        const initPoolTxId = await sendAndWaitSignedTransaction(
-          generatedTransactions.createPool,
+        const initPoolTxId = await sendSignedTransaction({
+          transaction: generatedTransactions.createPool,
           connection,
-          { sleepAfter: 1000 }
-        )
+          commitment: 'recent',
+        })
         console.log('initPoolTxId: ', initPoolTxId)
+        await sleep(1000)
 
         console.log('First deposit...')
         setProcessingStep(4)
-        const firstDepositTxId = await sendAndWaitSignedTransaction(
-          generatedTransactions.firstDeposit,
+        const firstDepositTxId = await sendSignedTransaction({
+          transaction: generatedTransactions.firstDeposit,
           connection,
-          { sleepAfter: 1000 }
-        )
+          commitment: 'recent',
+        })
+        await sleep(1000)
+
         console.log('firstDepositTxId: ', firstDepositTxId)
 
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
           setProcessingStep(5)
-          const farmingTxId = await sendAndWaitSignedTransaction(
-            generatedTransactions.farming,
+          const farmingTxId = await sendSignedTransaction({
+            transaction: generatedTransactions.farming,
             connection,
-            { sleepAfter: 1000 }
-          )
-          console.log('firstDepositTxId: ', farmingTxId)
+            commitment: 'recent',
+          })
+          await sleep(1000)
+          console.log('farmingTxId: ', farmingTxId)
         }
 
         setProcessingStep(6)

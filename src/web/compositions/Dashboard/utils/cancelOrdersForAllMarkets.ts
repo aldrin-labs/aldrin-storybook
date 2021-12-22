@@ -1,6 +1,10 @@
-import { sendTransaction } from '@sb/dexUtils/send'
-import { WalletAdapter } from '@sb/dexUtils/types'
 import { Connection, Transaction } from '@solana/web3.js'
+
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { getNotificationText } from '../../../dexUtils/serum'
+import { signAndSendTransactions } from '../../../dexUtils/transactions'
+import { splitBy } from '../../../utils'
 import { OrderWithMarket } from './getOpenOrdersFromOrderbooks'
 
 export const cancelOrdersForAllMarkets = async ({
@@ -12,39 +16,29 @@ export const cancelOrdersForAllMarkets = async ({
   connection: Connection
   orders: OrderWithMarket[]
 }) => {
-  let transaction = new Transaction()
-  let count = 0
-
-  for (let order of orders) {
-    transaction.add(
-      order.market.makeCancelOrderInstruction(
-        connection,
-        wallet.publicKey,
-        order
+  console.log('orders:', orders, splitBy(orders, 10))
+  const transactions = splitBy(orders, 10).map((ordersChunk) => {
+    const tx = new Transaction()
+    ordersChunk.forEach((order) =>
+      tx.add(
+        order.market.makeCancelOrderInstruction(
+          connection,
+          wallet.publicKey,
+          order
+        )
       )
     )
-    count++
-    if (count % 10 === 0) {
-      await sendTransaction({
-        transaction,
-        wallet,
-        connection,
-        signers: [],
-        sendingMessage: 'Sending cancel...',
-        operationType: 'cancelAll',
-      })
-      transaction = new Transaction()
-    }
-  }
+    return tx
+  })
 
-  if (transaction.instructions.length > 0) {
-    await sendTransaction({
-      transaction,
-      wallet,
-      connection,
-      signers: [],
-      sendingMessage: 'Sending cancel...',
+  console.log('transactions: ', transactions)
+
+  return signAndSendTransactions({
+    transactions: transactions.map((tx) => ({ transaction: tx, signers: [] })),
+    wallet,
+    connection,
+    successMessage: getNotificationText({
       operationType: 'cancelAll',
-    })
-  }
+    }),
+  })
 }

@@ -1,5 +1,3 @@
-import { stripByAmount } from '@core/utils/chartPageUtils'
-import { Metrics } from '@core/utils/metrics'
 import {
   DexInstructions,
   Market,
@@ -7,18 +5,6 @@ import {
   TokenInstructions,
 } from '@project-serum/serum'
 import { OrderParams } from '@project-serum/serum/lib/market'
-import {
-  AmendOrderParams,
-  CancelOrderParams,
-  PlaceOrder,
-  SendTransactionParams,
-  SignTransactionsParams,
-  ValidateOrderParams,
-  WalletAdapter,
-  SendSignedTransactionParams,
-  SendSignedTransactionResult,
-  AsyncSendSignedTransactionResult,
-} from '@sb/dexUtils/types'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
@@ -35,6 +21,22 @@ import {
   Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
+
+import {
+  AmendOrderParams,
+  CancelOrderParams,
+  PlaceOrder,
+  SendTransactionParams,
+  SignTransactionsParams,
+  ValidateOrderParams,
+  WalletAdapter,
+  SendSignedTransactionParams,
+  SendSignedTransactionResult,
+  AsyncSendSignedTransactionResult,
+} from '@sb/dexUtils/types'
+
+import { Metrics } from '@core/utils/metrics'
+
 import {
   getConnectionFromMultiConnections,
   getProviderNameFromUrl,
@@ -43,63 +45,9 @@ import { getCache } from './fetch-loop'
 import { getReferrerQuoteWallet } from './getReferrerQuoteWallet'
 import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
 import { notify } from './notifications'
-import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
-import MultiEndpointsConnection from './MultiEndpointsConnection'
+import { getNotificationText } from './serum'
 import { mergeTransactions } from './transactions'
-
-const getNotificationText = ({
-  baseSymbol = 'CCAI',
-  quoteSymbol = 'USDC',
-  baseUnsettled = 0,
-  quoteUnsettled = 0,
-  side = 'buy',
-  amount = 0,
-  price = 0,
-  orderType = 'limit',
-  operationType,
-}: {
-  baseSymbol?: string
-  quoteSymbol?: string
-  baseUnsettled?: number
-  quoteUnsettled?: number
-  side?: string
-  amount?: number
-  price?: number
-  orderType?: string
-  operationType: string
-}): [string, string] => {
-  const baseSettleText = `${stripByAmount(baseUnsettled)} ${baseSymbol}`
-  const quoteSettleText = `${stripByAmount(quoteUnsettled)} ${quoteSymbol}`
-
-  const texts = {
-    createOrder: [
-      `${orderType.slice(0, 1).toUpperCase()}${orderType.slice(
-        1
-      )} order placed.`,
-      `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed${
-        orderType === 'market' ? '' : ` at ${price} ${quoteSymbol}`
-      }.`,
-    ],
-    cancelOrder: [
-      `Limit Order canceled.`,
-      `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order canceled at ${price} ${quoteSymbol}.`,
-    ],
-    settleFunds: [
-      `Funds Settled.`,
-      `${
-        baseUnsettled > 0 && quoteUnsettled > 0
-          ? `${baseSettleText} and ${quoteSettleText}`
-          : baseUnsettled > 0
-          ? baseSettleText
-          : quoteSettleText
-      } has been successfully settled in your wallet.`,
-    ],
-    cancelAll: ['Orders canceled.', ``],
-    settleAllFunds: ['Funds settled.', ''],
-  }
-
-  return texts[operationType]
-}
+import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
 
 export async function createTokenAccountTransaction({
   wallet,
@@ -1024,18 +972,6 @@ export const sendSignedTransaction = async ({
 export const isTransactionFailed = (result: SendSignedTransactionResult) =>
   result === 'failed' || result === 'timeout'
 
-interface SendAndWaitParams {
-  timeout?: number
-  sleepAfter?: number
-  commitment?: Commitment
-}
-
-const CONFIRMATION_STATUSES: Commitment[] = [
-  'processed',
-  'confirmed',
-  'finalized',
-]
-
 async function awaitTransactionSignatureConfirmation({
   txid,
   timeout,
@@ -1204,59 +1140,4 @@ export const waitForTransactionConfirmation = async ({
     if (err.timeout) return 'timeout'
     return false
   }
-}
-
-export const sendAndWaitSignedTransaction = async (
-  signedTransaction: Transaction,
-  connection: MultiEndpointsConnection,
-  params: SendAndWaitParams = {}
-) => {
-  const { timeout = 60_000, sleepAfter, commitment } = params
-  const txid = await connection
-    .getConnection()
-    .sendRawTransaction(signedTransaction.serialize(), { skipPreflight: true })
-
-  const txResult = await waitForTransactionConfirmation({
-    txid,
-    timeout,
-    connection: connection.getConnection(),
-    showErrorForTimeout: true,
-    commitment,
-  })
-
-  console.log('txResult: ', txResult)
-
-  if (!txResult || txResult === 'timeout') {
-    throw new Error(`Transaction failed: ${txid}`)
-  }
-
-  if (sleepAfter) {
-    await sleep(sleepAfter)
-  }
-
-  return txid
-}
-
-export const sendPartOfTransactions = async (
-  connection: Connection,
-  transaction: Transaction
-) => {
-  try {
-    const tx = await sendSignedTransaction({
-      connection,
-      transaction,
-    })
-
-    if (isTransactionFailed(tx)) {
-      return 'failed'
-    }
-  } catch (e) {
-    console.log('end farming catch error', e)
-
-    if (e.message.includes('cancelled')) {
-      return 'cancelled'
-    }
-  }
-
-  return 'success'
 }

@@ -1,5 +1,7 @@
 import { Commitment, Connection } from '@solana/web3.js'
+
 import { Metrics } from '@core/utils/metrics'
+
 import { getProviderNameFromUrl } from './connection'
 
 type RateLimitedEndpoint = {

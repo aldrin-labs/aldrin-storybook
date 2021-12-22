@@ -6,25 +6,29 @@ import {
   SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
+import BN from 'bn.js'
 
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
-import {
-  createTokenAccountTransaction,
-  sendTransaction,
-  signTransactions,
-} from '@sb/dexUtils/send'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { getSnapshotsWithUnclaimedRewards } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
 import {
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
   NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION,
 } from '@sb/dexUtils/common/config'
-import BN from 'bn.js'
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
-import { getRandomInt } from '@core/utils/helpers'
+import { getSnapshotsWithUnclaimedRewards } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import {
+  createTokenAccountTransaction,
+  signTransactions,
+} from '@sb/dexUtils/send'
 import { WithdrawFarmedParams } from '@sb/dexUtils/staking/types'
-import { sendSignedTransactions } from '../../transactions'
+
+import { getRandomInt } from '@core/utils/helpers'
+
+import {
+  sendSignedTransactions,
+  signAndSendTransaction,
+} from '../../transactions'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -153,15 +157,15 @@ export const withdrawFarmed = async ({
         if (signAllTransactions) {
           transactionsAndSigners.push({ transaction: commonTransaction })
         } else {
-          const result = await sendTransaction({
+          const result = await signAndSendTransaction({
             wallet,
-            connection: connection.getConnection(),
+            connection,
             transaction: commonTransaction,
             signers: [],
           })
 
           if (result === 'timeout') {
-            return 'blockhash_outdated'
+            return 'timeout'
           }
           if (result === 'failed') {
             return 'failed'
