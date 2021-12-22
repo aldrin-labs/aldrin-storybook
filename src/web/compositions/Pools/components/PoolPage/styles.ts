@@ -2,7 +2,13 @@ import { BlockContent } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { Row, StretchedBlock } from '@sb/components/Layout'
 import { InlineText, Text } from '@sb/components/Typography'
-import { BORDER_RADIUS, BREAKPOINTS, COLORS, FONT_SIZES, LAYOUT_WIDTH } from '@variables/variables'
+import {
+  BORDER_RADIUS,
+  BREAKPOINTS,
+  COLORS,
+  FONT_SIZES,
+  LAYOUT_WIDTH,
+} from '@variables/variables'
 import styled from 'styled-components'
 
 export const ModalBlock = styled(BlockContent)`
@@ -11,14 +17,13 @@ export const ModalBlock = styled(BlockContent)`
   justify-content: space-between;
   align-items: center;
 
-
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     flex-direction: row;
     padding-left: 30px;
     padding-right: 30px;
   }
 
-  @media(min-width: ${BREAKPOINTS.xxl}) {
+  @media (min-width: ${BREAKPOINTS.xxl}) {
     width: ${LAYOUT_WIDTH}px;
   }
 `
@@ -36,7 +41,7 @@ export const TokenInfo = styled.div`
 `
 
 export const TokenGlobalInfo = styled(TokenInfo)`
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     width: 258px;
   }
 `
@@ -50,7 +55,6 @@ export const TokenInfoRow = styled.div`
   white-space: nowrap;
   flex: 1;
 
-
   ${InlineText} {
     margin: 0 3px;
   }
@@ -61,7 +65,7 @@ export const TokenInfos = styled.div`
   flex-direction: column;
   flex-wrap: wrap;
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     flex-direction: row;
   }
 `
@@ -105,7 +109,7 @@ export const SwapButtonIcon = styled.span`
 
 export const TokenSymbols = styled.h2`
   font-weight: bold;
-  font-size: ${FONT_SIZES.xl};
+  font-size: ${FONT_SIZES.lg};
   line-height: 1.6;
   color: ${COLORS.white};
   margin: 0 0 0 20px;
@@ -123,7 +127,7 @@ export const PoolRow = styled(StretchedBlock)`
   flex: 1;
   flex-direction: column;
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     flex-direction: row;
   }
 `
@@ -153,9 +157,8 @@ export const ButtonsContainer = styled.div`
 
 export const PoolStatsRow = styled(Row)`
   flex-direction: column;
-  
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     flex-direction: row;
     margin: auto 0 auto auto;
   }
@@ -167,8 +170,8 @@ export const PoolStatsWrap = styled.div`
   display: flex;
   flex-direction: column;
   margin: 10px 0 0;
-  
-  @media(min-width: ${BREAKPOINTS.lg}) {
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
     margin: 10px 0 10px 35px;
   }
 `
@@ -197,16 +200,6 @@ export const FarmingData = styled.div`
   flex-direction: row;
 `
 
-export const FarmingDataIcons = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-right: 10px;
-`
-
-export const FarmingIconWrap = styled.span`
-  margin-bottom: 5px;
-`
-
 export const PoolStatsText = styled(InlineText)`
   font-size: 13px;
   line-height: 26px;
@@ -220,7 +213,7 @@ export const PoolStatsNumber = styled(PoolStatsText)`
 export const LiquidityWrap = styled.div`
   width: 100%;
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     height: 160px;
   }
 `
@@ -234,7 +227,7 @@ export const LiquidityBlock = styled.div`
   margin-bottom: 20px;
 
   &:before {
-    content: "Liquidity";
+    content: 'Liquidity';
     font-weight: bold;
     font-size: 20px;
     color: ${COLORS.background};
@@ -251,29 +244,31 @@ export const FarmingBlock = styled(LiquidityBlock)`
   padding-top: 20px;
   flex-direction: column;
 
-
   &:before {
-    content: "Farming";
+    content: 'Farming';
     letter-spacing: 8px;
     left: -50px;
     top: 77px;
   }
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     border-left: 1px solid ${COLORS.background};
     padding-left: 90px;
     margin-left: -30px;
     margin-top: 0;
     border-top: 0;
     padding-top: 0px;
-    flex-direction: row;
 
     &:before {
       left: -30px;
       top: 57px;
     }
-    
   }
+`
+
+export const FarmingBlockInner = styled.div`
+  display: flex;
+  flex-direction: row;
 `
 
 export const LiquidityTitle = styled(PoolStatsTitle)`
@@ -292,7 +287,7 @@ export const LiquidityItem = styled.div`
   display: flex;
   flex-direction: column;
 
-  @media(min-width: ${BREAKPOINTS.lg}) {
+  @media (min-width: ${BREAKPOINTS.lg}) {
     margin: 0 40px 0 0;
     overflow: hidden;
   }
@@ -309,8 +304,6 @@ export const LiquidityButton = styled(Button)`
   margin-top: 20px;
 `
 
-
-
 export const FarmingButton = styled(LiquidityButton)`
   width: 110px;
   margin-top: 0;
@@ -324,6 +317,14 @@ export const FarmingButtonWrap = styled.div`
   margin-top: auto;
 `
 
+export const ExtendFarmingButton = styled(FarmingButton)`
+  width: auto;
+  max-width: 380px;
+  flex: 1;
+  margin-right: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+`
 
 export const FarmingButtonsContainer = styled.div`
   display: flex;
@@ -332,7 +333,7 @@ export const FarmingButtonsContainer = styled.div`
   ${FarmingButton} {
     margin-top: 20px;
   }
-  
+
   ${FarmingButton}:first-child {
     margin-right: 10px;
   }
@@ -341,7 +342,7 @@ export const FarmingButtonsContainer = styled.div`
 export const NoFarmingBlock = styled.div`
   flex: 1;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   text-align: center;
   justify-content: center;

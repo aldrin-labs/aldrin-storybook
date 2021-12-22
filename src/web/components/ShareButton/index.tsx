@@ -11,7 +11,7 @@ interface ShareButtonProps {
   addUrl?: boolean
   variant?: ButtonVariants
   iconFirst?: true
-  buttonStyle: CSSProperties
+  buttonStyle?: CSSProperties
 }
 
 const Img = styled.img<{ iconFirst?: true }>`

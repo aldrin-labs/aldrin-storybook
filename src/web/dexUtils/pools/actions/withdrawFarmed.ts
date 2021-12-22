@@ -1,26 +1,19 @@
 import { TokenInstructions } from '@project-serum/serum'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import {
-  Connection,
   PublicKey,
   SystemProgram,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  WithdrawStakeParams,
 } from '@solana/web3.js'
 
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress, POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
-  sendSignedTransaction,
   sendTransaction,
   signTransactions,
 } from '@sb/dexUtils/send'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { FarmingTicket, SnapshotQueue } from '@sb/dexUtils/common/types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getSnapshotsWithUnclaimedRewards } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
 import {
@@ -30,7 +23,8 @@ import {
 import BN from 'bn.js'
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 import { getRandomInt } from '@core/utils/helpers'
-import { WithdrawFarmedParams } from '@sb/dexUtils/staking/withdrawStaked'
+import { WithdrawFarmedParams } from '@sb/dexUtils/staking/types'
+import { sendSignedTransactions } from '../../transactions'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -61,8 +55,9 @@ export const withdrawFarmed = async ({
   const transactionsAndSigners = []
 
   // check farmed for every ticket and withdrawFarmed for every farming state
-  for (let ticketData of farmingTickets) {
-    for (let i = 0; i < pool.farming.length; i++) {
+  for (let j = 0; j < farmingTickets.length; j += 1) {
+    const ticketData = farmingTickets[j]
+    for (let i = 0; i < pool.farming.length; i += 1) {
       let commonTransaction = new Transaction()
 
       const farmingState = pool.farming[i]
@@ -70,8 +65,7 @@ export const withdrawFarmed = async ({
       // find amount to claim for this farming state in tickets amounts
       const amountToClaim =
         ticketData.amountsToClaim.find(
-          (amountToClaim) =>
-            amountToClaim.farmingState === farmingState.farmingState
+          (atc) => atc.farmingState === farmingState.farmingState
         )?.amount || 0
 
       // check amount for every farming state
@@ -99,13 +93,11 @@ export const withdrawFarmed = async ({
 
       // create pool token account for user if not exist
       if (!userFarmingTokenAccount) {
-        const {
-          transaction: createAccountTransaction,
-          newAccountPubkey,
-        } = await createTokenAccountTransaction({
-          wallet,
-          mintPublicKey: new PublicKey(farmingState.farmingTokenMint),
-        })
+        const { transaction: createAccountTransaction, newAccountPubkey } =
+          await createTokenAccountTransaction({
+            wallet,
+            mintPublicKey: new PublicKey(farmingState.farmingTokenMint),
+          })
 
         userFarmingTokenAccount = newAccountPubkey
         createdTokensMap.set(farmingState.farmingTokenMint, newAccountPubkey)
@@ -123,26 +115,29 @@ export const withdrawFarmed = async ({
         unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
       )
 
-      for (let i = 1; i <= iterations; i++) {
-        const withdrawFarmedTransaction = await program.instruction.withdrawFarmed(
-          new BN(NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION),
-          {
-            accounts: {
-              pool: poolPublicKey,
-              farmingState: new PublicKey(farmingState.farmingState),
-              farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
-              farmingTicket: new PublicKey(ticketData.farmingTicket),
-              farmingTokenVault: new PublicKey(farmingState.farmingTokenVault),
-              poolSigner: vaultSigner,
-              userFarmingTokenAccount,
-              userKey: wallet.publicKey,
-              userSolAccount: wallet.publicKey,
-              tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-              clock: SYSVAR_CLOCK_PUBKEY,
-              rent: SYSVAR_RENT_PUBKEY,
-            },
-          }
-        )
+      for (let k = 1; k <= iterations; k += 1) {
+        const withdrawFarmedTransaction =
+          await program.instruction.withdrawFarmed(
+            new BN(NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION),
+            {
+              accounts: {
+                pool: poolPublicKey,
+                farmingState: new PublicKey(farmingState.farmingState),
+                farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
+                farmingTicket: new PublicKey(ticketData.farmingTicket),
+                farmingTokenVault: new PublicKey(
+                  farmingState.farmingTokenVault
+                ),
+                poolSigner: vaultSigner,
+                userFarmingTokenAccount,
+                userKey: wallet.publicKey,
+                userSolAccount: wallet.publicKey,
+                tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+                clock: SYSVAR_CLOCK_PUBKEY,
+                rent: SYSVAR_RENT_PUBKEY,
+              },
+            }
+          )
 
         // due to same transaction data for withdrawFarmed we need add transaction with random
         // lamports amount to get random transaction hash every time
@@ -160,14 +155,15 @@ export const withdrawFarmed = async ({
         } else {
           const result = await sendTransaction({
             wallet,
-            connection,
+            connection: connection.getConnection(),
             transaction: commonTransaction,
             signers: [],
           })
 
           if (result === 'timeout') {
             return 'blockhash_outdated'
-          } else if (result === 'failed') {
+          }
+          if (result === 'failed') {
             return 'failed'
           }
         }
@@ -178,11 +174,10 @@ export const withdrawFarmed = async ({
   }
 
   if (signAllTransactions) {
-    // replace to separate function 
     try {
       const signedTransactions = await signTransactions({
         wallet,
-        connection,
+        connection: connection.getConnection(),
         transactionsAndSigners,
       })
 
@@ -190,22 +185,7 @@ export const withdrawFarmed = async ({
         return 'failed'
       }
 
-      for (let signedTransaction of signedTransactions) {
-        // send transaction and wait 1s before sending next
-        const result = await sendSignedTransaction({
-          transaction: signedTransaction,
-          connection,
-          timeout: 10_000,
-        })
-
-        if (result === 'timeout') {
-          return 'blockhash_outdated'
-        } else if (result === 'failed') {
-          return 'failed'
-        }
-
-        // await sleep(2000)
-      }
+      return sendSignedTransactions(signedTransactions, connection)
     } catch (e) {
       console.log('end farming catch error', e)
 
@@ -213,7 +193,7 @@ export const withdrawFarmed = async ({
         return 'cancelled'
       }
     }
-    
+
     return 'success'
   }
 

@@ -136,32 +136,28 @@ export const getSwapTransaction = async ({
 
   // create pool token account for user if not exist
   if (!userBaseTokenAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey: new PublicKey(baseTokenMint),
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: new PublicKey(baseTokenMint),
+      })
 
     userBaseTokenAccount = newAccountPubkey
     transactionBeforeSwap.add(createAccountTransaction)
   }
 
   if (!userQuoteTokenAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey: new PublicKey(quoteTokenMint),
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: new PublicKey(quoteTokenMint),
+      })
 
     userQuoteTokenAccount = newAccountPubkey
     transactionBeforeSwap.add(createAccountTransaction)
   }
 
-  let commonTransaction = new Transaction()
+  const commonTransaction = new Transaction()
 
   try {
     const swapTransaction = await program.instruction.swap(
@@ -175,7 +171,7 @@ export const getSwapTransaction = async ({
           poolMint,
           baseTokenVault,
           quoteTokenVault,
-          feePoolTokenAccount: feePoolTokenAccount,
+          feePoolTokenAccount,
           walletAuthority: wallet.publicKey,
           userBaseTokenAccount,
           userQuoteTokenAccount,

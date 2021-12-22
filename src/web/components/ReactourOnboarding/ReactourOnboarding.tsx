@@ -1,13 +1,5 @@
 import React from 'react'
-import Tour from 'reactour'
 import styled from 'styled-components'
-
-import SvgIcon from '@sb/components/SvgIcon'
-import exclamationMarkNotification from '@icons/exclamationMarkNotification.svg'
-
-import twitter from '@icons/twitter.svg'
-import telegram from '@icons/telegram.svg'
-import discord from '@icons/discord.svg'
 
 export const FinishBtn = styled.button`
   width: 8rem;
@@ -158,7 +150,7 @@ export const GotItButton = styled.button`
   width: 184px;
   height: 40px;
 
-  background: #651CE4;
+  background: #651ce4;
   border-radius: 8px;
 `
 
@@ -273,7 +265,7 @@ export const tourConfig = [
     content: () => (
       <Container>
         <Block>Analytics</Block>
-        <Text padding={'4rem 1.5rem'}>
+        <Text padding="4rem 1.5rem">
           You can watch $SRM analytics under this tab.
         </Text>
       </Container>
@@ -297,7 +289,7 @@ export const tourConfig = [
     content: () => (
       <Container>
         <Block>Pairs</Block>
-        <Text padding={'2.5rem 1.5rem'}>
+        <Text padding="2.5rem 1.5rem">
           Choose any available trading pair in this menu.
         </Text>
         {/* <BolderText>Note: you can farm $DCFI when trading SRM/USDT.</BolderText> */}
@@ -310,10 +302,10 @@ export const tourConfig = [
     content: () => (
       <Container>
         <Block>Wallet</Block>
-        <Text padding={'1rem 1.5rem'}>
+        <Text padding="1rem 1.5rem">
           Connect your Aldrin.com wallet here to start trading.
         </Text>
-        <Text padding={'1rem 1.5rem'}>
+        <Text padding="1rem 1.5rem">
           Note: remember to create the address of token you want to trade before
           trading.There should be some SOL in your wallet to trade on DEX.
         </Text>
@@ -326,12 +318,12 @@ export const tourConfig = [
     content: () => (
       <Container>
         <Block>Balances</Block>
-        <Text padding={'2.5rem 1.5rem'}>Here is your balance</Text>
+        <Text padding="2.5rem 1.5rem">Here is your balance</Text>
         <Text>
           Unsettled balance are funds were traded but haven't returned to your
           wallet. Press "Settle" to transfer the funds back to your wallet.
         </Text>
-        <Text padding={'1rem 1.5rem'}>
+        <Text padding="1rem 1.5rem">
           To use auto settle, first enable auto approval in your wallet during
           connection.
         </Text>
