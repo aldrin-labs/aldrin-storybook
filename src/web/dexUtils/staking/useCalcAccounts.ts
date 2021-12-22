@@ -14,23 +14,22 @@ export const useCalcAccounts = ({
   connection: Connection
   walletPublicKey?: PublicKey
 }): [FarmingCalc[], AsyncRefreshFunction] => {
-  const [calcAccounts, setCalcAccounts] = useState<
-    FarmingCalc[]
-  >([])
+  const [calcAccounts, setCalcAccounts] = useState<FarmingCalc[]>([])
 
-  const loadCalcAccounts = useCallback(
-    async () => {
-      if (walletPublicKey) {
-        const program = ProgramsMultiton.getProgramByAddress({ programAddress: STAKING_PROGRAM_ADDRESS, connection, wallet })
-        const calc = await getCalcAccounts(program, walletPublicKey)
+  const loadCalcAccounts = useCallback(async () => {
+    if (walletPublicKey) {
+      const program = ProgramsMultiton.getProgramByAddress({
+        programAddress: STAKING_PROGRAM_ADDRESS,
+        connection,
+        wallet,
+      })
+      const calc = await getCalcAccounts(program, walletPublicKey)
 
-        setCalcAccounts(calc)
-      }
+      setCalcAccounts(calc)
+    }
 
-      return true
-    },
-    [walletPublicKey?.toBase58()],
-  )
+    return true
+  }, [walletPublicKey?.toBase58()])
 
   useEffect(() => {
     loadCalcAccounts()

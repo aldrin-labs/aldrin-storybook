@@ -9,15 +9,13 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
-  RowTd, Table,
-  TableBody, TableHeader,
+  RowTd,
+  Table,
+  TableBody,
+  TableHeader,
   TableRow,
-
-
-
-
   TextColumnContainer
-} from '@sb/compositions/Pools/components/Tables/index.styles'
+} from './styles'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'

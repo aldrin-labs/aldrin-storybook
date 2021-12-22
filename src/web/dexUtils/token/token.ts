@@ -1,7 +1,7 @@
-import {Buffer} from 'buffer';
-import assert from 'assert';
-import BN from 'bn.js';
-import * as BufferLayout from 'buffer-layout';
+import { Buffer } from 'buffer'
+import assert from 'assert'
+import BN from 'bn.js'
+import * as BufferLayout from '@solana/buffer-layout'
 import {
   Account,
   PublicKey,
@@ -9,28 +9,28 @@ import {
   Transaction,
   TransactionInstruction,
   SYSVAR_RENT_PUBKEY,
-} from '@solana/web3.js';
+} from '@solana/web3.js'
 import type {
   Connection,
   Commitment,
   TransactionSignature,
-} from '@solana/web3.js';
+} from '@solana/web3.js'
 
-import * as Layout from './layout';
-import {sendAndConfirmTransaction} from './utils/send-and-confirm-transaction';
-import { sendAndConfirmTransactionViaWallet } from './utils/send-and-confirm-transaction-via-wallet'
 import { WalletAdapter } from '@sb/dexUtils/types'
+import * as Layout from './layout'
+import { sendAndConfirmTransaction } from './utils/send-and-confirm-transaction'
+import { sendAndConfirmTransactionViaWallet } from './utils/send-and-confirm-transaction-via-wallet'
 
 export const TOKEN_PROGRAM_ID: PublicKey = new PublicKey(
-  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',
-);
+  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
+)
 
 export const ASSOCIATED_TOKEN_PROGRAM_ID: PublicKey = new PublicKey(
-  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL',
-);
+  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
+)
 
-const FAILED_TO_FIND_ACCOUNT = 'Failed to find account';
-const INVALID_ACCOUNT_OWNER = 'Invalid account owner';
+const FAILED_TO_FIND_ACCOUNT = 'Failed to find account'
+const INVALID_ACCOUNT_OWNER = 'Invalid account owner'
 
 /**
  * Unfortunately, BufferLayout.encode uses an `instanceof` check for `Buffer`
@@ -38,7 +38,7 @@ const INVALID_ACCOUNT_OWNER = 'Invalid account owner';
  * class in `@solana/web3.js` is different from the bundled `Buffer` class in this package
  */
 function pubkeyToBuffer(publicKey: PublicKey): typeof Buffer {
-  return Buffer.from(publicKey.toBuffer());
+  return Buffer.from(publicKey.toBuffer())
 }
 
 /**
@@ -49,54 +49,54 @@ export class u64 extends BN {
    * Convert to Buffer representation
    */
   toBuffer(): Buffer {
-    const a = super.toArray().reverse();
-    const b = Buffer.from(a);
+    const a = super.toArray().reverse()
+    const b = Buffer.from(a)
     if (b.length === 8) {
-      return b;
+      return b
     }
-    assert(b.length < 8, 'u64 too large');
+    assert(b.length < 8, 'u64 too large')
 
-    const zeroPad = Buffer.alloc(8);
-    b.copy(zeroPad);
-    return zeroPad;
+    const zeroPad = Buffer.alloc(8)
+    b.copy(zeroPad)
+    return zeroPad
   }
 
   /**
    * Construct a u64 from Buffer representation
    */
   static fromBuffer(buffer: typeof Buffer): u64 {
-    assert(buffer.length === 8, `Invalid buffer length: ${buffer.length}`);
+    assert(buffer.length === 8, `Invalid buffer length: ${buffer.length}`)
     return new u64(
       [...buffer]
         .reverse()
-        .map(i => `00${i.toString(16)}`.slice(-2))
+        .map((i) => `00${i.toString(16)}`.slice(-2))
         .join(''),
-      16,
-    );
+      16
+    )
   }
 }
 
 function isAccount(accountOrPublicKey: any): boolean {
-  return 'publicKey' in accountOrPublicKey;
+  return 'publicKey' in accountOrPublicKey
 }
 
 type AuthorityType =
   | 'MintTokens'
   | 'FreezeAccount'
   | 'AccountOwner'
-  | 'CloseAccount';
+  | 'CloseAccount'
 
 const AuthorityTypeCodes = {
   MintTokens: 0,
   FreezeAccount: 1,
   AccountOwner: 2,
   CloseAccount: 3,
-};
+}
 
 // The address of the special mint for wrapped native token.
 export const NATIVE_MINT: PublicKey = new PublicKey(
-  'So11111111111111111111111111111111111111112',
-);
+  'So11111111111111111111111111111111111111112'
+)
 
 /**
  * Information about the mint
@@ -107,28 +107,28 @@ type MintInfo = {
    * mint creation. If no mint authority is present then the mint has a fixed supply and no
    * further tokens may be minted.
    */
-  mintAuthority: null | PublicKey,
+  mintAuthority: null | PublicKey
 
   /**
    * Total supply of tokens
    */
-  supply: u64,
+  supply: u64
 
   /**
    * Number of base 10 digits to the right of the decimal place
    */
-  decimals: number,
+  decimals: number
 
   /**
    * Is this mint initialized
    */
-  isInitialized: boolean,
+  isInitialized: boolean
 
   /**
    * Optional authority to freeze token accounts
    */
-  freezeAuthority: null | PublicKey,
-};
+  freezeAuthority: null | PublicKey
+}
 
 export const MintLayout: typeof BufferLayout.Structure = BufferLayout.struct([
   BufferLayout.u32('mintAuthorityOption'),
@@ -138,7 +138,7 @@ export const MintLayout: typeof BufferLayout.Structure = BufferLayout.struct([
   BufferLayout.u8('isInitialized'),
   BufferLayout.u32('freezeAuthorityOption'),
   Layout.publicKey('freezeAuthority'),
-]);
+])
 
 /**
  * Information about an account
@@ -147,60 +147,60 @@ type AccountInfo = {
   /**
    * The address of this account
    */
-  address: PublicKey,
+  address: PublicKey
 
   /**
    * The mint associated with this account
    */
-  mint: PublicKey,
+  mint: PublicKey
 
   /**
    * Owner of this account
    */
-  owner: PublicKey,
+  owner: PublicKey
 
   /**
    * Amount of tokens this account holds
    */
-  amount: u64,
+  amount: u64
 
   /**
    * The delegate for this account
    */
-  delegate: null | PublicKey,
+  delegate: null | PublicKey
 
   /**
    * The amount of tokens the delegate authorized to the delegate
    */
-  delegatedAmount: u64,
+  delegatedAmount: u64
 
   /**
    * Is this account initialized
    */
-  isInitialized: boolean,
+  isInitialized: boolean
 
   /**
    * Is this account frozen
    */
-  isFrozen: boolean,
+  isFrozen: boolean
 
   /**
    * Is this a native token account
    */
-  isNative: boolean,
+  isNative: boolean
 
   /**
    * If this account is a native token, it must be rent-exempt. This
    * value logs the rent-exempt reserve which must remain in the balance
    * until the account is closed.
    */
-  rentExemptReserve: null | u64,
+  rentExemptReserve: null | u64
 
   /**
    * Optional authority to close the account
    */
-  closeAuthority: null | PublicKey,
-};
+  closeAuthority: null | PublicKey
+}
 
 /**
  * @private
@@ -218,8 +218,8 @@ export const AccountLayout: typeof BufferLayout.Structure = BufferLayout.struct(
     Layout.uint64('delegatedAmount'),
     BufferLayout.u32('closeAuthorityOption'),
     Layout.publicKey('closeAuthority'),
-  ],
-);
+  ]
+)
 
 /**
  * Information about an multisig
@@ -228,34 +228,34 @@ type MultisigInfo = {
   /**
    * The number of signers required
    */
-  m: number,
+  m: number
 
   /**
    * Number of possible signers, corresponds to the
    * number of `signers` that are valid.
    */
-  n: number,
+  n: number
 
   /**
    * Is this mint initialized
    */
-  initialized: boolean,
+  initialized: boolean
 
   /**
    * The signers
    */
-  signer1: PublicKey,
-  signer2: PublicKey,
-  signer3: PublicKey,
-  signer4: PublicKey,
-  signer5: PublicKey,
-  signer6: PublicKey,
-  signer7: PublicKey,
-  signer8: PublicKey,
-  signer9: PublicKey,
-  signer10: PublicKey,
-  signer11: PublicKey,
-};
+  signer1: PublicKey
+  signer2: PublicKey
+  signer3: PublicKey
+  signer4: PublicKey
+  signer5: PublicKey
+  signer6: PublicKey
+  signer7: PublicKey
+  signer8: PublicKey
+  signer9: PublicKey
+  signer10: PublicKey
+  signer11: PublicKey
+}
 
 /**
  * @private
@@ -275,7 +275,7 @@ const MultisigLayout = BufferLayout.struct([
   Layout.publicKey('signer9'),
   Layout.publicKey('signer10'),
   Layout.publicKey('signer11'),
-]);
+])
 
 /**
  * An ERC20-like Token
@@ -284,28 +284,27 @@ export class Token {
   /**
    * @private
    */
-  connection: Connection;
+  connection: Connection
 
   /**
    * The wallet of user that we'll use for sign transactions
    */
-  wallet: WalletAdapter;
+  wallet: WalletAdapter
 
   /**
    * The public key identifying this mint
    */
-  publicKey: PublicKey;
+  publicKey: PublicKey
 
   /**
    * Program Identifier for the Token program
    */
-  programId: PublicKey;
+  programId: PublicKey
 
   /**
    * Program Identifier for the Associated Token program
    */
-  associatedProgramId: PublicKey;
-
+  associatedProgramId: PublicKey
 
   /**
    * Create a Token object attached to the specific mint
@@ -319,7 +318,7 @@ export class Token {
     wallet: WalletAdapter,
     connection: Connection,
     publicKey: PublicKey,
-    programId: PublicKey,
+    programId: PublicKey
   ) {
     Object.assign(this, {
       wallet,
@@ -328,7 +327,7 @@ export class Token {
       programId,
       // Hard code is ok; Overriding is needed only for tests
       associatedProgramId: ASSOCIATED_TOKEN_PROGRAM_ID,
-    });
+    })
   }
 
   /**
@@ -337,9 +336,9 @@ export class Token {
    * @return Number of lamports required
    */
   static async getMinBalanceRentForExemptMint(
-    connection: Connection,
+    connection: Connection
   ): Promise<number> {
-    return await connection.getMinimumBalanceForRentExemption(MintLayout.span);
+    return await connection.getMinimumBalanceForRentExemption(MintLayout.span)
   }
 
   /**
@@ -348,11 +347,11 @@ export class Token {
    * @return Number of lamports required
    */
   static async getMinBalanceRentForExemptAccount(
-    connection: Connection,
+    connection: Connection
   ): Promise<number> {
     return await connection.getMinimumBalanceForRentExemption(
-      AccountLayout.span,
-    );
+      AccountLayout.span
+    )
   }
 
   /**
@@ -361,11 +360,11 @@ export class Token {
    * @return Number of lamports required
    */
   static async getMinBalanceRentForExemptMultisig(
-    connection: Connection,
+    connection: Connection
   ): Promise<number> {
     return await connection.getMinimumBalanceForRentExemption(
-      MultisigLayout.span,
-    );
+      MultisigLayout.span
+    )
   }
 
   /**
@@ -386,23 +385,21 @@ export class Token {
     mintAuthority: PublicKey,
     freezeAuthority: PublicKey | null,
     decimals: number,
-    programId: PublicKey,
+    programId: PublicKey
     // transaction: Transaction
   ): Promise<[Token, Account, Transaction]> {
-    const mintAccount = new Account();
+    const mintAccount = new Account()
     const token = new Token(
       wallet,
       connection,
       mintAccount.publicKey,
-      programId,
-    );
+      programId
+    )
 
     // Allocate memory for the account
-    const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
-      connection,
-    );
+    const balanceNeeded = await Token.getMinBalanceRentForExemptMint(connection)
 
-    const transaction = new Transaction();
+    const transaction = new Transaction()
     transaction.add(
       SystemProgram.createAccount({
         fromPubkey: wallet.publicKey,
@@ -410,8 +407,8 @@ export class Token {
         lamports: balanceNeeded,
         space: MintLayout.span,
         programId,
-      }),
-    );
+      })
+    )
 
     transaction.add(
       Token.createInitMintInstruction(
@@ -419,9 +416,9 @@ export class Token {
         mintAccount.publicKey,
         decimals,
         mintAuthority,
-        freezeAuthority,
-      ),
-    );
+        freezeAuthority
+      )
+    )
 
     // Send the two instructions
     // await sendAndConfirmTransactionViaWallet(
@@ -431,7 +428,7 @@ export class Token {
     //   mintAccount,
     // );
 
-    return [token, mintAccount, transaction];
+    return [token, mintAccount, transaction]
   }
 
   /**
@@ -442,14 +439,16 @@ export class Token {
    * @param owner User account that will own the new account
    * @return Public key of the new empty account
    */
-  async createAccount(owner: PublicKey): Promise<[PublicKey, Account, Transaction]> {
+  async createAccount(
+    owner: PublicKey
+  ): Promise<[PublicKey, Account, Transaction]> {
     // Allocate memory for the account
     const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
-      this.connection,
-    );
+      this.connection
+    )
 
-    const newAccount = new Account();
-    const transaction = new Transaction();
+    const newAccount = new Account()
+    const transaction = new Transaction()
     transaction.add(
       SystemProgram.createAccount({
         fromPubkey: this.wallet.publicKey,
@@ -457,18 +456,18 @@ export class Token {
         lamports: balanceNeeded,
         space: AccountLayout.span,
         programId: this.programId,
-      }),
-    );
+      })
+    )
 
-    const mintPublicKey = this.publicKey;
+    const mintPublicKey = this.publicKey
     transaction.add(
       Token.createInitAccountInstruction(
         this.programId,
         mintPublicKey,
         newAccount.publicKey,
-        owner,
-      ),
-    );
+        owner
+      )
+    )
 
     // Send the two instructions
     // await sendAndConfirmTransactionViaWallet(
@@ -478,7 +477,7 @@ export class Token {
     //   newAccount,
     // );
 
-    return [newAccount.publicKey, newAccount, transaction];
+    return [newAccount.publicKey, newAccount, transaction]
   }
 
   /**
@@ -494,15 +493,15 @@ export class Token {
       this.associatedProgramId,
       this.programId,
       this.publicKey,
-      owner,
-    );
+      owner
+    )
 
-    return this.createAssociatedTokenAccountInternal(owner, associatedAddress);
+    return this.createAssociatedTokenAccountInternal(owner, associatedAddress)
   }
 
   async createAssociatedTokenAccountInternal(
     owner: PublicKey,
-    associatedAddress: PublicKey,
+    associatedAddress: PublicKey
   ): Promise<PublicKey> {
     await sendAndConfirmTransaction(
       'CreateAssociatedTokenAccount',
@@ -514,13 +513,13 @@ export class Token {
           this.publicKey,
           associatedAddress,
           owner,
-          this.payer.publicKey,
-        ),
+          this.payer.publicKey
+        )
       ),
-      this.payer,
-    );
+      this.payer
+    )
 
-    return associatedAddress;
+    return associatedAddress
   }
 
   /**
@@ -532,20 +531,20 @@ export class Token {
    * @return The new associated account
    */
   async getOrCreateAssociatedAccountInfo(
-    owner: PublicKey,
+    owner: PublicKey
   ): Promise<AccountInfo> {
     const associatedAddress = await Token.getAssociatedTokenAddress(
       this.associatedProgramId,
       this.programId,
       this.publicKey,
-      owner,
-    );
+      owner
+    )
 
     // This is the optimum logic, considering TX fee, client-side computation,
     // RPC roundtrips and guaranteed idempotent.
     // Sadly we can't do this atomically;
     try {
-      return await this.getAccountInfo(associatedAddress);
+      return await this.getAccountInfo(associatedAddress)
     } catch (err) {
       // INVALID_ACCOUNT_OWNER can be possible if the associatedAddress has
       // already been received some lamports (= became system accounts).
@@ -560,8 +559,8 @@ export class Token {
         try {
           await this.createAssociatedTokenAccountInternal(
             owner,
-            associatedAddress,
-          );
+            associatedAddress
+          )
         } catch (err) {
           // ignore all errors; for now there is no API compatible way to
           // selectively ignore the expected instruction error if the
@@ -569,10 +568,9 @@ export class Token {
         }
 
         // Now this should always succeed
-        return await this.getAccountInfo(associatedAddress);
-      } else {
-        throw err;
+        return await this.getAccountInfo(associatedAddress)
       }
+      throw err
     }
   }
 
@@ -596,16 +594,16 @@ export class Token {
     connection: Connection,
     programId: PublicKey,
     owner: PublicKey,
-    amount: number,
+    amount: number
   ): Promise<[PublicKey, Transaction, Account]> {
     // Allocate memory for the account
     const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
-      connection,
-    );
+      connection
+    )
 
     // Create a new account
-    const newAccount = new Account();
-    const transaction = new Transaction();
+    const newAccount = new Account()
+    const transaction = new Transaction()
     transaction.add(
       SystemProgram.createAccount({
         fromPubkey: wallet.publicKey,
@@ -613,8 +611,8 @@ export class Token {
         lamports: balanceNeeded,
         space: AccountLayout.span,
         programId,
-      }),
-    );
+      })
+    )
 
     // Send lamports to it (these will be wrapped into native tokens by the token program)
     transaction.add(
@@ -622,8 +620,8 @@ export class Token {
         fromPubkey: wallet.publicKey,
         toPubkey: newAccount.publicKey,
         lamports: amount,
-      }),
-    );
+      })
+    )
 
     // Assign the new account to the native token mint.
     // the account will be initialized with a balance equal to the native token balance.
@@ -633,9 +631,9 @@ export class Token {
         programId,
         NATIVE_MINT,
         newAccount.publicKey,
-        owner,
-      ),
-    );
+        owner
+      )
+    )
 
     // Send the three instructions
     // await sendAndConfirmTransactionViaWallet(
@@ -645,7 +643,7 @@ export class Token {
     //   newAccount,
     // );
 
-    return [newAccount.publicKey, transaction, newAccount];
+    return [newAccount.publicKey, transaction, newAccount]
   }
 
   /**
@@ -659,15 +657,15 @@ export class Token {
    */
   async createMultisig(
     m: number,
-    signers: Array<PublicKey>,
+    signers: Array<PublicKey>
   ): Promise<PublicKey> {
-    const multisigAccount = new Account();
+    const multisigAccount = new Account()
 
     // Allocate memory for the account
     const balanceNeeded = await Token.getMinBalanceRentForExemptMultisig(
-      this.connection,
-    );
-    const transaction = new Transaction();
+      this.connection
+    )
+    const transaction = new Transaction()
     transaction.add(
       SystemProgram.createAccount({
         fromPubkey: this.payer.publicKey,
@@ -675,34 +673,34 @@ export class Token {
         lamports: balanceNeeded,
         space: MultisigLayout.span,
         programId: this.programId,
-      }),
-    );
+      })
+    )
 
     // create the new account
-    let keys = [
-      {pubkey: multisigAccount.publicKey, isSigner: false, isWritable: true},
-      {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
-    ];
-    signers.forEach(signer =>
-      keys.push({pubkey: signer, isSigner: false, isWritable: false}),
-    );
+    const keys = [
+      { pubkey: multisigAccount.publicKey, isSigner: false, isWritable: true },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+    ]
+    signers.forEach((signer) =>
+      keys.push({ pubkey: signer, isSigner: false, isWritable: false })
+    )
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       BufferLayout.u8('m'),
-    ]);
-    const data = Buffer.alloc(dataLayout.span);
+    ])
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 2, // InitializeMultisig instruction
         m,
       },
-      data,
-    );
+      data
+    )
     transaction.add({
       keys,
       programId: this.programId,
       data,
-    });
+    })
 
     // Send the two instructions
     await sendAndConfirmTransaction(
@@ -710,45 +708,45 @@ export class Token {
       this.connection,
       transaction,
       this.payer,
-      multisigAccount,
-    );
+      multisigAccount
+    )
 
-    return multisigAccount.publicKey;
+    return multisigAccount.publicKey
   }
 
   /**
    * Retrieve mint information
    */
   async getMintInfo(): Promise<MintInfo> {
-    const info = await this.connection.getAccountInfo(this.publicKey);
+    const info = await this.connection.getAccountInfo(this.publicKey)
     if (info === null) {
-      throw new Error('Failed to find mint account');
+      throw new Error('Failed to find mint account')
     }
     if (!info.owner.equals(this.programId)) {
-      throw new Error(`Invalid mint owner: ${JSON.stringify(info.owner)}`);
+      throw new Error(`Invalid mint owner: ${JSON.stringify(info.owner)}`)
     }
     if (info.data.length != MintLayout.span) {
-      throw new Error(`Invalid mint size`);
+      throw new Error(`Invalid mint size`)
     }
 
-    const data = Buffer.from(info.data);
-    const mintInfo = MintLayout.decode(data);
+    const data = Buffer.from(info.data)
+    const mintInfo = MintLayout.decode(data)
 
     if (mintInfo.mintAuthorityOption === 0) {
-      mintInfo.mintAuthority = null;
+      mintInfo.mintAuthority = null
     } else {
-      mintInfo.mintAuthority = new PublicKey(mintInfo.mintAuthority);
+      mintInfo.mintAuthority = new PublicKey(mintInfo.mintAuthority)
     }
 
-    mintInfo.supply = u64.fromBuffer(mintInfo.supply);
-    mintInfo.isInitialized = mintInfo.isInitialized != 0;
+    mintInfo.supply = u64.fromBuffer(mintInfo.supply)
+    mintInfo.isInitialized = mintInfo.isInitialized != 0
 
     if (mintInfo.freezeAuthorityOption === 0) {
-      mintInfo.freezeAuthority = null;
+      mintInfo.freezeAuthority = null
     } else {
-      mintInfo.freezeAuthority = new PublicKey(mintInfo.freezeAuthority);
+      mintInfo.freezeAuthority = new PublicKey(mintInfo.freezeAuthority)
     }
-    return mintInfo;
+    return mintInfo
   }
 
   /**
@@ -758,59 +756,59 @@ export class Token {
    */
   async getAccountInfo(
     account: PublicKey,
-    commitment?: Commitment,
+    commitment?: Commitment
   ): Promise<AccountInfo> {
-    const info = await this.connection.getAccountInfo(account, commitment);
+    const info = await this.connection.getAccountInfo(account, commitment)
     if (info === null) {
-      throw new Error(FAILED_TO_FIND_ACCOUNT);
+      throw new Error(FAILED_TO_FIND_ACCOUNT)
     }
     if (!info.owner.equals(this.programId)) {
-      throw new Error(INVALID_ACCOUNT_OWNER);
+      throw new Error(INVALID_ACCOUNT_OWNER)
     }
     if (info.data.length != AccountLayout.span) {
-      throw new Error(`Invalid account size`);
+      throw new Error(`Invalid account size`)
     }
 
-    const data = Buffer.from(info.data);
-    const accountInfo = AccountLayout.decode(data);
-    accountInfo.address = account;
-    accountInfo.mint = new PublicKey(accountInfo.mint);
-    accountInfo.owner = new PublicKey(accountInfo.owner);
-    accountInfo.amount = u64.fromBuffer(accountInfo.amount);
+    const data = Buffer.from(info.data)
+    const accountInfo = AccountLayout.decode(data)
+    accountInfo.address = account
+    accountInfo.mint = new PublicKey(accountInfo.mint)
+    accountInfo.owner = new PublicKey(accountInfo.owner)
+    accountInfo.amount = u64.fromBuffer(accountInfo.amount)
 
     if (accountInfo.delegateOption === 0) {
-      accountInfo.delegate = null;
-      accountInfo.delegatedAmount = new u64();
+      accountInfo.delegate = null
+      accountInfo.delegatedAmount = new u64()
     } else {
-      accountInfo.delegate = new PublicKey(accountInfo.delegate);
-      accountInfo.delegatedAmount = u64.fromBuffer(accountInfo.delegatedAmount);
+      accountInfo.delegate = new PublicKey(accountInfo.delegate)
+      accountInfo.delegatedAmount = u64.fromBuffer(accountInfo.delegatedAmount)
     }
 
-    accountInfo.isInitialized = accountInfo.state !== 0;
-    accountInfo.isFrozen = accountInfo.state === 2;
+    accountInfo.isInitialized = accountInfo.state !== 0
+    accountInfo.isFrozen = accountInfo.state === 2
 
     if (accountInfo.isNativeOption === 1) {
-      accountInfo.rentExemptReserve = u64.fromBuffer(accountInfo.isNative);
-      accountInfo.isNative = true;
+      accountInfo.rentExemptReserve = u64.fromBuffer(accountInfo.isNative)
+      accountInfo.isNative = true
     } else {
-      accountInfo.rentExemptReserve = null;
-      accountInfo.isNative = false;
+      accountInfo.rentExemptReserve = null
+      accountInfo.isNative = false
     }
 
     if (accountInfo.closeAuthorityOption === 0) {
-      accountInfo.closeAuthority = null;
+      accountInfo.closeAuthority = null
     } else {
-      accountInfo.closeAuthority = new PublicKey(accountInfo.closeAuthority);
+      accountInfo.closeAuthority = new PublicKey(accountInfo.closeAuthority)
     }
 
     if (!accountInfo.mint.equals(this.publicKey)) {
       throw new Error(
         `Invalid account mint: ${JSON.stringify(
-          accountInfo.mint,
-        )} !== ${JSON.stringify(this.publicKey)}`,
-      );
+          accountInfo.mint
+        )} !== ${JSON.stringify(this.publicKey)}`
+      )
     }
-    return accountInfo;
+    return accountInfo
   }
 
   /**
@@ -819,32 +817,32 @@ export class Token {
    * @param multisig Public key of the account
    */
   async getMultisigInfo(multisig: PublicKey): Promise<MultisigInfo> {
-    const info = await this.connection.getAccountInfo(multisig);
+    const info = await this.connection.getAccountInfo(multisig)
     if (info === null) {
-      throw new Error('Failed to find multisig');
+      throw new Error('Failed to find multisig')
     }
     if (!info.owner.equals(this.programId)) {
-      throw new Error(`Invalid multisig owner`);
+      throw new Error(`Invalid multisig owner`)
     }
     if (info.data.length != MultisigLayout.span) {
-      throw new Error(`Invalid multisig size`);
+      throw new Error(`Invalid multisig size`)
     }
 
-    const data = Buffer.from(info.data);
-    const multisigInfo = MultisigLayout.decode(data);
-    multisigInfo.signer1 = new PublicKey(multisigInfo.signer1);
-    multisigInfo.signer2 = new PublicKey(multisigInfo.signer2);
-    multisigInfo.signer3 = new PublicKey(multisigInfo.signer3);
-    multisigInfo.signer4 = new PublicKey(multisigInfo.signer4);
-    multisigInfo.signer5 = new PublicKey(multisigInfo.signer5);
-    multisigInfo.signer6 = new PublicKey(multisigInfo.signer6);
-    multisigInfo.signer7 = new PublicKey(multisigInfo.signer7);
-    multisigInfo.signer8 = new PublicKey(multisigInfo.signer8);
-    multisigInfo.signer9 = new PublicKey(multisigInfo.signer9);
-    multisigInfo.signer10 = new PublicKey(multisigInfo.signer10);
-    multisigInfo.signer11 = new PublicKey(multisigInfo.signer11);
+    const data = Buffer.from(info.data)
+    const multisigInfo = MultisigLayout.decode(data)
+    multisigInfo.signer1 = new PublicKey(multisigInfo.signer1)
+    multisigInfo.signer2 = new PublicKey(multisigInfo.signer2)
+    multisigInfo.signer3 = new PublicKey(multisigInfo.signer3)
+    multisigInfo.signer4 = new PublicKey(multisigInfo.signer4)
+    multisigInfo.signer5 = new PublicKey(multisigInfo.signer5)
+    multisigInfo.signer6 = new PublicKey(multisigInfo.signer6)
+    multisigInfo.signer7 = new PublicKey(multisigInfo.signer7)
+    multisigInfo.signer8 = new PublicKey(multisigInfo.signer8)
+    multisigInfo.signer9 = new PublicKey(multisigInfo.signer9)
+    multisigInfo.signer10 = new PublicKey(multisigInfo.signer10)
+    multisigInfo.signer11 = new PublicKey(multisigInfo.signer11)
 
-    return multisigInfo;
+    return multisigInfo
   }
 
   /**
@@ -861,19 +859,19 @@ export class Token {
     destination: PublicKey,
     owner: any,
     multiSigners: Array<Account>,
-    amount: number | u64,
+    amount: number | u64
   ): Promise<Transaction> {
-    let ownerPublicKey;
-    let signers;
+    let ownerPublicKey
+    let signers
     if (isAccount(owner)) {
-      ownerPublicKey = owner.publicKey;
-      signers = [owner];
+      ownerPublicKey = owner.publicKey
+      signers = [owner]
     } else {
-      ownerPublicKey = owner;
-      signers = multiSigners;
+      ownerPublicKey = owner
+      signers = multiSigners
     }
 
-    const transaction = new Transaction();
+    const transaction = new Transaction()
     transaction.add(
       Token.createTransferInstruction(
         this.programId,
@@ -881,9 +879,9 @@ export class Token {
         destination,
         ownerPublicKey,
         multiSigners,
-        amount,
-      ),
-    );
+        amount
+      )
+    )
 
     // await sendAndConfirmTransactionViaWallet(
     //   this.wallet,
@@ -909,19 +907,19 @@ export class Token {
     delegate: PublicKey,
     owner: any,
     multiSigners: Array<Account>,
-    amount: number | u64,
+    amount: number | u64
   ): Promise<Transaction> {
-    let ownerPublicKey;
-    let signers;
+    let ownerPublicKey
+    let signers
     if (isAccount(owner)) {
-      ownerPublicKey = owner.publicKey;
-      signers = [owner];
+      ownerPublicKey = owner.publicKey
+      signers = [owner]
     } else {
-      ownerPublicKey = owner;
-      signers = multiSigners;
+      ownerPublicKey = owner
+      signers = multiSigners
     }
 
-    const transaction = new Transaction();
+    const transaction = new Transaction()
 
     transaction.add(
       Token.createApproveInstruction(
@@ -930,8 +928,8 @@ export class Token {
         delegate,
         ownerPublicKey,
         multiSigners,
-        amount,
-      ),
+        amount
+      )
     )
 
     // await sendAndConfirmTransactionViaWallet(
@@ -954,16 +952,16 @@ export class Token {
   async revoke(
     account: PublicKey,
     owner: any,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): Promise<void> {
-    let ownerPublicKey;
-    let signers;
+    let ownerPublicKey
+    let signers
     if (isAccount(owner)) {
-      ownerPublicKey = owner.publicKey;
-      signers = [owner];
+      ownerPublicKey = owner.publicKey
+      signers = [owner]
     } else {
-      ownerPublicKey = owner;
-      signers = multiSigners;
+      ownerPublicKey = owner
+      signers = multiSigners
     }
     await sendAndConfirmTransaction(
       'Revoke',
@@ -973,12 +971,12 @@ export class Token {
           this.programId,
           account,
           ownerPublicKey,
-          multiSigners,
-        ),
+          multiSigners
+        )
       ),
       this.payer,
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -995,16 +993,16 @@ export class Token {
     newAuthority: PublicKey | null,
     authorityType: AuthorityType,
     currentAuthority: any,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): Promise<void> {
-    let currentAuthorityPublicKey: PublicKey;
-    let signers;
+    let currentAuthorityPublicKey: PublicKey
+    let signers
     if (isAccount(currentAuthority)) {
-      currentAuthorityPublicKey = currentAuthority.publicKey;
-      signers = [currentAuthority];
+      currentAuthorityPublicKey = currentAuthority.publicKey
+      signers = [currentAuthority]
     } else {
-      currentAuthorityPublicKey = currentAuthority;
-      signers = multiSigners;
+      currentAuthorityPublicKey = currentAuthority
+      signers = multiSigners
     }
     await sendAndConfirmTransaction(
       'SetAuthority',
@@ -1016,12 +1014,12 @@ export class Token {
           newAuthority,
           authorityType,
           currentAuthorityPublicKey,
-          multiSigners,
-        ),
+          multiSigners
+        )
       ),
       this.payer,
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -1036,16 +1034,16 @@ export class Token {
     dest: PublicKey,
     authority: any,
     multiSigners: Array<Account>,
-    amount: number | u64,
+    amount: number | u64
   ): Promise<void> {
-    let ownerPublicKey;
-    let signers;
+    let ownerPublicKey
+    let signers
     if (isAccount(authority)) {
-      ownerPublicKey = authority.publicKey;
-      signers = [authority];
+      ownerPublicKey = authority.publicKey
+      signers = [authority]
     } else {
-      ownerPublicKey = authority;
-      signers = multiSigners;
+      ownerPublicKey = authority
+      signers = multiSigners
     }
     await sendAndConfirmTransactionViaWallet(
       this.wallet,
@@ -1057,11 +1055,11 @@ export class Token {
           dest,
           ownerPublicKey,
           multiSigners,
-          amount,
-        ),
+          amount
+        )
       ),
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -1076,16 +1074,16 @@ export class Token {
     account: PublicKey,
     owner: any,
     multiSigners: Array<Account>,
-    amount: number | u64,
+    amount: number | u64
   ): Promise<void> {
-    let ownerPublicKey;
-    let signers;
+    let ownerPublicKey
+    let signers
     if (isAccount(owner)) {
-      ownerPublicKey = owner.publicKey;
-      signers = [owner];
+      ownerPublicKey = owner.publicKey
+      signers = [owner]
     } else {
-      ownerPublicKey = owner;
-      signers = multiSigners;
+      ownerPublicKey = owner
+      signers = multiSigners
     }
     await sendAndConfirmTransaction(
       'Burn',
@@ -1097,12 +1095,12 @@ export class Token {
           account,
           ownerPublicKey,
           multiSigners,
-          amount,
-        ),
+          amount
+        )
       ),
       this.payer,
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -1117,16 +1115,16 @@ export class Token {
     account: PublicKey,
     dest: PublicKey,
     authority: any,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): Promise<[Transaction, Account[]]> {
-    let authorityPublicKey;
-    let signers;
+    let authorityPublicKey
+    let signers
     if (isAccount(authority)) {
-      authorityPublicKey = authority.publicKey;
-      signers = [authority];
+      authorityPublicKey = authority.publicKey
+      signers = [authority]
     } else {
-      authorityPublicKey = authority;
-      signers = multiSigners;
+      authorityPublicKey = authority
+      signers = multiSigners
     }
 
     const transaction = new Transaction().add(
@@ -1135,9 +1133,9 @@ export class Token {
         account,
         dest,
         authorityPublicKey,
-        multiSigners,
-      ),
-    );
+        multiSigners
+      )
+    )
 
     // await sendAndConfirmTransactionViaWallet(
     //   this.wallet,
@@ -1159,16 +1157,16 @@ export class Token {
   async freezeAccount(
     account: PublicKey,
     authority: any,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): Promise<void> {
-    let authorityPublicKey;
-    let signers;
+    let authorityPublicKey
+    let signers
     if (isAccount(authority)) {
-      authorityPublicKey = authority.publicKey;
-      signers = [authority];
+      authorityPublicKey = authority.publicKey
+      signers = [authority]
     } else {
-      authorityPublicKey = authority;
-      signers = multiSigners;
+      authorityPublicKey = authority
+      signers = multiSigners
     }
     await sendAndConfirmTransaction(
       'FreezeAccount',
@@ -1179,12 +1177,12 @@ export class Token {
           account,
           this.publicKey,
           authorityPublicKey,
-          multiSigners,
-        ),
+          multiSigners
+        )
       ),
       this.payer,
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -1197,16 +1195,16 @@ export class Token {
   async thawAccount(
     account: PublicKey,
     authority: any,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): Promise<void> {
-    let authorityPublicKey;
-    let signers;
+    let authorityPublicKey
+    let signers
     if (isAccount(authority)) {
-      authorityPublicKey = authority.publicKey;
-      signers = [authority];
+      authorityPublicKey = authority.publicKey
+      signers = [authority]
     } else {
-      authorityPublicKey = authority;
-      signers = multiSigners;
+      authorityPublicKey = authority
+      signers = multiSigners
     }
     await sendAndConfirmTransaction(
       'ThawAccount',
@@ -1217,12 +1215,12 @@ export class Token {
           account,
           this.publicKey,
           authorityPublicKey,
-          multiSigners,
-        ),
+          multiSigners
+        )
       ),
       this.payer,
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -1241,16 +1239,16 @@ export class Token {
     owner: any,
     multiSigners: Array<Account>,
     amount: number | u64,
-    decimals: number,
+    decimals: number
   ): Promise<TransactionSignature> {
-    let ownerPublicKey;
-    let signers;
+    let ownerPublicKey
+    let signers
     if (isAccount(owner)) {
-      ownerPublicKey = owner.publicKey;
-      signers = [owner];
+      ownerPublicKey = owner.publicKey
+      signers = [owner]
     } else {
-      ownerPublicKey = owner;
-      signers = multiSigners;
+      ownerPublicKey = owner
+      signers = multiSigners
     }
     return await sendAndConfirmTransaction(
       'TransferChecked',
@@ -1264,12 +1262,12 @@ export class Token {
           ownerPublicKey,
           multiSigners,
           amount,
-          decimals,
-        ),
+          decimals
+        )
       ),
       this.payer,
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -1289,16 +1287,16 @@ export class Token {
     owner: any,
     multiSigners: Array<Account>,
     amount: number | u64,
-    decimals: number,
+    decimals: number
   ): Promise<void> {
-    let ownerPublicKey;
-    let signers;
+    let ownerPublicKey
+    let signers
     if (isAccount(owner)) {
-      ownerPublicKey = owner.publicKey;
-      signers = [owner];
+      ownerPublicKey = owner.publicKey
+      signers = [owner]
     } else {
-      ownerPublicKey = owner;
-      signers = multiSigners;
+      ownerPublicKey = owner
+      signers = multiSigners
     }
     await sendAndConfirmTransaction(
       'ApproveChecked',
@@ -1312,12 +1310,12 @@ export class Token {
           ownerPublicKey,
           multiSigners,
           amount,
-          decimals,
-        ),
+          decimals
+        )
       ),
       this.payer,
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -1334,16 +1332,16 @@ export class Token {
     authority: any,
     multiSigners: Array<Account>,
     amount: number | u64,
-    decimals: number,
+    decimals: number
   ): Promise<void> {
-    let ownerPublicKey;
-    let signers;
+    let ownerPublicKey
+    let signers
     if (isAccount(authority)) {
-      ownerPublicKey = authority.publicKey;
-      signers = [authority];
+      ownerPublicKey = authority.publicKey
+      signers = [authority]
     } else {
-      ownerPublicKey = authority;
-      signers = multiSigners;
+      ownerPublicKey = authority
+      signers = multiSigners
     }
     await sendAndConfirmTransaction(
       'MintToChecked',
@@ -1356,12 +1354,12 @@ export class Token {
           ownerPublicKey,
           multiSigners,
           amount,
-          decimals,
-        ),
+          decimals
+        )
       ),
       this.payer,
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -1378,16 +1376,16 @@ export class Token {
     owner: any,
     multiSigners: Array<Account>,
     amount: number | u64,
-    decimals: number,
+    decimals: number
   ): Promise<void> {
-    let ownerPublicKey;
-    let signers;
+    let ownerPublicKey
+    let signers
     if (isAccount(owner)) {
-      ownerPublicKey = owner.publicKey;
-      signers = [owner];
+      ownerPublicKey = owner.publicKey
+      signers = [owner]
     } else {
-      ownerPublicKey = owner;
-      signers = multiSigners;
+      ownerPublicKey = owner
+      signers = multiSigners
     }
     await sendAndConfirmTransaction(
       'BurnChecked',
@@ -1400,12 +1398,12 @@ export class Token {
           ownerPublicKey,
           multiSigners,
           amount,
-          decimals,
-        ),
+          decimals
+        )
       ),
       this.payer,
-      ...signers,
-    );
+      ...signers
+    )
   }
 
   /**
@@ -1422,20 +1420,20 @@ export class Token {
     mint: PublicKey,
     decimals: number,
     mintAuthority: PublicKey,
-    freezeAuthority: PublicKey | null,
+    freezeAuthority: PublicKey | null
   ): TransactionInstruction {
-    let keys = [
-      {pubkey: mint, isSigner: false, isWritable: true},
-      {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
-    ];
+    const keys = [
+      { pubkey: mint, isSigner: false, isWritable: true },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+    ]
     const commandDataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       BufferLayout.u8('decimals'),
       Layout.publicKey('mintAuthority'),
       BufferLayout.u8('option'),
       Layout.publicKey('freezeAuthority'),
-    ]);
-    let data = Buffer.alloc(1024);
+    ])
+    let data = Buffer.alloc(1024)
     {
       const encodeLength = commandDataLayout.encode(
         {
@@ -1445,16 +1443,16 @@ export class Token {
           option: freezeAuthority === null ? 0 : 1,
           freezeAuthority: pubkeyToBuffer(freezeAuthority || new PublicKey(0)),
         },
-        data,
-      );
-      data = data.slice(0, encodeLength);
+        data
+      )
+      data = data.slice(0, encodeLength)
     }
 
     return new TransactionInstruction({
       keys,
       programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1469,28 +1467,28 @@ export class Token {
     programId: PublicKey,
     mint: PublicKey,
     account: PublicKey,
-    owner: PublicKey,
+    owner: PublicKey
   ): TransactionInstruction {
     const keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
-      {pubkey: owner, isSigner: false, isWritable: false},
-      {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
-    ];
-    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')]);
-    const data = Buffer.alloc(dataLayout.span);
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: owner, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+    ]
+    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')])
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 1, // InitializeAccount instruction
       },
-      data,
-    );
+      data
+    )
 
     return new TransactionInstruction({
       keys,
       programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1509,47 +1507,47 @@ export class Token {
     destination: PublicKey,
     owner: PublicKey,
     multiSigners: Array<Account>,
-    amount: number | u64,
+    amount: number | u64
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       Layout.uint64('amount'),
-    ]);
+    ])
 
-    const data = Buffer.alloc(dataLayout.span);
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 3, // Transfer instruction
         amount: new u64(amount).toBuffer(),
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: source, isSigner: false, isWritable: true},
-      {pubkey: destination, isSigner: false, isWritable: true},
-    ];
+    const keys = [
+      { pubkey: source, isSigner: false, isWritable: true },
+      { pubkey: destination, isSigner: false, isWritable: true },
+    ]
     if (multiSigners.length === 0) {
       keys.push({
         pubkey: owner,
         isSigner: true,
         isWritable: false,
-      });
+      })
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1568,44 +1566,44 @@ export class Token {
     delegate: PublicKey,
     owner: PublicKey,
     multiSigners: Array<Account>,
-    amount: number | u64,
+    amount: number | u64
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       Layout.uint64('amount'),
-    ]);
+    ])
 
-    const data = Buffer.alloc(dataLayout.span);
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 4, // Approve instruction
         amount: new u64(amount).toBuffer(),
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: delegate, isSigner: false, isWritable: false},
-    ];
+    const keys = [
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: delegate, isSigner: false, isWritable: false },
+    ]
     if (multiSigners.length === 0) {
-      keys.push({pubkey: owner, isSigner: true, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: true, isWritable: false })
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1620,37 +1618,37 @@ export class Token {
     programId: PublicKey,
     account: PublicKey,
     owner: PublicKey,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): TransactionInstruction {
-    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')]);
+    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')])
 
-    const data = Buffer.alloc(dataLayout.span);
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 5, // Approve instruction
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [{pubkey: account, isSigner: false, isWritable: true}];
+    const keys = [{ pubkey: account, isSigner: false, isWritable: true }]
     if (multiSigners.length === 0) {
-      keys.push({pubkey: owner, isSigner: true, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: true, isWritable: false })
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1669,16 +1667,16 @@ export class Token {
     newAuthority: PublicKey | null,
     authorityType: AuthorityType,
     currentAuthority: PublicKey,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): TransactionInstruction {
     const commandDataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       BufferLayout.u8('authorityType'),
       BufferLayout.u8('option'),
       Layout.publicKey('newAuthority'),
-    ]);
+    ])
 
-    let data = Buffer.alloc(1024);
+    let data = Buffer.alloc(1024)
     {
       const encodeLength = commandDataLayout.encode(
         {
@@ -1687,30 +1685,34 @@ export class Token {
           option: newAuthority === null ? 0 : 1,
           newAuthority: pubkeyToBuffer(newAuthority || new PublicKey(0)),
         },
-        data,
-      );
-      data = data.slice(0, encodeLength);
+        data
+      )
+      data = data.slice(0, encodeLength)
     }
 
-    let keys = [{pubkey: account, isSigner: false, isWritable: true}];
+    const keys = [{ pubkey: account, isSigner: false, isWritable: true }]
     if (multiSigners.length === 0) {
-      keys.push({pubkey: currentAuthority, isSigner: true, isWritable: false});
+      keys.push({ pubkey: currentAuthority, isSigner: true, isWritable: false })
     } else {
-      keys.push({pubkey: currentAuthority, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({
+        pubkey: currentAuthority,
+        isSigner: false,
+        isWritable: false,
+      })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1729,48 +1731,48 @@ export class Token {
     dest: PublicKey,
     authority: PublicKey,
     multiSigners: Array<Account>,
-    amount: number | u64,
+    amount: number | u64
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       Layout.uint64('amount'),
-    ]);
+    ])
 
-    const data = Buffer.alloc(dataLayout.span);
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 7, // MintTo instruction
         amount: new u64(amount).toBuffer(),
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: mint, isSigner: false, isWritable: true},
-      {pubkey: dest, isSigner: false, isWritable: true},
-    ];
+    const keys = [
+      { pubkey: mint, isSigner: false, isWritable: true },
+      { pubkey: dest, isSigner: false, isWritable: true },
+    ]
     if (multiSigners.length === 0) {
       keys.push({
         pubkey: authority,
         isSigner: true,
         isWritable: false,
-      });
+      })
     } else {
-      keys.push({pubkey: authority, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: authority, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1789,48 +1791,48 @@ export class Token {
     account: PublicKey,
     owner: PublicKey,
     multiSigners: Array<Account>,
-    amount: number | u64,
+    amount: number | u64
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       Layout.uint64('amount'),
-    ]);
+    ])
 
-    const data = Buffer.alloc(dataLayout.span);
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 8, // Burn instruction
         amount: new u64(amount).toBuffer(),
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: true},
-    ];
+    const keys = [
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: true },
+    ]
     if (multiSigners.length === 0) {
       keys.push({
         pubkey: owner,
         isSigner: true,
         isWritable: false,
-      });
+      })
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1847,39 +1849,39 @@ export class Token {
     account: PublicKey,
     dest: PublicKey,
     owner: PublicKey,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): TransactionInstruction {
-    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')]);
-    const data = Buffer.alloc(dataLayout.span);
+    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')])
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 9, // CloseAccount instruction
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: dest, isSigner: false, isWritable: true},
-    ];
+    const keys = [
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: dest, isSigner: false, isWritable: true },
+    ]
     if (multiSigners.length === 0) {
-      keys.push({pubkey: owner, isSigner: true, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: true, isWritable: false })
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1896,39 +1898,39 @@ export class Token {
     account: PublicKey,
     mint: PublicKey,
     authority: PublicKey,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): TransactionInstruction {
-    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')]);
-    const data = Buffer.alloc(dataLayout.span);
+    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')])
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 10, // FreezeAccount instruction
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
-    ];
+    const keys = [
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
+    ]
     if (multiSigners.length === 0) {
-      keys.push({pubkey: authority, isSigner: true, isWritable: false});
+      keys.push({ pubkey: authority, isSigner: true, isWritable: false })
     } else {
-      keys.push({pubkey: authority, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: authority, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -1945,39 +1947,39 @@ export class Token {
     account: PublicKey,
     mint: PublicKey,
     authority: PublicKey,
-    multiSigners: Array<Account>,
+    multiSigners: Array<Account>
   ): TransactionInstruction {
-    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')]);
-    const data = Buffer.alloc(dataLayout.span);
+    const dataLayout = BufferLayout.struct([BufferLayout.u8('instruction')])
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 11, // ThawAccount instruction
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
-    ];
+    const keys = [
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
+    ]
     if (multiSigners.length === 0) {
-      keys.push({pubkey: authority, isSigner: true, isWritable: false});
+      keys.push({ pubkey: authority, isSigner: true, isWritable: false })
     } else {
-      keys.push({pubkey: authority, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: authority, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -2000,50 +2002,50 @@ export class Token {
     owner: PublicKey,
     multiSigners: Array<Account>,
     amount: number | u64,
-    decimals: number,
+    decimals: number
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       Layout.uint64('amount'),
       BufferLayout.u8('decimals'),
-    ]);
+    ])
 
-    const data = Buffer.alloc(dataLayout.span);
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 12, // TransferChecked instruction
         amount: new u64(amount).toBuffer(),
         decimals,
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: source, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
-      {pubkey: destination, isSigner: false, isWritable: true},
-    ];
+    const keys = [
+      { pubkey: source, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: destination, isSigner: false, isWritable: true },
+    ]
     if (multiSigners.length === 0) {
       keys.push({
         pubkey: owner,
         isSigner: true,
         isWritable: false,
-      });
+      })
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -2066,47 +2068,47 @@ export class Token {
     owner: PublicKey,
     multiSigners: Array<Account>,
     amount: number | u64,
-    decimals: number,
+    decimals: number
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       Layout.uint64('amount'),
       BufferLayout.u8('decimals'),
-    ]);
+    ])
 
-    const data = Buffer.alloc(dataLayout.span);
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 13, // ApproveChecked instruction
         amount: new u64(amount).toBuffer(),
         decimals,
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: false},
-      {pubkey: delegate, isSigner: false, isWritable: false},
-    ];
+    const keys = [
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: delegate, isSigner: false, isWritable: false },
+    ]
     if (multiSigners.length === 0) {
-      keys.push({pubkey: owner, isSigner: true, isWritable: false});
+      keys.push({ pubkey: owner, isSigner: true, isWritable: false })
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -2127,50 +2129,50 @@ export class Token {
     authority: PublicKey,
     multiSigners: Array<Account>,
     amount: number | u64,
-    decimals: number,
+    decimals: number
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       Layout.uint64('amount'),
       BufferLayout.u8('decimals'),
-    ]);
+    ])
 
-    const data = Buffer.alloc(dataLayout.span);
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 14, // MintToChecked instruction
         amount: new u64(amount).toBuffer(),
         decimals,
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: mint, isSigner: false, isWritable: true},
-      {pubkey: dest, isSigner: false, isWritable: true},
-    ];
+    const keys = [
+      { pubkey: mint, isSigner: false, isWritable: true },
+      { pubkey: dest, isSigner: false, isWritable: true },
+    ]
     if (multiSigners.length === 0) {
       keys.push({
         pubkey: authority,
         isSigner: true,
         isWritable: false,
-      });
+      })
     } else {
-      keys.push({pubkey: authority, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: authority, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -2190,50 +2192,50 @@ export class Token {
     owner: PublicKey,
     multiSigners: Array<Account>,
     amount: number | u64,
-    decimals: number,
+    decimals: number
   ): TransactionInstruction {
     const dataLayout = BufferLayout.struct([
       BufferLayout.u8('instruction'),
       Layout.uint64('amount'),
       BufferLayout.u8('decimals'),
-    ]);
+    ])
 
-    const data = Buffer.alloc(dataLayout.span);
+    const data = Buffer.alloc(dataLayout.span)
     dataLayout.encode(
       {
         instruction: 15, // BurnChecked instruction
         amount: new u64(amount).toBuffer(),
         decimals,
       },
-      data,
-    );
+      data
+    )
 
-    let keys = [
-      {pubkey: account, isSigner: false, isWritable: true},
-      {pubkey: mint, isSigner: false, isWritable: true},
-    ];
+    const keys = [
+      { pubkey: account, isSigner: false, isWritable: true },
+      { pubkey: mint, isSigner: false, isWritable: true },
+    ]
     if (multiSigners.length === 0) {
       keys.push({
         pubkey: owner,
         isSigner: true,
         isWritable: false,
-      });
+      })
     } else {
-      keys.push({pubkey: owner, isSigner: false, isWritable: false});
-      multiSigners.forEach(signer =>
+      keys.push({ pubkey: owner, isSigner: false, isWritable: false })
+      multiSigners.forEach((signer) =>
         keys.push({
           pubkey: signer.publicKey,
           isSigner: true,
           isWritable: false,
-        }),
-      );
+        })
+      )
     }
 
     return new TransactionInstruction({
       keys,
-      programId: programId,
+      programId,
       data,
-    });
+    })
   }
 
   /**
@@ -2249,18 +2251,18 @@ export class Token {
     associatedProgramId: PublicKey,
     programId: PublicKey,
     mint: PublicKey,
-    owner: PublicKey,
+    owner: PublicKey
   ): Promise<PublicKey> {
     if (!PublicKey.isOnCurve(owner.toBuffer())) {
-      throw new Error(`Owner cannot sign: ${owner.toString()}`);
+      throw new Error(`Owner cannot sign: ${owner.toString()}`)
     }
 
     return (
       await PublicKey.findProgramAddress(
         [owner.toBuffer(), programId.toBuffer(), mint.toBuffer()],
-        associatedProgramId,
+        associatedProgramId
       )
-    )[0];
+    )[0]
   }
 
   /**
@@ -2280,24 +2282,24 @@ export class Token {
     mint: PublicKey,
     associatedAccount: PublicKey,
     owner: PublicKey,
-    payer: PublicKey,
+    payer: PublicKey
   ): TransactionInstruction {
-    const data = Buffer.alloc(0);
+    const data = Buffer.alloc(0)
 
-    let keys = [
-      {pubkey: payer, isSigner: true, isWritable: true},
-      {pubkey: associatedAccount, isSigner: false, isWritable: true},
-      {pubkey: owner, isSigner: false, isWritable: false},
-      {pubkey: mint, isSigner: false, isWritable: false},
-      {pubkey: SystemProgram.programId, isSigner: false, isWritable: false},
-      {pubkey: programId, isSigner: false, isWritable: false},
-      {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false},
-    ];
+    const keys = [
+      { pubkey: payer, isSigner: true, isWritable: true },
+      { pubkey: associatedAccount, isSigner: false, isWritable: true },
+      { pubkey: owner, isSigner: false, isWritable: false },
+      { pubkey: mint, isSigner: false, isWritable: false },
+      { pubkey: SystemProgram.programId, isSigner: false, isWritable: false },
+      { pubkey: programId, isSigner: false, isWritable: false },
+      { pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false },
+    ]
 
     return new TransactionInstruction({
       keys,
       programId: associatedProgramId,
       data,
-    });
+    })
   }
 }

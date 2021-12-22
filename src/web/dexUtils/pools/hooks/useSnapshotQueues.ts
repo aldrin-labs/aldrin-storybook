@@ -16,15 +16,18 @@ export const useSnapshotQueues = ({
   )
 
   const loadSnapshotQueues = useCallback(async () => {
-    const allSnapshotQueues = await getParsedSnapshotQueues({
+    if (!wallet.publicKey) {
+      return false
+    }
+    const allSnapshots = await getParsedSnapshotQueues({
       wallet,
       connection,
     })
 
-    setAllSnapshotQueues(allSnapshotQueues)
+    setAllSnapshotQueues(allSnapshots)
 
     return true
-  }, [])
+  }, [wallet.publicKey?.toBase58()])
 
   useEffect(() => {
     loadSnapshotQueues()

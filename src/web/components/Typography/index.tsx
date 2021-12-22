@@ -13,7 +13,7 @@ export interface TextProps {
 }
 
 export const Text = styled.p<TextProps>`
-  font-family: ${FONTS.main}; 
+  font-family: ${FONTS.main};
   font-size: ${(props: TextProps) => FONT_SIZES[props.size || 'md']};
   line-height: ${(props: TextProps) => props.lineHeight || '150%'};
   color: ${(props: TextProps) => COLORS[props.color || 'white']};
@@ -29,6 +29,7 @@ export interface InlineProps {
   color?: keyof typeof COLORS
   size?: keyof typeof FONT_SIZES
   weight?: Weight
+  cursor?: 'pointer' | 'help' | 'auto' | 'default' | 'none'
 }
 
 export const InlineText = styled.span<InlineProps>`
@@ -36,5 +37,7 @@ export const InlineText = styled.span<InlineProps>`
     props.color ? `color: ${COLORS[props.color]};` : ''}
   ${(props: InlineProps) =>
     props.size ? `font-size: ${FONT_SIZES[props.size]};` : ''}
-  ${(props: TextProps) => props.weight ? `font-weight: ${props.weight};` : ''};
+  ${(props: InlineProps) =>
+    props.weight ? `font-weight: ${props.weight};` : ''};
+  ${(props: InlineProps) => (props.cursor ? `cursor: ${props.cursor};` : '')}
 `

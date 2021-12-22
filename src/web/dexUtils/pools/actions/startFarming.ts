@@ -1,6 +1,5 @@
 import { TokenInstructions } from '@project-serum/serum'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress, POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   Connection,
@@ -11,6 +10,8 @@ import {
   Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
+
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { signAndSendTransaction } from '../signAndSendTransaction'
 
 export const getStartFarmingTransactions = async ({
@@ -20,7 +21,7 @@ export const getStartFarmingTransactions = async ({
   poolPublicKey,
   userPoolTokenAccount,
   farmingState,
-  curveType
+  curveType,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -28,7 +29,7 @@ export const getStartFarmingTransactions = async ({
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
   farmingState: PublicKey
-  curveType: number | null
+  curveType?: number | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -39,9 +40,8 @@ export const getStartFarmingTransactions = async ({
   const { lpTokenFreezeVault } = await program.account.pool.fetch(poolPublicKey)
 
   const farmingTicket = Keypair.generate()
-  const farmingTicketInstruction = await program.account.farmingTicket.createInstruction(
-    farmingTicket
-  )
+  const farmingTicketInstruction =
+    await program.account.farmingTicket.createInstruction(farmingTicket)
 
   const transactionsAndSigners = []
 
@@ -52,7 +52,7 @@ export const getStartFarmingTransactions = async ({
         pool: poolPublicKey,
         farmingState,
         farmingTicket: farmingTicket.publicKey,
-        lpTokenFreezeVault: lpTokenFreezeVault,
+        lpTokenFreezeVault,
         userLpTokenAccount: userPoolTokenAccount,
         walletAuthority: wallet.publicKey,
         userKey: wallet.publicKey,
@@ -95,7 +95,7 @@ export const startFarming = async ({
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
   farmingState: PublicKey
-  curveType: number | null
+  curveType?: number | null
 }) => {
   const transactionsAndSigners = await getStartFarmingTransactions({
     wallet,

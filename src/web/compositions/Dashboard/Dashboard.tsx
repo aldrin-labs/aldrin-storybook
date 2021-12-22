@@ -4,24 +4,33 @@ import { Theme, withTheme } from '@material-ui/core'
 
 import { DEX_PID } from '@core/config/dex'
 
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { useTokenAccountsMap } from '@sb/dexUtils/markets'
+import {
+  useTokenAccountsMap,
+  useAllMarketsList,
+  useAllMarketsMapById,
+} from '@sb/dexUtils/markets'
 import { useConnection, useSerumConnection } from '@sb/dexUtils/connection'
 
-import { Row, RowContainer, Title } from '../AnalyticsRoute/index.styles'
 import { LoadingScreenWithHint } from '@sb/components/LoadingScreenWithHint/LoadingScreenWithHint'
 import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable'
-import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
+import { notEmpty, onlyUnique, sleep } from '@sb/dexUtils/utils'
+import { useInterval } from '@sb/dexUtils/useInterval'
+import { Loading } from '@sb/components'
+import { notifyWithLog } from '@sb/dexUtils/notifications'
+import { compose } from 'recompose'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { RowContainer, Title } from '../AnalyticsRoute/index.styles'
 
 import { UnsettledBalancesTable } from './components/UnsettledBalancesTable/UnsettledBalancesTable'
-import { notEmpty, onlyUnique, sleep } from '@sb/dexUtils/utils'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import {
   LoadedMarketsMap,
   loadMarketsByNames,
 } from '../Rebalance/utils/loadMarketsByNames'
 import { TableContainer, TableWithTitleContainer } from './Dashboard.styles'
-import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen'
 import { UnsettledBalance } from './components/UnsettledBalancesTable/UnsettledBalancesTable.utils'
 import { getOpenOrdersAccountsMapByMarketId } from './utils/getOpenOrdersAccountsMapByMarketId'
 import { getUnsettledBalances } from './utils/getUnsettledBalances'
@@ -31,15 +40,9 @@ import {
 } from './utils/getOpenOrdersFromOrderbooks'
 import { loadOpenOrderAccountsFromPubkeys } from './utils/loadOpenOrderAccountsFromPubkeys'
 import { cancelOrdersForAllMarkets } from './utils/cancelOrdersForAllMarkets'
-import { useInterval } from '@sb/dexUtils/useInterval'
-import { Loading } from '@sb/components'
 import { settleUnsettledBalancesForAllMarkets } from './utils/settleUnsettledBalancesForAllMarkets'
 import LoadingText from './components/LoadingText/LoadingText'
-import { notifyWithLog } from '@sb/dexUtils/notifications'
 
-import { compose } from 'recompose'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { DexTokensPrices } from '../Pools/index.types'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
@@ -63,14 +66,10 @@ const Dashboard = ({
   const [unsettledBalances, setUnsettledBalances] = useState<
     UnsettledBalance[]
   >([])
-  const [
-    refreshUnsettledBalancesCounter,
-    setRefreshUnsettledBalancesCounter,
-  ] = useState(0)
-  const [
-    isUnsettledBalancesUpdating,
-    setIsUnsettledBalancesUpdating,
-  ] = useState(false)
+  const [refreshUnsettledBalancesCounter, setRefreshUnsettledBalancesCounter] =
+    useState(0)
+  const [isUnsettledBalancesUpdating, setIsUnsettledBalancesUpdating] =
+    useState(false)
   const refreshUnsettledBalances = () =>
     setRefreshUnsettledBalancesCounter(refreshUnsettledBalancesCounter + 1)
 
@@ -86,23 +85,19 @@ const Dashboard = ({
 
   // percentage of markets loaded, percentage of ob loaded, name of market/ob loading
   const [percentageOfLoadedMarkets, setPercentageOfLoadedMarkets] = useState(0)
-  const [
-    percentageOfLoadedOrderbooks,
-    setPercentageOfLoadedOrderbooks,
-  ] = useState(0)
+  const [percentageOfLoadedOrderbooks, setPercentageOfLoadedOrderbooks] =
+    useState(0)
 
   // flags for operations with settle/cancel all buttons
   const [isSettlingAllBalances, setIsSettlingAllBalances] = useState(false)
   const [isCancellingAllOrders, setsCancellingAllOrders] = useState(false)
 
-  const { wallet, connected } = useWallet()
+  const { wallet } = useWallet()
   const connection = useConnection()
   const serumConnection = useSerumConnection()
 
-  const [
-    userTokenAccountsMap,
-    userTokenAccountsMapLoaded,
-  ] = useTokenAccountsMap()
+  const [userTokenAccountsMap, userTokenAccountsMapLoaded] =
+    useTokenAccountsMap()
 
   const allMarketsMap = useAllMarketsList()
   const allMarketsMapById = useAllMarketsMapById()
@@ -111,16 +106,15 @@ const Dashboard = ({
     const getOpenOrdersAccounts = async () => {
       setIsDataLoading(true)
 
-      //load all open orders accounts by using users publicKey
+      // load all open orders accounts by using users publicKey
       const openOrdersAccounts = await OpenOrders.findForOwner(
         serumConnection,
         wallet.publicKey,
         DEX_PID
       )
 
-      const openOrdersAccountsMapByMarketId = getOpenOrdersAccountsMapByMarketId(
-        openOrdersAccounts
-      )
+      const openOrdersAccountsMapByMarketId =
+        getOpenOrdersAccountsMapByMarketId(openOrdersAccounts)
 
       // by using open orders accounts we can know unique markets that need to be loadad
       const uniqueMarketsIds = openOrdersAccounts
@@ -166,8 +160,8 @@ const Dashboard = ({
       setOpenOrders(openOrders)
       setUnsettledBalances(unsettledBalances)
     }
-    if (connected) getOpenOrdersAccounts()
-  }, [connected])
+    getOpenOrdersAccounts()
+  }, [])
 
   // on every action we need to update all OOA and unsettled balances
   useEffect(() => {
@@ -201,9 +195,8 @@ const Dashboard = ({
     const updateOpenOrders = async () => {
       setIsOpenOrdersUpdating(true)
 
-      const openOrdersAccountsMapByMarketId = getOpenOrdersAccountsMapByMarketId(
-        openOrdersAccounts
-      )
+      const openOrdersAccountsMapByMarketId =
+        getOpenOrdersAccountsMapByMarketId(openOrdersAccounts)
 
       const orderbooks = await getOrderbookForMarkets({
         connection,
@@ -224,8 +217,6 @@ const Dashboard = ({
   }, [refreshOpenOrdersCounter])
 
   useInterval(() => !isDataLoading && refreshOpenOrders(), 15000)
-
-  if (!connected) return <ConnectWalletScreen theme={theme} />
 
   if (isDataLoading || !userTokenAccountsMapLoaded)
     return (
@@ -269,14 +260,14 @@ const Dashboard = ({
           >
             Open Orders
           </Title>
-          {isOpenOrdersUpdating && <Loading margin={'0'} size={'3rem'} />}
+          {isOpenOrdersUpdating && <Loading margin="0" size="3rem" />}
         </RowContainer>
         <TableContainer>
           <OpenOrdersTable
-            tab={'openOrders'}
+            tab="openOrders"
             theme={theme}
-            show={true}
-            needShowValue={true}
+            show
+            needShowValue
             isCancellingAllOrders={isCancellingAllOrders}
             cancelOrderCallback={refreshOpenOrders}
             onCancelAll={async () => {
@@ -297,7 +288,7 @@ const Dashboard = ({
                 setsCancellingAllOrders(false)
               }
               await sleep(5 * 1000)
-              await refreshOpenOrders()
+              refreshOpenOrders()
             }}
             handlePairChange={() => {}}
             openOrders={openOrders}
@@ -320,9 +311,7 @@ const Dashboard = ({
           >
             Unsettled Balances
           </Title>
-          {isUnsettledBalancesUpdating && (
-            <Loading margin={'0'} size={'3rem'} />
-          )}
+          {isUnsettledBalancesUpdating && <Loading margin="0" size="3rem" />}
         </RowContainer>
         <TableContainer>
           <UnsettledBalancesTable
@@ -348,7 +337,7 @@ const Dashboard = ({
                 setIsSettlingAllBalances(false)
               }
               await sleep(5 * 1000)
-              await refreshUnsettledBalances()
+              refreshUnsettledBalances()
             }}
             userTokenAccountsMap={userTokenAccountsMap}
             unsettledBalances={unsettledBalances}
@@ -360,7 +349,7 @@ const Dashboard = ({
   )
 }
 
-export default compose(
+const WithQueries = compose(
   withTheme(),
   queryRendererHoc({
     query: getDexTokensPrices,
@@ -370,3 +359,13 @@ export default compose(
     pollInterval: 60000,
   })
 )(Dashboard)
+
+const DashboardWithWallet = () => {
+  return (
+    <ConnectWalletWrapper>
+      <WithQueries />
+    </ConnectWalletWrapper>
+  )
+}
+
+export default DashboardWithWallet

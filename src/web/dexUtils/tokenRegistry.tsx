@@ -4,7 +4,7 @@ import { clusterForEndpoint } from './clusters'
 import { useConnectionConfig } from './connection'
 
 const TokenListContext = React.createContext({
-  tokenInfos: new Map<string, TokenInfo>()
+  tokenInfos: new Map<string, TokenInfo>(),
 })
 
 export function useTokenInfos() {
@@ -21,9 +21,8 @@ export function TokenRegistryProvider(props) {
     tokenListProvider.resolve().then((tokenListContainer) => {
       const cluster = clusterForEndpoint(endpoint)
 
-      const filteredTokenListContainer = tokenListContainer?.filterByClusterSlug(
-        cluster?.name
-      )
+      const filteredTokenListContainer =
+        tokenListContainer?.filterByClusterSlug(cluster?.name)
 
       const tokenInfos =
         tokenListContainer !== filteredTokenListContainer
@@ -34,7 +33,9 @@ export function TokenRegistryProvider(props) {
         tokenInfos.reduce((map, item) => {
           const parsedItem = {
             ...item,
-            name: item.name.replace('Cryptocurrencies.Ai', 'Aldrin').replace('(Sollet)', ''),
+            name: item.name
+              .replace('Cryptocurrencies.Ai', 'Aldrin')
+              .replace('(Sollet)', ''),
           }
           map.set(item.address, parsedItem)
           return map

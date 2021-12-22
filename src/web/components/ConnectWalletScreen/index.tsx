@@ -18,7 +18,7 @@ interface ConnectWalletContentProps {
   size?: 'md' | 'sm'
 }
 
-//TODO: styled-components
+// TODO: styled-components
 const SIZES = {
   md: {
     icon: '8em',
@@ -35,7 +35,7 @@ const SIZES = {
     fontSize: '1em',
     titleMargin: '0 0 1em 0',
     btnHeight: '2.3em',
-  }
+  },
 }
 
 const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {

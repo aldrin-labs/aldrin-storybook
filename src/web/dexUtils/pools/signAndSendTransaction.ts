@@ -24,7 +24,7 @@ export const signAndSendTransaction = async ({
       return 'failed'
     }
 
-    for (let signedTransaction of signedTransactions) {
+    for (const signedTransaction of signedTransactions) {
       // send transaction and wait 1s before sending next
       const result = await sendSignedTransaction({
         transaction: signedTransaction,
@@ -34,7 +34,8 @@ export const signAndSendTransaction = async ({
 
       if (result === 'timeout') {
         return 'blockhash_outdated'
-      } else if (result === 'failed') {
+      }
+      if (result === 'failed') {
         return 'failed'
       }
 
