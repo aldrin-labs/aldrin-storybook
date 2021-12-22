@@ -15,10 +15,9 @@ type TableAssetsProps = {
     reserves: any,
     obligations: any,
     walletAccounts: WalletAccountsType | [],
-    handleDepositLiq: (reserve: any, amount: number, asCollateral: boolean, callback: () => void) => void,
-    handleWithdrawCollateral: (reserve: any, amount: number, callback: () => void) => void,
-    handleWithdrawLiquidity: (reserve: any, amount: number, callback: () => void) => void,
-    obligationDetails: ObligationType | null
+    obligationDetails: ObligationType | null,
+    calcCollateralWorth: () => void,
+    handleBorrowObligationLiquidity: (reserve: any, amount: number, callback: () => void) => void,
 }
 
 const TableAssets = ({
@@ -26,19 +25,14 @@ const TableAssets = ({
     reserves,
     obligations,
     walletAccounts,
-    handleDepositLiq,
-    handleWithdrawCollateral,
-    handleWithdrawLiquidity,
     obligationDetails,
+    calcCollateralWorth,
+    handleBorrowObligationLiquidity,
 }: TableAssetsProps) => {
     const [actionsOpen, setActionsOpen] = useState(false);
 
     const closeActions = () => {
         setActionsOpen(false)
-    }
-
-    const calcCollateralWorth = (collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice) => {
-        return collateralDeposit * (reserveBorrowedLiquidity + reserveAvailableLiquidity) / mintedCollateralTotal * tokenPrice;
     }
 
     const renderRows = () => {
@@ -50,9 +44,11 @@ const TableAssets = ({
             let walletBalance = 0;
             let depositApy = 0;
             let walletBalanceWorth = 0;
-            let reserveObligation = null;
+            let reserveObligationCollateral = null;
+            let reserveObligationBorrow = null;
             let borrowApy = 0;
             const maxLtv = reserve.config.loanToValueRatio.percent;
+            const liquidationThreshold = reserve.config.liquidationThreshold.percent;
             let remainingBorrow = 0;
             let liquidityDeposit = 0;
             let liquidityWorth = 0;
@@ -62,6 +58,8 @@ const TableAssets = ({
             let reserveAvailableLiquidity = 0;
             let mintedCollateralTotal = 0;
             let mintedLiquidityTotal = 0;
+            let borrowedAmount = 0;
+            let borrowedAmountWorth = 0;
 
             if(walletAccounts && walletAccounts.length > 0) {
                 const depositTokenAccount = walletAccounts.find(account => account.account.data.parsed.info.mint === reserve.collateral.mint.toString());
@@ -92,14 +90,37 @@ const TableAssets = ({
                     );
                     depositApy = borrowApy * utilizationRate;
 
-                    reserveBorrowedLiquidity = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString());
+                    reserveBorrowedLiquidity = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString())/Math.pow(10, 18);
                     reserveAvailableLiquidity = parseInt(reserve.liquidity.availableAmount.toString())/Math.pow(10, tokenDecimals);
                     mintedCollateralTotal = parseInt(reserve.collateral.mintTotalSupply.toString()/Math.pow(10, tokenDecimals));
                     // mintedLiquidityTotal = parseInt(reserve.liquidity.mintTotalSupply.toString()/Math.pow(10, tokenDecimals));
                     // console.log('mintedLiquidityTotal', mintedLiquidityTotal)
 
                     if(obligationDetails) {
-                        reserveObligation = obligationDetails.reserves.find(reserveObligation => {
+                        console.log(
+                            {
+                                depositedValue: u192ToBN(obligationDetails.depositedValue).toString(),
+                                borrowedValue: u192ToBN(obligationDetails.borrowedValue).toString(),
+                                allowedBorrowValue: u192ToBN(obligationDetails.allowedBorrowValue).toString(),
+                                unhealthyBorrowValue: u192ToBN(obligationDetails.unhealthyBorrowValue).toString(),
+                            }
+                        )
+                        //
+                        obligationDetails.reserves.forEach(r => {
+                            if (r.collateral) {
+                                const c = r.collateral.inner
+                                console.log("col", {
+                                    depositReserve: c.depositReserve.toString(), depositedAmount: c.depositedAmount.toString(), marketValue: u192ToBN(c.marketValue).toString()
+                                });
+                            } else if (r.liquidity) {
+                                const l = r.liquidity.inner
+                                console.log("liq",{
+                                    borrowReserve: l.borrowReserve.toString(), borrowedAmount: u192ToBN(l.borrowedAmount).toString(), cumulativeBorrowRate: u192ToBN(l.cumulativeBorrowRate).toString(), marketValue: u192ToBN(l.marketValue).toString()
+                                });
+                            }
+                        })
+
+                        reserveObligationCollateral = obligationDetails.reserves.find(reserveObligation => {
 
                             if(reserveObligation.collateral) {
                                 console.log(reserve.publicKey.toString(), reserveObligation.collateral.inner.depositReserve.toString())
@@ -109,14 +130,27 @@ const TableAssets = ({
 
                         })
 
-                        // remainingBorrow = reserve.config.loanToValueRatio.percent/100 * (depositWorth/Math.pow(10, 18));
-                        if(reserveObligation) {
-                            collateralDeposit = parseInt(reserveObligation.collateral.inner.depositedAmount.toString())/Math.pow(10, tokenDecimals);
-                            // amount_of_collateral * (reserveBorrowedLiquidity + reserveAvailableLiquidity) / mintedCollateralTotal * tokenPrice
-                            collateralWorth = calcCollateralWorth(collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
-                            liquidityWorth = collateralDeposit * (reserveBorrowedLiquidity + reserveAvailableLiquidity) / mintedCollateralTotal * tokenPrice;
+                        reserveObligationBorrow = obligationDetails.reserves.find(reserveObligation => {
 
+                            if(reserveObligation.liquidity) {
+                                console.log(reserve.publicKey.toString(), reserveObligation.liquidity.inner.borrowReserve.toString())
+                                return (reserve.publicKey.toString() === reserveObligation.liquidity.inner.borrowReserve.toString());
+                            }
+                            return false;
+
+                        })
+
+                        if(reserveObligationCollateral) {
+                            collateralDeposit = parseInt(reserveObligationCollateral.collateral.inner.depositedAmount.toString())/Math.pow(10, tokenDecimals);
+                            // collateralWorth = calcCollateralWorth(collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
+                            collateralWorth = parseInt(u192ToBN(reserveObligationCollateral.collateral.inner.marketValue).toString())/Math.pow(10, 18);
                             remainingBorrow = reserve.config.loanToValueRatio.percent/100 * collateralWorth;
+                        }
+
+                        if(reserveObligationBorrow) {
+                            borrowedAmount = parseInt(u192ToBN(reserveObligationBorrow.liquidity.inner.borrowedAmount).toString())/Math.pow(10, 18);
+                            borrowedAmountWorth = parseInt(u192ToBN(reserveObligationBorrow.liquidity.inner.marketValue).toString())/Math.pow(10, 18);
+                            console.log('borrowedAmount', borrowedAmount)
                         }
                     }
                 }
@@ -139,12 +173,30 @@ const TableAssets = ({
                             <span>${tokenPrice}</span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
-                            <p style={{margin: 0}}><strong>{walletBalance}</strong></p>
-                            <span>${toNumberWithDecimals(walletBalanceWorth, 2)}</span>
+                            <p style={{margin: 0}}><strong>{collateralDeposit}</strong></p>
+                            <span>
+                                <NumberFormat
+                                    value={remainingBorrow}
+                                    displayType={'text'}
+                                    decimalScale={2}
+                                    fixedDecimalScale={true}
+                                    thousandSeparator={true}
+                                    prefix={'$'}
+                                />
+                            </span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
-                            <p style={{margin: 0}}><strong>{depositAmount} ({collateralDeposit})</strong></p>
-                            <span>${toNumberWithDecimals(depositWorth, 2)}</span>
+                            <p style={{margin: 0}}><strong>{borrowedAmount}</strong></p>
+                            <span>
+                                <NumberFormat
+                                    value={borrowedAmountWorth}
+                                    displayType={'text'}
+                                    decimalScale={2}
+                                    fixedDecimalScale={true}
+                                    thousandSeparator={true}
+                                    prefix={'$'}
+                                />
+                            </span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
                             <p style={{margin: 0}}><strong>{borrowApy % 1 !== 0 ? borrowApy.toFixed(2) : borrowApy}%</strong></p>
@@ -158,7 +210,7 @@ const TableAssets = ({
                                 onClose={closeActions}
                                 reserve={reserve}
                                 tokenPrice={tokenPrice}
-                                reserveObligation={reserveObligation}
+                                reserveObligationCollateral={reserveObligationCollateral}
                                 token={reserve.liquidity.mint.toString()}
                                 walletBalance={walletBalance}
                                 tokenDecimals={tokenDecimals}
@@ -169,11 +221,11 @@ const TableAssets = ({
                                 reserveAvailableLiquidity={reserveAvailableLiquidity}
                                 mintedCollateralTotal={mintedCollateralTotal}
                                 maxLtv={maxLtv}
+                                liquidationThreshold={liquidationThreshold}
                                 remainingBorrow={remainingBorrow}
-                                handleDepositLiq={handleDepositLiq}
-                                handleWithdrawCollateral={handleWithdrawCollateral}
-                                handleWithdrawLiquidity={handleWithdrawLiquidity}
                                 calcCollateralWorth={calcCollateralWorth}
+                                borrowApy={borrowApy}
+                                handleBorrowObligationLiquidity={handleBorrowObligationLiquidity}
                             />
                         )
                     }

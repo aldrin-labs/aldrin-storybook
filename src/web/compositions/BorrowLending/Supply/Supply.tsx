@@ -110,7 +110,7 @@ const Supply = ({
                         obligation: obligations[0] || newObligation,
                         obligationDetails,
                         reserve,
-                        amount: new BN(amount),
+                        amount: new BN(amount * 5),
                     }).then(depositObligationCollateralRes => {
                         handleGetObligation()
                     }).catch(depositObligationCollateralError => console.log('depositObligationCollateralError', depositObligationCollateralError))

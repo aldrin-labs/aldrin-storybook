@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {depositLiquidity} from '@sb/dexUtils/borrow-lending/depositLiquidity';
 import {useWallet} from '@sb/dexUtils/wallet';
 import {useConnection} from '@sb/dexUtils/connection';
 import BN from 'bn.js';
@@ -19,15 +18,12 @@ import {
 } from '../Supply/Supply.styles';
 import {compose} from 'recompose';
 import {withTheme} from '@material-ui/core/styles';
-import {initObligation} from '@sb/dexUtils/borrow-lending/initObligation';
 import {depositObligationCollateral} from '@sb/dexUtils/borrow-lending/depositObligationCollateral';
 import TableAssets from './components/TableAssets';
 import {toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
 import {MarketCompType, ObligationType, WalletAccountsType} from '@sb/compositions/BorrowLending/Markets/types';
-import {getObligation} from '@sb/dexUtils/borrow-lending/getObligation';
-import {withdrawCollateral} from '@sb/dexUtils/borrow-lending/withdrawCollateral';
-import {withdrawLiquidity} from '@sb/dexUtils/borrow-lending/withdrawLiquidity';
 import {PublicKey} from '@solana/web3.js';
+import {borrowObligationLiquidity} from "@sb/dexUtils/borrow-lending/borrowObligationLiquidity";
 
 type BorrowProps = {
     theme: Theme,
@@ -54,19 +50,38 @@ const Borrow = ({
 }: BorrowProps) => {
     const { wallet } = useWallet()
     const connection = useConnection()
+
+    let collateralTokens = {};
     let totalRemainingBorrow = 0;
     let totalUserDepositWorth = 0;
+    let totalUserCollateralWorth = 0;
+    let reserveBorrowedLiquidity = 0;
+    let reserveAvailableLiquidity = 0;
+    let mintedCollateralTotal = 0;
 
-    const generateDepositCompositionArr = (reservesList: []): MarketCompType[] => {
+    const handleBorrowObligationLiquidity = (reserve: any, amount: number, callback: () => void) => {
+        borrowObligationLiquidity({
+            wallet,
+            connection,
+            obligation: obligations[0] || newObligation,
+            obligationDetails,
+            reserve,
+            amount: new BN(amount),
+        }).then(borrowObligationLiquidityRes => {
+            handleGetReservesAccounts()
+            handleGetObligation()
+            if(callback) {
+                callback()
+            }
+        }).catch(depositObligationCollateralError => console.log('depositObligationCollateralError', depositObligationCollateralError))
+    }
+
+    const generateCollateralCompositionArr = (reservesList: []): MarketCompType[] => {
         const depositCompArr: MarketCompType[] = [];
         if(walletAccounts && walletAccounts.length > 0 && userSummary) {
             reservesList.forEach(reserve => {
-                const tokenAccount = walletAccounts.find(account => account.account.data.parsed.info.mint === reserve.collateral.mint.toString());
-                const tokenAmount = tokenAccount?.account.data.parsed.info.tokenAmount.amount;
-                const tokenDecimals = tokenAccount?.account.data.parsed.info.tokenAmount.decimals;
-                const tokenWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())/Math.pow(10, 18) * tokenAmount/Math.pow(10, tokenDecimals)/5;
-                console.log('totalUserDepositWorth', totalUserDepositWorth/5, tokenWorth)
-                const reserveDepositPercent = tokenWorth/(totalUserDepositWorth/5)*100;
+                const tokenCollateralWorth = collateralTokens[reserve.publicKey];
+                const reserveDepositPercent = tokenCollateralWorth/(totalUserCollateralWorth)*100;
 
                 depositCompArr.push({
                     asset: reserve.collateral.mint.toString(),
@@ -78,88 +93,14 @@ const Borrow = ({
         return depositCompArr;
     }
 
-    const handleDepositLiq = async (reserve: any, amount: number, asCollateral: boolean, callback: () => void) => {
-        console.log('deposit liq', new BN(amount));
-        depositLiquidity({
-            wallet,
-            connection,
-            reserve,
-            amount: new BN(amount),
-        })
-            .then(async res => {
-                console.log('handleDepositLiq', res)
-                let newObligation = null;
-                if(obligations.length === 0) {
-                    newObligation = await initObligation({
-                        wallet,
-                        connection,
-                    }).catch(error => console.log('initObligationError', error));
-                }
-
-                if(callback) {
-                    callback()
-                }
-
-                console.log('deposit obligation', newObligation)
-                console.log('asCollateral', asCollateral)
-                if(asCollateral) {
-                    console.log('deposit collateral', new BN(amount));
-                    await depositObligationCollateral({
-                        wallet,
-                        connection,
-                        obligation: obligations[0] || newObligation,
-                        obligationDetails,
-                        reserve,
-                        amount: new BN(amount),
-                    }).then(depositObligationCollateralRes => {
-                        handleGetObligation()
-                    }).catch(depositObligationCollateralError => console.log('depositObligationCollateralError', depositObligationCollateralError))
-                }
-                handleGetReservesAccounts()
-
-            })
-            .catch(error => console.log('handleDepositLiqError', error))
-    }
-
-    const handleWithdrawCollateral = async (reserve: any, amount: number, callback: () => void) => {
-        withdrawCollateral({
-            wallet,
-            connection,
-            reserve,
-            obligation: obligations[0],
-            obligationDetails,
-            amount: new BN(amount),
-        }).then(res => {
-            console.log('withdrawCollateral', res)
-            handleGetReservesAccounts()
-            handleGetObligation()
-            if(callback) {
-                callback()
-            }
-        })
-            .catch(error => console.log('withdrawCollateralError', error))
-    }
-
-    const handleWithdrawLiquidity = async (reserve: any, amount: number, callback: () => void) => {
-        withdrawLiquidity({
-            wallet,
-            connection,
-            reserve,
-            obligation: obligations[0],
-            obligationDetails,
-            amount: new BN(amount),
-        }).then(res => {
-            console.log('withdrawLiquidity', res)
-            handleGetReservesAccounts()
-            if(callback) {
-                callback()
-            }
-        })
-            .catch(error => console.log(error))
+    const calcCollateralWorth = (collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice) => {
+        console.log('calcCollateralWorth', {collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice})
+        return collateralDeposit * (reserveBorrowedLiquidity + reserveAvailableLiquidity) / mintedCollateralTotal * tokenPrice;
     }
 
     if(walletAccounts && walletAccounts.length) {
         reserves.forEach(reserve => {
+            const tokenPrice = toNumberWithDecimals(parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()), 5);
             const tokenAccount = walletAccounts.find(account => account.account.data.parsed.info.mint === reserve.collateral.mint.toString());
             const depositAmount = tokenAccount.account.data.parsed.info.tokenAmount.uiAmount;
             const depositWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())/Math.pow(10, 18) * depositAmount;
@@ -168,12 +109,36 @@ const Borrow = ({
             console.log('remainingBorrow supply', totalRemainingBorrow)
 
             totalUserDepositWorth = totalUserDepositWorth + depositWorth;
+
+            const tokenDecimals = tokenAccount.account.data.parsed.info.tokenAmount.decimals;
+            reserveBorrowedLiquidity = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString())/Math.pow(10, 18);
+            reserveAvailableLiquidity = parseInt(reserve.liquidity.availableAmount.toString())/Math.pow(10, tokenDecimals);
+            mintedCollateralTotal = parseInt(reserve.collateral.mintTotalSupply.toString()/Math.pow(10, tokenDecimals));
+
+            if(obligationDetails) {
+                const reserveObligation = obligationDetails.reserves.find(reserveObligation => {
+
+                    if(reserveObligation.collateral) {
+                        return (reserve.publicKey.toString() === reserveObligation.collateral.inner.depositReserve.toString());
+                    }
+                    return false;
+
+                })
+
+                if(reserveObligation) {
+                    const collateralDeposit = parseInt(reserveObligation.collateral.inner.depositedAmount.toString())/Math.pow(10, tokenDecimals);
+                    const collateralWorth = calcCollateralWorth(collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
+                    const remainingBorrow = reserve.config.loanToValueRatio.percent/100 * collateralWorth;
+                    totalUserCollateralWorth = totalUserCollateralWorth + collateralWorth;
+                    collateralTokens[reserve.publicKey] = collateralWorth;
+                }
+            }
         });
     }
 
-    const depositCompValues = generateDepositCompositionArr(reserves);
+    const collateralCompValues = generateCollateralCompositionArr(reserves);
 
-    const renderDepositComp = (reservesValues: MarketCompType[]) => {
+    const renderCollateralsComp = (reservesValues: MarketCompType[]) => {
         return reservesValues.map((value) => {
             return (
                 <ListItem key={value.asset}>
@@ -216,7 +181,7 @@ const Borrow = ({
                                             <DescriptionBlock>
                                                 <Description>Total:
                                                     <NumberFormat
-                                                        value={totalUserDepositWorth/5}
+                                                        value={totalUserCollateralWorth}
                                                         displayType={'text'}
                                                         decimalScale={2}
                                                         fixedDecimalScale={true}
@@ -224,7 +189,7 @@ const Borrow = ({
                                                         prefix={'$'} />
                                                 </Description>
                                                 <List>
-                                                    {renderDepositComp(depositCompValues)}
+                                                    {renderCollateralsComp(collateralCompValues)}
                                                 </List>
                                             </DescriptionBlock>
                                         </BlockNumber>
@@ -292,10 +257,9 @@ const Borrow = ({
                                 walletAccounts={walletAccounts}
                                 reserves={reserves}
                                 obligations={obligations}
-                                handleDepositLiq={handleDepositLiq}
-                                handleWithdrawCollateral={handleWithdrawCollateral}
-                                handleWithdrawLiquidity={handleWithdrawLiquidity}
                                 obligationDetails={obligationDetails}
+                                calcCollateralWorth={calcCollateralWorth}
+                                handleBorrowObligationLiquidity={handleBorrowObligationLiquidity}
                             />
                         </Block>
                     </Cell>

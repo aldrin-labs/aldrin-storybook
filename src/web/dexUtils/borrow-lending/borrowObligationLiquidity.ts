@@ -9,7 +9,7 @@ import { WalletAdapter } from '../types'
 import {sendTransaction} from '@sb/dexUtils/send';
 import {checkAccountForMint} from "@sb/dexUtils/borrow-lending/checkAccountForMint";
 
-export const depositObligationCollateral = async ({
+export const borrowObligationLiquidity = async ({
     wallet,
     connection,
     programAddress = BORROW_LENDING_PROGRAM_ADDRESS,
@@ -32,7 +32,13 @@ export const depositObligationCollateral = async ({
         programAddress,
     })
 
-    const collateralWallet = await checkAccountForMint({wallet, connection, mint: reserve.collateral.mint, create: false});
+    const [lendingMarketPda, lendingMarketBumpSeed] =
+        await PublicKey.findProgramAddress(
+            [Buffer.from(new PublicKey('6zstoyUpKZ7iiuDND8th19BQHXrUmZ3auqxN2Ujq5vuz').toBytes())],
+            new PublicKey(programAddress)
+        );
+console.log('amountBorrow', amount.toString())
+    const destinationLiquidityWallet = await checkAccountForMint({wallet, connection, mint: reserve.liquidity.mint, create: false});
 
     const transaction = new Transaction();
 
@@ -47,7 +53,6 @@ export const depositObligationCollateral = async ({
     })
 
     reservesPkToRefresh = [...new Set(reservesPkToRefresh)];
-    console.log('reservesPkToRefresh', reservesPkToRefresh)
 
     const refreshReservesInstructions = () => {
         reservesPkToRefresh.forEach((reservePk: string) => {
@@ -61,9 +66,7 @@ export const depositObligationCollateral = async ({
         })
     }
 
-    refreshReservesInstructions()
-
-    console.log(transaction, 'newtransaction')
+    refreshReservesInstructions();
 
     const refreshObligationInstruction = program.instruction.refreshObligation({
         accounts: {
@@ -77,13 +80,15 @@ export const depositObligationCollateral = async ({
 
     transaction.add(refreshObligationInstruction);
 
-    transaction.add(program.instruction.depositObligationCollateral(amount, {
+    transaction.add(program.instruction.borrowObligationLiquidity(lendingMarketBumpSeed, amount, {
         accounts: {
             borrower: wallet.publicKey,
             obligation: obligation.pubkey,
             reserve: reserve.publicKey,
-            sourceCollateralWallet: collateralWallet,
-            destinationCollateralWallet: reserve.collateral.supply,
+            lendingMarketPda: lendingMarketPda,
+            sourceLiquidityWallet: reserve.liquidity.supply,
+            destinationLiquidityWallet: destinationLiquidityWallet,
+            feeReceiver: reserve.liquidity.feeReceiver,
             tokenProgram: TOKEN_PROGRAM_ID,
             clock: SYSVAR_CLOCK_PUBKEY,
         },
@@ -92,6 +97,7 @@ export const depositObligationCollateral = async ({
     refreshReservesInstructions();
 
     transaction.add(refreshObligationInstruction);
+
 
     return await sendTransaction({
         transaction: transaction,

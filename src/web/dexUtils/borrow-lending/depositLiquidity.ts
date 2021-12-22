@@ -63,7 +63,7 @@ export const depositLiquidity = async ({
     });
 
     return await sendTransaction({
-        transaction: new Transaction().add(refreshReserveInstruction).add(depositReserveInstruction),
+        transaction: new Transaction().add(refreshReserveInstruction).add(depositReserveInstruction).add(refreshReserveInstruction),
         wallet,
         signers: [],
         connection,

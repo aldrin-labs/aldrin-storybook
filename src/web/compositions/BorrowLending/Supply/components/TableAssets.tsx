@@ -92,7 +92,7 @@ const TableAssets = ({
                     );
                     depositApy = borrowApy * utilizationRate;
 
-                    reserveBorrowedLiquidity = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString());
+                    reserveBorrowedLiquidity = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString())/Math.pow(10, 18);
                     reserveAvailableLiquidity = parseInt(reserve.liquidity.availableAmount.toString())/Math.pow(10, tokenDecimals);
                     mintedCollateralTotal = parseInt(reserve.collateral.mintTotalSupply.toString()/Math.pow(10, tokenDecimals));
                     // mintedLiquidityTotal = parseInt(reserve.liquidity.mintTotalSupply.toString()/Math.pow(10, tokenDecimals));
@@ -113,9 +113,9 @@ const TableAssets = ({
                         if(reserveObligation) {
                             collateralDeposit = parseInt(reserveObligation.collateral.inner.depositedAmount.toString())/Math.pow(10, tokenDecimals);
                             // amount_of_collateral * (reserveBorrowedLiquidity + reserveAvailableLiquidity) / mintedCollateralTotal * tokenPrice
-                            collateralWorth = calcCollateralWorth(collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
-                            liquidityWorth = collateralDeposit * (reserveBorrowedLiquidity + reserveAvailableLiquidity) / mintedCollateralTotal * tokenPrice;
-
+                            console.log('reserve.collateral.inner.marketValue', parseInt(u192ToBN(reserveObligation.collateral.inner.marketValue).toString())/Math.pow(10, 18))
+                            // collateralWorth = calcCollateralWorth(collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
+                            collateralWorth = parseInt(u192ToBN(reserveObligation.collateral.inner.marketValue).toString())/Math.pow(10, 18);
                             remainingBorrow = reserve.config.loanToValueRatio.percent/100 * collateralWorth;
                         }
                     }
@@ -170,6 +170,7 @@ const TableAssets = ({
                                 mintedCollateralTotal={mintedCollateralTotal}
                                 maxLtv={maxLtv}
                                 remainingBorrow={remainingBorrow}
+                                depositApy={depositApy}
                                 handleDepositLiq={handleDepositLiq}
                                 handleWithdrawCollateral={handleWithdrawCollateral}
                                 handleWithdrawLiquidity={handleWithdrawLiquidity}

@@ -79,6 +79,19 @@ const BorrowLending: FC = ({match}: BorrowLendingProps) => {
                     totalDepositWorth = totalDepositWorth + tokenWorth;
                     // totalDepositWorth = parseInt(totalDepositWorth.add(tokenWorth).toString())/Math.pow(10, tokenAccount.account.data.parsed.info.tokenAmount.decimals);
                 }
+
+                const liq = reserve.liquidity
+                const col = reserve.collateral
+                console.log(
+                    'reserveInfo',
+                    {
+                        availableAmount: liq.availableAmount.toString(),
+                        borrowedAmount: u192ToBN(liq.borrowedAmount).toString(),
+                        cumulativeBorrowRate: u192ToBN(liq.cumulativeBorrowRate).toString(),
+                        marketPrice: u192ToBN(liq.marketPrice).toString(),
+                        mintTotalSupply: col.mintTotalSupply.toString()
+                    }
+                )
             })
 
             summary.totalDepositWorth = totalDepositWorth;

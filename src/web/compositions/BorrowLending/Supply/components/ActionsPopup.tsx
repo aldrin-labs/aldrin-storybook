@@ -48,6 +48,7 @@ const ActionsPopup = ({
     mintedCollateralTotal,
     maxLtv,
     remainingBorrow,
+    depositApy,
     handleDepositLiq,
     handleWithdrawCollateral,
     handleWithdrawLiquidity,
@@ -70,6 +71,7 @@ const ActionsPopup = ({
     mintedCollateralTotal: number,
     maxLtv: number,
     remainingBorrow: number,
+    depositApy: number,
     handleDepositLiq: (reserve: any, amount: number, asColateral: boolean, callback: () => void) => void,
     handleWithdrawCollateral: (reserve: any, amount: number, callback: () => void) => void,
     handleWithdrawLiquidity: (reserve: any, amount: number, callback: () => void) => void,
@@ -104,6 +106,7 @@ const ActionsPopup = ({
             onClose();
             setAmount(0);
         }
+        console.log('depositLiqq', amount * Math.pow(10, tokenDecimals), tokenDecimals)
         handleDepositLiq(reserve, amount * Math.pow(10, tokenDecimals), asCollateral, callback);
     }
 
@@ -194,8 +197,8 @@ const ActionsPopup = ({
                             </Cell>
                             <Cell col={12} colLg={3}>
                                 <BlockSupply>
-                                    <TitleBlock>Supply APY</TitleBlock>
-                                    2.31%
+                                    <TitleBlock>Deposit APY</TitleBlock>
+                                    {depositApy}%
                                 </BlockSupply>
                             </Cell>
                             <Cell col={12} colLg={3}>
