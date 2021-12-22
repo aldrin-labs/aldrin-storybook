@@ -1,6 +1,8 @@
 import { BN } from 'bn.js'
 import dayjs from 'dayjs'
 import React, { useState, ReactNode } from 'react'
+
+import { Link, useHistory } from 'react-router-dom'
 import {
   DataCellValues,
   DataHeadColumn,
@@ -21,7 +23,6 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 
-import { Link, useHistory } from 'react-router-dom'
 
 import { FlexBlock } from '@sb/components/Layout'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -29,8 +30,6 @@ import { useVestings } from '@sb/dexUtils/vesting'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SvgIcon } from '@sb/components'
 import { toMap, groupBy } from '@sb/utils'
-
-
 import { Vesting } from '@sb/dexUtils/vesting/types'
 import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
 
@@ -135,14 +134,6 @@ const prepareCell = (params: {
   const vesting = vestings.get(pool.poolTokenMint) || EMPTY_VESTING
 
   const hasLockedFunds = vesting.endTs * 1000 > Date.now()
-
-  if (hasLockedFunds) {
-    console.log(
-      'poolTokenPrice: ',
-      poolTokenPrice,
-      vesting.startBalance.toString()
-    )
-  }
 
   const lockedFundsValue =
     parseFloat(vesting.startBalance.toString()) * poolTokenPrice
