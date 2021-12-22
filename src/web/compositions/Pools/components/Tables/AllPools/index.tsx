@@ -52,7 +52,7 @@ export const AllPoolsTable: React.FC<AllPoolsProps> = (props) => {
   return (
     <PoolsTable
       addColumns={COLUMNS}
-      pools={pools.filter((pool) => !HIDE_POOLS.includes(pool.swapToken))}
+      pools={pools.filter((pool) => !HIDE_POOLS.includes(pool.poolTokenMint))}
       farmingTicketsMap={farmingTicketsMap}
       tokenPrices={dexTokensPricesMap}
       searchValue={searchValue}
