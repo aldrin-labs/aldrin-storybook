@@ -13,7 +13,7 @@ export const sendSignedTransactions = async (
     showNotification,
     successMessage,
     sentMessage,
-    commitment = 'finalized',
+    commitment = 'confirmed',
   } = params
   for (let i = 0; i < transactions.length; i += 1) {
     const signedTransaction = transactions[i]

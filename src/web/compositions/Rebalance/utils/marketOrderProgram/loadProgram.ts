@@ -21,8 +21,8 @@ export const loadMarketOrderProgram = ({
     program_idl,
     marketOrderProgramId,
     new Provider(connection, wallet, {
-      preflightCommitment: 'recent',
-      commitment: 'recent',
+      preflightCommitment: 'confirmed',
+      commitment: 'confirmed',
     })
   )
 

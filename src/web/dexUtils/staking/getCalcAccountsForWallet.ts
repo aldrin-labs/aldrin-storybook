@@ -23,7 +23,7 @@ export const getCalcAccounts = async (
   const calcAccountsData = await program.provider.connection.getProgramAccounts(
     new PublicKey(STAKING_PROGRAM_ADDRESS),
     {
-      commitment: 'finalized',
+      commitment: 'confirmed',
       filters: [
         {
           dataSize: CALC_ACCOUNT_SIZE,

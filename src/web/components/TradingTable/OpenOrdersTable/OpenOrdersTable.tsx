@@ -1,14 +1,13 @@
 import React from 'react'
+
 import { TableWithSort } from '@sb/components'
-
 import { getEmptyTextPlaceholder } from '@sb/components/TradingTable/TradingTable.utils'
-
-import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
+import { notify } from '@sb/dexUtils/notifications'
+import { cancelOrder } from '@sb/dexUtils/serum'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { cancelOrder } from '@sb/dexUtils/send'
-import { combineOpenOrdersTable } from './OpenOrdersTable.utils'
 import { openOrdersColumnNames } from '../TradingTable.mocks'
+import { combineOpenOrdersTable } from './OpenOrdersTable.utils'
 
 const OpenOrdersTable = (props) => {
   const { wallet } = useWallet()
@@ -37,7 +36,6 @@ const OpenOrdersTable = (props) => {
         market: order.market,
         connection,
         wallet,
-        signers: [],
       })
       cancelOrderCallback()
     } catch (e) {
@@ -47,7 +45,7 @@ const OpenOrdersTable = (props) => {
         type: 'error',
       })
 
-      return
+
     }
   }
 

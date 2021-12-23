@@ -229,7 +229,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const createAccountsTxId = await sendSignedTransaction({
           transaction: generatedTransactions.createAccounts,
           connection,
-          commitment: 'recent',
+          commitment: 'confirmed',
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
         await sleep(1000)
@@ -239,7 +239,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const setAuthoritiesTxId = await sendSignedTransaction({
           transaction: generatedTransactions.setAuthorities,
           connection,
-          commitment: 'recent',
+          commitment: 'confirmed',
         })
         console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
         await sleep(1000)
@@ -249,7 +249,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const initPoolTxId = await sendSignedTransaction({
           transaction: generatedTransactions.createPool,
           connection,
-          commitment: 'recent',
+          commitment: 'confirmed',
         })
         console.log('initPoolTxId: ', initPoolTxId)
         await sleep(1000)
@@ -259,7 +259,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const firstDepositTxId = await sendSignedTransaction({
           transaction: generatedTransactions.firstDeposit,
           connection,
-          commitment: 'recent',
+          commitment: 'confirmed',
         })
         await sleep(1000)
 
@@ -271,7 +271,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           const farmingTxId = await sendSignedTransaction({
             transaction: generatedTransactions.farming,
             connection,
-            commitment: 'recent',
+            commitment: 'confirmed',
           })
           await sleep(1000)
           console.log('farmingTxId: ', farmingTxId)
