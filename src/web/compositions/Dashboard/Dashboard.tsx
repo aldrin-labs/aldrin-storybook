@@ -1,7 +1,8 @@
+import { Theme, withTheme } from '@material-ui/core'
 import { OpenOrders } from '@project-serum/serum'
 import React, { useState, useEffect } from 'react'
-import { Theme, withTheme } from '@material-ui/core'
 
+import { Loading } from '@sb/components'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { DEX_PID } from '@core/config/dex'
 
@@ -16,7 +17,6 @@ import { LoadingScreenWithHint } from '@sb/components/LoadingScreenWithHint/Load
 import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable'
 import { notEmpty, onlyUnique, sleep } from '@sb/dexUtils/utils'
 import { useInterval } from '@sb/dexUtils/useInterval'
-import { Loading } from '@sb/components'
 import { notifyWithLog } from '@sb/dexUtils/notifications'
 
 import { compose } from 'recompose'
@@ -25,6 +25,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 import { RowContainer, Title } from '../AnalyticsRoute/index.styles'
+import { DexTokensPrices } from '../Pools/index.types'
 import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import { UnsettledBalancesTable } from './components/UnsettledBalancesTable/UnsettledBalancesTable'
 import {
@@ -43,7 +44,6 @@ import {
 import { loadOpenOrderAccountsFromPubkeys } from './utils/loadOpenOrderAccountsFromPubkeys'
 import { settleUnsettledBalancesForAllMarkets } from './utils/settleUnsettledBalancesForAllMarkets'
 import LoadingText from './components/LoadingText/LoadingText'
-import { DexTokensPrices } from '../Pools/index.types'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
@@ -287,7 +287,7 @@ const Dashboard = ({
                 // removing loaders only in case of error
                 setsCancellingAllOrders(false)
               }
-              await sleep(5 * 1000)
+              // await sleep(5 * 1000)
               refreshOpenOrders()
             }}
             handlePairChange={() => {}}

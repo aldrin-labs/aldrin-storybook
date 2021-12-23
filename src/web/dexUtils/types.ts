@@ -1,4 +1,5 @@
 import { Market, OpenOrders } from '@project-serum/serum'
+import { Order } from '@project-serum/serum/lib/market'
 import {
   Connection,
   PublicKey,
@@ -8,7 +9,6 @@ import {
   Signer,
   Commitment,
 } from '@solana/web3.js'
-import { Order } from '@project-serum/serum/lib/market'
 
 export interface WalletAdapter {
   publicKey: PublicKey | null | undefined

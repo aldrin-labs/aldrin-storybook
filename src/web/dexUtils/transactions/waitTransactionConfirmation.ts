@@ -8,7 +8,6 @@ import {
 import { Metrics } from '@core/utils/metrics'
 
 import { getProviderNameFromUrl } from '../connection'
-import MultiEndpointsConnection from '../MultiEndpointsConnection'
 import { sleep } from '../utils'
 import { WaitConfirmationParams } from './types'
 
@@ -79,7 +78,7 @@ const CONFIRMATION_STATUSES: Commitment[] = [
 
 const pollTransactionStatus = (
   txId: string,
-  connection: MultiEndpointsConnection,
+  connection: Connection,
   commitment: Commitment,
   pollInterval: number,
   timeout: number
@@ -97,9 +96,7 @@ const pollTransactionStatus = (
         // eslint-disable-next-line no-await-in-loop
         await sleep(pollInterval)
         // eslint-disable-next-line no-await-in-loop
-        const sigResult = await connection
-          .getConnection()
-          .getSignatureStatus(txId)
+        const sigResult = await connection.getSignatureStatus(txId)
 
         console.log(`Tx ${txId} status: `, sigResult.value)
         if (!done) {
@@ -154,11 +151,7 @@ export const waitTransactionConfirmation = async (
   } = params
   // const done = false
 
-  const [wsPromise, wsCancel] = onSignature(
-    txId,
-    connection.getConnection(),
-    commitment
-  )
+  const [wsPromise, wsCancel] = onSignature(txId, connection, commitment)
   const [tPromise, timeoutCanceler] = timeoutPromise(timeout)
   const [pollPromise, pollCancell] = pollTransactionStatus(
     txId,

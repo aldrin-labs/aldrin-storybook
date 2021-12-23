@@ -13,9 +13,7 @@ export const signAndSendTransactions = async (
     successMessage,
     commitment,
   } = params
-  const recentHash = (
-    await connection.getConnection().getRecentBlockhash('max')
-  ).blockhash
+  const recentHash = (await connection.getRecentBlockhash('max')).blockhash
 
   if (!wallet.publicKey) {
     throw new Error('no Public key for wallet')

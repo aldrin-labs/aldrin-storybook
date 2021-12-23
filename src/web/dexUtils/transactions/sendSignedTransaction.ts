@@ -24,11 +24,9 @@ export const sendSignedTransaction = async (
 
   const startTime = Date.now()
 
-  const txId = await connection
-    .getConnection()
-    .sendRawTransaction(rawTransaction, {
-      skipPreflight,
-    })
+  const txId = await connection.sendRawTransaction(rawTransaction, {
+    skipPreflight,
+  })
 
   const message = Array.isArray(sentMessage) ? sentMessage[0] : sentMessage
   const description = Array.isArray(sentMessage) ? sentMessage[1] : undefined

@@ -1,13 +1,12 @@
-import { Transaction } from '@solana/web3.js'
+import { Connection, Transaction } from '@solana/web3.js'
 
-import MultiEndpointsConnection from '../MultiEndpointsConnection'
 import { sendSignedTransaction } from './sendSignedTransaction'
 import { NotificationParams, TransactionParams } from './types'
 
 /** Send batch of signed transactions, wait for finalizing of last transaction */
 export const sendSignedTransactions = async (
   transactions: Transaction[],
-  connection: MultiEndpointsConnection,
+  connection: Connection,
   params: TransactionParams & NotificationParams = {}
 ) => {
   const {

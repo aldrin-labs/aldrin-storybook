@@ -1,15 +1,15 @@
 import {
   Commitment,
+  Connection,
   Signer,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import MultiEndpointsConnection from '../MultiEndpointsConnection'
 import { WalletAdapter } from '../types'
 
 interface SendTransactionParamsBase {
-  connection: MultiEndpointsConnection
+  connection: Connection
 }
 
 export interface NotificationParams {
