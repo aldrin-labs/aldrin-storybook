@@ -15,9 +15,6 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
   wallet,
   tokensMap,
   connection,
-  userBaseTokenAccount,
-  userQuoteTokenAccount,
-  transferSOLToWrapped,
   allTokensData,
 }: {
   swapAmountIn: number
@@ -26,9 +23,6 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
   wallet: WalletAdapter
   tokensMap: Map<string, TokenInfo>
   connection: Connection
-  userBaseTokenAccount: PublicKey | null
-  userQuoteTokenAccount: PublicKey | null
-  transferSOLToWrapped: boolean
   allTokensData: TokenInfo[]
 }) => {
   const {
@@ -49,7 +43,7 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
     isSwapBaseToQuote,
   })
 
-  if (swapAmountIn === 0 || (transferSOLToWrapped && !wallet.publicKey)) {
+  if (swapAmountIn === 0) {
     return ''
   }
 
