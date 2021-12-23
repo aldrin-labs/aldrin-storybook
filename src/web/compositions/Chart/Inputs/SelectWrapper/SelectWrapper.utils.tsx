@@ -8,7 +8,7 @@ import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
 import stableCoins from '@core/config/stableCoins'
-import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
+import { getNumberOfDecimalsFromNumber, stripByAmount } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
   roundAndFormatNumber,
@@ -465,9 +465,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(
-                      stripDigitPlaces(closePrice, pricePrecision)
-                    )}
+                  : formatNumberToUSFormat(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -481,9 +479,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(
-                      stripDigitPlaces(closePrice, pricePrecision)
-                    )}
+                  : formatNumberToUSFormat(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
