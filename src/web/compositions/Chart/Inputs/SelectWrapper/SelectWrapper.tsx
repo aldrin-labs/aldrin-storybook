@@ -415,15 +415,6 @@ class SelectPairListComponent extends React.PureComponent<
       console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
-    console.log({
-      exchange: 'serum',
-      publicKey: 'Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5',
-      marketType: 0,
-      startTimestamp: `${datesForQuery.startOfTime()}`,
-      endTimestamp: `${datesForQuery.endOfTime()}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
-    })
 
     return (
       <>
