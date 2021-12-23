@@ -11,13 +11,11 @@ export const useUserTokenAccounts = (): [TokenInfo[], RefreshFunction] => {
   const connection = useConnection()
 
   const fetcher = async () => {
-    console.log('Fetch tokens1')
     if (!wallet.publicKey) {
       return []
     }
-    console.log('Fetch tokens2')
     const data = await getAllTokensData(wallet.publicKey, connection)
-    console.log('Fetch tokens3', data)
+
     return data
   }
 
