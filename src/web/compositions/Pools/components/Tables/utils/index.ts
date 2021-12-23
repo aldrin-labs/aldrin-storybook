@@ -1,4 +1,7 @@
-export const symbolIncludesSearch = (symbol: string, searchValue: string): boolean => {
+export const symbolIncludesSearch = (
+  symbol: string,
+  searchValue: string
+): boolean => {
   if (searchValue) {
     const updatedSearchValue = searchValue
       .replace('/', '_')
@@ -11,3 +14,5 @@ export const symbolIncludesSearch = (symbol: string, searchValue: string): boole
 
   return true
 }
+
+export * from './poolsTable'

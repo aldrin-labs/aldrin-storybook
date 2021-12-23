@@ -1,22 +1,22 @@
 import { TokenInstructions } from '@project-serum/serum'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { createTokenAccountTransaction } from '@sb/dexUtils/send'
-import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   Connection,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  TransactionInstruction,
 } from '@solana/web3.js'
+
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { FarmingState, TransactionAndSigner } from '@sb/dexUtils/common/types'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { createTokenAccountTransaction } from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
 import { filterTicketsAvailableForUnstake } from '../filterTicketsAvailableForUnstake'
 import { signAndSendTransaction } from '../signAndSendTransaction'
-import { splitBy } from '../../../utils'
 
 export const getEndFarmingTransactions = async (params: {
   wallet: WalletAdapter
@@ -80,7 +80,7 @@ export const getEndFarmingTransactions = async (params: {
 
   const transactionsAndSigners = []
 
-  for (let ticketData of filteredUserFarmingTicketsPerPool) {
+  for (const ticketData of filteredUserFarmingTicketsPerPool) {
     const endFarmingTransaction = await program.instruction.endFarming({
       accounts: {
         pool: poolPublicKey,
@@ -105,16 +105,11 @@ export const getEndFarmingTransactions = async (params: {
     }
   }
 
-  const [firstTx, ...transactions] = splitBy(endFarmingInstructions, 4).map(
-    (instr) => ({
-      transaction: new Transaction().add(...instr),
-    })
-  )
+  if (commonTransaction.instructions.length > 0) {
+    transactionsAndSigners.push({ transaction: commonTransaction })
+  }
 
-  return [
-    { transaction: commonTransaction.add(...firstTx.transaction.instructions) },
-    ...transactions,
-  ]
+  return transactionsAndSigners
 }
 
 export const endFarming = async ({

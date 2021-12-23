@@ -1,9 +1,13 @@
+import { PublicKey } from '@solana/web3.js'
+import dayjs from 'dayjs'
+
+import React from 'react'
+import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
 import { dayDuration } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
@@ -12,11 +16,11 @@ import {
   useUserTokenAccounts,
   useAssociatedTokenAccount,
 } from '@sb/dexUtils/token/hooks'
-import { PublicKey } from '@solana/web3.js'
-import dayjs from 'dayjs'
-import React from 'react'
+
 import { compose } from 'recompose'
+
 import { Cell } from '@sb/components/Layout'
+
 import { RootRow } from '../styles'
 import StatsComponent from './StatsComponent'
 import UserStakingInfo from './UserStakingInfo'
@@ -35,7 +39,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
 
   const stakingPool = getStakingPoolInfoQuery.getStakingPoolInfo || {}
 
-  const [_totalStaked, refreshTotalStaked] = useAccountBalance({
+  const [totalStaked, refreshTotalStaked] = useAccountBalance({
     publicKey: new PublicKey(stakingPool.stakingVault),
   })
 
@@ -75,6 +79,7 @@ const StakingComponent: React.FC<StakingComponentProps> = (
             buyBackAmount={buyBackAmount}
             currentFarmingState={currentFarmingState}
             tokenData={tokenData}
+            totalStaked={totalStaked}
           />
         </Cell>
       </RootRow>
