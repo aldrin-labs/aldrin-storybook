@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+
+import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
+import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
+
 import AldrinLogo from '@icons/Aldrin.svg'
 import StakeBtn from '@icons/stakeBtn.png'
 
 // TODO: Refactor popup
-import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
-import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 
 import { Body } from '../Layout'
+import { DropDown } from './Dropdown'
 import {
   HeaderWrap,
   LogoLink,
@@ -20,8 +23,6 @@ import {
   MainLinksBlock,
   StakeButton,
 } from './styles'
-
-import { DropDown } from './Dropdown'
 import { WalletBlock } from './WalletBlock'
 
 export const Header = () => {
@@ -80,6 +81,9 @@ export const Header = () => {
             </NavLink>
             <NavLink to="/dashboard" activeClassName="selected">
               Dashboard
+            </NavLink>
+            <NavLink to="/twamm" activeClassName="selected">
+              Twamm
             </NavLink>
             <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">
               Wallet
