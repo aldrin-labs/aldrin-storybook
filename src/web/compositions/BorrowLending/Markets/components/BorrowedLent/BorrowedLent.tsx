@@ -1,6 +1,7 @@
 import React from 'react';
 
-import {Block, BlockContent} from "@sb/components/Block";
+import {Block, BlockContent} from '@sb/components/Block';
+import {toNumberWithDecimals} from '@sb/dexUtils/borrow-lending/U192-converting';
 
 type BorrowedLentProps = {
     valueBorrowed: string,

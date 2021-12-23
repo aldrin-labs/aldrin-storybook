@@ -28,6 +28,7 @@ import {Cell} from '@sb/components/Layout';
 import BN from 'bn.js';
 import {removeTrailingZeros, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
 import NumberFormat from 'react-number-format';
+import {BlockReward} from '@sb/compositions/BorrowLending/Supply/Supply.styles';
 
 const ActionsPopup = ({
     theme,
@@ -45,12 +46,16 @@ const ActionsPopup = ({
     reserveBorrowedLiquidity,
     reserveAvailableLiquidity,
     mintedCollateralTotal,
-    maxLtv,
     liquidationThreshold,
     remainingBorrow,
     calcCollateralWorth,
     borrowApy,
+    borrowedAmount,
+    borrowedAmountWorth,
+    riskFactor,
+    unhealthyBorrowValue,
     handleBorrowObligationLiquidity,
+    handleRepayObligationLiquidity,
 }: {
     theme: Theme
     onClose: () => void
@@ -67,12 +72,16 @@ const ActionsPopup = ({
     reserveBorrowedLiquidity: number,
     reserveAvailableLiquidity: number,
     mintedCollateralTotal: number,
-    maxLtv: number,
     liquidationThreshold: number,
     remainingBorrow: number,
     calcCollateralWorth: () => void,
     borrowApy: number,
+    borrowedAmount: number,
+    borrowedAmountWorth: number,
+    riskFactor: number,
+    unhealthyBorrowValue: number,
     handleBorrowObligationLiquidity: (reserve: any, amount: number, callback: () => void) => void,
+    handleRepayObligationLiquidity: (reserve: any, amount: number, callback: () => void) => void,
 }) => {
     const [amount, setAmount] = useState(0);
     const [mode, setMode] = useState(0);
@@ -81,14 +90,14 @@ const ActionsPopup = ({
         let valueToSet = values.floatValue;
 
         if(!mode && +valueToSet > walletBalance) {
-            valueToSet = walletBalance;
-        } else if(mode && +valueToSet > +depositAmount) {
-            valueToSet = +depositAmount;
+            valueToSet = collateralDeposit;
+        } else if(mode && +valueToSet > +borrowedAmount) {
+            valueToSet = +borrowedAmount;
         }
         setAmount(valueToSet || 0);
     };
 
-    const handleChangeMode = (modeValue) => {
+    const handleChangeMode = (modeValue: number) => {
         setMode(modeValue);
         setAmount(0);
     }
@@ -99,7 +108,7 @@ const ActionsPopup = ({
             setAmount(0);
         }
 
-        handleBorrowObligationLiquidity(reserve, amount, callback);
+        handleBorrowObligationLiquidity(reserve, amount * Math.pow(10, tokenDecimals), callback);
     }
 
     const repay = () => {
@@ -107,6 +116,8 @@ const ActionsPopup = ({
             onClose();
             setAmount(0);
         }
+
+        handleRepayObligationLiquidity(reserve, amount * Math.pow(10, tokenDecimals), callback)
     }
 
     const ballanceAfterBorrow = removeTrailingZeros((+walletBalance + amount).toFixed(tokenDecimals));
@@ -115,16 +126,28 @@ const ActionsPopup = ({
     const collateralWorthAfterBorrow = collateralWorth - calcCollateralWorth(amount, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
     const collateralWorthAfterRepay = collateralWorth + calcCollateralWorth(amount, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
 
-    const remainingBorrowAfterBorrow = reserve.config.loanToValueRatio.percent/100 * collateralWorthAfterBorrow;
-    const remainingBorrowAfterRepay = reserve.config.loanToValueRatio.percent/100 * collateralWorthAfterRepay;
+    const borrowedAmountAfterBorrow = borrowedAmount * Math.pow(10, tokenDecimals) + amount * Math.pow(10, tokenDecimals);
+    const borrowedWorthAfterBorrow = (borrowedAmountAfterBorrow * tokenPrice)/Math.pow(10, tokenDecimals);
+
+    const borrowedAmountAfterRepay = borrowedAmount * Math.pow(10, tokenDecimals) - amount * Math.pow(10, tokenDecimals);
+    const borrowedWorthAfterRepay = (borrowedAmountAfterRepay * tokenPrice)/Math.pow(10, tokenDecimals);
+    console.log('borrowedAmountAfterBorrow', collateralWorth, borrowedAmount, borrowedAmountAfterBorrow, tokenPrice, borrowedWorthAfterBorrow, unhealthyBorrowValue)
+
+    const remainingBorrowAfterBorrow = reserve.config.loanToValueRatio.percent/100 * (collateralWorthAfterBorrow - borrowedWorthAfterBorrow);
+    const remainingBorrowAfterRepay = reserve.config.loanToValueRatio.percent/100 * (collateralWorthAfterRepay - borrowedWorthAfterRepay);
+
+    const riskFactorAfterBorrow = (borrowedWorthAfterBorrow/unhealthyBorrowValue) * 100;
+    const riskFactorAfterRepay = (borrowedWorthAfterRepay/unhealthyBorrowValue) * 100;
 
     let MAX_VAL = 0;
     if(mode) {
-        MAX_VAL = parseFloat(depositAmount).toFixed(tokenDecimals);
+        MAX_VAL = parseFloat(borrowedAmount).toFixed(tokenDecimals);
     } else {
-        MAX_VAL = collateralDeposit;
+        MAX_VAL = parseFloat((collateralDeposit / 5 - borrowedAmount).toFixed(tokenDecimals));
     }
     const withValueLimit = ({ floatValue }) => floatValue <= MAX_VAL;
+
+    const activeStyle = {borderTopColor: 'green', color: 'green'};
 
     return (
         <DialogWrapper
@@ -156,8 +179,8 @@ const ActionsPopup = ({
             {/*    <button disabled={ typeof reserveObligationCollateral?.collateral.inner.depositedAmount === 'undefined' ? true : false} onClick={() => handleWithdrawCollateral(reserve, 10)}>Withdraw collateral</button>*/}
             {/*</RowContainer>*/}
             <RowContainer>
-                <ButtonCategory onClick={() => handleChangeMode(0)}>Borrow</ButtonCategory>
-                <ButtonCategory onClick={() => handleChangeMode(1)} style={{borderTopColor: 'green', color: 'green'}}>Repay</ButtonCategory>
+                <ButtonCategory onClick={() => handleChangeMode(0)} style={mode === 0 ? activeStyle : {}}>Borrow</ButtonCategory>
+                <ButtonCategory onClick={() => handleChangeMode(1)} style={mode ? activeStyle : {}}>Repay</ButtonCategory>
             </RowContainer>
 
             <RowContainer>
@@ -220,7 +243,7 @@ const ActionsPopup = ({
                                 </BlockSupply>
                                 <BlockSupply>
                                     <TitleBlock>Risk Factor</TitleBlock>
-                                    0%
+                                    {removeTrailingZeros(parseFloat(riskFactor).toFixed(2))}%
                                 </BlockSupply>
                                 <BlockSupply>
                                     <TitleBlock>Remaining Borrow</TitleBlock>
@@ -261,7 +284,11 @@ const ActionsPopup = ({
                                 </BlockSupply>
                                 <BlockSupply>
                                     <TitleBlock>Risk Factor</TitleBlock>
-                                    0%
+                                    {mode ?
+                                        removeTrailingZeros(riskFactorAfterRepay.toFixed(2))
+                                        :
+                                        removeTrailingZeros(riskFactorAfterBorrow.toFixed(2))
+                                    }%
                                 </BlockSupply>
                                 <BlockSupply>
                                     <TitleBlock>Remaining Borrow</TitleBlock>
@@ -320,11 +347,11 @@ const ActionsPopup = ({
                             </AmountCard>
                             <div style={{textAlign: 'left', marginTop: '0.3rem'}}>
                                 {mode ?
-                                    <MaxAmount>Max Amount: {depositAmount}({collateralDeposit}) </MaxAmount>
+                                    <MaxAmount>Max Amount: {parseFloat(borrowedAmount).toFixed(tokenDecimals)}</MaxAmount>
                                     :
                                     <MaxAmount>
                                         Max Amount:
-                                        {collateralDeposit}
+                                        {removeTrailingZeros((collateralDeposit / 5 - borrowedAmount).toFixed(tokenDecimals))}
                                     </MaxAmount>
                                 }
                             </div>
@@ -340,7 +367,7 @@ const ActionsPopup = ({
                                     theme={theme}
                                     btnWidth="calc(50% - 1rem)"
                                     style={{alignSelf: 'center', marginTop: '2rem'}}
-                                    disabled={amount === 0 || reserveObligationCollateral?.collateral.inner.depositedAmount.toString()}
+                                    disabled={amount === 0 || borrowedAmount === 0}
                                     onClick={() => repay()}
                                 >
                                     Confirm

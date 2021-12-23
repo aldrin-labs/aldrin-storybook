@@ -22,7 +22,7 @@ import {withTheme} from '@material-ui/core/styles';
 import {initObligation} from '@sb/dexUtils/borrow-lending/initObligation';
 import {depositObligationCollateral} from '@sb/dexUtils/borrow-lending/depositObligationCollateral';
 import TableAssets from './components/TableAssets';
-import {toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
+import {removeTrailingZeros, toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
 import {MarketCompType, ObligationType, WalletAccountsType} from '@sb/compositions/BorrowLending/Markets/types';
 import {getObligation} from '@sb/dexUtils/borrow-lending/getObligation';
 import {withdrawCollateral} from '@sb/dexUtils/borrow-lending/withdrawCollateral';
@@ -56,6 +56,7 @@ const Supply = ({
     const connection = useConnection()
     let totalRemainingBorrow = 0;
     let totalUserDepositWorth = 0;
+    let totalRiskFactor = obligationDetails ? parseInt(u192ToBN(obligationDetails.borrowedValue).toString())/parseInt(u192ToBN(obligationDetails.unhealthyBorrowValue).toString()) * 100 : 0;
 
     const generateDepositCompositionArr = (reservesList: []): MarketCompType[] => {
         const depositCompArr: MarketCompType[] = [];
@@ -235,9 +236,9 @@ const Supply = ({
                                             <TitleBlock>Projected Yields</TitleBlock>
 
                                             <DescriptionBlock>
-                                                <Description>Total: $9,659.78</Description>
+                                                <Description>Total: TBA</Description>
                                                 <List>
-                                                    <ListItem>USDC 100.00%</ListItem>
+                                                    <ListItem>Token name 100.00%</ListItem>
                                                 </List>
                                             </DescriptionBlock>
                                         </BlockNumber>
@@ -257,7 +258,7 @@ const Supply = ({
                                                 <Cell col={12} colLg={4}>
                                                     <BlockReward>
                                                         <TitleBlock>Risk Factor</TitleBlock>
-                                                        0
+                                                        {removeTrailingZeros(parseFloat(totalRiskFactor).toFixed(2))}%
                                                     </BlockReward>
                                                 </Cell>
                                                 <Cell col={12} colLg={4}>

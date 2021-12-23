@@ -203,7 +203,10 @@ const BorrowLending: FC = ({match}: BorrowLendingProps) => {
         <>
             {
                 match.params.section === 'markets' ?
-                    <Markets reserves={reserves} />
+                    <Markets
+                        reserves={reserves}
+                        obligationDetails={obligationDetails}
+                    />
                     :
                     match.params.section === 'dashboard' ?
                         <Dashboard

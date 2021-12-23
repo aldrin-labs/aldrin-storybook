@@ -20,10 +20,11 @@ import {compose} from 'recompose';
 import {withTheme} from '@material-ui/core/styles';
 import {depositObligationCollateral} from '@sb/dexUtils/borrow-lending/depositObligationCollateral';
 import TableAssets from './components/TableAssets';
-import {toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
+import {removeTrailingZeros, toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
 import {MarketCompType, ObligationType, WalletAccountsType} from '@sb/compositions/BorrowLending/Markets/types';
 import {PublicKey} from '@solana/web3.js';
 import {borrowObligationLiquidity} from "@sb/dexUtils/borrow-lending/borrowObligationLiquidity";
+import {repayObligationLiquidity} from "@sb/dexUtils/borrow-lending/repayObligationLiquidity";
 
 type BorrowProps = {
     theme: Theme,
@@ -58,16 +59,35 @@ const Borrow = ({
     let reserveBorrowedLiquidity = 0;
     let reserveAvailableLiquidity = 0;
     let mintedCollateralTotal = 0;
+    let unhealthyBorrowValue = 0;
+    let totalRiskFactor = obligationDetails ? (parseInt(u192ToBN(obligationDetails.borrowedValue).toString())/parseInt(u192ToBN(obligationDetails.unhealthyBorrowValue).toString()) * 100) : 0;
 
     const handleBorrowObligationLiquidity = (reserve: any, amount: number, callback: () => void) => {
         borrowObligationLiquidity({
             wallet,
             connection,
-            obligation: obligations[0] || newObligation,
+            obligation: obligations[0],
             obligationDetails,
             reserve,
             amount: new BN(amount),
         }).then(borrowObligationLiquidityRes => {
+            handleGetReservesAccounts()
+            handleGetObligation()
+            if(callback) {
+                callback()
+            }
+        }).catch(depositObligationCollateralError => console.log('depositObligationCollateralError', depositObligationCollateralError))
+    }
+
+    const handleRepayObligationLiquidity = (reserve: any, amount: number, callback: () => void) => {
+        repayObligationLiquidity({
+            wallet,
+            connection,
+            obligation: obligations[0],
+            obligationDetails,
+            reserve,
+            amount: new BN(amount),
+        }).then(repayObligationLiquidityRes => {
             handleGetReservesAccounts()
             handleGetObligation()
             if(callback) {
@@ -116,21 +136,37 @@ const Borrow = ({
             mintedCollateralTotal = parseInt(reserve.collateral.mintTotalSupply.toString()/Math.pow(10, tokenDecimals));
 
             if(obligationDetails) {
-                const reserveObligation = obligationDetails.reserves.find(reserveObligation => {
+                unhealthyBorrowValue = parseInt(u192ToBN(obligationDetails.unhealthyBorrowValue).toString())/Math.pow(10, 18);
+                const reserveObligationCollateral = obligationDetails.reserves.find(reserveObligation => {
 
                     if(reserveObligation.collateral) {
+                        console.log(reserve.publicKey.toString(), reserveObligation.collateral.inner.depositReserve.toString())
                         return (reserve.publicKey.toString() === reserveObligation.collateral.inner.depositReserve.toString());
                     }
                     return false;
 
                 })
 
-                if(reserveObligation) {
-                    const collateralDeposit = parseInt(reserveObligation.collateral.inner.depositedAmount.toString())/Math.pow(10, tokenDecimals);
+                const reserveObligationBorrow = obligationDetails.reserves.find(reserveObligation => {
+
+                    if(reserveObligation.liquidity) {
+                        console.log(reserve.publicKey.toString(), reserveObligation.liquidity.inner.borrowReserve.toString())
+                        return (reserve.publicKey.toString() === reserveObligation.liquidity.inner.borrowReserve.toString());
+                    }
+                    return false;
+
+                })
+
+                if(reserveObligationCollateral) {
+                    const collateralDeposit = parseInt(reserveObligationCollateral.collateral.inner.depositedAmount.toString())/Math.pow(10, tokenDecimals);
                     const collateralWorth = calcCollateralWorth(collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
                     const remainingBorrow = reserve.config.loanToValueRatio.percent/100 * collateralWorth;
                     totalUserCollateralWorth = totalUserCollateralWorth + collateralWorth;
                     collateralTokens[reserve.publicKey] = collateralWorth;
+                }
+
+                if(reserveObligationBorrow) {
+
                 }
             }
         });
@@ -222,7 +258,7 @@ const Borrow = ({
                                                 <Cell col={12} colLg={4}>
                                                     <BlockReward>
                                                         <TitleBlock>Risk Factor</TitleBlock>
-                                                        0
+                                                        {removeTrailingZeros(parseFloat(totalRiskFactor).toFixed(2))}%
                                                     </BlockReward>
                                                 </Cell>
                                                 <Cell col={12} colLg={4}>
@@ -259,7 +295,9 @@ const Borrow = ({
                                 obligations={obligations}
                                 obligationDetails={obligationDetails}
                                 calcCollateralWorth={calcCollateralWorth}
+                                unhealthyBorrowValue={unhealthyBorrowValue}
                                 handleBorrowObligationLiquidity={handleBorrowObligationLiquidity}
+                                handleRepayObligationLiquidity={handleRepayObligationLiquidity}
                             />
                         </Block>
                     </Cell>

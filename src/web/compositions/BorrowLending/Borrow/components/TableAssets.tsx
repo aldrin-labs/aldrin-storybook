@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 
 import {RowTd, Table, TableBody, TableHeader, TableRow} from '@sb/compositions/Pools/components/Tables/index.styles';
 import {Theme} from '@material-ui/core';
-import {toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
+import {removeTrailingZeros, toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
 import {ObligationType, WalletAccountsType} from '@sb/compositions/BorrowLending/Markets/types';
 import {calculateBorrowApy, calculateUtilizationRate} from '@sb/compositions/BorrowLending/utils/rates';
 import ActionsPopup from '@sb/compositions/BorrowLending/Borrow/components/ActionsPopup';
@@ -17,7 +17,9 @@ type TableAssetsProps = {
     walletAccounts: WalletAccountsType | [],
     obligationDetails: ObligationType | null,
     calcCollateralWorth: () => void,
+    unhealthyBorrowValue: number,
     handleBorrowObligationLiquidity: (reserve: any, amount: number, callback: () => void) => void,
+    handleRepayObligationLiquidity: (reserve: any, amount: number, callback: () => void) => void,
 }
 
 const TableAssets = ({
@@ -27,7 +29,9 @@ const TableAssets = ({
     walletAccounts,
     obligationDetails,
     calcCollateralWorth,
+    unhealthyBorrowValue,
     handleBorrowObligationLiquidity,
+    handleRepayObligationLiquidity,
 }: TableAssetsProps) => {
     const [actionsOpen, setActionsOpen] = useState(false);
 
@@ -47,19 +51,16 @@ const TableAssets = ({
             let reserveObligationCollateral = null;
             let reserveObligationBorrow = null;
             let borrowApy = 0;
-            const maxLtv = reserve.config.loanToValueRatio.percent;
             const liquidationThreshold = reserve.config.liquidationThreshold.percent;
             let remainingBorrow = 0;
-            let liquidityDeposit = 0;
-            let liquidityWorth = 0;
             let collateralDeposit = 0;
             let collateralWorth = 0;
             let reserveBorrowedLiquidity = 0;
             let reserveAvailableLiquidity = 0;
             let mintedCollateralTotal = 0;
-            let mintedLiquidityTotal = 0;
             let borrowedAmount = 0;
             let borrowedAmountWorth = 0;
+            let riskFactor = 0;
 
             if(walletAccounts && walletAccounts.length > 0) {
                 const depositTokenAccount = walletAccounts.find(account => account.account.data.parsed.info.mint === reserve.collateral.mint.toString());
@@ -144,12 +145,15 @@ const TableAssets = ({
                             collateralDeposit = parseInt(reserveObligationCollateral.collateral.inner.depositedAmount.toString())/Math.pow(10, tokenDecimals);
                             // collateralWorth = calcCollateralWorth(collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
                             collateralWorth = parseInt(u192ToBN(reserveObligationCollateral.collateral.inner.marketValue).toString())/Math.pow(10, 18);
-                            remainingBorrow = reserve.config.loanToValueRatio.percent/100 * collateralWorth;
                         }
 
                         if(reserveObligationBorrow) {
-                            borrowedAmount = parseInt(u192ToBN(reserveObligationBorrow.liquidity.inner.borrowedAmount).toString())/Math.pow(10, 18);
+                            borrowedAmount = parseInt(u192ToBN(reserveObligationBorrow.liquidity.inner.borrowedAmount).toString())/Math.pow(10, 18 + tokenDecimals);
                             borrowedAmountWorth = parseInt(u192ToBN(reserveObligationBorrow.liquidity.inner.marketValue).toString())/Math.pow(10, 18);
+                            remainingBorrow = reserve.config.loanToValueRatio.percent/100 * (collateralWorth - borrowedAmountWorth);
+                            console.log('reserveBorrowedAmount', borrowedAmountWorth, unhealthyBorrowValue)
+                            riskFactor = (borrowedAmountWorth/unhealthyBorrowValue) * 100;
+                            console.log(riskFactor, 'riskFactor')
                             console.log('borrowedAmount', borrowedAmount)
                         }
                     }
@@ -173,7 +177,7 @@ const TableAssets = ({
                             <span>${tokenPrice}</span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
-                            <p style={{margin: 0}}><strong>{collateralDeposit}</strong></p>
+                            <p style={{margin: 0}}><strong>{removeTrailingZeros(((collateralDeposit/5 - borrowedAmount)).toFixed(tokenDecimals))}</strong></p>
                             <span>
                                 <NumberFormat
                                     value={remainingBorrow}
@@ -186,7 +190,7 @@ const TableAssets = ({
                             </span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
-                            <p style={{margin: 0}}><strong>{borrowedAmount}</strong></p>
+                            <p style={{margin: 0}}><strong>{removeTrailingZeros(borrowedAmount.toFixed(2))}</strong></p>
                             <span>
                                 <NumberFormat
                                     value={borrowedAmountWorth}
@@ -220,12 +224,16 @@ const TableAssets = ({
                                 reserveBorrowedLiquidity={reserveBorrowedLiquidity}
                                 reserveAvailableLiquidity={reserveAvailableLiquidity}
                                 mintedCollateralTotal={mintedCollateralTotal}
-                                maxLtv={maxLtv}
                                 liquidationThreshold={liquidationThreshold}
                                 remainingBorrow={remainingBorrow}
                                 calcCollateralWorth={calcCollateralWorth}
                                 borrowApy={borrowApy}
+                                borrowedAmount={borrowedAmount}
+                                borrowedAmountWorth={borrowedAmountWorth}
+                                riskFactor={riskFactor}
+                                unhealthyBorrowValue={unhealthyBorrowValue}
                                 handleBorrowObligationLiquidity={handleBorrowObligationLiquidity}
+                                handleRepayObligationLiquidity={handleRepayObligationLiquidity}
                             />
                         )
                     }

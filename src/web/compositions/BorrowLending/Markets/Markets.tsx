@@ -15,11 +15,11 @@ import {MarketCompType} from './types';
 
 type MarketsProps = {
 	theme: Theme,
-	reserves: any
+	reserves: any,
+	obligationDetails: any,
 }
 
-const Markets = ({theme, reserves}: MarketsProps) => {
-
+const Markets = ({theme, reserves, obligationDetails}: MarketsProps) => {
 	const calculateTotalLiq = (reservesList: []): {'number': number, 'bn': BN} => {
 		let total = new BN(0);
 		reservesList.forEach(reserve => {
@@ -35,18 +35,15 @@ const Markets = ({theme, reserves}: MarketsProps) => {
 
 	const totalLiq = calculateTotalLiq(reserves);
 
-	const calculateMarketSize = (reservesList: []): {'number': number, 'bn': BN} => {
-		let total = new BN(0);
+	const calculateMarketSize = (reservesList: []): number => {
+		let total = 0;
 		reservesList.forEach(reserve => {
-			const reserveMarketPrice = u192ToBN(reserve.liquidity.marketPrice);
-			const reserveAvailableAmount = reserve.liquidity.availableAmount;
-			total = total.add(reserveMarketPrice.mul(reserveAvailableAmount));
+			const reserveMarketPrice = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())/Math.pow(10, 18);
+			const reserveAvailableAmount = parseInt(reserve.liquidity.availableAmount.toString());
+			total = total + reserveMarketPrice * reserveAvailableAmount;
 		})
 
-		return {
-			'number': parseInt(total.toString()),
-			'bn': total,
-		}
+		return total;
 	}
 
 	const calculateTotalBorrowedAmount = (reservesList: []): {'number': number, 'bn': BN} => {
@@ -88,7 +85,7 @@ const Markets = ({theme, reserves}: MarketsProps) => {
 		return marketCompArr;
 	}
 
-	const marketSize = toNumberWithDecimals(calculateMarketSize(reserves).number, 2);
+	const marketSize = calculateMarketSize(reserves);
 	const borrowedAmount = toNumberWithDecimals(calculateTotalBorrowedAmount(reserves).number, 2);
 	const lentPercentage = calculateLentPercentage(reserves);
 	const marketCompValues = generateMarketCompositionArr(reserves);

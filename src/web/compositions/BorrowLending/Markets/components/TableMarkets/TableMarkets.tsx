@@ -10,10 +10,11 @@ import {
 } from '@sb/compositions/Pools/components/Tables/index.styles';
 import {BlockTemplate} from '@sb/compositions/Pools/index.styles';
 import {Row, RowContainer} from '@sb/compositions/AnalyticsRoute/index.styles';
-import {toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
+import {removeTrailingZeros, toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
 import {calculateBorrowApy, calculateUtilizationRate} from '../../../utils/rates';
 import ReserveStatusPopup
     from '@sb/compositions/BorrowLending/Markets/components/ReserveStatusPopup/ReserveStatusPopup';
+import NumberFormat from "react-number-format";
 
 type TableMarketsProps = {
     theme: Theme,
@@ -40,8 +41,8 @@ const TableMarkets = ({theme, reserves}: TableMarketsProps) => {
     const renderRows = (reservesList) => {
         return reservesList.map((reserve, index) => {
             const tokenPrice = toNumberWithDecimals(parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()), 5);
-            const reserveMarketPrice = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString());
-            const tokenSupply = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).add(reserve.liquidity.availableAmount).toString());
+            const reserveMarketPrice = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())/Math.pow(10, 18);
+            const tokenSupply = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString())/Math.pow(10, 18) + parseInt(reserve.liquidity.availableAmount.toString());
             const tokenSupplyWorth = tokenSupply * reserveMarketPrice;
             const reserveAvailableLiq = parseInt(reserve.liquidity.availableAmount.toString());
             const reserveAvailableLiqWorth = reserveAvailableLiq * reserveMarketPrice;
@@ -79,11 +80,20 @@ const TableMarkets = ({theme, reserves}: TableMarketsProps) => {
                         <span>${tokenPrice}</span>
                     </td>
                     <td>
-                        <p style={{margin: 0}}>{tokenSupply}</p>
-                        <span>${toNumberWithDecimals(tokenSupplyWorth, 2)}</span>
+                        <p style={{margin: 0}}>{removeTrailingZeros(tokenSupply.toFixed(2))}</p>
+                        <span>
+                            <NumberFormat
+                                value={tokenSupplyWorth}
+                                displayType={'text'}
+                                decimalScale={2}
+                                fixedDecimalScale={true}
+                                thousandSeparator={true}
+                                prefix={'$'}
+                            />
+                        </span>
                     </td>
                     <td>
-                        <p style={{margin: 0}}>{reserveBorrowedAmount}</p>
+                        <p style={{margin: 0}}>{removeTrailingZeros(toNumberWithDecimals(reserveBorrowedAmount, 2))}</p>
                         <span>${toNumberWithDecimals(reserveBorrowedAmountWorth, 2)}</span>
                     </td>
                     <td>{depositApy % 1 !== 0 ? depositApy.toFixed(2) : depositApy}%</td>

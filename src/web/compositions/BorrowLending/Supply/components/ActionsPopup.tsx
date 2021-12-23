@@ -150,6 +150,8 @@ const ActionsPopup = ({
     }
     const withValueLimit = ({ floatValue }) => floatValue <= MAX_VAL;
 
+    const activeStyle = {borderTopColor: 'green', color: 'green'};
+
     console.log('reserveObligation?.collateral.inner.depositedAmount', reserveObligation?.collateral.inner.depositedAmount.toString())
     return (
         <DialogWrapper
@@ -181,8 +183,8 @@ const ActionsPopup = ({
             {/*    <button disabled={ typeof reserveObligation?.collateral.inner.depositedAmount === 'undefined' ? true : false} onClick={() => handleWithdrawCollateral(reserve, 10)}>Withdraw collateral</button>*/}
             {/*</RowContainer>*/}
             <RowContainer>
-                <ButtonCategory onClick={() => handleChangeMode(0)}>Deposit</ButtonCategory>
-                <ButtonCategory onClick={() => handleChangeMode(1)} style={{borderTopColor: 'green', color: 'green'}}>Withdraw</ButtonCategory>
+                <ButtonCategory onClick={() => handleChangeMode(0)} style={mode === 0 ? activeStyle : {}}>Deposit</ButtonCategory>
+                <ButtonCategory onClick={() => handleChangeMode(1)} style={mode ? activeStyle : {}}>Withdraw</ButtonCategory>
             </RowContainer>
 
             <RowContainer>
