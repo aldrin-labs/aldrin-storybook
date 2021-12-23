@@ -24,7 +24,6 @@ import BN from 'bn.js'
 
 import {
   AmendOrderParams,
-  CancelOrderParams,
   PlaceOrder,
   SendTransactionParams,
   SignTransactionsParams,
@@ -253,40 +252,6 @@ export async function settleFunds({
       quoteUnsettled,
     },
     focusPopup,
-  })
-}
-
-export async function cancelOrder({
-  market,
-  wallet,
-  connection,
-  order,
-}: CancelOrderParams) {
-  if (!wallet.publicKey) {
-    throw new Error(`cancelOrders: no publicKey for wallet: ${wallet}`)
-  }
-  const { publicKey } = wallet
-  const transaction = market.makeMatchOrdersTransaction(5)
-
-  transaction.add(
-    market.makeCancelOrderInstruction(connection, publicKey, order)
-  )
-
-  transaction.add(market.makeMatchOrdersTransaction(5))
-
-  return sendTransaction({
-    transaction,
-    wallet,
-    connection,
-    signers: [],
-    params: {
-      baseSymbol: order.marketName.split('/')[0],
-      quoteSymbol: order.marketName.split('/')[1],
-      side: order.side,
-      amount: order.size,
-      price: order.price,
-    },
-    operationType: 'cancelOrder',
   })
 }
 
@@ -977,7 +942,7 @@ async function awaitTransactionSignatureConfirmation({
   timeout,
   connection,
   interval = 1200,
-  commitment = 'recent',
+  commitment = 'confirmed',
 }: {
   txid: string
   timeout: number

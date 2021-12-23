@@ -24,7 +24,7 @@ const connection = new MultiEndpointsConnection(
     { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
     { url: 'https://aldrinexchange.genesysgo.net', weight: 3 },
   ],
-  'recent'
+  'confirmed'
 )
 
 connection.connections.forEach((c) => {

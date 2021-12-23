@@ -12,7 +12,7 @@ import BN from 'bn.js'
 
 import { walletAdapterToWallet } from '../../common'
 import MultiEndpointsConnection from '../../MultiEndpointsConnection'
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
 import { POOLS_V2_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { signAndSendTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
@@ -68,7 +68,7 @@ export const initializeFarmingInstructions = async (
   const provider = new Provider(
     connection.getConnection(),
     walletWithPk,
-    Provider.defaultOptions()
+    defaultOptions()
   )
 
   const [vaultSigner] = await PublicKey.findProgramAddress(

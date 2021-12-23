@@ -1,3 +1,4 @@
+import { Connection } from '@solana/web3.js'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -6,20 +7,25 @@ import { Text } from '@sb/compositions/Addressbook/index'
 
 import { Theme } from '@sb/types/materialUI'
 import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
-import { Connection } from '@solana/web3.js'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
+
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
 import { withTheme } from '@material-ui/core'
+
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+
+import { PoolInfo } from '../../index.types'
 import { Button } from '../Tables/index.styles'
 import { BoldHeader, ClaimRewardsStyledPaper } from './index.styles'
-import { PoolInfo } from '../../index.types'
 import { restakeAll } from '../../utils/restakeAll'
 
 const getSOLFeesAmountToRestake = ({
@@ -108,7 +114,7 @@ const Popup = ({
       allTokensData,
     })
 
-    if (result === 'blockhash_outdated') {
+    if (result === 'timeout') {
       setShowRetryMessage(true)
       setOperationLoading(true)
       setTimeout(async () => {

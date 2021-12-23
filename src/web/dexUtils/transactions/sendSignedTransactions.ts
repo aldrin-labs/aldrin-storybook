@@ -24,7 +24,7 @@ export const sendSignedTransactions = async (
       transaction: signedTransaction,
       connection,
       timeout: 30_000,
-      commitment: isLastTransaction ? commitment : 'recent', // Wait for finalization of last transaction
+      commitment: isLastTransaction ? commitment : 'confirmed', // Wait for finalization of last transaction
       successMessage: isLastTransaction ? successMessage : undefined,
       sentMessage,
       showNotification,

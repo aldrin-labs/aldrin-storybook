@@ -148,7 +148,7 @@ export const waitTransactionConfirmation = async (
     timeout = 60_000, // 1 minute
     connection,
     pollInterval = 1200, // TODO: add polling
-    commitment = 'recent',
+    commitment = 'confirmed',
   } = params
   // const done = false
 
