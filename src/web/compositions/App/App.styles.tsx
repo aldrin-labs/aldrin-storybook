@@ -22,12 +22,12 @@ export const AppGridLayout = styled.div`
 `
 
 export const AppInnerContainer = styled.div`
-  height: ${(props) =>
-    props.showFooter ? 'calc(100% - 11.7rem)' : 'calc(100% - 48px)'};
   overflow: ${(props) => (props.currentPage === '/' ? 'hidden' : 'auto')};
   display: flex;
   flex-direction: column;
-  @media (max-width: ${BREAKPOINTS.md}) {
-    height: calc(100% - 19rem);
+  height: calc(100% - 19rem);
+  @media (min-width: ${BREAKPOINTS.md}) {
+    height: ${(props) =>
+      props.showFooter ? 'calc(100% - 11.7rem)' : 'calc(100% - 48px)'};
   }
 `

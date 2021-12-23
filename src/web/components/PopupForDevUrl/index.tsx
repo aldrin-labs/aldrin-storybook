@@ -32,8 +32,8 @@ const DevUrlPopup = ({
   open: boolean
   close: () => void
 }) => {
-  document.addEventListener('keydown', function(event) {
-    if (event.code == 'KeyB' && (event.ctrlKey || event.metaKey)) {
+  document.addEventListener('keydown', function (event) {
+    if (event.code === 'KeyB' && (event.ctrlKey || event.metaKey)) {
       close()
     }
   })
@@ -44,15 +44,15 @@ const DevUrlPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={() => {}}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <Row justify={'space-between'} width={'100%'}>
+      <Row justify="space-between" width="100%">
         <BoldHeader>Warning!</BoldHeader>
         <SvgIcon width="4rem" height="4rem" src={Warning} onClick={close} />
       </Row>
-      <RowContainer margin={'3rem 0'} align={'start'} direction={'column'}>
+      <RowContainer margin="3rem 0" align="start" direction="column">
         <BoldHeader style={{ textAlign: 'left', marginBottom: '6rem' }}>
           Hello, this page is for developers only.
         </BoldHeader>
@@ -67,19 +67,19 @@ const DevUrlPopup = ({
             }}
             target="_blank"
             rel="noopener noreferrer"
-            href={'https://dex.aldrin.com/'}
+            href="https://dex.aldrin.com/"
           >
             dex.aldrin.com
           </a>
           .
         </Text>
       </RowContainer>
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <a
           style={{ textDecoration: 'none', width: '100%' }}
           target="_blank"
           rel="noopener noreferrer"
-          href={'https://dex.aldrin.com/'}
+          href="https://dex.aldrin.com/"
         >
           {' '}
           <BlueButton
@@ -88,7 +88,7 @@ const DevUrlPopup = ({
               fontFamily: 'Avenir Next Medium',
               textTransform: 'none',
             }}
-            isUserConfident={true}
+            isUserConfident
             theme={theme}
             onClick={() => {}}
           >

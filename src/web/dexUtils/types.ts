@@ -6,6 +6,7 @@ import {
   Account,
   Keypair,
   Signer,
+  Commitment,
 } from '@solana/web3.js'
 import { Order } from '@project-serum/serum/lib/market'
 
@@ -114,12 +115,13 @@ export interface SendSignedTransactionParams {
   sentMessage?: string
   successMessage?: string
   timeout?: number
-  operationType?: string
-  params?: any
   showNotification?: boolean
+  commitments?: Commitment
+  skipPreflight?: boolean // Default: true
 }
 
 export type SendSignedTransactionResult = 'failed' | 'timeout' | string
-export type AsyncSendSignedTransactionResult = Promise<SendSignedTransactionResult>
+export type AsyncSendSignedTransactionResult =
+  Promise<SendSignedTransactionResult>
 
 export type Maybe<T> = T | undefined

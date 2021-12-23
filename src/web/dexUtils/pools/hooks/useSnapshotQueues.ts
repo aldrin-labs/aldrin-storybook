@@ -1,8 +1,9 @@
 import { Connection } from '@solana/web3.js'
 import { useEffect, useState, useCallback } from 'react'
+
 import { SnapshotQueue } from '@sb/dexUtils/common/types'
-import { WalletAdapter, AsyncRefreshFunction } from '@sb/dexUtils/types'
 import { getParsedSnapshotQueues } from '@sb/dexUtils/pools/snapshotQueue/getParsedSnapshotQueues'
+import { WalletAdapter, AsyncRefreshFunction } from '@sb/dexUtils/types'
 
 export const useSnapshotQueues = ({
   wallet,
@@ -16,19 +17,22 @@ export const useSnapshotQueues = ({
   )
 
   const loadSnapshotQueues = useCallback(async () => {
-    const allSnapshotQueues = await getParsedSnapshotQueues({
+    if (!wallet.publicKey) {
+      return false
+    }
+    const allSnapshots = await getParsedSnapshotQueues({
       wallet,
       connection,
     })
 
-    setAllSnapshotQueues(allSnapshotQueues)
+    setAllSnapshotQueues(allSnapshots)
 
     return true
-  }, [])
+  }, [wallet.publicKey?.toBase58()])
 
   useEffect(() => {
     loadSnapshotQueues()
-  }, [])
+  }, [wallet.publicKey?.toBase58()])
 
   return [allSnapshotQueues, loadSnapshotQueues]
 }

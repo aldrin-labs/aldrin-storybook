@@ -5,8 +5,8 @@ import {
   POOLS_V2_PROGRAM_ADDRESS,
 } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { loadFarmingTickets } from './loadFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { loadFarmingTickets } from './loadFarmingTickets'
 import { parseFarmingTickets } from './parseFarmingTickets'
 
 export const getParsedUserFarmingTickets = async ({

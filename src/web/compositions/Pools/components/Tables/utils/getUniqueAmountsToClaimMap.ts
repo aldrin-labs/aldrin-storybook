@@ -23,12 +23,11 @@ export const getUniqueAmountsToClaimMap = ({
       return acc
     }
 
-    const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
-      {
+    const availableToClaimFromFarmingState =
+      getAvailableFarmingTokensForFarmingState({
         farmingTickets,
         farmingState: farmingState.farmingState,
-      }
-    )
+      })
 
     const state = acc.get(farmingTokenMint) || {
       farmingTokenMint,

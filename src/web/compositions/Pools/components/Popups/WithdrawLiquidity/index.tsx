@@ -9,8 +9,8 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   DexTokensPrices,
-  FeesEarned, PoolInfo,
-  PoolWithOperation
+  PoolInfo,
+  PoolWithOperation,
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
@@ -24,6 +24,7 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import { VestingWithPk } from '@sb/dexUtils/vesting/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
@@ -32,18 +33,28 @@ import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
 
-
 interface WithdrawalProps {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
   farmingTicketsMap: Map<string, FarmingTicket[]>
-  earnedFeesInPoolForUserMap: Map<string, FeesEarned>
+  // earnedFeesInPoolForUserMap: Map<string, FeesEarned>
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
   close: () => void
   refreshAllTokensData: RefreshFunction
   setIsUnstakePopupOpen: (isOpen: boolean) => void
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
+  vesting?: VestingWithPk
+}
+
+const resolveWithdrawStatus = (result: string) => {
+  if (result === 'success') {
+    return 'Withdrawal successful'
+  }
+  if (result === 'failed') {
+    return 'Withdrawal failed, please try again later or contact us in telegram.'
+  }
+  return 'Withdrawal cancelled'
 }
 
 const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
@@ -51,21 +62,22 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     theme,
     dexTokensPricesMap,
     farmingTicketsMap,
-    earnedFeesInPoolForUserMap,
+    // earnedFeesInPoolForUserMap,
     selectedPool,
     allTokensData,
     close,
     refreshAllTokensData,
     setIsUnstakePopupOpen,
     setPoolWaitingForUpdateAfterOperation,
+    vesting,
   } = props
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const [poolBalances, refreshPoolBalances] = usePoolBalances({
-    pool: selectedPool,
-    connection,
-  })
+  const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
+
+  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
+  const [baseAmount, setBaseAmount] = useState<string | number>('')
 
   const {
     baseTokenAmount: poolAmountTokenA,
@@ -86,24 +98,16 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     }
   }, [poolBalances])
 
-  const [baseAmount, setBaseAmount] = useState<string | number>('')
-  const setBaseAmountWithQuote = (baseAmount: string | number) => {
-    const quoteAmount = stripDigitPlaces(
-      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
-      8
-    )
-    setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
+  const setBaseAmountWithQuote = (ba: string | number) => {
+    const qa = stripDigitPlaces(+ba * (poolAmountTokenB / poolAmountTokenA), 8)
+    setBaseAmount(ba)
+    setQuoteAmount(qa)
   }
 
-  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
-  const setQuoteAmountWithBase = (quoteAmount: string | number) => {
-    const baseAmount = stripDigitPlaces(
-      +quoteAmount * (poolAmountTokenA / poolAmountTokenB),
-      8
-    )
-    setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmount)
+  const setQuoteAmountWithBase = (qa: string | number) => {
+    const ba = stripDigitPlaces(+qa * (poolAmountTokenA / poolAmountTokenB), 8)
+    setBaseAmount(ba)
+    setQuoteAmount(qa)
   }
 
   const [operationLoading, setOperationLoading] = useState<boolean>(false)
@@ -141,32 +145,32 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
   const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
+  const lockedTokens = parseFloat(vesting?.startBalance.toString() || '0') // Vesting
 
   const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
     selectedPool,
-    poolTokenAmount: poolTokenAmount + stakedTokens,
+    poolTokenAmount: poolTokenAmount + stakedTokens + lockedTokens,
   })
 
   const [availableWithdrawAmountTokenA] = calculateWithdrawAmount({
     selectedPool,
-    poolTokenAmount,
+    poolTokenAmount: poolTokenAmount + lockedTokens,
   })
 
   const poolTokenAmountToWithdraw =
-    (+baseAmount / availableWithdrawAmountTokenA) * poolTokenAmount
+    (+baseAmount / availableWithdrawAmountTokenA) *
+    (poolTokenAmount + lockedTokens)
 
   // need to show in popup
-  const {
-    totalBaseTokenFee,
-    totalQuoteTokenFee,
-  } = earnedFeesInPoolForUserMap.get(selectedPool.swapToken) || {
-    totalBaseTokenFee: 0,
-    totalQuoteTokenFee: 0,
-  }
+  // const { totalBaseTokenFee, totalQuoteTokenFee } =
+  //   earnedFeesInPoolForUserMap.get(selectedPool.swapToken) || {
+  //     totalBaseTokenFee: 0,
+  //     totalQuoteTokenFee: 0,
+  //   }
 
-  const feesUsd =
-    totalBaseTokenFee * baseTokenPrice + totalQuoteTokenFee * quoteTokenPrice
+  // const feesUsd =
+  //   totalBaseTokenFee * baseTokenPrice + totalQuoteTokenFee * quoteTokenPrice
 
   const isDisabled =
     +baseAmount <= 0 ||
@@ -190,15 +194,15 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
         setQuoteAmount('')
         setOperationLoading(false)
       }}
-      maxWidth={'md'}
+      maxWidth="md"
       open
       aria-labelledby="responsive-dialog-title"
     >
-      <Row justify={'space-between'} width={'100%'}>
+      <Row justify="space-between" width="100%">
         <BoldHeader>Withdraw Liquidity</BoldHeader>
         <Row>
           <ReloadTimer
-            margin={'0 1.5rem 0 0'}
+            margin="0 1.5rem 0 0"
             callback={async () => {
               if (!operationLoading) {
                 refreshPoolBalances()
@@ -210,7 +214,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
       </Row>
       <RowContainer>
         <SimpleInput
-          placeholder={'0'}
+          placeholder="0"
           theme={theme}
           symbol={baseSymbol}
           value={baseAmount}
@@ -218,12 +222,12 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
           maxBalance={withdrawAmountTokenA}
         />
         <Row>
-          <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
+          <Text fontSize="4rem" fontFamily="Avenir Next Medium">
             +
           </Text>
         </Row>
         <SimpleInput
-          placeholder={'0'}
+          placeholder="0"
           theme={theme}
           symbol={quoteSymbol}
           value={quoteAmount}
@@ -234,7 +238,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
         <InputWithTotal theme={theme} value={total} />
       </RowContainer>
 
-      <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+      <RowContainer justify="space-between" margin="2rem 0 0 0">
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
@@ -245,11 +249,11 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
         </WhiteText>
       </RowContainer>
 
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
-          isUserConfident={true}
+          isUserConfident
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
@@ -258,10 +262,10 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               availableToWithdrawAmountTokenB,
             ] = calculateWithdrawAmount({
               selectedPool,
-              poolTokenAmount,
+              poolTokenAmount: poolTokenAmount + lockedTokens,
             })
 
-            if (poolTokenAmount === 0) {
+            if (poolTokenAmount === 0 && vesting?.startBalance.eqn(0)) {
               setIsUnstakePopupOpen(true)
               return
             }
@@ -278,7 +282,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               return
             }
 
-            if (!userPoolTokenAccount) {
+            if (!userPoolTokenAccount && !vesting) {
               notify({
                 message: `No pool token account`,
                 type: 'error',
@@ -287,9 +291,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               return
             }
 
-            if (
-              !poolTokenAmountToWithdraw
-            ) {
+            if (!poolTokenAmountToWithdraw) {
               notify({
                 message: `Something went wrong with your pool token amount to withdraw`,
                 type: 'error',
@@ -318,22 +320,27 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               connection,
               curveType: selectedPool.curveType,
               poolPublicKey: new PublicKey(selectedPool.swapToken),
-              userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
+              userPoolTokenAccount: userPoolTokenAccount
+                ? new PublicKey(userPoolTokenAccount)
+                : undefined,
               userPoolTokenAmount: poolTokenAmountToWithdraw,
-              userBaseTokenAccount: userTokenAccountA ? new PublicKey(userTokenAccountA) : null,
-              userQuoteTokenAccount: userTokenAccountB ? new PublicKey(userTokenAccountB) : null,
+              unlockVesting:
+                poolTokenAmountToWithdraw > poolTokenAmount
+                  ? vesting
+                  : undefined,
+              userBaseTokenAccount: userTokenAccountA
+                ? new PublicKey(userTokenAccountA)
+                : null,
+              userQuoteTokenAccount: userTokenAccountB
+                ? new PublicKey(userTokenAccountB)
+                : null,
             })
 
             setOperationLoading(false)
 
             notify({
               type: result === 'success' ? 'success' : 'error',
-              message:
-                result === 'success'
-                  ? 'Withdrawal successful'
-                  : result === 'failed'
-                    ? 'Withdrawal failed, please try again later or contact us in telegram.'
-                    : 'Withdrawal cancelled',
+              message: resolveWithdrawStatus(result),
             })
 
             refreshPoolBalances()
@@ -348,13 +355,10 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               setTimeout(async () => {
                 refreshAllTokensData()
                 clearPoolWaitingForUpdate()
-              }, 7500)
-
-              setTimeout(() => refreshAllTokensData(), 15000)
+              })
             } else {
               clearPoolWaitingForUpdate()
             }
-
             close()
           }}
         >
@@ -365,9 +369,6 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   )
 }
 
-
 const WithTheme = withTheme()(WithdrawalPopup)
 
-export {
-  WithTheme as WithdrawalPopup
-}
+export { WithTheme as WithdrawalPopup }
