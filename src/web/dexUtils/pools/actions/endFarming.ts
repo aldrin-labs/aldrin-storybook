@@ -5,7 +5,6 @@ import {
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  TransactionInstruction,
 } from '@solana/web3.js'
 
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
@@ -16,7 +15,6 @@ import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { splitBy } from '../../../utils'
 import { signAndSendTransactions } from '../../transactions'
 import { filterTicketsAvailableForUnstake } from '../filterTicketsAvailableForUnstake'
 
@@ -66,7 +64,7 @@ export const getEndFarmingTransactions = async (params: {
     return []
   }
 
-  const commonTransaction = new Transaction()
+  let commonTransaction = new Transaction()
 
   // create pool token account for user if not exist
   if (!userPoolTokenAccount) {
@@ -80,37 +78,38 @@ export const getEndFarmingTransactions = async (params: {
     commonTransaction.add(createAccountTransaction)
   }
 
-  const endFarmingInstructions = await Promise.all(
-    filteredUserFarmingTicketsPerPool.map(
-      async (ticketData) =>
-        program.instruction.endFarming({
-          accounts: {
-            pool: poolPublicKey,
-            farmingState: farmingStatePublicKey,
-            farmingSnapshots: snapshotQueuePublicKey,
-            farmingTicket: ticketData.farmingTicket,
-            lpTokenFreezeVault,
-            poolSigner: vaultSigner,
-            userPoolTokenAccount,
-            userKey: wallet.publicKey,
-            tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
-            clock: SYSVAR_CLOCK_PUBKEY,
-            rent: SYSVAR_RENT_PUBKEY,
-          },
-        }) as TransactionInstruction
-    )
-  )
+  const transactionsAndSigners = []
 
-  const [firstTx, ...transactions] = splitBy(endFarmingInstructions, 4).map(
-    (instr) => ({
-      transaction: new Transaction().add(...instr),
+  for (const ticketData of filteredUserFarmingTicketsPerPool) {
+    const endFarmingTransaction = await program.instruction.endFarming({
+      accounts: {
+        pool: poolPublicKey,
+        farmingState: farmingStatePublicKey,
+        farmingSnapshots: snapshotQueuePublicKey,
+        farmingTicket: ticketData.farmingTicket,
+        lpTokenFreezeVault,
+        poolSigner: vaultSigner,
+        userPoolTokenAccount,
+        userKey: wallet.publicKey,
+        tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
+        clock: SYSVAR_CLOCK_PUBKEY,
+        rent: SYSVAR_RENT_PUBKEY,
+      },
     })
-  )
 
-  return [
-    { transaction: commonTransaction.add(...firstTx.transaction.instructions) },
-    ...transactions,
-  ]
+    commonTransaction.add(endFarmingTransaction)
+
+    if (commonTransaction.instructions.length > 2) {
+      transactionsAndSigners.push({ transaction: commonTransaction })
+      commonTransaction = new Transaction()
+    }
+  }
+
+  if (commonTransaction.instructions.length > 0) {
+    transactionsAndSigners.push({ transaction: commonTransaction })
+  }
+
+  return transactionsAndSigners
 }
 
 export const endFarming = async ({

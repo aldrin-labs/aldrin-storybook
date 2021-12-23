@@ -574,7 +574,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     <TokenAmountInputField
                       disabled={values.stableCurve}
                       name="price"
-                      available={selectedBaseAccount.amount}
                       mint={form.values.quoteToken.mint}
                       onChange={(v) => {
                         setPriceTouched(true)
