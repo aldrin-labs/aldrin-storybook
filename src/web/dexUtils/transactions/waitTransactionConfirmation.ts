@@ -63,6 +63,7 @@ const onSignature = (
     try {
       await connection.removeSignatureListener(subId)
     } catch (e) {
+      console.log('Unable to remove listener: ', subId)
       // Usually it's failed because subscription already removed by connection - do nothing
     }
   }
@@ -194,6 +195,14 @@ export const waitTransactionConfirmation = async (
         return 'timeout'
       }
     } else if (result.err) {
+      /**
+       * TODO: parse transaction errors and try to find lamports err
+       *  this.getConnection()
+      .getParsedConfirmedTransaction(
+        '5Zf7eQWauKk3xtJYrQthSFW4q6qj2U4aTJVpJEYG63i9T3K35tXEg8Uu5vr4PnLwMahpHamBdHcME6B2XqMw4Z1j'
+      )
+      .then((resp) => console.log('resp: ', resp?.meta?.logMessages))
+       */
       console.warn(`Transaction ${txId} not confirmed: `, result.err)
       return 'failed'
     }

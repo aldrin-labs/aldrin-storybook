@@ -16,7 +16,10 @@ type EndpointRequestsCounter = {
   weight: number
 }
 
-const processCall = (call: Promise<any>, connection: Connection) => {
+const processCall = (
+  call: Promise<any> | number /* Number come from subscriptions */,
+  connection: Connection
+) => {
   const rpcProvider = getProviderNameFromUrl({
     rawConnection: connection,
   })
@@ -24,18 +27,22 @@ const processCall = (call: Promise<any>, connection: Connection) => {
     Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.timeout` })
   }, 30 * 1000)
 
-  return call.then(
-    (d) => {
+  if (typeof call === 'number') {
+    return true
+  }
+
+  // console.log('call: ', call)
+  return call
+    .then((d) => {
       clearTimeout(t)
       return d
-    },
-    (err: Error) => {
+    })
+    .catch((err: Error) => {
       clearTimeout(t)
       const text = `${err}`.substring(0, 40).replace(/[: ]/g, '_').toLowerCase()
       Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.${text}` })
       console.error(err)
-    }
-  )
+    })
 }
 
 class MultiEndpointsConnection implements Connection {
