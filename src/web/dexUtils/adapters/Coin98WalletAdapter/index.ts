@@ -53,17 +53,17 @@ export class Coin98WalletAdapter
 
   constructor(config: Coin98WalletAdapterConfig = {}) {
     super()
-    this?._connecting = false
-    this?._wallet = null
-    this?._publicKey = null
-    this?.signTransaction = this?.signTransaction.bind(this)
-    this?.signAllTransactions = this?.signAllTransactions.bind(this)
-    if (!this?.ready)
+    this._connecting = false
+    this._wallet = null
+    this._publicKey = null
+    this.signTransaction = this.signTransaction.bind(this)
+    this.signAllTransactions = this.signAllTransactions.bind(this)
+    if (!this.ready)
       pollUntilReady(this, config.pollInterval || 1000, config.pollCount || 3)
   }
 
   get publicKey(): PublicKey | null {
-    return this?._publicKey
+    return this._publicKey
   }
 
   get ready(): boolean {
@@ -71,11 +71,11 @@ export class Coin98WalletAdapter
   }
 
   get connecting(): boolean {
-    return this?._connecting
+    return this._connecting
   }
 
   get connected(): boolean {
-    return !!this?._wallet?.isConnected()
+    return !!this._wallet?.isConnected()
   }
 
   get autoApprove(): boolean {
@@ -84,8 +84,8 @@ export class Coin98WalletAdapter
 
   async connect(): Promise<void> {
     try {
-      if (this?.connected || this?.connecting) return
-      this?._connecting = true
+      if (this.connected || this.connecting) return
+      this._connecting = true
       const wallet = window.coin98?.sol
       if (!wallet) throw new WalletNotFoundError()
       if (!wallet.isCoin98) throw new WalletNotInstalledError()
@@ -102,29 +102,29 @@ export class Coin98WalletAdapter
       } catch (error) {
         throw new WalletPublicKeyError(error?.message, error)
       }
-      this?._wallet = wallet
-      this?._publicKey = publicKey
-      this?.emit('connect')
+      this._wallet = wallet
+      this._publicKey = publicKey
+      this.emit('connect')
     } catch (error) {
-      this?.emit('error', error)
+      this.emit('error', error)
       throw error
     } finally {
-      this?._connecting = false
+      this._connecting = false
     }
   }
 
   async disconnect(): Promise<void> {
-    if (this?._wallet) {
-      this?._wallet.disconnect()
-      this?._wallet = null
-      this?._publicKey = null
-      this?.emit('disconnect')
+    if (this._wallet) {
+      this._wallet.disconnect()
+      this._wallet = null
+      this._publicKey = null
+      this.emit('disconnect')
     }
   }
 
   async signTransaction(transaction: Transaction): Promise<Transaction> {
     try {
-      const wallet = this?._wallet
+      const wallet = this._wallet
       if (!wallet) throw new WalletNotConnectedError()
       try {
         const signedTransaction = await wallet.request({
@@ -139,7 +139,7 @@ export class Coin98WalletAdapter
         throw new WalletSignatureError(error?.message, error)
       }
     } catch (error) {
-      this?.emit('error', error)
+      this.emit('error', error)
       throw error
     }
   }
@@ -147,19 +147,10 @@ export class Coin98WalletAdapter
   async signAllTransactions(
     transactions: Transaction[]
   ): Promise<Transaction[]> {
-    try {
-      const wallet = this?._wallet
-      if (!wallet) throw new WalletNotConnectedError()
-      try {
-        return await Promise.all(
-          transactions.map((transaction) => this?.signTransaction(transaction))
-        )
-      } catch (error) {
-        throw new WalletSignatureError(error?.message, error)
-      }
-    } catch (error) {
-      this?.emit('error', error)
-      throw error
+    const signedTransactions: Transaction[] = []
+    for (const transaction of transactions) {
+      signedTransactions.push(await this.signTransaction(transaction))
     }
+    return signedTransactions
   }
 }
