@@ -9,6 +9,7 @@ import {
   Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
+
 import { isCancelledTransactionError } from '../../common/isCancelledTransactionError'
 import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { transferSOLToWrappedAccountAndClose } from '../../pools'
@@ -30,6 +31,7 @@ interface CreateBasketBase {
   userQuoteTokenAmount: BN
   userBaseTokenAccount: PublicKey
   userQuoteTokenAccount: PublicKey
+  transferSOLToWrapped?: boolean
 }
 
 export interface CreateBasketTransactionParams extends CreateBasketBase {
@@ -42,7 +44,6 @@ export interface CreateBasketTransactionParams extends CreateBasketBase {
   program: Program
   supply: BN
   poolTokenAmountA: BN
-  transferSOLToWrapped?: boolean
 }
 
 export async function createBasketTransaction(

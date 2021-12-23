@@ -408,6 +408,8 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
       if (isCancelledTransactionError(e)) {
         return 'cancelled'
       }
+
+      return 'failed'
     }
 
     return 'success'

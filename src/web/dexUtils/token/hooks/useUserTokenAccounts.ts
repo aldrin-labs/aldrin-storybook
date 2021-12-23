@@ -1,5 +1,7 @@
-import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
 import useSWR from 'swr'
+
+import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
+
 import { useConnection } from '../../connection'
 import { RefreshFunction, TokenInfo } from '../../types'
 import { useWallet } from '../../wallet'
@@ -12,7 +14,9 @@ export const useUserTokenAccounts = (): [TokenInfo[], RefreshFunction] => {
     if (!wallet.publicKey) {
       return []
     }
-    return getAllTokensData(wallet.publicKey, connection)
+    const data = await getAllTokensData(wallet.publicKey, connection)
+
+    return data
   }
 
   const swr = useSWR(`usertokens-${wallet.publicKey?.toBase58()}`, fetcher, {
