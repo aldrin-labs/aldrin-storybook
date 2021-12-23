@@ -22,6 +22,7 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 
 import Mathwallet from '@icons/mathwallet.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
+import Slope from '@icons/slope.svg'
 import Sollet from '@icons/sollet.svg'
 import Solong from '@icons/solong.svg'
 
