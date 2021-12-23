@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import { TokenInfo } from '../../types'
 import { useWallet } from '../../wallet'
 import { findTokenAccount } from '../utils/findTokenAccount'
@@ -21,7 +22,7 @@ export const useAssociatedTokenAccount = (
     }
 
     load()
-  }, [mint, tokenAccounts.length])
+  }, [mint, tokenAccounts])
 
   return account
 }
