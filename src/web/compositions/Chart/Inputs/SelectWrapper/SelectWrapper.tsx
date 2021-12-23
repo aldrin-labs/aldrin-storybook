@@ -412,18 +412,8 @@ class SelectPairListComponent extends React.PureComponent<
       const newCustomMarkets = [...customMarkets, customMarket]
       setCustomMarkets(newCustomMarkets)
       history.push(`/chart/spot/${customMarket.name.replace('/', '_')}`)
-      console.log('onAddCustomMarket', newCustomMarkets)
       return true
     }
-    console.log({
-      exchange: 'serum',
-      publicKey: 'Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5',
-      marketType: 0,
-      startTimestamp: `${datesForQuery.startOfTime()}`,
-      endTimestamp: `${datesForQuery.endOfTime()}`,
-      prevStartTimestamp: `${datesForQuery.prevStartTimestamp()}`,
-      prevEndTimestamp: `${datesForQuery.prevEndTimestamp()}`,
-    })
 
     return (
       <>
