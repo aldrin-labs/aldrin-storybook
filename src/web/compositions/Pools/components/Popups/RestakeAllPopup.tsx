@@ -1,26 +1,29 @@
+import { withTheme } from '@material-ui/core'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import { Connection } from '@solana/web3.js'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
-
-import { Theme } from '@sb/types/materialUI'
-import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
-import { Connection } from '@solana/web3.js'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { useLocalStorageState } from '@sb/dexUtils/utils'
-import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
-import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
-import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import {
+  CREATE_FARMING_TICKET_SOL_FEE,
+  DEFAULT_FARMING_TICKET_END_TIME,
+} from '@sb/dexUtils/common/config'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
+import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
+import { Theme } from '@sb/types/materialUI'
+
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { withTheme } from '@material-ui/core'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
-import { Button } from '../Tables/index.styles'
-import { BoldHeader, ClaimRewardsStyledPaper } from './index.styles'
+
 import { PoolInfo } from '../../index.types'
 import { restakeAll } from '../../utils/restakeAll'
+import { Button } from '../Tables/index.styles'
+import { BoldHeader, ClaimRewardsStyledPaper } from './index.styles'
 
 const getSOLFeesAmountToRestake = ({
   allPoolsData,
@@ -74,10 +77,6 @@ const Popup = ({
   refreshTokensWithFarmingTickets: RefreshFunction
 }) => {
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
-  const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
-    `showRestakePopup-${wallet.publicKey}`,
-    true
-  )
   const [showRetryMessage, setShowRetryMessage] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
   const [isTransactionFailed, setIsTransactionFailed] = useState(false)
@@ -127,16 +126,32 @@ const Popup = ({
       setOperationLoading(false)
     } else if (result === 'success') {
       refreshTokensWithFarmingTickets()
-      setIsPopupOpen(false)
+      setIsPopupTemporaryHidden(true)
     }
   }
 
-  const openFarmings = filterOpenFarmingTickets(
-    [...farmingTicketsMap.values()].flat()
-  )
+  const oldTickets = Array.from(farmingTicketsMap.values())
+    .flat()
+    .filter((ticket) => {
+      const pool = allPoolsData.find((p) => p.swapToken === ticket.pool)
 
-  if (!isPopupOpen || isPopupTemporaryHidden || openFarmings.length === 0)
-    return null
+      if (!pool) {
+        return false
+      }
+
+      const openFarmings = filterOpenFarmingStates(pool.farming || [])
+
+      if (openFarmings.length === 0) {
+        return false
+      }
+
+      return (
+        ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
+        ticket.statesAttached.length >= 8
+      )
+    })
+
+  if (isPopupTemporaryHidden || oldTickets.length === 0) return null
 
   return (
     <DialogWrapper
@@ -146,7 +161,7 @@ const Popup = ({
       onClose={() => setIsPopupTemporaryHidden(true)}
       onEnter={() => {}}
       maxWidth="md"
-      open={isPopupOpen || !isPopupTemporaryHidden}
+      open={!isPopupTemporaryHidden}
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer margin="2rem 0 3rem 0" justify="space-between" width="100%">
