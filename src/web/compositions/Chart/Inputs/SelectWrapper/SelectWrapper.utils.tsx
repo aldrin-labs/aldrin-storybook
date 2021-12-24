@@ -8,10 +8,7 @@ import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
 import stableCoins from '@core/config/stableCoins'
-import {
-  getNumberOfDecimalsFromNumber,
-  stripByAmount,
-} from '@core/utils/chartPageUtils'
+import { getNumberOfDecimalsFromNumber, stripByAmount } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
   roundAndFormatNumber,

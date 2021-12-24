@@ -152,9 +152,11 @@ export const waitTransactionConfirmation = async (
   } = params
   // const done = false
 
+  const rawConnection = connection.getConnection()
+
   const [wsPromise, wsCancel] = onSignature(
     txId,
-    connection.getConnection(),
+    rawConnection,
     commitment
   )
   const [tPromise, timeoutCanceler] = timeoutPromise(timeout)
@@ -177,7 +179,7 @@ export const waitTransactionConfirmation = async (
     console.log(`Transaction ${txId} confirmation result: `, result)
     if (result === 'timeout') {
       cancelAll()
-      const rpcProvider = getProviderNameFromUrl({ rawConnection: connection })
+      const rpcProvider = getProviderNameFromUrl({ rawConnection })
       Metrics.sendMetrics({
         metricName: `error.rpc.${rpcProvider}.timeoutConfirmationTransaction`,
       })
@@ -206,7 +208,7 @@ export const waitTransactionConfirmation = async (
     cancelAll()
     console.error(`Error awaiting transaction ${txId} confirmation: `, e)
     const rpcProvider = getProviderNameFromUrl({
-      rawConnection: connection,
+      rawConnection,
     })
     Metrics.sendMetrics({
       metricName: `error.rpc.${rpcProvider}.connectionError-${JSON.stringify(
