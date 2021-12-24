@@ -9,14 +9,14 @@ export const filterOldFarmingTickets = (
   pools: PoolInfo[]
 ) => {
   return tickets.filter((ticket) => {
-    const pool = pools.find((p) => p.swapToken === ticket.pool)
+    const existingPool = pools.find((p) => p.swapToken === ticket.pool)
 
     // Wrong ticket and pool does not exists
-    if (!pool) {
+    if (!existingPool) {
       return false
     }
 
-    const openFarmings = filterOpenFarmingStates(pool.farming || [])
+    const openFarmings = filterOpenFarmingStates(existingPool.farming || [])
 
     // No farmings for pool, or farming is ended
     if (openFarmings.length === 0) {
