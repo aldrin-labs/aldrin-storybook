@@ -11,7 +11,7 @@ import {
 import BN from 'bn.js'
 
 import { isCancelledTransactionError } from '../../common/isCancelledTransactionError'
-import { MultiEndpointsConnection } from '../../MultiEndpointsConnection'
+import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { transferSOLToWrappedAccountAndClose } from '../../pools'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '../../ProgramsMultiton/utils'

@@ -45,7 +45,7 @@ const processCall = (
     })
 }
 
-class MultiConnection implements Connection {
+class MultiEndpointsConnection implements Connection {
   private endpointsRequestsCounter: EndpointRequestsCounter[]
 
   private totalWeight: number = 0
@@ -109,7 +109,5 @@ class MultiConnection implements Connection {
     return await processCall(connection._rpcRequest(...args), connection)
   }
 }
-
-export type MultiEndpointsConnection = MultiConnection & Connection
 
 export default MultiConnection
