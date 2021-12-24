@@ -33,7 +33,7 @@ const OrdersHistoryTable = ({
         height: '40rem',
         overflowX: 'hidden',
         backgroundColor: COLORS.blockBackground,
-        width: '85%',
+        width: '100%',
         borderRadius: '1.8rem',
         ...styles,
       }}

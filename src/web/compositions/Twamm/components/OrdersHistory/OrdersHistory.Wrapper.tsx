@@ -2,12 +2,12 @@ import React from 'react'
 
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import RunninhOrdersTable from './OrdersHistory'
+import OrdersHistoryTable from './OrdersHistory'
 
-export const RunningOrdersWrapper = () => {
+export const OrdersHistoryWrapper = () => {
   return (
     <RowContainer>
-      <RunninhOrdersTable />
+      <OrdersHistoryTable />
     </RowContainer>
   )
 }
