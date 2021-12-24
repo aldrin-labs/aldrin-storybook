@@ -1,6 +1,8 @@
-import { Cell, Page, WideContent } from '@sb/components/Layout'
 import React, { useEffect } from 'react'
+
 import { Block, BlockContent } from '@sb/components/Block'
+import { Cell, Page, WideContent } from '@sb/components/Layout'
+
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import { RootRow } from './components/Charts/styles'
 import { TableSwitcher } from './components/Tables/TablesSwitcher'

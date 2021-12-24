@@ -393,8 +393,8 @@ export const combineSelectWrapperData = ({
     const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
     const marketAddress = allMarketsMap?.get(el.symbol)?.address?.toBase58()
 
-    const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
-    const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0
+    const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || '--'
+    const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || '--'
 
     return {
       id: `${symbol}`,
@@ -505,7 +505,7 @@ export const combineSelectWrapperData = ({
               }}
             >
               {`${sign24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(lastPriceDiff, pricePrecision)
+                stripDigitPlaces(lastPriceDiff, 2)
               )}`}{' '}
               <span style={{ color: '#96999C' }}> / </span>{' '}
               {`${sign24hChange}${formatNumberToUSFormat(
