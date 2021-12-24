@@ -21,7 +21,7 @@ import { createTokenAccountTransaction } from '@sb/dexUtils/send'
 import { WithdrawFarmedParams } from '@sb/dexUtils/staking/types'
 import {
   signTransactions,
-  sendSignedTransactions,
+  signAndSendTransactions,
   signAndSendTransaction,
 } from '@sb/dexUtils/transactions'
 
@@ -190,12 +190,14 @@ export const withdrawFarmed = async ({
       }
 
       return signAndSendTransactions({
-        transactionsAndSigners.map(({ transaction }) => ({
-          transaction,
-          signers: [],
-        })),
+        transactionsAndSigners: transactionsAndSigners.map(
+          ({ transaction }) => ({
+            transaction,
+            signers: [],
+          })
+        ),
         connection,
-        wallet
+        wallet,
       })
     } catch (e) {
       console.log('end farming catch error', e)

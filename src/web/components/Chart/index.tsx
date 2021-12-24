@@ -1,26 +1,22 @@
-import { withTheme } from '@material-ui/styles'
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import { withTheme } from '@material-ui/styles'
 import { Card } from '@material-ui/core'
-
 import { TriggerTitle } from '@sb/components/ChartCardHeader/styles'
-
-import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
-import { amendOrder } from '@sb/dexUtils/send'
-import { cancelOrder as cancel } from '@sb/dexUtils/serum'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 
+import { cancelOrder as cancel, amendOrder } from '@sb/dexUtils/send'
+import { useWallet } from '@sb/dexUtils/wallet'
 import useMobileSize from '@webhooks/useMobileSize'
 import BN from 'bn.js'
-
-import { useSerumConnection } from '../../dexUtils/connection'
 import {
   useOpenOrders,
   useSelectedBaseCurrencyAccount,
   useSelectedQuoteCurrencyAccount,
   useSelectedOpenOrdersAccount,
 } from '../../dexUtils/markets'
+import { useSerumConnection } from '../../dexUtils/connection'
 import {
   Order,
   MESSAGE_TYPE,
@@ -154,9 +150,7 @@ export const SingleChart = (props: SingleChartProps) => {
         style={{ borderWidth: 0 }}
         src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${
           themeMode === 'light' ? 'light' : 'serum'
-        }&isMobile=${isMobile}${
-          wallet.connected ? `&user_id=${wallet.publicKey}` : ''
-        }`}
+        }&isMobile=${isMobile}${wallet.connected ? `&user_id=${wallet.publicKey}` : ''}`}
         height="100%"
         id={`tv_chart_${themeMode}`}
         title="Chart"
