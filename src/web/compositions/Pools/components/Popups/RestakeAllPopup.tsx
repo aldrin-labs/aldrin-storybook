@@ -8,12 +8,9 @@ import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import {
-  CREATE_FARMING_TICKET_SOL_FEE,
-  DEFAULT_FARMING_TICKET_END_TIME,
-} from '@sb/dexUtils/common/config'
+import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
+import { filterOldFarmingTickets } from '@sb/dexUtils/common/filterOldFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { Theme } from '@sb/types/materialUI'
@@ -130,26 +127,11 @@ const Popup = ({
     }
   }
 
-  const oldTickets = Array.from(farmingTicketsMap.values())
-    .flat()
-    .filter((ticket) => {
-      const pool = allPoolsData.find((p) => p.swapToken === ticket.pool)
-
-      if (!pool) {
-        return false
-      }
-
-      const openFarmings = filterOpenFarmingStates(pool.farming || [])
-
-      if (openFarmings.length === 0) {
-        return false
-      }
-
-      return (
-        ticket.endTime === DEFAULT_FARMING_TICKET_END_TIME &&
-        ticket.statesAttached.length >= 8
-      )
-    })
+  // Find all tickets
+  const oldTickets = filterOldFarmingTickets(
+    Array.from(farmingTicketsMap.values()).flat(),
+    allPoolsData
+  )
 
   if (isPopupTemporaryHidden || oldTickets.length === 0) return null
 
