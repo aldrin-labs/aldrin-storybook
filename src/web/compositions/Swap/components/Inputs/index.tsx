@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/compositions/Addressbook'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
   StyledInput,
@@ -18,6 +18,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 
 import Arrow from '@icons/arrowBottom.svg'
 import { stripInputNumber } from '@sb/dexUtils/utils'
+import {InputStats} from "@sb/compositions/Swap/components/Inputs/styles";
 
 export const InputWithSelectorForSwaps = ({
   theme,
@@ -32,6 +33,7 @@ export const InputWithSelectorForSwaps = ({
   wallet,
   onChange,
   openSelectCoinPopup,
+  customStats,
 }: {
   theme: Theme
   value: string | number
@@ -44,9 +46,24 @@ export const InputWithSelectorForSwaps = ({
   publicKey: string
   wallet: any
   onChange: (value: string | number) => void
-  openSelectCoinPopup: () => void
+  openSelectCoinPopup: () => void,
+  customStats?: {label: string, value: boolean}[],
 }) => {
   const isSelectToken = symbol === 'Select token'
+
+  const renderCustomStats = (customStats) => {
+    return customStats.map(statsItem => (
+      <InputStats>
+        <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
+          &nbsp;{statsItem.label}:
+        </Text>
+        &nbsp;
+        <BlueText theme={theme} onClick={() => onChange(statsItem.value)}>
+          {formatNumberToUSFormat(stripDigitPlaces(statsItem.value, 8))} {symbol}
+        </BlueText>
+      </InputStats>
+    ))
+  }
 
   return (
     <Row style={{ position: 'relative' }} width={'100%'}>
@@ -96,13 +113,16 @@ export const InputWithSelectorForSwaps = ({
       {!isSelectToken && (
         <TokenContainer right={'2rem'} top={'1rem'}>
           <Row style={{ flexWrap: 'nowrap' }}>
-            <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
-              &nbsp;Balance:
-            </Text>
-            &nbsp;
-            <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
-              {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 8))} {symbol}
-            </BlueText>
+            {customStats && renderCustomStats(customStats)}
+            <InputStats>
+              <Text color={theme.palette.grey.title} fontSize={'1.2rem'}>
+                &nbsp;Balance:
+              </Text>
+              &nbsp;
+              <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
+                {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 8))} {symbol}
+              </BlueText>
+            </InputStats>
           </Row>
         </TokenContainer>
       )}

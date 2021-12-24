@@ -21,6 +21,7 @@ import {
   STAKING_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
   VESTING_PROGRAM_ADDRESS,
+  TWAMM_PROGRAM_ADDRESS,
 } from './utils'
 
 const IDLS = {
@@ -29,6 +30,7 @@ const IDLS = {
   [MARKET_ORDER_PROGRAM_ADDRESS]: MarketOrderProgramIdl as Idl,
   [STAKING_PROGRAM_ADDRESS]: StakingProgramIdl as Idl,
   [VESTING_PROGRAM_ADDRESS]: VestingProgramIdl as Idl03,
+  [TWAMM_PROGRAM_ADDRESS]: VestingProgramIdl as Idl,
 }
 
 class ProgramsMultiton {
