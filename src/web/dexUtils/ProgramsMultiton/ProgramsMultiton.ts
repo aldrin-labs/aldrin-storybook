@@ -11,6 +11,7 @@ import PoolsProgramIdl from '@core/idls/pools.json'
 import PoolsV2ProgramIdl from '@core/idls/poolsV2.json'
 import StakingProgramIdl from '@core/idls/staking.json'
 import VestingProgramIdl from '@core/idls/vesting.json'
+import TwammProgramIdl from '@core/idls/twamm.json'
 import { walletAdapterToWallet } from '../common'
 import { WalletAdapter } from '../types'
 import { notifyForDevelop } from '../notifications'
@@ -30,7 +31,7 @@ const IDLS = {
   [MARKET_ORDER_PROGRAM_ADDRESS]: MarketOrderProgramIdl as Idl,
   [STAKING_PROGRAM_ADDRESS]: StakingProgramIdl as Idl,
   [VESTING_PROGRAM_ADDRESS]: VestingProgramIdl as Idl03,
-  [TWAMM_PROGRAM_ADDRESS]: VestingProgramIdl as Idl,
+  [TWAMM_PROGRAM_ADDRESS]: TwammProgramIdl as Idl,
 }
 
 class ProgramsMultiton {
