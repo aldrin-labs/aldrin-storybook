@@ -1,17 +1,16 @@
 import React from 'react'
+
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
-import Coinmarketcap from '@icons/coinmarketcap.svg'
+import BlueTwitterIcon from '@icons/blueTwitter.svg'
 import CoinGecko from '@icons/coingecko.svg'
+import Coinmarketcap from '@icons/coinmarketcap.svg'
+import Inform from '@icons/inform.svg'
 import Nomics from '@icons/nomics.svg'
 import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
-import BlueTwitterIcon from '@icons/blueTwitter.svg'
-
-import Inform from '@icons/inform.svg'
-
-import { Container, Anchor, Icon } from './styles'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
+import { Container, Anchor, Icon } from './styles'
 
 interface TokenExternalLinksProps {
   tokenName: string

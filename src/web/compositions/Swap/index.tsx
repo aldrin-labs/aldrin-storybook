@@ -47,7 +47,7 @@ import {
   getSelectedPoolForSwap,
   getDefaultBaseToken,
   getDefaultQuoteToken,
-} from '@sb/dexUtils/pools/swap'
+} from '@sb/dexUtils/pools/swap/index'
 import { Loader } from '@sb/components/Loader/Loader'
 import { sleep } from '@sb/dexUtils/utils'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
