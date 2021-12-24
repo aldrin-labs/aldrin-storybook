@@ -48,7 +48,7 @@ export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (
   props
 ) => {
   const { tokenName, marketAddress, marketPair, onInfoClick } = props
-  const token = tokensLinksMap.get(tokenName.toLowerCase()) || {
+  const token = tokensLinksMap.get(tokenName.toUpperCase()) || {
     marketCapLink: '',
     twitterLink: '',
   }
