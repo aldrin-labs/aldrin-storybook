@@ -1,6 +1,6 @@
 import { Connection, Transaction } from '@solana/web3.js'
 
-import { sendSignedTransaction } from './sendSignedTransaction'
+import { sendSignedSignleTransaction } from './sendSignedSignleTransaction'
 import { NotificationParams, TransactionParams } from './types'
 
 /** Send batch of signed transactions, wait for finalizing of last transaction */
@@ -20,7 +20,7 @@ export const sendSignedTransactions = async (
     const isLastTransaction = i === transactions.length - 1
 
     // send transaction and wait 1s before sending next
-    const result = await sendSignedTransaction({
+    const result = await sendSignedSignleTransaction({
       transaction: signedTransaction,
       connection,
       timeout: 30_000,

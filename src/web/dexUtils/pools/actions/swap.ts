@@ -16,7 +16,7 @@ import {
 } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { signAndSendTransaction } from '../../transactions'
+import { signAndSendSingleTransaction } from '../../transactions'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -241,7 +241,7 @@ export const swap = async ({
   const [swapTransaction, signers] = swapTransactionAndSigners
 
   try {
-    const tx = await signAndSendTransaction({
+    const tx = await signAndSendSingleTransaction({
       wallet,
       connection,
       transaction: swapTransaction,

@@ -1,7 +1,9 @@
 import { signAndSendTransactions } from './signAndSendTransactions'
 import { SendTransactionParams } from './types'
 
-export const signAndSendTransaction = async (params: SendTransactionParams) => {
+export const signAndSendSingleTransaction = async (
+  params: SendTransactionParams
+) => {
   const {
     transaction,
     connection,

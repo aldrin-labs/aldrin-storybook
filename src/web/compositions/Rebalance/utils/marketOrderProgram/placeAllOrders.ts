@@ -8,7 +8,7 @@ import {
   transferSOLToWrappedAccountAndClose,
 } from '@sb/dexUtils/pools'
 import { isTransactionFailed } from '@sb/dexUtils/send'
-import { signAndSendTransaction } from '@sb/dexUtils/transactions'
+import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 import { DEX_PID } from '@core/config/dex'
@@ -44,7 +44,7 @@ export const placeAllOrders = async ({
 
   const sendSavedTransaction = async () => {
     if (commonTransaction.instructions.length > 0) {
-      const result = await signAndSendTransaction({
+      const result = await signAndSendSingleTransaction({
         wallet,
         connection,
         transaction: commonTransaction,

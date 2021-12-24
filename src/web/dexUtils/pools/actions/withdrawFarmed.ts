@@ -22,7 +22,7 @@ import { WithdrawFarmedParams } from '@sb/dexUtils/staking/types'
 import {
   signTransactions,
   signAndSendTransactions,
-  signAndSendTransaction,
+  signAndSendSingleTransaction,
 } from '@sb/dexUtils/transactions'
 
 import { getRandomInt } from '@core/utils/helpers'
@@ -154,7 +154,7 @@ export const withdrawFarmed = async ({
         if (signAllTransactions) {
           transactionsAndSigners.push({ transaction: commonTransaction })
         } else {
-          const result = await signAndSendTransaction({
+          const result = await signAndSendSingleTransaction({
             wallet,
             connection,
             transaction: commonTransaction,

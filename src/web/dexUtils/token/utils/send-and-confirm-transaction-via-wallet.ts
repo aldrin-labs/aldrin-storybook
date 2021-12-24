@@ -7,7 +7,7 @@ import type {
 
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { signAndSendTransaction } from '../../transactions'
+import { signAndSendSingleTransaction } from '../../transactions'
 
 export function sendAndConfirmTransactionViaWallet(
   wallet: WalletAdapter,
@@ -15,5 +15,10 @@ export function sendAndConfirmTransactionViaWallet(
   transaction: Transaction,
   ...signers: Array<Account>
 ): Promise<TransactionSignature> {
-  return signAndSendTransaction({ connection, transaction, signers, wallet })
+  return signAndSendSingleTransaction({
+    connection,
+    transaction,
+    signers,
+    wallet,
+  })
 }

@@ -45,7 +45,7 @@ const processCall = (
     })
 }
 
-class MultiEndpointsConnection implements Connection {
+class MultiConnection implements Connection {
   private endpointsRequestsCounter: EndpointRequestsCounter[]
 
   private totalWeight: number = 0
@@ -110,4 +110,6 @@ class MultiEndpointsConnection implements Connection {
   }
 }
 
-export default MultiEndpointsConnection
+export type MultiEndpointsConnection = MultiConnection & Connection
+
+export default MultiConnection

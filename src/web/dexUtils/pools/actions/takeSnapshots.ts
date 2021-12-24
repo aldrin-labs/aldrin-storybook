@@ -21,7 +21,7 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 
 import { sleep } from '@core/utils/helpers'
 
-import { signAndSendTransaction } from '../../transactions'
+import { signAndSendSingleTransaction } from '../../transactions'
 
 const MAX_RETRY_COUNT = 5
 
@@ -81,7 +81,7 @@ export const takePoolsFarmingSnapshots = async ({
             )
 
             console.log('send transaction', pool, retries)
-            await signAndSendTransaction({
+            await signAndSendSingleTransaction({
               wallet,
               connection,
               transaction: tx,

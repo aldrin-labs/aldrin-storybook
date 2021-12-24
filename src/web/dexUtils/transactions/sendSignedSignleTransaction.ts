@@ -6,7 +6,7 @@ import {
 } from './types'
 import { waitTransactionConfirmation } from './waitTransactionConfirmation'
 
-export const sendSignedTransaction = async (
+export const sendSignedSignleTransaction = async (
   params: SendSignedTransactionParams
 ): AsyncSendSignedTransactionResult => {
   const {

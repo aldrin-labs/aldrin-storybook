@@ -11,10 +11,10 @@ import {
 import BN from 'bn.js'
 
 import { walletAdapterToWallet } from '../../common'
-import MultiEndpointsConnection from '../../MultiEndpointsConnection'
+import { MultiEndpointsConnection } from '../../MultiEndpointsConnection'
 import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
 import { POOLS_V2_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
-import { signAndSendTransaction } from '../../transactions'
+import { signAndSendSingleTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
 
 export interface InitializeFarmingBase {
@@ -120,7 +120,7 @@ export const initializeFarmingInstructions = async (
 export const initializeFaming = async (params: InitializeFarmingParams) => {
   const [transaction, signers] = await initializeFarmingInstructions(params)
 
-  return signAndSendTransaction({
+  return signAndSendSingleTransaction({
     transaction,
     connection: params.connection,
     wallet: params.wallet,

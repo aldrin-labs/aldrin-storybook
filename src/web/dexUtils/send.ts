@@ -36,8 +36,8 @@ import { notify } from './notifications'
 import { getNotificationText } from './serum'
 import {
   mergeTransactions,
-  sendSignedTransaction,
-  signAndSendTransaction,
+  sendSignedSignleTransaction,
+  signAndSendSingleTransaction,
 } from './transactions'
 import { getDecimalCount, isCCAITradingEnabled } from './utils'
 
@@ -55,7 +55,7 @@ export async function cancelOrder(params: CancelOrderParams) {
 
   transaction.add(market.makeMatchOrdersTransaction(5))
 
-  return signAndSendTransaction({
+  return signAndSendSingleTransaction({
     transaction,
     wallet,
     connection,
@@ -261,7 +261,7 @@ export async function settleFunds({
 
   const [transaction, settleFundsSigners] = result
 
-  return signAndSendTransaction({
+  return signAndSendSingleTransaction({
     transaction,
     signers: settleFundsSigners,
     wallet,
@@ -320,7 +320,7 @@ export async function amendOrder(params: AmendOrderParams) {
 
   const t = mergeTransactions([transaction, placeTransaction])
 
-  return signAndSendTransaction({
+  return signAndSendSingleTransaction({
     transaction: t,
     wallet,
     connection,
@@ -574,7 +574,7 @@ export async function placeOrder(data: PlaceOrder) {
   const { transaction, signers } = d
   const { wallet, connection } = data
 
-  return signAndSendTransaction({
+  return signAndSendSingleTransaction({
     transaction,
     wallet,
     connection,
@@ -764,7 +764,7 @@ export async function listMarket({
 
   await Promise.all(
     signedTransactions.map((signedTransaction) =>
-      sendSignedTransaction({
+      sendSignedSignleTransaction({
         transaction: signedTransaction,
         connection,
       })

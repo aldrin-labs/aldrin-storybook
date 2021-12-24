@@ -24,7 +24,7 @@ import { createTokenAccountTransaction } from '../send'
 import { findTokenAccount } from '../token/utils/findTokenAccount'
 import {
   mergeTransactions,
-  signAndSendTransaction,
+  signAndSendSingleTransaction,
   signAndSendTransactions,
 } from '../transactions'
 import { WalletAdapter } from '../types'
@@ -382,7 +382,7 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
   // Process ledger transactions
   for (let i = 0; i < allTransactions.length; i += 1) {
     // eslint-disable-next-line no-await-in-loop
-    const result = await signAndSendTransaction({
+    const result = await signAndSendSingleTransaction({
       wallet,
       connection,
       transaction: allTransactions[i].transaction,

@@ -3,7 +3,7 @@ import { Connection, Transaction } from '@solana/web3.js'
 import { TokenAccount } from '@sb/dexUtils/markets'
 import { getSettleFundsTransaction } from '@sb/dexUtils/send'
 import { getNotificationText } from '@sb/dexUtils/serum'
-import { signAndSendTransaction } from '@sb/dexUtils/transactions'
+import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 import { UnsettledBalance } from '../components/UnsettledBalancesTable/UnsettledBalancesTable.utils'
@@ -55,7 +55,7 @@ export const settleUnsettledBalancesForAllMarkets = async ({
     count++
 
     if (count % 10 === 0) {
-      await signAndSendTransaction({
+      await signAndSendSingleTransaction({
         transaction,
         signers,
         wallet,
@@ -72,7 +72,7 @@ export const settleUnsettledBalancesForAllMarkets = async ({
   }
 
   if (transaction.instructions.length > 0) {
-    await signAndSendTransaction({
+    await signAndSendSingleTransaction({
       transaction,
       signers,
       wallet,
