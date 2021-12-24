@@ -44,7 +44,7 @@ const TwammComponent = ({
       programAddress: TWAMM_PROGRAM_ADDRESS,
     })
 
-    console.log('program.account', program.account)
+    console.log('program.account', program.account.pairSettings)
   }
 
   return (
