@@ -1,4 +1,5 @@
 import { Connection } from '@solana/web3.js'
+
 import { STAKING_FARMING_STATE_SIZE } from '../common/config'
 import { loadAccountsFromStakingProgram } from './loadAccountsFromStakingProgram'
 
