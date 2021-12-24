@@ -17,18 +17,15 @@ import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTran
 import { getSnapshotsWithUnclaimedRewards } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
-import {
-  createTokenAccountTransaction,
-  signTransactions,
-} from '@sb/dexUtils/send'
+import { createTokenAccountTransaction } from '@sb/dexUtils/send'
 import { WithdrawFarmedParams } from '@sb/dexUtils/staking/types'
-
-import { getRandomInt } from '@core/utils/helpers'
-
 import {
+  signTransactions,
   sendSignedTransactions,
   signAndSendTransaction,
-} from '../../transactions'
+} from '@sb/dexUtils/transactions'
+
+import { getRandomInt } from '@core/utils/helpers'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -179,17 +176,27 @@ export const withdrawFarmed = async ({
 
   if (signAllTransactions) {
     try {
-      const signedTransactions = await signTransactions({
-        wallet,
-        connection: connection.getConnection(),
-        transactionsAndSigners,
-      })
+      const signedTransactions = await signTransactions(
+        transactionsAndSigners.map(({ transaction }) => ({
+          transaction,
+          signers: [],
+        })),
+        connection,
+        wallet
+      )
 
       if (!signedTransactions) {
         return 'failed'
       }
 
-      return sendSignedTransactions(signedTransactions, connection)
+      return signAndSendTransactions({
+        transactionsAndSigners.map(({ transaction }) => ({
+          transaction,
+          signers: [],
+        })),
+        connection,
+        wallet
+      })
     } catch (e) {
       console.log('end farming catch error', e)
 

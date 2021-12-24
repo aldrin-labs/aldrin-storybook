@@ -12,8 +12,7 @@ import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { signTransactions } from '../send'
-import { sendSignedTransactions } from '../transactions'
+import { sendSignedTransactions, signTransactions } from '../transactions'
 import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
 import { EndstakingParams } from './types'
 
@@ -78,14 +77,14 @@ export const endStaking = async (params: EndstakingParams) => {
     new Transaction().add(...instr)
   )
 
-  const signedTransactions = await signTransactions({
-    transactionsAndSigners: transactions.map((transaction) => ({
+  const signedTransactions = await signTransactions(
+    transactions.map((transaction) => ({
       transaction,
       signers: [],
     })),
-    wallet,
     connection,
-  })
+    wallet
+  )
 
   return sendSignedTransactions(signedTransactions, connection)
 }

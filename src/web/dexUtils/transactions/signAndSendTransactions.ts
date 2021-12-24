@@ -1,45 +1,27 @@
 import { sendSignedTransactions } from '.'
+import { signTransactions } from './signTransactions'
 import { SendTransactionsParams } from './types'
 
 export const signAndSendTransactions = async (
   params: SendTransactionsParams
 ) => {
   const {
-    transactionsAndSigners: transactionAndSigners,
+    transactionsAndSigners,
     connection,
     wallet,
-    focusPopup = true,
+    focusPopup,
     sentMessage,
     successMessage,
     commitment,
   } = params
-  const recentHash = (await connection.getRecentBlockhash('max')).blockhash
-
-  if (!wallet.publicKey) {
-    throw new Error('no Public key for wallet')
-  }
-  const walletPk = wallet.publicKey
-
-  const processedTransactions = transactionAndSigners.map((t) => {
-    const { transaction, signers } = t
-
-    transaction.feePayer = walletPk
-    transaction.recentBlockhash = recentHash
-
-    if (signers.length > 0) {
-      transaction.partialSign(...signers)
-    }
-
-    return transaction
-  })
 
   try {
-    const signedTransactions = await wallet.signAllTransactions(
-      processedTransactions,
+    const signedTransactions = await signTransactions(
+      transactionsAndSigners,
+      connection,
+      wallet,
       focusPopup
     )
-    // Return focus
-    window.focus()
 
     return sendSignedTransactions(signedTransactions, connection, {
       sentMessage,

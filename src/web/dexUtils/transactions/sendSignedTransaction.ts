@@ -65,7 +65,12 @@ export const sendSignedTransaction = async (
     })
   }
 
-  console.log('Confirmation time: ', txId, `${Date.now() - startTime}ms`)
+  console.log(
+    'Confirmation time: ',
+    txId,
+    confirmationResult,
+    `${Date.now() - startTime}ms`
+  )
 
   return confirmationResult
 }

@@ -15,7 +15,10 @@ import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { InlineText } from '@sb/components/Typography'
-import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
+import {
+  useConnection,
+  useMultiEndpointConnection,
+} from '@sb/dexUtils/connection'
 import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
@@ -117,7 +120,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const stepsSize = steps.length
 
   const { wallet } = useWallet()
-  const connection = useMultiEndpointConnection()
+  const connection = useConnection()
   const history = useHistory()
 
   const tokens: Token[] = userTokens
@@ -229,7 +232,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const createAccountsTxId = await sendSignedTransaction({
           transaction: generatedTransactions.createAccounts,
           connection,
-          commitment: 'confirmed',
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
         await sleep(1000)
@@ -239,7 +241,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const setAuthoritiesTxId = await sendSignedTransaction({
           transaction: generatedTransactions.setAuthorities,
           connection,
-          commitment: 'confirmed',
         })
         console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
         await sleep(1000)
@@ -249,7 +250,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const initPoolTxId = await sendSignedTransaction({
           transaction: generatedTransactions.createPool,
           connection,
-          commitment: 'confirmed',
         })
         console.log('initPoolTxId: ', initPoolTxId)
         await sleep(1000)
@@ -259,7 +259,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const firstDepositTxId = await sendSignedTransaction({
           transaction: generatedTransactions.firstDeposit,
           connection,
-          commitment: 'confirmed',
         })
         await sleep(1000)
 
@@ -271,7 +270,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           const farmingTxId = await sendSignedTransaction({
             transaction: generatedTransactions.farming,
             connection,
-            commitment: 'confirmed',
           })
           await sleep(1000)
           console.log('farmingTxId: ', farmingTxId)

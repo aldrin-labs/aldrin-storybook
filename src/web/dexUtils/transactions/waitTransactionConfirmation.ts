@@ -60,12 +60,12 @@ const onSignature = (
   })
 
   const canceler = async () => {
-    try {
-      await connection.removeSignatureListener(subId)
-    } catch (e) {
-      console.log('Unable to remove listener: ', subId)
-      // Usually it's failed because subscription already removed by connection - do nothing
-    }
+    // try {
+    //   await connection.removeSignatureListener(subId)
+    // } catch (e) {
+    //   console.log('Unable to remove listener: ', subId)
+    //   // Usually it's failed because subscription already removed by connection - do nothing
+    // }
   }
 
   return [promise, canceler]
