@@ -16,14 +16,15 @@ import {
   PhantomWalletAdapter,
   SolletExtensionAdapter,
   SolongWalletAdapter,
+  SlopeWalletAdapter,
 } from '@sb/dexUtils/adapters'
-
 import { WalletAdapter } from '@sb/dexUtils/types'
+
 import Mathwallet from '@icons/mathwallet.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
+import Slope from '@icons/slope.svg'
 import Sollet from '@icons/sollet.svg'
 import Solong from '@icons/solong.svg'
-
 
 import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
 import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
@@ -133,6 +134,15 @@ export const WALLET_PROVIDERS = [
     icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/solflare.svg`,
     isExtension: true,
     showOnMobile: true,
+  },
+  {
+    name: 'Slope',
+    fullName: 'Slope Wallet',
+    url: 'https://slope.finance/',
+    adapter: SlopeWalletAdapter,
+    icon: Slope,
+    isExtension: true,
+    showOnMobile: false,
   },
 ]
 
@@ -570,7 +580,7 @@ export async function createAssociatedTokenAccountIx(
   fundingAddress,
   walletAddress,
   splTokenMintAddress
-): Promise<[TransactionInstruction, PublicKey]> {
+) {
   const associatedTokenAddress = await findAssociatedTokenAddress(
     walletAddress,
     splTokenMintAddress

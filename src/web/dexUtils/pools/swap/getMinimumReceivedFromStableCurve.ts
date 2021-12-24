@@ -1,13 +1,13 @@
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { Connection, PublicKey } from '@solana/web3.js'
-
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { sendTransaction } from '@sb/dexUtils/send'
 import { Token } from '@sb/dexUtils/token/token'
+
 import { parseTokenAccountData } from '@sb/dexUtils/tokens'
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
-
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { Connection, Keypair, PublicKey } from '@solana/web3.js'
 import { getSwapTransaction } from '../actions/swap'
 
 export const getMinimumReceivedFromStableCurveForSwap = async ({
@@ -127,12 +127,7 @@ export const getMinimumReceivedFromStableCurveForSwap = async ({
       const { decimals } = tokensMap.get(quotePoolTokenMint)
       quoteTokenDecimals = decimals
     } else {
-      const quoteToken = new Token(
-        wallet,
-        connection,
-        parsedQuote.mint,
-        TOKEN_PROGRAM_ID
-      )
+      const quoteToken = new Token(wallet, connection, parsedQuote.mint, TOKEN_PROGRAM_ID)
       const { decimals } = await quoteToken.getMintInfo()
       quoteTokenDecimals = decimals
     }

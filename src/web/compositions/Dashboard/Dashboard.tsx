@@ -1,11 +1,10 @@
-import { Theme, withTheme } from '@material-ui/core'
-import { OpenOrders } from '@project-serum/serum'
 import React, { useState, useEffect } from 'react'
+import { OpenOrders } from '@project-serum/serum'
+import { Theme, withTheme } from '@material-ui/core'
 
-import { Loading } from '@sb/components'
-import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { DEX_PID } from '@core/config/dex'
 
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { useWallet } from '@sb/dexUtils/wallet'
 import {
   useTokenAccountsMap,
@@ -13,28 +12,26 @@ import {
   useAllMarketsMapById,
 } from '@sb/dexUtils/markets'
 import { useConnection, useSerumConnection } from '@sb/dexUtils/connection'
+
 import { LoadingScreenWithHint } from '@sb/components/LoadingScreenWithHint/LoadingScreenWithHint'
 import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable'
 import { notEmpty, onlyUnique, sleep } from '@sb/dexUtils/utils'
 import { useInterval } from '@sb/dexUtils/useInterval'
+import { Loading } from '@sb/components'
 import { notifyWithLog } from '@sb/dexUtils/notifications'
-
 import { compose } from 'recompose'
-
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-
 import { RowContainer, Title } from '../AnalyticsRoute/index.styles'
-import { DexTokensPrices } from '../Pools/index.types'
-import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
+
 import { UnsettledBalancesTable } from './components/UnsettledBalancesTable/UnsettledBalancesTable'
+import { getOrderbookForMarkets } from '../Rebalance/utils/getOrderbookForMarkets'
 import {
   LoadedMarketsMap,
   loadMarketsByNames,
 } from '../Rebalance/utils/loadMarketsByNames'
-import { UnsettledBalance } from './components/UnsettledBalancesTable/UnsettledBalancesTable.utils'
 import { TableContainer, TableWithTitleContainer } from './Dashboard.styles'
-import { cancelOrdersForAllMarkets } from './utils/cancelOrdersForAllMarkets'
+import { UnsettledBalance } from './components/UnsettledBalancesTable/UnsettledBalancesTable.utils'
 import { getOpenOrdersAccountsMapByMarketId } from './utils/getOpenOrdersAccountsMapByMarketId'
 import { getUnsettledBalances } from './utils/getUnsettledBalances'
 import {
@@ -42,8 +39,11 @@ import {
   OrderWithMarket,
 } from './utils/getOpenOrdersFromOrderbooks'
 import { loadOpenOrderAccountsFromPubkeys } from './utils/loadOpenOrderAccountsFromPubkeys'
+import { cancelOrdersForAllMarkets } from './utils/cancelOrdersForAllMarkets'
 import { settleUnsettledBalancesForAllMarkets } from './utils/settleUnsettledBalancesForAllMarkets'
 import LoadingText from './components/LoadingText/LoadingText'
+
+import { DexTokensPrices } from '../Pools/index.types'
 
 /* dashboard shows all open orders and all unsettled balances by using open orders accounts
 it gives you ability to settle your funds and cancel orders */
@@ -287,7 +287,7 @@ const Dashboard = ({
                 // removing loaders only in case of error
                 setsCancellingAllOrders(false)
               }
-              // await sleep(5 * 1000)
+              await sleep(5 * 1000)
               refreshOpenOrders()
             }}
             handlePairChange={() => {}}
@@ -327,7 +327,6 @@ const Dashboard = ({
                   unsettledBalances,
                   userTokenAccountsMap,
                 })
-                console.log('Settle finished')
               } catch (e) {
                 notifyWithLog({
                   message: 'Insufficient SOL balance for settling.',
