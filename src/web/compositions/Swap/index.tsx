@@ -86,9 +86,8 @@ const SwapPage = ({
   const allPools = getPoolsInfoQuery.getPoolsInfo
   const nativeSOLTokenData = allTokensData[0]
 
-  const [isStableSwapTabActive, setIsStableSwapTabActive] = useState<boolean>(
-    false
-  )
+  const [isStableSwapTabActive, setIsStableSwapTabActive] =
+    useState<boolean>(false)
 
   useEffect(() => {
     const updatedPoolsList = getPoolsForSwapActiveTab({
@@ -133,16 +132,16 @@ const SwapPage = ({
     const baseTokenMint = baseFromRedirect
       ? getTokenMintAddressByName(baseFromRedirect) || ''
       : getTokenMintAddressByName(
-        getDefaultBaseToken(isStableSwapFromRedirect)
-      ) || ''
+          getDefaultBaseToken(isStableSwapFromRedirect)
+        ) || ''
 
     setBaseTokenMintAddress(baseTokenMint)
 
     const quoteTokenMint = quoteFromRedirect
       ? getTokenMintAddressByName(quoteFromRedirect) || ''
       : getTokenMintAddressByName(
-        getDefaultQuoteToken(isStableSwapFromRedirect)
-      ) || ''
+          getDefaultQuoteToken(isStableSwapFromRedirect)
+        ) || ''
 
     setQuoteTokenMintAddress(quoteTokenMint)
 
@@ -185,18 +184,14 @@ const SwapPage = ({
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
 
-  const [
-    selectedBaseTokenAddressFromSeveral,
-    setBaseTokenAddressFromSeveral,
-  ] = useState<string>('')
+  const [selectedBaseTokenAddressFromSeveral, setBaseTokenAddressFromSeveral] =
+    useState<string>('')
   const [
     selectedQuoteTokenAddressFromSeveral,
     setQuoteTokenAddressFromSeveral,
   ] = useState<string>('')
-  const [
-    isTransactionSettingsPopupOpen,
-    openTransactionSettingsPopup,
-  ] = useState(false)
+  const [isTransactionSettingsPopupOpen, openTransactionSettingsPopup] =
+    useState(false)
 
   const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
 
@@ -311,21 +306,21 @@ const SwapPage = ({
   ) => {
     setBaseAmount(newBaseAmount)
 
-    const swapAmountOut = await getMinimumReceivedAmountFromSwap({
+    const swapAmountOut = getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newBaseAmount,
       isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
       pool: selectedPool,
-      wallet,
-      tokensMap,
-      connection,
-      userBaseTokenAccount: userPoolBaseTokenPublicKey,
-      userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
-      transferSOLToWrapped,
-      allTokensData,
       poolBalances,
     })
 
-    setQuoteAmount(swapAmountOut)
+    // do not set 0, leave 0 placeholder
+    if (swapAmountOut === 0) {
+      setQuoteAmount('')
+      return
+    }
+
+    const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
+    setQuoteAmount(strippedSwapAmountOut)
   }
 
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
@@ -333,21 +328,21 @@ const SwapPage = ({
 
     setQuoteAmount(newQuoteAmount)
 
-    const swapAmountOut = await getMinimumReceivedAmountFromSwap({
+    const swapAmountOut = getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newQuoteAmount,
       isSwapBaseToQuote: isSwapBaseToQuoteForQuoteChange,
       pool: selectedPool,
-      wallet,
-      tokensMap,
-      connection,
-      userBaseTokenAccount: userPoolBaseTokenPublicKey,
-      userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
-      transferSOLToWrapped,
-      allTokensData,
       poolBalances,
     })
 
-    setBaseAmount(swapAmountOut)
+    // do not set 0, leave 0 placeholder
+    if (swapAmountOut === 0) {
+      setBaseAmount('')
+      return
+    }
+
+    const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
+    setBaseAmount(strippedSwapAmountOut)
   }
 
   return (
@@ -499,8 +494,8 @@ const SwapPage = ({
                 {isSelectedPoolStable
                   ? 1
                   : isSwapBaseToQuote
-                    ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
-                    : stripDigitPlaces(
+                  ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
+                  : stripDigitPlaces(
                       +(+poolAmountTokenA / +poolAmountTokenB),
                       8
                     )}{' '}
@@ -588,8 +583,8 @@ const SwapPage = ({
                       result === 'success'
                         ? 'Swap executed successfully.'
                         : result === 'failed'
-                          ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
-                          : 'Swap cancelled',
+                        ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
+                        : 'Swap cancelled',
                   })
 
                   // refresh data
@@ -611,7 +606,8 @@ const SwapPage = ({
                 {isSwapInProgress ? (
                   <Loader />
                 ) : isTokenABalanceInsufficient ? (
-                  `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
+                  `Insufficient ${
+                    isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                   } Balance`
                 ) : !selectedPool ? (
                   'No pools available'
@@ -666,7 +662,8 @@ const SwapPage = ({
                   fontFamily={'Avenir Next Bold'}
                 >
                   {stripByAmountAndFormat(
-                    +baseAmount * (getLiquidityProviderFee(selectedPool.curveType) / 100)
+                    +baseAmount *
+                      (getLiquidityProviderFee(selectedPool.curveType) / 100)
                   )}{' '}
                   {baseSymbol}
                 </Text>

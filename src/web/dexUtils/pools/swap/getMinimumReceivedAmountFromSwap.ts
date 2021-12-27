@@ -1,71 +1,47 @@
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
   getPoolsProgramAddress,
   POOLS_PROGRAM_ADDRESS,
 } from '@sb/dexUtils/ProgramsMultiton/utils'
+import BN from 'bn.js'
 
-import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
-import { Connection, PublicKey } from '@solana/web3.js'
 import { PoolBalances } from '../hooks/usePoolBalances'
 import { getMinimumReceivedFromProductCurve } from './getMinimumReceivedFromProductCurve'
 import { getMinimumReceivedFromStableCurveForSwap } from './getMinimumReceivedFromStableCurve'
 
-export const getMinimumReceivedAmountFromSwap = async ({
+export const getMinimumReceivedAmountFromSwap = ({
   swapAmountIn,
   isSwapBaseToQuote,
   pool,
-  wallet,
-  tokensMap,
-  connection,
-  userBaseTokenAccount,
-  userQuoteTokenAccount,
-  transferSOLToWrapped,
-  allTokensData,
   poolBalances,
 }: {
   swapAmountIn: number
   isSwapBaseToQuote: boolean
   pool?: PoolInfo
-  wallet: WalletAdapter
-  tokensMap: Map<string, TokenInfo>,
-  connection: Connection
-  userBaseTokenAccount: PublicKey | null
-  userQuoteTokenAccount: PublicKey | null
-  transferSOLToWrapped: boolean
-  allTokensData: TokenInfo[]
   poolBalances: PoolBalances
-}) => {
-
+}): number => {
   if (!pool) return 0
 
   const { curveType } = pool
 
-  let swapAmountOut = 0
+  let swapAmountOut: number = 0
 
   if (getPoolsProgramAddress({ curveType }) === POOLS_PROGRAM_ADDRESS) {
     swapAmountOut = getMinimumReceivedFromProductCurve({
       swapAmountIn,
       isSwapBaseToQuote,
       poolBalances,
+      pool,
     })
   } else {
     // program v2
-    swapAmountOut = await getMinimumReceivedFromStableCurveForSwap({
+    swapAmountOut = getMinimumReceivedFromStableCurveForSwap({
       swapAmountIn,
       isSwapBaseToQuote,
       pool,
-      wallet,
-      tokensMap,
-      connection,
-      userBaseTokenAccount,
-      userQuoteTokenAccount,
-      transferSOLToWrapped,
-      allTokensData,
+      poolBalances,
     })
   }
 
-  const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
-
-  return strippedSwapAmountOut
+  return swapAmountOut
 }

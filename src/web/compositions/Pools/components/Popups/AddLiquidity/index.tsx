@@ -42,7 +42,10 @@ import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/uti
 import { InputWithCoins, InputWithTotal } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
-
+import { findClosestAmountToSwapForDeposit } from '@sb/dexUtils/pools/swap/findClosestAmountToSwapForDeposit'
+import { createBasketWithSwap } from '@sb/dexUtils/pools/actions/createBasketWithSwap'
+import { Checkbox } from '@sb/components/Checkbox'
+import { WarningLabel } from './AddLiquidity.styles'
 interface AddLiquidityPopupProps {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
@@ -78,22 +81,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     quoteTokenAmount: poolAmountTokenB,
   } = poolBalances
 
+  const isPoolEmpty = poolAmountTokenA === 0 && poolAmountTokenB === 0
+
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
 
-  // update entered value on every pool ratio change
-  useEffect(() => {
-    if (!selectedPool) return
-
-    const newQuote = stripDigitPlaces(
-      +baseAmount * (poolAmountTokenB / poolAmountTokenA),
-      8
-    )
-
-    if (baseAmount && newQuote) {
-      setQuoteAmount(newQuote)
-    }
-  }, [poolBalances])
+  const [autoRebalanceEnabled, setAutoRebalanceEnabled] = useState(true)
 
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
     const quoteAmount = stripDigitPlaces(
@@ -102,7 +95,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     )
 
     setBaseAmount(baseAmount)
-    if (poolAmountTokenA !== 0 && poolAmountTokenB !== 0) {
+    if (!isPoolEmpty && !autoRebalanceEnabled) {
       setQuoteAmount(quoteAmount)
     }
   }
@@ -113,17 +106,21 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       8
     )
 
-    if (poolAmountTokenA !== 0 && poolAmountTokenB !== 0) {
+    setQuoteAmount(quoteAmount)
+    if (!isPoolEmpty && !autoRebalanceEnabled) {
       setBaseAmount(baseAmount)
     }
-    setQuoteAmount(quoteAmount)
   }
 
+  useEffect(() => {
+    if (!autoRebalanceEnabled) {
+      setBaseAmountWithQuote(baseAmount)
+    }
+  }, [autoRebalanceEnabled])
+
   // if user has more than one token for one mint
-  const [
-    selectedBaseTokenAddressFromSeveral,
-    setBaseTokenAddressFromSeveral,
-  ] = useState<string>('')
+  const [selectedBaseTokenAddressFromSeveral, setBaseTokenAddressFromSeveral] =
+    useState<string>('')
   const [
     selectedQuoteTokenAddressFromSeveral,
     setQuoteTokenAddressFromSeveral,
@@ -189,16 +186,23 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     isBaseTokenSOL && isNativeSOLSelected
       ? maxBaseAmount - +baseAmount < 0.1
       : isQuoteTokenSOL && isNativeSOLSelected
-        ? maxQuoteAmount - +quoteAmount < 0.1
-        : false
+      ? maxQuoteAmount - +quoteAmount < 0.1
+      : false
 
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
     selectedPool,
     poolTokenAmount: poolTokenRawAmount * 10 ** poolTokenDecimals,
   })
 
+  const isImpermanentLossOnStablePool =
+    baseSymbol === 'mSOL' && quoteSymbol === 'SOL'
+
+  const isPoolWithoutImpermanentLoss =
+    selectedPool.parsedName.includes('USDT') &&
+    selectedPool.parsedName.includes('USDC')
+
   const isDisabled =
-    !warningChecked ||
+    (!warningChecked && !isPoolWithoutImpermanentLoss) ||
     +baseAmount <= 0 ||
     +quoteAmount <= 0 ||
     operationLoading ||
@@ -218,48 +222,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     )?.price || 0
 
   const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
-  const tvlUSD =
-    baseTokenPrice * selectedPool.tvl.tokenA +
-    quoteTokenPrice * selectedPool.tvl.tokenB
 
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0
   const openFarmings = isPoolWithFarming
     ? filterOpenFarmingStates(selectedPool.farming)
     : []
-
-  const poolTokenPrice = calculatePoolTokenPrice({
-    pool: selectedPool,
-    dexTokensPricesMap,
-  })
-
-  const totalStakedLpTokensUSD =
-    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice
-
-  const totalFarmingDailyRewardsUSD = openFarmings.reduce(
-    (acc, farmingState) => {
-      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValue(
-        { farmingState, totalStakedLpTokensUSD }
-      )
-
-      const farmingTokenSymbol = getTokenNameByMintAddress(
-        farmingState.farmingTokenMint
-      )
-
-      const farmingTokenPrice =
-        dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
-
-      const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
-        farmingStateDailyFarmingValuePerThousandDollarsLiquidity *
-        farmingTokenPrice
-
-      return acc + farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD
-    },
-    0
-  )
-
-  const farmingAPR =
-    ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100 || 0
 
   return (
     <DialogWrapper
@@ -321,11 +289,27 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           maxBalance={maxBaseAmount}
           needAlreadyInPool={false}
         />
-        <Row>
+        <RowContainer justify="space-between">
           <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
             +
           </Text>
-        </Row>
+          <Row onClick={() => setAutoRebalanceEnabled(!autoRebalanceEnabled)}>
+            <Checkbox
+              onChange={() => {}}
+              checked={isPoolEmpty ? false : autoRebalanceEnabled}
+            />
+            <Text>Auto-rebalance uneven amounts</Text>
+            <DarkTooltip title="The amounts you specify will be automatically rebalanced to match the pool ratio. For example, if you want to deposit 0 RIN + 100 USDC, and pool ratio is 1 RIN = 10 USDC your actual deposit after rebalancing will be 5 RIN + 50 USDC. When withdrawing liquidity you will get the amount corresponding to the pool ratio at the moment of withdrawal. Auto-rebalance deposit does not protect against impermanent loss.">
+              <span>
+                <SvgIcon
+                  src={Info}
+                  width="1.5rem"
+                  style={{ marginLeft: '1.5rem' }}
+                />
+              </span>
+            </DarkTooltip>
+          </Row>
+        </RowContainer>
         <InputWithCoins
           placeholder={'0'}
           theme={theme}
@@ -353,117 +337,78 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         </RowContainer>
       )}
 
-      <Row
-        margin={'2rem 0 1rem 0'}
-        align={'flex-start'}
-        justify={'space-between'}
-      >
-        <Row direction={'column'} align={'flex-start'} justify="flex-start">
-          <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
-            Total Value Locked:
-          </Text>
-          <Row>
-            <Text fontSize={'1.5rem'}>
-              {formatNumberToUSFormat(
-                stripDigitPlaces(poolAmountTokenA, 2)
-              )}{' '}
-              {getTokenNameByMintAddress(selectedPool.tokenA)} /{' '}
-              {formatNumberToUSFormat(
-                stripDigitPlaces(poolAmountTokenB, 2)
-              )}{' '}
-              {getTokenNameByMintAddress(selectedPool.tokenB)}
-            </Text>
-            <Text
-              fontSize={'1.5rem'}
-              color={'#53DF11'}
-              fontFamily={'Avenir Next Demi'}
-              style={{ marginLeft: '1rem' }}
-            >
-              ${stripByAmountAndFormat(tvlUSD)}
-            </Text>
-          </Row>
-        </Row>
-        <Row direction={'column'} align="flex-end">
-          <Row wrap="nowrap" margin={'0 0 1rem 0'}>
-            <Text style={{ whiteSpace: 'nowrap' }} fontSize={'1.4rem'}>
-              APR{' '}
-            </Text>{' '}
-            <DarkTooltip
-              title={
-                'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming rewards.'
-              }
-            >
-              <div>
-                <SvgIcon
-                  src={Info}
-                  width={'1.5rem'}
-                  height={'auto'}
-                  style={{ marginLeft: '1rem' }}
-                />
-              </div>
-            </DarkTooltip>
-          </Row>
-
-          <Row>
-            <Text
-              fontSize={'1.5rem'}
-              color={'#53DF11'}
-              fontFamily={'Avenir Next Demi'}
-            >
-              {formatNumberToUSFormat(
-                stripDigitPlaces(+selectedPool.apy24h + farmingAPR, 2)
-              )}
-              %
-            </Text>
-          </Row>
-        </Row>
-      </Row>
-
       {(isNeedToLeftSomeSOL ||
         baseAmount > maxBaseAmount ||
         quoteAmount > maxQuoteAmount) && (
-          <RowContainer margin={'2rem 0 0 0'}>
-            <AttentionComponent
-              text={
-                isNeedToLeftSomeSOL
-                  ? 'Sorry, but you need to leave some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
-                  : baseAmount > maxBaseAmount
-                    ? `You entered more token ${baseSymbol} amount than you have.`
-                    : quoteAmount > maxQuoteAmount
-                      ? `You entered more ${quoteSymbol} amount than you have.`
-                      : ''
-              }
-              blockHeight={'8rem'}
-            />
-          </RowContainer>
-        )}
+        <RowContainer margin={'2rem 0 0 0'}>
+          <AttentionComponent
+            text={
+              isNeedToLeftSomeSOL
+                ? 'Sorry, but you need to leave some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
+                : baseAmount > maxBaseAmount
+                ? `You entered more token ${baseSymbol} amount than you have.`
+                : quoteAmount > maxQuoteAmount
+                ? `You entered more ${quoteSymbol} amount than you have.`
+                : ''
+            }
+            blockHeight={'8rem'}
+          />
+        </RowContainer>
+      )}
+
+      <RowContainer
+        justify="space-between"
+        margin={'2rem 0 0 0'}
+        padding="2rem"
+        style={{ background: '#303236', borderRadius: '1.2rem' }}
+      >
+        <Text fontSize={'1.2rem'} fontFamily="Avenir Next">
+          {autoRebalanceEnabled
+            ? 'The amounts you specify will be automatically rebalanced to match the pool ratio. For example, if you want to deposit 0 RIN + 100 USDC, and pool ratio is 1 RIN = 10 USDC your actual deposit after rebalancing will be 5 RIN + 50 USDC. When withdrawing liquidity you will get the amount corresponding to the pool ratio at the moment of withdrawal. Auto-rebalance deposit does not protect against impermanent loss.'
+            : 'Start typing the amount in one of the fields above and the second field will fill in automatically. Enabling Auto-rebalance will allow you to deposit uneven amounts in a ratio that suits you.'}
+        </Text>
+      </RowContainer>
+
       <RowContainer justify="space-between" margin={'2rem 0 0 0'}>
         <Row
           width={'60%'}
-          justify="space-between"
+          justify={isPoolWithoutImpermanentLoss ? 'center' : 'space-between'}
           wrap={'nowrap'}
           padding={'0 2rem 0 0'}
         >
-          <SCheckbox
-            id={'warning_checkbox'}
-            style={{ padding: 0, marginRight: '1rem' }}
-            onChange={() => setWarningChecked(!warningChecked)}
-            checked={warningChecked}
-          />
-          <label htmlFor={'warning_checkbox'}>
-            <WhiteText
-              style={{
-                cursor: 'pointer',
-                color: '#F2ABB1',
-                fontSize: '1.12rem',
-                fontFamily: 'Avenir Next Medium',
-                letterSpacing: '0.01rem',
-              }}
-            >
-              I understand the risks of providing liquidity, and that I could
-              lose money to impermanent loss.
-            </WhiteText>
-          </label>
+          {isImpermanentLossOnStablePool && (
+            <DarkTooltip title="Impermanent loss on a stable pool? As mSOL rises incrementally in value when compared with SOL, a very small amount of impermanent loss occurs. At the time of writing, the expected price difference per year would result impermanent loss being a fraction of a percent">
+              <span>
+                <SvgIcon
+                  src={Info}
+                  width="1.5rem"
+                  style={{ marginRight: '1.5rem' }}
+                />
+              </span>
+            </DarkTooltip>
+          )}
+          {isPoolWithoutImpermanentLoss ? (
+            <>
+              <WarningLabel $color={COLORS.success} style={{ cursor: 'auto' }}>
+                No impermanent loss.
+              </WarningLabel>
+            </>
+          ) : (
+            <>
+              <SCheckbox
+                id={'warning_checkbox'}
+                style={{ padding: 0, marginRight: '1rem' }}
+                onChange={() => setWarningChecked(!warningChecked)}
+                checked={warningChecked}
+              />
+              <label htmlFor={'warning_checkbox'}>
+                <WarningLabel>
+                  I understand the risks of providing liquidity, and that I
+                  could lose money to impermanent loss.
+                </WarningLabel>
+              </label>
+            </>
+          )}
         </Row>
         <Button
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
@@ -482,8 +427,9 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               !userQuoteTokenAmount
             ) {
               notify({
-                message: `Sorry, something went wrong with your amount of ${!userTokenAccountA ? 'tokenA' : 'tokenB'
-                  }`,
+                message: `Sorry, something went wrong with your amount of ${
+                  !userTokenAccountA ? 'tokenA' : 'tokenB'
+                }`,
                 type: 'error',
               })
 
@@ -509,20 +455,41 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               operation: 'deposit',
             })
 
-            const result = await createBasket({
-              wallet,
-              connection,
-              curveType: selectedPool.curveType,
-              poolPublicKey: new PublicKey(selectedPool.swapToken),
-              userBaseTokenAmount,
-              userQuoteTokenAmount,
-              userBaseTokenAccount: new PublicKey(userTokenAccountA),
-              userQuoteTokenAccount: new PublicKey(userTokenAccountB),
-              ...(userPoolTokenAccount
-                ? { userPoolTokenAccount: new PublicKey(userPoolTokenAccount) }
-                : { userPoolTokenAccount: null }),
-              transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
-            })
+            const transferSOLToWrapped =
+              isPoolWithSOLToken && isNativeSOLSelected
+            let result = 'failed'
+
+            if (autoRebalanceEnabled) {
+              result = await createBasketWithSwap({
+                wallet,
+                connection,
+                pool: selectedPool,
+                poolBalances,
+                userBaseTokenAmount: +baseAmount,
+                userQuoteTokenAmount: +quoteAmount,
+                userBaseTokenAccount: new PublicKey(userTokenAccountA),
+                userQuoteTokenAccount: new PublicKey(userTokenAccountB),
+                userPoolTokenAccount: userPoolTokenAccount
+                  ? new PublicKey(userPoolTokenAccount)
+                  : null,
+                transferSOLToWrapped,
+              })
+            } else {
+              result = await createBasket({
+                wallet,
+                connection,
+                curveType: selectedPool.curveType,
+                poolPublicKey: new PublicKey(selectedPool.swapToken),
+                userBaseTokenAmount,
+                userQuoteTokenAmount,
+                userBaseTokenAccount: new PublicKey(userTokenAccountA),
+                userQuoteTokenAccount: new PublicKey(userTokenAccountB),
+                userPoolTokenAccount: userPoolTokenAccount
+                  ? new PublicKey(userPoolTokenAccount)
+                  : null,
+                transferSOLToWrapped,
+              })
+            }
 
             setOperationLoading(false)
 
@@ -532,8 +499,8 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
                 result === 'success'
                   ? 'Deposit successful'
                   : result === 'failed'
-                    ? 'Deposit failed, please try again or contact us in telegram.'
-                    : 'Deposit cancelled',
+                  ? 'Deposit failed, please try again or contact us in telegram.'
+                  : 'Deposit cancelled',
             })
 
             refreshPoolBalances()
@@ -571,7 +538,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenA)}
         open={isSelectorForSeveralBaseAddressesOpen}
         close={() => setIsSelectorForSeveralBaseAddressesOpen(false)}
-        selectTokenMintAddress={() => { }}
+        selectTokenMintAddress={() => {}}
         selectTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
       />
       <SelectSeveralAddressesPopup
@@ -579,7 +546,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenB)}
         open={isSelectorForSeveralQuoteAddressesOpen}
         close={() => setIsSelectorForSeveralQuoteAddressesOpen(false)}
-        selectTokenMintAddress={() => { }}
+        selectTokenMintAddress={() => {}}
         selectTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
       />
     </DialogWrapper>

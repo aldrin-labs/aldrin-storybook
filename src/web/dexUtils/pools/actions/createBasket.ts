@@ -4,6 +4,7 @@ import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import {
   Connection,
   PublicKey,
+  Signer,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
@@ -23,7 +24,7 @@ import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTran
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
-export async function createBasket({
+const getCreateBasketTransaction = async ({
   wallet,
   connection,
   poolPublicKey,
@@ -45,7 +46,7 @@ export async function createBasket({
   userBaseTokenAmount: number
   userQuoteTokenAmount: number
   transferSOLToWrapped: boolean
-}) {
+}): Promise<[Transaction, Signer[]]> => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
@@ -63,11 +64,7 @@ export async function createBasket({
     quoteTokenMint,
     quoteTokenVault,
     poolMint,
-    lpTokenFreezeVault,
-    ...rest
   } = await program.account.pool.fetch(poolPublicKey)
-
-  console.log('rest', rest)
 
   const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
 
@@ -104,13 +101,11 @@ export async function createBasket({
 
   // create pool token account for user if not exist
   if (!userPoolTokenAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey: new PublicKey(poolMint),
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: new PublicKey(poolMint),
+      })
 
     userPoolTokenAccount = newAccountPubkey
     transactionBeforeDeposit.add(createAccountTransaction)
@@ -159,32 +154,73 @@ export async function createBasket({
 
   let commonTransaction = new Transaction()
 
+  const createBasketTransaction = await program.instruction.createBasket(
+    poolTokenAmount,
+    new BN(userBaseTokenAmount),
+    new BN(userQuoteTokenAmount),
+    {
+      accounts: {
+        pool: poolPublicKey,
+        poolMint,
+        poolSigner: vaultSigner,
+        userBaseTokenAccount,
+        userQuoteTokenAccount,
+        baseTokenVault,
+        quoteTokenVault,
+        userPoolTokenAccount,
+        walletAuthority: wallet.publicKey,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        clock: SYSVAR_CLOCK_PUBKEY,
+        rent: SYSVAR_RENT_PUBKEY,
+      },
+    }
+  )
+
+  commonTransaction.add(transactionBeforeDeposit)
+  commonTransaction.add(createBasketTransaction)
+  commonTransaction.add(transactionAfterDeposit)
+
+  return [commonTransaction, commonSigners]
+}
+
+const createBasket = async ({
+  wallet,
+  connection,
+  poolPublicKey,
+  curveType,
+  userPoolTokenAccount,
+  userBaseTokenAccount,
+  userQuoteTokenAccount,
+  userBaseTokenAmount,
+  userQuoteTokenAmount,
+  transferSOLToWrapped,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+  poolPublicKey: PublicKey
+  curveType: number | null
+  userPoolTokenAccount: PublicKey | null
+  userBaseTokenAccount: PublicKey
+  userQuoteTokenAccount: PublicKey
+  userBaseTokenAmount: number
+  userQuoteTokenAmount: number
+  transferSOLToWrapped: boolean
+}) => {
   try {
-    const createBasketTransaction = await program.instruction.createBasket(
-      poolTokenAmount,
-      new BN(userBaseTokenAmount),
-      new BN(userQuoteTokenAmount),
+    const [commonTransaction, commonSigners] = await getCreateBasketTransaction(
       {
-        accounts: {
-          pool: poolPublicKey,
-          poolMint,
-          poolSigner: vaultSigner,
-          userBaseTokenAccount,
-          userQuoteTokenAccount,
-          baseTokenVault,
-          quoteTokenVault,
-          userPoolTokenAccount,
-          walletAuthority: wallet.publicKey,
-          tokenProgram: TOKEN_PROGRAM_ID,
-          clock: SYSVAR_CLOCK_PUBKEY,
-          rent: SYSVAR_RENT_PUBKEY,
-        },
+        wallet,
+        connection,
+        poolPublicKey,
+        curveType,
+        userPoolTokenAccount,
+        userBaseTokenAccount,
+        userQuoteTokenAccount,
+        userBaseTokenAmount,
+        userQuoteTokenAmount,
+        transferSOLToWrapped,
       }
     )
-
-    commonTransaction.add(transactionBeforeDeposit)
-    commonTransaction.add(createBasketTransaction)
-    commonTransaction.add(transactionAfterDeposit)
 
     const tx = await sendTransaction({
       wallet,
@@ -207,3 +243,5 @@ export async function createBasket({
 
   return 'success'
 }
+
+export { getCreateBasketTransaction, createBasket }

@@ -1,34 +1,108 @@
-interface ReverseBinarySearchParams {
-  userAmountTokenA: number;
-  userAmountTokenB: number;
-  poolAmountTokenA: number;
-  poolAmountTokenB: number;
-}
+import { FindClosestAmountToSwapForDepositParams } from './findClosestAmountToSwapForDeposit'
+import { getMinimumReceivedAmountFromSwap } from './getMinimumReceivedAmountFromSwap'
+import { getPoolRatioAfterSwap, getUserRatioAfterSwap } from './getRatioAfterSwap'
+
+interface ReverseBinarySearchParams
+  extends FindClosestAmountToSwapForDepositParams {}
 
 const reverseBinarySearch = (params: ReverseBinarySearchParams) => {
-  const {
-    userAmountTokenA,
-    userAmountTokenB,
-    poolAmountTokenA,
-    poolAmountTokenB
-  } = params
+  const { pool, poolBalances, userAmountTokenA, userAmountTokenB } = params
 
-  const poolRatioForTokenA = poolAmountTokenA / poolAmountTokenB
+  const {
+    baseTokenAmount: poolAmountTokenA,
+    quoteTokenAmount: poolAmountTokenB,
+  } = poolBalances
+
+  console.log({
+    poolBalances, userAmountTokenA, userAmountTokenB
+  })
+
+  const poolRatioForTokenA = poolAmountTokenB / poolAmountTokenA
 
   // determine which user amount is bigger using pool ratio
   const userAmountTokenAInTokenB = poolRatioForTokenA * userAmountTokenA
   const userAmountsDiffInTokenB = userAmountTokenAInTokenB - userAmountTokenB
-  const tokenToSwap = userAmountsDiffInTokenB > 0 ? 'tokenA' : 'tokenB'
 
-  // determine amount part which will be added every time we need to find side
-  // const 
+  const tokenToSwap = userAmountsDiffInTokenB > 0 ? 'tokenA' : 'tokenB'
+  const isSwapBaseToQuote = tokenToSwap === 'tokenA'
+
+  const swap = (swapAmountIn: number) =>
+    getMinimumReceivedAmountFromSwap({
+      swapAmountIn,
+      isSwapBaseToQuote,
+      pool,
+      poolBalances,
+    })
 
   // determine min and max amount to swap
-  // determine half of amount to swap
-  // determine pool ration with swapped amounts
+  let minSwapAmountIn = 0
+  let maxSwapAmountIn = isSwapBaseToQuote ? userAmountTokenA : userAmountTokenB
 
-  // check is new ratio close enough to ratio of user tokenA/B after swap, return if true
+  let iteration = 0
 
-  // determine side we need to move to continue searching
-  // change max to half value
+  while (true) {
+    // determine amount to swap
+    const swapAmountIn = (minSwapAmountIn + maxSwapAmountIn) / 2
+    const swapAmountOut = swap(swapAmountIn)
+
+    // determine pool and user amounts ratio with swapped amounts
+    const poolRatioAfterSwap = getPoolRatioAfterSwap({
+      amountTokenA: poolAmountTokenA,
+      amountTokenB: poolAmountTokenB,
+      swapAmountIn,
+      swapAmountOut,
+      isSwapBaseToQuote,
+    })
+
+    const userAmountsRatioAfterSwap = getUserRatioAfterSwap({
+      amountTokenA: userAmountTokenA,
+      amountTokenB: userAmountTokenB,
+      swapAmountIn,
+      swapAmountOut,
+      isSwapBaseToQuote,
+    })
+
+    // check is new ratio close enough to ratio of user tokenA/B after swap
+    const isUserAmountsRatioCloseEnoughToPool =
+      Math.abs(poolRatioAfterSwap - userAmountsRatioAfterSwap) <=
+      poolRatioAfterSwap / 10000
+
+    if (isUserAmountsRatioCloseEnoughToPool || iteration >= 100) {
+      break
+    }
+
+    // determine side we need to move to continue searching
+    const doWeNeedMoreTokenA =
+      poolRatioAfterSwap - userAmountsRatioAfterSwap > 0
+
+    // change min/max to half value
+
+    // if pool ratio > user, we need to have more tokenA (
+    //  if swap base to quote -> give less tokenA,
+    //  if swap quote to base -> give more tokenB
+    // )
+
+    if (
+      (doWeNeedMoreTokenA && isSwapBaseToQuote) ||
+      (!doWeNeedMoreTokenA && !isSwapBaseToQuote)
+    ) {
+      maxSwapAmountIn = swapAmountIn
+    } else {
+      // we need to give less tokenA
+      minSwapAmountIn = swapAmountIn
+    }
+
+    iteration++
+  }
+
+  const swapAmountIn = (minSwapAmountIn + maxSwapAmountIn) / 2
+  const swapAmountOut = swap(swapAmountIn)
+
+  return {
+    swapAmountIn,
+    swapAmountOut,
+    isSwapBaseToQuote,
+  }
 }
+
+export { reverseBinarySearch }

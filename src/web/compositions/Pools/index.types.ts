@@ -6,6 +6,8 @@ export type PoolInfo = {
   tokenA: string
   tokenB: string
   curveType: number
+  tokenADecimals: number
+  tokenBDecimals: number
   poolTokenAccountA: string
   poolTokenAccountB: string
   swapToken: string
