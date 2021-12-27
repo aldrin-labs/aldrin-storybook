@@ -44,11 +44,11 @@ import {
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 import { daysInMonthForDate } from '@core/utils/dateUtils'
+import { sleep } from '@core/utils/helpers'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import InfoIcon from '@icons/inform.svg'
 
-import { sleep } from '../../../dexUtils/utils'
 import { groupBy } from '../../../utils/collection'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
