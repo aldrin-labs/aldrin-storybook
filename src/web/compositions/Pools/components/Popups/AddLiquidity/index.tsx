@@ -46,6 +46,7 @@ import { findClosestAmountToSwapForDeposit } from '@sb/dexUtils/pools/swap/findC
 import { createBasketWithSwap } from '@sb/dexUtils/pools/actions/createBasketWithSwap'
 import { Checkbox } from '@sb/components/Checkbox'
 import { WarningLabel } from './AddLiquidity.styles'
+import BN from 'bn.js'
 interface AddLiquidityPopupProps {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
@@ -417,8 +418,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
-            const userBaseTokenAmount = +baseAmount * 10 ** baseTokenDecimals
-            const userQuoteTokenAmount = +quoteAmount * 10 ** quoteTokenDecimals
+            const userBaseTokenAmount = new BN(
+              +baseAmount * 10 ** baseTokenDecimals
+            )
+            const userQuoteTokenAmount = new BN(
+              +quoteAmount * 10 ** quoteTokenDecimals
+            )
 
             if (
               !userTokenAccountA ||

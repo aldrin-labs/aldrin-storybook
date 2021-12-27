@@ -64,6 +64,7 @@ import { Cards } from './components/Cards/Cards'
 import { Loader } from '@sb/components/Loader/Loader'
 import { sleep } from '@sb/dexUtils/utils'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import BN from 'bn.js'
 
 const SwapPage = ({
   theme,
@@ -555,9 +556,12 @@ const SwapPage = ({
                     quoteTokenDecimals,
                   })
 
-                  const swapAmountIn = +baseAmount * 10 ** baseTokenDecimals
-                  const swapAmountOut =
+                  const swapAmountIn = new BN(
+                    +baseAmount * 10 ** baseTokenDecimals
+                  )
+                  const swapAmountOut = new BN(
                     +totalWithFees * 10 ** quoteTokenDecimals
+                  )
 
                   const result = await swap({
                     wallet,

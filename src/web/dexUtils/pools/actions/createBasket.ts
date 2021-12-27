@@ -34,6 +34,7 @@ const getCreateBasketTransaction = async ({
   userQuoteTokenAccount,
   userBaseTokenAmount,
   userQuoteTokenAmount,
+  poolTokenAmountToReceive,
   transferSOLToWrapped,
 }: {
   wallet: WalletAdapter
@@ -43,8 +44,9 @@ const getCreateBasketTransaction = async ({
   userPoolTokenAccount: PublicKey | null
   userBaseTokenAccount: PublicKey
   userQuoteTokenAccount: PublicKey
-  userBaseTokenAmount: number
-  userQuoteTokenAmount: number
+  userBaseTokenAmount: BN
+  userQuoteTokenAmount: BN
+  poolTokenAmountToReceive?: BN | null
   transferSOLToWrapped: boolean
 }): Promise<[Transaction, Signer[]]> => {
   const program = ProgramsMultiton.getProgramByAddress({
@@ -81,17 +83,21 @@ const getCreateBasketTransaction = async ({
   const poolTokenA = await tokenMintA.getAccountInfo(baseTokenVault)
   const poolTokenAmountA = poolTokenA.amount
 
-  let poolTokenAmount
+  let poolTokenAmount: BN
 
-  // first deposit
-  if (supply.eq(new BN(0))) {
-    poolTokenAmount = new BN(1 * 10 ** 8)
+  if (poolTokenAmountToReceive) {
+    poolTokenAmount = poolTokenAmountToReceive
   } else {
-    poolTokenAmount = supply
-      .mul(new BN(userBaseTokenAmount))
-      .div(poolTokenAmountA)
-      .div(new BN(100))
-      .mul(new BN(99))
+    // first deposit
+    if (supply.eq(new BN(0))) {
+      poolTokenAmount = new BN(1 * 10 ** 8)
+    } else {
+      poolTokenAmount = supply
+        .mul(new BN(userBaseTokenAmount))
+        .div(poolTokenAmountA)
+        .div(new BN(1000))
+        .mul(new BN(997))
+    }
   }
 
   const transactionBeforeDeposit = new Transaction()
@@ -116,7 +122,7 @@ const getCreateBasketTransaction = async ({
     const result = await transferSOLToWrappedAccountAndClose({
       wallet,
       connection,
-      amount: userBaseTokenAmount,
+      amount: userBaseTokenAmount.toNumber(),
     })
 
     const [
@@ -135,7 +141,7 @@ const getCreateBasketTransaction = async ({
     const result = await transferSOLToWrappedAccountAndClose({
       wallet,
       connection,
-      amount: userQuoteTokenAmount,
+      amount: userQuoteTokenAmount.toNumber(),
     })
 
     const [
@@ -156,8 +162,8 @@ const getCreateBasketTransaction = async ({
 
   const createBasketTransaction = await program.instruction.createBasket(
     poolTokenAmount,
-    new BN(userBaseTokenAmount),
-    new BN(userQuoteTokenAmount),
+    userBaseTokenAmount,
+    userQuoteTokenAmount,
     {
       accounts: {
         pool: poolPublicKey,
@@ -202,8 +208,8 @@ const createBasket = async ({
   userPoolTokenAccount: PublicKey | null
   userBaseTokenAccount: PublicKey
   userQuoteTokenAccount: PublicKey
-  userBaseTokenAmount: number
-  userQuoteTokenAmount: number
+  userBaseTokenAmount: BN
+  userQuoteTokenAmount: BN
   transferSOLToWrapped: boolean
 }) => {
   try {

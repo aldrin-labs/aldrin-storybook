@@ -27,7 +27,7 @@ interface RatiosAfterSwap {
 
 type CreateSwapOptionsResult = RatiosAfterSwap[]
 
-const NUMBER_OF_STEPS = 10000
+const NUMBER_OF_STEPS = 100000
 
 const createSwapOptions = (
   params: CreateSwapOptionsParams
@@ -47,8 +47,7 @@ const createSwapOptions = (
 
   const swap = (swapAmountIn: number) =>
     getMinimumReceivedAmountFromSwap({
-      swapAmountIn: 0,
-      swapAmountInBN: new BN(swapAmountIn),
+      swapAmountIn,
       isSwapBaseToQuote,
       pool,
       poolBalances,

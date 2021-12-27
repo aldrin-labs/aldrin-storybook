@@ -1,8 +1,10 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
+import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
+import BN from 'bn.js'
 import { PoolBalances } from '../hooks/usePoolBalances'
 import { findClosestAmountToSwapForDeposit } from '../swap/findClosestAmountToSwapForDeposit'
 import { getCreateBasketTransaction } from './createBasket'
@@ -19,7 +21,6 @@ export async function createBasketWithSwap({
   userBaseTokenAmount,
   userQuoteTokenAmount,
   transferSOLToWrapped,
-  slippage = 0.3, // percentages
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -31,15 +32,16 @@ export async function createBasketWithSwap({
   userBaseTokenAmount: number
   userQuoteTokenAmount: number
   transferSOLToWrapped: boolean
-  slippage?: number
 }) {
-  const { swapToken, curveType, tokenADecimals, tokenBDecimals } = pool
-  const poolPublicKey = new PublicKey(swapToken)
+  const {
+    swapToken,
+    poolTokenMint,
+    curveType,
+    tokenADecimals,
+    tokenBDecimals,
+  } = pool
 
-  console.log({
-    userBaseTokenAmount,
-    userQuoteTokenAmount,
-  })
+  const poolPublicKey = new PublicKey(swapToken)
 
   const { isSwapBaseToQuote, swapAmountIn, swapAmountOut } =
     findClosestAmountToSwapForDeposit({
@@ -49,33 +51,33 @@ export async function createBasketWithSwap({
       userAmountTokenB: userQuoteTokenAmount,
     })
 
-  const swapAmountOutWithSlippage =
-    swapAmountOut - (swapAmountOut / 100) * slippage
+  console.log('swapAmountIn, swapAmountOut', swapAmountIn, swapAmountOut)
 
   const [baseAmountToDeposit, quoteAmountToDeposit] = isSwapBaseToQuote
-    ? [
-        userBaseTokenAmount - swapAmountIn,
-        userQuoteTokenAmount + swapAmountOutWithSlippage,
-      ]
-    : [
-        userBaseTokenAmount + swapAmountOutWithSlippage,
-        userQuoteTokenAmount - swapAmountIn,
-      ]
-
-  console.log({
-    baseAmountToDeposit,
-    quoteAmountToDeposit,
-  })
+    ? [userBaseTokenAmount - swapAmountIn, userQuoteTokenAmount + swapAmountOut]
+    : [userBaseTokenAmount + swapAmountOut, userQuoteTokenAmount - swapAmountIn]
 
   try {
+    const [swapAmountInDecimals, swapAmountOutDecimals] = isSwapBaseToQuote
+      ? [tokenADecimals, tokenBDecimals]
+      : [tokenBDecimals, tokenADecimals]
+
+    const swapAmountInWithDecimals = new BN(
+      swapAmountIn * 10 ** swapAmountInDecimals
+    )
+
+    const swapAmountOutWithDecimals = new BN(
+      swapAmountOut * 10 ** swapAmountOutDecimals
+    )
+
     const swapTransactionResult = await getSwapTransaction({
       wallet,
       connection,
       curveType,
       isSwapBaseToQuote,
       poolPublicKey,
-      swapAmountIn,
-      swapAmountOut: swapAmountOutWithSlippage,
+      swapAmountIn: swapAmountInWithDecimals,
+      swapAmountOut: swapAmountOutWithDecimals,
       transferSOLToWrapped,
       userBaseTokenAccount,
       userQuoteTokenAccount,
@@ -85,11 +87,35 @@ export async function createBasketWithSwap({
       throw new Error('Swap transaction creation failed')
     }
 
-    const [baseTokenDecimals, quoteTokenDecimals] = isSwapBaseToQuote
-      ? [tokenADecimals, tokenBDecimals]
-      : [tokenBDecimals, tokenADecimals]
-
     const [swapTransaction, swapSigners] = swapTransactionResult
+
+    const baseAmountToDepositWithDecimals = new BN(
+      baseAmountToDeposit * 10 ** tokenADecimals
+    )
+
+    const quoteAmountToDepositWithDecimals = new BN(
+      quoteAmountToDeposit * 10 ** tokenBDecimals
+    )
+
+    const poolToken = new Token(
+      wallet,
+      connection,
+      new PublicKey(poolTokenMint),
+      TOKEN_PROGRAM_ID
+    )
+
+    const { supply } = await poolToken.getMintInfo()
+
+    // for swap base to quote - add swap amount in, otherwise remove amount out
+    const poolBaseTokenAmoutAfterSwap = isSwapBaseToQuote
+      ? poolBalances.baseTokenAmountBN.add(swapAmountInWithDecimals)
+      : poolBalances.baseTokenAmountBN.sub(swapAmountOutWithDecimals)
+
+    const poolTokenAmountToReceive = supply
+      .mul(new BN(baseAmountToDepositWithDecimals))
+      .div(poolBaseTokenAmoutAfterSwap)
+      .div(new BN(1000))
+      .mul(new BN(997))
 
     const [createBasketTransaction, createBasketSigners] =
       await getCreateBasketTransaction({
@@ -98,11 +124,12 @@ export async function createBasketWithSwap({
         poolPublicKey,
         userBaseTokenAccount,
         userQuoteTokenAccount,
-        userBaseTokenAmount: baseAmountToDeposit * 10 ** baseTokenDecimals,
-        userQuoteTokenAmount: quoteAmountToDeposit * 10 ** quoteTokenDecimals,
+        userBaseTokenAmount: baseAmountToDepositWithDecimals,
+        userQuoteTokenAmount: quoteAmountToDepositWithDecimals,
         userPoolTokenAccount,
         transferSOLToWrapped,
         curveType,
+        poolTokenAmountToReceive,
       })
 
     const commonTransaction = new Transaction().add(

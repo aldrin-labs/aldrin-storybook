@@ -36,8 +36,8 @@ export const getSwapTransaction = async ({
   poolPublicKey: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
-  swapAmountIn: number
-  swapAmountOut: number
+  swapAmountIn: BN
+  swapAmountOut: BN
   isSwapBaseToQuote: boolean
   transferSOLToWrapped: boolean
   unwrapWrappedSOL?: boolean
@@ -85,7 +85,7 @@ export const getSwapTransaction = async ({
       const result = await transferSOLToWrappedAccountAndClose({
         wallet,
         connection,
-        amount: swapAmountIn,
+        amount: swapAmountIn.toNumber(),
       })
 
       const [
@@ -136,26 +136,22 @@ export const getSwapTransaction = async ({
 
   // create pool token account for user if not exist
   if (!userBaseTokenAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey: new PublicKey(baseTokenMint),
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: new PublicKey(baseTokenMint),
+      })
 
     userBaseTokenAccount = newAccountPubkey
     transactionBeforeSwap.add(createAccountTransaction)
   }
 
   if (!userQuoteTokenAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey: new PublicKey(quoteTokenMint),
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: new PublicKey(quoteTokenMint),
+      })
 
     userQuoteTokenAccount = newAccountPubkey
     transactionBeforeSwap.add(createAccountTransaction)
@@ -165,8 +161,8 @@ export const getSwapTransaction = async ({
 
   try {
     const swapTransaction = await program.instruction.swap(
-      new BN(swapAmountIn),
-      new BN(swapAmountOut),
+      swapAmountIn,
+      swapAmountOut,
       isSwapBaseToQuote ? Side.Ask : Side.Bid,
       {
         accounts: {
@@ -217,8 +213,8 @@ export const swap = async ({
   poolPublicKey: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
-  swapAmountIn: number
-  swapAmountOut: number
+  swapAmountIn: BN
+  swapAmountOut: BN
   isSwapBaseToQuote: boolean
   transferSOLToWrapped: boolean
   curveType: number | null
