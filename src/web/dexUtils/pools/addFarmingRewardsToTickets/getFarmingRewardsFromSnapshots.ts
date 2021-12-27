@@ -49,14 +49,14 @@ export const getFarmingRewardsFromSnapshots = ({
         return snapshotsAcc
       }
 
-      // if (
-      //   snapshot.time <= +ticket.startTime ||
-      //   snapshot.time >= +ticket.endTime ||
-      //   (stateAttached &&
-      //     snapshot.time <= stateAttached?.lastVestedWithdrawTime)
-      // ) {
-      //   return snapshotsAcc
-      // }
+      if (
+        snapshot.time <= +ticket.startTime ||
+        snapshot.time >= +ticket.endTime ||
+        (stateAttached &&
+          snapshot.time <= stateAttached?.lastVestedWithdrawTime)
+      ) {
+        return snapshotsAcc
+      }
 
       let { prevSnapshot, amount } = snapshotsAcc
 
