@@ -28,6 +28,7 @@ import {getObligation} from '@sb/dexUtils/borrow-lending/getObligation';
 import {withdrawCollateral} from '@sb/dexUtils/borrow-lending/withdrawCollateral';
 import {withdrawLiquidity} from '@sb/dexUtils/borrow-lending/withdrawLiquidity';
 import {PublicKey} from '@solana/web3.js';
+import {liqRatio} from "@sb/compositions/BorrowLending/config";
 
 type SupplyProps = {
     theme: Theme,
@@ -65,9 +66,9 @@ const Supply = ({
                 const tokenAccount = walletAccounts.find(account => account.account.data.parsed.info.mint === reserve.collateral.mint.toString());
                 const tokenAmount = tokenAccount?.account.data.parsed.info.tokenAmount.amount;
                 const tokenDecimals = tokenAccount?.account.data.parsed.info.tokenAmount.decimals;
-                const tokenWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())/Math.pow(10, 18) * tokenAmount/Math.pow(10, tokenDecimals)/5;
-                console.log('totalUserDepositWorth', totalUserDepositWorth/5, tokenWorth)
-                const reserveDepositPercent = tokenWorth/(totalUserDepositWorth/5)*100;
+                const tokenWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())/Math.pow(10, 18) * tokenAmount/Math.pow(10, tokenDecimals) / liqRatio;
+                console.log('totalUserDepositWorth', totalUserDepositWorth / liqRatio, tokenWorth)
+                const reserveDepositPercent = tokenWorth/(totalUserDepositWorth / liqRatio)*100;
 
                 depositCompArr.push({
                     asset: reserve.collateral.mint.toString(),
@@ -217,7 +218,7 @@ const Supply = ({
                                             <DescriptionBlock>
                                                 <Description>Total:
                                                     <NumberFormat
-                                                        value={totalUserDepositWorth/5}
+                                                        value={totalUserDepositWorth / liqRatio}
                                                         displayType={'text'}
                                                         decimalScale={2}
                                                         fixedDecimalScale={true}

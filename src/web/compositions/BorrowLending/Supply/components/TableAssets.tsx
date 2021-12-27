@@ -9,6 +9,7 @@ import ActionsPopup from '@sb/compositions/BorrowLending/Supply/components/Actio
 import {PublicKey} from '@solana/web3.js';
 import BN from 'bn.js';
 import NumberFormat from "react-number-format";
+import {liqRatio} from "@sb/compositions/BorrowLending/config";
 
 type TableAssetsProps = {
     theme: Theme,
@@ -70,7 +71,7 @@ const TableAssets = ({
                     const depositAmountBN = new BN(depositTokenAccount.account.data.parsed.info.tokenAmount.amount);
                     const depositWorthBN = u192ToBN(reserve.liquidity.marketPrice).mul(depositAmountBN);
                     depositAmount = depositTokenAccount.account.data.parsed.info.tokenAmount.uiAmountString;
-                    depositWorth = parseInt(depositWorthBN.toString())/Math.pow(10, depositTokenAccount.account.data.parsed.info.tokenAmount.decimals)/5;
+                    depositWorth = parseInt(depositWorthBN.toString())/Math.pow(10, depositTokenAccount.account.data.parsed.info.tokenAmount.decimals) / liqRatio;
                 }
 
                 if(tokenAccount) {

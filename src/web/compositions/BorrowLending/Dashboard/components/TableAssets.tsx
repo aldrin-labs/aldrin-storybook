@@ -83,8 +83,8 @@ const TableAssets = ({theme, reserves, walletAccounts}: TableAssetsProps) => {
                             <span>${toNumberWithDecimals(depositWorth, 2)}</span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
-                            <p style={{margin: 0}}><strong>0.00009</strong> USDC</p>
-                            <span>$4.27</span>
+                            <p style={{margin: 0}}><strong>tba</strong></p>
+                            <span>tba</span>
                         </RowTd>
                         <RowTd style={{paddingTop: '1rem', paddingBottom: '1rem'}}>
                             <p style={{margin: 0}}><strong>0</strong></p>

@@ -283,7 +283,7 @@ export const getRowHeight = ({
     if (isAsks) {
       return height / 6
     } else {
-      return terminalViewMode === 'mobileChart' ? height / 6 : height / 5
+      return terminalViewMode === 'mobileChart' ? height / 6 : height / liqRatio
     }
   } else {
     return mode === 'both' ? height / 8 : height / 18

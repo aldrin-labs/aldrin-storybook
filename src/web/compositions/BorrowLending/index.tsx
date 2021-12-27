@@ -22,6 +22,7 @@ import {getObligation} from "@sb/dexUtils/borrow-lending/getObligation";
 import Borrow from "@sb/compositions/BorrowLending/Borrow/Borrow";
 import { Link } from 'react-router-dom';
 import {Navbar, NavbarItem} from "@sb/compositions/BorrowLending/styles";
+import {liqRatio} from "@sb/compositions/BorrowLending/config";
 
 type MatchParams = {
     section: string;
@@ -77,7 +78,7 @@ const BorrowLending: FC = ({match}: BorrowLendingProps) => {
                 if(tokenAccount) {
                     const tokenAmount = tokenAccount.account.data.parsed.info.tokenAmount.amount;
                     const tokenDecimals = tokenAccount?.account.data.parsed.info.tokenAmount.decimals;
-                    const tokenWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())/Math.pow(10, 18) * tokenAmount/Math.pow(10, tokenDecimals)/5;
+                    const tokenWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())/Math.pow(10, 18) * tokenAmount/Math.pow(10, tokenDecimals) / liqRatio;
                     totalDepositWorth = totalDepositWorth + tokenWorth;
                     // totalDepositWorth = parseInt(totalDepositWorth.add(tokenWorth).toString())/Math.pow(10, tokenAccount.account.data.parsed.info.tokenAmount.decimals);
                 }
@@ -230,6 +231,7 @@ const BorrowLending: FC = ({match}: BorrowLendingProps) => {
                             obligations={obligations}
                             userSummary={userSummary}
                             walletAccounts={walletAccounts}
+                            obligationDetails={obligationDetails}
                         />
                         :
                         match.params.section === 'supply' ?

@@ -23,8 +23,8 @@ import TableAssets from './components/TableAssets';
 import {removeTrailingZeros, toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
 import {MarketCompType, ObligationType, WalletAccountsType} from '@sb/compositions/BorrowLending/Markets/types';
 import {PublicKey} from '@solana/web3.js';
-import {borrowObligationLiquidity} from "@sb/dexUtils/borrow-lending/borrowObligationLiquidity";
-import {repayObligationLiquidity} from "@sb/dexUtils/borrow-lending/repayObligationLiquidity";
+import {borrowObligationLiquidity} from '@sb/dexUtils/borrow-lending/borrowObligationLiquidity';
+import {repayObligationLiquidity} from '@sb/dexUtils/borrow-lending/repayObligationLiquidity';
 
 type BorrowProps = {
     theme: Theme,
@@ -52,15 +52,17 @@ const Borrow = ({
     const { wallet } = useWallet()
     const connection = useConnection()
 
-    let collateralTokens = {};
+    const collateralTokens = {};
     let totalRemainingBorrow = 0;
+    let totalBorrowedWorth = 0;
     let totalUserDepositWorth = 0;
     let totalUserCollateralWorth = 0;
     let reserveBorrowedLiquidity = 0;
+    let reserveBorrowedLiquidityWorth = 0;
     let reserveAvailableLiquidity = 0;
     let mintedCollateralTotal = 0;
     let unhealthyBorrowValue = 0;
-    let totalRiskFactor = obligationDetails ? (parseInt(u192ToBN(obligationDetails.borrowedValue).toString())/parseInt(u192ToBN(obligationDetails.unhealthyBorrowValue).toString()) * 100) : 0;
+    const totalRiskFactor = obligationDetails ? (parseInt(u192ToBN(obligationDetails.borrowedValue).toString())/parseInt(u192ToBN(obligationDetails.unhealthyBorrowValue).toString()) * 100) : 0;
 
     const handleBorrowObligationLiquidity = (reserve: any, amount: number, callback: () => void) => {
         borrowObligationLiquidity({
@@ -123,7 +125,7 @@ const Borrow = ({
             const tokenPrice = toNumberWithDecimals(parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()), 5);
             const tokenAccount = walletAccounts.find(account => account.account.data.parsed.info.mint === reserve.collateral.mint.toString());
             const depositAmount = tokenAccount.account.data.parsed.info.tokenAmount.uiAmount;
-            const depositWorth = parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())/Math.pow(10, 18) * depositAmount;
+            const depositWorth = parseFloat(tokenPrice, 5) * depositAmount;
             console.log('depositWorthh', depositWorth)
             totalRemainingBorrow = reserve.config.loanToValueRatio.percent/100 * (depositWorth);
             console.log('remainingBorrow supply', totalRemainingBorrow)
@@ -131,9 +133,12 @@ const Borrow = ({
             totalUserDepositWorth = totalUserDepositWorth + depositWorth;
 
             const tokenDecimals = tokenAccount.account.data.parsed.info.tokenAmount.decimals;
-            reserveBorrowedLiquidity = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString())/Math.pow(10, 18);
+            reserveBorrowedLiquidity = parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString())/Math.pow(10, 18 + tokenDecimals);
+            reserveBorrowedLiquidityWorth = reserveBorrowedLiquidity * parseFloat(tokenPrice);
             reserveAvailableLiquidity = parseInt(reserve.liquidity.availableAmount.toString())/Math.pow(10, tokenDecimals);
             mintedCollateralTotal = parseInt(reserve.collateral.mintTotalSupply.toString()/Math.pow(10, tokenDecimals));
+            console.log('reserveBorrowedLiquidityWorth', reserveBorrowedLiquidity, reserveBorrowedLiquidityWorth)
+            totalBorrowedWorth = totalBorrowedWorth + reserveBorrowedLiquidityWorth;
 
             if(obligationDetails) {
                 unhealthyBorrowValue = parseInt(u192ToBN(obligationDetails.unhealthyBorrowValue).toString())/Math.pow(10, 18);
@@ -236,9 +241,18 @@ const Borrow = ({
                                             <TitleBlock>Loans</TitleBlock>
 
                                             <DescriptionBlock>
-                                                <Description>Total: $9,659.78</Description>
+                                                <Description>
+                                                    Total:
+                                                    <NumberFormat
+                                                        value={totalBorrowedWorth}
+                                                        displayType={'text'}
+                                                        decimalScale={2}
+                                                        fixedDecimalScale={true}
+                                                        thousandSeparator={true}
+                                                        prefix={'$'} />
+                                                </Description>
                                                 <List>
-                                                    <ListItem>USDC 100.00%</ListItem>
+                                                    {/*<ListItem>USDC 100.00%</ListItem>*/}
                                                 </List>
                                             </DescriptionBlock>
                                         </BlockNumber>

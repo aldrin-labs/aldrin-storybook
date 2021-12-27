@@ -29,6 +29,7 @@ import BN from 'bn.js';
 import {removeTrailingZeros, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
 import NumberFormat from 'react-number-format';
 import {BlockReward} from '@sb/compositions/BorrowLending/Supply/Supply.styles';
+import {liqRatio} from "@sb/compositions/BorrowLending/config";
 
 const ActionsPopup = ({
     theme,
@@ -143,7 +144,7 @@ const ActionsPopup = ({
     if(mode) {
         MAX_VAL = parseFloat(borrowedAmount).toFixed(tokenDecimals);
     } else {
-        MAX_VAL = parseFloat((collateralDeposit / 5 - borrowedAmount).toFixed(tokenDecimals));
+        MAX_VAL = parseFloat((collateralDeposit / liqRatio - borrowedAmount).toFixed(tokenDecimals));
     }
     const withValueLimit = ({ floatValue }) => floatValue <= MAX_VAL;
 
@@ -351,7 +352,7 @@ const ActionsPopup = ({
                                     :
                                     <MaxAmount>
                                         Max Amount:
-                                        {removeTrailingZeros((collateralDeposit / 5 - borrowedAmount).toFixed(tokenDecimals))}
+                                        {removeTrailingZeros((collateralDeposit / liqRatio - borrowedAmount).toFixed(tokenDecimals))}
                                     </MaxAmount>
                                 }
                             </div>

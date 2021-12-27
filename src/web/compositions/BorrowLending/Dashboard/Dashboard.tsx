@@ -16,7 +16,7 @@ import {withTheme} from '@material-ui/core/styles';
 import {initObligation} from '@sb/dexUtils/borrow-lending/initObligation';
 import {depositObligationCollateral} from '@sb/dexUtils/borrow-lending/depositObligationCollateral';
 import TableAssets from './components/TableAssets';
-import {toNumberWithDecimals} from "@sb/dexUtils/borrow-lending/U192-converting";
+import {toNumberWithDecimals, u192ToBN} from "@sb/dexUtils/borrow-lending/U192-converting";
 import {WalletAccountsType} from "@sb/compositions/BorrowLending/Markets/types";
 import NumberFormat from "react-number-format";
 
@@ -26,6 +26,7 @@ type DashboardProps = {
     obligations: any,
     walletAccounts: WalletAccountsType | [],
     userSummary: any,
+    obligationDetails: any
 }
 
 const Dashboard = ({
@@ -34,9 +35,16 @@ const Dashboard = ({
     obligations,
     walletAccounts,
     userSummary,
+    obligationDetails,
 }: DashboardProps) => {
     const { wallet } = useWallet()
     const connection = useConnection()
+
+    let borrowedValue = 0;
+
+    if(obligationDetails) {
+        borrowedValue = parseInt(u192ToBN(obligationDetails.borrowedValue).toString())/Math.pow(10, 18);
+    }
 
     if(wallet.publicKey && !obligations) {
         return null;
@@ -76,7 +84,16 @@ const Dashboard = ({
                                     <Cell col={12} colLg={4}>
                                         <BlockNumber>
                                             <TitleBlock>Borrow Value</TitleBlock>
-                                            <NumberValue>$4.27</NumberValue>
+                                            <NumberValue>
+                                                <NumberFormat
+                                                    value={borrowedValue}
+                                                    displayType={'text'}
+                                                    decimalScale={2}
+                                                    fixedDecimalScale={true}
+                                                    thousandSeparator={true}
+                                                    prefix={'$'}
+                                                />
+                                            </NumberValue>
                                         </BlockNumber>
                                     </Cell>
                                 </RowContainer>
