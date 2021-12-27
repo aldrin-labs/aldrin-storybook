@@ -15,8 +15,8 @@ import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
+import { signAndSendTransactions } from '../../transactions'
 import { filterTicketsAvailableForUnstake } from '../filterTicketsAvailableForUnstake'
-import { signAndSendTransaction } from '../signAndSendTransaction'
 
 export const getEndFarmingTransactions = async (params: {
   wallet: WalletAdapter
@@ -136,7 +136,7 @@ export const endFarming = async ({
     curveType,
   })
 
-  const result = await signAndSendTransaction({
+  const result = await signAndSendTransactions({
     wallet,
     connection,
     transactionsAndSigners,

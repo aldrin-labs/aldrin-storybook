@@ -14,7 +14,7 @@ import {
 } from '@solana/web3.js'
 
 import { walletAdapterToWallet } from '../../common'
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
 import {
   FEE_OWNER_ACCOUNT,
   POOLS_PROGRAM_ADDRESS,
@@ -103,7 +103,7 @@ export const createPoolTransactions = async (
   const provider = new Provider(
     connection.getConnection(),
     walletWithPk,
-    Provider.defaultOptions()
+    defaultOptions()
   )
 
   const tokenAccountLamports = await connection

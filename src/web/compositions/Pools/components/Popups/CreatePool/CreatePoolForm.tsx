@@ -15,7 +15,10 @@ import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { InlineText } from '@sb/components/Typography'
-import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
+import {
+  useConnection,
+  useMultiEndpointConnection,
+} from '@sb/dexUtils/connection'
 import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
@@ -23,7 +26,7 @@ import {
 import { notify } from '@sb/dexUtils/notifications'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
-import { sendAndWaitSignedTransaction } from '@sb/dexUtils/send'
+import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -117,7 +120,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const stepsSize = steps.length
 
   const { wallet } = useWallet()
-  const connection = useMultiEndpointConnection()
+  const connection = useConnection()
   const history = useHistory()
 
   const tokens: Token[] = userTokens
@@ -226,49 +229,50 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(1)
         console.log('Create accounts...')
-        const createAccountsTxId = await sendAndWaitSignedTransaction(
-          generatedTransactions.createAccounts,
+        const createAccountsTxId = await sendSignedSignleTransaction({
+          transaction: generatedTransactions.createAccounts,
           connection,
-          { sleepAfter: 1000 }
-        )
+        })
         console.log('createAccountsTxId: ', createAccountsTxId)
+        await sleep(1000)
 
         setProcessingStep(2)
         console.log('Set authorities...')
-        const setAuthoritiesTxId = await sendAndWaitSignedTransaction(
-          generatedTransactions.setAuthorities,
+        const setAuthoritiesTxId = await sendSignedSignleTransaction({
+          transaction: generatedTransactions.setAuthorities,
           connection,
-          { sleepAfter: 1000 }
-        )
+        })
         console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
+        await sleep(1000)
 
         console.log('Initialize pool...')
         setProcessingStep(3)
-        const initPoolTxId = await sendAndWaitSignedTransaction(
-          generatedTransactions.createPool,
+        const initPoolTxId = await sendSignedSignleTransaction({
+          transaction: generatedTransactions.createPool,
           connection,
-          { sleepAfter: 1000 }
-        )
+        })
         console.log('initPoolTxId: ', initPoolTxId)
+        await sleep(1000)
 
         console.log('First deposit...')
         setProcessingStep(4)
-        const firstDepositTxId = await sendAndWaitSignedTransaction(
-          generatedTransactions.firstDeposit,
+        const firstDepositTxId = await sendSignedSignleTransaction({
+          transaction: generatedTransactions.firstDeposit,
           connection,
-          { sleepAfter: 1000 }
-        )
+        })
+        await sleep(1000)
+
         console.log('firstDepositTxId: ', firstDepositTxId)
 
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
           setProcessingStep(5)
-          const farmingTxId = await sendAndWaitSignedTransaction(
-            generatedTransactions.farming,
+          const farmingTxId = await sendSignedSignleTransaction({
+            transaction: generatedTransactions.farming,
             connection,
-            { sleepAfter: 1000 }
-          )
-          console.log('firstDepositTxId: ', farmingTxId)
+          })
+          await sleep(1000)
+          console.log('farmingTxId: ', farmingTxId)
         }
 
         setProcessingStep(6)

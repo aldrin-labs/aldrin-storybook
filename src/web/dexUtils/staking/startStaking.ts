@@ -13,8 +13,7 @@ import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { signTransactions } from '../send'
-import { sendSignedTransactions } from '../transactions'
+import { signAndSendTransactions } from '../transactions'
 import { buildTransactions } from '../transactions/buildTransactions'
 import { STAKING_FARMING_TOKEN_DECIMALS } from './config'
 import { endStakingInstructions } from './endStaking'
@@ -126,22 +125,15 @@ export const startStaking = async (params: StartStakingParams) => {
     })
   )
 
-  try {
-    const transactionsAndSigners = buildTransactions(
-      instructions.map((instruction) => ({ instruction })),
-      creatorPk,
-      signers
-    )
+  const transactionsAndSigners = buildTransactions(
+    instructions.map((instruction) => ({ instruction })),
+    creatorPk,
+    signers
+  )
 
-    const signedTransactions = await signTransactions({
-      transactionsAndSigners,
-      wallet,
-      connection: connection.getConnection(),
-    })
-
-    return sendSignedTransactions(signedTransactions, connection)
-  } catch (e) {
-    console.warn('Error sign or send transaction: ', e)
-    return 'failed'
-  }
+  return signAndSendTransactions({
+    transactionsAndSigners,
+    wallet,
+    connection,
+  })
 }
