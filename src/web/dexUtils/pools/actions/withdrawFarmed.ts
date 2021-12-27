@@ -106,16 +106,31 @@ export const withdrawFarmed = async ({
       }
 
       // get number of snapshots, get number of iterations, send transaction n times
-      const unclaimedSnapshots = getSnapshotsWithUnclaimedRewards({
+      const unclaimedSnapshotsForVesting = getSnapshotsWithUnclaimedRewards({
         ticket: ticketData,
         farmingState,
         snapshotQueues,
+        forVesting: true,
       })
-
-      const iterations = Math.ceil(
-        unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
+      const unclaimedSnapshotsWithoutVesting = getSnapshotsWithUnclaimedRewards(
+        {
+          ticket: ticketData,
+          farmingState,
+          snapshotQueues,
+          forVesting: false,
+        }
       )
 
+      const availableToClaimSnapshots = Math.max(
+        unclaimedSnapshotsForVesting.length,
+        unclaimedSnapshotsWithoutVesting.length
+      )
+
+      const iterations = Math.ceil(
+        availableToClaimSnapshots / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
+      )
+
+      // console.log('unclaimedSnapshots: ', ticketData, unclaimedSnapshots)
       for (let k = 1; k <= iterations; k += 1) {
         const withdrawFarmedTransaction =
           await program.instruction.withdrawFarmed(

@@ -1,11 +1,18 @@
+import pluralize from 'pluralize'
 import React from 'react'
+
 import { InlineText } from '@sb/components/Typography'
+
+import { estimateTime } from '@core/utils/dateUtils'
+
 import { TooltipText } from './styles'
 import { ClaimTimeTooltipProps } from './types'
 
 export const ClaimTimeTooltip: React.FC<ClaimTimeTooltipProps> = (props) => {
   const { farmingState } = props
   const hasVesting = farmingState?.vestingPeriod !== 0
+
+  const estimate = estimateTime(farmingState?.vestingPeriod || 0)
 
   return (
     <div>
@@ -23,7 +30,21 @@ export const ClaimTimeTooltip: React.FC<ClaimTimeTooltipProps> = (props) => {
             the remaining &nbsp;
             <InlineText color="success">66.67%</InlineText> of your reward will
             come&nbsp;
-            <InlineText color="success">every 3 days</InlineText>.
+            <InlineText color="success">
+              every{' '}
+              {!!estimate.days && (
+                <>
+                  {estimate.days} {pluralize('day', estimate.days)}
+                </>
+              )}{' '}
+              &nbsp;
+              {!!estimate.hours && (
+                <>
+                  {estimate.hours} {pluralize('hour', estimate.hours)}
+                </>
+              )}{' '}
+            </InlineText>
+            .
           </TooltipText>
         </>
       )}
