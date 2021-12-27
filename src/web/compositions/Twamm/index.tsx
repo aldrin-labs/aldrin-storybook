@@ -1,15 +1,25 @@
-import React, {useEffect} from 'react'
+import React, {FC, useEffect} from 'react'
 
 import {compose} from "recompose";
 import withTheme from "@material-ui/core/styles/withTheme";
 import {Theme} from "@material-ui/core";
 import PlaceOrder from "@sb/compositions/Twamm/PlaceOrder/PlaceOrder";
-import {Cell, Page, WideContent} from "@sb/components/Layout";
-import { Tabs, TabPanel } from 'react-tabs';
-import {TabListStyled, TabStyled, TabsListWrapper, TabTitle, Banners, BannerWrapper, BannerDescription, BannerLink} from "@sb/compositions/Twamm/styles";
+import {Cell, Page} from "@sb/components/Layout";
+import { TabPanel } from 'react-tabs';
+import {
+  TabListStyled,
+  TabStyled,
+  TabsListWrapper,
+  TabTitle,
+  Banners,
+  BannerWrapper,
+  BannerDescription,
+  BannerLink,
+  WideContentStyled, TabsStyled
+} from "@sb/compositions/Twamm/styles";
 import {BtnCustom} from "@sb/components/BtnCustom/BtnCustom.styles";
 import {ProgramsMultiton} from "@sb/dexUtils/ProgramsMultiton/ProgramsMultiton";
-import {POOLS_PROGRAM_ADDRESS, TWAMM_PROGRAM_ADDRESS} from "@sb/dexUtils/ProgramsMultiton/utils";
+import {TWAMM_PROGRAM_ADDRESS} from "@sb/dexUtils/ProgramsMultiton/utils";
 import {PublicKey} from "@solana/web3.js";
 import {loadAccountsFromProgram} from "@sb/dexUtils/common/loadAccountsFromProgram";
 import {useConnection} from "@sb/dexUtils/connection";
@@ -22,6 +32,8 @@ import {SvgIcon} from "@sb/components";
 import ArrowBanner from "@icons/arrowBanner.svg";
 import GuideImg from './img/guideImg.svg';
 import SdkImg from './img/sdkImg.svg';
+import {Snapshot} from "@sb/dexUtils/common/types";
+import {loadStakingSnapshots} from "@sb/dexUtils/staking/loadStakingSnapshots";
 
 const TwammComponent = ({
   theme,
@@ -37,7 +49,7 @@ const TwammComponent = ({
     }
   }, [wallet.publicKey])
 
-  const getAllAccounts = () => {
+  const getAllAccounts = async () => {
     const program = ProgramsMultiton.getProgramByAddress({
       wallet,
       connection,
@@ -45,11 +57,26 @@ const TwammComponent = ({
     })
 
     console.log('program.account', program.account.pairSettings)
+
+    const config = {
+      filters: [
+        {dataSize: 209 },
+      ],
+    };
+
+    const pairSettingsAccount = loadAccountsFromProgram({
+      connection,
+      filters: config.filters,
+      programAddress: TWAMM_PROGRAM_ADDRESS,
+    });
+
+    pairSettingsAccount.then(resPairSettings => console.log('resPairSettings', resPairSettings))
+
   }
 
   return (
     <Page>
-      <WideContent>
+      <WideContentStyled>
         <Banners>
           <Row width={'100%'} align="stretch">
             <Cell col={12} colSm={4}>
@@ -114,7 +141,7 @@ const TwammComponent = ({
             </Cell>
           </Row>
         </Banners>
-        <Tabs>
+        <TabsStyled>
           <TabsListWrapper>
             <TabListStyled>
               <TabStyled>
@@ -156,8 +183,8 @@ const TwammComponent = ({
           <TabPanel>
             <h2>Order History</h2>
           </TabPanel>
-        </Tabs>
-      </WideContent>
+        </TabsStyled>
+      </WideContentStyled>
     </Page>
   )
 }

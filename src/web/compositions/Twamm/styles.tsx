@@ -1,5 +1,17 @@
 import styled from "styled-components";
-import { TabList, Tab } from 'react-tabs';
+import { Tabs, TabList, Tab } from 'react-tabs';
+import {WideContent} from "@sb/components/Layout";
+
+export const WideContentStyled = styled(WideContent)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+export const TabsStyled = styled(Tabs)`
+  margin-bottom: 4.8rem;
+`;
 
 export const TabsListWrapper = styled.div`
   display: flex;

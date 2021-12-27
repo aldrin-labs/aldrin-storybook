@@ -54,7 +54,6 @@ import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
 import { InputWithSelectorForSwaps } from '@sb/compositions/Swap/components/Inputs'
 import { BlockTemplate } from '../../Pools/index.styles'
 import { Row, RowContainer } from '../../AnalyticsRoute/index.styles'
-import { Cards } from './components/Cards/Cards'
 import {Cell} from "@sb/components/Layout";
 import OrderStats from "./components/OrderStats/OrderStats";
 import {InputWithType} from "@sb/components/InputWithType/InputWithType";
@@ -78,38 +77,6 @@ const PlaceOrder = ({
   const allPools = getPoolsInfoQuery.getPoolsInfo
   const nativeSOLTokenData = allTokensData[0]
 
-  const [isStableSwapTabActive, setIsStableSwapTabActive] =
-    useState<boolean>(false)
-
-  useEffect(() => {
-    const updatedPoolsList = getPoolsForSwapActiveTab({
-      pools: allPools,
-      isStableSwapTabActive,
-    })
-
-    const isPoolExistInNewTab = getSelectedPoolForSwap({
-      pools: updatedPoolsList,
-      baseTokenMintAddress,
-      quoteTokenMintAddress,
-    })
-
-    // set tokens to default one if pool with selected tokens
-    // does not exist in new tab
-    if (!isPoolExistInNewTab) {
-      const defaultBaseTokenMint =
-        getTokenMintAddressByName(getDefaultBaseToken(isStableSwapTabActive)) ||
-        ''
-
-      const defaultQuoteTokenMint =
-        getTokenMintAddressByName(
-          getDefaultQuoteToken(isStableSwapTabActive)
-        ) || ''
-
-      setBaseTokenMintAddress(defaultBaseTokenMint)
-      setQuoteTokenMintAddress(defaultQuoteTokenMint)
-    }
-  }, [isStableSwapTabActive])
-
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
 
@@ -119,12 +86,11 @@ const PlaceOrder = ({
 
     const baseFromRedirect = urlParams.get('base')
     const quoteFromRedirect = urlParams.get('quote')
-    const isStableSwapFromRedirect = urlParams.get('isStablePool') === 'true'
 
     const baseTokenMint = baseFromRedirect
       ? getTokenMintAddressByName(baseFromRedirect) || ''
       : getTokenMintAddressByName(
-      getDefaultBaseToken(isStableSwapFromRedirect)
+      getDefaultBaseToken(false)
     ) || ''
 
     setBaseTokenMintAddress(baseTokenMint)
@@ -132,17 +98,15 @@ const PlaceOrder = ({
     const quoteTokenMint = quoteFromRedirect
       ? getTokenMintAddressByName(quoteFromRedirect) || ''
       : getTokenMintAddressByName(
-      getDefaultQuoteToken(isStableSwapFromRedirect)
+      getDefaultQuoteToken(false)
     ) || ''
 
     setQuoteTokenMintAddress(quoteTokenMint)
-
-    setIsStableSwapTabActive(isStableSwapFromRedirect)
   }, [])
 
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
-    isStableSwapTabActive,
+    isStableSwapTabActive: false
   })
 
   const selectedPool = getSelectedPoolForSwap({
