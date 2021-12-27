@@ -4,6 +4,8 @@ import React from 'react'
 import { StyledTitle } from '@sb/components/TradingTable/TradingTable.styles'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
+import { RedButton } from '../../styles'
+
 export const runningOrdersColumnNames = [
   { label: 'Pair/Side', id: 'pairSide' },
   { label: 'Total Order Amount', id: 'amount' },
@@ -53,6 +55,18 @@ const mock = [
     remainingTime: '126h 25m',
     actions: '',
   },
+  {
+    side: 'Buy',
+    pair: 'SOL/USDT',
+    amount: '10000.0000',
+    filledPers: '28%',
+    price: '198.42',
+    sent: '3000.00',
+    received: '240000.00',
+    remainingAmount: '9904.0421',
+    remainingTime: '126h 25m',
+    actions: '',
+  },
 ]
 
 export const combineRunningOrdersTable = ({ wallet, connection }) => {
@@ -64,11 +78,11 @@ export const combineRunningOrdersTable = ({ wallet, connection }) => {
       pairSide: {
         render: (
           <RowContainer direction="column" align="flex-start">
-            <StyledTitle color={COLORS.main} fontSize="1.3rem">
+            <StyledTitle color={COLORS.main} fontSize="1.5rem">
               {el.pair}
             </StyledTitle>
             <StyledTitle
-              fontSize="1.3rem"
+              fontSize="1.5rem"
               color={el.side === 'Buy' ? COLORS.success : COLORS.errorAlt}
             >
               {el.side} {base}
@@ -80,7 +94,7 @@ export const combineRunningOrdersTable = ({ wallet, connection }) => {
       },
       amount: {
         render: (
-          <StyledTitle color={COLORS.main} fontSize="1.3rem">
+          <StyledTitle color={COLORS.main} fontSize="1.5rem">
             {el.amount} {el.side === 'Buy' ? quote : base}
           </StyledTitle>
         ),
@@ -89,7 +103,7 @@ export const combineRunningOrdersTable = ({ wallet, connection }) => {
       },
       filled: {
         render: (
-          <StyledTitle color={COLORS.success} fontSize="1.3rem">
+          <StyledTitle color={COLORS.success} fontSize="1.5rem">
             {el.filledPers}
           </StyledTitle>
         ),
@@ -98,7 +112,7 @@ export const combineRunningOrdersTable = ({ wallet, connection }) => {
       },
       avgFilledPrice: {
         render: (
-          <StyledTitle color={COLORS.main} fontSize="1.3rem">
+          <StyledTitle color={COLORS.main} fontSize="1.5rem">
             {el.price}
             {quote}
           </StyledTitle>
@@ -108,7 +122,7 @@ export const combineRunningOrdersTable = ({ wallet, connection }) => {
       },
       sent: {
         render: (
-          <StyledTitle color={COLORS.success} fontSize="1.3rem">
+          <StyledTitle color={COLORS.success} fontSize="1.5rem">
             {el.sent}
           </StyledTitle>
         ),
@@ -117,7 +131,7 @@ export const combineRunningOrdersTable = ({ wallet, connection }) => {
       },
       received: {
         render: (
-          <StyledTitle color={COLORS.success} fontSize="1.3rem">
+          <StyledTitle color={COLORS.success} fontSize="1.5rem">
             {el.received}
           </StyledTitle>
         ),
@@ -126,7 +140,7 @@ export const combineRunningOrdersTable = ({ wallet, connection }) => {
       },
       remainingAmount: {
         render: (
-          <StyledTitle color={COLORS.main} fontSize="1.3rem">
+          <StyledTitle color={COLORS.main} fontSize="1.5rem">
             {el.remainingAmount} {quote}
           </StyledTitle>
         ),
@@ -135,7 +149,7 @@ export const combineRunningOrdersTable = ({ wallet, connection }) => {
       },
       remainingTime: {
         render: (
-          <StyledTitle color={COLORS.main} fontSize="1.3rem">
+          <StyledTitle color={COLORS.main} fontSize="1.5rem">
             {el.remainingTime}
           </StyledTitle>
         ),
@@ -143,7 +157,7 @@ export const combineRunningOrdersTable = ({ wallet, connection }) => {
         showOnMobile: false,
       },
       actions: {
-        render: el.actions,
+        render: <RedButton>Stop</RedButton>,
         contentToSort: '',
         showOnMobile: false,
       },

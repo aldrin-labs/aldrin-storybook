@@ -1,22 +1,29 @@
-import React, { memo } from 'react'
-import { withStyles, createStyles } from '@material-ui/styles'
-import { Theme } from '@material-ui/core/styles'
+import { Typography, IconButton, Grow } from '@material-ui/core'
+import Checkbox from '@material-ui/core/Checkbox'
+import Paper from '@material-ui/core/Paper'
+import { Theme, withStyles, createStyles } from '@material-ui/core/styles'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell, { Padding } from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
-import Checkbox from '@material-ui/core/Checkbox'
-import ExpandMore from '@material-ui/icons/ExpandMore'
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
 import ExpandLess from '@material-ui/icons/ExpandLess'
-import { fade } from '@material-ui/core/styles/colorManipulator'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import { COLORS } from '@variables/variables'
+import { isObject } from 'lodash-es'
+import React, { memo } from 'react'
+import styled from 'styled-components'
 
+import CustomPlaceholder from '@sb/components/CustomPlaceholder'
+import SwitchOnOff from '@sb/components/SwitchOnOff'
+import { StyledTooltip } from '@sb/components/TooltipCustom/TooltipCustom.styles'
+import { PaginationBlock } from '@sb/components/TradingTable/TradingTable.styles'
 import {
-  StyledTable,
-  StyledTableSortLabel,
-  StyledTablePagination,
-} from './Table.styles'
+  StyledSelect,
+  StyledOption,
+} from '@sb/components/TradingWrapper/styles'
 
+import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
 import {
   Props,
   Cell,
@@ -32,28 +39,10 @@ import {
   TableStyles,
   PaginationFunctionType,
 } from './index.types'
-
-import SwitchOnOff from '@sb/components/SwitchOnOff'
-import { isObject } from 'lodash-es'
-import { Typography, IconButton, Grow } from '@material-ui/core'
-import { withErrorFallback } from '../hoc/withErrorFallback/withErrorFallback'
-import withStandartSettings from './withStandartSettings/withStandartSettings'
-import withPagination from './withPagination/withPagination'
-
-import { PaginationBlock } from '@sb/components/TradingTable/TradingTable.styles'
-import { StyledTooltip } from '@sb/components/TooltipCustom/TooltipCustom.styles'
-
-import {
-  StyledSelect,
-  StyledOption,
-} from '@sb/components/TradingWrapper/styles'
-
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos'
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos'
-
-import CustomPlaceholder from '@sb/components/CustomPlaceholder'
 import { StyledTableHead } from './styles'
-import styled from 'styled-components'
+import { StyledTable, StyledTableSortLabel } from './Table.styles'
+import withPagination from './withPagination/withPagination'
+import withStandartSettings from './withStandartSettings/withStandartSettings'
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -139,7 +128,7 @@ const AutoRefetch = ({
       </span>
       <SwitchOnOff
         enabled={autoRefetch || false}
-        _id={'AutoRefetch'}
+        _id="AutoRefetch"
         onChange={() => toggleAutoRefetch(!autoRefetch)}
       />
     </div>
@@ -212,7 +201,7 @@ const styles = (theme: Theme) =>
     headRow: {
       height: '2rem',
       boxShadow: 'none',
-      borderBottom: theme.palette.border.main,
+      borderBottom: `0.1rem solid ${COLORS.background}`,
     },
     rowSelected: {
       backgroundColor: theme.palette.action.selected,
@@ -229,12 +218,12 @@ const styles = (theme: Theme) =>
     rowWithHover: {
       '&:hover': {
         borderRadius: '32px',
-        backgroundColor: theme.palette.hover[theme.palette.type], //TODO theme.palette.action.hover,
+        backgroundColor: theme.palette.hover[theme.palette.type], // TODO theme.palette.action.hover,
       },
       '&:hover td': {
         backgroundColor: `${
           theme.palette.hover[theme.palette.type]
-        } !important`, //TODO theme.palette.action.hover,
+        } !important`, // TODO theme.palette.action.hover,
       },
     },
     rowWithHoverBorderRadius: {
@@ -393,9 +382,7 @@ const renderCell = ({
       variant={variant}
       align={align}
       key={id}
-    >
-      {''}
-    </CustomTableCell>
+    />
   )
 }
 
@@ -454,7 +441,7 @@ const renderCells = ({
             numeric: numeric as boolean,
             id: key,
             variant: (row.options && row.options.variant) || 'body',
-            padding: padding ? padding : 'default',
+            padding: padding || 'default',
           }
 
       return renderCell({ tableStyles, ...renderCellArg })
@@ -500,7 +487,7 @@ const renderFooterCells = ({
       numeric: numeric as boolean,
       cell: footerCell as Cell,
       id: key,
-      variant: variant,
+      variant,
     }
   }
 
@@ -540,15 +527,11 @@ const CustomTable = (props: Props) => {
     withCheckboxes = false,
     title,
     elevation = 0,
-    onChange = () => {
-      return
-    },
+    onChange = () => {},
     expandableRows = false,
     expandedRows = [],
     expandAllRows = false,
-    onSelectAllClick = () => {
-      return
-    },
+    onSelectAllClick = () => {},
     checkedRows = [],
     staticCheckbox = false,
     sort,
@@ -561,12 +544,8 @@ const CustomTable = (props: Props) => {
       rowsPerPage: defaultRowsPerPage,
       rowsPerPageOptions: defaultrowsPerPageOptions,
       page: 0,
-      handleChangePage: () => {
-        return
-      },
-      handleChangeRowsPerPage: () => {
-        return
-      },
+      handleChangePage: () => {},
+      handleChangeRowsPerPage: () => {},
       additionalBlock: null,
       showPagination: true,
     },
@@ -574,7 +553,7 @@ const CustomTable = (props: Props) => {
     actionsColSpan = 1,
     borderBottom = false,
     rowsWithHover = true,
-    rowWithHoverBorderRadius = true, //TODO false rowWithHoverBorderRadius ,
+    rowWithHoverBorderRadius = true, // TODO false rowWithHoverBorderRadius ,
     emptyTableText = 'no data',
     tableStyles = {
       heading: {},
@@ -637,12 +616,8 @@ const CustomTable = (props: Props) => {
     rowsPerPage: defaultRowsPerPage,
     rowsPerPageOptions: defaultrowsPerPageOptions,
     page: 0,
-    handleChangePage: () => {
-      return
-    },
-    handleChangeRowsPerPage: () => {
-      return
-    },
+    handleChangePage: () => {},
+    handleChangeRowsPerPage: () => {},
     additionalBlock: null,
     paginationStyles: {},
     showPagination: true,
@@ -660,7 +635,7 @@ const CustomTable = (props: Props) => {
       }}
     >
       <StyledTable
-        padding={padding ? padding : 'default'}
+        padding={padding || 'default'}
         className={`${classes.table} ${props.className || ''}`}
         id={props.id}
         style={{
@@ -812,10 +787,7 @@ const CustomTable = (props: Props) => {
                         style={
                           borderBottom
                             ? {
-                                borderBottom: `1px solid ${fade(
-                                  theme!.palette.divider,
-                                  0.5
-                                )}`,
+                                borderBottom: `1px solid ${COLORS.border}`,
                                 cursor: 'pointer',
                                 ...tableStyles.row,
                               }
@@ -851,9 +823,9 @@ const CustomTable = (props: Props) => {
                               disabled:
                                 expandable &&
                                 row.expandableContent &&
-                                (row.expandableContent as ReadonlyArray<
-                                  NotExpandableRow
-                                >).length === 0,
+                                (
+                                  row.expandableContent as ReadonlyArray<NotExpandableRow>
+                                ).length === 0,
                               className: {
                                 checkboxClasses,
                                 disabledExpandRow: '',
@@ -880,15 +852,16 @@ const CustomTable = (props: Props) => {
                     </Component>
                     {expandable &&
                       // rendering content of expanded row if it is expandable
-                      (row!.expandableContent! as ReadonlyArray<
-                        NotExpandableRow
-                      >).map((collapsedRows: Row, i: number) => {
+                      (
+                        row!
+                          .expandableContent! as ReadonlyArray<NotExpandableRow>
+                      ).map((collapsedRows: Row, i: number) => {
                         return (
                           <Grow
                             in={expandedRow}
                             key={i}
-                            unmountOnExit={true}
-                            mountOnEnter={true}
+                            unmountOnExit
+                            mountOnEnter
                           >
                             <TableRow
                               className={rowsWithHover && classes.rowExpanded}
@@ -912,7 +885,7 @@ const CustomTable = (props: Props) => {
             )
           )}
         </TableBody>
-        {/*{Array.isArray(data.footer) && (
+        {/* {Array.isArray(data.footer) && (
           <TableFooter>
             {data.footer.filter(Boolean).map((row, index) => {
               const stickyOffset =

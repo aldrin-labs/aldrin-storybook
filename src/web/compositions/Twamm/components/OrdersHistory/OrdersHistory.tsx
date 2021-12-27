@@ -29,8 +29,9 @@ const OrdersHistoryTable = ({
 
   return (
     <TableWithSort
+      borderBottom
       style={{
-        height: '40rem',
+        height: '60rem',
         overflowX: 'hidden',
         backgroundColor: COLORS.blockBackground,
         width: '100%',
@@ -47,10 +48,9 @@ const OrdersHistoryTable = ({
       tableStyles={{
         cell: {
           color: COLORS.main,
-          fontSize: '1.2rem',
+          fontSize: '1.4rem',
           fontWeight: 'bold',
           letterSpacing: '.1rem',
-          borderBottom: COLORS.borderDark,
           backgroundColor: COLORS.blockBackground,
           boxShadow: 'none',
           height: '10rem',
@@ -58,14 +58,16 @@ const OrdersHistoryTable = ({
         },
         heading: {
           backgroundColor: '#222429',
-          fontSize: '1.2rem',
+          fontSize: '1.4rem',
           fontFamily: 'Avenir Next Light',
           height: '4rem',
         },
         tab: {
           padding: 0,
           boxShadow: 'none',
-          borderBottom: COLORS.borderDark,
+        },
+        row: {
+          borderBottom: `0.1rem solid ${COLORS.background}`,
         },
       }}
       emptyTableText=" "

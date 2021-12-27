@@ -63,11 +63,11 @@ export const combineOrdersHistoryTable = ({ wallet, connection }) => {
       pairSide: {
         render: (
           <RowContainer direction="column" align="flex-start">
-            <StyledTitle color={COLORS.main} fontSize="1.3rem">
+            <StyledTitle color={COLORS.main} fontSize="1.5rem">
               {el.pair}
             </StyledTitle>
             <StyledTitle
-              fontSize="1.3rem"
+              fontSize="1.5rem"
               color={el.side === 'Buy' ? COLORS.success : COLORS.errorAlt}
             >
               {el.side} {base}
@@ -79,7 +79,7 @@ export const combineOrdersHistoryTable = ({ wallet, connection }) => {
       },
       amount: {
         render: (
-          <StyledTitle color={COLORS.main} fontSize="1.3rem">
+          <StyledTitle color={COLORS.main} fontSize="1.5rem">
             {el.amount} {el.side === 'Buy' ? quote : base}
           </StyledTitle>
         ),
@@ -88,7 +88,7 @@ export const combineOrdersHistoryTable = ({ wallet, connection }) => {
       },
       filled: {
         render: (
-          <StyledTitle color={COLORS.success} fontSize="1.3rem">
+          <StyledTitle color={COLORS.success} fontSize="1.5rem">
             {el.filledPers}
           </StyledTitle>
         ),
@@ -97,7 +97,7 @@ export const combineOrdersHistoryTable = ({ wallet, connection }) => {
       },
       avgFilledPrice: {
         render: (
-          <StyledTitle color={COLORS.main} fontSize="1.3rem">
+          <StyledTitle color={COLORS.main} fontSize="1.5rem">
             {el.price}
             {quote}
           </StyledTitle>
@@ -107,7 +107,7 @@ export const combineOrdersHistoryTable = ({ wallet, connection }) => {
       },
       sent: {
         render: (
-          <StyledTitle color={COLORS.success} fontSize="1.3rem">
+          <StyledTitle color={COLORS.success} fontSize="1.5rem">
             {el.sent}
           </StyledTitle>
         ),
@@ -116,33 +116,44 @@ export const combineOrdersHistoryTable = ({ wallet, connection }) => {
       },
       received: {
         render: (
-          <StyledTitle color={COLORS.success} fontSize="1.3rem">
+          <StyledTitle color={COLORS.success} fontSize="1.5rem">
             {el.received}
           </StyledTitle>
         ),
         contentToSort: '',
         showOnMobile: false,
       },
-      remainingAmount: {
+      started: {
         render: (
-          <StyledTitle color={COLORS.main} fontSize="1.3rem">
-            {el.remainingAmount} {quote}
-          </StyledTitle>
+          <RowContainer direction="column" align="flex-start">
+            <StyledTitle color={COLORS.main} fontSize="1.5rem">
+              {el.pair}
+            </StyledTitle>
+            <StyledTitle
+              fontSize="1.5rem"
+              color={el.side === 'Buy' ? COLORS.success : COLORS.errorAlt}
+            >
+              {el.side} {base}
+            </StyledTitle>
+          </RowContainer>
         ),
         contentToSort: '',
         showOnMobile: false,
       },
-      remainingTime: {
+      finished: {
         render: (
-          <StyledTitle color={COLORS.main} fontSize="1.3rem">
-            {el.remainingTime}
-          </StyledTitle>
+          <RowContainer direction="column" align="flex-start">
+            <StyledTitle color={COLORS.main} fontSize="1.5rem">
+              {el.pair}
+            </StyledTitle>
+            <StyledTitle
+              fontSize="1.5rem"
+              color={el.side === 'Buy' ? COLORS.success : COLORS.errorAlt}
+            >
+              {el.side} {base}
+            </StyledTitle>
+          </RowContainer>
         ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-      actions: {
-        render: el.actions,
         contentToSort: '',
         showOnMobile: false,
       },

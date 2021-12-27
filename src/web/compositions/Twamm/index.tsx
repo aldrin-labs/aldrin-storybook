@@ -23,6 +23,8 @@ import {
 import { useConnection } from '@sb/dexUtils/connection'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { TWAMM_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { getParsedRunningOrders } from '@sb/dexUtils/twamm/getParsedRunningOrders'
+import { loadOrdersArrayForTwamm } from '@sb/dexUtils/twamm/loadOrdersArrayForTwamm'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import ArrowBanner from '@icons/arrowBanner.svg'
@@ -42,6 +44,13 @@ const TwammComponent = ({ theme }: { theme: Theme }) => {
     if (wallet.publicKey) {
       getAllAccounts()
     }
+
+    const getOrders = async () => {
+      const a = await loadOrdersArrayForTwamm({ connection })
+      const b = await getParsedRunningOrders({ connection, wallet })
+      console.log('orders', a, b)
+    }
+    getOrders()
   }, [wallet.publicKey])
 
   const getAllAccounts = () => {
