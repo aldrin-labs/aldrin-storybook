@@ -7,6 +7,7 @@ import {
   Transaction,
 } from '@solana/web3.js'
 
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
@@ -14,16 +15,18 @@ import {
   sendTransaction,
   signTransactions,
 } from '@sb/dexUtils/send'
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getSnapshotsWithUnclaimedRewards } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/getSnapshotsWithUnclaimedRewards'
 import {
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
   NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION,
 } from '@sb/dexUtils/common/config'
+
 import BN from 'bn.js'
+
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
-import { getRandomInt } from '@core/utils/helpers'
+
 import { WithdrawFarmedParams } from '@sb/dexUtils/staking/types'
+import { getRandomInt } from '@core/utils/helpers'
 import { sendSignedTransactions } from '../../transactions'
 
 export const withdrawFarmed = async ({
@@ -105,14 +108,27 @@ export const withdrawFarmed = async ({
       }
 
       // get number of snapshots, get number of iterations, send transaction n times
-      const unclaimedSnapshots = getSnapshotsWithUnclaimedRewards({
+      const unclaimedSnapshotsForVesting = getSnapshotsWithUnclaimedRewards({
         ticket: ticketData,
         farmingState,
         snapshotQueues,
+        forVesting: true,
       })
+      const unclaimedSnapshotsWithoutVesting = getSnapshotsWithUnclaimedRewards(
+        {
+          ticket: ticketData,
+          farmingState,
+          snapshotQueues,
+          forVesting: false,
+        }
+      )
 
+      const availableToClaimSnapshots = Math.max(
+        unclaimedSnapshotsForVesting.length,
+        unclaimedSnapshotsWithoutVesting.length
+      )
       const iterations = Math.ceil(
-        unclaimedSnapshots.length / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
+        availableToClaimSnapshots / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
       )
 
       for (let k = 1; k <= iterations; k += 1) {
