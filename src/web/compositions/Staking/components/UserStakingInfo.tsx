@@ -9,6 +9,7 @@ import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { InlineText } from '@sb/components/Typography'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { ClaimRewards } from '@sb/compositions/Pools/components/Popups/ClaimRewards/ClaimRewards'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
@@ -125,7 +126,9 @@ const resolveUnstakingNotification = (
   return 'Unstaking cancelled.'
 }
 
-// const walletPublicKey = new PublicKey('6foEm3bCdAit5J9fyYnevS5FrMKd8c5D1LHDS5bvTnRw')
+// const walletPublicKey = new PublicKey(
+//   '5FbM2CWzq33t1gMaYdxYvm4xVjh39nV8KfgdSt5L2ktH'
+// )
 
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
@@ -317,6 +320,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const snapshotsProcessing = availableToClaimOnTickets !== 0
 
+  console.log('availableToClaimOnTickets: ', availableToClaimOnTickets)
+
   // availableToClaimTotal = avail. to claim on clalcs only, if all snapshots processed
   const availableToClaimTotal = snapshotsProcessing
     ? 0
@@ -450,11 +455,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   >
                     <RewardsStatsRow>
                       <RewardsTitle>Available to claim:</RewardsTitle>
-                      <UserBalance
-                        visible={isBalancesShowing}
-                        value={availableToClaimTotal}
-                        decimals={2}
-                      />
+                      {snapshotsProcessing ? (
+                        <InlineText size="sm">Processing...</InlineText>
+                      ) : (
+                        <UserBalance
+                          visible={isBalancesShowing}
+                          value={availableToClaimTotal}
+                          decimals={2}
+                        />
+                      )}
                     </RewardsStatsRow>
                   </DarkTooltip>
                   <ClaimButtonContainer>
