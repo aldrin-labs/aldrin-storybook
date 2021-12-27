@@ -1,7 +1,5 @@
 import { Commitment, Connection } from '@solana/web3.js'
-
 import { Metrics } from '@core/utils/metrics'
-
 import { getProviderNameFromUrl } from './connection'
 
 type RateLimitedEndpoint = {
@@ -16,10 +14,7 @@ type EndpointRequestsCounter = {
   weight: number
 }
 
-const processCall = (
-  call: Promise<any> | number /* Number come from subscriptions */,
-  connection: Connection
-) => {
+const processCall = (call: Promise<any>, connection: Connection) => {
   const rpcProvider = getProviderNameFromUrl({
     rawConnection: connection,
   })
@@ -27,22 +22,18 @@ const processCall = (
     Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.timeout` })
   }, 30 * 1000)
 
-  if (typeof call === 'number') {
-    return true
-  }
-
-  // console.log('call: ', call)
-  return call
-    .then((d) => {
+  return call.then(
+    (d) => {
       clearTimeout(t)
       return d
-    })
-    .catch((err: Error) => {
+    },
+    (err: Error) => {
       clearTimeout(t)
       const text = `${err}`.substring(0, 40).replace(/[: ]/g, '_').toLowerCase()
       Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.${text}` })
       console.error(err)
-    })
+    }
+  )
 }
 
 class MultiEndpointsConnection implements Connection {
@@ -110,4 +101,4 @@ class MultiEndpointsConnection implements Connection {
   }
 }
 
-export default MultiConnection
+export default MultiEndpointsConnection
