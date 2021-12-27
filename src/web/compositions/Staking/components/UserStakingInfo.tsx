@@ -48,6 +48,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import InfoIcon from '@icons/inform.svg'
 
+import { sleep } from '../../../dexUtils/utils'
 import { groupBy } from '../../../utils/collection'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
@@ -236,8 +237,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         message: resolveStakingNotification(result),
       })
 
-      console.log('stake result: ', result)
-
       if (result === 'success') {
         await refreshAll()
       }
@@ -270,6 +269,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     })
 
     if (result === 'success') {
+      await sleep(7000)
       await refreshAll()
     }
 
