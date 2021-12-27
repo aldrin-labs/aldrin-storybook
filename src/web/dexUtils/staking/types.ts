@@ -12,33 +12,3 @@ export type StakingPool = {
   stakingVault: string
   farming: FarmingState[]
 }
-
-export interface WithdrawFarmedParams {
-  wallet: WalletAdapter
-  connection: MultiEndpointsConnection
-  allTokensData: TokenInfo[]
-  farmingTickets: FarmingTicket[]
-  pool: StakingPool | PoolInfo
-  programAddress?: string
-  snapshotQueues: SnapshotQueue[]
-  signAllTransactions: boolean // Ledger compability
-}
-
-export interface StartStakingParams {
-  wallet: WalletAdapter
-  connection: MultiEndpointsConnection
-  amount: number
-  userPoolTokenAccount: PublicKey
-  stakingPool: StakingPool | PoolInfo
-  farmingTickets: FarmingTicket[]
-  programAddress: string
-}
-
-export interface EndstakingParams {
-  wallet: WalletAdapter
-  connection: MultiEndpointsConnection
-  // poolPublicKey: PublicKey
-  userPoolTokenAccount: PublicKey
-  farmingTickets: FarmingTicket[]
-  stakingPool: StakingPool | PoolInfo
-}
