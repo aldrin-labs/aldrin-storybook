@@ -320,8 +320,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const snapshotsProcessing = availableToClaimOnTickets !== 0
 
-  console.log('availableToClaimOnTickets: ', availableToClaimOnTickets)
-
   // availableToClaimTotal = avail. to claim on clalcs only, if all snapshots processed
   const availableToClaimTotal = snapshotsProcessing
     ? 0
