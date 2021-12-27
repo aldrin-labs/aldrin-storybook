@@ -303,18 +303,25 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     snapshotQueues: allStakingSnapshotQueues,
   })
 
-  const availableToClaimTotal1 = getAvailableToClaimFarmingTokens(
+  // Available to claim on tickets & calc accounts
+  const availableToClaim = getAvailableToClaimFarmingTokens(
     availableToClaimTickets,
     calcAccounts,
     currentFarmingState.farmingTokenMintDecimals
   )
 
-  // TODO: FIx dat
-  const availableToClaimTotal2 = getAvailableToClaimFarmingTokens(
+  // Available to claim on tickets only
+  const availableToClaimOnTickets = getAvailableToClaimFarmingTokens(
     availableToClaimTickets
   )
 
-  const availableToClaimTotal = availableToClaimTotal1 - availableToClaimTotal2
+  const snapshotsProcessing = availableToClaimOnTickets !== 0
+
+  // availableToClaimTotal = avail. to claim on clalcs only, if all snapshots processed
+  const availableToClaimTotal = snapshotsProcessing
+    ? 0
+    : availableToClaim - availableToClaimOnTickets
+
   const lastFarmingTicket = userFarmingTickets.sort(
     (ticketA, ticketB) => +ticketB.startTime - +ticketA.startTime
   )[0]
