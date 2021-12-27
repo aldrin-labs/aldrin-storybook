@@ -20,6 +20,8 @@ import {getReserves} from '@sb/dexUtils/borrow-lending/getReserves';
 import BN from "bn.js";
 import {getObligation} from "@sb/dexUtils/borrow-lending/getObligation";
 import Borrow from "@sb/compositions/BorrowLending/Borrow/Borrow";
+import { Link } from 'react-router-dom';
+import {Navbar, NavbarItem} from "@sb/compositions/BorrowLending/styles";
 
 type MatchParams = {
     section: string;
@@ -201,6 +203,20 @@ const BorrowLending: FC = ({match}: BorrowLendingProps) => {
 
     return (
         <>
+            <Navbar>
+                <NavbarItem>
+                    <Link to="/borrow-lending/markets">Markets</Link>
+                </NavbarItem>
+                <NavbarItem>
+                    <Link to="/borrow-lending/dashboard">Dashboard</Link>
+                </NavbarItem>
+                <NavbarItem>
+                    <Link to="/borrow-lending/supply">Supply</Link>
+                </NavbarItem>
+                <NavbarItem>
+                    <Link to="/borrow-lending/borrow">Borrow</Link>
+                </NavbarItem>
+            </Navbar>
             {
                 match.params.section === 'markets' ?
                     <Markets

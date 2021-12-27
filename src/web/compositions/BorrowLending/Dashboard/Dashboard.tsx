@@ -70,7 +70,7 @@ const Dashboard = ({
                                     <Cell col={12} colLg={4}>
                                         <BlockNumber>
                                             <TitleBlock>Net APY</TitleBlock>
-                                            <NumberValue>91.08%</NumberValue>
+                                            <NumberValue>TBA</NumberValue>
                                         </BlockNumber>
                                     </Cell>
                                     <Cell col={12} colLg={4}>
@@ -82,15 +82,15 @@ const Dashboard = ({
                                 </RowContainer>
                                 <RowContainer>
                                     <Cell col={12} colLg={4}>
-                                        <TextCol>26.54%</TextCol>
+                                        <TextCol>0%</TextCol>
                                         <Subtitle>Borrowing Power Used</Subtitle>
                                     </Cell>
                                     <Cell col={12} colLg={4}>
-                                        <TextCol>73.46%</TextCol>
+                                        <TextCol>0%</TextCol>
                                         <Subtitle>Borrowing Power</Subtitle>
                                     </Cell>
                                     <Cell col={12} colLg={4}>
-                                        <TextCol>$4.27</TextCol>
+                                        <TextCol>$0</TextCol>
                                         <Subtitle>You Borrowed</Subtitle>
                                     </Cell>
                                 </RowContainer>
@@ -102,7 +102,7 @@ const Dashboard = ({
                                                 <Cell col={12} colLg={4}>
                                                     <BlockReward>
                                                         <TitleBlock>Total Claimable Reward</TitleBlock>
-                                                        0.000004
+                                                        0
                                                     </BlockReward>
                                                 </Cell>
                                                 <Cell col={12} colLg={4}>
