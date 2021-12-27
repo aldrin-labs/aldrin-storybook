@@ -7,13 +7,12 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { splitBy } from '../../utils/collection'
-import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
-import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendSignedTransactions, signTransactions } from '../transactions'
-import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
+import { splitBy } from '../../../utils/collection'
+import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { getCurrentFarmingStateFromAll } from '../../staking/getCurrentFarmingStateFromAll'
+import { sendSignedTransactions, signTransactions } from '../../transactions'
+import { filterOpenFarmingTickets } from '../filterOpenFarmingTickets'
+import { getTicketsAvailableToClose } from '../getTicketsAvailableToClose'
 import { EndstakingParams } from './types'
 
 export const endStakingInstructions = async (
@@ -25,15 +24,16 @@ export const endStakingInstructions = async (
     userPoolTokenAccount,
     farmingTickets,
     stakingPool,
+    programAddress,
   } = params
 
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection: connection.getConnection(),
-    programAddress: STAKING_PROGRAM_ADDRESS,
+    programAddress,
   })
 
-  const farmingState = getCurrentFarmingStateFromAll(stakingPool.farming)
+  const farmingState = getCurrentFarmingStateFromAll(stakingPool.farming || [])
 
   const openTickets = getTicketsAvailableToClose({
     farmingState,
@@ -53,8 +53,18 @@ export const endStakingInstructions = async (
           farmingState: new PublicKey(farmingState.farmingState),
           farmingSnapshots: new PublicKey(farmingState.farmingSnapshots),
           farmingTicket: new PublicKey(ticketData.farmingTicket),
-          stakingVault: new PublicKey(stakingPool.stakingVault),
+          // Make code compatible for both staking and pools farming
+          stakingVault:
+            'stakingVault' in stakingPool
+              ? new PublicKey(stakingPool.stakingVault)
+              : undefined,
+          lpTokenFreezeVault:
+            'lpTokenFreezeVault' in stakingPool
+              ? new PublicKey(stakingPool.lpTokenFreezeVault)
+              : undefined,
           userStakingTokenAccount: userPoolTokenAccount,
+          userPoolTokenAccount,
+
           poolSigner,
           userKey: wallet.publicKey,
           tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,

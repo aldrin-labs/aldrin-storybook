@@ -27,6 +27,7 @@ import {
 import CrownIcon from '@icons/crownIcon.svg'
 import ScalesIcon from '@icons/scales.svg'
 
+import { FarmingCalc } from '../../../../../dexUtils/common/types'
 import {
   DexTokensPrices,
   FarmingTicketsMap,
@@ -51,6 +52,7 @@ export const preparePoolTableCell = (params: {
   walletPk: string
   vestings: Map<string, Vesting>
   farmingTicketsMap: FarmingTicketsMap
+  calcAccounts?: Map<string, FarmingCalc>
 }): DataCellValues<PoolInfo> => {
   const {
     pool,
@@ -58,6 +60,7 @@ export const preparePoolTableCell = (params: {
     prepareMore,
     walletPk,
     vestings,
+    calcAccounts,
     farmingTicketsMap,
   } = params
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
@@ -114,6 +117,7 @@ export const preparePoolTableCell = (params: {
   const availableToClaimMap = getUniqueAmountsToClaimMap({
     farmingTickets: ticketsForPool,
     farmingStates: pool.farming || [],
+    calcAccounts,
   })
 
   const availableToClaim = Array.from(availableToClaimMap.values()).map(

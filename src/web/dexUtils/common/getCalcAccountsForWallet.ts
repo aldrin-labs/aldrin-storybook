@@ -2,19 +2,10 @@ import { Program } from '@project-serum/anchor'
 import { PublicKey } from '@solana/web3.js'
 
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { u64 } from '../token/token'
-// import { memCmpFiltersToBuf } from "../../utils/buffer";
+import { FarmingCalc } from './types'
 
 const USER_KEY_SPAN = 40
 const CALC_ACCOUNT_SIZE = 112
-
-export interface FarmingCalc {
-  farmingState: PublicKey
-  userKey: PublicKey
-  initializer: PublicKey
-  publicKey: PublicKey
-  tokenAmount: u64
-}
 
 export const getCalcAccounts = async (
   program: Program,

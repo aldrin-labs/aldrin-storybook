@@ -28,7 +28,7 @@ import {
   signAndSendTransactions,
 } from '../transactions'
 import { WalletAdapter } from '../types'
-import { getCalcAccounts } from './getCalcAccountsForWallet'
+import { getCalcAccounts } from '../common/getCalcAccountsForWallet'
 import { StakingPool } from './types'
 
 export interface WithdrawFarmedParams {

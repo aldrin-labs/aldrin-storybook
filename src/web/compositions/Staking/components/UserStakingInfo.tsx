@@ -12,6 +12,8 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { ClaimRewards } from '@sb/compositions/Pools/components/Popups/ClaimRewards/ClaimRewards'
+import { endStaking } from '@sb/dexUtils/common/actions/endStaking'
+import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingState } from '@sb/dexUtils/common/types'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
@@ -20,15 +22,13 @@ import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewards
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { BUY_BACK_RIN_ACCOUNT_ADDRESS } from '@sb/dexUtils/staking/config'
-import { endStaking } from '@sb/dexUtils/staking/endStaking'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getSnapshotQueueWithAMMFees } from '@sb/dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
-import { startStaking } from '@sb/dexUtils/staking/startStaking'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
-import { useCalcAccounts } from '@sb/dexUtils/staking/useCalcAccounts'
+import { useStakingCalcAccounts } from '@sb/dexUtils/staking/useCalcAccounts'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
 import { withdrawStaked } from '@sb/dexUtils/staking/withdrawStaked'
 import {
@@ -163,12 +163,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     // walletPublicKey,
   })
 
-  const [calcAccounts, reloadCalcAccounts] = useCalcAccounts({
-    wallet,
-    connection,
-    walletPublicKey: wallet.publicKey,
-    // walletPublicKey,
-  })
+  const { data: calcAccounts, mutate: reloadCalcAccounts } =
+    useStakingCalcAccounts()
 
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
@@ -229,6 +225,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         userPoolTokenAccount: new PublicKey(tokenData.address),
         stakingPool,
         farmingTickets: userFarmingTickets,
+        programAddress: STAKING_PROGRAM_ADDRESS,
       })
 
       notify({
@@ -262,6 +259,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       userPoolTokenAccount: new PublicKey(tokenData.address),
       farmingTickets: userFarmingTickets,
       stakingPool,
+      programAddress: STAKING_PROGRAM_ADDRESS,
     })
 
     notify({
