@@ -1,16 +1,21 @@
-import React, { useEffect, useRef } from 'react'
+import dayjs from 'dayjs'
 import { useFormik } from 'formik'
-import { TokenInfo } from '@sb/dexUtils/types'
-import { Input, REGEXP_FORMATTER } from '@sb/components/Input'
-import StakeBtn from '@icons/stakeBtn.png'
-import InfoIcon from '@icons/inform.svg'
+import React, { useEffect, useRef } from 'react'
 
+import { SvgIcon } from '@sb/components'
+import { Input, REGEXP_FORMATTER } from '@sb/components/Input'
 import { Loader } from '@sb/components/Loader/Loader'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import dayjs from 'dayjs'
-import { SvgIcon } from '@sb/components'
+import { TokenInfo } from '@sb/dexUtils/types'
+
 import { stripByAmount } from '@core/utils/chartPageUtils'
+
+import InfoIcon from '@icons/inform.svg'
+import StakeBtn from '@icons/stakeBtn.png'
+
 import { Button } from '../../../components/Button'
+import { MINIMAL_STAKING_AMOUNT } from '../../../dexUtils/common/config'
+import { STAKING_FARMING_TOKEN_DECIMALS } from '../../../dexUtils/staking/config'
 import { FormWrap, FormItem, FormItemFull } from '../styles'
 
 interface StakingFormProps {
@@ -53,7 +58,10 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
         return { amount: 'Enter value' }
       }
       const amount = parseFloat(values.amount)
-      if (amount <= 0) {
+      const minStakingAmount =
+        MINIMAL_STAKING_AMOUNT / 10 ** STAKING_FARMING_TOKEN_DECIMALS
+
+      if (amount <= minStakingAmount) {
         return { amount: 'Too small' }
       }
 
