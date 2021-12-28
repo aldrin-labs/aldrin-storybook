@@ -1,10 +1,10 @@
-import {sendAndConfirmTransaction as realSendAndConfirmTransaction} from '@solana/web3.js';
+import { sendAndConfirmTransaction as realSendAndConfirmTransaction } from '@solana/web3.js'
 import type {
   Account,
   Connection,
   Transaction,
   TransactionSignature,
-} from '@solana/web3.js';
+} from '@solana/web3.js'
 
 export function sendAndConfirmTransaction(
   title: string,
@@ -14,7 +14,7 @@ export function sendAndConfirmTransaction(
 ): Promise<TransactionSignature> {
   return realSendAndConfirmTransaction(connection, transaction, signers, {
     skipPreflight: false,
-    commitment: 'recent',
-    preflightCommitment: 'recent',
-  });
+    commitment: 'confirmed',
+    preflightCommitment: 'confirmed',
+  })
 }

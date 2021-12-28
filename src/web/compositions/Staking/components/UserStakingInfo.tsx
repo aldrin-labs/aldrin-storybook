@@ -9,6 +9,7 @@ import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { InlineText } from '@sb/components/Typography'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { ClaimRewards } from '@sb/compositions/Pools/components/Popups/ClaimRewards/ClaimRewards'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
@@ -43,7 +44,6 @@ import {
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 import { daysInMonthForDate } from '@core/utils/dateUtils'
-import { sleep } from '@core/utils/helpers'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import InfoIcon from '@icons/inform.svg'
@@ -126,7 +126,9 @@ const resolveUnstakingNotification = (
   return 'Unstaking cancelled.'
 }
 
-// const walletPublicKey = new PublicKey('6foEm3bCdAit5J9fyYnevS5FrMKd8c5D1LHDS5bvTnRw')
+// const walletPublicKey = new PublicKey(
+//   '5FbM2CWzq33t1gMaYdxYvm4xVjh39nV8KfgdSt5L2ktH'
+// )
 
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
@@ -234,8 +236,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         message: resolveStakingNotification(result),
       })
 
+      console.log('stake result: ', result)
+
       if (result === 'success') {
-        // await sleep(7000)
         await refreshAll()
       }
 
@@ -267,7 +270,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     })
 
     if (result === 'success') {
-      await sleep(7000)
       await refreshAll()
     }
 
@@ -304,18 +306,25 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     snapshotQueues: allStakingSnapshotQueues,
   })
 
-  const availableToClaimTotal1 = getAvailableToClaimFarmingTokens(
+  // Available to claim on tickets & calc accounts
+  const availableToClaim = getAvailableToClaimFarmingTokens(
     availableToClaimTickets,
     calcAccounts,
     currentFarmingState.farmingTokenMintDecimals
   )
 
-  // TODO: FIx dat
-  const availableToClaimTotal2 = getAvailableToClaimFarmingTokens(
+  // Available to claim on tickets only
+  const availableToClaimOnTickets = getAvailableToClaimFarmingTokens(
     availableToClaimTickets
   )
 
-  const availableToClaimTotal = availableToClaimTotal1 - availableToClaimTotal2
+  const snapshotsProcessing = availableToClaimOnTickets !== 0
+
+  // availableToClaimTotal = avail. to claim on clalcs only, if all snapshots processed
+  const availableToClaimTotal = snapshotsProcessing
+    ? 0
+    : availableToClaim - availableToClaimOnTickets
+
   const lastFarmingTicket = userFarmingTickets.sort(
     (ticketA, ticketB) => +ticketB.startTime - +ticketA.startTime
   )[0]
@@ -444,11 +453,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   >
                     <RewardsStatsRow>
                       <RewardsTitle>Available to claim:</RewardsTitle>
-                      <UserBalance
-                        visible={isBalancesShowing}
-                        value={availableToClaimTotal}
-                        decimals={2}
-                      />
+                      {snapshotsProcessing ? (
+                        <InlineText size="sm">Processing...</InlineText>
+                      ) : (
+                        <UserBalance
+                          visible={isBalancesShowing}
+                          value={availableToClaimTotal}
+                          decimals={2}
+                        />
+                      )}
                     </RewardsStatsRow>
                   </DarkTooltip>
                   <ClaimButtonContainer>

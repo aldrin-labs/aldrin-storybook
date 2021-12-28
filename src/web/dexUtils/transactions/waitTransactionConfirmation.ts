@@ -4,11 +4,12 @@ import {
   SignatureResult,
   SignatureStatus,
 } from '@solana/web3.js'
+
 import { Metrics } from '@core/utils/metrics'
-import { WaitConfirmationParams } from './types'
+
 import { getProviderNameFromUrl } from '../connection'
-import MultiEndpointsConnection from '../MultiEndpointsConnection'
 import { sleep } from '../utils'
+import { WaitConfirmationParams } from './types'
 
 /**
  * Promisify timeout, add cancel function
@@ -59,11 +60,12 @@ const onSignature = (
   })
 
   const canceler = async () => {
-    try {
-      await connection.removeSignatureListener(subId)
-    } catch (e) {
-      // Usually it's failed because subscription already removed by connection - do nothing
-    }
+    // try {
+    //   await connection.removeSignatureListener(subId)
+    // } catch (e) {
+    //   console.log('Unable to remove listener: ', subId)
+    //   // Usually it's failed because subscription already removed by connection - do nothing
+    // }
   }
 
   return [promise, canceler]
@@ -77,7 +79,7 @@ const CONFIRMATION_STATUSES: Commitment[] = [
 
 const pollTransactionStatus = (
   txId: string,
-  connection: MultiEndpointsConnection,
+  connection: Connection,
   commitment: Commitment,
   pollInterval: number,
   timeout: number
@@ -95,9 +97,7 @@ const pollTransactionStatus = (
         // eslint-disable-next-line no-await-in-loop
         await sleep(pollInterval)
         // eslint-disable-next-line no-await-in-loop
-        const sigResult = await connection
-          .getConnection()
-          .getSignatureStatus(txId)
+        const sigResult = await connection.getSignatureStatus(txId)
 
         console.log(`Tx ${txId} status: `, sigResult.value)
         if (!done) {
@@ -148,15 +148,13 @@ export const waitTransactionConfirmation = async (
     timeout = 60_000, // 1 minute
     connection,
     pollInterval = 1200, // TODO: add polling
-    commitment = 'recent',
+    commitment = 'confirmed',
   } = params
   // const done = false
 
-  const [wsPromise, wsCancel] = onSignature(
-    txId,
-    connection.getConnection(),
-    commitment
-  )
+  const rawConnection = connection.getConnection()
+
+  const [wsPromise, wsCancel] = onSignature(txId, rawConnection, commitment)
   const [tPromise, timeoutCanceler] = timeoutPromise(timeout)
   const [pollPromise, pollCancell] = pollTransactionStatus(
     txId,
@@ -174,10 +172,10 @@ export const waitTransactionConfirmation = async (
 
   try {
     const result = await Promise.race([tPromise, pollPromise, wsPromise])
-    console.log(`Transaction ${txId} confirmation result: `, result)
+    console.log(`Transaction ${txId} confirmation result: `, result, commitment)
     if (result === 'timeout') {
       cancelAll()
-      const rpcProvider = getProviderNameFromUrl({ rawConnection: connection })
+      const rpcProvider = getProviderNameFromUrl({ rawConnection })
       Metrics.sendMetrics({
         metricName: `error.rpc.${rpcProvider}.timeoutConfirmationTransaction`,
       })
@@ -199,6 +197,14 @@ export const waitTransactionConfirmation = async (
         return 'timeout'
       }
     } else if (result.err) {
+      /**
+       * TODO: parse transaction errors and try to find lamports err
+       *  this.getConnection()
+      .getParsedConfirmedTransaction(
+        '5Zf7eQWauKk3xtJYrQthSFW4q6qj2U4aTJVpJEYG63i9T3K35tXEg8Uu5vr4PnLwMahpHamBdHcME6B2XqMw4Z1j'
+      )
+      .then((resp) => console.log('resp: ', resp?.meta?.logMessages))
+       */
       console.warn(`Transaction ${txId} not confirmed: `, result.err)
       return 'failed'
     }
@@ -206,7 +212,7 @@ export const waitTransactionConfirmation = async (
     cancelAll()
     console.error(`Error awaiting transaction ${txId} confirmation: `, e)
     const rpcProvider = getProviderNameFromUrl({
-      rawConnection: connection,
+      rawConnection,
     })
     Metrics.sendMetrics({
       metricName: `error.rpc.${rpcProvider}.connectionError-${JSON.stringify(

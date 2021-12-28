@@ -24,7 +24,7 @@ import {
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
 } from '@sb/dexUtils/common/config'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useConnection, useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
@@ -76,7 +76,7 @@ const Popup = (props: StakePopupProps) => {
   const [operationLoading, setOperationLoading] = useState(false)
 
   const { wallet } = useWallet()
-  const connection = useConnection()
+  const connection = useMultiEndpointConnection()
 
   const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
   const farmingState = selectedPool.farming && selectedPool.farming[0]

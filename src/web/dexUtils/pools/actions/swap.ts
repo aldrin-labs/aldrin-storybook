@@ -2,6 +2,7 @@ import { TokenInstructions } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { Connection, PublicKey, Signer, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
+
 import { Side } from '@sb/dexUtils/common/config'
 import {
   createSOLAccountAndClose,
@@ -12,9 +13,10 @@ import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
-  sendTransaction,
 } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { signAndSendSingleTransaction } from '../../transactions'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -239,7 +241,7 @@ export const swap = async ({
   const [swapTransaction, signers] = swapTransactionAndSigners
 
   try {
-    const tx = await sendTransaction({
+    const tx = await signAndSendSingleTransaction({
       wallet,
       connection,
       transaction: swapTransaction,

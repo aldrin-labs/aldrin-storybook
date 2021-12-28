@@ -9,6 +9,7 @@ import {
   Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
+
 import { isCancelledTransactionError } from '../../common/isCancelledTransactionError'
 import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { transferSOLToWrappedAccountAndClose } from '../../pools'
@@ -16,7 +17,7 @@ import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '../../ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '../../send'
 import { Token } from '../../token/token'
-import { signAndSendTransaction } from '../../transactions'
+import { signAndSendSingleTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
@@ -30,6 +31,7 @@ interface CreateBasketBase {
   userQuoteTokenAmount: BN
   userBaseTokenAccount: PublicKey
   userQuoteTokenAccount: PublicKey
+  transferSOLToWrapped?: boolean
 }
 
 export interface CreateBasketTransactionParams extends CreateBasketBase {
@@ -42,7 +44,6 @@ export interface CreateBasketTransactionParams extends CreateBasketBase {
   program: Program
   supply: BN
   poolTokenAmountA: BN
-  transferSOLToWrapped?: boolean
 }
 
 export async function createBasketTransaction(
@@ -226,7 +227,7 @@ export async function createBasket(params: CreateBasketParams) {
       program,
     })
 
-    return signAndSendTransaction({
+    return signAndSendSingleTransaction({
       wallet,
       connection,
       signers: commonSigners,

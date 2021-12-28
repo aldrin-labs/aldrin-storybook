@@ -24,7 +24,7 @@ export const getMinimumReceivedFromProductCurve = ({
     : swapAmountIn * (baseTokenAmountInPool / quoteTokenAmountInPool)
 
   const swapAmountOutWithPriceImpact =
-    swapAmountOut - (swapAmountIn / 100) * priceImpact
+    swapAmountOut - (swapAmountOut / 100) * priceImpact
 
   return swapAmountOutWithPriceImpact
 }

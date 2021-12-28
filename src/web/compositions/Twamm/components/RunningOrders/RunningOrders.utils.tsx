@@ -1,8 +1,13 @@
+import { Connection } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { StyledTitle } from '@sb/components/TradingTable/TradingTable.styles'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { getParsedPairSettings } from '@sb/dexUtils/twamm/getParsedPairSettings'
+import { getParsedRunningOrders } from '@sb/dexUtils/twamm/getParsedRunningOrders'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { toMap } from '@sb/utils'
 
 import { RedButton } from '../../styles'
 
@@ -69,8 +74,37 @@ const mock = [
   },
 ]
 
-export const combineRunningOrdersTable = ({ wallet, connection }) => {
-  return mock.map((el) => {
+export const combineRunningOrdersTable = ({
+  wallet,
+  connection,
+}: {
+  wallet: WalletAdapter
+  connection: Connection
+}) => {
+  const [runningOrders, setRunningOrders] = useState()
+  const [pairData, setPairData] = useState([])
+
+  useEffect(() => {
+    const getRunningOrdersData = async () => {
+      const runningOrdersArray = await getParsedRunningOrders({
+        connection,
+        wallet,
+      })
+      const pairSettingsData = await getParsedPairSettings({
+        connection,
+        wallet,
+      })
+      setRunningOrders(runningOrdersArray)
+      setPairData(pairSettingsData)
+    }
+    getRunningOrdersData()
+  }, [wallet.publicKey])
+
+  const a = toMap(pairData, (p) => p?.publicKey)
+
+  const runningOrdersArray = runningOrders?.flat()
+
+  return runningOrdersArray.map((el) => {
     const [base, quote] = el.pair.split('/')
 
     return {

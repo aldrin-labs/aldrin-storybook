@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { Idl, Program, Provider } from '@project-serum/anchor'
 import { Connection, PublicKey } from '@solana/web3.js'
 import {
@@ -5,6 +6,11 @@ import {
   Provider as Provider03,
   Idl as Idl03,
 } from 'acnhor03'
+import {
+  Program as Program019,
+  Provider as Provider019,
+  Idl as Idl019,
+} from 'anchor019'
 
 import MarketOrderProgramIdl from '@core/idls/marketOrder.json'
 import PoolsProgramIdl from '@core/idls/pools.json'
@@ -23,6 +29,7 @@ import {
   POOLS_V2_PROGRAM_ADDRESS,
   VESTING_PROGRAM_ADDRESS,
   TWAMM_PROGRAM_ADDRESS,
+  defaultOptions,
 } from './utils'
 
 const IDLS = {
@@ -31,7 +38,7 @@ const IDLS = {
   [MARKET_ORDER_PROGRAM_ADDRESS]: MarketOrderProgramIdl as Idl,
   [STAKING_PROGRAM_ADDRESS]: StakingProgramIdl as Idl,
   [VESTING_PROGRAM_ADDRESS]: VestingProgramIdl as Idl03,
-  [TWAMM_PROGRAM_ADDRESS]: TwammProgramIdl as Idl,
+  [TWAMM_PROGRAM_ADDRESS]: TwammProgramIdl as Idl019,
 }
 
 class ProgramsMultiton {
@@ -79,16 +86,26 @@ class ProgramsMultiton {
             new Provider03(
               connection,
               walletAdapterToWallet(wallet),
-              Provider.defaultOptions()
+              defaultOptions()
             )
           ) as any as Program) // TODO
+        : programAddress === TWAMM_PROGRAM_ADDRESS
+        ? (new Program019(
+            programIdl as Idl019,
+            new PublicKey(TWAMM_PROGRAM_ADDRESS),
+            new Provider019(
+              connection,
+              walletAdapterToWallet(wallet),
+              defaultOptions()
+            )
+          ) as any as Program)
         : new Program(
             programIdl,
             programId,
             new Provider(
               connection,
               walletAdapterToWallet(wallet),
-              Provider.defaultOptions()
+              defaultOptions()
             )
           )
 

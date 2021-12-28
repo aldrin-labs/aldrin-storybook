@@ -36,6 +36,7 @@ const OrdersHistoryTable = ({
         backgroundColor: COLORS.blockBackground,
         width: '100%',
         borderRadius: '1.8rem',
+        position: 'relative',
         ...styles,
       }}
       stylesForTable={{ backgroundColor: 'inherit' }}
@@ -70,7 +71,7 @@ const OrdersHistoryTable = ({
           borderBottom: `0.1rem solid ${COLORS.background}`,
         },
       }}
-      emptyTableText=" "
+      emptyTableText="Coming soon"
       data={{ body: ordersHistoryProcessedData }}
       columnNames={ordersHistoryColumnNames}
     />

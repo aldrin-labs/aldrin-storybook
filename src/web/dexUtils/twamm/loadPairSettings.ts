@@ -2,7 +2,7 @@ import { Connection } from '@solana/web3.js'
 
 import { loadAccountsFromTWAMMProgram } from './loadAccountFromTwammProgram'
 
-export const loadOrdersArrayForTwamm = async ({
+export const loadPairSettings = async ({
   connection,
 }: {
   connection: Connection
@@ -11,7 +11,7 @@ export const loadOrdersArrayForTwamm = async ({
     connection,
     filters: [
       {
-        dataSize: 3560,
+        dataSize: 290,
       },
     ],
   })

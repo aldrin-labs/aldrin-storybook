@@ -23,8 +23,6 @@ import {
 import { useConnection } from '@sb/dexUtils/connection'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { TWAMM_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { getParsedRunningOrders } from '@sb/dexUtils/twamm/getParsedRunningOrders'
-import { loadOrdersArrayForTwamm } from '@sb/dexUtils/twamm/loadOrdersArrayForTwamm'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import ArrowBanner from '@icons/arrowBanner.svg'
@@ -40,19 +38,6 @@ const TwammComponent = ({ theme }: { theme: Theme }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  useEffect(() => {
-    if (wallet.publicKey) {
-      getAllAccounts()
-    }
-
-    const getOrders = async () => {
-      const a = await loadOrdersArrayForTwamm({ connection })
-      const b = await getParsedRunningOrders({ connection, wallet })
-      console.log('orders', a, b)
-    }
-    getOrders()
-  }, [wallet.publicKey])
-
   const getAllAccounts = () => {
     const program = ProgramsMultiton.getProgramByAddress({
       wallet,
@@ -60,8 +45,14 @@ const TwammComponent = ({ theme }: { theme: Theme }) => {
       programAddress: TWAMM_PROGRAM_ADDRESS,
     })
 
-    console.log('program.account', program.account.pairSettings)
+    console.log('program.account', program.account.orderArray)
   }
+
+  useEffect(() => {
+    if (wallet.publicKey) {
+      getAllAccounts()
+    }
+  }, [wallet.publicKey])
 
   return (
     <Page>

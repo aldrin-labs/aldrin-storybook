@@ -1,10 +1,11 @@
+import BN from 'bn.js'
+
 import {
   FarmingState,
   FarmingTicket,
   Snapshot,
   SnapshotQueue,
 } from '@sb/dexUtils/common/types'
-import BN from 'bn.js'
 
 /**
  * Return unclaimed snapshots for farming state related to farming ticket
@@ -13,12 +14,14 @@ export const getSnapshotsWithUnclaimedRewards = ({
   ticket,
   snapshotQueues,
   farmingState,
-  calculatedAmount = new BN(0)
+  calculatedAmount = new BN(0),
+  forVesting,
 }: {
   ticket: FarmingTicket
   snapshotQueues: SnapshotQueue[]
   farmingState: FarmingState
   calculatedAmount?: BN
+  forVesting: boolean
 }): Snapshot[] => {
   const snapshotQueue = snapshotQueues.find(
     (snapshotQueue) => snapshotQueue.publicKey === farmingState.farmingSnapshots
@@ -41,11 +44,23 @@ export const getSnapshotsWithUnclaimedRewards = ({
     return []
   }
 
+  const now = Date.now() / 1000
+  if (forVesting) {
+    return snapshotQueue.snapshots.filter((snapshot) => {
+      return (
+        snapshot.time + farmingState.vestingPeriod < now &&
+        snapshot.time > +ticket.startTime &&
+        snapshot.time < +ticket.endTime &&
+        (!stateAttached ||
+          snapshot.time > stateAttached?.lastVestedWithdrawTime)
+      )
+    })
+  }
   return snapshotQueue.snapshots.filter((snapshot) => {
     return (
       snapshot.time > +ticket.startTime &&
       snapshot.time < +ticket.endTime &&
-      (!stateAttached || snapshot.time > stateAttached?.lastVestedWithdrawTime)
+      (!stateAttached || snapshot.time > stateAttached.lastWithdrawTime)
     )
   })
 }

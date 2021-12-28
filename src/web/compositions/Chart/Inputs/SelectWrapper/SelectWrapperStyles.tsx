@@ -62,8 +62,9 @@ export const IconContainer = styled.div`
 `
 
 export const StyledHeader = styled(RowContainer)`
-  height: ${(props) => (props.isAdvancedSelectorMode ? '15rem' : '6rem')};
-  padding: 0.5rem;
+  height: ${(props) => (props.isAdvancedSelectorMode ? '15rem' : '10rem')};
+  padding: ${(props) =>
+    props.isAdvancedSelectorMode ? '0.5rem' : '1rem 0.5rem'};
   justify-content: flex-start;
   flex-direction: row;
   flex-wrap: normal;

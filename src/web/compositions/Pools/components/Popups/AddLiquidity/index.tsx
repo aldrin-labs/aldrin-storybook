@@ -1,8 +1,3 @@
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
 import Info from '@icons/TooltipImg.svg'
 import { Theme, withTheme } from '@material-ui/core'
@@ -37,6 +32,11 @@ import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import { BN } from 'bn.js'
 import React, { useEffect, useState } from 'react'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 import { sleep } from '../../../../../dexUtils/utils'
 import { Button } from '../../Tables/index.styles'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
@@ -508,7 +508,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               userPoolTokenAccount: userPoolTokenAccount
                 ? new PublicKey(userPoolTokenAccount)
                 : null,
-              // transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
+              transferSOLToWrapped: isPoolWithSOLToken && isNativeSOLSelected,
             })
 
             setOperationLoading(false)

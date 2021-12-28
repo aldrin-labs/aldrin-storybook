@@ -26,20 +26,25 @@ export const getParsedRunningOrders = async ({
     const data = Buffer.from(order.account.data)
     const ordersData = program.coder.accounts.decode('OrderArray', data)
 
-    console.log('data', ordersData, data)
+    console.log('ordersData', ordersData)
 
-    // const parsedSnapshotData: Snapshot[] = snapshotQueueData.snapshots
-    //   .map((el) => {
-    //     return {
-    //       time: el.time.toNumber(),
-    //       isInitialized: el.isInitialized,
-    //       tokensFrozen: parseFloat(el?.tokensFrozen?.toString()),
-    //       tokensTotal: parseFloat(el?.farmingTokens?.toString()),
-    //     }
-    //   })
-    //   .filter((snapshot) => snapshot.isInitialized)
+    const parsedOrdersData = ordersData.orders
+      .map((el) => {
+        return {
+          isInitialized: el.isInitialized,
+          startTime: el.startTime.toNumber(),
+          endTime: el.endTime.toNumber(),
+          amountFilled: el.amountFilled.toNumber(),
+          amountToFill: el.amountToFill.toNumber(),
+          amount: el.amount.toNumber(),
+          tokensSwapped: el.tokensSwapped.toNumber(),
+          side: ordersData.side,
+          pair: ordersData.pairSettings.toString(),
+        }
+      })
+      .filter((order) => order.isInitialized)
 
-    return {}
+    return parsedOrdersData
   })
 
   return OrdersArray

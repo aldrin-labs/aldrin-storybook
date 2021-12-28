@@ -14,7 +14,7 @@ import {
 } from '@solana/web3.js'
 
 import { walletAdapterToWallet } from '../../common'
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
 import {
   FEE_OWNER_ACCOUNT,
   POOLS_PROGRAM_ADDRESS,
@@ -22,8 +22,6 @@ import {
   POOLS_V2_PROGRAM_ADDRESS,
 } from '../../ProgramsMultiton/utils'
 import { signTransactions, createTokenAccountTransaction } from '../../send'
-import { createBasketTransaction } from './createBasket'
-import { initializeFarmingInstructions } from './initializeFarming'
 import { createVestingTransaction } from '../../vesting'
 import {
   AUTHORITY_TYPE,
@@ -32,6 +30,8 @@ import {
   CURVE,
   PoolLike,
 } from '../types'
+import { createBasketTransaction } from './createBasket'
+import { initializeFarmingInstructions } from './initializeFarming'
 
 export const createPoolTransactions = async (
   params: CreatePoolParams
@@ -103,7 +103,7 @@ export const createPoolTransactions = async (
   const provider = new Provider(
     connection.getConnection(),
     walletWithPk,
-    Provider.defaultOptions()
+    defaultOptions()
   )
 
   const tokenAccountLamports = await connection
