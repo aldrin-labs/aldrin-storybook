@@ -21,7 +21,7 @@ import withTheme from '@material-ui/core/styles/withTheme'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import {
   getTokenMintAddressByName,
-  getTokenNameByMintAddress,
+  getTokenNameByMintAddress, useOpenOrdersAccounts,
 } from '@sb/dexUtils/markets'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { PublicKey } from '@solana/web3.js'
@@ -57,24 +57,35 @@ import { Row, RowContainer } from '../../AnalyticsRoute/index.styles'
 import {Cell} from "@sb/components/Layout";
 import OrderStats from "./components/OrderStats/OrderStats";
 import {InputWithType} from "@sb/components/InputWithType/InputWithType";
+import {addOrder} from "@sb/dexUtils/twamm/addOrder";
+import BN from "bn.js";
 
 const PlaceOrder = ({
   theme,
   publicKey,
   getPoolsInfoQuery,
+  pairSettings,
+  orderArray,
 }: {
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  pairSettings: any
+  orderArray: any
 }) => {
+  const [selectedPairSettings, setSelectedPairSettings] = useState(pairSettings[0]);
+
   const { wallet } = useWallet()
   const connection = useConnection()
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
+  // const [openOrdersAccounts] = useOpenOrdersAccounts()
+  console.log(allTokensData, 'allTokensData')
   const tokensMap = useTokenInfos()
 
   const [orderLength, setOrderLength] = useState(0);
 
-  const allPools = getPoolsInfoQuery.getPoolsInfo
+  const allPoolsOld = getPoolsInfoQuery.getPoolsInfo
+  const allPools = allPoolsOld.filter(pool => pool.parsedName === 'USDC_SOL' || pool.parsedName === 'SOL_USDC');
   const nativeSOLTokenData = allTokensData[0]
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
@@ -82,24 +93,15 @@ const PlaceOrder = ({
 
   // set values from redirect or default one
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-
-    const baseFromRedirect = urlParams.get('base')
-    const quoteFromRedirect = urlParams.get('quote')
-
-    const baseTokenMint = baseFromRedirect
-      ? getTokenMintAddressByName(baseFromRedirect) || ''
-      : getTokenMintAddressByName(
+    const baseTokenMint = getTokenMintAddressByName(
       getDefaultBaseToken(false)
-    ) || ''
+    );
 
     setBaseTokenMintAddress(baseTokenMint)
 
-    const quoteTokenMint = quoteFromRedirect
-      ? getTokenMintAddressByName(quoteFromRedirect) || ''
-      : getTokenMintAddressByName(
-      getDefaultQuoteToken(false)
-    ) || ''
+    const quoteTokenMint = getTokenMintAddressByName(
+      'USDC'
+    );
 
     setQuoteTokenMintAddress(quoteTokenMint)
   }, [])
@@ -165,7 +167,7 @@ const PlaceOrder = ({
     decimals: baseTokenDecimals,
   } = getTokenDataByMint(
     allTokensData,
-    baseTokenMintAddress,
+    selectedPairSettings.baseTokenMint.toString(),
     selectedBaseTokenAddressFromSeveral
   )
 
@@ -186,7 +188,7 @@ const PlaceOrder = ({
     amount: maxQuoteAmount,
   } = getTokenDataByMint(
     allTokensData,
-    quoteTokenMintAddress,
+    selectedPairSettings.quoteTokenMint.toString(),
     selectedQuoteTokenAddressFromSeveral
   )
 
@@ -221,6 +223,7 @@ const PlaceOrder = ({
     !selectedPool.supply ||
     baseAmount == 0 ||
     quoteAmount == 0 ||
+    orderLength == 0 ||
     isOrderInProgress
 
   // for cases with SOL token
@@ -257,6 +260,13 @@ const PlaceOrder = ({
   ) => {
     setBaseAmount(newBaseAmount)
 
+    // let tokensMapCopy = [...tokensMap.entries()];
+    // console.log(tokensMapCopy, 'tokensMapCopy')
+    // tokensMapCopy.forEach((token, index) => {
+    //   if(token[0] === baseTokenMintAddress) {
+    //     console.log('poolpos')
+    //   }
+    // })
     const swapAmountOut = await getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newBaseAmount,
       isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
@@ -307,6 +317,24 @@ const PlaceOrder = ({
   const handleOrderLength = (event: React.ChangeEvent<HTMLInputElement>) => {
     setOrderLength(+event.target.value)
   }
+
+  const replaceMint = (mint: string) => {
+    if(mint === 'So11111111111111111111111111111111111111112') {
+      return pairSettings[0].baseTokenMint.toString();
+    } else if(mint === 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v') {
+      return pairSettings[0].quoteTokenMint.toString();
+    }
+    return mint;
+  }
+
+  let mints = [...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())];
+  // let filteredMints: string[] = [...mints];
+  // pairSettings.forEach(pair => {
+  //   // if(mints.includes(pair.baseTokenMint.toString()) || mints.includes(pair.quoteTokenMint.toString())) {
+  //   //   filteredMints.push(pair)
+  //   // }
+  //   filteredMints.push([pair.baseTokenMint.toString(), pair.quoteTokenMint.toString()])
+  // })
 
   return (
     <SwapPageContainer direction="column" height="100%" width="100%" wrap="nowrap">
@@ -438,7 +466,7 @@ const PlaceOrder = ({
           </Cell>
           <Cell col={12} colSm={6}>
             <OrderStatsWrapper>
-              <OrderStats />
+              <OrderStats pairSettings={selectedPairSettings} />
               {!publicKey ? (
                 <BtnCustom
                   theme={theme}
@@ -482,41 +510,27 @@ const PlaceOrder = ({
 
                     setIsOrderInProgress(true)
 
-                    console.log('baseTokenDecimals', {
-                      baseTokenDecimals,
-                      quoteTokenDecimals,
-                    })
-
-                    const swapAmountIn = +baseAmount * 10 ** baseTokenDecimals
-                    const swapAmountOut =
-                      +totalWithFees * 10 ** quoteTokenDecimals
-
-                    const result = await swap({
+                    const result = await addOrder({
                       wallet,
                       connection,
-                      poolPublicKey: new PublicKey(selectedPool.swapToken),
-                      userBaseTokenAccount: userPoolBaseTokenAccount
-                        ? new PublicKey(userPoolBaseTokenAccount)
-                        : null,
-                      userQuoteTokenAccount: userPoolQuoteTokenAccount
-                        ? new PublicKey(userPoolQuoteTokenAccount)
-                        : null,
-                      swapAmountIn,
-                      swapAmountOut,
-                      isSwapBaseToQuote,
-                      transferSOLToWrapped:
-                        isPoolWithSOLToken && isNativeSOLSelected,
-                      curveType: selectedPool.curveType,
+                      amount: new BN(+baseAmount * 10 ** baseTokenDecimals),
+                      timeLength: new BN(orderLength),
+                      pairSettings: selectedPairSettings,
+                      mint: new PublicKey(replaceMint(baseTokenMintAddress)),
+                      orders: [],
+                      orderArray,
                     })
+
+                    console.log('resultAddOrder', result)
 
                     notify({
                       type: result === 'success' ? 'success' : 'error',
                       message:
                         result === 'success'
-                          ? 'Swap executed successfully.'
+                          ? 'Order placed successfully.'
                           : result === 'failed'
-                          ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
-                          : 'Swap cancelled',
+                          ? 'Order placing operation failed.'
+                          : 'Order placing cancelled',
                     })
 
                     // refresh data
@@ -556,10 +570,11 @@ const PlaceOrder = ({
       </BlockTemplate>
 
       <SelectCoinPopup
+        pairSettings={pairSettings}
         poolsInfo={pools}
         theme={theme}
-        // mints={[...new Set(mints)]}
-        mints={[...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]}
+        mints={mints}
+        replaceMint={replaceMint}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
         allTokensData={allTokensData}

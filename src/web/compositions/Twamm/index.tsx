@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from 'react'
+import React, {FC, useEffect, useState} from 'react'
 
 import {compose} from "recompose";
 import withTheme from "@material-ui/core/styles/withTheme";
@@ -18,10 +18,6 @@ import {
   WideContentStyled, TabsStyled
 } from "@sb/compositions/Twamm/styles";
 import {BtnCustom} from "@sb/components/BtnCustom/BtnCustom.styles";
-import {ProgramsMultiton} from "@sb/dexUtils/ProgramsMultiton/ProgramsMultiton";
-import {TWAMM_PROGRAM_ADDRESS} from "@sb/dexUtils/ProgramsMultiton/utils";
-import {PublicKey} from "@solana/web3.js";
-import {loadAccountsFromProgram} from "@sb/dexUtils/common/loadAccountsFromProgram";
 import {useConnection} from "@sb/dexUtils/connection";
 import {useWallet} from "@sb/dexUtils/wallet";
 import {Row} from "@sb/compositions/AnalyticsRoute/index.styles";
@@ -32,8 +28,9 @@ import {SvgIcon} from "@sb/components";
 import ArrowBanner from "@icons/arrowBanner.svg";
 import GuideImg from './img/guideImg.svg';
 import SdkImg from './img/sdkImg.svg';
-import {Snapshot} from "@sb/dexUtils/common/types";
-import {loadStakingSnapshots} from "@sb/dexUtils/staking/loadStakingSnapshots";
+import {getPairSettings} from "@sb/dexUtils/twamm/getPairSettings";
+import {getOrderArray} from "@sb/dexUtils/twamm/getOrderArray";
+import {getOpenOrders} from "@sb/dexUtils/twamm/getOpenOrders";
 
 const TwammComponent = ({
   theme,
@@ -43,35 +40,27 @@ const TwammComponent = ({
   const {wallet} = useWallet();
   const connection = useConnection();
 
-  useEffect(() => {
-    if(wallet.publicKey) {
-      getAllAccounts();
-    }
-  }, [wallet.publicKey])
+  const [pairSettings, setPairSettings] = useState([]);
+  const [orderArray, setOrderArray] = useState([]);
 
-  const getAllAccounts = async () => {
-    const program = ProgramsMultiton.getProgramByAddress({
+  useEffect(() => {
+    getPairSettings({
       wallet,
       connection,
-      programAddress: TWAMM_PROGRAM_ADDRESS,
-    })
-
-    console.log('program.account', program.account.pairSettings)
-
-    const config = {
-      filters: [
-        {dataSize: 209 },
-      ],
-    };
-
-    const pairSettingsAccount = loadAccountsFromProgram({
-      connection,
-      filters: config.filters,
-      programAddress: TWAMM_PROGRAM_ADDRESS,
+    }).then(pairSettingsRes => {
+      setPairSettings(pairSettingsRes);
     });
 
-    pairSettingsAccount.then(resPairSettings => console.log('resPairSettings', resPairSettings))
+    getOrderArray({
+      wallet,
+      connection,
+    }).then(orderArrayRes => {
+      setOrderArray(orderArrayRes);
+    });
+  }, [])
 
+  if(!pairSettings.length || !orderArray.length) {
+    return null;
   }
 
   return (
@@ -175,7 +164,10 @@ const TwammComponent = ({
           </TabsListWrapper>
 
           <TabPanel>
-            <PlaceOrder />
+            <PlaceOrder
+              pairSettings={pairSettings}
+              orderArray={orderArray}
+            />
           </TabPanel>
           <TabPanel>
             <h2>Running Orders</h2>
