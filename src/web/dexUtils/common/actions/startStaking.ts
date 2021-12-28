@@ -29,6 +29,7 @@ export const startStaking = async (params: StartStakingParams) => {
     stakingPool,
     farmingTickets,
     programAddress,
+    decimals = STAKING_FARMING_TOKEN_DECIMALS,
   } = params
 
   const program = ProgramsMultiton.getProgramByAddress({
@@ -57,15 +58,17 @@ export const startStaking = async (params: StartStakingParams) => {
     tickets: filterOpenFarmingTickets(farmingTickets),
   })
 
+  console.log('stak1')
   const totalTokens = openTickets.reduce(
     (acc, ticket) => acc.add(new BN(`${ticket.tokensFrozen}`)),
     new BN(0)
   )
 
-  const totalToStake = totalTokens.add(
-    new BN(amount * 10 ** STAKING_FARMING_TOKEN_DECIMALS)
-  )
+  console.log('stak2', amount)
 
+  const totalToStake = totalTokens.add(new BN(amount * 10 ** decimals))
+
+  console.log('stak3')
   const farmingTicket = Keypair.generate()
 
   signers.push(farmingTicket)
@@ -90,6 +93,7 @@ export const startStaking = async (params: StartStakingParams) => {
           ? new PublicKey(stakingPool.lpTokenFreezeVault)
           : undefined,
       userStakingTokenAccount: userPoolTokenAccount,
+      userLpTokenAccount: userPoolTokenAccount,
       walletAuthority: wallet.publicKey,
       userKey: wallet.publicKey,
       tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
@@ -100,7 +104,7 @@ export const startStaking = async (params: StartStakingParams) => {
 
   instructions.push(await startFarming)
 
-  const farmingsWithoutCalc = stakingPool.farming
+  const farmingsWithoutCalc = (stakingPool.farming || [])
     .filter((f) => f.tokensTotal !== f.tokensUnlocked && !f.feesDistributed) // Open farmings
     .filter(
       // Farmings without calc account

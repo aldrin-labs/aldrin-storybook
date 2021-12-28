@@ -25,6 +25,7 @@ export interface StartStakingParams {
   stakingPool: StakingPool | PoolInfo
   farmingTickets: FarmingTicket[]
   programAddress: string
+  decimals?: number
 }
 
 export interface EndstakingParams {
