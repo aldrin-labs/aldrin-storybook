@@ -185,7 +185,7 @@ export interface CreateBasketParams extends CreateBasketBase {
   try {
     const program = ProgramsMultiton.getProgramByAddress({
       wallet,
-      connection: connection.getConnection(),
+      connection,
       programAddress: getPoolsProgramAddress({ curveType: params.curveType }),
     })
 
@@ -201,7 +201,7 @@ export interface CreateBasketParams extends CreateBasketBase {
     }
     const poolToken = new Token(
       wallet,
-      connection.getConnection(),
+      connection,
       poolMint,
       TOKEN_PROGRAM_ID
     )
@@ -211,7 +211,7 @@ export interface CreateBasketParams extends CreateBasketBase {
 
     const tokenMintA = new Token(
       wallet,
-      connection.getConnection(),
+      connection,
       baseTokenMint,
       TOKEN_PROGRAM_ID
     )
@@ -234,7 +234,7 @@ export interface CreateBasketParams extends CreateBasketBase {
 
     return signAndSendSingleTransaction({
       wallet,
-      connection: connection.getConnection(),
+      connection,
       signers: commonSigners,
       transaction: commonTransaction,
     })
