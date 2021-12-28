@@ -1,17 +1,19 @@
-import React, { useEffect, useRef } from 'react'
+import dayjs from 'dayjs'
 import { useFormik } from 'formik'
+import React, { useEffect, useRef } from 'react'
+
+import { SvgIcon } from '@sb/components'
+import { Input, REGEXP_FORMATTER } from '@sb/components/Input'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenInfo } from '@sb/dexUtils/types'
-import { FormWrap, FormItem, FormItemFull } from '../styles'
-import { Input, INPUT_FORMATTERS } from '@sb/components/Input'
-import StakeBtn from '@icons/stakeBtn.png'
+
+import { stripByAmount } from '@core/utils/chartPageUtils'
+
 import InfoIcon from '@icons/inform.svg'
+import StakeBtn from '@icons/stakeBtn.png'
 
 import { Button } from '../../../components/Button'
-import { Loader } from '@sb/components/Loader/Loader'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import dayjs from 'dayjs'
-import { SvgIcon } from '@sb/components'
-import { stripByAmount } from '@core/utils/chartPageUtils'
+import { FormWrap, FormItem, FormItemFull } from '../styles'
 
 interface StakingFormProps {
   tokenData: TokenInfo | undefined
@@ -23,6 +25,9 @@ interface StakingFormProps {
   unlockAvailableDate: number
 }
 
+const INPUT_FORMATTER = REGEXP_FORMATTER(/^\d+(\.?)\d{0,5}$/)
+const formatter = (v: string, prevValue: string) =>
+  INPUT_FORMATTER(v.replace(',', '.'), prevValue)
 export const StakingForm: React.FC<StakingFormProps> = (props) => {
   const {
     tokenData,
@@ -57,18 +62,22 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       if (amount > (tokenData?.amount || 0)) {
         return { amount: 'Too big' }
       }
-      return
     },
   })
 
   const prevTokenData = useRef(tokenData)
 
   useEffect(() => {
-    if (!prevTokenData.current && tokenData) {
+    if (
+      tokenData &&
+      (!prevTokenData.current ||
+        prevTokenData.current.amount !== tokenData.amount)
+    ) {
       prevTokenData.current = tokenData
       form.setFieldValue('amount', stripByAmount(tokenData.amount))
     }
   }, [tokenData])
+
   return (
     <FormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
@@ -81,7 +90,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           }}
           name="amount"
           append="RIN"
-          formatter={INPUT_FORMATTERS.DECIMAL}
+          formatter={formatter}
         />
       </FormItemFull>
       <FormItem>
@@ -91,8 +100,9 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           $padding="lg"
           $borderRadius="xxl"
           disabled={Object.keys(form.errors).length !== 0 || loading.stake}
+          $loading={loading.stake}
         >
-          {loading.stake ? <Loader /> : 'Stake'}
+          Stake
         </Button>
       </FormItem>
       <FormItem>
@@ -104,8 +114,9 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
             onClick={() => end()}
             disabled={isUnstakeDisabled}
             type="button"
+            $loading={!!loading.unstake}
           >
-            {loading.unstake ? <Loader /> : 'Unstake all'}
+            Unstake all
           </Button>
         </div>
       </FormItem>
@@ -122,8 +133,8 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           <div>
             <SvgIcon
               src={InfoIcon}
-              width={'1.5rem'}
-              height={'1.5rem'}
+              width="1.5rem"
+              height="1.5rem"
               style={{ marginTop: '1.5rem' }}
             />
           </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, ReactNode } from 'react'
 import {
   ModalContainer,
   ModalBody,
@@ -6,14 +6,30 @@ import {
   ModalTitleContainer,
   CloseIcon,
   ModalContent,
+  ModalBackdropStyle,
 } from './styles'
 import CloseIconImg from '@icons/closeIcon.svg'
 
-interface ModalProps {
-  open: boolean
+interface ModalCommon {
   onClose: () => void
-  title?: React.ReactChild
+  title?: ReactNode
 }
+
+interface ModalProps extends ModalCommon {
+  open: boolean
+  backdrop?: ModalBackdropStyle
+}
+
+export const ModalTitleBlock: React.FC<ModalCommon> = (props) =>
+  <ModalTitleContainer>
+    <ModalTitle>{props.title}</ModalTitle>
+    <CloseIcon
+      src={CloseIconImg}
+      onClick={() => {
+        props.onClose()
+      }}
+    />
+  </ModalTitleContainer>
 
 export const Modal: React.FC<ModalProps> = (props) => {
   const {
@@ -21,6 +37,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
     onClose,
     children,
     title,
+    backdrop = 'blur',
   } = props
 
   if (!open) {
@@ -40,20 +57,10 @@ export const Modal: React.FC<ModalProps> = (props) => {
   }, [])
 
   return (
-    <ModalContainer onClick={() => onClose()}>
+    <ModalContainer backdrop={backdrop} onClick={() => onClose()}>
       <ModalBody onClick={(e) => e.stopPropagation()}>
         <ModalContent>
-          {title &&
-            <ModalTitleContainer>
-              <ModalTitle>{title}</ModalTitle>
-              <CloseIcon
-                src={CloseIconImg}
-                onClick={() => {
-                  onClose()
-                }}
-              />
-            </ModalTitleContainer>
-          }
+          {title && <ModalTitleBlock title={title} onClose={onClose} />}
           {children}
         </ModalContent>
       </ModalBody>

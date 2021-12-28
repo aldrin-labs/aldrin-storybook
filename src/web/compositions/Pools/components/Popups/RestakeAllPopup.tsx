@@ -1,27 +1,26 @@
+import { withTheme } from '@material-ui/core'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import { Connection } from '@solana/web3.js'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
-
-import { BoldHeader, ClaimRewardsStyledPaper } from './index.styles'
-import { Button } from '../Tables/index.styles'
-import { Theme } from '@sb/types/materialUI'
-import { restakeAll } from '../../utils/restakeAll'
-import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
-import { Connection, PublicKey } from '@solana/web3.js'
-import { PoolInfo } from '../../index.types'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { useLocalStorageState } from '@sb/dexUtils/utils'
-import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/getParsedUserFarmingTickets'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
-import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
+import { filterOldFarmingTickets } from '@sb/dexUtils/common/filterOldFarmingTickets'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
+import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
+import { Theme } from '@sb/types/materialUI'
+
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+
+import { PoolInfo } from '../../index.types'
+import { restakeAll } from '../../utils/restakeAll'
+import { Button } from '../Tables/index.styles'
+import { BoldHeader, ClaimRewardsStyledPaper } from './index.styles'
 
 const getSOLFeesAmountToRestake = ({
   allPoolsData,
@@ -32,7 +31,7 @@ const getSOLFeesAmountToRestake = ({
 }) => {
   let SOLFees = 0
 
-  for (let pool of allPoolsData) {
+  for (const pool of allPoolsData) {
     const farmingStates = pool.farming || []
 
     const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
@@ -53,7 +52,7 @@ const getSOLFeesAmountToRestake = ({
   return SOLFees
 }
 
-export const RestakeAllPopup = ({
+const Popup = ({
   theme,
   //   open,
   //   close,
@@ -75,10 +74,6 @@ export const RestakeAllPopup = ({
   refreshTokensWithFarmingTickets: RefreshFunction
 }) => {
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
-  const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
-    `showRestakePopup-${wallet.publicKey}`,
-    true
-  )
   const [showRetryMessage, setShowRetryMessage] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
   const [isTransactionFailed, setIsTransactionFailed] = useState(false)
@@ -109,7 +104,7 @@ export const RestakeAllPopup = ({
       allTokensData,
     })
 
-    if (result === 'blockhash_outdated') {
+    if (result === 'timeout') {
       setShowRetryMessage(true)
       setOperationLoading(true)
       setTimeout(async () => {
@@ -128,16 +123,17 @@ export const RestakeAllPopup = ({
       setOperationLoading(false)
     } else if (result === 'success') {
       refreshTokensWithFarmingTickets()
-      setIsPopupOpen(false)
+      setIsPopupTemporaryHidden(true)
     }
   }
 
-  const openFarmings = filterOpenFarmingTickets(
-    [...farmingTicketsMap.values()].flat()
+  // Find all tickets
+  const oldTickets = filterOldFarmingTickets(
+    Array.from(farmingTicketsMap.values()).flat(),
+    allPoolsData
   )
 
-  if (!isPopupOpen || isPopupTemporaryHidden || openFarmings.length === 0)
-    return null
+  if (isPopupTemporaryHidden || oldTickets.length === 0) return null
 
   return (
     <DialogWrapper
@@ -146,43 +142,39 @@ export const RestakeAllPopup = ({
       fullScreen={false}
       onClose={() => setIsPopupTemporaryHidden(true)}
       onEnter={() => {}}
-      maxWidth={'md'}
-      open={isPopupOpen || !isPopupTemporaryHidden}
+      maxWidth="md"
+      open={!isPopupTemporaryHidden}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer
-        margin={'2rem 0 3rem 0'}
-        justify={'space-between'}
-        width={'100%'}
-      >
+      <RowContainer margin="2rem 0 3rem 0" justify="space-between" width="100%">
         <BoldHeader style={{ fontSize: '3rem' }}>
           Restake your LP tokens to keep earning rewards
         </BoldHeader>
       </RowContainer>
 
       <RowContainer
-        direction={'column'}
+        direction="column"
         justify="flex-start"
-        wrap={'nowrap'}
-        align={'flex-start'}
+        wrap="nowrap"
+        align="flex-start"
       >
         <Text
           style={{ fontFamily: 'Avenir Next', marginBottom: '1rem' }}
-          fontSize={'1.6rem'}
+          fontSize="1.6rem"
         >
           We have made some modifications to our pools and require you to click
           ‘Restake’ below.
         </Text>
-        <Text style={{ fontFamily: 'Avenir Next' }} fontSize={'1.6rem'}>
+        <Text style={{ fontFamily: 'Avenir Next' }} fontSize="1.6rem">
           It is important that you confirm all transactions in order to continue
           receiving rewards. Please do this as soon as posible.
         </Text>
       </RowContainer>
       {showRetryMessage && (
-        <RowContainer margin={'3rem 0 0 0'} justify="flex-start">
+        <RowContainer margin="3rem 0 0 0" justify="flex-start">
           <Text
             style={{ color: theme.palette.red.main, margin: '1rem 0' }}
-            fontSize={'1.8rem'}
+            fontSize="1.8rem"
           >
             {isTransactionFailed
               ? 'Restake failed, please try again or contact us in telegram.'
@@ -190,7 +182,7 @@ export const RestakeAllPopup = ({
           </Text>
         </RowContainer>
       )}
-      <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+      <RowContainer justify="space-between" margin="2rem 0 0 0">
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
@@ -201,7 +193,7 @@ export const RestakeAllPopup = ({
         </WhiteText>
       </RowContainer>
 
-      <RowContainer justify="space-between" margin={'7rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="7rem 0 2rem 0">
         <Button
           color="inherit"
           height="5.5rem"
@@ -209,7 +201,7 @@ export const RestakeAllPopup = ({
           fontSize="1.7rem"
           btnWidth="calc(35% - 1rem)"
           disabled={false}
-          isUserConfident={true}
+          isUserConfident
           theme={theme}
           onClick={() => {
             setIsPopupTemporaryHidden(true)
@@ -223,7 +215,7 @@ export const RestakeAllPopup = ({
           fontSize="1.7rem"
           btnWidth="calc(65% - 1rem)"
           disabled={operationLoading || isNotEnoughSOL}
-          isUserConfident={true}
+          isUserConfident
           showLoader={operationLoading}
           onClick={async () => {
             await restake()
@@ -239,3 +231,5 @@ export const RestakeAllPopup = ({
     </DialogWrapper>
   )
 }
+
+export const RestakeAllPopup = withTheme()(Popup)

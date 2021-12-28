@@ -1,33 +1,24 @@
 import { TokenInstructions } from '@project-serum/serum'
 import {
-  Connection,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
   Transaction,
-  TransactionInstruction
+  TransactionInstruction,
 } from '@solana/web3.js'
+
 import { splitBy } from '../../utils/collection'
 import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
 import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
-import { FarmingTicket } from '../common/types'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { sendPartOfTransactions, signTransactions } from '../send'
-import { WalletAdapter } from '../types'
+import { sendSignedTransactions, signTransactions } from '../transactions'
 import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
-import { StakingPool } from './types'
+import { EndstakingParams } from './types'
 
-interface EndstakingParams {
-  wallet: WalletAdapter
-  connection: Connection
-  // poolPublicKey: PublicKey
-  userPoolTokenAccount: PublicKey
-  farmingTickets: FarmingTicket[]
-  stakingPool: StakingPool
-}
-
-export const endStakingInstructions = async (params: EndstakingParams): Promise<TransactionInstruction[][]> => {
+export const endStakingInstructions = async (
+  params: EndstakingParams
+): Promise<TransactionInstruction[][]> => {
   const {
     wallet,
     connection,
@@ -38,26 +29,21 @@ export const endStakingInstructions = async (params: EndstakingParams): Promise<
 
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
-    connection,
+    connection: connection.getConnection(),
     programAddress: STAKING_PROGRAM_ADDRESS,
   })
 
-
   const farmingState = getCurrentFarmingStateFromAll(stakingPool.farming)
 
-  const openTickets = getTicketsAvailableToClose(
-    {
-      farmingState,
-      tickets: filterOpenFarmingTickets(farmingTickets),
-    }
-  )
+  const openTickets = getTicketsAvailableToClose({
+    farmingState,
+    tickets: filterOpenFarmingTickets(farmingTickets),
+  })
 
   const [poolSigner] = await PublicKey.findProgramAddress(
     [new PublicKey(stakingPool.swapToken).toBuffer()],
     program.programId
   )
-
-
 
   const instructions = await Promise.all(
     openTickets.map(async (ticketData) => {
@@ -76,7 +62,6 @@ export const endStakingInstructions = async (params: EndstakingParams): Promise<
           rent: SYSVAR_RENT_PUBKEY,
         },
       })) as TransactionInstruction
-
     })
   )
 
@@ -84,28 +69,22 @@ export const endStakingInstructions = async (params: EndstakingParams): Promise<
 }
 
 export const endStaking = async (params: EndstakingParams) => {
-
   const instructionChunks = await endStakingInstructions(params)
 
-  const {
-    wallet,
+  const { wallet, connection } = params
+
+  const transactions = instructionChunks.map((instr) =>
+    new Transaction().add(...instr)
+  )
+
+  const signedTransactions = await signTransactions(
+    transactions.map((transaction) => ({
+      transaction,
+      signers: [],
+    })),
     connection,
-  } = params
+    wallet
+  )
 
-  const transactions = instructionChunks.map((instr) => new Transaction().add(...instr))
-
-  const signedTransactions = await signTransactions({
-    transactionsAndSigners: transactions.map((transaction) => ({ transaction, signers: [] })),
-    wallet,
-    connection,
-  })
-
-  for (let transaction of signedTransactions) {
-    const result = await sendPartOfTransactions(connection, transaction)
-    if (result !== 'success') {
-      return result
-    }
-  }
-
-  return 'success'
+  return sendSignedTransactions(signedTransactions, connection)
 }

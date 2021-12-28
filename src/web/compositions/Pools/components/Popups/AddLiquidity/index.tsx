@@ -1,8 +1,3 @@
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
 import Info from '@icons/TooltipImg.svg'
 import { Theme, withTheme } from '@material-ui/core'
@@ -23,30 +18,31 @@ import {
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { createBasket } from '@sb/dexUtils/pools/actions/createBasket'
-import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
-import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
-import React, { useEffect, useState } from 'react'
 import { COLORS } from '@variables/variables'
+import { BN } from 'bn.js'
+import React, { useEffect, useState } from 'react'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+import { sleep } from '../../../../../dexUtils/utils'
 import { Button } from '../../Tables/index.styles'
-import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { InputWithCoins, InputWithTotal } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
-import { findClosestAmountToSwapForDeposit } from '@sb/dexUtils/pools/swap/findClosestAmountToSwapForDeposit'
 import { createBasketWithSwap } from '@sb/dexUtils/pools/actions/createBasketWithSwap'
-import { Checkbox } from '@sb/components/Checkbox'
 import { WarningLabel } from './AddLiquidity.styles'
-import BN from 'bn.js'
+
 interface AddLiquidityPopupProps {
   theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
@@ -70,12 +66,9 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     theme,
   } = props
   const { wallet } = useWallet()
-  const connection = useConnection()
+  const connection = useMultiEndpointConnection()
 
-  const [poolBalances, refreshPoolBalances] = usePoolBalances({
-    pool: selectedPool,
-    connection,
-  })
+  const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
   const {
     baseTokenAmount: poolAmountTokenA,
@@ -202,10 +195,14 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     selectedPool.parsedName.includes('USDT') &&
     selectedPool.parsedName.includes('USDC')
 
+  const isWarningChecked = warningChecked || isPoolWithoutImpermanentLoss
+  const isValuesFilled = autoRebalanceEnabled
+    ? +baseAmount > 0 || +quoteAmount > 0
+    : +baseAmount > 0 && +quoteAmount > 0
+
   const isDisabled =
-    (!warningChecked && !isPoolWithoutImpermanentLoss) ||
-    +baseAmount <= 0 ||
-    +quoteAmount <= 0 ||
+    !isWarningChecked ||
+    !isValuesFilled ||
     operationLoading ||
     baseAmount > maxBaseAmount ||
     quoteAmount > maxQuoteAmount
@@ -227,7 +224,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0
   const openFarmings = isPoolWithFarming
-    ? filterOpenFarmingStates(selectedPool.farming)
+    ? filterOpenFarmingStates(selectedPool.farming || [])
     : []
 
   return (
@@ -253,17 +250,17 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         setIsSelectorForSeveralBaseAddressesOpen(isSeveralBaseAddresses)
         setIsSelectorForSeveralQuoteAddressesOpen(isSeveralQuoteAddresses)
       }}
-      maxWidth={'md'}
+      maxWidth="md"
       open
       aria-labelledby="responsive-dialog-title"
     >
-      <Row justify={'space-between'} width={'100%'}>
+      <Row justify="space-between" width="100%">
         <BoldHeader style={{ margin: '0 0 2rem 0' }}>
           Deposit Liquidity
         </BoldHeader>
         <Row>
           <ReloadTimer
-            margin={'0 1.5rem 0 0'}
+            margin="0 1.5rem 0 0"
             callback={async () => {
               if (!operationLoading) {
                 refreshPoolBalances()
@@ -274,14 +271,14 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         </Row>
       </Row>
       <RowContainer>
-        <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+        <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
           Enter the amount of the first coin you wish to add, the second coin
           will adjust according to the match of the pool ratio.
         </Text>
       </RowContainer>
       <RowContainer>
         <InputWithCoins
-          placeholder={'0'}
+          placeholder="0"
           theme={theme}
           value={baseAmount}
           onChange={setBaseAmountWithQuote}
@@ -294,12 +291,16 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           <Text fontSize={'4rem'} fontFamily={'Avenir Next Medium'}>
             +
           </Text>
-          <Row onClick={() => setAutoRebalanceEnabled(!autoRebalanceEnabled)}>
-            <Checkbox
-              onChange={() => {}}
-              checked={isPoolEmpty ? false : autoRebalanceEnabled}
-            />
-            <Text>Auto-rebalance uneven amounts</Text>
+          <Row>
+            <Row onClick={() => setAutoRebalanceEnabled(!autoRebalanceEnabled)}>
+              <SCheckbox
+                onChange={() => {}}
+                checked={isPoolEmpty ? false : autoRebalanceEnabled}
+              />
+              <Text style={{ cursor: 'pointer' }}>
+                Auto-rebalance uneven amounts
+              </Text>
+            </Row>
             <DarkTooltip title="The amounts you specify will be automatically rebalanced to match the pool ratio. For example, if you want to deposit 0 RIN + 100 USDC, and pool ratio is 1 RIN = 10 USDC your actual deposit after rebalancing will be 5 RIN + 50 USDC. When withdrawing liquidity you will get the amount corresponding to the pool ratio at the moment of withdrawal. Auto-rebalance deposit does not protect against impermanent loss.">
               <span>
                 <SvgIcon
@@ -312,7 +313,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           </Row>
         </RowContainer>
         <InputWithCoins
-          placeholder={'0'}
+          placeholder="0"
           theme={theme}
           value={quoteAmount}
           onChange={setQuoteAmountWithBase}
@@ -326,7 +327,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       </RowContainer>
 
       {!userPoolTokenAccount && (
-        <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+        <RowContainer justify="space-between" margin="2rem 0 0 0">
           <WhiteText>Gas Fees</WhiteText>
           <WhiteText
             style={{
@@ -414,7 +415,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         <Button
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
-          isUserConfident={true}
+          isUserConfident
           showLoader={operationLoading}
           theme={theme}
           onClick={async () => {
@@ -521,13 +522,10 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
                 refreshAllTokensData()
                 clearPoolWaitingForUpdate()
                 if (openFarmings.length > 0) {
-                  await sleep(3000)
+                  await sleep(1000)
                   setIsRemindToStakePopupOpen()
                 }
-              }, 7500)
-              // end button loader
-
-              setTimeout(() => refreshAllTokensData(), 15000)
+              })
             } else {
               clearPoolWaitingForUpdate()
             }

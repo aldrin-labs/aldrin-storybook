@@ -7,20 +7,14 @@ import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { Theme } from '@material-ui/core'
 
-import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { BlockTemplate } from '../Pools/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 import {
   ReloadTimer,
   TimerButton,
 } from '@sb/compositions/Rebalance/components/ReloadTimer'
-import { InputWithSelectorForSwaps } from './components/Inputs/index'
-import { Card, SwapPageContainer } from './styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { notify } from '@sb/dexUtils/notifications'
 
-import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -34,36 +28,43 @@ import {
   getTokenMintAddressByName,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
-import { getTokenDataByMint } from '../Pools/utils'
-import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { PublicKey } from '@solana/web3.js'
 import { swap } from '@sb/dexUtils/pools/actions/swap'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
-import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
-import { getLiquidityProviderFee, SLIPPAGE_PERCENTAGE } from './config'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
   costOfAddingToken,
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
 import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
-
 import ScalesIcon from '@icons/scales.svg'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/TablesSwitcher.styles'
-import { Selector } from './components/Selector/Selector'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import {
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
   getDefaultBaseToken,
   getDefaultQuoteToken,
-} from '@sb/dexUtils/pools/swap'
-import { Cards } from './components/Cards/Cards'
+} from '@sb/dexUtils/pools/swap/index'
 import { Loader } from '@sb/components/Loader/Loader'
 import { sleep } from '@sb/dexUtils/utils'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { getLiquidityProviderFee } from './config'
+
+// TODO: imports
+import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/styles'
+import { Selector } from './components/Selector/Selector'
+import { TokenAddressesPopup } from './components/TokenAddressesPopup'
+import { getTokenDataByMint } from '../Pools/utils'
+import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
+import { SelectCoinPopup } from './components/SelectCoinPopup'
+import { Card, SwapPageContainer } from './styles'
+import { InputWithSelectorForSwaps } from './components/Inputs/index'
+import { BlockTemplate } from '../Pools/index.styles'
+import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
+import { Cards } from './components/Cards/Cards'
 import BN from 'bn.js'
 
 const SwapPage = ({
@@ -77,12 +78,8 @@ const SwapPage = ({
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
   const tokensMap = useTokenInfos()
-
-  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts({
-    wallet,
-    connection,
-  })
 
   const allPools = getPoolsInfoQuery.getPoolsInfo
   const nativeSOLTokenData = allTokensData[0]
@@ -163,11 +160,8 @@ const SwapPage = ({
   const isSelectedPoolStable = checkIsPoolStable(selectedPool)
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances({
-    connection,
-    pool: {
-      poolTokenAccountA: selectedPool?.poolTokenAccountA,
-      poolTokenAccountB: selectedPool?.poolTokenAccountB,
-    },
+    poolTokenAccountA: selectedPool?.poolTokenAccountA,
+    poolTokenAccountB: selectedPool?.poolTokenAccountB,
   })
 
   // update entered value on every pool ratio change
@@ -347,25 +341,25 @@ const SwapPage = ({
   }
 
   return (
-    <SwapPageContainer direction={'column'} height={'100%'} wrap={'nowrap'}>
+    <SwapPageContainer direction="column" height="100%" wrap="nowrap">
       <>
-        <Row width={'50rem'} justify={'flex-start'} margin={'2rem 1rem'}>
+        <Row width="50rem" justify="flex-start" margin="2rem 1rem">
           <TableModeButton
             isActive={!isStableSwapTabActive}
             onClick={() => setIsStableSwapTabActive(false)}
-            fontSize={'1.5rem'}
+            fontSize="1.5rem"
           >
             All
           </TableModeButton>
           <TableModeButton
             isActive={isStableSwapTabActive}
             onClick={() => setIsStableSwapTabActive(true)}
-            fontSize={'1.5rem'}
+            fontSize="1.5rem"
           >
             Stable Swap
           </TableModeButton>
         </Row>
-        <Row width={'50rem'} justify={'flex-start'} margin={'0 0 2rem 0'}>
+        <Row width="50rem" justify="flex-start" margin="0 0 2rem 0">
           <Selector
             data={pools}
             setBaseTokenMintAddress={setBaseTokenMintAddress}
@@ -374,16 +368,16 @@ const SwapPage = ({
         </Row>
         <BlockTemplate
           theme={theme}
-          width={'50rem'}
+          width="50rem"
           style={{ padding: '2rem', zIndex: '10' }}
         >
-          <RowContainer margin={'1rem 0'} justify={'space-between'}>
+          <RowContainer margin="1rem 0" justify="space-between">
             <Text>
               Slippage Tolerance: <strong>{slippageTolerance}%</strong>
             </Text>
             <Row>
               <ReloadTimer
-                margin={'0 1.5rem 0 0'}
+                margin="0 1.5rem 0 0"
                 callback={async () => {
                   refreshPoolBalances()
                   refreshAllTokensData()
@@ -392,20 +386,20 @@ const SwapPage = ({
               {baseTokenMintAddress && quoteTokenMintAddress && (
                 <TimerButton
                   onClick={() => openTokensAddressesPopup(true)}
-                  margin={'0 1.5rem 0 0'}
+                  margin="0 1.5rem 0 0"
                 >
-                  <SvgIcon src={Inform} width={'60%'} height={'60%'} />
+                  <SvgIcon src={Inform} width="60%" height="60%" />
                 </TimerButton>
               )}
               <TimerButton
-                margin={'0'}
+                margin="0"
                 onClick={() => openTransactionSettingsPopup(true)}
               >
-                <SvgIcon src={Gear} width={'60%'} height={'60%'} />
+                <SvgIcon src={Gear} width="60%" height="60%" />
               </TimerButton>
             </Row>
           </RowContainer>
-          <RowContainer margin={'2rem 0 1rem 0'}>
+          <RowContainer margin="2rem 0 1rem 0">
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
@@ -415,7 +409,7 @@ const SwapPage = ({
                   : '0.00'
               }
               theme={theme}
-              directionFrom={true}
+              directionFrom
               value={+baseAmount || +quoteAmount === 0 ? baseAmount : ''}
               disabled={
                 !baseTokenMintAddress ||
@@ -431,29 +425,25 @@ const SwapPage = ({
               }}
             />
           </RowContainer>
-          <RowContainer justify={'space-between'} margin={'0 2rem'}>
+          <RowContainer justify="space-between" margin="0 2rem">
             <SvgIcon
               style={{ cursor: 'pointer' }}
               src={Arrows}
-              width={'2rem'}
-              height={'2rem'}
+              width="2rem"
+              height="2rem"
               onClick={() => {
                 reverseTokens()
               }}
             />
             {isSelectedPoolStable ? (
-              <DarkTooltip
-                title={
-                  'This pool uses the stable curve, which provides better rates for swapping stablecoins.'
-                }
-              >
+              <DarkTooltip title="This pool uses the stable curve, which provides better rates for swapping stablecoins.">
                 <div>
-                  <SvgIcon src={ScalesIcon} width={'2rem'} height={'2rem'} />
+                  <SvgIcon src={ScalesIcon} width="2rem" height="2rem" />
                 </div>
               </DarkTooltip>
             ) : null}
           </RowContainer>
-          <RowContainer margin={'1rem 0 2rem 0'}>
+          <RowContainer margin="1rem 0 2rem 0">
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
@@ -480,15 +470,15 @@ const SwapPage = ({
           </RowContainer>
 
           {selectedPool && (
-            <RowContainer margin={'1rem 2rem'} justify={'space-between'}>
-              <Text color={'#93A0B2'}>Est. Price:</Text>
+            <RowContainer margin="1rem 2rem" justify="space-between">
+              <Text color="#93A0B2">Est. Price:</Text>
               <Text
-                fontSize={'1.5rem'}
-                color={'#53DF11'}
-                fontFamily={'Avenir Next Demi'}
+                fontSize="1.5rem"
+                color="#53DF11"
+                fontFamily="Avenir Next Demi"
               >
                 1{' '}
-                <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
+                <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
                   {baseSymbol}{' '}
                 </Text>
                 ={' '}
@@ -500,7 +490,7 @@ const SwapPage = ({
                       +(+poolAmountTokenA / +poolAmountTokenB),
                       8
                     )}{' '}
-                <Text fontSize={'1.5rem'} fontFamily={'Avenir Next Demi'}>
+                <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
                   {quoteSymbol}{' '}
                 </Text>
               </Text>
@@ -519,11 +509,11 @@ const SwapPage = ({
                 padding="2rem 8rem"
                 borderRadius="1.1rem"
                 borderColor={theme.palette.blue.serum}
-                btnColor={'#fff'}
+                btnColor="#fff"
                 backgroundColor={theme.palette.blue.serum}
-                textTransform={'none'}
-                margin={'4rem 0 0 0'}
-                transition={'all .4s ease-out'}
+                textTransform="none"
+                margin="4rem 0 0 0"
+                transition="all .4s ease-out"
                 style={{ whiteSpace: 'nowrap' }}
               >
                 Connect wallet
@@ -535,16 +525,16 @@ const SwapPage = ({
                 fontSize="1.4rem"
                 padding="1rem 2rem"
                 borderRadius=".8rem"
-                borderColor={'none'}
-                btnColor={'#fff'}
+                borderColor="none"
+                btnColor="#fff"
                 backgroundColor={
                   isButtonDisabled
                     ? '#3A475C'
                     : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
                 }
-                textTransform={'none'}
-                margin={'1rem 0 0 0'}
-                transition={'all .4s ease-out'}
+                textTransform="none"
+                margin="1rem 0 0 0"
+                transition="all .4s ease-out"
                 disabled={isButtonDisabled}
                 onClick={async () => {
                   if (!selectedPool) return
@@ -628,42 +618,42 @@ const SwapPage = ({
           <Card
             style={{ padding: '2rem' }}
             theme={theme}
-            width={'45rem'}
-            height={'12rem'}
+            width="45rem"
+            height="12rem"
           >
-            <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-              <Text color={'#93A0B2'}>Minimum received</Text>
+            <RowContainer margin="0.5rem 0" justify="space-between">
+              <Text color="#93A0B2">Minimum received</Text>
               <Row style={{ flexWrap: 'nowrap' }}>
                 <Text
                   style={{ padding: '0 0.5rem 0 0.5rem' }}
-                  fontFamily={'Avenir Next Bold'}
-                  color={'#53DF11'}
+                  fontFamily="Avenir Next Bold"
+                  color="#53DF11"
                 >
                   {totalWithFees.toFixed(5)}{' '}
                 </Text>
-                <Text fontFamily={'Avenir Next Bold'}>{quoteSymbol}</Text>
+                <Text fontFamily="Avenir Next Bold">{quoteSymbol}</Text>
               </Row>
             </RowContainer>
             {!isSelectedPoolStable && (
-              <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-                <Text color={'#93A0B2'}>Price Impact</Text>
+              <RowContainer margin="0.5rem 0" justify="space-between">
+                <Text color="#93A0B2">Price Impact</Text>
                 <Row style={{ flexWrap: 'nowrap' }}>
                   <Text
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily={'Avenir Next Bold'}
-                    color={'#53DF11'}
+                    fontFamily="Avenir Next Bold"
+                    color="#53DF11"
                   >
                     {stripDigitPlaces(rawSlippage, 2)}%
                   </Text>
                 </Row>
               </RowContainer>
             )}
-            <RowContainer margin={'0.5rem 0'} justify={'space-between'}>
-              <Text color={'#93A0B2'}>Liquidity provider fee</Text>
+            <RowContainer margin="0.5rem 0" justify="space-between">
+              <Text color="#93A0B2">Liquidity provider fee</Text>
               <Row style={{ flexWrap: 'nowrap' }}>
                 <Text
                   style={{ padding: '0 0.5rem 0 0.5rem' }}
-                  fontFamily={'Avenir Next Bold'}
+                  fontFamily="Avenir Next Bold"
                 >
                   {stripByAmountAndFormat(
                     +baseAmount *

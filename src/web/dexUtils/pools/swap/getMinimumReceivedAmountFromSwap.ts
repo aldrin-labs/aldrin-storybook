@@ -1,11 +1,6 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import {
-  getPoolsProgramAddress,
-  POOLS_PROGRAM_ADDRESS,
-} from '@sb/dexUtils/ProgramsMultiton/utils'
-import BN from 'bn.js'
-
 import { PoolBalances } from '../hooks/usePoolBalances'
+import { CURVE } from '../types'
 import { getMinimumReceivedFromProductCurve } from './getMinimumReceivedFromProductCurve'
 import { getMinimumReceivedFromStableCurveForSwap } from './getMinimumReceivedFromStableCurve'
 
@@ -20,25 +15,25 @@ export const getMinimumReceivedAmountFromSwap = ({
   pool?: PoolInfo
   poolBalances: PoolBalances
 }): number => {
-  if (!pool) return 0
+  if (!pool || swapAmountIn === 0) return 0
 
-  const { curveType } = pool
+  const { curveType = CURVE.PRODUCT } = pool
 
   let swapAmountOut: number = 0
 
-  if (getPoolsProgramAddress({ curveType }) === POOLS_PROGRAM_ADDRESS) {
-    swapAmountOut = getMinimumReceivedFromProductCurve({
-      swapAmountIn,
-      isSwapBaseToQuote,
-      poolBalances,
-      pool,
-    })
-  } else {
-    // program v2
+  if (curveType === CURVE.STABLE) {
+    // program v2 stable pool
     swapAmountOut = getMinimumReceivedFromStableCurveForSwap({
       swapAmountIn,
       isSwapBaseToQuote,
       pool,
+      poolBalances,
+    })
+  } else {
+    swapAmountOut = getMinimumReceivedFromProductCurve({
+      pool,
+      swapAmountIn,
+      isSwapBaseToQuote,
       poolBalances,
     })
   }

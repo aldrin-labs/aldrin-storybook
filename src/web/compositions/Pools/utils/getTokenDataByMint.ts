@@ -15,12 +15,15 @@ export const getTokenDataByMint = (
 
   if (address) {
     return (
-      allTokensData.find((tokenData) => tokenData.mint === mint && address === tokenData.address) || emptyResponse
+      allTokensData.find(
+        (tokenData) => tokenData.mint === mint && address === tokenData.address
+      ) || emptyResponse
     )
   }
 
-  return allTokensData
-    .filter((tokenData) => tokenData.mint === mint)
-    .sort((a, b) => b.amount - a.amount)[0] || emptyResponse
-
+  return (
+    allTokensData
+      .filter((tokenData) => tokenData.mint === mint)
+      .sort((a, b) => b.amount - a.amount)[0] || emptyResponse
+  )
 }

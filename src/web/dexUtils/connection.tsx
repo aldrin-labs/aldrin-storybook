@@ -5,8 +5,9 @@ import {
   Connection,
   PublicKey,
 } from '@solana/web3.js'
-import React, { useContext, useRef } from 'react'
 import tuple from 'immutable-tuple'
+import React, { useContext, useRef } from 'react'
+
 import { useAsyncData } from './fetch-loop'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
 
@@ -23,7 +24,7 @@ const connection = new MultiEndpointsConnection(
     { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
     { url: 'https://aldrinexchange.genesysgo.net', weight: 3 },
   ],
-  'recent'
+  'confirmed'
 )
 
 connection.connections.forEach((c) => {
@@ -53,6 +54,10 @@ export const ConnectionProvider: React.FC = ({ children }) => {
 }
 
 export function useConnection(): Connection {
+  return useContext(ConnectionContext).connection as Connection
+}
+
+export function useMultiEndpointConnection(): MultiEndpointsConnection {
   return useContext(ConnectionContext).connection
 }
 
@@ -61,15 +66,15 @@ export function useSerumConnection(): Connection {
 }
 
 export function useConnectionConfig() {
-  const context = useContext(ConnectionContext)
-  return { endpoint: context.endpoint, setEndpoint: context.setEndpoint }
+  const ctx = useContext(ConnectionContext)
+  return { endpoint: ctx.endpoint, setEndpoint: ctx.setEndpoint }
 }
 export function useAccountInfo(
   publicKey: PublicKey | undefined | null
 ): [AccountInfo<Buffer> | null | undefined, boolean] {
   const connection = useConnection()
   const cacheKey = tuple('useAccountInfo', publicKey?.toBase58())
-  const [accountInfo, loaded] = useAsyncData<AccountInfo<Buffer> | null>(
+  const [accountInfo, loaded] = useAsyncData(
     async () => (publicKey ? connection.getAccountInfo(publicKey) : null),
     cacheKey,
     { refreshInterval: 3_000 }

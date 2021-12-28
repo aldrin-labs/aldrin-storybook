@@ -1,30 +1,33 @@
-import { marketsByCategories } from '@core/config/marketsByCategories'
-import stableCoins from '@core/config/stableCoins'
-import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
-import {
-  formatNumberToUSFormat,
-  roundAndFormatNumber,
-  stripDigitPlaces
-} from '@core/utils/PortfolioTableUtils'
-import favouriteSelected from '@icons/favouriteSelected.svg'
-import favouriteUnselected from '@icons/favouriteUnselected.svg'
-import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
-import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+import React from 'react'
+
 import { SvgIcon } from '@sb/components'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
-import React from 'react'
+
+import { marketsByCategories } from '@core/config/marketsByCategories'
+import stableCoins from '@core/config/stableCoins'
+import { getNumberOfDecimalsFromNumber, stripByAmount } from '@core/utils/chartPageUtils'
+import {
+  formatNumberToUSFormat,
+  roundAndFormatNumber,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+
+import favouriteSelected from '@icons/favouriteSelected.svg'
+import favouriteUnselected from '@icons/favouriteUnselected.svg'
+import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
+import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+
 import { ISelectData, SelectTabType } from './SelectWrapper.types'
 import {
   IconContainer,
   StyledColumn,
   StyledRow,
   StyledSymbol,
-  StyledTokenName
+  StyledTokenName,
 } from './SelectWrapperStyles'
-
 
 export const selectWrapperColumnNames = [
   { label: '', id: 'favourite', isSortable: false },
@@ -102,7 +105,7 @@ export const filterSelectorDataByTab = ({
     }
 
     marketsCategoriesData?.forEach(([category, data]) => {
-      const tokens = data.tokens
+      const { tokens } = data
 
       if (tab === category) {
         processedData = processedData.filter((el) => {
@@ -178,6 +181,35 @@ export const filterSelectorDataByTab = ({
   return processedData
 }
 
+export const filterDataBySymbolForDifferentDeviders = ({
+  searchValue,
+  symbol,
+}: {
+  searchValue: string
+  symbol: string
+}) => {
+  if (searchValue) {
+    let updatedSearchValue = searchValue
+
+    const slashInSearch = updatedSearchValue.includes('/')
+    if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
+
+    const spaceInSeach = updatedSearchValue.includes(' ')
+    if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
+
+    const dashInSeach = updatedSearchValue.includes('-')
+    if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
+
+    const underlineInSearch = updatedSearchValue.includes('_')
+
+    return new RegExp(`${updatedSearchValue}`, 'gi').test(
+      underlineInSearch ? symbol : symbol.replace('_', '')
+    )
+  }
+
+  return true
+}
+
 export const getIsNotUSDTQuote = (symbol) => {
   const [base, quote] = symbol.split('_')
   return (
@@ -240,35 +272,6 @@ export const getMarketsMapsByCoins = (markets) => {
     usdcPairsMap,
     usdtPairsMap,
   }
-}
-
-export const filterDataBySymbolForDifferentDeviders = ({
-  searchValue,
-  symbol,
-}: {
-  searchValue: string
-  symbol: string
-}) => {
-  if (searchValue) {
-    let updatedSearchValue = searchValue
-
-    const slashInSearch = updatedSearchValue.includes('/')
-    if (slashInSearch) updatedSearchValue = updatedSearchValue.replace('/', '_')
-
-    const spaceInSeach = updatedSearchValue.includes(' ')
-    if (spaceInSeach) updatedSearchValue = updatedSearchValue.replace(' ', '_')
-
-    const dashInSeach = updatedSearchValue.includes('-')
-    if (dashInSeach) updatedSearchValue = updatedSearchValue.replace('-', '_')
-
-    const underlineInSearch = updatedSearchValue.includes('_')
-
-    return new RegExp(`${updatedSearchValue}`, 'gi').test(
-      underlineInSearch ? symbol : symbol.replace('_', '')
-    )
-  }
-
-  return true
 }
 
 export const combineSelectWrapperData = ({
@@ -390,8 +393,8 @@ export const combineSelectWrapperData = ({
     const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
     const marketAddress = allMarketsMap?.get(el.symbol)?.address?.toBase58()
 
-    const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
-    const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0
+    const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || '--'
+    const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || '--'
 
     return {
       id: `${symbol}`,
@@ -418,8 +421,8 @@ export const combineSelectWrapperData = ({
           <IconContainer>
             <TokenIcon
               mint={mint}
-              width={'2.5rem'}
-              emojiIfNoLogo={true}
+              width="2.5rem"
+              emojiIfNoLogo
               isAwesomeMarket={isAwesomeMarket}
               isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
             />
@@ -428,7 +431,7 @@ export const combineSelectWrapperData = ({
       },
       symbol: {
         render: (
-          <Row direction={'column'} align={'initial'}>
+          <Row direction="column" align="initial">
             {baseTokenInfo && baseTokenInfo?.name && (
               <StyledSymbol>
                 {baseTokenInfo?.name === 'Cryptocurrencies.Ai'
@@ -462,9 +465,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(
-                    stripDigitPlaces(closePrice, pricePrecision)
-                  )}
+                  : formatNumberToUSFormat(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -478,9 +479,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(
-                    stripDigitPlaces(closePrice, pricePrecision)
-                  )}
+                  : formatNumberToUSFormat(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -501,12 +500,12 @@ export const combineSelectWrapperData = ({
                   +lastPriceDiff === 0
                     ? ''
                     : +lastPriceDiff > 0
-                      ? theme.palette.green.main
-                      : theme.palette.red.main,
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
               }}
             >
               {`${sign24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(lastPriceDiff, pricePrecision)
+                stripDigitPlaces(lastPriceDiff, 2)
               )}`}{' '}
               <span style={{ color: '#96999C' }}> / </span>{' '}
               {`${sign24hChange}${formatNumberToUSFormat(
@@ -519,8 +518,8 @@ export const combineSelectWrapperData = ({
                   +lastPriceDiff === 0
                     ? ''
                     : +lastPriceDiff > 0
-                      ? theme.palette.green.main
-                      : theme.palette.red.main,
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
               }}
             >
               <span>
@@ -566,8 +565,8 @@ export const combineSelectWrapperData = ({
                   +precentageTradesDiff === 0
                     ? ''
                     : +precentageTradesDiff > 0
-                      ? theme.palette.green.main
-                      : theme.palette.red.main,
+                    ? theme.palette.green.main
+                    : theme.palette.red.main,
               }}
             >
               {`${signTrades24hChange}${formatNumberToUSFormat(
@@ -650,8 +649,8 @@ export const combineSelectWrapperData = ({
         render: (
           <Row
             style={{ flexWrap: 'nowrap' }}
-            justify={'flex-start'}
-            align={'baseline'}
+            justify="flex-start"
+            align="baseline"
           >
             <TokenExternalLinks
               tokenName={base}
@@ -662,7 +661,6 @@ export const combineSelectWrapperData = ({
                 setIsMintsPopupOpen(true)
               }}
               marketPair={symbol}
-
             />
           </Row>
         ),
@@ -673,8 +671,8 @@ export const combineSelectWrapperData = ({
           +volumeChange > 0 ? (
             <SvgIcon src={MoreVolumeArrow} width="1rem" height="auto" />
           ) : (
-              <SvgIcon src={LessVolumeArrow} width="1rem" height="auto" />
-            ),
+            <SvgIcon src={LessVolumeArrow} width="1rem" height="auto" />
+          ),
       },
     }
   })

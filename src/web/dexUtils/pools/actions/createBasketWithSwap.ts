@@ -1,13 +1,19 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
-import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
+import MultiEndpointsConnection from '@sb/dexUtils/MultiEndpointsConnection'
+import {
+  getPoolsProgramAddress,
+  ProgramsMultiton,
+} from '@sb/dexUtils/ProgramsMultiton'
+import { isTransactionFailed } from '@sb/dexUtils/send'
 import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
+import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { Connection, PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 import { PoolBalances } from '../hooks/usePoolBalances'
 import { findClosestAmountToSwapForDeposit } from '../swap/findClosestAmountToSwapForDeposit'
-import { getCreateBasketTransaction } from './createBasket'
+import { createBasketTransaction } from './createBasket'
 import { getSwapTransaction } from './swap'
 
 export async function createBasketWithSwap({
@@ -23,7 +29,7 @@ export async function createBasketWithSwap({
   transferSOLToWrapped,
 }: {
   wallet: WalletAdapter
-  connection: Connection
+  connection: MultiEndpointsConnection
   pool: PoolInfo
   poolBalances: PoolBalances
   userPoolTokenAccount: PublicKey | null
@@ -33,13 +39,13 @@ export async function createBasketWithSwap({
   userQuoteTokenAmount: number
   transferSOLToWrapped: boolean
 }) {
-  const {
-    swapToken,
-    poolTokenMint,
-    curveType,
-    tokenADecimals,
-    tokenBDecimals,
-  } = pool
+  const { swapToken, curveType, tokenADecimals, tokenBDecimals } = pool
+
+  const program = ProgramsMultiton.getProgramByAddress({
+    wallet,
+    connection: connection.getConnection(),
+    programAddress: getPoolsProgramAddress({ curveType }),
+  })
 
   const poolPublicKey = new PublicKey(swapToken)
 
@@ -50,8 +56,6 @@ export async function createBasketWithSwap({
       userAmountTokenA: userBaseTokenAmount,
       userAmountTokenB: userQuoteTokenAmount,
     })
-
-  console.log('swapAmountIn, swapAmountOut', swapAmountIn, swapAmountOut)
 
   const [baseAmountToDeposit, quoteAmountToDeposit] = isSwapBaseToQuote
     ? [userBaseTokenAmount - swapAmountIn, userQuoteTokenAmount + swapAmountOut]
@@ -72,7 +76,7 @@ export async function createBasketWithSwap({
 
     const swapTransactionResult = await getSwapTransaction({
       wallet,
-      connection,
+      connection: connection.getConnection(),
       curveType,
       isSwapBaseToQuote,
       poolPublicKey,
@@ -97,28 +101,34 @@ export async function createBasketWithSwap({
       quoteAmountToDeposit * 10 ** tokenBDecimals
     )
 
-    const poolToken = new Token(
-      wallet,
-      connection,
-      new PublicKey(poolTokenMint),
-      TOKEN_PROGRAM_ID
-    )
-
-    const { supply } = await poolToken.getMintInfo()
-
     // for swap base to quote - add swap amount in, otherwise remove amount out
     const poolBaseTokenAmoutAfterSwap = isSwapBaseToQuote
       ? poolBalances.baseTokenAmountBN.add(swapAmountInWithDecimals)
       : poolBalances.baseTokenAmountBN.sub(swapAmountOutWithDecimals)
 
-    const poolTokenAmountToReceive = supply
-      .mul(new BN(baseAmountToDepositWithDecimals))
-      .div(poolBaseTokenAmoutAfterSwap)
-      .div(new BN(1000))
-      .mul(new BN(997))
+    const {
+      baseTokenMint,
+      baseTokenVault,
+      quoteTokenMint,
+      quoteTokenVault,
+      poolMint,
+      lpTokenFreezeVault,
+    } = (await program.account.pool.fetch(poolPublicKey)) as {
+      [c: string]: PublicKey
+    }
 
-    const [createBasketTransaction, createBasketSigners] =
-      await getCreateBasketTransaction({
+    const poolToken = new Token(
+      wallet,
+      connection.getConnection(),
+      poolMint,
+      TOKEN_PROGRAM_ID
+    )
+
+    const poolMintInfo = await poolToken.getMintInfo()
+    const { supply } = poolMintInfo
+
+    const [createBasketTx, createBasketSigners] = await createBasketTransaction(
+      {
         wallet,
         connection,
         poolPublicKey,
@@ -128,17 +138,25 @@ export async function createBasketWithSwap({
         userQuoteTokenAmount: quoteAmountToDepositWithDecimals,
         userPoolTokenAccount,
         transferSOLToWrapped,
-        curveType,
-        poolTokenAmountToReceive,
-      })
+        program,
+        poolTokenAmountA: poolBaseTokenAmoutAfterSwap,
+        baseTokenMint,
+        baseTokenVault,
+        quoteTokenMint,
+        quoteTokenVault,
+        poolMint,
+        lpTokenFreezeVault,
+        supply,
+      }
+    )
 
     const commonTransaction = new Transaction().add(
       swapTransaction,
-      createBasketTransaction
+      createBasketTx
     )
     const commonSigners = [...swapSigners, ...createBasketSigners]
 
-    const tx = await sendTransaction({
+    const tx = await signAndSendSingleTransaction({
       wallet,
       connection,
       transaction: commonTransaction,

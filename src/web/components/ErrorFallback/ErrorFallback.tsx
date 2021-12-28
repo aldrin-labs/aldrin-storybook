@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
@@ -47,7 +47,7 @@ const SimpleError = (props: { error?: ApolloError }) => (
 
 const ErrorWithoutMessage = () => (
   <Typography variant="body1" align="center" color="error">
-    {`Network error, please refresh page or contact support in telegram chat`}
+    Network error, please refresh page or contact support in telegram chat
   </Typography>
 )
 
@@ -56,7 +56,6 @@ export const ErrorFallback = (props: {
   error?: ApolloError
   refetch?: Function
 }) => {
-
   // useEffect(() => {
 
   //   try {
@@ -79,7 +78,7 @@ export default class ErrorBoundary extends React.Component {
   /*  static getDerivedStateFromError(error: any) {
       // Update state so the next render will show the fallback UI.
       return { error, hasError: true }
-    }*/
+    } */
 
   componentDidCatch(error: any, info: any) {
     // imlement service/component to send errors to our database

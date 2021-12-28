@@ -17,19 +17,17 @@ export const getParsedSnapshotQueues = async ({
   connection: Connection
 }): Promise<SnapshotQueue[]> => {
   // load snapshot queues from all pools programs
-  const [
-    snapshotQueuesFromPoolsV1,
-    snapshotQueuesFromPoolsV2,
-  ] = await Promise.all([
-    loadSnapshotQueues({
-      connection,
-      programId: POOLS_PROGRAM_ADDRESS,
-    }),
-    loadSnapshotQueues({
-      connection,
-      programId: POOLS_V2_PROGRAM_ADDRESS,
-    }),
-  ])
+  const [snapshotQueuesFromPoolsV1, snapshotQueuesFromPoolsV2] =
+    await Promise.all([
+      loadSnapshotQueues({
+        connection,
+        programId: POOLS_PROGRAM_ADDRESS,
+      }),
+      loadSnapshotQueues({
+        connection,
+        programId: POOLS_V2_PROGRAM_ADDRESS,
+      }),
+    ])
 
   const programV1 = ProgramsMultiton.getProgramByAddress({
     wallet,

@@ -1,7 +1,9 @@
-import { Connection, PublicKey, Transaction } from "@solana/web3.js"
+import { Connection, PublicKey, Transaction } from '@solana/web3.js'
+
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { sendTransaction } from "./send"
-import { createAssociatedTokenAccountIx } from "./wallet"
+
+import { signAndSendSingleTransaction } from './transactions'
+import { createAssociatedTokenAccountIx } from './wallet'
 
 export const createTokens = async ({
   wallet,
@@ -30,11 +32,11 @@ export const createTokens = async ({
 
   await Promise.all(mints.map((mint) => addToken(mint)))
 
-  await sendTransaction({
+  await signAndSendSingleTransaction({
     wallet,
     connection,
     transaction: transactions,
     focusPopup: true,
-    signers: []
+    signers: [],
   })
 }

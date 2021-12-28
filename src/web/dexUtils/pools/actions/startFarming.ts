@@ -1,9 +1,5 @@
 import { TokenInstructions } from '@project-serum/serum'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress, POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { WalletAdapter } from '@sb/dexUtils/types'
 import {
-  Connection,
   Keypair,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
@@ -11,7 +7,13 @@ import {
   Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
-import { signAndSendTransaction } from '../signAndSendTransaction'
+
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+import MultiEndpointsConnection from '../../MultiEndpointsConnection'
+import { signAndSendTransactions } from '../../transactions/signAndSendTransactions'
 
 export const getStartFarmingTransactions = async ({
   wallet,
@@ -20,15 +22,15 @@ export const getStartFarmingTransactions = async ({
   poolPublicKey,
   userPoolTokenAccount,
   farmingState,
-  curveType
+  curveType,
 }: {
   wallet: WalletAdapter
-  connection: Connection
+  connection: MultiEndpointsConnection
   poolTokenAmount: number
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
   farmingState: PublicKey
-  curveType: number | null
+  curveType?: number | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -39,9 +41,8 @@ export const getStartFarmingTransactions = async ({
   const { lpTokenFreezeVault } = await program.account.pool.fetch(poolPublicKey)
 
   const farmingTicket = Keypair.generate()
-  const farmingTicketInstruction = await program.account.farmingTicket.createInstruction(
-    farmingTicket
-  )
+  const farmingTicketInstruction =
+    await program.account.farmingTicket.createInstruction(farmingTicket)
 
   const transactionsAndSigners = []
 
@@ -52,7 +53,7 @@ export const getStartFarmingTransactions = async ({
         pool: poolPublicKey,
         farmingState,
         farmingTicket: farmingTicket.publicKey,
-        lpTokenFreezeVault: lpTokenFreezeVault,
+        lpTokenFreezeVault,
         userLpTokenAccount: userPoolTokenAccount,
         walletAuthority: wallet.publicKey,
         userKey: wallet.publicKey,
@@ -90,12 +91,12 @@ export const startFarming = async ({
   curveType,
 }: {
   wallet: WalletAdapter
-  connection: Connection
+  connection: MultiEndpointsConnection
   poolTokenAmount: number
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
   farmingState: PublicKey
-  curveType: number | null
+  curveType?: number | null
 }) => {
   const transactionsAndSigners = await getStartFarmingTransactions({
     wallet,
@@ -107,7 +108,7 @@ export const startFarming = async ({
     curveType,
   })
 
-  const result = await signAndSendTransaction({
+  const result = await signAndSendTransactions({
     wallet,
     connection,
     transactionsAndSigners,

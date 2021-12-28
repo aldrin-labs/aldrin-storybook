@@ -1,6 +1,6 @@
 import styled from 'styled-components'
-import { SelectorRow } from '../SelectCoinPopup'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { SelectorRow } from '../SelectCoinPopup'
 
 const StyledSelectorRow = styled(SelectorRow)`
   cursor: pointer;
@@ -25,7 +25,4 @@ const SelectorRowsContainer = styled(RowContainer)`
   }
 `
 
-export {
-    StyledSelectorRow,
-    SelectorRowsContainer
-}
+export { StyledSelectorRow, SelectorRowsContainer }

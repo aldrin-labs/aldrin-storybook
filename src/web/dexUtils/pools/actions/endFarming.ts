@@ -1,8 +1,4 @@
 import { TokenInstructions } from '@project-serum/serum'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { createTokenAccountTransaction } from '@sb/dexUtils/send'
-import { WalletAdapter } from '@sb/dexUtils/types'
 import {
   Connection,
   PublicKey,
@@ -10,20 +6,19 @@ import {
   SYSVAR_RENT_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
-import { FarmingState, TransactionAndSigner } from '@sb/dexUtils/common/types'
-import { filterTicketsAvailableForUnstake } from '../filterTicketsAvailableForUnstake'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
-import { signAndSendTransaction } from '../signAndSendTransaction'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 
-export const getEndFarmingTransactions = async ({
-  wallet,
-  connection,
-  poolPublicKey,
-  farmingState,
-  userPoolTokenAccount,
-  curveType
-}: {
+import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
+import { FarmingState, TransactionAndSigner } from '@sb/dexUtils/common/types'
+import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { createTokenAccountTransaction } from '@sb/dexUtils/send'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { signAndSendTransactions } from '../../transactions'
+import { filterTicketsAvailableForUnstake } from '../filterTicketsAvailableForUnstake'
+
+export const getEndFarmingTransactions = async (params: {
   wallet: WalletAdapter
   connection: Connection
   poolPublicKey: PublicKey
@@ -31,9 +26,11 @@ export const getEndFarmingTransactions = async ({
   userPoolTokenAccount: PublicKey | null
   curveType: number | null
 }): Promise<TransactionAndSigner[]> => {
+  const { wallet, connection, poolPublicKey, farmingState, curveType } = params
+
+  let { userPoolTokenAccount } = params
   const farmingStatePublicKey = new PublicKey(farmingState.farmingState)
   const snapshotQueuePublicKey = new PublicKey(farmingState.farmingSnapshots)
-  
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
@@ -45,9 +42,9 @@ export const getEndFarmingTransactions = async ({
     program.programId
   )
 
-  const { poolMint, lpTokenFreezeVault } = await program.account.pool.fetch(
+  const { poolMint, lpTokenFreezeVault } = (await program.account.pool.fetch(
     poolPublicKey
-  )
+  )) as { poolMint: PublicKey; lpTokenFreezeVault: PublicKey }
 
   const allUserTicketsPerPool = await getParsedUserFarmingTickets({
     wallet,
@@ -71,13 +68,11 @@ export const getEndFarmingTransactions = async ({
 
   // create pool token account for user if not exist
   if (!userPoolTokenAccount) {
-    const {
-      transaction: createAccountTransaction,
-      newAccountPubkey,
-    } = await createTokenAccountTransaction({
-      wallet,
-      mintPublicKey: poolMint,
-    })
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: poolMint,
+      })
 
     userPoolTokenAccount = newAccountPubkey
     commonTransaction.add(createAccountTransaction)
@@ -85,7 +80,7 @@ export const getEndFarmingTransactions = async ({
 
   const transactionsAndSigners = []
 
-  for (let ticketData of filteredUserFarmingTicketsPerPool) {
+  for (const ticketData of filteredUserFarmingTicketsPerPool) {
     const endFarmingTransaction = await program.instruction.endFarming({
       accounts: {
         pool: poolPublicKey,
@@ -106,6 +101,7 @@ export const getEndFarmingTransactions = async ({
 
     if (commonTransaction.instructions.length > 2) {
       transactionsAndSigners.push({ transaction: commonTransaction })
+      commonTransaction = new Transaction()
     }
   }
 
@@ -122,7 +118,7 @@ export const endFarming = async ({
   poolPublicKey,
   farmingState,
   userPoolTokenAccount,
-  curveType
+  curveType,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -137,10 +133,10 @@ export const endFarming = async ({
     poolPublicKey,
     farmingState,
     userPoolTokenAccount,
-    curveType
+    curveType,
   })
 
-  const result = await signAndSendTransaction({
+  const result = await signAndSendTransactions({
     wallet,
     connection,
     transactionsAndSigners,

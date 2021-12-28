@@ -1,12 +1,16 @@
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
-import { AWESOME_TOKENS, useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
+import {
+  AWESOME_TOKENS,
+  useAwesomeMarkets,
+} from '@core/utils/awesomeMarkets/serum'
 import { Metrics } from '@core/utils/metrics'
 import {
   Market,
   MARKETS,
-  OpenOrders, Orderbook,
+  OpenOrders,
+  Orderbook,
   TokenInstructions,
-  TOKEN_MINTS
+  TOKEN_MINTS,
 } from '@project-serum/serum'
 import { OrderWithMarket } from '@sb/dexUtils/send'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
@@ -18,14 +22,14 @@ import {
   useAccountData,
   useAccountInfo,
   useConnection,
-  useConnectionConfig
+  useConnectionConfig,
 } from './connection'
 import { getCache, refreshCache, setCache, useAsyncData } from './fetch-loop'
 import { notify } from './notifications'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
-  TOKEN_PROGRAM_ID
+  TOKEN_PROGRAM_ID,
 } from './token/token'
 import { getTokenAccountInfo } from './tokens'
 import { getUniqueListBy, useLocalStorageState } from './utils'
@@ -45,19 +49,19 @@ export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   return acc
 }, {})
 
-export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } = {
-  "USDT": process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
-  "USDC": process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
-  "SOL": process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
-  "WUSDT": process.env.REACT_APP_WUSDT_REFERRAL_FEES_ADDRESS,
-  "ODOP": process.env.REACT_APP_ODOP_REFERRAL_FEES_ADDRESS,
-  "TRYB": process.env.REACT_APP_TRYB_REFERRAL_FEES_ADDRESS,
-  "SRM": process.env.REACT_APP_SRM_REFERRAL_FEES_ADDRESS,
-  "ETH": process.env.REACT_APP_ETH_REFERRAL_FEES_ADDRESS,
-  "RAY": process.env.REACT_APP_RAY_REFERRAL_FEES_ADDRESS,
-  "mSOL": process.env.REACT_APP_MSOL_REFERRAL_FEES_ADDRESS,
-}
-
+export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } =
+  {
+    USDT: process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
+    USDC: process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
+    SOL: process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
+    WUSDT: process.env.REACT_APP_WUSDT_REFERRAL_FEES_ADDRESS,
+    ODOP: process.env.REACT_APP_ODOP_REFERRAL_FEES_ADDRESS,
+    TRYB: process.env.REACT_APP_TRYB_REFERRAL_FEES_ADDRESS,
+    SRM: process.env.REACT_APP_SRM_REFERRAL_FEES_ADDRESS,
+    ETH: process.env.REACT_APP_ETH_REFERRAL_FEES_ADDRESS,
+    RAY: process.env.REACT_APP_RAY_REFERRAL_FEES_ADDRESS,
+    mSOL: process.env.REACT_APP_MSOL_REFERRAL_FEES_ADDRESS,
+  }
 
 // const ALL_TOKENS_MINTS_MAP = new Map();
 
@@ -74,15 +78,15 @@ const _IGNORE_DEPRECATED = false
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
-    {
-      address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-      name: 'RIN/USDC',
-      programId: new PublicKey(
-        '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-      ),
-      deprecated: false,
-    },
-  ].concat(MARKETS)
+      {
+        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+        name: 'RIN/USDC',
+        programId: new PublicKey(
+          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+        ),
+        deprecated: false,
+      },
+    ].concat(MARKETS)
 // : MARKETS
 
 export interface RawMarketData {
@@ -187,7 +191,7 @@ export function useAllMarkets() {
   const marketInfos = getMarketInfos(customMarkets)
 
   const getAllMarkets = async () => {
-    let i = 0
+    const i = 0
     const markets: Array<{
       market: Market
       marketName: string
@@ -230,9 +234,10 @@ export function useAllMarkets() {
     )
   }
 
-  const memoizedGetAllMarkets = useMemo(() => getAllMarkets, [
-    JSON.stringify(customMarkets),
-  ])
+  const memoizedGetAllMarkets = useMemo(
+    () => getAllMarkets,
+    [JSON.stringify(customMarkets)]
+  )
 
   // console.log('memoizedGetAllMarkets', memoizedGetAllMarkets)
 
@@ -257,9 +262,9 @@ export function useUnmigratedOpenOrdersAccounts() {
     let deprecatedOpenOrdersAccounts = []
     const deprecatedProgramIds = Array.from(
       new Set(
-        USE_MARKETS.filter(
-          ({ deprecated }) => deprecated
-        ).map(({ programId }) => programId.toBase58())
+        USE_MARKETS.filter(({ deprecated }) => deprecated).map(
+          ({ programId }) => programId.toBase58()
+        )
       )
     ).map((publicKeyStr) => new PublicKey(publicKeyStr))
     let programId
@@ -477,10 +482,10 @@ export function useMarkPrice() {
   const [orderbook] = useOrderbook(2)
 
   useEffect(() => {
-    let bb = orderbook?.bids?.length > 0 && Number(orderbook.bids[0][0])
-    let ba = orderbook?.asks?.length > 0 && Number(orderbook.asks[0][0])
+    const bb = orderbook?.bids?.length > 0 && Number(orderbook.bids[0][0])
+    const ba = orderbook?.asks?.length > 0 && Number(orderbook.asks[0][0])
 
-    let markPrice = bb && ba ? (bb + ba) / 2 : null
+    const markPrice = bb && ba ? (bb + ba) / 2 : null
 
     setMarkPrice(markPrice)
   }, [orderbook])
@@ -518,8 +523,8 @@ export function _useUnfilteredTrades(limit = 10000) {
 
 export function useOrderbookAccounts() {
   const { market } = useMarket()
-  let bidData = useAccountData(market && market._decoded.bids)
-  let askData = useAccountData(market && market._decoded.asks)
+  const bidData = useAccountData(market && market._decoded.bids)
+  const askData = useAccountData(market && market._decoded.asks)
   return {
     bidOrderbook: bidData ? Orderbook.decode(market, bidData) : null,
     askOrderbook: askData ? Orderbook.decode(market, askData) : null,
@@ -578,19 +583,20 @@ const useOpenOrdersPubkeys = (): string[] => {
       (a: { freeSlotBits: typeof BN }, b: { freeSlotBits: typeof BN }) =>
         a?.freeSlotBits?.cmp(b?.freeSlotBits)
     )
-    const sortedAccountsByUnsettledBalances = sortedAccountsByCountOfExistingOpenOrders.sort(
-      (
-        a: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN },
-        b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
-      ) =>
-        a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
+    const sortedAccountsByUnsettledBalances =
+      sortedAccountsByCountOfExistingOpenOrders.sort(
+        (
+          a: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN },
+          b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
+        ) =>
+          a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
           a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
-          ? -1
-          : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
-            a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
+            ? -1
+            : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
+              a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
             ? 1
             : 0
-    )
+      )
 
     console.log(
       '[getOpenOrdersAccounts] current openOrderAccount: ',
@@ -1058,8 +1064,8 @@ export function useBalances() {
       orders:
         baseExists && market
           ? market.baseSplSizeToNumber(
-            openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
-          )
+              openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
+            )
           : null,
       openOrders,
       unsettled:
@@ -1077,8 +1083,8 @@ export function useBalances() {
       orders:
         quoteExists && market
           ? market.quoteSplSizeToNumber(
-            openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
-          )
+              openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
+            )
           : null,
       unsettled:
         quoteExists && market
@@ -1096,7 +1102,7 @@ export function useWalletBalancesForAllMarkets() {
   const allMarkets = useAllMarkets()
 
   async function getWalletBalancesForAllMarkets() {
-    let balances = []
+    const balances = []
     if (!connected) {
       return balances
     }
@@ -1192,7 +1198,9 @@ export function useUnmigratedDeprecatedMarkets() {
       } catch (e) {
         console.log('Failed loading market', marketInfo.name, e)
         const rpcUrl = getProviderNameFromUrl({ rawConnection: connection })
-        Metrics.sendMetrics({ metricName: `error.rpc.${rpcUrl}.unmigratedMarketFetch` })
+        Metrics.sendMetrics({
+          metricName: `error.rpc.${rpcUrl}.unmigratedMarketFetch`,
+        })
         notify({
           message: 'Error loading market',
           description: e.message,
@@ -1231,7 +1239,6 @@ export function getMarketInfos(customMarkets) {
     programId: new PublicKey(m.programId),
   }))
 
-
   const awesomeMarkets = useAwesomeMarkets()
   // TODO: we should use useMarketsList first to not find
   // pair from custom market by name (in this way we cover case when pair with
@@ -1243,10 +1250,8 @@ export function useSelectedTokenAccounts(): [
   SelectedTokenAccounts,
   (newSelectedTokenAccounts: SelectedTokenAccounts) => void
 ] {
-  const [
-    selectedTokenAccounts,
-    setSelectedTokenAccounts,
-  ] = useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
+  const [selectedTokenAccounts, setSelectedTokenAccounts] =
+    useLocalStorageState<SelectedTokenAccounts>('selectedTokenAccounts', {})
   return [selectedTokenAccounts, setSelectedTokenAccounts]
 }
 

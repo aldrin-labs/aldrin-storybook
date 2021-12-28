@@ -23,9 +23,8 @@ import {
   CREATE_FARMING_TICKET_SOL_FEE,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
 } from '@sb/dexUtils/common/config'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useConnection, useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
@@ -77,27 +76,25 @@ const Popup = (props: StakePopupProps) => {
   const [operationLoading, setOperationLoading] = useState(false)
 
   const { wallet } = useWallet()
-  const connection = useConnection()
+  const connection = useMultiEndpointConnection()
 
   const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
   const farmingState = selectedPool.farming && selectedPool.farming[0]
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
-  const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
 
   const poolTokenPrice = calculatePoolTokenPrice({
     pool: selectedPool,
     dexTokensPricesMap,
   })
 
-  const totalStakedLpTokensUSD =
-    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice
+  const totalStakedLpTokensUSD = Math.max(
+    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice,
+    1000
+  )
 
   const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-
-  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
-  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
 
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0
@@ -140,8 +137,9 @@ const Popup = (props: StakePopupProps) => {
     ),
   ]
     .map((farmingTokenMint, i, arr) => {
-      return `${getTokenNameByMintAddress(farmingTokenMint)} ${i !== arr.length - 1 ? 'X ' : ''
-        }`
+      return `${getTokenNameByMintAddress(farmingTokenMint)} ${
+        i !== arr.length - 1 ? 'X ' : ''
+      }`
     })
     .join('')
     .replace(',', '')
@@ -164,7 +162,6 @@ const Popup = (props: StakePopupProps) => {
         setOperationLoading(false)
       }}
       maxWidth="md"
-      open={open}
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify="space-between" width="100%">
@@ -301,8 +298,8 @@ const Popup = (props: StakePopupProps) => {
                 result === 'success'
                   ? 'Successfully staked.'
                   : result === 'failed'
-                    ? 'Staking failed, please try again later or contact us in telegram.'
-                    : 'Staking cancelled.',
+                  ? 'Staking failed, please try again later or contact us in telegram.'
+                  : 'Staking cancelled.',
             })
 
             const clearPoolWaitingForUpdate = () =>
@@ -332,6 +329,5 @@ const Popup = (props: StakePopupProps) => {
     </DialogWrapper>
   )
 }
-
 
 export const StakePopup = withTheme()(Popup)
