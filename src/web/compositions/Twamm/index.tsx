@@ -51,13 +51,17 @@ const TwammComponent = ({
       setPairSettings(pairSettingsRes);
     });
 
+    handleGetOrderArray();
+  }, [])
+
+  const handleGetOrderArray = () => {
     getOrderArray({
       wallet,
       connection,
     }).then(orderArrayRes => {
       setOrderArray(orderArrayRes);
     });
-  }, [])
+  }
 
   if(!pairSettings.length || !orderArray.length) {
     return null;
@@ -167,6 +171,7 @@ const TwammComponent = ({
             <PlaceOrder
               pairSettings={pairSettings}
               orderArray={orderArray}
+              handleGetOrderArray={handleGetOrderArray}
             />
           </TabPanel>
           <TabPanel>

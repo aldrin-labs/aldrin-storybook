@@ -66,12 +66,14 @@ const PlaceOrder = ({
   getPoolsInfoQuery,
   pairSettings,
   orderArray,
+  handleGetOrderArray,
 }: {
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   pairSettings: any
   orderArray: any
+  handleGetOrderArray: () => void
 }) => {
   const [selectedPairSettings, setSelectedPairSettings] = useState(pairSettings[0]);
 
@@ -516,7 +518,8 @@ const PlaceOrder = ({
                       amount: new BN(+baseAmount * 10 ** baseTokenDecimals),
                       timeLength: new BN(orderLength),
                       pairSettings: selectedPairSettings,
-                      mint: new PublicKey(replaceMint(baseTokenMintAddress)),
+                      mintFrom: new PublicKey(replaceMint(baseTokenMintAddress)),
+                      mintTo: new PublicKey(replaceMint(quoteTokenMintAddress)),
                       orders: [],
                       orderArray,
                     })
@@ -544,6 +547,7 @@ const PlaceOrder = ({
                       setBaseAmount('')
                       setQuoteAmount('')
                       setOrderLength(0)
+                      handleGetOrderArray()
                     }
 
                     // remove loader

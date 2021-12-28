@@ -8,6 +8,7 @@ import { WalletAdapter } from '../types'
 import {isTransactionFailed, sendTransaction} from '@sb/dexUtils/send';
 import BN from "bn.js";
 import {checkAccountForMint} from "@sb/dexUtils/twamm/checkAccountForMint";
+import {initializeOrderArray} from "@sb/dexUtils/twamm/initializeOrderArray";
 
 export const addOrder = async ({
   wallet,
@@ -16,8 +17,8 @@ export const addOrder = async ({
   amount,
   timeLength,
   pairSettings,
-  mint,
-  orders,
+  mintFrom,
+  mintTo,
   orderArray,
 }: {
   wallet: WalletAdapter
@@ -26,7 +27,8 @@ export const addOrder = async ({
   amount: BN,
   timeLength: BN,
   pairSettings: any,
-  mint: PublicKey,
+  mintFrom: PublicKey,
+  mintTo: PublicKey,
   orders: PublicKey[],
   orderArray: any
 }) => {
@@ -52,7 +54,17 @@ export const addOrder = async ({
     }
   })
 
-  const userTokenAccount = await checkAccountForMint({wallet, connection, mint, create: false});
+  if(orderArrayFiltered.length === 0) {
+    // initializeOrderArray({
+    //   wallet,
+    //   connection,
+    //   pairSettings,
+    //   mintFrom,
+    //   mintTo,
+    // })
+  }
+
+  const userTokenAccount = await checkAccountForMint({wallet, connection, mint: mintFrom, create: false});
 
   const addOrderInstruction = program.instruction.addOrder(Side.Ask, amount, timeLength, {
     accounts: {

@@ -9,7 +9,7 @@ import {sendTransaction} from '@sb/dexUtils/send';
 import BN from "bn.js";
 import {checkAccountForMint} from "@sb/dexUtils/twamm/checkAccountForMint";
 
-export const addOrder = async ({
+export const initializeOrderArray = async ({
   wallet,
   connection,
   programAddress = TWAMM_PROGRAM_ADDRESS,
@@ -40,8 +40,8 @@ export const addOrder = async ({
   };
 
   const orderArray = Keypair.generate();
-  const tokenAccountFrom = await checkAccountForMint({wallet, connection, mintFrom, create: false});
-  const tokenAccountTo = await checkAccountForMint({wallet, connection, mintTo, create: false});
+  const tokenAccountFrom = await checkAccountForMint({wallet, connection, mint: mintFrom, create: false});
+  const tokenAccountTo = await checkAccountForMint({wallet, connection, mint: mintTo, create: false});
 
   let [askSigner, askSignerNonce] = await PublicKey.findProgramAddress(
     [orderArray.publicKey.toBuffer()],
