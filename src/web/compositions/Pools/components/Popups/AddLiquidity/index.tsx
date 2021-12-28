@@ -451,8 +451,6 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               return
             }
 
-            console.log('userPoolTokenAccount', userPoolTokenAccount)
-
             // loader in popup button
             setOperationLoading(true)
             // loader in table button
