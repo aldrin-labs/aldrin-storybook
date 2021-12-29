@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js'
 
 export type TwammOrder = {
+  index: number
   isInitialized: boolean
   startTime: number
   endTime: number

@@ -6,7 +6,15 @@ import {DarkTooltip} from "@sb/components/TooltipCustom/Tooltip";
 import {SvgIcon} from "@sb/components";
 import QuestionIcon from "@icons/question.svg";
 
-const OrderStats = () => {
+const OrderStats = ({
+  baseSymbol,
+  cancellingFee,
+  placingFee,
+}: {
+  baseSymbol: string,
+  cancellingFee: number,
+  placingFee: number,
+}) => {
   return (
     <OrderStatsContainer>
       <StatsItem>
@@ -53,27 +61,27 @@ const OrderStats = () => {
         </StatsValue>
       </StatsItem>
 
-      <StatsItem>
-        <Text
-          fontFamily="Avenir Next Light"
-          color="#F8FAFF"
-          fontSize="1.3rem">
-          Fullfill probability:
-        </Text>
-        <StatsValue>
-          <Text
-            fontFamily="Avenir Next Demi"
-            color="#F8FAFF"
-            fontSize="1.3rem">
-            99%
-          </Text>
-          <DarkTooltip title='99%'>
-            <span>
-              <SvgIcon src={QuestionIcon} width="16px" height="16px" />
-            </span>
-          </DarkTooltip>
-        </StatsValue>
-      </StatsItem>
+      {/*<StatsItem>*/}
+      {/*  <Text*/}
+      {/*    fontFamily="Avenir Next Light"*/}
+      {/*    color="#F8FAFF"*/}
+      {/*    fontSize="1.3rem">*/}
+      {/*    Fullfill probability:*/}
+      {/*  </Text>*/}
+      {/*  <StatsValue>*/}
+      {/*    <Text*/}
+      {/*      fontFamily="Avenir Next Demi"*/}
+      {/*      color="#F8FAFF"*/}
+      {/*      fontSize="1.3rem">*/}
+      {/*      99%*/}
+      {/*    </Text>*/}
+      {/*    <DarkTooltip title='99%'>*/}
+      {/*      <span>*/}
+      {/*        <SvgIcon src={QuestionIcon} width="16px" height="16px" />*/}
+      {/*      </span>*/}
+      {/*    </DarkTooltip>*/}
+      {/*  </StatsValue>*/}
+      {/*</StatsItem>*/}
 
       <StatsItem>
         <Text
@@ -87,9 +95,9 @@ const OrderStats = () => {
             fontFamily="Avenir Next Demi"
             color="#45AC14"
             fontSize="1.3rem">
-            $1550.00
+            ${placingFee}
           </Text>
-          <DarkTooltip title='$1550.00'>
+          <DarkTooltip title={`$${placingFee}`}>
             <span>
               <SvgIcon src={QuestionIcon} width="16px" height="16px" />
             </span>
@@ -131,9 +139,9 @@ const OrderStats = () => {
             fontFamily="Avenir Next Demi"
             color="#45AC14"
             fontSize="1.3rem">
-            10.00 RIN
+            ${cancellingFee}
           </Text>
-          <DarkTooltip title='10.00 RIN'>
+          <DarkTooltip title={`$${cancellingFee}`}>
             <span>
               <SvgIcon src={QuestionIcon} width="16px" height="16px" />
             </span>

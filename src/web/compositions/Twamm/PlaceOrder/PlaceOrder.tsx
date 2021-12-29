@@ -34,10 +34,6 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
-
-
-
-
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import ScalesIcon from '@icons/scales.svg'
@@ -63,11 +59,13 @@ import { getTokenDataByMint } from '../../Pools/utils'
 import OrderStats from './components/OrderStats/OrderStats'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 const PlaceOrder = ({
   theme,
   publicKey,
   getPoolsInfoQuery,
+  getDexTokensPricesQuery,
   pairSettings,
   orderArray,
   handleGetOrderArray,
@@ -75,6 +73,7 @@ const PlaceOrder = ({
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   pairSettings: any
   orderArray: any
   handleGetOrderArray: () => void
@@ -87,7 +86,6 @@ const PlaceOrder = ({
   const connection = useConnection()
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
   // const [openOrdersAccounts] = useOpenOrdersAccounts()
-  console.log(allTokensData, 'allTokensData')
   const tokensMap = useTokenInfos()
 
   const [orderLength, setOrderLength] = useState(0)
@@ -162,10 +160,24 @@ const PlaceOrder = ({
   const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
   const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
 
+  const baseTokenPrice =
+    getDexTokensPricesQuery?.getDexTokensPrices?.filter(
+      (el) => el.symbol === baseSymbol
+    )[0]?.price || 0;
+
   const {
     baseTokenAmount: poolAmountTokenA,
     quoteTokenAmount: poolAmountTokenB,
   } = poolBalances
+
+  const replaceMint = (mint: string) => {
+    if(mint === 'So11111111111111111111111111111111111111112') {
+      return pairSettings[0].baseTokenMint.toString();
+    } else if(mint === 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v') {
+      return pairSettings[0].quoteTokenMint.toString();
+    }
+    return mint;
+  }
 
   let {
     address: userBaseTokenAccount,
@@ -173,7 +185,7 @@ const PlaceOrder = ({
     decimals: baseTokenDecimals,
   } = getTokenDataByMint(
     allTokensData,
-    selectedPairSettings.baseTokenMint.toString(),
+    replaceMint(baseTokenMintAddress),
     selectedBaseTokenAddressFromSeveral
   )
 
@@ -194,7 +206,7 @@ const PlaceOrder = ({
     amount: maxQuoteAmount,
   } = getTokenDataByMint(
     allTokensData,
-    selectedPairSettings.quoteTokenMint.toString(),
+    replaceMint(quoteTokenMintAddress),
     selectedQuoteTokenAddressFromSeveral
   )
 
@@ -324,14 +336,14 @@ const PlaceOrder = ({
     setOrderLength(+event.target.value)
   }
 
-  const replaceMint = (mint: string) => {
-    if (mint === 'So11111111111111111111111111111111111111112') {
-      return pairSettings[0].baseTokenMint.toString()
+  const checkSide = (mintTo, mintFrom) => {
+    let side = null;
+    if(mintFrom === selectedPairSettings.baseTokenMint.toString() && mintTo === selectedPairSettings.quoteTokenMint.toString()) {
+      side = 'ask';
+    } else if(mintTo === selectedPairSettings.baseTokenMint.toString() && mintFrom === selectedPairSettings.quoteTokenMint.toString()) {
+      side = 'bid';
     }
-    if (mint === 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v') {
-      return pairSettings[0].quoteTokenMint.toString()
-    }
-    return mint
+    return side;
   }
 
   const mints = [...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]
@@ -342,6 +354,10 @@ const PlaceOrder = ({
   //   // }
   //   filteredMints.push([pair.baseTokenMint.toString(), pair.quoteTokenMint.toString()])
   // })
+
+  const placingFee = parseInt(selectedPairSettings.fees.placingFeeNumerator.toString())/parseInt(selectedPairSettings.fees.placingFeeDenominator.toString());
+  const cancellingFee = parseInt(selectedPairSettings.fees.cancellingFeeNumerator.toString())/parseInt(selectedPairSettings.fees.cancellingFeeDenominator.toString());
+  let maxOrderSize = parseFloat(100/baseTokenPrice);
 
   return (
     <SwapPageContainer
@@ -385,9 +401,9 @@ const PlaceOrder = ({
                   }}
                   customStats={[
                     {
-                      label: 'Maximum Order Size',
-                      value: '0.05',
-                    },
+                      label: "Maximum Order Size",
+                      value: maxOrderSize
+                    }
                   ]}
                 />
               </RowContainer>
@@ -487,7 +503,11 @@ const PlaceOrder = ({
           </Cell>
           <Cell col={12} colSm={6}>
             <OrderStatsWrapper>
-              <OrderStats pairSettings={selectedPairSettings} />
+              <OrderStats
+                baseSymbol={baseSymbol}
+                cancellingFee={cancellingFee}
+                placingFee={placingFee}
+              />
               {!publicKey ? (
                 <BtnCustom
                   theme={theme}
@@ -531,6 +551,7 @@ const PlaceOrder = ({
 
                     setIsOrderInProgress(true)
 
+                    const side = checkSide(new PublicKey(replaceMint(quoteTokenMintAddress)).toString(), new PublicKey(replaceMint(baseTokenMintAddress)).toString());
                     const result = await addOrder({
                       wallet,
                       connection,
@@ -543,9 +564,9 @@ const PlaceOrder = ({
                       mintTo: new PublicKey(replaceMint(quoteTokenMintAddress)),
                       orders: [],
                       orderArray,
+                      side,
                     })
 
-                    console.log('resultAddOrder', result)
 
                     notify({
                       type: result === 'success' ? 'success' : 'error',
@@ -656,5 +677,11 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
+  }),
+  queryRendererHoc({
+    name: 'getDexTokensPricesQuery',
+    query: getDexTokensPrices,
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 10000,
   })
 )(PlaceOrder)

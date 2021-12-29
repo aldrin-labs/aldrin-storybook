@@ -162,24 +162,24 @@ const TwammComponent = ({
                 <TabTitle>Order History</TabTitle>
               </TabStyled>
             </TabListStyled>
-            <BtnCustom
-              theme={theme}
-              onClick={() => {}}
-              needMinWidth={false}
-              btnWidth="21.3rem"
-              height="4rem"
-              fontSize="1.4rem"
-              borderRadius="1.1rem"
-              borderColor="#45AC14"
-              btnColor="#fff"
-              backgroundColor="#45AC14"
-              textTransform="none"
-              margin="0"
-              transition="all .4s ease-out"
-              style={{ whiteSpace: 'nowrap' }}
-            >
-              Trade on TWAMM
-            </BtnCustom>
+            {/*<BtnCustom*/}
+            {/*  theme={theme}*/}
+            {/*  onClick={() => {}}*/}
+            {/*  needMinWidth={false}*/}
+            {/*  btnWidth="21.3rem"*/}
+            {/*  height="4rem"*/}
+            {/*  fontSize="1.4rem"*/}
+            {/*  borderRadius="1.1rem"*/}
+            {/*  borderColor="#45AC14"*/}
+            {/*  btnColor="#fff"*/}
+            {/*  backgroundColor="#45AC14"*/}
+            {/*  textTransform="none"*/}
+            {/*  margin="0"*/}
+            {/*  transition="all .4s ease-out"*/}
+            {/*  style={{ whiteSpace: 'nowrap' }}*/}
+            {/*>*/}
+            {/*  Trade on TWAMM*/}
+            {/*</BtnCustom>*/}
           </TabsListWrapper>
 
           <TabPanel>

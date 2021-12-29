@@ -49,7 +49,7 @@ export const getCloseOrderTransactions = async (params: {
 
   const closeOrderTransaction = await program.instruction.closeOrder(
     Side.Ask,
-    new BN(1),
+    new BN(order.index),
     {
       accounts: {
         pairSettings: new PublicKey(pairSettings.publicKey),
@@ -66,7 +66,7 @@ export const getCloseOrderTransactions = async (params: {
     }
   )
 
-  return closeOrderTransaction
+  return new Transaction().add(closeOrderTransaction)
 }
 
 export const closeOrder = async ({

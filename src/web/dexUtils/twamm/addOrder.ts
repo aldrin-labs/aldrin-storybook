@@ -9,6 +9,7 @@ import {isTransactionFailed, sendTransaction} from '@sb/dexUtils/send';
 import BN from "bn.js";
 import {checkAccountForMint} from "@sb/dexUtils/twamm/checkAccountForMint";
 import {initializeOrderArray} from "@sb/dexUtils/twamm/initializeOrderArray";
+import { signAndSendSingleTransaction } from '../transactions'
 
 export const addOrder = async ({
   wallet,
@@ -20,6 +21,7 @@ export const addOrder = async ({
   mintFrom,
   mintTo,
   orderArray,
+  side,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -30,7 +32,8 @@ export const addOrder = async ({
   mintFrom: PublicKey,
   mintTo: PublicKey,
   orders: PublicKey[],
-  orderArray: any
+  orderArray: any,
+  side: string | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -44,9 +47,11 @@ export const addOrder = async ({
     Ask: { ask: {} },
   };
 
+  const sideSelected = side === 'ask' ? Side.Ask : side === 'bid' ? Side.Bid : null;
+
   let orderArrayFiltered = [];
   orderArray.forEach(order => {
-    if(order.side.ask && order.pairSettings.toString() === pairSettings.pubkey.toString()) {
+    if(order.side[side] && order.pairSettings.toString() === pairSettings.pubkey.toString()) {
       const notFullOrders = order.orders.filter(order => !order.isInitialized);
       if(notFullOrders.length > 0) {
         orderArrayFiltered.push(order);
@@ -54,26 +59,34 @@ export const addOrder = async ({
     }
   })
 
+  const transaction = new Transaction();
+  console.log('before initialize order array', orderArrayFiltered)
+  let newTwammFromTokenVault = null;
   if(orderArrayFiltered.length === 0) {
-    // initializeOrderArray({
-    //   wallet,
-    //   connection,
-    //   pairSettings,
-    //   mintFrom,
-    //   mintTo,
-    // })
+    const newOrderArray = await initializeOrderArray({
+      wallet,
+      connection,
+      pairSettings,
+      mintFrom,
+      mintTo,
+      side: sideSelected,
+    });
+    orderArrayFiltered.push(newOrderArray?.orderArray);
+    newTwammFromTokenVault = newOrderArray?.tokenAccountFrom;
   }
+
+  console.log('after initialize order array', orderArrayFiltered, sideSelected)
 
   const userTokenAccount = await checkAccountForMint({wallet, connection, mint: mintFrom, create: false});
 
-  const addOrderInstruction = program.instruction.addOrder(Side.Ask, amount, timeLength, {
+  const addOrderInstruction = program.instruction.addOrder(sideSelected, amount, timeLength, {
     accounts: {
       pairSettings: pairSettings.pubkey,
-      orders: orderArrayFiltered[0].pubkey,
+      orders: orderArrayFiltered[0].pubkey || orderArrayFiltered[0].publicKey,
       userTokenAccount,
       userAuthority: wallet.publicKey,
-      twammFromTokenVault: orderArrayFiltered[0].twammFromTokenVault,
-      feeAccount: pairSettings.baseTokenFeeAccount,
+      twammFromTokenVault: newTwammFromTokenVault || orderArrayFiltered[0].twammFromTokenVault,
+      feeAccount: side === 'ask' ? pairSettings.baseTokenFeeAccount : side === 'bid' ? pairSettings.quoteTokenFeeAccount : null,
       pyth: pairSettings.pyth,
       tokenProgram: TOKEN_PROGRAM_ID,
       clock: SYSVAR_CLOCK_PUBKEY,
@@ -81,8 +94,8 @@ export const addOrder = async ({
   });
 
   try {
-    const tx = await sendTransaction({
-      transaction: new Transaction().add(addOrderInstruction),
+    const tx = await signAndSendSingleTransaction({
+      transaction: transaction.add(addOrderInstruction),
       wallet,
       signers: [],
       connection,

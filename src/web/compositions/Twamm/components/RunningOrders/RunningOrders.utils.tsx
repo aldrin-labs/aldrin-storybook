@@ -16,9 +16,10 @@ import { PairSettings, TwammOrder } from '@sb/dexUtils/twamm/types'
 import { WalletAdapter } from '@sb/dexUtils/types'
 import { toMap } from '@sb/utils'
 
-import { secondsToHms } from '@core/utils/dateUtils'
+import { estimatedTime, secondsToHms } from '@core/utils/dateUtils'
 
 import { RedButton } from '../../styles'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 
 export const runningOrdersColumnNames = [
   { label: 'Pair/Side', id: 'pairSide' },
@@ -90,12 +91,12 @@ export const combineRunningOrdersTable = ({
 
     const side = runningOrder.side.ask ? 'Sell' : 'Buy'
 
-    const remainingAmount = +runningOrder?.amount - +runningOrder?.amountFilled
+    const remainingAmount = (+runningOrder?.amount - +runningOrder?.amountFilled) / 10 ** currentPairSettings.baseMintDecimals
 
     const avgFilledPrice =
       runningOrder.amountFilled / runningOrder.tokensSwapped || 0
 
-    const remainingTime = (runningOrder.endTime - Date.now() / 1000) * -1
+    const remainingTime = (runningOrder.endTime - Date.now() / 1000)
 
     const filledPers =
       (runningOrder.amountFilled * 100) / runningOrder.amountToFill
@@ -117,6 +118,8 @@ export const combineRunningOrdersTable = ({
       userTokensData,
       currentPairSettings.quoteTokenMint
     )
+
+    console.log("remainingTime", remainingTime)
 
     console.log({ userBaseTokenAccount, userQuoteTokenAccount })
 
@@ -142,7 +145,7 @@ export const combineRunningOrdersTable = ({
       amount: {
         render: (
           <StyledTitle color={COLORS.main} fontSize="1.5rem">
-            {el.amount} {base}
+            {stripByAmount(runningOrder.amount / 10 ** currentPairSettings.baseMintDecimals)} {base}
           </StyledTitle>
         ),
         contentToSort: '',
@@ -196,7 +199,7 @@ export const combineRunningOrdersTable = ({
       remainingTime: {
         render: (
           <StyledTitle color={COLORS.main} fontSize="1.5rem">
-            {secondsToHms(remainingTime)}
+            {estimatedTime(remainingTime)}
           </StyledTitle>
         ),
         contentToSort: '',
@@ -205,6 +208,7 @@ export const combineRunningOrdersTable = ({
       actions: {
         render: (
           <RedButton
+            style={{ cursor: 'pointer' }}
             onClick={async () => {
               const result = await closeOrder({
                 wallet,
@@ -223,5 +227,5 @@ export const combineRunningOrdersTable = ({
         showOnMobile: false,
       },
     }
-  })
+  }).filter(r => !!r)
 }
