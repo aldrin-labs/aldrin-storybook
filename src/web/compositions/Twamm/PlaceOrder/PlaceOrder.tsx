@@ -165,6 +165,11 @@ const PlaceOrder = ({
       (el) => el.symbol === baseSymbol
     )[0]?.price || 0;
 
+  const quoteTokenPrice =
+    getDexTokensPricesQuery?.getDexTokensPrices?.filter(
+      (el) => el.symbol === quoteSymbol
+    )[0]?.price || 0;
+
   const {
     baseTokenAmount: poolAmountTokenA,
     quoteTokenAmount: poolAmountTokenB,
@@ -217,10 +222,8 @@ const PlaceOrder = ({
     setBaseTokenAddressFromSeveral(selectedQuoteTokenAddressFromSeveral)
     setQuoteTokenAddressFromSeveral(selectedBaseTokenAddressFromSeveral)
 
-    await setBaseAmountWithQuote(
-      quoteAmount,
-      selectedPool?.tokenA === quoteTokenMintAddress
-    )
+    setBaseAmountWithQuote(quoteAmount)
+    setQuoteAmountWithBase(baseAmount)
   }
 
   const poolsAmountDiff = isSwapBaseToQuote
@@ -272,30 +275,23 @@ const PlaceOrder = ({
     ? new PublicKey(userPoolQuoteTokenAccount)
     : null
 
-  const setValueBasedOnRange = (min: number, max: number, value: number) => {
-
+  const setValueBasedOnRange = (value: number, min: number, max: number) => {
+    let newValue = value;
+    if(value < min) {
+      newValue = min;
+    } else if(value > max) {
+      newValue = max;
+    }
+    return newValue;
   }
 
   const setBaseAmountWithQuote = async (
     newBaseAmount: string | number,
     isSwapBaseToQuoteFromArgs?: boolean
   ) => {
-    let newBaseAmountCopy = newBaseAmount;
-    if(newBaseAmountCopy > maxOrderSize) {
-      newBaseAmountCopy = maxOrderSize
-    } else if(newBaseAmountCopy < minOrderSize) {
-      newBaseAmountCopy = minOrderSize;
-    }
+    let newBaseAmountCopy = setValueBasedOnRange(newBaseAmount, minOrderSize, maxOrderSize);
     setBaseAmount(newBaseAmountCopy)
-    console.log('tokenDecimals', baseTokenDecimals)
-    console.log('newBaseAmount', newBaseAmount)
-    // let tokensMapCopy = [...tokensMap.entries()];
-    // console.log(tokensMapCopy, 'tokensMapCopy')
-    // tokensMapCopy.forEach((token, index) => {
-    //   if(token[0] === baseTokenMintAddress) {
-    //     console.log('poolpos')
-    //   }
-    // })
+
     const swapAmountOut = await getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newBaseAmountCopy,
       isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
@@ -320,10 +316,12 @@ const PlaceOrder = ({
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
     const isSwapBaseToQuoteForQuoteChange = !isSwapBaseToQuote
 
-    setQuoteAmount(newQuoteAmount)
+    let newQuoteAmountCopy = setValueBasedOnRange(newQuoteAmount, minOrderSizeQuote, maxOrderSizeQuote);;
+
+    setQuoteAmount(newQuoteAmountCopy)
 
     const swapAmountOut = await getMinimumReceivedAmountFromSwap({
-      swapAmountIn: +newQuoteAmount,
+      swapAmountIn: +newQuoteAmountCopy,
       isSwapBaseToQuote: isSwapBaseToQuoteForQuoteChange,
       pool: selectedPool,
       wallet,
@@ -358,20 +356,21 @@ const PlaceOrder = ({
   }
 
   const mints = [...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]
-  // let filteredMints: string[] = [...mints];
-  // pairSettings.forEach(pair => {
-  //   // if(mints.includes(pair.baseTokenMint.toString()) || mints.includes(pair.quoteTokenMint.toString())) {
-  //   //   filteredMints.push(pair)
-  //   // }
-  //   filteredMints.push([pair.baseTokenMint.toString(), pair.quoteTokenMint.toString()])
-  // })
+
+  const getBasePairDecimals = (mint) => {
+    if(selectedPairSettings.baseTokenMint.toString() === mint) {
+      return selectedPairSettings.baseMintDecimals;
+    } else if(selectedPairSettings.quoteTokenMint.toString() === mint) {
+      return selectedPairSettings.quoteMintDecimals;
+    }
+  }
 
   const placingFee = parseInt(selectedPairSettings.fees.placingFeeNumerator.toString())/parseInt(selectedPairSettings.fees.placingFeeDenominator.toString());
   const cancellingFee = parseInt(selectedPairSettings.fees.cancellingFeeNumerator.toString())/parseInt(selectedPairSettings.fees.cancellingFeeDenominator.toString());
-  const maxOrderSize = (100/baseTokenPrice).toFixed(selectedPairSettings.baseMintDecimals);
-  const minOrderSize = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, selectedPairSettings.baseMintDecimals)
-  console.log('maxOrderSize', {maxOrderSize, baseTokenPrice, selectedPairSettings: selectedPairSettings.baseMintDecimals})
-  console.log('minOrderSize', {minOrderSize})
+  const maxOrderSize = (100/baseTokenPrice).toFixed(getBasePairDecimals(replaceMint(baseTokenMintAddress)));
+  const maxOrderSizeQuote = (100/quoteTokenPrice).toFixed(getBasePairDecimals(replaceMint(quoteTokenMintAddress)));
+  const minOrderSize = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, getBasePairDecimals(replaceMint(baseTokenMintAddress)));
+  const minOrderSizeQuote = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, getBasePairDecimals(replaceMint(baseTokenMintAddress))) * baseTokenPrice;
 
   return (
     <SwapPageContainer
