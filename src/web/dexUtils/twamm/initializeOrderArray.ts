@@ -1,13 +1,12 @@
 import {
-  Connection, Keypair, PublicKey, SYSVAR_CLOCK_PUBKEY, Transaction,
+  Account,
+  Connection, Keypair, PublicKey, SystemProgram, Transaction,
 } from '@solana/web3.js'
-import { TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
+import {Token, TOKEN_PROGRAM_ID} from '@sb/dexUtils/token/token'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import {TWAMM_PROGRAM_ADDRESS} from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import {sendTransaction} from '@sb/dexUtils/send';
-import BN from "bn.js";
-import {checkAccountForMint} from "@sb/dexUtils/twamm/checkAccountForMint";
 
 export const initializeOrderArray = async ({
   wallet,
@@ -16,17 +15,15 @@ export const initializeOrderArray = async ({
   pairSettings,
   mintFrom,
   mintTo,
+  side,
 }: {
   wallet: WalletAdapter
   connection: Connection
   programAddress?: string,
-  amount: BN,
-  timeLength: BN,
   pairSettings: any,
   mintFrom: PublicKey,
   mintTo: PublicKey,
-  orders: PublicKey[],
-  orderArray: any
+  side: {ask: {}} | {bid: {}} | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -34,39 +31,68 @@ export const initializeOrderArray = async ({
     programAddress,
   })
 
-  const Side = {
-    Bid: { bid: {} },
-    Ask: { ask: {} },
-  };
-
+  console.log('finalside', side)
   const orderArray = Keypair.generate();
-  const tokenAccountFrom = await checkAccountForMint({wallet, connection, mint: mintFrom, create: false});
-  const tokenAccountTo = await checkAccountForMint({wallet, connection, mint: mintTo, create: false});
 
-  let [askSigner, askSignerNonce] = await PublicKey.findProgramAddress(
+  let [signer, signerNonce] = await PublicKey.findProgramAddress(
     [orderArray.publicKey.toBuffer()],
     program.programId,
   );
 
-  const initializeOrderArrayInstruction = program.instruction.initializeOrderArray(askSignerNonce, Side.Ask, {
+  const transaction = new Transaction();
+  const createOrderArrayInstruction = await program.account.orderArray.createInstruction(orderArray);
+  transaction.add(createOrderArrayInstruction)
+
+  const tokenFrom = new Token(wallet, connection, mintFrom, TOKEN_PROGRAM_ID);
+  const tokenTo = new Token(wallet, connection, mintTo, TOKEN_PROGRAM_ID);
+
+  let tokenAccountFromInstruction = new Transaction();
+  let tokenAccountFromAccount = new Account();
+  await tokenFrom.createAccount(signer).then(res => {
+    const [publicKey, account, transaction] = res;
+    tokenAccountFromInstruction = transaction;
+    tokenAccountFromAccount = account;
+  });
+  transaction.add(tokenAccountFromInstruction);
+
+  let tokenAccountToInstruction = new Transaction();
+  let tokenAccountToAccount = new Account();
+  await tokenTo.createAccount(signer).then(res => {
+    const [publicKey, account, transaction] = res;
+    tokenAccountToInstruction = transaction;
+    tokenAccountToAccount = account;
+  });
+  transaction.add(tokenAccountToInstruction);
+
+  const initializeOrderArrayInstruction = program.instruction.initializeOrderArray(signerNonce, side, {
     accounts: {
-      pairSettings: pairSettings.publicKey,
+      pairSettings: pairSettings.pubkey,
       orders: orderArray.publicKey,
-      orderArraySigner: askSigner,
+      orderArraySigner: signer,
       initializer: wallet.publicKey,
-      twammFromTokenVault: tokenAccountFrom,
-      twammToTokenVault: tokenAccountTo,
+      twammFromTokenVault: tokenAccountFromAccount?.publicKey,
+      twammToTokenVault: tokenAccountToAccount.publicKey,
       feeAccount: pairSettings.baseTokenFeeAccount,
       tokenProgram: TOKEN_PROGRAM_ID,
-      clock: SYSVAR_CLOCK_PUBKEY,
+      systemProgram: SystemProgram.programId,
     },
   });
+  transaction.add(initializeOrderArrayInstruction)
 
-  return await sendTransaction({
-    transaction: new Transaction().add(initializeOrderArrayInstruction),
+  let returnValue = null;
+
+  await sendTransaction({
+    transaction: transaction,
     wallet,
-    signers: [orderArray],
+    signers: [orderArray, tokenAccountFromAccount, tokenAccountToAccount],
     connection,
     focusPopup: true,
+  }).then(res => {
+    console.log('returnValue', {orderArray, tokenAccountFrom: tokenAccountFromAccount.publicKey})
+    returnValue = {orderArray, tokenAccountFrom: tokenAccountFromAccount.publicKey};
+  }).catch(error => {
+    console.log('initializeOrderArrayError', error)
   });
+
+  return returnValue;
 }

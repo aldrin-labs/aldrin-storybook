@@ -29,7 +29,7 @@ export const TabListStyled = styled(TabList)`
   align-items: center;
   list-style: none;
   margin: 0;
-  margin-right: 2.7rem;
+  margin-right: 0;
   padding: 0;
   background-color: #222429;
   box-shadow: 0px 0px 2.66rem rgba(18, 0, 49, 0.24);
