@@ -49,13 +49,14 @@ export async function createBasketWithSwap({
 
   const poolPublicKey = new PublicKey(swapToken)
 
-  const { isSwapBaseToQuote, swapAmountIn, swapAmountOut } =
-    findClosestAmountToSwapForDeposit({
-      pool,
-      poolBalances,
-      userAmountTokenA: userBaseTokenAmount,
-      userAmountTokenB: userQuoteTokenAmount,
-    })
+  const {
+    swapOptions: { isSwapBaseToQuote, swapAmountIn, swapAmountOut },
+  } = findClosestAmountToSwapForDeposit({
+    pool,
+    poolBalances,
+    userAmountTokenA: userBaseTokenAmount,
+    userAmountTokenB: userQuoteTokenAmount,
+  })
 
   const [baseAmountToDeposit, quoteAmountToDeposit] = isSwapBaseToQuote
     ? [userBaseTokenAmount - swapAmountIn, userQuoteTokenAmount + swapAmountOut]

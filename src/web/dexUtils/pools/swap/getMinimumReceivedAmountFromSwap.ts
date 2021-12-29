@@ -9,11 +9,13 @@ export const getMinimumReceivedAmountFromSwap = ({
   isSwapBaseToQuote,
   pool,
   poolBalances,
+  slippage = 0,
 }: {
   swapAmountIn: number
   isSwapBaseToQuote: boolean
   pool?: PoolInfo
   poolBalances: PoolBalances
+  slippage?: number
 }): number => {
   if (!pool || swapAmountIn === 0) return 0
 
@@ -36,6 +38,11 @@ export const getMinimumReceivedAmountFromSwap = ({
       isSwapBaseToQuote,
       poolBalances,
     })
+  }
+
+  // remove slippage part if determined
+  if (slippage) {
+    swapAmountOut = swapAmountOut - (swapAmountOut / 100) * slippage
   }
 
   return swapAmountOut

@@ -1,21 +1,26 @@
-import { FindClosestAmountToSwapForDepositParams } from './findClosestAmountToSwapForDeposit'
+import { SLIPPAGE_PERCENTAGE } from '@sb/compositions/Swap/config'
+import {
+  FindClosestAmountToSwapForDepositParams,
+  SwapOptions,
+} from './findClosestAmountToSwapForDeposit'
 import { getMinimumReceivedAmountFromSwap } from './getMinimumReceivedAmountFromSwap'
-import { getPoolRatioAfterSwap, getUserRatioAfterSwap } from './getRatioAfterSwap'
+import {
+  getPoolRatioAfterSwap,
+  getUserRatioAfterSwap,
+} from './getRatioAfterSwap'
 
 interface ReverseBinarySearchParams
   extends FindClosestAmountToSwapForDepositParams {}
 
-const reverseBinarySearch = (params: ReverseBinarySearchParams) => {
+const reverseBinarySearch = (
+  params: ReverseBinarySearchParams
+): SwapOptions => {
   const { pool, poolBalances, userAmountTokenA, userAmountTokenB } = params
 
   const {
     baseTokenAmount: poolAmountTokenA,
     quoteTokenAmount: poolAmountTokenB,
   } = poolBalances
-
-  console.log({
-    poolBalances, userAmountTokenA, userAmountTokenB
-  })
 
   const poolRatioForTokenA = poolAmountTokenB / poolAmountTokenA
 
@@ -32,6 +37,7 @@ const reverseBinarySearch = (params: ReverseBinarySearchParams) => {
       isSwapBaseToQuote,
       pool,
       poolBalances,
+      slippage: SLIPPAGE_PERCENTAGE,
     })
 
   // determine min and max amount to swap
@@ -98,10 +104,28 @@ const reverseBinarySearch = (params: ReverseBinarySearchParams) => {
   const swapAmountIn = (minSwapAmountIn + maxSwapAmountIn) / 2
   const swapAmountOut = swap(swapAmountIn)
 
+  const poolRatioAfterSwap = getPoolRatioAfterSwap({
+    amountTokenA: poolAmountTokenA,
+    amountTokenB: poolAmountTokenB,
+    swapAmountIn,
+    swapAmountOut,
+    isSwapBaseToQuote,
+  })
+
+  const userAmountsRatioAfterSwap = getUserRatioAfterSwap({
+    amountTokenA: userAmountTokenA,
+    amountTokenB: userAmountTokenB,
+    swapAmountIn,
+    swapAmountOut,
+    isSwapBaseToQuote,
+  })
+
   return {
     swapAmountIn,
     swapAmountOut,
     isSwapBaseToQuote,
+    poolRatioAfterSwap,
+    userAmountsRatioAfterSwap,
   }
 }
 

@@ -1,7 +1,9 @@
+import { SLIPPAGE_PERCENTAGE } from '@sb/compositions/Swap/config'
 import BN from 'bn.js'
 import {
   ClosestAmountsToSwapResult,
   FindClosestAmountToSwapForDepositParams,
+  SwapOptions,
 } from './findClosestAmountToSwapForDeposit'
 import { getMinimumReceivedAmountFromSwap } from './getMinimumReceivedAmountFromSwap'
 import {
@@ -17,15 +19,7 @@ interface CreateSwapOptionsParams
   isSwapBaseToQuote: boolean
 }
 
-interface RatiosAfterSwap {
-  poolRatioAfterSwap: number
-  userAmountsRatioAfterSwap: number
-  isSwapBaseToQuote: boolean
-  swapAmountIn: number
-  swapAmountOut: number
-}
-
-type CreateSwapOptionsResult = RatiosAfterSwap[]
+type CreateSwapOptionsResult = SwapOptions[]
 
 const NUMBER_OF_STEPS = 100000
 
@@ -51,6 +45,7 @@ const createSwapOptions = (
       isSwapBaseToQuote,
       pool,
       poolBalances,
+      slippage: SLIPPAGE_PERCENTAGE,
     })
 
   // determine step size
@@ -95,9 +90,7 @@ const createSwapOptions = (
   return swapOptions
 }
 
-const bruteForceSearch = (
-  params: BruteForceSearchParams
-): ClosestAmountsToSwapResult => {
+const bruteForceSearch = (params: BruteForceSearchParams): SwapOptions => {
   const { pool, poolBalances, userAmountTokenA, userAmountTokenB } = params
 
   // create array of results swapping tokenA-tokenB and tokenB-tokenA
@@ -136,6 +129,8 @@ const bruteForceSearch = (
 
     return savedRatios
   })
+
+  console.log(swapAmounts)
 
   return swapAmounts
 }

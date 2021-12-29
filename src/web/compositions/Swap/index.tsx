@@ -277,23 +277,13 @@ const SwapPage = ({
     nativeSOLTokenData?.address === userBaseTokenAccount ||
     nativeSOLTokenData?.address === userQuoteTokenAccount
 
-  const transferSOLToWrapped = isPoolWithSOLToken && isNativeSOLSelected
-
   const userPoolBaseTokenAccount = isSwapBaseToQuote
     ? userBaseTokenAccount
     : userQuoteTokenAccount
 
-  const userPoolBaseTokenPublicKey = userPoolBaseTokenAccount
-    ? new PublicKey(userPoolBaseTokenAccount)
-    : null
-
   const userPoolQuoteTokenAccount = isSwapBaseToQuote
     ? userQuoteTokenAccount
     : userBaseTokenAccount
-
-  const userPoolQuoteTokenPublicKey = userPoolQuoteTokenAccount
-    ? new PublicKey(userPoolQuoteTokenAccount)
-    : null
 
   const setBaseAmountWithQuote = async (
     newBaseAmount: string | number,

@@ -10,10 +10,17 @@ export interface FindClosestAmountToSwapForDepositParams {
   userAmountTokenB: number
 }
 
-export interface ClosestAmountsToSwapResult {
+export interface SwapOptions {
+  poolRatioAfterSwap: number
+  userAmountsRatioAfterSwap: number
   isSwapBaseToQuote: boolean
   swapAmountIn: number
   swapAmountOut: number
+}
+
+export interface ClosestAmountsToSwapResult {
+  swapOptions: SwapOptions
+  userDepositPercentageOfPoolAmounts: number
 }
 
 const findClosestAmountToSwapForDeposit = (
@@ -38,9 +45,15 @@ const findClosestAmountToSwapForDeposit = (
 
   if (userDepositPercentageOfPoolAmounts >= 1) {
     // calc swap amount via brute force search due to user swap impact on pool ratio
-    return bruteForceSearch(params)
+    return {
+      swapOptions: bruteForceSearch(params),
+      userDepositPercentageOfPoolAmounts,
+    }
   } else {
-    return reverseBinarySearch(params)
+    return {
+      swapOptions: reverseBinarySearch(params),
+      userDepositPercentageOfPoolAmounts,
+    }
   }
 }
 

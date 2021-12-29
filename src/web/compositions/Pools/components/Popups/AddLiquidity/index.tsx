@@ -42,6 +42,9 @@ import { BoldHeader, Line, StyledPaper } from '../index.styles'
 import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { createBasketWithSwap } from '@sb/dexUtils/pools/actions/createBasketWithSwap'
 import { WarningLabel } from './AddLiquidity.styles'
+import { findClosestAmountToSwapForDeposit } from '@sb/dexUtils/pools/swap/findClosestAmountToSwapForDeposit'
+import { getFeesAmount } from '@sb/dexUtils/pools/swap/getFeesAmount'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 
 interface AddLiquidityPopupProps {
   theme: Theme
@@ -223,9 +226,47 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
 
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0
+
   const openFarmings = isPoolWithFarming
     ? filterOpenFarmingStates(selectedPool.farming || [])
     : []
+
+  const {
+    userDepositPercentageOfPoolAmounts,
+    swapOptions: { isSwapBaseToQuote, swapAmountIn, swapAmountOut },
+  } = findClosestAmountToSwapForDeposit({
+    pool: selectedPool,
+    poolBalances,
+    userAmountTokenA: +baseAmount,
+    userAmountTokenB: +quoteAmount,
+  })
+
+  const isUserDepositHasHighSwapImpact =
+    autoRebalanceEnabled && userDepositPercentageOfPoolAmounts >= 1
+
+  const currentPoolRatio = isSwapBaseToQuote
+    ? poolAmountTokenB / poolAmountTokenA
+    : poolAmountTokenA / poolAmountTokenB
+
+  const swapAmountsRatio = swapAmountOut / swapAmountIn
+
+  const swapImpact =
+    ((currentPoolRatio - swapAmountsRatio) / currentPoolRatio) * 100
+
+  const autoSwapAmountOutFees = getFeesAmount({
+    pool: selectedPool,
+    amount: swapAmountOut,
+  })
+
+  // TODO: add UI for this fields as on orca
+
+  console.log({
+    currentPoolRatio,
+    swapAmountsRatio,
+    swapImpact,
+    autoSwapAmountOutFees,
+    userDepositPercentageOfPoolAmounts,
+  })
 
   return (
     <DialogWrapper
@@ -364,12 +405,66 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         padding="2rem"
         style={{ background: '#303236', borderRadius: '1.2rem' }}
       >
-        <Text fontSize={'1.2rem'} fontFamily="Avenir Next">
-          {autoRebalanceEnabled
-            ? 'The amounts you specify will be automatically rebalanced to match the pool ratio. For example, if you want to deposit 0 RIN + 100 USDC, and pool ratio is 1 RIN = 10 USDC your actual deposit after rebalancing will be 5 RIN + 50 USDC. When withdrawing liquidity you will get the amount corresponding to the pool ratio at the moment of withdrawal. Auto-rebalance deposit does not protect against impermanent loss.'
-            : 'Start typing the amount in one of the fields above and the second field will fill in automatically. Enabling Auto-rebalance will allow you to deposit uneven amounts in a ratio that suits you.'}
-        </Text>
+        {isUserDepositHasHighSwapImpact ? (
+          <RowContainer direction="column">
+            <RowContainer justify="space-between">
+              <WhiteText>Rate</WhiteText>
+              <WhiteText>
+                <span
+                  style={{
+                    color: COLORS.error,
+                  }}
+                >
+                  {stripByAmount(swapAmountsRatio)} {quoteSymbol}{' '}
+                </span>{' '}
+                <span style={{ paddingLeft: '.5rem' }}>per {baseSymbol}</span>
+              </WhiteText>
+            </RowContainer>
+
+            <RowContainer justify="space-between" margin={'1rem 0 0 0'}>
+              <WhiteText>Price impact</WhiteText>
+              <WhiteText
+                style={{
+                  color: COLORS.error,
+                }}
+              >
+                {stripByAmount(swapImpact)}%
+              </WhiteText>
+            </RowContainer>
+
+            <RowContainer justify="space-between" margin={'1rem 0 0 0'}>
+              <WhiteText>Minimum received</WhiteText>
+              <WhiteText
+                style={{
+                  color: COLORS.error,
+                }}
+              >
+                {stripByAmount(swapAmountOut)}{' '}
+                {isSwapBaseToQuote ? quoteSymbol : baseSymbol}
+              </WhiteText>
+            </RowContainer>
+          </RowContainer>
+        ) : (
+          <Text fontSize={'1.2rem'} fontFamily="Avenir Next">
+            {autoRebalanceEnabled
+              ? 'The amounts you specify will be automatically rebalanced to match the pool ratio. For example, if you want to deposit 0 RIN + 100 USDC, and pool ratio is 1 RIN = 10 USDC your actual deposit after rebalancing will be 5 RIN + 50 USDC. When withdrawing liquidity you will get the amount corresponding to the pool ratio at the moment of withdrawal. Auto-rebalance deposit does not protect against impermanent loss.'
+              : 'Start typing the amount in one of the fields above and the second field will fill in automatically. Enabling Auto-rebalance will allow you to deposit uneven amounts in a ratio that suits you.'}
+          </Text>
+        )}
       </RowContainer>
+
+      {autoRebalanceEnabled && (
+        <RowContainer justify="space-between" margin="2rem 0 0 0">
+          <WhiteText>Auto-rebalance fee</WhiteText>
+          <WhiteText
+            style={{
+              color: COLORS.success,
+            }}
+          >
+            ${stripByAmount(autoSwapAmountOutFees * quoteTokenPrice)}
+          </WhiteText>
+        </RowContainer>
+      )}
 
       <RowContainer justify="space-between" margin={'2rem 0 0 0'}>
         <Row
