@@ -4,7 +4,9 @@ import { toMap } from '../../utils'
 import { TransactionAndSigners, InstructionWithLamports } from './types'
 
 const MAX_TX_SIZE = 1232 // Solana/MTU restrictions
-const KEY_SIZE = 32
+const KEY_SIZE = 33
+const EMPTY_INSTRUCTION_SIZE = 8
+const EMPTY_TRANSACTION_SIZE = 300
 const MAX_LAMPORTS = 200000
 const LAMPORTS_PER_SIG = 50
 
@@ -23,7 +25,7 @@ export const buildTransactions = (
 
   const lastTxKeys = new Set<string>()
   const signersByPk = toMap(signers, (s) => s.publicKey.toBase58())
-  let lastTxSize = 0
+  let lastTxSize = EMPTY_TRANSACTION_SIZE
   let lastTxLamports = 0
 
   for (let i = 0; i < instructions.length; i += 1) {
@@ -33,8 +35,17 @@ export const buildTransactions = (
     )
 
     const newKeys = [...instructionKeys].filter((ik) => !lastTxKeys.has(ik))
+    const keysWithSign = newKeys.filter((nk) => {
+      const meta = instruction.instruction.keys.find(
+        (_) => _.pubkey.toBase58() === nk
+      )
+      return meta?.isSigner
+    })
     const addTxSize =
-      KEY_SIZE * newKeys.length + instruction.instruction.data.byteLength
+      EMPTY_INSTRUCTION_SIZE +
+      KEY_SIZE * newKeys.length +
+      KEY_SIZE * keysWithSign.length +
+      instruction.instruction.data.byteLength
     const newTxSize = lastTxSize + addTxSize
 
     const addLamports =
@@ -50,7 +61,7 @@ export const buildTransactions = (
         transaction: new Transaction(),
         signers: new Map<string, Signer>(),
       })
-      lastTxSize = 0
+      lastTxSize = EMPTY_TRANSACTION_SIZE
       lastTxLamports = 0
       lastTxKeys.clear()
     }

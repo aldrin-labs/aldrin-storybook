@@ -19,13 +19,13 @@ import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '@sb/dexUtils/send'
 import { WithdrawFarmedParams } from '@sb/dexUtils/staking/types'
-import {
-  signTransactions,
-  signAndSendTransactions,
-  signAndSendSingleTransaction,
-} from '@sb/dexUtils/transactions'
 
 import { getRandomInt } from '@core/utils/helpers'
+
+import {
+  signAndSendSingleTransaction,
+  signAndSendTransactions,
+} from '../../transactions'
 
 export const withdrawFarmed = async ({
   wallet,
@@ -125,7 +125,6 @@ export const withdrawFarmed = async ({
         unclaimedSnapshotsForVesting.length,
         unclaimedSnapshotsWithoutVesting.length
       )
-
       const iterations = Math.ceil(
         availableToClaimSnapshots / NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION
       )
@@ -191,20 +190,7 @@ export const withdrawFarmed = async ({
 
   if (signAllTransactions) {
     try {
-      const signedTransactions = await signTransactions(
-        transactionsAndSigners.map(({ transaction }) => ({
-          transaction,
-          signers: [],
-        })),
-        connection,
-        wallet
-      )
-
-      if (!signedTransactions) {
-        return 'failed'
-      }
-
-      return signAndSendTransactions({
+      return await signAndSendTransactions({
         transactionsAndSigners: transactionsAndSigners.map(
           ({ transaction }) => ({
             transaction,

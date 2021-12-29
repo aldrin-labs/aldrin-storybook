@@ -124,16 +124,20 @@ export const startStaking = async (params: StartStakingParams) => {
       signers.push(farmingCalc)
     })
   )
+  try {
+    const transactionsAndSigners = buildTransactions(
+      instructions.map((instruction) => ({ instruction })),
+      creatorPk,
+      signers
+    )
 
-  const transactionsAndSigners = buildTransactions(
-    instructions.map((instruction) => ({ instruction })),
-    creatorPk,
-    signers
-  )
-
-  return signAndSendTransactions({
-    transactionsAndSigners,
-    wallet,
-    connection,
-  })
+    return await signAndSendTransactions({
+      transactionsAndSigners,
+      connection,
+      wallet,
+    })
+  } catch (e) {
+    console.warn('Error sign or send transaction: ', e)
+    return 'failed'
+  }
 }

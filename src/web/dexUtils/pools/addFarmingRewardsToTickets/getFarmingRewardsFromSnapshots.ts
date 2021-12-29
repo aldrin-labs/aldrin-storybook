@@ -106,8 +106,6 @@ export const getFarmingRewardsFromSnapshots = ({
         )
       }
 
-      const currentTime = Date.now() / 1000
-
       const unlockedUserSnapshotRewardWithoutDecimals =
         parseFloat(unlockedUserSnapshotReward.toString()) /
         10 ** farmingTokenMintDecimals
