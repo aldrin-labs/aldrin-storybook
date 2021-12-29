@@ -8,18 +8,21 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { closeOrder } from '@sb/dexUtils/twamm/closeOrder'
 import { getParsedPairSettings } from '@sb/dexUtils/twamm/getParsedPairSettings'
-import { getParsedRunningOrders } from '@sb/dexUtils/twamm/getParsedRunningOrders'
-import { PairSettings, TwammOrder } from '@sb/dexUtils/twamm/types'
+import { PairSettings } from '@sb/dexUtils/twamm/types'
+import { useRunningOrders } from '@sb/dexUtils/twamm/useRunningOrders'
 import { WalletAdapter } from '@sb/dexUtils/types'
+import { useInterval } from '@sb/dexUtils/useInterval'
 import { toMap } from '@sb/utils'
 
-import { estimatedTime, secondsToHms } from '@core/utils/dateUtils'
-
-import { RedButton } from '../../styles'
 import { stripByAmount } from '@core/utils/chartPageUtils'
+import { estimatedTime } from '@core/utils/dateUtils'
+
+import { MIN_ORDER_DURATION_TO_CANCEL } from '../../PlaceOrder/config'
+import { RedButton } from '../../styles'
 
 export const runningOrdersColumnNames = [
   { label: 'Pair/Side', id: 'pairSide' },
@@ -36,28 +39,29 @@ export const runningOrdersColumnNames = [
 export const combineRunningOrdersTable = ({
   wallet,
   connection,
-  getDexTokensPricesQuery,
+  getDexTokensPricesQuery: { getDexTokensPricesQuery },
 }: {
   wallet: WalletAdapter
   connection: Connection
   getDexTokensPricesQuery: { getDexTokensPricesQuery: DexTokensPrices[] }
 }) => {
-  const [runningOrders, setRunningOrders] = useState<TwammOrder[]>([])
+  const [runningOrders, refreshRunningOrders] = useRunningOrders({
+    wallet,
+    connection,
+  })
+
+  useInterval(refreshRunningOrders, 10000)
+
   const [pairData, setPairData] = useState<PairSettings[]>([])
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
   useEffect(() => {
     const getRunningOrdersData = async () => {
-      const runningOrdersArray = await getParsedRunningOrders({
-        connection,
-        wallet,
-      })
       const pairSettingsData = await getParsedPairSettings({
         connection,
         wallet,
       })
-      setRunningOrders(runningOrdersArray)
       setPairData(pairSettingsData)
     }
     getRunningOrdersData()
@@ -70,162 +74,188 @@ export const combineRunningOrdersTable = ({
       ?.flat()
       .filter((order) => order?.signer === wallet?.publicKey?.toString()) || []
 
-  console.log({ runningOrdersArray, pairData })
+  return runningOrdersArray
+    ?.map((runningOrder) => {
+      const pairSettingsAddress = runningOrder?.pair || ''
+      const currentPairSettings = pairsDataMap.get(pairSettingsAddress) || null
 
-  return runningOrdersArray?.map((runningOrder) => {
-    const pairSettingsAddress = runningOrder?.pair || ''
-    const currentPairSettings = pairsDataMap.get(pairSettingsAddress) || null
+      if (!currentPairSettings) {
+        return null
+      }
 
-    if (!currentPairSettings) {
-      return null
-    }
+      console.log({ currentPairSettings })
+      const base =
+        getTokenNameByMintAddress(currentPairSettings.baseTokenMint) ||
+        currentPairSettings.baseTokenMint
 
-    console.log({ currentPairSettings })
-    const base =
-      getTokenNameByMintAddress(currentPairSettings?.baseTokenMint) ||
-      currentPairSettings?.baseTokenMint
+      const quote =
+        getTokenNameByMintAddress(currentPairSettings.quoteTokenMint) ||
+        currentPairSettings.quoteTokenMint
 
-    const quote =
-      getTokenNameByMintAddress(currentPairSettings?.quoteTokenMint) ||
-      currentPairSettings?.quoteTokenMint
+      const side = runningOrder.side.ask ? 'Sell' : 'Buy'
 
-    const side = runningOrder.side.ask ? 'Sell' : 'Buy'
+      const remainingAmount =
+        (runningOrder.amount - +runningOrder?.amountFilled) /
+        10 ** currentPairSettings.baseMintDecimals
 
-    const remainingAmount = (+runningOrder?.amount - +runningOrder?.amountFilled) / 10 ** currentPairSettings.baseMintDecimals
+      const avgFilledPrice =
+        runningOrder.amountFilled / runningOrder.tokensSwapped || 0
 
-    const avgFilledPrice =
-      runningOrder.amountFilled / runningOrder.tokensSwapped || 0
+      const currentTime = Date.now() / 1000
+      const remainingTime = runningOrder.endTime - currentTime
 
-    const remainingTime = (runningOrder.endTime - Date.now() / 1000)
+      const filledPers =
+        (runningOrder.amountFilled * 100) / runningOrder.amountToFill
 
-    const filledPers =
-      (runningOrder.amountFilled * 100) / runningOrder.amountToFill
+      const sent = runningOrder.amount * filledPers || 0
 
-    const sent = runningOrder?.amount * filledPers
+      const quotePrice =
+        getDexTokensPricesQuery?.getDexTokensPrices?.find(
+          (runningOrder) => runningOrder.symbol === quote
+        )?.price || 0
 
-    const received =
-      sent *
-      getDexTokensPricesQuery?.getDexTokensPricesQuery?.getDexTokensPrices?.find(
-        (runningOrder) => runningOrder.symbol === quote
-      )?.price
+      const received = sent * quotePrice
 
-    const { address: userBaseTokenAccount } = getTokenDataByMint(
-      userTokensData,
-      currentPairSettings.baseTokenMint
-    )
+      const { address: userBaseTokenAccount } = getTokenDataByMint(
+        userTokensData,
+        currentPairSettings.baseTokenMint
+      )
 
-    const { address: userQuoteTokenAccount } = getTokenDataByMint(
-      userTokensData,
-      currentPairSettings.quoteTokenMint
-    )
+      const { address: userQuoteTokenAccount } = getTokenDataByMint(
+        userTokensData,
+        currentPairSettings.quoteTokenMint
+      )
 
-    console.log("remainingTime", remainingTime)
+      const isOrderFilled = runningOrder.amount === runningOrder.amountFilled
 
-    console.log({ userBaseTokenAccount, userQuoteTokenAccount })
+      // tmin time to pass < current - start
+      const isPassedEnoughTimeForCancle =
+        currentTime - runningOrder.startTime >
+        ((runningOrder.endTime - runningOrder.startTime) / 100) *
+          MIN_ORDER_DURATION_TO_CANCEL
 
-    return {
-      // id: el.pair,
-      pairSide: {
-        render: (
-          <RowContainer direction="column" align="flex-start">
+      return {
+        // id: el.pair,
+        pairSide: {
+          render: (
+            <RowContainer direction="column" align="flex-start">
+              <StyledTitle color={COLORS.main} fontSize="1.5rem">
+                {`${base} / ${quote}`}
+              </StyledTitle>
+              <StyledTitle
+                fontSize="1.5rem"
+                color={side === 'Buy' ? COLORS.success : COLORS.errorAlt}
+              >
+                {side} {base}
+              </StyledTitle>
+            </RowContainer>
+          ),
+          contentToSort: '',
+          showOnMobile: false,
+        },
+        amount: {
+          render: (
             <StyledTitle color={COLORS.main} fontSize="1.5rem">
-              {`${base} / ${quote}`}
+              {stripByAmount(
+                runningOrder.amount / 10 ** currentPairSettings.baseMintDecimals
+              )}{' '}
+              {base}
             </StyledTitle>
-            <StyledTitle
-              fontSize="1.5rem"
-              color={side === 'Buy' ? COLORS.success : COLORS.errorAlt}
+          ),
+          contentToSort: '',
+          showOnMobile: false,
+        },
+        filled: {
+          render: (
+            <StyledTitle color={COLORS.success} fontSize="1.5rem">
+              {filledPers} %
+            </StyledTitle>
+          ),
+          contentToSort: '',
+          showOnMobile: false,
+        },
+        avgFilledPrice: {
+          render: (
+            <StyledTitle color={COLORS.main} fontSize="1.5rem">
+              {avgFilledPrice} {quote}
+            </StyledTitle>
+          ),
+          contentToSort: '',
+          showOnMobile: false,
+        },
+        sent: {
+          render: (
+            <StyledTitle color={COLORS.success} fontSize="1.5rem">
+              {sent} {base}
+            </StyledTitle>
+          ),
+          contentToSort: '',
+          showOnMobile: false,
+        },
+        received: {
+          render: (
+            <StyledTitle color={COLORS.success} fontSize="1.5rem">
+              {received} {quote}
+            </StyledTitle>
+          ),
+          contentToSort: '',
+          showOnMobile: false,
+        },
+        remainingAmount: {
+          render: (
+            <StyledTitle color={COLORS.main} fontSize="1.5rem">
+              {remainingAmount} {base}
+            </StyledTitle>
+          ),
+          contentToSort: '',
+          showOnMobile: false,
+        },
+        remainingTime: {
+          render: (
+            <StyledTitle color={COLORS.main} fontSize="1.5rem">
+              {estimatedTime(remainingTime)}
+            </StyledTitle>
+          ),
+          contentToSort: '',
+          showOnMobile: false,
+        },
+        actions: {
+          render: (
+            <RedButton
+              disabled={!isPassedEnoughTimeForCancle}
+              style={{ cursor: 'pointer' }}
+              onClick={async () => {
+                const result = await closeOrder({
+                  wallet,
+                  connection,
+                  pairSettings: currentPairSettings,
+                  userBaseTokenAccount,
+                  userQuoteTokenAccount,
+                  order: runningOrder,
+                })
+
+                // reload data
+                await refreshRunningOrders()
+
+                const operationName = isOrderFilled ? 'claime' : 'close'
+
+                // notify
+                notify({
+                  type: result === 'success' ? 'success' : 'error',
+                  message:
+                    result === 'success'
+                      ? `Order ${operationName}d successfully.`
+                      : `Order ${operationName} failed. Please, try to increase slippage tolerance or try a bit later.`,
+                })
+              }}
             >
-              {side} {base}
-            </StyledTitle>
-          </RowContainer>
-        ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-      amount: {
-        render: (
-          <StyledTitle color={COLORS.main} fontSize="1.5rem">
-            {stripByAmount(runningOrder.amount / 10 ** currentPairSettings.baseMintDecimals)} {base}
-          </StyledTitle>
-        ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-      filled: {
-        render: (
-          <StyledTitle color={COLORS.success} fontSize="1.5rem">
-            {filledPers} %
-          </StyledTitle>
-        ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-      avgFilledPrice: {
-        render: (
-          <StyledTitle color={COLORS.main} fontSize="1.5rem">
-            {avgFilledPrice} {quote}
-          </StyledTitle>
-        ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-      sent: {
-        render: (
-          <StyledTitle color={COLORS.success} fontSize="1.5rem">
-            {sent} {base}
-          </StyledTitle>
-        ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-      received: {
-        render: (
-          <StyledTitle color={COLORS.success} fontSize="1.5rem">
-            {received} {quote}
-          </StyledTitle>
-        ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-      remainingAmount: {
-        render: (
-          <StyledTitle color={COLORS.main} fontSize="1.5rem">
-            {remainingAmount} {base}
-          </StyledTitle>
-        ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-      remainingTime: {
-        render: (
-          <StyledTitle color={COLORS.main} fontSize="1.5rem">
-            {estimatedTime(remainingTime)}
-          </StyledTitle>
-        ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-      actions: {
-        render: (
-          <RedButton
-            style={{ cursor: 'pointer' }}
-            onClick={async () => {
-              const result = await closeOrder({
-                wallet,
-                connection,
-                pairSettings: currentPairSettings,
-                userBaseTokenAccount,
-                userQuoteTokenAccount,
-                order: runningOrder,
-              })
-            }}
-          >
-            Stop
-          </RedButton>
-        ),
-        contentToSort: '',
-        showOnMobile: false,
-      },
-    }
-  }).filter(r => !!r)
+              {isOrderFilled ? 'Claim' : 'Stop'}
+            </RedButton>
+          ),
+          contentToSort: '',
+          showOnMobile: false,
+        },
+      }
+    })
+    .filter((r) => !!r)
 }
