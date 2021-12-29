@@ -4,9 +4,9 @@ import {
 } from '@solana/web3.js'
 import {Token, TOKEN_PROGRAM_ID} from '@sb/dexUtils/token/token'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import {TWAMM_PROGRAM_ADDRESS} from '../ProgramsMultiton/utils'
+import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
-import {sendTransaction} from '@sb/dexUtils/send';
+import { signAndSendSingleTransaction } from '../transactions'
 
 export const initializeOrderArray = async ({
   wallet,
@@ -36,8 +36,8 @@ export const initializeOrderArray = async ({
 
   let [signer, signerNonce] = await PublicKey.findProgramAddress(
     [orderArray.publicKey.toBuffer()],
-    program.programId,
-  );
+    program.programId
+  )
 
   const transaction = new Transaction();
   const createOrderArrayInstruction = await program.account.orderArray.createInstruction(orderArray);
@@ -81,8 +81,8 @@ export const initializeOrderArray = async ({
 
   let returnValue = null;
 
-  await sendTransaction({
-    transaction: transaction,
+  await signAndSendSingleTransaction({
+    transaction,
     wallet,
     signers: [orderArray, tokenAccountFromAccount, tokenAccountToAccount],
     connection,

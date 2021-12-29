@@ -144,7 +144,7 @@ const Popup = ({
 
     switch (result) {
       // if blockhash outdated - update data & ask user to try again (and update blockhash via new sign)
-      case 'blockhash_outdated': {
+      case 'timeout': {
         setShowRetryMessage(true)
         break
       }

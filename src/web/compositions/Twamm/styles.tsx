@@ -1,6 +1,8 @@
-import styled from "styled-components";
-import { Tabs, TabList, Tab } from 'react-tabs';
-import {WideContent} from "@sb/components/Layout";
+import { COLORS, BORDER_RADIUS } from '@variables/variables'
+import { Tabs, TabList, Tab } from 'react-tabs'
+import styled from 'styled-components'
+
+import { WideContent } from '@sb/components/Layout'
 
 export const WideContentStyled = styled(WideContent)`
   height: 100%;
@@ -11,13 +13,13 @@ export const WideContentStyled = styled(WideContent)`
 
 export const TabsStyled = styled(Tabs)`
   margin-bottom: 4.8rem;
-`;
+`
 
 export const TabsListWrapper = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 2.7rem;
-  marginTop: 2.4rem;
+  margintop: 2.4rem;
   @media (max-width: 768px) {
     flex-wrap: wrap;
   }
@@ -41,13 +43,13 @@ export const TabListStyled = styled(TabList)`
   }
 `
 
-export const TabStyled =  styled(Tab)`
+export const TabStyled = styled(Tab)`
   width: 33.33%;
   text-align: center;
   cursor: pointer;
   border-radius: 1.33rem;
   &.react-tabs__tab--selected {
-    background-color: #383B45;
+    background-color: #383b45;
   }
   @media (max-width: 768px) {
     display: flex;
@@ -67,7 +69,7 @@ export const TabTitle = styled.h3`
 `
 
 export const Banners = styled.div`
-  margin: 4.8rem -1.2rem 4.4rem
+  margin: 4.8rem -1.2rem 4.4rem;
 `
 
 type WrapperProps = {
@@ -121,4 +123,13 @@ export const BannerLink = styled.div`
     margin-right: auto;
     padding-left: 0;
   }
+`
+export const RedButton = styled.button`
+  border: none;
+  background-color: ${COLORS.errorAlt};
+  padding: 0.75rem 2rem;
+  border-radius: ${BORDER_RADIUS.md};
+  font-size: 1.7rem;
+  color: ${COLORS.main};
+  font-family: Avenir Next Demi;
 `

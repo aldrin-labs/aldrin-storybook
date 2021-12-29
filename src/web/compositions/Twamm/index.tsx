@@ -1,133 +1,148 @@
-import React, {FC, useEffect, useState} from 'react'
+import { Theme } from '@material-ui/core'
+import withTheme from '@material-ui/core/styles/withTheme'
+import React, { useEffect, useState } from 'react'
+import { TabPanel } from 'react-tabs'
+import { compose } from 'recompose'
 
-import {compose} from "recompose";
-import withTheme from "@material-ui/core/styles/withTheme";
-import {Theme} from "@material-ui/core";
-import PlaceOrder from "@sb/compositions/Twamm/PlaceOrder/PlaceOrder";
-import {Cell, Page} from "@sb/components/Layout";
-import { TabPanel } from 'react-tabs';
+import { SvgIcon } from '@sb/components'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Cell, Page } from '@sb/components/Layout'
+import { StyledLink, Text } from '@sb/compositions/Addressbook'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import PlaceOrder from '@sb/compositions/Twamm/PlaceOrder/PlaceOrder'
 import {
-  TabListStyled,
-  TabStyled,
-  TabsListWrapper,
-  TabTitle,
-  Banners,
-  BannerWrapper,
   BannerDescription,
   BannerLink,
-  WideContentStyled, TabsStyled
-} from "@sb/compositions/Twamm/styles";
-import {BtnCustom} from "@sb/components/BtnCustom/BtnCustom.styles";
-import {useConnection} from "@sb/dexUtils/connection";
-import {useWallet} from "@sb/dexUtils/wallet";
-import {Row} from "@sb/compositions/AnalyticsRoute/index.styles";
-import PinkBanner from '@icons/pinkBanner.png';
+  Banners,
+  BannerWrapper,
+  TabListStyled,
+  TabsListWrapper,
+  TabsStyled,
+  TabStyled,
+  TabTitle,
+  WideContentStyled,
+} from '@sb/compositions/Twamm/styles'
+import { useConnection } from '@sb/dexUtils/connection'
+import { getOrderArray } from '@sb/dexUtils/twamm/getOrderArray'
+import { getPairSettings } from '@sb/dexUtils/twamm/getPairSettings'
+import { PairSettings } from '@sb/dexUtils/twamm/types'
+import { useWallet } from '@sb/dexUtils/wallet'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+
+import ArrowBanner from '@icons/arrowBanner.svg'
 import BlackBanner from '@icons/blackBanner.png'
-import {StyledLink, Text} from "@sb/compositions/Addressbook";
-import {SvgIcon} from "@sb/components";
-import ArrowBanner from "@icons/arrowBanner.svg";
-import GuideImg from './img/guideImg.svg';
-import SdkImg from './img/sdkImg.svg';
-import {getPairSettings} from "@sb/dexUtils/twamm/getPairSettings";
-import {getOrderArray} from "@sb/dexUtils/twamm/getOrderArray";
-import {getOpenOrders} from "@sb/dexUtils/twamm/getOpenOrders";
+import PinkBanner from '@icons/pinkBanner.png'
+
+import { DexTokensPrices } from '../Pools/index.types'
+import { OrdersHistoryWrapper } from './components/OrdersHistory/OrdersHistory.Wrapper'
+import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.Wrapper'
+import GuideImg from './img/guideImg.svg'
+import SdkImg from './img/sdkImg.svg'
 
 const TwammComponent = ({
   theme,
+  getDexTokensPricesQuery,
 }: {
   theme: Theme
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
-  const {wallet} = useWallet();
-  const connection = useConnection();
-
-  const [pairSettings, setPairSettings] = useState([]);
-  const [orderArray, setOrderArray] = useState([]);
+  const { wallet } = useWallet()
+  const connection = useConnection()
+  const [pairSettings, setPairSettings] = useState<PairSettings[]>([])
+  const [orderArray, setOrderArray] = useState([])
 
   useEffect(() => {
     getPairSettings({
       wallet,
       connection,
-    }).then(pairSettingsRes => {
-      setPairSettings(pairSettingsRes);
-    });
+    }).then((pairSettingsRes) => {
+      setPairSettings(pairSettingsRes)
+    })
 
-    handleGetOrderArray();
+    handleGetOrderArray()
   }, [])
 
   const handleGetOrderArray = () => {
     getOrderArray({
       wallet,
       connection,
-    }).then(orderArrayRes => {
-      setOrderArray(orderArrayRes);
-    });
+    }).then((orderArrayRes) => {
+      setOrderArray(orderArrayRes)
+    })
   }
 
-  if(!pairSettings.length || !orderArray.length) {
-    return null;
+  if (!pairSettings.length || !orderArray.length) {
+    return null
   }
+
+  // useEffect(() => {
+  //   if (wallet.publicKey) {
+  //     getAllAccounts()
+  //   }
+  // }, [wallet.publicKey])
 
   return (
     <Page>
       <WideContentStyled>
         <Banners>
-          <Row width={'100%'} align="stretch">
+          <Row width="100%" align="stretch">
             <Cell col={12} colSm={4}>
               <BannerWrapper image={PinkBanner}>
-                <img src={GuideImg} alt=""/>
+                <img src={GuideImg} alt="" />
                 <BannerDescription>
-                  <Text
-                    fontSize={'1.3rem'}
-                    fontFamily={'Avenir Next Light'}
-                  >
+                  <Text fontSize="1.3rem" fontFamily="Avenir Next Light">
                     <span>Learn why and how to use Aldrin TWAMM.</span>
                   </Text>
                 </BannerDescription>
                 <BannerLink>
                   <StyledLink
-                    to={'/pools'}
+                    to="/pools"
                     needHover
-                    fontSize={'1.3rem'}
-                    fontFamily={'Avenir Next Bold'}
+                    fontSize="1.3rem"
+                    fontFamily="Avenir Next Bold"
                     whiteSpace="nowrap"
                   >
                     Open Guide{' '}
-                    <SvgIcon width={'1.7rem'} height={'0.89rem'} src={ArrowBanner} />
+                    <SvgIcon
+                      width="1.7rem"
+                      height="0.89rem"
+                      src={ArrowBanner}
+                    />
                   </StyledLink>
                 </BannerLink>
               </BannerWrapper>
             </Cell>
             <Cell col={12} colSm={4}>
               <BannerWrapper image={BlackBanner}>
-                <img src={SdkImg} alt=""/>
+                <img src={SdkImg} alt="" />
                 <BannerDescription>
-                  <Text
-                    fontSize={'1.3rem'}
-                    fontFamily={'Avenir Next Light'}
-                  >
+                  <Text fontSize="1.3rem" fontFamily="Avenir Next Light">
                     <span>Trade with your algorithm through Aldrin TWAMM!</span>
                   </Text>
                 </BannerDescription>
                 <BannerLink>
                   <StyledLink
-                    to={'/pools'}
+                    to="/pools"
                     needHover
-                    fontSize={'1.3rem'}
-                    fontFamily={'Avenir Next Bold'}
+                    fontSize="1.3rem"
+                    fontFamily="Avenir Next Bold"
                     whiteSpace="nowrap"
                   >
                     Open SDK{' '}
-                    <SvgIcon width={'1.7rem'} height={'0.89rem'} src={ArrowBanner} />
+                    <SvgIcon
+                      width="1.7rem"
+                      height="0.89rem"
+                      src={ArrowBanner}
+                    />
                   </StyledLink>
                 </BannerLink>
               </BannerWrapper>
             </Cell>
             <Cell col={12} colSm={4}>
               <BannerWrapper image={BlackBanner}>
-                <Text
-                  fontSize={'1.3rem'}
-                  fontFamily={'Avenir Next Demi'}
-                >
+                <Text fontSize="1.3rem" fontFamily="Avenir Next Demi">
                   Undergoing an audit at this time. Use at your own risk.
                 </Text>
               </BannerWrapper>
@@ -175,10 +190,12 @@ const TwammComponent = ({
             />
           </TabPanel>
           <TabPanel>
-            <h2>Running Orders</h2>
+            <RunningOrdersWrapper
+              getDexTokensPricesQuery={getDexTokensPricesQuery}
+            />
           </TabPanel>
           <TabPanel>
-            <h2>Order History</h2>
+            <OrdersHistoryWrapper />
           </TabPanel>
         </TabsStyled>
       </WideContentStyled>
@@ -188,4 +205,11 @@ const TwammComponent = ({
 
 export default compose(
   withTheme(),
+  queryRendererHoc({
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
+  })
 )(TwammComponent)

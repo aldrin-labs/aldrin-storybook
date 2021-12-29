@@ -1,65 +1,65 @@
+import { Theme } from '@material-ui/core'
+import withTheme from '@material-ui/core/styles/withTheme'
+import { PublicKey } from '@solana/web3.js'
+import BN from 'bn.js'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
-import SvgIcon from '@sb/components/SvgIcon'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
-
-import {DexTokensPrices, PoolInfo} from '@sb/compositions/Pools/index.types'
-import { Theme } from '@material-ui/core'
-
-import { Text } from '@sb/compositions/Addressbook'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { notify } from '@sb/dexUtils/notifications'
-
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { useWallet } from '@sb/dexUtils/wallet'
-
-import Arrows from '@icons/switchArrows.svg'
-import { useConnection } from '@sb/dexUtils/connection'
-import withTheme from '@material-ui/core/styles/withTheme'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import {
-  getTokenMintAddressByName,
-  getTokenNameByMintAddress, useOpenOrdersAccounts,
-} from '@sb/dexUtils/markets'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { PublicKey } from '@solana/web3.js'
-import { swap } from '@sb/dexUtils/pools/actions/swap'
-import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
-import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { InputWithType } from '@sb/components/InputWithType/InputWithType'
+import { Cell } from '@sb/components/Layout'
+import { Loader } from '@sb/components/Loader/Loader'
+import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
   costOfAddingToken,
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
-import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
-import ScalesIcon from '@icons/scales.svg'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Text } from '@sb/compositions/Addressbook'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { InputWithSelectorForSwaps } from '@sb/compositions/Swap/components/Inputs'
+import { TokenAddressesPopup } from '@sb/compositions/Swap/components/TokenAddressesPopup'
+import { useConnection } from '@sb/dexUtils/connection'
+import {
+  getTokenMintAddressByName,
+  getTokenNameByMintAddress,
+} from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { useWallet } from '@sb/dexUtils/wallet'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
+
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
+import ScalesIcon from '@icons/scales.svg'
+import Arrows from '@icons/switchArrows.svg'
+
+import { withPublicKey } from '@core/hoc/withPublicKey'
+
+import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 import {
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
   getDefaultBaseToken,
-  getDefaultQuoteToken,
 } from '@sb/dexUtils/pools/swap'
-import { Loader } from '@sb/components/Loader/Loader'
 import { sleep } from '@sb/dexUtils/utils'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
 // TODO: imports
-import { TokenAddressesPopup } from '@sb/compositions/Swap/components/TokenAddressesPopup'
+import { addOrder } from '@sb/dexUtils/twamm/addOrder'
+
+import { Row, RowContainer } from '../../AnalyticsRoute/index.styles'
+import { BlockTemplate } from '../../Pools/index.styles'
 import { getTokenDataByMint } from '../../Pools/utils'
+import OrderStats from './components/OrderStats/OrderStats'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
-import { InputWithSelectorForSwaps } from '@sb/compositions/Swap/components/Inputs'
-import { BlockTemplate } from '../../Pools/index.styles'
-import { Row, RowContainer } from '../../AnalyticsRoute/index.styles'
-import {Cell} from "@sb/components/Layout";
-import OrderStats from "./components/OrderStats/OrderStats";
-import {InputWithType} from "@sb/components/InputWithType/InputWithType";
-import {addOrder} from "@sb/dexUtils/twamm/addOrder";
-import BN from "bn.js";
-import {getDexTokensPrices} from "@core/graphql/queries/pools/getDexTokensPrices";
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 const PlaceOrder = ({
   theme,
@@ -78,7 +78,9 @@ const PlaceOrder = ({
   orderArray: any
   handleGetOrderArray: () => void
 }) => {
-  const [selectedPairSettings, setSelectedPairSettings] = useState(pairSettings[0]);
+  const [selectedPairSettings, setSelectedPairSettings] = useState(
+    pairSettings[0]
+  )
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -86,10 +88,12 @@ const PlaceOrder = ({
   // const [openOrdersAccounts] = useOpenOrdersAccounts()
   const tokensMap = useTokenInfos()
 
-  const [orderLength, setOrderLength] = useState(0);
+  const [orderLength, setOrderLength] = useState(0)
 
   const allPoolsOld = getPoolsInfoQuery.getPoolsInfo
-  const allPools = allPoolsOld.filter(pool => pool.parsedName === 'USDC_SOL' || pool.parsedName === 'SOL_USDC');
+  const allPools = allPoolsOld.filter(
+    (pool) => pool.parsedName === 'USDC_SOL' || pool.parsedName === 'SOL_USDC'
+  )
   const nativeSOLTokenData = allTokensData[0]
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
@@ -97,22 +101,18 @@ const PlaceOrder = ({
 
   // set values from redirect or default one
   useEffect(() => {
-    const baseTokenMint = getTokenMintAddressByName(
-      getDefaultBaseToken(false)
-    );
+    const baseTokenMint = getTokenMintAddressByName(getDefaultBaseToken(false))
 
     setBaseTokenMintAddress(baseTokenMint)
 
-    const quoteTokenMint = getTokenMintAddressByName(
-      'USDC'
-    );
+    const quoteTokenMint = getTokenMintAddressByName('USDC')
 
     setQuoteTokenMintAddress(quoteTokenMint)
   }, [])
 
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
-    isStableSwapTabActive: false
+    isStableSwapTabActive: false,
   })
 
   const selectedPool = getSelectedPoolForSwap({
@@ -357,7 +357,7 @@ const PlaceOrder = ({
     return side;
   }
 
-  let mints = [...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())];
+  const mints = [...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]
   // let filteredMints: string[] = [...mints];
   // pairSettings.forEach(pair => {
   //   // if(mints.includes(pair.baseTokenMint.toString()) || mints.includes(pair.quoteTokenMint.toString())) {
@@ -374,12 +374,17 @@ const PlaceOrder = ({
   console.log('minOrderSize', {minOrderSize})
 
   return (
-    <SwapPageContainer direction="column" height="100%" width="100%" wrap="nowrap">
+    <SwapPageContainer
+      direction="column"
+      height="100%"
+      width="100%"
+      wrap="nowrap"
+    >
       <BlockTemplate
         theme={theme}
         style={{ width: '100%', padding: '2rem', zIndex: '10' }}
       >
-        <Row width={'100%'} align="flex-start">
+        <Row width="100%" align="flex-start">
           <Cell col={12} colSm={6}>
             <OrderInputs>
               <RowContainer margin="2rem 0 1rem 0">
@@ -387,7 +392,9 @@ const PlaceOrder = ({
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder={
-                    +baseAmount === 0 && +quoteAmount !== 0 && isSelectedPoolStable
+                    +baseAmount === 0 &&
+                    +quoteAmount !== 0 &&
+                    isSelectedPoolStable
                       ? 'Insufficient Balance'
                       : '0.00'
                   }
@@ -437,7 +444,9 @@ const PlaceOrder = ({
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder={
-                    +quoteAmount === 0 && +baseAmount !== 0 && isSelectedPoolStable
+                    +quoteAmount === 0 &&
+                    +baseAmount !== 0 &&
+                    isSelectedPoolStable
                       ? 'Insufficient Balance'
                       : '0.00'
                   }
@@ -469,7 +478,11 @@ const PlaceOrder = ({
               </RowContainer>
 
               {selectedPool && (
-                <RowContainer margin="1rem 2rem" justify="space-between" style={{width: 'auto'}}>
+                <RowContainer
+                  margin="1rem 2rem"
+                  justify="space-between"
+                  style={{ width: 'auto' }}
+                >
                   <Text color="#93A0B2">Est. Price:</Text>
                   <Text
                     fontSize="1.5rem"
@@ -484,8 +497,11 @@ const PlaceOrder = ({
                     {isSelectedPoolStable
                       ? 1
                       : isSwapBaseToQuote
-                        ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
-                        : stripDigitPlaces(
+                      ? stripDigitPlaces(
+                          +poolAmountTokenB / +poolAmountTokenA,
+                          8
+                        )
+                      : stripDigitPlaces(
                           +(+poolAmountTokenA / +poolAmountTokenB),
                           8
                         )}{' '}
@@ -496,9 +512,7 @@ const PlaceOrder = ({
                 </RowContainer>
               )}
 
-              <RowContainer>
-
-              </RowContainer>
+              <RowContainer />
             </OrderInputs>
           </Cell>
           <Cell col={12} colSm={6}>
@@ -558,7 +572,9 @@ const PlaceOrder = ({
                       amount: new BN(+baseAmount * 10 ** baseTokenDecimals),
                       timeLength: new BN(orderLength),
                       pairSettings: selectedPairSettings,
-                      mintFrom: new PublicKey(replaceMint(baseTokenMintAddress)),
+                      mintFrom: new PublicKey(
+                        replaceMint(baseTokenMintAddress)
+                      ),
                       mintTo: new PublicKey(replaceMint(quoteTokenMintAddress)),
                       orders: [],
                       orderArray,
@@ -597,7 +613,8 @@ const PlaceOrder = ({
                   {isOrderInProgress ? (
                     <Loader />
                   ) : isTokenABalanceInsufficient ? (
-                    `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
+                    `Insufficient ${
+                      isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                     } Balance`
                   ) : !selectedPool ? (
                     'No pools available'

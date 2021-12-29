@@ -1,7 +1,8 @@
-import EventEmitter from 'eventemitter3'
 import { PublicKey, Transaction } from '@solana/web3.js'
-import { WalletAdapter } from '@sb/dexUtils/types'
+import EventEmitter from 'eventemitter3'
+
 import { notify } from '@sb/dexUtils/notifications'
+import { WalletAdapter } from '@sb/dexUtils/types'
 
 type SolflareExtensionEvent = 'disconnect' | 'connect'
 type SolflareExtensionRequestMethod =

@@ -1,8 +1,10 @@
-import {Connection, PublicKey} from '@solana/web3.js';
-import {WalletAdapter} from '@sb/dexUtils/types';
-import {loadAccountsFromProgram} from "@sb/dexUtils/common/loadAccountsFromProgram";
-import {TWAMM_PROGRAM_ADDRESS} from "@sb/dexUtils/ProgramsMultiton/utils";
-import {Program, Provider} from "@project-serum/anchor";
+import { Program, Provider } from '@project-serum/anchor'
+import { Connection, PublicKey } from '@solana/web3.js'
+
+import { loadAccountsFromProgram } from '@sb/dexUtils/common/loadAccountsFromProgram'
+import { TWAMM_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
 import TwammProgramIdl from '@core/idls/twamm.json'
 
 export const getOrderArray = async ({
@@ -12,41 +14,32 @@ export const getOrderArray = async ({
   wallet: WalletAdapter
   connection: Connection
 }) => {
-  const programId = new PublicKey(TWAMM_PROGRAM_ADDRESS);
+  const programId = new PublicKey(TWAMM_PROGRAM_ADDRESS)
 
   const program = new Program(
     TwammProgramIdl,
     programId,
-    new Provider(
-      connection,
-      wallet,
-      Provider.defaultOptions()
-    )
-  );
+    new Provider(connection, wallet, Provider.defaultOptions())
+  )
   const config = {
-    filters: [
-      {dataSize: program.account.orderArray.size},
-    ],
-  };
+    filters: [{ dataSize: program.account.orderArray.size }],
+  }
 
   const orderArrayAccount = loadAccountsFromProgram({
     connection,
     filters: config.filters,
     programAddress: TWAMM_PROGRAM_ADDRESS,
-  });
+  })
 
-  let allData = [];
+  let allData = []
 
-  await orderArrayAccount.then(resOrderArray => {
+  await orderArrayAccount.then((resOrderArray) => {
     allData = resOrderArray.map((item) => {
       const data = Buffer.from(item.account.data)
-      const dataDecoded = program.coder.accounts.decode(
-        'OrderArray',
-        data
-      )
-      return {...dataDecoded, pubkey: item.pubkey};
+      const dataDecoded = program.coder.accounts.decode('OrderArray', data)
+      return { ...dataDecoded, pubkey: item.pubkey }
     })
   })
 
-  return await allData;
+  return await allData
 }

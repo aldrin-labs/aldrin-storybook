@@ -1,19 +1,19 @@
+import { Theme } from '@material-ui/core'
 import React from 'react'
-import { TableWithSort } from '@sb/components'
 
+import { TableWithSort } from '@sb/components'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
+import { TokenAccount } from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
+import { settleFunds } from '@sb/dexUtils/send'
 import { useWallet } from '@sb/dexUtils/wallet'
+
 import {
   combineUnsettledBalances,
   getUnsettledBalancesColumnNames,
   UnsettledBalance,
 } from './UnsettledBalancesTable.utils'
-
-import { settleFunds } from '@sb/dexUtils/send'
-import { notify } from '@sb/dexUtils/notifications'
-import { Theme } from '@material-ui/core'
-import { TokenAccount } from '@sb/dexUtils/markets'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 
 export const UnsettledBalancesTable = ({
   theme,
@@ -79,8 +79,6 @@ export const UnsettledBalancesTable = ({
         description: e.message,
         type: 'error',
       })
-
-      return
     }
   }
 
@@ -129,7 +127,7 @@ export const UnsettledBalancesTable = ({
           boxShadow: 'none',
         },
       }}
-      emptyTableText={'All your balances are settled.'}
+      emptyTableText="All your balances are settled."
       data={{ body: unsettledBalancesProcessedData }}
       columnNames={getUnsettledBalancesColumnNames({ theme, onSettleAll })}
     />

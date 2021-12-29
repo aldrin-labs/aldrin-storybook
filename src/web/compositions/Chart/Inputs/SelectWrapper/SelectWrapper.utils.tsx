@@ -8,7 +8,7 @@ import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
 import stableCoins from '@core/config/stableCoins'
-import { getNumberOfDecimalsFromNumber } from '@core/utils/chartPageUtils'
+import { getNumberOfDecimalsFromNumber, stripByAmount } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
   roundAndFormatNumber,
@@ -393,8 +393,8 @@ export const combineSelectWrapperData = ({
     const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
     const marketAddress = allMarketsMap?.get(el.symbol)?.address?.toBase58()
 
-    const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || 0
-    const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || 0
+    const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || '--'
+    const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || '--'
 
     return {
       id: `${symbol}`,
@@ -465,9 +465,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(
-                      stripDigitPlaces(closePrice, pricePrecision)
-                    )}
+                  : formatNumberToUSFormat(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -481,9 +479,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(
-                      stripDigitPlaces(closePrice, pricePrecision)
-                    )}
+                  : formatNumberToUSFormat(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -509,7 +505,7 @@ export const combineSelectWrapperData = ({
               }}
             >
               {`${sign24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(lastPriceDiff, pricePrecision)
+                stripDigitPlaces(lastPriceDiff, 2)
               )}`}{' '}
               <span style={{ color: '#96999C' }}> / </span>{' '}
               {`${sign24hChange}${formatNumberToUSFormat(
