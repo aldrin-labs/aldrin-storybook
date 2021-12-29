@@ -407,7 +407,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       >
         {isUserDepositHasHighSwapImpact ? (
           <RowContainer direction="column">
-            <RowContainer justify="space-between">
+            <RowContainer justify="flex-start">
+              <Text fontSize={'1.6rem'}>
+                Deposit may fail due to high price impact
+              </Text>
+            </RowContainer>
+            <RowContainer justify="space-between" margin={'1rem 0 0 0'}>
               <WhiteText>Rate</WhiteText>
               <WhiteText>
                 <span
