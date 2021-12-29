@@ -272,12 +272,23 @@ const PlaceOrder = ({
     ? new PublicKey(userPoolQuoteTokenAccount)
     : null
 
+  const setValueBasedOnRange = (min: number, max: number, value: number) => {
+
+  }
+
   const setBaseAmountWithQuote = async (
     newBaseAmount: string | number,
     isSwapBaseToQuoteFromArgs?: boolean
   ) => {
-    setBaseAmount(newBaseAmount)
-
+    let newBaseAmountCopy = newBaseAmount;
+    if(newBaseAmountCopy > maxOrderSize) {
+      newBaseAmountCopy = maxOrderSize
+    } else if(newBaseAmountCopy < minOrderSize) {
+      newBaseAmountCopy = minOrderSize;
+    }
+    setBaseAmount(newBaseAmountCopy)
+    console.log('tokenDecimals', baseTokenDecimals)
+    console.log('newBaseAmount', newBaseAmount)
     // let tokensMapCopy = [...tokensMap.entries()];
     // console.log(tokensMapCopy, 'tokensMapCopy')
     // tokensMapCopy.forEach((token, index) => {
@@ -286,7 +297,7 @@ const PlaceOrder = ({
     //   }
     // })
     const swapAmountOut = await getMinimumReceivedAmountFromSwap({
-      swapAmountIn: +newBaseAmount,
+      swapAmountIn: +newBaseAmountCopy,
       isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
       pool: selectedPool,
       wallet,
@@ -357,7 +368,10 @@ const PlaceOrder = ({
 
   const placingFee = parseInt(selectedPairSettings.fees.placingFeeNumerator.toString())/parseInt(selectedPairSettings.fees.placingFeeDenominator.toString());
   const cancellingFee = parseInt(selectedPairSettings.fees.cancellingFeeNumerator.toString())/parseInt(selectedPairSettings.fees.cancellingFeeDenominator.toString());
-  let maxOrderSize = parseFloat(100/baseTokenPrice);
+  const maxOrderSize = (100/baseTokenPrice).toFixed(selectedPairSettings.baseMintDecimals);
+  const minOrderSize = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, selectedPairSettings.baseMintDecimals)
+  console.log('maxOrderSize', {maxOrderSize, baseTokenPrice, selectedPairSettings: selectedPairSettings.baseMintDecimals})
+  console.log('minOrderSize', {minOrderSize})
 
   return (
     <SwapPageContainer direction="column" height="100%" width="100%" wrap="nowrap">
