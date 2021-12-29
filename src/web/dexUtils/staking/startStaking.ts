@@ -139,7 +139,7 @@ export const startStaking = async (params: StartStakingParams) => {
       connection: connection.getConnection(),
     })
 
-    return sendSignedTransactions(signedTransactions, connection)
+    return await sendSignedTransactions(signedTransactions, connection)
   } catch (e) {
     console.warn('Error sign or send transaction: ', e)
     return 'failed'
