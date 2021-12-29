@@ -181,9 +181,9 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
 
   const isNeedToLeftSomeSOL =
     isBaseTokenSOL && isNativeSOLSelected
-      ? maxBaseAmount - +baseAmount < 0.1
+      ? maxBaseAmount - +baseAmount < 0.01
       : isQuoteTokenSOL && isNativeSOLSelected
-      ? maxQuoteAmount - +quoteAmount < 0.1
+      ? maxQuoteAmount - +quoteAmount < 0.01
       : false
 
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
@@ -206,6 +206,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   const isDisabled =
     !isWarningChecked ||
     !isValuesFilled ||
+    isNeedToLeftSomeSOL ||
     operationLoading ||
     baseAmount > maxBaseAmount ||
     quoteAmount > maxQuoteAmount
@@ -256,16 +257,6 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   const autoSwapAmountOutFees = getFeesAmount({
     pool: selectedPool,
     amount: swapAmountOut,
-  })
-
-  // TODO: add UI for this fields as on orca
-
-  console.log({
-    currentPoolRatio,
-    swapAmountsRatio,
-    swapImpact,
-    autoSwapAmountOutFees,
-    userDepositPercentageOfPoolAmounts,
   })
 
   return (
@@ -387,7 +378,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           <AttentionComponent
             text={
               isNeedToLeftSomeSOL
-                ? 'Sorry, but you need to leave some SOL (at least 0.1 SOL) on your wallet SOL account to successfully execute further transactions.'
+                ? 'Sorry, but you need to leave some SOL (at least 0.01 SOL) on your wallet SOL account to successfully execute further transactions.'
                 : baseAmount > maxBaseAmount
                 ? `You entered more token ${baseSymbol} amount than you have.`
                 : quoteAmount > maxQuoteAmount
