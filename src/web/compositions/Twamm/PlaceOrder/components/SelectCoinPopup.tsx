@@ -55,6 +55,8 @@ export const SelectCoinPopup = ({
   baseTokenMintAddress,
   setBaseTokenAddressFromSeveral,
   setQuoteTokenAddressFromSeveral,
+  pairSettings,
+  replaceMint,
 }: {
   theme: Theme
   open: boolean
@@ -68,6 +70,8 @@ export const SelectCoinPopup = ({
   baseTokenMintAddress: string
   setBaseTokenAddressFromSeveral: (address: string) => void
   setQuoteTokenAddressFromSeveral: (address: string) => void
+  pairSettings: any,
+  replaceMint: (mint: string) => string
 }) => {
   const needKnownMints = false
   const [searchValue, onChangeSearch] = useState<string>('')
@@ -82,12 +86,14 @@ export const SelectCoinPopup = ({
         (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
       )
     : mints
-
+console.log('usersMints', usersMints)
   const sortedAllTokensData = new Map()
 
   allTokensData.forEach((tokensData) => {
     sortedAllTokensData.set(tokensData.mint, tokensData.amount)
   })
+
+  console.log('allTokensData', allTokensData)
 
   const filteredMints = searchValue
     ? usersMints.filter((mint) =>
@@ -96,6 +102,8 @@ export const SelectCoinPopup = ({
           .includes(searchValue.toLowerCase())
       )
     : usersMints
+
+  console.log('pairSettingsMint', pairSettings[0].baseTokenMint.toString(), pairSettings[0].quoteTokenMint.toString())
 
   const poolsTokensA = poolsInfo.map((el) => el.tokenA)
   const poolsTokensB = poolsInfo.map((el) => el.tokenB)
@@ -110,12 +118,12 @@ export const SelectCoinPopup = ({
   const availablePools = poolsInfo
     .filter((el) => el.tokenA === choosenMint || el.tokenB === choosenMint)
     .map((el) => (el.tokenA === choosenMint ? el.tokenB : el.tokenA))
-
   const sortedMints = filteredMints
     .map((mint) => {
+      console.log('mintReplace', mint)
       return {
         mint,
-        amount: sortedAllTokensData.get(mint) || 0,
+        amount: sortedAllTokensData.get(replaceMint(mint)) || 0,
         isTokenInPool:
           poolsTokensA.includes(mint) || poolsTokensB.includes(mint),
         isPoolExist: availablePools.includes(mint),
@@ -123,6 +131,7 @@ export const SelectCoinPopup = ({
     })
     .filter((token) => token.isTokenInPool)
     .sort((a, b) => b.amount - a.amount)
+  console.log('sortedMints', filteredMints)
 
   return (
     <DialogWrapper

@@ -1,6 +1,19 @@
-import { BORDER_RADIUS, COLORS } from '@variables/variables'
-import { TabList, Tab } from 'react-tabs'
+import { COLORS, BORDER_RADIUS } from '@variables/variables'
+import { Tabs, TabList, Tab } from 'react-tabs'
 import styled from 'styled-components'
+
+import { WideContent } from '@sb/components/Layout'
+
+export const WideContentStyled = styled(WideContent)`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+export const TabsStyled = styled(Tabs)`
+  margin-bottom: 4.8rem;
+`
 
 export const TabsListWrapper = styled.div`
   display: flex;

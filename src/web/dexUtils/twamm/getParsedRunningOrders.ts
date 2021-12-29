@@ -4,6 +4,7 @@ import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { loadOrdersArrayForTwamm } from './loadOrdersArrayForTwamm'
+import { TwammOrder } from './types'
 
 export const getParsedRunningOrders = async ({
   connection,
@@ -11,7 +12,7 @@ export const getParsedRunningOrders = async ({
 }: {
   connection: Connection
   wallet: WalletAdapter
-}) => {
+}): Promise<TwammOrder[]> => {
   const orders = await loadOrdersArrayForTwamm({
     connection,
   })
@@ -22,24 +23,30 @@ export const getParsedRunningOrders = async ({
     programAddress: TWAMM_PROGRAM_ADDRESS,
   })
 
-  const OrdersArray = orders.map((order) => {
-    const data = Buffer.from(order.account.data)
-    const ordersData = program.coder.accounts.decode('OrderArray', data)
+  const OrdersArray = orders.map((orderArray) => {
+    const data = Buffer.from(orderArray.account.data)
+    const orderArrayData = program.coder.accounts.decode('OrderArray', data)
 
-    console.log('ordersData', ordersData)
+    console.log('orderArrayData', orderArrayData)
 
-    const parsedOrdersData = ordersData.orders
-      .map((el) => {
+    const parsedOrdersData = orderArrayData.orders
+      .map((order, orderIndex) => {
         return {
-          isInitialized: el.isInitialized,
-          startTime: el.startTime.toNumber(),
-          endTime: el.endTime.toNumber(),
-          amountFilled: el.amountFilled.toNumber(),
-          amountToFill: el.amountToFill.toNumber(),
-          amount: el.amount.toNumber(),
-          tokensSwapped: el.tokensSwapped.toNumber(),
-          side: ordersData.side,
-          pair: ordersData.pairSettings.toString(),
+          index: orderIndex,
+          isInitialized: order.isInitialized,
+          startTime: order.startTime.toNumber(),
+          endTime: order.endTime.toNumber(),
+          amountFilled: order.amountFilled.toNumber(),
+          amountToFill: order.amountToFill.toNumber(),
+          amount: order.amount.toNumber(),
+          tokensSwapped: order.tokensSwapped.toNumber(),
+          // orderArray data
+          orderArrayPublicKey: orderArray.pubkey.toString(),
+          side: orderArrayData.side,
+          twammFromTokenVault: orderArrayData.twammFromTokenVault.toString(),
+          twammToTokenVault: orderArrayData.twammToTokenVault.toString(),
+          pair: orderArrayData.pairSettings.toString(),
+          signer: order.authority.toString(),
         }
       })
       .filter((order) => order.isInitialized)

@@ -1,62 +1,91 @@
 import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
-import React, { useEffect } from 'react'
-import { Tabs, TabPanel } from 'react-tabs'
+import React, { useEffect, useState } from 'react'
+import { TabPanel } from 'react-tabs'
 import { compose } from 'recompose'
 
 import { SvgIcon } from '@sb/components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Cell, Page, WideContent } from '@sb/components/Layout'
+import { Cell, Page } from '@sb/components/Layout'
 import { StyledLink, Text } from '@sb/compositions/Addressbook'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import PlaceOrder from '@sb/compositions/Twamm/PlaceOrder/PlaceOrder'
 import {
-  TabListStyled,
-  TabStyled,
-  TabsListWrapper,
-  TabTitle,
-  Banners,
-  BannerWrapper,
   BannerDescription,
   BannerLink,
+  Banners,
+  BannerWrapper,
+  TabListStyled,
+  TabsListWrapper,
+  TabsStyled,
+  TabStyled,
+  TabTitle,
+  WideContentStyled,
 } from '@sb/compositions/Twamm/styles'
 import { useConnection } from '@sb/dexUtils/connection'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { TWAMM_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { getOrderArray } from '@sb/dexUtils/twamm/getOrderArray'
+import { getPairSettings } from '@sb/dexUtils/twamm/getPairSettings'
+import { PairSettings } from '@sb/dexUtils/twamm/types'
 import { useWallet } from '@sb/dexUtils/wallet'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
 import ArrowBanner from '@icons/arrowBanner.svg'
 import BlackBanner from '@icons/blackBanner.png'
 import PinkBanner from '@icons/pinkBanner.png'
 
+import { DexTokensPrices } from '../Pools/index.types'
 import { OrdersHistoryWrapper } from './components/OrdersHistory/OrdersHistory.Wrapper'
 import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.Wrapper'
 import GuideImg from './img/guideImg.svg'
 import SdkImg from './img/sdkImg.svg'
 
-const TwammComponent = ({ theme }: { theme: Theme }) => {
+const TwammComponent = ({
+  theme,
+  getDexTokensPricesQuery,
+}: {
+  theme: Theme
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+}) => {
   const { wallet } = useWallet()
   const connection = useConnection()
-
-  const getAllAccounts = () => {
-    const program = ProgramsMultiton.getProgramByAddress({
-      wallet,
-      connection,
-      programAddress: TWAMM_PROGRAM_ADDRESS,
-    })
-
-    console.log('program.account', program.account.orderArray)
-  }
+  const [pairSettings, setPairSettings] = useState<PairSettings[]>([])
+  const [orderArray, setOrderArray] = useState([])
 
   useEffect(() => {
-    if (wallet.publicKey) {
-      getAllAccounts()
-    }
-  }, [wallet.publicKey])
+    getPairSettings({
+      wallet,
+      connection,
+    }).then((pairSettingsRes) => {
+      setPairSettings(pairSettingsRes)
+    })
+
+    handleGetOrderArray()
+  }, [])
+
+  const handleGetOrderArray = () => {
+    getOrderArray({
+      wallet,
+      connection,
+    }).then((orderArrayRes) => {
+      setOrderArray(orderArrayRes)
+    })
+  }
+
+  if (!pairSettings.length || !orderArray.length) {
+    return null
+  }
+
+  // useEffect(() => {
+  //   if (wallet.publicKey) {
+  //     getAllAccounts()
+  //   }
+  // }, [wallet.publicKey])
 
   return (
     <Page>
-      <WideContent>
+      <WideContentStyled>
         <Banners>
           <Row width="100%" align="stretch">
             <Cell col={12} colSm={4}>
@@ -120,7 +149,7 @@ const TwammComponent = ({ theme }: { theme: Theme }) => {
             </Cell>
           </Row>
         </Banners>
-        <Tabs>
+        <TabsStyled>
           <TabsListWrapper>
             <TabListStyled>
               <TabStyled>
@@ -154,18 +183,33 @@ const TwammComponent = ({ theme }: { theme: Theme }) => {
           </TabsListWrapper>
 
           <TabPanel>
-            <PlaceOrder />
+            <PlaceOrder
+              pairSettings={pairSettings}
+              orderArray={orderArray}
+              handleGetOrderArray={handleGetOrderArray}
+            />
           </TabPanel>
           <TabPanel>
-            <RunningOrdersWrapper />
+            <RunningOrdersWrapper
+              getDexTokensPricesQuery={getDexTokensPricesQuery}
+            />
           </TabPanel>
           <TabPanel>
             <OrdersHistoryWrapper />
           </TabPanel>
-        </Tabs>
-      </WideContent>
+        </TabsStyled>
+      </WideContentStyled>
     </Page>
   )
 }
 
-export default compose(withTheme())(TwammComponent)
+export default compose(
+  withTheme(),
+  queryRendererHoc({
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
+  })
+)(TwammComponent)

@@ -2,6 +2,7 @@ import { COLORS } from '@variables/variables'
 import React from 'react'
 
 import { TableWithSort } from '@sb/components'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -10,14 +11,16 @@ import {
   runningOrdersColumnNames,
 } from './RunningOrders.utils'
 
-const RunninhOrdersTable = ({
+const RunningOrdersTable = ({
   stylesForTable,
   tableBodyStyles,
   styles,
+  getDexTokensPricesQuery,
 }: {
   stylesForTable?: {}
   tableBodyStyles?: {}
   styles?: {}
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -25,17 +28,19 @@ const RunninhOrdersTable = ({
   const runningOrdersProcessedData = combineRunningOrdersTable({
     wallet,
     connection,
+    getDexTokensPricesQuery,
   })
 
   return (
     <TableWithSort
       borderBottom
       style={{
-        height: '60rem',
+        height: '46rem',
         overflowX: 'hidden',
         backgroundColor: COLORS.blockBackground,
         width: '100%',
         borderRadius: '1.8rem',
+        position: 'relative',
         ...styles,
       }}
       stylesForTable={{ backgroundColor: 'inherit' }}
@@ -70,11 +75,13 @@ const RunninhOrdersTable = ({
           borderBottom: `0.1rem solid ${COLORS.background}`,
         },
       }}
-      emptyTableText=" "
+      emptyTableText={
+        wallet.connected ? 'You have no running orders' : 'Connect wallet'
+      }
       data={{ body: runningOrdersProcessedData }}
       columnNames={runningOrdersColumnNames}
     />
   )
 }
 
-export default RunninhOrdersTable
+export default RunningOrdersTable

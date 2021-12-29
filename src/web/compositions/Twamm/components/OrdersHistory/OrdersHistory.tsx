@@ -31,7 +31,7 @@ const OrdersHistoryTable = ({
     <TableWithSort
       borderBottom
       style={{
-        height: '60rem',
+        height: '46rem',
         overflowX: 'hidden',
         backgroundColor: COLORS.blockBackground,
         width: '100%',

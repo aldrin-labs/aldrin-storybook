@@ -4,6 +4,7 @@ import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { loadPairSettings } from './loadPairSettings'
+import { PairSettings } from './types'
 
 export const getParsedPairSettings = async ({
   connection,
@@ -11,7 +12,7 @@ export const getParsedPairSettings = async ({
 }: {
   connection: Connection
   wallet: WalletAdapter
-}) => {
+}): Promise<PairSettings[]> => {
   const pairSettings = await loadPairSettings({
     connection,
   })
@@ -34,10 +35,11 @@ export const getParsedPairSettings = async ({
       quoteTokenFeeAccount: pairData.quoteTokenFeeAccount.toString(),
       baseTokenMint: pairData.baseTokenMint.toString(),
       quoteTokenMint: pairData.quoteTokenMint.toString(),
-      quoteMintDecimals: pairData.quoteMintDecimals,
-      baseMintDecimals: pairData.baseMintDecimals,
+      quoteMintDecimals: pairData.quoteMintDecimals.toNumber(),
+      baseMintDecimals: pairData.baseMintDecimals.toNumber(),
       pair: pairData.initializerAccount.toString(),
       publicKey: pair.pubkey.toString(),
+      account: pairData.initializerAccount.toString(),
     }
   })
 
