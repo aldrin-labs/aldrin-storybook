@@ -70,12 +70,13 @@ export const addOrder = async ({
       mintFrom,
       mintTo,
       side: sideSelected,
+      sideText: side,
     });
     orderArrayFiltered.push(newOrderArray?.orderArray);
     newTwammFromTokenVault = newOrderArray?.tokenAccountFrom;
   }
 
-  console.log('after initialize order array', orderArrayFiltered, sideSelected)
+  console.log('after initialize order array', orderArrayFiltered, newTwammFromTokenVault, sideSelected)
 
   const userTokenAccount = await checkAccountForMint({wallet, connection, mint: mintFrom, create: false});
 

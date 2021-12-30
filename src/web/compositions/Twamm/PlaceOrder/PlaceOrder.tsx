@@ -16,7 +16,7 @@ import {
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import {DexTokensPrices, PoolInfo} from '@sb/compositions/Pools/index.types'
 import { InputWithSelectorForSwaps } from '@sb/compositions/Swap/components/Inputs'
 import { TokenAddressesPopup } from '@sb/compositions/Swap/components/TokenAddressesPopup'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -177,9 +177,9 @@ const PlaceOrder = ({
 
   const replaceMint = (mint: string) => {
     if(mint === 'So11111111111111111111111111111111111111112') {
-      return pairSettings[0].baseTokenMint.toString();
+      return selectedPairSettings.baseTokenMint.toString();
     } else if(mint === 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v') {
-      return pairSettings[0].quoteTokenMint.toString();
+      return selectedPairSettings.quoteTokenMint.toString();
     }
     return mint;
   }
@@ -370,8 +370,10 @@ const PlaceOrder = ({
   const maxOrderSize = (100/baseTokenPrice).toFixed(getBasePairDecimals(replaceMint(baseTokenMintAddress)));
   const maxOrderSizeQuote = (100/quoteTokenPrice).toFixed(getBasePairDecimals(replaceMint(quoteTokenMintAddress)));
   const minOrderSize = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, getBasePairDecimals(replaceMint(baseTokenMintAddress)));
-  const minOrderSizeQuote = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, getBasePairDecimals(replaceMint(baseTokenMintAddress))) * baseTokenPrice;
-console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAddress)))
+    const minOrderSizeQuote = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, selectedPairSettings.baseMintDecimals) * baseTokenPrice;
+  console.log('minOrderSize', minOrderSize, maxOrderSize)
+console.log('minOrderSizeQuote', minOrderSizeQuote, maxOrderSizeQuote, baseTokenPrice)
+  console.log('baseDecimals', getBasePairDecimals(replaceMint(baseTokenMintAddress)), getBasePairDecimals(replaceMint(quoteTokenMintAddress)))
   return (
     <SwapPageContainer
       direction="column"
@@ -470,10 +472,10 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
 
               <RowContainer margin="4rem 0 2rem 0">
                 <InputWithType
-                  placeholder="Hours"
+                  placeholder="Minutes"
                   theme={theme}
                   value={orderLength}
-                  metric="Hours"
+                  metric="Minutes"
                   onChange={handleOrderLength}
                 />
               </RowContainer>
@@ -571,7 +573,7 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
                       wallet,
                       connection,
                       amount: new BN(+baseAmount * 10 ** baseTokenDecimals),
-                      timeLength: new BN(orderLength),
+                      timeLength: new BN(orderLength * 60),
                       pairSettings: selectedPairSettings,
                       mintFrom: new PublicKey(
                         replaceMint(baseTokenMintAddress)
@@ -581,6 +583,7 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
                       orderArray,
                       side,
                     })
+                    console.log('orderLength', orderLength)
 
 
                     notify({

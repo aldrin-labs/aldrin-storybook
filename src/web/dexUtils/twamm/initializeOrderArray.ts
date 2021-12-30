@@ -16,14 +16,16 @@ export const initializeOrderArray = async ({
   mintFrom,
   mintTo,
   side,
+  sideText,
 }: {
-  wallet: WalletAdapter
-  connection: Connection
+  wallet: WalletAdapter,
+  connection: Connection,
   programAddress?: string,
   pairSettings: any,
   mintFrom: PublicKey,
   mintTo: PublicKey,
-  side: {ask: {}} | {bid: {}} | null
+  side: {ask: {}} | {bid: {}} | null,
+  sideText: string | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -31,7 +33,6 @@ export const initializeOrderArray = async ({
     programAddress,
   })
 
-  console.log('finalside', side)
   const orderArray = Keypair.generate();
 
   let [signer, signerNonce] = await PublicKey.findProgramAddress(
@@ -63,7 +64,18 @@ export const initializeOrderArray = async ({
     tokenAccountToAccount = account;
   });
   transaction.add(tokenAccountToInstruction);
-
+console.log({
+  side,
+  pairSettings: pairSettings.pubkey,
+  orders: orderArray.publicKey,
+  orderArraySigner: signer,
+  initializer: wallet.publicKey,
+  twammFromTokenVault: tokenAccountFromAccount?.publicKey,
+  twammToTokenVault: tokenAccountToAccount.publicKey,
+  feeAccount: pairSettings.baseTokenFeeAccount,
+  tokenProgram: TOKEN_PROGRAM_ID,
+  systemProgram: SystemProgram.programId,
+})
   const initializeOrderArrayInstruction = program.instruction.initializeOrderArray(signerNonce, side, {
     accounts: {
       pairSettings: pairSettings.pubkey,
@@ -72,7 +84,7 @@ export const initializeOrderArray = async ({
       initializer: wallet.publicKey,
       twammFromTokenVault: tokenAccountFromAccount?.publicKey,
       twammToTokenVault: tokenAccountToAccount.publicKey,
-      feeAccount: pairSettings.baseTokenFeeAccount,
+      feeAccount: sideText === 'ask' ? pairSettings.baseTokenFeeAccount : sideText === 'bid' ? pairSettings.quoteTokenFeeAccount : null,
       tokenProgram: TOKEN_PROGRAM_ID,
       systemProgram: SystemProgram.programId,
     },
