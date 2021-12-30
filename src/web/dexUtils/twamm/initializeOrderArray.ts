@@ -12,6 +12,8 @@ import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { signAndSendSingleTransaction } from '../transactions'
 import { PairSettings } from './types'
+import { Program, Provider } from '@project-serum/anchor'
+import TwammProgramIdl from '@core/idls/twamm.json'
 
 export const initializeOrderArray = async ({
   wallet,
@@ -32,11 +34,13 @@ export const initializeOrderArray = async ({
   side: { ask: {} } | { bid: {} } | null
   sideText: string | null
 }) => {
-  const program = ProgramsMultiton.getProgramByAddress({
-    wallet,
-    connection,
-    programAddress,
-  })
+  const programId = new PublicKey(TWAMM_PROGRAM_ADDRESS)
+
+  const program = new Program(
+    TwammProgramIdl,
+    programId,
+    new Provider(connection, wallet, Provider.defaultOptions())
+  )
 
   const orderArray = Keypair.generate()
 
