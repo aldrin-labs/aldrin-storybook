@@ -21,14 +21,16 @@ export const initializeOrderArray = async ({
   mintFrom,
   mintTo,
   side,
+  sideText,
 }: {
-  wallet: WalletAdapter
-  connection: Connection
-  programAddress?: string
-  pairSettings: PairSettings
-  mintFrom: PublicKey
-  mintTo: PublicKey
-  side: { ask: {} } | { bid: {} } | null
+  wallet: WalletAdapter,
+  connection: Connection,
+  programAddress?: string,
+  pairSettings: PairSettings,
+  mintFrom: PublicKey,
+  mintTo: PublicKey,
+  side: {ask: {}} | {bid: {}} | null,
+  sideText: string | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -36,12 +38,7 @@ export const initializeOrderArray = async ({
     programAddress,
   })
 
-  console.log({
-    side,
-    wallet
-  })
-
-  const orderArray = Keypair.generate()
+  const orderArray = Keypair.generate();
 
   let [signer, signerNonce] = await PublicKey.findProgramAddress(
     [orderArray.publicKey.toBuffer()],

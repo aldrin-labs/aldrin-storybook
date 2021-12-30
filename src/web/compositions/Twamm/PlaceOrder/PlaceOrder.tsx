@@ -394,10 +394,10 @@ const PlaceOrder = ({
 
               <RowContainer margin="4rem 0 2rem 0">
                 <InputWithType
-                  placeholder="Hours"
+                  placeholder="Minutes"
                   theme={theme}
                   value={orderLength}
-                  metric="Hours"
+                  metric="Minutes"
                   onChange={handleOrderLength}
                 />
               </RowContainer>
@@ -460,7 +460,7 @@ const PlaceOrder = ({
                       wallet,
                       connection,
                       amount: new BN(+baseAmount * 10 ** baseTokenDecimals),
-                      timeLength: new BN(orderLength),
+                      timeLength: new BN(orderLength * 60),
                       pairSettings: selectedPairSettings,
                       mintFrom: new PublicKey(baseTokenMintAddress),
                       mintTo: new PublicKey(quoteTokenMintAddress),
@@ -468,6 +468,7 @@ const PlaceOrder = ({
                       orderArray,
                       side,
                     })
+                    console.log('orderLength', orderLength)
 
                     notify({
                       type: result === 'success' ? 'success' : 'error',
