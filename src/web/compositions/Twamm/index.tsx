@@ -56,14 +56,12 @@ const TwammComponent = ({
   const [orderArray, setOrderArray] = useState([])
 
   useEffect(() => {
-    if (wallet.publicKey) {
-      getParsedPairSettings({
-        wallet,
-        connection,
-      }).then((pairSettingsRes) => {
-        setPairSettings(pairSettingsRes)
-      })
-    }
+    getParsedPairSettings({
+      wallet,
+      connection,
+    }).then((pairSettingsRes) => {
+      setPairSettings(pairSettingsRes)
+    })
     handleGetOrderArray()
   }, [wallet.publicKey])
 
@@ -76,10 +74,6 @@ const TwammComponent = ({
     })
   }
 
-  if (!wallet.publicKey) {
-    return <ConnectWalletScreen theme={theme} />
-  }
-  
   if (!pairSettings.length || !orderArray.length) {
     return null
   }
