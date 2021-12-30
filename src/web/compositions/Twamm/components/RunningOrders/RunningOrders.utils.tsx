@@ -83,20 +83,29 @@ export const combineRunningOrdersTable = ({
         return null
       }
 
-      console.log({ currentPairSettings })
-      const base =
-        getTokenNameByMintAddress(currentPairSettings.baseTokenMint) ||
-        currentPairSettings.baseTokenMint
-
-      const quote =
-        getTokenNameByMintAddress(currentPairSettings.quoteTokenMint) ||
-        currentPairSettings.quoteTokenMint
-
       const side = runningOrder.side.ask ? 'Sell' : 'Buy'
+      const isSellSide = side === 'Sell'
+      const [baseTokenMint, quoteTokenMint] = isSellSide
+        ? [
+            currentPairSettings.baseTokenMint,
+            currentPairSettings.quoteTokenMint,
+          ]
+        : [
+            currentPairSettings.quoteTokenMint,
+            currentPairSettings.baseTokenMint,
+          ]
+
+      const baseMintDecimals = isSellSide
+        ? currentPairSettings.baseMintDecimals
+        : currentPairSettings.quoteMintDecimals
+
+      const base = getTokenNameByMintAddress(baseTokenMint) || baseTokenMint
+
+      const quote = getTokenNameByMintAddress(quoteTokenMint) || quoteTokenMint
 
       const remainingAmount =
         (runningOrder.amount - +runningOrder?.amountFilled) /
-        10 ** currentPairSettings.baseMintDecimals
+        10 ** baseMintDecimals
 
       const avgFilledPrice =
         runningOrder.amountFilled / runningOrder.tokensSwapped || 0
@@ -118,12 +127,12 @@ export const combineRunningOrdersTable = ({
 
       const { address: userBaseTokenAccount } = getTokenDataByMint(
         userTokensData,
-        currentPairSettings.baseTokenMint
+        baseTokenMint
       )
 
       const { address: userQuoteTokenAccount } = getTokenDataByMint(
         userTokensData,
-        currentPairSettings.quoteTokenMint
+        quoteTokenMint
       )
 
       const isOrderFilled = runningOrder.amount === runningOrder.amountFilled
@@ -156,9 +165,7 @@ export const combineRunningOrdersTable = ({
         amount: {
           render: (
             <StyledTitle color={COLORS.main} fontSize="1.5rem">
-              {stripByAmount(
-                runningOrder.amount / 10 ** currentPairSettings.baseMintDecimals
-              )}{' '}
+              {stripByAmount(runningOrder.amount / 10 ** baseMintDecimals)}{' '}
               {base}
             </StyledTitle>
           ),
@@ -213,7 +220,7 @@ export const combineRunningOrdersTable = ({
         remainingTime: {
           render: (
             <StyledTitle color={COLORS.main} fontSize="1.5rem">
-              {estimatedTime(remainingTime)}
+              {remainingTime < 0 ? '-' : estimatedTime(remainingTime)}
             </StyledTitle>
           ),
           contentToSort: '',
