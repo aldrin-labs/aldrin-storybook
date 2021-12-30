@@ -5,7 +5,6 @@ import { TabPanel } from 'react-tabs'
 import { compose } from 'recompose'
 
 import { SvgIcon } from '@sb/components'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Cell, Page } from '@sb/components/Layout'
 import { StyledLink, Text } from '@sb/compositions/Addressbook'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -15,6 +14,7 @@ import {
   BannerLink,
   Banners,
   BannerWrapper,
+  StyledA,
   TabListStyled,
   TabsListWrapper,
   TabsStyled,
@@ -24,7 +24,7 @@ import {
 } from '@sb/compositions/Twamm/styles'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getOrderArray } from '@sb/dexUtils/twamm/getOrderArray'
-import { getPairSettings } from '@sb/dexUtils/twamm/getPairSettings'
+import { getParsedPairSettings } from '@sb/dexUtils/twamm/getParsedPairSettings'
 import { PairSettings } from '@sb/dexUtils/twamm/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -40,7 +40,6 @@ import { OrdersHistoryWrapper } from './components/OrdersHistory/OrdersHistory.W
 import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.Wrapper'
 import GuideImg from './img/guideImg.svg'
 import SdkImg from './img/sdkImg.svg'
-import { getParsedPairSettings } from '@sb/dexUtils/twamm/getParsedPairSettings'
 
 const TwammComponent = ({
   theme,
@@ -123,8 +122,10 @@ const TwammComponent = ({
                   </Text>
                 </BannerDescription>
                 <BannerLink>
-                  <StyledLink
-                    to="/pools"
+                  <StyledA
+                    href="https://github.com/aldrin-exchange/aldrin-sdk"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     needHover
                     fontSize="1.3rem"
                     fontFamily="Avenir Next Bold"
@@ -136,7 +137,7 @@ const TwammComponent = ({
                       height="0.89rem"
                       src={ArrowBanner}
                     />
-                  </StyledLink>
+                  </StyledA>
                 </BannerLink>
               </BannerWrapper>
             </Cell>
@@ -162,24 +163,24 @@ const TwammComponent = ({
                 <TabTitle>Order History</TabTitle>
               </TabStyled>
             </TabListStyled>
-            {/*<BtnCustom*/}
-            {/*  theme={theme}*/}
-            {/*  onClick={() => {}}*/}
-            {/*  needMinWidth={false}*/}
-            {/*  btnWidth="21.3rem"*/}
-            {/*  height="4rem"*/}
-            {/*  fontSize="1.4rem"*/}
-            {/*  borderRadius="1.1rem"*/}
-            {/*  borderColor="#45AC14"*/}
-            {/*  btnColor="#fff"*/}
-            {/*  backgroundColor="#45AC14"*/}
-            {/*  textTransform="none"*/}
-            {/*  margin="0"*/}
-            {/*  transition="all .4s ease-out"*/}
-            {/*  style={{ whiteSpace: 'nowrap' }}*/}
-            {/*>*/}
-            {/*  Trade on TWAMM*/}
-            {/*</BtnCustom>*/}
+            {/* <BtnCustom */}
+            {/*  theme={theme} */}
+            {/*  onClick={() => {}} */}
+            {/*  needMinWidth={false} */}
+            {/*  btnWidth="21.3rem" */}
+            {/*  height="4rem" */}
+            {/*  fontSize="1.4rem" */}
+            {/*  borderRadius="1.1rem" */}
+            {/*  borderColor="#45AC14" */}
+            {/*  btnColor="#fff" */}
+            {/*  backgroundColor="#45AC14" */}
+            {/*  textTransform="none" */}
+            {/*  margin="0" */}
+            {/*  transition="all .4s ease-out" */}
+            {/*  style={{ whiteSpace: 'nowrap' }} */}
+            {/* > */}
+            {/*  Trade on TWAMM */}
+            {/* </BtnCustom> */}
           </TabsListWrapper>
 
           <TabPanel>

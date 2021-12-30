@@ -4,6 +4,16 @@ import styled from 'styled-components'
 
 import { WideContent } from '@sb/components/Layout'
 
+export type TextProps = {
+  fontSize?: string
+  paddingBottom?: string
+  fontFamily?: string
+  color?: string
+  whiteSpace?: string
+  padding?: string
+  needHover?: boolean
+}
+
 export const WideContentStyled = styled(WideContent)`
   height: 100%;
   display: flex;
@@ -132,4 +142,21 @@ export const RedButton = styled.button`
   font-size: 1.7rem;
   color: ${COLORS.main};
   font-family: Avenir Next Demi;
+`
+export const StyledA = styled.a`
+  font-size: ${(props: TextProps) => props.fontSize || '1.5rem'};
+  padding-bottom: ${(props) => props.paddingBottom || '0'};
+  text-transform: none;
+  font-family: ${(props: TextProps) =>
+    props.fontFamily || 'Avenir Next Medium'};
+  color: ${(props: TextProps) => props.color || '#ecf0f3'};
+  white-space: ${(props: TextProps) => props.whiteSpace || 'normal'};
+  padding: ${(props: TextProps) => props.padding || '0'};
+  letter-spacing: 0.01rem;
+  cursor: pointer;
+  text-decoration: none;
+  &:hover {
+    text-decoration: ${(props: TextProps) =>
+      props.needHover ? 'underline' : 'none'};
+  }
 `
