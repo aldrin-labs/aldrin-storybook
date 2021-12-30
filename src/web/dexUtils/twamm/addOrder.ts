@@ -76,29 +76,26 @@ export const addOrder = async ({
   })
 
   const transaction = new Transaction()
-  console.log('before initialize order array', orderArrayFiltered)
+
   let newTwammFromTokenVault = null
   if (orderArrayFiltered.length === 0) {
-    const newOrderArray = await initializeOrderArray({
-      wallet,
-      connection,
-      pairSettings,
-      mintFrom,
-      mintTo,
-      side: sideSelected,
-      sideText: side,
-    })
+    try {
+      const newOrderArray = await initializeOrderArray({
+        wallet,
+        connection,
+        pairSettings,
+        mintFrom,
+        mintTo,
+        side: sideSelected,
+        sideText: side,
+      })
 
-    orderArrayFiltered.push(newOrderArray?.orderArray)
-    newTwammFromTokenVault = newOrderArray?.tokenAccountFrom
+      orderArrayFiltered.push(newOrderArray?.orderArray)
+      newTwammFromTokenVault = newOrderArray?.tokenAccountFrom
+    } catch (e) {
+      return 'failed'
+    }
   }
-
-  console.log(
-    'after initialize order array',
-    orderArrayFiltered,
-    newTwammFromTokenVault,
-    sideSelected
-  )
 
   let userTokenAccount = await checkAccountForMint({
     wallet,

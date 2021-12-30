@@ -132,4 +132,9 @@ export const RedButton = styled.button`
   font-size: 1.7rem;
   color: ${COLORS.main};
   font-family: Avenir Next Demi;
+
+  &:disabled {
+    background: ${COLORS.hint};
+    border-color: ${COLORS.hint};
+  }
 `

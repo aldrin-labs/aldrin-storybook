@@ -41,6 +41,7 @@ import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.W
 import GuideImg from './img/guideImg.svg'
 import SdkImg from './img/sdkImg.svg'
 import { getParsedPairSettings } from '@sb/dexUtils/twamm/getParsedPairSettings'
+import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen'
 
 const TwammComponent = ({
   theme,
@@ -55,12 +56,14 @@ const TwammComponent = ({
   const [orderArray, setOrderArray] = useState([])
 
   useEffect(() => {
-    getParsedPairSettings({
-      wallet,
-      connection,
-    }).then((pairSettingsRes) => {
-      setPairSettings(pairSettingsRes)
-    })
+    if (wallet.publicKey) {
+      getParsedPairSettings({
+        wallet,
+        connection,
+      }).then((pairSettingsRes) => {
+        setPairSettings(pairSettingsRes)
+      })
+    }
     handleGetOrderArray()
   }, [wallet.publicKey])
 
@@ -73,6 +76,10 @@ const TwammComponent = ({
     })
   }
 
+  if (!wallet.publicKey) {
+    return <ConnectWalletScreen theme={theme} />
+  }
+  
   if (!pairSettings.length || !orderArray.length) {
     return null
   }

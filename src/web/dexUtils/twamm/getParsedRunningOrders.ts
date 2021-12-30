@@ -27,8 +27,6 @@ export const getParsedRunningOrders = async ({
     const data = Buffer.from(orderArray.account.data)
     const orderArrayData = program.coder.accounts.decode('OrderArray', data)
 
-    console.log('orderArrayData', orderArrayData)
-
     const parsedOrdersData = orderArrayData.orders
       .map((order, orderIndex) => {
         return {

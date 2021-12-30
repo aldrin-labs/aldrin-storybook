@@ -23,13 +23,13 @@ export const initializeOrderArray = async ({
   side,
   sideText,
 }: {
-  wallet: WalletAdapter,
-  connection: Connection,
-  programAddress?: string,
-  pairSettings: PairSettings,
-  mintFrom: PublicKey,
-  mintTo: PublicKey,
-  side: {ask: {}} | {bid: {}} | null,
+  wallet: WalletAdapter
+  connection: Connection
+  programAddress?: string
+  pairSettings: PairSettings
+  mintFrom: PublicKey
+  mintTo: PublicKey
+  side: { ask: {} } | { bid: {} } | null
   sideText: string | null
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
@@ -38,7 +38,7 @@ export const initializeOrderArray = async ({
     programAddress,
   })
 
-  const orderArray = Keypair.generate();
+  const orderArray = Keypair.generate()
 
   let [signer, signerNonce] = await PublicKey.findProgramAddress(
     [orderArray.publicKey.toBuffer()],
@@ -85,17 +85,16 @@ export const initializeOrderArray = async ({
         initializer: wallet.publicKey,
         twammFromTokenVault: tokenAccountFromAccount.publicKey,
         twammToTokenVault: tokenAccountToAccount.publicKey,
-        feeAccount: new PublicKey(pairSettings.baseTokenFeeAccount),
+        feeAccount:
+          sideText === 'ask'
+            ? new PublicKey(pairSettings.baseTokenFeeAccount)
+            : new PublicKey(pairSettings.quoteTokenFeeAccount),
         tokenProgram: TOKEN_PROGRAM_ID,
         systemProgram: SystemProgram.programId,
       },
     })
 
   transaction.add(initializeOrderArrayInstruction)
-
-  console.log({
-    transaction,
-  })
 
   let returnValue = null
 
