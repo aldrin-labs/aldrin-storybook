@@ -62,7 +62,6 @@ export const combineRunningOrdersTable = ({
         connection,
         wallet,
       })
-      console.log('pairSettingsData', pairSettingsData)
       setPairData(pairSettingsData)
     }
     getRunningOrdersData()

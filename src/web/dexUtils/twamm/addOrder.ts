@@ -183,7 +183,7 @@ export const addOrder = async ({
     const tx = await signAndSendSingleTransaction({
       transaction: transaction.add(commonTransaction, transactionAfter),
       wallet,
-      signers: [],
+      signers: commonSigners,
       connection,
       focusPopup: true,
     })
