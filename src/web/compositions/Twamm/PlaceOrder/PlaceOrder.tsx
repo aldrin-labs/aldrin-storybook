@@ -16,7 +16,7 @@ import {
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { InputWithSelectorForSwaps } from '@sb/compositions/Swap/components/Inputs'
 import { TokenAddressesPopup } from '@sb/compositions/Swap/components/TokenAddressesPopup'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -60,11 +60,11 @@ import OrderStats from './components/OrderStats/OrderStats'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { PairSettings } from '@sb/dexUtils/twamm/types'
 
 const PlaceOrder = ({
   theme,
   publicKey,
-  getPoolsInfoQuery,
   getDexTokensPricesQuery,
   pairSettings,
   orderArray,
@@ -72,28 +72,19 @@ const PlaceOrder = ({
 }: {
   theme: Theme
   publicKey: string
-  getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-  pairSettings: any
+  pairSettings: PairSettings[]
   orderArray: any
   handleGetOrderArray: () => void
 }) => {
-  const [selectedPairSettings, setSelectedPairSettings] = useState(
-    pairSettings[0]
-  )
+  const selectedPairSettings = pairSettings[0]
 
   const { wallet } = useWallet()
   const connection = useConnection()
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
-  // const [openOrdersAccounts] = useOpenOrdersAccounts()
-  const tokensMap = useTokenInfos()
 
-  const [orderLength, setOrderLength] = useState(0)
+  const [orderLength, setOrderLength] = useState(60)
 
-  const allPoolsOld = getPoolsInfoQuery.getPoolsInfo
-  const allPools = allPoolsOld.filter(
-    (pool) => pool.parsedName === 'USDC_SOL' || pool.parsedName === 'SOL_USDC'
-  )
   const nativeSOLTokenData = allTokensData[0]
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
@@ -101,45 +92,12 @@ const PlaceOrder = ({
 
   // set values from redirect or default one
   useEffect(() => {
-    const baseTokenMint = getTokenMintAddressByName(getDefaultBaseToken(false))
-
-    setBaseTokenMintAddress(baseTokenMint)
-
-    const quoteTokenMint = getTokenMintAddressByName('USDC')
-
-    setQuoteTokenMintAddress(quoteTokenMint)
-  }, [])
-
-  const pools = getPoolsForSwapActiveTab({
-    pools: allPools,
-    isStableSwapTabActive: false,
-  })
-
-  const selectedPool = getSelectedPoolForSwap({
-    pools,
-    baseTokenMintAddress,
-    quoteTokenMintAddress,
-  })
-
-  const isSelectedPoolStable = checkIsPoolStable(selectedPool)
-
-  const [poolBalances, refreshPoolBalances] = usePoolBalances({
-    poolTokenAccountA: selectedPool?.poolTokenAccountA,
-    poolTokenAccountB: selectedPool?.poolTokenAccountB,
-  })
-
-  // update entered value on every pool ratio change
-  useEffect(() => {
-    if (!selectedPool || !+baseAmount) return
-
-    const updateQuoteAmount = async () => {
-      await setBaseAmountWithQuote(+baseAmount)
+    if (selectedPairSettings) {
+      setBaseTokenMintAddress(selectedPairSettings.baseTokenMint)
+      setQuoteTokenMintAddress(selectedPairSettings.quoteTokenMint)
     }
+  }, [selectedPairSettings])
 
-    updateQuoteAmount()
-  }, [poolBalances.baseTokenAmount, poolBalances.quoteTokenAmount])
-
-  const [slippageTolerance, setSlippageTolerance] = useState<number>(0.3)
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
 
@@ -150,7 +108,8 @@ const PlaceOrder = ({
     setQuoteTokenAddressFromSeveral,
   ] = useState<string>('')
 
-  const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
+  const isSwapBaseToQuote =
+    selectedPairSettings.baseTokenMint === baseTokenMintAddress
 
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
@@ -163,36 +122,19 @@ const PlaceOrder = ({
   const baseTokenPrice =
     getDexTokensPricesQuery?.getDexTokensPrices?.filter(
       (el) => el.symbol === baseSymbol
-    )[0]?.price || 0;
+    )[0]?.price || 0
 
   const quoteTokenPrice =
     getDexTokensPricesQuery?.getDexTokensPrices?.filter(
       (el) => el.symbol === quoteSymbol
-    )[0]?.price || 0;
+    )[0]?.price || 0
 
-  const {
-    baseTokenAmount: poolAmountTokenA,
-    quoteTokenAmount: poolAmountTokenB,
-  } = poolBalances
-
-  const replaceMint = (mint: string) => {
-    if(mint === 'So11111111111111111111111111111111111111112') {
-      return pairSettings[0].baseTokenMint.toString();
-    } else if(mint === 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v') {
-      return pairSettings[0].quoteTokenMint.toString();
-    }
-    return mint;
-  }
-
-  let {
-    address: userBaseTokenAccount,
-    amount: maxBaseAmount,
-    decimals: baseTokenDecimals,
-  } = getTokenDataByMint(
-    allTokensData,
-    replaceMint(baseTokenMintAddress),
-    selectedBaseTokenAddressFromSeveral
-  )
+  let { address: userBaseTokenAccount, amount: maxBaseAmount } =
+    getTokenDataByMint(
+      allTokensData,
+      baseTokenMintAddress,
+      selectedBaseTokenAddressFromSeveral
+    )
 
   // if we swap native sol to smth, we need to leave some SOL for covering fees
   if (nativeSOLTokenData?.address === userBaseTokenAccount) {
@@ -205,13 +147,9 @@ const PlaceOrder = ({
     }
   }
 
-  const {
-    address: userQuoteTokenAccount,
-    decimals: quoteTokenDecimals,
-    amount: maxQuoteAmount,
-  } = getTokenDataByMint(
+  const { amount: maxQuoteAmount } = getTokenDataByMint(
     allTokensData,
-    replaceMint(quoteTokenMintAddress),
+    quoteTokenMintAddress,
     selectedQuoteTokenAddressFromSeveral
   )
 
@@ -226,152 +164,101 @@ const PlaceOrder = ({
     setQuoteAmount(baseAmount)
   }
 
-  const poolsAmountDiff = isSwapBaseToQuote
-    ? +poolAmountTokenA / +baseAmount
-    : +poolAmountTokenA / +quoteAmount
-
-  // price impact due to curve
-  const rawSlippage = 100 / (poolsAmountDiff + 1)
-  const totalWithFees = +quoteAmount - (+quoteAmount / 100) * slippageTolerance
-
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
 
   const needEnterAmount = baseAmount == 0 || quoteAmount == 0
 
   const isButtonDisabled =
     isTokenABalanceInsufficient ||
-    !selectedPool ||
-    !selectedPool.supply ||
     baseAmount == 0 ||
     quoteAmount == 0 ||
     orderLength == 0 ||
     isOrderInProgress
 
-  // for cases with SOL token
-  const isBaseTokenSOL = baseSymbol === 'SOL'
-  const isQuoteTokenSOL = quoteSymbol === 'SOL'
-
-  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
-
-  const isNativeSOLSelected =
-    nativeSOLTokenData?.address === userBaseTokenAccount ||
-    nativeSOLTokenData?.address === userQuoteTokenAccount
-
-  const transferSOLToWrapped = isPoolWithSOLToken && isNativeSOLSelected
-
-  const userPoolBaseTokenAccount = isSwapBaseToQuote
-    ? userBaseTokenAccount
-    : userQuoteTokenAccount
-
-  const userPoolBaseTokenPublicKey = userPoolBaseTokenAccount
-    ? new PublicKey(userPoolBaseTokenAccount)
-    : null
-
-  const userPoolQuoteTokenAccount = isSwapBaseToQuote
-    ? userQuoteTokenAccount
-    : userBaseTokenAccount
-
-  const userPoolQuoteTokenPublicKey = userPoolQuoteTokenAccount
-    ? new PublicKey(userPoolQuoteTokenAccount)
-    : null
-
-  const setValueBasedOnRange = (value: number, min: number, max: number) => {
-    let newValue = value;
-    if(value < min) {
-      newValue = min;
-    } else if(value > max) {
-      newValue = max;
+  const setValueBasedOnRange = (value: number | string, max: number) => {
+    // empty input field
+    if (value === '') {
+      return value
     }
-    return newValue;
+
+    let newValue = value
+    if (value > max) {
+      newValue = max
+    }
+    return newValue
   }
 
-  const setBaseAmountWithQuote = async (
-    newBaseAmount: string | number,
-    isSwapBaseToQuoteFromArgs?: boolean
-  ) => {
-    let newBaseAmountCopy = setValueBasedOnRange(newBaseAmount, minOrderSize, maxOrderSize);
-    setBaseAmount(newBaseAmountCopy)
+  const setBaseAmountWithQuote = async (newBaseAmount: string | number) => {
+    let baseAmountInRange = setValueBasedOnRange(newBaseAmount, maxOrderSize)
+    const quoteAmount = baseAmountInRange * (baseTokenPrice / quoteTokenPrice)
 
-    const swapAmountOut = await getMinimumReceivedAmountFromSwap({
-      swapAmountIn: +newBaseAmountCopy,
-      isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
-      pool: selectedPool,
-      wallet,
-      tokensMap,
-      connection,
-      userBaseTokenAccount: userPoolBaseTokenPublicKey,
-      userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
-      transferSOLToWrapped,
-      allTokensData,
-      poolBalances,
-    })
-
-    if (swapAmountOut === 0) {
-      setQuoteAmount('')
-    } else {
-      setQuoteAmount(swapAmountOut)
-    }
+    setBaseAmount(baseAmountInRange)
+    setQuoteAmount(stripDigitPlaces(quoteAmount, 8))
   }
 
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
-    const isSwapBaseToQuoteForQuoteChange = !isSwapBaseToQuote
+    let quoteAmountInRange = setValueBasedOnRange(
+      newQuoteAmount,
+      maxOrderSizeQuote
+    )
 
-    let newQuoteAmountCopy = setValueBasedOnRange(newQuoteAmount, minOrderSizeQuote, maxOrderSizeQuote);;
+    const baseAmount = quoteAmountInRange * (quoteTokenPrice / baseTokenPrice)
 
-    setQuoteAmount(newQuoteAmountCopy)
-
-    const swapAmountOut = await getMinimumReceivedAmountFromSwap({
-      swapAmountIn: +newQuoteAmountCopy,
-      isSwapBaseToQuote: isSwapBaseToQuoteForQuoteChange,
-      pool: selectedPool,
-      wallet,
-      tokensMap,
-      connection,
-      userBaseTokenAccount: userPoolBaseTokenPublicKey,
-      userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
-      transferSOLToWrapped,
-      allTokensData,
-      poolBalances,
-    })
-
-    if (swapAmountOut === 0) {
-      setBaseAmount('')
-    } else {
-      setBaseAmount(swapAmountOut)
-    }
+    setBaseAmount(baseAmount)
+    setQuoteAmount(quoteAmountInRange)
   }
 
   const handleOrderLength = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setOrderLength(+event.target.value)
+    setOrderLength(event.target.value)
   }
 
   const checkSide = (mintTo, mintFrom) => {
-    let side = null;
-    if(mintFrom === selectedPairSettings.baseTokenMint.toString() && mintTo === selectedPairSettings.quoteTokenMint.toString()) {
-      side = 'ask';
-    } else if(mintTo === selectedPairSettings.baseTokenMint.toString() && mintFrom === selectedPairSettings.quoteTokenMint.toString()) {
-      side = 'bid';
+    let side = null
+    if (
+      mintFrom === selectedPairSettings.baseTokenMint &&
+      mintTo === selectedPairSettings.quoteTokenMint
+    ) {
+      side = 'ask'
+    } else if (
+      mintTo === selectedPairSettings.baseTokenMint &&
+      mintFrom === selectedPairSettings.quoteTokenMint
+    ) {
+      side = 'bid'
     }
-    return side;
+    return side
   }
 
-  const mints = [...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]
+  const mints = [
+    ...new Set(
+      pairSettings.map((i) => [i.baseTokenMint, i.quoteTokenMint]).flat()
+    ),
+  ]
 
-  const getBasePairDecimals = (mint) => {
-    if(selectedPairSettings.baseTokenMint.toString() === mint) {
-      return selectedPairSettings.baseMintDecimals;
-    } else if(selectedPairSettings.quoteTokenMint.toString() === mint) {
-      return selectedPairSettings.quoteMintDecimals;
-    }
-  }
+  const placingFee =
+    parseInt(selectedPairSettings.fees.placingFeeNumerator.toString()) /
+    parseInt(selectedPairSettings.fees.placingFeeDenominator.toString())
 
-  const placingFee = parseInt(selectedPairSettings.fees.placingFeeNumerator.toString())/parseInt(selectedPairSettings.fees.placingFeeDenominator.toString());
-  const cancellingFee = parseInt(selectedPairSettings.fees.cancellingFeeNumerator.toString())/parseInt(selectedPairSettings.fees.cancellingFeeDenominator.toString());
-  const maxOrderSize = (100/baseTokenPrice).toFixed(getBasePairDecimals(replaceMint(baseTokenMintAddress)));
-  const maxOrderSizeQuote = (100/quoteTokenPrice).toFixed(getBasePairDecimals(replaceMint(quoteTokenMintAddress)));
-  const minOrderSize = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, getBasePairDecimals(replaceMint(baseTokenMintAddress)));
-  const minOrderSizeQuote = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, getBasePairDecimals(replaceMint(baseTokenMintAddress))) * baseTokenPrice;
-console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAddress)))
+  const cancellingFee =
+    parseInt(selectedPairSettings.fees.cancellingFeeNumerator.toString()) /
+    parseInt(selectedPairSettings.fees.cancellingFeeDenominator.toString())
+
+  const maxOrderSize = +(100 / baseTokenPrice).toFixed(
+    selectedPairSettings.baseMintDecimals
+  )
+
+  const maxOrderSizeQuote = +(100 / quoteTokenPrice).toFixed(
+    selectedPairSettings.quoteMintDecimals
+  )
+
+  const minOrderSize =
+    parseInt(selectedPairSettings.minimumTokens.toString()) /
+    Math.pow(10, selectedPairSettings.baseMintDecimals)
+
+  const minOrderSizeQuote =
+    (parseInt(selectedPairSettings.minimumTokens.toString()) /
+      Math.pow(10, selectedPairSettings.baseMintDecimals)) *
+    (isSwapBaseToQuote ? baseTokenPrice : quoteTokenPrice)
+
   return (
     <SwapPageContainer
       direction="column"
@@ -388,16 +275,10 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
             <OrderInputs>
               <RowContainer margin="2rem 0 1rem 0">
                 <InputWithSelectorForSwaps
-                  tokenDecimals={getBasePairDecimals(replaceMint(baseTokenMintAddress))}
+                  tokenDecimals={selectedPairSettings.baseMintDecimals}
                   wallet={wallet}
                   publicKey={publicKey}
-                  placeholder={
-                    +baseAmount === 0 &&
-                    +quoteAmount !== 0 &&
-                    isSelectedPoolStable
-                      ? 'Insufficient Balance'
-                      : '0.00'
-                  }
+                  placeholder={'0.00'}
                   theme={theme}
                   directionFrom
                   value={+baseAmount || +quoteAmount === 0 ? baseAmount : ''}
@@ -415,9 +296,9 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
                   }}
                   customStats={[
                     {
-                      label: "Maximum Order Size",
-                      value: maxOrderSize
-                    }
+                      label: 'Maximum Order Size',
+                      value: maxOrderSize,
+                    },
                   ]}
                 />
               </RowContainer>
@@ -431,26 +312,13 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
                     reverseTokens()
                   }}
                 />
-                {isSelectedPoolStable ? (
-                  <DarkTooltip title="This pool uses the stable curve, which provides better rates for swapping stablecoins.">
-                    <div>
-                      <SvgIcon src={ScalesIcon} width="2rem" height="2rem" />
-                    </div>
-                  </DarkTooltip>
-                ) : null}
               </RowContainer>
               <RowContainer margin="1rem 0 2rem 0">
                 <InputWithSelectorForSwaps
-                  tokenDecimals={getBasePairDecimals(replaceMint(quoteTokenMintAddress))}
+                  tokenDecimals={selectedPairSettings.quoteMintDecimals}
                   wallet={wallet}
                   publicKey={publicKey}
-                  placeholder={
-                    +quoteAmount === 0 &&
-                    +baseAmount !== 0 &&
-                    isSelectedPoolStable
-                      ? 'Insufficient Balance'
-                      : '0.00'
-                  }
+                  placeholder={'0.00'}
                   theme={theme}
                   disabled={
                     !baseTokenMintAddress ||
@@ -470,55 +338,19 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
 
               <RowContainer margin="4rem 0 2rem 0">
                 <InputWithType
-                  placeholder="Hours"
+                  placeholder="Minutes"
                   theme={theme}
                   value={orderLength}
-                  metric="Hours"
+                  metric="Minutes"
                   onChange={handleOrderLength}
                 />
               </RowContainer>
-
-              {selectedPool && (
-                <RowContainer
-                  margin="1rem 2rem"
-                  justify="space-between"
-                  style={{ width: 'auto' }}
-                >
-                  <Text color="#93A0B2">Est. Price:</Text>
-                  <Text
-                    fontSize="1.5rem"
-                    color="#53DF11"
-                    fontFamily="Avenir Next Demi"
-                  >
-                    1{' '}
-                    <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
-                      {baseSymbol}{' '}
-                    </Text>
-                    ={' '}
-                    {isSelectedPoolStable
-                      ? 1
-                      : isSwapBaseToQuote
-                      ? stripDigitPlaces(
-                          +poolAmountTokenB / +poolAmountTokenA,
-                          8
-                        )
-                      : stripDigitPlaces(
-                          +(+poolAmountTokenA / +poolAmountTokenB),
-                          8
-                        )}{' '}
-                    <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
-                      {quoteSymbol}{' '}
-                    </Text>
-                  </Text>
-                </RowContainer>
-              )}
-
-              <RowContainer />
             </OrderInputs>
           </Cell>
           <Cell col={12} colSm={6}>
             <OrderStatsWrapper>
               <OrderStats
+                orderAmount={baseAmount * baseTokenPrice}
                 baseSymbol={baseSymbol}
                 cancellingFee={cancellingFee}
                 placingFee={placingFee}
@@ -562,26 +394,42 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
                   transition="all .4s ease-out"
                   disabled={isButtonDisabled}
                   onClick={async () => {
-                    if (!selectedPool) return
+                    const side = checkSide(
+                      quoteTokenMintAddress,
+                      baseTokenMintAddress
+                    )
+
+                    const baseMintDecimals = isSwapBaseToQuote
+                      ? selectedPairSettings.baseMintDecimals
+                      : selectedPairSettings.quoteMintDecimals
+
+                    const minBaseAmount = isSwapBaseToQuote
+                      ? minOrderSize
+                      : minOrderSizeQuote
+
+                    if (baseAmount < minBaseAmount) {
+                      notify({
+                        message: `Min order size is ${minBaseAmount} for ${getTokenNameByMintAddress(
+                          baseTokenMintAddress
+                        )} token on this pair.`,
+                      })
+                      return
+                    }
 
                     setIsOrderInProgress(true)
 
-                    const side = checkSide(new PublicKey(replaceMint(quoteTokenMintAddress)).toString(), new PublicKey(replaceMint(baseTokenMintAddress)).toString());
                     const result = await addOrder({
                       wallet,
                       connection,
-                      amount: new BN(+baseAmount * 10 ** baseTokenDecimals),
-                      timeLength: new BN(orderLength),
+                      amount: new BN(+baseAmount * 10 ** baseMintDecimals),
+                      timeLength: new BN(orderLength * 60),
                       pairSettings: selectedPairSettings,
-                      mintFrom: new PublicKey(
-                        replaceMint(baseTokenMintAddress)
-                      ),
-                      mintTo: new PublicKey(replaceMint(quoteTokenMintAddress)),
+                      mintFrom: new PublicKey(baseTokenMintAddress),
+                      mintTo: new PublicKey(quoteTokenMintAddress),
                       orders: [],
                       orderArray,
                       side,
                     })
-
 
                     notify({
                       type: result === 'success' ? 'success' : 'error',
@@ -596,14 +444,13 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
                     // refresh data
                     await sleep(2 * 1000)
 
-                    refreshPoolBalances()
                     refreshAllTokensData()
 
                     // reset fields
                     if (result === 'success') {
                       setBaseAmount('')
                       setQuoteAmount('')
-                      setOrderLength(0)
+                      setOrderLength(60)
                       handleGetOrderArray()
                     }
 
@@ -617,8 +464,6 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
                     `Insufficient ${
                       isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                     } Balance`
-                  ) : !selectedPool ? (
-                    'No pools available'
                   ) : needEnterAmount ? (
                     'Enter amount'
                   ) : (
@@ -633,10 +478,8 @@ console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAd
 
       <SelectCoinPopup
         pairSettings={pairSettings}
-        poolsInfo={pools}
         theme={theme}
         mints={mints}
-        replaceMint={replaceMint}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
         allTokensData={allTokensData}
@@ -688,11 +531,6 @@ export default compose(
   withTheme(),
   withPublicKey,
   withRegionCheck,
-  queryRendererHoc({
-    name: 'getPoolsInfoQuery',
-    query: getPoolsInfo,
-    fetchPolicy: 'cache-and-network',
-  }),
   queryRendererHoc({
     name: 'getDexTokensPricesQuery',
     query: getDexTokensPrices,
