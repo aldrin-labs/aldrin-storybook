@@ -252,7 +252,7 @@ export const combineRunningOrdersTable = ({
                   message:
                     result === 'success'
                       ? `Order ${operationName}d successfully.`
-                      : `Order ${operationName} failed. Please, try to increase slippage tolerance or try a bit later.`,
+                      : `Order ${operationName} failed. Please, try a bit later.`,
                 })
               }}
             >

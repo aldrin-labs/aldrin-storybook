@@ -9,7 +9,6 @@ import {isTransactionFailed, sendTransaction} from '@sb/dexUtils/send';
 import BN from "bn.js";
 import {checkAccountForMint} from "@sb/dexUtils/twamm/checkAccountForMint";
 import {initializeOrderArray} from "@sb/dexUtils/twamm/initializeOrderArray";
-import { signAndSendSingleTransaction } from '../transactions'
 
 export const addOrder = async ({
   wallet,
