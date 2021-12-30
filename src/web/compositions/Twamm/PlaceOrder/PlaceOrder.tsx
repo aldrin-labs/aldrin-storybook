@@ -331,7 +331,7 @@ const PlaceOrder = ({
             <OrderInputs>
               <RowContainer margin="2rem 0 1rem 0">
                 <InputWithSelectorForSwaps
-                  tokenDecimals={getBasePairDecimals(replaceMint(baseTokenMintAddress))}
+                  tokenDecimals={getBasePairDecimals(baseTokenMintAddress)}
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder={'0.00'}
@@ -371,7 +371,7 @@ const PlaceOrder = ({
               </RowContainer>
               <RowContainer margin="1rem 0 2rem 0">
                 <InputWithSelectorForSwaps
-                  tokenDecimals={getBasePairDecimals(replaceMint(quoteTokenMintAddress))}
+                  tokenDecimals={getBasePairDecimals(quoteTokenMintAddress)}
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder={'0.00'}
