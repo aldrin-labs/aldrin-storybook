@@ -52,7 +52,6 @@ export const InputWithSelectorForSwaps = ({
   tokenDecimals?: number
 }) => {
   const isSelectToken = symbol === 'Select token'
-console.log('input tokenDecimals', tokenDecimals)
   const renderCustomStats = (customStats) => {
     return customStats.map(statsItem => (
       <InputStats>
