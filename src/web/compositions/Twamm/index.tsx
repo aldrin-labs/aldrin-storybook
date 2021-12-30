@@ -40,6 +40,7 @@ import { OrdersHistoryWrapper } from './components/OrdersHistory/OrdersHistory.W
 import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.Wrapper'
 import GuideImg from './img/guideImg.svg'
 import SdkImg from './img/sdkImg.svg'
+import { getParsedPairSettings } from '@sb/dexUtils/twamm/getParsedPairSettings'
 
 const TwammComponent = ({
   theme,
@@ -54,15 +55,14 @@ const TwammComponent = ({
   const [orderArray, setOrderArray] = useState([])
 
   useEffect(() => {
-    getPairSettings({
+    getParsedPairSettings({
       wallet,
       connection,
     }).then((pairSettingsRes) => {
       setPairSettings(pairSettingsRes)
     })
-
     handleGetOrderArray()
-  }, [])
+  }, [wallet.publicKey])
 
   const handleGetOrderArray = () => {
     getOrderArray({

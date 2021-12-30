@@ -95,7 +95,7 @@ class ProgramsMultiton {
             new PublicKey(TWAMM_PROGRAM_ADDRESS),
             new Provider019(
               connection,
-              walletAdapterToWallet(wallet),
+              wallet,
               defaultOptions()
             )
           ) as any as Program)

@@ -56,7 +56,6 @@ export const SelectCoinPopup = ({
   setBaseTokenAddressFromSeveral,
   setQuoteTokenAddressFromSeveral,
   pairSettings,
-  replaceMint,
 }: {
   theme: Theme
   open: boolean
@@ -70,8 +69,7 @@ export const SelectCoinPopup = ({
   baseTokenMintAddress: string
   setBaseTokenAddressFromSeveral: (address: string) => void
   setQuoteTokenAddressFromSeveral: (address: string) => void
-  pairSettings: any,
-  replaceMint: (mint: string) => string
+  pairSettings: any
 }) => {
   const needKnownMints = false
   const [searchValue, onChangeSearch] = useState<string>('')
@@ -86,14 +84,12 @@ export const SelectCoinPopup = ({
         (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
       )
     : mints
-console.log('usersMints', usersMints)
+
   const sortedAllTokensData = new Map()
 
   allTokensData.forEach((tokensData) => {
     sortedAllTokensData.set(tokensData.mint, tokensData.amount)
   })
-
-  console.log('allTokensData', allTokensData)
 
   const filteredMints = searchValue
     ? usersMints.filter((mint) =>
@@ -103,35 +99,14 @@ console.log('usersMints', usersMints)
       )
     : usersMints
 
-  console.log('pairSettingsMint', pairSettings[0].baseTokenMint.toString(), pairSettings[0].quoteTokenMint.toString())
-
-  const poolsTokensA = poolsInfo.map((el) => el.tokenA)
-  const poolsTokensB = poolsInfo.map((el) => el.tokenB)
-
-  const choosenMint =
-    baseTokenMintAddress && quoteTokenMintAddress
-      ? isBaseTokenSelecting
-        ? quoteTokenMintAddress
-        : baseTokenMintAddress
-      : baseTokenMintAddress || quoteTokenMintAddress
-
-  const availablePools = poolsInfo
-    .filter((el) => el.tokenA === choosenMint || el.tokenB === choosenMint)
-    .map((el) => (el.tokenA === choosenMint ? el.tokenB : el.tokenA))
   const sortedMints = filteredMints
     .map((mint) => {
-      console.log('mintReplace', mint)
       return {
         mint,
-        amount: sortedAllTokensData.get(replaceMint(mint)) || 0,
-        isTokenInPool:
-          poolsTokensA.includes(mint) || poolsTokensB.includes(mint),
-        isPoolExist: availablePools.includes(mint),
+        amount: sortedAllTokensData.get(mint) || 0,
       }
     })
-    .filter((token) => token.isTokenInPool)
     .sort((a, b) => b.amount - a.amount)
-  console.log('sortedMints', filteredMints)
 
   return (
     <DialogWrapper
@@ -162,17 +137,7 @@ console.log('usersMints', usersMints)
       </RowContainer>
       <RowContainer>
         {sortedMints.map(
-          ({
-            mint,
-            amount,
-            isTokenInPool,
-            isPoolExist,
-          }: {
-            mint: string
-            amount: number
-            isTokenInPool: boolean
-            isPoolExist: boolean
-          }) => {
+          ({ mint, amount }: { mint: string; amount: number }) => {
             return (
               <SelectorRow
                 justify="space-between"
@@ -192,9 +157,6 @@ console.log('usersMints', usersMints)
                 <Row wrap="nowrap">
                   <TokenIcon mint={mint} width="2rem" height="2rem" />
                   <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
-                  {/* {!isPoolExist ? (
-                    <TokenLabel>Insufficient Liquidity</TokenLabel>
-                  ) : null} */}
                 </Row>
                 <Row wrap="nowrap">
                   <StyledText>

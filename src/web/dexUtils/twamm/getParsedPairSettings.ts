@@ -30,6 +30,7 @@ export const getParsedPairSettings = async ({
     console.log('ordersData', pairData)
 
     return {
+      ...pairData,
       isInitialized: pairData.isInitialized,
       baseTokenFeeAccount: pairData.baseTokenFeeAccount.toString(),
       quoteTokenFeeAccount: pairData.quoteTokenFeeAccount.toString(),
