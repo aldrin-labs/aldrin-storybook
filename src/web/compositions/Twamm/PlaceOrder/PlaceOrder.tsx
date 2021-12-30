@@ -168,8 +168,8 @@ const PlaceOrder = ({
     setBaseTokenAddressFromSeveral(selectedQuoteTokenAddressFromSeveral)
     setQuoteTokenAddressFromSeveral(selectedBaseTokenAddressFromSeveral)
 
-    setBaseAmountWithQuote(quoteAmount)
-    setQuoteAmountWithBase(baseAmount)
+    setBaseAmount(quoteAmount)
+    setQuoteAmount(baseAmount)
   }
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
@@ -331,6 +331,7 @@ const PlaceOrder = ({
             <OrderInputs>
               <RowContainer margin="2rem 0 1rem 0">
                 <InputWithSelectorForSwaps
+                  tokenDecimals={getBasePairDecimals(replaceMint(baseTokenMintAddress))}
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder={'0.00'}
@@ -370,6 +371,7 @@ const PlaceOrder = ({
               </RowContainer>
               <RowContainer margin="1rem 0 2rem 0">
                 <InputWithSelectorForSwaps
+                  tokenDecimals={getBasePairDecimals(replaceMint(quoteTokenMintAddress))}
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder={'0.00'}

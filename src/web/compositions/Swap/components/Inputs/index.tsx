@@ -34,6 +34,7 @@ export const InputWithSelectorForSwaps = ({
   onChange,
   openSelectCoinPopup,
   customStats,
+  tokenDecimals,
 }: {
   theme: Theme
   value: string | number
@@ -48,9 +49,10 @@ export const InputWithSelectorForSwaps = ({
   onChange: (value: string | number) => void
   openSelectCoinPopup: () => void,
   customStats?: {label: string, value: boolean}[],
+  tokenDecimals?: number
 }) => {
   const isSelectToken = symbol === 'Select token'
-
+console.log('input tokenDecimals', tokenDecimals)
   const renderCustomStats = (customStats) => {
     return customStats.map(statsItem => (
       <InputStats>
@@ -59,7 +61,7 @@ export const InputWithSelectorForSwaps = ({
         </Text>
         &nbsp;
         <BlueText theme={theme} onClick={() => onChange(statsItem.value)}>
-          {formatNumberToUSFormat(stripDigitPlaces(statsItem.value, 8))} {symbol}
+          {formatNumberToUSFormat(stripDigitPlaces(statsItem.value, tokenDecimals || 8))} {symbol}
         </BlueText>
       </InputStats>
     ))
