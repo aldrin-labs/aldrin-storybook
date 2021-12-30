@@ -175,7 +175,7 @@ export const combineRunningOrdersTable = ({
         filled: {
           render: (
             <StyledTitle color={COLORS.success} fontSize="1.5rem">
-              {filledPers} %
+              {stripByAmount(filledPers)} %
             </StyledTitle>
           ),
           contentToSort: '',
@@ -184,7 +184,7 @@ export const combineRunningOrdersTable = ({
         avgFilledPrice: {
           render: (
             <StyledTitle color={COLORS.main} fontSize="1.5rem">
-              {avgFilledPrice} {quote}
+              {stripByAmount(avgFilledPrice)} {quote}
             </StyledTitle>
           ),
           contentToSort: '',
@@ -193,7 +193,7 @@ export const combineRunningOrdersTable = ({
         sent: {
           render: (
             <StyledTitle color={COLORS.success} fontSize="1.5rem">
-              {sent} {base}
+              {stripByAmount(sent)} {base}
             </StyledTitle>
           ),
           contentToSort: '',
@@ -202,7 +202,7 @@ export const combineRunningOrdersTable = ({
         received: {
           render: (
             <StyledTitle color={COLORS.success} fontSize="1.5rem">
-              {received} {quote}
+              {stripByAmount(received)} {quote}
             </StyledTitle>
           ),
           contentToSort: '',
@@ -211,7 +211,7 @@ export const combineRunningOrdersTable = ({
         remainingAmount: {
           render: (
             <StyledTitle color={COLORS.main} fontSize="1.5rem">
-              {remainingAmount} {base}
+              {stripByAmount(remainingAmount)} {base}
             </StyledTitle>
           ),
           contentToSort: '',

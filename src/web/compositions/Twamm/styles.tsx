@@ -142,6 +142,11 @@ export const RedButton = styled.button`
   font-size: 1.7rem;
   color: ${COLORS.main};
   font-family: Avenir Next Demi;
+
+  &:disabled {
+    background: ${COLORS.hint};
+    border-color: ${COLORS.hint};
+  }
 `
 export const StyledA = styled.a`
   font-size: ${(props: TextProps) => props.fontSize || '1.5rem'};
