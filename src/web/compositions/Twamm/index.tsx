@@ -6,7 +6,7 @@ import { compose } from 'recompose'
 
 import { SvgIcon } from '@sb/components'
 import { Cell, Page } from '@sb/components/Layout'
-import { StyledLink, Text } from '@sb/compositions/Addressbook'
+import { Text } from '@sb/compositions/Addressbook'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import PlaceOrder from '@sb/compositions/Twamm/PlaceOrder/PlaceOrder'
 import {
@@ -96,20 +96,14 @@ const TwammComponent = ({
                   </Text>
                 </BannerDescription>
                 <BannerLink>
-                  <StyledLink
-                    to="/pools"
-                    needHover
+                  <StyledA
+                    needHover={false}
                     fontSize="1.3rem"
                     fontFamily="Avenir Next Bold"
                     whiteSpace="nowrap"
                   >
-                    Open Guide{' '}
-                    <SvgIcon
-                      width="1.7rem"
-                      height="0.89rem"
-                      src={ArrowBanner}
-                    />
-                  </StyledLink>
+                    Coming soon
+                  </StyledA>
                 </BannerLink>
               </BannerWrapper>
             </Cell>
