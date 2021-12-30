@@ -43,6 +43,8 @@ export const getParsedRunningOrders = async ({
           amountToFill: order.amountToFill.toNumber(),
           amount: order.amount.toNumber(),
           tokensSwapped: order.tokensSwapped.toNumber(),
+          stepsFilled: order.stepsFilled.toNumber(),
+          stepsToFill: order.stepsToFill.toNumber(),
           // orderArray data
           orderArrayPublicKey: orderArray.pubkey.toString(),
           side: orderArrayData.side,

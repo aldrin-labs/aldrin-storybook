@@ -13,6 +13,8 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton'
 import { signAndSendSingleTransaction } from '../transactions'
 import { PairSettings, TwammOrder } from './types'
+import { Program, Provider } from '@project-serum/anchor'
+import TwammProgramIdl from '@core/idls/twamm.json'
 
 export const getCloseOrderTransactions = async (params: {
   wallet: WalletAdapter
@@ -36,11 +38,13 @@ export const getCloseOrderTransactions = async (params: {
     Ask: { ask: {} },
   }
 
-  const program = ProgramsMultiton.getProgramByAddress({
-    wallet,
-    connection,
-    programAddress: TWAMM_PROGRAM_ADDRESS,
-  })
+  const programId = new PublicKey(TWAMM_PROGRAM_ADDRESS)
+
+  const program = new Program(
+    TwammProgramIdl,
+    programId,
+    new Provider(connection, wallet, Provider.defaultOptions())
+  )
 
   const [askSigner] = await PublicKey.findProgramAddress(
     [new PublicKey(order.orderArrayPublicKey).toBuffer()],

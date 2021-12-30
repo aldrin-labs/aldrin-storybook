@@ -74,6 +74,8 @@ export const combineRunningOrdersTable = ({
       ?.flat()
       .filter((order) => order?.signer === wallet?.publicKey?.toString()) || []
 
+  console.log('runningOrdersArray', runningOrdersArray)
+
   return runningOrdersArray
     ?.map((runningOrder) => {
       const pairSettingsAddress = runningOrder?.pair || ''
@@ -82,6 +84,10 @@ export const combineRunningOrdersTable = ({
       if (!currentPairSettings) {
         return null
       }
+
+      const placingFee =
+        parseInt(currentPairSettings.fees.placingFeeNumerator.toString()) /
+        parseInt(currentPairSettings.fees.placingFeeDenominator.toString())
 
       const side = runningOrder.side.ask ? 'Sell' : 'Buy'
       const isSellSide = side === 'Sell'
@@ -95,9 +101,15 @@ export const combineRunningOrdersTable = ({
             currentPairSettings.baseTokenMint,
           ]
 
-      const baseMintDecimals = isSellSide
-        ? currentPairSettings.baseMintDecimals
-        : currentPairSettings.quoteMintDecimals
+      const [baseMintDecimals, quoteMintDecimals] = isSellSide
+        ? [
+            currentPairSettings.baseMintDecimals,
+            currentPairSettings.quoteMintDecimals,
+          ]
+        : [
+            currentPairSettings.quoteMintDecimals,
+            currentPairSettings.baseMintDecimals,
+          ]
 
       const base = getTokenNameByMintAddress(baseTokenMint) || baseTokenMint
 
@@ -107,23 +119,17 @@ export const combineRunningOrdersTable = ({
         (runningOrder.amount - +runningOrder?.amountFilled) /
         10 ** baseMintDecimals
 
-      const avgFilledPrice =
-        runningOrder.amountFilled / runningOrder.tokensSwapped || 0
-
       const currentTime = Date.now() / 1000
       const remainingTime = runningOrder.endTime - currentTime
 
+      // reduce fee from amount
       const filledPers =
-        (runningOrder.amountFilled * 100) / runningOrder.amountToFill
+        (runningOrder.stepsFilled / runningOrder.stepsToFill) * 100
 
-      const sent = runningOrder.amount * filledPers || 0
+      const sent = runningOrder.amountFilled / 10 ** baseMintDecimals || 0
+      const received = runningOrder.tokensSwapped / 10 ** quoteMintDecimals || 0
 
-      const quotePrice =
-        getDexTokensPricesQuery?.getDexTokensPrices?.find(
-          (runningOrder) => runningOrder.symbol === quote
-        )?.price || 0
-
-      const received = sent * quotePrice
+      const avgFilledPrice = received / sent || 0
 
       const { address: userBaseTokenAccount } = getTokenDataByMint(
         userTokensData,
