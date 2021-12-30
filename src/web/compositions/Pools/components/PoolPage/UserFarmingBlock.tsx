@@ -120,6 +120,8 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const unstakeLocked = claimAvailableTs > now
 
+  console.log('ticketsForPool: ', ticketsForPool, pool.swapToken)
+
   const stakedAmount = getStakedTokensFromOpenFarmingTickets(ticketsForPool)
 
   const availableToClaimMap = getUniqueAmountsToClaimMap({
@@ -153,6 +155,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     setFarmingExtending(false)
   }
 
+  console.log('hadFarming: ', hadFarming, hasFarming, hasStaked)
   if (
     !hadFarming || // No farming were created
     (!hasFarming && !availableToClaimUsd && !hasStaked && !isPoolOwner) // Farming ended and nothing to withdraw/claim

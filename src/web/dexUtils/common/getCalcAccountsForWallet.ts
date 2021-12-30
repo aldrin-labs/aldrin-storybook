@@ -41,7 +41,6 @@ export const getCalcAccounts = async (
     }
   )
 
-  console.log('calcAccountsData: ', calcAccountsData)
   const calcAccounts = calcAccountsData.map((ca) => {
     const data = Buffer.from(ca.account.data)
     return {

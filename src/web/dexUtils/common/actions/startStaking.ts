@@ -58,17 +58,13 @@ export const startStaking = async (params: StartStakingParams) => {
     tickets: filterOpenFarmingTickets(farmingTickets),
   })
 
-  console.log('stak1')
   const totalTokens = openTickets.reduce(
     (acc, ticket) => acc.add(new BN(`${ticket.tokensFrozen}`)),
     new BN(0)
   )
 
-  console.log('stak2', amount)
-
   const totalToStake = totalTokens.add(new BN(amount * 10 ** decimals))
 
-  console.log('stak3')
   const farmingTicket = Keypair.generate()
 
   signers.push(farmingTicket)

@@ -16,6 +16,7 @@ import {
   DEFAULT_FARMING_TICKET_END_TIME,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
 } from '../common/config'
+import { getCalcAccounts } from '../common/getCalcAccountsForWallet'
 import { FarmingTicket, SnapshotQueue } from '../common/types'
 import MultiEndpointsConnection from '../MultiEndpointsConnection'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
@@ -28,7 +29,6 @@ import {
   signAndSendTransactions,
 } from '../transactions'
 import { WalletAdapter } from '../types'
-import { getCalcAccounts } from '../common/getCalcAccountsForWallet'
 import { StakingPool } from './types'
 
 export interface WithdrawFarmedParams {

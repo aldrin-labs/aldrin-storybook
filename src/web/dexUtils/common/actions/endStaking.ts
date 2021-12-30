@@ -3,29 +3,24 @@ import {
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
   SYSVAR_RENT_PUBKEY,
-  Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { splitBy } from '../../../utils/collection'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { createTokenAccountTransaction } from '../../send'
 import { getCurrentFarmingStateFromAll } from '../../staking/getCurrentFarmingStateFromAll'
-import { sendSignedTransactions, signTransactions } from '../../transactions'
+import { buildTransactions, signAndSendTransactions } from '../../transactions'
 import { filterOpenFarmingTickets } from '../filterOpenFarmingTickets'
 import { getTicketsAvailableToClose } from '../getTicketsAvailableToClose'
 import { EndstakingParams } from './types'
 
 export const endStakingInstructions = async (
   params: EndstakingParams
-): Promise<TransactionInstruction[][]> => {
-  const {
-    wallet,
-    connection,
-    userPoolTokenAccount,
-    farmingTickets,
-    stakingPool,
-    programAddress,
-  } = params
+): Promise<TransactionInstruction[]> => {
+  const { wallet, connection, farmingTickets, stakingPool, programAddress } =
+    params
+
+  let { userPoolTokenAccount } = params
 
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -33,6 +28,18 @@ export const endStakingInstructions = async (
     programAddress,
   })
 
+  const commonInstructions: TransactionInstruction[] = []
+
+  if (!userPoolTokenAccount) {
+    const { transaction: createAccountTransaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: new PublicKey(stakingPool.poolTokenMint),
+      })
+
+    userPoolTokenAccount = newAccountPubkey
+    commonInstructions.push(...createAccountTransaction.instructions)
+  }
   const farmingState = getCurrentFarmingStateFromAll(stakingPool.farming || [])
 
   const openTickets = getTicketsAvailableToClose({
@@ -75,26 +82,27 @@ export const endStakingInstructions = async (
     })
   )
 
-  return splitBy(instructions, 6)
+  return [...commonInstructions, ...instructions]
 }
 
 export const endStaking = async (params: EndstakingParams) => {
-  const instructionChunks = await endStakingInstructions(params)
+  const instructions = await endStakingInstructions(params)
 
   const { wallet, connection } = params
 
-  const transactions = instructionChunks.map((instr) =>
-    new Transaction().add(...instr)
+  if (!wallet.publicKey) {
+    throw new Error('No publicKey for wallet!')
+  }
+
+  const transactionsAndSigners = buildTransactions(
+    instructions.map((instruction) => ({ instruction })),
+    wallet.publicKey,
+    []
   )
 
-  const signedTransactions = await signTransactions(
-    transactions.map((transaction) => ({
-      transaction,
-      signers: [],
-    })),
+  return signAndSendTransactions({
+    transactionsAndSigners,
     connection,
-    wallet
-  )
-
-  return sendSignedTransactions(signedTransactions, connection)
+    wallet,
+  })
 }

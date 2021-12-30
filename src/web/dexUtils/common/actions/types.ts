@@ -31,8 +31,7 @@ export interface StartStakingParams {
 export interface EndstakingParams {
   wallet: WalletAdapter
   connection: MultiEndpointsConnection
-  // poolPublicKey: PublicKey
-  userPoolTokenAccount: PublicKey
+  userPoolTokenAccount?: PublicKey
   farmingTickets: FarmingTicket[]
   stakingPool: StakingPool | PoolInfo
   programAddress: string
