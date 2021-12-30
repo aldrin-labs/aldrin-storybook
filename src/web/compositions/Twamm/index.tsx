@@ -25,7 +25,7 @@ import {
 import { useConnection } from '@sb/dexUtils/connection'
 import { getOrderArray } from '@sb/dexUtils/twamm/getOrderArray'
 import { getPairSettings } from '@sb/dexUtils/twamm/getPairSettings'
-import { PairSettings } from '@sb/dexUtils/twamm/types'
+import {PairSettingsRaw} from '@sb/dexUtils/twamm/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -50,8 +50,8 @@ const TwammComponent = ({
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
-  const [pairSettings, setPairSettings] = useState<PairSettings[]>([])
-  const [orderArray, setOrderArray] = useState([])
+  const [pairSettings, setPairSettings] = useState<PairSettingsRaw[] | []>([])
+  const [orderArray, setOrderArray] = useState<any>([])
 
   useEffect(() => {
     getPairSettings({

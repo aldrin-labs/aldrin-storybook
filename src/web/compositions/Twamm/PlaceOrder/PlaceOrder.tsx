@@ -2,7 +2,7 @@ import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
 import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
-import React, { useEffect, useState } from 'react'
+import React, {FC, useEffect, useState} from 'react'
 import { compose } from 'recompose'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
@@ -60,6 +60,7 @@ import OrderStats from './components/OrderStats/OrderStats'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import {PairSettingsRaw} from "@sb/dexUtils/twamm/types";
 
 const PlaceOrder = ({
   theme,
@@ -74,11 +75,11 @@ const PlaceOrder = ({
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-  pairSettings: any
+  pairSettings: PairSettingsRaw[]
   orderArray: any
   handleGetOrderArray: () => void
 }) => {
-  const [selectedPairSettings, setSelectedPairSettings] = useState(
+  const [selectedPairSettings, setSelectedPairSettings] = useState<PairSettingsRaw>(
     pairSettings[0]
   )
 
@@ -345,7 +346,7 @@ const PlaceOrder = ({
     setOrderLength(+event.target.value)
   }
 
-  const checkSide = (mintTo, mintFrom) => {
+  const checkSide = (mintTo: string, mintFrom: string) => {
     let side = null;
     if(mintFrom === selectedPairSettings.baseTokenMint.toString() && mintTo === selectedPairSettings.quoteTokenMint.toString()) {
       side = 'ask';
@@ -357,12 +358,13 @@ const PlaceOrder = ({
 
   const mints = [...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]
 
-  const getBasePairDecimals = (mint) => {
+  const getBasePairDecimals = (mint: string): number => {
     if(selectedPairSettings.baseTokenMint.toString() === mint) {
       return selectedPairSettings.baseMintDecimals;
     } else if(selectedPairSettings.quoteTokenMint.toString() === mint) {
       return selectedPairSettings.quoteMintDecimals;
     }
+    return selectedPairSettings.baseMintDecimals;
   }
 
   const placingFee = parseInt(selectedPairSettings.fees.placingFeeNumerator.toString())/parseInt(selectedPairSettings.fees.placingFeeDenominator.toString());

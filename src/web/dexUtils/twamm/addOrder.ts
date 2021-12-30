@@ -10,6 +10,7 @@ import BN from "bn.js";
 import {checkAccountForMint} from "@sb/dexUtils/twamm/checkAccountForMint";
 import {initializeOrderArray} from "@sb/dexUtils/twamm/initializeOrderArray";
 import { signAndSendSingleTransaction } from '../transactions'
+import {PairSettingsRaw} from "@sb/dexUtils/twamm/types";
 
 export const addOrder = async ({
   wallet,
@@ -28,7 +29,7 @@ export const addOrder = async ({
   programAddress?: string,
   amount: BN,
   timeLength: BN,
-  pairSettings: any,
+  pairSettings: PairSettingsRaw,
   mintFrom: PublicKey,
   mintTo: PublicKey,
   orders: PublicKey[],

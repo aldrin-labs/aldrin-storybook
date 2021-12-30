@@ -24,6 +24,7 @@ import {
 import Close from '@icons/closeIcon.svg'
 
 import { SelectSeveralAddressesPopup } from '../../../Pools/components/Popups/SelectorForSeveralAddresses'
+import {PairSettingsRaw} from "@sb/dexUtils/twamm/types";
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 55rem;
@@ -70,7 +71,7 @@ export const SelectCoinPopup = ({
   baseTokenMintAddress: string
   setBaseTokenAddressFromSeveral: (address: string) => void
   setQuoteTokenAddressFromSeveral: (address: string) => void
-  pairSettings: any,
+  pairSettings: PairSettingsRaw,
   replaceMint: (mint: string) => string
 }) => {
   const needKnownMints = false

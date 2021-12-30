@@ -7,6 +7,7 @@ import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { signAndSendSingleTransaction } from '../transactions'
+import {PairSettingsRaw} from "@sb/dexUtils/twamm/types";
 
 export const initializeOrderArray = async ({
   wallet,
@@ -21,7 +22,7 @@ export const initializeOrderArray = async ({
   wallet: WalletAdapter,
   connection: Connection,
   programAddress?: string,
-  pairSettings: any,
+  pairSettings: PairSettingsRaw,
   mintFrom: PublicKey,
   mintTo: PublicKey,
   side: {ask: {}} | {bid: {}} | null,
@@ -64,18 +65,7 @@ export const initializeOrderArray = async ({
     tokenAccountToAccount = account;
   });
   transaction.add(tokenAccountToInstruction);
-console.log({
-  side,
-  pairSettings: pairSettings.pubkey,
-  orders: orderArray.publicKey,
-  orderArraySigner: signer,
-  initializer: wallet.publicKey,
-  twammFromTokenVault: tokenAccountFromAccount?.publicKey,
-  twammToTokenVault: tokenAccountToAccount.publicKey,
-  feeAccount: pairSettings.baseTokenFeeAccount,
-  tokenProgram: TOKEN_PROGRAM_ID,
-  systemProgram: SystemProgram.programId,
-})
+
   const initializeOrderArrayInstruction = program.instruction.initializeOrderArray(signerNonce, side, {
     accounts: {
       pairSettings: pairSettings.pubkey,
@@ -100,7 +90,6 @@ console.log({
     connection,
     focusPopup: true,
   }).then(res => {
-    console.log('returnValue', {orderArray, tokenAccountFrom: tokenAccountFromAccount.publicKey})
     returnValue = {orderArray, tokenAccountFrom: tokenAccountFromAccount.publicKey};
   }).catch(error => {
     console.log('initializeOrderArrayError', error)

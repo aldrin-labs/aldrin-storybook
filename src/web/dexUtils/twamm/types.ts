@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
+import BN from "bn.js";
 
 export type TwammOrder = {
   index: number
@@ -29,4 +30,28 @@ export type PairSettings = {
   pair: string
   publicKey: string
   account: string
+}
+
+export type PairSettingsFees = {
+  cancellingFeeDenominator: BN
+  cancellingFeeNumerator: BN
+  placingFeeDenominator: BN
+  placingFeeNumerator: BN
+}
+
+export type PairSettingsRaw = {
+  authority: PublicKey
+  baseMintDecimals: number
+  baseTokenFeeAccount: PublicKey
+  baseTokenMint: PublicKey
+  discountDenominator: BN
+  discountNumerator: BN
+  fees: PairSettingsFees
+  initializerAccount: PublicKey
+  minimumTokens: BN
+  pubkey: PublicKey
+  pyth: PublicKey
+  quoteMintDecimals: number
+  quoteTokenFeeAccount: PublicKey
+  quoteTokenMint: PublicKey
 }

@@ -6,6 +6,7 @@ import { TWAMM_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 import TwammProgramIdl from '@core/idls/twamm.json'
+import {PairSettingsRaw} from "@sb/dexUtils/twamm/types";
 
 export const getPairSettings = async ({
   wallet,
@@ -32,7 +33,7 @@ export const getPairSettings = async ({
     programAddress: TWAMM_PROGRAM_ADDRESS,
   })
 
-  let allData = []
+  let allData: PairSettingsRaw | [] = []
 
   await pairSettingsAccount.then((resPairSettings) => {
     allData = resPairSettings.map((item) => {
@@ -42,5 +43,5 @@ export const getPairSettings = async ({
     })
   })
 
-  return await allData
+  return allData;
 }
