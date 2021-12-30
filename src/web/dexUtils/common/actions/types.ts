@@ -4,17 +4,17 @@ import { PoolInfo } from '../../../compositions/Pools/index.types'
 import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { StakingPool } from '../../staking/types'
 import { TokenInfo, WalletAdapter } from '../../types'
-import { FarmingTicket, SnapshotQueue } from '../types'
+import { FarmingTicket } from '../types'
 
-export interface WithdrawFarmedParams {
+export interface WithdrawStakeddParams {
   wallet: WalletAdapter
   connection: MultiEndpointsConnection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
-  pool: StakingPool | PoolInfo
+  stakingPool: StakingPool | PoolInfo
   programAddress?: string
-  snapshotQueues: SnapshotQueue[]
-  signAllTransactions: boolean // Ledger compability
+  // snapshotQueues: SnapshotQueue[]
+  // signAllTransactions: boolean // Ledger compability
 }
 
 export interface StartStakingParams {
@@ -36,3 +36,14 @@ export interface EndstakingParams {
   stakingPool: StakingPool | PoolInfo
   programAddress: string
 }
+
+// export interface WithdrawFarmedParams {
+//   wallet: WalletAdapter
+//   connection: MultiEndpointsConnection
+//   allTokensData: TokenInfo[]
+//   farmingTickets: FarmingTicket[]
+//   pool: StakingPool | PoolInfo
+//   programAddress?: string
+//   snapshotQueues: SnapshotQueue[]
+//   signAllTransactions: boolean // Ledger compability
+// }

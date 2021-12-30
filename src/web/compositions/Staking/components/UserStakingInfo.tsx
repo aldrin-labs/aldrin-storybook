@@ -11,9 +11,9 @@ import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { ClaimRewards } from '@sb/compositions/Pools/components/Popups/ClaimRewards/ClaimRewards'
 import { endStaking } from '@sb/dexUtils/common/actions/endStaking'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
+import { withdrawStaked } from '@sb/dexUtils/common/actions/withdrawStaked'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingState } from '@sb/dexUtils/common/types'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
@@ -30,7 +30,6 @@ import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingCalcAccounts } from '@sb/dexUtils/staking/useCalcAccounts'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
-import { withdrawStaked } from '@sb/dexUtils/staking/withdrawStaked'
 import {
   AsyncRefreshVoidFunction,
   RefreshFunction,
@@ -126,6 +125,22 @@ const resolveUnstakingNotification = (
   return 'Unstaking cancelled.'
 }
 
+const resolveClaimNotification = (
+  status: 'success' | 'failed' | 'cancelled' | string
+) => {
+  if (status === 'success') {
+    return 'Successfully claimed rewards.'
+  }
+  if (status === 'failed') {
+    return 'Claim rewards failed, please try again later or contact us in telegram.'
+  }
+  if (status === 'cancelled') {
+    return 'Claim rewards cancelled.'
+  }
+
+  return 'Operation timeout, please claim rest rewards in a few seconds.'
+}
+
 // const walletPublicKey = new PublicKey(
 //   '5FbM2CWzq33t1gMaYdxYvm4xVjh39nV8KfgdSt5L2ktH'
 // )
@@ -143,12 +158,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
   const [loading, setLoading] = useState({ stake: false, unstake: false })
-  const [
-    isClaimRewardsAndRestakePopupOpen,
-    setIsClaimRewardsAndRestakePopupOpen,
-  ] = useState(false)
-
-  const [isClaimRewardsPopupOpen, setIsClaimRewardsPopupOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const { wallet } = useWallet()
@@ -355,6 +364,25 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const claimUnlockData = dayjs(claimUnlockDataTimestamp)
     .format('D-MMMM-YYYY')
     .replaceAll('-', ' ')
+
+  const claimRewards = async () => {
+    setIsLoading(true)
+    const result = await withdrawStaked({
+      connection,
+      wallet,
+      stakingPool,
+      farmingTickets: userFarmingTickets,
+      programAddress: STAKING_PROGRAM_ADDRESS,
+      allTokensData: allTokenData,
+    })
+
+    notify({
+      type: result === 'success' ? 'success' : 'error',
+      message: resolveClaimNotification(result),
+    })
+    refreshAll()
+    setIsLoading(false)
+  }
   return (
     <>
       <BlockContent border>
@@ -488,7 +516,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                           disabled={isClaimDisabled}
                           $loading={isLoading}
                           $borderRadius="xxl"
-                          onClick={() => setIsClaimRewardsPopupOpen(true)}
+                          onClick={claimRewards}
                         >
                           Claim
                         </Button>
@@ -524,44 +552,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         open={isRestakePopupOpen}
         close={() => setIsRestakePopupOpen(false)}
       />
-      {(isClaimRewardsPopupOpen || isClaimRewardsAndRestakePopupOpen) && (
-        <ClaimRewards
-          close={() => {
-            setIsLoading(false)
-            if (isClaimRewardsPopupOpen) {
-              setIsClaimRewardsPopupOpen(false)
-            } else {
-              setIsClaimRewardsAndRestakePopupOpen(false)
-            }
-          }}
-          selectedPool={stakingPoolWithClosedFarmings}
-          programId={STAKING_PROGRAM_ADDRESS}
-          allTokensData={allTokenData}
-          farmingTicketsMap={farmingTicketsMap}
-          snapshotQueues={snapshotQueueWithAMMFees}
-          refreshTokensWithFarmingTickets={refreshAll}
-          setPoolWaitingForUpdateAfterOperation={toggleIsLoading}
-          withdrawFunction={withdrawStaked}
-          hideMaintenanceWarning
-          callback={async () => {
-            setIsLoading(false)
-            if (isClaimRewardsAndRestakePopupOpen) {
-              if (!tokenData) {
-                throw new Error('No token data!')
-              }
-              await startStaking({
-                wallet,
-                connection,
-                amount: availableToClaimTotal,
-                userPoolTokenAccount: new PublicKey(tokenData.address),
-                stakingPool,
-                farmingTickets: userFarmingTickets,
-              })
-            }
-            return true
-          }}
-        />
-      )}
     </>
   )
 }
