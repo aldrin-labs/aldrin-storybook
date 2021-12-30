@@ -222,8 +222,8 @@ const PlaceOrder = ({
     setBaseTokenAddressFromSeveral(selectedQuoteTokenAddressFromSeveral)
     setQuoteTokenAddressFromSeveral(selectedBaseTokenAddressFromSeveral)
 
-    setBaseAmountWithQuote(quoteAmount)
-    setQuoteAmountWithBase(baseAmount)
+    setBaseAmount(quoteAmount)
+    setQuoteAmount(baseAmount)
   }
 
   const poolsAmountDiff = isSwapBaseToQuote
@@ -371,7 +371,7 @@ const PlaceOrder = ({
   const maxOrderSizeQuote = (100/quoteTokenPrice).toFixed(getBasePairDecimals(replaceMint(quoteTokenMintAddress)));
   const minOrderSize = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, getBasePairDecimals(replaceMint(baseTokenMintAddress)));
   const minOrderSizeQuote = parseInt(selectedPairSettings.minimumTokens.toString())/Math.pow(10, getBasePairDecimals(replaceMint(baseTokenMintAddress))) * baseTokenPrice;
-
+console.log('baseTokenDecimals', getBasePairDecimals(replaceMint(baseTokenMintAddress)))
   return (
     <SwapPageContainer
       direction="column"
@@ -388,6 +388,7 @@ const PlaceOrder = ({
             <OrderInputs>
               <RowContainer margin="2rem 0 1rem 0">
                 <InputWithSelectorForSwaps
+                  tokenDecimals={getBasePairDecimals(replaceMint(baseTokenMintAddress))}
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder={
@@ -440,6 +441,7 @@ const PlaceOrder = ({
               </RowContainer>
               <RowContainer margin="1rem 0 2rem 0">
                 <InputWithSelectorForSwaps
+                  tokenDecimals={getBasePairDecimals(replaceMint(quoteTokenMintAddress))}
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder={
