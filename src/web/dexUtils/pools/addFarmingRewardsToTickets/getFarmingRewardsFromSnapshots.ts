@@ -37,6 +37,7 @@ export const getFarmingRewardsFromSnapshots = ({
     amount: 0,
   }
 
+  const now = Date.now() / 1000
   const ticketEndTime = parseFloat(ticket.endTime)
 
   const userRewardsForFarmingState = snapshots.reduce(
@@ -96,8 +97,8 @@ export const getFarmingRewardsFromSnapshots = ({
         stateAttached?.lastVestedWithdrawTime || parseFloat(ticket.startTime)
 
       if (
-        lastVestedWithdrawTime + vestingPeriod < snapshot.time &&
-        ticketEndTime >= snapshot.time
+        lastVestedWithdrawTime < snapshot.time &&
+        snapshot.time + vestingPeriod < now
       ) {
         unlockedUserSnapshotReward = unlockedUserSnapshotReward.add(
           totalUserSnapshotReward
