@@ -77,7 +77,8 @@ const PlaceOrder = ({
   orderArray: any
   handleGetOrderArray: () => void
 }) => {
-  const selectedPairSettings = pairSettings[0]
+  // change to 0 before prod
+  const selectedPairSettings = pairSettings[1]
 
   const { wallet } = useWallet()
   const connection = useConnection()
