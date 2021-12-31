@@ -62,10 +62,7 @@ export const getCloseOrderTransactions = async (params: {
   const transactionAfter = new Transaction()
 
   // if SOL - create new token address
-  if (
-    new PublicKey(pairSettings.baseTokenMint).equals(WRAPPED_SOL_MINT) &&
-    side === 'Sell'
-  ) {
+  if (new PublicKey(pairSettings.baseTokenMint).equals(WRAPPED_SOL_MINT)) {
     const result = await createSOLAccountAndClose({
       wallet,
       connection,
@@ -78,14 +75,17 @@ export const getCloseOrderTransactions = async (params: {
     ] = result
 
     // change account to use from native to wrapped
-    userBaseTokenAccount = wrappedAccount.publicKey.toString()
+    if (side === 'Sell') {
+      userBaseTokenAccount = wrappedAccount.publicKey.toString()
+    } else {
+      userQuoteTokenAccount = wrappedAccount.publicKey.toString()
+    }
     commonTransaction.add(createWrappedAccountTransaction)
     commonSigners.push(wrappedAccount)
 
     transactionAfter.add(closeAccountTransaction)
   } else if (
-    new PublicKey(pairSettings.quoteTokenMint).equals(WRAPPED_SOL_MINT) &&
-    side === 'Buy'
+    new PublicKey(pairSettings.quoteTokenMint).equals(WRAPPED_SOL_MINT)
   ) {
     const result = await createSOLAccountAndClose({
       wallet,
@@ -99,14 +99,22 @@ export const getCloseOrderTransactions = async (params: {
     ] = result
 
     // change account to use from native to wrapped
-    userQuoteTokenAccount = wrappedAccount.publicKey.toString()
+    if (side === 'Sell') {
+      userQuoteTokenAccount = wrappedAccount.publicKey.toString()
+    } else {
+      userBaseTokenAccount = wrappedAccount.publicKey.toString()
+    }
     commonTransaction.add(createWrappedAccountTransaction)
     commonSigners.push(wrappedAccount)
 
     transactionAfter.add(closeAccountTransaction)
   }
 
-  console.log('order', order)
+  console.log({
+    order,
+    userBaseTokenAccount,
+    userQuoteTokenAccount,
+  })
 
   const closeOrderTransaction = await program.instruction.closeOrder(
     side === 'Sell' ? Side.Ask : Side.Bid,
