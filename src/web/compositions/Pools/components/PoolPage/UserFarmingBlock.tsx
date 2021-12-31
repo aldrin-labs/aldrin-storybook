@@ -120,8 +120,6 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const unstakeLocked = claimAvailableTs > now
 
-  console.log('ticketsForPool: ', ticketsForPool, pool.swapToken)
-
   const stakedAmount = getStakedTokensFromOpenFarmingTickets(ticketsForPool)
 
   const availableToClaimMap = getUniqueAmountsToClaimMap({

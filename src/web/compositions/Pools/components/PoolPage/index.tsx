@@ -1,7 +1,6 @@
-import {
-  stripByAmount,
-  stripByAmountAndFormat,
-} from '@core/utils/chartPageUtils'
+import React, { useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
+
 import { Button } from '@sb/components/Button'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, Row } from '@sb/components/Layout'
@@ -9,20 +8,26 @@ import { Modal } from '@sb/components/Modal'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import React, { useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { CURVE } from '@sb/dexUtils/pools/types'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
+
+import { withdrawStaked } from '../../../../dexUtils/common/actions/withdrawStaked'
+import { useConnection } from '../../../../dexUtils/connection'
+import { notify } from '../../../../dexUtils/notifications'
+import { getPoolsProgramAddress } from '../../../../dexUtils/ProgramsMultiton'
+import { useWallet } from '../../../../dexUtils/wallet'
 import { PoolWithOperation } from '../../index.types'
 import { AddLiquidityPopup } from '../Popups/AddLiquidity'
-import { ClaimRewards } from '../Popups/ClaimRewards/ClaimRewards'
 import { StakePopup } from '../Popups/Staking/StakePopup'
 import { UnstakePopup } from '../Popups/Unstaking/UnstakePopup'
 import { WithdrawalPopup } from '../Popups/WithdrawLiquidity'
 import { PoolStatsBlock, trimTo } from './PoolStats'
-
 import {
   LiquidityWrap,
   ModalBlock,
@@ -35,9 +40,25 @@ import {
   TokenInfoTextWrap,
   TokenPrice,
 } from './styles'
+import { ModalType, PoolPageProps } from './types'
 import { UserFarmingBlock } from './UserFarmingBlock'
 import { UserLiquidityBlock } from './UserLiquidityBlock'
-import { ModalType, PoolPageProps } from './types'
+
+const resolveClaimNotification = (
+  status: 'success' | 'failed' | 'cancelled' | string
+) => {
+  if (status === 'success') {
+    return 'Successfully claimed rewards.'
+  }
+  if (status === 'failed') {
+    return 'Claim rewards failed, please try again later or contact us in telegram.'
+  }
+  if (status === 'cancelled') {
+    return 'Claim rewards cancelled.'
+  }
+
+  return 'Operation timeout, please claim rest rewards in a few seconds.'
+}
 
 export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const {
@@ -60,6 +81,8 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const tokenMap = useTokenInfos()
 
+  const connection = useConnection()
+  const { wallet } = useWallet()
   const [openedPopup, setOpenedPopup] = useState<ModalType>('')
 
   const [poolUpdateOperation, setPoolUpdateOperation] =
@@ -106,6 +129,25 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const baseUsdPrice = prices.get(baseTokenName) || { price: 0 }
   const quoteUsdPrice = prices.get(quoteTokenName) || { price: 0 }
 
+  const claimRewards = async () => {
+    setPoolUpdateOperation({ pool: '', operation: 'claim' })
+    const result = await withdrawStaked({
+      connection,
+      wallet,
+      stakingPool: pool,
+      farmingTickets: farmingTickets.get(pool.swapToken) || [],
+      programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
+      allTokensData: userTokensData,
+    })
+
+    notify({
+      type: result === 'success' ? 'success' : 'error',
+      message: resolveClaimNotification(result),
+    })
+
+    refreshAll()
+    setPoolUpdateOperation({ pool: '', operation: '' })
+  }
   return (
     <Modal open onClose={goBack}>
       <ModalBlock border>
@@ -216,7 +258,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
                   userTokensData={userTokensData}
                   prices={prices}
                   onStakeClick={() => setOpenedPopup('stake')}
-                  onClaimClick={() => setOpenedPopup('claim')}
+                  onClaimClick={claimRewards}
                   onUnstakeClick={() => setOpenedPopup('unstake')}
                   processing={farmingProcessing}
                   refetchPools={refetchPools}
@@ -275,18 +317,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           close={closePopup}
           farmingTicketsMap={farmingTickets}
           allTokensData={userTokensData}
-          refreshTokensWithFarmingTickets={refreshAll}
-          setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
-        />
-      )}
-
-      {openedPopup === 'claim' && (
-        <ClaimRewards
-          selectedPool={pool}
-          farmingTicketsMap={farmingTickets}
-          snapshotQueues={snapshotQueues}
-          allTokensData={userTokensData}
-          close={closePopup}
           refreshTokensWithFarmingTickets={refreshAll}
           setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
         />
