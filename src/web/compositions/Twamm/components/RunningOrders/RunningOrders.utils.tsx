@@ -245,6 +245,7 @@ export const combineRunningOrdersTable = ({
                   userBaseTokenAccount,
                   userQuoteTokenAccount,
                   order: runningOrder,
+                  side
                 })
 
                 // reload data

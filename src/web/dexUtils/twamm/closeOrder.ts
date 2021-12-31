@@ -2,6 +2,7 @@ import { TokenInstructions } from '@project-serum/serum'
 import {
   Connection,
   PublicKey,
+  Signer,
   SYSVAR_CLOCK_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
@@ -15,6 +16,8 @@ import { signAndSendSingleTransaction } from '../transactions'
 import { PairSettings, TwammOrder } from './types'
 import { Program, Provider } from '@project-serum/anchor'
 import TwammProgramIdl from '@core/idls/twamm.json'
+import { WRAPPED_SOL_MINT } from '../wallet'
+import { createSOLAccountAndClose } from '../pools'
 
 export const getCloseOrderTransactions = async (params: {
   wallet: WalletAdapter
@@ -23,8 +26,10 @@ export const getCloseOrderTransactions = async (params: {
   order: TwammOrder
   userBaseTokenAccount: string
   userQuoteTokenAccount: string
-}): Promise<Transaction> => {
-  const {
+  side: 'Buy' | 'Sell'
+}): Promise<[Transaction, Signer[]]> => {
+  let {
+    side,
     wallet,
     connection,
     pairSettings,
@@ -51,8 +56,60 @@ export const getCloseOrderTransactions = async (params: {
     program.programId
   )
 
+  const commonTransaction = new Transaction()
+  const commonSigners = []
+
+  const transactionAfter = new Transaction()
+
+  // if SOL - create new token address
+  if (
+    new PublicKey(pairSettings.baseTokenMint).equals(WRAPPED_SOL_MINT) &&
+    side === 'Sell'
+  ) {
+    const result = await createSOLAccountAndClose({
+      wallet,
+      connection,
+    })
+
+    const [
+      wrappedAccount,
+      createWrappedAccountTransaction,
+      closeAccountTransaction,
+    ] = result
+
+    // change account to use from native to wrapped
+    userBaseTokenAccount = wrappedAccount.publicKey.toString()
+    commonTransaction.add(createWrappedAccountTransaction)
+    commonSigners.push(wrappedAccount)
+
+    transactionAfter.add(closeAccountTransaction)
+  } else if (
+    new PublicKey(pairSettings.quoteTokenMint).equals(WRAPPED_SOL_MINT) &&
+    side === 'Buy'
+  ) {
+    const result = await createSOLAccountAndClose({
+      wallet,
+      connection,
+    })
+
+    const [
+      wrappedAccount,
+      createWrappedAccountTransaction,
+      closeAccountTransaction,
+    ] = result
+
+    // change account to use from native to wrapped
+    userQuoteTokenAccount = wrappedAccount.publicKey.toString()
+    commonTransaction.add(createWrappedAccountTransaction)
+    commonSigners.push(wrappedAccount)
+
+    transactionAfter.add(closeAccountTransaction)
+  }
+
+  console.log('order', order)
+
   const closeOrderTransaction = await program.instruction.closeOrder(
-    Side.Ask,
+    side === 'Sell' ? Side.Ask : Side.Bid,
     new BN(order.index),
     {
       accounts: {
@@ -70,7 +127,10 @@ export const getCloseOrderTransactions = async (params: {
     }
   )
 
-  return new Transaction().add(closeOrderTransaction)
+  commonTransaction.add(closeOrderTransaction)
+  commonTransaction.add(transactionAfter)
+
+  return [commonTransaction, commonSigners]
 }
 
 export const closeOrder = async ({
@@ -80,6 +140,7 @@ export const closeOrder = async ({
   order,
   userBaseTokenAccount,
   userQuoteTokenAccount,
+  side,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -87,12 +148,14 @@ export const closeOrder = async ({
   order: TwammOrder
   userBaseTokenAccount: string
   userQuoteTokenAccount: string
+  side: 'Buy' | 'Sell'
 }) => {
-  const transaction = await getCloseOrderTransactions({
+  const [transaction, signers] = await getCloseOrderTransactions({
     wallet,
     connection,
     pairSettings,
     order,
+    side,
     userBaseTokenAccount,
     userQuoteTokenAccount,
   })
@@ -101,6 +164,7 @@ export const closeOrder = async ({
     wallet,
     connection,
     transaction,
+    signers,
   })
 
   return result
