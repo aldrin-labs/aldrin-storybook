@@ -133,9 +133,10 @@ export const combineRunningOrdersTable = ({
       const baseTokenPrice =
         getDexTokensPricesQuery?.getDexTokensPrices?.filter(
           (el) => el.symbol === base
-        )[0]?.price || 0
+        )[0]?.price || 10
 
-      const orderAmount = runningOrder.amount * baseTokenPrice;
+      const orderAmount = runningOrder.amount /
+        10 ** baseMintDecimals * baseTokenPrice;
 
       const cancelFeeCalc = (orderAmount / 100) * cancellingFee;
       const cancelFeeRin = cancelFeeCalc/rinTokenPrice;

@@ -120,6 +120,7 @@ const Popup = ({
           Cancel
         </WhiteButton>
         <RedButton
+          disabled={!hasRinForFee}
           width="48%"
           theme={theme}
           fontSize="1.2rem"

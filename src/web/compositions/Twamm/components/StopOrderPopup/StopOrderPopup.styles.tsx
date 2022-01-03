@@ -19,8 +19,8 @@ export const RedButton = styled((props) => (
     fontSize={'1.4rem'}
     height={'4.5rem'}
     textTransform={'capitalize'}
-    backgroundColor={props.background || '#D54D32'}
-    borderColor={props.background || '#D54D32'}
+    backgroundColor={props.disabled ? props.theme.palette.grey.dark : props.background || '#D54D32'}
+    borderColor={props.disabled ? props.theme.palette.grey.dark : props.background || '#D54D32'}
     btnColor={props.color || props.theme.palette.white.main}
     borderRadius={'1rem'}
     border={props.border || 'none'}
