@@ -73,7 +73,7 @@ export const Header = () => {
             <NavLink to="/swap" activeClassName="selected">
               Swap
             </NavLink>
-            <NavLink new show="md" to="/pools" activeClassName="selected">
+            <NavLink show="md" to="/pools" activeClassName="selected">
               Pools
             </NavLink>
             <NavLink to="/rebalance" activeClassName="selected">
@@ -82,11 +82,8 @@ export const Header = () => {
             <NavLink to="/dashboard" activeClassName="selected">
               Dashboard
             </NavLink>
-            <NavLink to="/twamm" activeClassName="selected">
-              Twamm
-            </NavLink>
-            <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">
-              Wallet
+            <NavLink beta to="/twamm" activeClassName="selected">
+              TWAMM
             </NavLink>
             <NavLink
               show="lg"

@@ -42,7 +42,8 @@ interface ShowHideProps {
 }
 
 interface LinkProps extends ShowHideProps {
-  new?: boolean
+  new?: boolean,
+  beta?: boolean
 }
 
 export const NavLink = styled(RouterNavLink)<LinkProps>`
@@ -98,6 +99,21 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
       padding-left: 5px;
     }
   `
+      : ''}
+
+  ${(props: LinkProps) =>
+    props.beta
+      ? `
+      &:after {
+        content: "BETA";
+        color: ${COLORS.success};
+        position: relative;
+        top: -5px;
+        font-weight: 600;
+        font-size: 0.7em;
+        padding-left: 5px;
+      }
+    `
       : ''}
 `
 

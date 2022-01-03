@@ -19,6 +19,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import Arrow from '@icons/arrowBottom.svg'
 import { stripInputNumber } from '@sb/dexUtils/utils'
 import {InputStats} from "@sb/compositions/Swap/components/Inputs/styles";
+import {limitDecimalsCustom, stripByAmount} from "@core/utils/chartPageUtils";
 
 export const InputWithSelectorForSwaps = ({
   theme,
@@ -60,7 +61,7 @@ export const InputWithSelectorForSwaps = ({
         </Text>
         &nbsp;
         <BlueText theme={theme} onClick={() => onChange(statsItem.value)}>
-          {formatNumberToUSFormat(stripDigitPlaces(statsItem.value, tokenDecimals || 8))} {symbol}
+          {formatNumberToUSFormat(stripByAmount(statsItem.value))} {symbol}
         </BlueText>
       </InputStats>
     ))
@@ -80,7 +81,7 @@ export const InputWithSelectorForSwaps = ({
           value={value}
           disabled={disabled}
           onChange={(e) => {
-            onChange(stripInputNumber(e, value))
+            onChange(limitDecimalsCustom(e.target.value))
           }}
           placeholder={placeholder}
         />
@@ -121,7 +122,7 @@ export const InputWithSelectorForSwaps = ({
               </Text>
               &nbsp;
               <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
-                {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 8))} {symbol}
+                {formatNumberToUSFormat(stripByAmount(maxBalance))} {symbol}
               </BlueText>
             </InputStats>
           </Row>

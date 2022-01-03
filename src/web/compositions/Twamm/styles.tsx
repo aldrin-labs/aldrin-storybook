@@ -1,6 +1,8 @@
+import React from 'react'
 import { COLORS, BORDER_RADIUS } from '@variables/variables'
 import { Tabs, TabList, Tab } from 'react-tabs'
 import styled from 'styled-components'
+import { Text } from '@sb/compositions/Addressbook'
 
 import { WideContent } from '@sb/components/Layout'
 
@@ -21,7 +23,7 @@ export const WideContentStyled = styled(WideContent)`
   justify-content: center;
 `
 
-export const TabsStyled = styled(Tabs)`
+export const TabsStyled = styled(props => <Tabs {...props} />)`
   margin-bottom: 4.8rem;
 `
 
@@ -114,9 +116,18 @@ export const BannerWrapper = styled.div`
   }
 `
 
+export const TextBlockWrapper = styled(Text)`
+   display: block;
+   text-align: center;
+`
+
+export const TextBlock = styled(Text)`
+   display: block;
+`
+
 export const BannerDescription = styled.div`
   width: 50%;
-  max-width: 15.6rem;
+  max-width: 21rem;
 
   @media (min-width: 540px) and (max-width: 991px) {
     width: 100%;

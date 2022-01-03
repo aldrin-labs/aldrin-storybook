@@ -19,7 +19,7 @@ import {
   TabsListWrapper,
   TabsStyled,
   TabStyled,
-  TabTitle,
+  TabTitle, TextBlock, TextBlockWrapper,
   WideContentStyled,
 } from '@sb/compositions/Twamm/styles'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -51,7 +51,10 @@ const TwammComponent = ({
   const { wallet } = useWallet()
   const connection = useConnection()
   const [pairSettings, setPairSettings] = useState<PairSettings[]>([])
+  // change to 0 before prod
+  const selectedPairSettings = pairSettings[1]
   const [orderArray, setOrderArray] = useState([])
+  const [tabIndex, setTabIndex] = useState(0)
 
   useEffect(() => {
     getParsedPairSettings({
@@ -91,43 +94,23 @@ const TwammComponent = ({
               <BannerWrapper image={PinkBanner}>
                 <img src={GuideImg} alt="" />
                 <BannerDescription>
-                  <Text fontSize="1.3rem" fontFamily="Avenir Next Light">
+                  <Text fontSize="1.6rem" fontFamily="Avenir Next Medium">
                     <span>Learn why and how to use Aldrin TWAMM.</span>
                   </Text>
                 </BannerDescription>
                 <BannerLink>
                   <StyledA
-                    needHover={false}
-                    fontSize="1.3rem"
-                    fontFamily="Avenir Next Bold"
-                    whiteSpace="nowrap"
-                  >
-                    Coming soon
-                  </StyledA>
-                </BannerLink>
-              </BannerWrapper>
-            </Cell>
-            <Cell col={12} colSm={4}>
-              <BannerWrapper image={BlackBanner}>
-                <img src={SdkImg} alt="" />
-                <BannerDescription>
-                  <Text fontSize="1.3rem" fontFamily="Avenir Next Light">
-                    <span>Trade with your algorithm through Aldrin TWAMM!</span>
-                  </Text>
-                </BannerDescription>
-                <BannerLink>
-                  <StyledA
-                    href="https://github.com/aldrin-exchange/aldrin-sdk"
+                    href="https://docs.aldrin.com/twamm/why-and-how-to-use-aldrin-twamm-guide-for-whales"
                     target="_blank"
                     rel="noopener noreferrer"
                     needHover
-                    fontSize="1.3rem"
+                    fontSize="1.6rem"
                     fontFamily="Avenir Next Bold"
                     whiteSpace="nowrap"
                   >
-                    Open SDK{' '}
+                    Open Guide{' '}
                     <SvgIcon
-                      width="1.7rem"
+                      width="1.6rem"
                       height="0.89rem"
                       src={ArrowBanner}
                     />
@@ -137,14 +120,47 @@ const TwammComponent = ({
             </Cell>
             <Cell col={12} colSm={4}>
               <BannerWrapper image={BlackBanner}>
-                <Text fontSize="1.3rem" fontFamily="Avenir Next Demi">
-                  Undergoing an audit at this time. Use at your own risk.
-                </Text>
+                <img src={SdkImg} alt="" />
+                <BannerDescription>
+                  <Text fontSize="1.6rem" fontFamily="Avenir Next Medium">
+                    <span>Do you want to execute parts of TWAMM orders?</span>
+                  </Text>
+                </BannerDescription>
+                <BannerLink>
+                  <StyledA
+                    href="https://github.com/aldrin-exchange/aldrin-sdk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    needHover
+                    fontSize="1.6rem"
+                    fontFamily="Avenir Next Bold"
+                    whiteSpace="nowrap"
+                  >
+                    Open SDK{' '}
+                    <SvgIcon
+                      width="1.6rem"
+                      height="0.89rem"
+                      src={ArrowBanner}
+                    />
+                  </StyledA>
+                </BannerLink>
+              </BannerWrapper>
+            </Cell>
+            <Cell col={12} colSm={4}>
+              <BannerWrapper image={BlackBanner}>
+                <TextBlockWrapper>
+                  <TextBlock fontSize="1.6rem" fontFamily="Avenir Next Bold">
+                    Public Beta
+                  </TextBlock>
+                  <Text fontSize="1.6rem" fontFamily="Avenir Next Medium">
+                    Undergoing an audit at this time. Use at your own risk.
+                  </Text>
+                </TextBlockWrapper>
               </BannerWrapper>
             </Cell>
           </Row>
         </Banners>
-        <TabsStyled>
+        <TabsStyled selectedIndex={tabIndex} onSelect={(index: number) => setTabIndex(index)}>
           <TabsListWrapper>
             <TabListStyled>
               <TabStyled>
@@ -180,12 +196,16 @@ const TwammComponent = ({
           <TabPanel>
             <PlaceOrder
               pairSettings={pairSettings}
+              selectedPairSettings={selectedPairSettings}
               orderArray={orderArray}
               handleGetOrderArray={handleGetOrderArray}
+              setTabIndex={setTabIndex}
             />
           </TabPanel>
           <TabPanel>
             <RunningOrdersWrapper
+              pairSettings={pairSettings}
+              selectedPairSettings={selectedPairSettings}
               getDexTokensPricesQuery={getDexTokensPricesQuery}
             />
           </TabPanel>

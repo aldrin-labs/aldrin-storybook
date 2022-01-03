@@ -25,30 +25,19 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
-import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import ScalesIcon from '@icons/scales.svg'
 import Arrows from '@icons/switchArrows.svg'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
-import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
-import {
-  getPoolsForSwapActiveTab,
-  getSelectedPoolForSwap,
-  getDefaultBaseToken,
-} from '@sb/dexUtils/pools/swap'
+
 import { sleep } from '@sb/dexUtils/utils'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
 // TODO: imports
 import { addOrder } from '@sb/dexUtils/twamm/addOrder'
@@ -61,25 +50,27 @@ import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { PairSettings } from '@sb/dexUtils/twamm/types'
+import {limitDecimalsCustom} from "@core/utils/chartPageUtils";
 
 const PlaceOrder = ({
   theme,
   publicKey,
   getDexTokensPricesQuery,
   pairSettings,
+  selectedPairSettings,
   orderArray,
   handleGetOrderArray,
+  setTabIndex,
 }: {
   theme: Theme
   publicKey: string
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   pairSettings: PairSettings[]
+  selectedPairSettings: PairSettings,
   orderArray: any
   handleGetOrderArray: () => void
+  setTabIndex: (index: number) => void
 }) => {
-  // change to 0 before prod
-  const selectedPairSettings = pairSettings[1]
-
   const { wallet } = useWallet()
   const connection = useConnection()
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
@@ -128,6 +119,11 @@ const PlaceOrder = ({
   const quoteTokenPrice =
     getDexTokensPricesQuery?.getDexTokensPrices?.filter(
       (el) => el.symbol === quoteSymbol
+    )[0]?.price || 0
+
+  const rinTokenPrice =
+    getDexTokensPricesQuery?.getDexTokensPrices?.filter(
+      (el) => el.symbol === 'RIN'
     )[0]?.price || 0
 
   let { address: userBaseTokenAccount, amount: maxBaseAmount } =
@@ -193,8 +189,8 @@ const PlaceOrder = ({
     let baseAmountInRange = setValueBasedOnRange(newBaseAmount, maxOrderSize)
     const quoteAmount = baseAmountInRange * (baseTokenPrice / quoteTokenPrice)
 
-    setBaseAmount(baseAmountInRange)
-    setQuoteAmount(stripDigitPlaces(quoteAmount, 8))
+    setBaseAmount(limitDecimalsCustom(baseAmountInRange.toString()))
+    setQuoteAmount(limitDecimalsCustom(quoteAmount.toString()))
   }
 
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
@@ -205,8 +201,8 @@ const PlaceOrder = ({
 
     const baseAmount = quoteAmountInRange * (quoteTokenPrice / baseTokenPrice)
 
-    setBaseAmount(baseAmount)
-    setQuoteAmount(quoteAmountInRange)
+    setBaseAmount(limitDecimalsCustom(baseAmount.toString()))
+    setQuoteAmount(limitDecimalsCustom(quoteAmountInRange.toString()))
   }
 
   const handleOrderLength = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -339,10 +335,11 @@ const PlaceOrder = ({
 
               <RowContainer margin="4rem 0 2rem 0">
                 <InputWithType
-                  placeholder="Minutes"
+                  placeholder="Hours"
                   theme={theme}
                   value={orderLength}
-                  metric="Minutes"
+                  metric="Hours"
+                  label="Order duration"
                   onChange={handleOrderLength}
                 />
               </RowContainer>
@@ -355,6 +352,7 @@ const PlaceOrder = ({
                 baseSymbol={baseSymbol}
                 cancellingFee={cancellingFee}
                 placingFee={placingFee}
+                rinTokenPrice={rinTokenPrice}
               />
               {!publicKey ? (
                 <BtnCustom
@@ -423,7 +421,7 @@ const PlaceOrder = ({
                       wallet,
                       connection,
                       amount: new BN(+baseAmount * 10 ** baseMintDecimals),
-                      timeLength: new BN(orderLength * 60),
+                      timeLength: new BN(orderLength * 60 * 60),
                       pairSettings: selectedPairSettings,
                       mintFrom: new PublicKey(baseTokenMintAddress),
                       mintTo: new PublicKey(quoteTokenMintAddress),
@@ -453,6 +451,7 @@ const PlaceOrder = ({
                       setQuoteAmount('')
                       setOrderLength(60)
                       handleGetOrderArray()
+                      setTabIndex(1)
                     }
 
                     // remove loader

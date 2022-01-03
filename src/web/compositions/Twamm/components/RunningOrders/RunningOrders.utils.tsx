@@ -23,6 +23,7 @@ import { estimatedTime } from '@core/utils/dateUtils'
 
 import { MIN_ORDER_DURATION_TO_CANCEL } from '../../PlaceOrder/config'
 import { RedButton } from '../../styles'
+import {StopOrderPopup} from "@sb/compositions/Twamm/components/StopOrderPopup/StopOrderPopup";
 
 export const runningOrdersColumnNames = [
   { label: 'Pair/Side', id: 'pairSide' },
@@ -40,15 +41,24 @@ export const combineRunningOrdersTable = ({
   wallet,
   connection,
   getDexTokensPricesQuery: { getDexTokensPricesQuery },
+  selectedPairSettings,
+  rinTokenPrice,
 }: {
   wallet: WalletAdapter
   connection: Connection
   getDexTokensPricesQuery: { getDexTokensPricesQuery: DexTokensPrices[] }
+  selectedPairSettings: PairSettings,
+  rinTokenPrice: number
 }) => {
   const [runningOrders, refreshRunningOrders] = useRunningOrders({
     wallet,
     connection,
   })
+  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
+
+  const rinWallet = allTokensData.find(token => token.symbol === 'RIN');
+
+  const [stopOrderPopupOpen, setStopOrderPopupOpen] = useState(true)
 
   useInterval(refreshRunningOrders, 10000)
 
@@ -74,10 +84,11 @@ export const combineRunningOrdersTable = ({
       ?.flat()
       .filter((order) => order?.signer === wallet?.publicKey?.toString()) || []
 
+
   console.log('runningOrdersArray', runningOrdersArray)
 
   return runningOrdersArray
-    ?.map((runningOrder) => {
+    ?.map((runningOrder, index) => {
       const pairSettingsAddress = runningOrder?.pair || ''
       const currentPairSettings = pairsDataMap.get(pairSettingsAddress) || null
 
@@ -88,6 +99,10 @@ export const combineRunningOrdersTable = ({
       const placingFee =
         parseInt(currentPairSettings.fees.placingFeeNumerator.toString()) /
         parseInt(currentPairSettings.fees.placingFeeDenominator.toString())
+
+      const cancellingFee =
+        parseInt(currentPairSettings.fees.cancellingFeeNumerator.toString()) /
+        parseInt(currentPairSettings.fees.cancellingFeeDenominator.toString())
 
       const side = runningOrder.side.ask ? 'Sell' : 'Buy'
       const isSellSide = side === 'Sell'
@@ -114,6 +129,20 @@ export const combineRunningOrdersTable = ({
       const base = getTokenNameByMintAddress(baseTokenMint) || baseTokenMint
 
       const quote = getTokenNameByMintAddress(quoteTokenMint) || quoteTokenMint
+
+      const baseTokenPrice =
+        getDexTokensPricesQuery?.getDexTokensPrices?.filter(
+          (el) => el.symbol === base
+        )[0]?.price || 0
+
+      const orderAmount = runningOrder.amount * baseTokenPrice;
+
+      const cancelFeeCalc = (orderAmount / 100) * cancellingFee;
+      const cancelFeeRin = cancelFeeCalc/rinTokenPrice;
+
+      const hasRinForFee = rinWallet?.amount >= cancelFeeRin;
+
+        console.log('orderAmount', orderAmount, cancellingFee, rinTokenPrice, hasRinForFee)
 
       const remainingAmount =
         (runningOrder.amount - +runningOrder?.amountFilled) /
@@ -234,37 +263,49 @@ export const combineRunningOrdersTable = ({
         },
         actions: {
           render: (
-            <RedButton
-              disabled={!isPassedEnoughTimeForCancle}
-              style={{ cursor: 'pointer' }}
-              onClick={async () => {
-                const result = await closeOrder({
-                  wallet,
-                  connection,
-                  pairSettings: currentPairSettings,
-                  userBaseTokenAccount,
-                  userQuoteTokenAccount,
-                  order: runningOrder,
-                  side
-                })
+            <>
+              <StopOrderPopup
+                open={stopOrderPopupOpen === index}
+                onClose={() => {
+                  setStopOrderPopupOpen(false)
+                }}
+                onStop={async () => {
+                  setStopOrderPopupOpen(false)
+                  const result = await closeOrder({
+                    wallet,
+                    connection,
+                    pairSettings: currentPairSettings,
+                    userBaseTokenAccount,
+                    userQuoteTokenAccount,
+                    order: runningOrder,
+                    side
+                  })
 
-                // reload data
-                await refreshRunningOrders()
+                  // reload data
+                  await refreshRunningOrders()
 
-                const operationName = isOrderFilled ? 'claime' : 'close'
+                  const operationName = isOrderFilled ? 'claime' : 'close'
 
-                // notify
-                notify({
-                  type: result === 'success' ? 'success' : 'error',
-                  message:
-                    result === 'success'
-                      ? `Order ${operationName}d successfully.`
-                      : `Order ${operationName} failed. Please, try a bit later.`,
-                })
-              }}
-            >
-              {isOrderFilled ? 'Claim' : 'Stop'}
-            </RedButton>
+                  // notify
+                  notify({
+                    type: result === 'success' ? 'success' : 'error',
+                    message:
+                      result === 'success'
+                        ? `Order ${operationName}d successfully.`
+                        : `Order ${operationName} failed. Please, try a bit later.`,
+                  })
+                }}
+                cancellingFee={cancelFeeRin}
+                hasRinForFee={hasRinForFee}
+              />
+              <RedButton
+                disabled={!isPassedEnoughTimeForCancle}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {setStopOrderPopupOpen(index)}}
+              >
+                {isOrderFilled ? 'Claim' : 'Stop'}
+              </RedButton>
+            </>
           ),
           contentToSort: '',
           showOnMobile: false,

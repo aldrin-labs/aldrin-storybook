@@ -15,12 +15,14 @@ export const InputWithType = ({
   placeholder,
   onChange,
   metric,
+  label,
 }: {
   theme: Theme
   value: string | number
   disabled?: boolean
   placeholder?: string
   metric: string
+  label: string
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }) => {
   return (
@@ -28,7 +30,7 @@ export const InputWithType = ({
       <StyledInput />
       <TokenContainer left={'2rem'} top={'1rem'}>
         <Text color={theme.palette.grey.title}>
-          Order length / each ticket will be placed every 15 sec
+          {label}
         </Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'1rem'}>
