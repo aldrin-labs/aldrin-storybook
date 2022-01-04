@@ -13,8 +13,6 @@ export interface WithdrawStakeddParams {
   farmingTickets: FarmingTicket[]
   stakingPool: StakingPool | PoolInfo
   programAddress?: string
-  // snapshotQueues: SnapshotQueue[]
-  // signAllTransactions: boolean // Ledger compability
 }
 
 export interface StartStakingParams {
@@ -36,14 +34,3 @@ export interface EndstakingParams {
   stakingPool: StakingPool | PoolInfo
   programAddress: string
 }
-
-// export interface WithdrawFarmedParams {
-//   wallet: WalletAdapter
-//   connection: MultiEndpointsConnection
-//   allTokensData: TokenInfo[]
-//   farmingTickets: FarmingTicket[]
-//   pool: StakingPool | PoolInfo
-//   programAddress?: string
-//   snapshotQueues: SnapshotQueue[]
-//   signAllTransactions: boolean // Ledger compability
-// }
