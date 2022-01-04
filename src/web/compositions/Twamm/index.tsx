@@ -40,6 +40,7 @@ import { OrdersHistoryWrapper } from './components/OrdersHistory/OrdersHistory.W
 import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.Wrapper'
 import GuideImg from './img/guideImg.svg'
 import SdkImg from './img/sdkImg.svg'
+import {ConnectWalletPopup} from "@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup";
 
 const TwammComponent = ({
   theme,
@@ -55,6 +56,8 @@ const TwammComponent = ({
   const selectedPairSettings = pairSettings[1]
   const [orderArray, setOrderArray] = useState([])
   const [tabIndex, setTabIndex] = useState(0)
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState(false)
 
   useEffect(() => {
     getParsedPairSettings({
@@ -200,6 +203,7 @@ const TwammComponent = ({
               orderArray={orderArray}
               handleGetOrderArray={handleGetOrderArray}
               setTabIndex={setTabIndex}
+              setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
             />
           </TabPanel>
           <TabPanel>
@@ -213,6 +217,10 @@ const TwammComponent = ({
           </TabPanel>
         </TabsStyled>
       </WideContentStyled>
+      <ConnectWalletPopup
+        open={isConnectWalletPopupOpen}
+        onClose={() => setIsConnectWalletPopupOpen(false)}
+      />
     </Page>
   )
 }

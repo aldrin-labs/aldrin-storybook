@@ -61,17 +61,19 @@ const PlaceOrder = ({
   orderArray,
   handleGetOrderArray,
   setTabIndex,
+  setIsConnectWalletPopupOpen,
 }: {
   theme: Theme
   publicKey: string
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   pairSettings: PairSettings[]
-  selectedPairSettings: PairSettings,
+  selectedPairSettings: PairSettings
   orderArray: any
   handleGetOrderArray: () => void
   setTabIndex: (index: number) => void
+  setIsConnectWalletPopupOpen: (value: boolean) => void
 }) => {
-  const { wallet } = useWallet()
+  const { connected, wallet } = useWallet()
   const connection = useConnection()
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
 
@@ -357,7 +359,7 @@ const PlaceOrder = ({
               {!publicKey ? (
                 <BtnCustom
                   theme={theme}
-                  onClick={wallet.connect}
+                  onClick={() => setIsConnectWalletPopupOpen(true)}
                   needMinWidth={false}
                   btnWidth="100%"
                   height="5.5rem"
