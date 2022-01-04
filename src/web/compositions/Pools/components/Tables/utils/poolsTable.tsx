@@ -204,7 +204,7 @@ export const preparePoolTableCell = (params: {
         rendered: (
           <>
             <Text size="sm">
-              {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD)}` : '-'}
+              {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD, 4)}` : '-'}
             </Text>
             <Text size="sm" margin="10px 0" color="hint">
               {stripByAmountAndFormat(pool.tvl.tokenA)} {baseName} /{' '}
