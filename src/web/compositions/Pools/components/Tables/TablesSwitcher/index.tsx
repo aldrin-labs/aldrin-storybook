@@ -15,12 +15,16 @@ import {
   TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
+import { calculateStaked } from '@sb/dexUtils/common/actions/calculateStaked'
+import { FarmingCalc } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { CURVE } from '@sb/dexUtils/pools/types'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { useVestings } from '@sb/dexUtils/vesting'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { toMap } from '@sb/utils'
@@ -38,6 +42,7 @@ import { getRandomInt } from '@core/utils/helpers'
 
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
+
 
 import { PoolPage } from '../../PoolPage'
 import { CreatePoolModal } from '../../Popups'
@@ -82,8 +87,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const [searchValue, setSearchValue] = useState('')
   const [isAuditPopupOpen, setIsAuditPopupOpen] = useState(false)
   const [selectedTable, setSelectedTable] = useState<
-    'authorized' | 'nonAuthorized' | 'stablePools' | 'userLiquidity'
-  >('authorized')
+    'authorized' | 'nonAuthorized' | 'stablePools' | 'userLiquidity' | 'all'
+  >('all')
 
   const { path } = useRouteMatch()
 
@@ -172,10 +177,47 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     new Map<string, TradingVolumeStats>()
   )
 
+  const calculate = async () => {
+    const instructions = await Promise.all(
+      pools.map(async (p) => {
+        const tickets = farmingTicketsMap.get(p.swapToken) || []
+        const calcs = (p.farming || [])
+          .map((f) => calcAccounts?.get(f.farmingState) || null)
+          .filter((_): _ is FarmingCalc => !!_)
+        return calculateStaked(
+          tickets,
+          p,
+          snapshotQueues,
+          calcs,
+          getPoolsProgramAddress({ curveType: p.curveType }),
+          wallet,
+          connection
+        )
+      })
+    )
+
+    const transactionsAndSigners = instructions.flat(3)
+
+    // console.log('allInstr: ', allInstr)
+
+    await signAndSendTransactions({
+      transactionsAndSigners,
+      wallet,
+      connection,
+    })
+  }
+
   return (
     <>
+      <button onClick={calculate}>CALCULATE</button>
       <TabContainer>
         <div>
+          <TableModeButton
+            isActive={selectedTable === 'all'}
+            onClick={() => setSelectedTable('all')}
+          >
+            All Pools ({pools.length})
+          </TableModeButton>
           <TableModeButton
             isActive={selectedTable === 'authorized'}
             onClick={() => setSelectedTable('authorized')}
@@ -188,6 +230,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           >
             Ecosystem-led Pools ({nonAuthorizedPools.length})
           </TableModeButton>
+
           <TableModeButton
             isActive={selectedTable === 'stablePools'}
             onClick={() => setSelectedTable('stablePools')}
@@ -247,6 +290,16 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           <AllPoolsTable
             searchValue={searchValue}
             pools={nonAuthorizedPools}
+            dexTokensPricesMap={dexTokensPricesMap}
+            feesByPool={feesByPoolMap}
+            tradingVolumes={tradingVolumesMap}
+            farmingTicketsMap={farmingTicketsMap}
+          />
+        )}
+        {selectedTable === 'all' && (
+          <AllPoolsTable
+            searchValue={searchValue}
+            pools={pools}
             dexTokensPricesMap={dexTokensPricesMap}
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}

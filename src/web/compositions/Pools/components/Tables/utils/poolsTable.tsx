@@ -1,3 +1,4 @@
+import { TokenInfo } from '@solana/spl-token-registry'
 import { BN } from 'bn.js'
 import dayjs from 'dayjs'
 import React from 'react'
@@ -13,6 +14,7 @@ import { FlexBlock } from '@sb/components/Layout'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText, Text } from '@sb/components/Typography'
 import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
+import { FarmingCalc } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
@@ -27,7 +29,6 @@ import {
 import CrownIcon from '@icons/crownIcon.svg'
 import ScalesIcon from '@icons/scales.svg'
 
-import { FarmingCalc } from '../../../../../dexUtils/common/types'
 import {
   DexTokensPrices,
   FarmingTicketsMap,
@@ -53,6 +54,7 @@ export const preparePoolTableCell = (params: {
   vestings: Map<string, Vesting>
   farmingTicketsMap: FarmingTicketsMap
   calcAccounts?: Map<string, FarmingCalc>
+  tokenMap: Map<string, TokenInfo>
 }): DataCellValues<PoolInfo> => {
   const {
     pool,
@@ -60,11 +62,19 @@ export const preparePoolTableCell = (params: {
     prepareMore,
     walletPk,
     vestings,
-    calcAccounts,
+    calcAccounts = new Map<string, FarmingCalc>(),
     farmingTicketsMap,
+    tokenMap,
   } = params
+
+  const baseInfo = tokenMap.get(pool.tokenA)
+  const quoteInfo = tokenMap.get(pool.tokenB)
+
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
+
+  const baseName = baseInfo?.symbol || baseSymbol
+  const quoteName = quoteInfo?.symbol || quoteSymbol
 
   const baseTokenPrice = tokenPrices.get(baseSymbol)?.price || 0
   const quoteTokenPrice = tokenPrices.get(quoteSymbol)?.price || 0
@@ -197,8 +207,8 @@ export const preparePoolTableCell = (params: {
               {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD)}` : '-'}
             </Text>
             <Text size="sm" margin="10px 0" color="hint">
-              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseSymbol} /{' '}
-              {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteSymbol}
+              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseName} /{' '}
+              {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteName}
             </Text>
           </>
         ),
@@ -214,7 +224,7 @@ export const preparePoolTableCell = (params: {
       farming: {
         rendered: (
           <FlexBlock alignItems="center">
-            {userInFarming ? (
+            {userInFarming && walletPk !== pool.initializerAccount ? (
               <>
                 <FarmingRewardsIcons
                   poolMint={pool.swapToken}

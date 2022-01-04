@@ -76,6 +76,8 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     refetchPools,
   } = props
 
+  console.log('snapshotQueues: ', snapshotQueues)
+
   const history = useHistory()
   const { symbol } = useParams<{ symbol: string }>()
 

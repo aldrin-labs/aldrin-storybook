@@ -51,7 +51,7 @@ export type AsyncSendSignedTransactionResult =
 
 export interface TransactionAndSigners {
   transaction: Transaction
-  signers: Signer[]
+  signers?: Signer[]
 }
 
 export interface InstructionWithLamports {

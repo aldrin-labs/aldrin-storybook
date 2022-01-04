@@ -153,7 +153,6 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     setFarmingExtending(false)
   }
 
-  console.log('hadFarming: ', hadFarming, hasFarming, hasStaked)
   if (
     !hadFarming || // No farming were created
     (!hasFarming && !availableToClaimUsd && !hasStaked && !isPoolOwner) // Farming ended and nothing to withdraw/claim
