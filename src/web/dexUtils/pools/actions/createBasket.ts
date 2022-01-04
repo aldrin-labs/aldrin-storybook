@@ -14,7 +14,7 @@ import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { transferSOLToWrappedAccountAndClose } from '../../pools'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '../../ProgramsMultiton/utils'
-import { createTokenAccountTransaction } from '../../send'
+import { createTokenAccountTransaction, isTransactionFailed } from '../../send'
 import { Token } from '../../token/token'
 import { signAndSendSingleTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
@@ -220,12 +220,18 @@ async function createBasket(params: CreateBasketParams) {
       program,
     })
 
-    return signAndSendSingleTransaction({
+    const result = await signAndSendSingleTransaction({
       wallet,
       connection,
       signers: commonSigners,
       transaction: commonTransaction,
     })
+
+    if (isTransactionFailed(result)) {
+      return 'failed'
+    }
+
+    return result
   } catch (e) {
     console.log('deposit catch error', e)
 

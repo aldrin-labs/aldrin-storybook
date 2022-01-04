@@ -252,6 +252,8 @@ export const swap = async ({
     if (!isTransactionFailed(tx)) {
       return 'success'
     }
+
+    return tx
   } catch (e) {
     console.log('swap catch error', e)
   }

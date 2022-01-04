@@ -1,5 +1,7 @@
+import { PublicKey, Transaction } from '@solana/web3.js'
+import BN from 'bn.js'
+
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 import MultiEndpointsConnection from '@sb/dexUtils/MultiEndpointsConnection'
 import {
   getPoolsProgramAddress,
@@ -9,8 +11,7 @@ import { isTransactionFailed } from '@sb/dexUtils/send'
 import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { Connection, PublicKey, Transaction } from '@solana/web3.js'
-import BN from 'bn.js'
+
 import { PoolBalances } from '../hooks/usePoolBalances'
 import { findClosestAmountToSwapForDeposit } from '../swap/findClosestAmountToSwapForDeposit'
 import { createBasketTransaction } from './createBasket'
@@ -157,7 +158,7 @@ export async function createBasketWithSwap({
     )
     const commonSigners = [...swapSigners, ...createBasketSigners]
 
-    const tx = await signAndSendSingleTransaction({
+    const result = await signAndSendSingleTransaction({
       wallet,
       connection,
       transaction: commonTransaction,
@@ -165,16 +166,14 @@ export async function createBasketWithSwap({
       focusPopup: true,
     })
 
-    if (isTransactionFailed(tx)) {
+    if (isTransactionFailed(result)) {
       return 'failed'
     }
+
+    return result
   } catch (e) {
     console.log('deposit with swap catch error', e)
 
-    if (isCancelledTransactionError(e)) {
-      return 'cancelled'
-    }
+    return 'failed'
   }
-
-  return 'success'
 }
