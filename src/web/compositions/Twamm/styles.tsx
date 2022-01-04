@@ -146,6 +146,7 @@ export const BannerLink = styled.div`
   }
 `
 export const RedButton = styled.button`
+  width: 100%;
   border: none;
   background-color: ${COLORS.errorAlt};
   padding: 0.75rem 2rem;
@@ -159,6 +160,23 @@ export const RedButton = styled.button`
     border-color: ${COLORS.hint};
   }
 `
+
+export const BlueButton = styled.button`
+  width: 100%;
+  border: none;
+  background-color: ${COLORS.primary};
+  padding: 0.75rem 2rem;
+  border-radius: ${BORDER_RADIUS.md};
+  font-size: 1.7rem;
+  color: ${COLORS.main};
+  font-family: Avenir Next Demi;
+
+  &:disabled {
+    background: ${COLORS.hint};
+    border-color: ${COLORS.hint};
+  }
+`
+
 export const StyledA = styled.a`
   font-size: ${(props: TextProps) => props.fontSize || '1.5rem'};
   padding-bottom: ${(props) => props.paddingBottom || '0'};

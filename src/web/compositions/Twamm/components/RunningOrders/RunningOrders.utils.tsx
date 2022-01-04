@@ -22,7 +22,7 @@ import { stripByAmount } from '@core/utils/chartPageUtils'
 import { estimatedTime } from '@core/utils/dateUtils'
 
 import { MIN_ORDER_DURATION_TO_CANCEL } from '../../PlaceOrder/config'
-import { RedButton } from '../../styles'
+import {BlueButton, RedButton} from '../../styles'
 import {StopOrderPopup} from "@sb/compositions/Twamm/components/StopOrderPopup/StopOrderPopup";
 
 export const runningOrdersColumnNames = [
@@ -94,6 +94,33 @@ export const combineRunningOrdersTable = ({
 
       if (!currentPairSettings) {
         return null
+      }
+
+      const handleCloseOrder = async () => {
+        setStopOrderPopupOpen(false)
+        const result = await closeOrder({
+          wallet,
+          connection,
+          pairSettings: currentPairSettings,
+          userBaseTokenAccount,
+          userQuoteTokenAccount,
+          order: runningOrder,
+          side
+        })
+
+        // reload data
+        await refreshRunningOrders()
+
+        const operationName = remainingTime < 0 ? 'claime' : 'close'
+
+        // notify
+        notify({
+          type: result === 'success' ? 'success' : 'error',
+          message:
+            result === 'success'
+              ? `Order ${operationName}d successfully.`
+              : `Order ${operationName} failed. Please, try a bit later.`,
+        })
       }
 
       const placingFee =
@@ -267,40 +294,24 @@ export const combineRunningOrdersTable = ({
                 onClose={() => {
                   setStopOrderPopupOpen(false)
                 }}
-                onStop={async () => {
-                  setStopOrderPopupOpen(false)
-                  const result = await closeOrder({
-                    wallet,
-                    connection,
-                    pairSettings: currentPairSettings,
-                    userBaseTokenAccount,
-                    userQuoteTokenAccount,
-                    order: runningOrder,
-                    side
-                  })
-
-                  // reload data
-                  await refreshRunningOrders()
-
-                  const operationName = isOrderFilled ? 'claime' : 'close'
-
-                  // notify
-                  notify({
-                    type: result === 'success' ? 'success' : 'error',
-                    message:
-                      result === 'success'
-                        ? `Order ${operationName}d successfully.`
-                        : `Order ${operationName} failed. Please, try a bit later.`,
-                  })
-                }}
+                onStop={handleCloseOrder}
               />
-              <RedButton
-                disabled={!isPassedEnoughTimeForCancle}
-                style={{ cursor: 'pointer' }}
-                onClick={() => {setStopOrderPopupOpen(index)}}
-              >
-                {isOrderFilled ? 'Claim' : 'Stop'}
-              </RedButton>
+              {remainingTime > 0 ?
+                <RedButton
+                  disabled={!isPassedEnoughTimeForCancle}
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {setStopOrderPopupOpen(index)}}
+                >
+                  Stop
+                </RedButton>
+                :
+                <BlueButton
+                  style={{ cursor: 'pointer' }}
+                  onClick={handleCloseOrder}
+                >
+                  Claim
+                </BlueButton>
+              }
             </>
           ),
           contentToSort: '',
