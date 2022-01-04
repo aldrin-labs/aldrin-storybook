@@ -28,6 +28,7 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -39,7 +40,6 @@ import {
 
 import Close from '@icons/closeIcon.svg'
 
-import { getPoolsProgramAddress } from '../../../../../dexUtils/ProgramsMultiton'
 import { Button } from '../../Tables/index.styles'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { InputWithCoins } from '../components'

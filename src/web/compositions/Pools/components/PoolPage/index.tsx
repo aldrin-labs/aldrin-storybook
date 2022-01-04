@@ -8,20 +8,20 @@ import { Modal } from '@sb/components/Modal'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
+import { withdrawStaked } from '@sb/dexUtils/common/actions'
+import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
 import { CURVE } from '@sb/dexUtils/pools/types'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 
-import { withdrawStaked } from '../../../../dexUtils/common/actions/withdrawStaked'
-import { useConnection } from '../../../../dexUtils/connection'
-import { notify } from '../../../../dexUtils/notifications'
-import { getPoolsProgramAddress } from '../../../../dexUtils/ProgramsMultiton'
-import { useWallet } from '../../../../dexUtils/wallet'
 import { PoolWithOperation } from '../../index.types'
 import { AddLiquidityPopup } from '../Popups/AddLiquidity'
 import { StakePopup } from '../Popups/Staking/StakePopup'

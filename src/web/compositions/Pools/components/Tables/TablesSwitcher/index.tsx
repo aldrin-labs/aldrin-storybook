@@ -197,8 +197,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
     const transactionsAndSigners = instructions.flat(3)
 
-    // console.log('allInstr: ', allInstr)
-
     await signAndSendTransactions({
       transactionsAndSigners,
       wallet,
@@ -208,7 +206,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   return (
     <>
-      <button onClick={calculate}>CALCULATE</button>
       <TabContainer>
         <div>
           <TableModeButton
