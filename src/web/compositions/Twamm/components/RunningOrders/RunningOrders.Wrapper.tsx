@@ -9,18 +9,15 @@ import {PairSettings} from "@sb/dexUtils/twamm/types";
 export const RunningOrdersWrapper = ({
   getDexTokensPricesQuery,
   pairSettings,
-  selectedPairSettings
 }: {
   getDexTokensPrices: DexTokensPrices[],
   pairSettings: PairSettings[],
-  selectedPairSettings: PairSettings,
 }) => {
   return (
     <RowContainer>
       <RunningOrdersTable
         getDexTokensPricesQuery={getDexTokensPricesQuery}
         pairSettings={pairSettings}
-        selectedPairSettings={selectedPairSettings}
       />
     </RowContainer>
   )

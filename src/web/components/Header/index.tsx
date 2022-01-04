@@ -82,8 +82,8 @@ export const Header = () => {
             <NavLink to="/dashboard" activeClassName="selected">
               Dashboard
             </NavLink>
-            <NavLink beta to="/twamm" activeClassName="selected">
-              TWAMM
+            <NavLink beta to="/dtwap" activeClassName="selected">
+              dTWAP
             </NavLink>
             <NavLink
               show="lg"

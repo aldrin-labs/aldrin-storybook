@@ -348,7 +348,7 @@ const PlaceOrder = ({
           <Cell col={12} colSm={6}>
             <OrderStatsWrapper>
               <OrderStats
-                orderAmount={baseAmount * baseTokenPrice}
+                orderAmount={baseAmount}
                 baseSymbol={baseSymbol}
                 cancellingFee={cancellingFee}
                 placingFee={placingFee}

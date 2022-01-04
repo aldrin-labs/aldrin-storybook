@@ -95,7 +95,7 @@ const TwammComponent = ({
                 <img src={GuideImg} alt="" />
                 <BannerDescription>
                   <Text fontSize="1.6rem" fontFamily="Avenir Next Medium">
-                    <span>Learn why and how to use Aldrin TWAMM.</span>
+                    <span>Learn why and how to use Aldrin dTWAP.</span>
                   </Text>
                 </BannerDescription>
                 <BannerLink>
@@ -123,7 +123,7 @@ const TwammComponent = ({
                 <img src={SdkImg} alt="" />
                 <BannerDescription>
                   <Text fontSize="1.6rem" fontFamily="Avenir Next Medium">
-                    <span>Do you want to execute parts of TWAMM orders?</span>
+                    <span>Do you want to execute parts of dTWAP orders?</span>
                   </Text>
                 </BannerDescription>
                 <BannerLink>
@@ -205,7 +205,6 @@ const TwammComponent = ({
           <TabPanel>
             <RunningOrdersWrapper
               pairSettings={pairSettings}
-              selectedPairSettings={selectedPairSettings}
               getDexTokensPricesQuery={getDexTokensPricesQuery}
             />
           </TabPanel>

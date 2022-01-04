@@ -5,17 +5,10 @@ import { Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import CloseIcon from '@icons/closeIcon.svg'
-import CoolIcon from '@icons/coolIcon.svg'
-
-import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { encode } from '@sb/dexUtils/utils'
-
-import { notify } from '@sb/dexUtils/notifications'
 import useMobileSize from '@webhooks/useMobileSize'
-import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import {
   StyledPaperMediumWidth,
   SubmitButton,
@@ -31,14 +24,14 @@ const Popup = ({
   open,
   onStop,
   cancellingFee,
-  hasRinForFee
+  baseSymbol,
 }: {
   theme: Theme
   onClose: () => void
   open: boolean,
   onStop: () => void,
   cancellingFee: number,
-  hasRinForFee: boolean
+  baseSymbol: string
 }) => {
   const isMobile = useMobileSize()
   const [feedbackData, setFeedbackData] = useState({
@@ -82,7 +75,7 @@ const Popup = ({
         justify={isMobile ? 'center' : 'space-between'}
       >
         <Text>
-          A fee of 0.0005% of the order amount is charged for stopping the order. The fee is charged in RIN tokens.
+          A fee of 0.0005% of the order amount is charged for stopping the order.
         </Text>
       </RowContainer>
       <RowContainer
@@ -94,21 +87,21 @@ const Popup = ({
             Stopping fee
           </Text>
           <Text fontFamily="Avenir Next Demi" color="#45AC14" fontSize="1.3rem">
-            {stripByAmount(cancellingFee)} RIN
+            {stripByAmount(cancellingFee)} {baseSymbol}
           </Text>
         </FeeInfo>
       </RowContainer>
 
-      {!hasRinForFee && <RowContainer
-        style={{ marginBottom: '3rem' }}
-        justify={isMobile ? 'center' : 'space-between'}
-      >
-        <FeeInfo>
-          <Text>
-            Insufficient RIN balance to stop the order.
-          </Text>
-        </FeeInfo>
-      </RowContainer> }
+      {/*{!hasRinForFee && <RowContainer*/}
+      {/*  style={{ marginBottom: '3rem' }}*/}
+      {/*  justify={isMobile ? 'center' : 'space-between'}*/}
+      {/*>*/}
+      {/*  <FeeInfo>*/}
+      {/*    <Text>*/}
+      {/*      Insufficient RIN balance to stop the order.*/}
+      {/*    </Text>*/}
+      {/*  </FeeInfo>*/}
+      {/*</RowContainer> }*/}
       <RowContainer justify="space-between">
         <WhiteButton
           style={{
@@ -120,7 +113,6 @@ const Popup = ({
           Cancel
         </WhiteButton>
         <RedButton
-          disabled={!hasRinForFee}
           width="48%"
           theme={theme}
           fontSize="1.2rem"

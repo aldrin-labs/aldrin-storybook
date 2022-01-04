@@ -41,13 +41,13 @@ export const combineRunningOrdersTable = ({
   wallet,
   connection,
   getDexTokensPricesQuery: { getDexTokensPricesQuery },
-  selectedPairSettings,
+  getTokenPriceByName,
   rinTokenPrice,
 }: {
   wallet: WalletAdapter
   connection: Connection
   getDexTokensPricesQuery: { getDexTokensPricesQuery: DexTokensPrices[] }
-  selectedPairSettings: PairSettings,
+  getTokenPriceByName: (name: string) => number,
   rinTokenPrice: number
 }) => {
   const [runningOrders, refreshRunningOrders] = useRunningOrders({
@@ -130,20 +130,15 @@ export const combineRunningOrdersTable = ({
 
       const quote = getTokenNameByMintAddress(quoteTokenMint) || quoteTokenMint
 
-      const baseTokenPrice =
-        getDexTokensPricesQuery?.getDexTokensPrices?.filter(
-          (el) => el.symbol === base
-        )[0]?.price || 10
+      const baseTokenPrice = getTokenPriceByName(base);
 
       const orderAmount = runningOrder.amount /
-        10 ** baseMintDecimals * baseTokenPrice;
+        10 ** baseMintDecimals;
 
       const cancelFeeCalc = (orderAmount / 100) * cancellingFee;
       const cancelFeeRin = cancelFeeCalc/rinTokenPrice;
 
       const hasRinForFee = rinWallet?.amount >= cancelFeeRin;
-
-        console.log('orderAmount', orderAmount, cancellingFee, rinTokenPrice, hasRinForFee)
 
       const remainingAmount =
         (runningOrder.amount - +runningOrder?.amountFilled) /
@@ -267,6 +262,8 @@ export const combineRunningOrdersTable = ({
             <>
               <StopOrderPopup
                 open={stopOrderPopupOpen === index}
+                cancellingFee={cancelFeeCalc}
+                baseSymbol={base}
                 onClose={() => {
                   setStopOrderPopupOpen(false)
                 }}
@@ -296,8 +293,6 @@ export const combineRunningOrdersTable = ({
                         : `Order ${operationName} failed. Please, try a bit later.`,
                   })
                 }}
-                cancellingFee={cancelFeeRin}
-                hasRinForFee={hasRinForFee}
               />
               <RedButton
                 disabled={!isPassedEnoughTimeForCancle}

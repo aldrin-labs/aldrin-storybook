@@ -16,14 +16,12 @@ import {PairSettings} from "@sb/dexUtils/twamm/types";
 
 const RunningOrdersTable = ({
   pairSettings,
-  selectedPairSettings,
   stylesForTable,
   tableBodyStyles,
   styles,
   getDexTokensPricesQuery,
 }: {
   pairSettings: PairSettings[]
-  selectedPairSettings: PairSettings
   stylesForTable?: {}
   tableBodyStyles?: {}
   styles?: {}
@@ -39,10 +37,17 @@ const RunningOrdersTable = ({
 
   console.log('rinTokenPrice', rinTokenPrice)
 
+  const getTokenPriceByName = (name: string) => {
+    return getDexTokensPricesQuery?.getDexTokensPrices?.filter(
+      (el) => el.symbol === name
+    )[0]?.price || 0
+  }
+
   const runningOrdersProcessedData = combineRunningOrdersTable({
     wallet,
     connection,
     getDexTokensPricesQuery,
+    getTokenPriceByName,
     rinTokenPrice
   })
 
