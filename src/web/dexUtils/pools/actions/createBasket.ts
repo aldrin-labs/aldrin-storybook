@@ -10,7 +10,6 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
-import { isCancelledTransactionError } from '../../common/isCancelledTransactionError'
 import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { transferSOLToWrappedAccountAndClose } from '../../pools'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
@@ -46,7 +45,7 @@ export interface CreateBasketTransactionParams extends CreateBasketBase {
   poolTokenAmountA: BN
 }
 
-export async function createBasketTransaction(
+async function createBasketTransaction(
   params: CreateBasketTransactionParams
 ): Promise<[Transaction, Account[]]> {
   const {
@@ -104,7 +103,7 @@ export async function createBasketTransaction(
     const result = await transferSOLToWrappedAccountAndClose({
       wallet,
       connection: connection.getConnection(),
-      amount: userBaseTokenAmount,
+      amount: parseFloat(userBaseTokenAmount.toString()),
     })
 
     const [
@@ -123,7 +122,7 @@ export async function createBasketTransaction(
     const result = await transferSOLToWrappedAccountAndClose({
       wallet,
       connection: connection.getConnection(),
-      amount: userQuoteTokenAmount,
+      amount: parseFloat(userQuoteTokenAmount.toString()),
     })
 
     const [
@@ -174,13 +173,12 @@ export async function createBasketTransaction(
 export interface CreateBasketParams extends CreateBasketBase {
   curveType: number | null
 }
-
-export async function createBasket(params: CreateBasketParams) {
+async function createBasket(params: CreateBasketParams) {
   const { wallet, connection, poolPublicKey } = params
   try {
     const program = ProgramsMultiton.getProgramByAddress({
       wallet,
-      connection: connection.getConnection(),
+      connection,
       programAddress: getPoolsProgramAddress({ curveType: params.curveType }),
     })
 
@@ -194,19 +192,14 @@ export async function createBasket(params: CreateBasketParams) {
     } = (await program.account.pool.fetch(poolPublicKey)) as {
       [c: string]: PublicKey
     }
-    const poolToken = new Token(
-      wallet,
-      connection.getConnection(),
-      poolMint,
-      TOKEN_PROGRAM_ID
-    )
+    const poolToken = new Token(wallet, connection, poolMint, TOKEN_PROGRAM_ID)
 
     const poolMintInfo = await poolToken.getMintInfo()
     const { supply } = poolMintInfo
 
     const tokenMintA = new Token(
       wallet,
-      connection.getConnection(),
+      connection,
       baseTokenMint,
       TOKEN_PROGRAM_ID
     )
@@ -236,9 +229,8 @@ export async function createBasket(params: CreateBasketParams) {
   } catch (e) {
     console.log('deposit catch error', e)
 
-    if (isCancelledTransactionError(e)) {
-      return 'cancelled'
-    }
     return 'failed'
   }
 }
+
+export { createBasketTransaction, createBasket }
