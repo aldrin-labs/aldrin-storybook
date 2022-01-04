@@ -188,23 +188,16 @@ const PlaceOrder = ({
   }
 
   const setBaseAmountWithQuote = async (newBaseAmount: string | number) => {
-    let baseAmountInRange = setValueBasedOnRange(newBaseAmount, maxOrderSize)
-    const quoteAmount = baseAmountInRange * (baseTokenPrice / quoteTokenPrice)
-
-    setBaseAmount(limitDecimalsCustom(baseAmountInRange.toString()))
-    setQuoteAmount(limitDecimalsCustom(quoteAmount.toString()))
+    const quoteAmount = newBaseAmount * (baseTokenPrice / quoteTokenPrice)
+    setBaseAmount(limitDecimalsCustom(newBaseAmount.toString()))
+    setQuoteAmount(limitDecimalsCustom(quoteAmount.toFixed(8).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/,'$1')))
   }
 
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
-    let quoteAmountInRange = setValueBasedOnRange(
-      newQuoteAmount,
-      maxOrderSizeQuote
-    )
+    const baseAmount = newQuoteAmount * (quoteTokenPrice / baseTokenPrice)
 
-    const baseAmount = quoteAmountInRange * (quoteTokenPrice / baseTokenPrice)
-
-    setBaseAmount(limitDecimalsCustom(baseAmount.toString()))
-    setQuoteAmount(limitDecimalsCustom(quoteAmountInRange.toString()))
+    setBaseAmount(limitDecimalsCustom(baseAmount.toFixed(8).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/,'$1')))
+    setQuoteAmount(limitDecimalsCustom(newQuoteAmount.toString()))
   }
 
   const handleOrderLength = (event: React.ChangeEvent<HTMLInputElement>) => {
