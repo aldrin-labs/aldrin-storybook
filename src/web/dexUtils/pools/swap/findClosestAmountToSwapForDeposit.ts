@@ -1,16 +1,17 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
+
 import { PoolBalances } from '../hooks/usePoolBalances'
 import { bruteForceSearch } from './bruteForceSearch'
 import { reverseBinarySearch } from './reverseBinarySearch'
 
-export interface FindClosestAmountToSwapForDepositParams {
+export type FindClosestAmountToSwapForDepositParams = {
   pool: PoolInfo
   poolBalances: PoolBalances
   userAmountTokenA: number
   userAmountTokenB: number
 }
 
-export interface SwapOptions {
+export type SwapOptions = {
   poolRatioAfterSwap: number
   userAmountsRatioAfterSwap: number
   isSwapBaseToQuote: boolean
@@ -18,7 +19,7 @@ export interface SwapOptions {
   swapAmountOut: number
 }
 
-export interface ClosestAmountsToSwapResult {
+export type ClosestAmountsToSwapResult = {
   swapOptions: SwapOptions
   userDepositPercentageOfPoolAmounts: number
 }
@@ -39,21 +40,17 @@ const findClosestAmountToSwapForDeposit = (
   const userDepositPercentageOfPoolAmounts =
     ((userDepositTokenAPartOfPool + userDepositTokenBPartOfPool) / 2) * 100
 
-  console.log({
-    userDepositPercentageOfPoolAmounts,
-  })
-
   if (userDepositPercentageOfPoolAmounts >= 1) {
     // calc swap amount via brute force search due to user swap impact on pool ratio
     return {
       swapOptions: bruteForceSearch(params),
       userDepositPercentageOfPoolAmounts,
     }
-  } else {
-    return {
-      swapOptions: reverseBinarySearch(params),
-      userDepositPercentageOfPoolAmounts,
-    }
+  }
+
+  return {
+    swapOptions: reverseBinarySearch(params),
+    userDepositPercentageOfPoolAmounts,
   }
 }
 

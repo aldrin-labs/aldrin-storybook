@@ -16,7 +16,7 @@ export const sendSignedSignleTransaction = async (
     successMessage = 'Transaction confirmed',
     timeout = DEFAULT_CONFIRMATION_TIMEOUT,
     showNotification = true,
-    skipPreflight = false,
+    skipPreflight = true,
     commitment,
   } = params
 

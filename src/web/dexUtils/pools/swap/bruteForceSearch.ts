@@ -1,7 +1,6 @@
 import { SLIPPAGE_PERCENTAGE } from '@sb/compositions/Swap/config'
-import BN from 'bn.js'
+
 import {
-  ClosestAmountsToSwapResult,
   FindClosestAmountToSwapForDepositParams,
   SwapOptions,
 } from './findClosestAmountToSwapForDeposit'
@@ -11,13 +10,13 @@ import {
   getUserRatioAfterSwap,
 } from './getRatioAfterSwap'
 
-interface BruteForceSearchParams
-  extends FindClosestAmountToSwapForDepositParams {}
+type BruteForceSearchParams = FindClosestAmountToSwapForDepositParams | {}
 
-interface CreateSwapOptionsParams
-  extends FindClosestAmountToSwapForDepositParams {
-  isSwapBaseToQuote: boolean
-}
+type CreateSwapOptionsParams =
+  | FindClosestAmountToSwapForDepositParams
+  | {
+      isSwapBaseToQuote: boolean
+    }
 
 type CreateSwapOptionsResult = SwapOptions[]
 
@@ -129,8 +128,6 @@ const bruteForceSearch = (params: BruteForceSearchParams): SwapOptions => {
 
     return savedRatios
   })
-
-  console.log(swapAmounts)
 
   return swapAmounts
 }

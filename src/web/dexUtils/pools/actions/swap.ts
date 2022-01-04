@@ -87,7 +87,7 @@ export const getSwapTransaction = async ({
       const result = await transferSOLToWrappedAccountAndClose({
         wallet,
         connection,
-        amount: swapAmountIn.toNumber(),
+        amount: parseFloat(swapAmountIn.toString()),
       })
 
       const [
@@ -254,9 +254,6 @@ export const swap = async ({
     }
   } catch (e) {
     console.log('swap catch error', e)
-    if (e.message.includes('cancelled')) {
-      return 'cancelled'
-    }
   }
 
   return 'failed'

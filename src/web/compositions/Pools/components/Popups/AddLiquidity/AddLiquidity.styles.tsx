@@ -1,10 +1,18 @@
-import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { COLORS, MAIN_FONT } from '@variables/variables'
 import styled from 'styled-components'
+
+import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const WarningLabel = styled(WhiteText)`
   cursor: pointer;
-  color: ${props => props.$color || '#f2abb1'};
+  color: ${(props) => props.$color || COLORS.lightRed};
   font-size: 1.12rem;
-  font-family: Avenir Next Medium;
+  font-family: ${MAIN_FONT} Medium;
   letter-spacing: 0.01rem;
+`
+
+export const PriceImpactWarningBlock = styled(RowContainer)`
+  background: #303236;
+  border-radius: 1.2rem;
 `
