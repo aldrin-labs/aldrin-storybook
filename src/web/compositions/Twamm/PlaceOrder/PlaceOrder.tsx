@@ -179,9 +179,9 @@ const PlaceOrder = ({
     }
 
     let newValue = value
-    if (value > max) {
-      newValue = max
-    }
+    // if (value > max) {
+    //   newValue = max
+    // }
     return newValue
   }
 
@@ -409,6 +409,19 @@ const PlaceOrder = ({
                     if (baseAmount < minBaseAmount) {
                       notify({
                         message: `Min order size is ${minBaseAmount} for ${getTokenNameByMintAddress(
+                          baseTokenMintAddress
+                        )} token on this pair.`,
+                      })
+                      return
+                    }
+
+                    const maxBaseAmount = isSwapBaseToQuote
+                      ? maxOrderSize
+                      : maxOrderSizeQuote
+
+                    if (baseAmount > maxBaseAmount) {
+                      notify({
+                        message: `Max order size is ${maxBaseAmount} for ${getTokenNameByMintAddress(
                           baseTokenMintAddress
                         )} token on this pair.`,
                       })
