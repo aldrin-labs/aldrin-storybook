@@ -51,6 +51,9 @@ export const OrderInputs = styled.div`
 `
 
 export const OrderStatsWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   margin: 3.1rem 1.1rem 1.1rem 1.1rem;
 `
 

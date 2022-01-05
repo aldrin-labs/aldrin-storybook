@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 export const OrderStatsContainer = styled.div`
+  height: 100%;
   background: #17181A;
   padding: 1.2rem 3.2rem;
   border-radius: 1.2rem;

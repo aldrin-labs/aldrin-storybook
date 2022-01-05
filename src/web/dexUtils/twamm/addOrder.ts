@@ -197,7 +197,7 @@ export const addOrder = async ({
       focusPopup: true,
     })
 
-    if (!isTransactionFailed(tx)) {
+    if (!isTransactionFailed(tx) && tx !== 'rejected') {
       return 'success'
     }
   } catch (e) {

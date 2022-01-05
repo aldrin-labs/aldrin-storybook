@@ -80,6 +80,7 @@ export const getCloseOrderTransactions = async (params: {
     } else {
       userQuoteTokenAccount = wrappedAccount.publicKey.toString()
     }
+
     commonTransaction.add(createWrappedAccountTransaction)
     commonSigners.push(wrappedAccount)
 

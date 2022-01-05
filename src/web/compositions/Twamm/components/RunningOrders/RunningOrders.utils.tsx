@@ -96,6 +96,8 @@ export const combineRunningOrdersTable = ({
         return null
       }
 
+      console.log(userBaseTokenAccount, userQuoteTokenAccount)
+
       const handleCloseOrder = async () => {
         setStopOrderPopupOpen(false)
         const result = await closeOrder({

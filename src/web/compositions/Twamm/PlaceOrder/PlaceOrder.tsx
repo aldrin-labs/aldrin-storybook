@@ -260,9 +260,9 @@ const PlaceOrder = ({
     >
       <BlockTemplate
         theme={theme}
-        style={{ width: '100%', padding: '2rem', zIndex: '10' }}
+        style={{ width: '100%', padding: '2rem 2rem 4rem 2rem', zIndex: '10' }}
       >
-        <Row width="100%" align="flex-start">
+        <Row width="100%" align="stretch">
           <Cell col={12} colSm={6}>
             <OrderInputs>
               <RowContainer margin="2rem 0 1rem 0">
@@ -328,7 +328,7 @@ const PlaceOrder = ({
                 />
               </RowContainer>
 
-              <RowContainer margin="4rem 0 2rem 0">
+              <RowContainer margin="4rem 0 0rem 0">
                 <InputWithType
                   type="number"
                   placeholder="Hours"
