@@ -53,7 +53,7 @@ const TwammComponent = ({
   const connection = useConnection()
   const [pairSettings, setPairSettings] = useState<PairSettings[]>([])
   // change to 0 before prod
-  const selectedPairSettings = pairSettings[1]
+  const selectedPairSettings = pairSettings[0]
   const [orderArray, setOrderArray] = useState([])
   const [tabIndex, setTabIndex] = useState(0)
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
@@ -78,15 +78,9 @@ const TwammComponent = ({
     })
   }
 
-  if (!pairSettings.length || !orderArray.length) {
+  if (!pairSettings.length) {
     return null
   }
-
-  // useEffect(() => {
-  //   if (wallet.publicKey) {
-  //     getAllAccounts()
-  //   }
-  // }, [wallet.publicKey])
 
   return (
     <Page>
