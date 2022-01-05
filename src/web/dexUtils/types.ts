@@ -1,4 +1,5 @@
 import { Market, OpenOrders } from '@project-serum/serum'
+import { Order } from '@project-serum/serum/lib/market'
 import {
   Connection,
   PublicKey,
@@ -8,7 +9,6 @@ import {
   Signer,
   Commitment,
 } from '@solana/web3.js'
-import { Order } from '@project-serum/serum/lib/market'
 
 export interface WalletAdapter {
   publicKey: PublicKey | null | undefined
@@ -105,7 +105,7 @@ export interface AmendOrderParams {
 
 export interface SendTransactionParams extends SendSignedTransactionParams {
   wallet: WalletAdapter
-  signers: (Keypair | Account)[]
+  signers: (Keypair | Account | Signer)[]
   focusPopup?: boolean
 }
 
@@ -116,7 +116,7 @@ export interface SendSignedTransactionParams {
   successMessage?: string
   timeout?: number
   showNotification?: boolean
-  commitments?: Commitment
+  commitment?: Commitment
   skipPreflight?: boolean // Default: true
 }
 

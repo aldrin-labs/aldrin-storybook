@@ -1,7 +1,8 @@
 import { PublicKey } from '@solana/web3.js'
 import useSwr from 'swr'
 import { RefreshFunction } from '@sb/dexUtils/types'
-import { useConnection } from '../../connection'
+import BN from 'bn.js'
+import { useConnection } from '@sb/dexUtils/connection'
 
 interface PoolTokens {
   poolTokenAccountA?: string
@@ -10,12 +11,16 @@ interface PoolTokens {
 
 export interface PoolBalances {
   baseTokenAmount: number
+  baseTokenAmountBN: BN
   quoteTokenAmount: number
+  quoteTokenAmountBN: BN
 }
 
 const EMPTY_POOL: PoolBalances = {
   baseTokenAmount: 0,
   quoteTokenAmount: 0,
+  baseTokenAmountBN: new BN(0),
+  quoteTokenAmountBN: new BN(0),
 }
 
 export const usePoolBalances = (
@@ -44,6 +49,8 @@ export const usePoolBalances = (
     return {
       baseTokenAmount,
       quoteTokenAmount,
+      baseTokenAmountBN: new BN(baseTokenBalanceInPool?.value?.amount),
+      quoteTokenAmountBN: new BN(quoteTokenBalanceInPool?.value.amount),
     }
   }
 

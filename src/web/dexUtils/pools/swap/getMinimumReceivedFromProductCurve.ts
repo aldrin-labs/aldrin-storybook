@@ -1,13 +1,18 @@
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { PoolBalances } from '../hooks/usePoolBalances'
+import { getFeesAmount } from './getFeesAmount'
 
+// TODO: update to math using BN.js
 export const getMinimumReceivedFromProductCurve = ({
   swapAmountIn,
   isSwapBaseToQuote,
   poolBalances,
+  pool,
 }: {
   swapAmountIn: number
   isSwapBaseToQuote: boolean
   poolBalances: PoolBalances
+  pool: PoolInfo
 }) => {
   const {
     baseTokenAmount: baseTokenAmountInPool,
@@ -26,5 +31,13 @@ export const getMinimumReceivedFromProductCurve = ({
   const swapAmountOutWithPriceImpact =
     swapAmountOut - (swapAmountOut / 100) * priceImpact
 
-  return swapAmountOutWithPriceImpact
+  const swapAmountOutFee = getFeesAmount({
+    pool,
+    amount: swapAmountOut,
+  })
+
+  const swapAmountOutWithoutFee =
+    swapAmountOutWithPriceImpact - swapAmountOutFee
+
+  return swapAmountOutWithoutFee
 }

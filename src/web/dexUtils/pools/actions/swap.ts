@@ -2,6 +2,7 @@ import { TokenInstructions } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { Connection, PublicKey, Signer, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
+
 import { Side } from '@sb/dexUtils/common/config'
 import {
   createSOLAccountAndClose,
@@ -12,9 +13,10 @@ import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
-  sendTransaction,
 } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { signAndSendSingleTransaction } from '../../transactions'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -36,8 +38,8 @@ export const getSwapTransaction = async ({
   poolPublicKey: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
-  swapAmountIn: number
-  swapAmountOut: number
+  swapAmountIn: BN
+  swapAmountOut: BN
   isSwapBaseToQuote: boolean
   transferSOLToWrapped: boolean
   unwrapWrappedSOL?: boolean
@@ -85,7 +87,7 @@ export const getSwapTransaction = async ({
       const result = await transferSOLToWrappedAccountAndClose({
         wallet,
         connection,
-        amount: swapAmountIn,
+        amount: parseFloat(swapAmountIn.toString()),
       })
 
       const [
@@ -161,8 +163,8 @@ export const getSwapTransaction = async ({
 
   try {
     const swapTransaction = await program.instruction.swap(
-      new BN(swapAmountIn),
-      new BN(swapAmountOut),
+      swapAmountIn,
+      swapAmountOut,
       isSwapBaseToQuote ? Side.Ask : Side.Bid,
       {
         accounts: {
@@ -213,8 +215,8 @@ export const swap = async ({
   poolPublicKey: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
-  swapAmountIn: number
-  swapAmountOut: number
+  swapAmountIn: BN
+  swapAmountOut: BN
   isSwapBaseToQuote: boolean
   transferSOLToWrapped: boolean
   curveType: number | null
@@ -239,7 +241,7 @@ export const swap = async ({
   const [swapTransaction, signers] = swapTransactionAndSigners
 
   try {
-    const tx = await sendTransaction({
+    const tx = await signAndSendSingleTransaction({
       wallet,
       connection,
       transaction: swapTransaction,
@@ -250,11 +252,10 @@ export const swap = async ({
     if (!isTransactionFailed(tx)) {
       return 'success'
     }
+
+    return tx
   } catch (e) {
     console.log('swap catch error', e)
-    if (e.message.includes('cancelled')) {
-      return 'cancelled'
-    }
   }
 
   return 'failed'

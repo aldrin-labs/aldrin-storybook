@@ -42,6 +42,7 @@ import {
   MINT_LAYOUT,
   parseTokenAccountData,
 } from './tokens'
+import { signAndSendSingleTransaction } from './transactions'
 import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
 
 export const WALLET_PROVIDERS = [
@@ -523,35 +524,6 @@ export function useBalanceInfo(publicKey) {
   return null
 }
 
-export async function signAndSendTransaction(
-  connection,
-  transaction,
-  wallet,
-  signers,
-  skipPreflight = false,
-  focusPopup = false
-) {
-  transaction.recentBlockhash = (
-    await connection.getRecentBlockhash('max')
-  ).blockhash
-  transaction.setSigners(
-    // fee payed by the wallet owner
-    wallet.publicKey,
-    ...signers.map((s) => s.publicKey)
-  )
-
-  if (signers.length > 0) {
-    transaction.partialSign(...signers)
-  }
-
-  transaction = await wallet.signTransaction(transaction, focusPopup)
-  const rawTransaction = transaction.serialize()
-  return await connection.sendRawTransaction(rawTransaction, {
-    skipPreflight,
-    preflightCommitment: 'single',
-  })
-}
-
 export async function createAssociatedTokenAccount({
   connection,
   wallet,
@@ -565,14 +537,12 @@ export async function createAssociatedTokenAccount({
   const tx = new Transaction()
   tx.add(ix)
   tx.feePayer = wallet.publicKey
-  const txSig = await signAndSendTransaction(
+  const txSig = await signAndSendSingleTransaction({
     connection,
-    tx,
+    transaction: tx,
     wallet,
-    [],
-    false,
-    true
-  )
+    signers: [],
+  })
 
   return [address, txSig]
 }

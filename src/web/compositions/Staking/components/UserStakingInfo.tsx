@@ -44,7 +44,6 @@ import {
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 import { daysInMonthForDate } from '@core/utils/dateUtils'
-import { sleep } from '@core/utils/helpers'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import InfoIcon from '@icons/inform.svg'
@@ -237,6 +236,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         message: resolveStakingNotification(result),
       })
 
+      console.log('stake result: ', result)
+
       if (result === 'success') {
         await refreshAll()
       }
@@ -269,7 +270,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     })
 
     if (result === 'success') {
-      await sleep(7000)
       await refreshAll()
     }
 

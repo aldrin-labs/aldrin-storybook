@@ -1,8 +1,5 @@
 import { TokenInstructions } from '@project-serum/serum'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { WalletAdapter } from '@sb/dexUtils/types'
 import {
-  Connection,
   Keypair,
   PublicKey,
   SYSVAR_CLOCK_PUBKEY,
@@ -11,8 +8,12 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
+import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { signAndSendTransaction } from '../signAndSendTransaction'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+import MultiEndpointsConnection from '../../MultiEndpointsConnection'
+import { signAndSendTransactions } from '../../transactions/signAndSendTransactions'
 
 export const getStartFarmingTransactions = async ({
   wallet,
@@ -24,7 +25,7 @@ export const getStartFarmingTransactions = async ({
   curveType,
 }: {
   wallet: WalletAdapter
-  connection: Connection
+  connection: MultiEndpointsConnection
   poolTokenAmount: number
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
@@ -90,7 +91,7 @@ export const startFarming = async ({
   curveType,
 }: {
   wallet: WalletAdapter
-  connection: Connection
+  connection: MultiEndpointsConnection
   poolTokenAmount: number
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null
@@ -107,7 +108,7 @@ export const startFarming = async ({
     curveType,
   })
 
-  const result = await signAndSendTransaction({
+  const result = await signAndSendTransactions({
     wallet,
     connection,
     transactionsAndSigners,

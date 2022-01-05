@@ -14,14 +14,15 @@ import {
 } from '@solana/web3.js'
 
 import { walletAdapterToWallet } from '../../common'
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
 import {
   FEE_OWNER_ACCOUNT,
   POOLS_PROGRAM_ADDRESS,
   POOL_AUTHORITY,
   POOLS_V2_PROGRAM_ADDRESS,
 } from '../../ProgramsMultiton/utils'
-import { signTransactions, createTokenAccountTransaction } from '../../send'
+import { createTokenAccountTransaction } from '../../send'
+import { signTransactions } from '../../transactions'
 import { createVestingTransaction } from '../../vesting'
 import {
   AUTHORITY_TYPE,
@@ -103,7 +104,7 @@ export const createPoolTransactions = async (
   const provider = new Provider(
     connection.getConnection(),
     walletWithPk,
-    Provider.defaultOptions()
+    defaultOptions()
   )
 
   const tokenAccountLamports = await connection
@@ -348,11 +349,14 @@ export const createPoolTransactions = async (
     createPool,
     firstDepositTx,
     farmingTx,
-  ] = await signTransactions({
-    transactionsAndSigners,
-    wallet,
-    connection: connection.getConnection(),
-  })
+  ] = await signTransactions(
+    transactionsAndSigners.map(({ transaction: tx, signers: s = [] }) => ({
+      transaction: tx,
+      signers: s,
+    })),
+    connection,
+    wallet
+  )
 
   return {
     transactions: {

@@ -4,7 +4,6 @@ import React, { useEffect, useRef } from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { Input, REGEXP_FORMATTER } from '@sb/components/Input'
-import { Loader } from '@sb/components/Loader/Loader'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TokenInfo } from '@sb/dexUtils/types'
 
@@ -106,8 +105,9 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           $padding="lg"
           $borderRadius="xxl"
           disabled={Object.keys(form.errors).length !== 0 || loading.stake}
+          $loading={loading.stake}
         >
-          {loading.stake ? <Loader /> : 'Stake'}
+          Stake
         </Button>
       </FormItem>
       <FormItem>
@@ -119,8 +119,9 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
             onClick={() => end()}
             disabled={isUnstakeDisabled}
             type="button"
+            $loading={!!loading.unstake}
           >
-            {loading.unstake ? <Loader /> : 'Unstake all'}
+            Unstake all
           </Button>
         </div>
       </FormItem>

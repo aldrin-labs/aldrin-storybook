@@ -1,5 +1,3 @@
-import { stripByAmount } from '@core/utils/chartPageUtils'
-import { Metrics } from '@core/utils/metrics'
 import {
   DexInstructions,
   Market,
@@ -8,97 +6,68 @@ import {
 } from '@project-serum/serum'
 import { OrderParams } from '@project-serum/serum/lib/market'
 import {
-  AmendOrderParams,
-  CancelOrderParams,
-  PlaceOrder,
-  SendTransactionParams,
-  SignTransactionsParams,
-  ValidateOrderParams,
-  WalletAdapter,
-  SendSignedTransactionParams,
-  SendSignedTransactionResult,
-  AsyncSendSignedTransactionResult,
-} from '@sb/dexUtils/types'
-import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   Token,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token'
 import {
   Account,
-  Commitment,
   Connection,
   PublicKey,
-  SignatureResult,
-  SignatureStatus,
   SystemProgram,
   Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
+
 import {
-  getConnectionFromMultiConnections,
-  getProviderNameFromUrl,
-} from './connection'
+  AmendOrderParams,
+  PlaceOrder,
+  SignTransactionsParams,
+  ValidateOrderParams,
+  WalletAdapter,
+  SendSignedTransactionResult,
+  CancelOrderParams,
+} from '@sb/dexUtils/types'
+
 import { getCache } from './fetch-loop'
 import { getReferrerQuoteWallet } from './getReferrerQuoteWallet'
 import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
 import { notify } from './notifications'
-import { getDecimalCount, isCCAITradingEnabled, sleep } from './utils'
-import MultiEndpointsConnection from './MultiEndpointsConnection'
-import { mergeTransactions } from './transactions'
+import { getNotificationText } from './serum'
+import {
+  mergeTransactions,
+  sendSignedSignleTransaction,
+  signAndSendSingleTransaction,
+} from './transactions'
+import { getDecimalCount, isCCAITradingEnabled } from './utils'
 
-const getNotificationText = ({
-  baseSymbol = 'CCAI',
-  quoteSymbol = 'USDC',
-  baseUnsettled = 0,
-  quoteUnsettled = 0,
-  side = 'buy',
-  amount = 0,
-  price = 0,
-  orderType = 'limit',
-  operationType,
-}: {
-  baseSymbol?: string
-  quoteSymbol?: string
-  baseUnsettled?: number
-  quoteUnsettled?: number
-  side?: string
-  amount?: number
-  price?: number
-  orderType?: string
-  operationType: string
-}): [string, string] => {
-  const baseSettleText = `${stripByAmount(baseUnsettled)} ${baseSymbol}`
-  const quoteSettleText = `${stripByAmount(quoteUnsettled)} ${quoteSymbol}`
-
-  const texts = {
-    createOrder: [
-      `${orderType.slice(0, 1).toUpperCase()}${orderType.slice(
-        1
-      )} order placed.`,
-      `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order placed${
-        orderType === 'market' ? '' : ` at ${price} ${quoteSymbol}`
-      }.`,
-    ],
-    cancelOrder: [
-      `Limit Order canceled.`,
-      `${baseSymbol}/${quoteSymbol}: ${side} ${amount} ${baseSymbol} order canceled at ${price} ${quoteSymbol}.`,
-    ],
-    settleFunds: [
-      `Funds Settled.`,
-      `${
-        baseUnsettled > 0 && quoteUnsettled > 0
-          ? `${baseSettleText} and ${quoteSettleText}`
-          : baseUnsettled > 0
-          ? baseSettleText
-          : quoteSettleText
-      } has been successfully settled in your wallet.`,
-    ],
-    cancelAll: ['Orders canceled.', ``],
-    settleAllFunds: ['Funds settled.', ''],
+export async function cancelOrder(params: CancelOrderParams) {
+  const { market, wallet, connection, order } = params
+  if (!wallet.publicKey) {
+    throw new Error(`cancelOrders: no publicKey for wallet: ${wallet}`)
   }
+  const { publicKey } = wallet
+  const transaction = market.makeMatchOrdersTransaction(5)
 
-  return texts[operationType]
+  transaction.add(
+    market.makeCancelOrderInstruction(connection, publicKey, order)
+  )
+
+  transaction.add(market.makeMatchOrdersTransaction(5))
+
+  return signAndSendSingleTransaction({
+    transaction,
+    wallet,
+    connection,
+    successMessage: getNotificationText({
+      baseSymbol: order.marketName.split('/')[0],
+      quoteSymbol: order.marketName.split('/')[1],
+      side: order.side,
+      amount: order.size,
+      price: order.price,
+      operationType: 'cancelOrder',
+    }),
+  })
 }
 
 export async function createTokenAccountTransaction({
@@ -288,57 +257,24 @@ export async function settleFunds({
     quoteTokenAccount,
   })
 
-  if (!result) return
+  if (!result) return false
 
   const [transaction, settleFundsSigners] = result
 
-  return await sendTransaction({
+  return signAndSendSingleTransaction({
     transaction,
     signers: settleFundsSigners,
     wallet,
     connection,
-    operationType: 'settleFunds',
-    params: {
+    successMessage: getNotificationText({
+      operationType: 'settleFunds',
       baseSymbol: baseCurrency,
       quoteSymbol: quoteCurrency,
       baseUnsettled,
       quoteUnsettled,
-    },
+    }),
+
     focusPopup,
-  })
-}
-
-export async function cancelOrder({
-  market,
-  wallet,
-  connection,
-  order,
-}: CancelOrderParams) {
-  if (!wallet.publicKey) {
-    throw new Error(`cancelOrders: no publicKey for wallet: ${wallet}`)
-  }
-  const { publicKey } = wallet
-  const transaction = market.makeMatchOrdersTransaction(5)
-
-  transaction.add(
-    market.makeCancelOrderInstruction(connection, publicKey, order)
-  )
-
-  transaction.add(market.makeMatchOrdersTransaction(5))
-
-  return sendTransaction({
-    transaction,
-    wallet,
-    connection,
-    signers: [],
-    params: {
-      baseSymbol: order.marketName.split('/')[0],
-      quoteSymbol: order.marketName.split('/')[1],
-      side: order.side,
-      amount: order.size,
-      price: order.price,
-    },
-    operationType: 'cancelOrder',
   })
 }
 
@@ -384,20 +320,20 @@ export async function amendOrder(params: AmendOrderParams) {
 
   const t = mergeTransactions([transaction, placeTransaction])
 
-  return sendTransaction({
+  return signAndSendSingleTransaction({
     transaction: t,
     wallet,
     connection,
     signers,
-    operationType: 'createOrder',
-    params: {
+    successMessage: getNotificationText({
+      operationType: 'createOrder',
       side: p.side,
       price: p.price,
       amount: p.size,
       baseSymbol: p.pair.split('_')[0],
       quoteSymbol: p.pair.split('_')[1],
       orderType: 'limit',
-    },
+    }),
   })
 }
 
@@ -638,20 +574,20 @@ export async function placeOrder(data: PlaceOrder) {
   const { transaction, signers } = d
   const { wallet, connection } = data
 
-  return sendTransaction({
+  return signAndSendSingleTransaction({
     transaction,
     wallet,
     connection,
     signers,
-    operationType: 'createOrder',
-    params: {
+    successMessage: getNotificationText({
+      operationType: 'createOrder',
       side: data.side,
       price: data.price,
       amount: data.size,
       baseSymbol: data.pair.split('_')[0],
       quoteSymbol: data.pair.split('_')[1],
       orderType: data.isMarketOrder ? 'market' : 'limit',
-    },
+    }),
   })
 }
 
@@ -828,7 +764,7 @@ export async function listMarket({
 
   await Promise.all(
     signedTransactions.map((signedTransaction) =>
-      sendSignedTransaction({
+      sendSignedSignleTransaction({
         transaction: signedTransaction,
         connection,
       })
@@ -838,425 +774,5 @@ export async function listMarket({
   return market.publicKey
 }
 
-const getUnixTs = () => {
-  return new Date().getTime() / 1000
-}
-
-const DEFAULT_TIMEOUT = 30000
-
-export async function sendTransaction(
-  p: SendTransactionParams
-): AsyncSendSignedTransactionResult {
-  const {
-    transaction,
-    wallet,
-    signers,
-    connection,
-    sentMessage,
-    successMessage,
-    timeout,
-    operationType,
-    params,
-    focusPopup,
-  } = p
-
-  transaction.recentBlockhash = (
-    await connection.getRecentBlockhash('max')
-  ).blockhash
-
-  console.log('signers', signers, wallet)
-
-  if (!wallet.publicKey) {
-    throw new Error(`No publicKey for wallet: ${wallet}`)
-  }
-
-  transaction.setSigners(
-    wallet.publicKey,
-    ...signers.map((s) => s.publicKey).filter((p) => !!p)
-  )
-
-  if (signers.length > 0) {
-    transaction.partialSign(...signers)
-  }
-
-  const transactionFromWallet = await wallet
-    .signTransaction(transaction, focusPopup)
-    .then((res) => {
-      window.focus()
-      return res
-    })
-
-  const tx = await sendSignedTransaction({
-    connection,
-    transaction: transactionFromWallet,
-    sentMessage,
-    successMessage,
-    timeout,
-    operationType,
-    params,
-  })
-
-  return tx
-}
-
-export const sendSignedTransaction = async ({
-  connection,
-  transaction,
-  sentMessage = 'Transaction sent',
-  successMessage = 'Transaction confirmed',
-  timeout = DEFAULT_TIMEOUT,
-  operationType,
-  params,
-  showNotification = true,
-}: SendSignedTransactionParams): AsyncSendSignedTransactionResult => {
-  const rawTransaction = transaction.serialize()
-
-  const startTime = getUnixTs()
-
-  const txid = await connection.sendRawTransaction(rawTransaction, {
-    skipPreflight: true,
-  })
-
-  if (showNotification) {
-    if (operationType) {
-      const [title, text] = getNotificationText({
-        baseSymbol: params?.baseSymbol || '',
-        quoteSymbol: params?.quoteSymbol || '',
-        quoteUnsettled: params?.quoteUnsettled || 0,
-        baseUnsettled: params?.baseUnsettled || 0,
-        price: params?.price || 0,
-        amount: params?.amount || 0,
-        side: params?.side || '',
-        orderType: params?.orderType || 'limit',
-        operationType,
-      })
-
-      notify({
-        message: title,
-        description: text,
-        type: 'success',
-        txid,
-      })
-    } else {
-      notify({
-        message: sentMessage,
-        type: 'success',
-        txid,
-      })
-    }
-  }
-
-  console.log('Started awaiting confirmation for', txid)
-
-  let done = false
-  // TODO
-  ;(async () => {
-    while (!done && getUnixTs() - startTime < timeout) {
-      const resultOfSendingConfirm = connection.sendRawTransaction(
-        rawTransaction,
-        {
-          skipPreflight: true,
-        }
-      )
-
-      console.log(
-        'sendTransaction resultOfSendingConfirm',
-        resultOfSendingConfirm
-      )
-      await sleep(1200)
-    }
-  })()
-
-  const rawConnection = getConnectionFromMultiConnections({
-    connection,
-  })
-
-  let result = await waitForTransactionConfirmation({
-    txid,
-    timeout,
-    connection: rawConnection,
-    showErrorForTimeout: false,
-  })
-  if (result === 'timeout') {
-    const rpcProvider = getProviderNameFromUrl({ rawConnection })
-    Metrics.sendMetrics({
-      metricName: `error.rpc.${rpcProvider}.timeoutConfirmationTransaction`,
-    })
-
-    // trying again for another 30s with probably another connection
-    const rawConnectionForRetry = getConnectionFromMultiConnections({
-      connection,
-    })
-
-    result = await waitForTransactionConfirmation({
-      txid,
-      timeout,
-      connection: rawConnectionForRetry,
-      interval: 2400,
-      showErrorForTimeout: true,
-    })
-
-    if (!result) {
-      const rpcProvider = getProviderNameFromUrl({
-        rawConnection: rawConnectionForRetry,
-      })
-
-      Metrics.sendMetrics({
-        metricName: `error.rpc.${rpcProvider}.secondTimeoutConfirmationTransaction`,
-      })
-    }
-  }
-
-  done = true
-  if (result === null) {
-    return 'failed'
-  }
-
-  if (result === 'timeout') {
-    return result
-  }
-
-  if (!operationType) notify({ message: successMessage, type: 'success', txid })
-  console.log('Latency', txid, getUnixTs() - startTime)
-  return txid
-}
-
 export const isTransactionFailed = (result: SendSignedTransactionResult) =>
   result === 'failed' || result === 'timeout'
-
-interface SendAndWaitParams {
-  timeout?: number
-  sleepAfter?: number
-  commitment?: Commitment
-}
-
-const CONFIRMATION_STATUSES: Commitment[] = [
-  'processed',
-  'confirmed',
-  'finalized',
-]
-
-async function awaitTransactionSignatureConfirmation({
-  txid,
-  timeout,
-  connection,
-  interval = 1200,
-  commitment = 'recent',
-}: {
-  txid: string
-  timeout: number
-  connection: Connection
-  interval?: number
-  commitment?: Commitment
-}) {
-  let done = false
-  console.log('commitment: ', commitment)
-  const result = await new Promise<SignatureStatus | SignatureResult>(
-    (resolve, reject) => {
-      ;(async () => {
-        setTimeout(() => {
-          if (done) {
-            return
-          }
-          done = true
-          console.log('Timed out for txid', txid)
-          reject(new Error('timeout'))
-        }, timeout)
-        try {
-          connection.onSignature(
-            txid,
-            (sigResult) => {
-              console.log('WS confirmed', txid, result)
-              done = true
-              if (sigResult.err) {
-                reject(sigResult.err)
-              } else {
-                resolve(sigResult)
-              }
-            },
-            commitment
-          )
-          console.log('Set up WS connection', txid)
-        } catch (e) {
-          done = true
-          console.log('WS error in setup', txid, e)
-        }
-        while (!done) {
-          // eslint-disable-next-line no-loop-func
-          ;(async () => {
-            const rpcProvider = getProviderNameFromUrl({
-              rawConnection: connection,
-            })
-            try {
-              const signatureStatuses = await connection.getSignatureStatuses([
-                txid,
-              ])
-              const sigResult = signatureStatuses && signatureStatuses.value[0]
-              if (!done) {
-                if (!sigResult) {
-                  console.log('REST null result for', txid, result)
-                } else if (sigResult.err) {
-                  console.log('REST error for', txid, result)
-
-                  Metrics.sendMetrics({
-                    metricName: `error.rpc.${rpcProvider}.getSignatureStatusesError-${JSON.stringify(
-                      sigResult.err
-                    )}`,
-                  })
-                  done = true
-                  reject(sigResult.err)
-                } else if (!sigResult.confirmations) {
-                  console.log('REST no confirmations for', txid, result)
-                } else if (CONFIRMATION_STATUSES.includes(commitment)) {
-                  if (sigResult.confirmationStatus === commitment) {
-                    done = true
-                    resolve(sigResult)
-                  }
-                } else {
-                  console.log('REST confirmation for', txid, result)
-                  done = true
-                  resolve(sigResult)
-                }
-              }
-            } catch (e) {
-              if (!done) {
-                console.log('REST connection error: txid', txid, e)
-                Metrics.sendMetrics({
-                  metricName: `error.rpc.${rpcProvider}.connectionError-${JSON.stringify(
-                    e
-                  )}`,
-                })
-              }
-            }
-          })()
-          // eslint-disable-next-line no-await-in-loop
-          await sleep(interval)
-        }
-      })()
-    }
-  )
-  done = true
-  return result
-}
-
-export const waitForTransactionConfirmation = async ({
-  txid,
-  timeout,
-  interval,
-  connection,
-  showErrorForTimeout = false,
-  commitment,
-}: {
-  txid: string
-  timeout: number
-  interval?: number
-  connection: Connection
-  showErrorForTimeout: boolean
-  commitment?: Commitment
-}) => {
-  try {
-    const resultOfSignature = await awaitTransactionSignatureConfirmation({
-      txid,
-      timeout,
-      interval,
-      connection,
-      commitment,
-    })
-
-    console.log('sendTransaction resultOfSignature', resultOfSignature)
-    return true
-  } catch (err: any) {
-    // TODO: resolve error better
-    console.log('sendTransaction error', err)
-    if (err.message && `${err}`.includes('timeout') && !showErrorForTimeout) {
-      notify({
-        message: 'Timed out awaiting confirmation on transaction',
-        type: 'info',
-        description:
-          "We'll continue checking confirmations for this transactions",
-      })
-
-      return 'timeout'
-    }
-    // if (err.InstructionError) {
-    //   if (Array.isArray(err.InstructionError)) {
-    //     const insufficientBalance = (err.InstructionError as []).findIndex((el) => el === 1) // Insufficient lamports instruction error
-    //     if (insufficientBalance >= 0) {
-    //       notify({
-    //         message: 'Not enough SOL',
-    //         type: 'error',
-    //       })
-    //     }
-    //   }
-    // }
-
-    notify({ message: 'Transaction failed', type: 'error' })
-    const rpcProvider = getProviderNameFromUrl({
-      rawConnection: connection,
-    })
-
-    Metrics.sendMetrics({
-      metricName: `error.rpc.${rpcProvider}.transactionFailed-${JSON.stringify(
-        err
-      )}`,
-    })
-
-    if (err.timeout) return 'timeout'
-    return false
-  }
-}
-
-export const sendAndWaitSignedTransaction = async (
-  signedTransaction: Transaction,
-  connection: MultiEndpointsConnection,
-  params: SendAndWaitParams = {}
-) => {
-  const { timeout = 60_000, sleepAfter, commitment } = params
-  const txid = await connection
-    .getConnection()
-    .sendRawTransaction(signedTransaction.serialize(), { skipPreflight: true })
-
-  const txResult = await waitForTransactionConfirmation({
-    txid,
-    timeout,
-    connection: connection.getConnection(),
-    showErrorForTimeout: true,
-    commitment,
-  })
-
-  console.log('txResult: ', txResult)
-
-  if (!txResult || txResult === 'timeout') {
-    throw new Error(`Transaction failed: ${txid}`)
-  }
-
-  if (sleepAfter) {
-    await sleep(sleepAfter)
-  }
-
-  return txid
-}
-
-export const sendPartOfTransactions = async (
-  connection: Connection,
-  transaction: Transaction
-) => {
-  try {
-    const tx = await sendSignedTransaction({
-      connection,
-      transaction,
-    })
-
-    if (isTransactionFailed(tx)) {
-      return 'failed'
-    }
-  } catch (e) {
-    console.log('end farming catch error', e)
-
-    if (e.message.includes('cancelled')) {
-      return 'cancelled'
-    }
-  }
-
-  return 'success'
-}

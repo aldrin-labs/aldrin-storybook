@@ -104,7 +104,7 @@ const Popup = ({
       allTokensData,
     })
 
-    if (result === 'blockhash_outdated') {
+    if (result === 'timeout') {
       setShowRetryMessage(true)
       setOperationLoading(true)
       setTimeout(async () => {

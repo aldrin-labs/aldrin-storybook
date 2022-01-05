@@ -65,6 +65,7 @@ import { InputWithSelectorForSwaps } from './components/Inputs/index'
 import { BlockTemplate } from '../Pools/index.styles'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { Cards } from './components/Cards/Cards'
+import BN from 'bn.js'
 
 const SwapPage = ({
   theme,
@@ -129,16 +130,16 @@ const SwapPage = ({
     const baseTokenMint = baseFromRedirect
       ? getTokenMintAddressByName(baseFromRedirect) || ''
       : getTokenMintAddressByName(
-        getDefaultBaseToken(isStableSwapFromRedirect)
-      ) || ''
+          getDefaultBaseToken(isStableSwapFromRedirect)
+        ) || ''
 
     setBaseTokenMintAddress(baseTokenMint)
 
     const quoteTokenMint = quoteFromRedirect
       ? getTokenMintAddressByName(quoteFromRedirect) || ''
       : getTokenMintAddressByName(
-        getDefaultQuoteToken(isStableSwapFromRedirect)
-      ) || ''
+          getDefaultQuoteToken(isStableSwapFromRedirect)
+        ) || ''
 
     setQuoteTokenMintAddress(quoteTokenMint)
 
@@ -276,23 +277,13 @@ const SwapPage = ({
     nativeSOLTokenData?.address === userBaseTokenAccount ||
     nativeSOLTokenData?.address === userQuoteTokenAccount
 
-  const transferSOLToWrapped = isPoolWithSOLToken && isNativeSOLSelected
-
   const userPoolBaseTokenAccount = isSwapBaseToQuote
     ? userBaseTokenAccount
     : userQuoteTokenAccount
 
-  const userPoolBaseTokenPublicKey = userPoolBaseTokenAccount
-    ? new PublicKey(userPoolBaseTokenAccount)
-    : null
-
   const userPoolQuoteTokenAccount = isSwapBaseToQuote
     ? userQuoteTokenAccount
     : userBaseTokenAccount
-
-  const userPoolQuoteTokenPublicKey = userPoolQuoteTokenAccount
-    ? new PublicKey(userPoolQuoteTokenAccount)
-    : null
 
   const setBaseAmountWithQuote = async (
     newBaseAmount: string | number,
@@ -300,25 +291,21 @@ const SwapPage = ({
   ) => {
     setBaseAmount(newBaseAmount)
 
-    const swapAmountOut = await getMinimumReceivedAmountFromSwap({
+    const swapAmountOut = getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newBaseAmount,
       isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
       pool: selectedPool,
-      wallet,
-      tokensMap,
-      connection,
-      userBaseTokenAccount: userPoolBaseTokenPublicKey,
-      userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
-      transferSOLToWrapped,
-      allTokensData,
       poolBalances,
     })
 
+    // do not set 0, leave 0 placeholder
     if (swapAmountOut === 0) {
       setQuoteAmount('')
-    } else {
-      setQuoteAmount(swapAmountOut)
+      return
     }
+
+    const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
+    setQuoteAmount(strippedSwapAmountOut)
   }
 
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
@@ -326,25 +313,21 @@ const SwapPage = ({
 
     setQuoteAmount(newQuoteAmount)
 
-    const swapAmountOut = await getMinimumReceivedAmountFromSwap({
+    const swapAmountOut = getMinimumReceivedAmountFromSwap({
       swapAmountIn: +newQuoteAmount,
       isSwapBaseToQuote: isSwapBaseToQuoteForQuoteChange,
       pool: selectedPool,
-      wallet,
-      tokensMap,
-      connection,
-      userBaseTokenAccount: userPoolBaseTokenPublicKey,
-      userQuoteTokenAccount: userPoolQuoteTokenPublicKey,
-      transferSOLToWrapped,
-      allTokensData,
       poolBalances,
     })
 
+    // do not set 0, leave 0 placeholder
     if (swapAmountOut === 0) {
       setBaseAmount('')
-    } else {
-      setBaseAmount(swapAmountOut)
+      return
     }
+
+    const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
+    setBaseAmount(strippedSwapAmountOut)
   }
 
   return (
@@ -492,8 +475,8 @@ const SwapPage = ({
                 {isSelectedPoolStable
                   ? 1
                   : isSwapBaseToQuote
-                    ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
-                    : stripDigitPlaces(
+                  ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
+                  : stripDigitPlaces(
                       +(+poolAmountTokenA / +poolAmountTokenB),
                       8
                     )}{' '}
@@ -553,9 +536,12 @@ const SwapPage = ({
                     quoteTokenDecimals,
                   })
 
-                  const swapAmountIn = +baseAmount * 10 ** baseTokenDecimals
-                  const swapAmountOut =
+                  const swapAmountIn = new BN(
+                    +baseAmount * 10 ** baseTokenDecimals
+                  )
+                  const swapAmountOut = new BN(
                     +totalWithFees * 10 ** quoteTokenDecimals
+                  )
 
                   const result = await swap({
                     wallet,
@@ -581,8 +567,8 @@ const SwapPage = ({
                       result === 'success'
                         ? 'Swap executed successfully.'
                         : result === 'failed'
-                          ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
-                          : 'Swap cancelled',
+                        ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
+                        : 'Swap cancelled',
                   })
 
                   // refresh data
@@ -604,7 +590,8 @@ const SwapPage = ({
                 {isSwapInProgress ? (
                   <Loader />
                 ) : isTokenABalanceInsufficient ? (
-                  `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
+                  `Insufficient ${
+                    isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                   } Balance`
                 ) : !selectedPool ? (
                   'No pools available'
@@ -660,7 +647,7 @@ const SwapPage = ({
                 >
                   {stripByAmountAndFormat(
                     +baseAmount *
-                    (getLiquidityProviderFee(selectedPool.curveType) / 100)
+                      (getLiquidityProviderFee(selectedPool.curveType) / 100)
                   )}{' '}
                   {baseSymbol}
                 </Text>

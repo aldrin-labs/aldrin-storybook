@@ -1,3 +1,5 @@
+import { ConfirmOptions } from '@solana/web3.js'
+
 import { MASTER_BUILD } from '@core/utils/config'
 
 export const POOLS_PROGRAM_ADDRESS = MASTER_BUILD
@@ -41,3 +43,8 @@ export const getPoolsProgramAddress = ({
 
   return POOLS_PROGRAM_ADDRESS
 }
+
+export const defaultOptions = (): ConfirmOptions => ({
+  commitment: 'confirmed',
+  preflightCommitment: 'confirmed',
+})

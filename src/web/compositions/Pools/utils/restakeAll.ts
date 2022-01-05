@@ -1,15 +1,16 @@
-import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { Connection, PublicKey } from '@solana/web3.js'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
 
 import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
+import { MIN_POOL_TOKEN_AMOUNT_TO_STAKE } from '@sb/dexUtils/common/config'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { getEndFarmingTransactions } from '@sb/dexUtils/pools/actions/endFarming'
 import { getStartFarmingTransactions } from '@sb/dexUtils/pools/actions/startFarming'
-import { signAndSendTransaction } from '@sb/dexUtils/pools/signAndSendTransaction'
-import { sleep } from '@sb/dexUtils/utils'
-import { MIN_POOL_TOKEN_AMOUNT_TO_STAKE } from '@sb/dexUtils/common/config'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
+import { sleep } from '@sb/dexUtils/utils'
+
 import { getTokenDataByMint } from '.'
+import { signAndSendTransactions } from '../../../dexUtils/transactions'
 import { PoolInfo } from '../index.types'
 
 export const restakeAll = async ({
@@ -61,7 +62,7 @@ export const restakeAll = async ({
     }
   }
 
-  const resultEndFarming = await signAndSendTransaction({
+  const resultEndFarming = await signAndSendTransactions({
     wallet,
     connection,
     transactionsAndSigners: endFarmingTransactions,
@@ -105,7 +106,7 @@ export const restakeAll = async ({
     }
   }
 
-  const resultStartFarming = await signAndSendTransaction({
+  const resultStartFarming = await signAndSendTransactions({
     wallet,
     connection,
     transactionsAndSigners: startFarmingTransactions,
