@@ -1,9 +1,9 @@
+import { SvgIcon } from '@sb/components'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
-import { SvgIcon } from '@sb/components'
 import { ShareButton } from '@sb/components/ShareButton'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
@@ -11,8 +11,10 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+
 import React from 'react'
 import { Link } from 'react-router-dom'
+
 import {
   DexTokensPrices,
   FeesEarned,
@@ -146,7 +148,10 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
 
   const totalApr = farmingAPR + feesAPR
 
-  const aprFormatted = formatNumberToUSFormat(stripDigitPlaces(totalApr, 2))
+  const aprFormatted =
+    totalApr >= 1
+      ? formatNumberToUSFormat(stripDigitPlaces(totalApr, 2))
+      : '< 1'
 
   const shareText = `I farm on ${base}/${quote} liquidity pool with ${aprFormatted}% APR on @aldrin_exchange
 Don't miss your chance.`
