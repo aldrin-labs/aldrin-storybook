@@ -16,8 +16,10 @@ export const InputWithType = ({
   onChange,
   metric,
   label,
+  type,
 }: {
   theme: Theme
+  type?: string,
   value: string | number
   disabled?: boolean
   placeholder?: string
@@ -35,7 +37,7 @@ export const InputWithType = ({
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'1rem'}>
         <InvisibleInput
-          type={'text'}
+          type={type || 'text'}
           value={value}
           disabled={disabled}
           onChange={(e) => {

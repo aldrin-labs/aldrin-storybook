@@ -10,22 +10,28 @@ import {
   combineRunningOrdersTable,
   runningOrdersColumnNames,
 } from './RunningOrders.utils'
-import {FeedbackPopup} from "@sb/compositions/Chart/components/UsersFeedbackPopup";
-import {StopOrderPopup} from "@sb/compositions/Twamm/components/StopOrderPopup/StopOrderPopup";
 import {PairSettings} from "@sb/dexUtils/twamm/types";
+import {BtnCustom} from "@sb/components/BtnCustom/BtnCustom.styles";
+import {compose} from "recompose";
+import withTheme from "@material-ui/core/styles/withTheme";
+import {Theme} from "@material-ui/core";
 
 const RunningOrdersTable = ({
+  theme,
   pairSettings,
   stylesForTable,
   tableBodyStyles,
   styles,
   getDexTokensPricesQuery,
+  setIsConnectWalletPopupOpen,
 }: {
+  theme: Theme
   pairSettings: PairSettings[]
   stylesForTable?: {}
   tableBodyStyles?: {}
   styles?: {}
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] },
+  setIsConnectWalletPopupOpen: (value: boolean) => void,
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -97,7 +103,28 @@ const RunningOrdersTable = ({
           },
         }}
         emptyTableText={
-          wallet.connected ? 'You have no running orders' : 'Connect wallet'
+          wallet.connected ?
+            'You have no running orders'
+            :
+            <BtnCustom
+              theme={theme}
+              onClick={() => setIsConnectWalletPopupOpen(true)}
+              needMinWidth={false}
+              btnWidth="100%"
+              height="5.5rem"
+              fontSize="1.4rem"
+              padding="2rem 8rem"
+              borderRadius="1.1rem"
+              borderColor={theme.palette.blue.serum}
+              btnColor="#fff"
+              backgroundColor={theme.palette.blue.serum}
+              textTransform="none"
+              margin="2rem 0 0 0"
+              transition="all .4s ease-out"
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              Connect wallet
+            </BtnCustom>
         }
         data={{ body: runningOrdersProcessedData }}
         columnNames={runningOrdersColumnNames}
@@ -106,4 +133,6 @@ const RunningOrdersTable = ({
   )
 }
 
-export default RunningOrdersTable
+export default compose(
+  withTheme(),
+)(RunningOrdersTable)

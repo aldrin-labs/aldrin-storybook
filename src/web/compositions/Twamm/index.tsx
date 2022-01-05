@@ -204,6 +204,7 @@ const TwammComponent = ({
             <RunningOrdersWrapper
               pairSettings={pairSettings}
               getDexTokensPricesQuery={getDexTokensPricesQuery}
+              setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
             />
           </TabPanel>
           <TabPanel>

@@ -238,7 +238,7 @@ const PlaceOrder = ({
     selectedPairSettings.baseMintDecimals
   )
 
-  const maxOrderSizeQuote = +(100 / quoteTokenPrice).toFixed(
+  const maxOrderSizeQuote = +(100 / baseTokenPrice).toFixed(
     selectedPairSettings.quoteMintDecimals
   )
 
@@ -330,6 +330,7 @@ const PlaceOrder = ({
 
               <RowContainer margin="4rem 0 2rem 0">
                 <InputWithType
+                  type="number"
                   placeholder="Hours"
                   theme={theme}
                   value={orderLength}
@@ -413,12 +414,18 @@ const PlaceOrder = ({
                     const maxBaseAmount = isSwapBaseToQuote
                       ? maxOrderSize
                       : maxOrderSizeQuote
-
                     if (baseAmount > maxBaseAmount) {
                       notify({
                         message: `Max order size is ${maxBaseAmount} for ${getTokenNameByMintAddress(
                           baseTokenMintAddress
                         )} token on this pair.`,
+                      })
+                      return
+                    }
+
+                    if (orderLength < 1) {
+                      notify({
+                        message: `Min duration is 1 hour.`,
                       })
                       return
                     }
