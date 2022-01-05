@@ -17,7 +17,7 @@ export const signTransactions = async (
   const walletPk = wallet.publicKey
 
   const processedTransactions = transactionsAndSigners.map((t) => {
-    const { transaction, signers } = t
+    const { transaction, signers = [] } = t
 
     transaction.feePayer = walletPk
     transaction.recentBlockhash = recentHash
