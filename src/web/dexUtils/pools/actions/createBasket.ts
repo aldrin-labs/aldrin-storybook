@@ -78,9 +78,9 @@ export async function createBasketTransaction(
     ? new BN(1 * 10 ** 8)
     : supply
         .mul(new BN(userBaseTokenAmount))
+        .muln(9_995)
         .div(poolTokenAmountA)
-        .muln(99)
-        .divn(100)
+        .divn(10_0000)
 
   const transactionBeforeDeposit = new Transaction()
   const commonSigners: Account[] = []
