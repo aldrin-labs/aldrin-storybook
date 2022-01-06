@@ -378,7 +378,10 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                   <span>
                     <FarmingButton
                       $variant="rainbow"
-                      disabled={availableToClaimUsd === 0 || processing}
+                      disabled={
+                        !availableToClaim.find((atc) => atc.amount > 0) ||
+                        processing
+                      }
                       $loading={processing}
                       onClick={onClaimClick}
                     >
