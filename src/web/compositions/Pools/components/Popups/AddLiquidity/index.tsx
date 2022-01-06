@@ -502,30 +502,6 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               +quoteAmount * 10 ** quoteTokenDecimals
             )
 
-            if (
-              !userTokenAccountA ||
-              !userTokenAccountB ||
-              !userBaseTokenAmount ||
-              !userQuoteTokenAmount
-            ) {
-              notify({
-                message: `Sorry, something went wrong with your amount of ${!userTokenAccountA ? 'tokenA' : 'tokenB'
-                  }`,
-                type: 'error',
-              })
-
-              console.log('base data', {
-                userTokenAccountA,
-                userTokenAccountB,
-                baseTokenDecimals,
-                quoteTokenDecimals,
-                userBaseTokenAmount,
-                userQuoteTokenAmount,
-              })
-
-              return
-            }
-
             // loader in popup button
             setOperationLoading(true)
             // loader in table button
