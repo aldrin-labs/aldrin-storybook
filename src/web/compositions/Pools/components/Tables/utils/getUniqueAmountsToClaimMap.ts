@@ -32,24 +32,18 @@ export const getUniqueAmountsToClaimMap = ({
       return acc
     }
 
-    // const availableToClaimFromFarmingState =
-    //   getAvailableFarmingTokensForFarmingState({
-    //     farmingTickets,
-    //     farmingState: farmingState.farmingState,
-    //   })
-
     const state = acc.get(farmingTokenMint) || {
       farmingTokenMint,
       amount: 0,
     }
 
-    const callAccountAmount =
+    const calcAccountAmount =
       parseFloat(calcAccounts.get(fs)?.tokenAmount.toString() || '0') /
       10 ** farmingTokenMintDecimals
 
     acc.set(farmingTokenMint, {
       farmingTokenMint,
-      amount: state.amount + callAccountAmount,
+      amount: state.amount + calcAccountAmount,
     })
 
     return acc

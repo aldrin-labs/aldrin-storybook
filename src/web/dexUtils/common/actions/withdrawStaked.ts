@@ -20,9 +20,9 @@ import {
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
 } from '../config'
 import { getCalcAccounts } from '../getCalcAccountsForWallet'
-import { WithdrawStakeddParams } from './types'
+import { WithdrawStakedParams } from './types'
 
-export const withdrawStaked = async (params: WithdrawStakeddParams) => {
+export const withdrawStaked = async (params: WithdrawStakedParams) => {
   const {
     wallet,
     connection,

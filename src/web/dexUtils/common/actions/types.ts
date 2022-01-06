@@ -6,7 +6,7 @@ import { StakingPool } from '../../staking/types'
 import { TokenInfo, WalletAdapter } from '../../types'
 import { FarmingTicket } from '../types'
 
-export interface WithdrawStakeddParams {
+export interface WithdrawStakedParams {
   wallet: WalletAdapter
   connection: MultiEndpointsConnection
   allTokensData: TokenInfo[]

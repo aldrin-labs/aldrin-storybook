@@ -27,6 +27,7 @@ import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction } from '@sb/dexUtils/types'
@@ -297,7 +298,7 @@ const Popup = (props: StakePopupProps) => {
                 curveType: selectedPool.curveType,
               }),
               farmingTickets,
-              decimals: 0,
+              decimals: POOL_TOKENS_MINT_DECIMALS,
             })
 
             setOperationLoading(false)

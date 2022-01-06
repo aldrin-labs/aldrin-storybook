@@ -1,13 +1,14 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 
+import { startStaking } from '@sb/dexUtils/common/actions'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { sleep } from '@sb/dexUtils/utils'
 
 import { getTokenDataByMint } from '.'
-import { startStaking } from '../../../dexUtils/common/actions'
-import { getPoolsProgramAddress } from '../../../dexUtils/ProgramsMultiton'
 import { PoolInfo } from '../index.types'
 
 export const restakeAll = async ({
@@ -36,11 +37,12 @@ export const restakeAll = async ({
       ? filterOpenFarmingStates(farmingStates)
       : []
 
-    if (
+    const hasNoActiveTickets =
       openFarmings.length === 0 ||
       !farmingTickets ||
       farmingTickets.length === 0
-    ) {
+
+    if (hasNoActiveTickets) {
       continue
     }
 
@@ -55,7 +57,7 @@ export const restakeAll = async ({
       amount: 0,
       userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
       farmingTickets,
-      decimals: 0,
+      decimals: POOL_TOKENS_MINT_DECIMALS,
       programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
       connection,
     })

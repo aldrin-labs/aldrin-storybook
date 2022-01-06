@@ -17,6 +17,10 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { VestingWithPk } from '../../vesting/types'
 import { withrawVestingInstruction } from '../../vesting/withdrawVesting'
+import {
+  POOLS_LIQUIDITY_SLIPPAGE_DENOMINATOR,
+  POOLS_LIQUIDITY_SLIPPAGE_NUMERATOR,
+} from '../config'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -88,10 +92,13 @@ export async function redeemBasket(params: {
       poolTokenAmount: userPoolTokenAmount,
     })
 
-  baseTokenAmountToWithdraw = baseTokenAmountToWithdraw.muln(9_995).divn(10_000)
+  baseTokenAmountToWithdraw = baseTokenAmountToWithdraw
+    .muln(POOLS_LIQUIDITY_SLIPPAGE_NUMERATOR)
+    .divn(POOLS_LIQUIDITY_SLIPPAGE_DENOMINATOR)
+
   quoteTokenAmountToWithdraw = quoteTokenAmountToWithdraw
-    .muln(9_995)
-    .divn(10_000)
+    .muln(POOLS_LIQUIDITY_SLIPPAGE_NUMERATOR)
+    .divn(POOLS_LIQUIDITY_SLIPPAGE_DENOMINATOR)
 
   const commonSigners = []
   const transactionBeforeWithdraw = new Transaction()
