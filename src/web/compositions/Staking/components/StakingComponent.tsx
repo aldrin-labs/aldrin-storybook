@@ -1,7 +1,9 @@
 import { PublicKey } from '@solana/web3.js'
 import dayjs from 'dayjs'
-
 import React from 'react'
+import { compose } from 'recompose'
+
+import { Cell } from '@sb/components/Layout'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
@@ -17,9 +19,7 @@ import {
   useAssociatedTokenAccount,
 } from '@sb/dexUtils/token/hooks'
 
-import { compose } from 'recompose'
 
-import { Cell } from '@sb/components/Layout'
 
 import { RootRow } from '../styles'
 import StatsComponent from './StatsComponent'
@@ -100,7 +100,7 @@ export default compose(
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
     variables: () => {
-      const endOfDay = dayjs().endOf('day').unix()
+      const endOfDay = dayjs.utc().endOf('day').unix()
 
       return {
         timestampFrom: endOfDay - dayDuration * DAYS_TO_CHECK_BUY_BACK,

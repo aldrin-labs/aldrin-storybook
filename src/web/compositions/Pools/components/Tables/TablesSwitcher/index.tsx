@@ -16,6 +16,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
+import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { CURVE } from '@sb/dexUtils/pools/types'
@@ -81,8 +82,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const [searchValue, setSearchValue] = useState('')
   const [isAuditPopupOpen, setIsAuditPopupOpen] = useState(false)
   const [selectedTable, setSelectedTable] = useState<
-    'authorized' | 'nonAuthorized' | 'stablePools' | 'userLiquidity'
-  >('authorized')
+    'authorized' | 'nonAuthorized' | 'stablePools' | 'userLiquidity' | 'all'
+  >('all')
 
   const { path } = useRouteMatch()
 
@@ -99,6 +100,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const history = useHistory()
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
+  const { data: calcAccounts, mutate: refreshCalcAccounts } =
+    useFarmingCalcAccounts()
 
   const [snapshotQueues] = useSnapshotQueues({
     wallet,
@@ -115,6 +118,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const refreshAll = () => {
     refreshUserTokensData()
     refreshFarmingTickets()
+    refreshCalcAccounts()
   }
 
   const dexTokensPricesMap = toMap(
@@ -144,6 +148,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     farmingTicketsMap,
     vestings: vestingsByMintForUser,
     walletPublicKey: wallet.publicKey,
+    calcAccounts,
   })
 
   const stablePools = pools.filter((pool) => pool.curveType === CURVE.STABLE)
@@ -166,6 +171,12 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
       <TabContainer>
         <div>
           <TableModeButton
+            isActive={selectedTable === 'all'}
+            onClick={() => setSelectedTable('all')}
+          >
+            All Pools ({pools.length})
+          </TableModeButton>
+          <TableModeButton
             isActive={selectedTable === 'authorized'}
             onClick={() => setSelectedTable('authorized')}
           >
@@ -177,6 +188,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           >
             Ecosystem-led Pools ({nonAuthorizedPools.length})
           </TableModeButton>
+
           <TableModeButton
             isActive={selectedTable === 'stablePools'}
             onClick={() => setSelectedTable('stablePools')}
@@ -236,6 +248,16 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           <AllPoolsTable
             searchValue={searchValue}
             pools={nonAuthorizedPools}
+            dexTokensPricesMap={dexTokensPricesMap}
+            feesByPool={feesByPoolMap}
+            tradingVolumes={tradingVolumesMap}
+            farmingTicketsMap={farmingTicketsMap}
+          />
+        )}
+        {selectedTable === 'all' && (
+          <AllPoolsTable
+            searchValue={searchValue}
+            pools={pools}
             dexTokensPricesMap={dexTokensPricesMap}
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}

@@ -1,22 +1,20 @@
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import {
-  dayDuration,
-  endOfDayTimestamp,
-} from '@sb/compositions/AnalyticsRoute/components/utils'
 import { COLORS, MAIN_FONT } from '@variables/variables'
 import { Chart, ChartType, TooltipItem } from 'chart.js'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
-import { DAY } from '@core/utils/dateUtils'
+
+import {
+  dayDuration,
+  endOfDayTimestamp,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
+
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 dayjs.extend(timezone)
 dayjs.extend(utc)
 
-const POOLS_EPOCH = 1636070400 // 5 Nov 2021
-export const NUMBER_OF_DAYS_TO_SHOW = Math.ceil(
-  (Date.now() / 1000 - POOLS_EPOCH) / DAY
-) // Show full history from pools start
+export const NUMBER_OF_DAYS_TO_SHOW = 40
 const CHART_HEIGHT = 220
 
 interface ChartParams<T = { date: number; vol?: number }[]> {

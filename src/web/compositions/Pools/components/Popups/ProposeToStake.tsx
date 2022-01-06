@@ -1,7 +1,10 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
-import { stripByAmount } from '@core/utils/chartPageUtils'
 import { Paper, Theme, withTheme } from '@material-ui/core'
+import { COLORS } from '@variables/variables'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { compose } from 'recompose'
+import styled from 'styled-components'
+
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Button } from '@sb/components/Button'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
@@ -17,11 +20,10 @@ import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFa
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { COLORS } from '@variables/variables'
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { compose } from 'recompose'
-import styled from 'styled-components'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 
 export const StyledPaper = styled(Paper)`
   border-radius: 1.5rem;
@@ -99,7 +101,7 @@ const ProposeToStakePopup = ({
       </RowContainer>
       <RowContainer justify="space-between" style={{ margin: '3rem 0' }}>
         <WhiteText theme={theme}>Current APR:</WhiteText>
-        <Number>{stripByAmount(apr, 2)}%</Number>
+        <Number>{apr > 1 ? stripByAmount(apr, 2) : '< 1'}%</Number>
       </RowContainer>
       <RowContainer justify="space-between" style={{ margin: '2rem 0' }}>
         <Button

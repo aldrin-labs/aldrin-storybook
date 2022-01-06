@@ -1,10 +1,14 @@
-import Loop from '@icons/loop.svg'
+import React from 'react'
+
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 // import { Text } from '@sb/compositions/Addressƒbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import React from 'react'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+
+import Loop from '@icons/loop.svg'
+
 import {
   IconsContainer,
   PoolName,
@@ -57,6 +61,14 @@ export const TokenIconsContainer: React.FC<TokenIconContainerProps> = (
   props
 ) => {
   const { tokenA, tokenB, children } = props
+  const tokenMap = useTokenInfos()
+
+  const baseInfo = tokenMap.get(tokenA)
+  const quoteInfo = tokenMap.get(tokenB)
+
+  const base = baseInfo?.symbol || getTokenNameByMintAddress(tokenA)
+  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(tokenB)
+
   return (
     <Row wrap="nowrap" justify="end">
       <IconsContainer>
@@ -73,8 +85,7 @@ export const TokenIconsContainer: React.FC<TokenIconContainerProps> = (
       </IconsContainer>
       <div style={{ marginLeft: '2rem' }}>
         <PoolName size="sm" color="white">
-          {getTokenNameByMintAddress(tokenA)}/
-          {getTokenNameByMintAddress(tokenB)}
+          {base} / {quote}
         </PoolName>
         {children}
       </div>

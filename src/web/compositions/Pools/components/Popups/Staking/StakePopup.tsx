@@ -1,10 +1,8 @@
-import { estimatedTime } from '@core/utils/dateUtils'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
-import Close from '@icons/closeIcon.svg'
 import { Theme, withTheme } from '@material-ui/core'
+import { PublicKey } from '@solana/web3.js'
+import dayjs from 'dayjs'
+import React, { useState } from 'react'
+
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -19,22 +17,30 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { startStaking } from '@sb/dexUtils/common/actions'
 import {
   CREATE_FARMING_TICKET_SOL_FEE,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
 } from '@sb/dexUtils/common/config'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { useConnection, useMultiEndpointConnection } from '@sb/dexUtils/connection'
+import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { startFarming } from '@sb/dexUtils/pools/actions/startFarming'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
-import dayjs from 'dayjs'
-import React, { useState } from 'react'
+
+import { estimatedTime } from '@core/utils/dateUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+
+import Close from '@icons/closeIcon.svg'
+
 import { Button } from '../../Tables/index.styles'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { InputWithCoins } from '../components'
@@ -133,7 +139,9 @@ const Popup = (props: StakePopupProps) => {
 
   const farmingTokens = [
     ...new Set(
-      selectedPool.farming.map((farmingState) => farmingState.farmingTokenMint)
+      (selectedPool.farming || []).map(
+        ({ farmingTokenMint }) => farmingTokenMint
+      )
     ),
   ]
     .map((farmingTokenMint, i, arr) => {
@@ -280,14 +288,17 @@ const Popup = (props: StakePopupProps) => {
             const poolTokenAmountWithDecimals =
               +poolTokenAmount * 10 ** poolTokenDecimals
 
-            const result = await startFarming({
+            const result = await startStaking({
               wallet,
               connection,
-              poolTokenAmount: poolTokenAmountWithDecimals,
+              amount: poolTokenAmountWithDecimals,
+              stakingPool: selectedPool,
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
-              poolPublicKey: new PublicKey(selectedPool.swapToken),
-              farmingState: new PublicKey(farmingState.farmingState),
-              curveType: selectedPool.curveType,
+              programAddress: getPoolsProgramAddress({
+                curveType: selectedPool.curveType,
+              }),
+              farmingTickets,
+              decimals: POOL_TOKENS_MINT_DECIMALS,
             })
 
             setOperationLoading(false)
@@ -309,13 +320,8 @@ const Popup = (props: StakePopupProps) => {
               })
 
             if (result === 'success') {
-              setTimeout(async () => {
-                refreshTokensWithFarmingTickets()
-                clearPoolWaitingForUpdate()
-              }, 7500)
-
-              // if not updated value returned after first refresh
-              setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+              refreshTokensWithFarmingTickets()
+              clearPoolWaitingForUpdate()
             } else {
               clearPoolWaitingForUpdate()
             }
