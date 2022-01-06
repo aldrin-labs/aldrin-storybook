@@ -38,8 +38,8 @@ export const getSwapTransaction = async ({
   poolPublicKey: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
-  swapAmountIn: number
-  swapAmountOut: number
+  swapAmountIn: BN
+  swapAmountOut: BN
   isSwapBaseToQuote: boolean
   transferSOLToWrapped: boolean
   unwrapWrappedSOL?: boolean
@@ -87,7 +87,7 @@ export const getSwapTransaction = async ({
       const result = await transferSOLToWrappedAccountAndClose({
         wallet,
         connection,
-        amount: swapAmountIn,
+        amount: parseFloat(swapAmountIn.toString()),
       })
 
       const [
@@ -163,8 +163,8 @@ export const getSwapTransaction = async ({
 
   try {
     const swapTransaction = await program.instruction.swap(
-      new BN(swapAmountIn),
-      new BN(swapAmountOut),
+      swapAmountIn,
+      swapAmountOut,
       isSwapBaseToQuote ? Side.Ask : Side.Bid,
       {
         accounts: {
@@ -215,8 +215,8 @@ export const swap = async ({
   poolPublicKey: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
-  swapAmountIn: number
-  swapAmountOut: number
+  swapAmountIn: BN
+  swapAmountOut: BN
   isSwapBaseToQuote: boolean
   transferSOLToWrapped: boolean
   curveType: number | null
@@ -252,11 +252,10 @@ export const swap = async ({
     if (!isTransactionFailed(tx)) {
       return 'success'
     }
+
+    return tx
   } catch (e) {
     console.log('swap catch error', e)
-    if (e.message.includes('cancelled')) {
-      return 'cancelled'
-    }
   }
 
   return 'failed'

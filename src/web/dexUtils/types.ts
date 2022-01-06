@@ -105,7 +105,7 @@ export interface AmendOrderParams {
 
 export interface SendTransactionParams extends SendSignedTransactionParams {
   wallet: WalletAdapter
-  signers: (Keypair | Account)[]
+  signers: (Keypair | Account | Signer)[]
   focusPopup?: boolean
 }
 

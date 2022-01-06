@@ -125,19 +125,16 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     refreshCalcAccounts()
   }
 
-  const dexTokensPricesMap = getDexTokensPrices.reduce(
-    (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
-    new Map<string, DexTokensPrices>()
+  const dexTokensPricesMap = toMap(
+    getDexTokensPrices,
+    (tokenPrice) => tokenPrice.symbol
   )
 
-  const feesByPoolMap = getFeesEarnedByPool.reduce(
-    (acc, fees) => acc.set(fees.pool, fees),
-    new Map<string, FeesEarned>()
-  )
+  const feesByPoolMap = toMap(getFeesEarnedByPool, (fees) => fees.pool.trim())
 
-  const earnedFeesInPoolForUserMap = getFeesEarnedByAccount.reduce(
-    (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned),
-    new Map<string, FeesEarned>()
+  const earnedFeesInPoolForUserMap = toMap(
+    getFeesEarnedByAccount,
+    (feesEarned) => feesEarned.pool.trim()
   )
 
   const [vestings] = useVestings()
@@ -171,10 +168,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools ||
     []
 
-  const tradingVolumesMap = tradingVolumes.reduce(
-    (acc, tv) => acc.set(tv.pool, tv),
-    new Map<string, TradingVolumeStats>()
-  )
+  const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
   const calculate = async () => {
     const instructions = await Promise.all(

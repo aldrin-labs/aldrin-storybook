@@ -6,6 +6,8 @@ export type PoolInfo = {
   tokenA: string
   tokenB: string
   curveType: number
+  tokenADecimals: number
+  tokenBDecimals: number
   poolTokenAccountA: string
   poolTokenAccountB: string
   initializerAccount: string
@@ -20,6 +22,16 @@ export type PoolInfo = {
   }
   apy24h: number // %
   supply: number
+  curve?: string
+  amp?: number
+  fees: PoolFees
+}
+
+export type PoolFees = {
+  tradeFeeNumerator: number
+  ownerTradeFeeNumerator: number
+  tradeFeeDenominator: number
+  ownerTradeFeeDenominator: number
 }
 
 export type DexTokensPrices = {

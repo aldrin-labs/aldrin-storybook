@@ -23,7 +23,7 @@ export const signAndSendTransactions = async (
       focusPopup
     )
 
-    return sendSignedTransactions(signedTransactions, connection, {
+    return await sendSignedTransactions(signedTransactions, connection, {
       sentMessage,
       successMessage,
       commitment,
@@ -32,7 +32,7 @@ export const signAndSendTransactions = async (
     console.warn('Error sign or send transactions:', e)
     if (e instanceof Error) {
       const errorText = e.message
-      if (errorText.includes('rejected')) {
+      if (errorText.includes('rejected') || errorText.includes('cancelled')) {
         return 'cancelled'
       }
     }

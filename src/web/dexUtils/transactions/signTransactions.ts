@@ -29,11 +29,15 @@ export const signTransactions = async (
     return transaction
   })
 
-  const signedTransacitons = await wallet.signAllTransactions(
-    processedTransactions,
-    focusPopup
-  )
-  // Return focus
-  window.focus()
-  return signedTransacitons
+  try {
+    const signedTransacitons = await wallet.signAllTransactions(
+      processedTransactions,
+      focusPopup
+    )
+    // Return focus
+    window.focus()
+    return signedTransacitons
+  } catch (e) {
+    throw new Error(e)
+  }
 }
