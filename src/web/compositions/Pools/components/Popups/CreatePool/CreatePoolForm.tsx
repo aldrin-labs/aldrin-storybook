@@ -131,7 +131,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const form = useFormik<CreatePoolFormType>({
     validateOnMount: true,
     initialValues: {
-      price: '1',
+      price: '',
       baseToken: tokens[0],
       quoteToken: findQuoteToken(tokens),
       stableCurve: false,
