@@ -18,6 +18,10 @@ import { createTokenAccountTransaction, isTransactionFailed } from '../../send'
 import { Token } from '../../token/token'
 import { signAndSendSingleTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
+import {
+  POOLS_LIQUIDITY_SLIPPAGE_DENOMINATOR,
+  POOLS_LIQUIDITY_SLIPPAGE_NUMERATOR,
+} from '../config'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -77,9 +81,9 @@ async function createBasketTransaction(
     ? new BN(1 * 10 ** 8)
     : supply
         .mul(new BN(userBaseTokenAmount))
+        .muln(POOLS_LIQUIDITY_SLIPPAGE_NUMERATOR)
         .div(poolTokenAmountA)
-        .muln(99)
-        .divn(100)
+        .divn(POOLS_LIQUIDITY_SLIPPAGE_DENOMINATOR)
 
   const transactionBeforeDeposit = new Transaction()
   const commonSigners: Account[] = []

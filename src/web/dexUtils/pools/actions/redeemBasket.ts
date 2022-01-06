@@ -1,5 +1,8 @@
 import { TokenInstructions } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import { PublicKey, SYSVAR_CLOCK_PUBKEY, Transaction } from '@solana/web3.js'
+import BN from 'bn.js'
+
 import { isCancelledTransactionError } from '@sb/dexUtils/common/isCancelledTransactionError'
 import {
   createSOLAccountAndClose,
@@ -10,12 +13,14 @@ import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '@sb/dexUtils/send'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { PublicKey, SYSVAR_CLOCK_PUBKEY, Transaction } from '@solana/web3.js'
-import BN from 'bn.js'
-import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 
+import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { VestingWithPk } from '../../vesting/types'
 import { withrawVestingInstruction } from '../../vesting/withdrawVesting'
+import {
+  POOLS_LIQUIDITY_SLIPPAGE_DENOMINATOR,
+  POOLS_LIQUIDITY_SLIPPAGE_NUMERATOR,
+} from '../config'
 
 const { TOKEN_PROGRAM_ID } = TokenInstructions
 
@@ -87,8 +92,13 @@ export async function redeemBasket(params: {
       poolTokenAmount: userPoolTokenAmount,
     })
 
-  baseTokenAmountToWithdraw = baseTokenAmountToWithdraw.divn(1000).muln(997)
-  quoteTokenAmountToWithdraw = quoteTokenAmountToWithdraw.divn(1000).muln(997)
+  baseTokenAmountToWithdraw = baseTokenAmountToWithdraw
+    .muln(POOLS_LIQUIDITY_SLIPPAGE_NUMERATOR)
+    .divn(POOLS_LIQUIDITY_SLIPPAGE_DENOMINATOR)
+
+  quoteTokenAmountToWithdraw = quoteTokenAmountToWithdraw
+    .muln(POOLS_LIQUIDITY_SLIPPAGE_NUMERATOR)
+    .divn(POOLS_LIQUIDITY_SLIPPAGE_DENOMINATOR)
 
   const commonSigners = []
   const transactionBeforeWithdraw = new Transaction()

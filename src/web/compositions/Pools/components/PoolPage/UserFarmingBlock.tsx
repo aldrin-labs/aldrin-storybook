@@ -12,6 +12,7 @@ import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getSt
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { UNLOCK_STAKED_AFTER } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
+import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { uniq } from '@sb/utils/collection'
 
@@ -87,6 +88,8 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const [farmingExtending, setFarmingExtending] = useState(false)
   const [extendFarmingModalOpen, setExtendFarmingModalOpen] = useState(false)
 
+  const { data: calcAccounts } = useFarmingCalcAccounts()
+
   const farmings = filterOpenFarmingStates(pool.farming || [])
   const hasFarming = farmings.length > 0
   const hadFarming = (pool.farming || []).length > 0
@@ -122,6 +125,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const availableToClaimMap = getUniqueAmountsToClaimMap({
     farmingTickets: ticketsForPool,
     farmingStates: pool.farming || [],
+    calcAccounts,
   })
 
   const hasUnstaked = poolTokenAmount > 0

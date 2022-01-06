@@ -1,6 +1,8 @@
 import { AccountInfo, PublicKey, Transaction, Signer } from '@solana/web3.js'
 import BN from 'bn.js'
 
+import { u64 } from '../token/token'
+
 export type FarmingTicket = {
   tokensFrozen: number
   endTime: string
@@ -105,4 +107,12 @@ export interface PoolV2 extends Pool {
 export type TransactionAndSigner = {
   transaction: Transaction
   signers?: Signer[]
+}
+
+export interface FarmingCalc {
+  farmingState: PublicKey
+  userKey: PublicKey
+  initializer: PublicKey
+  publicKey: PublicKey
+  tokenAmount: u64
 }

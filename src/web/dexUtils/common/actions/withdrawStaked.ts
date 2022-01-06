@@ -8,50 +8,28 @@ import {
 } from '@solana/web3.js'
 
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 
-import { PoolInfo } from '../../compositions/Pools/index.types'
-import { splitBy } from '../../utils/collection'
+import { splitBy } from '../../../utils/collection'
+import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { STAKING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
+import { createTokenAccountTransaction } from '../../send'
+import { findTokenAccount } from '../../token/utils/findTokenAccount'
+import { mergeTransactions, signAndSendTransactions } from '../../transactions'
 import {
   DEFAULT_FARMING_TICKET_END_TIME,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
-} from '../common/config'
-import { FarmingTicket, SnapshotQueue } from '../common/types'
-import MultiEndpointsConnection from '../MultiEndpointsConnection'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { createTokenAccountTransaction } from '../send'
-import { findTokenAccount } from '../token/utils/findTokenAccount'
-import {
-  mergeTransactions,
-  signAndSendSingleTransaction,
-  signAndSendTransactions,
-} from '../transactions'
-import { WalletAdapter } from '../types'
-import { getCalcAccounts } from './getCalcAccountsForWallet'
-import { StakingPool } from './types'
+} from '../config'
+import { getCalcAccounts } from '../getCalcAccountsForWallet'
+import { WithdrawStakedParams } from './types'
 
-export interface WithdrawFarmedParams {
-  wallet: WalletAdapter
-  connection: MultiEndpointsConnection
-  allTokensData: TokenInfo[]
-  farmingTickets: FarmingTicket[]
-  pool: StakingPool | PoolInfo
-  programAddress?: string
-  snapshotQueues: SnapshotQueue[]
-  signAllTransactions: boolean // Ledger compability
-}
-
-export const withdrawStaked = async (params: WithdrawFarmedParams) => {
+export const withdrawStaked = async (params: WithdrawStakedParams) => {
   const {
     wallet,
     connection,
     allTokensData,
     farmingTickets,
-    snapshotQueues,
-    pool,
+    stakingPool,
     programAddress = STAKING_PROGRAM_ADDRESS,
-    signAllTransactions,
   } = params
 
   if (!wallet.publicKey) {
@@ -66,7 +44,7 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
     programAddress,
   })
 
-  const { swapToken } = pool
+  const { swapToken } = stakingPool
   const poolPublicKey = new PublicKey(swapToken)
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
@@ -88,7 +66,7 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
   const tokenAccountsToCreate = new Set<string>()
   // Check token accounts for rewards
   await Promise.all(
-    (pool.farming || []).map(async (farming) => {
+    (stakingPool.farming || []).map(async (farming) => {
       const amountToClaim = ticketsToCalc.reduce((acc1, ft) => {
         const toClaim =
           ft.amountsToClaim.find(
@@ -122,7 +100,7 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
 
   const tokenAccountsWithCalcs = calcAccounts.reduce((acc, ca) => {
     if (ca.tokenAmount.gtn(0)) {
-      const farming = (pool.farming || []).find(
+      const farming = (stakingPool.farming || []).find(
         (fs) => fs.farmingState === ca.farmingState.toBase58()
       )
       if (farming) {
@@ -271,7 +249,7 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
   const withdrawTransactions = await Promise.all(
     splitBy(calcAccounts, 4).map(async (calcAccountChunck) => {
       const calcs = calcAccountChunck.map(async (calcAccount) => {
-        const fs = (pool.farming || []).find(
+        const fs = (stakingPool.farming || []).find(
           (farming) =>
             farming.farmingState === calcAccount.farmingState.toBase58()
         )
@@ -320,20 +298,20 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
               )
             )
 
-            if (!ticket) {
-              throw new Error('no ticket!')
+            if (ticket) {
+              tx.add(
+                await program.instruction.closeFarmingCalc({
+                  accounts: {
+                    farmingCalc: calcAccount.publicKey,
+                    farmingTicket: new PublicKey(ticket.farmingTicket),
+                    signer: creatorPk,
+                    initializer: calcAccount.initializer,
+                  },
+                })
+              )
+            } else {
+              console.warn('No tickets found for calc:', calcAccount)
             }
-
-            tx.add(
-              await program.instruction.closeFarmingCalc({
-                accounts: {
-                  farmingCalc: calcAccount.publicKey,
-                  farmingTicket: new PublicKey(ticket.farmingTicket),
-                  signer: creatorPk,
-                  initializer: calcAccount.initializer,
-                },
-              })
-            )
           }
 
           return tx
@@ -368,34 +346,11 @@ export const withdrawStaked = async (params: WithdrawFarmedParams) => {
     allTransactions[0] = { transaction: newFirstTx, signers: [] }
   }
 
-  if (signAllTransactions) {
-    // Process transactions with software wallets
-    return signAndSendTransactions({
-      wallet,
-      connection,
-      transactionsAndSigners: allTransactions
-        .filter(({ transaction }) => transaction.instructions.length > 0)
-        .map(({ transaction, signers = [] }) => ({ transaction, signers })),
-    })
-  }
-
-  // Process ledger transactions
-  for (let i = 0; i < allTransactions.length; i += 1) {
-    // eslint-disable-next-line no-await-in-loop
-    const result = await signAndSendSingleTransaction({
-      wallet,
-      connection,
-      transaction: allTransactions[i].transaction,
-      signers: allTransactions[i].signers || [],
-    })
-
-    if (result === 'timeout') {
-      return 'timeout'
-    }
-    if (result === 'failed') {
-      return 'failed'
-    }
-  }
-
-  return 'success'
+  return signAndSendTransactions({
+    wallet,
+    connection,
+    transactionsAndSigners: allTransactions
+      .filter(({ transaction }) => transaction.instructions.length > 0)
+      .map(({ transaction, signers = [] }) => ({ transaction, signers })),
+  })
 }

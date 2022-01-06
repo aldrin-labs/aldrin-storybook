@@ -1,13 +1,14 @@
+import dayjs from 'dayjs'
 import React from 'react'
 
-import dayjs from 'dayjs'
 
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { getTokenDataByMint } from '../../utils'
 import {
   LiquidityBlock,
   LiquidityButton,
@@ -15,7 +16,6 @@ import {
   LiquidityText,
   LiquidityTitle,
 } from './styles'
-import { getTokenDataByMint } from '../../utils'
 import { UserLiquidityBlockProps } from './types'
 
 export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (

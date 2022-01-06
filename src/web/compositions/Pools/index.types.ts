@@ -13,7 +13,8 @@ export type PoolInfo = {
   initializerAccount: string
   swapToken: string
   poolTokenMint: string
-  lpTokenFreezeVaultBalance: number;
+  lpTokenFreezeVaultBalance: number
+  lpTokenFreezeVault: string
   farming: FarmingState[] | null
   tvl: {
     tokenA: number
@@ -60,7 +61,6 @@ export type PoolWithOperation = {
   pool: string
   operation: 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'claim' | ''
 }
-
 
 export type TokenPricesMap = Map<string, DexTokensPrices>
 export type FeesMap = Map<string, FeesEarned>

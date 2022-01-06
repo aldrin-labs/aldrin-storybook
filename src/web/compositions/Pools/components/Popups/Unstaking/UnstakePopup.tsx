@@ -1,30 +1,30 @@
+import { Theme, withTheme } from '@material-ui/core'
+import { PublicKey } from '@solana/web3.js'
+import { COLORS } from '@variables/variables'
+import dayjs from 'dayjs'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme, withTheme } from '@material-ui/core'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
-
 import SvgIcon from '@sb/components/SvgIcon'
-import Close from '@icons/closeIcon.svg'
-
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
-import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
-
-import { endFarming } from '@sb/dexUtils/pools/actions/endFarming'
-import { PublicKey } from '@solana/web3.js'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { useConnection } from '@sb/dexUtils/connection'
-import { notify } from '@sb/dexUtils/notifications'
-import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
-import { COLORS } from '@variables/variables'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { endStaking } from '@sb/dexUtils/common/actions'
 import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
-import dayjs from 'dayjs'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { useConnection } from '@sb/dexUtils/connection'
+import { notify } from '@sb/dexUtils/notifications'
 import { UNLOCK_STAKED_AFTER } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
+import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
+import { useWallet } from '@sb/dexUtils/wallet'
+
+import Close from '@icons/closeIcon.svg'
+
 import { Button } from '../../Tables/index.styles'
 import { BoldHeader, StyledPaper } from '../index.styles'
 
@@ -144,18 +144,17 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
                   operation: 'unstake',
                 })
 
-                const result = await endFarming({
+                const result = await endStaking({
                   wallet,
-                  connection,
-                  poolPublicKey: new PublicKey(selectedPool.swapToken),
                   userPoolTokenAccount: userPoolTokenAccount
                     ? new PublicKey(userPoolTokenAccount)
-                    : null,
-                  snapshotQueuePublicKey: new PublicKey(
-                    farmingState.farmingSnapshots
-                  ),
-                  curveType: selectedPool.curveType,
-                  farmingState,
+                    : undefined,
+                  stakingPool: selectedPool,
+                  farmingTickets,
+                  programAddress: getPoolsProgramAddress({
+                    curveType: selectedPool.curveType,
+                  }),
+                  connection,
                 })
 
                 setOperationLoading(false)
@@ -177,12 +176,9 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
                   })
 
                 if (result === 'success') {
-                  setTimeout(async () => {
-                    refreshTokensWithFarmingTickets()
-                    clearPoolWaitingForUpdate()
-                    close()
-                  }, 7500)
-                  setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+                  refreshTokensWithFarmingTickets()
+                  clearPoolWaitingForUpdate()
+                  close()
                 } else {
                   clearPoolWaitingForUpdate()
                   close()

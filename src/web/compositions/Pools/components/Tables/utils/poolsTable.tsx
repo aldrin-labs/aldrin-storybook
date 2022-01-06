@@ -1,3 +1,4 @@
+import { TokenInfo } from '@solana/spl-token-registry'
 import { BN } from 'bn.js'
 import dayjs from 'dayjs'
 import React from 'react'
@@ -13,6 +14,7 @@ import { FlexBlock } from '@sb/components/Layout'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText, Text } from '@sb/components/Typography'
 import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
+import { FarmingCalc } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
@@ -51,6 +53,8 @@ export const preparePoolTableCell = (params: {
   walletPk: string
   vestings: Map<string, Vesting>
   farmingTicketsMap: FarmingTicketsMap
+  calcAccounts?: Map<string, FarmingCalc>
+  tokenMap: Map<string, TokenInfo>
 }): DataCellValues<PoolInfo> => {
   const {
     pool,
@@ -58,10 +62,19 @@ export const preparePoolTableCell = (params: {
     prepareMore,
     walletPk,
     vestings,
+    calcAccounts = new Map<string, FarmingCalc>(),
     farmingTicketsMap,
+    tokenMap,
   } = params
+
+  const baseInfo = tokenMap.get(pool.tokenA)
+  const quoteInfo = tokenMap.get(pool.tokenB)
+
   const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
+
+  const baseName = baseInfo?.symbol || baseSymbol
+  const quoteName = quoteInfo?.symbol || quoteSymbol
 
   const baseTokenPrice = tokenPrices.get(baseSymbol)?.price || 0
   const quoteTokenPrice = tokenPrices.get(quoteSymbol)?.price || 0
@@ -114,6 +127,7 @@ export const preparePoolTableCell = (params: {
   const availableToClaimMap = getUniqueAmountsToClaimMap({
     farmingTickets: ticketsForPool,
     farmingStates: pool.farming || [],
+    calcAccounts,
   })
 
   const availableToClaim = Array.from(availableToClaimMap.values()).map(
@@ -190,11 +204,11 @@ export const preparePoolTableCell = (params: {
         rendered: (
           <>
             <Text size="sm">
-              {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD)}` : '-'}
+              {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD, 4)}` : '-'}
             </Text>
             <Text size="sm" margin="10px 0" color="hint">
-              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseSymbol} /{' '}
-              {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteSymbol}
+              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseName} /{' '}
+              {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteName}
             </Text>
           </>
         ),
@@ -203,14 +217,14 @@ export const preparePoolTableCell = (params: {
         rawValue: farmingAPR,
         rendered: (
           <Text color="success" size="sm" weight={700}>
-            {farmingAPR > 0 ? `${stripByAmount(farmingAPR, 2)}%` : '-'}
+            {farmingAPR >= 1 ? `${stripByAmount(farmingAPR, 2)}%` : '< 1%'}
           </Text>
         ),
       },
       farming: {
         rendered: (
           <FlexBlock alignItems="center">
-            {userInFarming ? (
+            {userInFarming && walletPk !== pool.initializerAccount ? (
               <>
                 <FarmingRewardsIcons
                   poolMint={pool.swapToken}
