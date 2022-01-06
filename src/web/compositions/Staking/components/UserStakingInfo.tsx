@@ -141,10 +141,6 @@ const resolveClaimNotification = (
   return 'Operation timeout, please claim rest rewards in a few seconds.'
 }
 
-// const walletPublicKey = new PublicKey(
-//   '5FbM2CWzq33t1gMaYdxYvm4xVjh39nV8KfgdSt5L2ktH'
-// )
-
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
     tokenData,

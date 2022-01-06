@@ -15,16 +15,12 @@ import {
   TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
-import { calculateStaked } from '@sb/dexUtils/common/actions/calculateStaked'
-import { FarmingCalc } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { CURVE } from '@sb/dexUtils/pools/types'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { useVestings } from '@sb/dexUtils/vesting'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { toMap } from '@sb/utils'
@@ -169,34 +165,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     []
 
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
-
-  const calculate = async () => {
-    const instructions = await Promise.all(
-      pools.map(async (p) => {
-        const tickets = farmingTicketsMap.get(p.swapToken) || []
-        const calcs = (p.farming || [])
-          .map((f) => calcAccounts?.get(f.farmingState) || null)
-          .filter((_): _ is FarmingCalc => !!_)
-        return calculateStaked(
-          tickets,
-          p,
-          snapshotQueues,
-          calcs,
-          getPoolsProgramAddress({ curveType: p.curveType }),
-          wallet,
-          connection
-        )
-      })
-    )
-
-    const transactionsAndSigners = instructions.flat(3)
-
-    await signAndSendTransactions({
-      transactionsAndSigners,
-      wallet,
-      connection,
-    })
-  }
 
   return (
     <>

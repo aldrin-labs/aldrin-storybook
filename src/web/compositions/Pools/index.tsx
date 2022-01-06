@@ -21,8 +21,8 @@ export const PoolsComponent: React.FC = () => {
     <Page>
       <WideContent>
         <WaningBanner bannerId="calcAccountsCreating">
-          Technical work is underway, available to claim rewards may not be
-          displayed correctly.
+          Under maintenance, available to claim rewards may not be displayed
+          correctly.
         </WaningBanner>
         <RootRow>
           <Cell col={12} colLg={6}>
