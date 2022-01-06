@@ -15,10 +15,7 @@ import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { InlineText } from '@sb/components/Typography'
-import {
-  useConnection,
-  useMultiEndpointConnection,
-} from '@sb/dexUtils/connection'
+import { useConnection } from '@sb/dexUtils/connection'
 import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
@@ -419,6 +416,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       const newQuoteAmount = parseFloat(value) * userDefinedPrice
       if (newQuoteAmount) {
         form.setFieldValue('firstDeposit.quoteTokenAmount', newQuoteAmount)
+        form.setTouched({ firstDeposit: { quoteTokenAmount: true } })
       }
     } else {
       const newPrice =
@@ -440,6 +438,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       const newBaseAmount = parseFloat(value) / userDefinedPrice
       if (newBaseAmount) {
         form.setFieldValue('firstDeposit.baseTokenAmount', newBaseAmount)
+        form.setTouched({ firstDeposit: { baseTokenAmount: true } })
       }
     } else {
       const newPrice =
