@@ -1,6 +1,6 @@
+import { BORDER_RADIUS, COLORS } from '@variables/variables'
 import styled from 'styled-components'
 
-import { BORDER_RADIUS, COLORS } from '../../../variables/variables'
 import { Text } from '../Typography'
 
 export const BannerContainer = styled.div`
