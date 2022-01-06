@@ -141,6 +141,8 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     0
   )
 
+  const haveTokensToClaim = !!availableToClaim.find((atc) => atc.amount > 0)
+
   const onExtendSuccess = async () => {
     setFarmingExtending(true)
     const totalFarmings = (pool.farming || []).length
@@ -374,10 +376,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                   <span>
                     <FarmingButton
                       $variant="rainbow"
-                      disabled={
-                        !availableToClaim.find((atc) => atc.amount > 0) ||
-                        processing
-                      }
+                      disabled={!haveTokensToClaim || processing}
                       $loading={processing}
                       onClick={onClaimClick}
                     >
