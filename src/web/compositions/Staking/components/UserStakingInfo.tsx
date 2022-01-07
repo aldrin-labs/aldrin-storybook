@@ -46,7 +46,7 @@ import {
   BalanceRow,
   BalanceWrap,
   ClaimButtonContainer,
-  Digit,
+  Digit, RestakeWrapper,
   RewardsBlock,
   RewardsStats,
   RewardsStatsRow,
@@ -466,15 +466,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         </Button>
                       </span>
                     </DarkTooltip>
-                    {/* <Button
-                      fontSize="xs"
-                      padding="lg"
-                      variant={isClaimDisabled ? 'disabledLink' : 'link'}
-                      disabled={isClaimDisabled}
-                      onClick={() => setIsClaimRewardsAndRestakePopupOpen(true)}
-                    >
-                      Restake
-                    </Button> */}
+                    <RestakeWrapper>
+                      <Button
+                        fontSize="xs"
+                        padding="lg"
+                        variant={isClaimDisabled ? 'disabledLink' : 'link'}
+                        disabled={isClaimDisabled}
+                        onClick={() => setIsClaimRewardsAndRestakePopupOpen(true)}
+                      >
+                        Restake
+                      </Button>
+                    </RestakeWrapper>
                   </ClaimButtonContainer>
                 </RewardsStats>
               </BlockContent>

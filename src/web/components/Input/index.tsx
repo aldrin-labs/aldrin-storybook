@@ -1,8 +1,9 @@
 import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 
-import { COLORS, BORDER_RADIUS } from '@variables/variables'
+import {COLORS, BORDER_RADIUS, FONT_SIZES, WIDTH} from '@variables/variables'
 import { validateDecimal } from './utils'
+import {Button, ButtonProps} from "@sb/components/Button";
 
 export interface InputProps {
   value?: string
@@ -13,6 +14,14 @@ export interface InputProps {
   size?: number // Input size
   name: string
   className?: string
+  maxButton?: boolean
+  maxButtonOnClick?: () => void
+  halfButton?: boolean,
+  halfButtonOnClick?: () => void
+}
+
+export interface AppendProps {
+  padding?: string
 }
 
 const InputWrap = styled.div`
@@ -38,8 +47,8 @@ const InputEl = styled.input`
   color: ${COLORS.white};
 `
 
-const Append = styled.span`
-  padding: 0 1.5em;
+const Append = styled.span<AppendProps>`
+  padding: ${(props: AppendProps) => props.padding || '0 1.5em'};
   color: ${COLORS.hint};
   font-size: 1em;
 `
@@ -65,7 +74,11 @@ export const Input: React.FC<InputProps> = (props) => {
     size = 8,
     name,
     formatter = INPUT_FORMATTERS.NOP,
-    className = ''
+    className = '',
+    maxButton = false,
+    maxButtonOnClick,
+    halfButton = false,
+    halfButtonOnClick,
   } = props
 
   return (
@@ -77,8 +90,30 @@ export const Input: React.FC<InputProps> = (props) => {
         onChange={(e) => onChange(formatter(e.target.value, value))}
         name={name}
       />
+      {halfButton && <div style={{marginRight: '1rem'}}>
+        <Button
+          minWidth="2rem"
+          fontSize="xs"
+          borderRadius="xxl"
+          onClick={halfButtonOnClick}
+          type="button"
+          variant="utility"
+        >
+          HALF
+        </Button>
+      </div>}
+      {maxButton && <Button
+        minWidth="2rem"
+        fontSize="xs"
+        borderRadius="xxl"
+        onClick={maxButtonOnClick}
+        type="button"
+        variant="utility"
+      >
+        MAX
+      </Button>}
       {append &&
-        <Append>{append}</Append>
+        <Append padding={maxButton ? '0 1.5em 0 0.5em' : ''} >{append}</Append>
       }
     </InputWrap>
   )

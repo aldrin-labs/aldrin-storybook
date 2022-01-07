@@ -48,6 +48,11 @@ const VARIANTS = {
     border-color: ${COLORS.hint};
     cursor: not-allowed;
   `,
+
+  utility: css`
+    background: ${COLORS.hint};
+    border-color: ${COLORS.hint};
+  `,
 }
 
 const PADDINGS = {
@@ -62,13 +67,14 @@ export interface ButtonProps {
   padding?: keyof typeof PADDINGS
   backgroundImage?: string
   width?: keyof typeof WIDTH
+  minWidth?: string
   backgroundColor?: string
 }
 
 export const Button = styled.button<ButtonProps>`
   background-color: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   background: ${(props: ButtonProps) => props.backgroundColor || 'none'};
-  min-width: 9rem;
+  min-width: ${(props: ButtonProps) => props.minWidth || '9rem'};
   color: white;
   text-align: center;
   font-size: ${(props: ButtonProps) => FONT_SIZES[props.fontSize || 'md']};

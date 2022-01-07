@@ -225,8 +225,24 @@ export const FormWrap = styled.form`
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;
 `
+
 export const FormItemFull = styled(FormItem)`
+  display: flex;
   flex: 1;
+  margin-right: 0;
+  margin-top: 16px;
+  &:first-child {
+    margin-top: 0;
+  }
+`
+
+export const InputWrapper = styled.div`
+  flex: 1;
+`
+
+export const ButtonWrapper = styled.div`
+  margin: auto;
+  margin-left: 16px;
 `
 
 export const ChartContainer = styled.div`
@@ -271,4 +287,8 @@ export const ClaimButtonContainer = styled(RewardsStatsRow)`
   @media (min-width: ${BREAKPOINTS.xl}) {
     margin-top: 0;
   }
+`
+
+export const RestakeWrapper = styled.div`
+  margin-top: 1.3rem;
 `
