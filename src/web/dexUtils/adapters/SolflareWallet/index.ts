@@ -1,7 +1,8 @@
-import EventEmitter from 'eventemitter3'
 import { PublicKey, Transaction } from '@solana/web3.js'
-import { WalletAdapter } from '@sb/dexUtils/types'
+import EventEmitter from 'eventemitter3'
+
 import { notify } from '@sb/dexUtils/notifications'
+import { WalletAdapter } from '@sb/dexUtils/types'
 
 type SolflareExtensionEvent = 'disconnect' | 'connect'
 type SolflareExtensionRequestMethod =
@@ -23,8 +24,12 @@ interface SolflareExtensionProvider {
   request: (method: SolflareExtensionRequestMethod, params: any) => Promise<any>
 }
 
-export class SolflareExtensionWalletAdapter extends EventEmitter
-  implements WalletAdapter {
+export class SolflareExtensionWalletAdapter
+  extends EventEmitter
+  implements WalletAdapter
+{
+  private _publicKey: PublicKey | undefined = undefined
+
   constructor() {
     super()
     this.connect = this.connect.bind(this)
@@ -38,10 +43,12 @@ export class SolflareExtensionWalletAdapter extends EventEmitter
   }
 
   private _handleConnect = (...args) => {
+    this._publicKey = this._provider?.publicKey
     this.emit('connect', ...args)
   }
 
   private _handleDisconnect = (...args) => {
+    this._publicKey = undefined
     this._provider?.off('connect', this._handleConnect)
     this._provider?.off('disconnect', this._handleDisconnect)
     this.emit('disconnect', ...args)
@@ -66,7 +73,7 @@ export class SolflareExtensionWalletAdapter extends EventEmitter
   }
 
   get publicKey() {
-    return this._provider?.publicKey
+    return this._publicKey
   }
 
   async signTransaction(transaction: Transaction) {

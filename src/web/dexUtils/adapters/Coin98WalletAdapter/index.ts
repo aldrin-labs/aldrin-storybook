@@ -12,6 +12,7 @@ import {
 } from '@solana/wallet-adapter-base'
 import { PublicKey, Transaction } from '@solana/web3.js'
 import bs58 from 'bs58'
+
 interface SignTransactionResponse {
   signature: string
   publicKey: string
@@ -40,40 +41,51 @@ export interface Coin98WalletAdapterConfig {
   pollInterval?: number
   pollCount?: number
 }
-export class Coin98WalletAdapter extends EventEmitter<WalletAdapterEvents>
-  implements WalletAdapter {
+export class Coin98WalletAdapter
+  extends EventEmitter<WalletAdapterEvents>
+  implements WalletAdapter
+{
   private _connecting: boolean
+
   private _wallet: Coin98SolProvider | null
+
   private _publicKey: PublicKey | null
+
   constructor(config: Coin98WalletAdapterConfig = {}) {
     super()
-    this?._connecting = false
-    this?._wallet = null
-    this?._publicKey = null
-    this?.signTransaction = this?.signTransaction.bind(this)
-    this?.signAllTransactions = this?.signAllTransactions.bind(this)
-    if (!this?.ready)
+    this._connecting = false
+    this._wallet = null
+    this._publicKey = null
+    this.signTransaction = this.signTransaction.bind(this)
+    this.signAllTransactions = this.signAllTransactions.bind(this)
+    if (!this.ready)
       pollUntilReady(this, config.pollInterval || 1000, config.pollCount || 3)
   }
+
   get publicKey(): PublicKey | null {
-    return this?._publicKey
+    return this._publicKey
   }
+
   get ready(): boolean {
     return !!window.coin98
   }
+
   get connecting(): boolean {
-    return this?._connecting
+    return this._connecting
   }
+
   get connected(): boolean {
-    return !!this?._wallet?.isConnected()
+    return !!this._wallet?.isConnected()
   }
+
   get autoApprove(): boolean {
     return false
   }
+
   async connect(): Promise<void> {
     try {
-      if (this?.connected || this?.connecting) return
-      this?._connecting = true
+      if (this.connected || this.connecting) return
+      this._connecting = true
       const wallet = window.coin98?.sol
       if (!wallet) throw new WalletNotFoundError()
       if (!wallet.isCoin98) throw new WalletNotInstalledError()
@@ -90,27 +102,29 @@ export class Coin98WalletAdapter extends EventEmitter<WalletAdapterEvents>
       } catch (error) {
         throw new WalletPublicKeyError(error?.message, error)
       }
-      this?._wallet = wallet
-      this?._publicKey = publicKey
-      this?.emit('connect')
+      this._wallet = wallet
+      this._publicKey = publicKey
+      this.emit('connect')
     } catch (error) {
-      this?.emit('error', error)
+      this.emit('error', error)
       throw error
     } finally {
-      this?._connecting = false
+      this._connecting = false
     }
   }
+
   async disconnect(): Promise<void> {
-    if (this?._wallet) {
-      this?._wallet.disconnect()
-      this?._wallet = null
-      this?._publicKey = null
-      this?.emit('disconnect')
+    if (this._wallet) {
+      this._wallet.disconnect()
+      this._wallet = null
+      this._publicKey = null
+      this.emit('disconnect')
     }
   }
+
   async signTransaction(transaction: Transaction): Promise<Transaction> {
     try {
-      const wallet = this?._wallet
+      const wallet = this._wallet
       if (!wallet) throw new WalletNotConnectedError()
       try {
         const signedTransaction = await wallet.request({
@@ -125,26 +139,18 @@ export class Coin98WalletAdapter extends EventEmitter<WalletAdapterEvents>
         throw new WalletSignatureError(error?.message, error)
       }
     } catch (error) {
-      this?.emit('error', error)
+      this.emit('error', error)
       throw error
     }
   }
+
   async signAllTransactions(
     transactions: Transaction[]
   ): Promise<Transaction[]> {
-    try {
-      const wallet = this?._wallet
-      if (!wallet) throw new WalletNotConnectedError()
-      try {
-        return await Promise.all(
-          transactions.map((transaction) => this?.signTransaction(transaction))
-        )
-      } catch (error) {
-        throw new WalletSignatureError(error?.message, error)
-      }
-    } catch (error) {
-      this?.emit('error', error)
-      throw error
+    const signedTransactions: Transaction[] = []
+    for (const transaction of transactions) {
+      signedTransactions.push(await this.signTransaction(transaction))
     }
+    return signedTransactions
   }
 }

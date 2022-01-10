@@ -1,9 +1,10 @@
-import styled from 'styled-components'
-
-import { Row, StretchedBlock } from '@sb/components/Layout'
-import { Block, BlockSubtitle } from '@sb/components/Block'
 import { BREAKPOINTS, COLORS, BORDER_RADIUS } from '@variables/variables'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+
+import { Block, BlockSubtitle } from '@sb/components/Block'
+import { Row, StretchedBlock, Page } from '@sb/components/Layout'
+
 import { Button } from '../../components/Button'
 
 export const StyledTextDiv = styled.div`
@@ -181,10 +182,16 @@ export const BigNumber = styled.p`
   margin: 10px 0;
   white-space: nowrap;
 `
-export const Number = styled.span`
-  margin: ${(props) => props.margin || '0 10px 0 0'};
+
+interface NumberProps {
+  margin?: string
+  lineHeight?: string
+}
+
+export const Number = styled.span<NumberProps>`
+  margin: ${(props: NumberProps) => props.margin || '0 10px 0 0'};
   font-size: 1.4em;
-  line-height: ${(props) => props.lineHeight || '1.2rem'};
+  line-height: ${(props: NumberProps) => props.lineHeight || '1.2rem'};
   font-weight: bold;
 `
 
@@ -291,4 +298,13 @@ export const ClaimButtonContainer = styled(RewardsStatsRow)`
 
 export const RestakeWrapper = styled.div`
   margin-top: 1.3rem;
+`
+export const UserFormRestakeButton = styled(Button)`
+  margin-top: 10px;
+  padding: 0 10px;
+`
+
+export const CenteredPage = styled(Page)`
+  display: flex;
+  align-items: center;
 `

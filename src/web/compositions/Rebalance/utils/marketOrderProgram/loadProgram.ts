@@ -1,8 +1,11 @@
-import { Connection, PublicKey } from '@solana/web3.js'
 import { Program, Provider } from '@project-serum/anchor'
+import { Connection, PublicKey } from '@solana/web3.js'
+
+import { defaultOptions } from '@sb/dexUtils/ProgramsMultiton'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 const LookupJSON = require('./lookup.json')
+
 const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'
 
@@ -20,10 +23,7 @@ export const loadMarketOrderProgram = ({
   const marketOrderProgram = new Program(
     program_idl,
     marketOrderProgramId,
-    new Provider(connection, wallet, {
-      preflightCommitment: 'recent',
-      commitment: 'recent',
-    })
+    new Provider(connection, wallet, defaultOptions)
   )
 
   return marketOrderProgram

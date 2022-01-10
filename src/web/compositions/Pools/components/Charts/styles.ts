@@ -25,3 +25,8 @@ export const RootRow = styled(Row)`
 export const Canvas = styled.canvas`
   margin-left: -10px;
 `
+
+export const DataContainer = styled.div`
+  height: 220px;
+  position: relative;
+`

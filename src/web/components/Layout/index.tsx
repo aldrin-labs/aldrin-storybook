@@ -1,4 +1,3 @@
-import styled from 'styled-components'
 import {
   LAYOUT_WIDTH,
   COLORS,
@@ -8,6 +7,8 @@ import {
   LAYOUT_COL_NUMBER,
   WIDTH,
 } from '@variables/variables'
+import styled from 'styled-components'
+
 import { RowProps, CellProps, StretchedBlockProps } from './types'
 
 export const Body = styled.div`
@@ -27,6 +28,15 @@ export const PopupBody = styled(Body)`
 export const Page = styled(Body)`
   background: ${COLORS.bodyBackground};
   flex: 1;
+`
+export const StakingPage = styled(Page)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // height: 100%;
+  @media (max-width: ${BREAKPOINTS.lg}) {
+    align-items: flex-start;
+  }
 `
 
 export const Content = styled.div`
@@ -48,7 +58,7 @@ export const WideContent = styled(Content)`
     margin: 0 10px;
   }
   @media (min-width: ${BREAKPOINTS.xxl}) {
-    max-width: 90%;
+    max-width: ${BREAKPOINTS.xxl};
     margin: 0 auto;
   }
 `
@@ -70,7 +80,7 @@ export const Cell = styled.div<CellProps>`
   flex: 0 1 ${(props) => ((props.col || 12) / LAYOUT_COL_NUMBER) * 100}%;
   ${(props) =>
     props.colSm
-      ? `@media(min-width:${BREAKPOINTS.sm}) { 
+      ? `@media(min-width:${BREAKPOINTS.sm}) {
           flex: 0 1 ${(props.colSm / LAYOUT_COL_NUMBER) * 100}%;
           max-width: ${(props.colSm / LAYOUT_COL_NUMBER) * 100}%;
         }`
@@ -78,15 +88,15 @@ export const Cell = styled.div<CellProps>`
 
   ${(props) =>
     props.colMd
-      ? `@media(min-width:${BREAKPOINTS.md}) { 
+      ? `@media(min-width:${BREAKPOINTS.md}) {
           flex: 0 1 ${(props.colMd / LAYOUT_COL_NUMBER) * 100}%;
-          max-width: ${(props.colMd / LAYOUT_COL_NUMBER) * 100}%; 
+          max-width: ${(props.colMd / LAYOUT_COL_NUMBER) * 100}%;
         }`
       : ''}
 
   ${(props) =>
     props.colLg
-      ? `@media(min-width:${BREAKPOINTS.lg}) { 
+      ? `@media(min-width:${BREAKPOINTS.lg}) {
           flex: 0 1 ${(props.colLg / LAYOUT_COL_NUMBER) * 100}%;
           max-width: ${(props.colLg / LAYOUT_COL_NUMBER) * 100}%;
         }`
@@ -94,8 +104,8 @@ export const Cell = styled.div<CellProps>`
 
   ${(props) =>
     props.colXl
-      ? `@media(min-width:${BREAKPOINTS.xl}) { 
-          flex: 0 1 ${(props.colXl / LAYOUT_COL_NUMBER) * 100}%;  
+      ? `@media(min-width:${BREAKPOINTS.xl}) {
+          flex: 0 1 ${(props.colXl / LAYOUT_COL_NUMBER) * 100}%;
           max-width: ${(props.colXl / LAYOUT_COL_NUMBER) * 100}%;
         }`
       : ''}
@@ -114,4 +124,32 @@ export const StretchedBlock = styled.div<StretchedBlockProps>`
 `
 export const LeftBlock = styled(StretchedBlock)`
   justify-content: flex-start;
+`
+
+type Alignment =
+  | 'normal'
+  | 'center'
+  | 'flex-start'
+  | 'end'
+  | 'flex-start'
+  | 'flex-end'
+  | 'left'
+  | 'right'
+  | 'space-between'
+
+export interface FlexBlockProps {
+  direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse'
+  justifyContent?: Alignment
+  alignItems?: Alignment
+}
+
+export const Flex = styled.div`
+  display: flex;
+`
+
+export const FlexBlock = styled(Flex)<FlexBlockProps>`
+  flex-direction: ${(props: FlexBlockProps) => props.direction || 'row'};
+  justify-content: ${(props: FlexBlockProps) =>
+    props.justifyContent || 'normal'};
+  align-items: ${(props: FlexBlockProps) => props.alignItems || 'normal'};
 `

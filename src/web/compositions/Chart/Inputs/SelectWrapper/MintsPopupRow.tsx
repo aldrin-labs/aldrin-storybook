@@ -6,11 +6,11 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { TextArea } from './SelectWrapperStyles'
-import LinkToSolanaExp from '../../components/LinkToSolanaExp'
 import SvgIcon from '@sb/components/SvgIcon'
 
 import CopyIcon from '@icons/copyIcon.svg'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import { SolExplorerLink } from '@sb/components/TokenExternalLinks'
 
 export const MarketAddressWithLabel = ({ marketAddress }) => {
   return (
@@ -24,7 +24,7 @@ export const MarketAddressWithLabel = ({ marketAddress }) => {
       <RowContainer justify={'space-between'}>
         <TextArea>{marketAddress}</TextArea>
         <Row width={'12%'} justify={'space-between'}>
-          <LinkToSolanaExp marketAddress={marketAddress} />
+          <SolExplorerLink mint={marketAddress} />
           <SvgIcon
             style={{ cursor: 'pointer' }}
             src={CopyIcon}
@@ -53,7 +53,7 @@ export const CoinAddressWithLabel = ({ symbol }) => {
       <RowContainer justify={'space-between'}>
         <TextArea>{getTokenMintAddressByName(symbol)}</TextArea>
         <Row width={'12%'} justify={'space-between'}>
-          <LinkToSolanaExp marketAddress={getTokenMintAddressByName(symbol)} />
+          <SolExplorerLink mint={getTokenMintAddressByName(symbol)} />
           <SvgIcon
             style={{ cursor: 'pointer' }}
             src={CopyIcon}

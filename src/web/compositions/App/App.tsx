@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core/styles'
 import { Header } from '@sb/components/Header'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
-import WarningBanner from '@sb/components/WarningPopup/warningPopupsWrapper'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
@@ -75,7 +74,7 @@ if (currentVersion !== version) {
 }
 
 const DetermineMobileWindowHeight = () => {
-  const { width, height } = useWindowSize()
+  const { height = 0 } = useWindowSize()
   const vh = height * 0.01
   document.documentElement.style.setProperty('--vh', `${vh}px`)
   return null
@@ -90,10 +89,8 @@ const AppRaw = ({
     'isDevUrlPopupOpen',
     true
   )
-  const [
-    isRebrandingPopupOpen,
-    setIsRebrandingPopupOpen,
-  ] = useLocalStorageState('isRebrandingPopupOpen', true)
+  // const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
+  //   useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
   //   true
   // )
@@ -107,15 +104,15 @@ const AppRaw = ({
     localStorage.setItem('themeMode', 'dark')
   }
 
-  const chartPageView =
-    getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
+  // const chartPageView =
+  //   getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
-  const fullscreen: boolean = isChartPage && chartPageView !== 'default'
+  // const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
   // TODO: Check this variable
-  const pageIsRegistration = currentPage.includes('regist')
+  // const pageIsRegistration = currentPage.includes('regist')
   const isRewards = currentPage.includes('rewards')
 
   const searchParamsObject = getSearchParamsObject({ search })
@@ -157,11 +154,11 @@ const AppRaw = ({
                         >
                           {children}
                         </AppInnerContainer>
-                        {showFooter && (
+                        {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
-                        )}
+                        )} */}
                         <MobileFooter pathname={currentPage} />
-                        {/* 
+                        {/*
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}

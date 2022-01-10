@@ -1,14 +1,18 @@
 import { OpenOrders } from '@project-serum/serum'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { DEX_PID } from '@core/config/dex'
+import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
+import BN from 'bn.js'
+
 import {
   createSOLAccountAndClose,
   transferSOLToWrappedAccountAndClose,
 } from '@sb/dexUtils/pools'
-import { isTransactionFailed, sendTransaction } from '@sb/dexUtils/send'
-import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
-import BN from 'bn.js'
+import { isTransactionFailed } from '@sb/dexUtils/send'
+import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { DEX_PID } from '@core/config/dex'
+
 import { TokensMapType, TransactionType } from '../../Rebalance.types'
 import { getVariablesForPlacingOrder } from './getVariablesForPlacingOrder'
 
@@ -40,7 +44,7 @@ export const placeAllOrders = async ({
 
   const sendSavedTransaction = async () => {
     if (commonTransaction.instructions.length > 0) {
-      const result = await sendTransaction({
+      const result = await signAndSendSingleTransaction({
         wallet,
         connection,
         transaction: commonTransaction,
@@ -88,7 +92,6 @@ export const placeAllOrders = async ({
 
     const swapAmount = +(transaction.amount * 10 ** tokenADecimals).toFixed(0)
     const swapTotal = +(transaction.total * 10 ** tokenBDecimals).toFixed(0)
-
 
     const afterSwapTransaction = new Transaction()
 
