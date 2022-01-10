@@ -138,63 +138,6 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
           </Button>
         </ButtonWrapper>
       </FormItemFull>
-      {/* <FormItemFull>
-        <InputWrapper>
-          <Input
-            placeholder="Enter amount..."
-            value={form.values.amountUnstake}
-            onChange={async (v) => {
-              const value = limitDecimalsCustom(v.toString())
-              await form.setFieldValue('amountUnstake', value)
-              form.validateForm()
-            }}
-            name="amountUntake"
-            append="RIN"
-            maxButton
-            maxButtonOnClick={() =>
-              maxButtonOnClick('amountUnstake', tokenData?.amount)
-            }
-            halfButton
-            halfButtonOnClick={() =>
-              halfButtonOnClick('amountUnstake', tokenData?.amount)
-            }
-            formatter={INPUT_FORMATTERS.DECIMAL}
-          />
-        </InputWrapper>
-        <ButtonWrapper>
-          <Button
-            $fontSize="xs"
-            $padding="lg"
-            $borderRadius="xxl"
-            onClick={() => end()}
-            disabled={isUnstakeDisabled}
-            type="button"
-            $loading={!!loading.unstake}
-          >
-            {loading.unstake ? <Loader /> : 'Unstake'}
-          </Button>
-        </ButtonWrapper>
-      </FormItemFull> */}
-      {/* {isUnstakeLocked && (
-        <DarkTooltip
-          title={
-            isUnstakeLocked
-              ? `Locked until ${dayjs
-                  .unix(unlockAvailableDate)
-                  .format('HH:mm:ss MMM DD, YYYY')}`
-              : ''
-          }
-        >
-          <div>
-            <SvgIcon
-              src={InfoIcon}
-              width="1.5rem"
-              height="1.5rem"
-              style={{ marginTop: '1.5rem' }}
-            />
-          </div>
-        </DarkTooltip>
-      )} */}
     </FormWrap>
   )
 }

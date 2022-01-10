@@ -17,18 +17,10 @@ export const MobileFooter = ({ pathname }) => {
     <FooterComponent height="11em" justify="space-around">
       <TradeLink isActive={pathname.includes('chart')} />
       <DashboardLink isActive={pathname.includes('dashboard')} />
-      {/* <AnalyticsLink isActive={pathname.includes('analytics')} /> */}
       <PoolsLink isActive={pathname.includes('pools')} />
       <SwapsLink isActive={pathname.includes('swap')} />
-      {/* <RebalanceLink isActive={pathname.includes('rebalance')} /> */}
       <StakingLink isActive={pathname.includes('staking')} />
-      {/* <WalletLink isActive={pathname.includes('wallet')} />
-      <FeedbackBtn
-        onClick={() => {
-          setIsFeedBackPopupOpen(true)
-        }}
-        isActive={isFeedBackPopupOpen}
-      /> */}
+
       <FeedbackPopup
         open={isFeedBackPopupOpen}
         onClose={() => {
