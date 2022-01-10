@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import { default as React, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { Input, INPUT_FORMATTERS, REGEXP_FORMATTER } from '@sb/components/Input'
 import { Loader } from '@sb/components/Loader/Loader'
@@ -28,15 +28,7 @@ const INPUT_FORMATTER = REGEXP_FORMATTER(/^\d+(\.?)\d{0,5}$/)
 const formatter = (v: string, prevValue: string) =>
   INPUT_FORMATTER(v.replace(',', '.'), prevValue)
 export const StakingForm: React.FC<StakingFormProps> = (props) => {
-  const {
-    tokenData,
-    totalStaked,
-    loading,
-    start,
-    end,
-    isUnstakeLocked,
-    unlockAvailableDate,
-  } = props
+  const { tokenData, totalStaked, loading, start, end, isUnstakeLocked } = props
   const isUnstakeDisabled =
     isUnstakeLocked || totalStaked === 0 || loading.unstake
 
