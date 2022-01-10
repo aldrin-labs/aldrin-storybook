@@ -16,6 +16,7 @@ import {
 interface CalculatedUserRewards {
   prevSnapshot: Snapshot | null
   amount: number
+  vestedAmount: number
 }
 
 /**
@@ -31,10 +32,11 @@ export const getFarmingRewardsFromSnapshots = ({
   farmingState: FarmingState
   stateAttached?: StateAttached
   snapshots: Snapshot[]
-}): number => {
+}): [number, number] => {
   const startRewardsForFarmingState: CalculatedUserRewards = {
     prevSnapshot: null,
     amount: 0,
+    vestedAmount: 0,
   }
 
   const now = Date.now() / 1000
@@ -59,7 +61,8 @@ export const getFarmingRewardsFromSnapshots = ({
         return snapshotsAcc
       }
 
-      let { prevSnapshot, amount } = snapshotsAcc
+      const { amount, vestedAmount } = snapshotsAcc
+      let { prevSnapshot } = snapshotsAcc
 
       if (prevSnapshot === null) {
         if (index === 0) {
@@ -80,6 +83,7 @@ export const getFarmingRewardsFromSnapshots = ({
         .div(new BN(snapshot.tokensFrozen))
 
       let unlockedUserSnapshotReward = new BN(0)
+      let lockedUserSnapshotReward = new BN(0)
 
       if (
         !stateAttached ||
@@ -96,6 +100,7 @@ export const getFarmingRewardsFromSnapshots = ({
       const lastVestedWithdrawTime =
         stateAttached?.lastVestedWithdrawTime || parseFloat(ticket.startTime)
 
+      // Vesting passed and could be claimed
       if (
         lastVestedWithdrawTime < snapshot.time &&
         snapshot.time + vestingPeriod < now
@@ -107,17 +112,29 @@ export const getFarmingRewardsFromSnapshots = ({
         )
       }
 
+      // Vesting not passed
+      if (snapshot.time + vestingPeriod > now) {
+        lockedUserSnapshotReward = totalUserSnapshotReward
+          .mul(new BN(VESTING_FARMING_REWARD_PART_NUMERATOR))
+          .div(new BN(VESTING_FARMING_REWARD_PART_DENOMINATOR))
+      }
+
       const unlockedUserSnapshotRewardWithoutDecimals =
         parseFloat(unlockedUserSnapshotReward.toString()) /
+        10 ** farmingTokenMintDecimals
+
+      const lockedUserSnapshotRewardWithoutDecimals =
+        parseFloat(lockedUserSnapshotReward.toString()) /
         10 ** farmingTokenMintDecimals
 
       return {
         prevSnapshot: snapshot,
         amount: unlockedUserSnapshotRewardWithoutDecimals + amount,
+        vestedAmount: lockedUserSnapshotRewardWithoutDecimals + vestedAmount,
       }
     },
     startRewardsForFarmingState
   )
 
-  return userRewardsForFarmingState.amount
+  return [userRewardsForFarmingState.amount, userRewardsForFarmingState.vestedAmount]
 }

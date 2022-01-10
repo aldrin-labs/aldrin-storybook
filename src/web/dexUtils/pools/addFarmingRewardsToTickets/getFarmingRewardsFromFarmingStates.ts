@@ -4,6 +4,7 @@ import {
   FarmingTicket,
   SnapshotQueue,
 } from '@sb/dexUtils/common/types'
+
 import { getFarmingRewardsFromSnapshots } from './getFarmingRewardsFromSnapshots'
 
 /**
@@ -20,11 +21,9 @@ export const getFarmingRewardsFromFarmingStates = ({
 }): AmountToClaim[] => {
   const rewardsForFarmingStates = farmingStates.reduce(
     (farmingStatesAcc: AmountToClaim[], farmingState) => {
-
       // get snapshot queues for this farming state
       const snapshotQueue = snapshotQueues.find(
-        (snapshotQueue) =>
-          snapshotQueue.publicKey === farmingState.farmingSnapshots
+        (sq) => sq.publicKey === farmingState.farmingSnapshots
       )
 
       if (!snapshotQueue) {
@@ -44,18 +43,20 @@ export const getFarmingRewardsFromFarmingStates = ({
         return farmingStatesAcc
       }
 
-      const rewardsFromSnapshots = getFarmingRewardsFromSnapshots({
-        ticket,
-        farmingState,
-        stateAttached,
-        snapshots: snapshotQueue.snapshots,
-      })
+      const [rewardsFromSnapshots, vestedRewardsFromSnapshots] =
+        getFarmingRewardsFromSnapshots({
+          ticket,
+          farmingState,
+          stateAttached,
+          snapshots: snapshotQueue.snapshots,
+        })
 
       return [
         ...farmingStatesAcc,
         {
           farmingState: farmingState.farmingState,
           amount: rewardsFromSnapshots,
+          vestedAmount: vestedRewardsFromSnapshots,
         },
       ]
     },

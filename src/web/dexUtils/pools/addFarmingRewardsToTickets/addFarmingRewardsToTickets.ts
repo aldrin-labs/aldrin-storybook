@@ -1,14 +1,14 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 
+import { toMap } from '../../../utils/collection'
 import { FarmingTicket, SnapshotQueue } from '../../common/types'
 import { getFarmingRewardsFromFarmingStates } from './getFarmingRewardsFromFarmingStates'
-import { toMap } from '../../../utils/collection'
 
 interface CalculateRewardsParams {
   snapshotQueues: SnapshotQueue[]
   farmingTickets: FarmingTicket[]
-  pools: PoolInfo[] | StakingPool[]
+  pools: (PoolInfo | StakingPool)[]
 }
 
 /**

@@ -47,6 +47,10 @@ export const getUserPoolsFromAll = ({
           0
         ) || 0
 
+    const hasVestedInFarms = !!farmingTicketsMap
+      .get(el.swapToken)
+      ?.find((e) => !!e.amountsToClaim.find((atc) => atc.vestedAmount > 0))
+
     const calcAmounts = el.farming?.map(
       (farming) =>
         calcAccounts.get(farming.farmingState)?.tokenAmount || new BN(0)
@@ -56,6 +60,7 @@ export const getUserPoolsFromAll = ({
       poolTokenAmount > MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ||
       openFarmingTickets.length > 0 ||
       availableToClaimAmount > 0 ||
+      hasVestedInFarms ||
       vesting?.startBalance.gtn(0) ||
       !!calcAmounts?.find((ca) => ca.gtn(0)) ||
       el.initializerAccount === walletKey
