@@ -1,20 +1,20 @@
+import { COLORS } from '@variables/variables'
 import React from 'react'
 
-import { Cell } from '@sb/components/Layout'
-import { Text } from '@sb/components/Typography'
+import { SvgIcon } from '@sb/components'
 import { Block, BlockContent, BlockSubtitle } from '@sb/components/Block'
-import { COLORS } from '@variables/variables'
-import { RootRow, StyledLink } from '../styles'
+import { Cell } from '@sb/components/Layout'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Text } from '@sb/components/Typography'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
+import InfoIcon from '@icons/inform.svg'
+
+import { RootRow, StyledLink } from '../styles'
+import greenBack from './assets/greenBack.png'
 import locksIcon from './assets/lockIcon.svg'
 import poolIcon from './assets/poolIcon.svg'
 import rewardsIcon from './assets/rewards.svg'
-import InfoIcon from '@icons/inform.svg'
-
-import greenBack from './assets/greenBack.png'
-import { SvgIcon } from '@sb/components'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const BlockWithHints = () => {
   return (
@@ -34,22 +34,24 @@ export const BlockWithHints = () => {
       <Cell colLg={4}>
         <Block icon={rewardsIcon}>
           <BlockContent>
-            <RowContainer margin={'0 0 1rem'} justify={'flex-start'}>
-              <BlockSubtitle margin={'0'}>Rewards: </BlockSubtitle>
+            <RowContainer margin="0 0 1rem" justify="flex-start">
+              <BlockSubtitle margin="0">Rewards: </BlockSubtitle>
               <DarkTooltip
                 title={
                   <p>
-                   Staking rewards are paid <strong>every 27th of the month</strong> based on RIN weekly buy-backs 
-                   on 1/6th of AMM fees. Estimated rewards are updated <strong> hourly based on treasury 
-                   rewards</strong> and <strong>weekly based on RIN buyback.</strong> 
+                    Staking rewards are paid{' '}
+                    <strong>every 27th of the month</strong> based on RIN weekly
+                    buy-backs on 1/6th of AMM fees. Estimated rewards are
+                    updated <strong> hourly based on treasury rewards</strong>{' '}
+                    and <strong>weekly based on RIN buyback.</strong>
                   </p>
                 }
               >
                 <div>
                   <SvgIcon
                     src={InfoIcon}
-                    width={'1.5rem'}
-                    height={'2.5rem'}
+                    width="1.5rem"
+                    height="2.5rem"
                     style={{ marginLeft: '0.75rem' }}
                   />
                 </div>

@@ -73,11 +73,10 @@ export const getFarmingRewardsFromSnapshots = ({
         }
       }
 
-      const totalUserSnapshotReward = new BN(
-        snapshot.tokensTotal - prevSnapshot.tokensTotal
-      )
-        .mul(new BN(ticket.tokensFrozen))
-        .div(new BN(snapshot.tokensFrozen))
+      const totalUserSnapshotReward = new BN(snapshot.tokensTotal.toFixed(0))
+        .sub(new BN(prevSnapshot.tokensTotal.toFixed(0)))
+        .mul(new BN(ticket.tokensFrozen.toFixed(0)))
+        .div(new BN(snapshot.tokensFrozen.toFixed(0)))
 
       let unlockedUserSnapshotReward = new BN(0)
 
