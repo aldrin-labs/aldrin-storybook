@@ -1,12 +1,15 @@
+import { useFormikContext } from 'formik'
 import React from 'react'
-import { TokenSelectorField } from '@sb/components/TokenSelector'
+
 import { GroupLabel, RadioGroupField } from '@sb/components/FormElements'
 import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
-import { InlineText } from '@sb/components/Typography'
+import { TokenAmountInputField } from '@sb/components/TokenAmountInput'
+import { TokenIconWithName } from '@sb/components/TokenIcon'
+import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
+import { InlineText } from '@sb/components/Typography'
 import { TokenInfo } from '@sb/dexUtils/types'
-import { useFormikContext } from 'formik'
-import { TokenAmountInputField, TokenAmountInput } from './TokenAmountInput'
+
 import {
   CoinSelectors,
   CoinWrap,
@@ -16,6 +19,7 @@ import {
   RadioGroupContainer,
   ErrorText,
 } from './styles'
+import { TokenAmount } from './TokenAmount'
 import { FarmingFormType } from './types'
 
 interface FarmingFormProps {
@@ -87,8 +91,9 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
         name="farming.tokenAmount"
         setFieldValue={form.setFieldValue}
         available={resolveFarmingAvailableAmount(userTokens, form.values)}
-        mint={form.values.farming.token.mint}
-      />
+      >
+        <TokenIconWithName mint={form.values.farming.token.mint} />
+      </TokenAmountInputField>
       {form.errors.farming?.tokenAmount &&
         form.touched.farming?.tokenAmount && (
           <ErrorText color="error">{form.errors.farming.tokenAmount}</ErrorText>
@@ -113,7 +118,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
         </NumberInputContainer>
         <NumberInputContainer>
           <GroupLabel label="Estimated reward per day" />
-          <TokenAmountInput
+          <TokenAmount
             name="farming.tokenDayReward"
             value={farmingRewardFormatted}
             mint={form.values.farming.token.mint}
@@ -165,7 +170,9 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
           />
           {form.errors.farming?.vestingPeriod &&
             form.touched.farming?.vestingPeriod && (
-              <ErrorText color="error">{form.errors.farming?.vestingPeriod}</ErrorText>
+              <ErrorText color="error">
+                {form.errors.farming?.vestingPeriod}
+              </ErrorText>
             )}
         </div>
       </CheckboxWrap>

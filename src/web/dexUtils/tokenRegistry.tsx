@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import { clusterForEndpoint } from './clusters'
 import { useConnectionConfig } from './connection'
+import { getTokenNameByMintAddress } from './markets'
 
 const TokenListContext = React.createContext({
   tokenInfos: new Map<string, TokenInfo>(),
@@ -11,6 +12,16 @@ const TokenListContext = React.createContext({
 export function useTokenInfos() {
   const { tokenInfos } = useContext(TokenListContext)
   return tokenInfos
+}
+
+export function useTokenName(mint: string): string {
+  const { tokenInfos } = useContext(TokenListContext)
+  return tokenInfos.get(mint)?.name || getTokenNameByMintAddress(mint)
+}
+
+export function useTokenSymbol(mint: string): string {
+  const { tokenInfos } = useContext(TokenListContext)
+  return tokenInfos.get(mint)?.symbol || getTokenNameByMintAddress(mint)
 }
 
 export function TokenRegistryProvider(props) {

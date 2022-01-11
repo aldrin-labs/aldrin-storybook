@@ -11,6 +11,7 @@ import { GroupLabel, RadioGroupField } from '@sb/components/FormElements'
 import { InputField, INPUT_FORMATTERS } from '@sb/components/Input'
 import { FlexBlock } from '@sb/components/Layout'
 import { ModalTitleBlock } from '@sb/components/Modal'
+import { TokenAmountInputField } from '@sb/components/TokenAmountInput'
 import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
@@ -52,7 +53,6 @@ import {
   Title,
   VestingExplanation,
 } from './styles'
-import { TokenAmountInputField } from './TokenAmountInput'
 import { CreatePoolFormType, CreatePoolFormProps } from './types'
 
 const steps = [
@@ -571,7 +571,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     <TokenAmountInputField
                       disabled={values.stableCurve}
                       name="price"
-                      mint={form.values.quoteToken.mint}
                       onChange={(v) => {
                         setPriceTouched(true)
                         if (v) {
@@ -595,7 +594,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                           }
                         }
                       }}
-                    />
+                    >
+                      <TokenIconWithName mint={form.values.quoteToken.mint} />
+                    </TokenAmountInputField>
                   </NumberInputContainer>
                 </FlexBlock>
                 <br />
@@ -608,9 +609,10 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       onBaseAmountChange(value)
                     }}
                     available={selectedBaseAccount.amount}
-                    mint={form.values.baseToken.mint}
                     onChange={onBaseAmountChange}
-                  />
+                  >
+                    <TokenIconWithName mint={form.values.baseToken.mint} />
+                  </TokenAmountInputField>
                 </Centered>
 
                 {form.errors.firstDeposit?.baseTokenAmount &&
@@ -628,9 +630,10 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       onQuoteAmountChange(value)
                     }}
                     available={selectedQuoteAccount.amount}
-                    mint={form.values.quoteToken.mint}
                     onChange={onQuoteAmountChange}
-                  />
+                  >
+                    <TokenIconWithName mint={form.values.quoteToken.mint} />
+                  </TokenAmountInputField>
                 </Centered>
                 {form.errors.firstDeposit?.quoteTokenAmount &&
                   form.touched.firstDeposit?.quoteTokenAmount && (

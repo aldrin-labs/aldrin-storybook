@@ -1,8 +1,8 @@
 import { BORDER_RADIUS, COLORS, FONTS } from '@variables/variables'
 import styled from 'styled-components'
+
 import { Input } from '../Input'
 import { FlexBlock } from '../Layout'
-
 
 export const Container = styled(FlexBlock)`
   height: 72px;
@@ -27,7 +27,6 @@ export const DropdownArrow = styled.span`
   margin-left: auto;
 `
 
-
 export const TokenName = styled.span`
   margin-left: 10px;
 `
@@ -35,7 +34,6 @@ export const TokenName = styled.span`
 export const Balance = styled.span`
   margin-left: auto;
 `
-
 
 export const TokenRow = styled(FlexBlock)`
   padding: 10px 0;

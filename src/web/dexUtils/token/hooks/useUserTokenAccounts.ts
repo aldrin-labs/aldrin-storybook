@@ -6,11 +6,13 @@ import { useConnection } from '../../connection'
 import { RefreshFunction, TokenInfo } from '../../types'
 import { useWallet } from '../../wallet'
 
+const EMPTY_DATA: TokenInfo[] = []
 export const useUserTokenAccounts = (): [TokenInfo[], RefreshFunction] => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
   const fetcher = async () => {
+    console.log('fetcher:', wallet.publicKey)
     if (!wallet.publicKey) {
       return []
     }
@@ -23,5 +25,5 @@ export const useUserTokenAccounts = (): [TokenInfo[], RefreshFunction] => {
     refreshInterval: 60_000,
   })
 
-  return [swr.data || [], swr.mutate]
+  return [swr.data || EMPTY_DATA, swr.mutate]
 }

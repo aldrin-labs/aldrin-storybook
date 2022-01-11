@@ -16,19 +16,18 @@ export const getSnapshotQueueWithAMMFees = ({
     const currentSnapshots = sq.snapshots
     const feesForOneSnapshot = buyBackAmount / currentSnapshots?.length
 
-
     const snapshotsWithFees = currentSnapshots.map((el, idx) => {
       const snapshotWithFees = {
         ...el,
-        tokensTotal: el.tokensTotal + feesForOneSnapshot * (idx + 1),
+        tokensTotal:
+          el.tokensTotal + Math.round(feesForOneSnapshot * (idx + 1)),
       }
       return snapshotWithFees
     })
 
     return {
       ...sq,
-      snapshots: snapshotsWithFees
+      snapshots: snapshotsWithFees,
     }
-
   })
 }

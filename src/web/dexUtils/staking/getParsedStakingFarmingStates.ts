@@ -28,7 +28,7 @@ export const getParsedStakingFarmingStates = async ({
     const statesData = program.coder.accounts.decode('FarmingState', data)
     return {
       startTime: statesData.startTime.toNumber(),
-      tokensTotal: parseFloat(statesData.tokensTotal.toString()),
+      tokensTotal: parseInt(statesData.tokensTotal.toString(), 10),
       farmingState: state.pubkey.toString(),
       farmingSnapshots: statesData.farmingSnapshots.toString(),
       feesDistributed: statesData.feesDistributed,

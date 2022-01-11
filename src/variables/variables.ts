@@ -25,6 +25,7 @@ export const COLORS = {
   navLink: 'rgb(114, 132, 160)',
   navLinkActiveBg: 'rgb(46, 46, 46)',
   navLinkActive: 'rgb(209, 221, 239)',
+  swapBlockBg: 'rgba(34, 36, 41, 0.7)',
   primaryWhite: '#F8FAFF',
   tableHover: '#383a3d',
   warning: '#F29C38',

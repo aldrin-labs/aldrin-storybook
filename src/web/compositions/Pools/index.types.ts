@@ -1,5 +1,12 @@
 import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
 
+export type PoolFees = {
+  tradeFeeNumerator: number
+  ownerTradeFeeNumerator: number
+  tradeFeeDenominator: number
+  ownerTradeFeeDenominator: number
+}
+
 export type PoolInfo = {
   name: string
   parsedName: string
@@ -25,13 +32,6 @@ export type PoolInfo = {
   curve?: string
   amp?: number
   fees: PoolFees
-}
-
-export type PoolFees = {
-  tradeFeeNumerator: number
-  ownerTradeFeeNumerator: number
-  tradeFeeDenominator: number
-  ownerTradeFeeDenominator: number
 }
 
 export type DexTokensPrices = {

@@ -1,18 +1,18 @@
+import { Paper, Theme, withTheme } from '@material-ui/core'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import { Text } from '@sb/compositions/Addressbook/index'
-
-import { Paper, Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import Close from '@icons/closeIcon.svg'
-
+import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
 } from '@core/utils/chartPageUtils'
+
+import Close from '@icons/closeIcon.svg'
 
 const StyledPaper = styled(Paper)`
   height: auto;
@@ -59,7 +59,7 @@ const ValueInput = styled.input`
 
 const slippageToleranceValues = [{ value: 0.1 }, { value: 0.5 }, { value: 1 }]
 
-export const TransactionSettingsPopup = ({
+const Popup = ({
   theme,
   close,
   open,
@@ -86,11 +86,11 @@ export const TransactionSettingsPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
+      <RowContainer justify="space-between">
         <Text>Transaction Settings</Text>
         <SvgIcon
           src={Close}
@@ -98,10 +98,10 @@ export const TransactionSettingsPopup = ({
           onClick={() => close()}
         />
       </RowContainer>
-      <RowContainer justify={'flex-start'} margin={'2rem 0'}>
-        <Text fontFamily={'Avenir Next Demi'}>Slippage Tolerance</Text>
+      <RowContainer justify="flex-start" margin="2rem 0">
+        <Text fontFamily="Avenir Next Demi">Slippage Tolerance</Text>
       </RowContainer>
-      <RowContainer justify={'flex-start'}>
+      <RowContainer justify="flex-start">
         {slippageToleranceValues.map((el) => {
           return (
             <ValueButton
@@ -111,8 +111,7 @@ export const TransactionSettingsPopup = ({
                 close()
               }}
             >
-              {el.value}
-              {'%'}
+              {el.value}%
             </ValueButton>
           )
         })}
@@ -133,7 +132,7 @@ export const TransactionSettingsPopup = ({
               setLocalSlippage(e.target.value)
             }}
             value={localSlippage}
-            placeholder={'1.00'}
+            placeholder="1.00"
             theme={theme}
             onKeyDown={handleKeyDown}
           />
@@ -153,3 +152,5 @@ export const TransactionSettingsPopup = ({
     </DialogWrapper>
   )
 }
+
+export const TransactionSettingsPopup = withTheme()(Popup)
