@@ -1,4 +1,5 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
+
 import { checkIsPoolStable } from '../checkIsPoolStable'
 
 const getDefaultBaseToken = (isStableSwapTabActive: boolean) =>
@@ -30,13 +31,15 @@ const getSelectedPoolForSwap = ({
   baseTokenMintAddress: string
   quoteTokenMintAddress: string
 }) => {
-  return pools.find(
-    (pool) =>
-      (pool?.tokenA === baseTokenMintAddress ||
-        pool?.tokenA === quoteTokenMintAddress) &&
-      (pool?.tokenB === baseTokenMintAddress ||
-        pool?.tokenB === quoteTokenMintAddress)
-  )
+  return pools
+    .filter(
+      (pool) =>
+        (pool?.tokenA === baseTokenMintAddress ||
+          pool?.tokenA === quoteTokenMintAddress) &&
+        (pool?.tokenB === baseTokenMintAddress ||
+          pool?.tokenB === quoteTokenMintAddress)
+    )
+    .sort((a, b) => b.tvl.tokenA - a.tvl.tokenA)[0]
 }
 
 export {
