@@ -518,15 +518,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         </Button>
                       </span>
                     </DarkTooltip>
-                    {/* <Button
-                      fontSize="xs"
-                      padding="lg"
-                      variant={isClaimDisabled ? 'disabledLink' : 'link'}
-                      disabled={isClaimDisabled}
-                      onClick={() => setIsClaimRewardsAndRestakePopupOpen(true)}
-                    >
-                      Restake
-                    </Button> */}
                   </ClaimButtonContainer>
                 </RewardsStats>
               </BlockContent>
