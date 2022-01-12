@@ -268,7 +268,7 @@ export const createPoolTransactions = async (
     },
     {
       transaction: setAuthorities,
-      signers: [poolMint, poolFeeVault, lpTokenFreezeAccount, pool],
+      signers: [poolFeeVault, lpTokenFreezeAccount, pool],
     },
     {
       transaction: createPoolTx,
@@ -349,14 +349,7 @@ export const createPoolTransactions = async (
     createPool,
     firstDepositTx,
     farmingTx,
-  ] = await signTransactions(
-    transactionsAndSigners.map(({ transaction: tx, signers: s = [] }) => ({
-      transaction: tx,
-      signers: s,
-    })),
-    connection,
-    wallet
-  )
+  ] = await signTransactions(transactionsAndSigners, connection, wallet)
 
   return {
     transactions: {
