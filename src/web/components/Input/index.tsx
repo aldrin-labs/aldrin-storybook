@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react'
-import styled, { css } from 'styled-components'
 
 import { COLORS, BORDER_RADIUS } from '@variables/variables'
 import { useField, FieldValidator } from 'formik'
 import { noop } from 'lodash-es'
+import React, { ReactNode } from 'react'
+import styled, { css } from 'styled-components'
 import { validateDecimal, validateNatural, validateRegexp } from './utils'
 
 const VARIANTS = {
@@ -141,6 +141,7 @@ export const Input: React.FC<InputProps> = (props) => {
         onChange={(e) => onChange(formatter(e.target.value, value))}
         name={name}
         disabled={disabled}
+        autoComplete="off"
       />
       {append && <Append>{append}</Append>}
     </InputWrap>

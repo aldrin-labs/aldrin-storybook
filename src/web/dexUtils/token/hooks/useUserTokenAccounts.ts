@@ -12,7 +12,6 @@ export const useUserTokenAccounts = (): [TokenInfo[], RefreshFunction] => {
   const connection = useConnection()
 
   const fetcher = async () => {
-    console.log('fetcher:', wallet.publicKey)
     if (!wallet.publicKey) {
       return []
     }

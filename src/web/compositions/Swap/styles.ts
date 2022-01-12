@@ -20,17 +20,26 @@ export const SPage = styled(Page)`
   flex-direction: row;
   background: url(${bg}) right bottom no-repeat;
 `
+
 export const RootRow = styled(Row)`
   padding: 32px 0;
   min-height: 600px;
+  max-height: 800px;
+  width: 100%;
+  margin: auto;
 `
 
 export const Content = styled(WideContent)`
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 
 export const SBlock = styled(Block)`
   background: ${COLORS.swapBlockBg};
+  display: flex;
+  flex-direction: column;
 `
 
 export const StakeBlock = styled(Block)`
@@ -41,15 +50,6 @@ export const StakeBlock = styled(Block)`
 export const FormBlock = styled(SBlock)`
   display: flex;
   flex-direction: column;
-`
-
-export const SearchInput = styled(Input)`
-  background: none;
-  margin: 10px 8px;
-
-  input {
-    font-weight: normal;
-  }
 `
 
 export const TabsContainer = styled.div`

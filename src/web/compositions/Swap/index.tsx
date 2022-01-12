@@ -15,14 +15,15 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
-import Loop from '@icons/loop.svg'
-
 import { TokenIcon } from '../../components/TokenIcon'
 import { Token } from '../../components/TokenSelector/SelectTokenModal'
 import { InlineText } from '../../components/Typography'
 import { useTokenSymbol } from '../../dexUtils/tokenRegistry'
+import { Chart } from './components/Chart'
 import { SwapForm } from './components/SwapForm'
 import { SwapFormModel } from './components/SwapForm/types'
+import { SwapSearch } from './components/SwapSearch'
+import { SearchItem } from './components/SwapSearch/types'
 import StakeIcon from './img/stake.svg'
 import {
   RootRow,
@@ -31,7 +32,6 @@ import {
   SBlock,
   TabsContainer,
   Tab,
-  SearchInput,
   StakeBlock,
   StakingLink,
   FormBlock,
@@ -51,8 +51,8 @@ const SwapPageInner: React.FC<SwapPageProps> = (props) => {
 
   const form = useFormik<SwapFormModel>({
     initialValues: {
-      marketFrom: { ...tokens[0] },
-      marketTo: { ...tokens[1] },
+      marketFrom: tokens[0],
+      marketTo: tokens[1],
       amountFrom: '0',
       amountTo: '0',
       slippageTolerance: 0.1,
@@ -77,6 +77,10 @@ const SwapPageInner: React.FC<SwapPageProps> = (props) => {
 
   const fromName = useTokenSymbol(form.values.marketFrom.mint)
   const toName = useTokenSymbol(form.values.marketTo.mint)
+  const onSearchSelect = (selected: SearchItem) => {
+    form.setFieldValue('marketFrom', selected.tokenFrom)
+    form.setFieldValue('marketTo', selected.tokenTo)
+  }
 
   return (
     <>
@@ -101,17 +105,11 @@ const SwapPageInner: React.FC<SwapPageProps> = (props) => {
               </FlexBlock>
             </BlockTitle>
           </BlockContent>
+          <Chart />
         </SBlock>
       </Cell>
       <Cell col={12} colLg={4}>
-        <SearchInput
-          name="search"
-          placeholder="Try: “10 SOL to RIN”"
-          value={searchValue}
-          onChange={onChangeSearch}
-          append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
-          borderRadius="md"
-        />
+        <SwapSearch onSelect={onSearchSelect} tokens={tokens} />
         <FormBlock>
           <FormikProvider value={form}>
             <SwapForm tokens={tokens} refreshAll={refreshAll} />
