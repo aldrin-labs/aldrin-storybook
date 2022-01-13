@@ -1,3 +1,7 @@
+import styled, { css } from 'styled-components'
+
+import RinLogo from '@icons/DarkLogo.svg'
+
 import {
   COLORS,
   FONT_SIZES,
@@ -5,9 +9,6 @@ import {
   BORDER_RADIUS,
   WIDTH,
 } from '@variables/variables'
-import styled, { css } from 'styled-components'
-
-import RinLogo from '@icons/DarkLogo.svg'
 
 const VARIANTS = {
   primary: css`
@@ -116,6 +117,30 @@ export interface ButtonProps {
   $loading?: boolean
 }
 
+const rotate = css`
+  @keyframes button-rotate-loading {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    25% {
+      transform: rotate(60deg);
+    }
+
+    50% {
+      transform: rotate(0deg);
+    }
+
+    75% {
+      transform: rotate(-60deg);
+    }
+
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+`
+
 export const Button = styled.button<ButtonProps>`
   background-color: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   background: ${(props: ButtonProps) => props.backgroundColor || 'none'};
@@ -134,6 +159,8 @@ export const Button = styled.button<ButtonProps>`
   ${(props: ButtonProps) =>
     props.$width ? ` width: ${WIDTH[props.$width]};` : ''}
   text-decoration: none;
+
+  ${rotate}
 
   ${({ $backgroundImage: backgroundImage }: ButtonProps) =>
     backgroundImage
@@ -169,7 +196,7 @@ export const Button = styled.button<ButtonProps>`
       top: 15%;
       background-size: contain;
 
-     
+
     }
   `
       : ''}
