@@ -1,7 +1,8 @@
 import { computeOutputAmount } from '@orca-so/stablecurve'
-import { PoolFees } from '@sb/compositions/Pools/index.types'
 import { u64 } from '@solana/spl-token'
 import { BN } from 'bn.js'
+
+import { PoolFees } from '@sb/compositions/Pools/index.types'
 
 export function computeOutputAmountWithoutFee(
   inputAmount: u64,
@@ -21,7 +22,7 @@ export function computeOutputAmountWithoutFee(
     inputAmount,
     inputPoolAmount,
     outputPoolAmount,
-    amp
+    amp.muln(2)
   )
   const outputAmountFee = outputAmount
     .mul(new BN(tradeFeeNumerator))
