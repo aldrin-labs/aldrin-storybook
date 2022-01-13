@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 
 import { Block, BlockContent } from '@sb/components/Block'
 import { Cell, Page, WideContent } from '@sb/components/Layout'
+import { WaningBanner } from '@sb/components/WaningBanner'
 
 import { TotalVolumeLockedChart, TradingVolumeChart } from './components/Charts'
 import { RootRow } from './components/Charts/styles'
@@ -19,6 +20,10 @@ export const PoolsComponent: React.FC = () => {
   return (
     <Page>
       <WideContent>
+        <WaningBanner bannerId="calcAccountsCreating">
+          Under maintenance, available to claim rewards may not be displayed
+          correctly.
+        </WaningBanner>
         <RootRow>
           <Cell col={12} colLg={6}>
             <TotalVolumeLockedChart />
