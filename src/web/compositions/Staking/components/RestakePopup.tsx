@@ -1,9 +1,12 @@
-import StakeBtn from '@icons/stakeBtn.png'
+import React from 'react'
+
 import { Button } from '@sb/components/Button'
 import { LeftBlock, StretchedBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
 import { Text } from '@sb/components/Typography'
-import React from 'react'
+
+import StakeBtn from '@icons/stakeBtn.png'
+
 import { FormItem, RestakeButton } from '../styles'
 import { RewardsChart } from './RewardsChart'
 
@@ -22,8 +25,8 @@ export const RestakePopup = ({
     >
       <StretchedBlock>
         <Text size="sm">
-          By restaking your reward you will get more rewards each month due to
-          a compound percentage, that's how your rewards will grow:
+          By restaking your reward you will get more rewards each month due to a
+          compound percentage, that's how your rewards will grow:
         </Text>
       </StretchedBlock>
       <RewardsChart />
@@ -31,7 +34,7 @@ export const RestakePopup = ({
         {' '}
         <FormItem>
           <Button
-            onClick={() => { }}
+            onClick={() => {}}
             $fontSize="xs"
             $padding="lg"
             $borderRadius="xxl"
@@ -40,7 +43,7 @@ export const RestakePopup = ({
           </Button>
         </FormItem>{' '}
         <RestakeButton
-          onClick={() => { }}
+          onClick={() => {}}
           $backgroundImage={StakeBtn}
           $fontSize="xs"
           $padding="lg"

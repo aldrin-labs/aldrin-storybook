@@ -1,9 +1,10 @@
-import styled from 'styled-components'
-
-import { Row, StretchedBlock, Page } from '@sb/components/Layout'
-import { Block, BlockSubtitle } from '@sb/components/Block'
 import { BREAKPOINTS, COLORS, BORDER_RADIUS } from '@variables/variables'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+
+import { Block, BlockSubtitle } from '@sb/components/Block'
+import { Row, StretchedBlock, Page } from '@sb/components/Layout'
+
 import { Button } from '../../components/Button'
 
 export const StyledTextDiv = styled.div`
@@ -201,7 +202,7 @@ export const Asterisks = styled.span`
 
 export const StatsBlock = styled(StretchedBlock)`
   flex-wrap: wrap;
-  `
+`
 
 export const StatsBlockItem = styled.div`
   margin: 20px 20px 0 0;
@@ -231,8 +232,24 @@ export const FormWrap = styled.form`
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;
 `
+
 export const FormItemFull = styled(FormItem)`
+  display: flex;
   flex: 1;
+  margin-right: 0;
+  margin-top: 16px;
+  &:first-child {
+    margin-top: 0;
+  }
+`
+
+export const InputWrapper = styled.div`
+  flex: 1;
+`
+
+export const ButtonWrapper = styled.div`
+  margin: auto;
+  margin-left: 16px;
 `
 
 export const ChartContainer = styled.div`
@@ -279,6 +296,9 @@ export const ClaimButtonContainer = styled(RewardsStatsRow)`
   }
 `
 
+export const RestakeWrapper = styled.div`
+  margin-top: 1.3rem;
+`
 export const UserFormRestakeButton = styled(Button)`
   margin-top: 10px;
   padding: 0 10px;

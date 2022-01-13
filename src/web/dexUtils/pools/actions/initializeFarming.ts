@@ -65,11 +65,7 @@ export const initializeFarmingInstructions = async (
 
   const walletWithPk = walletAdapterToWallet(wallet)
 
-  const provider = new Provider(
-    connection.getConnection(),
-    walletWithPk,
-    defaultOptions()
-  )
+  const provider = new Provider(connection, walletWithPk, defaultOptions())
 
   const [vaultSigner] = await PublicKey.findProgramAddress(
     [pool.toBuffer()],
