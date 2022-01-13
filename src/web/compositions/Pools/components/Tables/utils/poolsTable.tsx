@@ -122,6 +122,7 @@ export const preparePoolTableCell = (params: {
   const farmingAPR =
     ((totalDailyRewardUsd * 365) / totalStakedLpTokensUSD) * 100 || 0
 
+  const totalApr = farmingAPR + pool.apy24h
   const ticketsForPool = farmingTicketsMap.get(pool.swapToken) || []
 
   const availableToClaimMap = getUniqueAmountsToClaimMap({
@@ -214,12 +215,10 @@ export const preparePoolTableCell = (params: {
         ),
       },
       apr: {
-        rawValue: farmingAPR,
+        rawValue: totalApr,
         rendered: (
           <Text color="success" size="sm" weight={700}>
-            {farmingAPR >= 1
-              ? `${stripByAmount(farmingAPR + pool.apy24h, 2)}%`
-              : '< 1%'}
+            {totalApr >= 1 ? `${stripByAmount(totalApr, 2)}%` : '< 1%'}
           </Text>
         ),
       },
