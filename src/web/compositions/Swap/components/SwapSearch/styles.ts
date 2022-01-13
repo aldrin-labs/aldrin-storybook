@@ -33,7 +33,7 @@ export const SwapItem = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 10px 24px;
+  padding: 15px 24px;
   cursor: pointer;
 `
 

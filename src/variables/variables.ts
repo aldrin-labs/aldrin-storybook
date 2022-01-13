@@ -6,6 +6,7 @@ export const FONTS = {
 export const COLORS = {
   bodyBackground: '#17181A',
   background: '#383b45',
+  backgroundTransparent: 'rgba(56, 59, 69, 0.5)',
   border: '#3a475c',
   borderDark: '#2e2e2e',
   white: '#ffffff',

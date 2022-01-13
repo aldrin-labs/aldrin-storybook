@@ -10,11 +10,20 @@ import { TokenAmountInputField } from '@sb/components/TokenAmountInput'
 import { InlineText } from '@sb/components/Typography'
 
 import Gear from '@icons/gear.svg'
+import Arrows from '@icons/switchArrows.svg'
 
+import { useTokenSymbol } from '../../../../dexUtils/tokenRegistry'
 import InfoIcon from '../../img/info-icon.svg'
 import { TokenAddressesPopup } from '../TokenAddressesPopup'
 import { TransactionSettingsPopup } from '../TransactionSettingsPopup'
-import { Form, FormButton, InputWrap, STokenSelectorField } from './styles'
+import {
+  Form,
+  FormButton,
+  InputWrap,
+  STokenSelectorField,
+  SwapInfoBlock,
+  SwitchButton,
+} from './styles'
 import { SwapFormModel, SwapFormProps } from './types'
 
 export const SwapForm: React.FC<SwapFormProps> = (props) => {
@@ -23,8 +32,20 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
   const [tokenPopupOpen, setTokenPopupOpen] = useState(false)
   const [settingsPopupOpen, setSettingsPopupOpen] = useState(false)
 
-  const { errors } = form
+  const {
+    errors,
+    values: { marketFrom, marketTo, amountFrom, amountTo },
+  } = form
   const error = Object.values(errors)[0]
+
+  const switchMarkets = () => {
+    form.setFieldValue('marketFrom', marketTo)
+    form.setFieldValue('marketTo', marketFrom)
+    form.setFieldValue('amountFrom', amountTo)
+    form.setFieldValue('amountTo', amountFrom)
+  }
+
+  const marketToName = useTokenSymbol(marketTo.mint)
 
   return (
     <Form>
@@ -54,6 +75,9 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
             <STokenSelectorField tokens={tokens} name="marketFrom" />
           </TokenAmountInputField>
         </InputWrap>
+        <SwitchButton onClick={switchMarkets}>
+          <SvgIcon src={Arrows} />
+        </SwitchButton>
         <InputWrap>
           <TokenAmountInputField
             name="amountTo"
@@ -64,6 +88,30 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
           </TokenAmountInputField>
         </InputWrap>
       </BlockContent>
+      <SwapInfoBlock>
+        <FlexBlock justifyContent="space-between" alignItems="center">
+          <InlineText size="sm">Route:</InlineText>
+          <InlineText size="sm">SOL -&gt; RIN -&gt; USD</InlineText>
+        </FlexBlock>
+        <FlexBlock justifyContent="space-between" alignItems="center">
+          <InlineText size="sm">Minimum received:</InlineText>
+          <InlineText size="sm" color="success">
+            224.24 {marketToName}
+          </InlineText>
+        </FlexBlock>
+        <FlexBlock justifyContent="space-between" alignItems="center">
+          <InlineText size="sm">Price Impact:</InlineText>
+          <InlineText size="sm" color="success">
+            1.24%
+          </InlineText>
+        </FlexBlock>
+        <FlexBlock justifyContent="space-between" alignItems="center">
+          <InlineText size="sm">Fee:</InlineText>
+          <InlineText size="sm" color="success">
+            $2.24
+          </InlineText>
+        </FlexBlock>
+      </SwapInfoBlock>
       <BlockContent>
         <FormButton $padding="lg" disabled={!!error}>
           {error || 'Swap'}

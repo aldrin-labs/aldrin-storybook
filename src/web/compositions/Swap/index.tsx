@@ -1,5 +1,5 @@
 import { FormikProvider, useFormik } from 'formik'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { compose } from 'recompose'
 
 import {
@@ -24,23 +24,22 @@ import { SwapForm } from './components/SwapForm'
 import { SwapFormModel } from './components/SwapForm/types'
 import { SwapSearch } from './components/SwapSearch'
 import { SearchItem } from './components/SwapSearch/types'
+import { TokensList } from './components/TokensList'
 import StakeIcon from './img/stake.svg'
 import {
   RootRow,
   SPage,
   Content,
   SBlock,
-  TabsContainer,
-  Tab,
   StakeBlock,
   StakingLink,
   FormBlock,
+  SCell,
 } from './styles'
 import { SwapPageProps, SwapPageBaseProps } from './types'
 
 const SwapPageInner: React.FC<SwapPageProps> = (props) => {
   const { tokens, poolsInfoRefetch } = props
-  const [searchValue, onChangeSearch] = useState('')
 
   const [_, refreshUserTokens] = useUserTokenAccounts()
 
@@ -84,7 +83,7 @@ const SwapPageInner: React.FC<SwapPageProps> = (props) => {
 
   return (
     <>
-      <Cell col={12} colLg={6}>
+      <Cell col={12} colMd={9} colXl={5}>
         <SBlock>
           <BlockContent border>
             <BlockTitle>
@@ -108,7 +107,7 @@ const SwapPageInner: React.FC<SwapPageProps> = (props) => {
           <Chart />
         </SBlock>
       </Cell>
-      <Cell col={12} colLg={4}>
+      <Cell col={12} colXl={4}>
         <SwapSearch onSelect={onSearchSelect} tokens={tokens} />
         <FormBlock>
           <FormikProvider value={form}>
@@ -123,7 +122,6 @@ const SwapPageInner: React.FC<SwapPageProps> = (props) => {
 const SwapPage: React.FC<SwapPageBaseProps> = (props) => {
   const { poolsInfo, poolsInfoRefetch } = props
 
-  const [activeTab, setActiveTab] = useState<'hot' | 'portfolio'>('hot')
   const [userTokens] = useUserTokenAccounts()
 
   const allTokens = useMemo(() => {
@@ -156,27 +154,9 @@ const SwapPage: React.FC<SwapPageBaseProps> = (props) => {
     <SPage>
       <Content>
         <RootRow>
-          <Cell col={12} colLg={2}>
+          <SCell col={12} colMd={3} colXl={3}>
             <SBlock>
-              <BlockContent border>
-                <BlockTitle>
-                  <TabsContainer>
-                    <Tab
-                      active={activeTab === 'hot'}
-                      onClick={() => setActiveTab('hot')}
-                    >
-                      Hot Tokens
-                    </Tab>
-                    <Tab
-                      active={activeTab === 'portfolio'}
-                      onClick={() => setActiveTab('portfolio')}
-                    >
-                      Portfolio
-                    </Tab>
-                  </TabsContainer>
-                </BlockTitle>
-              </BlockContent>
-              <BlockContent>Tokens</BlockContent>
+              <TokensList />
             </SBlock>
             <StakeBlock>
               <StakingLink to="/staking">
@@ -195,7 +175,7 @@ const SwapPage: React.FC<SwapPageBaseProps> = (props) => {
                 </BlockContentStretched>
               </StakingLink>
             </StakeBlock>
-          </Cell>
+          </SCell>
           <SwapPageInner
             poolsInfoRefetch={poolsInfoRefetch}
             poolsInfo={poolsInfo}

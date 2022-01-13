@@ -18,22 +18,17 @@ import {
 import { SearchItem, SwapSearchProps } from './types'
 
 const NUM_PATTERN = /\d{0,}\.?\d{0,}$/
-const SEARCH_PATTERN =
-  /(\d{0,}\.?\d{0,})([a-zA-Z]{1,})(\d{0,}\.?\d{0,})\s{0,}([a-zA-Z]{1,})/
 
 export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   const { tokens, onSelect } = props
   const [searchValue, setSearchValue] = useState('')
-  const [listOpened, setListOpened] = useState(true)
+  const [listOpened, setListOpened] = useState(false)
   const [searchItems, setSearchItems] = useState<SearchItem[]>([])
   const tokensMap = useTokenInfos()
 
   const onInput = (value: string) => {
     setSearchItems(() => {
       const groups = value.split(' ').filter((_) => !!_ && _ !== 'to')
-
-      // const matches = groups.match(SEARCH_PATTERN)
-      // console.log('groups: ', groups, matches)
 
       if (groups.length === 0) {
         return []
@@ -102,8 +97,10 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
       return tokensTo.map((tokenTo) => ({
         tokenTo,
         tokenFrom,
-        amountFrom: Number.isNaN(amountFrom) ? undefined : amountFrom,
-        amountTo: Number.isNaN(amountTo) ? undefined : amountTo,
+        amountFrom: Number.isNaN(amountFrom)
+          ? undefined
+          : amountFrom.toString(),
+        amountTo: Number.isNaN(amountTo) ? undefined : amountTo.toString(),
       }))
     })
 

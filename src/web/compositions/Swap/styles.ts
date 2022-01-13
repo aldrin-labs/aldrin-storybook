@@ -1,19 +1,13 @@
-import {
-  BORDER_RADIUS,
-  COLORS,
-  FONT_SIZES,
-  TRANSITION,
-} from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Block } from '@sb/components/Block'
-import { Input } from '@sb/components/Input'
-import { Row, Page, WideContent } from '@sb/components/Layout'
+import { Row, Page, WideContent, Cell } from '@sb/components/Layout'
+
+import { COLORS } from '@variables/variables'
 
 import stakeBg from './img/stake-bg.png'
 import bg from './img/swaps-bg.png'
-import { SwapTabsProps } from './types'
 
 export const SPage = styled(Page)`
   display: flex;
@@ -22,9 +16,9 @@ export const SPage = styled(Page)`
 `
 
 export const RootRow = styled(Row)`
-  padding: 32px 0;
-  min-height: 600px;
-  max-height: 800px;
+  padding: 10px 0;
+  min-height: 590px;
+  max-height: 700px;
   width: 100%;
   margin: auto;
 `
@@ -36,10 +30,15 @@ export const Content = styled(WideContent)`
   align-items: center;
 `
 
+export const SCell = styled(Cell)`
+  height: 100%;
+`
+
 export const SBlock = styled(Block)`
   background: ${COLORS.swapBlockBg};
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `
 
 export const StakeBlock = styled(Block)`
@@ -50,28 +49,6 @@ export const StakeBlock = styled(Block)`
 export const FormBlock = styled(SBlock)`
   display: flex;
   flex-direction: column;
-`
-
-export const TabsContainer = styled.div`
-  background: ${COLORS.bodyBackground};
-  border-radius: ${BORDER_RADIUS.md};
-  display: flex;
-  flex-direction: row;
-  margin: -3px 0;
-`
-
-export const Tab = styled.div<SwapTabsProps>`
-  flex: 1;
-  font-size: ${FONT_SIZES.xs};
-  border-radius: ${BORDER_RADIUS.md};
-  text-align: center;
-  cursor: pointer;
-  transition: ${TRANSITION};
-  height: 36px;
-  line-height: 36px;
-
-  ${(props: SwapTabsProps) =>
-    props.active ? `background: ${COLORS.background};` : ''}
 `
 
 export const StakingLink = styled(Link)`

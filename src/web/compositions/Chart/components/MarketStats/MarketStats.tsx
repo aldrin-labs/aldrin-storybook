@@ -164,6 +164,8 @@ const MarketStats: React.FC<IProps> = (props) => {
 
   const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
 
+  console.log()
+
   const priceChangePercentage = !prevClosePrice
     ? 0
     : (markPrice - prevClosePrice) / (prevClosePrice / 100)
@@ -257,7 +259,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               </PanelCardValue>
             </PanelCard>
           </>
-        )} 
+        )}
       </MarketStatsContainer>
       <MobileMarketStatsContainer>
         <Title

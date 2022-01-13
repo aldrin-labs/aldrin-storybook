@@ -1,8 +1,11 @@
 import styled from 'styled-components'
 
 import { Button } from '@sb/components/Button'
+import { FlexBlock } from '@sb/components/Layout'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { TokenRow } from '@sb/components/TokenSelector/styles'
+
+import { BORDER_RADIUS, COLORS } from '@variables/variables'
 
 export const FormButton = styled(Button)`
   width: 100%;
@@ -29,4 +32,20 @@ export const Form = styled.form`
   flex-direction: column;
   justify-content: space-between;
   flex: 1;
+`
+
+export const SwitchButton = styled.div`
+  margin: 5px 20px;
+  cursor: pointer;
+`
+
+export const SwapInfoBlock = styled.div`
+  background: ${COLORS.swapBlockBg};
+  border-radius: ${BORDER_RADIUS.md};
+  padding: 10px 20px;
+  margin: 0 20px;
+
+  ${FlexBlock} {
+    margin: 10px 0;
+  }
 `

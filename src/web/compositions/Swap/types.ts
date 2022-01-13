@@ -10,7 +10,3 @@ export interface SwapPageBaseProps {
 export interface SwapPageProps extends SwapPageBaseProps {
   tokens: Token[]
 }
-
-export interface SwapTabsProps {
-  active?: boolean
-}
