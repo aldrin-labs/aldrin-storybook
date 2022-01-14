@@ -14,7 +14,7 @@ import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingSta
 import { UNLOCK_STAKED_AFTER } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { uniq } from '@sb/utils/collection'
+import { uniq } from '@sb/utils'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { estimateTime, MINUTE } from '@core/utils/dateUtils'

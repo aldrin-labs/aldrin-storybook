@@ -42,6 +42,9 @@ export const useFarmingCalcAccounts = () => {
 
   return useSwr(
     `farming-calc-accounts-${wallet.publicKey?.toString()}`,
-    fetcher
+    fetcher,
+    {
+      refreshInterval: 15 * 60_000,
+    }
   )
 }

@@ -24,6 +24,9 @@ export const useStakingCalcAccounts = () => {
 
   return useSwr(
     `staking-calc-accounts-${wallet.publicKey?.toString()}`,
-    fetcher
+    fetcher,
+    {
+      refreshInterval: 15 * 60_000,
+    }
   )
 }

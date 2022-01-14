@@ -1,5 +1,5 @@
-import { COLORS } from '@variables/variables'
 import styled from 'styled-components'
+import { COLORS } from '@variables/variables'
 
 export interface BlockProps {
   $backgroundImage?: string

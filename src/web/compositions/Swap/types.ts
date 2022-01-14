@@ -7,6 +7,11 @@ export interface SwapPageBaseProps {
   poolsInfoRefetch: () => Promise<{ getPoolsInfo: PoolInfo[] }>
   poolsInfo: { getPoolsInfo: PoolInfo[] }
 }
+
 export interface SwapPageProps extends SwapPageBaseProps {
-  tokens: Token[]
+  tokens: TokenWithSymbol[]
+}
+
+export interface TokenWithSymbol extends Token {
+  symbol: string
 }

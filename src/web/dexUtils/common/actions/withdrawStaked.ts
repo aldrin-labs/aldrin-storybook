@@ -9,7 +9,7 @@ import {
 
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
-import { splitBy } from '../../../utils/collection'
+import { splitBy } from '../../../utils'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '../../send'

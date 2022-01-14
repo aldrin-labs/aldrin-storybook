@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
+
 import dayjs from 'dayjs'
 import React, { useCallback, useState } from 'react'
 
@@ -46,9 +46,8 @@ import { daysInMonthForDate } from '@core/utils/dateUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import InfoIcon from '@icons/inform.svg'
+import { COLORS } from '@variables/variables'
 
-import { groupBy } from '../../../utils/collection'
-import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
   Asterisks,
   BalanceRow,
@@ -67,6 +66,8 @@ import {
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
+import { groupBy } from '../../../utils'
+import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 
 interface UserBalanceProps {
   value: number

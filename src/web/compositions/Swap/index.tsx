@@ -1,5 +1,6 @@
 import { FormikProvider, useFormik } from 'formik'
 import React, { useEffect, useMemo } from 'react'
+import { useLocation } from 'react-router'
 import { compose } from 'recompose'
 
 import {
@@ -16,9 +17,9 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
 import { TokenIcon } from '../../components/TokenIcon'
-import { Token } from '../../components/TokenSelector/SelectTokenModal'
 import { InlineText } from '../../components/Typography'
-import { useTokenSymbol } from '../../dexUtils/tokenRegistry'
+import { getTokenNameByMintAddress } from '../../dexUtils/markets'
+import { useTokenInfos, useTokenSymbol } from '../../dexUtils/tokenRegistry'
 import { Chart } from './components/Chart'
 import { SwapForm } from './components/SwapForm'
 import { SwapFormModel } from './components/SwapForm/types'
@@ -36,10 +37,15 @@ import {
   FormBlock,
   SCell,
 } from './styles'
-import { SwapPageProps, SwapPageBaseProps } from './types'
+import { SwapPageProps, SwapPageBaseProps, TokenWithSymbol } from './types'
 
 const SwapPageInner: React.FC<SwapPageProps> = (props) => {
   const { tokens, poolsInfoRefetch } = props
+
+  const { search } = useLocation()
+  const params = useMemo(() => new URLSearchParams(search), [search])
+  const tokenFrom = params.get('base') || params.get('from')
+  const tokenTo = params.get('quote') || params.get('to')
 
   const [_, refreshUserTokens] = useUserTokenAccounts()
 
@@ -48,10 +54,20 @@ const SwapPageInner: React.FC<SwapPageProps> = (props) => {
     refreshUserTokens()
   }
 
+  const defaultMarketFrom =
+    tokens.find(
+      (token) => token.symbol.toLowerCase() === tokenFrom?.toLowerCase()
+    ) || tokens.find((token) => token.symbol === 'SOL')
+
+  const defaultMarketTo =
+    tokens.find(
+      (token) => token.symbol.toLowerCase() === tokenTo?.toLowerCase()
+    ) || tokens.find((token) => token.symbol === 'RIN')
+
   const form = useFormik<SwapFormModel>({
     initialValues: {
-      marketFrom: tokens[0],
-      marketTo: tokens[1],
+      marketFrom: defaultMarketFrom || tokens[0],
+      marketTo: defaultMarketTo || tokens[1],
       amountFrom: '0',
       amountTo: '0',
       slippageTolerance: 0.1,
@@ -123,28 +139,30 @@ const SwapPage: React.FC<SwapPageBaseProps> = (props) => {
   const { poolsInfo, poolsInfoRefetch } = props
 
   const [userTokens] = useUserTokenAccounts()
-
+  const tokensInfo = useTokenInfos()
   const allTokens = useMemo(() => {
     const poolMints = new Set(
       poolsInfo.getPoolsInfo.map((pool) => [pool.tokenA, pool.tokenB]).flat()
     )
 
-    const tokens: Token[] = userTokens
+    const tokens: TokenWithSymbol[] = userTokens
       .filter((token) => poolMints.has(token.mint))
       .map((ut) => ({
         mint: ut.mint,
         account: ut.address,
         balance: ut.amount,
+        symbol: ut.symbol,
       }))
       .sort((a, b) => a.mint.localeCompare(b.mint))
 
     const userTokensMints = new Set(userTokens.map((ut) => ut.mint))
 
-    const tokensWithoutUserAccount: Token[] = [...poolMints]
+    const tokensWithoutUserAccount: TokenWithSymbol[] = [...poolMints]
       .filter((token) => !userTokensMints.has(token))
       .map((mint) => ({
         mint,
         balance: 0,
+        symbol: tokensInfo.get(mint)?.symbol || getTokenNameByMintAddress(mint),
       }))
 
     return [...tokens, ...tokensWithoutUserAccount]

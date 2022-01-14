@@ -1,6 +1,8 @@
-import { BORDER_RADIUS, COLORS, FONTS } from '@variables/variables'
 import styled from 'styled-components'
 
+import { BORDER_RADIUS, COLORS, FONTS, BREAKPOINTS } from '@variables/variables'
+
+import { BlockContent } from '../Block'
 import { Input } from '../Input'
 import { FlexBlock } from '../Layout'
 
@@ -31,7 +33,7 @@ export const TokenName = styled.span`
   margin-left: 10px;
 `
 
-export const Balance = styled.span`
+export const BalanceBlock = styled.div`
   margin-left: auto;
 `
 
@@ -39,20 +41,23 @@ export const TokenRow = styled(FlexBlock)`
   padding: 10px 0;
   align-items: center;
   font-weight: 600;
-  width: 240px;
   cursor: pointer;
 `
 
-export const TokenModalRow = styled(TokenRow)`
-  border-bottom: 1px solid ${COLORS.background};
-  &:hover {
-    ${TokenName} {
-      font-weight: bold;
-    }
+export const TokenModalContent = styled(BlockContent)`
+  @media (min-width: ${BREAKPOINTS.md}) {
+    width: 600px;
   }
 `
 
+export const TokenModalRow = styled(TokenRow)`
+  background: ${COLORS.background};
+  border-radius: ${BORDER_RADIUS.md};
+  margin: 12px 0;
+  padding: 24px;
+`
+
 export const SearchInput = styled(Input)`
-  border-radius: ${BORDER_RADIUS.lg};
+  border-radius: ${BORDER_RADIUS.md};
   margin: -15px 0 20px 0;
 `

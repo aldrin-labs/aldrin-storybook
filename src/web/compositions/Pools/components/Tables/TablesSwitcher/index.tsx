@@ -1,4 +1,3 @@
-import { COLORS } from '@variables/variables'
 import { ApolloQueryResult } from 'apollo-client'
 import React, { useState } from 'react'
 import { Route, useHistory } from 'react-router'
@@ -38,6 +37,8 @@ import { getRandomInt } from '@core/utils/helpers'
 
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
+
+import { COLORS } from '@variables/variables'
 
 import { PoolPage } from '../../PoolPage'
 import { CreatePoolModal } from '../../Popups'
@@ -163,6 +164,20 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const tradingVolumes =
     getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools ||
     []
+
+  // const pool = pools.find((p) => p.parsedName === 'USDC_USDT')
+  // const calcAccountsForPool = (pool?.farming || [])
+  //   .map((fs) => calcAccounts?.get(fs.farmingState))
+  //   .filter((ca): ca is FarmingCalc => !!ca)
+  //   .map((ca) => ({
+  //     ...ca,
+  //     key: ca.publicKey.toString,
+  //     amount: ca.tokenAmount.toString(),
+  //   }))
+
+  // const ticketsForPool = farmingTicketsMap.get(pool?.swapToken)
+
+  // console.log('calcAccountsForPool', calcAccountsForPool, ticketsForPool)
 
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
