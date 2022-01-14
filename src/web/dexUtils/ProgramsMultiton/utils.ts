@@ -2,13 +2,17 @@ import { ConfirmOptions } from '@solana/web3.js'
 
 import { MASTER_BUILD } from '@core/utils/config'
 
+// dev v1: RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx
+// prod v1: AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6
 export const POOLS_PROGRAM_ADDRESS = MASTER_BUILD
   ? 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
-  : 'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
+  : 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
 
+// dev v2: RinFPaym3xbnndu4SfQPAt1NzQWTfqL34cvf9eafakk
+// prod v2: CURVGoZn8zycx6FXwwevgBTB2gVvdbGTEpvMJDbgs2t4
 export const POOLS_V2_PROGRAM_ADDRESS = MASTER_BUILD
   ? 'CURVGoZn8zycx6FXwwevgBTB2gVvdbGTEpvMJDbgs2t4'
-  : 'RinFPaym3xbnndu4SfQPAt1NzQWTfqL34cvf9eafakk'
+  : 'CURVGoZn8zycx6FXwwevgBTB2gVvdbGTEpvMJDbgs2t4'
 
 export const MARKET_ORDER_PROGRAM_ADDRESS =
   'EVAsnnEkPuDXDnGG2AtHNunXBNqK44Nd3bZauH7zKndP'

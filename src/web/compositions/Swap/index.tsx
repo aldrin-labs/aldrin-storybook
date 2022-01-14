@@ -1,7 +1,5 @@
 import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
-import { PublicKey } from '@solana/web3.js'
-import BN from 'bn.js'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
@@ -25,12 +23,12 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { swap } from '@sb/dexUtils/pools/actions/swap'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { usePoolsBalances } from '@sb/dexUtils/pools/hooks/usePoolsBalances'
 import {
   getMultiSwapAmountOut,
-  Route,
+  SwapRoute,
 } from '@sb/dexUtils/pools/swap/getMultiSwapAmountOut'
 import {
   getPoolsForSwapActiveTab,
@@ -38,6 +36,7 @@ import {
   getDefaultBaseToken,
   getDefaultQuoteToken,
 } from '@sb/dexUtils/pools/swap/index'
+import { multiSwap } from '@sb/dexUtils/pools/swap/multiSwap'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { sleep } from '@sb/dexUtils/utils'
@@ -186,22 +185,28 @@ const SwapPage = ({
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
   const [isSwapInProgress, setIsSwapInProgress] = useState(false)
-  const [swapRoute, setSwapRoute] = useState<Route | null>(null)
+  const [swapRoute, setSwapRoute] = useState<SwapRoute | null>(null)
+
+  const poolsBalancesMap = usePoolsBalances({
+    pools: swapRoute ? swapRoute.map((step) => step.pool) : [],
+  })
+
+  console.log({
+    poolsBalancesMap,
+    swapRoute,
+  })
 
   const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
   const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
 
   const { baseTokenAmount: poolAmountTokenA } = poolBalances
 
-  let {
-    address: userBaseTokenAccount,
-    amount: maxBaseAmount,
-    decimals: baseTokenDecimals,
-  } = getTokenDataByMint(
-    allTokensData,
-    baseTokenMintAddress,
-    selectedBaseTokenAddressFromSeveral
-  )
+  let { amount: maxBaseAmount, address: userBaseTokenAccount } =
+    getTokenDataByMint(
+      allTokensData,
+      baseTokenMintAddress,
+      selectedBaseTokenAddressFromSeveral
+    )
 
   // if we swap native sol to smth, we need to leave some SOL for covering fees
   if (nativeSOLTokenData?.address === userBaseTokenAccount) {
@@ -214,11 +219,7 @@ const SwapPage = ({
     }
   }
 
-  const {
-    address: userQuoteTokenAccount,
-    decimals: quoteTokenDecimals,
-    amount: maxQuoteAmount,
-  } = getTokenDataByMint(
+  const { amount: maxQuoteAmount } = getTokenDataByMint(
     allTokensData,
     quoteTokenMintAddress,
     selectedQuoteTokenAddressFromSeveral
@@ -238,35 +239,14 @@ const SwapPage = ({
 
   const isButtonDisabled =
     isTokenABalanceInsufficient ||
-    !selectedPool ||
-    !selectedPool.supply ||
     +baseAmount === 0 ||
     +quoteAmount === 0 ||
     isSwapInProgress
-
-  // for cases with SOL token
-  const isBaseTokenSOL = baseSymbol === 'SOL'
-  const isQuoteTokenSOL = quoteSymbol === 'SOL'
-
-  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
-
-  const isNativeSOLSelected =
-    nativeSOLTokenData?.address === userBaseTokenAccount ||
-    nativeSOLTokenData?.address === userQuoteTokenAccount
-
-  const userPoolBaseTokenAccount = isSwapBaseToQuote
-    ? userBaseTokenAccount
-    : userQuoteTokenAccount
-
-  const userPoolQuoteTokenAccount = isSwapBaseToQuote
-    ? userQuoteTokenAccount
-    : userBaseTokenAccount
 
   const setBaseAmountWithQuote = async (
     newBaseAmount: string | number,
     baseTokenMintFromArgs?: string,
     quoteTokenMintFromArgs?: string
-    // isSwapBaseToQuoteFromArgs?: boolean
   ) => {
     setBaseAmount(newBaseAmount)
 
@@ -275,8 +255,6 @@ const SwapPage = ({
       baseTokenMint: baseTokenMintFromArgs ?? baseTokenMintAddress,
       quoteTokenMint: quoteTokenMintFromArgs ?? quoteTokenMintAddress,
       amountIn: +newBaseAmount,
-      slippage: slippageTolerance,
-      tokensMap,
     })
 
     console.log('route', route)
@@ -300,8 +278,6 @@ const SwapPage = ({
       baseTokenMint: quoteTokenMintAddress,
       quoteTokenMint: baseTokenMintAddress,
       amountIn: +newQuoteAmount,
-      slippage: slippageTolerance,
-      tokensMap,
     })
 
     // do not set 0, leave 0 placeholder
@@ -345,8 +321,6 @@ const SwapPage = ({
     baseTokenMint: baseTokenMintAddress,
     quoteTokenMint: quoteTokenMintAddress,
     amountIn: 1,
-    slippage: slippageTolerance,
-    tokensMap,
   })
 
   return (
@@ -538,38 +512,28 @@ const SwapPage = ({
                 transition="all .4s ease-out"
                 disabled={isButtonDisabled}
                 onClick={async () => {
-                  if (!selectedPool) return
+                  // load pools balances
+
+                  // pass pools balance
+                  const [_, updatedSwapRoute] = getMultiSwapAmountOut({
+                    pools,
+                    baseTokenMint: baseTokenMintAddress,
+                    quoteTokenMint: quoteTokenMintAddress,
+                    amountIn: +baseAmount,
+                    slippage: slippageTolerance,
+                  })
+
+                  console.log('swapRoute2', updatedSwapRoute)
+
+                  if (!updatedSwapRoute) return
 
                   setIsSwapInProgress(true)
 
-                  console.log('baseTokenDecimals', {
-                    baseTokenDecimals,
-                    quoteTokenDecimals,
-                  })
-
-                  const swapAmountIn = new BN(
-                    +baseAmount * 10 ** baseTokenDecimals
-                  )
-                  const swapAmountOut = new BN(
-                    +totalWithFees * 10 ** quoteTokenDecimals
-                  )
-
-                  const result = await swap({
+                  const result = await multiSwap({
                     wallet,
                     connection,
-                    poolPublicKey: new PublicKey(selectedPool.swapToken),
-                    userBaseTokenAccount: userPoolBaseTokenAccount
-                      ? new PublicKey(userPoolBaseTokenAccount)
-                      : null,
-                    userQuoteTokenAccount: userPoolQuoteTokenAccount
-                      ? new PublicKey(userPoolQuoteTokenAccount)
-                      : null,
-                    swapAmountIn,
-                    swapAmountOut,
-                    isSwapBaseToQuote,
-                    transferSOLToWrapped:
-                      isPoolWithSOLToken && isNativeSOLSelected,
-                    curveType: selectedPool.curveType,
+                    allTokensData,
+                    swapRoute: updatedSwapRoute,
                   })
 
                   if (result === 'success') {
@@ -608,8 +572,8 @@ const SwapPage = ({
                 ) : isTokenABalanceInsufficient ? (
                   `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                   } Balance`
-                ) : !selectedPool ? (
-                  'No pools available'
+                ) : !swapRoute ? (
+                  'No route for swap'
                 ) : needEnterAmount ? (
                   'Enter amount'
                 ) : (

@@ -42,6 +42,10 @@ export async function createBasketWithSwap({
 }) {
   const { swapToken, curveType, tokenADecimals, tokenBDecimals } = pool
 
+  console.log({
+    transferSOLToWrapped,
+  })
+
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection: connection.getConnection(),

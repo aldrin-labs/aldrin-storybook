@@ -1,4 +1,5 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
+
 import { PoolBalances } from '../hooks/usePoolBalances'
 import { CURVE } from '../types'
 import { getMinimumReceivedFromProductCurve } from './getMinimumReceivedFromProductCurve'
@@ -42,7 +43,7 @@ export const getMinimumReceivedAmountFromSwap = ({
 
   // remove slippage part if determined
   if (slippage) {
-    swapAmountOut = swapAmountOut - (swapAmountOut / 100) * slippage
+    swapAmountOut -= (swapAmountOut / 100) * slippage
   }
 
   return swapAmountOut

@@ -78,6 +78,13 @@ export const getSwapTransaction = async ({
   ) {
     const isBaseTokenNativeSol = baseTokenMint.equals(WRAPPED_SOL_MINT)
 
+    console.log(
+      'isBaseTokenNativeSol',
+      isBaseTokenNativeSol,
+      'isSwapBaseToQuote',
+      isSwapBaseToQuote
+    )
+
     // if we swap base to quote and base is native sol or
     // if we swap quote to base and quote is native sol we need to transfer funds for swap
     if (

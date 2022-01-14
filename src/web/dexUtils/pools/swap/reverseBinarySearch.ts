@@ -1,4 +1,5 @@
 import { SLIPPAGE_PERCENTAGE } from '@sb/compositions/Swap/config'
+
 import {
   FindClosestAmountToSwapForDepositParams,
   SwapOptions,

@@ -1,26 +1,23 @@
-import { TokenInfo } from '@solana/spl-token-registry'
-import BN from 'bn.js'
-
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 
 import { Graph } from '@core/utils/graph/Graph'
+import { toBNWithDecimals } from '@core/utils/helpers'
 
 import { getSelectedPoolForSwap } from '.'
 import { PoolBalances } from '../hooks'
 import { getMinimumReceivedAmountFromSwap } from './getMinimumReceivedAmountFromSwap'
 
-type Step = {
+type SwapStep = {
   pool: PoolInfo
   isSwapBaseToQuote: boolean
   swapAmountIn: number
   swapAmountOut: number
 }
 
-export type Route = Step[]
+export type SwapRoute = SwapStep[]
 
 const getMultiSwapAmountOut = ({
   pools,
-  tokensMap,
   amountIn,
   baseTokenMint,
   quoteTokenMint,
@@ -28,11 +25,10 @@ const getMultiSwapAmountOut = ({
 }: {
   pools: PoolInfo[]
   amountIn: number
-  tokensMap: Map<string, TokenInfo>
   baseTokenMint: string
   quoteTokenMint: string
-  slippage: number
-}): [number, Route] => {
+  slippage?: number
+}): [number, SwapRoute | null] => {
   const graph = new Graph()
 
   pools.forEach((pool) => {
@@ -40,10 +36,19 @@ const getMultiSwapAmountOut = ({
   })
 
   const allPaths = graph.getAllPaths(baseTokenMint, quoteTokenMint)
-  const shortPaths = allPaths.filter((path) => path.length <= 4)
 
-  const routes: [number, Route][] = shortPaths.map((path) => {
-    const route: Route = []
+  if (allPaths.length === 0) {
+    return [0, null]
+  }
+
+  let shortPaths = allPaths.filter((path) => path.length <= 4)
+
+  if (shortPaths.length === 0 && allPaths.length > 0) {
+    shortPaths = allPaths
+  }
+
+  const routes: [number, SwapRoute][] = shortPaths.map((path) => {
+    const route: SwapRoute = []
 
     let baseMint = ''
     let quoteMint = ''
@@ -51,17 +56,14 @@ const getMultiSwapAmountOut = ({
     let tempSwapAmountIn = amountIn
     let multiSwapAmountOut = 0
 
-    path.forEach((mint, index) => {
-      const symbol = tokensMap.get(mint)?.symbol
+    let index = 0
 
-      if (!symbol) {
-        return
-      }
-
+    for (const mint of path) {
       // determine pool & side
       if (index === 0) {
         baseMint = mint
-        return
+        index += 1
+        continue
       }
 
       if (index === 1) {
@@ -79,17 +81,17 @@ const getMultiSwapAmountOut = ({
 
       const isSwapBaseToQuote = pool.tokenA === baseMint
 
-      console.log('data', {
-        pool,
-        baseMint,
-        isSwapBaseToQuote,
-      })
-
       const poolBalances: PoolBalances = {
         baseTokenAmount: pool.tvl.tokenA,
         quoteTokenAmount: pool.tvl.tokenB,
-        baseTokenAmountBN: new BN(pool.tvl.tokenA * 10 ** pool.tokenADecimals),
-        quoteTokenAmountBN: new BN(pool.tvl.tokenB * 10 ** pool.tokenBDecimals),
+        baseTokenAmountBN: toBNWithDecimals(
+          pool.tvl.tokenA,
+          pool.tokenADecimals
+        ),
+        quoteTokenAmountBN: toBNWithDecimals(
+          pool.tvl.tokenB,
+          pool.tokenBDecimals
+        ),
       }
 
       const swapAmountOut = getMinimumReceivedAmountFromSwap({
@@ -109,7 +111,9 @@ const getMultiSwapAmountOut = ({
 
       tempSwapAmountIn = swapAmountOut
       multiSwapAmountOut = swapAmountOut
-    })
+
+      index += 1
+    }
 
     return [multiSwapAmountOut, route]
   })
