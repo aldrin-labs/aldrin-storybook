@@ -231,6 +231,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
+        if (createAccountsTxId !== 'success') {
+          throw new Error('createAccountsTxId failed')
+        }
         await sleep(1000)
 
         setProcessingStep(2)
@@ -239,6 +242,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           transaction: generatedTransactions.setAuthorities,
           connection,
         })
+        if (setAuthoritiesTxId !== 'success') {
+          throw new Error('setAuthoritiesTxId failed')
+        }
         console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
         await sleep(1000)
 
@@ -248,6 +254,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           transaction: generatedTransactions.createPool,
           connection,
         })
+        if (initPoolTxId !== 'success') {
+          throw new Error('initPoolTxId failed')
+        }
         console.log('initPoolTxId: ', initPoolTxId)
         await sleep(1000)
 
@@ -257,6 +266,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           transaction: generatedTransactions.firstDeposit,
           connection,
         })
+        if (firstDepositTxId !== 'success') {
+          throw new Error('firstDepositTxId failed')
+        }
         await sleep(1000)
 
         console.log('firstDepositTxId: ', firstDepositTxId)
@@ -268,6 +280,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             transaction: generatedTransactions.farming,
             connection,
           })
+          if (farmingTxId !== 'success') {
+            throw new Error('farmingTxId failed')
+          }
           await sleep(1000)
           console.log('farmingTxId: ', farmingTxId)
         }
