@@ -8,7 +8,6 @@ import { TimerButton } from '@sb/components/ReloadTimer/styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenAmountInputField } from '@sb/components/TokenAmountInput'
 import { InlineText } from '@sb/components/Typography'
-import { useWallet } from '@sb/dexUtils/wallet'
 
 import Gear from '@icons/gear.svg'
 import Arrows from '@icons/switchArrows.svg'
@@ -29,7 +28,7 @@ import { SwapFormModel, SwapFormProps } from './types'
 
 export const SwapForm: React.FC<SwapFormProps> = (props) => {
   const { tokens, refreshAll } = props
-  const { connected } = useWallet()
+
   const form = useFormikContext<SwapFormModel>()
   const [tokenPopupOpen, setTokenPopupOpen] = useState(false)
   const [settingsPopupOpen, setSettingsPopupOpen] = useState(false)
@@ -48,10 +47,6 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
   }
 
   const marketToName = useTokenSymbol(marketTo.mint)
-
-  const tokensFrom = tokens.filter((token) =>
-    connected ? token.balance && token.balance > 0 : true
-  )
 
   return (
     <Form>
@@ -78,7 +73,7 @@ export const SwapForm: React.FC<SwapFormProps> = (props) => {
             setFieldValue={form.setFieldValue}
             available={form.values.marketFrom.balance}
           >
-            <STokenSelectorField tokens={tokensFrom} name="marketFrom" />
+            <STokenSelectorField tokens={tokens} name="marketFrom" />
           </TokenAmountInputField>
         </InputWrap>
         <SwitchButton onClick={switchMarkets}>
