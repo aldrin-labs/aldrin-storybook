@@ -106,8 +106,9 @@ export const endStakingInstructions = async (
           if (farmingStateForCalc) {
             // If farming ended - close calc
             const closeAccount =
+              ca.tokenAmount.eqn(0) &&
               farmingStateForCalc.tokensUnlocked ===
-              farmingStateForCalc.tokensTotal
+                farmingStateForCalc.tokensTotal
             if (closeAccount) {
               return program.instruction.closeFarmingCalc({
                 accounts: {
