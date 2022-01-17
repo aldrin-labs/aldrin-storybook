@@ -283,6 +283,7 @@ export const ChartCanvas = styled.canvas`
 export const RestakeButton = styled(Button)`
   flex: 1;
   margin-top: 10px;
+  padding-bottom: 0;
 `
 
 export const StyledLink = styled(Link)`

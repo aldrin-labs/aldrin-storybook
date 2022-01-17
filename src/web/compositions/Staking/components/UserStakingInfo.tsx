@@ -52,6 +52,7 @@ import {
   ClaimButtonContainer,
   Digit,
   FormsContainer,
+  RestakeButton,
   RewardsBlock,
   RewardsStats,
   RewardsStatsRow,
@@ -554,7 +555,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         </Button>
                       </span>
                     </DarkTooltip>
-                    <Button
+                    <RestakeButton
                       $variant="link"
                       $fontSize="xs"
                       $padding="lg"
@@ -564,7 +565,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       onClick={doRestake}
                     >
                       Restake
-                    </Button>
+                    </RestakeButton>
                   </ClaimButtonContainer>
                 </RewardsStats>
               </BlockContent>
