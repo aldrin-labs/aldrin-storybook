@@ -34,8 +34,8 @@ export async function createBasketWithSwap({
   pool: PoolInfo
   poolBalances: PoolBalances
   userPoolTokenAccount: PublicKey | null
-  userBaseTokenAccount: PublicKey
-  userQuoteTokenAccount: PublicKey
+  userBaseTokenAccount: PublicKey | null
+  userQuoteTokenAccount: PublicKey | null
   userBaseTokenAmount: number
   userQuoteTokenAmount: number
   transferSOLToWrapped: boolean
@@ -93,7 +93,21 @@ export async function createBasketWithSwap({
       throw new Error('Swap transaction creation failed')
     }
 
-    const [swapTransaction, swapSigners] = swapTransactionResult
+    const [
+      swapTransaction,
+      swapSigners,
+      newBaseTokenAccount,
+      newQuoteTokenAccount,
+    ] = swapTransactionResult
+
+    // if we created account in swap transaction
+    if (!userBaseTokenAccount) {
+      userBaseTokenAccount = newBaseTokenAccount
+    }
+
+    if (!userQuoteTokenAccount) {
+      userQuoteTokenAccount = newQuoteTokenAccount
+    }
 
     const baseAmountToDepositWithDecimals = new BN(
       baseAmountToDeposit * 10 ** tokenADecimals
