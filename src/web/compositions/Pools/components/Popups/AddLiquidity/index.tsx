@@ -522,8 +522,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
                 poolBalances,
                 userBaseTokenAmount: +baseAmount,
                 userQuoteTokenAmount: +quoteAmount,
-                userBaseTokenAccount: new PublicKey(userTokenAccountA),
-                userQuoteTokenAccount: new PublicKey(userTokenAccountB),
+                userBaseTokenAccount: userTokenAccountA
+                  ? new PublicKey(userTokenAccountA)
+                  : null,
+                userQuoteTokenAccount: userTokenAccountB
+                  ? new PublicKey(userTokenAccountB)
+                  : null,
                 userPoolTokenAccount: userPoolTokenAccount
                   ? new PublicKey(userPoolTokenAccount)
                   : null,
