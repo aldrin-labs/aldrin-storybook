@@ -1,48 +1,38 @@
 import { useFormik } from 'formik'
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 
-import { Input, INPUT_FORMATTERS, REGEXP_FORMATTER } from '@sb/components/Input'
-import { Loader } from '@sb/components/Loader/Loader'
+import { Button } from '@sb/components/Button'
+import { INPUT_FORMATTERS, Input } from '@sb/components/Input'
+import { FlexBlock } from '@sb/components/Layout'
+import { MINIMAL_STAKING_AMOUNT } from '@sb/dexUtils/common/config'
+import { STAKING_FARMING_TOKEN_DECIMALS } from '@sb/dexUtils/staking/config'
 import { TokenInfo } from '@sb/dexUtils/types'
 
 import { limitDecimalsCustom, stripByAmount } from '@core/utils/chartPageUtils'
 
 import StakeBtn from '@icons/stakeBtn.png'
 
-import { Button } from '../../../components/Button'
-import { MINIMAL_STAKING_AMOUNT } from '../../../dexUtils/common/config'
-import { STAKING_FARMING_TOKEN_DECIMALS } from '../../../dexUtils/staking/config'
 import { ButtonWrapper, FormItemFull, FormWrap, InputWrapper } from '../styles'
 
 interface StakingFormProps {
   tokenData: TokenInfo | undefined
   loading: { stake: boolean; unstake: boolean }
   start: (amount: number) => any
-  end: () => any
-  totalStaked: number
-  isUnstakeLocked: boolean
-  unlockAvailableDate: number
 }
 
-const INPUT_FORMATTER = REGEXP_FORMATTER(/^\d+(\.?)\d{0,5}$/)
-const formatter = (v: string, prevValue: string) =>
-  INPUT_FORMATTER(v.replace(',', '.'), prevValue)
 export const StakingForm: React.FC<StakingFormProps> = (props) => {
-  const { tokenData, totalStaked, loading, start, end, isUnstakeLocked } = props
-  const isUnstakeDisabled =
-    isUnstakeLocked || totalStaked === 0 || loading.unstake
+  const { tokenData, loading, start } = props
 
   const form = useFormik({
     // validateOnMount: true,
     initialValues: {
-      amount: 0,
-      amountUnstake: 0,
+      amount: '0',
     },
     onSubmit: async (values) => {
       start(parseFloat(values.amount))
       return false
     },
-    validate: (values) => {
+    validate: async (values) => {
       if (!values.amount) {
         return { amount: 'Enter value' }
       }
@@ -57,29 +47,15 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       if (amount > (tokenData?.amount || 0)) {
         return { amount: 'Too big' }
       }
+      return null
     },
   })
 
-  const prevTokenData = useRef(tokenData)
-
-  const maxButtonOnClick = (field: string, value: string | number) => {
-    form.setFieldValue(field, stripByAmount(tokenData?.amount))
-  }
-
-  const halfButtonOnClick = (field: string, value: string | number) => {
-    form.setFieldValue(field, stripByAmount(tokenData?.amount / 2))
-  }
-
-  useEffect(() => {
-    if (
-      tokenData &&
-      (!prevTokenData.current ||
-        prevTokenData.current.amount !== tokenData.amount)
-    ) {
-      prevTokenData.current = tokenData
+  const maxButtonOnClick = () => {
+    if (tokenData?.amount) {
       form.setFieldValue('amount', stripByAmount(tokenData.amount))
     }
-  }, [tokenData])
+  }
 
   return (
     <FormWrap onSubmit={form.handleSubmit}>
@@ -87,46 +63,44 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
         <InputWrapper>
           <Input
             placeholder="Enter amount..."
-            value={form.values.amount}
+            value={`${form.values.amount}`}
             onChange={async (v) => {
               const value = limitDecimalsCustom(v.toString())
               await form.setFieldValue('amount', value)
               form.validateForm()
             }}
             name="amount"
-            append="RIN"
-            maxButton
-            maxButtonOnClick={() =>
-              maxButtonOnClick('amount', tokenData?.amount)
-            }
-            halfButton
-            halfButtonOnClick={() =>
-              halfButtonOnClick('amount', tokenData?.amount)
+            append={
+              <FlexBlock direction="row" alignItems="center">
+                &nbsp;
+                <Button
+                  minWidth="2rem"
+                  $fontSize="xs"
+                  $borderRadius="xxl"
+                  onClick={maxButtonOnClick}
+                  type="button"
+                  $variant="utility"
+                >
+                  MAX
+                </Button>
+                &nbsp;
+                <span>RIN</span>
+              </FlexBlock>
             }
             formatter={INPUT_FORMATTERS.DECIMAL}
           />
         </InputWrapper>
         <ButtonWrapper>
           <Button
+            minWidth="70px"
             $backgroundImage={StakeBtn}
             $fontSize="xs"
             $padding="lg"
             $borderRadius="xxl"
+            $loading={loading.stake}
             disabled={Object.keys(form.errors).length !== 0 || loading.stake}
           >
-            {loading.stake ? <Loader /> : 'Stake'}
-          </Button>
-        </ButtonWrapper>
-        <ButtonWrapper>
-          <Button
-            $fontSize="xs"
-            $padding="lg"
-            $borderRadius="xxl"
-            onClick={() => end()}
-            disabled={isUnstakeDisabled}
-            type="button"
-          >
-            {loading.unstake ? <Loader /> : 'Unstake'}
+            Stake
           </Button>
         </ButtonWrapper>
       </FormItemFull>

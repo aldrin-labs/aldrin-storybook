@@ -11,6 +11,8 @@ import React, { useContext, useRef } from 'react'
 import { useAsyncData } from './fetch-loop'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
 
+export type AldrinConnection = MultiEndpointsConnection & Connection
+
 export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
   {
@@ -53,12 +55,12 @@ export const ConnectionProvider: React.FC = ({ children }) => {
   )
 }
 
-export function useConnection(): Connection {
-  return useContext(ConnectionContext).connection as Connection
+export function useConnection(): AldrinConnection {
+  return useContext(ConnectionContext).connection as AldrinConnection
 }
 
-export function useMultiEndpointConnection(): MultiEndpointsConnection {
-  return useContext(ConnectionContext).connection
+export function useMultiEndpointConnection(): AldrinConnection {
+  return useContext(ConnectionContext).connection as AldrinConnection
 }
 
 export function useSerumConnection(): Connection {

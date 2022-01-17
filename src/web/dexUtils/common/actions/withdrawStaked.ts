@@ -1,20 +1,18 @@
 import { TokenInstructions } from '@project-serum/serum'
 import {
-  Account,
-  Keypair,
   PublicKey,
+  Signer,
   SYSVAR_CLOCK_PUBKEY,
   Transaction,
 } from '@solana/web3.js'
 
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
-import { splitBy } from '../../../utils/collection'
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '../../send'
 import { findTokenAccount } from '../../token/utils/findTokenAccount'
-import { mergeTransactions, signAndSendTransactions } from '../../transactions'
+import { buildTransactions, signAndSendTransactions } from '../../transactions'
 import {
   DEFAULT_FARMING_TICKET_END_TIME,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
@@ -22,7 +20,9 @@ import {
 import { getCalcAccounts } from '../getCalcAccountsForWallet'
 import { WithdrawStakedParams } from './types'
 
-export const withdrawStaked = async (params: WithdrawStakedParams) => {
+export const withdrawStakedInstructions = async (
+  params: WithdrawStakedParams
+) => {
   const {
     wallet,
     connection,
@@ -33,7 +33,7 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
   } = params
 
   if (!wallet.publicKey) {
-    return 'failed'
+    throw new Error('No pubkey for wallet!')
   }
 
   const creatorPk = wallet.publicKey
@@ -246,9 +246,9 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
   // )
 
   // Generate withdrawFarmed transactions for calcs
-  const withdrawTransactions = await Promise.all(
-    splitBy(calcAccounts, 4).map(async (calcAccountChunck) => {
-      const calcs = calcAccountChunck.map(async (calcAccount) => {
+  const withdrawInstructions = (
+    await Promise.all(
+      calcAccounts.map(async (calcAccount) => {
         const fs = (stakingPool.farming || []).find(
           (farming) =>
             farming.farmingState === calcAccount.farmingState.toBase58()
@@ -316,41 +316,49 @@ export const withdrawStaked = async (params: WithdrawStakedParams) => {
 
           return tx
         }
-
-        return new Transaction()
+        return null
       })
-
-      const allTransactions = await Promise.all(calcs)
-      // TODO: check merging
-      return { transaction: mergeTransactions(allTransactions) }
-    })
+    )
   )
+    .filter((tx): tx is Transaction => !!tx)
+    .map((tx) => tx.instructions)
+    .flat()
 
-  const allTransactions: {
-    transaction: Transaction
-    signers?: (Keypair | Account)[]
-  }[] = [
-    // ...calculateTransactions.flat(2),
-    ...withdrawTransactions.flat(),
+  const instructions = [
+    ...createdAccounts
+      .map(({ transaction }) => transaction.instructions)
+      .flat(),
+    ...withdrawInstructions,
   ]
 
-  // console.log('allTrans: ', calculateTransactions, withdrawTransactions)
-  if (createdAccounts.length && allTransactions.length) {
-    const firstTx = allTransactions[0]
-    const newFirstTx = new Transaction()
-    createdAccounts.forEach((ca) => {
-      newFirstTx.add(ca.transaction)
-    })
-    newFirstTx.add(firstTx.transaction)
-
-    allTransactions[0] = { transaction: newFirstTx, signers: [] }
+  const signers: Signer[] = []
+  return {
+    instructions,
+    signers,
+    createdAccounts: createdAccounts.map((acc) => ({
+      mint: acc.mint,
+      publicKey: acc.newAccountPubkey,
+    })),
   }
+}
+export const withdrawStaked = async (params: WithdrawStakedParams) => {
+  const { wallet } = params
+
+  if (!wallet.publicKey) {
+    return 'failed'
+  }
+  const creatorPk = wallet.publicKey
+
+  const { instructions } = await withdrawStakedInstructions(params)
+
+  const transactionsAndSigners = buildTransactions(
+    instructions.map((instruction) => ({ instruction })),
+    creatorPk
+  )
 
   return signAndSendTransactions({
     wallet,
     connection,
-    transactionsAndSigners: allTransactions
-      .filter(({ transaction }) => transaction.instructions.length > 0)
-      .map(({ transaction, signers = [] }) => ({ transaction, signers })),
+    transactionsAndSigners,
   })
 }

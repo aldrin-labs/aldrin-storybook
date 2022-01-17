@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Block, BlockSubtitle } from '@sb/components/Block'
+import { Button } from '@sb/components/Button'
+import { Input } from '@sb/components/Input'
 import { Row, StretchedBlock, Page } from '@sb/components/Layout'
 
-import { Button } from '../../components/Button'
+import { Append, InputEl } from '../../components/Input/styles'
 
 export const StyledTextDiv = styled.div`
   height: auto;
@@ -247,9 +249,18 @@ export const InputWrapper = styled.div`
   flex: 1;
 `
 
+export const StakingInput = styled(Input)`
+  ${InputEl} {
+    padding-left: 0.7em;
+  }
+  ${Append} {
+    padding-right: 0.7em;
+  }
+`
+
 export const ButtonWrapper = styled.div`
   margin: auto;
-  margin-left: 16px;
+  margin-left: 0.6em;
 `
 
 export const ChartContainer = styled.div`
@@ -307,4 +318,14 @@ export const UserFormRestakeButton = styled(Button)`
 export const CenteredPage = styled(Page)`
   display: flex;
   align-items: center;
+`
+
+export const FormsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
 `
