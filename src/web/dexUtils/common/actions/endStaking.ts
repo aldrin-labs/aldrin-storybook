@@ -10,7 +10,6 @@ import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { createTokenAccountTransaction } from '../../send'
 import { getCurrentFarmingStateFromAll } from '../../staking/getCurrentFarmingStateFromAll'
 import { buildTransactions, signAndSendTransactions } from '../../transactions'
-import { DEFAULT_FARMING_TICKET_END_TIME } from '../config'
 import { filterOpenFarmingTickets } from '../filterOpenFarmingTickets'
 import { getCalcAccounts } from '../getCalcAccountsForWallet'
 import { getTicketsAvailableToClose } from '../getTicketsAvailableToClose'
@@ -101,34 +100,26 @@ export const endStakingInstructions = async (
     const calcsToClose = (
       await Promise.all(
         calcAccounts.map(async (ca) => {
-          const calcTickets = farmingTickets.filter((ft) =>
-            ft.amountsToClaim.find(
-              (atc) => atc.farmingState === ca.farmingState.toBase58()
-            )
-          )
           const farmingStateForCalc = (stakingPool.farming || []).find(
             (fs) => fs.farmingState === ca.farmingState.toBase58()
           )
-          // If farming ended - close calc, otherwise - close calc only when all tickets are closed
-          const closeAccount =
-            farmingStateForCalc &&
-            farmingStateForCalc.tokensUnlocked ===
+          if (farmingStateForCalc) {
+            // If farming ended - close calc
+            const closeAccount =
+              farmingStateForCalc.tokensUnlocked ===
               farmingStateForCalc.tokensTotal
-              ? true
-              : !calcTickets.find(
-                  (t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME
-                )
-
-          if (closeAccount) {
-            return program.instruction.closeFarmingCalc({
-              accounts: {
-                farmingCalc: ca.publicKey,
-                farmingTicket: new PublicKey(calcTickets[0].farmingTicket),
-                signer: creatorPk,
-                initializer: ca.initializer,
-              },
-            }) as TransactionInstruction
+            if (closeAccount) {
+              return program.instruction.closeFarmingCalc({
+                accounts: {
+                  farmingCalc: ca.publicKey,
+                  farmingTicket: new PublicKey(openTickets[0].farmingTicket),
+                  signer: creatorPk,
+                  initializer: ca.initializer,
+                },
+              }) as TransactionInstruction
+            }
           }
+
           return undefined
         })
       )

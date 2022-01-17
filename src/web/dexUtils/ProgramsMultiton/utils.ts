@@ -15,7 +15,7 @@ export const MARKET_ORDER_PROGRAM_ADDRESS =
 
 export const STAKING_PROGRAM_ADDRESS = MASTER_BUILD
   ? 'rinajRPUgiiW2rG6uieXvcNNQNaWr9ZcMmqo28VvXfa'
-  : 'rinajRPUgiiW2rG6uieXvcNNQNaWr9ZcMmqo28VvXfa'
+  : 'FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX'
 
 export const VESTING_PROGRAM_ADDRESS =
   '77WyS2Q4QHRgnLJZyduowV9dGVjHFqfHc2F3fVvuAdB8'
