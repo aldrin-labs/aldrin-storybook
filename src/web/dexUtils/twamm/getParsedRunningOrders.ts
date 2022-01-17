@@ -1,13 +1,12 @@
 import { Program, Provider } from '@project-serum/anchor'
 import { Connection, PublicKey } from '@solana/web3.js'
 
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
+import TwammProgramIdl from '@core/idls/twamm.json'
+
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { loadOrdersArrayForTwamm } from './loadOrdersArrayForTwamm'
 import { TwammOrder } from './types'
-import TwammProgramIdl from '@core/idls/twamm.json'
-
 
 export const getParsedRunningOrders = async ({
   connection,
@@ -52,6 +51,7 @@ export const getParsedRunningOrders = async ({
           twammToTokenVault: orderArrayData.twammToTokenVault.toString(),
           pair: orderArrayData.pairSettings.toString(),
           signer: order.authority.toString(),
+          feeAccount: orderArrayData.feeAccount.toString(),
         }
       })
       .filter((order) => order.isInitialized)

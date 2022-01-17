@@ -1,3 +1,4 @@
+import { Program, Provider } from '@project-serum/anchor'
 import { TokenInstructions } from '@project-serum/serum'
 import {
   Connection,
@@ -14,8 +15,8 @@ import { WalletAdapter } from '@sb/dexUtils/types'
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton'
 import { signAndSendSingleTransaction } from '../transactions'
 import { PairSettings, TwammOrder } from './types'
-import { Program, Provider } from '@project-serum/anchor'
 import TwammProgramIdl from '@core/idls/twamm.json'
+
 import { WRAPPED_SOL_MINT } from '../wallet'
 import { createSOLAccountAndClose } from '../pools'
 
@@ -127,6 +128,7 @@ export const getCloseOrderTransactions = async (params: {
         twammFromTokenVault: new PublicKey(order.twammFromTokenVault),
         twammToTokenVault: new PublicKey(order.twammToTokenVault),
         signer: askSigner,
+        feeAccount: new PublicKey(order.feeAccount),
         userBaseTokenAccount: new PublicKey(userBaseTokenAccount),
         userQuoteTokenAccount: new PublicKey(userQuoteTokenAccount),
         userAuthority: wallet.publicKey,

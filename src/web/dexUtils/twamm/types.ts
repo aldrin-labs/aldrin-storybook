@@ -16,6 +16,7 @@ export type TwammOrder = {
   signer: PublicKey | string
   twammFromTokenVault: string
   twammToTokenVault: string
+  feeAccount: string
 }
 
 export type PairSettings = {
