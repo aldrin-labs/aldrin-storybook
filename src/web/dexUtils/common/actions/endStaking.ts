@@ -10,16 +10,28 @@ import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { createTokenAccountTransaction } from '../../send'
 import { getCurrentFarmingStateFromAll } from '../../staking/getCurrentFarmingStateFromAll'
 import { buildTransactions, signAndSendTransactions } from '../../transactions'
+import { DEFAULT_FARMING_TICKET_END_TIME } from '../config'
 import { filterOpenFarmingTickets } from '../filterOpenFarmingTickets'
+import { getCalcAccounts } from '../getCalcAccountsForWallet'
 import { getTicketsAvailableToClose } from '../getTicketsAvailableToClose'
 import { EndstakingParams } from './types'
 
 export const endStakingInstructions = async (
   params: EndstakingParams
 ): Promise<TransactionInstruction[]> => {
-  const { wallet, connection, farmingTickets, stakingPool, programAddress } =
-    params
+  const {
+    wallet,
+    connection,
+    farmingTickets,
+    stakingPool,
+    programAddress,
+    closeCalcs = false,
+  } = params
 
+  const creatorPk = wallet.publicKey
+  if (!creatorPk) {
+    throw new Error('No publickey')
+  }
   let { userPoolTokenAccount } = params
 
   const program = ProgramsMultiton.getProgramByAddress({
@@ -82,11 +94,59 @@ export const endStakingInstructions = async (
     })
   )
 
-  return [...commonInstructions, ...instructions]
+  const closeCalcInstructions: TransactionInstruction[] = []
+  if (closeCalcs) {
+    const calcAccounts = await getCalcAccounts(program, creatorPk)
+
+    const calcsToClose = (
+      await Promise.all(
+        calcAccounts.map(async (ca) => {
+          const calcTickets = farmingTickets.filter((ft) =>
+            ft.amountsToClaim.find(
+              (atc) => atc.farmingState === ca.farmingState.toBase58()
+            )
+          )
+          const farmingStateForCalc = (stakingPool.farming || []).find(
+            (fs) => fs.farmingState === ca.farmingState.toBase58()
+          )
+          // If farming ended - close calc, otherwise - close calc only when all tickets are closed
+          const closeAccount =
+            farmingStateForCalc &&
+            farmingStateForCalc.tokensUnlocked ===
+              farmingStateForCalc.tokensTotal
+              ? true
+              : !calcTickets.find(
+                  (t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME
+                )
+
+          if (closeAccount) {
+            return program.instruction.closeFarmingCalc({
+              accounts: {
+                farmingCalc: ca.publicKey,
+                farmingTicket: new PublicKey(calcTickets[0].farmingTicket),
+                signer: creatorPk,
+                initializer: ca.initializer,
+              },
+            }) as TransactionInstruction
+          }
+          return undefined
+        })
+      )
+    ).filter(
+      (instruction): instruction is TransactionInstruction => !!instruction
+    )
+
+    closeCalcInstructions.push(...calcsToClose)
+  }
+
+  return [...commonInstructions, ...instructions, ...closeCalcInstructions]
 }
 
 export const endStaking = async (params: EndstakingParams) => {
-  const instructions = await endStakingInstructions(params)
+  const instructions = await endStakingInstructions({
+    ...params,
+    closeCalcs: true,
+  })
 
   const { wallet, connection } = params
 
