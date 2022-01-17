@@ -1,21 +1,12 @@
-import { getRINCirculationSupply } from '@core/api'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import {
-  stripByAmount,
-  stripByAmountAndFormat
-} from '@core/utils/chartPageUtils'
-import { dayDuration } from '@core/utils/dateUtils'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces
-} from '@core/utils/PortfolioTableUtils'
+import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
+
 import { SvgIcon } from '@sb/components'
 import {
   Block,
   BlockContentStretched,
   BlockSubtitle,
-  BlockTitle
+  BlockTitle,
 } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
@@ -29,23 +20,33 @@ import {
   DAYS_TO_CHECK_BUY_BACK,
   STAKING_FARMING_TOKEN_DIVIDER,
 } from '@sb/dexUtils/staking/config'
+import { TokenInfo } from '@sb/dexUtils/types'
+
+import { getRINCirculationSupply } from '@core/api'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
+import { dayDuration } from '@core/utils/dateUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 import Info from '@icons/TooltipImg.svg'
 
-import { TokenInfo } from '@sb/dexUtils/types'
-import React, { useEffect, useState } from 'react'
-import { compose } from 'recompose'
 import {
   BigNumber,
   LastPrice,
   Number,
   StatsBlock,
-  StatsBlockItem
+  StatsBlockItem,
 } from '../styles'
 import { getShareText } from '../utils'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
-
 
 interface InnerProps {
   tokenData: TokenInfo | null
@@ -77,11 +78,11 @@ const StatsComponent: React.FC<StatsComponentProps> = (
     getRINSupply()
   }, [])
 
-
-  const dexTokensPricesMap = getDexTokensPricesQuery?.getDexTokensPrices?.reduce(
-    (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
-    new Map()
-  )
+  const dexTokensPricesMap =
+    getDexTokensPricesQuery?.getDexTokensPrices?.reduce(
+      (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
+      new Map()
+    )
 
   const tokenPrice =
     dexTokensPricesMap?.get(
@@ -149,11 +150,11 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                 </InlineText>{' '}
                 RIN
               </BigNumber>
-              <StretchedBlock align={'flex-end'}>
-                <Number lineHeight={'85%'} margin={'0'}>
+              <StretchedBlock align="flex-end">
+                <Number lineHeight="85%" margin="0">
                   ${stripByAmountAndFormat(totalStakedUSD)}
                 </Number>{' '}
-                <Text lineHeight={'100%'} margin={'0'} size="sm">
+                <Text lineHeight="100%" margin="0" size="sm">
                   {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
                   circulating supply
                 </Text>
@@ -192,18 +193,19 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                     title={
                       <span>
                         <div style={{ marginBottom: '1rem' }}>
-                          The first APR is calculated based on fixed “treasury” rewards. 
-                          These rewards estimation are updated hourly.
+                          The first APR is calculated based on fixed “treasury”
+                          rewards. These rewards estimation are updated hourly.
                         </div>
                         <div>
-                          The second APR is calculated based on the current RIN price and the 
-                          average AMM fees for the past 7d. The reward estimations are updated weekly.
+                          The second APR is calculated based on the current RIN
+                          price and the average AMM fees for the past 7d. The
+                          reward estimations are updated weekly.
                         </div>
                       </span>
                     }
                   >
                     <div style={{ display: 'flex' }}>
-                      <SvgIcon src={Info} width={'1.2em'} height={'auto'} />
+                      <SvgIcon src={Info} width="1.2em" height="auto" />
                     </div>
                   </DarkTooltip>
                 </div>
@@ -225,7 +227,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
               <BlockTitle>RIN Stats </BlockTitle>
               <StatsBlock>
                 <StatsBlockItem>
-                  <BlockSubtitle margin={'0 0 3rem 0'}>Price</BlockSubtitle>
+                  <BlockSubtitle margin="0 0 3rem 0">Price</BlockSubtitle>
                   <LastPrice>
                     <Number>${stripByAmount(tokenPrice)}</Number>
                     {/* <InlineText
@@ -242,13 +244,15 @@ const StatsComponent: React.FC<StatsComponentProps> = (
                   </LastPrice>
                 </StatsBlockItem>
                 <StatsBlockItem>
-                  <BlockSubtitle margin={'0 0 3rem 0'}>Circulating Supply</BlockSubtitle>
+                  <BlockSubtitle margin="0 0 3rem 0">
+                    Circulating Supply
+                  </BlockSubtitle>
                   <Number>
                     {stripByAmountAndFormat(RINCirculatingSupply)} RIN
                   </Number>
                 </StatsBlockItem>
                 <StatsBlockItem>
-                  <BlockSubtitle margin={'0 0 3rem 0'}>Marketcap</BlockSubtitle>
+                  <BlockSubtitle margin="0 0 3rem 0">Marketcap</BlockSubtitle>
                   <Number>${stripByAmountAndFormat(RINMarketcap)}</Number>
                 </StatsBlockItem>
               </StatsBlock>

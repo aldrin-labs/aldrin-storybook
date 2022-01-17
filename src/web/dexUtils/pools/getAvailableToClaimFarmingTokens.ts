@@ -2,7 +2,7 @@ import BN from 'bn.js'
 import { MIN_POOL_TOKEN_AMOUNT_TO_STAKE } from '../common/config'
 import { getTotalFarmingAmountToClaim } from '../common/getTotalFarmingAmountToClaim'
 import { FarmingTicket } from '../common/types'
-import { FarmingCalc } from '../staking/getCalcAccountsForWallet'
+import { FarmingCalc } from '../common/getCalcAccountsForWallet'
 
 export const getAvailableToClaimFarmingTokens = (
   farmingTickets: FarmingTicket[],

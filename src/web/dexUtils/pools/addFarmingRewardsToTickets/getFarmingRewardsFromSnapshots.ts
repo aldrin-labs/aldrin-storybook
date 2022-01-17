@@ -37,6 +37,7 @@ export const getFarmingRewardsFromSnapshots = ({
     amount: 0,
   }
 
+  const now = Date.now() / 1000
   const ticketEndTime = parseFloat(ticket.endTime)
 
   const userRewardsForFarmingState = snapshots.reduce(
@@ -72,11 +73,10 @@ export const getFarmingRewardsFromSnapshots = ({
         }
       }
 
-      const totalUserSnapshotReward = new BN(
-        snapshot.tokensTotal - prevSnapshot.tokensTotal
-      )
-        .mul(new BN(ticket.tokensFrozen))
-        .div(new BN(snapshot.tokensFrozen))
+      const totalUserSnapshotReward = new BN(snapshot.tokensTotal.toFixed(0))
+        .sub(new BN(prevSnapshot.tokensTotal.toFixed(0)))
+        .mul(new BN(ticket.tokensFrozen.toFixed(0)))
+        .div(new BN(snapshot.tokensFrozen.toFixed(0)))
 
       let unlockedUserSnapshotReward = new BN(0)
 
@@ -96,8 +96,8 @@ export const getFarmingRewardsFromSnapshots = ({
         stateAttached?.lastVestedWithdrawTime || parseFloat(ticket.startTime)
 
       if (
-        lastVestedWithdrawTime + vestingPeriod < snapshot.time &&
-        ticketEndTime >= snapshot.time
+        lastVestedWithdrawTime < snapshot.time &&
+        snapshot.time + vestingPeriod < now
       ) {
         unlockedUserSnapshotReward = unlockedUserSnapshotReward.add(
           totalUserSnapshotReward
@@ -105,8 +105,6 @@ export const getFarmingRewardsFromSnapshots = ({
             .div(new BN(VESTING_FARMING_REWARD_PART_DENOMINATOR))
         )
       }
-
-      const currentTime = Date.now() / 1000
 
       const unlockedUserSnapshotRewardWithoutDecimals =
         parseFloat(unlockedUserSnapshotReward.toString()) /

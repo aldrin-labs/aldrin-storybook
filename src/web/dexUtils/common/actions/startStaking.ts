@@ -9,16 +9,15 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
-import { filterOpenFarmingTickets } from '../common/filterOpenFarmingTickets'
-import { getTicketsAvailableToClose } from '../common/getTicketsAvailableToClose'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { signAndSendTransactions } from '../transactions'
-import { buildTransactions } from '../transactions/buildTransactions'
-import { STAKING_FARMING_TOKEN_DECIMALS } from './config'
+import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { STAKING_FARMING_TOKEN_DECIMALS } from '../../staking/config'
+import { getCurrentFarmingStateFromAll } from '../../staking/getCurrentFarmingStateFromAll'
+import { signAndSendTransactions } from '../../transactions'
+import { buildTransactions } from '../../transactions/buildTransactions'
+import { filterOpenFarmingTickets } from '../filterOpenFarmingTickets'
+import { getCalcAccounts } from '../getCalcAccountsForWallet'
+import { getTicketsAvailableToClose } from '../getTicketsAvailableToClose'
 import { endStakingInstructions } from './endStaking'
-import { getCalcAccounts } from './getCalcAccountsForWallet'
-import { getCurrentFarmingStateFromAll } from './getCurrentFarmingStateFromAll'
 import { StartStakingParams } from './types'
 
 export const startStaking = async (params: StartStakingParams) => {
@@ -29,12 +28,14 @@ export const startStaking = async (params: StartStakingParams) => {
     userPoolTokenAccount,
     stakingPool,
     farmingTickets,
+    programAddress,
+    decimals = STAKING_FARMING_TOKEN_DECIMALS,
   } = params
 
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection: connection.getConnection(),
-    programAddress: STAKING_PROGRAM_ADDRESS,
+    programAddress,
   })
 
   const creatorPk = wallet.publicKey
@@ -50,7 +51,7 @@ export const startStaking = async (params: StartStakingParams) => {
   const instructionChunks = await endStakingInstructions(params)
 
   instructions.push(...instructionChunks.flat())
-  const farmingState = getCurrentFarmingStateFromAll(stakingPool.farming)
+  const farmingState = getCurrentFarmingStateFromAll(stakingPool.farming || [])
 
   const openTickets = getTicketsAvailableToClose({
     farmingState,
@@ -62,9 +63,7 @@ export const startStaking = async (params: StartStakingParams) => {
     new BN(0)
   )
 
-  const totalToStake = totalTokens.add(
-    new BN(amount * 10 ** STAKING_FARMING_TOKEN_DECIMALS)
-  )
+  const totalToStake = totalTokens.add(new BN(amount * 10 ** decimals))
 
   const farmingTicket = Keypair.generate()
 
@@ -78,10 +77,19 @@ export const startStaking = async (params: StartStakingParams) => {
   const startFarming = program.instruction.startFarming(totalToStake, {
     accounts: {
       pool: new PublicKey(stakingPool.swapToken),
-      farmingState: new PublicKey(stakingPool.farming[0].farmingState),
+      farmingState: new PublicKey(farmingState.farmingState),
       farmingTicket: farmingTicket.publicKey,
-      stakingVault: new PublicKey(stakingPool.stakingVault),
+      // Make code compatible for both staking and pools farming
+      stakingVault:
+        'stakingVault' in stakingPool
+          ? new PublicKey(stakingPool.stakingVault)
+          : undefined,
+      lpTokenFreezeVault:
+        'lpTokenFreezeVault' in stakingPool
+          ? new PublicKey(stakingPool.lpTokenFreezeVault)
+          : undefined,
       userStakingTokenAccount: userPoolTokenAccount,
+      userLpTokenAccount: userPoolTokenAccount,
       walletAuthority: wallet.publicKey,
       userKey: wallet.publicKey,
       tokenProgram: TokenInstructions.TOKEN_PROGRAM_ID,
@@ -92,7 +100,7 @@ export const startStaking = async (params: StartStakingParams) => {
 
   instructions.push(await startFarming)
 
-  const farmingsWithoutCalc = stakingPool.farming
+  const farmingsWithoutCalc = (stakingPool.farming || [])
     .filter((f) => f.tokensTotal !== f.tokensUnlocked && !f.feesDistributed) // Open farmings
     .filter(
       // Farmings without calc account
@@ -124,16 +132,20 @@ export const startStaking = async (params: StartStakingParams) => {
       signers.push(farmingCalc)
     })
   )
+  try {
+    const transactionsAndSigners = buildTransactions(
+      instructions.map((instruction) => ({ instruction })),
+      creatorPk,
+      signers
+    )
 
-  const transactionsAndSigners = buildTransactions(
-    instructions.map((instruction) => ({ instruction })),
-    creatorPk,
-    signers
-  )
-
-  return signAndSendTransactions({
-    transactionsAndSigners,
-    wallet,
-    connection,
-  })
+    return await signAndSendTransactions({
+      transactionsAndSigners,
+      connection,
+      wallet,
+    })
+  } catch (e) {
+    console.warn('Error sign or send transaction: ', e)
+    return 'failed'
+  }
 }

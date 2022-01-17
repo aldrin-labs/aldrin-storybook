@@ -1,6 +1,7 @@
-import React from 'react'
 import { COLORS } from '@variables/variables'
 import { useField } from 'formik'
+import React from 'react'
+
 import { CheckboxContainer, CheckMark, Label } from './styles'
 
 interface CheckboxBase {

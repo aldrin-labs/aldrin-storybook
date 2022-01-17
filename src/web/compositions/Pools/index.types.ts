@@ -6,12 +6,15 @@ export type PoolInfo = {
   tokenA: string
   tokenB: string
   curveType: number
+  tokenADecimals: number
+  tokenBDecimals: number
   poolTokenAccountA: string
   poolTokenAccountB: string
   initializerAccount: string
   swapToken: string
   poolTokenMint: string
-  lpTokenFreezeVaultBalance: number;
+  lpTokenFreezeVaultBalance: number
+  lpTokenFreezeVault: string
   farming: FarmingState[] | null
   tvl: {
     tokenA: number
@@ -19,6 +22,16 @@ export type PoolInfo = {
   }
   apy24h: number // %
   supply: number
+  curve?: string
+  amp?: number
+  fees: PoolFees
+}
+
+export type PoolFees = {
+  tradeFeeNumerator: number
+  ownerTradeFeeNumerator: number
+  tradeFeeDenominator: number
+  ownerTradeFeeDenominator: number
 }
 
 export type DexTokensPrices = {
@@ -48,7 +61,6 @@ export type PoolWithOperation = {
   pool: string
   operation: 'deposit' | 'withdraw' | 'stake' | 'unstake' | 'claim' | ''
 }
-
 
 export type TokenPricesMap = Map<string, DexTokensPrices>
 export type FeesMap = Map<string, FeesEarned>

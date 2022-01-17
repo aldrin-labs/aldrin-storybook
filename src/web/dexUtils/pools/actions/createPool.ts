@@ -21,7 +21,8 @@ import {
   POOL_AUTHORITY,
   POOLS_V2_PROGRAM_ADDRESS,
 } from '../../ProgramsMultiton/utils'
-import { signTransactions, createTokenAccountTransaction } from '../../send'
+import { createTokenAccountTransaction } from '../../send'
+import { signTransactions } from '../../transactions'
 import { createVestingTransaction } from '../../vesting'
 import {
   AUTHORITY_TYPE,
@@ -267,7 +268,7 @@ export const createPoolTransactions = async (
     },
     {
       transaction: setAuthorities,
-      signers: [poolMint, poolFeeVault, lpTokenFreezeAccount, pool],
+      signers: [poolFeeVault, lpTokenFreezeAccount, pool],
     },
     {
       transaction: createPoolTx,
@@ -348,11 +349,7 @@ export const createPoolTransactions = async (
     createPool,
     firstDepositTx,
     farmingTx,
-  ] = await signTransactions({
-    transactionsAndSigners,
-    wallet,
-    connection: connection.getConnection(),
-  })
+  ] = await signTransactions(transactionsAndSigners, connection, wallet)
 
   return {
     transactions: {

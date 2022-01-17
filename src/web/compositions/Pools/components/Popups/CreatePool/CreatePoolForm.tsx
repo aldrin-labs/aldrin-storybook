@@ -15,10 +15,7 @@ import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { InlineText } from '@sb/components/Typography'
-import {
-  useConnection,
-  useMultiEndpointConnection,
-} from '@sb/dexUtils/connection'
+import { useConnection } from '@sb/dexUtils/connection'
 import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
@@ -134,7 +131,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const form = useFormik<CreatePoolFormType>({
     validateOnMount: true,
     initialValues: {
-      price: '1',
+      price: '',
       baseToken: tokens[0],
       quoteToken: findQuoteToken(tokens),
       stableCurve: false,
@@ -234,6 +231,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
+        if (createAccountsTxId !== 'success') {
+          throw new Error('createAccountsTxId failed')
+        }
         await sleep(1000)
 
         setProcessingStep(2)
@@ -242,6 +242,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           transaction: generatedTransactions.setAuthorities,
           connection,
         })
+        if (setAuthoritiesTxId !== 'success') {
+          throw new Error('setAuthoritiesTxId failed')
+        }
         console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
         await sleep(1000)
 
@@ -251,6 +254,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           transaction: generatedTransactions.createPool,
           connection,
         })
+        if (initPoolTxId !== 'success') {
+          throw new Error('initPoolTxId failed')
+        }
         console.log('initPoolTxId: ', initPoolTxId)
         await sleep(1000)
 
@@ -260,6 +266,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           transaction: generatedTransactions.firstDeposit,
           connection,
         })
+        if (firstDepositTxId !== 'success') {
+          throw new Error('firstDepositTxId failed')
+        }
         await sleep(1000)
 
         console.log('firstDepositTxId: ', firstDepositTxId)
@@ -271,6 +280,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             transaction: generatedTransactions.farming,
             connection,
           })
+          if (farmingTxId !== 'success') {
+            throw new Error('farmingTxId failed')
+          }
           await sleep(1000)
           console.log('farmingTxId: ', farmingTxId)
         }
@@ -419,6 +431,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       const newQuoteAmount = parseFloat(value) * userDefinedPrice
       if (newQuoteAmount) {
         form.setFieldValue('firstDeposit.quoteTokenAmount', newQuoteAmount)
+        form.setTouched({ firstDeposit: { quoteTokenAmount: true } })
       }
     } else {
       const newPrice =
@@ -440,6 +453,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       const newBaseAmount = parseFloat(value) / userDefinedPrice
       if (newBaseAmount) {
         form.setFieldValue('firstDeposit.baseTokenAmount', newBaseAmount)
+        form.setTouched({ firstDeposit: { baseTokenAmount: true } })
       }
     } else {
       const newPrice =

@@ -19,7 +19,10 @@ export const PoolsComponent: React.FC = () => {
   return (
     <Page>
       <WideContent>
-        {/* <Banner theme={theme} /> */}
+        {/* <WaningBanner bannerId="calcAccountsCreating">
+          Under maintenance, available to claim rewards may not be displayed
+          correctly.
+        </WaningBanner> */}
         <RootRow>
           <Cell col={12} colLg={6}>
             <TotalVolumeLockedChart />

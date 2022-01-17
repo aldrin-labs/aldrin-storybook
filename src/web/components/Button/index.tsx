@@ -1,4 +1,7 @@
-import styled, { css, keyframes } from 'styled-components'
+import styled, { css } from 'styled-components'
+
+import RinLogo from '@icons/DarkLogo.svg'
+
 import {
   COLORS,
   FONT_SIZES,
@@ -6,8 +9,6 @@ import {
   BORDER_RADIUS,
   WIDTH,
 } from '@variables/variables'
-
-import RinLogo from '@icons/DarkLogo.svg'
 
 const VARIANTS = {
   primary: css`
@@ -30,7 +31,11 @@ const VARIANTS = {
   `,
 
   rainbow: css`
-    background: linear-gradient(91.8deg, ${COLORS.primary} 15.31%, ${COLORS.errorAlt} 89.64%);
+    background: linear-gradient(
+      91.8deg,
+      ${COLORS.primary} 15.31%,
+      ${COLORS.errorAlt} 89.64%
+    );
     border: 0;
 
     &:disabled {
@@ -87,6 +92,10 @@ const VARIANTS = {
     cursor: not-allowed;
   `,
 
+  utility: css`
+    background: ${COLORS.hint};
+    border-color: ${COLORS.hint};
+  `,
 }
 
 const PADDINGS = {
@@ -98,46 +107,44 @@ export type ButtonVariants = keyof typeof VARIANTS
 
 export interface ButtonProps {
   $fontSize?: keyof typeof FONT_SIZES
-  $variant?: ButtonVariants
+  $variant?: keyof typeof VARIANTS
   $borderRadius?: keyof typeof BORDER_RADIUS
   $padding?: keyof typeof PADDINGS
   $backgroundImage?: string
   $width?: keyof typeof WIDTH
-  $backgroundColor?: string
+  minWidth?: string
+  backgroundColor?: string
   $loading?: boolean
 }
 
 const rotate = css`
-@keyframes button-rotate-loading {
-  0% {
-    transform: rotate(0deg);
-  }
-  
-  25% {
-    transform: rotate(60deg);
-  }
-  
-  50% {
-    transform: rotate(0deg);
-  }
-  
-  75% {
-    transform: rotate(-60deg);
-  }
-  
-  100% {
-    transform: rotate(0deg);
-  }
-}
+  @keyframes button-rotate-loading {
+    0% {
+      transform: rotate(0deg);
+    }
 
+    25% {
+      transform: rotate(60deg);
+    }
+
+    50% {
+      transform: rotate(0deg);
+    }
+
+    75% {
+      transform: rotate(-60deg);
+    }
+
+    100% {
+      transform: rotate(0deg);
+    }
+  }
 `
 
-// console.log('animationStyle: ', animationStyle)
-
-export const Button = styled.button<ButtonProps>` 
-  background-color: ${(props: ButtonProps) => props.$backgroundColor || 'none'};
-  background: ${(props: ButtonProps) => props.$backgroundColor || 'none'};
-  min-width: 9rem;
+export const Button = styled.button<ButtonProps>`
+  background-color: ${(props: ButtonProps) => props.backgroundColor || 'none'};
+  background: ${(props: ButtonProps) => props.backgroundColor || 'none'};
+  min-width: ${(props: ButtonProps) => props.minWidth || '9rem'};
   color: white;
   text-align: center;
   font-size: ${(props: ButtonProps) => FONT_SIZES[props.$fontSize || 'md']};
@@ -152,17 +159,20 @@ export const Button = styled.button<ButtonProps>`
   ${(props: ButtonProps) =>
     props.$width ? ` width: ${WIDTH[props.$width]};` : ''}
   text-decoration: none;
+
   ${rotate}
 
-  ${({ $backgroundImage: backgroundImage }: ButtonProps) => backgroundImage ?
-    `
+  ${({ $backgroundImage: backgroundImage }: ButtonProps) =>
+    backgroundImage
+      ? `
     background-color: ${COLORS.buttonAltPink};
     border-color: transparent;
     background-image: url(${backgroundImage});
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-  ` : ''}
+  `
+      : ''}
 
   &:disabled {
     pointer-events: none;
@@ -170,8 +180,9 @@ export const Button = styled.button<ButtonProps>`
     pointer-events: none;
   }
 
-  ${({ $loading: loading }: ButtonProps) => loading ?
-    `
+  ${({ $loading: loading }: ButtonProps) =>
+    loading
+      ? `
     color: transparent;
     position: relative;
     &:before {
@@ -185,7 +196,8 @@ export const Button = styled.button<ButtonProps>`
       top: 15%;
       background-size: contain;
 
-     
+
     }
-  ` : ''}
   `
+      : ''}
+`

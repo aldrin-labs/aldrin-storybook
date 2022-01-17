@@ -16,6 +16,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
+import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { CURVE } from '@sb/dexUtils/pools/types'
@@ -81,8 +82,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const [searchValue, setSearchValue] = useState('')
   const [isAuditPopupOpen, setIsAuditPopupOpen] = useState(false)
   const [selectedTable, setSelectedTable] = useState<
-    'authorized' | 'nonAuthorized' | 'stablePools' | 'userLiquidity'
-  >('authorized')
+    'authorized' | 'nonAuthorized' | 'stablePools' | 'userLiquidity' | 'all'
+  >('all')
 
   const { path } = useRouteMatch()
 
@@ -99,6 +100,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const history = useHistory()
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
+  const { data: calcAccounts, mutate: refreshCalcAccounts } =
+    useFarmingCalcAccounts()
 
   const [snapshotQueues] = useSnapshotQueues({
     wallet,
@@ -115,21 +118,19 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const refreshAll = () => {
     refreshUserTokensData()
     refreshFarmingTickets()
+    refreshCalcAccounts()
   }
 
-  const dexTokensPricesMap = getDexTokensPrices.reduce(
-    (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
-    new Map<string, DexTokensPrices>()
+  const dexTokensPricesMap = toMap(
+    getDexTokensPrices,
+    (tokenPrice) => tokenPrice.symbol
   )
 
-  const feesByPoolMap = getFeesEarnedByPool.reduce(
-    (acc, fees) => acc.set(fees.pool, fees),
-    new Map<string, FeesEarned>()
-  )
+  const feesByPoolMap = toMap(getFeesEarnedByPool, (fees) => fees.pool.trim())
 
-  const earnedFeesInPoolForUserMap = getFeesEarnedByAccount.reduce(
-    (acc, feesEarned) => acc.set(feesEarned.pool, feesEarned),
-    new Map<string, FeesEarned>()
+  const earnedFeesInPoolForUserMap = toMap(
+    getFeesEarnedByAccount,
+    (feesEarned) => feesEarned.pool.trim()
   )
 
   const [vestings] = useVestings()
@@ -147,6 +148,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     farmingTicketsMap,
     vestings: vestingsByMintForUser,
     walletPublicKey: wallet.publicKey,
+    calcAccounts,
   })
 
   const stablePools = pools.filter((pool) => pool.curveType === CURVE.STABLE)
@@ -162,15 +164,18 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     getWeeklyAndDailyTradingVolumesForPoolsQuery.getWeeklyAndDailyTradingVolumesForPools ||
     []
 
-  const tradingVolumesMap = tradingVolumes.reduce(
-    (acc, tv) => acc.set(tv.pool, tv),
-    new Map<string, TradingVolumeStats>()
-  )
+  const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
   return (
     <>
       <TabContainer>
         <div>
+          <TableModeButton
+            isActive={selectedTable === 'all'}
+            onClick={() => setSelectedTable('all')}
+          >
+            All Pools ({pools.length})
+          </TableModeButton>
           <TableModeButton
             isActive={selectedTable === 'authorized'}
             onClick={() => setSelectedTable('authorized')}
@@ -183,6 +188,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           >
             Ecosystem-led Pools ({nonAuthorizedPools.length})
           </TableModeButton>
+
           <TableModeButton
             isActive={selectedTable === 'stablePools'}
             onClick={() => setSelectedTable('stablePools')}
@@ -242,6 +248,16 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           <AllPoolsTable
             searchValue={searchValue}
             pools={nonAuthorizedPools}
+            dexTokensPricesMap={dexTokensPricesMap}
+            feesByPool={feesByPoolMap}
+            tradingVolumes={tradingVolumesMap}
+            farmingTicketsMap={farmingTicketsMap}
+          />
+        )}
+        {selectedTable === 'all' && (
+          <AllPoolsTable
+            searchValue={searchValue}
+            pools={pools}
             dexTokensPricesMap={dexTokensPricesMap}
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}

@@ -1,39 +1,29 @@
-import { Connection, PublicKey } from '@solana/web3.js'
-import { useCallback, useEffect, useState } from 'react'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { AsyncRefreshFunction, WalletAdapter } from '../types'
-import { FarmingCalc, getCalcAccounts } from './getCalcAccountsForWallet'
+import useSwr from 'swr'
 
-export const useCalcAccounts = ({
-  wallet,
-  connection,
-  walletPublicKey,
-}: {
-  wallet: WalletAdapter
-  connection: Connection
-  walletPublicKey?: PublicKey
-}): [FarmingCalc[], AsyncRefreshFunction] => {
-  const [calcAccounts, setCalcAccounts] = useState<FarmingCalc[]>([])
+import { getCalcAccounts } from '../common/getCalcAccountsForWallet'
+import { FarmingCalc } from '../common/types'
+import { useConnection } from '../connection'
+import { ProgramsMultiton, STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton'
+import { useWallet } from '../wallet'
 
-  const loadCalcAccounts = useCallback(async () => {
-    if (walletPublicKey) {
+export const useStakingCalcAccounts = () => {
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
+  const fetcher = async (): Promise<FarmingCalc[]> => {
+    if (wallet.publicKey) {
       const program = ProgramsMultiton.getProgramByAddress({
         programAddress: STAKING_PROGRAM_ADDRESS,
         connection,
         wallet,
       })
-      const calc = await getCalcAccounts(program, walletPublicKey)
-
-      setCalcAccounts(calc)
+      return getCalcAccounts(program, wallet.publicKey)
     }
+    return []
+  }
 
-    return true
-  }, [walletPublicKey?.toBase58()])
-
-  useEffect(() => {
-    loadCalcAccounts()
-  }, [walletPublicKey])
-
-  return [calcAccounts, loadCalcAccounts]
+  return useSwr(
+    `staking-calc-accounts-${wallet.publicKey?.toString()}`,
+    fetcher
+  )
 }

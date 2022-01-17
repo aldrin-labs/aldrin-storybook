@@ -1,28 +1,22 @@
+import { Paper } from '@material-ui/core'
+import useMobileSize from '@webhooks/useMobileSize'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Paper } from '@material-ui/core'
-
-import Info from '@icons/inform.svg'
-import Attention from '@icons/attention.svg'
-import SvgIcon from '@sb/components/SvgIcon'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import {
-  SCheckbox,
-  StyledDialogTitle,
-} from '../SharePortfolioDialog/SharePortfolioDialog.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 
+import Attention from '@icons/attention.svg'
+import Info from '@icons/inform.svg'
+
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { SCheckbox } from '../SharePortfolioDialog/SharePortfolioDialog.styles'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { TradeInputContent } from './index'
 import { SendButton } from './styles'
-import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
-
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import useMobileSize from '@webhooks/useMobileSize'
-import { autoLogin } from 'src/storybook/src/utils/autoLogin'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -73,13 +67,13 @@ const Title = styled.span`
 export const WhiteButton = styled((props) => (
   <BtnCustom
     btnWidth={props.width || 'calc(50% - .5rem)'}
-    fontSize={'1.4rem'}
-    height={'4.5rem'}
-    textTransform={'capitalize'}
+    fontSize="1.4rem"
+    height="4.5rem"
+    textTransform="capitalize"
     backgroundColor={props.background || 'transparent'}
     borderColor={props.background || props.theme.palette.white.main}
     btnColor={props.color || props.theme.palette.white.main}
-    borderRadius={'1rem'}
+    borderRadius="1rem"
     border={props.border || 'none'}
     {...props}
   />
@@ -98,7 +92,7 @@ export const WhiteText = styled.span`
   display: flex;
   align-items: center;
   letter-spacing: 0.01rem;
-  color: #f8faff;
+  color: ${(props: { $color?: string }) => props.$color || '#f8faff'};
 `
 const WarningBlock = styled.div`
   background: rgba(242, 156, 56, 0.5);
@@ -148,7 +142,7 @@ export const ConfirmationPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -156,8 +150,8 @@ export const ConfirmationPopup = ({
         <MainTitle>
           {pair[0]}/{pair[1]}
         </MainTitle>
-        <RowContainer justify={'center'} style={{ flexWrap: 'nowrap' }}>
-          <Line sideType={sideType} width={'31%'} />
+        <RowContainer justify="center" style={{ flexWrap: 'nowrap' }}>
+          <Line sideType={sideType} width="31%" />
           <Title sideType={sideType}>
             <span style={{ textTransform: 'capitalize' }}>{priceType}</span>
             &nbsp;
@@ -165,7 +159,7 @@ export const ConfirmationPopup = ({
             &nbsp;
             {pair[0]}
           </Title>
-          <Line sideType={sideType} width={'31%'} />
+          <Line sideType={sideType} width="31%" />
         </RowContainer>
       </RowContainer>
       <RowContainer margin="2rem 0 0 0">
@@ -182,18 +176,18 @@ export const ConfirmationPopup = ({
         ) : null}
         <RowContainer>
           {priceType !== 'market' &&
-          priceType !== 'stop-market' &&
-          priceType !== 'maker-only' ? (
+            priceType !== 'stop-market' &&
+            priceType !== 'maker-only' ? (
             <InputRowContainer
-              key={'limit-price'}
-              padding={'.6rem 0'}
-              direction={'column'}
+              key="limit-price"
+              padding=".6rem 0"
+              direction="column"
             >
               <TradeInputContent
                 theme={theme}
                 needTitle
-                type={'text'}
-                title={`price`}
+                type="text"
+                title="price"
                 value={values.price || ''}
                 onChange={onPriceChange}
                 symbol={pair[1]}
@@ -243,7 +237,7 @@ export const ConfirmationPopup = ({
                 <span style={{ width: '12%' }}>
                   <SvgIcon
                     src={Info}
-                    width={'100%'}
+                    width="100%"
                     style={{ marginLeft: '1rem' }}
                   />
                 </span>
@@ -267,7 +261,7 @@ export const ConfirmationPopup = ({
                 <span style={{ width: '12%' }}>
                   <SvgIcon
                     src={Info}
-                    width={'100%'}
+                    width="100%"
                     style={{ marginLeft: '1rem' }}
                   />
                 </span>
@@ -315,8 +309,8 @@ export const ConfirmationPopup = ({
         ) : null}
       </RowContainer>
 
-      <RowContainer margin="2rem 0 0 0" justify={'space-between'}>
-        <WhiteButton width={'49%'} theme={theme} onClick={() => onClose()}>
+      <RowContainer margin="2rem 0 0 0" justify="space-between">
+        <WhiteButton width="49%" theme={theme} onClick={() => onClose()}>
           Cancel
         </WhiteButton>
         {priceType === 'market' && isSlippageHigh ? (
@@ -353,8 +347,8 @@ export const ConfirmationPopup = ({
                     ? `buy ${pair[0]} anyway`
                     : `sell ${pair[0]} anyway`
                   : sideType === 'buy'
-                  ? 'long'
-                  : 'short'}
+                    ? 'long'
+                    : 'short'}
               </span>
               <span style={{ fontSize: '1.2rem', textTransform: 'lowercase' }}>
                 (it may cause a loss of funds)
@@ -380,8 +374,8 @@ export const ConfirmationPopup = ({
                 ? `buy ${pair[0]}`
                 : `sell ${pair[0]}`
               : sideType === 'buy'
-              ? 'long'
-              : 'short'}
+                ? 'long'
+                : 'short'}
           </SendButton>
         )}
       </RowContainer>

@@ -1,5 +1,8 @@
-import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
-import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
+import {
+  FarmingCalc,
+  FarmingState,
+  FarmingTicket,
+} from '@sb/dexUtils/common/types'
 
 interface FamingStateClaimable {
   farmingTokenMint: string
@@ -9,34 +12,38 @@ interface FamingStateClaimable {
 export const getUniqueAmountsToClaimMap = ({
   farmingTickets,
   farmingStates = [],
+  calcAccounts = new Map<string, FarmingCalc>(),
 }: {
   farmingTickets: FarmingTicket[]
   farmingStates?: FarmingState[]
+  calcAccounts?: Map<string, FarmingCalc>
 }) => {
   if (!farmingStates) {
     return new Map<string, FamingStateClaimable>()
   }
   return farmingStates.reduce((acc, farmingState) => {
-    const { farmingTokenMint } = farmingState
+    const {
+      farmingTokenMint,
+      farmingState: fs,
+      farmingTokenMintDecimals,
+    } = farmingState
 
     if (!farmingTokenMint) {
       return acc
     }
-
-    const availableToClaimFromFarmingState =
-      getAvailableFarmingTokensForFarmingState({
-        farmingTickets,
-        farmingState: farmingState.farmingState,
-      })
 
     const state = acc.get(farmingTokenMint) || {
       farmingTokenMint,
       amount: 0,
     }
 
+    const calcAccountAmount =
+      parseFloat(calcAccounts.get(fs)?.tokenAmount.toString() || '0') /
+      10 ** farmingTokenMintDecimals
+
     acc.set(farmingTokenMint, {
       farmingTokenMint,
-      amount: state.amount + availableToClaimFromFarmingState,
+      amount: state.amount + calcAccountAmount,
     })
 
     return acc

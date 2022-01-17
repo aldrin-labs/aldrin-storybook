@@ -1,10 +1,31 @@
+import { BORDER_RADIUS, COLORS } from '@variables/variables'
+import { FieldValidator, useField } from 'formik'
+import { noop } from 'lodash-es'
 import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 
-import { COLORS, BORDER_RADIUS } from '@variables/variables'
-import { useField, FieldValidator } from 'formik'
-import { noop } from 'lodash-es'
+import { Button } from '@sb/components/Button'
+
 import { validateDecimal, validateNatural, validateRegexp } from './utils'
+
+export interface InputProps {
+  value?: string
+  onChange: (e: string) => void
+  formatter?: (e: string, prevValue: string) => string
+  placeholder?: string
+  append?: ReactNode
+  size?: number // Input size
+  name: string
+  className?: string
+  maxButton?: boolean
+  maxButtonOnClick?: () => void
+  halfButton?: boolean
+  halfButtonOnClick?: () => void
+}
+
+export interface AppendProps {
+  padding?: string
+}
 
 const VARIANTS = {
   default: css`
@@ -61,8 +82,8 @@ const InputEl = styled.input`
   }
 `
 
-const Append = styled.span`
-  padding: 0 1.5em;
+const Append = styled.span<AppendProps>`
+  padding: ${(props: AppendProps) => props.padding || '0 1.5em'};
   color: ${COLORS.hint};
   font-size: 1em;
 `
@@ -79,10 +100,10 @@ interface InputBase {
   disabled?: boolean
 }
 
-export interface InputProps extends InputBase {
-  value?: string
-  onChange: (e: string) => void
-}
+// export interface InputProps extends InputBase {
+//   value?: string
+//   onChange: (e: string) => void
+// }
 
 export const INPUT_FORMATTERS = {
   NOP: (e: string) => e,
@@ -122,6 +143,10 @@ export const Input: React.FC<InputProps> = (props) => {
     name,
     formatter = INPUT_FORMATTERS.NOP,
     className = '',
+    maxButton = false,
+    maxButtonOnClick,
+    halfButton = false,
+    halfButtonOnClick,
     variant = 'default',
     borderRadius = 'xxl',
     disabled,
@@ -142,11 +167,67 @@ export const Input: React.FC<InputProps> = (props) => {
         name={name}
         disabled={disabled}
       />
-      {append && <Append>{append}</Append>}
+      {halfButton && (
+        <div style={{ marginRight: '1rem' }}>
+          <Button
+            minWidth="2rem"
+            $fontSize="xs"
+            $borderRadius="xxl"
+            onClick={halfButtonOnClick}
+            type="button"
+            $variant="utility"
+          >
+            HALF
+          </Button>
+        </div>
+      )}
+      {maxButton && (
+        <Button
+          minWidth="2rem"
+          $fontSize="xs"
+          $borderRadius="xxl"
+          onClick={maxButtonOnClick}
+          type="button"
+          $variant="utility"
+        >
+          MAX
+        </Button>
+      )}
+      {append && (
+        <Append padding={maxButton ? '0 1.5em 0 0.5em' : ''}>{append}</Append>
+      )}
     </InputWrap>
   )
 }
 
+// export const RoundInputWithTokenName = ({
+//   text,
+//   width = '70%',
+//   placeholder,
+// }: {
+//   text: string
+//   width?: string
+//   placeholder?: string
+// }) => {
+//   return (
+//     <Row style={{ position: 'relative' }} width={width}>
+//       <RoundInput placeholder={placeholder} />
+//       <Text
+//         color={'#96999C'}
+//         fontSize="1.8rem"
+//         fontFamily="Avenir Next Light"
+//         style={{
+//           position: 'absolute',
+//           top: '2.5rem',
+//           right: '3rem',
+//           transform: 'translateY(-50%)',
+//         }}
+//       >
+//         {text}
+//       </Text>
+//     </Row>
+//   )
+// }
 // Formik Wrapper
 
 export interface InputFieldProps extends InputBase {
