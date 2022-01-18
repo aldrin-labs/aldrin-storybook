@@ -33,4 +33,5 @@ export interface EndstakingParams {
   farmingTickets: FarmingTicket[]
   stakingPool: StakingPool | PoolInfo
   programAddress: string
+  closeCalcs?: boolean
 }
