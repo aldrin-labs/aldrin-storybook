@@ -367,14 +367,14 @@ const TableAssets = ({
 
   return (
     <Table>
-      <th>
+      <thead>
         <tr>
           <th style={{ borderTop: 'none' }}>Asset</th>
           <th style={{ borderTop: 'none' }}>Available for You</th>
           <th style={{ borderTop: 'none' }}>Borrowed Amount</th>
           <th style={{ borderTop: 'none' }}>Borrow APY</th>
         </tr>
-      </th>
+      </thead>
       <tbody>{renderRows()}</tbody>
     </Table>
   )
