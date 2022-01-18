@@ -1,7 +1,8 @@
 import { FarmingState } from '../common/types'
 
-export const filterOpenFarmingStates = (farmingStates: FarmingState[]) =>
-  farmingStates.filter((state) => state.tokensTotal !== state.tokensUnlocked)
+export const filterOpenFarmingStates = (farmingStates: FarmingState[] = []) =>
+  farmingStates.filter(isOpenFarmingState)
 
 export const isOpenFarmingState = (farmingState: FarmingState) =>
-  farmingState.tokensTotal !== farmingState.tokensUnlocked
+  farmingState.tokensTotal !== farmingState.tokensUnlocked && farmingState.tokensPerPeriod > 0
+

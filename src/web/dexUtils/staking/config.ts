@@ -1,12 +1,4 @@
-import { MASTER_BUILD } from '@core/utils/config'
-import { RIN_MINT } from '../utils'
-
 export const STAKING_PART_OF_AMM_FEES = 1 / 6
-
-export const STAKING_FARMING_TOKEN_MINT_ADDRESS = MASTER_BUILD
-  ? RIN_MINT
-  : RIN_MINT
-// : 'BCP6eCN2W1Z918hVoF3q9xw79AxFHsVxM4RSPxxKXL2m'
 
 export const STAKING_FARMING_TOKEN_DECIMALS = 9
 
@@ -16,4 +8,4 @@ export const STAKING_FARMING_TOKEN_DIVIDER =
 export const BUY_BACK_RIN_ACCOUNT_ADDRESS =
   'BbC4UNcWkssrTscVAN4xzxfKpRfSXcz9wvrKStwGNwy1'
 
-export const DAYS_TO_CHECK_BUY_BACK = 30
+export const DAYS_TO_CHECK_BUY_BACK = 14

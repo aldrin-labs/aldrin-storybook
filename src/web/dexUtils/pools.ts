@@ -1,32 +1,28 @@
 import {
   Account,
   Connection,
-  LAMPORTS_PER_SOL,
+  Keypair,
   PublicKey,
   SystemProgram,
   Transaction,
   TransactionSignature,
 } from '@solana/web3.js'
 
-import * as BufferLayout from 'buffer-layout'
-import Base58 from 'base-58'
-
-import { Token, TOKEN_PROGRAM_ID } from './token/token'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import { DEX_PID } from '@core/config/dex'
+import { MARKET_STATE_LAYOUT_V3 } from '@project-serum/serum'
+import BN from 'bn.js'
+import { notify } from './notifications'
+import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 import {
   CurveType,
   TokenSwap,
   TOKEN_SWAP_PROGRAM_ID,
   TokenFarmingLayout,
-  TokenSwapLayout,
 } from './token-swap/token-swap'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { notify } from './notifications'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
-import { DEX_PID } from '@core/config/dex'
-import { MARKET_STATE_LAYOUT_V3 } from '@project-serum/serum'
-import BN from 'bn.js'
+import { Token, TOKEN_PROGRAM_ID } from './token/token'
 
 const OWNER: PublicKey = new PublicKey(
   '5rWKzCUY9ESdmobivjyjQzvdfHSePf37WouX39sMmfx9'
@@ -51,7 +47,7 @@ const CURVE_TYPE = CurveType.ConstantProduct
 
 function assert(condition: boolean, message?: string) {
   if (!condition) {
-    console.log(Error().stack + ':token-test.js')
+    console.log(`${Error().stack}:token-test.js`)
     throw message || 'Assertion failed'
   } else {
     console.log('Passed:', message)
@@ -122,11 +118,8 @@ export async function createTokenSwap({
     createTokenAccountPoolTransaction,
   ] = await tokenPoolMint.createAccount(wallet.publicKey)
 
-  const [
-    feeAccount,
-    feeAccountSignature,
-    createFeeAccountTransaction,
-  ] = await tokenPoolMint.createAccount(new PublicKey(ownerKey))
+  const [feeAccount, feeAccountSignature, createFeeAccountTransaction] =
+    await tokenPoolMint.createAccount(new PublicKey(ownerKey))
 
   const [
     tokenFreezeAccount,
@@ -134,10 +127,8 @@ export async function createTokenSwap({
     tokenFreezeAccountTransaction,
   ] = await tokenPoolMint.createAccount(authority)
 
-  const [
-    farmingStateAccount,
-    farmingStateTransaction,
-  ] = await createFarmingStateAccount({ wallet, connection })
+  const [farmingStateAccount, farmingStateTransaction] =
+    await createFarmingStateAccount({ wallet, connection })
 
   console.log('creating token A', mintA.toString())
   const mintTokenA = new Token(wallet, connection, mintA, TOKEN_PROGRAM_ID)
@@ -457,11 +448,8 @@ export async function depositAllTokenTypes({
 
   // create new account for user only if it has no one for such pool mint
   if (!isUserAlreadyHasPoolTokenAccount) {
-    ;[
-      newAccountPool,
-      newAccountPoolSignature,
-      newAccountPoolTransaction,
-    ] = await tokenPool.createAccount(wallet.publicKey)
+    ;[newAccountPool, newAccountPoolSignature, newAccountPoolTransaction] =
+      await tokenPool.createAccount(wallet.publicKey)
   }
 
   const userPoolTokenAccount = isUserAlreadyHasPoolTokenAccount
@@ -1013,7 +1001,7 @@ export const getMaxWithdrawAmount = async ({
   quotePoolTokenPublicKey: PublicKey
   poolPublicKey: PublicKey
   poolTokenAmount: number
-}): Promise<[number, number]> => {
+}): Promise<[BN, BN]> => {
   const poolToken = new Token(
     wallet,
     connection,
@@ -1022,7 +1010,7 @@ export const getMaxWithdrawAmount = async ({
   )
 
   const poolMintInfo = await poolToken.getMintInfo()
-  const supply = poolMintInfo.supply
+  const { supply } = poolMintInfo
 
   const basePoolToken = new Token(
     wallet,
@@ -1046,13 +1034,10 @@ export const getMaxWithdrawAmount = async ({
   )
   const quotePoolTokenAmount = quotePoolTokenInfo.amount
 
-  const withdrawAmountTokenA = (basePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply).toNumber()
-  const withdrawAmountTokenB = (quotePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply).toNumber()
+  const withdrawAmountTokenA = (basePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply)
+  const withdrawAmountTokenB = (quotePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply)
 
-  return [
-    withdrawAmountTokenA,
-    withdrawAmountTokenB,
-  ]
+  return [withdrawAmountTokenA, withdrawAmountTokenB]
 }
 
 /**
@@ -1116,7 +1101,7 @@ export const createSOLAccountAndClose = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-}): Promise<[Account, Transaction, Transaction]> => {
+}): Promise<[Keypair, Transaction, Transaction]> => {
   // if SOL - create new token address
 
   const tokenMint = new Token(
@@ -1126,11 +1111,8 @@ export const createSOLAccountAndClose = async ({
     TOKEN_PROGRAM_ID
   )
 
-  const [
-    _,
-    createWrappedAccount,
-    createWrappedAccountTransaction,
-  ] = await tokenMint.createAccount(wallet.publicKey)
+  const [_, createWrappedAccount, createWrappedAccountTransaction] =
+    await tokenMint.createAccount(wallet.publicKey)
 
   const [closeAccountTransaction] = await tokenMint.closeAccount(
     createWrappedAccount.publicKey,
@@ -1140,7 +1122,7 @@ export const createSOLAccountAndClose = async ({
   )
 
   return [
-    createWrappedAccount,
+    Keypair.fromSecretKey(createWrappedAccount.secretKey),
     createWrappedAccountTransaction,
     closeAccountTransaction,
   ]
@@ -1157,7 +1139,7 @@ export const transferSOLToWrappedAccountAndClose = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-  amount: number
+  amount: number | BN
 }): Promise<[Account, Transaction, Transaction]> => {
   // if SOL - create new token address
 
@@ -1168,6 +1150,12 @@ export const transferSOLToWrappedAccountAndClose = async ({
     TOKEN_PROGRAM_ID
   )
 
+  const creatorPk = wallet.publicKey
+
+  if (!creatorPk) {
+    throw new Error('No public key for wallet')
+  }
+
   const [
     createdWrappedAccountPubkey,
     createWrappedAccountTransaction,
@@ -1176,14 +1164,14 @@ export const transferSOLToWrappedAccountAndClose = async ({
     wallet,
     connection,
     TOKEN_PROGRAM_ID,
-    wallet.publicKey,
-    amount
+    creatorPk,
+    new BN(amount).toNumber()
   )
 
   const [closeAccountTransaction] = await tokenMint.closeAccount(
     createdWrappedAccountPubkey,
-    wallet.publicKey,
-    wallet.publicKey,
+    creatorPk,
+    creatorPk,
     []
   )
 
@@ -1195,8 +1183,8 @@ export const transferSOLToWrappedAccountAndClose = async ({
 }
 
 const createFarmingStateAccount = async ({
-  wallet,
   connection,
+  wallet,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -1209,9 +1197,14 @@ const createFarmingStateAccount = async ({
   const farmingStateAccount = new Account()
   const transaction = new Transaction()
 
+  const creatorPk = wallet.publicKey
+
+  if (!creatorPk) {
+    throw new Error('No public key for wallet')
+  }
   transaction.add(
     SystemProgram.createAccount({
-      fromPubkey: wallet.publicKey,
+      fromPubkey: creatorPk,
       newAccountPubkey: farmingStateAccount.publicKey,
       lamports: balanceNeeded,
       space: TokenFarmingLayout.span,
@@ -1261,8 +1254,18 @@ export const getMarketByTokens = async (
 ) => {
   const markets = await connection.getProgramAccounts(DEX_PID, {
     filters: [
-      { memcmp: { offset: MARKET_STATE_LAYOUT_V3.offsetOf('baseMint'), bytes: tokenA.toBase58() } },
-      { memcmp: { offset: MARKET_STATE_LAYOUT_V3.offsetOf('quoteMint'), bytes: tokenB.toBase58() } },
+      {
+        memcmp: {
+          offset: MARKET_STATE_LAYOUT_V3.offsetOf('baseMint'),
+          bytes: tokenA.toBase58(),
+        },
+      },
+      {
+        memcmp: {
+          offset: MARKET_STATE_LAYOUT_V3.offsetOf('quoteMint'),
+          bytes: tokenB.toBase58(),
+        },
+      },
     ],
   })
 

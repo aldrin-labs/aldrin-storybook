@@ -1,40 +1,44 @@
+import { Theme } from '@material-ui/core'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-
-import Close from '@icons/closeIcon.svg'
-import { Text } from '@sb/compositions/Addressbook/index'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
+import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
-import { SelectSeveralAddressesPopup } from '../../Pools/components/Popups/SelectorForSeveralAddresses'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
-import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
+
+import Close from '@icons/closeIcon.svg'
+
+import { SelectSeveralAddressesPopup } from '../../Pools/components/Popups/SelectorForSeveralAddresses'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
   width: 55rem;
 `
 
-const SelectorRow = styled(({ ...props }) => <RowContainer {...props} />)`
+export const SelectorRow = styled(({ ...props }) => (
+  <RowContainer {...props} />
+))`
   border-bottom: 0.1rem solid #383b45;
   height: 5rem;
 `
 
-const StyledText = styled(({ ...props }) => <Text {...props} />)`
+export const StyledText = styled(({ ...props }) => <Text {...props} />)`
   margin: 0 0.5rem;
-  font-size: 2rem;
+  font-size: 2em;
   font-family: Avenir Next Demi;
 `
 
@@ -126,7 +130,7 @@ export const SelectCoinPopup = ({
       PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       onEnter={() => {
         onChangeSearch('')
@@ -135,15 +139,15 @@ export const SelectCoinPopup = ({
       }}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'}>
-        <Text fontSize={'2rem'}>Select Token</Text>
+      <RowContainer justify="space-between">
+        <Text fontSize="2rem">Select Token</Text>
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
-      <RowContainer padding={'3rem 0'}>
+      <RowContainer padding="3rem 0">
         <SearchInputWithLoop
           searchValue={searchValue}
           onChangeSearch={onChangeSearch}
-          placeholder={'Search'}
+          placeholder="Search"
           width="100%"
         />
       </RowContainer>
@@ -162,7 +166,7 @@ export const SelectCoinPopup = ({
           }) => {
             return (
               <SelectorRow
-                justify={'space-between'}
+                justify="space-between"
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
                   const isSeveralCoinsWithSameAddress =
@@ -176,14 +180,14 @@ export const SelectCoinPopup = ({
                   }
                 }}
               >
-                <Row wrap={'nowrap'}>
-                  <TokenIcon mint={mint} width={'2rem'} height={'2rem'} />
+                <Row wrap="nowrap">
+                  <TokenIcon mint={mint} width="2rem" height="2rem" />
                   <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
                   {/* {!isPoolExist ? (
                     <TokenLabel>Insufficient Liquidity</TokenLabel>
                   ) : null} */}
                 </Row>
-                <Row wrap={'nowrap'}>
+                <Row wrap="nowrap">
                   <StyledText>
                     {formatNumberToUSFormat(stripDigitPlaces(amount, 8))}
                   </StyledText>

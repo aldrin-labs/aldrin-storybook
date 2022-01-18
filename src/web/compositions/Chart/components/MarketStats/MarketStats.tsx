@@ -3,7 +3,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import {
   formatNumberToUSFormat,
-  stripDigitPlaces
+  stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 import { Theme } from '@material-ui/core'
 import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -12,8 +12,12 @@ import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { compose } from 'recompose'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import {
-  MarketStatsContainer, MobileMarketStatsContainer, PanelCard, PanelCardSubValue, PanelCardTitle,
-  PanelCardValue
+  MarketStatsContainer,
+  MobileMarketStatsContainer,
+  PanelCard,
+  PanelCardSubValue,
+  PanelCardTitle,
+  PanelCardValue,
 } from '../../Chart.styles'
 import { getRINCirculationSupply } from '@core/api'
 
@@ -27,7 +31,6 @@ export interface MarketDataByTicker {
   maxPrice: number
 }
 
-
 interface IProps {
   theme: Theme
   symbol: string
@@ -35,7 +38,7 @@ interface IProps {
   marketDataByTickersQuery: {
     marketDataByTickers: MarketDataByTicker
   }
-  marketDataByTickersQueryRefetch: (variables: {[c:string]: any}) => void
+  marketDataByTickersQueryRefetch: (variables: { [c: string]: any }) => void
   getMarketStatisticsByPairQuery: {
     getMarketStatisticsByPair: {
       exchange: string
@@ -71,7 +74,7 @@ interface IProps {
   }
   quantityPrecision: number
   pricePrecision: number
-  isCCAIPair?: boolean
+  isRINPair?: boolean
 }
 
 export const generateDatesForRequest = () => ({
@@ -88,7 +91,7 @@ const MarketStats: React.FC<IProps> = (props) => {
     symbol = ' _ ',
     theme,
     marketType,
-    isCCAIPair,
+    isRINPair,
     pricePrecision,
   } = props
 
@@ -98,7 +101,7 @@ const MarketStats: React.FC<IProps> = (props) => {
       lastPriceDiff = 0,
       minPrice = 0,
       maxPrice = 0,
-    } = {}
+    } = {},
   } = marketDataByTickersQuery || {
     marketDataByTickers: {
       tradesCount: 0,
@@ -213,8 +216,8 @@ const MarketStats: React.FC<IProps> = (props) => {
               {!priceChangePercentage
                 ? '--'
                 : `${sign24hChange}${formatNumberToUSFormat(
-                  stripDigitPlaces(+priceChangePercentage)
-                )}%`}
+                    stripDigitPlaces(+priceChangePercentage)
+                  )}%`}
             </PanelCardSubValue>
           </span>
         </PanelCard>
@@ -232,21 +235,21 @@ const MarketStats: React.FC<IProps> = (props) => {
             {formatNumberToUSFormat(stripDigitPlaces(minPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
-        {/* <PanelCard marketType={marketType} theme={theme}>
+        <PanelCard marketType={marketType} theme={theme}>
           <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
           <PanelCardValue theme={theme}>
             {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
-        </PanelCard> */}
-        {isCCAIPair && (
+        </PanelCard>
+        {isRINPair && (
           <>
-            <PanelCard marketType={marketType} theme={theme}>
+            {/* <PanelCard marketType={marketType} theme={theme}>
               <PanelCardTitle theme={theme}>Circulating Supply</PanelCardTitle>
               <PanelCardValue theme={theme}>
                 {formatNumberToUSFormat(stripDigitPlaces(circulatingSupply, 2))}{' '}
                 CCAI
               </PanelCardValue>
-            </PanelCard>
+            </PanelCard> */}
             <PanelCard marketType={marketType} theme={theme}>
               <PanelCardTitle theme={theme}>Marketcap</PanelCardTitle>
               <PanelCardValue theme={theme}>
@@ -254,7 +257,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               </PanelCardValue>
             </PanelCard>
           </>
-        )}
+        )} 
       </MarketStatsContainer>
       <MobileMarketStatsContainer>
         <Title
@@ -283,8 +286,8 @@ const MarketStats: React.FC<IProps> = (props) => {
           {!priceChangePercentage
             ? '--'
             : `${sign24hChange}${formatNumberToUSFormat(
-              stripDigitPlaces(+priceChangePercentage)
-            )}%`}
+                stripDigitPlaces(+priceChangePercentage)
+              )}%`}
         </Title>
       </MobileMarketStatsContainer>
     </>

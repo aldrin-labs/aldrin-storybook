@@ -52,18 +52,18 @@ const TableHeader = ({
 
   return (
     <StyledHeader theme={theme} isAdvancedSelectorMode={isAdvancedSelectorMode}>
-      {/* <Row
-        width="10rem"
+      <Row
+        width="6rem"
         onClick={() => {
           setSelectorMode(isAdvancedSelectorMode ? 'basic' : 'advanced')
         }}
       >
         <SvgIcon
           src={isAdvancedSelectorMode ? SqueezeTableIcon : ExpandTableIcon}
-          width={'25%'}
+          width={'35%'}
           height={'auto'}
         />
-      </Row> */}
+      </Row>
       <Row
         width="calc(100%)"
         justify="flex-start"

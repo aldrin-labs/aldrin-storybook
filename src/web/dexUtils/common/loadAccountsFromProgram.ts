@@ -3,6 +3,7 @@ import {
   GetProgramAccountsFilter,
   PublicKey,
 } from '@solana/web3.js'
+import { AsyncGetProgramAccountsResult } from './types'
 
 export const loadAccountsFromProgram = async ({
   connection,
@@ -12,11 +13,8 @@ export const loadAccountsFromProgram = async ({
   connection: Connection
   filters: GetProgramAccountsFilter[]
   programAddress: string
-}) => {
-  return await connection.getProgramAccounts(
-    new PublicKey(programAddress),
-    {
-      filters,
-    }
-  )
+}): AsyncGetProgramAccountsResult => {
+  return await connection.getProgramAccounts(new PublicKey(programAddress), {
+    filters,
+  })
 }

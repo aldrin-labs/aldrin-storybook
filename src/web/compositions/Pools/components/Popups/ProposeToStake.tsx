@@ -1,7 +1,10 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
-import { stripByAmount } from '@core/utils/chartPageUtils'
-import { Paper, Theme } from '@material-ui/core'
+import { Paper, Theme, withTheme } from '@material-ui/core'
+import { COLORS } from '@variables/variables'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { compose } from 'recompose'
+import styled from 'styled-components'
+
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Button } from '@sb/components/Button'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
@@ -17,11 +20,10 @@ import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFa
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { COLORS } from '@variables/variables'
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { compose } from 'recompose'
-import styled from 'styled-components'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 
 export const StyledPaper = styled(Paper)`
   border-radius: 1.5rem;
@@ -58,13 +60,11 @@ const ProposeToStakePopup = ({
 
   const allStakingFarmingStates = stakingPool?.farming || []
 
-  const [
-    allStakingFarmingTickets,
-    refreshFarmingTickets,
-  ] = useAllStakingTickets({
-    wallet,
-    connection,
-  })
+  const [allStakingFarmingTickets, refreshFarmingTickets] =
+    useAllStakingTickets({
+      wallet,
+      connection,
+    })
 
   const totalStaked = getStakedTokensFromOpenFarmingTickets(
     allStakingFarmingTickets
@@ -84,14 +84,14 @@ const ProposeToStakePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
+      <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
         <Title>Would you like to stake your RIN rewards?</Title>
       </RowContainer>
-      <RowContainer direction={'column'} style={{ marginBottom: '2rem' }}>
+      <RowContainer direction="column" style={{ marginBottom: '2rem' }}>
         <WhiteText theme={theme}>
           Total trading fees on Aldrin’s AMM are 0.3%. Liquidity Providers will
           receive 0.20%, 0.05% will go to product development, while the
@@ -101,7 +101,7 @@ const ProposeToStakePopup = ({
       </RowContainer>
       <RowContainer justify="space-between" style={{ margin: '3rem 0' }}>
         <WhiteText theme={theme}>Current APR:</WhiteText>
-        <Number>{stripByAmount(apr, 2)}%</Number>
+        <Number>{apr > 1 ? stripByAmount(apr, 2) : '< 1'}%</Number>
       </RowContainer>
       <RowContainer justify="space-between" style={{ margin: '2rem 0' }}>
         <Button
@@ -133,6 +133,7 @@ const ProposeToStakePopup = ({
 }
 
 export default compose(
+  withTheme(),
   queryRendererHoc({
     query: getStakingPoolInfo,
     name: 'getStakingPoolInfoQuery',

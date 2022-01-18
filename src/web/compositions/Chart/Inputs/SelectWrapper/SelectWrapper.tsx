@@ -1,57 +1,52 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { fiatPairs } from '@core/config/stableCoins'
-import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import search from '@icons/search.svg'
-import { sortBy as sort } from 'lodash-es'
 import { Grid, InputAdornment } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
+import dayjs from 'dayjs'
+import { sortBy as sort } from 'lodash-es'
+import React, { useState } from 'react'
+import { withRouter } from 'react-router'
+import { SortDirection } from 'react-virtualized'
+
 import { SvgIcon } from '@sb/components'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
 import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
 import { notify } from '@sb/dexUtils/notifications'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
-import dayjs from 'dayjs'
-import React, { useState } from 'react'
-import { withRouter } from 'react-router'
-import { SortDirection } from 'react-virtualized'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { fiatPairs } from '@core/config/stableCoins'
+import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
+import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+
+import search from '@icons/search.svg'
+
 import 'react-virtualized/styles.css'
 import { compose } from 'recompose'
+
+import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
+import { dayDuration } from '@core/utils/dateUtils'
+
+import {
+  getTimezone,
+  endOfDayTimestamp,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
+
 import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
 import {
   IProps,
-
   IPropsSelectPairListComponent,
   IStateSelectPairListComponent,
-  SelectTabType
+  SelectTabType,
 } from './SelectWrapper.types'
 import { combineSelectWrapperData } from './SelectWrapper.utils'
 import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
 import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
 
-
-
-const PINNED_LIST = [
-  'RIN_USDC',
-]
-
-
-// TODO: clear that after db volume will be OK
-const TOP_LIST = [
-  'SOL_USDC',
-  'mSOL_USDC',
-  'BTC_USDT',
-  'SOL_USDT',
-  'ETH_USDC',
-  'SRM_USDC',
-  'RAY_USDC',
-  'ATLAS_USDC',
-]
+const PINNED_LIST = ['RIN_USDC']
 
 export const excludedPairs = [
   // 'USDC_ODOP',
@@ -64,24 +59,13 @@ export const excludedPairs = [
 ]
 
 export const datesForQuery = {
-  startOfTime: () => dayjs()
-    .startOf('hour')
-    .subtract(24, 'hour')
-    .unix(),
+  startOfTime: () => dayjs().startOf('hour').subtract(24, 'hour').unix(),
 
-  endOfTime: () => dayjs()
-    .endOf('hour')
-    .unix(),
+  endOfTime: () => dayjs().endOf('hour').unix(),
 
-  prevStartTimestamp: () => dayjs()
-    .startOf('hour')
-    .subtract(48, 'hour')
-    .unix(),
+  prevStartTimestamp: () => dayjs().startOf('hour').subtract(48, 'hour').unix(),
 
-  prevEndTimestamp: () => dayjs()
-    .startOf('hour')
-    .subtract(24, 'hour')
-    .unix(),
+  prevEndTimestamp: () => dayjs().startOf('hour').subtract(24, 'hour').unix(),
 }
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
@@ -92,13 +76,13 @@ const SelectWrapper = (props: IProps) => {
 
   // TODO: Uncomment once Postgres HA deployed
 
-  // const [selectorMode, setSelectorMode] = useLocalStorageState(
-  //   'selectorMode',
-  //   'basic'
-  // )
+  const [selectorMode, setSelectorMode] = useLocalStorageState(
+    'selectorMode',
+    'basic'
+  )
 
-  const selectorMode = 'basic'
-  const setSelectorMode = () => { }
+  // const selectorMode = 'advanced'
+  // const setSelectorMode = () => { }
 
   const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
     'favouriteMarkets',
@@ -126,13 +110,13 @@ const SelectWrapper = (props: IProps) => {
   }
 
   const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
-
-  const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
-    (el) =>
-      el.symbol &&
-      !Array.isArray(el.symbol.match(fiatRegexp)) &&
-      !excludedPairs.includes(el.symbol)
-  )
+  const filtredMarketsByExchange =
+    getSerumMarketDataQuery.getSerumMarketData.filter(
+      (el) =>
+        el.symbol &&
+        !Array.isArray(el.symbol.match(fiatRegexp)) &&
+        !excludedPairs.includes(el.symbol)
+    )
 
   const favouritePairsMap = favouriteMarkets.reduce(
     (acc: Map<string, string>, el: string) => {
@@ -162,7 +146,7 @@ const SelectWrapper = (props: IProps) => {
 class SelectPairListComponent extends React.PureComponent<
   IPropsSelectPairListComponent,
   IStateSelectPairListComponent
-  > {
+> {
   state: IStateSelectPairListComponent = {
     processedSelectData: [],
     showAddMarketPopup: false,
@@ -210,12 +194,8 @@ class SelectPairListComponent extends React.PureComponent<
       .getElementById('ExchangePair')
       ?.getBoundingClientRect()
 
-    const {
-      sortBy,
-      sortDirection,
-      isMintsPopupOpen,
-      isFeedBackPopupOpen,
-    } = this.state
+    const { sortBy, sortDirection, isMintsPopupOpen, isFeedBackPopupOpen } =
+      this.state
 
     getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
       serumMarketsDataMap.set(el.pair, el)
@@ -272,18 +252,15 @@ class SelectPairListComponent extends React.PureComponent<
       onTabChange,
     } = nextProps
     const { data: prevPropsData } = this.props
-    const {
-      sortBy,
-      sortDirection,
-      isMintsPopupOpen,
-      isFeedBackPopupOpen,
-    } = this.state
+    const { sortBy, sortDirection, isMintsPopupOpen, isFeedBackPopupOpen } =
+      this.state
 
     const serumMarketsDataMap = new Map()
 
     getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
       serumMarketsDataMap?.set(el.pair, el)
     )
+
     const processedSelectData = combineSelectWrapperData({
       data,
       toggleFavouriteMarket,
@@ -296,7 +273,7 @@ class SelectPairListComponent extends React.PureComponent<
       marketType,
       market,
       tokenMap,
-      serumMarketsDataMap: serumMarketsDataMap,
+      serumMarketsDataMap,
       allMarketsMap,
       isMintsPopupOpen,
       setIsMintsPopupOpen: this.setIsMintsPopupOpen,
@@ -315,10 +292,7 @@ class SelectPairListComponent extends React.PureComponent<
     })
   }
 
-
   _sortList = ({ sortBy, sortDirection, data, tab }) => {
-
-
     let dataToSort = data
 
     if (!dataToSort) {
@@ -333,8 +307,6 @@ class SelectPairListComponent extends React.PureComponent<
 
     // const CCAIMarket = newList.find(v => v.symbol.contentToSort === 'RIN_USDC')
 
-
-
     if (this.props.marketType === 0 && sortBy === 'volume24hChange') {
       newList.sort((pairObjectA, pairObjectB) => {
         const quoteA = pairObjectA.symbol.contentToSort.split('_')[1]
@@ -345,11 +317,14 @@ class SelectPairListComponent extends React.PureComponent<
             pairObjectB.volume24hChange.contentToSort -
             pairObjectA.volume24hChange.contentToSort
           )
-        } else if (quoteA === 'USDT') {
+        }
+        if (quoteA === 'USDT') {
           return -1
-        } else if (quoteB === 'USDT') {
+        }
+        if (quoteB === 'USDT') {
           return 1
-        } else if (quoteA !== 'USDT' && quoteB !== 'USDT') {
+        }
+        if (quoteA !== 'USDT' && quoteB !== 'USDT') {
           return (
             pairObjectB.volume24hChange.contentToSort -
             pairObjectA.volume24hChange.contentToSort
@@ -363,7 +338,7 @@ class SelectPairListComponent extends React.PureComponent<
       }
     }
 
-    const topList = sortBy === 'volume24hChange' ? [...PINNED_LIST, ...TOP_LIST] : PINNED_LIST
+    const topList = PINNED_LIST
 
     const topMarkets = newList
       .filter((v) => topList.includes(v.id))
@@ -376,10 +351,7 @@ class SelectPairListComponent extends React.PureComponent<
     )
     if (ccaiIndex === -1) return newList
 
-    const updatedList = [
-      ...topMarkets,
-      ...withoutTop,
-    ]
+    const updatedList = [...topMarkets, ...withoutTop]
 
     return updatedList
   }
@@ -465,7 +437,7 @@ class SelectPairListComponent extends React.PureComponent<
           <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
             <StyledInput
               placeholder="Search"
-              disableUnderline={true}
+              disableUnderline
               value={searchValue}
               onChange={onChangeSearch}
               inputProps={{
@@ -482,7 +454,7 @@ class SelectPairListComponent extends React.PureComponent<
                     cursor: 'pointer',
                     color: '#96999C',
                   }}
-                  disableTypography={true}
+                  disableTypography
                   position="end"
                   autoComplete="off"
                 >
@@ -597,18 +569,18 @@ export default compose(
     withTableLoader: false,
     showNoLoader: true,
   }),
-  // queryRendererHoc({
-  //   query: getSerumTradesData,
-  //   name: 'getSerumTradesDataQuery',
-  //   variables: (props) => ({
-  //     timezone: getTimezone(),
-  //     timestampTo: endOfDayTimestamp(),
-  //     timestampFrom: endOfDayTimestamp() - dayDuration * 14,
-  //   }),
-  //   withoutLoading: true,
-  //   withOutSpinner: true,
-  //   withTableLoader: false,
-  //   showNoLoader: true,
-  //   fetchPolicy: 'cache-and-network',
-  // })
+  queryRendererHoc({
+    query: getSerumTradesData,
+    name: 'getSerumTradesDataQuery',
+    variables: (props) => ({
+      timezone: getTimezone(),
+      timestampTo: endOfDayTimestamp(),
+      timestampFrom: endOfDayTimestamp() - dayDuration * 14,
+    }),
+    withoutLoading: true,
+    withOutSpinner: true,
+    withTableLoader: false,
+    showNoLoader: true,
+    fetchPolicy: 'cache-and-network',
+  })
 )(SelectWrapper)

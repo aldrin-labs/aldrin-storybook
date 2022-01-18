@@ -1,6 +1,7 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 
+import { toMap } from '../../../utils/collection'
 import { FarmingTicket, SnapshotQueue } from '../../common/types'
 import { getFarmingRewardsFromFarmingStates } from './getFarmingRewardsFromFarmingStates'
 
@@ -16,10 +17,7 @@ interface CalculateRewardsParams {
 export const addFarmingRewardsToTickets = (params: CalculateRewardsParams) => {
   const { snapshotQueues, farmingTickets, pools } = params
 
-  const poolsMap: Map<string, PoolInfo> = pools.reduce(
-    (acc, pool) => acc.set(pool.swapToken, pool),
-    new Map()
-  )
+  const poolsMap = toMap(pools, (p) => p.swapToken)
 
   // go through every ticket and calc amount to claim for every farming state
   const userRewardsForAllTickets = farmingTickets.reduce(

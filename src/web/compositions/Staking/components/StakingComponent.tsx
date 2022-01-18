@@ -1,46 +1,41 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
-
-import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
-import { endOfHourTimestamp } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
-import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import { useConnection } from '@sb/dexUtils/connection'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
-
-import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { StakingPool } from '@sb/dexUtils/staking/types'
-import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
-import { useInterval } from '@sb/dexUtils/useInterval'
-import { useUserTokenAccounts } from '@sb/dexUtils/useUserTokenAccounts'
-import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import dayjs from 'dayjs'
 import React from 'react'
 import { compose } from 'recompose'
-import { Cell } from '../../../components/Layout'
-import { RootRow } from '../styles'
 
+import { Cell } from '@sb/components/Layout'
+import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
+import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import { dayDuration } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
+import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
+import { StakingPool } from '@sb/dexUtils/staking/types'
+import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
+import { useInterval } from '@sb/dexUtils/useInterval'
+import {
+  useUserTokenAccounts,
+  useAssociatedTokenAccount,
+} from '@sb/dexUtils/token/hooks'
+
+
+
+import { RootRow } from '../styles'
 import StatsComponent from './StatsComponent'
 import UserStakingInfo from './UserStakingInfo'
 
 interface StakingComponentProps {
   getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
   getBuyBackAmountForPeriodQuery: { getBuyBackAmountForPeriod: number }
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }
 
 const StakingComponent: React.FC<StakingComponentProps> = (
   props: StakingComponentProps
 ) => {
   const { getStakingPoolInfoQuery, getBuyBackAmountForPeriodQuery } = props
-  const { wallet } = useWallet()
-  const connection = useConnection()
-  const [allTokenData, refreshAllTokenData] = useUserTokenAccounts({
-    wallet,
-    connection,
-  })
+
+  const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
   const stakingPool = getStakingPoolInfoQuery.getStakingPoolInfo || {}
 
@@ -54,13 +49,13 @@ const StakingComponent: React.FC<StakingComponentProps> = (
     allStakingFarmingStates
   )
 
-  const tokenData = allTokenData.find(
-    (token) => token.mint === currentFarmingState.farmingTokenMint
+  const tokenData = useAssociatedTokenAccount(
+    currentFarmingState.farmingTokenMint
   )
 
   const buyBackAmount =
     getBuyBackAmountForPeriodQuery.getBuyBackAmountForPeriod *
-    10 ** currentFarmingState.farmingTokenMintDecimals
+    10 ** currentFarmingState?.farmingTokenMintDecimals
 
   useInterval(() => {
     refreshTotalStaked()
@@ -74,7 +69,6 @@ const StakingComponent: React.FC<StakingComponentProps> = (
             stakingPool={stakingPool}
             currentFarmingState={currentFarmingState}
             tokenData={tokenData}
-            totalStaked={totalStaked}
             refreshAllTokenData={refreshAllTokenData}
             refreshTotalStaked={refreshTotalStaked}
             allTokenData={allTokenData}
@@ -83,9 +77,9 @@ const StakingComponent: React.FC<StakingComponentProps> = (
         <Cell col={12} colLg={6}>
           <StatsComponent
             buyBackAmount={buyBackAmount}
-            totalStaked={totalStaked}
             currentFarmingState={currentFarmingState}
             tokenData={tokenData}
+            totalStaked={totalStaked}
           />
         </Cell>
       </RootRow>
@@ -106,11 +100,7 @@ export default compose(
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
     variables: () => {
-      // we're using endOfDay only for first day of staking with buy back
-      // TODO: remove it once we'll have records for more than one day
-      const endOfDay = dayjs()
-        .endOf('day')
-        .unix()
+      const endOfDay = dayjs.utc().endOf('day').unix()
 
       return {
         timestampFrom: endOfDay - dayDuration * DAYS_TO_CHECK_BUY_BACK,

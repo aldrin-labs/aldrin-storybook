@@ -1,12 +1,14 @@
 import { Market, OpenOrders } from '@project-serum/serum'
+import { Order } from '@project-serum/serum/lib/market'
 import {
   Connection,
   PublicKey,
   Transaction,
   Account,
   Keypair,
+  Signer,
+  Commitment,
 } from '@solana/web3.js'
-import { Order } from '@project-serum/serum/lib/market'
 
 export interface WalletAdapter {
   publicKey: PublicKey | null | undefined
@@ -67,7 +69,7 @@ export interface PlaceOrder {
 export interface SignTransactionsParams {
   transactionsAndSigners: {
     transaction: Transaction
-    signers?: Array<Account>
+    signers?: Array<Signer>
   }[]
   wallet: WalletAdapter
   connection: Connection
@@ -103,7 +105,7 @@ export interface AmendOrderParams {
 
 export interface SendTransactionParams extends SendSignedTransactionParams {
   wallet: WalletAdapter
-  signers: (Account | Keypair)[]
+  signers: (Keypair | Account | Signer)[]
   focusPopup?: boolean
 }
 
@@ -113,11 +115,13 @@ export interface SendSignedTransactionParams {
   sentMessage?: string
   successMessage?: string
   timeout?: number
-  operationType?: string
-  params?: any
+  showNotification?: boolean
+  commitment?: Commitment
+  skipPreflight?: boolean // Default: true
 }
 
 export type SendSignedTransactionResult = 'failed' | 'timeout' | string
-export type AsyncSendSignedTransactionResult = Promise<SendSignedTransactionResult>
+export type AsyncSendSignedTransactionResult =
+  Promise<SendSignedTransactionResult>
 
 export type Maybe<T> = T | undefined

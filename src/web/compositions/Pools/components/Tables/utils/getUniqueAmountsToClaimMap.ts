@@ -1,37 +1,51 @@
-import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
-import { getAvailableFarmingTokensForFarmingState } from '@sb/dexUtils/pools/getAvailableFarmingTokensForFarmingState'
+import {
+  FarmingCalc,
+  FarmingState,
+  FarmingTicket,
+} from '@sb/dexUtils/common/types'
+
+interface FamingStateClaimable {
+  farmingTokenMint: string
+  amount: number
+}
 
 export const getUniqueAmountsToClaimMap = ({
   farmingTickets,
-  farmingStates,
+  farmingStates = [],
+  calcAccounts = new Map<string, FarmingCalc>(),
 }: {
   farmingTickets: FarmingTicket[]
-  farmingStates: FarmingState[]
+  farmingStates?: FarmingState[]
+  calcAccounts?: Map<string, FarmingCalc>
 }) => {
-  if (!farmingStates) return []
+  if (!farmingStates) {
+    return new Map<string, FamingStateClaimable>()
+  }
   return farmingStates.reduce((acc, farmingState) => {
-    const { farmingTokenMint } = farmingState
+    const {
+      farmingTokenMint,
+      farmingState: fs,
+      farmingTokenMintDecimals,
+    } = farmingState
 
-    const availableToClaimFromFarmingState = getAvailableFarmingTokensForFarmingState(
-      {
-        farmingTickets,
-        farmingState: farmingState.farmingState,
-      }
-    )
-
-    if (acc.has(farmingTokenMint)) {
-      const { amount, ...rest } = acc.get(farmingTokenMint)
-      acc.set(farmingTokenMint, {
-        ...rest,
-        amount: amount + availableToClaimFromFarmingState,
-      })
-    } else {
-      acc.set(farmingTokenMint, {
-        farmingTokenMint,
-        amount: availableToClaimFromFarmingState,
-      })
+    if (!farmingTokenMint) {
+      return acc
     }
 
+    const state = acc.get(farmingTokenMint) || {
+      farmingTokenMint,
+      amount: 0,
+    }
+
+    const calcAccountAmount =
+      parseFloat(calcAccounts.get(fs)?.tokenAmount.toString() || '0') /
+      10 ** farmingTokenMintDecimals
+
+    acc.set(farmingTokenMint, {
+      farmingTokenMint,
+      amount: state.amount + calcAccountAmount,
+    })
+
     return acc
-  }, new Map())
+  }, new Map<string, FamingStateClaimable>())
 }

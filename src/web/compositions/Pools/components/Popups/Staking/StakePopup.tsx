@@ -1,10 +1,8 @@
-import { estimatedTime } from '@core/utils/dateUtils'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
-import Close from '@icons/closeIcon.svg'
-import { Theme } from '@material-ui/core'
+import { Theme, withTheme } from '@material-ui/core'
+import { PublicKey } from '@solana/web3.js'
+import dayjs from 'dayjs'
+import React, { useState } from 'react'
+
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import AttentionComponent from '@sb/components/AttentionBlock'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -19,43 +17,38 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
+import { startStaking } from '@sb/dexUtils/common/actions'
 import {
   CREATE_FARMING_TICKET_SOL_FEE,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
 } from '@sb/dexUtils/common/config'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { startFarming } from '@sb/dexUtils/pools/startFarming'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
-import dayjs from 'dayjs'
-import React, { useState } from 'react'
+
+import { estimatedTime } from '@core/utils/dateUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+
+import Close from '@icons/closeIcon.svg'
+
 import { Button } from '../../Tables/index.styles'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { InputWithCoins } from '../components'
 import { BoldHeader, StyledPaper } from '../index.styles'
 import { HintContainer } from './styles'
 
-export const StakePopup = ({
-  theme,
-  open,
-  close,
-  selectedPool,
-  allTokensData,
-  farmingTicketsMap,
-  dexTokensPricesMap,
-  refreshTokensWithFarmingTickets,
-  setPoolWaitingForUpdateAfterOperation,
-  isReminderPopup = false,
-}: {
+interface StakePopupProps {
   theme: Theme
-  open: boolean
   close: () => void
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
@@ -63,8 +56,21 @@ export const StakePopup = ({
   dexTokensPricesMap: Map<string, DexTokensPrices>
   refreshTokensWithFarmingTickets: RefreshFunction
   setPoolWaitingForUpdateAfterOperation: (data: PoolWithOperation) => void
-  isReminderPopup?: boolean
-}) => {
+  isReminderPopup: boolean
+}
+
+const Popup = (props: StakePopupProps) => {
+  const {
+    theme,
+    close,
+    selectedPool,
+    allTokensData,
+    farmingTicketsMap,
+    dexTokensPricesMap,
+    refreshTokensWithFarmingTickets,
+    setPoolWaitingForUpdateAfterOperation,
+    isReminderPopup,
+  } = props
   const {
     amount: maxPoolTokenAmount,
     address: userPoolTokenAccount,
@@ -76,31 +82,25 @@ export const StakePopup = ({
   const [operationLoading, setOperationLoading] = useState(false)
 
   const { wallet } = useWallet()
-  const connection = useConnection()
+  const connection = useMultiEndpointConnection()
 
   const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
   const farmingState = selectedPool.farming && selectedPool.farming[0]
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
-  const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
 
   const poolTokenPrice = calculatePoolTokenPrice({
     pool: selectedPool,
     dexTokensPricesMap,
   })
 
-  const totalStakedLpTokensUSD =
-    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice
+  const totalStakedLpTokensUSD = Math.max(
+    selectedPool.lpTokenFreezeVaultBalance * poolTokenPrice,
+    1000
+  )
 
   const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
   const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-
-  const baseTokenPrice = dexTokensPricesMap.get(baseSymbol)?.price || 0
-  const quoteTokenPrice = dexTokensPricesMap.get(quoteSymbol)?.price || 0
-
-  const tvlUSD =
-    baseTokenPrice * selectedPool.tvl.tokenA +
-    quoteTokenPrice * selectedPool.tvl.tokenB
 
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0
@@ -108,16 +108,15 @@ export const StakePopup = ({
     ? filterOpenFarmingStates(selectedPool.farming)
     : []
 
-  const stakedWithEnteredPoolTokensUSD =
-    (stakedTokens + +poolTokenAmount) * poolTokenPrice
-
   if (!farmingState) return null
 
   const totalFarmingDailyRewardsUSD = openFarmings.reduce(
     (acc, farmingState) => {
-      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity = getFarmingStateDailyFarmingValue(
-        { farmingState, totalStakedLpTokensUSD }
-      )
+      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity =
+        getFarmingStateDailyFarmingValue({
+          farmingState,
+          totalStakedLpTokensUSD,
+        })
 
       const farmingTokenSymbol = getTokenNameByMintAddress(
         farmingState.farmingTokenMint
@@ -140,12 +139,15 @@ export const StakePopup = ({
 
   const farmingTokens = [
     ...new Set(
-      selectedPool.farming.map((farmingState) => farmingState.farmingTokenMint)
+      (selectedPool.farming || []).map(
+        ({ farmingTokenMint }) => farmingTokenMint
+      )
     ),
   ]
     .map((farmingTokenMint, i, arr) => {
-      return `${getTokenNameByMintAddress(farmingTokenMint)} ${i !== arr.length - 1 ? 'X ' : ''
-        }`
+      return `${getTokenNameByMintAddress(farmingTokenMint)} ${
+        i !== arr.length - 1 ? 'X ' : ''
+      }`
     })
     .join('')
     .replace(',', '')
@@ -163,14 +165,14 @@ export const StakePopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
+      open
       onEnter={() => {
         setOperationLoading(false)
       }}
-      maxWidth={'md'}
-      open={open}
+      maxWidth="md"
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify={'space-between'} width={'100%'}>
+      <RowContainer justify="space-between" width="100%">
         <BoldHeader>
           {!isReminderPopup
             ? 'Stake Pool Tokens'
@@ -179,26 +181,26 @@ export const StakePopup = ({
         <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
       </RowContainer>
       <RowContainer justify="flex-start">
-        <Text style={{ marginBottom: '1rem' }} fontSize={'1.4rem'}>
+        <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
           {!isReminderPopup
             ? 'Stake your Pool Tokens to start farming RIN.'
-            : `Stake your LP tokens to start framing ${farmingTokens}.`}
+            : `Stake your LP tokens to start farming ${farmingTokens}.`}
         </Text>
       </RowContainer>
       <RowContainer>
         <InputWithCoins
-          placeholder={'0'}
+          placeholder="0"
           theme={theme}
           onChange={setPoolTokenAmount}
           value={poolTokenAmount}
-          symbol={'Pool Tokens'}
+          symbol="Pool Tokens"
           // alreadyInPool={0}
           maxBalance={maxPoolTokenAmount}
           needAlreadyInPool={false}
         />
       </RowContainer>
       {isReminderPopup ? null : (
-        <RowContainer justify={'space-between'}>
+        <RowContainer justify="space-between">
           <Text>Est. rewards:</Text>
           <Text>
             <Row align="flex-start">
@@ -211,7 +213,7 @@ export const StakePopup = ({
           </Text>
         </RowContainer>
       )}
-      <RowContainer justify={'space-between'} margin={'2rem 0 0 0'}>
+      <RowContainer justify="space-between" margin="2rem 0 0 0">
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
@@ -222,13 +224,13 @@ export const StakePopup = ({
         </WhiteText>
       </RowContainer>
       {isReminderPopup ? null : (
-        <HintContainer justify={'flex-start'} margin="5rem 0 2rem 0">
+        <HintContainer justify="flex-start" margin="5rem 0 2rem 0">
           <Row justify="flex-start" width="20%">
             <ExclamationMark
               theme={theme}
-              margin={'0 0 0 2rem'}
+              margin="0 0 0 2rem"
               fontSize="5rem"
-              color={'#fbf2f2'}
+              color="#fbf2f2"
             />
           </Row>
           <Row width="80%" align="flex-start" direction="column">
@@ -251,27 +253,27 @@ export const StakePopup = ({
       )}
 
       {isLessThanMinPoolTokenAmountToStake && (
-        <RowContainer margin={'2rem 0 0 0'}>
+        <RowContainer margin="2rem 0 0 0">
           <AttentionComponent
             text={`You need to stake at least ${MIN_POOL_TOKEN_AMOUNT_TO_STAKE} Pool tokens.`}
-            blockHeight={'8rem'}
+            blockHeight="8rem"
           />
         </RowContainer>
       )}
 
       {isNotEnoughPoolTokens && (
-        <RowContainer margin={'2rem 0 0 0'}>
+        <RowContainer margin="2rem 0 0 0">
           <AttentionComponent
-            text={`You entered more Pool tokens than you have.`}
-            blockHeight={'8rem'}
+            text="You entered more Pool tokens than you have."
+            blockHeight="8rem"
           />
         </RowContainer>
       )}
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
-          isUserConfident={true}
+          isUserConfident
           theme={theme}
           showLoader={operationLoading}
           onClick={async () => {
@@ -286,13 +288,17 @@ export const StakePopup = ({
             const poolTokenAmountWithDecimals =
               +poolTokenAmount * 10 ** poolTokenDecimals
 
-            const result = await startFarming({
+            const result = await startStaking({
               wallet,
               connection,
-              poolTokenAmount: poolTokenAmountWithDecimals,
+              amount: poolTokenAmountWithDecimals,
+              stakingPool: selectedPool,
               userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
-              poolPublicKey: new PublicKey(selectedPool.swapToken),
-              farmingState: new PublicKey(farmingState.farmingState),
+              programAddress: getPoolsProgramAddress({
+                curveType: selectedPool.curveType,
+              }),
+              farmingTickets,
+              decimals: POOL_TOKENS_MINT_DECIMALS,
             })
 
             setOperationLoading(false)
@@ -303,8 +309,8 @@ export const StakePopup = ({
                 result === 'success'
                   ? 'Successfully staked.'
                   : result === 'failed'
-                    ? 'Staking failed, please try again later or contact us in telegram.'
-                    : 'Staking cancelled.',
+                  ? 'Staking failed, please try again later or contact us in telegram.'
+                  : 'Staking cancelled.',
             })
 
             const clearPoolWaitingForUpdate = () =>
@@ -314,13 +320,8 @@ export const StakePopup = ({
               })
 
             if (result === 'success') {
-              setTimeout(async () => {
-                refreshTokensWithFarmingTickets()
-                clearPoolWaitingForUpdate()
-              }, 7500)
-
-              // if not updated value returned after first refresh
-              setTimeout(() => refreshTokensWithFarmingTickets(), 15000)
+              refreshTokensWithFarmingTickets()
+              clearPoolWaitingForUpdate()
             } else {
               clearPoolWaitingForUpdate()
             }
@@ -334,3 +335,5 @@ export const StakePopup = ({
     </DialogWrapper>
   )
 }
+
+export const StakePopup = withTheme()(Popup)

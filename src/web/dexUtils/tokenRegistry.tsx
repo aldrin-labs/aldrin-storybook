@@ -1,9 +1,12 @@
-import { TokenListProvider } from '@solana/spl-token-registry'
+import { TokenListProvider, TokenInfo } from '@solana/spl-token-registry'
 import React, { useContext, useEffect, useState } from 'react'
+
 import { clusterForEndpoint } from './clusters'
 import { useConnectionConfig } from './connection'
 
-const TokenListContext = React.createContext({})
+const TokenListContext = React.createContext({
+  tokenInfos: new Map<string, TokenInfo>(),
+})
 
 export function useTokenInfos() {
   const { tokenInfos } = useContext(TokenListContext)
@@ -19,9 +22,8 @@ export function TokenRegistryProvider(props) {
     tokenListProvider.resolve().then((tokenListContainer) => {
       const cluster = clusterForEndpoint(endpoint)
 
-      const filteredTokenListContainer = tokenListContainer?.filterByClusterSlug(
-        cluster?.name
-      )
+      const filteredTokenListContainer =
+        tokenListContainer?.filterByClusterSlug(cluster?.name)
 
       const tokenInfos =
         tokenListContainer !== filteredTokenListContainer
@@ -30,9 +32,16 @@ export function TokenRegistryProvider(props) {
 
       setTokenInfos(
         tokenInfos.reduce((map, item) => {
-          map.set(item.address, item)
+          const parsedItem = {
+            ...item,
+            ...(item.symbol === 'soETH' ? { symbol: 'ETH' } : {}),
+            name: item.name
+              .replace('Cryptocurrencies.Ai', 'Aldrin')
+              .replace('(Sollet)', ''), // TODO: found better way to resolve token names
+          }
+          map.set(item.address, parsedItem)
           return map
-        }, new Map())
+        }, new Map<string, TokenInfo>())
       )
     })
   }, [endpoint])

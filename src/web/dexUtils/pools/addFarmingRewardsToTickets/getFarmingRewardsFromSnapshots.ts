@@ -1,8 +1,10 @@
+import BN from 'bn.js'
+
 import {
-  INSTANT_FARMING_REWARD_PART_DENOMINATOR,
   INSTANT_FARMING_REWARD_PART_NUMERATOR,
-  VESTING_FARMING_REWARD_PART_DENOMINATOR,
+  INSTANT_FARMING_REWARD_PART_DENOMINATOR,
   VESTING_FARMING_REWARD_PART_NUMERATOR,
+  VESTING_FARMING_REWARD_PART_DENOMINATOR,
 } from '@sb/dexUtils/common/config'
 import {
   FarmingState,
@@ -10,7 +12,6 @@ import {
   Snapshot,
   StateAttached,
 } from '@sb/dexUtils/common/types'
-import BN from 'bn.js'
 
 interface CalculatedUserRewards {
   prevSnapshot: Snapshot | null
@@ -35,6 +36,9 @@ export const getFarmingRewardsFromSnapshots = ({
     prevSnapshot: null,
     amount: 0,
   }
+
+  const now = Date.now() / 1000
+  const ticketEndTime = parseFloat(ticket.endTime)
 
   const userRewardsForFarmingState = snapshots.reduce(
     (snapshotsAcc, snapshot: Snapshot, index, snapshotsArr) => {
@@ -69,20 +73,32 @@ export const getFarmingRewardsFromSnapshots = ({
         }
       }
 
-      const totalUserSnapshotReward = new BN(
-        snapshot.tokensTotal - prevSnapshot.tokensTotal
-      )
-        .mul(new BN(ticket.tokensFrozen))
-        .div(new BN(snapshot.tokensFrozen))
+      const totalUserSnapshotReward = new BN(snapshot.tokensTotal.toFixed(0))
+        .sub(new BN(prevSnapshot.tokensTotal.toFixed(0)))
+        .mul(new BN(ticket.tokensFrozen.toFixed(0)))
+        .div(new BN(snapshot.tokensFrozen.toFixed(0)))
 
-      let unlockedUserSnapshotReward = totalUserSnapshotReward
-        .mul(new BN(INSTANT_FARMING_REWARD_PART_NUMERATOR))
-        .div(new BN(INSTANT_FARMING_REWARD_PART_DENOMINATOR))
+      let unlockedUserSnapshotReward = new BN(0)
 
-      const currentTime = Date.now() / 1000
+      if (
+        !stateAttached ||
+        (stateAttached.lastWithdrawTime < snapshot.time &&
+          ticketEndTime >= snapshot.time)
+      ) {
+        unlockedUserSnapshotReward = unlockedUserSnapshotReward.add(
+          totalUserSnapshotReward
+            .mul(new BN(INSTANT_FARMING_REWARD_PART_NUMERATOR))
+            .div(new BN(INSTANT_FARMING_REWARD_PART_DENOMINATOR))
+        )
+      }
 
-      // if vesting period passed
-      if (snapshot.time + vestingPeriod <= currentTime) {
+      const lastVestedWithdrawTime =
+        stateAttached?.lastVestedWithdrawTime || parseFloat(ticket.startTime)
+
+      if (
+        lastVestedWithdrawTime < snapshot.time &&
+        snapshot.time + vestingPeriod < now
+      ) {
         unlockedUserSnapshotReward = unlockedUserSnapshotReward.add(
           totalUserSnapshotReward
             .mul(new BN(VESTING_FARMING_REWARD_PART_NUMERATOR))
@@ -91,7 +107,8 @@ export const getFarmingRewardsFromSnapshots = ({
       }
 
       const unlockedUserSnapshotRewardWithoutDecimals =
-        parseFloat(unlockedUserSnapshotReward.toString()) / 10 ** farmingTokenMintDecimals
+        parseFloat(unlockedUserSnapshotReward.toString()) /
+        10 ** farmingTokenMintDecimals
 
       return {
         prevSnapshot: snapshot,
