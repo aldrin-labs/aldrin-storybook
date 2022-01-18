@@ -342,7 +342,7 @@ export const withdrawStakedInstructions = async (
   }
 }
 export const withdrawStaked = async (params: WithdrawStakedParams) => {
-  const { wallet } = params
+  const { wallet, connection } = params
 
   if (!wallet.publicKey) {
     return 'failed'

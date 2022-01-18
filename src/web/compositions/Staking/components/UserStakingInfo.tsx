@@ -122,7 +122,7 @@ const resolveUnstakingNotification = (
 }
 
 const resolveClaimNotification = (
-  status: 'success' | 'failed' | 'cancelled' | string
+  status: 'success' | 'failed' | 'rejected' | string
 ) => {
   if (status === 'success') {
     return 'Successfully claimed rewards.'
@@ -130,7 +130,7 @@ const resolveClaimNotification = (
   if (status === 'failed') {
     return 'Claim rewards failed, please try again later or contact us in telegram.'
   }
-  if (status === 'cancelled') {
+  if (status === 'rejected') {
     return 'Claim rewards cancelled.'
   }
 
@@ -138,15 +138,16 @@ const resolveClaimNotification = (
 }
 
 const resolveRestakeNotification = (
-  status: 'success' | 'failed' | 'cancelled' | string
+  status: 'success' | 'failed' | 'rejected' | string
 ) => {
+  console.log('status: ', status)
   if (status === 'success') {
     return 'Successfully restaked.'
   }
   if (status === 'failed') {
     return 'Restake failed, please try again later or contact us in telegram.'
   }
-  if (status === 'cancelled') {
+  if (status === 'rejected') {
     return 'Restake cancelled.'
   }
 
@@ -259,13 +260,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   // Available to claim on tickets only
   const availableToClaimOnTickets = getAvailableToClaimFarmingTokens(
     availableToClaimTickets
-  )
-
-  console.log(
-    'claims:',
-    availableToClaimTickets,
-    calcAccounts,
-    currentFarmingState
   )
 
   const snapshotsProcessing = availableToClaimOnTickets !== 0
@@ -546,7 +540,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                           $variant="primary"
                           $fontSize="xs"
                           $padding="lg"
-                          disabled={isClaimDisabled}
+                          disabled={isClaimDisabled || loading.claim}
                           $loading={loading.claim}
                           $borderRadius="xxl"
                           onClick={claimRewards}
@@ -559,7 +553,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       $variant="link"
                       $fontSize="xs"
                       $padding="lg"
-                      disabled={isClaimDisabled}
+                      disabled={isClaimDisabled || loading.claim}
                       $loading={loading.claim}
                       $borderRadius="xxl"
                       onClick={doRestake}
