@@ -21,6 +21,7 @@ import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton
 import { BORROW_LENDING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import Dashboard from './Dashboard/Dashboard'
 import Markets from './Markets/Markets'
 import Supply from './Supply/Supply'
@@ -283,4 +284,10 @@ const BorrowLending: FC = ({ match }: BorrowLendingProps) => {
   )
 }
 
-export default BorrowLending
+export default (props) => {
+  return (
+    <ConnectWalletWrapper>
+      <BorrowLending {...props} />
+    </ConnectWalletWrapper>
+  )
+}
