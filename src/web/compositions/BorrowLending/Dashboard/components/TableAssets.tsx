@@ -93,12 +93,12 @@ const TableAssets = ({ theme, reserves, walletAccounts }: TableAssetsProps) => {
 
       return (
         <>
-          <TableRow
+          <tr
             onClick={() => setBalancesOpen(index)}
             style={{ cursor: 'pointer' }}
             key={index}
           >
-            <RowTd style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+            <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <a
                 href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
                 target="_blank"
@@ -108,26 +108,26 @@ const TableAssets = ({ theme, reserves, walletAccounts }: TableAssetsProps) => {
                 {reserve.liquidity.mint.toString()}
               </a>
               <span>${tokenPrice}</span>
-            </RowTd>
-            <RowTd style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+            </td>
+            <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
                 <strong>{depositAmountUI}</strong>
               </p>
               <span>${toNumberWithDecimals(depositWorth, 2)}</span>
-            </RowTd>
-            <RowTd style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+            </td>
+            <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
                 <strong>tba</strong>
               </p>
               <span>tba</span>
-            </RowTd>
-            <RowTd style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+            </td>
+            <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
                 <strong>0</strong>
               </p>
               <span>$0.00</span>
-            </RowTd>
-          </TableRow>
+            </td>
+          </tr>
           <BalancesPopup
             theme={theme}
             open={balancesOpen === index}
