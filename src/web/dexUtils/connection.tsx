@@ -8,8 +8,13 @@ import {
 import tuple from 'immutable-tuple'
 import React, { useContext, useRef } from 'react'
 
+import {
+  getProviderNameFromUrl,
+  MultiEndpointsConnection,
+  AldrinConnection,
+} from '@core/solana/connection'
+
 import { useAsyncData } from './fetch-loop'
-import MultiEndpointsConnection from './MultiEndpointsConnection'
 
 export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
@@ -54,15 +59,16 @@ export const ConnectionProvider: React.FC = ({ children }) => {
 }
 
 export function useConnection(): Connection {
-  return useContext(ConnectionContext).connection as Connection
+  return useContext(ConnectionContext).connection as AldrinConnection
 }
 
 export function useMultiEndpointConnection(): MultiEndpointsConnection {
-  return useContext(ConnectionContext).connection
+  return useContext(ConnectionContext).connection as AldrinConnection
 }
 
 export function useSerumConnection(): Connection {
-  return useContext(ConnectionContext).serumConnection as unknown as Connection
+  return useContext(ConnectionContext)
+    .serumConnection as unknown as AldrinConnection
 }
 
 export function useConnectionConfig() {
@@ -148,10 +154,4 @@ export const getConnectionFromMultiConnections = ({ connection }) => {
   return rawConnection
 }
 
-export const getProviderNameFromUrl = ({ rawConnection }) => {
-  const rpcProvider = rawConnection._rpcEndpoint
-    .replace('https://', '')
-    .replaceAll('.', '-')
-
-  return rpcProvider
-}
+export { getProviderNameFromUrl }

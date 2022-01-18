@@ -1,5 +1,5 @@
-export * from './buildTransactions'
-export * from './mergeTransactions'
+export * from '@core/solana/transactions/buildTransactions'
+export * from '@core/solana/transactions/mergeTransactions'
 export * from './signAndSendSingleTransaction'
 export * from './sendSignedSignleTransaction'
 export * from './sendSignedTransactions'
