@@ -218,11 +218,11 @@ const TableAssets = ({
 
       return (
         <>
-          <TableRow
+          <tr
             onClick={() => setActionsOpen(index)}
             style={{ cursor: 'pointer' }}
           >
-            <RowTd style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+            <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <a
                 href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
                 target="_blank"
@@ -232,29 +232,29 @@ const TableAssets = ({
                 {reserve.liquidity.mint.toString()}
               </a>
               <span>${tokenPrice}</span>
-            </RowTd>
-            <RowTd style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+            </td>
+            <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
                 <strong>{walletBalance}</strong>
               </p>
               <span>${toNumberWithDecimals(walletBalanceWorth, 2)}</span>
-            </RowTd>
-            <RowTd style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+            </td>
+            <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
                 <strong>
                   {depositAmount} ({collateralDeposit})
                 </strong>
               </p>
               <span>${toNumberWithDecimals(depositWorth, 2)}</span>
-            </RowTd>
-            <RowTd style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+            </td>
+            <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
                 <strong>
                   {depositApy % 1 !== 0 ? depositApy.toFixed(2) : depositApy}%
                 </strong>
               </p>
-            </RowTd>
-          </TableRow>
+            </td>
+          </tr>
           {walletAccounts && walletAccounts.length > 0 && (
             <ActionsPopup
               theme={theme}

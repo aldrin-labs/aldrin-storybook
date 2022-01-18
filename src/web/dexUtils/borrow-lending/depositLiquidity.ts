@@ -61,8 +61,9 @@ export const depositLiquidity = async ({
 
   console.log(
     'depositLiqCollateralWallet',
-    collateralWallet.toString(),
-    sourceLiquidityWallet.toString()
+    reserve.collateral.mint,
+    collateralWallet,
+    sourceLiquidityWallet
   )
 
   const refreshReserveInstruction = program.instruction.refreshReserve({
