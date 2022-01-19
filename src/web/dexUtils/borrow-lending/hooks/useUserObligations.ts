@@ -8,12 +8,12 @@ import {
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
-import { Obligation, ObligationInner, Reserve, U192 } from '../types'
+import { Obligation, ObligationInner, ObligationReserve, U192 } from '../types'
 import { u192ToBN } from '../U192-converting'
 
 const USER_KEY_OFFSET = 1 + 16 + 32
 
-const reserve192ToBn = (reserve: Reserve<U192>): Reserve<BN> => {
+const reserve192ToBn = (reserve: ObligationReserve<U192>): ObligationReserve<BN> => {
   if (reserve.collateral) {
     return {
       collateral: {

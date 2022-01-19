@@ -7,13 +7,14 @@ import {
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
-import { Obligation } from '../types'
+import { Reserve, ReserveDecoded } from '../types'
+import { u192ToBN } from '../U192-converting'
 
 export const useReserves = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const fetcher = async (): Promise<Obligation[] | null> => {
+  const fetcher = async (): Promise<Reserve[] | null> => {
     if (!wallet.publicKey) {
       return null
     }
@@ -24,29 +25,39 @@ export const useReserves = () => {
       programAddress: BORROW_LENDING_PROGRAM_ADDRESS,
     })
 
-    console.log('size: ', program.account.reserve.size)
     const accounts = await connection.getProgramAccounts(
       new PublicKey(BORROW_LENDING_PROGRAM_ADDRESS),
       {
-        filters: [{ dataSize: program.account.reserve.size }],
+        filters: [{ dataSize: 408 }],
       }
     )
 
-    return accounts
-      .map((acc) => {
-        try {
-          const decoded = program.coder.accounts.decode(
-            'Reserve',
-            acc.account.data
-          )
-          console.log('decoded: ', decoded)
-          return decoded
-        } catch (e) {
-          console.warn('Unable to decode reserve: ', e)
-          return null
-        }
-      })
-      .filter((acc) => !!acc)
+    return accounts.map((acc) => {
+      const decoded = program.coder.accounts.decode<ReserveDecoded>(
+        'Reserve',
+        acc.account.data
+      )
+      return {
+        ...decoded,
+        reserve: acc.pubkey,
+        config: {
+          ...decoded.config,
+          fees: {
+            ...decoded.config.fees,
+            borrowFee: u192ToBN(decoded.config.fees.borrowFee),
+            flashLoanFee: u192ToBN(decoded.config.fees.flashLoanFee),
+          },
+        },
+        liquidity: {
+          ...decoded.liquidity,
+          borrowedAmount: u192ToBN(decoded.liquidity.borrowedAmount),
+          cumulativeBorrowRate: u192ToBN(
+            decoded.liquidity.cumulativeBorrowRate
+          ),
+          marketPrice: u192ToBN(decoded.liquidity.marketPrice),
+        },
+      }
+    })
   }
 
   return useSWR(`borrow-reserves`, fetcher)

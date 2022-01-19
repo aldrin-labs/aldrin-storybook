@@ -8,12 +8,13 @@ import {
 } from '@sb/compositions/BorrowLending/utils/rates'
 import { toNumberWithDecimals } from '@sb/dexUtils/borrow-lending/U192-converting'
 
+import { Reserve } from '../../../../dexUtils/borrow-lending/types'
 import { useUserTokenAccounts } from '../../../../dexUtils/token/hooks'
 import { Table } from '../../styles'
 
 type TableAssetsProps = {
   theme: Theme
-  reserves: any
+  reserves: Reserve[]
 }
 
 const TableAssets = ({ theme, reserves }: TableAssetsProps) => {

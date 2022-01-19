@@ -1,6 +1,5 @@
 import { Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/core/styles'
-import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
 import React from 'react'
 import { default as NumberFormat } from 'react-number-format'
@@ -10,23 +9,19 @@ import { Block, BlockContent } from '@sb/components/Block'
 import { Cell, Page, WideContent } from '@sb/components/Layout'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { liqRatio } from '@sb/compositions/BorrowLending/config'
-import {
-  MarketCompType,
-  WalletAccountsType,
-} from '@sb/compositions/BorrowLending/Markets/types'
+import { MarketCompType } from '@sb/compositions/BorrowLending/Markets/types'
 import { RootRow } from '@sb/compositions/Pools/components/Charts/styles'
 import { depositLiquidity } from '@sb/dexUtils/borrow-lending/depositLiquidity'
 import { depositObligationCollateral } from '@sb/dexUtils/borrow-lending/depositObligationCollateral'
 import { initObligation } from '@sb/dexUtils/borrow-lending/initObligation'
-import {
-  removeTrailingZeros,
-  u192ToBN,
-} from '@sb/dexUtils/borrow-lending/U192-converting'
+import { removeTrailingZeros } from '@sb/dexUtils/borrow-lending/U192-converting'
 import { withdrawCollateral } from '@sb/dexUtils/borrow-lending/withdrawCollateral'
 import { withdrawLiquidity } from '@sb/dexUtils/borrow-lending/withdrawLiquidity'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { Reserve } from '../../../dexUtils/borrow-lending/types'
+import { useUserTokenAccounts } from '../../../dexUtils/token/hooks'
 import TableAssets from './components/TableAssets'
 import {
   TitleBlock,
@@ -42,10 +37,8 @@ import {
 type SupplyProps = {
   theme: Theme
   reserves: any
-  reservesPKs: PublicKey[]
   obligations: any
   obligationDetails: any
-  walletAccounts: WalletAccountsType | []
   userSummary: any
   handleGetReservesAccounts: () => void
   handleGetObligation: () => void
@@ -54,44 +47,38 @@ type SupplyProps = {
 const Supply = ({
   theme,
   reserves,
-  reservesPKs,
   obligations,
   obligationDetails,
-  walletAccounts,
   userSummary,
   handleGetReservesAccounts,
   handleGetObligation,
 }: SupplyProps) => {
+  const [walletAccounts] = useUserTokenAccounts()
   const { wallet } = useWallet()
   const connection = useConnection()
   let totalRemainingBorrow = 0
   let totalUserDepositWorth = 0
   const totalRiskFactor = obligationDetails
-    ? (parseInt(u192ToBN(obligationDetails.borrowedValue).toString()) /
-        parseInt(u192ToBN(obligationDetails.unhealthyBorrowValue).toString())) *
+    ? (parseInt(obligationDetails.borrowedValue.toString(), 10) /
+        parseInt(obligationDetails.unhealthyBorrowValue.toString(), 10)) *
       100
     : 0
 
   const generateDepositCompositionArr = (
-    reservesList: []
+    reservesList: Reserve[]
   ): MarketCompType[] => {
     const depositCompArr: MarketCompType[] = []
     if (walletAccounts && walletAccounts.length > 0 && userSummary) {
       reservesList.forEach((reserve) => {
         const tokenAccount = walletAccounts.find(
-          (account) =>
-            account.account.data.parsed.info.mint ===
-            reserve.collateral.mint.toString()
+          (account) => account.mint === reserve.collateral.mint.toString()
         )
-        const tokenAmount =
-          tokenAccount?.account.data.parsed.info.tokenAmount.amount
-        const tokenDecimals =
-          tokenAccount?.account.data.parsed.info.tokenAmount.decimals
+        const tokenAmount = tokenAccount?.amount || 0
+        const tokenDecimals = tokenAccount?.decimals || 9
         const tokenWorth =
-          ((parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()) /
-            Math.pow(10, 18)) *
+          ((parseInt(reserve.liquidity.marketPrice.toString(), 10) / 10 ** 18) *
             tokenAmount) /
-          Math.pow(10, tokenDecimals) /
+          10 ** tokenDecimals /
           liqRatio
         console.log(
           'totalUserDepositWorth',
@@ -215,15 +202,11 @@ const Supply = ({
   if (walletAccounts && walletAccounts.length) {
     reserves.forEach((reserve) => {
       const tokenAccount = walletAccounts.find(
-        (account) =>
-          account.account.data.parsed.info.mint ===
-          reserve.collateral.mint.toString()
+        (account) => account.mint === reserve.collateral.mint.toString()
       )
-      const depositAmount =
-        tokenAccount?.account.data.parsed.info.tokenAmount.uiAmount || 0
+      const depositAmount = tokenAccount?.amount || 0
       const depositWorth =
-        (parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()) /
-          Math.pow(10, 18)) *
+        (parseInt(reserve.liquidity.marketPrice.toString(), 10) / 10 ** 18) *
         depositAmount
       console.log('depositWorthh', depositWorth)
       totalRemainingBorrow =
@@ -337,9 +320,7 @@ const Supply = ({
                               <NumberFormat
                                 value={
                                   parseInt(
-                                    u192ToBN(
-                                      obligationDetails.allowedBorrowValue
-                                    ).toString()
+                                    obligationDetails.allowedBorrowValue.toString()
                                   ) / Math.pow(10, 18)
                                 }
                                 displayType="text"

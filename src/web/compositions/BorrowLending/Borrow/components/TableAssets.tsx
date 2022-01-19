@@ -16,7 +16,6 @@ import {
 import {
   removeTrailingZeros,
   toNumberWithDecimals,
-  u192ToBN,
 } from '@sb/dexUtils/borrow-lending/U192-converting'
 
 import { Table } from '../../styles'
@@ -61,7 +60,7 @@ const TableAssets = ({
   const renderRows = () => {
     return reserves.map((reserve, index) => {
       const tokenPrice = toNumberWithDecimals(
-        parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()),
+        parseInt(reserve.liquidity.marketPrice.toString()),
         5
       )
       let tokenDecimals = 0
@@ -86,49 +85,34 @@ const TableAssets = ({
 
       if (walletAccounts && walletAccounts.length > 0) {
         const depositTokenAccount = walletAccounts.find(
-          (account) =>
-            account.account.data.parsed.info.mint ===
-            reserve.collateral.mint.toString()
+          (account) => account.mint === reserve.collateral.mint.toString()
         )
         const tokenAccount = walletAccounts.find(
-          (account) =>
-            account.account.data.parsed.info.mint ===
-            reserve.liquidity.mint.toString()
+          (account) => account.mint === reserve.liquidity.mint.toString()
         )
         if (depositTokenAccount) {
-          const depositAmountBN = new BN(
-            depositTokenAccount.account.data.parsed.info.tokenAmount.amount
-          )
-          const depositWorthBN = u192ToBN(reserve.liquidity.marketPrice).mul(
-            depositAmountBN
-          )
-          depositAmount =
-            depositTokenAccount.account.data.parsed.info.tokenAmount
-              .uiAmountString
+          const depositAmountBN = new BN(depositTokenAccount.amount)
+          const depositWorthBN =
+            reserve.liquidity.marketPrice.mul(depositAmountBN)
+          depositAmount = depositTokenAccount.amount
           depositWorth =
             parseInt(depositWorthBN.toString()) /
-            Math.pow(
-              10,
-              depositTokenAccount.account.data.parsed.info.tokenAmount.decimals
-            ) /
+            Math.pow(10, depositTokenAccount.decimals) /
             liqRatio
         }
 
         if (tokenAccount) {
-          tokenDecimals =
-            tokenAccount.account.data.parsed.info.tokenAmount.decimals
-          walletBalance =
-            +tokenAccount.account.data.parsed.info.tokenAmount.uiAmount
+          tokenDecimals = tokenAccount.decimals
+          walletBalance = +tokenAccount.amount
           walletBalanceWorth =
-            walletBalance *
-            parseInt(u192ToBN(reserve.liquidity.marketPrice).toString())
+            walletBalance * parseInt(reserve.liquidity.marketPrice.toString())
           const reserveBorrowedAmount = parseInt(
-            u192ToBN(reserve.liquidity.borrowedAmount).toString()
+            reserve.liquidity.borrowedAmount.toString()
           )
           const utilizationRate = calculateUtilizationRate(
             reserveBorrowedAmount,
             parseInt(
-              u192ToBN(reserve.liquidity.borrowedAmount)
+              reserve.liquidity.borrowedAmount
                 .add(reserve.liquidity.availableAmount)
                 .toString()
             )
@@ -144,7 +128,7 @@ const TableAssets = ({
           depositApy = borrowApy * utilizationRate
 
           reserveBorrowedLiquidity =
-            parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString()) /
+            parseInt(reserve.liquidity.borrowedAmount.toString()) /
             Math.pow(10, 18)
           reserveAvailableLiquidity =
             parseInt(reserve.liquidity.availableAmount.toString()) /
@@ -158,18 +142,12 @@ const TableAssets = ({
 
           if (obligationDetails) {
             console.log({
-              depositedValue: u192ToBN(
-                obligationDetails.depositedValue
-              ).toString(),
-              borrowedValue: u192ToBN(
-                obligationDetails.borrowedValue
-              ).toString(),
-              allowedBorrowValue: u192ToBN(
-                obligationDetails.allowedBorrowValue
-              ).toString(),
-              unhealthyBorrowValue: u192ToBN(
-                obligationDetails.unhealthyBorrowValue
-              ).toString(),
+              depositedValue: obligationDetails.depositedValue.toString(),
+              borrowedValue: obligationDetails.borrowedValue.toString(),
+              allowedBorrowValue:
+                obligationDetails.allowedBorrowValue.toString(),
+              unhealthyBorrowValue:
+                obligationDetails.unhealthyBorrowValue.toString(),
             })
             //
             obligationDetails.reserves.forEach((r) => {
@@ -178,17 +156,15 @@ const TableAssets = ({
                 console.log('col', {
                   depositReserve: c.depositReserve.toString(),
                   depositedAmount: c.depositedAmount.toString(),
-                  marketValue: u192ToBN(c.marketValue).toString(),
+                  marketValue: c.marketValue.toString(),
                 })
               } else if (r.liquidity) {
                 const l = r.liquidity.inner
                 console.log('liq', {
                   borrowReserve: l.borrowReserve.toString(),
-                  borrowedAmount: u192ToBN(l.borrowedAmount).toString(),
-                  cumulativeBorrowRate: u192ToBN(
-                    l.cumulativeBorrowRate
-                  ).toString(),
-                  marketValue: u192ToBN(l.marketValue).toString(),
+                  borrowedAmount: l.borrowedAmount.toString(),
+                  cumulativeBorrowRate: l.cumulativeBorrowRate.toString(),
+                  marketValue: l.marketValue.toString(),
                 })
               }
             })
@@ -233,24 +209,18 @@ const TableAssets = ({
               // collateralWorth = calcCollateralWorth(collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
               collateralWorth =
                 parseInt(
-                  u192ToBN(
-                    reserveObligationCollateral.collateral.inner.marketValue
-                  ).toString()
+                  reserveObligationCollateral.collateral.inner.marketValue.toString()
                 ) / Math.pow(10, 18)
             }
 
             if (reserveObligationBorrow) {
               borrowedAmount =
                 parseInt(
-                  u192ToBN(
-                    reserveObligationBorrow.liquidity.inner.borrowedAmount
-                  ).toString()
+                  reserveObligationBorrow.liquidity.inner.borrowedAmount.toString()
                 ) / Math.pow(10, 18 + tokenDecimals)
               borrowedAmountWorth =
                 parseInt(
-                  u192ToBN(
-                    reserveObligationBorrow.liquidity.inner.marketValue
-                  ).toString()
+                  reserveObligationBorrow.liquidity.inner.marketValue.toString()
                 ) / Math.pow(10, 18)
               remainingBorrow =
                 (reserve.config.loanToValueRatio.percent / 100) *

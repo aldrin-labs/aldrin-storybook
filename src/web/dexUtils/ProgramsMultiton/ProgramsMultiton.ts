@@ -101,7 +101,7 @@ class ProgramsMultiton {
             )
           ) as any as Program) // TODO
         : new Program(
-            programIdl,
+            programIdl as Idl,
             programId,
             new Provider(
               connection,

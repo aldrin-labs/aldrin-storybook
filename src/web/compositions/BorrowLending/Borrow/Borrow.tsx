@@ -1,30 +1,39 @@
-import {Block, BlockContent} from '@sb/components/Block';
-import {RowContainer} from '@sb/compositions/AnalyticsRoute/index.styles';
-import {Theme} from '@material-ui/core';
-import { default as NumberFormat } from 'react-number-format';
+import { Theme } from '@material-ui/core'
+import { withTheme } from '@material-ui/core/styles'
+import { PublicKey } from '@solana/web3.js'
+import BN from 'bn.js'
+import React from 'react'
+import { default as NumberFormat } from 'react-number-format'
+import { compose } from 'recompose'
 
+import { Block, BlockContent } from '@sb/components/Block'
+import { Cell, Page, WideContent } from '@sb/components/Layout'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
-    TitleBlock,
-    BlockNumber,
-    RewardCard,
-    BlockReward,
-    DescriptionBlock, Description, List, ListItem
-} from '../Supply/Supply.styles';
-import {compose} from 'recompose';
-import {withTheme} from '@material-ui/core/styles';
-import {depositObligationCollateral} from '@sb/dexUtils/borrow-lending/depositObligationCollateral';
-import TableAssets from './components/TableAssets';
-import {removeTrailingZeros, toNumberWithDecimals, u192ToBN} from '@sb/dexUtils/borrow-lending/U192-converting';
-import {MarketCompType, ObligationType, WalletAccountsType} from '@sb/compositions/BorrowLending/Markets/types';
-import {PublicKey} from '@solana/web3.js';
-import BN from 'bn.js';
-import React, { useState} from 'react'
-import {Cell, Page, WideContent} from '@sb/components/Layout';
-import {RootRow} from '@sb/compositions/Pools/components/Charts/styles';
+  MarketCompType,
+  WalletAccountsType,
+} from '@sb/compositions/BorrowLending/Markets/types'
+import { RootRow } from '@sb/compositions/Pools/components/Charts/styles'
 import { borrowObligationLiquidity } from '@sb/dexUtils/borrow-lending/borrowObligationLiquidity'
 import { repayObligationLiquidity } from '@sb/dexUtils/borrow-lending/repayObligationLiquidity'
+import {
+  removeTrailingZeros,
+  toNumberWithDecimals,
+} from '@sb/dexUtils/borrow-lending/U192-converting'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
+
+import {
+  TitleBlock,
+  BlockNumber,
+  RewardCard,
+  BlockReward,
+  DescriptionBlock,
+  Description,
+  List,
+  ListItem,
+} from '../Supply/Supply.styles'
+import TableAssets from './components/TableAssets'
 
 type BorrowProps = {
   theme: Theme
@@ -63,8 +72,8 @@ const Borrow = ({
   let mintedCollateralTotal = 0
   let unhealthyBorrowValue = 0
   const totalRiskFactor = obligationDetails
-    ? (parseInt(u192ToBN(obligationDetails.borrowedValue).toString()) /
-        parseInt(u192ToBN(obligationDetails.unhealthyBorrowValue).toString())) *
+    ? (parseInt(obligationDetails.borrowedValue.toString()) /
+        parseInt(obligationDetails.unhealthyBorrowValue.toString())) *
       100
     : 0
 
@@ -169,16 +178,13 @@ const Borrow = ({
   if (walletAccounts && walletAccounts.length) {
     reserves.forEach((reserve) => {
       const tokenPrice = toNumberWithDecimals(
-        parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()),
+        parseInt(reserve.liquidity.marketPrice.toString()),
         5
       )
       const tokenAccount = walletAccounts.find(
-        (account) =>
-          account.account.data.parsed.info.mint ===
-          reserve.collateral.mint.toString()
+        (account) => account.mint === reserve.collateral.mint.toString()
       )
-      const depositAmount =
-        tokenAccount?.account.data.parsed.info.tokenAmount.uiAmount || 0
+      const depositAmount = tokenAccount?.amount || 0
       const depositWorth = parseFloat(tokenPrice, 5) * depositAmount
       console.log('depositWorthh', depositWorth)
       totalRemainingBorrow =
@@ -187,10 +193,9 @@ const Borrow = ({
 
       totalUserDepositWorth += depositWorth
 
-      const tokenDecimals =
-        tokenAccount?.account.data.parsed.info.tokenAmount.decimals || 9
+      const tokenDecimals = tokenAccount?.decimals || 9
       reserveBorrowedLiquidity =
-        parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString()) /
+        parseInt(reserve.liquidity.borrowedAmount.toString()) /
         Math.pow(10, 18 + tokenDecimals)
       reserveBorrowedLiquidityWorth =
         reserveBorrowedLiquidity * parseFloat(tokenPrice)
@@ -210,9 +215,8 @@ const Borrow = ({
 
       if (obligationDetails) {
         unhealthyBorrowValue =
-          parseInt(
-            u192ToBN(obligationDetails.unhealthyBorrowValue).toString()
-          ) / Math.pow(10, 18)
+          parseInt(obligationDetails.unhealthyBorrowValue.toString()) /
+          Math.pow(10, 18)
         const reserveObligationCollateral = obligationDetails.reserves.find(
           (reserveObligation) => {
             if (reserveObligation.collateral) {
@@ -382,9 +386,7 @@ const Borrow = ({
                               <NumberFormat
                                 value={
                                   parseInt(
-                                    u192ToBN(
-                                      obligationDetails.allowedBorrowValue
-                                    ).toString()
+                                    obligationDetails.allowedBorrowValue.toString()
                                   ) / Math.pow(10, 18)
                                 }
                                 displayType="text"

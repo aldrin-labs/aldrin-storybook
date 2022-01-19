@@ -5,7 +5,7 @@ export interface U192 {
   u192: [BN, BN, BN]
 }
 
-export interface Reserve<S> {
+export interface ObligationReserve<S> {
   empty?: {}
   collateral?: {
     inner: {
@@ -24,21 +24,67 @@ export interface Reserve<S> {
   }
 }
 
+interface LastUpdate {
+  slot: BN
+  stale: boolean
+}
+
 export interface ObligationBase<S> {
   allowedBorrowValue: S
   borrowedValue: S
   depositedValue: S
-  lastUpdate: {
-    slot: BN
-    stale: boolean
-  }
+  lastUpdate: LastUpdate
   lendingMarket: PublicKey
   owner: PublicKey
-  reserves: Reserve<S>[]
+  reserves: ObligationReserve<S>[]
   unhealthyBorrowValue: S
 }
 
 export type ObligationInner = ObligationBase<U192>
 export type Obligation = ObligationBase<BN> & {
   obligation: PublicKey
+}
+
+export interface IntPercent {
+  percent: number
+}
+
+export interface ReserveBase<S> {
+  collateral: {
+    mint: PublicKey
+    mintTotalSupply: BN
+    supply: PublicKey
+  }
+  config: {
+    fees: {
+      borrowFee: S
+      flashLoanFee: S
+      hostFee: IntPercent
+    }
+    liquidationBonus: IntPercent
+    liquidationThreshold: IntPercent
+    loanToValueRatio: IntPercent
+    maxBorrowRate: IntPercent
+    minBorrowRate: IntPercent
+    optimalBorrowRate: IntPercent
+    optimalUtilizationRate: IntPercent
+  }
+  lastUpdate: LastUpdate
+  lendingMarket: PublicKey
+  liquidity: {
+    availableAmount: BN
+    borrowedAmount: S
+    cumulativeBorrowRate: S
+    feeReceiver: PublicKey
+    marketPrice: S
+    mint: PublicKey
+    mintDecimals: number
+    oracle: PublicKey
+    supply: PublicKey
+  }
+}
+
+export type ReserveDecoded = ReserveBase<U192>
+export type Reserve = ReserveBase<BN> & {
+  reserve: PublicKey
 }
