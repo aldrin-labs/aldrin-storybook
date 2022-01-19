@@ -9,12 +9,7 @@ export const sendSignedTransactions = async (
   connection: Connection,
   params: TransactionParams & NotificationParams = {}
 ) => {
-  const {
-    showNotification,
-    successMessage,
-    sentMessage,
-    commitment = 'confirmed',
-  } = params
+  const { showNotification, successMessage, commitment = 'confirmed' } = params
   for (let i = 0; i < transactions.length; i += 1) {
     const signedTransaction = transactions[i]
     const isLastTransaction = i === transactions.length - 1
@@ -26,7 +21,6 @@ export const sendSignedTransactions = async (
       timeout: 30_000,
       commitment: isLastTransaction ? commitment : 'confirmed', // Wait for finalization of last transaction
       successMessage: isLastTransaction ? successMessage : undefined,
-      sentMessage,
       showNotification,
     })
 

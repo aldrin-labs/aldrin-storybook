@@ -1,21 +1,17 @@
-import {
-  Commitment,
-  Connection,
-  Signer,
-  Transaction,
-  TransactionInstruction,
-} from '@solana/web3.js'
+import { Commitment, Connection, Signer } from '@solana/web3.js'
 
-import { WalletAdapter } from '../types'
+import {
+  SendSignedTransactionParams as SendSingleParams,
+  WalletAdapter,
+  TransactionAndSigners,
+} from '@core/solana'
 
 interface SendTransactionParamsBase {
   connection: Connection
 }
 
 export interface NotificationParams {
-  sentMessage?: string | [string, string]
   successMessage?: string | [string, string]
-  showNotification?: boolean
 }
 
 export interface TransactionParams {
@@ -25,38 +21,13 @@ export interface TransactionParams {
 }
 
 export interface SendSignedTransactionParams
-  extends SendTransactionParamsBase,
-    NotificationParams,
-    TransactionParams {
-  transaction: Transaction
-}
-
-export interface WaitConfirmationParams extends SendTransactionParamsBase {
-  txId: string
-  timeout: number
-  pollInterval?: number
-  commitment?: Commitment
-}
+  extends SendSingleParams,
+    NotificationParams {}
 
 export interface SendTransactionParams extends SendSignedTransactionParams {
   wallet: WalletAdapter
   signers?: Signer[]
   focusPopup?: boolean
-}
-
-export type SendSignedTransactionResult = 'failed' | 'timeout' | 'success'
-
-export type AsyncSendSignedTransactionResult =
-  Promise<SendSignedTransactionResult>
-
-export interface TransactionAndSigners {
-  transaction: Transaction
-  signers?: Signer[]
-}
-
-export interface InstructionWithLamports {
-  instruction: TransactionInstruction
-  lamports?: number
 }
 
 export interface SendTransactionsParams

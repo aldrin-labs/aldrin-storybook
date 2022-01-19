@@ -1,5 +1,4 @@
-import { sendSignedTransactions } from '.'
-import { signTransactions } from './signTransactions'
+import { sendSignedTransactions, signTransactions } from '.'
 import { SendTransactionsParams } from './types'
 
 export const signAndSendTransactions = async (
@@ -10,7 +9,6 @@ export const signAndSendTransactions = async (
     connection,
     wallet,
     focusPopup,
-    sentMessage,
     successMessage,
     commitment,
   } = params
@@ -24,7 +22,6 @@ export const signAndSendTransactions = async (
     )
 
     return await sendSignedTransactions(signedTransactions, connection, {
-      sentMessage,
       successMessage,
       commitment,
     })

@@ -10,7 +10,6 @@ export const signAndSendSingleTransaction = async (
     wallet,
     signers = [],
     focusPopup = true,
-    sentMessage,
     successMessage,
     commitment,
   } = params
@@ -20,7 +19,6 @@ export const signAndSendSingleTransaction = async (
     wallet,
     focusPopup,
     connection,
-    sentMessage,
     successMessage,
     commitment,
   })
