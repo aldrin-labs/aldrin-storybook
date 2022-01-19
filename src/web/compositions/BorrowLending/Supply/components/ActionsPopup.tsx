@@ -9,24 +9,23 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 
-import CloseIcon from '@icons/closeIcon.svg'
-
 import {
     BlueButton,
     StyledPaper,
     Title,
 } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles';
 import { removeTrailingZeros } from '@sb/dexUtils/borrow-lending/U192-converting'
+import CloseIcon from '@icons/closeIcon.svg'
 import {
-    ButtonCategory,
-    TitleBlock,
-    SupplyCard,
-    BlockSupply,
-    AmountCard,
-    MaxAmount,
-    CustomSlider,
-    ButtonGroup, AmountInput
-} from './ActionsPopup.styles';
+  ButtonCategory,
+  TitleBlock,
+  SupplyCard,
+  BlockSupply,
+  AmountCard,
+  MaxAmount,
+  ButtonGroup,
+  AmountInput,
+} from './ActionsPopup.styles'
 
 
 const ActionsPopup = ({
@@ -134,6 +133,7 @@ const ActionsPopup = ({
   }
 
   const withdrawLiq = () => {
+    console.log('withdrawLiq: ', reserve)
     const callback = () => {
       onClose()
       setAmount(0)

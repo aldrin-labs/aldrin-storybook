@@ -13,6 +13,7 @@ import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { BORROW_LENDING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
+import { Obligation, Reserve } from './types'
 
 export const withdrawCollateral = async ({
   wallet,
@@ -26,8 +27,8 @@ export const withdrawCollateral = async ({
   wallet: WalletAdapter
   connection: Connection
   programAddress?: string
-  reserve: any
-  obligation: any
+  reserve: Reserve
+  obligation: Obligation
   obligationDetails: any
   amount: BN
 }) => {
@@ -83,7 +84,7 @@ export const withdrawCollateral = async ({
 
   const refreshObligationInstruction = program.instruction.refreshObligation({
     accounts: {
-      obligation: obligation.pubkey,
+      obligation: obligation.obligation,
       clock: SYSVAR_CLOCK_PUBKEY,
     },
     remainingAccounts: reservesPkToRefresh.map((pubkey) => ({
@@ -103,8 +104,8 @@ export const withdrawCollateral = async ({
         accounts: {
           borrower: wallet.publicKey,
           lendingMarketPda,
-          obligation: obligation.pubkey,
-          reserve: reserve.publicKey,
+          obligation: obligation.obligation,
+          reserve: reserve.reserve,
           sourceCollateralWallet: reserve.collateral.supply,
           destinationCollateralWallet: collateralWallet,
           tokenProgram: TOKEN_PROGRAM_ID,

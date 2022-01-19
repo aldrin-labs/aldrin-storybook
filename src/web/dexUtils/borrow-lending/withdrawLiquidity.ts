@@ -13,22 +13,19 @@ import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { BORROW_LENDING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
+import { Reserve } from './types'
 
 export const withdrawLiquidity = async ({
   wallet,
   connection,
   programAddress = BORROW_LENDING_PROGRAM_ADDRESS,
   reserve,
-  obligation,
-  obligationDetails,
   amount,
 }: {
   wallet: WalletAdapter
   connection: Connection
   programAddress?: string
-  reserve: any
-  obligation: any
-  obligationDetails: any
+  reserve: Reserve
   amount: BN
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
@@ -68,7 +65,7 @@ export const withdrawLiquidity = async ({
   transaction.add(
     program.instruction.refreshReserve({
       accounts: {
-        reserve: reserve.publicKey,
+        reserve: reserve.reserve,
         oraclePrice: reserve.liquidity.oracle,
         clock: SYSVAR_CLOCK_PUBKEY,
       },
@@ -81,7 +78,7 @@ export const withdrawLiquidity = async ({
         funder: wallet.publicKey,
         lendingMarketPda,
         destinationLiquidityWallet: liquidityWallet,
-        reserve: reserve.publicKey,
+        reserve: reserve.reserve,
         reserveCollateralMint: reserve.collateral.mint,
         sourceCollateralWallet: collateralWallet,
         reserveLiquidityWallet: reserve.liquidity.supply,

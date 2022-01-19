@@ -6,10 +6,7 @@ import { compose } from 'recompose'
 
 import { Cell, WideContent, Page, Row } from '@sb/components/Layout'
 import { RootRow } from '@sb/compositions/Pools/components/Charts/styles'
-import {
-  toNumberWithDecimals,
-  u192ToBN,
-} from '@sb/dexUtils/borrow-lending/U192-converting'
+import { toNumberWithDecimals } from '@sb/dexUtils/borrow-lending/U192-converting'
 
 import BorrowedLent from './components/BorrowedLent/BorrowedLent'
 import CurrentMarketSize from './components/CurrentMarketSize/CurrentMarketSize'
@@ -27,7 +24,7 @@ const Markets = ({ theme, reserves, obligationDetails }: MarketsProps) => {
   const calculateTotalLiq = (reservesList: []): { number: number; bn: BN } => {
     let total = new BN(0)
     reservesList.forEach((reserve) => {
-      const reserveLiq = u192ToBN(reserve.liquidity.borrowedAmount).add(
+      const reserveLiq = reserve.liquidity.borrowedAmount.add(
         reserve.liquidity.availableAmount
       )
       total = total.add(reserveLiq)
@@ -45,8 +42,7 @@ const Markets = ({ theme, reserves, obligationDetails }: MarketsProps) => {
     let total = 0
     reservesList.forEach((reserve) => {
       const reserveMarketPrice =
-        parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()) /
-        Math.pow(10, 18)
+        parseInt(reserve.liquidity.marketPrice.toString()) / Math.pow(10, 18)
       const reserveAvailableAmount = parseInt(
         reserve.liquidity.availableAmount.toString()
       )
@@ -61,7 +57,7 @@ const Markets = ({ theme, reserves, obligationDetails }: MarketsProps) => {
   ): { number: number; bn: BN } => {
     let total = new BN(0)
     reservesList.forEach((reserve) => {
-      const reserveBorrowedAmount = u192ToBN(reserve.liquidity.borrowedAmount)
+      const reserveBorrowedAmount = reserve.liquidity.borrowedAmount
       total = total.add(reserveBorrowedAmount)
     })
 
@@ -74,12 +70,11 @@ const Markets = ({ theme, reserves, obligationDetails }: MarketsProps) => {
   const calculateLentPercentage = (reservesList: []) => {
     let totalLent = new BN(0)
     reservesList.forEach((reserve) => {
-      const reserveLiq = u192ToBN(reserve.liquidity.borrowedAmount).add(
+      const reserveLiq = reserve.liquidity.borrowedAmount.add(
         reserve.liquidity.availableAmount
       )
-      const reserveLentPercent = u192ToBN(reserve.liquidity.borrowedAmount).div(
-        reserveLiq
-      )
+      const reserveLentPercent =
+        reserve.liquidity.borrowedAmount.div(reserveLiq)
 
       totalLent = totalLent.add(reserveLentPercent)
     })
@@ -89,7 +84,7 @@ const Markets = ({ theme, reserves, obligationDetails }: MarketsProps) => {
   const generateMarketCompositionArr = (reservesList: []): MarketCompType[] => {
     const marketCompArr: MarketCompType[] = []
     reservesList.forEach((reserve) => {
-      const reserveLiq = u192ToBN(reserve.liquidity.borrowedAmount).add(
+      const reserveLiq = reserve.liquidity.borrowedAmount.add(
         reserve.liquidity.availableAmount
       )
       const reserveLiqPercent =

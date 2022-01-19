@@ -8,14 +8,13 @@ import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 import {
   removeTrailingZeros,
   toNumberWithDecimals,
-  u192ToBN,
 } from '@sb/dexUtils/borrow-lending/U192-converting'
 
+import { Table } from '../../../styles'
 import {
   calculateBorrowApy,
   calculateUtilizationRate,
 } from '../../../utils/rates'
-import { Table } from '../../../styles'
 
 type TableMarketsProps = {
   theme: Theme
@@ -44,14 +43,13 @@ const TableMarkets = ({ theme, reserves }: TableMarketsProps) => {
   const renderRows = (reservesList) => {
     return reservesList.map((reserve, index) => {
       const tokenPrice = toNumberWithDecimals(
-        parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()),
+        parseInt(reserve.liquidity.marketPrice.toString()),
         5
       )
       const reserveMarketPrice =
-        parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()) /
-        Math.pow(10, 18)
+        parseInt(reserve.liquidity.marketPrice.toString()) / Math.pow(10, 18)
       const tokenSupply =
-        parseInt(u192ToBN(reserve.liquidity.borrowedAmount).toString()) /
+        parseInt(reserve.liquidity.borrowedAmount.toString()) /
           Math.pow(10, 18) +
         parseInt(reserve.liquidity.availableAmount.toString())
       const tokenSupplyWorth = tokenSupply * reserveMarketPrice
@@ -60,14 +58,14 @@ const TableMarkets = ({ theme, reserves }: TableMarketsProps) => {
       )
       const reserveAvailableLiqWorth = reserveAvailableLiq * reserveMarketPrice
       const reserveBorrowedAmount = parseInt(
-        u192ToBN(reserve.liquidity.borrowedAmount).toString()
+        reserve.liquidity.borrowedAmount.toString()
       )
       const reserveBorrowedAmountWorth =
         reserveBorrowedAmount * reserveMarketPrice
       const utilizationRate = calculateUtilizationRate(
         reserveBorrowedAmount,
         parseInt(
-          u192ToBN(reserve.liquidity.borrowedAmount)
+          reserve.liquidity.borrowedAmount
             .add(reserve.liquidity.availableAmount)
             .toString()
         )

@@ -12,6 +12,7 @@ import {
 import { toNumberWithDecimals } from '@sb/dexUtils/borrow-lending/U192-converting'
 
 import { TokenInfo } from '../../../../dexUtils/types'
+import { Table } from '../../styles'
 
 type TableAssetsProps = {
   theme: Theme
@@ -264,7 +265,7 @@ const TableAssets = ({
   }
 
   return (
-    <table>
+    <Table>
       <thead>
         <tr>
           <th style={{ borderTop: 'none' }}>Asset</th>
@@ -274,7 +275,7 @@ const TableAssets = ({
         </tr>
       </thead>
       <tbody>{renderRows()}</tbody>
-    </table>
+    </Table>
   )
 }
 
