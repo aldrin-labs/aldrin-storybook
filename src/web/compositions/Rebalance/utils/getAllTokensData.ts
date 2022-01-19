@@ -1,6 +1,7 @@
 import { TokenInstructions } from '@project-serum/serum'
-import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
+
 import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
+import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 import { TokenInfo } from '../Rebalance.types'
 
 export const getAllTokensData = async (

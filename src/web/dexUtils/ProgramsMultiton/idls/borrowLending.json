@@ -1164,8 +1164,5 @@
       "name": "LiquidationTooSmall",
       "msg": "To receive some collateral or repay liquidity \\\n        the amount of liquidity to repay must be higher"
     }
-  ],
-  "metadata": {
-    "address": "7vRDzPZK2toUCkGUgtb1uPZLXvtj8YvXUKUBRh8Ufr5y"
-  }
+  ]
 }

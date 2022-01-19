@@ -5,6 +5,11 @@ import {
   Provider as Provider03,
   Idl as Idl03,
 } from 'acnhor03'
+import {
+  Program as Program18,
+  Provider as Provider18,
+  Idl as Idl18,
+} from 'anchor018'
 
 import MarketOrderProgramIdl from '@core/idls/marketOrder.json'
 import PoolsProgramIdl from '@core/idls/pools.json'
@@ -32,7 +37,7 @@ const IDLS = {
   [MARKET_ORDER_PROGRAM_ADDRESS]: MarketOrderProgramIdl as Idl,
   [STAKING_PROGRAM_ADDRESS]: StakingProgramIdl as Idl,
   [VESTING_PROGRAM_ADDRESS]: VestingProgramIdl as Idl03,
-  [BORROW_LENDING_PROGRAM_ADDRESS]: BorrowLendingIdl as Idl,
+  [BORROW_LENDING_PROGRAM_ADDRESS]: BorrowLendingIdl as Idl18,
 }
 
 class ProgramsMultiton {
@@ -71,6 +76,18 @@ class ProgramsMultiton {
       throw Error('Programm addres not found')
     }
     const programId = new PublicKey(programAddress)
+
+    if (programAddress === BORROW_LENDING_PROGRAM_ADDRESS) {
+      return new Program18(
+        programIdl as Idl18,
+        new PublicKey(BORROW_LENDING_PROGRAM_ADDRESS),
+        new Provider18(
+          connection,
+          walletAdapterToWallet(wallet),
+          defaultOptions()
+        )
+      )
+    }
 
     const poolsProgram =
       programAddress === VESTING_PROGRAM_ADDRESS

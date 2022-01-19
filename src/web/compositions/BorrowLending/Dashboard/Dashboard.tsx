@@ -10,8 +10,6 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WalletAccountsType } from '@sb/compositions/BorrowLending/Markets/types'
 import { BlueButton } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 import { RootRow } from '@sb/compositions/Pools/components/Charts/styles'
-import { u192ToBN } from '@sb/dexUtils/borrow-lending/U192-converting'
-import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import TableAssets from './components/TableAssets'
@@ -43,15 +41,10 @@ const Dashboard = ({
   obligationDetails,
 }: DashboardProps) => {
   const { wallet } = useWallet()
-  const connection = useConnection()
 
-  let borrowedValue = 0
-
-  if (obligationDetails) {
-    borrowedValue =
-      parseInt(u192ToBN(obligationDetails.borrowedValue).toString()) /
-      Math.pow(10, 18)
-  }
+  const borrowedValue = obligationDetails
+    ? parseInt(obligationDetails.borrowedValue.toString(), 10) / 10 ** 18
+    : 0
 
   if (wallet.publicKey && !obligations) {
     return null

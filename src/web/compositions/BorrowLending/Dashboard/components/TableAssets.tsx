@@ -2,26 +2,23 @@ import { Theme } from '@material-ui/core'
 import React, { useState } from 'react'
 
 import BalancesPopup from '@sb/compositions/BorrowLending/Dashboard/components/BalancesPopup'
-import { WalletAccountsType } from '@sb/compositions/BorrowLending/Markets/types'
 import {
   calculateBorrowApy,
   calculateUtilizationRate,
 } from '@sb/compositions/BorrowLending/utils/rates'
-import {
-  toNumberWithDecimals,
-  u192ToBN,
-} from '@sb/dexUtils/borrow-lending/U192-converting'
+import { toNumberWithDecimals } from '@sb/dexUtils/borrow-lending/U192-converting'
 
+import { useUserTokenAccounts } from '../../../../dexUtils/token/hooks'
 import { Table } from '../../styles'
 
 type TableAssetsProps = {
   theme: Theme
   reserves: any
-  walletAccounts: WalletAccountsType | []
 }
 
-const TableAssets = ({ theme, reserves, walletAccounts }: TableAssetsProps) => {
+const TableAssets = ({ theme, reserves }: TableAssetsProps) => {
   const [balancesOpen, setBalancesOpen] = useState(false)
+  const [walletAccounts] = useUserTokenAccounts()
 
   const closeBalances = () => {
     setBalancesOpen(false)
@@ -41,42 +38,37 @@ const TableAssets = ({ theme, reserves, walletAccounts }: TableAssetsProps) => {
 
       if (walletAccounts && walletAccounts.length > 0) {
         const depositTokenAccount = walletAccounts.find(
-          (account) =>
-            account.account.data.parsed.info.mint ===
-            reserve.collateral.mint.toString()
+          (account) => account.mint === reserve.collateral.mint.toString()
         )
         const tokenAccount = walletAccounts.find(
-          (account) =>
-            account.account.data.parsed.info.mint ===
-            reserve.liquidity.mint.toString()
+          (account) => account.mint === reserve.liquidity.mint.toString()
         )
         if (depositTokenAccount) {
           tokenPrice = toNumberWithDecimals(
-            parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()),
+            parseInt(reserve.liquidity.marketPrice.toString(), 10),
             5
           )
-          depositAmount =
-            depositTokenAccount.account.data.parsed.info.tokenAmount.uiAmount
-          depositAmountUI =
-            depositTokenAccount.account.data.parsed.info.tokenAmount
-              .uiAmountString
+          depositAmount = depositTokenAccount.amount
+          depositAmountUI = depositTokenAccount.amount
           depositWorth =
-            parseInt(u192ToBN(reserve.liquidity.marketPrice).toString()) *
+            parseInt(reserve.liquidity.marketPrice.toString(), 10) *
             depositAmount
         }
 
         if (tokenAccount) {
-          walletBalance =
-            tokenAccount.account.data.parsed.info.tokenAmount.uiAmount
+          console.log('reserve: ', reserve)
+          walletBalance = tokenAccount.amount
           const reserveBorrowedAmount = parseInt(
-            u192ToBN(reserve.liquidity.borrowedAmount).toString()
+            reserve.liquidity.borrowedAmount.toString(),
+            10
           )
           const utilizationRate = calculateUtilizationRate(
             reserveBorrowedAmount,
             parseInt(
-              u192ToBN(reserve.liquidity.borrowedAmount)
+              reserve.liquidity.borrowedAmount
                 .add(reserve.liquidity.availableAmount)
-                .toString()
+                .toString(),
+              10
             )
           )
 
