@@ -29,7 +29,7 @@ export const withdrawCollateral = async ({
   programAddress?: string
   reserve: Reserve
   obligation: Obligation
-  obligationDetails: any
+  obligationDetails: Obligation
   amount: BN
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({

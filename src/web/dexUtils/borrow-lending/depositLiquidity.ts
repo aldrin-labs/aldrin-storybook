@@ -6,13 +6,15 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
-import { checkAccountForMint } from '@sb/dexUtils/borrow-lending/checkAccountForMint'
 import { TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 
+import { getAllTokensData } from '../../compositions/Rebalance/utils'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { BORROW_LENDING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { createTokenAccountTransaction } from '../send'
 import { WalletAdapter } from '../types'
+import { Reserve } from './types'
 
 export const depositLiquidity = async ({
   wallet,
@@ -24,7 +26,7 @@ export const depositLiquidity = async ({
   wallet: WalletAdapter
   connection: Connection
   programAddress?: string
-  reserve: any
+  reserve: Reserve
   amount: BN
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
@@ -46,18 +48,38 @@ export const depositLiquidity = async ({
       new PublicKey(programAddress)
     )
 
-  const collateralWallet = await checkAccountForMint({
-    wallet,
-    connection,
-    mint: reserve.collateral.mint,
-    create: true,
-  })
-  const sourceLiquidityWallet = await checkAccountForMint({
-    wallet,
-    connection,
-    mint: reserve.liquidity.mint,
-    create: true,
-  })
+  const allTokens = await getAllTokensData(wallet.publicKey, connection)
+
+  const commonTransaction = new Transaction()
+
+  let collateralWallet = allTokens.find(
+    (tokenAccount) => tokenAccount.mint === reserve.collateral.mint.toString()
+  )?.address
+
+  if (!collateralWallet) {
+    const { transaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: reserve.collateral.mint,
+      })
+
+    collateralWallet = newAccountPubkey.toString()
+    commonTransaction.add(transaction)
+  }
+  let sourceLiquidityWallet = allTokens.find(
+    (tokenAccount) => tokenAccount.mint === reserve.liquidity.mint.toString()
+  )?.address
+
+  if (!sourceLiquidityWallet) {
+    const { transaction, newAccountPubkey } =
+      await createTokenAccountTransaction({
+        wallet,
+        mintPublicKey: reserve.liquidity.mint,
+      })
+
+    sourceLiquidityWallet = newAccountPubkey.toString()
+    commonTransaction.add(transaction)
+  }
 
   console.log(
     'depositLiqCollateralWallet',
@@ -68,7 +90,7 @@ export const depositLiquidity = async ({
 
   const refreshReserveInstruction = program.instruction.refreshReserve({
     accounts: {
-      reserve: reserve.publicKey,
+      reserve: reserve.reserve,
       oraclePrice: reserve.liquidity.oracle,
       clock: SYSVAR_CLOCK_PUBKEY,
     },
@@ -81,7 +103,7 @@ export const depositLiquidity = async ({
       accounts: {
         funder: wallet.publicKey,
         lendingMarketPda, // from the snippet above
-        reserve: reserve.publicKey,
+        reserve: reserve.reserve,
         reserveCollateralMint: reserve.collateral.mint, // reserve.collateral.mint
         reserveLiquidityWallet: reserve.liquidity.supply, // reserve.liquidity.supply wallet
         sourceLiquidityWallet, // this is your liquidity wallet that we've just created with that ritual
@@ -93,7 +115,7 @@ export const depositLiquidity = async ({
   )
 
   return signAndSendSingleTransaction({
-    transaction: new Transaction()
+    transaction: commonTransaction
       .add(refreshReserveInstruction)
       .add(depositReserveInstruction)
       .add(refreshReserveInstruction),

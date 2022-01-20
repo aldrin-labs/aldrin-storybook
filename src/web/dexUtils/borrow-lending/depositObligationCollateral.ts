@@ -13,6 +13,7 @@ import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { BORROW_LENDING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
+import { Obligation, Reserve } from './types'
 
 export const depositObligationCollateral = async ({
   wallet,
@@ -26,8 +27,8 @@ export const depositObligationCollateral = async ({
   wallet: WalletAdapter
   connection: Connection
   programAddress?: string
-  reserve: any
-  obligation: any
+  reserve: Reserve
+  obligation: Obligation
   obligationDetails: any
   amount: BN
 }) => {
@@ -56,8 +57,8 @@ export const depositObligationCollateral = async ({
     .filter(Boolean)
 
   reservesPkToRefresh.forEach((reserveRefresh) => {
-    if (reserveRefresh.toString() !== reserve.publicKey.toString()) {
-      reservesPkToRefresh.push(reserve.publicKey.toString())
+    if (reserveRefresh.toString() !== reserve.reserve.toString()) {
+      reservesPkToRefresh.push(reserve.reserve.toString())
     }
   })
 
@@ -84,7 +85,7 @@ export const depositObligationCollateral = async ({
 
   const refreshObligationInstruction = program.instruction.refreshObligation({
     accounts: {
-      obligation: obligation.pubkey,
+      obligation: obligation.obligation,
       clock: SYSVAR_CLOCK_PUBKEY,
     },
     remainingAccounts: reservesPkToRefresh.map((pubkey) => ({
@@ -100,8 +101,8 @@ export const depositObligationCollateral = async ({
     program.instruction.depositObligationCollateral(amount, {
       accounts: {
         borrower: wallet.publicKey,
-        obligation: obligation.pubkey,
-        reserve: reserve.publicKey,
+        obligation: obligation.obligation,
+        reserve: reserve.reserve,
         sourceCollateralWallet: collateralWallet,
         destinationCollateralWallet: reserve.collateral.supply,
         tokenProgram: TOKEN_PROGRAM_ID,

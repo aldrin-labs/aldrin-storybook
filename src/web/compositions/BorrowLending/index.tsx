@@ -4,8 +4,6 @@ import { RouteComponentProps, Link } from 'react-router-dom'
 import Borrow from '@sb/compositions/BorrowLending/Borrow/Borrow'
 import { liqRatio } from '@sb/compositions/BorrowLending/config'
 import { Navbar, NavbarItem } from '@sb/compositions/BorrowLending/styles'
-import { useConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
 
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import {
@@ -26,17 +24,21 @@ type BorrowLendingProps = {
 }
 
 const BorrowLending: FC = ({ match }: BorrowLendingProps) => {
-  const [walletAccounts] = useUserTokenAccounts()
+  const [walletAccounts, refreshWallets] = useUserTokenAccounts()
 
   const [userSummary, setUserSummary] = useState(null)
-  const { data: userObligations } = useUserObligations()
-  const { data: reserves } = useReserves()
-  console.log('userObligations: ', userObligations, reserves)
+  const { data: userObligations, mutate: refreshObligations } =
+    useUserObligations()
+  const { data: reserves, mutate: refreshReserves } = useReserves()
+
+  const refreshAll = () => {
+    console.log('!!!! REFRESH ALL')
+    refreshObligations()
+    refreshReserves()
+    refreshWallets()
+  }
   const obligationDetails =
     userObligations && userObligations.length ? userObligations[0] : undefined
-
-  const { wallet } = useWallet()
-  const connection = useConnection()
 
   useEffect(() => {
     const summary = { totalDepositWorth: 0 }
@@ -105,6 +107,8 @@ const BorrowLending: FC = ({ match }: BorrowLendingProps) => {
           userSummary={userSummary}
           walletAccounts={walletAccounts}
           obligationDetails={obligationDetails}
+          handleGetReservesAccounts={refreshAll}
+          handleGetObligation={refreshAll}
         />
       ) : match.params.section === 'supply' ? (
         <Supply
@@ -113,6 +117,8 @@ const BorrowLending: FC = ({ match }: BorrowLendingProps) => {
           obligationDetails={obligationDetails}
           userSummary={userSummary}
           walletAccounts={walletAccounts}
+          handleGetReservesAccounts={refreshAll}
+          handleGetObligation={refreshAll}
         />
       ) : match.params.section === 'borrow' ? (
         <Borrow
@@ -121,6 +127,8 @@ const BorrowLending: FC = ({ match }: BorrowLendingProps) => {
           obligationDetails={obligationDetails}
           userSummary={userSummary}
           walletAccounts={walletAccounts}
+          handleGetReservesAccounts={refreshAll}
+          handleGetObligation={refreshAll}
         />
       ) : null}
     </>

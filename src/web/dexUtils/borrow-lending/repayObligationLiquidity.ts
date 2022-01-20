@@ -13,6 +13,7 @@ import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { BORROW_LENDING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
+import { Obligation, Reserve } from './types'
 
 export const repayObligationLiquidity = async ({
   wallet,
@@ -26,9 +27,9 @@ export const repayObligationLiquidity = async ({
   wallet: WalletAdapter
   connection: Connection
   programAddress?: string
-  reserve: any
-  obligation: any
-  obligationDetails: any
+  reserve: Reserve
+  obligation: Obligation
+  obligationDetails: Obligation
   amount: BN
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
@@ -57,7 +58,7 @@ export const repayObligationLiquidity = async ({
     .filter(Boolean)
 
   reservesPkToRefresh.forEach((reserveRefresh) => {
-    if (reserveRefresh.toString() !== reserve.publicKey.toString()) {
+    if (reserveRefresh.toString() !== reserve.reserve.toString()) {
       reservesPkToRefresh.push(reserve.publicKey.toString())
     }
   })
@@ -82,7 +83,7 @@ export const repayObligationLiquidity = async ({
 
   const refreshObligationInstruction = program.instruction.refreshObligation({
     accounts: {
-      obligation: obligation.pubkey,
+      obligation: obligation.obligation,
       clock: SYSVAR_CLOCK_PUBKEY,
     },
     remainingAccounts: reservesPkToRefresh.map((pubkey) => ({
@@ -98,8 +99,8 @@ export const repayObligationLiquidity = async ({
     program.instruction.repayObligationLiquidity(amount, {
       accounts: {
         repayer: wallet.publicKey,
-        obligation: obligation.pubkey,
-        reserve: reserve.publicKey,
+        obligation: obligation.obligation,
+        reserve: reserve.reserve,
         sourceLiquidityWallet,
         destinationLiquidityWallet: reserve.liquidity.supply,
         tokenProgram: TOKEN_PROGRAM_ID,

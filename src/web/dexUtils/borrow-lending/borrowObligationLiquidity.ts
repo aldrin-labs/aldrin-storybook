@@ -13,6 +13,7 @@ import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { BORROW_LENDING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
+import { Obligation, Reserve } from './types'
 
 export const borrowObligationLiquidity = async ({
   wallet,
@@ -26,9 +27,9 @@ export const borrowObligationLiquidity = async ({
   wallet: WalletAdapter
   connection: Connection
   programAddress?: string
-  reserve: any
-  obligation: any
-  obligationDetails: any
+  reserve: Reserve
+  obligation: Obligation
+  obligationDetails: Obligation
   amount: BN
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
@@ -68,8 +69,8 @@ export const borrowObligationLiquidity = async ({
     .filter(Boolean)
 
   reservesPkToRefresh.forEach((reserveRefresh) => {
-    if (reserveRefresh.toString() !== reserve.publicKey.toString()) {
-      reservesPkToRefresh.push(reserve.publicKey.toString())
+    if (reserveRefresh.toString() !== reserve.reserve.toString()) {
+      reservesPkToRefresh.push(reserve.reserve.toString())
     }
   })
 
@@ -93,7 +94,7 @@ export const borrowObligationLiquidity = async ({
 
   const refreshObligationInstruction = program.instruction.refreshObligation({
     accounts: {
-      obligation: obligation.pubkey,
+      obligation: obligation.obligation,
       clock: SYSVAR_CLOCK_PUBKEY,
     },
     remainingAccounts: reservesPkToRefresh.map((pubkey) => ({
@@ -112,8 +113,8 @@ export const borrowObligationLiquidity = async ({
       {
         accounts: {
           borrower: wallet.publicKey,
-          obligation: obligation.pubkey,
-          reserve: reserve.publicKey,
+          obligation: obligation.obligation,
+          reserve: reserve.reserve,
           lendingMarketPda,
           sourceLiquidityWallet: reserve.liquidity.supply,
           destinationLiquidityWallet,
