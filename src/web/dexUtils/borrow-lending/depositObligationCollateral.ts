@@ -95,6 +95,11 @@ export const depositObligationCollateral = async ({
       obligation: obligation.obligation,
       clock: SYSVAR_CLOCK_PUBKEY,
     },
+    remainingAccounts: reservesPkToRefresh.map((pubkey) => ({
+      pubkey,
+      isSigner: false,
+      isWritable: false,
+    })),
   })
 
   transaction.add(refreshObligationInstruction)
