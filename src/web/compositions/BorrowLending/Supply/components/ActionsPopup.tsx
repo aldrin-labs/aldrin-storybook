@@ -7,15 +7,15 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { Cell } from '@sb/components/Layout'
 import SvgIcon from '@sb/components/SvgIcon'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-
-
 import {
-    BlueButton,
-    StyledPaper,
-    Title,
-} from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles';
+  BlueButton,
+  StyledPaper,
+  Title,
+} from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 import { removeTrailingZeros } from '@sb/dexUtils/borrow-lending/U192-converting'
+
 import CloseIcon from '@icons/closeIcon.svg'
+
 import {
   ButtonCategory,
   TitleBlock,
@@ -24,9 +24,7 @@ import {
   AmountCard,
   MaxAmount,
   ButtonGroup,
-  AmountInput,
 } from './ActionsPopup.styles'
-
 
 const ActionsPopup = ({
   theme,
@@ -485,10 +483,7 @@ const ActionsPopup = ({
                     theme={theme}
                     btnWidth="calc(50% - 1rem)"
                     style={{ alignSelf: 'center', marginTop: '2rem' }}
-                    disabled={
-                      amount === 0 ||
-                      reserveObligation?.collateral.inner.depositedAmount.toString()
-                    }
+                    disabled={amount === 0}
                     onClick={() => withdrawLiq()}
                   >
                     Withdraw Liquidity
