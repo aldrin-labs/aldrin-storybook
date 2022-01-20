@@ -1,4 +1,5 @@
 import { PublicKey, Transaction } from '@solana/web3.js'
+
 import { WalletAdapter } from '../types'
 
 interface WalletLike {
@@ -16,5 +17,3 @@ export const walletAdapterToWallet = (w: WalletAdapter): WalletLike => {
   }
   return { ...w, publicKey }
 }
-
-export const NUMBER_OF_RETRIES = 5

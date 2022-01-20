@@ -12,7 +12,7 @@ import BN from 'bn.js'
 
 import { walletAdapterToWallet } from '../../common'
 import MultiEndpointsConnection from '../../MultiEndpointsConnection'
-import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
+import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton/ProgramsMultiton'
 import { POOLS_V2_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { signAndSendSingleTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'

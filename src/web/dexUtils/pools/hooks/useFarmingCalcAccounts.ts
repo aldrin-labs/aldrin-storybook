@@ -8,7 +8,7 @@ import {
   ProgramsMultiton,
   POOLS_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
-} from '../../ProgramsMultiton'
+} from '../../ProgramsMultiton/ProgramsMultiton'
 import { useWallet } from '../../wallet'
 
 /**

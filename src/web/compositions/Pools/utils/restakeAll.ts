@@ -4,7 +4,7 @@ import { startStaking } from '@sb/dexUtils/common/actions'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
+import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { sleep } from '@sb/dexUtils/utils'
 

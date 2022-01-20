@@ -3,7 +3,7 @@ import useSwr from 'swr'
 import { getCalcAccounts } from '../common/getCalcAccountsForWallet'
 import { FarmingCalc } from '../common/types'
 import { useConnection } from '../connection'
-import { ProgramsMultiton, STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton'
+import { ProgramsMultiton, STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/ProgramsMultiton'
 import { useWallet } from '../wallet'
 
 export const useStakingCalcAccounts = () => {

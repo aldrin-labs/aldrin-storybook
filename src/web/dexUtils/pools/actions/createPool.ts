@@ -14,7 +14,7 @@ import {
 } from '@solana/web3.js'
 
 import { walletAdapterToWallet } from '../../common'
-import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
+import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton/ProgramsMultiton'
 import {
   FEE_OWNER_ACCOUNT,
   POOLS_PROGRAM_ADDRESS,

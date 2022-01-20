@@ -12,7 +12,7 @@ import { BN } from 'anchor019'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton'
+import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/ProgramsMultiton'
 import { signAndSendSingleTransaction } from '../transactions'
 import { PairSettings, TwammOrder } from './types'
 import TwammProgramIdl from '@core/idls/twamm.json'

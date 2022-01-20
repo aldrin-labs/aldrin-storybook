@@ -1,4 +1,5 @@
 import { Connection, Transaction } from '@solana/web3.js'
+
 import { sendSignedSignleTransaction } from './sendSignedSignleTransaction'
 import { NotificationParams, TransactionParams } from './types'
 
@@ -10,7 +11,6 @@ export const sendSignedTransactions = async (
 ) => {
   const { successMessage } = params
 
-
   for (let i = 0; i < transactions.length; i += 1) {
     const signedTransaction = transactions[i]
     const isLastTransaction = i === transactions.length - 1
@@ -19,7 +19,7 @@ export const sendSignedTransactions = async (
     const result = await sendSignedSignleTransaction({
       transaction: signedTransaction,
       timeout: 30_000,
-      successMessage: isLastTransaction ? successMessage : ''
+      successMessage: isLastTransaction ? successMessage : '',
       connection,
     })
 

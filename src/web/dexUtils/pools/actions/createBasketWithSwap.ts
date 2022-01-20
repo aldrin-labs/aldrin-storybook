@@ -6,7 +6,7 @@ import MultiEndpointsConnection from '@sb/dexUtils/MultiEndpointsConnection'
 import {
   getPoolsProgramAddress,
   ProgramsMultiton,
-} from '@sb/dexUtils/ProgramsMultiton'
+} from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { isTransactionFailed } from '@sb/dexUtils/send'
 import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
