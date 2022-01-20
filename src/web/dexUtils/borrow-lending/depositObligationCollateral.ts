@@ -62,8 +62,11 @@ export const depositObligationCollateral = async ({
     }
   })
 
-  reservesPkToRefresh = [...new Set(reservesPkToRefresh)]
-  console.log('reservesPkToRefresh', reservesPkToRefresh)
+  reservesPkToRefresh = [
+    reserve.reserve.toString(),
+    ...new Set(reservesPkToRefresh),
+  ]
+  console.log('reservesPkToRefresh', reserve, reservesPkToRefresh)
 
   const refreshReservesInstructions = () => {
     reservesPkToRefresh.forEach((reservePk: string) => {

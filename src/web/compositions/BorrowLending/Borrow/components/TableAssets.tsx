@@ -6,10 +6,6 @@ import NumberFormat from 'react-number-format'
 import ActionsPopup from '@sb/compositions/BorrowLending/Borrow/components/ActionsPopup'
 import { liqRatio } from '@sb/compositions/BorrowLending/config'
 import {
-  ObligationType,
-  WalletAccountsType,
-} from '@sb/compositions/BorrowLending/Markets/types'
-import {
   calculateBorrowApy,
   calculateUtilizationRate,
 } from '@sb/compositions/BorrowLending/utils/rates'
@@ -18,14 +14,16 @@ import {
   toNumberWithDecimals,
 } from '@sb/dexUtils/borrow-lending/U192-converting'
 
+import { Obligation, Reserve } from '../../../../dexUtils/borrow-lending/types'
+import { TokenInfo } from '../../../../dexUtils/types'
 import { Table } from '../../styles'
 
 type TableAssetsProps = {
   theme: Theme
-  reserves: any
-  obligations: any
-  walletAccounts: WalletAccountsType | []
-  obligationDetails: ObligationType | null
+  reserves: Reserve[]
+  obligations: Obligation
+  walletAccounts: TokenInfo[]
+  obligationDetails: Obligation
   calcCollateralWorth: () => void
   unhealthyBorrowValue: number
   handleBorrowObligationLiquidity: (
@@ -34,7 +32,7 @@ type TableAssetsProps = {
     callback: () => void
   ) => void
   handleRepayObligationLiquidity: (
-    reserve: any,
+    reserve: Reserve,
     amount: number,
     callback: () => void
   ) => void
@@ -43,7 +41,6 @@ type TableAssetsProps = {
 const TableAssets = ({
   theme,
   reserves,
-  obligations,
   walletAccounts,
   obligationDetails,
   calcCollateralWorth,
@@ -60,7 +57,7 @@ const TableAssets = ({
   const renderRows = () => {
     return reserves.map((reserve, index) => {
       const tokenPrice = toNumberWithDecimals(
-        parseInt(reserve.liquidity.marketPrice.toString()),
+        parseInt(reserve.liquidity.marketPrice.toString(), 10),
         5
       )
       let tokenDecimals = 0
@@ -173,11 +170,11 @@ const TableAssets = ({
               (reserveObligation) => {
                 if (reserveObligation.collateral) {
                   console.log(
-                    reserve.publicKey.toString(),
+                    reserve.reserve.toString(),
                     reserveObligation.collateral.inner.depositReserve.toString()
                   )
                   return (
-                    reserve.publicKey.toString() ===
+                    reserve.reserve.toString() ===
                     reserveObligation.collateral.inner.depositReserve.toString()
                   )
                 }
@@ -189,11 +186,11 @@ const TableAssets = ({
               (reserveObligation) => {
                 if (reserveObligation.liquidity) {
                   console.log(
-                    reserve.publicKey.toString(),
+                    reserve.reserve.toString(),
                     reserveObligation.liquidity.inner.borrowReserve.toString()
                   )
                   return (
-                    reserve.publicKey.toString() ===
+                    reserve.reserve.toString() ===
                     reserveObligation.liquidity.inner.borrowReserve.toString()
                   )
                 }

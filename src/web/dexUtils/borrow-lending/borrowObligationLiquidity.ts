@@ -74,7 +74,10 @@ export const borrowObligationLiquidity = async ({
     }
   })
 
-  reservesPkToRefresh = [...new Set(reservesPkToRefresh)]
+  reservesPkToRefresh = [
+    reserve.reserve.toString(),
+    ...new Set(reservesPkToRefresh),
+  ]
 
   const refreshReservesInstructions = () => {
     reservesPkToRefresh.forEach((reservePk: string) => {

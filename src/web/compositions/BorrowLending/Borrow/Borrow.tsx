@@ -139,7 +139,7 @@ const Borrow = ({
     const depositCompArr: MarketCompType[] = []
     if (walletAccounts && walletAccounts.length > 0 && userSummary) {
       reservesList.forEach((reserve) => {
-        const tokenCollateralWorth = collateralTokens[reserve.publicKey]
+        const tokenCollateralWorth = collateralTokens[reserve.reserve]
         const reserveDepositPercent =
           (tokenCollateralWorth / totalUserCollateralWorth) * 100
 
@@ -221,11 +221,11 @@ const Borrow = ({
           (reserveObligation) => {
             if (reserveObligation.collateral) {
               console.log(
-                reserve.publicKey.toString(),
+                reserve.reserve.toString(),
                 reserveObligation.collateral.inner.depositReserve.toString()
               )
               return (
-                reserve.publicKey.toString() ===
+                reserve.reserve.toString() ===
                 reserveObligation.collateral.inner.depositReserve.toString()
               )
             }
@@ -237,11 +237,11 @@ const Borrow = ({
           (reserveObligation) => {
             if (reserveObligation.liquidity) {
               console.log(
-                reserve.publicKey.toString(),
+                reserve.reserve.toString(),
                 reserveObligation.liquidity.inner.borrowReserve.toString()
               )
               return (
-                reserve.publicKey.toString() ===
+                reserve.reserve.toString() ===
                 reserveObligation.liquidity.inner.borrowReserve.toString()
               )
             }
@@ -264,7 +264,7 @@ const Borrow = ({
           const remainingBorrow =
             (reserve.config.loanToValueRatio.percent / 100) * collateralWorth
           totalUserCollateralWorth += collateralWorth
-          collateralTokens[reserve.publicKey] = collateralWorth
+          collateralTokens[reserve.reserve] = collateralWorth
         }
 
         if (reserveObligationBorrow) {

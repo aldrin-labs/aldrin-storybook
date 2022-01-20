@@ -40,6 +40,8 @@ const BorrowLending: FC = ({ match }: BorrowLendingProps) => {
   const obligationDetails =
     userObligations && userObligations.length ? userObligations[0] : undefined
 
+  console.log('obligationDetails: ', obligationDetails)
+
   useEffect(() => {
     const summary = { totalDepositWorth: 0 }
     let totalDepositWorth = 0

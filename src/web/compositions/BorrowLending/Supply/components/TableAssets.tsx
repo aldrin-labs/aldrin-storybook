@@ -102,6 +102,7 @@ const TableAssets = ({
           (account) => account.mint === reserve.liquidity.mint.toString()
         )
         if (depositTokenAccount) {
+          console.log('depositTokenAccount: ', depositTokenAccount)
           const depositAmountBN = new BN(depositTokenAccount.amount)
           const depositWorthBN =
             reserve.liquidity.marketPrice.mul(depositAmountBN)
@@ -156,11 +157,11 @@ const TableAssets = ({
               (reserveObligation) => {
                 if (reserveObligation.collateral) {
                   console.log(
-                    reserve.publicKey.toString(),
+                    reserve.reserve.toString(),
                     reserveObligation.collateral.inner.depositReserve.toString()
                   )
                   return (
-                    reserve.publicKey.toString() ===
+                    reserve.reserve.toString() ===
                     reserveObligation.collateral.inner.depositReserve.toString()
                   )
                 }

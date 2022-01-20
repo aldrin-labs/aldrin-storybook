@@ -59,7 +59,7 @@ export const repayObligationLiquidity = async ({
 
   reservesPkToRefresh.forEach((reserveRefresh) => {
     if (reserveRefresh.toString() !== reserve.reserve.toString()) {
-      reservesPkToRefresh.push(reserve.publicKey.toString())
+      reservesPkToRefresh.push(reserve.reserve.toString())
     }
   })
 
