@@ -60,17 +60,17 @@ export const withdrawCollateral = async ({
 
   const transaction = new Transaction()
 
-  const reservesPkToRefresh: PublicKey[] | [] = obligationDetails.reserves
+  const reservesPkToRefresh = obligationDetails.reserves
     .map((r) => {
       return (
         r.collateral?.inner.depositReserve || r.liquidity?.inner.borrowReserve
       )
     })
-    .filter(Boolean)
+    .filter((pk): pk is PublicKey => !!pk)
 
-  console.log('reservesPkToRefresh', reservesPkToRefresh)
+  const allPk = [reserve.reserve].concat(reservesPkToRefresh)
 
-  reservesPkToRefresh.forEach((reservePk: PublicKey) => {
+  allPk.forEach((reservePk: PublicKey) => {
     transaction.add(
       program.instruction.refreshReserve({
         accounts: {
