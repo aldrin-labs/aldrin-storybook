@@ -6,6 +6,7 @@ import { INPUT_FORMATTERS, Input } from '@sb/components/Input'
 
 import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
 
+import { FlexBlock } from '../../../components/Layout'
 import { ButtonWrapper, FormItemFull, FormWrap, InputWrapper } from '../styles'
 
 interface StakingFormProps {
@@ -51,6 +52,9 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
     loading.unstake ||
     unlockAvailableDate > now
 
+  const maxButtonOnClick = () => {
+    form.setFieldValue('amount', totalStaked)
+  }
   return (
     <FormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
@@ -64,7 +68,23 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
               form.validateForm()
             }}
             name="amount"
-            append="RIN"
+            append={
+              <FlexBlock direction="row" alignItems="center">
+                &nbsp;
+                <Button
+                  minWidth="2rem"
+                  $fontSize="xs"
+                  $borderRadius="xxl"
+                  onClick={maxButtonOnClick}
+                  type="button"
+                  $variant="primary"
+                >
+                  MAX
+                </Button>
+                &nbsp;
+                <span>RIN</span>
+              </FlexBlock>
+            }
             formatter={INPUT_FORMATTERS.DECIMAL}
           />
         </InputWrapper>

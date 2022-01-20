@@ -79,7 +79,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
                   $borderRadius="xxl"
                   onClick={maxButtonOnClick}
                   type="button"
-                  $variant="utility"
+                  $variant="primary"
                 >
                   MAX
                 </Button>
