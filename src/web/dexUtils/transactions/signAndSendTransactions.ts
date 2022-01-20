@@ -25,14 +25,7 @@ export const signAndSendTransactions = async (
       successMessage,
       commitment,
     })
-  } catch (e) {
-    console.warn('Error sign or send transactions:', e)
-    if (e instanceof Error) {
-      const errorText = e.message
-      if (errorText.includes('rejected') || errorText.includes('cancelled')) {
-        return 'cancelled'
-      }
-    }
-    return 'rejected'
+  } catch (e: any) {
+    return e.message || e || 'failed'
   }
 }

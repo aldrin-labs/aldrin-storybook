@@ -18,11 +18,13 @@ export const getNotifier =
         ? notificationMessage[1]
         : undefined
 
-      notify({
-        message,
-        description,
-        type: 'success',
-        txid: txId,
-      })
+      if (message) {
+        notify({
+          message,
+          description,
+          type: 'success',
+          txid: txId,
+        })
+      }
     }
   }
