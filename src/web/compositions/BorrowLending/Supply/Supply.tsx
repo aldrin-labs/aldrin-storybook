@@ -20,7 +20,7 @@ import { withdrawLiquidity } from '@sb/dexUtils/borrow-lending/withdrawLiquidity
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { Reserve } from '../../../dexUtils/borrow-lending/types'
+import { Obligation, Reserve } from '../../../dexUtils/borrow-lending/types'
 import { useUserTokenAccounts } from '../../../dexUtils/token/hooks'
 import TableAssets from './components/TableAssets'
 import {
@@ -36,9 +36,9 @@ import {
 
 type SupplyProps = {
   theme: Theme
-  reserves: any
-  obligations: any
-  obligationDetails: any
+  reserves: Reserve[]
+  obligations: Obligation[]
+  obligationDetails: Obligation
   userSummary: any
   handleGetReservesAccounts: () => void
   handleGetObligation: () => void
@@ -58,11 +58,17 @@ const Supply = ({
   const connection = useConnection()
   let totalRemainingBorrow = 0
   let totalUserDepositWorth = 0
-  const totalRiskFactor = obligationDetails
+  const totalRiskFactor = obligationDetails?.unhealthyBorrowValue?.gtn(0)
     ? (parseInt(obligationDetails.borrowedValue.toString(), 10) /
         parseInt(obligationDetails.unhealthyBorrowValue.toString(), 10)) *
       100
     : 0
+
+  console.log(
+    'obligationDetails:',
+    obligationDetails.borrowedValue.toString(),
+    obligationDetails.unhealthyBorrowValue.toString()
+  )
 
   const generateDepositCompositionArr = (
     reservesList: Reserve[]
@@ -185,8 +191,6 @@ const Supply = ({
       wallet,
       connection,
       reserve,
-      obligation: obligations[0],
-      obligationDetails,
       amount: new BN(amount),
     })
       .then((res) => {
@@ -307,10 +311,7 @@ const Supply = ({
                         <Cell col={12} colLg={4}>
                           <BlockReward>
                             <TitleBlock>Risk Factor</TitleBlock>
-                            {removeTrailingZeros(
-                              parseFloat(totalRiskFactor).toFixed(2)
-                            )}
-                            %
+                            {removeTrailingZeros(totalRiskFactor.toFixed(2))}%
                           </BlockReward>
                         </Cell>
                         <Cell col={12} colLg={4}>
@@ -320,8 +321,10 @@ const Supply = ({
                               <NumberFormat
                                 value={
                                   parseInt(
-                                    obligationDetails.allowedBorrowValue.toString()
-                                  ) / Math.pow(10, 18)
+                                    obligationDetails.allowedBorrowValue.toString(),
+                                    10
+                                  ) /
+                                  10 ** 18
                                 }
                                 displayType="text"
                                 decimalScale={2}
