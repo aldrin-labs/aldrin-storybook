@@ -141,6 +141,7 @@ const Supply = ({
             obligation: obligations[0] || newObligation,
             obligationDetails,
             reserve,
+            reserves,
             amount: new BN(amount * 5),
           })
             .then((depositObligationCollateralRes) => {
