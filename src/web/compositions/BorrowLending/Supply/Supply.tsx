@@ -321,7 +321,9 @@ const Supply = ({
                               <NumberFormat
                                 value={
                                   parseInt(
-                                    obligationDetails.allowedBorrowValue.toString(),
+                                    obligationDetails.allowedBorrowValue
+                                      .sub(obligationDetails.borrowedValue)
+                                      .toString(),
                                     10
                                   ) /
                                   10 ** 18

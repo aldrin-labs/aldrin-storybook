@@ -77,6 +77,7 @@ const Borrow = ({
       100
     : 0
 
+  console.log('obligationDetails: ', obligationDetails)
   const handleBorrowObligationLiquidity = (
     reserve: any,
     amount: number,
@@ -386,7 +387,10 @@ const Borrow = ({
                               <NumberFormat
                                 value={
                                   parseInt(
-                                    obligationDetails.allowedBorrowValue.toString()
+                                    obligationDetails.allowedBorrowValue
+                                      .sub(obligationDetails.borrowedValue)
+                                      .toString(),
+                                    10
                                   ) / Math.pow(10, 18)
                                 }
                                 displayType="text"
