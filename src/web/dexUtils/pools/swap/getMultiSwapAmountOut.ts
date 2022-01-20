@@ -22,12 +22,14 @@ const getMultiSwapAmountOut = ({
   baseTokenMint,
   quoteTokenMint,
   slippage,
+  poolsBalancesMap,
 }: {
   pools: PoolInfo[]
   amountIn: number
   baseTokenMint: string
   quoteTokenMint: string
   slippage?: number
+  poolsBalancesMap?: Map<string, PoolBalances>
 }): [number, SwapRoute | null] => {
   const graph = new Graph()
 
@@ -81,17 +83,23 @@ const getMultiSwapAmountOut = ({
 
       const isSwapBaseToQuote = pool.tokenA === baseMint
 
-      const poolBalances: PoolBalances = {
-        baseTokenAmount: pool.tvl.tokenA,
-        quoteTokenAmount: pool.tvl.tokenB,
-        baseTokenAmountBN: toBNWithDecimals(
-          pool.tvl.tokenA,
-          pool.tokenADecimals
-        ),
-        quoteTokenAmountBN: toBNWithDecimals(
-          pool.tvl.tokenB,
-          pool.tokenBDecimals
-        ),
+      let poolBalances = null
+
+      if (!poolsBalancesMap || !poolsBalancesMap.has(pool.swapToken)) {
+        poolBalances = {
+          baseTokenAmount: pool.tvl.tokenA,
+          quoteTokenAmount: pool.tvl.tokenB,
+          baseTokenAmountBN: toBNWithDecimals(
+            pool.tvl.tokenA,
+            pool.tokenADecimals
+          ),
+          quoteTokenAmountBN: toBNWithDecimals(
+            pool.tvl.tokenB,
+            pool.tokenBDecimals
+          ),
+        }
+      } else {
+        poolBalances = poolsBalancesMap.get(pool.swapToken)
       }
 
       const swapAmountOut = getMinimumReceivedAmountFromSwap({

@@ -12,7 +12,7 @@ import {
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
   ReloadTimer,
   TimerButton,
@@ -26,6 +26,7 @@ import { notify } from '@sb/dexUtils/notifications'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { usePoolsBalances } from '@sb/dexUtils/pools/hooks/usePoolsBalances'
+import { getFeesAmount } from '@sb/dexUtils/pools/swap/getFeesAmount'
 import {
   getMultiSwapAmountOut,
   SwapRoute,
@@ -43,10 +44,11 @@ import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import Gear from '@icons/gear.svg'
@@ -64,19 +66,19 @@ import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { Selector } from './components/Selector/Selector'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
-import { getLiquidityProviderFee } from './config'
-
-// TODO: imports
+import { getSwapButtonText } from './config'
 import { Card, SwapPageContainer } from './styles'
 
 const SwapPage = ({
   theme,
   publicKey,
   getPoolsInfoQuery,
+  getDexTokensPricesQuery,
 }: {
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -185,10 +187,12 @@ const SwapPage = ({
   const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
   const [isSwapInProgress, setIsSwapInProgress] = useState(false)
-  const [swapRoute, setSwapRoute] = useState<SwapRoute | null>(null)
+  const [swapRoute, setSwapRoute] = useState<SwapRoute>([])
 
-  const poolsBalancesMap = usePoolsBalances({
-    pools: swapRoute ? swapRoute.map((step) => step.pool) : [],
+  const isSwapRouteExists = swapRoute.length !== 0
+
+  const [poolsBalancesMap] = usePoolsBalances({
+    pools: swapRoute.map((step) => step.pool),
   })
 
   console.log({
@@ -225,12 +229,6 @@ const SwapPage = ({
     selectedQuoteTokenAddressFromSeveral
   )
 
-  const poolsAmountDiff = isSwapBaseToQuote
-    ? +poolAmountTokenA / +baseAmount
-    : +poolAmountTokenA / +quoteAmount
-
-  // price impact due to curve
-  const rawSlippage = 100 / (poolsAmountDiff + 1)
   const totalWithFees = +quoteAmount - (+quoteAmount / 100) * slippageTolerance
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
@@ -256,8 +254,6 @@ const SwapPage = ({
       quoteTokenMint: quoteTokenMintFromArgs ?? quoteTokenMintAddress,
       amountIn: +newBaseAmount,
     })
-
-    console.log('route', route)
 
     // do not set 0, leave 0 placeholder
     if (swapAmountOut === 0) {
@@ -316,12 +312,42 @@ const SwapPage = ({
     )
   }
 
+  const pricesMap = getDexTokensPricesQuery.getDexTokensPrices.reduce(
+    (acc, el) => acc.set(el.symbol, el),
+    new Map()
+  )
+
   const [price] = getMultiSwapAmountOut({
     pools,
     baseTokenMint: baseTokenMintAddress,
     quoteTokenMint: quoteTokenMintAddress,
     amountIn: 1,
   })
+
+  const totalFeeUSD = swapRoute.reduce((acc, step) => {
+    const feeAmountTokenA = getFeesAmount({
+      amount: step.swapAmountIn,
+      pool: step.pool,
+    })
+
+    const mint = step.isSwapBaseToQuote ? step.pool.tokenA : step.pool.tokenB
+    const symbol = getTokenNameByMintAddress(mint)
+
+    const { price: tokenAPrice } = pricesMap.get(symbol) || { price: 0 }
+
+    return acc + feeAmountTokenA * tokenAPrice
+  }, 0)
+
+  const priceImpact =
+    swapRoute.reduce((acc, step) => {
+      const stepPriceImpact = isSwapBaseToQuote
+        ? step.swapAmountIn / step.pool.tvl.tokenA
+        : step.swapAmountIn / step.pool.tvl.tokenB
+
+      const formattedImpact = stepPriceImpact > 1 ? 1 : stepPriceImpact
+
+      return acc + formattedImpact * 100
+    }, 0) / swapRoute.length
 
   return (
     <SwapPageContainer direction="column" height="100%" wrap="nowrap">
@@ -464,7 +490,7 @@ const SwapPage = ({
                 <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
                   {baseSymbol}{' '}
                 </Text>
-                = {price}{' '}
+                = {stripDigitPlaces(price, 8)}{' '}
                 <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
                   {quoteSymbol}{' '}
                 </Text>
@@ -512,20 +538,20 @@ const SwapPage = ({
                 transition="all .4s ease-out"
                 disabled={isButtonDisabled}
                 onClick={async () => {
-                  // load pools balances
-
                   // pass pools balance
-                  const [_, updatedSwapRoute] = getMultiSwapAmountOut({
-                    pools,
-                    baseTokenMint: baseTokenMintAddress,
-                    quoteTokenMint: quoteTokenMintAddress,
-                    amountIn: +baseAmount,
-                    slippage: slippageTolerance,
-                  })
+                  const [_, swapRouteWithUpdatedPoolsBalances] =
+                    getMultiSwapAmountOut({
+                      pools,
+                      baseTokenMint: baseTokenMintAddress,
+                      quoteTokenMint: quoteTokenMintAddress,
+                      amountIn: +baseAmount,
+                      slippage: slippageTolerance,
+                      poolsBalancesMap,
+                    })
 
-                  console.log('swapRoute2', updatedSwapRoute)
+                  console.log('swapRoute2', swapRouteWithUpdatedPoolsBalances)
 
-                  if (!updatedSwapRoute) return
+                  if (!swapRouteWithUpdatedPoolsBalances) return
 
                   setIsSwapInProgress(true)
 
@@ -533,7 +559,7 @@ const SwapPage = ({
                     wallet,
                     connection,
                     allTokensData,
-                    swapRoute: updatedSwapRoute,
+                    swapRoute: swapRouteWithUpdatedPoolsBalances,
                   })
 
                   if (result === 'success') {
@@ -569,21 +595,19 @@ const SwapPage = ({
               >
                 {isSwapInProgress ? (
                   <Loader />
-                ) : isTokenABalanceInsufficient ? (
-                  `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
-                  } Balance`
-                ) : !swapRoute ? (
-                  'No route for swap'
-                ) : needEnterAmount ? (
-                  'Enter amount'
                 ) : (
-                  'Swap'
+                  getSwapButtonText({
+                    baseSymbol,
+                    isSwapRouteExists,
+                    isTokenABalanceInsufficient,
+                    needEnterAmount,
+                  })
                 )}
               </BtnCustom>
             )}
           </RowContainer>
         </BlockTemplate>
-        {selectedPool && baseAmount && quoteAmount && (
+        {isSwapRouteExists && !needEnterAmount && (
           <Card
             style={{ padding: '2rem' }}
             theme={theme}
@@ -612,7 +636,7 @@ const SwapPage = ({
                     fontFamily="Avenir Next Bold"
                     color="#53DF11"
                   >
-                    {stripDigitPlaces(rawSlippage, 2)}%
+                    {stripDigitPlaces(priceImpact, 2)}%
                   </Text>
                 </Row>
               </RowContainer>
@@ -624,11 +648,7 @@ const SwapPage = ({
                   style={{ padding: '0 0.5rem 0 0.5rem' }}
                   fontFamily="Avenir Next Bold"
                 >
-                  {stripByAmountAndFormat(
-                    +baseAmount *
-                    (getLiquidityProviderFee(selectedPool.curveType) / 100)
-                  )}{' '}
-                  {baseSymbol}
+                  ${stripByAmount(totalFeeUSD)}
                 </Text>
               </Row>
             </RowContainer>
@@ -673,6 +693,7 @@ const SwapPage = ({
 
             setBaseTokenMintAddress(address)
             setIsSelectCoinPopupOpen(false)
+            setBaseAmountWithQuote(baseAmount, address)
           } else {
             if (baseTokenMintAddress === address) {
               setBaseTokenMintAddress('')
@@ -684,6 +705,7 @@ const SwapPage = ({
 
             setQuoteTokenMintAddress(address)
             setIsSelectCoinPopupOpen(false)
+            setBaseAmountWithQuote(baseAmount, baseTokenMintAddress, address)
           }
         }}
         close={() => setIsSelectCoinPopupOpen(false)}
@@ -709,5 +731,12 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
+  }),
+  queryRendererHoc({
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
   })
 )(SwapPage)

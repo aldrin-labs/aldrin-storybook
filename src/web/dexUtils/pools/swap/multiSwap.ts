@@ -54,18 +54,18 @@ const multiSwap = async ({
       tokenOutDecimals
     )
 
-    const [baseTokenMint, quoteTokenMint] = isSwapBaseToQuote
-      ? [tokenA, tokenB]
-      : [tokenB, tokenA]
+    // const [baseTokenMint, quoteTokenMint] = isSwapBaseToQuote
+    //   ? [tokenA, tokenB]
+    //   : [tokenB, tokenA]
 
     const { address: userBaseTokenAccount } = getTokenDataByMint(
       allTokensData,
-      baseTokenMint
+      tokenA
     )
 
     const { address: userQuoteTokenAccount } = getTokenDataByMint(
       allTokensData,
-      quoteTokenMint
+      tokenB
     )
 
     const nativeSOLTokenData = allTokensData[0]
