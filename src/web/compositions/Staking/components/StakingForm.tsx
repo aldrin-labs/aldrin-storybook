@@ -62,7 +62,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       <FormItemFull>
         <InputWrapper>
           <Input
-            placeholder="Enter amount..."
+            placeholder="0"
             value={`${form.values.amount}`}
             onChange={async (v) => {
               const value = limitDecimalsCustom(v.toString())
