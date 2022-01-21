@@ -2,7 +2,7 @@ import { useFormik } from 'formik'
 import React from 'react'
 
 import { Button } from '@sb/components/Button'
-import { INPUT_FORMATTERS, Input } from '@sb/components/Input'
+import { INPUT_FORMATTERS } from '@sb/components/Input'
 import { FlexBlock } from '@sb/components/Layout'
 import { MINIMAL_STAKING_AMOUNT } from '@sb/dexUtils/common/config'
 import { STAKING_FARMING_TOKEN_DECIMALS } from '@sb/dexUtils/staking/config'
@@ -12,7 +12,13 @@ import { limitDecimalsCustom, stripByAmount } from '@core/utils/chartPageUtils'
 
 import StakeBtn from '@icons/stakeBtn.png'
 
-import { ButtonWrapper, FormItemFull, FormWrap, InputWrapper } from '../styles'
+import {
+  ButtonWrapper,
+  FormItemFull,
+  FormWrap,
+  InputWrapper,
+  StakingInput,
+} from '../styles'
 
 interface StakingFormProps {
   tokenData: TokenInfo | undefined
@@ -61,7 +67,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
     <FormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
         <InputWrapper>
-          <Input
+          <StakingInput
             placeholder="0"
             value={`${form.values.amount}`}
             onChange={async (v) => {

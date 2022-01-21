@@ -2,12 +2,18 @@ import { useFormik } from 'formik'
 import React from 'react'
 
 import { Button } from '@sb/components/Button'
-import { INPUT_FORMATTERS, Input } from '@sb/components/Input'
+import { INPUT_FORMATTERS } from '@sb/components/Input'
 
 import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
 
 import { FlexBlock } from '../../../components/Layout'
-import { ButtonWrapper, FormItemFull, FormWrap, InputWrapper } from '../styles'
+import {
+  ButtonWrapper,
+  FormItemFull,
+  FormWrap,
+  InputWrapper,
+  StakingInput,
+} from '../styles'
 
 interface StakingFormProps {
   loading: { stake: boolean; unstake: boolean }
@@ -59,7 +65,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
     <FormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
         <InputWrapper>
-          <Input
+          <StakingInput
             placeholder="0"
             value={`${form.values.amount}`}
             onChange={async (v) => {
