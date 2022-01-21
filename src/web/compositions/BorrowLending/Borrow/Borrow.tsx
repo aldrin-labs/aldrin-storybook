@@ -23,6 +23,7 @@ import {
 import { useConnection } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { Reserve } from '../../../dexUtils/borrow-lending/types'
 import {
   TitleBlock,
   BlockNumber,
@@ -37,7 +38,7 @@ import TableAssets from './components/TableAssets'
 
 type BorrowProps = {
   theme: Theme
-  reserves: any
+  reserves: Reserve[]
   reservesPKs: PublicKey[]
   obligations: any
   obligationDetails: any
@@ -79,7 +80,7 @@ const Borrow = ({
 
   console.log('obligationDetails: ', obligationDetails)
   const handleBorrowObligationLiquidity = (
-    reserve: any,
+    reserve: Reserve,
     amount: number,
     callback: () => void
   ) => {
@@ -88,6 +89,7 @@ const Borrow = ({
       connection,
       obligation: obligations[0],
       obligationDetails,
+      reserves,
       reserve,
       amount: new BN(amount),
     })
@@ -117,6 +119,7 @@ const Borrow = ({
       obligation: obligations[0],
       obligationDetails,
       reserve,
+      reserves,
       amount: new BN(amount),
     })
       .then((repayObligationLiquidityRes) => {

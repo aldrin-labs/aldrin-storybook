@@ -20,6 +20,7 @@ export const repayObligationLiquidity = async ({
   connection,
   programAddress = BORROW_LENDING_PROGRAM_ADDRESS,
   reserve,
+  reserves,
   obligation,
   obligationDetails,
   amount,
@@ -28,6 +29,7 @@ export const repayObligationLiquidity = async ({
   connection: Connection
   programAddress?: string
   reserve: Reserve
+  reserves: Reserve[]
   obligation: Obligation
   obligationDetails: Obligation
   amount: BN
@@ -48,14 +50,14 @@ export const repayObligationLiquidity = async ({
 
   const transaction = new Transaction()
 
-  let reservesPkToRefresh: string[] | [] = obligationDetails.reserves
+  let reservesPkToRefresh: string[] = obligationDetails.reserves
     .map((r) => {
       return (
         r.collateral?.inner.depositReserve.toString() ||
         r.liquidity?.inner.borrowReserve.toString()
       )
     })
-    .filter(Boolean)
+    .filter((r): r is string => !!r)
 
   reservesPkToRefresh.forEach((reserveRefresh) => {
     if (reserveRefresh.toString() !== reserve.reserve.toString()) {
@@ -71,7 +73,9 @@ export const repayObligationLiquidity = async ({
         program.instruction.refreshReserve({
           accounts: {
             reserve: new PublicKey(reservePk),
-            oraclePrice: reserve.liquidity.oracle,
+            oraclePrice: reserves.find(
+              (r) => r.reserve.toString() === reservePk
+            )?.liquidity.oracle,
             clock: SYSVAR_CLOCK_PUBKEY,
           },
         })
