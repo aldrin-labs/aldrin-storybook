@@ -10,9 +10,9 @@ import { FlexBlock } from '../../../components/Layout'
 import {
   ButtonWrapper,
   FormItemFull,
-  FormWrap,
   InputWrapper,
   StakingInput,
+  UnstakingFormWrap,
 } from '../styles'
 
 interface StakingFormProps {
@@ -62,7 +62,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
     form.setFieldValue('amount', totalStaked)
   }
   return (
-    <FormWrap onSubmit={form.handleSubmit}>
+    <UnstakingFormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
         <InputWrapper>
           <StakingInput
@@ -108,6 +108,6 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
           </Button>
         </ButtonWrapper>
       </FormItemFull>
-    </FormWrap>
+    </UnstakingFormWrap>
   )
 }

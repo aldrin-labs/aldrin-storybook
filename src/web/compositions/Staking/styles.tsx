@@ -230,6 +230,11 @@ export const FormWrap = styled.form`
     margin-top: 20px;
   }
 `
+export const UnstakingFormWrap = styled(FormWrap)`
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin-left: 20px;
+  }
+`
 
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;
