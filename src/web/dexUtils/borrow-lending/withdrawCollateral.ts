@@ -23,11 +23,13 @@ export const withdrawCollateral = async ({
   obligation,
   obligationDetails,
   amount,
+  reserves,
 }: {
   wallet: WalletAdapter
   connection: Connection
   programAddress?: string
   reserve: Reserve
+  reserves: Reserve[]
   obligation: Obligation
   obligationDetails: Obligation
   amount: BN
@@ -75,7 +77,8 @@ export const withdrawCollateral = async ({
       program.instruction.refreshReserve({
         accounts: {
           reserve: reservePk,
-          oraclePrice: reserve.liquidity.oracle,
+          oraclePrice: reserves.find((r) => r.reserve.equals(reservePk))
+            ?.liquidity.oracle,
           clock: SYSVAR_CLOCK_PUBKEY,
         },
       })

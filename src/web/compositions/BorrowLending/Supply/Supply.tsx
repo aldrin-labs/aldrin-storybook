@@ -168,6 +168,7 @@ const Supply = ({
       wallet,
       connection,
       reserve,
+      reserves,
       obligation: obligations[0],
       obligationDetails,
       amount: new BN(amount),
