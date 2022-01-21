@@ -38,7 +38,7 @@ type SupplyProps = {
   theme: Theme
   reserves: Reserve[]
   obligations: Obligation[]
-  obligationDetails: Obligation
+  obligationDetails?: Obligation
   userSummary: any
   handleGetReservesAccounts: () => void
   handleGetObligation: () => void
@@ -66,8 +66,8 @@ const Supply = ({
 
   console.log(
     'obligationDetails:',
-    obligationDetails.borrowedValue.toString(),
-    obligationDetails.unhealthyBorrowValue.toString()
+    obligationDetails?.borrowedValue.toString(),
+    obligationDetails?.unhealthyBorrowValue.toString()
   )
 
   const generateDepositCompositionArr = (
@@ -244,10 +244,11 @@ const Supply = ({
     })
   }
 
-  const positions =
+  const positonEntries =
     obligationDetails?.reserves?.filter((reserve) => {
       return Object.keys(reserve)[0] !== 'empty'
-    }).length || 0
+    }) || []
+  const positions = positonEntries.length
 
   // if (wallet.publicKey && !obligations) {
   //   return null
@@ -343,6 +344,32 @@ const Supply = ({
                         </Cell>
                       </RowContainer>
                     </RewardCard>
+                  </Cell>
+                </RowContainer>
+                <RowContainer>
+                  <Cell col={12}>
+                    <div>
+                      {positonEntries.map((e, idx) => (
+                        <div key={`ob_position_${idx}`}>
+                          {e.collateral && (
+                            <>
+                              Collateral: Reserve{' '}
+                              {e.collateral.inner.depositReserve.toString()},
+                              Amount{' '}
+                              {e.collateral.inner.depositedAmount.toString()}
+                            </>
+                          )}
+                          {e.liquidity && (
+                            <>
+                              Borrow: Reserve{' '}
+                              {e.liquidity.inner.borrowReserve.toString()},
+                              Amount{' '}
+                              {e.liquidity.inner.borrowedAmount.toString()}
+                            </>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </Cell>
                 </RowContainer>
               </BlockContent>
