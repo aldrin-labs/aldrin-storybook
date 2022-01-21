@@ -140,7 +140,6 @@ const resolveClaimNotification = (
 const resolveRestakeNotification = (
   status: 'success' | 'failed' | 'rejected' | string
 ) => {
-  console.log('status: ', status)
   if (status === 'success') {
     return 'Successfully restaked.'
   }
@@ -299,15 +298,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         notify({ message: 'Account does not exists' })
         return false
       }
-
-      console.log(
-        'tokenData.address',
-        tokenData?.address,
-        connection,
-        wallet,
-        amount,
-        stakingPool
-      )
 
       setLoading((prev) => ({ ...prev, stake: true }))
       const result = await startStaking({
