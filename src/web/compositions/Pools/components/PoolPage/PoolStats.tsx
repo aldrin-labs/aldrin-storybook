@@ -1,9 +1,7 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
+
 import { SvgIcon } from '@sb/components'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
 import { ShareButton } from '@sb/components/ShareButton'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
@@ -12,8 +10,11 @@ import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPr
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
 import {
   DexTokensPrices,
@@ -203,6 +204,7 @@ Don't miss your chance.`
       </PoolInfoBlock>
       {/* Pool stats */}
       <PoolStatsRow>
+        <PoolStats title="Total Value Locked" value={tvlUsd} />
         <PoolStats
           title={
             <>
@@ -211,7 +213,6 @@ Don't miss your chance.`
           }
           value={tradingVolume.dailyTradingVolume}
         />
-        <PoolStats title="Total Value Locked" value={tvlUsd} />
         <PoolStats
           title={
             <>
