@@ -17,20 +17,21 @@ import {
   ReloadTimer,
   TimerButton,
 } from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { getMarketsMintsEdges } from '@sb/dexUtils/common/getMarketsMintsEdges'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
   getTokenMintAddressByName,
   getTokenNameByMintAddress,
+  useAllMarketsList,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
-import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { getPoolsMintsEdges } from '@sb/dexUtils/pools/getPoolsMintsEdges'
+import { useAllMarketsOrderbooks } from '@sb/dexUtils/pools/hooks/useAllMarketsOrderbooks'
 import { usePoolsBalances } from '@sb/dexUtils/pools/hooks/usePoolsBalances'
 import { getFeesAmount } from '@sb/dexUtils/pools/swap/getFeesAmount'
-import {
-  getMultiSwapAmountOut,
-  SwapRoute,
-} from '@sb/dexUtils/pools/swap/getMultiSwapAmountOut'
+import { getMarketsInSwapPaths } from '@sb/dexUtils/pools/swap/getMarketsInSwapPaths'
+import { getSwapRoute, SwapRoute } from '@sb/dexUtils/pools/swap/getSwapRoute'
 import {
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
@@ -39,12 +40,11 @@ import {
 } from '@sb/dexUtils/pools/swap/index'
 import { multiSwap } from '@sb/dexUtils/pools/swap/multiSwap'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
@@ -67,7 +67,13 @@ import { Selector } from './components/Selector/Selector'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { getSwapButtonText } from './config'
-import { Card, SwapPageContainer } from './styles'
+import {
+  Card,
+  DotPulse,
+  DotsContainer,
+  SwapButton,
+  SwapPageContainer,
+} from './styles'
 
 const SwapPage = ({
   theme,
@@ -83,9 +89,14 @@ const SwapPage = ({
   const { wallet } = useWallet()
   const connection = useConnection()
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
-  const tokensMap = useTokenInfos()
+  const allMarketsMap = useAllMarketsList()
 
   const allPools = getPoolsInfoQuery.getPoolsInfo
+
+  const { getDexTokensPrices = [] } = getDexTokensPricesQuery || {
+    getDexTokensPrices: [],
+  }
+
   const nativeSOLTokenData = allTokensData[0]
 
   const [isStableSwapTabActive, setIsStableSwapTabActive] =
@@ -93,62 +104,6 @@ const SwapPage = ({
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
-
-  useEffect(() => {
-    const updatedPoolsList = getPoolsForSwapActiveTab({
-      pools: allPools,
-      isStableSwapTabActive,
-    })
-
-    const isPoolExistInNewTab = getSelectedPoolForSwap({
-      pools: updatedPoolsList,
-      baseTokenMintAddress,
-      quoteTokenMintAddress,
-    })
-
-    // set tokens to default one if pool with selected tokens
-    // does not exist in new tab
-    if (!isPoolExistInNewTab) {
-      const defaultBaseTokenMint =
-        getTokenMintAddressByName(getDefaultBaseToken(isStableSwapTabActive)) ||
-        ''
-
-      const defaultQuoteTokenMint =
-        getTokenMintAddressByName(
-          getDefaultQuoteToken(isStableSwapTabActive)
-        ) || ''
-
-      setBaseTokenMintAddress(defaultBaseTokenMint)
-      setQuoteTokenMintAddress(defaultQuoteTokenMint)
-    }
-  }, [isStableSwapTabActive])
-
-  // set values from redirect or default one
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-
-    const baseFromRedirect = urlParams.get('base')
-    const quoteFromRedirect = urlParams.get('quote')
-    const isStableSwapFromRedirect = urlParams.get('isStablePool') === 'true'
-
-    const baseTokenMint = baseFromRedirect
-      ? getTokenMintAddressByName(baseFromRedirect) || ''
-      : getTokenMintAddressByName(
-        getDefaultBaseToken(isStableSwapFromRedirect)
-      ) || ''
-
-    setBaseTokenMintAddress(baseTokenMint)
-
-    const quoteTokenMint = quoteFromRedirect
-      ? getTokenMintAddressByName(quoteFromRedirect) || ''
-      : getTokenMintAddressByName(
-        getDefaultQuoteToken(isStableSwapFromRedirect)
-      ) || ''
-
-    setQuoteTokenMintAddress(quoteTokenMint)
-
-    setIsStableSwapTabActive(isStableSwapFromRedirect)
-  }, [])
 
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
@@ -162,11 +117,6 @@ const SwapPage = ({
   })
 
   const isSelectedPoolStable = checkIsPoolStable(selectedPool)
-
-  const [poolBalances, refreshPoolBalances] = usePoolBalances({
-    poolTokenAccountA: selectedPool?.poolTokenAccountA,
-    poolTokenAccountB: selectedPool?.poolTokenAccountB,
-  })
 
   const [slippageTolerance, setSlippageTolerance] = useState<number>(0.3)
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
@@ -191,9 +141,43 @@ const SwapPage = ({
 
   const isSwapRouteExists = swapRoute.length !== 0
 
-  const [poolsBalancesMap] = usePoolsBalances({
+  const [poolsBalancesMap, refreshPoolsBalances] = usePoolsBalances({
     pools: swapRoute.map((step) => step.pool),
   })
+
+  // get market names
+  const marketsInSwapPaths = getMarketsInSwapPaths({
+    pools,
+    allMarketsMap,
+    startNode: baseTokenMintAddress,
+    endNode: quoteTokenMintAddress,
+  })
+
+  console.log({
+    marketsInSwapPaths,
+  })
+
+  const [marketsWithOrderbookMap, refreshMarketsWithOrderbook] =
+    useAllMarketsOrderbooks({
+      marketsNames: marketsInSwapPaths,
+    })
+
+  const isAllMarketsInSwapPathLoaded = marketsInSwapPaths.reduce(
+    (checker, marketName) => {
+      if (!checker || !marketsWithOrderbookMap.has(marketName)) {
+        return false
+      }
+
+      return checker
+    },
+    true
+  )
+
+  console.log({
+    marketsWithOrderbookMap,
+  })
+
+  // create hook useAllMarkets
 
   console.log({
     poolsBalancesMap,
@@ -202,8 +186,6 @@ const SwapPage = ({
 
   const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
   const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
-
-  const { baseTokenAmount: poolAmountTokenA } = poolBalances
 
   let { amount: maxBaseAmount, address: userBaseTokenAccount } =
     getTokenDataByMint(
@@ -248,16 +230,19 @@ const SwapPage = ({
   ) => {
     setBaseAmount(newBaseAmount)
 
-    const [swapAmountOut, route] = getMultiSwapAmountOut({
+    const [route, swapAmountOut] = getSwapRoute({
       pools,
+      allMarketsMap,
       baseTokenMint: baseTokenMintFromArgs ?? baseTokenMintAddress,
       quoteTokenMint: quoteTokenMintFromArgs ?? quoteTokenMintAddress,
       amountIn: +newBaseAmount,
+      marketsWithOrderbookMap,
     })
 
     // do not set 0, leave 0 placeholder
     if (swapAmountOut === 0) {
       setQuoteAmount('')
+      setSwapRoute(route)
       return
     }
 
@@ -269,11 +254,13 @@ const SwapPage = ({
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
     setQuoteAmount(newQuoteAmount)
 
-    const [swapAmountOut, route] = getMultiSwapAmountOut({
+    const [route, swapAmountOut] = getSwapRoute({
       pools,
+      allMarketsMap,
       baseTokenMint: quoteTokenMintAddress,
       quoteTokenMint: baseTokenMintAddress,
       amountIn: +newQuoteAmount,
+      marketsWithOrderbookMap,
     })
 
     // do not set 0, leave 0 placeholder
@@ -286,17 +273,6 @@ const SwapPage = ({
     setSwapRoute(route)
     setBaseAmount(strippedSwapAmountOut)
   }
-
-  // update entered value on every pool ratio change
-  useEffect(() => {
-    if (!selectedPool || !+baseAmount) return
-
-    const updateQuoteAmount = async () => {
-      setBaseAmountWithQuote(+baseAmount)
-    }
-
-    updateQuoteAmount()
-  }, [poolBalances.baseTokenAmount, poolBalances.quoteTokenAmount])
 
   const reverseTokens = async () => {
     setBaseTokenMintAddress(quoteTokenMintAddress)
@@ -312,16 +288,81 @@ const SwapPage = ({
     )
   }
 
-  const pricesMap = getDexTokensPricesQuery.getDexTokensPrices.reduce(
+  useEffect(() => {
+    const updatedPoolsList = getPoolsForSwapActiveTab({
+      pools: allPools,
+      isStableSwapTabActive,
+    })
+
+    const isPoolExistInNewTab = getSelectedPoolForSwap({
+      pools: updatedPoolsList,
+      baseTokenMintAddress,
+      quoteTokenMintAddress,
+    })
+
+    // set tokens to default one if pool with selected tokens
+    // does not exist in new tab
+    if (!isPoolExistInNewTab) {
+      const defaultBaseTokenMint =
+        getTokenMintAddressByName(getDefaultBaseToken(isStableSwapTabActive)) ||
+        ''
+
+      const defaultQuoteTokenMint =
+        getTokenMintAddressByName(
+          getDefaultQuoteToken(isStableSwapTabActive)
+        ) || ''
+
+      setBaseTokenMintAddress(defaultBaseTokenMint)
+      setQuoteTokenMintAddress(defaultQuoteTokenMint)
+
+      setBaseAmountWithQuote(
+        baseAmount,
+        defaultBaseTokenMint,
+        defaultQuoteTokenMint
+      )
+    }
+  }, [isStableSwapTabActive])
+
+  // set values from redirect or default one
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+
+    const baseFromRedirect = urlParams.get('base')
+    const quoteFromRedirect = urlParams.get('quote')
+    const isStableSwapFromRedirect = urlParams.get('isStablePool') === 'true'
+
+    const baseTokenMint = baseFromRedirect
+      ? getTokenMintAddressByName(baseFromRedirect) || ''
+      : getTokenMintAddressByName(
+        getDefaultBaseToken(isStableSwapFromRedirect)
+      ) || ''
+
+    setBaseTokenMintAddress(baseTokenMint)
+
+    const quoteTokenMint = quoteFromRedirect
+      ? getTokenMintAddressByName(quoteFromRedirect) || ''
+      : getTokenMintAddressByName(
+        getDefaultQuoteToken(isStableSwapFromRedirect)
+      ) || ''
+
+    setQuoteTokenMintAddress(quoteTokenMint)
+
+    setIsStableSwapTabActive(isStableSwapFromRedirect)
+    setBaseAmountWithQuote(baseAmount, baseTokenMint, quoteTokenMint)
+  }, [])
+
+  const pricesMap = getDexTokensPrices.reduce(
     (acc, el) => acc.set(el.symbol, el),
     new Map()
   )
 
-  const [price] = getMultiSwapAmountOut({
+  const [_, price] = getSwapRoute({
     pools,
+    allMarketsMap,
     baseTokenMint: baseTokenMintAddress,
     quoteTokenMint: quoteTokenMintAddress,
     amountIn: 1,
+    marketsWithOrderbookMap,
   })
 
   const totalFeeUSD = swapRoute.reduce((acc, step) => {
@@ -348,6 +389,15 @@ const SwapPage = ({
 
       return acc + formattedImpact * 100
     }, 0) / swapRoute.length
+
+  const tokenSelectorMints = [
+    ...new Set(
+      [
+        ...getPoolsMintsEdges(pools),
+        ...getMarketsMintsEdges([...allMarketsMap.keys()]),
+      ].flat()
+    ),
+  ]
 
   return (
     <SwapPageContainer direction="column" height="100%" wrap="nowrap">
@@ -388,8 +438,9 @@ const SwapPage = ({
               <ReloadTimer
                 margin="0 1.5rem 0 0"
                 callback={async () => {
-                  refreshPoolBalances()
+                  refreshPoolsBalances()
                   refreshAllTokensData()
+                  refreshMarketsWithOrderbook()
                 }}
               />
               {baseTokenMintAddress && quoteTokenMintAddress && (
@@ -520,7 +571,7 @@ const SwapPage = ({
                 Connect wallet
               </BtnCustom>
             ) : (
-              <BtnCustom
+              <SwapButton
                 btnWidth="100%"
                 height="5.5rem"
                 fontSize="1.4rem"
@@ -539,15 +590,16 @@ const SwapPage = ({
                 disabled={isButtonDisabled}
                 onClick={async () => {
                   // pass pools balance
-                  const [_, swapRouteWithUpdatedPoolsBalances] =
-                    getMultiSwapAmountOut({
-                      pools,
-                      baseTokenMint: baseTokenMintAddress,
-                      quoteTokenMint: quoteTokenMintAddress,
-                      amountIn: +baseAmount,
-                      slippage: slippageTolerance,
-                      poolsBalancesMap,
-                    })
+                  const [swapRouteWithUpdatedPoolsBalances] = getSwapRoute({
+                    pools,
+                    allMarketsMap,
+                    baseTokenMint: baseTokenMintAddress,
+                    quoteTokenMint: quoteTokenMintAddress,
+                    amountIn: +baseAmount,
+                    slippage: slippageTolerance,
+                    poolsBalancesMap,
+                    marketsWithOrderbookMap,
+                  })
 
                   console.log('swapRoute2', swapRouteWithUpdatedPoolsBalances)
 
@@ -580,8 +632,9 @@ const SwapPage = ({
                   // refresh data
                   await sleep(2 * 1000)
 
-                  refreshPoolBalances()
+                  refreshPoolsBalances()
                   refreshAllTokensData()
+                  refreshMarketsWithOrderbook()
 
                   // reset fields
                   if (result === 'success') {
@@ -600,10 +653,14 @@ const SwapPage = ({
                     baseSymbol,
                     isSwapRouteExists,
                     isTokenABalanceInsufficient,
+                    isAllMarketsInSwapPathLoaded,
                     needEnterAmount,
                   })
                 )}
-              </BtnCustom>
+                <DotsContainer>
+                  <DotPulse size={8} emptyColor="#651CE4" filledColor="#fff" />
+                </DotsContainer>
+              </SwapButton>
             )}
           </RowContainer>
         </BlockTemplate>
@@ -669,47 +726,48 @@ const SwapPage = ({
         setSlippageTolerance={setSlippageTolerance}
       />
 
-      <SelectCoinPopup
-        poolsInfo={pools}
-        theme={theme}
-        // mints={[...new Set(mints)]}
-        mints={[...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]}
-        baseTokenMintAddress={baseTokenMintAddress}
-        quoteTokenMintAddress={quoteTokenMintAddress}
-        allTokensData={allTokensData}
-        open={isSelectCoinPopupOpen}
-        isBaseTokenSelecting={isBaseTokenSelecting}
-        setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
-        setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
-        selectTokenMintAddress={(address: string) => {
-          if (isBaseTokenSelecting) {
-            if (quoteTokenMintAddress === address) {
-              setQuoteTokenMintAddress('')
-            }
+      {isSelectCoinPopupOpen && (
+        <SelectCoinPopup
+          poolsInfo={pools}
+          theme={theme}
+          mints={tokenSelectorMints}
+          baseTokenMintAddress={baseTokenMintAddress}
+          quoteTokenMintAddress={quoteTokenMintAddress}
+          allTokensData={allTokensData}
+          open={isSelectCoinPopupOpen}
+          isBaseTokenSelecting={isBaseTokenSelecting}
+          setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
+          setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
+          selectTokenMintAddress={(address: string) => {
+            if (isBaseTokenSelecting) {
+              if (quoteTokenMintAddress === address) {
+                setQuoteTokenMintAddress('')
+              }
 
-            if (selectedBaseTokenAddressFromSeveral) {
-              setBaseTokenAddressFromSeveral('')
-            }
+              if (selectedBaseTokenAddressFromSeveral) {
+                setBaseTokenAddressFromSeveral('')
+              }
 
-            setBaseTokenMintAddress(address)
-            setIsSelectCoinPopupOpen(false)
-            setBaseAmountWithQuote(baseAmount, address)
-          } else {
-            if (baseTokenMintAddress === address) {
-              setBaseTokenMintAddress('')
-            }
+              setBaseTokenMintAddress(address)
+              setIsSelectCoinPopupOpen(false)
+              setBaseAmountWithQuote(baseAmount, address)
+            } else {
+              if (baseTokenMintAddress === address) {
+                setBaseTokenMintAddress('')
+              }
 
-            if (selectedQuoteTokenAddressFromSeveral) {
-              setQuoteTokenAddressFromSeveral('')
-            }
+              if (selectedQuoteTokenAddressFromSeveral) {
+                setQuoteTokenAddressFromSeveral('')
+              }
 
-            setQuoteTokenMintAddress(address)
-            setIsSelectCoinPopupOpen(false)
-            setBaseAmountWithQuote(baseAmount, baseTokenMintAddress, address)
-          }
-        }}
-        close={() => setIsSelectCoinPopupOpen(false)}
-      />
+              setQuoteTokenMintAddress(address)
+              setIsSelectCoinPopupOpen(false)
+              setBaseAmountWithQuote(baseAmount, baseTokenMintAddress, address)
+            }
+          }}
+          close={() => setIsSelectCoinPopupOpen(false)}
+        />
+      )}
 
       <TokenAddressesPopup
         theme={theme}
@@ -723,6 +781,7 @@ const SwapPage = ({
   )
 }
 
+// @ts-ignore
 export default compose(
   withTheme(),
   withPublicKey,
@@ -733,7 +792,7 @@ export default compose(
     fetchPolicy: 'cache-and-network',
   }),
   queryRendererHoc({
-    query: getDexTokensPrices,
+    query: getDexTokensPricesRequest,
     name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,

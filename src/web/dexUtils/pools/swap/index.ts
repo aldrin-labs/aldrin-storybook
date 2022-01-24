@@ -1,4 +1,5 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { checkIsPoolStable } from '../checkIsPoolStable'
 
@@ -42,9 +43,36 @@ const getSelectedPoolForSwap = ({
     .sort((a, b) => b.tvl.tokenA - a.tvl.tokenA)[0]
 }
 
+const getMarketForSwap = ({
+  marketsMap,
+  baseTokenMintAddress,
+  quoteTokenMintAddress,
+}: {
+  marketsMap: Map<string, any>
+  baseTokenMintAddress: string
+  quoteTokenMintAddress: string
+}): [any, boolean | null] => {
+  const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
+  const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
+
+  const marketName = `${baseSymbol}_${quoteSymbol}`
+  const reversedMarketName = `${quoteSymbol}_${baseSymbol}`
+
+  if (marketsMap.has(marketName)) {
+    return [marketsMap.get(marketName), true]
+  }
+
+  if (marketsMap.has(reversedMarketName)) {
+    return [marketsMap.get(marketName), false]
+  }
+
+  return [null, null]
+}
+
 export {
   getDefaultBaseToken,
   getDefaultQuoteToken,
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
+  getMarketForSwap,
 }

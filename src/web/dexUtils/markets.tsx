@@ -1,9 +1,3 @@
-import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
-import {
-  AWESOME_TOKENS,
-  useAwesomeMarkets,
-} from '@core/utils/awesomeMarkets/serum'
-import { Metrics } from '@core/utils/metrics'
 import {
   Market,
   MARKETS,
@@ -12,11 +6,20 @@ import {
   TokenInstructions,
   TOKEN_MINTS,
 } from '@project-serum/serum'
-import { OrderWithMarket } from '@sb/dexUtils/send'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+
+import { OrderWithMarket } from '@sb/dexUtils/send'
+
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  AWESOME_TOKENS,
+  useAwesomeMarkets,
+} from '@core/utils/awesomeMarkets/serum'
+import { Metrics } from '@core/utils/metrics'
+
 import {
   getProviderNameFromUrl,
   useAccountData,
@@ -50,18 +53,18 @@ export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
 }, {})
 
 export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } =
-  {
-    USDT: process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
-    USDC: process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
-    SOL: process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
-    WUSDT: process.env.REACT_APP_WUSDT_REFERRAL_FEES_ADDRESS,
-    ODOP: process.env.REACT_APP_ODOP_REFERRAL_FEES_ADDRESS,
-    TRYB: process.env.REACT_APP_TRYB_REFERRAL_FEES_ADDRESS,
-    SRM: process.env.REACT_APP_SRM_REFERRAL_FEES_ADDRESS,
-    ETH: process.env.REACT_APP_ETH_REFERRAL_FEES_ADDRESS,
-    RAY: process.env.REACT_APP_RAY_REFERRAL_FEES_ADDRESS,
-    mSOL: process.env.REACT_APP_MSOL_REFERRAL_FEES_ADDRESS,
-  }
+{
+  USDT: process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
+  USDC: process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
+  SOL: process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
+  WUSDT: process.env.REACT_APP_WUSDT_REFERRAL_FEES_ADDRESS,
+  ODOP: process.env.REACT_APP_ODOP_REFERRAL_FEES_ADDRESS,
+  TRYB: process.env.REACT_APP_TRYB_REFERRAL_FEES_ADDRESS,
+  SRM: process.env.REACT_APP_SRM_REFERRAL_FEES_ADDRESS,
+  ETH: process.env.REACT_APP_ETH_REFERRAL_FEES_ADDRESS,
+  RAY: process.env.REACT_APP_RAY_REFERRAL_FEES_ADDRESS,
+  mSOL: process.env.REACT_APP_MSOL_REFERRAL_FEES_ADDRESS,
+}
 
 // const ALL_TOKENS_MINTS_MAP = new Map();
 
@@ -78,15 +81,15 @@ const _IGNORE_DEPRECATED = false
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
-      {
-        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-        name: 'RIN/USDC',
-        programId: new PublicKey(
-          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-        ),
-        deprecated: false,
-      },
-    ].concat(MARKETS)
+    {
+      address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+      name: 'RIN/USDC',
+      programId: new PublicKey(
+        '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+      ),
+      deprecated: false,
+    },
+  ].concat(MARKETS)
 // : MARKETS
 
 export interface RawMarketData {
@@ -183,71 +186,6 @@ export function useCustomMarkets() {
   )
 
   return { customMarkets, setCustomMarkets }
-}
-
-export function useAllMarkets() {
-  const connection = useConnection()
-  const { customMarkets } = useCustomMarkets()
-  const marketInfos = getMarketInfos(customMarkets)
-
-  const getAllMarkets = async () => {
-    const i = 0
-    const markets: Array<{
-      market: Market
-      marketName: string
-      programId: PublicKey
-    } | null> =
-      // .slice(0, 2)
-      marketInfos.map(async (marketInfo) => {
-        try {
-          // console.log('marketInfo.address', marketInfo.address, ++i)
-          const market = await Market.load(
-            connection,
-            marketInfo.address,
-            {},
-            marketInfo.programId
-          )
-
-          const asks = await market.loadAsks(connection)
-          const bids = await market.loadBids(connection)
-
-          return {
-            market,
-            marketName: marketInfo.name,
-            programId: marketInfo.programId,
-            asks,
-            bids,
-          }
-        } catch (e) {
-          notify({
-            message: 'Error loading all market',
-            description: e.message,
-            type: 'error',
-          })
-          return null
-        }
-      })
-
-    return markets.filter(
-      (m): m is { market: Market; marketName: string; programId: PublicKey } =>
-        !!m
-    )
-  }
-
-  const memoizedGetAllMarkets = useMemo(
-    () => getAllMarkets,
-    [JSON.stringify(customMarkets)]
-  )
-
-  // console.log('memoizedGetAllMarkets', memoizedGetAllMarkets)
-
-  const getAllMarketsResult = useAsyncData(
-    memoizedGetAllMarkets,
-    tuple('getAllMarkets', customMarkets.length, connection),
-    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
-  )
-
-  return getAllMarketsResult
 }
 
 export function useUnmigratedOpenOrdersAccounts() {
@@ -590,12 +528,12 @@ const useOpenOrdersPubkeys = (): string[] => {
           b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
         ) =>
           a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
-          a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+            a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
             ? -1
             : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
               a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
-            ? 1
-            : 0
+              ? 1
+              : 0
       )
 
     console.log(
@@ -1064,8 +1002,8 @@ export function useBalances() {
       orders:
         baseExists && market
           ? market.baseSplSizeToNumber(
-              openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
-            )
+            openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
+          )
           : null,
       openOrders,
       unsettled:
@@ -1083,8 +1021,8 @@ export function useBalances() {
       orders:
         quoteExists && market
           ? market.quoteSplSizeToNumber(
-              openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
-            )
+            openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
+          )
           : null,
       unsettled:
         quoteExists && market
@@ -1093,142 +1031,6 @@ export function useBalances() {
       refreshQuote,
     },
   ]
-}
-
-export function useWalletBalancesForAllMarkets() {
-  const { connected, wallet } = useWallet()
-
-  const connection = useConnection()
-  const allMarkets = useAllMarkets()
-
-  async function getWalletBalancesForAllMarkets() {
-    const balances = []
-    if (!connected) {
-      return balances
-    }
-
-    let marketData
-    for (marketData of allMarkets) {
-      const { market, marketName } = marketData
-      if (!market) {
-        return balances
-      }
-      const baseCurrency = marketName.includes('/') && marketName.split('/')[0]
-      if (!balances.find((balance) => balance.coin === baseCurrency)) {
-        const baseBalance = await getCurrencyBalance(
-          market,
-          connection,
-          wallet,
-          true
-        )
-        balances.push({
-          key: baseCurrency,
-          coin: baseCurrency,
-          wallet: baseBalance,
-        })
-      }
-      const quoteCurrency = marketName.includes('/') && marketName.split('/')[1]
-      if (!balances.find((balance) => balance.coin === quoteCurrency)) {
-        const quoteBalance = await getCurrencyBalance(
-          market,
-          connection,
-          wallet,
-          false
-        )
-        balances.push({
-          key: quoteCurrency,
-          coin: quoteCurrency,
-          wallet: quoteBalance,
-        })
-      }
-    }
-
-    return balances
-  }
-
-  return useAsyncData(
-    getWalletBalancesForAllMarkets,
-    tuple(
-      'getWalletBalancesForAllMarkets',
-      connected,
-      connection,
-      wallet,
-      allMarkets
-    ),
-    { refreshInterval: _SLOW_REFRESH_INTERVAL }
-  )
-}
-
-async function getCurrencyBalance(market, connection, wallet, base = true) {
-  const currencyAccounts = base
-    ? await market.findBaseTokenAccountsForOwner(connection, wallet.publicKey)
-    : await market.findQuoteTokenAccountsForOwner(connection, wallet.publicKey)
-  const currencyAccount = currencyAccounts && currencyAccounts[0]
-  const tokenAccountBalances = await connection.getTokenAccountBalance(
-    currencyAccount.pubkey
-  )
-  return tokenAccountBalances?.value?.uiAmount
-}
-
-export function useUnmigratedDeprecatedMarkets() {
-  const connection = useConnection()
-  const { accounts } = useUnmigratedOpenOrdersAccounts()
-  const marketsList =
-    accounts &&
-    Array.from(new Set(accounts.map((openOrders) => openOrders.market)))
-  const deps = marketsList && marketsList.map((m) => m.toBase58())
-
-  const useUnmigratedDeprecatedMarketsInner = async () => {
-    if (!marketsList) {
-      return null
-    }
-    const getMarket = async (address) => {
-      const marketInfo = USE_MARKETS.find((market) =>
-        market.address.equals(address)
-      )
-      try {
-        console.log('Loading market', marketInfo.name)
-        // NOTE: Should this just be cached by (connection, marketInfo.address, marketInfo.programId)?
-        return await Market.load(
-          connection,
-          marketInfo.address,
-          {},
-          marketInfo.programId
-        )
-      } catch (e) {
-        console.log('Failed loading market', marketInfo.name, e)
-        const rpcUrl = getProviderNameFromUrl({ rawConnection: connection })
-        Metrics.sendMetrics({
-          metricName: `error.rpc.${rpcUrl}.unmigratedMarketFetch`,
-        })
-        notify({
-          message: 'Error loading market',
-          description: e.message,
-          type: 'error',
-        })
-        return null
-      }
-    }
-    return (await Promise.all(marketsList.map(getMarket))).filter((x) => x)
-  }
-  const [markets] = useAsyncData(
-    useUnmigratedDeprecatedMarketsInner,
-    tuple(
-      'useUnmigratedDeprecatedMarketsInner',
-      connection,
-      deps && deps.toString()
-    ),
-    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
-  )
-  if (!markets) {
-    return null
-  }
-  return markets.map((market) => ({
-    market,
-    openOrdersList: accounts.filter((openOrders) =>
-      openOrders.market.equals(market.address)
-    ),
-  }))
 }
 
 export function getMarketInfos(customMarkets) {

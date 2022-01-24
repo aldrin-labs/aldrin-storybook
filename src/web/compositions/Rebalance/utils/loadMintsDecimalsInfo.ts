@@ -1,9 +1,7 @@
-import {
-  notifyForDevelop,
-  notifyWithLog,
-} from '@sb/dexUtils/notifications'
-import { MINT_LAYOUT } from '@sb/dexUtils/tokens'
 import { Connection } from '@solana/web3.js'
+
+import { notifyForDevelop, notifyWithLog } from '@sb/dexUtils/notifications'
+import { MINT_LAYOUT } from '@sb/dexUtils/tokens'
 
 export const loadMintsDecimalsInfo = async ({
   connection,
@@ -14,7 +12,7 @@ export const loadMintsDecimalsInfo = async ({
 }) => {
   const mintsMap = new Map()
 
-  console.timeEnd('mints')
+  console.time('mints')
 
   const loadedMints = await connection._rpcRequest('getMultipleAccounts', [
     mints,

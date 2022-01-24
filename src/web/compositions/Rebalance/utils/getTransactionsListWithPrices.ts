@@ -1,29 +1,30 @@
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { TAKER_FEE } from '@core/config/dex'
-import { MarketsMap } from '@sb/dexUtils/markets'
 import { Connection } from '@solana/web3.js'
+
+import { MarketsMap } from '@sb/dexUtils/markets'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { TAKER_FEE } from '@core/config/dex'
+
 import { REBALANCE_CONFIG } from '../Rebalance.config'
 import { TokensMapType, TransactionType } from '../Rebalance.types'
 import { addPercentageToPricesInOrderbooks } from './addPercentageToPricesInOrderbooks'
 import { getOrderbookForMarkets } from './getOrderbookForMarkets'
+import { getRowsFromOrderbooks } from './getRowsFromOrderbooks'
 import { getTransactionsList } from './getTransactionsList'
+import { loadMarketsWithDataForTransactions } from './loadMarketsWithDataForTransactions'
 import { mergeRebalanceTransactions } from './mergeRebalanceTransactions'
 import { sortRebalanceTransactions } from './sortRebalanceTransactions'
-import { loadMarketsWithDataForTransactions } from './loadMarketsWithDataForTransactions'
-import { getRowsFromOrderbooks } from './getRowsFromOrderbooks'
 
 export const getTransactionsListWithPrices = async ({
   wallet,
   connection,
   tokensMap,
   allMarketsMap,
-  allMarketsMapById
 }: {
   wallet: WalletAdapter
   connection: Connection
   tokensMap: TokensMapType
   allMarketsMap: MarketsMap
-  allMarketsMapById: MarketsMap
 }): Promise<TransactionType[]> => {
   // getting names of markets to load
   const rebalanceTransactionsList = getTransactionsList({
@@ -40,7 +41,6 @@ export const getTransactionsListWithPrices = async ({
     connection,
     marketsNames,
     allMarketsMap,
-    allMarketsMapById
   })
 
   const orderbooksMap = await getOrderbookForMarkets({
@@ -65,7 +65,10 @@ export const getTransactionsListWithPrices = async ({
     loadedMarketsMap,
   })
 
-  console.log('rebalanceAllTransactionsListWithPrices', rebalanceAllTransactionsListWithPrices)
+  console.log(
+    'rebalanceAllTransactionsListWithPrices',
+    rebalanceAllTransactionsListWithPrices
+  )
 
   const mergedRebalanceTransactions = mergeRebalanceTransactions(
     rebalanceAllTransactionsListWithPrices

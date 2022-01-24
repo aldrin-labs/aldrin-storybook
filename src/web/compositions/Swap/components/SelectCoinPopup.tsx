@@ -79,8 +79,8 @@ export const SelectCoinPopup = ({
 
   const usersMints = needKnownMints
     ? mints.filter(
-        (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
-      )
+      (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
+    )
     : mints
 
   const sortedAllTokensData = new Map()
@@ -91,10 +91,10 @@ export const SelectCoinPopup = ({
 
   const filteredMints = searchValue
     ? usersMints.filter((mint) =>
-        getTokenNameByMintAddress(mint)
-          .toLowerCase()
-          .includes(searchValue.toLowerCase())
-      )
+      getTokenNameByMintAddress(mint)
+        .toLowerCase()
+        .includes(searchValue.toLowerCase())
+    )
     : usersMints
 
   const poolsTokensA = poolsInfo.map((el) => el.tokenA)
@@ -121,7 +121,7 @@ export const SelectCoinPopup = ({
         isPoolExist: availablePools.includes(mint),
       }
     })
-    .filter((token) => token.isTokenInPool)
+    // .filter((token) => token.isTokenInPool)
     .sort((a, b) => b.amount - a.amount)
 
   return (

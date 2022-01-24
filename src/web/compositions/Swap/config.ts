@@ -4,15 +4,21 @@ export const getLiquidityProviderFee = (curveType: number | null) =>
 
 export const getSwapButtonText = ({
   isTokenABalanceInsufficient,
+  isAllMarketsInSwapPathLoaded,
   baseSymbol,
   isSwapRouteExists,
   needEnterAmount,
 }: {
   isTokenABalanceInsufficient: boolean
+  isAllMarketsInSwapPathLoaded: boolean
   baseSymbol: string
   isSwapRouteExists: boolean
   needEnterAmount: boolean
 }) => {
+  if (!isAllMarketsInSwapPathLoaded) {
+    return 'Searching the best route...'
+  }
+
   if (isTokenABalanceInsufficient) {
     return `Insufficient ${baseSymbol} Balance`
   }

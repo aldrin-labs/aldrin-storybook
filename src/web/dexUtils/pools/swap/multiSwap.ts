@@ -8,7 +8,7 @@ import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { toBNWithDecimals } from '@core/utils/helpers'
 
 import { getSwapTransaction } from '../actions/swap'
-import { SwapRoute } from './getMultiSwapAmountOut'
+import { SwapRoute } from './getSwapRoute'
 
 const multiSwap = async ({
   wallet,
@@ -54,10 +54,6 @@ const multiSwap = async ({
       tokenOutDecimals
     )
 
-    // const [baseTokenMint, quoteTokenMint] = isSwapBaseToQuote
-    //   ? [tokenA, tokenB]
-    //   : [tokenB, tokenA]
-
     const { address: userBaseTokenAccount } = getTokenDataByMint(
       allTokensData,
       tokenA
@@ -73,6 +69,8 @@ const multiSwap = async ({
     const isNativeSOLSelected =
       nativeSOLTokenData?.address === userBaseTokenAccount ||
       nativeSOLTokenData?.address === userQuoteTokenAccount
+
+    // create transaction depending on programName
 
     const swapTransactionAndSigners = await getSwapTransaction({
       wallet,

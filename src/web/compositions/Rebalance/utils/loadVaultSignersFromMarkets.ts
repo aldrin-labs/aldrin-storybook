@@ -1,47 +1,30 @@
-import BN from 'bn.js'
-import { sleep } from '@core/utils/helpers'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { Connection, PublicKey } from '@solana/web3.js'
-import { LoadedMarket, LoadedMarketsMap } from './loadMarketsByNames'
+import { PublicKey } from '@solana/web3.js'
+
+import { MarketsMap } from '@sb/dexUtils/markets'
+
 import { getVaultOwnerAndNonce } from './marketOrderProgram/getVaultOwnerAndNonce'
 
-export interface LoadedMarketWithVaultSigner extends LoadedMarket {
-  vaultSigner: PublicKey | BN
-}
-export type LoadedMarketsWithVaultSignersMap = Map<
-  string,
-  LoadedMarketWithVaultSigner
->
+export type VaultSignersMap = Map<string, PublicKey>
 
-export const loadVaultSignersFromMarkets = async ({
-  wallet,
-  connection,
-  loadedMarketsMap,
+export const loadVaultSignersFromMarkets = ({
+  allMarketsMap,
+  marketsNames,
 }: {
-  wallet: WalletAdapter
-  connection: Connection
-  loadedMarketsMap: LoadedMarketsMap
-}): Promise<LoadedMarketsWithVaultSignersMap> => {
-  const marketsWithSignersMap: LoadedMarketsWithVaultSignersMap = new Map()
-  let i = 0
+  allMarketsMap: MarketsMap
+  marketsNames: string[]
+}): VaultSignersMap => {
+  const vaultSignersMap = new Map()
 
-  console.time('vaultSigners')
+  // not actually async
+  for (const [marketName, { address }] of allMarketsMap.entries()) {
+    if (marketsNames.length === 0 || marketsNames.includes(marketName)) {
+      try {
+        const [vaultSigner] = getVaultOwnerAndNonce(address)
 
-  for (let marketData of loadedMarketsMap.values()) {
-    const { market, marketName } = marketData
-
-    const [vaultSigner] = await getVaultOwnerAndNonce(
-      market._decoded.ownAddress
-    )
-
-    marketsWithSignersMap.set(marketName, { ...marketData, vaultSigner })
-
-    if (i % 4 === 0) await sleep(1 * 1000)
-
-    i++
+        vaultSignersMap.set(marketName, vaultSigner)
+      } catch (e) {}
+    }
   }
 
-  console.timeEnd('vaultSigners')
-
-  return marketsWithSignersMap
+  return vaultSignersMap
 }

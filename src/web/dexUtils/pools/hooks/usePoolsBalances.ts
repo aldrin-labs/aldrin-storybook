@@ -6,10 +6,18 @@ import { useConnection } from '@sb/dexUtils/connection'
 
 import { splitArray } from '@core/utils/helpers'
 
-export const usePoolsBalances = ({ pools }: { pools: PoolInfo[] }) => {
+import { PoolBalances } from '.'
+
+type PoolsBalancesMap = Map<string, PoolBalances>
+
+export const usePoolsBalances = ({
+  pools,
+}: {
+  pools: PoolInfo[]
+}): [PoolsBalancesMap, () => void] => {
   const connection = useConnection()
 
-  const fetcher = async () => {
+  const fetcher = async (): Promise<PoolsBalancesMap> => {
     if (!pools || pools.length === 0) {
       return new Map()
     }
