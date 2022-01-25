@@ -1,5 +1,5 @@
 import { Jupiter, RouteInfo } from '@jup-ag/core'
-import { Keypair, PublicKey } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import { useCallback, useEffect, useState } from 'react'
 
 import { useConnection } from '@sb/dexUtils/connection'
@@ -42,7 +42,7 @@ export const useJupiterSwapRoute = ({
         const jupiterInstance = await Jupiter.load({
           connection,
           cluster: 'mainnet-beta',
-          user: Keypair.fromSecretKey([]), // or public key
+          user: wallet.publicKey, // or public key
         })
 
         setJupiter(jupiterInstance)
