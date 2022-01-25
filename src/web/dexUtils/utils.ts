@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { PublicKey, PublicKeyInitData } from '@solana/web3.js'
+import { useEffect, useRef, useState } from 'react'
+
+import { useLocalStorageState } from '@core/react'
 import { MASTER_BUILD } from '@core/utils/config'
 
 export function isValidPublicKey(key: PublicKeyInitData) {
@@ -36,7 +38,7 @@ export const percentFormat = new Intl.NumberFormat(undefined, {
 
 export const encode = (data) => {
   return Object.keys(data)
-    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
     .join('&')
 }
 
@@ -61,39 +63,6 @@ export function getDecimalCount(value) {
   return 0
 }
 
-export function useLocalStorageState<T>(
-  key: string,
-  defaultState: T | null = null,
-  setIfNotChanged = false
-): [T, (newState: T) => void] {
-  const [state, setState] = useState<T>(() => {
-    // NOTE: Not sure if this is ok
-    const storedState = localStorage.getItem(key)
-    if (storedState) {
-      return JSON.parse(storedState)
-    }
-    return defaultState
-  })
-
-  const setLocalStorageState = useCallback(
-    (newState) => {
-      const changed = state !== newState
-      if (!changed && !setIfNotChanged) {
-        return
-      }
-      setState(newState)
-      if (newState === null) {
-        localStorage.removeItem(key)
-      } else {
-        localStorage.setItem(key, JSON.stringify(newState))
-      }
-    },
-    [state, key, setIfNotChanged]
-  )
-
-  return [state, setLocalStorageState]
-}
-
 export function useEffectAfterTimeout(effect, timeout) {
   useEffect(() => {
     const handle = setTimeout(effect, timeout)
@@ -112,7 +81,7 @@ export function useListener(emitter, eventName) {
 
 export function abbreviateAddress(address) {
   const base58 = address.toBase58()
-  return base58.slice(0, 4) + '…' + base58.slice(-4)
+  return `${base58.slice(0, 4)}…${base58.slice(-4)}`
 }
 
 export function isEqual(obj1, obj2, keys) {
@@ -144,15 +113,20 @@ export function onlyUnique(value, index, self) {
   return self.indexOf(value) === index
 }
 
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined;
+export function notEmpty<TValue>(
+  value: TValue | null | undefined
+): value is TValue {
+  return value !== null && value !== undefined
 }
 
 export function convertDataURIToBinary(base64: string) {
-  return new Buffer(base64, "base64")
+  return new Buffer(base64, 'base64')
 }
 
-export const stripInputNumber = (e: React.ChangeEvent<HTMLInputElement>, prevValue: number | string) => {
+export const stripInputNumber = (
+  e: React.ChangeEvent<HTMLInputElement>,
+  prevValue: number | string
+) => {
   let value = `${e.target.value}`
 
   // change comma to dot
@@ -171,3 +145,5 @@ export const stripInputNumber = (e: React.ChangeEvent<HTMLInputElement>, prevVal
   // change comma to dot
   return value.replace(',', '.')
 }
+
+export { useLocalStorageState }

@@ -1,13 +1,10 @@
 import { TokenInstructions } from '@project-serum/serum'
-import Wallet from '@project-serum/sol-wallet-adapter'
 import {
   PublicKey,
-  SystemProgram,
   SYSVAR_RENT_PUBKEY,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 import {
   CommonWalletAdapter,
@@ -18,7 +15,6 @@ import {
   SolongWalletAdapter,
   SlopeWalletAdapter,
 } from '@sb/dexUtils/adapters'
-import { WalletAdapter } from '@sb/dexUtils/types'
 
 import Mathwallet from '@icons/mathwallet.svg'
 import WalletAldrin from '@icons/RINLogo.svg'
@@ -28,22 +24,10 @@ import Solong from '@icons/solong.svg'
 
 import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
 import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
-import {
-  useAccountInfo,
-  useConnection,
-  useConnectionConfig,
-} from './connection'
-import { useAsyncData } from './fetch-loop'
-import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
-import { notify } from './notifications'
-import { getMaxWithdrawAmount } from './pools'
-import {
-  getTokenAccountInfo,
-  MINT_LAYOUT,
-  parseTokenAccountData,
-} from './tokens'
+import { useAccountInfo } from './connection'
+import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
 import { signAndSendSingleTransaction } from './transactions'
-import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
+import { RINProviderURL } from './utils'
 
 export const WALLET_PROVIDERS = [
   // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
@@ -160,206 +144,6 @@ export const MAINNET_URL = 'https://api.mainnet-beta.solana.com'
 export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
   'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
 )
-
-export interface WalletContextType {
-  wallet: WalletAdapter
-  connected: boolean
-  providerUrl: string
-  setProviderUrl: (newState: string) => void
-  setAutoConnect: (autoConnect: boolean) => void
-  providerName: string
-  providerFullName?: string
-}
-
-const WalletContext = React.createContext<WalletContextType | null>(null)
-
-export const WalletProvider: React.FC = ({ children }) => {
-  const { endpoint } = useConnectionConfig()
-
-  const [connectedPersist, setConnectedPersist] = useLocalStorageState(
-    'walletConnected',
-    false
-  )
-  const [connected, setConnected] = useState(false)
-  const [autoConnect, setAutoConnect] = useState(connectedPersist)
-
-  const [providerUrl, setProviderUrl] = useLocalStorageState(
-    'walletProvider',
-    RINProviderURL
-  )
-
-  const provider = useMemo(
-    () => WALLET_PROVIDERS.find(({ url }) => url === providerUrl),
-    [providerUrl]
-  )
-
-  const wallet = useMemo(() => {
-    const wallet = new (provider?.adapter || Wallet)(
-      providerUrl,
-      endpoint
-    ) as WalletAdapter
-
-    return wallet
-  }, [provider, endpoint])
-
-  const connectWalletHash = useMemo(
-    () => window.location.hash,
-    [wallet?.connected]
-  )
-
-  useEffect(() => {
-    if (wallet) {
-      wallet.on('connect', async () => {
-        if (
-          wallet?.publicKey &&
-          !wallet?.publicKey?.equals(SystemProgram.programId)
-        ) {
-          console.log('Wallet connected')
-
-          setConnectedPersist(true)
-          setConnected(true)
-
-          const walletPublicKey = wallet?.publicKey.toBase58()
-          const keyToDisplay =
-            walletPublicKey.length > 20
-              ? `${walletPublicKey.substring(
-                  0,
-                  7
-                )}.....${walletPublicKey.substring(
-                  walletPublicKey.length - 7,
-                  walletPublicKey.length
-                )}`
-              : walletPublicKey
-
-          notify({
-            message: 'Wallet update',
-            description: `Connected to wallet ${keyToDisplay}`,
-          })
-        }
-      })
-
-      wallet.on('disconnect', (...args) => {
-        setTimeout(() => {
-          // Prevent execution on tab close/reload
-          setConnectedPersist(false)
-          setConnected(false)
-          notify({
-            message: 'Wallet update',
-            description: 'Disconnected from wallet',
-          })
-        }, 300)
-      })
-    }
-
-    // Disable disconnect - it happens only on tab close/page reload, let's save last connection
-    // return () => {
-    //   setConnected(false)
-    //   if (wallet?.disconnect) {
-    //     wallet.disconnect()
-    //   }
-    // }
-  }, [wallet])
-
-  useEffect(() => {
-    setTimeout(() => {
-      // Allow app to start (initialize) properly
-      if (wallet && autoConnect) {
-        if (!wallet.connected) {
-          wallet.connect()
-        }
-        setAutoConnect(false)
-      }
-    }, 300)
-  }, [wallet, autoConnect])
-
-  useEffect(() => {
-    if (wallet && connectWalletHash === '#connect_wallet') {
-      setProviderUrl(RINProviderURL)
-      wallet?.connect()
-    }
-  }, [wallet])
-
-  const w = WALLET_PROVIDERS.find(({ url }) => url === providerUrl)
-
-  const context: WalletContextType = {
-    wallet,
-    connected,
-    providerUrl,
-    setProviderUrl,
-    setAutoConnect,
-    providerName: w?.name ?? providerUrl,
-    providerFullName: w?.fullName,
-  }
-  return (
-    <WalletContext.Provider value={context}>{children}</WalletContext.Provider>
-  )
-}
-
-export function useWallet() {
-  const context = useContext(WalletContext)
-  if (!context) {
-    throw new Error('Missing wallet context')
-  }
-  return {
-    connected: context.connected,
-    wallet: context.wallet,
-    providerUrl: context.providerUrl,
-    setProvider: context.setProviderUrl,
-    providerName: context.providerName,
-    providerFullName: context.providerFullName,
-    setAutoConnect: context.setAutoConnect,
-  }
-}
-
-export function useWalletPublicKeys() {
-  const { wallet } = useWallet()
-  const connection = useConnection()
-
-  const [tokenAccountInfo, loaded] = useAsyncData(
-    () => getTokenAccountInfo(connection, wallet.publicKey),
-    'getTokenAccountInfo',
-    { refreshInterval: _VERY_SLOW_REFRESH_INTERVAL }
-  )
-
-  let publicKeys = [
-    // wallet.publicKey,
-    ...(tokenAccountInfo
-      ? tokenAccountInfo.map(({ pubkey }: { pubkey: PublicKey }) => pubkey)
-      : []),
-  ]
-  // Prevent users from re-rendering unless the list of public keys actually changes
-  publicKeys = useRefEqual(
-    publicKeys,
-    (oldKeys, newKeys) =>
-      oldKeys.length === newKeys.length &&
-      oldKeys.every((key, i) => key.equals(newKeys[i]))
-  )
-  return [publicKeys, loaded]
-}
-
-export function useMaxWithdrawalAmounts({
-  poolTokenAmount,
-  tokenSwapPublicKey,
-}: {
-  poolTokenAmount: number
-  tokenSwapPublicKey: PublicKey
-}) {
-  const { wallet } = useWallet()
-  const connection = useConnection()
-
-  const [withdrawalAmounts, loaded] = useAsyncData(
-    () =>
-      getMaxWithdrawAmount({
-        connection,
-        wallet,
-        poolTokenAmount,
-        tokenSwapPublicKey,
-      }),
-    `getMaxWithdrawAmount-${tokenSwapPublicKey.toString()}`
-  )
-
-  return [withdrawalAmounts, loaded]
-}
 
 export function parseMintData(data) {
   const { decimals } = MINT_LAYOUT.decode(data)

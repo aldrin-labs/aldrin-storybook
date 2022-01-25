@@ -9,22 +9,23 @@ import {
   ConnectionContext,
   ConnectionProvider,
   useConnection,
+  useConnectionConfig,
 } from '@core/solana'
 
 import { useAsyncData } from './fetch-loop'
 
-export { MAINNET_BETA_ENDPOINT, ConnectionProvider, useConnection }
+export {
+  MAINNET_BETA_ENDPOINT,
+  ConnectionProvider,
+  useConnection,
+  useConnectionConfig,
+}
 
 export const useMultiEndpointConnection = useConnection
 
 export function useSerumConnection(): Connection {
   return useContext(ConnectionContext)
     .serumConnection as unknown as AldrinConnection
-}
-
-export function useConnectionConfig() {
-  const ctx = useContext(ConnectionContext)
-  return { endpoint: ctx.endpoint, setEndpoint: ctx.setEndpoint }
 }
 
 export function useAccountInfo(
