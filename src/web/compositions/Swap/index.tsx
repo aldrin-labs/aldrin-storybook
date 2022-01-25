@@ -1,71 +1,71 @@
+import { Theme } from '@material-ui/core'
+import withTheme from '@material-ui/core/styles/withTheme'
+import { PublicKey } from '@solana/web3.js'
+import BN from 'bn.js'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
-import SvgIcon from '@sb/components/SvgIcon'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { Theme } from '@material-ui/core'
-
-import { Text } from '@sb/compositions/Addressbook/index'
-import {
-  ReloadTimer,
-  TimerButton,
-} from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { notify } from '@sb/dexUtils/notifications'
-
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { useWallet } from '@sb/dexUtils/wallet'
-
-import Inform from '@icons/inform.svg'
-import Gear from '@icons/gear.svg'
-import Arrows from '@icons/switchArrows.svg'
-import { useConnection } from '@sb/dexUtils/connection'
-import withTheme from '@material-ui/core/styles/withTheme'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import {
-  getTokenMintAddressByName,
-  getTokenNameByMintAddress,
-} from '@sb/dexUtils/markets'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { PublicKey } from '@solana/web3.js'
-import { swap } from '@sb/dexUtils/pools/actions/swap'
-import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
-import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { Loader } from '@sb/components/Loader/Loader'
+import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
   costOfAddingToken,
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
-import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
-import ScalesIcon from '@icons/scales.svg'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import {
+  ReloadTimer,
+  TimerButton,
+} from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { useConnection } from '@sb/dexUtils/connection'
+import {
+  getTokenMintAddressByName,
+  getTokenNameByMintAddress,
+} from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
+import { swap } from '@sb/dexUtils/pools/actions/swap'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 import {
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
   getDefaultBaseToken,
   getDefaultQuoteToken,
 } from '@sb/dexUtils/pools/swap/index'
-import { Loader } from '@sb/components/Loader/Loader'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { sleep } from '@sb/dexUtils/utils'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { useWallet } from '@sb/dexUtils/wallet'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
+import Gear from '@icons/gear.svg'
+import Inform from '@icons/inform.svg'
+import ScalesIcon from '@icons/scales.svg'
+import Arrows from '@icons/switchArrows.svg'
+
+import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
+import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/styles'
+import { BlockTemplate } from '../Pools/index.styles'
+import { getTokenDataByMint } from '../Pools/utils'
+import { Cards } from './components/Cards/Cards'
+import { InputWithSelectorForSwaps } from './components/Inputs/index'
+import { SelectCoinPopup } from './components/SelectCoinPopup'
+import { Selector } from './components/Selector/Selector'
+import { TokenAddressesPopup } from './components/TokenAddressesPopup'
+import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { getLiquidityProviderFee } from './config'
 
 // TODO: imports
-import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/styles'
-import { Selector } from './components/Selector/Selector'
-import { TokenAddressesPopup } from './components/TokenAddressesPopup'
-import { getTokenDataByMint } from '../Pools/utils'
-import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
-import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { Card, SwapPageContainer } from './styles'
-import { InputWithSelectorForSwaps } from './components/Inputs/index'
-import { BlockTemplate } from '../Pools/index.styles'
-import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { Cards } from './components/Cards/Cards'
-import BN from 'bn.js'
+import { useJupiterSwapRoute } from './useJupiterSwapRoute'
 
 const SwapPage = ({
   theme,
@@ -79,7 +79,6 @@ const SwapPage = ({
   const { wallet } = useWallet()
   const connection = useConnection()
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
-  const tokensMap = useTokenInfos()
 
   const allPools = getPoolsInfoQuery.getPoolsInfo
   const nativeSOLTokenData = allTokensData[0]
@@ -130,16 +129,16 @@ const SwapPage = ({
     const baseTokenMint = baseFromRedirect
       ? getTokenMintAddressByName(baseFromRedirect) || ''
       : getTokenMintAddressByName(
-          getDefaultBaseToken(isStableSwapFromRedirect)
-        ) || ''
+        getDefaultBaseToken(isStableSwapFromRedirect)
+      ) || ''
 
     setBaseTokenMintAddress(baseTokenMint)
 
     const quoteTokenMint = quoteFromRedirect
       ? getTokenMintAddressByName(quoteFromRedirect) || ''
       : getTokenMintAddressByName(
-          getDefaultQuoteToken(isStableSwapFromRedirect)
-        ) || ''
+        getDefaultQuoteToken(isStableSwapFromRedirect)
+      ) || ''
 
     setQuoteTokenMintAddress(quoteTokenMint)
 
@@ -330,6 +329,26 @@ const SwapPage = ({
     setBaseAmount(strippedSwapAmountOut)
   }
 
+  const {
+    jupiter,
+    route: swapRoute,
+    refresh,
+    loading,
+  } = useJupiterSwapRoute({
+    inputAmount: +baseAmount,
+    inputMint: baseTokenMintAddress,
+    inputMintDecimals: baseTokenDecimals,
+    outputMint: quoteTokenMintAddress,
+    slippage: 0.3,
+  })
+
+  console.log({
+    jupiter,
+    swapRoute,
+    refresh,
+    loading,
+  })
+
   return (
     <SwapPageContainer direction="column" height="100%" wrap="nowrap">
       <>
@@ -367,6 +386,8 @@ const SwapPage = ({
             </Text>
             <Row>
               <ReloadTimer
+                duration={30}
+                initialRemainingTime={30}
                 margin="0 1.5rem 0 0"
                 callback={async () => {
                   refreshPoolBalances()
@@ -475,8 +496,8 @@ const SwapPage = ({
                 {isSelectedPoolStable
                   ? 1
                   : isSwapBaseToQuote
-                  ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
-                  : stripDigitPlaces(
+                    ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
+                    : stripDigitPlaces(
                       +(+poolAmountTokenA / +poolAmountTokenB),
                       8
                     )}{' '}
@@ -527,7 +548,7 @@ const SwapPage = ({
                 transition="all .4s ease-out"
                 disabled={isButtonDisabled}
                 onClick={async () => {
-                  if (!selectedPool) return
+                  if (!selectedPool || !jupiter || !swapRoute) return
 
                   setIsSwapInProgress(true)
 
@@ -535,6 +556,16 @@ const SwapPage = ({
                     baseTokenDecimals,
                     quoteTokenDecimals,
                   })
+
+                  const { execute } = await jupiter.exchange({
+                    route: swapRoute,
+                  })
+
+                  const executeResult = await execute()
+
+                  console.log('executeResult', executeResult)
+
+                  return executeResult
 
                   const swapAmountIn = new BN(
                     +baseAmount * 10 ** baseTokenDecimals
@@ -567,8 +598,8 @@ const SwapPage = ({
                       result === 'success'
                         ? 'Swap executed successfully.'
                         : result === 'failed'
-                        ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
-                        : 'Swap cancelled',
+                          ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
+                          : 'Swap cancelled',
                   })
 
                   // refresh data
@@ -590,8 +621,7 @@ const SwapPage = ({
                 {isSwapInProgress ? (
                   <Loader />
                 ) : isTokenABalanceInsufficient ? (
-                  `Insufficient ${
-                    isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
+                  `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
                   } Balance`
                 ) : !selectedPool ? (
                   'No pools available'
@@ -647,7 +677,7 @@ const SwapPage = ({
                 >
                   {stripByAmountAndFormat(
                     +baseAmount *
-                      (getLiquidityProviderFee(selectedPool.curveType) / 100)
+                    (getLiquidityProviderFee(selectedPool.curveType) / 100)
                   )}{' '}
                   {baseSymbol}
                 </Text>
