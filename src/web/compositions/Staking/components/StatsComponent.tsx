@@ -20,7 +20,6 @@ import {
   DAYS_TO_CHECK_BUY_BACK,
   STAKING_FARMING_TOKEN_DIVIDER,
 } from '@sb/dexUtils/staking/config'
-import { TokenInfo } from '@sb/dexUtils/types'
 
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -43,25 +42,23 @@ import {
   Number,
   StatsBlock,
   StatsBlockItem,
+  StatsBlockItem,
 } from '../styles'
 import { getShareText } from '../utils'
 import locksIcon from './assets/lockIcon.svg'
 import pinkBackground from './assets/pinkBackground.png'
 
-interface InnerProps {
-  tokenData: TokenInfo | null
-}
-interface StatsComponentProps extends InnerProps {
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-  marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
+interface OuterProps {
   currentFarmingState: FarmingState
   buyBackAmount: number
   totalStaked: number
 }
+interface InnerProps {
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+  marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
+}
 
-const StatsComponent: React.FC<StatsComponentProps> = (
-  props: StatsComponentProps
-) => {
+const StatsComponent: React.FC<InnerProps & OuterProps> = (props) => {
   const {
     getDexTokensPricesQuery,
     currentFarmingState,
@@ -264,7 +261,7 @@ const StatsComponent: React.FC<StatsComponentProps> = (
   )
 }
 
-export default compose(
+export default compose<InnerProps, OuterProps>(
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',

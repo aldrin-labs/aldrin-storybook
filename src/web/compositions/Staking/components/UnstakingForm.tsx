@@ -3,31 +3,31 @@ import React from 'react'
 
 import { Button } from '@sb/components/Button'
 import { INPUT_FORMATTERS } from '@sb/components/Input'
-import { FlexBlock } from '@sb/components/Layout'
-import { MINIMAL_STAKING_AMOUNT } from '@sb/dexUtils/common/config'
-import { STAKING_FARMING_TOKEN_DECIMALS } from '@sb/dexUtils/staking/config'
-import { TokenInfo } from '@sb/dexUtils/types'
 
-import { limitDecimalsCustom, stripByAmount } from '@core/utils/chartPageUtils'
+import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
 
-import StakeBtn from '@icons/stakeBtn.png'
-
+import { FlexBlock } from '../../../components/Layout'
 import {
   ButtonWrapper,
   FormItemFull,
-  FormWrap,
   InputWrapper,
   StakingInput,
+  UnstakingFormWrap,
 } from '../styles'
 
 interface StakingFormProps {
-  tokenData: TokenInfo | undefined
   loading: { stake: boolean; unstake: boolean }
-  start: (amount: number) => any
+  end: (amount: number) => any
+  totalStaked: number
+  isUnstakeLocked: boolean
+  unlockAvailableDate: number
 }
 
-export const StakingForm: React.FC<StakingFormProps> = (props) => {
-  const { tokenData, loading, start } = props
+export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
+  const { totalStaked, loading, end, isUnstakeLocked, unlockAvailableDate } =
+    props
+
+  const now = Date.now() / 1000
 
   const form = useFormik({
     // validateOnMount: true,
@@ -35,7 +35,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       amount: '0',
     },
     onSubmit: async (values) => {
-      start(parseFloat(values.amount))
+      end(parseFloat(values.amount))
       return false
     },
     validate: async (values) => {
@@ -43,28 +43,26 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
         return { amount: 'Enter value' }
       }
       const amount = parseFloat(values.amount)
-      const minStakingAmount =
-        MINIMAL_STAKING_AMOUNT / 10 ** STAKING_FARMING_TOKEN_DECIMALS
 
-      if (amount <= minStakingAmount) {
-        return { amount: 'Too small' }
-      }
-
-      if (amount > (tokenData?.amount || 0)) {
+      if (amount > totalStaked) {
         return { amount: 'Too big' }
       }
       return null
     },
   })
 
-  const maxButtonOnClick = () => {
-    if (tokenData?.amount) {
-      form.setFieldValue('amount', stripByAmount(tokenData.amount))
-    }
-  }
+  const isUnstakeDisabled =
+    !form.isValid ||
+    isUnstakeLocked ||
+    totalStaked === 0 ||
+    loading.unstake ||
+    unlockAvailableDate > now
 
+  const maxButtonOnClick = () => {
+    form.setFieldValue('amount', totalStaked)
+  }
   return (
-    <FormWrap onSubmit={form.handleSubmit}>
+    <UnstakingFormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
         <InputWrapper>
           <StakingInput
@@ -99,17 +97,17 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
         <ButtonWrapper>
           <Button
             minWidth="70px"
-            $backgroundImage={StakeBtn}
             $fontSize="xs"
             $padding="lg"
             $borderRadius="xxl"
-            $loading={loading.stake}
-            disabled={Object.keys(form.errors).length !== 0 || loading.stake}
+            type="submit"
+            disabled={isUnstakeDisabled}
+            $loading={loading.unstake}
           >
-            Stake
+            Unstake
           </Button>
         </ButtonWrapper>
       </FormItemFull>
-    </FormWrap>
+    </UnstakingFormWrap>
   )
 }

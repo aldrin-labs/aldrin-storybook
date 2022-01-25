@@ -1,7 +1,3 @@
-import styled, { css } from 'styled-components'
-
-import RinLogo from '@icons/DarkLogo.svg'
-
 import {
   COLORS,
   FONT_SIZES,
@@ -9,6 +5,9 @@ import {
   BORDER_RADIUS,
   WIDTH,
 } from '@variables/variables'
+import styled, { css } from 'styled-components'
+
+import RinLogo from '@icons/DarkLogo.svg'
 
 const VARIANTS = {
   primary: css`
@@ -183,8 +182,11 @@ export const Button = styled.button<ButtonProps>`
   ${({ $loading: loading }: ButtonProps) =>
     loading
       ? `
-    color: transparent;
+
     position: relative;
+    &, &:disabled {
+      color: transparent;
+    }
     &:before {
       animation: 5s button-rotate-loading infinite linear;
       content: "";
