@@ -5,21 +5,17 @@ import { compose } from 'recompose'
 
 import { Cell } from '@sb/components/Layout'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
+import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
+import { StakingPool } from '@sb/dexUtils/staking/types'
+import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
+import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
+import { useInterval } from '@sb/dexUtils/useInterval'
+
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
 import { dayDuration } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
-import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { StakingPool } from '@sb/dexUtils/staking/types'
-import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
-import { useInterval } from '@sb/dexUtils/useInterval'
-import {
-  useUserTokenAccounts,
-  useAssociatedTokenAccount,
-} from '@sb/dexUtils/token/hooks'
-
-
 
 import { RootRow } from '../styles'
 import StatsComponent from './StatsComponent'
@@ -34,8 +30,6 @@ const StakingComponent: React.FC<StakingComponentProps> = (
   props: StakingComponentProps
 ) => {
   const { getStakingPoolInfoQuery, getBuyBackAmountForPeriodQuery } = props
-
-  const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
   const stakingPool = getStakingPoolInfoQuery.getStakingPoolInfo || {}
 
@@ -69,16 +63,12 @@ const StakingComponent: React.FC<StakingComponentProps> = (
             stakingPool={stakingPool}
             currentFarmingState={currentFarmingState}
             tokenData={tokenData}
-            refreshAllTokenData={refreshAllTokenData}
-            refreshTotalStaked={refreshTotalStaked}
-            allTokenData={allTokenData}
           />
         </Cell>
         <Cell col={12} colLg={6}>
           <StatsComponent
             buyBackAmount={buyBackAmount}
             currentFarmingState={currentFarmingState}
-            tokenData={tokenData}
             totalStaked={totalStaked}
           />
         </Cell>

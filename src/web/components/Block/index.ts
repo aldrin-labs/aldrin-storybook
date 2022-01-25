@@ -1,5 +1,5 @@
-import styled from 'styled-components'
 import { COLORS } from '@variables/variables'
+import styled from 'styled-components'
 
 export interface BlockProps {
   $backgroundImage?: string
@@ -42,6 +42,7 @@ export const Block = styled.div<BlockProps>`
 
 export interface TitleProps {
   color?: string
+  margin?: string
 }
 
 export const BlockTitle = styled.h2`

@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Block, BlockSubtitle } from '@sb/components/Block'
+import { Button } from '@sb/components/Button'
+import { Input } from '@sb/components/Input'
 import { Row, StretchedBlock, Page } from '@sb/components/Layout'
 
-import { Button } from '../../components/Button'
+import { Append, InputEl } from '../../components/Input/styles'
 
 export const StyledTextDiv = styled.div`
   height: auto;
@@ -228,6 +230,11 @@ export const FormWrap = styled.form`
     margin-top: 20px;
   }
 `
+export const UnstakingFormWrap = styled(FormWrap)`
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin-left: 20px;
+  }
+`
 
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;
@@ -247,9 +254,18 @@ export const InputWrapper = styled.div`
   flex: 1;
 `
 
+export const StakingInput = styled(Input)`
+  ${InputEl} {
+    padding-left: 0.7em;
+  }
+  ${Append} {
+    padding-right: 0.7em;
+  }
+`
+
 export const ButtonWrapper = styled.div`
   margin: auto;
-  margin-left: 16px;
+  margin-left: 0.6em;
 `
 
 export const ChartContainer = styled.div`
@@ -272,6 +288,7 @@ export const ChartCanvas = styled.canvas`
 export const RestakeButton = styled(Button)`
   flex: 1;
   margin-top: 10px;
+  padding-bottom: 0;
 `
 
 export const StyledLink = styled(Link)`
@@ -307,4 +324,14 @@ export const UserFormRestakeButton = styled(Button)`
 export const CenteredPage = styled(Page)`
   display: flex;
   align-items: center;
+`
+
+export const FormsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: ${BREAKPOINTS.xl}) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
 `
