@@ -13,7 +13,7 @@ import { RowProps, CellProps, StretchedBlockProps } from './types'
 
 export const Body = styled.div`
   font-family: ${FONTS.main};
-  color: ${COLORS.white};
+  color: ${COLORS.main};
   font-size: ${SIZE.fontSize};
 `
 
@@ -29,8 +29,13 @@ export const Page = styled(Body)`
   background: ${COLORS.bodyBackground};
   flex: 1;
 `
-export const StakingPage = styled(Page)`
+
+export const FlexPage = styled(Page)`
   display: flex;
+  flex-direction: column;
+`
+
+export const StakingPage = styled(FlexPage)`
   justify-content: center;
   align-items: center;
   // height: 100%;
@@ -41,6 +46,7 @@ export const StakingPage = styled(Page)`
 
 export const Content = styled.div`
   margin: 0 10px;
+  width: calc(100% - 20px);
 
   @media (min-width: ${BREAKPOINTS.md}) {
     margin: 0 10px;

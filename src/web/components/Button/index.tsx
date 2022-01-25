@@ -1,14 +1,13 @@
-import styled, { css } from 'styled-components'
-
-import RinLogo from '@icons/DarkLogo.svg'
-
 import {
   COLORS,
   FONT_SIZES,
   FONTS,
   BORDER_RADIUS,
   WIDTH,
+  BUTTON_PADDINGS,
+  LOGO,
 } from '@variables/variables'
+import styled, { css } from 'styled-components'
 
 const VARIANTS = {
   primary: css`
@@ -97,19 +96,13 @@ const VARIANTS = {
     border-color: ${COLORS.hint};
   `,
 }
-
-const PADDINGS = {
-  md: '4px 10px', // 16px
-  lg: '8px 16px',
-}
-
 export type ButtonVariants = keyof typeof VARIANTS
 
 export interface ButtonProps {
   $fontSize?: keyof typeof FONT_SIZES
   $variant?: keyof typeof VARIANTS
   $borderRadius?: keyof typeof BORDER_RADIUS
-  $padding?: keyof typeof PADDINGS
+  $padding?: keyof typeof BUTTON_PADDINGS
   $backgroundImage?: string
   $width?: keyof typeof WIDTH
   minWidth?: string
@@ -151,7 +144,7 @@ export const Button = styled.button<ButtonProps>`
   border: 1px solid transparent;
   line-height: 150%;
   cursor: pointer;
-  padding: ${(props: ButtonProps) => PADDINGS[props.$padding || 'md']};
+  padding: ${(props: ButtonProps) => BUTTON_PADDINGS[props.$padding || 'md']};
   ${(props: ButtonProps) => VARIANTS[props.$variant || 'primary']};
   font-family: ${FONTS.main};
   border-radius: ${(props: ButtonProps) =>
@@ -165,7 +158,7 @@ export const Button = styled.button<ButtonProps>`
   ${({ $backgroundImage: backgroundImage }: ButtonProps) =>
     backgroundImage
       ? `
-    background-color: ${COLORS.buttonAltPink};
+    background-color: ${COLORS.buttonImgBg};
     border-color: transparent;
     background-image: url(${backgroundImage});
     background-repeat: no-repeat;
@@ -190,13 +183,11 @@ export const Button = styled.button<ButtonProps>`
       content: "";
       width: 80%;
       height: 70%;
-      background: url(${RinLogo}) center center no-repeat;
+      background: url(${LOGO}) center center no-repeat;
       position: absolute;
       left: 10%;
       top: 15%;
       background-size: contain;
-
-
     }
   `
       : ''}

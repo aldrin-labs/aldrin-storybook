@@ -1,3 +1,5 @@
+import RinLogo from '@icons/DarkLogo.svg'
+
 export const MAIN_FONT = 'Avenir Next'
 export const FONTS = {
   main: `${MAIN_FONT}, sans-serif;`,
@@ -18,7 +20,7 @@ export const COLORS = {
   successAlt: '#2E5223',
   error: '#F69894',
   errorAlt: '#D44C32',
-  buttonAltPink: '#a1458a',
+  buttonImgBg: '#a1458a',
   gray: '#383b42',
   chartGrid: '#4C4F59',
   textAlt: '#F5F5FB',
@@ -71,7 +73,14 @@ export const WIDTH = {
   xl: '100%',
 }
 
+export const BUTTON_PADDINGS = {
+  md: '4px 10px', // 16px
+  lg: '8px 16px',
+}
+
 export const LAYOUT_WIDTH = 1280
 export const LAYOUT_COL_NUMBER = 12
 
 export const TRANSITION = 'all ease-in 0.2s'
+
+export const LOGO = RinLogo

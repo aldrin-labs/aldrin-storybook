@@ -1,70 +1,21 @@
-import {
-  Account,
-  AccountInfo,
-  clusterApiUrl,
-  Connection,
-  PublicKey,
-} from '@solana/web3.js'
+import { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
 import tuple from 'immutable-tuple'
-import React, { useContext, useRef } from 'react'
+import { useContext, useRef } from 'react'
 
 import {
   getProviderNameFromUrl,
-  MultiEndpointsConnection,
   AldrinConnection,
-} from '@core/solana/connection'
+  MAINNET_BETA_ENDPOINT,
+  ConnectionContext,
+  ConnectionProvider,
+  useConnection,
+} from '@core/solana'
 
 import { useAsyncData } from './fetch-loop'
 
-export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
-export const ENDPOINTS = [
-  {
-    name: 'mainnet-beta',
-    endpoint: MAINNET_BETA_ENDPOINT,
-  },
-]
+export { MAINNET_BETA_ENDPOINT, ConnectionProvider, useConnection }
 
-const connection = new MultiEndpointsConnection(
-  [
-    { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
-    { url: 'https://aldrinexchange.genesysgo.net', weight: 3 },
-  ],
-  'confirmed'
-)
-
-connection.connections.forEach((c) => {
-  c.onSlotChange(() => null)
-  c.onAccountChange(new Account().publicKey, () => {})
-})
-
-const serumConnection = new MultiEndpointsConnection([
-  { url: 'https://solana-api.projectserum.com', weight: 2 },
-])
-
-const context = {
-  connection,
-  serumConnection,
-  endpoint: ENDPOINTS[0].endpoint,
-  setEndpoint: () => null, // compatibility
-}
-
-const ConnectionContext = React.createContext(context)
-
-export const ConnectionProvider: React.FC = ({ children }) => {
-  return (
-    <ConnectionContext.Provider value={context}>
-      {children}
-    </ConnectionContext.Provider>
-  )
-}
-
-export function useConnection(): Connection {
-  return useContext(ConnectionContext).connection as AldrinConnection
-}
-
-export function useMultiEndpointConnection(): MultiEndpointsConnection {
-  return useContext(ConnectionContext).connection as AldrinConnection
-}
+export const useMultiEndpointConnection = useConnection
 
 export function useSerumConnection(): Connection {
   return useContext(ConnectionContext)
@@ -75,6 +26,7 @@ export function useConnectionConfig() {
   const ctx = useContext(ConnectionContext)
   return { endpoint: ctx.endpoint, setEndpoint: ctx.setEndpoint }
 }
+
 export function useAccountInfo(
   publicKey: PublicKey | undefined | null
 ): [AccountInfo<Buffer> | null | undefined, boolean] {
