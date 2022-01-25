@@ -6,131 +6,13 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import {
-  CommonWalletAdapter,
-  LedgerWalletAdapter,
-  MathWalletAdapter,
-  PhantomWalletAdapter,
-  SolletExtensionAdapter,
-  SolongWalletAdapter,
-  SlopeWalletAdapter,
-} from '@sb/dexUtils/adapters'
+import { useWallet, WALLET_PROVIDERS } from '@core/solana'
 
-import Mathwallet from '@icons/mathwallet.svg'
-import WalletAldrin from '@icons/RINLogo.svg'
-import Slope from '@icons/slope.svg'
-import Sollet from '@icons/sollet.svg'
-import Solong from '@icons/solong.svg'
-
-import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
-import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
 import { useAccountInfo } from './connection'
 import { MINT_LAYOUT, parseTokenAccountData } from './tokens'
 import { signAndSendSingleTransaction } from './transactions'
-import { RINProviderURL } from './utils'
 
-export const WALLET_PROVIDERS = [
-  // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
-  {
-    name: 'Wallet™',
-    fullName: 'Wallet™ by Aldrin.com',
-    url: RINProviderURL,
-    adapter: CommonWalletAdapter,
-    isExtension: false,
-    showOnMobile: true,
-    icon: WalletAldrin,
-  },
-  // {
-  //   name: 'Wallet™ Extension',
-  //   url: `${CCAIProviderURL}/extension`,
-  //   adapter: CcaiExtensionAdapter,
-  //   isExtension: true,
-  //   showOnMobile: false,
-  //   icon: WalletAldrin,
-  // },
-  {
-    name: 'Sollet.io',
-    fullName: 'Wallet™ by Aldrin.com',
-    url: 'https://www.sollet.io',
-    adapter: CommonWalletAdapter,
-    icon: Sollet,
-    isExtension: false,
-    showOnMobile: true,
-  },
-  {
-    name: 'Sollet Extension',
-    fullName: 'Sollet Extension Wallet',
-    url: 'https://www.sollet.io/extension',
-    adapter: SolletExtensionAdapter,
-    icon: Sollet,
-    isExtension: true,
-    showOnMobile: false,
-  },
-  {
-    name: 'Ledger',
-    fullName: 'Ledger Wallet',
-    url: 'https://www.ledger.com',
-    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg`,
-    adapter: LedgerWalletAdapter,
-    isExtension: false,
-    showOnMobile: false,
-  },
-  {
-    name: 'Phantom',
-    fullName: 'Phantom Wallet',
-    url: 'https://www.phantom.app',
-    icon: `https://www.phantom.app/img/logo.png`,
-    adapter: PhantomWalletAdapter,
-    isExtension: false,
-    showOnMobile: false,
-  },
-  {
-    name: 'MathWallet',
-    fullName: 'MathWallet',
-    url: 'https://www.mathwallet.org',
-    adapter: MathWalletAdapter,
-    icon: Mathwallet,
-    isExtension: false,
-    showOnMobile: false,
-  },
-  {
-    name: 'Solong',
-    fullName: 'Solong Wallet',
-    url: 'https://solongwallet.com',
-    adapter: SolongWalletAdapter,
-    icon: Solong,
-    isExtension: false,
-    showOnMobile: false,
-  },
-  {
-    name: 'Coin98',
-    fullName: 'Coin98 Wallet',
-    url: 'https://wallet.coin98.com/',
-    adapter: Coin98WalletAdapter,
-    icon: `https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`,
-    isExtension: true,
-    showOnMobile: true,
-  },
-  {
-    name: 'Solflare',
-    fullName: 'Solflare Wallet',
-    url: 'https://solflare.com/',
-    adapter: SolflareExtensionWalletAdapter,
-    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/solflare.svg`,
-    isExtension: true,
-    showOnMobile: true,
-  },
-  {
-    name: 'Slope',
-    fullName: 'Slope Wallet',
-    url: 'https://slope.finance/',
-    adapter: SlopeWalletAdapter,
-    icon: Slope,
-    isExtension: true,
-    showOnMobile: false,
-  },
-]
-
+export { useWallet, WALLET_PROVIDERS }
 export const TOKEN_PROGRAM_ID = new PublicKey(
   'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
 )

@@ -1,8 +1,3 @@
-import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
-import {
-  AWESOME_TOKENS,
-  useAwesomeMarkets,
-} from '@core/utils/awesomeMarkets/serum'
 import { Metrics } from '@core/utils/metrics'
 import {
   Market,
@@ -17,6 +12,11 @@ import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  AWESOME_TOKENS,
+  useAwesomeMarkets,
+} from '@core/utils/awesomeMarkets/serum'
 import {
   getProviderNameFromUrl,
   useAccountData,
@@ -847,7 +847,8 @@ export function useSelectedQuoteCurrencyAccount() {
 }
 
 const useAssociatedTokenAddressByMint = (mint: PublicKey) => {
-  const { connected, wallet } = useWallet()
+  const w = useWallet()
+  const { connected, wallet } = w
 
   async function getAssociatedTokenAddress() {
     if (!connected || !mint) {

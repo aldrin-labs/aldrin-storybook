@@ -1,15 +1,19 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
-import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 //
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import {
   createGenerateClassName,
   jssPreset,
   withTheme,
 } from '@material-ui/core/styles'
+import { syncStorage } from '@storage'
+import useWindowSize from '@webhooks/useWindowSize'
+import { create } from 'jss'
+import React from 'react'
+import JssProvider from 'react-jss/lib/JssProvider'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+import styled from 'styled-components'
+
 import { Header } from '@sb/components/Header'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
@@ -19,20 +23,22 @@ import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
-import { WalletProvider } from '@sb/dexUtils/wallet'
+
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
-import { syncStorage } from '@storage'
-import useWindowSize from '@webhooks/useWindowSize'
-import { create } from 'jss'
-import React from 'react'
 // https://material-ui.com/customization/css-in-js/#other-html-element
-import JssProvider from 'react-jss/lib/JssProvider'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
 // import './app.styles.global.css';
-import styled from 'styled-components'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
+import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
+import { NotificationContext } from '@core/react'
+import { WalletProvider } from '@core/solana'
+import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
+
+import { notify } from '../../dexUtils/notifications'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import { AppGridLayout, AppInnerContainer } from './App.styles'
@@ -40,11 +46,13 @@ import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 // import Footer from '@sb/components/Footer'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 
+const NotificationProvider = NotificationContext.Provider
 const generateClassName = createGenerateClassName({
   dangerouslyUseGlobalCSS: false,
   productionPrefix: 'c',
 })
 
+const notificationContextValue = { notify }
 const jss = create(jssPreset())
 // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
 jss.options.insertionPoint = document.getElementById('jss-insertion-point')
@@ -132,47 +140,48 @@ const AppRaw = ({
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
           <SnackbarWrapper>
-            <SnackbarUtilsConfigurator />
-            <CssBaseline />
-            <ConnectionProvider>
-              <TokenRegistryProvider>
-                <MarketProvider>
-                  <WalletProvider>
-                    <PreferencesProvider>
-                      <AppGridLayout
-                        id="react-notification"
-                        showFooter={showFooter}
-                        isRewards={isRewards}
-                        isPNL={isPNL}
-                        isChartPage={isChartPage}
-                      >
-                        <Header />
-                        <AppInnerContainer
+            <NotificationProvider value={notificationContextValue}>
+              <SnackbarUtilsConfigurator />
+              <CssBaseline />
+              <ConnectionProvider>
+                <TokenRegistryProvider>
+                  <MarketProvider>
+                    <WalletProvider>
+                      <PreferencesProvider>
+                        <AppGridLayout
+                          id="react-notification"
                           showFooter={showFooter}
+                          isRewards={isRewards}
+                          isPNL={isPNL}
                           isChartPage={isChartPage}
-                          currentPage={currentPage}
                         >
-                          {children}
-                        </AppInnerContainer>
-                        {/* {showFooter && (
+                          <Header />
+                          <AppInnerContainer
+                            showFooter={showFooter}
+                            isChartPage={isChartPage}
+                            currentPage={currentPage}
+                          >
+                            {children}
+                          </AppInnerContainer>
+                          {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )} */}
-                        <MobileFooter pathname={currentPage} />
-                        {/*
+                          <MobileFooter pathname={currentPage} />
+                          {/*
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
-                        {!MASTER_BUILD && !LOCAL_BUILD && (
-                          <DevUrlPopup
-                            open={isDevUrlPopupOpen}
-                            close={() => {
-                              openDevUrlPopup(false)
-                            }}
-                          />
-                        )}
-                        {/* <WarningBanner
+                          {!MASTER_BUILD && !LOCAL_BUILD && (
+                            <DevUrlPopup
+                              open={isDevUrlPopupOpen}
+                              close={() => {
+                                openDevUrlPopup(false)
+                              }}
+                            />
+                          )}
+                          {/* <WarningBanner
                           localStorageProperty={'isPhantomIssuesPopupOpen'}
                           notification={[
                             'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
@@ -180,11 +189,11 @@ const AppRaw = ({
                           ]}
                           needMobile={false}
                         /> */}
-                        {/* <RebrandingPopup
+                          {/* <RebrandingPopup
                           open={isRebrandingPopupOpen}
                           onClose={() => setIsRebrandingPopupOpen(false)}
                         /> */}
-                        {/* {!isWalletMigrationToNewUrlPopupDone && (
+                          {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}
                           close={() => {
@@ -192,16 +201,17 @@ const AppRaw = ({
                           }}
                         />
                       )} */}
-                        <DetermineMobileWindowHeight />
-                      </AppGridLayout>
-                      {/* <ShowWarningOnMoblieDevice /> */}
-                    </PreferencesProvider>
-                  </WalletProvider>
-                </MarketProvider>
-              </TokenRegistryProvider>
-            </ConnectionProvider>
-            <GlobalStyle />
-            <GlobalStyles />
+                          <DetermineMobileWindowHeight />
+                        </AppGridLayout>
+                        {/* <ShowWarningOnMoblieDevice /> */}
+                      </PreferencesProvider>
+                    </WalletProvider>
+                  </MarketProvider>
+                </TokenRegistryProvider>
+              </ConnectionProvider>
+              <GlobalStyle />
+              <GlobalStyles />
+            </NotificationProvider>
           </SnackbarWrapper>
         </ThemeWrapper>
       </JssProvider>
