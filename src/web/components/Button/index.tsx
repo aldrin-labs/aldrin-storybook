@@ -6,101 +6,15 @@ import {
   WIDTH,
   BUTTON_PADDINGS,
   LOGO,
+  THEME,
 } from '@variables/variables'
 import styled, { css } from 'styled-components'
 
-const VARIANTS = {
-  primary: css`
-    background: ${COLORS.primary};
-    border-color: ${COLORS.primary};
-
-    &:disabled {
-      background: ${COLORS.hint};
-      border-color: ${COLORS.hint};
-    }
-  `,
-  secondary: css`
-    background: ${COLORS.background};
-    border-color: ${COLORS.background};
-
-    &:disabled {
-      background: ${COLORS.hint};
-      border-color: ${COLORS.hint};
-    }
-  `,
-
-  rainbow: css`
-    background: linear-gradient(
-      91.8deg,
-      ${COLORS.primary} 15.31%,
-      ${COLORS.errorAlt} 89.64%
-    );
-    border: 0;
-
-    &:disabled {
-      background: ${COLORS.hint};
-      border-color: ${COLORS.hint};
-    }
-  `,
-
-  error: css`
-    background: ${COLORS.error};
-    border-color: ${COLORS.error};
-
-    &:disabled {
-      background: ${COLORS.hint};
-      border-color: ${COLORS.hint};
-    }
-  `,
-
-  'outline-white': css`
-    background: transparent;
-    border-color: ${COLORS.white};
-
-    &:disabled {
-      color: ${COLORS.hint};
-      border-color: ${COLORS.hint};
-    }
-  `,
-
-  'link-error': css`
-    background: transparent;
-    border-color: transparent;
-    color: ${COLORS.error};
-
-    &:disabled {
-      color: ${COLORS.hint};
-      border-color: ${COLORS.hint};
-    }
-  `,
-
-  link: css`
-    background: transparent;
-    border-color: transparent;
-    color: ${COLORS.success};
-
-    &:disabled {
-      color: ${COLORS.hint};
-    }
-  `,
-
-  // TODO: rewrite with [disabled] html attribute
-  disabled: css`
-    background: ${COLORS.hint};
-    border-color: ${COLORS.hint};
-    cursor: not-allowed;
-  `,
-
-  utility: css`
-    background: ${COLORS.hint};
-    border-color: ${COLORS.hint};
-  `,
-}
-export type ButtonVariants = keyof typeof VARIANTS
+export type ButtonVariants = keyof typeof THEME.button.variants
 
 export interface ButtonProps {
   $fontSize?: keyof typeof FONT_SIZES
-  $variant?: keyof typeof VARIANTS
+  $variant?: ButtonVariants
   $borderRadius?: keyof typeof BORDER_RADIUS
   $padding?: keyof typeof BUTTON_PADDINGS
   $backgroundImage?: string
@@ -145,7 +59,7 @@ export const Button = styled.button<ButtonProps>`
   line-height: 150%;
   cursor: pointer;
   padding: ${(props: ButtonProps) => BUTTON_PADDINGS[props.$padding || 'md']};
-  ${(props: ButtonProps) => VARIANTS[props.$variant || 'primary']};
+  ${(props: ButtonProps) => THEME.button.variants[props.$variant || 'primary']};
   font-family: ${FONTS.main};
   border-radius: ${(props: ButtonProps) =>
     BORDER_RADIUS[props.$borderRadius || 'md']};
