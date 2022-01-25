@@ -6,7 +6,7 @@ import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.
 import { Cell } from '@sb/components/Layout'
 import SvgIcon from '@sb/components/SvgIcon'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { liqRatio } from '@sb/compositions/BorrowLending/config'
+import { LIQUIDITY_RATIO } from '@sb/compositions/BorrowLending/config'
 import {
   BlueButton,
   StyledPaper,
@@ -16,6 +16,7 @@ import { removeTrailingZeros } from '@sb/dexUtils/borrow-lending/U192-converting
 
 import CloseIcon from '@icons/closeIcon.svg'
 
+import { Reserve } from '../../../../dexUtils/borrow-lending/types'
 import {
   ButtonCategory,
   TitleBlock,
@@ -51,11 +52,12 @@ const ActionsPopup = ({
   unhealthyBorrowValue,
   handleBorrowObligationLiquidity,
   handleRepayObligationLiquidity,
+  allowToBorrowTokens,
 }: {
   theme: Theme
   onClose: () => void
   open: boolean
-  reserve: any
+  reserve: Reserve
   reserveObligationCollateral: any
   token: string
   tokenPrice: string
@@ -64,6 +66,7 @@ const ActionsPopup = ({
   depositAmount: number
   collateralDeposit: number
   collateralWorth: number
+  allowToBorrowTokens: number
   reserveBorrowedLiquidity: number
   reserveAvailableLiquidity: number
   mintedCollateralTotal: number
@@ -195,7 +198,9 @@ const ActionsPopup = ({
     MAX_VAL = parseFloat(borrowedAmount).toFixed(tokenDecimals)
   } else {
     MAX_VAL = parseFloat(
-      (collateralDeposit / liqRatio - borrowedAmount).toFixed(tokenDecimals)
+      (collateralDeposit / LIQUIDITY_RATIO - borrowedAmount).toFixed(
+        tokenDecimals
+      )
     )
   }
   const withValueLimit = ({ floatValue }) => floatValue <= MAX_VAL
@@ -266,8 +271,9 @@ const ActionsPopup = ({
               <Cell col={12} colLg={3}>
                 <BlockSupply>
                   <TitleBlock>Borrow Fees</TitleBlock>
-                  {parseInt(reserve.config.fees.borrowFee.toString()) /
-                    Math.pow(10, 18)}
+                  {(parseInt(reserve.config.fees.borrowFee.toString()) /
+                    Math.pow(10, 18)) *
+                    100}
                   %
                 </BlockSupply>
               </Cell>
@@ -407,8 +413,6 @@ const ActionsPopup = ({
                     <NumberFormat
                       value={amount}
                       onValueChange={(values) => handleChange(values)}
-                      allowLeadingZeros={false}
-                      isAllowed={withValueLimit}
                     />
                   </Cell>
                   <Cell col={6}>
@@ -433,9 +437,7 @@ const ActionsPopup = ({
                   <MaxAmount>
                     Max Amount:
                     {removeTrailingZeros(
-                      (collateralDeposit / liqRatio - borrowedAmount).toFixed(
-                        tokenDecimals
-                      )
+                      allowToBorrowTokens.toFixed(tokenDecimals)
                     )}
                   </MaxAmount>
                 )}

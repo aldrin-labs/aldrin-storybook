@@ -16,6 +16,7 @@ import { removeTrailingZeros } from '@sb/dexUtils/borrow-lending/U192-converting
 
 import CloseIcon from '@icons/closeIcon.svg'
 
+import { LIQUIDITY_RATIO } from '../../config'
 import {
   ButtonCategory,
   TitleBlock,
@@ -91,13 +92,14 @@ const ActionsPopup = ({
   const [asCollateral, setAsCollateral] = useState(false)
 
   const handleChange = (values) => {
-    let valueToSet = values.floatValue
+    let valueToSet = parseFloat(values.floatValue)
 
     if (!mode && +valueToSet > walletBalance) {
       valueToSet = walletBalance
     } else if (mode && +valueToSet > +depositAmount) {
       valueToSet = +depositAmount
     }
+
     setAmount(valueToSet || 0)
   }
 
@@ -139,7 +141,7 @@ const ActionsPopup = ({
     }
     handleWithdrawLiquidity(
       reserve,
-      amount * Math.pow(10, tokenDecimals),
+      amount * LIQUIDITY_RATIO * Math.pow(10, tokenDecimals),
       callback
     )
   }
@@ -153,7 +155,7 @@ const ActionsPopup = ({
     console.log(amount * Math.pow(10, tokenDecimals))
     handleWithdrawCollateral(
       reserve,
-      amount * Math.pow(10, tokenDecimals),
+      amount * LIQUIDITY_RATIO * Math.pow(10, tokenDecimals),
       callback
     )
   }
@@ -271,7 +273,7 @@ const ActionsPopup = ({
               <Cell col={12} colLg={3}>
                 <BlockSupply>
                   <TitleBlock>Deposit APY</TitleBlock>
-                  {depositApy}%
+                  {depositApy.toFixed(2)}%
                 </BlockSupply>
               </Cell>
               <Cell col={12} colLg={3}>
@@ -288,7 +290,7 @@ const ActionsPopup = ({
                       checked={asCollateral}
                       onChange={handleChangeCollateral}
                       value="checkedA"
-                      color="primary"
+                      color="default"
                     />
                   </BlockSupply>
                 )}
@@ -446,7 +448,6 @@ const ActionsPopup = ({
                       value={amount}
                       onValueChange={(values) => handleChange(values)}
                       allowLeadingZeros={false}
-                      isAllowed={withValueLimit}
                     />
                   </Cell>
                   <Cell col={6}>
@@ -464,10 +465,43 @@ const ActionsPopup = ({
               <div style={{ textAlign: 'left', marginTop: '0.3rem' }}>
                 {mode ? (
                   <MaxAmount>
-                    Max Amount: {depositAmount}({collateralDeposit}){' '}
+                    Max Amount:{' '}
+                    <span
+                      onClick={() =>
+                        handleChange({
+                          floatValue: (depositAmount / LIQUIDITY_RATIO).toFixed(
+                            4
+                          ),
+                        })
+                      }
+                    >
+                      {(depositAmount / LIQUIDITY_RATIO).toFixed(4)}
+                    </span>
+                    <span
+                      onClick={() =>
+                        handleChange({
+                          floatValue: (
+                            collateralDeposit / LIQUIDITY_RATIO
+                          ).toFixed(4),
+                        })
+                      }
+                    >
+                      ({(collateralDeposit / LIQUIDITY_RATIO).toFixed(4)})
+                    </span>{' '}
                   </MaxAmount>
                 ) : (
-                  <MaxAmount>Max Amount: {walletBalance} </MaxAmount>
+                  <MaxAmount>
+                    Max Amount:
+                    <span
+                      onClick={() =>
+                        handleChange({
+                          floatValue: walletBalance,
+                        })
+                      }
+                    >
+                      {walletBalance}
+                    </span>
+                  </MaxAmount>
                 )}
               </div>
               {/* <CustomSlider */}

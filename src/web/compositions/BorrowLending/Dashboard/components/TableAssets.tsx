@@ -100,7 +100,7 @@ const TableAssets = ({ theme, reserves }: TableAssetsProps) => {
               >
                 {reserve.liquidity.mint.toString()}
               </a>
-              <span>${tokenPrice}</span>
+              <span>Price: ${tokenPrice}</span>
             </td>
             <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>

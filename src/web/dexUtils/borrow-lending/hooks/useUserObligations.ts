@@ -13,7 +13,9 @@ import { u192ToBN } from '../U192-converting'
 
 const USER_KEY_OFFSET = 1 + 16 + 32
 
-const reserve192ToBn = (reserve: ObligationReserve<U192>): ObligationReserve<BN> => {
+const reserve192ToBn = (
+  reserve: ObligationReserve<U192>
+): ObligationReserve<BN> => {
   if (reserve.collateral) {
     return {
       collateral: {
@@ -96,5 +98,7 @@ export const useUserObligations = () => {
       .filter((acc): acc is Obligation => !!acc)
   }
 
-  return useSWR(`obligations-${wallet.publicKey?.toString()}`, fetcher)
+  return useSWR(`obligations-${wallet.publicKey?.toString()}`, fetcher, {
+    refreshInterval: 30_000,
+  })
 }

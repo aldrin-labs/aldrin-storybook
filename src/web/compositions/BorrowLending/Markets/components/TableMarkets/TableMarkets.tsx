@@ -36,6 +36,7 @@ const TableMarkets = ({ theme, reserves }: TableMarketsProps) => {
         <th>Total Borrowed</th>
         <th>Deposit APY</th>
         <th>Borrow APY</th>
+        <th>Utilization rate</th>
       </tr>
     </thead>
   )
@@ -97,7 +98,7 @@ const TableMarkets = ({ theme, reserves }: TableMarketsProps) => {
               >
                 {reserve.liquidity.mint.toString()}
               </a>
-              <span>${tokenPrice}</span>
+              <span>Price: ${tokenPrice}</span>
             </td>
             <td>
               <p style={{ margin: 0 }}>
@@ -124,10 +125,9 @@ const TableMarkets = ({ theme, reserves }: TableMarketsProps) => {
                 ${toNumberWithDecimals(reserveBorrowedAmountWorth, 2)}
               </span>
             </td>
-            <td>
-              {depositApy % 1 !== 0 ? depositApy.toFixed(2) : depositApy}%
-            </td>
-            <td>{borrowApy % 1 !== 0 ? borrowApy.toFixed(2) : borrowApy}%</td>
+            <td>{depositApy.toFixed(2)}%</td>
+            <td>{borrowApy.toFixed(2)}%</td>
+            <td>{utilizationRate.toFixed(2)}</td>
           </tr>
           <ReserveStatusPopup
             theme={theme}

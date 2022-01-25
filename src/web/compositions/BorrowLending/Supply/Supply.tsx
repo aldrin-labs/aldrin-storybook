@@ -8,7 +8,7 @@ import { compose } from 'recompose'
 import { Block, BlockContent } from '@sb/components/Block'
 import { Cell, Page, WideContent } from '@sb/components/Layout'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { liqRatio } from '@sb/compositions/BorrowLending/config'
+import { LIQUIDITY_RATIO } from '@sb/compositions/BorrowLending/config'
 import { MarketCompType } from '@sb/compositions/BorrowLending/Markets/types'
 import { RootRow } from '@sb/compositions/Pools/components/Charts/styles'
 import { depositLiquidity } from '@sb/dexUtils/borrow-lending/depositLiquidity'
@@ -85,14 +85,14 @@ const Supply = ({
           ((parseInt(reserve.liquidity.marketPrice.toString(), 10) / 10 ** 18) *
             tokenAmount) /
           10 ** tokenDecimals /
-          liqRatio
+          LIQUIDITY_RATIO
         console.log(
           'totalUserDepositWorth',
-          totalUserDepositWorth / liqRatio,
+          totalUserDepositWorth / LIQUIDITY_RATIO,
           tokenWorth
         )
         const reserveDepositPercent =
-          (tokenWorth / (totalUserDepositWorth / liqRatio)) * 100
+          (tokenWorth / (totalUserDepositWorth / LIQUIDITY_RATIO)) * 100
 
         depositCompArr.push({
           asset: reserve.collateral.mint.toString(),
@@ -212,9 +212,10 @@ const Supply = ({
       )
       const depositAmount = tokenAccount?.amount || 0
       const depositWorth =
-        (parseInt(reserve.liquidity.marketPrice.toString(), 10) / 10 ** 18) *
-        depositAmount
-      console.log('depositWorthh', depositWorth)
+        ((parseInt(reserve.liquidity.marketPrice.toString(), 10) / 10 ** 18) *
+          depositAmount) /
+        LIQUIDITY_RATIO
+      console.log('depositWorthh', depositAmount, depositWorth)
       totalRemainingBorrow =
         (reserve.config.loanToValueRatio.percent / 100) * depositWorth
       console.log('remainingBorrow supply', totalRemainingBorrow)
@@ -274,7 +275,7 @@ const Supply = ({
                         <Description>
                           Total:
                           <NumberFormat
-                            value={totalUserDepositWorth / liqRatio}
+                            value={totalUserDepositWorth}
                             displayType="text"
                             decimalScale={2}
                             fixedDecimalScale

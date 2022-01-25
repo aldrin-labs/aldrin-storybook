@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import NumberFormat from 'react-number-format'
 
 import ActionsPopup from '@sb/compositions/BorrowLending/Borrow/components/ActionsPopup'
-import { liqRatio } from '@sb/compositions/BorrowLending/config'
+import { LIQUIDITY_RATIO } from '@sb/compositions/BorrowLending/config'
 import {
   calculateBorrowApy,
   calculateUtilizationRate,
@@ -14,6 +14,7 @@ import {
   toNumberWithDecimals,
 } from '@sb/dexUtils/borrow-lending/U192-converting'
 
+import { Button } from '../../../../components/Button'
 import { Obligation, Reserve } from '../../../../dexUtils/borrow-lending/types'
 import { TokenInfo } from '../../../../dexUtils/types'
 import { Table } from '../../styles'
@@ -66,19 +67,74 @@ const TableAssets = ({
       let walletBalance = 0
       let depositApy = 0
       let walletBalanceWorth = 0
-      let reserveObligationCollateral = null
+
       let reserveObligationBorrow = null
       let borrowApy = 0
       const liquidationThreshold = reserve.config.liquidationThreshold.percent
       let remainingBorrow = 0
       let collateralDeposit = 0
-      let collateralWorth = 0
+
       let reserveBorrowedLiquidity = 0
       let reserveAvailableLiquidity = 0
       let mintedCollateralTotal = 0
       let borrowedAmount = 0
       let borrowedAmountWorth = 0
       let riskFactor = 0
+
+      const remainBorrow = obligationDetails.allowedBorrowValue.sub(
+        obligationDetails.borrowedValue
+      )
+
+      const allowToBorrowTokens =
+        parseInt(remainBorrow.toString(), 10) /
+        parseInt(reserve.liquidity.marketPrice.toString(), 10)
+
+      const reserveObligationCollateral = obligationDetails?.reserves.find(
+        (reserveObligation) => {
+          if (reserveObligation.collateral) {
+            return (
+              reserve.reserve.toString() ===
+              reserveObligation.collateral.inner.depositReserve.toString()
+            )
+          }
+          return false
+        }
+      )
+
+      const collateralWorthBn = obligationDetails.reserves.reduce(
+        (acc, res) => {
+          if (res.collateral) {
+            return acc.add(res.collateral.inner.marketValue)
+          }
+          return acc
+        },
+        new BN(0)
+      )
+
+      const collateralWorth =
+        parseInt(collateralWorthBn.toString(), 10) / 10 ** 18
+
+      const borrowedAmountWorthBn = obligationDetails.reserves.reduce(
+        (acc, res) => {
+          if (res.liquidity) {
+            return acc.add(res.liquidity.inner.marketValue)
+          }
+          return acc
+        },
+        new BN(0)
+      )
+
+      const borrowedAmountWorthTotal =
+        parseInt(borrowedAmountWorthBn.toString(), 10) / 10 ** 18
+
+      const availableToBorrow = collateralWorth - borrowedAmountWorthTotal
+
+      console.log(
+        'availableToBorrow: ',
+        collateralWorth,
+        borrowedAmountWorthTotal,
+        availableToBorrow
+      )
 
       if (walletAccounts && walletAccounts.length > 0) {
         const depositTokenAccount = walletAccounts.find(
@@ -95,7 +151,7 @@ const TableAssets = ({
           depositWorth =
             parseInt(depositWorthBN.toString()) /
             Math.pow(10, depositTokenAccount.decimals) /
-            liqRatio
+            LIQUIDITY_RATIO
         }
 
         if (tokenAccount) {
@@ -166,20 +222,9 @@ const TableAssets = ({
               }
             })
 
-            reserveObligationCollateral = obligationDetails.reserves.find(
-              (reserveObligation) => {
-                if (reserveObligation.collateral) {
-                  console.log(
-                    reserve.reserve.toString(),
-                    reserveObligation.collateral.inner.depositReserve.toString()
-                  )
-                  return (
-                    reserve.reserve.toString() ===
-                    reserveObligation.collateral.inner.depositReserve.toString()
-                  )
-                }
-                return false
-              }
+            console.log(
+              ' obligationDetails.reserves: ',
+              obligationDetails.reserves
             )
 
             reserveObligationBorrow = obligationDetails.reserves.find(
@@ -204,10 +249,6 @@ const TableAssets = ({
                   reserveObligationCollateral.collateral.inner.depositedAmount.toString()
                 ) / Math.pow(10, tokenDecimals)
               // collateralWorth = calcCollateralWorth(collateralDeposit, reserveBorrowedLiquidity, reserveAvailableLiquidity, mintedCollateralTotal, tokenPrice);
-              collateralWorth =
-                parseInt(
-                  reserveObligationCollateral.collateral.inner.marketValue.toString()
-                ) / Math.pow(10, 18)
             }
 
             if (reserveObligationBorrow) {
@@ -237,10 +278,7 @@ const TableAssets = ({
 
       return (
         <>
-          <tr
-            onClick={() => setActionsOpen(index)}
-            style={{ cursor: 'pointer' }}
-          >
+          <tr style={{ cursor: 'pointer' }}>
             <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <a
                 href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
@@ -250,21 +288,15 @@ const TableAssets = ({
               >
                 {reserve.liquidity.mint.toString()}
               </a>
-              <span>${tokenPrice}</span>
+              <span>Price: ${tokenPrice}</span>
             </td>
             <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
-                <strong>
-                  {removeTrailingZeros(
-                    (collateralDeposit / liqRatio - borrowedAmount).toFixed(
-                      tokenDecimals
-                    )
-                  )}
-                </strong>
+                <strong>{allowToBorrowTokens}</strong>
               </p>
               <span>
                 <NumberFormat
-                  value={remainingBorrow}
+                  value={parseInt(remainBorrow.toString(), 10) / 10 ** 18}
                   displayType="text"
                   decimalScale={2}
                   fixedDecimalScale
@@ -274,27 +306,29 @@ const TableAssets = ({
               </span>
             </td>
             <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
-              <p style={{ margin: 0 }}>
+              <Button
+                onClick={() => setActionsOpen(index)}
+                style={{ margin: 0 }}
+              >
                 <strong>
                   {removeTrailingZeros(borrowedAmount.toFixed(2))}
                 </strong>
-              </p>
-              <span>
-                <NumberFormat
-                  value={borrowedAmountWorth}
-                  displayType="text"
-                  decimalScale={2}
-                  fixedDecimalScale
-                  thousandSeparator
-                  prefix="$"
-                />
-              </span>
+
+                <div>
+                  <NumberFormat
+                    value={borrowedAmountWorth}
+                    displayType="text"
+                    decimalScale={2}
+                    fixedDecimalScale
+                    thousandSeparator
+                    prefix="$"
+                  />
+                </div>
+              </Button>
             </td>
             <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
-                <strong>
-                  {borrowApy % 1 !== 0 ? borrowApy.toFixed(2) : borrowApy}%
-                </strong>
+                <strong>{borrowApy.toFixed(2)}%</strong>
               </p>
             </td>
           </tr>
@@ -304,6 +338,7 @@ const TableAssets = ({
               open={actionsOpen === index}
               onClose={closeActions}
               reserve={reserve}
+              allowToBorrowTokens={allowToBorrowTokens}
               tokenPrice={tokenPrice}
               reserveObligationCollateral={reserveObligationCollateral}
               token={reserve.liquidity.mint.toString()}

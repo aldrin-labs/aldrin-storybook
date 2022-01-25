@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { RouteComponentProps, Link } from 'react-router-dom'
 
 import Borrow from '@sb/compositions/BorrowLending/Borrow/Borrow'
-import { liqRatio } from '@sb/compositions/BorrowLending/config'
+import { LIQUIDITY_RATIO } from '@sb/compositions/BorrowLending/config'
 import { Navbar, NavbarItem } from '@sb/compositions/BorrowLending/styles'
 
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
@@ -58,8 +58,7 @@ const BorrowLending: FC = ({ match }: BorrowLendingProps) => {
             ((parseInt(reserve.liquidity.marketPrice.toString(), 10) /
               10 ** 18) *
               tokenAmount) /
-            10 ** tokenDecimals /
-            liqRatio
+            LIQUIDITY_RATIO
           totalDepositWorth += tokenWorth
           // totalDepositWorth = parseInt(totalDepositWorth.add(tokenWorth).toString())/Math.pow(10, tokenAccount.account.data.parsed.info.tokenAmount.decimals);
         }

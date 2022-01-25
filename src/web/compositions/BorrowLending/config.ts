@@ -1,1 +1,1 @@
-export const liqRatio = 5;
+export const LIQUIDITY_RATIO = 5

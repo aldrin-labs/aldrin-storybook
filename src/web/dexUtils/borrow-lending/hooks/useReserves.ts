@@ -60,5 +60,5 @@ export const useReserves = () => {
     })
   }
 
-  return useSWR(`borrow-reserves`, fetcher)
+  return useSWR(`borrow-reserves`, fetcher, { refreshInterval: 30_000 })
 }

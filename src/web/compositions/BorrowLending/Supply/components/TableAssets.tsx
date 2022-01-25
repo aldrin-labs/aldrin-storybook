@@ -2,7 +2,7 @@ import { Theme } from '@material-ui/core'
 import BN from 'bn.js'
 import React, { useState } from 'react'
 
-import { liqRatio } from '@sb/compositions/BorrowLending/config'
+import { LIQUIDITY_RATIO } from '@sb/compositions/BorrowLending/config'
 import { ObligationType } from '@sb/compositions/BorrowLending/Markets/types'
 import ActionsPopup from '@sb/compositions/BorrowLending/Supply/components/ActionsPopup'
 import {
@@ -11,27 +11,29 @@ import {
 } from '@sb/compositions/BorrowLending/utils/rates'
 import { toNumberWithDecimals } from '@sb/dexUtils/borrow-lending/U192-converting'
 
+import { Button } from '../../../../components/Button'
+import { Reserve } from '../../../../dexUtils/borrow-lending/types'
 import { TokenInfo } from '../../../../dexUtils/types'
 import { Table } from '../../styles'
 
 type TableAssetsProps = {
   theme: Theme
-  reserves: any
+  reserves: Reserve[]
   obligations: any
   walletAccounts: TokenInfo[]
   handleDepositLiq: (
-    reserve: any,
+    reserve: Reserve,
     amount: number,
     asCollateral: boolean,
     callback: () => void
   ) => void
   handleWithdrawCollateral: (
-    reserve: any,
+    reserve: Reserve,
     amount: number,
     callback: () => void
   ) => void
   handleWithdrawLiquidity: (
-    reserve: any,
+    reserve: Reserve,
     amount: number,
     callback: () => void
   ) => void
@@ -94,6 +96,10 @@ const TableAssets = ({
       let mintedCollateralTotal = 0
       const mintedLiquidityTotal = 0
 
+      const price =
+        parseInt(reserve.liquidity.marketPrice.toString(), 10) / 10 ** 18
+
+      console.log('!!!price: ', price)
       if (walletAccounts && walletAccounts.length > 0) {
         const depositTokenAccount = walletAccounts.find(
           (account) => account.mint === reserve.collateral.mint.toString()
@@ -104,13 +110,17 @@ const TableAssets = ({
         if (depositTokenAccount) {
           console.log('depositTokenAccount: ', depositTokenAccount)
           const depositAmountBN = new BN(depositTokenAccount.amount)
-          const depositWorthBN =
-            reserve.liquidity.marketPrice.mul(depositAmountBN)
+          reserve.liquidity.marketPrice.mul(depositAmountBN)
           depositAmount = depositTokenAccount.amount
-          depositWorth =
-            parseInt(depositWorthBN.toString()) /
-            Math.pow(10, depositTokenAccount.decimals) /
-            liqRatio
+
+          depositWorth = (price * depositTokenAccount.amount) / LIQUIDITY_RATIO
+
+          console.log(
+            'depositWorthBN: ',
+            reserve.liquidity.marketPrice.toString(),
+            depositAmountBN.toString(),
+            depositWorth
+          )
         }
 
         if (tokenAccount) {
@@ -197,10 +207,7 @@ const TableAssets = ({
 
       return (
         <>
-          <tr
-            onClick={() => setActionsOpen(index)}
-            style={{ cursor: 'pointer' }}
-          >
+          <tr style={{ cursor: 'pointer' }}>
             <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <a
                 href={`https://explorer.solana.com/address/${reserve.liquidity.mint.toString()}`}
@@ -210,7 +217,7 @@ const TableAssets = ({
               >
                 {reserve.liquidity.mint.toString()}
               </a>
-              <span>${tokenPrice}</span>
+              <span>Price: ${tokenPrice}</span>
             </td>
             <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
@@ -219,18 +226,21 @@ const TableAssets = ({
               <span>${toNumberWithDecimals(walletBalanceWorth, 2)}</span>
             </td>
             <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
-              <p style={{ margin: 0 }}>
+              <Button
+                onClick={() => setActionsOpen(index)}
+                style={{ margin: 0 }}
+              >
                 <strong>
-                  {depositAmount} ({collateralDeposit})
+                  {depositAmount / LIQUIDITY_RATIO} (
+                  {collateralDeposit / LIQUIDITY_RATIO})
                 </strong>
-              </p>
-              <span>${toNumberWithDecimals(depositWorth, 2)}</span>
+
+                <div>${depositWorth.toFixed(2)}</div>
+              </Button>
             </td>
             <td style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
               <p style={{ margin: 0 }}>
-                <strong>
-                  {depositApy % 1 !== 0 ? depositApy.toFixed(2) : depositApy}%
-                </strong>
+                <strong>{depositApy.toFixed(2)}%</strong>
               </p>
             </td>
           </tr>
