@@ -561,7 +561,7 @@ const SwapPage = ({
                     route: swapRoute,
                   })
 
-                  const executeResult = await execute()
+                  const executeResult = await execute({ wallet })
 
                   console.log('executeResult', executeResult)
 
