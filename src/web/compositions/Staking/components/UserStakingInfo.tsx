@@ -12,7 +12,6 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
-import { endStaking } from '@sb/dexUtils/common/actions/endStaking'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingState } from '@sb/dexUtils/common/types'
@@ -30,11 +29,8 @@ import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingCalcAccounts } from '@sb/dexUtils/staking/useCalcAccounts'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
-import {
-  AsyncRefreshVoidFunction,
-  RefreshFunction,
-  TokenInfo,
-} from '@sb/dexUtils/types'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { TokenInfo } from '@sb/dexUtils/types'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -47,7 +43,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import InfoIcon from '@icons/inform.svg'
 
-import { groupBy } from '../../../utils/collection'
+import { restake } from '../../../dexUtils/staking/actions'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import {
   Asterisks,
@@ -55,6 +51,8 @@ import {
   BalanceWrap,
   ClaimButtonContainer,
   Digit,
+  FormsContainer,
+  RestakeButton,
   RewardsBlock,
   RewardsStats,
   RewardsStatsRow,
@@ -67,6 +65,7 @@ import {
 } from '../styles'
 import { RestakePopup } from './RestakePopup'
 import { StakingForm } from './StakingForm'
+import { UnstakingForm } from './UnstakingForm'
 
 interface UserBalanceProps {
   value: number
@@ -75,11 +74,8 @@ interface UserBalanceProps {
 }
 
 interface StakingInfoProps {
-  allTokenData: TokenInfo[]
   tokenData: TokenInfo | undefined
   stakingPool: StakingPool
-  refreshAllTokenData: RefreshFunction
-  refreshTotalStaked: AsyncRefreshVoidFunction
   currentFarmingState: FarmingState
 }
 
@@ -126,7 +122,7 @@ const resolveUnstakingNotification = (
 }
 
 const resolveClaimNotification = (
-  status: 'success' | 'failed' | 'cancelled' | string
+  status: 'success' | 'failed' | 'rejected' | string
 ) => {
   if (status === 'success') {
     return 'Successfully claimed rewards.'
@@ -134,27 +130,39 @@ const resolveClaimNotification = (
   if (status === 'failed') {
     return 'Claim rewards failed, please try again later or contact us in telegram.'
   }
-  if (status === 'cancelled') {
+  if (status === 'rejected') {
     return 'Claim rewards cancelled.'
   }
 
   return 'Operation timeout, please claim rest rewards in a few seconds.'
 }
 
+const resolveRestakeNotification = (
+  status: 'success' | 'failed' | 'rejected' | string
+) => {
+  if (status === 'success') {
+    return 'Successfully restaked.'
+  }
+  if (status === 'failed') {
+    return 'Restake failed, please try again later or contact us in telegram.'
+  }
+  if (status === 'rejected') {
+    return 'Restake cancelled.'
+  }
+
+  return 'Operation timeout, please claim rest rewards in a few seconds.'
+}
+
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
-  const {
-    tokenData,
-    stakingPool,
-    refreshAllTokenData,
-    refreshTotalStaked,
-    allTokenData,
-    currentFarmingState,
-  } = props
+  const { tokenData, stakingPool, currentFarmingState } = props
 
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
-  const [loading, setLoading] = useState({ stake: false, unstake: false })
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState({
+    stake: false,
+    unstake: false,
+    claim: false,
+  })
 
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
@@ -173,6 +181,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
+  })
+
+  const [_, refreshTotalStaked] = useAccountBalance({
+    publicKey: new PublicKey(stakingPool.stakingVault),
   })
 
   const buyBackAmountWithDecimals =
@@ -196,6 +208,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     farming: stakingPool.farming.filter((state) => !isOpenFarmingState(state)),
   }
 
+  const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
+
   const refreshAll = async () => {
     await Promise.all([
       refreshTotalStaked(),
@@ -204,80 +218,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       refreshAllTokenData(),
       reloadCalcAccounts(),
     ])
-  }
-
-  const start = useCallback(
-    async (amount: number) => {
-      if (!tokenData?.address) {
-        notify({ message: 'Account does not exists' })
-        return false
-      }
-
-      console.log(
-        'tokenData.address',
-        tokenData?.address,
-        connection,
-        wallet,
-        amount,
-        stakingPool
-      )
-
-      setLoading({ stake: true, unstake: false })
-      const result = await startStaking({
-        connection,
-        wallet,
-        amount,
-        userPoolTokenAccount: new PublicKey(tokenData.address),
-        stakingPool,
-        farmingTickets: userFarmingTickets,
-        programAddress: STAKING_PROGRAM_ADDRESS,
-      })
-
-      notify({
-        type: result === 'success' ? 'success' : 'error',
-        message: resolveStakingNotification(result),
-      })
-
-      console.log('stake result: ', result)
-
-      if (result === 'success') {
-        await refreshAll()
-      }
-
-      setLoading({ stake: false, unstake: false })
-      return true
-    },
-    [connection, wallet, tokenData, refreshAll]
-  )
-
-  const end = async () => {
-    if (!tokenData?.address) {
-      notify({ message: 'Create RIN token account please.' })
-      return false
-    }
-
-    setLoading({ stake: false, unstake: true })
-
-    const result = await endStaking({
-      connection,
-      wallet,
-      userPoolTokenAccount: new PublicKey(tokenData.address),
-      farmingTickets: userFarmingTickets,
-      stakingPool,
-      programAddress: STAKING_PROGRAM_ADDRESS,
-    })
-
-    notify({
-      type: result === 'success' ? 'success' : 'error',
-      message: resolveUnstakingNotification(result),
-    })
-
-    if (result === 'success') {
-      await refreshAll()
-    }
-
-    setLoading({ stake: false, unstake: false })
-    return true
   }
 
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
@@ -338,20 +278,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
 
-  const farmingTicketsMap = groupBy(
-    availableToClaimTickets,
-    (ticket) => ticket.pool
-  )
-
   const isClaimDisabled = availableToClaimTotal === 0
 
   useInterval(() => {
     refreshAll()
-  }, 30000)
-
-  const toggleIsLoading = useCallback(() => {
-    setIsLoading(!isLoading)
-  }, [isLoading])
+  }, 30_000)
 
   const claimUnlockDataTimestamp = dayjs.unix(
     currentFarmingState.startTime +
@@ -361,8 +292,73 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     .format('D-MMMM-YYYY')
     .replaceAll('-', ' ')
 
+  const start = useCallback(
+    async (amount: number) => {
+      if (!tokenData?.address) {
+        notify({ message: 'Account does not exists' })
+        return false
+      }
+
+      setLoading((prev) => ({ ...prev, stake: true }))
+      const result = await startStaking({
+        connection,
+        wallet,
+        amount,
+        userPoolTokenAccount: new PublicKey(tokenData.address),
+        stakingPool,
+        farmingTickets: userFarmingTickets,
+        programAddress: STAKING_PROGRAM_ADDRESS,
+      })
+
+      notify({
+        type: result === 'success' ? 'success' : 'error',
+        message: resolveStakingNotification(result),
+      })
+
+      if (result === 'success') {
+        await refreshAll()
+      }
+      setLoading((prev) => ({ ...prev, stake: false }))
+      return true
+    },
+    [connection, wallet, tokenData, refreshAll]
+  )
+
+  const end = async (amount: number) => {
+    if (!tokenData?.address) {
+      notify({ message: 'Create RIN token account please.' })
+      return false
+    }
+
+    setLoading((prev) => ({ ...prev, unstake: true }))
+
+    // startStaking close all tickets and create one with added amount
+    // partial end(amount) = start(-amount)
+    const result = await startStaking({
+      connection,
+      wallet,
+      amount: -amount,
+      userPoolTokenAccount: new PublicKey(tokenData.address),
+      stakingPool,
+      farmingTickets: userFarmingTickets,
+      programAddress: STAKING_PROGRAM_ADDRESS,
+    })
+
+    notify({
+      type: result === 'success' ? 'success' : 'error',
+      message: resolveUnstakingNotification(result),
+    })
+
+    if (result === 'success') {
+      await refreshAll()
+    }
+
+    setLoading((prev) => ({ ...prev, unstake: false }))
+    return true
+  }
+
   const claimRewards = async () => {
-    setIsLoading(true)
+    setLoading((prev) => ({ ...prev, claim: true }))
     const result = await withdrawStaked({
       connection,
       wallet,
@@ -376,8 +372,33 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       type: result === 'success' ? 'success' : 'error',
       message: resolveClaimNotification(result),
     })
-    refreshAll()
-    setIsLoading(false)
+    await refreshAll()
+    setLoading((prev) => ({ ...prev, claim: false }))
+  }
+
+  const doRestake = async () => {
+    if (!tokenData?.address) {
+      notify({ message: 'Create RIN token account please.' })
+      return false
+    }
+
+    setLoading((prev) => ({ ...prev, claim: true }))
+    const result = await restake({
+      wallet,
+      farmingTickets: userFarmingTickets,
+      allTokensData: allTokenData,
+      amount: availableToClaimTotal,
+      userPoolTokenAccount: new PublicKey(tokenData.address),
+      stakingPool,
+      connection,
+    })
+
+    notify({
+      type: result === 'success' ? 'success' : 'error',
+      message: resolveRestakeNotification(result),
+    })
+    await refreshAll()
+    setLoading((prev) => ({ ...prev, claim: false }))
   }
   return (
     <>
@@ -509,8 +530,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                           $variant="primary"
                           $fontSize="xs"
                           $padding="lg"
-                          disabled={isClaimDisabled}
-                          $loading={isLoading}
+                          disabled={isClaimDisabled || loading.claim}
+                          $loading={loading.claim}
                           $borderRadius="xxl"
                           onClick={claimRewards}
                         >
@@ -518,6 +539,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         </Button>
                       </span>
                     </DarkTooltip>
+                    <RestakeButton
+                      $variant="link"
+                      $fontSize="xs"
+                      $padding="lg"
+                      disabled={isClaimDisabled || loading.claim}
+                      $loading={loading.claim}
+                      $borderRadius="xxl"
+                      onClick={doRestake}
+                    >
+                      Restake
+                    </RestakeButton>
                   </ClaimButtonContainer>
                 </RewardsStats>
               </BlockContent>
@@ -525,15 +557,16 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           </Cell>
         </Row>
 
-        <StakingForm
-          isUnstakeLocked={isUnstakeLocked}
-          unlockAvailableDate={unlockAvailableDate}
-          tokenData={tokenData}
-          totalStaked={totalStaked}
-          start={start}
-          end={end}
-          loading={loading}
-        />
+        <FormsContainer>
+          <StakingForm tokenData={tokenData} start={start} loading={loading} />
+          <UnstakingForm
+            isUnstakeLocked={isUnstakeLocked}
+            unlockAvailableDate={unlockAvailableDate}
+            totalStaked={totalStaked}
+            end={end}
+            loading={loading}
+          />
+        </FormsContainer>
       </BlockContent>
       <RestakePopup
         open={isRestakePopupOpen}
@@ -544,25 +577,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 }
 
 const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
-  const {
-    tokenData,
-    stakingPool,
-    refreshAllTokenData,
-    refreshTotalStaked,
-    allTokenData,
-    currentFarmingState,
-  } = props
+  const { tokenData, stakingPool, currentFarmingState } = props
   return (
     <Block>
       <StretchedBlock direction="column">
         <ConnectWalletWrapper>
           <UserStakingInfoContent
-            allTokenData={allTokenData}
             stakingPool={stakingPool}
             tokenData={tokenData}
             currentFarmingState={currentFarmingState}
-            refreshAllTokenData={refreshAllTokenData}
-            refreshTotalStaked={refreshTotalStaked}
           />
         </ConnectWalletWrapper>
       </StretchedBlock>

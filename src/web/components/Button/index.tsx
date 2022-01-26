@@ -90,8 +90,11 @@ export const Button = styled.button<ButtonProps>`
   ${({ $loading: loading }: ButtonProps) =>
     loading
       ? `
-    color: transparent;
+
     position: relative;
+    &, &:disabled {
+      color: transparent;
+    }
     &:before {
       animation: 5s button-rotate-loading infinite linear;
       content: "";
