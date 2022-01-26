@@ -1,44 +1,39 @@
-import React, { useEffect, ReactNode } from 'react'
+import React, { useEffect } from 'react'
+
 import {
   ModalContainer,
   ModalBody,
   ModalTitle,
   ModalTitleContainer,
-  CloseIcon,
   ModalContent,
-  ModalBackdropStyle,
+  ModalSubtitle,
+  CloseButton,
 } from './styles'
-import CloseIconImg from '@icons/closeIcon.svg'
+import { ModalCommon, ModalProps } from './types'
 
-interface ModalCommon {
-  onClose: () => void
-  title?: ReactNode
+export const ModalTitleBlock: React.FC<ModalCommon> = (props) => {
+  const { title, subTitle, onClose } = props
+  return (
+    <ModalTitleContainer>
+      <div>
+        {title && <ModalTitle>{title}</ModalTitle>}
+        {subTitle && <ModalSubtitle>{subTitle}</ModalSubtitle>}
+      </div>
+      <CloseButton
+        $padding="lg"
+        $variant="secondary"
+        onClick={() => {
+          onClose()
+        }}
+      >
+        Esc
+      </CloseButton>
+    </ModalTitleContainer>
+  )
 }
-
-interface ModalProps extends ModalCommon {
-  open: boolean
-  backdrop?: ModalBackdropStyle
-}
-
-export const ModalTitleBlock: React.FC<ModalCommon> = (props) =>
-  <ModalTitleContainer>
-    <ModalTitle>{props.title}</ModalTitle>
-    <CloseIcon
-      src={CloseIconImg}
-      onClick={() => {
-        props.onClose()
-      }}
-    />
-  </ModalTitleContainer>
 
 export const Modal: React.FC<ModalProps> = (props) => {
-  const {
-    open,
-    onClose,
-    children,
-    title,
-    backdrop = 'blur',
-  } = props
+  const { open, onClose, children, title, subTitle, backdrop = 'blur' } = props
 
   if (!open) {
     return null
@@ -60,10 +55,16 @@ export const Modal: React.FC<ModalProps> = (props) => {
     <ModalContainer backdrop={backdrop} onClick={() => onClose()}>
       <ModalBody onClick={(e) => e.stopPropagation()}>
         <ModalContent>
-          {title && <ModalTitleBlock title={title} onClose={onClose} />}
+          {(title || subTitle) && (
+            <ModalTitleBlock
+              subTitle={subTitle}
+              title={title}
+              onClose={onClose}
+            />
+          )}
           {children}
         </ModalContent>
       </ModalBody>
-    </ModalContainer >
+    </ModalContainer>
   )
 }
