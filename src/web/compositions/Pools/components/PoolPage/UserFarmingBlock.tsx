@@ -229,9 +229,9 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const estimatedTime = estimateTime(timeRemainMax)
 
-  // Have pool ending soon
-  const prolongationEnabled = !!(pool.farming || []).find(
-    (fs) => fs.tokensTotal - fs.tokensUnlocked <= fs.tokensPerPeriod
+  // Pool does not have farmings which ending soon
+  const prolongationEnabled = !(pool.farming || []).find(
+    (fs) => fs.tokensTotal - fs.tokensUnlocked > fs.tokensPerPeriod
   )
 
   const unstakeTooltipText = unstakeLocked
