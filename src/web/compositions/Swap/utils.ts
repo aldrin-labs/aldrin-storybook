@@ -1,7 +1,7 @@
 import { Jupiter } from '@jup-ag/core'
 import { PublicKey } from '@solana/web3.js'
 
-const AMMS_TO_USE = ['Serum']
+const AMMS_TO_USE = ['Aldrin', 'Serum']
 
 export const getSwapRoute = async ({
   jupiter,
