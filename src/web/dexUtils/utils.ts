@@ -2,6 +2,7 @@ import { PublicKey, PublicKeyInitData } from '@solana/web3.js'
 import { useEffect, useRef, useState } from 'react'
 
 import { useLocalStorageState } from '@core/react'
+import { RIN_MINT } from '@core/solana'
 import { MASTER_BUILD } from '@core/utils/config'
 
 export function isValidPublicKey(key: PublicKeyInitData) {
@@ -9,14 +10,14 @@ export function isValidPublicKey(key: PublicKeyInitData) {
     return false
   }
   try {
-    new PublicKey(key)
+    const _a = new PublicKey(key)
     return true
   } catch {
     return false
   }
 }
 
-export const RIN_MINT: string = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
+export { RIN_MINT }
 
 export const RINProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'

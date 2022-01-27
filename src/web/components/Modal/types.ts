@@ -17,4 +17,5 @@ export interface ModalCommon {
 export interface ModalProps extends ModalCommon {
   open: boolean
   backdrop?: ModalBackdropStyle
+  className?: string
 }

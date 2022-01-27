@@ -92,4 +92,16 @@ export const THEME = {
       `,
     },
   },
+  block: {
+    style: css`
+      border-radius: 12px;
+      box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);
+      margin: 8px;
+    `,
+  },
+
+  table: {
+    borderColor: COLORS.borderDark,
+    hoverBackground: COLORS.tableHover,
+  },
 }

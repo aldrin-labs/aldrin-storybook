@@ -33,7 +33,15 @@ export const ModalTitleBlock: React.FC<ModalCommon> = (props) => {
 }
 
 export const Modal: React.FC<ModalProps> = (props) => {
-  const { open, onClose, children, title, subTitle, backdrop = 'blur' } = props
+  const {
+    open,
+    onClose,
+    children,
+    title,
+    subTitle,
+    backdrop = 'blur',
+    className = '',
+  } = props
 
   if (!open) {
     return null
@@ -52,7 +60,11 @@ export const Modal: React.FC<ModalProps> = (props) => {
   }, [])
 
   return (
-    <ModalContainer backdrop={backdrop} onClick={() => onClose()}>
+    <ModalContainer
+      className={className}
+      backdrop={backdrop}
+      onClick={() => onClose()}
+    >
       <ModalBody onClick={(e) => e.stopPropagation()}>
         <ModalContent>
           {(title || subTitle) && (
@@ -68,3 +80,5 @@ export const Modal: React.FC<ModalProps> = (props) => {
     </ModalContainer>
   )
 }
+
+export { ModalBody }

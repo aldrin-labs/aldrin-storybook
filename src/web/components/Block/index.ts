@@ -1,4 +1,4 @@
-import { COLORS } from '@variables/variables'
+import { THEME, COLORS } from '@variables/variables'
 import styled from 'styled-components'
 
 export interface BlockProps {
@@ -8,11 +8,9 @@ export interface BlockProps {
 }
 
 export const Block = styled.div<BlockProps>`
-  box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);
+  ${THEME.block.style}
   background: ${(props: BlockProps) =>
     props.inner ? COLORS.background : COLORS.blockBackground};
-  border-radius: 12px;
-  margin: 8px;
   height: 100%;
   position: relative;
   ${({ $backgroundImage: backgroundImage }: BlockProps) =>

@@ -1,22 +1,25 @@
-import { Metrics } from '@core/utils/metrics'
 import {
   Market,
   MARKETS,
   OpenOrders,
   Orderbook,
   TokenInstructions,
-  TOKEN_MINTS,
 } from '@project-serum/serum'
-import { OrderWithMarket } from '@sb/dexUtils/send'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
+
+import { OrderWithMarket } from '@sb/dexUtils/send'
+
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
 import {
-  AWESOME_TOKENS,
+  ALL_TOKENS_MINTS,
   useAwesomeMarkets,
+  getTokenNameByMintAddress,
 } from '@core/utils/awesomeMarkets/serum'
+import { Metrics } from '@core/utils/metrics'
+
 import {
   getProviderNameFromUrl,
   useAccountData,
@@ -32,13 +35,8 @@ import {
   TOKEN_PROGRAM_ID,
 } from './token/token'
 import { getTokenAccountInfo } from './tokens'
-import { getUniqueListBy, useLocalStorageState } from './utils'
+import { useLocalStorageState } from './utils'
 import { useWallet } from './wallet'
-
-export const ALL_TOKENS_MINTS = getUniqueListBy(
-  [...TOKEN_MINTS, ...AWESOME_TOKENS],
-  'name'
-)
 
 console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
 
@@ -1260,16 +1258,4 @@ export const getTokenMintAddressByName = (name: string): string | null => {
   return ALL_TOKENS_MINTS_MAP[name]?.toString()
 }
 
-export const getTokenNameByMintAddress = (address?: string): string => {
-  if (!address) {
-    return '--'
-  }
-
-  const tokenName = ALL_TOKENS_MINTS_MAP[address]
-
-  if (tokenName) {
-    return tokenName
-  }
-
-  return `${address.slice(0, 3)}...${address.slice(address.length - 3)}`
-}
+export { getTokenNameByMintAddress }

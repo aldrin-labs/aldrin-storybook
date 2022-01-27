@@ -1,5 +1,6 @@
+import { FONTS, COLORS, TRANSITION, THEME } from '@variables/variables'
 import styled from 'styled-components'
-import { FONTS, COLORS, TRANSITION } from '@variables/variables'
+
 import { FlexBlock, Body } from '../Layout'
 
 export const TableBody = styled(Body)`
@@ -15,8 +16,8 @@ export const Table = styled.table`
 
 export const Thead = styled.thead``
 export const Tr = styled.tr`
-  border-top: 1px solid ${COLORS.borderDark};
-  border-bottom: 1px solid ${COLORS.borderDark};
+  border-top: 1px solid ${THEME.table.borderColor};
+  border-bottom: 1px solid ${THEME.table.borderColor};
   background: rgba(0, 0, 0, 0);
   transition: ${TRANSITION};
 `
@@ -31,8 +32,8 @@ export const Th = styled.th`
   font-size: 0.8em;
   font-weight: normal;
   text-align: left;
-  border-bottom: 1px solid ${COLORS.borderDark};
-  border-top: 1px solid ${COLORS.borderDark};
+  border-bottom: 1px solid ${THEME.table.borderColor};
+  border-top: 1px solid ${THEME.table.borderColor};
   padding: 4px 8px;
 
   &.sortable {
@@ -43,7 +44,7 @@ export const Th = styled.th`
 
 export const Tbody = styled.tbody`
   ${Tr}:not(.no-hover):hover {
-    background: ${COLORS.tableHover};
+    background: ${THEME.table.hoverBackground};
   }
 `
 
