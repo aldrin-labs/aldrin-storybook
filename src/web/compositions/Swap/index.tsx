@@ -4,15 +4,13 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Loader } from '@sb/components/Loader/Loader'
 import SvgIcon from '@sb/components/SvgIcon'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
   costOfAddingToken,
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
   ReloadTimer,
   TimerButton,
@@ -22,7 +20,6 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import {
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
@@ -31,22 +28,18 @@ import {
 } from '@sb/dexUtils/pools/swap/index'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import {
-  stripByAmount,
-  stripByAmountAndFormat,
-} from '@core/utils/chartPageUtils'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 import { removeDecimals } from '@core/utils/helpers'
 
 import Gear from '@icons/gear.svg'
 import Inform from '@icons/inform.svg'
-import ScalesIcon from '@icons/scales.svg'
 import Arrows from '@icons/switchArrows.svg'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
@@ -59,20 +52,24 @@ import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { Selector } from './components/Selector/Selector'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
-import { getLiquidityProviderFee } from './config'
-
-// TODO: imports
 import { Card, SwapPageContainer } from './styles'
 import { useJupiterSwap } from './useJupiterSwap'
+import {
+  getEstimatedPrice,
+  getFeeFromSwapRoute,
+  getSwapButtonText,
+} from './utils'
 
 const SwapPage = ({
   theme,
   publicKey,
   getPoolsInfoQuery,
+  getDexTokensPricesQuery,
 }: {
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const { wallet } = useWallet()
   const tokenInfos = useTokenInfos()
@@ -81,6 +78,11 @@ const SwapPage = ({
 
   const allPools = getPoolsInfoQuery.getPoolsInfo
   const nativeSOLTokenData = allTokensData[0]
+
+  const dexTokensPricesMap = getDexTokensPricesQuery.getDexTokensPrices.reduce(
+    (acc, el) => acc.set(el.symbol, el.price),
+    new Map()
+  )
 
   const [isStableSwapTabActive, setIsStableSwapTabActive] =
     useState<boolean>(false)
@@ -149,14 +151,6 @@ const SwapPage = ({
     isStableSwapTabActive,
   })
 
-  const selectedPool = getSelectedPoolForSwap({
-    pools,
-    baseTokenMintAddress,
-    quoteTokenMintAddress,
-  })
-
-  const isSelectedPoolStable = checkIsPoolStable(selectedPool)
-
   const [slippage, setSlippage] = useState<number>(0.3)
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
@@ -175,6 +169,9 @@ const SwapPage = ({
 
   const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
   const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
+
+  const basePrice = dexTokensPricesMap.get(baseSymbol) || 0
+  const quotePrice = dexTokensPricesMap.get(quoteSymbol) || 0
 
   const { decimals: baseTokenDecimals } = tokenInfos.get(
     baseTokenMintAddress
@@ -217,6 +214,7 @@ const SwapPage = ({
     route: swapRoute,
     inputAmount,
     outputAmount,
+    loading: isLoadingSwapRoute,
     setInputsAmounts,
     refresh: refreshAmountsWithSwapRoute,
     reverseTokenAmounts,
@@ -226,13 +224,12 @@ const SwapPage = ({
     slippage,
   })
 
-  const { inAmount, outAmount, outAmountWithSlippage, priceImpactPct } =
-    swapRoute || {
-      inAmount: 0,
-      outAmount: 0,
-      outAmountWithSlippage: 0,
-      priceImpactPct: 0,
-    }
+  const { outAmountWithSlippage, priceImpactPct } = swapRoute || {
+    inAmount: 0,
+    outAmount: 0,
+    outAmountWithSlippage: 0,
+    priceImpactPct: 0,
+  }
 
   const outAmountWithSlippageWithoutDecimals = removeDecimals(
     outAmountWithSlippage,
@@ -259,9 +256,8 @@ const SwapPage = ({
   ])
 
   const isButtonDisabled =
+    isLoadingSwapRoute ||
     isTokenABalanceInsufficient ||
-    !selectedPool ||
-    !selectedPool.supply ||
     +inputAmount === 0 ||
     +outputAmount === 0 ||
     isSwapInProgress
@@ -270,6 +266,8 @@ const SwapPage = ({
     refreshAllTokensData()
     await refreshAmountsWithSwapRoute()
   }
+
+  console.log('route', swapRoute)
 
   return (
     <SwapPageContainer direction="column" height="100%" wrap="nowrap">
@@ -333,18 +331,12 @@ const SwapPage = ({
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={
-                +inputAmount === 0 &&
-                  +outputAmount !== 0 &&
-                  isSelectedPoolStable
-                  ? 'Insufficient Balance'
-                  : '0.00'
-              }
+              placeholder="0.00"
               theme={theme}
               directionFrom
               value={+inputAmount || +outputAmount === 0 ? inputAmount : ''}
               disabled={!baseTokenMintAddress || !quoteTokenMintAddress}
-              onChange={(v) => setInputsAmounts(v, 'input')}
+              onChange={setInputsAmounts}
               symbol={baseSymbol}
               maxBalance={maxBaseAmount}
               openSelectCoinPopup={() => {
@@ -361,25 +353,12 @@ const SwapPage = ({
               height="2rem"
               onClick={reverseTokens}
             />
-            {isSelectedPoolStable ? (
-              <DarkTooltip title="This pool uses the stable curve, which provides better rates for swapping stablecoins.">
-                <div>
-                  <SvgIcon src={ScalesIcon} width="2rem" height="2rem" />
-                </div>
-              </DarkTooltip>
-            ) : null}
           </RowContainer>
           <RowContainer margin="1rem 0 2rem 0">
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
-              placeholder={
-                +outputAmount === 0 &&
-                  +inputAmount !== 0 &&
-                  isSelectedPoolStable
-                  ? 'Insufficient Balance'
-                  : '0.00'
-              }
+              placeholder="0.00"
               theme={theme}
               disabled={
                 true ||
@@ -388,7 +367,6 @@ const SwapPage = ({
                 (!baseTokenMintAddress && !quoteTokenMintAddress)
               }
               value={+outputAmount || +inputAmount === 0 ? outputAmount : ''}
-              onChange={(v) => setInputsAmounts(v, 'output')}
               symbol={quoteSymbol}
               maxBalance={maxQuoteAmount}
               openSelectCoinPopup={() => {
@@ -398,25 +376,30 @@ const SwapPage = ({
             />
           </RowContainer>
 
-          {selectedPool && (
-            <RowContainer margin="1rem 2rem" justify="space-between">
-              <Text color="#93A0B2">Est. Price:</Text>
-              <Text
-                fontSize="1.5rem"
-                color="#53DF11"
-                fontFamily="Avenir Next Demi"
-              >
-                1{' '}
-                <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
-                  {baseSymbol}{' '}
-                </Text>
-                = {stripByAmount(outAmount / inAmount)}{' '}
-                <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
-                  {quoteSymbol}{' '}
-                </Text>
+          <RowContainer margin="1rem 2rem" justify="space-between">
+            <Text color="#93A0B2">Est. Price:</Text>
+            <Text
+              fontSize="1.5rem"
+              color="#53DF11"
+              fontFamily="Avenir Next Demi"
+            >
+              1{' '}
+              <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
+                {baseSymbol}{' '}
               </Text>
-            </RowContainer>
-          )}
+              ={' '}
+              {stripByAmount(
+                getEstimatedPrice({
+                  route: swapRoute,
+                  inputPrice: basePrice,
+                  outputPrice: quotePrice,
+                })
+              )}{' '}
+              <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
+                {quoteSymbol}{' '}
+              </Text>
+            </Text>
+          </RowContainer>
 
           <RowContainer>
             {!publicKey ? (
@@ -433,7 +416,7 @@ const SwapPage = ({
                 btnColor="#fff"
                 backgroundColor={theme.palette.blue.serum}
                 textTransform="none"
-                margin="4rem 0 0 0"
+                margin="2rem 0 0 0"
                 transition="all .4s ease-out"
                 style={{ whiteSpace: 'nowrap' }}
               >
@@ -454,74 +437,64 @@ const SwapPage = ({
                     : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
                 }
                 textTransform="none"
-                margin="1rem 0 0 0"
+                margin="2rem 0 0 0"
                 transition="all .4s ease-out"
                 disabled={isButtonDisabled}
                 onClick={async () => {
-                  if (!selectedPool || !jupiter || !swapRoute) return
+                  if (!jupiter || !swapRoute) return
 
                   setIsSwapInProgress(true)
-
-                  console.log('baseTokenDecimals', {
-                    baseTokenDecimals,
-                    quoteTokenDecimals,
-                  })
 
                   const { execute } = await jupiter.exchange({
                     route: swapRoute,
                   })
 
-                  const result = await execute({ wallet })
+                  try {
+                    const result = await execute({ wallet })
 
-                  console.log('result', result)
+                    console.log('result', result)
 
-                  if (result.error) {
-                    notify({
-                      type: 'error',
-                      message: result.error.includes('cancel')
-                        ? 'Swap cancelled'
-                        : 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.',
-                    })
-                  } else {
-                    notify({
-                      type: 'success',
-                      message: 'Swap executed successfully.',
-                    })
+                    if (result.error) {
+                      notify({
+                        type: 'error',
+                        message: result.error.message.includes('cancelled')
+                          ? 'Transaction cancelled'
+                          : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
+                      })
+                    } else {
+                      notify({
+                        type: 'success',
+                        message: 'Swap executed successfully.',
+                      })
+                    }
+
+                    refreshAllTokensData()
+                    await refreshAmountsWithSwapRoute()
+
+                    // reset fields
+                    if (result === 'success') {
+                      await setInputsAmounts('')
+                    }
+
+                    // remove loader
+                    setIsSwapInProgress(false)
+                  } catch (e) {
+                    console.log('error', e)
                   }
-
-                  // refresh data
-                  await sleep(2 * 1000)
-
-                  refreshAllTokensData()
-                  await refreshAmountsWithSwapRoute()
-
-                  // reset fields
-                  if (result === 'success') {
-                    // setBaseAmount('')
-                    // setQuoteAmount('')
-                  }
-
-                  // remove loader
-                  setIsSwapInProgress(false)
                 }}
               >
-                {isSwapInProgress ? (
-                  <Loader />
-                ) : isTokenABalanceInsufficient ? (
-                  `Insufficient ${isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
-                  } Balance`
-                ) : !selectedPool ? (
-                  'No pools available'
-                ) : needEnterAmount ? (
-                  'Enter amount'
-                ) : (
-                  'Swap'
-                )}
+                {getSwapButtonText({
+                  baseSymbol,
+                  isSwapRouteExists: !!swapRoute,
+                  needEnterAmount,
+                  isTokenABalanceInsufficient,
+                  isLoadingSwapRoute,
+                })}
               </BtnCustom>
             )}
           </RowContainer>
         </BlockTemplate>
-        {selectedPool && inputAmount && outputAmount && (
+        {inputAmount && outputAmount && (
           <Card
             style={{ padding: '2rem' }}
             theme={theme}
@@ -541,20 +514,18 @@ const SwapPage = ({
                 <Text fontFamily="Avenir Next Bold">{quoteSymbol}</Text>
               </Row>
             </RowContainer>
-            {!isSelectedPoolStable && (
-              <RowContainer margin="0.5rem 0" justify="space-between">
-                <Text color="#93A0B2">Price Impact</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily="Avenir Next Bold"
-                    color="#53DF11"
-                  >
-                    {stripByAmount(priceImpactPct)}%
-                  </Text>
-                </Row>
-              </RowContainer>
-            )}
+            <RowContainer margin="0.5rem 0" justify="space-between">
+              <Text color="#93A0B2">Price Impact</Text>
+              <Row style={{ flexWrap: 'nowrap' }}>
+                <Text
+                  style={{ padding: '0 0.5rem 0 0.5rem' }}
+                  fontFamily="Avenir Next Bold"
+                  color="#53DF11"
+                >
+                  {stripByAmount(priceImpactPct * 100)}%
+                </Text>
+              </Row>
+            </RowContainer>
             <RowContainer margin="0.5rem 0" justify="space-between">
               <Text color="#93A0B2">Liquidity provider fee</Text>
               <Row style={{ flexWrap: 'nowrap' }}>
@@ -562,11 +533,14 @@ const SwapPage = ({
                   style={{ padding: '0 0.5rem 0 0.5rem' }}
                   fontFamily="Avenir Next Bold"
                 >
-                  {stripByAmountAndFormat(
-                    +inputAmount *
-                    (getLiquidityProviderFee(selectedPool.curveType) / 100)
+                  $
+                  {stripByAmount(
+                    getFeeFromSwapRoute({
+                      route: swapRoute,
+                      tokenInfos,
+                      pricesMap: dexTokensPricesMap,
+                    })
                   )}{' '}
-                  {baseSymbol}
                 </Text>
               </Row>
             </RowContainer>
@@ -647,5 +621,12 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
+  }),
+  queryRendererHoc({
+    query: getDexTokensPrices,
+    name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
   })
 )(SwapPage)

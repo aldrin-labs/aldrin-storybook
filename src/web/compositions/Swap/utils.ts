@@ -1,5 +1,8 @@
-import { Jupiter } from '@jup-ag/core'
+import { Jupiter, RouteInfo } from '@jup-ag/core'
+import { TokenInfo } from '@solana/spl-token-registry'
 import { PublicKey } from '@solana/web3.js'
+
+import { removeDecimals } from '@core/utils/helpers'
 
 const AMMS_TO_USE = ['Aldrin', 'Serum']
 
@@ -51,4 +54,97 @@ export const getSwapRoute = async ({
     console.log('error', error)
     throw error
   }
+}
+
+export const getSwapButtonText = ({
+  isTokenABalanceInsufficient,
+  isLoadingSwapRoute,
+  baseSymbol,
+  isSwapRouteExists,
+  needEnterAmount,
+}: {
+  isTokenABalanceInsufficient: boolean
+  isLoadingSwapRoute: boolean
+  baseSymbol: string
+  isSwapRouteExists: boolean
+  needEnterAmount: boolean
+}) => {
+  if (needEnterAmount) {
+    return 'Enter amount'
+  }
+  if (isLoadingSwapRoute) {
+    return 'Searching the best route...'
+  }
+
+  if (isTokenABalanceInsufficient) {
+    return `Insufficient ${baseSymbol} Balance`
+  }
+
+  if (!isSwapRouteExists) {
+    return 'No route for swap'
+  }
+
+  return 'Swap'
+}
+
+export const getEstimatedPrice = ({
+  route,
+  inputPrice,
+  outputPrice,
+}: {
+  route?: RouteInfo | null
+  inputPrice: number
+  outputPrice: number
+}) => {
+  const { inAmount, outAmount } = route || {
+    inAmount: 0,
+    outAmount: 0,
+    outAmountWithSlippage: 0,
+    priceImpactPct: 0,
+  }
+
+  if (inAmount && outAmount) {
+    return outAmount / inAmount
+  }
+
+  if (inputPrice && outputPrice) {
+    return inputPrice / outputPrice
+  }
+
+  return 0
+}
+
+export const getFeeFromSwapRoute = ({
+  route,
+  tokenInfos,
+  pricesMap,
+}: {
+  route?: RouteInfo | null
+  tokenInfos: Map<string, TokenInfo>
+  pricesMap: Map<string, number>
+}) => {
+  if (!route) {
+    return 0
+  }
+
+  return route.marketInfos.reduce((totalFeeUSD, marketInfo) => {
+    const { label } = marketInfo.marketMeta.amm
+
+    if (label === 'Serum') {
+      // charge extra fees
+    }
+
+    const { mint, amount } = marketInfo.lpFee
+    const { decimals, symbol } = tokenInfos.get(mint) || {
+      decimals: 0,
+      symbol: '',
+    }
+
+    const price = pricesMap.get(symbol) || 0
+
+    const amountWithoutDecimals = removeDecimals(amount, decimals)
+    const amountUSD = amountWithoutDecimals * price
+
+    return totalFeeUSD + amountUSD
+  }, 0)
 }

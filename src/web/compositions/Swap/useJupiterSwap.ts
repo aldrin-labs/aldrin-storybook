@@ -18,17 +18,14 @@ export type UseJupiterSwapRouteProps = {
   inputAmount?: number
 }
 
-export type InputField = 'input' | 'output'
-
 export type UseJupiterSwapRouteResponse = {
   jupiter: Jupiter | null
   route: RouteInfo | null
+  loading: boolean
   inputAmount: number | string
   outputAmount: number | string
-  lastUsedInput: InputField
   setInputsAmounts: (
     newOutputAmount: number | string,
-    enteredField: InputField,
     inputMintFromArgs?: string,
     outputMintFromArgs?: string
   ) => void
@@ -49,37 +46,19 @@ export const useJupiterSwap = ({
   const [inputAmount, setInputAmount] = useState<string | number>('')
   const [outputAmount, setOutputAmount] = useState<string | number>('')
 
-  const [lastUsedInput, setLastUsedInput] = useState<InputField>('input')
-
-  // separate to another hook
+  const [loading, setLoading] = useState(false)
 
   const setInputsAmounts = async (
     newAmount: string | number,
-    enteredField: InputField,
     inputMintFromArgs?: string,
     outputMintFromArgs?: string
   ) => {
-    console.log('start setInputsAmounts', {
-      newAmount,
-      lastUsedInput,
-    })
-    const isEneteredInputField = enteredField === 'input'
-
-    const inputMintForRoute = isEneteredInputField
-      ? inputMintFromArgs ?? inputMint
-      : outputMintFromArgs ?? outputMint
-
-    const outputMintForRoute = isEneteredInputField
-      ? outputMintFromArgs ?? outputMint
-      : inputMintFromArgs ?? inputMint
+    const inputMintForRoute = inputMintFromArgs ?? inputMint
+    const outputMintForRoute = outputMintFromArgs ?? outputMint
 
     if (jupiter && inputMintForRoute && outputMintForRoute) {
-      setLastUsedInput(enteredField)
-      if (isEneteredInputField) {
-        setInputAmount(newAmount)
-      } else {
-        setOutputAmount(newAmount)
-      }
+      setLoading(true)
+      setInputAmount(newAmount)
 
       const { decimals: inputMintDecimalsForRoute } = tokenInfos.get(
         inputMintForRoute
@@ -102,12 +81,6 @@ export const useJupiterSwap = ({
         inputMintDecimals: inputMintDecimalsForRoute,
       })
 
-      console.log({
-        swapRoute,
-        isEneteredInputField,
-        newAmount,
-      })
-
       if (swapRoute) {
         const swapAmountOut = removeDecimals(
           swapRoute.outAmount,
@@ -116,66 +89,49 @@ export const useJupiterSwap = ({
 
         // do not set 0, leave 0 placeholder
         if (swapAmountOut === 0) {
-          if (isEneteredInputField) {
-            setOutputAmount('')
-          } else {
-            setInputAmount('')
-          }
+          setOutputAmount('')
+
           return
         }
 
-        console.log('end setInputsAmounts, set', {
-          swapAmountOut,
-          newAmount,
-          lastUsedInput,
-        })
-
         const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
         setRoute(swapRoute)
-        if (isEneteredInputField) {
-          setOutputAmount(strippedSwapAmountOut)
-        } else {
-          setInputAmount(strippedSwapAmountOut)
-        }
+        setOutputAmount(strippedSwapAmountOut)
+        setLoading(false)
       }
     }
   }
 
+  useEffect(() => {
+    setInputsAmounts(inputAmount, inputMint, outputMint)
+  }, [inputMint, outputMint])
+
   const refreshArgsRef = useRef({
-    lastUsedInput,
     inputAmount,
     outputAmount,
   })
 
   useEffect(() => {
     refreshArgsRef.current = {
-      lastUsedInput,
       inputAmount,
       outputAmount,
     }
-  }, [lastUsedInput, inputAmount, outputAmount])
+  }, [inputAmount, outputAmount])
 
   const refresh = async () => {
-    if (refreshArgsRef.current.lastUsedInput === 'input') {
-      await setInputsAmounts(refreshArgsRef.current.inputAmount, 'input')
-    } else {
-      await setInputsAmounts(refreshArgsRef.current.outputAmount, 'output')
-    }
+    await setInputsAmounts(refreshArgsRef.current.inputAmount)
   }
 
   const reverseTokenAmounts = async () => {
-    // const amountToUse = lastUsedInput === 'input' ? inputAmount : outputAmount
-    // const reversedInputField = lastUsedInput === 'input' ? 'output' : 'input'
-
-    await setInputsAmounts(outputAmount, 'input', outputMint, inputMint)
+    await setInputsAmounts(outputAmount, outputMint, inputMint)
   }
 
   return {
     jupiter,
     route,
+    loading,
     inputAmount,
     outputAmount,
-    lastUsedInput,
     refresh,
     reverseTokenAmounts,
     setInputsAmounts,
