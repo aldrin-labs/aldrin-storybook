@@ -267,7 +267,7 @@ const SwapPage = ({
     await refreshAmountsWithSwapRoute()
   }
 
-  console.log('route', swapRoute)
+  console.log('route', swapRoute, swapRoute?.getDepositAndFee())
 
   return (
     <SwapPageContainer direction="column" height="100%" wrap="nowrap">
@@ -336,7 +336,10 @@ const SwapPage = ({
               directionFrom
               value={+inputAmount || +outputAmount === 0 ? inputAmount : ''}
               disabled={!baseTokenMintAddress || !quoteTokenMintAddress}
-              onChange={setInputsAmounts}
+              onChange={(v) => {
+                // setInputAmount(v)
+                setInputsAmounts(v)
+              }}
               symbol={baseSymbol}
               maxBalance={maxBaseAmount}
               openSelectCoinPopup={() => {

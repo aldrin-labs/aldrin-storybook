@@ -1,7 +1,7 @@
+import { Paper } from '@material-ui/core'
+import { COLORS } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
-
-import { Paper } from '@material-ui/core'
 
 export const BoldHeader = styled.h2`
   font-family: Avenir Next Bold;
@@ -10,7 +10,8 @@ export const BoldHeader = styled.h2`
   color: #f5f5fb;
 `
 export const StyledInput = styled.div`
-  background: #222429;
+  background: ${(props) =>
+    props.disabled ? COLORS.darkBackground : '#222429'};
   border: 0.1rem solid #3a475c;
   border-radius: 1.5rem;
   color: #fbf2f2;
@@ -44,7 +45,8 @@ export const Line = styled.div`
 `
 export const InvisibleInput = styled.input`
   width: 100%;
-  background: #222429;
+  background: ${(props) =>
+    props.disabled ? COLORS.darkBackground : '#222429'};
   color: #fbf2f2;
   font-size: 2rem;
   outline: none;
@@ -67,7 +69,9 @@ export const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   border-radius: 1.6rem;
 `
 
-export const ClaimRewardsStyledPaper = styled(({ ...props }) => <Paper {...props} />)`
+export const ClaimRewardsStyledPaper = styled(({ ...props }) => (
+  <Paper {...props} />
+))`
   height: auto;
   padding: 2rem 4rem;
   width: 80rem;

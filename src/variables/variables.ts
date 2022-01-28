@@ -31,6 +31,7 @@ export const COLORS = {
   warningDark: 'rgb(132, 97, 56)',
   disabledGray: '#93A0B2',
   lightRed: '#f2abb1',
+  darkBackground: '#17181A',
 }
 
 export const BORDER_RADIUS = {

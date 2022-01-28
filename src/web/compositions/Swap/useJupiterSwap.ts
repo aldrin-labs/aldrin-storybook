@@ -48,11 +48,18 @@ export const useJupiterSwap = ({
 
   const [loading, setLoading] = useState(false)
 
+  const lastEnteredAmountTimeRef = useRef({
+    timestamp: Date.now(),
+  })
+
   const setInputsAmounts = async (
     newAmount: string | number,
     inputMintFromArgs?: string,
     outputMintFromArgs?: string
   ) => {
+    const startTime = Date.now()
+    console.log('startTime', startTime)
+
     const inputMintForRoute = inputMintFromArgs ?? inputMint
     const outputMintForRoute = outputMintFromArgs ?? outputMint
 
@@ -82,6 +89,12 @@ export const useJupiterSwap = ({
       })
 
       if (swapRoute) {
+        if (lastEnteredAmountTimeRef.current.timestamp > startTime) {
+          return
+        }
+
+        lastEnteredAmountTimeRef.current.timestamp = startTime
+
         const swapAmountOut = removeDecimals(
           swapRoute.outAmount,
           outputMintDecimalsForRoute
