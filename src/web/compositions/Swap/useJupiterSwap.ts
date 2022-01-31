@@ -1,4 +1,4 @@
-import { Jupiter, RouteInfo } from '@jup-ag/core'
+import { Jupiter, RouteInfo, TransactionFeeInfo } from '@jup-ag/core'
 import { PublicKey } from '@solana/web3.js'
 import { useEffect, useRef, useState } from 'react'
 
@@ -24,6 +24,7 @@ export type UseJupiterSwapRouteResponse = {
   loading: boolean
   inputAmount: number | string
   outputAmount: number | string
+  depositAndFee: TransactionFeeInfo | undefined | null
   setInputsAmounts: (
     newOutputAmount: number | string,
     inputMintFromArgs?: string,
@@ -42,6 +43,9 @@ export const useJupiterSwap = ({
   const tokenInfos = useTokenInfos()
 
   const [route, setRoute] = useState<RouteInfo | null>(null)
+  const [depositAndFee, setDepositAndFee] = useState<
+    TransactionFeeInfo | undefined | null
+  >(null)
 
   const [inputAmount, setInputAmount] = useState<string | number>('')
   const [outputAmount, setOutputAmount] = useState<string | number>('')
@@ -58,7 +62,6 @@ export const useJupiterSwap = ({
     outputMintFromArgs?: string
   ) => {
     const startTime = Date.now()
-    console.log('startTime', startTime)
 
     const inputMintForRoute = inputMintFromArgs ?? inputMint
     const outputMintForRoute = outputMintFromArgs ?? outputMint
@@ -108,7 +111,11 @@ export const useJupiterSwap = ({
         }
 
         const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
+
+        const routeDepositAndFee = await swapRoute.getDepositAndFee()
+
         setRoute(swapRoute)
+        setDepositAndFee(routeDepositAndFee)
         setOutputAmount(strippedSwapAmountOut)
         setLoading(false)
       }
@@ -145,6 +152,7 @@ export const useJupiterSwap = ({
     loading,
     inputAmount,
     outputAmount,
+    depositAndFee,
     refresh,
     reverseTokenAmounts,
     setInputsAmounts,

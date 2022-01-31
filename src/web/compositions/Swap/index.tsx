@@ -215,6 +215,7 @@ const SwapPage = ({
     inputAmount,
     outputAmount,
     loading: isLoadingSwapRoute,
+    depositAndFee,
     setInputsAmounts,
     refresh: refreshAmountsWithSwapRoute,
     reverseTokenAmounts,
@@ -266,8 +267,6 @@ const SwapPage = ({
     refreshAllTokensData()
     await refreshAmountsWithSwapRoute()
   }
-
-  console.log('route', swapRoute, swapRoute?.getDepositAndFee())
 
   return (
     <SwapPageContainer direction="column" height="100%" wrap="nowrap">
