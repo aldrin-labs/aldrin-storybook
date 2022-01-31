@@ -128,28 +128,29 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
     }))
     .sort((a, b) => a.mint.localeCompare(b.mint))
 
+  const [initialValues] = useState<CreatePoolFormType>({
+    price: '',
+    baseToken: tokens[0],
+    quoteToken: findQuoteToken(tokens),
+    stableCurve: false,
+    lockInitialLiquidity: false,
+    initialLiquidityLockPeriod: '',
+    firstDeposit: {
+      baseTokenAmount: '',
+      quoteTokenAmount: '',
+    },
+    farmingEnabled: true,
+    farming: {
+      token: tokens[0],
+      vestingEnabled: false,
+      tokenAmount: '',
+      farmingPeriod: '14',
+      vestingPeriod: '7',
+    },
+  })
   const form = useFormik<CreatePoolFormType>({
     validateOnMount: true,
-    initialValues: {
-      price: '',
-      baseToken: tokens[0],
-      quoteToken: findQuoteToken(tokens),
-      stableCurve: false,
-      lockInitialLiquidity: false,
-      initialLiquidityLockPeriod: '',
-      firstDeposit: {
-        baseTokenAmount: '',
-        quoteTokenAmount: '',
-      },
-      farmingEnabled: true,
-      farming: {
-        token: tokens[0],
-        vestingEnabled: false,
-        tokenAmount: '',
-        farmingPeriod: '14',
-        vestingPeriod: '7',
-      },
-    },
+    initialValues,
     onSubmit: async (values) => {
       if (!values.baseToken.account) {
         throw new Error('No base token selected!')
