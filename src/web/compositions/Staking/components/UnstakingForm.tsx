@@ -30,7 +30,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
   const now = Date.now() / 1000
 
   const form = useFormik({
-    // validateOnMount: true,
+    validateOnMount: true,
     initialValues: {
       amount: '0',
     },
@@ -43,6 +43,10 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
         return { amount: 'Enter value' }
       }
       const amount = parseFloat(values.amount)
+
+      if (amount <= 0) {
+        return { amount: 'Too small' }
+      }
 
       if (amount > totalStaked) {
         return { amount: 'Too big' }
