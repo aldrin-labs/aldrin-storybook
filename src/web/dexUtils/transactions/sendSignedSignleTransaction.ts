@@ -6,6 +6,7 @@ import {
 } from './types'
 import { waitTransactionConfirmation } from './waitTransactionConfirmation'
 
+const INSUFFICIENT_BALANCE_LOG = 'insufficient lamports'
 export const sendSignedSignleTransaction = async (
   params: SendSignedTransactionParams
 ): AsyncSendSignedTransactionResult => {
@@ -48,6 +49,25 @@ export const sendSignedSignleTransaction = async (
     timeout,
     commitment,
   })
+
+  // TODO: uncomment that
+  // if (confirmationResult === 'failed') {
+  //   const transactionDetails = await connection.getParsedConfirmedTransaction(
+  //     txId
+  //   )
+
+  //   const hasInsufficientSolError = transactionDetails?.meta?.logMessages?.find(
+  //     (msg) => msg.toLowerCase().includes(INSUFFICIENT_BALANCE_LOG)
+  //   )
+  //   if (hasInsufficientSolError) {
+  //     notify({
+  //       message: 'Not enough SOL',
+  //       description:
+  //         'Please make sure you have SOL to complete the transaction',
+  //       type: 'error',
+  //     })
+  //   }
+  // }
 
   if (confirmationResult === 'success') {
     const smessage = Array.isArray(successMessage)
