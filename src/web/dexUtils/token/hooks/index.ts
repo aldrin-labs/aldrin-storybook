@@ -1,2 +1,2 @@
 export * from './useAssociatedTokenAccount'
-export * from './useUserTokenAccounts'
+export * from '@core/solana/react/hooks'

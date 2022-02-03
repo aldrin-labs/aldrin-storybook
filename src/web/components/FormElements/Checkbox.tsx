@@ -16,6 +16,7 @@ interface CheckboxProps extends CheckboxBase {
 
 export const Checkbox: React.FC<CheckboxProps> = (props) => {
   const { value, onChange, label, color } = props
+
   return (
     <CheckboxContainer onClick={() => onChange(!value)}>
       <CheckMark checked={value} />

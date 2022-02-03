@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
+import { useUserTokenAccounts } from '.'
 import { TokenInfo } from '../../types'
 import { useWallet } from '../../wallet'
 import { findTokenAccount } from '../utils/findTokenAccount'
-import { useUserTokenAccounts } from './useUserTokenAccounts'
 
 export const useAssociatedTokenAccount = (
   mint: string

@@ -1,4 +1,4 @@
-import { COLORS, FONT_SIZES, FONTS } from '@variables/variables'
+import { COLORS, FONT_SIZES, FONTS, THEME } from '@variables/variables'
 import styled from 'styled-components'
 
 type Weight = 100 | 200 | 400 | 500 | 600 | 700
@@ -16,7 +16,8 @@ export const Text = styled.p<TextProps>`
   font-family: ${FONTS.main};
   font-size: ${(props: TextProps) => FONT_SIZES[props.size || 'md']};
   line-height: ${(props: TextProps) => props.lineHeight || '150%'};
-  color: ${(props: TextProps) => COLORS[props.color || 'white']};
+  color: ${(props: TextProps) =>
+    props.color ? COLORS[props.color] : THEME.label.color};
   font-weight: ${(props: TextProps) => props.weight || 400};
   letter-spacing: -0.52px;
   margin: ${(props) => props.margin || '10px 0 0 0'};

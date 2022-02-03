@@ -104,4 +104,8 @@ export const THEME = {
     borderColor: COLORS.borderDark,
     hoverBackground: COLORS.tableHover,
   },
+
+  label: {
+    color: COLORS.white,
+  },
 }
