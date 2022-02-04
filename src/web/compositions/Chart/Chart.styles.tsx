@@ -1,10 +1,12 @@
-import React from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
-import { CardTitle } from '@sb/components/ChartCardHeader/styles'
 import { Card, Grid, Button, Theme } from '@material-ui/core'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
-import StakeBtn from '@icons/stakeBtn.png'
+import React from 'react'
 import { Link } from 'react-router-dom'
+import styled, { createGlobalStyle } from 'styled-components'
+
+import { CardTitle } from '@sb/components/ChartCardHeader/styles'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
+
+import StakeBtn from '@icons/stakeBtn.png'
 
 export const MainContainer = styled.div`
   height: 100%;
@@ -311,10 +313,10 @@ export const TradingTerminalContainer = styled(
     props.hideTradeHistory
       ? '17%'
       : props.hideOrderbook
-      ? '17%'
-      : props.hideDepthChart
-      ? '35%'
-      : '32%'};
+        ? '17%'
+        : props.hideDepthChart
+          ? '35%'
+          : '32%'};
   overflow: hidden;
 
   flex-direction: column;
@@ -325,9 +327,9 @@ export const TradingTerminalContainer = styled(
   @media (max-width: 600px) {
     width: 100%;
     display: ${(props) =>
-      props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
+    props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
     height: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? '35%' : '100%'};
+    props.terminalViewMode === 'mobileChart' ? '35%' : '100%'};
   }
 `
 
@@ -354,21 +356,21 @@ export const TopChartsContainer = styled(
     props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   @media screen and (max-width: 1440px) {
     height: ${(props) =>
-      props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
+    props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   }
 
   @media screen and (max-width: 1140px) {
     height: ${(props) =>
-      props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
+    props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
   }
 
   @media screen and (max-width: 600px) {
     flex-basis: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? '100%' : '50%'};
+    props.terminalViewMode === 'mobileChart' ? '100%' : '50%'};
     height: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? '100%' : '60%'};
+    props.terminalViewMode === 'mobileChart' ? '100%' : '60%'};
     display: ${(props) =>
-      props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
+    props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
   }
 `
 
@@ -391,10 +393,10 @@ export const ChartsContainer = styled(
     props.hideTradeHistory
       ? '83%'
       : props.hideOrderbook
-      ? '83%'
-      : props.hideDepthChart
-      ? '65%'
-      : '68%'};
+        ? '83%'
+        : props.hideDepthChart
+          ? '65%'
+          : '68%'};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -404,7 +406,7 @@ export const ChartsContainer = styled(
 
   @media (max-width: 600px) {
     display: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
+    props.terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
     width: 100%;
     height: ${(props) => props.terminalViewMode === 'mobileChart' && '65%'};
   }
@@ -445,8 +447,8 @@ export const MobileTradingTabelContainer = styled(
     props.isDefaultTerminalViewMode
       ? '40%'
       : props.isTablesExpanded
-      ? '100%'
-      : '0%'};
+        ? '100%'
+        : '0%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
@@ -483,7 +485,7 @@ export const Container = styled(Grid)`
   font-family: Avenir Next Medium;
   background-color: ${(props) => props.theme.palette.dark.background};
 
-  height: calc(100vh - 12rem);
+  height: calc(100% - 6rem);
 
   @media (max-width: 600px) {
     height: calc((var(--vh, 1vh) * 100) - 32rem);
@@ -559,9 +561,9 @@ export const ChartAndOrderbookContainer = styled(Grid)`
   height: 100%;
   @media (max-width: 600px) {
     dispay: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? 'flex' : 'auto'};
+    props.terminalViewMode === 'mobileChart' ? 'flex' : 'auto'};
     flex-direction: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
+    props.terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
   }
 `
 export const RoundLink = styled(Link)`
