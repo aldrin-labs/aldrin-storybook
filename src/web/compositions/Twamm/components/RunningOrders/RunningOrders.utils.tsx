@@ -7,6 +7,7 @@ import { StyledTitle } from '@sb/components/TradingTable/TradingTable.styles'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { StopOrderPopup } from '@sb/compositions/Twamm/components/StopOrderPopup/StopOrderPopup'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
@@ -22,8 +23,7 @@ import { stripByAmount } from '@core/utils/chartPageUtils'
 import { estimatedTime } from '@core/utils/dateUtils'
 
 import { MIN_ORDER_DURATION_TO_CANCEL } from '../../PlaceOrder/config'
-import {BlueButton, RedButton} from '../../styles'
-import {StopOrderPopup} from "@sb/compositions/Twamm/components/StopOrderPopup/StopOrderPopup";
+import { BlueButton, RedButton } from '../../styles'
 
 export const runningOrdersColumnNames = [
   { label: 'Pair/Side', id: 'pairSide' },
@@ -37,6 +37,8 @@ export const runningOrdersColumnNames = [
   { label: 'Actions', id: 'actions' },
 ]
 
+const ORDER_FILL_THRESHOLD = 0.99 // mark 99% filled orders as completed
+
 export const combineRunningOrdersTable = ({
   wallet,
   connection,
@@ -47,7 +49,7 @@ export const combineRunningOrdersTable = ({
   wallet: WalletAdapter
   connection: Connection
   getDexTokensPricesQuery: { getDexTokensPricesQuery: DexTokensPrices[] }
-  getTokenPriceByName: (name: string) => number,
+  getTokenPriceByName: (name: string) => number
   rinTokenPrice: number
 }) => {
   const [runningOrders, refreshRunningOrders] = useRunningOrders({
@@ -56,7 +58,7 @@ export const combineRunningOrdersTable = ({
   })
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
 
-  const rinWallet = allTokensData.find(token => token.symbol === 'RIN');
+  const rinWallet = allTokensData.find((token) => token.symbol === 'RIN')
 
   const [stopOrderPopupOpen, setStopOrderPopupOpen] = useState(true)
 
@@ -84,7 +86,6 @@ export const combineRunningOrdersTable = ({
       ?.flat()
       .filter((order) => order?.signer === wallet?.publicKey?.toString()) || []
 
-
   console.log('runningOrdersArray', runningOrdersArray)
 
   return runningOrdersArray
@@ -107,7 +108,7 @@ export const combineRunningOrdersTable = ({
           userBaseTokenAccount,
           userQuoteTokenAccount,
           order: runningOrder,
-          side
+          side,
         })
 
         // reload data
@@ -159,15 +160,14 @@ export const combineRunningOrdersTable = ({
 
       const quote = getTokenNameByMintAddress(quoteTokenMint) || quoteTokenMint
 
-      const baseTokenPrice = getTokenPriceByName(base);
+      const baseTokenPrice = getTokenPriceByName(base)
 
-      const orderAmount = runningOrder.amount /
-        10 ** baseMintDecimals;
+      const orderAmount = runningOrder.amount / 10 ** baseMintDecimals
 
-      const cancelFeeCalc = (orderAmount / 100) * cancellingFee;
-      const cancelFeeRin = cancelFeeCalc/rinTokenPrice;
+      const cancelFeeCalc = (orderAmount / 100) * cancellingFee
+      const cancelFeeRin = cancelFeeCalc / rinTokenPrice
 
-      const hasRinForFee = rinWallet?.amount >= cancelFeeRin;
+      const hasRinForFee = rinWallet?.amount >= cancelFeeRin
 
       const remainingAmount =
         (runningOrder.amount - +runningOrder?.amountFilled) /
@@ -195,7 +195,8 @@ export const combineRunningOrdersTable = ({
         quoteTokenMint
       )
 
-      const isOrderFilled = runningOrder.amount === runningOrder.amountFilled
+      const isOrderFilled =
+        runningOrder.amount * ORDER_FILL_THRESHOLD <= runningOrder.amountFilled
 
       // tmin time to pass < current - start
       const isPassedEnoughTimeForCancle =
@@ -298,22 +299,24 @@ export const combineRunningOrdersTable = ({
                 }}
                 onStop={handleCloseOrder}
               />
-              {remainingTime > 0 ?
+              {remainingTime > 0 ? (
                 <RedButton
                   disabled={!isPassedEnoughTimeForCancle}
                   style={{ cursor: 'pointer' }}
-                  onClick={() => {setStopOrderPopupOpen(index)}}
+                  onClick={() => {
+                    setStopOrderPopupOpen(index)
+                  }}
                 >
                   Stop
                 </RedButton>
-                :
+              ) : (
                 <BlueButton
                   style={{ cursor: 'pointer' }}
                   onClick={handleCloseOrder}
                 >
                   Claim
                 </BlueButton>
-              }
+              )}
             </>
           ),
           contentToSort: '',
