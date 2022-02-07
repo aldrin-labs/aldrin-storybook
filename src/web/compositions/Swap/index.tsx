@@ -31,19 +31,21 @@ import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { stripByAmount } from '@core/utils/chartPageUtils'
+import {
+  getNumberOfDecimalsFromNumber,
+  getNumberOfIntegersFromNumber,
+  stripByAmount,
+} from '@core/utils/chartPageUtils'
 import { removeDecimals } from '@core/utils/helpers'
 
-import Gear from '@icons/gear.svg'
 import Inform from '@icons/inform.svg'
 import Arrows from '@icons/switchArrows.svg'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/styles'
 import { BlockTemplate } from '../Pools/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { Cards } from './components/Cards/Cards'
@@ -52,7 +54,8 @@ import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { Selector } from './components/Selector/Selector'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
-import { Card, SwapPageContainer } from './styles'
+import { SLIPPAGE_STEP } from './config'
+import { Card, SwapPageContainer, ValueButton, ValueInput } from './styles'
 import { useJupiterSwap } from './useJupiterSwap'
 import {
   getEstimatedPrice,
@@ -79,7 +82,11 @@ const SwapPage = ({
   const allPools = getPoolsInfoQuery.getPoolsInfo
   const nativeSOLTokenData = allTokensData[0]
 
-  const dexTokensPricesMap = getDexTokensPricesQuery.getDexTokensPrices.reduce(
+  const { getDexTokensPrices = [] } = getDexTokensPricesQuery || {
+    getDexTokensPrices: [],
+  }
+
+  const dexTokensPricesMap = getDexTokensPrices.reduce(
     (acc, el) => acc.set(el.symbol, el.price),
     new Map()
   )
@@ -101,16 +108,16 @@ const SwapPage = ({
     const baseTokenMint = baseFromRedirect
       ? getTokenMintAddressByName(baseFromRedirect) || ''
       : getTokenMintAddressByName(
-        getDefaultBaseToken(isStableSwapFromRedirect)
-      ) || ''
+          getDefaultBaseToken(isStableSwapFromRedirect)
+        ) || ''
 
     setBaseTokenMintAddress(baseTokenMint)
 
     const quoteTokenMint = quoteFromRedirect
       ? getTokenMintAddressByName(quoteFromRedirect) || ''
       : getTokenMintAddressByName(
-        getDefaultQuoteToken(isStableSwapFromRedirect)
-      ) || ''
+          getDefaultQuoteToken(isStableSwapFromRedirect)
+        ) || ''
 
     setQuoteTokenMintAddress(quoteTokenMint)
 
@@ -271,7 +278,7 @@ const SwapPage = ({
   return (
     <SwapPageContainer direction="column" height="100%" wrap="nowrap">
       <>
-        <Row width="50rem" justify="flex-start" margin="2rem 1rem">
+        {/* <Row width="50rem" justify="flex-start" margin="2rem 1rem">
           <TableModeButton
             isActive={!isStableSwapTabActive}
             onClick={() => setIsStableSwapTabActive(false)}
@@ -286,7 +293,7 @@ const SwapPage = ({
           >
             Stable Swap
           </TableModeButton>
-        </Row>
+        </Row> */}
         <Row width="50rem" justify="flex-start" margin="0 0 2rem 0">
           <Selector
             data={pools}
@@ -299,16 +306,14 @@ const SwapPage = ({
           width="50rem"
           style={{ padding: '2rem', zIndex: '10' }}
         >
-          <RowContainer margin="1rem 0" justify="space-between">
-            <Text>
-              Slippage Tolerance: <strong>{slippage}%</strong>
-            </Text>
+          <RowContainer margin="0 0 1rem 0" justify="space-between">
             <Row>
               <ReloadTimer
                 duration={15}
                 initialRemainingTime={15}
                 margin="0 1.5rem 0 0"
                 callback={refreshAll}
+                showTime
               />
               {baseTokenMintAddress && quoteTokenMintAddress && (
                 <TimerButton
@@ -318,15 +323,73 @@ const SwapPage = ({
                   <SvgIcon src={Inform} width="60%" height="60%" />
                 </TimerButton>
               )}
-              <TimerButton
-                margin="0"
+            </Row>
+            <Row>
+              <Text padding="0 0.8rem 0 0">Slippage Tolerance:</Text>
+              <Row style={{ position: 'relative' }}>
+                <ValueInput
+                  onChange={(e) => {
+                    if (
+                      /^-?\d*\.?\d*$/.test(e.target.value) &&
+                      getNumberOfIntegersFromNumber(e.target.value) <= 2 &&
+                      getNumberOfDecimalsFromNumber(e.target.value) <= 2
+                    ) {
+                      setSlippage(e.target.value)
+                    }
+                  }}
+                  onBlur={() => {
+                    if (+slippage <= 0) {
+                      setSlippage(0.3)
+                    }
+                  }}
+                  value={slippage}
+                  placeholder="1.00"
+                  theme={theme}
+                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    fontFamily: 'Avenir Next Medium',
+                    color: '#fbf2f2',
+                    fontSize: '1.3rem',
+                    right: '1.5rem',
+                  }}
+                >
+                  %
+                </div>
+              </Row>
+              <ValueButton
+                theme={theme}
+                onClick={() => {
+                  const newSlippage = +(slippage - SLIPPAGE_STEP).toFixed(2)
+
+                  if (newSlippage > 0) {
+                    setSlippage(newSlippage)
+                  }
+                }}
+              >
+                -
+              </ValueButton>
+              <ValueButton
+                theme={theme}
+                onClick={() => {
+                  const newSlippage = +(slippage + SLIPPAGE_STEP).toFixed(2)
+
+                  setSlippage(newSlippage)
+                }}
+              >
+                +
+              </ValueButton>
+
+              {/* <TimerButton
+                margin="0 1rem 0 0"
                 onClick={() => openTransactionSettingsPopup(true)}
               >
                 <SvgIcon src={Gear} width="60%" height="60%" />
-              </TimerButton>
+              </TimerButton> */}
             </Row>
           </RowContainer>
-          <RowContainer margin="2rem 0 1rem 0">
+          <RowContainer margin="1rem 0">
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
@@ -625,7 +688,7 @@ export default compose(
     fetchPolicy: 'cache-and-network',
   }),
   queryRendererHoc({
-    query: getDexTokensPrices,
+    query: getDexTokensPricesRequest,
     name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import styled from 'styled-components'
 
 export const TimerButton = styled.div`
   width: 3rem;
@@ -8,11 +8,10 @@ export const TimerButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #17181A;
+  background: #17181a;
   border-radius: 0.8rem;
   cursor: pointer;
-  margin: ${(props: { margin?: string }) =>
-    props.margin || '0 3rem 0 0'};
+  margin: ${(props: { margin?: string }) => props.margin || '0 3rem 0 0'};
 `
 
 export const ReloadTimer = ({
@@ -24,6 +23,7 @@ export const ReloadTimer = ({
   callback,
   margin = '0 3rem 0 0',
   rerenderOnClick = true,
+  showTime = false,
 }: {
   size?: number
   duration?: number
@@ -33,6 +33,7 @@ export const ReloadTimer = ({
   callback: () => void
   margin?: string
   rerenderOnClick?: boolean
+  showTime?: boolean
 }) => {
   const [rerenderCounter, rerender] = useState(0)
 
@@ -50,7 +51,7 @@ export const ReloadTimer = ({
         key={rerenderCounter}
         size={size}
         strokeWidth={3}
-        isPlaying={true}
+        isPlaying
         duration={duration}
         initialRemainingTime={initialRemainingTime}
         colors={color}
@@ -60,7 +61,15 @@ export const ReloadTimer = ({
           rerender(rerenderCounter + 1)
           return [true, 0]
         }}
-      />
+      >
+        {({ remainingTime }) =>
+          showTime ? (
+            <span style={{ color: '#fafafa', fontFamily: 'Avenir Next' }}>
+              {remainingTime % 60}
+            </span>
+          ) : null
+        }
+      </CountdownCircleTimer>
     </TimerButton>
   )
 }
