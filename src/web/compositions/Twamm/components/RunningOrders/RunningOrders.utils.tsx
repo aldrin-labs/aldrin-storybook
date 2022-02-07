@@ -37,7 +37,7 @@ export const runningOrdersColumnNames = [
   { label: 'Actions', id: 'actions' },
 ]
 
-const ORDER_FILL_THRESHOLD = 0.99 // mark 99% filled orders as completed
+const ORDER_FILL_THRESHOLD = 99 // mark 99% filled orders as completed
 
 export const combineRunningOrdersTable = ({
   wallet,
@@ -195,9 +195,6 @@ export const combineRunningOrdersTable = ({
         quoteTokenMint
       )
 
-      const isOrderFilled =
-        runningOrder.amount * ORDER_FILL_THRESHOLD <= runningOrder.amountFilled
-
       // tmin time to pass < current - start
       const isPassedEnoughTimeForCancle =
         currentTime - runningOrder.startTime >
@@ -236,7 +233,9 @@ export const combineRunningOrdersTable = ({
         filled: {
           render: (
             <StyledTitle color={COLORS.success} fontSize="1.5rem">
-              {isOrderFilled ? 'Filled' : `${stripByAmount(filledPers)} %`}
+              {filledPers >= ORDER_FILL_THRESHOLD
+                ? 'Filled'
+                : `${stripByAmount(filledPers)} %`}
             </StyledTitle>
           ),
           contentToSort: '',
