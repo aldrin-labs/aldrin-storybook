@@ -51,20 +51,26 @@ export const sendSignedSignleTransaction = async (
   })
 
   if (confirmationResult === 'failed') {
-    const transactionDetails = await connection.getParsedConfirmedTransaction(
-      txId
-    )
+    try {
+      const transactionDetails = await connection.getParsedConfirmedTransaction(
+        txId
+      )
 
-    const hasInsufficientSolError = transactionDetails?.meta?.logMessages?.find(
-      (msg) => msg.toLowerCase().includes(INSUFFICIENT_BALANCE_LOG)
-    )
-    if (hasInsufficientSolError) {
-      notify({
-        message: 'Not enough SOL',
-        description:
-          'Please make sure you have SOL to complete the transaction',
-        type: 'error',
-      })
+      const hasInsufficientSolError =
+        transactionDetails?.meta?.logMessages?.find((msg) =>
+          msg.toLowerCase().includes(INSUFFICIENT_BALANCE_LOG)
+        )
+      if (hasInsufficientSolError) {
+        notify({
+          message: 'Not enough SOL',
+          description:
+            'Please make sure you have SOL to complete the transaction',
+          type: 'error',
+        })
+      }
+    } catch (e) {
+      console.warn('Unable to parse transaction logs: ', e)
+      return 'failed'
     }
   }
 
