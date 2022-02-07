@@ -20,7 +20,7 @@ import { getTicketsAvailableToClose } from '../getTicketsAvailableToClose'
 import { endStakingInstructions } from './endStaking'
 import { StartStakingParams } from './types'
 
-export const startStaking = async (params: StartStakingParams) => {
+export const startStakingInstructions = async (params: StartStakingParams) => {
   const {
     wallet,
     connection,
@@ -132,6 +132,20 @@ export const startStaking = async (params: StartStakingParams) => {
       signers.push(farmingCalc)
     })
   )
+
+  return {
+    instructions,
+    signers,
+  }
+}
+export const startStaking = async (params: StartStakingParams) => {
+  const { wallet, connection } = params
+  const creatorPk = wallet.publicKey
+  if (!creatorPk) {
+    throw new Error('no wallet!')
+  }
+
+  const { instructions, signers } = await startStakingInstructions(params)
   try {
     const transactionsAndSigners = buildTransactions(
       instructions.map((instruction) => ({ instruction })),

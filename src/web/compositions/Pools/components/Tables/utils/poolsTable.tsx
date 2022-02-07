@@ -245,8 +245,7 @@ export const preparePoolTableCell = (params: {
                       {availableToClaim
                         .map(
                           (atc) =>
-                            `${stripByAmountAndFormat(atc.amount, 4)} ${
-                              atc.name
+                            `${stripByAmountAndFormat(atc.amount, 4)} ${atc.name
                             }`
                         )
                         .join(' + ')}
@@ -277,7 +276,7 @@ export const mergeColumns = (columns: DataHeadColumn[]) => [
     key: 'apr',
     title: 'APR',
     sortable: true,
-    hint: 'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming rewards.',
+    hint: 'Estimation for growth of your deposit over a year, projected based on trading activity in the past 7d as well as farming rewards.',
   },
   {
     key: 'farming',
