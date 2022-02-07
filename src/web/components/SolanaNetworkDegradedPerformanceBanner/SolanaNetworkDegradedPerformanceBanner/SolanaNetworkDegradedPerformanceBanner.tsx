@@ -22,7 +22,7 @@ const Container = styled(WideContent)`
 export const SolanaNetworkDegradedPerformanceBanner = () => {
   const { data: TPS } = useSolanaTPS()
 
-  if (TPS > MAX_TPS_TO_SHOW_BANNER) {
+  if (typeof TPS !== 'number' || TPS > MAX_TPS_TO_SHOW_BANNER) {
     return null
   }
 
