@@ -29,8 +29,6 @@ export class PhantomWalletAdapter
   extends EventEmitter
   implements WalletAdapter
 {
-  private _pk = new PublicKey('GHaYkEmgP2SCh5EFK58Hj9ptVoUtNgm9kNbu54XxAQoK')
-
   constructor() {
     super()
     this.connect = this.connect.bind(this)
@@ -70,8 +68,7 @@ export class PhantomWalletAdapter
   }
 
   get publicKey() {
-    return this._pk
-    // return this._provider?.publicKey
+    return this._provider?.publicKey
   }
 
   async signTransaction(transaction: Transaction) {
