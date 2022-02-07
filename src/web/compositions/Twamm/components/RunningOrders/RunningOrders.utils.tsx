@@ -236,7 +236,7 @@ export const combineRunningOrdersTable = ({
         filled: {
           render: (
             <StyledTitle color={COLORS.success} fontSize="1.5rem">
-              {stripByAmount(filledPers)} %
+              {isOrderFilled ? 'Filled' : `${stripByAmount(filledPers)} %`}
             </StyledTitle>
           ),
           contentToSort: '',
