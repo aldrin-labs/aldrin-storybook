@@ -1,17 +1,16 @@
-import styled from 'styled-components'
+import { COLORS, SIZE, BREAKPOINTS, BORDER_RADIUS } from '@variables/variables'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
+import styled from 'styled-components'
 // TODO: remove dat
 
-import { COLORS, SIZE, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import { Button } from '../Button'
 import { Text } from '../Typography'
 
 export const HeaderWrap = styled.header`
   display: flex;
   flex-direction: row;
-  height: 48px;
-  background: ${COLORS.bodyBackground};
-  border-bottom: 1px solid ${COLORS.border};
+  height: 60px;
+  background: ${COLORS.mainBlack};
   padding: 0 ${SIZE.defaultPadding};
 `
 
@@ -22,10 +21,6 @@ export const LogoBlock = styled.div`
   padding-right: ${SIZE.defaultPadding};
   margin: 8px 0;
   flex: 0 1 auto;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    border-right: 1px solid ${COLORS.border};
-  }
 `
 
 export const StakeButton = styled(Button)`
@@ -47,22 +42,23 @@ interface LinkProps extends ShowHideProps {
 
 export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
-  font-size: 0.7em;
+  font-size: 0.8em;
   padding: 8px 12px;
   margin: 0px 4px;
   text-align: center;
-  border-radius: ${BORDER_RADIUS.md};
-  color: ${COLORS.hint};
-  background: ${COLORS.bodyBackground};
+  color: ${COLORS.primaryGray};
+  background: transparent;
   transition: all ease-in 0.2s;
   border: 0;
   cursor: pointer;
   white-space: nowrap;
+  font-weight: 500;
 
   &:hover,
   &.selected {
-    color: ${COLORS.navLinkActive};
-    background: ${COLORS.navLinkActiveBg};
+    color: ${COLORS.activeWhite};
+    border-bottom: 1px solid ${COLORS.activeWhite};
+    transition: all ease-in 0.2s;
   }
 
   ${(props: LinkProps) =>
@@ -106,7 +102,6 @@ export const LinksBlock = styled.div`
   flex-direction: row;
   align-items: center;
   padding: 0 5px;
-  border-right: 1px solid ${COLORS.border};
   margin: 5px 0;
 
   @media (min-width: ${BREAKPOINTS.lg}) {
@@ -142,14 +137,10 @@ export const WalletContainer = styled.div`
   flex-direction: row;
   align-items: center;
   overflow: hidden;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    border-left: 1px solid ${COLORS.border};
-  }
 `
 
 export const LogoLink = styled(Link)`
-  height: 100%;
+  // height: 100%;
   margin-right: ${SIZE.defaultPadding};
   display: block;
 `
@@ -180,7 +171,7 @@ export const DropdownWrap = styled.div<ShowHideProps>`
     display: flex;
   }
 
-  ${(props: ShowHideProps) =>
+  /*${(props: ShowHideProps) =>
     props.show
       ? `
     display: none;
@@ -198,7 +189,7 @@ export const DropdownWrap = styled.div<ShowHideProps>`
       display: none;
     }
   `
-      : ''}
+      : ''}*/
 `
 
 export const DropdownInner = styled.div`
@@ -216,25 +207,39 @@ export const DropdownInner = styled.div`
 `
 
 export const WalletButton = styled(Button)`
-  padding: 4px 20px;
+  width: 100%;
+  padding: 10px 20px;
   font-size: 0.75em;
-
-  @media (min-width: ${BREAKPOINTS.lg}) {
-    width: 238px;
-  }
+  background-color: ${COLORS.bluePrimary};
+  border: none;
+  font-weight: 600;
 `
 
-export const WalletData = styled.div`
+export const WalletDataContainer = styled.div`
+  width: 100%;
+  height: 
+  border-radius: ${BORDER_RADIUS.md};
   display: flex;
   flex-direction: row;
-  width: calc(100% - 48px);
   align-items: center;
 
   @media (min-width: ${BREAKPOINTS.md}) {
     flex-direction: column;
     align-items: flex-start;
   }
+
+    button {
+      display: none;
+    }
+
+  &:hover {
+    button {
+        display: block;
+      }
+  }
 `
+
+export const WalletData = styled.div``
 
 export const WalletName = styled(Text)`
   font-size: 0.6em;
@@ -258,11 +263,10 @@ export const WalletAddress = styled(WalletName)`
 `
 
 export const WalletDisconnectButton = styled(Button)`
-  font-size: 0.6em;
-  padding: 0;
-  color: ${COLORS.error};
-  background: none;
-  border: 0;
-  margin-left: auto;
-  text-align: right;
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 0.75em;
+  background-color: ${COLORS.newOrange};
+  border: none;
+  font-weight: 600;
 `

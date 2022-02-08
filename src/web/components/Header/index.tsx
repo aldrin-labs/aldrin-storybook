@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
+
+import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
+import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
+
 import AldrinLogo from '@icons/Aldrin.svg'
-import StakeBtn from '@icons/stakeBtn.png'
 
 // TODO: Refactor popup
-import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
-import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 
 import { Body } from '../Layout'
+import { DropDown } from './Dropdown'
 import {
   HeaderWrap,
   LogoLink,
@@ -16,12 +18,8 @@ import {
   Logo,
   NavLink,
   MainLinksWrap,
-  LinksBlock,
   MainLinksBlock,
-  StakeButton,
 } from './styles'
-
-import { DropDown } from './Dropdown'
 import { WalletBlock } from './WalletBlock'
 
 export const Header = () => {
@@ -51,19 +49,7 @@ export const Header = () => {
           <LogoLink to="/">
             <Logo src={AldrinLogo} />
           </LogoLink>
-
-          <StakeButton
-            $backgroundImage={StakeBtn}
-            as={Link}
-            to="/staking"
-            $fontSize="xs"
-            $padding="md"
-            $borderRadius="xxl"
-          >
-            Stake RIN
-          </StakeButton>
         </LogoBlock>
-        <LinksBlock>{feedbackLinks}</LinksBlock>
         <MainLinksWrap>
           <MainLinksBlock>
             <NavLink to="/chart" activeClassName="selected">
@@ -72,55 +58,52 @@ export const Header = () => {
             <NavLink to="/swap" activeClassName="selected">
               Swap
             </NavLink>
-            <NavLink new show="md" to="/pools" activeClassName="selected">
-              Pools
+            <NavLink show="md" to="/pools" activeClassName="selected">
+              Pools & Farms
             </NavLink>
-            <NavLink to="/rebalance" activeClassName="selected">
-              Rebalance
+            <NavLink show="lg" to="/staking" activeClassName="selected">
+              Staking
             </NavLink>
-            <NavLink to="/dashboard" activeClassName="selected">
-              Dashboard
-            </NavLink>
-            <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">
-              Wallet
-            </NavLink>
-            <NavLink
-              show="lg"
-              as="a"
-              target="_blank"
-              href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
-            >
-              FAQ
-            </NavLink>
-            <NavLink
-              show="lg"
-              as="a"
-              target="_blank"
-              href="https://github.com/aldrin-exchange/aldrin-sdk"
-            >
-              SDK{' '}
-            </NavLink>
-            <DropDown hide="lg" text="···">
+            <DropDown hide="lg" text="More">
               {feedbackLinks}
-              <NavLink hide="md" activeClassName="selected" to="/pools">
-                Liquidity Pools
+              <NavLink to="/rebalance" activeClassName="selected">
+                Rebalancer
+              </NavLink>
+              <NavLink to="/dashboard" activeClassName="selected">
+                Dashboard
               </NavLink>
               <NavLink
+                hide="lg"
+                as="a"
+                target="_blank"
+                href="https://github.com/aldrin-exchange/aldrin-sdk"
+              >
+                SDK
+              </NavLink>
+              <NavLink
+                hide="lg"
+                as="a"
+                target="_blank"
+                href="https://docs.aldrin.com"
+              >
+                Read Me
+              </NavLink>
+              <NavLink
+                hide="lg"
+                as="a"
+                target="_blank"
+                href="https://rin.aldrin.com/"
+              >
+                Roadmap
+              </NavLink>
+              {/* <NavLink
                 hide="lg"
                 as="a"
                 target="_blank"
                 href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
               >
                 FAQ
-              </NavLink>{' '}
-              <NavLink
-                hide="lg"
-                as="a"
-                target="_blank"
-                href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
-              >
-                SDK
-              </NavLink>
+              </NavLink>{' '} */}
             </DropDown>
           </MainLinksBlock>
         </MainLinksWrap>

@@ -31,6 +31,12 @@ export const COLORS = {
   warningDark: 'rgb(132, 97, 56)',
   disabledGray: '#93A0B2',
   lightRed: '#f2abb1',
+  mainBlack: '#101010',
+  primaryGray: '#C1C1C1',
+  activeWhite: '#FAFAFA',
+  bluePrimary: '#0E02EC',
+  defaultGray: '#1A1A1A',
+  newOrange: '#DA6239',
 }
 
 export const BORDER_RADIUS = {

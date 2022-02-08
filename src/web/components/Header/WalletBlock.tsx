@@ -1,16 +1,12 @@
 import React, { useState } from 'react'
+
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import WalletIcon from '@icons/walletIcon.svg'
-
 // TODO: move that
-import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
-import { SvgIcon } from '..'
 import {
   WalletButton,
-  WalletName,
-  WalletAddress,
-  WalletData,
+  WalletDataContainer,
   WalletDisconnectButton,
 } from './styles'
 
@@ -21,12 +17,6 @@ export const WalletBlock = () => {
 
   return (
     <>
-      <SvgIcon
-        src={WalletIcon}
-        width="1em"
-        height="1em"
-        style={{ margin: '0 1em' }}
-      />
       {!connected && (
         <WalletButton
           onClick={() => {
@@ -37,8 +27,8 @@ export const WalletBlock = () => {
         </WalletButton>
       )}
       {connected && (
-        <WalletData>
-          <WalletName>{providerFullName || providerName}</WalletName>
+        <WalletDataContainer>
+          {/* <WalletName>{providerFullName || providerName}</WalletName>
           <WalletAddress>{wallet.publicKey?.toBase58()}</WalletAddress>
           <WalletDisconnectButton
             onClick={() => {
@@ -48,8 +38,10 @@ export const WalletBlock = () => {
             }}
           >
             Disconnect
-          </WalletDisconnectButton>
-        </WalletData>
+          </WalletDisconnectButton> */}
+          hhh
+          <WalletDisconnectButton>Disconnect</WalletDisconnectButton>
+        </WalletDataContainer>
       )}
       <ConnectWalletPopup
         open={isConnectWalletPopupOpen}
