@@ -5,9 +5,19 @@ import styled from 'styled-components'
 import { Block, BlockSubtitle } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { Input } from '@sb/components/Input'
-import { Row, StretchedBlock, Page } from '@sb/components/Layout'
+import { Row, StretchedBlock, Page, BlackPage } from '@sb/components/Layout'
 
 import { Append, InputEl } from '../../components/Input/styles'
+
+export const StakingPage = styled(BlackPage)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // height: 100%;
+  @media (max-width: ${BREAKPOINTS.lg}) {
+    align-items: flex-start;
+  }
+`
 
 export const StyledTextDiv = styled.div`
   height: auto;
