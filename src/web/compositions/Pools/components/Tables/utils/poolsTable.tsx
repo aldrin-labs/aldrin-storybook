@@ -131,14 +131,14 @@ export const preparePoolTableCell = (params: {
     calcAccounts,
   })
 
-  const availableToClaim = Array.from(availableToClaimMap.values()).map(
-    (atc) => {
+  const availableToClaim = Array.from(availableToClaimMap.values())
+    .map((atc) => {
       const name = getTokenNameByMintAddress(atc.farmingTokenMint)
       const usdValue = (tokenPrices.get(name)?.price || 0) * atc.amount
 
       return { ...atc, name, usdValue }
-    }
-  )
+    })
+    .filter((atc) => atc.usdValue > 0)
 
   const availableToClaimUsd = availableToClaim.reduce(
     (acc, atc) => acc + atc.usdValue,
@@ -245,7 +245,8 @@ export const preparePoolTableCell = (params: {
                       {availableToClaim
                         .map(
                           (atc) =>
-                            `${stripByAmountAndFormat(atc.amount, 4)} ${atc.name
+                            `${stripByAmountAndFormat(atc.amount, 4)} ${
+                              atc.name
                             }`
                         )
                         .join(' + ')}

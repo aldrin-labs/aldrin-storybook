@@ -131,14 +131,14 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const hasUnstaked = poolTokenAmount > 0
   const hasStaked = stakedAmount > 0
 
-  const availableToClaim = Array.from(availableToClaimMap.values()).map(
-    (atc) => {
+  const availableToClaim = Array.from(availableToClaimMap.values())
+    .map((atc) => {
       const name = getTokenNameByMintAddress(atc.farmingTokenMint)
       const usdValue = (prices.get(name)?.price || 0) * atc.amount
 
       return { ...atc, name, usdValue }
-    }
-  )
+    })
+    .filter((atc) => atc.usdValue > 0)
 
   const availableToClaimUsd = availableToClaim.reduce(
     (acc, atc) => acc + atc.usdValue,
