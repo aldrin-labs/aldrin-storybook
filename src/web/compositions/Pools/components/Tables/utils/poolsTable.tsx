@@ -53,7 +53,7 @@ export const preparePoolTableCell = (params: {
   walletPk: string
   vestings: Map<string, Vesting>
   farmingTicketsMap: FarmingTicketsMap
-  calcAccounts?: Map<string, FarmingCalc>
+  calcAccounts?: Map<string, FarmingCalc[]>
   tokenMap: Map<string, TokenInfo>
 }): DataCellValues<PoolInfo> => {
   const {
@@ -62,7 +62,7 @@ export const preparePoolTableCell = (params: {
     prepareMore,
     walletPk,
     vestings,
-    calcAccounts = new Map<string, FarmingCalc>(),
+    calcAccounts = new Map<string, FarmingCalc[]>(),
     farmingTicketsMap,
     tokenMap,
   } = params

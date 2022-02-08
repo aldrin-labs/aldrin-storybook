@@ -17,14 +17,14 @@ export const getUserPoolsFromAll = ({
   farmingTicketsMap,
   vestings,
   walletPublicKey,
-  calcAccounts = new Map<string, FarmingCalc>(),
+  calcAccounts = new Map<string, FarmingCalc[]>(),
 }: {
   allTokensData: TokenInfo[]
   farmingTicketsMap: Map<string, FarmingTicket[]>
   poolsInfo: PoolInfo[]
   vestings: Map<string, Vesting>
   walletPublicKey?: PublicKey | null
-  calcAccounts?: Map<string, FarmingCalc>
+  calcAccounts?: Map<string, FarmingCalc[]>
 }) => {
   const walletKey = walletPublicKey?.toBase58()
   return poolsInfo.filter((el) => {
@@ -47,9 +47,11 @@ export const getUserPoolsFromAll = ({
           0
         ) || 0
 
-    const calcAmounts = el.farming?.map(
-      (farming) =>
-        calcAccounts.get(farming.farmingState)?.tokenAmount || new BN(0)
+    const calcAmounts = el.farming?.map((farming) =>
+      (calcAccounts.get(farming.farmingState) || []).reduce(
+        (acc, ca) => acc.add(ca.tokenAmount),
+        new BN(0)
+      )
     )
 
     return (
