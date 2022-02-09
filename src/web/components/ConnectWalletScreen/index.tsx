@@ -1,3 +1,4 @@
+import { Theme, withTheme } from '@material-ui/core'
 import React, { useState } from 'react'
 
 import { SvgIcon } from '@sb/components'
@@ -5,13 +6,12 @@ import {
   RowContainer,
   Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
-
-import { Theme, withTheme } from '@material-ui/core'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 
 import LightLogo from '@icons/lightLogo.svg'
-import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+
 import { COLORS } from '../../../variables/variables'
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 
 interface ConnectWalletContentProps {
   theme: Theme
@@ -97,7 +97,7 @@ export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
     <RowContainer
       direction="column"
       height="100%"
-      style={{ background: theme.palette.grey.additional }}
+      style={{ background: COLORS.mainBlack }}
     >
       <ConnectWalletInner />
     </RowContainer>

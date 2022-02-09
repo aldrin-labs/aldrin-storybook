@@ -13,7 +13,10 @@ export const DropDown: React.FC<DropdownProps> = (props) => {
   const { text, children, hide, isActive } = props
   return (
     <DropdownWrap hide={hide}>
-      <NavLink className={isActive ? 'selected' : ''} as="a">
+      <NavLink
+        className={isActive ? 'selected-from-dropdown' : 'dropdown'}
+        as="a"
+      >
         {text}
       </NavLink>
       <DropdownContent>

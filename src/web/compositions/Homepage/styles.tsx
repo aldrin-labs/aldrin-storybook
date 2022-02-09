@@ -198,12 +198,12 @@ export const NewLink = styled(Link)`
     transition: 0.3s;
     svg {
       path {
-        fill: #651CE4;
+        fill: #0E02EC;
       }
       defs {
         linearGradient {
           stop {
-            stop-color: #651CE4;
+            stop-color: #0E02EC;
           }
         }
       }
@@ -224,7 +224,7 @@ export const StyledA = styled.a`
     text-decoration: underline;
     svg {
       path {
-        fill: #651CE4;
+        fill: #0E02EC;
       }
     }
   }

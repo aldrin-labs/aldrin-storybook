@@ -1,4 +1,10 @@
-import { COLORS, SIZE, BREAKPOINTS, BORDER_RADIUS } from '@variables/variables'
+import {
+  COLORS,
+  SIZE,
+  BREAKPOINTS,
+  BORDER_RADIUS,
+  FONT_SIZES,
+} from '@variables/variables'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import styled from 'styled-components'
 // TODO: remove dat
@@ -38,6 +44,7 @@ interface ShowHideProps {
 
 interface LinkProps extends ShowHideProps {
   new?: boolean
+  left?: boolean
 }
 
 export const NavLink = styled(RouterNavLink)<LinkProps>`
@@ -45,7 +52,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   font-size: 0.8em;
   padding: 8px 12px;
   margin: 0px 4px;
-  text-align: center;
+  text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
   color: ${COLORS.primaryGray};
   background: transparent;
   transition: all ease-in 0.2s;
@@ -54,11 +61,35 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   white-space: nowrap;
   font-weight: 500;
 
+  &.dropdown {
+    &:hover {
+      border-bottom: none;
+    }
+  }
+
+  &.selected-from-dropdown {
+    color: ${COLORS.activeWhite};
+    svg {
+      path {
+        fill: ${COLORS.activeWhite};
+      }
+    }
+  }
+
+  svg {
+    margin: 0 0.5rem;
+  }
+
   &:hover,
   &.selected {
     color: ${COLORS.activeWhite};
     border-bottom: 1px solid ${COLORS.activeWhite};
     transition: all ease-in 0.2s;
+    svg {
+      path {
+        fill: ${COLORS.activeWhite};
+      }
+    }
   }
 
   ${(props: LinkProps) =>
@@ -166,6 +197,7 @@ export const DropdownWrap = styled.div<ShowHideProps>`
   align-items: center;
   justify-content: center;
   position: relative;
+  z-index: 100000;
 
   &:hover ${DropdownContent} {
     display: flex;
@@ -194,30 +226,34 @@ export const DropdownWrap = styled.div<ShowHideProps>`
 
 export const DropdownInner = styled.div`
   min-width: 6em;
-  background: ${COLORS.bodyBackground};
-  border: 1px solid ${COLORS.border};
+  background: ${COLORS.defaultGray};
   display: flex;
   flex-direction: column;
   margin-top: 5px;
   padding: 5px 0;
-
+  border-radius: ${BORDER_RADIUS.md};
   & ${NavLink} {
     margin: 4px;
+
+    &:hover {
+      border: none;
+    }
   }
 `
 
 export const WalletButton = styled(Button)`
-  width: 100%;
+  width: 17rem;
+  white-space: nowrap;
   padding: 10px 20px;
   font-size: 0.75em;
   background-color: ${COLORS.bluePrimary};
   border: none;
   font-weight: 600;
+  height: 5rem;
 `
 
 export const WalletDataContainer = styled.div`
-  width: 100%;
-  height: 
+  width: 17rem;
   border-radius: ${BORDER_RADIUS.md};
   display: flex;
   flex-direction: row;
@@ -228,18 +264,49 @@ export const WalletDataContainer = styled.div`
     align-items: flex-start;
   }
 
-    button {
-      display: none;
-    }
+  button {
+    display: none;
+    transition: 0.2s;
+  }
 
   &:hover {
     button {
-        display: block;
-      }
+      display: block;
+      transition: 0.2s;
+    }
+  }
+
+  div {
+    display: flex;
+    transition: 0.2s;
+  }
+
+  &:hover {
+    div {
+      display: none;
+      transition: 0.5s;
+    }
   }
 `
 
-export const WalletData = styled.div``
+export const WalletData = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  height: 5rem;
+  border-radius: ${BORDER_RADIUS.md};
+  background: ${COLORS.defaultGray};
+  img {
+    border-radius: 50%;
+  }
+`
+export const Column = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-end;
+`
 
 export const WalletName = styled(Text)`
   font-size: 0.6em;
@@ -254,8 +321,9 @@ export const WalletName = styled(Text)`
 
 export const WalletAddress = styled(WalletName)`
   opacity: 0.5;
-  font-weight: normal;
+  font-weight: 600;
   display: none;
+  font-size: ${FONT_SIZES.sm};
 
   @media (min-width: ${BREAKPOINTS.md}) {
     display: block;
@@ -268,5 +336,11 @@ export const WalletDisconnectButton = styled(Button)`
   font-size: 0.75em;
   background-color: ${COLORS.newOrange};
   border: none;
+  font-weight: 600;
+  height: 5rem;
+`
+export const BalanceTitle = styled.span`
+  font-size: ${FONT_SIZES.sm};
+  color: ${COLORS.newGreen};
   font-weight: 600;
 `

@@ -13,8 +13,8 @@ export const COLORS = {
   hint: '#96999c',
   blockBackground: '#222429',
   main: '#fbf2f2',
-  primary: '#651CE4',
-  success: '#53DF11',
+  primary: '#0E02EC',
+  success: '#269F13',
   successAlt: '#2E5223',
   error: '#F69894',
   errorAlt: '#D44C32',
@@ -37,6 +37,7 @@ export const COLORS = {
   bluePrimary: '#0E02EC',
   defaultGray: '#1A1A1A',
   newOrange: '#DA6239',
+  newGreen: '#269F13',
 }
 
 export const BORDER_RADIUS = {
