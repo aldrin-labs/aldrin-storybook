@@ -1,58 +1,23 @@
-import { PublicKey } from '@solana/web3.js'
-import dayjs from 'dayjs'
+import { COLORS } from '@variables/variables'
 import React from 'react'
-import { compose } from 'recompose'
 
 import { Cell } from '@sb/components/Layout'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
-import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { StakingPool } from '@sb/dexUtils/staking/types'
-import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
-import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
-import { useInterval } from '@sb/dexUtils/useInterval'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
-import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
-import { dayDuration } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
-
+import { Loader } from '../../../components/Loader/Loader'
+import { useStakingPoolInfo } from '../../../dexUtils/staking/hooks'
 import { RootRow } from '../styles'
 import UserStakingInfo from './UserStakingInfo'
 
-interface StakingComponentProps {
-  getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
-  getBuyBackAmountForPeriodQuery: { getBuyBackAmountForPeriod: number }
-}
+const StakingComponent = () => {
+  const { data: poolInfo } = useStakingPoolInfo()
 
-const StakingComponent: React.FC<StakingComponentProps> = (
-  props: StakingComponentProps
-) => {
-  const { getStakingPoolInfoQuery, getBuyBackAmountForPeriodQuery } = props
-
-  const stakingPool = getStakingPoolInfoQuery.getStakingPoolInfo || {}
-
-  const [totalStaked, refreshTotalStaked] = useAccountBalance({
-    publicKey: new PublicKey(stakingPool.stakingVault),
-  })
-
-  const allStakingFarmingStates = stakingPool.farming || []
-
-  const currentFarmingState = getCurrentFarmingStateFromAll(
-    allStakingFarmingStates
-  )
-
-  const tokenData = useAssociatedTokenAccount(
-    currentFarmingState.farmingTokenMint
-  )
-
-  const buyBackAmount =
-    getBuyBackAmountForPeriodQuery.getBuyBackAmountForPeriod *
-    10 ** currentFarmingState?.farmingTokenMintDecimals
-
-  useInterval(() => {
-    refreshTotalStaked()
-  }, 30000)
+  if (!poolInfo) {
+    return (
+      <>
+        <br /> <Loader color={COLORS.white} width="5em" />
+      </>
+    )
+  }
 
   return (
     <>
@@ -71,11 +36,10 @@ const StakingComponent: React.FC<StakingComponentProps> = (
         </Cell> */}
         <Cell col={12} colLg={12}>
           <UserStakingInfo
-            buyBackAmount={buyBackAmount}
-            totalStakedRIN={totalStaked}
-            stakingPool={stakingPool}
-            currentFarmingState={currentFarmingState}
-            tokenData={tokenData}
+            buyBackAmount={poolInfo.buyBackAmount}
+            stakingPool={poolInfo.poolInfo}
+            currentFarmingState={poolInfo.currentFarmingState}
+            treasuryDailyRewards={poolInfo.treasuryDailyRewards}
           />
         </Cell>
       </RootRow>
@@ -83,25 +47,4 @@ const StakingComponent: React.FC<StakingComponentProps> = (
   )
 }
 
-export default compose(
-  queryRendererHoc({
-    query: getStakingPoolInfo,
-    name: 'getStakingPoolInfoQuery',
-    fetchPolicy: 'cache-and-network',
-  }),
-  queryRendererHoc({
-    name: 'getBuyBackAmountForPeriodQuery',
-    query: getBuyBackAmountForPeriod,
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000 * getRandomInt(5, 10),
-    variables: () => {
-      const endOfDay = dayjs.utc().endOf('day').unix()
-
-      return {
-        timestampFrom: endOfDay - dayDuration * DAYS_TO_CHECK_BUY_BACK,
-        timestampTo: endOfDay,
-      }
-    },
-  })
-)(StakingComponent)
+export default StakingComponent

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Block } from '@sb/components/Block'
+import { BlackPage } from '@sb/components/Layout'
 
 export const StakingBlock = styled(Block)`
   background: ${COLORS.defaultGray};
@@ -38,6 +39,7 @@ export const GrayButton = styled.button`
   border-radius: 1rem;
   margin: ${(props) => props.margin || '2rem 0 0 0'};
   height: 6rem;
+
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
@@ -66,6 +68,7 @@ export const GrayLink = styled(Link)`
   text-align: center;
   padding: 1.6rem 0;
   font-size: 0.9em;
+  line-height: 3rem;
   &:hover {
     background: ${COLORS.bluePrimary};
     transition: 0.3s;
@@ -81,4 +84,10 @@ export const Line = styled.div`
   height: 0.1rem;
   margin: 4rem 0 2rem 0;
   width: 100%;
+`
+
+export const Page = styled(BlackPage)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `

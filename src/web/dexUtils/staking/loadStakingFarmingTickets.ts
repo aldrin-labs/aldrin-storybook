@@ -1,9 +1,10 @@
 import { Connection, PublicKey } from '@solana/web3.js'
-import { WalletAdapter } from '../types'
+
 import {
   FARMING_TICKET_OFFSET_OF_USER_PUBLICKEY,
   FARMING_TICKET_SIZE,
 } from '../common/config'
+import { WalletAdapter } from '../types'
 import { loadAccountsFromStakingProgram } from './loadAccountsFromStakingProgram'
 
 export const loadStakingFarmingTickets = async ({
@@ -13,7 +14,7 @@ export const loadStakingFarmingTickets = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-  walletPublicKey?: PublicKey
+  walletPublicKey?: PublicKey | null
 }) => {
   const filterByWalletPublicKey = walletPublicKey
     ? [

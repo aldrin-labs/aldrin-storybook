@@ -1,11 +1,19 @@
+import { PublicKey } from '@solana/web3.js'
 import React from 'react'
 
 import { BlockTitle, BlockContent } from '@sb/components/Block'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
 import AldrinLogo from '@icons/Aldrin.svg'
 
+import { queryRendererHoc } from '../../../../../../../core/src/components/QueryRenderer'
+import { getDexTokensPrices } from '../../../../../../../core/src/graphql/queries/pools/getDexTokensPrices'
+import { DAYS_TO_CHECK_BUY_BACK } from '../../../../dexUtils/staking/config'
+import { useStakingPoolInfo } from '../../../../dexUtils/staking/hooks'
+import { useAccountBalance } from '../../../../dexUtils/staking/useAccountBalance'
 import {
   ContentBlock,
   GrayLink,
@@ -16,8 +24,41 @@ import {
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Coins from './bg.png'
 import { LogoWrap, AbsoluteImg } from './styles'
+import { RinStakingBlockProps } from './types'
 
-export const RinStakingBlock: React.FC = (props) => {
+const Block: React.FC<RinStakingBlockProps> = (props) => {
+  const {
+    getDexTokensPricesQuery: { getDexTokensPrices },
+  } = props
+
+  const { data: poolInfo } = useStakingPoolInfo()
+
+  const rinPrice =
+    getDexTokensPrices.find((v) => v.symbol === 'RIN')?.price || 0
+
+  const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
+    publicKey: poolInfo
+      ? new PublicKey(poolInfo.poolInfo.stakingVault)
+      : undefined,
+  })
+
+  const marketCap = rinPrice * (poolInfo?.rinCirculationSupply || 0)
+
+  const totalStakedUsdValue = rinPrice * totalStakedRIN
+
+  const stakedPercentage =
+    (totalStakedRIN / (poolInfo?.rinCirculationSupply || totalStakedRIN)) * 100
+
+  const buyBackAPR =
+    ((poolInfo?.buyBackAmount || 0) / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) *
+    365 *
+    100
+
+  const treasuryAPR =
+    ((poolInfo?.treasuryDailyRewards || 0) / totalStakedRIN) * 365 * 100
+
+  const totalApr = buyBackAPR + treasuryAPR
+
   return (
     <StakingBlock>
       <LogoWrap>
@@ -27,7 +68,7 @@ export const RinStakingBlock: React.FC = (props) => {
       <BlockContent>
         <RowContainer justify="space-between">
           <BlockTitle>Stake RIN</BlockTitle>
-          <NumberWithLabel value={45} label="APR" />
+          <NumberWithLabel value={totalApr} label="APR" />
         </RowContainer>
         <ContentBlock>
           <RowContainer
@@ -39,16 +80,24 @@ export const RinStakingBlock: React.FC = (props) => {
               Total Staked
             </InlineText>
             <InlineText size="rg" weight={700}>
-              10.25m{' '}
+              {totalStakedRIN
+                ? stripByAmountAndFormat(totalStakedRIN, 2)
+                : '---'}
+              &nbsp;
               <InlineText color="primaryGray" weight={600}>
                 RIN
               </InlineText>
             </InlineText>
           </RowContainer>
           <RowContainer justify="space-between">
-            <InlineText size="sm">25.24% of circulating supply</InlineText>{' '}
+            <InlineText size="sm">
+              {stakedPercentage.toFixed(2)}% of circulating supply
+            </InlineText>{' '}
             <InlineText size="sm" weight={700}>
-              <InlineText color="primaryGray">$</InlineText> 10.25m
+              <InlineText color="primaryGray">$</InlineText>
+              {totalStakedUsdValue
+                ? stripByAmountAndFormat(totalStakedUsdValue, 2)
+                : '---'}
             </InlineText>
           </RowContainer>
         </ContentBlock>
@@ -63,8 +112,8 @@ export const RinStakingBlock: React.FC = (props) => {
             <InlineText size="rg" weight={700}>
               <InlineText color="primaryGray" weight={700}>
                 $
-              </InlineText>{' '}
-              10.25m
+              </InlineText>
+              {rinPrice ? rinPrice.toFixed(2) : '---'}
             </InlineText>
           </ContentBlock>
           <ContentBlock width="31%">
@@ -74,7 +123,9 @@ export const RinStakingBlock: React.FC = (props) => {
               </InlineText>{' '}
             </Row>
             <InlineText size="rg" weight={700}>
-              11.42m
+              {poolInfo
+                ? stripByAmountAndFormat(poolInfo.rinCirculationSupply, 2)
+                : '---'}
             </InlineText>
           </ContentBlock>
           <ContentBlock width="31%">
@@ -86,8 +137,8 @@ export const RinStakingBlock: React.FC = (props) => {
             <InlineText size="rg" weight={700}>
               <InlineText color="primaryGray" weight={700}>
                 $
-              </InlineText>{' '}
-              10.25m
+              </InlineText>
+              {marketCap ? stripByAmountAndFormat(marketCap, 2) : '---'}
             </InlineText>
           </ContentBlock>
         </StretchedContent>
@@ -99,3 +150,11 @@ export const RinStakingBlock: React.FC = (props) => {
     </StakingBlock>
   )
 }
+
+export const RinStakingBlock = queryRendererHoc({
+  query: getDexTokensPrices,
+  name: 'getDexTokensPricesQuery',
+  fetchPolicy: 'cache-and-network',
+  withoutLoading: true,
+  pollInterval: 10000,
+})(Block)

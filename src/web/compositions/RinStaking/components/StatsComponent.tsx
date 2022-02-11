@@ -7,15 +7,11 @@ import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
 import { Cell, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import { InlineText, Text } from '@sb/components/Typography'
-import { MarketDataByTicker } from '@sb/compositions/Chart/components/MarketStats/MarketStats'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import { FarmingState } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import {
   DAYS_TO_CHECK_BUY_BACK,
   STAKING_FARMING_TOKEN_DIVIDER,
 } from '@sb/dexUtils/staking/config'
-import { TokenInfo } from '@sb/dexUtils/types'
 
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -26,26 +22,10 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { BigNumber } from '../styles'
 import { getShareText } from '../utils'
+import { StakingInfoProps } from './types'
 
-export interface OuterProps {
-  currentFarmingState: FarmingState
-  buyBackAmount: number
-  totalStaked: number
-  tokenData: TokenInfo | undefined
-}
-export interface InnerProps {
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-  marketDataByTickersQuery: { marketDataByTickers: MarketDataByTicker }
-}
-
-const StatsComponent: React.FC<InnerProps & OuterProps> = (props) => {
-  const {
-    getDexTokensPricesQuery,
-    currentFarmingState,
-    buyBackAmount,
-    totalStaked,
-    tokenData,
-  } = props
+const StatsComponent: React.FC<StakingInfoProps> = (props) => {
+  const { getDexTokensPricesQuery, currentFarmingState, buyBackAmount } = props
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
 
   useEffect(() => {

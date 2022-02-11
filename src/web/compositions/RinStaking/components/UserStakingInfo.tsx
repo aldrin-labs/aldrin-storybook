@@ -11,11 +11,9 @@ import { ShareButton } from '@sb/components/ShareButton'
 import { InlineText } from '@sb/components/Typography'
 import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { FarmingState } from '@sb/dexUtils/common/types'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
@@ -25,18 +23,18 @@ import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   BUY_BACK_RIN_ACCOUNT_ADDRESS,
   DAYS_TO_CHECK_BUY_BACK,
-  STAKING_FARMING_TOKEN_DIVIDER,
 } from '@sb/dexUtils/staking/config'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getSnapshotQueueWithAMMFees } from '@sb/dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
-import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingCalcAccounts } from '@sb/dexUtils/staking/useCalcAccounts'
 import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
-import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { TokenInfo } from '@sb/dexUtils/types'
+import {
+  useUserTokenAccounts,
+  useAssociatedTokenAccount,
+} from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -55,23 +53,14 @@ import { restake } from '../../../dexUtils/staking/actions'
 import { Asterisks, BalanceRow, BigNumber, Digit } from '../styles'
 import { getShareText } from '../utils'
 import { StakingForm } from './StakingForm'
-import { InnerProps, OuterProps } from './StatsComponent'
+import { StakingInfoProps } from './types'
 import { UnstakingForm } from './UnstakingForm'
-
-interface UserBalanceProps {
-  value: number
-  visible: boolean
-  decimals?: number
-}
-
-interface StakingInfoProps {
-  tokenData: TokenInfo | undefined
-  stakingPool: StakingPool
-  currentFarmingState: FarmingState
-  totalStakedRIN: number
-  buyBackAmount: number
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-}
+import {
+  resolveStakingNotification,
+  resolveClaimNotification,
+  resolveRestakeNotification,
+  resolveUnstakingNotification,
+} from './utils'
 
 const UserBalance: React.FC<UserBalanceProps> = (props) => {
   const { decimals, value, visible } = props
@@ -91,71 +80,26 @@ const UserBalance: React.FC<UserBalanceProps> = (props) => {
   )
 }
 
-const resolveStakingNotification = (status: 'success' | 'failed' | string) => {
-  if (status === 'success') {
-    return 'Successfully staked.'
-  }
-  if (status === 'failed') {
-    return 'Staking failed, please try again later or contact us in telegram.'
-  }
-
-  return 'Staking cancelled.'
-}
-
-const resolveUnstakingNotification = (
-  status: 'success' | 'failed' | string
-) => {
-  if (status === 'success') {
-    return 'Successfully unstaked.'
-  }
-  if (status === 'failed') {
-    return 'Unstaking failed, please try again later or contact us in telegram.'
-  }
-
-  return 'Unstaking cancelled.'
-}
-
-const resolveClaimNotification = (
-  status: 'success' | 'failed' | 'rejected' | string
-) => {
-  if (status === 'success') {
-    return 'Successfully claimed rewards.'
-  }
-  if (status === 'failed') {
-    return 'Claim rewards failed, please try again later or contact us in telegram.'
-  }
-  if (status === 'rejected') {
-    return 'Claim rewards cancelled.'
-  }
-
-  return 'Operation timeout, please claim rest rewards in a few seconds.'
-}
-
-const resolveRestakeNotification = (
-  status: 'success' | 'failed' | 'rejected' | string
-) => {
-  if (status === 'success') {
-    return 'Successfully restaked.'
-  }
-  if (status === 'failed') {
-    return 'Restake failed, please try again later or contact us in telegram.'
-  }
-  if (status === 'rejected') {
-    return 'Restake cancelled.'
-  }
-
-  return 'Operation timeout, please claim rest rewards in a few seconds.'
-}
-
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
-    tokenData,
     stakingPool,
     currentFarmingState,
-    totalStakedRIN,
     buyBackAmount,
     getDexTokensPricesQuery,
+    treasuryDailyRewards,
   } = props
+
+  const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
+    publicKey: new PublicKey(stakingPool.stakingVault),
+  })
+
+  const tokenData = useAssociatedTokenAccount(
+    currentFarmingState.farmingTokenMint
+  )
+
+  useInterval(() => {
+    refreshTotalStaked()
+  }, 30000)
 
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
@@ -167,8 +111,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
-
-  const walletAddress = wallet?.publicKey?.toString() || ''
 
   const [userFarmingTickets, refreshUserFarmingTickets] = useAllStakingTickets({
     wallet,
@@ -182,10 +124,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
-  })
-
-  const [_, refreshTotalStaked] = useAccountBalance({
-    publicKey: new PublicKey(stakingPool.stakingVault),
   })
 
   const buyBackAmountWithDecimals =
@@ -426,20 +364,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const totalStakedUSD = tokenPrice * totalStakedRIN
 
-  const buyBackAmountWithoutDecimals =
-    buyBackAmount / STAKING_FARMING_TOKEN_DIVIDER
-
   const buyBackAPR =
-    (buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) *
-    365 *
-    100
+    (buyBackAmount / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) * 365 * 100
 
-  const treasuryDailyRewards =
-    (currentFarmingState.tokensPerPeriod / STAKING_FARMING_TOKEN_DIVIDER) *
-    (dayDuration / currentFarmingState.periodLength)
-
-  const buyBackDailyRewards =
-    buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK
+  const buyBackDailyRewards = buyBackAmount / DAYS_TO_CHECK_BUY_BACK
 
   const dailyRewards = treasuryDailyRewards + buyBackDailyRewards
 
@@ -797,22 +725,21 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
 const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
   const {
-    tokenData,
     stakingPool,
     currentFarmingState,
     buyBackAmount,
-    totalStakedRIN,
     getDexTokensPricesQuery,
+    treasuryDailyRewards,
   } = props
+
   return (
     <StretchedBlock direction="column">
       <UserStakingInfoContent
         stakingPool={stakingPool}
-        tokenData={tokenData}
         currentFarmingState={currentFarmingState}
         buyBackAmount={buyBackAmount}
-        totalStakedRIN={totalStakedRIN}
         getDexTokensPricesQuery={getDexTokensPricesQuery}
+        treasuryDailyRewards={treasuryDailyRewards}
       />
     </StretchedBlock>
   )

@@ -17,4 +17,5 @@ export const LogoWrap = styled.div`
 export const AbsoluteImg = styled.img`
   position: absolute;
   left: 13%;
+  max-width: 75%;
 `
