@@ -5,12 +5,13 @@ import { BlockTitle, BlockContent } from '@sb/components/Block'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import AldrinLogo from '@icons/Aldrin.svg'
 
-import { queryRendererHoc } from '../../../../../../../core/src/components/QueryRenderer'
-import { getDexTokensPrices } from '../../../../../../../core/src/graphql/queries/pools/getDexTokensPrices'
+import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
 import { DAYS_TO_CHECK_BUY_BACK } from '../../../../dexUtils/staking/config'
 import { useStakingPoolInfo } from '../../../../dexUtils/staking/hooks'
 import { useAccountBalance } from '../../../../dexUtils/staking/useAccountBalance'
@@ -29,14 +30,18 @@ import { RinStakingBlockProps } from './types'
 const Block: React.FC<RinStakingBlockProps> = (props) => {
   const {
     getDexTokensPricesQuery: { getDexTokensPrices },
+    currentFarmingState,
   } = props
 
   const { data: poolInfo } = useStakingPoolInfo()
 
+  const tokenName = getTokenNameByMintAddress(
+    currentFarmingState.farmingTokenMint
+  )
   const rinPrice =
-    getDexTokensPrices.find((v) => v.symbol === 'RIN')?.price || 0
+    getDexTokensPrices.find((v) => v.symbol === tokenName)?.price || 0
 
-  const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
+  const [totalStakedRIN] = useAccountBalance({
     publicKey: poolInfo
       ? new PublicKey(poolInfo.poolInfo.stakingVault)
       : undefined,
@@ -152,7 +157,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
 }
 
 export const RinStakingBlock = queryRendererHoc({
-  query: getDexTokensPrices,
+  query: getDexTokensPricesQuery,
   name: 'getDexTokensPricesQuery',
   fetchPolicy: 'cache-and-network',
   withoutLoading: true,
