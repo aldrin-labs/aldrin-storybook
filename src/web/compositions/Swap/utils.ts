@@ -91,10 +91,12 @@ export const getEstimatedPrice = ({
   route,
   inputPrice,
   outputPrice,
+  field = 'input',
 }: {
   route?: RouteInfo | null
   inputPrice: number
   outputPrice: number
+  field: 'input' | 'output'
 }) => {
   const { inAmount, outAmount } = route || {
     inAmount: 0,
@@ -103,12 +105,20 @@ export const getEstimatedPrice = ({
     priceImpactPct: 0,
   }
 
+  const isInputPriceToCalculate = field === 'input'
+
   if (inAmount && outAmount) {
-    return outAmount / inAmount
+    if (isInputPriceToCalculate) {
+      return outAmount / inAmount
+    }
+    return inAmount / outAmount
   }
 
   if (inputPrice && outputPrice) {
-    return inputPrice / outputPrice
+    if (isInputPriceToCalculate) {
+      return inputPrice / outputPrice
+    }
+    return outputPrice / inputPrice
   }
 
   return 0

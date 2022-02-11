@@ -121,7 +121,6 @@ export const SelectCoinPopup = ({
         isPoolExist: availablePools.includes(mint),
       }
     })
-    .filter((token) => token.isTokenInPool)
     .sort((a, b) => b.amount - a.amount)
 
   return (

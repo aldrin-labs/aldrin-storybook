@@ -16,6 +16,7 @@ import {
   TimerButton,
 } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import {
+  ALL_TOKENS_MINTS,
   getTokenMintAddressByName,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
@@ -43,19 +44,27 @@ import {
 import { removeDecimals } from '@core/utils/helpers'
 
 import Inform from '@icons/inform.svg'
+import ReverseArrows from '@icons/reverseArrows.svg'
 import Arrows from '@icons/switchArrows.svg'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
-import { Cards } from './components/Cards/Cards'
 import { InputWithSelectorForSwaps } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { Selector } from './components/Selector/Selector'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
 import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { SLIPPAGE_STEP } from './config'
-import { Card, SwapPageContainer, ValueButton, ValueInput } from './styles'
+import {
+  SwapPageContainer,
+  ValueButton,
+  ValueInput,
+  BlackRow,
+  RowTitle,
+  RowValue,
+  RowAmountValue,
+} from './styles'
 import { useJupiterSwap } from './useJupiterSwap'
 import {
   getEstimatedPrice,
@@ -173,6 +182,9 @@ const SwapPage = ({
 
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
   const [isSwapInProgress, setIsSwapInProgress] = useState(false)
+  const [priceShowField, setPriceShowField] = useState<'input' | 'output'>(
+    'input'
+  )
 
   const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
   const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
@@ -275,25 +287,11 @@ const SwapPage = ({
     await refreshAmountsWithSwapRoute()
   }
 
+  console.log('depositAndFee', depositAndFee)
+
   return (
     <SwapPageContainer direction="column" height="100%" wrap="nowrap">
       <>
-        {/* <Row width="50rem" justify="flex-start" margin="2rem 1rem">
-          <TableModeButton
-            isActive={!isStableSwapTabActive}
-            onClick={() => setIsStableSwapTabActive(false)}
-            fontSize="1.5rem"
-          >
-            All
-          </TableModeButton>
-          <TableModeButton
-            isActive={isStableSwapTabActive}
-            onClick={() => setIsStableSwapTabActive(true)}
-            fontSize="1.5rem"
-          >
-            Stable Swap
-          </TableModeButton>
-        </Row> */}
         <Row width="50rem" justify="flex-start" margin="0 0 2rem 0">
           <Selector
             data={pools}
@@ -304,6 +302,7 @@ const SwapPage = ({
         <BlockTemplate
           theme={theme}
           width="50rem"
+          background="#1A1A1A"
           style={{ padding: '2rem', zIndex: '10' }}
         >
           <RowContainer margin="0 0 1rem 0" justify="space-between">
@@ -419,7 +418,7 @@ const SwapPage = ({
               onClick={reverseTokens}
             />
           </RowContainer>
-          <RowContainer margin="1rem 0 2rem 0">
+          <RowContainer margin="1.6rem 0">
             <InputWithSelectorForSwaps
               wallet={wallet}
               publicKey={publicKey}
@@ -441,7 +440,7 @@ const SwapPage = ({
             />
           </RowContainer>
 
-          <RowContainer margin="1rem 2rem" justify="space-between">
+          {/* <RowContainer margin="1rem 2rem" justify="space-between">
             <Text color="#93A0B2">Est. Price:</Text>
             <Text
               fontSize="1.5rem"
@@ -464,7 +463,7 @@ const SwapPage = ({
                 {quoteSymbol}{' '}
               </Text>
             </Text>
-          </RowContainer>
+          </RowContainer> */}
 
           <RowContainer>
             {!publicKey ? (
@@ -473,7 +472,7 @@ const SwapPage = ({
                 onClick={wallet.connect}
                 needMinWidth={false}
                 btnWidth="100%"
-                height="5.5rem"
+                height="6.4rem"
                 fontSize="1.4rem"
                 padding="2rem 8rem"
                 borderRadius="1.1rem"
@@ -481,7 +480,6 @@ const SwapPage = ({
                 btnColor="#fff"
                 backgroundColor={theme.palette.blue.serum}
                 textTransform="none"
-                margin="2rem 0 0 0"
                 transition="all .4s ease-out"
                 style={{ whiteSpace: 'nowrap' }}
               >
@@ -490,7 +488,7 @@ const SwapPage = ({
             ) : (
               <BtnCustom
                 btnWidth="100%"
-                height="5.5rem"
+                height="6.4rem"
                 fontSize="1.4rem"
                 padding="1rem 2rem"
                 borderRadius=".8rem"
@@ -502,7 +500,6 @@ const SwapPage = ({
                     : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
                 }
                 textTransform="none"
-                margin="2rem 0 0 0"
                 transition="all .4s ease-out"
                 disabled={isButtonDisabled}
                 onClick={async () => {
@@ -558,8 +555,98 @@ const SwapPage = ({
               </BtnCustom>
             )}
           </RowContainer>
+
+          {inputAmount && outputAmount && (
+            <RowContainer direction="column" margin="2rem 0 0 0">
+              <RowContainer justify="space-between">
+                <BlackRow width="48%">
+                  <RowTitle>Price:</RowTitle>
+                  <Row>
+                    <RowValue>
+                      <RowAmountValue>1</RowAmountValue>
+                      {priceShowField === 'input' ? baseSymbol : quoteSymbol}
+                    </RowValue>
+                    <SvgIcon
+                      src={ReverseArrows}
+                      height="1.4rem"
+                      width="1.4rem"
+                      style={{
+                        transform: 'rotate(90deg)',
+                        margin: '0 0.5rem',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() =>
+                        setPriceShowField(
+                          priceShowField === 'input' ? 'output' : 'input'
+                        )
+                      }
+                    />
+                    <RowValue>
+                      <RowAmountValue>
+                        {stripByAmount(
+                          getEstimatedPrice({
+                            route: swapRoute,
+                            inputPrice: basePrice,
+                            outputPrice: quotePrice,
+                            field: priceShowField,
+                          })
+                        )}
+                      </RowAmountValue>
+                      {priceShowField === 'input' ? quoteSymbol : baseSymbol}
+                    </RowValue>
+                  </Row>
+                </BlackRow>
+                <BlackRow width="48%">
+                  <RowTitle>Price Impact:</RowTitle>
+                  <RowAmountValue>
+                    {priceImpactPct < 0.1 ? '< 0.1' : priceImpactPct}%
+                  </RowAmountValue>
+                </BlackRow>
+              </RowContainer>
+
+              <RowContainer justify="space-between">
+                <BlackRow width="48%">
+                  <RowTitle>Trading fee:</RowTitle>
+                  <RowValue>
+                    $
+                    {stripByAmount(
+                      getFeeFromSwapRoute({
+                        route: swapRoute,
+                        tokenInfos,
+                        pricesMap: dexTokensPricesMap,
+                      })
+                    )}
+                  </RowValue>
+                </BlackRow>
+                <BlackRow width="48%">
+                  <RowTitle>Network fee:</RowTitle>
+                  <RowValue>
+                    {depositAndFee
+                      ? depositAndFee.ataDeposit *
+                          depositAndFee.ataDepositLength +
+                        depositAndFee.openOrdersDeposits.reduce(
+                          (acc, n) => acc + n,
+                          0
+                        ) +
+                        depositAndFee.signatureFee
+                      : swapRoute?.marketInfos.length *
+                        TRANSACTION_COMMON_SOL_FEE}{' '}
+                    SOL
+                  </RowValue>
+                </BlackRow>
+              </RowContainer>
+
+              <BlackRow width="100%">
+                <RowTitle>Minimum Received:</RowTitle>
+                <RowValue>
+                  {stripByAmount(outAmountWithSlippageWithoutDecimals)}{' '}
+                  {quoteSymbol}
+                </RowValue>
+              </BlackRow>
+            </RowContainer>
+          )}
         </BlockTemplate>
-        {inputAmount && outputAmount && (
+        {/* {inputAmount && outputAmount && (
           <Card
             style={{ padding: '2rem' }}
             theme={theme}
@@ -610,8 +697,7 @@ const SwapPage = ({
               </Row>
             </RowContainer>
           </Card>
-        )}
-        <Cards />
+        )} */}
       </>
 
       <TransactionSettingsPopup
@@ -629,8 +715,12 @@ const SwapPage = ({
       <SelectCoinPopup
         poolsInfo={pools}
         theme={theme}
-        // mints={[...new Set(mints)]}
-        mints={[...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]}
+        mints={[
+          ...new Set([
+            ...pools.map((i) => [i.tokenA, i.tokenB]).flat(),
+            ...ALL_TOKENS_MINTS.map(({ address }) => address.toString()),
+          ]),
+        ]}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
         allTokensData={allTokensData}

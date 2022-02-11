@@ -1,4 +1,4 @@
-import { COLORS } from '@variables/variables'
+import { COLORS, MAIN_FONT } from '@variables/variables'
 import styled from 'styled-components'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
@@ -90,8 +90,26 @@ export const ValueInput = styled.input`
 `
 
 export const BlackRow = styled(Row)`
-  background: rgba(5, 5, 5, 0.25);
+  justify-content: space-between;
+  background: #242424;
   border-radius: 1.2rem;
   height: 4.8rem;
-  padding: 1.4rem 1.2rem;
+  padding: 1.6rem 1.2rem;
+  margin-top: 0.8rem;
+`
+
+export const RowTitle = styled.span`
+  font-family: ${MAIN_FONT};
+  font-size: 1.4rem;
+  color: #c9c8cd;
+`
+
+export const RowValue = styled(RowTitle)`
+  font-weight: 500;
+  color: #fff;
+`
+
+export const RowAmountValue = styled(RowValue)`
+  margin-right: 0.4rem;
+  color: #91e073;
 `
