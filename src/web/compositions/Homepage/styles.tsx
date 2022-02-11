@@ -1,7 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const TextContainer = styled(RowContainer)`
   position: absolute;
@@ -198,12 +198,12 @@ export const NewLink = styled(Link)`
     transition: 0.3s;
     svg {
       path {
-        fill: #0E02EC;
+        fill: #0e02ec;
       }
       defs {
         linearGradient {
           stop {
-            stop-color: #0E02EC;
+            stop-color: #0e02ec;
           }
         }
       }
@@ -224,7 +224,7 @@ export const StyledA = styled.a`
     text-decoration: underline;
     svg {
       path {
-        fill: #0E02EC;
+        fill: #0e02ec;
       }
     }
   }
@@ -246,8 +246,8 @@ export const StyledPicture = styled.picture`
 `
 
 export const StyledLink = styled.a`
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
   margin: 0 1rem;
 
   @media (max-width: 600px) {

@@ -38,6 +38,12 @@ export const COLORS = {
   defaultGray: '#1A1A1A',
   newOrange: '#DA6239',
   newGreen: '#269F13',
+  cardsBack: '#242424',
+  newWhite: '#F8F8F8',
+  darkBlue: '#0B02BD',
+  primaryRed: '#E04237',
+  newBlack: '#191919',
+  lightGray: '#C9C8CD',
 }
 
 export const BORDER_RADIUS = {
@@ -51,8 +57,10 @@ export const BORDER_RADIUS = {
 
 export const FONT_SIZES = {
   xs: '0.6875em', // 11px
+  es: '0.7125em',
   sm: '0.8125em', // 13px
   md: '1em', // 16px
+  rg: '1.3em', // 20px
   lg: '1.6em', // 26px
   xl: '2em', // 16px
   xxxl: '4em', // 64px

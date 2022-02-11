@@ -1,4 +1,5 @@
 export interface NumberWithLabelProps {
-  value: number
+  value: number | null
   label: string
+  size?: string
 }

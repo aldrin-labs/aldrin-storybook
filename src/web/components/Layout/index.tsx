@@ -31,7 +31,7 @@ export const Page = styled(Body)`
 `
 
 export const BlackPage = styled(Page)`
-  background: ${COLORS.black};
+  background: ${COLORS.mainBlack};
 `
 
 export const Content = styled.div`
@@ -43,7 +43,8 @@ export const Content = styled.div`
 
   @media (min-width: ${LAYOUT_WIDTH}px) {
     max-width: ${LAYOUT_WIDTH}px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 3rem;
   }
 `
 

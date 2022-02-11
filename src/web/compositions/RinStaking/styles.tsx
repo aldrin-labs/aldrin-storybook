@@ -40,6 +40,9 @@ export const StyledTextDiv = styled.div`
 
 export const RootRow = styled(Row)`
   margin: 40px 0;
+  background: ${COLORS.newBlack};
+  border-radius: 2rem;
+  padding: 2rem;
 `
 
 export const RewardsStats = styled(StretchedBlock)`
@@ -240,11 +243,7 @@ export const FormWrap = styled.form`
     margin-top: 20px;
   }
 `
-export const UnstakingFormWrap = styled(FormWrap)`
-  @media (min-width: ${BREAKPOINTS.lg}) {
-    margin-left: 20px;
-  }
-`
+export const UnstakingFormWrap = styled(FormWrap)``
 
 export const FormItem = styled.div`
   margin: 10px 10px 0 0;
@@ -265,6 +264,13 @@ export const InputWrapper = styled.div`
 `
 
 export const StakingInput = styled(Input)`
+  border-radius: ${BORDER_RADIUS.md};
+  height: 6.8rem;
+  background-color: ${COLORS.cardsBack};
+  border: 0.1rem solid ${COLORS.background};
+  &:focus {
+    border: 0.1rem solid #aaaaaa;
+  }
   ${InputEl} {
     padding-left: 0.7em;
   }

@@ -50,7 +50,7 @@ interface LinkProps extends ShowHideProps {
 export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
   font-size: 0.8em;
-  padding: 8px 12px;
+  padding: 8px 0;
   margin: 0px 4px;
   text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
   color: ${COLORS.primaryGray};
@@ -80,7 +80,16 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
     margin: 0 0.5rem;
   }
 
-  &:hover,
+  &:hover {
+    color: ${COLORS.activeWhite};
+    transition: all ease-in 0.2s;
+    svg {
+      path {
+        fill: ${COLORS.activeWhite};
+      }
+    }
+  }
+
   &.selected {
     color: ${COLORS.activeWhite};
     border-bottom: 1px solid ${COLORS.activeWhite};
@@ -250,6 +259,10 @@ export const WalletButton = styled(Button)`
   border: none;
   font-weight: 600;
   height: 5rem;
+
+  &:active {
+    background-color: ${COLORS.darkBlue};
+  }
 `
 
 export const WalletDataContainer = styled.div`
@@ -266,25 +279,25 @@ export const WalletDataContainer = styled.div`
 
   button {
     display: none;
-    transition: 0.2s;
+    transition: all 1s ease-out;
   }
 
   &:hover {
     button {
       display: block;
-      transition: 0.2s;
+      transition: all 1s ease-out;
     }
   }
 
   div {
     display: flex;
-    transition: 0.2s;
+    transition: all 1s ease-out;
   }
 
   &:hover {
     div {
       display: none;
-      transition: 0.5s;
+      transition: all 1s ease-out;
     }
   }
 `
@@ -338,6 +351,10 @@ export const WalletDisconnectButton = styled(Button)`
   border: none;
   font-weight: 600;
   height: 5rem;
+
+  &:active {
+    background-color: ${COLORS.primaryRed};
+  }
 `
 export const BalanceTitle = styled.span`
   font-size: ${FONT_SIZES.sm};

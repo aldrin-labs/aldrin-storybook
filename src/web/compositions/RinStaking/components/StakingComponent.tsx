@@ -18,7 +18,6 @@ import { dayDuration } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 
 import { RootRow } from '../styles'
-import StatsComponent from './StatsComponent'
 import UserStakingInfo from './UserStakingInfo'
 
 interface StakingComponentProps {
@@ -58,18 +57,25 @@ const StakingComponent: React.FC<StakingComponentProps> = (
   return (
     <>
       <RootRow>
-        <Cell col={12} colLg={6}>
-          <UserStakingInfo
-            stakingPool={stakingPool}
-            currentFarmingState={currentFarmingState}
-            tokenData={tokenData}
-          />
-        </Cell>
-        <Cell col={12} colLg={6}>
+        {/* <Cell
+          col={12}
+          colLg={6}
+          style={{ borderRight: `0.1rem solid ${COLORS.cardsBack}` }}
+        >
           <StatsComponent
             buyBackAmount={buyBackAmount}
             currentFarmingState={currentFarmingState}
             totalStaked={totalStaked}
+            tokenData={tokenData}
+          />
+        </Cell> */}
+        <Cell col={12} colLg={12}>
+          <UserStakingInfo
+            buyBackAmount={buyBackAmount}
+            totalStakedRIN={totalStaked}
+            stakingPool={stakingPool}
+            currentFarmingState={currentFarmingState}
+            tokenData={tokenData}
           />
         </Cell>
       </RootRow>

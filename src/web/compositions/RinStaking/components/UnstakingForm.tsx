@@ -100,12 +100,16 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
         </InputWrapper>
         <ButtonWrapper>
           <Button
-            minWidth="70px"
-            $fontSize="xs"
-            $padding="lg"
-            $borderRadius="xxl"
+            style={{
+              padding: '2rem',
+              background: '#4B2321',
+              border: '0.1rem solid #4B2321',
+            }}
+            minWidth="14rem"
+            $fontSize="sm"
+            $borderRadius="md"
             type="submit"
-            disabled={isUnstakeDisabled}
+            // disabled={isUnstakeDisabled}
             $loading={loading.unstake}
           >
             Unstake

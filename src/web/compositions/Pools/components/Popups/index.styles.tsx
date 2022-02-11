@@ -1,7 +1,6 @@
+import { Paper } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
-
-import { Paper } from '@material-ui/core'
 
 export const BoldHeader = styled.h2`
   font-family: Avenir Next Bold;
@@ -67,7 +66,9 @@ export const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   border-radius: 1.6rem;
 `
 
-export const ClaimRewardsStyledPaper = styled(({ ...props }) => <Paper {...props} />)`
+export const ClaimRewardsStyledPaper = styled(({ ...props }) => (
+  <Paper {...props} />
+))`
   height: auto;
   padding: 2rem 4rem;
   width: 80rem;

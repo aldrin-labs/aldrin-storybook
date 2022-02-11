@@ -1,3 +1,4 @@
+import { COLORS } from '@variables/variables'
 import { useFormik } from 'formik'
 import React from 'react'
 
@@ -9,8 +10,6 @@ import { STAKING_FARMING_TOKEN_DECIMALS } from '@sb/dexUtils/staking/config'
 import { TokenInfo } from '@sb/dexUtils/types'
 
 import { limitDecimalsCustom, stripByAmount } from '@core/utils/chartPageUtils'
-
-import StakeBtn from '@icons/stakeBtn.png'
 
 import {
   ButtonWrapper,
@@ -98,11 +97,11 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
         </InputWrapper>
         <ButtonWrapper>
           <Button
-            minWidth="70px"
-            $backgroundImage={StakeBtn}
-            $fontSize="xs"
-            $padding="lg"
-            $borderRadius="xxl"
+            style={{ padding: '2rem' }}
+            backgroundColor={COLORS.bluePrimary}
+            minWidth="14rem"
+            $fontSize="sm"
+            $borderRadius="md"
             $loading={loading.stake}
             disabled={Object.keys(form.errors).length !== 0 || loading.stake}
           >
