@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import { PublicKey } from '@solana/web3.js'
-import { FONT_SIZES } from '@variables/variables'
+import { FONT_SIZES, COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -47,13 +47,14 @@ import {
 import { DAY, daysInMonthForDate } from '@core/utils/dateUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import { Button } from '../../../components/Button'
 import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
+import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
 import { restake } from '../../../dexUtils/staking/actions'
 import { toMap } from '../../../utils'
 import { Asterisks, BalanceRow, BigNumber, Digit, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
 import { StakingForm } from './StakingForm'
+import { RestakeButton, ClaimButton } from './styles'
 import { StakingInfoProps } from './types'
 import { UnstakingForm } from './UnstakingForm'
 import {
@@ -705,12 +706,42 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   )}
                 </InlineText>{' '}
                 <FlexBlock>
-                  <Button onClick={doRestake} $variant="link">
+                  <RestakeButton
+                    disabled={isClaimDisabled || loading.claim}
+                    $loading={loading.claim}
+                    $fontSize="sm"
+                    onClick={doRestake}
+                  >
                     Restake
-                  </Button>
-                  <Button onClick={claimRewards} $variant="link">
-                    Claim
-                  </Button>
+                  </RestakeButton>
+                  <DarkTooltip
+                    delay={0}
+                    title={
+                      !isClaimDisabled ? (
+                        ''
+                      ) : (
+                        <p>
+                          Rewards distribution takes place on the 27th day of
+                          each month, you will be able to claim your reward for
+                          this period on{' '}
+                          <span style={{ color: COLORS.success }}>
+                            {claimUnlockData}.
+                          </span>
+                        </p>
+                      )
+                    }
+                  >
+                    <span>
+                      <ClaimButton
+                        disabled={isClaimDisabled || loading.claim}
+                        $loading={loading.claim}
+                        $fontSize="sm"
+                        onClick={claimRewards}
+                      >
+                        Claim
+                      </ClaimButton>
+                    </span>
+                  </DarkTooltip>
                 </FlexBlock>
               </StretchedBlock>
             </BlockContentStretched>

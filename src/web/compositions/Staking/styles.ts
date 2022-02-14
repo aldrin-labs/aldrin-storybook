@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import { Block } from '@sb/components/Block'
 import { BlackPage } from '@sb/components/Layout'
 
+import { ContentBlockProps } from './types'
+
 export const StakingBlock = styled(Block)`
   background: ${COLORS.defaultGray};
 `
@@ -14,10 +16,10 @@ export const Content = styled.div`
   width: 100%;
   margin: 20px auto;
 `
-export const ContentBlock = styled.div`
+export const ContentBlock = styled.div<ContentBlockProps>`
   margin: 2rem 0;
   display: flex;
-  width: ${(props) => props.width || '100%'};
+  width: ${(props: ContentBlockProps) => props.width || '100%'};
   height: auto;
   padding: 2rem;
   flex-direction: column;
