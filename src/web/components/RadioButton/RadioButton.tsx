@@ -1,11 +1,21 @@
 import React from 'react'
 
+import {
+  Container,
+  AttributeContainer,
+  Label,
+  Input,
+  Checkmark,
+} from './RadioButton.styles'
+
 export const Radio = ({
+  change,
   label = '',
   checked,
 }: {
   label?: string
   checked: boolean
+  change: () => void
 }) => (
   <div>
     <Container>
@@ -18,6 +28,7 @@ export const Radio = ({
             id="inside"
             value="inside"
             checked={checked}
+            onChange={() => change()}
           />
           <Checkmark />
         </Label>

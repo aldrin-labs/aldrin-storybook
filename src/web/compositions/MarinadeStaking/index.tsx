@@ -1,18 +1,21 @@
 import { COLORS } from '@variables/variables'
 import React, { useState } from 'react'
 
-import { Button } from '@sb/components/Button'
-import { FlexBlock, Page } from '@sb/components/Layout'
+import { Page } from '@sb/components/Layout'
+import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { StakingInput } from '../RinStaking/styles'
+import { StakingInputWithAttributes } from '../Staking/StakingInput/StakingInput'
 import { StretchedContent, ContentBlock, GrayButton } from '../Staking/styles'
 import MarinadeBg from './bg.png'
+import { BlockWithRadio } from './components/styles'
 import { Switcher } from './components/Switcher/Switcher'
 
 export const MarinadeStaking = () => {
+  const [canUserUnstakeNow, setIfUserCanUnstakeNow] = useState(true)
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
+
   return (
     <Page>
       <RowContainer margin="5rem 0" direction="column">
@@ -55,34 +58,73 @@ export const MarinadeStaking = () => {
               </InlineText>
             </RowContainer>
             <RowContainer>
-              <StakingInput
+              <StakingInputWithAttributes
+                value="0"
+                onChange={() => {}}
                 placeholder="0"
-                append={
-                  <FlexBlock direction="row" alignItems="center">
-                    &nbsp;
-                    <Button
-                      minWidth="2rem"
-                      $fontSize="xs"
-                      $borderRadius="xxl"
-                      onClick={() => {}}
-                      type="button"
-                      $variant="primary"
-                    >
-                      MAX
-                    </Button>
-                    &nbsp;
-                    <span>RIN</span>
-                  </FlexBlock>
-                }
+                directionText={isStakeModeOn ? 'Stake' : 'Unstake'}
               />
             </RowContainer>
+            <RowContainer margin="2rem 0">
+              <StakingInputWithAttributes
+                value="0"
+                onChange={() => {}}
+                placeholder="0"
+                directionText="Receive"
+              />
+            </RowContainer>
+            {!isStakeModeOn && (
+              <RowContainer justify="space-between">
+                <BlockWithRadio checked={canUserUnstakeNow}>
+                  <RowContainer justify="space-between">
+                    <InlineText weight={600} size="sm">
+                      Unstake Now
+                    </InlineText>
+                    <Radio
+                      change={() => {
+                        setIfUserCanUnstakeNow(true)
+                      }}
+                      checked={canUserUnstakeNow}
+                    />
+                  </RowContainer>
+                  <RowContainer justify="space-between">
+                    <InlineText size="sm">Unstake Now</InlineText>
+                  </RowContainer>
+                </BlockWithRadio>
+                <BlockWithRadio checked={!canUserUnstakeNow}>
+                  <RowContainer justify="space-between">
+                    <InlineText weight={600} size="sm">
+                      Unstake in ≈2 days
+                    </InlineText>
+                    <Radio
+                      change={() => {
+                        setIfUserCanUnstakeNow(false)
+                      }}
+                      checked={!canUserUnstakeNow}
+                    />
+                  </RowContainer>
+                  <RowContainer justify="space-between">
+                    <InlineText weight={600} size="sm">
+                      No fee
+                    </InlineText>
+                  </RowContainer>
+                </BlockWithRadio>{' '}
+              </RowContainer>
+            )}
+
             <RowContainer>
-              <GrayButton style={{ background: COLORS.bluePrimary }}>
-                Stake
+              <GrayButton
+                style={{
+                  background: isStakeModeOn
+                    ? COLORS.bluePrimary
+                    : 'rgba(224, 66, 55, 0.25)',
+                }}
+              >
+                {isStakeModeOn ? 'Stake' : 'Unstake'}
               </GrayButton>
             </RowContainer>
             <RowContainer justify="space-between">
-              <ContentBlock width="48%">
+              <ContentBlock width={isStakeModeOn ? '48%' : '100%'}>
                 <RowContainer justify="space-between">
                   {' '}
                   <InlineText color="primaryGray" size="sm">
@@ -91,15 +133,17 @@ export const MarinadeStaking = () => {
                   <InlineText size="es">1 mSOL ⇄ 1.0313 SOL</InlineText>
                 </RowContainer>
               </ContentBlock>
-              <ContentBlock width="48%">
-                <RowContainer justify="space-between">
-                  {' '}
-                  <InlineText color="primaryGray" size="sm">
-                    Deposit fee:{' '}
-                  </InlineText>{' '}
-                  <InlineText size="es">0%</InlineText>
-                </RowContainer>
-              </ContentBlock>
+              {isStakeModeOn && (
+                <ContentBlock width="48%">
+                  <RowContainer justify="space-between">
+                    {' '}
+                    <InlineText color="primaryGray" size="sm">
+                      Deposit fee:{' '}
+                    </InlineText>{' '}
+                    <InlineText size="es">0%</InlineText>
+                  </RowContainer>
+                </ContentBlock>
+              )}
             </RowContainer>
           </ContentBlock>
         </Row>

@@ -261,11 +261,11 @@ export const InputWrapper = styled.div`
 `
 
 export const StakingInput = styled(Input)`
-  border-radius: ${BORDER_RADIUS.md};
-  height: 6.8rem;
+  border-radius: 1.5rem;
+  height: 7.5rem;
   background-color: ${COLORS.cardsBack};
   border: 0.1rem solid ${COLORS.background};
-
+  width: 100%;
   ${InputEl} {
     padding-left: 0.7em;
   }

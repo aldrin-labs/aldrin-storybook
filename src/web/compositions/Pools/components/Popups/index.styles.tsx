@@ -1,4 +1,5 @@
 import { Paper } from '@material-ui/core'
+import { COLORS } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -43,12 +44,12 @@ export const Line = styled.div`
 `
 export const InvisibleInput = styled.input`
   width: 100%;
-  background: #222429;
-  color: #fbf2f2;
-  font-size: 2rem;
+  background: ${COLORS.cardsBack};
+  color: ${COLORS.primaryWhite};
+  font-size: 2.4rem;
   outline: none;
   border: none;
-  font-family: Avenir Next Medium;
+  font-family: Avenir Next Demi;
   &::placeholder {
     color: #f2fbfb;
     height: 2rem;

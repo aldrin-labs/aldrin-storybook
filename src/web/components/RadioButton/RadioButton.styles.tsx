@@ -8,7 +8,6 @@ const Container = styled.div`
 const AttributeContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 10px;
   margin-bottom: 13px;
 `
 
@@ -31,18 +30,18 @@ const Checkmark = styled.span`
   position: absolute;
   top: 0;
   left: 0;
-  height: 15px;
-  width: 15px;
+  height: 13px;
+  width: 13px;
   border: 1px solid #818181;
   border-radius: 50%;
   &::after {
     content: '';
     position: absolute;
     display: none;
-    top: 2px;
-    left: 2px;
-    width: 11px;
-    height: 11px;
+    top: 1.5px;
+    left: 1.5px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background-color: ${COLORS.newGreen};
   }
