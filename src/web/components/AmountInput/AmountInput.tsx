@@ -12,12 +12,22 @@ import {
   AmountInputElement,
   ButtonsContainer,
   ButtonsWithAmount,
+  TokenNameWrap,
 } from './styles'
 import { AmountInputProps } from './types'
 
 export const AmountInput: React.FC<AmountInputProps> = (props) => {
-  const { amount, mint, value, onChange, name, placeholder, className, size } =
-    props
+  const {
+    amount,
+    mint,
+    value,
+    onChange,
+    name,
+    placeholder,
+    className,
+    size,
+    label,
+  } = props
 
   const inputSize = size || `${value}`.length || 1
 
@@ -37,18 +47,20 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
   return (
     <AmountInputElement
       className={className}
+      borderRadius="md"
       value={value}
       name={name}
       placeholder={placeholder}
       onChange={onChange}
       size={inputSize}
+      label={label}
       append={
         <FlexBlock
           direction="row"
           justifyContent="space-between"
           alignItems="center"
         >
-          <span>{tokenName}</span>
+          <TokenNameWrap>{tokenName}</TokenNameWrap>
           <ButtonsWithAmount>
             <InlineText color="success" weight={600}>
               {stripByAmountAndFormat(amount)}

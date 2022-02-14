@@ -30,4 +30,5 @@ export interface StakingFormProps {
   totalStaked: number
   isUnstakeLocked: boolean
   unlockAvailableDate: number
+  mint: string
 }

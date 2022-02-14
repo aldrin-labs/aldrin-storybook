@@ -1,25 +1,27 @@
 import { useFormik } from 'formik'
 import React from 'react'
 
-import { Button } from '@sb/components/Button'
-import { INPUT_FORMATTERS } from '@sb/components/Input'
-
 import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
 
-import { FlexBlock } from '../../../components/Layout'
+import { AmountInput } from '../../../components/AmountInput'
 import {
   ButtonWrapper,
   FormItemFull,
   InputWrapper,
-  StakingInput,
   UnstakingFormWrap,
 } from '../styles'
 import { UnStakingFormButton } from './styles'
 import { StakingFormProps } from './types'
 
 export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
-  const { totalStaked, loading, end, isUnstakeLocked, unlockAvailableDate } =
-    props
+  const {
+    totalStaked,
+    loading,
+    end,
+    isUnstakeLocked,
+    unlockAvailableDate,
+    mint,
+  } = props
 
   const now = Date.now() / 1000
 
@@ -56,40 +58,22 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
     loading.unstake ||
     unlockAvailableDate > now
 
-  const maxButtonOnClick = () => {
-    form.setFieldValue('amount', totalStaked)
-  }
   return (
     <UnstakingFormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
         <InputWrapper>
-          <StakingInput
+          <AmountInput
             placeholder="0"
+            amount={totalStaked}
+            mint={mint}
+            name="amount"
+            label="Unstake"
             value={`${form.values.amount}`}
             onChange={async (v) => {
-              const value = limitDecimalsCustom(v.toString())
+              const value = limitDecimalsCustom(v)
               await form.setFieldValue('amount', value)
               form.validateForm()
             }}
-            name="amount"
-            append={
-              <FlexBlock direction="row" alignItems="center">
-                &nbsp;
-                <Button
-                  minWidth="2rem"
-                  $fontSize="xs"
-                  $borderRadius="xxl"
-                  onClick={maxButtonOnClick}
-                  type="button"
-                  $variant="primary"
-                >
-                  MAX
-                </Button>
-                &nbsp;
-                <span>RIN</span>
-              </FlexBlock>
-            }
-            formatter={INPUT_FORMATTERS.DECIMAL}
           />
         </InputWrapper>
         <ButtonWrapper>
@@ -98,7 +82,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
             $fontSize="sm"
             $borderRadius="md"
             type="submit"
-            // disabled={isUnstakeDisabled}
+            disabled={isUnstakeDisabled}
             $loading={loading.unstake}
           >
             Unstake

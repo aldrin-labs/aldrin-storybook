@@ -22,14 +22,18 @@ export const ClaimButton = styled(Button)`
   &:disabled {
     background: ${COLORS.defaultGray};
   }
+
+  img {
+    margin-right: 5px;
+    padding-top: 5px;
+  }
 `
 
 export const StakingFormButton = styled(Button)`
-  padding: 2rem;
+  padding: 1.75em;
 `
 
 export const UnStakingFormButton = styled(StakingFormButton)`
-  padding: 2.1rem 2rem;
   background: ${COLORS.brown};
   border: 0.1rem solid ${COLORS.brown};
 `

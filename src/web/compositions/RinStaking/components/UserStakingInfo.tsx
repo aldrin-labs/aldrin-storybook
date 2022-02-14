@@ -8,6 +8,7 @@ import { compose } from 'recompose'
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
+import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
@@ -18,12 +19,8 @@ import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
-import {
-  BUY_BACK_RIN_ACCOUNT_ADDRESS,
-  DAYS_TO_CHECK_BUY_BACK,
-} from '@sb/dexUtils/staking/config'
+import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
-import { getSnapshotQueueWithAMMFees } from '@sb/dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
@@ -51,8 +48,10 @@ import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
 import { restake } from '../../../dexUtils/staking/actions'
 import { toMap } from '../../../utils'
-import { Asterisks, BalanceRow, BigNumber, Digit, FormsWrap } from '../styles'
+import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
+import ClockIcon from './assets/clock.svg'
+import InfoIcon from './assets/info.svg'
 import { StakingForm } from './StakingForm'
 import { RestakeButton, ClaimButton } from './styles'
 import { StakingInfoProps } from './types'
@@ -63,24 +62,6 @@ import {
   resolveRestakeNotification,
   resolveUnstakingNotification,
 } from './utils'
-
-const UserBalance: React.FC<UserBalanceProps> = (props) => {
-  const { decimals, value, visible } = props
-  const formatted = decimals
-    ? stripDigitPlaces(value, decimals)
-    : stripByAmountAndFormat(value)
-  const len = `${formatted}`.length
-  let asterisks = ''
-  for (let i = 0; i < len; i += 1) {
-    asterisks += '*'
-  }
-  return (
-    <BalanceRow>
-      <Digit>{visible ? formatted : <Asterisks>{asterisks}</Asterisks>}</Digit>
-      &nbsp;RIN
-    </BalanceRow>
-  )
-}
 
 const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
@@ -103,8 +84,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     refreshTotalStaked()
   }, 30000)
 
-  const [isBalancesShowing, setIsBalancesShowing] = useState(true)
-  const [isRestakePopupOpen, setIsRestakePopupOpen] = useState(false)
   const [loading, setLoading] = useState({
     stake: false,
     unstake: false,
@@ -123,13 +102,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const { data: calcAccounts, mutate: reloadCalcAccounts } =
     useStakingCalcAccounts()
-
-  const [buyBackAmountOnAccount] = useAccountBalance({
-    publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
-  })
-
-  const buyBackAmountWithDecimals =
-    buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
 
   const [allStakingSnapshotQueues, refreshAllStakingSnapshotQueues] =
     useStakingSnapshotQueues({
@@ -160,25 +132,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       reloadCalcAccounts(),
     ])
   }
-
-  const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
-    farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
-    buyBackAmount: buyBackAmountWithDecimals,
-    snapshotQueues: allStakingSnapshotQueues,
-  })
-
-  // Total rewards, include not finished state
-  const estimateRewardsTickets = addFarmingRewardsToTickets({
-    farmingTickets: userFarmingTickets,
-    pools: [stakingPool],
-    snapshotQueues: snapshotQueueWithAMMFees,
-  })
-
-  const estimatedRewards = getAvailableToClaimFarmingTokens(
-    estimateRewardsTickets,
-    calcAccounts,
-    currentFarmingState.farmingTokenMintDecimals
-  )
 
   // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
   // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
@@ -368,10 +321,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const buyBackAPR =
     (buyBackAmount / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) * 365 * 100
 
-  const buyBackDailyRewards = buyBackAmount / DAYS_TO_CHECK_BUY_BACK
-
-  const dailyRewards = treasuryDailyRewards + buyBackDailyRewards
-
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
   const formattedBuyBackAPR = isFinite(buyBackAPR)
@@ -400,193 +349,35 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const shareText = getShareText(formattedAPR)
 
   return (
-    // <>
-    //   <BlockContent border>
-    //     <WalletRow>
-    //       <div>
-    //         <StretchedBlock align="center">
-    //           <BlockTitle>Your RIN Staking</BlockTitle>
-    //           <SvgIcon
-    //             style={{ cursor: 'pointer' }}
-    //             src={isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye}
-    //             width="1.5em"
-    //             height="auto"
-    //             onClick={() => {
-    //               setIsBalancesShowing(!isBalancesShowing)
-    //             }}
-    //           />
-    //         </StretchedBlock>
-    //         <StyledTextDiv>
-    //           {isBalancesShowing ? walletAddress : '***'}
-    //         </StyledTextDiv>
-    //       </div>
-    //       <WalletBalanceBlock>
-    //         <WalletAvailableTitle>Available in wallet:</WalletAvailableTitle>
-    //         <BalanceWrap>
-    //           <UserBalance
-    //             visible={isBalancesShowing}
-    //             value={tokenData?.amount || 0}
-    //           />
-    //         </BalanceWrap>
-    //       </WalletBalanceBlock>
-    //     </WalletRow>
-    //   </BlockContent>
-    //   <BlockContent>
-    //     <Row>
-    //       <Cell colMd={4} colLg={12} colXl={4}>
-    //         <TotalStakedBlock inner>
-    //           <BlockContent>
-    //             <DarkTooltip title={`${stripByAmount(totalStaked)} RIN`}>
-    //               <RewardsStatsRow>
-    //                 <RewardsTitle>Total staked:</RewardsTitle>
-    //                 <UserBalance
-    //                   visible={isBalancesShowing}
-    //                   value={totalStaked}
-    //                 />
-    //               </RewardsStatsRow>
-    //             </DarkTooltip>
-    //           </BlockContent>
-    //         </TotalStakedBlock>
-    //       </Cell>
-    //       <Cell colMd={8} colLg={12} colXl={8}>
-    //         <RewardsBlock inner>
-    //           <BlockContent>
-    //             <RewardsStats>
-    //               <RewardsStatsRow>
-    //                 <RewardsTitle style={{ display: 'flex' }}>
-    //                   Est.Rewards:
-    //                   <DarkTooltip
-    //                     title={
-    //                       <p>
-    //                         Staking rewards are paid on the{' '}
-    //                         <strong> 27th of the every month</strong> based on
-    //                         RIN weekly buy-backs on 1/6th of AMM fees .
-    //                         Estimated rewards are updated{' '}
-    //                         <strong>hourly based on treasury rewards</strong>{' '}
-    //                         and&nbsp;
-    //                         <strong>weekly based on RIN buyback</strong>.
-    //                       </p>
-    //                     }
-    //                   >
-    //                     <div>
-    //                       <SvgIcon
-    //                         src={InfoIcon}
-    //                         width="1.75rem"
-    //                         height="1.75rem"
-    //                         style={{ marginLeft: '0.75rem' }}
-    //                       />
-    //                     </div>
-    //                   </DarkTooltip>
-    //                 </RewardsTitle>
-    //                 <DarkTooltip
-    //                   title={`${stripByAmount(estimatedRewards)} RIN`}
-    //                 >
-    //                   <div>
-    //                     <UserBalance
-    //                       visible={isBalancesShowing}
-    //                       value={estimatedRewards}
-    //                       decimals={2}
-    //                     />
-    //                   </div>
-    //                 </DarkTooltip>
-    //               </RewardsStatsRow>
-    //               <DarkTooltip
-    //                 title={`${stripByAmount(availableToClaimTotal)} RIN`}
-    //               >
-    //                 <RewardsStatsRow>
-    //                   <RewardsTitle>Available to claim:</RewardsTitle>
-    //                   {snapshotsProcessing ? (
-    //                     <InlineText size="sm">Processing...</InlineText>
-    //                   ) : (
-    //                     <UserBalance
-    //                       visible={isBalancesShowing}
-    //                       value={availableToClaimTotal}
-    //                       decimals={2}
-    //                     />
-    //                   )}
-    //                 </RewardsStatsRow>
-    //               </DarkTooltip>
-    //               <ClaimButtonContainer>
-    //                 <DarkTooltip
-    //                   delay={0}
-    //                   title={
-    //                     !isClaimDisabled ? (
-    //                       ''
-    //                     ) : (
-    //                       <p>
-    //                         Rewards distribution takes place on the 27th day of
-    //                         each month, you will be able to claim your reward
-    //                         for this period on{' '}
-    //                         <span style={{ color: COLORS.success }}>
-    //                           {claimUnlockData}.
-    //                         </span>
-    //                       </p>
-    //                     )
-    //                   }
-    //                 >
-    //                   <span>
-    //                     <Button
-    //                       $variant="primary"
-    //                       $fontSize="xs"
-    //                       $padding="lg"
-    //                       disabled={isClaimDisabled || loading.claim}
-    //                       $loading={loading.claim}
-    //                       $borderRadius="xxl"
-    //                       onClick={claimRewards}
-    //                     >
-    //                       Claim
-    //                     </Button>
-    //                   </span>
-    //                 </DarkTooltip>
-    //                 <RestakeButton
-    //                   $variant="link"
-    //                   $fontSize="xs"
-    //                   $padding="lg"
-    //                   disabled={isClaimDisabled || loading.claim}
-    //                   $loading={loading.claim}
-    //                   $borderRadius="xxl"
-    //                   onClick={doRestake}
-    //                 >
-    //                   Restake
-    //                 </RestakeButton>
-    //               </ClaimButtonContainer>
-    //             </RewardsStats>
-    //           </BlockContent>
-    //         </RewardsBlock>
-    //       </Cell>
-    //     </Row>
-
-    //     <FormsContainer>
-    //       <StakingForm tokenData={tokenData} start={start} loading={loading} />
-    //       <UnstakingForm
-    //         isUnstakeLocked={isUnstakeLocked}
-    //         unlockAvailableDate={unlockAvailableDate}
-    //         totalStaked={totalStaked}
-    //         end={end}
-    //         loading={loading}
-    //       />
-    //     </FormsContainer>
-    //   </BlockContent>
-    //   <RestakePopup
-    //     open={isRestakePopupOpen}
-    //     close={() => setIsRestakePopupOpen(false)}
-    //   />
-    // </>
     <>
       <Row>
         <Cell colMd={6} colXl={3} col={12}>
           <GreenBlock>
             <BlockContentStretched>
-              <InlineText color="lightGray" size="sm">
-                Estimated Rewards
-              </InlineText>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  flexWrap: 'nowrap',
-                }}
-              >
+              <FlexBlock alignItems="center" justifyContent="space-between">
+                <InlineText color="lightGray" size="sm">
+                  Estimated Rewards
+                </InlineText>
+                <DarkTooltip
+                  title={
+                    <p>
+                      Staking rewards are paid on the{' '}
+                      <strong> 27th of the every month</strong> based on RIN
+                      weekly buy-backs on 1/6th of AMM fees . Estimated rewards
+                      are updated{' '}
+                      <strong>hourly based on treasury rewards</strong>{' '}
+                      and&nbsp;
+                      <strong>weekly based on RIN buyback</strong>.
+                    </p>
+                  }
+                >
+                  <span>
+                    <SvgIcon src={InfoIcon} />
+                  </span>
+                </DarkTooltip>
+              </FlexBlock>
+
+              <FlexBlock alignItems="flex-end">
                 <InlineText size="lg" weight={700} color="newGreen">
                   {formattedAPR}%{' '}
                   <InlineText
@@ -597,10 +388,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                     APR
                   </InlineText>
                 </InlineText>
-              </div>
+              </FlexBlock>
 
               <StretchedBlock>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <FlexBlock alignItems="center">
                   <InlineText
                     size="sm"
                     color="lightGray"
@@ -611,26 +402,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   >
                     {formattedTreasuryAPR}% + {formattedBuyBackAPR}%
                   </InlineText>
-                  {/* <DarkTooltip
-                    title={
-                      <span>
-                        <div style={{ marginBottom: '1rem' }}>
-                          The first APR is calculated based on fixed “treasury”
-                          rewards. These rewards estimation are updated hourly.
-                        </div>
-                        <div>
-                          The second APR is calculated based on the current RIN
-                          price and the average AMM fees for the past 7d. The
-                          reward estimations are updated weekly.
-                        </div>
-                      </span>
-                    }
-                  >
-                    <div style={{ display: 'flex' }}>
-                      <SvgIcon src={Info} width="1.2em" height="auto" />
-                    </div>
-                  </DarkTooltip> */}
-                </div>
+                </FlexBlock>
                 <div>
                   <ShareButton
                     iconFirst
@@ -689,9 +461,25 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         <Cell colMd={6} colXl={3} col={12}>
           <Block>
             <BlockContentStretched>
-              <InlineText color="lightGray" size="sm">
-                Your Rewards
-              </InlineText>{' '}
+              <FlexBlock alignItems="center" justifyContent="space-between">
+                <InlineText color="lightGray" size="sm">
+                  Your rewards
+                </InlineText>
+                <DarkTooltip
+                  title={
+                    <p>
+                      Staking rewards are paid on the 27th of the every month
+                      based on RIN weekly buybacks on 1/6 of AMM fees. Estimated
+                      rewards are updated hourly on threasury rewards and weekly
+                      based on RIN buyback,
+                    </p>
+                  }
+                >
+                  <span>
+                    <SvgIcon src={InfoIcon} />
+                  </span>
+                </DarkTooltip>
+              </FlexBlock>
               <BigNumber>
                 <InlineText>
                   {stripByAmountAndFormat(availableToClaimTotal)}{' '}
@@ -738,6 +526,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         $fontSize="sm"
                         onClick={claimRewards}
                       >
+                        {isClaimDisabled ? <SvgIcon src={ClockIcon} /> : null}
                         Claim
                       </ClaimButton>
                     </span>
@@ -765,6 +554,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 totalStaked={totalStaked}
                 end={end}
                 loading={loading}
+                mint={currentFarmingState.farmingTokenMint}
               />
             </Cell>
           </Row>

@@ -54,6 +54,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       <FormItemFull>
         <InputWrapper>
           <AmountInput
+            label="Stake"
             placeholder="0"
             amount={tokenData?.amount || 0}
             mint={tokenData?.mint || ''}

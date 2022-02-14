@@ -1,4 +1,4 @@
-import { BORDER_RADIUS, COLORS } from '@variables/variables'
+import { COLORS } from '@variables/variables'
 import styled from 'styled-components'
 
 import { Button } from '../Button'
@@ -8,7 +8,6 @@ import { InlineText } from '../Typography'
 import WalletIcon from './wallet.svg'
 
 export const AmountInputElement = styled(Input)`
-  border-radius: ${BORDER_RADIUS.md};
   height: 4.25em;
   background-color: ${COLORS.cardsBack};
   border: 0.1rem solid ${COLORS.background};
@@ -58,4 +57,10 @@ export const ButtonsContainer = styled.div`
       margin-right: 0;
     }
   }
+`
+
+export const TokenNameWrap = styled.span`
+  padding-top: 1.5em;
+  color: ${COLORS.white};
+  font-weight: bold;
 `

@@ -1,8 +1,8 @@
 import { useField } from 'formik'
 import { noop } from 'lodash-es'
-import React from 'react'
+import React, { useRef } from 'react'
 
-import { Append, InputEl, InputWrap } from './styles'
+import { Append, InputEl, InputWrap, Label } from './styles'
 import { FieldProps, InputProps } from './types'
 import { validateDecimal, validateNatural, validateRegexp } from './utils'
 
@@ -35,6 +35,7 @@ export const REGEXP_FORMATTER =
   }
 
 export const Input: React.FC<InputProps> = (props) => {
+  const input = useRef<HTMLInputElement | null>(null)
   const {
     placeholder,
     onChange,
@@ -47,23 +48,36 @@ export const Input: React.FC<InputProps> = (props) => {
     variant = 'default',
     borderRadius = 'xxl',
     disabled,
+    label,
   } = props
 
+  const setFocus = () => {
+    if (input.current) {
+      input.current.focus()
+    }
+  }
   return (
     <InputWrap
       $borderRadius={borderRadius}
       $variant={variant}
       className={className}
       $disabled={disabled}
+      $withLabel={!!label}
+      onClick={setFocus}
     >
-      <InputEl
-        size={size}
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(formatter(e.target.value, value))}
-        name={name}
-        disabled={disabled}
-      />
+      <div>
+        {label && <Label>{label}</Label>}
+
+        <InputEl
+          size={size}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(formatter(e.target.value, value))}
+          name={name}
+          disabled={disabled}
+          ref={input}
+        />
+      </div>
 
       {append && <Append>{append}</Append>}
     </InputWrap>

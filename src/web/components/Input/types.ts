@@ -12,6 +12,7 @@ export interface WrapProps {
   $borderRadius: keyof typeof BORDER_RADIUS
   $variant: keyof typeof VARIANTS
   $disabled?: boolean
+  $withLabel?: boolean
 }
 
 // To share with other input-based components, for example AmountInput
@@ -23,6 +24,7 @@ export interface InputCommon {
   variant?: keyof typeof VARIANTS
   borderRadius?: keyof typeof BORDER_RADIUS
   disabled?: boolean
+  label?: ReactNode
 }
 
 export interface InputBase extends InputCommon {
