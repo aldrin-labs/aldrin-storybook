@@ -196,7 +196,7 @@ export const DropdownContent = styled.div`
   top: 100%;
   flex-direction: column;
   display: none;
-  z-index: 1;
+  z-index: 100000;
   background: rgba(0, 0, 0, 0.001);
 `
 
@@ -206,7 +206,6 @@ export const DropdownWrap = styled.div<ShowHideProps>`
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 100000;
 
   &:hover ${DropdownContent} {
     display: flex;

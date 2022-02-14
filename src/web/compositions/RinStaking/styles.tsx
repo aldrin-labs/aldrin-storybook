@@ -268,9 +268,7 @@ export const StakingInput = styled(Input)`
   height: 6.8rem;
   background-color: ${COLORS.cardsBack};
   border: 0.1rem solid ${COLORS.background};
-  &:focus {
-    border: 0.1rem solid #aaaaaa;
-  }
+
   ${InputEl} {
     padding-left: 0.7em;
   }

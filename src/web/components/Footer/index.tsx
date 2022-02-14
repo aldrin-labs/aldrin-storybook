@@ -13,7 +13,7 @@ import {
 export const Footer = () => {
   return (
     <RowContainer height="8rem" justify="space-between">
-      <Row width="20%" justify="space-between">
+      <Row width="25%" justify="space-between" wrap="nowrap">
         <LinkToTwitter />
         <LinkToCoinGecko />
         <LinkToCoinMarketcap />

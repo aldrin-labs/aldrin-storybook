@@ -1,15 +1,18 @@
 import { COLORS } from '@variables/variables'
-import React from 'react'
+import React, { useState } from 'react'
 
-import { Page } from '@sb/components/Layout'
+import { Button } from '@sb/components/Button'
+import { FlexBlock, Page } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { StakingInput } from '../RinStaking/styles'
 import { StretchedContent, ContentBlock, GrayButton } from '../Staking/styles'
 import MarinadeBg from './bg.png'
+import { Switcher } from './components/Switcher/Switcher'
 
 export const MarinadeStaking = () => {
+  const [isStakeModeOn, setIsStakeModeOn] = useState(true)
   return (
     <Page>
       <RowContainer margin="5rem 0" direction="column">
@@ -28,7 +31,7 @@ export const MarinadeStaking = () => {
                 55.9%
               </InlineText>
             </ContentBlock>
-            <ContentBlock style={{ background: COLORS.newBlack }} width="48%">
+            <ContentBlock style={{ background: '#121E10' }} width="48%">
               <Row justify="flex-start" margin="0 0 2rem 0">
                 <InlineText color="primaryGray" size="sm">
                   APY
@@ -42,13 +45,36 @@ export const MarinadeStaking = () => {
         </Row>
         <Row width="30%">
           <ContentBlock style={{ margin: '0', background: COLORS.newBlack }}>
+            <Switcher
+              setIsStakeModeOn={setIsStakeModeOn}
+              isStakeModeOn={isStakeModeOn}
+            />
             <RowContainer margin="0 0 2rem 0" justify="space-between">
               <InlineText color="primaryGray" size="sm">
                 Stake SOL and use mSOL while earning rewards
               </InlineText>
             </RowContainer>
             <RowContainer>
-              <StakingInput placeholder="0" />
+              <StakingInput
+                placeholder="0"
+                append={
+                  <FlexBlock direction="row" alignItems="center">
+                    &nbsp;
+                    <Button
+                      minWidth="2rem"
+                      $fontSize="xs"
+                      $borderRadius="xxl"
+                      onClick={() => {}}
+                      type="button"
+                      $variant="primary"
+                    >
+                      MAX
+                    </Button>
+                    &nbsp;
+                    <span>RIN</span>
+                  </FlexBlock>
+                }
+              />
             </RowContainer>
             <RowContainer>
               <GrayButton style={{ background: COLORS.bluePrimary }}>
@@ -60,7 +86,7 @@ export const MarinadeStaking = () => {
                 <RowContainer justify="space-between">
                   {' '}
                   <InlineText color="primaryGray" size="sm">
-                    Rate{' '}
+                    Rate:{' '}
                   </InlineText>{' '}
                   <InlineText size="es">1 mSOL ⇄ 1.0313 SOL</InlineText>
                 </RowContainer>
