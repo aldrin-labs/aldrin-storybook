@@ -1,12 +1,15 @@
 import { COLORS } from '@variables/variables'
 import React, { useState } from 'react'
 
+import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
+import { Button } from '@sb/components/Button'
 import { Page } from '@sb/components/Layout'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
+import Clock from '../RinStaking/components/assets/clock.svg'
 import { InputWrapper } from '../RinStaking/styles'
 import { StretchedContent, ContentBlock, GrayButton } from '../Staking/styles'
 import MarinadeBg from './bg.png'
@@ -23,6 +26,66 @@ export const MarinadeStaking = () => {
       <RowContainer margin="5rem 0" direction="column">
         <Container>
           <img src={MarinadeBg} width="100%" height="auto" alt="marinade" />
+        </Container>
+        <Container>
+          <ContentBlock
+            style={{
+              margin: '2rem 0 0 0',
+              background: COLORS.newBlack,
+              flexDirection: 'column',
+            }}
+          >
+            <InlineText size="sm" weight={700} color="lightGray">
+              Your unstake tickets
+            </InlineText>
+            <ContentBlock style={{ margin: '1rem 0' }}>
+              <RowContainer justify="space-between">
+                {' '}
+                <InlineText
+                  color="lightGray"
+                  size="sm"
+                  style={{ textDecoration: 'underline' }}
+                >
+                  5FbM...2ktH
+                </InlineText>{' '}
+                <InlineText size="sm">
+                  Receive{' '}
+                  <InlineText weight={600} color="newGreen">
+                    5.1252 SOL
+                  </InlineText>
+                </InlineText>
+                <Button
+                  $fontSize="sm"
+                  $borderRadius="md"
+                  style={{ fontWeight: '600' }}
+                >
+                  Claim
+                </Button>
+              </RowContainer>
+            </ContentBlock>
+            <ContentBlock style={{ margin: '1rem 0' }}>
+              <RowContainer justify="space-between">
+                {' '}
+                <InlineText
+                  color="lightGray"
+                  size="sm"
+                  style={{ textDecoration: 'underline' }}
+                >
+                  5FbM...2ktH
+                </InlineText>{' '}
+                <InlineText size="sm">
+                  Receive{' '}
+                  <InlineText weight={600} color="newGreen">
+                    5.1252 SOL
+                  </InlineText>
+                </InlineText>
+                <InlineText size="sm">
+                  {' '}
+                  <SvgIcon src={Clock} height="11px" /> 1d 8h 14m
+                </InlineText>
+              </RowContainer>
+            </ContentBlock>
+          </ContentBlock>
         </Container>
         <Container>
           <StretchedContent>
