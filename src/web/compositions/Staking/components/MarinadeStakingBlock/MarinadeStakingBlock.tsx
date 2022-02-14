@@ -3,7 +3,13 @@ import React from 'react'
 import { BlockTitle, BlockContent } from '@sb/components/Block'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { toMap } from '@sb/utils/collection'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
+import { useMarinadeStakingInfo } from '../../../../dexUtils/staking/hooks/useMarinadeStakingInfo'
 import {
   ContentBlock,
   StakingBlock,
@@ -14,8 +20,30 @@ import {
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Marinade from './marinadeLogo.svg'
 import { AbsoluteImg, LogoWrap } from './styles'
+import { MarinadeStakingProps } from './types'
 
-export const MarinadeStakingBlock: React.FC = (props) => {
+const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
+  const { data: mSolInfo } = useMarinadeStakingInfo()
+
+  const {
+    getDexTokensPricesQuery: { getDexTokensPrices: prices },
+  } = props
+
+  const pricesMap = toMap(prices, (p) => p.symbol)
+
+  const solPrice = pricesMap.get('SOL') || { price: 0 }
+
+  // console.log('solPrice: ', solPrice)
+
+  const totalStakedSol =
+    (mSolInfo?.mSolMintSupply || 0) * (mSolInfo?.mSolPrice || 0)
+
+  const totalStakedUsdValue = totalStakedSol * solPrice.price
+
+  const epochPct = mSolInfo
+    ? (mSolInfo.epochInfo.slotIndex / mSolInfo.epochInfo.slotsInEpoch) * 100
+    : 0
+
   return (
     <StakingBlock>
       <LogoWrap>
@@ -32,8 +60,11 @@ export const MarinadeStakingBlock: React.FC = (props) => {
               Total Staked
             </InlineText>
             <InlineText size="rg" weight={700}>
-              10.25m{' '}
+              {totalStakedSol
+                ? stripByAmountAndFormat(totalStakedSol, 2)
+                : '---'}
               <InlineText color="primaryGray" weight={600}>
+                {' '}
                 SOl{' '}
               </InlineText>
             </InlineText>
@@ -43,7 +74,10 @@ export const MarinadeStakingBlock: React.FC = (props) => {
               to 467 Validators{' '}
             </InlineText>{' '}
             <InlineText size="sm" weight={700}>
-              <InlineText color="primaryGray">$</InlineText> 10.25m
+              <InlineText color="primaryGray">$</InlineText>{' '}
+              {totalStakedUsdValue
+                ? stripByAmountAndFormat(totalStakedUsdValue, 2)
+                : '---'}
             </InlineText>
           </RowContainer>
         </ContentBlock>
@@ -56,7 +90,10 @@ export const MarinadeStakingBlock: React.FC = (props) => {
               </InlineText>{' '}
             </Row>
             <InlineText size="rg" weight={700}>
-              1.91 <InlineText color="primaryGray">SOL</InlineText>
+              {mSolInfo?.mSolPrice
+                ? stripByAmountAndFormat(mSolInfo.mSolPrice, 4)
+                : '---'}{' '}
+              <InlineText color="primaryGray">SOL</InlineText>
             </InlineText>
           </ContentBlock>
           <ContentBlock width="48%">
@@ -66,10 +103,7 @@ export const MarinadeStakingBlock: React.FC = (props) => {
               </InlineText>{' '}
             </Row>
             <InlineText size="rg" weight={700}>
-              <InlineText color="primaryGray" weight={700}>
-                $
-              </InlineText>{' '}
-              10.25m
+              {stripByAmountAndFormat(epochPct, 2)}%
             </InlineText>
           </ContentBlock>
         </StretchedContent>
@@ -80,3 +114,11 @@ export const MarinadeStakingBlock: React.FC = (props) => {
     </StakingBlock>
   )
 }
+
+export const MarinadeStakingBlock = queryRendererHoc({
+  query: getDexTokensPrices,
+  name: 'getDexTokensPricesQuery',
+  fetchPolicy: 'cache-and-network',
+  withoutLoading: true,
+  pollInterval: 60000,
+})(MrndStakingBlock)
