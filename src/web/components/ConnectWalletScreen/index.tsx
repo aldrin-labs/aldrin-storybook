@@ -1,5 +1,5 @@
 import { Theme, withTheme } from '@material-ui/core'
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { SvgIcon } from '@sb/components'
 import {
@@ -16,6 +16,7 @@ import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 interface ConnectWalletContentProps {
   theme: Theme
   size?: 'md' | 'sm'
+  text?: ReactNode
 }
 
 // TODO: styled-components
@@ -39,7 +40,7 @@ const SIZES = {
 }
 
 const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
-  const { theme, size = 'md' } = props
+  const { theme, size = 'md', text = 'Connect your wallet to begin.' } = props
   const sizes = SIZES[size]
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
@@ -49,14 +50,16 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
         <SvgIcon src={LightLogo} width={sizes.icon} height={sizes.icon} />
       </RowContainer>
       <RowContainer margin={sizes.titleMargin}>
-        <Title
-          fontFamily="Avenir Next Demi"
-          fontSize={sizes.fontSize}
-          color={COLORS.primaryWhite}
-          style={{ textAlign: 'center' }}
-        >
-          Connect your wallet to begin.
-        </Title>
+        {text && (
+          <Title
+            fontFamily="Avenir Next Demi"
+            fontSize={sizes.fontSize}
+            color={COLORS.primaryWhite}
+            style={{ textAlign: 'center' }}
+          >
+            {text}
+          </Title>
+        )}
       </RowContainer>
       <RowContainer margin={sizes.btnContainerMargin}>
         <BtnCustom

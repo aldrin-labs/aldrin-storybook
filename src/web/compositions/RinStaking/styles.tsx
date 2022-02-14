@@ -238,10 +238,7 @@ export const FormWrap = styled.form`
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-
-  @media (min-width: ${BREAKPOINTS.lg}) {
-    margin-top: 20px;
-  }
+  margin: 10px;
 `
 export const UnstakingFormWrap = styled(FormWrap)``
 
@@ -347,5 +344,11 @@ export const FormsContainer = styled.div`
   @media (min-width: ${BREAKPOINTS.xl}) {
     flex-direction: row;
     justify-content: space-between;
+  }
+`
+
+export const FormsWrap = styled.div`
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin-top: 20px;
   }
 `

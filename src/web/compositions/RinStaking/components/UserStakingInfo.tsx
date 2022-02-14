@@ -6,11 +6,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
-import { Cell, StretchedBlock } from '@sb/components/Layout'
+import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import { InlineText } from '@sb/components/Typography'
-import { dayDuration } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
@@ -46,11 +44,14 @@ import {
   stripByAmountAndFormat,
   stripToMillions,
 } from '@core/utils/chartPageUtils'
-import { daysInMonthForDate } from '@core/utils/dateUtils'
+import { DAY, daysInMonthForDate } from '@core/utils/dateUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
+import { Button } from '../../../components/Button'
+import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 import { restake } from '../../../dexUtils/staking/actions'
-import { Asterisks, BalanceRow, BigNumber, Digit } from '../styles'
+import { toMap } from '../../../utils'
+import { Asterisks, BalanceRow, BigNumber, Digit, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
 import { StakingForm } from './StakingForm'
 import { StakingInfoProps } from './types'
@@ -225,7 +226,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const claimUnlockDataTimestamp = dayjs.unix(
     currentFarmingState.startTime +
-      dayDuration * daysInMonthForDate(currentFarmingState.startTime)
+      DAY * daysInMonthForDate(currentFarmingState.startTime)
   )
   const claimUnlockData = dayjs(claimUnlockDataTimestamp)
     .format('D-MMMM-YYYY')
@@ -351,11 +352,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     getRINSupply()
   }, [])
 
-  const dexTokensPricesMap =
-    getDexTokensPricesQuery?.getDexTokensPrices?.reduce(
-      (acc, tokenPrice) => acc.set(tokenPrice.symbol, tokenPrice),
-      new Map()
-    )
+  const dexTokensPricesMap = toMap(
+    getDexTokensPricesQuery?.getDexTokensPrices || [],
+    (price) => price.symbol
+  )
 
   const tokenPrice =
     dexTokensPricesMap?.get(
@@ -572,9 +572,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     //   />
     // </>
     <>
-      <RowContainer>
-        <Cell colMd={3} colSm={12}>
-          <GreenBlock margin="0 1rem">
+      <Row>
+        <Cell colMd={6} colXl={3} col={12}>
+          <GreenBlock>
             <BlockContentStretched>
               <InlineText color="lightGray" size="sm">
                 Estimated Rewards
@@ -646,8 +646,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </GreenBlock>
         </Cell>
-        <Cell colMd={3} colSm={12}>
-          <Block margin="0 1rem">
+        <Cell colMd={6} colXl={3} col={12}>
+          <Block>
             <BlockContentStretched>
               <InlineText color="lightGray" size="sm">
                 Total staked{' '}
@@ -667,8 +667,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           </Block>
         </Cell>
 
-        <Cell colMd={3} colSm={12}>
-          <Block margin="0 1rem">
+        <Cell colMd={6} colXl={3} col={12}>
+          <Block>
             <BlockContentStretched>
               <InlineText color="lightGray" size="sm">
                 Your stake
@@ -678,13 +678,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>${stripToMillions(5004)}</InlineText>{' '}
+                <InlineText>
+                  ${stripByAmountAndFormat(totalStaked * tokenPrice || 0)}
+                </InlineText>{' '}
               </StretchedBlock>
             </BlockContentStretched>
           </Block>
         </Cell>
-        <Cell colMd={3} colSm={12}>
-          <Block margin="0 1rem">
+        <Cell colMd={6} colXl={3} col={12}>
+          <Block>
             <BlockContentStretched>
               <InlineText color="lightGray" size="sm">
                 Your Rewards
@@ -696,29 +698,47 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>${stripToMillions(500)}</InlineText>{' '}
-                <InlineText size="sm">
-                  {stripDigitPlaces(50, 0)}% of circulating supply
-                </InlineText>
+                <InlineText>
+                  $
+                  {stripByAmountAndFormat(
+                    availableToClaimTotal * tokenPrice || 0
+                  )}
+                </InlineText>{' '}
+                <FlexBlock>
+                  <Button onClick={doRestake} $variant="link">
+                    Restake
+                  </Button>
+                  <Button onClick={claimRewards} $variant="link">
+                    Claim
+                  </Button>
+                </FlexBlock>
               </StretchedBlock>
             </BlockContentStretched>
           </Block>
         </Cell>
-      </RowContainer>
-      <RowContainer justify="flex-start" margin="0 1rem">
-        <Cell style={{ margin: '0 2rem 0 0' }} colMd={5.85} colSm={12}>
-          <StakingForm tokenData={tokenData} start={start} loading={loading} />
-        </Cell>
-        <Cell colMd={5.85} colSm={12}>
-          <UnstakingForm
-            isUnstakeLocked={isUnstakeLocked}
-            unlockAvailableDate={unlockAvailableDate}
-            totalStaked={totalStaked}
-            end={end}
-            loading={loading}
-          />
-        </Cell>
-      </RowContainer>
+      </Row>
+      <FormsWrap>
+        <ConnectWalletWrapper text={null} size="sm">
+          <Row>
+            <Cell colMd={6} colSm={12}>
+              <StakingForm
+                tokenData={tokenData}
+                start={start}
+                loading={loading}
+              />
+            </Cell>
+            <Cell colMd={6} colSm={12}>
+              <UnstakingForm
+                isUnstakeLocked={isUnstakeLocked}
+                unlockAvailableDate={unlockAvailableDate}
+                totalStaked={totalStaked}
+                end={end}
+                loading={loading}
+              />
+            </Cell>
+          </Row>
+        </ConnectWalletWrapper>
+      </FormsWrap>
     </>
   )
 }
