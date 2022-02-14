@@ -23,3 +23,11 @@ export interface UserBalanceProps {
 }
 
 export type StakingInfoProps = InnerProps & OuterProps
+
+export interface StakingFormProps {
+  loading: { stake: boolean; unstake: boolean }
+  end: (amount: number) => any
+  totalStaked: number
+  isUnstakeLocked: boolean
+  unlockAvailableDate: number
+}

@@ -14,26 +14,28 @@ export interface WrapProps {
   $disabled?: boolean
 }
 
-export interface InputBase {
-  formatter?: (e: string, prevValue: string) => string
+// To share with other input-based components, for example AmountInput
+export interface InputCommon {
   placeholder?: string
-  append?: ReactNode
-  size?: number // Input size
   name: string
   className?: string
+  size?: number // Input size
   variant?: keyof typeof VARIANTS
   borderRadius?: keyof typeof BORDER_RADIUS
   disabled?: boolean
 }
 
-export interface InputProps extends InputBase {
+export interface InputBase extends InputCommon {
+  formatter?: (e: string, prevValue: string) => string
+  append?: ReactNode
+}
+
+export interface OnChangeProps {
   value?: string
   onChange: (e: string) => void
-  maxButton?: boolean
-  maxButtonOnClick?: () => void
-  halfButton?: boolean
-  halfButtonOnClick?: () => void
 }
+
+export interface InputProps extends InputBase, OnChangeProps {}
 
 export interface InputFieldProps extends InputBase {
   validate?: FieldValidator

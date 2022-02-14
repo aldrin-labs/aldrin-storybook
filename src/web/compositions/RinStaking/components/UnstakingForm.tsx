@@ -14,14 +14,8 @@ import {
   StakingInput,
   UnstakingFormWrap,
 } from '../styles'
-
-interface StakingFormProps {
-  loading: { stake: boolean; unstake: boolean }
-  end: (amount: number) => any
-  totalStaked: number
-  isUnstakeLocked: boolean
-  unlockAvailableDate: number
-}
+import { UnStakingFormButton } from './styles'
+import { StakingFormProps } from './types'
 
 export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
   const { totalStaked, loading, end, isUnstakeLocked, unlockAvailableDate } =
@@ -99,12 +93,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
           />
         </InputWrapper>
         <ButtonWrapper>
-          <Button
-            style={{
-              padding: '2rem',
-              background: '#4B2321',
-              border: '0.1rem solid #4B2321',
-            }}
+          <UnStakingFormButton
             minWidth="14rem"
             $fontSize="sm"
             $borderRadius="md"
@@ -113,7 +102,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
             $loading={loading.unstake}
           >
             Unstake
-          </Button>
+          </UnStakingFormButton>
         </ButtonWrapper>
       </FormItemFull>
     </UnstakingFormWrap>

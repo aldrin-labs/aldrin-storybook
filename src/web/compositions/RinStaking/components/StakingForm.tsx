@@ -2,22 +2,15 @@ import { COLORS } from '@variables/variables'
 import { useFormik } from 'formik'
 import React from 'react'
 
-import { Button } from '@sb/components/Button'
-import { INPUT_FORMATTERS } from '@sb/components/Input'
-import { FlexBlock } from '@sb/components/Layout'
 import { MINIMAL_STAKING_AMOUNT } from '@sb/dexUtils/common/config'
 import { STAKING_FARMING_TOKEN_DECIMALS } from '@sb/dexUtils/staking/config'
 import { TokenInfo } from '@sb/dexUtils/types'
 
-import { limitDecimalsCustom, stripByAmount } from '@core/utils/chartPageUtils'
+import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
 
-import {
-  ButtonWrapper,
-  FormItemFull,
-  FormWrap,
-  InputWrapper,
-  StakingInput,
-} from '../styles'
+import { AmountInput } from '../../../components/AmountInput'
+import { ButtonWrapper, FormItemFull, FormWrap, InputWrapper } from '../styles'
+import { StakingFormButton } from './styles'
 
 interface StakingFormProps {
   tokenData: TokenInfo | undefined
@@ -56,48 +49,25 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
     },
   })
 
-  const maxButtonOnClick = () => {
-    if (tokenData?.amount) {
-      form.setFieldValue('amount', stripByAmount(tokenData.amount))
-    }
-  }
-
   return (
     <FormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
         <InputWrapper>
-          <StakingInput
+          <AmountInput
             placeholder="0"
+            amount={tokenData?.amount || 0}
+            mint={tokenData?.mint || ''}
+            name="amount"
             value={`${form.values.amount}`}
             onChange={async (v) => {
-              const value = limitDecimalsCustom(v.toString())
+              const value = limitDecimalsCustom(v)
               await form.setFieldValue('amount', value)
               form.validateForm()
             }}
-            name="amount"
-            append={
-              <FlexBlock direction="row" alignItems="center">
-                &nbsp;
-                <Button
-                  minWidth="2rem"
-                  $fontSize="xs"
-                  $borderRadius="xxl"
-                  onClick={maxButtonOnClick}
-                  type="button"
-                  $variant="primary"
-                >
-                  MAX
-                </Button>
-                &nbsp;
-                <span>RIN</span>
-              </FlexBlock>
-            }
-            formatter={INPUT_FORMATTERS.DECIMAL}
           />
         </InputWrapper>
         <ButtonWrapper>
-          <Button
-            style={{ padding: '2rem' }}
+          <StakingFormButton
             backgroundColor={COLORS.bluePrimary}
             minWidth="14rem"
             $fontSize="sm"
@@ -106,7 +76,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
             disabled={Object.keys(form.errors).length !== 0 || loading.stake}
           >
             Stake
-          </Button>
+          </StakingFormButton>
         </ButtonWrapper>
       </FormItemFull>
     </FormWrap>
