@@ -1,8 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useLocation } from 'react-router-dom'
-
-import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
-import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
 
 import AldrinLogo from '@icons/Aldrin.svg'
 
@@ -23,24 +20,10 @@ import {
 import { WalletBlock } from './WalletBlock'
 
 export const Header = () => {
-  const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
-  const [listingPopupOpen, setListingPopupOpen] = useState(false)
-
   const { pathname } = useLocation()
 
   const isTradingActive =
     pathname.includes('/chart') || pathname.includes('/swap')
-
-  const feedbackLinks = (
-    <>
-      <NavLink as="button" onClick={() => setFeedbackPopupOpen(true)}>
-        Feedback &amp; Support
-      </NavLink>
-      <NavLink as="button" onClick={() => setListingPopupOpen(true)}>
-        Request Listing
-      </NavLink>
-    </>
-  )
 
   return (
     <Body>
@@ -249,18 +232,6 @@ export const Header = () => {
           <WalletBlock />
         </WalletContainer>
       </HeaderWrap>
-      <FeedbackPopup
-        open={feedbackPopupOpen}
-        onClose={() => {
-          setFeedbackPopupOpen(false)
-        }}
-      />
-      <ListingRequestPopup
-        open={listingPopupOpen}
-        onClose={() => {
-          setListingPopupOpen(false)
-        }}
-      />
     </Body>
   )
 }

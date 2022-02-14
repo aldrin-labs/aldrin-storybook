@@ -1,16 +1,18 @@
 import { COLORS } from '@variables/variables'
 import React, { useState } from 'react'
 
+import { AmountInput } from '@sb/components/AmountInput'
 import { Page } from '@sb/components/Layout'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { StakingInputWithAttributes } from '../Staking/StakingInput/StakingInput'
+import { InputWrapper } from '../RinStaking/styles'
 import { StretchedContent, ContentBlock, GrayButton } from '../Staking/styles'
 import MarinadeBg from './bg.png'
 import { BlockWithRadio } from './components/styles'
 import { Switcher } from './components/Switcher/Switcher'
+import { Container } from './styles'
 
 export const MarinadeStaking = () => {
   const [canUserUnstakeNow, setIfUserCanUnstakeNow] = useState(true)
@@ -19,10 +21,10 @@ export const MarinadeStaking = () => {
   return (
     <Page>
       <RowContainer margin="5rem 0" direction="column">
-        <Row width="30%">
+        <Container>
           <img src={MarinadeBg} width="100%" height="auto" alt="marinade" />
-        </Row>
-        <Row width="30%">
+        </Container>
+        <Container>
           <StretchedContent>
             <ContentBlock width="48%" style={{ background: COLORS.newBlack }}>
               <Row justify="flex-start" margin="0 0 2rem 0">
@@ -45,8 +47,8 @@ export const MarinadeStaking = () => {
               </InlineText>
             </ContentBlock>
           </StretchedContent>
-        </Row>
-        <Row width="30%">
+        </Container>
+        <Container>
           <ContentBlock style={{ margin: '0', background: COLORS.newBlack }}>
             <Switcher
               setIsStakeModeOn={setIsStakeModeOn}
@@ -58,20 +60,31 @@ export const MarinadeStaking = () => {
               </InlineText>
             </RowContainer>
             <RowContainer>
-              <StakingInputWithAttributes
-                value="0"
-                onChange={() => {}}
-                placeholder="0"
-                directionText={isStakeModeOn ? 'Stake' : 'Unstake'}
-              />
+              <InputWrapper style={{ position: 'relative' }}>
+                {' '}
+                <AmountInput
+                  value="0"
+                  onChange={() => {}}
+                  placeholder="0"
+                  name="amount"
+                  amount={0}
+                  mint=""
+                  label={isStakeModeOn ? 'Stake' : 'Unstake'}
+                />
+              </InputWrapper>
             </RowContainer>
             <RowContainer margin="2rem 0">
-              <StakingInputWithAttributes
-                value="0"
-                onChange={() => {}}
-                placeholder="0"
-                directionText="Receive"
-              />
+              <InputWrapper style={{ position: 'relative' }}>
+                <AmountInput
+                  value="0"
+                  onChange={() => {}}
+                  placeholder="0"
+                  name="amount"
+                  amount={0}
+                  mint=""
+                  label="Receive"
+                />
+              </InputWrapper>
             </RowContainer>
             {!isStakeModeOn && (
               <RowContainer justify="space-between">
@@ -146,7 +159,7 @@ export const MarinadeStaking = () => {
               )}
             </RowContainer>
           </ContentBlock>
-        </Row>
+        </Container>
       </RowContainer>
     </Page>
   )

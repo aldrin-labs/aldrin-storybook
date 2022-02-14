@@ -65,7 +65,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
                 : '---'}
               <InlineText color="primaryGray" weight={600}>
                 {' '}
-                SOl{' '}
+                SOL{' '}
               </InlineText>
             </InlineText>
           </RowContainer>
@@ -89,11 +89,13 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
                 mSOL Price
               </InlineText>{' '}
             </Row>
-            <InlineText size="rg" weight={700}>
+            <InlineText size="rg" weight={700} style={{ whiteSpace: 'nowrap' }}>
               {mSolInfo?.mSolPrice
                 ? stripByAmountAndFormat(mSolInfo.mSolPrice, 4)
                 : '---'}{' '}
-              <InlineText color="primaryGray">SOL</InlineText>
+              <InlineText color="primaryGray" weight={600}>
+                SOL
+              </InlineText>
             </InlineText>
           </ContentBlock>
           <ContentBlock width="48%">

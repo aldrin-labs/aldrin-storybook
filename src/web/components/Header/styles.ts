@@ -238,7 +238,7 @@ export const DropdownInner = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 5px;
-  padding: 5px 0;
+  padding: 1rem 2rem;
   border-radius: ${BORDER_RADIUS.md};
   & ${NavLink} {
     margin: 4px;

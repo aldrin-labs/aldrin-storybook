@@ -84,6 +84,16 @@ const VARIANTS = {
     }
   `,
 
+  footer: css`
+    background: ${COLORS.cardsBack};
+    border: none;
+    color: #6f6f6f;
+    border-radius: 1.5rem;
+    padding: 1rem;
+    font-size: ${FONT_SIZES.lg};
+    margin: 0 1rem;
+  `,
+
   input: css`
     background: ${COLORS.mainBlack};
     color: ${COLORS.newOrange};

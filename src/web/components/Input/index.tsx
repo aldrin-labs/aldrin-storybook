@@ -2,6 +2,7 @@ import { useField } from 'formik'
 import { noop } from 'lodash-es'
 import React, { useRef } from 'react'
 
+import { InlineText } from '../Typography'
 import { Append, InputEl, InputWrap, Label } from './styles'
 import { FieldProps, InputProps } from './types'
 import { validateDecimal, validateNatural, validateRegexp } from './utils'
@@ -66,7 +67,9 @@ export const Input: React.FC<InputProps> = (props) => {
       onClick={setFocus}
     >
       <div>
-        {label && <Label>{label}</Label>}
+        <InlineText size="xs" color="lightGray">
+          {label && <Label>{label}</Label>}
+        </InlineText>
 
         <InputEl
           size={size}
