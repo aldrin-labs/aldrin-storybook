@@ -30,13 +30,12 @@ import { RinStakingBlockProps } from './types'
 const Block: React.FC<RinStakingBlockProps> = (props) => {
   const {
     getDexTokensPricesQuery: { getDexTokensPrices },
-    currentFarmingState,
   } = props
 
   const { data: poolInfo } = useStakingPoolInfo()
 
   const tokenName = getTokenNameByMintAddress(
-    currentFarmingState.farmingTokenMint
+    poolInfo?.currentFarmingState.farmingTokenMint
   )
   const rinPrice =
     getDexTokensPrices.find((v) => v.symbol === tokenName)?.price || 0
