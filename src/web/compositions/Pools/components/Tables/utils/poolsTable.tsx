@@ -138,7 +138,7 @@ export const preparePoolTableCell = (params: {
 
       return { ...atc, name, usdValue }
     })
-    .filter((atc) => atc.usdValue > 0)
+    .filter((atc) => atc.amount > 0)
 
   const availableToClaimUsd = availableToClaim.reduce(
     (acc, atc) => acc + atc.usdValue,
