@@ -27,6 +27,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
     className,
     size,
     label,
+    showButtons = true,
   } = props
 
   const inputSize = size || `${value}`.length || 1
@@ -65,28 +66,32 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
             <InlineText color="success" weight={600}>
               {stripByAmountAndFormat(amount)}
             </InlineText>
-            <ButtonsContainer>
-              <Button
-                minWidth="2rem"
-                $fontSize="xs"
-                $borderRadius="xxl"
-                onClick={halfButtonOnClick}
-                type="button"
-                $variant="primary"
-              >
-                Half
-              </Button>
-              <Button
-                minWidth="2rem"
-                $fontSize="xs"
-                $borderRadius="xxl"
-                onClick={maxButtonOnClick}
-                type="button"
-                $variant="primary"
-              >
-                Max
-              </Button>
-            </ButtonsContainer>
+            {showButtons && (
+              <>
+                <ButtonsContainer>
+                  <Button
+                    minWidth="2rem"
+                    $fontSize="xs"
+                    $borderRadius="xxl"
+                    onClick={halfButtonOnClick}
+                    type="button"
+                    $variant="primary"
+                  >
+                    Half
+                  </Button>
+                  <Button
+                    minWidth="2rem"
+                    $fontSize="xs"
+                    $borderRadius="xxl"
+                    onClick={maxButtonOnClick}
+                    type="button"
+                    $variant="primary"
+                  >
+                    Max
+                  </Button>
+                </ButtonsContainer>
+              </>
+            )}
           </ButtonsWithAmount>
         </FlexBlock>
       }
