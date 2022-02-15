@@ -54,6 +54,11 @@ export const GrayButton = styled.button`
   &:active {
     background: ${COLORS.darkBlue};
   }
+
+  @media (max-width: 600px) {
+    height: 8rem;
+    font-size: 1em;
+  }
 `
 
 export const StakeButton = styled(GrayButton)`

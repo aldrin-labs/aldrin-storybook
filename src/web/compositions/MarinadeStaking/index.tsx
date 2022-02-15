@@ -36,7 +36,7 @@ import {
 import MarinadeBg from './bg.png'
 import { BlockWithRadio } from './components/styles'
 import { Switcher } from './components/Switcher/Switcher'
-import { Container } from './styles'
+import { Container, StyledInlineText } from './styles'
 
 const SOL_MINT = TokenInstructions.WRAPPED_SOL_MINT.toString()
 const SOL_GAP_AMOUNT = 0.0127 // to allow transaactions pass
@@ -367,9 +367,9 @@ export const MarinadeStaking = () => {
               <ContentBlock width={isStakeModeOn ? '48%' : '100%'}>
                 <RowContainer justify="space-between">
                   {' '}
-                  <InlineText color="primaryGray" size="sm">
+                  <StyledInlineText color="primaryGray" size="sm">
                     Rate:{' '}
-                  </InlineText>{' '}
+                  </StyledInlineText>{' '}
                   <InlineText size="es">
                     1 mSOL ⇄{' '}
                     {stripByAmountAndFormat(

@@ -17,13 +17,7 @@ export const RinStaking = () => {
       <Content>
         <LogoWrap radius="12px">
           <img src={AldrinLogo} height="70" alt="Aldrin" />
-          <AbsoluteImg
-            src={Coins}
-            height="auto"
-            width="14%"
-            left="87.5%"
-            alt="Aldrin"
-          />
+          <AbsoluteImg src={Coins} height="auto" left="87.5%" alt="Aldrin" />
         </LogoWrap>
         <StakingComponent />
         {/* <BlockWithHints /> */}

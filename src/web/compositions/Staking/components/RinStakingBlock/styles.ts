@@ -24,4 +24,10 @@ export const LogoWrap = styled.div<LogoContainer>`
 export const AbsoluteImg = styled.img<LogoContainer>`
   position: absolute;
   left: ${(props) => props.left || '78%'};
+  width: 14%;
+
+  @media (max-width: 600px) {
+    left: 75%;
+    width: 25%;
+  }
 `

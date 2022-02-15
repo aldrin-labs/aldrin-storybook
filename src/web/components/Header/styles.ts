@@ -17,7 +17,7 @@ export const HeaderWrap = styled.header`
   flex-direction: row;
   height: 60px;
   background: ${COLORS.mainBlack};
-  padding: 0 ${SIZE.defaultPadding};
+  padding: 0 3.5rem;
 `
 
 export const LogoBlock = styled.div`
@@ -262,6 +262,10 @@ export const WalletButton = styled(Button)`
   &:active {
     background-color: ${COLORS.darkBlue};
   }
+
+  @media (max-width: 1100px) {
+    padding: 7px 10px;
+  }
 `
 
 export const WalletDataContainer = styled.div`
@@ -309,8 +313,16 @@ export const WalletData = styled.div`
   height: 5rem;
   border-radius: ${BORDER_RADIUS.md};
   background: ${COLORS.defaultGray};
+  align-items: center;
   img {
     border-radius: 50%;
+  }
+
+  @media (max-width: 1200px) {
+    img {
+      width: 20px;
+      height: 20px;
+    }
   }
 `
 export const Column = styled.div`
@@ -334,11 +346,11 @@ export const WalletName = styled(Text)`
 export const WalletAddress = styled(WalletName)`
   opacity: 0.5;
   font-weight: 600;
-  display: none;
+  display: block;
   font-size: ${FONT_SIZES.sm};
 
-  @media (min-width: ${BREAKPOINTS.md}) {
-    display: block;
+  @media (max-width: 1200px) {
+    font-size: ${FONT_SIZES.es};
   }
 `
 
@@ -359,4 +371,7 @@ export const BalanceTitle = styled.span`
   font-size: ${FONT_SIZES.sm};
   color: ${COLORS.newGreen};
   font-weight: 600;
+  @media (max-width: 1200px) {
+    font-size: 0.6125em;
+  }
 `
