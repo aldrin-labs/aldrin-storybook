@@ -1,10 +1,12 @@
 import { Theme } from '@material-ui/core'
+import { COLORS, BORDER_RADIUS } from '@variables/variables'
 import React from 'react'
+import styled from 'styled-components'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueText } from '@sb/compositions/Pools/components/Popups/components/index.styles'
 import {
   StyledInput,
@@ -14,12 +16,14 @@ import {
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { stripInputNumber } from '@sb/dexUtils/utils'
 
+import { stripByAmount } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
 import Arrow from '@icons/arrowBottom.svg'
+import WalletIcon from '@icons/wallet.svg'
 
 export const InputWithSelectorForSwaps = ({
   theme,
@@ -105,5 +109,121 @@ export const InputWithSelectorForSwaps = ({
         </TokenContainer>
       )}
     </Row>
+  )
+}
+
+const InputContainer = styled(RowContainer)`
+  position: relative;
+  justify-content: space-between;
+  height: 6.4rem;
+  background: ${(props) =>
+    props.disabled ? COLORS.disabledInput : COLORS.blockBackground};
+  border: 0.1rem solid #383b45;
+  border-radius: ${BORDER_RADIUS.md};
+  ${(props) =>
+    props.sharpSides.map((sharpSide) => `border-${sharpSide}-radius: 0;`)}
+`
+
+const DropdownIconContainer = styled(Row)`
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+`
+
+export const TokenSelector = ({
+  symbol,
+  sharpSides = [],
+  onClick,
+}: {
+  symbol: string
+  sharpSides?: string[]
+  onClick: () => void
+}) => {
+  return (
+    <InputContainer
+      sharpSides={sharpSides}
+      padding="1.8rem 1.2rem"
+      onClick={onClick}
+      style={{ cursor: 'pointer' }}
+    >
+      <Row>
+        <TokenIcon
+          mint={getTokenMintAddressByName(symbol)}
+          width="3rem"
+          height="3rem"
+        />
+        <Text
+          style={{ margin: '0 0.8rem' }}
+          fontSize="2rem"
+          fontFamily="Avenir Next Demi"
+        >
+          {symbol}
+        </Text>
+      </Row>
+      <DropdownIconContainer>
+        <SvgIcon src={Arrow} width="1rem" height="1rem" />
+      </DropdownIconContainer>
+    </InputContainer>
+  )
+}
+
+export const SwapAmountInput = ({
+  amount = '',
+  maxAmount = '0.00',
+  disabled = false,
+  title = 'Title',
+  placeholder = '0.00',
+  sharpSides = [],
+  onChange = () => {},
+  appendComponent = null,
+}: {
+  amount?: string | number
+  maxAmount?: number | string
+  disabled?: boolean
+  title?: string
+  placeholder?: string
+  sharpSides?: string[]
+  onChange?: (value: number | string) => void
+  appendComponent?: any
+}) => {
+  return (
+    <InputContainer
+      disabled={disabled}
+      direction="column"
+      padding="0.6rem 1.6rem"
+      sharpSides={sharpSides}
+    >
+      <RowContainer justify="space-between">
+        <Text fontSize="1.4rem" fontFamily="Avenir Next" color="#C9C8CD">
+          {title}
+        </Text>
+        <Row>
+          <Text
+            fontSize="1.4rem"
+            fontFamily="Avenir Next Demi"
+            color="#91e073"
+            padding="0 0.8rem 0 0"
+          >
+            {maxAmount ? stripByAmount(maxAmount) : '0.00'}
+          </Text>
+          <SvgIcon src={WalletIcon} width="1.5rem" height="1.5rem" />
+        </Row>
+      </RowContainer>
+      <RowContainer justify="space-between">
+        <Row width="50%">
+          <InvisibleInput
+            type="text"
+            value={amount || ''}
+            disabled={disabled}
+            onChange={(e) => {
+              onChange(stripInputNumber(e, amount))
+            }}
+            placeholder={placeholder}
+          />
+        </Row>
+        {appendComponent}
+      </RowContainer>
+    </InputContainer>
   )
 }

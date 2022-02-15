@@ -1,0 +1,61 @@
+import { BORDER_RADIUS, COLORS } from '@variables/variables'
+import styled from 'styled-components'
+
+import WalletIcon from '@icons/wallet.svg'
+
+import { Button } from '../Button'
+import { Input, InputEl, Append } from '../Input'
+import { InlineText } from '../Typography'
+
+export const AmountInputElement = styled(Input)`
+  border-radius: ${BORDER_RADIUS.md};
+  height: 4.25em;
+  background-color: ${COLORS.cardsBack};
+  border: 0.1rem solid ${COLORS.background};
+
+  &:focus {
+    border: 0.1rem solid ${COLORS.gray2};
+  }
+
+  ${InputEl} {
+    padding-left: 0.7em;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  ${Append} {
+    padding-right: 0.7em;
+    flex: 1;
+  }
+`
+
+export const ButtonsWithAmount = styled.div`
+  margin-left: auto;
+  text-align: right;
+
+  ${InlineText} {
+    font-size: 0.75em;
+    background: url(${WalletIcon}) right center no-repeat;
+    padding-right: 22px;
+  }
+`
+
+export const ButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+
+  ${Button} {
+    margin: 0 2px;
+    background: ${COLORS.black};
+    border: 0;
+    color: ${COLORS.newOrange};
+    font-weight: 600;
+    text-align: center;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+`

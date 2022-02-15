@@ -58,7 +58,7 @@ export const InputWrap = styled.div<WrapProps>`
   ${(props: WrapProps) => (props.$disabled ? 'opacity: 0.6;' : '')}
 `
 
-const InputEl = styled.input`
+export const InputEl = styled.input`
   background: none;
   border: 0;
   outline: none;
@@ -82,7 +82,7 @@ const InputEl = styled.input`
   }
 `
 
-const Append = styled.span<AppendProps>`
+export const Append = styled.span<AppendProps>`
   padding: ${(props: AppendProps) => props.padding || '0 1.5em'};
   color: ${COLORS.hint};
   font-size: 1em;
@@ -166,6 +166,7 @@ export const Input: React.FC<InputProps> = (props) => {
         onChange={(e) => onChange(formatter(e.target.value, value))}
         name={name}
         disabled={disabled}
+        autoComplete="off"
       />
       {halfButton && (
         <div style={{ marginRight: '1rem' }}>

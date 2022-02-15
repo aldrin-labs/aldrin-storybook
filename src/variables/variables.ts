@@ -20,6 +20,7 @@ export const COLORS = {
   errorAlt: '#D44C32',
   buttonAltPink: '#a1458a',
   gray: '#383b42',
+  gray2: '#AAAAAA',
   chartGrid: '#4C4F59',
   textAlt: '#F5F5FB',
   navLink: 'rgb(114, 132, 160)',
@@ -32,6 +33,10 @@ export const COLORS = {
   disabledGray: '#93A0B2',
   lightRed: '#f2abb1',
   darkBackground: '#17181A',
+  disabledInput: '#2B2D32',
+  cardsBack: '#242424',
+  brown: '#4B2321',
+  inputPlaceholder: '#86878E',
 }
 
 export const BORDER_RADIUS = {

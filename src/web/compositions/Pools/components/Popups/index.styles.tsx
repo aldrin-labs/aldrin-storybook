@@ -46,17 +46,14 @@ export const Line = styled.div`
 export const InvisibleInput = styled.input`
   width: 100%;
   background: ${(props) =>
-    props.disabled ? COLORS.darkBackground : '#222429'};
-  color: #fbf2f2;
+    props.disabled ? COLORS.disabledInput : COLORS.blockBackground};
+  color: ${COLORS.primaryWhite};
   font-size: 2rem;
   outline: none;
   border: none;
-  font-family: Avenir Next Medium;
+  font-family: Avenir Next Demi;
   &::placeholder {
-    color: #f2fbfb;
-    height: 2rem;
-    font-size: 1.7rem;
-    font-family: 'Avenir Next Thin';
+    color: ${COLORS.inputPlaceholder};
   }
 `
 

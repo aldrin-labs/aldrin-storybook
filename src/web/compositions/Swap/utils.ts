@@ -88,30 +88,25 @@ export const getSwapButtonText = ({
 }
 
 export const getEstimatedPrice = ({
-  route,
+  inputAmount,
+  outputAmount,
   inputPrice,
   outputPrice,
   field = 'input',
 }: {
-  route?: RouteInfo | null
+  inputAmount?: number
+  outputAmount?: number
   inputPrice: number
   outputPrice: number
   field: 'input' | 'output'
 }) => {
-  const { inAmount, outAmount } = route || {
-    inAmount: 0,
-    outAmount: 0,
-    outAmountWithSlippage: 0,
-    priceImpactPct: 0,
-  }
-
   const isInputPriceToCalculate = field === 'input'
 
-  if (inAmount && outAmount) {
+  if (inputAmount && outputAmount) {
     if (isInputPriceToCalculate) {
-      return outAmount / inAmount
+      return outputAmount / inputAmount
     }
-    return inAmount / outAmount
+    return inputAmount / outputAmount
   }
 
   if (inputPrice && outputPrice) {

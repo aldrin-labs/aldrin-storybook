@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { CSSProperties, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import styled from 'styled-components'
 
@@ -24,6 +24,7 @@ export const ReloadTimer = ({
   margin = '0 3rem 0 0',
   rerenderOnClick = true,
   showTime = false,
+  timeStyles = {},
 }: {
   size?: number
   duration?: number
@@ -34,6 +35,7 @@ export const ReloadTimer = ({
   margin?: string
   rerenderOnClick?: boolean
   showTime?: boolean
+  timeStyles?: CSSProperties
 }) => {
   const [rerenderCounter, rerender] = useState(0)
 
@@ -64,7 +66,14 @@ export const ReloadTimer = ({
       >
         {({ remainingTime }) =>
           showTime ? (
-            <span style={{ color: '#fafafa', fontFamily: 'Avenir Next' }}>
+            <span
+              style={{
+                color: '#fafafa',
+                fontFamily: 'Avenir Next',
+                fontSize: '1rem',
+                ...timeStyles,
+              }}
+            >
               {remainingTime % 60}
             </span>
           ) : null

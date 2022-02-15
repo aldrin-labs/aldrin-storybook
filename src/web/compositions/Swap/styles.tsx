@@ -1,5 +1,8 @@
 import { COLORS, MAIN_FONT } from '@variables/variables'
+import React from 'react'
 import styled from 'styled-components'
+
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
@@ -112,4 +115,42 @@ export const RowValue = styled(RowTitle)`
 export const RowAmountValue = styled(RowValue)`
   margin-right: 0.4rem;
   color: #91e073;
+`
+
+export const SwapButton = styled((props) => (
+  <BtnCustom
+    btnWidth="100%"
+    height="6.4rem"
+    fontSize="1.6rem"
+    padding="1rem 2rem"
+    borderRadius=".8rem"
+    borderColor="none"
+    btnColor={COLORS.primaryWhite}
+    backgroundColor={
+      props.disabled
+        ? '#3A475C'
+        : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+    }
+    textTransform="none"
+    transition="all .4s ease-out"
+    {...props}
+  />
+))`
+  &:disabled {
+    color: ${COLORS.primaryWhite};
+  }
+`
+
+export const ReverseTokensContainer = styled(Row)`
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #2b2d36;
+  box-shadow: 0px 0px 0.8rem rgba(0, 0, 0, 0.45);
+  border-radius: 50%;
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 2;
 `
