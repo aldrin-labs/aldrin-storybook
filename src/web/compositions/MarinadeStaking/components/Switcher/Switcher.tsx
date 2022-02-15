@@ -7,7 +7,7 @@ export const Switcher = ({
   setIsStakeModeOn,
 }: {
   isStakeModeOn: boolean
-  setIsStakeModeOn: (arg: boolean) => voild
+  setIsStakeModeOn: (arg: boolean) => void
 }) => {
   return (
     <Container>

@@ -4,6 +4,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
+
 import { TokenInfo } from '../../types'
 
 export const findTokenAccount = async (

@@ -19,7 +19,8 @@ export const useMarinadeStakingInfo = () => {
 
     const epochInfo = await connection.getEpochInfo()
 
-    return { stats: statsBody, epochInfo }
+    const epochPct = (epochInfo.slotIndex / epochInfo.slotsInEpoch) * 100
+    return { stats: statsBody, epochInfo: { ...epochInfo, epochPct } }
   }
 
   return useSWR('marinade-pool-full-info', fetcher, {

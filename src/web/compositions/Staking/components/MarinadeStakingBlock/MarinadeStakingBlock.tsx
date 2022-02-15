@@ -40,10 +40,6 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
 
   const totalStakedUsdValue = totalStakedSol * solPrice.price
 
-  const epochPct = mSolInfo
-    ? (mSolInfo.epochInfo.slotIndex / mSolInfo.epochInfo.slotsInEpoch) * 100
-    : 0
-
   return (
     <StakingBlock>
       <LogoWrap>
@@ -110,7 +106,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
               <SvgIcon src={InfoIcon} width="1.5rem" />
             </Row>
             <InlineText size="rg" weight={700}>
-              {stripByAmountAndFormat(epochPct, 2)}%
+              {stripByAmountAndFormat(mSolInfo?.epochInfo.epochPct || 0, 2)}%
             </InlineText>
           </ContentBlock>
         </StretchedContent>

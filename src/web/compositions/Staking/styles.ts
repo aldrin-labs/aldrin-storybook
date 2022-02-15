@@ -60,6 +60,23 @@ export const GrayButton = styled.button`
     font-size: 1em;
   }
 `
+
+export const StakeButton = styled(GrayButton)`
+  background: ${COLORS.bluePrimary};
+
+  &:disabled {
+    background-color: ${COLORS.hint};
+  }
+`
+
+export const UnStakeButton = styled(GrayButton)`
+  background: rgba(224, 66, 55, 0.25);
+
+  &:disabled {
+    background-color: ${COLORS.hint};
+  }
+`
+
 export const GrayLink = styled(Link)`
   width: 100%;
   border: none;
