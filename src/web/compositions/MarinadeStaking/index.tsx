@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 
 import { AmountInput } from '@sb/components/AmountInput'
 import { Page } from '@sb/components/Layout'
-import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
@@ -34,7 +33,6 @@ import {
   UnStakeButton,
 } from '../Staking/styles'
 import MarinadeBg from './bg.png'
-import { BlockWithRadio } from './components/styles'
 import { Switcher } from './components/Switcher/Switcher'
 import { Container, StyledInlineText } from './styles'
 
@@ -91,7 +89,6 @@ const notifyAboutUnStakeTransaction = (
   })
 }
 export const MarinadeStaking = () => {
-  const [canUserUnstakeNow, setIfUserCanUnstakeNow] = useState(true)
   const [isStakeModeOn, setIsStakeModeOn] = useState(false)
 
   const [amount, setAmount] = useState('0')
@@ -154,24 +151,20 @@ export const MarinadeStaking = () => {
 
   const unstake = async () => {
     const amountLamports = MarinadeUtils.solToLamports(parseFloat(amount))
-    if (canUserUnstakeNow) {
-      // Instant withdraw with fee
-      const { transaction } = await marinade.liquidUnstake(amountLamports)
-      try {
-        const txResult = await signAndSendSingleTransaction({
-          transaction,
-          wallet,
-          connection,
-        })
-        await refreshAll()
-        notifyAboutUnStakeTransaction(txResult)
-      } catch (e) {
-        notify({
-          message: 'Something went wrong. Please, try again later',
-        })
-      }
-    } else {
-      // const { transaction } = await marinade.depositStakeAccount(amountLamports)
+    // Instant withdraw with fee
+    const { transaction } = await marinade.liquidUnstake(amountLamports)
+    try {
+      const txResult = await signAndSendSingleTransaction({
+        transaction,
+        wallet,
+        connection,
+      })
+      await refreshAll()
+      notifyAboutUnStakeTransaction(txResult)
+    } catch (e) {
+      notify({
+        message: 'Something went wrong. Please, try again later',
+      })
     }
   }
 
@@ -184,66 +177,6 @@ export const MarinadeStaking = () => {
         <Container>
           <img src={MarinadeBg} width="100%" height="auto" alt="marinade" />
         </Container>
-        {/* <Container>
-          <ContentBlock
-            style={{
-              margin: '2rem 0 0 0',
-              background: COLORS.newBlack,
-              flexDirection: 'column',
-            }}
-          >
-            <InlineText size="sm" weight={700} color="lightGray">
-              Your unstake tickets
-            </InlineText>
-            <ContentBlock style={{ margin: '1rem 0' }}>
-              <RowContainer justify="space-between">
-                {' '}
-                <InlineText
-                  color="lightGray"
-                  size="sm"
-                  style={{ textDecoration: 'underline' }}
-                >
-                  5FbM...2ktH
-                </InlineText>{' '}
-                <InlineText size="sm">
-                  Receive{' '}
-                  <InlineText weight={600} color="newGreen">
-                    5.1252 SOL
-                  </InlineText>
-                </InlineText>
-                <Button
-                  $fontSize="sm"
-                  $borderRadius="md"
-                  style={{ fontWeight: '600' }}
-                >
-                  Claim
-                </Button>
-              </RowContainer>
-            </ContentBlock>
-            <ContentBlock style={{ margin: '1rem 0' }}>
-              <RowContainer justify="space-between">
-                {' '}
-                <InlineText
-                  color="lightGray"
-                  size="sm"
-                  style={{ textDecoration: 'underline' }}
-                >
-                  5FbM...2ktH
-                </InlineText>{' '}
-                <InlineText size="sm">
-                  Receive{' '}
-                  <InlineText weight={600} color="newGreen">
-                    5.1252 SOL
-                  </InlineText>
-                </InlineText>
-                <InlineText size="sm">
-                  {' '}
-                  <SvgIcon src={Clock} height="11px" /> 1d 8h 14m
-                </InlineText>
-              </RowContainer>
-            </ContentBlock>
-          </ContentBlock>
-        </Container> */}
         <Container>
           <StretchedContent>
             <ContentBlock width="48%" style={{ background: COLORS.newBlack }}>
@@ -312,44 +245,6 @@ export const MarinadeStaking = () => {
                   />
                 </InputWrapper>
               </RowContainer>
-              {!isStakeModeOn && (
-                <RowContainer justify="space-between">
-                  <BlockWithRadio
-                    onClick={() => {
-                      setIfUserCanUnstakeNow(true)
-                    }}
-                    checked={canUserUnstakeNow}
-                  >
-                    <RowContainer justify="space-between">
-                      <InlineText weight={600} size="sm">
-                        Unstake Now {JSON.stringify(canUserUnstakeNow)}
-                      </InlineText>
-                      <Radio change={() => {}} checked={canUserUnstakeNow} />
-                    </RowContainer>
-                    <RowContainer justify="space-between">
-                      <InlineText size="sm">Fee ≈0.3%</InlineText>
-                    </RowContainer>
-                  </BlockWithRadio>
-                  <BlockWithRadio
-                    onClick={() => {
-                      setIfUserCanUnstakeNow(false)
-                    }}
-                    checked={!canUserUnstakeNow}
-                  >
-                    <RowContainer justify="space-between">
-                      <InlineText weight={600} size="sm">
-                        Unstake in ≈2 days
-                      </InlineText>
-                      <Radio change={() => {}} checked={!canUserUnstakeNow} />
-                    </RowContainer>
-                    <RowContainer justify="space-between">
-                      <InlineText weight={600} size="sm">
-                        No fee
-                      </InlineText>
-                    </RowContainer>
-                  </BlockWithRadio>{' '}
-                </RowContainer>
-              )}
 
               <RowContainer>
                 {isStakeModeOn ? (
@@ -364,7 +259,7 @@ export const MarinadeStaking = () => {
               </RowContainer>
             </ConnectWalletWrapper>
             <RowContainer justify="space-between">
-              <ContentBlock width={isStakeModeOn ? '48%' : '100%'}>
+              <ContentBlock width="48%">
                 <RowContainer justify="space-between">
                   {' '}
                   <StyledInlineText color="primaryGray" size="sm">
@@ -380,7 +275,7 @@ export const MarinadeStaking = () => {
                   </InlineText>
                 </RowContainer>
               </ContentBlock>
-              {isStakeModeOn && (
+              {isStakeModeOn ? (
                 <ContentBlock width="48%">
                   <RowContainer justify="space-between">
                     {' '}
@@ -388,6 +283,16 @@ export const MarinadeStaking = () => {
                       Deposit fee:{' '}
                     </InlineText>{' '}
                     <InlineText size="es">0%</InlineText>
+                  </RowContainer>
+                </ContentBlock>
+              ) : (
+                <ContentBlock width="48%">
+                  <RowContainer justify="space-between">
+                    {' '}
+                    <InlineText color="primaryGray" size="sm">
+                      Unstake fee:{' '}
+                    </InlineText>{' '}
+                    <InlineText size="es">≈0.3%</InlineText>
                   </RowContainer>
                 </ContentBlock>
               )}
