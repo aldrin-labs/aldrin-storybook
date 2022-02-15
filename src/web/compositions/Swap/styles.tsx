@@ -10,9 +10,6 @@ import { BlockTemplate } from '../Pools/index.styles'
 export const SwapPageContainer = styled(RowContainer)`
   background: ${COLORS.bodyBackground};
   overflow-y: auto;
-  @media (max-height: 800px) {
-    justify-content: flex-start;
-  }
 `
 
 export const Card = styled(BlockTemplate)`
