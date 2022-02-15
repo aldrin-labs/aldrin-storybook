@@ -18,7 +18,7 @@ export const Radio = ({
   change: () => void
 }) => (
   <div>
-    <Container>
+    <Container onClick={() => change()}>
       <AttributeContainer>
         <Label htmlFor="inside">
           {label}
@@ -28,7 +28,6 @@ export const Radio = ({
             id="inside"
             value="inside"
             checked={checked}
-            onChange={() => change()}
           />
           <Checkmark />
         </Label>

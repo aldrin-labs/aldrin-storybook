@@ -1,21 +1,31 @@
+import { MarinadeUtils } from '@marinade.finance/marinade-ts-sdk'
 import { TokenInstructions } from '@project-serum/serum'
 import { COLORS } from '@variables/variables'
 import React, { useState } from 'react'
 
-import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
-import { Button } from '@sb/components/Button'
 import { Page } from '@sb/components/Layout'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
 
-import { stripByAmountAndFormat } from '../../../../../core/src/utils/chartPageUtils'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
-import { useMarinadeStakingInfo } from '../../dexUtils/staking/hooks/useMarinadeStakingInfo'
-import { useAssociatedTokenAccount } from '../../dexUtils/token/hooks'
+import { useConnection } from '../../dexUtils/connection'
+import { notify } from '../../dexUtils/notifications'
+import {
+  useMarinadeSdk,
+  useMarinadeStakingInfo,
+} from '../../dexUtils/staking/hooks'
+import {
+  useAssociatedTokenAccount,
+  useUserTokenAccounts,
+} from '../../dexUtils/token/hooks'
+import { signAndSendSingleTransaction } from '../../dexUtils/transactions'
+import { SignAndSendTransactionResult } from '../../dexUtils/transactions/types'
 import { MSOL_MINT } from '../../dexUtils/utils'
+import { useWallet } from '../../dexUtils/wallet'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import Clock from '../RinStaking/components/assets/clock.svg'
 import { InputWrapper } from '../RinStaking/styles'
 import {
   StretchedContent,
@@ -29,24 +39,140 @@ import { Switcher } from './components/Switcher/Switcher'
 import { Container } from './styles'
 
 const SOL_MINT = TokenInstructions.WRAPPED_SOL_MINT.toString()
+const SOL_GAP_AMOUNT = 0.0127 // to allow transaactions pass
 
+const notifyAboutStakeTransaction = (result: SignAndSendTransactionResult) => {
+  if (result === 'success') {
+    return notify({
+      message: 'Staked succesfully',
+      type: 'success',
+    })
+  }
+  if (result === 'cancelled' || result === 'rejected') {
+    return notify({
+      message: 'Staking cancelled',
+      type: 'warn',
+    })
+  }
+  if (result === 'failed') {
+    return notify({
+      message: 'Staking failed',
+    })
+  }
+  return notify({
+    message: 'Something went wrong',
+    type: 'error',
+  })
+}
+
+const notifyAboutUnStakeTransaction = (
+  result: SignAndSendTransactionResult
+) => {
+  if (result === 'success') {
+    return notify({
+      message: 'Unstaked succesfully',
+      type: 'success',
+    })
+  }
+  if (result === 'cancelled' || result === 'rejected') {
+    return notify({
+      message: 'Untaking cancelled',
+      type: 'warn',
+    })
+  }
+  if (result === 'failed') {
+    return notify({
+      message: 'Unstaking failed',
+    })
+  }
+  return notify({
+    message: 'Something went wrong',
+    type: 'error',
+  })
+}
 export const MarinadeStaking = () => {
   const [canUserUnstakeNow, setIfUserCanUnstakeNow] = useState(true)
-  const [isStakeModeOn, setIsStakeModeOn] = useState(true)
+  const [isStakeModeOn, setIsStakeModeOn] = useState(false)
 
   const [amount, setAmount] = useState('0')
 
-  const { data: mSolInfo } = useMarinadeStakingInfo()
+  const { wallet } = useWallet()
+  const connection = useConnection()
+  // const { data } = useMarinadeTickets()
+  const { data: mSolInfo, mutate: refreshStakingInfo } =
+    useMarinadeStakingInfo()
+  const [_, refreshTokens] = useUserTokenAccounts()
 
   const mSolWallet = useAssociatedTokenAccount(MSOL_MINT)
   const solWallet = useAssociatedTokenAccount(SOL_MINT)
 
-  const fromWallet = isStakeModeOn ? mSolWallet : solWallet
-  const toWallet = isStakeModeOn ? solWallet : mSolWallet
+  const solWalletWithGap = solWallet
+    ? { ...solWallet, amount: Math.max(solWallet.amount - SOL_GAP_AMOUNT, 0) }
+    : undefined
+  const fromWallet = isStakeModeOn ? solWalletWithGap : mSolWallet
+  const toWallet = isStakeModeOn ? mSolWallet : solWalletWithGap
+
+  const solPrice = mSolInfo?.stats.m_sol_price || 1
+  const amountGet = isStakeModeOn
+    ? parseFloat(amount) / solPrice
+    : parseFloat(amount) * solPrice
 
   const toggleStakeMode = (value: boolean) => {
     setAmount('0')
     setIsStakeModeOn(value)
+  }
+
+  const marinade = useMarinadeSdk()
+
+  const refreshAll = async () =>
+    Promise.all([refreshTokens(), refreshStakingInfo()])
+
+  const stake = async () => {
+    if (!wallet.publicKey) {
+      throw new Error('No pubkey for wallet!')
+    }
+    const amountLamports = MarinadeUtils.solToLamports(parseFloat(amount))
+
+    const { transaction } = await marinade.deposit(amountLamports, {
+      mintToOwnerAddress: wallet.publicKey,
+    })
+
+    try {
+      const txResult = await signAndSendSingleTransaction({
+        transaction,
+        wallet,
+        connection,
+      })
+      await refreshAll()
+      notifyAboutStakeTransaction(txResult)
+    } catch (e) {
+      notify({
+        message: 'Something went wrong. Please, try again later',
+      })
+    }
+  }
+
+  const unstake = async () => {
+    const amountLamports = MarinadeUtils.solToLamports(parseFloat(amount))
+    if (canUserUnstakeNow) {
+      // Instant withdraw with fee
+      const { transaction } = await marinade.liquidUnstake(amountLamports)
+      try {
+        const txResult = await signAndSendSingleTransaction({
+          transaction,
+          wallet,
+          connection,
+        })
+        await refreshAll()
+        notifyAboutUnStakeTransaction(txResult)
+      } catch (e) {
+        notify({
+          message: 'Something went wrong. Please, try again later',
+        })
+      }
+    } else {
+      // const { transaction } = await marinade.depositStakeAccount(amountLamports)
+    }
   }
 
   const amountValue = parseFloat(amount)
@@ -58,7 +184,7 @@ export const MarinadeStaking = () => {
         <Container>
           <img src={MarinadeBg} width="100%" height="auto" alt="marinade" />
         </Container>
-        <Container>
+        {/* <Container>
           <ContentBlock
             style={{
               margin: '2rem 0 0 0',
@@ -117,7 +243,7 @@ export const MarinadeStaking = () => {
               </RowContainer>
             </ContentBlock>
           </ContentBlock>
-        </Container>
+        </Container> */}
         <Container>
           <StretchedContent>
             <ContentBlock width="48%" style={{ background: COLORS.newBlack }}>
@@ -175,7 +301,7 @@ export const MarinadeStaking = () => {
               <RowContainer margin="2rem 0">
                 <InputWrapper style={{ position: 'relative' }}>
                   <AmountInput
-                    value="0"
+                    value={`${amountGet || 0}`}
                     onChange={() => {}}
                     placeholder="0"
                     name="amountTo"
@@ -188,33 +314,33 @@ export const MarinadeStaking = () => {
               </RowContainer>
               {!isStakeModeOn && (
                 <RowContainer justify="space-between">
-                  <BlockWithRadio checked={canUserUnstakeNow}>
+                  <BlockWithRadio
+                    onClick={() => {
+                      setIfUserCanUnstakeNow(true)
+                    }}
+                    checked={canUserUnstakeNow}
+                  >
                     <RowContainer justify="space-between">
                       <InlineText weight={600} size="sm">
-                        Unstake Now
+                        Unstake Now {JSON.stringify(canUserUnstakeNow)}
                       </InlineText>
-                      <Radio
-                        change={() => {
-                          setIfUserCanUnstakeNow(true)
-                        }}
-                        checked={canUserUnstakeNow}
-                      />
+                      <Radio change={() => {}} checked={canUserUnstakeNow} />
                     </RowContainer>
                     <RowContainer justify="space-between">
-                      <InlineText size="sm">Unstake Now</InlineText>
+                      <InlineText size="sm">Fee ≈0.3%</InlineText>
                     </RowContainer>
                   </BlockWithRadio>
-                  <BlockWithRadio checked={!canUserUnstakeNow}>
+                  <BlockWithRadio
+                    onClick={() => {
+                      setIfUserCanUnstakeNow(false)
+                    }}
+                    checked={!canUserUnstakeNow}
+                  >
                     <RowContainer justify="space-between">
                       <InlineText weight={600} size="sm">
                         Unstake in ≈2 days
                       </InlineText>
-                      <Radio
-                        change={() => {
-                          setIfUserCanUnstakeNow(false)
-                        }}
-                        checked={!canUserUnstakeNow}
-                      />
+                      <Radio change={() => {}} checked={!canUserUnstakeNow} />
                     </RowContainer>
                     <RowContainer justify="space-between">
                       <InlineText weight={600} size="sm">
@@ -227,9 +353,13 @@ export const MarinadeStaking = () => {
 
               <RowContainer>
                 {isStakeModeOn ? (
-                  <StakeButton disabled={!isValid}>Stake</StakeButton>
+                  <StakeButton onClick={stake} disabled={!isValid}>
+                    Stake
+                  </StakeButton>
                 ) : (
-                  <UnStakeButton disabled={!isValid}>Unstake</UnStakeButton>
+                  <UnStakeButton onClick={unstake} disabled={!isValid}>
+                    Unstake
+                  </UnStakeButton>
                 )}
               </RowContainer>
             </ConnectWalletWrapper>
