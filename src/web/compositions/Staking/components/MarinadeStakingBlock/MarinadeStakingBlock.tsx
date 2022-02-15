@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { SvgIcon } from '@sb/components'
 import { BlockTitle, BlockContent } from '@sb/components/Block'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -8,6 +9,8 @@ import { toMap } from '@sb/utils/collection'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
+import InfoIcon from '@icons/info.svg'
 
 import { useMarinadeStakingInfo } from '../../../../dexUtils/staking/hooks/useMarinadeStakingInfo'
 import {
@@ -84,10 +87,11 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
         <Line />{' '}
         <StretchedContent>
           <ContentBlock width="48%">
-            <Row justify="flex-start" margin="0 0 2rem 0">
+            <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText color="primaryGray" size="sm">
                 mSOL Price
               </InlineText>{' '}
+              <SvgIcon src={InfoIcon} width="1.5rem" />
             </Row>
             <InlineText size="rg" weight={700} style={{ whiteSpace: 'nowrap' }}>
               {mSolInfo?.stats.m_sol_price
@@ -99,10 +103,11 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             </InlineText>
           </ContentBlock>
           <ContentBlock width="48%">
-            <Row justify="flex-start" margin="0 0 2rem 0">
+            <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText color="primaryGray" size="sm">
                 Epoch
               </InlineText>{' '}
+              <SvgIcon src={InfoIcon} width="1.5rem" />
             </Row>
             <InlineText size="rg" weight={700}>
               {stripByAmountAndFormat(epochPct, 2)}%

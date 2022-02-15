@@ -15,7 +15,7 @@ import { StretchedContent, ContentBlock, GrayButton } from '../Staking/styles'
 import MarinadeBg from './bg.png'
 import { BlockWithRadio } from './components/styles'
 import { Switcher } from './components/Switcher/Switcher'
-import { Container } from './styles'
+import { Container, StyledInlineText } from './styles'
 
 export const MarinadeStaking = () => {
   const [canUserUnstakeNow, setIfUserCanUnstakeNow] = useState(true)
@@ -203,9 +203,9 @@ export const MarinadeStaking = () => {
               <ContentBlock width={isStakeModeOn ? '48%' : '100%'}>
                 <RowContainer justify="space-between">
                   {' '}
-                  <InlineText color="primaryGray" size="sm">
+                  <StyledInlineText color="primaryGray" size="sm">
                     Rate:{' '}
-                  </InlineText>{' '}
+                  </StyledInlineText>{' '}
                   <InlineText size="es">1 mSOL ⇄ 1.0313 SOL</InlineText>
                 </RowContainer>
               </ContentBlock>

@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { InlineText } from '@sb/components/Typography'
+
 export const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -10,5 +12,11 @@ export const Container = styled.div`
 
   @media (max-width: 600px) {
     width: 95%;
+  }
+`
+
+export const StyledInlineText = styled(InlineText)`
+  @media (max-width: 1400px) {
+    display: none;
   }
 `
