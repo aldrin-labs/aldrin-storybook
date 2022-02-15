@@ -33,10 +33,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
 
   const solPrice = pricesMap.get('SOL') || { price: 0 }
 
-  // console.log('solPrice: ', solPrice)
-
-  const totalStakedSol =
-    (mSolInfo?.mSolMintSupply || 0) * (mSolInfo?.mSolPrice || 0)
+  const totalStakedSol = mSolInfo?.stats.tvl_sol || 0
 
   const totalStakedUsdValue = totalStakedSol * solPrice.price
 
@@ -52,7 +49,10 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
       <BlockContent>
         <RowContainer justify="space-between">
           <BlockTitle>Stake mSOL</BlockTitle>
-          <NumberWithLabel value={45} label="APY" />
+          <NumberWithLabel
+            value={mSolInfo?.stats.avg_staking_apy || 0}
+            label="APY"
+          />
         </RowContainer>
         <ContentBlock>
           <RowContainer margin="0 0 2rem 0" justify="space-between">
@@ -71,10 +71,10 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
           </RowContainer>
           <RowContainer justify="space-between">
             <InlineText size="sm" color="primaryGray">
-              to 467 Validators{' '}
+              to {mSolInfo?.stats.validators_count || 0} Validators{' '}
             </InlineText>{' '}
             <InlineText size="sm" weight={700}>
-              <InlineText color="primaryGray">$</InlineText>{' '}
+              <InlineText color="primaryGray">$</InlineText>
               {totalStakedUsdValue
                 ? stripByAmountAndFormat(totalStakedUsdValue, 2)
                 : '---'}
@@ -90,8 +90,8 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
               </InlineText>{' '}
             </Row>
             <InlineText size="rg" weight={700} style={{ whiteSpace: 'nowrap' }}>
-              {mSolInfo?.mSolPrice
-                ? stripByAmountAndFormat(mSolInfo.mSolPrice, 4)
+              {mSolInfo?.stats.m_sol_price
+                ? stripByAmountAndFormat(mSolInfo.stats.m_sol_price, 3)
                 : '---'}{' '}
               <InlineText color="primaryGray" weight={600}>
                 SOL
@@ -101,7 +101,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
           <ContentBlock width="48%">
             <Row justify="flex-start" margin="0 0 2rem 0">
               <InlineText color="primaryGray" size="sm">
-                Marketcap
+                Epoch
               </InlineText>{' '}
             </Row>
             <InlineText size="rg" weight={700}>

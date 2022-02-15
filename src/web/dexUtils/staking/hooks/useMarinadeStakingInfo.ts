@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import useSWR from 'swr'
 
 import { useConnection } from '../../connection'
+import { MarinadeStats } from './types'
 
 export const useMarinadeStakingInfo = () => {
   const connection = useConnection()
@@ -13,32 +14,12 @@ export const useMarinadeStakingInfo = () => {
   )
 
   const fetcher = async () => {
-    const marinadeState = await marinade.getMarinadeState()
+    const stats = await fetch('/marinade/stats.json')
+    const statsBody = (await stats.json()) as MarinadeStats
 
-    const {
-      state,
-      lpMint,
-      mSolMint,
-      mSolMintAddress,
-      mSolPrice,
-      treasuryMsolAccount,
-      rewardsCommissionPercent,
-    } = marinadeState
+    const epochInfo = await connection.getEpochInfo()
 
-    const mSolMintClient = mSolMint.mintClient()
-    const mSolMintSupply = await mSolMint.totalSupply()
-    const validatorRecords = await marinadeState.getValidatorRecords()
-    const epochInfo = await marinadeState.epochInfo()
-    console.log('epochInfo: ', epochInfo)
-    // console.log(
-    //   'validatorRecords: ',
-    //   validatorRecords.validatorRecords.filter((vr) => vr.score > 0)
-    // )
-    return {
-      mSolPrice,
-      mSolMintSupply,
-      epochInfo,
-    }
+    return { stats: statsBody, epochInfo }
   }
 
   return useSWR('marinade-pool-full-info', fetcher, {
