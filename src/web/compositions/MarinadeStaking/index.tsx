@@ -7,8 +7,10 @@ import { AmountInput } from '@sb/components/AmountInput'
 import { Page } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
 
+import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
+import { queryRendererHoc } from '../../../../../core/src/components/QueryRenderer'
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { useConnection } from '../../dexUtils/connection'
 import { notify } from '../../dexUtils/notifications'
@@ -24,6 +26,7 @@ import { signAndSendSingleTransaction } from '../../dexUtils/transactions'
 import { SignAndSendTransactionResult } from '../../dexUtils/transactions/types'
 import { MSOL_MINT } from '../../dexUtils/utils'
 import { useWallet } from '../../dexUtils/wallet'
+import { toMap } from '../../utils'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { InputWrapper } from '../RinStaking/styles'
 import {
@@ -35,6 +38,7 @@ import {
 import MarinadeBg from './bg.png'
 import { Switcher } from './components/Switcher/Switcher'
 import { Container, StyledInlineText } from './styles'
+import { StakingBlockProps } from './types'
 
 const SOL_MINT = TokenInstructions.WRAPPED_SOL_MINT.toString()
 const SOL_GAP_AMOUNT = 0.0127 // to allow transaactions pass
@@ -88,7 +92,11 @@ const notifyAboutUnStakeTransaction = (
     type: 'error',
   })
 }
-export const MarinadeStaking = () => {
+const Block: React.FC<StakingBlockProps> = (props) => {
+  const {
+    getDexTokensPricesQuery: { getDexTokensPrices },
+  } = props
+  const pricesMap = toMap(getDexTokensPrices, (p) => p.symbol)
   const [isStakeModeOn, setIsStakeModeOn] = useState(false)
 
   const [amount, setAmount] = useState('0')
@@ -109,10 +117,16 @@ export const MarinadeStaking = () => {
   const fromWallet = isStakeModeOn ? solWalletWithGap : mSolWallet
   const toWallet = isStakeModeOn ? mSolWallet : solWalletWithGap
 
-  const solPrice = mSolInfo?.stats.m_sol_price || 1
+  const mSolPrice = mSolInfo?.stats.m_sol_price || 1
+
   const amountGet = isStakeModeOn
-    ? parseFloat(amount) / solPrice
-    : parseFloat(amount) * solPrice
+    ? parseFloat(amount) / mSolPrice
+    : parseFloat(amount) * mSolPrice
+
+  const solPrice = pricesMap.get('SOL')?.price || 0
+  const usdValue = isStakeModeOn
+    ? parseFloat(amount) * solPrice
+    : amountGet * solPrice
 
   const toggleStakeMode = (value: boolean) => {
     setAmount('0')
@@ -242,6 +256,7 @@ export const MarinadeStaking = () => {
                     mint={toWallet?.mint || ''}
                     label="Receive"
                     showButtons={false}
+                    usdValue={usdValue}
                   />
                 </InputWrapper>
               </RowContainer>
@@ -303,3 +318,11 @@ export const MarinadeStaking = () => {
     </Page>
   )
 }
+
+export const MarinadeStaking = queryRendererHoc({
+  query: getDexTokensPricesQuery,
+  name: 'getDexTokensPricesQuery',
+  fetchPolicy: 'cache-and-network',
+  withoutLoading: true,
+  pollInterval: 10000,
+})(Block)
