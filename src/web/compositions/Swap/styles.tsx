@@ -165,16 +165,12 @@ export const SwapPageLayout = styled(Page)`
     font-size: 14px;
   }
 
-  @media (min-width: ${BREAKPOINTS.sm}) {
-    font-size: 16px;
-  }
-
   @media (min-width: ${BREAKPOINTS.lg}) {
-    font-size: 17px;
+    font-size: 15px;
   }
 
   @media (min-width: ${BREAKPOINTS.xxl}) {
-    font-size: 18px;
+    font-size: 16px;
   }
 `
 
