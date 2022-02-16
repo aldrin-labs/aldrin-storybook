@@ -1,5 +1,5 @@
 import { Theme } from '@material-ui/core'
-import { COLORS, BORDER_RADIUS } from '@variables/variables'
+import { COLORS, BORDER_RADIUS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -115,13 +115,15 @@ export const InputWithSelectorForSwaps = ({
 const InputContainer = styled(RowContainer)`
   position: relative;
   justify-content: space-between;
-  height: 6.4rem;
+  height: 4em;
   background: ${(props) =>
     props.disabled ? COLORS.disabledInput : COLORS.blockBackground};
   border: 0.1rem solid #383b45;
-  border-radius: ${BORDER_RADIUS.md};
+  border-radius: 0;
   ${(props) =>
-    props.sharpSides.map((sharpSide) => `border-${sharpSide}-radius: 0;`)}
+    props.roundSides.map(
+      (roundSide: string) => `border-${roundSide}-radius: ${BORDER_RADIUS.md};`
+    )}
 `
 
 const DropdownIconContainer = styled(Row)`
@@ -133,36 +135,36 @@ const DropdownIconContainer = styled(Row)`
 
 export const TokenSelector = ({
   symbol,
-  sharpSides = [],
+  roundSides = [],
   onClick,
 }: {
   symbol: string
-  sharpSides?: string[]
+  roundSides?: string[]
   onClick: () => void
 }) => {
   return (
     <InputContainer
-      sharpSides={sharpSides}
-      padding="1.8rem 1.2rem"
+      roundSides={roundSides}
+      padding="0 0.8em"
       onClick={onClick}
       style={{ cursor: 'pointer' }}
     >
       <Row>
         <TokenIcon
           mint={getTokenMintAddressByName(symbol)}
-          width="3rem"
-          height="3rem"
+          width={FONT_SIZES.xl}
+          height={FONT_SIZES.xl}
         />
         <Text
           style={{ margin: '0 0.8rem' }}
-          fontSize="2rem"
+          fontSize={symbol.length > 4 ? FONT_SIZES.md : FONT_SIZES.xmd}
           fontFamily="Avenir Next Demi"
         >
           {symbol}
         </Text>
       </Row>
       <DropdownIconContainer>
-        <SvgIcon src={Arrow} width="1rem" height="1rem" />
+        <SvgIcon src={Arrow} width="0.6875em" height="0.6875em" />
       </DropdownIconContainer>
     </InputContainer>
   )
@@ -174,7 +176,7 @@ export const SwapAmountInput = ({
   disabled = false,
   title = 'Title',
   placeholder = '0.00',
-  sharpSides = [],
+  roundSides = [],
   onChange = () => {},
   appendComponent = null,
 }: {
@@ -183,7 +185,7 @@ export const SwapAmountInput = ({
   disabled?: boolean
   title?: string
   placeholder?: string
-  sharpSides?: string[]
+  roundSides?: string[]
   onChange?: (value: number | string) => void
   appendComponent?: any
 }) => {
@@ -191,23 +193,27 @@ export const SwapAmountInput = ({
     <InputContainer
       disabled={disabled}
       direction="column"
-      padding="0.6rem 1.6rem"
-      sharpSides={sharpSides}
+      padding="0.3em 1em"
+      roundSides={roundSides}
     >
       <RowContainer justify="space-between">
-        <Text fontSize="1.4rem" fontFamily="Avenir Next" color="#C9C8CD">
+        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="#C9C8CD">
           {title}
         </Text>
         <Row>
           <Text
-            fontSize="1.4rem"
+            fontSize={FONT_SIZES.sm}
             fontFamily="Avenir Next Demi"
             color="#91e073"
             padding="0 0.8rem 0 0"
           >
             {maxAmount ? stripByAmount(maxAmount) : '0.00'}
           </Text>
-          <SvgIcon src={WalletIcon} width="1.5rem" height="1.5rem" />
+          <SvgIcon
+            src={WalletIcon}
+            width={FONT_SIZES.sm}
+            height={FONT_SIZES.sm}
+          />
         </Row>
       </RowContainer>
       <RowContainer justify="space-between">

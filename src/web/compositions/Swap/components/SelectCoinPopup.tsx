@@ -15,6 +15,7 @@ import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
 import {
   formatNumberToUSFormat,
@@ -69,6 +70,8 @@ export const SelectCoinPopup = ({
   setBaseTokenAddressFromSeveral: (address: string) => void
   setQuoteTokenAddressFromSeveral: (address: string) => void
 }) => {
+  const tokenInfos = useTokenInfos()
+
   const needKnownMints = false
   const [searchValue, onChangeSearch] = useState<string>('')
   const [selectedMint, setSelectedMint] = useState<string>('')
@@ -163,6 +166,10 @@ export const SelectCoinPopup = ({
             isTokenInPool: boolean
             isPoolExist: boolean
           }) => {
+            const { symbol } = tokenInfos.get(mint) || {
+              symbol: getTokenNameByMintAddress(mint),
+            }
+
             return (
               <SelectorRow
                 justify="space-between"
@@ -181,7 +188,7 @@ export const SelectCoinPopup = ({
               >
                 <Row wrap="nowrap">
                   <TokenIcon mint={mint} width="2rem" height="2rem" />
-                  <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
+                  <StyledText>{symbol}</StyledText>
                   {/* {!isPoolExist ? (
                     <TokenLabel>Insufficient Liquidity</TokenLabel>
                   ) : null} */}

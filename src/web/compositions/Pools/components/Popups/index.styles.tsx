@@ -1,5 +1,5 @@
 import { Paper } from '@material-ui/core'
-import { COLORS } from '@variables/variables'
+import { COLORS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -48,7 +48,7 @@ export const InvisibleInput = styled.input`
   background: ${(props) =>
     props.disabled ? COLORS.disabledInput : COLORS.blockBackground};
   color: ${COLORS.primaryWhite};
-  font-size: 2rem;
+  font-size: ${FONT_SIZES.xmd};
   outline: none;
   border: none;
   font-family: Avenir Next Demi;

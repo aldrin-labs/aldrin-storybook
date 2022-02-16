@@ -1,10 +1,11 @@
+import { FONT_SIZES } from '@variables/variables'
 import React, { CSSProperties, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import styled from 'styled-components'
 
 export const TimerButton = styled.div`
-  width: 3rem;
-  height: 3rem;
+  width: 2em;
+  height: 2em;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,6 +25,7 @@ export const ReloadTimer = ({
   margin = '0 3rem 0 0',
   rerenderOnClick = true,
   showTime = false,
+  timerStyles = {},
   timeStyles = {},
 }: {
   size?: number
@@ -35,6 +37,7 @@ export const ReloadTimer = ({
   margin?: string
   rerenderOnClick?: boolean
   showTime?: boolean
+  timerStyles?: CSSProperties
   timeStyles?: CSSProperties
 }) => {
   const [rerenderCounter, rerender] = useState(0)
@@ -42,6 +45,7 @@ export const ReloadTimer = ({
   return (
     <TimerButton
       margin={margin}
+      style={timerStyles}
       onClick={() => {
         callback()
         if (rerenderOnClick) {
@@ -70,7 +74,7 @@ export const ReloadTimer = ({
               style={{
                 color: '#fafafa',
                 fontFamily: 'Avenir Next',
-                fontSize: '1rem',
+                fontSize: FONT_SIZES.xs,
                 ...timeStyles,
               }}
             >

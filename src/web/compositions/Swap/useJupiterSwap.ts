@@ -25,7 +25,7 @@ export type UseJupiterSwapRouteResponse = {
   inputAmount: number | string
   outputAmount: number | string
   depositAndFee: TransactionFeeInfo | undefined | null
-  setInputsAmounts: (
+  setInputAmount: (
     newOutputAmount: number | string,
     inputMintFromArgs?: string,
     outputMintFromArgs?: string
@@ -47,7 +47,7 @@ export const useJupiterSwap = ({
     TransactionFeeInfo | undefined | null
   >(null)
 
-  const [inputAmount, setInputAmount] = useState<string | number>('')
+  const [inputAmount, setRawInputAmount] = useState<string | number>('')
   const [outputAmount, setOutputAmount] = useState<string | number>('')
 
   const [loading, setLoading] = useState(false)
@@ -56,7 +56,7 @@ export const useJupiterSwap = ({
     timestamp: Date.now(),
   })
 
-  const setInputsAmounts = async (
+  const setInputAmount = async (
     newAmount: string | number,
     inputMintFromArgs?: string,
     outputMintFromArgs?: string
@@ -68,7 +68,7 @@ export const useJupiterSwap = ({
 
     if (jupiter && inputMintForRoute && outputMintForRoute) {
       setLoading(true)
-      setInputAmount(newAmount)
+      setRawInputAmount(newAmount)
 
       const { decimals: inputMintDecimalsForRoute } = tokenInfos.get(
         inputMintForRoute
@@ -111,7 +111,6 @@ export const useJupiterSwap = ({
         }
 
         const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
-
         const routeDepositAndFee = await swapRoute.getDepositAndFee()
 
         setRoute(swapRoute)
@@ -123,27 +122,33 @@ export const useJupiterSwap = ({
   }
 
   useEffect(() => {
-    setInputsAmounts(inputAmount, inputMint, outputMint)
+    setInputAmount(inputAmount, inputMint, outputMint)
   }, [inputMint, outputMint])
 
   const refreshArgsRef = useRef({
     inputAmount,
-    outputAmount,
+    inputMint,
+    outputMint,
   })
 
   useEffect(() => {
     refreshArgsRef.current = {
       inputAmount,
-      outputAmount,
+      inputMint,
+      outputMint,
     }
-  }, [inputAmount, outputAmount])
+  }, [inputAmount, inputMint, outputMint])
 
   const refresh = async () => {
-    await setInputsAmounts(refreshArgsRef.current.inputAmount)
+    await setInputAmount(
+      refreshArgsRef.current.inputAmount,
+      refreshArgsRef.current.inputMint,
+      refreshArgsRef.current.outputMint
+    )
   }
 
   const reverseTokenAmounts = async () => {
-    await setInputsAmounts(outputAmount, outputMint, inputMint)
+    await setInputAmount(outputAmount, outputMint, inputMint)
   }
 
   return {
@@ -155,6 +160,6 @@ export const useJupiterSwap = ({
     depositAndFee,
     refresh,
     reverseTokenAmounts,
-    setInputsAmounts,
+    setInputAmount,
   }
 }

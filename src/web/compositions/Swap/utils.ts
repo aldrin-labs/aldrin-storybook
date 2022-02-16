@@ -153,3 +153,19 @@ export const getFeeFromSwapRoute = ({
     return totalFeeUSD + amountUSD
   }, 0)
 }
+
+export const getRouteMintsPath = (swapRoute: RouteInfo | null) => {
+  if (!swapRoute || !swapRoute.marketInfos) return []
+  return swapRoute.marketInfos.reduce<string[]>((acc, marketInfo, index) => {
+    if (index === 0) {
+      acc.push(
+        marketInfo.inputMint.toString(),
+        marketInfo.outputMint.toString()
+      )
+    } else {
+      acc.push(marketInfo.outputMint.toString())
+    }
+
+    return acc
+  }, [])
+}

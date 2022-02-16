@@ -8,7 +8,6 @@ export const Container = styled.div`
   width: 100%;
   margin: 10px 0;
   position: relative;
-  font-size: 1.6rem;
 `
 
 export const SearchInput = styled(Input)`

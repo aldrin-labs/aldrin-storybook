@@ -1,6 +1,7 @@
 export const MAIN_FONT = 'Avenir Next'
 export const FONTS = {
   main: `${MAIN_FONT}, sans-serif;`,
+  demi: `${MAIN_FONT} Demi, sans-serif`,
 }
 
 export const COLORS = {
@@ -37,6 +38,7 @@ export const COLORS = {
   cardsBack: '#242424',
   brown: '#4B2321',
   inputPlaceholder: '#86878E',
+  halfWhite: 'rgba(248, 250, 255, 0.5)',
 }
 
 export const BORDER_RADIUS = {
@@ -51,9 +53,11 @@ export const BORDER_RADIUS = {
 export const FONT_SIZES = {
   xs: '0.6875em', // 11px
   sm: '0.8125em', // 13px
+  xsm: '0.9em',
   md: '1em', // 16px
+  xmd: '1.3em', // 21px
   lg: '1.6em', // 26px
-  xl: '2em', // 16px
+  xl: '2em', // 32px
   xxxl: '4em', // 64px
 }
 

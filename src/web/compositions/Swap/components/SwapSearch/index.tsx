@@ -88,10 +88,15 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
       if (!tokenFrom) {
         return []
       }
+
+      const topSymbolsForSwap = ['sol', 'usdc', 'usdt']
+
       const tokensTo = tokensWithSymbol
         .filter((t) => t.mint !== tokenFrom.mint)
         .filter((t) =>
-          tokenToSearch ? t.symbol.includes(tokenToSearch.toLowerCase()) : true
+          tokenToSearch
+            ? t.symbol.includes(tokenToSearch.toLowerCase())
+            : topSymbolsForSwap.includes(t.symbol)
         )
         .slice(0, 2)
 

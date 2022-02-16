@@ -1,8 +1,14 @@
-import { COLORS, MAIN_FONT } from '@variables/variables'
+import {
+  BREAKPOINTS,
+  COLORS,
+  FONT_SIZES,
+  MAIN_FONT,
+} from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Page } from '@sb/components/Layout'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
@@ -52,55 +58,45 @@ export const ValueButton = styled.button`
   align-items: center;
   justify-content: center;
 
-  width: 3rem;
-  height: 3rem;
+  width: 2em;
+  height: 2em;
   cursor: pointer;
-  padding: 0.7rem 1rem;
+  padding: 0.5em 0.8em;
   font-family: Avenir Next Bold;
   color: #a7a7ae;
   background-color: #2b2d32;
   margin-left: 0.5rem;
-  font-size: 1.5rem;
-  line-height: 3rem;
+  font-size: ${(props) => FONT_SIZES[props.$fontSize || 'sm']};
+  line-height: 2em;
   border: 0.1rem solid #3a475c;
   border-radius: 0.8rem;
-
-  &:focus {
-    background: ${(props) => props.theme.palette.blue.serum};
-    border: ${(props) => `0.1rem solid ${props.theme.palette.blue.serum}`};
-    font-family: Avenir Next Demi;
-    color: #f8faff;
-  }
 `
 
 export const ValueInput = styled.input`
-  width: 7.5rem;
-  height: 3rem;
-  padding: 0.7rem 1rem;
+  width: 5em;
+  height: 2em;
+  padding: 0.5em 0.8em;
   font-family: Avenir Next Medium;
   color: #fbf2f2;
   background-color: transparent;
-  font-size: 1.3rem;
+  font-size: ${FONT_SIZES.sm};
   border: 0.1rem solid #3a475c;
   border-radius: 0.8rem;
   outline: none;
-  &:focus {
-    border: ${(props) => `0.1rem solid ${props.theme.palette.blue.serum}`};
-  }
 `
 
 export const BlackRow = styled(Row)`
   justify-content: space-between;
   background: #242424;
   border-radius: 1.2rem;
-  height: 4.8rem;
-  padding: 1.6rem 1.2rem;
+  height: 3em;
+  padding: 1em 0.8em;
   margin-top: 0.8rem;
 `
 
 export const RowTitle = styled.span`
   font-family: ${MAIN_FONT};
-  font-size: 1.4rem;
+  font-size: ${FONT_SIZES.xsm};
   color: #c9c8cd;
 `
 
@@ -117,9 +113,9 @@ export const RowAmountValue = styled(RowValue)`
 export const SwapButton = styled((props) => (
   <BtnCustom
     btnWidth="100%"
-    height="6.4rem"
-    fontSize="1.6rem"
-    padding="1rem 2rem"
+    height="4em"
+    fontSize="initial"
+    padding="0.7em 1.2em"
     borderRadius=".8rem"
     borderColor="none"
     btnColor={COLORS.primaryWhite}
@@ -138,16 +134,67 @@ export const SwapButton = styled((props) => (
   }
 `
 
-export const ReverseTokensContainer = styled(Row)`
-  width: 2.5rem;
-  height: 2.5rem;
+export const CircleIconContainer = styled(Row)`
+  width: ${(props) => props.size || '1.6em'};
+  height: ${(props) => props.size || '1.6em'};
   background: #2b2d36;
-  box-shadow: 0px 0px 0.8rem rgba(0, 0, 0, 0.45);
   border-radius: 50%;
+  font-family: Avenir Next Bold;
+  color: #a7a7ae;
+  line-height: ${(props) => props.size || '1.6em'};
+`
+
+export const ReverseTokensContainer = styled(CircleIconContainer)`
+  box-shadow: 0px 0px 0.8rem rgba(0, 0, 0, 0.45);
   position: absolute;
   right: 1rem;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   z-index: 2;
+`
+
+export const SwapPageLayout = styled(Page)`
+  font-size: 12px;
+
+  @media (min-width: 380px) {
+    font-size: 13px;
+  }
+
+  @media (min-width: 480px) {
+    font-size: 14px;
+  }
+
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    font-size: 16px;
+  }
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    font-size: 17px;
+  }
+
+  @media (min-width: ${BREAKPOINTS.xxl}) {
+    font-size: 18px;
+  }
+`
+
+export const SwapContentContainer = styled(Row)`
+  width: 90%;
+
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    width: 30em;
+  }
+
+  @media (min-width: 1920px) {
+    width: 40em;
+  }
+`
+
+export const SwapBlockTemplate = styled(BlockTemplate)`
+  padding: 2.4rem 1.6rem;
+  z-index: 10;
+
+  @media (min-width: 1920px) {
+    font-size: 20px;
+  }
 `
