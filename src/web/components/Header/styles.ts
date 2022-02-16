@@ -4,6 +4,7 @@ import {
   BREAKPOINTS,
   BORDER_RADIUS,
   FONT_SIZES,
+  TRANSITION,
 } from '@variables/variables'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import styled from 'styled-components'
@@ -258,9 +259,16 @@ export const WalletButton = styled(Button)`
   border: none;
   font-weight: 600;
   height: 5rem;
+  transition: ${TRANSITION};
 
-  &:active {
-    background-color: ${COLORS.darkBlue};
+  &:hover {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      ${COLORS.primary};
+  }
+
+  &:active,
+  &:focus {
+    background: ${COLORS.darkBlue};
   }
 
   @media (max-width: 1100px) {
@@ -362,9 +370,15 @@ export const WalletDisconnectButton = styled(Button)`
   border: none;
   font-weight: 600;
   height: 5rem;
+  transition: ${TRANSITION};
+
+  &:hover {
+    background-color: ${COLORS.primaryRed};
+  }
 
   &:active {
-    background-color: ${COLORS.primaryRed};
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      ${COLORS.primaryRed};
   }
 `
 export const BalanceTitle = styled.span`

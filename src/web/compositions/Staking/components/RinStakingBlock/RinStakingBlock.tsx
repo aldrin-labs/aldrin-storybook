@@ -67,7 +67,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
     <StakingBlock>
       <LogoWrap>
         <img src={AldrinLogo} height="70" alt="Aldrin" />
-        <AbsoluteImg src={Coins} height="auto" width="25%" alt="Aldrin" />
+        <AbsoluteImg src={Coins} height="auto" alt="Aldrin" />
       </LogoWrap>
       <BlockContent>
         <RowContainer justify="space-between">
