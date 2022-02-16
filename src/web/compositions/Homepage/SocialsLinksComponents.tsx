@@ -91,7 +91,7 @@ export const LinkToMedium = () => {
     <StyledLink
       target="_blank"
       rel="noopener noreferrer"
-      href="https://aldrin-rin.medium.com/"
+      href="https://blog.aldrin.com"
     >
       <svg
         width="100%"
