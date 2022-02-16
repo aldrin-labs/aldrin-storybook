@@ -54,7 +54,7 @@ export const getRandomBlueColor = () => {
 
 export const formatSymbol = ({ symbol }: { symbol: string }) => {
   if (symbol.length > 15) {
-    return `${symbol.slice(0, 3)}...${symbol.slice(symbol.length - 3)}`
+    return `${symbol.slice(0, 4)}...${symbol.slice(symbol.length - 4)}`
   }
   return symbol
 }

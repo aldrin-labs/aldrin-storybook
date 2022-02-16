@@ -139,7 +139,7 @@ export const LinkToCoinGecko = () => {
     <StyledLink
       target="_blank"
       rel="noopener noreferrer"
-      href="https://www.youtube.com/channel/UCyUM72zWism4-LdA2J4bwew"
+      href="https://www.coingecko.com/en/coins/aldrin"
     >
       <svg
         width="100%"
@@ -200,7 +200,7 @@ export const LinkToCoinMarketcap = () => {
     <StyledLink
       target="_blank"
       rel="noopener noreferrer"
-      href="https://aldrin-rin.medium.com/"
+      href="https://coinmarketcap.com/currencies/aldrin/"
     >
       <svg
         width="100%"

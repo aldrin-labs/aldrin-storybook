@@ -30,6 +30,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
     label,
     showButtons = true,
     usdValue,
+    disabled,
   } = props
 
   const inputSize = size || `${value}`.length || 1
@@ -47,7 +48,6 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
   const tokenName =
     tokensMap.get(mint)?.symbol || getTokenNameByMintAddress(mint)
 
-  console.log('usdValue: ', usdValue)
   return (
     <AmountInputElement
       className={className}
@@ -58,6 +58,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
       onChange={onChange}
       size={inputSize}
       label={label}
+      disabled={disabled}
       append={
         <FlexBlock
           direction="row"

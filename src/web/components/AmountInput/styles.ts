@@ -67,6 +67,6 @@ export const ButtonsContainer = styled.div`
 
 export const TokenNameWrap = styled.span`
   padding-top: 1.5em;
-  color: ${COLORS.white};
+  color: ${COLORS.hint};
   font-weight: bold;
 `

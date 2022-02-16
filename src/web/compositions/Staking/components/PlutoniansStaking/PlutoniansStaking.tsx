@@ -29,19 +29,6 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
           <ContentBlock width="48%">
             <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText size="md" weight={700}>
-                14 Days
-              </InlineText>{' '}
-              <SvgIcon src={Lock} alt="locked" />
-            </Row>
-            <NumberWithLabel
-              size={FONT_SIZES.es}
-              value={null}
-              label="12% APR + NFT"
-            />
-          </ContentBlock>
-          <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
-              <InlineText size="md" weight={700}>
                 30 Days
               </InlineText>{' '}
               <SvgIcon src={Lock} alt="locked" />
@@ -49,7 +36,22 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             <NumberWithLabel
               size={FONT_SIZES.es}
               value={null}
-              label="17% APR + NFT"
+              label="Coming Soon"
+              center
+            />
+          </ContentBlock>
+          <ContentBlock width="48%">
+            <Row justify="space-between" margin="0 0 2rem 0">
+              <InlineText size="md" weight={700}>
+                60 Days
+              </InlineText>{' '}
+              <SvgIcon src={Lock} alt="locked" />
+            </Row>
+            <NumberWithLabel
+              size={FONT_SIZES.es}
+              value={null}
+              label="Coming Soon"
+              center
             />
           </ContentBlock>
         </StretchedContent>
@@ -64,20 +66,22 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             <NumberWithLabel
               size={FONT_SIZES.es}
               value={null}
-              label="22% APR + NFT"
+              label="Coming Soon"
+              center
             />
           </ContentBlock>
           <ContentBlock width="48%">
             <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText size="md" weight={700}>
-                180 Days
+                120 Days
               </InlineText>{' '}
               <SvgIcon src={Lock} alt="locked" />
             </Row>
             <NumberWithLabel
               size={FONT_SIZES.es}
               value={null}
-              label="63% APR + NFT"
+              label="Coming Soon"
+              center
             />
           </ContentBlock>
         </StretchedContent>

@@ -22,7 +22,7 @@ import {
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Marinade from './marinadeLogo.svg'
-import { AbsoluteImg, LogoWrap } from './styles'
+import { AbsoluteImg, Filler, LogoWrap, RelativeContentBlock } from './styles'
 import { MarinadeStakingProps } from './types'
 
 const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
@@ -61,7 +61,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             <InlineText size="rg" weight={700}>
               {totalStakedSol
                 ? stripByAmountAndFormat(totalStakedSol, 2)
-                : '---'}
+                : ' ---'}
               <InlineText color="primaryGray" weight={600}>
                 {' '}
                 SOL{' '}
@@ -76,7 +76,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
               <InlineText color="primaryGray">$</InlineText>
               {totalStakedUsdValue
                 ? stripByAmountAndFormat(totalStakedUsdValue, 2)
-                : '---'}
+                : ' ---'}
             </InlineText>
           </RowContainer>
         </ContentBlock>
@@ -92,13 +92,14 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             <InlineText size="rg" weight={700} style={{ whiteSpace: 'nowrap' }}>
               {mSolInfo?.stats.m_sol_price
                 ? stripByAmountAndFormat(mSolInfo.stats.m_sol_price, 3)
-                : '---'}{' '}
+                : ' ---'}{' '}
               <InlineText color="primaryGray" weight={600}>
                 SOL
               </InlineText>
             </InlineText>
           </ContentBlock>
-          <ContentBlock width="48%">
+          <RelativeContentBlock width="48%">
+            <Filler $width={mSolInfo?.epochInfo.epochPct || 0} />
             <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText color="primaryGray" size="sm">
                 Epoch
@@ -108,7 +109,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             <InlineText size="rg" weight={700}>
               {stripByAmountAndFormat(mSolInfo?.epochInfo.epochPct || 0, 2)}%
             </InlineText>
-          </ContentBlock>
+          </RelativeContentBlock>
         </StretchedContent>
         <RowContainer>
           <GrayLink to="/staking/marinade">View</GrayLink>

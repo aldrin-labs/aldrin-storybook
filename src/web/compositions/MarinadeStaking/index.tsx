@@ -8,7 +8,10 @@ import { Page } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
 
 import { queryRendererHoc } from '../../../../../core/src/components/QueryRenderer'
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
@@ -97,9 +100,9 @@ const Block: React.FC<StakingBlockProps> = (props) => {
     getDexTokensPricesQuery: { getDexTokensPrices },
   } = props
   const pricesMap = toMap(getDexTokensPrices, (p) => p.symbol)
-  const [isStakeModeOn, setIsStakeModeOn] = useState(false)
+  const [isStakeModeOn, setIsStakeModeOn] = useState(true)
 
-  const [amount, setAmount] = useState('0')
+  const [amount, setAmount] = useState('')
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -191,34 +194,33 @@ const Block: React.FC<StakingBlockProps> = (props) => {
         <Container>
           <img src={MarinadeBg} width="100%" height="auto" alt="marinade" />
         </Container>
-        <Container>
-          <StretchedContent>
-            <ContentBlock width="48%" style={{ background: COLORS.newBlack }}>
-              <Row justify="flex-start" margin="0 0 2rem 0">
-                <InlineText color="primaryGray" size="sm">
-                  Epoch
-                </InlineText>{' '}
-              </Row>
-              <InlineText size="lg" weight={700}>
-                {stripByAmountAndFormat(mSolInfo?.epochInfo.epochPct || 0, 2)}%
-              </InlineText>
-            </ContentBlock>
-            <ContentBlock style={{ background: '#121E10' }} width="48%">
-              <Row justify="flex-start" margin="0 0 2rem 0">
-                <InlineText color="primaryGray" size="sm">
-                  APY
-                </InlineText>{' '}
-              </Row>
-              <InlineText color="newGreen" size="lg" weight={700}>
-                {stripByAmountAndFormat(
-                  mSolInfo?.stats.avg_staking_apy || 0,
-                  2
-                )}
-                %
-              </InlineText>
-            </ContentBlock>
-          </StretchedContent>
-        </Container>
+        {isStakeModeOn && (
+          <Container>
+            <StretchedContent>
+              <ContentBlock width="48%" style={{ background: COLORS.newBlack }}>
+                <Row justify="flex-start" margin="0 0 2rem 0">
+                  <InlineText color="primaryGray" size="sm">
+                    Epoch
+                  </InlineText>{' '}
+                </Row>
+                <InlineText size="lg" weight={700}>
+                  {stripByAmountAndFormat(mSolInfo?.epochInfo.epochPct || 0, 2)}
+                  %
+                </InlineText>
+              </ContentBlock>
+              <ContentBlock style={{ background: '#121E10' }} width="48%">
+                <Row justify="flex-start" margin="0 0 2rem 0">
+                  <InlineText color="primaryGray" size="sm">
+                    APY
+                  </InlineText>{' '}
+                </Row>
+                <InlineText color="newGreen" size="lg" weight={700}>
+                  {stripByAmount(mSolInfo?.stats.avg_staking_apy || 0, 2)}%
+                </InlineText>
+              </ContentBlock>
+            </StretchedContent>
+          </Container>
+        )}
         <Container>
           <ContentBlock style={{ margin: '0', background: COLORS.newBlack }}>
             <Switcher
@@ -230,38 +232,39 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                 Stake SOL and use mSOL while earning rewards
               </InlineText>
             </RowContainer>
-            <ConnectWalletWrapper>
-              <RowContainer>
-                <InputWrapper style={{ position: 'relative' }}>
-                  {' '}
-                  <AmountInput
-                    value={amount}
-                    onChange={(v) => setAmount(v)}
-                    placeholder="0"
-                    name="amountFrom"
-                    amount={fromWallet?.amount || 0}
-                    mint={fromWallet?.mint || ''}
-                    label={isStakeModeOn ? 'Stake' : 'Unstake'}
-                  />
-                </InputWrapper>
-              </RowContainer>
-              <RowContainer margin="2rem 0">
-                <InputWrapper style={{ position: 'relative' }}>
-                  <AmountInput
-                    value={`${amountGet || 0}`}
-                    onChange={() => {}}
-                    placeholder="0"
-                    name="amountTo"
-                    amount={toWallet?.amount || 0}
-                    mint={toWallet?.mint || ''}
-                    label="Receive"
-                    showButtons={false}
-                    usdValue={usdValue}
-                  />
-                </InputWrapper>
-              </RowContainer>
 
-              <RowContainer>
+            <RowContainer>
+              <InputWrapper style={{ position: 'relative' }}>
+                {' '}
+                <AmountInput
+                  value={amount}
+                  onChange={(v) => setAmount(v)}
+                  placeholder="0"
+                  name="amountFrom"
+                  amount={fromWallet?.amount || 0}
+                  mint={fromWallet?.mint || ''}
+                  label={isStakeModeOn ? 'Stake' : 'Unstake'}
+                />
+              </InputWrapper>
+            </RowContainer>
+            <RowContainer margin="2rem 0">
+              <InputWrapper style={{ position: 'relative' }}>
+                <AmountInput
+                  value={`${stripByAmount(amountGet || 0, 4)}`}
+                  onChange={() => {}}
+                  placeholder="0"
+                  name="amountTo"
+                  disabled
+                  amount={toWallet?.amount || 0}
+                  mint={toWallet?.mint || ''}
+                  label="Receive"
+                  showButtons={false}
+                  usdValue={usdValue}
+                />
+              </InputWrapper>
+            </RowContainer>
+            <RowContainer>
+              <ConnectWalletWrapper size="button-only">
                 {isStakeModeOn ? (
                   <StakeButton onClick={stake} disabled={!isValid}>
                     Stake
@@ -271,8 +274,8 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                     Unstake
                   </UnStakeButton>
                 )}
-              </RowContainer>
-            </ConnectWalletWrapper>
+              </ConnectWalletWrapper>
+            </RowContainer>
             <RowContainer justify="space-between">
               <ContentBlock width="48%">
                 <RowContainer justify="space-between">
