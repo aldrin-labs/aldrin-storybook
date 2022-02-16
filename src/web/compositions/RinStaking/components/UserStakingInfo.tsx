@@ -48,6 +48,7 @@ import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
 import { restake } from '../../../dexUtils/staking/actions'
 import { toMap } from '../../../utils'
+import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
 import ClockIcon from './assets/clock.svg'
@@ -185,6 +186,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const claimUnlockData = dayjs(claimUnlockDataTimestamp)
     .format('D-MMMM-YYYY')
     .replaceAll('-', ' ')
+
+  const [isBalancesShowing, setIsBalancesShowing] = useState(true)
 
   const start = useCallback(
     async (amount: number) => {
@@ -348,6 +351,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const shareText = getShareText(formattedAPR)
 
+  const rinValue = stripByAmountAndFormat(totalStaked)
+  const totalStakedValue = isBalancesShowing
+    ? rinValue
+    : new Array(rinValue.length).fill('∗').join('')
   return (
     <>
       <Row>
@@ -372,7 +379,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   }
                 >
                   <span>
-                    <SvgIcon src={InfoIcon} />
+                    <SvgIcon src={InfoIcon} width="0.8em" />
                   </span>
                 </DarkTooltip>
               </FlexBlock>
@@ -443,11 +450,24 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         <Cell colMd={6} colXl={3} col={12}>
           <Block>
             <BlockContentStretched>
-              <InlineText color="lightGray" size="sm">
-                Your stake
-              </InlineText>{' '}
+              <FlexBlock justifyContent="space-between" alignItems="center">
+                <InlineText color="lightGray" size="sm">
+                  Your stake
+                </InlineText>{' '}
+                <SvgIcon
+                  style={{ cursor: 'pointer' }}
+                  src={
+                    isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye
+                  }
+                  width="0.9em"
+                  height="auto"
+                  onClick={() => {
+                    setIsBalancesShowing(!isBalancesShowing)
+                  }}
+                />
+              </FlexBlock>
               <BigNumber>
-                <InlineText>{stripByAmountAndFormat(totalStaked)} </InlineText>{' '}
+                <InlineText>{totalStakedValue} </InlineText>{' '}
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
@@ -476,7 +496,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   }
                 >
                   <span>
-                    <SvgIcon src={InfoIcon} />
+                    <SvgIcon src={InfoIcon} width="0.8em" />
                   </span>
                 </DarkTooltip>
               </FlexBlock>

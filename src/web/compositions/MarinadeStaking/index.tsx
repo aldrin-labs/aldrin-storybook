@@ -3,6 +3,7 @@ import { TokenInstructions } from '@project-serum/serum'
 import { COLORS } from '@variables/variables'
 import React, { useState } from 'react'
 
+import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
 import { Page } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
@@ -13,8 +14,11 @@ import {
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 
+import InfoIcon from '@icons/info.svg'
+
 import { queryRendererHoc } from '../../../../../core/src/components/QueryRenderer'
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
+import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
 import { useConnection } from '../../dexUtils/connection'
 import { notify } from '../../dexUtils/notifications'
 import {
@@ -198,10 +202,15 @@ const Block: React.FC<StakingBlockProps> = (props) => {
           <Container>
             <StretchedContent>
               <ContentBlock width="48%" style={{ background: COLORS.newBlack }}>
-                <Row justify="flex-start" margin="0 0 2rem 0">
+                <Row justify="space-between" margin="0 0 2rem 0">
                   <InlineText color="primaryGray" size="sm">
                     Epoch
                   </InlineText>{' '}
+                  <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
+                    <span>
+                      <SvgIcon src={InfoIcon} width="1.5rem" />
+                    </span>
+                  </DarkTooltip>
                 </Row>
                 <InlineText size="lg" weight={700}>
                   {stripByAmountAndFormat(mSolInfo?.epochInfo.epochPct || 0, 2)}
@@ -209,10 +218,15 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                 </InlineText>
               </ContentBlock>
               <ContentBlock style={{ background: '#121E10' }} width="48%">
-                <Row justify="flex-start" margin="0 0 2rem 0">
+                <Row justify="space-between" margin="0 0 2rem 0">
                   <InlineText color="primaryGray" size="sm">
                     APY
                   </InlineText>{' '}
+                  <DarkTooltip title="This annual percentage yield is based on the average APY of last months. See our stats for more details.">
+                    <span>
+                      <SvgIcon src={InfoIcon} width="1.5rem" />
+                    </span>
+                  </DarkTooltip>
                 </Row>
                 <InlineText color="newGreen" size="lg" weight={700}>
                   {stripByAmount(mSolInfo?.stats.avg_staking_apy || 0, 2)}%
@@ -231,6 +245,32 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               <InlineText color="primaryGray" size="sm">
                 Stake SOL and use mSOL while earning rewards
               </InlineText>
+              <DarkTooltip
+                title={
+                  <>
+                    <p>
+                      mSOL has been integrated by many protocols in the Solana
+                      ecosystem including Aldrin!{' '}
+                    </p>
+                    <p>
+                      mSOL opens up new opportunities for you to cook your own
+                      DeFi recipes, adapted to your own needs and risk appetite.
+                      From single staking your mSOL without any added risk to
+                      adventurous degen strategies, mSOL can be marinated in all
+                      your DeFi recipes.
+                    </p>
+                    <p>
+                      Also keep in mind that mSOL can be traded at its current
+                      value in exchange for any other cryptocurrency on a
+                      decentralized exchange without the need to unstake first.
+                    </p>
+                  </>
+                }
+              >
+                <span>
+                  <SvgIcon src={InfoIcon} width="1.5rem" />
+                </span>
+              </DarkTooltip>
             </RowContainer>
 
             <RowContainer>
@@ -295,22 +335,34 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               </ContentBlock>
               {isStakeModeOn ? (
                 <ContentBlock width="48%">
-                  <RowContainer justify="space-between">
+                  <Row justify="space-between">
                     {' '}
                     <InlineText color="primaryGray" size="sm">
-                      Deposit fee:{' '}
+                      Stake fee:{' '}
                     </InlineText>{' '}
-                    <InlineText size="es">0%</InlineText>
-                  </RowContainer>
+                    <InlineText style={{ margin: '0 4px 0 auto' }} size="es">
+                      0%
+                    </InlineText>
+                    <DarkTooltip title="There is 0% fee for staking your SOL and receiving mSOL.">
+                      <span>
+                        <SvgIcon
+                          style={{ paddingTop: '3px' }}
+                          src={InfoIcon}
+                          width="1.5rem"
+                        />
+                      </span>
+                    </DarkTooltip>
+                  </Row>
                 </ContentBlock>
               ) : (
                 <ContentBlock width="48%">
                   <RowContainer justify="space-between">
-                    {' '}
                     <InlineText color="primaryGray" size="sm">
                       Unstake fee:{' '}
                     </InlineText>{' '}
-                    <InlineText size="es">≈0.3%</InlineText>
+                    <InlineText style={{ margin: '0 4px 0 auto' }} size="es">
+                      ≈0.3%
+                    </InlineText>
                   </RowContainer>
                 </ContentBlock>
               )}
