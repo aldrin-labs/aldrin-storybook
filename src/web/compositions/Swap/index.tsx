@@ -626,10 +626,7 @@ const SwapPage = ({
             {isAmountsEntered ? (
               <RowContainer direction="column" margin="2.4rem 0 0 0">
                 <RowContainer justify="space-between">
-                  <BlackRow width="calc(50% - 0.8rem)">
-                    {estimatedPriceDigits < 9 && symbolsLength < 8 ? (
-                      <RowTitle>Price:</RowTitle>
-                    ) : null}
+                  <BlackRow justify="center" width="calc(50% - 0.8rem)">
                     <Row>
                       <RowValue>
                         <RowAmountValue>1</RowAmountValue>

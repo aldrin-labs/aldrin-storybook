@@ -85,9 +85,10 @@ export const ValueInput = styled.input`
   outline: none;
 `
 
-export const BlackRow = styled(Row)`
-  justify-content: space-between;
-  background: #242424;
+export const BlackRow = styled((props) => (
+  <Row justify="space-between" {...props} />
+))`
+  background: ${COLORS.cardsBack};
   border-radius: 1.2rem;
   height: 3em;
   padding: 1em 0.8em;
