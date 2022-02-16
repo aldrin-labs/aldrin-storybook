@@ -26,7 +26,8 @@ export const PopupBody = styled(Body)`
 `
 
 export const Page = styled(Body)`
-  background: ${COLORS.bodyBackground};
+  background: ${(props: { $color?: keyof typeof COLORS }) =>
+    COLORS[props.$color || 'bodyBackground']};
   flex: 1;
 `
 export const StakingPage = styled(Page)`

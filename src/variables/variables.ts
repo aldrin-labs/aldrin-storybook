@@ -39,6 +39,7 @@ export const COLORS = {
   brown: '#4B2321',
   inputPlaceholder: '#86878E',
   halfWhite: 'rgba(248, 250, 255, 0.5)',
+  blockBlackBackground: '#1A1A1A',
 }
 
 export const BORDER_RADIUS = {

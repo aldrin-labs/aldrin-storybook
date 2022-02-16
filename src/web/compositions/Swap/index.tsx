@@ -321,12 +321,6 @@ const SwapPage = ({
     })
   )
 
-  const estimatedPriceDigits =
-    getNumberOfIntegersFromNumber(estimatedPrice) +
-    getNumberOfDecimalsFromNumber(estimatedPrice)
-
-  const symbolsLength = baseSymbol.length + quoteSymbol.length
-
   return (
     <SwapPageLayout>
       <SwapPageContainer direction="column" height="100%" wrap="nowrap">
@@ -731,12 +725,10 @@ const SwapPage = ({
         />
 
         <SelectCoinPopup
-          poolsInfo={pools}
           theme={theme}
           mints={mints}
-          baseTokenMintAddress={baseTokenMintAddress}
-          quoteTokenMintAddress={quoteTokenMintAddress}
           allTokensData={allTokensData}
+          pricesMap={dexTokensPricesMap}
           open={isSelectCoinPopupOpen}
           isBaseTokenSelecting={isBaseTokenSelecting}
           setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}

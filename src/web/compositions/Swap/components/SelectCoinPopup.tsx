@@ -1,46 +1,55 @@
 import { Theme } from '@material-ui/core'
-import React, { useState } from 'react'
+import { BREAKPOINTS, COLORS, FONTS, FONT_SIZES } from '@variables/variables'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import SvgIcon from '@sb/components/SvgIcon'
+import { Page } from '@sb/components/Layout'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { useWallet } from '@sb/dexUtils/wallet'
 
+import { stripByAmount } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import Close from '@icons/closeIcon.svg'
-
 import { SelectSeveralAddressesPopup } from '../../Pools/components/Popups/SelectorForSeveralAddresses'
 
 const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
-  width: 55rem;
+  font-size: 16px;
+  background: #1a1a1a;
+  width: 30em;
+
+  @media (max-width: ${BREAKPOINTS.sm}) {
+    max-height: 100%;
+    margin: 0;
+    width: 100%;
+  }
 `
 
 export const SelectorRow = styled(({ ...props }) => (
   <RowContainer {...props} />
 ))`
-  border-bottom: 0.1rem solid #383b45;
-  height: 5rem;
+  background: ${COLORS.background};
+  border-radius: 1.2rem;
+  margin-bottom: 0.8em;
+  padding: 1.5em;
 `
 
 export const StyledText = styled(({ ...props }) => <Text {...props} />)`
-  margin: 0 0.5rem;
-  font-size: 2em;
-  font-family: Avenir Next Demi;
+  font-size: ${FONT_SIZES.md};
+  font-family: ${FONTS.demi};
 `
 
 export const SelectCoinPopup = ({
@@ -48,12 +57,10 @@ export const SelectCoinPopup = ({
   open,
   mints,
   allTokensData,
-  poolsInfo,
+  pricesMap,
   isBaseTokenSelecting,
   close,
   selectTokenMintAddress,
-  quoteTokenMintAddress,
-  baseTokenMintAddress,
   setBaseTokenAddressFromSeveral,
   setQuoteTokenAddressFromSeveral,
 }: {
@@ -62,15 +69,14 @@ export const SelectCoinPopup = ({
   mints: string[]
   isBaseTokenSelecting: boolean
   allTokensData: TokenInfo[]
-  poolsInfo: PoolInfo[]
+  pricesMap: Map<string, number>
   close: () => void
   selectTokenMintAddress: (address: string) => void
-  quoteTokenMintAddress: string
-  baseTokenMintAddress: string
   setBaseTokenAddressFromSeveral: (address: string) => void
   setQuoteTokenAddressFromSeveral: (address: string) => void
 }) => {
   const tokenInfos = useTokenInfos()
+  const { wallet, connected } = useWallet()
 
   const needKnownMints = false
   const [searchValue, onChangeSearch] = useState<string>('')
@@ -89,42 +95,57 @@ export const SelectCoinPopup = ({
   const sortedAllTokensData = new Map()
 
   allTokensData.forEach((tokensData) => {
-    sortedAllTokensData.set(tokensData.mint, tokensData.amount)
+    if (sortedAllTokensData.has(tokensData.mint)) {
+      sortedAllTokensData.set(
+        tokensData.mint,
+        sortedAllTokensData.get(tokensData.mint) + tokensData.amount
+      )
+    } else {
+      sortedAllTokensData.set(tokensData.mint, tokensData.amount)
+    }
   })
 
   const filteredMints = searchValue
-    ? usersMints.filter((mint) =>
-        getTokenNameByMintAddress(mint)
-          .toLowerCase()
-          .includes(searchValue.toLowerCase())
+    ? usersMints.filter(
+        (mint) =>
+          getTokenNameByMintAddress(mint)
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          mint.toLowerCase().includes(searchValue.toLowerCase())
       )
     : usersMints
 
-  const poolsTokensA = poolsInfo.map((el) => el.tokenA)
-  const poolsTokensB = poolsInfo.map((el) => el.tokenB)
-
-  const choosenMint =
-    baseTokenMintAddress && quoteTokenMintAddress
-      ? isBaseTokenSelecting
-        ? quoteTokenMintAddress
-        : baseTokenMintAddress
-      : baseTokenMintAddress || quoteTokenMintAddress
-
-  const availablePools = poolsInfo
-    .filter((el) => el.tokenA === choosenMint || el.tokenB === choosenMint)
-    .map((el) => (el.tokenA === choosenMint ? el.tokenB : el.tokenA))
-
   const sortedMints = filteredMints
     .map((mint) => {
+      const symbol = getTokenNameByMintAddress(mint)
+      const { name } = tokenInfos.get(mint) || {
+        name: '',
+      }
+
+      const amount = sortedAllTokensData.get(mint) || 0
+      const price = pricesMap.get(symbol) || 0
+
       return {
         mint,
-        amount: sortedAllTokensData.get(mint) || 0,
-        isTokenInPool:
-          poolsTokensA.includes(mint) || poolsTokensB.includes(mint),
-        isPoolExist: availablePools.includes(mint),
+        name,
+        symbol,
+        amount,
+        price,
+        total: amount * price,
       }
     })
-    .sort((a, b) => b.amount - a.amount)
+    .filter((token) => !!token.price)
+    .sort((a, b) => b.total - a.total)
+
+  useEffect(() => {
+    const closePopup = (e) => {
+      if (e.keyCode === 27) {
+        close()
+      }
+    }
+    window.addEventListener('keydown', closePopup)
+    return () => window.removeEventListener('keydown', closePopup)
+  }, [])
 
   return (
     <DialogWrapper
@@ -141,85 +162,112 @@ export const SelectCoinPopup = ({
       }}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer justify="space-between">
-        <Text fontSize="2rem">Select Token</Text>
-        <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
-      </RowContainer>
-      <RowContainer padding="3rem 0">
-        <SearchInputWithLoop
-          searchValue={searchValue}
-          onChangeSearch={onChangeSearch}
-          placeholder="Search"
-          width="100%"
-        />
-      </RowContainer>
-      <RowContainer>
-        {sortedMints.map(
-          ({
-            mint,
-            amount,
-            isTokenInPool,
-            isPoolExist,
-          }: {
-            mint: string
-            amount: number
-            isTokenInPool: boolean
-            isPoolExist: boolean
-          }) => {
-            const { symbol } = tokenInfos.get(mint) || {
-              symbol: getTokenNameByMintAddress(mint),
+      <Page $color="blockBlackBackground">
+        <RowContainer padding="1.5em 0">
+          <SearchInputWithLoop
+            searchValue={searchValue}
+            onChangeSearch={onChangeSearch}
+            placeholder="Search token or paste address"
+            width="calc(100% - 4em)"
+          />
+          <Row
+            width="3em"
+            height="3em"
+            margin="0 0 0 1em"
+            onClick={close}
+            style={{
+              border: '1px solid #383B45',
+              borderRadius: '1.2rem',
+              cursor: 'pointer',
+            }}
+          >
+            <Text>Esc</Text>
+          </Row>
+        </RowContainer>
+        <RowContainer>
+          {sortedMints.map(
+            ({
+              mint,
+              amount,
+              price,
+              name,
+              symbol,
+              total,
+            }: {
+              mint: string
+              amount: number
+              price: number
+              symbol: string
+              name: string
+              total: number
+            }) => {
+              return (
+                <SelectorRow
+                  justify="space-between"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => {
+                    const isSeveralCoinsWithSameAddress =
+                      allTokensData.filter((el) => el.mint === mint).length > 1
+
+                    if (isSeveralCoinsWithSameAddress) {
+                      setSelectedMint(mint)
+                      setIsSelectorForSeveralAddressesOpen(true)
+                    } else {
+                      selectTokenMintAddress(mint)
+                    }
+                  }}
+                >
+                  <Row wrap="nowrap">
+                    <TokenIcon mint={mint} width="3em" height="3em" />
+                    <Row
+                      margin="0 0 0 0.5em"
+                      align="flex-start"
+                      direction="column"
+                    >
+                      <StyledText>{symbol}</StyledText>
+                      {name && (
+                        <Text
+                          color={COLORS.inputPlaceholder}
+                          padding="0.5em 0 0 0"
+                        >
+                          {name}
+                        </Text>
+                      )}
+                    </Row>
+                  </Row>
+                  {connected && (
+                    <Row direction="column" align="flex-end" wrap="nowrap">
+                      <Text fontFamily={FONTS.demi}>
+                        ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
+                      </Text>
+                      <Text color="#2C981E" padding="0.5em 0 0 0">
+                        {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
+                      </Text>
+                    </Row>
+                  )}
+                </SelectorRow>
+              )
             }
-
-            return (
-              <SelectorRow
-                justify="space-between"
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  const isSeveralCoinsWithSameAddress =
-                    allTokensData.filter((el) => el.mint === mint).length > 1
-
-                  if (isSeveralCoinsWithSameAddress) {
-                    setSelectedMint(mint)
-                    setIsSelectorForSeveralAddressesOpen(true)
-                  } else {
-                    selectTokenMintAddress(mint)
-                  }
-                }}
-              >
-                <Row wrap="nowrap">
-                  <TokenIcon mint={mint} width="2rem" height="2rem" />
-                  <StyledText>{symbol}</StyledText>
-                  {/* {!isPoolExist ? (
-                    <TokenLabel>Insufficient Liquidity</TokenLabel>
-                  ) : null} */}
-                </Row>
-                <Row wrap="nowrap">
-                  <StyledText>
-                    {formatNumberToUSFormat(stripDigitPlaces(amount, 8))}
-                  </StyledText>
-                </Row>
-              </SelectorRow>
-            )
-          }
-        )}
-        {mints.length === 0 && (
-          <RowContainer>
-            <StyledText>Loading...</StyledText>
-          </RowContainer>
-        )}
-        <SelectSeveralAddressesPopup
-          theme={theme}
-          tokens={allTokensData.filter((el) => el.mint === selectedMint)}
-          open={isSelectorForSeveralAddressesOpen}
-          close={() => setIsSelectorForSeveralAddressesOpen(false)}
-          selectTokenMintAddress={selectTokenMintAddress}
-          selectTokenAddressFromSeveral={
-            isBaseTokenSelecting
-              ? setBaseTokenAddressFromSeveral
-              : setQuoteTokenAddressFromSeveral
-          }
-        />
-      </RowContainer>
+          )}
+          {mints.length === 0 && (
+            <RowContainer>
+              <StyledText>Loading...</StyledText>
+            </RowContainer>
+          )}
+          <SelectSeveralAddressesPopup
+            theme={theme}
+            tokens={allTokensData.filter((el) => el.mint === selectedMint)}
+            open={isSelectorForSeveralAddressesOpen}
+            close={() => setIsSelectorForSeveralAddressesOpen(false)}
+            selectTokenMintAddress={selectTokenMintAddress}
+            selectTokenAddressFromSeveral={
+              isBaseTokenSelecting
+                ? setBaseTokenAddressFromSeveral
+                : setQuoteTokenAddressFromSeveral
+            }
+          />
+        </RowContainer>
+      </Page>
     </DialogWrapper>
   )
 }
