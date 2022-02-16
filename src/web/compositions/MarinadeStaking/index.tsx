@@ -44,6 +44,7 @@ import {
 } from '../Staking/styles'
 import MarinadeBg from './bg.png'
 import { Switcher } from './components/Switcher/Switcher'
+import { WellDoneModal } from './components/WellDoneModal'
 import { Container, StyledInlineText } from './styles'
 import { StakingBlockProps } from './types'
 
@@ -105,6 +106,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
   } = props
   const pricesMap = toMap(getDexTokensPrices, (p) => p.symbol)
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
+  const [modalOpen, setModalOpen] = useState(false)
 
   const [amount, setAmount] = useState('')
 
@@ -163,6 +165,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
       })
       await refreshAll()
       notifyAboutStakeTransaction(txResult)
+      setModalOpen(true)
     } catch (e) {
       notify({
         message: 'Something went wrong. Please, try again later',
@@ -370,6 +373,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
           </ContentBlock>
         </Container>
       </RowContainer>
+      {modalOpen && <WellDoneModal onClose={() => setModalOpen(false)} />}
     </Page>
   )
 }
