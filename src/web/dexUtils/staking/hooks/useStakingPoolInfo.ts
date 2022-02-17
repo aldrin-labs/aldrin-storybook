@@ -51,5 +51,5 @@ export const useStakingPoolInfo = () => {
       treasuryDailyRewards,
     }
   }
-  return useSWR('staking-pool-full-info', fetcher, { refreshInterval: 60_1000 })
+  return useSWR('staking-pool-full-info', fetcher, { refreshInterval: 60_000 })
 }

@@ -17,6 +17,6 @@ export const useMarinadeStakingInfo = () => {
   }
 
   return useSWR('marinade-pool-full-info', fetcher, {
-    refreshInterval: 60_1000,
+    refreshInterval: 60_000,
   })
 }

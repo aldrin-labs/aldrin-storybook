@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES, COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
