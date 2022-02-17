@@ -172,7 +172,7 @@ export const CardsPanel = ({ theme }) => {
               <Label
                 text={'New'}
                 theme={theme}
-                style={{ marginLeft: '.5rem', color: '#53DF11' }}
+                style={{ marginLeft: '.5rem', color: '#269F13' }}
               />
             </NavLinkButton>
             {/* {!MASTER_BUILD && (

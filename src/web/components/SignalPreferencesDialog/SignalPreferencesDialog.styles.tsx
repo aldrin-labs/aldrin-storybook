@@ -1,5 +1,6 @@
-import styled from 'styled-components'
 import { Grid, Typography, IconButton } from '@material-ui/core'
+import styled from 'styled-components'
+
 import {
   TypographySectionTitle,
   StyledInput,
@@ -18,7 +19,7 @@ export const SectionTitle = styled(TypographySectionTitle)`
 `
 
 export const RefreshButton = styled(IconButton)`
-  color: #651CE4;
+  color: #0e02ec;
   padding: 0.5rem;
 `
 

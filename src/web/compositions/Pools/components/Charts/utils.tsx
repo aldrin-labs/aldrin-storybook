@@ -133,8 +133,8 @@ const createTotalVolumeLockedChart = ({
   }
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(101, 28, 228, 0.84)')
-  gradient.addColorStop(0.55, 'rgba(115, 128, 235, 0)')
+  gradient.addColorStop(0, 'rgba(14, 2, 236, 0.9)')
+  gradient.addColorStop(0.55, 'rgba(14, 2, 236, 0)')
   gradient.addColorStop(1, COLORS.blockBackground)
 
   const transformedData = getEmptyData()
@@ -166,11 +166,11 @@ const createTotalVolumeLockedChart = ({
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: COLORS.primary,
+        borderColor: COLORS.primaryBlue,
         backgroundColor: gradient,
         borderWidth: 2,
         pointRadius: 0,
-        hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
+        hoverBackgroundColor: 'rgba(14, 2, 236, 0.75)',
         data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
       },
     ],

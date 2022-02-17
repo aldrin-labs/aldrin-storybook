@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Text } from '@sb/compositions/Addressbook'
 
 const BlueText = styled(({ ...props }) => (
-  <Text color={'#53DF11'} fontSize={'1.2rem'} {...props} />
+  <Text color="#269F13" fontSize="1.2rem" {...props} />
 ))`
   cursor: pointer;
 `

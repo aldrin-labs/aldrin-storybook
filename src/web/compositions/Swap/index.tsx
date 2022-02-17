@@ -1,71 +1,71 @@
+import { Theme } from '@material-ui/core'
+import withTheme from '@material-ui/core/styles/withTheme'
+import { PublicKey } from '@solana/web3.js'
+import BN from 'bn.js'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
-import SvgIcon from '@sb/components/SvgIcon'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { Theme } from '@material-ui/core'
-
-import { Text } from '@sb/compositions/Addressbook/index'
-import {
-  ReloadTimer,
-  TimerButton,
-} from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { notify } from '@sb/dexUtils/notifications'
-
-import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { useWallet } from '@sb/dexUtils/wallet'
-
-import Inform from '@icons/inform.svg'
-import Gear from '@icons/gear.svg'
-import Arrows from '@icons/switchArrows.svg'
-import { useConnection } from '@sb/dexUtils/connection'
-import withTheme from '@material-ui/core/styles/withTheme'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import {
-  getTokenMintAddressByName,
-  getTokenNameByMintAddress,
-} from '@sb/dexUtils/markets'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { PublicKey } from '@solana/web3.js'
-import { swap } from '@sb/dexUtils/pools/actions/swap'
-import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
-import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { Loader } from '@sb/components/Loader/Loader'
+import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
   costOfAddingToken,
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
-import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
-import ScalesIcon from '@icons/scales.svg'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import {
+  ReloadTimer,
+  TimerButton,
+} from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { useConnection } from '@sb/dexUtils/connection'
+import {
+  getTokenMintAddressByName,
+  getTokenNameByMintAddress,
+} from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
+import { swap } from '@sb/dexUtils/pools/actions/swap'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 import {
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
   getDefaultBaseToken,
   getDefaultQuoteToken,
 } from '@sb/dexUtils/pools/swap/index'
-import { Loader } from '@sb/components/Loader/Loader'
-import { sleep } from '@sb/dexUtils/utils'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { sleep } from '@sb/dexUtils/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
+import Gear from '@icons/gear.svg'
+import Inform from '@icons/inform.svg'
+import ScalesIcon from '@icons/scales.svg'
+import Arrows from '@icons/switchArrows.svg'
+
+import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
+import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/styles'
+import { BlockTemplate } from '../Pools/index.styles'
+import { getTokenDataByMint } from '../Pools/utils'
+import { Cards } from './components/Cards/Cards'
+import { InputWithSelectorForSwaps } from './components/Inputs/index'
+import { SelectCoinPopup } from './components/SelectCoinPopup'
+import { Selector } from './components/Selector/Selector'
+import { TokenAddressesPopup } from './components/TokenAddressesPopup'
+import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { getLiquidityProviderFee } from './config'
 
 // TODO: imports
-import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/styles'
-import { Selector } from './components/Selector/Selector'
-import { TokenAddressesPopup } from './components/TokenAddressesPopup'
-import { getTokenDataByMint } from '../Pools/utils'
-import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
-import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { Card, SwapPageContainer } from './styles'
-import { InputWithSelectorForSwaps } from './components/Inputs/index'
-import { BlockTemplate } from '../Pools/index.styles'
-import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { Cards } from './components/Cards/Cards'
-import BN from 'bn.js'
 
 const SwapPage = ({
   theme,
@@ -464,7 +464,7 @@ const SwapPage = ({
               <Text color="#93A0B2">Est. Price:</Text>
               <Text
                 fontSize="1.5rem"
-                color="#53DF11"
+                color="#269F13"
                 fontFamily="Avenir Next Demi"
               >
                 1{' '}
@@ -520,7 +520,7 @@ const SwapPage = ({
                 backgroundColor={
                   isButtonDisabled
                     ? '#3A475C'
-                    : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+                    : 'linear-gradient(91.8deg, #0E02EC 15.31%, #D44C32 89.64%)'
                 }
                 textTransform="none"
                 margin="1rem 0 0 0"
@@ -617,7 +617,7 @@ const SwapPage = ({
                 <Text
                   style={{ padding: '0 0.5rem 0 0.5rem' }}
                   fontFamily="Avenir Next Bold"
-                  color="#53DF11"
+                  color="#269F13"
                 >
                   {totalWithFees.toFixed(5)}{' '}
                 </Text>
@@ -631,7 +631,7 @@ const SwapPage = ({
                   <Text
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
                     fontFamily="Avenir Next Bold"
-                    color="#53DF11"
+                    color="#269F13"
                   >
                     {stripDigitPlaces(rawSlippage, 2)}%
                   </Text>

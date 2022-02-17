@@ -26,21 +26,17 @@ export const PopupBody = styled(Body)`
 `
 
 export const Page = styled(Body)`
-  background: ${COLORS.bodyBackground};
+  background: ${COLORS.mainBlack};
   flex: 1;
 `
-export const StakingPage = styled(Page)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  // height: 100%;
-  @media (max-width: ${BREAKPOINTS.lg}) {
-    align-items: flex-start;
-  }
+
+export const BlackPage = styled(Page)`
+  background: ${COLORS.mainBlack};
 `
 
 export const Content = styled.div`
   margin: 0 10px;
+  width: 100%;
 
   @media (min-width: ${BREAKPOINTS.md}) {
     margin: 0 10px;
@@ -48,7 +44,8 @@ export const Content = styled.div`
 
   @media (min-width: ${LAYOUT_WIDTH}px) {
     max-width: ${LAYOUT_WIDTH}px;
-    margin: 0 auto;
+
+    margin: 3rem;
   }
 `
 

@@ -1,7 +1,7 @@
+import { Paper } from '@material-ui/core'
+import { COLORS } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
-
-import { Paper } from '@material-ui/core'
 
 export const BoldHeader = styled.h2`
   font-family: Avenir Next Bold;
@@ -44,12 +44,12 @@ export const Line = styled.div`
 `
 export const InvisibleInput = styled.input`
   width: 100%;
-  background: #222429;
-  color: #fbf2f2;
-  font-size: 2rem;
+  background: ${COLORS.cardsBack};
+  color: ${COLORS.primaryWhite};
+  font-size: 2.4rem;
   outline: none;
   border: none;
-  font-family: Avenir Next Medium;
+  font-family: Avenir Next Demi;
   &::placeholder {
     color: #f2fbfb;
     height: 2rem;
@@ -67,7 +67,9 @@ export const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   border-radius: 1.6rem;
 `
 
-export const ClaimRewardsStyledPaper = styled(({ ...props }) => <Paper {...props} />)`
+export const ClaimRewardsStyledPaper = styled(({ ...props }) => (
+  <Paper {...props} />
+))`
   height: auto;
   padding: 2rem 4rem;
   width: 80rem;

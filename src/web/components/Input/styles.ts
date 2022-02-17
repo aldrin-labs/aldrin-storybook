@@ -16,18 +16,6 @@ export const VARIANTS = {
   `,
 }
 
-export const InputWrap = styled.div<WrapProps>`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  flex: 1;
-  border-radius: ${(props: WrapProps) => BORDER_RADIUS[props.$borderRadius]};
-
-  ${(props: WrapProps) => VARIANTS[props.$variant]}
-  ${(props: WrapProps) => (props.$disabled ? 'opacity: 0.6;' : '')}
-`
-
 export const InputEl = styled.input`
   background: none;
   border: 0;
@@ -52,8 +40,32 @@ export const InputEl = styled.input`
   }
 `
 
+export const InputWrap = styled.div<WrapProps>`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  flex: 1;
+  border-radius: ${(props: WrapProps) => BORDER_RADIUS[props.$borderRadius]};
+
+  ${(props: WrapProps) => VARIANTS[props.$variant]}
+  ${(props: WrapProps) => (props.$disabled ? 'opacity: 0.6;' : '')}
+  ${(props: WrapProps) =>
+    props.$withLabel
+      ? `${InputEl} {
+    margin-top: 1.5em;
+  }`
+      : ''}
+`
+
 export const Append = styled.span<AppendProps>`
   padding: 0 1.5em 0 0;
   color: ${COLORS.hint};
   font-size: 1em;
+`
+
+export const Label = styled.div`
+  position: absolute;
+  left: 3.2%;
+  top: 20%;
 `

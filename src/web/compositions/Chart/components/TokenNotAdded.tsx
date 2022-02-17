@@ -157,7 +157,7 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
             </RowContainer>
             <BlueButton
               color={'#17181A'}
-              background="#53DF11"
+              background="#269F13"
               theme={theme}
               onClick={() => onClose()}
             >
