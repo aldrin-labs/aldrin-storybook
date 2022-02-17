@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { BREAKPOINTS } from '../../../variables/variables'
+
 // put overflow-x hidden since
 // we dont need it to horizontal scrollbar
 // on whole page
@@ -20,6 +22,13 @@ export const AppGridLayout = styled.div`
   @media (max-width: 600px) {
     height: calc(var(--vh, 1vh) * 100);
     min-height: auto;
+  }
+
+  /* Mobile footer */
+  padding-bottom: 70px;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    padding-bottom: 0;
   }
 `
 

@@ -69,7 +69,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
         </InputWrapper>
         <ButtonWrapper>
           <StakingFormButton
-            backgroundColor={COLORS.bluePrimary}
+            backgroundColor={COLORS.primaryBlue}
             minWidth="14rem"
             $fontSize="sm"
             $borderRadius="md"

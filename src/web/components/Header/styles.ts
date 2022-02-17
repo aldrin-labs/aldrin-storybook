@@ -255,7 +255,7 @@ export const WalletButton = styled(Button)`
   white-space: nowrap;
   padding: 10px 20px;
   font-size: 0.75em;
-  background-color: ${COLORS.bluePrimary};
+  background-color: ${COLORS.primaryBlue};
   border: none;
   font-weight: 600;
   height: 5rem;
