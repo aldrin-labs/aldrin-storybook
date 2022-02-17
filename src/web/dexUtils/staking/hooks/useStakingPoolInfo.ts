@@ -32,7 +32,6 @@ export const useStakingPoolInfo = () => {
             timestampTo: endOfDay,
           },
         }),
-        // Promise.resolve({ data: { getBuyBackAmountForPeriod: 0 } }),
         getRINCirculationSupply(),
       ])
 
