@@ -1,5 +1,7 @@
 import useSWR from 'swr'
 
+import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
+
 import { useConnection } from '../../connection'
 import { MarinadeStats } from './types'
 
@@ -17,6 +19,6 @@ export const useMarinadeStakingInfo = () => {
   }
 
   return useSWR('marinade-pool-full-info', fetcher, {
-    refreshInterval: 60_000,
+    refreshInterval: COMMON_REFRESH_INTERVAL,
   })
 }

@@ -212,50 +212,6 @@ const AppRaw = ({
   )
 }
 
-// const Footer = (props) => {
-//   return (
-//     <RowContainer
-//       style={{
-//         background: props.theme.palette.grey.additional,
-//         height: '5.7rem',
-//         ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}),
-//       }}
-//     >
-//       <Line bottom="5.7rem" />
-//       <Link
-//         target="_blank"
-//         rel="noopener noreferrer"
-//         href="https://aldrin.com/"
-//       >
-//         Aldrin.com
-//       </Link>
-//       <Link
-//         href="https://t.me/CCAI_Official"
-//         target="_blank"
-//         rel="noopener noreferrer"
-//       >
-//         Telegram
-//       </Link>
-//       <Link
-//         href="https://twitter.com/CCAI_Official"
-//         target="_blank"
-//         rel="noopener noreferrer"
-//       >
-//         Twitter
-//       </Link>
-//       <Link
-//         href="https://discord.com/invite/2EaKvrs"
-//         target="_blank"
-//         rel="noopener noreferrer"
-//       >
-//         Discord
-//       </Link>
-//     </RowContainer>
-//   )
-// }
-
-// const FooterWithTheme = compose(withTheme())(Footer)
-
 const Row = styled.div`
   display: flex;
   flex-wrap: ${(props) => props.wrap || 'wrap'};

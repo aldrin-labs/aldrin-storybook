@@ -77,7 +77,8 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
     }
   }
 
-  svg {
+  svg,
+  img {
     margin: 0 0.5rem;
   }
 
