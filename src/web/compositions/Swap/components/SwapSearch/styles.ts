@@ -39,9 +39,7 @@ export const SwapItem = styled.div`
   color: ${(props) => COLORS[props.color]};
 `
 
-export const TokenName = styled(InlineText)`
-  text-transform: uppercase;
-`
+export const TokenName = styled(InlineText)``
 
 export const NoData = styled.div`
   padding: 20px 0;

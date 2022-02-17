@@ -203,6 +203,12 @@ const SwapPage = ({
   const basePrice = dexTokensPricesMap.get(baseSymbol) || 0
   const quotePrice = dexTokensPricesMap.get(quoteSymbol) || 0
 
+  const { decimals: baseTokenDecimals } = tokenInfos.get(
+    baseTokenMintAddress
+  ) || {
+    decimals: 0,
+  }
+
   const { decimals: quoteTokenDecimals } = tokenInfos.get(
     quoteTokenMintAddress
   ) || {
@@ -321,6 +327,13 @@ const SwapPage = ({
     })
   )
 
+  const minInputAmount =
+    swapRoute &&
+    swapRoute.marketInfos[0].minInAmount &&
+    removeDecimals(swapRoute.marketInfos[0].minInAmount, baseTokenDecimals)
+
+  const isTooSmallInputAmount = minInputAmount && minInputAmount > inputAmount
+
   return (
     <SwapPageLayout>
       <SwapPageContainer direction="column" height="100%" wrap="nowrap">
@@ -332,7 +345,9 @@ const SwapPage = ({
                 const { amountFrom, tokenFrom, tokenTo } = args
                 setBaseTokenMintAddress(tokenFrom.mint)
                 setQuoteTokenMintAddress(tokenTo.mint)
-                setInputAmount(+amountFrom, tokenFrom.mint, tokenTo.mint)
+                if (amountFrom) {
+                  setInputAmount(+amountFrom, tokenFrom.mint, tokenTo.mint)
+                }
               }}
             />
           </RowContainer>
@@ -390,7 +405,7 @@ const SwapPage = ({
                 </Row>
                 <ValueButton
                   onClick={() => {
-                    const newSlippage = +(slippage - SLIPPAGE_STEP).toFixed(2)
+                    const newSlippage = +(+slippage - SLIPPAGE_STEP).toFixed(2)
 
                     if (newSlippage > 0) {
                       setSlippage(newSlippage)
@@ -401,7 +416,7 @@ const SwapPage = ({
                 </ValueButton>
                 <ValueButton
                   onClick={() => {
-                    const newSlippage = +(slippage + SLIPPAGE_STEP).toFixed(2)
+                    const newSlippage = +(+slippage + SLIPPAGE_STEP).toFixed(2)
 
                     setSlippage(newSlippage)
                   }}
@@ -468,7 +483,7 @@ const SwapPage = ({
                 </Row>
                 <Row width="calc(35% - 0.2rem)">
                   <TokenSelector
-                    symbol={baseSymbol}
+                    mint={baseTokenMintAddress}
                     roundSides={['top-right']}
                     onClick={() => {
                       setIsBaseTokenSelecting(true)
@@ -502,7 +517,7 @@ const SwapPage = ({
                 </Row>
                 <Row width="calc(35% - .2rem)">
                   <TokenSelector
-                    symbol={quoteSymbol}
+                    mint={quoteTokenMintAddress}
                     roundSides={['bottom-right']}
                     onClick={() => {
                       setIsBaseTokenSelecting(false)
@@ -567,7 +582,7 @@ const SwapPage = ({
                       await refreshAmountsWithSwapRoute()
 
                       // reset fields
-                      if (result === 'success') {
+                      if (!result.error) {
                         await setInputAmount('')
                       }
 
@@ -582,10 +597,12 @@ const SwapPage = ({
                     <RowContainer>
                       {getSwapButtonText({
                         baseSymbol,
+                        minInputAmount,
                         isSwapRouteExists: !!swapRoute,
                         needEnterAmount,
                         isTokenABalanceInsufficient,
                         isLoadingSwapRoute,
+                        isTooSmallInputAmount,
                       })}
                     </RowContainer>
                     <RowContainer>

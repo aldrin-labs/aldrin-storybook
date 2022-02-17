@@ -13,7 +13,11 @@ import {
   TokenContainer,
   InvisibleInput,
 } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import {
+  getTokenMintAddressByName,
+  getTokenNameByMintAddress,
+} from '@sb/dexUtils/markets'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { stripInputNumber } from '@sb/dexUtils/utils'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
@@ -134,14 +138,19 @@ const DropdownIconContainer = styled(Row)`
 `
 
 export const TokenSelector = ({
-  symbol,
+  mint,
   roundSides = [],
   onClick,
 }: {
-  symbol: string
+  mint: string
   roundSides?: string[]
   onClick: () => void
 }) => {
+  const tokenInfos = useTokenInfos()
+  const { symbol } = tokenInfos.get(mint) || {
+    symbol: getTokenNameByMintAddress(mint),
+  }
+
   return (
     <InputContainer
       roundSides={roundSides}
@@ -150,14 +159,16 @@ export const TokenSelector = ({
       style={{ cursor: 'pointer' }}
     >
       <Row>
-        <TokenIcon
-          mint={getTokenMintAddressByName(symbol)}
-          width={FONT_SIZES.xl}
-          height={FONT_SIZES.xl}
-        />
+        <TokenIcon mint={mint} width={FONT_SIZES.xl} height={FONT_SIZES.xl} />
         <Text
           style={{ margin: '0 0.8rem' }}
-          fontSize={symbol.length > 4 ? FONT_SIZES.md : FONT_SIZES.xmd}
+          fontSize={
+            symbol.length > 5
+              ? FONT_SIZES.sm
+              : symbol.length >= 4
+              ? FONT_SIZES.md
+              : FONT_SIZES.xmd
+          }
           fontFamily="Avenir Next Demi"
         >
           {symbol}

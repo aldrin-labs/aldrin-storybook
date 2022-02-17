@@ -60,18 +60,27 @@ export const getSwapButtonText = ({
   isTokenABalanceInsufficient,
   isLoadingSwapRoute,
   baseSymbol,
+  minInputAmount,
+  isTooSmallInputAmount,
   isSwapRouteExists,
   needEnterAmount,
 }: {
   isTokenABalanceInsufficient: boolean
   isLoadingSwapRoute: boolean
   baseSymbol: string
+  minInputAmount: number
+  isTooSmallInputAmount: boolean
   isSwapRouteExists: boolean
   needEnterAmount: boolean
 }) => {
   if (needEnterAmount) {
     return 'Enter amount'
   }
+
+  if (isTooSmallInputAmount) {
+    return `Min. input amount: ${minInputAmount} ${baseSymbol}`
+  }
+
   if (isLoadingSwapRoute) {
     return 'Searching the best route...'
   }

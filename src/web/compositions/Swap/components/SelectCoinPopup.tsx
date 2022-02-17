@@ -117,13 +117,13 @@ export const SelectCoinPopup = ({
 
   const sortedMints = filteredMints
     .map((mint) => {
-      const symbol = getTokenNameByMintAddress(mint)
-      const { name } = tokenInfos.get(mint) || {
+      const { name, symbol } = tokenInfos.get(mint) || {
         name: '',
+        symbol: getTokenNameByMintAddress(mint),
       }
 
       const amount = sortedAllTokensData.get(mint) || 0
-      const price = pricesMap.get(symbol) || 0
+      const price = pricesMap.get(getTokenNameByMintAddress(mint)) || 0
 
       return {
         mint,

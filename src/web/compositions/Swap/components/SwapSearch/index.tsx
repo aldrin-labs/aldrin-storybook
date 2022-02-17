@@ -75,15 +75,16 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
       }
 
       const tokensWithSymbol = tokens.map((t) => {
-        const symbol = (
+        const symbol =
           tokensMap.get(t.mint)?.symbol || getTokenNameByMintAddress(t.mint)
-        ).toLowerCase()
         return { ...t, symbol }
       })
 
-      const tokenFrom = tokensWithSymbol.find((t) =>
-        t.symbol.includes(tokenFromSearch.toLowerCase())
-      )
+      const tokenFrom = tokensWithSymbol.find((t) => {
+        const symbol = t.symbol.toLowerCase()
+
+        return symbol.includes(tokenFromSearch.toLowerCase())
+      })
 
       if (!tokenFrom) {
         return []
@@ -93,11 +94,13 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
 
       const tokensTo = tokensWithSymbol
         .filter((t) => t.mint !== tokenFrom.mint)
-        .filter((t) =>
-          tokenToSearch
-            ? t.symbol.includes(tokenToSearch.toLowerCase())
-            : topSymbolsForSwap.includes(t.symbol)
-        )
+        .filter((t) => {
+          const symbol = t.symbol.toLowerCase()
+
+          return tokenToSearch
+            ? symbol.includes(tokenToSearch.toLowerCase())
+            : topSymbolsForSwap.includes(symbol)
+        })
         .slice(0, 2)
 
       const searchItems = tokensTo.map((tokenTo) => ({

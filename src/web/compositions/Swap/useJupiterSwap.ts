@@ -103,19 +103,14 @@ export const useJupiterSwap = ({
           outputMintDecimalsForRoute
         )
 
-        // do not set 0, leave 0 placeholder
-        if (swapAmountOut === 0) {
-          setOutputAmount('')
-
-          return
-        }
-
         const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
         const routeDepositAndFee = await swapRoute.getDepositAndFee()
 
         setRoute(swapRoute)
         setDepositAndFee(routeDepositAndFee)
-        setOutputAmount(strippedSwapAmountOut)
+
+        // do not set 0, leave 0 placeholder
+        setOutputAmount(swapAmountOut === 0 ? '' : strippedSwapAmountOut)
         setLoading(false)
       }
     }
