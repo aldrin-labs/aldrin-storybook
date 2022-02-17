@@ -8,9 +8,7 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import {
-  initializeFaming,
-} from '@sb/dexUtils/pools/actions/initializeFarming'
+import { initializeFaming } from '@sb/dexUtils/pools/actions/initializeFarming'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -49,17 +47,21 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
     }))
     .sort((a, b) => a.mint.localeCompare(b.mint))
 
+  // Because tokens could change & Formik bug, we have to store state somewhere
+  // https://github.com/jaredpalmer/formik/issues/3348
+  const [initialValues] = useState<WithFarming>({
+    farming: {
+      token: tokens[0],
+      vestingEnabled: true,
+      tokenAmount: '0',
+      farmingPeriod: '14',
+      vestingPeriod: '7',
+    },
+  })
+
   const form = useFormik<WithFarming>({
     validateOnMount: true,
-    initialValues: {
-      farming: {
-        token: tokens[0],
-        vestingEnabled: true,
-        tokenAmount: '0',
-        farmingPeriod: '14',
-        vestingPeriod: '7',
-      },
-    },
+    initialValues,
     onSubmit: async (values) => {
       setFarmingTransactionStatus('processing')
       const farmingRewardAccount = userTokens.find(
@@ -76,7 +78,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         if (!values.farming.token.account) {
           throw new Error('No token account selected')
         }
-        await initializeFaming({
+        const result = await initializeFaming({
           farmingTokenMint: new PublicKey(values.farming.token.mint),
           farmingTokenAccount: new PublicKey(values.farming.token.account),
           tokenAmount: new BN(
@@ -95,9 +97,11 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
         })
 
-        onExtend()
+        if (result === 'success') {
+          onExtend()
+        }
 
-        setFarmingTransactionStatus('success')
+        setFarmingTransactionStatus(result === 'success' ? 'success' : 'error')
       } catch (e) {
         setFarmingTransactionStatus('error')
       }

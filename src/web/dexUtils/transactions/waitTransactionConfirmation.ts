@@ -173,9 +173,10 @@ export const waitTransactionConfirmation = async (
   try {
     const result = await Promise.race([tPromise, pollPromise, wsPromise])
     console.log(`Transaction ${txId} confirmation result: `, result, commitment)
+    const rpcProvider = getProviderNameFromUrl({ rawConnection })
     if (result === 'timeout') {
       cancelAll()
-      const rpcProvider = getProviderNameFromUrl({ rawConnection })
+
       Metrics.sendMetrics({
         metricName: `error.rpc.${rpcProvider}.timeoutConfirmationTransaction`,
       })
@@ -197,14 +198,9 @@ export const waitTransactionConfirmation = async (
         return 'timeout'
       }
     } else if (result.err) {
-      /**
-       * TODO: parse transaction errors and try to find lamports err
-       *  this.getConnection()
-      .getParsedConfirmedTransaction(
-        '5Zf7eQWauKk3xtJYrQthSFW4q6qj2U4aTJVpJEYG63i9T3K35tXEg8Uu5vr4PnLwMahpHamBdHcME6B2XqMw4Z1j'
-      )
-      .then((resp) => console.log('resp: ', resp?.meta?.logMessages))
-       */
+      Metrics.sendMetrics({
+        metricName: `error.rpc.${rpcProvider}.transactionExectuionError`,
+      })
       console.warn(`Transaction ${txId} not confirmed: `, result.err)
       return 'failed'
     }
