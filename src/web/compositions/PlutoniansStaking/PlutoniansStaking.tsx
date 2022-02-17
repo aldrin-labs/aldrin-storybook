@@ -24,8 +24,8 @@ import Venator from './assets/Venator.png'
 import { RewardsComponent } from './components/RewardsComponent/RewardsComponent'
 
 export const PlutoniansStaking = () => {
-  const [isStaked, setIsStaked] = useState(true)
-  const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(true)
+  const [isStaked, setIsStaked] = useState(false)
+  const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(false)
 
   return (
     <Page>
