@@ -12,6 +12,7 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import InfoIcon from '@icons/info.svg'
 
+import { DarkTooltip } from '../../../../components/TooltipCustom/Tooltip'
 import { useMarinadeStakingInfo } from '../../../../dexUtils/staking/hooks/useMarinadeStakingInfo'
 import {
   ContentBlock,
@@ -22,7 +23,7 @@ import {
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Marinade from './marinadeLogo.svg'
-import { AbsoluteImg, LogoWrap } from './styles'
+import { AbsoluteImg, Filler, LogoWrap, RelativeContentBlock } from './styles'
 import { MarinadeStakingProps } from './types'
 
 const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
@@ -61,7 +62,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             <InlineText size="rg" weight={700}>
               {totalStakedSol
                 ? stripByAmountAndFormat(totalStakedSol, 2)
-                : '---'}
+                : ' ---'}
               <InlineText color="primaryGray" weight={600}>
                 {' '}
                 SOL{' '}
@@ -76,7 +77,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
               <InlineText color="primaryGray">$</InlineText>
               {totalStakedUsdValue
                 ? stripByAmountAndFormat(totalStakedUsdValue, 2)
-                : '---'}
+                : ' ---'}
             </InlineText>
           </RowContainer>
         </ContentBlock>
@@ -87,28 +88,37 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
               <InlineText color="primaryGray" size="sm">
                 mSOL Price
               </InlineText>{' '}
-              <SvgIcon src={InfoIcon} width="1.5rem" />
+              <DarkTooltip title="mSOL/SOL price increases every epoch because staking rewards are accumulated into the SOL staked pool. Therefore, the ratio is not 1:1. This ratio only goes up with time.">
+                <span>
+                  <SvgIcon src={InfoIcon} width="1.5rem" />
+                </span>
+              </DarkTooltip>
             </Row>
             <InlineText size="rg" weight={700} style={{ whiteSpace: 'nowrap' }}>
               {mSolInfo?.stats.m_sol_price
                 ? stripByAmountAndFormat(mSolInfo.stats.m_sol_price, 3)
-                : '---'}{' '}
+                : ' ---'}{' '}
               <InlineText color="primaryGray" weight={600}>
                 SOL
               </InlineText>
             </InlineText>
           </ContentBlock>
-          <ContentBlock width="48%">
+          <RelativeContentBlock width="48%">
+            <Filler $width={mSolInfo?.epochInfo.epochPct || 0} />
             <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText color="primaryGray" size="sm">
                 Epoch
               </InlineText>{' '}
-              <SvgIcon src={InfoIcon} width="1.5rem" />
+              <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
+                <span>
+                  <SvgIcon src={InfoIcon} width="1.5rem" />
+                </span>
+              </DarkTooltip>
             </Row>
             <InlineText size="rg" weight={700}>
               {stripByAmountAndFormat(mSolInfo?.epochInfo.epochPct || 0, 2)}%
             </InlineText>
-          </ContentBlock>
+          </RelativeContentBlock>
         </StretchedContent>
         <RowContainer>
           <GrayLink to="/staking/marinade">View</GrayLink>

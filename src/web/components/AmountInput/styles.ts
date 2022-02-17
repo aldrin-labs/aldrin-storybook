@@ -28,12 +28,17 @@ export const AmountInputElement = styled(Input)`
   }
 `
 
+export const MaxValue = styled(InlineText)``
+
 export const ButtonsWithAmount = styled.div`
   margin-left: auto;
   text-align: right;
 
   ${InlineText} {
     font-size: 0.75em;
+  }
+
+  ${MaxValue} {
     background: url(${WalletIcon}) right center no-repeat;
     padding-right: 22px;
   }
@@ -43,7 +48,8 @@ export const ButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 6px;
+  justify-content: flex-end;
 
   ${Button} {
     margin: 0 2px;
@@ -61,6 +67,6 @@ export const ButtonsContainer = styled.div`
 
 export const TokenNameWrap = styled.span`
   padding-top: 1.5em;
-  color: ${COLORS.white};
+  color: ${COLORS.hint};
   font-weight: bold;
 `

@@ -14,8 +14,8 @@ export const AppGridLayout = styled.div`
     props.isRewards
       ? 'auto'
       : props.isChartPage || !props.showFooter
-        ? 'calc(100vh)'
-        : 'calc(100vh)'};
+      ? 'calc(100vh)'
+      : 'calc(100vh)'};
   min-height: 100vh;
   @media (max-width: 600px) {
     height: calc(var(--vh, 1vh) * 100);
@@ -24,9 +24,8 @@ export const AppGridLayout = styled.div`
 `
 
 export const AppInnerContainer = styled.div`
-  overflow: ${(props) => (props.currentPage === '/' ? 'hidden' : 'auto')};
   display: flex;
   flex-direction: column;
-  height: 100%;
-  }
+  min-height: calc(100vh - 130px); /* header + footer*/
+  flex: 1 0 auto;
 `

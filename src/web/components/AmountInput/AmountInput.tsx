@@ -13,6 +13,7 @@ import {
   ButtonsContainer,
   ButtonsWithAmount,
   TokenNameWrap,
+  MaxValue,
 } from './styles'
 import { AmountInputProps } from './types'
 
@@ -28,6 +29,8 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
     size,
     label,
     showButtons = true,
+    usdValue,
+    disabled,
   } = props
 
   const inputSize = size || `${value}`.length || 1
@@ -55,6 +58,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
       onChange={onChange}
       size={inputSize}
       label={label}
+      disabled={disabled}
       append={
         <FlexBlock
           direction="row"
@@ -63,34 +67,44 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
         >
           <TokenNameWrap>{tokenName}</TokenNameWrap>
           <ButtonsWithAmount>
-            <InlineText color="success" weight={600}>
+            <MaxValue color="success" weight={600}>
               {stripByAmountAndFormat(amount)}
-            </InlineText>
-            {showButtons && (
-              <>
-                <ButtonsContainer>
-                  <Button
-                    minWidth="2rem"
-                    $fontSize="xs"
-                    $borderRadius="xxl"
-                    onClick={halfButtonOnClick}
-                    type="button"
-                    $variant="primary"
-                  >
-                    Half
-                  </Button>
-                  <Button
-                    minWidth="2rem"
-                    $fontSize="xs"
-                    $borderRadius="xxl"
-                    onClick={maxButtonOnClick}
-                    type="button"
-                    $variant="primary"
-                  >
-                    Max
-                  </Button>
-                </ButtonsContainer>
-              </>
+            </MaxValue>
+            {!!(showButtons || Number.isFinite(usdValue)) && (
+              <ButtonsContainer>
+                <div>
+                  {Number.isFinite(usdValue) && (
+                    <InlineText color="hint">
+                      ≈${stripByAmountAndFormat(usdValue || 0, 2)}
+                    </InlineText>
+                  )}
+                </div>
+
+                {showButtons && (
+                  <>
+                    <Button
+                      minWidth="2rem"
+                      $fontSize="xs"
+                      $borderRadius="xxl"
+                      onClick={halfButtonOnClick}
+                      type="button"
+                      $variant="primary"
+                    >
+                      Half
+                    </Button>
+                    <Button
+                      minWidth="2rem"
+                      $fontSize="xs"
+                      $borderRadius="xxl"
+                      onClick={maxButtonOnClick}
+                      type="button"
+                      $variant="primary"
+                    >
+                      Max
+                    </Button>
+                  </>
+                )}
+              </ButtonsContainer>
             )}
           </ButtonsWithAmount>
         </FlexBlock>

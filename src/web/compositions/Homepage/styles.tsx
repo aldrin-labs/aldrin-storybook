@@ -1,3 +1,4 @@
+import { COLORS, BORDER_RADIUS, TRANSITION } from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -224,7 +225,7 @@ export const StyledA = styled.a`
     text-decoration: underline;
     svg {
       path {
-        fill: #0e02ec;
+        fill: ${COLORS.primary};
       }
     }
   }
@@ -246,13 +247,27 @@ export const StyledPicture = styled.picture`
 `
 
 export const StyledLink = styled.a`
-  width: 4rem;
-  height: 4rem;
-  margin: 0 1rem;
+  width: 36px;
+  height: 36px;
+  background: ${COLORS.cardsBack};
+  border-radius: ${BORDER_RADIUS.md};
+  transition: ${TRANSITION};
 
-  @media (max-width: 600px) {
-    width: 5rem;
-    height: 5rem;
+  &:hover {
+    background: ${COLORS.primary};
+
+    svg path:not(.not-fill) {
+      fill: ${COLORS.white};
+    }
+  }
+
+  &:active {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      ${COLORS.bluePrimary};
+
+    svg path:not(.not-fill) {
+      fill: ${COLORS.white};
+    }
   }
 `
 

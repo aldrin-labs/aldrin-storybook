@@ -4,7 +4,7 @@ import { useWallet } from '../../dexUtils/wallet'
 import { ConnectWalletInner } from '../ConnectWalletScreen'
 
 interface ConnectWalletWrapperProps {
-  size?: 'md' | 'sm'
+  size?: 'button-only' | 'md' | 'sm'
   text?: ReactNode
 }
 export const ConnectWalletWrapper: React.FC<ConnectWalletWrapperProps> = (

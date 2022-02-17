@@ -21,6 +21,7 @@ export const COLORS = {
   buttonAltPink: '#a1458a',
   gray: '#383b42',
   gray2: '#AAAAAA',
+  gray3: '#6f6f6f',
   chartGrid: '#4C4F59',
   textAlt: '#F5F5FB',
   navLink: 'rgb(114, 132, 160)',

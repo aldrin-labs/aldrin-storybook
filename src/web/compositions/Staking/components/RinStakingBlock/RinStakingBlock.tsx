@@ -67,7 +67,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
     <StakingBlock>
       <LogoWrap>
         <img src={AldrinLogo} height="70" alt="Aldrin" />
-        <AbsoluteImg src={Coins} height="auto" width="25%" alt="Aldrin" />
+        <AbsoluteImg src={Coins} height="auto" alt="Aldrin" />
       </LogoWrap>
       <BlockContent>
         <RowContainer justify="space-between">
@@ -86,7 +86,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
             <InlineText size="rg" weight={700}>
               {totalStakedRIN
                 ? stripByAmountAndFormat(totalStakedRIN, 2)
-                : '---'}
+                : ' ---'}
               &nbsp;
               <InlineText color="primaryGray" weight={600}>
                 RIN
@@ -101,7 +101,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
               <InlineText color="primaryGray">$</InlineText>
               {totalStakedUsdValue
                 ? stripByAmountAndFormat(totalStakedUsdValue, 2)
-                : '---'}
+                : ' ---'}
             </InlineText>
           </RowContainer>
         </ContentBlock>
@@ -117,7 +117,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
               <InlineText color="primaryGray" weight={700}>
                 $
               </InlineText>
-              {rinPrice ? rinPrice.toFixed(2) : '---'}
+              {rinPrice ? rinPrice.toFixed(2) : ' ---'}
             </InlineText>
           </ContentBlock>
           <ContentBlock width="31%">
@@ -129,7 +129,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
             <InlineText size="rg" weight={700}>
               {poolInfo
                 ? stripByAmountAndFormat(poolInfo.rinCirculationSupply, 2)
-                : '---'}
+                : ' ---'}
             </InlineText>
           </ContentBlock>
           <ContentBlock width="31%">
@@ -142,7 +142,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
               <InlineText color="primaryGray" weight={700}>
                 $
               </InlineText>
-              {marketCap ? stripByAmountAndFormat(marketCap, 2) : '---'}
+              {marketCap ? stripByAmountAndFormat(marketCap, 2) : ' ---'}
             </InlineText>
           </ContentBlock>
         </StretchedContent>

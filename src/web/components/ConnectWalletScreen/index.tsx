@@ -15,7 +15,7 @@ import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 
 interface ConnectWalletContentProps {
   theme: Theme
-  size?: 'md' | 'sm'
+  size?: 'button-only' | 'md' | 'sm'
   text?: ReactNode
 }
 
@@ -28,6 +28,7 @@ const SIZES = {
     fontSize: '1.5em',
     titleMargin: '0 0 2.4rem 0',
     btnHeight: '3em',
+    btnWidth: '12em',
   },
   sm: {
     icon: '4em',
@@ -36,14 +37,61 @@ const SIZES = {
     fontSize: '1em',
     titleMargin: '0 0 1em 0',
     btnHeight: '2.3em',
+    btnWidth: '12em',
+  },
+  'button-only': {
+    icon: '4em',
+    logoRowMargin: '0rem 0 1rem 0',
+    btnContainerMargin: '0',
+    fontSize: '1em',
+    titleMargin: '0 0 1em 0',
+    btnHeight: '3em',
+    btnWidth: '100%',
   },
 }
 
 const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
   const { theme, size = 'md', text = 'Connect your wallet to begin.' } = props
   const sizes = SIZES[size]
+  const isButtonOnly = size === 'button-only'
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
+
+  const buttonWithModal = (
+    <>
+      <BtnCustom
+        onClick={() => {
+          setIsConnectWalletPopupOpen(true)
+        }}
+        btnColor="#F8FAFF"
+        backgroundColor={COLORS.primary}
+        btnWidth={sizes.btnWidth}
+        borderColor={COLORS.primary}
+        textTransform="capitalize"
+        height={sizes.btnHeight}
+        borderRadius="0.5em"
+        fontSize="1em"
+        style={{
+          display: 'flex',
+          textTransform: 'none',
+          padding: '0.5em',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        Connect wallet
+      </BtnCustom>
+      <ConnectWalletPopup
+        theme={theme}
+        open={isConnectWalletPopupOpen}
+        onClose={() => setIsConnectWalletPopupOpen(false)}
+      />
+    </>
+  )
+
+  if (isButtonOnly) {
+    return <>{buttonWithModal}</>
+  }
+
   return (
     <RowContainer style={{ fontSize: '16px' }} margin="auto 0">
       <RowContainer margin={sizes.logoRowMargin}>
@@ -62,33 +110,8 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
         )}
       </RowContainer>
       <RowContainer margin={sizes.btnContainerMargin}>
-        <BtnCustom
-          onClick={() => {
-            setIsConnectWalletPopupOpen(true)
-          }}
-          btnColor="#F8FAFF"
-          backgroundColor={COLORS.primary}
-          btnWidth="12em"
-          borderColor={COLORS.primary}
-          textTransform="capitalize"
-          height={sizes.btnHeight}
-          borderRadius="0.5em"
-          fontSize="1em"
-          style={{
-            display: 'flex',
-            textTransform: 'none',
-            padding: '0.5em',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          Connect wallet
-        </BtnCustom>
+        {buttonWithModal}
       </RowContainer>
-      <ConnectWalletPopup
-        theme={theme}
-        open={isConnectWalletPopupOpen}
-        onClose={() => setIsConnectWalletPopupOpen(false)}
-      />
     </RowContainer>
   )
 }
