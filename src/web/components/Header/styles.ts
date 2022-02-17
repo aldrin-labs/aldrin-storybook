@@ -181,7 +181,7 @@ export const WalletContainer = styled.div`
 
 export const LogoLink = styled(Link)`
   // height: 100%;
-  margin-right: ${SIZE.defaultPadding};
+  margin-right: 60px;
   display: block;
 `
 

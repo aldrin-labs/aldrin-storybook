@@ -8,9 +8,9 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import {
   ContentBlock,
-  GrayButton,
   StakingBlock,
   StretchedContent,
+  GrayLink,
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Lock from './lock.svg'
@@ -81,7 +81,11 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             />
           </ContentBlock>
         </StretchedContent>
-        <GrayButton>Feb 22, 2022 Exclusively on Aldrin</GrayButton>
+        <RowContainer>
+          <GrayLink to="/staking/plutonians">
+            Feb 22, 2022 Exclusively on Aldrin
+          </GrayLink>
+        </RowContainer>
       </BlockContent>
     </StakingBlock>
   )

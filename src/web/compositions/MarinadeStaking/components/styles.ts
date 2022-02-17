@@ -8,6 +8,10 @@ interface StyledSwitcher {
 
 interface RadioContainer {
   checked: boolean
+  width?: string
+  margin?: string
+  backgroundColor?: string
+  height?: string
 }
 
 export const Container = styled.div`
@@ -40,7 +44,9 @@ export const Button = styled.button<StyledSwitcher>`
   transition: 0.5s;
 `
 export const BlockWithRadio = styled.div<RadioContainer>`
-  width: 48%;
+  position: relative;
+  width: ${(props) => props.width || '48%'};
+  background-color: ${(props) => props.backgroundColor || 'transparent'};
   display: flex;
   padding: 1.5rem;
   flex-direction: column;
@@ -50,5 +56,6 @@ export const BlockWithRadio = styled.div<RadioContainer>`
       ? `0.1rem solid ${COLORS.success}`
       : '0.1rem solid rgba(193, 193, 193, 0.3)'};
   border-radius: 1.5rem;
-  height: 10rem;
+  height: ${(props) => props.height || '10rem'};
+  margin: ${(props) => props.margin || '0'};
 `
