@@ -15,8 +15,8 @@ const VARIANTS = {
     border-color: ${COLORS.primary};
 
     &:disabled {
-      background: ${COLORS.hint};
-      border-color: ${COLORS.hint};
+      background: ${COLORS.cardsBack};
+      border-color: ${COLORS.cardsBack};
     }
   `,
   secondary: css`
@@ -94,7 +94,7 @@ const VARIANTS = {
 
   // TODO: rewrite with [disabled] html attribute
   disabled: css`
-    background: ${COLORS.hint};
+    background: ${COLORS.cardsBack};
     border-color: ${COLORS.hint};
     cursor: not-allowed;
   `,
