@@ -97,6 +97,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     wallet,
     connection,
     walletPublicKey: wallet.publicKey,
+    onlyUserTickets: true,
     // walletPublicKey,
   })
 
