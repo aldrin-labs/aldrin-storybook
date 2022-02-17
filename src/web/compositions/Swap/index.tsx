@@ -42,7 +42,7 @@ import {
   getNumberOfIntegersFromNumber,
   stripByAmount,
 } from '@core/utils/chartPageUtils'
-import { removeDecimals } from '@core/utils/helpers'
+import { numberWithOneDotRegexp, removeDecimals } from '@core/utils/helpers'
 import {
   stripDigitPlaces,
   formatNumberToUSFormat,
@@ -52,13 +52,13 @@ import ArrowRightIcon from '@icons/arrowRight.svg'
 import ReverseArrows from '@icons/reverseArrows.svg'
 import Arrows from '@icons/switchArrows.svg'
 
+import { useJupiterSwap } from '../../../../../core/src/hooks/useJupiter/useJupiterSwap'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
-import { SelectCoinPopup } from './components/SelectCoinPopup'
+import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
 import { SwapSearch } from './components/SwapSearch'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
-import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
 import { SLIPPAGE_STEP } from './config'
 import {
   SwapPageContainer,
@@ -75,7 +75,6 @@ import {
   SwapPageLayout,
   CircleIconContainer,
 } from './styles'
-import { useJupiterSwap } from './useJupiterSwap'
 import {
   getEstimatedPrice,
   getFeeFromSwapRoute,
@@ -188,8 +187,6 @@ const SwapPage = ({
     selectedQuoteTokenAddressFromSeveral,
     setQuoteTokenAddressFromSeveral,
   ] = useState<string>('')
-  const [isTransactionSettingsPopupOpen, openTransactionSettingsPopup] =
-    useState(false)
 
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
   const [isSwapInProgress, setIsSwapInProgress] = useState(false)
@@ -376,7 +373,7 @@ const SwapPage = ({
                   <ValueInput
                     onChange={(e) => {
                       if (
-                        /^-?\d*\.?\d*$/.test(e.target.value) &&
+                        numberWithOneDotRegexp.test(e.target.value) &&
                         getNumberOfIntegersFromNumber(e.target.value) <= 2 &&
                         getNumberOfDecimalsFromNumber(e.target.value) <= 2
                       ) {
@@ -728,18 +725,6 @@ const SwapPage = ({
             ) : null}
           </SwapBlockTemplate>
         </SwapContentContainer>
-
-        <TransactionSettingsPopup
-          theme={theme}
-          slippage={slippage}
-          open={isTransactionSettingsPopupOpen}
-          close={() => {
-            if (slippage >= 0.01) {
-              openTransactionSettingsPopup(false)
-            }
-          }}
-          setSlippage={setSlippage}
-        />
 
         <SelectCoinPopup
           theme={theme}

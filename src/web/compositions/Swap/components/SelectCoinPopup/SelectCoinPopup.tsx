@@ -1,14 +1,13 @@
 import { Theme } from '@material-ui/core'
-import { BREAKPOINTS, COLORS, FONTS, FONT_SIZES } from '@variables/variables'
+import { COLORS, FONTS } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Page } from '@sb/components/Layout'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
+import { SelectSeveralAddressesPopup } from '@sb/compositions/Pools/components/Popups/SelectorForSeveralAddresses'
 import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import {
@@ -24,33 +23,7 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import { SelectSeveralAddressesPopup } from '../../Pools/components/Popups/SelectorForSeveralAddresses'
-
-const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
-  font-size: 16px;
-  background: #1a1a1a;
-  width: 30em;
-
-  @media (max-width: ${BREAKPOINTS.sm}) {
-    max-height: 100%;
-    margin: 0;
-    width: 100%;
-  }
-`
-
-export const SelectorRow = styled(({ ...props }) => (
-  <RowContainer {...props} />
-))`
-  background: ${COLORS.background};
-  border-radius: 1.2rem;
-  margin-bottom: 0.8em;
-  padding: 1.5em;
-`
-
-export const StyledText = styled(({ ...props }) => <Text {...props} />)`
-  font-size: ${FONT_SIZES.md};
-  font-family: ${FONTS.demi};
-`
+import { SelectorRow, StyledText, UpdatedPaper } from './styles'
 
 export const SelectCoinPopup = ({
   theme,
@@ -139,7 +112,7 @@ export const SelectCoinPopup = ({
 
   useEffect(() => {
     const closePopup = (e) => {
-      if (e.keyCode === 27) {
+      if (e.code === 'Escape') {
         close()
       }
     }

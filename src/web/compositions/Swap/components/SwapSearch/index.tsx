@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
@@ -27,50 +28,27 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   const [searchItems, setSearchItems] = useState<SearchItem[]>([])
   const tokensMap = useTokenInfos()
 
-  const onInput = (value: string) => {
+  const onInput = (searchText: string) => {
     setSearchItems(() => {
-      const groups = value.split(' ').filter((_) => !!_ && _ !== 'to')
+      const searchTextItems = searchText
+        .split(' ')
+        .filter((textItem) => !!textItem && textItem !== 'to')
 
-      if (groups.length === 0) {
+      if (searchTextItems.length === 0) {
         return []
       }
 
-      const amountFrom = parseFloat(groups[0])
-      const groupWithoutAmount = groups[0].replace(`${amountFrom}`, '')
-      const match1 = groups[0].match(NUM_PATTERN)
+      const [firstSearchTextItem] = searchTextItems
 
-      if (!match1) {
-        return []
-      }
+      const amountFrom = parseFloat(firstSearchTextItem)
 
-      const tokenFromSearch = (match1[0] ? groups[1] : groupWithoutAmount) || ''
-      const match2Idx = match1[0] ? 2 : 1
-
-      const amountTo = parseFloat(groups[match2Idx])
-      const groupWithoutAmount2 = (groups[match2Idx] || '').replace(
-        `${amountTo}`,
-        ''
+      const symbolsSearchTextItems = searchTextItems.filter(
+        (item) => !parseFloat(item)
       )
-      const match2 = (groups[match2Idx] || '').match(NUM_PATTERN)
 
-      if (!match2) {
-        return []
-      }
-      const tokenToSearch =
-        (match2[0] ? groups[match2Idx + 1] : groupWithoutAmount2) || ''
+      const [tokenFromSearch, tokenToSearch] = symbolsSearchTextItems
 
-      // console.log(
-      //   'matches: ',
-      //   groups,
-      //   match2Idx,
-      //   amountFrom,
-      //   tokenFromSearch,
-      //   amountTo,
-      //   tokenToSearch
-      // )
-      // return []
-
-      if ((amountFrom && amountTo) || !tokenFromSearch) {
+      if (!tokenFromSearch) {
         return []
       }
 
@@ -109,14 +87,13 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
         amountFrom: Number.isNaN(amountFrom)
           ? undefined
           : amountFrom.toString(),
-        amountTo: Number.isNaN(amountTo) ? undefined : amountTo.toString(),
       }))
 
       return searchItems
     })
 
-    setSearchValue(value)
-    setListOpened(!!value)
+    setSearchValue(searchText)
+    setListOpened(!!searchText)
   }
   const selectRow = (selected: SearchItem) => {
     onSelect(selected)
@@ -155,16 +132,13 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
               }
               key={`search_item_${tokenFrom.mint}_${tokenTo.mint}_${tokenFrom.account}_${tokenTo.account}`}
             >
-              <TokenIcon mint={tokenFrom.mint} height="24px" />
-              &nbsp;
-              <TokenIcon mint={tokenTo.mint} height="24px" />
-              &nbsp;
-              <InlineText color="primaryWhite">
-                {amountFrom}&nbsp;
-                <TokenName>{tokenFrom.symbol}</TokenName>
-                &nbsp; to {amountTo}
-                &nbsp;
-                <TokenName>{tokenTo.symbol}</TokenName>
+              <Row>
+                <TokenIcon mint={tokenFrom.mint} height="1.5em" />{' '}
+                <TokenIcon mint={tokenTo.mint} height="1.5em" />{' '}
+              </Row>
+              <InlineText weight={600} color="primaryWhite">
+                {amountFrom} <TokenName>{tokenFrom.symbol}</TokenName> to{' '}
+                {amountTo} <TokenName>{tokenTo.symbol}</TokenName>
               </InlineText>
             </SwapItem>
           ))}

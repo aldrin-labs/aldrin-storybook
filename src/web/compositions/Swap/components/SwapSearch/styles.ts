@@ -33,6 +33,7 @@ export const SwapsList = styled.div`
 export const SwapItem = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   padding: 15px 24px;
   cursor: pointer;
