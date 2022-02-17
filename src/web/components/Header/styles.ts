@@ -51,7 +51,7 @@ interface LinkProps extends ShowHideProps {
 export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
   font-size: 0.8em;
-  padding: 8px 0;
+  padding: 4px 0;
   margin: 0px 4px;
   text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
   color: ${COLORS.primaryGray};
