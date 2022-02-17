@@ -355,6 +355,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const totalStakedValue = isBalancesShowing
     ? rinValue
     : new Array(rinValue.length).fill('∗').join('')
+
+  const stakedInUsd = stripByAmountAndFormat(totalStaked * tokenPrice || 0)
+  const totalStakedUsdValue = isBalancesShowing
+    ? stakedInUsd
+    : new Array(stakedInUsd.length).fill('∗').join('')
   return (
     <>
       <Row>
@@ -471,9 +476,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>
-                  ${stripByAmountAndFormat(totalStaked * tokenPrice || 0)}
-                </InlineText>{' '}
+                <InlineText>${totalStakedUsdValue}</InlineText>{' '}
               </StretchedBlock>
             </BlockContentStretched>
           </Block>
