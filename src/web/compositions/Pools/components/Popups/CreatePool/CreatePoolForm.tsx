@@ -187,13 +187,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             quoteTokenMint: new PublicKey(values.quoteToken.mint),
             firstDeposit: {
               baseTokenAmount: new BN(
-                parseFloat(values.firstDeposit.baseTokenAmount) *
+                (
+                  parseFloat(values.firstDeposit.baseTokenAmount) *
                   10 ** (selectedBaseAccount?.decimals || 0)
+                ).toFixed(0)
               ),
               userBaseTokenAccount: new PublicKey(values.baseToken.account),
               quoteTokenAmount: new BN(
-                parseFloat(values.firstDeposit.quoteTokenAmount) *
+                (
+                  parseFloat(values.firstDeposit.quoteTokenAmount) *
                   10 ** (selectedQuoteAccount?.decimals || 0)
+                ).toFixed(0)
               ),
               userQuoteTokenAccount: new PublicKey(values.quoteToken.account),
               vestingPeriod: values.lockInitialLiquidity
@@ -208,10 +212,15 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       values.farming.token.account
                     ),
                     tokenAmount: new BN(
-                      parseFloat(values.farming.tokenAmount) * tokensMultiplier
+                      (
+                        parseFloat(values.farming.tokenAmount) *
+                        tokensMultiplier
+                      ).toFixed(0)
                     ),
                     periodLength: new BN(HOUR),
-                    tokensPerPeriod: new BN(tokensPerPeriod * tokensMultiplier),
+                    tokensPerPeriod: new BN(
+                      (tokensPerPeriod * tokensMultiplier).toFixed(0)
+                    ),
                     noWithdrawPeriodSeconds: new BN(0),
                     vestingPeriodSeconds: values.farming.vestingEnabled
                       ? new BN(
