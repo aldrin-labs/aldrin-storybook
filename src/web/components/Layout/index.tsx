@@ -36,7 +36,7 @@ export const BlackPage = styled(Page)`
 
 export const Content = styled.div`
   margin: 0 10px;
-  width: 100%;
+  width: calc(100% - 20px);
 
   @media (min-width: ${BREAKPOINTS.md}) {
     margin: 0 10px;

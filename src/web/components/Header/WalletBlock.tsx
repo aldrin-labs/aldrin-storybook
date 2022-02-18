@@ -22,7 +22,7 @@ import {
 export const WalletBlock = () => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
-  const { connected, wallet, providerName, providerFullName } = useWallet()
+  const { connected, wallet } = useWallet()
 
   const publicKey = wallet.publicKey?.toString() || ''
   const balanceInfo = useBalanceInfo(wallet.publicKey)

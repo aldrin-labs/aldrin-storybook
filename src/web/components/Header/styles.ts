@@ -16,9 +16,13 @@ import { Text } from '../Typography'
 export const HeaderWrap = styled.header`
   display: flex;
   flex-direction: row;
-  height: 60px;
+  height: 70px;
   background: ${COLORS.mainBlack};
-  padding: 0 3.5rem;
+  padding: 0 6px;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    height: 70px;
+  }
 `
 
 export const LogoBlock = styled.div`
@@ -188,7 +192,7 @@ export const LogoLink = styled(Link)`
 `
 
 export const Logo = styled.img`
-  height: 31px;
+  height: 36px;
   display: block;
   margin: 0;
 `
@@ -259,7 +263,7 @@ export const WalletButton = styled(Button)`
   background-color: ${COLORS.primaryBlue};
   border: none;
   font-weight: 600;
-  height: 5rem;
+  height: 45px;
   transition: ${TRANSITION};
 
   &:hover {
@@ -283,6 +287,7 @@ export const WalletDataContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  height: 45px;
 
   @media (min-width: ${BREAKPOINTS.md}) {
     flex-direction: column;
@@ -319,7 +324,7 @@ export const WalletData = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 1rem;
-  height: 5rem;
+  height: 100%;
   border-radius: ${BORDER_RADIUS.md};
   background: ${COLORS.defaultGray};
   align-items: center;
@@ -370,7 +375,7 @@ export const WalletDisconnectButton = styled(Button)`
   background-color: ${COLORS.newOrange};
   border: none;
   font-weight: 600;
-  height: 5rem;
+  height: 100%;
   transition: ${TRANSITION};
 
   &:hover {

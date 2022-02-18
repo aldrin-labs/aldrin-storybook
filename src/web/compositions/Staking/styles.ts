@@ -9,6 +9,7 @@ import { ContentBlockProps } from './types'
 
 export const StakingBlock = styled(Block)`
   background: ${COLORS.defaultGray};
+  margin: 16px;
 `
 
 export const Content = styled.div`

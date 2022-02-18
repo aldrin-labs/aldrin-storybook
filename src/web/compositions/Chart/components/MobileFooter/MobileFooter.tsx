@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { FeedbackPopup } from '../UsersFeedbackPopup'
 import {
   TradeLink,
-  DashboardLink,
   StakingLink,
   SwapsLink,
   PoolsLink,
@@ -16,7 +15,7 @@ export const MobileFooter = () => {
   return (
     <FooterComponent justify="space-around">
       <TradeLink />
-      <DashboardLink />
+      {/* <DashboardLink /> */}
       <SwapsLink />
       <PoolsLink />
       <StakingLink />
