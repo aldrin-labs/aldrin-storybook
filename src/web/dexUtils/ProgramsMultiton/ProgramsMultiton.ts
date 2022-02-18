@@ -12,7 +12,6 @@ import PoolsV2ProgramIdl from '@core/idls/poolsV2.json'
 import StakingProgramIdl from '@core/idls/staking.json'
 import VestingProgramIdl from '@core/idls/vesting.json'
 
-import { walletAdapterToWallet } from '../common'
 import { notifyForDevelop } from '../notifications'
 import { WalletAdapter } from '../types'
 import {
@@ -76,7 +75,8 @@ class ProgramsMultiton {
             new PublicKey(VESTING_PROGRAM_ADDRESS),
             new Provider03(
               connection,
-              walletAdapterToWallet(wallet),
+              // walletAdapterToWallet(wallet),
+              wallet, // TODO: resolve more gently?
               defaultOptions()
             )
           ) as any as Program) // TODO
@@ -85,7 +85,8 @@ class ProgramsMultiton {
             programId,
             new Provider(
               connection,
-              walletAdapterToWallet(wallet),
+              // walletAdapterToWallet(wallet),
+              wallet, // TODO: resolve more gently?
               defaultOptions()
             )
           )

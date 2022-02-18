@@ -1,3 +1,4 @@
+import { Theme } from '@material-ui/core'
 import React, { useEffect } from 'react'
 
 import {
@@ -7,11 +8,8 @@ import {
   HeaderContainer,
   ChartContainer,
 } from '../../index.styles'
-
-import { Theme } from '@material-ui/core'
-import { createButterflyChart } from '../utils'
-
 import { TooltipForButterflyChart } from '../Tooltips'
+import { createButterflyChart } from '../utils'
 
 const ButterflyChart = ({
   theme,
@@ -36,7 +34,7 @@ const ButterflyChart = ({
 
   return (
     <>
-      <HeaderContainer theme={theme} justify={'space-between'}>
+      <HeaderContainer theme={theme} justify="space-between">
         <Row>
           <WhiteTitle
             theme={theme}
@@ -47,25 +45,25 @@ const ButterflyChart = ({
           >
             {title}
           </WhiteTitle>
-          <Row margin={'0 2rem'}>
-            <Dot background={'#53DF11'} />
-            <WhiteTitle fontWeight={'normal'} theme={theme}>
+          <Row margin="0 2rem">
+            <Dot background="#269F13" />
+            <WhiteTitle fontWeight="normal" theme={theme}>
               Buy
             </WhiteTitle>
           </Row>
           <Row>
-            <Dot background={'#F26D68'} />
-            <WhiteTitle fontWeight={'normal'} theme={theme}>
+            <Dot background="#F26D68" />
+            <WhiteTitle fontWeight="normal" theme={theme}>
               Sell
             </WhiteTitle>
           </Row>
         </Row>
-        <Row margin={'0 2rem 0 0'}>
+        <Row margin="0 2rem 0 0">
           <WhiteTitle theme={theme}>14d</WhiteTitle>
         </Row>
       </HeaderContainer>
       <ChartContainer>
-        <canvas id={`butterflyChart-${id}`}></canvas>
+        <canvas id={`butterflyChart-${id}`} />
         <TooltipForButterflyChart
           needQuoteInLabel={needQuoteInLabel}
           theme={theme}

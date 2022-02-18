@@ -1,17 +1,22 @@
 import React, { useState } from 'react'
-import { useWallet } from '@sb/dexUtils/wallet'
 
-import WalletIcon from '@icons/walletIcon.svg'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { useWallet, useBalanceInfo } from '@sb/dexUtils/wallet'
+
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
+import Astronaut from '@icons/astronaut.webp'
 
 // TODO: move that
-import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
-import { SvgIcon } from '..'
+import { formatSymbol } from '../AllocationBlock/DonutChart/utils'
 import {
   WalletButton,
-  WalletName,
-  WalletAddress,
-  WalletData,
+  WalletDataContainer,
   WalletDisconnectButton,
+  WalletData,
+  Column,
+  WalletAddress,
+  BalanceTitle,
 } from './styles'
 
 export const WalletBlock = () => {
@@ -19,14 +24,16 @@ export const WalletBlock = () => {
     useState(false)
   const { connected, wallet, providerName, providerFullName } = useWallet()
 
+  const publicKey = wallet.publicKey?.toString() || ''
+  const balanceInfo = useBalanceInfo(wallet.publicKey)
+  const { amount, decimals } = balanceInfo || {
+    amount: 0,
+    decimals: 8,
+  }
+  const SOLAmount = amount / 10 ** decimals
+
   return (
     <>
-      <SvgIcon
-        src={WalletIcon}
-        width="1em"
-        height="1em"
-        style={{ margin: '0 1em' }}
-      />
       {!connected && (
         <WalletButton
           onClick={() => {
@@ -37,9 +44,19 @@ export const WalletBlock = () => {
         </WalletButton>
       )}
       {connected && (
-        <WalletData>
-          <WalletName>{providerFullName || providerName}</WalletName>
-          <WalletAddress>{wallet.publicKey?.toBase58()}</WalletAddress>
+        <WalletDataContainer>
+          <WalletData>
+            <img src={Astronaut} alt="aldrin" width="30px" height="30px" />
+            <Column>
+              {' '}
+              <BalanceTitle>
+                {stripByAmountAndFormat(SOLAmount)} SOL
+              </BalanceTitle>
+              <WalletAddress>
+                {formatSymbol({ symbol: publicKey })}
+              </WalletAddress>
+            </Column>
+          </WalletData>
           <WalletDisconnectButton
             onClick={() => {
               if (wallet?.disconnect) {
@@ -49,7 +66,7 @@ export const WalletBlock = () => {
           >
             Disconnect
           </WalletDisconnectButton>
-        </WalletData>
+        </WalletDataContainer>
       )}
       <ConnectWalletPopup
         open={isConnectWalletPopupOpen}

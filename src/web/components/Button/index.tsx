@@ -84,6 +84,14 @@ const VARIANTS = {
     }
   `,
 
+  input: css`
+    background: ${COLORS.mainBlack};
+    color: ${COLORS.newOrange};
+    padding: 0.2rem 1rem;
+    font-weight: 600;
+    font-size: ${FONT_SIZES.xs};
+  `,
+
   // TODO: rewrite with [disabled] html attribute
   disabled: css`
     background: ${COLORS.hint};

@@ -613,7 +613,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 alignItems: 'center',
               }}
               firstHalfStyleProperties={{
-                activeColor: '#53DF11',
+                activeColor: '#269F13',
                 activeBackgroundColor: '#222429',
                 borderRadius: '3rem',
                 width: '47%',

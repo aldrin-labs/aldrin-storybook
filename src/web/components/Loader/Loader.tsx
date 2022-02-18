@@ -1,8 +1,11 @@
-import DottedLoader from '@icons/dottedLoader.gif'
+import { COLORS } from '@variables/variables'
+import React from 'react'
+
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Text } from '@sb/compositions/Rebalance/Rebalance.styles'
-import React from 'react'
-import { COLORS } from '@variables/variables'
+
+import DottedLoader from '@icons/dottedLoader.gif'
+
 import { AnimatedImage } from './styles'
 
 export const Loader = ({
@@ -35,7 +38,7 @@ export const Loader = ({
           fill="black"
         />
       </AnimatedImage>
-      {/* <AnimatedImage width={width} height="auto" src={RinLogo} /> */}
+      {/* <AnimatedImage width={width} height="auto" src={} /> */}
       {text ? (
         <Text
           style={{ padding: '0 0 0 0.7rem' }}
