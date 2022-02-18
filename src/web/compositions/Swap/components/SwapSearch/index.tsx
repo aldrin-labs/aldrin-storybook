@@ -32,7 +32,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
     setSearchItems(() => {
       const searchTextItems = searchText
         .split(' ')
-        .filter((textItem) => !!textItem && textItem !== 'to')
+        .filter((textItem) => !!textItem && textItem.toLowerCase() !== 'to')
 
       if (searchTextItems.length === 0) {
         return []

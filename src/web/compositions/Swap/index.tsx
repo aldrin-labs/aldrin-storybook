@@ -317,15 +317,20 @@ const SwapPage = ({
     depositAndFee?.openOrdersDeposits.length > 0
   const priceImpact = priceImpactPct * 100
 
+  const swapRouteInAmount = removeDecimals(inAmount, baseTokenDecimals)
+
   const estimatedPrice = stripByAmount(
     getEstimatedPrice({
-      inputAmount: removeDecimals(inAmount, baseTokenDecimals),
+      inputAmount: swapRouteInAmount,
       outputAmount: removeDecimals(outAmount, quoteTokenDecimals),
       inputPrice: basePrice,
       outputPrice: quotePrice,
       field: priceShowField,
     })
   )
+
+  const pctDiffUsedAndUIInputAmount =
+    ((+inputAmount - swapRouteInAmount) / inputAmount) * 100
 
   const minInputAmount =
     swapRoute &&
@@ -352,7 +357,7 @@ const SwapPage = ({
             />
           </RowContainer>
           <SwapBlockTemplate theme={theme} width="100%" background="#1A1A1A">
-            <RowContainer margin="0 0 1rem 0" justify="space-between">
+            <RowContainer margin="0 0 .5em 0" justify="space-between">
               <Row>
                 <ValueButton>
                   <ReloadTimer
@@ -427,7 +432,7 @@ const SwapPage = ({
             </RowContainer>
             <RowContainer
               style={{ position: 'relative' }}
-              margin="1rem 0 1.6rem 0"
+              margin=".5em 0 1.6rem 0"
               direction="column"
             >
               <RowContainer justify="space-between">
@@ -527,6 +532,14 @@ const SwapPage = ({
                 </Row>
               </RowContainer>
             </RowContainer>
+            {!isLoadingSwapRoute && pctDiffUsedAndUIInputAmount >= 5 && (
+              <RowContainer margin="0 0 .5em 0">
+                <Text>
+                  This swap will only use {swapRouteInAmount} (out of{' '}
+                  {inputAmount}) USDC
+                </Text>
+              </RowContainer>
+            )}
             <RowContainer>
               {!publicKey ? (
                 <BtnCustom
