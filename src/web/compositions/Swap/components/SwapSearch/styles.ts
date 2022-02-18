@@ -14,8 +14,13 @@ export const SearchInput = styled(Input)`
   background: none;
   margin: 0;
 
+  div {
+    width: 100%;
+  }
+
   input {
     font-weight: normal;
+    width: 100%;
   }
 `
 
