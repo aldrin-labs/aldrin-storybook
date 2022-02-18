@@ -120,11 +120,7 @@ export const SwapButton = styled((props) => (
     borderRadius=".8rem"
     borderColor="none"
     btnColor={COLORS.primaryWhite}
-    backgroundColor={
-      props.disabled
-        ? '#3A475C'
-        : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
-    }
+    backgroundColor={props.disabled ? '#3A475C' : COLORS.primaryBlue}
     textTransform="none"
     transition="all .4s ease-out"
     {...props}
