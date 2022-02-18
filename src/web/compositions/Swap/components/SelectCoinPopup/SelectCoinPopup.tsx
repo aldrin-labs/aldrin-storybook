@@ -135,7 +135,7 @@ export const SelectCoinPopup = ({
       }}
       aria-labelledby="responsive-dialog-title"
     >
-      <Page $color="blockBlackBackground">
+      <Page $background="blockBlackBackground">
         <RowContainer padding="1.5em 0">
           <SearchInputWithLoop
             searchValue={searchValue}

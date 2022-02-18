@@ -14,14 +14,15 @@ export const COLORS = {
   hint: '#96999c',
   blockBackground: '#222429',
   main: '#fbf2f2',
-  primary: '#651CE4',
-  success: '#53DF11',
+  primary: '#0E02EC',
+  success: '#269F13',
   successAlt: '#2E5223',
   error: '#F69894',
   errorAlt: '#D44C32',
   buttonAltPink: '#a1458a',
   gray: '#383b42',
   gray2: '#AAAAAA',
+  gray3: '#6f6f6f',
   chartGrid: '#4C4F59',
   textAlt: '#F5F5FB',
   navLink: 'rgb(114, 132, 160)',
@@ -40,6 +41,18 @@ export const COLORS = {
   inputPlaceholder: '#86878E',
   halfWhite: 'rgba(248, 250, 255, 0.5)',
   blockBlackBackground: '#1A1A1A',
+  mainBlack: '#101010',
+  primaryGray: '#C1C1C1',
+  activeWhite: '#FAFAFA',
+  primaryBlue: '#0E02EC',
+  defaultGray: '#1A1A1A',
+  newOrange: '#DA6239',
+  newGreen: '#269F13',
+  newWhite: '#F8F8F8',
+  darkBlue: '#0B02BD',
+  primaryRed: '#E04237',
+  newBlack: '#191919',
+  lightGray: '#C9C8CD',
 }
 
 export const BORDER_RADIUS = {
@@ -53,6 +66,7 @@ export const BORDER_RADIUS = {
 
 export const FONT_SIZES = {
   xs: '0.6875em', // 11px
+  es: '0.7125em',
   sm: '0.8125em', // 13px
   xsm: '0.9em',
   md: '1em', // 16px

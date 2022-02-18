@@ -53,7 +53,7 @@ export const preparePoolTableCell = (params: {
   walletPk: string
   vestings: Map<string, Vesting>
   farmingTicketsMap: FarmingTicketsMap
-  calcAccounts?: Map<string, FarmingCalc>
+  calcAccounts?: Map<string, FarmingCalc[]>
   tokenMap: Map<string, TokenInfo>
 }): DataCellValues<PoolInfo> => {
   const {
@@ -62,7 +62,7 @@ export const preparePoolTableCell = (params: {
     prepareMore,
     walletPk,
     vestings,
-    calcAccounts = new Map<string, FarmingCalc>(),
+    calcAccounts = new Map<string, FarmingCalc[]>(),
     farmingTicketsMap,
     tokenMap,
   } = params
@@ -131,14 +131,14 @@ export const preparePoolTableCell = (params: {
     calcAccounts,
   })
 
-  const availableToClaim = Array.from(availableToClaimMap.values()).map(
-    (atc) => {
+  const availableToClaim = Array.from(availableToClaimMap.values())
+    .map((atc) => {
       const name = getTokenNameByMintAddress(atc.farmingTokenMint)
       const usdValue = (tokenPrices.get(name)?.price || 0) * atc.amount
 
       return { ...atc, name, usdValue }
-    }
-  )
+    })
+    .filter((atc) => atc.amount > 0)
 
   const availableToClaimUsd = availableToClaim.reduce(
     (acc, atc) => acc + atc.usdValue,
@@ -245,7 +245,8 @@ export const preparePoolTableCell = (params: {
                       {availableToClaim
                         .map(
                           (atc) =>
-                            `${stripByAmountAndFormat(atc.amount, 4)} ${atc.name
+                            `${stripByAmountAndFormat(atc.amount, 4)} ${
+                              atc.name
                             }`
                         )
                         .join(' + ')}

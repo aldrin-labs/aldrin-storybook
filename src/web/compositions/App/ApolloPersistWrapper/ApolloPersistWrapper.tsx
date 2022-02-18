@@ -44,7 +44,7 @@ export default class ApolloPersistWrapper extends Component<any> {
   render() {
 
     if (!this.state.loaded) {
-      return <Loading centerAligned={true} color={'#651CE4'} />
+      return <Loading centerAligned={true} color={'#0E02EC'} />
     }
     
     return (

@@ -46,6 +46,10 @@ export interface SendTransactionParams extends SendSignedTransactionParams {
 
 export type SendSignedTransactionResult = 'failed' | 'timeout' | 'success'
 
+export type SignAndSendTransactionResult =
+  | SendSignedTransactionResult
+  | 'cancelled'
+  | 'rejected'
 export type AsyncSendSignedTransactionResult =
   Promise<SendSignedTransactionResult>
 

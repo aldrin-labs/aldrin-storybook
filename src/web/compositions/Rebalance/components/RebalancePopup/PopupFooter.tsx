@@ -67,7 +67,7 @@ export const PopupFooter = ({
       <Row>
         <Text
           theme={theme}
-          color={'#53DF11'}
+          color={'#269F13'}
           fontFamily={'Avenir Next Demi'}
           style={{
             whiteSpace: 'nowrap',
@@ -90,7 +90,7 @@ export const PopupFooter = ({
 
         <Text
           theme={theme}
-          color={'#53DF11'}
+          color={'#269F13'}
           fontFamily={'Avenir Next Demi'}
           style={{
             whiteSpace: 'nowrap',

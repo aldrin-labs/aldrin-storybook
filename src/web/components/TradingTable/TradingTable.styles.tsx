@@ -1,8 +1,6 @@
+import { Button, Theme } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
-import { Button, Theme } from '@material-ui/core'
-import { CSS_CONFIG } from '@sb/config/cssConfig'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const TitleSecondRowContainer = styled.div`
   position: relative;
@@ -64,8 +62,8 @@ export const ClearButton = styled(TitleButton)`
   position: absolute;
   top: -2px;
   right: 1rem;
-  color: #651CE4;
-  border-color: #651CE4;
+  color: #0e02ec;
+  border-color: #0e02ec;
   font-size: 1.1rem;
   min-width: 70px;
   font-weight: bold;

@@ -16,6 +16,7 @@ export function isValidPublicKey(key: PublicKeyInitData) {
 }
 
 export const RIN_MINT: string = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
+export const MSOL_MINT: string = 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'
 
 export const RINProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'

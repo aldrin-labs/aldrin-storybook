@@ -1,6 +1,6 @@
-import { randomInteger } from '@core/utils/helpers'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { Chart, DoughnutController, ArcElement } from 'chart.js'
+
+import { randomInteger } from '@core/utils/helpers'
 
 Chart.register(DoughnutController, ArcElement)
 
@@ -11,7 +11,7 @@ const lightenDarkenColor = (baseColor: string, amt: number) => {
     usePound = true
   }
 
-  let num = parseInt(baseColor, 16)
+  const num = parseInt(baseColor, 16)
 
   let r = (num >> 16) + amt
 
@@ -32,7 +32,7 @@ const lightenDarkenColor = (baseColor: string, amt: number) => {
 }
 
 export const fixedColors = [
-  '#651CE4',
+  '#0E02EC',
   '#D5A688',
   '#90D7C7',
   '#4DA5E6',
@@ -40,7 +40,7 @@ export const fixedColors = [
 ]
 
 export const fixedColorsForLegend = [
-  'linear-gradient(90deg, #651CE4 0%, #747CF6 95.65%)',
+  'linear-gradient(90deg, #0E02EC 0%, #747CF6 95.65%)',
   'linear-gradient(90deg, #D3A987 0%, #EE7A96 100%)',
   'linear-gradient(90deg, #95D2BA 0%, #83E6EC 100%)',
   'linear-gradient(90deg, #4071B6 0%, #52B7F6 100%)',
@@ -53,12 +53,10 @@ export const getRandomBlueColor = () => {
 }
 
 export const formatSymbol = ({ symbol }: { symbol: string }) => {
-
   if (symbol.length > 15) {
-    return `${symbol.slice(0, 3)}...${symbol.slice(symbol.length - 3)}`
-  } else {
-    return symbol
+    return `${symbol.slice(0, 4)}...${symbol.slice(symbol.length - 4)}`
   }
+  return symbol
 }
 
 const createAllocationDonutChart = ({

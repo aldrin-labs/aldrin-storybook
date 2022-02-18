@@ -6,7 +6,7 @@ import { findTokenAccount } from '../utils/findTokenAccount'
 import { useUserTokenAccounts } from './useUserTokenAccounts'
 
 export const useAssociatedTokenAccount = (
-  mint: string
+  mint?: string
 ): TokenInfo | undefined => {
   const [account, setAccount] = useState<TokenInfo | undefined>(undefined)
   const [tokenAccounts] = useUserTokenAccounts()
@@ -14,7 +14,7 @@ export const useAssociatedTokenAccount = (
 
   useEffect(() => {
     const load = async () => {
-      if (!wallet.publicKey) {
+      if (!wallet.publicKey || !mint) {
         setAccount(undefined)
         return
       }

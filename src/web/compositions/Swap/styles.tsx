@@ -14,7 +14,7 @@ import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 
 export const SwapPageContainer = styled(RowContainer)`
-  background: ${COLORS.bodyBackground};
+  background: ${COLORS.mainBlack};
   overflow-y: auto;
 `
 
