@@ -1,7 +1,8 @@
-import React from 'react'
 import { Link } from '@material-ui/core'
+import React from 'react'
 
 import SnackbarUtils from '@sb/utils/SnackbarUtils'
+
 import { MASTER_BUILD } from '@core/utils/config'
 
 export const notify = ({
@@ -9,11 +10,13 @@ export const notify = ({
   description = '',
   txid = '',
   type = 'info',
+  persist = false,
 }: {
   message: string
   description?: any
   txid?: string
   type?: string
+  persist?: boolean
 }) => {
   console.log('notification: ', message)
   if (txid) {
@@ -87,11 +90,10 @@ export const notify = ({
     )
   }
 
-  SnackbarUtils[type](description, {
+  return SnackbarUtils[type](description, {
     variant: type,
+    persist,
   })
-
-  return null
 }
 
 export const notifyForDevelop = ({

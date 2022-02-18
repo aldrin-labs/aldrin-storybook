@@ -32,6 +32,7 @@ import {
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
+import SnackbarUtils from '@sb/utils/SnackbarUtils'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
@@ -572,12 +573,20 @@ const SwapPage = ({
 
                     setIsSwapInProgress(true)
 
+                    const awaitConfirmationNotificationKey = notify({
+                      message: 'Confirming transaction',
+                      type: 'loading',
+                      persist: true,
+                    })
+
                     const { execute } = await jupiter.exchange({
                       route: swapRoute,
                     })
 
                     try {
                       const result = await execute({ wallet })
+
+                      SnackbarUtils.close(awaitConfirmationNotificationKey)
 
                       console.log('result', result)
 

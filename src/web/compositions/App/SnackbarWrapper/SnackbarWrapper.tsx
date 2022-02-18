@@ -1,13 +1,16 @@
-import React from 'react'
-import { SnackbarProvider } from 'notistack'
-import { withStyles } from '@material-ui/styles'
 import { IconButton } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
+import { withStyles } from '@material-ui/styles'
+import { COLORS } from '@variables/variables'
+import { SnackbarProvider } from 'notistack'
+import React from 'react'
 
+import { Loader } from '@sb/components/Loader/Loader'
 import SvgIcon from '@sb/components/SvgIcon'
+
 import errorIcon from '@icons/errorIcon.svg'
-import successIcon from '@icons/successIcon.svg'
 import infoIcon from '@icons/infoIcon.svg'
+import successIcon from '@icons/successIcon.svg'
 
 const canselStyeles = (theme) => ({
   icon: {
@@ -21,27 +24,26 @@ const CloseButton = withStyles(canselStyeles)((props) => (
   </IconButton>
 ))
 
+const commonStyles = {
+  background: COLORS.cardsBack,
+  border: '1px solid #5b5b5b',
+}
+
 const snackStyeles = (theme) => ({
   success: {
+    ...commonStyles,
     color: '#fff',
     fontSize: '1.25rem',
     fontWeight: 'bold',
-    // backgroundColor: theme.customPalette.green.main,
-    background: 'rgba(22, 37, 61, 0.95)',
-    boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
-    backdropFilter: 'blur(4px)',
     borderRadius: '16px',
     flexGrow: 0,
     maxWidth: '100%',
   },
   error: {
+    ...commonStyles,
     color: '#fff',
     fontSize: '1.25rem',
     fontWeight: 'bold',
-    // backgroundColor: theme.customPalette.red.main,
-    background: 'rgba(22, 37, 61, 0.95)',
-    boxShadow: '0px 0px 32px rgba(8, 22, 58, 0.1)',
-    backdropFilter: 'blur(4px)',
     borderRadius: '16px',
     flexGrow: 0,
     maxWidth: '100%',
@@ -59,7 +61,7 @@ const IntegrationNotistack = ({ ...props }) => {
             width="3.5rem"
             height="auto"
             style={{
-              marginRight: '.8rem',
+              marginRight: '.8em',
             }}
           />
         ),
@@ -69,7 +71,7 @@ const IntegrationNotistack = ({ ...props }) => {
             width="3.5rem"
             height="auto"
             style={{
-              marginRight: '.8rem',
+              marginRight: '.8em',
             }}
           />
         ),
@@ -79,7 +81,7 @@ const IntegrationNotistack = ({ ...props }) => {
             width="3.5rem"
             height="auto"
             style={{
-              marginRight: '.8rem',
+              marginRight: '.8em',
             }}
           />
         ),
@@ -89,10 +91,11 @@ const IntegrationNotistack = ({ ...props }) => {
             width="3.5rem"
             height="auto"
             style={{
-              marginRight: '.8rem',
+              marginRight: '.8em',
             }}
           />
         ),
+        loading: <Loader width="3.5rem" color={COLORS.white} />,
       }}
       maxSnack={3}
       autoHideDuration={3000}
