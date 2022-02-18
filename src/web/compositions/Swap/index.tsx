@@ -505,7 +505,11 @@ const SwapPage = ({
                   <SwapAmountInput
                     title="You Receive"
                     maxAmount={maxQuoteAmount}
-                    amount={stripByAmount(outputAmount)}
+                    amount={
+                      outputAmount
+                        ? formatNumberToUSFormat(stripByAmount(outputAmount))
+                        : ''
+                    }
                     disabled
                     roundSides={['bottom-left']}
                     appendComponent={
