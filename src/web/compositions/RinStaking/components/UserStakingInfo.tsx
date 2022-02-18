@@ -46,6 +46,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
 import { restake } from '../../../dexUtils/staking/actions'
+import { getSnapshotQueueWithAMMFees } from '../../../dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
@@ -133,6 +134,27 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       reloadCalcAccounts(),
     ])
   }
+
+  const buyBackAmountWithDecimals =
+    buyBackAmount * 10 ** currentFarmingState.farmingTokenMintDecimals
+
+  const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
+    farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
+    buyBackAmount: buyBackAmountWithDecimals,
+    snapshotQueues: allStakingSnapshotQueues,
+  })
+
+  const estimateRewardsTickets = addFarmingRewardsToTickets({
+    farmingTickets: userFarmingTickets,
+    pools: [stakingPool],
+    snapshotQueues: snapshotQueueWithAMMFees,
+  })
+
+  const estimatedRewards = getAvailableToClaimFarmingTokens(
+    estimateRewardsTickets,
+    calcAccounts,
+    currentFarmingState.farmingTokenMintDecimals
+  )
 
   // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
   // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
@@ -505,7 +527,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
               <BigNumber>
                 <InlineText>
-                  {stripByAmountAndFormat(availableToClaimTotal)}{' '}
+                  {stripByAmountAndFormat(estimatedRewards, 4)}{' '}
                 </InlineText>{' '}
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
@@ -513,7 +535,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText>
                   $
                   {stripByAmountAndFormat(
-                    availableToClaimTotal * tokenPrice || 0
+                    estimatedRewards * tokenPrice || 0,
+                    2
                   )}
                 </InlineText>{' '}
                 <FlexBlock>
