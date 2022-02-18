@@ -36,5 +36,5 @@ export const AppInnerContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 130px); /* header + footer*/
-  flex: 1 0 auto;
+  // flex: 1 0 auto;
 `
