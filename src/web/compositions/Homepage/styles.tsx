@@ -263,7 +263,7 @@ export const StyledLink = styled.a`
 
   &:active {
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-      ${COLORS.bluePrimary};
+      ${COLORS.primaryBlue};
 
     svg path:not(.not-fill) {
       fill: ${COLORS.white};

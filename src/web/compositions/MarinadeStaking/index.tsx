@@ -30,7 +30,6 @@ import {
   useUserTokenAccounts,
 } from '../../dexUtils/token/hooks'
 import { signAndSendSingleTransaction } from '../../dexUtils/transactions'
-import { SignAndSendTransactionResult } from '../../dexUtils/transactions/types'
 import { MSOL_MINT } from '../../dexUtils/utils'
 import { useWallet } from '../../dexUtils/wallet'
 import { toMap } from '../../utils'
@@ -47,59 +46,14 @@ import { Switcher } from './components/Switcher/Switcher'
 import { WellDoneModal } from './components/WellDoneModal'
 import { Container, StyledInlineText } from './styles'
 import { StakingBlockProps } from './types'
+import {
+  notifyAboutStakeTransaction,
+  notifyAboutUnStakeTransaction,
+} from './utils'
 
 const SOL_MINT = TokenInstructions.WRAPPED_SOL_MINT.toString()
 const SOL_GAP_AMOUNT = 0.0127 // to allow transaactions pass
 
-const notifyAboutStakeTransaction = (result: SignAndSendTransactionResult) => {
-  if (result === 'success') {
-    return notify({
-      message: 'Staked succesfully',
-      type: 'success',
-    })
-  }
-  if (result === 'cancelled' || result === 'rejected') {
-    return notify({
-      message: 'Staking cancelled',
-      type: 'warn',
-    })
-  }
-  if (result === 'failed') {
-    return notify({
-      message: 'Staking failed',
-    })
-  }
-  return notify({
-    message: 'Something went wrong',
-    type: 'error',
-  })
-}
-
-const notifyAboutUnStakeTransaction = (
-  result: SignAndSendTransactionResult
-) => {
-  if (result === 'success') {
-    return notify({
-      message: 'Unstaked succesfully',
-      type: 'success',
-    })
-  }
-  if (result === 'cancelled' || result === 'rejected') {
-    return notify({
-      message: 'Untaking cancelled',
-      type: 'warn',
-    })
-  }
-  if (result === 'failed') {
-    return notify({
-      message: 'Unstaking failed',
-    })
-  }
-  return notify({
-    message: 'Something went wrong',
-    type: 'error',
-  })
-}
 const Block: React.FC<StakingBlockProps> = (props) => {
   const {
     getDexTokensPricesQuery: { getDexTokensPrices },
@@ -216,7 +170,9 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                   </DarkTooltip>
                 </Row>
                 <InlineText size="lg" weight={700}>
-                  {stripByAmountAndFormat(mSolInfo?.epochInfo.epochPct || 0, 2)}
+                  {mSolInfo?.epochInfo.epochPct
+                    ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
+                    : '---'}
                   %
                 </InlineText>
               </ContentBlock>
@@ -232,7 +188,10 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                   </DarkTooltip>
                 </Row>
                 <InlineText color="newGreen" size="lg" weight={700}>
-                  {stripByAmount(mSolInfo?.stats.avg_staking_apy || 0, 2)}%
+                  {mSolInfo?.stats.avg_staking_apy
+                    ? stripByAmount(mSolInfo.stats.avg_staking_apy, 2)
+                    : '---'}
+                  {}%
                 </InlineText>
               </ContentBlock>
             </StretchedContent>
@@ -328,10 +287,9 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                   </StyledInlineText>{' '}
                   <InlineText size="es">
                     1 mSOL ⇄{' '}
-                    {stripByAmountAndFormat(
-                      mSolInfo?.stats.m_sol_price || 0,
-                      4
-                    )}{' '}
+                    {mSolInfo?.stats.m_sol_price
+                      ? stripByAmountAndFormat(mSolInfo.stats.m_sol_price, 4)
+                      : '---'}{' '}
                     SOL
                   </InlineText>
                 </RowContainer>

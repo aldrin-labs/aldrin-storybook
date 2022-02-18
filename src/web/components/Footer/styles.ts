@@ -34,4 +34,9 @@ export const FooterButton = styled(Button)`
   padding: 0.5em;
   font-size: ${FONT_SIZES.lg};
   margin: 0 1rem;
+
+  &:hover {
+    background: ${COLORS.primaryBlue};
+    color: ${COLORS.primaryWhite};
+  }
 `

@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES, COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
@@ -47,6 +46,7 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
 import { restake } from '../../../dexUtils/staking/actions'
+import { getSnapshotQueueWithAMMFees } from '../../../dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
@@ -98,6 +98,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     wallet,
     connection,
     walletPublicKey: wallet.publicKey,
+    onlyUserTickets: true,
     // walletPublicKey,
   })
 
@@ -133,6 +134,27 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       reloadCalcAccounts(),
     ])
   }
+
+  const buyBackAmountWithDecimals =
+    buyBackAmount * 10 ** currentFarmingState.farmingTokenMintDecimals
+
+  const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
+    farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
+    buyBackAmount: buyBackAmountWithDecimals,
+    snapshotQueues: allStakingSnapshotQueues,
+  })
+
+  const estimateRewardsTickets = addFarmingRewardsToTickets({
+    farmingTickets: userFarmingTickets,
+    pools: [stakingPool],
+    snapshotQueues: snapshotQueueWithAMMFees,
+  })
+
+  const estimatedRewards = getAvailableToClaimFarmingTokens(
+    estimateRewardsTickets,
+    calcAccounts,
+    currentFarmingState.farmingTokenMintDecimals
+  )
 
   // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
   // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
@@ -326,19 +348,19 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
-  const formattedBuyBackAPR = isFinite(buyBackAPR)
+  const formattedBuyBackAPR = Number.isFinite(buyBackAPR)
     ? stripByAmount(buyBackAPR, 2)
     : '--'
 
   const totalStakedPercentageToCircSupply =
     (totalStakedRIN * 100) / RINCirculatingSupply
 
-  const formattedTreasuryAPR = isFinite(treasuryAPR)
+  const formattedTreasuryAPR = Number.isFinite(treasuryAPR)
     ? stripByAmount(treasuryAPR, 2)
     : '--'
 
   const formattedAPR =
-    isFinite(buyBackAPR) && isFinite(treasuryAPR)
+    Number.isFinite(buyBackAPR) && Number.isFinite(treasuryAPR)
       ? stripByAmount(buyBackAPR + treasuryAPR, 2)
       : '--'
 
@@ -355,6 +377,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const totalStakedValue = isBalancesShowing
     ? rinValue
     : new Array(rinValue.length).fill('∗').join('')
+
+  const stakedInUsd = stripByAmountAndFormat(totalStaked * tokenPrice || 0)
+  const totalStakedUsdValue = isBalancesShowing
+    ? stakedInUsd
+    : new Array(stakedInUsd.length).fill('∗').join('')
   return (
     <>
       <Row>
@@ -471,9 +498,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>
-                  ${stripByAmountAndFormat(totalStaked * tokenPrice || 0)}
-                </InlineText>{' '}
+                <InlineText>${totalStakedUsdValue}</InlineText>{' '}
               </StretchedBlock>
             </BlockContentStretched>
           </Block>
@@ -502,7 +527,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
               <BigNumber>
                 <InlineText>
-                  {stripByAmountAndFormat(availableToClaimTotal)}{' '}
+                  {stripByAmountAndFormat(estimatedRewards, 4)}{' '}
                 </InlineText>{' '}
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
@@ -510,7 +535,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText>
                   $
                   {stripByAmountAndFormat(
-                    availableToClaimTotal * tokenPrice || 0
+                    estimatedRewards * tokenPrice || 0,
+                    2
                   )}
                 </InlineText>{' '}
                 <FlexBlock>

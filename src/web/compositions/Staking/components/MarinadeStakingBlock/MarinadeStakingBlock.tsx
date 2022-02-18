@@ -2,8 +2,10 @@ import React from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { BlockTitle, BlockContent } from '@sb/components/Block'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { useMarinadeStakingInfo } from '@sb/dexUtils/staking/hooks/useMarinadeStakingInfo'
 import { toMap } from '@sb/utils/collection'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -12,8 +14,6 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import InfoIcon from '@icons/info.svg'
 
-import { DarkTooltip } from '../../../../components/TooltipCustom/Tooltip'
-import { useMarinadeStakingInfo } from '../../../../dexUtils/staking/hooks/useMarinadeStakingInfo'
 import {
   ContentBlock,
   StakingBlock,
@@ -22,7 +22,7 @@ import {
   GrayLink,
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
-import Marinade from './marinadeLogo.svg'
+import Marinade from './marinadeLogo.png'
 import { AbsoluteImg, Filler, LogoWrap, RelativeContentBlock } from './styles'
 import { MarinadeStakingProps } from './types'
 
@@ -71,7 +71,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
           </RowContainer>
           <RowContainer justify="space-between">
             <InlineText size="sm" color="primaryGray">
-              to {mSolInfo?.stats.validators_count || 0} Validators{' '}
+              to {mSolInfo?.stats.validators_count || '---'} Validators{' '}
             </InlineText>{' '}
             <InlineText size="sm" weight={700}>
               <InlineText color="primaryGray">$</InlineText>
@@ -116,7 +116,10 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
               </DarkTooltip>
             </Row>
             <InlineText size="rg" weight={700}>
-              {stripByAmountAndFormat(mSolInfo?.epochInfo.epochPct || 0, 2)}%
+              {mSolInfo?.epochInfo.epochPct
+                ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
+                : '---'}
+              %
             </InlineText>
           </RelativeContentBlock>
         </StretchedContent>

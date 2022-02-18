@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { BREAKPOINTS } from '../../../variables/variables'
+
 // put overflow-x hidden since
 // we dont need it to horizontal scrollbar
 // on whole page
@@ -21,11 +23,18 @@ export const AppGridLayout = styled.div`
     height: calc(var(--vh, 1vh) * 100);
     min-height: auto;
   }
+
+  /* Mobile footer */
+  padding-bottom: 70px;
+
+  @media (min-width: ${BREAKPOINTS.md}) {
+    padding-bottom: 0;
+  }
 `
 
 export const AppInnerContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 130px); /* header + footer*/
-  flex: 1 0 auto;
+  // flex: 1 0 auto;
 `
