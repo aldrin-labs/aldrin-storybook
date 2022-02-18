@@ -47,7 +47,7 @@ export const GrayButton = styled.button`
   transition: 0.3s;
 
   &:hover {
-    background: ${COLORS.bluePrimary};
+    background: ${COLORS.primaryBlue};
     transition: 0.3s;
   }
 
@@ -62,7 +62,7 @@ export const GrayButton = styled.button`
 `
 
 export const StakeButton = styled(GrayButton)`
-  background: ${COLORS.bluePrimary};
+  background: ${COLORS.primaryBlue};
 
   &:disabled {
     background-color: ${COLORS.hint};
@@ -94,7 +94,7 @@ export const GrayLink = styled(Link)`
   font-size: 0.9em;
   line-height: 3rem;
   &:hover {
-    background: ${COLORS.bluePrimary};
+    background: ${COLORS.primaryBlue};
     transition: 0.3s;
   }
 

@@ -1,39 +1,20 @@
 import React from 'react'
 
+import SvgIcon from '@sb/components/SvgIcon'
 import { RINProviderURL } from '@sb/dexUtils/utils'
 
+import DashboardIcon from './icons/dashboard.svg'
+import PoolsIcon from './icons/pools.svg'
+import StakingIcon from './icons/staking.svg'
+import SwapIcon from './icons/swaps.svg'
+import TradeIcon from './icons/trade.svg'
 import { StyledLink, StyledA, StyledButton } from './styles'
 
-export const TradeLink = ({ isActive }: { isActive: boolean }) => {
+export const TradeLink = () => {
   return (
-    <StyledLink to="/chart/spot/CCAI_USDC">
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 19 18"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M2.33952 16.3821V17.8337H3.33952V16.3821H4.68475V8.91687H3.33952V0H2.33952V8.91687H0.991455V16.3821H2.33952Z"
-          fill={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M15.6925 16.3821V17.8337H16.6925V16.3821H18.0387V8.91687H16.6925V0H15.6925V8.91687H14.3454V16.3821H15.6925Z"
-          fill={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M9.01501 8.91677V17.8337H10.015V8.91677H11.3622V1.45151H10.015V0H9.01501V1.45151H7.66891V8.91677H9.01501Z"
-          fill={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-      </svg>
-      <span style={{ color: isActive ? '#0E02EC' : '#F5F5FB' }}>Trade</span>
+    <StyledLink to="/chart">
+      <SvgIcon src={TradeIcon} />
+      <span>Trade</span>
     </StyledLink>
   )
 }
@@ -77,46 +58,21 @@ export const AnalyticsLink = ({ isActive }: { isActive: boolean }) => {
   )
 }
 
-export const PoolsLink = ({ isActive }: { isActive: boolean }) => {
+export const PoolsLink = () => {
   return (
     <StyledLink to="/pools">
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 17 17"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M8.5 17C13.1944 17 17 13.1944 17 8.5C17 3.8056 13.1944 0 8.5 0C3.80557 0 0 3.8056 0 8.5C0 13.1944 3.80557 17 8.5 17ZM4.2791 9C4.25987 8.836 4.25 8.66913 4.25 8.5C4.25 6.15277 6.15279 4.25 8.5 4.25C10.8472 4.25 12.75 6.15277 12.75 8.5C12.75 8.66913 12.7401 8.836 12.7209 9H4.2791Z"
-          fill={isActive ? '#0E02EC' : '#F8FAFF'}
-        />
-      </svg>
-      <span style={{ color: isActive ? '#0E02EC' : '#F5F5FB' }}>Pools</span>
+      <SvgIcon src={PoolsIcon} />
+
+      <span>Farms</span>
     </StyledLink>
   )
 }
 
-export const SwapsLink = ({ isActive }: { isActive: boolean }) => {
+export const SwapsLink = () => {
   return (
     <StyledLink to="/swap">
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 18 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M4.53227 0.146447C4.33701 -0.0488155 4.02042 -0.0488155 3.82516 0.146447L0.643181 3.32843C0.447919 3.52369 0.447919 3.84027 0.643181 4.03553C0.838443 4.2308 1.15503 4.2308 1.35029 4.03553L3.67871 1.70711L3.67872 15.5C3.67872 15.7761 3.90257 16 4.17872 16C4.45486 16 4.67872 15.7761 4.67872 15.5L4.67872 1.70711L7.00714 4.03553C7.2024 4.2308 7.51899 4.2308 7.71425 4.03553C7.90951 3.84027 7.90951 3.52369 7.71425 3.32843L4.53227 0.146447ZM13.7826 15.8536C13.9779 16.0488 14.2945 16.0488 14.4897 15.8536L17.6717 12.6716C17.867 12.4763 17.867 12.1597 17.6717 11.9645C17.4764 11.7692 17.1599 11.7692 16.9646 11.9645L14.6362 14.2929L14.6362 0.5C14.6362 0.223858 14.4123 7.45058e-09 14.1362 7.45058e-09C13.86 7.45058e-09 13.6362 0.223858 13.6362 0.5L13.6362 14.2929L11.3077 11.9645C11.1125 11.7692 10.7959 11.7692 10.6006 11.9645C10.4054 12.1597 10.4054 12.4763 10.6006 12.6716L13.7826 15.8536Z"
-          fill={isActive ? '#0E02EC' : '#F8FAFF'}
-        />
-      </svg>
-      <span style={{ color: isActive ? '#0E02EC' : '#F5F5FB' }}>Swap</span>
+      <SvgIcon src={SwapIcon} />
+      <span>Swap</span>
     </StyledLink>
   )
 }
@@ -190,83 +146,20 @@ export const FeedbackBtn = ({
   )
 }
 
-export const DashboardLink = ({ isActive }: { isActive: boolean }) => {
+export const DashboardLink = () => {
   return (
     <StyledLink to="/dashboard">
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 17 17"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M13.3572 11.5357H14.5715V14.5714H13.3572V11.5357Z"
-          fill={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-        <path
-          d="M10.9286 8.5H12.1429V14.5714H10.9286V8.5Z"
-          fill={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-        <path
-          d="M5.4643 14.5714C4.65948 14.5705 3.88789 14.2503 3.31879 13.6812C2.7497 13.1121 2.42955 12.3405 2.42859 11.5357H3.64287C3.64287 11.896 3.7497 12.2481 3.94984 12.5476C4.14998 12.8472 4.43445 13.0806 4.76727 13.2185C5.1001 13.3564 5.46632 13.3924 5.81965 13.3221C6.17297 13.2519 6.49752 13.0784 6.75225 12.8237C7.00698 12.5689 7.18045 12.2444 7.25073 11.8911C7.32101 11.5377 7.28494 11.1715 7.14708 10.8387C7.00922 10.5059 6.77577 10.2214 6.47623 10.0213C6.1767 9.82111 5.82455 9.71429 5.4643 9.71429V8.5C6.26942 8.5 7.04157 8.81983 7.61088 9.38914C8.18018 9.95845 8.50002 10.7306 8.50002 11.5357C8.50002 12.3408 8.18018 13.113 7.61088 13.6823C7.04157 14.2516 6.26942 14.5714 5.4643 14.5714Z"
-          fill={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-        <path
-          d="M15.7857 0H1.21429C0.892336 0.000321468 0.583664 0.128358 0.356011 0.356011C0.128358 0.583664 0.000321468 0.892336 0 1.21429V15.7857C0.000321468 16.1077 0.128358 16.4163 0.356011 16.644C0.583664 16.8716 0.892336 16.9997 1.21429 17H15.7857C16.1076 16.9995 16.4162 16.8714 16.6438 16.6438C16.8714 16.4162 16.9995 16.1076 17 15.7857V1.21429C16.9997 0.892336 16.8716 0.583664 16.644 0.356011C16.4163 0.128358 16.1077 0.000321468 15.7857 0ZM15.7857 5.46429H7.28571V1.21429H15.7857V5.46429ZM6.07143 1.21429V5.46429H1.21429V1.21429H6.07143ZM1.21429 15.7857V6.67857H15.7857L15.7869 15.7857H1.21429Z"
-          fill={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-      </svg>
-
-      <span style={{ color: isActive ? '#0E02EC' : '#F5F5FB' }}>Dashboard</span>
+      <SvgIcon src={DashboardIcon} />
+      <span>Dashboard</span>
     </StyledLink>
   )
 }
 
-export const StakingLink = ({ isActive }: { isActive: boolean }) => {
+export const StakingLink = () => {
   return (
     <StyledLink to="/staking">
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 17 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <rect
-          x="0.5"
-          y="12.5"
-          width="16"
-          height="3"
-          rx="1.5"
-          stroke={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-        <rect
-          x="0.5"
-          y="8.5"
-          width="16"
-          height="3"
-          rx="1.5"
-          stroke={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-        <rect
-          x="0.5"
-          y="4.5"
-          width="16"
-          height="3"
-          rx="1.5"
-          stroke={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-        <rect
-          x="0.5"
-          y="0.5"
-          width="16"
-          height="3"
-          rx="1.5"
-          stroke={isActive ? '#0E02EC' : '#F5F5FB'}
-        />
-      </svg>
-      <span style={{ color: isActive ? '#0E02EC' : '#F5F5FB' }}>Staking</span>
+      <SvgIcon src={StakingIcon} />
+      <span>Staking</span>
     </StyledLink>
   )
 }

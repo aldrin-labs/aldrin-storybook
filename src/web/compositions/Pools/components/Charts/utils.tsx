@@ -166,7 +166,7 @@ const createTotalVolumeLockedChart = ({
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: COLORS.bluePrimary,
+        borderColor: COLORS.primaryBlue,
         backgroundColor: gradient,
         borderWidth: 2,
         pointRadius: 0,

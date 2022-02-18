@@ -1,5 +1,4 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
 
 import AldrinLogo from '@icons/Aldrin.svg'
 
@@ -20,11 +19,6 @@ import {
 import { WalletBlock } from './WalletBlock'
 
 export const Header = () => {
-  const { pathname } = useLocation()
-
-  const isTradingActive =
-    pathname.includes('/chart') || pathname.includes('/swap')
-
   return (
     <Body>
       <WideContent>
