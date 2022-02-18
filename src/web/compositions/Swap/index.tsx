@@ -14,6 +14,7 @@ import {
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import {
@@ -180,6 +181,8 @@ const SwapPage = ({
   const [slippage, setSlippage] = useState<number>(0.3)
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState(false)
 
   const [selectedBaseTokenAddressFromSeveral, setBaseTokenAddressFromSeveral] =
     useState<string>('')
@@ -245,7 +248,6 @@ const SwapPage = ({
     depositAndFee,
     setInputAmount,
     refresh: refreshAmountsWithSwapRoute,
-    reverseTokenAmounts,
   } = useJupiterSwap({
     inputMint: baseTokenMintAddress,
     outputMint: quoteTokenMintAddress,
@@ -528,7 +530,7 @@ const SwapPage = ({
               {!publicKey ? (
                 <BtnCustom
                   theme={theme}
-                  onClick={wallet.connect}
+                  onClick={() => setIsConnectWalletPopupOpen(true)}
                   needMinWidth={false}
                   btnWidth="100%"
                   height="4em"
@@ -770,6 +772,11 @@ const SwapPage = ({
           allTokensData={allTokensData}
           open={isTokensAddressesPopupOpen}
           close={() => openTokensAddressesPopup(false)}
+        />
+
+        <ConnectWalletPopup
+          open={isConnectWalletPopupOpen}
+          onClose={() => setIsConnectWalletPopupOpen(false)}
         />
       </SwapPageContainer>
     </SwapPageLayout>
