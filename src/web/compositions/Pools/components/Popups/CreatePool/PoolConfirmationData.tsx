@@ -1,12 +1,14 @@
-import React, { ReactNode } from 'react'
 import pluralize from 'pluralize'
-import { InlineText } from '@sb/components/Typography'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import ScalesIcon from '@icons/scales.svg'
+import React, { ReactNode } from 'react'
+
 import { SvgIcon } from '@sb/components'
-import Attention from '@icons/attention.svg'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { InlineText } from '@sb/components/Typography'
+
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { CreatePoolFormType } from './types'
+import Attention from '@icons/attention.svg'
+import ScalesIcon from '@icons/scales.svg'
+
 import {
   ConfirmationBlock,
   ConfirmationRow,
@@ -14,6 +16,7 @@ import {
   Warning,
   WarningIcon,
 } from './styles'
+import { CreatePoolFormType } from './types'
 
 interface PoolConfirmationDataProps {
   values: CreatePoolFormType
@@ -94,9 +97,7 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
         <ConfirmationRow>
           <InlineText size="sm">Farming Period:</InlineText>
           <InlineText size="sm" weight={600}>
-            {values.farmingEnabled
-              ? `${pluralize('day', parseInt(farming.farmingPeriod, 10))} `
-              : '-'}
+            {values.farmingEnabled ? `${farming.farmingPeriod} days ` : '-'}
           </InlineText>
         </ConfirmationRow>
         <ConfirmationRow>
