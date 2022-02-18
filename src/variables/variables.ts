@@ -36,7 +36,7 @@ export const COLORS = {
   mainBlack: '#101010',
   primaryGray: '#C1C1C1',
   activeWhite: '#FAFAFA',
-  bluePrimary: '#0E02EC',
+  primaryBlue: '#0E02EC',
   defaultGray: '#1A1A1A',
   newOrange: '#DA6239',
   newGreen: '#269F13',

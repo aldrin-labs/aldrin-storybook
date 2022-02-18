@@ -51,7 +51,7 @@ interface LinkProps extends ShowHideProps {
 export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
   font-size: 0.8em;
-  padding: 8px 0;
+  padding: 4px 0;
   margin: 0px 4px;
   text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
   color: ${COLORS.primaryGray};
@@ -77,7 +77,8 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
     }
   }
 
-  svg {
+  svg,
+  img {
     margin: 0 0.5rem;
   }
 
@@ -255,7 +256,7 @@ export const WalletButton = styled(Button)`
   white-space: nowrap;
   padding: 10px 20px;
   font-size: 0.75em;
-  background-color: ${COLORS.bluePrimary};
+  background-color: ${COLORS.primaryBlue};
   border: none;
   font-weight: 600;
   height: 5rem;

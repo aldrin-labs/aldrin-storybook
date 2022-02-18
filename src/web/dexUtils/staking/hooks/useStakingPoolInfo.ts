@@ -3,10 +3,14 @@ import useSWR from 'swr'
 
 import { getRINCirculationSupply } from '@core/api'
 import { client } from '@core/graphql/apolloClient'
+import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
 import { DAY } from '@core/utils/dateUtils'
 
-import { STAKING_FARMING_TOKEN_DIVIDER } from '../config'
+import {
+  DAYS_TO_CHECK_BUY_BACK,
+  STAKING_FARMING_TOKEN_DIVIDER,
+} from '../config'
 import { getCurrentFarmingStateFromAll } from '../getCurrentFarmingStateFromAll'
 import { StakingPool } from '../types'
 
@@ -20,15 +24,14 @@ export const useStakingPoolInfo = () => {
           query: getStakingPoolInfo,
           fetchPolicy: 'network-only',
         }),
-        // client.query<{ getBuyBackAmountForPeriod: number }>({
-        //   query: getBuyBackAmountForPeriod,
-        //   fetchPolicy: 'network-only',
-        //   variables: {
-        //     timestampFrom: endOfDay - DAY * DAYS_TO_CHECK_BUY_BACK,
-        //     timestampTo: endOfDay,
-        //   },
-        // }),
-        Promise.resolve({ data: { getBuyBackAmountForPeriod: 0 } }),
+        client.query<{ getBuyBackAmountForPeriod: number }>({
+          query: getBuyBackAmountForPeriod,
+          fetchPolicy: 'network-only',
+          variables: {
+            timestampFrom: endOfDay - DAY * DAYS_TO_CHECK_BUY_BACK,
+            timestampTo: endOfDay,
+          },
+        }),
         getRINCirculationSupply(),
       ])
 
@@ -51,5 +54,5 @@ export const useStakingPoolInfo = () => {
       treasuryDailyRewards,
     }
   }
-  return useSWR('staking-pool-full-info', fetcher, { refreshInterval: 60_1000 })
+  return useSWR('staking-pool-full-info', fetcher, { refreshInterval: 60_000 })
 }

@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-globals */
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES, COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
@@ -98,6 +97,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     wallet,
     connection,
     walletPublicKey: wallet.publicKey,
+    onlyUserTickets: true,
     // walletPublicKey,
   })
 
@@ -326,19 +326,19 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
-  const formattedBuyBackAPR = isFinite(buyBackAPR)
+  const formattedBuyBackAPR = Number.isFinite(buyBackAPR)
     ? stripByAmount(buyBackAPR, 2)
     : '--'
 
   const totalStakedPercentageToCircSupply =
     (totalStakedRIN * 100) / RINCirculatingSupply
 
-  const formattedTreasuryAPR = isFinite(treasuryAPR)
+  const formattedTreasuryAPR = Number.isFinite(treasuryAPR)
     ? stripByAmount(treasuryAPR, 2)
     : '--'
 
   const formattedAPR =
-    isFinite(buyBackAPR) && isFinite(treasuryAPR)
+    Number.isFinite(buyBackAPR) && Number.isFinite(treasuryAPR)
       ? stripByAmount(buyBackAPR + treasuryAPR, 2)
       : '--'
 
@@ -355,6 +355,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const totalStakedValue = isBalancesShowing
     ? rinValue
     : new Array(rinValue.length).fill('∗').join('')
+
+  const stakedInUsd = stripByAmountAndFormat(totalStaked * tokenPrice || 0)
+  const totalStakedUsdValue = isBalancesShowing
+    ? stakedInUsd
+    : new Array(stakedInUsd.length).fill('∗').join('')
   return (
     <>
       <Row>
@@ -471,9 +476,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>
-                  ${stripByAmountAndFormat(totalStaked * tokenPrice || 0)}
-                </InlineText>{' '}
+                <InlineText>${totalStakedUsdValue}</InlineText>{' '}
               </StretchedBlock>
             </BlockContentStretched>
           </Block>
