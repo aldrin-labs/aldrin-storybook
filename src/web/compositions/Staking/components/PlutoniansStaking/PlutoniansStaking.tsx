@@ -29,7 +29,7 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
           <ContentBlock width="48%">
             <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText size="md" weight={700}>
-                30 Days
+                60 Days
               </InlineText>{' '}
               <SvgIcon src={Lock} alt="locked" />
             </Row>
@@ -43,7 +43,7 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
           <ContentBlock width="48%">
             <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText size="md" weight={700}>
-                60 Days
+                90 Days
               </InlineText>{' '}
               <SvgIcon src={Lock} alt="locked" />
             </Row>
@@ -59,7 +59,7 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
           <ContentBlock width="48%">
             <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText size="md" weight={700}>
-                90 Days
+                120 Days
               </InlineText>{' '}
               <SvgIcon src={Lock} alt="locked" />
             </Row>
@@ -73,7 +73,7 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
           <ContentBlock width="48%">
             <Row justify="space-between" margin="0 0 2rem 0">
               <InlineText size="md" weight={700}>
-                120 Days
+                150 Days
               </InlineText>{' '}
               <SvgIcon src={Lock} alt="locked" />
             </Row>
