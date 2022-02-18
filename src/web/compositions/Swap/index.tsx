@@ -579,8 +579,6 @@ const SwapPage = ({
                     try {
                       const result = await execute({ wallet })
 
-                      console.log('result', result)
-
                       if (result.error) {
                         notify({
                           type: 'error',
