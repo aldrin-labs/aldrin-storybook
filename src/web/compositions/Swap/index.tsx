@@ -254,12 +254,13 @@ const SwapPage = ({
     slippage,
   })
 
-  const { outAmountWithSlippage, priceImpactPct } = swapRoute || {
-    inAmount: 0,
-    outAmount: 0,
-    outAmountWithSlippage: 0,
-    priceImpactPct: 0,
-  }
+  const { inAmount, outAmount, outAmountWithSlippage, priceImpactPct } =
+    swapRoute || {
+      inAmount: 0,
+      outAmount: 0,
+      outAmountWithSlippage: 0,
+      priceImpactPct: 0,
+    }
 
   const outAmountWithSlippageWithoutDecimals = removeDecimals(
     outAmountWithSlippage,
@@ -318,8 +319,8 @@ const SwapPage = ({
 
   const estimatedPrice = stripByAmount(
     getEstimatedPrice({
-      inputAmount: +inputAmount,
-      outputAmount: +outputAmount,
+      inputAmount: removeDecimals(inAmount, baseTokenDecimals),
+      outputAmount: removeDecimals(outAmount, quoteTokenDecimals),
       inputPrice: basePrice,
       outputPrice: quotePrice,
       field: priceShowField,
