@@ -12,8 +12,9 @@ import {
 } from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
 import { MainContainer } from '@sb/compositions/Chart/Chart.styles'
-
 import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
+import { getDecimalCount } from '@sb/dexUtils/utils'
+
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { tokensToDelist } from '@core/config/dex'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
@@ -32,7 +33,6 @@ import { checkLoginStatus } from '@core/utils/loginUtils'
 // import Joyride from 'react-joyride'
 // import { Grid, Hidden } from '@material-ui/core'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
-import { getDecimalCount } from '@sb/dexUtils/utils'
 
 import MarketBlock from './components/MarketBlock/MarketBlock'
 import { WarningPopup } from './components/WarningPopup'
