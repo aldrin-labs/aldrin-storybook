@@ -178,14 +178,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     availableToClaimTickets
   )
 
-  console.log(
-    'userFarmingTickets: ',
-    availableToClaimOnTickets,
-    userFarmingTickets,
-    calcAccounts?.map((ca) => ca.tokenAmount.toString()),
-    availableToClaim
-  )
-
   const snapshotsProcessing = availableToClaimOnTickets !== 0
 
   // availableToClaimTotal = avail. to claim on clalcs only, if all snapshots processed
