@@ -361,7 +361,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     : '--'
 
   const formattedAPR =
-    Number.isFinite(buyBackAPR) && Number.isFinite(treasuryAPR)
+    Number.isFinite(buyBackAPR) &&
+    buyBackAPR > 0 &&
+    Number.isFinite(treasuryAPR)
       ? stripByAmount(buyBackAPR + treasuryAPR, 2)
       : '--'
 
