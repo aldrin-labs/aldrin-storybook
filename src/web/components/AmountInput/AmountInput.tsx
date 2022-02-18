@@ -6,7 +6,6 @@ import { getTokenNameByMintAddress } from '../../dexUtils/markets'
 import { useTokenInfos } from '../../dexUtils/tokenRegistry'
 import { Button } from '../Button'
 import { INPUT_FORMATTERS } from '../Input'
-import { FlexBlock } from '../Layout'
 import { InlineText } from '../Typography'
 import {
   AmountInputElement,
@@ -14,6 +13,7 @@ import {
   ButtonsWithAmount,
   TokenNameWrap,
   MaxValue,
+  ButtonsBlock,
 } from './styles'
 import { AmountInputProps } from './types'
 
@@ -60,11 +60,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
       label={label}
       disabled={disabled}
       append={
-        <FlexBlock
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
+        <ButtonsBlock>
           <TokenNameWrap>{tokenName}</TokenNameWrap>
           <ButtonsWithAmount>
             <MaxValue color="success" weight={600}>
@@ -107,7 +103,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
               </ButtonsContainer>
             )}
           </ButtonsWithAmount>
-        </FlexBlock>
+        </ButtonsBlock>
       }
       formatter={INPUT_FORMATTERS.DECIMAL}
     />
