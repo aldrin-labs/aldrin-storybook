@@ -1,6 +1,11 @@
 import { Idl, Program, Provider } from '@project-serum/anchor'
 import { Connection, PublicKey } from '@solana/web3.js'
 import {
+  Program as Program020,
+  Provider as Provider020,
+  Idl as Idl020,
+} from 'acnhor020'
+import {
   Program as Program03,
   Provider as Provider03,
   Idl as Idl03,
@@ -9,6 +14,7 @@ import {
 import MarketOrderProgramIdl from '@core/idls/marketOrder.json'
 import PoolsProgramIdl from '@core/idls/pools.json'
 import PoolsV2ProgramIdl from '@core/idls/poolsV2.json'
+import SrinStakingProgramIdl from '@core/idls/srin.json'
 import StakingProgramIdl from '@core/idls/staking.json'
 import VestingProgramIdl from '@core/idls/vesting.json'
 
@@ -20,6 +26,7 @@ import {
   STAKING_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
   VESTING_PROGRAM_ADDRESS,
+  PLUTONIANS_STAKING_ADDRESS,
   defaultOptions,
 } from './utils'
 
@@ -29,6 +36,7 @@ const IDLS = {
   [MARKET_ORDER_PROGRAM_ADDRESS]: MarketOrderProgramIdl as Idl,
   [STAKING_PROGRAM_ADDRESS]: StakingProgramIdl as Idl,
   [VESTING_PROGRAM_ADDRESS]: VestingProgramIdl as Idl03,
+  [PLUTONIANS_STAKING_ADDRESS]: SrinStakingProgramIdl as Idl020,
 }
 
 class ProgramsMultiton {
@@ -68,32 +76,42 @@ class ProgramsMultiton {
     }
     const programId = new PublicKey(programAddress)
 
-    const poolsProgram =
-      programAddress === VESTING_PROGRAM_ADDRESS
-        ? (new Program03(
-            programIdl as Idl03,
-            new PublicKey(VESTING_PROGRAM_ADDRESS),
-            new Provider03(
-              connection,
-              // walletAdapterToWallet(wallet),
-              wallet, // TODO: resolve more gently?
-              defaultOptions()
-            )
-          ) as any as Program) // TODO
-        : new Program(
-            programIdl,
-            programId,
-            new Provider(
-              connection,
-              // walletAdapterToWallet(wallet),
-              wallet, // TODO: resolve more gently?
-              defaultOptions()
-            )
-          )
+    if (programAddress === VESTING_PROGRAM_ADDRESS) {
+      this.cache[cacheKey] = new Program03(
+        programIdl as Idl03,
+        new PublicKey(VESTING_PROGRAM_ADDRESS),
+        new Provider03(
+          connection,
+          // walletAdapterToWallet(wallet),
+          wallet, // TODO: resolve more gently?
+          defaultOptions()
+        )
+      ) as any as Program
+    } else if (programAddress === PLUTONIANS_STAKING_ADDRESS) {
+      this.cache[cacheKey] = new Program020(
+        programIdl as Idl020,
+        new PublicKey(PLUTONIANS_STAKING_ADDRESS),
+        new Provider020(
+          connection,
+          // walletAdapterToWallet(wallet),
+          wallet, // TODO: resolve more gently?
+          defaultOptions()
+        )
+      ) as any as Program
+    } else {
+      this.cache[cacheKey] = new Program(
+        programIdl as Idl,
+        programId,
+        new Provider(
+          connection,
+          // walletAdapterToWallet(wallet),
+          wallet, // TODO: resolve more gently?
+          defaultOptions()
+        )
+      )
+    }
 
-    this.cache[cacheKey] = poolsProgram
-
-    return poolsProgram
+    return this.cache[cacheKey]
   }
 }
 
