@@ -11,6 +11,7 @@ import { InlineText } from '@sb/components/Typography'
 
 import InfoIcon from '@icons/info.svg'
 
+import { usePlutoniansStakingTiers } from '../../dexUtils/staking/hooks'
 import { BlockWithRadio } from '../MarinadeStaking/components/styles'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
@@ -27,6 +28,8 @@ export const PlutoniansStaking = () => {
   const [isStaked, setIsStaked] = useState(false)
   const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(false)
 
+  const { data } = usePlutoniansStakingTiers()
+  console.log('data: ', data)
   return (
     <Page>
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
