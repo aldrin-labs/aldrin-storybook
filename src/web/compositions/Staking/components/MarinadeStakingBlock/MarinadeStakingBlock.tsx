@@ -33,7 +33,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
     getDexTokensPricesQuery: { getDexTokensPrices: prices },
   } = props
 
-  const pricesMap = toMap(prices, (p) => p.symbol)
+  const pricesMap = toMap(prices || [], (p) => p.symbol)
 
   const solPrice = pricesMap.get('SOL') || { price: 0 }
 
