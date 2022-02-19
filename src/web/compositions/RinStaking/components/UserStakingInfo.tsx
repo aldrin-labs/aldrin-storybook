@@ -18,7 +18,7 @@ import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
+import { BUY_BACK_RIN_ACCOUNT_ADDRESS, DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
@@ -135,8 +135,13 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ])
   }
 
+
+  const [buyBackAmountOnAccount] = useAccountBalance({
+    publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
+  })
+
   const buyBackAmountWithDecimals =
-    buyBackAmount * 10 ** currentFarmingState.farmingTokenMintDecimals
+  buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
 
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
     farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
