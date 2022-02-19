@@ -159,7 +159,7 @@ const AppRaw = ({
                         {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )} */}
-                        <Footer />
+                        {!isChartPage && <Footer />}
                         <MobileFooter />
                         {/*
                     <Footer

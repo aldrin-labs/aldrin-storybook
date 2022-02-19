@@ -38,7 +38,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
     poolInfo?.currentFarmingState.farmingTokenMint
   )
   const rinPrice =
-    getDexTokensPrices.find((v) => v.symbol === tokenName)?.price || 0
+    getDexTokensPrices?.find((v) => v.symbol === tokenName)?.price || 0
 
   const [totalStakedRIN] = useAccountBalance({
     publicKey: poolInfo

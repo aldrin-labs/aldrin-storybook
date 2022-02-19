@@ -62,6 +62,8 @@ export const Append = styled.span<AppendProps>`
   padding: 0 1.5em 0 0;
   color: ${COLORS.hint};
   font-size: 1em;
+  display: flex;
+  flex: 1;
 `
 
 export const Label = styled.div`

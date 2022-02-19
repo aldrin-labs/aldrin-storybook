@@ -35,6 +35,7 @@ export const MarketStatsContainer = styled.div`
   justify-content: space-between;
   height: 6rem;
   padding: 0 3rem;
+  border-top: ${(props) => props.theme.palette.border.new};
   border-bottom: ${(props) => props.theme.palette.border.new};
   background: ${COLORS.mainBlack};
 

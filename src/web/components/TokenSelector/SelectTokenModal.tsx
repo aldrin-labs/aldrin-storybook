@@ -1,13 +1,16 @@
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import Loop from '@icons/loop.svg'
-import SvgIcon from '@sb/components/SvgIcon'
 import React, { useState } from 'react'
+
+import SvgIcon from '@sb/components/SvgIcon'
+
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
+import Loop from '@icons/loop.svg'
+
 import { getTokenNameByMintAddress } from '../../dexUtils/markets'
 import { BlockContent } from '../Block'
 import { Modal } from '../Modal'
 import { TokenIconWithName } from '../TokenIcon'
-import { Balance, SearchInput, TokenModalRow } from './styles'
-
+import { Balance, SearchInput, TokenModalRow, IconContainer } from './styles'
 
 export interface Token {
   mint: string
@@ -34,12 +37,16 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
       <BlockContent>
         <SearchInput
           name="token_search"
-          append={<SvgIcon src={Loop} height={'1.6rem'} width={'1.6rem'} />}
+          append={
+            <IconContainer>
+              <SvgIcon src={Loop} height="1.6rem" width="1.6rem" />
+            </IconContainer>
+          }
           value={search}
           onChange={setSearch}
           placeholder="Search"
         />
-        {tokensWithName.map((t, idx) =>
+        {tokensWithName.map((t, idx) => (
           <TokenModalRow
             key={`token_selector_${t.mint}_${t.account || idx}`}
             onClick={() => {
@@ -48,17 +55,12 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
             }}
           >
             <TokenIconWithName mint={t.mint} />
-            {
-              t.balance !== undefined &&
+            {t.balance !== undefined && (
               <Balance>{stripByAmountAndFormat(t.balance)}</Balance>
-            }
+            )}
           </TokenModalRow>
-        )}
-        {tokensWithName.length === 0 &&
-          <TokenModalRow>
-            No data
-         </TokenModalRow>
-        }
+        ))}
+        {tokensWithName.length === 0 && <TokenModalRow>No data</TokenModalRow>}
       </BlockContent>
     </Modal>
   )
