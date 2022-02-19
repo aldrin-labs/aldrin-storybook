@@ -11,17 +11,17 @@ import { InlineText } from '@sb/components/Typography'
 
 import InfoIcon from '@icons/info.svg'
 
-import { BlockWithRadio } from '../MarinadeStaking/components/styles'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
 import Lock from '../Staking/components/PlutoniansStaking/lock.svg'
-import { ContentBlock, StakingBlock } from '../Staking/styles'
+import { ContentBlock } from '../Staking/styles'
 import Centuria from './assets/Centuria.png'
 import Colossus from './assets/Colossus.png'
 import Leviathan from './assets/Leviathan.png'
 import Plutonians from './assets/plutoniansMock.png'
 import Venator from './assets/Venator.png'
 import { RewardsComponent } from './components/RewardsComponent/RewardsComponent'
+import { AdaptiveStakingBlock, ModeContainer, StakingContainer } from './styles'
 
 export const PlutoniansStaking = () => {
   const [isStaked, setIsStaked] = useState(false)
@@ -31,12 +31,11 @@ export const PlutoniansStaking = () => {
     <Page>
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
         <FlexBlock alignItems="center" direction="column">
-          <StretchedBlock width="hf">
-            <BlockWithRadio
+          <StakingContainer>
+            <ModeContainer
               checked
               height="25rem"
               backgroundColor={COLORS.cardsBack}
-              margin="0 1rem"
             >
               <FlexBlock direction="column">
                 <StretchedBlock style={{ margin: '0 0 2rem 0' }} align="center">
@@ -58,13 +57,18 @@ export const PlutoniansStaking = () => {
               >
                 Aldrin Skin + 2 components
               </InlineText>
-              <img src={Venator} alt="aldrin skin" width="100%" height="auto" />
-            </BlockWithRadio>
-            <BlockWithRadio
+              <img
+                className="aldrinSkin"
+                src={Venator}
+                alt="aldrin skin"
+                width="100%"
+                height="auto"
+              />
+            </ModeContainer>
+            <ModeContainer
               checked={false}
               height="25rem"
               backgroundColor={COLORS.cardsBack}
-              margin="0 1rem"
             >
               <FlexBlock direction="column">
                 <StretchedBlock style={{ margin: '0 0 2rem 0' }} align="center">
@@ -87,17 +91,17 @@ export const PlutoniansStaking = () => {
                 Aldrin Skin + 4 components
               </InlineText>
               <img
+                className="aldrinSkin"
                 src={Centuria}
                 alt="aldrin skin"
                 width="100%"
                 height="auto"
               />
-            </BlockWithRadio>
-            <BlockWithRadio
+            </ModeContainer>
+            <ModeContainer
               checked={false}
               height="25rem"
               backgroundColor={COLORS.cardsBack}
-              margin="0 1rem"
             >
               <FlexBlock direction="column">
                 <StretchedBlock style={{ margin: '0 0 2rem 0' }} align="center">
@@ -120,17 +124,17 @@ export const PlutoniansStaking = () => {
                 Venator + Aldrin Skin + 4 components{' '}
               </InlineText>
               <img
+                className="aldrinSkin"
                 src={Colossus}
                 alt="aldrin skin"
                 width="100%"
                 height="auto"
               />
-            </BlockWithRadio>
-            <BlockWithRadio
+            </ModeContainer>
+            <ModeContainer
               checked={false}
               height="25rem"
               backgroundColor={COLORS.cardsBack}
-              margin="0 1rem"
             >
               <FlexBlock direction="column">
                 <StretchedBlock style={{ margin: '0 0 2rem 0' }} align="center">
@@ -153,16 +157,17 @@ export const PlutoniansStaking = () => {
                 Star Hunter + Aldrin Skin + 4 components + 1 exotic component{' '}
               </InlineText>
               <img
+                className="aldrinSkin"
                 src={Leviathan}
                 alt="aldrin skin"
                 width="100%"
                 height="auto"
               />
-            </BlockWithRadio>
-          </StretchedBlock>
-          <StretchedBlock width="hf" style={{ margin: '1em 0 0 0' }}>
-            <StakingBlock style={{ width: '100%' }}>
-              <FlexBlock direction="column" style={{ padding: '2rem' }}>
+            </ModeContainer>
+          </StakingContainer>
+          <StakingContainer style={{ margin: '1em 0 0 0' }}>
+            <AdaptiveStakingBlock style={{ width: '100%' }}>
+              <FlexBlock direction="column" style={{ padding: '1em' }}>
                 {isStaked ? (
                   <ProgressBar width={isRewardsUnlocked ? '100%' : '50%'}>
                     {isRewardsUnlocked ? (
@@ -229,7 +234,7 @@ export const PlutoniansStaking = () => {
                     >
                       <StretchedBlock width="xl">
                         <InlineText color="primaryGray" size="sm">
-                          APY
+                          NFT
                         </InlineText>{' '}
                         <SvgIcon src={InfoIcon} width="12px" height="12px" />
                       </StretchedBlock>
@@ -318,8 +323,8 @@ export const PlutoniansStaking = () => {
                     : 'Stake'}
                 </Button>
               </FlexBlock>
-            </StakingBlock>
-          </StretchedBlock>
+            </AdaptiveStakingBlock>
+          </StakingContainer>
         </FlexBlock>
       </div>
     </Page>

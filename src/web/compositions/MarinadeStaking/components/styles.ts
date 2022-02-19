@@ -1,12 +1,12 @@
 import { COLORS, FONT_SIZES } from '@variables/variables'
 import styled from 'styled-components'
 
-interface StyledSwitcher {
+type StyledSwitcher = {
   isActive?: boolean
   radius?: string
 }
 
-interface RadioContainer {
+export interface RadioContainer {
   checked: boolean
   width?: string
   margin?: string
