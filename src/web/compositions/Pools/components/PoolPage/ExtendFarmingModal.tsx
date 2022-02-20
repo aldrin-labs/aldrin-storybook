@@ -84,10 +84,14 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           farmingTokenMint: new PublicKey(values.farming.token.mint),
           farmingTokenAccount: new PublicKey(values.farming.token.account),
           tokenAmount: new BN(
-            parseFloat(values.farming.tokenAmount) * tokensMultiplier
+            (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(
+              0
+            )
           ),
           periodLength: new BN(HOUR),
-          tokensPerPeriod: new BN(tokensPerPeriod * tokensMultiplier),
+          tokensPerPeriod: new BN(
+            (tokensPerPeriod * tokensMultiplier).toFixed(0)
+          ),
           noWithdrawPeriodSeconds: new BN(0),
           vestingPeriodSeconds:
             values.farming.vestingEnabled && values.farming.vestingPeriod
@@ -105,6 +109,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
 
         setFarmingTransactionStatus(result === 'success' ? 'success' : 'error')
       } catch (e) {
+        console.warn('Unable to create farming: ', e)
         setFarmingTransactionStatus('error')
       }
     },
