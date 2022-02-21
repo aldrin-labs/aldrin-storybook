@@ -802,7 +802,7 @@ const SwapPage = ({
 export default compose(
   withTheme(),
   withPublicKey,
-  withRegionCheck,
+  // withRegionCheck,
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
