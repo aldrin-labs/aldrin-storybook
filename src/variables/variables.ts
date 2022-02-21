@@ -77,6 +77,7 @@ export const FONT_SIZES = {
 }
 
 export const BREAKPOINTS = {
+  xs: '480px',
   sm: '540px',
   md: '768px',
   lg: '1024px',
