@@ -1,4 +1,4 @@
-import { COLORS, BORDER_RADIUS } from '@variables/variables'
+import { COLORS, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -22,4 +22,12 @@ export const DropdownIconContainer = styled(Row)`
   height: 2rem;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.35);
+`
+
+export const AmountInputContainer = styled(Row)`
+  width: 40%;
+
+  @media (min-width: ${BREAKPOINTS.xs}) {
+    width: 50%;
+  }
 `
