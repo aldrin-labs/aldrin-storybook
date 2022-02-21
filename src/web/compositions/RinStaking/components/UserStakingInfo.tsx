@@ -521,7 +521,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       Staking rewards are paid on the 27th of the every month
                       based on RIN weekly buybacks on 1/6 of AMM fees. Estimated
                       rewards are updated hourly on threasury rewards and weekly
-                      based on RIN buyback,
+                      based on RIN buyback.
                     </p>
                   }
                 >
