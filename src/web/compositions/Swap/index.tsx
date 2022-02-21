@@ -5,7 +5,7 @@ import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
-import { Loading } from '@sb/components'
+import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Button } from '@sb/components/Button'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -560,7 +560,7 @@ const SwapPage = ({
             )}
             <RowContainer>
               {!publicKey ? (
-                <DarkTooltip
+                <TooltipRegionBlocker
                   title={`
                   Sorry, Aldrin.com doesn't offer its services in your region.
                   If you think your access is restricted by mistake or have another
@@ -603,7 +603,7 @@ const SwapPage = ({
                           : `Connect wallet`)}
                     </BtnCustom>
                   </span>
-                </DarkTooltip>
+                </TooltipRegionBlocker>
               ) : (
                 <SwapButton
                   disabled={isButtonDisabled}
