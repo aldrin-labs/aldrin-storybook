@@ -1,48 +1,48 @@
+import { Theme } from '@material-ui/core'
 import React from 'react'
 
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Text } from '@sb/compositions/Addressbook/index'
-import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 import {
   TokenAllocationProgressBar,
   TokenAllocationProgressBarContainer,
 } from '@sb/components/AllocationBlock/Legend/index.styles'
-import { Theme } from '@material-ui/core'
+import { Text } from '@sb/compositions/Addressbook/index'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 
 const BalanceDistributedComponent = ({
   theme,
   leftToDistributeValue = 0,
   totalTokensValue,
 }: {
-  theme: Theme,
-  leftToDistributeValue: number,
-  totalTokensValue: number,
+  theme: Theme
+  leftToDistributeValue: number
+  totalTokensValue: number
 }) => {
   // This condition handling case when loading the data from backend
-  const distributedPercentage = totalTokensValue === 0 ? 100 : (
-    100 -
-    (leftToDistributeValue * 100) / totalTokensValue
-  ).toFixed(2)
+  const distributedPercentage =
+    totalTokensValue === 0
+      ? 100
+      : (100 - (leftToDistributeValue * 100) / totalTokensValue).toFixed(2)
 
   return (
     <BlockTemplate
-      direction={'column'}
-      width={'100%'}
-      height={'100%'}
+      direction="column"
+      width="100%"
+      height="100%"
       theme={theme}
-      justify={'space-around'}
+      justify="space-around"
     >
-      <RowContainer align={'flex-end'} style={{ flexWrap: 'nowrap' }}>
-        <Text color={'#93A0B2'}>Balance Distributed:</Text>&nbsp; &nbsp;
-        <Text fontSize={'1.7rem'} fontFamily={'Avenir Next Bold'}>
+      <RowContainer align="flex-end" style={{ flexWrap: 'nowrap' }}>
+        <Text color="#93A0B2">Balance Distributed:</Text>&nbsp; &nbsp;
+        <Text fontSize="1.7rem" fontFamily="Avenir Next Bold">
           {distributedPercentage}%
         </Text>
       </RowContainer>{' '}
-      <TokenAllocationProgressBarContainer width={'80%'} justify={'flex-start'}>
+      <TokenAllocationProgressBarContainer width="80%" justify="flex-start">
         {' '}
         <TokenAllocationProgressBar
-          color={'#269F13'}
-          height={'2.2rem'}
+          color="#53DF11"
+          height="2.2rem"
           width={`${distributedPercentage}%`}
           variant="determinate"
           value={0}
