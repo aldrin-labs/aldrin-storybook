@@ -353,9 +353,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
-  const formattedBuyBackAPR = Number.isFinite(buyBackAPR)
-    ? stripByAmount(buyBackAPR, 2)
-    : '--'
+  const formattedBuyBackAPR =
+    Number.isFinite(buyBackAPR) && buyBackAPR > 0
+      ? stripByAmount(buyBackAPR, 2)
+      : '--'
 
   const totalStakedPercentageToCircSupply =
     (totalStakedRIN * 100) / RINCirculatingSupply
@@ -365,7 +366,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     : '--'
 
   const formattedAPR =
-    Number.isFinite(buyBackAPR) && Number.isFinite(treasuryAPR)
+    Number.isFinite(buyBackAPR) &&
+    buyBackAPR > 0 &&
+    Number.isFinite(treasuryAPR)
       ? stripByAmount(buyBackAPR + treasuryAPR, 2)
       : '--'
 
