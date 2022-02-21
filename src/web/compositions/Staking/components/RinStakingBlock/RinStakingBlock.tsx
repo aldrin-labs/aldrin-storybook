@@ -83,7 +83,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
             <InlineText color="primaryGray" size="sm">
               Total Staked
             </InlineText>
-            <InlineText size="rg" weight={700}>
+            <InlineText size="xmd" weight={700}>
               {totalStakedRIN
                 ? stripByAmountAndFormat(totalStakedRIN, 2)
                 : ' ---'}
@@ -113,7 +113,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
                 RIN Price
               </InlineText>{' '}
             </Row>
-            <InlineText size="rg" weight={700}>
+            <InlineText size="xmd" weight={700}>
               <InlineText color="primaryGray" weight={700}>
                 $
               </InlineText>
@@ -126,7 +126,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
                 Circulating Supply
               </InlineText>{' '}
             </Row>
-            <InlineText size="rg" weight={700}>
+            <InlineText size="xmd" weight={700}>
               {poolInfo
                 ? stripByAmountAndFormat(poolInfo.rinCirculationSupply, 2)
                 : ' ---'}
@@ -138,7 +138,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
                 Marketcap
               </InlineText>{' '}
             </Row>
-            <InlineText size="rg" weight={700}>
+            <InlineText size="xmd" weight={700}>
               <InlineText color="primaryGray" weight={700}>
                 $
               </InlineText>

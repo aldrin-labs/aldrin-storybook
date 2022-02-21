@@ -26,7 +26,8 @@ export const PopupBody = styled(Body)`
 `
 
 export const Page = styled(Body)`
-  background: ${COLORS.mainBlack};
+  background: ${(props: { $background?: keyof typeof COLORS }) =>
+    COLORS[props.$background || 'mainBlack']};
   flex: 1;
 `
 

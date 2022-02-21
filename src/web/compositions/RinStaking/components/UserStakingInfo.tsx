@@ -353,9 +353,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
-  const formattedBuyBackAPR = Number.isFinite(buyBackAPR)
-    ? stripByAmount(buyBackAPR, 2)
-    : '--'
+  const formattedBuyBackAPR =
+    Number.isFinite(buyBackAPR) && buyBackAPR > 0
+      ? stripByAmount(buyBackAPR, 2)
+      : '--'
 
   const totalStakedPercentageToCircSupply =
     (totalStakedRIN * 100) / RINCirculatingSupply
@@ -365,7 +366,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     : '--'
 
   const formattedAPR =
-    Number.isFinite(buyBackAPR) && Number.isFinite(treasuryAPR)
+    Number.isFinite(buyBackAPR) &&
+    buyBackAPR > 0 &&
+    Number.isFinite(treasuryAPR)
       ? stripByAmount(buyBackAPR + treasuryAPR, 2)
       : '--'
 
@@ -521,7 +524,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       Staking rewards are paid on the 27th of the every month
                       based on RIN weekly buybacks on 1/6 of AMM fees. Estimated
                       rewards are updated hourly on threasury rewards and weekly
-                      based on RIN buyback,
+                      based on RIN buyback.
                     </p>
                   }
                 >
