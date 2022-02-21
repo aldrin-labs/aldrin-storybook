@@ -79,6 +79,7 @@ export const Input: React.FC<InputProps> = (props) => {
           name={name}
           disabled={disabled}
           ref={input}
+          autoComplete="off"
         />
       </div>
 

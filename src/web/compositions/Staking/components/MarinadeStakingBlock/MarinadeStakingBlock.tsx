@@ -59,7 +59,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             <InlineText color="primaryGray" size="sm">
               Total Staked
             </InlineText>
-            <InlineText size="rg" weight={700}>
+            <InlineText size="xmd" weight={700}>
               {totalStakedSol
                 ? stripByAmountAndFormat(totalStakedSol, 2)
                 : ' ---'}
@@ -94,7 +94,11 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
                 </span>
               </DarkTooltip>
             </Row>
-            <InlineText size="rg" weight={700} style={{ whiteSpace: 'nowrap' }}>
+            <InlineText
+              size="xmd"
+              weight={700}
+              style={{ whiteSpace: 'nowrap' }}
+            >
               {mSolInfo?.stats.m_sol_price
                 ? stripByAmountAndFormat(mSolInfo.stats.m_sol_price, 3)
                 : ' ---'}{' '}
@@ -115,7 +119,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
                 </span>
               </DarkTooltip>
             </Row>
-            <InlineText size="rg" weight={700}>
+            <InlineText size="xmd" weight={700}>
               {mSolInfo?.epochInfo.epochPct
                 ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
                 : '---'}

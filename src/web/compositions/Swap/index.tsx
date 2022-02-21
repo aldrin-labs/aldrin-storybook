@@ -1,12 +1,12 @@
 import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
-import { PublicKey } from '@solana/web3.js'
-import BN from 'bn.js'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Loader } from '@sb/components/Loader/Loader'
+import { Button } from '@sb/components/Button'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
@@ -14,21 +14,15 @@ import {
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import {
-  ReloadTimer,
-  TimerButton,
-} from '@sb/compositions/Rebalance/components/ReloadTimer'
-import { useConnection } from '@sb/dexUtils/connection'
-import {
+  ALL_TOKENS_MINTS,
   getTokenMintAddressByName,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { swap } from '@sb/dexUtils/pools/actions/swap'
-import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
-import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
-import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 import {
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
@@ -37,84 +31,88 @@ import {
 } from '@sb/dexUtils/pools/swap/index'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import {
+  getNumberOfDecimalsFromNumber,
+  getNumberOfIntegersFromNumber,
+  stripByAmount,
+} from '@core/utils/chartPageUtils'
+import { numberWithOneDotRegexp, removeDecimals } from '@core/utils/helpers'
+import {
+  stripDigitPlaces,
+  formatNumberToUSFormat,
+} from '@core/utils/PortfolioTableUtils'
 
-import Gear from '@icons/gear.svg'
-import Inform from '@icons/inform.svg'
-import ScalesIcon from '@icons/scales.svg'
+import ArrowRightIcon from '@icons/arrowRight.svg'
+import ReverseArrows from '@icons/reverseArrows.svg'
 import Arrows from '@icons/switchArrows.svg'
 
+import { useJupiterSwap } from '../../../../../core/src/hooks/useJupiter/useJupiterSwap'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { TableModeButton } from '../Pools/components/Tables/TablesSwitcher/styles'
-import { BlockTemplate } from '../Pools/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
-import { Cards } from './components/Cards/Cards'
-import { InputWithSelectorForSwaps } from './components/Inputs/index'
-import { SelectCoinPopup } from './components/SelectCoinPopup'
-import { Selector } from './components/Selector/Selector'
+import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
+import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
+import { SwapSearch } from './components/SwapSearch'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
-import { TransactionSettingsPopup } from './components/TransactionSettingsPopup'
-import { getLiquidityProviderFee } from './config'
-
-// TODO: imports
-import { Card, SwapPageContainer } from './styles'
+import { SLIPPAGE_STEP } from './config'
+import {
+  SwapPageContainer,
+  ValueButton,
+  ValueInput,
+  BlackRow,
+  RowTitle,
+  RowValue,
+  RowAmountValue,
+  SwapButton,
+  ReverseTokensContainer,
+  SwapContentContainer,
+  SwapBlockTemplate,
+  SwapPageLayout,
+  CircleIconContainer,
+} from './styles'
+import {
+  getEstimatedPrice,
+  getFeeFromSwapRoute,
+  getRouteMintsPath,
+  getSwapButtonText,
+} from './utils'
 
 const SwapPage = ({
   theme,
   publicKey,
   getPoolsInfoQuery,
+  getDexTokensPricesQuery,
 }: {
   theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const { wallet } = useWallet()
-  const connection = useConnection()
+  const tokenInfos = useTokenInfos()
+
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
-  const tokensMap = useTokenInfos()
 
   const allPools = getPoolsInfoQuery.getPoolsInfo
   const nativeSOLTokenData = allTokensData[0]
 
+  const { getDexTokensPrices = [] } = getDexTokensPricesQuery || {
+    getDexTokensPrices: [],
+  }
+
+  const dexTokensPricesMap = getDexTokensPrices.reduce(
+    (acc, el) => acc.set(el.symbol, el.price),
+    new Map()
+  )
+
   const [isStableSwapTabActive, setIsStableSwapTabActive] =
     useState<boolean>(false)
-
-  useEffect(() => {
-    const updatedPoolsList = getPoolsForSwapActiveTab({
-      pools: allPools,
-      isStableSwapTabActive,
-    })
-
-    const isPoolExistInNewTab = getSelectedPoolForSwap({
-      pools: updatedPoolsList,
-      baseTokenMintAddress,
-      quoteTokenMintAddress,
-    })
-
-    // set tokens to default one if pool with selected tokens
-    // does not exist in new tab
-    if (!isPoolExistInNewTab) {
-      const defaultBaseTokenMint =
-        getTokenMintAddressByName(getDefaultBaseToken(isStableSwapTabActive)) ||
-        ''
-
-      const defaultQuoteTokenMint =
-        getTokenMintAddressByName(
-          getDefaultQuoteToken(isStableSwapTabActive)
-        ) || ''
-
-      setBaseTokenMintAddress(defaultBaseTokenMint)
-      setQuoteTokenMintAddress(defaultQuoteTokenMint)
-    }
-  }, [isStableSwapTabActive])
 
   const [baseTokenMintAddress, setBaseTokenMintAddress] = useState<string>('')
   const [quoteTokenMintAddress, setQuoteTokenMintAddress] = useState<string>('')
@@ -146,38 +144,45 @@ const SwapPage = ({
     setIsStableSwapTabActive(isStableSwapFromRedirect)
   }, [])
 
+  useEffect(() => {
+    const updatedPoolsList = getPoolsForSwapActiveTab({
+      pools: allPools,
+      isStableSwapTabActive,
+    })
+
+    const isPoolExistInNewTab = getSelectedPoolForSwap({
+      pools: updatedPoolsList,
+      baseTokenMintAddress,
+      quoteTokenMintAddress,
+    })
+
+    // set tokens to default one if pool with selected tokens
+    // does not exist in new tab
+    if (!isPoolExistInNewTab) {
+      const defaultBaseTokenMint =
+        getTokenMintAddressByName(getDefaultBaseToken(isStableSwapTabActive)) ||
+        ''
+
+      const defaultQuoteTokenMint =
+        getTokenMintAddressByName(
+          getDefaultQuoteToken(isStableSwapTabActive)
+        ) || ''
+
+      setBaseTokenMintAddress(defaultBaseTokenMint)
+      setQuoteTokenMintAddress(defaultQuoteTokenMint)
+    }
+  }, [isStableSwapTabActive])
+
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
     isStableSwapTabActive,
   })
 
-  const selectedPool = getSelectedPoolForSwap({
-    pools,
-    baseTokenMintAddress,
-    quoteTokenMintAddress,
-  })
-
-  const isSelectedPoolStable = checkIsPoolStable(selectedPool)
-
-  const [poolBalances, refreshPoolBalances] = usePoolBalances({
-    poolTokenAccountA: selectedPool?.poolTokenAccountA,
-    poolTokenAccountB: selectedPool?.poolTokenAccountB,
-  })
-
-  // update entered value on every pool ratio change
-  useEffect(() => {
-    if (!selectedPool || !+baseAmount) return
-
-    const updateQuoteAmount = async () => {
-      await setBaseAmountWithQuote(+baseAmount)
-    }
-
-    updateQuoteAmount()
-  }, [poolBalances.baseTokenAmount, poolBalances.quoteTokenAmount])
-
-  const [slippageTolerance, setSlippageTolerance] = useState<number>(0.3)
+  const [slippage, setSlippage] = useState<number>(0.3)
   const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
+  const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
+    useState(false)
 
   const [selectedBaseTokenAddressFromSeveral, setBaseTokenAddressFromSeveral] =
     useState<string>('')
@@ -185,33 +190,37 @@ const SwapPage = ({
     selectedQuoteTokenAddressFromSeveral,
     setQuoteTokenAddressFromSeveral,
   ] = useState<string>('')
-  const [isTransactionSettingsPopupOpen, openTransactionSettingsPopup] =
-    useState(false)
 
-  const isSwapBaseToQuote = selectedPool?.tokenA === baseTokenMintAddress
-
-  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
-  const [baseAmount, setBaseAmount] = useState<string | number>('')
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
   const [isSwapInProgress, setIsSwapInProgress] = useState(false)
+  const [priceShowField, setPriceShowField] = useState<'input' | 'output'>(
+    'input'
+  )
 
   const baseSymbol = getTokenNameByMintAddress(baseTokenMintAddress)
   const quoteSymbol = getTokenNameByMintAddress(quoteTokenMintAddress)
 
-  const {
-    baseTokenAmount: poolAmountTokenA,
-    quoteTokenAmount: poolAmountTokenB,
-  } = poolBalances
+  const basePrice = dexTokensPricesMap.get(baseSymbol) || 0
+  const quotePrice = dexTokensPricesMap.get(quoteSymbol) || 0
 
-  let {
-    address: userBaseTokenAccount,
-    amount: maxBaseAmount,
-    decimals: baseTokenDecimals,
-  } = getTokenDataByMint(
-    allTokensData,
-    baseTokenMintAddress,
-    selectedBaseTokenAddressFromSeveral
-  )
+  const { decimals: baseTokenDecimals } = tokenInfos.get(
+    baseTokenMintAddress
+  ) || {
+    decimals: 0,
+  }
+
+  const { decimals: quoteTokenDecimals } = tokenInfos.get(
+    quoteTokenMintAddress
+  ) || {
+    decimals: 0,
+  }
+
+  let { address: userBaseTokenAccount, amount: maxBaseAmount } =
+    getTokenDataByMint(
+      allTokensData,
+      baseTokenMintAddress,
+      selectedBaseTokenAddressFromSeveral
+    )
 
   // if we swap native sol to smth, we need to leave some SOL for covering fees
   if (nativeSOLTokenData?.address === userBaseTokenAccount) {
@@ -224,501 +233,569 @@ const SwapPage = ({
     }
   }
 
-  const {
-    address: userQuoteTokenAccount,
-    decimals: quoteTokenDecimals,
-    amount: maxQuoteAmount,
-  } = getTokenDataByMint(
+  const { amount: maxQuoteAmount } = getTokenDataByMint(
     allTokensData,
     quoteTokenMintAddress,
     selectedQuoteTokenAddressFromSeveral
   )
 
-  const reverseTokens = async () => {
+  const {
+    jupiter,
+    route: swapRoute,
+    inputAmount,
+    outputAmount,
+    loading: isLoadingSwapRoute,
+    depositAndFee,
+    setInputAmount,
+    refresh: refreshAmountsWithSwapRoute,
+  } = useJupiterSwap({
+    inputMint: baseTokenMintAddress,
+    outputMint: quoteTokenMintAddress,
+    slippage,
+  })
+
+  const { inAmount, outAmount, outAmountWithSlippage, priceImpactPct } =
+    swapRoute || {
+      inAmount: 0,
+      outAmount: 0,
+      outAmountWithSlippage: 0,
+      priceImpactPct: 0,
+    }
+
+  const outAmountWithSlippageWithoutDecimals = removeDecimals(
+    outAmountWithSlippage,
+    quoteTokenDecimals
+  )
+
+  const needEnterAmount = +inputAmount === 0
+  const isTokenABalanceInsufficient = inputAmount > +maxBaseAmount
+
+  const reverseTokens = () => {
     setBaseTokenMintAddress(quoteTokenMintAddress)
     setQuoteTokenMintAddress(baseTokenMintAddress)
 
     setBaseTokenAddressFromSeveral(selectedQuoteTokenAddressFromSeveral)
     setQuoteTokenAddressFromSeveral(selectedBaseTokenAddressFromSeveral)
-
-    await setBaseAmountWithQuote(
-      quoteAmount,
-      selectedPool?.tokenA === quoteTokenMintAddress
-    )
   }
-
-  const poolsAmountDiff = isSwapBaseToQuote
-    ? +poolAmountTokenA / +baseAmount
-    : +poolAmountTokenA / +quoteAmount
-
-  // price impact due to curve
-  const rawSlippage = 100 / (poolsAmountDiff + 1)
-  const totalWithFees = +quoteAmount - (+quoteAmount / 100) * slippageTolerance
-
-  const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
-
-  const needEnterAmount = baseAmount == 0 || quoteAmount == 0
 
   const isButtonDisabled =
+    isLoadingSwapRoute ||
     isTokenABalanceInsufficient ||
-    !selectedPool ||
-    !selectedPool.supply ||
-    baseAmount == 0 ||
-    quoteAmount == 0 ||
+    +inputAmount === 0 ||
+    +outputAmount === 0 ||
     isSwapInProgress
 
-  // for cases with SOL token
-  const isBaseTokenSOL = baseSymbol === 'SOL'
-  const isQuoteTokenSOL = quoteSymbol === 'SOL'
-
-  const isPoolWithSOLToken = isBaseTokenSOL || isQuoteTokenSOL
-
-  const isNativeSOLSelected =
-    nativeSOLTokenData?.address === userBaseTokenAccount ||
-    nativeSOLTokenData?.address === userQuoteTokenAccount
-
-  const userPoolBaseTokenAccount = isSwapBaseToQuote
-    ? userBaseTokenAccount
-    : userQuoteTokenAccount
-
-  const userPoolQuoteTokenAccount = isSwapBaseToQuote
-    ? userQuoteTokenAccount
-    : userBaseTokenAccount
-
-  const setBaseAmountWithQuote = async (
-    newBaseAmount: string | number,
-    isSwapBaseToQuoteFromArgs?: boolean
-  ) => {
-    setBaseAmount(newBaseAmount)
-
-    const swapAmountOut = getMinimumReceivedAmountFromSwap({
-      swapAmountIn: +newBaseAmount,
-      isSwapBaseToQuote: isSwapBaseToQuoteFromArgs ?? isSwapBaseToQuote,
-      pool: selectedPool,
-      poolBalances,
-    })
-
-    // do not set 0, leave 0 placeholder
-    if (swapAmountOut === 0) {
-      setQuoteAmount('')
-      return
-    }
-
-    const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
-    setQuoteAmount(strippedSwapAmountOut)
+  const refreshAll = async () => {
+    refreshAllTokensData()
+    await refreshAmountsWithSwapRoute()
   }
 
-  const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
-    const isSwapBaseToQuoteForQuoteChange = !isSwapBaseToQuote
+  const mints = [
+    ...new Set([
+      ...pools.map((i) => [i.tokenA, i.tokenB]).flat(),
+      ...ALL_TOKENS_MINTS.map(({ address }) => address.toString()),
+    ]),
+  ]
 
-    setQuoteAmount(newQuoteAmount)
+  const networkFee = depositAndFee
+    ? (depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
+        depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
+        depositAndFee.signatureFee) /
+      LAMPORTS_PER_SOL
+    : swapRoute?.marketInfos.length * TRANSACTION_COMMON_SOL_FEE
 
-    const swapAmountOut = getMinimumReceivedAmountFromSwap({
-      swapAmountIn: +newQuoteAmount,
-      isSwapBaseToQuote: isSwapBaseToQuoteForQuoteChange,
-      pool: selectedPool,
-      poolBalances,
+  const outputUSD = +outputAmount * quotePrice
+
+  const halfButtonOnClick = () =>
+    setInputAmount(stripDigitPlaces(maxBaseAmount / 2, 8))
+
+  const maxButtonOnClick = () =>
+    setInputAmount(stripDigitPlaces(maxBaseAmount, 8))
+
+  const isAmountsEntered = inputAmount && outputAmount
+  const isOpenOrdersCreationRequired =
+    depositAndFee?.openOrdersDeposits.length > 0
+  const priceImpact = priceImpactPct * 100
+
+  const swapRouteInAmount = removeDecimals(inAmount, baseTokenDecimals)
+
+  const estimatedPrice = stripByAmount(
+    getEstimatedPrice({
+      inputAmount: swapRouteInAmount,
+      outputAmount: removeDecimals(outAmount, quoteTokenDecimals),
+      inputPrice: basePrice,
+      outputPrice: quotePrice,
+      field: priceShowField,
     })
+  )
 
-    // do not set 0, leave 0 placeholder
-    if (swapAmountOut === 0) {
-      setBaseAmount('')
-      return
-    }
+  const pctDiffUsedAndUIInputAmount =
+    ((+inputAmount - swapRouteInAmount) / inputAmount) * 100
 
-    const strippedSwapAmountOut = stripDigitPlaces(swapAmountOut, 8)
-    setBaseAmount(strippedSwapAmountOut)
-  }
+  const minInputAmount =
+    swapRoute &&
+    swapRoute.marketInfos[0].minInAmount &&
+    removeDecimals(swapRoute.marketInfos[0].minInAmount, baseTokenDecimals)
+
+  const isTooSmallInputAmount = minInputAmount && minInputAmount > inputAmount
 
   return (
-    <SwapPageContainer direction="column" height="100%" wrap="nowrap">
-      <>
-        <Row width="50rem" justify="flex-start" margin="2rem 1rem">
-          <TableModeButton
-            isActive={!isStableSwapTabActive}
-            onClick={() => setIsStableSwapTabActive(false)}
-            fontSize="1.5rem"
-          >
-            All
-          </TableModeButton>
-          <TableModeButton
-            isActive={isStableSwapTabActive}
-            onClick={() => setIsStableSwapTabActive(true)}
-            fontSize="1.5rem"
-          >
-            Stable Swap
-          </TableModeButton>
-        </Row>
-        <Row width="50rem" justify="flex-start" margin="0 0 2rem 0">
-          <Selector
-            data={pools}
-            setBaseTokenMintAddress={setBaseTokenMintAddress}
-            setQuoteTokenMintAddress={setQuoteTokenMintAddress}
-          />
-        </Row>
-        <BlockTemplate
-          theme={theme}
-          width="50rem"
-          style={{ padding: '2rem', zIndex: '10' }}
-        >
-          <RowContainer margin="1rem 0" justify="space-between">
-            <Text>
-              Slippage Tolerance: <strong>{slippageTolerance}%</strong>
-            </Text>
-            <Row>
-              <ReloadTimer
-                margin="0 1.5rem 0 0"
-                callback={async () => {
-                  refreshPoolBalances()
-                  refreshAllTokensData()
-                }}
-              />
-              {baseTokenMintAddress && quoteTokenMintAddress && (
-                <TimerButton
-                  onClick={() => openTokensAddressesPopup(true)}
-                  margin="0 1.5rem 0 0"
-                >
-                  <SvgIcon src={Inform} width="60%" height="60%" />
-                </TimerButton>
-              )}
-              <TimerButton
-                margin="0"
-                onClick={() => openTransactionSettingsPopup(true)}
-              >
-                <SvgIcon src={Gear} width="60%" height="60%" />
-              </TimerButton>
-            </Row>
-          </RowContainer>
-          <RowContainer margin="2rem 0 1rem 0">
-            <InputWithSelectorForSwaps
-              wallet={wallet}
-              publicKey={publicKey}
-              placeholder={
-                +baseAmount === 0 && +quoteAmount !== 0 && isSelectedPoolStable
-                  ? 'Insufficient Balance'
-                  : '0.00'
-              }
-              theme={theme}
-              directionFrom
-              value={+baseAmount || +quoteAmount === 0 ? baseAmount : ''}
-              disabled={
-                !baseTokenMintAddress ||
-                !quoteTokenMintAddress ||
-                (!baseTokenMintAddress && !quoteTokenMintAddress)
-              }
-              onChange={setBaseAmountWithQuote}
-              symbol={baseSymbol}
-              maxBalance={maxBaseAmount}
-              openSelectCoinPopup={() => {
-                setIsBaseTokenSelecting(true)
-                setIsSelectCoinPopupOpen(true)
-              }}
-            />
-          </RowContainer>
-          <RowContainer justify="space-between" margin="0 2rem">
-            <SvgIcon
-              style={{ cursor: 'pointer' }}
-              src={Arrows}
-              width="2rem"
-              height="2rem"
-              onClick={() => {
-                reverseTokens()
-              }}
-            />
-            {isSelectedPoolStable ? (
-              <DarkTooltip title="This pool uses the stable curve, which provides better rates for swapping stablecoins.">
-                <div>
-                  <SvgIcon src={ScalesIcon} width="2rem" height="2rem" />
-                </div>
-              </DarkTooltip>
-            ) : null}
-          </RowContainer>
-          <RowContainer margin="1rem 0 2rem 0">
-            <InputWithSelectorForSwaps
-              wallet={wallet}
-              publicKey={publicKey}
-              placeholder={
-                +quoteAmount === 0 && +baseAmount !== 0 && isSelectedPoolStable
-                  ? 'Insufficient Balance'
-                  : '0.00'
-              }
-              theme={theme}
-              disabled={
-                !baseTokenMintAddress ||
-                !quoteTokenMintAddress ||
-                (!baseTokenMintAddress && !quoteTokenMintAddress)
-              }
-              value={+quoteAmount || +baseAmount === 0 ? quoteAmount : ''}
-              onChange={setQuoteAmountWithBase}
-              symbol={quoteSymbol}
-              maxBalance={maxQuoteAmount}
-              openSelectCoinPopup={() => {
-                setIsBaseTokenSelecting(false)
-                setIsSelectCoinPopupOpen(true)
-              }}
-            />
-          </RowContainer>
-
-          {selectedPool && (
-            <RowContainer margin="1rem 2rem" justify="space-between">
-              <Text color="#93A0B2">Est. Price:</Text>
-              <Text
-                fontSize="1.5rem"
-                color="#269F13"
-                fontFamily="Avenir Next Demi"
-              >
-                1{' '}
-                <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
-                  {baseSymbol}{' '}
-                </Text>
-                ={' '}
-                {isSelectedPoolStable
-                  ? 1
-                  : isSwapBaseToQuote
-                  ? stripDigitPlaces(+poolAmountTokenB / +poolAmountTokenA, 8)
-                  : stripDigitPlaces(
-                      +(+poolAmountTokenA / +poolAmountTokenB),
-                      8
-                    )}{' '}
-                <Text fontSize="1.5rem" fontFamily="Avenir Next Demi">
-                  {quoteSymbol}{' '}
-                </Text>
-              </Text>
-            </RowContainer>
-          )}
-
-          <RowContainer>
-            {!publicKey ? (
-              <BtnCustom
-                theme={theme}
-                onClick={wallet.connect}
-                needMinWidth={false}
-                btnWidth="100%"
-                height="5.5rem"
-                fontSize="1.4rem"
-                padding="2rem 8rem"
-                borderRadius="1.1rem"
-                borderColor={theme.palette.blue.serum}
-                btnColor="#fff"
-                backgroundColor={theme.palette.blue.serum}
-                textTransform="none"
-                margin="4rem 0 0 0"
-                transition="all .4s ease-out"
-                style={{ whiteSpace: 'nowrap' }}
-              >
-                Connect wallet
-              </BtnCustom>
-            ) : (
-              <BtnCustom
-                btnWidth="100%"
-                height="5.5rem"
-                fontSize="1.4rem"
-                padding="1rem 2rem"
-                borderRadius=".8rem"
-                borderColor="none"
-                btnColor="#fff"
-                backgroundColor={
-                  isButtonDisabled
-                    ? '#3A475C'
-                    : 'linear-gradient(91.8deg, #0E02EC 15.31%, #D44C32 89.64%)'
+    <SwapPageLayout>
+      <SwapPageContainer direction="column" height="100%" wrap="nowrap">
+        <SwapContentContainer direction="column">
+          <RowContainer justify="flex-start" margin="0 0 2rem 0">
+            <SwapSearch
+              tokens={mints.map((mint) => ({ mint }))}
+              onSelect={(args) => {
+                const { amountFrom, tokenFrom, tokenTo } = args
+                setBaseTokenMintAddress(tokenFrom.mint)
+                setQuoteTokenMintAddress(tokenTo.mint)
+                if (amountFrom) {
+                  setInputAmount(+amountFrom, tokenFrom.mint, tokenTo.mint)
                 }
-                textTransform="none"
-                margin="1rem 0 0 0"
-                transition="all .4s ease-out"
-                disabled={isButtonDisabled}
-                onClick={async () => {
-                  if (!selectedPool) return
-
-                  setIsSwapInProgress(true)
-
-                  console.log('baseTokenDecimals', {
-                    baseTokenDecimals,
-                    quoteTokenDecimals,
-                  })
-
-                  const swapAmountIn = new BN(
-                    +baseAmount * 10 ** baseTokenDecimals
-                  )
-                  const swapAmountOut = new BN(
-                    +totalWithFees * 10 ** quoteTokenDecimals
-                  )
-
-                  const result = await swap({
-                    wallet,
-                    connection,
-                    poolPublicKey: new PublicKey(selectedPool.swapToken),
-                    userBaseTokenAccount: userPoolBaseTokenAccount
-                      ? new PublicKey(userPoolBaseTokenAccount)
-                      : null,
-                    userQuoteTokenAccount: userPoolQuoteTokenAccount
-                      ? new PublicKey(userPoolQuoteTokenAccount)
-                      : null,
-                    swapAmountIn,
-                    swapAmountOut,
-                    isSwapBaseToQuote,
-                    transferSOLToWrapped:
-                      isPoolWithSOLToken && isNativeSOLSelected,
-                    curveType: selectedPool.curveType,
-                  })
-
-                  notify({
-                    type: result === 'success' ? 'success' : 'error',
-                    message:
-                      result === 'success'
-                        ? 'Swap executed successfully.'
-                        : result === 'failed'
-                        ? 'Swap operation failed. Please, try to increase slippage tolerance or try a bit later.'
-                        : 'Swap cancelled',
-                  })
-
-                  // refresh data
-                  await sleep(2 * 1000)
-
-                  refreshPoolBalances()
-                  refreshAllTokensData()
-
-                  // reset fields
-                  if (result === 'success') {
-                    setBaseAmount('')
-                    setQuoteAmount('')
-                  }
-
-                  // remove loader
-                  setIsSwapInProgress(false)
-                }}
-              >
-                {isSwapInProgress ? (
-                  <Loader />
-                ) : isTokenABalanceInsufficient ? (
-                  `Insufficient ${
-                    isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
-                  } Balance`
-                ) : !selectedPool ? (
-                  'No pools available'
-                ) : needEnterAmount ? (
-                  'Enter amount'
-                ) : (
-                  'Swap'
-                )}
-              </BtnCustom>
-            )}
+              }}
+            />
           </RowContainer>
-        </BlockTemplate>
-        {selectedPool && baseAmount && quoteAmount && (
-          <Card
-            style={{ padding: '2rem' }}
-            theme={theme}
-            width="45rem"
-            height="12rem"
-          >
-            <RowContainer margin="0.5rem 0" justify="space-between">
-              <Text color="#93A0B2">Minimum received</Text>
-              <Row style={{ flexWrap: 'nowrap' }}>
-                <Text
-                  style={{ padding: '0 0.5rem 0 0.5rem' }}
-                  fontFamily="Avenir Next Bold"
-                  color="#269F13"
+          <SwapBlockTemplate theme={theme} width="100%" background="#1A1A1A">
+            <RowContainer margin="0 0 .5em 0" justify="space-between">
+              <Row>
+                <ValueButton>
+                  <ReloadTimer
+                    duration={15}
+                    initialRemainingTime={15}
+                    callback={refreshAll}
+                    showTime
+                    margin="0"
+                    timerStyles={{ background: 'transparent' }}
+                  />
+                </ValueButton>
+                {baseTokenMintAddress && quoteTokenMintAddress && (
+                  <ValueButton onClick={() => openTokensAddressesPopup(true)}>
+                    i
+                  </ValueButton>
+                )}
+              </Row>
+              <Row>
+                <Text padding="0 0.8rem 0 0">Slippage Tolerance:</Text>
+                <Row style={{ position: 'relative' }}>
+                  <ValueInput
+                    onChange={(e) => {
+                      if (
+                        numberWithOneDotRegexp.test(e.target.value) &&
+                        getNumberOfIntegersFromNumber(e.target.value) <= 2 &&
+                        getNumberOfDecimalsFromNumber(e.target.value) <= 2
+                      ) {
+                        setSlippage(e.target.value)
+                      }
+                    }}
+                    onBlur={() => {
+                      if (+slippage <= 0) {
+                        setSlippage(0.3)
+                      }
+                    }}
+                    value={slippage}
+                    placeholder="1.00"
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      fontFamily: 'Avenir Next Medium',
+                      color: '#fbf2f2',
+                      fontSize: FONT_SIZES.sm,
+                      right: '1.5rem',
+                    }}
+                  >
+                    %
+                  </div>
+                </Row>
+                <ValueButton
+                  onClick={() => {
+                    const newSlippage = +(+slippage - SLIPPAGE_STEP).toFixed(2)
+
+                    if (newSlippage > 0) {
+                      setSlippage(newSlippage)
+                    }
+                  }}
                 >
-                  {totalWithFees.toFixed(5)}{' '}
-                </Text>
-                <Text fontFamily="Avenir Next Bold">{quoteSymbol}</Text>
+                  -
+                </ValueButton>
+                <ValueButton
+                  onClick={() => {
+                    const newSlippage = +(+slippage + SLIPPAGE_STEP).toFixed(2)
+
+                    setSlippage(newSlippage)
+                  }}
+                >
+                  +
+                </ValueButton>
               </Row>
             </RowContainer>
-            {!isSelectedPoolStable && (
-              <RowContainer margin="0.5rem 0" justify="space-between">
-                <Text color="#93A0B2">Price Impact</Text>
-                <Row style={{ flexWrap: 'nowrap' }}>
-                  <Text
-                    style={{ padding: '0 0.5rem 0 0.5rem' }}
-                    fontFamily="Avenir Next Bold"
-                    color="#269F13"
-                  >
-                    {stripDigitPlaces(rawSlippage, 2)}%
-                  </Text>
+            <RowContainer
+              style={{ position: 'relative' }}
+              margin=".5em 0 1.6rem 0"
+              direction="column"
+            >
+              <RowContainer justify="space-between">
+                <Row width="calc(65% - .2rem)">
+                  <SwapAmountInput
+                    title="You Pay"
+                    maxAmount={maxBaseAmount}
+                    amount={formatNumberToUSFormat(inputAmount)}
+                    disabled={false}
+                    onChange={(v) => {
+                      if (
+                        getNumberOfIntegersFromNumber(v) <= 8 &&
+                        getNumberOfDecimalsFromNumber(v) <= 8
+                      ) {
+                        setInputAmount(v)
+                      }
+                    }}
+                    roundSides={['top-left']}
+                    appendComponent={
+                      <Row>
+                        <Button
+                          minWidth="2rem"
+                          $fontSize="xs"
+                          $fontFamily="demi"
+                          $borderRadius="xxl"
+                          onClick={halfButtonOnClick}
+                          type="button"
+                          $variant="secondary"
+                          $padding="sm"
+                          $color="halfWhite"
+                          backgroundColor="#383B45"
+                          style={{ marginRight: '0.8rem' }}
+                        >
+                          Half
+                        </Button>
+                        <Button
+                          minWidth="2rem"
+                          $fontSize="xs"
+                          $fontFamily="demi"
+                          $borderRadius="xxl"
+                          onClick={maxButtonOnClick}
+                          type="button"
+                          $variant="secondary"
+                          $padding="sm"
+                          $color="halfWhite"
+                          backgroundColor="#383B45"
+                        >
+                          Max
+                        </Button>
+                      </Row>
+                    }
+                  />
+                </Row>
+                <Row width="calc(35% - 0.2rem)">
+                  <TokenSelector
+                    mint={baseTokenMintAddress}
+                    roundSides={['top-right']}
+                    onClick={() => {
+                      setIsBaseTokenSelecting(true)
+                      setIsSelectCoinPopupOpen(true)
+                    }}
+                  />
                 </Row>
               </RowContainer>
-            )}
-            <RowContainer margin="0.5rem 0" justify="space-between">
-              <Text color="#93A0B2">Liquidity provider fee</Text>
-              <Row style={{ flexWrap: 'nowrap' }}>
-                <Text
-                  style={{ padding: '0 0.5rem 0 0.5rem' }}
-                  fontFamily="Avenir Next Bold"
-                >
-                  {stripByAmountAndFormat(
-                    +baseAmount *
-                      (getLiquidityProviderFee(selectedPool.curveType) / 100)
-                  )}{' '}
-                  {baseSymbol}
-                </Text>
-              </Row>
+              <ReverseTokensContainer onClick={reverseTokens}>
+                <SvgIcon src={Arrows} width="1em" height="1em" />
+              </ReverseTokensContainer>
+              <RowContainer justify="space-between" margin=".4rem 0 0 0">
+                <Row width="calc(65% - .2rem)">
+                  <SwapAmountInput
+                    title="You Receive"
+                    maxAmount={maxQuoteAmount}
+                    amount={
+                      outputAmount
+                        ? formatNumberToUSFormat(stripByAmount(outputAmount))
+                        : ''
+                    }
+                    disabled
+                    roundSides={['bottom-left']}
+                    appendComponent={
+                      <Text
+                        fontFamily="Avenir Next"
+                        fontSize={FONT_SIZES.sm}
+                        color="#A6A6A6"
+                      >
+                        ≈$
+                        {outputUSD ? stripDigitPlaces(outputUSD, 2) : '0.00'}
+                      </Text>
+                    }
+                  />
+                </Row>
+                <Row width="calc(35% - .2rem)">
+                  <TokenSelector
+                    mint={quoteTokenMintAddress}
+                    roundSides={['bottom-right']}
+                    onClick={() => {
+                      setIsBaseTokenSelecting(false)
+                      setIsSelectCoinPopupOpen(true)
+                    }}
+                  />
+                </Row>
+              </RowContainer>
             </RowContainer>
-          </Card>
-        )}
-        <Cards />
-      </>
+            {!isLoadingSwapRoute && pctDiffUsedAndUIInputAmount >= 5 && (
+              <RowContainer margin="0 0 .5em 0">
+                <Text>
+                  This swap will only use {swapRouteInAmount} (out of{' '}
+                  {inputAmount}) USDC
+                </Text>
+              </RowContainer>
+            )}
+            <RowContainer>
+              {!publicKey ? (
+                <BtnCustom
+                  theme={theme}
+                  onClick={() => setIsConnectWalletPopupOpen(true)}
+                  needMinWidth={false}
+                  btnWidth="100%"
+                  height="4em"
+                  fontSize="1em"
+                  padding="1.4em 5em"
+                  borderRadius="1.1rem"
+                  borderColor={theme.palette.blue.serum}
+                  btnColor="#fff"
+                  backgroundColor={theme.palette.blue.serum}
+                  textTransform="none"
+                  transition="all .4s ease-out"
+                  style={{ whiteSpace: 'nowrap' }}
+                >
+                  Connect wallet
+                </BtnCustom>
+              ) : (
+                <SwapButton
+                  disabled={isButtonDisabled}
+                  onClick={async () => {
+                    if (!jupiter || !swapRoute) return
 
-      <TransactionSettingsPopup
-        theme={theme}
-        slippageTolerance={slippageTolerance}
-        open={isTransactionSettingsPopupOpen}
-        close={() => {
-          if (slippageTolerance >= 0.01) {
-            openTransactionSettingsPopup(false)
-          }
-        }}
-        setSlippageTolerance={setSlippageTolerance}
-      />
+                    setIsSwapInProgress(true)
 
-      <SelectCoinPopup
-        poolsInfo={pools}
-        theme={theme}
-        // mints={[...new Set(mints)]}
-        mints={[...new Set(pools.map((i) => [i.tokenA, i.tokenB]).flat())]}
-        baseTokenMintAddress={baseTokenMintAddress}
-        quoteTokenMintAddress={quoteTokenMintAddress}
-        allTokensData={allTokensData}
-        open={isSelectCoinPopupOpen}
-        isBaseTokenSelecting={isBaseTokenSelecting}
-        setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
-        setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
-        selectTokenMintAddress={(address: string) => {
-          if (isBaseTokenSelecting) {
-            if (quoteTokenMintAddress === address) {
-              setQuoteTokenMintAddress('')
+                    const { execute } = await jupiter.exchange({
+                      route: swapRoute,
+                    })
+
+                    try {
+                      const result = await execute({ wallet })
+
+                      if (result.error) {
+                        notify({
+                          type: 'error',
+                          message: result.error.message.includes('cancelled')
+                            ? 'Transaction cancelled'
+                            : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
+                        })
+                      } else {
+                        notify({
+                          type: 'success',
+                          message: 'Swap executed successfully.',
+                        })
+                      }
+
+                      refreshAllTokensData()
+                      await refreshAmountsWithSwapRoute()
+
+                      // reset fields
+                      if (!result.error) {
+                        await setInputAmount('')
+                      }
+
+                      // remove loader
+                      setIsSwapInProgress(false)
+                    } catch (e) {
+                      console.log('error', e)
+                    }
+                  }}
+                >
+                  <RowContainer>
+                    <RowContainer>
+                      {getSwapButtonText({
+                        baseSymbol,
+                        minInputAmount,
+                        isSwapRouteExists: !!swapRoute,
+                        needEnterAmount,
+                        isTokenABalanceInsufficient,
+                        isLoadingSwapRoute,
+                        isTooSmallInputAmount,
+                      })}
+                    </RowContainer>
+                    <RowContainer>
+                      {getRouteMintsPath(swapRoute).map((mint, index, arr) => {
+                        const { symbol } = tokenInfos.get(mint) || {
+                          symbol: getTokenNameByMintAddress(mint),
+                        }
+                        return (
+                          <>
+                            <Text
+                              color="rgba(248, 250, 255, 0.5)"
+                              padding="0 0.4rem"
+                            >
+                              {symbol}
+                            </Text>
+                            {arr.length - 1 !== index && (
+                              <SvgIcon
+                                src={ArrowRightIcon}
+                                width="0.8em"
+                                height="0.8em"
+                              />
+                            )}
+                          </>
+                        )
+                      })}
+                    </RowContainer>
+                  </RowContainer>
+                </SwapButton>
+              )}
+            </RowContainer>
+
+            {isAmountsEntered ? (
+              <RowContainer direction="column" margin="2.4rem 0 0 0">
+                <RowContainer justify="space-between">
+                  <BlackRow justify="center" width="calc(50% - 0.8rem)">
+                    <Row>
+                      <RowValue>
+                        <RowAmountValue>1</RowAmountValue>
+                        {priceShowField === 'input' ? baseSymbol : quoteSymbol}
+                      </RowValue>
+                      <SvgIcon
+                        src={ReverseArrows}
+                        height="0.9em"
+                        width="0.9em"
+                        style={{
+                          transform: 'rotate(90deg)',
+                          margin: '0 0.5rem',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() =>
+                          setPriceShowField(
+                            priceShowField === 'input' ? 'output' : 'input'
+                          )
+                        }
+                      />
+                      <RowValue>
+                        <RowAmountValue>{estimatedPrice}</RowAmountValue>
+                        {priceShowField === 'input' ? quoteSymbol : baseSymbol}
+                      </RowValue>
+                    </Row>
+                  </BlackRow>
+                  <BlackRow width="calc(50% - 0.8rem)">
+                    <RowTitle>Price Impact:</RowTitle>
+                    <RowAmountValue>
+                      {priceImpact < 0.1
+                        ? '< 0.1'
+                        : stripDigitPlaces(priceImpact, 2)}
+                      %
+                    </RowAmountValue>
+                  </BlackRow>
+                </RowContainer>
+
+                <RowContainer justify="space-between">
+                  <BlackRow width="calc(50% - 0.8rem)">
+                    <RowTitle>Trading fee:</RowTitle>
+                    <RowValue>
+                      $
+                      {stripByAmount(
+                        getFeeFromSwapRoute({
+                          route: swapRoute,
+                          tokenInfos,
+                          pricesMap: dexTokensPricesMap,
+                        })
+                      )}
+                    </RowValue>
+                  </BlackRow>
+                  <BlackRow width="calc(50% - 0.8rem)">
+                    <RowTitle>Network fee:</RowTitle>
+                    <RowValue style={{ display: 'flex' }}>
+                      {stripDigitPlaces(
+                        networkFee,
+                        isOpenOrdersCreationRequired ? 4 : 6
+                      )}{' '}
+                      SOL{' '}
+                      {isOpenOrdersCreationRequired ? (
+                        <DarkTooltip
+                          title={
+                            'The route includes the Serum market, which requires opening an "Open Order" account, which costs 0.024 SOL. You can close the account later and get the fee back.'
+                          }
+                        >
+                          <CircleIconContainer
+                            size="1em"
+                            style={{
+                              marginLeft: '.5rem',
+                            }}
+                          >
+                            i
+                          </CircleIconContainer>
+                        </DarkTooltip>
+                      ) : null}
+                    </RowValue>
+                  </BlackRow>
+                </RowContainer>
+
+                <BlackRow width="100%">
+                  <RowTitle>Minimum Received:</RowTitle>
+                  <RowValue>
+                    {stripByAmount(outAmountWithSlippageWithoutDecimals)}{' '}
+                    {quoteSymbol}
+                  </RowValue>
+                </BlackRow>
+              </RowContainer>
+            ) : null}
+          </SwapBlockTemplate>
+        </SwapContentContainer>
+
+        <SelectCoinPopup
+          theme={theme}
+          mints={mints}
+          allTokensData={allTokensData}
+          pricesMap={dexTokensPricesMap}
+          open={isSelectCoinPopupOpen}
+          isBaseTokenSelecting={isBaseTokenSelecting}
+          setBaseTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
+          setQuoteTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
+          selectTokenMintAddress={(address: string) => {
+            if (isBaseTokenSelecting) {
+              if (quoteTokenMintAddress === address) {
+                setQuoteTokenMintAddress('')
+              }
+
+              if (selectedBaseTokenAddressFromSeveral) {
+                setBaseTokenAddressFromSeveral('')
+              }
+
+              setBaseTokenMintAddress(address)
+              setIsSelectCoinPopupOpen(false)
+            } else {
+              if (baseTokenMintAddress === address) {
+                setBaseTokenMintAddress('')
+              }
+
+              if (selectedQuoteTokenAddressFromSeveral) {
+                setQuoteTokenAddressFromSeveral('')
+              }
+
+              setQuoteTokenMintAddress(address)
+              setIsSelectCoinPopupOpen(false)
             }
+          }}
+          close={() => setIsSelectCoinPopupOpen(false)}
+        />
 
-            if (selectedBaseTokenAddressFromSeveral) {
-              setBaseTokenAddressFromSeveral('')
-            }
+        <TokenAddressesPopup
+          theme={theme}
+          quoteTokenMintAddress={quoteTokenMintAddress}
+          baseTokenMintAddress={baseTokenMintAddress}
+          allTokensData={allTokensData}
+          open={isTokensAddressesPopupOpen}
+          close={() => openTokensAddressesPopup(false)}
+        />
 
-            setBaseTokenMintAddress(address)
-            setIsSelectCoinPopupOpen(false)
-          } else {
-            if (baseTokenMintAddress === address) {
-              setBaseTokenMintAddress('')
-            }
-
-            if (selectedQuoteTokenAddressFromSeveral) {
-              setQuoteTokenAddressFromSeveral('')
-            }
-
-            setQuoteTokenMintAddress(address)
-            setIsSelectCoinPopupOpen(false)
-          }
-        }}
-        close={() => setIsSelectCoinPopupOpen(false)}
-      />
-
-      <TokenAddressesPopup
-        theme={theme}
-        quoteTokenMintAddress={quoteTokenMintAddress}
-        baseTokenMintAddress={baseTokenMintAddress}
-        allTokensData={allTokensData}
-        open={isTokensAddressesPopupOpen}
-        close={() => openTokensAddressesPopup(false)}
-      />
-    </SwapPageContainer>
+        <ConnectWalletPopup
+          open={isConnectWalletPopupOpen}
+          onClose={() => setIsConnectWalletPopupOpen(false)}
+        />
+      </SwapPageContainer>
+    </SwapPageLayout>
   )
 }
 
@@ -730,5 +807,12 @@ export default compose(
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
     fetchPolicy: 'cache-and-network',
+  }),
+  queryRendererHoc({
+    query: getDexTokensPricesRequest,
+    name: 'getDexTokensPricesQuery',
+    fetchPolicy: 'cache-and-network',
+    withoutLoading: true,
+    pollInterval: 60000,
   })
 )(SwapPage)

@@ -1,5 +1,5 @@
 import { Paper } from '@material-ui/core'
-import { COLORS } from '@variables/variables'
+import { COLORS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -10,7 +10,8 @@ export const BoldHeader = styled.h2`
   color: #f5f5fb;
 `
 export const StyledInput = styled.div`
-  background: #222429;
+  background: ${(props) =>
+    props.disabled ? COLORS.darkBackground : '#222429'};
   border: 0.1rem solid #3a475c;
   border-radius: 1.5rem;
   color: #fbf2f2;
@@ -44,17 +45,15 @@ export const Line = styled.div`
 `
 export const InvisibleInput = styled.input`
   width: 100%;
-  background: ${COLORS.cardsBack};
+  background: ${(props) =>
+    props.disabled ? COLORS.disabledInput : COLORS.blockBackground};
   color: ${COLORS.primaryWhite};
-  font-size: 2.4rem;
+  font-size: ${FONT_SIZES.xmd};
   outline: none;
   border: none;
   font-family: Avenir Next Demi;
   &::placeholder {
-    color: #f2fbfb;
-    height: 2rem;
-    font-size: 1.7rem;
-    font-family: 'Avenir Next Thin';
+    color: ${COLORS.inputPlaceholder};
   }
 `
 

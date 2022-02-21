@@ -1,11 +1,13 @@
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Loader } from '@sb/components/Loader/Loader'
-import { Text, TextProps } from '@sb/compositions/Addressbook'
-import { COLORS } from '@variables/variables'
+import { COLORS, FONTS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Loader } from '@sb/components/Loader/Loader'
 import { InlineText } from '@sb/components/Typography'
+import { Text, TextProps } from '@sb/compositions/Addressbook'
+
 import { Row, RowContainer } from '../../../AnalyticsRoute/index.styles'
 
 export const RowDataTdText = styled(Text)`
@@ -44,21 +46,21 @@ export const TokenIconContainer = styled.div`
 `
 
 export const SearchInput = styled.input`
-  font-size: 1.7rem;
+  font-size: ${FONT_SIZES.md};
   color: #f2fbfb;
-  background: #383b45;
-  border: 0.1rem solid #3a475c;
+  background: #17181a;
+  border: 0.1rem solid #383b45;
   border-radius: 1.2rem;
-  font-family: 'Avenir Next Thin';
-  height: 4rem;
+  font-family: ${FONTS.main};
   width: ${(props) => props.width || '100%'};
+  height: 100%;
   padding: 0 2rem;
   outline: none;
 
   &::placeholder {
-    font-size: 1.7rem;
-    font-family: 'Avenir Next Thin';
-    color: #93a0b2;
+    font-size: ${FONT_SIZES.md};
+    font-family: ${FONTS.main};
+    color: ${COLORS.hint};
   }
 `
 

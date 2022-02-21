@@ -162,13 +162,10 @@ export const stripInputNumber = (
 ) => {
   let value = `${e.target.value}`
 
-  // change comma to dot
-  value = value.replaceAll(',', '.')
-
   // check numbers only and 1 dot
-  if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
-    return prevValue
-  }
+  // if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
+  //   return prevValue
+  // }
 
   // add 0 if first symbol is dot
   if (value[0] === '.') {
@@ -176,5 +173,5 @@ export const stripInputNumber = (
   }
 
   // change comma to dot
-  return value.replace(',', '.')
+  return value.replaceAll(',', '')
 }
