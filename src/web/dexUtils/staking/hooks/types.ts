@@ -38,7 +38,7 @@ export interface MarinadeStats {
   validators_count: number
 }
 
-export interface PlutoniansStakingPool {
+export interface SRINStakingPool {
   owner: PublicKey
   poolSigner: PublicKey
   bumpPoolSigner: number
@@ -48,8 +48,14 @@ export interface PlutoniansStakingPool {
   tiers: PublicKey[]
 }
 
-export interface PlutoniansStakingTier {
+export interface SRINStakingTier {
   pool: PublicKey
   apr: BN
   lockDuration: BN
+}
+
+export interface SRINUserAccount {
+  user: PublicKey
+  amount: BN
+  tier: PublicKey
 }
