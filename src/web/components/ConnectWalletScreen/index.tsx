@@ -7,6 +7,7 @@ import {
   Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import LightLogo from '@icons/lightLogo.svg'
 
@@ -58,15 +59,24 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
+  const [isRegionCheckIsLoading, setRegionCheckIsLoading] = useState<boolean>(false)
   const [isFromRestrictedRegion, setIsFromRestrictedRegion] = useState<boolean>(false)
+
   useEffect(() => {
+    setRegionCheckIsLoading(true)
     getRegionData({ setIsFromRestrictedRegion })
+    .then(() => {
+      setRegionCheckIsLoading(false)
+    })
   }, [setIsFromRestrictedRegion])
 
   const buttonWithModal = (
     <>
       <BtnCustom
         onClick={() => {
+          if (isRegionCheckIsLoading || isFromRestrictedRegion) {
+            return
+          }
           setIsConnectWalletPopupOpen(true)
         }}
         disabled={isFromRestrictedRegion}
@@ -89,7 +99,7 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
       </BtnCustom>
       <ConnectWalletPopup
         theme={theme}
-        open={isConnectWalletPopupOpen}
+        open={isConnectWalletPopupOpen && !isFromRestrictedRegion}
         onClose={() => setIsConnectWalletPopupOpen(false)}
       />
     </>

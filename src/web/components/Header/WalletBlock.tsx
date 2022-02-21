@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { useWallet, useBalanceInfo } from '@sb/dexUtils/wallet'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
@@ -33,22 +34,31 @@ export const WalletBlock = () => {
   }
   const SOLAmount = amount / 10 ** decimals
 
+  const [isRegionCheckIsLoading, setRegionCheckIsLoading] = useState<boolean>(false)
   const [isFromRestrictedRegion, setIsFromRestrictedRegion] = useState<boolean>(false)
+
   useEffect(() => {
+    setRegionCheckIsLoading(true)
     getRegionData({ setIsFromRestrictedRegion })
+    .then(() => {
+      setRegionCheckIsLoading(false)
+    })
   }, [setIsFromRestrictedRegion])
 
   return (
     <>
       {!connected && (
-        <WalletButton
-          disabled={isFromRestrictedRegion}
-          onClick={() => {
-            setIsConnectWalletPopupOpen(true)
-          }}
-        >
-        {isFromRestrictedRegion ? `Restricted region` : `Connect wallet`}
-        </WalletButton>
+          <WalletButton
+            disabled={isFromRestrictedRegion}
+            onClick={() => {
+              if (isFromRestrictedRegion || isRegionCheckIsLoading) {
+                return
+              }
+              setIsConnectWalletPopupOpen(true)
+            }}
+          >
+          {isFromRestrictedRegion ? `Restricted region` : `Connect wallet`}
+          </WalletButton>
       )}
       {connected && (
         <WalletDataContainer>
@@ -76,7 +86,7 @@ export const WalletBlock = () => {
         </WalletDataContainer>
       )}
       <ConnectWalletPopup
-        open={isConnectWalletPopupOpen}
+        open={isConnectWalletPopupOpen && !isFromRestrictedRegion}
         onClose={() => setIsConnectWalletPopupOpen(false)}
       />
     </>
