@@ -464,7 +464,7 @@ const SwapPage = ({
               <Text color="#93A0B2">Est. Price:</Text>
               <Text
                 fontSize="1.5rem"
-                color="#269F13"
+                color="#53DF11"
                 fontFamily="Avenir Next Demi"
               >
                 1{' '}
@@ -520,7 +520,7 @@ const SwapPage = ({
                 backgroundColor={
                   isButtonDisabled
                     ? '#3A475C'
-                    : 'linear-gradient(91.8deg, #0E02EC 15.31%, #D44C32 89.64%)'
+                    : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
                 }
                 textTransform="none"
                 margin="1rem 0 0 0"
@@ -617,7 +617,7 @@ const SwapPage = ({
                 <Text
                   style={{ padding: '0 0.5rem 0 0.5rem' }}
                   fontFamily="Avenir Next Bold"
-                  color="#269F13"
+                  color="#53DF11"
                 >
                   {totalWithFees.toFixed(5)}{' '}
                 </Text>
@@ -631,7 +631,7 @@ const SwapPage = ({
                   <Text
                     style={{ padding: '0 0.5rem 0 0.5rem' }}
                     fontFamily="Avenir Next Bold"
-                    color="#269F13"
+                    color="#53DF11"
                   >
                     {stripDigitPlaces(rawSlippage, 2)}%
                   </Text>

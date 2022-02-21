@@ -65,13 +65,13 @@ export const StyledTab = styled(({ active, ...rest }) => <Button {...rest} />)`
   letter-spacing: 1.5px;
   transition: 0.3s all;
 
-  background: ${(props) => (props.active ? '#0E02EC' : '#fff')};
-  color: ${(props) => (props.active ? '#fff' : '#0E02EC')};
-  border: 1px solid #0e02ec;
+  background: ${(props) => (props.active ? '#651CE4' : '#fff')};
+  color: ${(props) => (props.active ? '#fff' : '#651CE4')};
+  border: 1px solid #651CE4;
   border-radius: 4px;
 
   &:hover {
-    background-color: ${(props) => (props.active ? '#0E02EC' : '#F2F4F6')};
+    background-color: ${(props) => (props.active ? '#651CE4' : '#F2F4F6')};
   }
 
   @media (max-width: 1400px) {

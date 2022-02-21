@@ -83,7 +83,7 @@ export const StyledPaper = styled(Paper)`
 `
 
 export const ButtonShare = styled(Button)`
-  background: ${(props) => (props.active ? '#0E02EC' : '#FFFFFF')};
+  background: ${(props) => (props.active ? '#651CE4' : '#FFFFFF')};
   color: ${(props) => (props.active ? '#fff' : '#7284A0')};
   box-shadow: ${(props) =>
     props.active ? 'none' : '0px 0px .5rem rgba(10,19,43,0.1)'};
@@ -95,8 +95,8 @@ export const ButtonShare = styled(Button)`
 
   &:hover {
     color: #fff;
-    background-color: #0e02ec;
-    border: 1.5px solid #0e02ec;
+    background-color: #651CE4;
+    border: 1.5px solid #651CE4;
   }
 
   @media (min-width: 1440px) {
@@ -131,8 +131,8 @@ export const StyledButton = styled(({ padding, ...rest }) => (
   font-weight: bold;
   border-radius: 1.2rem;
   border: ${(props) =>
-    props.disabled ? '1.5px solid #E0E5EC' : '1.5px solid #0E02EC'};
-  color: #0e02ec;
+    props.disabled ? '1.5px solid #E0E5EC' : '1.5px solid #651CE4'};
+  color: #651CE4;
   letter-spacing: 1.5px;
 
   @media (min-width: 1440px) {
@@ -182,13 +182,13 @@ export const Line = styled.div`
 
 export const SButton = styled.span`
   text-decoration: none;
-  color: #0e02ec;
+  color: #651CE4;
   cursor: pointer;
 `
 
 export const SRadio = styled(Radio)`
   svg {
-    color: #0e02ec;
+    color: #651CE4;
   }
 
   @media (min-width: 1440px) {

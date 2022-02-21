@@ -269,7 +269,7 @@ export const WalletButton = styled(Button)`
 
   &:active,
   &:focus {
-    background: ${COLORS.darkBlue};
+    background: #320e71;
   }
 
   @media (max-width: 1100px) {

@@ -1,18 +1,18 @@
+import { Theme } from '@material-ui/core'
+import Paper from '@material-ui/core/Paper'
+import { withTheme } from '@material-ui/styles'
 import React from 'react'
+import { compose } from 'recompose'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import { withTheme } from '@material-ui/styles'
-
 import { Text } from '@sb/compositions/Addressbook/index'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
+import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.styles'
+
 import Warning from '@icons/newWarning.svg'
-import Paper from '@material-ui/core/Paper'
-import { compose } from 'recompose'
 
 const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   height: auto;
@@ -62,7 +62,7 @@ const DevUrlPopup = ({
           <a
             style={{
               padding: '0 0 0 0.5rem',
-              color: '#269F13',
+              color: '#53DF11',
               textDecoration: 'none',
             }}
             target="_blank"
