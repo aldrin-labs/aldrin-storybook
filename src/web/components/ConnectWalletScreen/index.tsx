@@ -1,5 +1,5 @@
 import { Theme, withTheme } from '@material-ui/core'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useState, useEffect } from 'react'
 
 import { SvgIcon } from '@sb/components'
 import {
@@ -12,6 +12,7 @@ import LightLogo from '@icons/lightLogo.svg'
 
 import { COLORS } from '../../../variables/variables'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { getRegionData } from '@core/hoc/withRegionCheck'
 
 interface ConnectWalletContentProps {
   theme: Theme
@@ -57,12 +58,18 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
+  const [isFromRestrictedRegion, setIsFromRestrictedRegion] = useState<boolean>(false)
+  useEffect(() => {
+    getRegionData({ setIsFromRestrictedRegion })
+  }, [setIsFromRestrictedRegion])
+
   const buttonWithModal = (
     <>
       <BtnCustom
         onClick={() => {
           setIsConnectWalletPopupOpen(true)
         }}
+        disabled={isFromRestrictedRegion}
         btnColor="#F8FAFF"
         backgroundColor={COLORS.primary}
         btnWidth={sizes.btnWidth}
@@ -78,7 +85,7 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
           whiteSpace: 'nowrap',
         }}
       >
-        Connect wallet
+        {isFromRestrictedRegion ? `Restricted region` : `Connect wallet`}
       </BtnCustom>
       <ConnectWalletPopup
         theme={theme}
