@@ -64,6 +64,7 @@ export const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
   background: #222429;
   border-radius: 1.6rem;
+  font-size: 16px;
 `
 
 export const ClaimRewardsStyledPaper = styled(({ ...props }) => (
