@@ -8,6 +8,7 @@ import {
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Loading } from '@sb/components'
 
 import LightLogo from '@icons/lightLogo.svg'
 
@@ -95,7 +96,10 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
           whiteSpace: 'nowrap',
         }}
       >
-        {isFromRestrictedRegion ? `Restricted region` : `Connect wallet`}
+        {isRegionCheckIsLoading && (
+            <Loading color="#FFFFFF" size={16} style={{ height: '16px' }} />
+        )}
+        {!isRegionCheckIsLoading && (isFromRestrictedRegion ? `Restricted region` : `Connect wallet`)}
       </BtnCustom>
       <ConnectWalletPopup
         theme={theme}

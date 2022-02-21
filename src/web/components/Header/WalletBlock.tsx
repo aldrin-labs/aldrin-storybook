@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { useWallet, useBalanceInfo } from '@sb/dexUtils/wallet'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Loading } from '@sb/components'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
@@ -57,7 +58,10 @@ export const WalletBlock = () => {
               setIsConnectWalletPopupOpen(true)
             }}
           >
-          {isFromRestrictedRegion ? `Restricted region` : `Connect wallet`}
+          {isRegionCheckIsLoading && (
+            <Loading color="#FFFFFF" size={16} style={{ height: '16px' }} />
+          )}
+          {!isRegionCheckIsLoading && (isFromRestrictedRegion ? `Restricted region` : `Connect wallet`)}
           </WalletButton>
       )}
       {connected && (
