@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Button } from '@sb/components/Button'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
@@ -75,6 +74,7 @@ import {
   SwapBlockTemplate,
   SwapPageLayout,
   CircleIconContainer,
+  SetAmountButton,
 } from './styles'
 import {
   getEstimatedPrice,
@@ -453,35 +453,33 @@ const SwapPage = ({
                     roundSides={['top-left']}
                     appendComponent={
                       <Row>
-                        <Button
-                          minWidth="2rem"
+                        <SetAmountButton
+                          minWidth="0"
                           $fontSize="xs"
                           $fontFamily="demi"
                           $borderRadius="xxl"
                           onClick={halfButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $padding="sm"
                           $color="halfWhite"
                           backgroundColor="#383B45"
                           style={{ marginRight: '0.8rem' }}
                         >
                           Half
-                        </Button>
-                        <Button
-                          minWidth="2rem"
+                        </SetAmountButton>
+                        <SetAmountButton
+                          minWidth="0"
                           $fontSize="xs"
                           $fontFamily="demi"
                           $borderRadius="xxl"
                           onClick={maxButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $padding="sm"
                           $color="halfWhite"
                           backgroundColor="#383B45"
                         >
                           Max
-                        </Button>
+                        </SetAmountButton>
                       </Row>
                     }
                   />
@@ -618,32 +616,37 @@ const SwapPage = ({
                         isTokenABalanceInsufficient,
                         isLoadingSwapRoute,
                         isTooSmallInputAmount,
+                        isSwapInProgress,
                       })}
                     </RowContainer>
-                    <RowContainer>
-                      {getRouteMintsPath(swapRoute).map((mint, index, arr) => {
-                        const { symbol } = tokenInfos.get(mint) || {
-                          symbol: getTokenNameByMintAddress(mint),
-                        }
-                        return (
-                          <>
-                            <Text
-                              color="rgba(248, 250, 255, 0.5)"
-                              padding="0 0.4rem"
-                            >
-                              {symbol}
-                            </Text>
-                            {arr.length - 1 !== index && (
-                              <SvgIcon
-                                src={ArrowRightIcon}
-                                width="0.8em"
-                                height="0.8em"
-                              />
-                            )}
-                          </>
-                        )
-                      })}
-                    </RowContainer>
+                    {!isSwapInProgress && (
+                      <RowContainer>
+                        {getRouteMintsPath(swapRoute).map(
+                          (mint, index, arr) => {
+                            const { symbol } = tokenInfos.get(mint) || {
+                              symbol: getTokenNameByMintAddress(mint),
+                            }
+                            return (
+                              <>
+                                <Text
+                                  color="rgba(248, 250, 255, 0.5)"
+                                  padding="0 0.4rem"
+                                >
+                                  {symbol}
+                                </Text>
+                                {arr.length - 1 !== index && (
+                                  <SvgIcon
+                                    src={ArrowRightIcon}
+                                    width="0.8em"
+                                    height="0.8em"
+                                  />
+                                )}
+                              </>
+                            )
+                          }
+                        )}
+                      </RowContainer>
+                    )}
                   </RowContainer>
                 </SwapButton>
               )}
