@@ -1,3 +1,6 @@
+import { PublicKey } from '@solana/web3.js'
+import BN from 'bn.js'
+
 /* eslint-disable camelcase */
 export interface MarinadeStats {
   available_reserve_balance: number
@@ -33,4 +36,20 @@ export interface MarinadeStats {
   treasury_m_sol_amount: number
   tvl_sol: number
   validators_count: number
+}
+
+export interface PlutoniansStakingPool {
+  owner: PublicKey
+  poolSigner: PublicKey
+  bumpPoolSigner: number
+  stakeTokenMint: PublicKey
+  rewardTokenMint: PublicKey
+  rewardTokenaccount: PublicKey
+  tiers: PublicKey[]
+}
+
+export interface PlutoniansStakingTier {
+  pool: PublicKey
+  apr: BN
+  lockDuration: BN
 }

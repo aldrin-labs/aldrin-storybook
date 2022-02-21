@@ -30,11 +30,7 @@ export const usePlutoniansStakingTiers = () => {
       console.log('Accs: ', accs)
       // window.PLUTO = program
       const pools = accs.map((acc) => {
-        console.log(
-          'Decode acc: ',
-          acc.account.data.byteLength,
-          acc.pubkey.toString()
-        )
+        console.log('Decode acc: ', acc.account.data, acc.pubkey.toString())
         // return program.coder.accounts.decode('StakingPool', acc.account.data)
       })
       // const pools = await
