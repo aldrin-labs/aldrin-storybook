@@ -9,10 +9,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Button } from '@sb/components/Button'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import {
-  costOfAddingToken,
-  TRANSACTION_COMMON_SOL_FEE,
-} from '@sb/components/TraidingTerminal/utils'
+import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
@@ -222,17 +219,6 @@ const SwapPage = ({
       selectedBaseTokenAddressFromSeveral
     )
 
-  // if we swap native sol to smth, we need to leave some SOL for covering fees
-  if (nativeSOLTokenData?.address === userBaseTokenAccount) {
-    const solFees = TRANSACTION_COMMON_SOL_FEE + costOfAddingToken
-
-    if (maxBaseAmount >= solFees) {
-      maxBaseAmount -= solFees
-    } else {
-      maxBaseAmount = 0
-    }
-  }
-
   const { amount: maxQuoteAmount } = getTokenDataByMint(
     allTokensData,
     quoteTokenMintAddress,
@@ -253,6 +239,22 @@ const SwapPage = ({
     outputMint: quoteTokenMintAddress,
     slippage,
   })
+
+  const networkFee = depositAndFee
+    ? (depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
+        depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
+        depositAndFee.signatureFee) /
+      LAMPORTS_PER_SOL
+    : swapRoute?.marketInfos.length * TRANSACTION_COMMON_SOL_FEE
+
+  // if we swap native sol to smth, we need to leave some SOL for covering fees
+  if (nativeSOLTokenData?.address === userBaseTokenAccount) {
+    if (maxBaseAmount >= networkFee) {
+      maxBaseAmount -= networkFee
+    } else {
+      maxBaseAmount = 0
+    }
+  }
 
   const { inAmount, outAmount, outAmountWithSlippage, priceImpactPct } =
     swapRoute || {
@@ -296,13 +298,6 @@ const SwapPage = ({
       ...ALL_TOKENS_MINTS.map(({ address }) => address.toString()),
     ]),
   ]
-
-  const networkFee = depositAndFee
-    ? (depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
-        depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
-        depositAndFee.signatureFee) /
-      LAMPORTS_PER_SOL
-    : swapRoute?.marketInfos.length * TRANSACTION_COMMON_SOL_FEE
 
   const outputUSD = +outputAmount * quotePrice
 
