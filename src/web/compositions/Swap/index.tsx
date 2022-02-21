@@ -560,13 +560,7 @@ const SwapPage = ({
             )}
             <RowContainer>
               {!publicKey ? (
-                <TooltipRegionBlocker
-                  title={`
-                  Sorry, Aldrin.com doesn't offer its services in your region.
-                  If you think your access is restricted by mistake or have another
-                  question, please contact us via: contact@aldrin.com
-                  `}
-                >
+                <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
                   <span>
                     <BtnCustom
                       theme={theme}
