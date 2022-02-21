@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { useWallet, useBalanceInfo } from '@sb/dexUtils/wallet'
@@ -18,6 +18,7 @@ import {
   WalletAddress,
   BalanceTitle,
 } from './styles'
+import { getRegionData } from '@core/hoc/withRegionCheck'
 
 export const WalletBlock = () => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
@@ -32,15 +33,21 @@ export const WalletBlock = () => {
   }
   const SOLAmount = amount / 10 ** decimals
 
+  const [isFromRestrictedRegion, setIsFromRestrictedRegion] = useState<boolean>(false)
+  useEffect(() => {
+    getRegionData({ setIsFromRestrictedRegion })
+  }, [setIsFromRestrictedRegion])
+
   return (
     <>
       {!connected && (
         <WalletButton
+          disabled={isFromRestrictedRegion}
           onClick={() => {
             setIsConnectWalletPopupOpen(true)
           }}
         >
-          Connect wallet
+        {isFromRestrictedRegion ? `Restricted region` : `Connect wallet`}
         </WalletButton>
       )}
       {connected && (
