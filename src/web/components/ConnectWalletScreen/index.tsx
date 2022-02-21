@@ -60,47 +60,59 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
-  const [isRegionCheckIsLoading, setRegionCheckIsLoading] = useState<boolean>(false)
-  const [isFromRestrictedRegion, setIsFromRestrictedRegion] = useState<boolean>(false)
+  const [isRegionCheckIsLoading, setRegionCheckIsLoading] =
+    useState<boolean>(false)
+  const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
+    useState<boolean>(false)
 
   useEffect(() => {
     setRegionCheckIsLoading(true)
-    getRegionData({ setIsFromRestrictedRegion })
-    .then(() => {
+    getRegionData({ setIsFromRestrictedRegion }).then(() => {
       setRegionCheckIsLoading(false)
     })
   }, [setIsFromRestrictedRegion])
 
   const buttonWithModal = (
     <>
-      <BtnCustom
-        onClick={() => {
-          if (isRegionCheckIsLoading || isFromRestrictedRegion) {
-            return
-          }
-          setIsConnectWalletPopupOpen(true)
-        }}
-        disabled={isFromRestrictedRegion}
-        btnColor="#F8FAFF"
-        backgroundColor={COLORS.primary}
-        btnWidth={sizes.btnWidth}
-        borderColor={COLORS.primary}
-        textTransform="capitalize"
-        height={sizes.btnHeight}
-        borderRadius="0.5em"
-        fontSize="1em"
-        style={{
-          display: 'flex',
-          textTransform: 'none',
-          padding: '0.5em',
-          whiteSpace: 'nowrap',
-        }}
+      <DarkTooltip
+        title={`
+    Sorry, Aldrin.com doesn't offer its services in your region.
+    If you think your access is restricted by mistake or have another
+    question, please contact us via: contact@aldrin.com
+    `}
       >
-        {isRegionCheckIsLoading && (
-            <Loading color="#FFFFFF" size={16} style={{ height: '16px' }} />
-        )}
-        {!isRegionCheckIsLoading && (isFromRestrictedRegion ? `Restricted region` : `Connect wallet`)}
-      </BtnCustom>
+        <span>
+          <BtnCustom
+            onClick={() => {
+              if (isRegionCheckIsLoading || isFromRestrictedRegion) {
+                return
+              }
+              setIsConnectWalletPopupOpen(true)
+            }}
+            disabled={isFromRestrictedRegion}
+            btnColor="#F8FAFF"
+            backgroundColor={COLORS.primary}
+            btnWidth={sizes.btnWidth}
+            borderColor={COLORS.primary}
+            textTransform="capitalize"
+            height={sizes.btnHeight}
+            borderRadius="0.5em"
+            fontSize="1em"
+            style={{
+              display: 'flex',
+              textTransform: 'none',
+              padding: '0.5em',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {isRegionCheckIsLoading && (
+              <Loading color="#FFFFFF" size={16} style={{ height: '16px' }} />
+            )}
+            {!isRegionCheckIsLoading &&
+              (isFromRestrictedRegion ? `Restricted region` : `Connect wallet`)}
+          </BtnCustom>
+        </span>
+      </DarkTooltip>
       <ConnectWalletPopup
         theme={theme}
         open={isConnectWalletPopupOpen && !isFromRestrictedRegion}

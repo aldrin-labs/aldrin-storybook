@@ -35,13 +35,14 @@ export const WalletBlock = () => {
   }
   const SOLAmount = amount / 10 ** decimals
 
-  const [isRegionCheckIsLoading, setRegionCheckIsLoading] = useState<boolean>(false)
-  const [isFromRestrictedRegion, setIsFromRestrictedRegion] = useState<boolean>(false)
+  const [isRegionCheckIsLoading, setRegionCheckIsLoading] =
+    useState<boolean>(false)
+  const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
+    useState<boolean>(false)
 
   useEffect(() => {
     setRegionCheckIsLoading(true)
-    getRegionData({ setIsFromRestrictedRegion })
-    .then(() => {
+    getRegionData({ setIsFromRestrictedRegion }).then(() => {
       setRegionCheckIsLoading(false)
     })
   }, [setIsFromRestrictedRegion])
@@ -49,20 +50,33 @@ export const WalletBlock = () => {
   return (
     <>
       {!connected && (
-          <WalletButton
-            disabled={isFromRestrictedRegion}
-            onClick={() => {
-              if (isFromRestrictedRegion || isRegionCheckIsLoading) {
-                return
-              }
-              setIsConnectWalletPopupOpen(true)
-            }}
-          >
-          {isRegionCheckIsLoading && (
-            <Loading color="#FFFFFF" size={16} style={{ height: '16px' }} />
-          )}
-          {!isRegionCheckIsLoading && (isFromRestrictedRegion ? `Restricted region` : `Connect wallet`)}
-          </WalletButton>
+        <DarkTooltip
+          title={`
+        Sorry, Aldrin.com doesn't offer its services in your region.
+        If you think your access is restricted by mistake or have another
+        question, please contact us via: contact@aldrin.com
+        `}
+        >
+          <span>
+            <WalletButton
+              disabled={isFromRestrictedRegion}
+              onClick={() => {
+                if (isFromRestrictedRegion || isRegionCheckIsLoading) {
+                  return
+                }
+                setIsConnectWalletPopupOpen(true)
+              }}
+            >
+              {isRegionCheckIsLoading && (
+                <Loading color="#FFFFFF" size={16} style={{ height: '16px' }} />
+              )}
+              {!isRegionCheckIsLoading &&
+                (isFromRestrictedRegion
+                  ? `Restricted region`
+                  : `Connect wallet`)}
+            </WalletButton>
+          </span>
+        </DarkTooltip>
       )}
       {connected && (
         <WalletDataContainer>
