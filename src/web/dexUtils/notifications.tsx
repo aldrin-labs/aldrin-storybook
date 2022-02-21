@@ -18,60 +18,50 @@ export const notify = ({
   type?: string
   persist?: boolean
 }) => {
+  let notificationDescription = null
   console.log('notification: ', message)
+
   if (txid) {
-    description = (
+    notificationDescription = (
       <Link
         rel="noopener noreferrer"
         target="_blank"
         to={`https://solscan.io/tx/${txid}`}
         href={`https://solscan.io/tx/${txid}`}
       >
-        {description ? (
-          <div
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            marginLeft: '.5rem',
+            height: '4em',
+          }}
+        >
+          <span
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              marginLeft: '.5rem',
-              height: '6rem',
+              color: '#C1C1C1',
+              fontFamily: 'Avenir Next',
+              fontSize: '1.6rem',
             }}
           >
-            <span
-              style={{
-                color: '#fff',
-                fontFamily: 'Avenir Next Demi',
-                fontSize: '1.6rem',
-              }}
-            >
-              {message}
-            </span>
-            <p style={{ color: '#fff', margin: 0 }}>
-              {description}{' '}
-              <span style={{ color: '#09ACC7' }}>
-                {txid.slice(0, 8)}...{txid.slice(txid.length - 8)}
-              </span>
-            </p>
-          </div>
-        ) : (
-          <span style={{ color: '#fff' }}>
-            {message}:{' '}
-            <span style={{ color: '#09ACC7' }}>
-              {txid.slice(0, 8)}...{txid.slice(txid.length - 8)}
-            </span>
+            {message}
           </span>
-        )}
+          <p style={{ color: '#C1C1C1', margin: 0 }}>
+            <span>View transaction{description ? ':' : ''} </span> {description}
+          </p>
+        </div>
       </Link>
     )
   } else {
-    description = (
+    notificationDescription = (
       <div
         style={{
           display: 'flex',
           flexDirection: 'column',
           justifyContent: description ? 'space-between' : 'center',
           marginLeft: '.5rem',
-          height: '6rem',
+          height: '4em',
         }}
       >
         <span
@@ -84,13 +74,16 @@ export const notify = ({
           {message}
         </span>
         {description && (
-          <p style={{ color: '#fff', margin: 0 }}>{description}</p>
+          <p style={{ color: '#C1C1C1', margin: 0 }}>{description}</p>
         )}
       </div>
     )
   }
 
-  return SnackbarUtils[type](description, {
+  // we cannot add new type so for loading we use determined one
+  if (type === 'loading') type = 'warning'
+
+  return SnackbarUtils[type](notificationDescription, {
     variant: type,
     persist,
   })
