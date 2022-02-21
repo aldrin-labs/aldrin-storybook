@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { useWallet, useBalanceInfo } from '@sb/dexUtils/wallet'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Loading } from '@sb/components'
+import { Loading, TooltipRegionBlocker } from '@sb/components'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
@@ -50,13 +50,7 @@ export const WalletBlock = () => {
   return (
     <>
       {!connected && (
-        <DarkTooltip
-          title={`
-        Sorry, Aldrin.com doesn't offer its services in your region.
-        If you think your access is restricted by mistake or have another
-        question, please contact us via: contact@aldrin.com
-        `}
-        >
+        <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
           <span>
             <WalletButton
               disabled={isFromRestrictedRegion}
@@ -76,7 +70,7 @@ export const WalletBlock = () => {
                   : `Connect wallet`)}
             </WalletButton>
           </span>
-        </DarkTooltip>
+        </TooltipRegionBlocker>
       )}
       {connected && (
         <WalletDataContainer>

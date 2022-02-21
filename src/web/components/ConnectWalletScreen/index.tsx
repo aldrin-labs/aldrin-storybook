@@ -8,7 +8,7 @@ import {
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Loading } from '@sb/components'
+import { Loading, TooltipRegionBlocker } from '@sb/components'
 
 import LightLogo from '@icons/lightLogo.svg'
 
@@ -74,13 +74,7 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
 
   const buttonWithModal = (
     <>
-      <DarkTooltip
-        title={`
-    Sorry, Aldrin.com doesn't offer its services in your region.
-    If you think your access is restricted by mistake or have another
-    question, please contact us via: contact@aldrin.com
-    `}
-      >
+      <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
         <span>
           <BtnCustom
             onClick={() => {
@@ -112,7 +106,7 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
               (isFromRestrictedRegion ? `Restricted region` : `Connect wallet`)}
           </BtnCustom>
         </span>
-      </DarkTooltip>
+      </TooltipRegionBlocker>
       <ConnectWalletPopup
         theme={theme}
         open={isConnectWalletPopupOpen && !isFromRestrictedRegion}
