@@ -457,6 +457,11 @@ const SwapPage = ({
                     amount={formatNumberToUSFormat(inputAmount)}
                     disabled={false}
                     onChange={(v) => {
+                      if (v === '') {
+                        setInputAmount(v)
+                        return
+                      }
+
                       if (
                         numberWithOneDotRegexp.test(v) &&
                         getNumberOfIntegersFromNumber(v) <= 8 &&
@@ -532,7 +537,11 @@ const SwapPage = ({
                         color="#A6A6A6"
                       >
                         ≈$
-                        {outputUSD ? stripDigitPlaces(outputUSD, 2) : '0.00'}
+                        {outputUSD
+                          ? formatNumberToUSFormat(
+                              stripDigitPlaces(outputUSD, 2)
+                            )
+                          : '0.00'}
                       </Text>
                     }
                   />
@@ -714,7 +723,9 @@ const SwapPage = ({
                         }
                       />
                       <RowValue>
-                        <RowAmountValue>{estimatedPrice}</RowAmountValue>
+                        <RowAmountValue>
+                          {formatNumberToUSFormat(estimatedPrice)}
+                        </RowAmountValue>
                         {priceShowField === 'input' ? quoteSymbol : baseSymbol}
                       </RowValue>
                     </Row>
@@ -735,12 +746,15 @@ const SwapPage = ({
                     <RowTitle>Trading fee:</RowTitle>
                     <RowValue>
                       $
-                      {stripByAmount(
-                        getFeeFromSwapRoute({
-                          route: swapRoute,
-                          tokenInfos,
-                          pricesMap: dexTokensPricesMap,
-                        })
+                      {formatNumberToUSFormat(
+                        stripDigitPlaces(
+                          getFeeFromSwapRoute({
+                            route: swapRoute,
+                            tokenInfos,
+                            pricesMap: dexTokensPricesMap,
+                          }),
+                          2
+                        )
                       )}
                     </RowValue>
                   </BlackRow>
@@ -775,7 +789,9 @@ const SwapPage = ({
                 <BlackRow width="100%">
                   <RowTitle>Minimum Received:</RowTitle>
                   <RowValue>
-                    {stripByAmount(outAmountWithSlippageWithoutDecimals)}{' '}
+                    {formatNumberToUSFormat(
+                      stripByAmount(outAmountWithSlippageWithoutDecimals)
+                    )}{' '}
                     {quoteSymbol}
                   </RowValue>
                 </BlackRow>
