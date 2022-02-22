@@ -259,6 +259,16 @@ export const StyledLink = styled.a`
     svg path:not(.not-fill) {
       fill: ${COLORS.white};
     }
+
+    svg {
+      defs {
+        clipPath {
+          rect {
+            fill: ${COLORS.white};
+          }
+        }
+      }
+    }
   }
 
   &:active {

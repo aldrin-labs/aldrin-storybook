@@ -183,7 +183,7 @@ export const WalletContainer = styled.div`
 
 export const LogoLink = styled(Link)`
   // height: 100%;
-  margin-right: ${SIZE.defaultPadding};
+  margin-right: 60px;
   display: block;
 `
 
@@ -278,13 +278,14 @@ export const WalletButton = styled(Button)`
 `
 
 export const WalletDataContainer = styled.div`
-  width: 17rem;
+  width: 20rem;
   border-radius: ${BORDER_RADIUS.md};
   display: flex;
   flex-direction: row;
   align-items: center;
 
   @media (min-width: ${BREAKPOINTS.md}) {
+    width: 17rem;
     flex-direction: column;
     align-items: flex-start;
   }
@@ -328,9 +329,11 @@ export const WalletData = styled.div`
   }
 
   @media (max-width: 1200px) {
+    padding: 1rem 1.5rem;
+    height: 7rem;
     img {
-      width: 20px;
-      height: 20px;
+      width: 25px;
+      height: 25px;
     }
   }
 `
@@ -359,7 +362,7 @@ export const WalletAddress = styled(WalletName)`
   font-size: ${FONT_SIZES.sm};
 
   @media (max-width: 1200px) {
-    font-size: ${FONT_SIZES.es};
+    font-size: ${FONT_SIZES.sm};
   }
 `
 
@@ -387,6 +390,6 @@ export const BalanceTitle = styled.span`
   color: ${COLORS.newGreen};
   font-weight: 600;
   @media (max-width: 1200px) {
-    font-size: 0.6125em;
+    font-size: 0.7125em;
   }
 `

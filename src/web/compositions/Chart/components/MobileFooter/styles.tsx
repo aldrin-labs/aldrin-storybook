@@ -15,7 +15,7 @@ export const StyledLink = styled(NavLink)`
   text-decoration: none;
   color: ${COLORS.primaryWhite};
   font-family: Avenir Next Medium;
-  font-size: 1.6rem;
+  font-size: 1.9rem;
   margin: -1px 20px 0;
   border-top: 1px solid transparent;
   span {
@@ -28,7 +28,7 @@ export const StyledLink = styled(NavLink)`
 `
 export const StyledA = styled.a`
   width: 7rem;
-  height: 7rem;
+  height: 6rem;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -36,7 +36,7 @@ export const StyledA = styled.a`
   text-decoration: none;
   color: #fbf2f2;
   font-family: Avenir Next Medium;
-  font-size: 1.6rem;
+  font-size: 1.9rem;
   span {
     margin-top: 1rem;
   }
@@ -62,10 +62,10 @@ export const StyledButton = styled.div`
   align-items: center;
   flex-direction: column;
   width: 7rem;
-  height: 7rem;
+  height: 6rem;
   text-align: center;
   text-decoration: none;
   color: #fbf2f2;
   font-family: Avenir Next Medium;
-  font-size: 1.6rem;
+  font-size: 1.9rem;
 `

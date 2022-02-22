@@ -24,7 +24,12 @@ import {
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Coins from './bg.png'
-import { LogoWrap, AbsoluteImg } from './styles'
+import {
+  LogoWrap,
+  AbsoluteImg,
+  MarketcapBlock,
+  Block as StatsBlock,
+} from './styles'
 import { RinStakingBlockProps } from './types'
 
 const Block: React.FC<RinStakingBlockProps> = (props) => {
@@ -107,7 +112,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
         </ContentBlock>
         <Line />{' '}
         <StretchedContent>
-          <ContentBlock width="31%">
+          <StatsBlock width="31%">
             <Row justify="flex-start" margin="0 0 2rem 0">
               <InlineText color="primaryGray" size="sm">
                 RIN Price
@@ -119,8 +124,8 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
               </InlineText>
               {rinPrice ? rinPrice.toFixed(2) : ' ---'}
             </InlineText>
-          </ContentBlock>
-          <ContentBlock width="31%">
+          </StatsBlock>
+          <StatsBlock width="31%">
             <Row justify="flex-start" margin="0 0 2rem 0">
               <InlineText color="primaryGray" size="sm">
                 Circulating Supply
@@ -131,8 +136,8 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
                 ? stripByAmountAndFormat(poolInfo.rinCirculationSupply, 2)
                 : ' ---'}
             </InlineText>
-          </ContentBlock>
-          <ContentBlock width="31%">
+          </StatsBlock>
+          <MarketcapBlock width="31%">
             <Row justify="flex-start" margin="0 0 2rem 0">
               <InlineText color="primaryGray" size="sm">
                 Marketcap
@@ -144,7 +149,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
               </InlineText>
               {marketCap ? stripByAmountAndFormat(marketCap, 2) : ' ---'}
             </InlineText>
-          </ContentBlock>
+          </MarketcapBlock>
         </StretchedContent>
         <RowContainer>
           {' '}

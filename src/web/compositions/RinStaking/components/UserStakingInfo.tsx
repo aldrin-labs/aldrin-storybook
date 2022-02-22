@@ -18,7 +18,10 @@ import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { BUY_BACK_RIN_ACCOUNT_ADDRESS, DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
+import {
+  BUY_BACK_RIN_ACCOUNT_ADDRESS,
+  DAYS_TO_CHECK_BUY_BACK,
+} from '@sb/dexUtils/staking/config'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
@@ -135,13 +138,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ])
   }
 
-
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
   })
 
   const buyBackAmountWithDecimals =
-  buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
+    buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
 
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
     farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
@@ -390,6 +392,22 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const totalStakedUsdValue = isBalancesShowing
     ? stakedInUsd
     : new Array(stakedInUsd.length).fill('∗').join('')
+
+  const strippedEstRewards = stripByAmountAndFormat(estimatedRewards || 0, 4)
+
+  const userEstRewards = isBalancesShowing
+    ? stripByAmountAndFormat(estimatedRewards, 4)
+    : new Array(strippedEstRewards.length).fill('∗').join('')
+
+  const strippedEstRewardsUSD = stripByAmountAndFormat(
+    estimatedRewards * tokenPrice || 0,
+    2
+  )
+
+  const userEstRewardsUSD = isBalancesShowing
+    ? stripByAmountAndFormat(estimatedRewards, 4)
+    : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
+
   return (
     <>
       <Row>
@@ -534,19 +552,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 </DarkTooltip>
               </FlexBlock>
               <BigNumber>
-                <InlineText>
-                  {stripByAmountAndFormat(estimatedRewards, 4)}{' '}
-                </InlineText>{' '}
+                <InlineText>{userEstRewards} </InlineText>{' '}
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>
-                  $
-                  {stripByAmountAndFormat(
-                    estimatedRewards * tokenPrice || 0,
-                    2
-                  )}
-                </InlineText>{' '}
+                <InlineText>${userEstRewardsUSD}</InlineText>{' '}
                 <FlexBlock>
                   <RestakeButton
                     disabled={isClaimDisabled || loading.claim}
