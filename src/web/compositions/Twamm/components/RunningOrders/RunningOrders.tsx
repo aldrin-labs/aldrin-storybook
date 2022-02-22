@@ -1,20 +1,20 @@
+import { Theme } from '@material-ui/core'
+import withTheme from '@material-ui/core/styles/withTheme'
 import { COLORS } from '@variables/variables'
-import React, {useState} from 'react'
+import React from 'react'
+import { compose } from 'recompose'
 
 import { TableWithSort } from '@sb/components'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
+import { PairSettings } from '@sb/dexUtils/twamm/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import {
   combineRunningOrdersTable,
   runningOrdersColumnNames,
 } from './RunningOrders.utils'
-import {PairSettings} from "@sb/dexUtils/twamm/types";
-import {BtnCustom} from "@sb/components/BtnCustom/BtnCustom.styles";
-import {compose} from "recompose";
-import withTheme from "@material-ui/core/styles/withTheme";
-import {Theme} from "@material-ui/core";
 
 const RunningOrdersTable = ({
   theme,
@@ -30,8 +30,8 @@ const RunningOrdersTable = ({
   stylesForTable?: {}
   tableBodyStyles?: {}
   styles?: {}
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] },
-  setIsConnectWalletPopupOpen: (value: boolean) => void,
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+  setIsConnectWalletPopupOpen: (value: boolean) => void
 }) => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -41,12 +41,12 @@ const RunningOrdersTable = ({
       (el) => el.symbol === 'RIN'
     )[0]?.price || 0
 
-  console.log('rinTokenPrice', rinTokenPrice)
-
   const getTokenPriceByName = (name: string) => {
-    return getDexTokensPricesQuery?.getDexTokensPrices?.filter(
-      (el) => el.symbol === name
-    )[0]?.price || 0
+    return (
+      getDexTokensPricesQuery?.getDexTokensPrices?.filter(
+        (el) => el.symbol === name
+      )[0]?.price || 0
+    )
   }
 
   const runningOrdersProcessedData = combineRunningOrdersTable({
@@ -54,7 +54,7 @@ const RunningOrdersTable = ({
     connection,
     getDexTokensPricesQuery,
     getTokenPriceByName,
-    rinTokenPrice
+    rinTokenPrice,
   })
 
   return (
@@ -103,9 +103,9 @@ const RunningOrdersTable = ({
           },
         }}
         emptyTableText={
-          wallet.connected ?
+          wallet.connected ? (
             'You have no running orders'
-            :
+          ) : (
             <BtnCustom
               theme={theme}
               onClick={() => setIsConnectWalletPopupOpen(true)}
@@ -125,6 +125,7 @@ const RunningOrdersTable = ({
             >
               Connect wallet
             </BtnCustom>
+          )
         }
         data={{ body: runningOrdersProcessedData }}
         columnNames={runningOrdersColumnNames}
@@ -133,6 +134,4 @@ const RunningOrdersTable = ({
   )
 }
 
-export default compose(
-  withTheme(),
-)(RunningOrdersTable)
+export default compose(withTheme())(RunningOrdersTable)

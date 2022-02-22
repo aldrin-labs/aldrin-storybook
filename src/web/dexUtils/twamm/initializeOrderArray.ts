@@ -1,19 +1,18 @@
 import {
-  Account,
   Connection,
   Keypair,
   PublicKey,
   SystemProgram,
   Transaction,
 } from '@solana/web3.js'
+
 import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
+
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-import { WalletAdapter } from '../types'
 import { signAndSendSingleTransaction } from '../transactions'
+import { WalletAdapter } from '../types'
 import { PairSettings } from './types'
-import { Program, Provider } from '@project-serum/anchor'
-import TwammProgramIdl from '@core/idls/twamm.json'
 
 export const initializeOrderArray = async ({
   wallet,
@@ -34,94 +33,76 @@ export const initializeOrderArray = async ({
   side: { ask: {} } | { bid: {} } | null
   sideText: string | null
 }) => {
-  const programId = new PublicKey(TWAMM_PROGRAM_ADDRESS)
-
-  const program = new Program(
-    TwammProgramIdl,
-    programId,
-    new Provider(connection, wallet, Provider.defaultOptions())
-  )
-
-  const orderArray = Keypair.generate()
-
-  let [signer, signerNonce] = await PublicKey.findProgramAddress(
-    [orderArray.publicKey.toBuffer()],
-    program.programId
-  )
-
-  const transaction = new Transaction()
-  const createOrderArrayInstruction =
-    await program.account.orderArray.createInstruction(orderArray)
-
-  console.log('createOrderArrayInstruction', createOrderArrayInstruction)
-
-  transaction.add(createOrderArrayInstruction)
-
-  const tokenFrom = new Token(wallet, connection, mintFrom, TOKEN_PROGRAM_ID)
-  const tokenTo = new Token(wallet, connection, mintTo, TOKEN_PROGRAM_ID)
-
-  let tokenAccountFromInstruction = new Transaction()
-  let tokenAccountFromAccount = new Account()
-
-  await tokenFrom.createAccount(signer).then((res) => {
-    const [publicKey, account, transaction] = res
-    tokenAccountFromInstruction = transaction
-    tokenAccountFromAccount = account
-  })
-  transaction.add(tokenAccountFromInstruction)
-
-  let tokenAccountToInstruction = new Transaction()
-  let tokenAccountToAccount = new Account()
-  await tokenTo.createAccount(signer).then((res) => {
-    const [publicKey, account, transaction] = res
-    tokenAccountToInstruction = transaction
-    tokenAccountToAccount = account
-  })
-
-  transaction.add(tokenAccountToInstruction)
-
-  const initializeOrderArrayInstruction =
-    await program.instruction.initializeOrderArray(signerNonce, side, {
-      accounts: {
-        pairSettings: new PublicKey(pairSettings.publicKey),
-        orders: orderArray.publicKey,
-        orderArraySigner: signer,
-        initializer: wallet.publicKey,
-        twammFromTokenVault: tokenAccountFromAccount.publicKey,
-        twammToTokenVault: tokenAccountToAccount.publicKey,
-        feeAccount:
-          sideText === 'ask'
-            ? new PublicKey(pairSettings.baseTokenFeeAccount)
-            : new PublicKey(pairSettings.quoteTokenFeeAccount),
-        tokenProgram: TOKEN_PROGRAM_ID,
-        systemProgram: SystemProgram.programId,
-      },
+  try {
+    const program = ProgramsMultiton.getProgramByAddress({
+      wallet,
+      connection,
+      programAddress: TWAMM_PROGRAM_ADDRESS,
     })
 
-  transaction.add(initializeOrderArrayInstruction)
+    const orderArray = Keypair.generate()
 
-  let returnValue = null
+    const [signer, signerNonce] = await PublicKey.findProgramAddress(
+      [orderArray.publicKey.toBuffer()],
+      program.programId
+    )
 
-  await signAndSendSingleTransaction({
-    transaction,
-    wallet,
-    signers: [orderArray, tokenAccountFromAccount, tokenAccountToAccount],
-    connection,
-    focusPopup: true,
-  })
-    .then((res) => {
-      console.log('returnValue', {
-        orderArray,
-        tokenAccountFrom: tokenAccountFromAccount.publicKey,
+    const transaction = new Transaction()
+    const createOrderArrayInstruction =
+      await program.account.orderArray.createInstruction(orderArray)
+
+    transaction.add(createOrderArrayInstruction)
+
+    const tokenFrom = new Token(wallet, connection, mintFrom, TOKEN_PROGRAM_ID)
+    const tokenTo = new Token(wallet, connection, mintTo, TOKEN_PROGRAM_ID)
+
+    // let tokenAccountFromInstruction = new Transaction()
+    // let tokenAccountFromAccount = new Account()
+
+    const [_pkFrom, tokenAccountFromAccount, tokenAccountFromInstruction] =
+      await tokenFrom.createAccount(signer)
+
+    const [_pkTo, tokenAccountToAccount, tokenAccountToInstruction] =
+      await tokenTo.createAccount(signer)
+
+    transaction.add(tokenAccountFromInstruction)
+
+    transaction.add(tokenAccountToInstruction)
+
+    const initializeOrderArrayInstruction =
+      await program.instruction.initializeOrderArray(signerNonce, side, {
+        accounts: {
+          pairSettings: new PublicKey(pairSettings.publicKey),
+          orders: orderArray.publicKey,
+          orderArraySigner: signer,
+          initializer: wallet.publicKey,
+          twammFromTokenVault: tokenAccountFromAccount.publicKey,
+          twammToTokenVault: tokenAccountToAccount.publicKey,
+          feeAccount:
+            sideText === 'ask'
+              ? new PublicKey(pairSettings.baseTokenFeeAccount)
+              : new PublicKey(pairSettings.quoteTokenFeeAccount),
+          tokenProgram: TOKEN_PROGRAM_ID,
+          systemProgram: SystemProgram.programId,
+        },
       })
-      returnValue = {
-        orderArray,
-        tokenAccountFrom: tokenAccountFromAccount.publicKey,
-      }
-    })
-    .catch((error) => {
-      console.log('initializeOrderArrayError', error)
+
+    transaction.add(initializeOrderArrayInstruction)
+
+    await signAndSendSingleTransaction({
+      transaction,
+      wallet,
+      signers: [orderArray, tokenAccountFromAccount, tokenAccountToAccount],
+      connection,
+      focusPopup: true,
     })
 
-  return returnValue
+    return {
+      orderArray,
+      tokenAccountFrom: tokenAccountFromAccount.publicKey,
+    }
+  } catch (e) {
+    console.warn('Unable to initialize order array:', e)
+    return null
+  }
 }

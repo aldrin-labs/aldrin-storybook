@@ -18,8 +18,6 @@ import { signAndSendSingleTransaction } from '../transactions'
 import { WalletAdapter } from '../types'
 import { WRAPPED_SOL_MINT } from '../wallet'
 import { PairSettings } from './types'
-import { Program, Provider } from '@project-serum/anchor'
-import TwammProgramIdl from '@core/idls/twamm.json'
 
 export const addOrder = async ({
   wallet,
@@ -45,15 +43,11 @@ export const addOrder = async ({
   orderArray: any
   side: string | null
 }) => {
-  const programId = new PublicKey(TWAMM_PROGRAM_ADDRESS)
-
-  const program = new Program(
-    TwammProgramIdl,
-    programId,
-    new Provider(connection, wallet, Provider.defaultOptions())
-  )
-
-  console.log(program)
+  const program = ProgramsMultiton.getProgramByAddress({
+    wallet,
+    connection,
+    programAddress: TWAMM_PROGRAM_ADDRESS,
+  })
 
   const Side = {
     Bid: { bid: {} },
@@ -65,10 +59,7 @@ export const addOrder = async ({
 
   const orderArrayFiltered = []
   orderArray.forEach((order) => {
-    console.log({
-      order,
-      pairSettings,
-    })
+
     if (
       order.side[side] &&
       order.pairSettings.toString() === pairSettings.publicKey

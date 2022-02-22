@@ -1,8 +1,6 @@
-import { Program, Provider } from '@project-serum/anchor'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { Connection } from '@solana/web3.js'
 
-import TwammProgramIdl from '@core/idls/twamm.json'
-
+import { ProgramsMultiton } from '../ProgramsMultiton'
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { loadOrdersArrayForTwamm } from './loadOrdersArrayForTwamm'
@@ -19,13 +17,11 @@ export const getParsedRunningOrders = async ({
     connection,
   })
 
-  const programId = new PublicKey(TWAMM_PROGRAM_ADDRESS)
-
-  const program = new Program(
-    TwammProgramIdl,
-    programId,
-    new Provider(connection, wallet, Provider.defaultOptions())
-  )
+  const program = ProgramsMultiton.getProgramByAddress({
+    wallet,
+    connection,
+    programAddress: TWAMM_PROGRAM_ADDRESS,
+  })
 
   const OrdersArray = orders.map((orderArray) => {
     const data = Buffer.from(orderArray.account.data)

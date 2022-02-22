@@ -1,4 +1,3 @@
-import { Program, Provider } from '@project-serum/anchor'
 import { TokenInstructions } from '@project-serum/serum'
 import {
   Connection,
@@ -12,13 +11,11 @@ import { BN } from 'anchor019'
 import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
+import { createSOLAccountAndClose } from '../pools'
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton'
 import { signAndSendSingleTransaction } from '../transactions'
-import { PairSettings, TwammOrder } from './types'
-import TwammProgramIdl from '@core/idls/twamm.json'
-
 import { WRAPPED_SOL_MINT } from '../wallet'
-import { createSOLAccountAndClose } from '../pools'
+import { PairSettings, TwammOrder } from './types'
 
 export const getCloseOrderTransactions = async (params: {
   wallet: WalletAdapter
@@ -44,13 +41,11 @@ export const getCloseOrderTransactions = async (params: {
     Ask: { ask: {} },
   }
 
-  const programId = new PublicKey(TWAMM_PROGRAM_ADDRESS)
-
-  const program = new Program(
-    TwammProgramIdl,
-    programId,
-    new Provider(connection, wallet, Provider.defaultOptions())
-  )
+  const program = ProgramsMultiton.getProgramByAddress({
+    wallet,
+    connection,
+    programAddress: TWAMM_PROGRAM_ADDRESS,
+  })
 
   const [askSigner] = await PublicKey.findProgramAddress(
     [new PublicKey(order.orderArrayPublicKey).toBuffer()],
@@ -111,12 +106,6 @@ export const getCloseOrderTransactions = async (params: {
 
     transactionAfter.add(closeAccountTransaction)
   }
-
-  console.log({
-    order,
-    userBaseTokenAccount,
-    userQuoteTokenAccount,
-  })
 
   const closeOrderTransaction = await program.instruction.closeOrder(
     side === 'Sell' ? Side.Ask : Side.Bid,

@@ -1,50 +1,43 @@
-import {Token, TOKEN_PROGRAM_ID} from '@sb/dexUtils/token/token';
-import {Connection, PublicKey} from '@solana/web3.js';
-import {TokenInstructions} from '@project-serum/serum';
-import {WalletAdapter} from '@sb/dexUtils/types';
+import { TokenInstructions } from '@project-serum/serum'
+import { Connection, PublicKey } from '@solana/web3.js'
+
+import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
+import { WalletAdapter } from '@sb/dexUtils/types'
 
 export const checkAccountForMint = async ({
   wallet,
   connection,
   mint,
-  create
+  create,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  mint: PublicKey,
+  mint: PublicKey
   create: boolean
 }) => {
-  const token = new Token(wallet, connection, mint, TOKEN_PROGRAM_ID);
+  try {
+    const token = new Token(wallet, connection, mint, TOKEN_PROGRAM_ID)
 
-  let tokenWallet = null;
-  const tokenAccounts = connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
-    programId: TokenInstructions.TOKEN_PROGRAM_ID,
-  }).then(resAccounts => {
-    console.log(resAccounts, 'getParsedTokenAccountsByOwner')
-    tokenWallet = resAccounts.value.find(account => {
-      if(account.account.data.parsed.info.mint === mint.toString()) {
-        return account.pubkey;
+    const resAccounts = await connection.getParsedTokenAccountsByOwner(
+      wallet.publicKey,
+      {
+        programId: TokenInstructions.TOKEN_PROGRAM_ID,
       }
-    })
+    )
 
-    if(create && (!tokenWallet || typeof tokenWallet === 'undefined')) {
-      token.createAccount(wallet.publicKey)
-        .then(resCreateAccount => {
-          console.log(resCreateAccount, 'createAccount')
+    let tokenWallet = resAccounts.value.find(
+      (account) => account.account.data.parsed.info.mint === mint.toString()
+    )?.pubkey
 
-          connection.getAccountInfo(resCreateAccount[0])
-            .then(resAccountInfo => console.log(resAccountInfo, 'accountInfo'))
-            .catch(error => console.log(error, 'accountInfoError'))
-          tokenWallet = resCreateAccount[0];
-          return tokenWallet;
-        })
-        .catch(error => console.log(error));
+    if (create && !tokenWallet) {
+      const [newTokenWallet] = await token.createAccount(wallet.publicKey)
+
+      tokenWallet = newTokenWallet
     }
-    console.log(tokenWallet)
-    return tokenWallet.pubkey;
-  }).catch(error => {
-    console.log('error')
-  });
 
-  return await tokenAccounts;
+    return tokenWallet
+  } catch (e) {
+    console.warn('Unable to get tokenaccount for mint:', mint.toString())
+    return undefined
+  }
 }

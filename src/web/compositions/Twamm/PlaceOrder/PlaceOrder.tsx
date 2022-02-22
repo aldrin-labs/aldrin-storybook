@@ -10,47 +10,38 @@ import { InputWithType } from '@sb/components/InputWithType/InputWithType'
 import { Cell } from '@sb/components/Layout'
 import { Loader } from '@sb/components/Loader/Loader'
 import SvgIcon from '@sb/components/SvgIcon'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
   costOfAddingToken,
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
-import { Text } from '@sb/compositions/Addressbook'
-import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
-import { InputWithSelectorForSwaps } from '@sb/compositions/Swap/components/Inputs'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { TokenAddressesPopup } from '@sb/compositions/Swap/components/TokenAddressesPopup'
 import { useConnection } from '@sb/dexUtils/connection'
-import {
-  getTokenMintAddressByName,
-  getTokenNameByMintAddress,
-} from '@sb/dexUtils/markets'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { addOrder } from '@sb/dexUtils/twamm/addOrder'
+import { PairSettings } from '@sb/dexUtils/twamm/types'
+import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-
+import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
 
 import Arrows from '@icons/switchArrows.svg'
 
-import { withPublicKey } from '@core/hoc/withPublicKey'
-
-
-import { sleep } from '@sb/dexUtils/utils'
-
 // TODO: imports
-import { addOrder } from '@sb/dexUtils/twamm/addOrder'
 
 import { Row, RowContainer } from '../../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../../Pools/index.styles'
 import { getTokenDataByMint } from '../../Pools/utils'
+import { InputWithSelectorForSwaps } from '../components/InputSelectorForSwap'
 import OrderStats from './components/OrderStats/OrderStats'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
-import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { PairSettings } from '@sb/dexUtils/twamm/types'
-import {limitDecimalsCustom} from "@core/utils/chartPageUtils";
 
 const PlaceOrder = ({
   theme,
@@ -180,7 +171,7 @@ const PlaceOrder = ({
       return value
     }
 
-    let newValue = value
+    const newValue = value
     // if (value > max) {
     //   newValue = max
     // }
@@ -190,13 +181,21 @@ const PlaceOrder = ({
   const setBaseAmountWithQuote = async (newBaseAmount: string | number) => {
     const quoteAmount = newBaseAmount * (baseTokenPrice / quoteTokenPrice)
     setBaseAmount(limitDecimalsCustom(newBaseAmount.toString()))
-    setQuoteAmount(limitDecimalsCustom(quoteAmount.toFixed(8).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/,'$1')))
+    setQuoteAmount(
+      limitDecimalsCustom(
+        quoteAmount.toFixed(8).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1')
+      )
+    )
   }
 
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
     const baseAmount = newQuoteAmount * (quoteTokenPrice / baseTokenPrice)
 
-    setBaseAmount(limitDecimalsCustom(baseAmount.toFixed(8).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/,'$1')))
+    setBaseAmount(
+      limitDecimalsCustom(
+        baseAmount.toFixed(8).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1')
+      )
+    )
     setQuoteAmount(limitDecimalsCustom(newQuoteAmount.toString()))
   }
 
@@ -270,7 +269,7 @@ const PlaceOrder = ({
                   tokenDecimals={selectedPairSettings.baseMintDecimals}
                   wallet={wallet}
                   publicKey={publicKey}
-                  placeholder={'0.00'}
+                  placeholder="0.00"
                   theme={theme}
                   directionFrom
                   value={+baseAmount || +quoteAmount === 0 ? baseAmount : ''}
@@ -310,7 +309,7 @@ const PlaceOrder = ({
                   tokenDecimals={selectedPairSettings.quoteMintDecimals}
                   wallet={wallet}
                   publicKey={publicKey}
-                  placeholder={'0.00'}
+                  placeholder="0.00"
                   theme={theme}
                   disabled={
                     !baseTokenMintAddress ||

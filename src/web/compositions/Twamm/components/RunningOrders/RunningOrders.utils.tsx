@@ -1,4 +1,3 @@
-/* eslint-disable no-prototype-builtins */
 import { Connection } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
@@ -86,8 +85,6 @@ export const combineRunningOrdersTable = ({
       ?.flat()
       .filter((order) => order?.signer === wallet?.publicKey?.toString()) || []
 
-  console.log('runningOrdersArray', runningOrdersArray)
-
   return runningOrdersArray
     ?.map((runningOrder, index) => {
       const pairSettingsAddress = runningOrder?.pair || ''
@@ -96,8 +93,6 @@ export const combineRunningOrdersTable = ({
       if (!currentPairSettings) {
         return null
       }
-
-      console.log(userBaseTokenAccount, userQuoteTokenAccount)
 
       const handleCloseOrder = async () => {
         setStopOrderPopupOpen(false)
