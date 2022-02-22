@@ -31,9 +31,6 @@ export const sendSignedSignleTransaction = async (
     skipPreflight,
   })
 
-  // const message = Array.isArray(sentMessage) ? sentMessage[0] : sentMessage
-  // const description = Array.isArray(sentMessage) ? sentMessage[1] : undefined
-
   let awaitConfirmationNotificationKey = null
 
   if (showNotification) {

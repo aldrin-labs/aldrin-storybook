@@ -80,7 +80,8 @@ export const notify = ({
     )
   }
 
-  // we cannot add new type so for loading we use determined one
+  // we cannot add new type to notifications, so it's hacky way to be explicit on arguments level
+  // to show notification with loader, which is actually warning type
   if (type === 'loading') type = 'warning'
 
   return SnackbarUtils[type](notificationDescription, {
