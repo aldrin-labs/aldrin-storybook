@@ -37,7 +37,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { getRegionData, withRegionCheck } from '@core/hoc/withRegionCheck'
+import { getRegionData } from '@core/hoc/withRegionCheck'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
@@ -457,7 +457,13 @@ const SwapPage = ({
                     amount={formatNumberToUSFormat(inputAmount)}
                     disabled={false}
                     onChange={(v) => {
+                      if (v === '') {
+                        setInputAmount(v)
+                        return
+                      }
+
                       if (
+                        numberWithOneDotRegexp.test(v) &&
                         getNumberOfIntegersFromNumber(v) <= 8 &&
                         getNumberOfDecimalsFromNumber(v) <= 8
                       ) {
@@ -531,7 +537,11 @@ const SwapPage = ({
                         color="#A6A6A6"
                       >
                         ≈$
-                        {outputUSD ? stripDigitPlaces(outputUSD, 2) : '0.00'}
+                        {outputUSD
+                          ? formatNumberToUSFormat(
+                              stripDigitPlaces(outputUSD, 2)
+                            )
+                          : '0.00'}
                       </Text>
                     }
                   />
@@ -558,8 +568,10 @@ const SwapPage = ({
             )}
             <RowContainer>
               {!publicKey ? (
-                <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
-                  <span>
+                <TooltipRegionBlocker
+                  isFromRestrictedRegion={isFromRestrictedRegion}
+                >
+                  <span style={{ width: '100%' }}>
                     <BtnCustom
                       theme={theme}
                       disabled={isFromRestrictedRegion}
@@ -711,7 +723,9 @@ const SwapPage = ({
                         }
                       />
                       <RowValue>
-                        <RowAmountValue>{estimatedPrice}</RowAmountValue>
+                        <RowAmountValue>
+                          {formatNumberToUSFormat(estimatedPrice)}
+                        </RowAmountValue>
                         {priceShowField === 'input' ? quoteSymbol : baseSymbol}
                       </RowValue>
                     </Row>
@@ -732,12 +746,15 @@ const SwapPage = ({
                     <RowTitle>Trading fee:</RowTitle>
                     <RowValue>
                       $
-                      {stripByAmount(
-                        getFeeFromSwapRoute({
-                          route: swapRoute,
-                          tokenInfos,
-                          pricesMap: dexTokensPricesMap,
-                        })
+                      {formatNumberToUSFormat(
+                        stripDigitPlaces(
+                          getFeeFromSwapRoute({
+                            route: swapRoute,
+                            tokenInfos,
+                            pricesMap: dexTokensPricesMap,
+                          }),
+                          2
+                        )
                       )}
                     </RowValue>
                   </BlackRow>
@@ -772,7 +789,9 @@ const SwapPage = ({
                 <BlackRow width="100%">
                   <RowTitle>Minimum Received:</RowTitle>
                   <RowValue>
-                    {stripByAmount(outAmountWithSlippageWithoutDecimals)}{' '}
+                    {formatNumberToUSFormat(
+                      stripByAmount(outAmountWithSlippageWithoutDecimals)
+                    )}{' '}
                     {quoteSymbol}
                   </RowValue>
                 </BlackRow>

@@ -9,7 +9,7 @@ import { stripInputNumber } from '@sb/dexUtils/utils'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 
-import WalletIcon from '@icons/wallet.svg'
+import WalletIcon from '@icons/walletNew.svg'
 
 import { AmountInputContainer, InputContainer } from './styles'
 
@@ -36,6 +36,7 @@ export const SwapAmountInput = ({
     <InputContainer
       disabled={disabled}
       direction="column"
+      wrap="nowrap"
       padding="0.3em 1em"
       roundSides={roundSides}
     >
@@ -59,7 +60,7 @@ export const SwapAmountInput = ({
           />
         </Row>
       </RowContainer>
-      <RowContainer justify="space-between">
+      <RowContainer wrap="nowrap" justify="space-between">
         <AmountInputContainer>
           <InvisibleInput
             type="text"
