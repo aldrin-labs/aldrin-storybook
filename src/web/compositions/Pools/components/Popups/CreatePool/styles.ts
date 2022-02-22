@@ -1,8 +1,8 @@
+import { COLORS, BORDER_RADIUS, SIZE } from '@variables/variables'
 import { BlockContent } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { Flex } from '@sb/components/Layout'
 import { InlineText, Text } from '@sb/components/Typography'
-import { COLORS, BORDER_RADIUS, SIZE } from '@variables/variables'
 import styled from 'styled-components'
 
 export const Title = styled.span`
@@ -85,6 +85,7 @@ export const InputAppendContainer = styled.div`
   justify-content: center;
   text-align: right;
   align-items: flex-end;
+  margin-left: auto;
 `
 
 export const TokensAvailableText = styled.div`

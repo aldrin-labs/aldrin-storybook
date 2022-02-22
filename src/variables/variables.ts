@@ -1,6 +1,7 @@
 export const MAIN_FONT = 'Avenir Next'
 export const FONTS = {
   main: `${MAIN_FONT}, sans-serif;`,
+  demi: `${MAIN_FONT} Demi, sans-serif`,
 }
 
 export const COLORS = {
@@ -13,13 +14,15 @@ export const COLORS = {
   hint: '#96999c',
   blockBackground: '#222429',
   main: '#fbf2f2',
-  primary: '#651CE4',
-  success: '#53DF11',
+  primary: '#0E02EC',
+  success: '#269F13',
   successAlt: '#2E5223',
   error: '#F69894',
   errorAlt: '#D44C32',
   buttonAltPink: '#a1458a',
   gray: '#383b42',
+  gray2: '#AAAAAA',
+  gray3: '#6f6f6f',
   chartGrid: '#4C4F59',
   textAlt: '#F5F5FB',
   navLink: 'rgb(114, 132, 160)',
@@ -31,6 +34,25 @@ export const COLORS = {
   warningDark: 'rgb(132, 97, 56)',
   disabledGray: '#93A0B2',
   lightRed: '#f2abb1',
+  darkBackground: '#17181A',
+  disabledInput: '#2B2D32',
+  cardsBack: '#242424',
+  brown: '#4B2321',
+  inputPlaceholder: '#86878E',
+  halfWhite: 'rgba(248, 250, 255, 0.5)',
+  blockBlackBackground: '#1A1A1A',
+  mainBlack: '#101010',
+  primaryGray: '#C1C1C1',
+  activeWhite: '#FAFAFA',
+  primaryBlue: '#0E02EC',
+  defaultGray: '#1A1A1A',
+  newOrange: '#DA6239',
+  newGreen: '#269F13',
+  newWhite: '#F8F8F8',
+  darkBlue: '#0B02BD',
+  primaryRed: '#E04237',
+  newBlack: '#191919',
+  lightGray: '#C9C8CD',
 }
 
 export const BORDER_RADIUS = {
@@ -44,14 +66,18 @@ export const BORDER_RADIUS = {
 
 export const FONT_SIZES = {
   xs: '0.6875em', // 11px
+  es: '0.7125em',
   sm: '0.8125em', // 13px
+  xsm: '0.9em',
   md: '1em', // 16px
+  xmd: '1.3em', // 21px
   lg: '1.6em', // 26px
-  xl: '2em', // 16px
+  xl: '2em', // 32px
   xxxl: '4em', // 64px
 }
 
 export const BREAKPOINTS = {
+  xs: '480px',
   sm: '540px',
   md: '768px',
   lg: '1024px',

@@ -164,7 +164,7 @@ export const StyledTab = styled(({ isSelected, ...props }) => (
   && {
     text-transform: capitalize;
     padding: 0.2rem 0.75rem;
-    background: ${(props) => (props.isSelected ? '#651CE4' : '#383B45')};
+    background: ${(props) => (props.isSelected ? '#0E02EC' : '#383B45')};
     border-radius: 1.3rem;
     cursor: pointer;
     font-family: ${(props) =>

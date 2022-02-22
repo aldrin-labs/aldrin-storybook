@@ -16,6 +16,8 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
+import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
+import { useTokenInfos } from '../../../../dexUtils/tokenRegistry'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
@@ -82,10 +84,14 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           farmingTokenMint: new PublicKey(values.farming.token.mint),
           farmingTokenAccount: new PublicKey(values.farming.token.account),
           tokenAmount: new BN(
-            parseFloat(values.farming.tokenAmount) * tokensMultiplier
+            (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(
+              0
+            )
           ),
           periodLength: new BN(HOUR),
-          tokensPerPeriod: new BN(tokensPerPeriod * tokensMultiplier),
+          tokensPerPeriod: new BN(
+            (tokensPerPeriod * tokensMultiplier).toFixed(0)
+          ),
           noWithdrawPeriodSeconds: new BN(0),
           vestingPeriodSeconds:
             values.farming.vestingEnabled && values.farming.vestingPeriod
@@ -103,6 +109,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
 
         setFarmingTransactionStatus(result === 'success' ? 'success' : 'error')
       } catch (e) {
+        console.warn('Unable to create farming: ', e)
         setFarmingTransactionStatus('error')
       }
     },
@@ -171,9 +178,16 @@ export const ExtendFarmingModal: React.FC<ExtendFarmingModalProps> = (
 ) => {
   const [userTokens] = useUserTokenAccounts()
   const { title = 'Extend Farming', onClose, onExtend, pool } = props
+  const tokenMap = useTokenInfos()
+
+  const baseInfo = tokenMap.get(pool.tokenA)
+  const quoteInfo = tokenMap.get(pool.tokenB)
+
+  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
+  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
 
   return (
-    <Modal open onClose={onClose} title={title}>
+    <Modal open onClose={onClose} title={`${title} for ${base}/${quote} pool`}>
       <Body>
         {!userTokens.length ? (
           <Loader />

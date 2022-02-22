@@ -22,5 +22,5 @@ export const StyledPaper = styled(Paper)`
 `
 
 export const GreenText = styled(WhiteText)`
-  color: #53DF11;
+  color: #269F13;
 `

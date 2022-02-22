@@ -1,18 +1,24 @@
-import styled from 'styled-components'
+import {
+  COLORS,
+  SIZE,
+  BREAKPOINTS,
+  BORDER_RADIUS,
+  FONT_SIZES,
+  TRANSITION,
+} from '@variables/variables'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
+import styled from 'styled-components'
 // TODO: remove dat
 
-import { COLORS, SIZE, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import { Button } from '../Button'
 import { Text } from '../Typography'
 
 export const HeaderWrap = styled.header`
   display: flex;
   flex-direction: row;
-  height: 48px;
-  background: ${COLORS.bodyBackground};
-  border-bottom: 1px solid ${COLORS.border};
-  padding: 0 ${SIZE.defaultPadding};
+  height: 60px;
+  background: ${COLORS.mainBlack};
+  padding: 0 3.5rem;
 `
 
 export const LogoBlock = styled.div`
@@ -22,10 +28,6 @@ export const LogoBlock = styled.div`
   padding-right: ${SIZE.defaultPadding};
   margin: 8px 0;
   flex: 0 1 auto;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    border-right: 1px solid ${COLORS.border};
-  }
 `
 
 export const StakeButton = styled(Button)`
@@ -42,28 +44,63 @@ interface ShowHideProps {
 }
 
 interface LinkProps extends ShowHideProps {
-  new?: boolean,
-  beta?: boolean
+  new?: boolean
+  left?: boolean
 }
 
 export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
-  font-size: 0.7em;
-  padding: 8px 12px;
+  font-size: 0.8em;
+  padding: 4px 0;
   margin: 0px 4px;
-  text-align: center;
-  border-radius: ${BORDER_RADIUS.md};
-  color: ${COLORS.hint};
-  background: ${COLORS.bodyBackground};
+  text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
+  color: ${COLORS.primaryGray};
+  background: transparent;
   transition: all ease-in 0.2s;
   border: 0;
   cursor: pointer;
   white-space: nowrap;
+  font-weight: 500;
 
-  &:hover,
+  &.dropdown {
+    &:hover {
+      border-bottom: none;
+    }
+  }
+
+  &.selected-from-dropdown {
+    color: ${COLORS.activeWhite};
+    svg {
+      path {
+        fill: ${COLORS.activeWhite};
+      }
+    }
+  }
+
+  svg,
+  img {
+    margin: 0 0.5rem;
+  }
+
+  &:hover {
+    color: ${COLORS.activeWhite};
+    transition: all ease-in 0.2s;
+    svg {
+      path {
+        fill: ${COLORS.activeWhite};
+      }
+    }
+  }
+
   &.selected {
-    color: ${COLORS.navLinkActive};
-    background: ${COLORS.navLinkActiveBg};
+    color: ${COLORS.activeWhite};
+    border-bottom: 1px solid ${COLORS.activeWhite};
+    transition: all ease-in 0.2s;
+    svg {
+      path {
+        fill: ${COLORS.activeWhite};
+      }
+    }
   }
 
   ${(props: LinkProps) =>
@@ -122,7 +159,6 @@ export const LinksBlock = styled.div`
   flex-direction: row;
   align-items: center;
   padding: 0 5px;
-  border-right: 1px solid ${COLORS.border};
   margin: 5px 0;
 
   @media (min-width: ${BREAKPOINTS.lg}) {
@@ -158,14 +194,10 @@ export const WalletContainer = styled.div`
   flex-direction: row;
   align-items: center;
   overflow: hidden;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    border-left: 1px solid ${COLORS.border};
-  }
 `
 
 export const LogoLink = styled(Link)`
-  height: 100%;
+  // height: 100%;
   margin-right: ${SIZE.defaultPadding};
   display: block;
 `
@@ -181,7 +213,7 @@ export const DropdownContent = styled.div`
   top: 100%;
   flex-direction: column;
   display: none;
-  z-index: 1;
+  z-index: 100000;
   background: rgba(0, 0, 0, 0.001);
 `
 
@@ -196,7 +228,7 @@ export const DropdownWrap = styled.div<ShowHideProps>`
     display: flex;
   }
 
-  ${(props: ShowHideProps) =>
+  /*${(props: ShowHideProps) =>
     props.show
       ? `
     display: none;
@@ -214,42 +246,114 @@ export const DropdownWrap = styled.div<ShowHideProps>`
       display: none;
     }
   `
-      : ''}
+      : ''}*/
 `
 
 export const DropdownInner = styled.div`
   min-width: 6em;
-  background: ${COLORS.bodyBackground};
-  border: 1px solid ${COLORS.border};
+  background: ${COLORS.defaultGray};
   display: flex;
   flex-direction: column;
   margin-top: 5px;
-  padding: 5px 0;
-
+  padding: 1rem 2rem;
+  border-radius: ${BORDER_RADIUS.md};
   & ${NavLink} {
     margin: 4px;
+
+    &:hover {
+      border: none;
+    }
   }
 `
 
 export const WalletButton = styled(Button)`
-  padding: 4px 20px;
+  width: 17rem;
+  white-space: nowrap;
+  padding: 10px 20px;
   font-size: 0.75em;
+  background-color: ${COLORS.primaryBlue};
+  border: none;
+  font-weight: 600;
+  height: 5rem;
+  transition: ${TRANSITION};
 
-  @media (min-width: ${BREAKPOINTS.lg}) {
-    width: 238px;
+  &:hover {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      ${COLORS.primary};
+  }
+
+  &:active,
+  &:focus {
+    background: ${COLORS.darkBlue};
+  }
+
+  @media (max-width: 1100px) {
+    padding: 7px 10px;
   }
 `
 
-export const WalletData = styled.div`
+export const WalletDataContainer = styled.div`
+  width: 17rem;
+  border-radius: ${BORDER_RADIUS.md};
   display: flex;
   flex-direction: row;
-  width: calc(100% - 48px);
   align-items: center;
 
   @media (min-width: ${BREAKPOINTS.md}) {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  button {
+    display: none;
+    transition: all 1s ease-out;
+  }
+
+  &:hover {
+    button {
+      display: block;
+      transition: all 1s ease-out;
+    }
+  }
+
+  div {
+    display: flex;
+    transition: all 1s ease-out;
+  }
+
+  &:hover {
+    div {
+      display: none;
+      transition: all 1s ease-out;
+    }
+  }
+`
+
+export const WalletData = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  height: 5rem;
+  border-radius: ${BORDER_RADIUS.md};
+  background: ${COLORS.defaultGray};
+  align-items: center;
+  img {
+    border-radius: 50%;
+  }
+
+  @media (max-width: 1200px) {
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
+`
+export const Column = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-end;
 `
 
 export const WalletName = styled(Text)`
@@ -265,20 +369,39 @@ export const WalletName = styled(Text)`
 
 export const WalletAddress = styled(WalletName)`
   opacity: 0.5;
-  font-weight: normal;
-  display: none;
+  font-weight: 600;
+  display: block;
+  font-size: ${FONT_SIZES.sm};
 
-  @media (min-width: ${BREAKPOINTS.md}) {
-    display: block;
+  @media (max-width: 1200px) {
+    font-size: ${FONT_SIZES.es};
   }
 `
 
 export const WalletDisconnectButton = styled(Button)`
-  font-size: 0.6em;
-  padding: 0;
-  color: ${COLORS.error};
-  background: none;
-  border: 0;
-  margin-left: auto;
-  text-align: right;
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 0.75em;
+  background-color: ${COLORS.newOrange};
+  border: none;
+  font-weight: 600;
+  height: 5rem;
+  transition: ${TRANSITION};
+
+  &:hover {
+    background-color: ${COLORS.primaryRed};
+  }
+
+  &:active {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      ${COLORS.primaryRed};
+  }
+`
+export const BalanceTitle = styled.span`
+  font-size: ${FONT_SIZES.sm};
+  color: ${COLORS.newGreen};
+  font-weight: 600;
+  @media (max-width: 1200px) {
+    font-size: 0.6125em;
+  }
 `

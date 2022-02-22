@@ -41,7 +41,7 @@ const BalanceDistributedComponent = ({
       <TokenAllocationProgressBarContainer width={'80%'} justify={'flex-start'}>
         {' '}
         <TokenAllocationProgressBar
-          color={'#53DF11'}
+          color={'#269F13'}
           height={'2.2rem'}
           width={`${distributedPercentage}%`}
           variant="determinate"

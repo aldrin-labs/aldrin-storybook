@@ -76,7 +76,7 @@ const LastTrade = (props: IProps) => {
           }}
         >
           <LastTradePrice
-            style={{ color: isPriceDown ? '#F69894' : '#53DF11' }}
+            style={{ color: isPriceDown ? '#F69894' : '#269F13' }}
             theme={theme}
           >
             {Number(markPrice).toFixed(pricePrecision)}
@@ -131,7 +131,7 @@ export const LastTradeMobile = (props: IProps) => {
           }}
         >
           <LastTradePrice
-            style={{ color: isPriceDown ? '#F69894' : '#53DF11' }}
+            style={{ color: isPriceDown ? '#F69894' : '#269F13' }}
             theme={theme}
           >
             {Number(markPrice).toFixed(pricePrecision)}

@@ -1,11 +1,14 @@
-import useSWR from 'swr'
 import { blob, struct, u8 } from '@solana/buffer-layout'
 import { PublicKey } from '@solana/web3.js'
+import useSWR from 'swr'
+
+import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
+
 import { useMultiEndpointConnection } from '../../connection'
 import { publicKey, uint64 } from '../../layout'
-import { Vesting, VestingWithPk } from '../types'
 import { VESTING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { RefreshFunction } from '../../types'
+import { Vesting, VestingWithPk } from '../types'
 
 const vestingAddress = new PublicKey(VESTING_PROGRAM_ADDRESS)
 
@@ -47,7 +50,7 @@ export const useVestings = (): [VestingWithPk[], RefreshFunction] => {
       .filter((vesting) => vesting.createdTs > 0)
   }
   const { data, mutate } = useSWR('vestings', fetcher, {
-    refreshInterval: 60_000,
+    refreshInterval: COMMON_REFRESH_INTERVAL,
   })
   return [data || [], mutate]
 }

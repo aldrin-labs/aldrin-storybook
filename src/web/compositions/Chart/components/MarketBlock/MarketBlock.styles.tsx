@@ -1,6 +1,6 @@
+import { COLORS } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
-
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
@@ -35,8 +35,9 @@ export const MarketStatsContainer = styled.div`
   justify-content: space-between;
   height: 6rem;
   padding: 0 3rem;
+  border-top: ${(props) => props.theme.palette.border.new};
   border-bottom: ${(props) => props.theme.palette.border.new};
-  background: ${(props) => props.theme.palette.background.paper};
+  background: ${COLORS.mainBlack};
 
   @media (max-width: 600px) {
     display: none;

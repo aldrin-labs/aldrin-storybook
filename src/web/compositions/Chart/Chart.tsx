@@ -1,3 +1,20 @@
+import { withTheme } from '@material-ui/styles'
+import React, { useEffect, useState } from 'react'
+import { graphql } from 'react-apollo'
+import { withRouter } from 'react-router-dom'
+import Tour from 'reactour'
+import { compose } from 'recompose'
+
+import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
+import {
+  FinishBtn,
+  tourConfig,
+} from '@sb/components/ReactourOnboarding/ReactourOnboarding'
+import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
+import { MainContainer } from '@sb/compositions/Chart/Chart.styles'
+import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
+import { getDecimalCount } from '@sb/dexUtils/utils'
+
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { tokensToDelist } from '@core/config/dex'
 import { changeChartLayout } from '@core/graphql/mutations/chart/changeChartLayout'
@@ -14,24 +31,9 @@ import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { finishJoyride } from '@core/utils/joyride'
 import { checkLoginStatus } from '@core/utils/loginUtils'
 // import Joyride from 'react-joyride'
-import { withTheme } from '@material-ui/styles'
-import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
 // import { Grid, Hidden } from '@material-ui/core'
-import {
-  FinishBtn,
-  tourConfig,
-} from '@sb/components/ReactourOnboarding/ReactourOnboarding'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
-import { TokenDelistPopup } from '@sb/components/TokenDelistPopup'
-import { TransactionsConfirmationWarningPopup } from '@sb/components/TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup'
-import { MainContainer } from '@sb/compositions/Chart/Chart.styles'
-import { useAllMarketsList, useMarket } from '@sb/dexUtils/markets'
-import { getDecimalCount } from '@sb/dexUtils/utils'
-import React, { useEffect, useState } from 'react'
-import { graphql } from 'react-apollo'
-import { withRouter } from 'react-router-dom'
-import Tour from 'reactour'
-import { compose } from 'recompose'
+
 import MarketBlock from './components/MarketBlock/MarketBlock'
 import { WarningPopup } from './components/WarningPopup'
 // import { CardsPanel } from './components'
@@ -42,7 +44,7 @@ const arraysCustomMarketsMatch = (arr1, arr2) => {
   if (arr1.length !== arr2.length) return false
 
   // Check if all items exist and are in the same order
-  for (var i = 0; i < arr1.length; i++) {
+  for (let i = 0; i < arr1.length; i++) {
     if (arr1[i].symbol !== arr2[i].symbol) return false
   }
 
@@ -135,7 +137,7 @@ function ChartPageComponent(props: any) {
   }, [getUserCustomMarketsQuery.getUserCustomMarkets.length])
 
   const setCorrectMarketAddress = async () => {
-    const pair = !!location.pathname.split('/')[3]
+    const pair = location.pathname.split('/')[3]
       ? location.pathname.split('/')[3]
       : 'RIN_USDC'
 
@@ -245,8 +247,8 @@ function ChartPageComponent(props: any) {
         showCloseButton={false}
         nextButton={<FinishBtn>Next</FinishBtn>}
         prevButton={<a />}
-        showNavigationNumber={true}
-        showNavigation={true}
+        showNavigationNumber
+        showNavigation
         lastStepNextButton={<FinishBtn>Finish</FinishBtn>}
         steps={tourConfig}
         accentColor={accentColor}
@@ -261,8 +263,8 @@ function ChartPageComponent(props: any) {
         updateTerminalViewMode={updateTerminalViewMode}
       />
       <DefaultView
-        id={'_id'}
-        view={'default'}
+        id="_id"
+        view="default"
         layout={layout}
         theme={theme}
         publicKey={publicKey}
@@ -280,7 +282,7 @@ function ChartPageComponent(props: any) {
         }
         themeMode={theme.palette.type}
         selectedKey={{ hedgeMode: false }}
-        activeExchange={'serum'}
+        activeExchange="serum"
         terminalViewMode={terminalViewMode}
         updateTerminalViewMode={(mode) => {
           if (mode === 'smartOrderMode') {
@@ -412,7 +414,7 @@ export default compose(
   withTheme(),
   withPublicKey,
   withRouter,
-  withRegionCheck,
+  // withRegionCheck,
   // withAuth,
   // queryRendererHoc({
   //   skip: (props: any) => !props.authenticated,

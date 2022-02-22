@@ -14,7 +14,7 @@ export const loadStakingFarmingTickets = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-  walletPublicKey?: PublicKey
+  walletPublicKey?: PublicKey | null
 }) => {
   const filterByWalletPublicKey = walletPublicKey
     ? [

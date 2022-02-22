@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
 import { PublicKey, PublicKeyInitData } from '@solana/web3.js'
+import { useCallback, useEffect, useRef, useState } from 'react'
+
 import { MASTER_BUILD } from '@core/utils/config'
 
 export function isValidPublicKey(key: PublicKeyInitData) {
@@ -15,6 +16,7 @@ export function isValidPublicKey(key: PublicKeyInitData) {
 }
 
 export const RIN_MINT: string = 'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
+export const MSOL_MINT: string = 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'
 
 export const RINProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'
@@ -36,7 +38,7 @@ export const percentFormat = new Intl.NumberFormat(undefined, {
 
 export const encode = (data) => {
   return Object.keys(data)
-    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+    .map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(data[key])}`)
     .join('&')
 }
 
@@ -112,7 +114,7 @@ export function useListener(emitter, eventName) {
 
 export function abbreviateAddress(address) {
   const base58 = address.toBase58()
-  return base58.slice(0, 4) + '…' + base58.slice(-4)
+  return `${base58.slice(0, 4)}…${base58.slice(-4)}`
 }
 
 export function isEqual(obj1, obj2, keys) {
@@ -144,24 +146,26 @@ export function onlyUnique(value, index, self) {
   return self.indexOf(value) === index
 }
 
-export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
-  return value !== null && value !== undefined;
+export function notEmpty<TValue>(
+  value: TValue | null | undefined
+): value is TValue {
+  return value !== null && value !== undefined
 }
 
 export function convertDataURIToBinary(base64: string) {
-  return new Buffer(base64, "base64")
+  return new Buffer(base64, 'base64')
 }
 
-export const stripInputNumber = (e: React.ChangeEvent<HTMLInputElement>, prevValue: number | string) => {
+export const stripInputNumber = (
+  e: React.ChangeEvent<HTMLInputElement>,
+  prevValue: number | string
+) => {
   let value = `${e.target.value}`
 
-  // change comma to dot
-  value = value.replaceAll(',', '.')
-
   // check numbers only and 1 dot
-  if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
-    return prevValue
-  }
+  // if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
+  //   return prevValue
+  // }
 
   // add 0 if first symbol is dot
   if (value[0] === '.') {
@@ -169,5 +173,5 @@ export const stripInputNumber = (e: React.ChangeEvent<HTMLInputElement>, prevVal
   }
 
   // change comma to dot
-  return value.replace(',', '.')
+  return value.replaceAll(',', '')
 }

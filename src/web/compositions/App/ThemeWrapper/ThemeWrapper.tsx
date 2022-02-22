@@ -175,21 +175,21 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#3B63AF', // 165BE0
               switcherBackground: '#3B63AF', // 165BE0
               switcherBorder: '#2E2E2E',
-              serum: '#651CE4',
+              serum: '#0E02EC',
             },
             green: {
               dark: '#377E21',
               light: '#E7ECF3',
               custom: '#97C15C',
-              main: '#53DF11',
-              button: 'linear-gradient(135deg, #53DF11 0%, #97E873 100%)',
-              new: '#53DF11',
+              main: '#269F13',
+              button: 'linear-gradient(135deg, #269F13 0%, #97E873 100%)',
+              new: '#269F13',
               tab: '#09ACC7',
               shine: '#c7ffd0',
               acid: '#c7ffd0',
               descrip: '#61D8E6',
               border: '#61D8E6',
-              analytics: '#53DF11',
+              analytics: '#269F13',
             },
             grey: {
               custom: '#2E2E2E',
@@ -219,7 +219,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#27272D',
             },
             secondary: {
-              main: '#651CE4', //'#48DCC6',
+              main: '#0E02EC', //'#48DCC6',
             },
             action: {
               selected: 'rgba(255, 255, 255, 0.05)',
@@ -371,7 +371,7 @@ export default ({ themeMode, isChartPage, children }) => {
             text: {
               primary: fade('#41495E', 0.69),
               dark: '#7284A0',
-              blue: '#651CE4',
+              blue: '#0E02EC',
               subPrimary: '#16253D',
               grey: '#2E2E2E',
               light: '#9F9F9F',
@@ -397,15 +397,15 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             blue: {
               custom: '#5085EC',
-              light: '#651CE4',
+              light: '#0E02EC',
               first: '#0B1FD1',
               second: '#5C8CEA',
               background: '#5C8CEA',
-              main: '#651CE4',
+              main: '#0E02EC',
               btnBackground: '#5C8CEA',
               switcherBackground: 'rgba(11, 31, 209, 0.5)',
               switcherBorder: '#0B1FD1',
-              serum: '#651CE4',
+              serum: '#0E02EC',
             },
             green: {
               dark: '#377E21',
@@ -417,7 +417,7 @@ export default ({ themeMode, isChartPage, children }) => {
               descrip: '#1BA492',
               acid: '#1BA492',
               border: '#7380eb',
-              analytics: '#53DF11',
+              analytics: '#269F13',
             },
             grey: {
               custom: '#ABBAD1',
@@ -445,7 +445,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#FFF',
             },
             secondary: {
-              main: '#651CE4', // '#48DCC6',
+              main: '#0E02EC', // '#48DCC6',
             },
             action: {
               selected: 'rgba(255, 255, 255, 0.05)',
@@ -459,7 +459,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#E0E5EC',
             },
             button: {
-              color: '#651CE4',
+              color: '#0E02EC',
             },
             btnChartBorderNotActive: {
               main: '#E0E5EC',
