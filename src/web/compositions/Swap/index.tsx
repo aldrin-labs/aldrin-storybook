@@ -444,6 +444,7 @@ const SwapPage = ({
                     disabled={false}
                     onChange={(v) => {
                       if (
+                        numberWithOneDotRegexp.test(v) &&
                         getNumberOfIntegersFromNumber(v) <= 8 &&
                         getNumberOfDecimalsFromNumber(v) <= 8
                       ) {
@@ -544,24 +545,46 @@ const SwapPage = ({
             )}
             <RowContainer>
               {!publicKey ? (
-                <BtnCustom
-                  theme={theme}
-                  onClick={() => setIsConnectWalletPopupOpen(true)}
-                  needMinWidth={false}
-                  btnWidth="100%"
-                  height="4em"
-                  fontSize="1em"
-                  padding="1.4em 5em"
-                  borderRadius="1.1rem"
-                  borderColor={theme.palette.blue.serum}
-                  btnColor="#fff"
-                  backgroundColor={theme.palette.blue.serum}
-                  textTransform="none"
-                  transition="all .4s ease-out"
-                  style={{ whiteSpace: 'nowrap' }}
+                <TooltipRegionBlocker
+                  isFromRestrictedRegion={isFromRestrictedRegion}
                 >
-                  Connect wallet
-                </BtnCustom>
+                  <span style={{ width: '100%' }}>
+                    <BtnCustom
+                      theme={theme}
+                      disabled={isFromRestrictedRegion}
+                      onClick={() => {
+                        if (isFromRestrictedRegion || isRegionCheckIsLoading) {
+                          return
+                        }
+                        setIsConnectWalletPopupOpen(true)
+                      }}
+                      needMinWidth={false}
+                      btnWidth="100%"
+                      height="4em"
+                      fontSize="1em"
+                      padding="1.4em 5em"
+                      borderRadius="1.1rem"
+                      borderColor={theme.palette.blue.serum}
+                      btnColor="#fff"
+                      backgroundColor={theme.palette.blue.serum}
+                      textTransform="none"
+                      transition="all .4s ease-out"
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
+                      {isRegionCheckIsLoading && (
+                        <Loading
+                          color="#FFFFFF"
+                          size={16}
+                          style={{ height: '16px' }}
+                        />
+                      )}
+                      {!isRegionCheckIsLoading &&
+                        (isFromRestrictedRegion
+                          ? `Restricted region`
+                          : `Connect wallet`)}
+                    </BtnCustom>
+                  </span>
+                </TooltipRegionBlocker>
               ) : (
                 <SwapButton
                   disabled={isButtonDisabled}

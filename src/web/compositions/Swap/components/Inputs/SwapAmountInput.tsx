@@ -36,6 +36,7 @@ export const SwapAmountInput = ({
     <InputContainer
       disabled={disabled}
       direction="column"
+      wrap="nowrap"
       padding="0.3em 1em"
       roundSides={roundSides}
     >
@@ -59,7 +60,7 @@ export const SwapAmountInput = ({
           />
         </Row>
       </RowContainer>
-      <RowContainer justify="space-between">
+      <RowContainer wrap="nowrap" justify="space-between">
         <AmountInputContainer>
           <InvisibleInput
             type="text"
