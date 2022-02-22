@@ -8,14 +8,13 @@ import BN from 'bn.js'
 
 import { isTransactionFailed } from '@sb/dexUtils/send'
 import { TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
-import { checkAccountForMint } from '@sb/dexUtils/twamm/checkAccountForMint'
 import { initializeOrderArray } from '@sb/dexUtils/twamm/initializeOrderArray'
 
 import { transferSOLToWrappedAccountAndClose } from '../pools'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { signAndSendSingleTransaction } from '../transactions'
-import { WalletAdapter } from '../types'
+import { TokenInfo, WalletAdapter } from '../types'
 import { WRAPPED_SOL_MINT } from '../wallet'
 import { PairSettings } from './types'
 
@@ -30,6 +29,7 @@ export const addOrder = async ({
   mintTo,
   orderArray,
   side,
+  allTokensData,
 }: {
   wallet: WalletAdapter
   connection: Connection
@@ -42,6 +42,7 @@ export const addOrder = async ({
   orders: PublicKey[]
   orderArray: any
   side: string | null
+  allTokensData: TokenInfo[]
 }) => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
@@ -59,7 +60,6 @@ export const addOrder = async ({
 
   const orderArrayFiltered = []
   orderArray.forEach((order) => {
-
     if (
       order.side[side] &&
       order.pairSettings.toString() === pairSettings.publicKey
@@ -93,18 +93,19 @@ export const addOrder = async ({
     }
   }
 
-  let userTokenAccount = await checkAccountForMint({
-    wallet,
-    connection,
-    mint: mintFrom,
-    create: false,
-  })
-
   const transactionAfter = new Transaction()
 
   const commonTransaction = new Transaction()
   const commonSigners = []
 
+  const userToken = allTokensData.find(
+    (v) => v.mint === mintFrom.toString()
+  )?.address
+  let userTokenAccount: PublicKey | undefined
+
+  if (userToken) {
+    userTokenAccount = new PublicKey(userToken)
+  }
   // if SOL - create new token address
   if (
     new PublicKey(pairSettings.baseTokenMint).equals(WRAPPED_SOL_MINT) &&
@@ -150,6 +151,10 @@ export const addOrder = async ({
     commonSigners.push(wrappedAccount)
 
     transactionAfter.add(closeAccountTransaction)
+  }
+
+  if (!userTokenAccount) {
+    throw new Error('No user token account!')
   }
 
   const addOrderInstruction = await program.instruction.addOrder(

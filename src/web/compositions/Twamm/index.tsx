@@ -8,6 +8,7 @@ import { SvgIcon } from '@sb/components'
 import { Cell, Page } from '@sb/components/Layout'
 import { Text } from '@sb/compositions/Addressbook'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import PlaceOrder from '@sb/compositions/Twamm/PlaceOrder/PlaceOrder'
 import {
   BannerDescription,
@@ -19,7 +20,9 @@ import {
   TabsListWrapper,
   TabsStyled,
   TabStyled,
-  TabTitle, TextBlock, TextBlockWrapper,
+  TabTitle,
+  TextBlock,
+  TextBlockWrapper,
   WideContentStyled,
 } from '@sb/compositions/Twamm/styles'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -40,7 +43,6 @@ import { OrdersHistoryWrapper } from './components/OrdersHistory/OrdersHistory.W
 import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.Wrapper'
 import GuideImg from './img/guideImg.svg'
 import SdkImg from './img/sdkImg.svg'
-import {ConnectWalletPopup} from "@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup";
 
 const TwammComponent = ({
   theme,
@@ -59,24 +61,28 @@ const TwammComponent = ({
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
-  useEffect(() => {
-    getParsedPairSettings({
-      wallet,
-      connection,
-    }).then((pairSettingsRes) => {
-      setPairSettings(pairSettingsRes)
-    })
-    handleGetOrderArray()
-  }, [wallet.publicKey])
+  const handleGetOrderArray = async () => {
+    try {
+      const [pairSettingsRes, orderArrayRes] = await Promise.all([
+        getParsedPairSettings({
+          wallet,
+          connection,
+        }),
+        getOrderArray({
+          wallet,
+          connection,
+        }),
+      ])
 
-  const handleGetOrderArray = () => {
-    getOrderArray({
-      wallet,
-      connection,
-    }).then((orderArrayRes) => {
+      setPairSettings(pairSettingsRes)
       setOrderArray(orderArrayRes)
-    })
+    } catch (e) {
+      console.warn('Unable to load orders:', e)
+    }
   }
+  useEffect(() => {
+    handleGetOrderArray()
+  }, [wallet.publicKey?.toString()])
 
   if (!pairSettings.length) {
     return null
@@ -157,7 +163,10 @@ const TwammComponent = ({
             </Cell>
           </Row>
         </Banners>
-        <TabsStyled selectedIndex={tabIndex} onSelect={(index: number) => setTabIndex(index)}>
+        <TabsStyled
+          selectedIndex={tabIndex}
+          onSelect={(index: number) => setTabIndex(index)}
+        >
           <TabsListWrapper>
             <TabListStyled>
               <TabStyled>

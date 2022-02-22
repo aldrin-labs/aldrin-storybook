@@ -1,13 +1,11 @@
 import { Theme } from '@material-ui/core'
 import React, { useState } from 'react'
-import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { StyledPaper } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
@@ -24,23 +22,7 @@ import {
 import Close from '@icons/closeIcon.svg'
 
 import { SelectSeveralAddressesPopup } from '../../../Pools/components/Popups/SelectorForSeveralAddresses'
-
-const UpdatedPaper = styled(({ ...props }) => <StyledPaper {...props} />)`
-  width: 55rem;
-`
-
-export const SelectorRow = styled(({ ...props }) => (
-  <RowContainer {...props} />
-))`
-  border-bottom: 0.1rem solid #383b45;
-  height: 5rem;
-`
-
-export const StyledText = styled(({ ...props }) => <Text {...props} />)`
-  margin: 0 0.5rem;
-  font-size: 2em;
-  font-family: Avenir Next Demi;
-`
+import { UpdatedPaper, SelectorRow, StyledText } from './styles'
 
 export const SelectCoinPopup = ({
   theme,

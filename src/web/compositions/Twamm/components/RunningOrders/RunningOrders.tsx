@@ -36,11 +36,6 @@ const RunningOrdersTable = ({
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const rinTokenPrice =
-    getDexTokensPricesQuery?.getDexTokensPrices?.filter(
-      (el) => el.symbol === 'RIN'
-    )[0]?.price || 0
-
   const getTokenPriceByName = (name: string) => {
     return (
       getDexTokensPricesQuery?.getDexTokensPrices?.filter(
@@ -54,7 +49,6 @@ const RunningOrdersTable = ({
     connection,
     getDexTokensPricesQuery,
     getTokenPriceByName,
-    rinTokenPrice,
   })
 
   return (

@@ -29,7 +29,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
+import { limitDecimalsCustom, stripByAmount } from '@core/utils/chartPageUtils'
 
 import Arrows from '@icons/switchArrows.svg'
 
@@ -41,6 +41,7 @@ import { getTokenDataByMint } from '../../Pools/utils'
 import { InputWithSelectorForSwaps } from '../components/InputSelectorForSwap'
 import OrderStats from './components/OrderStats/OrderStats'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
+import { DEFAULT_ORDER_LENGTH } from './config'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
 
 const PlaceOrder = ({
@@ -68,7 +69,7 @@ const PlaceOrder = ({
   const connection = useConnection()
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
 
-  const [orderLength, setOrderLength] = useState(60)
+  const [orderLength, setOrderLength] = useState(DEFAULT_ORDER_LENGTH)
 
   const nativeSOLTokenData = allTokensData[0]
 
@@ -181,21 +182,13 @@ const PlaceOrder = ({
   const setBaseAmountWithQuote = async (newBaseAmount: string | number) => {
     const quoteAmount = newBaseAmount * (baseTokenPrice / quoteTokenPrice)
     setBaseAmount(limitDecimalsCustom(newBaseAmount.toString()))
-    setQuoteAmount(
-      limitDecimalsCustom(
-        quoteAmount.toFixed(8).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1')
-      )
-    )
+    setQuoteAmount(stripByAmount(quoteAmount))
   }
 
   const setQuoteAmountWithBase = async (newQuoteAmount: string | number) => {
     const baseAmount = newQuoteAmount * (quoteTokenPrice / baseTokenPrice)
 
-    setBaseAmount(
-      limitDecimalsCustom(
-        baseAmount.toFixed(8).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1')
-      )
-    )
+    setBaseAmount(stripByAmount(baseAmount))
     setQuoteAmount(limitDecimalsCustom(newQuoteAmount.toString()))
   }
 
@@ -250,6 +243,84 @@ const PlaceOrder = ({
       Math.pow(10, selectedPairSettings.baseMintDecimals)) *
     (isSwapBaseToQuote ? baseTokenPrice : quoteTokenPrice)
 
+  const placeOrder = async () => {
+    const side = checkSide(quoteTokenMintAddress, baseTokenMintAddress)
+
+    const baseMintDecimals = isSwapBaseToQuote
+      ? selectedPairSettings.baseMintDecimals
+      : selectedPairSettings.quoteMintDecimals
+
+    const minBaseAmount = isSwapBaseToQuote ? minOrderSize : minOrderSizeQuote
+
+    if (baseAmount < minBaseAmount) {
+      notify({
+        message: `Min order size is ${minBaseAmount} for ${getTokenNameByMintAddress(
+          baseTokenMintAddress
+        )} token on this pair.`,
+      })
+      return
+    }
+
+    const maxBaseAmount = isSwapBaseToQuote ? maxOrderSize : maxOrderSizeQuote
+    if (baseAmount > maxBaseAmount) {
+      notify({
+        message: `Max order size is ${maxBaseAmount} for ${getTokenNameByMintAddress(
+          baseTokenMintAddress
+        )} token on this pair.`,
+      })
+      return
+    }
+
+    if (orderLength < 1) {
+      notify({
+        message: `Min duration is 1 hour.`,
+      })
+      return
+    }
+
+    setIsOrderInProgress(true)
+
+    const result = await addOrder({
+      wallet,
+      connection,
+      amount: new BN(+baseAmount * 10 ** baseMintDecimals),
+      timeLength: new BN(orderLength * 60 * 60),
+      pairSettings: selectedPairSettings,
+      mintFrom: new PublicKey(baseTokenMintAddress),
+      mintTo: new PublicKey(quoteTokenMintAddress),
+      orders: [],
+      orderArray,
+      side,
+      allTokensData,
+    })
+
+    notify({
+      type: result === 'success' ? 'success' : 'error',
+      message:
+        result === 'success'
+          ? 'Order placed successfully.'
+          : result === 'failed'
+          ? 'Order placing operation failed.'
+          : 'Order placing cancelled',
+    })
+
+    // refresh data
+    await sleep(2 * 1000)
+
+    refreshAllTokensData()
+
+    // reset fields
+    if (result === 'success') {
+      setBaseAmount('')
+      setQuoteAmount('')
+      setOrderLength(DEFAULT_ORDER_LENGTH)
+      handleGetOrderArray()
+      setTabIndex(1)
+    }
+
+    // remove loader
+    setIsOrderInProgress(false)
+  }
   return (
     <SwapPageContainer
       direction="column"
@@ -387,90 +458,7 @@ const PlaceOrder = ({
                   margin="2rem 0 0 0"
                   transition="all .4s ease-out"
                   disabled={isButtonDisabled}
-                  onClick={async () => {
-                    const side = checkSide(
-                      quoteTokenMintAddress,
-                      baseTokenMintAddress
-                    )
-
-                    const baseMintDecimals = isSwapBaseToQuote
-                      ? selectedPairSettings.baseMintDecimals
-                      : selectedPairSettings.quoteMintDecimals
-
-                    const minBaseAmount = isSwapBaseToQuote
-                      ? minOrderSize
-                      : minOrderSizeQuote
-
-                    if (baseAmount < minBaseAmount) {
-                      notify({
-                        message: `Min order size is ${minBaseAmount} for ${getTokenNameByMintAddress(
-                          baseTokenMintAddress
-                        )} token on this pair.`,
-                      })
-                      return
-                    }
-
-                    const maxBaseAmount = isSwapBaseToQuote
-                      ? maxOrderSize
-                      : maxOrderSizeQuote
-                    if (baseAmount > maxBaseAmount) {
-                      notify({
-                        message: `Max order size is ${maxBaseAmount} for ${getTokenNameByMintAddress(
-                          baseTokenMintAddress
-                        )} token on this pair.`,
-                      })
-                      return
-                    }
-
-                    if (orderLength < 1) {
-                      notify({
-                        message: `Min duration is 1 hour.`,
-                      })
-                      return
-                    }
-
-                    setIsOrderInProgress(true)
-
-                    const result = await addOrder({
-                      wallet,
-                      connection,
-                      amount: new BN(+baseAmount * 10 ** baseMintDecimals),
-                      timeLength: new BN(orderLength * 60 * 60),
-                      pairSettings: selectedPairSettings,
-                      mintFrom: new PublicKey(baseTokenMintAddress),
-                      mintTo: new PublicKey(quoteTokenMintAddress),
-                      orders: [],
-                      orderArray,
-                      side,
-                    })
-
-                    notify({
-                      type: result === 'success' ? 'success' : 'error',
-                      message:
-                        result === 'success'
-                          ? 'Order placed successfully.'
-                          : result === 'failed'
-                          ? 'Order placing operation failed.'
-                          : 'Order placing cancelled',
-                    })
-
-                    // refresh data
-                    await sleep(2 * 1000)
-
-                    refreshAllTokensData()
-
-                    // reset fields
-                    if (result === 'success') {
-                      setBaseAmount('')
-                      setQuoteAmount('')
-                      setOrderLength(60)
-                      handleGetOrderArray()
-                      setTabIndex(1)
-                    }
-
-                    // remove loader
-                    setIsOrderInProgress(false)
-                  }}
+                  onClick={placeOrder}
                 >
                   {isOrderInProgress ? (
                     <Loader />

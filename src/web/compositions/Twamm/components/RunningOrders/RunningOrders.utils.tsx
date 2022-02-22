@@ -21,7 +21,10 @@ import { toMap } from '@sb/utils'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { estimatedTime } from '@core/utils/dateUtils'
 
-import { MIN_ORDER_DURATION_TO_CANCEL } from '../../PlaceOrder/config'
+import {
+  MIN_ORDER_DURATION_TO_CANCEL,
+  ORDER_FILL_THRESHOLD,
+} from '../../PlaceOrder/config'
 import { BlueButton, RedButton } from '../../styles'
 
 export const runningOrdersColumnNames = [
@@ -36,28 +39,21 @@ export const runningOrdersColumnNames = [
   { label: 'Actions', id: 'actions' },
 ]
 
-const ORDER_FILL_THRESHOLD = 99 // mark 99% filled orders as completed
-
 export const combineRunningOrdersTable = ({
   wallet,
   connection,
   getDexTokensPricesQuery: { getDexTokensPricesQuery },
   getTokenPriceByName,
-  rinTokenPrice,
 }: {
   wallet: WalletAdapter
   connection: Connection
   getDexTokensPricesQuery: { getDexTokensPricesQuery: DexTokensPrices[] }
   getTokenPriceByName: (name: string) => number
-  rinTokenPrice: number
 }) => {
   const [runningOrders, refreshRunningOrders] = useRunningOrders({
     wallet,
     connection,
   })
-  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
-
-  const rinWallet = allTokensData.find((token) => token.symbol === 'RIN')
 
   const [stopOrderPopupOpen, setStopOrderPopupOpen] = useState(true)
 
@@ -109,15 +105,17 @@ export const combineRunningOrdersTable = ({
         // reload data
         await refreshRunningOrders()
 
-        const operationName = remainingTime < 0 ? 'claime' : 'close'
+        const isClaim = remainingTime < 0
 
         // notify
         notify({
           type: result === 'success' ? 'success' : 'error',
           message:
             result === 'success'
-              ? `Order ${operationName}d successfully.`
-              : `Order ${operationName} failed. Please, try a bit later.`,
+              ? `Order ${isClaim ? 'claimed' : 'closed'} successfully.`
+              : `Order ${
+                  isClaim ? 'claim' : 'close'
+                } failed. Please, try a bit later.`,
         })
       }
 
@@ -160,9 +158,6 @@ export const combineRunningOrdersTable = ({
       const orderAmount = runningOrder.amount / 10 ** baseMintDecimals
 
       const cancelFeeCalc = (orderAmount / 100) * cancellingFee
-      const cancelFeeRin = cancelFeeCalc / rinTokenPrice
-
-      const hasRinForFee = rinWallet?.amount >= cancelFeeRin
 
       const remainingAmount =
         (runningOrder.amount - +runningOrder?.amountFilled) /

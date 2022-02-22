@@ -1,11 +1,14 @@
 import React from 'react'
 
-import { OrderStatsContainer, StatsItem, StatsValue } from './OrderStats.styles'
-import { Text } from '@sb/compositions/Addressbook'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { SvgIcon } from '@sb/components'
-import QuestionIcon from '@icons/question.svg'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Text } from '@sb/compositions/Addressbook'
+
 import { stripByAmount } from '@core/utils/chartPageUtils'
+
+import QuestionIcon from '@icons/question.svg'
+
+import { OrderStatsContainer, StatsItem, StatsValue } from './OrderStats.styles'
 
 const OrderStats = ({
   orderAmount,
@@ -20,10 +23,9 @@ const OrderStats = ({
   placingFee: number
   rinTokenPrice: number
 }) => {
-
-  const cancelFeeCalc = (orderAmount / 100) * cancellingFee;
+  const cancelFeeCalc = (orderAmount / 100) * cancellingFee
   // const cancelFeeRin = cancelFeeCalc/rinTokenPrice;
-  const placingFeeCalc = (orderAmount / 100) * placingFee;
+  const placingFeeCalc = (orderAmount / 100) * placingFee
 
   return (
     <OrderStatsContainer>
@@ -51,8 +53,10 @@ const OrderStats = ({
           <Text fontFamily="Avenir Next Demi" color="#F8FAFF" fontSize="1.3rem">
             0.001%
           </Text>
-          <DarkTooltip title="If no one bought a particle of the order during the allocated 15 seconds - it will be merged with the next one with the price lower by 0.001%.
-This is to motivate traders to execute your orders. Don’t set the dTWAP order time too short, so that the parts are small enough to be executed in time.">
+          <DarkTooltip
+            title="If no one bought a particle of the order during the allocated 15 seconds - it will be merged with the next one with the price lower by 0.001%.
+This is to motivate traders to execute your orders. Don’t set the dTWAP order time too short, so that the parts are small enough to be executed in time."
+          >
             <span>
               <SvgIcon src={QuestionIcon} width="16px" height="16px" />
             </span>
@@ -60,27 +64,27 @@ This is to motivate traders to execute your orders. Don’t set the dTWAP order 
         </StatsValue>
       </StatsItem>
 
-      {/*<StatsItem>*/}
-      {/*  <Text*/}
-      {/*    fontFamily="Avenir Next Light"*/}
-      {/*    color="#F8FAFF"*/}
-      {/*    fontSize="1.3rem">*/}
-      {/*    Fullfill probability:*/}
-      {/*  </Text>*/}
-      {/*  <StatsValue>*/}
-      {/*    <Text*/}
-      {/*      fontFamily="Avenir Next Demi"*/}
-      {/*      color="#F8FAFF"*/}
-      {/*      fontSize="1.3rem">*/}
-      {/*      99%*/}
-      {/*    </Text>*/}
-      {/*    <DarkTooltip title='99%'>*/}
-      {/*      <span>*/}
-      {/*        <SvgIcon src={QuestionIcon} width="16px" height="16px" />*/}
-      {/*      </span>*/}
-      {/*    </DarkTooltip>*/}
-      {/*  </StatsValue>*/}
-      {/*</StatsItem>*/}
+      {/* <StatsItem> */}
+      {/*  <Text */}
+      {/*    fontFamily="Avenir Next Light" */}
+      {/*    color="#F8FAFF" */}
+      {/*    fontSize="1.3rem"> */}
+      {/*    Fullfill probability: */}
+      {/*  </Text> */}
+      {/*  <StatsValue> */}
+      {/*    <Text */}
+      {/*      fontFamily="Avenir Next Demi" */}
+      {/*      color="#F8FAFF" */}
+      {/*      fontSize="1.3rem"> */}
+      {/*      99% */}
+      {/*    </Text> */}
+      {/*    <DarkTooltip title='99%'> */}
+      {/*      <span> */}
+      {/*        <SvgIcon src={QuestionIcon} width="16px" height="16px" /> */}
+      {/*      </span> */}
+      {/*    </DarkTooltip> */}
+      {/*  </StatsValue> */}
+      {/* </StatsItem> */}
 
       <StatsItem>
         <Text fontFamily="Avenir Next Light" color="#F8FAFF" fontSize="1.3rem">
@@ -90,7 +94,7 @@ This is to motivate traders to execute your orders. Don’t set the dTWAP order 
           <Text fontFamily="Avenir Next Demi" color="#45AC14" fontSize="1.3rem">
             {stripByAmount(placingFeeCalc)} {baseSymbol}
           </Text>
-          <DarkTooltip title={'0.001% of your order amount.'}>
+          <DarkTooltip title="0.001% of your order amount.">
             <span>
               <SvgIcon src={QuestionIcon} width="16px" height="16px" />
             </span>
@@ -122,9 +126,7 @@ This is to motivate traders to execute your orders. Don’t set the dTWAP order 
           <Text fontFamily="Avenir Next Demi" color="#45AC14" fontSize="1.3rem">
             {stripByAmount(cancelFeeCalc)} {baseSymbol}
           </Text>
-          <DarkTooltip
-            title={'A fee of 0.0005% of the order amount is charged if you decide to stop the order.'}
-          >
+          <DarkTooltip title="A fee of 0.0005% of the order amount is charged if you decide to stop the order.">
             <span>
               <SvgIcon src={QuestionIcon} width="16px" height="16px" />
             </span>
