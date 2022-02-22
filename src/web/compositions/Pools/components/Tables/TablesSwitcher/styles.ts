@@ -1,12 +1,13 @@
 import { Theme } from '@material-ui/core'
-import { Button } from '@sb/components/Button'
-import { Input } from '@sb/components/Input'
+
 import {
   BORDER_RADIUS,
   BREAKPOINTS,
   COLORS,
   FONT_SIZES,
 } from '@variables/variables'
+import { Button } from '@sb/components/Button'
+import { Input } from '@sb/components/Input'
 import styled from 'styled-components'
 
 type TableModeButtonProps = {
@@ -92,4 +93,8 @@ export const AddPoolButton = styled(Button)`
   @media (min-width: ${BREAKPOINTS.md}) {
     margin-right: 20px;
   }
+`
+
+export const IconWrap = styled.div`
+  margin-left: auto;
 `

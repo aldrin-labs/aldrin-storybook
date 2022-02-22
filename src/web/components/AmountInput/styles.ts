@@ -70,3 +70,11 @@ export const TokenNameWrap = styled.span`
   color: ${COLORS.hint};
   font-weight: bold;
 `
+
+export const ButtonsBlock = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  flex: 1;
+`

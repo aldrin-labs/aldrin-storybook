@@ -105,7 +105,8 @@ const VARIANTS = {
   `,
 }
 
-const PADDINGS = {
+export const PADDINGS = {
+  xs: '1px 6px',
   sm: '2px 8px',
   md: '4px 10px', // 16px
   lg: '8px 16px',

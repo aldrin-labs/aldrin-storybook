@@ -15,6 +15,11 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
+import { COLORS } from '../../../variables/variables'
+import BalanceDistributedComponent from './components/BalanceDistributed'
+import RebalanceHeaderComponent from './components/Header'
+import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'
+import { RebalancePopup } from './components/RebalancePopup/RebalancePopup'
 import RebalanceTable from './components/Tables'
 import { TokensMapType, Colors } from './Rebalance.types'
 import {
@@ -23,11 +28,6 @@ import {
   getTotalTokenValue,
   getAllTokensData,
 } from './utils'
-
-
-import RebalanceHeaderComponent from './components/Header'
-import BalanceDistributedComponent from './components/BalanceDistributed'
-import { RebalancePopup } from './components/RebalancePopup/RebalancePopup'
 import {
   generateLegendColors,
   generateChartColors,
@@ -37,7 +37,6 @@ import { getTokensToBuy } from './utils/getTokensToBuy'
 import { getTokensToSell } from './utils/getTokensToSell'
 import { processAllTokensData } from './utils/processAllTokensData'
 import { resetTargetAllocation } from './utils/resetTargetAllocation'
-import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'
 
 // const MemoizedCurrentValueChartWithLegend = React.memo(
 //   DonutChartWithLegend,
@@ -239,9 +238,9 @@ const RebalanceComposition = ({
   return (
     <RowContainer
       theme={theme}
-      height="100%"
+      height="calc(100vh - 120px)"
       style={{
-        background: theme.palette.grey.additional,
+        background: COLORS.mainBlack,
         minWidth: '1000px',
         overflow: 'auto',
         minHeight: '500px',

@@ -85,7 +85,7 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             />
           </ContentBlock>
         </StretchedContent>
-        <GrayButton>Feb 22, 2022 Exclusively on Aldrin</GrayButton>
+        <GrayButton>Soon</GrayButton>
       </BlockContent>
     </StakingBlock>
   )
