@@ -15,10 +15,7 @@ import InfoIcon from '@icons/info.svg'
 
 import { useConnection } from '../../dexUtils/connection'
 import { notify } from '../../dexUtils/notifications'
-import {
-  usePlutoniansStaking,
-  useSrinStakingAccounts,
-} from '../../dexUtils/staking/hooks'
+import { useSrinStakingAccounts } from '../../dexUtils/staking/hooks'
 import { useUserTokenAccounts } from '../../dexUtils/token/hooks'
 import { TokenInfo } from '../../dexUtils/types'
 import { useWallet } from '../../dexUtils/wallet'
@@ -47,7 +44,9 @@ export const PlutoniansStaking = () => {
 
   const [tokenAccounts, refreshTokenAccounts] = useUserTokenAccounts()
 
-  const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
+  // const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
+
+  const stakingPool = undefined
   const { data: stakingAccounts, mutate: updateStakeAccounts } =
     useSrinStakingAccounts()
 
