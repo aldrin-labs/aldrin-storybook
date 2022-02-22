@@ -15,8 +15,8 @@ const VARIANTS = {
     border-color: ${COLORS.primary};
 
     &:disabled {
-      background: ${COLORS.hint};
-      border-color: ${COLORS.hint};
+      background: ${COLORS.cardsBack};
+      border-color: ${COLORS.cardsBack};
     }
   `,
   secondary: css`
@@ -94,7 +94,7 @@ const VARIANTS = {
 
   // TODO: rewrite with [disabled] html attribute
   disabled: css`
-    background: ${COLORS.hint};
+    background: ${COLORS.cardsBack};
     border-color: ${COLORS.hint};
     cursor: not-allowed;
   `,
@@ -105,7 +105,8 @@ const VARIANTS = {
   `,
 }
 
-const PADDINGS = {
+export const PADDINGS = {
+  xs: '1px 6px',
   sm: '2px 8px',
   md: '4px 10px', // 16px
   lg: '8px 16px',

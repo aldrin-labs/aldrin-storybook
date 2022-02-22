@@ -46,7 +46,7 @@ const ButterflyChart = ({
             {title}
           </WhiteTitle>
           <Row margin="0 2rem">
-            <Dot background="#269F13" />
+            <Dot background="#53DF11" />
             <WhiteTitle fontWeight="normal" theme={theme}>
               Buy
             </WhiteTitle>

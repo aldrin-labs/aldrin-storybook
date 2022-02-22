@@ -5,8 +5,8 @@ import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
+import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Button } from '@sb/components/Button'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import {
@@ -37,7 +37,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { getRegionData, withRegionCheck } from '@core/hoc/withRegionCheck'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
@@ -75,6 +75,7 @@ import {
   SwapBlockTemplate,
   SwapPageLayout,
   CircleIconContainer,
+  SetAmountButton,
 } from './styles'
 import {
   getEstimatedPrice,
@@ -172,6 +173,19 @@ const SwapPage = ({
       setQuoteTokenMintAddress(defaultQuoteTokenMint)
     }
   }, [isStableSwapTabActive])
+
+  const [isRegionCheckIsLoading, setRegionCheckIsLoading] =
+    useState<boolean>(false)
+  const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
+    useState<boolean>(false)
+
+  getRegionData
+  useEffect(() => {
+    setRegionCheckIsLoading(true)
+    getRegionData({ setIsFromRestrictedRegion }).then(() => {
+      setRegionCheckIsLoading(false)
+    })
+  }, [setIsFromRestrictedRegion])
 
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
@@ -453,35 +467,33 @@ const SwapPage = ({
                     roundSides={['top-left']}
                     appendComponent={
                       <Row>
-                        <Button
-                          minWidth="2rem"
+                        <SetAmountButton
+                          minWidth="0"
                           $fontSize="xs"
                           $fontFamily="demi"
                           $borderRadius="xxl"
                           onClick={halfButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $padding="sm"
                           $color="halfWhite"
                           backgroundColor="#383B45"
                           style={{ marginRight: '0.8rem' }}
                         >
                           Half
-                        </Button>
-                        <Button
-                          minWidth="2rem"
+                        </SetAmountButton>
+                        <SetAmountButton
+                          minWidth="0"
                           $fontSize="xs"
                           $fontFamily="demi"
                           $borderRadius="xxl"
                           onClick={maxButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $padding="sm"
                           $color="halfWhite"
                           backgroundColor="#383B45"
                         >
                           Max
-                        </Button>
+                        </SetAmountButton>
                       </Row>
                     }
                   />
@@ -546,24 +558,44 @@ const SwapPage = ({
             )}
             <RowContainer>
               {!publicKey ? (
-                <BtnCustom
-                  theme={theme}
-                  onClick={() => setIsConnectWalletPopupOpen(true)}
-                  needMinWidth={false}
-                  btnWidth="100%"
-                  height="4em"
-                  fontSize="1em"
-                  padding="1.4em 5em"
-                  borderRadius="1.1rem"
-                  borderColor={theme.palette.blue.serum}
-                  btnColor="#fff"
-                  backgroundColor={theme.palette.blue.serum}
-                  textTransform="none"
-                  transition="all .4s ease-out"
-                  style={{ whiteSpace: 'nowrap' }}
-                >
-                  Connect wallet
-                </BtnCustom>
+                <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
+                  <span>
+                    <BtnCustom
+                      theme={theme}
+                      disabled={isFromRestrictedRegion}
+                      onClick={() => {
+                        if (isFromRestrictedRegion || isRegionCheckIsLoading) {
+                          return
+                        }
+                        setIsConnectWalletPopupOpen(true)
+                      }}
+                      needMinWidth={false}
+                      btnWidth="100%"
+                      height="4em"
+                      fontSize="1em"
+                      padding="1.4em 5em"
+                      borderRadius="1.1rem"
+                      borderColor={theme.palette.blue.serum}
+                      btnColor="#fff"
+                      backgroundColor={theme.palette.blue.serum}
+                      textTransform="none"
+                      transition="all .4s ease-out"
+                      style={{ whiteSpace: 'nowrap' }}
+                    >
+                      {isRegionCheckIsLoading && (
+                        <Loading
+                          color="#FFFFFF"
+                          size={16}
+                          style={{ height: '16px' }}
+                        />
+                      )}
+                      {!isRegionCheckIsLoading &&
+                        (isFromRestrictedRegion
+                          ? `Restricted region`
+                          : `Connect wallet`)}
+                    </BtnCustom>
+                  </span>
+                </TooltipRegionBlocker>
               ) : (
                 <SwapButton
                   disabled={isButtonDisabled}
@@ -618,32 +650,37 @@ const SwapPage = ({
                         isTokenABalanceInsufficient,
                         isLoadingSwapRoute,
                         isTooSmallInputAmount,
+                        isSwapInProgress,
                       })}
                     </RowContainer>
-                    <RowContainer>
-                      {getRouteMintsPath(swapRoute).map((mint, index, arr) => {
-                        const { symbol } = tokenInfos.get(mint) || {
-                          symbol: getTokenNameByMintAddress(mint),
-                        }
-                        return (
-                          <>
-                            <Text
-                              color="rgba(248, 250, 255, 0.5)"
-                              padding="0 0.4rem"
-                            >
-                              {symbol}
-                            </Text>
-                            {arr.length - 1 !== index && (
-                              <SvgIcon
-                                src={ArrowRightIcon}
-                                width="0.8em"
-                                height="0.8em"
-                              />
-                            )}
-                          </>
-                        )
-                      })}
-                    </RowContainer>
+                    {!isSwapInProgress && (
+                      <RowContainer>
+                        {getRouteMintsPath(swapRoute).map(
+                          (mint, index, arr) => {
+                            const { symbol } = tokenInfos.get(mint) || {
+                              symbol: getTokenNameByMintAddress(mint),
+                            }
+                            return (
+                              <>
+                                <Text
+                                  color="rgba(248, 250, 255, 0.5)"
+                                  padding="0 0.4rem"
+                                >
+                                  {symbol}
+                                </Text>
+                                {arr.length - 1 !== index && (
+                                  <SvgIcon
+                                    src={ArrowRightIcon}
+                                    width="0.8em"
+                                    height="0.8em"
+                                  />
+                                )}
+                              </>
+                            )
+                          }
+                        )}
+                      </RowContainer>
+                    )}
                   </RowContainer>
                 </SwapButton>
               )}
@@ -802,7 +839,7 @@ const SwapPage = ({
 export default compose(
   withTheme(),
   withPublicKey,
-  withRegionCheck,
+  // withRegionCheck,
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,

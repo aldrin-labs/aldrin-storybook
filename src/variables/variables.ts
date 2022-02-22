@@ -14,8 +14,8 @@ export const COLORS = {
   hint: '#96999c',
   blockBackground: '#222429',
   main: '#fbf2f2',
-  primary: '#0E02EC',
-  success: '#269F13',
+  primary: '#651CE4',
+  success: '#53DF11',
   successAlt: '#2E5223',
   error: '#F69894',
   errorAlt: '#D44C32',
@@ -44,12 +44,12 @@ export const COLORS = {
   mainBlack: '#101010',
   primaryGray: '#C1C1C1',
   activeWhite: '#FAFAFA',
-  primaryBlue: '#0E02EC',
+  primaryBlue: '#651CE4',
   defaultGray: '#1A1A1A',
   newOrange: '#DA6239',
-  newGreen: '#269F13',
+  newGreen: '#53DF11',
   newWhite: '#F8F8F8',
-  darkBlue: '#0B02BD',
+  darkBlue: 'rgba(101, 28, 228, 0.7)',
   primaryRed: '#E04237',
   newBlack: '#191919',
   lightGray: '#C9C8CD',
@@ -77,6 +77,7 @@ export const FONT_SIZES = {
 }
 
 export const BREAKPOINTS = {
+  xs: '480px',
   sm: '540px',
   md: '768px',
   lg: '1024px',
@@ -92,6 +93,7 @@ export const SIZE = {
 export const WIDTH = {
   sm: '10%',
   md: '30%',
+  hf: '50%',
   lg: '60%',
   xl: '100%',
 }

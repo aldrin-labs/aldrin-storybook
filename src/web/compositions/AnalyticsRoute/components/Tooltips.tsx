@@ -79,7 +79,7 @@ export const TooltipForButterflyChart = ({
           <PopupInfoValue id={`butterflyChart-tooltip-${id}-buy`}>
             {0}
           </PopupInfoValue>
-          <PopupInfoTitle style={{ color: '#269F13' }}>
+          <PopupInfoTitle style={{ color: '#53DF11' }}>
             {needQuoteInLabel ? 'Avg. Buy' : 'Buy Trades'}
           </PopupInfoTitle>
         </PopupInfoBlock>

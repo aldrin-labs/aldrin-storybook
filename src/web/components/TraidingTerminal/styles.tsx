@@ -421,7 +421,7 @@ export const SmartTradeButton = styled(SendButton)`
           props.theme.palette &&
           props.theme.palette.blue &&
           props.theme.palette.blue.main) ||
-        '#0E02EC'
+        '#651CE4'
       : (props.theme &&
           props.theme.palette &&
           props.theme.palette.red &&
@@ -435,7 +435,7 @@ export const SmartTradeButton = styled(SendButton)`
             props.theme.palette &&
             props.theme.palette.blue &&
             props.theme.palette.blue.main) ||
-          '#0E02EC'
+          '#651CE4'
         : (props.theme &&
             props.theme.palette &&
             props.theme.palette.red &&

@@ -1,5 +1,9 @@
 import { RouteInfo } from '@jup-ag/core'
 import { TokenInfo } from '@solana/spl-token-registry'
+import { COLORS } from '@variables/variables'
+import React from 'react'
+
+import { Loading } from '@sb/components'
 
 import { removeDecimals } from '@core/utils/helpers'
 
@@ -11,6 +15,7 @@ export const getSwapButtonText = ({
   isTooSmallInputAmount,
   isSwapRouteExists,
   needEnterAmount,
+  isSwapInProgress,
 }: {
   isTokenABalanceInsufficient: boolean
   isLoadingSwapRoute: boolean
@@ -19,7 +24,22 @@ export const getSwapButtonText = ({
   isTooSmallInputAmount: boolean
   isSwapRouteExists: boolean
   needEnterAmount: boolean
+  isSwapInProgress: boolean
 }) => {
+  if (isSwapInProgress) {
+    return (
+      <>
+        <Loading
+          size="1em"
+          color={COLORS.white}
+          margin="0 0.6em 0 0"
+          style={{ display: 'flex' }}
+        />{' '}
+        <span>Swapping</span>
+      </>
+    )
+  }
+
   if (needEnterAmount) {
     return 'Enter amount'
   }

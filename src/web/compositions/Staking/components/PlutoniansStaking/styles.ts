@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+
 import bg from './plutoniasLogo.png'
 
 export const LogoWrap = styled.div`
@@ -13,4 +15,8 @@ export const LogoWrap = styled.div`
   display: flex;
   align-items: center;
   padding: 0 20px;
+`
+
+export const ButtonContainer = styled(RowContainer)`
+  margin-top: 9px;
 `

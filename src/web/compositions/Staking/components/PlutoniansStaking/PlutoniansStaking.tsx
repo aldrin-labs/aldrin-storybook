@@ -8,13 +8,13 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import {
   ContentBlock,
-  GrayButton,
   StakingBlock,
   StretchedContent,
+  GrayLink,
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Lock from './lock.svg'
-import { LogoWrap } from './styles'
+import { LogoWrap, ButtonContainer } from './styles'
 
 export const PlutoniasStakingBlock: React.FC = (props) => {
   return (
@@ -85,7 +85,9 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             />
           </ContentBlock>
         </StretchedContent>
-        <GrayButton>Soon</GrayButton>
+        <ButtonContainer>
+          <GrayLink to="/staking/plutonians">View</GrayLink>
+        </ButtonContainer>
       </BlockContent>
     </StakingBlock>
   )
