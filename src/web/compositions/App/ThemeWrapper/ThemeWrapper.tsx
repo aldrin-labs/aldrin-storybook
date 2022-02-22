@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react'
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
-import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme'
 import { fade } from '@material-ui/core/styles/colorManipulator'
-import { client } from '@core/graphql/apolloClient'
-import { Props } from './ThemeWrapper.types'
-import { GET_THEME_MODE } from '@core/graphql/queries/app/getThemeMode'
-import { useQuery } from 'react-apollo'
+import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme'
+import React, { useState, useEffect } from 'react'
 
 declare module '@material-ui/core/styles/createMuiTheme' {
   interface Theme {
@@ -175,25 +171,25 @@ export default ({ themeMode, isChartPage, children }) => {
               btnBackground: '#3B63AF', // 165BE0
               switcherBackground: '#3B63AF', // 165BE0
               switcherBorder: '#2E2E2E',
-              serum: '#0E02EC',
+              serum: '#651CE4',
             },
             green: {
               dark: '#377E21',
               light: '#E7ECF3',
               custom: '#97C15C',
-              main: '#269F13',
-              button: 'linear-gradient(135deg, #269F13 0%, #97E873 100%)',
-              new: '#269F13',
+              main: '#53DF11',
+              button: 'linear-gradient(135deg, #53DF11 0%, #97E873 100%)',
+              new: '#53DF11',
               tab: '#09ACC7',
               shine: '#c7ffd0',
               acid: '#c7ffd0',
               descrip: '#61D8E6',
               border: '#61D8E6',
-              analytics: '#269F13',
+              analytics: '#53DF11',
             },
             grey: {
               custom: '#2E2E2E',
-              dark: '#2c2c34', //'#1F1F24',
+              dark: '#2c2c34', // '#1F1F24',
               light: '#D1DDEF',
               main: '#0E1016',
               background: '#2E2E2E',
@@ -219,7 +215,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#27272D',
             },
             secondary: {
-              main: '#0E02EC', //'#48DCC6',
+              main: '#651CE4', // '#48DCC6',
             },
             action: {
               selected: 'rgba(255, 255, 255, 0.05)',
@@ -371,7 +367,7 @@ export default ({ themeMode, isChartPage, children }) => {
             text: {
               primary: fade('#41495E', 0.69),
               dark: '#7284A0',
-              blue: '#0E02EC',
+              blue: '#651CE4',
               subPrimary: '#16253D',
               grey: '#2E2E2E',
               light: '#9F9F9F',
@@ -397,15 +393,15 @@ export default ({ themeMode, isChartPage, children }) => {
             },
             blue: {
               custom: '#5085EC',
-              light: '#0E02EC',
+              light: '#651CE4',
               first: '#0B1FD1',
               second: '#5C8CEA',
               background: '#5C8CEA',
-              main: '#0E02EC',
+              main: '#651CE4',
               btnBackground: '#5C8CEA',
               switcherBackground: 'rgba(11, 31, 209, 0.5)',
               switcherBorder: '#0B1FD1',
-              serum: '#0E02EC',
+              serum: '#651CE4',
             },
             green: {
               dark: '#377E21',
@@ -417,11 +413,11 @@ export default ({ themeMode, isChartPage, children }) => {
               descrip: '#1BA492',
               acid: '#1BA492',
               border: '#7380eb',
-              analytics: '#269F13',
+              analytics: '#53DF11',
             },
             grey: {
               custom: '#ABBAD1',
-              dark: '#8f9092', //'#7284A0',
+              dark: '#8f9092', // '#7284A0',
               light: '#7284A0',
               main: '#F2F4F6',
               backround: '#f2f4f6',
@@ -445,7 +441,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#FFF',
             },
             secondary: {
-              main: '#0E02EC', // '#48DCC6',
+              main: '#651CE4', // '#48DCC6',
             },
             action: {
               selected: 'rgba(255, 255, 255, 0.05)',
@@ -459,7 +455,7 @@ export default ({ themeMode, isChartPage, children }) => {
               light: '#E0E5EC',
             },
             button: {
-              color: '#0E02EC',
+              color: '#651CE4',
             },
             btnChartBorderNotActive: {
               main: '#E0E5EC',

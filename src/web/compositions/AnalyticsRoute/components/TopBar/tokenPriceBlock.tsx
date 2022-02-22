@@ -48,7 +48,7 @@ const PriceBlock = ({
 
   return (
     <GreenTitle
-      style={{ color: showGreen ? '#269F13' : '#F26D68' }}
+      style={{ color: showGreen ? '#53DF11' : '#F26D68' }}
       theme={theme}
     >
       {`$${formatNumberToUSFormat(

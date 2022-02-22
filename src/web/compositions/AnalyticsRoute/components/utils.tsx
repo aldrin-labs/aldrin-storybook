@@ -1,10 +1,3 @@
-import moment from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
-
-moment.extend(timezone)
-moment.extend(utc)
-
 import {
   Chart,
   BarElement,
@@ -19,13 +12,19 @@ import {
   Filler,
   BubbleController,
 } from 'chart.js'
+import moment from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+
+import { getIsNotUSDTQuote } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 
 import {
   stripDigitPlaces,
   formatNumberToUSFormat,
 } from '@core/utils/PortfolioTableUtils'
 
-import { getIsNotUSDTQuote } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+moment.extend(timezone)
+moment.extend(utc)
 
 Chart.register(
   BarElement,
@@ -48,10 +47,7 @@ export const getTimestampsForDays = (
   fisrtTimestamp: number,
   lastTimestamp: number
 ) => {
-  let dayEndTimestamp: number = moment
-    .unix(lastTimestamp)
-    .startOf('day')
-    .unix()
+  let dayEndTimestamp: number = moment.unix(lastTimestamp).startOf('day').unix()
 
   const dayStartTimestamps = {}
   do {
@@ -73,13 +69,9 @@ export const getTimestampsForDays = (
 export const generateIDFromValues = (arr: any[]) =>
   arr.reduce((acc, cur) => acc + cur.buy + cur.sell, '')
 
-export const endOfDayTimestamp = () => moment()
-  .endOf('day')
-  .unix()
+export const endOfDayTimestamp = () => moment().endOf('day').unix()
 
-export const startOfDayTimestamp = () => moment()
-  .startOf('day')
-  .unix()
+export const startOfDayTimestamp = () => moment().startOf('day').unix()
 
 export const dayDuration = 24 * 60 * 60
 
@@ -92,7 +84,7 @@ export const createButterflyChart = (
   const ctx = document.getElementById(`butterflyChart-${id}`)?.getContext('2d')
 
   const topBarGradient = ctx.createLinearGradient(0, 0, 0, 400)
-  topBarGradient.addColorStop(0, '#269F13')
+  topBarGradient.addColorStop(0, '#53DF11')
   topBarGradient.addColorStop(1, '#97E873')
 
   const width =
@@ -137,7 +129,7 @@ export const createButterflyChart = (
       datasets: [
         {
           barPercentage,
-          borderColor: '#269F13',
+          borderColor: '#53DF11',
           label: 'data-1',
           backgroundColor: '#1C1D22',
           borderRadius: 50,
@@ -179,12 +171,12 @@ export const createButterflyChart = (
           ticks: {
             color: '#fff',
             callback: needQuoteInLabel
-              ? function(value, index, values) {
+              ? function (value, index, values) {
                   return `${isNotUSDTQuote ? '' : '$'}${Math.abs(value)}${
                     isNotUSDTQuote ? ` ${quote}` : ''
                   }`
                 }
-              : function(value, index, values) {
+              : function (value, index, values) {
                   return String(Math.abs(value))
                 },
             font: {
@@ -225,14 +217,14 @@ export const createButterflyChart = (
             ticks: {
               color: '#fff',
               callback: needQuoteInLabel
-                ? function(value, index, values) {
+                ? function (value, index, values) {
                     return `${
                       needQuoteInLabel ? (isNotUSDTQuote ? '' : '$') : ''
                     }${Math.abs(value)}${
                       isNotUSDTQuote && needQuoteInLabel ? ` ${quote}` : ''
                     }`
                   }
-                : function(value, index, values) {
+                : function (value, index, values) {
                     return String(Math.abs(value))
                   },
               font: {
@@ -260,12 +252,12 @@ export const createButterflyChart = (
           enabled: false,
           intersect: false,
           custom: (context) => {
-            var tooltipEl = document.getElementById(
+            const tooltipEl = document.getElementById(
               `butterflyChart-tooltip-${id}`
             )
 
             // Hide if no tooltip
-            var tooltipModel = context.tooltip
+            const tooltipModel = context.tooltip
             if (tooltipEl && tooltipModel.opacity === 0) {
               tooltipEl.style.opacity = '0'
               return
@@ -312,7 +304,7 @@ export const createButterflyChart = (
                 )}${isNotUSDTQuote && needQuoteInLabel ? ` ${quote}` : ''}`
             }
 
-            var position = context.chart.canvas.getBoundingClientRect()
+            const position = context.chart.canvas.getBoundingClientRect()
 
             // Display, position, and set styles for font
             if (tooltipEl) {
@@ -324,15 +316,17 @@ export const createButterflyChart = (
                 tooltipModel.caretX +
                 tooltipModel._size.width / 3
 
-              tooltipEl.style.left = left + 'px'
+              tooltipEl.style.left = `${left}px`
 
               if (left + tooltipModel._size.width * 1.5 >= width) {
-                tooltipEl.style.left =
-                  left - tooltipModel._size.width * 2 + 'px'
+                tooltipEl.style.left = `${
+                  left - tooltipModel._size.width * 2
+                }px`
               }
 
-              tooltipEl.style.top =
-                position.top + window.pageYOffset + tooltipModel.caretY + 'px'
+              tooltipEl.style.top = `${
+                position.top + window.pageYOffset + tooltipModel.caretY
+              }px`
 
               tooltipEl.style.pointerEvents = 'none'
             }
@@ -419,15 +413,15 @@ export const createAreaChart = (data: any, selectedPair = '', theme) => {
           },
           ticks: {
             color: '#fff',
-            callback: function(value, index, values) {
+            callback(value, index, values) {
               let valueToShow: number | string = +value
 
               if (valueToShow === 0) {
                 valueToShow = 0
               } else if (valueToShow % 1000000 === 0) {
-                valueToShow = valueToShow / 1000000 + 'M'
+                valueToShow = `${valueToShow / 1000000}M`
               } else if (valueToShow % 1000 === 0) {
-                valueToShow = valueToShow / 1000 + 'K'
+                valueToShow = `${valueToShow / 1000}K`
               }
 
               return `${isNotUSDTQuote ? '' : '$'}${valueToShow}${
@@ -471,15 +465,15 @@ export const createAreaChart = (data: any, selectedPair = '', theme) => {
             },
             ticks: {
               color: '#fff',
-              callback: function(value, index, values) {
+              callback(value, index, values) {
                 let valueToShow: number | string = +value
 
                 if (valueToShow === 0) {
                   valueToShow = 0
                 } else if (valueToShow % 1000000 === 0) {
-                  valueToShow = valueToShow / 1000000 + 'M'
+                  valueToShow = `${valueToShow / 1000000}M`
                 } else if (valueToShow % 1000 === 0) {
-                  valueToShow = valueToShow / 1000 + 'K'
+                  valueToShow = `${valueToShow / 1000}K`
                 }
 
                 return `${isNotUSDTQuote ? '' : '$'}${valueToShow}${
@@ -579,13 +573,7 @@ export const createLinearChart = (data: any) => {
     type: 'line',
     data: {
       labels: [
-        100000,
-        600000,
-        1600000,
-        6600000,
-        16600000,
-        41600000,
-        45000000,
+        100000, 600000, 1600000, 6600000, 16600000, 41600000, 45000000,
         // 91600000,
         // 166600000,
         // 266600000,
@@ -634,8 +622,8 @@ export const createLinearChart = (data: any) => {
             color: 'rgb(246, 86, 131)',
           },
           ticks: {
-            callback: function(value, index, values) {
-              return '$' + value
+            callback(value, index, values) {
+              return `$${value}`
             },
             color: '#fff',
             font: {
@@ -651,12 +639,11 @@ export const createLinearChart = (data: any) => {
             color: 'rgb(246, 86, 131)',
           },
           ticks: {
-            callback: function(value, index, values) {
+            callback(value, index, values) {
               if (value >= 1000000) {
-                return value / 1000000 + 'M'
-              } else {
-                return value / 1000 + 'К'
+                return `${value / 1000000}M`
               }
+              return `${value / 1000}К`
             },
             color: '#fff',
             font: {
@@ -712,7 +699,7 @@ export const createLinearChart = (data: any) => {
   })
 
   ctx.beginPath()
-  ctx.fillStyle = '#000' //or whatever color
-  ctx.arc(10000, 10000, 20, 100, Math.PI * 2) //maybe too big for you, but you get the point
+  ctx.fillStyle = '#000' // or whatever color
+  ctx.arc(10000, 10000, 20, 100, Math.PI * 2) // maybe too big for you, but you get the point
   ctx.fill()
 }

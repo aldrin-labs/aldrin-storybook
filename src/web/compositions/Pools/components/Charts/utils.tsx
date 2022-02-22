@@ -133,8 +133,8 @@ const createTotalVolumeLockedChart = ({
   }
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(14, 2, 236, 0.9)')
-  gradient.addColorStop(0.55, 'rgba(14, 2, 236, 0)')
+  gradient.addColorStop(0, 'rgba(101, 28, 228, 0.9)')
+  gradient.addColorStop(0.55, 'rgba(101, 28, 228, 0)')
   gradient.addColorStop(1, COLORS.blockBackground)
 
   const transformedData = getEmptyData()

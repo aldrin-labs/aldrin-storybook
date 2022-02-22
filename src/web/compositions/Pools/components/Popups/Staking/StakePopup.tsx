@@ -205,7 +205,7 @@ const Popup = (props: StakePopupProps) => {
           <Text>
             <Row align="flex-start">
               <span
-                style={{ color: '#269F13', fontFamily: 'Avenir Next Demi' }}
+                style={{ color: '#53DF11', fontFamily: 'Avenir Next Demi' }}
               >
                 {formatNumberToUSFormat(stripDigitPlaces(farmingAPR, 2))}% APR
               </span>
@@ -236,13 +236,13 @@ const Popup = (props: StakePopupProps) => {
           <Row width="80%" align="flex-start" direction="column">
             <Text style={{ margin: '0 0 1.5rem 0' }}>
               Pool tokens will be locked for{' '}
-              <span style={{ color: '#269F13' }}>
+              <span style={{ color: '#53DF11' }}>
                 {estimatedTime(farmingState.periodLength + 20 * 60)}.
               </span>{' '}
             </Text>
             <Text>
               Withdrawal will not be available until{' '}
-              <span style={{ color: '#269F13' }}>
+              <span style={{ color: '#53DF11' }}>
                 {dayjs
                   .unix(Date.now() / 1000 + farmingState.periodLength)
                   .format('MMM DD, YYYY')}
