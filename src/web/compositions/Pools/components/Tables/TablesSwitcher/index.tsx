@@ -54,6 +54,7 @@ import {
   TableContainer,
   TableModeButton,
   AuditInfo,
+  IconWrap,
 } from './styles'
 
 export type PoolsInfo = { getPoolsInfo: PoolInfo[] }
@@ -210,7 +211,11 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
               placeholder="Search"
               value={searchValue}
               onChange={onChangeSearch}
-              append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
+              append={
+                <IconWrap>
+                  <SvgIcon src={Loop} height="1.6rem" width="1.6rem" />
+                </IconWrap>
+              }
             />
             <AddPoolButton as={Link} to={`${path}/create`}>
               <SvgIcon src={PlusIcon} width="1.2em" />

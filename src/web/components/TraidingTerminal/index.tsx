@@ -1,7 +1,10 @@
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { Grid, Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
+import { withFormik } from 'formik'
+import { toNumber } from 'lodash-es'
+import React, { CSSProperties, PureComponent, SyntheticEvent } from 'react'
+import { compose } from 'recompose'
+
 import { Line } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import BlueSlider from '@sb/components/Slider/BlueSlider'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
@@ -14,10 +17,10 @@ import {
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { notify } from '@sb/dexUtils/notifications'
 import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
-import { withFormik } from 'formik'
-import { toNumber } from 'lodash-es'
-import React, { CSSProperties, PureComponent, SyntheticEvent } from 'react'
-import { compose } from 'recompose'
+
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
 import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
@@ -226,13 +229,7 @@ export const TradeInputContent = ({
       />
       <UpdatedCoin
         theme={theme}
-        right={
-          symbolRightIndent
-            ? symbolRightIndent
-            : symbol.length <= 2
-            ? '2.5rem'
-            : '1rem'
-        }
+        right={symbolRightIndent || (symbol.length <= 2 ? '2.5rem' : '1rem')}
       >
         {symbol}
       </UpdatedCoin>
@@ -613,7 +610,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 alignItems: 'center',
               }}
               firstHalfStyleProperties={{
-                activeColor: '#269F13',
+                activeColor: '#53DF11',
                 activeBackgroundColor: '#222429',
                 borderRadius: '3rem',
                 width: '47%',

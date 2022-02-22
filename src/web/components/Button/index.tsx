@@ -105,7 +105,9 @@ const VARIANTS = {
   `,
 }
 
-const PADDINGS = {
+export const PADDINGS = {
+  xs: '1px 6px',
+  sm: '2px 8px',
   md: '4px 10px', // 16px
   lg: '8px 16px',
 }
@@ -114,11 +116,13 @@ export type ButtonVariants = keyof typeof VARIANTS
 
 export interface ButtonProps {
   $fontSize?: keyof typeof FONT_SIZES
+  $fontFamily?: keyof typeof FONTS
   $variant?: keyof typeof VARIANTS
   $borderRadius?: keyof typeof BORDER_RADIUS
   $padding?: keyof typeof PADDINGS
   $backgroundImage?: string
   $width?: keyof typeof WIDTH
+  $color?: keyof typeof COLORS
   minWidth?: string
   backgroundColor?: string
   $loading?: boolean
@@ -152,7 +156,7 @@ export const Button = styled.button<ButtonProps>`
   background-color: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   background: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   min-width: ${(props: ButtonProps) => props.minWidth || '9rem'};
-  color: white;
+  color: ${(props: ButtonProps) => COLORS[props.$color || 'white']};
   text-align: center;
   font-size: ${(props: ButtonProps) => FONT_SIZES[props.$fontSize || 'md']};
   border: 1px solid transparent;
@@ -160,7 +164,7 @@ export const Button = styled.button<ButtonProps>`
   cursor: pointer;
   padding: ${(props: ButtonProps) => PADDINGS[props.$padding || 'md']};
   ${(props: ButtonProps) => VARIANTS[props.$variant || 'primary']};
-  font-family: ${FONTS.main};
+  font-family: ${(props: ButtonProps) => FONTS[props.$fontFamily || 'main']};
   border-radius: ${(props: ButtonProps) =>
     BORDER_RADIUS[props.$borderRadius || 'md']};
   ${(props: ButtonProps) =>

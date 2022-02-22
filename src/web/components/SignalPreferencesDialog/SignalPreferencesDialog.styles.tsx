@@ -19,7 +19,7 @@ export const SectionTitle = styled(TypographySectionTitle)`
 `
 
 export const RefreshButton = styled(IconButton)`
-  color: #0e02ec;
+  color: #651ce4;
   padding: 0.5rem;
 `
 

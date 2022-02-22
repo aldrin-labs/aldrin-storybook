@@ -1,5 +1,5 @@
 import { Theme, withTheme } from '@material-ui/core'
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useState, useEffect } from 'react'
 
 import { SvgIcon } from '@sb/components'
 import {
@@ -7,11 +7,14 @@ import {
   Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Loading, TooltipRegionBlocker } from '@sb/components'
 
 import LightLogo from '@icons/lightLogo.svg'
 
 import { COLORS } from '../../../variables/variables'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { getRegionData } from '@core/hoc/withRegionCheck'
 
 interface ConnectWalletContentProps {
   theme: Theme
@@ -57,32 +60,56 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
 
+  const [isRegionCheckIsLoading, setRegionCheckIsLoading] =
+    useState<boolean>(false)
+  const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
+    useState<boolean>(false)
+
+  useEffect(() => {
+    setRegionCheckIsLoading(true)
+    getRegionData({ setIsFromRestrictedRegion }).then(() => {
+      setRegionCheckIsLoading(false)
+    })
+  }, [setIsFromRestrictedRegion])
+
   const buttonWithModal = (
     <>
-      <BtnCustom
-        onClick={() => {
-          setIsConnectWalletPopupOpen(true)
-        }}
-        btnColor="#F8FAFF"
-        backgroundColor={COLORS.primary}
-        btnWidth={sizes.btnWidth}
-        borderColor={COLORS.primary}
-        textTransform="capitalize"
-        height={sizes.btnHeight}
-        borderRadius="0.5em"
-        fontSize="1em"
-        style={{
-          display: 'flex',
-          textTransform: 'none',
-          padding: '0.5em',
-          whiteSpace: 'nowrap',
-        }}
-      >
-        Connect wallet
-      </BtnCustom>
+      <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
+        <span>
+          <BtnCustom
+            onClick={() => {
+              if (isRegionCheckIsLoading || isFromRestrictedRegion) {
+                return
+              }
+              setIsConnectWalletPopupOpen(true)
+            }}
+            disabled={isFromRestrictedRegion}
+            btnColor="#F8FAFF"
+            backgroundColor={COLORS.primary}
+            btnWidth={sizes.btnWidth}
+            borderColor={COLORS.primary}
+            textTransform="capitalize"
+            height={sizes.btnHeight}
+            borderRadius="0.5em"
+            fontSize="1em"
+            style={{
+              display: 'flex',
+              textTransform: 'none',
+              padding: '0.5em',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {isRegionCheckIsLoading && (
+              <Loading color="#FFFFFF" size={16} style={{ height: '16px' }} />
+            )}
+            {!isRegionCheckIsLoading &&
+              (isFromRestrictedRegion ? `Restricted region` : `Connect wallet`)}
+          </BtnCustom>
+        </span>
+      </TooltipRegionBlocker>
       <ConnectWalletPopup
         theme={theme}
-        open={isConnectWalletPopupOpen}
+        open={isConnectWalletPopupOpen && !isFromRestrictedRegion}
         onClose={() => setIsConnectWalletPopupOpen(false)}
       />
     </>

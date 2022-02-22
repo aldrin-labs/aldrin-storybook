@@ -13,24 +13,21 @@ import InfoDialog from '@sb/components/InfoDialog/InfoDialog'
 import GetKeysInfo from '@sb/components/Onboarding/GetKeysInfo/GetKeysInfo'
 import SelectExchangeList from '@sb/components/SelectExchangeList/SelectExchangeList'
 import SvgIcon from '@sb/components/SvgIcon'
-
 import { DialogContent } from '@sb/styles/Dialog.styles'
+
 import FuturesWarsRoomSelector from '@core/components/FuturesWarsRoomSelector/index'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
-import CcaiBinanceLogo from '@icons/ccai&binance.svg'
-import Plus from '@icons/Plus.svg'
+import { generateBrokerKey } from '@core/graphql/mutations/keys/generateBrokerKey'
+import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
+import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
 
+import CcaiBinanceLogo from '@icons/ccai&binance.svg'
 import free from '@icons/free.svg'
+import Plus from '@icons/Plus.svg'
 import secure from '@icons/secure.svg'
 import useful from '@icons/useful.svg'
 
-
-import { addExchangeKeyMutation } from '@core/graphql/mutations/user/addExchangeKeyMutation'
-import { generateBrokerKey } from '@core/graphql/mutations/keys/generateBrokerKey'
-import { GET_BASE_COIN } from '@core/graphql/queries/portfolio/getBaseCoin'
-
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
-
 
 import {
   TypographyCustomHeading,
@@ -325,9 +322,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             <BtnCustom
               btnWidth="auto"
               height="auto"
-              btnColor="#0E02EC"
+              btnColor="#651CE4"
               borderRadius="1rem"
-              color="#0E02EC"
+              color="#651CE4"
               margin="1.6rem 0 0 2rem"
               padding=".5rem 1rem .5rem 0"
               fontSize="1.4rem"
@@ -485,8 +482,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <BtnCustom
                       btnWidth="45%"
                       borderRadius="8px"
-                      btnColor="#0E02EC"
-                      borderColor="#0E02EC"
+                      btnColor="#651CE4"
+                      borderColor="#651CE4"
                       padding="1.5rem"
                       height="auto"
                       borderWidth="2px"
@@ -601,8 +598,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                           <BtnCustom
                             btnWidth="45%"
                             borderRadius="8px"
-                            btnColor="#0E02EC"
-                            borderColor="#0E02EC"
+                            btnColor="#651CE4"
+                            borderColor="#651CE4"
                             padding="1.5rem"
                             height="auto"
                             borderWidth="2px"
@@ -690,7 +687,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 </Grid>
               ) : (
                 <div style={{ padding: '350px 0 0 0' }}>
-                  <Loading centerAligned loaderColor="#0E02EC" />
+                  <Loading centerAligned loaderColor="#651CE4" />
                 </div>
               )}
 
@@ -709,7 +706,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   <BtnCustom
                     disabled={regularLoading}
                     borderRadius="8px"
-                    btnColor="#0E02EC"
+                    btnColor="#651CE4"
                     fontSize="1.6rem"
                     padding="1rem"
                     height="auto"

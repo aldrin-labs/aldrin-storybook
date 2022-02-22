@@ -244,6 +244,7 @@ const RebalanceComposition = ({
         minWidth: '1000px',
         overflow: 'auto',
         minHeight: '500px',
+        fontSize: '16px',
       }}
     >
       {!isWalletConnected ? (

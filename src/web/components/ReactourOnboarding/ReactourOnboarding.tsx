@@ -150,7 +150,7 @@ export const GotItButton = styled.button`
   width: 184px;
   height: 40px;
 
-  background: #0E02EC;
+  background: #651ce4;
   border-radius: 8px;
 `
 

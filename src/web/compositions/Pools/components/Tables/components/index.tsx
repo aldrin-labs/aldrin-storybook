@@ -32,7 +32,7 @@ export const SearchInputWithLoop = ({
   onBlur?: () => {}
 }) => {
   return (
-    <Row style={{ position: 'relative' }} width={width}>
+    <Row style={{ position: 'relative' }} height="3em" width={width}>
       <SearchInput
         value={searchValue}
         onChange={(e) => {
@@ -44,8 +44,8 @@ export const SearchInputWithLoop = ({
       />
       <SvgIcon
         src={Loop}
-        height="1.6rem"
-        width="1.6rem"
+        height="1em"
+        width="1em"
         style={{ position: 'absolute', right: '2rem', cursor: 'pointer' }}
       />
     </Row>

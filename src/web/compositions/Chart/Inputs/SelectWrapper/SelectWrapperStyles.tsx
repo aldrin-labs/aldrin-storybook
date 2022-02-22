@@ -1,13 +1,12 @@
-import styled from 'styled-components'
+import { Grid, Paper, Input } from '@material-ui/core'
 import React from 'react'
+import { AutoSizer } from 'react-virtualized'
+import styled from 'styled-components'
 
-import { Grid, Paper } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Loading } from '@sb/components/Loading'
 import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { Input } from '@material-ui/core'
-import { AutoSizer } from 'react-virtualized'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const StyledGrid = styled(Grid)`
   display: none;
@@ -164,7 +163,7 @@ export const StyledTab = styled(({ isSelected, ...props }) => (
   && {
     text-transform: capitalize;
     padding: 0.2rem 0.75rem;
-    background: ${(props) => (props.isSelected ? '#0E02EC' : '#383B45')};
+    background: ${(props) => (props.isSelected ? '#651CE4' : '#383B45')};
     border-radius: 1.3rem;
     cursor: pointer;
     font-family: ${(props) =>
@@ -190,7 +189,7 @@ export const BlueButton = styled(
     <BtnCustom {...props}>
       {showLoader ? (
         <Loading
-          color={'#fff'}
+          color="#fff"
           size={24}
           style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
         />
