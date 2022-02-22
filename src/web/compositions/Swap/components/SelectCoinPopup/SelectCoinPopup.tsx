@@ -10,10 +10,7 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { SelectSeveralAddressesPopup } from '@sb/compositions/Pools/components/Popups/SelectorForSeveralAddresses'
 import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import {
-  ALL_TOKENS_MINTS_MAP,
-  getTokenNameByMintAddress,
-} from '@sb/dexUtils/markets'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -51,19 +48,12 @@ export const SelectCoinPopup = ({
   const tokenInfos = useTokenInfos()
   const { wallet, connected } = useWallet()
 
-  const needKnownMints = false
   const [searchValue, onChangeSearch] = useState<string>('')
   const [selectedMint, setSelectedMint] = useState<string>('')
   const [
     isSelectorForSeveralAddressesOpen,
     setIsSelectorForSeveralAddressesOpen,
   ] = useState(false)
-
-  const usersMints = needKnownMints
-    ? mints.filter(
-        (el) => getTokenNameByMintAddress(el) === ALL_TOKENS_MINTS_MAP[el]
-      )
-    : mints
 
   const sortedAllTokensData = new Map()
 
@@ -79,14 +69,21 @@ export const SelectCoinPopup = ({
   })
 
   const filteredMints = searchValue
-    ? usersMints.filter(
-        (mint) =>
-          getTokenNameByMintAddress(mint)
-            .toLowerCase()
-            .includes(searchValue.toLowerCase()) ||
-          mint.toLowerCase().includes(searchValue.toLowerCase())
-      )
-    : usersMints
+    ? mints.filter((mint) => {
+        const { symbol, name } = tokenInfos.get(mint) || {
+          symbol: getTokenNameByMintAddress(mint),
+          name: '',
+        }
+
+        const searchValueLowerCase = searchValue.toLowerCase()
+
+        return (
+          symbol.toLowerCase().includes(searchValueLowerCase) ||
+          name.toLowerCase().includes(searchValueLowerCase) ||
+          mint.includes(searchValueLowerCase)
+        )
+      })
+    : mints
 
   const sortedMints = filteredMints
     .map((mint) => {
