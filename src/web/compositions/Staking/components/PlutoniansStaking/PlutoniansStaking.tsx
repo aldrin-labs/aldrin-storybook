@@ -86,9 +86,7 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
           </ContentBlock>
         </StretchedContent>
         <RowContainer>
-          <GrayLink to="/staking/plutonians">
-            Feb 22, 2022 Exclusively on Aldrin
-          </GrayLink>
+          <GrayLink to="/staking/plutonians">View</GrayLink>
         </RowContainer>
       </BlockContent>
     </StakingBlock>
