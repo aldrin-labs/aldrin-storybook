@@ -14,6 +14,7 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { useConnection } from '@sb/dexUtils/connection'
 import {
   ALL_TOKENS_MINTS,
   getTokenMintAddressByName,
@@ -28,6 +29,7 @@ import {
 } from '@sb/dexUtils/pools/swap/index'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -93,6 +95,7 @@ const SwapPage = ({
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const { wallet } = useWallet()
+  const connection = useConnection()
   const tokenInfos = useTokenInfos()
 
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
@@ -611,19 +614,42 @@ const SwapPage = ({
 
                     setIsSwapInProgress(true)
 
-                    const { execute, transactions } = await jupiter.exchange({
+                    const { transactions } = await jupiter.exchange({
                       route: swapRoute,
                     })
 
-                    try {
-                      const result = await execute({ wallet })
+                    const transactionsAndSigners = []
 
-                      if (result.error) {
+                    if (transactions.setupTransaction) {
+                      transactionsAndSigners.push({
+                        transaction: transactions.setupTransaction,
+                      })
+                    }
+
+                    transactionsAndSigners.push({
+                      transaction: transactions.swapTransaction,
+                    })
+
+                    if (transactions.cleanupTransaction) {
+                      transactionsAndSigners.push({
+                        transaction: transactions.cleanupTransaction,
+                      })
+                    }
+
+                    try {
+                      const result = await signAndSendTransactions({
+                        connection,
+                        wallet,
+                        transactionsAndSigners,
+                      })
+
+                      if (result !== 'success') {
                         notify({
                           type: 'error',
-                          message: result.error.message.includes('cancelled')
-                            ? 'Transaction cancelled'
-                            : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
+                          message:
+                            result !== 'failed'
+                              ? 'Transaction cancelled'
+                              : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
                         })
                       } else {
                         notify({
