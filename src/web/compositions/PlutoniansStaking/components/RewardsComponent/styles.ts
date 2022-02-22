@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 
+import { InlineText } from '@sb/components/Typography'
 import { ContentBlock } from '@sb/compositions/Staking/styles'
 
 export const RewardsContainer = styled(ContentBlock)`
@@ -16,4 +17,8 @@ export const ImageContainer = styled.div`
   background: #000;
   border-radius: 1rem 1rem 0 0;
   padding: 6rem;
+`
+
+export const RewardDescription = styled(InlineText)`
+  text-align: right;
 `

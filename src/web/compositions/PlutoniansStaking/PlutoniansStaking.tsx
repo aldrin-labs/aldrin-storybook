@@ -29,11 +29,13 @@ import Leviathan from './assets/Leviathan.png'
 import Plutonians from './assets/plutoniansMock.png'
 import Venator from './assets/Venator.png'
 import { RewardsComponent } from './components/RewardsComponent/RewardsComponent'
+import { RewardDescription } from './components/RewardsComponent/styles'
 import {
   AdaptiveStakingBlock,
   AprWrap,
   Content,
   ModeContainer,
+  RewardContentBlock,
   StakingContainer,
 } from './styles'
 
@@ -208,10 +210,7 @@ export const PlutoniansStaking = () => {
                 )}
                 {!isStaked ? (
                   <StretchedBlock width="xl">
-                    <ContentBlock
-                      style={{ background: 'rgba(38, 159, 19, 10%)' }}
-                      width="48%"
-                    >
+                    <RewardContentBlock width="48%">
                       <StretchedBlock width="xl">
                         <InlineText color="primaryGray" size="sm">
                           APY
@@ -226,15 +225,12 @@ export const PlutoniansStaking = () => {
                         <InlineText color="newGreen" size="lg" weight={700}>
                           7 %
                         </InlineText>
-                        <InlineText size="md" weight={600}>
+                        <RewardDescription size="md" weight={600}>
                           PU238
-                        </InlineText>
+                        </RewardDescription>
                       </StretchedBlock>
-                    </ContentBlock>
-                    <ContentBlock
-                      style={{ background: 'rgba(38, 159, 19, 10%)' }}
-                      width="48%"
-                    >
+                    </RewardContentBlock>
+                    <RewardContentBlock width="48%">
                       <StretchedBlock width="xl">
                         <InlineText color="primaryGray" size="sm">
                           NFT
@@ -249,11 +245,11 @@ export const PlutoniansStaking = () => {
                         <InlineText color="newGreen" size="lg" weight={700}>
                           Eligible
                         </InlineText>
-                        <InlineText size="sm" weight={600}>
+                        <RewardDescription size="sm" weight={600}>
                           Aldrin Skin + 2 components
-                        </InlineText>
+                        </RewardDescription>
                       </StretchedBlock>
-                    </ContentBlock>
+                    </RewardContentBlock>
                   </StretchedBlock>
                 ) : (
                   <StretchedBlock width="xl">
@@ -276,17 +272,17 @@ export const PlutoniansStaking = () => {
                         <InlineText size="sm" weight={600}>
                           $ 120.24
                         </InlineText>
-                        <InlineText size="md" weight={600}>
+                        <RewardDescription size="md" weight={600}>
                           PU238
-                        </InlineText>
+                        </RewardDescription>
                       </StretchedBlock>
                     </ContentBlock>
                     {isRewardsUnlocked ? (
                       <RewardsComponent imgSrc={Plutonians}>
                         <StretchedBlock style={{ padding: '1.3em 1em' }}>
-                          <InlineText weight={700} size="sm">
-                            Aldrin Skin + 2 components
-                          </InlineText>
+                          <RewardDescription weight={700} size="sm">
+                            Aldrin Skin + 2 components3
+                          </RewardDescription>
                         </StretchedBlock>
                       </RewardsComponent>
                     ) : (
@@ -302,9 +298,9 @@ export const PlutoniansStaking = () => {
                           align="flex-start"
                           width="xl"
                         >
-                          <InlineText size="sm" weight={600}>
-                            Aldrin Skin + 2 components
-                          </InlineText>
+                          <RewardDescription size="sm" weight={600}>
+                            Aldrin Skin + 2 components2
+                          </RewardDescription>
                         </StretchedBlock>
                       </ContentBlock>
                     )}

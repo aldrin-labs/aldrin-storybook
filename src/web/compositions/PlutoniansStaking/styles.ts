@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { StretchedBlock } from '@sb/components/Layout'
 
 import { BlockWithRadio } from '../MarinadeStaking/components/styles'
-import { StakingBlock } from '../Staking/styles'
+import { ContentBlock, StakingBlock } from '../Staking/styles'
 
 export const Content = styled.div`
   margin: auto;
@@ -12,7 +12,7 @@ export const Content = styled.div`
 
 export const StakingContainer = styled(StretchedBlock)`
   width: 100%;
-  max-width: 670px;
+  max-width: 700px;
   margin: 0 auto;
   padding: 0 1em;
   flex-direction: column;
@@ -49,4 +49,8 @@ export const AdaptiveStakingBlock = styled(StakingBlock)`
 
 export const AprWrap = styled.div`
   margin-top: 10px;
+`
+
+export const RewardContentBlock = styled(ContentBlock)`
+  background: rgba(38, 159, 19, 10%);
 `
