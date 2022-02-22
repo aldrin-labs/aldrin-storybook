@@ -52,7 +52,7 @@ export const Line = styled.div`
   content: '';
   width: ${(props) => props.width || '100%'};
   background-color: ${(props) =>
-    props.sideType === 'buy' ? '#269F13' : '#F69894'};
+    props.sideType === 'buy' ? '#53DF11' : '#F69894'};
   margin: 0 0 0 0rem;
   height: 0.1rem;
 `
@@ -61,7 +61,7 @@ const Title = styled.span`
   font-size: 2rem;
   text-align: center;
   letter-spacing: -0.653846px;
-  color: ${(props) => (props.sideType === 'buy' ? '#269F13' : '#F69894')};
+  color: ${(props) => (props.sideType === 'buy' ? '#53DF11' : '#F69894')};
   margin: 0 2rem;
 `
 export const WhiteButton = styled((props) => (
@@ -167,7 +167,7 @@ export const ConfirmationPopup = ({
           <RowContainer justify="space-between" margin="0 0 2rem 0">
             <WhiteText>Spread Percentage:</WhiteText>
             <WhiteText style={{ fontFamily: 'Avenir Next Demi' }}>
-              <span style={{ color: isSlippageHigh ? '#F2ABB1' : '#269F13' }}>
+              <span style={{ color: isSlippageHigh ? '#F2ABB1' : '#53DF11' }}>
                 {spread.toFixed(2)}
               </span>
               %
@@ -176,8 +176,8 @@ export const ConfirmationPopup = ({
         ) : null}
         <RowContainer>
           {priceType !== 'market' &&
-            priceType !== 'stop-market' &&
-            priceType !== 'maker-only' ? (
+          priceType !== 'stop-market' &&
+          priceType !== 'maker-only' ? (
             <InputRowContainer
               key="limit-price"
               padding=".6rem 0"
@@ -217,7 +217,7 @@ export const ConfirmationPopup = ({
         <RowContainer justify="space-between" margin="2rem 0 0 0">
           <WhiteText>Est. Fee:</WhiteText>
           <WhiteText style={{ fontFamily: 'Avenir Next Demi' }}>
-            <span style={{ color: '#269F13', fontFamily: 'Avenir Next Demi' }}>
+            <span style={{ color: '#53DF11', fontFamily: 'Avenir Next Demi' }}>
               ≈&nbsp;
               {needCreateOpenOrdersAccount
                 ? costsOfTheFirstTrade
@@ -347,8 +347,8 @@ export const ConfirmationPopup = ({
                     ? `buy ${pair[0]} anyway`
                     : `sell ${pair[0]} anyway`
                   : sideType === 'buy'
-                    ? 'long'
-                    : 'short'}
+                  ? 'long'
+                  : 'short'}
               </span>
               <span style={{ fontSize: '1.2rem', textTransform: 'lowercase' }}>
                 (it may cause a loss of funds)
@@ -374,8 +374,8 @@ export const ConfirmationPopup = ({
                 ? `buy ${pair[0]}`
                 : `sell ${pair[0]}`
               : sideType === 'buy'
-                ? 'long'
-                : 'short'}
+              ? 'long'
+              : 'short'}
           </SendButton>
         )}
       </RowContainer>

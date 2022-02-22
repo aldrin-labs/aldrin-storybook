@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react'
 
 import SvgIcon from '@sb/components/SvgIcon'
-import ArrowUp from '@icons/ArrowUp.svg'
-import ArrowDown from '@icons/ArrowDown.svg'
 
-import {
-  LastTradeContainer,
-  LastTradeValue,
-  LastTradeContainerMobile,
-  LastTradePrice,
-  ArrowIcon,
-} from './LastTrade.styles'
+import ArrowDown from '@icons/ArrowDown.svg'
+import ArrowUp from '@icons/ArrowUp.svg'
 
 import { OrderbookMode } from '../../OrderBookTableContainer.types'
+import {
+  LastTradeContainer,
+  LastTradeContainerMobile,
+  LastTradePrice,
+} from './LastTrade.styles'
 
 interface IProps {
   data: { marketTickers: [string] }
@@ -76,7 +74,7 @@ const LastTrade = (props: IProps) => {
           }}
         >
           <LastTradePrice
-            style={{ color: isPriceDown ? '#F69894' : '#269F13' }}
+            style={{ color: isPriceDown ? '#F69894' : '#53DF11' }}
             theme={theme}
           >
             {Number(markPrice).toFixed(pricePrecision)}
@@ -131,7 +129,7 @@ export const LastTradeMobile = (props: IProps) => {
           }}
         >
           <LastTradePrice
-            style={{ color: isPriceDown ? '#F69894' : '#269F13' }}
+            style={{ color: isPriceDown ? '#F69894' : '#53DF11' }}
             theme={theme}
           >
             {Number(markPrice).toFixed(pricePrecision)}

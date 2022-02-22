@@ -210,7 +210,7 @@ const Popup = ({
           Remind me later
         </Button>
         <Button
-          color="#0E02EC"
+          color="#651CE4"
           height="5.5rem"
           fontSize="1.7rem"
           btnWidth="calc(65% - 1rem)"
