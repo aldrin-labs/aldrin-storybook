@@ -5,6 +5,7 @@ import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
+import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
@@ -36,7 +37,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { getRegionData } from '@core/hoc/withRegionCheck'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
@@ -172,6 +173,19 @@ const SwapPage = ({
       setQuoteTokenMintAddress(defaultQuoteTokenMint)
     }
   }, [isStableSwapTabActive])
+
+  const [isRegionCheckIsLoading, setRegionCheckIsLoading] =
+    useState<boolean>(false)
+  const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
+    useState<boolean>(false)
+
+  getRegionData
+  useEffect(() => {
+    setRegionCheckIsLoading(true)
+    getRegionData({ setIsFromRestrictedRegion }).then(() => {
+      setRegionCheckIsLoading(false)
+    })
+  }, [setIsFromRestrictedRegion])
 
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
@@ -828,7 +842,7 @@ const SwapPage = ({
 export default compose(
   withTheme(),
   withPublicKey,
-  withRegionCheck,
+  // withRegionCheck,
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,

@@ -61,6 +61,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
   const pricesMap = toMap(getDexTokensPrices, (p) => p.symbol)
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const [amount, setAmount] = useState('')
 
@@ -111,6 +112,8 @@ const Block: React.FC<StakingBlockProps> = (props) => {
       mintToOwnerAddress: wallet.publicKey,
     })
 
+    setLoading(true)
+
     try {
       const txResult = await signAndSendSingleTransaction({
         transaction,
@@ -125,9 +128,12 @@ const Block: React.FC<StakingBlockProps> = (props) => {
         message: 'Something went wrong. Please, try again later',
       })
     }
+
+    setLoading(false)
   }
 
   const unstake = async () => {
+    setLoading(true)
     const amountLamports = MarinadeUtils.solToLamports(parseFloat(amount))
     // Instant withdraw with fee
     const { transaction } = await marinade.liquidUnstake(amountLamports)
@@ -144,6 +150,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
         message: 'Something went wrong. Please, try again later',
       })
     }
+    setLoading(false)
   }
 
   const amountValue = parseFloat(amount)
@@ -268,11 +275,14 @@ const Block: React.FC<StakingBlockProps> = (props) => {
             <RowContainer>
               <ConnectWalletWrapper size="button-only">
                 {isStakeModeOn ? (
-                  <StakeButton onClick={stake} disabled={!isValid}>
+                  <StakeButton onClick={stake} disabled={!isValid || loading}>
                     Stake
                   </StakeButton>
                 ) : (
-                  <UnStakeButton onClick={unstake} disabled={!isValid}>
+                  <UnStakeButton
+                    onClick={unstake}
+                    disabled={!isValid || loading}
+                  >
                     Unstake
                   </UnStakeButton>
                 )}

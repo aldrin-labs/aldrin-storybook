@@ -14,24 +14,31 @@ import {
 import { getCurrentFarmingStateFromAll } from '../getCurrentFarmingStateFromAll'
 import { StakingPool } from '../types'
 
+const loadBuyBackAmount = async () => {
+  const endOfDay = dayjs.utc().endOf('day').unix()
+  try {
+    const data = await client.query<{ getBuyBackAmountForPeriod: number }>({
+      query: getBuyBackAmountForPeriod,
+      fetchPolicy: 'network-only',
+      variables: {
+        timestampFrom: endOfDay - DAY * DAYS_TO_CHECK_BUY_BACK,
+        timestampTo: endOfDay,
+      },
+    })
+    return data.data.getBuyBackAmountForPeriod
+  } catch (e) {
+    return 0
+  }
+}
 export const useStakingPoolInfo = () => {
   const fetcher = async () => {
-    const endOfDay = dayjs.utc().endOf('day').unix()
-
     const [poolInfo, buybackAmountData, rinCirculationSupply] =
       await Promise.all([
         client.query<{ getStakingPoolInfo: StakingPool }>({
           query: getStakingPoolInfo,
           fetchPolicy: 'network-only',
         }),
-        client.query<{ getBuyBackAmountForPeriod: number }>({
-          query: getBuyBackAmountForPeriod,
-          fetchPolicy: 'network-only',
-          variables: {
-            timestampFrom: endOfDay - DAY * DAYS_TO_CHECK_BUY_BACK,
-            timestampTo: endOfDay,
-          },
-        }),
+        loadBuyBackAmount(),
         getRINCirculationSupply(),
       ])
 
@@ -49,7 +56,7 @@ export const useStakingPoolInfo = () => {
     return {
       poolInfo: poolInfo.data.getStakingPoolInfo,
       currentFarmingState,
-      buyBackAmount: buybackAmountData.data.getBuyBackAmountForPeriod,
+      buyBackAmount: buybackAmountData,
       rinCirculationSupply,
       treasuryDailyRewards,
     }

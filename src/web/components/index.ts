@@ -23,3 +23,4 @@ export {
 } from './IconButtonWithHover/IconButtonWithHover'
 export { default as SwitchButtons } from './SwitchButtons/SwitchButtons'
 export { LinearProgressCustom } from './LinearProgressCustom/LinearProgressCustom'
+export { TooltipRegionBlocker } from './TooltipRegionBlocker/TooltipRegionBlocker'

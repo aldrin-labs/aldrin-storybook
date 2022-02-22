@@ -19,7 +19,7 @@ export const ReloadTimer = ({
   size = 21,
   duration = 10,
   initialRemainingTime = 10,
-  color = '#0E02EC',
+  color = '#651CE4',
   trailColor = '#383B45',
   callback,
   margin = '0 3rem 0 0',

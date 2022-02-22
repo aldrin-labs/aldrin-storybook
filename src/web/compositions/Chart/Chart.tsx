@@ -414,7 +414,7 @@ export default compose(
   withTheme(),
   withPublicKey,
   withRouter,
-  withRegionCheck,
+  // withRegionCheck,
   // withAuth,
   // queryRendererHoc({
   //   skip: (props: any) => !props.authenticated,
