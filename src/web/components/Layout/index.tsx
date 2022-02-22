@@ -29,6 +29,8 @@ export const Page = styled(Body)`
   background: ${(props: { $background?: keyof typeof COLORS }) =>
     COLORS[props.$background || 'mainBlack']};
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `
 
 export const BlackPage = styled(Page)`

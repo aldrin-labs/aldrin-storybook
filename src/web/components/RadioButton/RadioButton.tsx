@@ -18,7 +18,7 @@ export const Radio = ({
   change: () => void
 }) => (
   <div>
-    <Container onClick={() => change()}>
+    <Container onClick={change}>
       <AttributeContainer>
         <Label htmlFor="inside">
           {label}

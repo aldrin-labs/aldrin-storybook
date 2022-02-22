@@ -23,10 +23,19 @@ import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
 import Lock from '../Staking/components/PlutoniansStaking/lock.svg'
 import { ContentBlock } from '../Staking/styles'
+import Centuria from './assets/Centuria.png'
+import Colossus from './assets/Colossus.png'
+import Leviathan from './assets/Leviathan.png'
 import Plutonians from './assets/plutoniansMock.png'
 import Venator from './assets/Venator.png'
 import { RewardsComponent } from './components/RewardsComponent/RewardsComponent'
-import { AdaptiveStakingBlock, ModeContainer, StakingContainer } from './styles'
+import {
+  AdaptiveStakingBlock,
+  AprWrap,
+  Content,
+  ModeContainer,
+  StakingContainer,
+} from './styles'
 
 const EXTRA_REWARDS = [
   'Aldrin Skin + 2 components',
@@ -34,6 +43,8 @@ const EXTRA_REWARDS = [
   'Venator + Aldrin Skin + 4 components',
   'Star Hunter + Aldrin Skin + 4 components + 1 exotic component',
 ]
+
+const REWARDS_BG = [Centuria, Colossus, Venator, Leviathan]
 
 export const PlutoniansStaking = () => {
   const { wallet } = useWallet()
@@ -116,64 +127,50 @@ export const PlutoniansStaking = () => {
 
   return (
     <Page>
-      <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+      <Content>
         <FlexBlock alignItems="center" direction="column">
           <StakingContainer>
             {EXTRA_REWARDS.map((tierReward, idx) => {
               const tier = stakingPool?.tiers[idx]
               return (
                 <ModeContainer
+                  $bg={REWARDS_BG[idx]}
                   // eslint-disable-next-line react/no-array-index-key
                   key={`tier_${idx}`}
                   checked={selectedTierIndex === idx}
-                  height="25rem"
                   onClick={() => setSelectedTierIndex(idx)}
                   backgroundColor={COLORS.cardsBack}
                 >
                   <FlexBlock direction="column">
-                    <StretchedBlock
-                      style={{ margin: '0 0 2rem 0' }}
-                      align="center"
-                    >
-                      <InlineText size="md" weight={700}>
-                        <SvgIcon src={Lock} alt="locked" />{' '}
-                        {tier?.account.lockDuration.toString()} Days
-                      </InlineText>{' '}
+                    <StretchedBlock align="center">
+                      <FlexBlock alignItems="center">
+                        <SvgIcon src={Lock} alt="locked" />
+                        <InlineText size="md" weight={700}>
+                          {tier?.account.lockDuration.toString()} Days
+                        </InlineText>
+                      </FlexBlock>
                       <Radio
                         checked={selectedTierIndex === idx}
                         change={() => setSelectedTierIndex(idx)}
                       />
-                    </StretchedBlock>{' '}
-                    <NumberWithLabel
-                      size={FONT_SIZES.es}
-                      value={null}
-                      label={`${tier?.account.apr.toString()}% APR + NFT`}
-                    />
+                    </StretchedBlock>
+                    <AprWrap>
+                      <NumberWithLabel
+                        size={FONT_SIZES.es}
+                        value={null}
+                        label={`${tier?.account.apr.toString()}% APR + NFT`}
+                      />
+                    </AprWrap>
                   </FlexBlock>
-                  <InlineText
-                    style={{
-                      position: 'absolute',
-                      bottom: '3rem',
-                      width: '70%',
-                    }}
-                    size="sm"
-                    weight={600}
-                  >
+                  <InlineText size="sm" weight={600}>
                     {tierReward}
                   </InlineText>
-                  <img
-                    className="aldrinSkin"
-                    src={Venator}
-                    alt="aldrin skin"
-                    width="100%"
-                    height="auto"
-                  />
                 </ModeContainer>
               )
             })}
           </StakingContainer>
-          <StakingContainer style={{ margin: '1em 0 0 0' }}>
-            <AdaptiveStakingBlock style={{ width: '100%' }}>
+          <StakingContainer>
+            <AdaptiveStakingBlock>
               <FlexBlock direction="column" style={{ padding: '1em' }}>
                 {isStaked ? (
                   <ProgressBar width={isRewardsUnlocked ? '100%' : '50%'}>
@@ -181,8 +178,7 @@ export const PlutoniansStaking = () => {
                       'Unlocked!'
                     ) : (
                       <>
-                        {' '}
-                        25d 21h 39m{' '}
+                        25d 21h 39m
                         <InlineText weight={400}>Left to unlock</InlineText>
                       </>
                     )}
@@ -219,7 +215,7 @@ export const PlutoniansStaking = () => {
                       <StretchedBlock width="xl">
                         <InlineText color="primaryGray" size="sm">
                           APY
-                        </InlineText>{' '}
+                        </InlineText>
                         <SvgIcon src={InfoIcon} width="12px" height="12px" />
                       </StretchedBlock>
                       <StretchedBlock
@@ -234,7 +230,7 @@ export const PlutoniansStaking = () => {
                           PU238
                         </InlineText>
                       </StretchedBlock>
-                    </ContentBlock>{' '}
+                    </ContentBlock>
                     <ContentBlock
                       style={{ background: 'rgba(38, 159, 19, 10%)' }}
                       width="48%"
@@ -242,7 +238,7 @@ export const PlutoniansStaking = () => {
                       <StretchedBlock width="xl">
                         <InlineText color="primaryGray" size="sm">
                           NFT
-                        </InlineText>{' '}
+                        </InlineText>
                         <SvgIcon src={InfoIcon} width="12px" height="12px" />
                       </StretchedBlock>
                       <StretchedBlock
@@ -261,12 +257,11 @@ export const PlutoniansStaking = () => {
                   </StretchedBlock>
                 ) : (
                   <StretchedBlock width="xl">
-                    {' '}
                     <ContentBlock width="48%">
                       <StretchedBlock width="xl">
                         <InlineText color="primaryGray" size="sm">
                           Rewards
-                        </InlineText>{' '}
+                        </InlineText>
                         <SvgIcon src={InfoIcon} width="12px" height="12px" />
                       </StretchedBlock>
                       <InlineText
@@ -275,7 +270,7 @@ export const PlutoniansStaking = () => {
                         size="lg"
                         weight={700}
                       >
-                        24.25{' '}
+                        24.25
                       </InlineText>
                       <StretchedBlock align="center" width="xl">
                         <InlineText size="sm" weight={600}>
@@ -285,7 +280,7 @@ export const PlutoniansStaking = () => {
                           PU238
                         </InlineText>
                       </StretchedBlock>
-                    </ContentBlock>{' '}
+                    </ContentBlock>
                     {isRewardsUnlocked ? (
                       <RewardsComponent imgSrc={Plutonians}>
                         <StretchedBlock style={{ padding: '1.3em 1em' }}>
@@ -299,7 +294,7 @@ export const PlutoniansStaking = () => {
                         <StretchedBlock width="xl">
                           <InlineText color="primaryGray" size="sm">
                             NFT
-                          </InlineText>{' '}
+                          </InlineText>
                           <SvgIcon src={InfoIcon} width="12px" height="12px" />
                         </StretchedBlock>
                         <StretchedBlock
@@ -334,7 +329,7 @@ export const PlutoniansStaking = () => {
             </AdaptiveStakingBlock>
           </StakingContainer>
         </FlexBlock>
-      </div>
+      </Content>
     </Page>
   )
 }

@@ -38,10 +38,10 @@ const Checkmark = styled.span`
     content: '';
     position: absolute;
     display: none;
-    top: 1.5px;
-    left: 1.5px;
-    width: 8px;
-    height: 8px;
+    top: 2px;
+    left: 2px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background-color: ${COLORS.newGreen};
   }

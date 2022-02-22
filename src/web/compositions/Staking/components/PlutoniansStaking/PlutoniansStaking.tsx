@@ -14,7 +14,7 @@ import {
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Lock from './lock.svg'
-import { LogoWrap } from './styles'
+import { LogoWrap, ButtonContainer } from './styles'
 
 export const PlutoniasStakingBlock: React.FC = (props) => {
   return (
@@ -85,9 +85,9 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             />
           </ContentBlock>
         </StretchedContent>
-        <RowContainer>
+        <ButtonContainer>
           <GrayLink to="/staking/plutonians">View</GrayLink>
-        </RowContainer>
+        </ButtonContainer>
       </BlockContent>
     </StakingBlock>
   )

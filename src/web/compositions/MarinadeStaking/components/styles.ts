@@ -43,6 +43,7 @@ export const Button = styled.button<StyledSwitcher>`
   height: 5rem;
   transition: 0.5s;
 `
+
 export const BlockWithRadio = styled.div<RadioContainer>`
   position: relative;
   width: ${(props) => props.width || '48%'};
@@ -55,7 +56,7 @@ export const BlockWithRadio = styled.div<RadioContainer>`
     props.checked
       ? `0.1rem solid ${COLORS.success}`
       : '0.1rem solid rgba(193, 193, 193, 0.3)'};
-  border-radius: 1.5rem;
+  border-radius: 8px;
   height: ${(props) => props.height || '10rem'};
   margin: ${(props) => props.margin || '0'};
 `

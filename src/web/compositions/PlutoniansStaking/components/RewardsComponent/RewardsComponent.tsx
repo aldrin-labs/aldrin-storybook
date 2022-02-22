@@ -7,7 +7,7 @@ export const RewardsComponent = ({
   children,
 }: {
   imgSrc: string
-  children: any
+  children: React.ReactChild
 }) => {
   return (
     <RewardsContainer>
