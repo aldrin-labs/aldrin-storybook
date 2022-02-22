@@ -9,7 +9,7 @@ import { stripInputNumber } from '@sb/dexUtils/utils'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 
-import WalletIcon from '@icons/wallet.svg'
+import WalletIcon from '@icons/walletNew.svg'
 
 import { AmountInputContainer, InputContainer } from './styles'
 
