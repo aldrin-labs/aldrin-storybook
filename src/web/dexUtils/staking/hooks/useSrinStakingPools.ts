@@ -10,12 +10,12 @@ import {
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
-import { SRINStakingPool, SRINStakingTier } from './types'
+import { SRINStakingPool, SRINStakingPoolUI, SRINStakingTier } from './types'
 
 export const useSrinStakingPools = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
-  const fetcher = async () => {
+  const fetcher = async (): Promise<SRINStakingPoolUI[]> => {
     try {
       const program = ProgramsMultiton.getProgramByAddress({
         programAddress: PLUTONIANS_STAKING_ADDRESS,

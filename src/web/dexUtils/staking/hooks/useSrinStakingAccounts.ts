@@ -19,7 +19,7 @@ export const useSrinStakingAccounts = () => {
 
   const fetcher = async () => {
     if (!wallet.publicKey) {
-      return new Map<string, SRINUserAccount>()
+      return new Map<string, ProgramAccount<SRINUserAccount>>()
     }
     const program = ProgramsMultiton.getProgramByAddress({
       programAddress: PLUTONIANS_STAKING_ADDRESS,

@@ -1,5 +1,6 @@
 import { COLORS, FONT_SIZES } from '@variables/variables'
-import React, { useState } from 'react'
+import { BN } from 'bn.js'
+import React, { useEffect, useState } from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
@@ -8,13 +9,19 @@ import { FlexBlock, Page, StretchedBlock } from '@sb/components/Layout'
 import { ProgressBar } from '@sb/components/ProgressBarBlock/ProgressBar'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
+import { startSrinStaking } from '@sb/dexUtils/staking/actions'
 
 import InfoIcon from '@icons/info.svg'
 
+import { useConnection } from '../../dexUtils/connection'
+import { notify } from '../../dexUtils/notifications'
 import {
   usePlutoniansStaking,
   useSrinStakingAccounts,
 } from '../../dexUtils/staking/hooks'
+import { useUserTokenAccounts } from '../../dexUtils/token/hooks'
+import { TokenInfo } from '../../dexUtils/types'
+import { useWallet } from '../../dexUtils/wallet'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
 import Lock from '../Staking/components/PlutoniansStaking/lock.svg'
@@ -25,26 +32,88 @@ import { RewardsComponent } from './components/RewardsComponent/RewardsComponent
 import { AdaptiveStakingBlock, ModeContainer, StakingContainer } from './styles'
 
 const EXTRA_REWARDS = [
-  ' Aldrin Skin + 2 components',
+  'Aldrin Skin + 2 components',
   'Aldrin Skin + 4 components',
-  ' Venator + Aldrin Skin + 4 components',
-  ' Star Hunter + Aldrin Skin + 4 components + 1 exotic component',
+  'Venator + Aldrin Skin + 4 components',
+  'Star Hunter + Aldrin Skin + 4 components + 1 exotic component',
 ]
 
 export const PlutoniansStaking = () => {
+  const { wallet } = useWallet()
+  const connection = useConnection()
   const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(false)
 
   const [selectedTierIndex, setSelectedTierIndex] = useState(0) // TODO: rewrite with real keys
 
-  const { data: stakingPool } = usePlutoniansStaking()
-  const { data: stakingAccounts } = useSrinStakingAccounts()
+  const [tokenAccounts, refreshTokenAccounts] = useUserTokenAccounts()
+
+  const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
+  const { data: stakingAccounts, mutate: updateStakeAccounts } =
+    useSrinStakingAccounts()
 
   const selectedTier = stakingPool?.tiers[selectedTierIndex]
-  const stakeAccountForTier = stakingAccounts.get(
-    selectedTier?.publicKey.toString(0)
+  const stakeAccountForTier = stakingAccounts?.get(
+    selectedTier?.publicKey.toString() || ''
   )
 
   const isStaked = !!stakeAccountForTier
+
+  const [selectedTokenAccount, setSelectedTokenAccount] = useState<
+    TokenInfo | undefined
+  >()
+
+  const [amount, setAmount] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (!selectedTokenAccount) {
+      const rewardsMint = stakingPool?.rewardTokenMint.toString()
+      const sta = tokenAccounts.find((ta) => ta.mint === rewardsMint)
+      setSelectedTokenAccount(sta)
+    }
+  }, [tokenAccounts, stakingPool])
+
+  const refreshAll = () =>
+    Promise.all([updatePools(), updateStakeAccounts(), refreshTokenAccounts()])
+
+  const stake = async () => {
+    if (!selectedTokenAccount) {
+      throw new Error('No tokens for stake!')
+    }
+    if (!stakingPool) {
+      throw new Error('No stakingPool!')
+    }
+
+    if (!selectedTier) {
+      throw new Error('No tier selected!')
+    }
+
+    const depositAmount = new BN(
+      parseFloat(amount) * 10 ** selectedTokenAccount.decimals
+    )
+    try {
+      setLoading(true)
+      const result = await startSrinStaking({
+        wallet,
+        connection,
+        amount: depositAmount,
+        stakingPool: stakingPool.stakingPool,
+        stakingTier: selectedTier.publicKey,
+      })
+      notify({
+        message: result === 'success' ? 'Succesfully staked' : 'Staking failed',
+      })
+      await refreshAll()
+      setLoading(false)
+    } catch (e) {
+      console.warn('Unable to stake PLD:', e)
+      notify({ message: 'Something went wrong' })
+      setLoading(false)
+    }
+  }
+
+  const isStakingDisabled =
+    loading || !(parseFloat(amount) > 0) || !selectedTokenAccount
 
   return (
     <Page>
@@ -137,8 +206,8 @@ export const PlutoniansStaking = () => {
                       amount={0}
                       mint=""
                       name="amount"
-                      value="0"
-                      onChange={() => {}}
+                      value={amount}
+                      onChange={setAmount}
                     />
                   </InputWrapper>
                 )}
@@ -250,6 +319,7 @@ export const PlutoniansStaking = () => {
                 <Button
                   $width="xl"
                   $fontSize={isStaked ? 'sm' : 'md'}
+                  disabled={isStakingDisabled}
                   style={{
                     fontWeight: isStaked ? '500' : '600',
                     padding: '1em',

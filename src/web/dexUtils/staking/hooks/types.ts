@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
+import { ProgramAccount } from 'anchor03'
 import BN from 'bn.js'
 
 /* eslint-disable camelcase */
@@ -38,13 +39,16 @@ export interface MarinadeStats {
   validators_count: number
 }
 
-export interface SRINStakingPool {
+export interface SRINStakingPoolBase {
   owner: PublicKey
   poolSigner: PublicKey
   bumpPoolSigner: number
   stakeTokenMint: PublicKey
   rewardTokenMint: PublicKey
   rewardTokenaccount: PublicKey
+}
+
+export interface SRINStakingPool extends SRINStakingPoolBase {
   tiers: PublicKey[]
 }
 
@@ -58,4 +62,9 @@ export interface SRINUserAccount {
   user: PublicKey
   amount: BN
   tier: PublicKey
+}
+
+export interface SRINStakingPoolUI extends SRINStakingPoolBase {
+  stakingPool: PublicKey
+  tiers: ProgramAccount<SRINStakingTier>[]
 }
