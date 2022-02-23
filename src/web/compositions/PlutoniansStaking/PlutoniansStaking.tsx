@@ -11,8 +11,6 @@ import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
 import { startSrinStaking } from '@sb/dexUtils/staking/actions'
 
-import InfoIcon from '@icons/info.svg'
-
 import { useConnection } from '../../dexUtils/connection'
 import { notify } from '../../dexUtils/notifications'
 import { useSrinStakingAccounts } from '../../dexUtils/staking/hooks'
@@ -51,7 +49,7 @@ const REWARDS_BG = [Centuria, Colossus, Venator, Leviathan]
 export const PlutoniansStaking = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
-  const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(false)
+  const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(true)
 
   const [selectedTierIndex, setSelectedTierIndex] = useState(0) // TODO: rewrite with real keys
 
@@ -215,7 +213,7 @@ export const PlutoniansStaking = () => {
                         <InlineText color="primaryGray" size="sm">
                           APY
                         </InlineText>
-                        <SvgIcon src={InfoIcon} width="12px" height="12px" />
+                        {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
                       </StretchedBlock>
                       <StretchedBlock
                         style={{ margin: '3rem 0 0 0' }}
@@ -235,7 +233,7 @@ export const PlutoniansStaking = () => {
                         <InlineText color="primaryGray" size="sm">
                           NFT
                         </InlineText>
-                        <SvgIcon src={InfoIcon} width="12px" height="12px" />
+                        {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
                       </StretchedBlock>
                       <StretchedBlock
                         style={{ margin: '3rem 0 0 0' }}
@@ -258,7 +256,7 @@ export const PlutoniansStaking = () => {
                         <InlineText color="primaryGray" size="sm">
                           Rewards
                         </InlineText>
-                        <SvgIcon src={InfoIcon} width="12px" height="12px" />
+                        {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
                       </StretchedBlock>
                       <InlineText
                         style={{ margin: '1rem 0' }}
@@ -291,7 +289,7 @@ export const PlutoniansStaking = () => {
                           <InlineText color="primaryGray" size="sm">
                             NFT
                           </InlineText>
-                          <SvgIcon src={InfoIcon} width="12px" height="12px" />
+                          {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
                         </StretchedBlock>
                         <StretchedBlock
                           style={{ margin: '3rem 0 0 0' }}
