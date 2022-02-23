@@ -257,13 +257,14 @@ const SwapPage = ({
   })
 
   const networkFee = getSwapNetworkFee({ swapRoute, depositAndFee })
+  const isNotEnoughSOL = nativeSOLTokenData?.amount < networkFee
 
   // if we swap native sol to smth, we need to leave some SOL for covering fees
   if (nativeSOLTokenData?.address === userBaseTokenAccount) {
-    if (maxBaseAmount >= networkFee) {
-      maxBaseAmount -= networkFee
-    } else {
+    if (isNotEnoughSOL) {
       maxBaseAmount = 0
+    } else {
+      maxBaseAmount -= networkFee
     }
   }
 
@@ -292,6 +293,7 @@ const SwapPage = ({
   }
 
   const isButtonDisabled =
+    isNotEnoughSOL ||
     isLoadingSwapRoute ||
     isTokenABalanceInsufficient ||
     +inputAmount === 0 ||
@@ -677,6 +679,7 @@ const SwapPage = ({
                         isTokenABalanceInsufficient,
                         isLoadingSwapRoute,
                         isTooSmallInputAmount,
+                        isNotEnoughSOL,
                         isSwapInProgress,
                       })}
                     </RowContainer>

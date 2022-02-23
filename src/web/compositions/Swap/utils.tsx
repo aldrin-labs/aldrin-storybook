@@ -18,6 +18,7 @@ export const getSwapButtonText = ({
   isSwapRouteExists,
   needEnterAmount,
   isSwapInProgress,
+  isNotEnoughSOL,
 }: {
   isTokenABalanceInsufficient: boolean
   isLoadingSwapRoute: boolean
@@ -27,6 +28,7 @@ export const getSwapButtonText = ({
   isSwapRouteExists: boolean
   needEnterAmount: boolean
   isSwapInProgress: boolean
+  isNotEnoughSOL: boolean
 }) => {
   if (isSwapInProgress) {
     return (
@@ -55,7 +57,11 @@ export const getSwapButtonText = ({
   }
 
   if (isTokenABalanceInsufficient) {
-    return `Insufficient ${baseSymbol} Balance`
+    return `Insufficient ${baseSymbol} balance`
+  }
+
+  if (isNotEnoughSOL) {
+    return 'Insufficient SOL balance'
   }
 
   if (!isSwapRouteExists) {
