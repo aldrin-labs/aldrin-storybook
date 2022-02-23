@@ -161,9 +161,10 @@ export const getSwapNetworkFee = ({
 
   if (depositAndFee) {
     return (
-      depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
-      depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
-      depositAndFee.signatureFee / LAMPORTS_PER_SOL
+      (depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
+        depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
+        depositAndFee.signatureFee) /
+      LAMPORTS_PER_SOL
     )
   }
 
