@@ -99,8 +99,6 @@ const SwapPage = ({
 
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
 
-  console.log('allTokensData', allTokensData)
-
   const allPools = getPoolsInfoQuery.getPoolsInfo
   const nativeSOLTokenData = allTokensData[0]
 
