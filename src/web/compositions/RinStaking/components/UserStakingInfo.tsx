@@ -388,7 +388,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ? rinValue
     : new Array(rinValue.length).fill('∗').join('')
 
-  const stakedInUsd = stripByAmountAndFormat(totalStaked * tokenPrice || 0)
+  const stakedInUsd = stripByAmountAndFormat(totalStaked * tokenPrice || 0, 2)
   const totalStakedUsdValue = isBalancesShowing
     ? stakedInUsd
     : new Array(stakedInUsd.length).fill('∗').join('')
@@ -405,7 +405,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   )
 
   const userEstRewardsUSD = isBalancesShowing
-    ? stripByAmountAndFormat(estimatedRewards, 4)
+    ? stripByAmountAndFormat(estimatedRewards, 2)
     : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
 
   return (

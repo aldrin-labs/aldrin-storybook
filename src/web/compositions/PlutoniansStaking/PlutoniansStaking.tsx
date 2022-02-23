@@ -11,6 +11,9 @@ import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
 import { startSrinStaking } from '@sb/dexUtils/staking/actions'
 
+import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+
+import { queryRendererHoc } from '../../../../../core/src/components/QueryRenderer'
 import { useConnection } from '../../dexUtils/connection'
 import { notify } from '../../dexUtils/notifications'
 import { useSrinStakingAccounts } from '../../dexUtils/staking/hooks'
@@ -46,7 +49,7 @@ const EXTRA_REWARDS = [
 
 const REWARDS_BG = [Centuria, Colossus, Venator, Leviathan]
 
-export const PlutoniansStaking = () => {
+const Block = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
   const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(true)
@@ -327,3 +330,11 @@ export const PlutoniansStaking = () => {
     </Page>
   )
 }
+
+export const PlutoniansStaking = queryRendererHoc({
+  query: getDexTokensPrices,
+  name: 'getDexTokensPricesQuery',
+  fetchPolicy: 'cache-and-network',
+  withoutLoading: true,
+  pollInterval: 60000,
+})(Block)
