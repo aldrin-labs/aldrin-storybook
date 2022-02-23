@@ -1,3 +1,5 @@
+import SnackbarUtils from '@sb/utils/SnackbarUtils'
+
 import { notify } from '../notifications'
 import { DEFAULT_CONFIRMATION_TIMEOUT } from './constants'
 import {
@@ -29,15 +31,14 @@ export const sendSignedSignleTransaction = async (
     skipPreflight,
   })
 
-  const message = Array.isArray(sentMessage) ? sentMessage[0] : sentMessage
-  const description = Array.isArray(sentMessage) ? sentMessage[1] : undefined
+  let awaitConfirmationNotificationKey = null
 
   if (showNotification) {
-    notify({
-      message,
-      description,
-      type: 'success',
+    awaitConfirmationNotificationKey = notify({
+      message: 'Confirming transaction',
+      type: 'loading',
       txid: txId,
+      persist: true,
     })
   }
 
@@ -49,6 +50,10 @@ export const sendSignedSignleTransaction = async (
     timeout,
     commitment,
   })
+
+  if (awaitConfirmationNotificationKey) {
+    SnackbarUtils.close(awaitConfirmationNotificationKey)
+  }
 
   if (confirmationResult === 'failed') {
     try {

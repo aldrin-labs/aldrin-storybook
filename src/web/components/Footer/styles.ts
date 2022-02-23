@@ -19,7 +19,7 @@ export const FooterContainer = styled.div`
   flex-wrap: nowrap;
 
   @media (max-width: ${BREAKPOINTS.md}) {
-    display: none;
+    flex-direction: column;
   }
 `
 export const MediaContainer = styled(Row)`
@@ -48,5 +48,9 @@ export const FooterButton = styled(Button)`
 
   &:last-child {
     margin: 0 0 0 1rem;
+  }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    display: none;
   }
 `
