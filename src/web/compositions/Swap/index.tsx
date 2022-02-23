@@ -1,6 +1,5 @@
 import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -9,14 +8,11 @@ import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import {
-  costOfAddingToken,
-  TRANSACTION_COMMON_SOL_FEE,
-} from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
+import { useConnection } from '@sb/dexUtils/connection'
 import {
   ALL_TOKENS_MINTS,
   getTokenMintAddressByName,
@@ -31,13 +27,14 @@ import {
 } from '@sb/dexUtils/pools/swap/index'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { getRegionData, withRegionCheck } from '@core/hoc/withRegionCheck'
+import { getRegionData } from '@core/hoc/withRegionCheck'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
@@ -82,6 +79,7 @@ import {
   getFeeFromSwapRoute,
   getRouteMintsPath,
   getSwapButtonText,
+  getSwapNetworkFee,
 } from './utils'
 
 const SwapPage = ({
@@ -96,6 +94,7 @@ const SwapPage = ({
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const { wallet } = useWallet()
+  const connection = useConnection()
   const tokenInfos = useTokenInfos()
 
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
@@ -236,17 +235,6 @@ const SwapPage = ({
       selectedBaseTokenAddressFromSeveral
     )
 
-  // if we swap native sol to smth, we need to leave some SOL for covering fees
-  if (nativeSOLTokenData?.address === userBaseTokenAccount) {
-    const solFees = TRANSACTION_COMMON_SOL_FEE + costOfAddingToken
-
-    if (maxBaseAmount >= solFees) {
-      maxBaseAmount -= solFees
-    } else {
-      maxBaseAmount = 0
-    }
-  }
-
   const { amount: maxQuoteAmount } = getTokenDataByMint(
     allTokensData,
     quoteTokenMintAddress,
@@ -267,6 +255,17 @@ const SwapPage = ({
     outputMint: quoteTokenMintAddress,
     slippage,
   })
+
+  const networkFee = getSwapNetworkFee({ swapRoute, depositAndFee })
+
+  // if we swap native sol to smth, we need to leave some SOL for covering fees
+  if (nativeSOLTokenData?.address === userBaseTokenAccount) {
+    if (maxBaseAmount >= networkFee) {
+      maxBaseAmount -= networkFee
+    } else {
+      maxBaseAmount = 0
+    }
+  }
 
   const { inAmount, outAmount, outAmountWithSlippage, priceImpactPct } =
     swapRoute || {
@@ -310,13 +309,6 @@ const SwapPage = ({
       ...ALL_TOKENS_MINTS.map(({ address }) => address.toString()),
     ]),
   ]
-
-  const networkFee = depositAndFee
-    ? (depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
-        depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
-        depositAndFee.signatureFee) /
-      LAMPORTS_PER_SOL
-    : swapRoute?.marketInfos.length * TRANSACTION_COMMON_SOL_FEE
 
   const outputUSD = +outputAmount * quotePrice
 
@@ -457,7 +449,13 @@ const SwapPage = ({
                     amount={formatNumberToUSFormat(inputAmount)}
                     disabled={false}
                     onChange={(v) => {
+                      if (v === '') {
+                        setInputAmount(v)
+                        return
+                      }
+
                       if (
+                        numberWithOneDotRegexp.test(v) &&
                         getNumberOfIntegersFromNumber(v) <= 8 &&
                         getNumberOfDecimalsFromNumber(v) <= 8
                       ) {
@@ -531,7 +529,11 @@ const SwapPage = ({
                         color="#A6A6A6"
                       >
                         ≈$
-                        {outputUSD ? stripDigitPlaces(outputUSD, 2) : '0.00'}
+                        {outputUSD
+                          ? formatNumberToUSFormat(
+                              stripDigitPlaces(outputUSD, 2)
+                            )
+                          : '0.00'}
                       </Text>
                     }
                   />
@@ -558,8 +560,10 @@ const SwapPage = ({
             )}
             <RowContainer>
               {!publicKey ? (
-                <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
-                  <span>
+                <TooltipRegionBlocker
+                  isFromRestrictedRegion={isFromRestrictedRegion}
+                >
+                  <span style={{ width: '100%' }}>
                     <BtnCustom
                       theme={theme}
                       disabled={isFromRestrictedRegion}
@@ -604,19 +608,42 @@ const SwapPage = ({
 
                     setIsSwapInProgress(true)
 
-                    const { execute } = await jupiter.exchange({
+                    const { transactions } = await jupiter.exchange({
                       route: swapRoute,
                     })
 
-                    try {
-                      const result = await execute({ wallet })
+                    const transactionsAndSigners = []
 
-                      if (result.error) {
+                    if (transactions.setupTransaction) {
+                      transactionsAndSigners.push({
+                        transaction: transactions.setupTransaction,
+                      })
+                    }
+
+                    transactionsAndSigners.push({
+                      transaction: transactions.swapTransaction,
+                    })
+
+                    if (transactions.cleanupTransaction) {
+                      transactionsAndSigners.push({
+                        transaction: transactions.cleanupTransaction,
+                      })
+                    }
+
+                    try {
+                      const result = await signAndSendTransactions({
+                        connection,
+                        wallet,
+                        transactionsAndSigners,
+                      })
+
+                      if (result !== 'success') {
                         notify({
                           type: 'error',
-                          message: result.error.message.includes('cancelled')
-                            ? 'Transaction cancelled'
-                            : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
+                          message:
+                            result !== 'failed'
+                              ? 'Transaction cancelled'
+                              : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
                         })
                       } else {
                         notify({
@@ -711,7 +738,9 @@ const SwapPage = ({
                         }
                       />
                       <RowValue>
-                        <RowAmountValue>{estimatedPrice}</RowAmountValue>
+                        <RowAmountValue>
+                          {formatNumberToUSFormat(estimatedPrice)}
+                        </RowAmountValue>
                         {priceShowField === 'input' ? quoteSymbol : baseSymbol}
                       </RowValue>
                     </Row>
@@ -732,12 +761,15 @@ const SwapPage = ({
                     <RowTitle>Trading fee:</RowTitle>
                     <RowValue>
                       $
-                      {stripByAmount(
-                        getFeeFromSwapRoute({
-                          route: swapRoute,
-                          tokenInfos,
-                          pricesMap: dexTokensPricesMap,
-                        })
+                      {formatNumberToUSFormat(
+                        stripDigitPlaces(
+                          getFeeFromSwapRoute({
+                            route: swapRoute,
+                            tokenInfos,
+                            pricesMap: dexTokensPricesMap,
+                          }),
+                          2
+                        )
                       )}
                     </RowValue>
                   </BlackRow>
@@ -772,7 +804,9 @@ const SwapPage = ({
                 <BlackRow width="100%">
                   <RowTitle>Minimum Received:</RowTitle>
                   <RowValue>
-                    {stripByAmount(outAmountWithSlippageWithoutDecimals)}{' '}
+                    {formatNumberToUSFormat(
+                      stripByAmount(outAmountWithSlippageWithoutDecimals)
+                    )}{' '}
                     {quoteSymbol}
                   </RowValue>
                 </BlackRow>
