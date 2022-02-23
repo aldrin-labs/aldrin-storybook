@@ -23,7 +23,7 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
       <BlockContent>
         <RowContainer justify="space-between">
           <BlockTitle>Stake PLD</BlockTitle>
-          <NumberWithLabel value={null} label="Exclusive" />
+          <NumberWithLabel padding="0" value={null} label="Exclusive" />
         </RowContainer>
         <StretchedContent>
           <ContentBlock width="48%">

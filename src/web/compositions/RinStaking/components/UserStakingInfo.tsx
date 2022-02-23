@@ -410,7 +410,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   return (
     <>
-      <Row>
+      <Row style={{ height: 'auto' }}>
         <Cell colMd={6} colXl={3} col={12}>
           <GreenBlock>
             <BlockContentStretched>
@@ -490,7 +490,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>${stripToMillions(totalStakedUSD)}</InlineText>{' '}
+                <InlineText size="sm">
+                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  {stripToMillions(totalStakedUSD)}
+                </InlineText>{' '}
                 <InlineText margin="0" size="sm">
                   {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
                   circulating supply
@@ -524,7 +527,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>${totalStakedUsdValue}</InlineText>{' '}
+                <InlineText size="sm">
+                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  {totalStakedUsdValue}
+                </InlineText>{' '}
               </StretchedBlock>
             </BlockContentStretched>
           </Block>
@@ -538,12 +544,16 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 </InlineText>
                 <DarkTooltip
                   title={
-                    <p>
-                      Staking rewards are paid on the 27th of the every month
-                      based on RIN weekly buybacks on 1/6 of AMM fees. Estimated
-                      rewards are updated hourly on threasury rewards and weekly
-                      based on RIN buyback.
-                    </p>
+                    <>
+                      <p>
+                        The first APR is calculated based on fixed “treasury”
+                        rewards. These rewards estimation are updated hourly.
+                      </p>
+                      <p>
+                        The second APR is calculated based on last RIN buyback
+                        which are weekly.
+                      </p>
+                    </>
                   }
                 >
                   <span>
@@ -556,7 +566,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>${userEstRewardsUSD}</InlineText>{' '}
+                <InlineText size="sm">
+                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  {userEstRewardsUSD}
+                </InlineText>{' '}
                 <FlexBlock>
                   <RestakeButton
                     disabled={isClaimDisabled || loading.claim}

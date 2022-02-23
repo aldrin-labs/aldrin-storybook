@@ -111,9 +111,8 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             <RowContainer
               direction="column"
               align="flex-start"
-              style={{ position: 'absolute' }}
+              style={{ position: 'absolute', padding: '1em' }}
             >
-              {' '}
               <RowContainer justify="space-between" margin="0 0 2rem 0">
                 <InlineText color="primaryGray" size="sm">
                   Epoch

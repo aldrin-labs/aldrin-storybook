@@ -3,4 +3,5 @@ export interface NumberWithLabelProps {
   label: string
   size?: string
   center?: boolean
+  padding?: string
 }

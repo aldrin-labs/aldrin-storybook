@@ -4,6 +4,7 @@ import styled from 'styled-components'
 type LabelType = {
   weight?: string
   size?: string
+  padding?: string
 }
 
 export const Container = styled.div`
@@ -21,6 +22,6 @@ export const Container = styled.div`
 
 export const Label = styled.span<LabelType>`
   font-weight: ${(props) => props.weight || '400'};
-  padding: 0 0 0 0.5rem;
+  padding: ${(props) => props.padding || '0 0 0 0.5rem'};
   font-size: ${(props) => props.size || FONT_SIZES.md};
 `
