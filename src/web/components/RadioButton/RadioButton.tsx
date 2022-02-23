@@ -22,13 +22,7 @@ export const Radio = ({
       <AttributeContainer>
         <Label htmlFor="inside">
           {label}
-          <Input
-            type="radio"
-            name="radio"
-            id="inside"
-            value="inside"
-            checked={checked}
-          />
+          <Input checked={checked} />
           <Checkmark />
         </Label>
       </AttributeContainer>

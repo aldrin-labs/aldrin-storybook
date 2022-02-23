@@ -47,15 +47,21 @@ const Checkmark = styled.span`
   }
 `
 
-const Input = styled.input`
+const Input = styled.span<{ checked: boolean }>`
   display: none;
-  &:checked ~ ${Checkmark} {
+  ${(props: { checked: boolean }) =>
+    props.checked
+      ? `
+  & ~ ${Checkmark} {
     border: 1px solid ${COLORS.newGreen};
     transition: all 0.25s ease-in-out;
+
+    &:after {
+      display: block;
+    }
   }
-  &:checked ~ ${Checkmark}:after {
-    display: block;
-  }
+  `
+      : ''}
 `
 
 export { Label, Input, Checkmark, Container, AttributeContainer }
