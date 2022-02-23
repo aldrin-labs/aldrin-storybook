@@ -65,12 +65,12 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
   const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
     useState<boolean>(false)
 
-  useEffect(() => {
-    setRegionCheckIsLoading(true)
-    getRegionData({ setIsFromRestrictedRegion }).then(() => {
-      setRegionCheckIsLoading(false)
-    })
-  }, [setIsFromRestrictedRegion])
+  // useEffect(() => {
+  //   setRegionCheckIsLoading(true)
+  //   getRegionData({ setIsFromRestrictedRegion }).then(() => {
+  //     setRegionCheckIsLoading(false)
+  //   })
+  // }, [setIsFromRestrictedRegion])
 
   const buttonWithModal = (
     <>

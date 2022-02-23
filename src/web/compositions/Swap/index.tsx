@@ -34,7 +34,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { getRegionData } from '@core/hoc/withRegionCheck'
+import { getRegionData, withRegionCheck } from '@core/hoc/withRegionCheck'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
@@ -178,13 +178,12 @@ const SwapPage = ({
   const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
     useState<boolean>(false)
 
-  getRegionData
-  useEffect(() => {
-    setRegionCheckIsLoading(true)
-    getRegionData({ setIsFromRestrictedRegion }).then(() => {
-      setRegionCheckIsLoading(false)
-    })
-  }, [setIsFromRestrictedRegion])
+  // useEffect(() => {
+  //   setRegionCheckIsLoading(true)
+  //   getRegionData({ setIsFromRestrictedRegion }).then(() => {
+  //     setRegionCheckIsLoading(false)
+  //   })
+  // }, [setIsFromRestrictedRegion])
 
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
@@ -873,7 +872,7 @@ const SwapPage = ({
 export default compose(
   withTheme(),
   withPublicKey,
-  // withRegionCheck,
+  withRegionCheck,
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
