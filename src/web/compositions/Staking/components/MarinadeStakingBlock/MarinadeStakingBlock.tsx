@@ -108,23 +108,29 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             </InlineText>
           </ContentBlock>
           <RelativeContentBlock width="48%">
-            <Filler $width={mSolInfo?.epochInfo.epochPct || 0} />
-            <Row justify="space-between" margin="0 0 2rem 0">
-              <InlineText color="primaryGray" size="sm">
-                Epoch
+            <RowContainer
+              direction="column"
+              align="flex-start"
+              style={{ position: 'absolute', padding: '1em' }}
+            >
+              <RowContainer justify="space-between" margin="0 0 2rem 0">
+                <InlineText color="primaryGray" size="sm">
+                  Epoch
+                </InlineText>{' '}
+                <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
+                  <span>
+                    <SvgIcon src={InfoIcon} width="1.5rem" />
+                  </span>
+                </DarkTooltip>
+              </RowContainer>
+              <InlineText size="xmd" weight={700}>
+                {mSolInfo?.epochInfo.epochPct
+                  ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
+                  : '---'}
+                %
               </InlineText>{' '}
-              <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
-                <span>
-                  <SvgIcon src={InfoIcon} width="1.5rem" />
-                </span>
-              </DarkTooltip>
-            </Row>
-            <InlineText size="xmd" weight={700}>
-              {mSolInfo?.epochInfo.epochPct
-                ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
-                : '---'}
-              %
-            </InlineText>
+            </RowContainer>
+            <Filler $width={mSolInfo?.epochInfo.epochPct || 0} />
           </RelativeContentBlock>
         </StretchedContent>
         <RowContainer>

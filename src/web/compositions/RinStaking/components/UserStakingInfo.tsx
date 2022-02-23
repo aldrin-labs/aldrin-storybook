@@ -18,7 +18,10 @@ import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { BUY_BACK_RIN_ACCOUNT_ADDRESS, DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
+import {
+  BUY_BACK_RIN_ACCOUNT_ADDRESS,
+  DAYS_TO_CHECK_BUY_BACK,
+} from '@sb/dexUtils/staking/config'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
@@ -135,13 +138,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ])
   }
 
-
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
   })
 
   const buyBackAmountWithDecimals =
-  buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
+    buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
 
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
     farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
@@ -390,9 +392,25 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const totalStakedUsdValue = isBalancesShowing
     ? stakedInUsd
     : new Array(stakedInUsd.length).fill('∗').join('')
+
+  const strippedEstRewards = stripByAmountAndFormat(estimatedRewards || 0, 4)
+
+  const userEstRewards = isBalancesShowing
+    ? stripByAmountAndFormat(estimatedRewards, 4)
+    : new Array(strippedEstRewards.length).fill('∗').join('')
+
+  const strippedEstRewardsUSD = stripByAmountAndFormat(
+    estimatedRewards * tokenPrice || 0,
+    2
+  )
+
+  const userEstRewardsUSD = isBalancesShowing
+    ? stripByAmountAndFormat(estimatedRewards, 4)
+    : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
+
   return (
     <>
-      <Row>
+      <Row style={{ height: 'auto' }}>
         <Cell colMd={6} colXl={3} col={12}>
           <GreenBlock>
             <BlockContentStretched>
@@ -472,7 +490,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>${stripToMillions(totalStakedUSD)}</InlineText>{' '}
+                <InlineText size="sm">
+                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  {stripToMillions(totalStakedUSD)}
+                </InlineText>{' '}
                 <InlineText margin="0" size="sm">
                   {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
                   circulating supply
@@ -506,7 +527,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>${totalStakedUsdValue}</InlineText>{' '}
+                <InlineText size="sm">
+                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  {totalStakedUsdValue}
+                </InlineText>{' '}
               </StretchedBlock>
             </BlockContentStretched>
           </Block>
@@ -520,12 +544,16 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 </InlineText>
                 <DarkTooltip
                   title={
-                    <p>
-                      Staking rewards are paid on the 27th of the every month
-                      based on RIN weekly buybacks on 1/6 of AMM fees. Estimated
-                      rewards are updated hourly on threasury rewards and weekly
-                      based on RIN buyback.
-                    </p>
+                    <>
+                      <p>
+                        The first APR is calculated based on fixed “treasury”
+                        rewards. These rewards estimation are updated hourly.
+                      </p>
+                      <p>
+                        The second APR is calculated based on last RIN buyback
+                        which are weekly.
+                      </p>
+                    </>
                   }
                 >
                   <span>
@@ -534,18 +562,13 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 </DarkTooltip>
               </FlexBlock>
               <BigNumber>
-                <InlineText>
-                  {stripByAmountAndFormat(estimatedRewards, 4)}{' '}
-                </InlineText>{' '}
+                <InlineText>{userEstRewards} </InlineText>{' '}
                 <InlineText color="primaryGray">RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
-                <InlineText>
-                  $
-                  {stripByAmountAndFormat(
-                    estimatedRewards * tokenPrice || 0,
-                    2
-                  )}
+                <InlineText size="sm">
+                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  {userEstRewardsUSD}
                 </InlineText>{' '}
                 <FlexBlock>
                   <RestakeButton

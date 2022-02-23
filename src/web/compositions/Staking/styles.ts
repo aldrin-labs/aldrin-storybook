@@ -9,6 +9,9 @@ import { ContentBlockProps } from './types'
 
 export const StakingBlock = styled(Block)`
   background: ${COLORS.defaultGray};
+  @media (max-width: ${BREAKPOINTS.md}) {
+    margin: 8px 15px;
+  }
 `
 
 export const Content = styled.div`
@@ -84,13 +87,13 @@ export const GrayLink = styled(Link)`
   background: ${COLORS.cardsBack};
   border-radius: 1rem;
   margin: ${(props) => props.margin || '2rem 0 0 0'};
-  height: 6rem;
+  height: 3em;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
   text-decoration: none;
   text-align: center;
-  padding: 1.6rem 0;
+  padding: 0.8em 0;
   font-size: 0.9em;
   line-height: 3rem;
   &:hover {
@@ -100,6 +103,11 @@ export const GrayLink = styled(Link)`
 
   &:active {
     background: ${COLORS.darkBlue};
+  }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    height: 4em;
+    padding: 1.4em 0;
   }
 `
 
