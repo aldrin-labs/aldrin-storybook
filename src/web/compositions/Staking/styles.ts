@@ -1,4 +1,4 @@
-import { COLORS, BREAKPOINTS } from '@variables/variables'
+import { COLORS, BREAKPOINTS, BORDER_RADIUS } from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -20,15 +20,15 @@ export const Content = styled.div`
   margin: 20px auto;
 `
 export const ContentBlock = styled.div<ContentBlockProps>`
-  margin: 2rem 0;
+  margin: 1em 0;
   display: flex;
   width: ${(props: ContentBlockProps) => props.width || '100%'};
   height: auto;
-  padding: 2rem;
+  padding: 1em;
   flex-direction: column;
   justify-content: space-between;
   background: ${COLORS.cardsBack};
-  border-radius: 1rem;
+  border-radius: ${BORDER_RADIUS.md};
 `
 export const StretchedContent = styled.div`
   display: flex;
@@ -41,9 +41,9 @@ export const GrayButton = styled.button`
   border: none;
   color: ${COLORS.newWhite};
   background: ${COLORS.cardsBack};
-  border-radius: 1rem;
-  margin: ${(props) => props.margin || '2rem 0 0 0'};
-  height: 6rem;
+  border-radius: ${BORDER_RADIUS.md};
+  margin: ${(props) => props.margin || '1em 0 0 0'};
+  height: 3em;
 
   font-weight: 600;
   cursor: pointer;
@@ -59,7 +59,7 @@ export const GrayButton = styled.button`
   }
 
   @media (max-width: 600px) {
-    height: 8rem;
+    height: 4em;
     font-size: 1em;
   }
 `
@@ -85,17 +85,17 @@ export const GrayLink = styled(Link)`
   border: none;
   color: ${COLORS.newWhite};
   background: ${COLORS.cardsBack};
-  border-radius: 1rem;
-  margin: ${(props) => props.margin || '2rem 0 0 0'};
+  border-radius: ${BORDER_RADIUS.md};
+  margin: 0.7em 0 0 0;
   height: 3em;
+  line-height: 3em;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
   text-decoration: none;
   text-align: center;
-  padding: 0.8em 0;
+  padding: 0;
   font-size: 0.9em;
-  line-height: 3rem;
   &:hover {
     background: ${COLORS.primaryBlue};
     transition: 0.3s;
@@ -112,9 +112,9 @@ export const GrayLink = styled(Link)`
 `
 
 export const Line = styled.div`
-  border: 0.1rem solid ${COLORS.cardsBack};
-  height: 0.1rem;
-  margin: 4rem 0 2rem 0;
+  border: 0.05em solid ${COLORS.cardsBack};
+  height: 0.05em;
+  margin: 2em 0 1em 0;
   width: 100%;
 `
 

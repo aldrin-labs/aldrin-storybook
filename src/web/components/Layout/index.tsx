@@ -54,7 +54,7 @@ export const Content = styled.div`
 
 export const WideContent = styled(Content)`
   @media (min-width: ${LAYOUT_WIDTH}px) {
-    max-width: none;
+    max-width: calc(100% - 20px);
     margin: 0 10px;
   }
   @media (min-width: ${BREAKPOINTS.xxl}) {

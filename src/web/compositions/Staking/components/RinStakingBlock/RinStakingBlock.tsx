@@ -81,7 +81,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
         </RowContainer>
         <ContentBlock>
           <RowContainer
-            margin="0 0 2rem 0"
+            margin="0 0 1em 0"
             justify="space-between"
             align="flex-start"
           >
@@ -113,7 +113,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
         <Line />{' '}
         <StretchedContent>
           <StatsBlock width="31%">
-            <Row justify="flex-start" margin="0 0 2rem 0">
+            <Row justify="flex-start" margin="0 0 1em 0">
               <InlineText color="primaryGray" size="sm">
                 RIN Price
               </InlineText>{' '}
@@ -126,7 +126,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
             </InlineText>
           </StatsBlock>
           <StatsBlock width="31%">
-            <Row justify="flex-start" margin="0 0 2rem 0">
+            <Row justify="flex-start" margin="0 0 1em 0">
               <InlineText color="primaryGray" size="sm">
                 Circulating Supply
               </InlineText>{' '}
@@ -138,7 +138,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
             </InlineText>
           </StatsBlock>
           <MarketcapBlock width="31%">
-            <Row justify="flex-start" margin="0 0 2rem 0">
+            <Row justify="flex-start" margin="0 0 1em 0">
               <InlineText color="primaryGray" size="sm">
                 Marketcap
               </InlineText>{' '}

@@ -14,7 +14,7 @@ import {
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Lock from './lock.svg'
-import { LogoWrap, ButtonContainer } from './styles'
+import { LogoWrap } from './styles'
 
 export const PlutoniasStakingBlock: React.FC = (props) => {
   return (
@@ -27,7 +27,7 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
         </RowContainer>
         <StretchedContent>
           <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
+            <Row justify="space-between" margin="0 0 0.7em 0">
               <InlineText size="md" weight={700}>
                 60 Days
               </InlineText>{' '}
@@ -36,12 +36,12 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             <NumberWithLabel
               size={FONT_SIZES.es}
               value={null}
-              label="Coming Soon"
+              label="Coming"
               center
             />
           </ContentBlock>
           <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
+            <Row justify="space-between" margin="0 0 0.7em 0">
               <InlineText size="md" weight={700}>
                 90 Days
               </InlineText>{' '}
@@ -50,14 +50,14 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             <NumberWithLabel
               size={FONT_SIZES.es}
               value={null}
-              label="Coming Soon"
+              label="Coming"
               center
             />
           </ContentBlock>
         </StretchedContent>
-        <StretchedContent style={{ margin: '0.5rem 0 0 0' }}>
+        <StretchedContent style={{ margin: '1.6em 0 0 0' }}>
           <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
+            <Row justify="space-between" margin="0 0 0.7em 0">
               <InlineText size="md" weight={700}>
                 120 Days
               </InlineText>{' '}
@@ -66,12 +66,12 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             <NumberWithLabel
               size={FONT_SIZES.es}
               value={null}
-              label="Coming Soon"
+              label="Coming"
               center
             />
           </ContentBlock>
           <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
+            <Row justify="space-between" margin="0 0 0.7em 0">
               <InlineText size="md" weight={700}>
                 150 Days
               </InlineText>{' '}
@@ -80,14 +80,14 @@ export const PlutoniasStakingBlock: React.FC = (props) => {
             <NumberWithLabel
               size={FONT_SIZES.es}
               value={null}
-              label="Coming Soon"
+              label="Coming "
               center
             />
           </ContentBlock>
         </StretchedContent>
-        <ButtonContainer>
+        <RowContainer>
           <GrayLink to="/staking/plutonians">View</GrayLink>
-        </ButtonContainer>
+        </RowContainer>
       </BlockContent>
     </StakingBlock>
   )

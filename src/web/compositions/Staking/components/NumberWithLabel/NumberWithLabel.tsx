@@ -9,7 +9,7 @@ export const NumberWithLabel: React.FC<NumberWithLabelProps> = (props) => {
     label,
     size,
     center = false,
-    padding = '0 0 0 0.5rem',
+    padding = '0 0 0 0.25em',
   } = props
 
   return (
