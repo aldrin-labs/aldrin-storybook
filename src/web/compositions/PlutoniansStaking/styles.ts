@@ -53,4 +53,9 @@ export const AprWrap = styled.div`
 
 export const RewardContentBlock = styled(ContentBlock)`
   background: rgba(38, 159, 19, 10%);
+  width: auto;
+  @media (min-width: ${BREAKPOINTS.md}) {
+    ${(props: { last?: boolean }) =>
+      props.last ? `margin-left: 10px` : 'margin-right: 10px;'}
+  }
 `

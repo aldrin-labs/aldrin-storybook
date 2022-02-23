@@ -5,21 +5,27 @@ import React, { useEffect, useState } from 'react'
 import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
 import { Button } from '@sb/components/Button'
-import { FlexBlock, Page, StretchedBlock } from '@sb/components/Layout'
+import {
+  FlexBlock,
+  Page,
+  StretchedBlock,
+  Row,
+  Cell,
+} from '@sb/components/Layout'
 import { ProgressBar } from '@sb/components/ProgressBarBlock/ProgressBar'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
+import { useConnection } from '@sb/dexUtils/connection'
+import { notify } from '@sb/dexUtils/notifications'
 import { startSrinStaking } from '@sb/dexUtils/staking/actions'
+import { useSrinStakingAccounts } from '@sb/dexUtils/staking/hooks'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { TokenInfo } from '@sb/dexUtils/types'
+import { useWallet } from '@sb/dexUtils/wallet'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 
-import { queryRendererHoc } from '../../../../../core/src/components/QueryRenderer'
-import { useConnection } from '../../dexUtils/connection'
-import { notify } from '../../dexUtils/notifications'
-import { useSrinStakingAccounts } from '../../dexUtils/staking/hooks'
-import { useUserTokenAccounts } from '../../dexUtils/token/hooks'
-import { TokenInfo } from '../../dexUtils/types'
-import { useWallet } from '../../dexUtils/wallet'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
 import Lock from '../Staking/components/PlutoniansStaking/lock.svg'
@@ -172,6 +178,7 @@ const Block = () => {
               )
             })}
           </StakingContainer>
+
           <StakingContainer>
             <AdaptiveStakingBlock>
               <FlexBlock direction="column" style={{ padding: '1em' }}>
@@ -196,62 +203,67 @@ const Block = () => {
                     </InlineText>
                   </ContentBlock>
                 )}
-                {!isStaked && (
-                  <InputWrapper style={{ width: '100%' }}>
-                    <AmountInput
-                      label="Stake"
-                      placeholder="0"
-                      amount={0}
-                      mint=""
-                      name="amount"
-                      value={amount}
-                      onChange={setAmount}
-                    />
-                  </InputWrapper>
-                )}
+
                 {!isStaked ? (
-                  <StretchedBlock width="xl">
-                    <RewardContentBlock width="48%">
-                      <StretchedBlock width="xl">
-                        <InlineText color="primaryGray" size="sm">
-                          APY
-                        </InlineText>
-                        {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
-                      </StretchedBlock>
-                      <StretchedBlock
-                        style={{ margin: '3rem 0 0 0' }}
-                        align="center"
-                        width="xl"
-                      >
-                        <InlineText color="newGreen" size="lg" weight={700}>
-                          7 %
-                        </InlineText>
-                        <RewardDescription size="md" weight={600}>
-                          PU238
-                        </RewardDescription>
-                      </StretchedBlock>
-                    </RewardContentBlock>
-                    <RewardContentBlock width="48%">
-                      <StretchedBlock width="xl">
-                        <InlineText color="primaryGray" size="sm">
-                          NFT
-                        </InlineText>
-                        {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
-                      </StretchedBlock>
-                      <StretchedBlock
-                        style={{ margin: '3rem 0 0 0' }}
-                        align="center"
-                        width="xl"
-                      >
-                        <InlineText color="newGreen" size="lg" weight={700}>
-                          Eligible
-                        </InlineText>
-                        <RewardDescription size="sm" weight={600}>
-                          Aldrin Skin + 2 components
-                        </RewardDescription>
-                      </StretchedBlock>
-                    </RewardContentBlock>
-                  </StretchedBlock>
+                  <>
+                    <InputWrapper style={{ width: '100%' }}>
+                      <AmountInput
+                        label="Stake"
+                        placeholder="0"
+                        amount={0}
+                        mint=""
+                        name="amount"
+                        value={amount}
+                        onChange={setAmount}
+                      />
+                    </InputWrapper>
+                    <Row>
+                      <Cell col={12} colMd={6}>
+                        <RewardContentBlock>
+                          <StretchedBlock width="xl">
+                            <InlineText color="primaryGray" size="sm">
+                              APY
+                            </InlineText>
+                            {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
+                          </StretchedBlock>
+                          <StretchedBlock
+                            style={{ margin: '3rem 0 0 0' }}
+                            align="center"
+                            width="xl"
+                          >
+                            <InlineText color="newGreen" size="lg" weight={700}>
+                              7 %
+                            </InlineText>
+                            <RewardDescription size="md" weight={600}>
+                              PU238
+                            </RewardDescription>
+                          </StretchedBlock>
+                        </RewardContentBlock>
+                      </Cell>
+                      <Cell col={12} colMd={6}>
+                        <RewardContentBlock last>
+                          <StretchedBlock width="xl">
+                            <InlineText color="primaryGray" size="sm">
+                              NFT
+                            </InlineText>
+                            {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
+                          </StretchedBlock>
+                          <StretchedBlock
+                            style={{ margin: '3rem 0 0 0' }}
+                            align="center"
+                            width="xl"
+                          >
+                            <InlineText color="newGreen" size="lg" weight={700}>
+                              Eligible
+                            </InlineText>
+                            <RewardDescription size="sm" weight={600}>
+                              Aldrin Skin + 2 components
+                            </RewardDescription>
+                          </StretchedBlock>
+                        </RewardContentBlock>
+                      </Cell>
+                    </Row>
+                  </>
                 ) : (
                   <StretchedBlock width="xl">
                     <ContentBlock width="48%">
