@@ -15,8 +15,8 @@ export const FooterContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  padding: 1em 0;
-  margin: 0 2em;
+  padding: 3.5em;
+  flex-wrap: nowrap;
 
   @media (max-width: ${BREAKPOINTS.md}) {
     display: none;
