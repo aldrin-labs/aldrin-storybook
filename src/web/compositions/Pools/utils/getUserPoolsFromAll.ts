@@ -58,7 +58,7 @@ export const getUserPoolsFromAll = ({
       poolTokenAmount > MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ||
       openFarmingTickets.length > 0 ||
       availableToClaimAmount > 0 ||
-      vesting?.startBalance.gtn(0) ||
+      vesting?.outstanding.gtn(0) ||
       !!calcAmounts?.find((ca) => ca.gtn(0)) ||
       el.initializerAccount === walletKey
     )
