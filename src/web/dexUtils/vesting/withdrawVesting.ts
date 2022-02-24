@@ -5,6 +5,7 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
+
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { VESTING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '../send'
@@ -45,7 +46,7 @@ export const withrawVestingInstruction = async (
   )
 
   const instruction: TransactionInstruction =
-    await program.instruction.withdraw(vesting.startBalance, {
+    await program.instruction.withdraw(vesting.outstanding, {
       accounts: {
         vesting: vesting.vesting,
         beneficiary: wallet.publicKey,
