@@ -87,14 +87,14 @@ export const GrayLink = styled(Link)`
   background: ${COLORS.cardsBack};
   border-radius: ${BORDER_RADIUS.md};
   margin: 0.7em 0 0 0;
-  height: 3em;
   line-height: 3em;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
   text-decoration: none;
   text-align: center;
-  padding: 0;
+
+  padding: 0.5em 0;
   font-size: 0.9em;
   &:hover {
     background: ${COLORS.primaryBlue};
@@ -105,9 +105,8 @@ export const GrayLink = styled(Link)`
     background: ${COLORS.darkBlue};
   }
 
-  @media (max-width: ${BREAKPOINTS.md}) {
-    height: 4em;
-    padding: 1.4em 0;
+  @media (min-width: ${BREAKPOINTS.md}) {
+    padding: 0;
   }
 `
 

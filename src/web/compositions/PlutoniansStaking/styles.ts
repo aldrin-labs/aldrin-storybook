@@ -56,6 +56,6 @@ export const RewardContentBlock = styled(ContentBlock)`
   width: auto;
   @media (min-width: ${BREAKPOINTS.md}) {
     ${(props: { last?: boolean }) =>
-      props.last ? `margin-left: 10px` : 'margin-right: 10px;'}
+      props.last ? `margin-left: 10px;` : 'margin-right: 10px;'}
   }
 `
