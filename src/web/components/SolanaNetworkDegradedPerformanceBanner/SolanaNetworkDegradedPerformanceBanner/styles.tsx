@@ -4,8 +4,7 @@ import styled from 'styled-components'
 import { WideContent } from '@sb/components/Layout'
 
 export const Link = styled.a`
-  padding: 0 0 0 0.5rem;
-  color: '#53DF11';
+  padding: 0 0 0 5px;
   text-decoration: 'none';
 `
 
