@@ -12,7 +12,7 @@ import { Vesting, VestingWithPk } from '../types'
 
 const vestingAddress = new PublicKey(VESTING_PROGRAM_ADDRESS)
 
-const VESTING_LAYOUT = struct([
+const VESTING_LAYOUT = struct<Vesting>([
   blob(8, 'padding'),
   publicKey('beneficiary'),
   publicKey('mint'),
@@ -40,14 +40,14 @@ export const useVestings = (): [VestingWithPk[], RefreshFunction] => {
 
     return data
       .map((d) => {
-        const decoded = VESTING_LAYOUT.decode(d.account.data) as Vesting
+        const decoded = VESTING_LAYOUT.decode(d.account.data)
 
         return {
           ...decoded,
           vesting: d.pubkey,
         }
       })
-      .filter((vesting) => vesting.createdTs > 0)
+      .filter((vesting) => vesting.createdTs > 0 && vesting.outstanding.gtn(0))
   }
   const { data, mutate } = useSWR('vestings', fetcher, {
     refreshInterval: COMMON_REFRESH_INTERVAL,
