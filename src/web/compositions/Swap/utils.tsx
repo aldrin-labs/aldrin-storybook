@@ -1,9 +1,11 @@
-import { RouteInfo } from '@jup-ag/core'
+import { RouteInfo, TransactionFeeInfo } from '@jup-ag/core'
 import { TokenInfo } from '@solana/spl-token-registry'
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import React from 'react'
 
 import { Loading } from '@sb/components'
+import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 
 import { removeDecimals } from '@core/utils/helpers'
 
@@ -144,4 +146,27 @@ export const getRouteMintsPath = (swapRoute: RouteInfo | null) => {
 
     return acc
   }, [])
+}
+
+export const getSwapNetworkFee = ({
+  swapRoute,
+  depositAndFee,
+}: {
+  swapRoute: RouteInfo | null
+  depositAndFee: TransactionFeeInfo | null | undefined
+}) => {
+  if (!swapRoute) {
+    return 0
+  }
+
+  if (depositAndFee) {
+    return (
+      (depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
+        depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
+        depositAndFee.signatureFee) /
+      LAMPORTS_PER_SOL
+    )
+  }
+
+  return swapRoute?.marketInfos.length * TRANSACTION_COMMON_SOL_FEE
 }

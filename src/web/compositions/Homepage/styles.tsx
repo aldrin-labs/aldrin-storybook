@@ -199,12 +199,12 @@ export const NewLink = styled(Link)`
     transition: 0.3s;
     svg {
       path {
-        fill: #0e02ec;
+        fill: #651ce4;
       }
       defs {
         linearGradient {
           stop {
-            stop-color: #0e02ec;
+            stop-color: #651ce4;
           }
         }
       }

@@ -1,7 +1,7 @@
+import { Paper } from '@material-ui/core'
 import styled from 'styled-components'
 
 import { Title } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
-import { Paper } from '@material-ui/core'
 
 export const WhiteText = styled(Title)`
   font-size: 1.4rem;
@@ -22,5 +22,5 @@ export const StyledPaper = styled(Paper)`
 `
 
 export const GreenText = styled(WhiteText)`
-  color: #269F13;
+  color: #53df11;
 `

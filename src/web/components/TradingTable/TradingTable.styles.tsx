@@ -62,13 +62,8 @@ export const ClearButton = styled(TitleButton)`
   position: absolute;
   top: -2px;
   right: 1rem;
-<<<<<<< HEAD
   color: #651ce4;
   border-color: #651ce4;
-=======
-  color: #0e02ec;
-  border-color: #0e02ec;
->>>>>>> origin/serum-develop
   font-size: 1.1rem;
   min-width: 70px;
   font-weight: bold;

@@ -58,26 +58,55 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
         return { ...t, symbol }
       })
 
-      const tokenFrom = tokensWithSymbol.find((t) => {
-        const symbol = t.symbol.toLowerCase()
+      const tokenFromSearchLowerCase =
+        tokenFromSearch && tokenFromSearch.toLowerCase()
 
-        return symbol.includes(tokenFromSearch.toLowerCase())
-      })
+      const tokensFrom = tokensWithSymbol
+        .filter((t) => {
+          const symbol = t.symbol.toLowerCase()
+
+          return symbol.includes(tokenFromSearchLowerCase)
+        })
+        .sort((a, b) => {
+          const isBFullMatch =
+            b.symbol.toLowerCase() === tokenFromSearchLowerCase
+
+          const isAFullMatch =
+            a.symbol.toLowerCase() === tokenFromSearchLowerCase
+
+          if (isBFullMatch) {
+            return 1
+          }
+
+          if (isAFullMatch) {
+            return -1
+          }
+
+          return 0
+        })
+
+      const tokenFrom = tokensFrom[0]
 
       if (!tokenFrom) {
         return []
       }
 
-      const topSymbolsForSwap = ['sol', 'usdc', 'usdt']
+      const tokenToSearchLowerCase =
+        tokenToSearch && tokenToSearch.toLowerCase()
+
+      const topSymbolsForSwap = ['sol', 'usdc', 'usdt'].filter(
+        (topSymbol) => !topSymbol.includes(tokenFromSearchLowerCase)
+      )
 
       const tokensTo = tokensWithSymbol
         .filter((t) => t.mint !== tokenFrom.mint)
         .filter((t) => {
           const symbol = t.symbol.toLowerCase()
+          if (tokenToSearchLowerCase) {
+            return symbol.includes(tokenToSearchLowerCase)
+          }
 
-          return tokenToSearch
-            ? symbol.includes(tokenToSearch.toLowerCase())
-            : topSymbolsForSwap.includes(symbol)
+          return topSymbolsForSwap.includes(symbol)
         })
         .slice(0, 2)
 
