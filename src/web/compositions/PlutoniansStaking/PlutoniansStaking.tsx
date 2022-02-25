@@ -18,7 +18,10 @@ import { InlineText } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
 import { startSrinStaking } from '@sb/dexUtils/staking/actions'
-import { useSrinStakingAccounts } from '@sb/dexUtils/staking/hooks'
+import {
+  useSrinStakingAccounts,
+  usePlutoniansStaking,
+} from '@sb/dexUtils/staking/hooks'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -30,13 +33,15 @@ import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
 import Lock from '../Staking/components/PlutoniansStaking/lock.svg'
 import { ContentBlock } from '../Staking/styles'
-import Centuria from './assets/Centuria.png'
-import Colossus from './assets/Colossus.png'
-import Leviathan from './assets/Leviathan.png'
 import Plutonians from './assets/plutoniansMock.png'
-import Venator from './assets/Venator.png'
 import { RewardsComponent } from './components/RewardsComponent/RewardsComponent'
 import { RewardDescription } from './components/RewardsComponent/styles'
+import {
+  EXTRA_REWARDS,
+  REWARDS_BG,
+  REWARD_TOKEN_NAME,
+  REWARD_TOKEN_MULTIPLIER,
+} from './config'
 import {
   AdaptiveStakingBlock,
   AprWrap,
@@ -45,17 +50,17 @@ import {
   RewardContentBlock,
   StakingContainer,
 } from './styles'
+import { PlutoniansBlockProps } from './types'
 
-const EXTRA_REWARDS = [
-  'Aldrin Skin + 2 components',
-  'Aldrin Skin + 4 components',
-  'Venator + Aldrin Skin + 4 components',
-  'Star Hunter + Aldrin Skin + 4 components + 1 exotic component',
-]
+const Block: React.FC<PlutoniansBlockProps> = (props) => {
+  const {
+    getDexTokensPricesQuery: { getDexTokensPrices = [] },
+  } = props
 
-const REWARDS_BG = [Centuria, Colossus, Venator, Leviathan]
+  const prcPrice =
+    (getDexTokensPrices.find((dp) => dp.symbol === REWARD_TOKEN_NAME)?.price ||
+      0) * REWARD_TOKEN_MULTIPLIER
 
-const Block = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
   const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(true)
@@ -64,9 +69,8 @@ const Block = () => {
 
   const [tokenAccounts, refreshTokenAccounts] = useUserTokenAccounts()
 
-  // const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
+  const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
 
-  const stakingPool = undefined
   const { data: stakingAccounts, mutate: updateStakeAccounts } =
     useSrinStakingAccounts()
 
@@ -84,6 +88,7 @@ const Block = () => {
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
 
+  console.log('Token mint: ', stakingPool?.rewardTokenMint.toString())
   useEffect(() => {
     if (!selectedTokenAccount) {
       const rewardsMint = stakingPool?.rewardTokenMint.toString()
@@ -211,7 +216,7 @@ const Block = () => {
                         label="Stake"
                         placeholder="0"
                         amount={0}
-                        mint=""
+                        mint={stakingPool?.rewardTokenMint.toString() || ''}
                         name="amount"
                         value={amount}
                         onChange={setAmount}
@@ -328,7 +333,6 @@ const Block = () => {
                     padding: '1em',
                     color: isStaked ? COLORS.lightGray : COLORS.primaryWhite,
                   }}
-                  //   disabled={isStaked}
                 >
                   {isStaked
                     ? 'Unstake 10.522 PLD and Claim Rewards & Common Small Fighter'

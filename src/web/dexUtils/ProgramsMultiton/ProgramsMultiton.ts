@@ -14,7 +14,7 @@ import {
 import MarketOrderProgramIdl from '@core/idls/marketOrder.json'
 import PoolsProgramIdl from '@core/idls/pools.json'
 import PoolsV2ProgramIdl from '@core/idls/poolsV2.json'
-import SrinStakingProgramIdl from '@core/idls/srin.json'
+import PlutoniansStakingProgramIdl from '@core/idls/plutonians.json'
 import StakingProgramIdl from '@core/idls/staking.json'
 import VestingProgramIdl from '@core/idls/vesting.json'
 
@@ -36,7 +36,7 @@ const IDLS = {
   [MARKET_ORDER_PROGRAM_ADDRESS]: MarketOrderProgramIdl as Idl,
   [STAKING_PROGRAM_ADDRESS]: StakingProgramIdl as Idl,
   [VESTING_PROGRAM_ADDRESS]: VestingProgramIdl as Idl03,
-  [PLUTONIANS_STAKING_ADDRESS]: SrinStakingProgramIdl as Idl020,
+  [PLUTONIANS_STAKING_ADDRESS]: PlutoniansStakingProgramIdl as Idl020,
 }
 
 class ProgramsMultiton {

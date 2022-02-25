@@ -30,6 +30,7 @@ export const useSrinStakingPools = () => {
           ProgramAccount<SRINStakingTier>[]
         >,
       ])
+
       const tiersByKey = toMap(tiers, (t) => t.publicKey.toString())
       const poolsWithTiers = pools.map((p) => ({
         ...p.account,
