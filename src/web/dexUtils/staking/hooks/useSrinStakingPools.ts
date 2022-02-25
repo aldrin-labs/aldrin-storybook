@@ -10,28 +10,37 @@ import {
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
-import { SRINStakingPool, SRINStakingPoolUI, SRINStakingTier } from './types'
+import {
+  SRinStakingPool,
+  SRinStakingPoolUI,
+  SRinStakingTier,
+  SRinNftRewardGroup,
+} from './types'
 
 export const useSrinStakingPools = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
-  const fetcher = async (): Promise<SRINStakingPoolUI[]> => {
+  const fetcher = async (): Promise<SRinStakingPoolUI[]> => {
     try {
       const program = ProgramsMultiton.getProgramByAddress({
         programAddress: PLUTONIANS_STAKING_ADDRESS,
         wallet,
         connection,
       })
-      const [pools, tiers] = await Promise.all([
+      const [pools, tiers, nftRewards] = await Promise.all([
         program.account.stakingPool.all() as Promise<
-          ProgramAccount<SRINStakingPool>[]
+          ProgramAccount<SRinStakingPool>[]
         >,
         program.account.stakingTier.all() as Promise<
-          ProgramAccount<SRINStakingTier>[]
+          ProgramAccount<SRinStakingTier>[]
+        >,
+        program.account.nftRewardGroup.all() as Promise<
+          ProgramAccount<SRinNftRewardGroup>[]
         >,
       ])
 
       const tiersByKey = toMap(tiers, (t) => t.publicKey.toString())
+      const nftRewardsByKey = toMap(nftRewards, (t) => t.publicKey.toString())
       const poolsWithTiers = pools.map((p) => ({
         ...p.account,
         stakingPool: p.publicKey,
@@ -47,7 +56,15 @@ export const useSrinStakingPools = () => {
               )
               throw new Error('Inconsistent data: tier for pool not found!')
             }
-            return tier
+            return {
+              ...tier,
+              account: {
+                ...tier.account,
+                nftRewardGroupsData: tier.account.nftRewardGroups
+                  .map((nrg) => nftRewardsByKey.get(nrg.toString()))
+                  .filter((g): g is ProgramAccount<SRinNftRewardGroup> => !!g),
+              },
+            }
           })
           .sort((a, b) => b.account.lockDuration.cmp(a.account.lockDuration)),
       }))

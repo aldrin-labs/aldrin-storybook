@@ -8,7 +8,7 @@ import {
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
-import { SRINUserAccount } from './types'
+import { SRinUserAccount } from './types'
 
 const USER_KEY_OFFSET = 8
 
@@ -19,7 +19,7 @@ export const useSrinStakingAccounts = () => {
 
   const fetcher = async () => {
     if (!wallet.publicKey) {
-      return new Map<string, ProgramAccount<SRINUserAccount>>()
+      return new Map<string, ProgramAccount<SRinUserAccount>>()
     }
     const program = ProgramsMultiton.getProgramByAddress({
       programAddress: PLUTONIANS_STAKING_ADDRESS,
@@ -34,7 +34,7 @@ export const useSrinStakingAccounts = () => {
           bytes: wallet.publicKey.toString(),
         },
       },
-    ]) as Promise<any> as Promise<ProgramAccount<SRINUserAccount>[]>)
+    ]) as Promise<any> as Promise<ProgramAccount<SRinUserAccount>[]>)
 
     return toMap(accounts, (acc) => acc.account.tier.toString())
   }

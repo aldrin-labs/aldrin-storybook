@@ -37,7 +37,6 @@ import Plutonians from './assets/plutoniansMock.png'
 import { RewardsComponent } from './components/RewardsComponent/RewardsComponent'
 import { RewardDescription } from './components/RewardsComponent/styles'
 import {
-  EXTRA_REWARDS,
   REWARDS_BG,
   REWARD_TOKEN_NAME,
   REWARD_TOKEN_MULTIPLIER,
@@ -144,8 +143,9 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
       <Content>
         <FlexBlock alignItems="center" direction="column">
           <StakingContainer>
-            {EXTRA_REWARDS.map((tierReward, idx) => {
-              const tier = stakingPool?.tiers[idx]
+            {(stakingPool?.tiers || []).map((tier, idx) => {
+              const tierReward =
+                tier.account.nftRewardGroupsData[0]?.account.name || ''
               return (
                 <ModeContainer
                   $bg={REWARDS_BG[idx]}
@@ -172,13 +172,17 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <NumberWithLabel
                         size={FONT_SIZES.es}
                         value={null}
-                        label={`${tier?.account.apr.toString()}% APR + NFT`}
+                        label={`${tier?.account.apr.toString() || 0}% APR ${
+                          tierReward ? '+ NFT' : ''
+                        } `}
                       />
                     </AprWrap>
                   </FlexBlock>
-                  <InlineText size="sm" weight={600}>
-                    {tierReward}
-                  </InlineText>
+                  {tierReward && (
+                    <InlineText size="sm" weight={600}>
+                      {tierReward}
+                    </InlineText>
+                  )}
                 </ModeContainer>
               )
             })}

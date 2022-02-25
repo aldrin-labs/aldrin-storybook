@@ -39,7 +39,7 @@ export interface MarinadeStats {
   validators_count: number
 }
 
-export interface SRINStakingPoolBase {
+export interface SRinStakingPoolBase {
   owner: PublicKey
   poolSigner: PublicKey
   bumpPoolSigner: number
@@ -48,23 +48,30 @@ export interface SRINStakingPoolBase {
   rewardTokenaccount: PublicKey
 }
 
-export interface SRINStakingPool extends SRINStakingPoolBase {
+export interface SRinStakingPool extends SRinStakingPoolBase {
   tiers: PublicKey[]
 }
 
-export interface SRINStakingTier {
+export interface SRinNftRewardGroup {
+  name: string
+  quantity: number
+}
+
+export interface SRinStakingTier {
   pool: PublicKey
   apr: BN
   lockDuration: BN
+  nftRewardGroups: PublicKey[]
+  nftRewardGroupsData: ProgramAccount<SRinNftRewardGroup>[]
 }
 
-export interface SRINUserAccount {
+export interface SRinUserAccount {
   user: PublicKey
   amount: BN
   tier: PublicKey
 }
 
-export interface SRINStakingPoolUI extends SRINStakingPoolBase {
+export interface SRinStakingPoolUI extends SRinStakingPoolBase {
   stakingPool: PublicKey
-  tiers: ProgramAccount<SRINStakingTier>[]
+  tiers: ProgramAccount<SRinStakingTier>[]
 }
