@@ -25,7 +25,7 @@ export const SolanaNetworkDegradedPerformanceBanner = () => {
         <SvgIcon src={BlackWarningIcon} width="24px" height="24px" />
         <Text size="lg" color="black" margin="10px 0 10px 20px">
           Solana network is experiencing degraded performance. Transactions may
-          fail to send or confirm based on
+          fail to send or confirm. This info based on
           <Link
             target="_blank"
             rel="noopener noreferrer"
@@ -33,7 +33,7 @@ export const SolanaNetworkDegradedPerformanceBanner = () => {
           >
             Solana TPS
           </Link>
-          . You can also check the Solana status
+          , you can also check the Solana status
           <Link
             target="_blank"
             rel="noopener noreferrer"
