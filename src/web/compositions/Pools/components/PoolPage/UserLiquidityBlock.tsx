@@ -46,7 +46,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
 
   const vestingFinishTs = (vesting?.endTs || 0) * 1000
   const vestingFinished = vestingFinishTs <= Date.now()
-  const vestedTokens = parseFloat(vesting?.startBalance.toString() || '0')
+  const vestedTokens = parseFloat(vesting?.outstanding.toString() || '0')
   const [baseUserTokenAmount, quoteUserTokenAmount] = calculateWithdrawAmount({
     selectedPool: pool,
     poolTokenAmount: poolTokenAmount + stakedTokens + vestedTokens,
