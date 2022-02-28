@@ -69,6 +69,7 @@ export interface SRinUserAccount {
   user: PublicKey
   amount: BN
   tier: PublicKey
+  depositedAt: BN
 }
 
 export interface SRinStakingPoolUI extends SRinStakingPoolBase {

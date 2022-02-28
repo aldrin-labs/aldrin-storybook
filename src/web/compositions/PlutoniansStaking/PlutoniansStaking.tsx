@@ -28,6 +28,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { stripByAmount } from '@core/utils/chartPageUtils'
 
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
@@ -40,6 +41,7 @@ import {
   REWARDS_BG,
   REWARD_TOKEN_NAME,
   REWARD_TOKEN_MULTIPLIER,
+  REWARD_APR_DENOMINATOR,
 } from './config'
 import {
   AdaptiveStakingBlock,
@@ -51,24 +53,27 @@ import {
 } from './styles'
 import { PlutoniansBlockProps } from './types'
 
+const Z
 const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const {
-    getDexTokensPricesQuery: { getDexTokensPrices = [] },
+    getDexTokensPricesQuery: { getDexTokensPrices: prices = [] },
   } = props
 
   const prcPrice =
-    (getDexTokensPrices.find((dp) => dp.symbol === REWARD_TOKEN_NAME)?.price ||
-      0) * REWARD_TOKEN_MULTIPLIER
+    (prices.find((dp) => dp.symbol === REWARD_TOKEN_NAME)?.price || 0) *
+    REWARD_TOKEN_MULTIPLIER
 
   const { wallet } = useWallet()
   const connection = useConnection()
-  const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(true)
+  // const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(true)
 
   const [selectedTierIndex, setSelectedTierIndex] = useState(0) // TODO: rewrite with real keys
 
   const [tokenAccounts, refreshTokenAccounts] = useUserTokenAccounts()
 
   const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
+
+  console.log('stakingPool: ', stakingPool)
 
   const { data: stakingAccounts, mutate: updateStakeAccounts } =
     useSrinStakingAccounts()
@@ -80,6 +85,13 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const isStaked = !!stakeAccountForTier
 
+  const isRewardsUnlocked =
+    selectedTier && stakeAccountForTier
+      ? stakeAccountForTier.account.depositedAt
+          .add(selectedTier.account.lockDuration)
+          .ltn(Date.now())
+      : false
+
   const [selectedTokenAccount, setSelectedTokenAccount] = useState<
     TokenInfo | undefined
   >()
@@ -87,7 +99,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
 
-  console.log('Token mint: ', stakingPool?.rewardTokenMint.toString())
   useEffect(() => {
     if (!selectedTokenAccount) {
       const rewardsMint = stakingPool?.rewardTokenMint.toString()
@@ -138,14 +149,24 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const isStakingDisabled =
     loading || !(parseFloat(amount) > 0) || !selectedTokenAccount
 
+  const apr =
+    parseInt(selectedTier?.account.apr.toString() || '0', 10) /
+    REWARD_APR_DENOMINATOR
+
   return (
     <Page>
       <Content>
         <FlexBlock alignItems="center" direction="column">
           <StakingContainer>
             {(stakingPool?.tiers || []).map((tier, idx) => {
-              const tierReward =
-                tier.account.nftRewardGroupsData[0]?.account.name || ''
+              const tierReward = tier.account.nftRewardGroupsData
+                .map(
+                  (nft) =>
+                    `${nft.account.quantity > 1 ? nft.account.quantity : ''} ${
+                      nft.account.name
+                    }`
+                )
+                .join(' + ')
               return (
                 <ModeContainer
                   $bg={REWARDS_BG[idx]}
@@ -241,7 +262,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                             width="xl"
                           >
                             <InlineText color="newGreen" size="lg" weight={700}>
-                              7 %
+                              {stripByAmount(apr, 2)} %
                             </InlineText>
                             <RewardDescription size="md" weight={600}>
                               PU238
