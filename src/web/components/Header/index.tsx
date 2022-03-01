@@ -18,6 +18,7 @@ import {
 } from './styles'
 import { WalletBlock } from './WalletBlock'
 
+import { RewardsBlock } from './RewardsBlock/RewardsBlock'
 export const Header = () => {
   return (
     <Body>
@@ -244,6 +245,7 @@ export const Header = () => {
             </MainLinksBlock>
           </MainLinksWrap>
           <WalletContainer>
+            <RewardsBlock />
             <WalletBlock />
           </WalletContainer>
         </HeaderWrap>

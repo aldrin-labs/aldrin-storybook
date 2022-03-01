@@ -18,7 +18,10 @@ import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
-import { BUY_BACK_RIN_ACCOUNT_ADDRESS, DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
+import {
+  BUY_BACK_RIN_ACCOUNT_ADDRESS,
+  DAYS_TO_CHECK_BUY_BACK,
+} from '@sb/dexUtils/staking/config'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
@@ -43,6 +46,8 @@ import {
 import { DAY, daysInMonthForDate } from '@core/utils/dateUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
+import ClockIcon from '@icons/clock.svg'
+
 import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
 import { restake } from '../../../dexUtils/staking/actions'
@@ -51,7 +56,6 @@ import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
-import ClockIcon from './assets/clock.svg'
 import InfoIcon from './assets/info.svg'
 import { StakingForm } from './StakingForm'
 import { RestakeButton, ClaimButton } from './styles'
@@ -135,13 +139,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ])
   }
 
-
   const [buyBackAmountOnAccount] = useAccountBalance({
     publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
   })
 
   const buyBackAmountWithDecimals =
-  buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
+    buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
 
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
     farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
