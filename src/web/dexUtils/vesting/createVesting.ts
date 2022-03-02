@@ -1,3 +1,5 @@
+import { createTokenAccountInstrs } from '@project-serum/common'
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import {
   Keypair,
   PublicKey,
@@ -7,10 +9,9 @@ import {
   Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
-import { createTokenAccountInstrs } from '@project-serum/common'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { VESTING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
+import { VESTING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { CreateVestingParams } from './types'
 
 export const createVestingTransaction = async (
@@ -26,7 +27,9 @@ export const createVestingTransaction = async (
     accountLamports,
   } = params
 
+  console.log('asd0: ')
   const unlockTs = new BN(Date.now() / 1000).add(vestingPeriod)
+  console.log('asd1: ')
 
   const program = ProgramsMultiton.getProgramByAddress({
     programAddress: VESTING_PROGRAM_ADDRESS,
@@ -34,6 +37,7 @@ export const createVestingTransaction = async (
     wallet,
   })
 
+  console.log('asd2: ')
   const vestingAccount = Keypair.generate()
   const vestingVault = Keypair.generate()
 
@@ -41,6 +45,8 @@ export const createVestingTransaction = async (
     [vestingAccount.publicKey.toBuffer()],
     program.programId
   )
+
+  console.log('asdasd: ', vestingSigner)
 
   if (!wallet.publicKey) {
     throw Error('No public key!')

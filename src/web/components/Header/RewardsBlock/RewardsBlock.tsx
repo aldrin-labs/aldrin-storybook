@@ -4,7 +4,7 @@ import { RewardsModal } from './RewardsModal'
 import { RewardsButton } from './styles'
 
 export const RewardsBlock = () => {
-  const [modalOpened, setModalOpened] = useState(true)
+  const [modalOpened, setModalOpened] = useState(false)
   return (
     <>
       <RewardsButton onClick={() => setModalOpened(true)}>

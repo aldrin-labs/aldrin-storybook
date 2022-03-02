@@ -1,11 +1,20 @@
+import { PublicKey } from '@solana/web3.js'
+import { BN } from 'bn.js'
 import React from 'react'
 
 import AldrinLogo from '@icons/Aldrin.svg'
 
 // TODO: Refactor popup
 
+import { DAY } from '../../../../../core/src/utils/dateUtils'
+import { useConnection } from '../../dexUtils/connection'
+import { signAndSendSingleTransaction } from '../../dexUtils/transactions'
+import { RIN_MINT } from '../../dexUtils/utils'
+import { createVestingTransaction } from '../../dexUtils/vesting'
+import { useWallet } from '../../dexUtils/wallet'
 import { Body, WideContent } from '../Layout'
 import { DropDown } from './Dropdown'
+import { RewardsBlock } from './RewardsBlock/RewardsBlock'
 import {
   HeaderWrap,
   LogoLink,
@@ -18,8 +27,43 @@ import {
 } from './styles'
 import { WalletBlock } from './WalletBlock'
 
-import { RewardsBlock } from './RewardsBlock/RewardsBlock'
 export const Header = () => {
+  const { wallet } = useWallet()
+  const connection = useConnection()
+  const makeVesting = async () => {
+    try {
+      console.log('Make:', {
+        wallet,
+        connection,
+        tokenMint: new PublicKey(RIN_MINT),
+        depositAmount: new BN(2).mul(new BN(10).pow(new BN(9))),
+        vestingPeriod: new BN(DAY),
+        depositorAccount: new PublicKey(
+          '7fFd5qspmMEfoZ5EGDamBLZQXHNwX65SfPMHP7ASZXCB'
+        ),
+      })
+      const [transaction, signers] = await createVestingTransaction({
+        wallet,
+        connection,
+        tokenMint: new PublicKey(RIN_MINT),
+        depositAmount: new BN(2).mul(new BN(10).pow(new BN(9))),
+        vestingPeriod: new BN(DAY),
+        depositorAccount: new PublicKey(
+          '7fFd5qspmMEfoZ5EGDamBLZQXHNwX65SfPMHP7ASZXCB'
+        ),
+      })
+      console.log('Make2:', transaction, signers)
+      const result = await signAndSendSingleTransaction({
+        wallet,
+        connection,
+        transaction,
+        signers,
+      })
+      console.log('result: ', result)
+    } catch (e) {
+      console.warn('Unabel: ', e)
+    }
+  }
   return (
     <Body>
       <WideContent>
@@ -244,6 +288,9 @@ export const Header = () => {
               </DropDown>
             </MainLinksBlock>
           </MainLinksWrap>
+          <button type="button" onClick={makeVesting}>
+            Vest
+          </button>
           <WalletContainer>
             <RewardsBlock />
             <WalletBlock />
