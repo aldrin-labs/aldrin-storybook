@@ -1,32 +1,33 @@
-import React, { useState } from 'react'
-import { TableWithSort } from '@sb/components'
-import styled from 'styled-components'
-import { AES, enc, MD5 } from 'crypto-js'
-import { BtnCustom, BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-
-import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
-import { Card } from '@sb/compositions/Rewards/index'
-import { Icon } from '@sb/styles/cssUtils'
-import dayjs from 'dayjs'
-import { notify } from '@sb/dexUtils/notifications'
 import { withTheme } from '@material-ui/styles'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { withAddressbookPassword } from '@core/hoc/withAddressbookPassword'
-
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { FONT_SIZES } from '@variables/variables'
+import { AES, enc, MD5 } from 'crypto-js'
+import dayjs from 'dayjs'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { compose } from 'recompose'
-import { addressBookColumnNames } from '@sb/components/TradingTable/TradingTable.mocks'
-import { getUserAddressbook } from '@core/graphql/queries/chart/getUserAddressbook'
-import { useWallet } from '@sb/dexUtils/wallet'
-import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
-import SubColumn from './components/SubColumn'
-import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils'
+import styled from 'styled-components'
 
+import { TableWithSort } from '@sb/components'
+import { BtnCustom, BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
+import { addressBookColumnNames } from '@sb/components/TradingTable/TradingTable.mocks'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Card } from '@sb/compositions/Rewards/index'
+import { notify } from '@sb/dexUtils/notifications'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { Icon } from '@sb/styles/cssUtils'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getUserAddressbook } from '@core/graphql/queries/chart/getUserAddressbook'
+import { withAddressbookPassword } from '@core/hoc/withAddressbookPassword'
+import { withPublicKey } from '@core/hoc/withPublicKey'
+import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
+
+import { BlueSwitcherStyles } from '../Chart/components/SmartOrderTerminal/utils'
+import UpdatePopup from './components/Popups/ChooseActionPopup'
 import NewCoinPopup from './components/Popups/NewCoinPopup'
 import NewContactPopup from './components/Popups/NewContactPopup'
-import UpdatePopup from './components/Popups/ChooseActionPopup'
-import { Link } from 'react-router-dom'
+import SubColumn from './components/SubColumn'
 
 export const AddBtn = styled.button`
   background: ${(props) => props.background || '#1ba492'};
@@ -58,7 +59,7 @@ export type TextProps = {
 }
 
 export const Text = styled.span`
-  font-size: ${(props: TextProps) => props.fontSize || '1.5rem'};
+  font-size: ${(props: TextProps) => props.fontSize || FONT_SIZES.sm};
   padding-bottom: ${(props) => props.paddingBottom || '0'};
   text-transform: none;
   font-family: ${(props: TextProps) =>
@@ -69,7 +70,7 @@ export const Text = styled.span`
   letter-spacing: 0.01rem;
   &:hover {
     text-decoration: ${(props: TextProps) =>
-    props.needHover ? 'underline' : 'none'};
+      props.needHover ? 'underline' : 'none'};
   }
 `
 
@@ -87,7 +88,7 @@ export const StyledLink = styled(Link)`
   text-decoration: none;
   &:hover {
     text-decoration: ${(props: TextProps) =>
-    props.needHover ? 'underline' : 'none'};
+      props.needHover ? 'underline' : 'none'};
   }
 `
 

@@ -30,6 +30,15 @@ export interface SendTransactionParams extends SendSignedTransactionParams {
   focusPopup?: boolean
 }
 
+export type SendSignedTransactionResult = 'failed' | 'timeout' | 'success'
+
+export type SignAndSendTransactionResult =
+  | SendSignedTransactionResult
+  | 'cancelled'
+  | 'rejected'
+export type AsyncSendSignedTransactionResult =
+  Promise<SendSignedTransactionResult>
+
 export interface SendTransactionsParams
   extends SendTransactionParamsBase,
     NotificationParams,

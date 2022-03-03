@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import { useWallet } from '@sb/dexUtils/wallet'
-import { Theme } from '@sb/types/materialUI'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
-import { abbreviateAddress } from '@sb/dexUtils/utils'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WhiteButton } from '@sb/components/TraidingTerminal/ConfirmationPopup'
-import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import { ListCard } from '../../Rebalance.styles'
-import { useConnection } from '@sb/dexUtils/connection'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InputWithSearch } from '@sb/compositions/Chart/components/Inputs/Inputs'
+import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
+import { useConnection } from '@sb/dexUtils/connection'
+import { createTokens } from '@sb/dexUtils/createTokens'
 import {
   ALL_TOKENS_MINTS,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { createTokens } from '@sb/dexUtils/createTokens'
-import { TokenListItem } from './TokenListItem'
+import { abbreviateAddress } from '@sb/dexUtils/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { Theme } from '@sb/types/materialUI'
+
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
+
+import { ListCard } from '../../Rebalance.styles'
 import { StyledPaper, WhiteText, GreenText } from './AddTokensPopup.styles'
+import { TokenListItem } from './TokenListItem'
 
 export const feeFormat = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 6,
@@ -73,7 +75,7 @@ export default function TokenDialog({
     <DialogWrapper
       theme={theme}
       PaperComponent={StyledPaper}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       onClose={onClose}
       onEnter={() => {
@@ -97,7 +99,7 @@ export default function TokenDialog({
             <RowContainer margin="2rem 0">
               <InputWithSearch
                 theme={theme}
-                type={'text'}
+                type="text"
                 value={searchValue}
                 onChange={(e) => {
                   if (
@@ -110,7 +112,7 @@ export default function TokenDialog({
                   setSearchValue(e.target.value)
                 }}
                 onSearchClick={() => {}}
-                placeholder={'Search'}
+                placeholder="Search"
               />
             </RowContainer>
             <ListCard>

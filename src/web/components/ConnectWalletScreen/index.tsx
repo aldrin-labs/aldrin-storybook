@@ -1,21 +1,25 @@
-import React, { useState } from 'react'
+import { Theme, withTheme } from '@material-ui/core'
+import React, { ReactNode, useState, useEffect } from 'react'
 
 import { SvgIcon } from '@sb/components'
 import {
   RowContainer,
   Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
-
-import { Theme, withTheme } from '@material-ui/core'
+import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Loading, TooltipRegionBlocker } from '@sb/components'
 
 import LightLogo from '@icons/lightLogo.svg'
-import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+
 import { COLORS } from '../../../variables/variables'
+import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { getRegionData } from '@core/hoc/withRegionCheck'
 
 interface ConnectWalletContentProps {
   theme: Theme
-  size?: 'md' | 'sm'
+  size?: 'button-only' | 'md' | 'sm'
+  text?: ReactNode
 }
 
 // TODO: styled-components
@@ -27,6 +31,7 @@ const SIZES = {
     fontSize: '1.5em',
     titleMargin: '0 0 2.4rem 0',
     btnHeight: '3em',
+    btnWidth: '12em',
   },
   sm: {
     icon: '4em',
@@ -35,57 +40,105 @@ const SIZES = {
     fontSize: '1em',
     titleMargin: '0 0 1em 0',
     btnHeight: '2.3em',
+    btnWidth: '12em',
+  },
+  'button-only': {
+    icon: '4em',
+    logoRowMargin: '0rem 0 1rem 0',
+    btnContainerMargin: '0',
+    fontSize: '1em',
+    titleMargin: '0 0 1em 0',
+    btnHeight: '3em',
+    btnWidth: '100%',
   },
 }
 
 const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
-  const { theme, size = 'md' } = props
+  const { theme, size = 'md', text = 'Connect your wallet to begin.' } = props
   const sizes = SIZES[size]
+  const isButtonOnly = size === 'button-only'
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
+
+  const [isRegionCheckIsLoading, setRegionCheckIsLoading] =
+    useState<boolean>(false)
+  const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
+    useState<boolean>(false)
+
+  // useEffect(() => {
+  //   setRegionCheckIsLoading(true)
+  //   getRegionData({ setIsFromRestrictedRegion }).then(() => {
+  //     setRegionCheckIsLoading(false)
+  //   })
+  // }, [setIsFromRestrictedRegion])
+
+  const buttonWithModal = (
+    <>
+      <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
+        <span>
+          <BtnCustom
+            onClick={() => {
+              if (isRegionCheckIsLoading || isFromRestrictedRegion) {
+                return
+              }
+              setIsConnectWalletPopupOpen(true)
+            }}
+            disabled={isFromRestrictedRegion}
+            btnColor="#F8FAFF"
+            backgroundColor={COLORS.primary}
+            btnWidth={sizes.btnWidth}
+            borderColor={COLORS.primary}
+            textTransform="capitalize"
+            height={sizes.btnHeight}
+            borderRadius="0.5em"
+            fontSize="1em"
+            style={{
+              display: 'flex',
+              textTransform: 'none',
+              padding: '0.5em',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {isRegionCheckIsLoading && (
+              <Loading color="#FFFFFF" size={16} style={{ height: '16px' }} />
+            )}
+            {!isRegionCheckIsLoading &&
+              (isFromRestrictedRegion ? `Restricted region` : `Connect wallet`)}
+          </BtnCustom>
+        </span>
+      </TooltipRegionBlocker>
+      <ConnectWalletPopup
+        theme={theme}
+        open={isConnectWalletPopupOpen && !isFromRestrictedRegion}
+        onClose={() => setIsConnectWalletPopupOpen(false)}
+      />
+    </>
+  )
+
+  if (isButtonOnly) {
+    return <>{buttonWithModal}</>
+  }
+
   return (
     <RowContainer style={{ fontSize: '16px' }} margin="auto 0">
       <RowContainer margin={sizes.logoRowMargin}>
         <SvgIcon src={LightLogo} width={sizes.icon} height={sizes.icon} />
       </RowContainer>
       <RowContainer margin={sizes.titleMargin}>
-        <Title
-          fontFamily="Avenir Next Demi"
-          fontSize={sizes.fontSize}
-          color={COLORS.primaryWhite}
-          style={{ textAlign: 'center' }}
-        >
-          Connect your wallet to begin.
-        </Title>
+        {text && (
+          <Title
+            fontFamily="Avenir Next Demi"
+            fontSize={sizes.fontSize}
+            color={COLORS.primaryWhite}
+            style={{ textAlign: 'center' }}
+          >
+            {text}
+          </Title>
+        )}
       </RowContainer>
       <RowContainer margin={sizes.btnContainerMargin}>
-        <BtnCustom
-          onClick={() => {
-            setIsConnectWalletPopupOpen(true)
-          }}
-          btnColor="#F8FAFF"
-          backgroundColor={COLORS.primary}
-          btnWidth="12em"
-          borderColor={COLORS.primary}
-          textTransform="capitalize"
-          height={sizes.btnHeight}
-          borderRadius="0.5em"
-          fontSize="1em"
-          style={{
-            display: 'flex',
-            textTransform: 'none',
-            padding: '0.5em',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          Connect wallet
-        </BtnCustom>
+        {buttonWithModal}
       </RowContainer>
-      <ConnectWalletPopup
-        theme={theme}
-        open={isConnectWalletPopupOpen}
-        onClose={() => setIsConnectWalletPopupOpen(false)}
-      />
     </RowContainer>
   )
 }
@@ -97,7 +150,7 @@ export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
     <RowContainer
       direction="column"
       height="100%"
-      style={{ background: theme.palette.grey.additional }}
+      style={{ background: COLORS.mainBlack }}
     >
       <ConnectWalletInner />
     </RowContainer>

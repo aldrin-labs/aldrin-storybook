@@ -26,7 +26,8 @@ export const PopupBody = styled(Body)`
 `
 
 export const Page = styled(Body)`
-  background: ${COLORS.bodyBackground};
+  background: ${(props: { $background?: keyof typeof COLORS }) =>
+    COLORS[props.$background || 'mainBlack']};
   flex: 1;
 `
 
@@ -43,6 +44,9 @@ export const StakingPage = styled(FlexPage)`
     align-items: flex-start;
   }
 `
+export const BlackPage = styled(Page)`
+  background: ${COLORS.mainBlack};
+`
 
 export const Content = styled.div`
   margin: 0 10px;
@@ -54,7 +58,8 @@ export const Content = styled.div`
 
   @media (min-width: ${LAYOUT_WIDTH}px) {
     max-width: ${LAYOUT_WIDTH}px;
-    margin: 0 auto;
+
+    margin: 3rem;
   }
 `
 

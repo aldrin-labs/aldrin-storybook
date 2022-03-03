@@ -14,11 +14,13 @@ export type ButtonVariants = keyof typeof THEME.button.variants
 
 export interface ButtonProps {
   $fontSize?: keyof typeof FONT_SIZES
+  $fontFamily?: keyof typeof FONTS
   $variant?: ButtonVariants
   $borderRadius?: keyof typeof BORDER_RADIUS
   $padding?: keyof typeof BUTTON_PADDINGS
   $backgroundImage?: string
   $width?: keyof typeof WIDTH
+  $color?: keyof typeof COLORS
   minWidth?: string
   backgroundColor?: string
   $loading?: boolean
@@ -52,7 +54,7 @@ export const Button = styled.button<ButtonProps>`
   background-color: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   background: ${(props: ButtonProps) => props.backgroundColor || 'none'};
   min-width: ${(props: ButtonProps) => props.minWidth || '9rem'};
-  color: white;
+  color: ${(props: ButtonProps) => COLORS[props.$color || 'white']};
   text-align: center;
   font-size: ${(props: ButtonProps) => FONT_SIZES[props.$fontSize || 'md']};
   border: 1px solid transparent;
@@ -60,7 +62,7 @@ export const Button = styled.button<ButtonProps>`
   cursor: pointer;
   padding: ${(props: ButtonProps) => BUTTON_PADDINGS[props.$padding || 'md']};
   ${(props: ButtonProps) => THEME.button.variants[props.$variant || 'primary']};
-  font-family: ${FONTS.main};
+  font-family: ${(props: ButtonProps) => FONTS[props.$fontFamily || 'main']};
   border-radius: ${(props: ButtonProps) =>
     BORDER_RADIUS[props.$borderRadius || 'md']};
   ${(props: ButtonProps) =>

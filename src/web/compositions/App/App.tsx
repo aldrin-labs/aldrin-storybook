@@ -5,6 +5,7 @@ import {
   jssPreset,
   withTheme,
 } from '@material-ui/core/styles'
+import { createGenerateClassName, jssPreset } from '@material-ui/core/styles'
 import { syncStorage } from '@storage'
 import useWindowSize from '@webhooks/useWindowSize'
 import { create } from 'jss'
@@ -14,8 +15,10 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import styled from 'styled-components'
 
+import { Footer } from '@sb/components/Footer'
 import { Header } from '@sb/components/Header'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import { SolanaNetworkDegradedPerformanceBanner } from '@sb/components/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
@@ -39,6 +42,8 @@ import { WalletProvider } from '@core/solana'
 import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 
 import { notify } from '../../dexUtils/notifications'
+import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
+
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import { AppGridLayout, AppInnerContainer } from './App.styles'
@@ -139,8 +144,8 @@ const AppRaw = ({
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
-          <SnackbarWrapper>
-            <NotificationProvider value={notificationContextValue}>
+          <NotificationProvider value={notificationContextValue}>
+            <SnackbarWrapper>
               <SnackbarUtilsConfigurator />
               <CssBaseline />
               <ConnectionProvider>
@@ -155,33 +160,42 @@ const AppRaw = ({
                           isPNL={isPNL}
                           isChartPage={isChartPage}
                         >
+                          <SolanaNetworkDegradedPerformanceBanner />
                           <Header />
                           <AppInnerContainer
                             showFooter={showFooter}
+                            isRewards={isRewards}
+                            isPNL={isPNL}
                             isChartPage={isChartPage}
-                            currentPage={currentPage}
                           >
-                            {children}
-                          </AppInnerContainer>
-                          {/* {showFooter && (
+                            <Header />
+                            <AppInnerContainer
+                              showFooter={showFooter}
+                              isChartPage={isChartPage}
+                              currentPage={currentPage}
+                            >
+                              {children}
+                            </AppInnerContainer>
+                            {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )} */}
-                          <MobileFooter pathname={currentPage} />
-                          {/*
+                            {!isChartPage && <Footer />}
+                            <MobileFooter />
+                            {/*
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
-                          {!MASTER_BUILD && !LOCAL_BUILD && (
-                            <DevUrlPopup
-                              open={isDevUrlPopupOpen}
-                              close={() => {
-                                openDevUrlPopup(false)
-                              }}
-                            />
-                          )}
-                          {/* <WarningBanner
+                            {!MASTER_BUILD && !LOCAL_BUILD && (
+                              <DevUrlPopup
+                                open={isDevUrlPopupOpen}
+                                close={() => {
+                                  openDevUrlPopup(false)
+                                }}
+                              />
+                            )}
+                            {/* <WarningBanner
                           localStorageProperty={'isPhantomIssuesPopupOpen'}
                           notification={[
                             'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
@@ -189,11 +203,11 @@ const AppRaw = ({
                           ]}
                           needMobile={false}
                         /> */}
-                          {/* <RebrandingPopup
+                            {/* <RebrandingPopup
                           open={isRebrandingPopupOpen}
                           onClose={() => setIsRebrandingPopupOpen(false)}
                         /> */}
-                          {/* {!isWalletMigrationToNewUrlPopupDone && (
+                            {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}
                           close={() => {
@@ -201,7 +215,7 @@ const AppRaw = ({
                           }}
                         />
                       )} */}
-                          <DetermineMobileWindowHeight />
+                            <DetermineMobileWindowHeight />
                         </AppGridLayout>
                         {/* <ShowWarningOnMoblieDevice /> */}
                       </PreferencesProvider>
@@ -211,57 +225,13 @@ const AppRaw = ({
               </ConnectionProvider>
               <GlobalStyle />
               <GlobalStyles />
-            </NotificationProvider>
-          </SnackbarWrapper>
+            </SnackbarWrapper>
+          </NotificationProvider>
         </ThemeWrapper>
       </JssProvider>
     </ApolloPersistWrapper>
   )
 }
-
-const Footer = (props) => {
-  return (
-    <RowContainer
-      style={{
-        background: props.theme.palette.grey.additional,
-        height: '5.7rem',
-        ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}),
-      }}
-    >
-      <Line bottom="5.7rem" />
-      <Link
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://aldrin.com/"
-      >
-        Aldrin.com
-      </Link>
-      <Link
-        href="https://t.me/CCAI_Official"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Telegram
-      </Link>
-      <Link
-        href="https://twitter.com/CCAI_Official"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Twitter
-      </Link>
-      <Link
-        href="https://discord.com/invite/2EaKvrs"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Discord
-      </Link>
-    </RowContainer>
-  )
-}
-
-const FooterWithTheme = compose(withTheme())(Footer)
 
 const Row = styled.div`
   display: flex;

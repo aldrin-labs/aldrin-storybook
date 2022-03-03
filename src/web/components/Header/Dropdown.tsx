@@ -1,6 +1,7 @@
-import React from 'react'
-import { NavLink, DropdownWrap, DropdownContent, DropdownInner } from './styles'
 import { BREAKPOINTS } from '@variables/variables'
+import React from 'react'
+
+import { NavLink, DropdownWrap, DropdownContent, DropdownInner } from './styles'
 
 interface DropdownProps {
   text: React.ReactNode
@@ -12,11 +13,14 @@ export const DropDown: React.FC<DropdownProps> = (props) => {
   const { text, children, hide, isActive } = props
   return (
     <DropdownWrap hide={hide}>
-      <NavLink className={isActive ? 'selected' : ''} as="a">{text}</NavLink>
+      <NavLink
+        className={isActive ? 'selected-from-dropdown' : 'dropdown'}
+        as="a"
+      >
+        {text}
+      </NavLink>
       <DropdownContent>
-        <DropdownInner>
-          {children}
-        </DropdownInner>
+        <DropdownInner>{children}</DropdownInner>
       </DropdownContent>
     </DropdownWrap>
   )

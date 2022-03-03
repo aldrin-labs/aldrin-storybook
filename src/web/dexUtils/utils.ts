@@ -17,7 +17,7 @@ export function isValidPublicKey(key: PublicKeyInitData) {
   }
 }
 
-export { RIN_MINT }
+export const MSOL_MINT: string = 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So'
 
 export const RINProviderURL = MASTER_BUILD
   ? 'https://wallet.aldrin.com'
@@ -130,13 +130,10 @@ export const stripInputNumber = (
 ) => {
   let value = `${e.target.value}`
 
-  // change comma to dot
-  value = value.replaceAll(',', '.')
-
   // check numbers only and 1 dot
-  if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
-    return prevValue
-  }
+  // if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
+  //   return prevValue
+  // }
 
   // add 0 if first symbol is dot
   if (value[0] === '.') {
@@ -147,4 +144,4 @@ export const stripInputNumber = (
   return value.replace(',', '.')
 }
 
-export { useLocalStorageState }
+export { useLocalStorageState, RIN_MINT }

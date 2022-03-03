@@ -286,7 +286,7 @@ export const createPoolTransactions = async (
 
   const [transaction, signers] = await createBasketTransaction({
     wallet,
-    connection: connection.getConnection(),
+    connection,
     baseTokenMint,
     baseTokenVault: baseTokenVault.publicKey,
     quoteTokenMint,
@@ -332,7 +332,7 @@ export const createPoolTransactions = async (
   if (farming) {
     const [farmingTx, farmingSigners] = await initializeFarmingInstructions({
       ...farming,
-      connection: connection.getConnection(),
+      connection,
       wallet,
       pool: pool.publicKey,
       accountLamports: tokenAccountLamports,

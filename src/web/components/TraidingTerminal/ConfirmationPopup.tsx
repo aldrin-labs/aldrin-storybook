@@ -176,8 +176,8 @@ export const ConfirmationPopup = ({
         ) : null}
         <RowContainer>
           {priceType !== 'market' &&
-            priceType !== 'stop-market' &&
-            priceType !== 'maker-only' ? (
+          priceType !== 'stop-market' &&
+          priceType !== 'maker-only' ? (
             <InputRowContainer
               key="limit-price"
               padding=".6rem 0"
@@ -347,8 +347,8 @@ export const ConfirmationPopup = ({
                     ? `buy ${pair[0]} anyway`
                     : `sell ${pair[0]} anyway`
                   : sideType === 'buy'
-                    ? 'long'
-                    : 'short'}
+                  ? 'long'
+                  : 'short'}
               </span>
               <span style={{ fontSize: '1.2rem', textTransform: 'lowercase' }}>
                 (it may cause a loss of funds)
@@ -374,8 +374,8 @@ export const ConfirmationPopup = ({
                 ? `buy ${pair[0]}`
                 : `sell ${pair[0]}`
               : sideType === 'buy'
-                ? 'long'
-                : 'short'}
+              ? 'long'
+              : 'short'}
           </SendButton>
         )}
       </RowContainer>

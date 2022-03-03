@@ -1,6 +1,6 @@
+import Slider from '@material-ui/lab/Slider'
 import React from 'react'
 import styled, { css } from 'styled-components'
-import Slider from '@material-ui/lab/Slider'
 
 // const thumbWidth = '25px'
 // const thumbHeight = '25px'
