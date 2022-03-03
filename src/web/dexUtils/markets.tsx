@@ -73,6 +73,8 @@ export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } =
 
 const _IGNORE_DEPRECATED = false
 
+export { ALL_TOKENS_MINTS }
+
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
