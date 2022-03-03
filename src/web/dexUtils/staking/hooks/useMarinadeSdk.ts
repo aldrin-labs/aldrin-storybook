@@ -3,7 +3,7 @@ import { PublicKey } from '@solana/web3.js'
 import { useMemo } from 'react'
 
 import { useConnection } from '../../connection'
-import { MARINADE_REF_ADDRESS } from '../../ProgramsMultiton'
+import { MARINADE_REF_ADDRESS } from '../../ProgramsMultiton/ProgramsMultiton'
 import { useWallet } from '../../wallet'
 
 export const useMarinadeSdk = () => {

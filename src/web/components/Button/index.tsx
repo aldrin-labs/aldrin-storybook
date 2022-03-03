@@ -74,7 +74,6 @@ export const Button = styled.button<ButtonProps>`
   ${({ $backgroundImage: backgroundImage }: ButtonProps) =>
     backgroundImage
       ? `
-    background-color: ${COLORS.buttonImgBg};
     border-color: transparent;
     background-image: url(${backgroundImage});
     background-repeat: no-repeat;

@@ -3,9 +3,9 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import {
   createGenerateClassName,
   jssPreset,
-  withTheme,
+  createGenerateClassName,
+  jssPreset,
 } from '@material-ui/core/styles'
-import { createGenerateClassName, jssPreset } from '@material-ui/core/styles'
 import { syncStorage } from '@storage'
 import useWindowSize from '@webhooks/useWindowSize'
 import { create } from 'jss'
@@ -39,11 +39,14 @@ import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { NotificationContext } from '@core/react'
 import { WalletProvider } from '@core/solana'
-import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
+import {
+  LOCAL_BUILD,
+  MASTER_BUILD,
+  LOCAL_BUILD,
+  MASTER_BUILD,
+} from '@core/utils/config'
 
 import { notify } from '../../dexUtils/notifications'
-import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
-
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import { AppGridLayout, AppInnerContainer } from './App.styles'
@@ -168,34 +171,28 @@ const AppRaw = ({
                             isPNL={isPNL}
                             isChartPage={isChartPage}
                           >
-                            <Header />
-                            <AppInnerContainer
-                              showFooter={showFooter}
-                              isChartPage={isChartPage}
-                              currentPage={currentPage}
-                            >
-                              {children}
-                            </AppInnerContainer>
-                            {/* {showFooter && (
+                            {children}
+                          </AppInnerContainer>
+                          {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )} */}
-                            {!isChartPage && <Footer />}
-                            <MobileFooter />
-                            {/*
+                          {!isChartPage && <Footer />}
+                          <MobileFooter />
+                          {/*
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
-                            {!MASTER_BUILD && !LOCAL_BUILD && (
-                              <DevUrlPopup
-                                open={isDevUrlPopupOpen}
-                                close={() => {
-                                  openDevUrlPopup(false)
-                                }}
-                              />
-                            )}
-                            {/* <WarningBanner
+                          {!MASTER_BUILD && !LOCAL_BUILD && (
+                            <DevUrlPopup
+                              open={isDevUrlPopupOpen}
+                              close={() => {
+                                openDevUrlPopup(false)
+                              }}
+                            />
+                          )}
+                          {/* <WarningBanner
                           localStorageProperty={'isPhantomIssuesPopupOpen'}
                           notification={[
                             'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
@@ -203,11 +200,11 @@ const AppRaw = ({
                           ]}
                           needMobile={false}
                         /> */}
-                            {/* <RebrandingPopup
+                          {/* <RebrandingPopup
                           open={isRebrandingPopupOpen}
                           onClose={() => setIsRebrandingPopupOpen(false)}
                         /> */}
-                            {/* {!isWalletMigrationToNewUrlPopupDone && (
+                          {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}
                           close={() => {
@@ -215,7 +212,7 @@ const AppRaw = ({
                           }}
                         />
                       )} */}
-                            <DetermineMobileWindowHeight />
+                          <DetermineMobileWindowHeight />
                         </AppGridLayout>
                         {/* <ShowWarningOnMoblieDevice /> */}
                       </PreferencesProvider>

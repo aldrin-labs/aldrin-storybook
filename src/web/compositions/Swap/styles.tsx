@@ -2,13 +2,14 @@ import {
   BREAKPOINTS,
   COLORS,
   FONT_SIZES,
+  BUTTON_PADDINGS,
   MAIN_FONT,
 } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { Button, PADDINGS } from '@sb/components/Button'
+import { Button } from '@sb/components/Button'
 import { Page } from '@sb/components/Layout'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
@@ -194,9 +195,9 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
 `
 
 export const SetAmountButton = styled(Button)`
-  padding: ${PADDINGS.xs};
+  padding: ${BUTTON_PADDINGS.md};
 
   @media (min-width: ${BREAKPOINTS.sm}) {
-    padding: ${PADDINGS.sm};
+    padding: ${BUTTON_PADDINGS.lg};
   }
 `
