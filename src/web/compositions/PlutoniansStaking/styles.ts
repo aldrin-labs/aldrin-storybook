@@ -11,8 +11,8 @@ export const Content = styled.div`
 `
 
 export const StakingContainer = styled(StretchedBlock)`
-  width: 100%;
-  max-width: 700px;
+  width: 90vw;
+  max-width: 750px;
   margin: 0 auto;
   padding: 0 1em;
   flex-direction: column;

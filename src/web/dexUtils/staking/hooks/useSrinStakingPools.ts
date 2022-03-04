@@ -39,6 +39,8 @@ export const useSrinStakingPools = () => {
         >,
       ])
 
+      console.log('tiers: ', tiers)
+
       const tiersByKey = toMap(tiers, (t) => t.publicKey.toString())
       const nftRewardsByKey = toMap(nftRewards, (t) => t.publicKey.toString())
       const poolsWithTiers = pools.map((p) => ({

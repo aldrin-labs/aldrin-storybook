@@ -44,6 +44,7 @@ export interface SRinStakingPoolBase {
   poolSigner: PublicKey
   bumpPoolSigner: number
   stakeTokenMint: PublicKey
+  stakeTokenaccount: PublicKey
   rewardTokenMint: PublicKey
   rewardTokenaccount: PublicKey
 }

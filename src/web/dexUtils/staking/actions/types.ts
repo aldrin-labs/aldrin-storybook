@@ -22,5 +22,7 @@ export interface StartSrinStakingParams {
   connection: Connection
   stakingPool: PublicKey
   stakingTier: PublicKey
+  userStakeTokenaccount: PublicKey
+  poolStakeTokenaccount: PublicKey
   amount: BN
 }

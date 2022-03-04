@@ -1,6 +1,7 @@
+import { PublicKey } from '@solana/web3.js'
 import { COLORS, FONT_SIZES } from '@variables/variables'
 import { BN } from 'bn.js'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
@@ -23,13 +24,14 @@ import {
   usePlutoniansStaking,
 } from '@sb/dexUtils/staking/hooks'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmount } from '@core/utils/chartPageUtils'
+import { DAY } from '@core/utils/dateUtils'
 
+import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
 import Lock from '../Staking/components/PlutoniansStaking/lock.svg'
@@ -42,6 +44,7 @@ import {
   REWARD_TOKEN_NAME,
   REWARD_TOKEN_MULTIPLIER,
   REWARD_APR_DENOMINATOR,
+  EXTRA_REWARDS,
 } from './config'
 import {
   AdaptiveStakingBlock,
@@ -53,7 +56,6 @@ import {
 } from './styles'
 import { PlutoniansBlockProps } from './types'
 
-const Z
 const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const {
     getDexTokensPricesQuery: { getDexTokensPrices: prices = [] },
@@ -72,6 +74,10 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const [tokenAccounts, refreshTokenAccounts] = useUserTokenAccounts()
 
   const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
+
+  const selectedTokenAccount = tokenAccounts.find(
+    (ta) => ta.mint === stakingPool?.stakeTokenMint.toString()
+  )
 
   console.log('stakingPool: ', stakingPool)
 
@@ -92,20 +98,16 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
           .ltn(Date.now())
       : false
 
-  const [selectedTokenAccount, setSelectedTokenAccount] = useState<
-    TokenInfo | undefined
-  >()
-
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    if (!selectedTokenAccount) {
-      const rewardsMint = stakingPool?.rewardTokenMint.toString()
-      const sta = tokenAccounts.find((ta) => ta.mint === rewardsMint)
-      setSelectedTokenAccount(sta)
-    }
-  }, [tokenAccounts, stakingPool])
+  // useEffect(() => {
+  //   if (!selectedTokenAccount) {
+  //     const rewardsMint = stakingPool?.rewardTokenMint.toString()
+  //     const sta = tokenAccounts.find((ta) => ta.mint === rewardsMint)
+  //     setSelectedTokenAccount(sta)
+  //   }
+  // }, [tokenAccounts, stakingPool])
 
   const refreshAll = () =>
     Promise.all([updatePools(), updateStakeAccounts(), refreshTokenAccounts()])
@@ -123,16 +125,25 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     }
 
     const depositAmount = new BN(
-      parseFloat(amount) * 10 ** selectedTokenAccount.decimals
+      (parseFloat(amount) * 10 ** selectedTokenAccount.decimals).toFixed(0)
     )
     try {
       setLoading(true)
+      console.log('DATA: ', {
+        wallet,
+        connection,
+        amount: depositAmount,
+        stakingPool: stakingPool.stakingPool,
+        stakingTier: selectedTier.publicKey,
+      })
       const result = await startSrinStaking({
         wallet,
         connection,
         amount: depositAmount,
         stakingPool: stakingPool.stakingPool,
         stakingTier: selectedTier.publicKey,
+        userStakeTokenaccount: new PublicKey(selectedTokenAccount.address),
+        poolStakeTokenaccount: stakingPool.stakeTokenaccount,
       })
       notify({
         message: result === 'success' ? 'Succesfully staked' : 'Staking failed',
@@ -149,16 +160,22 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const isStakingDisabled =
     loading || !(parseFloat(amount) > 0) || !selectedTokenAccount
 
+  console.log(
+    'isStakingDisabled: ',
+    isStakingDisabled,
+    stakingPool?.stakeTokenMint.toString()
+  )
   const apr =
-    parseInt(selectedTier?.account.apr.toString() || '0', 10) /
-    REWARD_APR_DENOMINATOR
+    (parseInt(selectedTier?.account.apr.toString() || '0', 10) /
+      REWARD_APR_DENOMINATOR) *
+    100
 
   return (
     <Page>
       <Content>
         <FlexBlock alignItems="center" direction="column">
           <StakingContainer>
-            {(stakingPool?.tiers || []).map((tier, idx) => {
+            {(stakingPool?.tiers || []).slice(0, 4).map((tier, idx) => {
               const tierReward = tier.account.nftRewardGroupsData
                 .map(
                   (nft) =>
@@ -181,7 +198,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <FlexBlock alignItems="center">
                         <SvgIcon src={Lock} alt="locked" />
                         <InlineText size="md" weight={700}>
-                          {tier?.account.lockDuration.toString()} Days
+                          &nbsp;
+                          {tier?.account.lockDuration.divn(DAY).toString()} Days
                         </InlineText>
                       </FlexBlock>
                       <Radio
@@ -193,17 +211,23 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <NumberWithLabel
                         size={FONT_SIZES.es}
                         value={null}
-                        label={`${tier?.account.apr.toString() || 0}% APR ${
-                          tierReward ? '+ NFT' : ''
-                        } `}
+                        label={`${
+                          (parseInt(tier?.account.apr.toString() || '0', 10) /
+                            REWARD_APR_DENOMINATOR) *
+                          100
+                        }% APR ${tierReward ? '+ NFT' : ''} `}
                       />
                     </AprWrap>
                   </FlexBlock>
-                  {tierReward && (
+                  {/* {tierReward && (
                     <InlineText size="sm" weight={600}>
-                      {tierReward}
+                      {EXTRA_REWARDS[idx]}
                     </InlineText>
-                  )}
+                  )} */}
+                  <InlineText size="sm" weight={600}>
+                    {/* {tierReward} */}
+                    {EXTRA_REWARDS[idx]}
+                  </InlineText>
                 </ModeContainer>
               )
             })}
@@ -240,8 +264,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <AmountInput
                         label="Stake"
                         placeholder="0"
-                        amount={0}
-                        mint={stakingPool?.rewardTokenMint.toString() || ''}
+                        amount={selectedTokenAccount?.amount || 0}
+                        mint={stakingPool?.stakeTokenMint.toString() || ''}
                         name="amount"
                         value={amount}
                         onChange={setAmount}
@@ -349,20 +373,37 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                     )}
                   </StretchedBlock>
                 )}
-                <Button
-                  $width="xl"
-                  $fontSize={isStaked ? 'sm' : 'md'}
-                  disabled={isStakingDisabled}
-                  style={{
-                    fontWeight: isStaked ? '500' : '600',
-                    padding: '1em',
-                    color: isStaked ? COLORS.lightGray : COLORS.primaryWhite,
-                  }}
-                >
-                  {isStaked
-                    ? 'Unstake 10.522 PLD and Claim Rewards & Common Small Fighter'
-                    : 'Stake'}
-                </Button>
+                <ConnectWalletWrapper size="button-only">
+                  {isStaked ? (
+                    <Button
+                      $width="xl"
+                      $fontSize="sm"
+                      disabled={isStakingDisabled}
+                      style={{
+                        fontWeight: '500',
+                        padding: '1em',
+                        color: COLORS.lightGray,
+                      }}
+                    >
+                      Unstake 10.522 PLD and Claim Rewards &amp; Common Small
+                      Fighter
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={stake}
+                      $width="xl"
+                      $fontSize="md"
+                      disabled={isStakingDisabled}
+                      style={{
+                        fontWeight: '600',
+                        padding: '1em',
+                        color: COLORS.primaryWhite,
+                      }}
+                    >
+                      Stake
+                    </Button>
+                  )}
+                </ConnectWalletWrapper>
               </FlexBlock>
             </AdaptiveStakingBlock>
           </StakingContainer>
