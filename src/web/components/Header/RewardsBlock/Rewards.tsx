@@ -74,7 +74,6 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
 
   const claimed = startBalance - notClaimed
 
-  console.log('rinVesting.endTs: ', rinVesting.endTs)
   const duration = rinVesting.endTs - rinVesting.startTs
   const now = Date.now() / 1000
   const timePassed = Math.max(0, now - rinVesting.startTs)
