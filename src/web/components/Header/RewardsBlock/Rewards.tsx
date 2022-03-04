@@ -27,13 +27,11 @@ import { FlexBlock } from '../../Layout'
 import SvgIcon from '../../SvgIcon'
 import { DarkTooltip } from '../../TooltipCustom/Tooltip'
 import { Text, InlineText } from '../../Typography'
+import { rinMint, AVAILABLE_TO_CLAIM_THRESHOLD } from './config'
 import Helmet from './helmet.png'
 import { ProgressBar, Separator } from './styles'
 import { RewardsProps } from './types'
 
-const rinMint = new PublicKey(RIN_MINT)
-
-const AVAILABLE_TO_CLAIM_THRESHOLD = 0.0
 const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const {
     getDexTokensPricesQuery: { getDexTokensPrices: prices = [] },
