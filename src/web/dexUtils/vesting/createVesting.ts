@@ -27,9 +27,7 @@ export const createVestingTransaction = async (
     accountLamports,
   } = params
 
-  console.log('asd0: ')
   const unlockTs = new BN(Date.now() / 1000).add(vestingPeriod)
-  console.log('asd1: ')
 
   const program = ProgramsMultiton.getProgramByAddress({
     programAddress: VESTING_PROGRAM_ADDRESS,
@@ -37,7 +35,6 @@ export const createVestingTransaction = async (
     wallet,
   })
 
-  console.log('asd2: ')
   const vestingAccount = Keypair.generate()
   const vestingVault = Keypair.generate()
 
@@ -45,8 +42,6 @@ export const createVestingTransaction = async (
     [vestingAccount.publicKey.toBuffer()],
     program.programId
   )
-
-  console.log('asdasd: ', vestingSigner)
 
   if (!wallet.publicKey) {
     throw Error('No public key!')

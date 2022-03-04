@@ -21,6 +21,7 @@ import { estimateTime } from '@core/utils/dateUtils'
 
 import ClockIcon from '@icons/clock.svg'
 
+import { notify } from '../../../dexUtils/notifications'
 import { Button } from '../../Button'
 import { FlexBlock } from '../../Layout'
 import SvgIcon from '../../SvgIcon'
@@ -32,7 +33,7 @@ import { RewardsProps } from './types'
 
 const rinMint = new PublicKey(RIN_MINT)
 
-const AVAILABLE_TO_CLAIM_THRESHOLD = 0.1
+const AVAILABLE_TO_CLAIM_THRESHOLD = 0.0
 const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const {
     getDexTokensPricesQuery: { getDexTokensPrices: prices = [] },
@@ -42,10 +43,10 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useConnection()
-  const [data] = useUserVestings()
+  const [data, reloadVesting] = useUserVestings()
   const rinVesting = data.find((v) => v.mint.equals(rinMint))
   const rinAccount = useAssociatedTokenAccount(RIN_MINT)
-  // console.log('rinVesting: ', rinVesting)
+
   if (!rinVesting) {
     return (
       <FlexBlock
@@ -73,10 +74,11 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
 
   const claimed = startBalance - notClaimed
 
+  console.log('rinVesting.endTs: ', rinVesting.endTs)
   const duration = rinVesting.endTs - rinVesting.startTs
   const now = Date.now() / 1000
   const timePassed = Math.max(0, now - rinVesting.startTs)
-  const timeProgress = timePassed / duration
+  const timeProgress = Math.min(timePassed / duration, 1)
   const secondsLeft = rinVesting.endTs - now
   const timeLeft = estimateTime(Math.max(secondsLeft, 0))
 
@@ -102,6 +104,12 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
       wallet,
       connection,
       transaction,
+    })
+
+    await reloadVesting()
+
+    notify({
+      message: result === 'success' ? 'Claimed succesfully' : 'Claim failed',
     })
   }
 
@@ -152,7 +160,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
           </div>
         </div>
 
-        <ProgressBar value={timeProgress * 100}>
+        <ProgressBar $value={timeProgress * 100}>
           <InlineText weight={600}>
             {timeLeft.days ? `${timeLeft.days}d` : `${timeLeft.hours}h`} &nbsp;
           </InlineText>

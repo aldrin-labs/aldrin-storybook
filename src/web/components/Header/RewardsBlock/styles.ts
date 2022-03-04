@@ -51,7 +51,7 @@ export const ProgressBar = styled.div<ProgressBarProps>`
     background: ${COLORS.successTransparent};
     border-radius: ${BORDER_RADIUS.md};
     flex: 1;
-    width: ${(props: ProgressBarProps) => props.value}%;
+    width: ${(props: ProgressBarProps) => props.$value}%;
     position: absolute;
     left: 0;
     top: 0;

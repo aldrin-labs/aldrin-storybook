@@ -6,7 +6,7 @@ import AldrinLogo from '@icons/Aldrin.svg'
 
 // TODO: Refactor popup
 
-import { DAY } from '../../../../../core/src/utils/dateUtils'
+import { HOUR } from '../../../../../core/src/utils/dateUtils'
 import { useConnection } from '../../dexUtils/connection'
 import { signAndSendSingleTransaction } from '../../dexUtils/transactions'
 import { RIN_MINT } from '../../dexUtils/utils'
@@ -32,22 +32,22 @@ export const Header = () => {
   const connection = useConnection()
   const makeVesting = async () => {
     try {
-      console.log('Make:', {
-        wallet,
-        connection,
-        tokenMint: new PublicKey(RIN_MINT),
-        depositAmount: new BN(2).mul(new BN(10).pow(new BN(9))),
-        vestingPeriod: new BN(DAY),
-        depositorAccount: new PublicKey(
-          '7fFd5qspmMEfoZ5EGDamBLZQXHNwX65SfPMHP7ASZXCB'
-        ),
-      })
+      // console.log('Make:', {
+      //   wallet,
+      //   connection,
+      //   tokenMint: new PublicKey(RIN_MINT),
+      //   depositAmount: new BN(2).mul(new BN(10).pow(new BN(9))),
+      //   vestingPeriod: new BN(HOUR * 4),
+      //   depositorAccount: new PublicKey(
+      //     '7fFd5qspmMEfoZ5EGDamBLZQXHNwX65SfPMHP7ASZXCB'
+      //   ),
+      // })
       const [transaction, signers] = await createVestingTransaction({
         wallet,
         connection,
         tokenMint: new PublicKey(RIN_MINT),
         depositAmount: new BN(2).mul(new BN(10).pow(new BN(9))),
-        vestingPeriod: new BN(DAY),
+        vestingPeriod: new BN(HOUR),
         depositorAccount: new PublicKey(
           '7fFd5qspmMEfoZ5EGDamBLZQXHNwX65SfPMHP7ASZXCB'
         ),
@@ -288,9 +288,9 @@ export const Header = () => {
               </DropDown>
             </MainLinksBlock>
           </MainLinksWrap>
-          <button type="button" onClick={makeVesting}>
+          {/* <button type="button" onClick={makeVesting}>
             Vest
-          </button>
+          </button> */}
           <WalletContainer>
             <RewardsBlock />
             <WalletBlock />
