@@ -36,7 +36,11 @@ export const startSrinStakingInstructions = async (
 
   const [userStakingAccount, bumpUserStakingAccount] =
     await PublicKey.findProgramAddress(
-      [w.publicKey.toBytes(), stakingPool.toBytes(), stakingTier.toBytes()],
+      [
+        Buffer.from('user_staking_account'),
+        w.publicKey.toBytes(),
+        stakingTier.toBytes(),
+      ],
       new PublicKey(PLUTONIANS_STAKING_ADDRESS)
     )
   console.log('SystemProgram.programId,: ', SystemProgram.programId.toString())
