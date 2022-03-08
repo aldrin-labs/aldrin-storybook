@@ -12,11 +12,10 @@ export const ProgressBar = ({
 }) => {
   return (
     <ProgressBarContainer>
-      <Progress width={width}>
-        <InlineText size="sm" weight={600}>
-          {children}
-        </InlineText>
-      </Progress>
+      <Progress width={width} />
+      <InlineText size="sm" weight={600}>
+        {children}
+      </InlineText>
     </ProgressBarContainer>
   )
 }

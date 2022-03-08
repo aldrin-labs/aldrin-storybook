@@ -69,7 +69,7 @@ export interface SRinStakingTier {
 export interface SRinUserAccount {
   user: PublicKey
   amount: BN
-  tier: PublicKey
+  stakingTier: PublicKey
   depositedAt: BN
 }
 

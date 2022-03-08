@@ -16,3 +16,5 @@ export const REWARD_TOKEN_NAME = 'PRC' // For getDexTokenPrices
 export const REWARD_TOKEN_MULTIPLIER = 0.001
 
 export const REWARD_APR_DENOMINATOR = 1_000_000
+
+export const PLD_DENOMINATOR = 1_000_000_000

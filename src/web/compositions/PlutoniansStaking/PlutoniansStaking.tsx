@@ -29,7 +29,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmount } from '@core/utils/chartPageUtils'
-import { DAY } from '@core/utils/dateUtils'
+import { DAY, estimateTime } from '@core/utils/dateUtils'
 
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { InputWrapper } from '../RinStaking/styles'
@@ -45,6 +45,7 @@ import {
   REWARD_TOKEN_MULTIPLIER,
   REWARD_APR_DENOMINATOR,
   EXTRA_REWARDS,
+  PLD_DENOMINATOR,
 } from './config'
 import {
   AdaptiveStakingBlock,
@@ -55,6 +56,8 @@ import {
   StakingContainer,
 } from './styles'
 import { PlutoniansBlockProps } from './types'
+
+const ONE = new BN(1)
 
 const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const {
@@ -79,10 +82,10 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     (ta) => ta.mint === stakingPool?.stakeTokenMint.toString()
   )
 
-  console.log('stakingPool: ', stakingPool)
-
   const { data: stakingAccounts, mutate: updateStakeAccounts } =
     useSrinStakingAccounts()
+
+  console.log('stakingPool: ', prcPrice)
 
   const selectedTier = stakingPool?.tiers[selectedTierIndex]
   const stakeAccountForTier = stakingAccounts?.get(
@@ -157,9 +160,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     }
   }
 
-  const isStakingDisabled =
-    loading || !(parseFloat(amount) > 0) || !selectedTokenAccount
-
   console.log(
     'isStakingDisabled: ',
     isStakingDisabled,
@@ -170,80 +170,109 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
       REWARD_APR_DENOMINATOR) *
     100
 
+  const lockDuration = selectedTier?.account.lockDuration || ONE
+  const unlockDate =
+    stakeAccountForTier?.account.depositedAt.add(lockDuration).toNumber() || 0
+
+  console.log('unlockDate: ', unlockDate)
+  const timePassed =
+    Date.now() / 1000 -
+    (stakeAccountForTier?.account.depositedAt.toNumber() || 0)
+
+  const timeLeft = Math.max(0, unlockDate - Date.now() / 1000)
+
+  const estimate = estimateTime(timeLeft)
+
+  const isStakingDisabled =
+    loading ||
+    !(parseFloat(amount) > 0) ||
+    !selectedTokenAccount ||
+    timeLeft > 0
+
+  const timeProgresss = timePassed / lockDuration.toNumber()
+
   return (
     <Page>
       <Content>
         <FlexBlock alignItems="center" direction="column">
           <StakingContainer>
-            {(stakingPool?.tiers || []).slice(0, 4).map((tier, idx) => {
-              const tierReward = tier.account.nftRewardGroupsData
-                .map(
-                  (nft) =>
-                    `${nft.account.quantity > 1 ? nft.account.quantity : ''} ${
-                      nft.account.name
-                    }`
-                )
-                .join(' + ')
-              return (
-                <ModeContainer
-                  $bg={REWARDS_BG[idx]}
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`tier_${idx}`}
-                  checked={selectedTierIndex === idx}
-                  onClick={() => setSelectedTierIndex(idx)}
-                  backgroundColor={COLORS.cardsBack}
-                >
-                  <FlexBlock direction="column">
-                    <StretchedBlock align="center">
-                      <FlexBlock alignItems="center">
-                        <SvgIcon src={Lock} alt="locked" />
-                        <InlineText size="md" weight={700}>
-                          &nbsp;
-                          {tier?.account.lockDuration.divn(DAY).toString()} Days
-                        </InlineText>
-                      </FlexBlock>
-                      <Radio
-                        checked={selectedTierIndex === idx}
-                        change={() => setSelectedTierIndex(idx)}
-                      />
-                    </StretchedBlock>
-                    <AprWrap>
-                      <NumberWithLabel
-                        size={FONT_SIZES.es}
-                        value={null}
-                        label={`${
-                          (parseInt(tier?.account.apr.toString() || '0', 10) /
-                            REWARD_APR_DENOMINATOR) *
-                          100
-                        }% APR ${tierReward ? '+ NFT' : ''} `}
-                      />
-                    </AprWrap>
-                  </FlexBlock>
-                  {/* {tierReward && (
+            {(stakingPool?.tiers || [])
+              .slice(0, 4)
+              .reverse()
+              .map((tier, idx) => {
+                const tierReward = tier.account.nftRewardGroupsData
+                  .map(
+                    (nft) =>
+                      `${
+                        nft.account.quantity > 1 ? nft.account.quantity : ''
+                      } ${nft.account.name}`
+                  )
+                  .join(' + ')
+                return (
+                  <ModeContainer
+                    $bg={REWARDS_BG[idx]}
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={`tier_${idx}`}
+                    checked={selectedTierIndex === idx}
+                    onClick={() => setSelectedTierIndex(idx)}
+                    backgroundColor={COLORS.cardsBack}
+                  >
+                    <FlexBlock direction="column">
+                      <StretchedBlock align="center">
+                        <FlexBlock alignItems="center">
+                          <SvgIcon src={Lock} alt="locked" />
+                          <InlineText size="md" weight={700}>
+                            &nbsp;
+                            {tier?.account.lockDuration
+                              .divn(DAY)
+                              .toString()}{' '}
+                            Days
+                          </InlineText>
+                        </FlexBlock>
+                        <Radio
+                          checked={selectedTierIndex === idx}
+                          change={() => setSelectedTierIndex(idx)}
+                        />
+                      </StretchedBlock>
+                      <AprWrap>
+                        <NumberWithLabel
+                          size={FONT_SIZES.es}
+                          value={null}
+                          label={`${
+                            (parseInt(tier?.account.apr.toString() || '0', 10) /
+                              REWARD_APR_DENOMINATOR) *
+                            100
+                          }% APR ${tierReward ? '+ NFT' : ''} `}
+                        />
+                      </AprWrap>
+                    </FlexBlock>
+                    {/* {tierReward && (
                     <InlineText size="sm" weight={600}>
                       {EXTRA_REWARDS[idx]}
                     </InlineText>
                   )} */}
-                  <InlineText size="sm" weight={600}>
-                    {/* {tierReward} */}
-                    {EXTRA_REWARDS[idx]}
-                  </InlineText>
-                </ModeContainer>
-              )
-            })}
+                    <InlineText size="sm" weight={600}>
+                      {/* {tierReward} */}
+                      {EXTRA_REWARDS[idx]}
+                    </InlineText>
+                  </ModeContainer>
+                )
+              })}
           </StakingContainer>
 
           <StakingContainer>
             <AdaptiveStakingBlock>
               <FlexBlock direction="column" style={{ padding: '1em' }}>
                 {isStaked ? (
-                  <ProgressBar width={isRewardsUnlocked ? '100%' : '50%'}>
+                  <ProgressBar width={`${timeProgresss * 100}%`}>
                     {isRewardsUnlocked ? (
                       'Unlocked!'
                     ) : (
                       <>
-                        25d 21h 39m
-                        <InlineText weight={400}>Left to unlock</InlineText>
+                        {estimate.days && `${estimate.days}d `}
+                        {estimate.hours && `${estimate.hours}h `}
+                        {estimate.minutes && `${estimate.minutes}m `}
+                        <InlineText weight={400}> Left to unlock</InlineText>
                       </>
                     )}
                   </ProgressBar>
@@ -348,7 +377,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <RewardsComponent imgSrc={Plutonians}>
                         <StretchedBlock style={{ padding: '1.3em 1em' }}>
                           <RewardDescription weight={700} size="sm">
-                            Aldrin Skin + 2 components3
+                            Aldrin Skin + 2 components
                           </RewardDescription>
                         </StretchedBlock>
                       </RewardsComponent>
@@ -366,7 +395,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                           width="xl"
                         >
                           <RewardDescription size="sm" weight={600}>
-                            Aldrin Skin + 2 components2
+                            Aldrin Skin + 2 components
                           </RewardDescription>
                         </StretchedBlock>
                       </ContentBlock>
@@ -385,8 +414,11 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                         color: COLORS.lightGray,
                       }}
                     >
-                      Unstake 10.522 PLD and Claim Rewards &amp; Common Small
-                      Fighter
+                      Unstake{' '}
+                      {parseFloat(
+                        stakeAccountForTier?.account.amount.toString()
+                      ) / PLD_DENOMINATOR}{' '}
+                      PLD and Claim Rewards
                     </Button>
                   ) : (
                     <Button

@@ -8,9 +8,11 @@ export type ProgressBar = {
 export const ProgressBarContainer = styled.div`
   width: 100%;
   height: 2em;
+  line-height: 2em;
   border-radius: 7px;
   position: relative;
   background: ${COLORS.cardsBack};
+  padding: 0 1em;
 `
 
 export const Progress = styled.div<ProgressBar>`
