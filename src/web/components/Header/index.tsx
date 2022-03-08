@@ -74,7 +74,7 @@ export const Header = () => {
                     fill="#C1C1C1"
                   />
                 </svg>
-                Pools & Farms
+                Pools &amp; Farms
               </NavLink>
               <NavLink to="/staking" activeClassName="selected">
                 <svg
