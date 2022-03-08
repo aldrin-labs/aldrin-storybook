@@ -46,6 +46,7 @@ import {
   REWARD_APR_DENOMINATOR,
   EXTRA_REWARDS,
   PLD_DENOMINATOR,
+  NFT_REWARD_MIN_STAKE_AMOUNT,
 } from './config'
 import {
   AdaptiveStakingBlock,
@@ -275,8 +276,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                     style={{ alignItems: isStaked ? 'flex-start' : 'center' }}
                   >
                     <InlineText size="sm">
-                      You have to stake at least 1000 PLD to be eligible for
-                      Aldrin Skin NFT drop.
+                      You have to stake at least {NFT_REWARD_MIN_STAKE_AMOUNT}{' '}
+                      PLD to be eligible for Aldrin Skin NFT drop.
                     </InlineText>
                   </ContentBlock>
                 )}
@@ -326,16 +327,36 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                             {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
                           </StretchedBlock>
                           <StretchedBlock
-                            style={{ margin: '3rem 0 0 0' }}
+                            style={{ margin: '3rem 0 0 0', height: '35px' }}
                             align="center"
                             width="xl"
                           >
-                            <InlineText color="newGreen" size="lg" weight={700}>
-                              Eligible
-                            </InlineText>
-                            <RewardDescription size="sm" weight={600}>
-                              Aldrin Skin + 2 components
-                            </RewardDescription>
+                            {parseFloat(amount) >
+                            NFT_REWARD_MIN_STAKE_AMOUNT ? (
+                              <>
+                                <InlineText
+                                  color="newGreen"
+                                  size="lg"
+                                  weight={700}
+                                >
+                                  Eligible
+                                </InlineText>
+                                <RewardDescription size="sm" weight={600}>
+                                  Aldrin Skin + 2 components
+                                </RewardDescription>
+                              </>
+                            ) : (
+                              <>
+                                <InlineText
+                                  color="newGreen"
+                                  size="md"
+                                  weight={700}
+                                >
+                                  Stake more than {NFT_REWARD_MIN_STAKE_AMOUNT}{' '}
+                                  PLD
+                                </InlineText>
+                              </>
+                            )}
                           </StretchedBlock>
                         </RewardContentBlock>
                       </Cell>
