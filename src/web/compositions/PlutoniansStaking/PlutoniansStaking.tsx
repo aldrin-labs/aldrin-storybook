@@ -85,9 +85,9 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const { data: stakingAccounts, mutate: updateStakeAccounts } =
     useSrinStakingAccounts()
 
-  console.log('stakingPool: ', prcPrice)
+  const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
 
-  const selectedTier = stakingPool?.tiers[selectedTierIndex]
+  const selectedTier = tiers[selectedTierIndex]
   const stakeAccountForTier = stakingAccounts?.get(
     selectedTier?.publicKey.toString() || ''
   )
@@ -196,68 +196,62 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
       <Content>
         <FlexBlock alignItems="center" direction="column">
           <StakingContainer>
-            {(stakingPool?.tiers || [])
-              .slice(0, 4)
-              .reverse()
-              .map((tier, idx) => {
-                const tierReward = tier.account.nftRewardGroupsData
-                  .map(
-                    (nft) =>
-                      `${
-                        nft.account.quantity > 1 ? nft.account.quantity : ''
-                      } ${nft.account.name}`
-                  )
-                  .join(' + ')
-                return (
-                  <ModeContainer
-                    $bg={REWARDS_BG[idx]}
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`tier_${idx}`}
-                    checked={selectedTierIndex === idx}
-                    onClick={() => setSelectedTierIndex(idx)}
-                    backgroundColor={COLORS.cardsBack}
-                  >
-                    <FlexBlock direction="column">
-                      <StretchedBlock align="center">
-                        <FlexBlock alignItems="center">
-                          <SvgIcon src={Lock} alt="locked" />
-                          <InlineText size="md" weight={700}>
-                            &nbsp;
-                            {tier?.account.lockDuration
-                              .divn(DAY)
-                              .toString()}{' '}
-                            Days
-                          </InlineText>
-                        </FlexBlock>
-                        <Radio
-                          checked={selectedTierIndex === idx}
-                          change={() => setSelectedTierIndex(idx)}
-                        />
-                      </StretchedBlock>
-                      <AprWrap>
-                        <NumberWithLabel
-                          size={FONT_SIZES.es}
-                          value={null}
-                          label={`${
-                            (parseInt(tier?.account.apr.toString() || '0', 10) /
-                              REWARD_APR_DENOMINATOR) *
-                            100
-                          }% APR ${tierReward ? '+ NFT' : ''} `}
-                        />
-                      </AprWrap>
-                    </FlexBlock>
-                    {/* {tierReward && (
+            {tiers.map((tier, idx) => {
+              const tierReward = tier.account.nftRewardGroupsData
+                .map(
+                  (nft) =>
+                    `${nft.account.quantity > 1 ? nft.account.quantity : ''} ${
+                      nft.account.name
+                    }`
+                )
+                .join(' + ')
+              return (
+                <ModeContainer
+                  $bg={REWARDS_BG[idx]}
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`tier_${tier.publicKey.toString()}`}
+                  checked={selectedTierIndex === idx}
+                  onClick={() => setSelectedTierIndex(idx)}
+                  backgroundColor={COLORS.cardsBack}
+                >
+                  <FlexBlock direction="column">
+                    <StretchedBlock align="center">
+                      <FlexBlock alignItems="center">
+                        <SvgIcon src={Lock} alt="locked" />
+                        <InlineText size="md" weight={700}>
+                          &nbsp;
+                          {tier?.account.lockDuration.divn(DAY).toString()} Days
+                        </InlineText>
+                      </FlexBlock>
+                      <Radio
+                        checked={selectedTierIndex === idx}
+                        change={() => setSelectedTierIndex(idx)}
+                      />
+                    </StretchedBlock>
+                    <AprWrap>
+                      <NumberWithLabel
+                        size={FONT_SIZES.es}
+                        value={null}
+                        label={`${
+                          (parseInt(tier?.account.apr.toString() || '0', 10) /
+                            REWARD_APR_DENOMINATOR) *
+                          100
+                        }% APR ${tierReward ? '+ NFT' : ''} `}
+                      />
+                    </AprWrap>
+                  </FlexBlock>
+                  {/* {tierReward && (
                     <InlineText size="sm" weight={600}>
                       {EXTRA_REWARDS[idx]}
                     </InlineText>
                   )} */}
-                    <InlineText size="sm" weight={600}>
-                      {/* {tierReward} */}
-                      {EXTRA_REWARDS[idx]}
-                    </InlineText>
-                  </ModeContainer>
-                )
-              })}
+                  <InlineText size="sm" weight={600}>
+                    {/* {tierReward} */}
+                    {EXTRA_REWARDS[idx]}
+                  </InlineText>
+                </ModeContainer>
+              )
+            })}
           </StakingContainer>
 
           <StakingContainer>

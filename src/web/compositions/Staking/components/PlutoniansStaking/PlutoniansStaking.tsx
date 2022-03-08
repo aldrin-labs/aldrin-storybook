@@ -21,7 +21,7 @@ import Lock from './lock.svg'
 import { LogoWrap } from './styles'
 
 export const PlutoniasStakingBlock: React.FC = () => {
-  const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
+  const { data: stakingPool } = usePlutoniansStaking()
   const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
   const tiersGroup1 = tiers.slice(0, 2)
   const tiersGroup2 = tiers.slice(2)
