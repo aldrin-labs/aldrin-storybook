@@ -29,7 +29,7 @@ import { DarkTooltip } from '../../TooltipCustom/Tooltip'
 import { Text, InlineText } from '../../Typography'
 import { rinMint, AVAILABLE_TO_CLAIM_THRESHOLD } from './config'
 import Helmet from './helmet.png'
-import { ProgressBar, Separator } from './styles'
+import { ProgressBar, RewardsLink, Separator } from './styles'
 import { RewardsProps } from './types'
 
 const RewardsBlock: React.FC<RewardsProps> = (props) => {
@@ -56,8 +56,10 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
         <br />
         <Text align="center">
           Sorry, your wallet is not eligible for the current airdrop. But don't
-          despair, you can farm rewards for staking your tokens or providing
-          liquidity to Aldrin AMM.
+          despair, you can farm rewards for{' '}
+          <RewardsLink to="/staking">staking</RewardsLink> your tokens or{' '}
+          <RewardsLink to="/pools">providing liquidity</RewardsLink> to Aldrin
+          AMM.
         </Text>
       </FlexBlock>
     )

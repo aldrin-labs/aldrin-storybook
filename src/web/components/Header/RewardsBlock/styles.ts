@@ -1,4 +1,5 @@
 import { COLORS, BORDER_RADIUS } from '@variables/variables'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { BlockContent } from '../../Block'
@@ -56,4 +57,8 @@ export const ProgressBar = styled.div<ProgressBarProps>`
     left: 0;
     top: 0;
   }
+`
+
+export const RewardsLink = styled(Link)`
+  color: ${COLORS.main};
 `
