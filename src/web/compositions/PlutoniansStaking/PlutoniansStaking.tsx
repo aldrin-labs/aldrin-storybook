@@ -90,8 +90,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     REWARD_TOKEN_MULTIPLIER
 
   const stakeTokenPrice =
-    (prices.find((dp) => dp.symbol === stakeTokenName)?.price || 0) *
-    REWARD_TOKEN_MULTIPLIER
+    prices.find((dp) => dp.symbol === stakeTokenName)?.price || 0
 
   const selectedTokenAccount = tokenAccounts.find(
     (ta) => ta.mint === stakingPool?.stakeTokenMint.toString()
