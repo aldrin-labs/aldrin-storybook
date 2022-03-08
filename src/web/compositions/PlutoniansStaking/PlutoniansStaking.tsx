@@ -19,6 +19,7 @@ import { InlineText } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
+import { RPC_TOKEN_MINT } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { startSrinStaking } from '@sb/dexUtils/staking/actions'
 import {
   useSrinStakingAccounts,
@@ -79,14 +80,15 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
 
-  const rewardTokenMint = stakingPool?.rewardTokenMint.toString() || ''
+  // const rewardTokenMint = stakingPool?.rewardTokenMint.toString() || ''
   const stakeTokenMint = stakingPool?.stakeTokenMint.toString() || ''
 
-  const rewardTokenName = getTokenNameByMintAddress(rewardTokenMint)
+  const rpcTokenName = getTokenNameByMintAddress(RPC_TOKEN_MINT)
+  // const rewardTokenName = getTokenNameByMintAddress(rewardTokenMint)
   const stakeTokenName = getTokenNameByMintAddress(stakeTokenMint)
 
   const rewardPrice =
-    (prices.find((dp) => dp.symbol === rewardTokenName)?.price || 0) *
+    (prices.find((dp) => dp.symbol === rpcTokenName)?.price || 0) *
     REWARD_TOKEN_MULTIPLIER
 
   const stakeTokenPrice =
@@ -146,13 +148,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     )
     try {
       setLoading(true)
-      console.log('DATA: ', {
-        wallet,
-        connection,
-        amount: depositAmount,
-        stakingPool: stakingPool.stakingPool,
-        stakingTier: selectedTier.publicKey,
-      })
+
       const result = await startSrinStaking({
         wallet,
         connection,
@@ -216,7 +212,9 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const rewardsUsdValue = estimateRewardsInStakeTokens * stakeTokenPrice
 
-  console.log('stakeTokenPrice: ', stakeTokenPrice)
+  const estimateRewardsInPu = rewardsUsdValue / rewardPrice
+
+  console.log('stakeTokenPrice: ', estimateRewardsInPu)
   return (
     <Page>
       <Content>
@@ -402,7 +400,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                         size="lg"
                         weight={700}
                       >
-                        {stripByAmount(estimateRewardsInStakeTokens, 3)}
+                        {stripByAmountAndFormat(estimateRewardsInPu, 2)}
                       </InlineText>
                       <StretchedBlock align="center" width="xl">
                         <InlineText size="sm" weight={600}>
