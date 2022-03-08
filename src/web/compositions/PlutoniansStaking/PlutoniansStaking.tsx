@@ -17,6 +17,7 @@ import { ProgressBar } from '@sb/components/ProgressBarBlock/ProgressBar'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { startSrinStaking } from '@sb/dexUtils/staking/actions'
 import {
@@ -28,8 +29,11 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { stripByAmount } from '@core/utils/chartPageUtils'
-import { DAY, estimateTime } from '@core/utils/dateUtils'
+import {
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
+import { DAY, YEAR, estimateTime } from '@core/utils/dateUtils'
 
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { InputWrapper } from '../RinStaking/styles'
@@ -41,12 +45,12 @@ import { RewardsComponent } from './components/RewardsComponent/RewardsComponent
 import { RewardDescription } from './components/RewardsComponent/styles'
 import {
   REWARDS_BG,
-  REWARD_TOKEN_NAME,
   REWARD_TOKEN_MULTIPLIER,
   REWARD_APR_DENOMINATOR,
   EXTRA_REWARDS,
   PLD_DENOMINATOR,
   NFT_REWARD_MIN_STAKE_AMOUNT,
+  NFT_REWARD_MIN_STAKE_AMOUNT_BN,
 } from './config'
 import {
   AdaptiveStakingBlock,
@@ -65,10 +69,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     getDexTokensPricesQuery: { getDexTokensPrices: prices = [] },
   } = props
 
-  const prcPrice =
-    (prices.find((dp) => dp.symbol === REWARD_TOKEN_NAME)?.price || 0) *
-    REWARD_TOKEN_MULTIPLIER
-
   const { wallet } = useWallet()
   const connection = useConnection()
   // const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(true)
@@ -78,6 +78,20 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const [tokenAccounts, refreshTokenAccounts] = useUserTokenAccounts()
 
   const { data: stakingPool, mutate: updatePools } = usePlutoniansStaking()
+
+  const rewardTokenMint = stakingPool?.rewardTokenMint.toString() || ''
+  const stakeTokenMint = stakingPool?.stakeTokenMint.toString() || ''
+
+  const rewardTokenName = getTokenNameByMintAddress(rewardTokenMint)
+  const stakeTokenName = getTokenNameByMintAddress(stakeTokenMint)
+
+  const rewardPrice =
+    (prices.find((dp) => dp.symbol === rewardTokenName)?.price || 0) *
+    REWARD_TOKEN_MULTIPLIER
+
+  const stakeTokenPrice =
+    (prices.find((dp) => dp.symbol === stakeTokenName)?.price || 0) *
+    REWARD_TOKEN_MULTIPLIER
 
   const selectedTokenAccount = tokenAccounts.find(
     (ta) => ta.mint === stakingPool?.stakeTokenMint.toString()
@@ -175,7 +189,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const unlockDate =
     stakeAccountForTier?.account.depositedAt.add(lockDuration).toNumber() || 0
 
-  console.log('unlockDate: ', unlockDate)
   const timePassed =
     Date.now() / 1000 -
     (stakeAccountForTier?.account.depositedAt.toNumber() || 0)
@@ -192,6 +205,19 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const timeProgresss = timePassed / lockDuration.toNumber()
 
+  const estimateRewardsInStakeTokens =
+    selectedTier && stakeAccountForTier
+      ? (((parseInt(selectedTier.account.apr.toString(), 10) *
+          selectedTier.account.lockDuration.toNumber()) /
+          REWARD_APR_DENOMINATOR /
+          YEAR) *
+          parseFloat(stakeAccountForTier.account.amount.toString())) /
+        PLD_DENOMINATOR
+      : 0
+
+  const rewardsUsdValue = estimateRewardsInStakeTokens * stakeTokenPrice
+
+  console.log('stakeTokenPrice: ', stakeTokenPrice)
   return (
     <Page>
       <Content>
@@ -248,7 +274,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   )} */}
                   <InlineText size="sm" weight={600}>
                     {/* {tierReward} */}
-                    {EXTRA_REWARDS[idx]}
+                    {EXTRA_REWARDS[selectedTierIndex]}
                   </InlineText>
                 </ModeContainer>
               )
@@ -377,11 +403,11 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                         size="lg"
                         weight={700}
                       >
-                        24.25
+                        {stripByAmount(estimateRewardsInStakeTokens, 3)}
                       </InlineText>
                       <StretchedBlock align="center" width="xl">
                         <InlineText size="sm" weight={600}>
-                          $ 120.24
+                          $ {stripByAmountAndFormat(rewardsUsdValue, 2)}
                         </InlineText>
                         <RewardDescription size="md" weight={600}>
                           PU238
@@ -392,7 +418,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <RewardsComponent imgSrc={Plutonians}>
                         <StretchedBlock style={{ padding: '1.3em 1em' }}>
                           <RewardDescription weight={700} size="sm">
-                            Aldrin Skin + 2 components
+                            {EXTRA_REWARDS[selectedTierIndex]}
                           </RewardDescription>
                         </StretchedBlock>
                       </RewardsComponent>
@@ -404,15 +430,27 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                           </InlineText>
                           {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
                         </StretchedBlock>
-                        <StretchedBlock
-                          style={{ margin: '3rem 0 0 0' }}
-                          align="flex-start"
-                          width="xl"
-                        >
-                          <RewardDescription size="sm" weight={600}>
-                            Aldrin Skin + 2 components
-                          </RewardDescription>
-                        </StretchedBlock>
+                        {stakeAccountForTier.account.amount.gt(
+                          NFT_REWARD_MIN_STAKE_AMOUNT_BN
+                        ) ? (
+                          <>
+                            <StretchedBlock
+                              style={{ margin: '3rem 0 0 0' }}
+                              align="flex-start"
+                              width="xl"
+                            >
+                              <RewardDescription size="sm" weight={600}>
+                                {EXTRA_REWARDS[selectedTierIndex]}
+                              </RewardDescription>
+                            </StretchedBlock>
+                          </>
+                        ) : (
+                          <>
+                            <InlineText color="newGreen" size="md" weight={700}>
+                              Stake more than {NFT_REWARD_MIN_STAKE_AMOUNT} PLD
+                            </InlineText>
+                          </>
+                        )}
                       </ContentBlock>
                     )}
                   </StretchedBlock>

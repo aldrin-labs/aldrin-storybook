@@ -1,3 +1,5 @@
+import BN from 'bn.js'
+
 import Centuria from './assets/Centuria.png'
 import Colossus from './assets/Colossus.png'
 import Leviathan from './assets/Leviathan.png'
@@ -20,3 +22,6 @@ export const REWARD_APR_DENOMINATOR = 1_000_000
 export const PLD_DENOMINATOR = 1_000_000_000
 
 export const NFT_REWARD_MIN_STAKE_AMOUNT = 1_000
+export const NFT_REWARD_MIN_STAKE_AMOUNT_BN = new BN(
+  NFT_REWARD_MIN_STAKE_AMOUNT
+).mul(new BN(10).pow(new BN(9)))
