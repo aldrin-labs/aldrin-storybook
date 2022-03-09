@@ -171,11 +171,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     }
   }
 
-  console.log(
-    'isStakingDisabled: ',
-    isStakingDisabled,
-    stakingPool?.stakeTokenMint.toString()
-  )
   const apr =
     (parseInt(selectedTier?.account.apr.toString() || '0', 10) /
       REWARD_APR_DENOMINATOR) *
@@ -215,7 +210,13 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const estimateRewardsInPu = rewardsUsdValue / rewardPrice
 
-  console.log('stakeTokenPrice: ', estimateRewardsInPu)
+  // console.log('stakeTokenPrice: ', rewardsUsdValue, estimateRewardsInPu)
+
+  // console.log(
+  //   'isStakingDisabled: ',
+  //   isStakingDisabled,
+  //   stakingPool?.stakeTokenMint.toString()
+  // )
   return (
     <Page>
       <Content>
@@ -366,7 +367,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                   Eligible
                                 </InlineText>
                                 <RewardDescription size="sm" weight={600}>
-                                  Aldrin Skin + 2 components
+                                  {EXTRA_REWARDS[selectedTierIndex]}
                                 </RewardDescription>
                               </>
                             ) : (
