@@ -167,6 +167,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     } catch (e) {
       console.warn('Unable to stake PLD:', e)
       notify({ message: 'Something went wrong' })
+      await refreshAll()
       setLoading(false)
     }
   }
