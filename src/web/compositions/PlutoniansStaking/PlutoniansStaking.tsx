@@ -57,6 +57,7 @@ import {
   AdaptiveStakingBlock,
   AprWrap,
   Content,
+  FormContainer,
   ModeContainer,
   RewardContentBlock,
   StakingContainer,
@@ -271,7 +272,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   )} */}
                   <InlineText size="sm" weight={600}>
                     {/* {tierReward} */}
-                    {EXTRA_REWARDS[selectedTierIndex]}
+                    {EXTRA_REWARDS[idx]}
                   </InlineText>
                 </ModeContainer>
               )
@@ -280,7 +281,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
           <StakingContainer>
             <AdaptiveStakingBlock>
-              <FlexBlock direction="column" style={{ padding: '1em' }}>
+              <FormContainer direction="column" justifyContent="center">
                 {isStaked ? (
                   <ProgressBar width={`${timeProgresss * 100}%`}>
                     {isRewardsUnlocked ? (
@@ -486,7 +487,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                     </Button>
                   )}
                 </ConnectWalletWrapper>
-              </FlexBlock>
+              </FormContainer>
             </AdaptiveStakingBlock>
           </StakingContainer>
         </FlexBlock>

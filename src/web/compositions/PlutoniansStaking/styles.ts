@@ -1,7 +1,7 @@
 import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
-import { StretchedBlock } from '@sb/components/Layout'
+import { FlexBlock, StretchedBlock } from '@sb/components/Layout'
 
 import { BlockWithRadio } from '../MarinadeStaking/components/styles'
 import { ContentBlock, StakingBlock } from '../Staking/styles'
@@ -58,4 +58,9 @@ export const RewardContentBlock = styled(ContentBlock)`
     ${(props: { last?: boolean }) =>
       props.last ? `margin-left: 10px;` : 'margin-right: 10px;'}
   }
+`
+
+export const FormContainer = styled(FlexBlock)`
+  padding: 0 1em 1em;
+  min-height: 22em;
 `

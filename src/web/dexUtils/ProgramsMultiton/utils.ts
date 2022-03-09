@@ -4,12 +4,12 @@ import { MASTER_BUILD } from '@core/utils/config'
 
 export const POOLS_PROGRAM_ADDRESS = MASTER_BUILD
   ? 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
-  : 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
+  : 'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
 // RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx
 
 export const POOLS_V2_PROGRAM_ADDRESS = MASTER_BUILD
   ? 'CURVGoZn8zycx6FXwwevgBTB2gVvdbGTEpvMJDbgs2t4'
-  : 'CURVGoZn8zycx6FXwwevgBTB2gVvdbGTEpvMJDbgs2t4'
+  : 'RinFPaym3xbnndu4SfQPAt1NzQWTfqL34cvf9eafakk'
 // RinFPaym3xbnndu4SfQPAt1NzQWTfqL34cvf9eafakk
 
 export const MARKET_ORDER_PROGRAM_ADDRESS =
@@ -25,11 +25,11 @@ export const VESTING_PROGRAM_ADDRESS =
 
 export const FEE_OWNER_ACCOUNT = MASTER_BUILD
   ? 'D7FkvSLw8rq8Ydh43tBViSQuST2sBczEStbWudFhR6L'
-  : 'D7FkvSLw8rq8Ydh43tBViSQuST2sBczEStbWudFhR6L'
+  : '9VHVV44zDSmmdDMUHk4fwotXioimN78yzNDgzaVUP5Fb'
 // 9VHVV44zDSmmdDMUHk4fwotXioimN78yzNDgzaVUP5Fb
 export const POOL_AUTHORITY = MASTER_BUILD
   ? 'BqSGA2WdiQXA2cC1EdGDnVD615A4nYEAq49K3fz2hNBo'
-  : 'BqSGA2WdiQXA2cC1EdGDnVD615A4nYEAq49K3fz2hNBo'
+  : 'EAWfgtTAFe2pYbDsTN57t6yoZyxWSBEWoszxQe8PSbvC'
 // EAWfgtTAFe2pYbDsTN57t6yoZyxWSBEWoszxQe8PSbvC
 export const MARINADE_REF_ADDRESS =
   'ALDKL1QUkHnVK7a7hsLNzs1VNqUKfQAaZLg6ER6YTEHb'
