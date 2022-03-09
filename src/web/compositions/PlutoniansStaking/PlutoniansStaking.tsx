@@ -460,10 +460,10 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       $width="xl"
                       $fontSize="sm"
                       disabled={isStakingDisabled}
+                      $loading={loading}
                       style={{
                         fontWeight: '500',
                         padding: '1em',
-                        color: COLORS.lightGray,
                       }}
                     >
                       Unstake{' '}
@@ -476,12 +476,12 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                     <Button
                       onClick={stake}
                       $width="xl"
-                      $fontSize="md"
+                      $fontSize="sm"
                       disabled={isStakingDisabled}
+                      $loading={loading}
                       style={{
                         fontWeight: '600',
                         padding: '1em',
-                        color: COLORS.primaryWhite,
                       }}
                     >
                       Stake
