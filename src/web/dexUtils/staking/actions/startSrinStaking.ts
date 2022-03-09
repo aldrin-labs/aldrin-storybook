@@ -43,7 +43,6 @@ export const startSrinStakingInstructions = async (
       ],
       new PublicKey(PLUTONIANS_STAKING_ADDRESS)
     )
-  console.log('SystemProgram.programId,: ', SystemProgram.programId.toString())
 
   return program.instruction.deposit(amount, bumpUserStakingAccount, {
     accounts: {

@@ -210,13 +210,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const estimateRewardsInPu = rewardsUsdValue / rewardPrice
 
-  // console.log('stakeTokenPrice: ', rewardsUsdValue, estimateRewardsInPu)
-
-  // console.log(
-  //   'isStakingDisabled: ',
-  //   isStakingDisabled,
-  //   stakingPool?.stakeTokenMint.toString()
-  // )
   return (
     <Page>
       <Content>
@@ -266,13 +259,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       />
                     </AprWrap>
                   </FlexBlock>
-                  {/* {tierReward && (
-                    <InlineText size="sm" weight={600}>
-                      {EXTRA_REWARDS[idx]}
-                    </InlineText>
-                  )} */}
                   <InlineText size="sm" weight={600}>
-                    {/* {tierReward} */}
                     {EXTRA_REWARDS[idx]}
                   </InlineText>
                 </ModeContainer>
