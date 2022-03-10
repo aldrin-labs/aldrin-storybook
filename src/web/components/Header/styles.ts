@@ -53,7 +53,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
   font-size: 0.8em;
   padding: 4px 0;
-  margin: 0px 4px;
+  margin: 0;
   text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
   color: ${COLORS.primaryGray};
   background: transparent;
@@ -199,7 +199,7 @@ export const DropdownContent = styled.div`
   top: 100%;
   flex-direction: column;
   display: none;
-  z-index: 100000;
+  z-index: 99;
   background: rgba(0, 0, 0, 0.001);
 `
 
@@ -241,7 +241,7 @@ export const DropdownInner = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 5px;
-  padding: 1rem 2rem;
+  padding: 0.5em;
   border-radius: ${BORDER_RADIUS.md};
   & ${NavLink} {
     margin: 4px;
