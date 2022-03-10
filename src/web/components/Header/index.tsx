@@ -6,6 +6,7 @@ import AldrinLogo from '@icons/Aldrin.svg'
 
 import { Body, WideContent } from '../Layout'
 import { DropDown } from './Dropdown'
+import { RewardsBlock } from './RewardsBlock/RewardsBlock'
 import {
   HeaderWrap,
   LogoLink,
@@ -73,7 +74,7 @@ export const Header = () => {
                     fill="#C1C1C1"
                   />
                 </svg>
-                Pools & Farms
+                Pools &amp; Farms
               </NavLink>
               <NavLink to="/staking" activeClassName="selected">
                 <svg
@@ -244,6 +245,7 @@ export const Header = () => {
             </MainLinksBlock>
           </MainLinksWrap>
           <WalletContainer>
+            <RewardsBlock />
             <WalletBlock />
           </WalletContainer>
         </HeaderWrap>
