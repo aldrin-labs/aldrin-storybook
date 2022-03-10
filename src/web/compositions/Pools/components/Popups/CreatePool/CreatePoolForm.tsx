@@ -7,6 +7,7 @@ import { useHistory } from 'react-router'
 
 import { SvgIcon } from '@sb/components'
 import { Button } from '@sb/components/Button'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { GroupLabel, RadioGroupField } from '@sb/components/FormElements'
 import { InputField, INPUT_FORMATTERS } from '@sb/components/Input'
 import { FlexBlock } from '@sb/components/Layout'
@@ -39,6 +40,7 @@ import { PoolConfirmationData } from './PoolConfirmationData'
 import { PoolProcessingModal, TransactionStatus } from './PoolProcessingModal'
 import {
   Body,
+  ButtonContainer,
   Centered,
   CheckboxWrap,
   CoinSelectors,
@@ -152,8 +154,14 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
     validateOnMount: true,
     initialValues,
     onSubmit: async (values) => {
+      if (!values.baseToken) {
+        throw new Error('No base token selected!')
+      }
       if (!values.baseToken.account) {
         throw new Error('No base token selected!')
+      }
+      if (!values.quoteToken) {
+        throw new Error('No quote token selected!')
       }
       if (!values.quoteToken.account) {
         throw new Error('No quote token selected!')
@@ -323,9 +331,16 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
     },
     validate: async (values) => {
       const {
-        baseToken: { mint: baseTokenMint },
-        quoteToken: { mint: quoteTokenMint },
+        baseToken: { mint: baseTokenMint } = {},
+        quoteToken: { mint: quoteTokenMint } = {},
       } = values
+
+      if (!baseTokenMint) {
+        return { baseToken: 'No token selected' }
+      }
+      if (!quoteTokenMint) {
+        return { quoteToken: 'No token selected' }
+      }
 
       const basePrice = dexTokensPricesMap.get(
         getTokenNameByMintAddress(baseTokenMint)
@@ -377,26 +392,26 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const farmingRewardFormatted = stripByAmount(farmingRewardPerDay)
 
   const selectedBaseAccount = userTokens.find(
-    (ut) => ut.address === values.baseToken.account
+    (ut) => ut.address === values.baseToken?.account
   )
   const selectedQuoteAccount = userTokens.find(
-    (ut) => ut.address === values.quoteToken.account
+    (ut) => ut.address === values.quoteToken?.account
   )
   const farmingRewardAccount = userTokens.find(
-    (ut) => ut.address === values.farming.token.account
+    (ut) => ut.address === values.farming.token?.account
   )
 
-  if (!farmingRewardAccount) {
-    return null
-  }
+  // if (!farmingRewardAccount) {
+  //   return null
+  // }
 
-  if (!selectedBaseAccount) {
-    return null
-  }
+  // if (!selectedBaseAccount) {
+  //   return null
+  // }
 
-  if (!selectedQuoteAccount) {
-    return null
-  }
+  // if (!selectedQuoteAccount) {
+  //   return null
+  // }
 
   const isLastStep = step === stepsSize
   const prevStep = (e: EventLike) => {
@@ -681,49 +696,57 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             )}
 
             <Footer>
-              {step === 1 ? (
-                <Button
-                  $padding="lg"
-                  type="button"
-                  onClick={onClose}
-                  $variant="outline-white"
-                >
-                  Cancel
-                </Button>
-              ) : (
-                <Button
-                  $padding="lg"
-                  $variant="outline-white"
-                  onClick={prevStep}
-                >
-                  Back
-                </Button>
-              )}
+              <ButtonContainer>
+                {step === 1 ? (
+                  <Button
+                    $padding="lg"
+                    type="button"
+                    onClick={onClose}
+                    $variant="outline-white"
+                  >
+                    Cancel
+                  </Button>
+                ) : (
+                  <Button
+                    $padding="lg"
+                    $variant="outline-white"
+                    onClick={prevStep}
+                  >
+                    Back
+                  </Button>
+                )}
+              </ButtonContainer>
 
               {step === 3 && (
-                <Button
-                  type="button"
-                  $padding="lg"
-                  $variant="outline-white"
-                  onClick={(e) => {
-                    nextStep(e, false)
-                  }}
-                >
-                  Skip
-                </Button>
+                <ButtonContainer>
+                  <Button
+                    type="button"
+                    $padding="lg"
+                    $variant="outline-white"
+                    onClick={(e) => {
+                      nextStep(e, false)
+                    }}
+                  >
+                    Skip
+                  </Button>
+                </ButtonContainer>
               )}
-              {isLastStep ? (
-                <Button type="submit">Create Pool</Button>
-              ) : (
-                <Button
-                  $padding="lg"
-                  type="button"
-                  disabled={!form.isValid}
-                  onClick={nextStep}
-                >
-                  Next
-                </Button>
-              )}
+              <ButtonContainer>
+                {isLastStep ? (
+                  <Button type="submit">Create Pool</Button>
+                ) : (
+                  <ConnectWalletWrapper size="button-only">
+                    <Button
+                      $padding="lg"
+                      type="button"
+                      disabled={!form.isValid}
+                      onClick={nextStep}
+                    >
+                      Next
+                    </Button>
+                  </ConnectWalletWrapper>
+                )}
+              </ButtonContainer>
             </Footer>
           </form>
         </FormikProvider>
