@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKe, Transaction } from '@solana/web3.js'
 
 export class SolongWalletAdapter extends EventEmitter {
   _providerUrl: URL
@@ -29,6 +29,19 @@ export class SolongWalletAdapter extends EventEmitter {
 
   get autoApprove() {
     return this._autoApprove
+  }
+
+  public async signAllTransactions(
+    transactions: Transaction[],
+  ): Promise<Transaction[]> {
+    const result: Transaction[] = [];
+    for (let i = 0; i < transactions.length; i++) {
+      const transaction = transactions[i];
+      const signed = await this.signTransaction(transaction);
+      result.push(signed);
+    }
+
+    return result;
   }
 
   async signTransaction(transaction: any) {

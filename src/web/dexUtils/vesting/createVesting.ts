@@ -1,3 +1,5 @@
+import { createTokenAccountInstrs } from '@project-serum/common'
+import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import {
   Keypair,
   PublicKey,
@@ -7,10 +9,9 @@ import {
   Transaction,
 } from '@solana/web3.js'
 import BN from 'bn.js'
-import { createTokenAccountInstrs } from '@project-serum/common'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { VESTING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
+import { VESTING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { CreateVestingParams } from './types'
 
 export const createVestingTransaction = async (

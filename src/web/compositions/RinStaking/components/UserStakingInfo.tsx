@@ -46,6 +46,8 @@ import {
 import { DAY, daysInMonthForDate } from '@core/utils/dateUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
+import ClockIcon from '@icons/clock.svg'
+
 import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
 import { restake } from '../../../dexUtils/staking/actions'
@@ -54,7 +56,6 @@ import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
-import ClockIcon from './assets/clock.svg'
 import InfoIcon from './assets/info.svg'
 import { StakingForm } from './StakingForm'
 import { RestakeButton, ClaimButton } from './styles'

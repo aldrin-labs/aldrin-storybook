@@ -1,6 +1,5 @@
 import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
-import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -9,7 +8,6 @@ import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
@@ -36,7 +34,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { getRegionData } from '@core/hoc/withRegionCheck'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { useJupiterSwap } from '@core/hooks/useJupiter/useJupiterSwap'
 import {
   getNumberOfDecimalsFromNumber,
@@ -81,6 +79,7 @@ import {
   getFeeFromSwapRoute,
   getRouteMintsPath,
   getSwapButtonText,
+  getSwapNetworkFee,
 } from './utils'
 
 const SwapPage = ({
@@ -179,13 +178,12 @@ const SwapPage = ({
   const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
     useState<boolean>(false)
 
-  getRegionData
-  useEffect(() => {
-    setRegionCheckIsLoading(true)
-    getRegionData({ setIsFromRestrictedRegion }).then(() => {
-      setRegionCheckIsLoading(false)
-    })
-  }, [setIsFromRestrictedRegion])
+  // useEffect(() => {
+  //   setRegionCheckIsLoading(true)
+  //   getRegionData({ setIsFromRestrictedRegion }).then(() => {
+  //     setRegionCheckIsLoading(false)
+  //   })
+  // }, [setIsFromRestrictedRegion])
 
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
@@ -257,12 +255,7 @@ const SwapPage = ({
     slippage,
   })
 
-  const networkFee = depositAndFee
-    ? (depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
-        depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
-        depositAndFee.signatureFee) /
-      LAMPORTS_PER_SOL
-    : swapRoute?.marketInfos.length * TRANSACTION_COMMON_SOL_FEE
+  const networkFee = getSwapNetworkFee({ swapRoute, depositAndFee })
 
   // if we swap native sol to smth, we need to leave some SOL for covering fees
   if (nativeSOLTokenData?.address === userBaseTokenAccount) {
@@ -879,7 +872,7 @@ const SwapPage = ({
 export default compose(
   withTheme(),
   withPublicKey,
-  // withRegionCheck,
+  withRegionCheck,
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,
