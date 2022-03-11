@@ -1,11 +1,12 @@
 import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { TabPanel } from 'react-tabs'
 import { compose } from 'recompose'
 
 import { SvgIcon } from '@sb/components'
-import { Cell, Page } from '@sb/components/Layout'
+import { Cell, FlexBlock, Page } from '@sb/components/Layout'
 import { Text } from '@sb/compositions/Addressbook'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
@@ -38,6 +39,9 @@ import ArrowBanner from '@icons/arrowBanner.svg'
 import BlackBanner from '@icons/blackBanner.png'
 import PinkBanner from '@icons/pinkBanner.png'
 
+import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
+import { DEFAULT_FARMING_TICKET_END_TIME } from '../../dexUtils/common/config'
+import { useAllStakingTickets } from '../../dexUtils/staking/useAllStakingTickets'
 import { DexTokensPrices } from '../Pools/index.types'
 import { OrdersHistoryWrapper } from './components/OrdersHistory/OrdersHistory.Wrapper'
 import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.Wrapper'
@@ -83,6 +87,17 @@ const TwammComponent = ({
   useEffect(() => {
     handleGetOrderArray()
   }, [wallet.publicKey?.toString()])
+
+  const [tickets] = useAllStakingTickets({
+    wallet,
+    connection,
+    walletPublicKey: wallet.publicKey,
+    onlyUserTickets: true,
+  })
+
+  const hasActiveTickets = !!tickets.find(
+    (t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME
+  )
 
   if (!pairSettings.length) {
     return null
@@ -163,63 +178,82 @@ const TwammComponent = ({
             </Cell>
           </Row>
         </Banners>
-        <TabsStyled
-          selectedIndex={tabIndex}
-          onSelect={(index: number) => setTabIndex(index)}
-        >
-          <TabsListWrapper>
-            <TabListStyled>
-              <TabStyled>
-                <TabTitle>Place Time-Weighted Average Order</TabTitle>
-              </TabStyled>
-              <TabStyled>
-                <TabTitle>Running Orders</TabTitle>
-              </TabStyled>
-              <TabStyled>
-                <TabTitle>Order History</TabTitle>
-              </TabStyled>
-            </TabListStyled>
-            {/* <BtnCustom */}
-            {/*  theme={theme} */}
-            {/*  onClick={() => {}} */}
-            {/*  needMinWidth={false} */}
-            {/*  btnWidth="21.3rem" */}
-            {/*  height="4rem" */}
-            {/*  fontSize="1.4rem" */}
-            {/*  borderRadius="1.1rem" */}
-            {/*  borderColor="#45AC14" */}
-            {/*  btnColor="#fff" */}
-            {/*  backgroundColor="#45AC14" */}
-            {/*  textTransform="none" */}
-            {/*  margin="0" */}
-            {/*  transition="all .4s ease-out" */}
-            {/*  style={{ whiteSpace: 'nowrap' }} */}
-            {/* > */}
-            {/*  Trade on TWAMM */}
-            {/* </BtnCustom> */}
-          </TabsListWrapper>
+        <ConnectWalletWrapper>
+          {hasActiveTickets ? (
+            <TabsStyled
+              selectedIndex={tabIndex}
+              onSelect={(index: number) => setTabIndex(index)}
+            >
+              <TabsListWrapper>
+                <TabListStyled>
+                  <TabStyled>
+                    <TabTitle>Place Time-Weighted Average Order</TabTitle>
+                  </TabStyled>
+                  <TabStyled>
+                    <TabTitle>Running Orders</TabTitle>
+                  </TabStyled>
+                  <TabStyled>
+                    <TabTitle>Order History</TabTitle>
+                  </TabStyled>
+                </TabListStyled>
+                {/* <BtnCustom */}
+                {/*  theme={theme} */}
+                {/*  onClick={() => {}} */}
+                {/*  needMinWidth={false} */}
+                {/*  btnWidth="21.3rem" */}
+                {/*  height="4rem" */}
+                {/*  fontSize="1.4rem" */}
+                {/*  borderRadius="1.1rem" */}
+                {/*  borderColor="#45AC14" */}
+                {/*  btnColor="#fff" */}
+                {/*  backgroundColor="#45AC14" */}
+                {/*  textTransform="none" */}
+                {/*  margin="0" */}
+                {/*  transition="all .4s ease-out" */}
+                {/*  style={{ whiteSpace: 'nowrap' }} */}
+                {/* > */}
+                {/*  Trade on TWAMM */}
+                {/* </BtnCustom> */}
+              </TabsListWrapper>
 
-          <TabPanel>
-            <PlaceOrder
-              pairSettings={pairSettings}
-              selectedPairSettings={selectedPairSettings}
-              orderArray={orderArray}
-              handleGetOrderArray={handleGetOrderArray}
-              setTabIndex={setTabIndex}
-              setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
-            />
-          </TabPanel>
-          <TabPanel>
-            <RunningOrdersWrapper
-              pairSettings={pairSettings}
-              getDexTokensPricesQuery={getDexTokensPricesQuery}
-              setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
-            />
-          </TabPanel>
-          <TabPanel>
-            <OrdersHistoryWrapper />
-          </TabPanel>
-        </TabsStyled>
+              <TabPanel>
+                <PlaceOrder
+                  pairSettings={pairSettings}
+                  selectedPairSettings={selectedPairSettings}
+                  orderArray={orderArray}
+                  handleGetOrderArray={handleGetOrderArray}
+                  setTabIndex={setTabIndex}
+                  setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
+                />
+              </TabPanel>
+              <TabPanel>
+                <RunningOrdersWrapper
+                  pairSettings={pairSettings}
+                  getDexTokensPricesQuery={getDexTokensPricesQuery}
+                  setIsConnectWalletPopupOpen={setIsConnectWalletPopupOpen}
+                />
+              </TabPanel>
+              <TabPanel>
+                <OrdersHistoryWrapper />
+              </TabPanel>
+            </TabsStyled>
+          ) : (
+            <FlexBlock
+              alignItems="center"
+              justifyContent="center"
+              style={{ height: '427px' }}
+            >
+              <Text fontSize="lg">
+                {' '}
+                No active staking. Please{' '}
+                <Link style={{ color: 'white' }} to="/staking/rin">
+                  stake RIN
+                </Link>{' '}
+                first.
+              </Text>
+            </FlexBlock>
+          )}
+        </ConnectWalletWrapper>
       </WideContentStyled>
       <ConnectWalletPopup
         open={isConnectWalletPopupOpen}
