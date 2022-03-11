@@ -13,34 +13,39 @@ export const getParsedPairSettings = async ({
   connection: Connection
   wallet: WalletAdapter
 }): Promise<PairSettings[]> => {
-  const pairSettings = await loadPairSettings({
-    connection,
-  })
+  try {
+    const pairSettings = await loadPairSettings({
+      connection,
+    })
 
-  const program = ProgramsMultiton.getProgramByAddress({
-    wallet,
-    connection,
-    programAddress: TWAMM_PROGRAM_ADDRESS,
-  })
+    const program = ProgramsMultiton.getProgramByAddress({
+      wallet,
+      connection,
+      programAddress: TWAMM_PROGRAM_ADDRESS,
+    })
 
-  const OrdersArray = pairSettings.map((pair) => {
-    const data = Buffer.from(pair.account.data)
-    const pairData = program.coder.accounts.decode('PairSettings', data)
+    const OrdersArray = pairSettings.map((pair) => {
+      const data = Buffer.from(pair.account.data)
+      const pairData = program.coder.accounts.decode('PairSettings', data)
 
-    return {
-      ...pairData,
-      isInitialized: pairData.isInitialized,
-      baseTokenFeeAccount: pairData.baseTokenFeeAccount.toString(),
-      quoteTokenFeeAccount: pairData.quoteTokenFeeAccount.toString(),
-      baseTokenMint: pairData.baseTokenMint.toString(),
-      quoteTokenMint: pairData.quoteTokenMint.toString(),
-      quoteMintDecimals: pairData.quoteMintDecimals,
-      baseMintDecimals: pairData.baseMintDecimals,
-      pair: pairData.initializerAccount.toString(),
-      publicKey: pair.pubkey.toString(),
-      account: pairData.initializerAccount.toString(),
-    }
-  })
+      return {
+        ...pairData,
+        isInitialized: pairData.isInitialized,
+        baseTokenFeeAccount: pairData.baseTokenFeeAccount.toString(),
+        quoteTokenFeeAccount: pairData.quoteTokenFeeAccount.toString(),
+        baseTokenMint: pairData.baseTokenMint.toString(),
+        quoteTokenMint: pairData.quoteTokenMint.toString(),
+        quoteMintDecimals: pairData.quoteMintDecimals,
+        baseMintDecimals: pairData.baseMintDecimals,
+        pair: pairData.initializerAccount.toString(),
+        publicKey: pair.pubkey.toString(),
+        account: pairData.initializerAccount.toString(),
+      }
+    })
 
-  return OrdersArray
+    return OrdersArray
+  } catch (e) {
+    console.warn('getParsedPairSettings error:', e)
+    throw e
+  }
 }

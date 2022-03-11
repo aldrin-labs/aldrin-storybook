@@ -13,27 +13,32 @@ export const getOrderArray = async ({
   wallet: WalletAdapter
   connection: Connection
 }) => {
-  const program = ProgramsMultiton.getProgramByAddress({
-    wallet,
-    connection,
-    programAddress: TWAMM_PROGRAM_ADDRESS,
-  })
+  try {
+    const program = ProgramsMultiton.getProgramByAddress({
+      wallet,
+      connection,
+      programAddress: TWAMM_PROGRAM_ADDRESS,
+    })
 
-  const config = {
-    filters: [{ dataSize: program.account.orderArray.size }],
+    const config = {
+      filters: [{ dataSize: program.account.orderArray.size }],
+    }
+
+    const orderArrayAccount = await loadAccountsFromProgram({
+      connection,
+      filters: config.filters,
+      programAddress: TWAMM_PROGRAM_ADDRESS,
+    })
+
+    const allData = orderArrayAccount.map((item) => {
+      const data = Buffer.from(item.account.data)
+      const dataDecoded = program.coder.accounts.decode('OrderArray', data)
+      return { ...dataDecoded, pubkey: item.pubkey }
+    })
+
+    return allData
+  } catch (e) {
+    console.warn('getOrderArray error:', e)
+    throw e
   }
-
-  const orderArrayAccount = await loadAccountsFromProgram({
-    connection,
-    filters: config.filters,
-    programAddress: TWAMM_PROGRAM_ADDRESS,
-  })
-
-  const allData = orderArrayAccount.map((item) => {
-    const data = Buffer.from(item.account.data)
-    const dataDecoded = program.coder.accounts.decode('OrderArray', data)
-    return { ...dataDecoded, pubkey: item.pubkey }
-  })
-
-  return allData
 }
