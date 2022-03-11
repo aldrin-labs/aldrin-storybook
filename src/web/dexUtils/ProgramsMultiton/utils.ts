@@ -24,7 +24,7 @@ export const VESTING_PROGRAM_ADDRESS =
   '77WyS2Q4QHRgnLJZyduowV9dGVjHFqfHc2F3fVvuAdB8'
 
 export const TWAMM_PROGRAM_ADDRESS =
-    'TWAPR9s1DEhrr8tuFbwEPws5moHXebMotqU85wwVmvU'
+  'TWAPR9s1DEhrr8tuFbwEPws5moHXebMotqU85wwVmvU'
 
 export const FEE_OWNER_ACCOUNT = MASTER_BUILD
   ? 'D7FkvSLw8rq8Ydh43tBViSQuST2sBczEStbWudFhR6L'
@@ -40,6 +40,7 @@ export const MARINADE_REF_ADDRESS =
 console.log(`POOLS_PROGRAM_ADDRESS: ${POOLS_PROGRAM_ADDRESS}`)
 console.log(`STAKING_PROGRAM_ADDRESS: ${STAKING_PROGRAM_ADDRESS}`)
 console.log(`POOLS_V2_PROGRAM_ADDRESS: ${POOLS_V2_PROGRAM_ADDRESS}`)
+console.log(`TWAMM_PROGRAM_ADDRESS: ${TWAMM_PROGRAM_ADDRESS}`)
 
 export const getPoolsProgramAddress = ({
   curveType,
