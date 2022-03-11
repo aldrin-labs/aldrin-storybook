@@ -6,7 +6,7 @@ import AldrinLogo from '@icons/Aldrin.svg'
 
 import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 import { FeedbackPopup } from '../../compositions/Chart/components/UsersFeedbackPopup'
-import { Body, WideContent } from '../Layout'
+import { Body } from '../Layout'
 import { DropDown } from './Dropdown'
 import { RewardsBlock } from './RewardsBlock/RewardsBlock'
 import {
@@ -18,6 +18,7 @@ import {
   NavLink,
   MainLinksWrap,
   MainLinksBlock,
+  Wrap,
 } from './styles'
 import { WalletBlock } from './WalletBlock'
 
@@ -26,7 +27,7 @@ export const Header = () => {
   const [listingPopupOpen, setListingPopupOpen] = useState(false)
   return (
     <Body>
-      <WideContent>
+      <Wrap>
         <HeaderWrap>
           <LogoBlock>
             <LogoLink to="/">
@@ -318,7 +319,7 @@ export const Header = () => {
             <WalletBlock />
           </WalletContainer>
         </HeaderWrap>
-      </WideContent>
+      </Wrap>
       <FeedbackPopup
         open={feedbackPopupOpen}
         onClose={() => {

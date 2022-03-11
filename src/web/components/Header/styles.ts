@@ -19,7 +19,6 @@ export const HeaderWrap = styled.header`
   flex-direction: row;
   height: 60px;
   background: ${COLORS.mainBlack};
-  padding: 0 3.5rem;
 `
 
 export const LogoBlock = styled.div`
@@ -389,5 +388,13 @@ export const BalanceTitle = styled.span`
   font-weight: 600;
   @media (max-width: 1200px) {
     font-size: 0.6125em;
+  }
+`
+
+export const Wrap = styled.div`
+  margin: 0 10px;
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin: 0 48px;
   }
 `
