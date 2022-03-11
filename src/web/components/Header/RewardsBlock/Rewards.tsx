@@ -29,8 +29,6 @@ import SvgIcon from '../../SvgIcon'
 import { DarkTooltip } from '../../TooltipCustom/Tooltip'
 import { Text, InlineText } from '../../Typography'
 import { AVAILABLE_TO_CLAIM_THRESHOLD, rinMint } from './config'
-// import Helmet from './helmet.png'
-
 import { ProgressBar, RewardsLink, Separator, Img } from './styles'
 import { RewardsProps } from './types'
 

@@ -1,13 +1,12 @@
 import React from 'react'
 
 import Astronaut from '@icons/astronaut.webp'
+
 import { useWallet } from '../../../dexUtils/wallet'
 import { ConnectWalletWrapper } from '../../ConnectWalletWrapper'
 import { FlexBlock } from '../../Layout'
 import { Modal } from '../../Modal'
 import { Text } from '../../Typography'
-
-// import Helmet from './helmet.png'
 import { Rewards } from './Rewards'
 import { RewardsContent, Img } from './styles'
 import { RewardsModalProps } from './types'

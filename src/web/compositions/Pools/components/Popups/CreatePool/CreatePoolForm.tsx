@@ -68,9 +68,6 @@ interface EventLike {
   preventDefault: () => void
 }
 
-// const STABLE_POOLS_TOOLTIP =
-//   'Stable pools are designed specifically for pegged assets that trade at a similar price. e.g. mSOL/SOL (SOL-pegged), USDC/USDT (USD-pegged) etc.'
-
 const checkPoolCreated = async (
   pool: PublicKey,
   refetch: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
@@ -400,18 +397,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const farmingRewardAccount = userTokens.find(
     (ut) => ut.address === values.farming.token?.account
   )
-
-  // if (!farmingRewardAccount) {
-  //   return null
-  // }
-
-  // if (!selectedBaseAccount) {
-  //   return null
-  // }
-
-  // if (!selectedQuoteAccount) {
-  //   return null
-  // }
 
   const isLastStep = step === stepsSize
   const prevStep = (e: EventLike) => {

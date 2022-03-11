@@ -16,13 +16,7 @@ const PoolModal: React.FC<CreatePoolProps> = (props) => {
   const [userTokens] = useUserTokenAccounts()
   const [pools] = usePools()
 
-  // if (!userTokens.length) {
-  //   return <Loader />
-  // }
-
   const isTokensLoaded = connected ? userTokens.length > 0 : true
-
-  console.log('connected: ', connected, userTokens.length)
 
   return isTokensLoaded && pools.length ? (
     <CreatePoolForm
