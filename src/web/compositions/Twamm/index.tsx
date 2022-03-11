@@ -48,6 +48,7 @@ import { RunningOrdersWrapper } from './components/RunningOrders/RunningOrders.W
 import GuideImg from './img/guideImg.svg'
 import SdkImg from './img/sdkImg.svg'
 
+const MIN_RIN = 100_000_000_000
 const TwammComponent = ({
   theme,
   getDexTokensPricesQuery,
@@ -95,10 +96,17 @@ const TwammComponent = ({
     onlyUserTickets: true,
   })
 
-  const hasActiveTickets = !!tickets.find(
-    (t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME
-  )
+  const hasActiveTickets =
+    tickets
+      .filter((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
+      .reduce((acc, t) => acc + t.tokensFrozen, 0) > MIN_RIN
 
+  console.log(
+    'stake: ',
+    tickets
+      .filter((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
+      .reduce((acc, t) => acc + t.tokensFrozen, 0)
+  )
   if (!pairSettings.length) {
     return null
   }
@@ -247,7 +255,7 @@ const TwammComponent = ({
                 {' '}
                 No active staking. Please{' '}
                 <Link style={{ color: 'white' }} to="/staking/rin">
-                  stake RIN
+                  stake at least 100 RIN
                 </Link>{' '}
                 first.
               </Text>
