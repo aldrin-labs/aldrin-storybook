@@ -45,13 +45,11 @@ export const CreatePoolModal: React.FC<CreatePoolProps> = (props) => {
   const { onClose, refetchPools, dexTokensPricesMap } = props
   return (
     <Modal open onClose={nop}>
-      {/* <ConnectWalletWrapper> */}
       <PoolModal
         onClose={onClose}
         refetchPools={refetchPools}
         dexTokensPricesMap={dexTokensPricesMap}
       />
-      {/* </ConnectWalletWrapper> */}
     </Modal>
   )
 }
