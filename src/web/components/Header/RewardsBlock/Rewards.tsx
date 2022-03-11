@@ -19,6 +19,7 @@ import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPric
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { estimateTime } from '@core/utils/dateUtils'
 
+import Astronaut from '@icons/astronaut.webp'
 import ClockIcon from '@icons/clock.svg'
 
 import { notify } from '../../../dexUtils/notifications'
@@ -28,8 +29,9 @@ import SvgIcon from '../../SvgIcon'
 import { DarkTooltip } from '../../TooltipCustom/Tooltip'
 import { Text, InlineText } from '../../Typography'
 import { AVAILABLE_TO_CLAIM_THRESHOLD, rinMint } from './config'
-import Helmet from './helmet.png'
-import { ProgressBar, RewardsLink, Separator } from './styles'
+// import Helmet from './helmet.png'
+
+import { ProgressBar, RewardsLink, Separator, Img } from './styles'
 import { RewardsProps } from './types'
 
 const RewardsBlock: React.FC<RewardsProps> = (props) => {
@@ -53,7 +55,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
         alignItems="center"
         justifyContent="space-between"
       >
-        <img src={Helmet} alt="Aldronaut" />
+        <Img src={Astronaut} width="96px" alt="Aldronaut" />
         <br />
         <Text align="center">
           Sorry, your wallet is not eligible for the current airdrop. But don't

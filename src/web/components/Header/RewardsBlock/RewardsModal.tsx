@@ -1,13 +1,15 @@
 import React from 'react'
 
+import Astronaut from '@icons/astronaut.webp'
 import { useWallet } from '../../../dexUtils/wallet'
 import { ConnectWalletWrapper } from '../../ConnectWalletWrapper'
 import { FlexBlock } from '../../Layout'
 import { Modal } from '../../Modal'
 import { Text } from '../../Typography'
-import Helmet from './helmet.png'
+
+// import Helmet from './helmet.png'
 import { Rewards } from './Rewards'
-import { RewardsContent } from './styles'
+import { RewardsContent, Img } from './styles'
 import { RewardsModalProps } from './types'
 
 export const RewardsModal: React.FC<RewardsModalProps> = (props) => {
@@ -25,7 +27,7 @@ export const RewardsModal: React.FC<RewardsModalProps> = (props) => {
               alignItems="center"
               justifyContent="space-between"
             >
-              <img src={Helmet} alt="Aldronaut" width="48px" />
+              <Img src={Astronaut} alt="Aldronaut" width="48px" />
               <br />
               <Text align="center">
                 Connect your wallet to check if you are eligible for the airdrop
