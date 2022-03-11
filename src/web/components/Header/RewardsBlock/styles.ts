@@ -21,6 +21,10 @@ export const RewardsButton = styled(WalletButton)`
   }
 `
 
+export const Img = styled.img`
+  border-radius: ${BORDER_RADIUS.md};
+`
+
 export const RewardsContent = styled(BlockContent)`
   width: 100vw;
   max-width: 440px;

@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import AldrinLogo from '@icons/Aldrin.svg'
 
 // TODO: Refactor popup
 
-import { Body, WideContent } from '../Layout'
+import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
+import { FeedbackPopup } from '../../compositions/Chart/components/UsersFeedbackPopup'
+import { Body } from '../Layout'
 import { DropDown } from './Dropdown'
 import { RewardsBlock } from './RewardsBlock/RewardsBlock'
 import {
@@ -16,13 +18,16 @@ import {
   NavLink,
   MainLinksWrap,
   MainLinksBlock,
+  Wrap,
 } from './styles'
 import { WalletBlock } from './WalletBlock'
 
 export const Header = () => {
+  const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
+  const [listingPopupOpen, setListingPopupOpen] = useState(false)
   return (
     <Body>
-      <WideContent>
+      <Wrap>
         <HeaderWrap>
           <LogoBlock>
             <LogoLink to="/">
@@ -241,6 +246,71 @@ export const Header = () => {
                   </svg>
                   Roadmap
                 </NavLink>
+                <NavLink
+                  left
+                  as="span"
+                  onClick={() => setFeedbackPopupOpen(true)}
+                >
+                  <svg
+                    width="10"
+                    height="11"
+                    viewBox="0 0 10 11"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M5.22917 0.083313C2.68875 0.083313 0.625 2.14706 0.625 4.68748C0.625 7.2279 2.68875 9.29165 5.22917 9.29165H5.5V10.9166C8.1325 9.64915 9.83333 7.12498 9.83333 4.68748C9.83333 2.14706 7.76958 0.083313 5.22917 0.083313ZM5.77083 7.93748H4.6875V6.85415H5.77083V7.93748ZM5.9875 5.34831C5.98208 5.35373 5.97667 5.36456 5.97125 5.3754C5.94417 5.41873 5.91708 5.46206 5.89542 5.5054C5.88458 5.52165 5.87917 5.54331 5.87375 5.56498C5.8575 5.6029 5.84125 5.64081 5.83042 5.67873C5.7925 5.79248 5.77625 5.91165 5.77625 6.04706H4.6875C4.6875 5.77081 4.73083 5.5379 4.79583 5.3429C4.79583 5.33748 4.79583 5.33206 4.80125 5.32665C4.80667 5.30498 4.82292 5.29415 4.82833 5.27248C4.86083 5.18581 4.89875 5.10998 4.9475 5.03415C4.96375 5.00706 4.98542 4.97998 5.00167 4.9529C5.01792 4.93123 5.02875 4.90415 5.045 4.8879L5.05042 4.89331C5.50542 4.29748 6.2475 4.11331 6.30708 3.44165C6.35583 2.91081 5.97667 2.39623 5.45667 2.2879C4.89333 2.16873 4.38417 2.49915 4.21083 2.98123C4.135 3.17623 3.95625 3.33331 3.73417 3.33331H3.62583C3.30083 3.33331 3.0625 3.01373 3.15458 2.69956C3.30636 2.20146 3.63236 1.77463 4.07298 1.49713C4.51359 1.21964 5.03937 1.11001 5.55417 1.18831C6.46958 1.32373 7.20083 2.07665 7.35792 2.99206C7.59625 4.31373 6.475 4.63331 5.9875 5.34831Z"
+                      fill="#C1C1C1"
+                    />
+                  </svg>
+                  Feedback &amp; Support
+                </NavLink>
+                <NavLink
+                  left
+                  as="span"
+                  onClick={() => setListingPopupOpen(true)}
+                >
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 13 13"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2.70833 11.375H10.2917C10.8891 11.375 11.375 10.8891 11.375 10.2917V2.70833C11.375 2.11087 10.8891 1.625 10.2917 1.625H2.70833C2.11087 1.625 1.625 2.11087 1.625 2.70833V10.2917C1.625 10.8891 2.11087 11.375 2.70833 11.375ZM2.70833 2.70833H10.2917L10.2922 10.2917H2.70833V2.70833Z"
+                      fill="#C1C1C1"
+                    />
+                    <path
+                      d="M7.3413 6.31475L5.17463 5.23142L3.84863 7.88287L4.81822 8.36712L5.65888 6.68525L7.82555 7.76858L9.15155 5.11712L8.18197 4.63287L7.3413 6.31475Z"
+                      fill="#C1C1C1"
+                    />
+                  </svg>
+                  Request Listing
+                </NavLink>
+                <NavLink left to="/pools/create">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 13 13"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6.49984 5.41665V1.08331M5.4165 4.33331L6.49984 5.41665L7.58317 4.33331H5.4165ZM8.6665 7.85415L9.74984 8.93748L10.8332 7.85415H8.6665ZM2.1665 7.85415L3.24984 8.93748L4.33317 7.85415H2.1665Z"
+                      stroke="#C1C1C1"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M9.74992 8.90144V5.31832C9.74992 5.031 9.86406 4.75545 10.0672 4.55229C10.2704 4.34912 10.5459 4.23499 10.8333 4.23499H11.9166M3.24992 8.90144V5.31832C3.24992 5.031 3.13578 4.75545 2.93262 4.55229C2.72945 4.34912 2.4539 4.23499 2.16659 4.23499H1.08325M1.08325 9.74996V10.8333C1.08325 11.1206 1.19739 11.3962 1.40055 11.5993C1.60372 11.8025 1.87927 11.9166 2.16659 11.9166H10.8333C11.1206 11.9166 11.3961 11.8025 11.5993 11.5993C11.8024 11.3962 11.9166 11.1206 11.9166 10.8333V9.74996"
+                      stroke="#C1C1C1"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  Create Pool
+                </NavLink>
               </DropDown>
             </MainLinksBlock>
           </MainLinksWrap>
@@ -249,7 +319,19 @@ export const Header = () => {
             <WalletBlock />
           </WalletContainer>
         </HeaderWrap>
-      </WideContent>
+      </Wrap>
+      <FeedbackPopup
+        open={feedbackPopupOpen}
+        onClose={() => {
+          setFeedbackPopupOpen(false)
+        }}
+      />
+      <ListingRequestPopup
+        open={listingPopupOpen}
+        onClose={() => {
+          setListingPopupOpen(false)
+        }}
+      />
     </Body>
   )
 }
