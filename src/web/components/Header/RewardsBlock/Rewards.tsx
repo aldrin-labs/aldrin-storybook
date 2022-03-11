@@ -27,7 +27,7 @@ import { FlexBlock } from '../../Layout'
 import SvgIcon from '../../SvgIcon'
 import { DarkTooltip } from '../../TooltipCustom/Tooltip'
 import { Text, InlineText } from '../../Typography'
-import { rinMint, AVAILABLE_TO_CLAIM_THRESHOLD } from './config'
+import { AVAILABLE_TO_CLAIM_THRESHOLD, rinMint } from './config'
 import Helmet from './helmet.png'
 import { ProgressBar, RewardsLink, Separator } from './styles'
 import { RewardsProps } from './types'
@@ -42,6 +42,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const { wallet } = useWallet()
   const connection = useConnection()
   const [data, reloadVesting] = useUserVestings()
+
   const rinVesting = data.find((v) => v.mint.equals(rinMint))
   const rinAccount = useAssociatedTokenAccount(RIN_MINT)
 
@@ -75,13 +76,21 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const claimed = startBalance - notClaimed
 
   const duration = rinVesting.endTs - rinVesting.startTs
+
   const now = Date.now() / 1000
   const timePassed = Math.max(0, now - rinVesting.startTs)
   const timeProgress = Math.min(timePassed / duration, 1)
   const secondsLeft = rinVesting.endTs - now
   const timeLeft = estimateTime(Math.max(secondsLeft, 0))
 
-  const availableToClaimTotal = startBalance * timeProgress
+  const periodDuration = duration / rinVesting.periodCount
+  const tokensPerPeriod = startBalance / rinVesting.periodCount
+  const periodsPassed = Math.min(
+    rinVesting.periodCount,
+    Math.floor(timePassed / periodDuration)
+  )
+
+  const availableToClaimTotal = periodsPassed * tokensPerPeriod
   const availableToClaim = availableToClaimTotal - claimed
 
   const claim = async () => {
