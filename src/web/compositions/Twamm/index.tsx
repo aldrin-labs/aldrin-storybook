@@ -99,7 +99,7 @@ const TwammComponent = ({
   const hasActiveTickets =
     tickets
       .filter((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
-      .reduce((acc, t) => acc + t.tokensFrozen, 0) > MIN_RIN
+      .reduce((acc, t) => acc + t.tokensFrozen, 0) >= MIN_RIN
 
   console.log(
     'stake: ',
