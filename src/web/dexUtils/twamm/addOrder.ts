@@ -101,10 +101,10 @@ export const addOrder = async ({
   const userToken = allTokensData.find(
     (v) => v.mint === mintFrom.toString()
   )?.address
-  let userTokenAccount: PublicKey | undefined
+  let userTokenAccount: string | undefined
 
   if (userToken) {
-    userTokenAccount = new PublicKey(userToken)
+    userTokenAccount = userToken
   }
   // if SOL - create new token address
   if (
@@ -164,7 +164,7 @@ export const addOrder = async ({
     timeLength,
     {
       accounts: {
-        pairSettings: new PublicKey(pairSettings.publicKey),
+        pairSettings: pairSettings.publicKey,
         orders: orderArrayFiltered[0].pubkey || orderArrayFiltered[0].publicKey,
         userTokenAccount,
         userAuthority: wallet.publicKey?.toString(),
@@ -172,9 +172,9 @@ export const addOrder = async ({
           newTwammFromTokenVault || orderArrayFiltered[0].twammFromTokenVault,
         feeAccount:
           side === 'ask'
-            ? new PublicKey(pairSettings.baseTokenFeeAccount)
+            ? pairSettings.baseTokenFeeAccount
             : side === 'bid'
-            ? new PublicKey(pairSettings.quoteTokenFeeAccount)
+            ? pairSettings.quoteTokenFeeAccount
             : null,
         pyth: pairSettings.pyth,
         tokenProgram: TOKEN_PROGRAM_ID,
