@@ -1,4 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client'
+
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { Pool, PoolV2 } from '@sb/dexUtils/common/types'
 import { TokenInfo } from '@sb/dexUtils/types'

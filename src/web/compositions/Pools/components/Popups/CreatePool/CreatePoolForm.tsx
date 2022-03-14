@@ -92,6 +92,15 @@ const checkPoolCreated = async (
 
 const USDC_MINT = ALL_TOKENS_MINTS_MAP.USDC.toString()
 const SOL_WRAP_MINT = ALL_TOKENS_MINTS_MAP.SOL.toString()
+// Try to set SOL, otherwise - any
+const findBaseToken = (tokens: Token[]): Token => {
+  const sol = tokens.find((t) => t.mint === SOL_WRAP_MINT)
+  if (sol) {
+    return sol
+  }
+  return tokens[1]
+}
+
 // Try to set USDC, otherwise - Sol
 const findQuoteToken = (tokens: Token[]): Token => {
   const usdc = tokens.find((t) => t.mint === USDC_MINT)
@@ -129,7 +138,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
   const [initialValues] = useState<CreatePoolFormType>({
     price: '',
-    baseToken: tokens[0],
+    baseToken: findBaseToken(tokens),
     quoteToken: findQuoteToken(tokens),
     stableCurve: false,
     lockInitialLiquidity: false,
