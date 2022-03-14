@@ -157,6 +157,7 @@ export const addOrder = async ({
     throw new Error('No user token account!')
   }
 
+  console.log('userAuthority: ', wallet.publicKey?.toString())
   const addOrderInstruction = await program.instruction.addOrder(
     sideSelected,
     amount,
@@ -166,7 +167,7 @@ export const addOrder = async ({
         pairSettings: new PublicKey(pairSettings.publicKey),
         orders: orderArrayFiltered[0].pubkey || orderArrayFiltered[0].publicKey,
         userTokenAccount,
-        userAuthority: wallet.publicKey,
+        userAuthority: wallet.publicKey?.toString(),
         twammFromTokenVault:
           newTwammFromTokenVault || orderArrayFiltered[0].twammFromTokenVault,
         feeAccount:
