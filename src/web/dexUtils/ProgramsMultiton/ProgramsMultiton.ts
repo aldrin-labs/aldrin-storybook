@@ -92,7 +92,7 @@ class ProgramsMultiton {
         : programAddress === TWAMM_PROGRAM_ADDRESS
         ? (new Program019(
             programIdl as Idl019,
-            new PublicKey(TWAMM_PROGRAM_ADDRESS),
+            TWAMM_PROGRAM_ADDRESS,
             new Provider019(
               connection,
               // walletAdapterToWallet(wallet),
