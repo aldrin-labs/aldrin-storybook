@@ -4,12 +4,12 @@ import { MASTER_BUILD } from '@core/utils/config'
 
 export const POOLS_PROGRAM_ADDRESS = MASTER_BUILD
   ? 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
-  : 'AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6'
+  : 'RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx'
 // RinKtB5mZkTYfVvhCyLrwGxaYsfXruZg4r4AmzPM4wx
 
 export const POOLS_V2_PROGRAM_ADDRESS = MASTER_BUILD
   ? 'CURVGoZn8zycx6FXwwevgBTB2gVvdbGTEpvMJDbgs2t4'
-  : 'CURVGoZn8zycx6FXwwevgBTB2gVvdbGTEpvMJDbgs2t4'
+  : 'RinFPaym3xbnndu4SfQPAt1NzQWTfqL34cvf9eafakk'
 // RinFPaym3xbnndu4SfQPAt1NzQWTfqL34cvf9eafakk
 
 export const MARKET_ORDER_PROGRAM_ADDRESS =
@@ -17,7 +17,7 @@ export const MARKET_ORDER_PROGRAM_ADDRESS =
 
 export const STAKING_PROGRAM_ADDRESS = MASTER_BUILD
   ? 'rinajRPUgiiW2rG6uieXvcNNQNaWr9ZcMmqo28VvXfa'
-  : 'rinajRPUgiiW2rG6uieXvcNNQNaWr9ZcMmqo28VvXfa'
+  : 'FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX'
 // FhcygzxWnn782qsSryBeZn2kXZ3sAfCJ8NEoFjBeZsVX
 
 export const VESTING_PROGRAM_ADDRESS =
