@@ -167,7 +167,7 @@ export const addOrder = async ({
         pairSettings: pairSettings.publicKey,
         orders: orderArrayFiltered[0].pubkey || orderArrayFiltered[0].publicKey,
         userTokenAccount,
-        userAuthority: wallet.publicKey?.toString(),
+        userAuthority: wallet.publicKey,
         twammFromTokenVault:
           newTwammFromTokenVault || orderArrayFiltered[0].twammFromTokenVault,
         feeAccount:

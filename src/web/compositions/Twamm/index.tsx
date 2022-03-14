@@ -101,12 +101,12 @@ const TwammComponent = ({
       .filter((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
       .reduce((acc, t) => acc + t.tokensFrozen, 0) >= MIN_RIN
 
-  console.log(
-    'stake: ',
-    tickets
-      .filter((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
-      .reduce((acc, t) => acc + t.tokensFrozen, 0)
-  )
+  // console.log(
+  //   'stake: ',
+  //   tickets
+  //     .filter((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
+  //     .reduce((acc, t) => acc + t.tokensFrozen, 0)
+  // )
   if (!pairSettings.length) {
     return null
   }
