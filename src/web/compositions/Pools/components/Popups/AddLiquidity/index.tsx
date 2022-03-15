@@ -86,7 +86,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   const [quoteAmount, setQuoteAmount] = useState<string | number>('')
   const [baseAmount, setBaseAmount] = useState<string | number>('')
 
-  const [autoRebalanceEnabled, setAutoRebalanceEnabled] = useState(true)
+  const [autoRebalanceEnabled, setAutoRebalanceEnabled] = useState(!isPoolEmpty)
 
   const setBaseAmountWithQuote = (baseAmount: string | number) => {
     const quoteAmount = stripDigitPlaces(
@@ -186,8 +186,8 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     isBaseTokenSOL && isNativeSOLSelected
       ? maxBaseAmount - +baseAmount < 0.01
       : isQuoteTokenSOL && isNativeSOLSelected
-        ? maxQuoteAmount - +quoteAmount < 0.01
-        : false
+      ? maxQuoteAmount - +quoteAmount < 0.01
+      : false
 
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
     selectedPool,
@@ -326,11 +326,14 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
             +
           </Text>
           <Row>
-            <Row onClick={() => setAutoRebalanceEnabled(!autoRebalanceEnabled)}>
-              <SCheckbox
-                onChange={() => { }}
-                checked={isPoolEmpty ? false : autoRebalanceEnabled}
-              />
+            <Row
+              onClick={() =>
+                !isPoolEmpty
+                  ? setAutoRebalanceEnabled(!autoRebalanceEnabled)
+                  : {}
+              }
+            >
+              <SCheckbox onChange={() => {}} checked={autoRebalanceEnabled} />
               <Text style={{ cursor: 'pointer' }}>
                 Auto-rebalance uneven amounts
               </Text>
@@ -376,21 +379,21 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       {(isNeedToLeftSomeSOL ||
         baseAmount > maxBaseAmount ||
         quoteAmount > maxQuoteAmount) && (
-          <RowContainer margin="2rem 0 0 0">
-            <AttentionComponent
-              text={
-                isNeedToLeftSomeSOL
-                  ? 'Sorry, but you need to leave some SOL (at least 0.01 SOL) on your wallet SOL account to successfully execute further transactions.'
-                  : baseAmount > maxBaseAmount
-                    ? `You entered more token ${baseSymbol} amount than you have.`
-                    : quoteAmount > maxQuoteAmount
-                      ? `You entered more ${quoteSymbol} amount than you have.`
-                      : ''
-              }
-              blockHeight="8rem"
-            />
-          </RowContainer>
-        )}
+        <RowContainer margin="2rem 0 0 0">
+          <AttentionComponent
+            text={
+              isNeedToLeftSomeSOL
+                ? 'Sorry, but you need to leave some SOL (at least 0.01 SOL) on your wallet SOL account to successfully execute further transactions.'
+                : baseAmount > maxBaseAmount
+                ? `You entered more token ${baseSymbol} amount than you have.`
+                : quoteAmount > maxQuoteAmount
+                ? `You entered more ${quoteSymbol} amount than you have.`
+                : ''
+            }
+            blockHeight="8rem"
+          />
+        </RowContainer>
+      )}
 
       <PriceImpactWarningBlock
         justify="space-between"
@@ -558,8 +561,8 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
                 result === 'success'
                   ? 'Deposit successful'
                   : result === 'failed'
-                    ? 'Deposit failed, please try again or contact us in telegram.'
-                    : 'Deposit cancelled',
+                  ? 'Deposit failed, please try again or contact us in telegram.'
+                  : 'Deposit cancelled',
             })
 
             refreshPoolBalances()
@@ -594,7 +597,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenA)}
         open={isSelectorForSeveralBaseAddressesOpen}
         close={() => setIsSelectorForSeveralBaseAddressesOpen(false)}
-        selectTokenMintAddress={() => { }}
+        selectTokenMintAddress={() => {}}
         selectTokenAddressFromSeveral={setBaseTokenAddressFromSeveral}
       />
       <SelectSeveralAddressesPopup
@@ -602,7 +605,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         tokens={allTokensData.filter((el) => el.mint === selectedPool.tokenB)}
         open={isSelectorForSeveralQuoteAddressesOpen}
         close={() => setIsSelectorForSeveralQuoteAddressesOpen(false)}
-        selectTokenMintAddress={() => { }}
+        selectTokenMintAddress={() => {}}
         selectTokenAddressFromSeveral={setQuoteTokenAddressFromSeveral}
       />
     </DialogWrapper>
