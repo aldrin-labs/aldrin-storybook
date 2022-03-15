@@ -9,7 +9,6 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DAY } from '@core/utils/dateUtils'
 
 import { usePlutoniansStaking } from '../../../../dexUtils/staking/hooks'
-import { REWARD_APR_DENOMINATOR } from '../../../PlutoniansStaking/config'
 import {
   ContentBlock,
   StakingBlock,
@@ -46,11 +45,12 @@ export const PlutoniasStakingBlock: React.FC = () => {
               <NumberWithLabel
                 size={FONT_SIZES.es}
                 value={null}
-                label={`${
-                  (parseInt(tier?.account.apr.toString() || '0', 10) /
-                    REWARD_APR_DENOMINATOR) *
-                  100
-                }% APR  `}
+                // label={`${
+                //   (parseInt(tier?.account.apr.toString() || '0', 10) /
+                //     REWARD_APR_DENOMINATOR) *
+                //   100
+                // }% APR  `}
+                label="APY + NFT"
                 center
               />
             </ContentBlock>
@@ -68,11 +68,12 @@ export const PlutoniasStakingBlock: React.FC = () => {
               <NumberWithLabel
                 size={FONT_SIZES.es}
                 value={null}
-                label={`${
-                  (parseInt(tier?.account.apr.toString() || '0', 10) /
-                    REWARD_APR_DENOMINATOR) *
-                  100
-                }% APR  `}
+                // label={`${
+                //   (parseInt(tier?.account.apr.toString() || '0', 10) /
+                //     REWARD_APR_DENOMINATOR) *
+                //   100
+                // }% APR  `}
+                label="APY + NFT"
                 center
               />
             </ContentBlock>
