@@ -258,6 +258,7 @@ export const FormItemFull = styled(FormItem)`
 
 export const InputWrapper = styled.div`
   flex: 1;
+  position: relative;
 `
 
 export const StakingInput = styled(Input)`

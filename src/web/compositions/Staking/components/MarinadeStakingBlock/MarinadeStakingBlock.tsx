@@ -55,7 +55,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
           />
         </RowContainer>
         <ContentBlock>
-          <RowContainer margin="0 0 2rem 0" justify="space-between">
+          <RowContainer margin="0 0 1em 0" justify="space-between">
             <InlineText color="primaryGray" size="sm">
               Total Staked
             </InlineText>
@@ -84,13 +84,13 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
         <Line />{' '}
         <StretchedContent>
           <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
+            <Row justify="space-between" margin="0 0 1em 0">
               <InlineText color="primaryGray" size="sm">
                 mSOL Price
               </InlineText>{' '}
               <DarkTooltip title="mSOL/SOL price increases every epoch because staking rewards are accumulated into the SOL staked pool. Therefore, the ratio is not 1:1. This ratio only goes up with time.">
                 <span>
-                  <SvgIcon src={InfoIcon} width="1.5rem" />
+                  <SvgIcon src={InfoIcon} width="0.75em" />
                 </span>
               </DarkTooltip>
             </Row>
@@ -108,23 +108,29 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             </InlineText>
           </ContentBlock>
           <RelativeContentBlock width="48%">
-            <Filler $width={mSolInfo?.epochInfo.epochPct || 0} />
-            <Row justify="space-between" margin="0 0 2rem 0">
-              <InlineText color="primaryGray" size="sm">
-                Epoch
+            <RowContainer
+              direction="column"
+              align="flex-start"
+              style={{ position: 'absolute', padding: '1em' }}
+            >
+              <RowContainer justify="space-between" margin="0 0 1em 0">
+                <InlineText color="primaryGray" size="sm">
+                  Epoch
+                </InlineText>{' '}
+                <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
+                  <span>
+                    <SvgIcon src={InfoIcon} width="0.75em" />
+                  </span>
+                </DarkTooltip>
+              </RowContainer>
+              <InlineText size="xmd" weight={700}>
+                {mSolInfo?.epochInfo.epochPct
+                  ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
+                  : '---'}
+                %
               </InlineText>{' '}
-              <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
-                <span>
-                  <SvgIcon src={InfoIcon} width="1.5rem" />
-                </span>
-              </DarkTooltip>
-            </Row>
-            <InlineText size="xmd" weight={700}>
-              {mSolInfo?.epochInfo.epochPct
-                ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
-                : '---'}
-              %
-            </InlineText>
+            </RowContainer>
+            <Filler $width={mSolInfo?.epochInfo.epochPct || 0} />
           </RelativeContentBlock>
         </StretchedContent>
         <RowContainer>

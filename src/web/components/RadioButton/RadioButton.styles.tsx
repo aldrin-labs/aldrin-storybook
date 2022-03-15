@@ -38,24 +38,30 @@ const Checkmark = styled.span`
     content: '';
     position: absolute;
     display: none;
-    top: 1.5px;
-    left: 1.5px;
-    width: 8px;
-    height: 8px;
+    top: 2px;
+    left: 2px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background-color: ${COLORS.newGreen};
   }
 `
 
-const Input = styled.input`
+const Input = styled.span<{ checked: boolean }>`
   display: none;
-  &:checked ~ ${Checkmark} {
+  ${(props: { checked: boolean }) =>
+    props.checked
+      ? `
+  & ~ ${Checkmark} {
     border: 1px solid ${COLORS.newGreen};
     transition: all 0.25s ease-in-out;
+
+    &:after {
+      display: block;
+    }
   }
-  &:checked ~ ${Checkmark}:after {
-    display: block;
-  }
+  `
+      : ''}
 `
 
 export { Label, Input, Checkmark, Container, AttributeContainer }

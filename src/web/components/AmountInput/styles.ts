@@ -11,6 +11,7 @@ export const AmountInputElement = styled(Input)`
   height: 4.25em;
   background-color: ${COLORS.cardsBack};
   border: 0.1rem solid ${COLORS.background};
+  user-select: none;
 
   &:focus {
     border: 0.1rem solid ${COLORS.gray2};

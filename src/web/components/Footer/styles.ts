@@ -1,4 +1,9 @@
-import { COLORS, FONT_SIZES, BORDER_RADIUS } from '@variables/variables'
+import {
+  COLORS,
+  FONT_SIZES,
+  BORDER_RADIUS,
+  BREAKPOINTS,
+} from '@variables/variables'
 import styled from 'styled-components'
 
 import { Button } from '../Button'
@@ -8,12 +13,13 @@ export const FooterContainer = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
-  padding: 1em 0;
+  padding: 3.5em;
+  flex-wrap: nowrap;
 
-  @media (max-width: 1000px) {
-    display: none;
+  @media (max-width: ${BREAKPOINTS.md}) {
+    flex-direction: column;
   }
 `
 export const MediaContainer = styled(Row)`
@@ -30,13 +36,21 @@ export const FooterButton = styled(Button)`
   background: ${COLORS.cardsBack};
   border: none;
   color: ${COLORS.gray3};
-  border-radius: ${BORDER_RADIUS.lg};
+  border-radius: ${BORDER_RADIUS.md};
   padding: 0.5em;
   font-size: ${FONT_SIZES.lg};
-  margin: 0 1rem;
+  margin: 0 0.5em;
 
   &:hover {
     background: ${COLORS.primaryBlue};
     color: ${COLORS.primaryWhite};
+  }
+
+  &:last-child {
+    margin: 0 0 0 1rem;
+  }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    display: none;
   }
 `
