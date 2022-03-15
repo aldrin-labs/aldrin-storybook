@@ -16,12 +16,25 @@ const PoolModal: React.FC<CreatePoolProps> = (props) => {
   const [userTokens] = useUserTokenAccounts()
   const [pools] = usePools()
 
+  const poolTokens = [
+    ...new Set([
+      ...pools.map((p) => p.baseTokenMint.toString()),
+      ...pools.map((p) => p.quoteTokenMint.toString()),
+    ]).values(),
+  ].map((mint) => ({
+    mint,
+    address: '',
+    symbol: '',
+    amount: 0,
+    decimals: 0,
+  }))
   const isTokensLoaded = connected ? userTokens.length > 0 : true
+  const isPoolTokensLoaded = connected ? true : poolTokens.length > 0
 
-  return isTokensLoaded && pools.length ? (
+  return isTokensLoaded && isPoolTokensLoaded && pools.length ? (
     <CreatePoolForm
       pools={pools}
-      userTokens={userTokens}
+      userTokens={connected ? userTokens : poolTokens}
       onClose={onClose}
       refetchPools={refetchPools}
       dexTokensPricesMap={dexTokensPricesMap}
