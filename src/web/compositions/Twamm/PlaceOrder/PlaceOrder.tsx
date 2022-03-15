@@ -19,6 +19,7 @@ import { TokenAddressesPopup } from '@sb/compositions/Swap/components/TokenAddre
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
+import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { addOrder } from '@sb/dexUtils/twamm/addOrder'
 import { PairSettings } from '@sb/dexUtils/twamm/types'
@@ -35,6 +36,8 @@ import Arrows from '@icons/switchArrows.svg'
 
 // TODO: imports
 
+import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
+import { DEFAULT_FARMING_TICKET_END_TIME } from '../../../dexUtils/common/config'
 import { Row, RowContainer } from '../../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../../Pools/index.styles'
 import { getTokenDataByMint } from '../../Pools/utils'
@@ -43,6 +46,8 @@ import OrderStats from './components/OrderStats/OrderStats'
 import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { DEFAULT_ORDER_LENGTH } from './config'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
+
+const MIN_RIN = 100_000_000_000
 
 const PlaceOrder = ({
   theme,
@@ -159,7 +164,20 @@ const PlaceOrder = ({
 
   const needEnterAmount = baseAmount == 0 || quoteAmount == 0
 
+  const [tickets] = useAllStakingTickets({
+    wallet,
+    connection,
+    walletPublicKey: wallet.publicKey,
+    onlyUserTickets: true,
+  })
+
+  const hasActiveTickets =
+    tickets
+      .filter((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
+      .reduce((acc, t) => acc + t.tokensFrozen, 0) >= MIN_RIN
+
   const isButtonDisabled =
+    !hasActiveTickets ||
     isTokenABalanceInsufficient ||
     baseAmount == 0 ||
     quoteAmount == 0 ||
@@ -321,6 +339,7 @@ const PlaceOrder = ({
     // remove loader
     setIsOrderInProgress(false)
   }
+
   return (
     <SwapPageContainer
       direction="column"
@@ -420,27 +439,8 @@ const PlaceOrder = ({
                 placingFee={placingFee}
                 rinTokenPrice={rinTokenPrice}
               />
-              {!publicKey ? (
-                <BtnCustom
-                  theme={theme}
-                  onClick={() => setIsConnectWalletPopupOpen(true)}
-                  needMinWidth={false}
-                  btnWidth="100%"
-                  height="5.5rem"
-                  fontSize="1.4rem"
-                  padding="2rem 8rem"
-                  borderRadius="1.1rem"
-                  borderColor={theme.palette.blue.serum}
-                  btnColor="#fff"
-                  backgroundColor={theme.palette.blue.serum}
-                  textTransform="none"
-                  margin="2rem 0 0 0"
-                  transition="all .4s ease-out"
-                  style={{ whiteSpace: 'nowrap' }}
-                >
-                  Connect wallet
-                </BtnCustom>
-              ) : (
+
+              <ConnectWalletWrapper size="button-only">
                 <BtnCustom
                   btnWidth="100%"
                   height="5.5rem"
@@ -455,13 +455,15 @@ const PlaceOrder = ({
                       : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
                   }
                   textTransform="none"
-                  margin="2rem 0 0 0"
+                  margin="0.5rem 0 0 0"
                   transition="all .4s ease-out"
                   disabled={isButtonDisabled}
                   onClick={placeOrder}
                 >
                   {isOrderInProgress ? (
                     <Loader />
+                  ) : !hasActiveTickets ? (
+                    'Please stake at least 100 RIN'
                   ) : isTokenABalanceInsufficient ? (
                     `Insufficient ${
                       isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
@@ -472,7 +474,7 @@ const PlaceOrder = ({
                     'Place Time-Weighted Average Order'
                   )}
                 </BtnCustom>
-              )}
+              </ConnectWalletWrapper>
             </OrderStatsWrapper>
           </Cell>
         </Row>

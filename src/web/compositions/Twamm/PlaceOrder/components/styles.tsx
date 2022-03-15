@@ -20,6 +20,6 @@ export const SelectorRow = styled(({ ...props }) => (
 
 export const StyledText = styled(({ ...props }) => <Text {...props} />)`
   margin: 0 0.5rem;
-  font-size: 2em;
+  font-size: 1em;
   font-family: Avenir Next Demi;
 `
