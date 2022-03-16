@@ -29,6 +29,8 @@ export const Page = styled(Body)`
   background: ${(props: { $background?: keyof typeof COLORS }) =>
     COLORS[props.$background || 'mainBlack']};
   flex: 1;
+  display: flex;
+  flex-direction: column;
 `
 
 export const BlackPage = styled(Page)`
@@ -52,7 +54,7 @@ export const Content = styled.div`
 
 export const WideContent = styled(Content)`
   @media (min-width: ${LAYOUT_WIDTH}px) {
-    max-width: none;
+    max-width: calc(100% - 20px);
     margin: 0 10px;
   }
   @media (min-width: ${BREAKPOINTS.xxl}) {

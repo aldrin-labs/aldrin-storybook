@@ -5,9 +5,26 @@ import React, { useState } from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Page } from '@sb/components/Layout'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
+import { useConnection } from '@sb/dexUtils/connection'
+import { notify } from '@sb/dexUtils/notifications'
+import {
+  useMarinadeSdk,
+  useMarinadeStakingInfo,
+} from '@sb/dexUtils/staking/hooks'
+import {
+  useAssociatedTokenAccount,
+  useUserTokenAccounts,
+} from '@sb/dexUtils/token/hooks'
+import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
+import { MSOL_MINT } from '@sb/dexUtils/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   stripByAmount,
@@ -16,23 +33,6 @@ import {
 
 import InfoIcon from '@icons/info.svg'
 
-import { queryRendererHoc } from '../../../../../core/src/components/QueryRenderer'
-import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
-import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
-import { useConnection } from '../../dexUtils/connection'
-import { notify } from '../../dexUtils/notifications'
-import {
-  useMarinadeSdk,
-  useMarinadeStakingInfo,
-} from '../../dexUtils/staking/hooks'
-import {
-  useAssociatedTokenAccount,
-  useUserTokenAccounts,
-} from '../../dexUtils/token/hooks'
-import { signAndSendSingleTransaction } from '../../dexUtils/transactions'
-import { MSOL_MINT } from '../../dexUtils/utils'
-import { useWallet } from '../../dexUtils/wallet'
-import { toMap } from '../../utils'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { InputWrapper } from '../RinStaking/styles'
 import {
@@ -64,6 +64,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
   const [loading, setLoading] = useState(false)
 
   const [amount, setAmount] = useState('')
+  const [amountGet, setAmountGet] = useState('')
 
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -83,17 +84,32 @@ const Block: React.FC<StakingBlockProps> = (props) => {
 
   const mSolPrice = mSolInfo?.stats.m_sol_price || 1
 
-  const amountGet = isStakeModeOn
-    ? parseFloat(amount) / mSolPrice
-    : parseFloat(amount) * mSolPrice
+  // const amountGet = isStakeModeOn
+  //   ? parseFloat(amount) / mSolPrice
+  //   : parseFloat(amount) * mSolPrice
 
   const solPrice = pricesMap.get('SOL')?.price || 0
   const usdValue = isStakeModeOn
     ? parseFloat(amount) * solPrice
-    : amountGet * solPrice
+    : parseFloat(amountGet) * solPrice
+
+  const setAmountFrom = (v: string) => {
+    const value = parseFloat(v)
+    const newGetValue = isStakeModeOn ? value / mSolPrice : value * mSolPrice
+    setAmount(v)
+    setAmountGet(stripByAmount(newGetValue || 0, 4))
+  }
+
+  const setAmountTo = (v: string) => {
+    const value = parseFloat(v)
+    const newFromValue = isStakeModeOn ? value * mSolPrice : value / mSolPrice
+    setAmountGet(v)
+    setAmount(stripByAmount(newFromValue || 0, 4))
+  }
 
   const toggleStakeMode = (value: boolean) => {
     setAmount('0')
+    setAmountGet('0')
     setIsStakeModeOn(value)
   }
 
@@ -247,7 +263,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                 {' '}
                 <AmountInput
                   value={amount}
-                  onChange={(v) => setAmount(v)}
+                  onChange={setAmountFrom}
                   placeholder="0"
                   name="amountFrom"
                   amount={fromWallet?.amount || 0}
@@ -259,11 +275,10 @@ const Block: React.FC<StakingBlockProps> = (props) => {
             <RowContainer margin="2rem 0">
               <InputWrapper style={{ position: 'relative' }}>
                 <AmountInput
-                  value={`${stripByAmount(amountGet || 0, 4)}`}
-                  onChange={() => {}}
+                  value={amountGet}
+                  onChange={setAmountTo}
                   placeholder="0"
                   name="amountTo"
-                  disabled
                   amount={toWallet?.amount || 0}
                   mint={toWallet?.mint || ''}
                   label="Receive"

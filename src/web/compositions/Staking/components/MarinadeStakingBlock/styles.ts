@@ -25,9 +25,6 @@ export const AbsoluteImg = styled.img`
 `
 
 export const Filler = styled.div<FillerProps>`
-  position: absolute;
-  left: 0;
-  top: 0;
   background: rgba(38, 159, 19, 0.2);
   border-radius: ${BORDER_RADIUS.md};
   width: ${(props: FillerProps) => props.$width}%;
@@ -36,4 +33,5 @@ export const Filler = styled.div<FillerProps>`
 
 export const RelativeContentBlock = styled(ContentBlock)`
   position: relative;
+  padding: 0;
 `

@@ -84,6 +84,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
             type="submit"
             disabled={isUnstakeDisabled}
             $loading={loading.unstake}
+            style={{ padding: '1.75em 1.3em' }}
           >
             Unstake
           </UnStakingFormButton>

@@ -154,7 +154,7 @@ export const waitTransactionConfirmation = async (
 
   const rawConnection = connection.getConnection()
 
-  const [wsPromise, wsCancel] = onSignature(txId, rawConnection, commitment)
+  // const [wsPromise, wsCancel] = onSignature(txId, rawConnection, commitment)
   const [tPromise, timeoutCanceler] = timeoutPromise(timeout)
   const [pollPromise, pollCancell] = pollTransactionStatus(
     txId,
@@ -166,12 +166,16 @@ export const waitTransactionConfirmation = async (
 
   const cancelAll = () => {
     timeoutCanceler()
-    wsCancel()
+    // wsCancel()
     pollCancell()
   }
 
   try {
-    const result = await Promise.race([tPromise, pollPromise, wsPromise])
+    const result = await Promise.race([
+      tPromise,
+      pollPromise,
+      //  wsPromise,
+    ])
     console.log(`Transaction ${txId} confirmation result: `, result, commitment)
     const rpcProvider = getProviderNameFromUrl({ rawConnection })
     if (result === 'timeout') {

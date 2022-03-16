@@ -21,7 +21,7 @@ const StakingComponent = () => {
 
   return (
     <>
-      <RootRow>
+      <RootRow style={{ height: 'auto' }}>
         <Cell col={12} colLg={12}>
           <UserStakingInfo
             buyBackAmount={poolInfo.buyBackAmount}

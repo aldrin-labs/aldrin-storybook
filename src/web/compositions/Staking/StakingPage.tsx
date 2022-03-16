@@ -1,16 +1,16 @@
 import React from 'react'
 
-import { Row, Cell } from '@sb/components/Layout'
+import { Row, Cell, WideContent } from '@sb/components/Layout'
 
 import { MarinadeStakingBlock } from './components/MarinadeStakingBlock'
 import { PlutoniasStakingBlock } from './components/PlutoniansStaking/PlutoniansStaking'
 import { RinStakingBlock } from './components/RinStakingBlock'
-import { Content, Page } from './styles'
+import { Page } from './styles'
 
 export const StakingPage: React.FC = () => {
   return (
     <Page>
-      <Content>
+      <WideContent>
         <Row>
           <Cell col={12} colXl={6}>
             <RinStakingBlock />
@@ -22,7 +22,7 @@ export const StakingPage: React.FC = () => {
             <PlutoniasStakingBlock />
           </Cell>
         </Row>
-      </Content>
+      </WideContent>
     </Page>
   )
 }

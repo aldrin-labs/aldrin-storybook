@@ -6,86 +6,82 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
+import { DAY } from '@core/utils/dateUtils'
+
+import { usePlutoniansStaking } from '../../../../dexUtils/staking/hooks'
 import {
   ContentBlock,
-  GrayButton,
   StakingBlock,
   StretchedContent,
+  GrayLink,
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Lock from './lock.svg'
 import { LogoWrap } from './styles'
 
-export const PlutoniasStakingBlock: React.FC = (props) => {
+export const PlutoniasStakingBlock: React.FC = () => {
+  const { data: stakingPool } = usePlutoniansStaking()
+  const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
+  const tiersGroup1 = tiers.slice(0, 2)
+  const tiersGroup2 = tiers.slice(2)
+
   return (
     <StakingBlock>
       <LogoWrap />
       <BlockContent>
         <RowContainer justify="space-between">
           <BlockTitle>Stake PLD</BlockTitle>
-          <NumberWithLabel value={null} label="Exclusive" />
+          <NumberWithLabel padding="0" value={null} label="Exclusive" />
         </RowContainer>
         <StretchedContent>
-          <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
-              <InlineText size="md" weight={700}>
-                60 Days
-              </InlineText>{' '}
-              <SvgIcon src={Lock} alt="locked" />
-            </Row>
-            <NumberWithLabel
-              size={FONT_SIZES.es}
-              value={null}
-              label="Coming Soon"
-              center
-            />
-          </ContentBlock>
-          <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
-              <InlineText size="md" weight={700}>
-                90 Days
-              </InlineText>{' '}
-              <SvgIcon src={Lock} alt="locked" />
-            </Row>
-            <NumberWithLabel
-              size={FONT_SIZES.es}
-              value={null}
-              label="Coming Soon"
-              center
-            />
-          </ContentBlock>
+          {tiersGroup1.map((tier) => (
+            <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
+              <Row justify="space-between" margin="0 0 0.7em 0">
+                <InlineText size="md" weight={700}>
+                  {tier?.account.lockDuration.divn(DAY).toString()} Days
+                </InlineText>{' '}
+                <SvgIcon src={Lock} alt="locked" />
+              </Row>
+              <NumberWithLabel
+                size={FONT_SIZES.es}
+                value={null}
+                // label={`${
+                //   (parseInt(tier?.account.apr.toString() || '0', 10) /
+                //     REWARD_APR_DENOMINATOR) *
+                //   100
+                // }% APR  `}
+                label="APY + NFT"
+                center
+              />
+            </ContentBlock>
+          ))}
         </StretchedContent>
-        <StretchedContent style={{ margin: '0.5rem 0 0 0' }}>
-          <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
-              <InlineText size="md" weight={700}>
-                120 Days
-              </InlineText>{' '}
-              <SvgIcon src={Lock} alt="locked" />
-            </Row>
-            <NumberWithLabel
-              size={FONT_SIZES.es}
-              value={null}
-              label="Coming Soon"
-              center
-            />
-          </ContentBlock>
-          <ContentBlock width="48%">
-            <Row justify="space-between" margin="0 0 2rem 0">
-              <InlineText size="md" weight={700}>
-                150 Days
-              </InlineText>{' '}
-              <SvgIcon src={Lock} alt="locked" />
-            </Row>
-            <NumberWithLabel
-              size={FONT_SIZES.es}
-              value={null}
-              label="Coming Soon"
-              center
-            />
-          </ContentBlock>
+        <StretchedContent style={{ margin: '1.6em 0 0 0' }}>
+          {tiersGroup2.map((tier) => (
+            <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
+              <Row justify="space-between" margin="0 0 0.7em 0">
+                <InlineText size="md" weight={700}>
+                  {tier?.account.lockDuration.divn(DAY).toString()} Days
+                </InlineText>{' '}
+                <SvgIcon src={Lock} alt="locked" />
+              </Row>
+              <NumberWithLabel
+                size={FONT_SIZES.es}
+                value={null}
+                // label={`${
+                //   (parseInt(tier?.account.apr.toString() || '0', 10) /
+                //     REWARD_APR_DENOMINATOR) *
+                //   100
+                // }% APR  `}
+                label="APY + NFT"
+                center
+              />
+            </ContentBlock>
+          ))}
         </StretchedContent>
-        <GrayButton>Soon</GrayButton>
+        <RowContainer>
+          <GrayLink as="span">Coming Soon</GrayLink>
+        </RowContainer>
       </BlockContent>
     </StakingBlock>
   )

@@ -1,4 +1,7 @@
+import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
+
+import { ContentBlock } from '../../styles'
 
 type LogoContainer = {
   radius?: string
@@ -25,4 +28,14 @@ export const AbsoluteImg = styled.img<LogoContainer>`
   position: absolute;
   right: 20px;
   height: 90%;
+`
+export const MarketcapBlock = styled(ContentBlock)`
+  @media (max-width: ${BREAKPOINTS.md}) {
+    display: none;
+  }
+`
+export const Block = styled(ContentBlock)`
+  @media (max-width: ${BREAKPOINTS.md}) {
+    width: 46%;
+  }
 `

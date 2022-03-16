@@ -24,7 +24,12 @@ import {
 } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Coins from './bg.png'
-import { LogoWrap, AbsoluteImg } from './styles'
+import {
+  LogoWrap,
+  AbsoluteImg,
+  MarketcapBlock,
+  Block as StatsBlock,
+} from './styles'
 import { RinStakingBlockProps } from './types'
 
 const Block: React.FC<RinStakingBlockProps> = (props) => {
@@ -76,7 +81,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
         </RowContainer>
         <ContentBlock>
           <RowContainer
-            margin="0 0 2rem 0"
+            margin="0 0 1em 0"
             justify="space-between"
             align="flex-start"
           >
@@ -107,8 +112,8 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
         </ContentBlock>
         <Line />{' '}
         <StretchedContent>
-          <ContentBlock width="31%">
-            <Row justify="flex-start" margin="0 0 2rem 0">
+          <StatsBlock width="31%">
+            <Row justify="flex-start" margin="0 0 1em 0">
               <InlineText color="primaryGray" size="sm">
                 RIN Price
               </InlineText>{' '}
@@ -119,9 +124,9 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
               </InlineText>
               {rinPrice ? rinPrice.toFixed(2) : ' ---'}
             </InlineText>
-          </ContentBlock>
-          <ContentBlock width="31%">
-            <Row justify="flex-start" margin="0 0 2rem 0">
+          </StatsBlock>
+          <StatsBlock width="31%">
+            <Row justify="flex-start" margin="0 0 1em 0">
               <InlineText color="primaryGray" size="sm">
                 Circulating Supply
               </InlineText>{' '}
@@ -131,9 +136,9 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
                 ? stripByAmountAndFormat(poolInfo.rinCirculationSupply, 2)
                 : ' ---'}
             </InlineText>
-          </ContentBlock>
-          <ContentBlock width="31%">
-            <Row justify="flex-start" margin="0 0 2rem 0">
+          </StatsBlock>
+          <MarketcapBlock width="31%">
+            <Row justify="flex-start" margin="0 0 1em 0">
               <InlineText color="primaryGray" size="sm">
                 Marketcap
               </InlineText>{' '}
@@ -144,7 +149,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
               </InlineText>
               {marketCap ? stripByAmountAndFormat(marketCap, 2) : ' ---'}
             </InlineText>
-          </ContentBlock>
+          </MarketcapBlock>
         </StretchedContent>
         <RowContainer>
           {' '}

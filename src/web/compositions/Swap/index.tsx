@@ -34,7 +34,8 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
-import { getRegionData, withRegionCheck } from '@core/hoc/withRegionCheck'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { useJupiterSwap } from '@core/hooks/useJupiter/useJupiterSwap'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
@@ -50,7 +51,6 @@ import ArrowRightIcon from '@icons/arrowRight.svg'
 import ReverseArrows from '@icons/reverseArrows.svg'
 import Arrows from '@icons/switchArrows.svg'
 
-import { useJupiterSwap } from '../../../../../core/src/hooks/useJupiter/useJupiterSwap'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
