@@ -1,9 +1,10 @@
 import { COLORS, BORDER_RADIUS, SIZE } from '@variables/variables'
+import styled from 'styled-components'
+
 import { BlockContent } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { Flex } from '@sb/components/Layout'
 import { InlineText, Text } from '@sb/components/Typography'
-import styled from 'styled-components'
 
 export const Title = styled.span`
   font-size: 32px;
@@ -15,14 +16,14 @@ export const Title = styled.span`
   }
 `
 
+export const ButtonContainer = styled.div``
+
 export const Footer = styled(Flex)`
   margin: 30px 0 0 0;
   flex-direction: row;
-
-  ${Button} {
+  ${ButtonContainer} {
     flex: 1;
     margin: 0 10px;
-
     &:first-child {
       margin-left: 0;
     }
@@ -30,6 +31,9 @@ export const Footer = styled(Flex)`
     &:last-child {
       margin-right: 0;
     }
+  }
+  ${Button} {
+    width: 100%;
   }
 `
 

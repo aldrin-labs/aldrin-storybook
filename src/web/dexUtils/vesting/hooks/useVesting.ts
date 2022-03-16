@@ -1,33 +1,11 @@
-import { blob, struct, u8 } from '@solana/buffer-layout'
-import { PublicKey } from '@solana/web3.js'
 import useSWR from 'swr'
 
 import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 
 import { useMultiEndpointConnection } from '../../connection'
-import { publicKey, uint64 } from '../../layout'
-import { VESTING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { RefreshFunction } from '../../types'
-import { Vesting, VestingWithPk } from '../types'
-
-const vestingAddress = new PublicKey(VESTING_PROGRAM_ADDRESS)
-
-const VESTING_LAYOUT = struct<Vesting>([
-  blob(8, 'padding'),
-  publicKey('beneficiary'),
-  publicKey('mint'),
-  publicKey('vault'),
-  publicKey('grantor'),
-  uint64('outstanding'),
-  uint64('startBalance'),
-  uint64('createdTs', true),
-  uint64('startTs', true),
-  uint64('endTs', true),
-  uint64('periodCount', true),
-  uint64('whitelistOwned'),
-  u8('nonce'),
-  struct([publicKey('program'), publicKey('metadata')], 'realizor'),
-])
+import { VestingWithPk } from '../types'
+import { vestingAddress, VESTING_LAYOUT } from './utils'
 
 export const useVestings = (): [VestingWithPk[], RefreshFunction] => {
   const connection = useMultiEndpointConnection()

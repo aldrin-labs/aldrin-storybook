@@ -1,3 +1,7 @@
+import { PublicKey } from '@solana/web3.js'
+import { ProgramAccount } from 'anchor03'
+import BN from 'bn.js'
+
 /* eslint-disable camelcase */
 export interface MarinadeStats {
   available_reserve_balance: number
@@ -33,4 +37,43 @@ export interface MarinadeStats {
   treasury_m_sol_amount: number
   tvl_sol: number
   validators_count: number
+}
+
+export interface SRinStakingPoolBase {
+  owner: PublicKey
+  poolSigner: PublicKey
+  bumpPoolSigner: number
+  stakeTokenMint: PublicKey
+  stakeTokenaccount: PublicKey
+  rewardTokenMint: PublicKey
+  rewardTokenaccount: PublicKey
+}
+
+export interface SRinStakingPool extends SRinStakingPoolBase {
+  tiers: PublicKey[]
+}
+
+export interface SRinNftRewardGroup {
+  name: string
+  quantity: number
+}
+
+export interface SRinStakingTier {
+  pool: PublicKey
+  apr: BN
+  lockDuration: BN
+  nftRewardGroups: PublicKey[]
+  nftRewardGroupsData: ProgramAccount<SRinNftRewardGroup>[]
+}
+
+export interface SRinUserAccount {
+  user: PublicKey
+  amount: BN
+  stakingTier: PublicKey
+  depositedAt: BN
+}
+
+export interface SRinStakingPoolUI extends SRinStakingPoolBase {
+  stakingPool: PublicKey
+  tiers: ProgramAccount<SRinStakingTier>[]
 }

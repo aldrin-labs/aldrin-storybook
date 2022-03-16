@@ -1,5 +1,8 @@
-import { SvgIcon } from '@sb/components'
+import { COLORS } from '@variables/variables'
 import styled, { css, keyframes } from 'styled-components'
+
+import { SvgIcon } from '@sb/components'
+
 import { Block, BlockContent } from '../Block'
 import { Page } from '../Layout'
 
@@ -14,13 +17,13 @@ const kf = keyframes`
 
 const BackdropStyle = {
   blur: css`
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(30px);
   `,
   dark: css`
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
   `,
-  none: css``
+  none: css``,
 }
 
 export type ModalBackdropStyle = keyof typeof BackdropStyle
@@ -30,20 +33,20 @@ interface ModalContainerProps {
 }
 
 export const ModalContainer = styled(Page)<ModalContainerProps>`
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    
-    z-index: 100;
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: center;
-    animation: 0.1s ${kf} ease-out;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
 
-    ${(props: ModalContainerProps) => BackdropStyle[props.backdrop]}
+  z-index: 101;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  animation: 0.1s ${kf} ease-out;
+
+  ${(props: ModalContainerProps) => BackdropStyle[props.backdrop]}
 `
 
 export const ModalBody = styled(Block)`
@@ -51,7 +54,7 @@ export const ModalBody = styled(Block)`
   max-width: 80em;
   max-height: 95vh;
   overflow: auto;
-
+  background: ${COLORS.blockBlackBackground};
 `
 
 export const ModalContent = styled(BlockContent)`

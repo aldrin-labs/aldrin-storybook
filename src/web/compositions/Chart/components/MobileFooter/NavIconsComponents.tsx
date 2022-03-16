@@ -4,11 +4,13 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { RINProviderURL } from '@sb/dexUtils/utils'
 
 import DashboardIcon from './icons/dashboard.svg'
+import MoreIcon from './icons/more.svg'
 import PoolsIcon from './icons/pools.svg'
 import StakingIcon from './icons/staking.svg'
 import SwapIcon from './icons/swaps.svg'
 import TradeIcon from './icons/trade.svg'
 import { StyledLink, StyledA, StyledButton } from './styles'
+import { MoreLinkProps } from './types'
 
 export const TradeLink = () => {
   return (
@@ -160,6 +162,16 @@ export const StakingLink = () => {
     <StyledLink to="/staking">
       <SvgIcon src={StakingIcon} />
       <span>Staking</span>
+    </StyledLink>
+  )
+}
+
+export const MoreLink: React.FC<MoreLinkProps> = (props) => {
+  const { onClick } = props
+  return (
+    <StyledLink onClick={onClick} as="div">
+      <SvgIcon src={MoreIcon} />
+      <span>More</span>
     </StyledLink>
   )
 }

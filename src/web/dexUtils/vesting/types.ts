@@ -42,4 +42,5 @@ export interface WithdrawVestingParams {
   withdrawAccount?: PublicKey
   connection: Connection
   wallet: WalletAdapter
+  amount?: BN
 }

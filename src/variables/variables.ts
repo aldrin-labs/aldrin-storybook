@@ -47,9 +47,11 @@ export const COLORS = {
   primaryBlue: '#651CE4',
   defaultGray: '#1A1A1A',
   newOrange: '#DA6239',
+  newOrangeTransparent: 'rgba(218, 98, 57, 0.15)',
   newGreen: '#53DF11',
   newWhite: '#F8F8F8',
   darkBlue: 'rgba(101, 28, 228, 0.7)',
+  successTransparent: 'rgba(38, 159, 19, 0.25)',
   primaryRed: '#E04237',
   newBlack: '#191919',
   lightGray: '#C9C8CD',
@@ -93,6 +95,7 @@ export const SIZE = {
 export const WIDTH = {
   sm: '10%',
   md: '30%',
+  hf: '50%',
   lg: '60%',
   xl: '100%',
 }

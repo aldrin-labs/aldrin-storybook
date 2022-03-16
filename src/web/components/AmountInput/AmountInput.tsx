@@ -11,9 +11,9 @@ import {
   AmountInputElement,
   ButtonsContainer,
   ButtonsWithAmount,
-  TokenNameWrap,
   MaxValue,
   ButtonsBlock,
+  TokenNameWrap,
 } from './styles'
 import { AmountInputProps } from './types'
 

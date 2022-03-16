@@ -68,6 +68,6 @@ export const Append = styled.span<AppendProps>`
 
 export const Label = styled.div`
   position: absolute;
-  left: 3.2%;
+  left: 1em;
   top: 20%;
 `

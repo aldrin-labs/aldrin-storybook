@@ -8,6 +8,7 @@ import {
 } from '@variables/variables'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import styled from 'styled-components'
+
 // TODO: remove dat
 
 import { Button } from '../Button'
@@ -18,7 +19,6 @@ export const HeaderWrap = styled.header`
   flex-direction: row;
   height: 60px;
   background: ${COLORS.mainBlack};
-  padding: 0 3.5rem;
 `
 
 export const LogoBlock = styled.div`
@@ -52,7 +52,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
   font-size: 0.8em;
   padding: 4px 0;
-  margin: 0px 4px;
+  margin: 0;
   text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
   color: ${COLORS.primaryGray};
   background: transparent;
@@ -198,7 +198,7 @@ export const WalletContainer = styled.div`
 
 export const LogoLink = styled(Link)`
   // height: 100%;
-  margin-right: ${SIZE.defaultPadding};
+  margin-right: 60px;
   display: block;
 `
 
@@ -213,7 +213,7 @@ export const DropdownContent = styled.div`
   top: 100%;
   flex-direction: column;
   display: none;
-  z-index: 100000;
+  z-index: 99;
   background: rgba(0, 0, 0, 0.001);
 `
 
@@ -255,7 +255,7 @@ export const DropdownInner = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 5px;
-  padding: 1rem 2rem;
+  padding: 0.5em;
   border-radius: ${BORDER_RADIUS.md};
   & ${NavLink} {
     margin: 4px;
@@ -293,13 +293,14 @@ export const WalletButton = styled(Button)`
 `
 
 export const WalletDataContainer = styled.div`
-  width: 17rem;
+  width: 20rem;
   border-radius: ${BORDER_RADIUS.md};
   display: flex;
   flex-direction: row;
   align-items: center;
 
   @media (min-width: ${BREAKPOINTS.md}) {
+    width: 17rem;
     flex-direction: column;
     align-items: flex-start;
   }
@@ -343,9 +344,11 @@ export const WalletData = styled.div`
   }
 
   @media (max-width: 1200px) {
+    padding: 1rem 1.5rem;
+    height: 7rem;
     img {
-      width: 20px;
-      height: 20px;
+      width: 25px;
+      height: 25px;
     }
   }
 `
@@ -374,7 +377,7 @@ export const WalletAddress = styled(WalletName)`
   font-size: ${FONT_SIZES.sm};
 
   @media (max-width: 1200px) {
-    font-size: ${FONT_SIZES.es};
+    font-size: ${FONT_SIZES.sm};
   }
 `
 
@@ -402,6 +405,14 @@ export const BalanceTitle = styled.span`
   color: ${COLORS.newGreen};
   font-weight: 600;
   @media (max-width: 1200px) {
-    font-size: 0.6125em;
+    font-size: 0.7125em;
+  }
+`
+
+export const Wrap = styled.div`
+  margin: 0 10px;
+
+  @media (min-width: ${BREAKPOINTS.lg}) {
+    margin: 0 48px;
   }
 `

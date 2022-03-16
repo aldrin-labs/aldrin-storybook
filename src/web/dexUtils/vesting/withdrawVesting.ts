@@ -45,8 +45,10 @@ export const withrawVestingInstruction = async (
     program.programId
   )
 
+  const amount = params.amount || vesting.outstanding
+
   const instruction: TransactionInstruction =
-    await program.instruction.withdraw(vesting.outstanding, {
+    await program.instruction.withdraw(amount, {
       accounts: {
         vesting: vesting.vesting,
         beneficiary: wallet.publicKey,

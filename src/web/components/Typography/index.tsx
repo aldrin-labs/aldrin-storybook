@@ -10,6 +10,7 @@ export interface TextProps {
   noWrap?: boolean
   margin?: string
   lineHeight?: string
+  align?: 'center' | 'left' | 'right'
 }
 
 export const Text = styled.p<TextProps>`
@@ -23,6 +24,7 @@ export const Text = styled.p<TextProps>`
   ${(props: TextProps) =>
     props.maxWidth ? `max-width: ${props.maxWidth};` : ''}
   ${(props: TextProps) => (props.noWrap ? `white-space: nowrap;` : '')}
+  text-align: ${(props: TextProps) => props.align || 'left'}
 `
 
 export interface InlineProps {
