@@ -32,6 +32,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { withRegionCheck } from '@core/hoc/withRegionCheck'
 
 import ArrowBanner from '@icons/arrowBanner.svg'
 import BlackBanner from '@icons/blackBanner.png'
@@ -232,6 +233,7 @@ const TwammComponent = ({
 
 export default compose(
   withTheme(),
+  withRegionCheck(),
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
