@@ -14,7 +14,7 @@ export const getParsedStakingFarmingTickets = async ({
 }: {
   wallet: WalletAdapter
   connection: Connection
-  walletPublicKey?: PublicKey
+  walletPublicKey?: PublicKey | null
 }): Promise<FarmingTicket[]> => {
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,

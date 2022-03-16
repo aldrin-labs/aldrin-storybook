@@ -2,7 +2,7 @@ import {
   startStakingInstructions,
   withdrawStakedInstructions,
 } from '../../common/actions'
-import { STAKING_PROGRAM_ADDRESS } from '../../ProgramsMultiton'
+import { STAKING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/ProgramsMultiton'
 import { buildTransactions, signAndSendTransactions } from '../../transactions'
 import { RestakeParams } from './types'
 

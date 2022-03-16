@@ -1,7 +1,8 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTotalVolumeLockedHistory'
-import { msToNextHour } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
+import { COLORS } from '@variables/variables'
+import { Chart } from 'chart.js'
+import React, { useEffect, useRef } from 'react'
+import { compose } from 'recompose'
+
 import { Block, BlockContent } from '@sb/components/Block'
 import {
   dayDuration,
@@ -9,15 +10,17 @@ import {
   getTimezone,
   startOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { Chart } from 'chart.js'
-import React, { useEffect, useRef } from 'react'
-import { compose } from 'recompose'
-import { COLORS } from '@variables/variables'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTotalVolumeLockedHistory'
+import { msToNextHour } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
+
 import { Line } from '../Popups/index.styles'
 import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate'
 import { Canvas, SubTitle, TitleContainer, DataContainer } from './styles'
-import { createTotalVolumeLockedChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 import { TotalVolumeLockedChartProps } from './types'
+import { createTotalVolumeLockedChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
 const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
   const { getTotalVolumeLockedHistoryQuery } = props

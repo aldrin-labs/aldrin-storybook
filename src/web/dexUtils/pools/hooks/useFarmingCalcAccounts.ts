@@ -1,6 +1,6 @@
 import useSwr from 'swr'
 
-import { toMap } from '../../../utils'
+import { groupBy } from '../../../utils'
 import { getCalcAccounts } from '../../common/getCalcAccountsForWallet'
 import { FarmingCalc } from '../../common/types'
 import { useConnection } from '../../connection'
@@ -19,7 +19,7 @@ export const useFarmingCalcAccounts = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
-  const fetcher = async (): Promise<Map<string, FarmingCalc>> => {
+  const fetcher = async (): Promise<Map<string, FarmingCalc[]>> => {
     if (wallet.publicKey) {
       const programV1 = ProgramsMultiton.getProgramByAddress({
         programAddress: POOLS_PROGRAM_ADDRESS,
@@ -35,9 +35,10 @@ export const useFarmingCalcAccounts = () => {
         getCalcAccounts(programV1, wallet.publicKey),
         getCalcAccounts(programV2, wallet.publicKey),
       ])
-      return toMap(accounts.flat(), (acc) => acc.farmingState.toString())
+
+      return groupBy(accounts.flat(), (acc) => acc.farmingState.toString())
     }
-    return new Map<string, FarmingCalc>()
+    return new Map<string, FarmingCalc[]>()
   }
 
   return useSwr(

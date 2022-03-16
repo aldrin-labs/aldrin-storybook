@@ -1,3 +1,5 @@
+import { BN } from 'bn.js'
+
 import {
   FarmingCalc,
   FarmingState,
@@ -12,11 +14,11 @@ interface FamingStateClaimable {
 export const getUniqueAmountsToClaimMap = ({
   farmingTickets,
   farmingStates = [],
-  calcAccounts = new Map<string, FarmingCalc>(),
+  calcAccounts = new Map<string, FarmingCalc[]>(),
 }: {
   farmingTickets: FarmingTicket[]
   farmingStates?: FarmingState[]
-  calcAccounts?: Map<string, FarmingCalc>
+  calcAccounts?: Map<string, FarmingCalc[]>
 }) => {
   if (!farmingStates) {
     return new Map<string, FamingStateClaimable>()
@@ -38,7 +40,11 @@ export const getUniqueAmountsToClaimMap = ({
     }
 
     const calcAccountAmount =
-      parseFloat(calcAccounts.get(fs)?.tokenAmount.toString() || '0') /
+      parseFloat(
+        (calcAccounts.get(fs) || [])
+          .reduce((acc2, ca) => acc2.add(ca.tokenAmount), new BN(0))
+          .toString()
+      ) /
       10 ** farmingTokenMintDecimals
 
     acc.set(farmingTokenMint, {

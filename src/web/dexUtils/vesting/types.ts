@@ -1,7 +1,8 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
-import { WalletAdapter } from '../types'
+
 import MultiEndpointsConnection from '../MultiEndpointsConnection'
+import { WalletAdapter } from '../types'
 
 export interface Vesting {
   beneficiary: PublicKey

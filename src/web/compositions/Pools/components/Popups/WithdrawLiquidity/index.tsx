@@ -1,4 +1,3 @@
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
 import { Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -29,6 +28,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
@@ -145,7 +145,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
   const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
-  const lockedTokens = parseFloat(vesting?.startBalance.toString() || '0') // Vesting
+  const lockedTokens = parseFloat(vesting?.outstanding.toString() || '0') // Vesting
 
   const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
   const [withdrawAmountTokenA, withdrawAmountTokenB] = calculateWithdrawAmount({
@@ -265,7 +265,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               poolTokenAmount: poolTokenAmount + lockedTokens,
             })
 
-            if (poolTokenAmount === 0 && vesting?.startBalance.eqn(0)) {
+            if (poolTokenAmount === 0 && vesting?.outstanding.eqn(0)) {
               setIsUnstakePopupOpen(true)
               return
             }

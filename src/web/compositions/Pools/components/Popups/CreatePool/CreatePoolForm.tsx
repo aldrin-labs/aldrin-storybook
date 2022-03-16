@@ -128,28 +128,29 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
     }))
     .sort((a, b) => a.mint.localeCompare(b.mint))
 
+  const [initialValues] = useState<CreatePoolFormType>({
+    price: '',
+    baseToken: tokens[0],
+    quoteToken: findQuoteToken(tokens),
+    stableCurve: false,
+    lockInitialLiquidity: false,
+    initialLiquidityLockPeriod: '',
+    firstDeposit: {
+      baseTokenAmount: '',
+      quoteTokenAmount: '',
+    },
+    farmingEnabled: true,
+    farming: {
+      token: tokens[0],
+      vestingEnabled: false,
+      tokenAmount: '',
+      farmingPeriod: '14',
+      vestingPeriod: '7',
+    },
+  })
   const form = useFormik<CreatePoolFormType>({
     validateOnMount: true,
-    initialValues: {
-      price: '',
-      baseToken: tokens[0],
-      quoteToken: findQuoteToken(tokens),
-      stableCurve: false,
-      lockInitialLiquidity: false,
-      initialLiquidityLockPeriod: '',
-      firstDeposit: {
-        baseTokenAmount: '',
-        quoteTokenAmount: '',
-      },
-      farmingEnabled: true,
-      farming: {
-        token: tokens[0],
-        vestingEnabled: false,
-        tokenAmount: '',
-        farmingPeriod: '14',
-        vestingPeriod: '7',
-      },
-    },
+    initialValues,
     onSubmit: async (values) => {
       if (!values.baseToken.account) {
         throw new Error('No base token selected!')
@@ -186,13 +187,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             quoteTokenMint: new PublicKey(values.quoteToken.mint),
             firstDeposit: {
               baseTokenAmount: new BN(
-                parseFloat(values.firstDeposit.baseTokenAmount) *
+                (
+                  parseFloat(values.firstDeposit.baseTokenAmount) *
                   10 ** (selectedBaseAccount?.decimals || 0)
+                ).toFixed(0)
               ),
               userBaseTokenAccount: new PublicKey(values.baseToken.account),
               quoteTokenAmount: new BN(
-                parseFloat(values.firstDeposit.quoteTokenAmount) *
+                (
+                  parseFloat(values.firstDeposit.quoteTokenAmount) *
                   10 ** (selectedQuoteAccount?.decimals || 0)
+                ).toFixed(0)
               ),
               userQuoteTokenAccount: new PublicKey(values.quoteToken.account),
               vestingPeriod: values.lockInitialLiquidity
@@ -207,10 +212,15 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       values.farming.token.account
                     ),
                     tokenAmount: new BN(
-                      parseFloat(values.farming.tokenAmount) * tokensMultiplier
+                      (
+                        parseFloat(values.farming.tokenAmount) *
+                        tokensMultiplier
+                      ).toFixed(0)
                     ),
                     periodLength: new BN(HOUR),
-                    tokensPerPeriod: new BN(tokensPerPeriod * tokensMultiplier),
+                    tokensPerPeriod: new BN(
+                      (tokensPerPeriod * tokensMultiplier).toFixed(0)
+                    ),
                     noWithdrawPeriodSeconds: new BN(0),
                     vestingPeriodSeconds: values.farming.vestingEnabled
                       ? new BN(

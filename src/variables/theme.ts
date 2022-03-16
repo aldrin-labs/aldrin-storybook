@@ -1,6 +1,7 @@
 import { css } from 'styled-components'
 
 import { COLORS } from './colors'
+import { FONT_SIZES } from './fonts'
 
 export const THEME = {
   button: {
@@ -77,6 +78,14 @@ export const THEME = {
         &:disabled {
           color: ${COLORS.hint};
         }
+      `,
+
+      input: css`
+        background: ${COLORS.mainBlack};
+        color: ${COLORS.newOrange};
+        padding: 0.2rem 1rem;
+        font-weight: 600;
+        font-size: ${FONT_SIZES.xs};
       `,
 
       // TODO: rewrite with [disabled] html attribute

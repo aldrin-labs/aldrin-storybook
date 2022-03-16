@@ -3,7 +3,8 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import {
   createGenerateClassName,
   jssPreset,
-  withTheme,
+  createGenerateClassName,
+  jssPreset,
 } from '@material-ui/core/styles'
 import { syncStorage } from '@storage'
 import useWindowSize from '@webhooks/useWindowSize'
@@ -14,8 +15,10 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 import styled from 'styled-components'
 
+import { Footer } from '@sb/components/Footer'
 import { Header } from '@sb/components/Header'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import { SolanaNetworkDegradedPerformanceBanner } from '@sb/components/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
@@ -36,7 +39,12 @@ import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { NotificationContext } from '@core/react'
 import { WalletProvider } from '@core/solana'
-import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
+import {
+  LOCAL_BUILD,
+  MASTER_BUILD,
+  LOCAL_BUILD,
+  MASTER_BUILD,
+} from '@core/utils/config'
 
 import { notify } from '../../dexUtils/notifications'
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
@@ -139,8 +147,8 @@ const AppRaw = ({
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
-          <SnackbarWrapper>
-            <NotificationProvider value={notificationContextValue}>
+          <NotificationProvider value={notificationContextValue}>
+            <SnackbarWrapper>
               <SnackbarUtilsConfigurator />
               <CssBaseline />
               <ConnectionProvider>
@@ -155,18 +163,21 @@ const AppRaw = ({
                           isPNL={isPNL}
                           isChartPage={isChartPage}
                         >
+                          <SolanaNetworkDegradedPerformanceBanner />
                           <Header />
                           <AppInnerContainer
                             showFooter={showFooter}
+                            isRewards={isRewards}
+                            isPNL={isPNL}
                             isChartPage={isChartPage}
-                            currentPage={currentPage}
                           >
                             {children}
                           </AppInnerContainer>
                           {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )} */}
-                          <MobileFooter pathname={currentPage} />
+                          {!isChartPage && <Footer />}
+                          <MobileFooter />
                           {/*
                     <Footer
                       isChartPage={isChartPage}
@@ -211,57 +222,13 @@ const AppRaw = ({
               </ConnectionProvider>
               <GlobalStyle />
               <GlobalStyles />
-            </NotificationProvider>
-          </SnackbarWrapper>
+            </SnackbarWrapper>
+          </NotificationProvider>
         </ThemeWrapper>
       </JssProvider>
     </ApolloPersistWrapper>
   )
 }
-
-const Footer = (props) => {
-  return (
-    <RowContainer
-      style={{
-        background: props.theme.palette.grey.additional,
-        height: '5.7rem',
-        ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}),
-      }}
-    >
-      <Line bottom="5.7rem" />
-      <Link
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://aldrin.com/"
-      >
-        Aldrin.com
-      </Link>
-      <Link
-        href="https://t.me/CCAI_Official"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Telegram
-      </Link>
-      <Link
-        href="https://twitter.com/CCAI_Official"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Twitter
-      </Link>
-      <Link
-        href="https://discord.com/invite/2EaKvrs"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Discord
-      </Link>
-    </RowContainer>
-  )
-}
-
-const FooterWithTheme = compose(withTheme())(Footer)
 
 const Row = styled.div`
   display: flex;

@@ -1,11 +1,11 @@
-import React from 'react'
-import styled from 'styled-components'
-import { StyledTab } from '@sb/components/TradingWrapper/styles'
 import { Button, TextField, Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/styles'
+import React from 'react'
+import styled from 'styled-components'
 
-import { CSS_CONFIG } from '@sb/config/cssConfig'
+import { StyledTab } from '@sb/components/TradingWrapper/styles'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { CSS_CONFIG } from '@sb/config/cssConfig'
 
 const styles = {
   button: {
@@ -71,7 +71,7 @@ export const InputTextField = withStyles(styles)(
     <TextField
       InputProps={{
         className: classes.input,
-        endAdornment: endAdornment,
+        endAdornment,
       }}
       fullWidth
       {...others}
@@ -571,7 +571,7 @@ export const AmountTooltip = styled.div`
 export const Placeholder = styled.div`
   font-size: 1.2rem;
   width: 100%;
-  height: ${props => props.height || '4rem'};
+  height: ${(props) => props.height || '4rem'};
   background: #383b45;
   border-radius: 1rem;
   padding: 0 2rem;

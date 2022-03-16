@@ -1,5 +1,3 @@
-import React from 'react'
-import styled from 'styled-components'
 import {
   Grid,
   Dialog,
@@ -10,6 +8,8 @@ import {
   withTheme,
 } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
+import React from 'react'
+import styled from 'styled-components'
 
 export const TypographyCustomHeading = styled(
   ({ color, fontWeight, ...rest }) => <Typography {...rest} />
@@ -108,7 +108,7 @@ export const LinkCustom = styled(Link)`
   line-height: 114.5%;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #651CE4;
+  color: #651ce4;
 `
 export const SearchIconCustom = styled(SearchIcon)`
   position: absolute;

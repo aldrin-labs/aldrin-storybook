@@ -27,7 +27,7 @@ export const Text = styled.p<TextProps>`
 `
 
 export interface InlineProps {
-  color?: keyof typeof COLORS
+  color?: keyof typeof COLORS | string
   size?: keyof typeof FONT_SIZES
   weight?: Weight
   cursor?: 'pointer' | 'help' | 'auto' | 'default' | 'none'

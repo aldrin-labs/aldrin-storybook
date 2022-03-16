@@ -1,11 +1,13 @@
 import RinLogo from '@icons/DarkLogo.svg'
 
 import { COLORS } from './colors'
+import { FONT_SIZES } from './fonts'
 import { THEME } from './theme'
 
 export const MAIN_FONT = 'Avenir Next'
 export const FONTS = {
   main: `${MAIN_FONT}, sans-serif;`,
+  demi: `${MAIN_FONT} Demi, sans-serif`,
 }
 
 export { COLORS, THEME }
@@ -19,16 +21,10 @@ export const BORDER_RADIUS = {
   xxl: '56px',
 }
 
-export const FONT_SIZES = {
-  xs: '0.6875em', // 11px
-  sm: '0.8125em', // 13px
-  md: '1em', // 16px
-  lg: '1.6em', // 26px
-  xl: '2em', // 16px
-  xxxl: '4em', // 64px
-}
+export { FONT_SIZES }
 
 export const BREAKPOINTS = {
+  xs: '480px',
   sm: '540px',
   md: '768px',
   lg: '1024px',

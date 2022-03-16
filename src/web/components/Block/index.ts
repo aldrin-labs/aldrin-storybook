@@ -5,12 +5,15 @@ export interface BlockProps {
   $backgroundImage?: string
   icon?: string
   inner?: boolean
+  margin?: string
 }
 
 export const Block = styled.div<BlockProps>`
   ${THEME.block.style}
   background: ${(props: BlockProps) =>
     props.inner ? COLORS.background : COLORS.blockBackground};
+  border-radius: 12px;
+  margin: ${(props) => props.margin || '8px'};
   height: 100%;
   position: relative;
   ${({ $backgroundImage: backgroundImage }: BlockProps) =>
@@ -36,6 +39,9 @@ export const Block = styled.div<BlockProps>`
   }
   `
       : ''}
+`
+export const GreenBlock = styled(Block)`
+  background: rgba(38, 159, 19, 0.1);
 `
 
 export interface TitleProps {

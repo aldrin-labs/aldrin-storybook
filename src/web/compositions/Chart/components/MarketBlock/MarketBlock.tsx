@@ -1,6 +1,8 @@
-import ArrowLeft from '@icons/ArrowLeft.svg'
-import ChartIcon from '@icons/chartIcon.svg'
 import { Theme, withTheme } from '@material-ui/core'
+import React, { useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { compose } from 'recompose'
+
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -9,9 +11,10 @@ import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName, useMarket } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { getDecimalCount } from '@sb/dexUtils/utils'
-import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { compose } from 'recompose'
+
+import ArrowLeft from '@icons/ArrowLeft.svg'
+import ChartIcon from '@icons/chartIcon.svg'
+
 import AutoSuggestSelect from '../../Inputs/AutoSuggestSelect/AutoSuggestSelect'
 import { MintsPopup } from '../../Inputs/SelectWrapper/MintsPopup'
 import MarketStats from '../MarketStats/MarketStats'
@@ -109,8 +112,8 @@ const MarketBlock = ({
               isPrivateCustomMarket
                 ? 'This is an unofficial custom market. Use at your own risk.'
                 : isCustomUserMarket
-                  ? 'This is curated but unofficial market.'
-                  : 'This is the official market.'
+                ? 'This is curated but unofficial market.'
+                : 'This is the official market.'
             }
           >
             <div
@@ -123,8 +126,8 @@ const MarketBlock = ({
             >
               <TokenIcon
                 mint={getTokenMintAddressByName(base)}
-                width={'50%'}
-                emojiIfNoLogo={true}
+                width="50%"
+                emojiIfNoLogo
                 isAwesomeMarket={isCustomUserMarket}
                 isAdditionalCustomUserMarket={isPrivateCustomMarket}
               />
@@ -136,7 +139,7 @@ const MarketBlock = ({
           >
             <AutoSuggestSelect
               value={pair}
-              id={'pairSelector'}
+              id="pairSelector"
               style={{ width: '20rem' }}
               activeExchange={activeExchange}
               selectStyles={{ ...selectStyles(theme) }}
@@ -160,7 +163,7 @@ const MarketBlock = ({
             quantityPrecision={quantityPrecision}
             pricePrecision={pricePrecision}
           />
-          <Row align={'baseline'}>
+          <Row align="baseline">
             <TokenExternalLinks
               tokenName={base}
               marketAddress={marketAddress}
@@ -172,7 +175,7 @@ const MarketBlock = ({
           </Row>
         </Row>
         <Row>
-          <Row align={'flex-start'} direction="column">
+          <Row align="flex-start" direction="column">
             <Title color={theme.palette.green.main}>
               You have to settle funds after each trade to transfer{' '}
             </Title>
@@ -182,7 +185,7 @@ const MarketBlock = ({
           </Row>
           <ExclamationMark
             theme={theme}
-            margin={'0 0 0 2rem'}
+            margin="0 0 0 2rem"
             fontSize="5rem"
             color={theme.palette.green.main}
           />
@@ -198,7 +201,7 @@ const MarketBlock = ({
       <MobileMarketStatsContainer theme={theme}>
         <AutoSuggestSelect
           value={pair}
-          id={'pairSelector'}
+          id="pairSelector"
           activeExchange={activeExchange}
           selectStyles={{ ...selectStyles(theme) }}
           marketType={marketType}
@@ -222,8 +225,8 @@ const MarketBlock = ({
           />
           <SvgIcon
             src={terminalViewMode === 'mobileChart' ? ArrowLeft : ChartIcon}
-            width={'5rem'}
-            height={'auto'}
+            width="5rem"
+            height="auto"
             style={{ margin: '0 0 0 2rem', padding: '1rem' }}
             onClick={() => {
               if (terminalViewMode === 'mobileChart') {

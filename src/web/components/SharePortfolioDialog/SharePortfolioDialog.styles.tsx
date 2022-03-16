@@ -1,5 +1,3 @@
-import React from 'react'
-import styled from 'styled-components'
 import {
   Typography,
   Button,
@@ -11,20 +9,20 @@ import {
   DialogContent,
   DialogTitle,
 } from '@material-ui/core'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import styled from 'styled-components'
 
 import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 
-import { Link } from 'react-router-dom'
-
 export const StyledDialogContent = styled(DialogContent)`
-
   border-radius: none;
   border: ${(props) =>
-      (props.theme &&
-        props.theme.palette &&
-        props.theme.palette.border &&
-        props.theme.palette.border.main) ||
-      '.1rem solid #e0e5ec'};
+    (props.theme &&
+      props.theme.palette &&
+      props.theme.palette.border &&
+      props.theme.palette.border.main) ||
+    '.1rem solid #e0e5ec'};
   border-top: 0;
   padding: 0 2.4rem 2.4rem;
   font-family: DM Sans;
@@ -97,8 +95,8 @@ export const ButtonShare = styled(Button)`
 
   &:hover {
     color: #fff;
-    background-color: #651CE4;
-    border: 1.5px solid #651CE4;
+    background-color: #651ce4;
+    border: 1.5px solid #651ce4;
   }
 
   @media (min-width: 1440px) {
@@ -134,7 +132,7 @@ export const StyledButton = styled(({ padding, ...rest }) => (
   border-radius: 1.2rem;
   border: ${(props) =>
     props.disabled ? '1.5px solid #E0E5EC' : '1.5px solid #651CE4'};
-  color: #651CE4;
+  color: #651ce4;
   letter-spacing: 1.5px;
 
   @media (min-width: 1440px) {
@@ -184,13 +182,13 @@ export const Line = styled.div`
 
 export const SButton = styled.span`
   text-decoration: none;
-  color: #651CE4;
+  color: #651ce4;
   cursor: pointer;
 `
 
 export const SRadio = styled(Radio)`
   svg {
-    color: #651CE4;
+    color: #651ce4;
   }
 
   @media (min-width: 1440px) {

@@ -1,12 +1,12 @@
-import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
-import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
-import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
-import { MASTER_BUILD } from '@core/utils/config'
-import AldrinLogo from '@icons/Aldrin.svg'
-import LightLogo from '@icons/lightLogo.svg'
-import WalletIcon from '@icons/walletIcon.svg'
 import { withTheme } from '@material-ui/core'
+import React, { useState } from 'react'
+import { graphql } from 'react-apollo'
+import { Link, useLocation } from 'react-router-dom'
+import { compose } from 'recompose'
+
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
+
+import WalletIcon from '@icons/walletIcon.svg'
 import { Label } from '@sb/components/Label/Label'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -16,32 +16,29 @@ import {
   RowContainer,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { withApolloPersist } from '@sb/compositions/App/ApolloPersistWrapper/withApolloPersist'
-import { ChartGridContainer } from '@sb/compositions/Chart/Chart.styles'
+import {
+  ChartGridContainer,
+  CustomCard,
+  PanelWrapper,
+} from '@sb/compositions/Chart/Chart.styles'
 import { useConnectionConfig } from '@sb/dexUtils/connection'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
-import React, { useState } from 'react'
-import { graphql } from 'react-apollo'
-import { Link, useLocation } from 'react-router-dom'
-import { compose } from 'recompose'
-import { CustomCard, PanelWrapper } from '../Chart.styles'
+import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
+import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
+import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
+import AldrinLogo from '@icons/Aldrin.svg'
+import LightLogo from '@icons/lightLogo.svg'
+
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
-import {
-  RedButton,
-  DropdownContainer,
-  DropwodnItem,
-  MenuDropdown,
-  MenuDropdownInner,
-  MenuDropdownLink,
-} from './styles'
+import { RedButton } from './styles'
 import { FeedbackPopup } from './UsersFeedbackPopup'
 
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
   const [isFeedBackPopupOpen, setIsFeedBackPopupOpen] = useState(false)
-  const [isListingRequestPopupOpen, setIsListingRequestPopupOpen] = useState(
-    false
-  )
+  const [isListingRequestPopupOpen, setIsListingRequestPopupOpen] =
+    useState(false)
 
   const [tradingMenuOpen, setTradingMenuOpen] = useState(false)
 
@@ -71,7 +68,7 @@ export const CardsPanel = ({ theme }) => {
     <ChartGridContainer theme={theme}>
       <PanelWrapper>
         <CustomCard theme={theme} style={CARD_STYLE}>
-          <Link to={'/'} style={LOGO_LINK_STYLE}>
+          <Link to="/" style={LOGO_LINK_STYLE}>
             <img
               style={{
                 width: '100%',
@@ -118,8 +115,8 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               pathname={location.pathname}
               to="/chart"
-              page={'chart'}
-              component={(props) => <Link to={`/chart`} {...props} />}
+              page="chart"
+              component={(props) => <Link to="/chart" {...props} />}
             >
               Trading
             </NavLinkButton>
@@ -136,9 +133,9 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               pathname={location.pathname}
               to="/rebalance"
-              page={'rebalance'}
+              page="rebalance"
               style={{ width: '13rem' }}
-              component={(props) => <Link to={`/rebalance`} {...props} />}
+              component={(props) => <Link to="/rebalance" {...props} />}
             >
               Rebalance
             </NavLinkButton>
@@ -146,9 +143,9 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               pathname={location.pathname}
               to="/dashboard"
-              page={'dashboard'}
+              page="dashboard"
               style={{ width: '13rem' }}
-              component={(props) => <Link to={`/dashboard`} {...props} />}
+              component={(props) => <Link to="/dashboard" {...props} />}
             >
               Dashboard
             </NavLinkButton>
@@ -156,21 +153,21 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               data-tut="farming"
               pathname={location.pathname}
-              page={'wallet'}
+              page="wallet"
               component={(props) => <a href={CCAIProviderURL} {...props} />}
             >
               Wallet
             </NavLinkButton>
             <NavLinkButton
               theme={theme}
-              page={'/pools'}
+              page="/pools"
               pathname={location.pathname}
               style={{ width: '17rem' }}
-              component={(props) => <Link to={`/pools`} {...props} />}
+              component={(props) => <Link to="/pools" {...props} />}
             >
               Liquidity Pools
               <Label
-                text={'New'}
+                text="New"
                 theme={theme}
                 style={{ marginLeft: '.5rem', color: '#53DF11' }}
               />
@@ -191,7 +188,7 @@ export const CardsPanel = ({ theme }) => {
               theme={theme}
               data-tut="token"
               pathname={location.pathname}
-              page={'token'}
+              page="token"
               component={(props) => (
                 <a
                   href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
@@ -241,13 +238,13 @@ const TopBar = ({ theme }) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
       {!connected && (
-        <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap={'nowrap'}>
+        <Row style={{ paddingLeft: '4rem' }} data-tut="wallet" wrap="nowrap">
           <ConnectWalletDropdown
             theme={theme}
-            height={'4rem'}
-            id={'navBar'}
-            isNavBar={true}
-            showOnTop={true}
+            height="4rem"
+            id="navBar"
+            isNavBar
+            showOnTop
           />
         </Row>
       )}
@@ -282,7 +279,7 @@ const TopBar = ({ theme }) => {
             </Title>
             <Title
               fontFamily="Avenir Next"
-              color={'rgb(147, 160, 178)'}
+              color="rgb(147, 160, 178)"
               fontSize="1rem"
             >
               {wallet?.publicKey?.toBase58()}

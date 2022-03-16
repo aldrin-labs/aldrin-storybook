@@ -1,25 +1,30 @@
+import { Theme } from '@material-ui/core'
+import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
+
+import SvgIcon from '@sb/components/SvgIcon'
+import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+import { useMarket } from '@sb/dexUtils/markets'
+
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   formatNumberToUSFormat,
-  roundAndFormatNumber
+  roundAndFormatNumber,
 } from '@core/utils/PortfolioTableUtils'
+
 import RINLogo from '@icons/RINLogo.svg'
-import { Theme } from '@material-ui/core'
-import SvgIcon from '@sb/components/SvgIcon'
-import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import { useMarket } from '@sb/dexUtils/markets'
-import React, { useEffect, useState } from 'react'
-import { compose } from 'recompose'
+
 import {
   BlockContainer,
-  GreenTitle, Row,
-  Text, TokenTitleBlockContainer,
+  GreenTitle,
+  Row,
+  Text,
+  TokenTitleBlockContainer,
   TokenWhiteTitle,
-  TopBarTitle
+  TopBarTitle,
 } from '../../index.styles'
-
 
 export const ccaiData = {
   totalySupply: 50000000,
@@ -63,15 +68,15 @@ const TopBar = ({
     savePreviousPrice(CCAIPrice)
   }, [CCAIPrice])
 
-  let totalySupply = ccaiData.totalySupply - ccaiData.burned
+  const totalySupply = ccaiData.totalySupply - ccaiData.burned
   const CCAImarketcap = CCAICirculatingSupply * CCAIPrice
   return (
     <>
-      <Row height={'100%'}>
+      <Row height="100%">
         <SvgIcon
           style={{ marginRight: '1rem' }}
-          height={'50%'}
-          width={'auto'}
+          height="50%"
+          width="auto"
           src={RINLogo}
         />
         <TokenWhiteTitle theme={theme}>RIN</TokenWhiteTitle>
@@ -79,16 +84,20 @@ const TopBar = ({
           style={{ color: showGreen ? '#53DF11' : '#F26D68' }}
           theme={theme}
         >
-          {CCAIPrice === 0 ? '-' : `$${formatNumberToUSFormat(
-            roundAndFormatNumber(CCAIPrice, 4, false)
-          )}`}
+          {CCAIPrice === 0
+            ? '-'
+            : `$${formatNumberToUSFormat(
+                roundAndFormatNumber(CCAIPrice, 4, false)
+              )}`}
         </GreenTitle>
       </Row>
       <Row>
         <TokenTitleBlockContainer>
           <TopBarTitle theme={theme}>RIN Marketcap</TopBarTitle>{' '}
           <Text theme={theme}>
-            {CCAImarketcap === 0 ? '-' : `$${formatNumberToUSFormat(CCAImarketcap.toFixed(0))}`}
+            {CCAImarketcap === 0
+              ? '-'
+              : `$${formatNumberToUSFormat(CCAImarketcap.toFixed(0))}`}
           </Text>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>

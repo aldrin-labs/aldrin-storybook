@@ -1,21 +1,29 @@
+import { COLORS, BREAKPOINTS } from '@variables/variables'
+import { NavLink } from 'react-router-dom'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BREAKPOINTS } from '@variables/variables'
 
-export const StyledLink = styled(Link)`
-  width: 7rem;
-  height: 7rem;
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+
+export const StyledLink = styled(NavLink)`
+  flex: 1;
+  height: 100%;
   display: flex;
+  align-items: center;
   justify-content: center;
   flex-direction: column;
   text-align: center;
   text-decoration: none;
-  color: #fbf2f2;
+  color: ${COLORS.primaryWhite};
   font-family: Avenir Next Medium;
   font-size: 1.6rem;
+  margin: -1px 20px 0;
+  border-top: 1px solid transparent;
   span {
     margin-top: 1rem;
+  }
+
+  &.active {
+    border-top: 1px solid ${COLORS.primaryWhite};
   }
 `
 export const StyledA = styled.a`
@@ -35,10 +43,13 @@ export const StyledA = styled.a`
 `
 
 export const FooterComponent = styled(RowContainer)`
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
   display: flex;
-  background-color: #222429;
-  border-top: 0.1rem solid #383b45;
-  padding: 0 2rem;
+  background-color: ${COLORS.mainBlack};
+  height: 65px;
+  border-top: 1px solid ${COLORS.cardsBack};
 
   @media (min-width: ${BREAKPOINTS.md}) {
     display: none;

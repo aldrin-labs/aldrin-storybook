@@ -1,7 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
 import { Button, Grid } from '@material-ui/core'
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap'
+import React from 'react'
+import styled from 'styled-components'
 
 export const TablesBlockWrapper = styled(Grid)`
   border-radius: 0;
@@ -67,7 +67,7 @@ export const StyledTab = styled(({ active, ...rest }) => <Button {...rest} />)`
 
   background: ${(props) => (props.active ? '#651CE4' : '#fff')};
   color: ${(props) => (props.active ? '#fff' : '#651CE4')};
-  border: 1px solid #651CE4;
+  border: 1px solid #651ce4;
   border-radius: 4px;
 
   &:hover {
