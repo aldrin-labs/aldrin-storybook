@@ -47,7 +47,7 @@ import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { DEFAULT_ORDER_LENGTH } from './config'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
 
-const MIN_RIN = 100_000_000_000
+const MIN_RIN = 1_000_000_000_000
 
 const PlaceOrder = ({
   theme,
@@ -463,7 +463,7 @@ const PlaceOrder = ({
                   {isOrderInProgress ? (
                     <Loader />
                   ) : !hasActiveTickets ? (
-                    'Please stake at least 100 RIN'
+                    'Please stake at least 1000 RIN'
                   ) : isTokenABalanceInsufficient ? (
                     `Insufficient ${
                       isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
