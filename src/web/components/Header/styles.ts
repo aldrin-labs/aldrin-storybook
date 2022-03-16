@@ -137,6 +137,21 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
     }
   `
       : ''}
+
+  ${(props: LinkProps) =>
+    props.beta
+      ? `
+      &:after {
+        content: "BETA";
+        color: ${COLORS.success};
+        position: relative;
+        top: -5px;
+        font-weight: 600;
+        font-size: 0.7em;
+        padding-left: 5px;
+      }
+    `
+      : ''}
 `
 
 export const LinksBlock = styled.div`

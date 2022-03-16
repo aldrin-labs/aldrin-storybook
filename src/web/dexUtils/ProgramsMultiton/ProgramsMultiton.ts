@@ -1,21 +1,28 @@
+/* eslint-disable no-nested-ternary */
 import { Idl, Program, Provider } from '@project-serum/anchor'
 import { Connection, PublicKey } from '@solana/web3.js'
-import {
-  Program as Program020,
-  Provider as Provider020,
-  Idl as Idl020,
-} from 'anchor020'
 import {
   Program as Program03,
   Provider as Provider03,
   Idl as Idl03,
 } from 'anchor03'
+import {
+  Program as Program019,
+  Provider as Provider019,
+  Idl as Idl019,
+} from 'anchor019'
+import {
+  Program as Program020,
+  Provider as Provider020,
+  Idl as Idl020,
+} from 'anchor020'
 
 import MarketOrderProgramIdl from '@core/idls/marketOrder.json'
+import PlutoniansStakingProgramIdl from '@core/idls/plutonians.json'
 import PoolsProgramIdl from '@core/idls/pools.json'
 import PoolsV2ProgramIdl from '@core/idls/poolsV2.json'
-import PlutoniansStakingProgramIdl from '@core/idls/plutonians.json'
 import StakingProgramIdl from '@core/idls/staking.json'
+import TwammProgramIdl from '@core/idls/twamm.json'
 import VestingProgramIdl from '@core/idls/vesting.json'
 
 import { notifyForDevelop } from '../notifications'
@@ -26,6 +33,7 @@ import {
   STAKING_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
   VESTING_PROGRAM_ADDRESS,
+  TWAMM_PROGRAM_ADDRESS,
   PLUTONIANS_STAKING_ADDRESS,
   defaultOptions,
 } from './utils'
@@ -36,6 +44,7 @@ const IDLS = {
   [MARKET_ORDER_PROGRAM_ADDRESS]: MarketOrderProgramIdl as Idl,
   [STAKING_PROGRAM_ADDRESS]: StakingProgramIdl as Idl,
   [VESTING_PROGRAM_ADDRESS]: VestingProgramIdl as Idl03,
+  [TWAMM_PROGRAM_ADDRESS]: TwammProgramIdl as Idl019,
   [PLUTONIANS_STAKING_ADDRESS]: PlutoniansStakingProgramIdl as Idl020,
 }
 
@@ -95,6 +104,17 @@ class ProgramsMultiton {
           connection,
           // walletAdapterToWallet(wallet),
           wallet, // TODO: resolve more gently?
+          defaultOptions()
+        )
+      ) as any as Program
+    } else if (programAddress === TWAMM_PROGRAM_ADDRESS) {
+      this.cache[cacheKey] = new Program019(
+        programIdl as Idl019,
+        TWAMM_PROGRAM_ADDRESS,
+        new Provider019(
+          connection,
+          // walletAdapterToWallet(wallet),
+          wallet,
           defaultOptions()
         )
       ) as any as Program

@@ -13,14 +13,10 @@ export {
   CustomError,
 } from './ErrorFallback/ErrorFallback'
 export { Loading } from './Loading/Loading'
-export {
-  QueryRenderPlaceholder,
-} from './QueryRenderPlaceholder/QueryRenderPlaceholder'
+export { QueryRenderPlaceholder } from './QueryRenderPlaceholder/QueryRenderPlaceholder'
 export { default as TooltipCustom } from './TooltipCustom/TooltipCustom'
 export { default as Slider } from './Slider/Slider'
-export {
-  default as IconButtonWithHover,
-} from './IconButtonWithHover/IconButtonWithHover'
+export { default as IconButtonWithHover } from './IconButtonWithHover/IconButtonWithHover'
 export { default as SwitchButtons } from './SwitchButtons/SwitchButtons'
 export { LinearProgressCustom } from './LinearProgressCustom/LinearProgressCustom'
 export { TooltipRegionBlocker } from './TooltipRegionBlocker/TooltipRegionBlocker'

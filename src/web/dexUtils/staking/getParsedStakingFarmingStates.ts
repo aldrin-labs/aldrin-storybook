@@ -1,10 +1,10 @@
 import { Connection } from '@solana/web3.js'
+
+import { FarmingState } from '../common/types'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
-
-import { loadStakingFarmingStates } from './loadStakingFarmingStates'
-import { FarmingState } from '../common/types'
 import { WalletAdapter } from '../types'
+import { loadStakingFarmingStates } from './loadStakingFarmingStates'
 
 export const getParsedStakingFarmingStates = async ({
   wallet,

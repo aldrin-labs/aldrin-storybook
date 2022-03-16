@@ -96,7 +96,7 @@ export const AdlIndicator = styled.div`
 `
 export const StyledTitle = styled.span`
   font-family: Avenir Next Light;
-  font-size: 2rem;
+  font-size: ${(props: { fontSize?: string }) => props.fontSize || '2rem'};
   padding: 0.7rem 0;
   letter-spacing: 0.01rem;
   color: ${(props) => props.color || '#93a0b2'};
