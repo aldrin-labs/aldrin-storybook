@@ -128,7 +128,3 @@ export const HeaderCell = styled.th`
   color: ${(props) => props.theme.palette.grey.text};
   font-size: bold;
 `
-
-export const RewardsRoute = () => {
-  return <div>twamm</div>
-}
