@@ -1,6 +1,8 @@
+import BN from 'bn.js'
+
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { computeOutputAmountWithoutFee } from '@sb/dexUtils/stablecurve/stableCurve'
-import BN from 'bn.js'
+
 import { PoolBalances } from '../hooks/usePoolBalances'
 
 export const getMinimumReceivedFromStableCurveForSwap = ({

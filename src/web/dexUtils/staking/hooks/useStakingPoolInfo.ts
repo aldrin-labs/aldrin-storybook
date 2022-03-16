@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 import useSWR from 'swr'
 
 import { getRINCirculationSupply } from '@core/api'
@@ -14,9 +15,12 @@ import {
 import { getCurrentFarmingStateFromAll } from '../getCurrentFarmingStateFromAll'
 import { StakingPool } from '../types'
 
+dayjs.extend(utc)
+
 const loadBuyBackAmount = async () => {
-  const endOfDay = dayjs.utc().endOf('day').unix()
   try {
+    const endOfDay = dayjs.utc().endOf('day').unix()
+
     const data = await client.query<{ getBuyBackAmountForPeriod: number }>({
       query: getBuyBackAmountForPeriod,
       fetchPolicy: 'network-only',
@@ -27,6 +31,7 @@ const loadBuyBackAmount = async () => {
     })
     return data.data.getBuyBackAmountForPeriod
   } catch (e) {
+    console.warn('Unable to load buyback amount: ', e)
     return 0
   }
 }
@@ -38,6 +43,7 @@ export const useStakingPoolInfo = () => {
           query: getStakingPoolInfo,
           fetchPolicy: 'network-only',
         }),
+        // 0,
         loadBuyBackAmount(),
         getRINCirculationSupply(),
       ])
@@ -61,5 +67,5 @@ export const useStakingPoolInfo = () => {
       treasuryDailyRewards,
     }
   }
-  return useSWR('staking-pool-full-info', fetcher, { refreshInterval: 60_000 })
+  return useSWR('staking-pool-full-info', fetcher)
 }

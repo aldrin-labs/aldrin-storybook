@@ -548,7 +548,7 @@ export function useOrderbook(depth = 200) {
   return [{ bids, asks }, !!bids || !!asks]
 }
 
-const useOpenOrdersPubkeys = (): string[] => {
+export const useOpenOrdersPubkeys = (): string[] => {
   const { market } = useMarket()
   const { connected, wallet } = useWallet()
   const connection = useConnection()

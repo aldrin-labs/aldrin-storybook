@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { useWallet, useBalanceInfo } from '@sb/dexUtils/wallet'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Loading, TooltipRegionBlocker } from '@sb/components'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
@@ -20,7 +19,6 @@ import {
   WalletAddress,
   BalanceTitle,
 } from './styles'
-import { getRegionData } from '@core/hoc/withRegionCheck'
 
 export const WalletBlock = () => {
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
@@ -79,7 +77,7 @@ export const WalletBlock = () => {
             <Column>
               {' '}
               <BalanceTitle>
-                {stripByAmountAndFormat(SOLAmount)} SOL
+                {stripByAmountAndFormat(SOLAmount, 4)} SOL
               </BalanceTitle>
               <WalletAddress>
                 {formatSymbol({ symbol: publicKey })}
