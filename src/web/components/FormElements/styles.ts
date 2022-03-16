@@ -1,8 +1,9 @@
-import { BORDER_RADIUS, COLORS, TRANSITION } from '@variables/variables'
+import { BORDER_RADIUS, COLORS, TRANSITION, THEME } from '@variables/variables'
 import styled from 'styled-components'
 
 import { FlexBlock } from '../Layout'
 import { Text } from '../Typography'
+import { SwitcherContainerProps } from './types'
 
 export const Container = styled(FlexBlock)`
   margin: 5px 0;
@@ -64,8 +65,8 @@ interface CheckMarkProps {
 export const CheckMark = styled.div<CheckMarkProps>`
   width: 16px;
   height: 16px;
-  background: ${COLORS.black};
-  border: 2px solid ${COLORS.primary};
+  background: ${THEME.checkbox.color};
+  border: 2px solid ${THEME.checkbox.borderColor};
   border-radius: ${BORDER_RADIUS.sm};
   position: relative;
   cursor: pointer;
@@ -75,7 +76,7 @@ export const CheckMark = styled.div<CheckMarkProps>`
     props.checked
       ? `
     & {
-      background: ${COLORS.primary};
+      background: ${THEME.checkbox.borderColor};
     }
     &:after {
       content: "";
@@ -109,4 +110,30 @@ export const LabelWrap = styled(FlexBlock)`
 export const GroupLabelText = styled.label`
   font-size: 11px;
   color: ${COLORS.textAlt};
+`
+
+export const SwitcherButton = styled.div`
+  height: 20px;
+  width: 20px;
+  border-radius: 20px;
+  background: ${COLORS.success};
+  margin: 1px;
+  transition: ${TRANSITION};
+`
+
+/** Switcher */
+export const SwitcherContainer = styled.div<SwitcherContainerProps>`
+  height: 24px;
+  width: 44px;
+  border-radius: 24px;
+  border: 1px solid ${COLORS.border};
+  cursor: pointer;
+  transition: ${TRANSITION};
+  background: ${(props: SwitcherContainerProps) =>
+    props.$checked ? COLORS.successAlt : COLORS.blockBackground};
+
+  ${SwitcherButton} {
+    margin-left: ${(props: SwitcherContainerProps) =>
+      props.$checked ? '21px' : '1px'};
+  }§
 `

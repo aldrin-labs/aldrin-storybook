@@ -1,18 +1,8 @@
-import { COLORS } from '@variables/variables'
 import { useField } from 'formik'
 import React from 'react'
 
 import { CheckboxContainer, CheckMark, Label } from './styles'
-
-interface CheckboxBase {
-  label: React.ReactNode
-  color?: keyof typeof COLORS
-}
-
-interface CheckboxProps extends CheckboxBase {
-  value: boolean
-  onChange: (checked: boolean) => void
-}
+import { CheckboxProps, CheckboxFieldProps } from './types'
 
 export const Checkbox: React.FC<CheckboxProps> = (props) => {
   const { value, onChange, label, color } = props
@@ -25,10 +15,6 @@ export const Checkbox: React.FC<CheckboxProps> = (props) => {
       </Label>
     </CheckboxContainer>
   )
-}
-
-interface CheckboxFieldProps extends CheckboxBase {
-  name: string
 }
 
 export const CheckboxField: React.FC<CheckboxFieldProps> = (props) => {
