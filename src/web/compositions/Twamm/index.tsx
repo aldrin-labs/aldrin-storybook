@@ -233,7 +233,7 @@ const TwammComponent = ({
 
 export default compose(
   withTheme(),
-  withRegionCheck(),
+  withRegionCheck,
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
