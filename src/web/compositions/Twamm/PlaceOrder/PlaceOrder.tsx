@@ -47,7 +47,7 @@ import { SelectCoinPopup } from './components/SelectCoinPopup'
 import { DEFAULT_ORDER_LENGTH } from './config'
 import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
 
-const MIN_RIN = 1_000_000_000_000
+const MIN_RIN = 10_000_000_000
 
 const PlaceOrder = ({
   theme,
