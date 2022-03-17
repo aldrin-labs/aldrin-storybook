@@ -463,7 +463,7 @@ const PlaceOrder = ({
                   {isOrderInProgress ? (
                     <Loader />
                   ) : !hasActiveTickets ? (
-                    'Please stake at least 1000 RIN'
+                    'Please stake at least 10 RIN'
                   ) : isTokenABalanceInsufficient ? (
                     `Insufficient ${
                       isTokenABalanceInsufficient ? baseSymbol : quoteSymbol
