@@ -16,6 +16,7 @@ import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { uniq } from '@sb/utils/collection'
 
+import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { estimateTime, MINUTE } from '@core/utils/dateUtils'
 import { sleep } from '@core/utils/helpers'
@@ -94,7 +95,10 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const hasFarming = farmings.length > 0
   const hadFarming = (pool.farming || []).length > 0
 
-  const isPoolOwner = wallet.publicKey?.toString() === pool.initializerAccount
+  const additionalPoolOwners = ADDITIONAL_POOL_OWNERS[pool.poolTokenMint] || []
+  const isPoolOwner =
+    wallet.publicKey?.toString() === pool.initializerAccount ||
+    additionalPoolOwners.includes(wallet.publicKey?.toString())
 
   const farming = farmings[0]
 
