@@ -1,4 +1,5 @@
 import {
+  UCOLORS,
   COLORS,
   FONT_SIZES,
   BORDER_RADIUS,
@@ -33,9 +34,9 @@ export const MediaContainer = styled(Row)`
 `
 
 export const FooterButton = styled(Button)`
-  background: ${COLORS.cardsBack};
+  background: ${UCOLORS.gray6};
   border: none;
-  color: ${COLORS.gray3};
+  color: ${UCOLORS.gray1};
   border-radius: ${BORDER_RADIUS.md};
   padding: 0.5em;
   font-size: ${FONT_SIZES.lg};

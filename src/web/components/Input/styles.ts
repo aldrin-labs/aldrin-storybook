@@ -1,11 +1,11 @@
-import { BORDER_RADIUS, COLORS } from '@variables/variables'
+import { BORDER_RADIUS, COLORS, UCOLORS } from '@variables/variables'
 import styled, { css } from 'styled-components'
 
 import { WrapProps, AppendProps } from './types'
 
 export const VARIANTS = {
   default: css`
-    background: ${COLORS.background};
+    background: ${UCOLORS.gray5};
     border: 1px solid ${COLORS.border};
   `,
   'outline-white': css`

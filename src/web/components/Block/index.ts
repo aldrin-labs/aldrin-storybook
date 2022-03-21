@@ -1,4 +1,4 @@
-import { COLORS } from '@variables/variables'
+import { UCOLORS, COLORS } from '@variables/variables'
 import styled from 'styled-components'
 
 export interface BlockProps {
@@ -10,7 +10,7 @@ export interface BlockProps {
 
 export const Block = styled.div<BlockProps>`
   background: ${(props: BlockProps) =>
-    props.inner ? COLORS.newBlack : COLORS.cardsBack};
+    props.inner ? COLORS.newBlack : UCOLORS.gray6};
   border-radius: 12px;
   margin: ${(props) => props.margin || '8px'};
   height: 100%;
@@ -53,6 +53,7 @@ export const BlockTitle = styled.h2`
   font-size: 1.25em;
   line-height: 150%;
   margin: 0.25rem 0 0.5rem;
+  color: ${UCOLORS.gray0};
 `
 
 export const BlockSubtitle = styled.h3<TitleProps>`

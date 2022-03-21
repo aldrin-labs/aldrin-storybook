@@ -1,4 +1,9 @@
-import { COLORS, BORDER_RADIUS, TRANSITION } from '@variables/variables'
+import {
+  UCOLORS,
+  COLORS,
+  BORDER_RADIUS,
+  TRANSITION,
+} from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -249,7 +254,7 @@ export const StyledPicture = styled.picture`
 export const StyledLink = styled.a`
   width: 36px;
   height: 36px;
-  background: ${COLORS.cardsBack};
+  background: ${UCOLORS.gray6};
   border-radius: ${BORDER_RADIUS.md};
   transition: ${TRANSITION};
 

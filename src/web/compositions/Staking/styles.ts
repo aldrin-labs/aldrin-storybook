@@ -1,4 +1,9 @@
-import { COLORS, BREAKPOINTS, BORDER_RADIUS } from '@variables/variables'
+import {
+  UCOLORS,
+  COLORS,
+  BREAKPOINTS,
+  BORDER_RADIUS,
+} from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -8,7 +13,7 @@ import { BlackPage } from '@sb/components/Layout'
 import { ContentBlockProps } from './types'
 
 export const StakingBlock = styled(Block)`
-  background: ${COLORS.defaultGray};
+  background: ${UCOLORS.gray6};
   @media (max-width: ${BREAKPOINTS.md}) {
     margin: 8px 15px;
   }
@@ -27,7 +32,7 @@ export const ContentBlock = styled.div<ContentBlockProps>`
   padding: 1em;
   flex-direction: column;
   justify-content: space-between;
-  background: ${COLORS.cardsBack};
+  background: ${UCOLORS.gray5};
   border-radius: ${BORDER_RADIUS.md};
 `
 export const StretchedContent = styled.div`
@@ -83,8 +88,8 @@ export const UnStakeButton = styled(GrayButton)`
 export const GrayLink = styled(Link)`
   width: 100%;
   border: none;
-  color: ${COLORS.newWhite};
-  background: ${COLORS.cardsBack};
+  color: ${UCOLORS.gray0};
+  background: ${UCOLORS.gray5};
   border-radius: ${BORDER_RADIUS.md};
   margin: 0.7em 0 0 0;
   line-height: 3em;

@@ -1,4 +1,5 @@
 import {
+  UCOLORS,
   COLORS,
   SIZE,
   BREAKPOINTS,
@@ -18,7 +19,7 @@ export const HeaderWrap = styled.header`
   display: flex;
   flex-direction: row;
   height: 60px;
-  background: ${COLORS.mainBlack};
+  background: ${UCOLORS.gray9};
 `
 
 export const LogoBlock = styled.div`
@@ -54,7 +55,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   padding: 4px 0;
   margin: 0;
   text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
-  color: ${COLORS.primaryGray};
+  color: ${UCOLORS.gray1};
   background: transparent;
   transition: all ease-in 0.2s;
   border: 0;
@@ -83,22 +84,22 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   }
 
   &:hover {
-    color: ${COLORS.activeWhite};
+    color: ${UCOLORS.gray0};
     transition: all ease-in 0.2s;
     svg {
       path {
-        fill: ${COLORS.activeWhite};
+        fill: ${UCOLORS.gray0};
       }
     }
   }
 
   &.selected {
-    color: ${COLORS.activeWhite};
-    border-bottom: 1px solid ${COLORS.activeWhite};
+    color: ${UCOLORS.gray0};
+    border-bottom: 1px solid ${UCOLORS.gray0};
     transition: all ease-in 0.2s;
     svg {
       path {
-        fill: ${COLORS.activeWhite};
+        fill: ${UCOLORS.gray0};
       }
     }
   }
@@ -251,7 +252,7 @@ export const DropdownWrap = styled.div<ShowHideProps>`
 
 export const DropdownInner = styled.div`
   min-width: 6em;
-  background: ${COLORS.defaultGray};
+  background: ${UCOLORS.gray5};
   display: flex;
   flex-direction: column;
   margin-top: 5px;
@@ -271,15 +272,15 @@ export const WalletButton = styled(Button)`
   white-space: nowrap;
   padding: 10px 20px;
   font-size: 0.75em;
-  background-color: ${COLORS.primaryBlue};
+  background-color: ${UCOLORS.blue3};
   border: none;
   font-weight: 600;
   height: 5rem;
   transition: ${TRANSITION};
+  color: white;
 
   &:hover {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-      ${COLORS.primary};
+    background: ${UCOLORS.blue4};
   }
 
   &:active,

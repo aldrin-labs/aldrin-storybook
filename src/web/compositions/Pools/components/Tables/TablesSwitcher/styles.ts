@@ -4,6 +4,7 @@ import {
   BORDER_RADIUS,
   BREAKPOINTS,
   COLORS,
+  UCOLORS,
   FONT_SIZES,
 } from '@variables/variables'
 import { Button } from '@sb/components/Button'
@@ -89,6 +90,13 @@ export const AddPoolButton = styled(Button)`
   justify-content: center;
   font-weight: bold;
   font-size: ${FONT_SIZES.md};
+  background-color: ${UCOLORS.blue3};
+  border: none;
+  color: white;
+
+  &:hover {
+    background: ${UCOLORS.blue4};
+  }
 
   @media (min-width: ${BREAKPOINTS.md}) {
     margin-right: 20px;

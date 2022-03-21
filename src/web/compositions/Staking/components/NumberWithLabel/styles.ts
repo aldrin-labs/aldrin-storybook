@@ -1,4 +1,4 @@
-import { COLORS, FONT_SIZES, BORDER_RADIUS } from '@variables/variables'
+import { UCOLORS, FONT_SIZES, BORDER_RADIUS } from '@variables/variables'
 import styled from 'styled-components'
 
 type LabelType = {
@@ -8,8 +8,8 @@ type LabelType = {
 }
 
 export const Container = styled.div`
-  background: rgba(38, 159, 19, 0.1);
-  color: ${COLORS.success};
+  background: #00ff8426;
+  color: ${UCOLORS.green4};
   display: flex;
   flex-direction: row;
   align-items: center;
