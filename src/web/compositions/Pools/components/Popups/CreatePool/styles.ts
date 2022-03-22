@@ -1,9 +1,10 @@
 import { COLORS, BORDER_RADIUS, SIZE } from '@variables/variables'
+
+import styled from 'styled-components'
 import { BlockContent } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { Flex } from '@sb/components/Layout'
 import { InlineText, Text } from '@sb/components/Typography'
-import styled from 'styled-components'
 
 export const Title = styled.span`
   font-size: 32px;

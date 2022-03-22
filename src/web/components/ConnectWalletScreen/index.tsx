@@ -1,20 +1,17 @@
 import { Theme, withTheme } from '@material-ui/core'
-import React, { ReactNode, useState, useEffect } from 'react'
+import { COLORS } from '@variables/variables'
+import React, { ReactNode, useState } from 'react'
 
-import { SvgIcon } from '@sb/components'
+import { SvgIcon, Loading, TooltipRegionBlocker } from '@sb/components'
 import {
   RowContainer,
   Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Loading, TooltipRegionBlocker } from '@sb/components'
 
 import LightLogo from '@icons/lightLogo.svg'
 
-import { COLORS } from '../../../variables/variables'
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
-import { getRegionData } from '@core/hoc/withRegionCheck'
 
 interface ConnectWalletContentProps {
   theme: Theme

@@ -117,8 +117,13 @@ export const THEME = {
   label: {
     color: COLORS.white,
   },
+
   checkbox: {
     color: COLORS.black,
     borderColor: COLORS.main,
+  },
+
+  input: {
+    color: COLORS.white,
   },
 }

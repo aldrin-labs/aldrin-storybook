@@ -1,6 +1,5 @@
+import { COLORS } from '@variables/variables'
 import styled from 'styled-components'
-
-import { COLORS } from '../../../variables/variables'
 
 export const AnimatedImage = styled.svg`
   width: ${(props) => props.width || '2.5rem'};

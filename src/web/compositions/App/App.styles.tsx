@@ -1,6 +1,5 @@
+import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
-
-import { BREAKPOINTS } from '../../../variables/variables'
 
 // put overflow-x hidden since
 // we dont need it to horizontal scrollbar

@@ -1,4 +1,4 @@
-import { BORDER_RADIUS, COLORS } from '@variables/variables'
+import { BORDER_RADIUS, COLORS, THEME } from '@variables/variables'
 import styled, { css } from 'styled-components'
 
 import { WrapProps, AppendProps } from './types'
@@ -26,7 +26,7 @@ export const InputEl = styled.input`
   line-height: 1.7;
   font-weight: 600;
   padding: 0.6em 0 0.6em 1.5em;
-  color: ${COLORS.white};
+  color: ${THEME.input.color};
 
   &:disabled {
     color: ${COLORS.hint};
@@ -35,7 +35,7 @@ export const InputEl = styled.input`
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
   &:-webkit-autofill {
-    -webkit-text-fill-color: ${COLORS.white};
+    -webkit-text-fill-color: ${THEME.input.color};
     transition: background-color 5000s ease-in-out 0s;
   }
 `

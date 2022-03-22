@@ -12,7 +12,6 @@ export const Block = styled.div<BlockProps>`
   ${THEME.block.style}
   background: ${(props: BlockProps) =>
     props.inner ? COLORS.background : COLORS.blockBackground};
-  border-radius: 12px;
   margin: ${(props) => props.margin || '8px'};
   height: 100%;
   position: relative;

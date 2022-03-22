@@ -1,8 +1,10 @@
+import { COLORS } from '@variables/variables'
 import styled from 'styled-components'
-import background from './banner-background.png'
-import { Text } from '@sb/components/Typography'
+
 import { Button } from '@sb/components/Button'
-import { COLORS } from '../../../../../variables/variables'
+import { Text } from '@sb/components/Typography'
+
+import background from './banner-background.png'
 
 export const BannerContainer = styled.div`
   flex: 1;

@@ -1,4 +1,4 @@
-import { WIDTH } from "../../../variables/variables";
+import { WIDTH } from '@variables/variables'
 
 export interface RowProps {
   wrap?: string

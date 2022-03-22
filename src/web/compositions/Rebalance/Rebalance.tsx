@@ -1,5 +1,6 @@
 import { withTheme, Theme } from '@material-ui/core/styles'
 import { Connection } from '@solana/web3.js'
+import { COLORS } from '@variables/variables'
 import React, { useEffect, useState, useCallback } from 'react'
 import debounceRender from 'react-debounce-render'
 import { compose } from 'recompose'
@@ -15,7 +16,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
 
-import { COLORS } from '../../../variables/variables'
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import RebalanceHeaderComponent from './components/Header'
 import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'

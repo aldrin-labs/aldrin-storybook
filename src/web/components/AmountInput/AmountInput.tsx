@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
+import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 
-import { getTokenNameByMintAddress } from '../../dexUtils/markets'
 import { useTokenInfos } from '../../dexUtils/tokenRegistry'
 import { Button } from '../Button'
 import { INPUT_FORMATTERS } from '../Input'
@@ -61,7 +61,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
       disabled={disabled}
       append={
         <ButtonsBlock>
-          <TokenNameWrap>{tokenName}</TokenNameWrap>
+          {mint && <TokenNameWrap>{tokenName}</TokenNameWrap>}
           <ButtonsWithAmount>
             <MaxValue color="success" weight={600}>
               {stripByAmountAndFormat(amount)}
