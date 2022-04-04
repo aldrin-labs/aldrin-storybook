@@ -1,16 +1,18 @@
+import { ApolloQueryResult } from 'apollo-client'
 import React from 'react'
+
+import {
+  FarmingState,
+  FarmingTicket,
+  SnapshotQueue,
+} from '@sb/dexUtils/common/types'
 import {
   TokenInfo,
   RefreshFunction,
   TokenInfo as TokenInfoType,
 } from '@sb/dexUtils/types'
 import { VestingWithPk, Vesting } from '@sb/dexUtils/vesting/types'
-import {
-  FarmingState,
-  FarmingTicket,
-  SnapshotQueue,
-} from '@sb/dexUtils/common/types'
-import { ApolloQueryResult } from 'apollo-client'
+
 import {
   DexTokensPrices,
   FeesEarned,
@@ -64,6 +66,7 @@ export type ModalType =
 export interface PoolStatsProps {
   title: React.ReactNode
   value: number
+  additionalInfo?: React.ReactNode
 }
 
 export interface ClaimTimeTooltipProps {
