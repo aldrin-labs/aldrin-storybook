@@ -104,7 +104,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const pool = pools?.find((p) => p.parsedName === symbol)
 
-  const [poolBalances, refreshPoolBalances] = usePoolBalances(pool)
+  const [poolBalances] = usePoolBalances(pool)
 
   const vesting = vestingsForWallet.get(pool?.poolTokenMint || '')
 
@@ -132,7 +132,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     poolBalances,
   })
 
-  // pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenB / pool.tvl.tokenA
   const quotePrice = getMinimumReceivedAmountFromSwap({
     isSwapBaseToQuote: false,
     slippage: 0,
@@ -140,7 +139,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     swapAmountIn: 1,
     poolBalances,
   })
-  // pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenA / pool.tvl.tokenB
 
   const baseUsdPrice = prices.get(baseTokenName) || { price: 0 }
   const quoteUsdPrice = prices.get(quoteTokenName) || { price: 0 }
