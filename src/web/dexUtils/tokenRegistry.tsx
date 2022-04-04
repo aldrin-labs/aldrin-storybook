@@ -35,6 +35,7 @@ export function TokenRegistryProvider(props) {
           const parsedItem = {
             ...item,
             ...(item.symbol === 'soETH' ? { symbol: 'ETH' } : {}),
+            ...(item.symbol === '$HONEY' ? { symbol: 'HONEY' } : {}),
             name: item.name
               .replace('Cryptocurrencies.Ai', 'Aldrin')
               .replace('(Sollet)', ''), // TODO: found better way to resolve token names
