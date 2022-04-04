@@ -12,7 +12,8 @@ import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { CURVE } from '@sb/dexUtils/pools/types'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks'
+import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -103,6 +104,8 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const pool = pools?.find((p) => p.parsedName === symbol)
 
+  const [poolBalances, refreshPoolBalances] = usePoolBalances(pool)
+
   const vesting = vestingsForWallet.get(pool?.poolTokenMint || '')
 
   if (!pool) {
@@ -121,10 +124,23 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const baseDoubleTrimmed = trimTo(baseInfo?.name || '', 7)
   const quoteDoubleTrimmed = trimTo(quoteInfo?.name || '', 7)
 
-  const basePrice =
-    pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenB / pool.tvl.tokenA
-  const quotePrice =
-    pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenA / pool.tvl.tokenB
+  const basePrice = getMinimumReceivedAmountFromSwap({
+    isSwapBaseToQuote: true,
+    slippage: 0,
+    pool,
+    swapAmountIn: 1,
+    poolBalances,
+  })
+
+  // pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenB / pool.tvl.tokenA
+  const quotePrice = getMinimumReceivedAmountFromSwap({
+    isSwapBaseToQuote: false,
+    slippage: 0,
+    pool,
+    swapAmountIn: 1,
+    poolBalances,
+  })
+  // pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenA / pool.tvl.tokenB
 
   const baseUsdPrice = prices.get(baseTokenName) || { price: 0 }
   const quoteUsdPrice = prices.get(quoteTokenName) || { price: 0 }
