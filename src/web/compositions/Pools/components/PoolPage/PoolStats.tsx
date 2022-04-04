@@ -217,7 +217,7 @@ Don't miss your chance.`
           additionalInfo={
             <FlexBlock alignItems="flex-start" direction="column">
               <span>
-                {stripByAmountAndFormat(pool.tvl.tokenA)} {base} /
+                {stripByAmountAndFormat(pool.tvl.tokenA)} {base}
               </span>
               <span>
                 {stripByAmountAndFormat(pool.tvl.tokenB)} {quote}
