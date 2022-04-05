@@ -302,7 +302,6 @@ export default compose(
       symbol: props.symbol,
       exchange: 'serum',
       marketType: props.marketType,
-      ...generateDatesForRequest(),
     }),
     fetchPolicy: 'cache-and-network',
     withOutSpinner: true,
