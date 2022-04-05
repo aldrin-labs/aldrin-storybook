@@ -99,23 +99,22 @@ const getEmptyData = (
     dayDuration * NUMBER_OF_DAYS_TO_SHOW,
   lastTimestamp: number = endOfDayTimestamp()
 ) => {
-  const tsFrom = dayjs.unix(fisrtTimestamp).startOf('day').unix()
+  const tsFrom = dayjs.unix(fisrtTimestamp).startOf('day')
+  const tsTo = dayjs.unix(lastTimestamp).startOf('day')
 
-  let tsTo = dayjs.unix(lastTimestamp).startOf('day').unix()
+  const diffInDays = tsTo.diff(tsFrom, 'days')
 
-  const emptyData = []
+  const emptyData = new Array(diffInDays)
+  .fill(undefined)
+  .map((el, i) => {
+      const date = dayjs.unix(tsTo.subtract(i, 'day').unix()).format('YYYY-MM-DD')
 
-  do {
-    const date = dayjs.unix(tsTo).format('YYYY-MM-DD')
-    emptyData.push({
-      date,
-      vol: 0,
-    })
+      return { date, vol: 0 }
 
-    tsTo -= dayDuration
-  } while (tsTo >= tsFrom)
+  })
+  .reverse()
 
-  return emptyData.reverse()
+  return emptyData
 }
 
 const createTotalVolumeLockedChart = ({

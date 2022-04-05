@@ -2,9 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { SvgIcon } from '@sb/components'
+import { FlexBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { InlineText } from '@sb/components/Typography'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
@@ -45,7 +47,7 @@ import {
 import { PoolStatsProps } from './types'
 
 export const PoolStats: React.FC<PoolStatsProps> = (props) => {
-  const { title, value } = props
+  const { title, value, additionalInfo } = props
   return (
     <PoolStatsWrap>
       <PoolStatsTitle>{title}</PoolStatsTitle>
@@ -55,6 +57,11 @@ export const PoolStats: React.FC<PoolStatsProps> = (props) => {
             <span>{value > 0 ? `$${stripByAmountAndFormat(value)}` : '-'}</span>
           </DarkTooltip>
         </PoolStatsText>
+        {additionalInfo ? (
+          <InlineText weight={300} color="gray2" size="sm">
+            {additionalInfo}
+          </InlineText>
+        ) : null}
       </PoolStatsData>
     </PoolStatsWrap>
   )
@@ -190,7 +197,7 @@ Don't miss your chance.`
         </PoolName>
         <ButtonsContainer>
           <SwapButton
-            $borderRadius="xl"
+            $borderRadius="md"
             as={Link}
             to={`/swap?base=${base}&quote=${quote}`}
           >
@@ -204,7 +211,20 @@ Don't miss your chance.`
       </PoolInfoBlock>
       {/* Pool stats */}
       <PoolStatsRow>
-        <PoolStats title="Total Value Locked" value={tvlUsd} />
+        <PoolStats
+          title="Total Value Locked"
+          value={tvlUsd}
+          additionalInfo={
+            <FlexBlock alignItems="flex-start" direction="column">
+              <span>
+                {stripByAmountAndFormat(pool.tvl.tokenA)} {base}
+              </span>
+              <span>
+                {stripByAmountAndFormat(pool.tvl.tokenB)} {quote}
+              </span>
+            </FlexBlock>
+          }
+        />
         <PoolStats
           title={
             <>
