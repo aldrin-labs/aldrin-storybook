@@ -104,7 +104,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const pool = pools?.find((p) => p.parsedName === symbol)
 
-  const [poolBalances] = usePoolBalances(pool)
+  const [poolBalances] = usePoolBalances(pool || {})
 
   const vesting = vestingsForWallet.get(pool?.poolTokenMint || '')
 
