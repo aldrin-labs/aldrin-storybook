@@ -70,6 +70,16 @@ const resolveFarmingAvailableAmount = (
   )
 }
 
+export const validateFarmingDuration = (v?: number, max?: number) => {
+  const value = v || 0
+  if (typeof max !== 'undefined' && value > max) {
+    return 'Entered value greater than max farming duration.'
+  }
+  if (value <= 0) {
+    return 'Wrong value'
+  }
+}
+
 export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
   const { tokens, userTokens, farmingRewardFormatted } = props
   const form = useFormikContext<FarmingFormType>()
@@ -78,6 +88,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
   } = form
   const farmingEndDate =
     Date.now() + parseFloat(farming.farmingPeriod) * DAY * 1000 // to ms
+
   return (
     <>
       <CoinSelectors>
@@ -108,6 +119,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             borderRadius="lg"
             variant="outline"
             name="farming.farmingPeriod"
+            placeholder="from 7 to 60"
             append={
               <InputAppendContainer>
                 <InlineText color="primaryWhite" weight={600}>
@@ -115,6 +127,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
                 </InlineText>
               </InputAppendContainer>
             }
+            validate={(v) => validateFarmingDuration(v, 60)}
             formatter={INPUT_FORMATTERS.DECIMAL}
           />
         </NumberInputContainer>
@@ -127,11 +140,23 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
           />
         </NumberInputContainer>
       </CoinSelectors>
-      <InlineText color="hint" size="sm" weight={600}>
-        Farming will end at {dayjs(farmingEndDate).format('HH:mm MMM DD, YYYY')}
-      </InlineText>
-      <br />
-      <br />
+      {form.errors.farming?.farmingPeriod &&
+        form.touched.farming?.farmingPeriod && (
+          <ErrorText color="error">
+            {form.errors.farming?.farmingPeriod}
+          </ErrorText>
+        )}
+      {farming.farmingPeriod && !form.errors.farming?.farmingPeriod && (
+        <>
+          <InlineText color="hint" size="sm" weight={600}>
+            Farming will end at{' '}
+            {dayjs(farmingEndDate).format('HH:mm MMM DD, YYYY')}
+          </InlineText>
+          <br />
+          <br />
+        </>
+      )}
+
       <CheckboxWrap>
         <RadioGroupContainer>
           <div>
