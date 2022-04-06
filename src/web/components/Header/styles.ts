@@ -274,7 +274,7 @@ export const WalletButton = styled(Button)`
   background-color: ${COLORS.primaryBlue};
   border: none;
   font-weight: 600;
-  height: 5rem;
+  height: 3.5em;
   transition: ${TRANSITION};
 
   &:hover {
@@ -335,7 +335,6 @@ export const WalletData = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 1rem;
-  height: 5rem;
   border-radius: ${BORDER_RADIUS.md};
   background: ${COLORS.defaultGray};
   align-items: center;
@@ -357,6 +356,7 @@ export const Column = styled.div`
   justify-content: space-between;
   flex-direction: column;
   align-items: flex-end;
+  margin-left: 0.4em;
 `
 
 export const WalletName = styled(Text)`
@@ -372,7 +372,7 @@ export const WalletName = styled(Text)`
 
 export const WalletAddress = styled(WalletName)`
   opacity: 0.5;
-  font-weight: 600;
+  font-weight: 400;
   display: block;
   font-size: ${FONT_SIZES.sm};
 
@@ -404,13 +404,14 @@ export const BalanceTitle = styled.span`
   font-size: ${FONT_SIZES.sm};
   color: ${COLORS.newGreen};
   font-weight: 600;
+  white-space: nowrap;
   @media (max-width: 1200px) {
     font-size: 0.7125em;
   }
 `
 
 export const Wrap = styled.div`
-  margin: 0 10px;
+  margin: 0 15px;
 
   @media (min-width: ${BREAKPOINTS.lg}) {
     margin: 0 48px;
