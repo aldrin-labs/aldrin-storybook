@@ -414,6 +414,6 @@ export const Wrap = styled.div`
   margin: 0 15px;
 
   @media (min-width: ${BREAKPOINTS.lg}) {
-    margin: 0 48px;
+    margin: 0 1.5em;
   }
 `
