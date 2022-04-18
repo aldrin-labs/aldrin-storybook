@@ -12,8 +12,8 @@ export const RewardsButton = styled(WalletButton)`
   padding-left: 10px;
   padding-right: 10px;
   width: auto;
-  margin-right: 20px;
-
+  margin-right: 10px;
+  height: 3.5em;
   &:hover,
   &:active,
   &:focus {
@@ -26,7 +26,6 @@ export const Img = styled.img`
 `
 
 export const RewardsContent = styled(BlockContent)`
-  width: 100vw;
   max-width: 440px;
   background: ${COLORS.cardsBack};
   margin: 20px;

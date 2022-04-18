@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
+import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { useWallet, useBalanceInfo } from '@sb/dexUtils/wallet'
-import { Loading, TooltipRegionBlocker } from '@sb/components'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 

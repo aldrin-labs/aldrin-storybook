@@ -340,7 +340,6 @@ export const StyledPaperMediumWidth = styled(Paper)`
   width: 60rem;
   height: auto;
   background: #222429;
-  border: 0.1rem solid #3a475c;
   display: flex;
   justify-content: space-between;
   align-items: center;
