@@ -55,6 +55,7 @@ import {
   PLD_DENOMINATOR,
   NFT_REWARD_MIN_STAKE_AMOUNT,
   NFT_REWARD_MIN_STAKE_AMOUNT_BN,
+  PLD_DECIMALS,
 } from './config'
 import {
   AdaptiveStakingBlock,
@@ -256,7 +257,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                 currentTierTimePassed / currentTierLockDuration.toNumber()
 
               const stakedAmount =
-                stakingAccount?.account.amount.toNumber() / 10 ** 9 || '--' // with real pld it will be 10 ** 6
+                stakingAccount?.account.amount.toNumber() /
+                  10 ** PLD_DECIMALS || '--'
 
               return (
                 <ModeContainer
