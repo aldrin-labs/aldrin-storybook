@@ -430,7 +430,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                   PLD
                                 </InlineText>
                                 <InlineText size="sm">
-                                  {EXTRA_REWARDS[selectedTierIndex]}
+                                  to get {EXTRA_REWARDS[selectedTierIndex]}
                                 </InlineText>
                               </Column>
                             )}
