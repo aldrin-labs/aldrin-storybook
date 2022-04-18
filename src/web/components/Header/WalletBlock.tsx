@@ -1,13 +1,7 @@
 import copy from 'clipboard-copy'
 import React, { useState } from 'react'
 
-import {
-  Loading,
-  SvgIcon,
-  TooltipRegionBlocker,
-  Loading,
-  TooltipRegionBlocker,
-} from '@sb/components'
+import { Loading, SvgIcon, TooltipRegionBlocker } from '@sb/components'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { useWallet, useBalanceInfo } from '@sb/dexUtils/wallet'
 

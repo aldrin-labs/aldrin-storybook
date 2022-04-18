@@ -5,7 +5,13 @@ import styled from 'styled-components'
 import { Block, BlockSubtitle } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import { Input } from '@sb/components/Input'
-import { Row, StretchedBlock, Page, BlackPage } from '@sb/components/Layout'
+import {
+  Row,
+  StretchedBlock,
+  Page,
+  BlackPage,
+  Content,
+} from '@sb/components/Layout'
 
 import { Append, InputEl } from '../../components/Input/styles'
 
@@ -243,16 +249,23 @@ export const FormWrap = styled.form`
 export const UnstakingFormWrap = styled(FormWrap)``
 
 export const FormItem = styled.div`
-  margin: 10px 10px 0 0;
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    margin: 10px 10px 0 0;
+  }
 `
 
 export const FormItemFull = styled(FormItem)`
   display: flex;
-  flex: 1;
-  margin-right: 0;
-  margin-top: 16px;
-  &:first-child {
-    margin-top: 0;
+  flex-direction: column;
+  width: 100%;
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    flex-direction: row;
+    flex: 1;
+    margin-right: 0;
+    margin-top: 16px;
+    &:first-child {
+      margin-top: 0;
+    }
   }
 `
 
@@ -282,8 +295,11 @@ export const StakingInput = styled(Input)`
 `
 
 export const ButtonWrapper = styled.div`
-  margin: auto;
-  margin-left: 0.6em;
+  margin: 0.6em 0 0 0;
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    margin: auto;
+    margin-left: 0.6em;
+  }
 `
 
 export const ChartContainer = styled.div`
@@ -357,5 +373,13 @@ export const FormsContainer = styled.div`
 export const FormsWrap = styled.div`
   @media (min-width: ${BREAKPOINTS.lg}) {
     margin-top: 20px;
+  }
+`
+export const StakingContent = styled(Content)`
+  width: auto;
+  margin: 0 15px;
+  @media (min-width: ${BREAKPOINTS.md}) {
+    width: 100%;
+    margin: 0 10px;
   }
 `

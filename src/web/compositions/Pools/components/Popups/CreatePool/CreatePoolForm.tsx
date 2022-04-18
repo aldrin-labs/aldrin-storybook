@@ -54,7 +54,7 @@ import {
   Title,
   VestingExplanation,
 } from './styles'
-import { TokenAmountInputField } from './TokenAmountInput'
+import { TokenAmountInputField, validateNumber } from './TokenAmountInput'
 import { CreatePoolFormType, CreatePoolFormProps } from './types'
 
 const steps = [
