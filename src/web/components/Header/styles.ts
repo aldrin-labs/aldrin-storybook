@@ -48,6 +48,10 @@ interface LinkProps extends ShowHideProps {
   left?: boolean
 }
 
+type CopyButton = {
+  isCopied: boolean
+}
+
 export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
   font-size: 0.8em;
@@ -293,37 +297,39 @@ export const WalletButton = styled(Button)`
 `
 
 export const WalletDataContainer = styled.div`
-  width: 20rem;
+  width: 8.5em;
   border-radius: ${BORDER_RADIUS.md};
   display: flex;
   flex-direction: row;
   align-items: center;
+  max-width: 120px;
 
   @media (min-width: ${BREAKPOINTS.md}) {
-    width: 17rem;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  button {
+  .disconnect-wallet {
     display: none;
     transition: all 1s ease-out;
   }
 
   &:hover {
-    button {
-      display: block;
+    .disconnect-wallet {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
       transition: all 1s ease-out;
     }
   }
 
-  div {
+  .wallet-data {
     display: flex;
     transition: all 1s ease-out;
   }
 
   &:hover {
-    div {
+    .wallet-data {
       display: none;
       transition: all 1s ease-out;
     }
@@ -382,14 +388,19 @@ export const WalletAddress = styled(WalletName)`
 `
 
 export const WalletDisconnectButton = styled(Button)`
-  width: 100%;
-  padding: 10px 20px;
+  width: calc(100% - 5rem);
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 0.75em;
   background-color: ${COLORS.newOrange};
   border: none;
   font-weight: 600;
-  height: 5rem;
+  height: 100%;
   transition: ${TRANSITION};
+  border-radius: 8px 0 0 8px;
+  min-width: 2rem;
 
   &:hover {
     background-color: ${COLORS.primaryRed};
@@ -414,5 +425,40 @@ export const Wrap = styled.div`
 
   @media (min-width: ${BREAKPOINTS.lg}) {
     margin: 0 48px;
+  }
+`
+export const WalletDisconnectBlock = styled.div`
+  width: 100%;
+  height: 5rem;
+`
+
+export const CopyAddressButton = styled(Button)<CopyButton>`
+  width: 5rem;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75em;
+  background: ${(props) => (props.isCopied ? '#269F13' : '#434343')};
+  border: none;
+  font-weight: 600;
+  height: 100%;
+  transition: ${TRANSITION};
+  border-radius: 0 8px 8px 0;
+  min-width: 2rem;
+  border-left: 2px solid #191919;
+
+  &:hover {
+    background: ${(props) => (props.isCopied ? '#269F13' : '#363636')};
+
+    svg {
+      path {
+        stroke: #fff;
+      }
+    }
+  }
+
+  &:active {
+    background: #363636;
   }
 `
