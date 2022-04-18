@@ -71,6 +71,13 @@ export const Row = styled.div<RowProps>`
   height: 100%;
 `
 
+export const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  height: 100%;
+`
+
 export const Cell = styled.div<CellProps>`
   width: 100%;
   display: flex;
