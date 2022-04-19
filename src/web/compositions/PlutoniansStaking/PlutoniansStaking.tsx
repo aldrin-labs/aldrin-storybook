@@ -20,7 +20,7 @@ import { InlineText } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { RPC_TOKEN_MINT } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { PU238_TOKEN_MINT } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { startSrinStaking } from '@sb/dexUtils/staking/actions'
 import {
   useSrinStakingAccounts,
@@ -88,12 +88,12 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   // const rewardTokenMint = stakingPool?.rewardTokenMint.toString() || ''
   const stakeTokenMint = stakingPool?.stakeTokenMint.toString() || ''
 
-  const rpcTokenName = getTokenNameByMintAddress(RPC_TOKEN_MINT)
+  const pu238TokenName = getTokenNameByMintAddress(PU238_TOKEN_MINT)
   // const rewardTokenName = getTokenNameByMintAddress(rewardTokenMint)
   const stakeTokenName = getTokenNameByMintAddress(stakeTokenMint)
 
   const rewardPrice =
-    (prices.find((dp) => dp.symbol === rpcTokenName)?.price || 0) *
+    (prices.find((dp) => dp.symbol === pu238TokenName)?.price || 0) *
     REWARD_TOKEN_MULTIPLIER
 
   const stakeTokenPrice =

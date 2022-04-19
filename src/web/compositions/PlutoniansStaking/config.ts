@@ -16,8 +16,8 @@ export const EXTRA_REWARDS = [
 
 export const REWARDS_BG = [Centuria, Colossus, Venator, Leviathan]
 
-export const REWARD_TOKEN_NAME = 'PRC' // For getDexTokenPrices
-export const REWARD_TOKEN_MULTIPLIER = 0.001
+export const REWARD_TOKEN_NAME = 'PU238' // For getDexTokenPrices
+export const REWARD_TOKEN_MULTIPLIER = 1
 
 export const REWARD_APR_DENOMINATOR = 1_000_000
 
