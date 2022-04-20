@@ -38,8 +38,10 @@ import {
 import { DAY, YEAR, estimateTime } from '@core/utils/dateUtils'
 
 import ClockIcon from '@icons/clock.svg'
+import InfoIcon from '@icons/infoIcon.svg'
 
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
+import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
 import Lock from '../Staking/components/PlutoniansStaking/lock.svg'
@@ -108,13 +110,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
 
-  console.log(
-    ' stakingPool?.tiers: ',
-    stakingPool?.tiers.map((t) => [
-      t.account.apr.toString(),
-      t.publicKey.toString(),
-    ])
-  )
   const selectedTier = tiers[selectedTierIndex]
   const stakeAccountForTier = stakingAccounts?.get(
     selectedTier?.publicKey.toString() || ''
@@ -221,7 +216,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const rewardsUsdValue = estimateRewardsInStakeTokens * stakeTokenPrice
 
-  const estimateRewardsInPu = rewardsUsdValue / rewardPrice
+  const estimateRewardsInPu =
+    rewardPrice === 0 ? '-' : rewardsUsdValue / rewardPrice
 
   return (
     <Page>
@@ -452,10 +448,19 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   <StretchedBlock width="xl">
                     <ContentBlock width="48%">
                       <StretchedBlock width="xl">
-                        <InlineText color="primaryGray" size="sm">
-                          Rewards
-                        </InlineText>
-                        {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
+                        <DarkTooltip title="Your actual rewards depend on the market price of the PLD and PU238 at the time of unlocking and their projection may change dynamically over time during the lockup period.">
+                          <FlexBlock alignItems="center">
+                            <InlineText color="primaryGray" size="sm">
+                              Est. Rewards
+                            </InlineText>
+                            &nbsp;
+                            <SvgIcon
+                              src={InfoIcon}
+                              width="12px"
+                              height="12px"
+                            />
+                          </FlexBlock>
+                        </DarkTooltip>
                       </StretchedBlock>
                       <InlineText
                         style={{ margin: '1rem 0' }}
@@ -467,7 +472,10 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       </InlineText>
                       <StretchedBlock align="center" width="xl">
                         <InlineText size="sm" weight={600}>
-                          $ {stripByAmountAndFormat(rewardsUsdValue, 2)}
+                          ${' '}
+                          {rewardsUsdValue
+                            ? stripByAmountAndFormat(rewardsUsdValue, 2)
+                            : '-'}
                         </InlineText>
                         <RewardDescription size="md" weight={600}>
                           PU238
