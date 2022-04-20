@@ -50,7 +50,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
                 //     REWARD_APR_DENOMINATOR) *
                 //   100
                 // }% APR  `}
-                label="APY + NFT"
+                label="APR + NFT"
                 center
               />
             </ContentBlock>
@@ -73,7 +73,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
                 //     REWARD_APR_DENOMINATOR) *
                 //   100
                 // }% APR  `}
-                label="APY + NFT"
+                label="APR + NFT"
                 center
               />
             </ContentBlock>
