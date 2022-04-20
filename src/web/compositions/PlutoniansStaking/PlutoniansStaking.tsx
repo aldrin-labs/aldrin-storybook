@@ -108,6 +108,13 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
 
+  console.log(
+    ' stakingPool?.tiers: ',
+    stakingPool?.tiers.map((t) => [
+      t.account.apr.toString(),
+      t.publicKey.toString(),
+    ])
+  )
   const selectedTier = tiers[selectedTierIndex]
   const stakeAccountForTier = stakingAccounts?.get(
     selectedTier?.publicKey.toString() || ''
