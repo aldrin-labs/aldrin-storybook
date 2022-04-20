@@ -410,7 +410,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                             align="center"
                             width="xl"
                           >
-                            {parseFloat(amount) >=
+                            {parseFloat(amount) >
                             NFT_REWARD_MIN_STAKE_AMOUNT ? (
                               <>
                                 <InlineText
@@ -498,7 +498,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                           </InlineText>
                           {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
                         </StretchedBlock>
-                        {stakeAccountForTier.account.amount.gte(
+                        {stakeAccountForTier.account.amount.gt(
                           NFT_REWARD_MIN_STAKE_AMOUNT_BN
                         ) ? (
                           <>
