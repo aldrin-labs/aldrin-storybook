@@ -42,7 +42,7 @@ export const PLUTONIANS_STAKING_ADDRESS = MASTER_BUILD
   : 'DEVPSeh87GKPyWdowW4MgFwy6qLTs3KTm5vKppGNh6w4'
 
 export const PLUTONIANS_STAKING_POOL_ADDRESS = MASTER_BUILD
-  ? 'BwhPMphP66m4tfJGTpxB4buCkyoUBFnrWWc7ZbvHS77E'
+  ? 'AnsJbrAsV6bU8gqAL45xdmwsjdLe1oTPgLemAbNuUYwA'
   : '3cbB8H3h2kfAdMkSV5cNKXj5Z8Kkpv9fk9dJ4P16Fw22'
 
 // Plutonians staking reward
