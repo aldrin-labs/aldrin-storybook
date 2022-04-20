@@ -108,13 +108,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
 
-  console.log(
-    ' stakingPool?.tiers: ',
-    stakingPool?.tiers.map((t) => [
-      t.account.apr.toString(),
-      t.publicKey.toString(),
-    ])
-  )
   const selectedTier = tiers[selectedTierIndex]
   const stakeAccountForTier = stakingAccounts?.get(
     selectedTier?.publicKey.toString() || ''
@@ -221,7 +214,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const rewardsUsdValue = estimateRewardsInStakeTokens * stakeTokenPrice
 
-  const estimateRewardsInPu = rewardsUsdValue / rewardPrice
+  const estimateRewardsInPu =
+    rewardPrice === 0 ? '-' : rewardsUsdValue / rewardPrice
 
   return (
     <Page>
@@ -467,7 +461,10 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       </InlineText>
                       <StretchedBlock align="center" width="xl">
                         <InlineText size="sm" weight={600}>
-                          $ {stripByAmountAndFormat(rewardsUsdValue, 2)}
+                          ${' '}
+                          {rewardsUsdValue
+                            ? stripByAmountAndFormat(rewardsUsdValue, 2)
+                            : '-'}
                         </InlineText>
                         <RewardDescription size="md" weight={600}>
                           PU238
