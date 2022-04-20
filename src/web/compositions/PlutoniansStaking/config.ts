@@ -22,10 +22,9 @@ export const REWARD_TOKEN_MULTIPLIER = 1
 export const REWARD_APR_DENOMINATOR = 1_000_000
 
 export const PLD_DENOMINATOR = MASTER_BUILD ? 1_000_000 : 1_000_000_000
+export const PLD_DECIMALS = MASTER_BUILD ? 6 : 9
 
 export const NFT_REWARD_MIN_STAKE_AMOUNT = 1_000
 export const NFT_REWARD_MIN_STAKE_AMOUNT_BN = new BN(
   NFT_REWARD_MIN_STAKE_AMOUNT
-).mul(new BN(10).pow(new BN(9)))
-
-export const PLD_DECIMALS = MASTER_BUILD ? 6 : 9
+).mul(new BN(10).pow(new BN(PLD_DECIMALS)))
