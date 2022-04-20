@@ -80,7 +80,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
           ))}
         </StretchedContent>
         <RowContainer>
-          <GrayLink as="span">Coming Soon</GrayLink>
+          <GrayLink to="/staking/plutonians">View</GrayLink>
         </RowContainer>
       </BlockContent>
     </StakingBlock>
