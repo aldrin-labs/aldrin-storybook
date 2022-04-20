@@ -38,8 +38,10 @@ import {
 import { DAY, YEAR, estimateTime } from '@core/utils/dateUtils'
 
 import ClockIcon from '@icons/clock.svg'
+import InfoIcon from '@icons/infoIcon.svg'
 
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
+import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
 import Lock from '../Staking/components/PlutoniansStaking/lock.svg'
@@ -446,10 +448,19 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   <StretchedBlock width="xl">
                     <ContentBlock width="48%">
                       <StretchedBlock width="xl">
-                        <InlineText color="primaryGray" size="sm">
-                          Rewards
-                        </InlineText>
-                        {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
+                        <DarkTooltip title="Your actual rewards depend on the market price of the PLD and PU238 at the time of unlocking and their projection may change dynamically over time during the lockup period.">
+                          <FlexBlock alignItems="center">
+                            <InlineText color="primaryGray" size="sm">
+                              Est. Rewards
+                            </InlineText>
+                            &nbsp;
+                            <SvgIcon
+                              src={InfoIcon}
+                              width="12px"
+                              height="12px"
+                            />
+                          </FlexBlock>
+                        </DarkTooltip>
                       </StretchedBlock>
                       <InlineText
                         style={{ margin: '1rem 0' }}
