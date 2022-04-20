@@ -448,7 +448,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   <StretchedBlock width="xl">
                     <ContentBlock width="48%">
                       <StretchedBlock width="xl">
-                        <DarkTooltip title="Your actual rewards depend on the market price of the PLD and PU238 at the time of unlocking and their projection may change dynamically over time during the lockup period.">
+                        <DarkTooltip title="Your actual rewards depend on the market price of the PLD and PU238 at the time of claiming and their projection may change dynamically over time during the lockup period.">
                           <FlexBlock alignItems="center">
                             <InlineText color="primaryGray" size="sm">
                               Est. Rewards
