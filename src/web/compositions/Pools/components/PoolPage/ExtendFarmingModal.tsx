@@ -42,7 +42,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const tokens: Token[] = userTokens
     .filter(
       (ut) =>
-        farmingTokens.length === 0 ? true : farmingTokens.includes(ut.mint) // Limit token select with already existing mints
+        farmingTokens.length === 0 ? true : farmingTokens.includes(ut.mint) //  Limit token select with already existing mints
     )
     .map((ut) => ({
       mint: ut.mint,
