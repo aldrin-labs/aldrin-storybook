@@ -1,6 +1,7 @@
 import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
 import { FONT_SIZES } from '@variables/variables'
+import { useJupiterSwap } from 'aldrin-internalsdk'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
@@ -35,7 +36,6 @@ import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/q
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { useJupiterSwap } from '@core/hooks/useJupiter/useJupiterSwap'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
@@ -234,6 +234,8 @@ const SwapPage = ({
       selectedBaseTokenAddressFromSeveral
     )
 
+  console.log('maxBaseAmount:', maxBaseAmount, allTokensData)
+
   const { amount: maxQuoteAmount } = getTokenDataByMint(
     allTokensData,
     quoteTokenMintAddress,
@@ -253,6 +255,9 @@ const SwapPage = ({
     inputMint: baseTokenMintAddress,
     outputMint: quoteTokenMintAddress,
     slippage,
+    connection,
+    walletPublicKey: wallet.publicKey?.toString(),
+    tokenInfos,
   })
 
   const networkFee = getSwapNetworkFee({ swapRoute, depositAndFee })
@@ -344,6 +349,7 @@ const SwapPage = ({
 
   const isTooSmallInputAmount = minInputAmount && minInputAmount > inputAmount
 
+  console.log('inputAmount: ', inputAmount)
   return (
     <SwapPageLayout>
       <SwapPageContainer direction="column" height="100%" wrap="nowrap">

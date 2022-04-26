@@ -9,6 +9,8 @@ import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/util
 
 import { removeDecimals } from '@core/utils/helpers'
 
+import { sum } from '../../utils'
+
 export const getSwapButtonText = ({
   isTokenABalanceInsufficient,
   isLoadingSwapRoute,
@@ -111,7 +113,7 @@ export const getFeeFromSwapRoute = ({
   }
 
   return route.marketInfos.reduce((totalFeeUSD, marketInfo) => {
-    const { label } = marketInfo.marketMeta.amm
+    const { label } = marketInfo.amm
 
     if (label === 'Serum') {
       // charge extra fees
@@ -160,10 +162,10 @@ export const getSwapNetworkFee = ({
   }
 
   if (depositAndFee) {
+    const depositsSum = sum(depositAndFee.ataDeposits)
+    const openOrdersDepositsSum = sum(depositAndFee.openOrdersDeposits)
     return (
-      (depositAndFee.ataDeposit * depositAndFee.ataDepositLength +
-        depositAndFee.openOrdersDeposits.reduce((acc, n) => acc + n, 0) +
-        depositAndFee.signatureFee) /
+      (depositsSum + openOrdersDepositsSum + depositAndFee.signatureFee) /
       LAMPORTS_PER_SOL
     )
   }

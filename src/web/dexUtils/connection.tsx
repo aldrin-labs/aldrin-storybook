@@ -8,6 +8,8 @@ import {
 import tuple from 'immutable-tuple'
 import React, { useContext, useRef } from 'react'
 
+import { Metrics } from '@core/utils/metrics'
+
 import { useAsyncData } from './fetch-loop'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
 
@@ -26,7 +28,8 @@ const connection = new MultiEndpointsConnection(
     { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
     // { url: 'https://aldrinexchange.genesysgo.net', weight: 3 },
   ],
-  'confirmed'
+  'confirmed',
+  Metrics
 )
 
 connection.connections.forEach((c) => {
@@ -34,9 +37,14 @@ connection.connections.forEach((c) => {
   c.onAccountChange(new Account().publicKey, () => {})
 })
 
-const serumConnection = new MultiEndpointsConnection([
-  { url: 'https://solana-api.projectserum.com', weight: 2 },
-])
+const serumConnection = new MultiEndpointsConnection(
+  [
+    { url: 'https://solana-api.projectserum.com', weight: 2 },
+    // { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
+  ],
+  undefined,
+  Metrics
+)
 
 const context = {
   connection,

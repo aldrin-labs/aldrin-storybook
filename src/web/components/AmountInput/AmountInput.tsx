@@ -2,6 +2,7 @@ import React from 'react'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
+import { formatNumberToUSFormat } from '../../../../../core/src/utils/PortfolioTableUtils'
 import { getTokenNameByMintAddress } from '../../dexUtils/markets'
 import { useTokenInfos } from '../../dexUtils/tokenRegistry'
 import { Button } from '../Button'
@@ -52,7 +53,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
     <AmountInputElement
       className={className}
       borderRadius="md"
-      value={value}
+      value={formatNumberToUSFormat(value)}
       name={name}
       placeholder={placeholder}
       onChange={onChange}

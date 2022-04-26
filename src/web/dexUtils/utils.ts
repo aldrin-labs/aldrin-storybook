@@ -162,7 +162,7 @@ export const stripInputNumber = (
 ) => {
   let value = `${e.target.value}`
 
-  // check numbers only and 1 dot
+ // check numbers only and 1 dot
   // if (!/^[0-9]*\.?[0-9]*$/.test(value)) {
   //   return prevValue
   // }
