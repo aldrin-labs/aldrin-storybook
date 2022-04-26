@@ -95,8 +95,8 @@ export const SIZE = {
 export const WIDTH = {
   sm: '10%',
   md: '30%',
-  rg: '49%',
   hf: '50%',
+  rg: '49%',
   lg: '60%',
   xl: '100%',
 }
