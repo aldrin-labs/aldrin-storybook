@@ -35,7 +35,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
 
-  const [isProcessingFarmingPopupOpen, setIfProcessingFarmingPopupOpen] =
+  const [isProcessingFarmingPopupOpen, setIsProcessingFarmingPopupOpen] =
     useState(false)
   const [farmingTransactionStatus, setFarmingTransactionStatus] =
     useState<TransactionStatus | null>(null)
@@ -65,6 +65,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
 
   const prolongFarming = async (values) => {
     setFarmingTransactionStatus('processing')
+    setIsProcessingFarmingPopupOpen(true)
     const farmingRewardAccount = userTokens.find(
       (ut) => ut.address === values.farming.token.account
     )
@@ -161,12 +162,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
               </Button>
             </ButtonContainer>
             <ButtonContainer>
-              <Button
-                onClick={() => setIfProcessingFarmingPopupOpen(true)}
-                $padding="lg"
-                disabled={!form.isValid}
-                type="submit"
-              >
+              <Button $padding="lg" disabled={!form.isValid} type="submit">
                 {title}
               </Button>
             </ButtonContainer>
@@ -180,7 +176,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           open={isProcessingFarmingPopupOpen}
           onClose={() => {
             setFarmingTransactionStatus(null)
-            setIfProcessingFarmingPopupOpen(false)
+            setIsProcessingFarmingPopupOpen(false)
           }}
         />
       )}
