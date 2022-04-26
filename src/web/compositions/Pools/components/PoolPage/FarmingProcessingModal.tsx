@@ -65,7 +65,7 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
         )}
         <PoolProcessingContent>
           <PoolProcessingButton
-            $width="hf"
+            $width="rg"
             $loading={status === 'processing'}
             disabled={status === 'processing'}
             onClick={() => prolongFarming()}
@@ -73,7 +73,7 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
             Try again
           </PoolProcessingButton>
           <PoolProcessingButton
-            $width="hf"
+            $width="rg"
             $loading={status === 'processing'}
             disabled={status === 'processing'}
             onClick={onClose}
