@@ -27,7 +27,6 @@ import {
 } from '@sb/dexUtils/pools/swap/index'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -51,6 +50,7 @@ import ArrowRightIcon from '@icons/arrowRight.svg'
 import ReverseArrows from '@icons/reverseArrows.svg'
 import Arrows from '@icons/switchArrows.svg'
 
+import { signAndSendTransactions } from '../../dexUtils/transactions'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
@@ -344,6 +344,69 @@ const SwapPage = ({
 
   const isTooSmallInputAmount = minInputAmount && minInputAmount > inputAmount
 
+  const doSwap = async () => {
+    if (!jupiter || !swapRoute) return
+
+    setIsSwapInProgress(true)
+
+    const { transactions } = await jupiter.exchange({
+      routeInfo: swapRoute,
+    })
+
+    const transactionsAndSigners = []
+
+    if (transactions.setupTransaction) {
+      transactionsAndSigners.push({
+        transaction: transactions.setupTransaction,
+      })
+    }
+
+    transactionsAndSigners.push({
+      transaction: transactions.swapTransaction,
+    })
+
+    if (transactions.cleanupTransaction) {
+      transactionsAndSigners.push({
+        transaction: transactions.cleanupTransaction,
+      })
+    }
+
+    try {
+      setInputAmount('')
+
+      // remove loader
+      setIsSwapInProgress(false)
+      const result = await signAndSendTransactions({
+        connection,
+        wallet,
+        transactionsAndSigners,
+      })
+
+      if (result !== 'success') {
+        notify({
+          type: 'error',
+          message:
+            result !== 'failed'
+              ? 'Transaction cancelled'
+              : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
+        })
+      } else {
+        notify({
+          type: 'success',
+          message: 'Swap executed successfully.',
+        })
+      }
+
+      refreshAllTokensData()
+      await refreshAmountsWithSwapRoute()
+    } catch (e) {
+      console.log('error', e)
+      setInputAmount('')
+
+      // remove loader
+      setIsSwapInProgress(false)
+    }
+  }
   return (
     <SwapPageLayout>
       <SwapPageContainer direction="column" height="100%" wrap="nowrap">
@@ -600,72 +663,7 @@ const SwapPage = ({
                   </span>
                 </TooltipRegionBlocker>
               ) : (
-                <SwapButton
-                  disabled={isButtonDisabled}
-                  onClick={async () => {
-                    if (!jupiter || !swapRoute) return
-
-                    setIsSwapInProgress(true)
-
-                    const { transactions } = await jupiter.exchange({
-                      route: swapRoute,
-                    })
-
-                    const transactionsAndSigners = []
-
-                    if (transactions.setupTransaction) {
-                      transactionsAndSigners.push({
-                        transaction: transactions.setupTransaction,
-                      })
-                    }
-
-                    transactionsAndSigners.push({
-                      transaction: transactions.swapTransaction,
-                    })
-
-                    if (transactions.cleanupTransaction) {
-                      transactionsAndSigners.push({
-                        transaction: transactions.cleanupTransaction,
-                      })
-                    }
-
-                    try {
-                      const result = await signAndSendTransactions({
-                        connection,
-                        wallet,
-                        transactionsAndSigners,
-                      })
-
-                      if (result !== 'success') {
-                        notify({
-                          type: 'error',
-                          message:
-                            result !== 'failed'
-                              ? 'Transaction cancelled'
-                              : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
-                        })
-                      } else {
-                        notify({
-                          type: 'success',
-                          message: 'Swap executed successfully.',
-                        })
-                      }
-
-                      refreshAllTokensData()
-                      await refreshAmountsWithSwapRoute()
-
-                      // reset fields
-                      if (!result.error) {
-                        await setInputAmount('')
-                      }
-
-                      // remove loader
-                      setIsSwapInProgress(false)
-                    } catch (e) {
-                      console.log('error', e)
-                    }
-                  }}
-                >
+                <SwapButton disabled={isButtonDisabled} onClick={doSwap}>
                   <RowContainer>
                     <RowContainer>
                       {getSwapButtonText({

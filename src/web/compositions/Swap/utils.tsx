@@ -111,7 +111,7 @@ export const getFeeFromSwapRoute = ({
   }
 
   return route.marketInfos.reduce((totalFeeUSD, marketInfo) => {
-    const { label } = marketInfo.marketMeta.amm
+    const { label } = marketInfo.amm
 
     if (label === 'Serum') {
       // charge extra fees

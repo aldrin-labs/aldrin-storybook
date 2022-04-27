@@ -241,7 +241,6 @@ export const TableMainRow = ({
   totalTokensValue: number
 }) => {
   const handleSliderChange = (e, value) => {
-    // console.log('value: ', value)
     const token = tokensMap[el.symbol]
 
     // console.log('token: ', token)

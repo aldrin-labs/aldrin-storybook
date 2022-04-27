@@ -1,5 +1,7 @@
 import { Commitment, Connection } from '@solana/web3.js'
+
 import { Metrics } from '@core/utils/metrics'
+
 import { getProviderNameFromUrl } from './connection'
 
 type RateLimitedEndpoint = {
@@ -14,7 +16,10 @@ type EndpointRequestsCounter = {
   weight: number
 }
 
-const processCall = (call: Promise<any>, connection: Connection) => {
+const processCall = (
+  call: Promise<any> | Array<any>,
+  connection: Connection
+) => {
   const rpcProvider = getProviderNameFromUrl({
     rawConnection: connection,
   })
@@ -22,6 +27,9 @@ const processCall = (call: Promise<any>, connection: Connection) => {
     Metrics.sendMetrics({ metricName: `error.rpc.${rpcProvider}.timeout` })
   }, 30 * 1000)
 
+  if (Array.isArray(call)) {
+    return call
+  }
   return call.then(
     (d) => {
       clearTimeout(t)
