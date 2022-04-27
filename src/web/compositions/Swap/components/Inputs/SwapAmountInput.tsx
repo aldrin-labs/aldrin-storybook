@@ -32,7 +32,6 @@ export const SwapAmountInput = ({
   onChange?: (value: number | string) => void
   appendComponent?: any
 }) => {
-  console.log('amount: ', amount)
   return (
     <InputContainer
       disabled={disabled}

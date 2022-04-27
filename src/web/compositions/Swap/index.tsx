@@ -234,8 +234,6 @@ const SwapPage = ({
       selectedBaseTokenAddressFromSeveral
     )
 
-  console.log('maxBaseAmount:', maxBaseAmount, allTokensData)
-
   const { amount: maxQuoteAmount } = getTokenDataByMint(
     allTokensData,
     quoteTokenMintAddress,
@@ -349,7 +347,6 @@ const SwapPage = ({
 
   const isTooSmallInputAmount = minInputAmount && minInputAmount > inputAmount
 
-  console.log('inputAmount: ', inputAmount)
   return (
     <SwapPageLayout>
       <SwapPageContainer direction="column" height="100%" wrap="nowrap">
@@ -614,7 +611,7 @@ const SwapPage = ({
                     setIsSwapInProgress(true)
 
                     const { transactions } = await jupiter.exchange({
-                      route: swapRoute,
+                      routeInfo: swapRoute,
                     })
 
                     const transactionsAndSigners = []
