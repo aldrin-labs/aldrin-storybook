@@ -4,7 +4,7 @@ import {
   Program as Program03,
   Provider as Provider03,
   Idl as Idl03,
-} from 'acnhor03'
+} from 'anchor03'
 
 import MarketOrderProgramIdl from '@core/idls/marketOrder.json'
 import PoolsProgramIdl from '@core/idls/pools.json'
