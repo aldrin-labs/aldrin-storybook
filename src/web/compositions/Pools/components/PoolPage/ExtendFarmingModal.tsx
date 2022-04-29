@@ -53,7 +53,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   // https://github.com/jaredpalmer/formik/issues/3348
   const [initialValues] = useState<WithFarming>({
     farming: {
-      token: tokens[0],
+      token: tokens[0] || { mint: farmingTokens[0] },
       vestingEnabled: true,
       tokenAmount: '0',
       farmingPeriod: '14',
