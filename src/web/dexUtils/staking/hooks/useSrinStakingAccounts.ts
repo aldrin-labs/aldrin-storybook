@@ -1,4 +1,4 @@
-import { Program, ProgramAccount } from 'anchor020'
+import { Program, ProgramAccount } from 'anchor024'
 import useSWR from 'swr'
 
 import { toMap } from '../../../utils'
