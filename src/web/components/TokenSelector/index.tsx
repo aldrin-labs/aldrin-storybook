@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
-import { getTokenNameByMintAddress } from '../../dexUtils/markets'
-import { TokenIcon, TokenIconWithName } from '../TokenIcon'
-import { SelectTokenModal, Token } from './SelectTokenModal'
-import { Container, DropdownArrow, TokenName, TokenRow } from './styles'
-import { GroupLabel } from '../FormElements/GroupLabel'
 import { useField } from 'formik'
+import React, { useState } from 'react'
 
+import { GroupLabel } from '../FormElements/GroupLabel'
+import { TokenIconWithName } from '../TokenIcon'
+import { SelectTokenModal, Token } from './SelectTokenModal'
+import { Container, DropdownArrow, TokenRow } from './styles'
 
 interface TokenSelectorBaseprops {
   tokens: Token[]
   label?: string
+  disabled?: boolean
 }
 
 interface TokenSelectorProps extends TokenSelectorBaseprops {
@@ -18,33 +18,40 @@ interface TokenSelectorProps extends TokenSelectorBaseprops {
 }
 
 export const TokenSelector: React.FC<TokenSelectorProps> = (props) => {
-  const { value, tokens, onChange, label } = props
+  const { value, tokens, onChange, label, disabled } = props
 
   const [modalOpen, setModalOpen] = useState(false)
   return (
     <div>
       {label && <GroupLabel label={label} />}
-      <Container alignItems="center" onClick={() => setModalOpen(true)}>
-        {value ?
+      <Container
+        alignItems="center"
+        onClick={() => {
+          if (!disabled) {
+            setModalOpen(true)
+          }
+        }}
+      >
+        {value ? (
           <>
             <TokenRow alignItems="center">
               <TokenIconWithName mint={value.mint} />
             </TokenRow>
           </>
-          : 'Please select...'
-        }
-        <DropdownArrow />
+        ) : (
+          'Please select...'
+        )}
+        {!disabled && <DropdownArrow />}
       </Container>
 
-      {modalOpen &&
+      {modalOpen && (
         <SelectTokenModal
           onSelect={onChange}
           tokens={tokens}
           onClose={() => setModalOpen(false)}
         />
-      }
+      )}
     </div>
-
   )
 }
 
@@ -54,7 +61,9 @@ interface TokenSelectorFieldProps extends TokenSelectorBaseprops {
 
 // Formik Wrapper
 
-export const TokenSelectorField: React.FC<TokenSelectorFieldProps> = (props) => {
+export const TokenSelectorField: React.FC<TokenSelectorFieldProps> = (
+  props
+) => {
   const [field, meta, helpers] = useField(props)
 
   return (
@@ -62,8 +71,8 @@ export const TokenSelectorField: React.FC<TokenSelectorFieldProps> = (props) => 
       {...props}
       value={field.value}
       onChange={(value) => {
-        helpers.setTouched(true, true);
-        helpers.setValue(value, true);
+        helpers.setTouched(true, true)
+        helpers.setValue(value, true)
       }}
     />
   )
