@@ -89,12 +89,24 @@ export const Input: React.FC<InputProps> = (props) => {
 }
 
 export const InputField: React.FC<FieldProps> = (props) => {
-  const { onChange = noop, value, ...rest } = props
+  const {
+    onChange = noop,
+    value,
+    placeholder,
+    showPlaceholderOnDisabled,
+    disabled,
+    ...rest
+  } = props
   const [field, _meta, helpers] = useField(rest)
+
+  const newValue = disabled && showPlaceholderOnDisabled ? placeholder : value
+
   return (
     <Input
       {...rest}
-      value={value || field.value}
+      value={newValue || field.value}
+      disabled={disabled}
+      placeholder={placeholder}
       onChange={(v) => {
         helpers.setTouched(true, true)
         helpers.setValue(v, true)

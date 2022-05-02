@@ -14,6 +14,8 @@ type TokenAmountInputFieldProps = {
   disabled?: boolean
   onChange?: (value: string) => void
   value?: string
+  placeholder?: string
+  showPlaceholderOnDisabled?: boolean
 }
 
 export const validateNumber = (v?: number, max?: number) => {
@@ -37,6 +39,8 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
     disabled = false,
     onChange,
     value,
+    placeholder = '0',
+    showPlaceholderOnDisabled,
   } = props
   return (
     <InputField
@@ -45,8 +49,9 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
       name={name}
       disabled={disabled}
       onChange={onChange}
-      placeholder="0"
       value={value}
+      placeholder={placeholder}
+      showPlaceholderOnDisabled={showPlaceholderOnDisabled}
       append={
         <InputAppendContainer>
           <div>

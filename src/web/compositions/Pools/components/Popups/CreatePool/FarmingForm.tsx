@@ -7,6 +7,7 @@ import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { InlineText } from '@sb/components/Typography'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/dexUtils/types'
 
 import { DAY } from '@core/utils/dateUtils'
@@ -45,7 +46,7 @@ const resolveFarmingAvailableAmount = (
     firstDeposit,
   } = formValues
 
-  if (farmingToken.account === baseToken?.account) {
+  if (farmingToken?.account === baseToken?.account) {
     const totalBalance =
       userTokens.find((ut) => ut.address === baseToken?.account)?.amount || 0
     return Math.max(
@@ -89,11 +90,14 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
   const farmingEndDate =
     Date.now() + parseFloat(farming.farmingPeriod) * DAY * 1000 // to ms
 
+  const tokenName = getTokenNameByMintAddress(farming.token.mint)
+
   return (
     <>
       <CoinSelectors>
         <CoinWrap>
           <TokenSelectorField
+            disabled={tokens.length === 0}
             tokens={tokens}
             label="Choose the token you want to give to the farming"
             name="farming.token"
@@ -106,6 +110,13 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
         setFieldValue={form.setFieldValue}
         available={resolveFarmingAvailableAmount(userTokens, form.values)}
         mint={form.values.farming.token.mint}
+        disabled={!form.values.farming.token.account}
+        placeholder={
+          form.values.farming.token.account
+            ? '0'
+            : `No ${tokenName} tokens on wallet`
+        }
+        showPlaceholderOnDisabled
       />
       {form.errors.farming?.tokenAmount &&
         form.touched.farming?.tokenAmount && (
@@ -136,7 +147,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
           <TokenAmountInput
             name="farming.tokenDayReward"
             value={farmingRewardFormatted}
-            mint={form.values.farming.token.mint}
+            mint={form.values.farming.token?.mint}
           />
         </NumberInputContainer>
       </CoinSelectors>
