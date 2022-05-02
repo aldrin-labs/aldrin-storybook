@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import { getTokenNameByMintAddress } from '../../dexUtils/markets'
@@ -64,7 +66,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
           <TokenNameWrap>{tokenName}</TokenNameWrap>
           <ButtonsWithAmount>
             <MaxValue color="success" weight={600}>
-              {stripByAmountAndFormat(amount)}
+              {formatNumberWithSpaces(amount)}
             </MaxValue>
             {!!(showButtons || Number.isFinite(usdValue)) && (
               <ButtonsContainer>
@@ -105,7 +107,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
           </ButtonsWithAmount>
         </ButtonsBlock>
       }
-      formatter={INPUT_FORMATTERS.DECIMAL}
+      formatter={INPUT_FORMATTERS.NOP}
     />
   )
 }

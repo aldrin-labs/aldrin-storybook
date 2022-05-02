@@ -27,6 +27,10 @@ import {
   usePlutoniansStaking,
 } from '@sb/dexUtils/staking/hooks'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -370,8 +374,11 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                         amount={selectedTokenAccount?.amount || 0}
                         mint={stakingPool?.stakeTokenMint.toString() || ''}
                         name="amount"
-                        value={amount}
-                        onChange={setAmount}
+                        value={formatNumberWithSpaces(amount)}
+                        onChange={(v) => {
+                          const valueForState = formatNumbersForState(v)
+                          setAmount(valueForState)
+                        }}
                       />
                     </InputWrapper>
                     <Row>

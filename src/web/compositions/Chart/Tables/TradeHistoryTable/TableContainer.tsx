@@ -1,20 +1,19 @@
-import React, { Component } from 'react'
 import dayjs from 'dayjs'
-import TradeHistoryTable from './Table/TradeHistoryTable'
+import React, { Component } from 'react'
+
 import ChartCardHeader from '@sb/components/ChartCardHeader'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+
+import { client } from '@core/graphql/apolloClient'
+import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import {
   reduceArrayLength,
   getNumberOfDigitsAfterDecimal,
 } from '@core/utils/chartPageUtils'
 
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
-import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
-
-import { client } from '@core/graphql/apolloClient'
-
+import TradeHistoryTable from './Table/TradeHistoryTable'
 import { IProps, IState } from './TableContainer.types'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
 
 class TableContainer extends Component<IProps, IState> {
   state: IState = {
@@ -184,11 +183,19 @@ class TableContainer extends Component<IProps, IState> {
     const amountForBackground =
       data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
 
+    const formattedData = data.map((el) => {
+      return {
+        ...el,
+        price: formatNumberWithSpaces(el.price),
+        size: formatNumberWithSpaces(el.size),
+      }
+    })
+
     return (
       <>
         <ChartCardHeader theme={theme}>Trade history</ChartCardHeader>
         <TradeHistoryTable
-          data={data}
+          data={formattedData}
           theme={theme}
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}

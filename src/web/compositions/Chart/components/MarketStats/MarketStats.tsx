@@ -1,16 +1,21 @@
+import { Theme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
+
+import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
+import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
+import { useInterval } from '@sb/dexUtils/useInterval'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+
+import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
-import { Theme } from '@material-ui/core'
-import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
-import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
-import { compose } from 'recompose'
-import { useInterval } from '@sb/dexUtils/useInterval'
+
 import {
   MarketStatsContainer,
   MobileMarketStatsContainer,
@@ -19,7 +24,6 @@ import {
   PanelCardTitle,
   PanelCardValue,
 } from '../../Chart.styles'
-import { getRINCirculationSupply } from '@core/api'
 
 export interface MarketDataByTicker {
   tradesCount: number
@@ -187,7 +191,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               fontFamily: 'Avenir Next Demi',
             }}
           >
-            {markPrice === 0 ? '--' : formatNumberToUSFormat(strippedMarkPrice)}
+            {markPrice === 0 ? '--' : formatNumberWithSpaces(strippedMarkPrice)}
           </PanelCardValue>
         </PanelCard>
         <PanelCard marketType={marketType} theme={theme}>
@@ -202,7 +206,7 @@ const MarketStats: React.FC<IProps> = (props) => {
                     : theme.palette.red.main,
               }}
             >
-              {formatNumberToUSFormat(strippedLastPriceDiff)}
+              {formatNumberWithSpaces(strippedLastPriceDiff)}
             </PanelCardValue>
             <PanelCardSubValue
               theme={theme}
@@ -215,7 +219,7 @@ const MarketStats: React.FC<IProps> = (props) => {
             >
               {!priceChangePercentage
                 ? '--'
-                : `${sign24hChange}${formatNumberToUSFormat(
+                : `${sign24hChange}${formatNumberWithSpaces(
                     stripDigitPlaces(+priceChangePercentage)
                   )}%`}
             </PanelCardSubValue>
@@ -225,20 +229,20 @@ const MarketStats: React.FC<IProps> = (props) => {
         <PanelCard marketType={marketType} theme={theme}>
           <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
           <PanelCardValue theme={theme}>
-            {formatNumberToUSFormat(stripDigitPlaces(maxPrice, pricePrecision))}
+            {formatNumberWithSpaces(stripDigitPlaces(maxPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
 
         <PanelCard marketType={marketType} theme={theme}>
           <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
           <PanelCardValue theme={theme}>
-            {formatNumberToUSFormat(stripDigitPlaces(minPrice, pricePrecision))}
+            {formatNumberWithSpaces(stripDigitPlaces(minPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
         <PanelCard marketType={marketType} theme={theme}>
           <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
           <PanelCardValue theme={theme}>
-            {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
+            {formatNumberWithSpaces(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
         </PanelCard>
         {isRINPair && (
@@ -253,11 +257,11 @@ const MarketStats: React.FC<IProps> = (props) => {
             <PanelCard marketType={marketType} theme={theme}>
               <PanelCardTitle theme={theme}>Marketcap</PanelCardTitle>
               <PanelCardValue theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(marketcap, 2))}
+                ${formatNumberWithSpaces(stripDigitPlaces(marketcap, 2))}
               </PanelCardValue>
             </PanelCard>
           </>
-        )} 
+        )}
       </MarketStatsContainer>
       <MobileMarketStatsContainer>
         <Title

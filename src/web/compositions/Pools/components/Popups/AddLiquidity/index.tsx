@@ -42,7 +42,11 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import Close from '@icons/closeIcon.svg'
 import Info from '@icons/TooltipImg.svg'
 
-import { sleep } from '../../../../../dexUtils/utils'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+  sleep,
+} from '../../../../../dexUtils/utils'
 import { Button } from '../../Tables/index.styles'
 import { InputWithCoins, InputWithTotal } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
@@ -94,9 +98,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       8
     )
 
-    setBaseAmount(baseAmount)
+    const quoteValueForState = formatNumbersForState(quoteAmount)
+    const baseValueForState = formatNumbersForState(baseAmount)
+
+    setBaseAmount(baseValueForState)
     if (!isPoolEmpty && !autoRebalanceEnabled) {
-      setQuoteAmount(quoteAmount)
+      setQuoteAmount(quoteValueForState)
     }
   }
 
@@ -106,9 +113,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       8
     )
 
-    setQuoteAmount(quoteAmount)
+    const quoteValueForState = formatNumbersForState(quoteAmount)
+    const baseValueForState = formatNumbersForState(baseAmount)
+
+    setQuoteAmount(quoteValueForState)
     if (!isPoolEmpty && !autoRebalanceEnabled) {
-      setBaseAmount(baseAmount)
+      setBaseAmount(baseValueForState)
     }
   }
 
@@ -314,7 +324,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         <InputWithCoins
           placeholder="0"
           theme={theme}
-          value={baseAmount}
+          value={formatNumberWithSpaces(baseAmount)}
           onChange={setBaseAmountWithQuote}
           symbol={baseSymbol}
           alreadyInPool={withdrawAmountTokenA}
@@ -352,7 +362,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         <InputWithCoins
           placeholder="0"
           theme={theme}
-          value={quoteAmount}
+          value={formatNumberWithSpaces(quoteAmount)}
           onChange={setQuoteAmountWithBase}
           symbol={quoteSymbol}
           alreadyInPool={withdrawAmountTokenB}
@@ -360,7 +370,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           needAlreadyInPool={false}
         />
         <Line />
-        <InputWithTotal theme={theme} value={total} />
+        <InputWithTotal theme={theme} value={formatNumberWithSpaces(total)} />
       </RowContainer>
 
       {!userPoolTokenAccount && (

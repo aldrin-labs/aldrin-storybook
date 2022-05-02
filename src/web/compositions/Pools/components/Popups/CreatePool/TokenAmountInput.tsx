@@ -1,7 +1,9 @@
 import React from 'react'
+
 import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
-import { InlineText } from '@sb/components/Typography'
 import { TokenIconWithName } from '@sb/components/TokenIcon'
+import { InlineText } from '@sb/components/Typography'
+
 import { InputAppendContainer, TokensAvailableText } from './styles'
 
 type TokenAmountInputFieldProps = {
@@ -11,6 +13,7 @@ type TokenAmountInputFieldProps = {
   setFieldValue?: (field: string, value: any) => void
   disabled?: boolean
   onChange?: (value: string) => void
+  value?: string
 }
 
 export const validateNumber = (v?: number, max?: number) => {
@@ -33,6 +36,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
     mint,
     disabled = false,
     onChange,
+    value,
   } = props
   return (
     <InputField
@@ -42,6 +46,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
       disabled={disabled}
       onChange={onChange}
       placeholder="0"
+      value={value}
       append={
         <InputAppendContainer>
           <div>
@@ -57,7 +62,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
           <TokenIconWithName mint={mint} />
         </InputAppendContainer>
       }
-      formatter={INPUT_FORMATTERS.DECIMAL}
+      formatter={INPUT_FORMATTERS.NOP}
       validate={(v) => validateNumber(v, available)}
     />
   )

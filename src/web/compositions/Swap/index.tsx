@@ -28,6 +28,7 @@ import {
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { signAndSendTransactions } from '@sb/dexUtils/transactions'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -445,7 +446,7 @@ const SwapPage = ({
                   <SwapAmountInput
                     title="You Pay"
                     maxAmount={maxBaseAmount}
-                    amount={formatNumberToUSFormat(inputAmount)}
+                    amount={formatNumberWithSpaces(inputAmount)}
                     disabled={false}
                     onChange={(v) => {
                       if (v === '') {
@@ -516,7 +517,7 @@ const SwapPage = ({
                     maxAmount={maxQuoteAmount}
                     amount={
                       outputAmount
-                        ? formatNumberToUSFormat(stripByAmount(outputAmount))
+                        ? formatNumberWithSpaces(stripByAmount(outputAmount))
                         : ''
                     }
                     disabled

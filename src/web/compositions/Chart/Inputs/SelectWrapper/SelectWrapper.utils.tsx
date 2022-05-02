@@ -5,12 +5,15 @@ import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
 import stableCoins from '@core/config/stableCoins'
-import { getNumberOfDecimalsFromNumber, stripByAmount } from '@core/utils/chartPageUtils'
 import {
-  formatNumberToUSFormat,
+  getNumberOfDecimalsFromNumber,
+  stripByAmount,
+} from '@core/utils/chartPageUtils'
+import {
   roundAndFormatNumber,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
@@ -465,7 +468,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(stripByAmount(closePrice))}
+                  : formatNumberWithSpaces(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -479,7 +482,7 @@ export const combineSelectWrapperData = ({
               >
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(stripByAmount(closePrice))}
+                  : formatNumberWithSpaces(stripByAmount(closePrice))}
               </span>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -504,11 +507,11 @@ export const combineSelectWrapperData = ({
                     : theme.palette.red.main,
               }}
             >
-              {`${sign24hChange}${formatNumberToUSFormat(
+              {`${sign24hChange}${formatNumberWithSpaces(
                 stripDigitPlaces(lastPriceDiff, 2)
               )}`}{' '}
               <span style={{ color: '#96999C' }}> / </span>{' '}
-              {`${sign24hChange}${formatNumberToUSFormat(
+              {`${sign24hChange}${formatNumberWithSpaces(
                 stripDigitPlaces(priceChangePercentage, 2)
               )}%`}
             </StyledRow>
@@ -523,13 +526,13 @@ export const combineSelectWrapperData = ({
               }}
             >
               <span>
-                {`${formatNumberToUSFormat(
+                {`${formatNumberWithSpaces(
                   stripDigitPlaces(closePrice, pricePrecision)
                 )} ${quote}`}
               </span>
               <span
                 style={{ fontFamily: 'Avenir Next Thin', marginTop: '1rem' }}
-              >{`${sign24hChange}${formatNumberToUSFormat(
+              >{`${sign24hChange}${formatNumberWithSpaces(
                 stripDigitPlaces(priceChangePercentage, 2)
               )}%`}</span>
             </StyledColumn>
@@ -543,7 +546,7 @@ export const combineSelectWrapperData = ({
         contentToSort: +volume || 0,
         render: (
           <span>
-            {`${isNotUSDTQuote ? '' : '$'}${formatNumberToUSFormat(
+            {`${isNotUSDTQuote ? '' : '$'}${formatNumberWithSpaces(
               roundAndFormatNumber(volume, 2, false)
             )}${isNotUSDTQuote ? ` ${quote}` : ''}`}
           </span>
@@ -555,7 +558,7 @@ export const combineSelectWrapperData = ({
         render: (
           <>
             <span>
-              {`${formatNumberToUSFormat(
+              {`${formatNumberWithSpaces(
                 roundAndFormatNumber(tradesCount, 0, false)
               )} / `}
             </span>
@@ -569,7 +572,7 @@ export const combineSelectWrapperData = ({
                     : theme.palette.red.main,
               }}
             >
-              {`${signTrades24hChange}${formatNumberToUSFormat(
+              {`${signTrades24hChange}${formatNumberWithSpaces(
                 stripDigitPlaces(Math.abs(precentageTradesDiff))
               )}%`}
             </span>
@@ -585,7 +588,7 @@ export const combineSelectWrapperData = ({
           >
             <>
               {' '}
-              {`${formatNumberToUSFormat(
+              {`${formatNumberWithSpaces(
                 stripDigitPlaces(minPrice, pricePrecision)
               )}`}{' '}
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
@@ -603,7 +606,7 @@ export const combineSelectWrapperData = ({
             }}
           >
             <>
-              {`${formatNumberToUSFormat(
+              {`${formatNumberWithSpaces(
                 stripDigitPlaces(maxPrice, pricePrecision)
               )}`}{' '}
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
@@ -621,7 +624,7 @@ export const combineSelectWrapperData = ({
                 color: theme.palette.red.main,
               }}
             >
-              {`${formatNumberToUSFormat(stripDigitPlaces(avgSell))}`}
+              {`${formatNumberWithSpaces(stripDigitPlaces(avgSell))}`}
             </span>
             <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
               {quote}
@@ -637,7 +640,7 @@ export const combineSelectWrapperData = ({
                 color: theme.palette.green.main,
               }}
             >
-              {`${formatNumberToUSFormat(stripDigitPlaces(avgBuy))}`}{' '}
+              {`${formatNumberWithSpaces(stripDigitPlaces(avgBuy))}`}{' '}
             </span>{' '}
             <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
               {quote}

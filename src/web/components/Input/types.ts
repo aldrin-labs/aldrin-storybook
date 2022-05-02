@@ -45,4 +45,5 @@ export interface InputFieldProps extends InputBase {
 
 export type FieldProps = InputFieldProps & {
   onChange?: (v: string) => void
+  value?: string
 }

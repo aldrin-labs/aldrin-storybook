@@ -89,16 +89,16 @@ export const Input: React.FC<InputProps> = (props) => {
 }
 
 export const InputField: React.FC<FieldProps> = (props) => {
-  const { onChange = noop, ...rest } = props
+  const { onChange = noop, value, ...rest } = props
   const [field, _meta, helpers] = useField(rest)
   return (
     <Input
       {...rest}
-      value={field.value}
-      onChange={(value) => {
+      value={value || field.value}
+      onChange={(v) => {
         helpers.setTouched(true, true)
-        helpers.setValue(value, true)
-        onChange(value)
+        helpers.setValue(v, true)
+        onChange(v)
       }}
     />
   )
