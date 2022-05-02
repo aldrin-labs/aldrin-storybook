@@ -1,7 +1,9 @@
-import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { ApolloQueryResult } from 'apollo-client'
+
+import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { Pool, PoolV2 } from '@sb/dexUtils/common/types'
 import { TokenInfo } from '@sb/dexUtils/types'
+
 import { DexTokensPrices, PoolInfo } from '../../../index.types'
 
 export interface WithFarming {
@@ -27,8 +29,8 @@ export interface FarmingFormType extends WithFarming {
 
 export interface CreatePoolFormType extends WithFarming {
   price: string
-  baseToken: Token
-  quoteToken: Token
+  baseToken?: Token
+  quoteToken?: Token
   stableCurve: boolean
   lockInitialLiquidity: boolean
   initialLiquidityLockPeriod: string

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+
 import { COLORS } from '../../../variables/variables'
 
 export const AnimatedImage = styled.svg`

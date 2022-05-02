@@ -1,27 +1,26 @@
 import { PublicKey } from '@solana/web3.js'
-import { useCallback, useEffect, useState } from 'react'
+import useSWR from 'swr'
+
 import { useConnection } from '../connection'
 import { AsyncRefreshVoidFunction } from '../types'
 
 export const useAccountBalance = ({
   publicKey,
 }: {
-  publicKey: PublicKey
-}): [number, AsyncRefreshVoidFunction] => {
-  const [accountBalance, setAccountBalance] = useState(0)
-
+  publicKey?: PublicKey
+}): [number, AsyncRefreshVoidFunction<number | undefined>] => {
   const connection = useConnection()
 
-  const loadAccountBalance = useCallback(async () => {
-    const accountBalance = await connection.getTokenAccountBalance(publicKey)
+  const fetcher = async () => {
+    if (!publicKey) {
+      return 0
+    }
+    const balance = await connection.getTokenAccountBalance(publicKey)
 
-    const accountTokenAmount = accountBalance?.value?.uiAmount || 0
-    setAccountBalance(accountTokenAmount)
-  }, [])
+    return balance?.value?.uiAmount || 0
+  }
 
-  useEffect(() => {
-    loadAccountBalance()
-  }, [loadAccountBalance])
+  const swr = useSWR(`account-balance-${publicKey?.toBase58()}`, fetcher)
 
-  return [accountBalance, loadAccountBalance]
+  return [swr.data || 0, swr.mutate]
 }

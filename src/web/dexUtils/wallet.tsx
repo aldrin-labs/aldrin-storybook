@@ -177,7 +177,7 @@ export const WalletProvider: React.FC = ({ children }) => {
   const { endpoint } = useConnectionConfig()
 
   const [connectedPersist, setConnectedPersist] = useLocalStorageState(
-    'walletConnected',
+    'walletConnectedUpdatedFinally',
     false
   )
   const [connected, setConnected] = useState(false)

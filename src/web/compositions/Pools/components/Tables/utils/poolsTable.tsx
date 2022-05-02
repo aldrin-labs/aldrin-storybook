@@ -21,6 +21,7 @@ import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingSta
 import { Vesting } from '@sb/dexUtils/vesting/types'
 import { groupBy } from '@sb/utils'
 
+import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -53,7 +54,7 @@ export const preparePoolTableCell = (params: {
   walletPk: string
   vestings: Map<string, Vesting>
   farmingTicketsMap: FarmingTicketsMap
-  calcAccounts?: Map<string, FarmingCalc>
+  calcAccounts?: Map<string, FarmingCalc[]>
   tokenMap: Map<string, TokenInfo>
 }): DataCellValues<PoolInfo> => {
   const {
@@ -62,7 +63,7 @@ export const preparePoolTableCell = (params: {
     prepareMore,
     walletPk,
     vestings,
-    calcAccounts = new Map<string, FarmingCalc>(),
+    calcAccounts = new Map<string, FarmingCalc[]>(),
     farmingTicketsMap,
     tokenMap,
   } = params
@@ -131,14 +132,14 @@ export const preparePoolTableCell = (params: {
     calcAccounts,
   })
 
-  const availableToClaim = Array.from(availableToClaimMap.values()).map(
-    (atc) => {
+  const availableToClaim = Array.from(availableToClaimMap.values())
+    .map((atc) => {
       const name = getTokenNameByMintAddress(atc.farmingTokenMint)
       const usdValue = (tokenPrices.get(name)?.price || 0) * atc.amount
 
       return { ...atc, name, usdValue }
-    }
-  )
+    })
+    .filter((atc) => atc.amount > 0)
 
   const availableToClaimUsd = availableToClaim.reduce(
     (acc, atc) => acc + atc.usdValue,
@@ -154,6 +155,12 @@ export const preparePoolTableCell = (params: {
 
   const openFarmingsKeys = Array.from(farmingsMap.keys())
 
+  const additionalPoolOwners = ADDITIONAL_POOL_OWNERS[pool.poolTokenMint] || []
+
+  const isPoolOwner =
+    (walletPk && walletPk === pool.initializerAccount) ||
+    additionalPoolOwners.includes(walletPk)
+
   return {
     extra: pool,
     fields: {
@@ -167,7 +174,7 @@ export const preparePoolTableCell = (params: {
               onClick={(e) => e.stopPropagation()}
             >
               <TokenIconsContainer tokenA={pool.tokenA} tokenB={pool.tokenB}>
-                {!!walletPk && walletPk === pool.initializerAccount && (
+                {isPoolOwner && (
                   <Text color="success" size="sm">
                     Your pool
                   </Text>
@@ -277,7 +284,7 @@ export const mergeColumns = (columns: DataHeadColumn[]) => [
     key: 'apr',
     title: 'APR',
     sortable: true,
-    hint: 'Estimation for growth of your deposit over a year, projected based on trading activity in the past 24h as well as farming rewards.',
+    hint: 'Estimation for growth of your deposit over a year, projected based on trading activity in the past 7d as well as farming rewards.',
   },
   {
     key: 'farming',

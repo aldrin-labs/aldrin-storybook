@@ -1,18 +1,18 @@
-import styled from 'styled-components'
 import { COLORS } from '@variables/variables'
+import styled from 'styled-components'
 
 export interface BlockProps {
   $backgroundImage?: string
   icon?: string
   inner?: boolean
+  margin?: string
 }
 
 export const Block = styled.div<BlockProps>`
-  box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);
   background: ${(props: BlockProps) =>
-    props.inner ? COLORS.background : COLORS.blockBackground};
+    props.inner ? COLORS.newBlack : COLORS.cardsBack};
   border-radius: 12px;
-  margin: 8px;
+  margin: ${(props) => props.margin || '8px'};
   height: 100%;
   position: relative;
   ${({ $backgroundImage: backgroundImage }: BlockProps) =>
@@ -39,9 +39,13 @@ export const Block = styled.div<BlockProps>`
   `
       : ''}
 `
+export const GreenBlock = styled(Block)`
+  background: rgba(38, 159, 19, 0.1);
+`
 
 export interface TitleProps {
   color?: string
+  margin?: string
 }
 
 export const BlockTitle = styled.h2`

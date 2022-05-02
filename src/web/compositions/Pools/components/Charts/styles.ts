@@ -1,7 +1,8 @@
+import { COLORS } from '@variables/variables'
 import styled from 'styled-components'
+
 import { BlockSubtitle } from '@sb/components/Block'
 import { Row } from '@sb/components/Layout'
-import { COLORS } from '@variables/variables'
 
 export const TitleContainer = styled.div`
   display: flex;
@@ -21,6 +22,7 @@ export const SubTitle = styled(BlockSubtitle)`
 
 export const RootRow = styled(Row)`
   margin-top: 40px;
+  height: ${(props) => props.height || '100%'};
 `
 export const Canvas = styled.canvas`
   margin-left: -10px;

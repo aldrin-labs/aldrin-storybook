@@ -1,30 +1,11 @@
 import useSWR from 'swr'
-import { blob, struct, u8 } from '@solana/buffer-layout'
-import { PublicKey } from '@solana/web3.js'
+
+import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
+
 import { useMultiEndpointConnection } from '../../connection'
-import { publicKey, uint64 } from '../../layout'
-import { Vesting, VestingWithPk } from '../types'
-import { VESTING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { RefreshFunction } from '../../types'
-
-const vestingAddress = new PublicKey(VESTING_PROGRAM_ADDRESS)
-
-const VESTING_LAYOUT = struct([
-  blob(8, 'padding'),
-  publicKey('beneficiary'),
-  publicKey('mint'),
-  publicKey('vault'),
-  publicKey('grantor'),
-  uint64('outstanding'),
-  uint64('startBalance'),
-  uint64('createdTs', true),
-  uint64('startTs', true),
-  uint64('endTs', true),
-  uint64('periodCount', true),
-  uint64('whitelistOwned'),
-  u8('nonce'),
-  struct([publicKey('program'), publicKey('metadata')], 'realizor'),
-])
+import { VestingWithPk } from '../types'
+import { vestingAddress, VESTING_LAYOUT } from './utils'
 
 export const useVestings = (): [VestingWithPk[], RefreshFunction] => {
   const connection = useMultiEndpointConnection()
@@ -37,17 +18,17 @@ export const useVestings = (): [VestingWithPk[], RefreshFunction] => {
 
     return data
       .map((d) => {
-        const decoded = VESTING_LAYOUT.decode(d.account.data) as Vesting
+        const decoded = VESTING_LAYOUT.decode(d.account.data)
 
         return {
           ...decoded,
           vesting: d.pubkey,
         }
       })
-      .filter((vesting) => vesting.createdTs > 0)
+      .filter((vesting) => vesting.createdTs > 0 && vesting.outstanding.gtn(0))
   }
   const { data, mutate } = useSWR('vestings', fetcher, {
-    refreshInterval: 60_000,
+    refreshInterval: COMMON_REFRESH_INTERVAL,
   })
   return [data || [], mutate]
 }

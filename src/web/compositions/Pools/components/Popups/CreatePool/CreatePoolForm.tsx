@@ -7,6 +7,7 @@ import { useHistory } from 'react-router'
 
 import { SvgIcon } from '@sb/components'
 import { Button } from '@sb/components/Button'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { GroupLabel, RadioGroupField } from '@sb/components/FormElements'
 import { InputField, INPUT_FORMATTERS } from '@sb/components/Input'
 import { FlexBlock } from '@sb/components/Layout'
@@ -39,6 +40,7 @@ import { PoolConfirmationData } from './PoolConfirmationData'
 import { PoolProcessingModal, TransactionStatus } from './PoolProcessingModal'
 import {
   Body,
+  ButtonContainer,
   Centered,
   CheckboxWrap,
   CoinSelectors,
@@ -52,7 +54,7 @@ import {
   Title,
   VestingExplanation,
 } from './styles'
-import { TokenAmountInputField } from './TokenAmountInput'
+import { TokenAmountInputField, validateNumber } from './TokenAmountInput'
 import { CreatePoolFormType, CreatePoolFormProps } from './types'
 
 const steps = [
@@ -65,9 +67,6 @@ const steps = [
 interface EventLike {
   preventDefault: () => void
 }
-
-// const STABLE_POOLS_TOOLTIP =
-//   'Stable pools are designed specifically for pegged assets that trade at a similar price. e.g. mSOL/SOL (SOL-pegged), USDC/USDT (USD-pegged) etc.'
 
 const checkPoolCreated = async (
   pool: PublicKey,
@@ -93,6 +92,15 @@ const checkPoolCreated = async (
 
 const USDC_MINT = ALL_TOKENS_MINTS_MAP.USDC.toString()
 const SOL_WRAP_MINT = ALL_TOKENS_MINTS_MAP.SOL.toString()
+// Try to set SOL, otherwise - any
+const findBaseToken = (tokens: Token[]): Token => {
+  const sol = tokens.find((t) => t.mint === SOL_WRAP_MINT)
+  if (sol) {
+    return sol
+  }
+  return tokens[1]
+}
+
 // Try to set USDC, otherwise - Sol
 const findQuoteToken = (tokens: Token[]): Token => {
   const usdc = tokens.find((t) => t.mint === USDC_MINT)
@@ -128,31 +136,38 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
     }))
     .sort((a, b) => a.mint.localeCompare(b.mint))
 
+  const [initialValues] = useState<CreatePoolFormType>({
+    price: '',
+    baseToken: findBaseToken(tokens),
+    quoteToken: findQuoteToken(tokens),
+    stableCurve: false,
+    lockInitialLiquidity: false,
+    initialLiquidityLockPeriod: '',
+    firstDeposit: {
+      baseTokenAmount: '',
+      quoteTokenAmount: '',
+    },
+    farmingEnabled: true,
+    farming: {
+      token: tokens[0],
+      vestingEnabled: false,
+      tokenAmount: '',
+      farmingPeriod: '14',
+      vestingPeriod: '7',
+    },
+  })
   const form = useFormik<CreatePoolFormType>({
     validateOnMount: true,
-    initialValues: {
-      price: '',
-      baseToken: tokens[0],
-      quoteToken: findQuoteToken(tokens),
-      stableCurve: false,
-      lockInitialLiquidity: false,
-      initialLiquidityLockPeriod: '',
-      firstDeposit: {
-        baseTokenAmount: '',
-        quoteTokenAmount: '',
-      },
-      farmingEnabled: true,
-      farming: {
-        token: tokens[0],
-        vestingEnabled: false,
-        tokenAmount: '',
-        farmingPeriod: '14',
-        vestingPeriod: '7',
-      },
-    },
+    initialValues,
     onSubmit: async (values) => {
+      if (!values.baseToken) {
+        throw new Error('No base token selected!')
+      }
       if (!values.baseToken.account) {
         throw new Error('No base token selected!')
+      }
+      if (!values.quoteToken) {
+        throw new Error('No quote token selected!')
       }
       if (!values.quoteToken.account) {
         throw new Error('No quote token selected!')
@@ -186,13 +201,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             quoteTokenMint: new PublicKey(values.quoteToken.mint),
             firstDeposit: {
               baseTokenAmount: new BN(
-                parseFloat(values.firstDeposit.baseTokenAmount) *
+                (
+                  parseFloat(values.firstDeposit.baseTokenAmount) *
                   10 ** (selectedBaseAccount?.decimals || 0)
+                ).toFixed(0)
               ),
               userBaseTokenAccount: new PublicKey(values.baseToken.account),
               quoteTokenAmount: new BN(
-                parseFloat(values.firstDeposit.quoteTokenAmount) *
+                (
+                  parseFloat(values.firstDeposit.quoteTokenAmount) *
                   10 ** (selectedQuoteAccount?.decimals || 0)
+                ).toFixed(0)
               ),
               userQuoteTokenAccount: new PublicKey(values.quoteToken.account),
               vestingPeriod: values.lockInitialLiquidity
@@ -207,10 +226,15 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       values.farming.token.account
                     ),
                     tokenAmount: new BN(
-                      parseFloat(values.farming.tokenAmount) * tokensMultiplier
+                      (
+                        parseFloat(values.farming.tokenAmount) *
+                        tokensMultiplier
+                      ).toFixed(0)
                     ),
                     periodLength: new BN(HOUR),
-                    tokensPerPeriod: new BN(tokensPerPeriod * tokensMultiplier),
+                    tokensPerPeriod: new BN(
+                      (tokensPerPeriod * tokensMultiplier).toFixed(0)
+                    ),
                     noWithdrawPeriodSeconds: new BN(0),
                     vestingPeriodSeconds: values.farming.vestingEnabled
                       ? new BN(
@@ -313,9 +337,16 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
     },
     validate: async (values) => {
       const {
-        baseToken: { mint: baseTokenMint },
-        quoteToken: { mint: quoteTokenMint },
+        baseToken: { mint: baseTokenMint } = {},
+        quoteToken: { mint: quoteTokenMint } = {},
       } = values
+
+      if (!baseTokenMint) {
+        return { baseToken: 'No token selected' }
+      }
+      if (!quoteTokenMint) {
+        return { quoteToken: 'No token selected' }
+      }
 
       const basePrice = dexTokensPricesMap.get(
         getTokenNameByMintAddress(baseTokenMint)
@@ -367,26 +398,14 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const farmingRewardFormatted = stripByAmount(farmingRewardPerDay)
 
   const selectedBaseAccount = userTokens.find(
-    (ut) => ut.address === values.baseToken.account
+    (ut) => ut.address === values.baseToken?.account
   )
   const selectedQuoteAccount = userTokens.find(
-    (ut) => ut.address === values.quoteToken.account
+    (ut) => ut.address === values.quoteToken?.account
   )
   const farmingRewardAccount = userTokens.find(
-    (ut) => ut.address === values.farming.token.account
+    (ut) => ut.address === values.farming.token?.account
   )
-
-  if (!farmingRewardAccount) {
-    return null
-  }
-
-  if (!selectedBaseAccount) {
-    return null
-  }
-
-  if (!selectedQuoteAccount) {
-    return null
-  }
 
   const isLastStep = step === stepsSize
   const prevStep = (e: EventLike) => {
@@ -671,49 +690,57 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             )}
 
             <Footer>
-              {step === 1 ? (
-                <Button
-                  $padding="lg"
-                  type="button"
-                  onClick={onClose}
-                  $variant="outline-white"
-                >
-                  Cancel
-                </Button>
-              ) : (
-                <Button
-                  $padding="lg"
-                  $variant="outline-white"
-                  onClick={prevStep}
-                >
-                  Back
-                </Button>
-              )}
+              <ButtonContainer>
+                {step === 1 ? (
+                  <Button
+                    $padding="lg"
+                    type="button"
+                    onClick={onClose}
+                    $variant="outline-white"
+                  >
+                    Cancel
+                  </Button>
+                ) : (
+                  <Button
+                    $padding="lg"
+                    $variant="outline-white"
+                    onClick={prevStep}
+                  >
+                    Back
+                  </Button>
+                )}
+              </ButtonContainer>
 
               {step === 3 && (
-                <Button
-                  type="button"
-                  $padding="lg"
-                  $variant="outline-white"
-                  onClick={(e) => {
-                    nextStep(e, false)
-                  }}
-                >
-                  Skip
-                </Button>
+                <ButtonContainer>
+                  <Button
+                    type="button"
+                    $padding="lg"
+                    $variant="outline-white"
+                    onClick={(e) => {
+                      nextStep(e, false)
+                    }}
+                  >
+                    Skip
+                  </Button>
+                </ButtonContainer>
               )}
-              {isLastStep ? (
-                <Button type="submit">Create Pool</Button>
-              ) : (
-                <Button
-                  $padding="lg"
-                  type="button"
-                  disabled={!form.isValid}
-                  onClick={nextStep}
-                >
-                  Next
-                </Button>
-              )}
+              <ButtonContainer>
+                {isLastStep ? (
+                  <Button type="submit">Create Pool</Button>
+                ) : (
+                  <ConnectWalletWrapper size="button-only">
+                    <Button
+                      $padding="lg"
+                      type="button"
+                      disabled={!form.isValid}
+                      onClick={nextStep}
+                    >
+                      Next
+                    </Button>
+                  </ConnectWalletWrapper>
+                )}
+              </ButtonContainer>
             </Footer>
           </form>
         </FormikProvider>

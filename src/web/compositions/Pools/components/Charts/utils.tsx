@@ -99,23 +99,22 @@ const getEmptyData = (
     dayDuration * NUMBER_OF_DAYS_TO_SHOW,
   lastTimestamp: number = endOfDayTimestamp()
 ) => {
-  const tsFrom = dayjs.unix(fisrtTimestamp).startOf('day').unix()
+  const tsFrom = dayjs.unix(fisrtTimestamp).startOf('day')
+  const tsTo = dayjs.unix(lastTimestamp).startOf('day')
 
-  let tsTo = dayjs.unix(lastTimestamp).startOf('day').unix()
+  const diffInDays = tsTo.diff(tsFrom, 'days')
 
-  const emptyData = []
+  const emptyData = new Array(diffInDays)
+  .fill(undefined)
+  .map((el, i) => {
+      const date = dayjs.unix(tsTo.subtract(i, 'day').unix()).format('YYYY-MM-DD')
 
-  do {
-    const date = dayjs.unix(tsTo).format('YYYY-MM-DD')
-    emptyData.push({
-      date,
-      vol: 0,
-    })
+      return { date, vol: 0 }
 
-    tsTo -= dayDuration
-  } while (tsTo >= tsFrom)
+  })
+  .reverse()
 
-  return emptyData.reverse()
+  return emptyData
 }
 
 const createTotalVolumeLockedChart = ({
@@ -133,8 +132,8 @@ const createTotalVolumeLockedChart = ({
   }
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(101, 28, 228, 0.84)')
-  gradient.addColorStop(0.55, 'rgba(115, 128, 235, 0)')
+  gradient.addColorStop(0, 'rgba(101, 28, 228, 0.9)')
+  gradient.addColorStop(0.55, 'rgba(101, 28, 228, 0)')
   gradient.addColorStop(1, COLORS.blockBackground)
 
   const transformedData = getEmptyData()
@@ -166,11 +165,11 @@ const createTotalVolumeLockedChart = ({
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: COLORS.primary,
+        borderColor: COLORS.primaryBlue,
         backgroundColor: gradient,
         borderWidth: 2,
         pointRadius: 0,
-        hoverBackgroundColor: 'rgba(28, 29, 34, 0.75)',
+        hoverBackgroundColor: 'rgba(14, 2, 236, 0.75)',
         data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
       },
     ],

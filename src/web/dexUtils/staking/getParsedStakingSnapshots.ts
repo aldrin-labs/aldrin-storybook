@@ -1,9 +1,9 @@
 import { Connection } from '@solana/web3.js'
+
 import { Snapshot, SnapshotQueue } from '../common/types'
 import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
-import { STAKING_FARMING_TOKEN_DIVIDER } from './config'
 import { loadStakingSnapshots } from './loadStakingSnapshots'
 
 export const getParsedStakingSnapshots = async ({

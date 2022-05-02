@@ -1,13 +1,30 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+
 import AldrinLogo from '@icons/Aldrin.svg'
-import StakeBtn from '@icons/stakeBtn.png'
 
 // TODO: Refactor popup
-import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
-import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 
+import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
+import { FeedbackPopup } from '../../compositions/Chart/components/UsersFeedbackPopup'
 import { Body } from '../Layout'
+import { DropDown } from './Dropdown'
+import {
+  PoolsIcon,
+  SwapIcon,
+  TradeIcon,
+  StakingIcon,
+  RebalanceIcon,
+  DashboardIcon,
+  WalletIcon,
+  SDKIcon,
+  ReadmeIcon,
+  RoadmapIcon,
+  SupportIcon,
+  RequestListingIcon,
+  CreatePoolIcon,
+  MoreIcon,
+} from './MenuIcons'
+import { RewardsBlock } from './RewardsBlock/RewardsBlock'
 import {
   HeaderWrap,
   LogoLink,
@@ -16,118 +33,131 @@ import {
   Logo,
   NavLink,
   MainLinksWrap,
-  LinksBlock,
   MainLinksBlock,
-  StakeButton,
+  Wrap,
 } from './styles'
-
-import { DropDown } from './Dropdown'
 import { WalletBlock } from './WalletBlock'
 
 export const Header = () => {
   const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
   const [listingPopupOpen, setListingPopupOpen] = useState(false)
-
-  const { pathname } = useLocation()
-
-  const isTradingActive =
-    pathname.includes('/chart') || pathname.includes('/swap')
-
-  const feedbackLinks = (
-    <>
-      <NavLink as="button" onClick={() => setFeedbackPopupOpen(true)}>
-        Feedback &amp; Support
-      </NavLink>
-      <NavLink as="button" onClick={() => setListingPopupOpen(true)}>
-        Request Listing
-      </NavLink>
-    </>
-  )
-
   return (
     <Body>
-      <HeaderWrap>
-        <LogoBlock>
-          <LogoLink to="/">
-            <Logo src={AldrinLogo} />
-          </LogoLink>
+      <Wrap>
+        <HeaderWrap>
+          <LogoBlock>
+            <LogoLink to="/">
+              <Logo src={AldrinLogo} />
+            </LogoLink>
+          </LogoBlock>
+          <MainLinksWrap>
+            <MainLinksBlock>
+              <NavLink to="/chart" activeClassName="selected">
+                <TradeIcon />
+                Trade
+              </NavLink>
+              <NavLink to="/swap" activeClassName="selected">
+                <SwapIcon />
+                Swap
+              </NavLink>
+              <NavLink to="/pools" activeClassName="selected">
+                <PoolsIcon />
+                Pools &amp; Farms
+              </NavLink>
+              <NavLink to="/staking" activeClassName="selected">
+                <StakingIcon />
+                Staking
+              </NavLink>
+              <DropDown
+                text={
+                  <>
+                    <MoreIcon />
+                    More
+                  </>
+                }
+              >
+                <NavLink
+                  left
+                  to="/rebalance"
+                  activeClassName="selected-from-dropdown"
+                >
+                  <RebalanceIcon />
+                  Rebalancer
+                </NavLink>
+                <NavLink
+                  left
+                  to="/dashboard"
+                  activeClassName="selected-from-dropdown"
+                >
+                  <DashboardIcon />
+                  Dashboard
+                </NavLink>
 
-          <StakeButton
-            $backgroundImage={StakeBtn}
-            as={Link}
-            to="/staking"
-            $fontSize="xs"
-            $padding="md"
-            $borderRadius="xxl"
-          >
-            Stake RIN
-          </StakeButton>
-        </LogoBlock>
-        <LinksBlock>{feedbackLinks}</LinksBlock>
-        <MainLinksWrap>
-          <MainLinksBlock>
-            <NavLink to="/chart" activeClassName="selected">
-              Trade
-            </NavLink>
-            <NavLink to="/swap" activeClassName="selected">
-              Swap
-            </NavLink>
-            <NavLink new show="md" to="/pools" activeClassName="selected">
-              Pools
-            </NavLink>
-            <NavLink to="/rebalance" activeClassName="selected">
-              Rebalance
-            </NavLink>
-            <NavLink to="/dashboard" activeClassName="selected">
-              Dashboard
-            </NavLink>
-            <NavLink as="a" target="_blank" href="https://wallet.aldrin.com/">
-              Wallet
-            </NavLink>
-            <NavLink
-              show="lg"
-              as="a"
-              target="_blank"
-              href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
-            >
-              FAQ
-            </NavLink>
-            <NavLink
-              show="lg"
-              as="a"
-              target="_blank"
-              href="https://github.com/aldrin-exchange/aldrin-sdk"
-            >
-              SDK{' '}
-            </NavLink>
-            <DropDown hide="lg" text="···">
-              {feedbackLinks}
-              <NavLink hide="md" activeClassName="selected" to="/pools">
-                Liquidity Pools
-              </NavLink>
-              <NavLink
-                hide="lg"
-                as="a"
-                target="_blank"
-                href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
-              >
-                FAQ
-              </NavLink>{' '}
-              <NavLink
-                hide="lg"
-                as="a"
-                target="_blank"
-                href="https://docs.aldrin.com/dex/how-to-get-started-on-aldrin-dex"
-              >
-                SDK
-              </NavLink>
-            </DropDown>
-          </MainLinksBlock>
-        </MainLinksWrap>
-        <WalletContainer>
-          <WalletBlock />
-        </WalletContainer>
-      </HeaderWrap>
+                <NavLink
+                  left
+                  as="a"
+                  target="_blank"
+                  href="https://wallet.aldrin.com"
+                >
+                  <WalletIcon />
+                  Wallet
+                </NavLink>
+                <NavLink
+                  left
+                  as="a"
+                  target="_blank"
+                  href="https://github.com/aldrin-exchange/aldrin-sdk"
+                >
+                  <SDKIcon />
+                  SDK
+                </NavLink>
+                <NavLink
+                  left
+                  as="a"
+                  target="_blank"
+                  href="https://docs.aldrin.com"
+                >
+                  <ReadmeIcon />
+                  Read Me
+                </NavLink>
+                <NavLink
+                  left
+                  as="a"
+                  target="_blank"
+                  href="https://rin.aldrin.com/"
+                >
+                  <RoadmapIcon />
+                  Roadmap
+                </NavLink>
+                <NavLink
+                  left
+                  as="span"
+                  onClick={() => setFeedbackPopupOpen(true)}
+                >
+                  <SupportIcon />
+                  Feedback &amp; Support
+                </NavLink>
+                <NavLink
+                  left
+                  as="span"
+                  onClick={() => setListingPopupOpen(true)}
+                >
+                  <RequestListingIcon />
+                  Request Listing
+                </NavLink>
+                <NavLink left to="/pools/create">
+                  <CreatePoolIcon />
+                  Create Pool
+                </NavLink>
+              </DropDown>
+            </MainLinksBlock>
+          </MainLinksWrap>
+          <WalletContainer>
+            <RewardsBlock />
+            <WalletBlock />
+          </WalletContainer>
+        </HeaderWrap>
+      </Wrap>
       <FeedbackPopup
         open={feedbackPopupOpen}
         onClose={() => {

@@ -1,17 +1,19 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
-import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 //
-import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import {
-  createGenerateClassName,
-  jssPreset,
-  withTheme,
-} from '@material-ui/core/styles'
+import { createGenerateClassName, jssPreset } from '@material-ui/core/styles'
+import { syncStorage } from '@storage'
+import useWindowSize from '@webhooks/useWindowSize'
+import { create } from 'jss'
+import React from 'react'
+import JssProvider from 'react-jss/lib/JssProvider'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'recompose'
+import styled from 'styled-components'
+
+import { Footer } from '@sb/components/Footer'
 import { Header } from '@sb/components/Header'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import { SolanaNetworkDegradedPerformanceBanner } from '@sb/components/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
@@ -23,16 +25,15 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
-import { syncStorage } from '@storage'
-import useWindowSize from '@webhooks/useWindowSize'
-import { create } from 'jss'
-import React from 'react'
 // https://material-ui.com/customization/css-in-js/#other-html-element
-import JssProvider from 'react-jss/lib/JssProvider'
-import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
 // import './app.styles.global.css';
-import styled from 'styled-components'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
+import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
+import { withAuthStatus } from '@core/hoc/withAuthStatus'
+import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
+
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import { AppGridLayout, AppInnerContainer } from './App.styles'
@@ -146,6 +147,7 @@ const AppRaw = ({
                         isPNL={isPNL}
                         isChartPage={isChartPage}
                       >
+                        <SolanaNetworkDegradedPerformanceBanner />
                         <Header />
                         <AppInnerContainer
                           showFooter={showFooter}
@@ -157,7 +159,8 @@ const AppRaw = ({
                         {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )} */}
-                        <MobileFooter pathname={currentPage} />
+                        {!isChartPage && <Footer />}
+                        <MobileFooter />
                         {/*
                     <Footer
                       isChartPage={isChartPage}
@@ -208,50 +211,6 @@ const AppRaw = ({
     </ApolloPersistWrapper>
   )
 }
-
-const Footer = (props) => {
-  return (
-    <RowContainer
-      style={{
-        background: props.theme.palette.grey.additional,
-        height: '5.7rem',
-        ...(props.isRewards ? { position: 'absolute', bottom: '0' } : {}),
-      }}
-    >
-      <Line bottom="5.7rem" />
-      <Link
-        target="_blank"
-        rel="noopener noreferrer"
-        href="https://aldrin.com/"
-      >
-        Aldrin.com
-      </Link>
-      <Link
-        href="https://t.me/CCAI_Official"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Telegram
-      </Link>
-      <Link
-        href="https://twitter.com/CCAI_Official"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Twitter
-      </Link>
-      <Link
-        href="https://discord.com/invite/2EaKvrs"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Discord
-      </Link>
-    </RowContainer>
-  )
-}
-
-const FooterWithTheme = compose(withTheme())(Footer)
 
 const Row = styled.div`
   display: flex;

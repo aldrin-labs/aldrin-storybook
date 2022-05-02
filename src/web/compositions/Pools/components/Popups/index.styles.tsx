@@ -1,7 +1,7 @@
+import { Paper } from '@material-ui/core'
+import { COLORS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
-
-import { Paper } from '@material-ui/core'
 
 export const BoldHeader = styled.h2`
   font-family: Avenir Next Bold;
@@ -10,7 +10,8 @@ export const BoldHeader = styled.h2`
   color: #f5f5fb;
 `
 export const StyledInput = styled.div`
-  background: #222429;
+  background: ${(props) =>
+    props.disabled ? COLORS.darkBackground : '#222429'};
   border: 0.1rem solid #3a475c;
   border-radius: 1.5rem;
   color: #fbf2f2;
@@ -44,17 +45,15 @@ export const Line = styled.div`
 `
 export const InvisibleInput = styled.input`
   width: 100%;
-  background: #222429;
-  color: #fbf2f2;
-  font-size: 2rem;
+  background: ${(props) =>
+    props.disabled ? COLORS.disabledInput : COLORS.blockBackground};
+  color: ${COLORS.primaryWhite};
+  font-size: ${FONT_SIZES.xmd};
   outline: none;
   border: none;
-  font-family: Avenir Next Medium;
+  font-family: Avenir Next Demi;
   &::placeholder {
-    color: #f2fbfb;
-    height: 2rem;
-    font-size: 1.7rem;
-    font-family: 'Avenir Next Thin';
+    color: ${COLORS.inputPlaceholder};
   }
 `
 
@@ -65,9 +64,12 @@ export const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
   background: #222429;
   border-radius: 1.6rem;
+  font-size: 16px;
 `
 
-export const ClaimRewardsStyledPaper = styled(({ ...props }) => <Paper {...props} />)`
+export const ClaimRewardsStyledPaper = styled(({ ...props }) => (
+  <Paper {...props} />
+))`
   height: auto;
   padding: 2rem 4rem;
   width: 80rem;

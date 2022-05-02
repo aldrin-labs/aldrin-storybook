@@ -132,7 +132,7 @@ export interface Props {
   borderBottom?: boolean
   rowsWithHover?: boolean
   rowWithHoverBorderRadius?: boolean
-  emptyTableText?: string
+  emptyTableText?: string | JSX.Element
   onboardingPlaceholder?: boolean
   tableStyles?: TableStyles
   onTrClick?: (data: any) => void

@@ -1,12 +1,16 @@
+import dayjs from 'dayjs'
+import { useFormikContext } from 'formik'
 import React from 'react'
-import { TokenSelectorField } from '@sb/components/TokenSelector'
+
 import { GroupLabel, RadioGroupField } from '@sb/components/FormElements'
 import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
-import { InlineText } from '@sb/components/Typography'
+import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
+import { InlineText } from '@sb/components/Typography'
 import { TokenInfo } from '@sb/dexUtils/types'
-import { useFormikContext } from 'formik'
-import { TokenAmountInputField, TokenAmountInput } from './TokenAmountInput'
+
+import { DAY } from '@core/utils/dateUtils'
+
 import {
   CoinSelectors,
   CoinWrap,
@@ -16,6 +20,7 @@ import {
   RadioGroupContainer,
   ErrorText,
 } from './styles'
+import { TokenAmountInputField, TokenAmountInput } from './TokenAmountInput'
 import { FarmingFormType } from './types'
 
 interface FarmingFormProps {
@@ -65,12 +70,25 @@ const resolveFarmingAvailableAmount = (
   )
 }
 
+export const validateFarmingDuration = (v?: number, max?: number) => {
+  const value = v || 0
+  if (typeof max !== 'undefined' && value > max) {
+    return 'Entered value greater than max farming duration.'
+  }
+  if (value <= 0) {
+    return 'Wrong value'
+  }
+}
+
 export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
   const { tokens, userTokens, farmingRewardFormatted } = props
   const form = useFormikContext<FarmingFormType>()
   const {
     values: { farming },
   } = form
+  const farmingEndDate =
+    Date.now() + parseFloat(farming.farmingPeriod) * DAY * 1000 // to ms
+
   return (
     <>
       <CoinSelectors>
@@ -101,6 +119,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             borderRadius="lg"
             variant="outline"
             name="farming.farmingPeriod"
+            placeholder="from 7 to 60"
             append={
               <InputAppendContainer>
                 <InlineText color="primaryWhite" weight={600}>
@@ -108,7 +127,8 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
                 </InlineText>
               </InputAppendContainer>
             }
-            formatter={INPUT_FORMATTERS.NATURAL}
+            validate={(v) => validateFarmingDuration(v, 60)}
+            formatter={INPUT_FORMATTERS.DECIMAL}
           />
         </NumberInputContainer>
         <NumberInputContainer>
@@ -120,6 +140,23 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
           />
         </NumberInputContainer>
       </CoinSelectors>
+      {form.errors.farming?.farmingPeriod &&
+        form.touched.farming?.farmingPeriod && (
+          <ErrorText color="error">
+            {form.errors.farming?.farmingPeriod}
+          </ErrorText>
+        )}
+      {farming.farmingPeriod && !form.errors.farming?.farmingPeriod && (
+        <>
+          <InlineText color="hint" size="sm" weight={600}>
+            Farming will end at{' '}
+            {dayjs(farmingEndDate).format('HH:mm MMM DD, YYYY')}
+          </InlineText>
+          <br />
+          <br />
+        </>
+      )}
+
       <CheckboxWrap>
         <RadioGroupContainer>
           <div>
@@ -165,7 +202,9 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
           />
           {form.errors.farming?.vestingPeriod &&
             form.touched.farming?.vestingPeriod && (
-              <ErrorText color="error">{form.errors.farming?.vestingPeriod}</ErrorText>
+              <ErrorText color="error">
+                {form.errors.farming?.vestingPeriod}
+              </ErrorText>
             )}
         </div>
       </CheckboxWrap>

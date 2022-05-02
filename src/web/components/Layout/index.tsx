@@ -26,21 +26,20 @@ export const PopupBody = styled(Body)`
 `
 
 export const Page = styled(Body)`
-  background: ${COLORS.bodyBackground};
+  background: ${(props: { $background?: keyof typeof COLORS }) =>
+    COLORS[props.$background || 'mainBlack']};
   flex: 1;
-`
-export const StakingPage = styled(Page)`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  // height: 100%;
-  @media (max-width: ${BREAKPOINTS.lg}) {
-    align-items: flex-start;
-  }
+  flex-direction: column;
+`
+
+export const BlackPage = styled(Page)`
+  background: ${COLORS.mainBlack};
 `
 
 export const Content = styled.div`
   margin: 0 10px;
+  width: 100%;
 
   @media (min-width: ${BREAKPOINTS.md}) {
     margin: 0 10px;
@@ -48,13 +47,14 @@ export const Content = styled.div`
 
   @media (min-width: ${LAYOUT_WIDTH}px) {
     max-width: ${LAYOUT_WIDTH}px;
-    margin: 0 auto;
+
+    margin: 3rem;
   }
 `
 
 export const WideContent = styled(Content)`
   @media (min-width: ${LAYOUT_WIDTH}px) {
-    max-width: none;
+    max-width: calc(100% - 20px);
     margin: 0 10px;
   }
   @media (min-width: ${BREAKPOINTS.xxl}) {
@@ -67,6 +67,13 @@ export const Row = styled.div<RowProps>`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: stretch;
+  height: 100%;
+`
+
+export const Column = styled.div`
+  display: flex;
+  flex-direction: column;
   align-items: stretch;
   height: 100%;
 `

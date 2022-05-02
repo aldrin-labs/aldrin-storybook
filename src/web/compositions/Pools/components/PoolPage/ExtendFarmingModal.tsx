@@ -8,9 +8,7 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import {
-  initializeFaming,
-} from '@sb/dexUtils/pools/actions/initializeFarming'
+import { initializeFaming } from '@sb/dexUtils/pools/actions/initializeFarming'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -18,8 +16,10 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
+import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
+import { useTokenInfos } from '../../../../dexUtils/tokenRegistry'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
-import { Body, Footer } from '../Popups/CreatePool/styles'
+import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
 import { FarmingProcessingModal } from './FarmingProcessingModal'
 import {
@@ -49,17 +49,21 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
     }))
     .sort((a, b) => a.mint.localeCompare(b.mint))
 
+  // Because tokens could change & Formik bug, we have to store state somewhere
+  // https://github.com/jaredpalmer/formik/issues/3348
+  const [initialValues] = useState<WithFarming>({
+    farming: {
+      token: tokens[0],
+      vestingEnabled: true,
+      tokenAmount: '0',
+      farmingPeriod: '14',
+      vestingPeriod: '7',
+    },
+  })
+
   const form = useFormik<WithFarming>({
     validateOnMount: true,
-    initialValues: {
-      farming: {
-        token: tokens[0],
-        vestingEnabled: true,
-        tokenAmount: '0',
-        farmingPeriod: '14',
-        vestingPeriod: '7',
-      },
-    },
+    initialValues,
     onSubmit: async (values) => {
       setFarmingTransactionStatus('processing')
       const farmingRewardAccount = userTokens.find(
@@ -76,14 +80,18 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         if (!values.farming.token.account) {
           throw new Error('No token account selected')
         }
-        await initializeFaming({
+        const result = await initializeFaming({
           farmingTokenMint: new PublicKey(values.farming.token.mint),
           farmingTokenAccount: new PublicKey(values.farming.token.account),
           tokenAmount: new BN(
-            parseFloat(values.farming.tokenAmount) * tokensMultiplier
+            (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(
+              0
+            )
           ),
           periodLength: new BN(HOUR),
-          tokensPerPeriod: new BN(tokensPerPeriod * tokensMultiplier),
+          tokensPerPeriod: new BN(
+            (tokensPerPeriod * tokensMultiplier).toFixed(0)
+          ),
           noWithdrawPeriodSeconds: new BN(0),
           vestingPeriodSeconds:
             values.farming.vestingEnabled && values.farming.vestingPeriod
@@ -95,10 +103,13 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
         })
 
-        onExtend()
+        if (result === 'success') {
+          onExtend()
+        }
 
-        setFarmingTransactionStatus('success')
+        setFarmingTransactionStatus(result === 'success' ? 'success' : 'error')
       } catch (e) {
+        console.warn('Unable to create farming: ', e)
         setFarmingTransactionStatus('error')
       }
     },
@@ -135,17 +146,21 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           />
 
           <Footer>
-            <Button
-              $padding="lg"
-              type="button"
-              onClick={onClose}
-              $variant="outline-white"
-            >
-              Cancel
-            </Button>
-            <Button disabled={!form.isValid} type="submit">
-              {title}
-            </Button>
+            <ButtonContainer>
+              <Button
+                $padding="lg"
+                type="button"
+                onClick={onClose}
+                $variant="outline-white"
+              >
+                Cancel
+              </Button>
+            </ButtonContainer>
+            <ButtonContainer>
+              <Button $padding="lg" disabled={!form.isValid} type="submit">
+                {title}
+              </Button>
+            </ButtonContainer>
           </Footer>
         </form>
       </FormikProvider>
@@ -167,9 +182,16 @@ export const ExtendFarmingModal: React.FC<ExtendFarmingModalProps> = (
 ) => {
   const [userTokens] = useUserTokenAccounts()
   const { title = 'Extend Farming', onClose, onExtend, pool } = props
+  const tokenMap = useTokenInfos()
+
+  const baseInfo = tokenMap.get(pool.tokenA)
+  const quoteInfo = tokenMap.get(pool.tokenB)
+
+  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
+  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
 
   return (
-    <Modal open onClose={onClose} title={title}>
+    <Modal open onClose={onClose} title={`${title} for ${base}/${quote} pool`}>
       <Body>
         {!userTokens.length ? (
           <Loader />

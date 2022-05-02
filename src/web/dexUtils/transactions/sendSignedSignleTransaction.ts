@@ -1,3 +1,5 @@
+import SnackbarUtils from '@sb/utils/SnackbarUtils'
+
 import { notify } from '../notifications'
 import { DEFAULT_CONFIRMATION_TIMEOUT } from './constants'
 import {
@@ -6,6 +8,7 @@ import {
 } from './types'
 import { waitTransactionConfirmation } from './waitTransactionConfirmation'
 
+const INSUFFICIENT_BALANCE_LOG = 'insufficient lamports'
 export const sendSignedSignleTransaction = async (
   params: SendSignedTransactionParams
 ): AsyncSendSignedTransactionResult => {
@@ -28,15 +31,14 @@ export const sendSignedSignleTransaction = async (
     skipPreflight,
   })
 
-  const message = Array.isArray(sentMessage) ? sentMessage[0] : sentMessage
-  const description = Array.isArray(sentMessage) ? sentMessage[1] : undefined
+  let awaitConfirmationNotificationKey = null
 
   if (showNotification) {
-    notify({
-      message,
-      description,
-      type: 'success',
+    awaitConfirmationNotificationKey = notify({
+      message: 'Confirming transaction',
+      type: 'loading',
       txid: txId,
+      persist: true,
     })
   }
 
@@ -48,6 +50,34 @@ export const sendSignedSignleTransaction = async (
     timeout,
     commitment,
   })
+
+  if (awaitConfirmationNotificationKey) {
+    SnackbarUtils.close(awaitConfirmationNotificationKey)
+  }
+
+  if (confirmationResult === 'failed') {
+    try {
+      const transactionDetails = await connection.getParsedConfirmedTransaction(
+        txId
+      )
+
+      const hasInsufficientSolError =
+        transactionDetails?.meta?.logMessages?.find((msg) =>
+          msg.toLowerCase().includes(INSUFFICIENT_BALANCE_LOG)
+        )
+      if (hasInsufficientSolError) {
+        notify({
+          message: 'Not enough SOL',
+          description:
+            'Please make sure you have SOL to complete the transaction',
+          type: 'error',
+        })
+      }
+    } catch (e) {
+      console.warn('Unable to parse transaction logs: ', e)
+      return 'failed'
+    }
+  }
 
   if (confirmationResult === 'success') {
     const smessage = Array.isArray(successMessage)
