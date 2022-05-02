@@ -3,6 +3,7 @@ import BN from 'bn.js'
 
 import { FarmingTicket } from '../../common/types'
 import { TokenInfo, WalletAdapter } from '../../types'
+import { SRinStakingPoolUI } from '../hooks/types'
 import { StakingPool } from '../types'
 
 export interface RestakeParams {
@@ -23,6 +24,30 @@ export interface StartSrinStakingParams {
   stakingPool: PublicKey
   stakingTier: PublicKey
   userStakeTokenaccount: PublicKey
-  poolStakeTokenaccount: PublicKey
+  stakeVault: PublicKey
   amount: BN
+}
+
+export interface EndSrinStakingInstructionParams {
+  wallet: WalletAdapter
+  connection: Connection
+  stakingPool: PublicKey
+  stakingTier: PublicKey
+  userStakeWallet: PublicKey
+  userRewardWallet: PublicKey
+  poolSigner: PublicKey
+  nftReward: PublicKey
+  rewardVault: PublicKey
+  stakeVault: PublicKey
+  conversion: PublicKey
+  stakeToRewardConversionPaths: PublicKey[]
+}
+
+export interface EndSrinStakingParams {
+  wallet: WalletAdapter
+  connection: Connection
+  stakingPool: SRinStakingPoolUI
+  stakingTier: PublicKey
+  nftTierReward: PublicKey
+  userTokens: TokenInfo[]
 }

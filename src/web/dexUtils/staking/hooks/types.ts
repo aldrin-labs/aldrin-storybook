@@ -42,11 +42,19 @@ export interface MarinadeStats {
 export interface SRinStakingPoolBase {
   owner: PublicKey
   poolSigner: PublicKey
-  bumpPoolSigner: number
+  bumpSeedSigner: number
   stakeTokenMint: PublicKey
-  stakeTokenaccount: PublicKey
+  stakeVault: PublicKey
   rewardTokenMint: PublicKey
-  rewardTokenaccount: PublicKey
+  rewardVault: PublicKey
+}
+
+export interface SRinStakeToRewardConversionPath {
+  stakingPool: PublicKey
+  vaults: {
+    vault1: PublicKey
+    vault2: PublicKey
+  }[]
 }
 
 export interface SRinStakingPool extends SRinStakingPoolBase {
@@ -54,16 +62,24 @@ export interface SRinStakingPool extends SRinStakingPoolBase {
 }
 
 export interface SRinNftRewardGroup {
-  name: string
-  quantity: number
+  tier: PublicKey
+  minStakeTokensForReward: BN
+  nfts: {
+    quantity: number
+    nftOwner: PublicKey
+    bumpSeed: number
+    uniqueSeed: number[]
+  }[]
 }
 
 export interface SRinStakingTier {
   pool: PublicKey
-  apr: BN
-  lockDuration: BN
-  nftRewardGroups: PublicKey[]
-  nftRewardGroupsData: ProgramAccount<SRinNftRewardGroup>[]
+  apr: {
+    permillion: BN
+  }
+  lockDuration: {
+    seconds: BN
+  }
 }
 
 export interface SRinUserAccount {
@@ -75,5 +91,8 @@ export interface SRinUserAccount {
 
 export interface SRinStakingPoolUI extends SRinStakingPoolBase {
   stakingPool: PublicKey
-  tiers: ProgramAccount<SRinStakingTier>[]
+  tiers: (ProgramAccount<SRinStakingTier> & {
+    nftRewards: ProgramAccount<SRinNftRewardGroup>[]
+  })[]
+  stakeToRewardConversionPath?: ProgramAccount<SRinStakeToRewardConversionPath>
 }

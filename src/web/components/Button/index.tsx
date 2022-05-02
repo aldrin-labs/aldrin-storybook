@@ -198,6 +198,9 @@ export const Button = styled.button<ButtonProps>`
     position: relative;
     &, &:disabled {
       color: transparent;
+      img {
+        opacity: 0;
+      }
     }
     &:before {
       animation: 5s button-rotate-loading infinite linear;
@@ -209,8 +212,6 @@ export const Button = styled.button<ButtonProps>`
       left: 10%;
       top: 15%;
       background-size: contain;
-
-
     }
   `
       : ''}

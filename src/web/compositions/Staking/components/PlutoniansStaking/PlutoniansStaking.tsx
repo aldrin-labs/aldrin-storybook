@@ -38,7 +38,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
             <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
               <Row justify="space-between" margin="0 0 0.7em 0">
                 <InlineText size="md" weight={700}>
-                  {tier?.account.lockDuration.divn(DAY).toString()} Days
+                  {tier?.account.lockDuration.seconds.divn(DAY).toString()} Days
                 </InlineText>{' '}
                 <SvgIcon src={Lock} alt="locked" />
               </Row>
@@ -61,7 +61,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
             <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
               <Row justify="space-between" margin="0 0 0.7em 0">
                 <InlineText size="md" weight={700}>
-                  {tier?.account.lockDuration.divn(DAY).toString()} Days
+                  {tier?.account.lockDuration.seconds.divn(DAY).toString()} Days
                 </InlineText>{' '}
                 <SvgIcon src={Lock} alt="locked" />
               </Row>
