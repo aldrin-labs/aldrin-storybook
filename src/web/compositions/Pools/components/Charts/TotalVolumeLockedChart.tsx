@@ -1,5 +1,5 @@
 import { COLORS } from '@variables/variables'
-import { Chart } from 'chart.js'
+import Chart from 'chart.js/auto'
 import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
 

@@ -1,8 +1,6 @@
-import { Chart, DoughnutController, ArcElement } from 'chart.js'
+import Chart from 'chart.js/auto'
 
 import { randomInteger } from '@core/utils/helpers'
-
-Chart.register(DoughnutController, ArcElement)
 
 const lightenDarkenColor = (baseColor: string, amt: number) => {
   let usePound = false
