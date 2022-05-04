@@ -148,6 +148,7 @@ export interface FlexBlockProps {
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse'
   justifyContent?: Alignment
   alignItems?: Alignment
+  flex?: string
 }
 
 export const Flex = styled.div`
@@ -159,4 +160,5 @@ export const FlexBlock = styled(Flex)<FlexBlockProps>`
   justify-content: ${(props: FlexBlockProps) =>
     props.justifyContent || 'normal'};
   align-items: ${(props: FlexBlockProps) => props.alignItems || 'normal'};
+  ${(props: FlexBlockProps) => (props.flex ? `flex: ${props.flex}` : '')};
 `

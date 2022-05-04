@@ -21,7 +21,6 @@ import { InlineText } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { PU238_TOKEN_MINT } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { startSrinStaking } from '@sb/dexUtils/staking/actions'
 import {
   useSrinStakingAccounts,
@@ -60,7 +59,6 @@ import {
   EXTRA_REWARDS,
   PLD_DENOMINATOR,
   NFT_REWARD_MIN_STAKE_AMOUNT,
-  NFT_REWARD_MIN_STAKE_AMOUNT_BN,
   PLD_DECIMALS,
   STAKINGS,
 } from './config'
@@ -103,13 +101,14 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   // console.log('nftReceipes:', nftReceipes)
   // const rewardTokenMint = stakingPool?.rewardTokenMint.toString() || ''
   const stakeTokenMint = stakingPool?.stakeTokenMint.toString() || ''
+  const rewardTokenMint = stakingPool?.rewardTokenMint.toString() || ''
 
-  const pu238TokenName = getTokenNameByMintAddress(PU238_TOKEN_MINT)
+  const rewardTokenName = getTokenNameByMintAddress(rewardTokenMint)
   // const rewardTokenName = getTokenNameByMintAddress(rewardTokenMint)
   const stakeTokenName = getTokenNameByMintAddress(stakeTokenMint)
 
   const rewardPrice =
-    (prices.find((dp) => dp.symbol === pu238TokenName)?.price || 0) *
+    (prices.find((dp) => dp.symbol === rewardTokenName)?.price || 0) *
     REWARD_TOKEN_MULTIPLIER
 
   const stakeTokenPrice =
@@ -127,6 +126,15 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const selectedTier = tiers[selectedTierIndex]
   const stakeAccountForTier = stakingAccounts?.get(
     selectedTier?.publicKey.toString() || ''
+  )
+
+  const nftReward = selectedTier.nftRewards
+    ? selectedTier.nftRewards[0]
+    : undefined
+
+  const minStakeTokensForRewardBn = nftReward?.account.minStakeTokensForReward
+  const minStakeTokensForReward = parseFloat(
+    minStakeTokensForRewardBn?.toString() || '0'
   )
 
   const isStaked = !!stakeAccountForTier
@@ -159,7 +167,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
       throw new Error('No stakingPool!')
     }
     try {
-      console.log('nftRewards:', selectedTier.nftRewards)
       const result = await endSrinStaking({
         wallet,
         connection,
@@ -211,7 +218,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
       console.log('refreshAllResult: ', refreshAllResult)
       setLoading(false)
     } catch (e) {
-      console.warn('Unable to stake PLD:', e)
+      console.warn(`Unable to stake ${stakeTokenName}`, e)
       notify({ message: 'Something went wrong' })
       await refreshAll()
       setLoading(false)
@@ -330,7 +337,9 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                         value={null}
                         label={
                           stakingAccount
-                            ? `${stripByAmountAndFormat(stakedAmount)} PLD`
+                            ? `${stripByAmountAndFormat(
+                                stakedAmount
+                              )} ${stakeTokenName}`
                             : `${
                                 (parseInt(
                                   tier?.account.apr.permillion.toString() ||
@@ -393,10 +402,14 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   <ContentBlock
                     style={{ alignItems: isStaked ? 'flex-start' : 'center' }}
                   >
-                    <InlineText size="sm">
-                      You have to stake at least {NFT_REWARD_MIN_STAKE_AMOUNT}{' '}
-                      PLD to be eligible for Aldrin Skin NFT drop.
-                    </InlineText>
+                    {minStakeTokensForReward && (
+                      <InlineText size="sm">
+                        You have to stake at least{' '}
+                        {formatNumberToUSFormat(minStakeTokensForReward)}
+                        {stakeTokenName} to be eligible for Aldrin Skin NFT
+                        drop.
+                      </InlineText>
+                    )}
                   </ContentBlock>
                 )}
 
@@ -465,17 +478,24 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                               </>
                             ) : (
                               <Column>
-                                <InlineText
-                                  color="newGreen"
-                                  size="md"
-                                  weight={700}
-                                >
-                                  Stake more than {NFT_REWARD_MIN_STAKE_AMOUNT}{' '}
-                                  PLD
-                                </InlineText>
-                                <InlineText size="sm">
-                                  to get {EXTRA_REWARDS[selectedTierIndex]}
-                                </InlineText>
+                                {minStakeTokensForReward && (
+                                  <>
+                                    <InlineText
+                                      color="newGreen"
+                                      size="md"
+                                      weight={700}
+                                    >
+                                      Stake more than{' '}
+                                      {formatNumberToUSFormat(
+                                        minStakeTokensForReward
+                                      )}{' '}
+                                      {stakeTokenName}
+                                    </InlineText>
+                                    <InlineText size="sm">
+                                      to get {EXTRA_REWARDS[selectedTierIndex]}
+                                    </InlineText>
+                                  </>
+                                )}
                               </Column>
                             )}
                           </StretchedBlock>
@@ -487,7 +507,9 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   <StretchedBlock width="xl">
                     <ContentBlock width="48%">
                       <StretchedBlock width="xl">
-                        <DarkTooltip title="Your actual rewards depend on the market price of the PLD and PU238 at the time of claiming and their projection may change dynamically over time during the lockup period.">
+                        <DarkTooltip
+                          title={`Your actual rewards depend on the market price of the ${stakeTokenName} and ${rewardTokenName} at the time of claiming and their projection may change dynamically over time during the lockup period.`}
+                        >
                           <FlexBlock alignItems="center">
                             <InlineText color="primaryGray" size="sm">
                               Est. Rewards
@@ -517,7 +539,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                             : '-'}
                         </InlineText>
                         <RewardDescription size="md" weight={600}>
-                          PU238
+                          {rewardTokenName}
                         </RewardDescription>
                       </StretchedBlock>
                     </ContentBlock>
@@ -537,8 +559,9 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                           </InlineText>
                           {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
                         </StretchedBlock>
-                        {stakeAccountForTier.account.amount.gt(
-                          NFT_REWARD_MIN_STAKE_AMOUNT_BN
+                        {minStakeTokensForRewardBn &&
+                        stakeAccountForTier.account.amount.gt(
+                          minStakeTokensForRewardBn
                         ) ? (
                           <>
                             <StretchedBlock
@@ -553,9 +576,19 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                           </>
                         ) : (
                           <>
-                            <InlineText color="newGreen" size="md" weight={700}>
-                              Stake more than {NFT_REWARD_MIN_STAKE_AMOUNT} PLD
-                            </InlineText>
+                            {minStakeTokensForReward && (
+                              <InlineText
+                                color="newGreen"
+                                size="md"
+                                weight={700}
+                              >
+                                Stake more than{' '}
+                                {formatNumberToUSFormat(
+                                  minStakeTokensForReward
+                                )}{' '}
+                                {stakeTokenName}
+                              </InlineText>
+                            )}
                           </>
                         )}
                       </ContentBlock>
@@ -587,7 +620,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                           stakeAccountForTier?.account.amount.toString()
                         ) / PLD_DENOMINATOR
                       )}{' '}
-                      PLD and Claim Rewards
+                      {stakeTokenName} and Claim Rewards
                     </Button>
                   ) : (
                     <Button

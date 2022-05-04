@@ -9,6 +9,8 @@ import { ContentBlockProps } from './types'
 
 export const StakingBlock = styled(Block)`
   background: ${COLORS.defaultGray};
+  display: flex;
+  flex-direction: column;
   @media (max-width: ${BREAKPOINTS.md}) {
     margin: 8px 15px;
   }

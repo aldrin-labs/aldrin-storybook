@@ -1,9 +1,10 @@
 import { Connection, PublicKey } from '@solana/web3.js'
+import { ProgramAccount } from 'anchor024'
 import BN from 'bn.js'
 
 import { FarmingTicket } from '../../common/types'
 import { TokenInfo, WalletAdapter } from '../../types'
-import { SRinStakingPoolUI } from '../hooks/types'
+import { SRinNftRewardGroup, SRinStakingPoolUI } from '../hooks/types'
 import { StakingPool } from '../types'
 
 export interface RestakeParams {
@@ -50,4 +51,13 @@ export interface EndSrinStakingParams {
   stakingTier: PublicKey
   nftTierReward: PublicKey
   userTokens: TokenInfo[]
+}
+
+export interface ClaimNftParams {
+  wallet: WalletAdapter
+  connection: Connection
+  userNftReceipt: PublicKey
+  stakingPool: PublicKey
+  nftReward: PublicKey
+  nftTier: ProgramAccount<SRinNftRewardGroup>[]
 }

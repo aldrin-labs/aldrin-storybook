@@ -42,7 +42,6 @@ export const endSrinStakingInstructions = async (
 
   const [userStakingAccount] = await getStakingAccount(w.publicKey, stakingTier)
 
-  console.log('stakeToRewardConversionPaths:', stakeToRewardConversionPaths)
   return program.instruction.withdraw({
     accounts: {
       user: w.publicKey,

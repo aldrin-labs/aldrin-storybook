@@ -1,18 +1,16 @@
+import { ProgramAccount } from 'anchor024'
 import useSWR from 'swr'
 
-import { AldrinConnection, useConnection } from '../../connection'
+import { useConnection } from '../../connection'
 import { ProgramsMultiton } from '../../ProgramsMultiton'
-import { WalletAdapter } from '../../types'
 import { useWallet } from '../../wallet'
-
-interface LoadReceiptsParams {
-  wallet: WalletAdapter
-  connection: AldrinConnection
-}
+import { LoadReceiptsParams, SrinNftReceipt } from './types'
 
 const USER_KEY_OFFSET = 8
 
-export const loadNftReceipts = async (params: LoadReceiptsParams) => {
+export const loadNftReceipts = async (
+  params: LoadReceiptsParams
+): Promise<ProgramAccount<SrinNftReceipt>[]> => {
   const program = ProgramsMultiton.getPlutoniansStakingProgram({
     wallet: params.wallet,
     connection: params.connection,
@@ -27,7 +25,7 @@ export const loadNftReceipts = async (params: LoadReceiptsParams) => {
         bytes: params.wallet.publicKey.toString(),
       },
     },
-  ])
+  ]) as Promise<any> as Promise<ProgramAccount<SrinNftReceipt>[]>
 }
 
 export const useSrinNftReceipts = () => {

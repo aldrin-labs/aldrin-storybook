@@ -2,6 +2,9 @@ import { PublicKey } from '@solana/web3.js'
 import { ProgramAccount } from 'anchor03'
 import BN from 'bn.js'
 
+import { AldrinConnection } from '../../connection'
+import { WalletAdapter } from '../../types'
+
 /* eslint-disable camelcase */
 export interface MarinadeStats {
   available_reserve_balance: number
@@ -92,7 +95,17 @@ export interface SRinUserAccount {
 export interface SRinStakingPoolUI extends SRinStakingPoolBase {
   stakingPool: PublicKey
   tiers: (ProgramAccount<SRinStakingTier> & {
-    nftRewards: ProgramAccount<SRinNftRewardGroup>[]
+    nftRewards?: ProgramAccount<SRinNftRewardGroup>[]
   })[]
   stakeToRewardConversionPath?: ProgramAccount<SRinStakeToRewardConversionPath>
+}
+
+export interface SrinNftReceipt {
+  user: PublicKey
+  nftReward: PublicKey
+}
+
+export interface LoadReceiptsParams {
+  wallet: WalletAdapter
+  connection: AldrinConnection
 }

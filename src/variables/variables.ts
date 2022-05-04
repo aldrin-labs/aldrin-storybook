@@ -55,6 +55,7 @@ export const COLORS = {
   primaryRed: '#E04237',
   newBlack: '#191919',
   lightGray: '#C9C8CD',
+  lightButtonBg: 'rgba(193, 193, 193, 0.1)',
 }
 
 export const BORDER_RADIUS = {
