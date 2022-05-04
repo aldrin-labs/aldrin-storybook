@@ -94,7 +94,7 @@ export const UCOLORS = {
   green6: '#00E878FF',
   green5: '#00F47EFF',
   green4: '#00FF84FF',
-  green3: '#47FFA6FF',
+  green3: '#47FFA7FF',
   green2: '#70FFBAFF',
   green1: '#8EFEC8FF',
   green0: '#C1FFE1FF',

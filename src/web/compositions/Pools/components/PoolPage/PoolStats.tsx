@@ -190,7 +190,7 @@ Don't miss your chance.`
         </PoolName>
         <ButtonsContainer>
           <SwapButton
-            $borderRadius="xl"
+            $borderRadius="md"
             as={Link}
             to={`/swap?base=${base}&quote=${quote}`}
           >

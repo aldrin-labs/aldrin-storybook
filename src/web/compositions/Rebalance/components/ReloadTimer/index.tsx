@@ -1,4 +1,4 @@
-import { FONT_SIZES } from '@variables/variables'
+import { FONT_SIZES, UCOLORS } from '@variables/variables'
 import React, { CSSProperties, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import styled from 'styled-components'
@@ -19,8 +19,8 @@ export const ReloadTimer = ({
   size = 21,
   duration = 10,
   initialRemainingTime = 10,
-  color = '#651CE4',
-  trailColor = '#383B45',
+  color = UCOLORS.blue3,
+  trailColor = UCOLORS.blue1,
   callback,
   margin = '0 3rem 0 0',
   rerenderOnClick = true,

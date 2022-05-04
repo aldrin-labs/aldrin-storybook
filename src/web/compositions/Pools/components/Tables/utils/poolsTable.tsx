@@ -217,7 +217,7 @@ export const preparePoolTableCell = (params: {
       apr: {
         rawValue: totalApr,
         rendered: (
-          <Text color="success" size="sm" weight={700}>
+          <Text color="green3" size="sm" weight={700}>
             {totalApr >= 1 ? `${stripByAmount(totalApr, 2)}%` : '< 1%'}
           </Text>
         ),

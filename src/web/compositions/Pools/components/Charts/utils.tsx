@@ -1,4 +1,4 @@
-import { COLORS, MAIN_FONT } from '@variables/variables'
+import { COLORS, MAIN_FONT, UCOLORS } from '@variables/variables'
 import { Chart, ChartType, TooltipItem } from 'chart.js'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
@@ -133,9 +133,8 @@ const createTotalVolumeLockedChart = ({
   }
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(101, 28, 228, 0.9)')
-  gradient.addColorStop(0.55, 'rgba(101, 28, 228, 0)')
-  gradient.addColorStop(1, COLORS.blockBackground)
+  gradient.addColorStop(0, 'rgba(143, 255, 200, 0.25)')
+  gradient.addColorStop(0.55, 'rgba(143, 255, 200, 0)')
 
   const transformedData = getEmptyData()
     .map((value) => ({
@@ -166,7 +165,7 @@ const createTotalVolumeLockedChart = ({
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: COLORS.primaryBlue,
+        borderColor: UCOLORS.green3,
         backgroundColor: gradient,
         borderWidth: 2,
         pointRadius: 0,
@@ -219,10 +218,11 @@ const createTradingVolumeChart = ({ chart, container, data }: ChartParams) => {
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: COLORS.success,
-        backgroundColor: COLORS.success,
+        borderColor: UCOLORS.violet3,
+        backgroundColor: UCOLORS.violet3,
         borderWidth: 0,
         pointRadius: 0,
+        hoverBackgroundColor: UCOLORS.violet1,
         borderRadius: {
           topLeft: 4,
           topRight: 4,

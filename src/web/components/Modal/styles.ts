@@ -1,4 +1,4 @@
-import { COLORS } from '@variables/variables'
+import { UCOLORS } from '@variables/variables'
 import styled, { css, keyframes } from 'styled-components'
 
 import { SvgIcon } from '@sb/components'
@@ -54,7 +54,7 @@ export const ModalBody = styled(Block)`
   max-width: 80em;
   max-height: 95vh;
   overflow: auto;
-  background: ${COLORS.blockBlackBackground};
+  background: ${UCOLORS.gray6};
 `
 
 export const ModalContent = styled(BlockContent)`

@@ -1,15 +1,17 @@
-import { BlockContent } from '@sb/components/Block'
-import { Button } from '@sb/components/Button'
-import { Row, StretchedBlock } from '@sb/components/Layout'
-import { InlineText, Text } from '@sb/components/Typography'
 import {
   BORDER_RADIUS,
   BREAKPOINTS,
   COLORS,
   FONT_SIZES,
   LAYOUT_WIDTH,
+  UCOLORS,
 } from '@variables/variables'
 import styled from 'styled-components'
+
+import { BlockContent } from '@sb/components/Block'
+import { Button } from '@sb/components/Button'
+import { Row, StretchedBlock } from '@sb/components/Layout'
+import { InlineText, Text } from '@sb/components/Typography'
 
 export const ModalBlock = styled(BlockContent)`
   display: flex;
@@ -98,6 +100,8 @@ export const SwapButton = styled(Button)`
   margin-right: 16px;
   padding-top: 5px;
   padding-bottom: 6px;
+  background-color: ${UCOLORS.blue3};
+  border-color: ${UCOLORS.blue3};
 `
 
 export const SwapButtonIcon = styled.span`
