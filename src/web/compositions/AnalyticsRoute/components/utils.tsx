@@ -1,17 +1,4 @@
-import {
-  Chart,
-  BarElement,
-  PointElement,
-  BarController,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  LineElement,
-  LineController,
-  PolarAreaController,
-  Filler,
-  BubbleController,
-} from 'chart.js'
+import Chart from 'chart.js/auto'
 import moment from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -25,20 +12,6 @@ import {
 
 moment.extend(timezone)
 moment.extend(utc)
-
-Chart.register(
-  BarElement,
-  PointElement,
-  BarController,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  LineElement,
-  LineController,
-  PolarAreaController,
-  BubbleController,
-  Filler
-)
 
 export const getTimezone = () =>
   Intl.DateTimeFormat().resolvedOptions().timeZone // city
