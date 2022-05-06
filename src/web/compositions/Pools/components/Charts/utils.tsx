@@ -1,5 +1,5 @@
 import { COLORS, MAIN_FONT } from '@variables/variables'
-import { Chart, ChartType, TooltipItem } from 'chart.js'
+import Chart from 'chart.js/auto'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
@@ -105,14 +105,15 @@ const getEmptyData = (
   const diffInDays = tsTo.diff(tsFrom, 'days')
 
   const emptyData = new Array(diffInDays)
-  .fill(undefined)
-  .map((el, i) => {
-      const date = dayjs.unix(tsTo.subtract(i, 'day').unix()).format('YYYY-MM-DD')
+    .fill(undefined)
+    .map((el, i) => {
+      const date = dayjs
+        .unix(tsTo.subtract(i, 'day').unix())
+        .format('YYYY-MM-DD')
 
       return { date, vol: 0 }
-
-  })
-  .reverse()
+    })
+    .reverse()
 
   return emptyData
 }

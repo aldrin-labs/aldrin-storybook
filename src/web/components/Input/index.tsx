@@ -3,7 +3,7 @@ import { noop } from 'lodash-es'
 import React, { useRef } from 'react'
 
 import { InlineText } from '../Typography'
-import { Append, InputEl, InputWrap, Label } from './styles'
+import { Append, InputContainer, InputEl, InputWrap, Label } from './styles'
 import { FieldProps, InputProps } from './types'
 import { validateDecimal, validateNatural, validateRegexp } from './utils'
 
@@ -66,7 +66,7 @@ export const Input: React.FC<InputProps> = (props) => {
       $withLabel={!!label}
       onClick={setFocus}
     >
-      <div>
+      <InputContainer>
         <InlineText size="xs" color="lightGray">
           {label && <Label>{label}</Label>}
         </InlineText>
@@ -81,7 +81,7 @@ export const Input: React.FC<InputProps> = (props) => {
           ref={input}
           autoComplete="off"
         />
-      </div>
+      </InputContainer>
 
       {append && <Append>{append}</Append>}
     </InputWrap>
@@ -89,12 +89,24 @@ export const Input: React.FC<InputProps> = (props) => {
 }
 
 export const InputField: React.FC<FieldProps> = (props) => {
-  const { onChange = noop, ...rest } = props
+  const {
+    onChange = noop,
+
+    placeholder,
+    showPlaceholderOnDisabled,
+    disabled,
+    ...rest
+  } = props
   const [field, _meta, helpers] = useField(rest)
+  const value =
+    disabled && showPlaceholderOnDisabled ? placeholder : field.value
+
   return (
     <Input
       {...rest}
-      value={field.value}
+      value={value}
+      disabled={disabled}
+      placeholder={placeholder}
       onChange={(value) => {
         helpers.setTouched(true, true)
         helpers.setValue(value, true)

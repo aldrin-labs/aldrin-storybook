@@ -162,8 +162,8 @@ export const PoolProcessingBlock = styled(BlockContent)`
 export const PoolProcessingContent = styled(Flex)`
   margin: 20px 0;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
 `
 
 export const PoolProcessingButton = styled(Button)`

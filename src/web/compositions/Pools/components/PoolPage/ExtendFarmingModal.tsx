@@ -35,12 +35,14 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
 
+  const [isProcessingFarmingPopupOpen, setIsProcessingFarmingPopupOpen] =
+    useState(false)
   const [farmingTransactionStatus, setFarmingTransactionStatus] =
     useState<TransactionStatus | null>(null)
   const tokens: Token[] = userTokens
     .filter(
       (ut) =>
-        farmingTokens.length === 0 ? true : farmingTokens.includes(ut.mint) // Limit token select with already existing mints
+        farmingTokens.length === 0 ? true : farmingTokens.includes(ut.mint) //  Limit token select with already existing mints
     )
     .map((ut) => ({
       mint: ut.mint,
@@ -53,7 +55,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   // https://github.com/jaredpalmer/formik/issues/3348
   const [initialValues] = useState<WithFarming>({
     farming: {
-      token: tokens[0],
+      token: tokens[0] || { mint: farmingTokens[0] },
       vestingEnabled: true,
       tokenAmount: '0',
       farmingPeriod: '14',
@@ -61,57 +63,60 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
     },
   })
 
+  const prolongFarming = async (values) => {
+    setFarmingTransactionStatus('processing')
+    setIsProcessingFarmingPopupOpen(true)
+    const farmingRewardAccount = userTokens.find(
+      (ut) => ut.address === values.farming.token.account
+    )
+
+    const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
+    const tokensPerPeriod =
+      (parseFloat(values.farming.tokenAmount) * HOUR) /
+      DAY /
+      parseFloat(values.farming.farmingPeriod)
+
+    try {
+      if (!values.farming.token.account) {
+        throw new Error('No token account selected')
+      }
+      const result = await initializeFaming({
+        farmingTokenMint: new PublicKey(values.farming.token.mint),
+        farmingTokenAccount: new PublicKey(values.farming.token.account),
+        tokenAmount: new BN(
+          (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(0)
+        ),
+        periodLength: new BN(HOUR),
+        tokensPerPeriod: new BN(
+          (tokensPerPeriod * tokensMultiplier).toFixed(0)
+        ),
+        noWithdrawPeriodSeconds: new BN(0),
+        vestingPeriodSeconds:
+          values.farming.vestingEnabled && values.farming.vestingPeriod
+            ? new BN(parseFloat(values.farming.vestingPeriod) * DAY)
+            : new BN(0),
+        pool: new PublicKey(pool.swapToken),
+        wallet,
+        connection,
+        programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
+      })
+
+      if (result === 'success') {
+        onExtend()
+      }
+
+      setFarmingTransactionStatus(result === 'success' ? 'success' : 'error')
+    } catch (e) {
+      console.warn('Unable to create farming: ', e)
+      setFarmingTransactionStatus('error')
+    }
+  }
+
   const form = useFormik<WithFarming>({
     validateOnMount: true,
     initialValues,
     onSubmit: async (values) => {
-      setFarmingTransactionStatus('processing')
-      const farmingRewardAccount = userTokens.find(
-        (ut) => ut.address === values.farming.token.account
-      )
-
-      const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
-      const tokensPerPeriod =
-        (parseFloat(values.farming.tokenAmount) * HOUR) /
-        DAY /
-        parseFloat(values.farming.farmingPeriod)
-
-      try {
-        if (!values.farming.token.account) {
-          throw new Error('No token account selected')
-        }
-        const result = await initializeFaming({
-          farmingTokenMint: new PublicKey(values.farming.token.mint),
-          farmingTokenAccount: new PublicKey(values.farming.token.account),
-          tokenAmount: new BN(
-            (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(
-              0
-            )
-          ),
-          periodLength: new BN(HOUR),
-          tokensPerPeriod: new BN(
-            (tokensPerPeriod * tokensMultiplier).toFixed(0)
-          ),
-          noWithdrawPeriodSeconds: new BN(0),
-          vestingPeriodSeconds:
-            values.farming.vestingEnabled && values.farming.vestingPeriod
-              ? new BN(parseFloat(values.farming.vestingPeriod) * DAY)
-              : new BN(0),
-          pool: new PublicKey(pool.swapToken),
-          wallet,
-          connection,
-          programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
-        })
-
-        if (result === 'success') {
-          onExtend()
-        }
-
-        setFarmingTransactionStatus(result === 'success' ? 'success' : 'error')
-      } catch (e) {
-        console.warn('Unable to create farming: ', e)
-        setFarmingTransactionStatus('error')
-      }
+      prolongFarming(values)
     },
     validate: async (values) => {
       if (
@@ -166,10 +171,12 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       </FormikProvider>
       {farmingTransactionStatus && (
         <FarmingProcessingModal
+          prolongFarming={async () => prolongFarming({ farming })}
           status={farmingTransactionStatus}
+          open={isProcessingFarmingPopupOpen}
           onClose={() => {
             setFarmingTransactionStatus(null)
-            onClose()
+            setIsProcessingFarmingPopupOpen(false)
           }}
         />
       )}
