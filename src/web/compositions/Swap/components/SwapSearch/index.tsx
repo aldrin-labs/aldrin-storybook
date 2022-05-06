@@ -16,10 +16,11 @@ import {
   NoData,
   SwapItem,
   TokenName,
+  IconWrap,
 } from './styles'
 import { SearchItem, SwapSearchProps } from './types'
 
-const NUM_PATTERN = /\d{0,}\.?\d{0,}$/
+// const NUM_PATTERN = /\d{0,}\.?\d{0,}$/
 
 export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   const { tokens, onSelect } = props
@@ -147,7 +148,11 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
         placeholder={'Try: "10 SOL to RIN"'}
         value={searchValue}
         onChange={onInput}
-        append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
+        append={
+          <IconWrap>
+            <SvgIcon src={Loop} height="1.6rem" width="1.6rem" />
+          </IconWrap>
+        }
         borderRadius="md"
       />
 

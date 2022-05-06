@@ -51,3 +51,10 @@ export const NoData = styled.div`
   padding: 20px 0;
   text-align: center;
 `
+
+export const IconWrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+`
