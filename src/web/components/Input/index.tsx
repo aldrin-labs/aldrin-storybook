@@ -11,7 +11,7 @@ export const INPUT_FORMATTERS = {
   NOP: (e: string) => e,
 
   DECIMAL: (v: string | number, prevValue: string | number) => {
-    const value = v ? `${v}`.replaceAll(',', '') : `${v}`
+    const value = v ? `${v}`.replaceAll(',', '').replaceAll(' ', '') : `${v}`
     if (validateDecimal(value) || v === '') {
       return value
     }
