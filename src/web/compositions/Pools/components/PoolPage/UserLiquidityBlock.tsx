@@ -1,13 +1,14 @@
 import dayjs from 'dayjs'
 import React from 'react'
 
-
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
-import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
 import { getTokenDataByMint } from '../../utils'
 import {
   LiquidityBlock,
@@ -95,7 +96,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
         <LiquidityButton
           disabled={processing}
           $loading={processing}
-          $variant="rainbow"
+          $variant="border"
           onClick={onDepositClick}
         >
           Deposit Liquidity

@@ -1,7 +1,8 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
-import { msToNextHour } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
+import { COLORS } from '@variables/variables'
+import Chart from 'chart.js/auto'
+import React, { useEffect, useRef } from 'react'
+import { compose } from 'recompose'
+
 import { Block, BlockContent } from '@sb/components/Block'
 import {
   dayDuration,
@@ -9,15 +10,17 @@ import {
   getTimezone,
   startOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { Chart } from 'chart.js'
-import React, { useEffect, useRef } from 'react'
-import { compose } from 'recompose'
-import { COLORS } from '@variables/variables'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
+import { msToNextHour } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
+
 import { Line } from '../Popups/index.styles'
 import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate'
 import { Canvas, DataContainer, SubTitle, TitleContainer } from './styles'
-import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 import { TradingVolumeChartProps } from './types'
+import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
 const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)

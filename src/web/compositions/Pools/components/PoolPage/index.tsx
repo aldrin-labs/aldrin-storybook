@@ -12,7 +12,8 @@ import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { CURVE } from '@sb/dexUtils/pools/types'
+import { usePoolBalances } from '@sb/dexUtils/pools/hooks'
+import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -103,6 +104,8 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const pool = pools?.find((p) => p.parsedName === symbol)
 
+  const [poolBalances] = usePoolBalances(pool || {})
+
   const vesting = vestingsForWallet.get(pool?.poolTokenMint || '')
 
   if (!pool) {
@@ -121,10 +124,21 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const baseDoubleTrimmed = trimTo(baseInfo?.name || '', 7)
   const quoteDoubleTrimmed = trimTo(quoteInfo?.name || '', 7)
 
-  const basePrice =
-    pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenB / pool.tvl.tokenA
-  const quotePrice =
-    pool.curveType === CURVE.STABLE ? 1 : pool.tvl.tokenA / pool.tvl.tokenB
+  const basePrice = getMinimumReceivedAmountFromSwap({
+    isSwapBaseToQuote: true,
+    slippage: 0,
+    pool,
+    swapAmountIn: 1,
+    poolBalances,
+  })
+
+  const quotePrice = getMinimumReceivedAmountFromSwap({
+    isSwapBaseToQuote: false,
+    slippage: 0,
+    pool,
+    swapAmountIn: 1,
+    poolBalances,
+  })
 
   const baseUsdPrice = prices.get(baseTokenName) || { price: 0 }
   const quoteUsdPrice = prices.get(quoteTokenName) || { price: 0 }
@@ -160,10 +174,10 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           <TokenInfo>
             <TokenInfoRow>
               <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
-              <InlineText color="success">1</InlineText>
+              <InlineText color="green4">1</InlineText>
               <InlineText>{base}&nbsp;=&nbsp;</InlineText>
               <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
-              <InlineText color="success">
+              <InlineText color="green4">
                 {stripByAmountAndFormat(basePrice, 4)}
               </InlineText>
               <InlineText>{quote}</InlineText>
@@ -172,10 +186,10 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           <TokenInfo>
             <TokenInfoRow>
               <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
-              <InlineText color="success">1</InlineText>
+              <InlineText color="green4">1</InlineText>
               <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
               <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
-              <InlineText color="success">
+              <InlineText color="green4">
                 {stripByAmountAndFormat(quotePrice, 4)}
               </InlineText>
               <InlineText>{base}</InlineText>

@@ -21,6 +21,7 @@ import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingSta
 import { Vesting } from '@sb/dexUtils/vesting/types'
 import { groupBy } from '@sb/utils'
 
+import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -154,6 +155,12 @@ export const preparePoolTableCell = (params: {
 
   const openFarmingsKeys = Array.from(farmingsMap.keys())
 
+  const additionalPoolOwners = ADDITIONAL_POOL_OWNERS[pool.poolTokenMint] || []
+
+  const isPoolOwner =
+    (walletPk && walletPk === pool.initializerAccount) ||
+    additionalPoolOwners.includes(walletPk)
+
   return {
     extra: pool,
     fields: {
@@ -167,7 +174,7 @@ export const preparePoolTableCell = (params: {
               onClick={(e) => e.stopPropagation()}
             >
               <TokenIconsContainer tokenA={pool.tokenA} tokenB={pool.tokenB}>
-                {!!walletPk && walletPk === pool.initializerAccount && (
+                {isPoolOwner && (
                   <Text color="success" size="sm">
                     Your pool
                   </Text>

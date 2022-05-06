@@ -19,7 +19,7 @@ import { DAY, HOUR } from '@core/utils/dateUtils'
 import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
 import { useTokenInfos } from '../../../../dexUtils/tokenRegistry'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
-import { Body, Footer } from '../Popups/CreatePool/styles'
+import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
 import { FarmingProcessingModal } from './FarmingProcessingModal'
 import {
@@ -53,7 +53,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   // https://github.com/jaredpalmer/formik/issues/3348
   const [initialValues] = useState<WithFarming>({
     farming: {
-      token: tokens[0],
+      token: tokens[0] || { mint: farmingTokens[0] },
       vestingEnabled: true,
       tokenAmount: '0',
       farmingPeriod: '14',
@@ -146,17 +146,21 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           />
 
           <Footer>
-            <Button
-              $padding="lg"
-              type="button"
-              onClick={onClose}
-              $variant="outline-white"
-            >
-              Cancel
-            </Button>
-            <Button disabled={!form.isValid} type="submit">
-              {title}
-            </Button>
+            <ButtonContainer>
+              <Button
+                $padding="lg"
+                type="button"
+                onClick={onClose}
+                $variant="outline-white"
+              >
+                Cancel
+              </Button>
+            </ButtonContainer>
+            <ButtonContainer>
+              <Button $padding="lg" disabled={!form.isValid} type="submit">
+                {title}
+              </Button>
+            </ButtonContainer>
           </Footer>
         </form>
       </FormikProvider>

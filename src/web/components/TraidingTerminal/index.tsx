@@ -1,5 +1,6 @@
 import { Grid, Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
+import { UCOLORS } from '@variables/variables'
 import { withFormik } from 'formik'
 import { toNumber } from 'lodash-es'
 import React, { CSSProperties, PureComponent, SyntheticEvent } from 'react'
@@ -862,9 +863,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                         })
                       }}
                       btnColor="#F8FAFF"
-                      backgroundColor={theme.palette.blue.serum}
+                      backgroundColor={UCOLORS.blue3}
                       btnWidth="35rem"
-                      borderColor={theme.palette.blue.serum}
+                      borderColor={UCOLORS.blue3}
                       textTransform="capitalize"
                       height="4.5rem"
                       borderRadius="1rem"
@@ -873,7 +874,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                         display: 'flex',
                         textTransform: 'none',
                         padding: '1rem',
-                        whiteSpace: 'nowrap',
                       }}
                     >
                       Connect wallet
@@ -889,9 +889,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       fontSize="1.6rem"
                       padding="2rem 8rem"
                       borderRadius="1.5rem"
-                      borderColor={theme.palette.blue.serum}
+                      borderColor={UCOLORS.blue3}
                       btnColor="#fff"
-                      backgroundColor={theme.palette.blue.serum}
+                      backgroundColor={UCOLORS.blue3}
                       textTransform="none"
                       margin="1rem 0 0 0"
                       transition="all .4s ease-out"

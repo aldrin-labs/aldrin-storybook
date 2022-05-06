@@ -7,6 +7,7 @@ import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { InlineText } from '@sb/components/Typography'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/dexUtils/types'
 
 import { DAY } from '@core/utils/dateUtils'
@@ -45,7 +46,7 @@ const resolveFarmingAvailableAmount = (
     firstDeposit,
   } = formValues
 
-  if (farmingToken.account === baseToken?.account) {
+  if (farmingToken?.account === baseToken?.account) {
     const totalBalance =
       userTokens.find((ut) => ut.address === baseToken?.account)?.amount || 0
     return Math.max(
@@ -70,6 +71,16 @@ const resolveFarmingAvailableAmount = (
   )
 }
 
+export const validateFarmingDuration = (v?: number, max?: number) => {
+  const value = v || 0
+  if (typeof max !== 'undefined' && value > max) {
+    return 'Entered value greater than max farming duration.'
+  }
+  if (value <= 0) {
+    return 'Wrong value'
+  }
+}
+
 export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
   const { tokens, userTokens, farmingRewardFormatted } = props
   const form = useFormikContext<FarmingFormType>()
@@ -78,11 +89,15 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
   } = form
   const farmingEndDate =
     Date.now() + parseFloat(farming.farmingPeriod) * DAY * 1000 // to ms
+
+  const tokenName = getTokenNameByMintAddress(farming.token.mint)
+
   return (
     <>
       <CoinSelectors>
         <CoinWrap>
           <TokenSelectorField
+            disabled={tokens.length === 0}
             tokens={tokens}
             label="Choose the token you want to give to the farming"
             name="farming.token"
@@ -95,6 +110,13 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
         setFieldValue={form.setFieldValue}
         available={resolveFarmingAvailableAmount(userTokens, form.values)}
         mint={form.values.farming.token.mint}
+        disabled={!form.values.farming.token.account}
+        placeholder={
+          form.values.farming.token.account
+            ? '0'
+            : `No ${tokenName} tokens on wallet`
+        }
+        showPlaceholderOnDisabled
       />
       {form.errors.farming?.tokenAmount &&
         form.touched.farming?.tokenAmount && (
@@ -108,6 +130,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             borderRadius="lg"
             variant="outline"
             name="farming.farmingPeriod"
+            placeholder="from 7 to 60"
             append={
               <InputAppendContainer>
                 <InlineText color="primaryWhite" weight={600}>
@@ -115,6 +138,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
                 </InlineText>
               </InputAppendContainer>
             }
+            validate={(v) => validateFarmingDuration(v, 60)}
             formatter={INPUT_FORMATTERS.DECIMAL}
           />
         </NumberInputContainer>
@@ -123,15 +147,27 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
           <TokenAmountInput
             name="farming.tokenDayReward"
             value={farmingRewardFormatted}
-            mint={form.values.farming.token.mint}
+            mint={form.values.farming.token?.mint}
           />
         </NumberInputContainer>
       </CoinSelectors>
-      <InlineText color="hint" size="sm" weight={600}>
-        Farming will end at {dayjs(farmingEndDate).format('HH:mm MMM DD, YYYY')}
-      </InlineText>
-      <br />
-      <br />
+      {form.errors.farming?.farmingPeriod &&
+        form.touched.farming?.farmingPeriod && (
+          <ErrorText color="error">
+            {form.errors.farming?.farmingPeriod}
+          </ErrorText>
+        )}
+      {farming.farmingPeriod && !form.errors.farming?.farmingPeriod && (
+        <>
+          <InlineText color="hint" size="sm" weight={600}>
+            Farming will end at{' '}
+            {dayjs(farmingEndDate).format('HH:mm MMM DD, YYYY')}
+          </InlineText>
+          <br />
+          <br />
+        </>
+      )}
+
       <CheckboxWrap>
         <RadioGroupContainer>
           <div>

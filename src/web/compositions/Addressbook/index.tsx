@@ -1,5 +1,5 @@
 import { withTheme } from '@material-ui/styles'
-import { FONT_SIZES } from '@variables/variables'
+import { FONT_SIZES, UCOLORS } from '@variables/variables'
 import { AES, enc, MD5 } from 'crypto-js'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
@@ -303,9 +303,9 @@ const AddressbookRoute = ({
               fontSize="1.4rem"
               padding="1rem 2rem"
               borderRadius=".8rem"
-              borderColor={theme.palette.blue.serum}
+              borderColor={UCOLORS.blue3}
               btnColor="#fff"
-              backgroundColor={theme.palette.blue.serum}
+              backgroundColor={UCOLORS.blue3}
               textTransform="none"
               margin="4rem 0 0 0"
               transition="all .4s ease-out"

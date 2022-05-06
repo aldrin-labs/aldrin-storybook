@@ -1,6 +1,6 @@
 import { Theme, withTheme } from '@material-ui/core'
 import { PublicKey } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
+import { COLORS, UCOLORS } from '@variables/variables'
 import { BN } from 'bn.js'
 import React, { useEffect, useState } from 'react'
 
@@ -368,7 +368,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           <WhiteText>Gas Fees</WhiteText>
           <WhiteText
             style={{
-              color: COLORS.success,
+              color: UCOLORS.green4,
             }}
           >
             {costOfAddingToken} SOL
@@ -444,7 +444,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       {autoRebalanceEnabled && (
         <RowContainer justify="space-between" margin="2rem 0 0 0">
           <WhiteText>Auto-rebalance fee</WhiteText>
-          <WhiteText $color={COLORS.success}>
+          <WhiteText $color={UCOLORS.green4}>
             ${stripByAmount(autoSwapAmountOutFees * quoteTokenPrice)}
           </WhiteText>
         </RowContainer>

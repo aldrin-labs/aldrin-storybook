@@ -4,6 +4,7 @@ import {
   FONTS,
   BORDER_RADIUS,
   WIDTH,
+  UCOLORS,
 } from '@variables/variables'
 import styled, { css } from 'styled-components'
 
@@ -11,8 +12,8 @@ import RinLogo from '@icons/DarkLogo.svg'
 
 const VARIANTS = {
   primary: css`
-    background: ${COLORS.primary};
-    border-color: ${COLORS.primary};
+    background: ${UCOLORS.blue3};
+    border-color: ${UCOLORS.blue3};
 
     &:disabled {
       background: ${COLORS.cardsBack};
@@ -40,6 +41,19 @@ const VARIANTS = {
     &:disabled {
       background: ${COLORS.hint};
       border-color: ${COLORS.hint};
+    }
+  `,
+
+  border: css`
+    border-color: ${UCOLORS.blue2};
+    color: ${UCOLORS.blue2};
+    border-radius: ${BORDER_RADIUS.sm};
+    transition: 0.3s;
+
+    &:hover {
+      border-color: ${UCOLORS.blue1};
+      background-color: ${UCOLORS.blue1};
+      color: ${UCOLORS.blue5};
     }
   `,
 
@@ -189,6 +203,7 @@ export const Button = styled.button<ButtonProps>`
     pointer-events: none;
     cursor: not-allowed;
     pointer-events: none;
+    background-color: ${UCOLORS.gray5};
   }
 
   ${({ $loading: loading }: ButtonProps) =>

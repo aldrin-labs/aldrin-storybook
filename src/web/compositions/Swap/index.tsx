@@ -1,6 +1,6 @@
 import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
-import { FONT_SIZES } from '@variables/variables'
+import { FONT_SIZES, UCOLORS } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
@@ -578,9 +578,9 @@ const SwapPage = ({
                       fontSize="1em"
                       padding="1.4em 5em"
                       borderRadius="1.1rem"
-                      borderColor={theme.palette.blue.serum}
+                      borderColor={UCOLORS.blue3}
                       btnColor="#fff"
-                      backgroundColor={theme.palette.blue.serum}
+                      backgroundColor={UCOLORS.blue3}
                       textTransform="none"
                       transition="all .4s ease-out"
                       style={{ whiteSpace: 'nowrap' }}

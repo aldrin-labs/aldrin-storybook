@@ -49,6 +49,10 @@ interface LinkProps extends ShowHideProps {
   left?: boolean
 }
 
+type CopyButton = {
+  isCopied: boolean
+}
+
 export const NavLink = styled(RouterNavLink)<LinkProps>`
   text-decoration: none;
   font-size: 0.8em;
@@ -275,7 +279,7 @@ export const WalletButton = styled(Button)`
   background-color: ${UCOLORS.blue3};
   border: none;
   font-weight: 600;
-  height: 5rem;
+  height: 3.5em;
   transition: ${TRANSITION};
   color: white;
 
@@ -294,37 +298,39 @@ export const WalletButton = styled(Button)`
 `
 
 export const WalletDataContainer = styled.div`
-  width: 20rem;
+  width: 8.5em;
   border-radius: ${BORDER_RADIUS.md};
   display: flex;
   flex-direction: row;
   align-items: center;
+  max-width: 120px;
 
   @media (min-width: ${BREAKPOINTS.md}) {
-    width: 17rem;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  button {
+  .disconnect-wallet {
     display: none;
     transition: all 1s ease-out;
   }
 
   &:hover {
-    button {
-      display: block;
+    .disconnect-wallet {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
       transition: all 1s ease-out;
     }
   }
 
-  div {
+  .wallet-data {
     display: flex;
     transition: all 1s ease-out;
   }
 
   &:hover {
-    div {
+    .wallet-data {
       display: none;
       transition: all 1s ease-out;
     }
@@ -336,7 +342,6 @@ export const WalletData = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0.5rem 1rem;
-  height: 5rem;
   border-radius: ${BORDER_RADIUS.md};
   background: ${COLORS.defaultGray};
   align-items: center;
@@ -358,6 +363,7 @@ export const Column = styled.div`
   justify-content: space-between;
   flex-direction: column;
   align-items: flex-end;
+  margin-left: 0.4em;
 `
 
 export const WalletName = styled(Text)`
@@ -373,7 +379,7 @@ export const WalletName = styled(Text)`
 
 export const WalletAddress = styled(WalletName)`
   opacity: 0.5;
-  font-weight: 600;
+  font-weight: 400;
   display: block;
   font-size: ${FONT_SIZES.sm};
 
@@ -383,14 +389,19 @@ export const WalletAddress = styled(WalletName)`
 `
 
 export const WalletDisconnectButton = styled(Button)`
-  width: 100%;
-  padding: 10px 20px;
+  width: calc(100% - 5rem);
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 0.75em;
   background-color: ${COLORS.newOrange};
   border: none;
   font-weight: 600;
-  height: 5rem;
+  height: 100%;
   transition: ${TRANSITION};
+  border-radius: 8px 0 0 8px;
+  min-width: 2rem;
 
   &:hover {
     background-color: ${COLORS.primaryRed};
@@ -405,15 +416,51 @@ export const BalanceTitle = styled.span`
   font-size: ${FONT_SIZES.sm};
   color: ${COLORS.newGreen};
   font-weight: 600;
+  white-space: nowrap;
   @media (max-width: 1200px) {
     font-size: 0.7125em;
   }
 `
 
 export const Wrap = styled.div`
-  margin: 0 10px;
+  margin: 0 15px;
 
   @media (min-width: ${BREAKPOINTS.lg}) {
-    margin: 0 48px;
+    margin: 0 1.5em;
+  }
+`
+export const WalletDisconnectBlock = styled.div`
+  width: 100%;
+  height: 5rem;
+`
+
+export const CopyAddressButton = styled(Button)<CopyButton>`
+  width: 5rem;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75em;
+  background: ${(props) => (props.isCopied ? '#269F13' : '#434343')};
+  border: none;
+  font-weight: 600;
+  height: 100%;
+  transition: ${TRANSITION};
+  border-radius: 0 8px 8px 0;
+  min-width: 2rem;
+  border-left: 2px solid #191919;
+
+  &:hover {
+    background: ${(props) => (props.isCopied ? '#269F13' : '#363636')};
+
+    svg {
+      path {
+        stroke: #fff;
+      }
+    }
+  }
+
+  &:active {
+    background: #363636;
   }
 `

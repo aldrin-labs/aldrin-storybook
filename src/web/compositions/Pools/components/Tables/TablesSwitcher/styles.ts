@@ -1,5 +1,4 @@
 import { Theme } from '@material-ui/core'
-
 import {
   BORDER_RADIUS,
   BREAKPOINTS,
@@ -7,9 +6,10 @@ import {
   UCOLORS,
   FONT_SIZES,
 } from '@variables/variables'
+import styled from 'styled-components'
+
 import { Button } from '@sb/components/Button'
 import { Input } from '@sb/components/Input'
-import styled from 'styled-components'
 
 type TableModeButtonProps = {
   isActive: boolean
@@ -93,6 +93,7 @@ export const AddPoolButton = styled(Button)`
   background-color: ${UCOLORS.blue3};
   border: none;
   color: white;
+  transition: 0.3s;
 
   &:hover {
     background: ${UCOLORS.blue4};

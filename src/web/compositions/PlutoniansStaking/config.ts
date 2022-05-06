@@ -1,5 +1,7 @@
 import BN from 'bn.js'
 
+import { MASTER_BUILD } from '@core/utils/config'
+
 import Centuria from './assets/Centuria.png'
 import Colossus from './assets/Colossus.png'
 import Leviathan from './assets/Leviathan.png'
@@ -14,14 +16,15 @@ export const EXTRA_REWARDS = [
 
 export const REWARDS_BG = [Centuria, Colossus, Venator, Leviathan]
 
-export const REWARD_TOKEN_NAME = 'PRC' // For getDexTokenPrices
-export const REWARD_TOKEN_MULTIPLIER = 0.001
+export const REWARD_TOKEN_NAME = 'PU238' // For getDexTokenPrices
+export const REWARD_TOKEN_MULTIPLIER = 1
 
 export const REWARD_APR_DENOMINATOR = 1_000_000
 
-export const PLD_DENOMINATOR = 1_000_000_000
+export const PLD_DENOMINATOR = MASTER_BUILD ? 1_000_000 : 1_000_000_000
+export const PLD_DECIMALS = MASTER_BUILD ? 6 : 9
 
 export const NFT_REWARD_MIN_STAKE_AMOUNT = 1_000
 export const NFT_REWARD_MIN_STAKE_AMOUNT_BN = new BN(
   NFT_REWARD_MIN_STAKE_AMOUNT
-).mul(new BN(10).pow(new BN(9)))
+).mul(new BN(10).pow(new BN(PLD_DECIMALS)))

@@ -86,7 +86,7 @@ export const TokenInfoText = styled(Text)`
 `
 
 export const TokenPrice = styled(TokenInfoText)`
-  color: ${COLORS.success};
+  color: ${UCOLORS.green4};
   font-weight: 400;
 `
 

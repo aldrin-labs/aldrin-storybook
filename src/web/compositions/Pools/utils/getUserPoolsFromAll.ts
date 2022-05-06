@@ -7,6 +7,8 @@ import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingT
 import { getTotalFarmingAmountToClaim } from '@sb/dexUtils/common/getTotalFarmingAmountToClaim'
 import { FarmingCalc, FarmingTicket } from '@sb/dexUtils/common/types'
 
+import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
+
 import { getTokenDataByMint } from '.'
 import { Vesting } from '../../../dexUtils/vesting/types'
 import { PoolInfo } from '../index.types'
@@ -54,13 +56,19 @@ export const getUserPoolsFromAll = ({
       )
     )
 
+    const additionalPoolOwners = ADDITIONAL_POOL_OWNERS[el.poolTokenMint] || []
+
+    const isPoolOwner =
+      (walletKey && walletKey === el.initializerAccount) ||
+      additionalPoolOwners.includes(walletKey || '')
+
     return (
       poolTokenAmount > MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ||
       openFarmingTickets.length > 0 ||
       availableToClaimAmount > 0 ||
       vesting?.outstanding.gtn(0) ||
       !!calcAmounts?.find((ca) => ca.gtn(0)) ||
-      el.initializerAccount === walletKey
+      isPoolOwner
     )
   })
 }

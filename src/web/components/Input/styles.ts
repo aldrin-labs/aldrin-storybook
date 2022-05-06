@@ -27,6 +27,7 @@ export const InputEl = styled.input`
   font-weight: 600;
   padding: 0.6em 0 0.6em 1.5em;
   color: ${COLORS.white};
+  width: 80%;
 
   &:disabled {
     color: ${COLORS.hint};
@@ -56,6 +57,10 @@ export const InputWrap = styled.div<WrapProps>`
     margin-top: 1.5em;
   }`
       : ''}
+`
+
+export const InputContainer = styled.div`
+  flex: 1;
 `
 
 export const Append = styled.span<AppendProps>`

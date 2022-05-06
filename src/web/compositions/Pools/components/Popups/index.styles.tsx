@@ -1,5 +1,5 @@
 import { Paper } from '@material-ui/core'
-import { COLORS, FONT_SIZES } from '@variables/variables'
+import { COLORS, FONT_SIZES, UCOLORS } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -11,7 +11,7 @@ export const BoldHeader = styled.h2`
 `
 export const StyledInput = styled.div`
   background: ${(props) =>
-    props.disabled ? COLORS.darkBackground : '#222429'};
+    props.disabled ? COLORS.darkBackground : UCOLORS.gray5};
   border: 0.1rem solid #3a475c;
   border-radius: 1.5rem;
   color: #fbf2f2;
@@ -46,7 +46,7 @@ export const Line = styled.div`
 export const InvisibleInput = styled.input`
   width: 100%;
   background: ${(props) =>
-    props.disabled ? COLORS.disabledInput : COLORS.blockBackground};
+    props.disabled ? COLORS.disabledInput : UCOLORS.gray5};
   color: ${COLORS.primaryWhite};
   font-size: ${FONT_SIZES.xmd};
   outline: none;
@@ -62,7 +62,7 @@ export const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   padding: 2rem;
   width: 55rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
+  background: ${UCOLORS.gray6};
   border-radius: 1.6rem;
   font-size: 16px;
 `

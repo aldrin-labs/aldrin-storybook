@@ -17,6 +17,8 @@ import {
   SRinNftRewardGroup,
 } from './types'
 
+const HIDE_TIERS = ['EhMoc44x7GjGadBaFf1CM6GZzJVKSGotwxovrcwsnQek']
+
 export const useSrinStakingPools = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -39,14 +41,18 @@ export const useSrinStakingPools = () => {
         >,
       ])
 
-      console.log('tiers: ', tiers)
+      // console.log('tiers: ', tiers)
 
-      const tiersByKey = toMap(tiers, (t) => t.publicKey.toString())
+      const tiersByKey = toMap(
+        tiers.filter((t) => !HIDE_TIERS.includes(t.publicKey.toString())),
+        (t) => t.publicKey.toString()
+      )
       const nftRewardsByKey = toMap(nftRewards, (t) => t.publicKey.toString())
       const poolsWithTiers = pools.map((p) => ({
         ...p.account,
         stakingPool: p.publicKey,
         tiers: p.account.tiers
+          .filter((t) => !HIDE_TIERS.includes(t.toString()))
           .map((t) => {
             const tier = tiersByKey.get(t.toString())
             if (!tier) {
