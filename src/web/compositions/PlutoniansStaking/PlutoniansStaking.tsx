@@ -1,11 +1,13 @@
 import { PublicKey } from '@solana/web3.js'
 import { COLORS, FONT_SIZES } from '@variables/variables'
+import { ProgramAccount } from 'anchor024'
 import { BN } from 'bn.js'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 
 import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
+import { BlockContent } from '@sb/components/Block'
 import { Button } from '@sb/components/Button'
 import {
   FlexBlock,
@@ -15,9 +17,10 @@ import {
   Cell,
   Column,
 } from '@sb/components/Layout'
-import { ProgressBar } from '@sb/components/ProgressBarBlock/ProgressBar'
+import { Modal } from '@sb/components/Modal'
+import { TimeProgressBar } from '@sb/components/ProgressBarBlock/ProgressBar'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
-import { InlineText } from '@sb/components/Typography'
+import { InlineText, Text } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
@@ -43,7 +46,9 @@ import InfoIcon from '@icons/infoIcon.svg'
 import { formatNumberToUSFormat } from '../../../../../core/src/utils/PortfolioTableUtils'
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
+import { claimSrinNFTs } from '../../dexUtils/staking/actions/claimSrinNFTs'
 import { endSrinStaking } from '../../dexUtils/staking/actions/endSrinStaking'
+import { SRinNftRewardGroup } from '../../dexUtils/staking/hooks/types'
 import { useSrinNftReceipts } from '../../dexUtils/staking/hooks/useSrinNftReceipts'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
@@ -58,7 +63,6 @@ import {
   REWARD_APR_DENOMINATOR,
   EXTRA_REWARDS,
   PLD_DENOMINATOR,
-  NFT_REWARD_MIN_STAKE_AMOUNT,
   PLD_DECIMALS,
   STAKINGS,
 } from './config'
@@ -68,8 +72,11 @@ import {
   Content,
   FormContainer,
   ModeContainer,
+  ProgressWrap,
   RewardContentBlock,
   StakingContainer,
+  TextBlock,
+  UnclaimedTitle,
 } from './styles'
 import { PlutoniansBlockProps } from './types'
 
@@ -86,7 +93,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useConnection()
-  // const [isRewardsUnlocked, setIsRewardsUnlocked] = useState(true)
 
   const [selectedTierIndex, setSelectedTierIndex] = useState(0) // TODO: rewrite with real keys
 
@@ -98,13 +104,10 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const { data: nftReceipes, mutate: updateReceipts } = useSrinNftReceipts()
 
-  // console.log('nftReceipes:', nftReceipes)
-  // const rewardTokenMint = stakingPool?.rewardTokenMint.toString() || ''
   const stakeTokenMint = stakingPool?.stakeTokenMint.toString() || ''
   const rewardTokenMint = stakingPool?.rewardTokenMint.toString() || ''
 
   const rewardTokenName = getTokenNameByMintAddress(rewardTokenMint)
-  // const rewardTokenName = getTokenNameByMintAddress(rewardTokenMint)
   const stakeTokenName = getTokenNameByMintAddress(stakeTokenMint)
 
   const rewardPrice =
@@ -124,17 +127,19 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
 
   const selectedTier = tiers[selectedTierIndex]
-  const stakeAccountForTier = stakingAccounts?.get(
-    selectedTier?.publicKey.toString() || ''
-  )
 
-  const nftReward = selectedTier.nftRewards
+  const nftReward = selectedTier?.nftRewards
     ? selectedTier.nftRewards[0]
     : undefined
 
   const minStakeTokensForRewardBn = nftReward?.account.minStakeTokensForReward
+
   const minStakeTokensForReward = parseFloat(
     minStakeTokensForRewardBn?.toString() || '0'
+  )
+
+  const stakeAccountForTier = stakingAccounts?.get(
+    selectedTier?.publicKey.toString() || ''
   )
 
   const isStaked = !!stakeAccountForTier
@@ -150,21 +155,43 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
 
-  // useEffect(() => {
-  //   if (!selectedTokenAccount) {
-  //     const rewardsMint = stakingPool?.rewardTokenMint.toString()
-  //     const sta = tokenAccounts.find((ta) => ta.mint === rewardsMint)
-  //     setSelectedTokenAccount(sta)
-  //   }
-  // }, [tokenAccounts, stakingPool])
-
   const refreshAll = () =>
-    Promise.all([updatePools(), updateStakeAccounts(), refreshTokenAccounts()])
+    Promise.all([
+      updatePools(),
+      updateStakeAccounts(),
+      refreshTokenAccounts(),
+      updateReceipts(),
+    ])
+
+  const reward = useMemo(() => {
+    if (nftReceipes && nftReceipes?.length) {
+      const receipt = nftReceipes[0]
+      const allRewards =
+        stakingPool?.tiers
+          .map((t) => t.nftRewards)
+          .flat()
+          .filter((t): t is ProgramAccount<SRinNftRewardGroup> => !!t) || []
+
+      const rewardForReceipt = allRewards.find((r) =>
+        r.publicKey.equals(receipt.account.nftReward)
+      )
+
+      return rewardForReceipt
+    }
+    return undefined
+  }, [nftReceipes, stakingPool])
+
+  const unclaimedNftCount = reward
+    ? reward.account.nfts.reduce((acc, nft) => nft.quantity + acc, 0)
+    : 0
 
   const unstake = async () => {
     setLoading(true)
-    if (!stakingPool) {
+    if (!stakingPool || !selectedTier || !selectedTier.nftRewards) {
       throw new Error('No stakingPool!')
+    }
+    if (!stakeAccountForTier) {
+      throw new Error('No stakingAccount!')
     }
     try {
       const result = await endSrinStaking({
@@ -174,6 +201,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
         stakingTier: selectedTier.publicKey,
         nftTierReward: selectedTier.nftRewards[0].publicKey,
         stakingPool,
+        stakedAmount: stakeAccountForTier.account.amount,
       })
 
       await refreshAll()
@@ -184,21 +212,71 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     }
   }
 
+  const depositAmount = new BN(
+    (
+      parseFloat(amount || '0') *
+      10 ** (selectedTokenAccount?.decimals || 0)
+    ).toFixed(0)
+  )
+
+  const notifyNoData = () => {
+    notify({
+      message: 'No necessary data',
+    })
+  }
+
+  const claimNft = async () => {
+    if (!nftReceipes) {
+      notifyNoData()
+      return
+    }
+    const receipt = nftReceipes[0]
+
+    if (!reward || !stakingPool || !receipt) {
+      notifyNoData()
+      return
+    }
+
+    try {
+      setLoading(true)
+      await claimSrinNFTs({
+        wallet,
+        connection,
+        userNftReceipt: receipt.publicKey,
+        stakingPool: stakingPool.stakingPool,
+        nftRewardGroup: reward,
+      })
+    } catch (e) {
+      notify({
+        message: 'Something went wrong. Please try again later',
+      })
+    } finally {
+      await refreshAll()
+      setLoading(false)
+    }
+  }
+
   const stake = async () => {
     if (!selectedTokenAccount) {
-      throw new Error('No tokens for stake!')
+      notify({
+        message: 'No tokens for stake!',
+      })
+      return
     }
     if (!stakingPool) {
-      throw new Error('No stakingPool!')
+      notify({
+        message: 'No staking pool!',
+      })
+      return
     }
 
     if (!selectedTier) {
-      throw new Error('No tier selected!')
+      notify({
+        message: 'Please select tier.',
+      })
+      return
     }
 
-    const depositAmount = new BN(
-      (parseFloat(amount) * 10 ** selectedTokenAccount.decimals).toFixed(0)
-    )
     try {
       setLoading(true)
 
@@ -282,33 +360,13 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
               const currentTierLockDuration =
                 tier?.account.lockDuration.seconds || ONE
 
-              const unlockTime =
-                stakingAccount?.account.depositedAt
-                  .add(currentTierLockDuration)
-                  .toNumber() || 0
-
-              const timeLeftUntillUnlock = Math.max(
-                0,
-                unlockTime - Date.now() / 1000
-              )
-
-              const estimateTimeForTiar = estimateTime(timeLeftUntillUnlock)
-
-              const currentTierTimePassed =
-                Date.now() / 1000 -
-                (stakingAccount?.account.depositedAt.toNumber() || 0)
-
-              const currentTierTimeProgress =
-                currentTierTimePassed / currentTierLockDuration.toNumber()
-
               const stakedAmount =
-                stakingAccount?.account.amount.toNumber() /
+                (stakingAccount?.account.amount.toNumber() || 0) /
                   10 ** PLD_DECIMALS || '--'
 
               return (
                 <ModeContainer
                   $bg={isStaked ? null : REWARDS_BG[idx]}
-                  // eslint-disable-next-line react/no-array-index-key
                   key={`tier_${tier.publicKey.toString()}`}
                   checked={selectedTierIndex === idx}
                   onClick={() => setSelectedTierIndex(idx)}
@@ -354,24 +412,15 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                     </AprWrap>
                   </FlexBlock>
                   {stakingAccount ? (
-                    <ProgressBar
+                    <TimeProgressBar
                       background={COLORS.newBlack}
-                      width={`${Math.min(1, currentTierTimeProgress) * 100}%`}
+                      duration={currentTierLockDuration.toNumber()}
+                      startTime={
+                        stakingAccount?.account.depositedAt.toNumber() || 0
+                      }
                       padding="0.5em"
-                    >
-                      {isRewardsUnlocked ? (
-                        'Unlocked!'
-                      ) : (
-                        <>
-                          {estimateTimeForTiar.days &&
-                            `${estimateTimeForTiar.days}d `}
-                          {estimateTimeForTiar.hours &&
-                            `${estimateTimeForTiar.hours}h `}
-                          {estimateTimeForTiar.minutes &&
-                            `${estimateTimeForTiar.minutes}m `}
-                        </>
-                      )}
-                    </ProgressBar>
+                      finishedText="Unlocked!"
+                    />
                   ) : (
                     <InlineText size="sm" weight={600}>
                       {EXTRA_REWARDS[idx]}
@@ -386,31 +435,32 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
             <AdaptiveStakingBlock>
               <FormContainer direction="column" justifyContent="center">
                 {isStaked ? (
-                  <ProgressBar width={`${Math.min(timeProgresss, 1) * 100}%`}>
-                    {isRewardsUnlocked ? (
-                      'Unlocked!'
-                    ) : (
-                      <>
-                        {estimate.days ? `${estimate.days}d ` : ''}
-                        {estimate.hours ? `${estimate.hours}h ` : ''}
-                        {estimate.minutes ? `${estimate.minutes}m ` : ''}
-                        <InlineText weight={400}> Left to unlock</InlineText>
-                      </>
-                    )}
-                  </ProgressBar>
+                  <ProgressWrap>
+                    <TimeProgressBar
+                      duration={lockDuration.toNumber()}
+                      startTime={
+                        stakeAccountForTier?.account.depositedAt.toNumber() || 0
+                      }
+                      finishedText="Unlocked!"
+                    />
+                  </ProgressWrap>
                 ) : (
-                  <ContentBlock
-                    style={{ alignItems: isStaked ? 'flex-start' : 'center' }}
-                  >
-                    {minStakeTokensForReward && (
-                      <InlineText size="sm">
-                        You have to stake at least{' '}
-                        {formatNumberToUSFormat(minStakeTokensForReward)}
-                        {stakeTokenName} to be eligible for Aldrin Skin NFT
-                        drop.
-                      </InlineText>
-                    )}
-                  </ContentBlock>
+                  <>
+                    <ContentBlock
+                      style={{ alignItems: isStaked ? 'flex-start' : 'center' }}
+                    >
+                      {minStakeTokensForReward ? (
+                        <InlineText size="sm">
+                          You have to stake at least{' '}
+                          {formatNumberToUSFormat(minStakeTokensForReward)}
+                          {stakeTokenName} to be eligible for Aldrin Skin NFT
+                          drop.
+                        </InlineText>
+                      ) : (
+                        <InlineText size="sm">No NFTs available</InlineText>
+                      )}
+                    </ContentBlock>
+                  </>
                 )}
 
                 {!isStaked ? (
@@ -462,8 +512,9 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                             align="center"
                             width="xl"
                           >
-                            {parseFloat(amount) >
-                            NFT_REWARD_MIN_STAKE_AMOUNT ? (
+                            {!!minStakeTokensForReward &&
+                            minStakeTokensForRewardBn &&
+                            depositAmount.gte(minStakeTokensForRewardBn) ? (
                               <>
                                 <InlineText
                                   color="newGreen"
@@ -478,7 +529,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                               </>
                             ) : (
                               <Column>
-                                {minStakeTokensForReward && (
+                                {minStakeTokensForReward ? (
                                   <>
                                     <InlineText
                                       color="newGreen"
@@ -493,6 +544,16 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                     </InlineText>
                                     <InlineText size="sm">
                                       to get {EXTRA_REWARDS[selectedTierIndex]}
+                                    </InlineText>
+                                  </>
+                                ) : (
+                                  <>
+                                    <InlineText
+                                      color="newGreen"
+                                      size="lg"
+                                      weight={700}
+                                    >
+                                      No NFTs for that tier
                                     </InlineText>
                                   </>
                                 )}
@@ -642,6 +703,21 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
             </AdaptiveStakingBlock>
           </StakingContainer>
         </FlexBlock>
+        {!!reward && (
+          <Modal open onClose={() => {}} backdrop="dark">
+            <BlockContent>
+              <UnclaimedTitle>
+                <Text>You have unclaimed rewards.</Text>
+              </UnclaimedTitle>
+              <TextBlock>
+                <Text>{unclaimedNftCount} NFTs could be claimed.</Text>
+              </TextBlock>
+              <Button minWidth="100%" $loading={loading} onClick={claimNft}>
+                Claim NFT
+              </Button>
+            </BlockContent>
+          </Modal>
+        )}
       </Content>
     </Page>
   )

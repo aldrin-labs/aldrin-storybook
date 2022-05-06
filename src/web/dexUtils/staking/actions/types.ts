@@ -42,6 +42,7 @@ export interface EndSrinStakingInstructionParams {
   stakeVault: PublicKey
   conversion: PublicKey
   stakeToRewardConversionPaths: PublicKey[]
+  createNftReceipt: boolean
 }
 
 export interface EndSrinStakingParams {
@@ -51,6 +52,7 @@ export interface EndSrinStakingParams {
   stakingTier: PublicKey
   nftTierReward: PublicKey
   userTokens: TokenInfo[]
+  stakedAmount: BN
 }
 
 export interface ClaimNftParams {
@@ -58,6 +60,5 @@ export interface ClaimNftParams {
   connection: Connection
   userNftReceipt: PublicKey
   stakingPool: PublicKey
-  nftReward: PublicKey
-  nftTier: ProgramAccount<SRinNftRewardGroup>[]
+  nftRewardGroup: ProgramAccount<SRinNftRewardGroup>
 }

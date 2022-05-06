@@ -1,17 +1,21 @@
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import {
+  Keypair,
   PublicKey,
+  Signer,
   SystemProgram,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
 
 import { walletAdapterToWallet } from '../../common'
+import { TransactionAndSigner } from '../../common/types'
 import {
   PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
-import { signAndSendSingleTransaction } from '../../transactions'
+import { signAndSendTransactions } from '../../transactions'
+import { claimSrinNFTsInstructions } from './claimSrinNFTs'
 import { EndSrinStakingInstructionParams, EndSrinStakingParams } from './types'
 import { getStakingAccount } from './utils'
 
@@ -31,6 +35,7 @@ export const endSrinStakingInstructions = async (
     nftReward,
     conversion,
     stakeToRewardConversionPaths,
+    createNftReceipt,
   } = params
   const w = walletAdapterToWallet(wallet)
 
@@ -42,28 +47,53 @@ export const endSrinStakingInstructions = async (
 
   const [userStakingAccount] = await getStakingAccount(w.publicKey, stakingTier)
 
-  return program.instruction.withdraw({
-    accounts: {
-      user: w.publicKey,
-      userStakingAccount,
-      userRewardWallet,
-      userStakeWallet,
-      stakingPool,
-      poolSigner,
-      rewardVault,
-      stakeVault,
-      nftReward,
-      conversion,
-      tier: stakingTier,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      systemProgram: SystemProgram.programId,
-    },
-    remainingAccounts: [...stakeToRewardConversionPaths].map((pubkey) => ({
-      pubkey,
-      isWritable: false,
+  const result: {
+    instructions: TransactionInstruction[]
+    signers: Signer[]
+    userNftReceipt?: PublicKey
+  } = { instructions: [], signers: [] }
+
+  const remainingAccounts = [...stakeToRewardConversionPaths].map((pubkey) => ({
+    pubkey,
+    isWritable: false,
+    isSigner: false,
+  }))
+
+  if (createNftReceipt) {
+    const kp = Keypair.generate()
+    result.instructions.push(
+      await program.account.userNftReceipt.createInstruction(kp)
+    )
+    result.signers.push(kp)
+    remainingAccounts.push({
+      pubkey: kp.publicKey,
+      isWritable: true,
       isSigner: false,
-    })),
-  }) as TransactionInstruction
+    })
+    result.userNftReceipt = kp.publicKey
+  }
+  result.instructions.push(
+    program.instruction.withdraw({
+      accounts: {
+        user: w.publicKey,
+        userStakingAccount,
+        userRewardWallet,
+        userStakeWallet,
+        stakingPool,
+        poolSigner,
+        rewardVault,
+        stakeVault,
+        nftReward,
+        conversion,
+        tier: stakingTier,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      },
+      remainingAccounts,
+    }) as TransactionInstruction
+  )
+
+  return result
 }
 
 export const endSrinStaking = async (params: EndSrinStakingParams) => {
@@ -76,12 +106,15 @@ export const endSrinStaking = async (params: EndSrinStakingParams) => {
       rewardVault,
       stakeTokenMint,
       rewardTokenMint,
+      tiers,
+      ...stakingPoolRest
     },
     wallet,
     stakingTier,
     connection,
     userTokens,
     nftTierReward,
+    stakedAmount,
   } = params
 
   if (!stakeToRewardConversionPath) {
@@ -106,6 +139,14 @@ export const endSrinStaking = async (params: EndSrinStakingParams) => {
     throw new Error('No user reward wallet for tier!')
   }
 
+  const tier = tiers.find((t) => t.publicKey.equals(stakingTier))
+  const rewards = tier?.nftRewards ? tier?.nftRewards[0] : undefined
+  const minStakeAmount = rewards?.account.minStakeTokensForReward
+
+  const createNftReceipt = minStakeAmount
+    ? stakedAmount.gte(minStakeAmount)
+    : false
+
   const instructionParams: EndSrinStakingInstructionParams = {
     wallet,
     connection,
@@ -118,16 +159,38 @@ export const endSrinStaking = async (params: EndSrinStakingParams) => {
     conversion: stakeToRewardConversionPath.publicKey,
     userStakeWallet: new PublicKey(userStakeWallet),
     userRewardWallet: new PublicKey(userRewardWallet),
+    createNftReceipt,
     stakeToRewardConversionPaths: stakeToRewardConversionPath.account.vaults
       .map((v) => [v.vault1, v.vault2])
       .flat(),
   }
 
-  const instruction = await endSrinStakingInstructions(instructionParams)
-  const transaction = new Transaction().add(instruction)
+  const result = await endSrinStakingInstructions(instructionParams)
 
-  return signAndSendSingleTransaction({
-    transaction,
+  const transaction = new Transaction().add(...result.instructions)
+
+  const transactionsAndSigners: TransactionAndSigner[] = [
+    {
+      transaction,
+      signers: result.signers,
+    },
+  ]
+  if (result.userNftReceipt && rewards && tier) {
+    const claimResult = await claimSrinNFTsInstructions({
+      wallet,
+      connection,
+      userNftReceipt: result.userNftReceipt,
+      stakingPool,
+      nftRewardGroup: rewards,
+    })
+
+    transactionsAndSigners.push({
+      transaction: new Transaction().add(...claimResult),
+    })
+  }
+
+  return signAndSendTransactions({
+    transactionsAndSigners,
     wallet: params.wallet,
     connection: params.connection,
   })
