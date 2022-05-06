@@ -10,12 +10,12 @@ import { validateDecimal, validateNatural, validateRegexp } from './utils'
 export const INPUT_FORMATTERS = {
   NOP: (e: string) => e,
 
-  DECIMAL: (v: string, prevValue: string) => {
-    const value = v ? v.replace(',', '.') : v
+  DECIMAL: (v: string | number, prevValue: string | number) => {
+    const value = v ? `${v}`.replaceAll(',', '.') : `${v}`
     if (validateDecimal(value) || v === '') {
       return value
     }
-    return prevValue
+    return `${prevValue}`
   },
   NATURAL: (v: string, prevValue: string) => {
     if (validateNatural(v) || v === '') {
