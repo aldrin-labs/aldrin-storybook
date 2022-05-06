@@ -36,7 +36,6 @@ export const useSrinStakingAccounts = () => {
       },
     ]) as Promise<any> as Promise<ProgramAccount<SRinUserAccount>[]>)
 
-    console.log('saccounts: ', accounts)
     return toMap(accounts, (acc) => acc.account.stakingTier.toString())
   }
 

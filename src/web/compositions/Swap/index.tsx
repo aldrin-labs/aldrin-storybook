@@ -52,6 +52,8 @@ import ArrowRightIcon from '@icons/arrowRight.svg'
 import ReverseArrows from '@icons/reverseArrows.svg'
 import Arrows from '@icons/switchArrows.svg'
 
+import { AmountInput } from '../../components/AmountInput'
+import { INPUT_FORMATTERS } from '../../components/Input'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
@@ -453,13 +455,17 @@ const SwapPage = ({
                         setInputAmount(v)
                         return
                       }
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
 
                       if (
-                        numberWithOneDotRegexp.test(v) &&
-                        getNumberOfIntegersFromNumber(v) <= 8 &&
-                        getNumberOfDecimalsFromNumber(v) <= 8
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
                       ) {
-                        setInputAmount(v)
+                        setInputAmount(parsedValue)
                       }
                     }}
                     roundSides={['top-left']}

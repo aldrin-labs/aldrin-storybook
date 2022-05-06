@@ -108,7 +108,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
           </ButtonsWithAmount>
         </ButtonsBlock>
       }
-      formatter={INPUT_FORMATTERS.NOP}
+      formatter={INPUT_FORMATTERS.DECIMAL}
     />
   )
 }

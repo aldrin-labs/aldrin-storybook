@@ -75,11 +75,8 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
             label="Unstake"
             value={formatNumberWithSpaces(form.values.amount)}
             onChange={async (v) => {
-              console.log({ v })
               const value = limitDecimalsCustom(v)
-              console.log({ value })
               const valueForState = formatNumbersForState(value)
-              console.log({ valueForState })
               await form.setFieldValue('amount', valueForState)
               form.validateForm()
             }}

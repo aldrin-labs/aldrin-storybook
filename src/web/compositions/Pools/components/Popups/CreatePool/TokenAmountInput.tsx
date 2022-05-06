@@ -67,7 +67,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
           <TokenIconWithName mint={mint} />
         </InputAppendContainer>
       }
-      formatter={INPUT_FORMATTERS.NOP}
+      formatter={INPUT_FORMATTERS.DECIMAL}
       validate={(v) => validateNumber(v, available)}
     />
   )

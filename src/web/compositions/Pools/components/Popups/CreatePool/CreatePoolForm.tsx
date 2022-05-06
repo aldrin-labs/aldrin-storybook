@@ -676,7 +676,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     onChange={onBaseAmountChange}
                   />
                 </Centered>
-
                 {form.errors.firstDeposit?.baseTokenAmount &&
                   form.touched.firstDeposit?.baseTokenAmount && (
                     <ErrorText color="error">
