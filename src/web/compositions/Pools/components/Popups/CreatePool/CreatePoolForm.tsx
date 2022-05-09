@@ -150,6 +150,11 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
     [userTokens]
   )
 
+  const setTransactionError = (err: POOL_ERRORS) => {
+    setError(err)
+    setProcessingStatus('error')
+  }
+
   const [initialValues] = useState<CreatePoolFormType>({
     price: '',
     baseToken: findBaseToken(tokens),
@@ -187,6 +192,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         throw new Error('No quote token selected!')
       }
       setProcessing(true)
+      setError(undefined)
       setProcessingStatus('processing')
       setProcessingStep(0)
 
@@ -270,7 +276,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
         if (createAccountsTxId !== 'success') {
-          setError(POOL_ERRORS.ACCOUNTS_CREATION_FAILED)
+          setTransactionError(POOL_ERRORS.ACCOUNTS_CREATION_FAILED)
           return
         }
 
@@ -281,7 +287,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (setAuthoritiesTxId !== 'success') {
-          setError(POOL_ERRORS.SETTING_AUTHORITIES_FAILED)
+          setTransactionError(POOL_ERRORS.SETTING_AUTHORITIES_FAILED)
           return
         }
         console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
@@ -293,7 +299,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (initPoolTxId !== 'success') {
-          setError(POOL_ERRORS.POOL_CREATION_FAILED)
+          setTransactionError(POOL_ERRORS.POOL_CREATION_FAILED)
           return
         }
         console.log('initPoolTxId: ', initPoolTxId)
@@ -305,7 +311,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (firstDepositTxId !== 'success') {
-          setError(POOL_ERRORS.DEPOSIT_FAILED)
+          setTransactionError(POOL_ERRORS.DEPOSIT_FAILED)
           return
         }
 
@@ -319,7 +325,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             connection,
           })
           if (farmingTxId !== 'success') {
-            setError(POOL_ERRORS.FARMING_CREATION_FAILED)
+            console.log('farming failed:', farmingTxId)
+            setTransactionError(POOL_ERRORS.FARMING_CREATION_FAILED)
             return
           }
           await sleep(1000)

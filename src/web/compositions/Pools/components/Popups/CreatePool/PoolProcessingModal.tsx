@@ -32,9 +32,9 @@ const steps = [
 ]
 
 export enum POOL_ERRORS {
-  ACCOUNTS_CREATION_FAILED = 'Accounts creation failed. Please, try again later',
-  SETTING_AUTHORITIES_FAILED = 'Setting authorities failed. Please, try again later',
-  POOL_CREATION_FAILED = 'Pool creation failed. Please, try again later',
+  ACCOUNTS_CREATION_FAILED = 'Accounts creation failed. Please, try again.',
+  SETTING_AUTHORITIES_FAILED = 'Setting authorities failed. Please, try again later.',
+  POOL_CREATION_FAILED = 'Pool creation failed. Please, try again later.',
   DEPOSIT_FAILED = 'Deposit failed. Please, try to deposit manually',
   FARMING_CREATION_FAILED = 'Farming creation failed. Please, try to create farming manually.',
   BACKEND_REFRESH_FAILED = 'Pools fetching failed. Try to refresh the page.',
