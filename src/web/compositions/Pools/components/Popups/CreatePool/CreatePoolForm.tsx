@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js'
 import { ApolloQueryResult } from 'apollo-client'
 import BN from 'bn.js'
 import { FormikProvider, useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useHistory } from 'react-router'
 
 import { SvgIcon } from '@sb/components'
@@ -37,7 +37,11 @@ import CrownIcon from '@icons/crownIcon.svg'
 import { PoolInfo } from '../../../index.types'
 import { FarmingForm, YES_NO } from './FarmingForm'
 import { PoolConfirmationData } from './PoolConfirmationData'
-import { PoolProcessingModal, TransactionStatus } from './PoolProcessingModal'
+import {
+  PoolProcessingModal,
+  TransactionStatus,
+  POOL_ERRORS,
+} from './PoolProcessingModal'
 import {
   Body,
   ButtonContainer,
@@ -54,7 +58,7 @@ import {
   Title,
   VestingExplanation,
 } from './styles'
-import { TokenAmountInputField, validateNumber } from './TokenAmountInput'
+import { TokenAmountInputField } from './TokenAmountInput'
 import { CreatePoolFormType, CreatePoolFormProps } from './types'
 
 const steps = [
@@ -71,23 +75,28 @@ interface EventLike {
 const checkPoolCreated = async (
   pool: PublicKey,
   refetch: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
-  retries = 20
+  retries = 16
 ): Promise<PoolInfo | null> => {
   if (retries === 0) {
     return null
   }
   const poolStr = pool.toBase58()
-  const data = await refetch()
 
-  const {
-    data: { getPoolsInfo },
-  } = data
-  const createdPool = getPoolsInfo.find((p) => p.swapToken === poolStr)
-  if (!createdPool) {
+  let retriesMade = 0
+  while (retriesMade < retries) {
+    const data = await refetch()
+
+    const {
+      data: { getPoolsInfo },
+    } = data
+    const createdPool = getPoolsInfo.find((p) => p.swapToken === poolStr)
+    if (createdPool) {
+      return createdPool
+    }
     await sleep(20_000)
-    return checkPoolCreated(pool, refetch, retries - 1)
+    retriesMade += 1
   }
-  return createdPool
+  return null
 }
 
 const USDC_MINT = ALL_TOKENS_MINTS_MAP.USDC.toString()
@@ -120,6 +129,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const [processing, setProcessing] = useState(false)
   const [processingStatus, setProcessingStatus] =
     useState<TransactionStatus>('processing')
+  const [error, setError] = useState<undefined | POOL_ERRORS>()
   const [processingStep, setProcessingStep] = useState(0)
   const [priceTouched, setPriceTouched] = useState(false)
   const stepsSize = steps.length
@@ -128,13 +138,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const connection = useConnection()
   const history = useHistory()
 
-  const tokens: Token[] = userTokens
-    .map((ut) => ({
-      mint: ut.mint,
-      account: ut.address,
-      balance: ut.amount,
-    }))
-    .sort((a, b) => a.mint.localeCompare(b.mint))
+  const tokens: Token[] = useMemo(
+    () =>
+      userTokens
+        .map((ut) => ({
+          mint: ut.mint,
+          account: ut.address,
+          balance: ut.amount,
+        }))
+        .sort((a, b) => a.mint.localeCompare(b.mint)),
+    [userTokens]
+  )
 
   const [initialValues] = useState<CreatePoolFormType>({
     price: '',
@@ -256,9 +270,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
         if (createAccountsTxId !== 'success') {
-          throw new Error('createAccountsTxId failed')
+          setError(POOL_ERRORS.ACCOUNTS_CREATION_FAILED)
+          return
         }
-        await sleep(1000)
 
         setProcessingStep(2)
         console.log('Set authorities...')
@@ -267,10 +281,10 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (setAuthoritiesTxId !== 'success') {
-          throw new Error('setAuthoritiesTxId failed')
+          setError(POOL_ERRORS.SETTING_AUTHORITIES_FAILED)
+          return
         }
         console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
-        await sleep(1000)
 
         console.log('Initialize pool...')
         setProcessingStep(3)
@@ -279,10 +293,10 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (initPoolTxId !== 'success') {
-          throw new Error('initPoolTxId failed')
+          setError(POOL_ERRORS.POOL_CREATION_FAILED)
+          return
         }
         console.log('initPoolTxId: ', initPoolTxId)
-        await sleep(1000)
 
         console.log('First deposit...')
         setProcessingStep(4)
@@ -291,9 +305,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (firstDepositTxId !== 'success') {
-          throw new Error('firstDepositTxId failed')
+          setError(POOL_ERRORS.DEPOSIT_FAILED)
+          return
         }
-        await sleep(1000)
 
         console.log('firstDepositTxId: ', firstDepositTxId)
 
@@ -305,7 +319,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             connection,
           })
           if (farmingTxId !== 'success') {
-            throw new Error('farmingTxId failed')
+            setError(POOL_ERRORS.FARMING_CREATION_FAILED)
+            return
           }
           await sleep(1000)
           console.log('farmingTxId: ', farmingTxId)
@@ -313,7 +328,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(6)
 
-        // TODO: timeout?
         const createdPool = await checkPoolCreated(pool, refetchPools)
 
         setProcessingStep(-1)
@@ -746,6 +760,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         </FormikProvider>
         {processing && (
           <PoolProcessingModal
+            error={error}
             status={processingStatus}
             step={processingStep}
             onSuccess={() => {

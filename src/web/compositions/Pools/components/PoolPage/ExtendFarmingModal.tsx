@@ -63,9 +63,11 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
     },
   })
 
-  const prolongFarming = async (values) => {
+  const prolongFarming = async (values: WithFarming) => {
     setFarmingTransactionStatus('processing')
+
     setIsProcessingFarmingPopupOpen(true)
+
     const farmingRewardAccount = userTokens.find(
       (ut) => ut.address === values.farming.token.account
     )
@@ -115,9 +117,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const form = useFormik<WithFarming>({
     validateOnMount: true,
     initialValues,
-    onSubmit: async (values) => {
-      prolongFarming(values)
-    },
+    onSubmit: prolongFarming,
     validate: async (values) => {
       if (
         values.farming.vestingEnabled &&
