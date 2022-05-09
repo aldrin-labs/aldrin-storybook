@@ -77,15 +77,19 @@ const CONFIRMATION_STATUSES: Commitment[] = [
   'finalized',
 ]
 
+const noIncrementRequestsCount = 10
+
 const pollTransactionStatus = (
   txId: string,
   connection: Connection,
   commitment: Commitment,
   pollInterval: number,
-  timeout: number
+  timeout: number,
+  sequenceIndex = 0
 ): [Promise<SignatureStatus>, (reason?: any) => void] => {
   let done = false
   let timeoutId: any
+  let idx = sequenceIndex
 
   const buildPromise = async (): Promise<SignatureStatus> => {
     timeoutId = setTimeout(() => {
@@ -94,8 +98,13 @@ const pollTransactionStatus = (
 
     try {
       while (!done) {
+        idx += 1
+        const timeoutInterval =
+          idx <= noIncrementRequestsCount
+            ? 1000
+            : (idx - noIncrementRequestsCount) * pollInterval
         // eslint-disable-next-line no-await-in-loop
-        await sleep(pollInterval)
+        await sleep(timeoutInterval)
         // eslint-disable-next-line no-await-in-loop
         const sigResult = await connection.getSignatureStatus(txId)
 
@@ -192,7 +201,8 @@ export const waitTransactionConfirmation = async (
           connection,
           commitment,
           pollInterval * 2,
-          timeout
+          timeout,
+          noIncrementRequestsCount
         )
         await polling2
       } catch (e) {
