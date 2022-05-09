@@ -75,7 +75,7 @@ interface EventLike {
 const checkPoolCreated = async (
   pool: PublicKey,
   refetch: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
-  retries = 16
+  retries = 15
 ): Promise<PoolInfo | null> => {
   if (retries === 0) {
     return null
