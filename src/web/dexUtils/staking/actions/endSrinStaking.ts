@@ -1,4 +1,8 @@
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  Token,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token'
 import {
   Keypair,
   PublicKey,
@@ -107,7 +111,6 @@ export const endSrinStaking = async (params: EndSrinStakingParams) => {
       stakeTokenMint,
       rewardTokenMint,
       tiers,
-      ...stakingPoolRest
     },
     wallet,
     stakingTier,
@@ -117,26 +120,66 @@ export const endSrinStaking = async (params: EndSrinStakingParams) => {
     stakedAmount,
   } = params
 
+  const { publicKey } = wallet
+
+  if (!publicKey) {
+    throw new Error('No public key')
+  }
+
   if (!stakeToRewardConversionPath) {
     throw new Error('No conversion path for tier!')
   }
 
+  const transaction = new Transaction()
+
   const stakeMint = stakeTokenMint.toString()
-  const userStakeWallet = userTokens.find(
-    (ut) => ut.mint === stakeMint
-  )?.address
+  let userStakeWallet = userTokens.find((ut) => ut.mint === stakeMint)?.address
 
   if (!userStakeWallet) {
-    throw new Error('No user stake wallet for tier!')
+    const stakeMintPk = new PublicKey(stakeMint)
+    const ata = await Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      TOKEN_PROGRAM_ID,
+      stakeMintPk,
+      publicKey
+    )
+    transaction.add(
+      Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        stakeMintPk,
+        ata,
+        publicKey,
+        publicKey
+      )
+    )
+    userStakeWallet = ata.toString()
   }
   const rewardMint = rewardTokenMint.toString()
 
-  const userRewardWallet = userTokens.find(
+  let userRewardWallet = userTokens.find(
     (ut) => ut.mint === rewardMint
   )?.address
 
   if (!userRewardWallet) {
-    throw new Error('No user reward wallet for tier!')
+    const rewardMintPk = new PublicKey(rewardMint)
+    const ata = await Token.getAssociatedTokenAddress(
+      ASSOCIATED_TOKEN_PROGRAM_ID,
+      TOKEN_PROGRAM_ID,
+      rewardMintPk,
+      publicKey
+    )
+    transaction.add(
+      Token.createAssociatedTokenAccountInstruction(
+        ASSOCIATED_TOKEN_PROGRAM_ID,
+        TOKEN_PROGRAM_ID,
+        rewardMintPk,
+        ata,
+        publicKey,
+        publicKey
+      )
+    )
+    userRewardWallet = ata.toString()
   }
 
   const tier = tiers.find((t) => t.publicKey.equals(stakingTier))
@@ -167,7 +210,7 @@ export const endSrinStaking = async (params: EndSrinStakingParams) => {
 
   const result = await endSrinStakingInstructions(instructionParams)
 
-  const transaction = new Transaction().add(...result.instructions)
+  transaction.add(...result.instructions)
 
   const transactionsAndSigners: TransactionAndSigner[] = [
     {
