@@ -30,7 +30,4 @@ const getUserRatioAfterSwap = ({
     : (amountTokenA + swapAmountOut) / (amountTokenB - swapAmountIn)
 }
 
-export {
-  getPoolRatioAfterSwap,
-  getUserRatioAfterSwap
-}
+export { getPoolRatioAfterSwap, getUserRatioAfterSwap }

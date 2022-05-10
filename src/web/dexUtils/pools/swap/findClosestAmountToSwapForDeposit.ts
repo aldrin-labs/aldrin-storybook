@@ -29,6 +29,11 @@ const findClosestAmountToSwapForDeposit = (
 ): ClosestAmountsToSwapResult => {
   const { poolBalances, userAmountTokenA, userAmountTokenB } = params
 
+  console.log(
+    'findClosestAmountToSwapForDeposit',
+    userAmountTokenA,
+    userAmountTokenB
+  )
   const {
     baseTokenAmount: poolAmountTokenA,
     quoteTokenAmount: poolAmountTokenB,

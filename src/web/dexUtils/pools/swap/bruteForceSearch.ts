@@ -15,7 +15,9 @@ type BruteForceSearchParams = FindClosestAmountToSwapForDepositParams | {}
 type CreateSwapOptionsParams =
   | FindClosestAmountToSwapForDepositParams
   | {
+      numberOfSteps?: number
       isSwapBaseToQuote: boolean
+      minAmount?: number
     }
 
 type CreateSwapOptionsResult = SwapOptions[]
@@ -32,8 +34,11 @@ const createSwapOptions = (
     userAmountTokenA,
     userAmountTokenB,
     isSwapBaseToQuote,
+    minAmount = 0,
+    numberOfSteps = NUMBER_OF_STEPS,
   } = params
 
+  console.log('createSwapOptions: ', userAmountTokenA, userAmountTokenB)
   const {
     baseTokenAmount: poolAmountTokenA,
     quoteTokenAmount: poolAmountTokenB,
@@ -53,13 +58,13 @@ const createSwapOptions = (
     ? userAmountTokenA
     : userAmountTokenB
 
-  const stepSize = userAmountToSwap / NUMBER_OF_STEPS
+  const stepSize = (userAmountToSwap - minAmount) / numberOfSteps
 
   // go in cycle and add it every time to create array 10000
-  const swapOptions = Array.from(Array(NUMBER_OF_STEPS).keys())
+  const swapOptions = Array.from(Array(numberOfSteps).keys())
     .map((v) => v + 1)
     .map((iteration) => {
-      const swapAmountIn = stepSize * iteration
+      const swapAmountIn = minAmount + stepSize * iteration
       const swapAmountOut = swap(swapAmountIn)
 
       const poolRatioAfterSwap = getPoolRatioAfterSwap({
@@ -93,6 +98,7 @@ const createSwapOptions = (
 const bruteForceSearch = (params: BruteForceSearchParams): SwapOptions => {
   const { pool, poolBalances, userAmountTokenA, userAmountTokenB } = params
 
+  console.log('bruteForceSearch', userAmountTokenA)
   // create array of results swapping tokenA-tokenB and tokenB-tokenA
   const swapBaseToQuoteResults = createSwapOptions({
     pool,
