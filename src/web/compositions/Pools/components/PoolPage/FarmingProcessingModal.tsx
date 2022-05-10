@@ -15,7 +15,9 @@ import { FarmingProcessingModalProps } from './types'
 export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
   props
 ) => {
-  const { onClose, open, status, prolongFarming } = props
+  const { onClose, open, status, prolongFarming, txId } = props
+
+  const isTransactionFailed = status !== 'processing' && status !== 'success'
 
   return (
     <Modal backdrop="dark" open={open} onClose={() => {}}>
@@ -43,14 +45,36 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
             </PoolProcessingContent>
           </>
         )}
-        {status === 'error' && (
+        {isTransactionFailed && (
           <>
             <FlexBlock justifyContent="space-between">
-              <Title>Farming prolongation failed...</Title>
+              {status === 'timeout' ? (
+                <div>
+                  <Title>Farming prolongation timeout.</Title>
+                  <Text>Please, try again later.</Text>
+                </div>
+              ) : (
+                <div>
+                  <Title>Farming prolongation failed.</Title>
+                  <>
+                    {!!txId && (
+                      <Text>
+                        <a
+                          target="_blank"
+                          href={`https://solscan.io/tx/${txId}`}
+                          rel="noreferrer"
+                        >
+                          View on SolScan.
+                        </a>
+                      </Text>
+                    )}
+                  </>
+                </div>
+              )}
             </FlexBlock>
             <PoolProcessingContent>
               <Text size="sm">
-                Please check your transactions or contact us via{' '}
+                Please check your transaction or contact us via{' '}
                 <a
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"

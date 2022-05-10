@@ -19,6 +19,7 @@ interface PoolProcessingModalProps {
   onError: () => void
   status: TransactionStatus
   error?: POOL_ERRORS
+  txId?: string
 }
 
 const steps = [
@@ -33,17 +34,21 @@ const steps = [
 
 export enum POOL_ERRORS {
   ACCOUNTS_CREATION_FAILED = 'Accounts creation failed. Please, try again.',
+  ACCOUNTS_CREATION_TIMEOUT = 'Accounts creation timeout. Please, try again.',
   SETTING_AUTHORITIES_FAILED = 'Setting authorities failed. Please, try again later.',
+  SETTING_AUTHORITIES_TIMEOUT = 'Setting authorities timeout. Please, try again later.',
   POOL_CREATION_FAILED = 'Pool creation failed. Please, try again later.',
+  POOL_CREATION_TIMEOUT = 'Pool creation timeout. Please, try again later.',
   DEPOSIT_FAILED = 'Deposit failed. Please, try to deposit manually',
+  DEPOSIT_TIMEOUT = 'Deposit timeout. Please, try again later',
   FARMING_CREATION_FAILED = 'Farming creation failed. Please, try to create farming manually.',
-  BACKEND_REFRESH_FAILED = 'Pools fetching failed. Try to refresh the page.',
+  FARMING_CREATION_TIMEOUT = 'Farming creation timeout. Please, try again later.',
 }
 
 export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
   props
 ) => {
-  const { step, onSuccess, onError, status, error } = props
+  const { step, onSuccess, onError, status, error, txId } = props
 
   return (
     <Modal backdrop="dark" open onClose={() => {}}>
@@ -66,7 +71,16 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
           )}
           {status === 'error' && (
             <>
-              <Text>{error || 'Pool creation failed.'}</Text>
+              <Text>
+                {error || 'Pool creation failed.'}
+                <>
+                  {txId && (
+                    <a target="blank" href={`https://solscan.io/tx/${txId}`}>
+                      View on SolScan.
+                    </a>
+                  )}
+                </>
+              </Text>
               <Text size="sm">
                 If you have any questions, contact us via{' '}
                 <a

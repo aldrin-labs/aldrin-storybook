@@ -22,11 +22,7 @@ import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
 import { FarmingProcessingModal } from './FarmingProcessingModal'
-import {
-  ExtendFarmingModalProps,
-  FarmingModalProps,
-  TransactionStatus,
-} from './types'
+import { ExtendFarmingModalProps, FarmingModalProps } from './types'
 
 const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const { userTokens, onClose, onExtend, title, pool } = props
@@ -37,8 +33,11 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
 
   const [isProcessingFarmingPopupOpen, setIsProcessingFarmingPopupOpen] =
     useState(false)
-  const [farmingTransactionStatus, setFarmingTransactionStatus] =
-    useState<TransactionStatus | null>(null)
+  const [farmingTransactionStatus, setFarmingTransactionStatus] = useState<
+    string | null
+  >(null)
+  const [farmingTxId, setFarmingTxId] = useState<string | undefined>()
+
   const tokens: Token[] = userTokens
     .filter(
       (ut) =>
@@ -82,7 +81,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       if (!values.farming.token.account) {
         throw new Error('No token account selected')
       }
-      const result = await initializeFaming({
+      const [txId, result] = await initializeFaming({
         farmingTokenMint: new PublicKey(values.farming.token.mint),
         farmingTokenAccount: new PublicKey(values.farming.token.account),
         tokenAmount: new BN(
@@ -103,11 +102,13 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
       })
 
+      setFarmingTxId(txId)
+
       if (result === 'success') {
         onExtend()
       }
 
-      setFarmingTransactionStatus(result === 'success' ? 'success' : 'error')
+      setFarmingTransactionStatus(result)
     } catch (e) {
       console.warn('Unable to create farming: ', e)
       setFarmingTransactionStatus('error')
@@ -174,8 +175,10 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           prolongFarming={async () => prolongFarming({ farming })}
           status={farmingTransactionStatus}
           open={isProcessingFarmingPopupOpen}
+          txId={farmingTxId}
           onClose={() => {
             setFarmingTransactionStatus(null)
+            setFarmingTxId(undefined)
             setIsProcessingFarmingPopupOpen(false)
           }}
         />

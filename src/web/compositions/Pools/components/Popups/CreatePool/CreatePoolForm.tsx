@@ -24,7 +24,8 @@ import {
 import { notify } from '@sb/dexUtils/notifications'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
-import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
+import { sendSignedSignleTransactionRaw } from '@sb/dexUtils/transactions'
+import { SendSignedTransactionResult } from '@sb/dexUtils/types'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -130,6 +131,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const [processingStatus, setProcessingStatus] =
     useState<TransactionStatus>('processing')
   const [error, setError] = useState<undefined | POOL_ERRORS>()
+  const [failedTxId, setFailedTxId] = useState<undefined | string>()
   const [processingStep, setProcessingStep] = useState(0)
   const [priceTouched, setPriceTouched] = useState(false)
   const stepsSize = steps.length
@@ -150,9 +152,16 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
     [userTokens]
   )
 
-  const setTransactionError = (err: POOL_ERRORS) => {
+  const setTransactionError = (
+    err: POOL_ERRORS,
+    txStatus: SendSignedTransactionResult,
+    txId?: string
+  ) => {
     setError(err)
     setProcessingStatus('error')
+    if (txStatus !== 'timeout') {
+      setFailedTxId(txId)
+    }
   }
 
   const [initialValues] = useState<CreatePoolFormType>({
@@ -270,67 +279,102 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(1)
         console.log('Create accounts...')
-        const createAccountsTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.createAccounts,
-          connection,
-        })
-        console.log('createAccountsTxId: ', createAccountsTxId)
-        if (createAccountsTxId !== 'success') {
-          setTransactionError(POOL_ERRORS.ACCOUNTS_CREATION_FAILED)
+        const [createAccountsTxId, createAccountsStatus] =
+          await sendSignedSignleTransactionRaw({
+            transaction: generatedTransactions.createAccounts,
+            connection,
+          })
+        console.log('createAccountsTxId: ', createAccountsStatus)
+        if (createAccountsStatus !== 'success') {
+          setTransactionError(
+            createAccountsStatus === 'timeout'
+              ? POOL_ERRORS.ACCOUNTS_CREATION_TIMEOUT
+              : POOL_ERRORS.ACCOUNTS_CREATION_FAILED,
+            createAccountsStatus,
+            createAccountsTxId
+          )
           return
         }
 
         setProcessingStep(2)
         console.log('Set authorities...')
-        const setAuthoritiesTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.setAuthorities,
-          connection,
-        })
-        if (setAuthoritiesTxId !== 'success') {
-          setTransactionError(POOL_ERRORS.SETTING_AUTHORITIES_FAILED)
+        const [setAuthoritiesTxId, setAuthoritiesStatus] =
+          await sendSignedSignleTransactionRaw({
+            transaction: generatedTransactions.setAuthorities,
+            connection,
+          })
+        if (setAuthoritiesStatus !== 'success') {
+          setTransactionError(
+            setAuthoritiesStatus === 'timeout'
+              ? POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT
+              : POOL_ERRORS.SETTING_AUTHORITIES_FAILED,
+            setAuthoritiesStatus,
+            setAuthoritiesTxId
+          )
           return
         }
-        console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
+        console.log('setAuthoritiesTxId: ', setAuthoritiesStatus)
 
         console.log('Initialize pool...')
         setProcessingStep(3)
-        const initPoolTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.createPool,
-          connection,
-        })
-        if (initPoolTxId !== 'success') {
-          setTransactionError(POOL_ERRORS.POOL_CREATION_FAILED)
+        const [initPoolTxId, initPoolStatus] =
+          await sendSignedSignleTransactionRaw({
+            transaction: generatedTransactions.createPool,
+            connection,
+          })
+        if (initPoolStatus !== 'success') {
+          setTransactionError(
+            initPoolStatus === 'timeout'
+              ? POOL_ERRORS.POOL_CREATION_TIMEOUT
+              : POOL_ERRORS.POOL_CREATION_FAILED,
+            initPoolStatus,
+            initPoolTxId
+          )
           return
         }
-        console.log('initPoolTxId: ', initPoolTxId)
+        console.log('initPoolTxId: ', initPoolStatus)
 
         console.log('First deposit...')
         setProcessingStep(4)
-        const firstDepositTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.firstDeposit,
-          connection,
-        })
-        if (firstDepositTxId !== 'success') {
-          setTransactionError(POOL_ERRORS.DEPOSIT_FAILED)
+        const [firstDepositTxId, firstDepositStatus] =
+          await sendSignedSignleTransactionRaw({
+            transaction: generatedTransactions.firstDeposit,
+            connection,
+          })
+        if (firstDepositStatus !== 'success') {
+          setTransactionError(
+            firstDepositStatus === 'timeout'
+              ? POOL_ERRORS.DEPOSIT_TIMEOUT
+              : POOL_ERRORS.DEPOSIT_FAILED,
+            firstDepositStatus,
+            firstDepositTxId
+          )
           return
         }
 
-        console.log('firstDepositTxId: ', firstDepositTxId)
+        console.log('firstDepositTxId: ', firstDepositStatus)
 
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
           setProcessingStep(5)
-          const farmingTxId = await sendSignedSignleTransaction({
-            transaction: generatedTransactions.farming,
-            connection,
-          })
-          if (farmingTxId !== 'success') {
-            console.log('farming failed:', farmingTxId)
-            setTransactionError(POOL_ERRORS.FARMING_CREATION_FAILED)
+          const [farmingTxId, farmingStatus] =
+            await sendSignedSignleTransactionRaw({
+              transaction: generatedTransactions.farming,
+              connection,
+            })
+          if (farmingStatus !== 'success') {
+            setTransactionError(
+              farmingStatus === 'timeout'
+                ? POOL_ERRORS.FARMING_CREATION_TIMEOUT
+                : POOL_ERRORS.FARMING_CREATION_FAILED,
+
+              farmingStatus,
+              farmingTxId
+            )
             return
           }
           await sleep(1000)
-          console.log('farmingTxId: ', farmingTxId)
+          console.log('farmingTxId: ', farmingStatus)
         }
 
         setProcessingStep(6)
@@ -770,6 +814,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             error={error}
             status={processingStatus}
             step={processingStep}
+            txId={failedTxId}
             onSuccess={() => {
               setProcessing(false)
               onClose()
