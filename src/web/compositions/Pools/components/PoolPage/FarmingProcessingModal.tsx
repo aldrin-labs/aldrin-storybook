@@ -1,7 +1,9 @@
+import React from 'react'
+
 import { FlexBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
 import { Text } from '@sb/components/Typography'
-import React from 'react'
+
 import {
   PoolProcessingBlock,
   PoolProcessingButton,
@@ -13,10 +15,10 @@ import { FarmingProcessingModalProps } from './types'
 export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
   props
 ) => {
-  const { onClose, status } = props
+  const { onClose, open, status, prolongFarming } = props
 
   return (
-    <Modal backdrop="dark" open onClose={() => {}}>
+    <Modal backdrop="dark" open={open} onClose={() => {}}>
       <PoolProcessingBlock>
         {status === 'processing' && (
           <>
@@ -63,12 +65,20 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
         )}
         <PoolProcessingContent>
           <PoolProcessingButton
+            $width="rg"
+            $loading={status === 'processing'}
+            disabled={status === 'processing'}
+            onClick={() => prolongFarming()}
+          >
+            Try again
+          </PoolProcessingButton>
+          <PoolProcessingButton
+            $width="rg"
             $loading={status === 'processing'}
             disabled={status === 'processing'}
             onClick={onClose}
           >
             OK
-            {status === 'error' && ' :('}
           </PoolProcessingButton>
         </PoolProcessingContent>
       </PoolProcessingBlock>
