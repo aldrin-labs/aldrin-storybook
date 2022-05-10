@@ -1,41 +1,41 @@
+import { FONT_SIZES } from '@variables/variables'
 import React from 'react'
 
-import { BlockTitle } from '@sb/components/Block'
+import { BlockTitle, BlockContent } from '@sb/components/Block'
 import { FlexBlock } from '@sb/components/Layout'
+import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { StakingBlock } from '../../styles'
-import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
-import PldIcon from './assets/stake-pld.png'
-import PuIcon from './assets/stake-pu238.png'
-import RpcIcon from './assets/stake-rpc.png'
+import { DAY } from '@core/utils/dateUtils'
+
+import { usePlutoniansStaking } from '../../../../dexUtils/staking/hooks'
 import {
-  LogoWrap,
-  StakePoolButtonContainer,
-  StakePoolLink,
-  StakePoolText,
-  StakePoolWrap,
-  BlockContent,
   ContentBlock,
-  RootFlexBlock,
-} from './styles'
+  StakingBlock,
+  StretchedContent,
+  GrayLink,
+} from '../../styles'
+import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
+import Lock from './lock.svg'
+import { LogoWrap } from './styles'
 
 export const PlutoniasStakingBlock: React.FC = () => {
-  // const { data: stakingPool } = usePlutoniansStaking()
-  // const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
-  // const tiersGroup1 = tiers.slice(0, 2)
-  // const tiersGroup2 = tiers.slice(2)
+  const { data: stakingPool } = usePlutoniansStaking()
+  const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
+  const tiersGroup1 = tiers.slice(0, 2)
+  const tiersGroup2 = tiers.slice(2)
 
   return (
     <StakingBlock>
       <LogoWrap />
       <BlockContent>
-        <RootFlexBlock justifyContent="space-between">
+        <FlexBlock justifyContent="space-between">
           <BlockTitle>Plutonians</BlockTitle>
           <NumberWithLabel padding="0" value={null} label="Exclusive" />
-        </RootFlexBlock>
+        </FlexBlock>
 
-        <FlexBlock flex="1" direction="column" justifyContent="space-between">
+        {/* <FlexBlock flex="1" direction="column" justifyContent="space-between">
           <StakePoolWrap>
             <ContentBlock>
               <FlexBlock alignItems="center">
@@ -90,8 +90,8 @@ export const PlutoniasStakingBlock: React.FC = () => {
               </FlexBlock>
             </ContentBlock>
           </StakePoolWrap>
-        </FlexBlock>
-        {/* <StretchedContent>
+        </FlexBlock> */}
+        <StretchedContent>
           {tiersGroup1.map((tier) => (
             <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
               <Row justify="space-between" margin="0 0 0.7em 0">
@@ -126,10 +126,10 @@ export const PlutoniasStakingBlock: React.FC = () => {
               />
             </ContentBlock>
           ))}
-        </StretchedContent> */}
-        {/* <RowContainer>
+        </StretchedContent>
+        <RowContainer>
           <GrayLink to="/staking/plutonians">View</GrayLink>
-        </RowContainer> */}
+        </RowContainer>
       </BlockContent>
     </StakingBlock>
   )
