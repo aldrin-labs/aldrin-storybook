@@ -2,11 +2,6 @@
 import { Idl, Program, Provider } from '@project-serum/anchor'
 import { Connection, PublicKey } from '@solana/web3.js'
 import {
-  Program as Program03,
-  Provider as Provider03,
-  Idl as Idl03,
-} from 'anchor03'
-import {
   Program as Program019,
   Provider as Provider019,
   Idl as Idl019,
@@ -16,6 +11,11 @@ import {
   Provider as Provider020,
   Idl as Idl020,
 } from 'anchor020'
+import {
+  Program as Program03,
+  Provider as Provider03,
+  Idl as Idl03,
+} from 'anchor03'
 
 import MarketOrderProgramIdl from '@core/idls/marketOrder.json'
 import PlutoniansStakingProgramIdl from '@core/idls/plutonians.json'
