@@ -11,6 +11,7 @@ export const getMinimumReceivedFromOrderbook = ({
   swapAmountIn: number
   isSwapBaseToQuote: boolean
 }) => {
+  // remove fee here
   let tempSwapAmountIn = swapAmountIn
   let swapAmountOut = 0
 

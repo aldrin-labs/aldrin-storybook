@@ -20,13 +20,14 @@ type CreateSwapOptionsParams =
 
 type CreateSwapOptionsResult = SwapOptions[]
 
-const NUMBER_OF_STEPS = 100000
+const NUMBER_OF_STEPS = 100_000
 
 const createSwapOptions = (
   params: CreateSwapOptionsParams
 ): CreateSwapOptionsResult => {
   const {
     pool,
+    slippage = SLIPPAGE_PERCENTAGE,
     poolBalances,
     userAmountTokenA,
     userAmountTokenB,
@@ -44,7 +45,7 @@ const createSwapOptions = (
       isSwapBaseToQuote,
       pool,
       poolBalances,
-      slippage: SLIPPAGE_PERCENTAGE,
+      slippage,
     })
 
   // determine step size
@@ -132,4 +133,4 @@ const bruteForceSearch = (params: BruteForceSearchParams): SwapOptions => {
   return swapAmounts
 }
 
-export { bruteForceSearch }
+export { bruteForceSearch, createSwapOptions }
