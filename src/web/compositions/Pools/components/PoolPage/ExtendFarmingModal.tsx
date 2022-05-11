@@ -8,16 +8,18 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { initializeFaming } from '@sb/dexUtils/pools/actions/initializeFarming'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { initializeFarmingInstructions } from '@sb/dexUtils/pools/actions/initializeFarming'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { signTransactions } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
-import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
-import { useTokenInfos } from '../../../../dexUtils/tokenRegistry'
+import { sendSignedSignleTransactionRaw } from '../../../../dexUtils/transactions'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
@@ -63,7 +65,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   })
 
   const prolongFarming = async (values: WithFarming) => {
-    setFarmingTransactionStatus('processing')
+    setFarmingTransactionStatus('preparing')
 
     setIsProcessingFarmingPopupOpen(true)
 
@@ -81,7 +83,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       if (!values.farming.token.account) {
         throw new Error('No token account selected')
       }
-      const [txId, result] = await initializeFaming({
+      const [transaction, signers] = await initializeFarmingInstructions({
         farmingTokenMint: new PublicKey(values.farming.token.mint),
         farmingTokenAccount: new PublicKey(values.farming.token.account),
         tokenAmount: new BN(
@@ -100,6 +102,22 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         wallet,
         connection,
         programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
+      })
+
+
+      setFarmingTransactionStatus('signing')
+      const [signedTransaction] = await signTransactions({
+        transactionsAndSigners: [{ transaction, signers }],
+        connection,
+        wallet,
+      })
+
+      setFarmingTransactionStatus('sending')
+
+      const [txId, result] = await sendSignedSignleTransactionRaw({
+        transaction: signedTransaction,
+        connection,
+        wallet,
       })
 
       setFarmingTxId(txId)
