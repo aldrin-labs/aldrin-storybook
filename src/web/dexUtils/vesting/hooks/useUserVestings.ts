@@ -8,7 +8,10 @@ import { useWallet } from '../../wallet'
 import { VestingWithPk } from '../types'
 import { vestingAddress, VESTING_LAYOUT } from './utils'
 
-export const useUserVestings = (): [VestingWithPk[], RefreshFunction] => {
+export const useUserVestings = (): [
+  VestingWithPk[] | undefined,
+  RefreshFunction
+] => {
   const connection = useMultiEndpointConnection()
   const { wallet } = useWallet()
 
@@ -48,5 +51,5 @@ export const useUserVestings = (): [VestingWithPk[], RefreshFunction] => {
       refreshInterval: COMMON_REFRESH_INTERVAL,
     }
   )
-  return [data || [], mutate]
+  return [data, mutate]
 }

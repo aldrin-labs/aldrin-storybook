@@ -27,6 +27,7 @@ export const Img = styled.img`
 
 export const RewardsContent = styled(BlockContent)`
   max-width: 440px;
+  width: 80vw;
   background: ${COLORS.cardsBack};
   margin: 20px;
   border-radius: ${BORDER_RADIUS.md};
