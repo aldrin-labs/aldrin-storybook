@@ -27,7 +27,6 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
   const isProcessing = PROCESSING_STATUSES.has(status)
   const isTransactionFailed = !OK_STATUSES.has(status)
 
-  console.log('status:', status)
   return (
     <Modal backdrop="dark" open={open} onClose={() => {}}>
       <PoolProcessingBlock>
