@@ -17,7 +17,6 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
-import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
 import {
   BUY_BACK_RIN_ACCOUNT_ADDRESS,
   DAYS_TO_CHECK_BUY_BACK,
@@ -38,6 +37,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { STAKING_PROGRAM_ADDRESS } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,

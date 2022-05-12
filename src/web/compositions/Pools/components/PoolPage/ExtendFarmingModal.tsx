@@ -9,10 +9,10 @@ import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { initializeFaming } from '@sb/dexUtils/pools/actions/initializeFarming'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { getPoolsProgramAddress } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 

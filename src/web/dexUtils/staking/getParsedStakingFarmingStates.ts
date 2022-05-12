@@ -1,8 +1,8 @@
 import { Connection } from '@solana/web3.js'
 
+import { ProgramsMultiton, STAKING_PROGRAM_ADDRESS } from '@core/solana'
+
 import { FarmingState } from '../common/types'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { loadStakingFarmingStates } from './loadStakingFarmingStates'
 

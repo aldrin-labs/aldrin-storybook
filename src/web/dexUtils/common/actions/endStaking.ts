@@ -6,9 +6,8 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { buildTransactions } from '@core/solana'
+import { buildTransactions, ProgramsMultiton } from '@core/solana'
 
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { createTokenAccountTransaction } from '../../send'
 import { getCurrentFarmingStateFromAll } from '../../staking/getCurrentFarmingStateFromAll'
 import { signAndSendTransactions } from '../../transactions'

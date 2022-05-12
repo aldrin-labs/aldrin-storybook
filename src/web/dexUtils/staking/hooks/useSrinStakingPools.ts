@@ -1,14 +1,11 @@
 import { ProgramAccount } from '@project-serum/anchor'
 import useSWR from 'swr'
 
+import { PLUTONIANS_STAKING_ADDRESS, ProgramsMultiton } from '@core/solana'
 import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 
 import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
-import {
-  PLUTONIANS_STAKING_ADDRESS,
-  ProgramsMultiton,
-} from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
 import {
   SRinStakingPool,

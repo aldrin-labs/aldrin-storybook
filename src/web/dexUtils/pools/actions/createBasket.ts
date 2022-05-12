@@ -10,10 +10,13 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
-import MultiEndpointsConnection from '../../MultiEndpointsConnection'
+import {
+  AldrinConnection,
+  ProgramsMultiton,
+  getPoolsProgramAddress,
+} from '@core/solana'
+
 import { transferSOLToWrappedAccountAndClose } from '../../pools'
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress } from '../../ProgramsMultiton/utils'
 import { createTokenAccountTransaction, isTransactionFailed } from '../../send'
 import { Token } from '../../token/token'
 import { signAndSendSingleTransaction } from '../../transactions'
@@ -29,7 +32,7 @@ interface CreateBasketBase {
   poolPublicKey: PublicKey
   userPoolTokenAccount?: PublicKey | null
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   userBaseTokenAmount: BN
   userQuoteTokenAmount: BN
   userBaseTokenAccount: PublicKey

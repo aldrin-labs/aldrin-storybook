@@ -8,10 +8,12 @@ import {
 
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
-import { buildTransactions } from '@core/solana'
+import {
+  buildTransactions,
+  ProgramsMultiton,
+  STAKING_PROGRAM_ADDRESS,
+} from '@core/solana'
 
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
-import { STAKING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '../../send'
 import { findTokenAccount } from '../../token/utils/findTokenAccount'
 import { signAndSendTransactions } from '../../transactions'

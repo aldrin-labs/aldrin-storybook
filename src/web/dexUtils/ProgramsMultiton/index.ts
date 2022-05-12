@@ -1,2 +1,1 @@
-export * from './ProgramsMultiton'
-export * from './utils'
+export * from '@core/solana/programsMultiton'

@@ -1,14 +1,15 @@
 import useSwr from 'swr'
 
-import { groupBy } from '../../../utils'
-import { getCalcAccounts } from '../../common/getCalcAccountsForWallet'
-import { FarmingCalc } from '../../common/types'
-import { useConnection } from '../../connection'
 import {
   ProgramsMultiton,
   POOLS_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
-} from '../../ProgramsMultiton'
+} from '@core/solana'
+
+import { groupBy } from '../../../utils'
+import { getCalcAccounts } from '../../common/getCalcAccountsForWallet'
+import { FarmingCalc } from '../../common/types'
+import { useConnection } from '../../connection'
 import { useWallet } from '../../wallet'
 
 /**

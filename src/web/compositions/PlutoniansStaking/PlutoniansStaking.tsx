@@ -20,7 +20,6 @@ import { InlineText } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { PU238_TOKEN_MINT } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { startSrinStaking } from '@sb/dexUtils/staking/actions'
 import {
   useSrinStakingAccounts,
@@ -31,6 +30,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { PU238_TOKEN_MINT } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,

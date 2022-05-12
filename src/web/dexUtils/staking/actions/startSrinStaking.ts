@@ -6,11 +6,9 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
+import { PLUTONIANS_STAKING_ADDRESS, ProgramsMultiton } from '@core/solana'
+
 import { walletAdapterToWallet } from '../../common'
-import {
-  PLUTONIANS_STAKING_ADDRESS,
-  ProgramsMultiton,
-} from '../../ProgramsMultiton'
 import { signAndSendSingleTransaction } from '../../transactions'
 import { StartSrinStakingParams } from './types'
 

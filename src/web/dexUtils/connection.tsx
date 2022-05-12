@@ -8,10 +8,9 @@ import {
 import tuple from 'immutable-tuple'
 import React, { useContext, useRef } from 'react'
 
-import { useAsyncData } from './fetch-loop'
-import MultiEndpointsConnection from './MultiEndpointsConnection'
+import { MultiEndpointsConnection, AldrinConnection } from '@core/solana'
 
-export type AldrinConnection = MultiEndpointsConnection & Connection
+import { useAsyncData } from './fetch-loop'
 
 export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
