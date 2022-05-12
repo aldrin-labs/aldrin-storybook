@@ -30,7 +30,7 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { limitDecimalsCustom, stripByAmount } from '@core/utils/chartPageUtils'
+import { limitDecimalsCustom, stripByAmount } from '@core/utils/numberUtils'
 
 import Arrows from '@icons/switchArrows.svg'
 

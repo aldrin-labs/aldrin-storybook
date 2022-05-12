@@ -1,7 +1,7 @@
 import { useFormik } from 'formik'
 import React from 'react'
 
-import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
+import { limitDecimalsCustom } from '@core/utils/numberUtils'
 
 import { AmountInput } from '../../../components/AmountInput'
 import {

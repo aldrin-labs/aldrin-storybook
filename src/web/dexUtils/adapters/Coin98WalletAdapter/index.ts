@@ -1,14 +1,11 @@
 import {
   EventEmitter,
-  pollUntilReady,
   WalletAccountError,
   WalletAdapter,
   WalletAdapterEvents,
   WalletNotConnectedError,
-  WalletNotFoundError,
   WalletPublicKeyError,
-  WalletSignatureError,
-  WalletNotInstalledError,
+  WalletNotReadyError,
 } from '@solana/wallet-adapter-base'
 import { PublicKey, Transaction } from '@solana/web3.js'
 import bs58 from 'bs58'
@@ -58,8 +55,6 @@ export class Coin98WalletAdapter
     this._publicKey = null
     this.signTransaction = this.signTransaction.bind(this)
     this.signAllTransactions = this.signAllTransactions.bind(this)
-    if (!this.ready)
-      pollUntilReady(this, config.pollInterval || 1000, config.pollCount || 3)
   }
 
   get publicKey(): PublicKey | null {
@@ -87,8 +82,8 @@ export class Coin98WalletAdapter
       if (this.connected || this.connecting) return
       this._connecting = true
       const wallet = window.coin98?.sol
-      if (!wallet) throw new WalletNotFoundError()
-      if (!wallet.isCoin98) throw new WalletNotInstalledError()
+      if (!wallet) throw new WalletNotReadyError()
+      if (!wallet.isCoin98) throw new WalletNotReadyError()
       let account: string
       try {
         const [address] = await wallet.connect()

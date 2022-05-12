@@ -6,7 +6,7 @@ import { MINIMAL_STAKING_AMOUNT } from '@sb/dexUtils/common/config'
 import { STAKING_FARMING_TOKEN_DECIMALS } from '@sb/dexUtils/staking/config'
 import { TokenInfo } from '@sb/dexUtils/types'
 
-import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
+import { limitDecimalsCustom } from '@core/utils/numberUtils'
 
 import { AmountInput } from '../../../components/AmountInput'
 import { ButtonWrapper, FormItemFull, FormWrap, InputWrapper } from '../styles'
