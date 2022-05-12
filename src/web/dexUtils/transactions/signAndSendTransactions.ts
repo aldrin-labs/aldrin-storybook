@@ -1,5 +1,6 @@
+import { signTransactions } from '@core/solana'
+
 import { sendSignedTransactions } from '.'
-import { signTransactions } from './signTransactions'
 import { SendTransactionsParams } from './types'
 
 export const signAndSendTransactions = async (

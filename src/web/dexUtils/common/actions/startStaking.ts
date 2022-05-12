@@ -9,11 +9,12 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
+import { buildTransactions } from '@core/solana'
+
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_FARMING_TOKEN_DECIMALS } from '../../staking/config'
 import { getCurrentFarmingStateFromAll } from '../../staking/getCurrentFarmingStateFromAll'
 import { signAndSendTransactions } from '../../transactions'
-import { buildTransactions } from '../../transactions/buildTransactions'
 import { filterOpenFarmingTickets } from '../filterOpenFarmingTickets'
 import { getCalcAccounts } from '../getCalcAccountsForWallet'
 import { getTicketsAvailableToClose } from '../getTicketsAvailableToClose'

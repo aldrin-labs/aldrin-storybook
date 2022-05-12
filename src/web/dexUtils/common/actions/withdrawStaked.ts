@@ -8,11 +8,13 @@ import {
 
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 
+import { buildTransactions } from '@core/solana'
+
 import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
 import { STAKING_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { createTokenAccountTransaction } from '../../send'
 import { findTokenAccount } from '../../token/utils/findTokenAccount'
-import { buildTransactions, signAndSendTransactions } from '../../transactions'
+import { signAndSendTransactions } from '../../transactions'
 import {
   DEFAULT_FARMING_TICKET_END_TIME,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
