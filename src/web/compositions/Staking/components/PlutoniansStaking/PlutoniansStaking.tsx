@@ -1,29 +1,28 @@
-import { FONT_SIZES } from '@variables/variables'
 import React from 'react'
 
 import { BlockTitle, BlockContent } from '@sb/components/Block'
-import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { DAY } from '@core/utils/dateUtils'
-
-import { usePlutoniansStaking } from '../../../../dexUtils/staking/hooks'
-import {
-  ContentBlock,
-  StakingBlock,
-  StretchedContent,
-  GrayLink,
-} from '../../styles'
+import { FlexBlock } from '../../../../components/Layout'
+import { ContentBlock, StakingBlock } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
-import Lock from './lock.svg'
-import { LogoWrap } from './styles'
+import PldIcon from './assets/stake-pld.png'
+import PuIcon from './assets/stake-pu238.png'
+import RpcIcon from './assets/stake-rpc.png'
+import {
+  LogoWrap,
+  StakePoolWrap,
+  StakePoolText,
+  StakePoolButtonContainer,
+  StakePoolLink,
+} from './styles'
 
 export const PlutoniasStakingBlock: React.FC = () => {
-  const { data: stakingPool } = usePlutoniansStaking()
-  const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
-  const tiersGroup1 = tiers.slice(0, 2)
-  const tiersGroup2 = tiers.slice(2)
+  // const { data: stakingPool } = usePlutoniansStaking()
+  // const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
+  // const tiersGroup1 = tiers.slice(0, 2)
+  // const tiersGroup2 = tiers.slice(2)
 
   return (
     <StakingBlock>
@@ -33,7 +32,63 @@ export const PlutoniasStakingBlock: React.FC = () => {
           <BlockTitle>Stake PLD</BlockTitle>
           <NumberWithLabel padding="0" value={null} label="Exclusive" />
         </RowContainer>
-        <StretchedContent>
+        <FlexBlock flex="1" direction="column" justifyContent="space-between">
+          <StakePoolWrap>
+            <ContentBlock>
+              <FlexBlock alignItems="center">
+                <img src={PldIcon} alt="Stake PLD" />
+                <StakePoolText>
+                  <div>
+                    <InlineText weight={700}>Stake PLD</InlineText>
+                  </div>
+                  <InlineText>NFT &amp; up to 20% APR</InlineText>
+                </StakePoolText>
+                <StakePoolButtonContainer>
+                  <StakePoolLink to="/staking/plutonians/pld">
+                    View
+                  </StakePoolLink>
+                </StakePoolButtonContainer>
+              </FlexBlock>
+            </ContentBlock>
+          </StakePoolWrap>
+          <StakePoolWrap>
+            <ContentBlock>
+              <FlexBlock alignItems="center">
+                <img src={RpcIcon} alt="Stake RPC" />
+                <StakePoolText>
+                  <div>
+                    <InlineText weight={700}>Stake RPC</InlineText>
+                  </div>
+                  <InlineText>NFT &amp; up to 20% APR</InlineText>
+                </StakePoolText>
+                <StakePoolButtonContainer>
+                  <StakePoolLink to="/staking/plutonians/rpc">
+                    View
+                  </StakePoolLink>
+                </StakePoolButtonContainer>
+              </FlexBlock>
+            </ContentBlock>
+          </StakePoolWrap>
+          <StakePoolWrap>
+            <ContentBlock>
+              <FlexBlock alignItems="center">
+                <img src={PuIcon} alt="Stake PU238" />
+                <StakePoolText>
+                  <div>
+                    <InlineText weight={700}>Stake PU238</InlineText>
+                  </div>
+                  <InlineText>NFT &amp; up to 20% APR</InlineText>
+                </StakePoolText>
+                <StakePoolButtonContainer>
+                  <StakePoolLink to="/staking/plutonians/pu238">
+                    View
+                  </StakePoolLink>
+                </StakePoolButtonContainer>
+              </FlexBlock>
+            </ContentBlock>
+          </StakePoolWrap>
+        </FlexBlock>
+        {/* <StretchedContent>
           {tiersGroup1.map((tier) => (
             <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
               <Row justify="space-between" margin="0 0 0.7em 0">
@@ -45,11 +100,6 @@ export const PlutoniasStakingBlock: React.FC = () => {
               <NumberWithLabel
                 size={FONT_SIZES.es}
                 value={null}
-                // label={`${
-                //   (parseInt(tier?.account.apr.toString() || '0', 10) /
-                //     REWARD_APR_DENOMINATOR) *
-                //   100
-                // }% APR  `}
                 label="APR + NFT"
                 center
               />
@@ -68,11 +118,6 @@ export const PlutoniasStakingBlock: React.FC = () => {
               <NumberWithLabel
                 size={FONT_SIZES.es}
                 value={null}
-                // label={`${
-                //   (parseInt(tier?.account.apr.toString() || '0', 10) /
-                //     REWARD_APR_DENOMINATOR) *
-                //   100
-                // }% APR  `}
                 label="APR + NFT"
                 center
               />
@@ -81,7 +126,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
         </StretchedContent>
         <RowContainer>
           <GrayLink to="/staking/plutonians">View</GrayLink>
-        </RowContainer>
+        </RowContainer> */}
       </BlockContent>
     </StakingBlock>
   )

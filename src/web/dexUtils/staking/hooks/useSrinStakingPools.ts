@@ -6,7 +6,7 @@ import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
 import {
-  PLUTONIANS_STAKING_ADDRESS,
+  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
@@ -25,7 +25,7 @@ export const useSrinStakingPools = () => {
   const fetcher = async (): Promise<SRinStakingPoolUI[]> => {
     try {
       const program = ProgramsMultiton.getProgramByAddress({
-        programAddress: PLUTONIANS_STAKING_ADDRESS,
+        programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
         wallet,
         connection,
       })

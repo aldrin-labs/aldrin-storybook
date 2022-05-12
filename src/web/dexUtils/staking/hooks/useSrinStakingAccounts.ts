@@ -4,7 +4,7 @@ import useSWR from 'swr'
 import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
 import {
-  PLUTONIANS_STAKING_ADDRESS,
+  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
@@ -22,7 +22,7 @@ export const useSrinStakingAccounts = () => {
       return new Map<string, ProgramAccount<SRinUserAccount>>()
     }
     const program = ProgramsMultiton.getProgramByAddress({
-      programAddress: PLUTONIANS_STAKING_ADDRESS,
+      programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
       wallet,
       connection,
     }) as any as Program // TODO:
@@ -36,7 +36,6 @@ export const useSrinStakingAccounts = () => {
       },
     ]) as Promise<any> as Promise<ProgramAccount<SRinUserAccount>[]>)
 
-    console.log('saccounts: ', accounts)
     return toMap(accounts, (acc) => acc.account.stakingTier.toString())
   }
 

@@ -1,11 +1,17 @@
 import BN from 'bn.js'
 
+import {
+  PLUTONIANS_STAKING_POOL_ADDRESS,
+  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+} from '@sb/dexUtils/ProgramsMultiton'
+
 import { MASTER_BUILD } from '@core/utils/config'
 
 import Centuria from './assets/Centuria.png'
 import Colossus from './assets/Colossus.png'
 import Leviathan from './assets/Leviathan.png'
 import Venator from './assets/Venator.png'
+import { StakingDescription } from './types'
 
 export const EXTRA_REWARDS = [
   'Aldrin Skin + 2 components',
@@ -28,3 +34,12 @@ export const NFT_REWARD_MIN_STAKE_AMOUNT = 1_000
 export const NFT_REWARD_MIN_STAKE_AMOUNT_BN = new BN(
   NFT_REWARD_MIN_STAKE_AMOUNT
 ).mul(new BN(10).pow(new BN(PLD_DECIMALS)))
+
+export const STAKINGS: { [c: string]: StakingDescription } = {
+  PLD: {
+    programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+    stakingPool: PLUTONIANS_STAKING_POOL_ADDRESS,
+    minStakeTokensForRewardBn: NFT_REWARD_MIN_STAKE_AMOUNT_BN,
+    minStakeTokensForReward: NFT_REWARD_MIN_STAKE_AMOUNT,
+  },
+}

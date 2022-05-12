@@ -8,7 +8,7 @@ import {
 
 import { walletAdapterToWallet } from '../../common'
 import {
-  PLUTONIANS_STAKING_ADDRESS,
+  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
 import { signAndSendSingleTransaction } from '../../transactions'
@@ -31,7 +31,7 @@ export const startSrinStakingInstructions = async (
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: PLUTONIANS_STAKING_ADDRESS,
+    programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
   })
 
   const [userStakingAccount, bumpUserStakingAccount] =
@@ -41,7 +41,7 @@ export const startSrinStakingInstructions = async (
         w.publicKey.toBytes(),
         stakingTier.toBytes(),
       ],
-      new PublicKey(PLUTONIANS_STAKING_ADDRESS)
+      new PublicKey(PLUTONIANS_STAKING_PROGRAMM_ADDRESS)
     )
 
   return program.instruction.deposit(amount, bumpUserStakingAccount, {
