@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js'
 import { COLORS, FONT_SIZES } from '@variables/variables'
 import { BN } from 'bn.js'
 import React, { useState } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 
 import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
@@ -442,7 +442,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       {minStakeTokensForReward ? (
                         <InlineText size="sm">
                           You have to stake at least{' '}
-                          {formatNumberToUSFormat(minStakeTokensForReward)}
+                          {formatNumberToUSFormat(minStakeTokensForReward)}{' '}
                           {stakeTokenName} to be eligible for Aldrin Skin NFT
                           drop.
                         </InlineText>

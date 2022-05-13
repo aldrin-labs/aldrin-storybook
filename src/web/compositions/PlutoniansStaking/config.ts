@@ -3,6 +3,8 @@ import BN from 'bn.js'
 import {
   PLUTONIANS_STAKING_POOL_ADDRESS,
   PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+  PLUTONIANS_RPC_STAKING_POOL_ADDRESS,
+  PLUTONIANS_PU_STAKING_POOL_ADDRESS,
 } from '@sb/dexUtils/ProgramsMultiton'
 
 import { MASTER_BUILD } from '@core/utils/config'
@@ -31,15 +33,25 @@ export const PLD_DENOMINATOR = MASTER_BUILD ? 1_000_000 : 1_000_000_000
 export const PLD_DECIMALS = MASTER_BUILD ? 6 : 9
 
 export const NFT_REWARD_MIN_STAKE_AMOUNT = 1_000
-export const NFT_REWARD_MIN_STAKE_AMOUNT_BN = new BN(
-  NFT_REWARD_MIN_STAKE_AMOUNT
-).mul(new BN(10).pow(new BN(PLD_DECIMALS)))
+const TOKEN_MULTIPLIER = new BN(10).pow(new BN(PLD_DECIMALS))
 
 export const STAKINGS: { [c: string]: StakingDescription } = {
   PLD: {
     programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
     stakingPool: PLUTONIANS_STAKING_POOL_ADDRESS,
-    minStakeTokensForRewardBn: NFT_REWARD_MIN_STAKE_AMOUNT_BN,
-    minStakeTokensForReward: NFT_REWARD_MIN_STAKE_AMOUNT,
+    minStakeTokensForRewardBn: new BN(1_000).mul(TOKEN_MULTIPLIER),
+    minStakeTokensForReward: 1_000,
+  },
+  RPC: {
+    programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+    stakingPool: PLUTONIANS_RPC_STAKING_POOL_ADDRESS,
+    minStakeTokensForRewardBn: new BN(50_000).mul(TOKEN_MULTIPLIER),
+    minStakeTokensForReward: 50_000,
+  },
+  PU238: {
+    programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+    stakingPool: PLUTONIANS_PU_STAKING_POOL_ADDRESS,
+    minStakeTokensForRewardBn: new BN(1_000_000).mul(TOKEN_MULTIPLIER),
+    minStakeTokensForReward: 1_000_000,
   },
 }
