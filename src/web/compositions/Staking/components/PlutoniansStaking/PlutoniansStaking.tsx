@@ -5,7 +5,7 @@ import { InlineText } from '@sb/components/Typography'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { FlexBlock } from '../../../../components/Layout'
-import { ContentBlock, StakingBlock } from '../../styles'
+import { StakingBlock, PLDContentBlock } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import PldIcon from './assets/stake-pld.png'
 import PuIcon from './assets/stake-pu238.png'
@@ -34,7 +34,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
         </RowContainer>
         <FlexBlock flex="1" direction="column" justifyContent="space-between">
           <StakePoolWrap>
-            <ContentBlock>
+            <PLDContentBlock>
               <FlexBlock alignItems="center">
                 <img src={PldIcon} alt="Stake PLD" />
                 <StakePoolText>
@@ -49,10 +49,10 @@ export const PlutoniasStakingBlock: React.FC = () => {
                   </StakePoolLink>
                 </StakePoolButtonContainer>
               </FlexBlock>
-            </ContentBlock>
+            </PLDContentBlock>
           </StakePoolWrap>
           <StakePoolWrap>
-            <ContentBlock>
+            <PLDContentBlock>
               <FlexBlock alignItems="center">
                 <img src={RpcIcon} alt="Stake RPC" />
                 <StakePoolText>
@@ -67,10 +67,10 @@ export const PlutoniasStakingBlock: React.FC = () => {
                   </StakePoolLink>
                 </StakePoolButtonContainer>
               </FlexBlock>
-            </ContentBlock>
+            </PLDContentBlock>
           </StakePoolWrap>
           <StakePoolWrap>
-            <ContentBlock>
+            <PLDContentBlock>
               <FlexBlock alignItems="center">
                 <img src={PuIcon} alt="Stake PU238" />
                 <StakePoolText>
@@ -85,7 +85,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
                   </StakePoolLink>
                 </StakePoolButtonContainer>
               </FlexBlock>
-            </ContentBlock>
+            </PLDContentBlock>
           </StakePoolWrap>
         </FlexBlock>
         {/* <StretchedContent>

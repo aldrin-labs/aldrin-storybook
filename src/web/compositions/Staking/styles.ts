@@ -30,6 +30,11 @@ export const ContentBlock = styled.div<ContentBlockProps>`
   background: ${COLORS.cardsBack};
   border-radius: ${BORDER_RADIUS.md};
 `
+
+export const PLDContentBlock = styled(ContentBlock)`
+  margin: 0.7em 0;
+`
+
 export const StretchedContent = styled.div`
   display: flex;
   justify-content: space-between;

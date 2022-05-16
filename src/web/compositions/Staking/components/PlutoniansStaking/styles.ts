@@ -1,4 +1,4 @@
-import { COLORS, BORDER_RADIUS } from '@variables/variables'
+import { COLORS, BORDER_RADIUS, FONT_SIZES } from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -41,6 +41,7 @@ export const ButtonContainer = styled(RowContainer)`
 
 export const StakePoolText = styled.div`
   margin-left: 20px;
+  font-size: ${FONT_SIZES.xsm};
 `
 
 export const StakePoolWrap = styled.div`
