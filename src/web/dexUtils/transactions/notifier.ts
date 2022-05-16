@@ -1,4 +1,4 @@
-import { SendTransactionStatus } from '@core/solana'
+import { SendSignedTransactionResponse } from '@core/solana'
 
 import { notify } from '../notifications'
 
@@ -7,8 +7,8 @@ interface NotificationMessages {
 }
 export const getNotifier =
   (messages: NotificationMessages) =>
-  (status: SendTransactionStatus, txId?: string) => {
-    const notificationMessage = messages[status]
+  (status: SendSignedTransactionResponse) => {
+    const notificationMessage = messages[status.status]
 
     if (notificationMessage) {
       const message = Array.isArray(notificationMessage)
@@ -23,7 +23,7 @@ export const getNotifier =
           message,
           description,
           type: 'success',
-          txid: txId,
+          txid: status.transactionId,
         })
       }
     }
