@@ -1,3 +1,5 @@
+import { MARKET_STATE_LAYOUT_V3 } from '@project-serum/serum'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import {
   Account,
   Connection,
@@ -7,15 +9,15 @@ import {
   Transaction,
   TransactionSignature,
 } from '@solana/web3.js'
-
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
-import { DEX_PID } from '@core/config/dex'
-import { MARKET_STATE_LAYOUT_V3 } from '@project-serum/serum'
 import BN from 'bn.js'
+
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { DEX_PID } from '@core/config/dex'
+import { transferSOLToWrappedAccountAndClose } from '@core/solana'
+
 import { notify } from './notifications'
-import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 import {
   CurveType,
   TokenSwap,
@@ -23,6 +25,7 @@ import {
   TokenFarmingLayout,
 } from './token-swap/token-swap'
 import { Token, TOKEN_PROGRAM_ID } from './token/token'
+import { sendAndConfirmTransactionViaWallet } from './token/utils/send-and-confirm-transaction-via-wallet'
 
 const OWNER: PublicKey = new PublicKey(
   '5rWKzCUY9ESdmobivjyjQzvdfHSePf37WouX39sMmfx9'
@@ -1034,8 +1037,12 @@ export const getMaxWithdrawAmount = async ({
   )
   const quotePoolTokenAmount = quotePoolTokenInfo.amount
 
-  const withdrawAmountTokenA = (basePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply)
-  const withdrawAmountTokenB = (quotePoolTokenAmount.mul(new BN(poolTokenAmount))).div(supply)
+  const withdrawAmountTokenA = basePoolTokenAmount
+    .mul(new BN(poolTokenAmount))
+    .div(supply)
+  const withdrawAmountTokenB = quotePoolTokenAmount
+    .mul(new BN(poolTokenAmount))
+    .div(supply)
 
   return [withdrawAmountTokenA, withdrawAmountTokenB]
 }
@@ -1123,60 +1130,6 @@ export const createSOLAccountAndClose = async ({
 
   return [
     Keypair.fromSecretKey(createWrappedAccount.secretKey),
-    createWrappedAccountTransaction,
-    closeAccountTransaction,
-  ]
-}
-
-/**
- * Transfer amount of SOL from native account to wrapped to be able to interact with pools
- * @returns Address, transaction for creation this account and closing
- */
-export const transferSOLToWrappedAccountAndClose = async ({
-  wallet,
-  connection,
-  amount,
-}: {
-  wallet: WalletAdapter
-  connection: Connection
-  amount: number | BN
-}): Promise<[Account, Transaction, Transaction]> => {
-  // if SOL - create new token address
-
-  const tokenMint = new Token(
-    wallet,
-    connection,
-    WRAPPED_SOL_MINT,
-    TOKEN_PROGRAM_ID
-  )
-
-  const creatorPk = wallet.publicKey
-
-  if (!creatorPk) {
-    throw new Error('No public key for wallet')
-  }
-
-  const [
-    createdWrappedAccountPubkey,
-    createWrappedAccountTransaction,
-    createWrappedAccount,
-  ] = await Token.createWrappedNativeAccount(
-    wallet,
-    connection,
-    TOKEN_PROGRAM_ID,
-    creatorPk,
-    new BN(amount).toNumber()
-  )
-
-  const [closeAccountTransaction] = await tokenMint.closeAccount(
-    createdWrappedAccountPubkey,
-    creatorPk,
-    creatorPk,
-    []
-  )
-
-  return [
-    createWrappedAccount,
     createWrappedAccountTransaction,
     closeAccountTransaction,
   ]

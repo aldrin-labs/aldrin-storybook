@@ -22,13 +22,12 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { SendTransactionStatus } from '@core/solana'
+import { SendTransactionStatus, createPoolTransactions } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 

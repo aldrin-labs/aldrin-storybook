@@ -1,10 +1,9 @@
 import { blob, struct, u8 } from '@solana/buffer-layout'
 import { PublicKey } from '@solana/web3.js'
 
-import { VESTING_PROGRAM_ADDRESS } from '@core/solana'
+import { VESTING_PROGRAM_ADDRESS, Vesting } from '@core/solana'
 
 import { publicKey, uint64 } from '../../layout'
-import { Vesting } from '../types'
 
 export const vestingAddress = new PublicKey(VESTING_PROGRAM_ADDRESS)
 

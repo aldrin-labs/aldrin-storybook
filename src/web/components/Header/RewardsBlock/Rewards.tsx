@@ -8,14 +8,12 @@ import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { RIN_MINT } from '@sb/dexUtils/utils'
-import {
-  useUserVestings,
-  withrawVestingInstruction,
-} from '@sb/dexUtils/vesting'
+import { useUserVestings } from '@sb/dexUtils/vesting'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { withdrawVestingInstruction, walletAdapterToWallet } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { estimateTime } from '@core/utils/dateUtils'
 
@@ -111,8 +109,9 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
       (availableToClaim * STAKING_FARMING_TOKEN_DIVIDER).toFixed(0)
     )
 
-    const [transaction] = await withrawVestingInstruction({
-      wallet,
+    const walletWithPk = walletAdapterToWallet(wallet)
+    const [transaction] = await withdrawVestingInstruction({
+      wallet: walletWithPk,
       connection,
       withdrawAccount: rinAccount
         ? new PublicKey(rinAccount.address)
@@ -122,7 +121,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
     })
 
     const result = await signAndSendSingleTransaction({
-      wallet,
+      wallet: walletWithPk,
       connection,
       transaction,
     })

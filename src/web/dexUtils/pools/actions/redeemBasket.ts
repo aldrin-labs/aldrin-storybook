@@ -8,17 +8,18 @@ import {
   createSOLAccountAndClose,
   getMaxWithdrawAmount,
 } from '@sb/dexUtils/pools'
-
-
 import { createTokenAccountTransaction } from '@sb/dexUtils/send'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { ProgramsMultiton } from '@core/solana'
-import { getPoolsProgramAddress } from '@core/solana'
-import { AldrinConnection } from '@core/solana'
 
-import { VestingWithPk } from '../../vesting/types'
-import { withrawVestingInstruction } from '../../vesting/withdrawVesting'
+import {
+  ProgramsMultiton,
+  getPoolsProgramAddress,
+  AldrinConnection,
+  withdrawVestingInstruction,
+  VestingWithPk,
+} from '@core/solana'
+
 import {
   POOLS_LIQUIDITY_SLIPPAGE_DENOMINATOR,
   POOLS_LIQUIDITY_SLIPPAGE_NUMERATOR,
@@ -168,9 +169,9 @@ export async function redeemBasket(params: {
   }
 
   if (unlockVesting) {
-    const [tx, poolTokenAccount] = await withrawVestingInstruction({
+    const [tx, poolTokenAccount] = await withdrawVestingInstruction({
       wallet,
-      connection: connection.getConnection(),
+      connection,
       vesting: unlockVesting,
       withdrawAccount: userPoolTokenAccount,
     })

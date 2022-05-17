@@ -3,15 +3,13 @@ import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { Account, Connection, PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 
-import {
-  createSOLAccountAndClose,
-  transferSOLToWrappedAccountAndClose,
-} from '@sb/dexUtils/pools'
+import { createSOLAccountAndClose } from '@sb/dexUtils/pools'
 import { isTransactionFailed } from '@sb/dexUtils/send'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 import { DEX_PID } from '@core/config/dex'
+import { transferSOLToWrappedAccountAndClose } from '@core/solana'
 
 import { TokensMapType, TransactionType } from '../../Rebalance.types'
 import { getVariablesForPlacingOrder } from './getVariablesForPlacingOrder'

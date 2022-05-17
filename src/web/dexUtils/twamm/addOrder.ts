@@ -10,9 +10,12 @@ import { isTransactionFailed } from '@sb/dexUtils/send'
 import { TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
 import { initializeOrderArray } from '@sb/dexUtils/twamm/initializeOrderArray'
 
-import { ProgramsMultiton, TWAMM_PROGRAM_ADDRESS } from '@core/solana'
+import {
+  ProgramsMultiton,
+  TWAMM_PROGRAM_ADDRESS,
+  transferSOLToWrappedAccountAndClose,
+} from '@core/solana'
 
-import { transferSOLToWrappedAccountAndClose } from '../pools'
 import { signAndSendSingleTransaction } from '../transactions'
 import { TokenInfo, WalletAdapter } from '../types'
 import { WRAPPED_SOL_MINT } from '../wallet'

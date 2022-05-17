@@ -4,19 +4,13 @@ import { Connection, PublicKey, Signer, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 
 import { Side } from '@sb/dexUtils/common/config'
-import {
-  createSOLAccountAndClose,
-  transferSOLToWrappedAccountAndClose,
-} from '@sb/dexUtils/pools'
-
-
-import {
+import { createSOLAccountAndClose } from '@sb/dexUtils/pools'import {
   createTokenAccountTransaction,
   isTransactionFailed,
 } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { ProgramsMultiton } from '@core/solana'
-import { getPoolsProgramAddress } from '@core/solana'
+
+import { transferSOLToWrappedAccountAndClose , ProgramsMultiton , getPoolsProgramAddress } from '@core/solana'
 
 import { signAndSendSingleTransaction } from '../../transactions'
 

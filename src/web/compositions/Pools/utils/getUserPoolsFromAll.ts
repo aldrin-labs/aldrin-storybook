@@ -8,9 +8,9 @@ import { getTotalFarmingAmountToClaim } from '@sb/dexUtils/common/getTotalFarmin
 import { FarmingCalc, FarmingTicket } from '@sb/dexUtils/common/types'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
+import { Vesting } from '@core/solana'
 
 import { getTokenDataByMint } from '.'
-import { Vesting } from '../../../dexUtils/vesting/types'
 import { PoolInfo } from '../index.types'
 
 export const getUserPoolsFromAll = ({
