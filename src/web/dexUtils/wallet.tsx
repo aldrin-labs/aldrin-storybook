@@ -73,12 +73,10 @@ export const WalletProvider: React.FC = ({ children }) => {
   )
 
   const wallet = useMemo(() => {
-    const wallet = new (provider?.adapter || Wallet)(
+    return new (provider?.adapter || Wallet)(
       providerUrl,
       endpoint
     ) as WalletAdapter
-
-    return wallet
   }, [provider, endpoint])
 
   const connectWalletHash = useMemo(
