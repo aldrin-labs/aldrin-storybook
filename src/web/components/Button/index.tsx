@@ -12,17 +12,17 @@ import RinLogo from '@icons/DarkLogo.svg'
 
 const VARIANTS = {
   primary: css`
-    background: ${UCOLORS.blue3};
-    border-color: ${UCOLORS.blue3};
+    background: ${(props) => props.theme.colors.blue3};
+    border-color: ${(props) => props.theme.colors.blue3};
 
     &:disabled {
-      background: ${COLORS.cardsBack};
-      border-color: ${COLORS.cardsBack};
+      background: ${(props) => props.theme.colors.gray2};
+      border-color: ${(props) => props.theme.colors.gray2};
     }
   `,
   secondary: css`
-    background: ${COLORS.background};
-    border-color: ${COLORS.background};
+    background: ${(props) => props.theme.colors.block};
+    border-color: ${(props) => props.theme.colors.block};
 
     &:disabled {
       background: ${COLORS.hint};
@@ -69,7 +69,8 @@ const VARIANTS = {
 
   'outline-white': css`
     background: transparent;
-    border-color: ${COLORS.white};
+    border-color: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.white};
 
     &:disabled {
       color: ${COLORS.hint};
@@ -203,7 +204,8 @@ export const Button = styled.button<ButtonProps>`
     pointer-events: none;
     cursor: not-allowed;
     pointer-events: none;
-    background-color: ${UCOLORS.gray5};
+    border: none;
+    background-color: ${(props) => props.theme.colors.disabled};
   }
 
   ${({ $loading: loading }: ButtonProps) =>

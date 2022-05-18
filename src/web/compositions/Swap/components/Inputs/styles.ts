@@ -1,4 +1,4 @@
-import { COLORS, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
+import { BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -8,8 +8,8 @@ export const InputContainer = styled(RowContainer)`
   justify-content: space-between;
   height: 4em;
   background: ${(props) =>
-    props.disabled ? COLORS.disabledInput : COLORS.blockBackground};
-  border: 0.1rem solid #383b45;
+    props.disabled ? props.theme.colors.gray5 : props.theme.colors.gray5};
+  border: 0.1rem solid ${(props) => props.theme.colors.border};
   border-radius: 0;
   ${(props) =>
     props.roundSides.map(
@@ -21,7 +21,15 @@ export const DropdownIconContainer = styled(Row)`
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.35);
+  background: ${(props) => props.theme.colors.gray7};
+
+  svg {
+    width: 0.5875em;
+    height: 0.5875em;
+    path {
+      stroke: ${(props) => props.theme.colors.gray1};
+    }
+  }
 `
 
 export const AmountInputContainer = styled(Row)`

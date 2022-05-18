@@ -59,7 +59,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
             <InlineText color="gray1" size="sm">
               Total Staked
             </InlineText>
-            <InlineText size="xmd" weight={700} color="gray0">
+            <InlineText color="gray0" size="xmd" weight={700}>
               {totalStakedSol
                 ? stripByAmountAndFormat(totalStakedSol, 2)
                 : ' ---'}
@@ -74,7 +74,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
               to {mSolInfo?.stats.validators_count || '---'} Validators{' '}
             </InlineText>{' '}
             <InlineText size="sm" weight={700} color="gray0">
-              <InlineText color="gray1">$</InlineText>
+              <InlineText color="gray0">$</InlineText>
               {totalStakedUsdValue
                 ? stripByAmountAndFormat(totalStakedUsdValue, 2)
                 : ' ---'}
@@ -124,7 +124,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
                   </span>
                 </DarkTooltip>
               </RowContainer>
-              <InlineText size="xmd" weight={700} color="gray0">
+              <InlineText color="gray0" size="xmd" weight={700}>
                 {mSolInfo?.epochInfo.epochPct
                   ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
                   : '---'}

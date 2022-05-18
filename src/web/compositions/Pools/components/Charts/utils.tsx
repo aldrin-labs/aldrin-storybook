@@ -122,6 +122,7 @@ const createTotalVolumeLockedChart = ({
   container,
   data,
   chart,
+  theme,
 }: ChartParams) => {
   if (container) {
     container.height = CHART_HEIGHT
@@ -133,8 +134,8 @@ const createTotalVolumeLockedChart = ({
   }
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(143, 255, 200, 0.25)')
-  gradient.addColorStop(0.55, 'rgba(143, 255, 200, 0)')
+  gradient.addColorStop(0, theme.colors.greenChart[0])
+  gradient.addColorStop(0.55, theme.colors.greenChart[1])
 
   const transformedData = getEmptyData()
     .map((value) => ({
@@ -165,7 +166,7 @@ const createTotalVolumeLockedChart = ({
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: UCOLORS.green3,
+        borderColor: theme.colors.green6,
         backgroundColor: gradient,
         borderWidth: 2,
         pointRadius: 0,

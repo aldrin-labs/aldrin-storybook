@@ -64,7 +64,7 @@ export const Text = styled.span`
   text-transform: none;
   font-family: ${(props: TextProps) =>
     props.fontFamily || 'Avenir Next Medium'};
-  color: ${(props: TextProps) => props.color || '#ecf0f3'};
+  color: ${(props: TextProps) => props.theme.colors[props.color || 'gray0']};
   white-space: ${(props: TextProps) => props.whiteSpace || 'normal'};
   padding: ${(props: TextProps) => props.padding || '0'};
   letter-spacing: 0.01rem;

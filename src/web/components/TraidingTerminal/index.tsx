@@ -1,6 +1,5 @@
 import { Grid, Theme } from '@material-ui/core'
 import { withTheme } from '@material-ui/styles'
-import { UCOLORS } from '@variables/variables'
 import { withFormik } from 'formik'
 import { toNumber } from 'lodash-es'
 import React, { CSSProperties, PureComponent, SyntheticEvent } from 'react'
@@ -199,12 +198,12 @@ export const TradeInputContent = ({
         <>
           {needTooltip ? (
             <DarkTooltip title={titleForTooltip}>
-              <TitleForInput theme={theme} textDecoration={textDecoration}>
+              <TitleForInput textDecoration={textDecoration}>
                 {header}
               </TitleForInput>
             </DarkTooltip>
           ) : (
-            <TitleForInput theme={theme} textDecoration={textDecoration}>
+            <TitleForInput textDecoration={textDecoration}>
               {header}
             </TitleForInput>
           )}
@@ -212,7 +211,6 @@ export const TradeInputContent = ({
       ) : null}
 
       <TradeInput
-        theme={theme}
         align={textAlign}
         type={type}
         pattern={pattern}
@@ -863,9 +861,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                         })
                       }}
                       btnColor="#F8FAFF"
-                      backgroundColor={UCOLORS.blue3}
+                      backgroundColor="#0E02EC"
                       btnWidth="35rem"
-                      borderColor={UCOLORS.blue3}
+                      borderColor="#0E02EC"
                       textTransform="capitalize"
                       height="4.5rem"
                       borderRadius="1rem"
@@ -889,9 +887,9 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                       fontSize="1.6rem"
                       padding="2rem 8rem"
                       borderRadius="1.5rem"
-                      borderColor={UCOLORS.blue3}
+                      borderColor="#0E02EC"
                       btnColor="#fff"
-                      backgroundColor={UCOLORS.blue3}
+                      backgroundColor="#0E02EC"
                       textTransform="none"
                       margin="1rem 0 0 0"
                       transition="all .4s ease-out"

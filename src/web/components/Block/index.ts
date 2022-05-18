@@ -1,4 +1,4 @@
-import { UCOLORS, COLORS } from '@variables/variables'
+import { COLORS } from '@variables/variables'
 import styled from 'styled-components'
 
 export interface BlockProps {
@@ -10,7 +10,7 @@ export interface BlockProps {
 
 export const Block = styled.div<BlockProps>`
   background: ${(props: BlockProps) =>
-    props.inner ? COLORS.newBlack : UCOLORS.gray6};
+    props.inner ? props.theme.colors.gray5 : props.theme.colors.gray6};
   border-radius: 12px;
   margin: ${(props) => props.margin || '8px'};
   height: 100%;
@@ -39,8 +39,9 @@ export const Block = styled.div<BlockProps>`
   `
       : ''}
 `
+
 export const GreenBlock = styled(Block)`
-  background: rgba(38, 159, 19, 0.1);
+  background: ${(props) => props.theme.colors.green8};
 `
 
 export interface TitleProps {
@@ -53,7 +54,7 @@ export const BlockTitle = styled.h2`
   font-size: 1.25em;
   line-height: 150%;
   margin: 0.25rem 0 0.5rem;
-  color: ${UCOLORS.gray0};
+  color: ${(props) => props.theme.colors.gray0};
 `
 
 export const BlockSubtitle = styled.h3<TitleProps>`
@@ -74,7 +75,7 @@ export const BlockContent = styled.div<BlockContentProps>`
   position: relative;
   overflow: hidden;
   ${(props) =>
-    props.border ? `border-bottom: 1px solid ${COLORS.background}` : ''}
+    props.border ? `border-bottom: 1px solid ${props.theme.colors.gray10}` : ''}
 `
 
 export const BlockContentStretched = styled(BlockContent)`

@@ -1,22 +1,21 @@
+import { Paper } from '@material-ui/core'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 
-import { Paper, Theme } from '@material-ui/core'
+import { Loading } from '@sb/components'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-
 import {
   MainTitle,
   WhiteText,
-  WhiteButton,
 } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import Warning from '@icons/newWarning.svg'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+
 import { Row } from '../Inputs/PreferencesSelect/index.styles'
-import { Loading } from '@sb/components'
 
 export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -47,12 +46,12 @@ export const BlueButton = styled(
     <BtnCustom
       disabled={disabled}
       textTransform={textTransform}
-      fontFamily={'Avenir Next'}
+      fontFamily="Avenir Next"
       {...props}
     >
       {showLoader ? (
         <Loading
-          color={'#fff'}
+          color="#fff"
           size={24}
           style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
         />
@@ -67,31 +66,17 @@ export const BlueButton = styled(
   border-radius: 1rem;
   border: none;
 
-  background-color: ${(props: { disabled: boolean; theme: Theme }) =>
-    !props.disabled
-      ? props.theme.palette.blue.serum
-      : props.theme.palette.grey.title};
-  color: ${(props: { disabled: boolean }) =>
-    !props.disabled ? '#f8faff' : '#fff'};
-
-  &:hover {
-    background-color: ${(props: { disabled: boolean; theme: Theme }) =>
-      !props.disabled
-        ? props.theme.palette.blue.serum
-        : props.theme.palette.grey.title};
-    color: ${(props: { disabled: boolean }) =>
-      !props.disabled ? '#f8faff' : '#fff'};
-  }
+  background-color: ${(props) =>
+    !props.disabled ? props.theme.colors.blue5 : props.theme.colors.gray5};
+  color: ${(props) => (!props.disabled ? '#f8faff' : '#fff')};
 `
 
 export const WarningPopup = ({
-  theme,
   onClose,
   open,
   isPoolsPage = false,
   isSwapPage = false,
 }: {
-  theme: Theme
   onClose: () => void
   open: boolean
   isPoolsPage?: boolean
@@ -100,39 +85,38 @@ export const WarningPopup = ({
   const [isUserConfident, userConfident] = useState(false)
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={isUserConfident ? onClose : () => {}}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
+      <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
         <Title>Warning!</Title>
-        <SvgIcon src={Warning} width={'10%'} height={'auto'} />
+        <SvgIcon src={Warning} width="10%" height="auto" />
       </RowContainer>
-      <RowContainer direction={'column'} style={{ marginBottom: '2rem' }}>
+      <RowContainer direction="column" style={{ marginBottom: '2rem' }}>
         {isSwapPage ? (
           <>
-            <WhiteText theme={theme}>
+            <WhiteText>
               Anyone can create a token on Solana, it may be fake version of
               existing tokens, or token, that claim to represent projects that
               don't have a token.
             </WhiteText>
-            <WhiteText style={{ marginTop: '2rem' }} theme={theme}>
+            <WhiteText style={{ marginTop: '2rem' }}>
               Always check the quoted price and that the pool has sufficient
               liquidity before trading.
             </WhiteText>
           </>
         ) : isPoolsPage ? (
-          <WhiteText theme={theme}>
+          <WhiteText>
             On Aldrin.com DEX anyone can create their own market and pool for
             this market. This pool is one of those unofficial custom pools. Use
             at your own risk.
           </WhiteText>
         ) : (
-          <WhiteText theme={theme}>
+          <WhiteText>
             On Aldrin.com DEX anyone can create their own market and pool for
             this market. This pool is one of those unofficial custom pools. Use
             at your own risk.
@@ -140,16 +124,16 @@ export const WarningPopup = ({
         )}
       </RowContainer>
       <RowContainer justify="space-between" style={{ marginBottom: '2rem' }}>
-        <Row width={'calc(45%)'} justify="flex-start" margin="2rem 0 0 0">
+        <Row width="calc(45%)" justify="flex-start" margin="2rem 0 0 0">
           <SCheckbox
-            id={'warning_checkbox'}
+            id="warning_checkbox"
             style={{ padding: 0, marginRight: '1rem' }}
             onChange={() => {
               userConfident(!isUserConfident)
             }}
             checked={isUserConfident}
           />
-          <label htmlFor={'warning_checkbox'}>
+          <label htmlFor="warning_checkbox">
             <WhiteText
               style={{
                 cursor: 'pointer',
@@ -169,7 +153,6 @@ export const WarningPopup = ({
         <BlueButton
           disabled={!isUserConfident}
           isUserConfident={isUserConfident}
-          theme={theme}
           onClick={onClose}
         >
           Ok

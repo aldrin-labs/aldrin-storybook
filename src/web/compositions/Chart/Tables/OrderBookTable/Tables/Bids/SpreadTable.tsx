@@ -1,27 +1,20 @@
-import React, { Component, PureComponent } from 'react'
-import styled from 'styled-components'
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import React from 'react'
 import { Column, Table } from 'react-virtualized'
+import { useTheme } from 'styled-components'
 import 'react-virtualized/styles.css'
 
-import { IProps } from './SpreadTable.types'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withTheme } from '@material-ui/styles'
-
-import {
-  getDataForTable,
-  getDataFromTree,
-  rowStyles,
-} from '@core/utils/chartPageUtils'
-
-import defaultRowRenderer, { getRowHeight } from '../../utils'
-import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
-import useMobileSize from '@webhooks/useMobileSize'
 import { useOpenOrders } from '@sb/dexUtils/markets'
 
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { getDataFromTree } from '@core/utils/chartPageUtils'
+
+import useMobileSize from '@webhooks/useMobileSize'
+
+import { BidsWrapper } from '../../OrderBookTableContainer.styles'
+import defaultRowRenderer, { getRowHeight } from '../../utils'
+
 const SpreadTable = ({
-  theme,
   data,
   aggregation,
   openOrderHistory,
@@ -35,6 +28,7 @@ const SpreadTable = ({
 }) => {
   const openOrders = useOpenOrders()
   const isMobile = useMobileSize()
+  const theme = useTheme()
   const tableData = getDataFromTree(data.bids, 'bids').reverse()
   const amountForBackground =
     tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
@@ -64,7 +58,7 @@ const SpreadTable = ({
               updateTerminalPriceFromOrderbook(+rowData.price)
             }}
             headerStyle={{
-              color: theme.palette.grey.text,
+              color: theme.colors.gray1,
               paddingLeft: '.5rem',
               paddingTop: '.25rem',
               marginLeft: 0,
@@ -103,7 +97,7 @@ const SpreadTable = ({
               headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
               width={width}
               style={{
-                color: theme.palette.green.main,
+                color: theme.colors.obGreenFont,
                 fontFamily: 'Avenir Next Demi',
                 ...(isMobile ? { fontSize: '1.8rem' } : {}),
               }}
@@ -116,7 +110,7 @@ const SpreadTable = ({
                 headerStyle={{ textAlign: 'left', paddingRight: '.9rem' }}
                 style={{
                   textAlign: 'left',
-                  color: theme.palette.white.primary,
+                  color: theme.colors.gray1,
                 }}
               />
             )}
@@ -130,7 +124,7 @@ const SpreadTable = ({
               }}
               style={{
                 textAlign: 'right',
-                color: theme.palette.white.primary,
+                color: theme.colors.gray1,
                 ...(isMobile ? { fontSize: '1.8rem' } : {}),
               }}
             />

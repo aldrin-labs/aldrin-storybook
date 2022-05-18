@@ -1,7 +1,5 @@
 import React, { useEffect, ReactNode } from 'react'
 
-import CloseIconImg from '@icons/closeIcon.svg'
-
 import {
   ModalContainer,
   ModalBody,
@@ -26,11 +24,24 @@ export const ModalTitleBlock: React.FC<ModalCommon> = (props) => (
   <ModalTitleContainer>
     <ModalTitle>{props.title}</ModalTitle>
     <CloseIcon
-      src={CloseIconImg}
       onClick={() => {
         props.onClose()
       }}
-    />
+    >
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 19 19"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+          stroke="#F5F5FB"
+          strokeWidth="2"
+        />
+      </svg>
+    </CloseIcon>
   </ModalTitleContainer>
 )
 
@@ -54,11 +65,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
   }, [])
 
   return (
-    <ModalContainer
-      $background="gray6"
-      backdrop={backdrop}
-      onClick={() => onClose()}
-    >
+    <ModalContainer backdrop={backdrop} onClick={() => onClose()}>
       <ModalBody onClick={(e) => e.stopPropagation()}>
         <ModalContent>
           {title && <ModalTitleBlock title={title} onClose={onClose} />}

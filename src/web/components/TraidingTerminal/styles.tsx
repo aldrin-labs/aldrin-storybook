@@ -26,17 +26,13 @@ export const TitleForInput = styled.div`
   min-height: 3rem;
   white-space: nowrap;
   text-decoration: ${(props) => props.textDecoration || 'none'};
-  border: ${(props) =>
-    props.theme &&
-    props.theme.palette &&
-    props.theme.palette.border &&
-    props.theme.palette.border.main};
+  border: none;
   border-top-left-radius: 0.3rem;
   border-bottom-left-radius: 0.3rem;
   border-right: none;
   box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
-  color: ${(props) => props.theme.palette.white.text};
-  background-color: ${(props) => props.theme.palette.grey.block};
+  color: ${(props) => props.theme.colors.gray1};
+  background-color: none;
   font-size: 1.1rem;
   font-family: Avenir Next Demi;
   text-transform: capitalize;
@@ -215,33 +211,12 @@ export const TradeBlock = styled(BalanceGrid)`
 export const TradeInput = styled.input`
   width: 100%;
   min-height: 3rem;
-  border: ${(props) =>
-    props.isValid
-      ? `.1rem solid ${props.theme.palette.grey.newborder}` ||
-        '.1rem solid #e0e5ec'
-      : '.1rem solid #DD6956'};
+  border: none;
   border-radius: 0.7rem;
   border-top-right-radius: ${(props) => props.haveSelector && '0'};
   border-bottom-right-radius: ${(props) => props.haveSelector && '0'};
-  box-shadow: inset 0px 0px 0.2rem rgba(0, 0, 0, 0.15);
-  color: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.dark &&
-      props.theme.palette.dark.main) ||
-    '#16253D'};
-  background-color: ${(props) =>
-    props.disabled
-      ? (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.grey &&
-          props.theme.palette.grey.background) ||
-        '#f2f4f6'
-      : (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.grey &&
-          props.theme.palette.grey.terminal) ||
-        '#fff'};
+  color: ${(props) => props.theme.colors.gray1};
+  background-color: ${(props) => props.theme.colors.gray5};
   font-size: 1.3rem;
 
   font-weight: bold;
@@ -259,7 +234,7 @@ export const TradeInput = styled.input`
   }
 
   &::placeholder {
-    color: #abbad1;
+    color: ${(props) => props.theme.colors.gray1};
     font-family: Avenir Next Medium;
   }
 
@@ -367,43 +342,16 @@ export const PercentageItem = styled(StyledTab)`
 
 export const SendButton = styled(StyledTab)`
   width: 100%;
-  color: ${(props) =>
-    props.theme &&
-    props.theme.palette &&
-    props.theme.palette.grey &&
-    props.theme.palette.grey.terminal};
+  color: #fff;
   background: ${(props) =>
     props.type === 'buy'
-      ? (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.green &&
-          props.theme.palette.green.button) ||
-        '#29AC80'
-      : (props.theme &&
-          props.theme.palette &&
-          props.theme.palette.red &&
-          props.theme.palette.red.button) ||
-        '#DD6956'};
+      ? props.theme.colors.green7 || '#29AC80'
+      : props.theme.colors.red3 || '#DD6956'};
   box-shadow: 0px 0.7rem 1rem rgba(8, 22, 58, 0.3);
   border-radius: 1rem;
   border: none;
   text-transform: capitalize;
   font-family: Avenir Next Demi;
-
-  &:hover {
-    background-color: ${(props) =>
-      props.type === 'buy'
-        ? (props.theme &&
-            props.theme.palette &&
-            props.theme.palette.green &&
-            props.theme.palette.green.main) ||
-          '#29AC80'
-        : (props.theme &&
-            props.theme.palette &&
-            props.theme.palette.red &&
-            props.theme.palette.red.main) ||
-          '#DD6956'};
-  }
 
   @media (max-width: 600px) {
     height: 6rem;
@@ -421,7 +369,7 @@ export const SmartTradeButton = styled(SendButton)`
           props.theme.palette &&
           props.theme.palette.blue &&
           props.theme.palette.blue.main) ||
-        '#651CE4'
+        '#0E02EC'
       : (props.theme &&
           props.theme.palette &&
           props.theme.palette.red &&
@@ -435,7 +383,7 @@ export const SmartTradeButton = styled(SendButton)`
             props.theme.palette &&
             props.theme.palette.blue &&
             props.theme.palette.blue.main) ||
-          '#651CE4'
+          '#0E02EC'
         : (props.theme &&
             props.theme.palette &&
             props.theme.palette.red &&
@@ -502,8 +450,8 @@ export const PercentageTab = styled.button`
   height: 3rem;
   width: 15%;
   border-radius: 1.2rem;
-  background: ${(props) => props.theme.palette.grey.terminal};
-  border: 0.1rem solid #3a475c;
+  background: ${(props) => props.theme.colors.gray5};
+  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
   font-family: Avenir Next Medium;
   font-size: 1.3rem;
   letter-spacing: 0.01rem;
@@ -511,8 +459,8 @@ export const PercentageTab = styled.button`
   outline: none;
   cursor: pointer;
   &:focus {
-    background: ${(props) => props.theme.palette.blue.serum};
-    border: ${(props) => `0.1rem solid ${props.theme.palette.blue.serum}`};
+    background: ${(props) => props.theme.colors.blue3};
+    border: ${(props) => `0.1rem solid ${props.theme.colors.blue3}`};
     font-family: Avenir Next Demi;
     color: #f8faff;
   }

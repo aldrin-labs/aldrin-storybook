@@ -1,7 +1,6 @@
 import {
   LAYOUT_WIDTH,
   COLORS,
-  UCOLORS,
   SIZE,
   FONTS,
   BREAKPOINTS,
@@ -27,15 +26,14 @@ export const PopupBody = styled(Body)`
 `
 
 export const Page = styled(Body)`
-  background: ${(props: { $background?: keyof typeof UCOLORS }) =>
-    UCOLORS[props.$background || 'gray9']};
+  background: ${(props) => props.theme.colors[props.$background || 'gray9']};
   flex: 1;
   display: flex;
   flex-direction: column;
 `
 
 export const BlackPage = styled(Page)`
-  background: ${UCOLORS.gray9};
+  background: ${(props) => props.theme.colors.gray9};
 `
 
 export const Content = styled.div`

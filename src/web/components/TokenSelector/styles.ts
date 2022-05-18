@@ -8,13 +8,14 @@ export const Container = styled(FlexBlock)`
   height: 72px;
   align-items: center;
   padding: 0 24px;
-  border: 1px solid ${COLORS.border};
+  border: 1px solid ${(props) => props.theme.colors.border};
   border-radius: ${BORDER_RADIUS.lg};
   font-family: ${FONTS.main};
   font-size: 20px;
   font-weight: 600;
   cursor: pointer;
   user-select: none;
+  background: ${(props) => props.theme.colors.gray5};
 `
 
 export const DropdownArrow = styled.span`
@@ -33,6 +34,7 @@ export const TokenName = styled.span`
 
 export const Balance = styled.span`
   margin-left: auto;
+  color: ${(props) => props.theme.colors.gray0};
 `
 
 export const TokenRow = styled(FlexBlock)`
@@ -54,6 +56,7 @@ export const TokenModalRow = styled(TokenRow)`
 
 export const SearchInput = styled(Input)`
   border-radius: ${BORDER_RADIUS.lg};
+  border: none;
   margin: -15px 0 20px 0;
 `
 

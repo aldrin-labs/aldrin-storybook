@@ -1,6 +1,10 @@
 import React from 'react'
 
-import { IProps } from './TradingTabs.types'
+import SvgIcon from '@sb/components/SvgIcon'
+
+import ExpandTableIcon from '@icons/expandIcon.svg'
+import SqueezeTableIcon from '@icons/squeezeIcon.svg'
+
 import {
   TitleTab,
   TitleTabsGroup,
@@ -8,23 +12,18 @@ import {
   ExpandTableButton,
   StyledTitleTabForMobile,
 } from './TradingTabs.styles'
-import SvgIcon from '@sb/components/SvgIcon'
-
-import ExpandTableIcon from '@icons/expandIcon.svg'
-import SqueezeTableIcon from '@icons/squeezeIcon.svg'
+import { IProps } from './TradingTabs.types'
 
 const TradingTabs = ({
   tab,
-  theme,
   handleTabChange,
   updateTerminalViewMode,
   terminalViewMode,
 }: IProps) => {
   return (
     <>
-      <TitleTabsGroup theme={theme}>
+      <TitleTabsGroup>
         <StyledTitleTabForMobile
-          theme={theme}
           active={tab === 'balances'}
           onClick={() => handleTabChange('balances')}
           style={{ width: '20%' }}
@@ -32,28 +31,24 @@ const TradingTabs = ({
           Balances
         </StyledTitleTabForMobile>
         <TitleTab
-          theme={theme}
           active={tab === 'openOrders'}
           onClick={() => handleTabChange('openOrders')}
         >
           Open orders{' '}
         </TitleTab>
         <TitleTab
-          theme={theme}
           active={tab === 'tradeHistory'}
           onClick={() => handleTabChange('tradeHistory')}
         >
           Recent Trade history
         </TitleTab>
         <StyledTitleTab
-          theme={theme}
           active={tab === 'feeTiers'}
           onClick={() => handleTabChange('feeTiers')}
         >
           Fee Tiers
         </StyledTitleTab>
         <StyledTitleTab
-          theme={theme}
           active={tab === 'balances'}
           onClick={() => handleTabChange('balances')}
         >
@@ -67,7 +62,6 @@ const TradingTabs = ({
               updateTerminalViewMode('default')
             }
           }}
-          theme={theme}
         >
           <SvgIcon
             src={
@@ -75,8 +69,8 @@ const TradingTabs = ({
                 ? SqueezeTableIcon
                 : ExpandTableIcon
             }
-            width={'25%'}
-            height={'auto'}
+            width="25%"
+            height="auto"
           />
         </ExpandTableButton>
       </TitleTabsGroup>

@@ -1,4 +1,3 @@
-import { UCOLORS } from '@variables/variables'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
@@ -207,15 +206,7 @@ Don't miss your chance.`
             </SwapButtonIcon>
             Swap
           </SwapButton>
-          <ShareButton
-            iconFirst
-            variant="primary"
-            buttonStyle={{
-              backgroundColor: UCOLORS.blue3,
-              borderColor: UCOLORS.blue3,
-            }}
-            text={shareText}
-          />
+          <ShareButton iconFirst variant="primary" text={shareText} />
         </ButtonsContainer>
       </PoolInfoBlock>
       {/* Pool stats */}
@@ -253,7 +244,7 @@ Don't miss your chance.`
         <PoolStatsWrap>
           <PoolStatsTitle>APR</PoolStatsTitle>
           <PoolStatsData>
-            <PoolStatsText color="success">{aprFormatted}%</PoolStatsText>
+            <PoolStatsText color="green7">{aprFormatted}%</PoolStatsText>
           </PoolStatsData>
         </PoolStatsWrap>
         <PoolStatsWrap>

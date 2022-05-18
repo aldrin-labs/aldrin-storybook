@@ -1,9 +1,4 @@
-import {
-  UCOLORS,
-  COLORS,
-  BREAKPOINTS,
-  BORDER_RADIUS,
-} from '@variables/variables'
+import { COLORS, BREAKPOINTS, BORDER_RADIUS } from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -13,7 +8,7 @@ import { BlackPage } from '@sb/components/Layout'
 import { ContentBlockProps } from './types'
 
 export const StakingBlock = styled(Block)`
-  background: ${UCOLORS.gray6};
+  background: ${(props) => props.theme.colors.gray6};
   @media (max-width: ${BREAKPOINTS.md}) {
     margin: 8px 15px;
   }
@@ -32,7 +27,7 @@ export const ContentBlock = styled.div<ContentBlockProps>`
   padding: 1em;
   flex-direction: column;
   justify-content: space-between;
-  background: ${UCOLORS.gray5};
+  background: ${(props) => props.theme.colors[props.background || 'gray5']};
   border-radius: ${BORDER_RADIUS.md};
 `
 export const StretchedContent = styled.div`
@@ -45,7 +40,7 @@ export const GrayButton = styled.button`
   width: 100%;
   border: none;
   color: ${COLORS.newWhite};
-  background: ${COLORS.cardsBack};
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: ${BORDER_RADIUS.md};
   margin: ${(props) => props.margin || '1em 0 0 0'};
   height: 3em;
@@ -55,7 +50,8 @@ export const GrayButton = styled.button`
   transition: 0.3s;
 
   &:hover {
-    background: ${COLORS.primaryBlue};
+    background: ${(props) => props.theme.colors.blue5};
+    color: ${(props) => props.theme.colors.white};
     transition: 0.3s;
   }
 
@@ -88,8 +84,8 @@ export const UnStakeButton = styled(GrayButton)`
 export const GrayLink = styled(Link)`
   width: 100%;
   border: none;
-  color: ${UCOLORS.gray0};
-  background: ${UCOLORS.gray5};
+  color: ${(props) => props.theme.colors.gray1};
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: ${BORDER_RADIUS.md};
   margin: 0.7em 0 0 0;
   line-height: 3em;
@@ -98,16 +94,17 @@ export const GrayLink = styled(Link)`
   transition: 0.3s;
   text-decoration: none;
   text-align: center;
-
   padding: 0.5em 0;
   font-size: 0.9em;
+
   &:hover {
-    background: ${COLORS.primaryBlue};
+    background: ${(props) => props.theme.colors.blue5};
+    color: ${(props) => props.theme.colors.gray0};
     transition: 0.3s;
   }
 
   &:active {
-    background: ${COLORS.darkBlue};
+    background: ${(props) => props.theme.colors.blue2};
   }
 
   @media (min-width: ${BREAKPOINTS.md}) {
@@ -116,8 +113,8 @@ export const GrayLink = styled(Link)`
 `
 
 export const Line = styled.div`
-  border: 0.05em solid ${COLORS.cardsBack};
-  height: 0.05em;
+  border-top: 0.05em solid ${COLORS.cardsBack};
+  height: 0em;
   margin: 2em 0 1em 0;
   width: 100%;
 `

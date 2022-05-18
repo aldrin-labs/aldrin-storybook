@@ -10,7 +10,7 @@ export const Title = styled.span`
   font-size: 32px;
   line-height: 1.4;
   font-weight: 700;
-
+  color: ${(props) => props.theme.colors.gray0};
   span {
     font-weight: 400;
   }
@@ -50,6 +50,7 @@ export const CoinSelectors = styled(Flex)`
 
 export const Slash = styled.div`
   padding: 25px 10px 0;
+  color: ${(props) => props.theme.colors.gray0};
 `
 
 export const CoinWrap = styled.div`
@@ -93,7 +94,7 @@ export const InputAppendContainer = styled.div`
 `
 
 export const TokensAvailableText = styled.div`
-  color: ${COLORS.primaryWhite};
+  color: ${(props) => props.theme.colors.gray1};
   font-size: 0.8em;
   line-height: 1.2;
   padding: 4px 0;
@@ -171,14 +172,25 @@ export const PoolProcessingButton = styled(Button)`
 `
 
 export const VestingExplanation = styled.div`
-  border: 1px solid ${COLORS.background};
+  border: 1px solid ${(props) => props.theme.colors.gray1};
   padding: ${SIZE.defaultPadding} 30px;
   margin-top: ${SIZE.defaultPadding};
   border-radius: ${BORDER_RADIUS.md};
   display: flex;
   flex-direction: row;
+  align-items: center;
 
   ${InlineText} {
     margin-left: 30px;
+  }
+`
+export const AttentionIcon = styled.div`
+  width: auto;
+  height: 55px;
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.gray0};
+    }
   }
 `

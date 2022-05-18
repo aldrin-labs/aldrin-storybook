@@ -92,7 +92,8 @@ export const WhiteText = styled.span`
   display: flex;
   align-items: center;
   letter-spacing: 0.01rem;
-  color: ${(props: { $color?: string }) => props.$color || '#f8faff'};
+  color: ${(props: { $color?: string }) =>
+    props.$color || props.theme.colors.gray0};
 `
 const WarningBlock = styled.div`
   background: rgba(242, 156, 56, 0.5);

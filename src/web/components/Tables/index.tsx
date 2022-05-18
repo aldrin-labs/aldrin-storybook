@@ -741,7 +741,7 @@ const CustomTable = (props: Props) => {
 
         <TableBody style={{ ...tableBodyStyles }}>
           {data.body.length === 0 ? (
-            <CustomPlaceholder theme={theme} text={emptyTableText} />
+            <CustomPlaceholder text={emptyTableText} />
           ) : (
             paginationFunc(
               data.body.filter(Boolean).map((row) => {

@@ -1,9 +1,4 @@
-import {
-  UCOLORS,
-  COLORS,
-  BORDER_RADIUS,
-  TRANSITION,
-} from '@variables/variables'
+import { COLORS, BORDER_RADIUS, TRANSITION } from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -204,12 +199,12 @@ export const NewLink = styled(Link)`
     transition: 0.3s;
     svg {
       path {
-        fill: #651ce4;
+        fill: #0e02ec;
       }
       defs {
         linearGradient {
           stop {
-            stop-color: #651ce4;
+            stop-color: #0e02ec;
           }
         }
       }
@@ -254,12 +249,12 @@ export const StyledPicture = styled.picture`
 export const StyledLink = styled.a`
   width: 36px;
   height: 36px;
-  background: ${UCOLORS.gray6};
+  background: ${(props) => props.theme.colors.gray6};
   border-radius: ${BORDER_RADIUS.md};
   transition: ${TRANSITION};
 
   &:hover {
-    background: ${COLORS.primary};
+    background: ${(props) => props.theme.colors.blue5};
 
     svg path:not(.not-fill) {
       fill: ${COLORS.white};

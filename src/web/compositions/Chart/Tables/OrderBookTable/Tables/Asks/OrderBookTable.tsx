@@ -1,21 +1,19 @@
-import React, { Component } from 'react'
-import { withTheme } from '@material-ui/styles'
-
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import React from 'react'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { IProps } from './OrderBookTable.types'
+import styled, { useTheme } from 'styled-components'
 
+import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
+import { useOpenOrders } from '@sb/dexUtils/markets'
+
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { getDataFromTree } from '@core/utils/chartPageUtils'
 
-import defaultRowRenderer, { getRowHeight } from '../../utils'
-import { AsksWrapper } from '../../OrderBookTableContainer.styles'
-import styled from 'styled-components'
-import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 import useMobileSize from '@webhooks/useMobileSize'
-import { useOpenOrders } from '@sb/dexUtils/markets'
+
+import { AsksWrapper } from '../../OrderBookTableContainer.styles'
+import defaultRowRenderer, { getRowHeight } from '../../utils'
 
 const StyledTable = styled(Table)`
   & .ReactVirtualized__Grid__innerScrollContainer {
@@ -31,7 +29,6 @@ const StyledTable = styled(Table)`
 
 const OrderBookTable = ({
   data,
-  theme,
   mode,
   aggregation,
   openOrderHistory,
@@ -42,6 +39,7 @@ const OrderBookTable = ({
   terminalViewMode,
 }) => {
   const isMobile = useMobileSize()
+  const theme = useTheme()
   const openOrders = useOpenOrders()
   const tableData =
     isMobile && terminalViewMode === 'mobileChart'
@@ -51,7 +49,7 @@ const OrderBookTable = ({
     tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 
   const [base, quote] = currencyPair.split('_')
-
+  console.log('theme', theme)
   return (
     <AsksWrapper
       terminalViewMode={terminalViewMode}
@@ -77,7 +75,7 @@ const OrderBookTable = ({
                 terminalViewMode,
               })}
               headerStyle={{
-                color: theme.palette.grey.text,
+                color: theme.colors.gray1,
                 paddingLeft: '.5rem',
                 paddingTop: '.25rem',
                 marginLeft: 0,
@@ -120,7 +118,7 @@ const OrderBookTable = ({
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width}
                 style={{
-                  color: theme.palette.red.main,
+                  color: theme.colors.obRedFont,
                   fontFamily: 'Avenir Next Demi',
                   ...(isMobile ? { fontSize: '1.8rem' } : {}),
                 }}
@@ -133,7 +131,7 @@ const OrderBookTable = ({
                   width={width}
                   style={{
                     textAlign: 'left',
-                    color: theme.palette.white.primary,
+                    color: theme.colors.gray0,
                   }}
                 />
               )}
@@ -148,7 +146,7 @@ const OrderBookTable = ({
                 width={width}
                 style={{
                   textAlign: 'right',
-                  color: theme.palette.white.primary,
+                  color: theme.colors.gray0,
                   ...(isMobile ? { fontSize: '1.8rem' } : {}),
                 }}
               />

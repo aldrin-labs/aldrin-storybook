@@ -1,8 +1,10 @@
 import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { useLocalStorageState } from '@sb/dexUtils/utils'
 import useMobileSize from '@webhooks/useMobileSize'
 import React, { useState } from 'react'
+
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+
 import {
   BlackButton,
   Container,
@@ -33,9 +35,9 @@ export const MobileBanner = ({
   const onClose = () => setIsPopupOpen(false)
 
   return (
-    <Container showOnTheBottom={true} direction="column" padding="6rem 4rem">
+    <Container showOnTheBottom direction="column" padding="6rem 4rem">
       <RowContainer justify="space-between" margin="0 0 4rem 0">
-        <Row width="80%" direction={'column'} align={'flex-start'}>
+        <Row width="80%" direction="column" align="flex-start">
           <DemiText theme={theme} style={{ margin: '0 0 4rem 0' }}>
             {title}
           </DemiText>
@@ -48,16 +50,14 @@ export const MobileBanner = ({
       <RowContainer justify="space-between" style={{ marginBottom: '2rem' }}>
         <BlackButton
           disabled={false}
-          theme={theme}
-          hoverBackground={'#20292d'}
+          hoverBackground="#20292d"
           onClick={onClose}
         >
           Never show again.
         </BlackButton>
         <BlackButton
           disabled={false}
-          theme={theme}
-          hoverBackground={'#20292d'}
+          hoverBackground="#20292d"
           onClick={() => setIsPopupTemporaryHidden(true)}
         >
           Ok.

@@ -41,14 +41,14 @@ export const SwapAmountInput = ({
       roundSides={roundSides}
     >
       <RowContainer justify="space-between">
-        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="#C9C8CD">
+        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="gray1">
           {title}
         </Text>
         <Row>
           <Text
             fontSize={FONT_SIZES.sm}
             fontFamily="Avenir Next Demi"
-            color="#91e073"
+            color="green3"
             padding="0 0.8rem 0 0"
           >
             {maxAmount ? stripByAmount(maxAmount) : '0.00'}

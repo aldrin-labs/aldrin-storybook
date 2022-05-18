@@ -1,16 +1,13 @@
-import React, { PureComponent } from 'react'
-import styled from 'styled-components'
-import { withTheme } from '@material-ui/styles'
-import { IProps, IState } from './TradeHistoryTable.types'
-
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import React from 'react'
 import { Column, Table } from 'react-virtualized'
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import styled, { useTheme } from 'styled-components'
+
 import 'react-virtualized/styles.css'
 
-import { rowStyles } from '@core/utils/chartPageUtils'
+import useMobileSize from '@webhooks/useMobileSize'
 
 import defaultRowRenderer from '../../OrderBookTable/utils'
-import useMobileSize from '@webhooks/useMobileSize'
 
 const Wrapper = styled.div`
   height: calc(100% - 3rem);
@@ -18,12 +15,12 @@ const Wrapper = styled.div`
 
 const TradeHistoryTable = ({
   data,
-  theme,
   updateTerminalPriceFromOrderbook,
   amountForBackground,
   quantityPrecision,
 }) => {
   const isMobile = useMobileSize()
+  const theme = useTheme()
 
   return (
     <Wrapper>
@@ -32,7 +29,7 @@ const TradeHistoryTable = ({
           <Table
             headerHeight={height / 19}
             headerStyle={{
-              color: theme.palette.grey.text,
+              color: theme.colors.gray1,
               paddingLeft: '.5rem',
               paddingTop: '.25rem',
               marginLeft: 0,
@@ -72,13 +69,13 @@ const TradeHistoryTable = ({
               label="Size"
               dataKey="size"
               width={width}
-              style={{ color: theme.palette.white.primary }}
+              style={{ color: theme.colors.white }}
             />
             <Column
               label="time"
               dataKey="time"
               width={width}
-              style={{ color: theme.palette.white.primary }}
+              style={{ color: theme.colors.white }}
             />
           </Table>
         )}

@@ -1,5 +1,5 @@
-import { Theme } from '@material-ui/core'
 import React from 'react'
+import { DefaultTheme } from 'styled-components'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -31,7 +31,7 @@ export const InputWithCoins = ({
   needAlreadyInPool = true,
   onChange,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   value: string | number
   symbol: string
   alreadyInPool?: number
@@ -44,7 +44,7 @@ export const InputWithCoins = ({
     <Row style={{ position: 'relative' }} padding="1rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="2rem">
-        <Text color={theme.palette.grey.title}>{symbol}</Text>
+        <Text color="gray1">{symbol}</Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="2rem">
         <InvisibleInput
@@ -94,7 +94,7 @@ export const InputWithCoins = ({
           {needAlreadyInPool && (
             <>
               {' '}
-              <Text color={theme.palette.grey.title} fontSize="1.2rem">
+              <Text color="gray1" fontSize="1.2rem">
                 Already in pool:
               </Text>
               &nbsp;
@@ -108,7 +108,7 @@ export const InputWithCoins = ({
               &nbsp;
             </>
           )}
-          <Text color={theme.palette.grey.title} fontSize="1.2rem">
+          <Text color="gray1" fontSize="1.2rem">
             &nbsp;Max:
           </Text>
           &nbsp;
@@ -125,14 +125,14 @@ export const InputWithTotal = ({
   theme,
   value,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   value: number
 }) => {
   return (
     <Row style={{ position: 'relative' }} padding="1rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="2rem">
-        <Text color={theme.palette.grey.title}>Total</Text>
+        <Text color="gray1">Total</Text>
       </TokenContainer>
       <TokenContainer left="2rem" bottom="2rem">
         <Text fontSize="2rem" fontFamily="Avenir Next Demi">
@@ -159,7 +159,7 @@ export const InputWithSelector = ({
   onChange,
   openSelectCoinPopup,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   value: string | number
   symbol: string
   disabled?: boolean
@@ -173,7 +173,7 @@ export const InputWithSelector = ({
     <Row style={{ position: 'relative' }} padding="2rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="3rem">
-        <Text color={theme.palette.grey.title}>{symbol}</Text>
+        <Text color={theme.colors.gray1}>{symbol}</Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="3rem">
         <InvisibleInput
@@ -204,7 +204,7 @@ export const InputWithSelector = ({
       {!isSelectToken && (
         <TokenContainer right="2rem" top="3rem">
           <Row style={{ flexWrap: 'nowrap' }}>
-            <Text color={theme.palette.grey.title} fontSize="1.2rem">
+            <Text color={theme.colors.gray1} fontSize="1.2rem">
               &nbsp;Max:
             </Text>
             &nbsp;
@@ -227,7 +227,7 @@ export const SimpleInput = ({
   onChange,
   placeholder,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   value: string | number
   symbol: string
   disabled?: boolean
@@ -239,7 +239,7 @@ export const SimpleInput = ({
     <Row style={{ position: 'relative' }} padding="2rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="3rem">
-        <Text color={theme.palette.grey.title}>{symbol}</Text>
+        <Text color="gray1">{symbol}</Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="3rem">
         <InvisibleInput
@@ -268,7 +268,7 @@ export const SimpleInput = ({
       </TokenContainer>
       <TokenContainer right="2rem" top="3rem">
         <Row style={{ flexWrap: 'nowrap' }}>
-          <Text color={theme.palette.grey.title} fontSize="1.2rem">
+          <Text color="gray1" fontSize="1.2rem">
             &nbsp;Max:
           </Text>
           &nbsp;

@@ -1,7 +1,4 @@
-import { UCOLORS } from '@variables/variables'
 import styled, { css, keyframes } from 'styled-components'
-
-import { SvgIcon } from '@sb/components'
 
 import { Block, BlockContent } from '../Block'
 import { Page } from '../Layout'
@@ -54,7 +51,7 @@ export const ModalBody = styled(Block)`
   max-width: 80em;
   max-height: 95vh;
   overflow: auto;
-  background: ${UCOLORS.gray6};
+  background: ${(props) => props.theme.colors.gray6};
 `
 
 export const ModalContent = styled(BlockContent)`
@@ -63,6 +60,7 @@ export const ModalContent = styled(BlockContent)`
 
 export const ModalTitle = styled.h3`
   margin: 0;
+  color: ${(props) => props.theme.colors.gray0};
 `
 
 export const ModalTitleContainer = styled.div`
@@ -73,6 +71,14 @@ export const ModalTitleContainer = styled.div`
   margin: 20px;
 `
 
-export const CloseIcon = styled(SvgIcon)`
+export const CloseIcon = styled.div`
   cursor: pointer;
+  width: 2rem;
+  height: 3rem;
+
+  svg {
+    path {
+      stroke: ${(props) => props.theme.colors.gray0};
+    }
+  }
 `

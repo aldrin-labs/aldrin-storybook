@@ -9,7 +9,7 @@ export const TimerButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #17181a;
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 0.8rem;
   cursor: pointer;
   margin: ${(props: { margin?: string }) => props.margin || '0 3rem 0 0'};
@@ -72,7 +72,6 @@ export const ReloadTimer = ({
           showTime ? (
             <span
               style={{
-                color: '#fafafa',
                 fontFamily: 'Avenir Next',
                 fontSize: FONT_SIZES.xs,
                 ...timeStyles,
