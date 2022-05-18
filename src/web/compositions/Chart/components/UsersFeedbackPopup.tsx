@@ -154,7 +154,6 @@ const Popup = ({
               margin: isMobile ? '15rem 0 0 0' : '6rem 0 0 0',
             }}
             disabled={false}
-            theme={theme}
             onClick={() => {
               submitFeedback(false)
               onClose()

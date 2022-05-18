@@ -189,7 +189,6 @@ export default function TokenDialog({
           </WhiteButton>
           <BlueButton
             isUserConfident={!isDisabled}
-            theme={theme}
             width="calc(50% - .5rem)"
             disabled={isDisabled}
             onClick={async () => {

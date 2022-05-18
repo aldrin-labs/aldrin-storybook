@@ -359,7 +359,6 @@ const ListingRequestPopup = ({
           <BlueButton
             style={{ width: '100%', margin: '6rem 0 0 0' }}
             disabled={false}
-            theme={theme}
             onClick={() => {
               submitRequest(false)
               onClose()

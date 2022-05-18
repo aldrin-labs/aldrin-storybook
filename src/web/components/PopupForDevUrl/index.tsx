@@ -89,7 +89,6 @@ const DevUrlPopup = ({
               textTransform: 'none',
             }}
             isUserConfident
-            theme={theme}
             onClick={() => {}}
           >
             Go to dex.aldrin.com
