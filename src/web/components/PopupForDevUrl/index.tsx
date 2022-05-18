@@ -7,12 +7,13 @@ import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.styles'
 
 import Warning from '@icons/newWarning.svg'
+
+import { InlineText } from '../Typography'
 
 const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   height: auto;
@@ -56,7 +57,7 @@ const DevUrlPopup = ({
         <BoldHeader style={{ textAlign: 'left', marginBottom: '6rem' }}>
           Hello, this page is for developers only.
         </BoldHeader>
-        <Text>
+        <InlineText>
           To avoid loss of funds or confusing situations, please leave it. You
           probably wanted to get to
           <a
@@ -72,7 +73,7 @@ const DevUrlPopup = ({
             dex.aldrin.com
           </a>
           .
-        </Text>
+        </InlineText>
       </RowContainer>
       <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <a

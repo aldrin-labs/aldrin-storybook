@@ -21,8 +21,7 @@ export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 60rem;
   height: auto;
-  background: #222429;
-  border: 0.1rem solid #3a475c;
+  background: ${(props) => props.theme.colors.gray6};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -67,8 +66,8 @@ export const BlueButton = styled(
   border: none;
 
   background-color: ${(props) =>
-    !props.disabled ? props.theme.colors.blue5 : props.theme.colors.gray5};
-  color: ${(props) => (!props.disabled ? '#f8faff' : '#fff')};
+    !props.disabled ? props.theme.colors.blue5 : props.theme.colors.disabled};
+  color: #fff;
 `
 
 export const WarningPopup = ({
@@ -94,7 +93,7 @@ export const WarningPopup = ({
     >
       <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
         <Title>Warning!</Title>
-        <SvgIcon src={Warning} width="10%" height="auto" />
+        <SvgIcon src={Warning} width="6%" height="auto" />
       </RowContainer>
       <RowContainer direction="column" style={{ marginBottom: '2rem' }}>
         {isSwapPage ? (
