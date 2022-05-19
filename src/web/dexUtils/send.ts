@@ -24,7 +24,10 @@ import {
   CancelOrderParams,
 } from '@sb/dexUtils/types'
 
-import { createTokenAccountTransaction, mergeTransactions } from '@core/solana'
+import {
+  createAssociatedTokenAccountTransaction,
+  mergeTransactions,
+} from '@core/solana'
 
 import { getCache } from './fetch-loop'
 import { getReferrerQuoteWallet } from './getReferrerQuoteWallet'
@@ -132,7 +135,7 @@ export async function getSettleFundsTransaction({
   let quoteCurrencyAccountPubkey = quoteTokenAccount?.pubkey
 
   if (!baseCurrencyAccountPubkey) {
-    const result = await createTokenAccountTransaction({
+    const result = await createAssociatedTokenAccountTransaction({
       wallet,
       mintPublicKey: market.baseMintAddress,
     })
@@ -140,7 +143,7 @@ export async function getSettleFundsTransaction({
     createAccountTransaction = result?.transaction
   }
   if (!quoteCurrencyAccountPubkey) {
-    const result = await createTokenAccountTransaction({
+    const result = await createAssociatedTokenAccountTransaction({
       wallet,
       mintPublicKey: market.quoteMintAddress,
     })
@@ -375,7 +378,7 @@ const createTokenAccount = async (
   transaction?: Transaction
 ) => {
   const { transaction: createAccountTransaction, newAccountPubkey } =
-    await createTokenAccountTransaction({
+    await createAssociatedTokenAccountTransaction({
       wallet,
       mintPublicKey,
     })
@@ -740,4 +743,4 @@ export async function listMarket({
 export const isTransactionFailed = (result: SendSignedTransactionResult) =>
   result === 'failed' || result === 'timeout'
 
-export { createTokenAccountTransaction }
+export { createAssociatedTokenAccountTransaction as createTokenAccountTransaction }
