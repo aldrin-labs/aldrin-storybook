@@ -406,7 +406,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   )
 
   const userEstRewardsUSD = isBalancesShowing
-    ? stripByAmountAndFormat(estimatedRewards, 2)
+    ? strippedEstRewardsUSD
     : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
 
   return (
