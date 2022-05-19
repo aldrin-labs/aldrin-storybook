@@ -308,12 +308,7 @@ export const Coin = styled(TradingItemTitle)`
 `
 
 export const UpdatedCoin = styled(Coin)`
-  color: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.grey &&
-      props.theme.palette.grey.text) ||
-    '#7284a0'};
+  color: ${(props) => props.theme.colors.gray1};
 
   font-size: 1.2rem;
 

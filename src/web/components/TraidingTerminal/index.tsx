@@ -227,7 +227,6 @@ export const TradeInputContent = ({
         onClick={(e) => handleSelect(e)}
       />
       <UpdatedCoin
-        theme={theme}
         right={symbolRightIndent || (symbol.length <= 2 ? '2.5rem' : '1rem')}
       >
         {symbol}

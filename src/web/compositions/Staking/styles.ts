@@ -113,7 +113,7 @@ export const GrayLink = styled(Link)`
 `
 
 export const Line = styled.div`
-  border-top: 0.05em solid ${(props) => props.theme.colors.gray11};
+  border-top: 0.05em solid ${(props) => props.theme.colors.line};
   height: 0em;
   margin: 2em 0 1em 0;
   width: 100%;

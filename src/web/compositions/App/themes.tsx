@@ -70,6 +70,7 @@ export const dark = {
     logo: '#F5F5FB',
     border: '#302F41',
     block: '#383b45',
+    line: '#0B0B12FF',
     disabled: 'rgba(48, 47, 65, 0.25)',
     primaryWhite: '#fff',
     obGreebBack: 'rgba(143, 255, 200, 0.25)',
@@ -150,6 +151,7 @@ export const light = {
     black: '#F9F9F9FF', //
     logo: '#050505', //
     border: '#FAFAFA',
+    line: '#E8E8E9FF',
     block: '#A9A9B2',
     disabled: 'rgb(214, 216, 224)',
     primaryWhite: '#fff',
