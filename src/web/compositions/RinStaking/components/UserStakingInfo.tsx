@@ -6,6 +6,7 @@ import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
@@ -35,7 +36,6 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { getRINCirculationSupply } from '@core/api'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { STAKING_PROGRAM_ADDRESS } from '@core/solana'
 import {

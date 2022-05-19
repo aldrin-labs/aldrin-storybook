@@ -3,8 +3,7 @@ import React from 'react'
 import { SvgIcon } from '@sb/components'
 import { Text } from '@sb/components/Typography'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-
-import { useSolanaTPS } from '@core/hooks/useSolanaTPS'
+import { useSolanaTPS } from '@sb/hooks/useSolanaTPS'
 
 import BlackWarningIcon from '@icons/blackWarning.svg'
 

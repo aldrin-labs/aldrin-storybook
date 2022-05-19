@@ -3,6 +3,7 @@ import { BN } from 'bn.js'
 import dayjs from 'dayjs'
 import React from 'react'
 
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { useConnection } from '@sb/dexUtils/connection'
 import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
@@ -14,7 +15,6 @@ import {
 } from '@sb/dexUtils/vesting'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { estimateTime } from '@core/utils/dateUtils'

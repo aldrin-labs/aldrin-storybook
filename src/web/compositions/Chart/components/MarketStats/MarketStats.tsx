@@ -1,16 +1,20 @@
+import { Theme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import { compose } from 'recompose'
+
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
+import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
+import { useInterval } from '@sb/dexUtils/useInterval'
+
+import { getRINCirculationSupply } from '@core/api'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
-import { Theme } from '@material-ui/core'
-import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
-import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
-import { compose } from 'recompose'
-import { useInterval } from '@sb/dexUtils/useInterval'
+
 import {
   MarketStatsContainer,
   MobileMarketStatsContainer,
@@ -19,7 +23,6 @@ import {
   PanelCardTitle,
   PanelCardValue,
 } from '../../Chart.styles'
-import { getRINCirculationSupply } from '@core/api'
 
 export interface MarketDataByTicker {
   tradesCount: number
@@ -257,7 +260,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               </PanelCardValue>
             </PanelCard>
           </>
-        )} 
+        )}
       </MarketStatsContainer>
       <MobileMarketStatsContainer>
         <Title

@@ -2,8 +2,7 @@ import * as React from 'react'
 import { compose } from 'recompose'
 
 import ReactSelectComponent from '@sb/components/ReactSelectComponent/index'
-
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
+import { withMarketUtilsHOC } from '@sb/hoc'
 
 import { IRow } from './SelectCoinList.types'
 
@@ -23,7 +22,9 @@ class SelectCoinList extends React.PureComponent {
       market.name.split('/').forEach((v: string) => splittedMarkets.push(v))
     })
 
-    splittedMarkets = [...new Set(splittedMarkets)].map((coin) => ({ symbol: coin }))
+    splittedMarkets = [...new Set(splittedMarkets)].map((coin) => ({
+      symbol: coin,
+    }))
 
     const coinOptions = splittedMarkets
       .slice()
@@ -31,15 +32,24 @@ class SelectCoinList extends React.PureComponent {
       .filter(needAdditionalFiltering ? additionalFiltering : (a) => a)
       .map(needAdditionalMapping ? additionalMapping : (a) => a)
       .sort((a: IRow, b: IRow) => a.symbol.localeCompare(b.symbol))
-      .map(({ name, symbol, priceUSD, priceBTC, alreadyExist = false, dustFiltered = false }) => ({
-        name,
-        label: symbol,
-        value: symbol,
-        priceUSD,
-        priceBTC,
-        alreadyExist,
-        dustFiltered,
-      }))
+      .map(
+        ({
+          name,
+          symbol,
+          priceUSD,
+          priceBTC,
+          alreadyExist = false,
+          dustFiltered = false,
+        }) => ({
+          name,
+          label: symbol,
+          value: symbol,
+          priceUSD,
+          priceBTC,
+          alreadyExist,
+          dustFiltered,
+        })
+      )
 
     if (changeRowToShow) {
       return coinOptions.map((option) => changeRowToShow(option))
@@ -49,7 +59,13 @@ class SelectCoinList extends React.PureComponent {
   }
 
   render() {
-    const { placeholder = '', inputValue = undefined, filterCoin = '', markets, ...otherPropsForSelect } = this.props
+    const {
+      placeholder = '',
+      inputValue = undefined,
+      filterCoin = '',
+      markets,
+      ...otherPropsForSelect
+    } = this.props
 
     const options = this.combineDataToSelectOptions(markets)
 

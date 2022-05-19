@@ -1,39 +1,35 @@
-import React, { useEffect, useState } from 'react'
-
-import { Text } from '@sb/compositions/Addressbook/index'
 import { Theme, withTheme } from '@material-ui/core'
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import SvgIcon from '@sb/components/SvgIcon'
+import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
+import { PublicKey } from '@solana/web3.js'
+import React, { useEffect, useState } from 'react'
+import { graphql } from 'react-apollo'
+import { Link, useHistory } from 'react-router-dom'
+import { compose } from 'recompose'
 
+import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { Loading } from '@sb/components/Loading'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import SvgIcon from '@sb/components/SvgIcon'
+import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
+import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
+import { useConnection, useConnectionConfig } from '@sb/dexUtils/connection'
+import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
+import { encode, isValidPublicKey } from '@sb/dexUtils/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { withMarketUtilsHOC } from '@sb/hoc'
+
+import { getDexProgramIdByEndpoint } from '@core/config/dex'
+import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
+import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
+import { writeQueryData } from '@core/utils/TradingTable.utils'
 
 import CloseIcon from '@icons/closeIcon.svg'
 import CoolIcon from '@icons/coolIcon.svg'
 
-import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { encode, isValidPublicKey } from '@sb/dexUtils/utils'
-import { notify } from '@sb/dexUtils/notifications'
-import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { useConnection, useConnectionConfig } from '@sb/dexUtils/connection'
-import { PublicKey } from '@solana/web3.js'
-import { getDexProgramIdByEndpoint } from '@core/config/dex'
-import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
-import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
-import { compose } from 'recompose'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
-import { writeQueryData } from '@core/utils/TradingTable.utils'
-import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { Link, useHistory } from 'react-router-dom'
-import { Loading } from '@sb/components/Loading'
-import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
-import { graphql } from 'react-apollo'
-import {
-  categoriesOfMarkets,
-  defaultRequestDataState,
-} from './ListingRequestPopup.config'
 import {
   BlueButton,
   Form,
@@ -44,6 +40,10 @@ import {
   StyledLabel,
   StyledTab,
 } from '../../Inputs/SelectWrapper/SelectWrapperStyles'
+import {
+  categoriesOfMarkets,
+  defaultRequestDataState,
+} from './ListingRequestPopup.config'
 import {
   BannerContainer,
   BT1,

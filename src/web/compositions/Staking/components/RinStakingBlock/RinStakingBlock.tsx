@@ -2,10 +2,10 @@ import { PublicKey } from '@solana/web3.js'
 import React from 'react'
 
 import { BlockTitle, BlockContent } from '@sb/components/Block'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 

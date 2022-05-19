@@ -15,6 +15,7 @@ import {
   Column,
 } from '@sb/components/Layout'
 import { ProgressBar } from '@sb/components/ProgressBarBlock/ProgressBar'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -28,7 +29,6 @@ import {
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { PU238_TOKEN_MINT } from '@core/solana'
 import {

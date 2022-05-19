@@ -1,20 +1,17 @@
-import React, { useEffect } from 'react'
-import { compose } from 'recompose'
 import { withTheme } from '@material-ui/core/styles'
+import React from 'react'
+import { compose } from 'recompose'
 
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { withPublicKey } from '@core/hoc/withPublicKey'
+import { withMarketUtilsHOC } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
-import TopBar from './components/TopBar/TopBar'
+import { BlockTemplate } from '../Pools/index.styles'
+import AreaVolumeChart from './components/AreaCharts/AreaVolumeChart'
+import AverageButterflyChart from './components/ButterflyCharts/AverageButterflyChart'
+import CountButterflyChart from './components/ButterflyCharts/CountButterflyChart'
 import MarketInfo from './components/MarketInfo/MarketInfo'
 import PairSelector from './components/PairSelector'
-import AreaVolumeChart from './components/AreaCharts/AreaVolumeChart'
-import CountButterflyChart from './components/ButterflyCharts/CountButterflyChart'
-import AverageButterflyChart from './components/ButterflyCharts/AverageButterflyChart'
-
-import { IProps } from './index.types'
-
+import TopBar from './components/TopBar/TopBar'
 import {
   Row,
   RowContainer,
@@ -22,7 +19,7 @@ import {
   MainContentContainer,
   TopBarContainer,
 } from './index.styles'
-import { BlockTemplate } from '../Pools/index.styles'
+import { IProps } from './index.types'
 
 const AnalyticsRoute = ({
   markets,
@@ -34,15 +31,15 @@ const AnalyticsRoute = ({
 
   return (
     <Container theme={theme}>
-      <RowContainer height={'100%'} direction={'column'}>
-        <TopBarContainer theme={theme} justify={'space-between'}>
+      <RowContainer height="100%" direction="column">
+        <TopBarContainer theme={theme} justify="space-between">
           <TopBar theme={theme} />
         </TopBarContainer>
-        <MainContentContainer height={'100%'}>
+        <MainContentContainer height="100%">
           <BlockTemplate
-            width={'calc(17% - .4rem)'}
-            height={'calc(100% - .1rem)'}
-            margin={'0 0.4rem 0 0'}
+            width="calc(17% - .4rem)"
+            height="calc(100% - .1rem)"
+            margin="0 0.4rem 0 0"
             theme={theme}
           >
             <PairSelector
@@ -52,9 +49,9 @@ const AnalyticsRoute = ({
             />
           </BlockTemplate>
           <Row
-            width={'calc(83% - 0.4rem)'}
-            margin={'0 0 0 0.4rem'}
-            height={'100%'}
+            width="calc(83% - 0.4rem)"
+            margin="0 0 0 0.4rem"
+            height="100%"
             style={{ overflowY: 'auto' }}
           >
             {isAllMarketsSelected ? null : (
@@ -65,14 +62,14 @@ const AnalyticsRoute = ({
               />
             )}
             <RowContainer
-              height={'calc(50% - 0.4rem)'}
-              margin={'0 0 .4rem 0'}
+              height="calc(50% - 0.4rem)"
+              margin="0 0 .4rem 0"
               theme={theme}
             >
               <BlockTemplate
-                width={'calc(50% - .4rem)'}
-                height={'100%'}
-                margin={'0 .4rem 0 0'}
+                width="calc(50% - .4rem)"
+                height="100%"
+                margin="0 .4rem 0 0"
                 theme={theme}
                 style={{ position: 'relative' }}
               >
@@ -82,9 +79,9 @@ const AnalyticsRoute = ({
                 />
               </BlockTemplate>
               <BlockTemplate
-                width={'calc(50% - .4rem)'}
-                height={'100%'}
-                margin={'0 0 0 .4rem'}
+                width="calc(50% - .4rem)"
+                height="100%"
+                margin="0 0 0 .4rem"
                 theme={theme}
                 style={{ position: 'relative' }}
               >
@@ -95,9 +92,9 @@ const AnalyticsRoute = ({
               </BlockTemplate>
             </RowContainer>
             <BlockTemplate
-              width={'100%'}
-              height={'calc(50% - 0.4rem)'}
-              margin={'.4rem 0 0 0'}
+              width="100%"
+              height="calc(50% - 0.4rem)"
+              margin=".4rem 0 0 0"
               theme={theme}
               style={{ position: 'relative' }}
             >

@@ -2,12 +2,12 @@ import { Theme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { useMarket } from '@sb/dexUtils/markets'
 
 import { getRINCirculationSupply } from '@core/api'
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   formatNumberToUSFormat,

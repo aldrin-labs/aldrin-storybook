@@ -1,34 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { compose } from 'recompose'
 import { Theme } from '@material-ui/core'
+import React from 'react'
+import { compose } from 'recompose'
 
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import {
-  PanelCard,
-  PanelCardTitle,
-  PanelCardValue,
-  PanelCardSubValue,
-} from '@sb/compositions/Chart/Chart.styles'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-  roundAndFormatNumber,
-} from '@core/utils/PortfolioTableUtils'
 import { getPrice } from '@core/graphql/queries/chart/getPrice'
-import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
-import { updatePriceQuerryFunction } from '@sb/compositions/Chart/components/MarketStats/MarketStats.utils'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
-import {
-  Row,
-  BlockContainer,
-  GreenTitle,
-  SerumTitleBlockContainer,
-  SerumWhiteTitle,
-  Text,
-  TopBarTitle,
-} from '../../index.styles'
+import { Text } from '../../index.styles'
 
 export interface IProps {
   marketType: 0 | 1

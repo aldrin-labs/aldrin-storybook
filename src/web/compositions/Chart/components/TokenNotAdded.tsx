@@ -24,8 +24,8 @@ import {
   useBalanceInfo,
   useWallet,
 } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import greenDoneMark from '@icons/greenDoneMark.svg'

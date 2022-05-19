@@ -1,21 +1,19 @@
-import React, { Component } from 'react'
-import { withTheme } from '@material-ui/styles'
-
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import React from 'react'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { IProps } from './OrderBookTable.types'
+import styled from 'styled-components'
+
+import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
+import { useOpenOrders } from '@sb/dexUtils/markets'
+import { withErrorFallback } from '@sb/hoc'
 
 import { getDataFromTree } from '@core/utils/chartPageUtils'
 
-import defaultRowRenderer, { getRowHeight } from '../../utils'
-import { AsksWrapper } from '../../OrderBookTableContainer.styles'
-import styled from 'styled-components'
-import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 import useMobileSize from '@webhooks/useMobileSize'
-import { useOpenOrders } from '@sb/dexUtils/markets'
+
+import { AsksWrapper } from '../../OrderBookTableContainer.styles'
+import defaultRowRenderer, { getRowHeight } from '../../utils'
 
 const StyledTable = styled(Table)`
   & .ReactVirtualized__Grid__innerScrollContainer {

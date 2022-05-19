@@ -6,6 +6,7 @@ import { compose } from 'recompose'
 
 import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -29,13 +30,12 @@ import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withRegionCheck } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
+import { useJupiterSwap } from '@sb/hooks/useJupiter/useJupiterSwap'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { useJupiterSwap } from '@core/hooks/useJupiter/useJupiterSwap'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,

@@ -1,11 +1,11 @@
 import React from 'react'
 
-import QueryRenderer from '@core/components/QueryRenderer'
+import QueryRenderer from '@sb/components/QueryRenderer'
+
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 
-
-import { TradeHistoryTable } from '../Tables/Tables'
 import { TradeHistoryWrapper } from '../Chart.styles'
+import { TradeHistoryTable } from '../Tables/Tables'
 
 export const TradeHistory = ({
   updateTerminalPriceFromOrderbook,
@@ -28,7 +28,7 @@ export const TradeHistory = ({
   return (
     <TradeHistoryWrapper
       theme={theme}
-      key={`tradehistory_table`}
+      key="tradehistory_table"
       className="ExchangesTable"
       variant={{
         show: showTableOnMobile === 'TRADE',
@@ -39,7 +39,7 @@ export const TradeHistory = ({
         withOutSpinner
         query={MARKET_QUERY}
         variables={{ symbol, exchange: 'serum', marketType }}
-        fetchPolicy={'network-only'}
+        fetchPolicy="network-only"
         {...{
           quote,
           activeExchange,

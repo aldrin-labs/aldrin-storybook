@@ -13,8 +13,6 @@ import {
 import TokenNotAddedPopup from '@sb/compositions/Chart/components/TokenNotAdded'
 import { isCCAITradingEnabled } from '@sb/dexUtils/utils'
 
-import TradingComponent from '@core/components/TradingComponent'
-
 import {
   BalancesContainer,
   ChartAndOrderbookContainer,
@@ -29,6 +27,7 @@ import {
   OrderBookGrid,
   TradeHistoryGrid,
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
+import TradingComponent from '../TradingComponent'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
