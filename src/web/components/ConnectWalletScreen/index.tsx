@@ -1,4 +1,3 @@
-import { Theme, withTheme } from '@material-ui/core'
 import React, { ReactNode, useState } from 'react'
 
 import { TooltipRegionBlocker } from '@sb/components'
@@ -13,7 +12,6 @@ import { Button } from '../Button'
 import { LogoContainer } from './styles'
 
 interface ConnectWalletContentProps {
-  theme: Theme
   size?: 'button-only' | 'md' | 'sm'
   text?: ReactNode
 }
@@ -50,7 +48,7 @@ const SIZES = {
 }
 
 const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
-  const { theme, size = 'md', text = 'Connect your wallet to begin.' } = props
+  const { size = 'md', text = 'Connect your wallet to begin.' } = props
   const sizes = SIZES[size]
   const isButtonOnly = size === 'button-only'
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
@@ -90,7 +88,6 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
         </span>
       </TooltipRegionBlocker>
       <ConnectWalletPopup
-        theme={theme}
         open={isConnectWalletPopupOpen && !isFromRestrictedRegion}
         onClose={() => setIsConnectWalletPopupOpen(false)}
       />
@@ -139,9 +136,9 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
   )
 }
 
-export const ConnectWalletInner = withTheme()(ConnectWalletContent)
+export const ConnectWalletInner = ConnectWalletContent
 
-export const ConnectWalletScreen = ({ theme }: { theme: Theme }) => {
+export const ConnectWalletScreen = () => {
   return (
     <RowContainer
       direction="column"

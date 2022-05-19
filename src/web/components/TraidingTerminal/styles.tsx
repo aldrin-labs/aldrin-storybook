@@ -215,7 +215,7 @@ export const TradeInput = styled.input`
   border-radius: 0.7rem;
   border-top-right-radius: ${(props) => props.haveSelector && '0'};
   border-bottom-right-radius: ${(props) => props.haveSelector && '0'};
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.gray0};
   background-color: ${(props) => props.theme.colors.gray5};
   font-size: 1.3rem;
 
@@ -358,6 +358,13 @@ export const SendButton = styled(StyledTab)`
     border-radius: 2rem;
     font-size: 2rem;
   }
+
+  &:hover {
+    background-color: ${(props) =>
+      props.type === 'buy'
+        ? props.theme.colors.green7 || '#29AC80'
+        : props.theme.colors.red3 || '#DD6956'};
+  }
 `
 
 export const SmartTradeButton = styled(SendButton)`
@@ -429,12 +436,7 @@ export const BlueInputTitle = styled(SeparateInputTitle)`
 
 export const AbsoluteInputTitle = styled(Coin)`
   left: 1rem;
-  color: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.grey &&
-      props.theme.palette.grey.custom) ||
-    '#ABBAD1'};
+  color: ${(props) => props.theme.colors.gray1};
   font-size: 1.2rem;
   width: 0;
   white-space: nowrap;
@@ -459,8 +461,8 @@ export const PercentageTab = styled.button`
   outline: none;
   cursor: pointer;
   &:focus {
-    background: ${(props) => props.theme.colors.blue3};
-    border: ${(props) => `0.1rem solid ${props.theme.colors.blue3}`};
+    background: ${(props) => props.theme.colors.gray3};
+    border: ${(props) => `0.1rem solid ${props.theme.colors.gray3}`};
     font-family: Avenir Next Demi;
     color: #f8faff;
   }

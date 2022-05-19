@@ -110,7 +110,7 @@ const SpreadTable = ({
                 headerStyle={{ textAlign: 'left', paddingRight: '.9rem' }}
                 style={{
                   textAlign: 'left',
-                  color: theme.colors.gray1,
+                  color: theme.colors.gray0,
                 }}
               />
             )}
@@ -124,7 +124,7 @@ const SpreadTable = ({
               }}
               style={{
                 textAlign: 'right',
-                color: theme.colors.gray1,
+                color: theme.colors.gray0,
                 ...(isMobile ? { fontSize: '1.8rem' } : {}),
               }}
             />

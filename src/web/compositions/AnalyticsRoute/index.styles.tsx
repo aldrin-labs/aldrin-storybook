@@ -153,7 +153,7 @@ export const Text = styled.div`
 export const Title = styled(({ color, fontSize, fontFamily, ...rest }) => (
   <span {...rest} />
 ))`
-  color: ${(props) => props.color || '#fff'};
+  color: ${(props) => props.color || props.theme.colors.white};
   font-size: ${(props) => props.fontSize || '1.6rem'};
   font-family: ${(props) => props.fontFamily || 'Avenir Next'};
 `

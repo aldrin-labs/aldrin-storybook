@@ -216,15 +216,15 @@ const styles = (theme: Theme) =>
       },
     },
     rowWithHover: {
-      '&:hover': {
-        borderRadius: '32px',
-        backgroundColor: theme.palette.hover[theme.palette.type], // TODO theme.palette.action.hover,
-      },
-      '&:hover td': {
-        backgroundColor: `${
-          theme.palette.hover[theme.palette.type]
-        } !important`, // TODO theme.palette.action.hover,
-      },
+      // '&:hover': {
+      //   borderRadius: '32px',
+      //   backgroundColor: theme.palette.hover[theme.palette.type], // TODO theme.palette.action.hover,
+      // },
+      // '&:hover td': {
+      //   backgroundColor: `${
+      //     theme.palette.hover[theme.palette.type]
+      //   } !important`, // TODO theme.palette.action.hover,
+      // },
     },
     rowWithHoverBorderRadius: {
       '& td:first-child': {

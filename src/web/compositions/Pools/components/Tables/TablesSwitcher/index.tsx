@@ -1,9 +1,9 @@
-import { COLORS } from '@variables/variables'
 import { ApolloQueryResult } from 'apollo-client'
 import React, { useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
+import { DefaultTheme } from 'styled-components'
 
 import { FlexBlock } from '@sb/components/Layout'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -67,6 +67,7 @@ interface TableSwitcherProps {
   getWeeklyAndDailyTradingVolumesForPoolsQuery: {
     getWeeklyAndDailyTradingVolumesForPools?: TradingVolumeStats[]
   }
+  theme: DefaultTheme
 }
 
 const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
@@ -77,6 +78,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
     getFeesEarnedByPoolQuery: { getFeesEarnedByPool = [] },
     getWeeklyAndDailyTradingVolumesForPoolsQuery,
+    theme,
   } = props
 
   const [searchValue, setSearchValue] = useState('')
@@ -352,14 +354,14 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: COLORS.white,
+    loaderColor: (props) => props.theme.colors.white,
   }),
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfoRequest,
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 2),
-    loaderColor: COLORS.white,
+    loaderColor: (props) => props.theme.colors.white,
   }),
   queryRendererHoc({
     query: getFeesEarnedByAccountRequest,
@@ -370,7 +372,7 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    loaderColor: COLORS.white,
+    loaderColor: (props) => props.theme.colors.white,
   }),
   queryRendererHoc({
     name: 'getFeesEarnedByPoolQuery',
@@ -378,7 +380,7 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    loaderColor: COLORS.white,
+    loaderColor: (props) => props.theme.colors.white,
     // TODO: Comment before merge
     variables: () => ({
       timestampFrom: endOfHourTimestamp() - DAY,
@@ -391,7 +393,7 @@ export const TableSwitcher = compose<TableSwitcherProps, any>(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
-    loaderColor: COLORS.white,
+    loaderColor: (props) => props.theme.colors.white,
     variables: () => ({
       dailyTimestampTo: endOfHourTimestamp(),
       dailyTimestampFrom: endOfHourTimestamp() - DAY,

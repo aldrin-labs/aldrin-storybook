@@ -26,7 +26,7 @@ export const ThContent = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.gray1};
 `
 
 export const Th = styled.th`

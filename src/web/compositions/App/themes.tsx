@@ -53,6 +53,7 @@ export const dark = {
     blue2: '#908BF6FF',
     blue1: '#B4B1F9FF',
     blue0: '#E7E6FDFF',
+    gray11: '#3F3F50',
     gray10: '#14131FFF',
     gray9: '#0B0B12FF',
     gray8: '#2b2d36',
@@ -60,7 +61,7 @@ export const dark = {
     gray6: '#212030FF',
     gray5: '#2F2F40FF',
     gray4: '#3F3E4FFF',
-    gray3: '#5A5972FF',
+    gray3: '#5B5A72',
     gray2: '#96999c',
     gray1: '#A8A8B2FF',
     gray0: '#E8E8E9FF',
@@ -77,6 +78,7 @@ export const dark = {
     obRedFont: 'rgba(255, 128, 104, 1)',
     tooltip: '#222429',
     greenChart: ['rgba(143, 255, 200, 0.25)', 'rgba(143, 255, 200, 0)'],
+    shadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.45)',
   },
 }
 
@@ -132,7 +134,7 @@ export const light = {
     blue2: '#908BF6FF',
     blue1: '#B4B1F9FF',
     blue0: '#E7E6FDFF',
-    gray11: '#212030FF',
+    gray11: '#D4D4D7',
     gray10: '#FAFAFA',
     gray9: '#FAFAFA',
     gray8: '#A9A9B2', // gray buttons
@@ -140,7 +142,7 @@ export const light = {
     gray6: '#F3F3F7', // inputs, hovers for gray5
     gray5: '#ECECF2', // popups, blocks, etc.
     gray4: '#FFFFFF',
-    gray3: '#5A5972FF',
+    gray3: '#A9A9B2',
     gray2: '#A8A8B2FF',
     gray1: '#82819CFF', // dark gray
     gray0: '#212131', // almost black
@@ -157,6 +159,7 @@ export const light = {
     obRedFont: 'rgba(255, 65, 29, 1)',
     tooltip: 'rgb(214, 216, 224)',
     greenChart: ['rgba(0, 232, 120, 0.31)', 'rgba(0, 244, 126, 0)'],
+    shadow: '0px 0px 8px 0px rgba(169, 169, 178, 1)',
   },
 }
 

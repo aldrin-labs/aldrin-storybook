@@ -23,6 +23,8 @@ import favouriteSelected from '@icons/favouriteSelected.svg'
 import favouriteUnselected from '@icons/favouriteUnselected.svg'
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+import starSelected from '@icons/starSelected.svg'
+import starUnselected from '@icons/starUnselected.svg'
 
 import { ISelectData, SelectTabType } from './SelectWrapper.types'
 import {
@@ -401,7 +403,17 @@ export const combineSelectWrapperData = ({
       id: `${symbol}`,
       favourite: {
         isSortable: false,
-        render: (
+        render: symbol.includes('RIN') ? (
+          <SvgIcon
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleFavouriteMarket(symbol)
+            }}
+            src={favouritePairsMap.get(symbol) ? starSelected : starUnselected}
+            width="2.5rem"
+            height="auto"
+          />
+        ) : (
           <SvgIcon
             onClick={(e) => {
               e.stopPropagation()

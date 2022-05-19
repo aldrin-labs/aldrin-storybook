@@ -1,9 +1,10 @@
-import { Theme } from '@material-ui/core'
 import { Market, OpenOrders } from '@project-serum/serum'
 import React from 'react'
+import { DefaultTheme } from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Button } from '@sb/components/Button'
+import { InlineText } from '@sb/components/Typography'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { FundsType } from '@core/types/ChartTypes'
@@ -14,7 +15,7 @@ import { StyledTitle } from '../TradingTable.styles'
 export const combineBalancesTable = (
   fundsData: FundsType[],
   onSettleFunds: (market: Market, openOrders: OpenOrders) => void,
-  theme: Theme,
+  theme: DefaultTheme,
   showSettle: boolean
 ) => {
   if (!fundsData && !Array.isArray(fundsData)) {
@@ -28,23 +29,26 @@ export const combineBalancesTable = (
       const { coin, wallet, orders, unsettled, market, openOrders } = el
       return {
         id: `${coin}${wallet}${unsettled}${i}`,
-        coin: { render: coin || 'unknown', showOnMobile: false },
+        coin: {
+          render: <InlineText> {coin || 'unknown'}</InlineText>,
+          showOnMobile: false,
+        },
         columnForMobile: {
           render: (
             <RowContainer height="20rem" padding="0 2rem">
               <RowContainer style={{ width: '40%' }} direction="column">
                 <RowContainer justify="flex-start">
-                  <StyledTitle color="#fbf2f2">{coin}</StyledTitle>
+                  <StyledTitle color={theme.colors.gray1}>{coin}</StyledTitle>
                 </RowContainer>
                 <RowContainer justify="space-between">
                   <StyledTitle>Wallet</StyledTitle>
-                  <StyledTitle color="#fbf2f2">
+                  <StyledTitle color={theme.colors.gray1}>
                     {roundAndFormatNumber(wallet, 8, true) || '0'}
                   </StyledTitle>
                 </RowContainer>
                 <RowContainer justify="space-between">
                   <StyledTitle>Unsettled</StyledTitle>
-                  <StyledTitle color="#fbf2f2">
+                  <StyledTitle color={theme.colors.gray1}>
                     {roundAndFormatNumber(unsettled, 8, true) || '0'}
                   </StyledTitle>
                 </RowContainer>
@@ -58,9 +62,9 @@ export const combineBalancesTable = (
                   textTransform="none"
                   padding=".5rem 1rem .4rem 1rem"
                   borderRadius="1.4rem"
-                  btnColor={theme.palette.dark.main}
-                  borderColor={theme.palette.blue.serum}
-                  backgroundColor={theme.palette.blue.serum}
+                  btnColor={theme.colors.primaryWhite}
+                  borderColor={theme.colors.blue5}
+                  backgroundColor={theme.colors.blue5}
                   transition="all .4s ease-out"
                   margin="0 0 0 2rem"
                   onClick={() => onSettleFunds(market, openOrders)}
@@ -73,19 +77,31 @@ export const combineBalancesTable = (
           showOnMobile: true,
         },
         wallet: {
-          render: roundAndFormatNumber(wallet, 8, true) || '0',
+          render: (
+            <InlineText size="md">
+              {roundAndFormatNumber(wallet, 8, true) || '0'}
+            </InlineText>
+          ),
           style: { textAlign: 'left' },
           contentToSort: +wallet,
           showOnMobile: false,
         },
         orders: {
-          render: roundAndFormatNumber(orders, 8, true) || '0',
+          render: (
+            <InlineText size="md">
+              {roundAndFormatNumber(orders, 8, true) || '0'}
+            </InlineText>
+          ),
           style: { textAlign: 'left' },
           contentToSort: +orders,
           showOnMobile: false,
         },
         unsettled: {
-          render: roundAndFormatNumber(unsettled, 8, true) || '0',
+          render: (
+            <InlineText size="md">
+              {roundAndFormatNumber(unsettled, 8, true) || '0'}
+            </InlineText>
+          ),
           style: { textAlign: 'left' },
           contentToSort: +unsettled,
           showOnMobile: false,

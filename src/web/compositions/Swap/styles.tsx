@@ -79,8 +79,8 @@ export const ValueInput = styled.input`
   height: 2em;
   padding: 0.5em 0.8em;
   font-family: Avenir Next Medium;
-  color: ${(props) => props.theme.colors.gray1};
-  background-color: ${(props) => props.theme.colors.gray9};
+  color: ${(props) => props.theme.colors.gray0};
+  background-color: ${(props) => props.theme.colors.gray5};
   border: none;
   font-size: ${FONT_SIZES.sm};
   border-radius: 0.8rem;
@@ -149,6 +149,7 @@ export const ReverseTokensContainer = styled(CircleIconContainer)`
   position: absolute;
   right: 1rem;
   top: 50%;
+  box-shadow: ${(props) => props.theme.colors.shadow};
   transform: translateY(-50%);
   cursor: pointer;
   z-index: 2;
@@ -210,7 +211,7 @@ export const SetAmountButton = styled(Button)`
   font-family: ${FONTS.demi};
   border-radius: ${BORDER_RADIUS.xxl};
   color: ${(props) => props.theme.colors.gray1};
-  background-color: ${(props) => props.theme.colors.gray4};
+  background-color: ${(props) => props.theme.colors.gray11};
   border: none;
   padding: ${PADDINGS.xs};
 

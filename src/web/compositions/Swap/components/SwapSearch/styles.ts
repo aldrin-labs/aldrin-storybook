@@ -14,7 +14,7 @@ export const SearchInput = styled(Input)`
   background: none;
   margin: 0;
   border: 0.1rem solid ${(props) => props.theme.colors.gray5};
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.gray5};
 
   div {
     width: 100%;

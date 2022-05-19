@@ -1,4 +1,4 @@
-import { Paper, Theme, withTheme } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -34,18 +34,15 @@ export const Title = styled.span`
 `
 
 const ConnectWalletPopup = ({
-  theme,
   onClose,
   open,
 }: {
-  theme: Theme
   onClose: () => void
   open: boolean
 }) => {
   const { setAutoConnect, setProvider } = useWallet()
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
@@ -103,6 +100,4 @@ const ConnectWalletPopup = ({
   )
 }
 
-const WithTheme = withTheme()(ConnectWalletPopup)
-
-export { WithTheme as ConnectWalletPopup }
+export { ConnectWalletPopup }

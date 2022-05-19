@@ -1,7 +1,7 @@
-import { COLORS } from '@variables/variables'
 import Chart from 'chart.js/auto'
 import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import { Block, BlockContent } from '@sb/components/Block'
 import {
@@ -27,6 +27,7 @@ const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
   const chartRef = useRef<Chart | null>(null)
 
   const { getTradingVolumeHistoryQuery } = props
+  const theme = useTheme()
 
   const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
 
@@ -77,7 +78,7 @@ export const ChartBlockInnerWithData = compose(
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: COLORS.white,
+    loaderColor: (props) => props.theme.colors.white,
   })
 )(ChartBlockInner)
 

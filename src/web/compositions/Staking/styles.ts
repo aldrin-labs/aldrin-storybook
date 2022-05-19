@@ -51,7 +51,7 @@ export const GrayButton = styled.button`
 
   &:hover {
     background: ${(props) => props.theme.colors.blue5};
-    color: ${(props) => props.theme.colors.white};
+    color: #fff;
     transition: 0.3s;
   }
 
@@ -99,7 +99,7 @@ export const GrayLink = styled(Link)`
 
   &:hover {
     background: ${(props) => props.theme.colors.blue5};
-    color: ${(props) => props.theme.colors.gray0};
+    color: #fff;
     transition: 0.3s;
   }
 
@@ -113,7 +113,7 @@ export const GrayLink = styled(Link)`
 `
 
 export const Line = styled.div`
-  border-top: 0.05em solid ${COLORS.cardsBack};
+  border-top: 0.05em solid ${(props) => props.theme.colors.gray11};
   height: 0em;
   margin: 2em 0 1em 0;
   width: 100%;

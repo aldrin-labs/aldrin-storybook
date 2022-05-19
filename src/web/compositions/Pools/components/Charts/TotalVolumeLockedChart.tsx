@@ -1,4 +1,3 @@
-import { COLORS } from '@variables/variables'
 import Chart from 'chart.js/auto'
 import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
@@ -79,7 +78,7 @@ const TotalVolumeLockedChartInner = compose(
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: COLORS.white,
+    loaderColor: (props) => props.theme.colors.white,
   })
 )(ChartInner)
 
