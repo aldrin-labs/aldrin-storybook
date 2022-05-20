@@ -1,7 +1,7 @@
 import {
   InitializeFarmingParams,
   walletAdapterToWallet,
-  initializeFarmingTransaction,
+  buildInitializeFarmingTransaction,
 } from '@core/solana'
 
 import { signAndSendSingleTransaction } from '../../transactions'
@@ -11,7 +11,7 @@ export const initializeFaming = async (
   params: InitializeFarmingParams<WalletAdapter>
 ) => {
   const walletWithPk = walletAdapterToWallet(params.wallet)
-  const [transaction, signers] = await initializeFarmingTransaction({
+  const [transaction, signers] = await buildInitializeFarmingTransaction({
     ...params,
     wallet: walletWithPk,
   })

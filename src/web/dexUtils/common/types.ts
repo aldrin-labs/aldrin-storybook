@@ -1,6 +1,8 @@
 import { AccountInfo, PublicKey, Transaction, Signer } from '@solana/web3.js'
 import BN from 'bn.js'
 
+import { FarmingState } from '@core/types/pools.types'
+
 import { u64 } from '../token/token'
 
 export type FarmingTicket = {
@@ -22,22 +24,6 @@ export type StateAttached = {
   farmingState: string
   lastVestedWithdrawTime: number
   lastWithdrawTime: number
-}
-
-export type FarmingState = {
-  farmingState: string
-  farmingTokenVault: string
-  farmingTokenMint: string
-  farmingTokenMintDecimals: number
-  farmingSnapshots: string
-  tokensUnlocked: number
-  tokensTotal: number
-  startTime: number
-  currentTime: number | null
-  tokensPerPeriod: number
-  periodLength: number
-  vestingPeriod: number
-  feesDistributed: boolean
 }
 
 export type BlockchainFarmingState = {
@@ -116,3 +102,5 @@ export interface FarmingCalc {
   publicKey: PublicKey
   tokenAmount: u64
 }
+
+export { FarmingState }

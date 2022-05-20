@@ -1,5 +1,4 @@
 import { TokenInstructions } from '@project-serum/serum'
-import Wallet from '@project-serum/sol-wallet-adapter'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
@@ -11,6 +10,7 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
+import { noop } from 'lodash-es'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
@@ -73,10 +73,13 @@ export const WalletProvider: React.FC = ({ children }) => {
   )
 
   const wallet = useMemo(() => {
-    return new (provider?.adapter || Wallet)(
+    const adapter = (provider?.adapter || noop)(
       providerUrl,
       endpoint
-    ) as WalletAdapter
+    ) as any as WalletAdapter
+
+    console.log('adapter:', adapter)
+    return adapter
   }, [provider, endpoint])
 
   const connectWalletHash = useMemo(

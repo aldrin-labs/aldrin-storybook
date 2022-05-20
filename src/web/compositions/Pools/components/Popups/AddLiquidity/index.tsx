@@ -30,14 +30,14 @@ import { createBasketWithSwap } from '@sb/dexUtils/pools/actions/createBasketWit
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
-import { findClosestAmountToSwapForDeposit } from '@sb/dexUtils/pools/swap/findClosestAmountToSwapForDeposit'
-import { getFeesAmount } from '@sb/dexUtils/pools/swap/getFeesAmount'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { STABLE_POOLS_WITH_IMPERMANENT_LOSS } from '@core/config/dex'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { findClosestAmountToSwapForDeposit } from '@core/utils/swap/findClosestAmountToSwapForDeposit'
+import { getFeesAmount } from '@core/utils/swap/getFeesAmount'
 
 import Close from '@icons/closeIcon.svg'
 import Info from '@icons/TooltipImg.svg'

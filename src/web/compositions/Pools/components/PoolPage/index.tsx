@@ -13,7 +13,6 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks'
-import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -22,6 +21,7 @@ import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
+import { getMinimumReceivedAmountFromSwap } from '@core/utils/swap/getMinimumReceivedAmountFromSwap'
 
 import { PoolWithOperation } from '../../index.types'
 import { AddLiquidityPopup } from '../Popups/AddLiquidity'

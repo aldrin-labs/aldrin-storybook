@@ -4,7 +4,7 @@ import BN from 'bn.js'
 import { isTransactionFailed } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { swapTransaction } from '@core/solana'
+import { buildSwapTransaction } from '@core/solana'
 
 import { signAndSendSingleTransaction } from '../../transactions'
 
@@ -31,7 +31,7 @@ export const swap = async ({
   transferSOLToWrapped: boolean
   curveType: number | null
 }) => {
-  const swapTransactionAndSigners = await swapTransaction({
+  const swapTransactionAndSigners = await buildSwapTransaction({
     wallet,
     connection,
     poolPublicKey,

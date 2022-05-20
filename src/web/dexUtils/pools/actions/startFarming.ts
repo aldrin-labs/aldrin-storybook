@@ -9,10 +9,12 @@ import {
 import BN from 'bn.js'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { ProgramsMultiton } from '@core/solana'
 
-import { getPoolsProgramAddress } from '@core/solana'
-import { AldrinConnection } from '@core/solana'
+import {
+  ProgramsMultiton,
+  getPoolsProgramAddress,
+  AldrinConnection,
+} from '@core/solana'
 
 import { signAndSendTransactions } from '../../transactions/signAndSendTransactions'
 

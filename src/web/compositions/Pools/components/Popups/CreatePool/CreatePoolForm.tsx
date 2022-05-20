@@ -27,7 +27,7 @@ import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { SendTransactionStatus, createPoolTransactions } from '@core/solana'
+import { SendTransactionStatus, buildCreatePoolTransactions } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
@@ -194,7 +194,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
       try {
         const { transactions: generatedTransactions, pool } =
-          await createPoolTransactions({
+          await buildCreatePoolTransactions({
             wallet,
             connection,
             baseTokenMint: new PublicKey(values.baseToken.mint),

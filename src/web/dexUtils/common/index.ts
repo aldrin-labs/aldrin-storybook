@@ -1,4 +1,5 @@
 import { PublicKey, Transaction } from '@solana/web3.js'
+
 import { WalletAdapter } from '../types'
 
 interface WalletLike {
@@ -8,13 +9,13 @@ interface WalletLike {
 }
 
 export const walletAdapterToWallet = (w: WalletAdapter): WalletLike => {
-  const { publicKey } = w
-  if (!publicKey) {
-    throw new Error(
-      'Could not create Wallet from adapter: PublicKey is not defined'
-    )
+  if (w.publicKey) {
+    return w as any as WalletLike
   }
-  return { ...w, publicKey }
+
+  throw new Error(
+    'Could not create Wallet from adapter: PublicKey is not defined'
+  )
 }
 
 export const NUMBER_OF_RETRIES = 5

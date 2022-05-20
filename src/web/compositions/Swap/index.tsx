@@ -19,12 +19,6 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import {
-  getPoolsForSwapActiveTab,
-  getSelectedPoolForSwap,
-  getDefaultBaseToken,
-  getDefaultQuoteToken,
-} from '@sb/dexUtils/pools/swap/index'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { signAndSendTransactions } from '@sb/dexUtils/transactions'
@@ -46,6 +40,12 @@ import {
   stripDigitPlaces,
   formatNumberToUSFormat,
 } from '@core/utils/PortfolioTableUtils'
+import {
+  getPoolsForSwapActiveTab,
+  getSelectedPoolForSwap,
+  getDefaultBaseToken,
+  getDefaultQuoteToken,
+} from '@core/utils/swap'
 
 import ArrowRightIcon from '@icons/arrowRight.svg'
 import ReverseArrows from '@icons/reverseArrows.svg'
