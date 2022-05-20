@@ -1,4 +1,5 @@
 import React, { ReactNode, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { TooltipRegionBlocker } from '@sb/components'
 import {
@@ -7,7 +8,6 @@ import {
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 
-import { COLORS } from '../../../variables/variables'
 import { Button } from '../Button'
 import { LogoContainer } from './styles'
 
@@ -139,11 +139,12 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
 export const ConnectWalletInner = ConnectWalletContent
 
 export const ConnectWalletScreen = () => {
+  const theme = useTheme()
   return (
     <RowContainer
       direction="column"
       height="100%"
-      style={{ background: COLORS.mainBlack }}
+      style={{ background: theme.colors.gray9 }}
     >
       <ConnectWalletInner />
     </RowContainer>

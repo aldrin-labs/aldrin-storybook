@@ -21,7 +21,7 @@ import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { Button } from '../Button'
 import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { ConfirmationPopup } from './ConfirmationPopup'
@@ -853,49 +853,30 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               {!connected ? (
                 <>
                   <ConnectWalletDropdownContainer>
-                    <BtnCustom
+                    <Button
+                      $variant="primary"
+                      $width="xl"
+                      $padding="lg"
+                      $fontSize="lg"
                       onClick={() => {
                         this.setState({
                           isConnectWalletPopupOpen: true,
                         })
                       }}
-                      btnColor="#F8FAFF"
-                      backgroundColor="#0E02EC"
-                      btnWidth="35rem"
-                      borderColor="#0E02EC"
-                      textTransform="capitalize"
-                      height="4.5rem"
-                      borderRadius="1rem"
-                      fontSize="1.5rem"
-                      style={{
-                        display: 'flex',
-                        textTransform: 'none',
-                        padding: '1rem',
-                      }}
                     >
                       Connect wallet
-                    </BtnCustom>
+                    </Button>
                   </ConnectWalletDropdownContainer>
                   <ConnectWalletButtonContainer>
-                    <BtnCustom
-                      theme={theme}
+                    <Button
+                      $variant="primary"
+                      $width="xl"
+                      $padding="lg"
+                      $fontSize="lg"
                       onClick={() => this.setState({ isWalletPopupOpen: true })}
-                      needMinWidth={false}
-                      btnWidth="100%"
-                      height="6rem"
-                      fontSize="1.6rem"
-                      padding="2rem 8rem"
-                      borderRadius="1.5rem"
-                      borderColor="#0E02EC"
-                      btnColor="#fff"
-                      backgroundColor="#0E02EC"
-                      textTransform="none"
-                      margin="1rem 0 0 0"
-                      transition="all .4s ease-out"
-                      style={{ whiteSpace: 'nowrap' }}
                     >
                       Connect wallet
-                    </BtnCustom>
+                    </Button>
                   </ConnectWalletButtonContainer>
                 </>
               ) : (

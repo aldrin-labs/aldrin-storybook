@@ -517,7 +517,7 @@ export const Placeholder = styled.div`
   font-size: 1.2rem;
   width: 100%;
   height: ${(props) => props.height || '4rem'};
-  background: #383b45;
+  background: ${(props) => props.theme.colors.gray6};
   border-radius: 1rem;
   padding: 0 2rem;
   font-family: Avenir Next Medium;

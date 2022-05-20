@@ -8,7 +8,7 @@ export const Container = styled(FlexBlock)`
   height: 72px;
   align-items: center;
   padding: 0 24px;
-  border: 1px solid ${(props) => props.theme.colors.border};
+  border: none;
   border-radius: ${BORDER_RADIUS.lg};
   font-family: ${FONTS.main};
   font-size: 20px;
@@ -22,8 +22,8 @@ export const DropdownArrow = styled.span`
   display: block;
   height: 6px;
   width: 6px;
-  border-left: 1px solid ${COLORS.white};
-  border-bottom: 1px solid ${COLORS.white};
+  border-left: 1px solid ${(props) => props.theme.colors.gray1};
+  border-bottom: 1px solid ${(props) => props.theme.colors.gray1};
   transform: rotate(-45deg);
   margin-left: auto;
 `

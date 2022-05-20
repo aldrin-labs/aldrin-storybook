@@ -79,7 +79,7 @@ const DonutChartWithLegend = ({
       <ChartContainer>
         <HeaderContainer theme={theme} justify="space-between">
           <RowContainer padding="2rem" style={{ flexWrap: 'nowrap' }}>
-            <WhiteTitle theme={theme} style={{ marginRight: '1rem' }}>
+            <WhiteTitle style={{ marginRight: '1rem' }}>
               {id === 'target' ? (
                 <DarkTooltip title="The final distribution may differ slightly from the set distribution due to differences in min. order size values in different markets, as well as market movements.">
                   <Row wrap="nowrap">

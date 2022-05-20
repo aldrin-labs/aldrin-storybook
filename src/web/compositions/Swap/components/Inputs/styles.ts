@@ -9,7 +9,7 @@ export const InputContainer = styled(RowContainer)`
   height: 4em;
   background: ${(props) =>
     props.disabled ? props.theme.colors.gray5 : props.theme.colors.gray5};
-  border: 0.1rem solid ${(props) => props.theme.colors.border};
+  border: none;
   border-radius: 0;
   ${(props) =>
     props.roundSides.map(
