@@ -94,7 +94,9 @@ const AppRaw = ({
   const theme = localStorage.getItem('theme')
 
   const [currentTheme, setCurrentTheme] = useState(theme)
-
+  if (!theme) {
+    localStorage.setItem('theme', 'dark')
+  }
   // const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
   //   useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
