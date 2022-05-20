@@ -146,7 +146,7 @@ export const light = {
     gray3: '#A9A9B2',
     gray2: '#A8A8B2FF',
     gray1: '#82819CFF', // dark gray
-    gray0: '#2a2933', // almost black
+    gray0: '#65666E', // almost black
     white: '#050405FF', //
     black: '#F9F9F9FF', //
     logo: '#050505', //
