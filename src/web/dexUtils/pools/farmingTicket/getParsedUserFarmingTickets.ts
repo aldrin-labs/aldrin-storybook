@@ -1,11 +1,14 @@
 import { Connection, PublicKey } from '@solana/web3.js'
-import { ProgramsMultiton } from '@core/solana'
+
+import { FarmingTicket } from '@sb/dexUtils/common/types'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
 import {
+  ProgramsMultiton,
   POOLS_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
 } from '@core/solana'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { FarmingTicket } from '@sb/dexUtils/common/types'
+
 import { loadFarmingTickets } from './loadFarmingTickets'
 import { parseFarmingTickets } from './parseFarmingTickets'
 

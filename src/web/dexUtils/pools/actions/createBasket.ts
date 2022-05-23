@@ -13,7 +13,7 @@ async function createBasket(params: CreateBasketParams) {
   try {
     const walletWithPk = walletAdapterToWallet(wallet)
 
-    const [commonTransaction, commonSigners] =
+    const { transaction: commonTransaction, signers: commonSigners } =
       await buildCreateBasketTransaction({
         ...params,
         wallet: walletWithPk,
