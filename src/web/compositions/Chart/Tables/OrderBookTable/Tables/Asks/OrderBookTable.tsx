@@ -131,7 +131,7 @@ const OrderBookTable = ({
                   width={width}
                   style={{
                     textAlign: 'left',
-                    color: theme.colors.gray0,
+                    color: theme.colors.white,
                   }}
                 />
               )}
@@ -146,7 +146,7 @@ const OrderBookTable = ({
                 width={width}
                 style={{
                   textAlign: 'right',
-                  color: theme.colors.gray0,
+                  color: theme.colors.white,
                   ...(isMobile ? { fontSize: '1.8rem' } : {}),
                 }}
               />

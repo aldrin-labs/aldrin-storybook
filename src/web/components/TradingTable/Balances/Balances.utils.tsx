@@ -111,6 +111,7 @@ export const combineBalancesTable = (
               settle: {
                 render: (
                   <Button
+                    $variant="primary"
                     $fontSize="lg"
                     style={{ margin: '0.3em 0' }}
                     onClick={() => onSettleFunds(market, openOrders)}
