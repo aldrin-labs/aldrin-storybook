@@ -215,19 +215,19 @@ const PlaceOrder = ({
   }
 
   const checkSide = (mintTo, mintFrom) => {
-    let side = null
     if (
       mintFrom === selectedPairSettings.baseTokenMint &&
       mintTo === selectedPairSettings.quoteTokenMint
     ) {
-      side = 'ask'
-    } else if (
+      return 'ask'
+    }
+    if (
       mintTo === selectedPairSettings.baseTokenMint &&
       mintFrom === selectedPairSettings.quoteTokenMint
     ) {
-      side = 'bid'
+      return 'bid'
     }
-    return side
+    throw new Error('Unlnown side')
   }
 
   const mints = [

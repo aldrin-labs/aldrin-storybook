@@ -15,7 +15,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { WALLET_PROVIDERS } from '@core/solana'
+import { WALLET_PROVIDERS, getMaxWithdrawAmount } from '@core/solana'
 
 import {
   useAccountInfo,
@@ -25,7 +25,6 @@ import {
 import { useAsyncData } from './fetch-loop'
 import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
 import { notify } from './notifications'
-import { getMaxWithdrawAmount } from './pools'
 import {
   getTokenAccountInfo,
   MINT_LAYOUT,
