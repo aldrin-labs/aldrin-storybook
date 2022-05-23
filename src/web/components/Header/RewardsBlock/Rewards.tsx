@@ -43,6 +43,19 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const connection = useConnection()
   const [data, reloadVesting] = useUserVestings()
 
+  if (!data) {
+    return (
+      <FlexBlock
+        direction="column"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Img src={Astronaut} width="96px" alt="Aldronaut" />
+        <br />
+        <Text align="center">Loading...</Text>
+      </FlexBlock>
+    )
+  }
   const rinVesting = data.find((v) => v.mint.equals(rinMint))
   const rinAccount = useAssociatedTokenAccount(RIN_MINT)
 
