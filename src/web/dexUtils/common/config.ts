@@ -1,20 +1,4 @@
 // (2 ** 63) - 1
-export const DEFAULT_FARMING_TICKET_END_TIME = '9223372036854775807'
-
-export const FARMING_TICKET_SIZE = 584
-export const FARMING_TICKET_OFFSET_OF_POOL_PUBLICKEY = 64
-export const FARMING_TICKET_OFFSET_OF_USER_PUBLICKEY = 32
-
-export const INSTANT_FARMING_REWARD_PART_NUMERATOR = 1
-export const INSTANT_FARMING_REWARD_PART_DENOMINATOR = 3
-
-export const VESTING_FARMING_REWARD_PART_NUMERATOR = 2
-export const VESTING_FARMING_REWARD_PART_DENOMINATOR = 3
-
-export const SNAPSHOT_QUEUE_SIZE = 37516
-export const NUMBER_OF_SNAPSHOTS_TO_CLAIM_PER_TRANSACTION = 25
-export const MIN_POOL_TOKEN_AMOUNT_TO_STAKE = 10000
-export const MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY = 10
 
 // staking
 export const STAKING_FARMING_STATE_SIZE = 170
@@ -28,3 +12,5 @@ export const Side = {
   Bid: { bid: {} },
   Ask: { ask: {} },
 }
+
+export * from '@core/solana/programs/staking/config'

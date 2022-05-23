@@ -1,16 +1,12 @@
-import { PublicKey, Transaction } from '@solana/web3.js'
+import { AuthorizedWalletAdapter } from '@core/solana'
 
 import { WalletAdapter } from '../types'
 
-interface WalletLike {
-  signTransaction(tx: Transaction): Promise<Transaction>
-  signAllTransactions(txs: Transaction[]): Promise<Transaction[]>
-  publicKey: PublicKey
-}
-
-export const walletAdapterToWallet = (w: WalletAdapter): WalletLike => {
+export const walletAdapterToWallet = (
+  w: WalletAdapter
+): AuthorizedWalletAdapter => {
   if (w.publicKey) {
-    return w as any as WalletLike
+    return w as any as AuthorizedWalletAdapter
   }
 
   throw new Error(

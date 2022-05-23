@@ -14,7 +14,6 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { PoolInfo, PoolWithOperation } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { endStaking } from '@sb/dexUtils/common/actions'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
@@ -22,6 +21,8 @@ import { UNLOCK_STAKED_AFTER } from '@sb/dexUtils/pools/filterTicketsAvailableFo
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
+
+import { filterOpenFarmingTickets } from '@core/solana'
 
 import Close from '@icons/closeIcon.svg'
 

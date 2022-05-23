@@ -17,11 +17,11 @@ import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { getMinimumReceivedAmountFromSwap } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
-import { getMinimumReceivedAmountFromSwap } from '@core/utils/swap/getMinimumReceivedAmountFromSwap'
 
 import { PoolWithOperation } from '../../index.types'
 import { AddLiquidityPopup } from '../Popups/AddLiquidity'

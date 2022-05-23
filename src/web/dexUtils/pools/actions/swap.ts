@@ -1,11 +1,12 @@
-import { Connection, PublicKey } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
 
 import { isTransactionFailed } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { buildSwapTransaction } from '@core/solana'
+import { buildSwapTransaction, AldrinConnection } from '@core/solana'
 
+import { walletAdapterToWallet } from '../../common'
 import { signAndSendSingleTransaction } from '../../transactions'
 
 export const swap = async ({
@@ -21,7 +22,7 @@ export const swap = async ({
   curveType,
 }: {
   wallet: WalletAdapter
-  connection: Connection
+  connection: AldrinConnection
   poolPublicKey: PublicKey
   userBaseTokenAccount: PublicKey | null
   userQuoteTokenAccount: PublicKey | null
@@ -31,31 +32,32 @@ export const swap = async ({
   transferSOLToWrapped: boolean
   curveType: number | null
 }) => {
-  const swapTransactionAndSigners = await buildSwapTransaction({
-    wallet,
-    connection,
-    poolPublicKey,
-    userBaseTokenAccount,
-    userQuoteTokenAccount,
-    swapAmountIn,
-    swapAmountOut,
-    isSwapBaseToQuote,
-    transferSOLToWrapped,
-    curveType,
-  })
-
-  if (!swapTransactionAndSigners) {
-    return 'failed'
-  }
-
-  const { commonTransaction, signers } = swapTransactionAndSigners
-
   try {
+    const w = walletAdapterToWallet(wallet)
+    const swapTransactionAndSigners = await buildSwapTransaction({
+      wallet: w,
+      connection,
+      poolPublicKey,
+      userBaseTokenAccount,
+      userQuoteTokenAccount,
+      swapAmountIn,
+      swapAmountOut,
+      isSwapBaseToQuote,
+      transferSOLToWrapped,
+      curveType,
+    })
+
+    if (!swapTransactionAndSigners) {
+      return 'failed'
+    }
+
+    const { transaction, signers } = swapTransactionAndSigners
+
     const tx = await signAndSendSingleTransaction({
-      wallet,
+      wallet: w,
       connection,
       signers,
-      transaction: commonTransaction,
+      transaction,
       focusPopup: true,
     })
 

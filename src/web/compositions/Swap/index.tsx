@@ -31,6 +31,12 @@ import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { useJupiterSwap } from '@core/hooks/useJupiter/useJupiterSwap'
 import {
+  getPoolsForSwapActiveTab,
+  getSelectedPoolForSwap,
+  getDefaultBaseToken,
+  getDefaultQuoteToken,
+} from '@core/solana'
+import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
   stripByAmount,
@@ -40,12 +46,6 @@ import {
   stripDigitPlaces,
   formatNumberToUSFormat,
 } from '@core/utils/PortfolioTableUtils'
-import {
-  getPoolsForSwapActiveTab,
-  getSelectedPoolForSwap,
-  getDefaultBaseToken,
-  getDefaultQuoteToken,
-} from '@core/utils/swap'
 
 import ArrowRightIcon from '@icons/arrowRight.svg'
 import ReverseArrows from '@icons/reverseArrows.svg'

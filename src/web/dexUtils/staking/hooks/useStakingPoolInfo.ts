@@ -6,13 +6,13 @@ import { getRINCirculationSupply } from '@core/api'
 import { client } from '@core/graphql/apolloClient'
 import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import { getCurrentFarmingStateFromAll } from '@core/solana'
 import { DAY } from '@core/utils/dateUtils'
 
 import {
   DAYS_TO_CHECK_BUY_BACK,
   STAKING_FARMING_TOKEN_DIVIDER,
 } from '../config'
-import { getCurrentFarmingStateFromAll } from '../getCurrentFarmingStateFromAll'
 import { StakingPool } from '../types'
 
 dayjs.extend(utc)

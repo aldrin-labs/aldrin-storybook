@@ -1,26 +1,25 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
-import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
-import { stripByAmount } from '@core/utils/chartPageUtils'
-import { dayDuration } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
-import {
-  DAYS_TO_CHECK_BUY_BACK,
-  STAKING_FARMING_TOKEN_DIVIDER,
-} from '@sb/dexUtils/staking/config'
-import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
-import { StakingPool } from '@sb/dexUtils/staking/types'
-import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { PublicKey } from '@solana/web3.js'
 import dayjs from 'dayjs'
 import React from 'react'
 import { compose } from 'recompose'
 
-import PinkBox from '@icons/pinkBox.png'
-import WhiteArrow from '@icons/longWhiteArrow.svg'
-
 import { SvgIcon } from '@sb/components'
 import { StyledLink, Text } from '@sb/compositions/Addressbook'
+import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
+import { StakingPool } from '@sb/dexUtils/staking/types'
+import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
+import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import { getCurrentFarmingStateFromAll } from '@core/solana'
+import { stripByAmount } from '@core/utils/chartPageUtils'
+import { dayDuration } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
+
+import WhiteArrow from '@icons/longWhiteArrow.svg'
+import PinkBox from '@icons/pinkBox.png'
+
 import { InfoBox } from '../../styles'
 
 interface StakingCardParams {
@@ -62,29 +61,21 @@ const StakingCard = (props: StakingCardParams) => {
 
   return (
     <InfoBox image={PinkBox}>
-      <Text
-        fontSize={'1.7rem'}
-        fontFamily={'Avenir Next Bold'}
-        whiteSpace="nowrap"
-      >
+      <Text fontSize="1.7rem" fontFamily="Avenir Next Bold" whiteSpace="nowrap">
         Stake RIN
       </Text>
-      <Text
-        fontSize={'1.4rem'}
-        fontFamily={'Avenir Next Bold'}
-        whiteSpace="nowrap"
-      >
+      <Text fontSize="1.4rem" fontFamily="Avenir Next Bold" whiteSpace="nowrap">
         <span style={{ fontFamily: 'Avenir Next Light' }}>with</span>{' '}
         {formattedAPR}% APR!
       </Text>
       <StyledLink
-        to={'/staking'}
+        to="/staking"
         needHover
-        fontSize={'1.7rem'}
-        fontFamily={'Avenir Next Bold'}
+        fontSize="1.7rem"
+        fontFamily="Avenir Next Bold"
         whiteSpace="nowrap"
       >
-        Stake Now <SvgIcon width={'3rem'} height={'0.75rem'} src={WhiteArrow} />
+        Stake Now <SvgIcon width="3rem" height="0.75rem" src={WhiteArrow} />
       </StyledLink>
     </InfoBox>
   )
@@ -103,9 +94,7 @@ export default compose(
     withoutLoading: true,
     pollInterval: 60000 * getRandomInt(5, 10),
     variables: () => {
-      const endOfDay = dayjs()
-        .endOf('day')
-        .unix()
+      const endOfDay = dayjs().endOf('day').unix()
 
       return {
         timestampFrom: endOfDay - dayDuration * DAYS_TO_CHECK_BUY_BACK,
