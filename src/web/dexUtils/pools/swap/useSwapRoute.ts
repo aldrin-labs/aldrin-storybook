@@ -1,9 +1,14 @@
 import { TransactionFeeInfo } from '@jup-ag/core'
 import { useEffect, useRef, useState } from 'react'
 
+import { PoolInfo } from '@sb/compositions/Pools/index.types'
+import { useOpenOrdersFromMarkets } from '@sb/compositions/Rebalance/utils/useOpenOrdersFromMarkets'
 import { getMarketsMintsEdges } from '@sb/dexUtils/common/getMarketsMintsEdges'
+import { useConnection } from '@sb/dexUtils/connection'
 import { useAllMarketsList } from '@sb/dexUtils/markets'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { AsyncSendSignedTransactionResult } from '@sb/dexUtils/types'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -12,15 +17,46 @@ import { useAllMarketsOrderbooks } from '../hooks/useAllMarketsOrderbooks'
 import { usePoolsBalances } from '../hooks/usePoolsBalances'
 import { getMarketsInSwapPaths } from './getMarketsInSwapPaths'
 import { getSwapRoute, SwapRoute } from './getSwapRoute'
-import { UseJupiterSwapRouteProps, UseJupiterSwapRouteResponse } from './types'
+import { multiSwap } from './multiSwap'
+
+type UseSwapRouteProps = {
+  pools: PoolInfo[]
+  inputMint: string
+  outputMint: string
+  slippage: number
+  selectedBaseTokenAddressFromSeveral?: string
+  selectedQuoteTokenAddressFromSeveral?: string
+}
+
+type UseSwapRouteResponse = {
+  price: number
+  swapRoute: SwapRoute
+  loading: boolean
+  inputAmount: string | number
+  outputAmount: string | number
+  depositAndFee: null
+  mints: string[]
+  refresh: () => void
+  setFieldAmount: (
+    newAmount: string | number,
+    field: 'input' | 'output',
+    inputMintFromArgs?: string,
+    outputMintFromArgs?: string
+  ) => void
+  exchange: () => AsyncSendSignedTransactionResult
+}
 
 export const useSwapRoute = ({
   pools = [],
   inputMint,
   outputMint,
   slippage = 0,
-}: UseJupiterSwapRouteProps): UseJupiterSwapRouteResponse => {
-  const tokenInfos = useTokenInfos()
+  selectedBaseTokenAddressFromSeveral,
+  selectedQuoteTokenAddressFromSeveral,
+}: UseSwapRouteProps): UseSwapRouteResponse => {
+  const { wallet } = useWallet()
+  const connection = useConnection()
+
   const allMarketsMap = useAllMarketsList()
 
   const [lastEnteredField, setLastEnteredField] = useState<'input' | 'output'>(
@@ -30,6 +66,11 @@ export const useSwapRoute = ({
   const [depositAndFee, setDepositAndFee] = useState<
     TransactionFeeInfo | undefined | null
   >(null)
+
+  const [openOrdersMap, refreshOpenOrdersMap, isLoadingOpenOrdersMap] =
+    useOpenOrdersFromMarkets()
+
+  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
 
   const [inputAmount, setInputAmount] = useState<string | number>('')
   const [outputAmount, setOutputAmount] = useState<string | number>('')
@@ -52,7 +93,9 @@ export const useSwapRoute = ({
   })
 
   const [poolsBalancesMap, refreshPoolsBalances] = usePoolsBalances({
-    pools: swapRoute?.map((step) => step.pool),
+    pools: swapRoute
+      ?.filter((step) => step.ammLabel === 'Aldrin')
+      .map((step) => step.pool),
   })
 
   const [marketsWithOrderbookMap, refreshMarketsWithOrderbook] =
@@ -76,7 +119,17 @@ export const useSwapRoute = ({
     marketsWithOrderbookMap,
   })
 
-  const setFieldAmount = async (
+  const refreshArgsRef = useRef({
+    inputAmount,
+    outputAmount,
+    inputMint,
+    outputMint,
+    lastEnteredField,
+    loading,
+    marketsWithOrderbookMap,
+  })
+
+  const setFieldAmount = (
     newAmount: string | number,
     field: 'input' | 'output',
     inputMintFromArgs?: string,
@@ -99,23 +152,42 @@ export const useSwapRoute = ({
 
       setLoading(true)
 
-      const updateSwapRoute = async () => {
+      const updateSwapRoute = () => {
         if (lastEnteredAmountTimeRef.current.timestamp > startTime) {
           return
         }
 
         setLastEnteredField(field)
 
-        const [newSwapRoute, swapAmountOut] = getSwapRoute({
-          pools,
-          field,
-          allMarketsMap,
-          baseTokenMint: inputMint,
-          quoteTokenMint: outputMint,
-          amountIn: +newAmount,
+        console.log('getSwapRoute', {
           poolsBalancesMap,
           marketsWithOrderbookMap,
         })
+
+        const result = getSwapRoute({
+          pools,
+          field,
+          slippage,
+          allMarketsMap,
+          baseTokenMint: inputMintForRoute,
+          quoteTokenMint: outputMintForRoute,
+          amountIn: +newAmount,
+          poolsBalancesMap,
+          marketsWithOrderbookMap:
+            refreshArgsRef.current.marketsWithOrderbookMap,
+        })
+
+        if (!result) {
+          if (typeof result !== 'object') {
+            console.log('not object hmmmmmmmm', result)
+          }
+
+          setLoading(false)
+          return
+        }
+
+        const [newSwapRoute, swapAmountOut] = result
+
         const strippedSwapAmountOut =
           swapAmountOut === 0 ? '' : stripDigitPlaces(swapAmountOut, 8)
         // const routeDepositAndFee = await swapRoute.getDepositAndFee()
@@ -143,6 +215,7 @@ export const useSwapRoute = ({
     baseTokenMint: inputMint,
     quoteTokenMint: outputMint,
     amountIn: 1,
+    poolsBalancesMap,
     marketsWithOrderbookMap,
   })
 
@@ -156,55 +229,95 @@ export const useSwapRoute = ({
   ]
 
   useEffect(() => {
-    const amountToUse =
-      lastEnteredField === 'input' ? inputAmount : outputAmount
-
-    setFieldAmount(amountToUse, lastEnteredField, inputMint, outputMint)
-  }, [inputMint, outputMint, slippage])
-
-  const refreshArgsRef = useRef({
+    refreshArgsRef.current = {
+      ...refreshArgsRef.current,
+      inputAmount,
+      outputAmount,
+      lastEnteredField,
+      loading,
+      marketsWithOrderbookMap,
+    }
+  }, [
     inputAmount,
     outputAmount,
-    inputMint,
-    outputMint,
     lastEnteredField,
-  })
+    loading,
+    marketsWithOrderbookMap,
+  ])
+
+  const refresh = async () => {
+    if (refreshArgsRef.current.loading) {
+      console.log('loading the path already')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      await refreshPoolsBalances()
+      await refreshMarketsWithOrderbook()
+
+      const amountToUse =
+        refreshArgsRef.current.lastEnteredField === 'input'
+          ? refreshArgsRef.current.inputAmount
+          : refreshArgsRef.current.outputAmount
+
+      await setFieldAmount(
+        amountToUse,
+        refreshArgsRef.current.lastEnteredField,
+        refreshArgsRef.current.inputMint,
+        refreshArgsRef.current.outputMint
+      )
+    } catch (e) {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     refreshArgsRef.current = {
-      inputAmount,
-      outputAmount,
+      ...refreshArgsRef.current,
       inputMint,
       outputMint,
-      lastEnteredField,
     }
-  }, [inputAmount, outputAmount, inputMint, outputMint, lastEnteredField])
 
-  const refresh = async () => {
-    const amountToUse =
-      refreshArgsRef.current.lastEnteredField === 'input'
-        ? refreshArgsRef.current.inputAmount
-        : refreshArgsRef.current.outputAmount
+    console.log({
+      isAllMarketsInSwapPathLoaded,
+      marketsWithOrderbookMap,
+    })
 
-    await refreshPoolsBalances()
-    await refreshMarketsWithOrderbook()
-    await setFieldAmount(
-      amountToUse,
-      refreshArgsRef.current.lastEnteredField,
-      refreshArgsRef.current.inputMint,
-      refreshArgsRef.current.outputMint
-    )
+    refresh()
+  }, [inputMint, outputMint, wallet.publicKey, slippage])
+
+  const exchange = async () => {
+    const result = await multiSwap({
+      wallet,
+      connection,
+      allTokensData,
+      swapRoute,
+      openOrdersMap,
+      selectedInputTokenAddressFromSeveral: selectedBaseTokenAddressFromSeveral,
+      selectedOutputTokenAddressFromSeveral:
+        selectedQuoteTokenAddressFromSeveral,
+    })
+
+    refreshOpenOrdersMap()
+
+    return result
   }
 
   return {
     price,
     swapRoute,
-    loading: loading || !isAllMarketsInSwapPathLoaded,
+    loading:
+      loading ||
+      !isAllMarketsInSwapPathLoaded ||
+      (isLoadingOpenOrdersMap && marketsInSwapPaths.length > 0),
     inputAmount,
     outputAmount,
     depositAndFee,
     mints,
     refresh,
+    exchange,
     setFieldAmount,
   }
 }

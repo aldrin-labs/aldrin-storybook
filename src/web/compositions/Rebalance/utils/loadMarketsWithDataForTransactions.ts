@@ -5,7 +5,7 @@ import { MarketsMap } from '@sb/dexUtils/markets'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 import { LoadedMarket, loadMarketsByNames } from './loadMarketsByNames'
-import { loadOpenOrdersFromMarkets } from './loadOpenOrdersFromMarkets'
+import { OpenOrdersMap } from './loadOpenOrdersFromMarkets'
 import { loadVaultSignersFromMarkets } from './loadVaultSignersFromMarkets'
 
 export type LoadedMarketWithDataForTransactions = Partial<LoadedMarket> & {
@@ -22,26 +22,23 @@ export const loadMarketsWithDataForTransactions = async ({
   connection,
   marketsNames,
   allMarketsMap,
+  openOrdersFromMarketsMap,
 }: {
   wallet: WalletAdapter
   connection: Connection
   marketsNames: string[]
   allMarketsMap: MarketsMap
+  openOrdersFromMarketsMap: OpenOrdersMap
 }): Promise<LoadedMarketsWithDataForTransactionsMap> => {
-  const [loadedMarketsMap, openOrdersMap] = await Promise.all([
+  const [loadedMarketsMap] = await Promise.all([
     loadMarketsByNames({
       connection,
       marketsNames,
       allMarketsMap,
     }),
-    loadOpenOrdersFromMarkets({
-      wallet,
-      connection,
-      allMarketsMap,
-    }),
   ])
 
-  const vaultSignersMap = loadVaultSignersFromMarkets({
+  const vaultSignersMap = await loadVaultSignersFromMarkets({
     allMarketsMap,
     marketsNames,
   })
@@ -49,14 +46,16 @@ export const loadMarketsWithDataForTransactions = async ({
   const marketsWithTransactionsDataMap: LoadedMarketsWithDataForTransactionsMap =
     [...loadedMarketsMap.entries()].reduce((acc, loadedMarket) => {
       const [marketName, loadedMarketData] = loadedMarket
-
-      const openOrders = openOrdersMap.get(marketName) || []
       const vaultSigner = vaultSignersMap.get(marketName)
+      const openOrders =
+        openOrdersFromMarketsMap.get(
+          loadedMarketData.market.address.toString()
+        ) || []
 
       return acc.set(marketName, {
         ...loadedMarketData,
-        openOrders,
         vaultSigner,
+        openOrders,
       })
     }, new Map())
 

@@ -9,6 +9,7 @@ import {
   LoadedMarketWithDataForTransactions,
   loadMarketsWithDataForTransactions,
 } from '@sb/compositions/Rebalance/utils/loadMarketsWithDataForTransactions'
+import { useOpenOrdersFromMarkets } from '@sb/compositions/Rebalance/utils/useOpenOrdersFromMarkets'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useAllMarketsList } from '@sb/dexUtils/markets'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -31,8 +32,10 @@ export const useAllMarketsOrderbooks = ({
   const { wallet } = useWallet()
   const connection = useConnection()
   const allMarketsMap = useAllMarketsList()
+  const [openOrdersFromMarketsMap] = useOpenOrdersFromMarkets()
 
   const fetcher = async (): Promise<LoadedMarketWithOrderbookMap> => {
+    console.log('refreshing useAllMarketsOrderbooks', { marketsNames })
     if (!marketsNames || marketsNames.length === 0) {
       return new Map()
     }
@@ -42,6 +45,7 @@ export const useAllMarketsOrderbooks = ({
       connection,
       marketsNames,
       allMarketsMap,
+      openOrdersFromMarketsMap,
     })
 
     console.log('loadedMarketsMap', loadedMarketsMap)
@@ -66,9 +70,9 @@ export const useAllMarketsOrderbooks = ({
     return marketsWithOrderbook
   }
 
-  const key = `all-markets-with-orderbook-${marketsNames
-    .map((name) => `${name}`)
-    .join('-')}`
+  const key = `${
+    wallet.publicKey
+  }-all-markets-with-orderbook-${marketsNames.join('-')}`
 
   const { data, mutate } = useSwr(key, fetcher)
 

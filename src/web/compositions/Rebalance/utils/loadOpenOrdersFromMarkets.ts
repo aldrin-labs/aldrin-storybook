@@ -37,13 +37,13 @@ export const loadOpenOrdersFromMarkets = async ({
     )
   }
 
-  for (const [marketName, { address }] of allMarketsMap.entries()) {
+  for (const [_, { address }] of allMarketsMap.entries()) {
     const openOrders = openOrdersAccounts.filter((account) =>
       account.market.equals(address)
     )
 
     if (openOrders.length > 0) {
-      openOrdersMap.set(marketName, openOrders)
+      openOrdersMap.set(address.toString(), openOrders)
     }
   }
 

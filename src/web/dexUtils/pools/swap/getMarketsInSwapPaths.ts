@@ -34,26 +34,15 @@ export const getMarketsInSwapPaths = ({
 
   const edges = [...poolsEdges, ...marketsEdges]
 
-  let paths = getShortestPaths({
+  const paths = getShortestPaths({
     edges,
     startNode,
     endNode,
-    maxPathLength: 3,
   })
 
   if (paths.length === 0) {
-    // no short paths, trying a bit longer
-    paths = getShortestPaths({
-      edges,
-      startNode,
-      endNode,
-      maxPathLength: 4,
-    })
-
-    if (paths.length === 0) {
-      // no sense to try longer paths
-      return []
-    }
+    // no sense to try longer paths
+    return []
   }
 
   const marketsInSwapPaths: string[] = []

@@ -1,129 +1,364 @@
-import { Connection, PublicKey, Transaction } from '@solana/web3.js'
+import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 
-import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
+import { OpenOrdersMap } from '@sb/compositions/Rebalance/utils/loadOpenOrdersFromMarkets'
+import { getVariablesForPlacingOrder } from '@sb/compositions/Rebalance/utils/marketOrderProgram/getVariablesForPlacingOrder'
+import {
+  MARKET_ORDER_PROGRAM_ADDRESS,
+  ProgramsMultiton,
+} from '@sb/dexUtils/ProgramsMultiton'
 import { isTransactionFailed } from '@sb/dexUtils/send'
-import { signAndSendTransactions } from '@sb/dexUtils/transactions'
-import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
+import {
+  buildTransactions,
+  signAndSendTransactions,
+} from '@sb/dexUtils/transactions'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { notEmpty } from '@sb/dexUtils/utils'
+import { WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
 
 import { toBNWithDecimals } from '@core/utils/helpers'
 
 import { getSwapTransaction } from '../actions/swap'
 import { SwapRoute } from './getSwapRoute'
+import {
+  createAndCloseWSOLAccount,
+  getOrCreateOpenOrdersAddress,
+  routeAtaInstructions,
+} from './serum'
+
+const checkIsTransactionFromNativeSOL = ({
+  swapStep,
+  walletPubkey,
+  selectedInputTokenAddressFromSeveral,
+  selectedOutputTokenAddressFromSeveral,
+}) => {
+  const { inputMint, isSwapBaseToQuote } = swapStep
+  const isInputTokenSOL = WRAPPED_SOL_MINT.equals(new PublicKey(inputMint))
+
+  if (isInputTokenSOL) {
+    // if input mint is base of pool/market, we want to check that user didn't select
+    // another SOL token (not native) from several
+    if (isSwapBaseToQuote) {
+      return (
+        !selectedInputTokenAddressFromSeveral ||
+        walletPubkey.equals(new PublicKey(selectedInputTokenAddressFromSeveral))
+      )
+    }
+
+    // same if SOL token is in quote
+    return (
+      !selectedOutputTokenAddressFromSeveral ||
+      walletPubkey.equals(new PublicKey(selectedOutputTokenAddressFromSeveral))
+    )
+  }
+
+  return false
+}
 
 const multiSwap = async ({
   wallet,
   connection,
   swapRoute,
-  allTokensData,
+  openOrdersMap,
+  selectedInputTokenAddressFromSeveral,
+  selectedOutputTokenAddressFromSeveral,
 }: {
   wallet: WalletAdapter
   connection: Connection
   swapRoute: SwapRoute
-  allTokensData: TokenInfo[]
+  openOrdersMap: OpenOrdersMap
+  selectedInputTokenAddressFromSeveral: string
+  selectedOutputTokenAddressFromSeveral: string
 }) => {
-  const transactionsAndSigners = []
+  const commonInstructions = []
+  const commonSigners = []
 
-  let commonTransaction = new Transaction()
-  let commonSigners = []
+  console.log('multiSwap', {
+    swapRoute,
+    openOrdersMap,
+    selectedInputTokenAddressFromSeveral,
+    selectedOutputTokenAddressFromSeveral,
+  })
+
+  const firstSwapStep = swapRoute[0]
+
+  let { swapAmountInWithSlippage: swapAmountIn } = firstSwapStep
+
+  // check if we start swap from native SOL (we'll need to handle it later)
+  const isSwapFromNativeSOL = checkIsTransactionFromNativeSOL({
+    swapStep: firstSwapStep,
+    selectedInputTokenAddressFromSeveral,
+    selectedOutputTokenAddressFromSeveral,
+    walletPubkey: wallet.publicKey,
+  })
+
+  // create token accounts if needed and OOA
+  const isInputTokenSOL = WRAPPED_SOL_MINT.equals(
+    new PublicKey(firstSwapStep.inputMint)
+  )
+
+  const uniqSwapRouteMints = [
+    ...new Set(
+      swapRoute
+        .map((step, index) =>
+          // TODO: explain
+          index === 0 && isSwapFromNativeSOL
+            ? [isInputTokenSOL ? step.outputMint : step.inputMint]
+            : [step.inputMint, step.outputMint]
+        )
+        .flat()
+    ),
+  ]
+
+  // get ata addresses for all swap route tokens
+  // we also cover creation of ata instructions here & wSOL
+  const tokenAccountsMap = await routeAtaInstructions({
+    connection,
+    userPublicKey: wallet.publicKey,
+    mints: uniqSwapRouteMints,
+  })
+
+  // get all OOA addresses for all serum market steps & create + close instructions
+  const swapRouteOpenOrders = (
+    await Promise.all(
+      swapRoute.map((step) => {
+        if (step.ammLabel === 'Serum') {
+          return getOrCreateOpenOrdersAddress({
+            connection,
+            user: wallet.publicKey,
+            serumMarket: step.market.market,
+            marketToOpenOrdersAddress: openOrdersMap,
+          })
+        }
+
+        return undefined
+      })
+    )
+  ).filter(notEmpty)
+
+  const swapRouteOpenOrdersMap = swapRouteOpenOrders.reduce(
+    (acc, openOrders) => acc.set(openOrders.marketAddress, openOrders),
+    new Map()
+  )
+
+  console.log('setup', {
+    tokenAccountsMap,
+    swapRouteOpenOrders,
+    swapRouteOpenOrdersMap,
+  })
+
+  // create ata and OpenOrders accounts
+  const { setupInstructions, setupSigners } = [
+    ...tokenAccountsMap.values(),
+    ...swapRouteOpenOrders,
+  ].reduce(
+    (acc, current) => {
+      acc.setupInstructions.push(...current.instructions)
+      acc.setupSigners.push(...current.signers)
+
+      return acc
+    },
+    { setupInstructions: [], setupSigners: [] }
+  )
+
+  // close wSOL & OpenOrders accounts
+  const { cleanupInstructions } = [
+    ...tokenAccountsMap.values(),
+    ...swapRouteOpenOrders,
+  ].reduce(
+    (acc, current) => {
+      acc.cleanupInstructions.push(...current.instructions)
+      return acc
+    },
+    { cleanupInstructions: [] }
+  )
+
+  if (isSwapFromNativeSOL) {
+    const {
+      address,
+      instructions: createWSOLIxs,
+      cleanupInstructions: closeWSOLIxs,
+    } = await createAndCloseWSOLAccount({
+      connection,
+      amount: (swapAmountIn * LAMPORTS_PER_SOL).toFixed(0),
+      owner: wallet.publicKey,
+    })
+
+    // reassign input token address to wrapped one for first swap step
+    // eslint-disable-next-line no-param-reassign
+    selectedInputTokenAddressFromSeveral = address.toString()
+
+    // add to setup & cleanup ix
+    setupInstructions.push(...createWSOLIxs)
+    cleanupInstructions.push(...closeWSOLIxs)
+  }
+
+  commonInstructions.push(...setupInstructions)
+  commonSigners.push(...setupSigners)
 
   for (let i = 1; i <= swapRoute.length; i += 1) {
     const swapStep = swapRoute[i - 1]
+    const { isSwapBaseToQuote, inputMint, outputMint } = swapStep
 
-    const { swapAmountIn, swapAmountOut, pool, isSwapBaseToQuote } = swapStep
+    const [baseMint, quoteMint] = isSwapBaseToQuote
+      ? [inputMint, outputMint]
+      : [outputMint, inputMint]
 
-    const {
-      curveType,
-      swapToken,
-      tokenADecimals,
-      tokenBDecimals,
-      tokenA,
-      tokenB,
-    } = pool
-
-    const [tokenInDecimals, tokenOutDecimals] = isSwapBaseToQuote
-      ? [tokenADecimals, tokenBDecimals]
-      : [tokenBDecimals, tokenADecimals]
-
-    const swapAmountInWithDecimals = toBNWithDecimals(
-      swapAmountIn,
-      tokenInDecimals
-    )
-
-    const swapAmountOutWithDecimals = toBNWithDecimals(
-      swapAmountOut,
-      tokenOutDecimals
-    )
-
-    const { address: userBaseTokenAccount } = getTokenDataByMint(
-      allTokensData,
-      tokenA
-    )
-
-    const { address: userQuoteTokenAccount } = getTokenDataByMint(
-      allTokensData,
-      tokenB
-    )
-
-    const nativeSOLTokenData = allTokensData[0]
-
-    const isNativeSOLSelected =
-      nativeSOLTokenData?.address === userBaseTokenAccount ||
-      nativeSOLTokenData?.address === userQuoteTokenAccount
-
-    // create transaction depending on programName
-
-    const swapTransactionAndSigners = await getSwapTransaction({
-      wallet,
-      connection,
-      poolPublicKey: new PublicKey(swapToken),
-      userBaseTokenAccount: userBaseTokenAccount
-        ? new PublicKey(userBaseTokenAccount)
-        : null,
-      userQuoteTokenAccount: userQuoteTokenAccount
-        ? new PublicKey(userQuoteTokenAccount)
-        : null,
-      swapAmountIn: swapAmountInWithDecimals,
-      swapAmountOut: swapAmountOutWithDecimals,
-      isSwapBaseToQuote,
-      transferSOLToWrapped: isNativeSOLSelected,
-      curveType,
-    })
-
-    if (!swapTransactionAndSigners) {
-      throw new Error('Swap transaction creation failed')
+    let { address: userBaseTokenAccount } = tokenAccountsMap.get(baseMint) || {
+      address: null,
     }
 
-    const [transaction, signers] = swapTransactionAndSigners
+    let { address: userQuoteTokenAccount } = tokenAccountsMap.get(
+      quoteMint
+    ) || { address: null }
 
-    commonTransaction.add(transaction)
-    commonSigners.push(...signers)
+    const isFirstSwapStep = i === 1
+    // change input token account address for first step
+    if (isFirstSwapStep && selectedInputTokenAddressFromSeveral) {
+      if (isSwapBaseToQuote) {
+        userBaseTokenAccount = selectedInputTokenAddressFromSeveral
+      } else {
+        userQuoteTokenAccount = selectedInputTokenAddressFromSeveral
+      }
+    }
 
-    // add only if second swap or last
-    if (i % 2 === 0) {
-      transactionsAndSigners.push({
-        transaction: commonTransaction,
-        signers: commonSigners,
+    const isLastSwapStep = i === swapRoute.length
+    // change output token account address for last step
+    if (isLastSwapStep && selectedOutputTokenAddressFromSeveral) {
+      if (isSwapBaseToQuote) {
+        userQuoteTokenAccount = selectedOutputTokenAddressFromSeveral
+      } else {
+        userBaseTokenAccount = selectedOutputTokenAddressFromSeveral
+      }
+    }
+
+    if (swapStep.ammLabel === 'Serum') {
+      const { swapAmountOutWithSlippage, market } = swapStep
+
+      const tokenADecimals = market.market?._baseSplTokenDecimals
+      const tokenBDecimals = market.market?._quoteSplTokenDecimals
+
+      // create token accounts if needed
+
+      const isBuySide = !isSwapBaseToQuote
+      const side = isBuySide ? 'buy' : 'sell'
+
+      // create open orders account if needed
+      const { address: openOrdersAccountAddress } = swapRouteOpenOrdersMap.get(
+        market.market?.address.toString()
+      )
+
+      const variablesForPlacingOrder = await getVariablesForPlacingOrder({
+        wallet,
+        connection,
+        market: market.market,
+        vaultSigner: market.vaultSigner,
+        openOrdersAccountAddress,
+        side,
+        tokenAccountA: new PublicKey(userBaseTokenAccount),
+        tokenAccountB: new PublicKey(userQuoteTokenAccount),
       })
 
-      commonTransaction = new Transaction()
-      commonSigners = []
+      const Side = { Ask: { ask: {} }, Bid: { bid: {} } }
+
+      const swapAmountInBN = toBNWithDecimals(
+        swapAmountIn,
+        isSwapBaseToQuote ? tokenADecimals : tokenBDecimals
+      )
+
+      const swapAmountOutBN = toBNWithDecimals(
+        swapAmountOutWithSlippage,
+        isSwapBaseToQuote ? tokenBDecimals : tokenADecimals
+      )
+
+      swapAmountIn = swapAmountOutWithSlippage
+
+      console.log('variablesForPlacingOrder', {
+        ...variablesForPlacingOrder,
+        isBuySide,
+        swapAmountIn,
+        swapAmountOutWithSlippage,
+        swapAmountInBN: swapAmountInBN.toString(),
+        swapAmountOutBN: swapAmountOutBN.toString(),
+      })
+
+      const serumMarketOrderProgram = ProgramsMultiton.getProgramByAddress({
+        wallet,
+        connection,
+        programAddress: MARKET_ORDER_PROGRAM_ADDRESS,
+      })
+
+      const placeMarketOrderInstruction =
+        await serumMarketOrderProgram.instruction.swap(
+          isBuySide ? Side.Bid : Side.Ask,
+          swapAmountInBN,
+          swapAmountOutBN,
+          {
+            accounts: variablesForPlacingOrder,
+          }
+        )
+
+      commonInstructions.push(placeMarketOrderInstruction)
+    } else {
+      const { swapAmountOutWithSlippage, pool } = swapStep
+
+      const { curveType, swapToken, tokenADecimals, tokenBDecimals } = pool
+
+      const [tokenInDecimals, tokenOutDecimals] = isSwapBaseToQuote
+        ? [tokenADecimals, tokenBDecimals]
+        : [tokenBDecimals, tokenADecimals]
+
+      const swapAmountInWithDecimals = toBNWithDecimals(
+        swapAmountIn,
+        tokenInDecimals
+      )
+
+      const swapAmountOutWithDecimals = toBNWithDecimals(
+        swapAmountOutWithSlippage,
+        tokenOutDecimals
+      )
+
+      swapAmountIn = swapAmountOutWithSlippage
+
+      const swapTransactionAndSigners = await getSwapTransaction({
+        wallet,
+        connection,
+        poolPublicKey: new PublicKey(swapToken),
+        userBaseTokenAccount: new PublicKey(userBaseTokenAccount),
+        userQuoteTokenAccount: new PublicKey(userQuoteTokenAccount),
+        swapAmountIn: swapAmountInWithDecimals,
+        swapAmountOut: swapAmountOutWithDecimals,
+        isSwapBaseToQuote,
+        transferSOLToWrapped: false,
+        curveType,
+      })
+
+      if (!swapTransactionAndSigners) {
+        throw new Error('Swap transaction creation failed')
+      }
+
+      const [transaction, signers] = swapTransactionAndSigners
+
+      commonInstructions.push(...transaction.instructions)
+      commonSigners.push(...signers)
     }
   }
 
-  if (commonTransaction.instructions.length > 0) {
-    transactionsAndSigners.push({
-      transaction: commonTransaction,
-      signers: commonSigners,
-    })
-  }
+  // add close wSOL & OpenOrders ix
+  commonInstructions.push(...cleanupInstructions)
 
-  console.log('transactionsAndSigners', transactionsAndSigners)
+  const buildedTransactions = buildTransactions(
+    commonInstructions.map((ix) => ({ instruction: ix })),
+    wallet.publicKey,
+    commonSigners
+  )
+
+  console.log('buildedTransactions', buildedTransactions)
 
   try {
     const tx = await signAndSendTransactions({
       wallet,
       connection,
-      transactionsAndSigners,
+      transactionsAndSigners: buildedTransactions,
       commitment: 'confirmed',
       skipPreflight: false,
     })

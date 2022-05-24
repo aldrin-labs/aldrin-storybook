@@ -3,15 +3,15 @@ import BN from 'bn.js'
 
 import { DEX_PID } from '@core/config/dex'
 
-export function getVaultOwnerAndNonce(
+export async function getVaultOwnerAndNonce(
   marketPublicKey: PublicKey,
   dexProgramId = DEX_PID
-): [PublicKey, BN] {
+): Promise<[PublicKey, BN]> {
   const nonce = new BN(0)
   while (nonce.toNumber() < 255) {
     try {
       // not actually async - https://github.com/solana-labs/solana-web3.js/blob/03268b698a180ecb14c9a4b5c255d8f1c434e69b/src/publickey.ts#L146
-      const vaultOwner = PublicKey.createProgramAddress(
+      const vaultOwner = await PublicKey.createProgramAddress(
         [marketPublicKey.toBuffer(), nonce.toArrayLike(Buffer, 'le', 8)],
         dexProgramId
       )

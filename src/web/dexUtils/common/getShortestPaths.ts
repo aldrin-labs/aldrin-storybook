@@ -34,11 +34,7 @@ export const getShortestPaths = ({
     knownEdgesGraph.addEdge(nodeA, nodeB)
   })
 
-  const knownPaths = knownEdgesGraph.getAllPaths(
-    startNode,
-    endNode,
-    maxPathLength
-  )
+  const knownPaths = knownEdgesGraph.getAllPaths(startNode, endNode, 3)
 
   console.log('knownPaths', {
     knownPaths,

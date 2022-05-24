@@ -8,7 +8,7 @@ import { splitArray } from '@core/utils/helpers'
 
 import { PoolBalances } from '.'
 
-type PoolsBalancesMap = Map<string, PoolBalances>
+export type PoolsBalancesMap = Map<string, PoolBalances>
 
 export const usePoolsBalances = ({
   pools,

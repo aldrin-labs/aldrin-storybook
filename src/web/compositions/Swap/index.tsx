@@ -18,14 +18,13 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { getFeesAmount } from '@sb/dexUtils/pools/swap/getFeesAmount'
+import { getSwapStepFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import {
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
   getDefaultBaseToken,
   getDefaultQuoteToken,
 } from '@sb/dexUtils/pools/swap/index'
-import { multiSwap } from '@sb/dexUtils/pools/swap/multiSwap'
 import { useSwapRoute } from '@sb/dexUtils/pools/swap/useSwapRoute'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -96,7 +95,6 @@ const SwapPage = ({
   const tokenInfos = useTokenInfos()
 
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
-
   const allPools = getPoolsInfoQuery.getPoolsInfo
 
   const nativeSOLTokenData = allTokensData[0]
@@ -185,6 +183,16 @@ const SwapPage = ({
     setQuoteTokenAddressFromSeveral,
   ] = useState<string>('')
 
+  console.log(
+    'selectedBaseTokenAddressFromSeveral',
+    selectedBaseTokenAddressFromSeveral
+  )
+
+  console.log(
+    'selectedQuoteTokenAddressFromSeveral',
+    selectedQuoteTokenAddressFromSeveral
+  )
+
   const [isBaseTokenSelecting, setIsBaseTokenSelecting] = useState(false)
   const [isSwapInProgress, setIsSwapInProgress] = useState(false)
   const [priceShowField, setPriceShowField] = useState<'input' | 'output'>(
@@ -199,11 +207,14 @@ const SwapPage = ({
     loading: isLoadingSwapRoute,
     setFieldAmount,
     refresh: refreshAll,
+    exchange,
   } = useSwapRoute({
     pools: allPools,
     inputMint: baseTokenMintAddress,
     outputMint: quoteTokenMintAddress,
-    // slippage,
+    selectedBaseTokenAddressFromSeveral,
+    selectedQuoteTokenAddressFromSeveral,
+    slippage,
   })
 
   console.log('swapRoute', swapRoute)
@@ -221,19 +232,12 @@ const SwapPage = ({
     )
 
   const totalFeeUSD = swapRoute.reduce((acc, step) => {
-    const feeAmountTokenA = getFeesAmount({
-      amount: step.swapAmountIn,
-      pool: step.pool,
+    const stepFeeUSD = getSwapStepFeesAmount({
+      swapStep: step,
+      pricesMap: dexTokensPricesMap,
     })
 
-    const mint = step.isSwapBaseToQuote ? step.pool.tokenA : step.pool.tokenB
-    const symbol = getTokenNameByMintAddress(mint)
-
-    const tokenAPrice = dexTokensPricesMap.get(symbol) || 0
-
-    console.log('acc', { acc, feeAmountTokenA, tokenAPrice })
-
-    return acc + feeAmountTokenA * tokenAPrice
+    return acc + stepFeeUSD
   }, 0)
 
   const basePrice = dexTokensPricesMap.get(baseSymbol) || 0
@@ -293,7 +297,7 @@ const SwapPage = ({
   //   }
 
   const outputAmountWithSlippage =
-    outputAmount - (outputAmount / 100) * slippage
+    outputAmount - (outputAmount / 100) * slippage * swapRoute.length
 
   const needEnterAmount = +inputAmount === 0
   const isTokenABalanceInsufficient = inputAmount > +maxBaseAmount
@@ -365,20 +369,22 @@ const SwapPage = ({
     setFieldAmount(inputAmount, 'input', baseTokenMint, quoteTokenMint)
   }, [])
 
-  const priceImpact = swapRoute.reduce((acc, step) => {
-    const stepPriceImpact =
-      (step.isSwapBaseToQuote
-        ? step.swapAmountIn / step.pool.tvl.tokenA
-        : step.swapAmountIn / step.pool.tvl.tokenB) * 100
+  const priceImpact = swapRoute
+    .filter((step) => step.ammLabel === 'Aldrin')
+    .reduce((acc, step) => {
+      const stepPriceImpact =
+        (step.isSwapBaseToQuote
+          ? step.swapAmountIn / step.pool.tvl.tokenA
+          : step.swapAmountIn / step.pool.tvl.tokenB) * 100
 
-    if (stepPriceImpact > 100) return 100
+      if (stepPriceImpact > 100) return 100
 
-    if (stepPriceImpact > acc) {
-      return stepPriceImpact
-    }
+      if (stepPriceImpact > acc) {
+        return stepPriceImpact
+      }
 
-    return acc
-  }, 0)
+      return acc
+    }, 0)
 
   return (
     <SwapPageLayout>
@@ -407,8 +413,8 @@ const SwapPage = ({
               <Row>
                 <ValueButton>
                   <ReloadTimer
-                    duration={15}
-                    initialRemainingTime={15}
+                    duration={30}
+                    initialRemainingTime={30}
                     callback={refreshAll}
                     showTime
                     margin="0"
@@ -670,12 +676,7 @@ const SwapPage = ({
                       //   transactionsAndSigners,
                       // })
 
-                      const result = await multiSwap({
-                        wallet,
-                        connection,
-                        allTokensData,
-                        swapRoute,
-                      })
+                      const result = await exchange()
 
                       if (result !== 'success') {
                         notify({
@@ -693,7 +694,7 @@ const SwapPage = ({
                       }
 
                       refreshAllTokensData()
-                      await refreshAll()
+                      refreshAll()
 
                       // reset fields
                       if (result === 'success') {

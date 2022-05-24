@@ -2,6 +2,7 @@ import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { checkIsPoolStable } from '../checkIsPoolStable'
+import { LoadedMarketWithOrderbookMap } from '../hooks/useAllMarketsOrderbooks'
 
 const getDefaultBaseToken = (isStableSwapTabActive: boolean) =>
   isStableSwapTabActive ? 'USDC' : 'SOL'
@@ -48,7 +49,7 @@ const getMarketForSwap = ({
   baseTokenMintAddress,
   quoteTokenMintAddress,
 }: {
-  marketsMap: Map<string, any>
+  marketsMap: LoadedMarketWithOrderbookMap
   baseTokenMintAddress: string
   quoteTokenMintAddress: string
 }): [any, boolean | null] => {
@@ -63,7 +64,7 @@ const getMarketForSwap = ({
   }
 
   if (marketsMap.has(reversedMarketName)) {
-    return [marketsMap.get(marketName), false]
+    return [marketsMap.get(reversedMarketName), false]
   }
 
   return [null, null]

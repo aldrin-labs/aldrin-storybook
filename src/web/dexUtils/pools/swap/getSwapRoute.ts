@@ -2,25 +2,54 @@ import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getMarketsMintsEdges } from '@sb/dexUtils/common/getMarketsMintsEdges'
 import { getShortestPaths } from '@sb/dexUtils/common/getShortestPaths'
 import { MarketsMap } from '@sb/dexUtils/markets'
+import { getDecimalCount } from '@sb/dexUtils/utils'
 
 import { toBNWithDecimals } from '@core/utils/helpers'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { getMarketForSwap, getSelectedPoolForSwap } from '.'
 import { getPoolsMintsEdges } from '../getPoolsMintsEdges'
-import { PoolBalances } from '../hooks'
 import {
   LoadedMarketWithOrderbook,
   LoadedMarketWithOrderbookMap,
 } from '../hooks/useAllMarketsOrderbooks'
+import { PoolsBalancesMap } from '../hooks/usePoolsBalances'
 import { getInputAmountFromOutput } from './getInputAmountFromOutput'
+import { getInputAmountFromOutputForOrderbook } from './getInputAmountFromOutputForOrderbook'
 import { getMinimumReceivedAmountFromSwap } from './getMinimumReceivedAmountFromSwap'
 import { getMinimumReceivedFromOrderbook } from './getMinimumReceivedFromOrderbook'
 
-type SwapStep = {
-  pool: PoolInfo
+type MintSteps = [string, string][]
+
+type CommonSwapStep = {
   isSwapBaseToQuote: boolean
+  inputMint: string
+  outputMint: string
   swapAmountIn: number
   swapAmountOut: number
+  swapAmountInWithSlippage: number
+  swapAmountOutWithSlippage: number
+}
+
+type AldrinSwapStep = CommonSwapStep & {
+  pool: PoolInfo
+  ammLabel: 'Aldrin'
+}
+
+type SerumSwapStep = CommonSwapStep & {
+  market: LoadedMarketWithOrderbook
+  ammLabel: 'Serum'
+}
+
+export type SwapStep = AldrinSwapStep | SerumSwapStep
+
+type CreateRouteFromFieldArgs = {
+  pools: PoolInfo[]
+  amountIn: number
+  slippage: number
+  mintSteps: MintSteps
+  poolsBalancesMap?: PoolsBalancesMap
+  marketsWithOrderbookMap?: LoadedMarketWithOrderbookMap
 }
 
 export type SwapRoute = SwapStep[]
@@ -30,35 +59,20 @@ const EMPTY_ROUTE_RESPONSE: [SwapRoute, number] = [[], 0]
 const createRouteFromInputField = ({
   pools,
   amountIn,
+  slippage,
   poolsBalancesMap,
   marketsWithOrderbookMap,
-  path,
-}): [SwapRoute, number] => {
+  mintSteps,
+}: CreateRouteFromFieldArgs): [SwapRoute, number] => {
   const route: SwapRoute = []
 
-  let baseMint = ''
-  let quoteMint = ''
-
   let tempSwapAmountIn = amountIn
-  let multiSwapAmountOut = 0
+  let tempSwapAmountInWithSlippage = amountIn
 
   let index = 0
 
-  for (const mint of path) {
-    // determine pool & side
-    if (index === 0) {
-      baseMint = mint
-      index += 1
-      // eslint-disable-next-line no-continue
-      continue
-    }
-
-    if (index === 1) {
-      quoteMint = mint
-    } else {
-      baseMint = quoteMint
-      quoteMint = mint
-    }
+  for (const [baseMint, quoteMint] of mintSteps) {
+    const incrementedSlippage = slippage * (index + 1)
 
     const pool = getSelectedPoolForSwap({
       pools,
@@ -67,7 +81,9 @@ const createRouteFromInputField = ({
     })
 
     let isSwapBaseToQuote = null
+
     let swapAmountOut = 0
+    let swapAmountOutWithSlippage = 0
 
     // if no pool - try to find market
     if (!pool && marketsWithOrderbookMap) {
@@ -80,101 +96,138 @@ const createRouteFromInputField = ({
         quoteTokenMintAddress: quoteMint,
       })
 
-      if (!market || isSwapBaseToQuote === null) {
+      if (!market || isMarketSwapBaseToQuote === null) {
         return EMPTY_ROUTE_RESPONSE
       }
 
       isSwapBaseToQuote = isMarketSwapBaseToQuote
+      const roundedSwapAmountIn = isSwapBaseToQuote
+        ? +stripDigitPlaces(
+            tempSwapAmountIn,
+            getDecimalCount(market.market?.minOrderSize)
+          )
+        : tempSwapAmountIn
+
+      const roundedSwapAmountInWithSlippage = isSwapBaseToQuote
+        ? +stripDigitPlaces(
+            tempSwapAmountInWithSlippage,
+            getDecimalCount(market.market?.minOrderSize)
+          )
+        : tempSwapAmountInWithSlippage
+
+      // if base to quote -> strip input
       swapAmountOut = getMinimumReceivedFromOrderbook({
         market,
-        swapAmountIn: tempSwapAmountIn,
+        swapAmountIn: roundedSwapAmountIn,
+        isSwapBaseToQuote,
+      })
+
+      swapAmountOutWithSlippage =
+        swapAmountOut - (swapAmountOut / 100) * incrementedSlippage
+
+      if (!isSwapBaseToQuote) {
+        const strippedSwapAmountOutWithSlippage = +stripDigitPlaces(
+          swapAmountOutWithSlippage,
+          getDecimalCount(market.market?.minOrderSize)
+        )
+
+        // TODO: remove it by rounding to down
+        if (strippedSwapAmountOutWithSlippage >= swapAmountOutWithSlippage) {
+          swapAmountOutWithSlippage =
+            strippedSwapAmountOutWithSlippage - market.market?.minOrderSize
+        } else {
+          swapAmountOutWithSlippage = strippedSwapAmountOutWithSlippage
+        }
+      }
+
+      route.push({
+        market,
+        ammLabel: 'Serum',
+        inputMint: baseMint,
+        outputMint: quoteMint,
+        swapAmountIn: roundedSwapAmountIn,
+        swapAmountOut,
+        swapAmountInWithSlippage: roundedSwapAmountInWithSlippage,
+        swapAmountOutWithSlippage,
         isSwapBaseToQuote,
       })
     } else {
       let poolBalances = null
 
+      const poolBalancesFromTVL = {
+        baseTokenAmount: pool.tvl.tokenA,
+        quoteTokenAmount: pool.tvl.tokenB,
+        baseTokenAmountBN: toBNWithDecimals(
+          pool.tvl.tokenA,
+          pool.tokenADecimals
+        ),
+        quoteTokenAmountBN: toBNWithDecimals(
+          pool.tvl.tokenB,
+          pool.tokenBDecimals
+        ),
+      }
+
       if (!poolsBalancesMap || !poolsBalancesMap.has(pool.swapToken)) {
-        poolBalances = {
-          baseTokenAmount: pool.tvl.tokenA,
-          quoteTokenAmount: pool.tvl.tokenB,
-          baseTokenAmountBN: toBNWithDecimals(
-            pool.tvl.tokenA,
-            pool.tokenADecimals
-          ),
-          quoteTokenAmountBN: toBNWithDecimals(
-            pool.tvl.tokenB,
-            pool.tokenBDecimals
-          ),
-        }
+        poolBalances = poolBalancesFromTVL
       } else {
-        poolBalances = poolsBalancesMap.get(pool.swapToken)
+        poolBalances =
+          poolsBalancesMap.get(pool.swapToken) || poolBalancesFromTVL
       }
 
       isSwapBaseToQuote = pool.tokenA === baseMint
-
       swapAmountOut = getMinimumReceivedAmountFromSwap({
         pool,
         swapAmountIn: tempSwapAmountIn,
         isSwapBaseToQuote,
         poolBalances,
       })
+
+      swapAmountOutWithSlippage =
+        swapAmountOut - (swapAmountOut / 100) * incrementedSlippage
+
+      route.push({
+        pool,
+        ammLabel: 'Aldrin',
+        inputMint: baseMint,
+        outputMint: quoteMint,
+        swapAmountIn: tempSwapAmountIn,
+        swapAmountOut,
+        swapAmountInWithSlippage: tempSwapAmountInWithSlippage,
+        swapAmountOutWithSlippage,
+        isSwapBaseToQuote,
+      })
     }
 
-    // calculate market swap amount out, write func which will calc using OB data
-
-    // add field like programName = 'Aldrin' || 'Serum', isSwapThroughPool etc
-    route.push({
-      pool,
-      swapAmountIn: tempSwapAmountIn,
-      swapAmountOut,
-      isSwapBaseToQuote,
-    })
-
     tempSwapAmountIn = swapAmountOut
-    multiSwapAmountOut = swapAmountOut
+    tempSwapAmountInWithSlippage = swapAmountOutWithSlippage
 
     index += 1
   }
 
-  return [route, multiSwapAmountOut]
+  const totalSwapAmountOut =
+    route.length > 0 ? route[index - 1].swapAmountOut : 0
+
+  return [route, totalSwapAmountOut]
 }
 
 const createRouteFromOutputField = ({
   pools,
-  amountIn,
+  slippage,
+  outputAmount,
   poolsBalancesMap,
   marketsWithOrderbookMap,
-  path,
-}): [SwapRoute, number] => {
+  mintSteps,
+}: CreateRouteFromFieldArgs): [SwapRoute, number] => {
   const route: SwapRoute = []
 
-  let baseMint = ''
-  let quoteMint = ''
+  let tempSwapAmountOut = outputAmount
 
-  let tempSwapAmountIn = amountIn
-  let multiSwapAmountOut = 0
+  // we need to find route from output to input
+  const reversedMintSteps = mintSteps
+    .map((step) => [...step.reverse()])
+    .reverse()
 
-  let index = 0
-
-  // we need to find route from output to input, using
-  const reversedPath = path.reverse()
-
-  for (const mint of reversedPath) {
-    // determine pool & side
-    if (index === 0) {
-      baseMint = mint
-      index += 1
-      // eslint-disable-next-line no-continue
-      continue
-    }
-
-    if (index === 1) {
-      quoteMint = mint
-    } else {
-      baseMint = quoteMint
-      quoteMint = mint
-    }
-
+  for (const [baseMint, quoteMint] of reversedMintSteps) {
     const pool = getSelectedPoolForSwap({
       pools,
       baseTokenMintAddress: baseMint,
@@ -182,7 +235,7 @@ const createRouteFromOutputField = ({
     })
 
     let isSwapBaseToQuote = null
-    let swapAmountOut = 0
+    let swapAmountIn = 0
 
     // if no pool - try to find market
     if (!pool && marketsWithOrderbookMap) {
@@ -195,78 +248,138 @@ const createRouteFromOutputField = ({
         quoteTokenMintAddress: quoteMint,
       })
 
-      if (!market || isSwapBaseToQuote === null) {
+      if (!market || isMarketSwapBaseToQuote === null) {
         return EMPTY_ROUTE_RESPONSE
       }
 
-      isSwapBaseToQuote = isMarketSwapBaseToQuote
-      swapAmountOut = getMinimumReceivedFromOrderbook({
+      isSwapBaseToQuote = !isMarketSwapBaseToQuote
+      // find amount we need to buy/sell for getting tempSwapAmountIn
+      swapAmountIn = getInputAmountFromOutputForOrderbook({
         market,
-        swapAmountIn: tempSwapAmountIn,
+        outputAmount: tempSwapAmountOut,
+        outputMint: baseMint,
+      })
+
+      route.push({
+        market,
+        ammLabel: 'Serum',
+        inputMint: quoteMint,
+        outputMint: baseMint,
+        swapAmountIn,
+        swapAmountOut: tempSwapAmountOut,
+        swapAmountInWithSlippage: swapAmountIn,
+        swapAmountOutWithSlippage: tempSwapAmountOut,
         isSwapBaseToQuote,
       })
     } else {
       let poolBalances = null
 
-      if (!poolsBalancesMap || !poolsBalancesMap.has(pool.swapToken)) {
-        poolBalances = {
-          baseTokenAmount: pool.tvl.tokenA,
-          quoteTokenAmount: pool.tvl.tokenB,
-          baseTokenAmountBN: toBNWithDecimals(
-            pool.tvl.tokenA,
-            pool.tokenADecimals
-          ),
-          quoteTokenAmountBN: toBNWithDecimals(
-            pool.tvl.tokenB,
-            pool.tokenBDecimals
-          ),
-        }
-      } else {
-        poolBalances = poolsBalancesMap.get(pool.swapToken)
+      const poolBalancesFromTVL = {
+        baseTokenAmount: pool.tvl.tokenA,
+        quoteTokenAmount: pool.tvl.tokenB,
+        baseTokenAmountBN: toBNWithDecimals(
+          pool.tvl.tokenA,
+          pool.tokenADecimals
+        ),
+        quoteTokenAmountBN: toBNWithDecimals(
+          pool.tvl.tokenB,
+          pool.tokenBDecimals
+        ),
       }
 
-      isSwapBaseToQuote = pool.tokenA === baseMint
+      if (!poolsBalancesMap || !poolsBalancesMap.has(pool.swapToken)) {
+        poolBalances = poolBalancesFromTVL
+      } else {
+        poolBalances =
+          poolsBalancesMap.get(pool.swapToken) || poolBalancesFromTVL
+      }
+
+      // reverse due to reversed order (from quote to base)
+      isSwapBaseToQuote = !(pool.tokenA === baseMint)
 
       const result = getInputAmountFromOutput({
         pool,
         poolBalances,
-        outputAmount: tempSwapAmountIn,
-        isSwapBaseToQuote: !isSwapBaseToQuote,
+        outputAmount: tempSwapAmountOut,
+        isSwapBaseToQuote,
       })
 
-      console.log('getInputAmountFromOutput', {
-        result,
-        path,
+      swapAmountIn = result.swapAmountIn
+
+      route.push({
         pool,
+        ammLabel: 'Aldrin',
+        inputMint: quoteMint,
+        outputMint: baseMint,
+        swapAmountIn,
+        swapAmountInWithSlippage: swapAmountIn,
+        swapAmountOut: tempSwapAmountOut,
+        swapAmountOutWithSlippage: tempSwapAmountOut,
+        isSwapBaseToQuote,
       })
-
-      swapAmountOut = result.swapAmountIn
     }
 
-    // calculate market swap amount out, write func which will calc using OB data
-
-    // add field like programName = 'Aldrin' || 'Serum', isSwapThroughPool etc
-    route.push({
-      pool,
-      swapAmountIn: tempSwapAmountIn,
-      swapAmountOut,
-      isSwapBaseToQuote,
-    })
-
-    tempSwapAmountIn = swapAmountOut
-    multiSwapAmountOut = swapAmountOut
-
-    index += 1
+    tempSwapAmountOut = swapAmountIn
   }
 
-  const reversedRoute = route.reverse().map((step) => ({
-    pool: step.pool,
-    swapAmountOut: step.swapAmountIn,
-    swapAmountIn: step.swapAmountOut,
-    isSwapBaseToQuote: !step.isSwapBaseToQuote,
-  }))
+  let tempSwapAmountInWithSlippage = route[route.length - 1].swapAmountIn
 
-  return [reversedRoute, tempSwapAmountIn]
+  // we want to add slippage here
+  const reversedPath = route.reverse().map((swapStep, index) => {
+    const incrementedOutputAmountSlippage = slippage * (index + 1)
+
+    let swapAmountOutWithSlippage =
+      swapStep.swapAmountOut -
+      (swapStep.swapAmountOut / 100) * incrementedOutputAmountSlippage
+
+    if (swapStep.ammLabel === 'Aldrin') {
+      const swapStepWithSlippage = {
+        ...swapStep,
+        swapAmountInWithSlippage: tempSwapAmountInWithSlippage,
+        swapAmountOutWithSlippage,
+      }
+
+      tempSwapAmountInWithSlippage = swapAmountOutWithSlippage
+
+      return swapStepWithSlippage
+    }
+    if (swapStep.ammLabel === 'Serum') {
+      let strippedSwapAmountOutWithSlippage = !swapStep.isSwapBaseToQuote
+        ? // TODO: round down, then remove condition below
+          +stripDigitPlaces(
+            swapAmountOutWithSlippage,
+            getDecimalCount(swapStep.market.market?.minOrderSize)
+          )
+        : swapAmountOutWithSlippage
+
+      // remove minOrderSize to amountOut due to rounding
+      if (
+        !swapStep.isSwapBaseToQuote &&
+        strippedSwapAmountOutWithSlippage >= swapAmountOutWithSlippage
+      ) {
+        strippedSwapAmountOutWithSlippage -=
+          swapStep.market.market?.minOrderSize
+      }
+
+      swapAmountOutWithSlippage = strippedSwapAmountOutWithSlippage
+
+      const swapStepWithSlippage = {
+        ...swapStep,
+        swapAmountInWithSlippage: tempSwapAmountInWithSlippage,
+        swapAmountOutWithSlippage,
+      }
+
+      tempSwapAmountInWithSlippage = swapAmountOutWithSlippage
+
+      return swapStepWithSlippage
+    }
+
+    return swapStep
+  })
+
+  console.log('reversedPath', reversedPath)
+
+  return [reversedPath, tempSwapAmountOut]
 }
 
 const getSwapRoute = ({
@@ -276,7 +389,7 @@ const getSwapRoute = ({
   field = 'input',
   baseTokenMint,
   quoteTokenMint,
-  slippage,
+  slippage = 0,
   poolsBalancesMap,
   marketsWithOrderbookMap,
 }: {
@@ -287,7 +400,7 @@ const getSwapRoute = ({
   baseTokenMint: string
   quoteTokenMint: string
   slippage?: number
-  poolsBalancesMap?: Map<string, PoolBalances>
+  poolsBalancesMap?: PoolsBalancesMap
   marketsWithOrderbookMap?: LoadedMarketWithOrderbookMap
 }): [SwapRoute, number] => {
   const poolsEdges = getPoolsMintsEdges(pools)
@@ -295,8 +408,7 @@ const getSwapRoute = ({
     ? getMarketsMintsEdges([...allMarketsMap.keys()])
     : []
 
-  // if no path with 3 length, use
-  const shortPaths = getShortestPaths({
+  const shortPaths: string[][] = getShortestPaths({
     edges: [...poolsEdges, ...marketsEdges],
     startNode: baseTokenMint,
     endNode: quoteTokenMint,
@@ -306,16 +418,36 @@ const getSwapRoute = ({
     return EMPTY_ROUTE_RESPONSE
   }
 
+  const swapRoutesMintSteps: MintSteps[] = shortPaths.map((path) => {
+    const steps: MintSteps = path.reduce<MintSteps>(
+      (acc, mint, index, array) => {
+        if (array.length - 1 === index) {
+          return acc
+        }
+
+        acc.push([mint, array[index + 1]])
+
+        return acc
+      },
+      []
+    )
+
+    return steps
+  })
+
   if (field === 'input') {
-    const routes: [SwapRoute, number][] = shortPaths.map((path) => {
-      return createRouteFromInputField({
-        path,
-        pools,
-        amountIn,
-        marketsWithOrderbookMap,
-        poolsBalancesMap,
-      })
-    })
+    const routes: [SwapRoute, number][] = swapRoutesMintSteps.map(
+      (mintSteps) => {
+        return createRouteFromInputField({
+          mintSteps,
+          pools,
+          amountIn,
+          slippage,
+          marketsWithOrderbookMap,
+          poolsBalancesMap,
+        })
+      }
+    )
 
     // for output have another sort - the most similar to amountIn
     const bestRoute = routes.sort((a, b) => {
@@ -329,15 +461,18 @@ const getSwapRoute = ({
   }
 
   if (field === 'output') {
-    const routes: [SwapRoute, number][] = shortPaths.map((path) => {
-      return createRouteFromOutputField({
-        path,
-        pools,
-        amountIn,
-        marketsWithOrderbookMap,
-        poolsBalancesMap,
-      })
-    })
+    const routes: [SwapRoute, number][] = swapRoutesMintSteps.map(
+      (mintSteps) => {
+        return createRouteFromOutputField({
+          mintSteps,
+          pools,
+          outputAmount: amountIn,
+          slippage,
+          marketsWithOrderbookMap,
+          poolsBalancesMap,
+        })
+      }
+    )
 
     console.log('swapResults routes', routes)
 
@@ -356,7 +491,7 @@ const getSwapRoute = ({
         return routeA[0].swapAmountIn - routeB[0].swapAmountIn
       })[0]
 
-    return bestRoute
+    return bestRoute || EMPTY_ROUTE_RESPONSE
   }
 
   return EMPTY_ROUTE_RESPONSE

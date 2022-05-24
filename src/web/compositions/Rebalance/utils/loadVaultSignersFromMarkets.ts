@@ -6,20 +6,20 @@ import { getVaultOwnerAndNonce } from './marketOrderProgram/getVaultOwnerAndNonc
 
 export type VaultSignersMap = Map<string, PublicKey>
 
-export const loadVaultSignersFromMarkets = ({
+export const loadVaultSignersFromMarkets = async ({
   allMarketsMap,
   marketsNames,
 }: {
   allMarketsMap: MarketsMap
   marketsNames: string[]
-}): VaultSignersMap => {
+}): Promise<VaultSignersMap> => {
   const vaultSignersMap = new Map()
 
   // not actually async
   for (const [marketName, { address }] of allMarketsMap.entries()) {
     if (marketsNames.length === 0 || marketsNames.includes(marketName)) {
       try {
-        const [vaultSigner] = getVaultOwnerAndNonce(address)
+        const [vaultSigner] = await getVaultOwnerAndNonce(address)
 
         vaultSignersMap.set(marketName, vaultSigner)
       } catch (e) {}

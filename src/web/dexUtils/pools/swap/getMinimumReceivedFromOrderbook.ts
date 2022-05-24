@@ -1,13 +1,15 @@
+import { getDecimalCount } from '@sb/dexUtils/utils'
+
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
 import { LoadedMarketWithOrderbook } from '../hooks/useAllMarketsOrderbooks'
 
 export const getMinimumReceivedFromOrderbook = ({
   market,
-  slippage = 0,
   swapAmountIn,
   isSwapBaseToQuote,
 }: {
   market: LoadedMarketWithOrderbook
-  slippage?: number
   swapAmountIn: number
   isSwapBaseToQuote: boolean
 }) => {
@@ -47,8 +49,12 @@ export const getMinimumReceivedFromOrderbook = ({
     }
   })
 
-  // remove slippage part
-  swapAmountOut -= (swapAmountOut / 100) * slippage
+  if (!isSwapBaseToQuote) {
+    return +stripDigitPlaces(
+      swapAmountOut,
+      getDecimalCount(market.market?.minOrderSize)
+    )
+  }
 
   return swapAmountOut
 }
