@@ -4,15 +4,68 @@ import { PoolBalances } from '../hooks'
 import { createSwapOptions } from './bruteForceSearch'
 import { SwapOptions } from './findClosestAmountToSwapForDeposit'
 
-const getInputAmountFromOutput = (params: {
+interface SearchParams {
   pool: PoolInfo
   poolBalances: PoolBalances
   outputAmount: number
   isSwapBaseToQuote: boolean
-}): SwapOptions => {
+}
+
+interface FindOptionParams extends SearchParams {
+  appproxInputAmount: number
+  minAmountMultiplier?: number
+  maxAmountMultiplier?: number
+}
+
+const findBestOption = (params: FindOptionParams) => {
+  const {
+    pool,
+    poolBalances,
+    outputAmount,
+    isSwapBaseToQuote,
+    appproxInputAmount,
+    minAmountMultiplier = 0,
+    maxAmountMultiplier = 2,
+  } = params
+
+  // console.log('findBest: ', appproxInputAmount)
+  // create array of results swapping tokenA-tokenB and tokenB-tokenA
+  const swapResults = createSwapOptions({
+    pool,
+    poolBalances,
+    slippage: 0,
+    userAmountTokenA: isSwapBaseToQuote
+      ? appproxInputAmount * maxAmountMultiplier
+      : 0, // outputAmount * ratio * 2, to find the closest inputAmount to get outputAmount
+    userAmountTokenB: isSwapBaseToQuote
+      ? 0
+      : appproxInputAmount * maxAmountMultiplier,
+    isSwapBaseToQuote,
+    minAmount: appproxInputAmount * minAmountMultiplier,
+    numberOfSteps: 3_000,
+  })
+
+  // take the closes one to pool amount ratio - user amount ratio
+  const swapAmounts = swapResults
+    .map((ratios) => {
+      const { swapAmountOut } = ratios
+
+      const swapAmountOutDiff = Math.abs(swapAmountOut - outputAmount)
+      return { ...ratios, swapAmountOutDiff }
+    })
+    .sort(
+      (ratioA, ratioB) => ratioA.swapAmountOutDiff - ratioB.swapAmountOutDiff
+    )
+
+  // console.log('swapResults1', swapAmounts)
+
+  return swapAmounts[0]
+}
+
+const getInputAmountFromOutput = (params: SearchParams): SwapOptions => {
   const { pool, poolBalances, outputAmount, isSwapBaseToQuote } = params
 
-  console.log('poolBalances', poolBalances)
+  // console.log('poolBalances', poolBalances)
 
   if (
     poolBalances.baseTokenAmountBN.eqn(0) ||
@@ -26,51 +79,30 @@ const getInputAmountFromOutput = (params: {
       userAmountsRatioAfterSwap: 0,
     }
   }
-
-  console.log('swapResults', { pool, poolBalances, outputAmount })
-
   const appproxInputAmount = isSwapBaseToQuote
     ? (poolBalances.baseTokenAmount / poolBalances.quoteTokenAmount) *
       outputAmount
     : (poolBalances.quoteTokenAmount / poolBalances.baseTokenAmount) *
       outputAmount
 
-  console.log('swapResults', {
-    userAmountTokenA: isSwapBaseToQuote ? appproxInputAmount * 2 : 0, // outputAmount * ratio * 2, to find the closest inputAmount to get outputAmount
-    userAmountTokenB: isSwapBaseToQuote ? 0 : appproxInputAmount * 2,
-    isSwapBaseToQuote,
+  // console.log('swapResults2', {
+  //   userAmountTokenA: isSwapBaseToQuote ? appproxInputAmount * 2 : 0, // outputAmount * ratio * 2, to find the closest inputAmount to get outputAmount
+  //   userAmountTokenB: isSwapBaseToQuote ? 0 : appproxInputAmount * 2,
+  //   isSwapBaseToQuote,
+  // })
+
+  const step1 = findBestOption({
+    ...params,
+    appproxInputAmount,
   })
 
-  // create array of results swapping tokenA-tokenB and tokenB-tokenA
-  const swapResults = createSwapOptions({
-    pool,
-    poolBalances,
-    slippage: 0,
-    userAmountTokenA: isSwapBaseToQuote ? appproxInputAmount * 2 : 0, // outputAmount * ratio * 2, to find the closest inputAmount to get outputAmount
-    userAmountTokenB: isSwapBaseToQuote ? 0 : appproxInputAmount * 2,
-    isSwapBaseToQuote,
+  const step2 = findBestOption({
+    ...params,
+    appproxInputAmount: step1.swapAmountIn,
+    minAmountMultiplier: 0.95,
+    maxAmountMultiplier: 1.05,
   })
-
-  // take the closes one to pool amount ratio - user amount ratio
-  const swapAmounts = swapResults.reduce((savedRatios, ratios) => {
-    const { swapAmountOut } = ratios
-
-    const swapAmountOutDiff = Math.abs(swapAmountOut - outputAmount)
-    const savedSwapAmountOutDiff = Math.abs(
-      savedRatios.swapAmountOut - outputAmount
-    )
-
-    // save if diff is smaller
-    if (swapAmountOutDiff < savedSwapAmountOutDiff) {
-      return ratios
-    }
-
-    return savedRatios
-  })
-
-  console.log('swapResults', swapAmounts)
-
-  return swapAmounts
+  return step2
 }
 
 export { getInputAmountFromOutput }
