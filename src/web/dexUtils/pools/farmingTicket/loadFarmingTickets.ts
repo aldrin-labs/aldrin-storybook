@@ -5,10 +5,10 @@ import {
   FARMING_TICKET_OFFSET_OF_USER_PUBLICKEY,
   FARMING_TICKET_SIZE,
 } from '@sb/dexUtils/common/config'
-
 import { loadAccountsFromPoolsProgram } from '@sb/dexUtils/pools/loadAccountsFromPoolsProgram'
 import { loadAccountsFromPoolsV2Program } from '@sb/dexUtils/pools/loadAccountsFromPoolsV2Program'
 import { WalletAdapter } from '@sb/dexUtils/types'
+
 import { POOLS_PROGRAM_ADDRESS } from '@core/solana'
 
 export const loadFarmingTickets = async ({

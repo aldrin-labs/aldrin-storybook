@@ -1,13 +1,15 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
 
+import { AldrinConnection } from '@core/solana'
+
 import { FarmingTicket } from '../../common/types'
 import { TokenInfo, WalletAdapter } from '../../types'
 import { StakingPool } from '../types'
 
 export interface RestakeParams {
   wallet: WalletAdapter
-  connection: Connection
+  connection: AldrinConnection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
   stakingPool: StakingPool
@@ -19,7 +21,7 @@ export interface RestakeParams {
 
 export interface StartSrinStakingParams {
   wallet: WalletAdapter
-  connection: Connection
+  connection: AldrinConnection
   stakingPool: PublicKey
   stakingTier: PublicKey
   userStakeTokenaccount: PublicKey

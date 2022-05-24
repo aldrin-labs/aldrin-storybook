@@ -23,8 +23,7 @@ export const getFarmingRewardsFromFarmingStates = ({
     (farmingStatesAcc: AmountToClaim[], farmingState) => {
       // get snapshot queues for this farming state
       const snapshotQueue = snapshotQueues.find(
-        (snapshotQueue) =>
-          snapshotQueue.publicKey === farmingState.farmingSnapshots
+        (sq) => sq.publicKey === farmingState.farmingSnapshots
       )
 
       if (!snapshotQueue) {
@@ -39,7 +38,7 @@ export const getFarmingRewardsFromFarmingStates = ({
       // farming ended, skip queue
       if (
         stateAttached &&
-        stateAttached.lastVestedWithdrawTime >= farmingState?.currentTime
+        stateAttached.lastVestedWithdrawTime >= (farmingState?.currentTime || 0)
       ) {
         return farmingStatesAcc
       }

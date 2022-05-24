@@ -16,13 +16,13 @@ import {
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useConnection } from '@sb/dexUtils/connection'
 import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
-import { getCurrentFarmingStateFromAll } from '@sb/dexUtils/staking/getCurrentFarmingStateFromAll'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import { getCurrentFarmingStateFromAll } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 
 export const StyledPaper = styled(Paper)`

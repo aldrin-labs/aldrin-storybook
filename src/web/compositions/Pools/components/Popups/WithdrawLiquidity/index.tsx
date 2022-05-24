@@ -1,5 +1,8 @@
-import Close from '@icons/closeIcon.svg'
 import { Theme, withTheme } from '@material-ui/core'
+import { PublicKey } from '@solana/web3.js'
+import { COLORS } from '@variables/variables'
+import React, { useEffect, useState } from 'react'
+
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
@@ -23,12 +26,13 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
-import { VestingWithPk } from '@sb/dexUtils/vesting/types'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
-import React, { useEffect, useState } from 'react'
+
+import { VestingWithPk } from '@core/solana'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
+import Close from '@icons/closeIcon.svg'
+
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'

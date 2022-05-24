@@ -3,14 +3,13 @@ import { BN } from 'bn.js'
 
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
-import { filterOpenFarmingTickets } from '@sb/dexUtils/common/filterOpenFarmingTickets'
 import { getTotalFarmingAmountToClaim } from '@sb/dexUtils/common/getTotalFarmingAmountToClaim'
 import { FarmingCalc, FarmingTicket } from '@sb/dexUtils/common/types'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
+import { filterOpenFarmingTickets, Vesting } from '@core/solana'
 
 import { getTokenDataByMint } from '.'
-import { Vesting } from '../../../dexUtils/vesting/types'
 import { PoolInfo } from '../index.types'
 
 export const getUserPoolsFromAll = ({

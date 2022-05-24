@@ -11,7 +11,8 @@ import {
   RefreshFunction,
   TokenInfo as TokenInfoType,
 } from '@sb/dexUtils/types'
-import { VestingWithPk, Vesting } from '@sb/dexUtils/vesting/types'
+
+import { VestingWithPk, Vesting } from '@core/solana'
 
 import {
   DexTokensPrices,

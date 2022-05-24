@@ -22,12 +22,12 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { SendTransactionStatus, buildCreatePoolTransactions } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
@@ -54,7 +54,7 @@ import {
   Title,
   VestingExplanation,
 } from './styles'
-import { TokenAmountInputField, validateNumber } from './TokenAmountInput'
+import { TokenAmountInputField } from './TokenAmountInput'
 import { CreatePoolFormType, CreatePoolFormProps } from './types'
 
 const steps = [
@@ -194,7 +194,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
       try {
         const { transactions: generatedTransactions, pool } =
-          await createPoolTransactions({
+          await buildCreatePoolTransactions({
             wallet,
             connection,
             baseTokenMint: new PublicKey(values.baseToken.mint),
@@ -255,7 +255,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
-        if (createAccountsTxId !== 'success') {
+        if (createAccountsTxId.status !== SendTransactionStatus.CONFIRMED) {
           throw new Error('createAccountsTxId failed')
         }
         await sleep(1000)
@@ -266,7 +266,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           transaction: generatedTransactions.setAuthorities,
           connection,
         })
-        if (setAuthoritiesTxId !== 'success') {
+        if (setAuthoritiesTxId.status !== SendTransactionStatus.CONFIRMED) {
           throw new Error('setAuthoritiesTxId failed')
         }
         console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
@@ -278,7 +278,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           transaction: generatedTransactions.createPool,
           connection,
         })
-        if (initPoolTxId !== 'success') {
+        if (initPoolTxId.status !== SendTransactionStatus.CONFIRMED) {
           throw new Error('initPoolTxId failed')
         }
         console.log('initPoolTxId: ', initPoolTxId)
@@ -290,7 +290,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           transaction: generatedTransactions.firstDeposit,
           connection,
         })
-        if (firstDepositTxId !== 'success') {
+        if (firstDepositTxId.status !== SendTransactionStatus.CONFIRMED) {
           throw new Error('firstDepositTxId failed')
         }
         await sleep(1000)
@@ -304,7 +304,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             transaction: generatedTransactions.farming,
             connection,
           })
-          if (farmingTxId !== 'success') {
+          if (farmingTxId.status !== SendTransactionStatus.CONFIRMED) {
             throw new Error('farmingTxId failed')
           }
           await sleep(1000)

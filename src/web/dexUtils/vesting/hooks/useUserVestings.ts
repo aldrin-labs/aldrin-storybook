@@ -1,11 +1,11 @@
 import useSWR from 'swr'
 
+import { VestingWithPk } from '@core/solana'
 import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 
 import { useMultiEndpointConnection } from '../../connection'
 import { RefreshFunction } from '../../types'
 import { useWallet } from '../../wallet'
-import { VestingWithPk } from '../types'
 import { vestingAddress, VESTING_LAYOUT } from './utils'
 
 export const useUserVestings = (): [

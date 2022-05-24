@@ -59,7 +59,8 @@ export const getFarmingRewardsFromSnapshots = ({
         return snapshotsAcc
       }
 
-      let { prevSnapshot, amount } = snapshotsAcc
+      const { amount } = snapshotsAcc
+      let { prevSnapshot } = snapshotsAcc
 
       if (prevSnapshot === null) {
         if (index === 0) {
