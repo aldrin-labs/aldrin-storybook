@@ -9,10 +9,10 @@ export const TablesBlockWrapper = styled(Grid)`
   border: none;
   position: relative;
   height: ${({
-    isDefaultTerminalViewMode,
+    $isDefaultTerminalViewMode,
   }: {
-    isDefaultTerminalViewMode: boolean
-  }) => (isDefaultTerminalViewMode ? '40%' : '50%')};
+    $isDefaultTerminalViewMode: boolean
+  }) => ($isDefaultTerminalViewMode ? '40%' : '50%')};
 
   && {
     box-shadow: none !important;
@@ -23,8 +23,8 @@ export const TablesBlockWrapper = styled(Grid)`
     flex-basis: 50%;
     height: 60%;
     display: ${(props) =>
-      props.terminalViewMode === 'fullScreenTablesMobile' ||
-      props.terminalViewMode === 'mobileChart'
+      props.$terminalViewMode === 'fullScreenTablesMobile' ||
+      props.$terminalViewMode === 'mobileChart'
         ? 'none'
         : 'flex'};
   }
@@ -315,6 +315,6 @@ export const SpotBalanceSpan = styled.span`
 export const TerminalComponentsContainer = styled(Grid)`
   @media (max-width: 600px) {
     display: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? 'none' : 'block'};
+      props.$terminalViewMode === 'mobileChart' ? 'none' : 'block'};
   }
 `

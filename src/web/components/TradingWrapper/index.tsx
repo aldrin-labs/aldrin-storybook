@@ -1,5 +1,6 @@
 import React from 'react'
 import { compose } from 'recompose'
+import type { ComponentEnhancer } from 'recompose'
 import { Grid } from '@material-ui/core'
 
 import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
@@ -249,7 +250,7 @@ class SimpleTabs extends React.Component<any, any> {
     const maxAmount = [funds[1].quantity, funds[0].quantity]
     return (
       <TerminalComponentsContainer
-        terminalViewMode={terminalViewMode}
+        $terminalViewMode={terminalViewMode}
         id="tradingTerminal"
         item
         xs={12}
@@ -709,8 +710,8 @@ class SimpleTabs extends React.Component<any, any> {
                           isButtonLoaderShowing={isButtonLoaderShowing}
                           baseCurrencyAccount={baseCurrencyAccount}
                           quoteCurrencyAccount={quoteCurrencyAccount}
-                          byType={'sell'}
-                          sideType={'sell'}
+                          byType="sell"
+                          sideType="sell"
                           setAutoConnect={setAutoConnect}
                           providerUrl={providerUrl}
                           setProvider={setProvider}

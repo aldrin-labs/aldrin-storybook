@@ -1,22 +1,24 @@
+import { Theme } from '@material-ui/core'
 import React, { useMemo, useCallback } from 'react'
-import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { StyledTab, StyledHeader } from './SelectWrapperStyles'
-import { marketsByCategories } from '@core/config/marketsByCategories'
 
 import { SvgIcon } from '@sb/components'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+
+import { marketsByCategories } from '@core/config/marketsByCategories'
+
 import ExpandTableIcon from '@icons/expandIcon.svg'
 import SqueezeTableIcon from '@icons/squeezeIcon.svg'
 
-import { filterSelectorDataByTab } from './SelectWrapper.utils'
-import { Theme } from '@material-ui/core'
 import { ISelectData, SelectTabType } from './SelectWrapper.types'
+import { filterSelectorDataByTab } from './SelectWrapper.utils'
+import { StyledTab, StyledHeader } from './SelectWrapperStyles'
 
 const TableHeader = ({
   theme,
   tab,
   data,
   tokenMap,
-  favouritePairsMap,
+  favouriteMarkets,
   isAdvancedSelectorMode,
   setSelectorMode,
   onTabChange,
@@ -28,7 +30,7 @@ const TableHeader = ({
   isAdvancedSelectorMode: boolean
   allMarketsMap: Map<string, any>
   tokenMap: Map<string, any>
-  favouritePairsMap: Map<string, string>
+  favouriteMarkets: string[]
   setSelectorMode: (mode: string) => void
   onTabChange: (tab: string) => void
 }) => {
@@ -38,11 +40,11 @@ const TableHeader = ({
         tab,
         data,
         allMarketsMap,
-        favouritePairsMap,
+        favouriteMarkets,
         tokenMap,
       })
     },
-    [data, allMarketsMap, favouritePairsMap, tokenMap]
+    [data, allMarketsMap, favouriteMarkets, tokenMap]
   )
 
   const dataWithoutCustomMarkets = useMemo(
@@ -60,8 +62,8 @@ const TableHeader = ({
       >
         <SvgIcon
           src={isAdvancedSelectorMode ? SqueezeTableIcon : ExpandTableIcon}
-          width={'35%'}
-          height={'auto'}
+          width="35%"
+          height="auto"
         />
       </Row>
       <Row
@@ -97,7 +99,7 @@ const TableHeader = ({
               marginLeft: '0.5rem',
             }}
           >
-            {`(${favouritePairsMap.size})`}
+            {`(${favouriteMarkets.length})`}
           </span>
         </StyledTab>
         <StyledTab

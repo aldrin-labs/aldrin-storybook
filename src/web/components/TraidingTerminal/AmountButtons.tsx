@@ -79,7 +79,6 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               title={`Est. amount`}
               value={localAmount}
               type={'number'}
-              pattern="\d*"
               pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
               onChange={onAmountChange}
               symbol={pair[0]}
@@ -132,8 +131,9 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             }}
           >
             <PercentageTabsContainer>
-              {percentages.map((el) => (
+              {percentages.map((el, index) => (
                 <PercentageTab
+                  key={index}
                   theme={theme}
                   isActive={false}
                   onClick={() => {

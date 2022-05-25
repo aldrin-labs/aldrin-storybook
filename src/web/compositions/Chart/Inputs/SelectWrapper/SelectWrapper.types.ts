@@ -20,6 +20,9 @@ export interface IState {
 }
 
 export interface IProps {
+  getSerumMarketDataQuery: {
+    getSerumMarketData: [{ symbol: string }]
+  }
   marketsByExchangeQuery: IGetMarketsByExchangeQuery
   getSelectorSettingsQuery: {
     getAccountSettings: {
@@ -37,13 +40,14 @@ export interface IProps {
 
 export interface IPropsSelectPairListComponent extends IProps {
   data: ISelectData
-  favouritePairsMap: Map<string, string>
+  favouriteMarkets: string[]
   searchValue: string
   tab: SelectTabType
   selectorMode: string
   setSelectorMode: (mode: string) => void
   onChangeSearch: (e: React.ChangeEvent<HTMLInputElement>) => void
   onTabChange: (tab: SelectTabType) => void
+  toggleFavouriteMarket: (pair: string) => void
 }
 
 export interface IStateSelectPairListComponent {

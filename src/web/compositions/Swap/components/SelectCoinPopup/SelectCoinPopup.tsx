@@ -173,6 +173,7 @@ export const SelectCoinPopup = ({
             }) => {
               return (
                 <SelectorRow
+                  key={mint}
                   justify="space-between"
                   style={{ cursor: 'pointer' }}
                   onClick={() => {

@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+
 import ReactSelectComponent from '@sb/components/ReactSelectComponent'
 import { ChartSelectStyles } from '@sb/styles/cssUtils'
 
@@ -26,11 +27,15 @@ export const ExchangePair = styled(({ gridBorder, paddingCell, ...props }) => (
   ${(props) => props.selectStyles}
   border-radius: 0;
   box-shadow: none;
-  @media (min-width: 600px) {
-    &:hover #selectWrapper {
-      display: block;
-    }
-  }
+  //@media (min-width: 600px) {
+  //  &:hover #selectWrapper {
+  //    display: block;
+  //  }
+  //}
+  //
+  //#selectWrapper {
+  //  display: block;
+  //}
 
   ${(props) =>
     props.fixed

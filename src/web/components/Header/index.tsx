@@ -77,7 +77,7 @@ export const Header = () => {
                 }
               >
                 <NavLink
-                  left
+                  $left
                   to="/rebalance"
                   activeClassName="selected-from-dropdown"
                 >
@@ -85,7 +85,7 @@ export const Header = () => {
                   Rebalancer
                 </NavLink>
                 <NavLink
-                  left
+                  $left
                   to="/dashboard"
                   activeClassName="selected-from-dropdown"
                 >
@@ -94,7 +94,7 @@ export const Header = () => {
                 </NavLink>
 
                 <NavLink
-                  left
+                  $left
                   as="a"
                   target="_blank"
                   href="https://wallet.aldrin.com"
@@ -103,7 +103,7 @@ export const Header = () => {
                   Wallet
                 </NavLink>
                 <NavLink
-                  left
+                  $left
                   as="a"
                   target="_blank"
                   href="https://github.com/aldrin-exchange/aldrin-sdk"
@@ -112,7 +112,7 @@ export const Header = () => {
                   SDK
                 </NavLink>
                 <NavLink
-                  left
+                  $left
                   as="a"
                   target="_blank"
                   href="https://docs.aldrin.com"
@@ -121,7 +121,7 @@ export const Header = () => {
                   Read Me
                 </NavLink>
                 <NavLink
-                  left
+                  $left
                   as="a"
                   target="_blank"
                   href="https://rin.aldrin.com/"
@@ -130,7 +130,7 @@ export const Header = () => {
                   Roadmap
                 </NavLink>
                 <NavLink
-                  left
+                  $left
                   as="span"
                   onClick={() => setFeedbackPopupOpen(true)}
                 >
@@ -138,14 +138,14 @@ export const Header = () => {
                   Feedback &amp; Support
                 </NavLink>
                 <NavLink
-                  left
+                  $left
                   as="span"
                   onClick={() => setListingPopupOpen(true)}
                 >
                   <RequestListingIcon />
                   Request Listing
                 </NavLink>
-                <NavLink left to="/pools/create">
+                <NavLink $left to="/pools/create">
                   <CreatePoolIcon />
                   Create Pool
                 </NavLink>

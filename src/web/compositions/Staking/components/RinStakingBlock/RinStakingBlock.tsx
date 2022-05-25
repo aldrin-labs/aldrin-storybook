@@ -100,7 +100,8 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
           </RowContainer>
           <RowContainer justify="space-between">
             <InlineText size="sm">
-              {stakedPercentage.toFixed(2)}% of circulating supply
+              {stakedPercentage ? `${stakedPercentage.toFixed(2)}%` : '---'} of
+              circulating supply
             </InlineText>{' '}
             <InlineText size="sm" weight={700}>
               <InlineText color="primaryGray">$</InlineText>

@@ -16,7 +16,6 @@ import { SvgIcon } from '@sb/components'
 
 import {
   datesForQuery,
-  excludedPairs,
   fiatRegexp,
 } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 
@@ -180,8 +179,7 @@ const PairSelector = ({
   const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
     (el) =>
       el.symbol &&
-      !Array.isArray(el.symbol.match(fiatRegexp)) &&
-      !excludedPairs.includes(el.symbol)
+      !Array.isArray(el.symbol.match(fiatRegexp))
   )
 
   const allMarketsValue = filtredMarketsByExchange

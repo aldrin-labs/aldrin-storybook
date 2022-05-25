@@ -2,12 +2,13 @@ import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES, COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
 import React, { useCallback, useEffect, useState } from 'react'
-import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
@@ -18,11 +19,13 @@ import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { restake } from '@sb/dexUtils/staking/actions'
 import {
   BUY_BACK_RIN_ACCOUNT_ADDRESS,
   DAYS_TO_CHECK_BUY_BACK,
 } from '@sb/dexUtils/staking/config'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
+import { getSnapshotQueueWithAMMFees } from '@sb/dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
@@ -34,6 +37,7 @@ import {
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -48,11 +52,6 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import ClockIcon from '@icons/clock.svg'
 
-import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
-import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
-import { restake } from '../../../dexUtils/staking/actions'
-import { getSnapshotQueueWithAMMFees } from '../../../dexUtils/staking/getSnapshotQueueWithAMMFees'
-import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
@@ -326,6 +325,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     })
     await refreshAll()
     setLoading((prev) => ({ ...prev, claim: false }))
+
+    return result
   }
   // TODO: separate it to another component
 
@@ -495,9 +496,14 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   <InlineText color="lightGray">$</InlineText>&nbsp;
                   {stripToMillions(totalStakedUSD)}
                 </InlineText>{' '}
-                <InlineText margin="0" size="sm">
-                  {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
-                  circulating supply
+                <InlineText size="sm">
+                  {totalStakedPercentageToCircSupply
+                    ? `${stripDigitPlaces(
+                        totalStakedPercentageToCircSupply,
+                        0
+                      )}%`
+                    : '---'}
+                  &nbsp;of circulating supply
                 </InlineText>
               </StretchedBlock>
             </BlockContentStretched>
@@ -664,12 +670,10 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
   )
 }
 
-export default compose<InnerProps, OuterProps>(
-  queryRendererHoc({
-    query: getDexTokensPrices,
-    name: 'getDexTokensPricesQuery',
-    fetchPolicy: 'cache-and-network',
-    withoutLoading: true,
-    pollInterval: 60000,
-  })
-)(UserStakingInfo)
+export default queryRendererHoc({
+  query: getDexTokensPrices,
+  name: 'getDexTokensPricesQuery',
+  fetchPolicy: 'cache-and-network',
+  withoutLoading: true,
+  pollInterval: 60000,
+})(UserStakingInfo)

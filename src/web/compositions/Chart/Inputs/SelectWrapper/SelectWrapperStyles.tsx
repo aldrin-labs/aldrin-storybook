@@ -111,9 +111,9 @@ export const StyledAutoSizer = styled(AutoSizer)`
 export const TradeHistoryGrid = styled(Grid)`
   height: 100%;
   flex-basis: ${(props) =>
-    props.hideOrderbook ? '100%' : props.hideDepthChart ? '50%' : '35%'};
+    props.$hideOrderbook ? '100%' : props.$hideDepthChart ? '50%' : '35%'};
   max-width: ${(props) =>
-    props.hideOrderbook ? '100%' : props.hideDepthChart ? '50%' : '35%'};
+    props.$hideOrderbook ? '100%' : props.$hideDepthChart ? '50%' : '35%'};
   @media (max-width: 600px) {
     display: none;
   }
@@ -121,9 +121,9 @@ export const TradeHistoryGrid = styled(Grid)`
 export const OrderBookGrid = styled(Grid)`
   height: 100%;
   flex-basis: ${(props) =>
-    props.hideOrderbook ? '0' : props.hideTradeHistory ? '100%' : '50%'};
+    props.$hideOrderbook ? '0' : props.$hideTradeHistory ? '100%' : '50%'};
   max-width: ${(props) =>
-    props.hideOrderbook ? '0' : props.hideTradeHistory ? '100%' : '50%'};
+    props.$hideOrderbook ? '0' : props.$hideTradeHistory ? '100%' : '50%'};
   @media (max-width: 600px) {
     max-width: 100%;
     flex-basis: 100%;
