@@ -17,7 +17,6 @@ import {
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -28,7 +27,8 @@ import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { VestingWithPk } from '@core/solana'
+import { getStakedTokensTotal , VestingWithPk } from '@core/solana'
+
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import Close from '@icons/closeIcon.svg'
@@ -148,7 +148,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     )?.price || 0
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
-  const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
+  const stakedTokens = getStakedTokensTotal(farmingTickets)
   const lockedTokens = parseFloat(vesting?.outstanding.toString() || '0') // Vesting
 
   const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals

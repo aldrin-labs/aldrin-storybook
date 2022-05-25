@@ -8,15 +8,17 @@ import { LoadingBlock } from '@sb/components/Loader/LoadingBlock'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Text } from '@sb/components/Typography'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { UNLOCK_STAKED_AFTER } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { uniq } from '@sb/utils/collection'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
+import {
+  UNLOCK_STAKED_AFTER,
+  getStakedTokensTotal,
+  filterOpenFarmingStates,
+} from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { estimateTime, MINUTE } from '@core/utils/dateUtils'
 import { sleep } from '@core/utils/helpers'
@@ -124,7 +126,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const unstakeLocked = claimAvailableTs > now
 
-  const stakedAmount = getStakedTokensFromOpenFarmingTickets(ticketsForPool)
+  const stakedAmount = getStakedTokensTotal(ticketsForPool)
 
   const availableToClaimMap = getUniqueAmountsToClaimMap({
     farmingTickets: ticketsForPool,

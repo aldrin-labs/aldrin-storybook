@@ -17,12 +17,11 @@ import { endStaking } from '@sb/dexUtils/common/actions'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { notify } from '@sb/dexUtils/notifications'
-import { UNLOCK_STAKED_AFTER } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction, TokenInfo } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { filterOpenFarmingTickets } from '@core/solana'
+import { UNLOCK_STAKED_AFTER, filterOpenFarmingTickets } from '@core/solana'
 
 import Close from '@icons/closeIcon.svg'
 

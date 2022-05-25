@@ -2,9 +2,10 @@ import React from 'react'
 
 import { DataCellValue } from '@sb/components/DataTable'
 import { Text } from '@sb/components/Typography'
-import { getStakedTokensForPool } from '@sb/dexUtils/common/getStakedTokensForPool'
+
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { getStakedTokensTotal } from '@core/solana'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
@@ -28,7 +29,7 @@ export const prepareCell = (
 
   const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
 
-  const stakedTokens = getStakedTokensForPool(farmingTickets)
+  const stakedTokens = getStakedTokensTotal(farmingTickets)
 
   const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
 
