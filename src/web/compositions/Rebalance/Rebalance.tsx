@@ -14,6 +14,7 @@ import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { getAllTokensData } from '@core/solana'
 
 import { COLORS } from '../../../variables/variables'
 import BalanceDistributedComponent from './components/BalanceDistributed'
@@ -26,7 +27,6 @@ import {
   getPricesForTokens,
   getTokenValuesForTokens,
   getTotalTokenValue,
-  getAllTokensData,
 } from './utils'
 import {
   generateLegendColors,
