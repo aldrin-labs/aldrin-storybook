@@ -1,16 +1,15 @@
+import { Paper, Theme, withTheme } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
 
-import { Paper, Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-
 import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
+import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import Close from '@icons/closeIcon.svg'
 
-import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 import { WalletSelectorRow } from './ConnectWalletPopup.styles'
 
 export const StyledPaper = styled(Paper)`
@@ -44,24 +43,25 @@ const ConnectWalletPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer style={{ marginBottom: '2rem' }} justify={'space-between'}>
+      <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
         <Title>Select Wallet</Title>
         <SvgIcon
           src={Close}
-          width={'2rem'}
-          height={'auto'}
+          width="2rem"
+          height="auto"
           style={{ cursor: 'pointer' }}
           onClick={() => onClose()}
         />
       </RowContainer>
-      <RowContainer direction={'column'}>
+      <RowContainer direction="column">
         {WALLET_PROVIDERS.map((provider) => {
           return (
             <WalletSelectorRow
+              data-wallet-provider={provider.name}
               key={`wallet_${provider.providerName}`}
               onClick={async () => {
                 await setProvider(provider.url)
@@ -69,7 +69,7 @@ const ConnectWalletPopup = ({
                 await onClose()
               }}
             >
-              <SvgIcon src={provider.icon} width={'3rem'} height={'100%'} />
+              <SvgIcon src={provider.icon} width="3rem" height="100%" />
               {provider.name}
             </WalletSelectorRow>
           )
