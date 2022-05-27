@@ -1,4 +1,4 @@
-/import copy from 'clipboard-copy'
+import copy from 'clipboard-copy'
 import React, { useState } from 'react'
 
 import { Loading, SvgIcon, TooltipRegionBlocker } from '@sb/components'
