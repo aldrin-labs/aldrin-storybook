@@ -43,6 +43,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const connection = useConnection()
   const [data, reloadVesting] = useUserVestings()
 
+  const rinAccount = useAssociatedTokenAccount(RIN_MINT)
   if (!data) {
     return (
       <FlexBlock
@@ -57,7 +58,6 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
     )
   }
   const rinVesting = data.find((v) => v.mint.equals(rinMint))
-  const rinAccount = useAssociatedTokenAccount(RIN_MINT)
 
   if (!rinVesting) {
     return (
