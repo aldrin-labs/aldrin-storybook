@@ -115,6 +115,8 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     (a, b) => parseInt(b.startTime, 10) - parseInt(a.startTime, 10)
   )[0]
 
+  console.log('lastFarmingTicket:', ticketsForPool)
+
   const claimAvailableTs =
     lastFarmingTicket && farming
       ? parseInt(lastFarmingTicket.startTime, 10) +
