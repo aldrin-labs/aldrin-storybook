@@ -16,8 +16,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
-import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
-import { useTokenInfos } from '../../../../dexUtils/tokenRegistry'
+import { getTokenName } from '../../../../dexUtils/markets'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
@@ -188,14 +187,19 @@ export const ExtendFarmingModal: React.FC<ExtendFarmingModalProps> = (
   props
 ) => {
   const [userTokens] = useUserTokenAccounts()
-  const { title = 'Extend Farming', onClose, onExtend, pool } = props
-  const tokenMap = useTokenInfos()
+  const {
+    title = 'Extend Farming',
+    onClose,
+    onExtend,
+    pool,
+    tokensInfo,
+  } = props
 
-  const baseInfo = tokenMap.get(pool.tokenA)
-  const quoteInfo = tokenMap.get(pool.tokenB)
-
-  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
-  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
+  const base = getTokenName({ address: pool.tokenA, tokensInfoMap: tokensInfo })
+  const quote = getTokenName({
+    address: pool.tokenB,
+    tokensInfoMap: tokensInfo,
+  })
 
   return (
     <Modal open onClose={onClose} title={`${title} for ${base}/${quote} pool`}>

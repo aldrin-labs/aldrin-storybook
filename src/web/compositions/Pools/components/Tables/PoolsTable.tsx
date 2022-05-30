@@ -43,13 +43,20 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
   const walletPk = wallet.wallet.publicKey?.toBase58() || ''
 
   const data = pools
-    .filter((pool) =>
-      symbolIncludesSearch(
-        `${getTokenNameByMintAddress(pool.tokenA)}_${getTokenNameByMintAddress(
-          pool.tokenB
-        )}`,
-        searchValue
-      )
+    .filter(
+      (pool) =>
+        symbolIncludesSearch(
+          `${tokenMap.get(pool.tokenA)?.symbol}_${
+            tokenMap.get(pool.tokenB)?.symbol
+          }`,
+          searchValue
+        ) ||
+        symbolIncludesSearch(
+          `${getTokenNameByMintAddress(
+            pool.tokenA
+          )}_${getTokenNameByMintAddress(pool.tokenB)}`,
+          searchValue
+        )
     )
     .map((pool) =>
       preparePoolTableCell({
@@ -73,7 +80,10 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
       defaultSortOrder={SORT_ORDER.DESC}
       onRowClick={(e, row) => {
         e.preventDefault()
-        history.push(`/pools/${row.extra.parsedName}`)
+        const tokenA = tokenMap.get(row.extra.tokenA)?.symbol
+        const tokenB = tokenMap.get(row.extra.tokenB)?.symbol
+
+        history.push(`/pools/${tokenA}_${tokenB}`)
       }}
       noDataText={
         noDataText || (

@@ -46,7 +46,7 @@ export const SelectCoinPopup = ({
   setQuoteTokenAddressFromSeveral: (address: string) => void
 }) => {
   const tokenInfos = useTokenInfos()
-  const { wallet, connected } = useWallet()
+  const { connected } = useWallet()
 
   const [searchValue, onChangeSearch] = useState<string>('')
   const [selectedMint, setSelectedMint] = useState<string>('')

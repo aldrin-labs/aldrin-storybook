@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from 'react'
-import { TokenListProvider, TokenInfo } from '@solana/spl-token-registry'
-import CoinPlaceholder from '@icons/coinPlaceholder.svg'
+import React from 'react'
+
 import { SvgIcon } from '@sb/components'
-
-import GreenCheckmark from '@icons/successIcon.svg'
-import Warning from '@icons/warningPairSel.png'
-import ThinkingFace from '@icons/thinkingFace.png'
-import MangoLogo from '@icons/mango_logo.png'
-import RinLogo from '@icons/rin_logo.png'
-import SunnyLogo from '@icons/sunny_logo.jpg'
-import GMCoinLogo from '@icons/gmcoinIcon.jpg'
-import OTRLogo from '@icons/otrIcon.jpg'
-import PTRLogo from '@icons/ptr_logo.png'
-import SYPLogo from '@icons/syp_logo.png'
-import CobanLogo from '@icons/coban_logo.svg'
-import SfcnLogo from '@icons/sfcn_logo.png'
-import FriesLogo from '@icons/fries_logo.png'
-import AlmLogo from '@icons/alm_logo.png'
-import SobLogo from '@icons/sob_logo.png'
-
+import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { RIN_MINT } from '@sb/dexUtils/utils'
-import { ALL_TOKENS_MINTS_MAP } from '@sb/dexUtils/markets'
+
+import AlmLogo from '@icons/alm_logo.png'
+import CobanLogo from '@icons/coban_logo.svg'
+import CoinPlaceholder from '@icons/coinPlaceholder.svg'
+import FriesLogo from '@icons/fries_logo.png'
+import GMCoinLogo from '@icons/gmcoinIcon.jpg'
+import MangoLogo from '@icons/mango_logo.png'
+import OTRLogo from '@icons/otrIcon.jpg'
+import PTRLogo from '@icons/ptr_logo.png'
+import RinLogo from '@icons/rin_logo.png'
+import SfcnLogo from '@icons/sfcn_logo.png'
+import SobLogo from '@icons/sob_logo.png'
+import GreenCheckmark from '@icons/successIcon.svg'
+import SunnyLogo from '@icons/sunny_logo.jpg'
+import SYPLogo from '@icons/syp_logo.png'
+import ThinkingFace from '@icons/thinkingFace.png'
+import Warning from '@icons/warningPairSel.png'
 
 export const TokenIcon = ({
   mint,
@@ -45,7 +44,9 @@ export const TokenIcon = ({
   const tokenMap = useTokenInfos()
 
   if (isAdditionalCustomUserMarket) {
-    return <SvgIcon className={className} width={'50%'} height={'auto'} src={Warning} />
+    return (
+      <SvgIcon className={className} width="50%" height="auto" src={Warning} />
+    )
   }
 
   if (!mint) {
@@ -54,7 +55,7 @@ export const TokenIcon = ({
         src={CoinPlaceholder}
         height={height}
         width={width}
-        style={{ margin: margin }}
+        style={{ margin }}
         className={className}
       />
     )
@@ -140,10 +141,20 @@ export const TokenIcon = ({
   if (!token || !token.logoURI) {
     if (emojiIfNoLogo) {
       return isAwesomeMarket ? (
-        <SvgIcon className={className} width={'50%'} height={'auto'} src={ThinkingFace} />
+        <SvgIcon
+          className={className}
+          width="50%"
+          height="auto"
+          src={ThinkingFace}
+        />
       ) : (
-          <SvgIcon className={className} width={'50%'} height={'auto'} src={GreenCheckmark} />
-        )
+        <SvgIcon
+          className={className}
+          width="50%"
+          height="auto"
+          src={GreenCheckmark}
+        />
+      )
     }
 
     return (
@@ -151,7 +162,7 @@ export const TokenIcon = ({
         src={CoinPlaceholder}
         height={height}
         width={width}
-        style={{ margin: margin }}
+        style={{ margin }}
         className={className}
       />
     )

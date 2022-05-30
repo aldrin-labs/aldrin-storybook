@@ -10,7 +10,7 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks'
 import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
@@ -102,7 +102,11 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const goBack = () => history.push('/pools')
 
-  const pool = pools?.find((p) => p.parsedName === symbol)
+  const pool = pools?.find(
+    (p) =>
+      `${tokenMap.get(p.tokenA)?.symbol}_${tokenMap.get(p.tokenB)?.symbol}` ===
+      symbol
+  )
 
   const [poolBalances] = usePoolBalances(pool || {})
 
@@ -115,8 +119,8 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const baseInfo = tokenMap.get(pool.tokenA)
   const quoteInfo = tokenMap.get(pool.tokenB)
 
-  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
-  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
+  const base = getTokenName({ address: pool.tokenA, tokensInfoMap: tokenMap })
+  const quote = getTokenName({ address: pool.tokenB, tokensInfoMap: tokenMap })
 
   const baseTokenName = trimTo(baseInfo?.symbol || '')
   const quoteTokenName = trimTo(quoteInfo?.symbol || '')
@@ -253,6 +257,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
             <Row>
               <Cell col={12} colLg={6}>
                 <UserLiquidityBlock
+                  tokenMap={tokenMap}
                   pool={pool}
                   userTokensData={userTokensData}
                   farmingTickets={farmingTickets}

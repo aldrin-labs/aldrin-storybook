@@ -1,5 +1,8 @@
-import Close from '@icons/closeIcon.svg'
 import { Theme, withTheme } from '@material-ui/core'
+import { PublicKey } from '@solana/web3.js'
+import { COLORS } from '@variables/variables'
+import React, { useEffect, useState } from 'react'
+
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
@@ -17,18 +20,20 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { VestingWithPk } from '@sb/dexUtils/vesting/types'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
-import React, { useEffect, useState } from 'react'
+
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
+import Close from '@icons/closeIcon.svg'
+
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
@@ -73,6 +78,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   } = props
   const { wallet } = useWallet()
   const connection = useConnection()
+  const tokensInfo = useTokenInfos()
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
@@ -128,9 +134,14 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
 
-  const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
-  const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-
+  const baseSymbol = getTokenName({
+    address: selectedPool.tokenA,
+    tokensInfoMap: tokensInfo,
+  })
+  const quoteSymbol = getTokenName({
+    address: selectedPool.tokenB,
+    tokensInfoMap: tokensInfo,
+  })
   const baseTokenPrice =
     (
       dexTokensPricesMap.get(selectedPool.tokenA) ||

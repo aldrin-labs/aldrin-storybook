@@ -1,9 +1,4 @@
-import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
-import {
-  AWESOME_TOKENS,
-  useAwesomeMarkets,
-} from '@core/utils/awesomeMarkets/serum'
-import { Metrics } from '@core/utils/metrics'
+import tokensList from '@flosssolis/my-test-registry/src/tokens.json'
 import {
   Market,
   MARKETS,
@@ -12,11 +7,21 @@ import {
   TokenInstructions,
   TOKEN_MINTS,
 } from '@project-serum/serum'
-import { OrderWithMarket } from '@sb/dexUtils/send'
+import { TokenInfo } from '@solana/spl-token-registry'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
+
+import { OrderWithMarket } from '@sb/dexUtils/send'
+
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import {
+  AWESOME_TOKENS,
+  useAwesomeMarkets,
+} from '@core/utils/awesomeMarkets/serum'
+import { Metrics } from '@core/utils/metrics'
+
 import {
   getProviderNameFromUrl,
   useAccountData,
@@ -39,8 +44,6 @@ export const ALL_TOKENS_MINTS = getUniqueListBy(
   [...TOKEN_MINTS, ...AWESOME_TOKENS],
   'name'
 )
-
-console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
 
 export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   acc[el.address] = el.name
@@ -1264,11 +1267,27 @@ export const getTokenNameByMintAddress = (address?: string): string => {
     return '--'
   }
 
-  const tokenName = ALL_TOKENS_MINTS_MAP[address]
-
+  const tokenName = tokensList.find((el) => el.address === address)?.symbol
   if (tokenName) {
     return tokenName
   }
 
   return `${address.slice(0, 3)}...${address.slice(address.length - 3)}`
+}
+
+export const getTokenName = ({
+  address,
+  tokensInfoMap,
+}: {
+  address: string
+  tokensInfoMap: Map<string, TokenInfo>
+}): string => {
+  if (!address) {
+    return '--'
+  }
+
+  const tokenName =
+    tokensInfoMap.get(address)?.symbol || getTokenNameByMintAddress(address)
+
+  return tokenName
 }

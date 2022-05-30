@@ -1,11 +1,11 @@
+import { Theme } from '@material-ui/core'
 import React from 'react'
 
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { TokenIcon } from '@sb/components/TokenIcon'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { WhiteText } from './AddTokensPopup.styles'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { Theme } from '@material-ui/core'
+import { WhiteText } from './AddTokensPopup.styles'
 
 export function TokenListItem({
   name: tokenName,
@@ -58,7 +58,7 @@ export function TokenListItem({
         }}
       >
         <Row>
-          <TokenIcon mint={mintAddress} width={'2.5rem'} height={'2.5rem'} />
+          <TokenIcon mint={mintAddress} width="2.5rem" height="2.5rem" />
           <WhiteText theme={theme} style={{ marginLeft: '1rem' }}>
             {tokenName.replace('(Sollet)', '')}
             {tokenSymbol ? ` (${tokenSymbol})` : null}

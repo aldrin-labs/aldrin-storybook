@@ -169,11 +169,15 @@ export const preparePoolTableCell = (params: {
         rendered: (
           <FlexBlock alignItems="center">
             <Link
-              to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
+              to={`/swap?base=${baseName}&quote=${quoteName}`}
               style={{ textDecoration: 'none' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <TokenIconsContainer tokenA={pool.tokenA} tokenB={pool.tokenB}>
+              <TokenIconsContainer
+                tokenMap={tokenMap}
+                tokenA={pool.tokenA}
+                tokenB={pool.tokenB}
+              >
                 {isPoolOwner && (
                   <Text color="success" size="sm">
                     Your pool

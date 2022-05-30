@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
-import { DataTableProps, DataTableState, SORT_ORDER } from './types'
+
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+
+import { useLocalStorageState } from '../../dexUtils/utils'
+import { Hint, SortButton } from './components'
 import {
   Table,
   Thead,
@@ -11,8 +15,7 @@ import {
   NoDataBlock,
   TableBody,
 } from './styles'
-import { Hint, SortButton } from './components'
-import { useLocalStorageState } from '../../dexUtils/utils'
+import { DataTableProps, DataTableState, SORT_ORDER } from './types'
 import { sortData, nextSortOrder } from './utils'
 
 export * from './types'
@@ -36,6 +39,7 @@ export function DataTable<E>(props: DataTableProps<E>) {
   })
 
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
+  const tokenMap = useTokenInfos()
 
   const isExpandable = !!expandableContent
 
@@ -92,7 +96,6 @@ export function DataTable<E>(props: DataTableProps<E>) {
             <React.Fragment key={`datatable_${name}_row_${idx}`}>
               <Tr onClick={(e) => onRowClick(e, row)}>
                 {columns.map(({ key }) => (
-                  // eslint-disable-next-line react/no-array-index-key
                   <Td key={`datatable_${name}_cell_${idx}_${key}`}>
                     {!!row.fields[key] && (
                       <>
