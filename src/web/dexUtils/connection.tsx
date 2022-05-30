@@ -21,13 +21,11 @@ export const ENDPOINTS = [
   },
 ]
 
-const connection = new MultiEndpointsConnection(
-  [
-    { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
-    // { url: 'https://aldrinexchange.genesysgo.net', weight: 3 },
-  ],
-  'confirmed'
-)
+const providers = process.env.RPC_PROVIDERS_ADDRESSES
+  ? JSON.parse(process.env.RPC_PROVIDERS_ADDRESSES)
+  : [{ url: MAINNET_BETA_ENDPOINT, weight: 20 }]
+
+const connection = new MultiEndpointsConnection(providers, 'confirmed')
 
 connection.connections.forEach((c) => {
   c.onSlotChange(() => null)
