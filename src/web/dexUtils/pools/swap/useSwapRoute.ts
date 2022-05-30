@@ -1,4 +1,3 @@
-import { TransactionFeeInfo } from '@jup-ag/core'
 import { useEffect, useRef, useState } from 'react'
 
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
@@ -18,14 +17,15 @@ import { usePoolsBalances } from '../hooks/usePoolsBalances'
 import { getMarketsInSwapPaths } from './getMarketsInSwapPaths'
 import { getSwapRoute, SwapRoute } from './getSwapRoute'
 import { multiSwap } from './multiSwap'
+import { calculateTransactionDepositAndFee } from './serum'
 
 type UseSwapRouteProps = {
   pools: PoolInfo[]
   inputMint: string
   outputMint: string
   slippage: number
-  selectedBaseTokenAddressFromSeveral?: string
-  selectedQuoteTokenAddressFromSeveral?: string
+  selectedInputTokenAddressFromSeveral?: string
+  selectedOutputTokenAddressFromSeveral?: string
 }
 
 type UseSwapRouteResponse = {
@@ -51,8 +51,8 @@ export const useSwapRoute = ({
   inputMint,
   outputMint,
   slippage = 0,
-  selectedBaseTokenAddressFromSeveral,
-  selectedQuoteTokenAddressFromSeveral,
+  selectedInputTokenAddressFromSeveral,
+  selectedOutputTokenAddressFromSeveral,
 }: UseSwapRouteProps): UseSwapRouteResponse => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -63,14 +63,11 @@ export const useSwapRoute = ({
     'input'
   )
   const [swapRoute, setSwapRoute] = useState<SwapRoute>([])
-  const [depositAndFee, setDepositAndFee] = useState<
-    TransactionFeeInfo | undefined | null
-  >(null)
 
   const [openOrdersMap, refreshOpenOrdersMap, isLoadingOpenOrdersMap] =
     useOpenOrdersFromMarkets()
 
-  const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
+  const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
   const [inputAmount, setInputAmount] = useState<string | number>('')
   const [outputAmount, setOutputAmount] = useState<string | number>('')
@@ -88,8 +85,10 @@ export const useSwapRoute = ({
     endNode: outputMint,
   })
 
-  console.log({
-    marketsInSwapPaths,
+  const depositAndFee = calculateTransactionDepositAndFee({
+    swapRoute,
+    openOrdersMap,
+    userTokensData,
   })
 
   const [poolsBalancesMap, refreshPoolsBalances] = usePoolsBalances({
@@ -113,11 +112,6 @@ export const useSwapRoute = ({
     },
     true
   )
-
-  console.log({
-    isAllMarketsInSwapPathLoaded,
-    marketsWithOrderbookMap,
-  })
 
   const refreshArgsRef = useRef({
     inputAmount,
@@ -176,15 +170,6 @@ export const useSwapRoute = ({
           marketsWithOrderbookMap:
             refreshArgsRef.current.marketsWithOrderbookMap,
         })
-
-        if (!result) {
-          if (typeof result !== 'object') {
-            console.log('not object hmmmmmmmm', result)
-          }
-
-          setLoading(false)
-          return
-        }
 
         const [newSwapRoute, swapAmountOut] = result
 
@@ -254,6 +239,7 @@ export const useSwapRoute = ({
     setLoading(true)
 
     try {
+      refreshUserTokensData()
       await refreshPoolsBalances()
       await refreshMarketsWithOrderbook()
 
@@ -292,12 +278,10 @@ export const useSwapRoute = ({
     const result = await multiSwap({
       wallet,
       connection,
-      allTokensData,
       swapRoute,
       openOrdersMap,
-      selectedInputTokenAddressFromSeveral: selectedBaseTokenAddressFromSeveral,
-      selectedOutputTokenAddressFromSeveral:
-        selectedQuoteTokenAddressFromSeveral,
+      selectedInputTokenAddressFromSeveral,
+      selectedOutputTokenAddressFromSeveral,
     })
 
     refreshOpenOrdersMap()

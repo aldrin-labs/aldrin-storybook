@@ -36,10 +36,6 @@ export const getShortestPaths = ({
 
   const knownPaths = knownEdgesGraph.getAllPaths(startNode, endNode, 3)
 
-  console.log('knownPaths', {
-    knownPaths,
-  })
-
   if (knownPaths.length > 0) {
     return knownPaths
   }

@@ -1,20 +1,26 @@
-import { OpenOrders, DexInstructions } from '@project-serum/serum'
+import { DexInstructions, OpenOrders } from '@project-serum/serum'
 import { Token } from '@solana/spl-token'
 import {
   Keypair,
+  LAMPORTS_PER_SOL,
   PublicKey,
   Signer,
   SystemProgram,
   TransactionInstruction,
 } from '@solana/web3.js'
 
+import { OpenOrdersMap } from '@sb/compositions/Rebalance/utils/loadOpenOrdersFromMarkets'
 import {
   ASSOCIATED_TOKEN_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
 } from '@sb/dexUtils/token/token'
+import { TokenInfo } from '@sb/dexUtils/types'
 import { WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
 import { DEX_PID } from '@core/config/dex'
+
+import { SwapRoute } from './getSwapRoute'
 
 const getEmptyInstruction = (): {
   instructions: TransactionInstruction[]
@@ -178,6 +184,16 @@ export async function getOrCreateOpenOrdersAddress({
         'processed'
       )
 
+      // result.cleanupInstructions = [
+      //   DexInstructions.closeOpenOrders({
+      //     market: serumMarket.address,
+      //     openOrders: openOrdersAddress,
+      //     owner: user,
+      //     solWallet: user,
+      //     programId: DEX_PID,
+      //   }),
+      // ]
+
       if (openOrdersAccountInfo) {
         return {
           ...result,
@@ -204,11 +220,27 @@ export async function getOrCreateOpenOrdersAddress({
         openOrdersAccount.publicKey,
         DEX_PID
       ),
+      DexInstructions.initOpenOrders({
+        market: serumMarket.address,
+        openOrders: newOpenOrdersAddress,
+        owner: user,
+        programId: DEX_PID,
+        marketAuthority: null,
+      }),
     ]
 
     result.signers = [openOrdersAccount]
 
     result.cleanupInstructions = [
+      // DexInstructions.consumeEvents({
+      //   market: serumMarket.address,
+      //   eventQueue: serumMarket.decoded.eventQueue,
+      //   coinFee: serumMarket.decoded.eventQueue,
+      //   pcFee: serumMarket.decoded.eventQueue,
+      //   openOrdersAccounts: [openOrdersAccount],
+      //   limit: 11,
+      //   programId: DEX_PID,
+      // }),
       DexInstructions.closeOpenOrders({
         market: serumMarket.address,
         openOrders: newOpenOrdersAddress,
@@ -225,47 +257,50 @@ export async function getOrCreateOpenOrdersAddress({
   return { ...result, address: newOpenOrdersAddress, marketAddress }
 }
 
-const calculateTransactionDepositAndFee = ({
-  intermediate,
-  destination,
-  openOrders,
-  feeCalculator,
+export const calculateTransactionDepositAndFee = ({
+  swapRoute,
+  openOrdersMap,
+  userTokensData,
+}: {
+  swapRoute: SwapRoute
+  openOrdersMap: OpenOrdersMap
+  userTokensData: TokenInfo[]
 }) => {
+  if (!swapRoute || swapRoute.length === 0) return 0
+
   const SERUM_OPEN_ACCOUNT_LAMPORTS = 23352760
   const OPEN_TOKEN_ACCOUNT_LAMPORTS = 2039280
+  const LAMPORTS_PER_SIGNATURE = 5000
 
-  const openOrdersDeposits = openOrders
-    .filter((ooi) => ooi && ooi.instructions.length > 0)
-    .map(() => SERUM_OPEN_ACCOUNT_LAMPORTS)
-
-  const ataDepositLength = [destination, intermediate].filter(
-    (item) =>
-      (item === null || item === undefined
-        ? undefined
-        : item.instructions.length) && item.cleanupInstructions.length === 0
+  const openOrdersToCreate = swapRoute.filter(
+    (swapStep) =>
+      swapStep.ammLabel === 'Serum' &&
+      !openOrdersMap.has(swapStep.market.market?.address.toString())
   ).length
 
-  const ataDeposit = ataDepositLength * OPEN_TOKEN_ACCOUNT_LAMPORTS
+  const uniqSwapRouteMints = [
+    ...new Set(
+      swapRoute.map((step) => [step.inputMint, step.outputMint]).flat()
+    ),
+  ]
 
-  return {
-    signatureFee:
-      ([
-        destination.signers,
-        intermediate === null || intermediate === undefined
-          ? undefined
-          : intermediate.signers,
-        openOrders === null || openOrders === undefined
-          ? undefined
-          : openOrders.some((oo) =>
-              oo === null || oo === undefined ? undefined : oo.signers
-            ),
-      ]
-        .filter(Boolean)
-        .flat().length +
-        1) *
-      feeCalculator.lamportsPerSignature,
-    openOrdersDeposits,
-    ataDeposit,
-    ataDepositLength,
-  }
+  const userTokensDataMap = toMap(userTokensData, (tokenData) => tokenData.mint)
+
+  const tokenAccountsToCreate = uniqSwapRouteMints.filter(
+    (mint) => !userTokensDataMap.has(mint)
+  ).length
+
+  const openOrdersNetworkFee = openOrdersToCreate * SERUM_OPEN_ACCOUNT_LAMPORTS
+  const tokenAccountsNetworkFee =
+    tokenAccountsToCreate * OPEN_TOKEN_ACCOUNT_LAMPORTS
+
+  const signersNetworkFee = openOrdersToCreate * LAMPORTS_PER_SIGNATURE
+
+  return (
+    (LAMPORTS_PER_SIGNATURE +
+      openOrdersNetworkFee +
+      tokenAccountsNetworkFee +
+      signersNetworkFee) /
+    LAMPORTS_PER_SOL
+  )
 }

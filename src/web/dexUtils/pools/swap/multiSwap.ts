@@ -18,41 +18,13 @@ import { WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
 import { toBNWithDecimals } from '@core/utils/helpers'
 
 import { getSwapTransaction } from '../actions/swap'
+import { checkIsTransactionFromNativeSOL } from './checkIsTransactionFromNativeSOL'
 import { SwapRoute } from './getSwapRoute'
 import {
   createAndCloseWSOLAccount,
   getOrCreateOpenOrdersAddress,
   routeAtaInstructions,
 } from './serum'
-
-const checkIsTransactionFromNativeSOL = ({
-  swapStep,
-  walletPubkey,
-  selectedInputTokenAddressFromSeveral,
-  selectedOutputTokenAddressFromSeveral,
-}) => {
-  const { inputMint, isSwapBaseToQuote } = swapStep
-  const isInputTokenSOL = WRAPPED_SOL_MINT.equals(new PublicKey(inputMint))
-
-  if (isInputTokenSOL) {
-    // if input mint is base of pool/market, we want to check that user didn't select
-    // another SOL token (not native) from several
-    if (isSwapBaseToQuote) {
-      return (
-        !selectedInputTokenAddressFromSeveral ||
-        walletPubkey.equals(new PublicKey(selectedInputTokenAddressFromSeveral))
-      )
-    }
-
-    // same if SOL token is in quote
-    return (
-      !selectedOutputTokenAddressFromSeveral ||
-      walletPubkey.equals(new PublicKey(selectedOutputTokenAddressFromSeveral))
-    )
-  }
-
-  return false
-}
 
 const multiSwap = async ({
   wallet,
@@ -81,13 +53,13 @@ const multiSwap = async ({
 
   const firstSwapStep = swapRoute[0]
 
-  let { swapAmountInWithSlippage: swapAmountIn } = firstSwapStep
+  const { swapAmountInWithSlippage: firstStepSwapAmountIn } = firstSwapStep
 
   // check if we start swap from native SOL (we'll need to handle it later)
   const isSwapFromNativeSOL = checkIsTransactionFromNativeSOL({
     swapStep: firstSwapStep,
-    selectedInputTokenAddressFromSeveral,
-    selectedOutputTokenAddressFromSeveral,
+    inputTokenAddress: selectedInputTokenAddressFromSeveral,
+    outputTokenAddress: selectedOutputTokenAddressFromSeveral,
     walletPubkey: wallet.publicKey,
   })
 
@@ -166,7 +138,7 @@ const multiSwap = async ({
     ...swapRouteOpenOrders,
   ].reduce(
     (acc, current) => {
-      acc.cleanupInstructions.push(...current.instructions)
+      acc.cleanupInstructions.push(...current.cleanupInstructions)
       return acc
     },
     { cleanupInstructions: [] }
@@ -179,7 +151,7 @@ const multiSwap = async ({
       cleanupInstructions: closeWSOLIxs,
     } = await createAndCloseWSOLAccount({
       connection,
-      amount: (swapAmountIn * LAMPORTS_PER_SOL).toFixed(0),
+      amount: (firstStepSwapAmountIn * LAMPORTS_PER_SOL).toFixed(0),
       owner: wallet.publicKey,
     })
 
@@ -232,12 +204,11 @@ const multiSwap = async ({
     }
 
     if (swapStep.ammLabel === 'Serum') {
-      const { swapAmountOutWithSlippage, market } = swapStep
+      const { swapAmountInWithSlippage, swapAmountOutWithSlippage, market } =
+        swapStep
 
       const tokenADecimals = market.market?._baseSplTokenDecimals
       const tokenBDecimals = market.market?._quoteSplTokenDecimals
-
-      // create token accounts if needed
 
       const isBuySide = !isSwapBaseToQuote
       const side = isBuySide ? 'buy' : 'sell'
@@ -261,7 +232,7 @@ const multiSwap = async ({
       const Side = { Ask: { ask: {} }, Bid: { bid: {} } }
 
       const swapAmountInBN = toBNWithDecimals(
-        swapAmountIn,
+        swapAmountInWithSlippage,
         isSwapBaseToQuote ? tokenADecimals : tokenBDecimals
       )
 
@@ -270,12 +241,10 @@ const multiSwap = async ({
         isSwapBaseToQuote ? tokenBDecimals : tokenADecimals
       )
 
-      swapAmountIn = swapAmountOutWithSlippage
-
       console.log('variablesForPlacingOrder', {
         ...variablesForPlacingOrder,
         isBuySide,
-        swapAmountIn,
+        swapAmountInWithSlippage,
         swapAmountOutWithSlippage,
         swapAmountInBN: swapAmountInBN.toString(),
         swapAmountOutBN: swapAmountOutBN.toString(),
@@ -299,7 +268,8 @@ const multiSwap = async ({
 
       commonInstructions.push(placeMarketOrderInstruction)
     } else {
-      const { swapAmountOutWithSlippage, pool } = swapStep
+      const { swapAmountInWithSlippage, swapAmountOutWithSlippage, pool } =
+        swapStep
 
       const { curveType, swapToken, tokenADecimals, tokenBDecimals } = pool
 
@@ -308,7 +278,7 @@ const multiSwap = async ({
         : [tokenBDecimals, tokenADecimals]
 
       const swapAmountInWithDecimals = toBNWithDecimals(
-        swapAmountIn,
+        swapAmountInWithSlippage,
         tokenInDecimals
       )
 
@@ -317,7 +287,12 @@ const multiSwap = async ({
         tokenOutDecimals
       )
 
-      swapAmountIn = swapAmountOutWithSlippage
+      console.log({
+        swapAmountInWithDecimals,
+        swapAmountOutWithDecimals,
+        swapAmountInWithDecimalsN: swapAmountInWithDecimals.toNumber(),
+        swapAmountOutWithDecimalsN: swapAmountOutWithDecimals.toNumber(),
+      })
 
       const swapTransactionAndSigners = await getSwapTransaction({
         wallet,
@@ -346,11 +321,15 @@ const multiSwap = async ({
   // add close wSOL & OpenOrders ix
   commonInstructions.push(...cleanupInstructions)
 
-  const buildedTransactions = buildTransactions(
-    commonInstructions.map((ix) => ({ instruction: ix })),
-    wallet.publicKey,
-    commonSigners
-  )
+  const buildedTransactions = [
+    ...buildTransactions(
+      commonInstructions.map((ix) => ({ instruction: ix })),
+      wallet.publicKey,
+      commonSigners
+    ),
+    // { transaction: new Transaction().add(cleanupInstructions[0]), signers: [] },
+    // { transaction: new Transaction().add(cleanupInstructions[1]), signers: [] },
+  ]
 
   console.log('buildedTransactions', buildedTransactions)
 

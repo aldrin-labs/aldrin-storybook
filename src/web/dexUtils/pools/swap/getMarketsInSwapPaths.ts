@@ -17,7 +17,6 @@ export const getMarketsInSwapPaths = ({
   startNode: string
   endNode: string
 }): string[] => {
-  console.log('getMarketsInSwapPaths')
   const poolsEdges = getPoolsMintsEdges(pools)
 
   const pathsViaPools = getShortestPaths({
