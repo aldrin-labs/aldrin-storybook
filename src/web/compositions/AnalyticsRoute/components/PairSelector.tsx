@@ -126,8 +126,6 @@ export const defaultRowRenderer = ({
       (rowData.symbol.contentToSort.toLowerCase().includes('all') &&
         selectedPair === 'all'))
 
-  console.log('className', className)
-
   return (
     <div
       {...a11yProps}

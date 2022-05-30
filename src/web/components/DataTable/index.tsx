@@ -1,130 +1,120 @@
-import React, { useState } from 'react'
-import { DataTableProps, DataTableState, SORT_ORDER } from './types'
-import {
-  Table,
-  Thead,
-  Tbody,
-  Th,
-  Tr,
-  Td,
-  ThContent,
-  NoDataBlock,
-  TableBody,
-} from './styles'
+import { withTheme } from '@material-ui/core/styles'
+import React, { useEffect, useState } from 'react'
+import { Column, Table } from 'react-virtualized'
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+
+import 'react-virtualized/styles.css'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+
 import { Hint, SortButton } from './components'
-import { useLocalStorageState } from '../../dexUtils/utils'
-import { sortData, nextSortOrder } from './utils'
+import { NoDataBlock } from './styles'
+import {
+  DataCellValues,
+  DataTableProps,
+  DataTableState,
+  SORT_ORDER,
+} from './types'
+import { nextSortOrder, sortData } from './utils'
 
 export * from './types'
 
-const nop = () => {}
+const DataTablePure = <E,>(props: DataTableProps<E & { theme: any }>) => {
+  const { columns, data, name, onRowClick, noDataText } = props
 
-export function DataTable<E>(props: DataTableProps<E>) {
-  const {
-    columns,
-    data,
-    name,
-    defaultSortColumn = '',
-    defaultSortOrder = SORT_ORDER.NONE,
-    expandableContent,
-    onRowClick = nop,
-    noDataText,
-  } = props
   const [state, setState] = useLocalStorageState<DataTableState>(`dt_${name}`, {
-    sortColumn: defaultSortColumn,
-    sortOrder: defaultSortOrder,
+    sort: {
+      field: 'tvl',
+      direction: SORT_ORDER.DESC,
+    },
   })
+  const [sortedData, setSortedData] = useState<DataCellValues<E>[]>([])
 
-  const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
-
-  const isExpandable = !!expandableContent
-
-  const sortedData = sortData(data, state.sortColumn, state.sortOrder)
-
-  const setSort = (column: string) => {
-    setExpandedIdx(null)
-    if (column !== state.sortColumn) {
-      setState({ ...state, sortColumn: column, sortOrder: SORT_ORDER.DESC })
-    } else {
-      setState({ ...state, sortOrder: nextSortOrder(state.sortOrder) })
-    }
-  }
-
-  const setExpanded = (idx: number) => {
-    if (expandedIdx === idx) {
-      setExpandedIdx(null)
-    } else {
-      setExpandedIdx(idx)
-    }
-  }
-
-  const cols = columns.length + (isExpandable ? 1 : 0)
+  useEffect(() => {
+    setSortedData(sortData(data, state.sort.field, state.sort.direction))
+  }, [state.sort])
 
   return (
-    <TableBody>
-      <Table>
-        <Thead>
-          <Tr>
-            {columns.map((c) => (
-              <Th
-                className={`${c.sortable ? 'sortable ' : ''}`}
-                key={`datatable_${name}_head_${c.key}`}
-              >
-                <ThContent onClick={c.sortable ? () => setSort(c.key) : nop}>
-                  {c.title}
-                  {c.hint && <Hint text={c.hint} />}
-                  {c.sortable && (
+    <AutoSizer>
+      {({ height, width }) => (
+        <Table
+          width={width > 800 ? width : 800}
+          height={height}
+          sort={({ sortBy: field }) => {
+            const nextDirection = nextSortOrder(state.sort.direction)
+
+            setState({
+              ...state,
+              sort: {
+                field,
+                direction: nextDirection,
+              },
+            })
+          }}
+          sortBy={state.sort.field}
+          sortDirection={
+            state.sort.direction === 'NONE' ? undefined : state.sort.direction
+          }
+          rowCount={sortedData.length}
+          noRowsRenderer={() => <>{noDataText}</>}
+          onRowClick={onRowClick}
+          rowStyle={{
+            outline: 'none',
+            cursor: 'pointer',
+            fontSize: '16px',
+            borderBottom: `1px solid rgb(46, 46, 46)`,
+            overflow: 'initial',
+          }}
+          headerHeight={40}
+          rowHeight={100}
+          rowGetter={({ index }) => sortedData[index]}
+        >
+          {columns.map((item) => {
+            let columnWidth = width
+
+            if (item.key === 'pool') {
+              columnWidth *= 2
+            } else if (item.key === 'tvl') {
+              columnWidth *= 2
+            }
+
+            return (
+              <Column
+                key={item.key}
+                label={item.title}
+                columnData={item}
+                dataKey={item.key}
+                headerRenderer={({ label, columnData }) => (
+                  <>
+                    {label}
+                    {columnData.hint && <Hint text={columnData.hint} />}
                     <SortButton
-                      sortOrder={state.sortOrder}
-                      sortColumn={state.sortColumn}
-                      columnName={c.key}
+                      sortOrder={state.sort.direction}
+                      sortColumn={state.sort.field}
+                      columnName={item.key}
                     />
-                  )}
-                </ThContent>
-              </Th>
-            ))}
-            {isExpandable && <Th />}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {sortedData.map((row, idx) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <React.Fragment key={`datatable_${name}_row_${idx}`}>
-              <Tr onClick={(e) => onRowClick(e, row)}>
-                {columns.map(({ key }) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Td key={`datatable_${name}_cell_${idx}_${key}`}>
-                    {!!row.fields[key] && (
-                      <>
-                        {row.fields[key].rendered || row.fields[key].rawValue}
-                      </>
-                    )}
-                  </Td>
-                ))}
-                {isExpandable && (
-                  <Td onClick={() => setExpanded(idx)}>Details</Td>
+                  </>
                 )}
-              </Tr>
-              {!!expandableContent && expandedIdx === idx && (
-                <Tr>
-                  <Td colSpan={cols}>{expandableContent(row)}</Td>
-                </Tr>
-              )}
-            </React.Fragment>
-          ))}
-          {sortedData.length === 0 && (
-            <Tr className="no-hover">
-              <Td colSpan={cols}>
-                {noDataText || (
-                  <NoDataBlock justifyContent="center">No data</NoDataBlock>
-                )}
-              </Td>
-            </Tr>
-          )}
-        </Tbody>
-      </Table>
-    </TableBody>
+                headerStyle={{
+                  textTransform: 'capitalize',
+                  fontWeight: 400,
+                  fontSize: '0.8em',
+                  textAlign: 'left',
+                  display: 'flex',
+                }}
+                width={columnWidth}
+                cellRenderer={({ rowData, dataKey }) =>
+                  rowData.fields[dataKey].rendered ||
+                  rowData.fields[dataKey].rawValue
+                }
+              />
+            )
+          })}
+        </Table>
+      )}
+    </AutoSizer>
   )
 }
+
+export const DataTable = withTheme()(DataTablePure)
 
 export { NoDataBlock }

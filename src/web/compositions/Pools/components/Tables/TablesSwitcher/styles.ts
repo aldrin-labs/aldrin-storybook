@@ -76,8 +76,13 @@ export const SearchInput = styled(Input)`
   }
 `
 
+type TableContainerProps = {
+  $height?: string
+}
+
 export const TableContainer = styled.div`
   overflow: auto;
+  height: ${(props: TableContainerProps) => props.$height};
 `
 
 export const AddPoolButton = styled(Button)`

@@ -17,6 +17,7 @@ export const TooltipText = styled.div`
   color: ${COLORS.primaryWhite};
   padding: 5px;
   line-height: 1.4;
+  z-index: 1;
 `
 
 export const Container = styled.div`
