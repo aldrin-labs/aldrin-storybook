@@ -54,7 +54,7 @@ import {
   Title,
   VestingExplanation,
 } from './styles'
-import { TokenAmountInputField, validateNumber } from './TokenAmountInput'
+import { TokenAmountInputField } from './TokenAmountInput'
 import { CreatePoolFormType, CreatePoolFormProps } from './types'
 
 const steps = [
@@ -503,7 +503,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       />
       <Body>
         <FormikProvider value={form}>
-          <form onSubmit={form.handleSubmit}>
+          <form data-test-id="create-pool-form" onSubmit={form.handleSubmit}>
             {step === 1 && (
               <>
                 <CoinSelectors>

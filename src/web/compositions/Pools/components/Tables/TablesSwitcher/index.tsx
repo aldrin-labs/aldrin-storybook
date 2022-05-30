@@ -217,7 +217,11 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
                 </IconWrap>
               }
             />
-            <AddPoolButton as={Link} to={`${path}/create`}>
+            <AddPoolButton
+              data-test-id="create-pool-button"
+              as={Link}
+              to={`${path}/create`}
+            >
               <SvgIcon src={PlusIcon} width="1.2em" />
               &nbsp;Create a Pool
             </AddPoolButton>
