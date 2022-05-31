@@ -1,3 +1,4 @@
+import { COLORS } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { Column, Table } from 'react-virtualized'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
@@ -21,7 +22,7 @@ const rowStyle = {
   outline: 'none',
   cursor: 'pointer',
   fontSize: '16px',
-  borderBottom: `1px solid rgb(46, 46, 46)`,
+  borderBottom: `1px solid ${COLORS.tableBorderColor}`,
   overflow: 'initial',
 }
 

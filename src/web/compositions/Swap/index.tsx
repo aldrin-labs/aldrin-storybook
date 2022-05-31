@@ -472,7 +472,6 @@ const SwapPage = ({
                           onClick={halfButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $color="halfWhite"
                           backgroundColor="#383B45"
                           style={{ marginRight: '0.8rem' }}
                         >
@@ -486,7 +485,6 @@ const SwapPage = ({
                           onClick={maxButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $color="halfWhite"
                           backgroundColor="#383B45"
                         >
                           Max
