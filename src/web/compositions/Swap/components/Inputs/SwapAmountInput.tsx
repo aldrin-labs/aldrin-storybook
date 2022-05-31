@@ -5,7 +5,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InvisibleInput } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { stripInputNumber } from '@sb/dexUtils/utils'
+import { formatNumbersForState } from '@sb/dexUtils/utils'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 
@@ -67,7 +67,7 @@ export const SwapAmountInput = ({
             value={amount || ''}
             disabled={disabled}
             onChange={(e) => {
-              onChange(stripInputNumber(e, amount))
+              onChange(formatNumbersForState(e.target.value))
             }}
             placeholder={placeholder}
           />

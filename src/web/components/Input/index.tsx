@@ -10,12 +10,12 @@ import { validateDecimal, validateNatural, validateRegexp } from './utils'
 export const INPUT_FORMATTERS = {
   NOP: (e: string) => e,
 
-  DECIMAL: (v: string, prevValue: string) => {
-    const value = v ? v.replace(',', '.') : v
+  DECIMAL: (v: string | number, prevValue: string | number) => {
+    const value = v ? `${v}`.replaceAll(',', '').replaceAll(' ', '') : `${v}`
     if (validateDecimal(value) || v === '') {
       return value
     }
-    return prevValue
+    return `${prevValue}`
   },
   NATURAL: (v: string, prevValue: string) => {
     if (validateNatural(v) || v === '') {
@@ -89,26 +89,26 @@ export const Input: React.FC<InputProps> = (props) => {
 export const InputField: React.FC<FieldProps> = (props) => {
   const {
     onChange = noop,
-
+    value,
     placeholder,
     showPlaceholderOnDisabled,
     disabled,
     ...rest
   } = props
   const [field, _meta, helpers] = useField(rest)
-  const value =
-    disabled && showPlaceholderOnDisabled ? placeholder : field.value
+
+  const newValue = disabled && showPlaceholderOnDisabled ? placeholder : value
 
   return (
     <Input
       {...rest}
-      value={value}
+      value={newValue || field.value}
       disabled={disabled}
       placeholder={placeholder}
-      onChange={(value) => {
+      onChange={(v) => {
         helpers.setTouched(true, true)
-        helpers.setValue(value, true)
-        onChange(value)
+        helpers.setValue(v, true)
+        onChange(v)
       }}
     />
   )

@@ -13,6 +13,7 @@ type TokenAmountInputFieldProps = {
   setFieldValue?: (field: string, value: any) => void
   disabled?: boolean
   onChange?: (value: string) => void
+  value?: string
   placeholder?: string
   showPlaceholderOnDisabled?: boolean
 }
@@ -37,6 +38,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
     mint,
     disabled = false,
     onChange,
+    value,
     placeholder = '0',
     showPlaceholderOnDisabled,
   } = props
@@ -47,6 +49,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
       name={name}
       disabled={disabled}
       onChange={onChange}
+      value={value}
       placeholder={placeholder}
       showPlaceholderOnDisabled={showPlaceholderOnDisabled}
       append={

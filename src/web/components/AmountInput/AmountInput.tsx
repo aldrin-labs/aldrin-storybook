@@ -1,7 +1,10 @@
 import React from 'react'
 import { useTheme } from 'styled-components'
 
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
 import { getTokenNameByMintAddress } from '../../dexUtils/markets'
 import { useTokenInfos } from '../../dexUtils/tokenRegistry'
@@ -53,7 +56,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
     <AmountInputElement
       className={className}
       borderRadius="md"
-      value={value}
+      value={value ? formatNumberToUSFormat(value) : ''}
       name={name}
       placeholder={placeholder}
       onChange={onChange}
@@ -65,7 +68,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
           <TokenNameWrap>{tokenName}</TokenNameWrap>
           <ButtonsWithAmount>
             <MaxValue color="green7" weight={600}>
-              {stripByAmountAndFormat(amount)}
+              {formatNumberWithSpaces(amount)}
             </MaxValue>
             {!!(showButtons || Number.isFinite(usdValue)) && (
               <ButtonsContainer>

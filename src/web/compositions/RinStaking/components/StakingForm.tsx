@@ -5,6 +5,10 @@ import React from 'react'
 import { MINIMAL_STAKING_AMOUNT } from '@sb/dexUtils/common/config'
 import { STAKING_FARMING_TOKEN_DECIMALS } from '@sb/dexUtils/staking/config'
 import { TokenInfo } from '@sb/dexUtils/types'
+import {
+  formatNumberWithSpaces,
+  formatNumbersForState,
+} from '@sb/dexUtils/utils'
 
 import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
 
@@ -59,10 +63,11 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
             amount={tokenData?.amount || 0}
             mint={tokenData?.mint || ''}
             name="amount"
-            value={`${form.values.amount}`}
+            value={formatNumberWithSpaces(form.values.amount)}
             onChange={async (v) => {
               const value = limitDecimalsCustom(v)
-              await form.setFieldValue('amount', value)
+              const valueForState = formatNumbersForState(value)
+              await form.setFieldValue('amount', valueForState)
               form.validateForm()
             }}
           />

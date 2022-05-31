@@ -30,6 +30,10 @@ import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
@@ -204,8 +208,11 @@ const Popup = (props: StakePopupProps) => {
         <InputWithCoins
           placeholder="0"
           theme={theme}
-          onChange={setPoolTokenAmount}
-          value={poolTokenAmount}
+          onChange={(v) => {
+            const valueForState = formatNumbersForState(v)
+            setPoolTokenAmount(valueForState)
+          }}
+          value={formatNumberWithSpaces(poolTokenAmount)}
           symbol="Pool Tokens"
           // alreadyInPool={0}
           maxBalance={maxPoolTokenAmount}

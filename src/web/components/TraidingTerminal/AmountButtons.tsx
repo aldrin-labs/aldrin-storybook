@@ -5,6 +5,7 @@ import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/inde
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { SliderWithPriceAndPercentageFieldRowProps } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
 import Info from '@icons/inform.svg'
 
@@ -77,7 +78,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               theme={theme}
               needTitle
               title="Est. amount"
-              value={localAmount}
+              value={formatNumberWithSpaces(localAmount)}
               type="number"
               pattern="\d*"
               pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}

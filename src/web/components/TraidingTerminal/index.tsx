@@ -22,6 +22,7 @@ import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { Button } from '../Button'
+import { INPUT_FORMATTERS } from '../Input'
 import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { ConfirmationPopup } from './ConfirmationPopup'
@@ -175,6 +176,11 @@ export const TradeInputContent = ({
     e.target.select()
   }
 
+  const changeHandler = (e) => {
+    const { value: newValue } = e.target
+    onChange({ target: { value: INPUT_FORMATTERS.DECIMAL(newValue, value) } })
+  }
+
   return (
     <InputRowContainer
       padding={padding}
@@ -220,7 +226,7 @@ export const TradeInputContent = ({
         value={value}
         symbolLength={symbol.length}
         disabled={disabled}
-        onChange={onChange}
+        onChange={changeHandler}
         needPadding={symbol !== ''}
         haveSelector={haveSelector}
         style={{ ...inputStyles, ...(fontSize ? { fontSize } : {}) }}

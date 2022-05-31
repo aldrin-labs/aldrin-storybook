@@ -6,6 +6,7 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
 import stableCoins from '@core/config/stableCoins'
@@ -14,7 +15,6 @@ import {
   stripByAmount,
 } from '@core/utils/chartPageUtils'
 import {
-  formatNumberToUSFormat,
   roundAndFormatNumber,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
@@ -473,7 +473,7 @@ export const combineSelectWrapperData = ({
               <InlineText color="green7">
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(stripByAmount(closePrice))}
+                  : formatNumberWithSpaces(stripByAmount(closePrice))}
               </InlineText>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -483,7 +483,7 @@ export const combineSelectWrapperData = ({
               <InlineText color="green7">
                 {closePrice === 0
                   ? '-'
-                  : formatNumberToUSFormat(stripByAmount(closePrice))}
+                  : formatNumberWithSpaces(stripByAmount(closePrice))}
               </InlineText>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
@@ -507,7 +507,7 @@ export const combineSelectWrapperData = ({
                 }
               >
                 {' '}
-                {`${sign24hChange}${formatNumberToUSFormat(
+                {`${sign24hChange}${formatNumberWithSpaces(
                   stripDigitPlaces(lastPriceDiff, 2)
                 )}`}{' '}
               </InlineText>
@@ -524,7 +524,7 @@ export const combineSelectWrapperData = ({
                 {' '}
                 /{' '}
               </InlineText>{' '}
-              {`${sign24hChange}${formatNumberToUSFormat(
+              {`${sign24hChange}${formatNumberWithSpaces(
                 stripDigitPlaces(priceChangePercentage, 2)
               )}%`}
             </StyledRow>
@@ -538,7 +538,7 @@ export const combineSelectWrapperData = ({
                     : 'red3'
                 }
               >
-                {`${formatNumberToUSFormat(
+                {`${formatNumberWithSpaces(
                   stripDigitPlaces(closePrice, pricePrecision)
                 )} ${quote}`}
               </InlineText>
@@ -551,7 +551,7 @@ export const combineSelectWrapperData = ({
                     : 'red3'
                 }
                 style={{ fontFamily: 'Avenir Next Thin', marginTop: '1rem' }}
-              >{`${sign24hChange}${formatNumberToUSFormat(
+              >{`${sign24hChange}${formatNumberWithSpaces(
                 stripDigitPlaces(priceChangePercentage, 2)
               )}%`}</InlineText>
             </StyledColumn>
@@ -565,7 +565,7 @@ export const combineSelectWrapperData = ({
         contentToSort: +volume || 0,
         render: (
           <span>
-            {`${isNotUSDTQuote ? '' : '$'}${formatNumberToUSFormat(
+            {`${isNotUSDTQuote ? '' : '$'}${formatNumberWithSpaces(
               roundAndFormatNumber(volume, 2, false)
             )}${isNotUSDTQuote ? ` ${quote}` : ''}`}
           </span>
@@ -577,7 +577,7 @@ export const combineSelectWrapperData = ({
         render: (
           <>
             <span>
-              {`${formatNumberToUSFormat(
+              {`${formatNumberWithSpaces(
                 roundAndFormatNumber(tradesCount, 0, false)
               )} / `}
             </span>
@@ -590,7 +590,7 @@ export const combineSelectWrapperData = ({
                   : 'red3'
               }
             >
-              {`${signTrades24hChange}${formatNumberToUSFormat(
+              {`${signTrades24hChange}${formatNumberWithSpaces(
                 stripDigitPlaces(Math.abs(precentageTradesDiff))
               )}%`}
             </InlineText>
@@ -602,7 +602,7 @@ export const combineSelectWrapperData = ({
           <InlineText color="red3">
             <>
               {' '}
-              {`${formatNumberToUSFormat(
+              {`${formatNumberWithSpaces(
                 stripDigitPlaces(minPrice, pricePrecision)
               )}`}{' '}
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
@@ -616,7 +616,7 @@ export const combineSelectWrapperData = ({
         render: (
           <InlineText color="green7">
             <>
-              {`${formatNumberToUSFormat(
+              {`${formatNumberWithSpaces(
                 stripDigitPlaces(maxPrice, pricePrecision)
               )}`}{' '}
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
@@ -630,7 +630,7 @@ export const combineSelectWrapperData = ({
         render: (
           <>
             <InlineText color="red3">
-              {`${formatNumberToUSFormat(stripDigitPlaces(avgSell))}`}
+              {`${formatNumberWithSpaces(stripDigitPlaces(avgSell))}`}
             </InlineText>
             <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
               {quote}
@@ -642,7 +642,7 @@ export const combineSelectWrapperData = ({
         render: (
           <>
             <InlineText color="green7">
-              {`${formatNumberToUSFormat(stripDigitPlaces(avgBuy))}`}{' '}
+              {`${formatNumberWithSpaces(stripDigitPlaces(avgBuy))}`}{' '}
             </InlineText>{' '}
             <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
               {quote}

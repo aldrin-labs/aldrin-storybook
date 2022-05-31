@@ -6,6 +6,7 @@ import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.st
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { useInterval } from '@sb/dexUtils/useInterval'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
@@ -188,7 +189,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               fontFamily: 'Avenir Next Demi',
             }}
           >
-            {markPrice === 0 ? '--' : formatNumberToUSFormat(strippedMarkPrice)}
+            {markPrice === 0 ? '--' : formatNumberWithSpaces(strippedMarkPrice)}
           </PanelCardValue>
         </PanelCard>
         <PanelCard marketType={marketType}>
@@ -202,7 +203,7 @@ const MarketStats: React.FC<IProps> = (props) => {
                     : theme.colors.red3,
               }}
             >
-              {formatNumberToUSFormat(strippedLastPriceDiff)}
+              {formatNumberWithSpaces(strippedLastPriceDiff)}
             </PanelCardValue>
             <PanelCardSubValue
               style={{
@@ -214,7 +215,7 @@ const MarketStats: React.FC<IProps> = (props) => {
             >
               {!priceChangePercentage
                 ? '--'
-                : `${sign24hChange}${formatNumberToUSFormat(
+                : `${sign24hChange}${formatNumberWithSpaces(
                     stripDigitPlaces(+priceChangePercentage)
                   )}%`}
             </PanelCardSubValue>
@@ -224,20 +225,20 @@ const MarketStats: React.FC<IProps> = (props) => {
         <PanelCard marketType={marketType}>
           <PanelCardTitle>24h high</PanelCardTitle>
           <PanelCardValue>
-            {formatNumberToUSFormat(stripDigitPlaces(maxPrice, pricePrecision))}
+            {formatNumberWithSpaces(stripDigitPlaces(maxPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
 
         <PanelCard marketType={marketType}>
           <PanelCardTitle>24h low</PanelCardTitle>
           <PanelCardValue>
-            {formatNumberToUSFormat(stripDigitPlaces(minPrice, pricePrecision))}
+            {formatNumberWithSpaces(stripDigitPlaces(minPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
         <PanelCard marketType={marketType}>
           <PanelCardTitle>24hr volume</PanelCardTitle>
           <PanelCardValue>
-            {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
+            {formatNumberWithSpaces(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
         </PanelCard>
         {isRINPair && (
@@ -252,7 +253,7 @@ const MarketStats: React.FC<IProps> = (props) => {
             <PanelCard marketType={marketType}>
               <PanelCardTitle>Marketcap</PanelCardTitle>
               <PanelCardValue>
-                ${formatNumberToUSFormat(stripDigitPlaces(marketcap, 2))}
+                ${formatNumberWithSpaces(stripDigitPlaces(marketcap, 2))}
               </PanelCardValue>
             </PanelCard>
           </>

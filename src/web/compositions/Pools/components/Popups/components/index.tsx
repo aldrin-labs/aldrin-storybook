@@ -6,6 +6,7 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
 import {
   getNumberOfIntegersFromNumber,
@@ -136,7 +137,7 @@ export const InputWithTotal = ({
       </TokenContainer>
       <TokenContainer left="2rem" bottom="2rem">
         <Text fontSize="2rem" fontFamily="Avenir Next Demi">
-          {formatNumberToUSFormat(stripDigitPlaces(value, 2))}
+          {formatNumberWithSpaces(stripDigitPlaces(value, 2))}
         </Text>
       </TokenContainer>
       <TokenContainer right="2rem" bottom="2rem">

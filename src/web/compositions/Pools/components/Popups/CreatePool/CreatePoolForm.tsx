@@ -25,7 +25,11 @@ import { notify } from '@sb/dexUtils/notifications'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
-import { sleep } from '@sb/dexUtils/utils'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+  sleep,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
@@ -443,18 +447,29 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const priceFormatted = stripByAmount(price)
 
   const onBaseAmountChange = (value: string) => {
+    form.setFieldValue(
+      'firstDeposit.baseTokenAmount',
+      formatNumbersForState(value)
+    )
+
+    const quoteValueForState = formatNumbersForState(value)
+    const priceValueForState = formatNumbersForState(values.price)
+
     if (values.stableCurve) {
-      form.setFieldValue('firstDeposit.quoteTokenAmount', value)
+      form.setFieldValue('firstDeposit.quoteTokenAmount', quoteValueForState)
     } else if (priceTouched) {
-      const userDefinedPrice = parseFloat(values.price || '1')
-      const newQuoteAmount = parseFloat(value) * userDefinedPrice
+      const userDefinedPrice = parseFloat(priceValueForState || '1')
+      const newQuoteAmount = parseFloat(quoteValueForState) * userDefinedPrice
+
       if (newQuoteAmount) {
         form.setFieldValue('firstDeposit.quoteTokenAmount', newQuoteAmount)
         form.setTouched({ firstDeposit: { quoteTokenAmount: true } })
       }
     } else {
       const newPrice =
-        parseFloat(values.firstDeposit.quoteTokenAmount) / parseFloat(value)
+        parseFloat(
+          formatNumbersForState(values.firstDeposit.quoteTokenAmount)
+        ) / parseFloat(quoteValueForState)
 
       if (newPrice) {
         form.setFieldValue('price', stripByAmount(newPrice))
@@ -465,18 +480,27 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   }
 
   const onQuoteAmountChange = (value: string) => {
+    form.setFieldValue(
+      'firstDeposit.quoteTokenAmount',
+      formatNumbersForState(value)
+    )
+
+    const baseValueForState = formatNumbersForState(value)
+    const priceValueForState = formatNumbersForState(values.price)
+
     if (values.stableCurve) {
-      form.setFieldValue('firstDeposit.baseTokenAmount', value)
+      form.setFieldValue('firstDeposit.baseTokenAmount', baseValueForState)
     } else if (priceTouched) {
-      const userDefinedPrice = parseFloat(values.price || '1')
-      const newBaseAmount = parseFloat(value) / userDefinedPrice
+      const userDefinedPrice = parseFloat(priceValueForState || '1')
+      const newBaseAmount = parseFloat(baseValueForState) / userDefinedPrice
       if (newBaseAmount) {
         form.setFieldValue('firstDeposit.baseTokenAmount', newBaseAmount)
         form.setTouched({ firstDeposit: { baseTokenAmount: true } })
       }
     } else {
       const newPrice =
-        parseFloat(value) / parseFloat(values.firstDeposit.baseTokenAmount)
+        parseFloat(baseValueForState) /
+        parseFloat(formatNumbersForState(values.firstDeposit.baseTokenAmount))
       if (newPrice) {
         form.setFieldValue('price', stripByAmount(newPrice))
       }
@@ -621,15 +645,18 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       disabled={values.stableCurve}
                       name="price"
                       mint={form.values.quoteToken.mint}
+                      value={formatNumberWithSpaces(form.values.price)}
                       onChange={(v) => {
                         setPriceTouched(true)
+
                         if (v) {
-                          const newPrice = parseFloat(v)
+                          const newPrice = parseFloat(formatNumbersForState(v))
                           const {
                             firstDeposit: { baseTokenAmount: bta = '0' },
                           } = values
 
                           const baseAmount = parseFloat(bta)
+
                           if (baseAmount) {
                             form.setFieldValue(
                               'firstDeposit.quoteTokenAmount',
@@ -652,6 +679,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.baseTokenAmount"
+                    value={formatNumberWithSpaces(
+                      form.values.firstDeposit.baseTokenAmount
+                    )}
                     setFieldValue={(field: string, value: string) => {
                       form.setFieldValue(field, value)
                       onBaseAmountChange(value)
@@ -661,7 +691,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     onChange={onBaseAmountChange}
                   />
                 </Centered>
-
                 {form.errors.firstDeposit?.baseTokenAmount &&
                   form.touched.firstDeposit?.baseTokenAmount && (
                     <ErrorText color="red3">
@@ -676,6 +705,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.quoteTokenAmount"
+                    value={formatNumberWithSpaces(
+                      form.values.firstDeposit.quoteTokenAmount
+                    )}
                     setFieldValue={(field: string, value: string) => {
                       form.setFieldValue(field, value)
                       onQuoteAmountChange(value)

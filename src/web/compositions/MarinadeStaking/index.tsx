@@ -19,7 +19,11 @@ import {
   useUserTokenAccounts,
 } from '@sb/dexUtils/token/hooks'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
-import { MSOL_MINT } from '@sb/dexUtils/utils'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+  MSOL_MINT,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { toMap } from '@sb/utils'
 
@@ -93,16 +97,22 @@ const Block: React.FC<StakingBlockProps> = (props) => {
     : parseFloat(amountGet) * solPrice
 
   const setAmountFrom = (v: string) => {
-    const value = parseFloat(v)
+    const valueForState = formatNumbersForState(v)
+    const value = parseFloat(valueForState)
+
     const newGetValue = isStakeModeOn ? value / mSolPrice : value * mSolPrice
-    setAmount(v)
+
+    setAmount(valueForState)
     setAmountGet(stripByAmount(newGetValue || 0, 4))
   }
 
   const setAmountTo = (v: string) => {
-    const value = parseFloat(v)
+    const valueForState = formatNumbersForState(v)
+    const value = parseFloat(valueForState)
+
     const newFromValue = isStakeModeOn ? value * mSolPrice : value / mSolPrice
-    setAmountGet(v)
+
+    setAmountGet(valueForState)
     setAmount(stripByAmount(newFromValue || 0, 4))
   }
 
@@ -261,7 +271,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               <InputWrapper style={{ position: 'relative' }}>
                 {' '}
                 <AmountInput
-                  value={amount}
+                  value={formatNumberWithSpaces(amount)}
                   onChange={setAmountFrom}
                   placeholder="0"
                   name="amountFrom"
@@ -274,7 +284,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
             <RowContainer margin="2rem 0">
               <InputWrapper style={{ position: 'relative' }}>
                 <AmountInput
-                  value={amountGet}
+                  value={formatNumberWithSpaces(amountGet)}
                   onChange={setAmountTo}
                   placeholder="0"
                   name="amountTo"

@@ -17,7 +17,7 @@ import {
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { settleFunds } from '@sb/dexUtils/send'
-import { RINProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL, formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { Key, FundsType } from '@core/types/ChartTypes'
@@ -289,7 +289,7 @@ export const Balances = ({
                   <BalanceFuturesTitle>{pair[0]} Wallet</BalanceFuturesTitle>
                   <BalanceQuantity>
                     {balances[0]?.wallet
-                      ? balances[0].wallet.toFixed(8)
+                      ? formatNumberWithSpaces(balances[0].wallet.toFixed(8))
                       : (0).toFixed(8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>
@@ -302,7 +302,7 @@ export const Balances = ({
                   <BalanceFuturesTitle>{pair[0]} Unsettled</BalanceFuturesTitle>
                   <BalanceQuantity>
                     {balances[0]?.unsettled
-                      ? balances[0].unsettled.toFixed(8)
+                      ? formatNumberWithSpaces(balances[0].unsettled.toFixed(8))
                       : (0).toFixed(8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>
@@ -388,7 +388,9 @@ export const Balances = ({
                   <BalanceFuturesTitle>{pair[1]} Wallet</BalanceFuturesTitle>
                   <BalanceQuantity>
                     {balances[1]?.wallet
-                      ? balances[1].wallet.toFixed(isQuoteUSDT ? 2 : 8)
+                      ? formatNumberWithSpaces(
+                          balances[1].wallet.toFixed(isQuoteUSDT ? 2 : 8)
+                        )
                       : (0).toFixed(isQuoteUSDT ? 2 : 8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>
@@ -401,7 +403,9 @@ export const Balances = ({
                   <BalanceFuturesTitle>{pair[1]} Unsettled</BalanceFuturesTitle>
                   <BalanceQuantity>
                     {balances[1]?.unsettled
-                      ? balances[1].unsettled.toFixed(isQuoteUSDT ? 2 : 8)
+                      ? formatNumberWithSpaces(
+                          balances[1].unsettled.toFixed(isQuoteUSDT ? 2 : 8)
+                        )
                       : (0).toFixed(isQuoteUSDT ? 2 : 8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>

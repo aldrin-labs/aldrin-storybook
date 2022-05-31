@@ -28,6 +28,7 @@ import {
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { signAndSendTransactions } from '@sb/dexUtils/transactions'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -49,6 +50,8 @@ import {
 
 import ArrowRightIcon from '@icons/arrowRight.svg'
 
+import { AmountInput } from '../../components/AmountInput'
+import { INPUT_FORMATTERS } from '../../components/Input'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
@@ -442,20 +445,24 @@ const SwapPage = ({
                   <SwapAmountInput
                     title="You Pay"
                     maxAmount={maxBaseAmount}
-                    amount={formatNumberToUSFormat(inputAmount)}
+                    amount={formatNumberWithSpaces(inputAmount)}
                     disabled={false}
                     onChange={(v) => {
                       if (v === '') {
                         setInputAmount(v)
                         return
                       }
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
 
                       if (
-                        numberWithOneDotRegexp.test(v) &&
-                        getNumberOfIntegersFromNumber(v) <= 8 &&
-                        getNumberOfDecimalsFromNumber(v) <= 8
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
                       ) {
-                        setInputAmount(v)
+                        setInputAmount(parsedValue)
                       }
                     }}
                     roundSides={['top-left']}
@@ -513,7 +520,7 @@ const SwapPage = ({
                     maxAmount={maxQuoteAmount}
                     amount={
                       outputAmount
-                        ? formatNumberToUSFormat(stripByAmount(outputAmount))
+                        ? formatNumberWithSpaces(stripByAmount(outputAmount))
                         : ''
                     }
                     disabled
