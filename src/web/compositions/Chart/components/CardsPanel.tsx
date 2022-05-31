@@ -207,7 +207,6 @@ export const CardsPanel = ({ theme }) => {
         <TopBar theme={theme} />
       </PanelWrapper>
       <FeedbackPopup
-        theme={theme}
         open={isFeedBackPopupOpen}
         onClose={() => {
           setIsFeedBackPopupOpen(false)

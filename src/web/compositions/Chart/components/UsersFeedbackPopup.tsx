@@ -1,4 +1,3 @@
-import { Theme, withTheme } from '@material-ui/core'
 import useMobileSize from '@webhooks/useMobileSize'
 import React, { useState } from 'react'
 
@@ -27,12 +26,10 @@ import {
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
 import { WhiteButton } from './TokenNotAdded'
 
-const Popup = ({
-  theme,
+export const FeedbackPopup = ({
   onClose,
   open,
 }: {
-  theme: Theme
   onClose: () => void
   open: boolean
 }) => {
@@ -78,7 +75,6 @@ const Popup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaperMediumWidth}
       fullScreen={false}
       onClose={onClose}
@@ -272,7 +268,6 @@ const Popup = ({
                   marginTop: '4rem',
                   fontSize: '2.3rem',
                 }}
-                theme={theme}
                 onClick={onClose}
               >
                 Cancel
@@ -281,7 +276,6 @@ const Popup = ({
             <SubmitButton
               isDisabled={isDisabled}
               disabled={isDisabled}
-              theme={theme}
               type="submit"
             >
               Submit
@@ -292,5 +286,3 @@ const Popup = ({
     </DialogWrapper>
   )
 }
-
-export const FeedbackPopup = withTheme()(Popup)
