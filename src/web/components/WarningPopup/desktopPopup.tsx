@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
 import { Theme } from '@material-ui/core'
-
-import { useLocalStorageState } from '@sb/dexUtils/utils'
 import useMobileSize from '@webhooks/useMobileSize'
+import React, { useState } from 'react'
 
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+
+import DarkLogo from '@icons/DarkLogo.svg'
+
+import SvgIcon from '../SvgIcon'
 import {
   Container,
   Text,
   DemiText,
   BlackButton,
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import DarkLogo from '@icons/DarkLogo.svg'
-import SvgIcon from '../SvgIcon'
 
 export const DesktopBanner = ({
   theme,
@@ -38,7 +39,7 @@ export const DesktopBanner = ({
 
   return (
     <Container
-      showOnTheTop={true}
+      showOnTheTop
       style={{ height: '64%', flexWrap: 'nowrap', zIndex: '100' }}
       direction="column"
       align="flex-start"
@@ -61,7 +62,7 @@ export const DesktopBanner = ({
       <RowContainer height="40%" align="flex-start" justify="space-between">
         <Row
           width="60%"
-          direction={'column'}
+          direction="column"
           justify="flex-start"
           align="flex-start"
           height="100%"
@@ -79,17 +80,16 @@ export const DesktopBanner = ({
             </Text>
           ))}
         </Row>
-        <Row width={'40%'} height={'100%'}>
-          <SvgIcon width={'13rem'} height={'auto'} src={DarkLogo} />
+        <Row width="40%" height="100%">
+          <SvgIcon width="13rem" height="auto" src={DarkLogo} />
         </Row>
       </RowContainer>
       <Row justify="space-between" style={{ flexWrap: 'nowrap' }}>
         <BlackButton
           disabled={false}
-          theme={theme}
-          hoverBackground={'#20292d'}
-          width={'auto'}
-          fontSize={'1.5rem'}
+          hoverBackground="#20292d"
+          width="auto"
+          fontSize="1.5rem"
           style={{ padding: '1rem 5rem', margin: '0 2rem 0 0' }}
           onClick={onClose}
         >
@@ -97,10 +97,9 @@ export const DesktopBanner = ({
         </BlackButton>
         <BlackButton
           disabled={false}
-          theme={theme}
-          hoverBackground={'#20292d'}
-          width={'auto'}
-          fontSize={'1.5rem'}
+          hoverBackground="#20292d"
+          width="auto"
+          fontSize="1.5rem"
           style={{ padding: '1rem 5rem' }}
           onClick={() => setIsPopupTemporaryHidden(true)}
         >

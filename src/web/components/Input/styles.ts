@@ -5,14 +5,14 @@ import { WrapProps, AppendProps } from './types'
 
 export const VARIANTS = {
   default: css`
-    background: ${COLORS.background};
-    border: 1px solid ${COLORS.border};
+    background: ${(props) => props.theme.colors.gray5};
+    border: 1px solid ${(props) => props.theme.colors.gray1};
   `,
   'outline-white': css`
-    border: 1px solid ${COLORS.white};
+    border: 1px solid ${(props) => props.theme.colors.white};
   `,
   outline: css`
-    border: 1px solid ${COLORS.border};
+    border: 1px solid ${(props) => props.theme.colors.gray5};
   `,
 }
 
@@ -26,8 +26,12 @@ export const InputEl = styled.input`
   line-height: 1.7;
   font-weight: 600;
   padding: 0.6em 0 0.6em 1.5em;
-  color: ${COLORS.white};
+  color: ${(props) => props.theme.colors.white};
   width: 80%;
+
+  &::placeholder {
+    font-weight: 500;
+  }
 
   &:disabled {
     color: ${COLORS.hint};
@@ -36,7 +40,7 @@ export const InputEl = styled.input`
   &:-webkit-autofill:hover,
   &:-webkit-autofill:focus,
   &:-webkit-autofill {
-    -webkit-text-fill-color: ${COLORS.white};
+    -webkit-text-fill-color: ${(props) => props.theme.colors.white};
     transition: background-color 5000s ease-in-out 0s;
   }
 `

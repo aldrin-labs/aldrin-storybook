@@ -3,12 +3,16 @@ import React from 'react'
 import { SvgIcon } from '@sb/components'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { InlineText } from '@sb/components/Typography'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
 import stableCoins from '@core/config/stableCoins'
-import { getNumberOfDecimalsFromNumber, stripByAmount } from '@core/utils/chartPageUtils'
+import {
+  getNumberOfDecimalsFromNumber,
+  stripByAmount,
+} from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
   roundAndFormatNumber,
@@ -19,6 +23,8 @@ import favouriteSelected from '@icons/favouriteSelected.svg'
 import favouriteUnselected from '@icons/favouriteUnselected.svg'
 import LessVolumeArrow from '@icons/lessVolumeArrow.svg'
 import MoreVolumeArrow from '@icons/moreVolumeArrow.svg'
+import starSelected from '@icons/starSelected.svg'
+import starUnselected from '@icons/starUnselected.svg'
 
 import { ISelectData, SelectTabType } from './SelectWrapper.types'
 import {
@@ -278,7 +284,6 @@ export const combineSelectWrapperData = ({
   data,
   previousData,
   onSelectPair,
-  theme,
   searchValue,
   tab,
   favouritePairsMap,
@@ -292,7 +297,6 @@ export const combineSelectWrapperData = ({
   data: ISelectData
   previousData?: ISelectData
   onSelectPair: ({ value }: { value: string }) => void
-  theme: any
   searchValue: string
   tab: SelectTabType
   favouritePairsMap: Map<string, string>
@@ -312,7 +316,6 @@ export const combineSelectWrapperData = ({
   if (!data && !Array.isArray(data)) {
     return []
   }
-
   let processedData = data.filter(
     (market, index, arr) =>
       arr.findIndex(
@@ -400,7 +403,17 @@ export const combineSelectWrapperData = ({
       id: `${symbol}`,
       favourite: {
         isSortable: false,
-        render: (
+        render: symbol.includes('RIN') ? (
+          <SvgIcon
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleFavouriteMarket(symbol)
+            }}
+            src={favouritePairsMap.get(symbol) ? starSelected : starUnselected}
+            width="2.5rem"
+            height="auto"
+          />
+        ) : (
           <SvgIcon
             onClick={(e) => {
               e.stopPropagation()
@@ -449,7 +462,6 @@ export const combineSelectWrapperData = ({
             programId,
           }),
         contentToSort: symbol,
-        color: theme.palette.dark.main,
       },
       price: {
         contentToSort: +closePrice,
@@ -458,80 +470,90 @@ export const combineSelectWrapperData = ({
             <StyledColumn
               style={{ flexDirection: 'row', justifyContent: 'flex-end' }}
             >
-              <span
-                style={{
-                  color: theme.palette.green.main,
-                }}
-              >
+              <InlineText color="green7">
                 {closePrice === 0
                   ? '-'
                   : formatNumberToUSFormat(stripByAmount(closePrice))}
-              </span>
+              </InlineText>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
               </span>
             </StyledColumn>
             <StyledRow>
-              <span
-                style={{
-                  color: theme.palette.green.main,
-                }}
-              >
+              <InlineText color="green7">
                 {closePrice === 0
                   ? '-'
                   : formatNumberToUSFormat(stripByAmount(closePrice))}
-              </span>
+              </InlineText>
               <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
                 {quote}
               </span>
             </StyledRow>
           </>
         ),
-
-        color: theme.palette.dark.main,
       },
       price24hChange: {
         isNumber: true,
         render: (
           <>
-            <StyledRow
-              style={{
-                color:
+            <StyledRow>
+              <InlineText
+                color={
                   +lastPriceDiff === 0
                     ? ''
                     : +lastPriceDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
-              }}
-            >
-              {`${sign24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(lastPriceDiff, 2)
-              )}`}{' '}
-              <span style={{ color: '#96999C' }}> / </span>{' '}
+                    ? 'green7'
+                    : 'red3'
+                }
+              >
+                {' '}
+                {`${sign24hChange}${formatNumberToUSFormat(
+                  stripDigitPlaces(lastPriceDiff, 2)
+                )}`}{' '}
+              </InlineText>
+              <InlineText
+                color={
+                  +lastPriceDiff === 0
+                    ? ''
+                    : +lastPriceDiff > 0
+                    ? 'green7'
+                    : 'red3'
+                }
+                style={{ color: '#96999C' }}
+              >
+                {' '}
+                /{' '}
+              </InlineText>{' '}
               {`${sign24hChange}${formatNumberToUSFormat(
                 stripDigitPlaces(priceChangePercentage, 2)
               )}%`}
             </StyledRow>
-            <StyledColumn
-              style={{
-                color:
+            <StyledColumn>
+              <InlineText
+                color={
                   +lastPriceDiff === 0
                     ? ''
                     : +lastPriceDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
-              }}
-            >
-              <span>
+                    ? 'green7'
+                    : 'red3'
+                }
+              >
                 {`${formatNumberToUSFormat(
                   stripDigitPlaces(closePrice, pricePrecision)
                 )} ${quote}`}
-              </span>
-              <span
+              </InlineText>
+              <InlineText
+                color={
+                  +lastPriceDiff === 0
+                    ? ''
+                    : +lastPriceDiff > 0
+                    ? 'green7'
+                    : 'red3'
+                }
                 style={{ fontFamily: 'Avenir Next Thin', marginTop: '1rem' }}
               >{`${sign24hChange}${formatNumberToUSFormat(
                 stripDigitPlaces(priceChangePercentage, 2)
-              )}%`}</span>
+              )}%`}</InlineText>
             </StyledColumn>
           </>
         ),
@@ -559,30 +581,25 @@ export const combineSelectWrapperData = ({
                 roundAndFormatNumber(tradesCount, 0, false)
               )} / `}
             </span>
-            <span
-              style={{
-                color:
-                  +precentageTradesDiff === 0
-                    ? ''
-                    : +precentageTradesDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
-              }}
+            <InlineText
+              color={
+                +precentageTradesDiff === 0
+                  ? ''
+                  : +precentageTradesDiff > 0
+                  ? 'green7'
+                  : 'red3'
+              }
             >
               {`${signTrades24hChange}${formatNumberToUSFormat(
                 stripDigitPlaces(Math.abs(precentageTradesDiff))
               )}%`}
-            </span>
+            </InlineText>
           </>
         ),
       },
       min24h: {
         render: (
-          <span
-            style={{
-              color: theme.palette.red.main,
-            }}
-          >
+          <InlineText color="red3">
             <>
               {' '}
               {`${formatNumberToUSFormat(
@@ -592,16 +609,12 @@ export const combineSelectWrapperData = ({
                 {quote}
               </span>
             </>
-          </span>
+          </InlineText>
         ),
       },
       max24h: {
         render: (
-          <span
-            style={{
-              color: theme.palette.green.main,
-            }}
-          >
+          <InlineText color="green7">
             <>
               {`${formatNumberToUSFormat(
                 stripDigitPlaces(maxPrice, pricePrecision)
@@ -610,19 +623,15 @@ export const combineSelectWrapperData = ({
                 {quote}
               </span>
             </>
-          </span>
+          </InlineText>
         ),
       },
       avgSell14d: {
         render: (
           <>
-            <span
-              style={{
-                color: theme.palette.red.main,
-              }}
-            >
+            <InlineText color="red3">
               {`${formatNumberToUSFormat(stripDigitPlaces(avgSell))}`}
-            </span>
+            </InlineText>
             <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
               {quote}
             </span>
@@ -632,13 +641,9 @@ export const combineSelectWrapperData = ({
       avgBuy14d: {
         render: (
           <>
-            <span
-              style={{
-                color: theme.palette.green.main,
-              }}
-            >
+            <InlineText color="green7">
               {`${formatNumberToUSFormat(stripDigitPlaces(avgBuy))}`}{' '}
-            </span>{' '}
+            </InlineText>{' '}
             <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
               {quote}
             </span>

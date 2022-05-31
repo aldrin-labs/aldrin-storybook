@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
 import { withTheme } from '@material-ui/core'
+import React from 'react'
 
 import {
   HeaderContainer,
@@ -10,19 +10,18 @@ import {
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
 
-import AllocationDonutChart from './DonutChart'
-import AllocationLegend from './Legend'
+import Info from '@icons/inform.svg'
 
-import { IProps } from './index.types'
+import SvgIcon from '../SvgIcon'
+import { DarkTooltip } from '../TooltipCustom/Tooltip'
+import AllocationDonutChart from './DonutChart'
 import {
   AllocationChartContainer,
   AllocationLegendContainer,
   ChartContainer,
 } from './index.styles'
-
-import { DarkTooltip } from '../TooltipCustom/Tooltip'
-import Info from '@icons/inform.svg'
-import SvgIcon from '../SvgIcon'
+import { IProps } from './index.types'
+import AllocationLegend from './Legend'
 
 export const ROWS_TO_SHOW_IN_LEGEND = 4
 
@@ -74,23 +73,18 @@ const DonutChartWithLegend = ({
   return (
     <BlockTemplate
       style={{ margin: '0 0 2rem 0', overflow: 'scroll' }}
-      theme={theme}
-      width={'100%'}
-      height={'48%'}
+      width="100%"
+      height="48%"
     >
       <ChartContainer>
-        <HeaderContainer theme={theme} justify={'space-between'}>
-          <RowContainer padding={'2rem'} style={{ flexWrap: 'nowrap' }}>
-            <WhiteTitle theme={theme} style={{ marginRight: '1rem' }}>
+        <HeaderContainer theme={theme} justify="space-between">
+          <RowContainer padding="2rem" style={{ flexWrap: 'nowrap' }}>
+            <WhiteTitle style={{ marginRight: '1rem' }}>
               {id === 'target' ? (
-                <DarkTooltip
-                  title={
-                    'The final distribution may differ slightly from the set distribution due to differences in min. order size values in different markets, as well as market movements.'
-                  }
-                >
-                  <Row wrap={'nowrap'}>
+                <DarkTooltip title="The final distribution may differ slightly from the set distribution due to differences in min. order size values in different markets, as well as market movements.">
+                  <Row wrap="nowrap">
                     <span>Est. Target Allocation</span>
-                    <SvgIcon src={Info} width={'3rem'} padding={'0 0 0 1rem'} />
+                    <SvgIcon src={Info} width="3rem" padding="0 0 0 1rem" />
                   </Row>
                 </DarkTooltip>
               ) : (
@@ -100,7 +94,7 @@ const DonutChartWithLegend = ({
             <Line style={{ border: '0.1rem solid #383B45' }} />
           </RowContainer>
         </HeaderContainer>
-        <RowContainer height={'calc(100% - 5rem)'}>
+        <RowContainer height="calc(100% - 5rem)">
           <AllocationChartContainer>
             <AllocationDonutChart
               id={id}
@@ -111,7 +105,7 @@ const DonutChartWithLegend = ({
           </AllocationChartContainer>
           <AllocationLegendContainer centerRows={legendData.length <= 4}>
             <AllocationLegend
-              id={'legend'}
+              id="legend"
               theme={theme}
               data={legendData}
               colors={formattedColorsForLegend}

@@ -1,6 +1,5 @@
 import { MarinadeUtils } from '@marinade.finance/marinade-ts-sdk'
 import { TokenInstructions } from '@project-serum/serum'
-import { COLORS } from '@variables/variables'
 import React, { useState } from 'react'
 
 import { SvgIcon } from '@sb/components'
@@ -181,9 +180,9 @@ const Block: React.FC<StakingBlockProps> = (props) => {
         {isStakeModeOn && (
           <Container>
             <StretchedContent>
-              <ContentBlock width="48%" style={{ background: COLORS.newBlack }}>
+              <ContentBlock width="48%" background="green8">
                 <Row justify="space-between" margin="0 0 2rem 0">
-                  <InlineText color="primaryGray" size="sm">
+                  <InlineText color="gray0" size="sm">
                     Epoch
                   </InlineText>{' '}
                   <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
@@ -199,9 +198,9 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                   %
                 </InlineText>
               </ContentBlock>
-              <ContentBlock style={{ background: '#121E10' }} width="48%">
+              <ContentBlock background="gray6" width="48%">
                 <Row justify="space-between" margin="0 0 2rem 0">
-                  <InlineText color="primaryGray" size="sm">
+                  <InlineText color="gray0" size="sm">
                     APY
                   </InlineText>{' '}
                   <DarkTooltip title="This annual percentage yield is based on the average APY of last months. See our stats for more details.">
@@ -210,7 +209,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                     </span>
                   </DarkTooltip>
                 </Row>
-                <InlineText color="newGreen" size="lg" weight={700}>
+                <InlineText color="green7" size="lg" weight={700}>
                   {mSolInfo?.stats.avg_staking_apy
                     ? stripByAmount(mSolInfo.stats.avg_staking_apy, 2)
                     : '---'}
@@ -221,13 +220,13 @@ const Block: React.FC<StakingBlockProps> = (props) => {
           </Container>
         )}
         <Container>
-          <ContentBlock style={{ margin: '0', background: COLORS.newBlack }}>
+          <ContentBlock background="gray6" style={{ margin: '0' }}>
             <Switcher
               setIsStakeModeOn={toggleStakeMode}
               isStakeModeOn={isStakeModeOn}
             />
             <RowContainer margin="0 0 2rem 0" justify="space-between">
-              <InlineText color="primaryGray" size="sm">
+              <InlineText size="sm">
                 Stake SOL and use mSOL while earning rewards
               </InlineText>
               <DarkTooltip
@@ -304,12 +303,10 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               </ConnectWalletWrapper>
             </RowContainer>
             <RowContainer justify="space-between">
-              <ContentBlock width="48%">
+              <ContentBlock background="gray5" width="48%">
                 <RowContainer justify="space-between">
                   {' '}
-                  <StyledInlineText color="primaryGray" size="sm">
-                    Rate:{' '}
-                  </StyledInlineText>{' '}
+                  <StyledInlineText size="sm">Rate: </StyledInlineText>{' '}
                   <InlineText size="es">
                     1 mSOL ⇄{' '}
                     {mSolInfo?.stats.m_sol_price
@@ -320,12 +317,10 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                 </RowContainer>
               </ContentBlock>
               {isStakeModeOn ? (
-                <ContentBlock width="48%">
+                <ContentBlock background="gray5" width="48%">
                   <Row justify="space-between">
                     {' '}
-                    <InlineText color="primaryGray" size="sm">
-                      Stake fee:{' '}
-                    </InlineText>{' '}
+                    <InlineText size="sm">Stake fee: </InlineText>{' '}
                     <InlineText style={{ margin: '0 4px 0 auto' }} size="es">
                       0%
                     </InlineText>
@@ -341,7 +336,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                   </Row>
                 </ContentBlock>
               ) : (
-                <ContentBlock width="48%">
+                <ContentBlock background="gray5" width="48%">
                   <RowContainer justify="space-between">
                     <InlineText color="primaryGray" size="sm">
                       Unstake fee:{' '}

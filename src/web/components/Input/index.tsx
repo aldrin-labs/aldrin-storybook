@@ -67,9 +67,7 @@ export const Input: React.FC<InputProps> = (props) => {
       onClick={setFocus}
     >
       <InputContainer>
-        <InlineText size="xs" color="lightGray">
-          {label && <Label>{label}</Label>}
-        </InlineText>
+        <InlineText size="xs">{label && <Label>{label}</Label>}</InlineText>
 
         <InputEl
           size={size}

@@ -21,7 +21,7 @@ import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { Button } from '../Button'
 import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { ConfirmationPopup } from './ConfirmationPopup'
@@ -198,12 +198,12 @@ export const TradeInputContent = ({
         <>
           {needTooltip ? (
             <DarkTooltip title={titleForTooltip}>
-              <TitleForInput theme={theme} textDecoration={textDecoration}>
+              <TitleForInput textDecoration={textDecoration}>
                 {header}
               </TitleForInput>
             </DarkTooltip>
           ) : (
-            <TitleForInput theme={theme} textDecoration={textDecoration}>
+            <TitleForInput textDecoration={textDecoration}>
               {header}
             </TitleForInput>
           )}
@@ -211,7 +211,6 @@ export const TradeInputContent = ({
       ) : null}
 
       <TradeInput
-        theme={theme}
         align={textAlign}
         type={type}
         pattern={pattern}
@@ -228,7 +227,6 @@ export const TradeInputContent = ({
         onClick={(e) => handleSelect(e)}
       />
       <UpdatedCoin
-        theme={theme}
         right={symbolRightIndent || (symbol.length <= 2 ? '2.5rem' : '1rem')}
       >
         {symbol}
@@ -855,50 +853,30 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               {!connected ? (
                 <>
                   <ConnectWalletDropdownContainer>
-                    <BtnCustom
+                    <Button
+                      $variant="primary"
+                      $width="xl"
+                      $padding="lg"
+                      $fontSize="lg"
                       onClick={() => {
                         this.setState({
                           isConnectWalletPopupOpen: true,
                         })
                       }}
-                      btnColor="#F8FAFF"
-                      backgroundColor={theme.palette.blue.serum}
-                      btnWidth="35rem"
-                      borderColor={theme.palette.blue.serum}
-                      textTransform="capitalize"
-                      height="4.5rem"
-                      borderRadius="1rem"
-                      fontSize="1.5rem"
-                      style={{
-                        display: 'flex',
-                        textTransform: 'none',
-                        padding: '1rem',
-                        whiteSpace: 'nowrap',
-                      }}
                     >
                       Connect wallet
-                    </BtnCustom>
+                    </Button>
                   </ConnectWalletDropdownContainer>
                   <ConnectWalletButtonContainer>
-                    <BtnCustom
-                      theme={theme}
+                    <Button
+                      $variant="primary"
+                      $width="xl"
+                      $padding="lg"
+                      $fontSize="lg"
                       onClick={() => this.setState({ isWalletPopupOpen: true })}
-                      needMinWidth={false}
-                      btnWidth="100%"
-                      height="6rem"
-                      fontSize="1.6rem"
-                      padding="2rem 8rem"
-                      borderRadius="1.5rem"
-                      borderColor={theme.palette.blue.serum}
-                      btnColor="#fff"
-                      backgroundColor={theme.palette.blue.serum}
-                      textTransform="none"
-                      margin="1rem 0 0 0"
-                      transition="all .4s ease-out"
-                      style={{ whiteSpace: 'nowrap' }}
                     >
                       Connect wallet
-                    </BtnCustom>
+                    </Button>
                   </ConnectWalletButtonContainer>
                 </>
               ) : (

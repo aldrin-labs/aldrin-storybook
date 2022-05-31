@@ -244,7 +244,7 @@ Don't miss your chance.`
         <PoolStatsWrap>
           <PoolStatsTitle>APR</PoolStatsTitle>
           <PoolStatsData>
-            <PoolStatsText color="success">{aprFormatted}%</PoolStatsText>
+            <PoolStatsText color="green7">{aprFormatted}%</PoolStatsText>
           </PoolStatsData>
         </PoolStatsWrap>
         <PoolStatsWrap>

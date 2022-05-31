@@ -55,7 +55,7 @@ const HeaderRow = ({
     style={{ borderBottom: '0.1rem solid #383B45' }}
   >
     <Row width="30%" align="center" justify="flex-start">
-      <Text theme={theme}>Set up your allocation </Text>
+      <Text>Set up your allocation </Text>
 
       {loadingRebalanceData && (
         <Loading size={22} margin="auto auto auto 2rem" />
@@ -161,7 +161,6 @@ export const TokenAmountColumn = ({
   <RowTd>
     <TextColumnContainer>
       <Text
-        theme={theme}
         style={{
           whiteSpace: 'nowrap',
           paddingBottom: '1rem',
@@ -170,7 +169,6 @@ export const TokenAmountColumn = ({
         {amount} {formatSymbol({ symbol })}
       </Text>
       <Text
-        theme={theme}
         color={theme.palette.grey.new}
         style={{
           whiteSpace: 'nowrap',
@@ -196,7 +194,6 @@ export const TokenTargetAmountColumn = ({
   <RowTd style={{ minWidth: '25rem' }}>
     <TextColumnContainer>
       <Text
-        theme={theme}
         style={{
           whiteSpace: 'nowrap',
           paddingBottom: '1rem',
@@ -205,7 +202,6 @@ export const TokenTargetAmountColumn = ({
         {targetAmount} {formatSymbol({ symbol })}
       </Text>
       <Text
-        theme={theme}
         color={theme.palette.grey.new}
         style={{
           whiteSpace: 'nowrap',
@@ -400,10 +396,10 @@ export const TableMainRow = ({
           sliderHeightAfter="2rem"
           borderRadius="3rem"
           borderRadiusAfter="3rem"
-          thumbBackground={el.disabled ? '#93A0B2' : '#651CE4'}
+          thumbBackground={el.disabled ? '#93A0B2' : '#0E02EC'}
           borderThumb="2px solid #f2fbfb"
           trackAfterBackground="#383B45"
-          trackBeforeBackground={el.disabled ? '#93A0B2' : '#651CE4'}
+          trackBeforeBackground={el.disabled ? '#93A0B2' : '#0E02EC'}
           value={el.targetPercentage}
           disabled={el.disabled}
           disabledText={tooltipTexts[el.disabledReason]}
@@ -480,7 +476,6 @@ const RebalanceTable = ({
         width="100%"
         height="100%"
         align="flex-end"
-        theme={theme}
         direction="column"
         justify="end"
       >

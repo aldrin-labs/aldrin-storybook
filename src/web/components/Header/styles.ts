@@ -1,4 +1,5 @@
 import {
+  UCOLORS,
   COLORS,
   SIZE,
   BREAKPOINTS,
@@ -18,7 +19,7 @@ export const HeaderWrap = styled.header`
   display: flex;
   flex-direction: row;
   height: 60px;
-  background: ${COLORS.mainBlack};
+  background: ${(props) => props.theme.colors.gray9};
 `
 
 export const LogoBlock = styled.div`
@@ -58,13 +59,13 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   padding: 4px 0;
   margin: 0;
   text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
-  color: ${COLORS.primaryGray};
+  color: ${(props) => props.theme.colors.gray1};
   background: transparent;
-  transition: all ease-in 0.2s;
   border: 0;
   cursor: pointer;
   white-space: nowrap;
   font-weight: 500;
+  transition: 0.3s;
 
   &.dropdown {
     &:hover {
@@ -73,10 +74,10 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   }
 
   &.selected-from-dropdown {
-    color: ${COLORS.activeWhite};
+    color: ${(props) => props.theme.colors.gray0};
     svg {
       path {
-        fill: ${COLORS.activeWhite};
+        fill: ${(props) => props.theme.colors.gray0};
       }
     }
   }
@@ -87,22 +88,22 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   }
 
   &:hover {
-    color: ${COLORS.activeWhite};
-    transition: all ease-in 0.2s;
+    color: ${(props) => props.theme.colors.gray0};
+    transition: 0.3s;
     svg {
       path {
-        fill: ${COLORS.activeWhite};
+        fill: ${(props) => props.theme.colors.gray0};
       }
     }
   }
 
   &.selected {
-    color: ${COLORS.activeWhite};
-    border-bottom: 1px solid ${COLORS.activeWhite};
+    color: ${(props) => props.theme.colors.gray0};
+    border-bottom: 1px solid ${(props) => props.theme.colors.gray0};
     transition: all ease-in 0.2s;
     svg {
       path {
-        fill: ${COLORS.activeWhite};
+        fill: ${(props) => props.theme.colors.gray0};
       }
     }
   }
@@ -201,8 +202,7 @@ export const WalletContainer = styled.div`
 `
 
 export const LogoLink = styled(Link)`
-  // height: 100%;
-  margin-right: 60px;
+  margin-right: 15px;
   display: block;
 `
 
@@ -255,7 +255,7 @@ export const DropdownWrap = styled.div<ShowHideProps>`
 
 export const DropdownInner = styled.div`
   min-width: 6em;
-  background: ${COLORS.defaultGray};
+  background: ${(props) => props.theme.colors.gray5};
   display: flex;
   flex-direction: column;
   margin-top: 5px;
@@ -275,15 +275,15 @@ export const WalletButton = styled(Button)`
   white-space: nowrap;
   padding: 10px 20px;
   font-size: 0.75em;
-  background-color: ${COLORS.primaryBlue};
+  background-color: ${(props) => props.theme.colors.blue3};
   border: none;
   font-weight: 600;
   height: 3.5em;
   transition: ${TRANSITION};
+  color: white;
 
   &:hover {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-      ${COLORS.primary};
+    background: ${UCOLORS.blue4};
   }
 
   &:active,
@@ -311,7 +311,6 @@ export const WalletDataContainer = styled.div`
 
   .disconnect-wallet {
     display: none;
-    transition: all 1s ease-out;
   }
 
   &:hover {
@@ -319,19 +318,16 @@ export const WalletDataContainer = styled.div`
       display: flex;
       justify-content: space-between;
       flex-direction: row;
-      transition: all 1s ease-out;
     }
   }
 
   .wallet-data {
     display: flex;
-    transition: all 1s ease-out;
   }
 
   &:hover {
     .wallet-data {
       display: none;
-      transition: all 1s ease-out;
     }
   }
 `
@@ -342,7 +338,7 @@ export const WalletData = styled.div`
   justify-content: space-between;
   padding: 0.5rem 1rem;
   border-radius: ${BORDER_RADIUS.md};
-  background: ${COLORS.defaultGray};
+  background: ${(props) => props.theme.colors.gray6};
   align-items: center;
   img {
     border-radius: 50%;
@@ -369,7 +365,7 @@ export const WalletName = styled(Text)`
   font-size: 0.6em;
   line-height: 1.3;
   margin: 0;
-  color: ${COLORS.primaryWhite};
+  color: ${(props) => props.theme.colors.gray1};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -413,7 +409,7 @@ export const WalletDisconnectButton = styled(Button)`
 `
 export const BalanceTitle = styled.span`
   font-size: ${FONT_SIZES.sm};
-  color: ${COLORS.newGreen};
+  color: ${(props) => props.theme.colors.green7};
   font-weight: 600;
   white-space: nowrap;
   @media (max-width: 1200px) {
@@ -422,10 +418,11 @@ export const BalanceTitle = styled.span`
 `
 
 export const Wrap = styled.div`
-  margin: 0 15px;
+  padding: 0 15px;
+  background: ${(props) => props.theme.colors.gray9};
 
   @media (min-width: ${BREAKPOINTS.lg}) {
-    margin: 0 1.5em;
+    padding: 0 1.5em;
   }
 `
 export const WalletDisconnectBlock = styled.div`
@@ -461,5 +458,14 @@ export const CopyAddressButton = styled(Button)<CopyButton>`
 
   &:active {
     background: #363636;
+  }
+`
+export const LogoContainer = styled.div`
+  width: 4em;
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.logo};
+    }
   }
 `

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import { DataTableProps, DataTableState, SORT_ORDER } from './types'
+
+import { useLocalStorageState } from '../../dexUtils/utils'
+import { Hint, SortButton } from './components'
 import {
   Table,
   Thead,
@@ -11,8 +13,7 @@ import {
   NoDataBlock,
   TableBody,
 } from './styles'
-import { Hint, SortButton } from './components'
-import { useLocalStorageState } from '../../dexUtils/utils'
+import { DataTableProps, DataTableState, SORT_ORDER } from './types'
 import { sortData, nextSortOrder } from './utils'
 
 export * from './types'

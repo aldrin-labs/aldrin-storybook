@@ -1,7 +1,3 @@
-import { BlockContent } from '@sb/components/Block'
-import { Button } from '@sb/components/Button'
-import { Row, StretchedBlock } from '@sb/components/Layout'
-import { InlineText, Text } from '@sb/components/Typography'
 import {
   BORDER_RADIUS,
   BREAKPOINTS,
@@ -10,6 +6,11 @@ import {
   LAYOUT_WIDTH,
 } from '@variables/variables'
 import styled from 'styled-components'
+
+import { BlockContent } from '@sb/components/Block'
+import { Button } from '@sb/components/Button'
+import { Row, StretchedBlock } from '@sb/components/Layout'
+import { InlineText, Text } from '@sb/components/Typography'
 
 export const ModalBlock = styled(BlockContent)`
   display: flex;
@@ -29,7 +30,7 @@ export const ModalBlock = styled(BlockContent)`
 `
 
 export const TokenInfo = styled.div`
-  background: ${COLORS.background};
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: ${BORDER_RADIUS.lg};
   margin: 10px 0 10px 12px;
   padding: 16px 12px;
@@ -84,13 +85,13 @@ export const TokenInfoText = styled(Text)`
 `
 
 export const TokenPrice = styled(TokenInfoText)`
-  color: ${COLORS.success};
+  color: ${(props) => props.theme.colors.green4};
   font-weight: 400;
 `
 
 export const TokenInfoName = styled(InlineText)`
   font-size: 13px;
-  color: ${COLORS.textAlt};
+  color: ${(props) => props.theme.colors.gray1};
   font-weight: 400;
 `
 
@@ -98,6 +99,8 @@ export const SwapButton = styled(Button)`
   margin-right: 16px;
   padding-top: 5px;
   padding-bottom: 6px;
+  background-color: ${(props) => props.theme.colors.blue3};
+  border-color: ${({ theme }) => theme.colors.blue3};
 `
 
 export const SwapButtonIcon = styled.span`
@@ -111,7 +114,7 @@ export const TokenSymbols = styled.h2`
   font-weight: bold;
   font-size: ${FONT_SIZES.lg};
   line-height: 1.6;
-  color: ${COLORS.white};
+  color: ${(props) => props.theme.colors.gray1};
   margin: 0 0 0 20px;
 `
 
@@ -182,7 +185,7 @@ export const PoolStatsTitle = styled.h4`
   line-height: 1.25;
   letter-spacing: -0.63px;
   margin: 7px 0 20px;
-
+  color: ${(props) => props.theme.colors.gray1};
   span {
     font-weight: normal;
   }
@@ -230,7 +233,7 @@ export const LiquidityBlock = styled.div`
     content: 'Liquidity';
     font-weight: bold;
     font-size: 20px;
-    color: ${COLORS.background};
+    color: ${(props) => props.theme.colors.gray1};
     transform: rotate(-90deg);
     position: absolute;
     left: -70px;
@@ -252,7 +255,7 @@ export const FarmingBlock = styled(LiquidityBlock)`
   }
 
   @media (min-width: ${BREAKPOINTS.lg}) {
-    border-left: 1px solid ${COLORS.background};
+    border-left: 1px solid ${(props) => props.theme.colors.gray10};
     padding-left: 90px;
     margin-left: -30px;
     margin-top: 0;

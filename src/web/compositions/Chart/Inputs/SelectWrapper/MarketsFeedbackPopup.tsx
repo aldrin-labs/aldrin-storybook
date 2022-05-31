@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -8,8 +7,8 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { notify } from '@sb/dexUtils/notifications'
 import { encode } from '@sb/dexUtils/utils'
+import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
-import CloseIcon from '@icons/closeIcon.svg'
 import CoolIcon from '@icons/coolIcon.svg'
 
 import {
@@ -22,11 +21,9 @@ import {
 } from './SelectWrapperStyles'
 
 export const MarketsFeedbackPopup = ({
-  theme,
   onClose,
   open,
 }: {
-  theme: Theme
   onClose: () => void
   open: boolean
 }) => {
@@ -68,7 +65,6 @@ export const MarketsFeedbackPopup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaperMediumWidth}
       fullScreen={false}
       onClose={onClose}
@@ -82,12 +78,25 @@ export const MarketsFeedbackPopup = ({
             ? 'Feedback Submitted'
             : 'Is there a catalog mistake?'}
         </Title>
-        <SvgIcon
-          onClick={() => onClose()}
-          src={CloseIcon}
-          width="2rem"
-          height="2rem"
-        />
+        <CloseIconContainer
+          onClick={() => {
+            onClose()
+          }}
+        >
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 19 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+              stroke="#F5F5FB"
+              strokeWidth="2"
+            />
+          </svg>
+        </CloseIconContainer>
       </RowContainer>
       {isFeedbackSubmitted ? (
         <RowContainer direction="column">
@@ -112,7 +121,6 @@ export const MarketsFeedbackPopup = ({
           <BlueButton
             style={{ width: '100%', margin: '6rem 0 0 0' }}
             disabled={false}
-            theme={theme}
             onClick={() => {
               submitFeedback(false)
               onClose()
@@ -147,7 +155,6 @@ export const MarketsFeedbackPopup = ({
                 name="token"
                 id="token"
                 autoComplete="off"
-                theme={theme}
                 placeholder="Input token name"
                 value={feedbackData.token}
                 onChange={(e) =>
@@ -172,7 +179,6 @@ export const MarketsFeedbackPopup = ({
                 name="wrongCategory"
                 id="wrongCategory"
                 autoComplete="off"
-                theme={theme}
                 placeholder="Input category name"
                 value={feedbackData.wrongCategory}
                 onChange={(e) =>
@@ -197,7 +203,6 @@ export const MarketsFeedbackPopup = ({
                 name="rightCategory"
                 id="rightCategory"
                 autoComplete="off"
-                theme={theme}
                 placeholder="Input category name"
                 value={feedbackData.rightCategory}
                 onChange={(e) =>
@@ -210,9 +215,7 @@ export const MarketsFeedbackPopup = ({
             </RowContainer>
           </RowContainer>
           <RowContainer>
-            <SubmitButton theme={theme} type="submit">
-              Submit
-            </SubmitButton>
+            <SubmitButton type="submit">Submit</SubmitButton>
           </RowContainer>
         </Form>
       )}

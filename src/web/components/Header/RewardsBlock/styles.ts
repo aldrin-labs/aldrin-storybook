@@ -7,8 +7,8 @@ import { WalletButton } from '../styles'
 import { ProgressBarProps } from './types'
 
 export const RewardsButton = styled(WalletButton)`
-  color: ${COLORS.newOrange};
-  background: ${COLORS.newOrangeTransparent};
+  color: ${(props) => props.theme.colors.red4};
+  background: ${(props) => props.theme.colors.redTransparant};
   padding-left: 10px;
   padding-right: 10px;
   width: auto;
@@ -27,20 +27,19 @@ export const Img = styled.img`
 
 export const RewardsContent = styled(BlockContent)`
   max-width: 440px;
-  width: 80vw;
-  background: ${COLORS.cardsBack};
+  background: ${(props) => props.theme.colors.gray5};
   margin: 20px;
   border-radius: ${BORDER_RADIUS.md};
 `
 
 export const Separator = styled.div`
-  border-bottom: 1px solid ${COLORS.blockBlackBackground};
+  border-bottom: 1px solid ${(props) => props.theme.colors.line};
   margin: 20px 0;
 `
 
 export const ProgressBar = styled.div<ProgressBarProps>`
   height: 80px;
-  background: ${COLORS.blockBlackBackground};
+  background: ${(props) => props.theme.colors.gray6};
   border-radius: ${BORDER_RADIUS.md};
   flex: 1;
   margin-left: 30px;
@@ -64,5 +63,5 @@ export const ProgressBar = styled.div<ProgressBarProps>`
 `
 
 export const RewardsLink = styled(Link)`
-  color: ${COLORS.main};
+  color: ${(props) => props.theme.colors.green7};
 `
