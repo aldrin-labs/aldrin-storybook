@@ -1,4 +1,3 @@
-import { withTheme } from '@material-ui/core'
 import React from 'react'
 
 import {
@@ -27,7 +26,6 @@ export const ROWS_TO_SHOW_IN_LEGEND = 4
 
 const DonutChartWithLegend = ({
   data = [],
-  theme,
   id,
   colors,
   colorsForLegend,
@@ -77,7 +75,7 @@ const DonutChartWithLegend = ({
       height="48%"
     >
       <ChartContainer>
-        <HeaderContainer theme={theme} justify="space-between">
+        <HeaderContainer justify="space-between">
           <RowContainer padding="2rem" style={{ flexWrap: 'nowrap' }}>
             <WhiteTitle style={{ marginRight: '1rem' }}>
               {id === 'target' ? (
@@ -106,7 +104,6 @@ const DonutChartWithLegend = ({
           <AllocationLegendContainer centerRows={legendData.length <= 4}>
             <AllocationLegend
               id="legend"
-              theme={theme}
               data={legendData}
               colors={formattedColorsForLegend}
             />
@@ -117,4 +114,4 @@ const DonutChartWithLegend = ({
   )
 }
 
-export default withTheme()(DonutChartWithLegend)
+export default DonutChartWithLegend

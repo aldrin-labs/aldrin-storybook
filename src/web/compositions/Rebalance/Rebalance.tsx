@@ -290,6 +290,7 @@ const RebalanceComposition = ({
                 colorsForLegend={colorsForLegend}
                 id="current"
               />
+
               <DebouncedMemoizedTargetValueChartWithLegend
                 data={tokensMap}
                 colors={colors}
