@@ -29,7 +29,6 @@ const BalanceDistributedComponent = ({
       direction="column"
       width="100%"
       height="100%"
-      theme={theme}
       justify="space-around"
     >
       <RowContainer align="flex-end" style={{ flexWrap: 'nowrap' }}>

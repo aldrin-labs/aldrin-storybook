@@ -180,16 +180,11 @@ export default function TokenDialog({
           </WhiteText>
         </RowContainer>
         <RowContainer width="90%" justify="space-between" margin="2rem 0 0 0">
-          <WhiteButton
-            width="calc(50% - .5rem)"
-            theme={theme}
-            onClick={onClose}
-          >
+          <WhiteButton width="calc(50% - .5rem)" onClick={onClose}>
             Cancel
           </WhiteButton>
           <BlueButton
             isUserConfident={!isDisabled}
-            theme={theme}
             width="calc(50% - .5rem)"
             disabled={isDisabled}
             onClick={async () => {

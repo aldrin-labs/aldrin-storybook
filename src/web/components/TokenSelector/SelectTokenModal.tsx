@@ -44,7 +44,7 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
           }
           value={search}
           onChange={setSearch}
-          placeholder="Search"
+          placeholder="Search..."
         />
         {tokensWithName.map((t, idx) => (
           <TokenModalRow

@@ -3,6 +3,7 @@ import React from 'react'
 import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
 import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
+
 import { InputAppendContainer, TokensAvailableText } from './styles'
 
 type TokenAmountInputFieldProps = {
@@ -56,7 +57,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
                 onClick={() => setFieldValue(name, available)}
               >
                 Available:&nbsp;{' '}
-                <InlineText color="success">{available}</InlineText>
+                <InlineText color="green3">{available}</InlineText>
               </TokensAvailableText>
             )}
           </div>

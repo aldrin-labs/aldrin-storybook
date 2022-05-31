@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react'
+import { compose } from 'recompose'
+import { DefaultTheme, useTheme } from 'styled-components'
+
+import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
+import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
+import { useInterval } from '@sb/dexUtils/useInterval'
+
+import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
-import { Theme } from '@material-ui/core'
-import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
-import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
-import { compose } from 'recompose'
-import { useInterval } from '@sb/dexUtils/useInterval'
+
 import {
   MarketStatsContainer,
   MobileMarketStatsContainer,
@@ -19,7 +23,6 @@ import {
   PanelCardTitle,
   PanelCardValue,
 } from '../../Chart.styles'
-import { getRINCirculationSupply } from '@core/api'
 
 export interface MarketDataByTicker {
   tradesCount: number
@@ -32,7 +35,7 @@ export interface MarketDataByTicker {
 }
 
 interface IProps {
-  theme: Theme
+  theme: DefaultTheme
   symbol: string
   marketType: number
   marketDataByTickersQuery: {
@@ -89,7 +92,6 @@ const MarketStats: React.FC<IProps> = (props) => {
     marketDataByTickersQuery,
     marketDataByTickersQueryRefetch,
     symbol = ' _ ',
-    theme,
     marketType,
     isRINPair,
     pricePrecision,
@@ -112,6 +114,8 @@ const MarketStats: React.FC<IProps> = (props) => {
       maxPrice: 0,
     },
   }
+
+  const theme = useTheme()
 
   useInterval(() => {
     const variables = {
@@ -175,13 +179,10 @@ const MarketStats: React.FC<IProps> = (props) => {
   return (
     <>
       <MarketStatsContainer>
-        <PanelCard marketType={marketType} theme={theme}>
+        <PanelCard marketType={marketType}>
           <PanelCardValue
-            theme={theme}
             style={{
-              color: showGreen
-                ? theme.palette.green.main
-                : theme.palette.red.main,
+              color: showGreen ? theme.colors.green7 : theme.colors.red3,
               fontSize: '2.3rem',
               letterSpacing: '0.01rem',
               fontFamily: 'Avenir Next Demi',
@@ -190,27 +191,25 @@ const MarketStats: React.FC<IProps> = (props) => {
             {markPrice === 0 ? '--' : formatNumberToUSFormat(strippedMarkPrice)}
           </PanelCardValue>
         </PanelCard>
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardTitle theme={theme}>24h change</PanelCardTitle>
+        <PanelCard marketType={marketType}>
+          <PanelCardTitle>24h change</PanelCardTitle>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue
-              theme={theme}
               style={{
                 color:
                   +priceChangePercentage > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                    ? theme.colors.green7
+                    : theme.colors.red3,
               }}
             >
               {formatNumberToUSFormat(strippedLastPriceDiff)}
             </PanelCardValue>
             <PanelCardSubValue
-              theme={theme}
               style={{
                 color:
                   +priceChangePercentage > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                    ? theme.colors.green7
+                    : theme.colors.red3,
               }}
             >
               {!priceChangePercentage
@@ -222,50 +221,50 @@ const MarketStats: React.FC<IProps> = (props) => {
           </span>
         </PanelCard>
 
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
-          <PanelCardValue theme={theme}>
+        <PanelCard marketType={marketType}>
+          <PanelCardTitle>24h high</PanelCardTitle>
+          <PanelCardValue>
             {formatNumberToUSFormat(stripDigitPlaces(maxPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
 
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
-          <PanelCardValue theme={theme}>
+        <PanelCard marketType={marketType}>
+          <PanelCardTitle>24h low</PanelCardTitle>
+          <PanelCardValue>
             {formatNumberToUSFormat(stripDigitPlaces(minPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
-          <PanelCardValue theme={theme}>
+        <PanelCard marketType={marketType}>
+          <PanelCardTitle>24hr volume</PanelCardTitle>
+          <PanelCardValue>
             {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
         </PanelCard>
         {isRINPair && (
           <>
-            {/* <PanelCard marketType={marketType} theme={theme}>
-              <PanelCardTitle theme={theme}>Circulating Supply</PanelCardTitle>
-              <PanelCardValue theme={theme}>
+            {/* <PanelCard marketType={marketType} >
+              <PanelCardTitle >Circulating Supply</PanelCardTitle>
+              <PanelCardValue >
                 {formatNumberToUSFormat(stripDigitPlaces(circulatingSupply, 2))}{' '}
                 CCAI
               </PanelCardValue>
             </PanelCard> */}
-            <PanelCard marketType={marketType} theme={theme}>
-              <PanelCardTitle theme={theme}>Marketcap</PanelCardTitle>
-              <PanelCardValue theme={theme}>
+            <PanelCard marketType={marketType}>
+              <PanelCardTitle>Marketcap</PanelCardTitle>
+              <PanelCardValue>
                 ${formatNumberToUSFormat(stripDigitPlaces(marketcap, 2))}
               </PanelCardValue>
             </PanelCard>
           </>
-        )} 
+        )}
       </MarketStatsContainer>
       <MobileMarketStatsContainer>
         <Title
           style={{
             color:
               +priceChangePercentage > 0
-                ? theme.palette.green.main
-                : theme.palette.red.main,
+                ? theme.colors.green7
+                : theme.colors.red3,
             fontSize: '2rem',
             margin: '0 2.5rem 0 0',
           }}
@@ -278,8 +277,8 @@ const MarketStats: React.FC<IProps> = (props) => {
           style={{
             color:
               +priceChangePercentage > 0
-                ? theme.palette.green.main
-                : theme.palette.red.main,
+                ? theme.colors.green7
+                : theme.colors.red3,
             fontSize: '2rem',
           }}
         >

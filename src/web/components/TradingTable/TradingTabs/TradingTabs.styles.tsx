@@ -1,33 +1,27 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button, Theme } from '@material-ui/core'
 
-export const TitleTab = styled(({ active, theme, ...rest }) => {
+export const TitleTab = styled(({ active, ...rest }) => {
   return <button {...rest} />
 })`
   &&& {
-    color: ${(props: { active: boolean; theme: Theme }) =>
-      props.active
-        ? props.theme.palette.blue.serum
-        : props.theme.palette.dark.main};
-    background-color: ${(props) => props.theme.palette.grey.main};
+    color: ${(props) =>
+      props.active ? props.theme.colors.white : props.theme.colors.gray1};
+    background-color: ${(props) => props.theme.colors.gray10};
     font-size: 1.3rem;
     font-weight: normal;
     width: 25%;
     border-radius: 0;
-    font-family: ${(props: { active: boolean; theme: Theme }) =>
+    font-family: ${(props) =>
       props.active ? 'Avenir Next Demi' : 'Avenir Next Medium'};
     letter-spacing: 0.01rem;
     border: none;
-    border-bottom: ${(props: { active: boolean; theme: Theme }) =>
-      props.active
-        ? `0.2rem solid ${props.theme.palette.blue.serum}`
-        : `0.2rem solid ${props.theme.palette.grey.border}`};
-    border-right: ${(props) => props.theme.palette.border.main};
+    border-bottom: ${(props) =>
+      !props.active ? 'none' : `0.2rem solid ${props.theme.colors.gray1}`};
     height: auto;
     text-transform: capitalize;
     white-space: nowrap;
-    line-height: 1rem;
+    line-height: 1.5rem;
     padding: 1rem 0;
 
     &:hover {
@@ -43,12 +37,12 @@ export const TitleTab = styled(({ active, theme, ...rest }) => {
     }
     @media (max-width: 600px) {
       padding: 3rem 0;
-      color: ${(props: { active: boolean; theme: Theme }) =>
-        props.active ? '#fbf2f2' : props.theme.palette.dark.main};
-      border-bottom: ${(props: { active: boolean; theme: Theme }) =>
+      color: ${(props) =>
+        props.active ? '#fbf2f2' : props.theme.colors.gray1};
+      border-bottom: ${(props) =>
         props.active
           ? `0.4rem solid #fbf2f2`
-          : `0.1rem solid ${props.theme.palette.grey.border}`};
+          : `0.1rem solid ${props.theme.colors.gray1}`};
       font-size: 2rem;
       background-color: #222429;
       width: 31%;
@@ -71,7 +65,7 @@ export const StyledTitleTabForMobile = styled(TitleTab)`
 export const TitleTabsGroup = styled(({ ...rest }) => <div {...rest} />)`
   &&& {
     display: flex;
-    background-color: ${(props) => props.theme.palette.grey.main};
+    background-color: ${(props) => props.theme.colors.gray10};
     @media (max-width: 600px) {
       background-color: #222429;
     }
@@ -80,8 +74,7 @@ export const TitleTabsGroup = styled(({ ...rest }) => <div {...rest} />)`
 export const ExpandTableButton = styled.div`
   width: 18%;
   display: flex;
-  border-bottom: ${(props) =>
-    `0.1rem solid ${props.theme.palette.grey.border}`};
+  border-bottom: ${(props) => `0.1rem solid ${props.theme.colors.gray5}`};
   justify-content: center;
 
   @media (min-width: 600px) {

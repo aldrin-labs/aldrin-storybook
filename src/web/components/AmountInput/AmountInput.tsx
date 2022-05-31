@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
@@ -32,7 +33,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
     usdValue,
     disabled,
   } = props
-
+  const theme = useTheme()
   const inputSize = size || `${value}`.length || 1
 
   const maxButtonOnClick = () => {
@@ -63,14 +64,14 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
         <ButtonsBlock>
           <TokenNameWrap>{tokenName}</TokenNameWrap>
           <ButtonsWithAmount>
-            <MaxValue color="success" weight={600}>
+            <MaxValue color="green7" weight={600}>
               {stripByAmountAndFormat(amount)}
             </MaxValue>
             {!!(showButtons || Number.isFinite(usdValue)) && (
               <ButtonsContainer>
                 <div>
                   {Number.isFinite(usdValue) && (
-                    <InlineText color="hint">
+                    <InlineText color="gray1">
                       ≈${stripByAmountAndFormat(usdValue || 0, 2)}
                     </InlineText>
                   )}
