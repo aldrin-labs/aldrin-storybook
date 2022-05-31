@@ -1,4 +1,3 @@
-import { withTheme } from '@material-ui/core/styles'
 import React, { useEffect, useState } from 'react'
 import { Column, Table } from 'react-virtualized'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
@@ -18,7 +17,25 @@ import { nextSortOrder, sortData } from './utils'
 
 export * from './types'
 
-const DataTablePure = <E,>(props: DataTableProps<E & { theme: any }>) => {
+const rowStyle = {
+  outline: 'none',
+  cursor: 'pointer',
+  fontSize: '16px',
+  borderBottom: `1px solid rgb(46, 46, 46)`,
+  overflow: 'initial',
+}
+
+const headerStyle = {
+  textTransform: 'capitalize',
+  fontWeight: 400,
+  fontSize: '0.8em',
+  textAlign: 'left',
+  display: 'flex',
+}
+
+const MOBILE_WIDTH = 800
+
+export const DataTable = <E,>(props: DataTableProps<E>) => {
   const { columns, data, name, onRowClick, noDataText } = props
 
   const [state, setState] = useLocalStorageState<DataTableState>(`dt_${name}`, {
@@ -37,7 +54,7 @@ const DataTablePure = <E,>(props: DataTableProps<E & { theme: any }>) => {
     <AutoSizer>
       {({ height, width }) => (
         <Table
-          width={width > 800 ? width : 800}
+          width={Math.max(MOBILE_WIDTH, width)}
           height={height}
           sort={({ sortBy: field }) => {
             const nextDirection = nextSortOrder(state.sort.direction)
@@ -52,31 +69,19 @@ const DataTablePure = <E,>(props: DataTableProps<E & { theme: any }>) => {
           }}
           sortBy={state.sort.field}
           sortDirection={
-            state.sort.direction === 'NONE' ? undefined : state.sort.direction
+            state.sort.direction === SORT_ORDER.NONE
+              ? undefined
+              : state.sort.direction
           }
           rowCount={sortedData.length}
           noRowsRenderer={() => <>{noDataText}</>}
           onRowClick={onRowClick}
-          rowStyle={{
-            outline: 'none',
-            cursor: 'pointer',
-            fontSize: '16px',
-            borderBottom: `1px solid rgb(46, 46, 46)`,
-            overflow: 'initial',
-          }}
+          rowStyle={rowStyle}
           headerHeight={40}
           rowHeight={100}
           rowGetter={({ index }) => sortedData[index]}
         >
           {columns.map((item) => {
-            let columnWidth = width
-
-            if (item.key === 'pool') {
-              columnWidth *= 2
-            } else if (item.key === 'tvl') {
-              columnWidth *= 2
-            }
-
             return (
               <Column
                 key={item.key}
@@ -94,14 +99,8 @@ const DataTablePure = <E,>(props: DataTableProps<E & { theme: any }>) => {
                     />
                   </>
                 )}
-                headerStyle={{
-                  textTransform: 'capitalize',
-                  fontWeight: 400,
-                  fontSize: '0.8em',
-                  textAlign: 'left',
-                  display: 'flex',
-                }}
-                width={columnWidth}
+                headerStyle={headerStyle}
+                width={item.getWidth ? item.getWidth(width) : width}
                 cellRenderer={({ rowData, dataKey }) =>
                   rowData.fields[dataKey].rendered ||
                   rowData.fields[dataKey].rawValue
@@ -114,7 +113,5 @@ const DataTablePure = <E,>(props: DataTableProps<E & { theme: any }>) => {
     </AutoSizer>
   )
 }
-
-export const DataTable = withTheme()(DataTablePure)
 
 export { NoDataBlock }

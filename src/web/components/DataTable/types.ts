@@ -1,10 +1,11 @@
-import { ReactNode, SyntheticEvent } from 'react'
+import { ReactNode } from 'react'
 
 export interface DataHeadColumn {
   key: string
   sortable?: boolean
   hint?: ReactNode
   title: ReactNode
+  getWidth?: (width: number) => number
 }
 
 export interface DataCellValue {
