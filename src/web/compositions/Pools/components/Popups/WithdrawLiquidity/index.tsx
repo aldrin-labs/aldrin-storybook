@@ -1,6 +1,6 @@
-import { PublicKey, PublicKey } from '@solana/web3.js'
-import { COLORS, COLORS } from '@variables/variables'
-import React, { useEffect, useState, useEffect, useState } from 'react'
+import { PublicKey } from '@solana/web3.js'
+import { COLORS } from '@variables/variables'
+import React, { useEffect, useState } from 'react'
 import { useTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
