@@ -4,7 +4,6 @@ import {
   HeaderContainer,
   Row,
   RowContainer,
-  WhiteTitle,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
@@ -13,6 +12,7 @@ import Info from '@icons/inform.svg'
 
 import SvgIcon from '../SvgIcon'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
+import { InlineText } from '../Typography'
 import AllocationDonutChart from './DonutChart'
 import {
   AllocationChartContainer,
@@ -77,19 +77,24 @@ const DonutChartWithLegend = ({
       <ChartContainer>
         <HeaderContainer justify="space-between">
           <RowContainer padding="2rem" style={{ flexWrap: 'nowrap' }}>
-            <WhiteTitle style={{ marginRight: '1rem' }}>
+            <InlineText
+              size="sm"
+              style={{ marginRight: '1rem', whiteSpace: 'nowrap' }}
+            >
               {id === 'target' ? (
                 <DarkTooltip title="The final distribution may differ slightly from the set distribution due to differences in min. order size values in different markets, as well as market movements.">
                   <Row wrap="nowrap">
-                    <span>Est. Target Allocation</span>
+                    <InlineText style={{ whiteSpace: 'nowrap' }} size="sm">
+                      Est. Target Allocation
+                    </InlineText>
                     <SvgIcon src={Info} width="3rem" padding="0 0 0 1rem" />
                   </Row>
                 </DarkTooltip>
               ) : (
                 'Current Allocation'
               )}
-            </WhiteTitle>
-            <Line style={{ border: '0.1rem solid #383B45' }} />
+            </InlineText>
+            <Line style={{ borderTop: '0.1rem solid #383B45' }} />
           </RowContainer>
         </HeaderContainer>
         <RowContainer height="calc(100% - 5rem)">

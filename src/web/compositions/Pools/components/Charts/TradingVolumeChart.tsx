@@ -42,6 +42,7 @@ const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
           container: canvasRef.current,
           data,
           chart: chartRef.current,
+          theme,
         })
       } catch (e) {
         console.warn('Erorr on chart update:', e)
