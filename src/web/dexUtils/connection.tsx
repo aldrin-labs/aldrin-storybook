@@ -6,10 +6,13 @@ import {
   PublicKey,
 } from '@solana/web3.js'
 import tuple from 'immutable-tuple'
-import React, { useContext, useRef } from 'react'
+import useSWR from 'swr'
+import React, { useContext, useRef, useCallback } from 'react'
 
 import { useAsyncData } from './fetch-loop'
 import MultiEndpointsConnection from './MultiEndpointsConnection'
+import { getAllTokensData } from "@sb/compositions/Rebalance/utils"
+import { COMMON_REFRESH_INTERVAL } from "@core/utils/config"
 
 export type AldrinConnection = MultiEndpointsConnection & Connection
 
@@ -71,75 +74,36 @@ export function useConnectionConfig() {
   const ctx = useContext(ConnectionContext)
   return { endpoint: ctx.endpoint, setEndpoint: ctx.setEndpoint }
 }
-export function useAccountInfo(
-  publicKey: PublicKey | undefined | null
-): [AccountInfo<Buffer> | null | undefined, boolean] {
+
+export function useAccountInfo(publicKey: PublicKey | undefined | null): {
+  data: AccountInfo<Buffer> | null | undefined
+  isLoading: boolean
+  error: Error | undefined
+} {
   const connection = useConnection()
-  const cacheKey = tuple('useAccountInfo', publicKey?.toBase58())
-  const [accountInfo, loaded] = useAsyncData(
-    async () => (publicKey ? connection.getAccountInfo(publicKey) : null),
-    cacheKey,
-    { refreshInterval: 3_000 }
+
+  const fetcher = useCallback(
+    () => (publicKey ? connection.getAccountInfo(publicKey) : null),
+    [publicKey]
   )
 
-  // useEffect(() => {
-  //   if (!publicKey) {
-  //     return
-  //   }
-  //   if (accountListenerCount.has(cacheKey)) {
-  //     let currentItem = accountListenerCount.get(cacheKey)
-  //     ++currentItem.count
-  //   } else {
-  //     let previousInfo: AccountInfo<Buffer> | null = null
-  //     const subscriptionId = connection.onAccountChange(publicKey, (info) => {
-  //       if (
-  //         !previousInfo ||
-  //         !previousInfo.data.equals(info.data) ||
-  //         previousInfo.lamports !== info.lamports
-  //       ) {
-  //         // probably here is memory leak, sometimes this code executes realy frequently and block whole page
-  //         // console.log('connection', connection, info)
-  //         // console.log(
-  //         //   'setCache useAccountInfo',
-  //         //   connection,
-  //         //   info,
-  //         //   previousInfo,
-  //         //   previousInfo?.data.equals(info.data),
-  //         //   previousInfo?.lamports === info.lamports
-  //         // )
-  //         previousInfo = info
-  //         setCache(cacheKey, info)
-  //       }
-  //     })
-  //     accountListenerCount.set(cacheKey, { count: 1, subscriptionId })
-  //   }
-  //   return () => {
-  //     let currentItem = accountListenerCount.get(cacheKey)
-  //     let nextCount = currentItem.count - 1
-  //     if (nextCount <= 0) {
-  //       connection.removeAccountChangeListener(currentItem.subscriptionId)
-  //       accountListenerCount.delete(cacheKey)
-  //     } else {
-  //       --currentItem.count
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [cacheKey])
+  const { data, error } = useSWR(
+    `userAccountInfo_${publicKey?.toBase58()}`,
+    fetcher,
+    {
+      refreshInterval: 3_000,
+    }
+  )
 
-  const previousInfoRef = useRef<AccountInfo<Buffer> | null | undefined>(null)
-  if (
-    !accountInfo ||
-    !previousInfoRef.current ||
-    !previousInfoRef.current.data.equals(accountInfo.data) ||
-    previousInfoRef.current.lamports !== accountInfo.lamports
-  ) {
-    previousInfoRef.current = accountInfo
+  return {
+    data,
+    isLoading: typeof data === 'undefined',
+    error,
   }
-  return [previousInfoRef.current, loaded]
 }
 
 export function useAccountData(publicKey) {
-  const [accountInfo] = useAccountInfo(publicKey)
+  const { data: accountInfo } = useAccountInfo(publicKey)
   return accountInfo && accountInfo.data
 }
 

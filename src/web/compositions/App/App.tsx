@@ -60,7 +60,6 @@ if (currentVersion !== version) {
   const isNotificationDone = localStorage.getItem('isNotificationDone')
   const isOnboardingDone = localStorage.getItem('isOnboardingDone')
   const isRebrandingPopupOpen = localStorage.getItem('isRebrandingPopupOpen')
-  const isRpcWarningPopupOpen = localStorage.getItem('isRpcWarningPopupOpen')
 
   localStorage.clear()
 
@@ -68,7 +67,6 @@ if (currentVersion !== version) {
   localStorage.setItem('isNotificationDone', isNotificationDone)
   localStorage.setItem('isOnboardingDone', isOnboardingDone)
   localStorage.setItem('isRebrandingPopupOpen', isRebrandingPopupOpen)
-  // localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
 
   localStorage.setItem('version', version)
   document.location.reload()
