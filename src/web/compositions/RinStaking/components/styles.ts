@@ -10,7 +10,8 @@ export const RestakeButton = styled(Button)`
 
   &,
   &:disabled {
-    color: ${(props) => props.theme.colors.gray1};
+    color: ${(props) =>
+      props.$loading ? 'transparent' : props.theme.colors.gray1};
     background: none;
   }
 `
