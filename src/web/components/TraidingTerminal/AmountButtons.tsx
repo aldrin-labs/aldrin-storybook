@@ -93,10 +93,9 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             <Input
               theme={theme}
               needTitle
-              type="number"
-              pattern="\d*"
+              type="text"
               title="total"
-              value={localTotal || 0}
+              value={formatNumberWithSpaces(localTotal || 0)}
               onChange={onTotalChange}
               symbol={pair[1]}
             />

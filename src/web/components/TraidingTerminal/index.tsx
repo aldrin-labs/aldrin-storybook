@@ -21,6 +21,7 @@ import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
+import { formatNumberWithSpaces } from '../../dexUtils/utils'
 import { Button } from '../Button'
 import { INPUT_FORMATTERS } from '../Input'
 import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
@@ -707,7 +708,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                     needTitle
                     type="text"
                     title="price"
-                    value={values.price || ''}
+                    value={formatNumberWithSpaces(values.price || '')}
                     onChange={this.onPriceChange}
                     symbol={pair[1]}
                   />
