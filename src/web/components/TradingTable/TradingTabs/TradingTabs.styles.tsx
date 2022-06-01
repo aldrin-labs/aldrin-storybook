@@ -40,9 +40,7 @@ export const TitleTab = styled(({ active, ...rest }) => {
       color: ${(props) =>
         props.active ? props.theme.colors.gray0 : props.theme.colors.gray1};
       border-bottom: ${(props) =>
-        props.active
-          ? `0.4rem solid ${props.theme.colors.gray0}`
-          : `0.1rem solid ${props.theme.colors.gray1}`};
+        props.active ? `0.1rem solid ${props.theme.colors.gray0}` : `none`};
       font-size: 2rem;
       background-color: ${(props) => props.theme.colors.gray6};
       width: 31%;
