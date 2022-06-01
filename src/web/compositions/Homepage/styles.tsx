@@ -249,22 +249,19 @@ export const StyledPicture = styled.picture`
 export const StyledLink = styled.a`
   width: 36px;
   height: 36px;
-  background: ${(props) => props.theme.colors.gray6};
   border-radius: ${BORDER_RADIUS.md};
   transition: ${TRANSITION};
 
   &:hover {
-    background: ${(props) => props.theme.colors.blue5};
-
     svg path:not(.not-fill) {
-      fill: ${COLORS.white};
+      fill: ${(props) => props.theme.colors.gray0};
     }
 
     svg {
       defs {
         clipPath {
           rect {
-            fill: ${COLORS.white};
+            fill: ${(props) => props.theme.colors.gray0};
           }
         }
       }
@@ -272,11 +269,8 @@ export const StyledLink = styled.a`
   }
 
   &:active {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-      ${COLORS.primaryBlue};
-
     svg path:not(.not-fill) {
-      fill: ${COLORS.white};
+      fill: ${(props) => props.theme.colors.gray0};
     }
   }
 `

@@ -15,9 +15,14 @@ import styled from 'styled-components'
 import { Button } from '../Button'
 import { Text } from '../Typography'
 
+type LogoContainerType = {
+  width?: string
+}
+
 export const HeaderWrap = styled.header`
   display: flex;
   flex-direction: row;
+  align-items: center;
   height: 60px;
   background: ${(props) => props.theme.colors.gray9};
 `
@@ -460,12 +465,29 @@ export const CopyAddressButton = styled(Button)<CopyButton>`
     background: #363636;
   }
 `
-export const LogoContainer = styled.div`
-  width: 4em;
+export const LogoContainer = styled.div<LogoContainerType>`
+  width: ${(props) => props.width || '4em'};
 
   svg {
     path {
       fill: ${(props) => props.theme.colors.logo};
+    }
+  }
+`
+
+export const NotifyButton = styled.div`
+  width: 2em;
+  height: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${(props) => props.theme.colors.gray6};
+  border-radius: 0.8rem;
+  cursor: pointer;
+  margin: 0 0 0 1rem;
+  svg {
+    path {
+      stroke: ${(props) => props.theme.colors.gray1};
     }
   }
 `

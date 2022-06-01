@@ -13,6 +13,9 @@ import {
   LinkToTwitter,
 } from '@sb/compositions/Homepage/SocialsLinksComponents'
 
+import { AldrinLogo } from '../Header/MenuIcons'
+import { Column } from '../Layout'
+import { InlineText } from '../Typography'
 import { FooterButton, FooterContainer, MediaContainer } from './styles'
 
 export const Footer = () => {
@@ -20,6 +23,10 @@ export const Footer = () => {
   const [listingPopupOpen, setListingPopupOpen] = useState(false)
   return (
     <FooterContainer>
+      <Column>
+        <AldrinLogo width="60px" />
+        <InlineText size="lg">Aldrin.com 2021 - ∞</InlineText>
+      </Column>
       <MediaContainer>
         <LinkToTwitter />
         <LinkToCoinGecko />
@@ -28,7 +35,7 @@ export const Footer = () => {
         <LinkToTelegram />
         <LinkToDiscord />
       </MediaContainer>
-      <Row width="35%" justify="flex-end">
+      <Row justify="flex-end">
         <FooterButton onClick={() => setListingPopupOpen(true)}>
           Request Listing
         </FooterButton>{' '}
@@ -39,7 +46,6 @@ export const Footer = () => {
           Feedback &amp; Support
         </FooterButton>{' '}
       </Row>
-
       <FeedbackPopup
         open={feedbackPopupOpen}
         onClose={() => {

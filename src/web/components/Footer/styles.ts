@@ -1,10 +1,4 @@
-import {
-  UCOLORS,
-  COLORS,
-  FONT_SIZES,
-  BORDER_RADIUS,
-  BREAKPOINTS,
-} from '@variables/variables'
+import { FONT_SIZES, BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
 import { Button } from '../Button'
@@ -25,7 +19,7 @@ export const FooterContainer = styled.div`
   }
 `
 export const MediaContainer = styled(Row)`
-  width: 25%;
+  width: 40%;
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
@@ -35,9 +29,9 @@ export const MediaContainer = styled(Row)`
 `
 
 export const FooterButton = styled(Button)`
-  background: ${(props) => props.theme.colors.gray6};
+  background: transparent;
   border: none;
-  color: ${UCOLORS.gray1};
+  color: ${(props) => props.theme.colors.gray1};
   border-radius: ${BORDER_RADIUS.md};
   padding: 0.5em;
   font-size: ${FONT_SIZES.lg};
@@ -45,8 +39,7 @@ export const FooterButton = styled(Button)`
   transition: 0.3s;
 
   &:hover {
-    background: ${(props) => props.theme.colors.blue5};
-    color: ${COLORS.primaryWhite};
+    color: ${(props) => props.theme.colors.gray0};
   }
 
   &:last-child {

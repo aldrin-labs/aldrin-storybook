@@ -236,8 +236,8 @@ export const CreatePoolIcon = () => (
   </svg>
 )
 
-export const AldrinLogo = () => (
-  <LogoContainer>
+export const AldrinLogo = ({ width }: { width?: string }) => (
+  <LogoContainer width={width}>
     <svg
       width="100%"
       height="36"
