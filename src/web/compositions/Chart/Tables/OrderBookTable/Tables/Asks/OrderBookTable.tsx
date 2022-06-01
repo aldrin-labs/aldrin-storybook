@@ -61,6 +61,7 @@ const OrderBookTable = ({
     formattedData.length
 
   const [base, quote] = currencyPair.split('_')
+
   return (
     <AsksWrapper
       terminalViewMode={terminalViewMode}
