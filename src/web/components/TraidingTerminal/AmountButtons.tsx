@@ -79,9 +79,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
               needTitle
               title="Est. amount"
               value={formatNumberWithSpaces(localAmount)}
-              type="number"
-              pattern="\d*"
-              pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
+              type="text"
               onChange={onAmountChange}
               symbol={pair[0]}
             />
