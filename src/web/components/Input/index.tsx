@@ -42,7 +42,7 @@ export const Input: React.FC<InputProps> = (props) => {
     onChange,
     append,
     value = '',
-    size = 8,
+    size,
     name,
     formatter = INPUT_FORMATTERS.NOP,
     className = '',
