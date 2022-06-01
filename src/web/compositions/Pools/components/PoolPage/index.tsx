@@ -9,7 +9,7 @@ import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useConnection, useFallbackConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks'
@@ -83,6 +83,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const tokenMap = useTokenInfos()
 
   const connection = useConnection()
+  const fallbackConnection = useFallbackConnection()
   const { wallet } = useWallet()
   const [openedPopup, setOpenedPopup] = useState<ModalType>('')
 
@@ -147,6 +148,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     setPoolUpdateOperation({ pool: '', operation: 'claim' })
     const result = await withdrawStaked({
       connection,
+      fallbackConnection,
       wallet,
       stakingPool: pool,
       farmingTickets: farmingTickets.get(pool.swapToken) || [],

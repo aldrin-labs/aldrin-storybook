@@ -36,6 +36,7 @@ interface InitializeFarmingParams extends InitializeFarmingBase {
   pool: PublicKey
   wallet: WalletAdapter
   connection: AldrinConnection
+  fallbackConnection?: AldrinConnection
   programAddress?: string
 }
 
@@ -123,6 +124,7 @@ export const initializeFaming = async (params: InitializeFarmingParams) => {
   return signAndSendSingleTransaction({
     transaction,
     connection: params.connection,
+    fallbackConnection: params.fallbackConnection,
     wallet: params.wallet,
     signers,
   })

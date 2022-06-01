@@ -12,7 +12,10 @@ import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
+import {
+  useFallbackConnection,
+  useMultiEndpointConnection,
+} from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
@@ -97,6 +100,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
+  const fallbackConnection = useFallbackConnection()
 
   const [userFarmingTickets, refreshUserFarmingTickets] = useAllStakingTickets({
     wallet,
@@ -229,6 +233,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       setLoading((prev) => ({ ...prev, stake: true }))
       const result = await startStaking({
         connection,
+        fallbackConnection,
         wallet,
         amount,
         userPoolTokenAccount: new PublicKey(tokenData.address),
@@ -288,6 +293,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     setLoading((prev) => ({ ...prev, claim: true }))
     const result = await withdrawStaked({
       connection,
+      fallbackConnection,
       wallet,
       stakingPool,
       farmingTickets: userFarmingTickets,

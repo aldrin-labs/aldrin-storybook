@@ -16,7 +16,7 @@ import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { InlineText } from '@sb/components/Typography'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useConnection, useFallbackConnection } from '@sb/dexUtils/connection'
 import {
   ALL_TOKENS_MINTS_MAP,
   getTokenNameByMintAddress,
@@ -54,7 +54,7 @@ import {
   Title,
   VestingExplanation,
 } from './styles'
-import { TokenAmountInputField, validateNumber } from './TokenAmountInput'
+import { TokenAmountInputField } from './TokenAmountInput'
 import { CreatePoolFormType, CreatePoolFormProps } from './types'
 
 const steps = [
@@ -126,6 +126,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useConnection()
+  const fallbackConnection = useFallbackConnection()
   const history = useHistory()
 
   const tokens: Token[] = userTokens
@@ -253,6 +254,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const createAccountsTxId = await sendSignedSignleTransaction({
           transaction: generatedTransactions.createAccounts,
           connection,
+          fallbackConnection,
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
         if (createAccountsTxId !== 'success') {
@@ -265,6 +267,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const setAuthoritiesTxId = await sendSignedSignleTransaction({
           transaction: generatedTransactions.setAuthorities,
           connection,
+          fallbackConnection,
         })
         if (setAuthoritiesTxId !== 'success') {
           throw new Error('setAuthoritiesTxId failed')
@@ -277,6 +280,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const initPoolTxId = await sendSignedSignleTransaction({
           transaction: generatedTransactions.createPool,
           connection,
+          fallbackConnection,
         })
         if (initPoolTxId !== 'success') {
           throw new Error('initPoolTxId failed')
@@ -289,6 +293,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         const firstDepositTxId = await sendSignedSignleTransaction({
           transaction: generatedTransactions.firstDeposit,
           connection,
+          fallbackConnection,
         })
         if (firstDepositTxId !== 'success') {
           throw new Error('firstDepositTxId failed')
@@ -303,6 +308,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           const farmingTxId = await sendSignedSignleTransaction({
             transaction: generatedTransactions.farming,
             connection,
+            fallbackConnection,
           })
           if (farmingTxId !== 'success') {
             throw new Error('farmingTxId failed')

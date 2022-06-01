@@ -7,6 +7,7 @@ export const signAndSendSingleTransaction = async (
   const {
     transaction,
     connection,
+    fallbackConnection,
     wallet,
     signers = [],
     focusPopup = true,
@@ -20,6 +21,7 @@ export const signAndSendSingleTransaction = async (
     wallet,
     focusPopup,
     connection,
+    fallbackConnection,
     sentMessage,
     successMessage,
     commitment,

@@ -1,3 +1,5 @@
+import SnackbarUtils from '@sb/utils/SnackbarUtils'
+
 import { SendTransactionStatus } from '@core/solana'
 
 import { notify } from '../notifications'
@@ -7,24 +9,40 @@ interface NotificationMessages {
 }
 export const getNotifier =
   (messages: NotificationMessages) =>
-  (status: SendTransactionStatus, txId?: string) => {
+  ({
+    status,
+    txId,
+    type = 'success',
+    persist = false,
+  }: {
+    status: SendTransactionStatus
+    txId?: string
+    type?: string
+    persist?: boolean
+  }) => {
     const notificationMessage = messages[status]
 
     if (notificationMessage) {
       const message = Array.isArray(notificationMessage)
         ? notificationMessage[0]
         : notificationMessage
+
       const description = Array.isArray(notificationMessage)
         ? notificationMessage[1]
         : undefined
 
       if (message) {
-        notify({
+        const notifyKey = notify({
           message,
           description,
-          type: 'success',
+          type,
           txid: txId,
+          persist,
         })
+
+        return () => SnackbarUtils.close(notifyKey)
       }
     }
+
+    return null
   }
