@@ -65,7 +65,7 @@ export const TitleTabsGroup = styled(({ ...rest }) => <div {...rest} />)`
     display: flex;
     background-color: ${(props) => props.theme.colors.gray6};
     @media (max-width: 600px) {
-      background-color: #222429;
+      background-color: ${(props) => props.theme.colors.gray6};
     }
   }
 `
