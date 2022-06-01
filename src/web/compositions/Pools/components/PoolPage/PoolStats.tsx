@@ -48,13 +48,18 @@ import { PoolStatsProps } from './types'
 
 export const PoolStats: React.FC<PoolStatsProps> = (props) => {
   const { title, value, additionalInfo } = props
+  const roundedValue = Math.round(value * 100) / 100
   return (
     <PoolStatsWrap>
       <PoolStatsTitle>{title}</PoolStatsTitle>
       <PoolStatsData>
         <PoolStatsText>
-          <DarkTooltip title={`$${formatNumberToUSFormat(Math.round(value))}`}>
-            <span>{value > 0 ? `$${stripByAmountAndFormat(value)}` : '-'}</span>
+          <DarkTooltip
+            title={`$${formatNumberToUSFormat(roundedValue.toFixed(2))}`}
+          >
+            <span>
+              {value > 0 ? `$${stripByAmountAndFormat(roundedValue, 2)}` : '-'}
+            </span>
           </DarkTooltip>
         </PoolStatsText>
         {additionalInfo ? (

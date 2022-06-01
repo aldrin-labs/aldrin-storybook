@@ -12,6 +12,8 @@ import {
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
+import { formatNumberToUSFormat } from '../../../../../../../core/src/utils/PortfolioTableUtils'
+
 dayjs.extend(timezone)
 dayjs.extend(utc)
 
@@ -87,9 +89,8 @@ const createChart = ({
           enabled: true,
           intersect: false,
           callbacks: {
-            label: (model: any, item: TooltipItem) => {
-              const [int, dec] = (model.formattedValue || '0').split('.')
-              return ` $${int}`
+            label: (model: any) => {
+              return ` $${formatNumberToUSFormat(model.raw.y.toFixed(0))}`
             },
           },
         },
