@@ -3,6 +3,7 @@ import Chart from 'chart.js/auto'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
+import { DefaultTheme } from 'styled-components'
 
 import {
   dayDuration,
@@ -21,9 +22,18 @@ interface ChartParams<T = { date: number; vol?: number }[]> {
   chart: Chart | null
   data: T
   container: HTMLCanvasElement | null
+  theme: DefaultTheme
 }
 
-const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
+const createChart = ({
+  ctx,
+  type = 'line',
+  theme,
+}: {
+  ctx: CanvasRenderingContext2D
+  type: ChartType
+  theme: DefaultTheme
+}) =>
   new Chart(ctx, {
     type,
     data: {
@@ -39,7 +49,7 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
           },
           ticks: {
             align: 'center',
-            color: COLORS.textAlt,
+            color: theme.colors.gray1,
             maxRotation: 0,
             font: {
               size: 12,
@@ -57,7 +67,7 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
           ticks: {
             padding: 15,
             callback: (value) => `$${stripByAmountAndFormat(value)}`,
-            color: COLORS.textAlt,
+            color: theme.colors.gray1,
             font: {
               size: 12,
               family: MAIN_FONT,
@@ -159,7 +169,8 @@ const createTotalVolumeLockedChart = ({
   if (chart) {
     chart.destroy()
   }
-  chart = createChart(ctx)
+
+  chart = createChart({ ctx, theme })
   chart.data = {
     labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
     datasets: [
@@ -181,7 +192,12 @@ const createTotalVolumeLockedChart = ({
   return chart
 }
 
-const createTradingVolumeChart = ({ chart, container, data }: ChartParams) => {
+const createTradingVolumeChart = ({
+  chart,
+  container,
+  data,
+  theme,
+}: ChartParams) => {
   const ctx = container?.getContext('2d')
 
   if (!ctx) {
@@ -212,7 +228,7 @@ const createTradingVolumeChart = ({ chart, container, data }: ChartParams) => {
   if (chart) {
     chart.destroy()
   }
-  chart = createChart(ctx, 'bar')
+  chart = createChart({ ctx, type: 'bar', theme })
   chart.data = {
     labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
     datasets: [

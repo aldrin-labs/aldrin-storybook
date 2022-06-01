@@ -1,12 +1,12 @@
-import { Theme } from '@material-ui/core'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import copy from 'clipboard-copy'
 import { throttle } from 'lodash-es'
 import React, { useState } from 'react'
+import { DefaultTheme, useTheme } from 'styled-components'
 
 import { Loading } from '@sb/components'
 import { formatSymbol } from '@sb/components/AllocationBlock/DonutChart/utils'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Button } from '@sb/components/Button'
 import Slider from '@sb/components/Slider/Slider'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -37,77 +37,58 @@ const tooltipTexts = {
 }
 
 const HeaderRow = ({
-  theme,
   openAddCoinPopup,
   loadingRebalanceData,
   resetTargetAllocation,
 }: {
-  theme: Theme
   openAddCoinPopup: (arg: boolean) => {}
   loadingRebalanceData: boolean
   resetTargetAllocation: () => void
-}) => (
-  <RowContainer
-    height="10rem"
-    padding="2rem"
-    justify="space-between"
-    align="center"
-    style={{ borderBottom: '0.1rem solid #383B45' }}
-  >
-    <Row width="30%" align="center" justify="flex-start">
-      <Text>Set up your allocation </Text>
+}) => {
+  const theme = useTheme()
+  return (
+    <RowContainer
+      height="10rem"
+      padding="2rem"
+      justify="space-between"
+      align="center"
+      style={{ borderBottom: `0.1rem solid ${theme.colors.gray5}` }}
+    >
+      <Row width="30%" align="center" justify="flex-start">
+        <Text>Set up your allocation </Text>
 
-      {loadingRebalanceData && (
-        <Loading size={22} margin="auto auto auto 2rem" />
-      )}
-    </Row>
-    <Row>
-      <BtnCustom
-        needMinWidth={false}
-        btnWidth="auto"
-        height="auto"
-        fontSize="1.4rem"
-        padding=".4rem 1rem"
-        margin="0 2rem 0 0"
-        borderColor="inherit"
-        btnColor={theme.palette.blue.serum}
-        backgroundColor="inherit"
-        textTransform="none"
-        transition="all .4s ease-out"
-        style={{ whiteSpace: 'nowrap' }}
-        onClick={resetTargetAllocation}
-      >
-        Reset to current allocation
-      </BtnCustom>
-      <BtnCustom
-        theme={theme}
-        onClick={() => {
-          openAddCoinPopup(true)
-        }}
-        needMinWidth={false}
-        btnWidth="auto"
-        height="auto"
-        fontSize="1.4rem"
-        padding="1rem 2.5rem"
-        borderRadius="1.7rem"
-        borderColor={theme.palette.blue.serum}
-        btnColor="#fff"
-        backgroundColor={theme.palette.blue.serum}
-        textTransform="none"
-        transition="all .4s ease-out"
-        style={{ whiteSpace: 'nowrap' }}
-      >
-        Add Coin
-      </BtnCustom>
-    </Row>
-  </RowContainer>
-)
+        {loadingRebalanceData && (
+          <Loading size={22} margin="auto auto auto 2rem" />
+        )}
+      </Row>
+      <Row>
+        <Button
+          $variant="link"
+          $padding="lg"
+          $fontSize="sm"
+          $color="primary"
+          onClick={resetTargetAllocation}
+        >
+          Reset to current allocation
+        </Button>
+        <Button
+          onClick={() => {
+            openAddCoinPopup(true)
+          }}
+          $variant="primary"
+          $padding="lg"
+          $fontSize="sm"
+        >
+          Add Coin
+        </Button>
+      </Row>
+    </RowContainer>
+  )
+}
 
 const FooterRow = ({
-  theme,
   resetTargetAllocation,
 }: {
-  theme: Theme
   resetTargetAllocation: () => void
 }) => (
   <RowContainer
@@ -151,12 +132,10 @@ export const TokenAmountColumn = ({
   symbol,
   amount,
   tokenValue,
-  theme,
 }: {
   symbol: string
   amount: number
   tokenValue: number
-  theme: Theme
 }) => (
   <RowTd>
     <TextColumnContainer>
@@ -169,7 +148,6 @@ export const TokenAmountColumn = ({
         {amount} {formatSymbol({ symbol })}
       </Text>
       <Text
-        color={theme.palette.grey.new}
         style={{
           whiteSpace: 'nowrap',
         }}
@@ -184,12 +162,10 @@ export const TokenTargetAmountColumn = ({
   symbol,
   targetAmount,
   targetTokenValue,
-  theme,
 }: {
   symbol: string
   targetAmount: number
   targetTokenValue: number
-  theme: Theme
 }) => (
   <RowTd style={{ minWidth: '25rem' }}>
     <TextColumnContainer>
@@ -202,7 +178,6 @@ export const TokenTargetAmountColumn = ({
         {targetAmount} {formatSymbol({ symbol })}
       </Text>
       <Text
-        color={theme.palette.grey.new}
         style={{
           whiteSpace: 'nowrap',
         }}
@@ -221,7 +196,6 @@ export const MemoizedTokenTargetAmountColumn = React.memo(
 
 export const TableMainRow = ({
   el,
-  theme,
   setTokensMap,
   tokensMap,
   leftToDistributeValue,
@@ -229,13 +203,13 @@ export const TableMainRow = ({
   totalTokensValue,
 }: {
   el: TokenInfoWithTargetData
-  theme: Theme
   setTokensMap: (tokensMap: TokensMapType) => void
   tokensMap: TokensMapType
   leftToDistributeValue: number
   setLeftToDistributeValue: (n: number) => void
   totalTokensValue: number
 }) => {
+  const theme = useTheme()
   const handleSliderChange = (e, value) => {
     // console.log('value: ', value)
     const token = tokensMap[el.symbol]
@@ -385,7 +359,6 @@ export const TableMainRow = ({
         symbol={el.symbol}
         amount={el.amount}
         tokenValue={el.tokenValue}
-        theme={theme}
       />
       <RowTd>
         <Slider
@@ -398,8 +371,10 @@ export const TableMainRow = ({
           borderRadiusAfter="3rem"
           thumbBackground={el.disabled ? '#93A0B2' : '#0E02EC'}
           borderThumb="2px solid #f2fbfb"
-          trackAfterBackground="#383B45"
-          trackBeforeBackground={el.disabled ? '#93A0B2' : '#0E02EC'}
+          trackAfterBackground={theme.colors.gray5}
+          trackBeforeBackground={
+            el.disabled ? theme.colors.gray10 : theme.colors.blue5
+          }
           value={el.targetPercentage}
           disabled={el.disabled}
           disabledText={tooltipTexts[el.disabledReason]}
@@ -416,7 +391,6 @@ export const TableMainRow = ({
         symbol={el.symbol}
         targetAmount={el.targetAmount}
         targetTokenValue={el.targetTokenValue}
-        theme={theme}
       />
     </TableRow>
   )
@@ -457,7 +431,7 @@ const RebalanceTable = ({
   loadingRebalanceData,
   resetTargetAllocation,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   data: TokenInfoWithTargetData[]
   softRefresh: () => void
   setTokensMap: (tokensMap: TokensMapType) => void
@@ -478,6 +452,7 @@ const RebalanceTable = ({
         align="flex-end"
         direction="column"
         justify="end"
+        color="gray6"
       >
         <MemoizedHeaderRow
           resetTargetAllocation={resetTargetAllocation}
@@ -486,7 +461,6 @@ const RebalanceTable = ({
           openAddCoinPopup={async (...args) => {
             openAddCoinPopup(...args)
           }}
-          theme={theme}
         />
         <RowContainer
           align="flex-start"

@@ -1,4 +1,4 @@
-import { BORDER_RADIUS, COLORS } from '@variables/variables'
+import { BORDER_RADIUS } from '@variables/variables'
 import styled from 'styled-components'
 
 import { Input } from '@sb/components/Input'
@@ -30,11 +30,11 @@ export const SwapsList = styled.div`
   position: absolute;
   width: 100%;
   top: 60px;
-  background: ${COLORS.blockBackground};
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: ${BORDER_RADIUS.md};
   z-index: 20;
   padding: 10px 0;
-  box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);
+  box-shadow: ${(props) => props.theme.colors.shadow};
 `
 
 export const SwapItem = styled.div`
@@ -44,7 +44,7 @@ export const SwapItem = styled.div`
   align-items: center;
   padding: 15px 24px;
   cursor: pointer;
-  color: ${(props) => COLORS[props.color]};
+  color: ${(props) => props.theme.colors[props.color]};
 `
 
 export const TokenName = styled(InlineText)``

@@ -316,7 +316,9 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               <ContentBlock background="gray5" width="48%">
                 <RowContainer justify="space-between">
                   {' '}
-                  <StyledInlineText size="sm">Rate: </StyledInlineText>{' '}
+                  <StyledInlineText color="gray0" size="sm">
+                    Rate:{' '}
+                  </StyledInlineText>{' '}
                   <InlineText size="es">
                     1 mSOL ⇄{' '}
                     {mSolInfo?.stats.m_sol_price
@@ -348,7 +350,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               ) : (
                 <ContentBlock background="gray5" width="48%">
                   <RowContainer justify="space-between">
-                    <InlineText color="primaryGray" size="sm">
+                    <InlineText color="gray0" size="sm">
                       Unstake fee:{' '}
                     </InlineText>{' '}
                     <InlineText style={{ margin: '0 4px 0 auto' }} size="es">

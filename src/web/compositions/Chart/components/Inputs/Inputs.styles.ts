@@ -1,15 +1,14 @@
 import styled from 'styled-components'
 
 export const SearchInput = styled.input`
-  background: #383b45;
-  border: 1px solid #3a475c;
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 1.7rem;
   outline: none;
   width: 100%;
   height: 3.5rem;
-  color: #fff;
+  color: ${(props) => props.theme.colors.gray0};
   padding: 0 2rem;
-
+  border: none;
   @media (max-width: 540px) {
     height: 4.5rem;
   }

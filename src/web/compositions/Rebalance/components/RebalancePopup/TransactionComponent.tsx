@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import { Market } from '@project-serum/serum'
 import React from 'react'
 
@@ -16,7 +15,6 @@ import { BlockForCoins } from './BlockForCoins'
 import { Stroke, StyledTextColumnContainer } from './styles'
 
 export const TransactionComponent = ({
-  theme,
   symbol,
   slippage,
   price,
@@ -28,7 +26,6 @@ export const TransactionComponent = ({
   isNotEnoughLiquidity,
   isLastTransaction,
 }: {
-  theme: Theme
   symbol: string
   slippage: number
   price: number

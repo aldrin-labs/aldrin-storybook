@@ -27,7 +27,7 @@ export const InputEl = styled.input`
   font-weight: 600;
   padding: 0.6em 0 0.6em 1.5em;
   color: ${(props) => props.theme.colors.white};
-  width: 80%;
+  width: auto;
 
   &::placeholder {
     font-weight: 500;
@@ -64,7 +64,7 @@ export const InputWrap = styled.div<WrapProps>`
 `
 
 export const InputContainer = styled.div`
-  flex: 1;
+  // flex: 1;
 `
 
 export const Append = styled.span<AppendProps>`
