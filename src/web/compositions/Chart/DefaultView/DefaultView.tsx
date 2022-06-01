@@ -267,6 +267,7 @@ export const DefaultViewComponent = (
             terminalViewMode={terminalViewMode}
           >
             <TradingComponent
+              newTheme={newTheme}
               selectedKey={selectedKey}
               activeExchange={activeExchange}
               pair={baseQuoteArr}

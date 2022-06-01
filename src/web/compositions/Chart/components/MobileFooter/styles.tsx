@@ -34,6 +34,12 @@ export const StyledLink = styled(NavLink)`
   &.active {
     border-top: 1px solid ${COLORS.primaryWhite};
   }
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.gray0};
+    }
+  }
 `
 export const StyledA = styled.a`
   width: 7rem;
@@ -43,9 +49,15 @@ export const StyledA = styled.a`
   flex-direction: column;
   text-align: center;
   text-decoration: none;
-  color: #fbf2f2;
+  color: ${(props) => props.theme.colors.gray0};
   font-family: Avenir Next Medium;
   font-size: 1.9rem;
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.gray0};
+    }
+  }
   span {
     margin-top: 1rem;
   }
@@ -56,9 +68,9 @@ export const FooterComponent = styled(RowContainer)`
   bottom: 0;
   z-index: 999;
   display: flex;
-  background-color: ${COLORS.mainBlack};
+  background-color: ${(props) => props.theme.colors.gray6};
   height: 65px;
-  border-top: 1px solid ${COLORS.cardsBack};
+  border-top: 1px solid ${(props) => props.theme.colors.gray5};
 
   @media (min-width: ${BREAKPOINTS.md}) {
     display: none;

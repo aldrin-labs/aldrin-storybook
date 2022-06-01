@@ -38,13 +38,13 @@ export const TitleTab = styled(({ active, ...rest }) => {
     @media (max-width: 600px) {
       padding: 3rem 0;
       color: ${(props) =>
-        props.active ? '#fbf2f2' : props.theme.colors.gray1};
+        props.active ? props.theme.colors.gray0 : props.theme.colors.gray1};
       border-bottom: ${(props) =>
         props.active
-          ? `0.4rem solid #fbf2f2`
+          ? `0.4rem solid ${props.theme.colors.gray0}`
           : `0.1rem solid ${props.theme.colors.gray1}`};
       font-size: 2rem;
-      background-color: #222429;
+      background-color: ${(props) => props.theme.colors.gray6};
       width: 31%;
       border-right: none;
     }
@@ -65,7 +65,7 @@ export const StyledTitleTabForMobile = styled(TitleTab)`
 export const TitleTabsGroup = styled(({ ...rest }) => <div {...rest} />)`
   &&& {
     display: flex;
-    background-color: ${(props) => props.theme.colors.gray10};
+    background-color: ${(props) => props.theme.colors.gray6};
     @media (max-width: 600px) {
       background-color: #222429;
     }
@@ -76,8 +76,17 @@ export const ExpandTableButton = styled.div`
   display: flex;
   border-bottom: ${(props) => `0.1rem solid ${props.theme.colors.gray5}`};
   justify-content: center;
+  background-color: ${(props) => props.theme.colors.gray6};
 
   @media (min-width: 600px) {
     display: none;
+  }
+
+  svg {
+    width: 25%;
+    height: auto;
+    path {
+      fill: ${(props) => props.theme.colors.gray1};
+    }
   }
 `

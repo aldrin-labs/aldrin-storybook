@@ -49,7 +49,7 @@ export const MobileMarketStatsContainer = styled.div`
   justify-content: space-between;
   height: 10rem;
   padding: 0 3rem;
-  background: #17181a;
+  background: ${(props) => props.theme.colors.gray6};
   border-bottom: ${(props) => props.theme.colors.gray1};
   @media (min-width: 600px) {
     display: none;

@@ -546,6 +546,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       baseCurrencyAccount,
       quoteCurrencyAccount,
       isButtonLoaderShowing,
+      newTheme,
     } = this.props
 
     const needCreateOpenOrdersAccount = !openOrdersAccount
@@ -609,21 +610,21 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: '#383B45',
+                background: newTheme.colors.gray5,
                 borderRadius: '2rem',
                 alignItems: 'center',
               }}
               firstHalfStyleProperties={{
-                activeColor: '#53DF11',
-                activeBackgroundColor: '#222429',
+                activeColor: newTheme.colors.green7,
+                activeBackgroundColor: newTheme.colors.gray10,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: '#F69894',
-                activeBackgroundColor: '#222429',
+                activeColor: newTheme.colors.red4,
+                activeBackgroundColor: newTheme.colors.gray10,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
@@ -651,22 +652,22 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: '#383B45',
+                background: newTheme.colors.gray5,
                 borderRadius: '2rem',
                 alignItems: 'center',
                 marginTop: '2rem',
               }}
               firstHalfStyleProperties={{
-                activeColor: '#fff',
-                activeBackgroundColor: '#222429',
+                activeColor: newTheme.colors.gray0,
+                activeBackgroundColor: newTheme.colors.gray10,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: '#fff',
-                activeBackgroundColor: '#222429',
+                activeColor: newTheme.colors.gray0,
+                activeBackgroundColor: newTheme.colors.gray10,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
