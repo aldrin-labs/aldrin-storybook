@@ -210,6 +210,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             <SearchInput
               name="search"
               placeholder="Search..."
+              size="8"
               value={searchValue}
               onChange={onChangeSearch}
               append={
