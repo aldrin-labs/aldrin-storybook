@@ -40,6 +40,10 @@ export const StyledLink = styled(NavLink)`
       fill: ${(props) => props.theme.colors.gray0};
     }
   }
+
+  span {
+    color: ${(props) => props.theme.colors.gray0};
+  }
 `
 export const StyledA = styled.a`
   width: 7rem;
@@ -60,6 +64,7 @@ export const StyledA = styled.a`
   }
   span {
     margin-top: 1rem;
+    color: ${(props) => props.theme.colors.gray0};
   }
 `
 
@@ -108,13 +113,16 @@ export const MoreLinksPopup = styled.div<MoreLinksPopupProps>`
 `
 
 export const MoreLinksContent = styled.div`
-  background: ${COLORS.blockBackground};
+  background: ${(props) => props.theme.colors.gray6};
   padding: 1em 1.5em;
   border-radius: ${BORDER_RADIUS.md};
   position: absolute;
   width: calc(100% - 20px);
   left: 10px;
   bottom: 10px;
+  h4 {
+    color: ${(props) => props.theme.colors.gray0};
+  }
 `
 
 export const MoreLinkContainer = styled.div`
@@ -127,7 +135,7 @@ export const MoreLinkContainer = styled.div`
   margin: 10px 0;
 
   span {
-    color: ${COLORS.main};
+    color: ${(props) => props.theme.colors.gray0};
     font-size: ${FONT_SIZES.sm};
     padding: 0 0 0 5px;
   }
