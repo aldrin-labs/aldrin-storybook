@@ -590,8 +590,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   >
                     <span>
                       <ClaimButton
-                        // disabled={isClaimDisabled || loading.claim}
-                        disabled={true}
+                        disabled={isClaimDisabled || loading.claim}
                         $loading={loading.claim}
                         $fontSize="sm"
                         onClick={claimRewards}
