@@ -181,7 +181,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
           </div>
         </div>
 
-        <ProgressBar $value={timeProgress * 100}>
+        <ProgressBar $value={Math.round(timeProgress * 100)}>
           <InlineText weight={600}>
             {timeLeft.days ? `${timeLeft.days}d` : `${timeLeft.hours}h`} &nbsp;
           </InlineText>

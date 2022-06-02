@@ -130,7 +130,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
                 %
               </InlineText>{' '}
             </RowContainer>
-            <Filler $width={mSolInfo?.epochInfo.epochPct || 0} />
+            <Filler $width={Math.round(mSolInfo?.epochInfo.epochPct || 0)} />
           </RelativeContentBlock>
         </StretchedContent>
         <RowContainer>

@@ -11,12 +11,12 @@ export const ProgressBar = ({
 }: {
   children: any
   width: string
-  background: string
+  background?: string
   padding: string
 }) => {
   return (
     <ProgressBarContainer background={background}>
-      <Progress padding={padding} width={width} />
+      <Progress padding={padding} $width={width} />
       <InlineText size="sm" weight={600}>
         {children}
       </InlineText>

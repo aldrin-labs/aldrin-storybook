@@ -308,7 +308,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   {stakingAccount ? (
                     <ProgressBar
                       background={COLORS.newBlack}
-                      width={`${currentTierTimeProgress * 100}%`}
+                      width={`${Math.round(currentTierTimeProgress * 100)}%`}
                       padding="0.5em"
                     >
                       {isRewardsUnlocked ? (
@@ -338,7 +338,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
             <AdaptiveStakingBlock>
               <FormContainer direction="column" justifyContent="center">
                 {isStaked ? (
-                  <ProgressBar width={`${timeProgresss * 100}%`}>
+                  <ProgressBar width={`${Math.round(timeProgresss * 100)}%`}>
                     {isRewardsUnlocked ? (
                       'Unlocked!'
                     ) : (

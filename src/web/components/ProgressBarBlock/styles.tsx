@@ -27,7 +27,7 @@ export const Progress = styled.div<ProgressBar>`
   bottom: 0;
   border-radius: 7px;
   background: rgba(38, 159, 19, 0.25);
-  width: ${(props) => props.width || '0%'};
+  width: ${(props) => props.$width || '0%'};
   display: flex;
   align-items: center;
   padding: ${(props) => props.padding || '1em'};
