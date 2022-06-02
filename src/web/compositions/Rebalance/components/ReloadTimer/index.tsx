@@ -1,4 +1,4 @@
-import { FONT_SIZES } from '@variables/variables'
+import { FONT_SIZES, UCOLORS } from '@variables/variables'
 import React, { CSSProperties, useState } from 'react'
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import styled from 'styled-components'
@@ -9,7 +9,7 @@ export const TimerButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #17181a;
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 0.8rem;
   cursor: pointer;
   margin: ${(props: { margin?: string }) => props.margin || '0 3rem 0 0'};
@@ -19,8 +19,8 @@ export const ReloadTimer = ({
   size = 21,
   duration = 10,
   initialRemainingTime = 10,
-  color = '#651CE4',
-  trailColor = '#383B45',
+  color = UCOLORS.blue3,
+  trailColor = UCOLORS.blue1,
   callback,
   margin = '0 3rem 0 0',
   rerenderOnClick = true,
@@ -72,7 +72,6 @@ export const ReloadTimer = ({
           showTime ? (
             <span
               style={{
-                color: '#fafafa',
                 fontFamily: 'Avenir Next',
                 fontSize: FONT_SIZES.xs,
                 ...timeStyles,

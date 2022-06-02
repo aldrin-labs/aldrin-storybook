@@ -1,8 +1,10 @@
 /** @flow */
 import React, { CSSProperties } from 'react'
 import styled from 'styled-components'
+
+import { filterOpenOrders } from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable.utils'
+
 import {
-  rowStyles,
   roundUp,
   roundDown,
   roundDownSmall,
@@ -10,12 +12,8 @@ import {
   getNumberOfDecimalsFromNumber,
 } from '@core/utils/chartPageUtils'
 
-import RedArrow from '@icons/redArrow.png'
 import GreenArrow from '@icons/greenArrow.png'
-import { isDataForThisMarket } from '@sb/components/TradingTable/TradingTable.utils'
-import { Theme } from '@material-ui/core'
-import { filterOpenOrders } from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable.utils'
-import { Order } from '@project-serum/serum/lib/market'
+import RedArrow from '@icons/redArrow.png'
 
 // ${rowStyles}
 // ${(props: { style: CSSProperties }) =>
@@ -42,7 +40,7 @@ type IProps = {
   index: number
   key?: string
   rowData?: any
-  theme: Theme
+  theme: any
   style?: CSSProperties
   openOrderHistory: { price: number }[]
   onRowClick?: ({
@@ -118,12 +116,12 @@ export default function defaultRowRenderer({
   const colorStyles =
     fall !== undefined
       ? {
-          color: fall ? theme.palette.red.main : theme.palette.green.main,
+          color: fall ? theme.colors.obRedFont : theme.colors.obGreenFont,
         }
       : {}
 
   let needHighlightPrice = false
-  let needHighlightStopPrice = false
+  const needHighlightStopPrice = false
 
   const openOrders =
     (openOrderHistory &&
@@ -155,7 +153,7 @@ export default function defaultRowRenderer({
       }) !== -1
   }
 
-  let orderPercentage =
+  const orderPercentage =
     rowData.size > amountForBackground
       ? 100
       : rowData.size / (amountForBackground / 100)
@@ -243,7 +241,7 @@ export default function defaultRowRenderer({
             transform: 'translate(50%, -50%)',
             background: '#fff',
           }}
-        ></div>
+        />
       )}
       <div
         className="amountForBackground"
@@ -251,8 +249,8 @@ export default function defaultRowRenderer({
           borderRadius: '.1rem',
           backgroundColor:
             side === 'bids' || fall === 0
-              ? theme.palette.orderbook.greenBackground
-              : theme.palette.orderbook.redBackground,
+              ? theme.colors.obGreebBack
+              : theme.colors.obRedBack,
           transform: `translateX(calc(100% - ${orderPercentage}%))`,
           ...(fall === undefined
             ? {}
@@ -282,10 +280,8 @@ export const getRowHeight = ({
   if (isMobile) {
     if (isAsks) {
       return height / 6
-    } else {
-      return terminalViewMode === 'mobileChart' ? height / 6 : height / 5
     }
-  } else {
-    return mode === 'both' ? height / 8 : height / 18
+    return terminalViewMode === 'mobileChart' ? height / 6 : height / 5
   }
+  return mode === 'both' ? height / 8 : height / 18
 }

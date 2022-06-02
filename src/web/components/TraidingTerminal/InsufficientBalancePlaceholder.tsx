@@ -1,4 +1,16 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react'
+
+import SvgIcon from '@sb/components/SvgIcon'
+import {
+  useSelectedBaseCurrencyAccount,
+  useSelectedOpenOrdersAccount,
+  useSelectedQuoteCurrencyAccount,
+} from '@sb/dexUtils/markets'
+
+import Info from '@icons/inform.svg'
+
+import { Loader } from '../Loader/Loader'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
 import { Placeholder, SendButton } from './styles'
 import {
@@ -6,27 +18,16 @@ import {
   costsOfTheFirstTrade,
   SOLFeeForTrade,
 } from './utils'
-import SvgIcon from '@sb/components/SvgIcon'
-import Info from '@icons/inform.svg'
-import { Theme } from '@sb/types/materialUI'
-import {
-  useSelectedBaseCurrencyAccount,
-  useSelectedOpenOrdersAccount,
-  useSelectedQuoteCurrencyAccount,
-} from '@sb/dexUtils/markets'
-import { Loader } from '../Loader/Loader'
 
 export const InsufficientBalancePlaceholder = ({
   pair,
   SOLAmount,
-  theme,
   onClick,
   isLoading,
   sideType,
 }: {
   pair: string
   SOLAmount: number
-  theme: Theme
   onClick: any
   isLoading: boolean
   sideType: string
@@ -84,7 +85,7 @@ export const InsufficientBalancePlaceholder = ({
           >
             <Placeholder>
               Insufficient SOL balance to complete the transaction.
-              <SvgIcon src={Info} width={'5%'} />
+              <SvgIcon src={Info} width="5%" />
             </Placeholder>
           </DarkTooltip>
         ) : needToAddToken && !isEnoughSOLForAddingToken ? (
@@ -115,7 +116,7 @@ export const InsufficientBalancePlaceholder = ({
           >
             <Placeholder>
               Insufficient SOL balance to complete the transaction.
-              <SvgIcon src={Info} width={'5%'} />
+              <SvgIcon src={Info} width="5%" />
             </Placeholder>
           </DarkTooltip>
         ) : (
@@ -132,19 +133,14 @@ export const InsufficientBalancePlaceholder = ({
           >
             <Placeholder>
               Insufficient SOL balance to complete the transaction.
-              <SvgIcon src={Info} width={'5%'} />
+              <SvgIcon src={Info} width="5%" />
             </Placeholder>
           </DarkTooltip>
         )
       ) : (
-        <SendButton
-          theme={theme}
-          type={sideType}
-          onClick={onClick}
-          disabled={isLoading}
-        >
+        <SendButton type={sideType} onClick={onClick} disabled={isLoading}>
           {isLoading ? (
-            <Loader text={'Transaction Pending'} />
+            <Loader text="Transaction Pending" />
           ) : sideType === 'buy' ? (
             `buy ${pair[0]}`
           ) : (

@@ -1,12 +1,13 @@
+import { LinearProgress } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
-import { LinearProgress } from '@material-ui/core'
+
 import { Row, WhiteTitle } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 const TokenAllocationProgressBarContainer = styled(({ ...props }) => (
   <Row {...props} />
 ))`
-  background: #383b45;
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 35px;
 `
 
