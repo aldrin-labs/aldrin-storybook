@@ -49,7 +49,7 @@ export const InputWithCoins = ({
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="2rem">
         <InvisibleInput
-          type="number"
+          type="string"
           value={value}
           onChange={(e) => {
             if (
