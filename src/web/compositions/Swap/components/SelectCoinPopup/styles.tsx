@@ -1,4 +1,4 @@
-import { BREAKPOINTS, COLORS, FONTS, FONT_SIZES } from '@variables/variables'
+import { BREAKPOINTS, FONTS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -10,7 +10,7 @@ export const UpdatedPaper = styled(({ ...props }) => (
   <StyledPaper {...props} />
 ))`
   font-size: 16px;
-  background: #1a1a1a;
+  background: ${(props) => props.theme.colors.gray6};
   width: 30em;
 
   @media (max-width: ${BREAKPOINTS.sm}) {
@@ -23,7 +23,7 @@ export const UpdatedPaper = styled(({ ...props }) => (
 export const SelectorRow = styled(({ ...props }) => (
   <RowContainer {...props} />
 ))`
-  background: ${COLORS.background};
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 1.2rem;
   margin-bottom: 0.8em;
   padding: 1.5em;

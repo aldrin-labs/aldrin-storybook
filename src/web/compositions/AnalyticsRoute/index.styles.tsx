@@ -1,7 +1,7 @@
+import { Grid } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
 
-import { Grid } from '@material-ui/core'
 import { LineProps, RowProps } from './index.types'
 
 export const Line = styled.div`
@@ -119,7 +119,7 @@ export const HeaderContainer = styled((props) => <RowContainer {...props} />)`
 
 export const PairSelectorContainerGrid = styled((props) => <Grid {...props} />)`
   .pairSelectorRow:hover {
-    background: rgba(55, 56, 62, 0.75);
+    background: ${(props) => props.theme.colors.gray6};
   }
 `
 
@@ -150,10 +150,10 @@ export const Text = styled.div`
   }
 `
 
-export const Title = styled(
-  ({ color, theme, fontSize, fontFamily, ...rest }) => <span {...rest} />
-)`
-  color: ${(props) => props.color || props.theme.palette.grey.title};
+export const Title = styled(({ color, fontSize, fontFamily, ...rest }) => (
+  <span {...rest} />
+))`
+  color: ${(props) => props.color || props.theme.colors.white};
   font-size: ${(props) => props.fontSize || '1.6rem'};
   font-family: ${(props) => props.fontFamily || 'Avenir Next'};
 `
@@ -172,7 +172,7 @@ export const TopBarTitle = styled((props) => <Title {...props} />)`
 
 export const WhiteTitle = styled((props) => <Title {...props} />)`
   font-size: 1.6rem;
-  color: ${(props) => props.color || props.theme.palette.dark.main};
+  color: ${(props) => props.color || props.theme.colors.gray0};
   font-weight: ${(props) => props.fontWeight || 'bold'};
   white-space: nowrap;
 

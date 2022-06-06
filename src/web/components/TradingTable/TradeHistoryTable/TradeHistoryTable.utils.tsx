@@ -1,15 +1,17 @@
 import React from 'react'
+import { DefaultTheme } from 'styled-components'
+
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { TradeType } from '@core/types/ChartTypes'
-import { Theme } from '@material-ui/core'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+
 import { StyledTitle } from '../TradingTable.styles'
 
 export const combineTradeHistoryTable = (
   tradeData: TradeType[],
-  theme: Theme,
+  theme: DefaultTheme,
   marketType: 0 | 1,
   handlePairChange: (pair: string) => void
 ) => {
@@ -33,10 +35,7 @@ export const combineTradeHistoryTable = (
       symbol: marketName,
     })
 
-    const pair = marketName
-      .split('/')
-      .join('_')
-      .split('_')
+    const pair = marketName.split('/').join('_').split('_')
 
     return {
       id: `${orderId}_${size}_${price}`,
@@ -64,10 +63,7 @@ export const combineTradeHistoryTable = (
             style={{
               display: 'block',
               textTransform: 'uppercase',
-              color:
-                side === 'buy'
-                  ? theme.palette.green.main
-                  : theme.palette.red.main,
+              color: side === 'buy' ? theme.colors.green7 : theme.colors.red3,
             }}
           >
             {side}
@@ -107,39 +103,37 @@ export const combineTradeHistoryTable = (
       },
       columnForMobile: {
         render: (
-          <RowContainer padding={'0 2rem'} direction={'column'} height="20rem">
-            <RowContainer justify={'space-between'}>
-              <StyledTitle color={'#fbf2f2'}>
+          <RowContainer padding="0 2rem" direction="column" height="20rem">
+            <RowContainer justify="space-between">
+              <StyledTitle color="#fbf2f2">
                 {pair[0]}/{pair[1]}
               </StyledTitle>
               <StyledTitle
                 style={{
                   textTransform: 'capitalize',
                   color:
-                    side === 'buy'
-                      ? theme.palette.green.main
-                      : theme.palette.red.main,
+                    side === 'buy' ? theme.colors.green7 : theme.colors.red3,
                 }}
               >
                 {side}
               </StyledTitle>
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <StyledTitle>Price(USDC)</StyledTitle>{' '}
-              <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+              <StyledTitle color="#fbf2f2">{`${stripDigitPlaces(
                 price,
                 pricePrecision
               )}`}</StyledTitle>
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <StyledTitle>Amount (CCAI)</StyledTitle>
-              <StyledTitle color={'#fbf2f2'}>
+              <StyledTitle color="#fbf2f2">
                 {stripDigitPlaces(size, quantityPrecision)}
               </StyledTitle>
             </RowContainer>
-            <RowContainer justify={'space-between'}>
+            <RowContainer justify="space-between">
               <StyledTitle>Total (USDC)</StyledTitle>
-              <StyledTitle color={'#fbf2f2'}>
+              <StyledTitle color="#fbf2f2">
                 {stripDigitPlaces(size * price, quantityPrecision)}
               </StyledTitle>
             </RowContainer>

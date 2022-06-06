@@ -62,8 +62,8 @@ export const ClearButton = styled(TitleButton)`
   position: absolute;
   top: -2px;
   right: 1rem;
-  color: #651ce4;
-  border-color: #651ce4;
+  color: #0E02EC;
+  border-color: #0E02EC;
   font-size: 1.1rem;
   min-width: 70px;
   font-weight: bold;

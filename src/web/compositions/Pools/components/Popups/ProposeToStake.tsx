@@ -123,9 +123,7 @@ const ProposeToStakePopup = ({
           style={{ width: '65%', height: '4.5rem', textDecoration: 'none' }}
           to="/staking"
         >
-          <BlueButton style={{ width: '100%' }} theme={theme}>
-            Yes, definitely
-          </BlueButton>
+          <BlueButton style={{ width: '100%' }}>Yes, definitely</BlueButton>
         </Link>
       </RowContainer>
     </DialogWrapper>

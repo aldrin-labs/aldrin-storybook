@@ -1,18 +1,9 @@
-import React, { useState, useEffect } from 'react'
 import { Theme } from '@material-ui/core'
-import { settleFunds } from '@sb/dexUtils/send'
-
 import useMobileSize from '@webhooks/useMobileSize'
+import React, { useState, useEffect } from 'react'
 
-import {
-  Container,
-  Text,
-  DemiText,
-  BlackButton,
-  TextButton,
-} from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import CloseIcon from '@icons/blackCloseIcon.svg'
+import { useConnection } from '@sb/dexUtils/connection'
 import {
   useBalances,
   useMarket,
@@ -20,11 +11,22 @@ import {
   useSelectedOpenOrdersAccount,
   useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
-import { useConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { settleFunds } from '@sb/dexUtils/send'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
-import SvgIcon from '../SvgIcon'
+import { useWallet } from '@sb/dexUtils/wallet'
+
 import { stripByAmount } from '@core/utils/chartPageUtils'
+
+import CloseIcon from '@icons/blackCloseIcon.svg'
+
+import SvgIcon from '../SvgIcon'
+import {
+  Container,
+  Text,
+  DemiText,
+  BlackButton,
+  TextButton,
+} from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
 
 export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
@@ -67,7 +69,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
 
   return (
     <Container
-      showOnTheTop={true}
+      showOnTheTop
       style={{
         height: isMobile ? '38.5%' : '35%',
         top: 'auto',
@@ -119,8 +121,8 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
           justify="space-between"
         >
           <Row
-            height={'100%'}
-            direction={'column'}
+            height="100%"
+            direction="column"
             justify="space-between"
             align="flex-start"
           >
@@ -156,10 +158,9 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
               </TextButton>
               <BlackButton
                 disabled={false}
-                theme={theme}
-                hoverBackground={'#20292d'}
-                width={'auto'}
-                fontSize={'1.5rem'}
+                hoverBackground="#20292d"
+                width="auto"
+                fontSize="1.5rem"
                 style={{ padding: '1rem 5rem' }}
                 onClick={async () => {
                   await settleFunds({
@@ -185,10 +186,9 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
         {isMobile && (
           <BlackButton
             disabled={false}
-            theme={theme}
-            hoverBackground={'#20292d'}
-            width={'100%'}
-            fontSize={'2rem'}
+            hoverBackground="#20292d"
+            width="100%"
+            fontSize="2rem"
             style={{ padding: '4rem 5rem' }}
             onClick={async () => {
               await settleFunds({

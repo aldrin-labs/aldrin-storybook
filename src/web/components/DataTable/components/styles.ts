@@ -1,4 +1,4 @@
-import { COLORS, FONTS, BORDER_RADIUS } from '@variables/variables'
+import { FONTS, BORDER_RADIUS } from '@variables/variables'
 import styled from 'styled-components'
 
 export const TooltipText = styled.div`
@@ -8,13 +8,12 @@ export const TooltipText = styled.div`
   left: -125px;
   text-align: left;
   display: none;
-  background: ${COLORS.blockBackground};
-  border: 1px solid ${COLORS.border};
+  background: ${(props) => props.theme.colors.gray11};
   font-family: ${FONTS.main};
   font-size: 1em;
   letter-spacing: -0.523077px;
   border-radius: ${BORDER_RADIUS.md};
-  color: ${COLORS.primaryWhite};
+  color: ${(props) => props.theme.colors.gray0};
   padding: 5px;
   line-height: 1.4;
 `

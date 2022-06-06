@@ -1,11 +1,11 @@
+import { Fade } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
-import { Fade } from '@material-ui/core'
 
 export default ({ show = true, text, containerHeight = '', theme }) => (
   <Container containerHeight={containerHeight}>
     <Fade timeout={1000} in={show}>
-      <Typography theme={theme}>{text}</Typography>
+      <Typography>{text}</Typography>
     </Fade>
   </Container>
 )
@@ -28,11 +28,6 @@ const Container = styled.tr`
 `
 
 const Typography = styled.td`
-  color: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.white &&
-      props.theme.palette.white.primary) ||
-    '#F8FAFF'};
+  color: ${(props) => (props.theme && props.theme.colors.gray1) || '#F8FAFF'};
   font-size: 3rem;
 `
