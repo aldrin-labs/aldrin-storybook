@@ -1,7 +1,8 @@
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES, COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
-import React, { useCallback, useEffect, useState } from 'react'
+import { isEqual } from 'lodash-es'
+import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
@@ -115,11 +116,22 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       connection,
     })
 
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(
-    getTicketsWithUiValues({
-      tickets: userFarmingTickets,
-      farmingTokenMintDecimals: currentFarmingState.farmingTokenMintDecimals,
-    })
+  const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
+
+  const [buyBackAmountOnAccount] = useAccountBalance({
+    publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
+  })
+
+  const totalStaked = useMemo(
+    () =>
+      getStakedTokensFromOpenFarmingTickets(
+        getTicketsWithUiValues({
+          tickets: userFarmingTickets,
+          farmingTokenMintDecimals:
+            currentFarmingState.farmingTokenMintDecimals,
+        })
+      ),
+    [userFarmingTickets, currentFarmingState.farmingTokenMintDecimals]
   )
 
   const stakingPoolWithClosedFarmings = {
@@ -127,9 +139,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     farming: stakingPool.farming.filter((state) => !isOpenFarmingState(state)),
   }
 
-  const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
-
-  const refreshAll = async () => {
+  const refreshAll = useCallback(async () => {
     await Promise.all([
       refreshTotalStaked(),
       refreshUserFarmingTickets(),
@@ -137,53 +147,92 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       refreshAllTokenData(),
       reloadCalcAccounts(),
     ])
-  }
-
-  const [buyBackAmountOnAccount] = useAccountBalance({
-    publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
-  })
+  }, [
+    refreshTotalStaked,
+    refreshUserFarmingTickets,
+    refreshAllStakingSnapshotQueues,
+    refreshAllTokenData,
+    reloadCalcAccounts,
+  ])
 
   const buyBackAmountWithDecimals =
     buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
 
-  const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
-    farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
-    buyBackAmount: buyBackAmountWithDecimals,
-    snapshotQueues: allStakingSnapshotQueues,
-  })
+  const snapshotQueueWithAMMFees = useMemo(
+    () =>
+      getSnapshotQueueWithAMMFees({
+        farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
+        buyBackAmount: buyBackAmountWithDecimals,
+        snapshotQueues: allStakingSnapshotQueues,
+      }),
+    [
+      currentFarmingState.farmingSnapshots,
+      buyBackAmountWithDecimals,
+      allStakingSnapshotQueues,
+    ]
+  )
 
-  const estimateRewardsTickets = addFarmingRewardsToTickets({
-    farmingTickets: userFarmingTickets,
-    pools: [stakingPool],
-    snapshotQueues: snapshotQueueWithAMMFees,
-  })
+  const estimateRewardsTickets = useMemo(
+    () =>
+      addFarmingRewardsToTickets({
+        farmingTickets: userFarmingTickets,
+        pools: [stakingPool],
+        snapshotQueues: snapshotQueueWithAMMFees,
+      }),
+    [userFarmingTickets, stakingPool, snapshotQueueWithAMMFees]
+  )
 
-  const estimatedRewards = getAvailableToClaimFarmingTokens(
-    estimateRewardsTickets,
-    calcAccounts,
-    currentFarmingState.farmingTokenMintDecimals
+  const estimatedRewards = useMemo(
+    () =>
+      getAvailableToClaimFarmingTokens(
+        estimateRewardsTickets,
+        calcAccounts,
+        currentFarmingState.farmingTokenMintDecimals
+      ),
+    [
+      estimateRewardsTickets,
+      calcAccounts,
+      currentFarmingState.farmingTokenMintDecimals,
+    ]
   )
 
   // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
   // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
 
   // Available to claim rewards
-  const availableToClaimTickets = addFarmingRewardsToTickets({
-    farmingTickets: userFarmingTickets,
-    pools: [stakingPoolWithClosedFarmings],
-    snapshotQueues: allStakingSnapshotQueues,
-  })
+  const availableToClaimTickets = useMemo(
+    () =>
+      addFarmingRewardsToTickets({
+        farmingTickets: userFarmingTickets,
+        pools: [stakingPoolWithClosedFarmings],
+        snapshotQueues: allStakingSnapshotQueues,
+      }),
+    [
+      userFarmingTickets,
+      stakingPoolWithClosedFarmings,
+      allStakingSnapshotQueues,
+    ]
+  )
 
   // Available to claim on tickets & calc accounts
-  const availableToClaim = getAvailableToClaimFarmingTokens(
-    availableToClaimTickets,
-    calcAccounts,
-    currentFarmingState.farmingTokenMintDecimals
+  const availableToClaim = useMemo(
+    () =>
+      getAvailableToClaimFarmingTokens(
+        availableToClaimTickets,
+        calcAccounts,
+        currentFarmingState.farmingTokenMintDecimals
+      ),
+    [
+      availableToClaimTickets,
+      calcAccounts,
+      currentFarmingState.farmingTokenMintDecimals,
+    ]
   )
 
   // Available to claim on tickets only
-  const availableToClaimOnTickets = getAvailableToClaimFarmingTokens(
-    availableToClaimTickets
+  const availableToClaimOnTickets = useMemo(
+    () => getAvailableToClaimFarmingTokens(availableToClaimTickets),
+    [availableToClaimTickets]
   )
 
   const snapshotsProcessing = availableToClaimOnTickets !== 0
@@ -642,27 +691,41 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   )
 }
 
-const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
-  const {
-    stakingPool,
-    currentFarmingState,
-    buyBackAmount,
-    getDexTokensPricesQuery,
-    treasuryDailyRewards,
-  } = props
+const UserStakingInfo: React.FC<StakingInfoProps> = React.memo(
+  (props) => {
+    const {
+      stakingPool,
+      currentFarmingState,
+      buyBackAmount,
+      getDexTokensPricesQuery,
+      treasuryDailyRewards,
+    } = props
 
-  return (
-    <StretchedBlock direction="column">
-      <UserStakingInfoContent
-        stakingPool={stakingPool}
-        currentFarmingState={currentFarmingState}
-        buyBackAmount={buyBackAmount}
-        getDexTokensPricesQuery={getDexTokensPricesQuery}
-        treasuryDailyRewards={treasuryDailyRewards}
-      />
-    </StretchedBlock>
-  )
-}
+    return (
+      <StretchedBlock direction="column">
+        <UserStakingInfoContent
+          stakingPool={stakingPool}
+          currentFarmingState={currentFarmingState}
+          buyBackAmount={buyBackAmount}
+          getDexTokensPricesQuery={getDexTokensPricesQuery}
+          treasuryDailyRewards={treasuryDailyRewards}
+        />
+      </StretchedBlock>
+    )
+  },
+  (prevProps, nextProps) => {
+    return (
+      prevProps.buyBackAmount === nextProps.buyBackAmount &&
+      prevProps.treasuryDailyRewards === nextProps.treasuryDailyRewards &&
+      isEqual(prevProps.stakingPool, nextProps.stakingPool) &&
+      isEqual(prevProps.currentFarmingState, nextProps.currentFarmingState) &&
+      isEqual(
+        prevProps.getDexTokensPricesQuery.getDexTokensPrices,
+        nextProps.getDexTokensPricesQuery.getDexTokensPrices
+      )
+    )
+  }
+)
 
 export default compose<InnerProps, OuterProps>(
   queryRendererHoc({
