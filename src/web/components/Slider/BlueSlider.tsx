@@ -1,6 +1,7 @@
-import React, { CSSProperties } from 'react'
-import SmallSlider from '@sb/components/Slider/SmallSlider'
 import { Theme } from '@material-ui/core'
+import React, { CSSProperties } from 'react'
+
+import SmallSlider from '@sb/components/Slider/SmallSlider'
 
 const BlueSlider = ({
   theme,
@@ -12,7 +13,7 @@ const BlueSlider = ({
   showMarks = false,
   sliderContainerStyles,
   onChange,
-  onAfterChange
+  onAfterChange,
 }: {
   theme: Theme
   max?: number
@@ -36,12 +37,12 @@ const BlueSlider = ({
       marks={
         showMarks
           ? {
-            0: {},
-            25: {},
-            50: {},
-            75: {},
-            100: {},
-          }
+              0: {},
+              25: {},
+              50: {},
+              75: {},
+              100: {},
+            }
           : {}
       }
       onChange={onChange}
@@ -51,26 +52,24 @@ const BlueSlider = ({
         width: '1.2rem',
         height: '1.2rem',
         border: 'none',
-        backgroundColor: theme.palette.blue.serum,
+        backgroundColor: theme.colors.blue5,
         marginTop: '-.28rem',
         boxShadow: '0px .4rem .6rem rgba(8, 22, 58, 0.3)',
         transform: 'translate(-50%, -15%) !important',
       }}
       dotStyles={{
         border: 'none',
-        backgroundColor: theme.palette.slider.dots,
+        backgroundColor: theme.colors.gray6,
       }}
       activeDotStyles={{
-        backgroundColor: theme.palette.blue.serum,
+        backgroundColor: theme.colors.blue5,
       }}
       markTextSlyles={{
-        color: theme.palette.grey.light,
+        color: theme.colors.gray1,
         fontSize: '1rem',
       }}
       railStyle={{
-        backgroundColor: showMarks
-          ? theme.palette.slider.rail
-          : theme.palette.slider.dots,
+        backgroundColor: theme.colors.gray6,
       }}
       trackBeforeBackground={theme.palette.blue.serum}
     />

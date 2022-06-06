@@ -223,7 +223,6 @@ class SimpleTabs extends React.Component<any, any> {
       baseCurrencyAccount,
       quoteCurrencyAccount,
       isButtonLoaderShowing,
-      newTheme,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -294,7 +293,6 @@ class SimpleTabs extends React.Component<any, any> {
                     title="A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading."
                   >
                     <FuturesSettings
-                      theme={theme}
                       style={{
                         padding: '0 2rem 0 0',
                       }}
@@ -454,7 +452,6 @@ class SimpleTabs extends React.Component<any, any> {
             <div style={{ display: 'flex', width: '100%', height: '100%' }}>
               {TVAlertsBotEnabled ? (
                 <TradingViewBotTerminalMemo
-                  theme={theme}
                   side={side}
                   pair={pair}
                   token={token}

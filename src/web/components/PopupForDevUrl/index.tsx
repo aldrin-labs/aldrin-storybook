@@ -1,8 +1,5 @@
-import { Theme } from '@material-ui/core'
 import Paper from '@material-ui/core/Paper'
-import { withTheme } from '@material-ui/styles'
 import React from 'react'
-import { compose } from 'recompose'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -19,20 +16,11 @@ const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   height: auto;
   padding: 2rem 4rem;
   width: 55rem;
-  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
   background: ${(props) => props.theme.colors.gray6};
   border-radius: 0.8rem;
 `
 
-const DevUrlPopup = ({
-  theme,
-  open,
-  close,
-}: {
-  theme: Theme
-  open: boolean
-  close: () => void
-}) => {
+const DevUrlPopup = ({ open, close }: { open: boolean; close: () => void }) => {
   document.addEventListener('keydown', function (event) {
     if (event.code === 'KeyB' && (event.ctrlKey || event.metaKey)) {
       close()
@@ -41,7 +29,6 @@ const DevUrlPopup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={() => {}}
@@ -100,4 +87,4 @@ const DevUrlPopup = ({
   )
 }
 
-export default compose(withTheme())(DevUrlPopup)
+export default DevUrlPopup

@@ -1,5 +1,3 @@
-import { Theme } from '@material-ui/core'
-import withTheme from '@material-ui/core/styles/withTheme'
 import React, { useEffect, useState } from 'react'
 import { TabPanel } from 'react-tabs'
 import { compose } from 'recompose'
@@ -45,10 +43,8 @@ import GuideImg from './img/guideImg.svg'
 import SdkImg from './img/sdkImg.svg'
 
 const TwammComponent = ({
-  theme,
   getDexTokensPricesQuery,
 }: {
-  theme: Theme
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const { wallet } = useWallet()
@@ -186,7 +182,6 @@ const TwammComponent = ({
               </TabStyled>
             </TabListStyled>
             {/* <BtnCustom */}
-            {/*  theme={theme} */}
             {/*  onClick={() => {}} */}
             {/*  needMinWidth={false} */}
             {/*  btnWidth="21.3rem" */}
@@ -232,7 +227,6 @@ const TwammComponent = ({
 }
 
 export default compose(
-  withTheme(),
   withRegionCheck,
   queryRendererHoc({
     query: getDexTokensPrices,

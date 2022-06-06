@@ -1,7 +1,6 @@
-import { NavLink } from 'react-router-dom'
-import styled, { css } from 'styled-components'
 import { Paper, MenuItem, Button } from '@material-ui/core'
-
+import { NavLink } from 'react-router-dom'
+import styled from 'styled-components'
 
 export const StyledLink = styled(NavLink)`
   color: ${(props) => props.theme.palette.grey.text};
@@ -70,8 +69,8 @@ export const StyledPaper = styled(Paper)`
     width: calc(14rem);
     height: auto;
     box-shadow: 0px 0.4rem 0.8rem rgba(10, 19, 43, 0.1);
-    border: ${(props) => props.theme.palette.border.main};
-    background: ${(props) => props.theme.palette.white.background};
+    border: ${(props) => props.theme.colors.gray5};
+    background: ${(props) => props.theme.colors.gray6};
     border-radius: 0rem;
     /* border-top-left-radius: 0;
     border-top-right-radius: 0; */
@@ -84,8 +83,8 @@ export const StyledMenuItem = styled(MenuItem)`
   /* padding: 0.3rem 0 0.3rem 0.4rem; */
   padding: 0;
   height: auto;
-  color: ${(props) => props.theme.palette.grey.light};
-  background: ${(props) => props.theme.palette.white.background};
+  color: ${(props) => props.theme.colors.gray1};
+  background: ${(props) => props.theme.colors.gray5};
 
   svg {
     font-size: 14px;

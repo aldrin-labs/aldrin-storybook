@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
 import utc from 'dayjs/plugin/utc'
@@ -18,12 +17,10 @@ dayjs.extend(utc)
 dayjs.extend(duration)
 
 export const TokenDelistPopup = ({
-  theme,
   onClose,
   open,
   tokenToDelist,
 }: {
-  theme: Theme
   onClose: () => void
   open: boolean
   tokenToDelist: {
@@ -44,7 +41,6 @@ export const TokenDelistPopup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={isUserConfident ? onClose : () => {}}
@@ -60,11 +56,11 @@ export const TokenDelistPopup = ({
       </RowContainer>
       <RowContainer direction="column" align="flex-start" margin="2rem 0">
         {isExpired ? (
-          <WhiteText theme={theme}>
+          <WhiteText>
             The {name} token will be delisted during next few hours.
           </WhiteText>
         ) : (
-          <WhiteText theme={theme}>
+          <WhiteText>
             You have {hours.toFixed(0)} hours to close the open orders. The{' '}
             {name} token will be delisted on{' '}
             {`${delistTimeToFormat.format(

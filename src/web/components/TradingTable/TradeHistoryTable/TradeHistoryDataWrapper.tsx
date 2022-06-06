@@ -1,11 +1,11 @@
 import React from 'react'
+
 import { IProps } from './TradeHistoryDataWrapper.types'
 import TradeHistoryTable from './TradeHistoryTable'
 
 const TradeHistoryDataWrapper = ({
   tab,
   show,
-  theme,
   handlePairChange,
   marketType,
 }: IProps) => {
@@ -17,7 +17,6 @@ const TradeHistoryDataWrapper = ({
     <TradeHistoryTable
       {...{
         tab,
-        theme,
         marketType,
         handlePairChange,
       }}

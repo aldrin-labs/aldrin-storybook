@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { DefaultTheme } from 'styled-components'
+import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -30,14 +30,12 @@ const StyledText = styled(({ ...props }) => <Text {...props} />)`
 `
 
 export const SelectSeveralAddressesPopup = ({
-  theme,
   open,
   tokens,
   close,
   selectTokenMintAddress,
   selectTokenAddressFromSeveral,
 }: {
-  theme: DefaultTheme
   open: boolean
   tokens: TokenInfo[]
   close: () => void

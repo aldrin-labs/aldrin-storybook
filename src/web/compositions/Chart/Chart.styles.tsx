@@ -400,7 +400,7 @@ export const ChartsContainer = styled(
     height: ${(props) => props.terminalViewMode === 'mobileChart' && '65%'};
   }
 
-  background-color: ${(props) => props.theme.palette.white.background};
+  background-color: ${(props) => props.theme.colors.gray5};
 `
 
 export const TradingTabelContainer = styled(
@@ -472,7 +472,7 @@ export const Container = styled(Grid)`
   margin: 0;
   padding: 0;
   font-family: Avenir Next Medium;
-  background-color: ${(props) => props.theme.palette.dark.background};
+  background-color: ${(props) => props.theme.colors.gray9};
 
   height: calc(100% - 6rem);
 

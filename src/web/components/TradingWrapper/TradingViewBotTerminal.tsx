@@ -1,13 +1,8 @@
-
-
-import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-
-import HeightIcon from '@material-ui/icons/Height'
 import copy from 'clipboard-copy'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
@@ -109,14 +104,8 @@ export const TradingViewBotTerminal = ({
   }
 
   return (
-    <TerminalBlock
-      style={{ display: 'flex' }}
-      theme={theme}
-      width="100%"
-      data-tut="step1"
-    >
+    <TerminalBlock style={{ display: 'flex' }} width="100%" data-tut="step1">
       <TradingViewConfirmPopup
-        theme={theme}
         open={showPopup}
         handleClose={() => changeShowPopup(false)}
         updateWrapperState={updateWrapperState}
@@ -124,7 +113,6 @@ export const TradingViewBotTerminal = ({
       <div style={{ margin: 'auto 0', width: '100%' }}>
         <InputRowContainer padding="1.2rem 0 .6rem 0">
           <CustomSwitcher
-            theme={theme}
             firstHalfText="buy"
             secondHalfText="sell"
             buttonHeight="3rem"
@@ -160,7 +148,6 @@ export const TradingViewBotTerminal = ({
             />
           </SwitcherContainer>
           <Input
-            theme={theme}
             needTitle
             title="plot_"
             type="number"
@@ -180,7 +167,6 @@ export const TradingViewBotTerminal = ({
         </InputRowContainer>
         <InputRowContainer padding=".6rem 0 .6rem 0">
           <CustomSwitcher
-            theme={theme}
             firstHalfText="limit"
             secondHalfText="market"
             buttonHeight="3rem"
@@ -209,7 +195,6 @@ export const TradingViewBotTerminal = ({
           />
           <div style={{ width: 'calc(35% - 1rem)', marginLeft: '1rem' }}>
             <Input
-              theme={theme}
               padding="0"
               width="calc(100%)"
               textAlign="right"
@@ -236,7 +221,6 @@ export const TradingViewBotTerminal = ({
           <Input
             needTitle
             title="plot_"
-            theme={theme}
             type="number"
             textAlign="left"
             width="calc(20% - .8rem)"

@@ -1,4 +1,3 @@
-import withTheme from '@material-ui/core/styles/withTheme'
 import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -50,7 +49,6 @@ import {
 
 import ArrowRightIcon from '@icons/arrowRight.svg'
 
-import { AmountInput } from '../../components/AmountInput'
 import { INPUT_FORMATTERS } from '../../components/Input'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
@@ -570,7 +568,6 @@ const SwapPage = ({
                     <Button
                       $width="xl"
                       $padding="lg"
-                      theme={theme}
                       disabled={isFromRestrictedRegion}
                       style={{ height: '4em' }}
                       onClick={() => {
@@ -596,7 +593,6 @@ const SwapPage = ({
                 </TooltipRegionBlocker>
               ) : (
                 <SwapButton
-                  theme={theme}
                   disabled={isButtonDisabled}
                   onClick={async () => {
                     if (!jupiter || !swapRoute) return
@@ -863,7 +859,6 @@ const SwapPage = ({
 }
 
 export default compose(
-  withTheme(),
   withPublicKey,
   withRegionCheck,
   queryRendererHoc({

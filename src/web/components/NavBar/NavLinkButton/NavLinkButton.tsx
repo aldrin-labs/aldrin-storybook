@@ -1,6 +1,5 @@
 import React from 'react'
-import { withTheme } from '@material-ui/styles'
-import { Theme } from '@material-ui/core/styles'
+import { useTheme } from 'styled-components'
 
 import { SButton } from './NavLinkButton.styles'
 
@@ -8,8 +7,7 @@ const NavLinkButton = ({
   component,
   children,
   pathname,
-  theme,
-  theme: { palette },
+
   page = '',
   marketName,
   style,
@@ -18,28 +16,26 @@ const NavLinkButton = ({
   component: any
   children: React.ReactChild
   pathname: string
-  theme: Theme
+
   page: string
   marketName: string
   style: any
   onClick: any
 }) => {
   const isActivePage = page !== '' && pathname.match(page)
-
+  const theme = useTheme()
   return (
     <SButton
-      theme={theme}
       pathname={pathname}
       marketName={marketName}
       component={component}
       isActivePage={isActivePage}
-      type={palette.type}
-      white={palette.common.white}
-      black={palette.common.black}
-      grey={palette.grey.text}
-      blue={palette.blue.light}
-      borderColor={palette.grey.border}
-      btnWidth={'14rem'}
+      white={theme.colors.gray0}
+      black={theme.colors.black}
+      grey={theme.colors.grey.gray1}
+      blue={theme.colors.blue5}
+      borderColor={theme.colors.grey5}
+      btnWidth="14rem"
       size="medium"
       color="default"
       variant="text"
@@ -51,4 +47,4 @@ const NavLinkButton = ({
   )
 }
 
-export default withTheme()(NavLinkButton)
+export default NavLinkButton

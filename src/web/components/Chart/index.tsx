@@ -1,5 +1,4 @@
 import { Card } from '@material-ui/core'
-import { withTheme } from '@material-ui/styles'
 import useMobileSize from '@webhooks/useMobileSize'
 import BN from 'bn.js'
 import React, { useEffect, useRef } from 'react'
@@ -200,4 +199,4 @@ export const SingleChartWithButtons = (props: SingleChartWithButtonsProps) => {
   )
 }
 
-export default withTheme()(SingleChartWithButtons)
+export default SingleChartWithButtons

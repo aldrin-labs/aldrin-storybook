@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -25,7 +24,6 @@ import { SelectSeveralAddressesPopup } from '../../../Pools/components/Popups/Se
 import { UpdatedPaper, SelectorRow, StyledText } from './styles'
 
 export const SelectCoinPopup = ({
-  theme,
   open,
   mints,
   allTokensData,
@@ -39,7 +37,6 @@ export const SelectCoinPopup = ({
   setQuoteTokenAddressFromSeveral,
   pairSettings,
 }: {
-  theme: Theme
   open: boolean
   mints: string[]
   isBaseTokenSelecting: boolean
@@ -92,7 +89,6 @@ export const SelectCoinPopup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}
@@ -155,7 +151,6 @@ export const SelectCoinPopup = ({
           </RowContainer>
         )}
         <SelectSeveralAddressesPopup
-          theme={theme}
           tokens={allTokensData.filter((el) => el.mint === selectedMint)}
           open={isSelectorForSeveralAddressesOpen}
           close={() => setIsSelectorForSeveralAddressesOpen(false)}

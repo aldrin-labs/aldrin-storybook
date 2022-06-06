@@ -1,5 +1,3 @@
-import { Theme } from '@material-ui/core'
-import withTheme from '@material-ui/core/styles/withTheme'
 import { PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
 import React, { useEffect, useState } from 'react'
@@ -50,7 +48,6 @@ import { SwapPageContainer, OrderInputs, OrderStatsWrapper } from './styles'
 const MIN_RIN = 10_000_000_000
 
 const PlaceOrder = ({
-  theme,
   publicKey,
   getDexTokensPricesQuery,
   pairSettings,
@@ -60,7 +57,6 @@ const PlaceOrder = ({
   setTabIndex,
   setIsConnectWalletPopupOpen,
 }: {
-  theme: Theme
   publicKey: string
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   pairSettings: PairSettings[]
@@ -359,7 +355,6 @@ const PlaceOrder = ({
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder="0.00"
-                  theme={theme}
                   directionFrom
                   value={+baseAmount || +quoteAmount === 0 ? baseAmount : ''}
                   disabled={
@@ -399,7 +394,6 @@ const PlaceOrder = ({
                   wallet={wallet}
                   publicKey={publicKey}
                   placeholder="0.00"
-                  theme={theme}
                   disabled={
                     !baseTokenMintAddress ||
                     !quoteTokenMintAddress ||
@@ -420,7 +414,6 @@ const PlaceOrder = ({
                 <InputWithType
                   type="number"
                   placeholder="Hours"
-                  theme={theme}
                   value={orderLength}
                   metric="Hours"
                   label="Order duration"
@@ -481,7 +474,6 @@ const PlaceOrder = ({
 
       <SelectCoinPopup
         pairSettings={pairSettings}
-        theme={theme}
         mints={mints}
         baseTokenMintAddress={baseTokenMintAddress}
         quoteTokenMintAddress={quoteTokenMintAddress}
@@ -519,7 +511,6 @@ const PlaceOrder = ({
       />
 
       <TokenAddressesPopup
-        theme={theme}
         quoteTokenMintAddress={quoteTokenMintAddress}
         baseTokenMintAddress={baseTokenMintAddress}
         allTokensData={allTokensData}
@@ -531,7 +522,6 @@ const PlaceOrder = ({
 }
 
 export default compose(
-  withTheme(),
   withPublicKey,
   withRegionCheck,
   queryRendererHoc({

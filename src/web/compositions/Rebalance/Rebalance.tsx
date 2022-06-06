@@ -1,4 +1,3 @@
-import { withTheme } from '@material-ui/core/styles'
 import { Connection } from '@solana/web3.js'
 import React, { useEffect, useState, useCallback } from 'react'
 import debounceRender from 'react-debounce-render'
@@ -334,4 +333,4 @@ const RebalanceComposition = ({ publicKey }: { publicKey: string }) => {
   )
 }
 
-export default compose(withTheme(), withPublicKey)(RebalanceComposition)
+export default compose(withPublicKey)(RebalanceComposition)

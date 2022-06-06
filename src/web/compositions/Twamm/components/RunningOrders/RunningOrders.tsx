@@ -1,11 +1,8 @@
-import { Theme } from '@material-ui/core'
-import withTheme from '@material-ui/core/styles/withTheme'
 import { COLORS } from '@variables/variables'
 import React from 'react'
-import { compose } from 'recompose'
 
 import { TableWithSort } from '@sb/components'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Button } from '@sb/components/Button'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { useConnection } from '@sb/dexUtils/connection'
 import { PairSettings } from '@sb/dexUtils/twamm/types'
@@ -17,7 +14,6 @@ import {
 } from './RunningOrders.utils'
 
 const RunningOrdersTable = ({
-  theme,
   pairSettings,
   stylesForTable,
   tableBodyStyles,
@@ -25,7 +21,6 @@ const RunningOrdersTable = ({
   getDexTokensPricesQuery,
   setIsConnectWalletPopupOpen,
 }: {
-  theme: Theme
   pairSettings: PairSettings[]
   stylesForTable?: {}
   tableBodyStyles?: {}
@@ -100,25 +95,14 @@ const RunningOrdersTable = ({
           wallet.connected ? (
             'You have no running orders'
           ) : (
-            <BtnCustom
-              theme={theme}
+            <Button
               onClick={() => setIsConnectWalletPopupOpen(true)}
-              needMinWidth={false}
-              btnWidth="100%"
-              height="5.5rem"
-              fontSize="1.4rem"
-              padding="2rem 8rem"
-              borderRadius="1.1rem"
-              borderColor={theme.palette.blue.serum}
-              btnColor="#fff"
-              backgroundColor={theme.palette.blue.serum}
-              textTransform="none"
-              margin="2rem 0 0 0"
-              transition="all .4s ease-out"
-              style={{ whiteSpace: 'nowrap' }}
+              $variant="primary"
+              $padding="lg"
+              $fontSize="md"
             >
               Connect wallet
-            </BtnCustom>
+            </Button>
           )
         }
         data={{ body: runningOrdersProcessedData }}
@@ -128,4 +112,4 @@ const RunningOrdersTable = ({
   )
 }
 
-export default compose(withTheme())(RunningOrdersTable)
+export default RunningOrdersTable

@@ -45,15 +45,15 @@ export const VioletButton = styled((props) => (
     textTransform="capitalize"
     backgroundColor={
       props.disabled
-        ? props.theme.palette.grey.dark
-        : props.background || props.theme.palette.blue.serum
+        ? props.theme.colors.gray5
+        : props.background || props.theme.colors.blue5
     }
     borderColor={
       props.disabled
-        ? props.theme.palette.grey.dark
-        : props.background || props.theme.palette.blue.serum
+        ? props.theme.colors.gray6
+        : props.background || props.theme.colors.blue5
     }
-    btnColor={props.color || props.theme.palette.white.main}
+    btnColor={props.color || props.theme.colors.gray0}
     borderRadius="1rem"
     border={props.border || 'none'}
     {...props}

@@ -1,7 +1,6 @@
-import { Grid, Theme } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { isEqual } from 'lodash-es'
 import React, { useEffect, useState } from 'react'
-import { useTheme } from 'styled-components'
 
 import SingleChartWithButtons from '@sb/components/Chart'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
@@ -31,18 +30,15 @@ import {
 const TerminalContainer = ({
   isDefaultTerminalViewMode,
   children,
-  theme,
   terminalViewMode,
 }: {
   isDefaultTerminalViewMode: boolean
   children: React.ReactChild
-  theme: Theme
-  terminalViewMode: sting
+  terminalViewMode: string
 }) => (
   <TablesBlockWrapper
     item
     container
-    theme={theme}
     xs={isDefaultTerminalViewMode ? 5 : 12}
     isDefaultTerminalViewMode={isDefaultTerminalViewMode}
     terminalViewMode={terminalViewMode}
@@ -59,7 +55,6 @@ export const DefaultViewComponent = (
     currencyPair,
     marketType,
     theme,
-    themeMode,
     activeExchange,
     changeTable,
     minPriceDigits,
@@ -95,8 +90,6 @@ export const DefaultViewComponent = (
     !isCCAITradingEnabled() && currencyPair === 'RIN_USDC'
   )
 
-  const newTheme = useTheme()
-
   const [base, quote] = currencyPair.split('_')
 
   const baseQuoteArr = [base, quote]
@@ -109,7 +102,7 @@ export const DefaultViewComponent = (
   }, [currencyPair])
 
   return (
-    <Container container spacing={8} theme={theme}>
+    <Container container spacing={8}>
       <Grid
         item
         container
@@ -129,7 +122,6 @@ export const DefaultViewComponent = (
         >
           <TopChartsContainer
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-            theme={theme}
             terminalViewMode={terminalViewMode}
           >
             <ChartsContainer
@@ -137,7 +129,6 @@ export const DefaultViewComponent = (
               terminalViewMode={terminalViewMode}
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
-              theme={theme}
               hideTradeHistory={hideTradeHistory}
             >
               <SingleChartWithButtons
@@ -145,7 +136,7 @@ export const DefaultViewComponent = (
                 base={base}
                 quote={quote}
                 marketType={marketType}
-                themeMode={themeMode}
+                theme={theme}
               />
             </ChartsContainer>
             <TradingTerminalContainer
@@ -228,7 +219,7 @@ export const DefaultViewComponent = (
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <TradingTable
-              newTheme={newTheme}
+              theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               maxLeverage={maxLeverage}
               selectedKey={selectedKey}
@@ -248,7 +239,6 @@ export const DefaultViewComponent = (
           <BalancesContainer
             item
             xs={1}
-            theme={theme}
             id="balances"
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
@@ -256,18 +246,15 @@ export const DefaultViewComponent = (
               pair={currencyPair.split('_')}
               selectedKey={selectedKey}
               marketType={marketType}
-              theme={theme}
               showFuturesTransfer={showFuturesTransfer}
               setShowTokenNotAdded={setShowTokenNotAdded}
             />
           </BalancesContainer>
           <TerminalContainer
-            theme={theme}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             terminalViewMode={terminalViewMode}
           >
             <TradingComponent
-              newTheme={newTheme}
               selectedKey={selectedKey}
               activeExchange={activeExchange}
               pair={baseQuoteArr}
@@ -345,14 +332,12 @@ export const DefaultView = React.memo(DefaultViewComponent, (prev, next) => {
     prev.isPairDataLoading === next.isPairDataLoading &&
     prev.chartPagePopup === next.chartPagePopup &&
     prev.maxLeverage === next.maxLeverage &&
-    prev.themeMode === next.themeMode &&
     prev.minPriceDigits === next.minPriceDigits &&
     prev.pricePrecision === next.pricePrecision &&
     prev.quantityPrecision === next.quantityPrecision &&
     prev.minSpotNotional === next.minSpotNotional &&
     prev.minFuturesStep === next.minFuturesStep &&
     prev.initialLeverage === next.initialLeverage &&
-    prev.theme.palette.type === next.theme.palette.type &&
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&

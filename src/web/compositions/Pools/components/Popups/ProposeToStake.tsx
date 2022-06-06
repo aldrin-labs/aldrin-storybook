@@ -1,4 +1,4 @@
-import { Paper, Theme, withTheme } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { COLORS } from '@variables/variables'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -43,12 +43,10 @@ export const Number = styled.span`
 `
 
 const ProposeToStakePopup = ({
-  theme,
   close,
   open,
   getStakingPoolInfoQuery,
 }: {
-  theme: Theme
   close: () => void
   open: boolean
   getStakingPoolInfoQuery: { getStakingPoolInfo: StakingPool }
@@ -80,7 +78,6 @@ const ProposeToStakePopup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -92,7 +89,7 @@ const ProposeToStakePopup = ({
         <Title>Would you like to stake your RIN rewards?</Title>
       </RowContainer>
       <RowContainer direction="column" style={{ marginBottom: '2rem' }}>
-        <WhiteText theme={theme}>
+        <WhiteText>
           Total trading fees on Aldrin’s AMM are 0.3%. Liquidity Providers will
           receive 0.20%, 0.05% will go to product development, while the
           remaining 0.05% will be used to buy back and distribute RIN to RIN
@@ -100,7 +97,7 @@ const ProposeToStakePopup = ({
         </WhiteText>
       </RowContainer>
       <RowContainer justify="space-between" style={{ margin: '3rem 0' }}>
-        <WhiteText theme={theme}>Current APR:</WhiteText>
+        <WhiteText>Current APR:</WhiteText>
         <Number>{apr > 1 ? stripByAmount(apr, 2) : '< 1'}%</Number>
       </RowContainer>
       <RowContainer justify="space-between" style={{ margin: '2rem 0' }}>
@@ -114,7 +111,6 @@ const ProposeToStakePopup = ({
             fontSize: '1.4rem',
             borderRadius: '1rem',
           }}
-          theme={theme}
           onClick={close}
         >
           No, Thanks
@@ -131,7 +127,6 @@ const ProposeToStakePopup = ({
 }
 
 export default compose(
-  withTheme(),
   queryRendererHoc({
     query: getStakingPoolInfo,
     name: 'getStakingPoolInfoQuery',

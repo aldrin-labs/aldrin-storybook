@@ -1,5 +1,4 @@
 import React, { CSSProperties } from 'react'
-import { Theme } from '@material-ui/core'
 
 import { SwitcherHalf } from './styles'
 
@@ -13,7 +12,6 @@ const CustomSwitcher = ({
   buttonHeight,
   containerStyles,
   needBorderRadius,
-  theme,
   needBorder,
 }: {
   firstHalfIsActive: boolean
@@ -25,19 +23,17 @@ const CustomSwitcher = ({
   buttonHeight: string
   containerStyles: CSSProperties
   needBorderRadius: boolean
-  theme: Theme
   needBorder: boolean
 }) => {
   return (
     <div style={{ display: 'inline-block', ...containerStyles }}>
       <SwitcherHalf
         isFirstHalf
-        theme={theme}
-        key={'firstHalf'}
+        key="firstHalf"
         isDisabled={!firstHalfIsActive}
         onClick={() => !firstHalfIsActive && changeHalf()}
         height={buttonHeight}
-        width={'50%'}
+        width="50%"
         needBorderRadius
         needBorder
         {...firstHalfStyleProperties}
@@ -45,12 +41,11 @@ const CustomSwitcher = ({
         {firstHalfText}
       </SwitcherHalf>
       <SwitcherHalf
-        theme={theme}
-        key={'secondHalf'}
+        key="secondHalf"
         isDisabled={firstHalfIsActive}
         onClick={() => firstHalfIsActive && changeHalf()}
         height={buttonHeight}
-        width={'50%'}
+        width="50%"
         needBorderRadius
         needBorder
         {...secondHalfStyleProperties}

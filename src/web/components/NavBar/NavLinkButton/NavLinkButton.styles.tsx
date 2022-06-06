@@ -1,5 +1,5 @@
-import React from 'react'
 import { Button } from '@material-ui/core'
+import React from 'react'
 import styled from 'styled-components'
 
 const StyledButton = styled(Button)`
@@ -22,7 +22,7 @@ export const SButton = styled(
   && {
     color: ${(props) => (props.isActivePage ? props.blue : props.grey)};
     background: ${(props) =>
-      props.isActivePage ? props.borderColor : props.theme.palette.grey.main};
+      props.isActivePage ? props.borderColor : props.theme.colors.gray5};
     font-family: Avenir Next Demi;
     letter-spacing: 0.05rem;
     font-size: 1.2rem;

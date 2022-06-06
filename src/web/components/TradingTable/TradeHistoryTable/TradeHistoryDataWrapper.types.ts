@@ -1,11 +1,8 @@
 import dayjs from 'dayjs'
 
-import { Theme } from '@material-ui/core'
-
 export interface IProps {
   tab: string
   show: boolean
-  theme: Theme,
   handlePairChange: (pair: string) => void
   marketType: number
 }

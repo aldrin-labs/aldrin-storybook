@@ -1,9 +1,9 @@
-import { withTheme } from '@material-ui/styles'
 import React, { useEffect, useState } from 'react'
 import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import Tour from 'reactour'
 import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import { ProposeToSettlePopup } from '@sb/components/ProposeToSettlePopup/ProposeToSettlePopup'
 import {
@@ -54,7 +54,6 @@ const arraysCustomMarketsMatch = (arr1, arr2) => {
 
 function ChartPageComponent(props: any) {
   const {
-    theme,
     getTooltipSettingsQuery: {
       getTooltipSettings = { chartPage: false, chartPagePopup: false },
     } = {
@@ -94,6 +93,7 @@ function ChartPageComponent(props: any) {
   const [isWarningPopupOpen, openWarningPopup] = useState(false)
   const [isDelistPopupOpen, openDelistPopup] = useState(false)
   const [isWarningBannerOpen, openWarningBanner] = useState(false)
+  const theme = useTheme()
 
   const [isNotificationTourOpen, setNotificationTourOpen] = useState(
     localStorage.getItem('isNotificationDone') == 'null'
@@ -219,7 +219,6 @@ function ChartPageComponent(props: any) {
   pricePrecision = market?.tickSize && getDecimalCount(market.tickSize)
 
   const accentColor = '#09ACC7'
-
   return (
     <MainContainer fullscreen={false}>
       {/* {!isTourOpen && (
@@ -263,10 +262,10 @@ function ChartPageComponent(props: any) {
         updateTerminalViewMode={updateTerminalViewMode}
       />
       <DefaultView
+        theme={theme}
         id="_id"
         view="default"
         layout={layout}
-        theme={theme}
         publicKey={publicKey}
         authenticated={authenticated}
         marketType={marketType}
@@ -280,7 +279,6 @@ function ChartPageComponent(props: any) {
         isPairDataLoading={
           isPairDataLoading || !pricePrecision || !quantityPrecision
         }
-        themeMode={theme.palette.type}
         selectedKey={{ hedgeMode: false }}
         activeExchange="serum"
         terminalViewMode={terminalViewMode}
@@ -310,21 +308,18 @@ function ChartPageComponent(props: any) {
       <WarningPopup
         open={isWarningPopupOpen}
         onClose={() => openWarningPopup(false)}
-        theme={theme}
       />
 
       <TokenDelistPopup
         open={isDelistPopupOpen}
         onClose={() => openDelistPopup(false)}
-        theme={theme}
         tokenToDelist={tokenToDelist}
       />
 
-      {/* <TransactionsConfirmationWarningPopup theme={theme} /> */}
-      <ProposeToSettlePopup theme={theme} />
+      {/* <TransactionsConfirmationWarningPopup  /> */}
+      <ProposeToSettlePopup />
 
       {/* <MarketDeprecatedPopup
-        theme={theme}
         newMarketID={allMarketsMap.get('LIQ_USDC')?.address.toString()}
         oldMarketID={allMarketsMap
           .get('LIQ_USDC_deprecated')
@@ -411,7 +406,6 @@ export default compose(
   withMarketUtilsHOC,
   withErrorFallback,
   withAuthStatus,
-  withTheme(),
   withPublicKey,
   withRouter,
   withRegionCheck,

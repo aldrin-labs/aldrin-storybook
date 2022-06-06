@@ -1,4 +1,3 @@
-import { Theme, withTheme } from '@material-ui/core'
 import { UCOLORS } from '@variables/variables'
 import React from 'react'
 
@@ -10,18 +9,9 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Button } from '../../Tables/index.styles'
 import { StyledPaper } from '../index.styles'
 
-const Popup = ({
-  theme,
-  open,
-  close,
-}: {
-  theme: Theme
-  open: boolean
-  close: () => void
-}) => {
+const Popup = ({ open, close }: { open: boolean; close: () => void }) => {
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -38,7 +28,6 @@ const Popup = ({
           isUserConfident
           href={AMMAudit}
           target="_blank"
-          theme={theme}
           color={UCOLORS.green4}
         >
           AMM Audit
@@ -51,7 +40,6 @@ const Popup = ({
           isUserConfident
           href={AMMV2_Audit}
           target="_blank"
-          theme={theme}
           color={UCOLORS.green4}
         >
           Stable Curve Audit
@@ -61,4 +49,4 @@ const Popup = ({
   )
 }
 
-export const AMMAuditPopup = withTheme()(Popup)
+export const AMMAuditPopup = Popup

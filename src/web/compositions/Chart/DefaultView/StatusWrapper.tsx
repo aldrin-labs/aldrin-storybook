@@ -1,9 +1,11 @@
-import { orderError } from '@core/utils/errorsConfig'
-import { isEqual } from 'lodash-es'
 import { useSnackbar } from 'notistack'
 import React from 'react'
-import { DefaultView } from './DefaultView'
 
+import { isEqual } from '@sb/dexUtils/utils'
+
+import { orderError } from '@core/utils/errorsConfig'
+
+import { DefaultView } from './DefaultView'
 
 const OrderStatusWrapper = (props) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -96,8 +98,6 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
   //     prev.isPairDataLoading === next.isPairDataLoading &&
   //     prev.chartPagePopup === next.chartPagePopup &&
   //     prev.maxLeverage === next.maxLeverage &&
-  //     prev.themeMode === next.themeMode &&
-  //     prev.theme.palette.type === next.theme.palette.type &&
   //     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
   //     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
   //     prev.layout.hideTradeHistory === next.layout.hideTradeHistory
@@ -112,14 +112,12 @@ export default React.memo(OrderStatusWrapper, (prev, next) => {
     prev.isPairDataLoading === next.isPairDataLoading &&
     prev.chartPagePopup === next.chartPagePopup &&
     prev.maxLeverage === next.maxLeverage &&
-    prev.themeMode === next.themeMode &&
     prev.minPriceDigits === next.minPriceDigits &&
     prev.pricePrecision === next.pricePrecision &&
     prev.quantityPrecision === next.quantityPrecision &&
     prev.minSpotNotional === next.minSpotNotional &&
     prev.minFuturesStep === next.minFuturesStep &&
     prev.initialLeverage === next.initialLeverage &&
-    prev.theme.palette.type === next.theme.palette.type &&
     prev.layout.hideDepthChart === next.layout.hideDepthChart &&
     prev.layout.hideOrderbook === next.layout.hideOrderbook &&
     prev.layout.hideTradeHistory === next.layout.hideTradeHistory &&

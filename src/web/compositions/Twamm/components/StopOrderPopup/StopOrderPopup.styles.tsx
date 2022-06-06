@@ -1,6 +1,6 @@
-import styled from "styled-components";
-import {BtnCustom} from "@sb/components/BtnCustom/BtnCustom.styles";
-import React from "react";
+import styled from 'styled-components'
+
+import { Button } from '@sb/components/Button'
 
 export const MainButtonWrapper = styled.div`
   width: 48%;
@@ -13,19 +13,7 @@ export const FeeInfo = styled.div`
   align-items: center;
 `
 
-export const RedButton = styled((props) => (
-  <BtnCustom
-    btnWidth={props.width || 'calc(50% - .5rem)'}
-    fontSize={'1.4rem'}
-    height={'4.5rem'}
-    textTransform={'capitalize'}
-    backgroundColor={props.disabled ? props.theme.palette.grey.dark : props.background || '#D54D32'}
-    borderColor={props.disabled ? props.theme.palette.grey.dark : props.background || '#D54D32'}
-    btnColor={props.color || props.theme.palette.white.main}
-    borderRadius={'1rem'}
-    border={props.border || 'none'}
-    {...props}
-  />
-))`
+export const RedButton = styled(Button)`
   outline: none;
+  background-color: ${(props) => props.theme.colors.red4};
 `

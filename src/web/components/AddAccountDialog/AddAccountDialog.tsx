@@ -1,5 +1,5 @@
+/* eslint-disable no-nested-ternary */
 import { Grid } from '@material-ui/core'
-import { withTheme } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { withSnackbar } from 'notistack'
 import React from 'react'
@@ -29,8 +29,8 @@ import useful from '@icons/useful.svg'
 
 // import { handleSelectChangePrepareForFormik } from '@core/utils/UserUtils'
 
+import { InlineText } from '../Typography'
 import {
-  TypographyCustomHeading,
   GridCustom,
   InputBaseCustom,
   DialogWrapper,
@@ -40,7 +40,6 @@ import {
 } from './AddAccountDialog.styles'
 import { IState, IProps } from './AddAccountDialog.types'
 
-@withTheme()
 class AddAccountDialog extends React.Component<IProps, IState> {
   state: IState = {
     open: false,
@@ -278,9 +277,6 @@ class AddAccountDialog extends React.Component<IProps, IState> {
 
   render() {
     const {
-      theme: {
-        palette: { black },
-      },
       open,
       onboarding = undefined,
       includeCommonBinanceKey = true,
@@ -383,15 +379,11 @@ class AddAccountDialog extends React.Component<IProps, IState> {
               }
             }}
           >
-            <TypographyCustomHeading
-              fontWeight="700"
-              borderRadius="1rem"
-              color={black.custom}
-            >
+            <InlineText fontWeight="700" borderRadius="1rem" color="gray0">
               {isFuturesWars
                 ? 'Create futures wars account'
                 : `Create free exchange account`}
-            </TypographyCustomHeading>
+            </InlineText>
           </DialogTitleCustom>
           <DialogContent
             justify="center"
@@ -524,23 +516,22 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             alignItems="center"
                             style={{ maxWidth: '33%' }}
                           >
-                            <Typography
+                            <InlineText
                               style={{
                                 paddingBottom: '0.5rem',
                                 fontWeight: 'bold',
-                                color: 'black',
                                 textTransform: 'uppercase',
                               }}
                             >
                               Free
-                            </Typography>
+                            </InlineText>
                             <SvgIcon src={free} width="40px" height="auto" />
-                            <Typography
+                            <InlineText
                               align="center"
                               style={{ paddingTop: '1.4rem' }}
                             >
                               No extra fee, pay only Binance fee
-                            </Typography>
+                            </InlineText>
                           </Grid>
                           <Grid
                             container
@@ -549,23 +540,22 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             alignItems="center"
                             style={{ maxWidth: '33%' }}
                           >
-                            <Typography
+                            <InlineText
                               style={{
                                 paddingBottom: '0.5rem',
                                 fontWeight: 'bold',
-                                color: 'black',
                                 textTransform: 'uppercase',
                               }}
                             >
                               Useful
-                            </Typography>
+                            </InlineText>
                             <SvgIcon src={useful} width="40px" height="auto" />
-                            <Typography
+                            <InlineText
                               align="center"
                               style={{ paddingTop: '1.4rem' }}
                             >
                               All features availiable with no limits
-                            </Typography>
+                            </InlineText>
                           </Grid>
                           <Grid
                             container
@@ -574,16 +564,15 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                             alignItems="center"
                             style={{ maxWidth: '33%' }}
                           >
-                            <Typography
+                            <InlineText
                               style={{
                                 paddingBottom: '0.2rem',
                                 fontWeight: 'bold',
-                                color: 'black',
                                 textTransform: 'uppercase',
                               }}
                             >
                               Secure
-                            </Typography>
+                            </InlineText>
                             <SvgIcon src={secure} width="40px" height="auto" />
                             <Typography
                               align="center"

@@ -1,55 +1,29 @@
-import React, { useState } from 'react'
-import { withSnackbar } from 'notistack'
-import { compose } from 'recompose'
+import { Grid, Typography, Link } from '@material-ui/core'
 import copy from 'clipboard-copy'
-import {
-  Grid,
-  Typography,
-  withTheme,
-  Input,
-  Link,
-  Theme,
-} from '@material-ui/core'
-import Timer from 'react-compound-timer'
-import { Loading } from '@sb/components/index'
-
-import copyIcon from '@icons/copySerum.svg'
-import SvgIcon from '@sb/components/SvgIcon'
-
-import { StyledTypography } from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock.styles'
-import InputAmount from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAmount'
-
-import {
-  CoinOption,
-  CoinSingleValue,
-} from '@sb/components/ReactSelectComponents/CoinOption'
-
-import {
-  AccountOption,
-  AccountSingleValue,
-} from '@sb/components/ReactSelectComponents/AccountOption'
+import { withSnackbar } from 'notistack'
+import React from 'react'
+import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import {
   TypographyCustomHeading,
   DialogWrapper,
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { DialogContent } from '@sb/styles/Dialog.styles'
-
+import SvgIcon from '@sb/components/SvgIcon'
 import {
   useSelectedBaseCurrencyAccount,
   useMarket,
   useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { RemindToStakePopup } from '@sb/compositions/Pools/components/Popups/ReminderToStake/ReminderToStake'
-import { useConnection } from '@sb/dexUtils/connection'
+import { DialogContent } from '@sb/styles/Dialog.styles'
+
+import copyIcon from '@icons/copySerum.svg'
 
 interface IProps {
   open: boolean
   handleClose: () => void
-  theme: Theme
   baseOrQuote: 'base' | 'quote'
 }
 
@@ -57,11 +31,10 @@ const TransferPopup = ({
   open,
   handleClose,
   enqueueSnackbar,
-  theme,
   baseOrQuote,
 }: IProps) => {
   const { market, baseCurrency, quoteCurrency } = useMarket()
-
+  const theme = useTheme()
   const { providerName, providerUrl } = useWallet()
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
@@ -95,7 +68,6 @@ const TransferPopup = ({
   return (
     <>
       <DialogWrapper
-        theme={theme}
         aria-labelledby="customized-dialog-title"
         onClose={handleClose}
         open={open}
@@ -109,22 +81,20 @@ const TransferPopup = ({
           },
         }}
       >
-        <DialogTitleCustom id="customized-dialog-title" theme={theme}>
+        <DialogTitleCustom id="customized-dialog-title">
           <TypographyCustomHeading
-            fontWeight={'700'}
-            theme={theme}
+            fontWeight="700"
             style={{
               textAlign: 'left',
               fontSize: '1.6rem',
               letterSpacing: '1.5px',
-              color: theme.palette.dark.main,
+              color: theme.colors.gray1,
             }}
           >
             Deposit {depositCoin}
           </TypographyCustomHeading>
         </DialogTitleCustom>
         <DialogContent
-          theme={theme}
           justify="center"
           style={{
             padding: '5rem',
@@ -186,11 +156,7 @@ const TransferPopup = ({
               </Typography>
               <Typography
                 style={{
-                  color: account
-                    ? '#71E0EC'
-                    : theme.palette.type === 'light'
-                    ? ''
-                    : '#fff',
+                  color: account ? theme.colors.blue5 : theme.colors.gray1,
                   fontWeight: 'bold',
                   fontSize: '1.6rem',
                   letterSpacing: '1px',
@@ -220,13 +186,18 @@ const TransferPopup = ({
                   <>
                     Visit{' '}
                     <Link
-                      style={{ color: '#71E0EC', textDecoration: 'none' }}
+                      style={{
+                        color: theme.colors.gray1,
+                        textDecoration: 'none',
+                      }}
                       rel="noopener noreferrer"
                       target="_blank"
                       to={providerUrl}
                       href={providerUrl}
                     >
-                      <span style={{ color: '#71E0EC' }}>{providerName}</span>
+                      <span style={{ color: theme.colors.blue5 }}>
+                        {providerName}
+                      </span>
                     </Link>{' '}
                     to create an account for this mint
                   </>
@@ -240,4 +211,4 @@ const TransferPopup = ({
   )
 }
 
-export default compose(withSnackbar, withTheme())(TransferPopup)
+export default compose(withSnackbar)(TransferPopup)

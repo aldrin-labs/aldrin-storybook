@@ -1,4 +1,3 @@
-import { withTheme, Theme } from '@material-ui/core'
 import useMobileSize from '@webhooks/useMobileSize'
 import React from 'react'
 import styled from 'styled-components'
@@ -27,10 +26,10 @@ const Text = styled.span`
 const Link = styled.a`
   font-size: 1.4rem;
   font-family: Avenir Next;
-  color: ${(props) => props.theme.palette.blue.serum};
+  color: ${(props) => props.theme.colors.blue5};
 `
 
-const RestrictedRegion = ({ theme }: { theme: Theme }) => {
+const RestrictedRegion = () => {
   const isMobile = useMobileSize()
   return (
     <RowContainer direction="column" height="100%">
@@ -52,11 +51,7 @@ const RestrictedRegion = ({ theme }: { theme: Theme }) => {
         </Text>
       </RowContainer>
       <Row justify="space-between" width={isMobile ? '75%' : '30%'}>
-        <Link
-          theme={theme}
-          href="mailto:contact@aldrin.com"
-          style={{ marginRight: '16px' }}
-        >
+        <Link href="mailto:contact@aldrin.com" style={{ marginRight: '16px' }}>
           contact@aldrin.com
         </Link>
         <Text>or</Text>
@@ -70,4 +65,4 @@ const RestrictedRegion = ({ theme }: { theme: Theme }) => {
   )
 }
 
-export default withTheme()(RestrictedRegion)
+export default RestrictedRegion

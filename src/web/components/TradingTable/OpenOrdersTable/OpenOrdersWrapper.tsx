@@ -6,7 +6,6 @@ import OpenOrdersTable from './OpenOrdersTable'
 
 export const OpenOrdersTableWrapper = ({
   tab,
-  theme,
   show,
   marketType,
   canceledOrders,
@@ -14,7 +13,6 @@ export const OpenOrdersTableWrapper = ({
   terminalViewMode,
 }: {
   tab
-  theme
   show
   marketType
   canceledOrders

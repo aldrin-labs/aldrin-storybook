@@ -1,5 +1,5 @@
-import { Theme } from '@material-ui/core'
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -21,7 +21,6 @@ import {
 import Arrow from '@icons/arrowBottom.svg'
 
 export const InputWithSelectorForSwaps = ({
-  theme,
   value,
   symbol,
   disabled,
@@ -34,7 +33,6 @@ export const InputWithSelectorForSwaps = ({
   onChange,
   openSelectCoinPopup,
 }: {
-  theme: Theme
   value: string | number
   symbol: string
   disabled?: boolean
@@ -48,12 +46,12 @@ export const InputWithSelectorForSwaps = ({
   openSelectCoinPopup: () => void
 }) => {
   const isSelectToken = symbol === 'Select token'
-
+  const theme = useTheme()
   return (
     <Row style={{ position: 'relative' }} width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="1rem">
-        <Text color={theme.palette.grey.title}>
+        <Text color={theme.colors.gray1}>
           {directionFrom ? 'From:' : 'To (Estimate):'}
         </Text>
       </TokenContainer>
@@ -93,11 +91,11 @@ export const InputWithSelectorForSwaps = ({
       {!isSelectToken && (
         <TokenContainer right="2rem" top="1rem">
           <Row style={{ flexWrap: 'nowrap' }}>
-            <Text color={theme.palette.grey.title} fontSize="1.2rem">
+            <Text color={theme.colors.gray1} fontSize="1.2rem">
               &nbsp;Balance:
             </Text>
             &nbsp;
-            <BlueText theme={theme} onClick={() => onChange(maxBalance)}>
+            <BlueText onClick={() => onChange(maxBalance)}>
               {formatNumberToUSFormat(stripDigitPlaces(maxBalance, 8))} {symbol}
             </BlueText>
           </Row>

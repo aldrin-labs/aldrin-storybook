@@ -1,5 +1,4 @@
 import { MenuList } from '@material-ui/core'
-import { UCOLORS } from '@variables/variables'
 import * as React from 'react'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
@@ -8,6 +7,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 
+import { Button } from '../Button'
 import {
   StyledDropdown,
   StyledPaper,
@@ -16,58 +16,28 @@ import {
 } from './Dropdown.styles'
 import { IProps } from './types'
 
-const WalletStatusButton = ({ wallet, connected, theme, id, buttonStyles }) => (
-  <BtnCustom
+const WalletStatusButton = ({ wallet, connected, id }) => (
+  <Button
     onClick={connected ? wallet?.disconnect : wallet?.connect}
-    btnColor={theme.palette.blue.serum}
-    btnWidth="14rem"
-    textTransform="capitalize"
-    height="3.5rem"
-    borderRadius=".6rem"
-    fontSize="1.2rem"
-    // margin={'0 0 0 3rem'}
+    $variant="primary"
+    $padding="lg"
+    $fontSize="md"
     id={id}
-    style={{
-      display: 'flex',
-      textTransform: 'none',
-      padding: '1rem',
-      ...buttonStyles,
-    }}
   >
     {!connected ? 'Connect wallet' : 'Disconnect'}
-  </BtnCustom>
+  </Button>
 )
 
-const ConnectWalletButton = ({
-  wallet,
-  theme,
-  height,
-  id,
-  buttonStyles = {},
-}: {
-  buttonStyles?: React.CSSProperties
-}) => (
-  <BtnCustom
+const ConnectWalletButton = ({ wallet, id }) => (
+  <Button
     onClick={wallet?.connect}
-    btnColor="#F8FAFF"
-    backgroundColor={UCOLORS.blue3}
-    btnWidth="100%"
-    borderColor={UCOLORS.blue3}
-    textTransform="capitalize"
-    height={height}
-    borderRadius=".6rem"
-    fontSize="1.2rem"
-    style={{
-      display: 'flex',
-      textTransform: 'none',
-      padding: '1rem',
-      whiteSpace: 'nowrap',
-      ...buttonStyles,
-    }}
+    $variant="primary"
+    $padding="lg"
+    $fontSize="md"
     id={id}
   >
     Connect wallet
-  </BtnCustom>
+  </Button>
 )
 
 const StyledButton = styled(BtnCustom)`
@@ -80,15 +50,7 @@ const StyledButton = styled(BtnCustom)`
 export default class Dropdown extends React.Component<IProps> {
   render() {
     const {
-      page,
-      selectedMenu,
       id,
-      theme,
-      Component,
-      onMouseOver,
-      marketName,
-      pathname,
-      isActivePage,
       wallet,
       connected,
       setProvider: updateProviderUrl,
@@ -106,27 +68,13 @@ export default class Dropdown extends React.Component<IProps> {
       <>
         <StyledDropdown
           isNavBar={isNavBar}
-          theme={theme}
           showOnTop={showOnTop}
           style={{ ...containerStyle }}
         >
           {isNavBar ? (
-            <WalletStatusButton
-              wallet={wallet}
-              connected={connected}
-              theme={theme}
-              id={id}
-              buttonStyles={buttonStyles}
-            />
+            <WalletStatusButton wallet={wallet} connected={connected} id={id} />
           ) : (
-            <ConnectWalletButton
-              wallet={wallet}
-              connected={connected}
-              height={height}
-              theme={theme}
-              id={id}
-              buttonStyles={buttonStyles}
-            />
+            <ConnectWalletButton wallet={wallet} id={id} />
           )}
           <StyledPaper
             style={{
@@ -138,7 +86,6 @@ export default class Dropdown extends React.Component<IProps> {
               width: '100%',
             }}
             showOnTop={showOnTop}
-            theme={theme}
             isWalletConnected={connected}
             customActiveRem="9rem"
             customNotActiveRem="3rem"
@@ -149,7 +96,6 @@ export default class Dropdown extends React.Component<IProps> {
 
                 return (
                   <StyledMenuItem
-                    theme={theme}
                     disableRipple
                     disableGutters
                     key={provider.name}

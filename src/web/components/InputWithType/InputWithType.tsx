@@ -1,4 +1,6 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
+
 import { Text } from '@sb/compositions/Addressbook'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
@@ -6,10 +8,8 @@ import {
   TokenContainer,
   InvisibleInput,
 } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { Theme } from '@material-ui/core'
 
 export const InputWithType = ({
-  theme,
   value,
   disabled,
   placeholder,
@@ -18,8 +18,7 @@ export const InputWithType = ({
   label,
   type,
 }: {
-  theme: Theme
-  type?: string,
+  type?: string
   value: string | number
   disabled?: boolean
   placeholder?: string
@@ -27,15 +26,14 @@ export const InputWithType = ({
   label: string
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }) => {
+  const theme = useTheme()
   return (
-    <Row style={{ position: 'relative' }} width={'100%'}>
+    <Row style={{ position: 'relative' }} width="100%">
       <StyledInput />
-      <TokenContainer left={'2rem'} top={'1rem'}>
-        <Text color={theme.palette.grey.title}>
-          {label}
-        </Text>
+      <TokenContainer left="2rem" top="1rem">
+        <Text color={theme.colors.gray1}>{label}</Text>
       </TokenContainer>
-      <TokenContainer style={{ width: '80%' }} left={'2rem'} bottom={'1rem'}>
+      <TokenContainer style={{ width: '80%' }} left="2rem" bottom="1rem">
         <InvisibleInput
           type={type || 'text'}
           value={value}
@@ -46,17 +44,12 @@ export const InputWithType = ({
           placeholder={placeholder}
         />
       </TokenContainer>
-      <TokenContainer
-        right={'2rem'}
-        bottom={'2.6rem'}
-      >
-        <Row
-          style={{ flexWrap: 'nowrap' }}
-        >
+      <TokenContainer right="2rem" bottom="2.6rem">
+        <Row style={{ flexWrap: 'nowrap' }}>
           <Text
             style={{ margin: '0 0.5rem' }}
-            fontSize={'2rem'}
-            fontFamily={'Avenir Next Demi'}
+            fontSize="2rem"
+            fontFamily="Avenir Next Demi"
           >
             {metric}
           </Text>

@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react'
 
+import BlueSlider from '@sb/components/Slider/BlueSlider'
+import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
 import {
   InputRowContainer,
   Switcher,
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import { SliderWithPriceAndPercentageFieldRowProps } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
-import HeightIcon from '@material-ui/icons/Height'
-import { SliderWithPriceAndPercentageFieldRowProps } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
-import BlueSlider from '@sb/components/Slider/BlueSlider'
-
-import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
-import {
-  Select,
-  FormInputContainer,
-} from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 
 export const SliderWithAmountFieldRow = ({
   pair,
@@ -51,15 +44,14 @@ export const SliderWithAmountFieldRow = ({
   return (
     <>
       <InputRowContainer>
-        <InputRowContainer width={'35%'} style={{ flexWrap: 'wrap' }}>
+        <InputRowContainer width="35%" style={{ flexWrap: 'wrap' }}>
           <InputRowContainer>
             <Input
-              theme={theme}
-              type={'text'}
+              type="text"
               pattern={marketType === 0 ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
               symbol={pair[0]}
               needTitle
-              title={`size`}
+              title="size"
               value={localAmount}
               showErrors={showErrors}
               disabled={amountPlotEnabled}
@@ -69,21 +61,20 @@ export const SliderWithAmountFieldRow = ({
           </InputRowContainer>
           <InputRowContainer>
             <Input
-              theme={theme}
-              type={'text'}
+              type="text"
               symbol={pair[1]}
               value={localTotal}
               needTitle
-              title={`total`}
+              title="total"
               disabled={amountPlotEnabled}
               onChange={onTotalChange}
             />
           </InputRowContainer>
         </InputRowContainer>
-        <InputRowContainer width={'35%'}>
+        <InputRowContainer width="35%">
           <BlueSlider
-            theme={theme}
             showMarks
+            theme={theme}
             disabled={amountPlotEnabled}
             value={
               side === 'buy' || marketType === 1
@@ -127,14 +118,13 @@ export const SliderWithAmountFieldRow = ({
           <Switcher checked={amountPlotEnabled} onChange={togglePlot} />
         </div>
         <Input
-          theme={theme}
-          type={'number'}
+          type="number"
           textAlign="left"
-          width={'calc(20% - .8rem)'}
+          width="calc(20% - .8rem)"
           disabled={!amountPlotEnabled}
           value={amountPlot}
           needTitle
-          title={`plot_`}
+          title="plot_"
           showErrors={showErrors}
           isValid={validateField(true, amountPlot)}
           onChange={changePlot}

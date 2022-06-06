@@ -1,5 +1,3 @@
-import { Theme } from '@material-ui/core'
-
 export enum MESSAGE_TYPE {
   ACCOUNT_ORDERS = 'ACCOUNT_ORDERS',
   ORDER_AMEND = 'ORDER_AMEND',
@@ -8,8 +6,8 @@ export enum MESSAGE_TYPE {
 
 export interface SingleChartProps {
   additionalUrl: string
-  themeMode: string
   currencyPair: string
+  theme: string
 }
 
 export interface Order {
@@ -21,8 +19,7 @@ export interface Order {
 }
 
 export interface SingleChartWithButtonsProps {
-  theme: Theme
-  themeMode: string
+  theme: string
   currencyPair: string
   base: string
   quote: string

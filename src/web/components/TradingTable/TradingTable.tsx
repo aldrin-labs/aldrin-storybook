@@ -1,9 +1,7 @@
-import { withTheme } from '@material-ui/styles'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 
-import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
 
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
@@ -67,20 +65,15 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   render() {
     const { tab, canceledOrders } = this.state
 
-    const {
-      theme,
-      marketType,
-      updateTerminalViewMode,
-      terminalViewMode,
-      newTheme,
-    } = this.props
+    const { theme, marketType, updateTerminalViewMode, terminalViewMode } =
+      this.props
     return (
       <div
         id="tables"
         style={{
           height: '100%',
-          backgroundColor: newTheme?.colors?.gray6,
-          borderLeft: newTheme?.colors?.gray2,
+          backgroundColor: theme?.colors?.gray6,
+          borderLeft: theme?.colors?.gray2,
         }}
       >
         <TradingTabs
@@ -94,7 +87,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         />
         <OpenOrdersTableWrapper
           tab={tab}
-          theme={theme}
           show={tab === 'openOrders'}
           marketType={marketType}
           canceledOrders={canceledOrders}
@@ -104,7 +96,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <TradeHistoryTable
           {...{
             tab,
-            theme,
             marketType,
             show: tab === 'tradeHistory',
             handlePairChange: this.handlePairChange,
@@ -114,7 +105,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <Balances
           {...{
             tab,
-            theme,
             marketType,
             show: tab === 'balances',
           }}
@@ -122,12 +112,11 @@ class TradingTable extends React.PureComponent<IProps, IState> {
         <FeeTiers
           {...{
             tab,
-            theme,
             marketType,
             show: tab === 'feeTiers',
           }}
         />
-        <StyleForCalendar theme={theme} />
+        {/* <StyleForCalendar theme={theme} /> */}
       </div>
     )
   }
@@ -136,7 +125,6 @@ class TradingTable extends React.PureComponent<IProps, IState> {
 const TradingTableWrapper = compose(
   withRouter,
   withErrorFallback,
-  withTheme(),
   withMobileSize
 )(TradingTable)
 
@@ -145,7 +133,7 @@ export default React.memo(TradingTableWrapper, (prevProps, nextProps) => {
     prevProps.marketType === nextProps.marketType &&
     prevProps.terminalViewMode === nextProps.terminalViewMode &&
     prevProps.isMobile === nextProps.isMobile &&
-    prevProps.newTheme === nextProps.newTheme
+    prevProps.theme === nextProps.theme
   ) {
     return true
   }

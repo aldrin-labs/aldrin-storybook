@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import useMobileSize from '@webhooks/useMobileSize'
 import React, { useState, useEffect } from 'react'
 
@@ -28,7 +27,7 @@ import {
   TextButton,
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
 
-export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
+export const ProposeToSettlePopup = () => {
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
     'isSettlePopupOpen',
     true
@@ -94,7 +93,6 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
         <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
           {' '}
           <DemiText
-            theme={theme}
             style={{
               lineHeight: '4rem',
               fontSize: '3.5rem',
@@ -131,7 +129,6 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
                 lineHeight: '2rem',
                 fontSize: isMobile ? '2.3rem' : '1.8rem',
               }}
-              theme={theme}
             >
               {balances[0].coin}:{' '}
               <span style={{ fontFamily: 'Avenir Next Demi' }}>
@@ -143,7 +140,6 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
                 lineHeight: '2rem',
                 fontSize: isMobile ? '2.3rem' : '1.8rem',
               }}
-              theme={theme}
             >
               {balances[1].coin}:{' '}
               <span style={{ fontFamily: 'Avenir Next Demi' }}>

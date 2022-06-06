@@ -1,6 +1,10 @@
-import { Theme } from '@material-ui/core'
+import { DefaultTheme } from 'styled-components'
 
-const values = [['short', 'long'], ['sell', 'buy'], ['market', 'limit']]
+const values = [
+  ['short', 'long'],
+  ['sell', 'buy'],
+  ['market', 'limit'],
+]
 
 export const getSecondValueFromFirst = (value: string): string => {
   const pairValues = values.find((arr) => {
@@ -20,26 +24,26 @@ const CommonSwitcherStyles = {
   borderRadius: '0',
 }
 
-export const GreenSwitcherStyles = (theme: Theme) => ({
+export const GreenSwitcherStyles = (theme: DefaultTheme) => ({
   ...CommonSwitcherStyles,
-  activeBackgroundColor: theme.palette.green.main,
-  activeBorderColor: theme.palette.green.main,
+  activeBackgroundColor: theme.colors.green7,
+  activeBorderColor: theme.colors.green7,
 })
 
-export const DisabledSwitcherStyles = (theme: Theme) => ({
+export const DisabledSwitcherStyles = (theme: DefaultTheme) => ({
   ...CommonSwitcherStyles,
-  activeColor: theme.palette.grey.text,
-  activeBorderColor: theme.palette.border.main,
+  activeColor: theme.colors.gray1,
+  activeBorderColor: theme.colors.gray1,
 })
 
-export const RedSwitcherStyles = (theme: Theme) => ({
+export const RedSwitcherStyles = (theme: DefaultTheme) => ({
   ...CommonSwitcherStyles,
-  activeBackgroundColor: theme.palette.red.main,
-  activeBorderColor: theme.palette.red.main,
+  activeBackgroundColor: theme.colors.red4,
+  activeBorderColor: theme.colors.red4,
 })
 
-export const BlueSwitcherStyles = (theme: Theme) => ({
+export const BlueSwitcherStyles = (theme: DefaultTheme) => ({
   ...CommonSwitcherStyles,
-  activeBackgroundColor: theme.palette.blue.switcherBackground,
-  activeBorderColor: theme.palette.blue.switcherBorder,
+  activeBackgroundColor: theme.colors.blue5,
+  activeBorderColor: theme.colors.blue5,
 })

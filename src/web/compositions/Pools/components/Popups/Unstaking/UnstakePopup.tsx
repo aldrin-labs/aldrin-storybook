@@ -1,4 +1,3 @@
-import { Theme, withTheme } from '@material-ui/core'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
@@ -29,7 +28,6 @@ import { Button } from '../../Tables/index.styles'
 import { BoldHeader, StyledPaper } from '../index.styles'
 
 interface UnstakePopupProps {
-  theme: Theme
   allTokensData: TokenInfo[]
   selectedPool: PoolInfo
   farmingTicketsMap: Map<string, FarmingTicket[]>
@@ -40,7 +38,6 @@ interface UnstakePopupProps {
 
 const Popup: React.FC<UnstakePopupProps> = (props) => {
   const {
-    theme,
     allTokensData,
     selectedPool,
     farmingTicketsMap,
@@ -87,7 +84,6 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -133,7 +129,6 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
               style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
               disabled={isUnstakeDisabled}
               isUserConfident
-              theme={theme}
               showLoader={operationLoading}
               onClick={async () => {
                 // loader in popup button
@@ -194,4 +189,4 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
   )
 }
 
-export const UnstakePopup = withTheme()(Popup)
+export const UnstakePopup = Popup

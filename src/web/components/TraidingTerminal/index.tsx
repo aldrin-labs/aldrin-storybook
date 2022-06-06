@@ -137,7 +137,6 @@ export const TradeInputContent = ({
   onChange = () => {},
   inputStyles,
   header = '',
-  theme,
   needTooltip = false,
   textDecoration,
   titleForTooltip = '',

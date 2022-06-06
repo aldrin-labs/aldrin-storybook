@@ -17,12 +17,6 @@ import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 
 export const StyledDialogContent = styled(DialogContent)`
   border-radius: none;
-  border: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.border &&
-      props.theme.palette.border.main) ||
-    '.1rem solid #e0e5ec'};
   border-top: 0;
   padding: 0 2.4rem 2.4rem;
   font-family: DM Sans;
@@ -36,18 +30,7 @@ export const StyledDialogTitle = styled(DialogTitle)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.border &&
-      props.theme.palette.border.main) ||
-    '.1rem solid #e0e5ec'};
-  background-color: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.grey &&
-      props.theme.palette.grey.main) ||
-    '#f2f4f6'};
+  background-color: ${(props) => props.theme.colors.gray5};
   height: 4rem;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;

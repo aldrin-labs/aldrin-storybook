@@ -6,7 +6,6 @@ export { default as SvgIcon } from './SvgIcon'
 export { addMainSymbol } from './AddMainSymbol'
 export { default as PrivacyPolicy } from './PrivacyPolicy'
 export { default as TermsOfUse } from './TermsOfUse/TermsOfUse'
-export { default as CardHeader } from './CardHeader'
 export {
   default as ErrorBoundary,
   ErrorFallback,

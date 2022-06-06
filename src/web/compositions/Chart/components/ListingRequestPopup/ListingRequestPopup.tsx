@@ -1,4 +1,3 @@
-import { withTheme } from '@material-ui/core'
 import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
 import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useState } from 'react'
@@ -768,7 +767,6 @@ const ListingRequestPopup = ({
 
 export default compose(
   withMarketUtilsHOC,
-  withTheme(),
   queryRendererHoc({
     query: getUserCustomMarkets,
     name: 'getUserCustomMarketsQuery',

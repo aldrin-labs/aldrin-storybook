@@ -8,15 +8,11 @@ export const SwitcherHalf = styled(
     isDisabled,
     activeBackgroundColor,
     activeColor,
-    activeBorderColor,
-    isFirstHalf,
-    borderRadius,
+
     width,
-    height,
+
     padding,
-    theme,
-    needBorder = true,
-    needBorderRadius = false,
+
     ...rest
   }) => (
     <BtnCustom
