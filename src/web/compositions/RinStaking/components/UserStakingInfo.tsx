@@ -1,14 +1,15 @@
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES, COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
-import { isEqual } from 'lodash-es'
 import React, { useCallback, useEffect, useState, useMemo } from 'react'
 import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
@@ -19,11 +20,13 @@ import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { restake } from '@sb/dexUtils/staking/actions'
 import {
   BUY_BACK_RIN_ACCOUNT_ADDRESS,
   DAYS_TO_CHECK_BUY_BACK,
 } from '@sb/dexUtils/staking/config'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
+import { getSnapshotQueueWithAMMFees } from '@sb/dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
@@ -35,6 +38,7 @@ import {
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -44,16 +48,12 @@ import {
   stripByAmountAndFormat,
   stripToMillions,
 } from '@core/utils/chartPageUtils'
+import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 import { DAY, daysInMonthForDate } from '@core/utils/dateUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import ClockIcon from '@icons/clock.svg'
 
-import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
-import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
-import { restake } from '../../../dexUtils/staking/actions'
-import { getSnapshotQueueWithAMMFees } from '../../../dexUtils/staking/getSnapshotQueueWithAMMFees'
-import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
@@ -74,7 +74,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     stakingPool,
     currentFarmingState,
     buyBackAmount,
-    getDexTokensPricesQuery,
+    tokenPrice,
     treasuryDailyRewards,
   } = props
 
@@ -104,7 +104,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
     walletPublicKey: wallet.publicKey,
     onlyUserTickets: true,
-    // walletPublicKey,
   })
 
   const { data: calcAccounts, mutate: reloadCalcAccounts } =
@@ -139,7 +138,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     farming: stakingPool.farming.filter((state) => !isOpenFarmingState(state)),
   }
 
-  const refreshAll = useCallback(async () => {
+  const refreshAll = async () => {
     await Promise.all([
       refreshTotalStaked(),
       refreshUserFarmingTickets(),
@@ -147,13 +146,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       refreshAllTokenData(),
       reloadCalcAccounts(),
     ])
-  }, [
-    refreshTotalStaked,
-    refreshUserFarmingTickets,
-    refreshAllStakingSnapshotQueues,
-    refreshAllTokenData,
-    reloadCalcAccounts,
-  ])
+  }
 
   const buyBackAmountWithDecimals =
     buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
@@ -195,9 +188,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       currentFarmingState.farmingTokenMintDecimals,
     ]
   )
-
-  // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
-  // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
 
   // Available to claim rewards
   const availableToClaimTickets = useMemo(
@@ -388,16 +378,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     getRINSupply()
   }, [])
 
-  const dexTokensPricesMap = toMap(
-    getDexTokensPricesQuery?.getDexTokensPrices || [],
-    (price) => price.symbol
-  )
-
-  const tokenPrice =
-    dexTokensPricesMap?.get(
-      getTokenNameByMintAddress(currentFarmingState.farmingTokenMint)
-    )?.price || 0
-
   const totalStakedUSD = tokenPrice * totalStakedRIN
 
   const buyBackAPR =
@@ -438,7 +418,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ? rinValue
     : new Array(rinValue.length).fill('∗').join('')
 
-  const stakedInUsd = stripByAmountAndFormat(totalStaked * tokenPrice || 0, 2)
+  const stakedInUsd = stripByAmountAndFormat(totalStaked * tokenPrice, 2)
   const totalStakedUsdValue = isBalancesShowing
     ? stakedInUsd
     : new Array(stakedInUsd.length).fill('∗').join('')
@@ -450,7 +430,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     : new Array(strippedEstRewards.length).fill('∗').join('')
 
   const strippedEstRewardsUSD = stripByAmountAndFormat(
-    estimatedRewards * tokenPrice || 0,
+    estimatedRewards * tokenPrice,
     2
   )
 
@@ -691,48 +671,44 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   )
 }
 
-const UserStakingInfo: React.FC<StakingInfoProps> = React.memo(
-  (props) => {
-    const {
-      stakingPool,
-      currentFarmingState,
-      buyBackAmount,
-      getDexTokensPricesQuery,
-      treasuryDailyRewards,
-    } = props
+const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
+  const {
+    stakingPool,
+    currentFarmingState,
+    buyBackAmount,
+    getDexTokensPricesQuery,
+    treasuryDailyRewards,
+  } = props
 
-    return (
-      <StretchedBlock direction="column">
-        <UserStakingInfoContent
-          stakingPool={stakingPool}
-          currentFarmingState={currentFarmingState}
-          buyBackAmount={buyBackAmount}
-          getDexTokensPricesQuery={getDexTokensPricesQuery}
-          treasuryDailyRewards={treasuryDailyRewards}
-        />
-      </StretchedBlock>
-    )
-  },
-  (prevProps, nextProps) => {
-    return (
-      prevProps.buyBackAmount === nextProps.buyBackAmount &&
-      prevProps.treasuryDailyRewards === nextProps.treasuryDailyRewards &&
-      isEqual(prevProps.stakingPool, nextProps.stakingPool) &&
-      isEqual(prevProps.currentFarmingState, nextProps.currentFarmingState) &&
-      isEqual(
-        prevProps.getDexTokensPricesQuery.getDexTokensPrices,
-        nextProps.getDexTokensPricesQuery.getDexTokensPrices
-      )
-    )
-  }
-)
+  const dexTokensPricesMap = toMap(
+    getDexTokensPricesQuery?.getDexTokensPrices || [],
+    (price) => price.symbol
+  )
 
-export default compose<InnerProps, OuterProps>(
+  const tokenPrice =
+    dexTokensPricesMap.get(
+      getTokenNameByMintAddress(currentFarmingState.farmingTokenMint)
+    )?.price || 0
+
+  return (
+    <StretchedBlock direction="column">
+      <UserStakingInfoContent
+        stakingPool={stakingPool}
+        currentFarmingState={currentFarmingState}
+        buyBackAmount={buyBackAmount}
+        tokenPrice={tokenPrice}
+        treasuryDailyRewards={treasuryDailyRewards}
+      />
+    </StretchedBlock>
+  )
+}
+
+export default compose<StakingInfoProps>(
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
-    pollInterval: 60000,
+    pollInterval: COMMON_REFRESH_INTERVAL,
   })
 )(UserStakingInfo)

@@ -3,18 +3,7 @@
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { FarmingState } from '@sb/dexUtils/common/types'
 
-import { StakingPool } from '../../../dexUtils/staking/types'
-
-export interface OuterProps {
-  currentFarmingState: FarmingState
-  stakingPool: StakingPool
-  buyBackAmount: number
-  treasuryDailyRewards: number
-}
-
-export interface InnerProps {
-  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
-}
+import { StakingPool } from '@sb/dexUtils/staking/types'
 
 export interface UserBalanceProps {
   value: number
@@ -22,7 +11,13 @@ export interface UserBalanceProps {
   decimals?: number
 }
 
-export type StakingInfoProps = InnerProps & OuterProps
+export type StakingInfoProps = {
+  tokenPrice: number
+  currentFarmingState: FarmingState
+  stakingPool: StakingPool
+  buyBackAmount: number
+  treasuryDailyRewards: number
+}
 
 export interface StakingFormProps {
   loading: { stake: boolean; unstake: boolean }

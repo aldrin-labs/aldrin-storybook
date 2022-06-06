@@ -25,6 +25,7 @@ import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import Marinade from './marinadeLogo.png'
 import { AbsoluteImg, Filler, LogoWrap, RelativeContentBlock } from './styles'
 import { MarinadeStakingProps } from './types'
+import { COMMON_REFRESH_INTERVAL } from "@core/utils/config"
 
 const MrndStakingBlock: React.FC<MarinadeStakingProps> = React.memo(
   (props) => {
@@ -151,5 +152,5 @@ export const MarinadeStakingBlock = queryRendererHoc({
   name: 'getDexTokensPricesQuery',
   fetchPolicy: 'cache-and-network',
   withoutLoading: true,
-  pollInterval: 60000,
+  pollInterval: COMMON_REFRESH_INTERVAL,
 })(MrndStakingBlock)
