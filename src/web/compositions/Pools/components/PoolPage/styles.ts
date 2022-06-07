@@ -1,7 +1,3 @@
-import { BlockContent } from '@sb/components/Block'
-import { Button } from '@sb/components/Button'
-import { Row, StretchedBlock } from '@sb/components/Layout'
-import { InlineText, Text } from '@sb/components/Typography'
 import {
   BORDER_RADIUS,
   BREAKPOINTS,
@@ -10,6 +6,11 @@ import {
   LAYOUT_WIDTH,
 } from '@variables/variables'
 import styled from 'styled-components'
+
+import { BlockContent } from '@sb/components/Block'
+import { Button } from '@sb/components/Button'
+import { Row, StretchedBlock } from '@sb/components/Layout'
+import { InlineText, Text } from '@sb/components/Typography'
 
 export const ModalBlock = styled(BlockContent)`
   display: flex;
@@ -269,6 +270,7 @@ export const FarmingBlock = styled(LiquidityBlock)`
 export const FarmingBlockInner = styled.div`
   display: flex;
   flex-direction: row;
+  height: 100%;
 `
 
 export const LiquidityTitle = styled(PoolStatsTitle)`
