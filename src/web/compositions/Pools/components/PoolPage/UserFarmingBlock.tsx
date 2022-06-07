@@ -1,6 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client'
 import dayjs from 'dayjs'
-import pluralize from 'pluralize'
 import React, { useState } from 'react'
 
 import { SvgIcon } from '@sb/components'
@@ -18,7 +17,7 @@ import { uniq } from '@sb/utils/collection'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { estimateTime, MINUTE } from '@core/utils/dateUtils'
+import { estimateTime } from '@core/utils/dateUtils'
 import { sleep } from '@core/utils/helpers'
 
 import LightLogo from '@icons/lightLogo.svg'
@@ -331,7 +330,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
           </>
         ) : (
           <FarmingBlockInner>
-            <LiquidityItem>
+            {/* <LiquidityItem>
               <LiquidityTitle>Stake LP Tokens</LiquidityTitle>
               <div>
                 <LiquidityText weight={600}>
@@ -375,7 +374,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                   </span>
                 </DarkTooltip>
               </FarmingButtonsContainer>
-            </LiquidityItem>
+            </LiquidityItem> */}
             <LiquidityItem>
               <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
               <UserFarmingRewards availableToClaim={availableToClaim} />

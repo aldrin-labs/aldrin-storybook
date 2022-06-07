@@ -42,7 +42,6 @@ import Loop from '@icons/loop.svg'
 import { PoolPage } from '../../PoolPage'
 import { CreatePoolModal } from '../../Popups'
 import { AMMAuditPopup } from '../../Popups/AMMAuditPopup/AMMAuditPopup'
-import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
 import { AllPoolsTable } from '../AllPools'
 import { UserLiquidityTable } from '../UserLiquidity'
 import PlusIcon from './icons/plus.svg'
@@ -320,7 +319,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         close={() => setIsAuditPopupOpen(false)}
       />
 
-      {wallet.publicKey && (
+      {/* {wallet.publicKey && (
         <RestakeAllPopup
           wallet={wallet}
           connection={connection}
@@ -329,7 +328,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           farmingTicketsMap={farmingTicketsMap}
           refreshTokensWithFarmingTickets={refreshAll}
         />
-      )}
+      )} */}
     </>
   )
 }
