@@ -318,17 +318,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         open={isAuditPopupOpen}
         close={() => setIsAuditPopupOpen(false)}
       />
-
-      {/* {wallet.publicKey && (
-        <RestakeAllPopup
-          wallet={wallet}
-          connection={connection}
-          allPoolsData={pools}
-          allTokensData={userTokensData}
-          farmingTicketsMap={farmingTicketsMap}
-          refreshTokensWithFarmingTickets={refreshAll}
-        />
-      )} */}
     </>
   )
 }

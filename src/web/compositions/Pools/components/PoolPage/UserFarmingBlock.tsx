@@ -330,51 +330,6 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
           </>
         ) : (
           <FarmingBlockInner>
-            {/* <LiquidityItem>
-              <LiquidityTitle>Stake LP Tokens</LiquidityTitle>
-              <div>
-                <LiquidityText weight={600}>
-                  <LiquidityText color="success">
-                    {stripByAmountAndFormat(poolTokenAmount)}
-                  </LiquidityText>{' '}
-                  Unstaked
-                </LiquidityText>
-              </div>
-              <div>
-                <LiquidityText weight={600}>
-                  <LiquidityText color="success">
-                    {stripByAmountAndFormat(stakedAmount)}
-                  </LiquidityText>{' '}
-                  Staked
-                </LiquidityText>
-              </div>
-              <FarmingButtonsContainer>
-                <DarkTooltip title={tooltipText}>
-                  <span>
-                    <FarmingButton
-                      disabled={!hasUnstaked || processing || !hasFarming}
-                      $loading={processing}
-                      onClick={onStakeClick}
-                      $variant="rainbow"
-                    >
-                      Stake LP Tokens
-                    </FarmingButton>
-                  </span>
-                </DarkTooltip>
-                <DarkTooltip title={unstakeTooltipText}>
-                  <span>
-                    <FarmingButton
-                      $variant="error"
-                      disabled={!hasStaked || processing || unstakeLocked}
-                      $loading={processing}
-                      onClick={onUnstakeClick}
-                    >
-                      Unstake LP Tokens
-                    </FarmingButton>
-                  </span>
-                </DarkTooltip>
-              </FarmingButtonsContainer>
-            </LiquidityItem> */}
             <LiquidityItem>
               <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
               <UserFarmingRewards availableToClaim={availableToClaim} />
