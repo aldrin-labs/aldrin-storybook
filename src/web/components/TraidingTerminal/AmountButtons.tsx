@@ -39,7 +39,6 @@ const percentages = [
 
 export const ButtonsWithAmountFieldRowForBasic = ({
   pair,
-  theme,
   priceType,
   onAmountChange,
   onTotalChange,
@@ -75,7 +74,6 @@ export const ButtonsWithAmountFieldRowForBasic = ({
         <StyledInputsContainer mode={priceType}>
           <InputRowContainer padding="0 0 1.2rem 0" style={{ width: '100%' }}>
             <Input
-              theme={theme}
               needTitle
               title="Est. amount"
               value={formatNumberWithSpaces(localAmount)}
@@ -91,7 +89,6 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             style={{ width: '100%' }}
           >
             <Input
-              theme={theme}
               needTitle
               type="text"
               title="total"
@@ -106,7 +103,6 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             <InputWithReverseButton
               onChange={isAmountMode ? onAmountChange : onTotalChange}
               value={isAmountMode ? localAmount : localTotal}
-              theme={theme}
               symbol={pair}
               setMode={setMode}
               mode={mode}

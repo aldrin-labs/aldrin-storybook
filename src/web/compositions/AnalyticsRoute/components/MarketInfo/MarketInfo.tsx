@@ -1,8 +1,7 @@
-import { Theme } from '@material-ui/core'
 import copy from 'clipboard-copy'
 import React from 'react'
 import { compose } from 'recompose'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { SvgIcon } from '@sb/components/index'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
@@ -64,7 +63,7 @@ const SmallBoldTitle = styled((props) => <SmallTitle {...props} />)`
 
 const ValueBlock = styled((props) => <Row {...props} />)`
   padding: 1rem 4rem 1rem 1rem;
-  border-left: ${(props) => props.theme.palette.border.new};
+  border-left: ${(props) => props.theme.colors.gray6};
 `
 
 export const BlockTitle = styled((props) => <WhiteTitle {...props} />)`
@@ -79,7 +78,7 @@ export const BlockValue = styled((props) => <WhiteTitle {...props} />)`
 
 const PurpleTitle = styled((props) => <a {...props} />)`
   font-size: 1.4rem;
-  color: ${(props) => props.theme.palette.blue.serum};
+  color: ${(props) => props.theme.colors.blue5};
   font-family: Avenir Next Demi;
   cursor: pointer;
   text-decoration: none;
@@ -90,10 +89,10 @@ const PurpleTitle = styled((props) => <a {...props} />)`
 const PurpleLinkButton = styled.a`
   min-width: 8rem;
   font-size: 1.4rem;
-  color: ${(props) => props.theme.palette.white.main};
+  color: ${(props) => props.theme.colors.gray0};
   text-align: center;
   text-decoration: none;
-  background: ${(props) => props.theme.palette.blue.serum};
+  background: ${(props) => props.theme.colors.gray0}};
   border-radius: 0.4rem;
   padding: 0.5rem 0;
   font-family: Avenir Next;
@@ -101,11 +100,9 @@ const PurpleLinkButton = styled.a`
 `
 
 const MarketInfo = ({
-  theme,
   selectedPair,
   marketDataByTickersQuery,
 }: {
-  theme: Theme
   selectedPair: string
   marketDataByTickersQuery: any
 }) => {
@@ -142,7 +139,7 @@ const MarketInfo = ({
       // closePrice: 0
     },
   }
-
+  const theme = useTheme()
   const { market } = useMarket() || { market: { tickSize: 8 } }
   const markPrice = useMarkPrice() || 0
 
@@ -177,10 +174,9 @@ const MarketInfo = ({
                 height={'3rem'}
                 src={CoinPlaceholder}
               /> */}
-              <PairNameTitle theme={theme}>{pair}</PairNameTitle>
+              <PairNameTitle>{pair}</PairNameTitle>
             </Row>
             <PurpleLinkButton
-              theme={theme}
               target="_blank"
               rel="noopener noreferrer"
               href={`/chart/spot/${selectedPair}`}
@@ -190,7 +186,7 @@ const MarketInfo = ({
           </RowContainer>
 
           <RowContainer justify="space-between">
-            <LastPrice theme={theme}>
+            <LastPrice>
               {`${
                 markPrice === 0
                   ? '--'
@@ -217,11 +213,10 @@ const MarketInfo = ({
                 src={WhiteArrow}
               />
               <SmallTitle
-                theme={theme}
                 style={{
                   padding: '1rem',
                   fontWeight: 600,
-                  color: theme.palette.white.main,
+                  color: theme.colors.gray0,
                 }}
               >
                 {`${sign24hChange}${formatNumberToUSFormat(
@@ -232,10 +227,10 @@ const MarketInfo = ({
           </RowContainer>
           <Row justify="flex-start">
             <Row margin="0 1rem 0 0">
-              <SmallTitle theme={theme} style={{ paddingRight: '.5rem' }}>
+              <SmallTitle style={{ paddingRight: '.5rem' }}>
                 24h Low:
               </SmallTitle>
-              <SmallBoldTitle theme={theme}>{`${formatNumberToUSFormat(
+              <SmallBoldTitle>{`${formatNumberToUSFormat(
                 stripDigitPlaces(
                   markPrice < minPrice ? markPrice : minPrice,
                   pricePrecision
@@ -243,10 +238,10 @@ const MarketInfo = ({
               )} ${quote}`}</SmallBoldTitle>
             </Row>
             <Row>
-              <SmallTitle theme={theme} style={{ paddingRight: '.5rem' }}>
+              <SmallTitle style={{ paddingRight: '.5rem' }}>
                 24h High:
               </SmallTitle>
-              <SmallBoldTitle theme={theme}>{`${formatNumberToUSFormat(
+              <SmallBoldTitle>{`${formatNumberToUSFormat(
                 stripDigitPlaces(
                   markPrice > maxPrice ? markPrice : maxPrice,
                   pricePrecision
@@ -257,49 +252,39 @@ const MarketInfo = ({
         </Row>
         <Row wrap="nowrap">
           <Row padding="2rem 0">
-            <ValueBlock theme={theme} align="flex-start" direction="column">
-              <BlockTitle theme={theme}>Volume (24h)</BlockTitle>
-              <BlockValue theme={theme}>{`${
+            <ValueBlock align="flex-start" direction="column">
+              <BlockTitle>Volume (24h)</BlockTitle>
+              <BlockValue>{`${
                 isNotUSDTQuote ? '' : '$'
               }${formatNumberToUSFormat(stripDigitPlaces(volume, 2))}${
                 isNotUSDTQuote ? ` ${quote}` : ''
               }`}</BlockValue>
             </ValueBlock>
           </Row>
-          {/* <Row padding="2rem 0">
-            <ValueBlock theme={theme} align={'flex-start'} direction={'column'}>
-              <BlockTitle theme={theme}>Supply</BlockTitle>
-              <BlockValue theme={theme}>28.95</BlockValue>
-            </ValueBlock>
-          </Row> */}
           <Row padding="2rem 0" style={{ position: 'relative' }}>
-            <ValueBlock theme={theme} align="flex-start" direction="column">
+            <ValueBlock align="flex-start" direction="column">
               <FeesInfo
                 isNotUSDTQuote={isNotUSDTQuote}
-                theme={theme}
                 selectedPair={selectedPair}
               />
             </ValueBlock>
           </Row>
           <Row padding="2rem 0">
-            <ValueBlock theme={theme} align="flex-start" direction="column">
+            <ValueBlock align="flex-start" direction="column">
               <RowContainer justify="space-between">
-                <BlockTitle theme={theme}>Address</BlockTitle>
+                <BlockTitle>Address</BlockTitle>
                 <PurpleTitle
                   target="_blank"
                   rel="noopener noreferrer"
                   href={`https://solscan.io/address/${
                     market ? market.address.toBase58() : '--'
                   }`}
-                  theme={theme}
                 >
                   Go to explorer
                 </PurpleTitle>
               </RowContainer>
               <Row>
-                <Address theme={theme}>
-                  {market ? market.address.toBase58() : '--'}
-                </Address>
+                <Address>{market ? market.address.toBase58() : '--'}</Address>
                 <img
                   onClick={() => {
                     notify({

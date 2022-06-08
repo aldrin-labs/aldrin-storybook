@@ -69,8 +69,8 @@ export const WhiteButton = styled((props) => (
     height="4.5rem"
     textTransform="capitalize"
     backgroundColor={props.background || 'transparent'}
-    borderColor={props.background || props.theme.palette.white.main}
-    btnColor={props.color || props.theme.palette.white.main}
+    borderColor={props.background || props.theme.colors.gray0}
+    btnColor={props.color || props.theme.colors.gray0}
     borderRadius="1rem"
     border={props.border || 'none'}
     {...props}
@@ -127,7 +127,6 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       style={{ width: '85rem', margin: 'auto' }}
       fullScreen={false}
@@ -142,9 +141,8 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
           display: 'flex',
           justifyContent: 'center',
           textAlign: 'center',
-          background: theme.palette.grey.input,
+          background: theme.colors.gray6,
         }}
-        theme={theme}
         id="share-dialog-content"
       >
         {isTokenSuccessfullyAdded ? (
@@ -184,8 +182,8 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
                   style={{
                     color:
                       SOLAmount < cost
-                        ? theme.palette.red.main
-                        : theme.palette.green.main,
+                        ? theme.colors.red4
+                        : theme.colors.green7,
                     fontSize: '2.4rem',
                     paddingBottom: '1rem',
                   }}
@@ -195,7 +193,7 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
                 <BtnCustom
                   btnWidth="auto"
                   textTransform="capitalize"
-                  color={theme.palette.blue.serum}
+                  color={theme.colors.blue5}
                   borderWidth="0"
                   fontFamily="Avenir Next Demi"
                   fontSize="1rem"
@@ -216,7 +214,7 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
                 </Text>
                 <Text
                   style={{
-                    color: theme.palette.green.main,
+                    color: theme.colors.green7,
                     fontSize: '2.4rem',
                     paddingBottom: '1rem',
                   }}
@@ -226,7 +224,7 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
                 <BtnCustom
                   btnWidth="auto"
                   textTransform="capitalize"
-                  color={theme.palette.blue.serum}
+                  color={theme.colors.blue5}
                   borderWidth="0"
                   fontFamily="Avenir Next Demi"
                   fontSize="1rem"

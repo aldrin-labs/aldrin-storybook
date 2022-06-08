@@ -415,7 +415,7 @@ export const TradeInputBlock = styled.div`
 `
 
 export const SeparateInputTitle = styled.span`
-  color: ${(props) => props.theme.palette.dark.main};
+  color: ${(props) => props.theme.colors.gray0};
   font-size: 1rem;
   font-weight: bold;
   text-transform: capitalize;

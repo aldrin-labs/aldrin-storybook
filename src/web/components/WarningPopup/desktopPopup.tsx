@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import useMobileSize from '@webhooks/useMobileSize'
 import React, { useState } from 'react'
 
@@ -16,12 +15,10 @@ import {
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
 
 export const DesktopBanner = ({
-  theme,
   localStorageProperty = '',
   title = 'Important note!',
   notification = [''],
 }: {
-  theme: Theme
   localStorageProperty: string
   title: string
   notification: string[]
@@ -48,7 +45,6 @@ export const DesktopBanner = ({
     >
       <RowContainer justify="space-between" style={{ position: 'relative' }}>
         <DemiText
-          theme={theme}
           style={{
             lineHeight: '4rem',
             fontSize: '4.5rem',
@@ -74,7 +70,6 @@ export const DesktopBanner = ({
                 marginBottom: '3rem',
                 fontSize: '1.8rem',
               }}
-              theme={theme}
             >
               {el}
             </Text>

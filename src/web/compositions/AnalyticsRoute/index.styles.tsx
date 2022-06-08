@@ -72,15 +72,15 @@ export const TokenTitleBlockContainer = styled(({ theme, ...props }) => (
 
 export const Container = styled.div`
   height: 100%;
-  background: ${(props) => props.theme.palette.grey.additional};
+  background: ${(props) => props.theme.colors.gray9};
   font-family: Avenir Next;
 `
 
 export const TopBarContainer = styled((props) => <RowContainer {...props} />)`
   position: relative;
   width: calc(100% - 1.6rem);
-  border-bottom: ${(props) => props.theme.palette.border.new};
-  background: ${(props) => props.theme.palette.grey.additional};
+  border-bottom: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.gray9};
   height: 6rem;
   padding-left: 6rem;
   padding-right: 6rem;
@@ -201,6 +201,6 @@ export const Dot = styled.div`
 `
 
 export const GreenTitle = styled((props) => <TokenWhiteTitle {...props} />)`
-  color: ${(props) => props.theme.palette.green.analytics};
+  color: ${(props) => props.theme.colors.green7};
   padding-left: 1rem;
 `

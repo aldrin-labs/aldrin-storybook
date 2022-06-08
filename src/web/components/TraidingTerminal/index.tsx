@@ -1,5 +1,4 @@
-import { Grid, Theme } from '@material-ui/core'
-import { withTheme } from '@material-ui/styles'
+import { Grid } from '@material-ui/core'
 import { withFormik } from 'formik'
 import { toNumber } from 'lodash-es'
 import React, { CSSProperties, PureComponent, SyntheticEvent } from 'react'
@@ -59,9 +58,6 @@ export const TradeInputHeader = ({
   rightValue = 'Value',
   haveTooltip = false,
   tooltipText = '',
-  tooltipStyles = {},
-  onValueClick = () => {},
-  theme,
 }) => {
   return (
     <InputRowContainer
@@ -78,7 +74,6 @@ export const TradeInputHeader = ({
             enterDelay={10000}
           >
             <SeparateInputTitle
-              theme={theme}
               haveTooltip={haveTooltip}
               // style={{
               //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
@@ -91,10 +86,9 @@ export const TradeInputHeader = ({
         </>
       ) : (
         <SeparateInputTitle
-          theme={theme}
-          // style={{
-          //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
-          // }}
+        // style={{
+        //   borderBottom: haveTooltip ? '.1rem solid #e0e5ec' : 'none',
+        // }}
         >
           {title}
         </SeparateInputTitle>
@@ -104,9 +98,9 @@ export const TradeInputHeader = ({
       >
         {title}
       </SeparateInputTitle> */}
-      {needLine && <Line theme={theme} lineMargin={lineMargin} />}
+      {needLine && <Line lineMargin={lineMargin} />}
       {needRightValue && (
-        <BlueInputTitle theme={theme} onClick={() => onValueClick()}>
+        <BlueInputTitle onClick={() => onValueClick()}>
           {rightValue}
         </BlueInputTitle>
       )}
@@ -165,7 +159,6 @@ export const TradeInputContent = ({
   onChange: any
   header?: any
   inputStyles?: CSSProperties
-  theme?: Theme
   textDecoration?: string
   needTooltip?: boolean
   titleForTooltip?: string
@@ -251,7 +244,6 @@ const toFixedTrunc = (value, n) => {
   return `${v[0]}.${f}`
 }
 
-@withTheme()
 class TradingTerminal extends PureComponent<IPropsWithFormik> {
   state = {
     marketPrice: null,
@@ -546,7 +538,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       baseCurrencyAccount,
       quoteCurrencyAccount,
       isButtonLoaderShowing,
-      newTheme,
     } = this.props
 
     const needCreateOpenOrdersAccount = !openOrdersAccount
@@ -598,7 +589,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
         >
           <SwitchersContainer>
             <CustomSwitcher
-              theme={theme}
               firstHalfText="buy"
               secondHalfText="sell"
               buttonHeight="3rem"
@@ -610,21 +600,21 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: newTheme.colors.gray5,
+                background: theme.colors.gray5,
                 borderRadius: '2rem',
                 alignItems: 'center',
               }}
               firstHalfStyleProperties={{
-                activeColor: newTheme.colors.green7,
-                activeBackgroundColor: newTheme.colors.gray10,
+                activeColor: theme.colors.green7,
+                activeBackgroundColor: theme.colors.gray10,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: newTheme.colors.red4,
-                activeBackgroundColor: newTheme.colors.gray10,
+                activeColor: theme.colors.red4,
+                activeBackgroundColor: theme.colors.gray10,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
@@ -640,7 +630,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               }}
             />
             <CustomSwitcher
-              theme={theme}
               firstHalfText="market"
               secondHalfText="limit"
               buttonHeight="3rem"
@@ -652,22 +641,22 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: newTheme.colors.gray5,
+                background: theme.colors.gray5,
                 borderRadius: '2rem',
                 alignItems: 'center',
                 marginTop: '2rem',
               }}
               firstHalfStyleProperties={{
-                activeColor: newTheme.colors.gray0,
-                activeBackgroundColor: newTheme.colors.gray10,
+                activeColor: theme.colors.gray0,
+                activeBackgroundColor: theme.colors.gray10,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: newTheme.colors.gray0,
-                activeBackgroundColor: newTheme.colors.gray10,
+                activeColor: theme.colors.gray0,
+                activeBackgroundColor: theme.colors.gray10,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
@@ -703,7 +692,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                   direction="column"
                 >
                   <TradeInputContent
-                    theme={theme}
                     needTitle
                     type="text"
                     title="price"
@@ -720,7 +708,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               )} */}
               {tradingBotEnabled && !tradingBotIsActive && (
                 <FormInputContainer
-                  theme={theme}
                   haveTooltip={false}
                   tooltipText={
                     <>
@@ -736,13 +723,12 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                   title="Buy SRM Each"
                   lineMargin="0 1.2rem 0 1rem"
                   style={{
-                    borderBottom: theme.palette.border.main,
+                    borderBottom: theme.colors.gray1,
                     padding: '1rem 0',
                   }}
                 >
                   <InputRowContainer>
                     <TradeInputContent
-                      theme={theme}
                       haveSelector
                       symbol="sec"
                       width="calc(50% - .4rem)"
@@ -783,7 +769,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 {...{
                   pair,
                   needButtons: true,
-                  theme,
                   maxAmount,
                   minOrderSize,
                   priceType,
@@ -825,7 +810,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               {takeProfit && !tradingBotEnabled && priceType === 'market' && (
                 <InputRowContainer>
                   <TradeInputContent
-                    theme={theme}
                     padding="0 1.5% 0 0"
                     width="calc(50%)"
                     symbol="%"
@@ -891,7 +875,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                   pair={pair}
                   SOLAmount={SOLAmount}
                   sideType={sideType}
-                  theme={theme}
                   isLoading={isButtonLoaderShowing}
                   onClick={() => {
                     onSendOrder({ values, market, wallet })
@@ -899,7 +882,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 />
               )}
               <MobileWalletDropdown
-                theme={theme}
                 open={this.state.isWalletPopupOpen}
                 onClose={() => this.setState({ isWalletPopupOpen: false })}
                 setAutoConnect={setAutoConnect}
@@ -940,7 +922,6 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
           </ButtonBlock>
         </TerminalGridContainer>
         <ConnectWalletPopup
-          theme={theme}
           open={this.state.isConnectWalletPopupOpen}
           onClose={() => this.setState({ isConnectWalletPopupOpen: false })}
         />

@@ -183,7 +183,6 @@ export const ConfirmationPopup = ({
               direction="column"
             >
               <TradeInputContent
-                theme={theme}
                 needTitle
                 type="text"
                 title="price"
@@ -197,7 +196,6 @@ export const ConfirmationPopup = ({
             {...{
               pair,
               needButtons: false,
-              theme,
               maxAmount,
               minOrderSize,
               priceType,
@@ -332,11 +330,9 @@ export const ConfirmationPopup = ({
             }}
             style={{
               height: isMobile ? '7.5rem' : '4rem',
-              background: !isAwareOfHighSlippage
-                ? theme.palette.grey.title
-                : '',
+              background: !isAwareOfHighSlippage ? theme.colors.gray1 : '',
               width: '49%',
-              color: theme.palette.grey.terminal,
+              color: theme.colors.blue5,
             }}
           >
             <RowContainer

@@ -1,19 +1,14 @@
 import React, { ReactNode } from 'react'
 
-import { InputProps } from './types'
+import { TradeInputHeader } from '@sb/components/TraidingTerminal/index'
 import {
   TradeInput,
   TradeSelect,
   Coin,
 } from '@sb/components/TraidingTerminal/styles'
-import {
-  TradeInputContent,
-  TradeInputHeader,
-} from '@sb/components/TraidingTerminal/index'
-import { TooltipContainer, Tooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import { BeforeCharacter, InputRowContainer } from './styles'
-import { Theme } from '@material-ui/core'
+import { InputProps } from './types'
 
 export const Character = ({
   needCharacter,
@@ -47,7 +42,7 @@ export const Input = ({
   isValid = true,
   showErrors = false,
   inputStyles,
-  theme
+  theme,
 }: InputProps) => {
   return (
     <div
@@ -119,9 +114,8 @@ export const FormInputContainer = ({
   haveTooltip = false,
   tooltipText = '',
   tooltipStyles = {},
-  onValueClick = () => { },
-  theme,
-  style
+  onValueClick = () => {},
+  style,
 }: {
   title: string
   children: ReactNode
@@ -135,7 +129,6 @@ export const FormInputContainer = ({
   tooltipText?: string | React.ReactChild
   tooltipStyles?: React.CSSProperties
   onValueClick?: any
-  theme: Theme
   style: React.CSSProperties
 }) => {
   return (
@@ -146,7 +139,6 @@ export const FormInputContainer = ({
         >
           <Tooltip style={{ ...tooltipStyles }}>{tooltipText}</Tooltip> */}
       <TradeInputHeader
-        theme={theme}
         title={title}
         haveTooltip={haveTooltip}
         needLine={needLine}

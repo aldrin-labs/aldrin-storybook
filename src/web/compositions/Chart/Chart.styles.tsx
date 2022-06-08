@@ -422,15 +422,10 @@ export const TradingTabelContainer = styled(
   flex: auto;
 `
 
-export const MobileTradingTabelContainer = styled(
-  ({
-    isDefaultTerminalViewMode,
-    isTablesExpanded,
-    terminalViewMode,
-    ...rest
-  }) => <TablesContainer {...rest} />
-)`
-  background-color: ${(props) => props.theme.palette.white.background};
+export const MobileTradingTabelContainer = styled(({ ...rest }) => (
+  <TablesContainer {...rest} />
+))`
+  background-color: ${(props) => props.theme.colors.gray5};
   position: relative;
   height: ${(props) =>
     props.isDefaultTerminalViewMode

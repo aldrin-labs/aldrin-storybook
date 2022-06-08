@@ -158,7 +158,7 @@ export const ClearButton = styled(IconButton)`
 export const Line = styled.div`
   content: '';
   width: 100%;
-  background-color: ${(props) => props.theme.palette.grey.border};
+  background-color: ${(props) => props.theme.colors.gray0};
   margin: ${(props) => props.lineMargin || '0 0 0 1rem'};
   height: 0.1rem;
 `

@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import useMobileSize from '@webhooks/useMobileSize'
 import React, { useState } from 'react'
 
@@ -13,12 +12,10 @@ import {
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
 
 export const MobileBanner = ({
-  theme,
   localStorageProperty = '',
   title = 'Important note!',
   notification = [''],
 }: {
-  theme: Theme
   localStorageProperty: string
   title: string
   notification: string[]
@@ -38,10 +35,8 @@ export const MobileBanner = ({
     <Container showOnTheBottom direction="column" padding="6rem 4rem">
       <RowContainer justify="space-between" margin="0 0 4rem 0">
         <Row width="80%" direction="column" align="flex-start">
-          <DemiText theme={theme} style={{ margin: '0 0 4rem 0' }}>
-            {title}
-          </DemiText>
-          <Text theme={theme}>{notification.join()}</Text>
+          <DemiText style={{ margin: '0 0 4rem 0' }}>{title}</DemiText>
+          <Text>{notification.join()}</Text>
         </Row>
         <Row>
           <DemiText style={{ fontSize: '14rem' }}>!</DemiText>

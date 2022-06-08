@@ -280,14 +280,13 @@ export const DefaultViewComponent = (
           </TerminalContainer>
           <MobileTradingTabelContainer
             item
-            theme={theme}
             xs={6}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             isTablesExpanded={terminalViewMode === 'fullScreenTablesMobile'}
             terminalViewMode={terminalViewMode}
           >
             <TradingTable
-              newTheme={newTheme}
+              theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               maxLeverage={maxLeverage}
               selectedKey={selectedKey}

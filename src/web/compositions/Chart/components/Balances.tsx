@@ -1,4 +1,4 @@
-import { Grid, Theme } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import React, { useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 
@@ -110,7 +110,6 @@ const BalanceValuesContainer = styled(RowContainer)`
 export const Balances = ({
   getFundsQuery,
   pair,
-  theme,
   marketType,
   selectedKey,
   showFuturesTransfer = false,
@@ -123,7 +122,6 @@ export const Balances = ({
   getFundsQuery: {
     getFunds: FundsType[]
   }
-  theme: Theme
   pair: string[]
   marketType: 0 | 1
   selectedKey: Key
@@ -144,7 +142,7 @@ export const Balances = ({
   const balances = useBalances()
   const connection = useConnection()
 
-  const newTheme = useTheme()
+  const theme = useTheme()
 
   const { wallet, providerUrl } = useWallet()
   const { market, baseCurrency, quoteCurrency } = useMarket()
@@ -271,7 +269,7 @@ export const Balances = ({
               align="flex-start"
               xs={6}
               style={{
-                borderBottom: newTheme.colors.border,
+                borderBottom: theme.colors.gray6,
                 maxWidth: '100%',
               }}
             >

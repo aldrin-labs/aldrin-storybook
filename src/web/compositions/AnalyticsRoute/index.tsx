@@ -1,4 +1,3 @@
-import { withTheme } from '@material-ui/core/styles'
 import React from 'react'
 import { compose } from 'recompose'
 
@@ -21,19 +20,14 @@ import {
 } from './index.styles'
 import { IProps } from './index.types'
 
-const AnalyticsRoute = ({
-  markets,
-  theme,
-  publicKey,
-  selectedPair,
-}: IProps) => {
+const AnalyticsRoute = ({ markets, publicKey, selectedPair }: IProps) => {
   const isAllMarketsSelected = selectedPair === 'all'
 
   return (
-    <Container theme={theme}>
+    <Container>
       <RowContainer height="100%" direction="column">
-        <TopBarContainer theme={theme} justify="space-between">
-          <TopBar theme={theme} />
+        <TopBarContainer justify="space-between">
+          <TopBar />
         </TopBarContainer>
         <MainContentContainer height="100%">
           <BlockTemplate
@@ -41,11 +35,7 @@ const AnalyticsRoute = ({
             height="calc(100% - .1rem)"
             margin="0 0.4rem 0 0"
           >
-            <PairSelector
-              theme={theme}
-              publicKey={publicKey}
-              selectedPair={selectedPair}
-            />
+            <PairSelector publicKey={publicKey} selectedPair={selectedPair} />
           </BlockTemplate>
           <Row
             width="calc(83% - 0.4rem)"
@@ -54,11 +44,7 @@ const AnalyticsRoute = ({
             style={{ overflowY: 'auto' }}
           >
             {isAllMarketsSelected ? null : (
-              <MarketInfo
-                theme={theme}
-                selectedPair={selectedPair}
-                marketType={0}
-              />
+              <MarketInfo selectedPair={selectedPair} marketType={0} />
             )}
             <RowContainer
               height="calc(50% - 0.4rem)"
@@ -106,8 +92,4 @@ const AnalyticsRoute = ({
   )
 }
 
-export default compose(
-  withPublicKey,
-  withTheme(),
-  withMarketUtilsHOC
-)(AnalyticsRoute)
+export default compose(withPublicKey, withMarketUtilsHOC)(AnalyticsRoute)

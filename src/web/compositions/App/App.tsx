@@ -12,7 +12,6 @@ import styled from 'styled-components'
 
 import { Footer } from '@sb/components/Footer'
 import { Header } from '@sb/components/Header'
-import DevUrlPopup from '@sb/components/PopupForDevUrl'
 import { SolanaNetworkDegradedPerformanceBanner } from '@sb/components/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
@@ -20,7 +19,6 @@ import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { MarketProvider } from '@sb/dexUtils/markets'
 import { PreferencesProvider } from '@sb/dexUtils/preferences'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
-import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { WalletProvider } from '@sb/dexUtils/wallet'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
@@ -32,7 +30,6 @@ import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
@@ -87,21 +84,12 @@ const AppRaw = ({
   getViewModeQuery,
   location: { pathname: currentPage, search },
 }: any) => {
-  const [isDevUrlPopupOpen, openDevUrlPopup] = useLocalStorageState(
-    'isDevUrlPopupOpen',
-    true
-  )
   const theme = localStorage.getItem('theme')
 
   const [currentTheme, setCurrentTheme] = useState(theme)
   if (!theme) {
     localStorage.setItem('theme', 'dark')
   }
-  // const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
-  //   useLocalStorageState('isRebrandingPopupOpen', true)
-  // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
-  //   true
-  // )
 
   const isChartPage = /chart/.test(currentPage)
 
@@ -112,15 +100,10 @@ const AppRaw = ({
     localStorage.setItem('themeMode', 'dark')
   }
 
-  // const chartPageView =
-  //   getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
-
-  // const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
-  // TODO: Check this variable
-  // const pageIsRegistration = currentPage.includes('regist')
+
   const isRewards = currentPage.includes('rewards')
 
   const searchParamsObject = getSearchParamsObject({ search })
@@ -167,48 +150,10 @@ const AppRaw = ({
                           >
                             {children}
                           </AppInnerContainer>
-                          {/* {showFooter && (
-                          <FooterWithTheme isRewards={isRewards} />
-                        )} */}
                           {!isChartPage && <Footer />}
                           <MobileFooter />
-                          {/*
-                    <Footer
-                      isChartPage={isChartPage}
-                      fullscreenMode={fullscreen}
-                      showFooter={showFooter}
-                    /> */}
-                          {!MASTER_BUILD && !LOCAL_BUILD && (
-                            <DevUrlPopup
-                              open={isDevUrlPopupOpen}
-                              close={() => {
-                                openDevUrlPopup(false)
-                              }}
-                            />
-                          )}
-                          {/* <WarningBanner
-                          localStorageProperty={'isPhantomIssuesPopupOpen'}
-                          notification={[
-                            'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
-                            'In the meantime, you can import your Seed Phrase into Aldrin Wallet or any other wallet and interact with DEX using it.',
-                          ]}
-                          needMobile={false}
-                        /> */}
-                          {/* <RebrandingPopup
-                          open={isRebrandingPopupOpen}
-                          onClose={() => setIsRebrandingPopupOpen(false)}
-                        /> */}
-                          {/* {!isWalletMigrationToNewUrlPopupDone && (
-                        <WalletMigrationPopup
-                          open={isMigrationToNewUrlPopupOpen}
-                          close={() => {
-                            openMigrationToNewUrlPopup(false)
-                          }}
-                        />
-                      )} */}
                           <DetermineMobileWindowHeight />
                         </AppGridLayout>
-                        {/* <ShowWarningOnMoblieDevice /> */}
                       </PreferencesProvider>
                     </WalletProvider>
                   </MarketProvider>

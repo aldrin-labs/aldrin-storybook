@@ -468,7 +468,6 @@ class SimpleTabs extends React.Component<any, any> {
                   <BuyTerminal xs={6} item needBorderRight={!tradingBotEnabled}>
                     <TerminalContainer>
                       <TraidingTerminal
-                        newTheme={newTheme}
                         isButtonLoaderShowing={isButtonLoaderShowing}
                         baseCurrencyAccount={baseCurrencyAccount}
                         quoteCurrencyAccount={quoteCurrencyAccount}
@@ -673,7 +672,6 @@ class SimpleTabs extends React.Component<any, any> {
                     <SellTerminal theme={theme} xs={6} item>
                       <TerminalContainer>
                         <TraidingTerminal
-                          newTheme={newTheme}
                           isButtonLoaderShowing={isButtonLoaderShowing}
                           baseCurrencyAccount={baseCurrencyAccount}
                           quoteCurrencyAccount={quoteCurrencyAccount}

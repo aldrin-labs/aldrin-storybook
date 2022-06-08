@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
@@ -33,10 +32,8 @@ export const ccaiData = {
 }
 
 const TopBar = ({
-  theme,
   getDexTokensPricesQuery,
 }: {
-  theme: Theme
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const [CCAICirculatingSupply, setCirculatingSupply] = useState(0)
@@ -79,11 +76,8 @@ const TopBar = ({
           width="auto"
           src={RINLogo}
         />
-        <TokenWhiteTitle theme={theme}>RIN</TokenWhiteTitle>
-        <GreenTitle
-          style={{ color: showGreen ? '#53DF11' : '#F26D68' }}
-          theme={theme}
-        >
+        <TokenWhiteTitle>RIN</TokenWhiteTitle>
+        <GreenTitle style={{ color: showGreen ? '#53DF11' : '#F26D68' }}>
           {CCAIPrice === 0
             ? '-'
             : `$${formatNumberToUSFormat(

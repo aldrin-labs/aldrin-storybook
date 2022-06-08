@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
-import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import React from 'react'
+
 import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
-import SvgIcon from '../SvgIcon'
+import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+
 import ReverseArrows from '@icons/reverseArrows.svg'
 
+import SvgIcon from '../SvgIcon'
+
 export const InputWithReverseButton = ({
-  theme,
   mode,
   setMode,
   title,
@@ -20,11 +22,10 @@ export const InputWithReverseButton = ({
       style={{ width: '100%', position: 'relative' }}
     >
       <Input
-        theme={theme}
         needTitle
         title={title}
         value={value}
-        type={'number'}
+        type="number"
         pattern="\d*"
         onTitleClick={() => {
           if (mode === 'amount') {
@@ -38,8 +39,8 @@ export const InputWithReverseButton = ({
       />
       <SvgIcon
         src={ReverseArrows}
-        width={'2rem'}
-        height={'auto'}
+        width="2rem"
+        height="auto"
         style={{
           position: 'absolute',
           left: mode === 'amount' ? '10.5rem' : '7.5rem',
