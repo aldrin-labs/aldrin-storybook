@@ -4,12 +4,12 @@ import React from 'react'
 import { compose } from 'recompose'
 
 import { SvgIcon } from '@sb/components'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { StyledLink, Text } from '@sb/compositions/Addressbook'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getBuyBackAmountForPeriod } from '@core/graphql/queries/pools/getBuyBackAmountForPeriod'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
 import { getCurrentFarmingStateFromAll } from '@core/solana'

@@ -1,34 +1,33 @@
+import { Grid, Input, InputAdornment, Theme } from '@material-ui/core'
 import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
-import { compose } from 'recompose'
-import { Grid, Input, InputAdornment } from '@material-ui/core'
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { Column, Table, SortDirection } from 'react-virtualized'
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import { compose } from 'recompose'
 import 'react-virtualized/styles.css'
 
-import { Theme } from '@material-ui/core'
-import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { combineSelectWrapperData } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
-import search from '@icons/search.svg'
-
 import { SvgIcon } from '@sb/components'
-
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import {
   datesForQuery,
   excludedPairs,
   fiatRegexp,
 } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
+import { combineSelectWrapperData } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { useAllMarketsList } from '@sb/dexUtils/markets'
+
+import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
+
+import search from '@icons/search.svg'
 
 import {
   HeaderContainer,
   WhiteTitle,
   PairSelectorContainerGrid,
 } from '../index.styles'
-import { useAllMarketsList, useCustomMarkets } from '@sb/dexUtils/markets'
 
 const _sortList = ({ sortBy, sortDirection, data }) => {
-  let dataToSort = data
+  const dataToSort = data
   let newList = [...dataToSort]
   const isASCSort = sortDirection === SortDirection.ASC
 
@@ -48,11 +47,10 @@ const _sortList = ({ sortBy, sortDirection, data }) => {
         pairObjectB.volume24hChange.contentToSort -
         pairObjectA.volume24hChange.contentToSort
       )
-    } else {
-      return pairObjectB.symbol.contentToSort.localeCompare(
-        pairObjectA.symbol.contentToSort
-      )
     }
+    return pairObjectB.symbol.contentToSort.localeCompare(
+      pairObjectA.symbol.contentToSort
+    )
   })
 
   if (sortDirection === SortDirection.ASC) {
@@ -177,12 +175,13 @@ const PairSelector = ({
   const [processedSelectData, updateProcessedSelectData] = useState([])
   const allMarketsMap = useAllMarketsList()
 
-  const filtredMarketsByExchange = getSerumMarketDataQuery.getSerumMarketData.filter(
-    (el) =>
-      el.symbol &&
-      !Array.isArray(el.symbol.match(fiatRegexp)) &&
-      !excludedPairs.includes(el.symbol)
-  )
+  const filtredMarketsByExchange =
+    getSerumMarketDataQuery.getSerumMarketData.filter(
+      (el) =>
+        el.symbol &&
+        !Array.isArray(el.symbol.match(fiatRegexp)) &&
+        !excludedPairs.includes(el.symbol)
+    )
 
   const allMarketsValue = filtredMarketsByExchange
     .filter(
@@ -269,7 +268,7 @@ const PairSelector = ({
       <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
         <Input
           placeholder="Search"
-          disableUnderline={true}
+          disableUnderline
           style={{
             width: '100%',
             height: '3rem',
@@ -296,7 +295,7 @@ const PairSelector = ({
                 justifyContent: 'center',
                 cursor: 'pointer',
               }}
-              disableTypography={true}
+              disableTypography
               position="end"
               aria-autocomplete="none"
             >
@@ -330,7 +329,7 @@ const PairSelector = ({
               rowRenderer={(...props) =>
                 defaultRowRenderer({ ...props[0], selectedPair })
               }
-              rowClassName={'pairSelectorRow'}
+              rowClassName="pairSelectorRow"
               rowStyle={{
                 outline: 'none',
                 cursor: 'pointer',
@@ -355,7 +354,7 @@ const PairSelector = ({
               rowGetter={({ index }) => processedSelectData[index]}
             >
               <Column
-                label={``}
+                label=""
                 dataKey="emoji"
                 headerStyle={{
                   textTransform: 'capitalize',
@@ -369,7 +368,7 @@ const PairSelector = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
               <Column
-                label={`Name`}
+                label="Name"
                 dataKey="symbol"
                 headerStyle={{
                   textTransform: 'capitalize',
@@ -388,7 +387,7 @@ const PairSelector = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
               <Column
-                label={`Volume 24h`}
+                label="Volume 24h"
                 dataKey="volume24hChange"
                 headerStyle={{
                   textTransform: 'capitalize',

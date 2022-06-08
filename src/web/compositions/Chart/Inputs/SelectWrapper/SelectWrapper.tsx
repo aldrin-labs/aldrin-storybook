@@ -7,18 +7,18 @@ import { withRouter } from 'react-router'
 import { SortDirection } from 'react-virtualized'
 
 import { SvgIcon } from '@sb/components'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
 import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
 import { notify } from '@sb/dexUtils/notifications'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
+import { withMarketUtilsHOC } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { fiatPairs } from '@core/config/stableCoins'
 import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 
 import search from '@icons/search.svg'
 

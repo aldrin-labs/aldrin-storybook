@@ -1,24 +1,17 @@
-import React, { Component, PureComponent } from 'react'
-import styled from 'styled-components'
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import React from 'react'
 import { Column, Table } from 'react-virtualized'
 import 'react-virtualized/styles.css'
 
-import { IProps } from './SpreadTable.types'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withTheme } from '@material-ui/styles'
-
-import {
-  getDataForTable,
-  getDataFromTree,
-  rowStyles,
-} from '@core/utils/chartPageUtils'
-
-import defaultRowRenderer, { getRowHeight } from '../../utils'
-import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
-import useMobileSize from '@webhooks/useMobileSize'
 import { useOpenOrders } from '@sb/dexUtils/markets'
+import { withErrorFallback } from '@sb/hoc'
+
+import { getDataFromTree } from '@core/utils/chartPageUtils'
+
+import useMobileSize from '@webhooks/useMobileSize'
+
+import { BidsWrapper } from '../../OrderBookTableContainer.styles'
+import defaultRowRenderer, { getRowHeight } from '../../utils'
 
 const SpreadTable = ({
   theme,

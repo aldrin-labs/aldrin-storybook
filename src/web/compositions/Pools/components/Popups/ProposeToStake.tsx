@@ -7,6 +7,7 @@ import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { Button } from '@sb/components/Button'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import {
@@ -19,7 +20,6 @@ import { StakingPool } from '@sb/dexUtils/staking/types'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
 import {
   getStakedTokensTotal,

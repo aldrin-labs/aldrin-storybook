@@ -1,31 +1,29 @@
-import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
 import { Grid, Theme } from '@material-ui/core'
+import React, { useState } from 'react'
+import styled from 'styled-components'
 
-import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-
-import { Key, FundsType } from '@core/types/ChartTypes'
-import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
-
-import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
+import ChartCardHeader from '@sb/components/ChartCardHeader'
+import { Loading } from '@sb/components/Loading/Loading'
 import SvgIcon from '@sb/components/SvgIcon'
-import RefreshBtn from '@icons/refresh.svg'
-
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
+import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
+import { useConnection } from '@sb/dexUtils/connection'
 import {
   useBalances,
   useMarket,
   useSelectedBaseCurrencyAccount,
   useSelectedQuoteCurrencyAccount,
 } from '@sb/dexUtils/markets'
-import { useConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { notify } from '@sb/dexUtils/notifications'
 import { settleFunds } from '@sb/dexUtils/send'
 import { RINProviderURL } from '@sb/dexUtils/utils'
-import { notify } from '@sb/dexUtils/notifications'
+import { useWallet } from '@sb/dexUtils/wallet'
 
-import { Loading } from '@sb/components/Loading/Loading'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Key, FundsType } from '@core/types/ChartTypes'
+
+import RefreshBtn from '@icons/refresh.svg'
 
 export const BalanceTitle = styled.div`
   display: flex;
@@ -112,6 +110,35 @@ const BalanceValuesContainer = styled(RowContainer)`
   margin-bottom: ${(props) => (props.needMargin ? '0.8rem' : '0')};
 `
 
+export interface IProps {
+  pair: string
+  selectedKey: {
+    keyId: string
+    hedgeMode: boolean
+    isFuturesWarsKey: boolean
+  }
+  marketType: number
+  showFuturesTransfer: boolean
+  isFuturesWarsKeyQuery: {
+    isFuturesWarsKey: boolean
+  }
+  getPlannedRoundByKeyIdQuery: {
+    getPlannedRoundByKeyId: {
+      isAlreadyJoined: boolean
+      plannedRounds: any
+      plannedRoundInfo: {
+        startedAt: number
+        endedAt: number
+        bet: number
+      }
+    }
+  }
+}
+
+export interface IPropsBalancesWrapper extends IProps {
+  subscribeToMore: () => () => void
+}
+
 export const Balances = ({
   getFundsQuery,
   pair,
@@ -197,7 +224,7 @@ export const Balances = ({
 
       console.log('settleFunds result', result)
 
-      if (!!result) {
+      if (result) {
         notify({
           message: 'Settling funds successfully done',
           type: 'success',
@@ -245,7 +272,7 @@ export const Balances = ({
         style={{ borderRight: 'none', borderTop: '0' }}
       >
         <ChartCardHeader
-          padding={'0.6rem 0'}
+          padding="0.6rem 0"
           theme={theme}
           style={{
             display: 'flex',
@@ -278,7 +305,7 @@ export const Balances = ({
           container
           xs={12}
           direction="column"
-          wrap={'nowrap'}
+          wrap="nowrap"
           style={{
             height: 'calc(100% - 3rem)',
             padding: '0 .8rem .4rem .8rem',
@@ -308,7 +335,7 @@ export const Balances = ({
                 />
               </BalanceTitle> */}
               <BalanceValues>
-                <BalanceValuesContainer needMargin={true} theme={theme}>
+                <BalanceValuesContainer needMargin theme={theme}>
                   <BalanceFuturesTitle theme={theme}>
                     {pair[0]} Wallet
                   </BalanceFuturesTitle>
@@ -356,7 +383,7 @@ export const Balances = ({
                         borderColor={theme.palette.blue.serum}
                         backgroundColor={theme.palette.blue.serum}
                         // hoverBackground="#3992a9"
-                        transition={'all .4s ease-out'}
+                        transition="all .4s ease-out"
                         onClick={() => {
                           setShowTokenNotAdded(true)
                         }}
@@ -366,7 +393,7 @@ export const Balances = ({
                     ) : (
                       showSettle && (
                         <BtnCustom
-                          btnWidth={'100%'}
+                          btnWidth="100%"
                           height="2.5rem"
                           fontSize=".8rem"
                           padding=".5rem 0 .4rem 0;"
@@ -375,7 +402,7 @@ export const Balances = ({
                           borderColor={theme.palette.blue.serum}
                           backgroundColor={theme.palette.blue.serum}
                           // hoverBackground="#3992a9"
-                          transition={'all .4s ease-out'}
+                          transition="all .4s ease-out"
                           disabled={showLoading}
                           onClick={() => {
                             const { market, openOrders } = baseBalances
@@ -383,11 +410,7 @@ export const Balances = ({
                           }}
                         >
                           {showLoading ? (
-                            <Loading
-                              centerAligned={true}
-                              color={'#fff'}
-                              size={'1rem'}
-                            />
+                            <Loading centerAligned color="#fff" size="1rem" />
                           ) : (
                             'settle'
                           )}
@@ -416,7 +439,7 @@ export const Balances = ({
                 />
               </BalanceTitle> */}
               <BalanceValues>
-                <BalanceValuesContainer needMargin={true} theme={theme}>
+                <BalanceValuesContainer needMargin theme={theme}>
                   <BalanceFuturesTitle theme={theme}>
                     {pair[1]} Wallet
                   </BalanceFuturesTitle>
@@ -464,7 +487,7 @@ export const Balances = ({
                         borderColor={theme.palette.blue.serum}
                         backgroundColor={theme.palette.blue.serum}
                         // hoverBackground="#3992a9"
-                        transition={'all .4s ease-out'}
+                        transition="all .4s ease-out"
                         onClick={() => {
                           setShowTokenNotAdded(true)
                         }}
@@ -474,7 +497,7 @@ export const Balances = ({
                     ) : (
                       showSettle && (
                         <BtnCustom
-                          btnWidth={'100%'}
+                          btnWidth="100%"
                           height="2.5rem"
                           fontSize=".8rem"
                           padding=".5rem 0 .4rem 0;"
@@ -482,7 +505,7 @@ export const Balances = ({
                           btnColor={theme.palette.dark.main}
                           borderColor={theme.palette.blue.serum}
                           backgroundColor={theme.palette.blue.serum}
-                          transition={'all .4s ease-out'}
+                          transition="all .4s ease-out"
                           disabled={showLoading}
                           onClick={() => {
                             const { market, openOrders } = quoteBalances
@@ -490,11 +513,7 @@ export const Balances = ({
                           }}
                         >
                           {showLoading ? (
-                            <Loading
-                              centerAligned={true}
-                              color={'#fff'}
-                              size={'1rem'}
-                            />
+                            <Loading centerAligned color="#fff" size="1rem" />
                           ) : (
                             'settle'
                           )}
@@ -510,4 +529,17 @@ export const Balances = ({
       </CustomCard>
     </>
   )
+}
+
+export const BalancesWrapper = (props: IPropsBalancesWrapper) => {
+  const propsObject = {
+    isAlreadyJoined: false,
+    futuresWarsRoundBet: 0,
+    isFuturesWarsKey: false,
+    getFundsQuery: {
+      getFunds: [],
+    },
+  }
+
+  return <Balances {...props} {...propsObject} />
 }
