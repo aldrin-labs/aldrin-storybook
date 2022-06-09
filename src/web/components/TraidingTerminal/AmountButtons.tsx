@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react'
 
+import SvgIcon from '@sb/components/SvgIcon'
+import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import { SliderWithPriceAndPercentageFieldRowProps } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+
+import Info from '@icons/inform.svg'
+
+import { DarkTooltip } from '../TooltipCustom/Tooltip'
+import { InputWithReverseButton } from './InputWithReverseButton'
 import {
   AmountTooltip,
   PercentageTab,
@@ -8,15 +18,6 @@ import {
   ReverseInputContainer,
   StyledInputsContainer,
 } from './styles'
-
-import SvgIcon from '@sb/components/SvgIcon'
-import Info from '@icons/inform.svg'
-import { DarkTooltip } from '../TooltipCustom/Tooltip'
-import { SliderWithPriceAndPercentageFieldRowProps } from '@sb/compositions/Chart/components/SmartOrderTerminal/types'
-
-import { TradeInputContent as Input } from '@sb/components/TraidingTerminal/index'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { InputWithReverseButton } from './InputWithReverseButton'
 
 const percentages = [
   {
@@ -67,8 +68,8 @@ export const ButtonsWithAmountFieldRowForBasic = ({
     <>
       <InputRowContainer
         direction="column"
-        key={'amount'}
-        padding={'.6rem 0'}
+        key="amount"
+        padding=".6rem 0"
         justify={priceType === 'market' ? 'flex-end' : 'center'}
       >
         <StyledInputsContainer mode={priceType}>
@@ -76,28 +77,25 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             <Input
               theme={theme}
               needTitle
-              title={`Est. amount`}
-              value={localAmount}
-              type={'number'}
-              pattern="\d*"
-              pattern={isSPOTMarket ? '[0-9]+.[0-9]{8}' : '[0-9]+.[0-9]{3}'}
+              title="Est. amount"
+              value={formatNumberWithSpaces(localAmount)}
+              type="text"
               onChange={onAmountChange}
               symbol={pair[0]}
             />
           </InputRowContainer>
           <InputRowContainer
-            key={'total'}
-            padding={'0 0 0rem 0'}
-            direction={'column'}
+            key="total"
+            padding="0 0 0rem 0"
+            direction="column"
             style={{ width: '100%' }}
           >
             <Input
               theme={theme}
               needTitle
-              type={'number'}
-              pattern="\d*"
-              title={`total`}
-              value={localTotal || 0}
+              type="text"
+              title="total"
+              value={formatNumberWithSpaces(localTotal || 0)}
               onChange={onTotalChange}
               symbol={pair[1]}
             />
@@ -134,7 +132,6 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             <PercentageTabsContainer>
               {percentages.map((el) => (
                 <PercentageTab
-                  theme={theme}
                   isActive={false}
                   onClick={() => {
                     onAfterSliderChange(el.value)

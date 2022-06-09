@@ -1,7 +1,7 @@
-import { withTheme } from '@material-ui/core'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { Connection } from '@solana/web3.js'
 import React, { useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
@@ -13,7 +13,6 @@ import { filterOldFarmingTickets } from '@sb/dexUtils/common/filterOldFarmingTic
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
-import { Theme } from '@sb/types/materialUI'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -53,7 +52,6 @@ const getSOLFeesAmountToRestake = ({
 }
 
 const Popup = ({
-  theme,
   //   open,
   //   close,
   wallet,
@@ -63,7 +61,6 @@ const Popup = ({
   allTokensData,
   refreshTokensWithFarmingTickets,
 }: {
-  theme: Theme
   //   open: boolean
   //   close: () => void
   wallet: WalletAdapter
@@ -77,6 +74,7 @@ const Popup = ({
   const [showRetryMessage, setShowRetryMessage] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
   const [isTransactionFailed, setIsTransactionFailed] = useState(false)
+  const theme = useTheme()
 
   // first result for sol mint is native sol account which is using to cover fees
   const { amount: userSOLAmount } = allTokensData.find(
@@ -137,7 +135,6 @@ const Popup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={ClaimRewardsStyledPaper}
       fullScreen={false}
       onClose={() => setIsPopupTemporaryHidden(true)}
@@ -173,7 +170,7 @@ const Popup = ({
       {showRetryMessage && (
         <RowContainer margin="3rem 0 0 0" justify="flex-start">
           <Text
-            style={{ color: theme.palette.red.main, margin: '1rem 0' }}
+            style={{ color: theme.colors.red3, margin: '1rem 0' }}
             fontSize="1.8rem"
           >
             {isTransactionFailed
@@ -186,7 +183,7 @@ const Popup = ({
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
-            color: theme.palette.green.main,
+            color: theme.colors.green7,
           }}
         >
           {stripDigitPlaces(SOLFeesForRestake, 8)} SOL
@@ -202,7 +199,6 @@ const Popup = ({
           btnWidth="calc(35% - 1rem)"
           disabled={false}
           isUserConfident
-          theme={theme}
           onClick={() => {
             setIsPopupTemporaryHidden(true)
           }}
@@ -210,7 +206,7 @@ const Popup = ({
           Remind me later
         </Button>
         <Button
-          color="#651CE4"
+          color="#0E02EC"
           height="5.5rem"
           fontSize="1.7rem"
           btnWidth="calc(65% - 1rem)"
@@ -232,4 +228,4 @@ const Popup = ({
   )
 }
 
-export const RestakeAllPopup = withTheme()(Popup)
+export { Popup as RestakeAllPopup }
