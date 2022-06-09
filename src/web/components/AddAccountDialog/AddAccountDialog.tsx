@@ -322,9 +322,9 @@ class AddAccountDialog extends React.Component<IProps, IState> {
             <BtnCustom
               btnWidth="auto"
               height="auto"
-              btnColor="#651CE4"
+              btnColor="#0E02EC"
               borderRadius="1rem"
-              color="#651CE4"
+              color="#0E02EC"
               margin="1.6rem 0 0 2rem"
               padding=".5rem 1rem .5rem 0"
               fontSize="1.4rem"
@@ -482,8 +482,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                     <BtnCustom
                       btnWidth="45%"
                       borderRadius="8px"
-                      btnColor="#651CE4"
-                      borderColor="#651CE4"
+                      btnColor="#0E02EC"
+                      borderColor="#0E02EC"
                       padding="1.5rem"
                       height="auto"
                       borderWidth="2px"
@@ -598,8 +598,8 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                           <BtnCustom
                             btnWidth="45%"
                             borderRadius="8px"
-                            btnColor="#651CE4"
-                            borderColor="#651CE4"
+                            btnColor="#0E02EC"
+                            borderColor="#0E02EC"
                             padding="1.5rem"
                             height="auto"
                             borderWidth="2px"
@@ -687,7 +687,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                 </Grid>
               ) : (
                 <div style={{ padding: '350px 0 0 0' }}>
-                  <Loading centerAligned loaderColor="#651CE4" />
+                  <Loading centerAligned loaderColor="#0E02EC" />
                 </div>
               )}
 
@@ -706,7 +706,7 @@ class AddAccountDialog extends React.Component<IProps, IState> {
                   <BtnCustom
                     disabled={regularLoading}
                     borderRadius="8px"
-                    btnColor="#651CE4"
+                    btnColor="#0E02EC"
                     fontSize="1.6rem"
                     padding="1rem"
                     height="auto"

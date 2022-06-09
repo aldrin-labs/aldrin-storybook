@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTheme } from 'styled-components'
 
 import SvgIcon from '@sb/components/SvgIcon'
 
@@ -39,12 +40,11 @@ const LastTrade = (props: IProps) => {
     getPriceQuery,
     getMarkPriceQuery,
     marketType,
-    theme,
     markPrice,
     pricePrecision,
     terminalViewMode,
   } = props
-
+  const theme = useTheme()
   const [prevLastPrice, setPrevLastPrice] = useState(0)
   const [currentLastPrice, setCurrentLastPrice] = useState(0)
 
@@ -58,7 +58,6 @@ const LastTrade = (props: IProps) => {
     <>
       <LastTradeContainer
         terminalViewMode={terminalViewMode}
-        theme={theme}
         onClick={() =>
           updateTerminalPriceFromOrderbook(
             Number(markPrice).toFixed(pricePrecision)
@@ -74,8 +73,11 @@ const LastTrade = (props: IProps) => {
           }}
         >
           <LastTradePrice
-            style={{ color: isPriceDown ? '#F69894' : '#53DF11' }}
-            theme={theme}
+            style={{
+              color: isPriceDown
+                ? theme.colors.obRedFont
+                : theme.colors.obGreenFont,
+            }}
           >
             {Number(markPrice).toFixed(pricePrecision)}
           </LastTradePrice>
@@ -93,7 +95,6 @@ export const LastTradeMobile = (props: IProps) => {
     getPriceQuery,
     getMarkPriceQuery,
     marketType,
-    theme,
     markPrice,
     pricePrecision,
     terminalViewMode,
@@ -113,7 +114,6 @@ export const LastTradeMobile = (props: IProps) => {
     <>
       <LastTradeContainerMobile
         terminalViewMode={terminalViewMode}
-        theme={theme}
         onClick={() =>
           updateTerminalPriceFromOrderbook(
             Number(markPrice).toFixed(pricePrecision)
@@ -130,7 +130,6 @@ export const LastTradeMobile = (props: IProps) => {
         >
           <LastTradePrice
             style={{ color: isPriceDown ? '#F69894' : '#53DF11' }}
-            theme={theme}
           >
             {Number(markPrice).toFixed(pricePrecision)}
           </LastTradePrice>

@@ -1,17 +1,18 @@
 import React from 'react'
-import { TableWithSort } from '@sb/components'
+import { useTheme } from 'styled-components'
 
+import { TableWithSort } from '@sb/components'
 import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
-
 import { useFills } from '@sb/dexUtils/markets'
+
 import { combineTradeHistoryTable } from './TradeHistoryTable.utils'
 
 const TradeHistoryTable = (props) => {
-  const { tab, theme, marketType, handlePairChange } = props
-
+  const { tab, marketType, handlePairChange } = props
+  const theme = useTheme()
   const fills = useFills()
 
   const dataSource = (fills || []).map((fill) => ({
@@ -42,15 +43,21 @@ const TradeHistoryTable = (props) => {
       withCheckboxes={false}
       tableStyles={{
         cell: {
-          color: theme.palette.dark.main,
-          backgroundColor: 'inherit',
+          color: theme.colors.gray1,
           fontSize: '1rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
-          borderBottom: theme.palette.border.main,
+          borderBottom: `0.1rem solid ${theme.colors.gray5}`,
           boxShadow: 'none',
           paddingTop: '.8rem',
           paddingBottom: '.8rem',
+        },
+        heading: {
+          backgroundColor: theme.colors.gray6,
+          fontSize: '1.3rem',
+          borderRadius: 'none',
+          color: theme.colors.gray1,
+          borderBottom: `0.1rem solid ${theme.colors.gray5}`,
         },
         tab: {
           padding: 0,

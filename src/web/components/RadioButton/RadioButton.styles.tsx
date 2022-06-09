@@ -1,4 +1,3 @@
-import { COLORS } from '@variables/variables'
 import styled from 'styled-components'
 
 const Container = styled.div`
@@ -43,7 +42,7 @@ const Checkmark = styled.span`
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background-color: ${COLORS.newGreen};
+    background-color: ${(props) => props.theme.colors.green7};
   }
 `
 
@@ -53,7 +52,7 @@ const Input = styled.span<{ checked: boolean }>`
     props.checked
       ? `
   & ~ ${Checkmark} {
-    border: 1px solid ${COLORS.newGreen};
+    border: 1px solid ${props.theme.colors.green7};
     transition: all 0.25s ease-in-out;
 
     &:after {

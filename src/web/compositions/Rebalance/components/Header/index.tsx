@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 import { Text } from '@sb/compositions/Addressbook/index'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -9,14 +10,17 @@ const TotalTokensValueComponent = ({
   totalTokensValue,
 }: {
   totalTokensValue: number
-}) => (
-  <BalanceCard background="linear-gradient(135deg, #1331AD 0%, #95363F 100%)">
-    <Title>Wallet Balance</Title>
-    <Header fontSize="3.5rem" fontFamily="Avenir Next Demi">
-      ${totalTokensValue.toFixed(2)}
-    </Header>
-  </BalanceCard>
-)
+}) => {
+  const theme = useTheme()
+  return (
+    <BalanceCard background="rgba(80, 39, 191, 0.42)">
+      <Title>Wallet Balance</Title>
+      <Header fontSize="3.5rem" fontFamily="Avenir Next Demi">
+        ${totalTokensValue.toFixed(2)}
+      </Header>
+    </BalanceCard>
+  )
+}
 
 const MemoizedTotalTokensValueComponent = React.memo(TotalTokensValueComponent)
 
@@ -28,7 +32,7 @@ const HeaderNameRow = () => (
     direction="column"
     width="40%"
   >
-    <Header>Rebalance</Header>
+    <Header color="gray0">Rebalance</Header>
     <Text>Diversify your portfolio with ease.</Text>
   </Row>
 )
@@ -42,6 +46,7 @@ const RebalanceHeaderComponent = ({
   totalTokensValue: number
   leftToDistributeValue: number
 }) => {
+  const theme = useTheme()
   return (
     <RowContainer margin="0 0 2rem 0" height="calc(16%)">
       <MemoizedHeaderNameRow />
@@ -49,7 +54,7 @@ const RebalanceHeaderComponent = ({
         <MemoizedTotalTokensValueComponent
           totalTokensValue={totalTokensValue}
         />
-        <BalanceCard background="linear-gradient(135deg, #1331AD 0%, #3B8D17 100%)">
+        <BalanceCard background="rgba(80, 39, 191, 0.42)">
           <Title>Left to distribute</Title>{' '}
           <Header fontSize="3.5rem" fontFamily="Avenir Next Demi">
             ${leftToDistributeValue.toFixed(2)}
