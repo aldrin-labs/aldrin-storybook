@@ -1,5 +1,4 @@
 import { PublicKey } from '@solana/web3.js'
-import BN from 'bn.js'
 import { FormikProvider, useFormik } from 'formik'
 import React, { useState } from 'react'
 
@@ -8,16 +7,15 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { initializeFaming } from '@sb/dexUtils/pools/actions/initializeFarming'
+import { initializeFarmingV2 } from '@sb/dexUtils/farming'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { getPoolsProgramAddress } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
-import { getTokenNameByMintAddress } from '../../../../dexUtils/markets'
-import { useTokenInfos } from '../../../../dexUtils/tokenRegistry'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
@@ -80,25 +78,26 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       if (!values.farming.token.account) {
         throw new Error('No token account selected')
       }
-      const result = await initializeFaming({
-        farmingTokenMint: new PublicKey(values.farming.token.mint),
-        farmingTokenAccount: new PublicKey(values.farming.token.account),
-        tokenAmount: new BN(
-          (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(0)
-        ),
-        periodLength: new BN(HOUR),
-        tokensPerPeriod: new BN(
-          (tokensPerPeriod * tokensMultiplier).toFixed(0)
-        ),
-        noWithdrawPeriodSeconds: new BN(0),
-        vestingPeriodSeconds:
-          values.farming.vestingEnabled && values.farming.vestingPeriod
-            ? new BN(parseFloat(values.farming.vestingPeriod) * DAY)
-            : new BN(0),
-        pool: new PublicKey(pool.swapToken),
+      const result = await initializeFarmingV2({
+        stakeMint: new PublicKey(pool.poolTokenMint),
+        // farmingTokenMint: new PublicKey(values.farming.token.mint),
+        // farmingTokenAccount: new PublicKey(values.farming.token.account),
+        // tokenAmount: new BN(
+        //   (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(0)
+        // ),
+        // periodLength: new BN(HOUR),
+        // tokensPerPeriod: new BN(
+        //   (tokensPerPeriod * tokensMultiplier).toFixed(0)
+        // ),
+        // noWithdrawPeriodSeconds: new BN(0),
+        // vestingPeriodSeconds:
+        //   values.farming.vestingEnabled && values.farming.vestingPeriod
+        //     ? new BN(parseFloat(values.farming.vestingPeriod) * DAY)
+        //     : new BN(0),
+        // pool: new PublicKey(pool.swapToken),
         wallet,
         connection,
-        programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
+        // programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
       })
 
       if (result === 'success') {
