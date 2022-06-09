@@ -37,6 +37,7 @@ import {
   getNumberOfIntegersFromNumber,
   stripByAmount,
 } from '@core/utils/chartPageUtils'
+import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
 import { numberWithOneDotRegexp } from '@core/utils/helpers'
 import {
   stripDigitPlaces,
@@ -168,8 +169,8 @@ const SwapPage = ({
 
   const isSwapRouteExists = swapRoute.length !== 0
 
-  const baseSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
-  const quoteSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
+  const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
+  const outputSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
 
   let { amount: maxInputAmount } = getTokenDataByMint(
     userTokensData,
@@ -186,8 +187,8 @@ const SwapPage = ({
     return acc + stepFeeUSD
   }, 0)
 
-  const basePrice = dexTokensPricesMap.get(baseSymbol) || 0
-  const quotePrice = dexTokensPricesMap.get(quoteSymbol) || 0
+  const basePrice = dexTokensPricesMap.get(inputSymbol) || 0
+  const quotePrice = dexTokensPricesMap.get(outputSymbol) || 0
   const outputUSD = quotePrice * outputAmount
 
   const { amount: maxQuoteAmount } = getTokenDataByMint(
@@ -267,7 +268,12 @@ const SwapPage = ({
 
   return (
     <SwapPageLayout>
-      <SwapPageContainer direction="column" height="100%" wrap="nowrap">
+      <SwapPageContainer
+        justify="space-around"
+        direction="row"
+        height="100%"
+        wrap="nowrap"
+      >
         <SwapContentContainer direction="column">
           <RowContainer justify="flex-start" margin="0 0 2rem 0">
             <SwapSearch
@@ -292,8 +298,8 @@ const SwapPage = ({
               <Row>
                 <ValueButton>
                   <ReloadTimer
-                    duration={30}
-                    initialRemainingTime={30}
+                    duration={15}
+                    initialRemainingTime={15}
                     callback={refreshAll}
                     showTime
                     margin="0"
@@ -558,7 +564,7 @@ const SwapPage = ({
                   <RowContainer>
                     <RowContainer>
                       {getSwapButtonText({
-                        baseSymbol,
+                        baseSymbol: inputSymbol,
                         minInputAmount: 0,
                         isSwapRouteExists,
                         needEnterAmount,
@@ -608,7 +614,9 @@ const SwapPage = ({
                     <Row>
                       <RowValue>
                         <RowAmountValue>1</RowAmountValue>
-                        {priceShowField === 'input' ? baseSymbol : quoteSymbol}
+                        {priceShowField === 'input'
+                          ? inputSymbol
+                          : outputSymbol}
                       </RowValue>
                       <SvgIcon
                         src={ReverseArrows}
@@ -631,7 +639,9 @@ const SwapPage = ({
                             stripByAmount(estimatedPrice)
                           )}
                         </RowAmountValue>
-                        {priceShowField === 'input' ? quoteSymbol : baseSymbol}
+                        {priceShowField === 'input'
+                          ? outputSymbol
+                          : inputSymbol}
                       </RowValue>
                     </Row>
                   </BlackRow>
@@ -684,7 +694,7 @@ const SwapPage = ({
                     {formatNumberToUSFormat(
                       stripByAmount(outputAmountWithSlippage)
                     )}{' '}
-                    {quoteSymbol}
+                    {outputSymbol}
                   </RowValue>
                 </BlackRow>
               </RowContainer>
@@ -742,6 +752,20 @@ const SwapPage = ({
           open={isConnectWalletPopupOpen}
           onClose={() => setIsConnectWalletPopupOpen(false)}
         />
+        <div style={{ height: '100%', width: 'calc(100% - 40em)' }}>
+          <iframe
+            allowFullScreen
+            style={{ borderWidth: 0 }}
+            src={`${PROTOCOL}//${CHARTS_API_URL}/?symbol=${inputSymbol}/${outputSymbol}&marketType=2&exchange=serum&theme=serum&isMobile=false${
+              wallet.connected ? `&user_id=${wallet.publicKey}` : ''
+            }`}
+            height="100%"
+            width="100%"
+            id="tv_chart_serum"
+            title="Chart"
+            key={`${inputSymbol}/${outputSymbol}`}
+          />
+        </div>
       </SwapPageContainer>
     </SwapPageLayout>
   )

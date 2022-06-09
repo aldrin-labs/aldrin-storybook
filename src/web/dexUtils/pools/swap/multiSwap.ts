@@ -1,5 +1,12 @@
-import { Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
+import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import {
+  Connection,
+  LAMPORTS_PER_SOL,
+  PublicKey,
+  SystemProgram,
+} from '@solana/web3.js'
 
+import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { OpenOrdersMap } from '@sb/compositions/Rebalance/utils/loadOpenOrdersFromMarkets'
 import { getVariablesForPlacingOrder } from '@sb/compositions/Rebalance/utils/marketOrderProgram/getVariablesForPlacingOrder'
 import {
@@ -11,12 +18,13 @@ import {
   buildTransactions,
   signAndSendTransactions,
 } from '@sb/dexUtils/transactions'
-import { WalletAdapter } from '@sb/dexUtils/types'
+import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { notEmpty } from '@sb/dexUtils/utils'
 import { WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
 
 import { toBNWithDecimals } from '@core/utils/helpers'
 
+import { SWAP_FEES_SETTINGS } from '.'
 import { getSwapTransaction } from '../actions/swap'
 import { checkIsTransactionFromNativeSOL } from './checkIsTransactionFromNativeSOL'
 import { SwapRoute } from './getSwapRoute'
@@ -31,6 +39,7 @@ const multiSwap = async ({
   connection,
   swapRoute,
   openOrdersMap,
+  feeAccountTokens,
   selectedInputTokenAddressFromSeveral,
   selectedOutputTokenAddressFromSeveral,
 }: {
@@ -38,9 +47,12 @@ const multiSwap = async ({
   connection: Connection
   swapRoute: SwapRoute
   openOrdersMap: OpenOrdersMap
+  feeAccountTokens: TokenInfo[]
   selectedInputTokenAddressFromSeveral: string
   selectedOutputTokenAddressFromSeveral: string
 }) => {
+  if (!wallet.publicKey) return 'failed'
+
   const commonInstructions = []
   const commonSigners = []
 
@@ -52,6 +64,7 @@ const multiSwap = async ({
   })
 
   const firstSwapStep = swapRoute[0]
+  const lastSwapStep = swapRoute[swapRoute.length - 1]
 
   const { swapAmountInWithSlippage: firstStepSwapAmountIn } = firstSwapStep
 
@@ -318,18 +331,52 @@ const multiSwap = async ({
     }
   }
 
+  const { address: lastStepOutputTokenAccount } = tokenAccountsMap.get(
+    lastSwapStep.outputMint
+  )
+
+  const takeFeesFromAccount = new PublicKey(lastStepOutputTokenAccount)
+
+  const { address: feesDestination, decimals: feesDestinationTokenDecimals } =
+    getTokenDataByMint(feeAccountTokens, lastSwapStep.outputMint)
+
+  const refFeeAmount =
+    ((lastSwapStep.swapAmountOutWithSlippage * SWAP_FEES_SETTINGS.percentage) /
+      100) *
+    10 ** feesDestinationTokenDecimals
+
+  if (SWAP_FEES_SETTINGS.enabled && feesDestination) {
+    // charge extra fees
+    if (lastSwapStep.outputMint === WRAPPED_SOL_MINT.toString()) {
+      commonInstructions.push(
+        SystemProgram.transfer({
+          fromPubkey: wallet.publicKey,
+          toPubkey: new PublicKey(feesDestination),
+          lamports: parseInt(refFeeAmount.toString(), 10),
+        })
+      )
+    } else {
+      commonInstructions.push(
+        Token.createTransferInstruction(
+          TOKEN_PROGRAM_ID,
+          takeFeesFromAccount,
+          new PublicKey(feesDestination),
+          wallet.publicKey,
+          [],
+          parseInt(refFeeAmount.toString(), 10)
+        )
+      )
+    }
+  }
+
   // add close wSOL & OpenOrders ix
   commonInstructions.push(...cleanupInstructions)
 
-  const buildedTransactions = [
-    ...buildTransactions(
-      commonInstructions.map((ix) => ({ instruction: ix })),
-      wallet.publicKey,
-      commonSigners
-    ),
-    // { transaction: new Transaction().add(cleanupInstructions[0]), signers: [] },
-    // { transaction: new Transaction().add(cleanupInstructions[1]), signers: [] },
-  ]
+  const buildedTransactions = buildTransactions(
+    commonInstructions.map((ix) => ({ instruction: ix })),
+    wallet.publicKey,
+    commonSigners
+  )
 
   console.log('buildedTransactions', buildedTransactions)
 

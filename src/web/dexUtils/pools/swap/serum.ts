@@ -184,15 +184,24 @@ export async function getOrCreateOpenOrdersAddress({
         'processed'
       )
 
-      // result.cleanupInstructions = [
-      //   DexInstructions.closeOpenOrders({
-      //     market: serumMarket.address,
-      //     openOrders: openOrdersAddress,
-      //     owner: user,
-      //     solWallet: user,
-      //     programId: DEX_PID,
-      //   }),
-      // ]
+      result.cleanupInstructions = [
+        DexInstructions.consumeEvents({
+          market: serumMarket.address,
+          eventQueue: serumMarket.decoded.eventQueue,
+          coinFee: serumMarket.decoded.eventQueue,
+          pcFee: serumMarket.decoded.eventQueue,
+          openOrdersAccounts: [openOrdersAddress],
+          limit: 11,
+          programId: DEX_PID,
+        }),
+        DexInstructions.closeOpenOrders({
+          market: serumMarket.address,
+          openOrders: openOrdersAddress,
+          owner: user,
+          solWallet: user,
+          programId: DEX_PID,
+        }),
+      ]
 
       if (openOrdersAccountInfo) {
         return {
@@ -232,15 +241,15 @@ export async function getOrCreateOpenOrdersAddress({
     result.signers = [openOrdersAccount]
 
     result.cleanupInstructions = [
-      // DexInstructions.consumeEvents({
-      //   market: serumMarket.address,
-      //   eventQueue: serumMarket.decoded.eventQueue,
-      //   coinFee: serumMarket.decoded.eventQueue,
-      //   pcFee: serumMarket.decoded.eventQueue,
-      //   openOrdersAccounts: [openOrdersAccount],
-      //   limit: 11,
-      //   programId: DEX_PID,
-      // }),
+      DexInstructions.consumeEvents({
+        market: serumMarket.address,
+        eventQueue: serumMarket.decoded.eventQueue,
+        coinFee: serumMarket.decoded.eventQueue,
+        pcFee: serumMarket.decoded.eventQueue,
+        openOrdersAccounts: [openOrdersAccount],
+        limit: 11,
+        programId: DEX_PID,
+      }),
       DexInstructions.closeOpenOrders({
         market: serumMarket.address,
         openOrders: newOpenOrdersAddress,

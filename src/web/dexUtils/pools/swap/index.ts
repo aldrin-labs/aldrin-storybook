@@ -1,8 +1,17 @@
+import { PublicKey } from '@solana/web3.js'
+
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { checkIsPoolStable } from '../checkIsPoolStable'
 import { LoadedMarketWithOrderbookMap } from '../hooks/useAllMarketsOrderbooks'
+
+const SWAP_FEES_SETTINGS = {
+  percentage: 0.3,
+  enabled: false,
+  // TODO: change
+  account: new PublicKey('Tip5wgv8BjhBGujrNZSvhTSZ8eo6KLRM5i1xSq3n5e5'),
+}
 
 const getDefaultBaseToken = (isStableSwapTabActive: boolean) =>
   isStableSwapTabActive ? 'USDC' : 'SOL'
@@ -71,6 +80,7 @@ const getMarketForSwap = ({
 }
 
 export {
+  SWAP_FEES_SETTINGS,
   getDefaultBaseToken,
   getDefaultQuoteToken,
   getPoolsForSwapActiveTab,

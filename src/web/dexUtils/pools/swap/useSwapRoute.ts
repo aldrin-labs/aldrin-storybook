@@ -6,11 +6,13 @@ import { getMarketsMintsEdges } from '@sb/dexUtils/common/getMarketsMintsEdges'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useAllMarketsList } from '@sb/dexUtils/markets'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { useOwnerTokenAccounts } from '@sb/dexUtils/token/hooks/useOwnerTokenAccounts'
 import { AsyncSendSignedTransactionResult } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
+import { SWAP_FEES_SETTINGS } from '.'
 import { getPoolsMintsEdges } from '../getPoolsMintsEdges'
 import { useAllMarketsOrderbooks } from '../hooks/useAllMarketsOrderbooks'
 import { usePoolsBalances } from '../hooks/usePoolsBalances'
@@ -68,6 +70,7 @@ export const useSwapRoute = ({
     useOpenOrdersFromMarkets()
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
+  const [feeAccountTokens] = useOwnerTokenAccounts(SWAP_FEES_SETTINGS.account)
 
   const [inputAmount, setInputAmount] = useState<string | number>('')
   const [outputAmount, setOutputAmount] = useState<string | number>('')
@@ -280,6 +283,7 @@ export const useSwapRoute = ({
       connection,
       swapRoute,
       openOrdersMap,
+      feeAccountTokens,
       selectedInputTokenAddressFromSeveral,
       selectedOutputTokenAddressFromSeveral,
     })
