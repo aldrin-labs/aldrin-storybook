@@ -23,7 +23,8 @@ export const ENDPOINTS = [
 const connection = new MultiEndpointsConnection(
   [
     { url: 'https://solana-api.projectserum.com', weight: 2 },
-    // { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
+    { url: 'https://api.mainnet-beta.solana.com', weight: 2 },
+    { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 1 },
     // { url: 'https://aldrinexchange.genesysgo.net', weight: 3 },
   ],
   'confirmed'
