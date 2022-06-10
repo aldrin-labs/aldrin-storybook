@@ -40,7 +40,10 @@ import { getRandomInt } from '@core/utils/helpers'
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
 
-import { startFarmingV2 } from '../../../../../dexUtils/farming/actions/startFarming'
+import {
+  startFarmingV2,
+  stopFarmingV2,
+} from '../../../../../dexUtils/farming/actions'
 import { PoolPage } from '../../PoolPage'
 import { CreatePoolModal } from '../../Popups'
 import { AMMAuditPopup } from '../../Popups/AMMAuditPopup/AMMAuditPopup'
@@ -187,6 +190,25 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         }}
       >
         Start farming
+      </button>
+
+      <button
+        type="button"
+        onClick={async () => {
+          if (!farms) {
+            throw new Error('No farms')
+          }
+          // TODO: pass farmer address if it exists
+          await stopFarmingV2({
+            wallet,
+            connection,
+            amount: 10000,
+            farm: farms[0],
+            userTokens: userTokensData,
+          })
+        }}
+      >
+        Stop farming
       </button>
       <TabContainer>
         <div>

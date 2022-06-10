@@ -19,3 +19,11 @@ export interface StartFarmingV2Params {
   amount: number
   farmer?: PublicKey
 }
+
+export interface StopFarmingParams {
+  wallet: WalletAdapter
+  connection: AldrinConnection
+  farm: ProgramAccount<Farm>
+  userTokens: TokenInfo[]
+  amount: number
+}
