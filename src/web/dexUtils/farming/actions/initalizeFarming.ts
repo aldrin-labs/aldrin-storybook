@@ -22,7 +22,7 @@ export const initializeFarmingV2 = async (params: InitializeFarmingParams) => {
     signers
   )
 
-  await signAndSendTransactions({
+  return signAndSendTransactions({
     wallet,
     connection,
     transactionsAndSigners,

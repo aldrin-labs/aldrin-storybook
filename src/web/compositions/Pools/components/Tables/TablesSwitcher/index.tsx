@@ -1,7 +1,5 @@
-import { PublicKey, Transaction } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import { ApolloQueryResult } from 'apollo-client'
-import { BN } from 'bn.js'
 import React, { useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
@@ -36,14 +34,13 @@ import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/g
 import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql/queries/pools/getFeesEarnedByPool'
 import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
-import { buildAddHarvestInstructions } from '@core/solana'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
 
-import { signAndSendSingleTransaction } from '../../../../../dexUtils/transactions'
+import { startFarmingV2 } from '../../../../../dexUtils/farming/actions/startFarming'
 import { PoolPage } from '../../PoolPage'
 import { CreatePoolModal } from '../../Popups'
 import { AMMAuditPopup } from '../../Popups/AMMAuditPopup/AMMAuditPopup'
@@ -176,26 +173,20 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
       <button
         type="button"
         onClick={async () => {
-          const { instruction } = await buildAddHarvestInstructions({
+          if (!farms) {
+            throw new Error('No farms')
+          }
+          // TODO: pass farmer address if it exists
+          await startFarmingV2({
             wallet,
             connection,
-            tokenAmount: new BN(111111),
-            harvestMint: new PublicKey(
-              'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
-            ),
-            farm: new PublicKey('Cr3qUmwKzuyLy1E216fcTthHfbULZNeYLJCSwY6RnynZ'),
+            amount: 10000,
+            farm: farms[0],
+            userTokens: userTokensData,
           })
-          const tx = new Transaction().add(instruction)
-          const txID = await signAndSendSingleTransaction({
-            wallet,
-            connection,
-            transaction: tx,
-          })
-
-          console.log('txID:', txID)
         }}
       >
-        Add harvest
+        Start farming
       </button>
       <TabContainer>
         <div>
