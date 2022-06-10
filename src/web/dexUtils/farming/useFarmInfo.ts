@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 
-import { loadFarmAccountsData } from '@core/solana/programs/farming/fetchers/loadFarmAccountsData'
+import { loadFarmAccountsData } from '@core/solana'
 
 import { useConnection } from '../connection'
 import { useWallet } from '../wallet'

@@ -1,5 +1,7 @@
+import { PublicKey, Transaction } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import { ApolloQueryResult } from 'apollo-client'
+import { BN } from 'bn.js'
 import React, { useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
@@ -17,6 +19,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
+import { useFarmInfo } from '@sb/dexUtils/farming/useFarmInfo'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
@@ -33,12 +36,14 @@ import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/g
 import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql/queries/pools/getFeesEarnedByPool'
 import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
+import { buildAddHarvestInstructions } from '@core/solana'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 
 import KudelskiLogo from '@icons/kudelski.svg'
 import Loop from '@icons/loop.svg'
 
+import { signAndSendSingleTransaction } from '../../../../../dexUtils/transactions'
 import { PoolPage } from '../../PoolPage'
 import { CreatePoolModal } from '../../Popups'
 import { AMMAuditPopup } from '../../Popups/AMMAuditPopup/AMMAuditPopup'
@@ -164,8 +169,34 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
+  const { data: farms } = useFarmInfo()
+  console.log('farms:', farms)
   return (
     <>
+      <button
+        type="button"
+        onClick={async () => {
+          const { instruction } = await buildAddHarvestInstructions({
+            wallet,
+            connection,
+            tokenAmount: new BN(111111),
+            harvestMint: new PublicKey(
+              'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
+            ),
+            farm: new PublicKey('Cr3qUmwKzuyLy1E216fcTthHfbULZNeYLJCSwY6RnynZ'),
+          })
+          const tx = new Transaction().add(instruction)
+          const txID = await signAndSendSingleTransaction({
+            wallet,
+            connection,
+            transaction: tx,
+          })
+
+          console.log('txID:', txID)
+        }}
+      >
+        Add harvest
+      </button>
       <TabContainer>
         <div>
           <TableModeButton
