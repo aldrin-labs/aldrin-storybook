@@ -219,17 +219,21 @@ export const endSrinStaking = async (params: EndSrinStakingParams) => {
     },
   ]
   if (result.userNftReceipt && rewards && tier) {
-    const claimResult = await claimSrinNFTsInstructions({
-      wallet,
-      connection,
-      userNftReceipt: result.userNftReceipt,
-      stakingPool,
-      nftRewardGroup: rewards,
-    })
+    try {
+      const claimResult = await claimSrinNFTsInstructions({
+        wallet,
+        connection,
+        userNftReceipt: result.userNftReceipt,
+        stakingPool,
+        nftRewardGroup: rewards,
+      })
 
-    transactionsAndSigners.push({
-      transaction: new Transaction().add(...claimResult),
-    })
+      transactionsAndSigners.push({
+        transaction: new Transaction().add(...claimResult),
+      })
+    } catch (e) {
+      console.warn('Unable to claim NFTs', e)
+    }
   }
 
   return signAndSendTransactions({
