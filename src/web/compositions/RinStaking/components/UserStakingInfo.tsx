@@ -5,9 +5,11 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
@@ -18,11 +20,13 @@ import { notify } from '@sb/dexUtils/notifications'
 import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
 import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import { STAKING_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { restake } from '@sb/dexUtils/staking/actions'
 import {
   BUY_BACK_RIN_ACCOUNT_ADDRESS,
   DAYS_TO_CHECK_BUY_BACK,
 } from '@sb/dexUtils/staking/config'
 import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
+import { getSnapshotQueueWithAMMFees } from '@sb/dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
@@ -34,6 +38,7 @@ import {
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
 import { getRINCirculationSupply } from '@core/api'
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -48,18 +53,13 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import ClockIcon from '@icons/clock.svg'
 
-import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
-import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
-import { restake } from '../../../dexUtils/staking/actions'
-import { getSnapshotQueueWithAMMFees } from '../../../dexUtils/staking/getSnapshotQueueWithAMMFees'
-import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
 import InfoIcon from './assets/info.svg'
 import { StakingForm } from './StakingForm'
 import { RestakeButton, ClaimButton } from './styles'
-import { StakingInfoProps } from './types'
+import { InnerProps, OuterProps, StakingInfoProps } from './types'
 import { UnstakingForm } from './UnstakingForm'
 import {
   resolveStakingNotification,
@@ -72,7 +72,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
     stakingPool,
     currentFarmingState,
-    buyBackAmount,
     getDexTokensPricesQuery,
     treasuryDailyRewards,
   } = props
@@ -327,6 +326,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     await refreshAll()
     setLoading((prev) => ({ ...prev, claim: false }))
   }
+
   // TODO: separate it to another component
 
   const [RINCirculatingSupply, setCirculatingSupply] = useState(0)
@@ -352,7 +352,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const totalStakedUSD = tokenPrice * totalStakedRIN
 
   const buyBackAPR =
-    (buyBackAmount / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) * 365 * 100
+    (stakingPool.apr.buyBackAmountWithoutDecimals /
+      DAYS_TO_CHECK_BUY_BACK /
+      totalStakedRIN) *
+    365 *
+    100
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
@@ -490,7 +494,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   <InlineText>$</InlineText>&nbsp;
                   {stripToMillions(totalStakedUSD)}
                 </InlineText>{' '}
-                <InlineText margin="0" size="sm">
+                <InlineText size="sm">
                   {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
                   circulating supply
                 </InlineText>
@@ -637,7 +641,6 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
   const {
     stakingPool,
     currentFarmingState,
-    buyBackAmount,
     getDexTokensPricesQuery,
     treasuryDailyRewards,
   } = props
@@ -647,7 +650,6 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
       <UserStakingInfoContent
         stakingPool={stakingPool}
         currentFarmingState={currentFarmingState}
-        buyBackAmount={buyBackAmount}
         getDexTokensPricesQuery={getDexTokensPricesQuery}
         treasuryDailyRewards={treasuryDailyRewards}
       />

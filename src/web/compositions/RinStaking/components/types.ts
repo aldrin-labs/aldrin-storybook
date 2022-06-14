@@ -8,7 +8,6 @@ import { StakingPool } from '../../../dexUtils/staking/types'
 export interface OuterProps {
   currentFarmingState: FarmingState
   stakingPool: StakingPool
-  buyBackAmount: number
   treasuryDailyRewards: number
 }
 

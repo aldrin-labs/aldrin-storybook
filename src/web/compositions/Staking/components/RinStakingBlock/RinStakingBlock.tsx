@@ -59,7 +59,9 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
     (totalStakedRIN / (poolInfo?.rinCirculationSupply || totalStakedRIN)) * 100
 
   const buyBackAPR =
-    ((poolInfo?.buyBackAmount || 0) / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) *
+    ((poolInfo?.poolInfo.apr.buyBackAmountWithoutDecimals || 0) /
+      DAYS_TO_CHECK_BUY_BACK /
+      totalStakedRIN) *
     365 *
     100
 
