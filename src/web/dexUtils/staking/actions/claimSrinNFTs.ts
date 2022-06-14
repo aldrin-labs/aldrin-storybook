@@ -242,7 +242,7 @@ export const claimSrinNFTsInstructions = async (params: ClaimNftParams) => {
 
   const availableNfts = nfts.map((ro) => ({
     publicKey: ro.nftOwner,
-    nfts: NFTS_WHITELIST[ro.nftOwner.toBase58()],
+    nfts: NFTS_WHITELIST[ro.nftOwner.toBase58()] || [],
     quantity: ro.quantity,
   }))
 
@@ -274,6 +274,7 @@ export const claimSrinNFTsInstructions = async (params: ClaimNftParams) => {
     if (!nftToClaim) {
       throw new Error('No available NFTs for claim!')
     }
+    console.log('nftToClaim', nftToClaim)
     const existingNfts = nftToClaim.nfts.filter((nft) =>
       mintAddresses.has(nft.mint)
     )

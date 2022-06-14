@@ -154,6 +154,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const [amount, setAmount] = useState('')
   const [loading, setLoading] = useState(false)
+  const [isClaimModalClosed, setClaimModalClosed] = useState(false)
 
   const refreshAll = () =>
     Promise.all([
@@ -252,6 +253,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
       })
     } finally {
       await refreshAll()
+      setClaimModalClosed(true)
       setLoading(false)
     }
   }
@@ -703,7 +705,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
             </AdaptiveStakingBlock>
           </StakingContainer>
         </FlexBlock>
-        {!!reward && (
+        {!!reward && !isClaimModalClosed && (
           <Modal open onClose={() => {}} backdrop="dark">
             <BlockContent>
               <UnclaimedTitle>
