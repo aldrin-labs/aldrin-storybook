@@ -4,8 +4,8 @@ import React, { ReactNode } from 'react'
 import { SvgIcon } from '@sb/components'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
-
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+
 import Attention from '@icons/attention.svg'
 import ScalesIcon from '@icons/scales.svg'
 
@@ -140,7 +140,7 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
         <WarningIcon>
           <SvgIcon src={Attention} height="40px" />
         </WarningIcon>
-        <InlineText size="sm">
+        <InlineText color="primaryWhite" size="sm">
           Please make sure you have enough SOL to proceed transaction. You will
           need to sign several transactions, and then your pool will appear in
           the list of pools and in the &quot;Your Liquidity&quot; tab.

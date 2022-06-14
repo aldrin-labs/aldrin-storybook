@@ -37,7 +37,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
           {tiersGroup1.map((tier) => (
             <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
               <Row justify="space-between" margin="0 0 0.7em 0">
-                <InlineText size="md" weight={700}>
+                <InlineText size="md" weight={700} color="gray0">
                   {tier?.account.lockDuration.divn(DAY).toString()} Days
                 </InlineText>{' '}
                 <SvgIcon src={Lock} alt="locked" />
@@ -60,7 +60,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
           {tiersGroup2.map((tier) => (
             <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
               <Row justify="space-between" margin="0 0 0.7em 0">
-                <InlineText size="md" weight={700}>
+                <InlineText size="md" weight={700} color="gray0">
                   {tier?.account.lockDuration.divn(DAY).toString()} Days
                 </InlineText>{' '}
                 <SvgIcon src={Lock} alt="locked" />

@@ -262,7 +262,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                 {farmingTokens.map((mint) => (
                   <div key={`farming_reward_${mint}`}>
                     <LiquidityText weight={600}>
-                      <LiquidityText color="success">
+                      <LiquidityText color="green7">
                         {stripByAmountAndFormat(
                           farmingRemain.get(mint)?.tokensRemain || 0
                         )}{' '}
@@ -282,7 +282,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                     <>
                       {!!estimatedTime.days && (
                         <LiquidityText>
-                          <LiquidityText color="success">
+                          <LiquidityText color="green7">
                             {estimatedTime.days}{' '}
                           </LiquidityText>
                           <LiquidityText>
@@ -292,7 +292,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                       )}
                       {!!estimatedTime.hours && (
                         <LiquidityText>
-                          <LiquidityText color="success">
+                          <LiquidityText color="green7">
                             {' '}
                             {estimatedTime.hours}{' '}
                           </LiquidityText>
@@ -303,7 +303,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                       )}
                       {!!estimatedTime.minutes && (
                         <LiquidityText>
-                          <LiquidityText color="success">
+                          <LiquidityText color="green7">
                             {' '}
                             {estimatedTime.minutes}{' '}
                           </LiquidityText>
@@ -339,7 +339,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               <LiquidityTitle>Stake LP Tokens</LiquidityTitle>
               <div>
                 <LiquidityText weight={600}>
-                  <LiquidityText color="success">
+                  <LiquidityText color="green7">
                     {stripByAmountAndFormat(poolTokenAmount)}
                   </LiquidityText>{' '}
                   Unstaked
@@ -347,7 +347,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               </div>
               <div>
                 <LiquidityText weight={600}>
-                  <LiquidityText color="success">
+                  <LiquidityText color="green7">
                     {stripByAmountAndFormat(stakedAmount)}
                   </LiquidityText>{' '}
                   Staked

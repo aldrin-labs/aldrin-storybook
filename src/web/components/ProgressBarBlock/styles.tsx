@@ -16,7 +16,7 @@ export const ProgressBarContainer = styled.div<ProgressContainer>`
   line-height: 2em;
   border-radius: 7px;
   position: relative;
-  background: ${(props) => props.background || COLORS.cardsBack};
+  background: ${(props) => props.theme.colors.disabled || COLORS.cardsBack};
   padding: 0 1em;
 `
 

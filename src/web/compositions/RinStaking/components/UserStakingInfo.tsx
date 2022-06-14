@@ -408,7 +408,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   )
 
   const userEstRewardsUSD = isBalancesShowing
-    ? stripByAmountAndFormat(estimatedRewards, 2)
+    ? strippedEstRewardsUSD
     : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
 
   return (
@@ -418,9 +418,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           <GreenBlock>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
-                <InlineText color="lightGray" size="sm">
-                  Estimated Rewards
-                </InlineText>
+                <InlineText size="sm">Estimated Rewards</InlineText>
                 <DarkTooltip
                   title={
                     <p>
@@ -441,7 +439,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
 
               <FlexBlock alignItems="flex-end">
-                <InlineText size="lg" weight={700} color="newGreen">
+                <InlineText size="lg" weight={700} color="green7">
                   {formattedAPR}%{' '}
                   <InlineText
                     weight={400}
@@ -457,7 +455,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <FlexBlock alignItems="center">
                   <InlineText
                     size="sm"
-                    color="lightGray"
                     style={{
                       lineHeight: 'normal',
                       whiteSpace: 'nowrap',
@@ -483,18 +480,16 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           </GreenBlock>
         </Cell>
         <Cell colMd={6} colXl={3} col={12}>
-          <Block>
+          <Block inner>
             <BlockContentStretched>
-              <InlineText color="lightGray" size="sm">
-                Total staked{' '}
-              </InlineText>{' '}
+              <InlineText size="sm">Total staked </InlineText>{' '}
               <BigNumber>
                 <InlineText>{stripToMillions(totalStakedRIN)} </InlineText>{' '}
-                <InlineText color="primaryGray">RIN</InlineText>
+                <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
-                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  <InlineText>$</InlineText>&nbsp;
                   {stripToMillions(totalStakedUSD)}
                 </InlineText>{' '}
                 <InlineText margin="0" size="sm">
@@ -507,12 +502,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         </Cell>
 
         <Cell colMd={6} colXl={3} col={12}>
-          <Block>
+          <Block inner>
             <BlockContentStretched>
               <FlexBlock justifyContent="space-between" alignItems="center">
-                <InlineText color="lightGray" size="sm">
-                  Your stake
-                </InlineText>{' '}
+                <InlineText size="sm">Your stake</InlineText>{' '}
                 <SvgIcon
                   style={{ cursor: 'pointer' }}
                   src={
@@ -527,11 +520,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
               <BigNumber>
                 <InlineText>{totalStakedValue} </InlineText>{' '}
-                <InlineText color="primaryGray">RIN</InlineText>
+                <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
-                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  <InlineText>$</InlineText>&nbsp;
                   {totalStakedUsdValue}
                 </InlineText>{' '}
               </StretchedBlock>
@@ -539,12 +532,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           </Block>
         </Cell>
         <Cell colMd={6} colXl={3} col={12}>
-          <Block>
+          <Block inner>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
-                <InlineText color="lightGray" size="sm">
-                  Your rewards
-                </InlineText>
+                <InlineText size="sm">Your rewards</InlineText>
                 <DarkTooltip
                   title={
                     <>
@@ -566,11 +557,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
               <BigNumber>
                 <InlineText>{userEstRewards} </InlineText>{' '}
-                <InlineText color="primaryGray">RIN</InlineText>
+                <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
-                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  <InlineText>$</InlineText>&nbsp;
                   {userEstRewardsUSD}
                 </InlineText>{' '}
                 <FlexBlock>

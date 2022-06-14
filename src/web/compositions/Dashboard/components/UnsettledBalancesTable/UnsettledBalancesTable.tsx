@@ -1,5 +1,5 @@
-import { Theme } from '@material-ui/core'
 import React from 'react'
+import { DefaultTheme } from 'styled-components'
 
 import { TableWithSort } from '@sb/components'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
@@ -24,7 +24,7 @@ export const UnsettledBalancesTable = ({
   onSettleAll,
   refreshUnsettledBalances,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   userTokenAccountsMap: Map<string, TokenAccount>
   unsettledBalances: UnsettledBalance[]
   isSettlingAllBalances: boolean
@@ -95,11 +95,9 @@ export const UnsettledBalancesTable = ({
       style={{
         overflowX: 'hidden',
         height: '100%',
-        background: 'inherit',
+        background: theme.colors.gray6,
       }}
-      stylesForTable={{
-        backgroundColor: '#222429',
-      }}
+      stylesForTable={{ backgroundColor: theme.colors.gray5 }}
       defaultSort={{
         sortColumn: 'date',
         sortDirection: 'desc',
@@ -107,20 +105,21 @@ export const UnsettledBalancesTable = ({
       withCheckboxes={false}
       tableStyles={{
         cell: {
-          color: theme.palette.dark.main,
+          color: theme.colors.gray1,
           fontSize: '1.2rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
-          borderBottom: theme.palette.border.main,
+          borderBottom: theme.colors.gray5,
           backgroundColor: 'inherit',
           boxShadow: 'none',
-          paddingTop: '1rem',
-          paddingBottom: '1rem',
           fontFamily: 'Avenir Next Light',
         },
         heading: {
-          backgroundColor: '#222429',
-          fontSize: '1.3rem', // 1.2 if bold
+          backgroundColor: theme.colors.gray6,
+          fontSize: '1.3rem',
+          borderRadius: 'none',
+          color: theme.colors.gray1,
+          borderBottom: `0.1rem solid ${theme.colors.gray5}`,
         },
         tab: {
           padding: 0,
