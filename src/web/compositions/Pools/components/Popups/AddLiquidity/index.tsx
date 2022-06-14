@@ -1,8 +1,8 @@
-import { Theme, withTheme } from '@material-ui/core'
 import { PublicKey } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
+import { COLORS, UCOLORS } from '@variables/variables'
 import { BN } from 'bn.js'
 import React, { useEffect, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import AttentionComponent from '@sb/components/AttentionBlock'
@@ -34,15 +34,19 @@ import { findClosestAmountToSwapForDeposit } from '@sb/dexUtils/pools/swap/findC
 import { getFeesAmount } from '@sb/dexUtils/pools/swap/getFeesAmount'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
 import { STABLE_POOLS_WITH_IMPERMANENT_LOSS } from '@core/config/dex'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import Close from '@icons/closeIcon.svg'
 import Info from '@icons/TooltipImg.svg'
 
-import { sleep } from '../../../../../dexUtils/utils'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+  sleep,
+} from '../../../../../dexUtils/utils'
 import { Button } from '../../Tables/index.styles'
 import { InputWithCoins, InputWithTotal } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
@@ -50,7 +54,6 @@ import { SelectSeveralAddressesPopup } from '../SelectorForSeveralAddresses'
 import { PriceImpactWarningBlock, WarningLabel } from './AddLiquidity.styles'
 
 interface AddLiquidityPopupProps {
-  theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
@@ -69,10 +72,10 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     refreshAllTokensData,
     setPoolWaitingForUpdateAfterOperation,
     setIsRemindToStakePopupOpen,
-    theme,
   } = props
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
+  const theme = useTheme()
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
@@ -94,9 +97,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       8
     )
 
-    setBaseAmount(baseAmount)
+    const quoteValueForState = formatNumbersForState(quoteAmount)
+    const baseValueForState = formatNumbersForState(baseAmount)
+
+    setBaseAmount(baseValueForState)
     if (!isPoolEmpty && !autoRebalanceEnabled) {
-      setQuoteAmount(quoteAmount)
+      setQuoteAmount(quoteValueForState)
     }
   }
 
@@ -106,9 +112,12 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       8
     )
 
-    setQuoteAmount(quoteAmount)
+    const quoteValueForState = formatNumbersForState(quoteAmount)
+    const baseValueForState = formatNumbersForState(baseAmount)
+
+    setQuoteAmount(quoteValueForState)
     if (!isPoolEmpty && !autoRebalanceEnabled) {
-      setBaseAmount(baseAmount)
+      setBaseAmount(baseValueForState)
     }
   }
 
@@ -311,7 +320,25 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               }
             }}
           />
-          <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+          <CloseIconContainer
+            onClick={() => {
+              close()
+            }}
+          >
+            <svg
+              width="100%"
+              height="100%"
+              viewBox="0 0 19 19"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+                stroke="#F5F5FB"
+                strokeWidth="2"
+              />
+            </svg>
+          </CloseIconContainer>
         </Row>
       </Row>
       <RowContainer>
@@ -324,7 +351,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         <InputWithCoins
           placeholder="0"
           theme={theme}
-          value={baseAmount}
+          value={formatNumberWithSpaces(baseAmount)}
           onChange={setBaseAmountWithQuote}
           symbol={baseSymbol}
           alreadyInPool={withdrawAmountTokenA}
@@ -362,7 +389,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
         <InputWithCoins
           placeholder="0"
           theme={theme}
-          value={quoteAmount}
+          value={formatNumberWithSpaces(quoteAmount)}
           onChange={setQuoteAmountWithBase}
           symbol={quoteSymbol}
           alreadyInPool={withdrawAmountTokenB}
@@ -370,7 +397,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           needAlreadyInPool={false}
         />
         <Line />
-        <InputWithTotal theme={theme} value={total} />
+        <InputWithTotal theme={theme} value={formatNumberWithSpaces(total)} />
       </RowContainer>
 
       {!userPoolTokenAccount && (
@@ -378,7 +405,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           <WhiteText>Gas Fees</WhiteText>
           <WhiteText
             style={{
-              color: COLORS.success,
+              color: theme.colors.green7,
             }}
           >
             {costOfAddingToken} SOL
@@ -454,7 +481,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       {autoRebalanceEnabled && (
         <RowContainer justify="space-between" margin="2rem 0 0 0">
           <WhiteText>Auto-rebalance fee</WhiteText>
-          <WhiteText $color={COLORS.success}>
+          <WhiteText $color={UCOLORS.green4}>
             ${stripByAmount(autoSwapAmountOutFees * quoteTokenPrice)}
           </WhiteText>
         </RowContainer>
@@ -623,6 +650,4 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   )
 }
 
-const WithTheme = withTheme()(AddLiquidityPopup)
-
-export { WithTheme as AddLiquidityPopup }
+export { AddLiquidityPopup }

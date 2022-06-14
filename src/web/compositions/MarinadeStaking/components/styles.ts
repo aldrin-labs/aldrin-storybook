@@ -26,15 +26,16 @@ export const Container = styled.div`
   display: flex;
   flex-wrap: nowrap;
   margin: 0 0 2rem 0;
-  background: ${COLORS.cardsBack};
+  background: ${(props) => props.theme.colors.gray5};
   justify-content: space-between;
 `
 export const Button = styled.button<StyledSwitcher>`
   width: 49.5%;
   background: ${(props) =>
-    props.isActive ? COLORS.mainBlack : COLORS.cardsBack}};
+    props.isActive ? props.theme.colors.gray10 : props.theme.colors.gray5};
   padding: 0.5rem;
-  color: ${(props) => (props.isActive ? COLORS.white : COLORS.lightGray)};
+  color: ${(props) =>
+    props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray1};
   font-size: ${FONT_SIZES.sm};
   outline: none;
   border: none;
@@ -47,15 +48,15 @@ export const Button = styled.button<StyledSwitcher>`
 export const BlockWithRadio = styled.div<RadioContainer>`
   position: relative;
   width: ${(props) => props.width || '48%'};
-  background-color: ${(props) => props.backgroundColor || 'transparent'};
+  background-color: ${(props) => props.theme.colors.gray5 || 'transparent'};
   display: flex;
   padding: 1.5rem;
   flex-direction: column;
   justify-content: space-between;
   border: ${(props) =>
     props.checked
-      ? `0.1rem solid ${COLORS.success}`
-      : '0.1rem solid rgba(193, 193, 193, 0.3)'};
+      ? `0.1rem solid ${props.theme.colors.green7}`
+      : `0.1rem solid ${props.theme.colors.gray5}`};
   border-radius: 8px;
   height: ${(props) => props.height || '10rem'};
   margin: ${(props) => props.margin || '0'};

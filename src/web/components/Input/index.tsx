@@ -3,19 +3,19 @@ import { noop } from 'lodash-es'
 import React, { useRef } from 'react'
 
 import { InlineText } from '../Typography'
-import { Append, InputEl, InputWrap, Label } from './styles'
+import { Append, InputContainer, InputEl, InputWrap, Label } from './styles'
 import { FieldProps, InputProps } from './types'
 import { validateDecimal, validateNatural, validateRegexp } from './utils'
 
 export const INPUT_FORMATTERS = {
   NOP: (e: string) => e,
 
-  DECIMAL: (v: string, prevValue: string) => {
-    const value = v ? v.replace(',', '.') : v
+  DECIMAL: (v: string | number, prevValue: string | number) => {
+    const value = v ? `${v}`.replaceAll(',', '').replaceAll(' ', '') : `${v}`
     if (validateDecimal(value) || v === '') {
       return value
     }
-    return prevValue
+    return `${prevValue}`
   },
   NATURAL: (v: string, prevValue: string) => {
     if (validateNatural(v) || v === '') {
@@ -44,7 +44,7 @@ export const Input: React.FC<InputProps> = (props) => {
     onFocus,
     append,
     value = '',
-    size = 8,
+    size,
     name,
     formatter = INPUT_FORMATTERS.NOP,
     className = '',
@@ -68,10 +68,8 @@ export const Input: React.FC<InputProps> = (props) => {
       $withLabel={!!label}
       onClick={setFocus}
     >
-      <div>
-        <InlineText size="xs" color="lightGray">
-          {label && <Label>{label}</Label>}
-        </InlineText>
+      <InputContainer>
+        <InlineText size="xs">{label && <Label>{label}</Label>}</InlineText>
 
         <InputEl
           size={size}
@@ -85,7 +83,7 @@ export const Input: React.FC<InputProps> = (props) => {
           ref={input}
           autoComplete="off"
         />
-      </div>
+      </InputContainer>
 
       {append && <Append>{append}</Append>}
     </InputWrap>
@@ -93,16 +91,28 @@ export const Input: React.FC<InputProps> = (props) => {
 }
 
 export const InputField: React.FC<FieldProps> = (props) => {
-  const { onChange = noop, ...rest } = props
+  const {
+    onChange = noop,
+    value,
+    placeholder,
+    showPlaceholderOnDisabled,
+    disabled,
+    ...rest
+  } = props
   const [field, _meta, helpers] = useField(rest)
+
+  const newValue = disabled && showPlaceholderOnDisabled ? placeholder : value
+
   return (
     <Input
       {...rest}
-      value={field.value}
-      onChange={(value) => {
+      value={newValue || field.value}
+      disabled={disabled}
+      placeholder={placeholder}
+      onChange={(v) => {
         helpers.setTouched(true, true)
-        helpers.setValue(value, true)
-        onChange(value)
+        helpers.setValue(v, true)
+        onChange(v)
       }}
     />
   )

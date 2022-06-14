@@ -7,6 +7,7 @@ import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
 import { TokenSelectorField } from '@sb/components/TokenSelector'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { InlineText } from '@sb/components/Typography'
+import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { TokenInfo } from '@sb/dexUtils/types'
 
 import { DAY } from '@core/utils/dateUtils'
@@ -45,7 +46,7 @@ const resolveFarmingAvailableAmount = (
     firstDeposit,
   } = formValues
 
-  if (farmingToken.account === baseToken?.account) {
+  if (farmingToken?.account === baseToken?.account) {
     const totalBalance =
       userTokens.find((ut) => ut.address === baseToken?.account)?.amount || 0
     return Math.max(
@@ -89,11 +90,14 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
   const farmingEndDate =
     Date.now() + parseFloat(farming.farmingPeriod) * DAY * 1000 // to ms
 
+  const tokenName = getTokenNameByMintAddress(farming.token.mint)
+
   return (
     <>
       <CoinSelectors>
         <CoinWrap>
           <TokenSelectorField
+            disabled={tokens.length === 0}
             tokens={tokens}
             label="Choose the token you want to give to the farming"
             name="farming.token"
@@ -106,10 +110,17 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
         setFieldValue={form.setFieldValue}
         available={resolveFarmingAvailableAmount(userTokens, form.values)}
         mint={form.values.farming.token.mint}
+        disabled={!form.values.farming.token.account}
+        placeholder={
+          form.values.farming.token.account
+            ? '0'
+            : `No ${tokenName} tokens on wallet`
+        }
+        showPlaceholderOnDisabled
       />
       {form.errors.farming?.tokenAmount &&
         form.touched.farming?.tokenAmount && (
-          <ErrorText color="error">{form.errors.farming.tokenAmount}</ErrorText>
+          <ErrorText color="red3">{form.errors.farming.tokenAmount}</ErrorText>
         )}
       <br />
       <CoinSelectors>
@@ -122,7 +133,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             placeholder="from 7 to 60"
             append={
               <InputAppendContainer>
-                <InlineText color="primaryWhite" weight={600}>
+                <InlineText color="gray1" weight={600}>
                   Days
                 </InlineText>
               </InputAppendContainer>
@@ -136,19 +147,19 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
           <TokenAmountInput
             name="farming.tokenDayReward"
             value={farmingRewardFormatted}
-            mint={form.values.farming.token.mint}
+            mint={form.values.farming.token?.mint}
           />
         </NumberInputContainer>
       </CoinSelectors>
       {form.errors.farming?.farmingPeriod &&
         form.touched.farming?.farmingPeriod && (
-          <ErrorText color="error">
+          <ErrorText color="red3">
             {form.errors.farming?.farmingPeriod}
           </ErrorText>
         )}
       {farming.farmingPeriod && !form.errors.farming?.farmingPeriod && (
         <>
-          <InlineText color="hint" size="sm" weight={600}>
+          <InlineText color="gray1" size="sm" weight={600}>
             Farming will end at{' '}
             {dayjs(farmingEndDate).format('HH:mm MMM DD, YYYY')}
           </InlineText>
@@ -176,7 +187,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             name="initialLiquidityLockPeriod"
             append={
               <InputAppendContainer>
-                <InlineText color="primaryWhite" weight={600}>
+                <InlineText color="gray1" weight={600}>
                   % per Day
                 </InlineText>
               </InputAppendContainer>
@@ -193,7 +204,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             disabled={!farming.vestingEnabled}
             append={
               <InputAppendContainer>
-                <InlineText color="primaryWhite" weight={600}>
+                <InlineText color="gray1" weight={600}>
                   Days
                 </InlineText>
               </InputAppendContainer>
@@ -202,7 +213,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
           />
           {form.errors.farming?.vestingPeriod &&
             form.touched.farming?.vestingPeriod && (
-              <ErrorText color="error">
+              <ErrorText color="red3">
                 {form.errors.farming?.vestingPeriod}
               </ErrorText>
             )}

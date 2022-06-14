@@ -1,7 +1,9 @@
 import React from 'react'
+
 import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
-import { InlineText } from '@sb/components/Typography'
 import { TokenIconWithName } from '@sb/components/TokenIcon'
+import { InlineText } from '@sb/components/Typography'
+
 import { InputAppendContainer, TokensAvailableText } from './styles'
 
 type TokenAmountInputFieldProps = {
@@ -11,6 +13,9 @@ type TokenAmountInputFieldProps = {
   setFieldValue?: (field: string, value: any) => void
   disabled?: boolean
   onChange?: (value: string) => void
+  value?: string
+  placeholder?: string
+  showPlaceholderOnDisabled?: boolean
 }
 
 export const validateNumber = (v?: number, max?: number) => {
@@ -33,6 +38,9 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
     mint,
     disabled = false,
     onChange,
+    value,
+    placeholder = '0',
+    showPlaceholderOnDisabled,
   } = props
   return (
     <InputField
@@ -41,7 +49,9 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
       name={name}
       disabled={disabled}
       onChange={onChange}
-      placeholder="0"
+      value={value}
+      placeholder={placeholder}
+      showPlaceholderOnDisabled={showPlaceholderOnDisabled}
       append={
         <InputAppendContainer>
           <div>
@@ -50,7 +60,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
                 onClick={() => setFieldValue(name, available)}
               >
                 Available:&nbsp;{' '}
-                <InlineText color="success">{available}</InlineText>
+                <InlineText color="green3">{available}</InlineText>
               </TokensAvailableText>
             )}
           </div>

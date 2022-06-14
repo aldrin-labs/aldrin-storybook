@@ -1,9 +1,8 @@
-import { Theme } from '@material-ui/core'
-import { COLORS, FONTS } from '@variables/variables'
+import { FONTS } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
+import { DefaultTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Page } from '@sb/components/Layout'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -41,7 +40,7 @@ export const SelectCoinPopup = ({
   setBaseTokenAddressFromSeveral,
   setQuoteTokenAddressFromSeveral,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   open: boolean
   mints: string[]
   isBaseTokenSelecting: boolean
@@ -140,7 +139,6 @@ export const SelectCoinPopup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}
@@ -153,7 +151,7 @@ export const SelectCoinPopup = ({
       }}
       aria-labelledby="responsive-dialog-title"
     >
-      <Page $background="blockBlackBackground">
+      <RowContainer>
         <RowContainer padding="1.5em 0 0 0">
           <SearchInputWithLoop
             searchValue={searchValue}
@@ -262,7 +260,7 @@ export const SelectCoinPopup = ({
             }
           />
         </RowContainer>
-      </Page>
+      </RowContainer>
     </DialogWrapper>
   )
 }

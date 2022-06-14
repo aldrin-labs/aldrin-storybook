@@ -165,7 +165,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
         <SwapsList>
           {searchItems.map(({ tokenFrom, tokenTo, amountFrom, amountTo }) => (
             <SwapItem
-              color="primaryWhite"
+              color="gray0"
               onClick={() =>
                 selectRow({ tokenFrom, tokenTo, amountFrom, amountTo })
               }
@@ -175,15 +175,16 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
                 <TokenIcon mint={tokenFrom.mint} height="1.5em" />{' '}
                 <TokenIcon mint={tokenTo.mint} height="1.5em" />{' '}
               </Row>
-              <InlineText weight={600} color="primaryWhite">
-                {amountFrom} <TokenName>{tokenFrom.symbol}</TokenName> to{' '}
-                {amountTo} <TokenName>{tokenTo.symbol}</TokenName>
+              <InlineText weight={600} color="gray0">
+                {amountFrom}{' '}
+                <TokenName color="gray1">{tokenFrom.symbol}</TokenName> to{' '}
+                {amountTo} <TokenName color="gray1">{tokenTo.symbol}</TokenName>
               </InlineText>
             </SwapItem>
           ))}
           {searchItems.length === 0 && (
             <NoData>
-              <InlineText color="primaryWhite">No swaps found :(</InlineText>
+              <InlineText color="gray0">No swaps found :(</InlineText>
             </NoData>
           )}
         </SwapsList>

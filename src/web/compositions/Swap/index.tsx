@@ -1,9 +1,9 @@
-import { Theme } from '@material-ui/core'
 import withTheme from '@material-ui/core/styles/withTheme'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -25,6 +25,7 @@ import { getSwapStepFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD
 import { useSwapRoute } from '@sb/dexUtils/pools/swap/useSwapRoute'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -45,9 +46,8 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 
 import ArrowRightIcon from '@icons/arrowRight.svg'
-import ReverseArrows from '@icons/reverseArrows.svg'
-import Arrows from '@icons/switchArrows.svg'
 
+import { INPUT_FORMATTERS } from '../../components/Input'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
@@ -78,16 +78,15 @@ import {
 } from './utils'
 
 const SwapPage = ({
-  theme,
   publicKey,
   getPoolsInfoQuery,
   getDexTokensPricesQuery,
 }: {
-  theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
+  const theme = useTheme()
   const { wallet } = useWallet()
   const tokenInfos = useTokenInfos()
 
@@ -293,7 +292,7 @@ const SwapPage = ({
               }}
             />
           </RowContainer>
-          <SwapBlockTemplate theme={theme} width="100%" background="#1A1A1A">
+          <SwapBlockTemplate width="100%">
             <RowContainer margin="0 0 .5em 0" justify="space-between">
               <Row>
                 <ValueButton>
@@ -337,7 +336,7 @@ const SwapPage = ({
                     style={{
                       position: 'absolute',
                       fontFamily: 'Avenir Next Medium',
-                      color: '#fbf2f2',
+                      color: theme.colors.gray1,
                       fontSize: FONT_SIZES.sm,
                       right: '1.5rem',
                     }}
@@ -377,49 +376,41 @@ const SwapPage = ({
                   <SwapAmountInput
                     title="You Pay"
                     maxAmount={maxInputAmount}
-                    amount={formatNumberToUSFormat(inputAmount)}
+                    amount={formatNumberWithSpaces(inputAmount)}
                     disabled={false}
                     onChange={(v) => {
                       if (v === '') {
                         setFieldAmount(v, 'input')
                         return
                       }
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
 
                       if (
-                        numberWithOneDotRegexp.test(v) &&
-                        getNumberOfIntegersFromNumber(v) <= 8 &&
-                        getNumberOfDecimalsFromNumber(v) <= 8
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
                       ) {
-                        setFieldAmount(v, 'input')
+                        setFieldAmount(parsedValue, 'input')
                       }
                     }}
                     roundSides={['top-left']}
                     appendComponent={
                       <Row>
                         <SetAmountButton
-                          minWidth="0"
-                          $fontSize="xs"
-                          $fontFamily="demi"
-                          $borderRadius="xxl"
                           // onClick={halfButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $color="halfWhite"
-                          backgroundColor="#383B45"
                           style={{ marginRight: '0.8rem' }}
                         >
                           Half
                         </SetAmountButton>
                         <SetAmountButton
-                          minWidth="0"
-                          $fontSize="xs"
-                          $fontFamily="demi"
-                          $borderRadius="xxl"
                           // onClick={maxButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $color="halfWhite"
-                          backgroundColor="#383B45"
                         >
                           Max
                         </SetAmountButton>
@@ -439,7 +430,19 @@ const SwapPage = ({
                 </Row>
               </RowContainer>
               <ReverseTokensContainer onClick={reverseTokens}>
-                <SvgIcon src={Arrows} width="1em" height="1em" />
+                <svg
+                  width="11"
+                  height="10"
+                  viewBox="0 0 11 10"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5.40138 2.6212L8.00836 0.0142284L10.6153 2.6212L9.87064 3.3659L8.53449 2.03029L8.53502 8.96748L7.4817 8.96748L7.4817 2.03029L6.14608 3.3659L5.40138 2.6212ZM0.134766 6.88716L0.879465 6.14246L2.21508 7.47808L2.21508 0.54089L3.2684 0.54089L3.2684 7.47808L4.60402 6.14246L5.34872 6.88716L2.74174 9.49414L0.134766 6.88716Z"
+                    fill="white"
+                    fillOpacity="0.7"
+                  />
+                </svg>
               </ReverseTokensContainer>
               <RowContainer justify="space-between" margin=".4rem 0 0 0">
                 <Row width="calc(65% - .2rem)">
@@ -466,7 +469,7 @@ const SwapPage = ({
                       <Text
                         fontFamily="Avenir Next"
                         fontSize={FONT_SIZES.sm}
-                        color="#A6A6A6"
+                        color="gray1"
                       >
                         ≈$
                         {outputUSD
@@ -511,9 +514,9 @@ const SwapPage = ({
                   fontSize="1em"
                   padding="1.4em 5em"
                   borderRadius="1.1rem"
-                  borderColor={theme.palette.blue.serum}
+                  borderColor={theme.colors.blue5}
                   btnColor="#fff"
-                  backgroundColor={theme.palette.blue.serum}
+                  backgroundColor={theme.colors.blue5}
                   textTransform="none"
                   transition="all .4s ease-out"
                   style={{ whiteSpace: 'nowrap' }}
@@ -522,6 +525,7 @@ const SwapPage = ({
                 </BtnCustom>
               ) : (
                 <SwapButton
+                  theme={theme}
                   disabled={isButtonDisabled}
                   onClick={async () => {
                     if (!swapRoute) return
@@ -618,21 +622,19 @@ const SwapPage = ({
                           ? inputSymbol
                           : outputSymbol}
                       </RowValue>
-                      <SvgIcon
-                        src={ReverseArrows}
-                        height="0.9em"
-                        width="0.9em"
+                      <span
                         style={{
-                          transform: 'rotate(90deg)',
-                          margin: '0 0.5rem',
-                          cursor: 'pointer',
+                          color: theme.colors.white,
+                          padding: '0 0.5rem',
                         }}
                         onClick={() =>
                           setPriceShowField(
                             priceShowField === 'input' ? 'output' : 'input'
                           )
                         }
-                      />
+                      >
+                        ⇌
+                      </span>
                       <RowValue>
                         <RowAmountValue>
                           {formatNumberToUSFormat(
@@ -740,7 +742,6 @@ const SwapPage = ({
         />
 
         <TokenAddressesPopup
-          theme={theme}
           quoteTokenMintAddress={outputTokenMintAddress}
           baseTokenMintAddress={inputTokenMintAddress}
           allTokensData={userTokensData}
