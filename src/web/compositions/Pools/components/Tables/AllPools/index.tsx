@@ -47,6 +47,7 @@ export const AllPoolsTable: React.FC<AllPoolsProps> = (props) => {
     pools,
     feesByPool,
     tradingVolumes,
+    farms,
   } = props
 
   return (
@@ -56,6 +57,7 @@ export const AllPoolsTable: React.FC<AllPoolsProps> = (props) => {
       farmingTicketsMap={farmingTicketsMap}
       tokenPrices={dexTokensPricesMap}
       searchValue={searchValue}
+      farms={farms}
       prepareCell={(pool) =>
         prepareCell(pool, dexTokensPricesMap, feesByPool, tradingVolumes)
       }

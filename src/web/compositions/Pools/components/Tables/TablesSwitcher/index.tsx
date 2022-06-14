@@ -287,6 +287,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
             farmingTicketsMap={farmingTicketsMap}
+            farms={farms}
           />
         )}
 
@@ -298,6 +299,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
             farmingTicketsMap={farmingTicketsMap}
+            farms={farms}
           />
         )}
         {selectedTable === 'all' && (
@@ -308,6 +310,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
             farmingTicketsMap={farmingTicketsMap}
+            farms={farms}
           />
         )}
         {selectedTable === 'stablePools' && (
@@ -318,6 +321,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
             farmingTicketsMap={farmingTicketsMap}
+            farms={farms}
           />
         )}
         {selectedTable === 'userLiquidity' && (
@@ -328,6 +332,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             allTokensData={userTokensData}
             farmingTicketsMap={farmingTicketsMap}
             feesByPoolForUser={earnedFeesInPoolForUserMap}
+            farms={farms}
           />
         )}
       </TableContainer>
