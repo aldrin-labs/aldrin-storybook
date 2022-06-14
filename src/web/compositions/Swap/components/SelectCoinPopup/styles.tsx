@@ -33,3 +33,21 @@ export const StyledText = styled(({ ...props }) => <Text {...props} />)`
   font-size: ${FONT_SIZES.md};
   font-family: ${FONTS.demi};
 `
+
+export const TokenButton = styled.button`
+  display: flex;
+  align-items: center;
+  background: ${COLORS.background};
+  cursor: pointer;
+
+  padding: 0.5em 0.75em;
+  margin: 0.2em 0.8em 0.2em 0;
+
+  border: 0;
+  border-radius: 0.5em;
+`
+
+export const TokenButtonText = styled.span`
+  color: ${COLORS.white};
+  font-family: ${FONTS.demi};
+`

@@ -27,9 +27,9 @@ export const SearchInput = styled(Input)`
 export const SwapsList = styled.div`
   position: absolute;
   width: 100%;
-  top: 60px;
   background: ${COLORS.blockBackground};
-  border-radius: ${BORDER_RADIUS.md};
+  border-radius-bottom-left: ${BORDER_RADIUS.md};
+  border-radius-bottom-right: ${BORDER_RADIUS.md};
   z-index: 20;
   padding: 10px 0;
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0.55);

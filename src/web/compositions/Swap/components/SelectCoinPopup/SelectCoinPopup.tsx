@@ -20,7 +20,14 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import { SelectorRow, StyledText, UpdatedPaper } from './styles'
+import {
+  SelectorRow,
+  StyledText,
+  TokenButton,
+  TokenButtonText,
+  UpdatedPaper,
+} from './styles'
+import { useTopTradingTokens } from './useTopTradingTokens'
 
 export const SelectCoinPopup = ({
   theme,
@@ -47,6 +54,8 @@ export const SelectCoinPopup = ({
 }) => {
   const tokenInfos = useTokenInfos()
   const { wallet, connected } = useWallet()
+
+  const [topTradingTokens, mutate] = useTopTradingTokens()
 
   const [searchValue, onChangeSearch] = useState<string>('')
   const [selectedMint, setSelectedMint] = useState<string>('')
@@ -117,6 +126,18 @@ export const SelectCoinPopup = ({
     return () => window.removeEventListener('keydown', closePopup)
   }, [])
 
+  const selectMint = (mint: string) => {
+    const isSeveralCoinsWithSameAddress =
+      allTokensData.filter((el) => el.mint === mint).length > 1
+
+    if (isSeveralCoinsWithSameAddress) {
+      setSelectedMint(mint)
+      setIsSelectorForSeveralAddressesOpen(true)
+    } else {
+      selectTokenMintAddress(mint)
+    }
+  }
+
   return (
     <DialogWrapper
       theme={theme}
@@ -133,7 +154,7 @@ export const SelectCoinPopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <Page $background="blockBlackBackground">
-        <RowContainer padding="1.5em 0">
+        <RowContainer padding="1.5em 0 0 0">
           <SearchInputWithLoop
             searchValue={searchValue}
             onChangeSearch={onChangeSearch}
@@ -153,6 +174,20 @@ export const SelectCoinPopup = ({
           >
             <Text>Esc</Text>
           </Row>
+        </RowContainer>
+        <RowContainer justify="flex-start" padding="0.8em 0">
+          {/* top-8 tokens */}
+          {topTradingTokens.slice(0, 8).map((mint) => (
+            <TokenButton onClick={() => selectMint(mint)}>
+              <TokenIcon
+                mint={mint}
+                width="1.5em"
+                height="1.5em"
+                margin="0 0.5em 0 0"
+              />
+              <TokenButtonText>{tokenInfos.get(mint)?.symbol}</TokenButtonText>
+            </TokenButton>
+          ))}
         </RowContainer>
         <RowContainer>
           {sortedMints.map(
@@ -175,17 +210,7 @@ export const SelectCoinPopup = ({
                 <SelectorRow
                   justify="space-between"
                   style={{ cursor: 'pointer' }}
-                  onClick={() => {
-                    const isSeveralCoinsWithSameAddress =
-                      allTokensData.filter((el) => el.mint === mint).length > 1
-
-                    if (isSeveralCoinsWithSameAddress) {
-                      setSelectedMint(mint)
-                      setIsSelectorForSeveralAddressesOpen(true)
-                    } else {
-                      selectTokenMintAddress(mint)
-                    }
-                  }}
+                  onClick={() => selectMint(mint)}
                 >
                   <Row wrap="nowrap">
                     <TokenIcon mint={mint} width="3em" height="3em" />

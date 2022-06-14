@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import { useOutsideRef } from '@webhooks/useOutsideRef'
+import React, { useRef, useState } from 'react'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -26,6 +27,8 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   const [searchValue, setSearchValue] = useState('')
   const [listOpened, setListOpened] = useState(false)
   const [searchItems, setSearchItems] = useState<SearchItem[]>([])
+
+  const wrapperRef = useRef(null)
   const tokensMap = useTokenInfos()
 
   const onInput = (searchText: string) => {
@@ -124,6 +127,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
     setSearchValue(searchText)
     setListOpened(!!searchText)
   }
+
   const selectRow = (selected: SearchItem) => {
     onSelect(selected)
     setListOpened(false)
@@ -140,13 +144,19 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
     )
   }
 
+  useOutsideRef({ ref: wrapperRef, callback: () => setListOpened(false) })
+
   return (
-    <Container>
+    <Container ref={wrapperRef}>
       <SearchInput
         name="search"
         placeholder={'Try: "10 SOL to RIN"'}
         value={searchValue}
         onChange={onInput}
+        onFocus={() => {
+          console.log('open')
+          setListOpened(true)
+        }}
         append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
         borderRadius="md"
       />

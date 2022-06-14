@@ -40,6 +40,8 @@ export const Input: React.FC<InputProps> = (props) => {
   const {
     placeholder,
     onChange,
+    onBlur,
+    onFocus,
     append,
     value = '',
     size = 8,
@@ -76,6 +78,8 @@ export const Input: React.FC<InputProps> = (props) => {
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(formatter(e.target.value, value))}
+          onBlur={onBlur}
+          onFocus={onFocus}
           name={name}
           disabled={disabled}
           ref={input}
