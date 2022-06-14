@@ -14,9 +14,9 @@ const MAX_TPS_TO_SHOW_BANNER = 1500
 export const SolanaNetworkDegradedPerformanceBanner = () => {
   const { data: TPS } = useSolanaTPS()
 
-  if (typeof TPS !== 'number' || TPS > MAX_TPS_TO_SHOW_BANNER) {
-    return null
-  }
+  // if (typeof TPS !== 'number' || TPS > MAX_TPS_TO_SHOW_BANNER) {
+  //   return null
+  // }
 
   return (
     <StyledRowContainer>

@@ -54,7 +54,7 @@ export const ButtonsContainer = styled.div`
 
   ${Button} {
     margin: 0 2px;
-    background: ${(props) => props.theme.colors.black};
+    background: ${(props) => props.theme.colors.gray0};
     border: 0;
     color: ${(props) => props.theme.colors.red5};
     font-weight: 600;
