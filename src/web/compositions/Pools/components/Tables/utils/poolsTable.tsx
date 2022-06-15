@@ -25,6 +25,7 @@ import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
 import {
   stripByAmount,
   stripByAmountAndFormat,
+  stripUSD,
 } from '@core/utils/chartPageUtils'
 
 import CrownIcon from '@icons/crownIcon.svg'
@@ -215,8 +216,8 @@ export const preparePoolTableCell = (params: {
               {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD, 4)}` : '-'}
             </Text>
             <Text size="sm" margin="10px 0" color="gray1">
-              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseName} /{' '}
-              {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteName}
+              {stripUSD(baseName, pool.tvl.tokenA)} {baseName} /{' '}
+              {stripUSD(quoteName, pool.tvl.tokenB)} {quoteName}
             </Text>
           </>
         ),
