@@ -36,9 +36,10 @@ export type TransactionStatus = 'processing' | 'success' | 'error'
 
 export interface FarmingProcessingModalProps {
   onClose: () => void
-  status: TransactionStatus
+  status: string
   open: boolean
   prolongFarming: () => void
+  txId?: string
 }
 
 export interface PoolPageProps {

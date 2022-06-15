@@ -1,9 +1,9 @@
 import { Card } from '@material-ui/core'
-import { withTheme } from '@material-ui/styles'
 import useMobileSize from '@webhooks/useMobileSize'
 import BN from 'bn.js'
 import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import useSWR from 'swr'
 
 import { TriggerTitle } from '@sb/components/ChartCardHeader/styles'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
@@ -53,7 +53,7 @@ type OrderCancel = (orderId: string) => void
 type OrderAmend = (orderId: string, price: number) => void
 
 export const SingleChart = (props: SingleChartProps) => {
-  const { additionalUrl, theme } = props
+  const { additionalUrl } = props
   const { wallet } = useWallet()
   const isMobile = useMobileSize()
   const openOrders = useOpenOrders()
@@ -66,6 +66,8 @@ export const SingleChart = (props: SingleChartProps) => {
   const iframe = useRef<HTMLIFrameElement | null>(null)
   const cancelCallback = useRef<OrderCancel | null>(null)
   const amendCallback = useRef<OrderAmend | null>(null)
+
+  const { data: themeMode } = useSWR('theme')
 
   useEffect(() => {
     cancelCallback.current = async (orderId: string) => {
@@ -145,18 +147,19 @@ export const SingleChart = (props: SingleChartProps) => {
     }
   }, [openOrders])
 
+  console.log('themeMode', themeMode)
   return (
     <Wrapper>
       <iframe
         allowFullScreen
         style={{ borderWidth: 0 }}
-        src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${theme}&isMobile=${isMobile}${
+        src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${themeMode}&isMobile=${isMobile}${
           wallet.connected ? `&user_id=${wallet.publicKey}` : ''
         }`}
         height="100%"
-        id={`tv_chart_${theme}`}
+        id={`tv_chart_${themeMode}`}
         title="Chart"
-        key={`${theme}${additionalUrl}`}
+        key={`${themeMode}${additionalUrl}`}
         ref={iframe}
       />
     </Wrapper>
@@ -192,7 +195,6 @@ export const SingleChartWithButtons = (props: SingleChartWithButtonsProps) => {
       </TriggerTitle>
       <SingleChart
         key={`${theme}${base}/${quote}`}
-        theme={theme}
         currencyPair={currencyPair}
         additionalUrl={`/?symbol=${base}/${quote}&marketType=${marketType}&exchange=serum`}
       />
@@ -200,4 +202,4 @@ export const SingleChartWithButtons = (props: SingleChartWithButtonsProps) => {
   )
 }
 
-export default withTheme()(SingleChartWithButtons)
+export default SingleChartWithButtons
