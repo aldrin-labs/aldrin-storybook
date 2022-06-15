@@ -15,5 +15,5 @@ export const Container = styled(WideContent)`
   align-items: center;
 `
 export const StyledRowContainer = styled(RowContainer)`
-  background: ${(props) => props.theme.colors.red3};
+  background: ${(props) => props.theme.colors.red2};
 `

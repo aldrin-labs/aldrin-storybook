@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { Button } from '@sb/components/Button'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -18,7 +19,6 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { PoolInfo } from '../../index.types'
 import { restakeAll } from '../../utils/restakeAll'
-import { Button } from '../Tables/index.styles'
 import { BoldHeader, ClaimRewardsStyledPaper } from './index.styles'
 
 const getSOLFeesAmountToRestake = ({
@@ -192,12 +192,11 @@ const Popup = ({
 
       <RowContainer justify="space-between" margin="7rem 0 2rem 0">
         <Button
-          color="inherit"
-          height="5.5rem"
-          borderColor="#fff"
-          fontSize="1.7rem"
-          btnWidth="calc(35% - 1rem)"
+          $variant="outline-white"
           disabled={false}
+          $width="md"
+          $fontSize="lg"
+          $padding="lg"
           isUserConfident
           onClick={() => {
             setIsPopupTemporaryHidden(true)
@@ -206,10 +205,10 @@ const Popup = ({
           Remind me later
         </Button>
         <Button
-          color="#0E02EC"
-          height="5.5rem"
-          fontSize="1.7rem"
-          btnWidth="calc(65% - 1rem)"
+          $variant="primary"
+          $width="lg"
+          $fontSize="lg"
+          $padding="lg"
           disabled={operationLoading || isNotEnoughSOL}
           isUserConfident
           showLoader={operationLoading}
