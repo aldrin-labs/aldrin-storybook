@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js'
 import { ApolloQueryResult } from 'apollo-client'
 import BN from 'bn.js'
 import { FormikProvider, useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useHistory } from 'react-router'
 
 import { SvgIcon } from '@sb/components'
@@ -24,14 +24,19 @@ import {
 import { notify } from '@sb/dexUtils/notifications'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
+import { SendSignedTransactionResult } from '@sb/dexUtils/types'
 import {
+  sleep,
   formatNumbersForState,
   formatNumberWithSpaces,
-  sleep,
 } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { SendTransactionStatus, buildCreatePoolTransactions } from '@core/solana'
+import {
+  SendTransactionStatus,
+  buildCreatePoolTransactions,
+  SendTransactionDetails,
+} from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
@@ -40,7 +45,11 @@ import CrownIcon from '@icons/crownIcon.svg'
 import { PoolInfo } from '../../../index.types'
 import { FarmingForm, YES_NO } from './FarmingForm'
 import { PoolConfirmationData } from './PoolConfirmationData'
-import { PoolProcessingModal, TransactionStatus } from './PoolProcessingModal'
+import {
+  PoolProcessingModal,
+  TransactionStatus,
+  POOL_ERRORS,
+} from './PoolProcessingModal'
 import {
   AttentionIcon,
   Body,
@@ -75,23 +84,28 @@ interface EventLike {
 const checkPoolCreated = async (
   pool: PublicKey,
   refetch: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
-  retries = 20
+  retries = 15
 ): Promise<PoolInfo | null> => {
   if (retries === 0) {
     return null
   }
   const poolStr = pool.toBase58()
-  const data = await refetch()
 
-  const {
-    data: { getPoolsInfo },
-  } = data
-  const createdPool = getPoolsInfo.find((p) => p.swapToken === poolStr)
-  if (!createdPool) {
+  let retriesMade = 0
+  while (retriesMade < retries) {
+    const data = await refetch()
+
+    const {
+      data: { getPoolsInfo },
+    } = data
+    const createdPool = getPoolsInfo.find((p) => p.swapToken === poolStr)
+    if (createdPool) {
+      return createdPool
+    }
     await sleep(20_000)
-    return checkPoolCreated(pool, refetch, retries - 1)
+    retriesMade += 1
   }
-  return createdPool
+  return null
 }
 
 const USDC_MINT = ALL_TOKENS_MINTS_MAP.USDC.toString()
@@ -124,6 +138,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const [processing, setProcessing] = useState(false)
   const [processingStatus, setProcessingStatus] =
     useState<TransactionStatus>('processing')
+  const [error, setError] = useState<undefined | POOL_ERRORS>()
+  const [failedTxId, setFailedTxId] = useState<undefined | string>()
   const [processingStep, setProcessingStep] = useState(0)
   const [priceTouched, setPriceTouched] = useState(false)
   const stepsSize = steps.length
@@ -132,13 +148,29 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const connection = useConnection()
   const history = useHistory()
 
-  const tokens: Token[] = userTokens
-    .map((ut) => ({
-      mint: ut.mint,
-      account: ut.address,
-      balance: ut.amount,
-    }))
-    .sort((a, b) => a.mint.localeCompare(b.mint))
+  const tokens: Token[] = useMemo(
+    () =>
+      userTokens
+        .map((ut) => ({
+          mint: ut.mint,
+          account: ut.address,
+          balance: ut.amount,
+        }))
+        .sort((a, b) => a.mint.localeCompare(b.mint)),
+    [userTokens]
+  )
+
+  const setTransactionError = (
+    err: POOL_ERRORS,
+    txStatus: SendSignedTransactionResult,
+    txId?: string
+  ) => {
+    setError(err)
+    setProcessingStatus('error')
+    if (txStatus !== 'timeout') {
+      setFailedTxId(txId)
+    }
+  }
 
   const [initialValues] = useState<CreatePoolFormType>({
     price: '',
@@ -177,6 +209,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         throw new Error('No quote token selected!')
       }
       setProcessing(true)
+      setError(undefined)
       setProcessingStatus('processing')
       setProcessingStep(0)
 
@@ -260,9 +293,15 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
         if (createAccountsTxId.status !== SendTransactionStatus.CONFIRMED) {
-          throw new Error('createAccountsTxId failed')
+          setTransactionError(
+            createAccountsTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+              ? POOL_ERRORS.ACCOUNTS_CREATION_TIMEOUT
+              : POOL_ERRORS.ACCOUNTS_CREATION_FAILED,
+            createAccountsTxId.status,
+            createAccountsTxId.transactionId
+          )
+          return
         }
-        await sleep(1000)
 
         setProcessingStep(2)
         console.log('Set authorities...')
@@ -271,10 +310,16 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (setAuthoritiesTxId.status !== SendTransactionStatus.CONFIRMED) {
-          throw new Error('setAuthoritiesTxId failed')
+          setTransactionError(
+            setAuthoritiesTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+              ? POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT
+              : POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT,
+            setAuthoritiesTxId.status,
+            setAuthoritiesTxId.transactionId
+          )
+          return
         }
-        console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
-        await sleep(1000)
+        console.log('setAuthoritiesTxId: ', setAuthoritiesTxId.status)
 
         console.log('Initialize pool...')
         setProcessingStep(3)
@@ -283,10 +328,16 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (initPoolTxId.status !== SendTransactionStatus.CONFIRMED) {
-          throw new Error('initPoolTxId failed')
+          setTransactionError(
+            initPoolTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+              ? POOL_ERRORS.POOL_CREATION_TIMEOUT
+              : POOL_ERRORS.POOL_CREATION_FAILED,
+            initPoolTxId.status,
+            initPoolTxId.transactionId
+          )
+          return
         }
-        console.log('initPoolTxId: ', initPoolTxId)
-        await sleep(1000)
+        console.log('initPoolTxId: ', initPoolTxId.status)
 
         console.log('First deposit...')
         setProcessingStep(4)
@@ -295,11 +346,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (firstDepositTxId.status !== SendTransactionStatus.CONFIRMED) {
-          throw new Error('firstDepositTxId failed')
+          setTransactionError(
+            firstDepositTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+              ? POOL_ERRORS.DEPOSIT_TIMEOUT
+              : POOL_ERRORS.DEPOSIT_FAILED,
+            firstDepositTxId.status,
+            firstDepositTxId.transactionId
+          )
+          return
         }
-        await sleep(1000)
 
-        console.log('firstDepositTxId: ', firstDepositTxId)
+        console.log('firstDepositTxId: ', firstDepositTxId.status)
 
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
@@ -309,15 +366,21 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             connection,
           })
           if (farmingTxId.status !== SendTransactionStatus.CONFIRMED) {
-            throw new Error('farmingTxId failed')
+            setTransactionError(
+              farmingTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+                ? POOL_ERRORS.FARMING_CREATION_TIMEOUT
+                : POOL_ERRORS.FARMING_CREATION_FAILED,
+              farmingTxId.status,
+              farmingTxId.transactionId
+            )
+            return
           }
           await sleep(1000)
-          console.log('farmingTxId: ', farmingTxId)
+          console.log('farmingTxId: ', farmingTxId.status)
         }
 
         setProcessingStep(6)
 
-        // TODO: timeout?
         const createdPool = await checkPoolCreated(pool, refetchPools)
 
         setProcessingStep(-1)
@@ -799,8 +862,10 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         </FormikProvider>
         {processing && (
           <PoolProcessingModal
+            error={error}
             status={processingStatus}
             step={processingStep}
+            txId={failedTxId}
             onSuccess={() => {
               setProcessing(false)
               onClose()
