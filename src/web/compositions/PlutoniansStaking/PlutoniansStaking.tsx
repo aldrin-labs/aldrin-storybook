@@ -560,6 +560,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                       color="newGreen"
                                       size="lg"
                                       weight={700}
+                                      color="gray1"
                                     >
                                       No NFTs for that tier
                                     </InlineText>
