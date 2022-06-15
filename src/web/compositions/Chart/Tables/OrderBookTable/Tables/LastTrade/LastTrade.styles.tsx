@@ -1,6 +1,7 @@
+import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt'
 import React from 'react'
 import styled from 'styled-components'
-import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt'
+
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const LastTradeContainer = styled.div`
@@ -12,13 +13,13 @@ export const LastTradeContainer = styled.div`
   height: 4rem;
   margin: 0;
   text-align: center;
-  background: ${(props) => props.theme.palette.white.background};
-  border-top: ${(props) => props.theme.palette.border.main};
-  border-bottom: ${(props) => props.theme.palette.border.main};
+  background: ${(props) => props.theme.colors.border};
+  border-top: ${(props) => props.theme.colors.border};
+  border-bottom: ${(props) => props.theme.colors.border};
 
   @media (max-width: 600px) {
     background: none;
-    border-right: ${(props) => props.theme.palette.border.main};
+    border-right: ${(props) => props.theme.colors.border};
     height: 6rem;
     color: #fbf2f2;
     display: ${(props) =>
@@ -35,8 +36,8 @@ export const LastTradeContainerMobile = styled.div`
   margin: 0;
   text-align: center;
   background: none;
-  border-top: ${(props) => props.theme.palette.border.main};
-  border-bottom: ${(props) => props.theme.palette.border.main};
+  border-top: ${(props) => props.theme.colors.border};
+  border-bottom: ${(props) => props.theme.colors.border};
 
   @media (min-width: 600px) {
     display: none;
@@ -56,7 +57,7 @@ export const LastTradePrice = styled.span`
 
   font-size: 1.6rem;
   font-weight: bold;
-  color: ${(props) => props.theme.palette.dark.main};
+  color: ${(props) => props.theme.colors.black};
   letter-spacing: 0.075rem;
   padding-left: 1rem;
 

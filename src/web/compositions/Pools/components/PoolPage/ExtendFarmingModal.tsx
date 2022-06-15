@@ -41,10 +41,10 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const [farmingTxId, setFarmingTxId] = useState<string | undefined>()
 
   const tokens: Token[] = userTokens
-    .filter(
-      (ut) =>
-        farmingTokens.length === 0 ? true : farmingTokens.includes(ut.mint) //  Limit token select with already existing mints
-    )
+    // .filter(
+    //   (ut) =>
+    //     farmingTokens.length === 0 ? true : farmingTokens.includes(ut.mint) //  Limit token select with already existing mints
+    // )
     .map((ut) => ({
       mint: ut.mint,
       account: ut.address,

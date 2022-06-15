@@ -1,26 +1,27 @@
-import React from 'react'
-import styled from 'styled-components'
-import { compose } from 'recompose'
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
-import copy from 'clipboard-copy'
-
 import { Theme } from '@material-ui/core'
-import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
-import { getDecimalCount } from '@sb/dexUtils/utils'
-import WhiteArrow from '@icons/whiteArrow.svg'
-import CopyIcon from '@icons/copyIcon.png'
-import { SvgIcon } from '@sb/components/index'
+import copy from 'clipboard-copy'
+import React from 'react'
+import { compose } from 'recompose'
+import styled from 'styled-components'
 
-import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
+import { SvgIcon } from '@sb/components/index'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 import { getIsNotUSDTQuote } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
+import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
+import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
+import { getDecimalCount } from '@sb/dexUtils/utils'
 
+import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import {
   stripDigitPlaces,
   formatNumberToUSFormat,
 } from '@core/utils/PortfolioTableUtils'
-import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
+
+import CopyIcon from '@icons/copyIcon.png'
+import WhiteArrow from '@icons/whiteArrow.svg'
+
 import { Row, RowContainer, WhiteTitle } from '../../index.styles'
 import FeesInfo from './FeesInfo'
 
@@ -159,7 +160,6 @@ const MarketInfo = ({
 
   return (
     <BlockTemplate
-      theme={theme}
       width="100%"
       height="calc(20rem - 0.8rem)"
       margin="0 0 .8rem 0"

@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
 import { Theme } from '@material-ui/core'
-
-import { useLocalStorageState } from '@sb/dexUtils/utils'
 import useMobileSize from '@webhooks/useMobileSize'
+import React, { useState } from 'react'
+
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 import {
   Container,
@@ -10,13 +11,8 @@ import {
   DemiText,
   BlackButton,
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-export const MobileSerumIssueWarningPopup = ({
-  theme,
-}: {
-  theme: Theme
-}) => {
+export const MobileSerumIssueWarningPopup = ({ theme }: { theme: Theme }) => {
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
   const [isPopupOpen, setIsPopupOpen] = useLocalStorageState(
     'isSerumIssueWarningPopupOpen',
@@ -29,9 +25,9 @@ export const MobileSerumIssueWarningPopup = ({
   const onClose = () => setIsPopupOpen(false)
 
   return (
-    <Container showOnTheBottom={true} direction="column" padding="6rem 4rem">
+    <Container showOnTheBottom direction="column" padding="6rem 4rem">
       <RowContainer justify="space-between" margin="0 0 4rem 0">
-        <Row width="80%" direction={'column'}>
+        <Row width="80%" direction="column">
           <DemiText theme={theme} style={{ margin: '0 0 4rem 0' }}>
             Serum ecosystem is experiencing problems with settling the balance
             after limit orders.
@@ -49,16 +45,14 @@ export const MobileSerumIssueWarningPopup = ({
       <RowContainer justify="space-between" style={{ marginBottom: '2rem' }}>
         <BlackButton
           disabled={false}
-          theme={theme}
-          hoverBackground={'#20292d'}
+          hoverBackground="#20292d"
           onClick={onClose}
         >
           Never show again.
         </BlackButton>
         <BlackButton
           disabled={false}
-          theme={theme}
-          hoverBackground={'#20292d'}
+          hoverBackground="#20292d"
           onClick={() => setIsPopupTemporaryHidden(true)}
         >
           Ok.

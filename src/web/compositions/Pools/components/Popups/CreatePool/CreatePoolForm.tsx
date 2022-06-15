@@ -26,13 +26,16 @@ import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { sendSignedSignleTransactionRaw } from '@sb/dexUtils/transactions'
 import { SendSignedTransactionResult } from '@sb/dexUtils/types'
-import { sleep } from '@sb/dexUtils/utils'
+import {
+  sleep,
+  formatNumbersForState,
+  formatNumberWithSpaces,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
-import AttentionIcon from '@icons/attentionWhite.svg'
 import CrownIcon from '@icons/crownIcon.svg'
 
 import { PoolInfo } from '../../../index.types'
@@ -44,6 +47,7 @@ import {
   POOL_ERRORS,
 } from './PoolProcessingModal'
 import {
+  AttentionIcon,
   Body,
   ButtonContainer,
   Centered,
@@ -508,18 +512,29 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const priceFormatted = stripByAmount(price)
 
   const onBaseAmountChange = (value: string) => {
+    form.setFieldValue(
+      'firstDeposit.baseTokenAmount',
+      formatNumbersForState(value)
+    )
+
+    const quoteValueForState = formatNumbersForState(value)
+    const priceValueForState = formatNumbersForState(values.price)
+
     if (values.stableCurve) {
-      form.setFieldValue('firstDeposit.quoteTokenAmount', value)
+      form.setFieldValue('firstDeposit.quoteTokenAmount', quoteValueForState)
     } else if (priceTouched) {
-      const userDefinedPrice = parseFloat(values.price || '1')
-      const newQuoteAmount = parseFloat(value) * userDefinedPrice
+      const userDefinedPrice = parseFloat(priceValueForState || '1')
+      const newQuoteAmount = parseFloat(quoteValueForState) * userDefinedPrice
+
       if (newQuoteAmount) {
         form.setFieldValue('firstDeposit.quoteTokenAmount', newQuoteAmount)
         form.setTouched({ firstDeposit: { quoteTokenAmount: true } })
       }
     } else {
       const newPrice =
-        parseFloat(values.firstDeposit.quoteTokenAmount) / parseFloat(value)
+        parseFloat(
+          formatNumbersForState(values.firstDeposit.quoteTokenAmount)
+        ) / parseFloat(quoteValueForState)
 
       if (newPrice) {
         form.setFieldValue('price', stripByAmount(newPrice))
@@ -530,18 +545,27 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   }
 
   const onQuoteAmountChange = (value: string) => {
+    form.setFieldValue(
+      'firstDeposit.quoteTokenAmount',
+      formatNumbersForState(value)
+    )
+
+    const baseValueForState = formatNumbersForState(value)
+    const priceValueForState = formatNumbersForState(values.price)
+
     if (values.stableCurve) {
-      form.setFieldValue('firstDeposit.baseTokenAmount', value)
+      form.setFieldValue('firstDeposit.baseTokenAmount', baseValueForState)
     } else if (priceTouched) {
-      const userDefinedPrice = parseFloat(values.price || '1')
-      const newBaseAmount = parseFloat(value) / userDefinedPrice
+      const userDefinedPrice = parseFloat(priceValueForState || '1')
+      const newBaseAmount = parseFloat(baseValueForState) / userDefinedPrice
       if (newBaseAmount) {
         form.setFieldValue('firstDeposit.baseTokenAmount', newBaseAmount)
         form.setTouched({ firstDeposit: { baseTokenAmount: true } })
       }
     } else {
       const newPrice =
-        parseFloat(value) / parseFloat(values.firstDeposit.baseTokenAmount)
+        parseFloat(baseValueForState) /
+        parseFloat(formatNumbersForState(values.firstDeposit.baseTokenAmount))
       if (newPrice) {
         form.setFieldValue('price', stripByAmount(newPrice))
       }
@@ -589,7 +613,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   </CoinWrap>
                 </CoinSelectors>
                 {form.errors.baseToken && (
-                  <ErrorText color="error">{form.errors.baseToken}</ErrorText>
+                  <ErrorText color="red3">{form.errors.baseToken}</ErrorText>
                 )}
                 {/* <CheckboxWrap>
                   <CheckboxField
@@ -621,7 +645,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       name="initialLiquidityLockPeriod"
                       append={
                         <InputAppendContainer>
-                          <InlineText color="primaryWhite" weight={600}>
+                          <InlineText color="gray1" weight={600}>
                             Days
                           </InlineText>
                         </InputAppendContainer>
@@ -631,7 +655,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     />
                     {form.errors.initialLiquidityLockPeriod &&
                       form.touched.initialLiquidityLockPeriod && (
-                        <ErrorText color="error">
+                        <ErrorText color="red3">
                           {form.errors.initialLiquidityLockPeriod}
                         </ErrorText>
                       )}
@@ -639,7 +663,20 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 </CheckboxWrap>
 
                 <VestingExplanation>
-                  <SvgIcon src={AttentionIcon} width="11px" height="47px" />
+                  <AttentionIcon>
+                    <svg
+                      width="100%"
+                      height="100%"
+                      viewBox="0 0 11 47"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9.72 31.792H2.04V0.688H9.72V31.792ZM0.76 41.52C0.76 40.1547 1.25067 38.9813 2.232 38C3.256 37.0187 4.472 36.528 5.88 36.528C7.24533 36.528 8.44 36.9973 9.464 37.936C10.488 38.8747 11 40.0267 11 41.392C11 42.7573 10.488 43.9307 9.464 44.912C8.48267 45.8933 7.288 46.384 5.88 46.384C5.19733 46.384 4.536 46.256 3.896 46C3.29867 45.744 2.76533 45.4027 2.296 44.976C1.82667 44.5493 1.44267 44.0373 1.144 43.44C0.888 42.8427 0.76 42.2027 0.76 41.52Z"
+                        fill="#FFFFFF"
+                      />
+                    </svg>
+                  </AttentionIcon>
                   <InlineText size="sm">
                     Pools with locked liquidity will be marked with an
                     additional&nbsp;
@@ -660,26 +697,31 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <GroupLabel label="Set Base Token initial price" />
                 <FlexBlock>
                   <FlexBlock alignItems="center">
-                    <InlineText color="success" weight={600}>
+                    <InlineText weight={600} color="gray1">
                       1&nbsp;
                     </InlineText>
                     <TokenIconWithName mint={form.values.baseToken.mint} />{' '}
-                    &nbsp;=
+                    <InlineText weight={600} color="gray1">
+                      &nbsp;=
+                    </InlineText>
                   </FlexBlock>
                   <NumberInputContainer>
                     <TokenAmountInputField
                       disabled={values.stableCurve}
                       name="price"
                       mint={form.values.quoteToken.mint}
+                      value={formatNumberWithSpaces(form.values.price)}
                       onChange={(v) => {
                         setPriceTouched(true)
+
                         if (v) {
-                          const newPrice = parseFloat(v)
+                          const newPrice = parseFloat(formatNumbersForState(v))
                           const {
                             firstDeposit: { baseTokenAmount: bta = '0' },
                           } = values
 
                           const baseAmount = parseFloat(bta)
+
                           if (baseAmount) {
                             form.setFieldValue(
                               'firstDeposit.quoteTokenAmount',
@@ -702,6 +744,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.baseTokenAmount"
+                    value={formatNumberWithSpaces(
+                      form.values.firstDeposit.baseTokenAmount
+                    )}
                     setFieldValue={(field: string, value: string) => {
                       form.setFieldValue(field, value)
                       onBaseAmountChange(value)
@@ -711,17 +756,23 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     onChange={onBaseAmountChange}
                   />
                 </Centered>
-
                 {form.errors.firstDeposit?.baseTokenAmount &&
                   form.touched.firstDeposit?.baseTokenAmount && (
-                    <ErrorText color="error">
+                    <ErrorText color="red3">
                       {form.errors.firstDeposit.baseTokenAmount}
                     </ErrorText>
                   )}
-                <Centered>+</Centered>
+                <Centered>
+                  <InlineText weight={600} color="gray1">
+                    +
+                  </InlineText>
+                </Centered>
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.quoteTokenAmount"
+                    value={formatNumberWithSpaces(
+                      form.values.firstDeposit.quoteTokenAmount
+                    )}
                     setFieldValue={(field: string, value: string) => {
                       form.setFieldValue(field, value)
                       onQuoteAmountChange(value)
@@ -733,7 +784,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 </Centered>
                 {form.errors.firstDeposit?.quoteTokenAmount &&
                   form.touched.firstDeposit?.quoteTokenAmount && (
-                    <ErrorText color="error">
+                    <ErrorText color="red3">
                       {form.errors.firstDeposit.quoteTokenAmount}
                     </ErrorText>
                   )}
@@ -792,7 +843,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
               )}
               <ButtonContainer>
                 {isLastStep ? (
-                  <Button type="submit">Create Pool</Button>
+                  <Button $padding="lg" type="submit">
+                    Create Pool
+                  </Button>
                 ) : (
                   <ConnectWalletWrapper size="button-only">
                     <Button

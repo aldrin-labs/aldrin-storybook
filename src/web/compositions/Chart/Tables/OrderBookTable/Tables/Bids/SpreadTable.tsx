@@ -1,27 +1,21 @@
-import React, { Component, PureComponent } from 'react'
-import styled from 'styled-components'
-import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import React from 'react'
 import { Column, Table } from 'react-virtualized'
+import { useTheme } from 'styled-components'
 import 'react-virtualized/styles.css'
 
-import { IProps } from './SpreadTable.types'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withTheme } from '@material-ui/styles'
-
-import {
-  getDataForTable,
-  getDataFromTree,
-  rowStyles,
-} from '@core/utils/chartPageUtils'
-
-import defaultRowRenderer, { getRowHeight } from '../../utils'
-import { BidsWrapper } from '../../OrderBookTableContainer.styles'
 import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
-import useMobileSize from '@webhooks/useMobileSize'
 import { useOpenOrders } from '@sb/dexUtils/markets'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+
+import { withErrorFallback } from '@core/hoc/withErrorFallback'
+import { getDataFromTree } from '@core/utils/chartPageUtils'
+
+import useMobileSize from '@webhooks/useMobileSize'
+
+import { BidsWrapper } from '../../OrderBookTableContainer.styles'
+import defaultRowRenderer, { getRowHeight } from '../../utils'
 
 const SpreadTable = ({
-  theme,
   data,
   aggregation,
   openOrderHistory,
@@ -35,10 +29,21 @@ const SpreadTable = ({
 }) => {
   const openOrders = useOpenOrders()
   const isMobile = useMobileSize()
+  const theme = useTheme()
   const tableData = getDataFromTree(data.bids, 'bids').reverse()
-  const amountForBackground =
-    tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
 
+  const formattedData = tableData.map((el) => {
+    return {
+      ...el,
+      price: formatNumberWithSpaces(el.price),
+      size: formatNumberWithSpaces(el.size),
+      total: formatNumberWithSpaces(el.total),
+    }
+  })
+
+  const amountForBackground =
+    formattedData.reduce((acc, curr) => acc + +curr.size, 0) /
+    formattedData.length
   const [base, quote] = currencyPair.split('_')
   const showHeader = mode === 'bids' || terminalViewMode === 'mobileChart'
   return (
@@ -64,7 +69,7 @@ const SpreadTable = ({
               updateTerminalPriceFromOrderbook(+rowData.price)
             }}
             headerStyle={{
-              color: theme.palette.grey.text,
+              color: theme.colors.gray1,
               paddingLeft: '.5rem',
               paddingTop: '.25rem',
               marginLeft: 0,
@@ -74,7 +79,7 @@ const SpreadTable = ({
               fontFamily: 'Avenir Next Light',
               textTransform: 'capitalize',
             }}
-            rowCount={tableData.length}
+            rowCount={formattedData.length}
             rowHeight={getRowHeight({
               mode,
               height,
@@ -83,7 +88,7 @@ const SpreadTable = ({
               terminalViewMode,
             })}
             overscanRowCount={0}
-            rowGetter={({ index }) => tableData[index]}
+            rowGetter={({ index }) => formattedData[index]}
             rowRenderer={(...rest) =>
               defaultRowRenderer({
                 theme,
@@ -103,7 +108,7 @@ const SpreadTable = ({
               headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
               width={width}
               style={{
-                color: theme.palette.green.main,
+                color: theme.colors.obGreenFont,
                 fontFamily: 'Avenir Next Demi',
                 ...(isMobile ? { fontSize: '1.8rem' } : {}),
               }}
@@ -116,7 +121,7 @@ const SpreadTable = ({
                 headerStyle={{ textAlign: 'left', paddingRight: '.9rem' }}
                 style={{
                   textAlign: 'left',
-                  color: theme.palette.white.primary,
+                  color: theme.colors.white,
                 }}
               />
             )}
@@ -130,7 +135,7 @@ const SpreadTable = ({
               }}
               style={{
                 textAlign: 'right',
-                color: theme.palette.white.primary,
+                color: theme.colors.white,
                 ...(isMobile ? { fontSize: '1.8rem' } : {}),
               }}
             />
