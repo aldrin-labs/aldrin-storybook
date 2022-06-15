@@ -65,13 +65,16 @@ export const claimSrinNFTsInstructions = async (params: ClaimNftParams) => {
     if (!nftToClaim) {
       throw new Error('No available NFTs for claim!')
     }
-    console.log('nftToClaim', nftToClaim)
+    // console.log('nftToClaim', nftToClaim)
     const existingNfts = nftToClaim.nfts.filter((nft) =>
       mintAddresses.has(nft.mint)
     )
 
     const shuffledNfts = existingNfts.sort(() => 0.5 - Math.random())
 
+    if (shuffledNfts.length < nftToClaim.quantity) {
+      throw new Error('Not enough NFTs for claim!')
+    }
     return {
       publicKey: nftToClaim.publicKey,
       nfts: shuffledNfts.slice(0, nftToClaim.quantity),

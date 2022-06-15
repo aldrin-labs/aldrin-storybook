@@ -268,7 +268,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
       }
     } catch (e) {
       notify({
-        message: 'Something went wrong. Please try again later',
+        message: 'Something went wrong. Please contact Plutonians support.',
       })
     } finally {
       await refreshAll()
