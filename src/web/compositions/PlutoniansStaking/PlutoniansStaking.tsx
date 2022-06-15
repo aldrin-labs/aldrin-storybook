@@ -244,13 +244,28 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
     try {
       setLoading(true)
-      await claimSrinNFTs({
+      const result = await claimSrinNFTs({
         wallet,
         connection,
         userNftReceipt: receipt.publicKey,
         stakingPool: stakingPool.stakingPool,
         nftRewardGroup: reward,
       })
+
+      if (result === 'timeout') {
+        notify({
+          type: 'error',
+          message:
+            'Could not claim NFTs: confirmation timeout. Please try again later.',
+        })
+      }
+      if (result === 'failed') {
+        notify({
+          type: 'error',
+          message:
+            'Could not claim NFTs: something went wrong. Please contact Plutonians support.',
+        })
+      }
     } catch (e) {
       notify({
         message: 'Something went wrong. Please try again later',
