@@ -5,7 +5,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InvisibleInput } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { stripInputNumber } from '@sb/dexUtils/utils'
+import { formatNumbersForState } from '@sb/dexUtils/utils'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 
@@ -41,14 +41,14 @@ export const SwapAmountInput = ({
       roundSides={roundSides}
     >
       <RowContainer justify="space-between">
-        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="#C9C8CD">
+        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="gray1">
           {title}
         </Text>
         <Row>
           <Text
             fontSize={FONT_SIZES.sm}
             fontFamily="Avenir Next Demi"
-            color="#91e073"
+            color="green3"
             padding="0 0.8rem 0 0"
           >
             {maxAmount ? stripByAmount(maxAmount) : '0.00'}
@@ -67,7 +67,7 @@ export const SwapAmountInput = ({
             value={amount || ''}
             disabled={disabled}
             onChange={(e) => {
-              onChange(stripInputNumber(e, amount))
+              onChange(formatNumbersForState(e.target.value))
             }}
             placeholder={placeholder}
           />

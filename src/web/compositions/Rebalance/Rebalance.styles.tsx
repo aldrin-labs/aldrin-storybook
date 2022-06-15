@@ -1,5 +1,5 @@
+import { Tab, Tabs } from '@material-ui/core'
 import React, { CSSProperties, HTMLAttributes } from 'react'
-import { Dialog, DialogContent, StepLabel, Tab, Tabs } from '@material-ui/core'
 import styled from 'styled-components'
 
 export interface TextInterface extends HTMLAttributes<HTMLSpanElement> {
@@ -79,8 +79,7 @@ export const Input = styled(({ style, ...props }) => (
 export const ListCard = styled.div`
   width: ${(props) => props.width || '100%'};
   height: ${(props) => props.height || '20rem'};
-  background: #222429;
-  border: 0.1rem solid #3a475c;
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 1rem;
   display: flex;
   justify-content: flex-start;

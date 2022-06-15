@@ -1,8 +1,6 @@
-import { Chart, DoughnutController, ArcElement } from 'chart.js'
+import Chart from 'chart.js/auto'
 
 import { randomInteger } from '@core/utils/helpers'
-
-Chart.register(DoughnutController, ArcElement)
 
 const lightenDarkenColor = (baseColor: string, amt: number) => {
   let usePound = false
@@ -32,7 +30,7 @@ const lightenDarkenColor = (baseColor: string, amt: number) => {
 }
 
 export const fixedColors = [
-  '#651CE4',
+  '#0E02EC',
   '#D5A688',
   '#90D7C7',
   '#4DA5E6',
@@ -40,7 +38,7 @@ export const fixedColors = [
 ]
 
 export const fixedColorsForLegend = [
-  'linear-gradient(90deg, #651CE4 0%, #747CF6 95.65%)',
+  'linear-gradient(90deg, #0E02EC 0%, #747CF6 95.65%)',
   'linear-gradient(90deg, #D3A987 0%, #EE7A96 100%)',
   'linear-gradient(90deg, #95D2BA 0%, #83E6EC 100%)',
   'linear-gradient(90deg, #4071B6 0%, #52B7F6 100%)',

@@ -1,7 +1,7 @@
-import { COLORS } from '@variables/variables'
-import { Chart } from 'chart.js'
+import Chart from 'chart.js/auto'
 import React, { useEffect, useRef } from 'react'
 import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import { Block, BlockContent } from '@sb/components/Block'
 import {
@@ -30,7 +30,7 @@ const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const chartRef = useRef<Chart | null>(null)
-
+  const theme = useTheme()
   useEffect(() => {
     if (!canvasRef.current) {
       return () => {}
@@ -41,6 +41,7 @@ const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
           container: canvasRef.current,
           data,
           chart: chartRef.current,
+          theme,
         })
       } catch (e) {
         console.warn('Erorr on chart update:', e)
@@ -77,7 +78,7 @@ const TotalVolumeLockedChartInner = compose(
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: COLORS.white,
+    loaderColor: (props) => props.theme.colors.white,
   })
 )(ChartInner)
 

@@ -1,7 +1,8 @@
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
-import { msToNextHour } from '@core/utils/dateUtils'
-import { getRandomInt } from '@core/utils/helpers'
+import Chart from 'chart.js/auto'
+import React, { useEffect, useRef } from 'react'
+import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
+
 import { Block, BlockContent } from '@sb/components/Block'
 import {
   dayDuration,
@@ -9,21 +10,24 @@ import {
   getTimezone,
   startOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
-import { Chart } from 'chart.js'
-import React, { useEffect, useRef } from 'react'
-import { compose } from 'recompose'
-import { COLORS } from '@variables/variables'
+
+import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
+import { msToNextHour } from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
+
 import { Line } from '../Popups/index.styles'
 import { ReloadTimerTillUpdate } from './ReloadTimerTillUpdate'
 import { Canvas, DataContainer, SubTitle, TitleContainer } from './styles'
-import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 import { TradingVolumeChartProps } from './types'
+import { createTradingVolumeChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
 const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const chartRef = useRef<Chart | null>(null)
 
   const { getTradingVolumeHistoryQuery } = props
+  const theme = useTheme()
 
   const data = getTradingVolumeHistoryQuery?.getTradingVolumeHistory?.volumes
 
@@ -38,6 +42,7 @@ const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
           container: canvasRef.current,
           data,
           chart: chartRef.current,
+          theme,
         })
       } catch (e) {
         console.warn('Erorr on chart update:', e)
@@ -74,7 +79,7 @@ export const ChartBlockInnerWithData = compose(
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: COLORS.white,
+    loaderColor: (props) => props.theme.colors.white,
   })
 )(ChartBlockInner)
 
