@@ -1,5 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
-import { FONT_SIZES } from '@variables/variables'
+import { COLORS, FONT_SIZES } from '@variables/variables'
 import { BN } from 'bn.js'
 import React, { useState } from 'react'
 
@@ -27,10 +27,6 @@ import {
   usePlutoniansStaking,
 } from '@sb/dexUtils/staking/hooks'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import {
-  formatNumbersForState,
-  formatNumberWithSpaces,
-} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
@@ -274,12 +270,13 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   key={`tier_${tier.publicKey.toString()}`}
                   checked={selectedTierIndex === idx}
                   onClick={() => setSelectedTierIndex(idx)}
+                  backgroundColor={COLORS.cardsBack}
                 >
                   <FlexBlock direction="column">
                     <StretchedBlock align="center">
                       <FlexBlock alignItems="center">
                         <SvgIcon src={Lock} alt="locked" />
-                        <InlineText size="md" weight={700} color="gray0">
+                        <InlineText size="md" weight={700}>
                           &nbsp;
                           {tier?.account.lockDuration.divn(DAY).toString()} Days
                         </InlineText>
@@ -310,6 +307,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   </FlexBlock>
                   {stakingAccount ? (
                     <ProgressBar
+                      background={COLORS.newBlack}
                       width={`${currentTierTimeProgress * 100}%`}
                       padding="0.5em"
                     >
@@ -327,7 +325,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       )}
                     </ProgressBar>
                   ) : (
-                    <InlineText color="gray0" size="sm" weight={600}>
+                    <InlineText size="sm" weight={600}>
                       {EXTRA_REWARDS[idx]}
                     </InlineText>
                   )}
@@ -372,18 +370,15 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                         amount={selectedTokenAccount?.amount || 0}
                         mint={stakingPool?.stakeTokenMint.toString() || ''}
                         name="amount"
-                        value={formatNumberWithSpaces(amount)}
-                        onChange={(v) => {
-                          const valueForState = formatNumbersForState(v)
-                          setAmount(valueForState)
-                        }}
+                        value={amount}
+                        onChange={setAmount}
                       />
                     </InputWrapper>
                     <Row>
                       <Cell col={12} colMd={6}>
                         <RewardContentBlock>
                           <StretchedBlock width="xl">
-                            <InlineText color="gray1" size="sm">
+                            <InlineText color="primaryGray" size="sm">
                               APR
                             </InlineText>
                             {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
@@ -393,7 +388,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                             align="center"
                             width="xl"
                           >
-                            <InlineText color="green7" size="lg" weight={700}>
+                            <InlineText color="newGreen" size="lg" weight={700}>
                               {stripByAmount(apr, 2)} %
                             </InlineText>
                             <RewardDescription size="md" weight={600}>
@@ -405,7 +400,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <Cell col={12} colMd={6}>
                         <RewardContentBlock last>
                           <StretchedBlock width="xl">
-                            <InlineText color="gray1" size="sm">
+                            <InlineText color="primaryGray" size="sm">
                               NFT
                             </InlineText>
                             {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
@@ -432,7 +427,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                             ) : (
                               <Column>
                                 <InlineText
-                                  color="green7"
+                                  color="newGreen"
                                   size="md"
                                   weight={700}
                                 >
@@ -455,7 +450,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <StretchedBlock width="xl">
                         <DarkTooltip title="Your actual rewards depend on the market price of the PLD and PU238 at the time of claiming and their projection may change dynamically over time during the lockup period.">
                           <FlexBlock alignItems="center">
-                            <InlineText color="gray1" size="sm">
+                            <InlineText color="primaryGray" size="sm">
                               Est. Rewards
                             </InlineText>
                             &nbsp;
@@ -469,7 +464,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       </StretchedBlock>
                       <InlineText
                         style={{ margin: '1rem 0' }}
-                        color="green7"
+                        color="newGreen"
                         size="lg"
                         weight={700}
                       >
@@ -498,7 +493,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                     ) : (
                       <ContentBlock width="48%">
                         <StretchedBlock width="xl">
-                          <InlineText color="gray1" size="sm">
+                          <InlineText color="primaryGray" size="sm">
                             NFT
                           </InlineText>
                           {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
@@ -519,7 +514,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                           </>
                         ) : (
                           <>
-                            <InlineText color="green7" size="md" weight={700}>
+                            <InlineText color="newGreen" size="md" weight={700}>
                               Stake more than {NFT_REWARD_MIN_STAKE_AMOUNT} PLD
                             </InlineText>
                           </>
@@ -572,6 +567,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
             </AdaptiveStakingBlock>
           </StakingContainer>
         </FlexBlock>
+        s{' '}
       </Content>
     </Page>
   )
