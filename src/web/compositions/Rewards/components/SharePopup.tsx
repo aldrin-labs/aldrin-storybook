@@ -132,25 +132,7 @@ export const SharePopup = (props) => {
             </GifContainer>
           </RowContainer>
         </RowContainer>{' '}
-        {/* <GifContainer
-            theme={theme}
-            isChoosen={choosenPic === 'pic.twitter.com/lDKbpqSqk9'}
-            onClick={() => {
-              setChoosenPic('pic.twitter.com/lDKbpqSqk9')
-            }}
-          >
-            {' '}
-            <Gif src={Subtract}></Gif>
-          </GifContainer>
-          <GifContainer
-            theme={theme}
-            isChoosen={choosenPic === 'pic.twitter.com/1eTKx8xVv6'}
-            onClick={() => {
-              setChoosenPic('pic.twitter.com/1eTKx8xVv6')
-            }}
-          >
-            <Gif src={TwitterPost}></Gif>
-          </GifContainer> */}
+
         <RowContainer style={{ margin: '2rem auto' }}>
           <BtnCustom
             theme={theme}

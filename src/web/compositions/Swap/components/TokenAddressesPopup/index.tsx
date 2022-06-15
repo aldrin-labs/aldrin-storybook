@@ -64,8 +64,6 @@ export const TokenAddressesPopup = ({
         <Row>
           <TokenIcon
             mint={baseTokenMintAddress}
-            width="1.2em"
-            height="1.2em"
             margin="0 1rem 0 0"
           />
           <Text fontSize={FONT_SIZES.xs}>{baseTokenMintAddress}</Text>
@@ -89,8 +87,6 @@ export const TokenAddressesPopup = ({
         <Row>
           <TokenIcon
             mint={quoteTokenMintAddress}
-            width="1.2em"
-            height="1.2em"
             margin="0 1rem 0 0"
           />
           <Text fontSize={FONT_SIZES.xs}>{quoteTokenMintAddress}</Text>

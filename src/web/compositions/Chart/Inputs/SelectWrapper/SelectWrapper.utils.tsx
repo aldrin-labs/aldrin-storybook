@@ -419,7 +419,6 @@ export const combineSelectWrapperData = ({
           <IconContainer>
             <TokenIcon
               mint={mint}
-              width="2.5rem"
               isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
             />
           </IconContainer>

@@ -162,8 +162,8 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
               key={`search_item_${tokenFrom.mint}_${tokenTo.mint}_${tokenFrom.account}_${tokenTo.account}`}
             >
               <Row>
-                <TokenIcon mint={tokenFrom.mint} height="1.5em" />{' '}
-                <TokenIcon mint={tokenTo.mint} height="1.5em" />{' '}
+                <TokenIcon mint={tokenFrom.mint} />{' '}
+                <TokenIcon mint={tokenTo.mint} />{' '}
               </Row>
               <InlineText weight={600} color="primaryWhite">
                 {amountFrom} <TokenName>{tokenFrom.symbol}</TokenName> to{' '}

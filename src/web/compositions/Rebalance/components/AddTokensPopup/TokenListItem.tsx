@@ -58,7 +58,7 @@ export function TokenListItem({
         }}
       >
         <Row>
-          <TokenIcon mint={mintAddress} width={'2.5rem'} height={'2.5rem'} />
+          <TokenIcon mint={mintAddress} size={32} />
           <WhiteText theme={theme} style={{ marginLeft: '1rem' }}>
             {tokenName.replace('(Sollet)', '')}
             {tokenSymbol ? ` (${tokenSymbol})` : null}

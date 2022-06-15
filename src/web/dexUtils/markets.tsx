@@ -40,8 +40,6 @@ export const ALL_TOKENS_MINTS = getUniqueListBy(
   'name'
 )
 
-console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
-
 export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
   acc[el.address] = el.name
   acc[el.name] = el.address

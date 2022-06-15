@@ -75,7 +75,7 @@ export const SelectSeveralAddressesPopup = ({
               }}
             >
               <Row wrap="nowrap">
-                <TokenIcon mint={token.mint} width="2rem" height="2rem" />
+                <TokenIcon mint={token.mint} size={32} />
                 <StyledText>{getTokenNameByMintAddress(token.mint)}</StyledText>
               </Row>
               <Row wrap="nowrap">

@@ -126,7 +126,7 @@ const MarketBlock = ({
             >
               <TokenIcon
                 mint={getTokenMintAddressByName(base)}
-                width="50%"
+                size={32}
                 isAdditionalCustomUserMarket={isPrivateCustomMarket}
               />
             </div>

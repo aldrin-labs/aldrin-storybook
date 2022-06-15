@@ -188,7 +188,7 @@ export const SelectCoinPopup = ({
                   }}
                 >
                   <Row wrap="nowrap">
-                    <TokenIcon mint={mint} width="3em" height="3em" />
+                    <TokenIcon mint={mint} size={32} />
                     <Row
                       margin="0 0 0 0.5em"
                       align="flex-start"

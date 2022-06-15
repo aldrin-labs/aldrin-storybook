@@ -74,8 +74,7 @@ export const InputWithCoins = ({
         <Row style={{ flexWrap: 'nowrap' }}>
           <TokenIcon
             mint={getTokenMintAddressByName(symbol)}
-            width={'2rem'}
-            height={'2rem'}
+            size={32}
           />
           <Text
             style={{ marginLeft: '0.5rem' }}
@@ -189,8 +188,7 @@ export const InputWithSelector = ({
         <Row style={{ flexWrap: 'nowrap' }} onClick={openSelectCoinPopup}>
           <TokenIcon
             mint={getTokenMintAddressByName(symbol)}
-            width={'2rem'}
-            height={'2rem'}
+            size={32}
           />
           <Text
             style={{ margin: '0 0.5rem' }}
@@ -255,8 +253,7 @@ export const SimpleInput = ({
         <Row style={{ flexWrap: 'nowrap' }}>
           <TokenIcon
             mint={getTokenMintAddressByName(symbol)}
-            width={'2rem'}
-            height={'2rem'}
+            size={32}
           />
           <Text
             style={{ margin: '0 0.5rem' }}
