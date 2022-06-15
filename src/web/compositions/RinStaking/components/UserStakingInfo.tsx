@@ -48,6 +48,7 @@ import {
   stripByAmountAndFormat,
   stripToMillions,
 } from '@core/utils/chartPageUtils'
+import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 import { DAY, daysInMonthForDate } from '@core/utils/dateUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
@@ -663,6 +664,6 @@ export default compose<InnerProps, OuterProps>(
     name: 'getDexTokensPricesQuery',
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
-    pollInterval: 60000,
+    pollInterval: COMMON_REFRESH_INTERVAL,
   })
 )(UserStakingInfo)
