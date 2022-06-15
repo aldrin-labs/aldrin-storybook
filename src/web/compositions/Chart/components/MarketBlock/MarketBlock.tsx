@@ -88,7 +88,7 @@ const MarketBlock = ({
     return null
   }
 
-  const [base, quote] = pair.split('_')
+  const [base] = pair.split('_')
 
   const marketName = pair.replaceAll('_', '/')
   const currentMarket = customMarkets?.find(
@@ -127,8 +127,6 @@ const MarketBlock = ({
               <TokenIcon
                 mint={getTokenMintAddressByName(base)}
                 width="50%"
-                emojiIfNoLogo
-                isAwesomeMarket={isCustomUserMarket}
                 isAdditionalCustomUserMarket={isPrivateCustomMarket}
               />
             </div>

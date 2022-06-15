@@ -1,5 +1,5 @@
 {
-  "createdAt": 1655217476559,
+  "createdAt": 1655273549863,
   "webpFilename": "token-icons.webp",
   "icons": [
     {
@@ -161,7 +161,7 @@
       "styles": {
         "width": "64px",
         "height": "46px",
-        "backgroundPosition": "-704px -530px"
+        "backgroundPosition": "-704px -594px"
       }
     },
     {
@@ -548,7 +548,7 @@
       "styles": {
         "width": "64px",
         "height": "48px",
-        "backgroundPosition": "-704px -482px"
+        "backgroundPosition": "-704px -546px"
       }
     },
     {
@@ -656,7 +656,7 @@
       "styles": {
         "width": "64px",
         "height": "57px",
-        "backgroundPosition": "-704px -373px"
+        "backgroundPosition": "-704px -437px"
       }
     },
     {
@@ -800,7 +800,7 @@
       "styles": {
         "width": "64px",
         "height": "62px",
-        "backgroundPosition": "-704px -192px"
+        "backgroundPosition": "-704px -256px"
       }
     },
     {
@@ -827,7 +827,7 @@
       "styles": {
         "width": "64px",
         "height": "60px",
-        "backgroundPosition": "-704px -254px"
+        "backgroundPosition": "-704px -318px"
       }
     },
     {
@@ -926,7 +926,7 @@
       "styles": {
         "width": "64px",
         "height": "52px",
-        "backgroundPosition": "-704px -430px"
+        "backgroundPosition": "-704px -494px"
       }
     },
     {
@@ -944,7 +944,7 @@
       "styles": {
         "width": "64px",
         "height": "59px",
-        "backgroundPosition": "-704px -314px"
+        "backgroundPosition": "-704px -378px"
       }
     },
     {
@@ -993,12 +993,21 @@
       }
     },
     {
+      "token": "WNDO",
+      "address": "E8G4uo2i9d12aGnXDHXXcw6hU2fh2NytR5XR3qurTLBx",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-320px -586px"
+      }
+    },
+    {
       "token": "WPUFF",
       "address": "14Zi6xaKrFpEdxQKyU1SnSE8dfa97Gfj1jrtuWCxWnZL",
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -586px"
+        "backgroundPosition": "-384px -586px"
       }
     },
     {
@@ -1007,7 +1016,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -586px"
+        "backgroundPosition": "-448px -586px"
       }
     },
     {
@@ -1025,7 +1034,7 @@
       "styles": {
         "width": "64px",
         "height": "44px",
-        "backgroundPosition": "-704px -576px"
+        "backgroundPosition": "-0px -650px"
       }
     },
     {
@@ -1034,7 +1043,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -586px"
+        "backgroundPosition": "-512px -586px"
       }
     },
     {
@@ -1043,7 +1052,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -586px"
+        "backgroundPosition": "-576px -586px"
       }
     },
     {
@@ -1052,7 +1061,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -586px"
+        "backgroundPosition": "-640px -586px"
       }
     },
     {
@@ -1061,7 +1070,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -586px"
+        "backgroundPosition": "-704px -0px"
       }
     },
     {
@@ -1070,7 +1079,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-704px -0px"
+        "backgroundPosition": "-704px -64px"
       }
     },
     {
@@ -1079,7 +1088,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-704px -64px"
+        "backgroundPosition": "-704px -128px"
       }
     },
     {
@@ -1088,7 +1097,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-704px -128px"
+        "backgroundPosition": "-704px -192px"
       }
     }
   ]

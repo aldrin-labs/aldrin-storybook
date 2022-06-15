@@ -53,8 +53,6 @@ export const TokenIcon = ({
   isAdditionalCustomUserMarket?: boolean
   className?: string
 }) => {
-  // console.log('debug tokenMap', tokenMap)
-
   if (isAdditionalCustomUserMarket) {
     return (
       <SvgIcon className={className} width="50%" height="auto" src={Warning} />

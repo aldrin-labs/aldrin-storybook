@@ -383,10 +383,8 @@ export const combineSelectWrapperData = ({
     const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
     const marketName = symbol?.replace('_', '/')
-    const currentMarket = allMarketsMap?.get(symbol)
 
     const isAdditionalCustomUserMarket = el.isCustomUserMarket
-    const isAwesomeMarket = currentMarket?.isAwesomeMarket
 
     const mint = getTokenMintAddressByName(base)
 
@@ -422,8 +420,6 @@ export const combineSelectWrapperData = ({
             <TokenIcon
               mint={mint}
               width="2.5rem"
-              emojiIfNoLogo
-              isAwesomeMarket={isAwesomeMarket}
               isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
             />
           </IconContainer>
