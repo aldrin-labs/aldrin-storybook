@@ -67,6 +67,7 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
   return (
     <DataTable
       name={`amm_pools_table_${suffix}`}
+      testid={`amm-pools-table-${suffix}`}
       data={data}
       columns={columns}
       defaultSortColumn="tvl"

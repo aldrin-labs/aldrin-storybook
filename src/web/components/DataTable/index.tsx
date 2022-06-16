@@ -30,6 +30,7 @@ export function DataTable<E>(props: DataTableProps<E>) {
     expandableContent,
     onRowClick = nop,
     noDataText,
+    testid,
   } = props
   const [state, setState] = useLocalStorageState<DataTableState>(`dt_${name}`, {
     sortColumn: defaultSortColumn,
@@ -92,13 +93,13 @@ export function DataTable<E>(props: DataTableProps<E>) {
             // eslint-disable-next-line react/no-array-index-key
             <React.Fragment key={`datatable_${name}_row_${idx}`}>
               <Tr
-                data-testid={`pools-row-${row.extra.parsedName}`}
+                data-testid={`${testid}-${row.extra.parsedName}-tr`}
                 onClick={(e) => onRowClick(e, row)}
               >
                 {columns.map(({ key }) => (
                   // eslint-disable-next-line react/no-array-index-key
                   <Td
-                    data-testid={`pools-row-${row.extra.parsedName}-${key}`}
+                    data-testid={`${testid}-${row.extra.parsedName}-td`}
                     key={`datatable_${name}_cell_${idx}_${key}`}
                   >
                     {!!row.fields[key] && (

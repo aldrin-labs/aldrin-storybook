@@ -450,7 +450,6 @@ const SwapPage = ({
               <RowContainer justify="space-between">
                 <Row width="calc(65% - .2rem)">
                   <SwapAmountInput
-                    data-testid="swap-you-pay-field"
                     title="You Pay"
                     maxAmount={maxBaseAmount}
                     amount={formatNumberWithSpaces(inputAmount)}
@@ -527,7 +526,6 @@ const SwapPage = ({
               <RowContainer justify="space-between" margin=".4rem 0 0 0">
                 <Row width="calc(65% - .2rem)">
                   <SwapAmountInput
-                    data-testid="swap-you-receive-field"
                     title="You Receive"
                     maxAmount={maxQuoteAmount}
                     amount={
