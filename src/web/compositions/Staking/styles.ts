@@ -8,6 +8,8 @@ import { BlackPage } from '@sb/components/Layout'
 import { ContentBlockProps } from './types'
 
 export const StakingBlock = styled(Block)`
+  display: flex;
+  flex-direction: column;
   background: ${(props) => props.theme.colors.gray6};
   @media (max-width: ${BREAKPOINTS.md}) {
     margin: 8px 15px;
