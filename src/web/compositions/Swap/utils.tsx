@@ -6,6 +6,7 @@ import React from 'react'
 
 import { Loading } from '@sb/components'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
+import { AmmLabel, SwapRoute } from '@sb/dexUtils/pools/swap/getSwapRoute'
 
 import { removeDecimals } from '@core/utils/helpers'
 
@@ -169,4 +170,18 @@ export const getSwapNetworkFee = ({
   }
 
   return swapRoute?.marketInfos.length * TRANSACTION_COMMON_SOL_FEE
+}
+
+const marketTypeFromAmm: { [key in AmmLabel]: number } = {
+  Serum: 0,
+  Aldrin: 2,
+}
+
+export const getOHLCVMarketTypeFromSwapRoute = (swapRoute: SwapRoute) => {
+  if (swapRoute.length > 0) {
+    return marketTypeFromAmm[swapRoute[0].ammLabel]
+  }
+
+  // as default
+  return marketTypeFromAmm.Aldrin
 }

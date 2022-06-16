@@ -1,12 +1,12 @@
 import { useOutsideRef } from '@webhooks/useOutsideRef'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { notEmpty } from '@sb/dexUtils/utils'
 
 import Loop from '@icons/loop.svg'
 
@@ -14,19 +14,20 @@ import {
   SearchInput,
   Container,
   SwapsList,
-  NoData,
   SwapItem,
   TokenName,
+  NoData,
 } from './styles'
 import { SearchItem, SwapSearchProps } from './types'
 
-const NUM_PATTERN = /\d{0,}\.?\d{0,}$/
-
 export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
-  const { tokens, onSelect } = props
+  const { tokens, topTradingPairs, topTradingMints, onSelect } = props
+
   const [searchValue, setSearchValue] = useState('')
   const [listOpened, setListOpened] = useState(false)
   const [searchItems, setSearchItems] = useState<SearchItem[]>([])
+  const [selectedKeyboardSwapOptionIndex, selectKeyboardSwapOptionIndex] =
+    useState(0)
 
   const wrapperRef = useRef(null)
   const tokensMap = useTokenInfos()
@@ -49,17 +50,22 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
         (item) => !parseFloat(item)
       )
 
-      const [tokenFromSearch, tokenToSearch] = symbolsSearchTextItems
+      let [tokenFromSearch, tokenToSearch] = symbolsSearchTextItems
 
       if (!tokenFromSearch) {
-        return []
+        const topTradingMint = topTradingMints[0]
+        tokenFromSearch = tokensMap.get(topTradingMint).symbol
       }
 
-      const tokensWithSymbol = tokens.map((t) => {
-        const symbol =
-          tokensMap.get(t.mint)?.symbol || getTokenNameByMintAddress(t.mint)
-        return { ...t, symbol }
-      })
+      const tokensWithSymbol = tokens
+        .map((t) => {
+          const symbol = tokensMap.get(t.mint)?.symbol
+
+          if (!symbol) return null
+
+          return { ...t, symbol }
+        })
+        .filter(notEmpty)
 
       const tokenFromSearchLowerCase =
         tokenFromSearch && tokenFromSearch.toLowerCase()
@@ -97,23 +103,26 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
       const tokenToSearchLowerCase =
         tokenToSearch && tokenToSearch.toLowerCase()
 
-      const topSymbolsForSwap = ['sol', 'usdc', 'usdt'].filter(
-        (topSymbol) => !topSymbol.includes(tokenFromSearchLowerCase)
-      )
+      const topSymbolsForSwap = topTradingMints
+        .slice(0, 20)
+        .map((mint) => tokensMap.get(mint)?.symbol.toLowerCase() || null)
+        .filter(notEmpty)
+        .filter((topSymbol) => !topSymbol.includes(tokenFromSearchLowerCase))
 
       const tokensTo = tokensWithSymbol
         .filter((t) => t.mint !== tokenFrom.mint)
         .filter((t) => {
           const symbol = t.symbol.toLowerCase()
+
           if (tokenToSearchLowerCase) {
             return symbol.includes(tokenToSearchLowerCase)
           }
 
           return topSymbolsForSwap.includes(symbol)
         })
-        .slice(0, 2)
+        .slice(0, 5)
 
-      const searchItems = tokensTo.map((tokenTo) => ({
+      const swapOptions = tokensTo.map((tokenTo) => ({
         tokenTo,
         tokenFrom,
         amountFrom: Number.isNaN(amountFrom)
@@ -121,7 +130,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
           : amountFrom.toString(),
       }))
 
-      return searchItems
+      return swapOptions
     })
 
     setSearchValue(searchText)
@@ -131,60 +140,121 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   const selectRow = (selected: SearchItem) => {
     onSelect(selected)
     setListOpened(false)
-    setSearchValue(
-      [
-        selected.amountFrom || '',
-        selected.tokenFrom.symbol.toUpperCase(),
-        'to',
-        selected.amountTo || '',
-        selected.tokenTo.symbol.toUpperCase(),
-      ]
-        .filter((_) => !!_)
-        .join(' ')
-    )
   }
+
+  const swapOptions =
+    searchValue !== ''
+      ? searchItems
+      : topTradingPairs.slice(0, 5).map((pair) => ({
+          tokenFrom: {
+            symbol: pair.baseSymbol,
+            mint: pair.baseMint,
+            amountFrom: 0,
+          },
+          tokenTo: {
+            symbol: pair.quoteSymbol,
+            mint: pair.quoteMint,
+            amountFrom: 0,
+          },
+        }))
 
   useOutsideRef({ ref: wrapperRef, callback: () => setListOpened(false) })
 
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      switch (event.key) {
+        case 'ArrowUp': {
+          const newIndex =
+            selectedKeyboardSwapOptionIndex - 1 < 0
+              ? swapOptions.length - 1
+              : selectedKeyboardSwapOptionIndex - 1
+
+          selectKeyboardSwapOptionIndex(newIndex)
+          break
+        }
+        case 'ArrowDown': {
+          const newIndex =
+            selectedKeyboardSwapOptionIndex + 1 > swapOptions.length - 1
+              ? 0
+              : selectedKeyboardSwapOptionIndex + 1
+
+          selectKeyboardSwapOptionIndex(newIndex)
+          break
+        }
+        case 'Enter':
+          selectRow(swapOptions[selectedKeyboardSwapOptionIndex])
+          break
+        default:
+          break
+      }
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [selectedKeyboardSwapOptionIndex])
+
   return (
-    <Container ref={wrapperRef}>
+    <Container listOpened={listOpened} ref={wrapperRef}>
       <SearchInput
         name="search"
         placeholder={'Try: "10 SOL to RIN"'}
         value={searchValue}
         onChange={onInput}
-        onFocus={() => {
-          console.log('open')
-          setListOpened(true)
-        }}
+        onFocus={() => setListOpened(true)}
         append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
         borderRadius="md"
+        className="inputWrapper"
       />
 
       {listOpened && (
         <SwapsList>
-          {searchItems.map(({ tokenFrom, tokenTo, amountFrom, amountTo }) => (
-            <SwapItem
-              color="gray0"
-              onClick={() =>
-                selectRow({ tokenFrom, tokenTo, amountFrom, amountTo })
+          {swapOptions.map((option, index) => {
+            const { tokenFrom, tokenTo, amountFrom } = option
+
+            const { name: baseTokenName, symbol: baseTokenSymbol } =
+              tokensMap.get(tokenFrom.mint) || {
+                name: '',
+                symbol: '',
               }
-              key={`search_item_${tokenFrom.mint}_${tokenTo.mint}_${tokenFrom.account}_${tokenTo.account}`}
-            >
-              <Row>
-                <TokenIcon mint={tokenFrom.mint} height="1.5em" />{' '}
-                <TokenIcon mint={tokenTo.mint} height="1.5em" />{' '}
-              </Row>
-              <InlineText weight={600} color="gray0">
-                {amountFrom}{' '}
-                <TokenName color="gray1">{tokenFrom.symbol}</TokenName> to{' '}
-                {amountTo} <TokenName color="gray1">{tokenTo.symbol}</TokenName>
-              </InlineText>
-            </SwapItem>
-          ))}
-          {searchItems.length === 0 && (
+
+            const { name: quoteTokenName, symbol: quoteTokenSymbol } =
+              tokensMap.get(tokenTo.mint) || {
+                name: '',
+                symbol: '',
+              }
+
+            const isOptionSelectedFromKeyboard =
+              index === selectedKeyboardSwapOptionIndex
+
+            return (
+              <SwapItem
+                $color="gray0"
+                className={isOptionSelectedFromKeyboard ? 'focused' : ''}
+                onClick={() => selectRow(option)}
+                key={`search_item_${tokenFrom.mint}_${tokenTo.mint}`}
+              >
+                <Row>
+                  <TokenIcon mint={tokenFrom.mint} height="1.5em" />{' '}
+                  <TokenIcon mint={tokenTo.mint} height="1.5em" />{' '}
+                </Row>
+                <Row direction="column" align="flex-start" margin="0 0 0 1em">
+                  <InlineText weight={600} color="gray0">
+                    {amountFrom && `${amountFrom} `}
+                    <TokenName color="gray1">{baseTokenSymbol}</TokenName>{' '}
+                    {`- `}
+                    <TokenName color="gray1">{quoteTokenSymbol}</TokenName>
+                  </InlineText>
+                  <InlineText size="sm" weight={400} color="gray0">
+                    <TokenName color="gray1">{baseTokenName}</TokenName> {`- `}
+                    <TokenName color="gray1">{quoteTokenName}</TokenName>
+                  </InlineText>
+                </Row>
+              </SwapItem>
+            )
+          })}
+          {swapOptions.length === 0 && (
             <NoData>
-              <InlineText color="gray0">No swaps found :(</InlineText>
+              <InlineText>That doesn't look like a supported swap!</InlineText>
             </NoData>
           )}
         </SwapsList>

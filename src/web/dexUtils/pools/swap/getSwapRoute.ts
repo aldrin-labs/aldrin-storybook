@@ -42,6 +42,7 @@ type SerumSwapStep = CommonSwapStep & {
 }
 
 export type SwapStep = AldrinSwapStep | SerumSwapStep
+export type AmmLabel = SwapStep['ammLabel']
 
 type CreateRouteFromFieldArgs = {
   pools: PoolInfo[]

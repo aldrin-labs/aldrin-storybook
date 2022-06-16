@@ -345,6 +345,7 @@ const multiSwap = async ({
       100) *
     10 ** feesDestinationTokenDecimals
 
+  // add check if serum was in route, mul by serum steps in route
   if (SWAP_FEES_SETTINGS.enabled && feesDestination) {
     // charge extra fees
     if (lastSwapStep.outputMint === WRAPPED_SOL_MINT.toString()) {

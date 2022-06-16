@@ -26,12 +26,12 @@ import {
   TokenButtonText,
   UpdatedPaper,
 } from './styles'
-import { useTopTradingTokens } from './useTopTradingTokens'
 
 export const SelectCoinPopup = ({
   theme,
   open,
   mints,
+  topTradingMints,
   allTokensData,
   pricesMap,
   isBaseTokenSelecting,
@@ -43,6 +43,7 @@ export const SelectCoinPopup = ({
   theme: DefaultTheme
   open: boolean
   mints: string[]
+  topTradingMints: string[]
   isBaseTokenSelecting: boolean
   allTokensData: TokenInfo[]
   pricesMap: Map<string, number>
@@ -53,8 +54,6 @@ export const SelectCoinPopup = ({
 }) => {
   const tokenInfos = useTokenInfos()
   const { wallet, connected } = useWallet()
-
-  const [topTradingTokens, mutate] = useTopTradingTokens()
 
   const [searchValue, onChangeSearch] = useState<string>('')
   const [selectedMint, setSelectedMint] = useState<string>('')
@@ -175,7 +174,7 @@ export const SelectCoinPopup = ({
         </RowContainer>
         <RowContainer justify="flex-start" padding="0.8em 0">
           {/* top-8 tokens */}
-          {topTradingTokens.slice(0, 8).map((mint) => (
+          {topTradingMints.slice(0, 8).map((mint) => (
             <TokenButton onClick={() => selectMint(mint)}>
               <TokenIcon
                 mint={mint}
@@ -218,14 +217,7 @@ export const SelectCoinPopup = ({
                       direction="column"
                     >
                       <StyledText>{symbol}</StyledText>
-                      {name && (
-                        <Text
-                          color={COLORS.inputPlaceholder}
-                          padding="0.5em 0 0 0"
-                        >
-                          {name}
-                        </Text>
-                      )}
+                      {name && <Text padding="0.5em 0 0 0">{name}</Text>}
                     </Row>
                   </Row>
                   {connected && (

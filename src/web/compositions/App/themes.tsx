@@ -79,6 +79,7 @@ export const dark = {
     obRedFont: 'rgba(255, 128, 104, 1)',
     tooltip: '#222429',
     greenChart: ['rgba(143, 255, 200, 0.25)', 'rgba(143, 255, 200, 0)'],
+    shadowColor: 'rgba(0, 0, 0, 0.45)',
     shadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.45)',
   },
 }
@@ -161,6 +162,7 @@ export const light = {
     obRedFont: 'rgba(255, 65, 29, 1)',
     tooltip: 'rgb(214, 216, 224)',
     greenChart: ['rgba(0, 232, 120, 0.31)', 'rgba(0, 244, 126, 0)'],
+    shadowColor: 'rgba(169, 169, 178)',
     shadow: '0px 0px 8px 0px rgba(169, 169, 178, 1)',
   },
 }

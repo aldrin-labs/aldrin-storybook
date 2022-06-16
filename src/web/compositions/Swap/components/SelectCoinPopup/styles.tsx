@@ -27,6 +27,11 @@ export const SelectorRow = styled(({ ...props }) => (
   border-radius: 1.2rem;
   margin-bottom: 0.8em;
   padding: 1.5em;
+
+  &:hover {
+    background: ${(props) => props.theme.colors.gray3};
+    transition: all 0.4s ease-out;
+  }
 `
 
 export const StyledText = styled(({ ...props }) => <Text {...props} />)`
@@ -37,7 +42,7 @@ export const StyledText = styled(({ ...props }) => <Text {...props} />)`
 export const TokenButton = styled.button`
   display: flex;
   align-items: center;
-  background: ${COLORS.background};
+  background: ${(props) => props.theme.colors.gray5};
   cursor: pointer;
 
   padding: 0.5em 0.75em;
@@ -48,6 +53,6 @@ export const TokenButton = styled.button`
 `
 
 export const TokenButtonText = styled.span`
-  color: ${COLORS.white};
+  color: ${(props) => props.theme.colors.white};
   font-family: ${FONTS.demi};
 `

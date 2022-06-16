@@ -25,12 +25,14 @@ import { getSwapStepFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD
 import { useSwapRoute } from '@sb/dexUtils/pools/swap/useSwapRoute'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+import { formatNumberWithSpaces, notEmpty } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
+import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import {
@@ -39,6 +41,7 @@ import {
   stripByAmount,
 } from '@core/utils/chartPageUtils'
 import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
+import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { numberWithOneDotRegexp } from '@core/utils/helpers'
 import {
   stripDigitPlaces,
@@ -73,6 +76,7 @@ import {
 } from './styles'
 import {
   getEstimatedPrice,
+  getOHLCVMarketTypeFromSwapRoute,
   getRouteMintsPath,
   getSwapButtonText,
 } from './utils'
@@ -81,17 +85,50 @@ const SwapPage = ({
   publicKey,
   getPoolsInfoQuery,
   getDexTokensPricesQuery,
+  getTradingVolumeForAllPoolsQuery,
 }: {
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+  getTradingVolumeForAllPoolsQuery: {
+    getTradingVolumeForAllPools: { pool: string; tradingVolume: number }[]
+  }
 }) => {
   const theme = useTheme()
   const { wallet } = useWallet()
   const tokenInfos = useTokenInfos()
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
-  const allPools = getPoolsInfoQuery.getPoolsInfo
+
+  const { getPoolsInfo: pools } = getPoolsInfoQuery
+  const poolsMap = toMap(pools, (pool) => pool.swapToken)
+
+  const { getTradingVolumeForAllPools: poolsTradingVolume = [] } =
+    getTradingVolumeForAllPoolsQuery || { getTradingVolumeForAllPools: [] }
+
+  const topPoolsByTradingVolume = [...poolsTradingVolume]
+    .sort((a, b) => b.tradingVolume - a.tradingVolume)
+    .map((poolWithVolume) => poolsMap.get(poolWithVolume.pool))
+    .filter(notEmpty)
+
+  const topTradingPairs = topPoolsByTradingVolume.map((pool) => {
+    const baseSymbol = tokenInfos.get(pool.tokenA)?.symbol
+    const quoteSymbol = tokenInfos.get(pool.tokenB)?.symbol
+
+    return {
+      baseMint: pool.tokenA,
+      quoteMint: pool.tokenB,
+      baseSymbol,
+      quoteSymbol,
+      pair: `${baseSymbol}_${quoteSymbol}`,
+    }
+  })
+
+  const topTradingMints = [
+    ...new Set(
+      topTradingPairs.map((pair) => [pair.baseMint, pair.quoteMint]).flat()
+    ),
+  ]
 
   const { getDexTokensPrices = [] } = getDexTokensPricesQuery || {
     getDexTokensPrices: [],
@@ -158,7 +195,7 @@ const SwapPage = ({
     exchange,
     depositAndFee,
   } = useSwapRoute({
-    pools: allPools,
+    pools,
     inputMint: inputTokenMintAddress,
     outputMint: outputTokenMintAddress,
     selectedInputTokenAddressFromSeveral,
@@ -276,6 +313,8 @@ const SwapPage = ({
         <SwapContentContainer direction="column">
           <RowContainer justify="flex-start" margin="0 0 2rem 0">
             <SwapSearch
+              topTradingMints={topTradingMints}
+              topTradingPairs={topTradingPairs}
               tokens={tokenSelectorMints.map((mint) => ({ mint }))}
               onSelect={(args) => {
                 const { amountFrom, tokenFrom, tokenTo } = args
@@ -302,7 +341,14 @@ const SwapPage = ({
                     callback={refreshAll}
                     showTime
                     margin="0"
-                    timerStyles={{ background: 'transparent' }}
+                    timeStyles={{
+                      color: theme.colors.gray0,
+                    }}
+                    timerStyles={{
+                      background: 'transparent',
+                    }}
+                    color={theme.colors.blue5}
+                    trailColor={theme.colors.white}
                   />
                 </ValueButton>
                 {inputTokenMintAddress && outputTokenMintAddress && (
@@ -669,7 +715,10 @@ const SwapPage = ({
                   <BlackRow width="calc(50% - 0.8rem)">
                     <RowTitle>Network fee:</RowTitle>
                     <RowValue style={{ display: 'flex' }}>
-                      {stripDigitPlaces(depositAndFee, 6)} SOL{' '}
+                      {wallet.connected
+                        ? stripDigitPlaces(depositAndFee, 6)
+                        : '-'}{' '}
+                      SOL{' '}
                       {false && isOpenOrdersCreationRequired ? (
                         <DarkTooltip
                           title={
@@ -707,6 +756,7 @@ const SwapPage = ({
         <SelectCoinPopup
           theme={theme}
           mints={tokenSelectorMints}
+          topTradingMints={topTradingMints}
           allTokensData={userTokensData}
           pricesMap={dexTokensPricesMap}
           open={isSelectCoinPopupOpen}
@@ -757,7 +807,9 @@ const SwapPage = ({
           <iframe
             allowFullScreen
             style={{ borderWidth: 0 }}
-            src={`${PROTOCOL}//${CHARTS_API_URL}/?symbol=${inputSymbol}/${outputSymbol}&marketType=2&exchange=serum&theme=serum&isMobile=false${
+            src={`${PROTOCOL}//${CHARTS_API_URL}/?symbol=${inputSymbol}/${outputSymbol}&marketType=${getOHLCVMarketTypeFromSwapRoute(
+              swapRoute
+            )}&exchange=serum&theme=serum&isMobile=false${
               wallet.connected ? `&user_id=${wallet.publicKey}` : ''
             }`}
             height="100%"
@@ -788,5 +840,15 @@ export default compose(
     fetchPolicy: 'cache-and-network',
     withoutLoading: true,
     pollInterval: 60000,
+  }),
+  queryRendererHoc({
+    name: 'getTradingVolumeForAllPoolsQuery',
+    query: getTradingVolumeForAllPools,
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 60000,
+    variables: () => ({
+      timestampTo: endOfHourTimestamp(),
+      timestampFrom: endOfHourTimestamp() - DAY,
+    }),
   })
 )(SwapPage)

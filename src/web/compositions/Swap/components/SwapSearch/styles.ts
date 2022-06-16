@@ -8,6 +8,17 @@ export const Container = styled.div`
   width: 100%;
   margin: 10px 0;
   position: relative;
+
+  ${(props: { listOpened: boolean }) =>
+    props.listOpened &&
+    `
+    .inputWrapper { 
+      border-bottom-left-radius: 0; 
+      border-bottom-right-radius: 0; 
+      box-shadow: 0px 8px 8px -2px ${props.theme.colors.shadowColor};
+    }
+
+  `}
 `
 
 export const SearchInput = styled(Input)`
@@ -30,21 +41,28 @@ export const SwapsList = styled.div`
   position: absolute;
   width: 100%;
   background: ${(props) => props.theme.colors.gray5};
-  border-radius-bottom-left: ${BORDER_RADIUS.md};
-  border-radius-bottom-right: ${BORDER_RADIUS.md};
+  border-bottom-left-radius: ${BORDER_RADIUS.md};
+  border-bottom-right-radius: ${BORDER_RADIUS.md};
   z-index: 20;
   padding: 10px 0;
-  box-shadow: ${(props) => props.theme.colors.shadow};
+  box-shadow: 0px 8px 8px -2px ${(props) => props.theme.colors.shadowColor};
 `
 
 export const SwapItem = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   padding: 15px 24px;
   cursor: pointer;
-  color: ${(props) => props.theme.colors[props.color]};
+  color: ${(props) => props.theme.colors[props.$color]};
+  background: ${(props) => props.theme.colors.gray5};
+
+  &:hover,
+  &.focused {
+    background: ${(props) => props.theme.colors.gray6};
+    transition: all 0.4s ease-out;
+  }
 `
 
 export const TokenName = styled(InlineText)``
