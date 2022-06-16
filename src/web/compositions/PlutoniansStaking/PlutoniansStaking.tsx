@@ -134,9 +134,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const minStakeTokensForRewardBn = nftReward?.account.minStakeTokensForReward
 
-  const minStakeTokensForReward = parseFloat(
-    minStakeTokensForRewardBn?.toString() || '0'
-  )
+  const minStakeTokensForReward =
+    parseFloat(minStakeTokensForRewardBn?.toString() || '0') / PLD_DENOMINATOR
 
   const stakeAccountForTier = stakingAccounts?.get(
     selectedTier?.publicKey.toString() || ''
