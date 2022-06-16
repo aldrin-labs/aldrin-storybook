@@ -147,7 +147,6 @@ export const SingleChart = (props: SingleChartProps) => {
     }
   }, [openOrders])
 
-  console.log('themeMode', themeMode)
   return (
     <Wrapper>
       <iframe
