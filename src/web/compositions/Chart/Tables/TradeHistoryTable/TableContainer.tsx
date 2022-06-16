@@ -198,6 +198,7 @@ class TableContainer extends Component<IProps, IState> {
       <>
         <ChartCardHeader>Trade history</ChartCardHeader>
         <TradeHistoryTable
+          data-testid="trade-history"
           data={formattedData}
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}

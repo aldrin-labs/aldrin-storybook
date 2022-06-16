@@ -56,19 +56,35 @@ export const Header = ({
           </LogoBlock>
           <MainLinksWrap>
             <MainLinksBlock>
-              <NavLink to="/chart" activeClassName="selected">
+              <NavLink
+                data-testid="header-link-to-trade"
+                to="/chart"
+                activeClassName="selected"
+              >
                 <TradeIcon />
                 Trade
               </NavLink>
-              <NavLink to="/swap" activeClassName="selected">
+              <NavLink
+                data-testid="header-link-to-swap"
+                to="/swap"
+                activeClassName="selected"
+              >
                 <SwapIcon />
                 Swap
               </NavLink>
-              <NavLink to="/pools" activeClassName="selected">
+              <NavLink
+                data-testid="header-link-to-pools"
+                to="/pools"
+                activeClassName="selected"
+              >
                 <PoolsIcon />
                 Pools &amp; Farms
               </NavLink>
-              <NavLink to="/staking" activeClassName="selected">
+              <NavLink
+                data-testid="header-link-to-staking"
+                to="/staking"
+                activeClassName="selected"
+              >
                 <StakingIcon />
                 Staking
               </NavLink>

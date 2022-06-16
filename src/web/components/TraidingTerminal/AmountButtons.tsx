@@ -75,6 +75,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
         <StyledInputsContainer mode={priceType}>
           <InputRowContainer padding="0 0 1.2rem 0" style={{ width: '100%' }}>
             <Input
+              data-testid="trading-terminal-est-amount-field"
               theme={theme}
               needTitle
               title="Est. amount"
@@ -85,6 +86,7 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             />
           </InputRowContainer>
           <InputRowContainer
+            data-testid="trading-terminal-total-field"
             key="total"
             padding="0 0 0rem 0"
             direction="column"
