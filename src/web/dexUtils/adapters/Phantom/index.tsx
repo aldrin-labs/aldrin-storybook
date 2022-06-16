@@ -34,8 +34,6 @@ export class PhantomWalletAdapter
     this.connect = this.connect.bind(this)
   }
 
-  private _pk = new PublicKey('6DrvNmxiEp5f7cbSqeaZiGojungMzvjP61NLf6n394jP')
-
   private get _provider(): PhantomProvider | undefined {
     if ((window as any)?.solana?.isPhantom) {
       return (window as any).solana
@@ -70,8 +68,7 @@ export class PhantomWalletAdapter
   }
 
   get publicKey() {
-    return this._pk
-    // return this._provider?.publicKey
+    return this._provider?.publicKey
   }
 
   async signTransaction(transaction: Transaction) {
