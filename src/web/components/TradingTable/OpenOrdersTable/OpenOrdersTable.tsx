@@ -63,6 +63,7 @@ const OpenOrdersTable = (props) => {
   const openOrdersProcessedData = combineOpenOrdersTable(
     openOrders,
     cancelOrderWithStatus,
+    theme,
     handlePairChange,
     isCancellingAllOrders,
     needShowValue

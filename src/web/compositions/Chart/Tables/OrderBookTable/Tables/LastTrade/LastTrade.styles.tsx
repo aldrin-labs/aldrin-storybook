@@ -57,7 +57,7 @@ export const LastTradePrice = styled.span`
 
   font-size: 1.6rem;
   font-weight: bold;
-  color: ${(props) => props.theme.colors.black};
+  color: ${(props) => props.theme.colors.gray0};
   letter-spacing: 0.075rem;
   padding-left: 1rem;
 

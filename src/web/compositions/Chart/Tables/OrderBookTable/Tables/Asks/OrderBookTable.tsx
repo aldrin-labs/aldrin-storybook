@@ -56,9 +56,15 @@ const OrderBookTable = ({
     }
   })
 
+  const dataForCalcBackgroundAmount = tableData.map((el) => {
+    return {
+      size: el.size,
+    }
+  })
+
   const amountForBackground =
-    formattedData.reduce((acc, curr) => acc + +curr.size, 0) /
-    formattedData.length
+    dataForCalcBackgroundAmount.reduce((acc, curr) => acc + +curr.size, 0) /
+    dataForCalcBackgroundAmount.length
 
   const [base, quote] = currencyPair.split('_')
 
