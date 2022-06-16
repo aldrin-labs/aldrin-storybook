@@ -1,6 +1,5 @@
-import { Theme } from '@material-ui/core'
 import React from 'react'
-import styled from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -38,7 +37,7 @@ export const SelectSeveralAddressesPopup = ({
   selectTokenMintAddress,
   selectTokenAddressFromSeveral,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   open: boolean
   tokens: TokenInfo[]
   close: () => void
@@ -47,7 +46,6 @@ export const SelectSeveralAddressesPopup = ({
 }) => {
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}

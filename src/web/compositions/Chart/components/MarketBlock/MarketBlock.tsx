@@ -1,7 +1,6 @@
-import { Theme, withTheme } from '@material-ui/core'
 import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
@@ -25,14 +24,14 @@ import {
   Title,
 } from './MarketBlock.styles'
 
-const selectStyles = (theme: Theme) => ({
+const selectStyles = (theme) => ({
   height: '100%',
-  background: theme.palette.white.background,
+  background: theme.colors.gray6,
   marginRight: '.8rem',
   cursor: 'pointer',
   padding: 0,
-  backgroundColor: theme.palette.white.background,
-  border: `.1rem solid ${theme.palette.blue.serum}`,
+  backgroundColor: theme.colors.gray6,
+  border: `none`,
   borderRadius: '0.75rem',
   boxShadow: '0px 0px 1.2rem rgba(8, 22, 58, 0.1)',
   width: '20rem',
@@ -40,11 +39,11 @@ const selectStyles = (theme: Theme) => ({
     fontFamily: 'Avenir Next Demi',
     fontSize: '1.8rem',
     cursor: 'pointer',
-    color: theme.palette.dark.main,
+    color: theme.colors.gray0,
     textTransform: 'uppercase',
   },
   '& svg': {
-    color: theme.palette.blue.serum,
+    color: theme.colors.gray1,
   },
   '.custom-select-box__control': {
     padding: '0 .75rem',
@@ -60,18 +59,18 @@ const selectStyles = (theme: Theme) => ({
     width: '19rem',
     '& div': { fontSize: '2rem' },
     '& svg': {
-      color: theme.palette.dark.main,
+      color: theme.colors.gray6,
     },
   },
 })
 
 const MarketBlock = ({
-  theme,
   activeExchange = 'serum',
   marketType = 0,
   updateTerminalViewMode,
   terminalViewMode,
 }) => {
+  const theme = useTheme()
   const { market, customMarkets } = useMarket()
   const location = useLocation()
   const [isMintsPopupOpen, setIsMintsPopupOpen] = useState(false)
@@ -105,7 +104,7 @@ const MarketBlock = ({
 
   return (
     <>
-      <MarketStatsContainer theme={theme}>
+      <MarketStatsContainer>
         <Row justify="flex-start">
           <DarkTooltip
             title={
@@ -154,7 +153,6 @@ const MarketBlock = ({
 
           <MarketStats
             isRINPair={isRINPair}
-            theme={theme}
             symbol={pair}
             marketType={marketType}
             exchange={activeExchange}
@@ -174,10 +172,10 @@ const MarketBlock = ({
         </Row>
         <Row>
           <Row align="flex-start" direction="column">
-            <Title color={theme.palette.green.main}>
+            <Title color={theme.colors.green7}>
               You have to settle funds after each trade to transfer{' '}
             </Title>
-            <Title color={theme.palette.green.main}>
+            <Title color={theme.colors.green7}>
               funds from your trading account to your wallet account.
             </Title>
           </Row>
@@ -185,18 +183,17 @@ const MarketBlock = ({
             theme={theme}
             margin="0 0 0 2rem"
             fontSize="5rem"
-            color={theme.palette.green.main}
+            color={theme.colors.green7}
           />
         </Row>
         <MintsPopup
-          theme={theme}
           symbol={marketName}
           marketAddress={marketAddress}
           open={isMintsPopupOpen}
           onClose={() => setIsMintsPopupOpen(false)}
         />
       </MarketStatsContainer>
-      <MobileMarketStatsContainer theme={theme}>
+      <MobileMarketStatsContainer>
         <AutoSuggestSelect
           value={pair}
           id="pairSelector"
@@ -214,7 +211,6 @@ const MarketBlock = ({
         <Row>
           <MarketStats
             isRINPair={isRINPair}
-            theme={theme}
             symbol={pair}
             marketType={marketType}
             exchange={activeExchange}
@@ -240,4 +236,4 @@ const MarketBlock = ({
   )
 }
 
-export default compose(withTheme())(MarketBlock)
+export default MarketBlock

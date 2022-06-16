@@ -1,18 +1,18 @@
+import { Theme } from '@material-ui/core'
+import Paper from '@material-ui/core/Paper'
+import { withTheme } from '@material-ui/styles'
 import React from 'react'
+import { compose } from 'recompose'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { Theme } from '@material-ui/core'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import { withTheme } from '@material-ui/styles'
-
 import { Text } from '@sb/compositions/Addressbook/index'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
-import Paper from '@material-ui/core/Paper'
+import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.styles'
+
 import SunLogo from '@icons/SunLogo.svg'
-import { compose } from 'recompose'
 
 const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   height: auto;
@@ -38,15 +38,15 @@ const WalletMigrationPopup = ({
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={() => {}}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <Row justify={'space-between'} width={'100%'}>
+      <Row justify="space-between" width="100%">
         <BoldHeader>CCAI Wallet is SunWallet now!</BoldHeader>
         <SvgIcon width="15rem" height="auto" src={SunLogo} />
       </Row>
-      <RowContainer margin={'3rem 0'} align={'start'} direction={'column'}>
+      <RowContainer margin="3rem 0" align="start" direction="column">
         <Text style={{ margin: '1.5rem 0' }}>
           Our wallet has changed its name and moved to a new domain:
           SunWallet.io
@@ -61,15 +61,14 @@ const WalletMigrationPopup = ({
           together!
         </Text>
       </RowContainer>
-      <RowContainer justify="space-between" margin={'3rem 0 2rem 0'}>
+      <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <BlueButton
           style={{
             width: '48%',
             fontFamily: 'Avenir Next Medium',
             textTransform: 'none',
           }}
-          isUserConfident={true}
-          theme={theme}
+          isUserConfident
           onClick={() => {
             close()
             localStorage.setItem('isWalletMigrationToNewUrlPopupDone', 'true')
@@ -81,7 +80,7 @@ const WalletMigrationPopup = ({
           style={{ textDecoration: 'none', width: '48%' }}
           target="_blank"
           rel="noopener noreferrer"
-          href={''}
+          href=""
         >
           {' '}
           <BlueButton
@@ -90,8 +89,7 @@ const WalletMigrationPopup = ({
               fontFamily: 'Avenir Next Medium',
               textTransform: 'none',
             }}
-            isUserConfident={true}
-            theme={theme}
+            isUserConfident
             onClick={() => {}}
           >
             Open SunWallet{' '}

@@ -1,4 +1,4 @@
-import { Paper, Theme } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
@@ -8,8 +8,8 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
-import Close from '@icons/closeIcon.svg'
 import ExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 const StyledPaper = styled(Paper)`
@@ -19,20 +19,18 @@ const StyledPaper = styled(Paper)`
   width: auto;
   min-width: 65rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 0.8rem;
   overflow: hidden;
   padding: 3rem 2rem;
 `
 
 export const TokenAddressesPopup = ({
-  theme,
   close,
   open,
   baseTokenMintAddress,
   quoteTokenMintAddress,
 }: {
-  theme: Theme
   close: () => void
   open: boolean
   baseTokenMintAddress: string
@@ -40,7 +38,6 @@ export const TokenAddressesPopup = ({
 }) => {
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -50,11 +47,21 @@ export const TokenAddressesPopup = ({
     >
       <RowContainer justify="space-between">
         <Text>Selected tokens:</Text>
-        <SvgIcon
-          src={Close}
-          style={{ cursor: 'pointer' }}
-          onClick={() => close()}
-        />
+        <CloseIconContainer onClick={() => close()}>
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 19 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+              stroke="#F5F5FB"
+              strokeWidth="2"
+            />
+          </svg>
+        </CloseIconContainer>
       </RowContainer>
       <RowContainer
         wrap="nowrap"

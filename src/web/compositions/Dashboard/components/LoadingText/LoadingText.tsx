@@ -1,27 +1,28 @@
 import React from 'react'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { DefaultTheme } from 'styled-components'
+
 import {
   RowContainer,
   Title,
 } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Theme } from '@sb/types/materialUI'
+
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 const LoadingText = ({
   theme,
   percentageOfLoadedMarkets,
   percentageOfLoadedOrderbooks,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   percentageOfLoadedMarkets: number
   percentageOfLoadedOrderbooks: number
 }) => {
   return (
     <RowContainer direction="column">
       <Title
-        color={theme.palette.white.primary}
+        color={theme.colors.gray1}
         fontFamily="Avenir Next Demi"
         fontSize="3rem"
-        theme={theme}
         style={{ marginBottom: '2rem' }}
       >
         Loading:{' '}
@@ -30,10 +31,9 @@ const LoadingText = ({
         %
       </Title>
       <Title
-        color={theme.palette.white.primary}
+        color={theme.colors.gray1}
         fontFamily="Avenir Next Demi"
         fontSize="2rem"
-        theme={theme}
       >
         Checking the markets for{' '}
         {percentageOfLoadedMarkets === 100

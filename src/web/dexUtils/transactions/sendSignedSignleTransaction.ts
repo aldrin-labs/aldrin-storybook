@@ -1,17 +1,19 @@
 import SnackbarUtils from '@sb/utils/SnackbarUtils'
 
 import { notify } from '../notifications'
+import { AsyncSendSignedTransactionResult } from '../types'
 import { DEFAULT_CONFIRMATION_TIMEOUT } from './constants'
 import {
-  AsyncSendSignedTransactionResult,
+  SignAndSendTransactionResult,
   SendSignedTransactionParams,
 } from './types'
 import { waitTransactionConfirmation } from './waitTransactionConfirmation'
 
 const INSUFFICIENT_BALANCE_LOG = 'insufficient lamports'
-export const sendSignedSignleTransaction = async (
+
+export const sendSignedSignleTransactionRaw = async (
   params: SendSignedTransactionParams
-): AsyncSendSignedTransactionResult => {
+): Promise<[string, SignAndSendTransactionResult]> => {
   const {
     connection,
     transaction,
@@ -75,7 +77,7 @@ export const sendSignedSignleTransaction = async (
       }
     } catch (e) {
       console.warn('Unable to parse transaction logs: ', e)
-      return 'failed'
+      return [txId, 'failed']
     }
   }
 
@@ -102,5 +104,14 @@ export const sendSignedSignleTransaction = async (
     `${Date.now() - startTime}ms`
   )
 
+  return [txId, confirmationResult]
+}
+
+export const sendSignedSignleTransaction = async (
+  params: SendSignedTransactionParams
+): AsyncSendSignedTransactionResult => {
+  const [_txId, confirmationResult] = await sendSignedSignleTransactionRaw(
+    params
+  )
   return confirmationResult
 }

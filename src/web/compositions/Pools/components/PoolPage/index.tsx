@@ -186,10 +186,10 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           <TokenInfo>
             <TokenInfoRow>
               <TokenIcon mint={pool.tokenB} />
-              <InlineText color="success">1</InlineText>
+              <InlineText color="green4">1</InlineText>
               <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
               <TokenIcon mint={pool.tokenA} />
-              <InlineText color="success">
+              <InlineText color="green4">
                 {stripByAmountAndFormat(quotePrice, 4)}
               </InlineText>
               <InlineText>{base}</InlineText>

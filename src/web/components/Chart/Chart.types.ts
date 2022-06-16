@@ -8,7 +8,6 @@ export enum MESSAGE_TYPE {
 
 export interface SingleChartProps {
   additionalUrl: string
-  themeMode: string
   currencyPair: string
 }
 

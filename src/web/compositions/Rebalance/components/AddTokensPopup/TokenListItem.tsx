@@ -1,11 +1,10 @@
 import React from 'react'
 
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { TokenIcon } from '@sb/components/TokenIcon'
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { WhiteText } from './AddTokensPopup.styles'
+import { TokenIcon } from '@sb/components/TokenIcon'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { Theme } from '@material-ui/core'
+import { WhiteText } from './AddTokensPopup.styles'
 
 export function TokenListItem({
   name: tokenName,
@@ -15,7 +14,6 @@ export function TokenListItem({
   existingAccount,
   selectedTokens,
   setSelectedTokens,
-  theme,
 }: {
   name: string
   symbol: string
@@ -24,7 +22,6 @@ export function TokenListItem({
   existingAccount: boolean
   selectedTokens: any[]
   setSelectedTokens: any
-  theme: Theme
 }) {
   const alreadyExists = !!existingAccount
 
@@ -59,16 +56,12 @@ export function TokenListItem({
       >
         <Row>
           <TokenIcon mint={mintAddress} size={32} />
-          <WhiteText theme={theme} style={{ marginLeft: '1rem' }}>
+          <WhiteText style={{ marginLeft: '1rem' }}>
             {tokenName.replace('(Sollet)', '')}
             {tokenSymbol ? ` (${tokenSymbol})` : null}
           </WhiteText>
         </Row>
-        <SCheckbox
-          theme={theme}
-          checked={checked || alreadyExists}
-          disabled={isDisabled}
-        />
+        <SCheckbox checked={checked || alreadyExists} disabled={isDisabled} />
       </RowContainer>
     </>
   )

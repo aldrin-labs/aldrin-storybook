@@ -1,5 +1,5 @@
 import React, { CSSProperties } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import lightBird from '@icons/lightBird.svg'
 
@@ -31,6 +31,8 @@ export const ShareButton: React.FC<ShareButtonProps> = (props) => {
     iconFirst,
     buttonStyle,
   } = props
+  const theme = useTheme()
+
   const fullUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
     text
   )}${addUrl ? `&url=${encodeURIComponent(url)}` : ''}`

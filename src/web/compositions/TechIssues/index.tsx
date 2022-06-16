@@ -1,9 +1,11 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
+
+import SvgIcon from '@sb/components/SvgIcon'
+
+import DiscordSvg from '@icons/smallDiscord.svg'
 import TechSvg from '@icons/tech.svg'
 import TelegramSvg from '@icons/telegram.svg'
-import DiscordSvg from '@icons/smallDiscord.svg'
-import SvgIcon from '@sb/components/SvgIcon'
 
 const ButtonLink = styled.a`
   display: flex;
@@ -16,6 +18,7 @@ const ButtonLink = styled.a`
 `
 
 const TechIssues = () => {
+  const theme = useTheme()
   return (
     <div
       style={{
@@ -26,13 +29,13 @@ const TechIssues = () => {
         flexDirection: 'column',
       }}
     >
-      <SvgIcon src={TechSvg} width={'6rem'} height={'6rem'} />
+      <SvgIcon src={TechSvg} width="6rem" height="6rem" />
       <h3
         style={{
           fontFamily: 'DM Sans',
           fontWeight: 'bold',
           fontSize: '2.5rem',
-          color: '#fff',
+          color: theme.colors.gray0,
           marginTop: '5rem',
         }}
       >
@@ -49,7 +52,7 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          href={'https://www.google.com/chrome/'}
+          href="https://www.google.com/chrome/"
           style={{ marginRight: '1.5rem' }}
         >
           <span
@@ -63,7 +66,7 @@ const TechIssues = () => {
         style={{
           fontFamily: 'DM Sans',
           fontSize: '2rem',
-          color: '#fff',
+          color: theme.colors.gray0,
           marginTop: '8rem',
         }}
       >
@@ -80,14 +83,14 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          href={'https://t.me/Aldrin_Exchange'}
+          href="https://t.me/Aldrin_Exchange"
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon
             src={TelegramSvg}
             style={{ marginRight: '.5rem' }}
-            width={'1.5rem'}
-            height={'1.5rem'}
+            width="1.5rem"
+            height="1.5rem"
           />
           <span
             style={{ fontFamily: 'DM Sans', fontSize: '2rem', color: '#fff' }}
@@ -98,15 +101,15 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          background={'#886AED'}
+          background="#886AED"
           href="https://discord.gg/4VZyNxT2WU"
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon
             src={DiscordSvg}
             style={{ marginRight: '.5rem' }}
-            width={'1.5rem'}
-            height={'1.5rem'}
+            width="1.5rem"
+            height="1.5rem"
           />
           <span
             style={{ fontFamily: 'DM Sans', fontSize: '2rem', color: '#fff' }}
