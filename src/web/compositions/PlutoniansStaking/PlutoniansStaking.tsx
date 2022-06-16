@@ -213,9 +213,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     }
   }
 
-  const v = (
-    parseFloat(amount || '0') *
-    10 ** (selectedTokenAccount?.decimals || 0)
+  const v = Math.floor(
+    parseFloat(amount || '0') * 10 ** (selectedTokenAccount?.decimals || 0)
   ).toLocaleString('fullwide', { useGrouping: false })
 
   const depositAmount = new BN(v)
@@ -321,7 +320,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   }
 
   const apr =
-    (parseInt(selectedTier?.account.apr.toString() || '0', 10) /
+    (parseInt(selectedTier?.account.apr.permillion.toString() || '0', 10) /
       REWARD_APR_DENOMINATOR) *
     100
 
@@ -349,7 +348,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const estimateRewardsInStakeTokens =
     selectedTier && stakeAccountForTier
-      ? (((parseInt(selectedTier.account.apr.toString(), 10) *
+      ? (((parseInt(selectedTier.account.apr.permillion.toString(), 10) *
           selectedTier.account.lockDuration.seconds.toNumber()) /
           REWARD_APR_DENOMINATOR /
           YEAR) *
