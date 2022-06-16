@@ -567,7 +567,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
             </AdaptiveStakingBlock>
           </StakingContainer>
         </FlexBlock>
-        s{' '}
       </Content>
     </Page>
   )
