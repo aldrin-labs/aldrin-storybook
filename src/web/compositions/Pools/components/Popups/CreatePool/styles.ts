@@ -159,12 +159,12 @@ export const WarningIcon = styled.div`
 export const PoolProcessingBlock = styled(BlockContent)`
   width: 100vw;
   max-width: 400px;
+  flex-direction: column;
 `
 export const PoolProcessingContent = styled(Flex)`
   margin: 20px 0;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
 `
 
 export const PoolProcessingButton = styled(Button)`

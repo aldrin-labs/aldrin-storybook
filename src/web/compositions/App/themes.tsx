@@ -20,7 +20,7 @@ export const dark = {
     red5: '#FF411DFF',
     red4: '#FF674AFF',
     red3: '#FF8068FF',
-    red2: '#FFA897FF',
+    red2: '#FF8068FF',
     red1: '#FFC4B9FF',
     red0: '#FFECE8FF',
     violet9: '#2F006BFF',
@@ -102,7 +102,7 @@ export const light = {
     red5: '#FF411DFF',
     red4: '#FF674AFF',
     red3: '#E83B1AFF',
-    red2: '#FFA897FF',
+    red2: '#FF8068FF',
     red1: '#FFC4B9FF',
     red0: '#FFECE8FF',
     violet9: '#2F006BFF',
@@ -148,7 +148,7 @@ export const light = {
     gray1: '#82819CFF', // dark gray
     gray0: '#65666E', // almost black
     white: '#65666E',
-    black: '#F9F9F9FF',
+    black: '#050405FF',
     logo: '#050505',
     border: '#FAFAFA',
     line: '#E8E8E9FF',
