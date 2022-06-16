@@ -22,16 +22,17 @@ export const ENDPOINTS = [
 
 const connection = new MultiEndpointsConnection(
   [
-    // { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
-    { url: 'https://aldrin-aldrin-3110.mainnet.rpcpool.com', weight: 20 },
+    { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
+    // { url: 'https://aldrin-aldrin-3110.mainnet.rpcpool.com', weight: 20 },
     // { url: 'https://solana-api.ccai.khassanov.xyz/figment', weight: 20 },
-    // { url: 'https://aldrinexchange.genesysgo.net', weight: 3 },
+    // // { url: 'https://aldrinexchange.genesysgo.net', weight: 3 },
     // { url: 'https://solana-api.projectserum.com', weight: 2 },
     // { url: 'https://api.mainnet-beta.solana.com', weight: 2 },
   ],
   'confirmed'
 )
 
+connection.getConnection().getTransaction()
 connection.connections.forEach((c) => {
   c.onSlotChange(() => null)
   c.onAccountChange(new Account().publicKey, () => {})

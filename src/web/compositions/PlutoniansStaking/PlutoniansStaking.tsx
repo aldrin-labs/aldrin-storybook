@@ -34,6 +34,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { SRinNftRewardGroup } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -48,7 +49,6 @@ import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
 import { claimSrinNFTs } from '../../dexUtils/staking/actions/claimSrinNFTs'
 import { endSrinStaking } from '../../dexUtils/staking/actions/endSrinStaking'
-import { SRinNftRewardGroup } from '../../dexUtils/staking/hooks/types'
 import { useSrinNftReceipts } from '../../dexUtils/staking/hooks/useSrinNftReceipts'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
