@@ -213,12 +213,12 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     }
   }
 
-  const depositAmount = new BN(
-    (
-      parseFloat(amount || '0') *
-      10 ** (selectedTokenAccount?.decimals || 0)
-    ).toFixed(0)
-  )
+  const v = (
+    parseFloat(amount || '0') *
+    10 ** (selectedTokenAccount?.decimals || 0)
+  ).toLocaleString('fullwide', { useGrouping: false })
+
+  const depositAmount = new BN(v)
 
   const notifyNoData = () => {
     notify({
