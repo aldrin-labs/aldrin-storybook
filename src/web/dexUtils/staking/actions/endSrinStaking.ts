@@ -15,7 +15,7 @@ import {
 import { walletAdapterToWallet } from '../../common'
 import { TransactionAndSigner } from '../../common/types'
 import {
-  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+  PLUTONIANS_STAKING_ADDRESS,
   ProgramsMultiton,
 } from '../../ProgramsMultiton'
 import { signAndSendTransactions } from '../../transactions'
@@ -46,7 +46,7 @@ export const endSrinStakingInstructions = async (
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+    programAddress: PLUTONIANS_STAKING_ADDRESS,
   })
 
   const [userStakingAccount] = await getStakingAccount(w.publicKey, stakingTier)

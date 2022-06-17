@@ -2,7 +2,7 @@ import BN from 'bn.js'
 
 import {
   PLUTONIANS_STAKING_POOL_ADDRESS,
-  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+  PLUTONIANS_STAKING_ADDRESS,
 } from '@sb/dexUtils/ProgramsMultiton'
 
 import { MASTER_BUILD } from '@core/utils/config'
@@ -38,7 +38,7 @@ export const NFT_REWARD_MIN_STAKE_AMOUNT_BN = new BN(
 
 export const STAKINGS: { [c: string]: StakingDescription } = {
   PLD: {
-    programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+    programAddress: PLUTONIANS_STAKING_ADDRESS,
     stakingPool: PLUTONIANS_STAKING_POOL_ADDRESS,
   },
 }

@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 
-import { PLUTONIANS_STAKING_PROGRAMM_ADDRESS } from '../../ProgramsMultiton'
+import { PLUTONIANS_STAKING_ADDRESS } from '@core/solana'
 
 export const getStakingAccount = (
   walletPublicKey: PublicKey,
@@ -12,5 +12,5 @@ export const getStakingAccount = (
       walletPublicKey.toBytes(),
       stakingTier.toBytes(),
     ],
-    new PublicKey(PLUTONIANS_STAKING_PROGRAMM_ADDRESS)
+    new PublicKey(PLUTONIANS_STAKING_ADDRESS)
   )
