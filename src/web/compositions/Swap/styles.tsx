@@ -77,13 +77,13 @@ export const ValueButton = styled.button`
   border-radius: 0.8rem;
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.swapHover};
-    border: 0.1rem solid ${(props) => props.theme.colors.swapHover};
+    background-color: ${(props) => props.theme.colors.swapValueBtnHover};
+    border: 0.1rem solid ${(props) => props.theme.colors.swapValueBtnHover};
   }
 
   &:active {
-    background-color: ${(props) => props.theme.colors.swapActive};
-    border: 0.1rem solid ${(props) => props.theme.colors.swapActive};
+    background-color: ${(props) => props.theme.colors.swapValueBtnActive};
+    border: 0.1rem solid ${(props) => props.theme.colors.swapValueBtnActive};
   }
 `
 
