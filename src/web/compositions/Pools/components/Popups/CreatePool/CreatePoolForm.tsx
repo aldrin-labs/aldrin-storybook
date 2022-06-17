@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js'
 import { ApolloQueryResult } from 'apollo-client'
 import BN from 'bn.js'
 import { FormikProvider, useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useHistory } from 'react-router'
 
 import { SvgIcon } from '@sb/components'
@@ -24,21 +24,30 @@ import {
 import { notify } from '@sb/dexUtils/notifications'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
-import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
-import { sleep } from '@sb/dexUtils/utils'
+import { sendSignedSignleTransactionRaw } from '@sb/dexUtils/transactions'
+import { SendSignedTransactionResult } from '@sb/dexUtils/types'
+import {
+  sleep,
+  formatNumbersForState,
+  formatNumberWithSpaces,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
-import AttentionIcon from '@icons/attentionWhite.svg'
 import CrownIcon from '@icons/crownIcon.svg'
 
 import { PoolInfo } from '../../../index.types'
 import { FarmingForm, YES_NO } from './FarmingForm'
 import { PoolConfirmationData } from './PoolConfirmationData'
-import { PoolProcessingModal, TransactionStatus } from './PoolProcessingModal'
 import {
+  PoolProcessingModal,
+  TransactionStatus,
+  POOL_ERRORS,
+} from './PoolProcessingModal'
+import {
+  AttentionIcon,
   Body,
   ButtonContainer,
   Centered,
@@ -54,7 +63,7 @@ import {
   Title,
   VestingExplanation,
 } from './styles'
-import { TokenAmountInputField, validateNumber } from './TokenAmountInput'
+import { TokenAmountInputField } from './TokenAmountInput'
 import { CreatePoolFormType, CreatePoolFormProps } from './types'
 
 const steps = [
@@ -71,23 +80,28 @@ interface EventLike {
 const checkPoolCreated = async (
   pool: PublicKey,
   refetch: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
-  retries = 20
+  retries = 15
 ): Promise<PoolInfo | null> => {
   if (retries === 0) {
     return null
   }
   const poolStr = pool.toBase58()
-  const data = await refetch()
 
-  const {
-    data: { getPoolsInfo },
-  } = data
-  const createdPool = getPoolsInfo.find((p) => p.swapToken === poolStr)
-  if (!createdPool) {
+  let retriesMade = 0
+  while (retriesMade < retries) {
+    const data = await refetch()
+
+    const {
+      data: { getPoolsInfo },
+    } = data
+    const createdPool = getPoolsInfo.find((p) => p.swapToken === poolStr)
+    if (createdPool) {
+      return createdPool
+    }
     await sleep(20_000)
-    return checkPoolCreated(pool, refetch, retries - 1)
+    retriesMade += 1
   }
-  return createdPool
+  return null
 }
 
 const USDC_MINT = ALL_TOKENS_MINTS_MAP.USDC.toString()
@@ -120,6 +134,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const [processing, setProcessing] = useState(false)
   const [processingStatus, setProcessingStatus] =
     useState<TransactionStatus>('processing')
+  const [error, setError] = useState<undefined | POOL_ERRORS>()
+  const [failedTxId, setFailedTxId] = useState<undefined | string>()
   const [processingStep, setProcessingStep] = useState(0)
   const [priceTouched, setPriceTouched] = useState(false)
   const stepsSize = steps.length
@@ -128,13 +144,29 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const connection = useConnection()
   const history = useHistory()
 
-  const tokens: Token[] = userTokens
-    .map((ut) => ({
-      mint: ut.mint,
-      account: ut.address,
-      balance: ut.amount,
-    }))
-    .sort((a, b) => a.mint.localeCompare(b.mint))
+  const tokens: Token[] = useMemo(
+    () =>
+      userTokens
+        .map((ut) => ({
+          mint: ut.mint,
+          account: ut.address,
+          balance: ut.amount,
+        }))
+        .sort((a, b) => a.mint.localeCompare(b.mint)),
+    [userTokens]
+  )
+
+  const setTransactionError = (
+    err: POOL_ERRORS,
+    txStatus: SendSignedTransactionResult,
+    txId?: string
+  ) => {
+    setError(err)
+    setProcessingStatus('error')
+    if (txStatus !== 'timeout') {
+      setFailedTxId(txId)
+    }
+  }
 
   const [initialValues] = useState<CreatePoolFormType>({
     price: '',
@@ -173,6 +205,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         throw new Error('No quote token selected!')
       }
       setProcessing(true)
+      setError(undefined)
       setProcessingStatus('processing')
       setProcessingStep(0)
 
@@ -250,70 +283,106 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(1)
         console.log('Create accounts...')
-        const createAccountsTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.createAccounts,
-          connection,
-        })
-        console.log('createAccountsTxId: ', createAccountsTxId)
-        if (createAccountsTxId !== 'success') {
-          throw new Error('createAccountsTxId failed')
+        const [createAccountsTxId, createAccountsStatus] =
+          await sendSignedSignleTransactionRaw({
+            transaction: generatedTransactions.createAccounts,
+            connection,
+          })
+        console.log('createAccountsTxId: ', createAccountsStatus)
+        if (createAccountsStatus !== 'success') {
+          setTransactionError(
+            createAccountsStatus === 'timeout'
+              ? POOL_ERRORS.ACCOUNTS_CREATION_TIMEOUT
+              : POOL_ERRORS.ACCOUNTS_CREATION_FAILED,
+            createAccountsStatus,
+            createAccountsTxId
+          )
+          return
         }
-        await sleep(1000)
 
         setProcessingStep(2)
         console.log('Set authorities...')
-        const setAuthoritiesTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.setAuthorities,
-          connection,
-        })
-        if (setAuthoritiesTxId !== 'success') {
-          throw new Error('setAuthoritiesTxId failed')
+        const [setAuthoritiesTxId, setAuthoritiesStatus] =
+          await sendSignedSignleTransactionRaw({
+            transaction: generatedTransactions.setAuthorities,
+            connection,
+          })
+        if (setAuthoritiesStatus !== 'success') {
+          setTransactionError(
+            setAuthoritiesStatus === 'timeout'
+              ? POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT
+              : POOL_ERRORS.SETTING_AUTHORITIES_FAILED,
+            setAuthoritiesStatus,
+            setAuthoritiesTxId
+          )
+          return
         }
-        console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
-        await sleep(1000)
+        console.log('setAuthoritiesTxId: ', setAuthoritiesStatus)
 
         console.log('Initialize pool...')
         setProcessingStep(3)
-        const initPoolTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.createPool,
-          connection,
-        })
-        if (initPoolTxId !== 'success') {
-          throw new Error('initPoolTxId failed')
+        const [initPoolTxId, initPoolStatus] =
+          await sendSignedSignleTransactionRaw({
+            transaction: generatedTransactions.createPool,
+            connection,
+          })
+        if (initPoolStatus !== 'success') {
+          setTransactionError(
+            initPoolStatus === 'timeout'
+              ? POOL_ERRORS.POOL_CREATION_TIMEOUT
+              : POOL_ERRORS.POOL_CREATION_FAILED,
+            initPoolStatus,
+            initPoolTxId
+          )
+          return
         }
-        console.log('initPoolTxId: ', initPoolTxId)
-        await sleep(1000)
+        console.log('initPoolTxId: ', initPoolStatus)
 
         console.log('First deposit...')
         setProcessingStep(4)
-        const firstDepositTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.firstDeposit,
-          connection,
-        })
-        if (firstDepositTxId !== 'success') {
-          throw new Error('firstDepositTxId failed')
+        const [firstDepositTxId, firstDepositStatus] =
+          await sendSignedSignleTransactionRaw({
+            transaction: generatedTransactions.firstDeposit,
+            connection,
+          })
+        if (firstDepositStatus !== 'success') {
+          setTransactionError(
+            firstDepositStatus === 'timeout'
+              ? POOL_ERRORS.DEPOSIT_TIMEOUT
+              : POOL_ERRORS.DEPOSIT_FAILED,
+            firstDepositStatus,
+            firstDepositTxId
+          )
+          return
         }
-        await sleep(1000)
 
-        console.log('firstDepositTxId: ', firstDepositTxId)
+        console.log('firstDepositTxId: ', firstDepositStatus)
 
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
           setProcessingStep(5)
-          const farmingTxId = await sendSignedSignleTransaction({
-            transaction: generatedTransactions.farming,
-            connection,
-          })
-          if (farmingTxId !== 'success') {
-            throw new Error('farmingTxId failed')
+          const [farmingTxId, farmingStatus] =
+            await sendSignedSignleTransactionRaw({
+              transaction: generatedTransactions.farming,
+              connection,
+            })
+          if (farmingStatus !== 'success') {
+            setTransactionError(
+              farmingStatus === 'timeout'
+                ? POOL_ERRORS.FARMING_CREATION_TIMEOUT
+                : POOL_ERRORS.FARMING_CREATION_FAILED,
+
+              farmingStatus,
+              farmingTxId
+            )
+            return
           }
           await sleep(1000)
-          console.log('farmingTxId: ', farmingTxId)
+          console.log('farmingTxId: ', farmingStatus)
         }
 
         setProcessingStep(6)
 
-        // TODO: timeout?
         const createdPool = await checkPoolCreated(pool, refetchPools)
 
         setProcessingStep(-1)
@@ -443,18 +512,29 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   const priceFormatted = stripByAmount(price)
 
   const onBaseAmountChange = (value: string) => {
+    form.setFieldValue(
+      'firstDeposit.baseTokenAmount',
+      formatNumbersForState(value)
+    )
+
+    const quoteValueForState = formatNumbersForState(value)
+    const priceValueForState = formatNumbersForState(values.price)
+
     if (values.stableCurve) {
-      form.setFieldValue('firstDeposit.quoteTokenAmount', value)
+      form.setFieldValue('firstDeposit.quoteTokenAmount', quoteValueForState)
     } else if (priceTouched) {
-      const userDefinedPrice = parseFloat(values.price || '1')
-      const newQuoteAmount = parseFloat(value) * userDefinedPrice
+      const userDefinedPrice = parseFloat(priceValueForState || '1')
+      const newQuoteAmount = parseFloat(quoteValueForState) * userDefinedPrice
+
       if (newQuoteAmount) {
         form.setFieldValue('firstDeposit.quoteTokenAmount', newQuoteAmount)
         form.setTouched({ firstDeposit: { quoteTokenAmount: true } })
       }
     } else {
       const newPrice =
-        parseFloat(values.firstDeposit.quoteTokenAmount) / parseFloat(value)
+        parseFloat(
+          formatNumbersForState(values.firstDeposit.quoteTokenAmount)
+        ) / parseFloat(quoteValueForState)
 
       if (newPrice) {
         form.setFieldValue('price', stripByAmount(newPrice))
@@ -465,18 +545,27 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   }
 
   const onQuoteAmountChange = (value: string) => {
+    form.setFieldValue(
+      'firstDeposit.quoteTokenAmount',
+      formatNumbersForState(value)
+    )
+
+    const baseValueForState = formatNumbersForState(value)
+    const priceValueForState = formatNumbersForState(values.price)
+
     if (values.stableCurve) {
-      form.setFieldValue('firstDeposit.baseTokenAmount', value)
+      form.setFieldValue('firstDeposit.baseTokenAmount', baseValueForState)
     } else if (priceTouched) {
-      const userDefinedPrice = parseFloat(values.price || '1')
-      const newBaseAmount = parseFloat(value) / userDefinedPrice
+      const userDefinedPrice = parseFloat(priceValueForState || '1')
+      const newBaseAmount = parseFloat(baseValueForState) / userDefinedPrice
       if (newBaseAmount) {
         form.setFieldValue('firstDeposit.baseTokenAmount', newBaseAmount)
         form.setTouched({ firstDeposit: { baseTokenAmount: true } })
       }
     } else {
       const newPrice =
-        parseFloat(value) / parseFloat(values.firstDeposit.baseTokenAmount)
+        parseFloat(baseValueForState) /
+        parseFloat(formatNumbersForState(values.firstDeposit.baseTokenAmount))
       if (newPrice) {
         form.setFieldValue('price', stripByAmount(newPrice))
       }
@@ -524,7 +613,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   </CoinWrap>
                 </CoinSelectors>
                 {form.errors.baseToken && (
-                  <ErrorText color="error">{form.errors.baseToken}</ErrorText>
+                  <ErrorText color="red3">{form.errors.baseToken}</ErrorText>
                 )}
                 {/* <CheckboxWrap>
                   <CheckboxField
@@ -556,7 +645,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       name="initialLiquidityLockPeriod"
                       append={
                         <InputAppendContainer>
-                          <InlineText color="primaryWhite" weight={600}>
+                          <InlineText color="gray1" weight={600}>
                             Days
                           </InlineText>
                         </InputAppendContainer>
@@ -566,7 +655,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     />
                     {form.errors.initialLiquidityLockPeriod &&
                       form.touched.initialLiquidityLockPeriod && (
-                        <ErrorText color="error">
+                        <ErrorText color="red3">
                           {form.errors.initialLiquidityLockPeriod}
                         </ErrorText>
                       )}
@@ -574,7 +663,20 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 </CheckboxWrap>
 
                 <VestingExplanation>
-                  <SvgIcon src={AttentionIcon} width="11px" height="47px" />
+                  <AttentionIcon>
+                    <svg
+                      width="100%"
+                      height="100%"
+                      viewBox="0 0 11 47"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M9.72 31.792H2.04V0.688H9.72V31.792ZM0.76 41.52C0.76 40.1547 1.25067 38.9813 2.232 38C3.256 37.0187 4.472 36.528 5.88 36.528C7.24533 36.528 8.44 36.9973 9.464 37.936C10.488 38.8747 11 40.0267 11 41.392C11 42.7573 10.488 43.9307 9.464 44.912C8.48267 45.8933 7.288 46.384 5.88 46.384C5.19733 46.384 4.536 46.256 3.896 46C3.29867 45.744 2.76533 45.4027 2.296 44.976C1.82667 44.5493 1.44267 44.0373 1.144 43.44C0.888 42.8427 0.76 42.2027 0.76 41.52Z"
+                        fill="#FFFFFF"
+                      />
+                    </svg>
+                  </AttentionIcon>
                   <InlineText size="sm">
                     Pools with locked liquidity will be marked with an
                     additional&nbsp;
@@ -595,26 +697,31 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <GroupLabel label="Set Base Token initial price" />
                 <FlexBlock>
                   <FlexBlock alignItems="center">
-                    <InlineText color="success" weight={600}>
+                    <InlineText weight={600} color="gray1">
                       1&nbsp;
                     </InlineText>
                     <TokenIconWithName mint={form.values.baseToken.mint} />{' '}
-                    &nbsp;=
+                    <InlineText weight={600} color="gray1">
+                      &nbsp;=
+                    </InlineText>
                   </FlexBlock>
                   <NumberInputContainer>
                     <TokenAmountInputField
                       disabled={values.stableCurve}
                       name="price"
                       mint={form.values.quoteToken.mint}
+                      value={formatNumberWithSpaces(form.values.price)}
                       onChange={(v) => {
                         setPriceTouched(true)
+
                         if (v) {
-                          const newPrice = parseFloat(v)
+                          const newPrice = parseFloat(formatNumbersForState(v))
                           const {
                             firstDeposit: { baseTokenAmount: bta = '0' },
                           } = values
 
                           const baseAmount = parseFloat(bta)
+
                           if (baseAmount) {
                             form.setFieldValue(
                               'firstDeposit.quoteTokenAmount',
@@ -637,6 +744,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.baseTokenAmount"
+                    value={formatNumberWithSpaces(
+                      form.values.firstDeposit.baseTokenAmount
+                    )}
                     setFieldValue={(field: string, value: string) => {
                       form.setFieldValue(field, value)
                       onBaseAmountChange(value)
@@ -646,17 +756,23 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     onChange={onBaseAmountChange}
                   />
                 </Centered>
-
                 {form.errors.firstDeposit?.baseTokenAmount &&
                   form.touched.firstDeposit?.baseTokenAmount && (
-                    <ErrorText color="error">
+                    <ErrorText color="red3">
                       {form.errors.firstDeposit.baseTokenAmount}
                     </ErrorText>
                   )}
-                <Centered>+</Centered>
+                <Centered>
+                  <InlineText weight={600} color="gray1">
+                    +
+                  </InlineText>
+                </Centered>
                 <Centered>
                   <TokenAmountInputField
                     name="firstDeposit.quoteTokenAmount"
+                    value={formatNumberWithSpaces(
+                      form.values.firstDeposit.quoteTokenAmount
+                    )}
                     setFieldValue={(field: string, value: string) => {
                       form.setFieldValue(field, value)
                       onQuoteAmountChange(value)
@@ -668,7 +784,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 </Centered>
                 {form.errors.firstDeposit?.quoteTokenAmount &&
                   form.touched.firstDeposit?.quoteTokenAmount && (
-                    <ErrorText color="error">
+                    <ErrorText color="red3">
                       {form.errors.firstDeposit.quoteTokenAmount}
                     </ErrorText>
                   )}
@@ -727,7 +843,9 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
               )}
               <ButtonContainer>
                 {isLastStep ? (
-                  <Button type="submit">Create Pool</Button>
+                  <Button $padding="lg" type="submit">
+                    Create Pool
+                  </Button>
                 ) : (
                   <ConnectWalletWrapper size="button-only">
                     <Button
@@ -746,8 +864,10 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         </FormikProvider>
         {processing && (
           <PoolProcessingModal
+            error={error}
             status={processingStatus}
             step={processingStep}
+            txId={failedTxId}
             onSuccess={() => {
               setProcessing(false)
               onClose()

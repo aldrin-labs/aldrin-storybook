@@ -1,18 +1,17 @@
-import React from 'react'
-import { Grid, Theme } from '@material-ui/core'
-import { Column, Table } from 'react-virtualized'
-import { StyledTable, StyledAutoSizer } from './SelectWrapperStyles'
 import useMobileSize from '@webhooks/useMobileSize'
+import React from 'react'
+import { Column, Table } from 'react-virtualized'
+import { useTheme } from 'styled-components'
+
+import { StyledTable, StyledAutoSizer } from './SelectWrapperStyles'
 
 export const TableInner = ({
-  theme,
   isAdvancedSelectorMode,
   processedSelectData,
   sort,
   sortBy,
   sortDirection,
 }: {
-  theme: Theme
   isAdvancedSelectorMode: boolean
   processedSelectData: any[]
   sort: () => void
@@ -20,6 +19,7 @@ export const TableInner = ({
   sortDirection: any
 }) => {
   const isMobile = useMobileSize()
+  const theme = useTheme()
 
   return (
     <StyledTable
@@ -41,16 +41,16 @@ export const TableInner = ({
             gridStyle={{
               outline: 'none',
             }}
-            rowClassName={'pairSelectorRow'}
+            rowClassName="pairSelectorRow"
             rowStyle={{
               outline: 'none',
               cursor: 'pointer',
               fontSize: '2rem',
-              borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
+              borderBottom: `0.05rem solid ${theme.colors.gray10}`,
             }}
             headerHeight={isMobile ? 0 : window.outerHeight / 25}
             headerStyle={{
-              color: '#fff',
+              color: theme.colors.gray1,
               paddingLeft: '.5rem',
               paddingTop: '.25rem',
               marginLeft: 0,
@@ -67,31 +67,31 @@ export const TableInner = ({
             }
             rowGetter={({ index }) => processedSelectData[index]}
           >
-            {!isMobile &&
-            <Column
-              label={` `}
-              dataKey="favourite"
-              headerStyle={{
-                color: '#fff',
-                paddingRight: 'calc(10px)',
-                fontSize: '1.5rem',
-                textAlign: 'left',
-                fontFamily: 'Avenir Next Light',
-              }}
-              width={width / 2}
-              style={{
-                textAlign: 'center',
-                fontSize: '1.4rem',
-                fontWeight: 'bold',
-              }}
-              cellRenderer={({ cellData }) => cellData.render}
-            />
-            }
+            {!isMobile && (
+              <Column
+                label={` `}
+                dataKey="favourite"
+                headerStyle={{
+                  color: theme.colors.gray1,
+                  paddingRight: 'calc(10px)',
+                  fontSize: '1.5rem',
+                  textAlign: 'left',
+                  fontFamily: 'Avenir Next Light',
+                }}
+                width={width / 2}
+                style={{
+                  textAlign: 'center',
+                  fontSize: '1.4rem',
+                  fontWeight: 'bold',
+                }}
+                cellRenderer={({ cellData }) => cellData.render}
+              />
+            )}
             <Column
               label={` `}
               dataKey="emoji"
               headerStyle={{
-                color: '#fff',
+                color: theme.colors.gray1,
                 paddingRight: 'calc(10px)',
                 fontSize: '1.5rem',
                 textAlign: 'left',
@@ -106,10 +106,10 @@ export const TableInner = ({
               cellRenderer={({ cellData }) => cellData.render}
             />
             <Column
-              label={`Market`}
+              label="Market"
               dataKey="symbol"
               headerStyle={{
-                color: '#fff',
+                color: theme.colors.gray1,
                 paddingRight: '6px',
                 fontSize: '1.5rem',
                 textAlign: 'left',
@@ -124,47 +124,49 @@ export const TableInner = ({
               cellRenderer={({ cellData }) => cellData.render}
             />
             <Column
-                label={`last price`}
-                dataKey="price"
-                headerStyle={{
-                  color: '#fff',
-                  paddingRight: 'calc(10px)',
-                  fontSize: '1.5rem',
-                  textAlign: 'left',
-                  fontFamily: 'Avenir Next Light',
-                }}
-                width={width * 2}
-                style={{
-                  textAlign: 'left',
-                  fontSize: '1.4rem',
-                  fontWeight: 'bold',
-                }}
-                cellRenderer={({ cellData }) => cellData.render}
-            />
-            {(isAdvancedSelectorMode && !isMobile) && <Column
-              label={`change 24h`}
-              dataKey="price24hChange"
+              label="last price"
+              dataKey="price"
               headerStyle={{
-                color: '#fff',
+                color: theme.colors.gray1,
                 paddingRight: 'calc(10px)',
                 fontSize: '1.5rem',
                 textAlign: 'left',
                 fontFamily: 'Avenir Next Light',
               }}
-              width={width * 1.8}
+              width={width * 2}
               style={{
                 textAlign: 'left',
                 fontSize: '1.4rem',
                 fontWeight: 'bold',
               }}
               cellRenderer={({ cellData }) => cellData.render}
-            />}
+            />
+            {isAdvancedSelectorMode && !isMobile && (
+              <Column
+                label="change 24h"
+                dataKey="price24hChange"
+                headerStyle={{
+                  color: theme.colors.gray1,
+                  paddingRight: 'calc(10px)',
+                  fontSize: '1.5rem',
+                  textAlign: 'left',
+                  fontFamily: 'Avenir Next Light',
+                }}
+                width={width * 1.8}
+                style={{
+                  textAlign: 'left',
+                  fontSize: '1.4rem',
+                  fontWeight: 'bold',
+                }}
+                cellRenderer={({ cellData }) => cellData.render}
+              />
+            )}
             {!isMobile && isAdvancedSelectorMode && (
               <Column
-                label={`Min 24h`}
+                label="Min 24h"
                 dataKey="min24h"
                 headerStyle={{
-                  color: '#fff',
+                  color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -179,12 +181,12 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {(!isMobile && isAdvancedSelectorMode) && (
+            {!isMobile && isAdvancedSelectorMode && (
               <Column
-                label={`Max 24h`}
+                label="Max 24h"
                 dataKey="max24h"
                 headerStyle={{
-                  color: '#fff',
+                  color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -199,12 +201,12 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {(!isMobile && isAdvancedSelectorMode) && (
+            {!isMobile && isAdvancedSelectorMode && (
               <Column
-                label={`volume 24h`}
+                label="volume 24h"
                 dataKey="volume24hChange"
                 headerStyle={{
-                  color: '#fff',
+                  color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -219,12 +221,12 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {(!isMobile && isAdvancedSelectorMode) && (
+            {!isMobile && isAdvancedSelectorMode && (
               <Column
-                label={`trades 24h`}
+                label="trades 24h"
                 dataKey="trades24h"
                 headerStyle={{
-                  color: '#fff',
+                  color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -239,12 +241,12 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {(!isMobile && isAdvancedSelectorMode) && (
+            {!isMobile && isAdvancedSelectorMode && (
               <Column
-                label={`Avg.Buy 14d`}
+                label="Avg.Buy 14d"
                 dataKey="avgBuy14d"
                 headerStyle={{
-                  color: '#fff',
+                  color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -259,12 +261,12 @@ export const TableInner = ({
                 cellRenderer={({ cellData }) => cellData.render}
               />
             )}
-            {(!isMobile && isAdvancedSelectorMode) && (
+            {!isMobile && isAdvancedSelectorMode && (
               <Column
-                label={`Avg.Sell 14d`}
+                label="Avg.Sell 14d"
                 dataKey="avgSell14d"
                 headerStyle={{
-                  color: '#fff',
+                  color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -281,10 +283,10 @@ export const TableInner = ({
             )}
             {!isMobile && (
               <Column
-                label={`Links`}
+                label="Links"
                 dataKey="links"
                 headerStyle={{
-                  color: '#fff',
+                  color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
