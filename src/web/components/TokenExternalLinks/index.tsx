@@ -48,7 +48,7 @@ export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => (
         target="_blank"
       >
         <SvgIcon src={Solscan} alt="solscan" />
-      </Anchor>{' '}
+      </Anchor>
       <Anchor
         className="explorers-dropdown-item"
         href={`https://solana.fm/account/${props.mint}`}
