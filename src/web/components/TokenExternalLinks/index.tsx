@@ -47,7 +47,7 @@ export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => (
         rel="noopener noreferrer"
         target="_blank"
       >
-        <SvgIcon src={Solscan} alt="" />
+        <SvgIcon src={Solscan} alt="solscan" />
       </Anchor>{' '}
       <Anchor
         className="explorers-dropdown-item"
@@ -55,7 +55,7 @@ export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => (
         rel="noopener noreferrer"
         target="_blank"
       >
-        <SvgIcon src={SolanaFm} alt="" />
+        <SvgIcon src={SolanaFm} alt="solana.fm" />
       </Anchor>
     </div>
   </IconsContainer>
