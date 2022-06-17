@@ -1,19 +1,16 @@
 import React from 'react'
 
-import { Theme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
-import { StyledPaper } from './SelectWrapperStyles'
 import { CoinAddressWithLabel, MarketAddressWithLabel } from './MintsPopupRow'
+import { StyledPaper } from './SelectWrapperStyles'
 
 export const MintsPopup = ({
-  theme,
   onClose,
   open,
   symbol = 'RIN/USDC',
   marketAddress,
 }: {
-  theme: Theme
   onClose: () => void
   open: boolean
   symbol: string
@@ -23,11 +20,10 @@ export const MintsPopup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >

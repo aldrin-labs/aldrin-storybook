@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { useTheme } from 'styled-components'
 
 import { Block, BlockContent } from '@sb/components/Block'
 import { Cell, Page, WideContent } from '@sb/components/Layout'
@@ -9,6 +10,7 @@ import { TableSwitcher } from './components/Tables/TablesSwitcher'
 import { TableSwitcherWrap } from './index.styles'
 
 export const PoolsComponent: React.FC = () => {
+  const theme = useTheme()
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
     return () => {
@@ -36,7 +38,7 @@ export const PoolsComponent: React.FC = () => {
             <Block>
               <BlockContent>
                 <TableSwitcherWrap>
-                  <TableSwitcher />
+                  <TableSwitcher theme={theme} />
                 </TableSwitcherWrap>
               </BlockContent>
             </Block>

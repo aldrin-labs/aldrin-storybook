@@ -1,14 +1,14 @@
 import { Theme } from '@material-ui/core'
-
 import {
   BORDER_RADIUS,
   BREAKPOINTS,
-  COLORS,
+  UCOLORS,
   FONT_SIZES,
 } from '@variables/variables'
+import styled from 'styled-components'
+
 import { Button } from '@sb/components/Button'
 import { Input } from '@sb/components/Input'
-import styled from 'styled-components'
 
 type TableModeButtonProps = {
   isActive: boolean
@@ -19,11 +19,13 @@ type TableModeButtonProps = {
 export const TableModeButton = styled.button`
   border: none;
   border-bottom: ${(props: TableModeButtonProps) =>
-    props.isActive ? `.3rem solid ${COLORS.white}` : `.3rem solid transparent`};
+    props.isActive
+      ? `.2rem solid ${props.theme.colors.gray0}`
+      : `.3rem solid transparent`};
 
   background: inherit;
   color: ${(props: TableModeButtonProps) =>
-    props.isActive ? COLORS.white : COLORS.hint};
+    props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray1};
   padding: 0.4rem 0;
   margin: 0 1.6rem 0 0;
   outline: none;
@@ -68,6 +70,7 @@ export const InputWrap = styled.div`
 export const SearchInput = styled(Input)`
   margin-right: 10px;
   flex: 1;
+  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
   border-radius: ${BORDER_RADIUS.lg};
 
   @media (min-width: ${BREAKPOINTS.md}) {
@@ -94,6 +97,14 @@ export const AddPoolButton = styled(Button)`
   justify-content: center;
   font-weight: bold;
   font-size: ${FONT_SIZES.md};
+  background-color: ${(props) => props.theme.colors.blue3};
+  border: none;
+  color: white;
+  transition: 0.3s;
+
+  &:hover {
+    background: ${UCOLORS.blue4};
+  }
 
   @media (min-width: ${BREAKPOINTS.md}) {
     margin-right: 20px;
@@ -102,4 +113,11 @@ export const AddPoolButton = styled(Button)`
 
 export const IconWrap = styled.div`
   margin-left: auto;
+  width: 1.8rem;
+  height: 1.8rem;
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.gray1};
+    }
+  }
 `

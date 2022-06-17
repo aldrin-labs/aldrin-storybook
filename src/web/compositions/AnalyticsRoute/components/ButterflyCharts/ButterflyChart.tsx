@@ -37,7 +37,6 @@ const ButterflyChart = ({
       <HeaderContainer theme={theme} justify="space-between">
         <Row>
           <WhiteTitle
-            theme={theme}
             style={{
               borderRight: theme.palette.border.main,
               padding: '0 2rem',
@@ -47,19 +46,15 @@ const ButterflyChart = ({
           </WhiteTitle>
           <Row margin="0 2rem">
             <Dot background="#53DF11" />
-            <WhiteTitle fontWeight="normal" theme={theme}>
-              Buy
-            </WhiteTitle>
+            <WhiteTitle fontWeight="normal">Buy</WhiteTitle>
           </Row>
           <Row>
             <Dot background="#F26D68" />
-            <WhiteTitle fontWeight="normal" theme={theme}>
-              Sell
-            </WhiteTitle>
+            <WhiteTitle fontWeight="normal">Sell</WhiteTitle>
           </Row>
         </Row>
         <Row margin="0 2rem 0 0">
-          <WhiteTitle theme={theme}>14d</WhiteTitle>
+          <WhiteTitle>14d</WhiteTitle>
         </Row>
       </HeaderContainer>
       <ChartContainer>

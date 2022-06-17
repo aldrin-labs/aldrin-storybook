@@ -120,7 +120,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
       />
       {form.errors.farming?.tokenAmount &&
         form.touched.farming?.tokenAmount && (
-          <ErrorText color="error">{form.errors.farming.tokenAmount}</ErrorText>
+          <ErrorText color="red3">{form.errors.farming.tokenAmount}</ErrorText>
         )}
       <br />
       <CoinSelectors>
@@ -133,7 +133,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             placeholder="from 7 to 60"
             append={
               <InputAppendContainer>
-                <InlineText color="primaryWhite" weight={600}>
+                <InlineText color="gray1" weight={600}>
                   Days
                 </InlineText>
               </InputAppendContainer>
@@ -153,13 +153,13 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
       </CoinSelectors>
       {form.errors.farming?.farmingPeriod &&
         form.touched.farming?.farmingPeriod && (
-          <ErrorText color="error">
+          <ErrorText color="red3">
             {form.errors.farming?.farmingPeriod}
           </ErrorText>
         )}
       {farming.farmingPeriod && !form.errors.farming?.farmingPeriod && (
         <>
-          <InlineText color="hint" size="sm" weight={600}>
+          <InlineText color="gray1" size="sm" weight={600}>
             Farming will end at{' '}
             {dayjs(farmingEndDate).format('HH:mm MMM DD, YYYY')}
           </InlineText>
@@ -187,7 +187,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             name="initialLiquidityLockPeriod"
             append={
               <InputAppendContainer>
-                <InlineText color="primaryWhite" weight={600}>
+                <InlineText color="gray1" weight={600}>
                   % per Day
                 </InlineText>
               </InputAppendContainer>
@@ -204,7 +204,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             disabled={!farming.vestingEnabled}
             append={
               <InputAppendContainer>
-                <InlineText color="primaryWhite" weight={600}>
+                <InlineText color="gray1" weight={600}>
                   Days
                 </InlineText>
               </InputAppendContainer>
@@ -213,7 +213,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
           />
           {form.errors.farming?.vestingPeriod &&
             form.touched.farming?.vestingPeriod && (
-              <ErrorText color="error">
+              <ErrorText color="red3">
                 {form.errors.farming?.vestingPeriod}
               </ErrorText>
             )}

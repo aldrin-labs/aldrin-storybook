@@ -34,6 +34,16 @@ export const StyledLink = styled(NavLink)`
   &.active {
     border-top: 1px solid ${COLORS.primaryWhite};
   }
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.gray0};
+    }
+  }
+
+  span {
+    color: ${(props) => props.theme.colors.gray0};
+  }
 `
 export const StyledA = styled.a`
   width: 7rem;
@@ -43,11 +53,18 @@ export const StyledA = styled.a`
   flex-direction: column;
   text-align: center;
   text-decoration: none;
-  color: #fbf2f2;
+  color: ${(props) => props.theme.colors.gray0};
   font-family: Avenir Next Medium;
   font-size: 1.9rem;
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.gray0};
+    }
+  }
   span {
     margin-top: 1rem;
+    color: ${(props) => props.theme.colors.gray0};
   }
 `
 
@@ -56,9 +73,9 @@ export const FooterComponent = styled(RowContainer)`
   bottom: 0;
   z-index: 999;
   display: flex;
-  background-color: ${COLORS.mainBlack};
+  background-color: ${(props) => props.theme.colors.gray6};
   height: 65px;
-  border-top: 1px solid ${COLORS.cardsBack};
+  border-top: 1px solid ${(props) => props.theme.colors.gray5};
 
   @media (min-width: ${BREAKPOINTS.md}) {
     display: none;
@@ -96,13 +113,16 @@ export const MoreLinksPopup = styled.div<MoreLinksPopupProps>`
 `
 
 export const MoreLinksContent = styled.div`
-  background: ${COLORS.blockBackground};
+  background: ${(props) => props.theme.colors.gray6};
   padding: 1em 1.5em;
   border-radius: ${BORDER_RADIUS.md};
   position: absolute;
   width: calc(100% - 20px);
   left: 10px;
   bottom: 10px;
+  h4 {
+    color: ${(props) => props.theme.colors.gray0};
+  }
 `
 
 export const MoreLinkContainer = styled.div`
@@ -115,7 +135,7 @@ export const MoreLinkContainer = styled.div`
   margin: 10px 0;
 
   span {
-    color: ${COLORS.main};
+    color: ${(props) => props.theme.colors.gray0};
     font-size: ${FONT_SIZES.sm};
     padding: 0 0 0 5px;
   }

@@ -5,8 +5,6 @@ import { Link, useLocation } from 'react-router-dom'
 import { compose } from 'recompose'
 
 import ConnectWalletDropdown from '@sb/components/ConnectWalletDropdown/index'
-
-import WalletIcon from '@icons/walletIcon.svg'
 import { Label } from '@sb/components/Label/Label'
 import NavLinkButton from '@sb/components/NavBar/NavLinkButton/NavLinkButton'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -24,11 +22,14 @@ import {
 import { useConnectionConfig } from '@sb/dexUtils/connection'
 import { CCAIProviderURL } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+
 import { TOGGLE_THEME_MODE } from '@core/graphql/mutations/app/toggleThemeMode'
 import { changePositionMode } from '@core/graphql/mutations/chart/changePositionMode'
 import { updateThemeMode } from '@core/graphql/mutations/chart/updateThemeMode'
+
 import AldrinLogo from '@icons/Aldrin.svg'
 import LightLogo from '@icons/lightLogo.svg'
+import WalletIcon from '@icons/walletIcon.svg'
 
 import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
 import { RedButton } from './styles'
@@ -67,7 +68,7 @@ export const CardsPanel = ({ theme }) => {
   return (
     <ChartGridContainer theme={theme}>
       <PanelWrapper>
-        <CustomCard theme={theme} style={CARD_STYLE}>
+        <CustomCard style={CARD_STYLE}>
           <Link to="/" style={LOGO_LINK_STYLE}>
             <img
               style={{
@@ -206,7 +207,6 @@ export const CardsPanel = ({ theme }) => {
         <TopBar theme={theme} />
       </PanelWrapper>
       <FeedbackPopup
-        theme={theme}
         open={isFeedBackPopupOpen}
         onClose={() => {
           setIsFeedBackPopupOpen(false)

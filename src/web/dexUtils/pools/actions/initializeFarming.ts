@@ -14,7 +14,8 @@ import { walletAdapterToWallet } from '../../common'
 import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
 import { POOLS_V2_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
-import { signAndSendSingleTransaction } from '../../transactions'
+import { signTransactions } from '../../send'
+import { sendSignedSignleTransactionRaw } from '../../transactions'
 import { WalletAdapter } from '../../types'
 
 export interface InitializeFarmingBase {
@@ -113,13 +114,23 @@ export const initializeFarmingInstructions = async (
   return [transaction, [snapshots, farmingState, farmingTokenVault]]
 }
 
-export const initializeFaming = async (params: InitializeFarmingParams) => {
+export const initializeFaming = async (
+  params: InitializeFarmingParams
+): Promise<[string | undefined, string]> => {
   const [transaction, signers] = await initializeFarmingInstructions(params)
 
-  return signAndSendSingleTransaction({
-    transaction,
-    connection: params.connection,
-    wallet: params.wallet,
-    signers,
-  })
+  try {
+    const [signedTransaction] = await signTransactions({
+      transactionsAndSigners: [{ transaction, signers }],
+      connection: params.connection,
+      wallet: params.wallet,
+    })
+    return sendSignedSignleTransactionRaw({
+      transaction: signedTransaction,
+      connection: params.connection,
+      wallet: params.wallet,
+    })
+  } catch (e) {
+    return [undefined, 'rejected']
+  }
 }

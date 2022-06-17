@@ -1,6 +1,7 @@
 import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
+import { BlockTitle } from '@sb/components/Block'
 import { FlexBlock, StretchedBlock } from '@sb/components/Layout'
 
 import { BlockWithRadio } from '../MarinadeStaking/components/styles'
@@ -63,4 +64,15 @@ export const RewardContentBlock = styled(ContentBlock)`
 export const FormContainer = styled(FlexBlock)`
   padding: 0 1em 1em;
   min-height: 22em;
+`
+
+export const UnclaimedTitle = styled(BlockTitle)`
+  margin-bottom: 1em;
+`
+export const TextBlock = styled.div`
+  margin-bottom: 1em;
+`
+
+export const ProgressWrap = styled.div`
+  margin-top: 1em;
 `
