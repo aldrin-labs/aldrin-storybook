@@ -36,7 +36,7 @@ export interface DataTableProps<E> {
     row: DataCellValues<E>
   ) => void
   noDataText?: ReactNode
-  testid: string
+  generateTestId: (a?: string) => string
 }
 
 export interface DataTableState {
