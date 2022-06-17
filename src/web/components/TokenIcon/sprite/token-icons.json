@@ -1,5 +1,5 @@
 {
-  "createdAt": 1655273549863,
+  "createdAt": 1655459778479,
   "webpFilename": "token-icons.webp",
   "icons": [
     {
@@ -93,12 +93,21 @@
       }
     },
     {
+      "token": "ALM",
+      "address": "ALMmmmbt5KNrPPUBFE4dAKUKSPWTop5s3kUGCdF69gmw.",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-128px -202px"
+      }
+    },
+    {
       "token": "API",
       "address": "cPQm9UM1ekMeAgRcYGLfNcBC65SLA8o2BVTaBUA7kTg",
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-128px -202px"
+        "backgroundPosition": "-192px -202px"
       }
     },
     {
@@ -107,7 +116,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-192px -202px"
+        "backgroundPosition": "-256px -202px"
       }
     },
     {
@@ -116,7 +125,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-256px -202px"
+        "backgroundPosition": "-320px -0px"
       }
     },
     {
@@ -125,7 +134,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -0px"
+        "backgroundPosition": "-320px -64px"
       }
     },
     {
@@ -134,7 +143,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -64px"
+        "backgroundPosition": "-320px -128px"
       }
     },
     {
@@ -143,7 +152,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -128px"
+        "backgroundPosition": "-320px -192px"
       }
     },
     {
@@ -152,7 +161,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -192px"
+        "backgroundPosition": "-0px -266px"
       }
     },
     {
@@ -161,7 +170,7 @@
       "styles": {
         "width": "64px",
         "height": "46px",
-        "backgroundPosition": "-704px -594px"
+        "backgroundPosition": "-640px -650px"
       }
     },
     {
@@ -170,7 +179,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-0px -266px"
+        "backgroundPosition": "-64px -266px"
       }
     },
     {
@@ -179,7 +188,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-64px -266px"
+        "backgroundPosition": "-128px -266px"
       }
     },
     {
@@ -188,7 +197,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-128px -266px"
+        "backgroundPosition": "-192px -266px"
       }
     },
     {
@@ -197,7 +206,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-192px -266px"
+        "backgroundPosition": "-256px -266px"
       }
     },
     {
@@ -206,7 +215,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-256px -266px"
+        "backgroundPosition": "-320px -266px"
       }
     },
     {
@@ -215,7 +224,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -266px"
+        "backgroundPosition": "-384px -0px"
       }
     },
     {
@@ -224,7 +233,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -0px"
+        "backgroundPosition": "-384px -64px"
       }
     },
     {
@@ -233,7 +242,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -64px"
+        "backgroundPosition": "-384px -128px"
       }
     },
     {
@@ -242,7 +251,16 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -128px"
+        "backgroundPosition": "-384px -192px"
+      }
+    },
+    {
+      "token": "COCU",
+      "address": "4CqGRYLzvj3ibufGJdLmdK2CzvDA5k82NVav4a5EKCBG",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-384px -256px"
       }
     },
     {
@@ -260,7 +278,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -192px"
+        "backgroundPosition": "-0px -330px"
       }
     },
     {
@@ -269,7 +287,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -256px"
+        "backgroundPosition": "-64px -330px"
       }
     },
     {
@@ -278,7 +296,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-0px -330px"
+        "backgroundPosition": "-128px -330px"
       }
     },
     {
@@ -287,7 +305,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-64px -330px"
+        "backgroundPosition": "-192px -330px"
       }
     },
     {
@@ -296,7 +314,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-128px -330px"
+        "backgroundPosition": "-256px -330px"
       }
     },
     {
@@ -305,7 +323,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-192px -330px"
+        "backgroundPosition": "-320px -330px"
       }
     },
     {
@@ -314,7 +332,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-256px -330px"
+        "backgroundPosition": "-384px -330px"
       }
     },
     {
@@ -332,7 +350,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -330px"
+        "backgroundPosition": "-448px -0px"
       }
     },
     {
@@ -341,7 +359,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -330px"
+        "backgroundPosition": "-448px -64px"
       }
     },
     {
@@ -350,7 +368,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -0px"
+        "backgroundPosition": "-448px -128px"
       }
     },
     {
@@ -359,7 +377,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -64px"
+        "backgroundPosition": "-448px -192px"
       }
     },
     {
@@ -368,7 +386,16 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -128px"
+        "backgroundPosition": "-448px -256px"
+      }
+    },
+    {
+      "token": "FRIES",
+      "address": "FriCEbw1V99GwrJRXPnSQ6su2TabHabNxiZ3VNsVFPPN.",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-448px -320px"
       }
     },
     {
@@ -377,7 +404,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -192px"
+        "backgroundPosition": "-0px -394px"
       }
     },
     {
@@ -386,7 +413,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -256px"
+        "backgroundPosition": "-64px -394px"
       }
     },
     {
@@ -395,7 +422,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -320px"
+        "backgroundPosition": "-128px -394px"
       }
     },
     {
@@ -404,7 +431,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-0px -394px"
+        "backgroundPosition": "-192px -394px"
       }
     },
     {
@@ -413,7 +440,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-64px -394px"
+        "backgroundPosition": "-256px -394px"
       }
     },
     {
@@ -422,7 +449,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-128px -394px"
+        "backgroundPosition": "-320px -394px"
       }
     },
     {
@@ -431,7 +458,16 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-192px -394px"
+        "backgroundPosition": "-384px -394px"
+      }
+    },
+    {
+      "token": "GMCOIN",
+      "address": "A9Nc6Yo9YGKsaeAb2nsQFSQpLcdotGqjEJmEQFzZeeqX.",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-448px -394px"
       }
     },
     {
@@ -440,7 +476,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-256px -394px"
+        "backgroundPosition": "-512px -0px"
       }
     },
     {
@@ -449,7 +485,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -394px"
+        "backgroundPosition": "-512px -64px"
       }
     },
     {
@@ -458,7 +494,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -394px"
+        "backgroundPosition": "-512px -128px"
       }
     },
     {
@@ -467,7 +503,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -394px"
+        "backgroundPosition": "-512px -192px"
       }
     },
     {
@@ -476,7 +512,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -0px"
+        "backgroundPosition": "-512px -256px"
       }
     },
     {
@@ -485,7 +521,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -64px"
+        "backgroundPosition": "-512px -320px"
       }
     },
     {
@@ -494,7 +530,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -128px"
+        "backgroundPosition": "-512px -384px"
       }
     },
     {
@@ -503,7 +539,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -192px"
+        "backgroundPosition": "-0px -458px"
       }
     },
     {
@@ -512,7 +548,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -256px"
+        "backgroundPosition": "-64px -458px"
       }
     },
     {
@@ -521,7 +557,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -320px"
+        "backgroundPosition": "-128px -458px"
       }
     },
     {
@@ -530,7 +566,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -384px"
+        "backgroundPosition": "-192px -458px"
       }
     },
     {
@@ -539,7 +575,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-0px -458px"
+        "backgroundPosition": "-256px -458px"
       }
     },
     {
@@ -548,7 +584,7 @@
       "styles": {
         "width": "64px",
         "height": "48px",
-        "backgroundPosition": "-704px -546px"
+        "backgroundPosition": "-576px -650px"
       }
     },
     {
@@ -557,7 +593,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-64px -458px"
+        "backgroundPosition": "-320px -458px"
       }
     },
     {
@@ -566,7 +602,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-128px -458px"
+        "backgroundPosition": "-384px -458px"
       }
     },
     {
@@ -575,7 +611,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-192px -458px"
+        "backgroundPosition": "-448px -458px"
       }
     },
     {
@@ -584,7 +620,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-256px -458px"
+        "backgroundPosition": "-512px -458px"
       }
     },
     {
@@ -593,7 +629,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -458px"
+        "backgroundPosition": "-576px -0px"
       }
     },
     {
@@ -602,7 +638,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -458px"
+        "backgroundPosition": "-576px -64px"
       }
     },
     {
@@ -611,7 +647,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -458px"
+        "backgroundPosition": "-576px -128px"
       }
     },
     {
@@ -620,7 +656,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -458px"
+        "backgroundPosition": "-576px -192px"
       }
     },
     {
@@ -629,7 +665,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -0px"
+        "backgroundPosition": "-576px -256px"
       }
     },
     {
@@ -638,7 +674,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -64px"
+        "backgroundPosition": "-576px -320px"
       }
     },
     {
@@ -647,7 +683,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -128px"
+        "backgroundPosition": "-576px -384px"
       }
     },
     {
@@ -656,7 +692,7 @@
       "styles": {
         "width": "64px",
         "height": "57px",
-        "backgroundPosition": "-704px -437px"
+        "backgroundPosition": "-448px -650px"
       }
     },
     {
@@ -665,7 +701,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -192px"
+        "backgroundPosition": "-576px -448px"
       }
     },
     {
@@ -674,7 +710,16 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -256px"
+        "backgroundPosition": "-0px -522px"
+      }
+    },
+    {
+      "token": "OTR",
+      "address": "6TgvYd7eApfcZ7K5Mur7MaUQ2xT7THB4cLHWuMkQdU5Z.",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-64px -522px"
       }
     },
     {
@@ -683,7 +728,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -320px"
+        "backgroundPosition": "-128px -522px"
       }
     },
     {
@@ -692,7 +737,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -384px"
+        "backgroundPosition": "-192px -522px"
       }
     },
     {
@@ -719,7 +764,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -448px"
+        "backgroundPosition": "-256px -522px"
       }
     },
     {
@@ -728,7 +773,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-0px -522px"
+        "backgroundPosition": "-320px -522px"
       }
     },
     {
@@ -737,7 +782,16 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-64px -522px"
+        "backgroundPosition": "-384px -522px"
+      }
+    },
+    {
+      "token": "PRT",
+      "address": "JET6zMJWkCN9tpRT2v2jfAmm5VnQFDpUBCyaKojmGtz.",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-448px -522px"
       }
     },
     {
@@ -746,7 +800,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-128px -522px"
+        "backgroundPosition": "-512px -522px"
       }
     },
     {
@@ -755,7 +809,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-192px -522px"
+        "backgroundPosition": "-576px -522px"
       }
     },
     {
@@ -764,7 +818,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-256px -522px"
+        "backgroundPosition": "-640px -0px"
       }
     },
     {
@@ -773,7 +827,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -522px"
+        "backgroundPosition": "-640px -64px"
       }
     },
     {
@@ -782,7 +836,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -522px"
+        "backgroundPosition": "-640px -128px"
       }
     },
     {
@@ -791,7 +845,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -522px"
+        "backgroundPosition": "-640px -192px"
       }
     },
     {
@@ -800,7 +854,16 @@
       "styles": {
         "width": "64px",
         "height": "62px",
-        "backgroundPosition": "-704px -256px"
+        "backgroundPosition": "-256px -650px"
+      }
+    },
+    {
+      "token": "SFCN",
+      "address": "5abCYCzwJLtazvtAZEPcHaEoB2zZ6xNFEmM36o6qyAHy.",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-640px -256px"
       }
     },
     {
@@ -809,7 +872,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -522px"
+        "backgroundPosition": "-640px -320px"
       }
     },
     {
@@ -818,7 +881,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -522px"
+        "backgroundPosition": "-640px -384px"
       }
     },
     {
@@ -827,7 +890,7 @@
       "styles": {
         "width": "64px",
         "height": "60px",
-        "backgroundPosition": "-704px -318px"
+        "backgroundPosition": "-320px -650px"
       }
     },
     {
@@ -840,12 +903,21 @@
       }
     },
     {
+      "token": "SOB",
+      "address": "EkDf4Nt89x4Usnxkj4sGHX7sWxkmmpiBzA4qdDkgEN6b.",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-640px -448px"
+      }
+    },
+    {
       "token": "SOL",
       "address": "So11111111111111111111111111111111111111112",
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -0px"
+        "backgroundPosition": "-640px -512px"
       }
     },
     {
@@ -854,7 +926,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -64px"
+        "backgroundPosition": "-0px -586px"
       }
     },
     {
@@ -863,7 +935,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -128px"
+        "backgroundPosition": "-64px -586px"
       }
     },
     {
@@ -872,7 +944,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -192px"
+        "backgroundPosition": "-128px -586px"
       }
     },
     {
@@ -885,12 +957,30 @@
       }
     },
     {
+      "token": "SUNNY",
+      "address": "SUNNYWgPQmFxe9wTZzNK7iPnJ3vYDrkgnxJRJm1s3ag.",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-192px -586px"
+      }
+    },
+    {
+      "token": "SYP",
+      "address": "FnKE9n6aGjQoNWRBZXy4RW6LZVao7qwBonUbiD7edUmZ.",
+      "styles": {
+        "width": "64px",
+        "height": "64px",
+        "backgroundPosition": "-256px -586px"
+      }
+    },
+    {
       "token": "THC",
       "address": "THCBB791xLFhRhxPHMDVN9m5KDeBBjwh6dfBbnTuPe9",
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -256px"
+        "backgroundPosition": "-320px -586px"
       }
     },
     {
@@ -899,7 +989,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -320px"
+        "backgroundPosition": "-384px -586px"
       }
     },
     {
@@ -908,7 +998,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -384px"
+        "backgroundPosition": "-448px -586px"
       }
     },
     {
@@ -917,7 +1007,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -448px"
+        "backgroundPosition": "-512px -586px"
       }
     },
     {
@@ -926,7 +1016,7 @@
       "styles": {
         "width": "64px",
         "height": "52px",
-        "backgroundPosition": "-704px -494px"
+        "backgroundPosition": "-512px -650px"
       }
     },
     {
@@ -935,7 +1025,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -512px"
+        "backgroundPosition": "-576px -586px"
       }
     },
     {
@@ -944,7 +1034,7 @@
       "styles": {
         "width": "64px",
         "height": "59px",
-        "backgroundPosition": "-704px -378px"
+        "backgroundPosition": "-384px -650px"
       }
     },
     {
@@ -953,7 +1043,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-0px -586px"
+        "backgroundPosition": "-640px -586px"
       }
     },
     {
@@ -962,7 +1052,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-64px -586px"
+        "backgroundPosition": "-704px -0px"
       }
     },
     {
@@ -971,7 +1061,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-128px -586px"
+        "backgroundPosition": "-704px -64px"
       }
     },
     {
@@ -980,7 +1070,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-192px -586px"
+        "backgroundPosition": "-704px -128px"
       }
     },
     {
@@ -989,7 +1079,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-256px -586px"
+        "backgroundPosition": "-704px -192px"
       }
     },
     {
@@ -998,7 +1088,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-320px -586px"
+        "backgroundPosition": "-704px -256px"
       }
     },
     {
@@ -1007,7 +1097,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-384px -586px"
+        "backgroundPosition": "-704px -320px"
       }
     },
     {
@@ -1016,7 +1106,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-448px -586px"
+        "backgroundPosition": "-704px -384px"
       }
     },
     {
@@ -1034,7 +1124,7 @@
       "styles": {
         "width": "64px",
         "height": "44px",
-        "backgroundPosition": "-0px -650px"
+        "backgroundPosition": "-704px -650px"
       }
     },
     {
@@ -1043,7 +1133,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-512px -586px"
+        "backgroundPosition": "-704px -448px"
       }
     },
     {
@@ -1052,7 +1142,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-576px -586px"
+        "backgroundPosition": "-704px -512px"
       }
     },
     {
@@ -1061,7 +1151,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-640px -586px"
+        "backgroundPosition": "-704px -576px"
       }
     },
     {
@@ -1070,7 +1160,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-704px -0px"
+        "backgroundPosition": "-0px -650px"
       }
     },
     {
@@ -1079,7 +1169,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-704px -64px"
+        "backgroundPosition": "-64px -650px"
       }
     },
     {
@@ -1088,7 +1178,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-704px -128px"
+        "backgroundPosition": "-128px -650px"
       }
     },
     {
@@ -1097,7 +1187,7 @@
       "styles": {
         "width": "64px",
         "height": "64px",
-        "backgroundPosition": "-704px -192px"
+        "backgroundPosition": "-192px -650px"
       }
     }
   ]
