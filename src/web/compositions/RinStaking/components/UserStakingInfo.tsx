@@ -1,13 +1,12 @@
 import { PublicKey } from '@solana/web3.js'
-import { FONT_SIZES, COLORS } from '@variables/variables'
+import { COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
-import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
+import { Block, BlockContentStretched } from '@sb/components/Block'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
-import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
@@ -44,10 +43,8 @@ import {
 import {
   stripByAmount,
   stripByAmountAndFormat,
-  stripToMillions,
 } from '@core/utils/chartPageUtils'
 import { DAY, daysInMonthForDate } from '@core/utils/dateUtils'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import ClockIcon from '@icons/clock.svg'
 
@@ -414,98 +411,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   return (
     <>
       <Row style={{ height: 'auto' }}>
-        <Cell colMd={6} colXl={3} col={12}>
-          <GreenBlock>
-            <BlockContentStretched>
-              <FlexBlock alignItems="center" justifyContent="space-between">
-                <InlineText color="lightGray" size="sm">
-                  Estimated Rewards
-                </InlineText>
-                <DarkTooltip
-                  title={
-                    <p>
-                      Staking rewards are paid on the{' '}
-                      <strong> 27th of the every month</strong> based on RIN
-                      weekly buy-backs on 1/6th of AMM fees . Estimated rewards
-                      are updated{' '}
-                      <strong>hourly based on treasury rewards</strong>{' '}
-                      and&nbsp;
-                      <strong>weekly based on RIN buyback</strong>.
-                    </p>
-                  }
-                >
-                  <span>
-                    <SvgIcon src={InfoIcon} width="0.8em" />
-                  </span>
-                </DarkTooltip>
-              </FlexBlock>
-
-              <FlexBlock alignItems="flex-end">
-                <InlineText size="lg" weight={700} color="newGreen">
-                  {formattedAPR}%{' '}
-                  <InlineText
-                    weight={400}
-                    size="es"
-                    style={{ color: 'rgba(38, 159, 19, 50%)' }}
-                  >
-                    APR
-                  </InlineText>
-                </InlineText>
-              </FlexBlock>
-
-              <StretchedBlock>
-                <FlexBlock alignItems="center">
-                  <InlineText
-                    size="sm"
-                    color="lightGray"
-                    style={{
-                      lineHeight: 'normal',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {formattedTreasuryAPR}% + {formattedBuyBackAPR}%
-                  </InlineText>
-                </FlexBlock>
-                <div>
-                  <ShareButton
-                    iconFirst
-                    text={shareText}
-                    buttonStyle={{
-                      minWidth: 'auto',
-                      border: 'none',
-                      fontSize: FONT_SIZES.sm,
-                      padding: '0',
-                    }}
-                  />
-                </div>
-              </StretchedBlock>
-            </BlockContentStretched>
-          </GreenBlock>
-        </Cell>
-        <Cell colMd={6} colXl={3} col={12}>
-          <Block>
-            <BlockContentStretched>
-              <InlineText color="lightGray" size="sm">
-                Total staked{' '}
-              </InlineText>{' '}
-              <BigNumber>
-                <InlineText>{stripToMillions(totalStakedRIN)} </InlineText>{' '}
-                <InlineText color="primaryGray">RIN</InlineText>
-              </BigNumber>
-              <StretchedBlock align="flex-end">
-                <InlineText size="sm">
-                  <InlineText color="lightGray">$</InlineText>&nbsp;
-                  {stripToMillions(totalStakedUSD)}
-                </InlineText>{' '}
-                <InlineText margin="0" size="sm">
-                  {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
-                  circulating supply
-                </InlineText>
-              </StretchedBlock>
-            </BlockContentStretched>
-          </Block>
-        </Cell>
-
         <Cell colMd={6} colXl={3} col={12}>
           <Block>
             <BlockContentStretched>
