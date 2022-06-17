@@ -80,6 +80,10 @@ export const dark = {
     tooltip: '#222429',
     greenChart: ['rgba(143, 255, 200, 0.25)', 'rgba(143, 255, 200, 0)'],
     shadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.45)',
+    swapHover: '#2a2a3a',
+    swapActive: '#262633',
+    swapSetAmountHover: '#393948',
+    swapSetAmountActive: '#323240',
   },
 }
 
@@ -162,6 +166,10 @@ export const light = {
     tooltip: 'rgb(214, 216, 224)',
     greenChart: ['rgba(0, 232, 120, 0.31)', 'rgba(0, 244, 126, 0)'],
     shadow: '0px 0px 8px 0px rgba(169, 169, 178, 1)',
+    swapHover: '#d4d4da',
+    swapActive: '#bdbdc2',
+    swapSetAmountHover: '#bfbfc2',
+    swapSetAmountActive: '#aaaaac',
   },
 }
 

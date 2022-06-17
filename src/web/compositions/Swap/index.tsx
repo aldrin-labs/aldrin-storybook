@@ -364,7 +364,7 @@ const SwapPage = ({
           <SwapBlockTemplate width="100%">
             <RowContainer margin="0 0 .5em 0" justify="space-between">
               <Row>
-                <ValueButton>
+                <ValueButton className="timer">
                   <ReloadTimer
                     duration={15}
                     initialRemainingTime={15}
@@ -568,6 +568,7 @@ const SwapPage = ({
                 >
                   <span style={{ width: '100%' }}>
                     <Button
+                      className="btn"
                       $width="xl"
                       $padding="lg"
                       theme={theme}

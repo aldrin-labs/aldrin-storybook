@@ -4,6 +4,9 @@ import {
   FONTS,
   FONT_SIZES,
   MAIN_FONT,
+  UCOLORS,
+  COLORS,
+  TRANSITION,
 } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
@@ -72,6 +75,16 @@ export const ValueButton = styled.button`
   line-height: 2em;
   border: 0.1rem solid ${(props) => props.theme.colors.gray5};
   border-radius: 0.8rem;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.swapHover};
+    border: 0.1rem solid ${(props) => props.theme.colors.swapHover};
+  }
+
+  &:active {
+    background-color: ${(props) => props.theme.colors.swapActive};
+    border: 0.1rem solid ${(props) => props.theme.colors.swapActive};
+  }
 `
 
 export const ValueInput = styled.input`
@@ -200,6 +213,31 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
   padding: 2.4rem 1.6rem;
   z-index: 10;
 
+  .timer {
+    &:hover {
+      background-color: ${(props) => props.theme.colors.gray5};
+      border: 0.1rem solid ${(props) => props.theme.colors.gray5};
+    }
+    &:active {
+      background-color: ${(props) => props.theme.colors.gray5};
+      border: 0.1rem solid ${(props) => props.theme.colors.gray5};
+    }
+  }
+
+  .btn {
+    transition: ${TRANSITION};
+
+    &:hover {
+      background: ${UCOLORS.blue4};
+      border: 1px solid transparent;
+    }
+
+    &:active {
+      background: ${COLORS.darkBlue};
+      border: 1px solid transparent;
+    }
+  }
+
   @media (min-width: 1920px) {
     font-size: 20px;
   }
@@ -214,6 +252,13 @@ export const SetAmountButton = styled(Button)`
   background-color: ${(props) => props.theme.colors.gray11};
   border: none;
   padding: ${PADDINGS.xs};
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.swapSetAmountHover};
+  }
+  &:active {
+    background-color: ${(props) => props.theme.colors.swapSetAmountActive};
+  }
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     padding: ${PADDINGS.sm};
