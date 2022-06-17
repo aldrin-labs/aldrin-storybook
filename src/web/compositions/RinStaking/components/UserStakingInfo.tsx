@@ -411,7 +411,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   return (
     <>
       <Row style={{ height: 'auto' }}>
-        <Cell colMd={6} colXl={3} col={12}>
+        <Cell colMd={12} colXl={6} col={12}>
           <Block>
             <BlockContentStretched>
               <FlexBlock justifyContent="space-between" alignItems="center">
@@ -443,7 +443,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </Block>
         </Cell>
-        <Cell colMd={6} colXl={3} col={12}>
+        <Cell colMd={12} colXl={6} col={12}>
           <Block>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
@@ -525,14 +525,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       <FormsWrap>
         <ConnectWalletWrapper text={null} size="sm">
           <Row>
-            <Cell colMd={6} colSm={12}>
+            <Cell colMd={12} colSm={12}>
               <StakingForm
                 tokenData={tokenData}
                 start={start}
                 loading={loading}
-              />
-            </Cell>
-            <Cell colMd={6} colSm={12}>
+              />{' '}
               <UnstakingForm
                 isUnstakeLocked={isUnstakeLocked}
                 unlockAvailableDate={unlockAvailableDate}
