@@ -2,20 +2,20 @@
 import { Idl, Program, Provider } from '@project-serum/anchor'
 import { Connection, PublicKey } from '@solana/web3.js'
 import {
-  Program as Program03,
-  Provider as Provider03,
-  Idl as Idl03,
-} from 'anchor03'
-import {
   Program as Program019,
   Provider as Provider019,
   Idl as Idl019,
 } from 'anchor019'
 import {
   Program as Program020,
-  Provider as Provider020,
+  AnchorProvider as Provider020,
   Idl as Idl020,
-} from 'anchor020'
+} from 'anchor024'
+import {
+  Program as Program03,
+  Provider as Provider03,
+  Idl as Idl03,
+} from 'anchor03'
 
 import MarketOrderProgramIdl from '@core/idls/marketOrder.json'
 import PlutoniansStakingProgramIdl from '@core/idls/plutonians.json'
@@ -34,7 +34,7 @@ import {
   POOLS_V2_PROGRAM_ADDRESS,
   VESTING_PROGRAM_ADDRESS,
   TWAMM_PROGRAM_ADDRESS,
-  PLUTONIANS_STAKING_ADDRESS,
+  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
   defaultOptions,
 } from './utils'
 
@@ -45,21 +45,23 @@ const IDLS = {
   [STAKING_PROGRAM_ADDRESS]: StakingProgramIdl as Idl,
   [VESTING_PROGRAM_ADDRESS]: VestingProgramIdl as Idl03,
   [TWAMM_PROGRAM_ADDRESS]: TwammProgramIdl as Idl019,
-  [PLUTONIANS_STAKING_ADDRESS]: PlutoniansStakingProgramIdl as Idl020,
+  [PLUTONIANS_STAKING_PROGRAMM_ADDRESS]: PlutoniansStakingProgramIdl as Idl020,
+}
+
+interface GetProgramParamsCommon {
+  wallet: WalletAdapter
+  connection: Connection
+}
+
+interface GetProgramParams extends GetProgramParamsCommon {
+  programAddress: string
 }
 
 class ProgramsMultiton {
   private cache: { [programAddress: string]: Program } = {}
 
-  getProgramByAddress({
-    wallet,
-    connection,
-    programAddress,
-  }: {
-    wallet: WalletAdapter
-    connection: Connection
-    programAddress: string
-  }) {
+  getProgramByAddress(params: GetProgramParams) {
+    const { wallet, connection, programAddress } = params
     const cacheKey = `${programAddress}-${wallet.publicKey}`
 
     // save program to key program-address-wallet (to load program after connecting wallet)
@@ -96,17 +98,8 @@ class ProgramsMultiton {
           defaultOptions()
         )
       ) as any as Program
-    } else if (programAddress === PLUTONIANS_STAKING_ADDRESS) {
-      this.cache[cacheKey] = new Program020(
-        programIdl as Idl020,
-        new PublicKey(PLUTONIANS_STAKING_ADDRESS),
-        new Provider020(
-          connection,
-          // walletAdapterToWallet(wallet),
-          wallet, // TODO: resolve more gently?
-          defaultOptions()
-        )
-      ) as any as Program
+    } else if (programAddress === PLUTONIANS_STAKING_PROGRAMM_ADDRESS) {
+      return this.getPlutoniansStakingProgram(params) as any as Program
     } else if (programAddress === TWAMM_PROGRAM_ADDRESS) {
       this.cache[cacheKey] = new Program019(
         programIdl as Idl019,
@@ -132,6 +125,23 @@ class ProgramsMultiton {
     }
 
     return this.cache[cacheKey]
+  }
+
+  getPlutoniansStakingProgram(params: GetProgramParamsCommon): Program020 {
+    const cacheKey = `${PLUTONIANS_STAKING_PROGRAMM_ADDRESS}-${params.wallet.publicKey}`
+    if (!this.cache[cacheKey]) {
+      return new Program020(
+        IDLS[PLUTONIANS_STAKING_PROGRAMM_ADDRESS] as Idl020,
+        new PublicKey(PLUTONIANS_STAKING_PROGRAMM_ADDRESS),
+        new Provider020(
+          params.connection,
+          // walletAdapterToWallet(wallet),
+          params.wallet, // TODO: resolve more gently?
+          defaultOptions()
+        )
+      )
+    }
+    return this.cache[cacheKey] as any as Program020
   }
 }
 
