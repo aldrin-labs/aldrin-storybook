@@ -84,7 +84,7 @@ export const TokenIconsContainer: React.FC<TokenIconContainerProps> = (
         </TokenIconContainer>
       </IconsContainer>
       <div style={{ marginLeft: '2rem' }}>
-        <PoolName size="sm" color="white">
+        <PoolName size="sm">
           {base} / {quote}
         </PoolName>
         {children}

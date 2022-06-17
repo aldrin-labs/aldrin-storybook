@@ -25,7 +25,8 @@ export const AbsoluteImg = styled.img`
 `
 
 export const Filler = styled.div<FillerProps>`
-  background: rgba(38, 159, 19, 0.2);
+  background: #00ff8426;
+
   border-radius: ${BORDER_RADIUS.md};
   width: ${(props: FillerProps) => props.$width}%;
   height: 100%;

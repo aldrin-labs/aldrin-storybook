@@ -1,5 +1,5 @@
-import { COLORS } from '@variables/variables'
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 import { Cell } from '@sb/components/Layout'
 
@@ -10,11 +10,11 @@ import UserStakingInfo from './UserStakingInfo'
 
 const StakingComponent = () => {
   const { data: poolInfo } = useStakingPoolInfo()
-
+  const theme = useTheme()
   if (!poolInfo) {
     return (
       <>
-        <br /> <Loader color={COLORS.white} width="5em" />
+        <br /> <Loader color={theme.colors.white} width="5em" />
       </>
     )
   }

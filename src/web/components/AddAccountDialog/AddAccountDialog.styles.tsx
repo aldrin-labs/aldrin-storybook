@@ -5,7 +5,6 @@ import {
   Typography,
   Link,
   InputBase,
-  withTheme,
 } from '@material-ui/core'
 import SearchIcon from '@material-ui/icons/Search'
 import React from 'react'
@@ -92,7 +91,7 @@ const DialogWrapper1 = styled(({ ...props }) => <Dialog {...props} />)`
   border-radius: 100px;
 `
 
-export const DialogWrapper = withTheme()(DialogWrapper1)
+export const DialogWrapper = DialogWrapper1
 
 export const TypographyTopDescription = styled(Typography)`
   margin: auto;
@@ -108,7 +107,7 @@ export const LinkCustom = styled(Link)`
   line-height: 114.5%;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #651ce4;
+  color: #0e02ec;
 `
 export const SearchIconCustom = styled(SearchIcon)`
   position: absolute;

@@ -1,32 +1,30 @@
+import { MenuList } from '@material-ui/core'
+import { UCOLORS } from '@variables/variables'
 import * as React from 'react'
-import ReactDOM from 'react-dom'
 import { withRouter } from 'react-router-dom'
-import { MenuList, Grid, withWidth } from '@material-ui/core'
+import styled from 'styled-components'
+
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import SvgIcon from '@sb/components/SvgIcon'
+import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
+
 import {
   StyledDropdown,
   StyledPaper,
   StyledMenuItem,
-  StyledMenuItemText,
-  StyledLink,
   StyledButton,
 } from './Dropdown.styles'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import SvgIcon from '@sb/components/SvgIcon'
-
 import { IProps } from './types'
-import styled from 'styled-components'
-
-import { WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 
 const WalletStatusButton = ({ wallet, connected, theme, id, buttonStyles }) => (
   <BtnCustom
     onClick={connected ? wallet?.disconnect : wallet?.connect}
     btnColor={theme.palette.blue.serum}
-    btnWidth={'14rem'}
-    textTransform={'capitalize'}
-    height={'3.5rem'}
+    btnWidth="14rem"
+    textTransform="capitalize"
+    height="3.5rem"
     borderRadius=".6rem"
-    fontSize={'1.2rem'}
+    fontSize="1.2rem"
     // margin={'0 0 0 3rem'}
     id={id}
     style={{
@@ -51,14 +49,14 @@ const ConnectWalletButton = ({
 }) => (
   <BtnCustom
     onClick={wallet?.connect}
-    btnColor={'#F8FAFF'}
-    backgroundColor={theme.palette.blue.serum}
-    btnWidth={'100%'}
-    borderColor={theme.palette.blue.serum}
-    textTransform={'capitalize'}
+    btnColor="#F8FAFF"
+    backgroundColor={UCOLORS.blue3}
+    btnWidth="100%"
+    borderColor={UCOLORS.blue3}
+    textTransform="capitalize"
     height={height}
     borderRadius=".6rem"
-    fontSize={'1.2rem'}
+    fontSize="1.2rem"
     style={{
       display: 'flex',
       textTransform: 'none',
@@ -142,8 +140,8 @@ export default class Dropdown extends React.Component<IProps> {
             showOnTop={showOnTop}
             theme={theme}
             isWalletConnected={connected}
-            customActiveRem={'9rem'}
-            customNotActiveRem={'3rem'}
+            customActiveRem="9rem"
+            customNotActiveRem="3rem"
           >
             <MenuList style={{ padding: 0 }}>
               {WALLET_PROVIDERS.map((provider) => {
@@ -153,18 +151,18 @@ export default class Dropdown extends React.Component<IProps> {
                   <StyledMenuItem
                     theme={theme}
                     disableRipple
-                    disableGutters={true}
+                    disableGutters
                     key={provider.name}
                     isActive={isProviderActive}
                   >
                     <StyledButton
-                      btnWidth={'100%'}
-                      height={'4rem'}
+                      btnWidth="100%"
+                      height="4rem"
                       border="none"
                       borderWidth="0"
                       borderRadius="0"
                       btnColor={isProviderActive ? '#AAF2C9' : '#ECF0F3'}
-                      fontSize={'1.2rem'}
+                      fontSize="1.2rem"
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -183,8 +181,8 @@ export default class Dropdown extends React.Component<IProps> {
                     >
                       <SvgIcon
                         src={provider.icon}
-                        width={'2.5rem'}
-                        height={'100%'}
+                        width="2.5rem"
+                        height="100%"
                       />
                       {provider.name}
                     </StyledButton>
