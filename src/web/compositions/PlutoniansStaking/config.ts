@@ -27,6 +27,7 @@ export const REWARD_TOKEN_MULTIPLIER = 1
 
 export const REWARD_APR_DENOMINATOR = 1_000_000
 
+// TODO: get rid of that once new pool is ready
 export const PLD_DENOMINATOR = MASTER_BUILD ? 1_000_000 : 1_000_000_000
 export const PLD_DECIMALS = MASTER_BUILD ? 6 : 9
 
