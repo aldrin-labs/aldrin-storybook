@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 
-import { COLORS } from '../../../variables/variables'
-
 export const AnimatedImage = styled.svg`
   width: ${(props) => props.width || '2.5rem'};
   height: auto;
@@ -33,7 +31,7 @@ export const AnimatedImage = styled.svg`
   }
 
   .with-fill {
-    fill: ${(props) => props.color || COLORS.black};
+    fill: ${(props) => props.color || props.theme.colors.gray0};
   }
 `
 

@@ -5,6 +5,7 @@ import {
   TokenAllocationProgressBar,
   TokenAllocationProgressBarContainer,
 } from '@sb/components/AllocationBlock/Legend/index.styles'
+import { InlineText } from '@sb/components/Typography'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
@@ -29,11 +30,10 @@ const BalanceDistributedComponent = ({
       direction="column"
       width="100%"
       height="100%"
-      theme={theme}
       justify="space-around"
     >
       <RowContainer align="flex-end" style={{ flexWrap: 'nowrap' }}>
-        <Text color="#93A0B2">Balance Distributed:</Text>&nbsp; &nbsp;
+        <InlineText size="sm">Balance Distributed:</InlineText>&nbsp; &nbsp;
         <Text fontSize="1.7rem" fontFamily="Avenir Next Bold">
           {distributedPercentage}%
         </Text>

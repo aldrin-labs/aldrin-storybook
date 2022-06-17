@@ -1,10 +1,11 @@
 import React from 'react'
 
-import Loupe from '@icons/search.svg'
-import { Theme } from '@sb/types/materialUI'
+import SvgIcon from '@sb/components/SvgIcon'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { Input, TextButton } from '@sb/compositions/Rebalance/Rebalance.styles'
-import SvgIcon from '@sb/components/SvgIcon'
+import { Theme } from '@sb/types/materialUI'
+
+import Loupe from '@icons/search.svg'
 
 import { SearchInput } from './Inputs.styles'
 import { ImagesPath } from './Inputs.utils'
@@ -86,7 +87,7 @@ const InputWithEye = ({
   return (
     <InputWithComponent
       theme={theme}
-      autoFocus={true}
+      autoFocus
       ComponentToShow={
         <img
           style={{
@@ -147,14 +148,12 @@ const SearchInputWithLoupe = ({
   onChange,
   placeholder,
   ComponentToShow,
-  theme,
 }: {
   type: string
   value: string
   onChange: any
   placeholder: string
   ComponentToShow: any
-  theme: Theme
 }) => {
   return (
     <RowContainer style={{ position: 'relative', width: '100%' }}>
@@ -180,7 +179,6 @@ const SearchInputWithLoupe = ({
 
 const InputWithSearch = ({
   onSearchClick,
-  theme,
   ...props
 }: {
   type: string
@@ -188,11 +186,9 @@ const InputWithSearch = ({
   onChange: any
   placeholder: string
   onSearchClick: () => void
-  theme: Theme
 }) => {
   return (
     <SearchInputWithLoupe
-      theme={theme}
       ComponentToShow={
         <SvgIcon
           style={{
@@ -209,10 +205,5 @@ const InputWithSearch = ({
   )
 }
 
-
-export {
-  InputWithEye,
-  InputWithPaste,
-  InputWithSearch,
-}
+export { InputWithEye, InputWithPaste, InputWithSearch }
 export default InputWithComponent

@@ -3,6 +3,7 @@ import React from 'react'
 import { InputField, INPUT_FORMATTERS, Input } from '@sb/components/Input'
 import { TokenIconWithName } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
+
 import { InputAppendContainer, TokensAvailableText } from './styles'
 
 type TokenAmountInputFieldProps = {
@@ -12,6 +13,7 @@ type TokenAmountInputFieldProps = {
   setFieldValue?: (field: string, value: any) => void
   disabled?: boolean
   onChange?: (value: string) => void
+  value?: string
   placeholder?: string
   showPlaceholderOnDisabled?: boolean
 }
@@ -36,6 +38,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
     mint,
     disabled = false,
     onChange,
+    value,
     placeholder = '0',
     showPlaceholderOnDisabled,
   } = props
@@ -46,6 +49,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
       name={name}
       disabled={disabled}
       onChange={onChange}
+      value={value}
       placeholder={placeholder}
       showPlaceholderOnDisabled={showPlaceholderOnDisabled}
       append={
@@ -56,7 +60,7 @@ export const TokenAmountInputField: React.FC<TokenAmountInputFieldProps> = (
                 onClick={() => setFieldValue(name, available)}
               >
                 Available:&nbsp;{' '}
-                <InlineText color="success">{available}</InlineText>
+                <InlineText color="green3">{available}</InlineText>
               </TokensAvailableText>
             )}
           </div>

@@ -1,13 +1,14 @@
 import dayjs from 'dayjs'
 import React from 'react'
 
-
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
-import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
 import { getTokenDataByMint } from '../../utils'
 import {
   LiquidityBlock,
@@ -76,11 +77,11 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
         <LiquidityTitle>Your Liquidity:</LiquidityTitle>
         <div>
           <LiquidityText weight={600}>
-            <LiquidityText color="success">
+            <LiquidityText color="green7">
               {stripByAmountAndFormat(baseUserTokenAmount, 6)}
             </LiquidityText>{' '}
             {baseTokenName}
-            <LiquidityText color="success">
+            <LiquidityText color="green7">
               {' '}
               / {stripByAmountAndFormat(quoteUserTokenAmount, 6)}
             </LiquidityText>{' '}
@@ -88,7 +89,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
           </LiquidityText>
         </div>
         <div>
-          <LiquidityText color="success">
+          <LiquidityText color="green7">
             ${stripByAmountAndFormat(userLiquidityUsd, 2)}
           </LiquidityText>
         </div>
@@ -105,11 +106,11 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
         <LiquidityTitle>Fees Earned:</LiquidityTitle>
         <div>
           <LiquidityText weight={600}>
-            <LiquidityText color="success">
+            <LiquidityText color="green7">
               {stripByAmountAndFormat(earnedPoolFees.totalBaseTokenFee, 6)}
             </LiquidityText>{' '}
             {baseTokenName}
-            <LiquidityText color="success">
+            <LiquidityText color="green7">
               {' '}
               /{stripByAmountAndFormat(earnedPoolFees.totalQuoteTokenFee, 6)}
             </LiquidityText>{' '}
@@ -117,7 +118,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
           </LiquidityText>
         </div>
         <div>
-          <LiquidityText color="success">
+          <LiquidityText color="green7">
             ${stripByAmountAndFormat(earnedFeesUd, 2)}
           </LiquidityText>
         </div>

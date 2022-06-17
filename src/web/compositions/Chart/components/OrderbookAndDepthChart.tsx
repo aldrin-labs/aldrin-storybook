@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import 'treemap-js'
 
 import { Grid } from '@material-ui/core'
-import { OrderBook } from '../components'
+
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { useOrderbook, useMarkPrice } from '@sb/dexUtils/markets'
+import { useInterval } from '@sb/dexUtils/useInterval'
 
 import {
   transformOrderbookData,
@@ -11,12 +13,11 @@ import {
   getAggregationsFromPricePrecision,
 } from '@core/utils/chartPageUtils'
 
-import { useInterval } from '@sb/dexUtils/useInterval'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+// eslint-disable-next-line import/no-useless-path-segments
+import { OrderBook } from '../components'
 
 const OrderbookAndDepthChart = (props) => {
   const {
-    theme,
     chartProps,
     changeTable,
     symbol,
@@ -149,7 +150,6 @@ const OrderbookAndDepthChart = (props) => {
         style={{ height: '100%' }}
       >
         <OrderBook
-          theme={theme}
           exchange={exchange}
           aggregation={8}
           chartProps={chartProps}
