@@ -181,6 +181,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     return undefined
   }, [nftReceipes, stakingPool])
 
+  console.log('reward:', reward, nftReceipes, stakingPool)
   const unclaimedNftCount = reward
     ? reward.account.nfts.reduce((acc, nft) => nft.quantity + acc, 0)
     : 0

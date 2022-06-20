@@ -1,14 +1,15 @@
 import { PublicKey } from '@solana/web3.js'
 
+import { AldrinConnection } from '@core/solana'
+
 import { PoolInfo } from '../../../compositions/Pools/index.types'
-import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { StakingPool } from '../../staking/types'
 import { TokenInfo, WalletAdapter } from '../../types'
 import { FarmingTicket } from '../types'
 
 export interface WithdrawStakedParams {
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   allTokensData: TokenInfo[]
   farmingTickets: FarmingTicket[]
   stakingPool: StakingPool | PoolInfo
@@ -17,7 +18,7 @@ export interface WithdrawStakedParams {
 
 export interface StartStakingParams {
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   amount: number
   userPoolTokenAccount: PublicKey
   stakingPool: StakingPool | PoolInfo
@@ -28,7 +29,7 @@ export interface StartStakingParams {
 
 export interface EndstakingParams {
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   userPoolTokenAccount?: PublicKey
   farmingTickets: FarmingTicket[]
   stakingPool: StakingPool | PoolInfo

@@ -10,16 +10,16 @@ import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { initializeFarmingInstructions } from '@sb/dexUtils/pools/actions/initializeFarming'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { signTransactions } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { getPoolsProgramAddress } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
-import { sendSignedSignleTransactionRaw } from '../../../../dexUtils/transactions'
+import { sendSignedSignleTransaction } from '../../../../dexUtils/transactions'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
@@ -104,7 +104,6 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
       })
 
-
       setFarmingTransactionStatus('signing')
       const [signedTransaction] = await signTransactions({
         transactionsAndSigners: [{ transaction, signers }],
@@ -114,7 +113,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
 
       setFarmingTransactionStatus('sending')
 
-      const [txId, result] = await sendSignedSignleTransactionRaw({
+      const { txId, result } = await sendSignedSignleTransaction({
         transaction: signedTransaction,
         connection,
         wallet,

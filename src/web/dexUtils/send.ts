@@ -29,13 +29,14 @@ import {
   CancelOrderParams,
 } from '@sb/dexUtils/types'
 
+import { mergeTransactions } from '@core/solana'
+
 import { getCache } from './fetch-loop'
 import { getReferrerQuoteWallet } from './getReferrerQuoteWallet'
 import { isTokenAccountsForSettleValid } from './isTokenAccountsForSettleValid'
 import { notify } from './notifications'
 import { getNotificationText } from './serum'
 import {
-  mergeTransactions,
   sendSignedSignleTransaction,
   signAndSendSingleTransaction,
 } from './transactions'

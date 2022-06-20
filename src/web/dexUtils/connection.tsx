@@ -8,10 +8,9 @@ import {
 import tuple from 'immutable-tuple'
 import React, { useContext, useRef } from 'react'
 
-import { useAsyncData } from './fetch-loop'
-import MultiEndpointsConnection from './MultiEndpointsConnection'
+import { MultiEndpointsConnection, AldrinConnection } from '@core/solana'
 
-export type AldrinConnection = MultiEndpointsConnection & Connection
+import { useAsyncData } from './fetch-loop'
 
 export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
@@ -23,6 +22,8 @@ export const ENDPOINTS = [
 
 const connection = new MultiEndpointsConnection(
   [
+    // { url: 'https://solana-api.projectserum.com', weight: 2 },
+    // { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
     { url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 },
     // { url: 'https://aldrin-aldrin-3110.mainnet.rpcpool.com', weight: 20 },
     // { url: 'https://solana-api.ccai.khassanov.xyz/figment', weight: 20 },

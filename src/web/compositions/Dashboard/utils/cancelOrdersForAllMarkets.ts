@@ -1,9 +1,10 @@
 import { Transaction } from '@solana/web3.js'
 
-import MultiEndpointsConnection from '@sb/dexUtils/MultiEndpointsConnection'
 import { getNotificationText } from '@sb/dexUtils/serum'
 import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { AldrinConnection } from '@core/solana'
 
 import { splitBy } from '../../../utils'
 import { OrderWithMarket } from './getOpenOrdersFromOrderbooks'
@@ -14,7 +15,7 @@ export const cancelOrdersForAllMarkets = async ({
   orders,
 }: {
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   orders: OrderWithMarket[]
 }) => {
   const transactions = splitBy(orders, 10).map((ordersChunk) => {

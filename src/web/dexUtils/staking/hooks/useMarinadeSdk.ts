@@ -2,8 +2,9 @@ import { Marinade, MarinadeConfig } from '@marinade.finance/marinade-ts-sdk'
 import { PublicKey } from '@solana/web3.js'
 import { useMemo } from 'react'
 
+import { MARINADE_REF_ADDRESS } from '@core/solana'
+
 import { useConnection } from '../../connection'
-import { MARINADE_REF_ADDRESS } from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
 
 export const useMarinadeSdk = () => {

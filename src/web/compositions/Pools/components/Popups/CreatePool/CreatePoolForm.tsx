@@ -24,7 +24,7 @@ import {
 import { notify } from '@sb/dexUtils/notifications'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
-import { sendSignedSignleTransactionRaw } from '@sb/dexUtils/transactions'
+import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { SendSignedTransactionResult } from '@sb/dexUtils/types'
 import {
   sleep,
@@ -283,8 +283,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(1)
         console.log('Create accounts...')
-        const [createAccountsTxId, createAccountsStatus] =
-          await sendSignedSignleTransactionRaw({
+        const { txId: createAccountsTxId, result: createAccountsStatus } =
+          await sendSignedSignleTransaction({
             transaction: generatedTransactions.createAccounts,
             connection,
           })
@@ -302,8 +302,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(2)
         console.log('Set authorities...')
-        const [setAuthoritiesTxId, setAuthoritiesStatus] =
-          await sendSignedSignleTransactionRaw({
+        const { txId: setAuthoritiesTxId, result: setAuthoritiesStatus } =
+          await sendSignedSignleTransaction({
             transaction: generatedTransactions.setAuthorities,
             connection,
           })
@@ -321,8 +321,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         console.log('Initialize pool...')
         setProcessingStep(3)
-        const [initPoolTxId, initPoolStatus] =
-          await sendSignedSignleTransactionRaw({
+        const { txId: initPoolTxId, result: initPoolStatus } =
+          await sendSignedSignleTransaction({
             transaction: generatedTransactions.createPool,
             connection,
           })
@@ -340,8 +340,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         console.log('First deposit...')
         setProcessingStep(4)
-        const [firstDepositTxId, firstDepositStatus] =
-          await sendSignedSignleTransactionRaw({
+        const { txId: firstDepositTxId, result: firstDepositStatus } =
+          await sendSignedSignleTransaction({
             transaction: generatedTransactions.firstDeposit,
             connection,
           })
@@ -361,8 +361,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
           setProcessingStep(5)
-          const [farmingTxId, farmingStatus] =
-            await sendSignedSignleTransactionRaw({
+          const { txId: farmingTxId, result: farmingStatus } =
+            await sendSignedSignleTransaction({
               transaction: generatedTransactions.farming,
               connection,
             })

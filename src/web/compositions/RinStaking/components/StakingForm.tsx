@@ -10,7 +10,7 @@ import {
   formatNumbersForState,
 } from '@sb/dexUtils/utils'
 
-import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
+import { limitDecimalsCustom } from '@core/utils/numberUtils'
 
 import { AmountInput } from '../../../components/AmountInput'
 import { ButtonWrapper, FormItemFull, FormWrap, InputWrapper } from '../styles'
