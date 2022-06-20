@@ -63,8 +63,8 @@ export const combineBalancesTable = (
                   padding=".5rem 1rem .4rem 1rem"
                   borderRadius="1.4rem"
                   btnColor={theme.colors.primaryWhite}
-                  borderColor={theme.colors.blue5}
-                  backgroundColor={theme.colors.blue5}
+                  borderColor={theme.colors.blue3}
+                  backgroundColor={theme.colors.blue3}
                   transition="all .4s ease-out"
                   margin="0 0 0 2rem"
                   onClick={() => onSettleFunds(market, openOrders)}

@@ -111,7 +111,6 @@ const AppRaw = ({
     themeMode = 'dark'
     localStorage.setItem('themeMode', 'dark')
   }
-
   // const chartPageView =
   //   getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
