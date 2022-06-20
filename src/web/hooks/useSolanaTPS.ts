@@ -8,7 +8,8 @@ export const useSolanaTPS = () => {
   const connection = useSerumConnection()
 
   const fetcher = async () => {
-    const recentPerformanceSamples = await connection.getRecentPerformanceSamples(MINUTES_TO_CHECK_PERFORMANCE)
+    const recentPerformanceSamples =
+      await connection.getRecentPerformanceSamples(MINUTES_TO_CHECK_PERFORMANCE)
 
     const avgTPS =
       recentPerformanceSamples.reduce((acc, sample) => {

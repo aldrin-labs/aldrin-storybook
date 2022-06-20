@@ -1,22 +1,24 @@
-import React, { useEffect, useRef } from 'react'
-import styled from 'styled-components'
-import { withTheme } from '@material-ui/styles'
 import { Card } from '@material-ui/core'
-import { TriggerTitle } from '@sb/components/ChartCardHeader/styles'
-import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
-import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
-
-import { cancelOrder as cancel, amendOrder } from '@sb/dexUtils/send'
-import { useWallet } from '@sb/dexUtils/wallet'
 import useMobileSize from '@webhooks/useMobileSize'
 import BN from 'bn.js'
+import React, { useEffect, useRef } from 'react'
+import styled from 'styled-components'
+import useSWR from 'swr'
+
+import { TriggerTitle } from '@sb/components/ChartCardHeader/styles'
+import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
+import { cancelOrder as cancel, amendOrder } from '@sb/dexUtils/send'
+import { useWallet } from '@sb/dexUtils/wallet'
+
+import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
+
+import { useSerumConnection } from '../../dexUtils/connection'
 import {
   useOpenOrders,
   useSelectedBaseCurrencyAccount,
   useSelectedQuoteCurrencyAccount,
   useSelectedOpenOrdersAccount,
 } from '../../dexUtils/markets'
-import { useSerumConnection } from '../../dexUtils/connection'
 import {
   Order,
   MESSAGE_TYPE,
@@ -51,7 +53,7 @@ type OrderCancel = (orderId: string) => void
 type OrderAmend = (orderId: string, price: number) => void
 
 export const SingleChart = (props: SingleChartProps) => {
-  const { additionalUrl, themeMode } = props
+  const { additionalUrl } = props
   const { wallet } = useWallet()
   const isMobile = useMobileSize()
   const openOrders = useOpenOrders()
@@ -64,6 +66,8 @@ export const SingleChart = (props: SingleChartProps) => {
   const iframe = useRef<HTMLIFrameElement | null>(null)
   const cancelCallback = useRef<OrderCancel | null>(null)
   const amendCallback = useRef<OrderAmend | null>(null)
+
+  const { data: themeMode } = useSWR('theme')
 
   useEffect(() => {
     cancelCallback.current = async (orderId: string) => {
@@ -148,9 +152,9 @@ export const SingleChart = (props: SingleChartProps) => {
       <iframe
         allowFullScreen
         style={{ borderWidth: 0 }}
-        src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${
-          themeMode === 'light' ? 'light' : 'serum'
-        }&isMobile=${isMobile}${wallet.connected ? `&user_id=${wallet.publicKey}` : ''}`}
+        src={`${PROTOCOL}//${CHARTS_API_URL}${additionalUrl}&theme=${themeMode}&isMobile=${isMobile}${
+          wallet.connected ? `&user_id=${wallet.publicKey}` : ''
+        }`}
         height="100%"
         id={`tv_chart_${themeMode}`}
         title="Chart"
@@ -172,7 +176,7 @@ const ChartTitle = styled.span`
   width: calc(100% - 20rem);
   white-space: pre-line;
   text-align: left;
-  color: ${(props) => props.theme.palette.dark.main};
+  color: ${(props) => props.theme.colors.gray0};
   text-transform: capitalize;
   font-size: 1.3rem;
   line-height: 1rem;
@@ -180,16 +184,16 @@ const ChartTitle = styled.span`
 `
 
 export const SingleChartWithButtons = (props: SingleChartWithButtonsProps) => {
-  const { theme, themeMode, currencyPair, base, quote, marketType } = props
+  const { currencyPair, base, quote, marketType } = props
+  const theme = localStorage.getItem('theme')
 
   return (
-    <CustomCard theme={theme} id="tradingViewChart" style={CARD_STYLE}>
-      <TriggerTitle theme={theme}>
-        <ChartTitle theme={theme}>Chart</ChartTitle>
+    <CustomCard id="tradingViewChart" style={CARD_STYLE}>
+      <TriggerTitle>
+        <ChartTitle>Chart</ChartTitle>
       </TriggerTitle>
       <SingleChart
-        key={`${themeMode}${base}/${quote}`}
-        themeMode={themeMode}
+        key={`${theme}${base}/${quote}`}
         currencyPair={currencyPair}
         additionalUrl={`/?symbol=${base}/${quote}&marketType=${marketType}&exchange=serum`}
       />
@@ -197,4 +201,4 @@ export const SingleChartWithButtons = (props: SingleChartWithButtonsProps) => {
   )
 }
 
-export default withTheme()(SingleChartWithButtons)
+export default SingleChartWithButtons

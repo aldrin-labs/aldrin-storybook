@@ -1,5 +1,5 @@
 import { withTheme } from '@material-ui/styles'
-import { FONT_SIZES } from '@variables/variables'
+import { FONT_SIZES, UCOLORS } from '@variables/variables'
 import { AES, enc, MD5 } from 'crypto-js'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
@@ -63,7 +63,7 @@ export const Text = styled.span`
   text-transform: none;
   font-family: ${(props: TextProps) =>
     props.fontFamily || 'Avenir Next Medium'};
-  color: ${(props: TextProps) => props.color || '#ecf0f3'};
+  color: ${(props: TextProps) => props.theme.colors[props.color || 'gray0']};
   white-space: ${(props: TextProps) => props.whiteSpace || 'normal'};
   padding: ${(props: TextProps) => props.padding || '0'};
   letter-spacing: 0.01rem;
@@ -302,9 +302,9 @@ const AddressbookRoute = ({
               fontSize="1.4rem"
               padding="1rem 2rem"
               borderRadius=".8rem"
-              borderColor={theme.palette.blue.serum}
+              borderColor={UCOLORS.blue3}
               btnColor="#fff"
-              backgroundColor={theme.palette.blue.serum}
+              backgroundColor={UCOLORS.blue3}
               textTransform="none"
               margin="4rem 0 0 0"
               transition="all .4s ease-out"

@@ -41,6 +41,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const connection = useConnection()
   const [data, reloadVesting] = useUserVestings()
 
+  const rinAccount = useAssociatedTokenAccount(RIN_MINT)
   if (!data) {
     return (
       <FlexBlock
@@ -55,7 +56,6 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
     )
   }
   const rinVesting = data.find((v) => v.mint.equals(rinMint))
-  const rinAccount = useAssociatedTokenAccount(RIN_MINT)
 
   if (!rinVesting) {
     return (
@@ -148,7 +148,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
           RIN
         </InlineText>
         <FlexBlock alignItems="center">
-          <InlineText color="hint" weight={600}>
+          <InlineText color="gray1" weight={600}>
             Vested&nbsp;
           </InlineText>
 
@@ -163,18 +163,18 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
       <FlexBlock justifyContent="space-between" alignItems="center">
         <div>
           <div>
-            <InlineText color="hint" weight={600}>
+            <InlineText color="gray1" weight={600}>
               Total vested:
             </InlineText>
           </div>
           <div>
-            <InlineText weight={700} size="lg">
+            <InlineText color="gray1" weight={700} size="lg">
               {stripByAmount(startBalance, 2)}{' '}
-              <InlineText color="hint">RIN</InlineText>
+              <InlineText color="gray1">RIN</InlineText>
             </InlineText>
           </div>
           <div>
-            <InlineText color="hint">
+            <InlineText color="green7">
               ${stripByAmount(rinPrice * startBalance, 2)}
             </InlineText>
           </div>
@@ -184,25 +184,25 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
           <InlineText weight={600}>
             {timeLeft.days ? `${timeLeft.days}d` : `${timeLeft.hours}h`} &nbsp;
           </InlineText>
-          <InlineText color="hint">of vesting left</InlineText>{' '}
+          <InlineText color="gray1">of vesting left</InlineText>{' '}
         </ProgressBar>
       </FlexBlock>
       <Separator />
       <FlexBlock justifyContent="space-between" alignItems="center">
         <div>
           <div>
-            <InlineText color="hint" weight={600}>
+            <InlineText color="gray1" weight={600}>
               Available to claim:
             </InlineText>
           </div>
           <div>
-            <InlineText weight={700} size="lg">
+            <InlineText color="gray1" weight={700} size="lg">
               {stripByAmount(availableToClaim, 2)}{' '}
-              <InlineText color="hint">RIN</InlineText>
+              <InlineText color="gray1">RIN</InlineText>
             </InlineText>
           </div>
           <div>
-            <InlineText color="hint">
+            <InlineText color="green7">
               ${stripByAmount(rinPrice * availableToClaim, 2)}
             </InlineText>
           </div>

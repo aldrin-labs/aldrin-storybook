@@ -405,7 +405,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   )
 
   const userEstRewardsUSD = isBalancesShowing
-    ? stripByAmountAndFormat(estimatedRewards, 2)
+    ? strippedEstRewardsUSD
     : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
 
   return (
@@ -415,9 +415,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           <Block>
             <BlockContentStretched>
               <FlexBlock justifyContent="space-between" alignItems="center">
-                <InlineText color="lightGray" size="sm">
-                  Your stake
-                </InlineText>{' '}
+                <InlineText size="sm">Your stake</InlineText>{' '}
                 <SvgIcon
                   style={{ cursor: 'pointer' }}
                   src={
@@ -432,11 +430,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
               <BigNumber>
                 <InlineText>{totalStakedValue} </InlineText>{' '}
-                <InlineText color="primaryGray">RIN</InlineText>
+                <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
-                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  <InlineText>$</InlineText>&nbsp;
                   {totalStakedUsdValue}
                 </InlineText>{' '}
               </StretchedBlock>
@@ -447,9 +445,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           <Block>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
-                <InlineText color="lightGray" size="sm">
-                  Your rewards
-                </InlineText>
+                <InlineText size="sm">Your rewards</InlineText>
                 <DarkTooltip
                   title={
                     <>
@@ -471,11 +467,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
               <BigNumber>
                 <InlineText>{userEstRewards} </InlineText>{' '}
-                <InlineText color="primaryGray">RIN</InlineText>
+                <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
-                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  <InlineText>$</InlineText>&nbsp;
                   {userEstRewardsUSD}
                 </InlineText>{' '}
                 <FlexBlock>

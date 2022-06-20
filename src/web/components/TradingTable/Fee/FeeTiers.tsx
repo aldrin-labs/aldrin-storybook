@@ -1,10 +1,12 @@
 import React from 'react'
-import { TableWithSort } from '@sb/components'
+import { useTheme } from 'styled-components'
 
+import { TableWithSort } from '@sb/components'
 import {
   getEmptyTextPlaceholder,
   getTableHead,
 } from '@sb/components/TradingTable/TradingTable.utils'
+import { InlineText } from '@sb/components/Typography'
 import { useFeeDiscountKeys } from '@sb/dexUtils/markets'
 
 export const feeTiers = [
@@ -42,7 +44,11 @@ export const combineFeeTiers = (feeTiers, feeAccounts) => {
       taker: `${taker} %`,
       maker: `${maker} %`,
       condition: {
-        render: balance > 0 ? `>= ${balance} ${token}` : 'None',
+        render: (
+          <InlineText weight={600}>
+            {balance > 0 ? `>= ${balance} ${token}` : 'None'}
+          </InlineText>
+        ),
         style: { textAlign: 'left' },
         contentToSort: +balance,
       },
@@ -53,7 +59,8 @@ export const combineFeeTiers = (feeTiers, feeAccounts) => {
 }
 
 const FeeTiers = (props) => {
-  const { tab, theme, show, marketType } = props
+  const theme = useTheme()
+  const { tab, show, marketType } = props
 
   if (!show) {
     return null
@@ -79,13 +86,20 @@ const FeeTiers = (props) => {
       withCheckboxes={false}
       tableStyles={{
         cell: {
-          color: theme.palette.dark.main,
+          color: theme.colors.gray1,
           fontSize: '1rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
-          borderBottom: theme.palette.border.main,
+          borderBottom: `0.1rem solid ${theme.colors.gray5}`,
           backgroundColor: 'inherit',
           boxShadow: 'none',
+        },
+        heading: {
+          backgroundColor: theme.colors.gray6,
+          fontSize: '1.3rem',
+          borderRadius: 'none',
+          color: theme.colors.gray1,
+          borderBottom: `0.1rem solid ${theme.colors.gray5}`,
         },
         tab: {
           padding: 0,

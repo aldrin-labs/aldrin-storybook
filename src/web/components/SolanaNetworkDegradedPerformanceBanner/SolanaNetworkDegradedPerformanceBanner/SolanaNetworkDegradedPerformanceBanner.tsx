@@ -2,12 +2,11 @@ import React from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { Text } from '@sb/components/Typography'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { useSolanaTPS } from '@sb/hooks/useSolanaTPS'
 
 import BlackWarningIcon from '@icons/blackWarning.svg'
 
-import { Link, Container } from './styles'
+import { useSolanaTPS } from '../../../hooks/useSolanaTPS'
+import { Link, Container, StyledRowContainer } from './styles'
 
 const MAX_TPS_TO_SHOW_BANNER = 1500
 
@@ -19,7 +18,7 @@ export const SolanaNetworkDegradedPerformanceBanner = () => {
   }
 
   return (
-    <RowContainer style={{ background: 'rgba(255, 219, 28)' }}>
+    <StyledRowContainer>
       <Container>
         <SvgIcon src={BlackWarningIcon} width="24px" height="24px" />
         <Text size="lg" color="black" margin="10px 0 10px 20px">
@@ -43,6 +42,6 @@ export const SolanaNetworkDegradedPerformanceBanner = () => {
           .
         </Text>
       </Container>
-    </RowContainer>
+    </StyledRowContainer>
   )
 }

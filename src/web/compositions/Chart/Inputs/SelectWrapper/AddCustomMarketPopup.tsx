@@ -272,7 +272,6 @@ const CustomMarketDialog = ({
   // console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       style={{ width: '85rem', margin: 'auto' }}
       fullScreen={false}

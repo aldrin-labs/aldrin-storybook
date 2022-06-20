@@ -160,7 +160,6 @@ const MarketInfo = ({
 
   return (
     <BlockTemplate
-      theme={theme}
       width="100%"
       height="calc(20rem - 0.8rem)"
       margin="0 0 .8rem 0"

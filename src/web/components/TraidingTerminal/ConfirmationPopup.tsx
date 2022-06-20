@@ -13,6 +13,7 @@ import Attention from '@icons/attention.svg'
 import Info from '@icons/inform.svg'
 
 import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { Button } from '../Button'
 import { SCheckbox } from '../SharePortfolioDialog/SharePortfolioDialog.styles'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { TradeInputContent } from './index'
@@ -22,8 +23,7 @@ const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
   height: auto;
-  background: #222429;
-  border: 0.1rem solid #3a475c;
+  background: ${(props) => props.theme.colors.gray6};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -45,7 +45,7 @@ export const MainTitle = styled.span`
   line-height: 4rem;
   text-align: center;
   letter-spacing: 0.01rem;
-  color: #f8faff;
+  color: ${(props) => props.theme.colors.white};
   margin-bottom: 2rem;
 `
 export const Line = styled.div`
@@ -71,15 +71,14 @@ export const WhiteButton = styled((props) => (
     height="4.5rem"
     textTransform="capitalize"
     backgroundColor={props.background || 'transparent'}
-    borderColor={props.background || props.theme.palette.white.main}
-    btnColor={props.color || props.theme.palette.white.main}
     borderRadius="1rem"
     border={props.border || 'none'}
     {...props}
   />
 ))`
   outline: none;
-
+  border-color:${(props) => props.background || props.theme.colors.white}
+  color:${(props) => props.color || props.theme.colors.white}
   @media (max-width: 600px) {
     height: 7.5rem;
     border-radius: 2rem;
@@ -92,7 +91,8 @@ export const WhiteText = styled.span`
   display: flex;
   align-items: center;
   letter-spacing: 0.01rem;
-  color: ${(props: { $color?: string }) => props.$color || '#f8faff'};
+  color: ${(props: { $color?: string }) =>
+    props.$color || props.theme.colors.gray0};
 `
 const WarningBlock = styled.div`
   background: rgba(242, 156, 56, 0.5);
@@ -138,7 +138,6 @@ export const ConfirmationPopup = ({
   const isMobile = useMobileSize()
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
@@ -310,9 +309,15 @@ export const ConfirmationPopup = ({
       </RowContainer>
 
       <RowContainer margin="2rem 0 0 0" justify="space-between">
-        <WhiteButton width="49%" theme={theme} onClick={() => onClose()}>
+        <Button
+          $variant="outline-white"
+          $width="hf"
+          $fontSize="xmd"
+          $padding="lg"
+          onClick={() => onClose()}
+        >
           Cancel
-        </WhiteButton>
+        </Button>
         {priceType === 'market' && isSlippageHigh ? (
           <SendButton
             type={sideType}
@@ -333,7 +338,6 @@ export const ConfirmationPopup = ({
               width: '49%',
               color: theme.palette.grey.terminal,
             }}
-            theme={theme}
           >
             <RowContainer
               direction="column"
@@ -367,7 +371,6 @@ export const ConfirmationPopup = ({
             }}
             type={sideType}
             style={{ width: '49%', height: isMobile ? '7.5rem' : '4rem' }}
-            theme={theme}
           >
             {isSPOTMarket
               ? sideType === 'buy'

@@ -1,6 +1,7 @@
 import { Grid, Theme } from '@material-ui/core'
 import { isEqual } from 'lodash-es'
 import React, { useEffect, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import SingleChartWithButtons from '@sb/components/Chart'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
@@ -96,6 +97,8 @@ export const DefaultViewComponent = (
     !isCCAITradingEnabled() && currencyPair === 'RIN_USDC'
   )
 
+  const newTheme = useTheme()
+
   const [base, quote] = currencyPair.split('_')
 
   const baseQuoteArr = [base, quote]
@@ -148,7 +151,6 @@ export const DefaultViewComponent = (
               />
             </ChartsContainer>
             <TradingTerminalContainer
-              theme={theme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               hideDepthChart={hideDepthChart}
               hideOrderbook={hideOrderbook}
@@ -157,6 +159,7 @@ export const DefaultViewComponent = (
             >
               <Grid item container style={{ height: '100%' }}>
                 <OrderBookGrid
+                  xs
                   item
                   container
                   hideTradeHistory={hideTradeHistory}
@@ -223,11 +226,11 @@ export const DefaultViewComponent = (
           </TopChartsContainer>
           <TradingTabelContainer
             item
-            theme={theme}
             xs={6}
             isDefaultTerminalViewMode={isDefaultTerminalViewMode}
           >
             <TradingTable
+              newTheme={newTheme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               maxLeverage={maxLeverage}
               selectedKey={selectedKey}
@@ -266,6 +269,7 @@ export const DefaultViewComponent = (
             terminalViewMode={terminalViewMode}
           >
             <TradingComponent
+              newTheme={newTheme}
               selectedKey={selectedKey}
               activeExchange={activeExchange}
               pair={baseQuoteArr}
@@ -298,6 +302,7 @@ export const DefaultViewComponent = (
             terminalViewMode={terminalViewMode}
           >
             <TradingTable
+              newTheme={newTheme}
               isDefaultTerminalViewMode={isDefaultTerminalViewMode}
               maxLeverage={maxLeverage}
               selectedKey={selectedKey}
