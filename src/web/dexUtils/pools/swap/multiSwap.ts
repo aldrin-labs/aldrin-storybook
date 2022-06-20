@@ -14,14 +14,12 @@ import {
   ProgramsMultiton,
 } from '@sb/dexUtils/ProgramsMultiton'
 import { isTransactionFailed } from '@sb/dexUtils/send'
-import {
-  buildTransactions,
-  signAndSendTransactions,
-} from '@sb/dexUtils/transactions'
+import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { notEmpty } from '@sb/dexUtils/utils'
 import { WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
 
+import { buildTransactions } from '@core/solana'
 import { toBNWithDecimals } from '@core/utils/helpers'
 
 import { SWAP_FEES_SETTINGS } from '.'
