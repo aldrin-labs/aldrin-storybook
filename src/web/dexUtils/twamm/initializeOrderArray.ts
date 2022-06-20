@@ -8,8 +8,8 @@ import {
 
 import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
 
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { ProgramsMultiton, TWAMM_PROGRAM_ADDRESS } from '@core/solana'
+
 import { signAndSendSingleTransaction } from '../transactions'
 import { WalletAdapter } from '../types'
 import { PairSettings } from './types'

@@ -42,6 +42,10 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
 
   const walletPk = wallet.wallet.publicKey?.toBase58() || ''
 
+  const generateTestId = (extraData?: string) => {
+    return `amm-pools-table-${suffix}-${extraData}`
+  }
+
   const data = pools
     .filter((pool) =>
       symbolIncludesSearch(
@@ -67,6 +71,7 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
   return (
     <DataTable
       name={`amm_pools_table_${suffix}`}
+      generateTestId={generateTestId}
       data={data}
       columns={columns}
       defaultSortColumn="tvl"

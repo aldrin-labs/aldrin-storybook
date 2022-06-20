@@ -315,6 +315,7 @@ const SwapPage = ({
             <SwapSearch
               topTradingMints={topTradingMints}
               topTradingPairs={topTradingPairs}
+              data-testid="swap-search-field"
               tokens={tokenSelectorMints.map((mint) => ({ mint }))}
               onSelect={(args) => {
                 const { amountFrom, tokenFrom, tokenTo } = args
@@ -336,6 +337,7 @@ const SwapPage = ({
               <Row>
                 <ValueButton>
                   <ReloadTimer
+                    data-testid="swap-reload-data-timer"
                     duration={15}
                     initialRemainingTime={15}
                     callback={refreshAll}
@@ -352,7 +354,10 @@ const SwapPage = ({
                   />
                 </ValueButton>
                 {inputTokenMintAddress && outputTokenMintAddress && (
-                  <ValueButton onClick={() => openTokensAddressesPopup(true)}>
+                  <ValueButton
+                    data-testid="swap-open-tokens-info-tooltip"
+                    onClick={() => openTokensAddressesPopup(true)}
+                  >
                     i
                   </ValueButton>
                 )}
@@ -361,6 +366,7 @@ const SwapPage = ({
                 <Text padding="0 0.8rem 0 0">Slippage Tolerance:</Text>
                 <Row style={{ position: 'relative' }}>
                   <ValueInput
+                    data-testid="slippage-tolerance-field"
                     onChange={(e) => {
                       if (
                         numberWithOneDotRegexp.test(e.target.value) &&
@@ -391,6 +397,7 @@ const SwapPage = ({
                   </div>
                 </Row>
                 <ValueButton
+                  data-testid="decreace-slippage-tolerance"
                   onClick={() => {
                     const newSlippage = +(+slippage - SLIPPAGE_STEP).toFixed(2)
 
@@ -402,6 +409,7 @@ const SwapPage = ({
                   -
                 </ValueButton>
                 <ValueButton
+                  data-testid="increace-slippage-tolerance"
                   onClick={() => {
                     const newSlippage = +(+slippage + SLIPPAGE_STEP).toFixed(2)
 
@@ -446,6 +454,7 @@ const SwapPage = ({
                     appendComponent={
                       <Row>
                         <SetAmountButton
+                          data-testid="swap-half-btn"
                           // onClick={halfButtonOnClick}
                           type="button"
                           $variant="secondary"
@@ -454,6 +463,7 @@ const SwapPage = ({
                           Half
                         </SetAmountButton>
                         <SetAmountButton
+                          data-testid="swap-max-btn"
                           // onClick={maxButtonOnClick}
                           type="button"
                           $variant="secondary"
@@ -467,6 +477,7 @@ const SwapPage = ({
                 <Row width="calc(35% - 0.2rem)">
                   <TokenSelector
                     mint={inputTokenMintAddress}
+                    data-testid="swap-token-selector"
                     roundSides={['top-right']}
                     onClick={() => {
                       setIsInputTokenSelecting(true)
@@ -754,6 +765,7 @@ const SwapPage = ({
         </SwapContentContainer>
 
         <SelectCoinPopup
+          data-testid="swap-select-token-popup"
           theme={theme}
           mints={tokenSelectorMints}
           topTradingMints={topTradingMints}

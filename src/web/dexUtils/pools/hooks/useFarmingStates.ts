@@ -1,15 +1,18 @@
+import { useCallback } from 'react'
 import useSwr from 'swr'
+
 import { BlockchainFarmingState } from '@sb/dexUtils/common/types'
 import { RefreshFunction } from '@sb/dexUtils/types'
-import { useCallback } from 'react'
-import { useConnection } from '../../connection'
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+
 import {
+  ProgramsMultiton,
   POOLS_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
-} from '../../ProgramsMultiton/utils'
-import { useWallet } from '../../wallet'
+} from '@core/solana'
+
 import { groupBy } from '../../../utils'
+import { useConnection } from '../../connection'
+import { useWallet } from '../../wallet'
 
 export const useFarmingStates = (): [
   Map<string, BlockchainFarmingState[]>, // Farming states groupped by pool PK

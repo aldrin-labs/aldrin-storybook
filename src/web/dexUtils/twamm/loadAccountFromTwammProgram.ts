@@ -4,7 +4,7 @@ import {
   PublicKey,
 } from '@solana/web3.js'
 
-import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { TWAMM_PROGRAM_ADDRESS } from '@core/solana'
 
 export const loadAccountsFromTWAMMProgram = async ({
   connection,

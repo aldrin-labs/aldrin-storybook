@@ -14,10 +14,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { OrderWithMarket } from '@sb/dexUtils/send'
 
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
-import {
-  AWESOME_TOKENS,
-  useAwesomeMarkets,
-} from '@core/utils/awesomeMarkets/serum'
+import { AWESOME_TOKENS } from '@core/utils/awesomeMarkets/dictionaries'
+import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { Metrics } from '@core/utils/metrics'
 
 import {
@@ -53,18 +51,18 @@ export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
 }, {})
 
 export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } =
-{
-  USDT: process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
-  USDC: process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
-  SOL: process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
-  WUSDT: process.env.REACT_APP_WUSDT_REFERRAL_FEES_ADDRESS,
-  ODOP: process.env.REACT_APP_ODOP_REFERRAL_FEES_ADDRESS,
-  TRYB: process.env.REACT_APP_TRYB_REFERRAL_FEES_ADDRESS,
-  SRM: process.env.REACT_APP_SRM_REFERRAL_FEES_ADDRESS,
-  ETH: process.env.REACT_APP_ETH_REFERRAL_FEES_ADDRESS,
-  RAY: process.env.REACT_APP_RAY_REFERRAL_FEES_ADDRESS,
-  mSOL: process.env.REACT_APP_MSOL_REFERRAL_FEES_ADDRESS,
-}
+  {
+    USDT: process.env.REACT_APP_USDT_REFERRAL_FEES_ADDRESS,
+    USDC: process.env.REACT_APP_USDC_REFERRAL_FEES_ADDRESS,
+    SOL: process.env.REACT_APP_SOL_REFERRAL_FEES_ADDRESS,
+    WUSDT: process.env.REACT_APP_WUSDT_REFERRAL_FEES_ADDRESS,
+    ODOP: process.env.REACT_APP_ODOP_REFERRAL_FEES_ADDRESS,
+    TRYB: process.env.REACT_APP_TRYB_REFERRAL_FEES_ADDRESS,
+    SRM: process.env.REACT_APP_SRM_REFERRAL_FEES_ADDRESS,
+    ETH: process.env.REACT_APP_ETH_REFERRAL_FEES_ADDRESS,
+    RAY: process.env.REACT_APP_RAY_REFERRAL_FEES_ADDRESS,
+    mSOL: process.env.REACT_APP_MSOL_REFERRAL_FEES_ADDRESS,
+  }
 
 // const ALL_TOKENS_MINTS_MAP = new Map();
 
@@ -81,15 +79,15 @@ const _IGNORE_DEPRECATED = false
 const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
-    {
-      address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
-      name: 'RIN/USDC',
-      programId: new PublicKey(
-        '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
-      ),
-      deprecated: false,
-    },
-  ].concat(MARKETS)
+      {
+        address: new PublicKey('7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa'),
+        name: 'RIN/USDC',
+        programId: new PublicKey(
+          '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin'
+        ),
+        deprecated: false,
+      },
+    ].concat(MARKETS)
 // : MARKETS
 
 export interface RawMarketData {
@@ -528,12 +526,12 @@ export const useOpenOrdersPubkeys = (): string[] => {
           b: { baseTokenFree: typeof BN; quoteTokenFree: typeof BN }
         ) =>
           a?.baseTokenFree.cmp(b?.baseTokenFree) === 1 ||
-            a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
+          a?.quoteTokenFree.cmp(b?.quoteTokenFree) === 1
             ? -1
             : a?.baseTokenFree.cmp(b?.baseTokenFree) === -1 ||
               a?.quoteTokenFree.cmp(b?.quoteTokenFree) === -1
-              ? 1
-              : 0
+            ? 1
+            : 0
       )
 
     console.log(
@@ -1002,8 +1000,8 @@ export function useBalances() {
       orders:
         baseExists && market
           ? market.baseSplSizeToNumber(
-            openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
-          )
+              openOrders.baseTokenTotal.sub(openOrders.baseTokenFree)
+            )
           : null,
       openOrders,
       unsettled:
@@ -1021,8 +1019,8 @@ export function useBalances() {
       orders:
         quoteExists && market
           ? market.quoteSplSizeToNumber(
-            openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
-          )
+              openOrders.quoteTokenTotal.sub(openOrders.quoteTokenFree)
+            )
           : null,
       unsettled:
         quoteExists && market

@@ -243,6 +243,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
       </Row>
       <RowContainer>
         <SimpleInput
+          data-testid="withdraw-liquidity-base-token-field"
           placeholder="0"
           theme={theme}
           symbol={baseSymbol}
@@ -256,6 +257,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
           </Text>
         </Row>
         <SimpleInput
+          data-testid="withdraw-liquidity-quote-token-field"
           placeholder="0"
           theme={theme}
           symbol={quoteSymbol}
@@ -280,6 +282,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
 
       <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
+          data-testid="withdraw-liquidity-submit-btn"
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident

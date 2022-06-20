@@ -25,12 +25,12 @@ export const PoolsComponent: React.FC = () => {
           Under maintenance, available to claim rewards may not be displayed
           correctly.
         </WaningBanner> */}
-        <RootRow height="auto">
+        <RootRow data-testid="pools-charts-row" height="auto">
           <Cell col={12} colLg={6}>
-            <TotalVolumeLockedChart />
+            <TotalVolumeLockedChart data-testid="pools-tvl-chart" />
           </Cell>
           <Cell col={12} colLg={6}>
-            <TradingVolumeChart />
+            <TradingVolumeChart data-testid="pools-volume-chart" />
           </Cell>
         </RootRow>
         <RootRow height="auto">

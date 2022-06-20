@@ -1,5 +1,5 @@
 import { Connection, PublicKey } from '@solana/web3.js'
-import { WalletAdapter } from '@sb/dexUtils/types'
+
 import {
   FARMING_TICKET_OFFSET_OF_POOL_PUBLICKEY,
   FARMING_TICKET_OFFSET_OF_USER_PUBLICKEY,
@@ -8,7 +8,8 @@ import {
 
 import { loadAccountsFromPoolsProgram } from '@sb/dexUtils/pools/loadAccountsFromPoolsProgram'
 import { loadAccountsFromPoolsV2Program } from '@sb/dexUtils/pools/loadAccountsFromPoolsV2Program'
-import { POOLS_PROGRAM_ADDRESS } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { WalletAdapter } from '@sb/dexUtils/types'
+import { POOLS_PROGRAM_ADDRESS } from '@core/solana'
 
 export const loadFarmingTickets = async ({
   wallet,
