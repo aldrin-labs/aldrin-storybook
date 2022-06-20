@@ -54,6 +54,7 @@ export const Wrap = styled.div`
   align-items: center;
   justify-content: space-around;
   display: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
 `
 
 export const IconsContainer = styled.div`

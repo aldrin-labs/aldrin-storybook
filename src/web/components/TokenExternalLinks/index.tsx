@@ -50,7 +50,7 @@ export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => {
   const { data: theme } = useSWR('theme')
   return (
     <IconsContainer>
-      <Icon alt="View on Solan explorer" src={SolanaExplorerIcon} />
+      <Icon alt="View on Solana explorer" src={SolanaExplorerIcon} />
       <IconsInner>
         <Wrap>
           <Anchor
