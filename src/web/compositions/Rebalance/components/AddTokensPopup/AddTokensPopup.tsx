@@ -1,5 +1,5 @@
-import marketsList from '@flosssolis/my-test-registry/src/markets.json'
-import tokensList from '@flosssolis/my-test-registry/src/tokens.json'
+import marketsList from 'aldrin-registry/src/markets.json'
+import tokensList from 'aldrin-registry/src/tokens.json'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'

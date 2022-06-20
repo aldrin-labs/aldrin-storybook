@@ -1,5 +1,5 @@
-import tokensList from '@flosssolis/my-test-registry/src/tokens.json'
 import { FONT_SIZES } from '@variables/variables'
+import tokensList from 'aldrin-registry/src/tokens.json'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
