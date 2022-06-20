@@ -15,7 +15,14 @@ import Solscan from '@icons/solscan.svg'
 
 import SvgIcon from '../SvgIcon'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
-import { Container, Anchor, Icon, IconsContainer } from './styles'
+import {
+  Container,
+  Anchor,
+  Wrap,
+  Icon,
+  IconsInner,
+  IconsContainer,
+} from './styles'
 
 interface TokenExternalLinksProps {
   tokenName: string
@@ -44,27 +51,27 @@ export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => {
   return (
     <IconsContainer>
       <Icon alt="View on Solan explorer" src={SolanaExplorerIcon} />
-      <div className="explorers-dropdown">
-        <Anchor
-          className="explorers-dropdown-item"
-          href={`https://solscan.io/account/${props.mint}`}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <SvgIcon src={Solscan} alt="solscan" />
-        </Anchor>
-        <Anchor
-          className="explorers-dropdown-item"
-          href={`https://solana.fm/account/${props.mint}`}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <SvgIcon
-            src={theme === 'dark' ? SolanaFm : SolanaFmDark}
-            alt="solana.fm"
-          />
-        </Anchor>
-      </div>
+      <IconsInner>
+        <Wrap>
+          <Anchor
+            href={`https://solscan.io/account/${props.mint}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <SvgIcon src={Solscan} alt="solscan" />
+          </Anchor>
+          <Anchor
+            href={`https://solana.fm/account/${props.mint}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <SvgIcon
+              src={theme === 'dark' ? SolanaFm : SolanaFmDark}
+              alt="solana.fm"
+            />
+          </Anchor>
+        </Wrap>
+      </IconsInner>
     </IconsContainer>
   )
 }

@@ -36,25 +36,33 @@ export const AnalyticsIcon = styled(Icon)`
   background: none;
 `
 
+export const IconsInner = styled.div`
+  margin-top: -5px;
+  padding-top: 5px;
+  position: relative;
+`
+
+export const Wrap = styled.div`
+  background: ${(props) => props.theme.colors.gray5};
+  position: absolute;
+  left: 3px;
+  z-index: 1000;
+  border-radius: 2rem;
+  width: 29px;
+  height: 60px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  display: none;
+`
+
 export const IconsContainer = styled.div`
   position: relative;
   cursor: pointer;
   display: block;
   height: 24px;
 
-  .explorers-dropdown {
-    display: none;
-    background: ${(props) => props.theme.colors.gray5};
-    position: absolute;
-    top: 3rem;
-    left: 3px;
-    z-index: 1000;
-    border-radius: 2rem;
-    width: 29px;
-    height: 60px;
-  }
-
-  .explorers-dropdown-item {
+  ${Anchor} {
     background: ${(props) => props.theme.colors.gray6};
     border-radius: 50%;
     width: 26px;
@@ -63,14 +71,16 @@ export const IconsContainer = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 
   &:hover {
-    .explorers-dropdown {
+    ${Wrap} {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-around;
     }
   }
 `
