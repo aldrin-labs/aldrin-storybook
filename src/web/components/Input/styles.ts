@@ -52,6 +52,7 @@ export const InputWrap = styled.div<WrapProps>`
   align-items: center;
   flex: 1;
   border-radius: ${(props: WrapProps) => BORDER_RADIUS[props.$borderRadius]};
+  overflow: scroll hidden;
 
   ${(props: WrapProps) => VARIANTS[props.$variant]}
   ${(props: WrapProps) => (props.$disabled ? 'opacity: 0.6;' : '')}
