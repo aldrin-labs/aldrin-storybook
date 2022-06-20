@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 
 type TokenData = {
   symbol: string
@@ -8,7 +7,6 @@ type TokenData = {
 
 type IProps = {
   data: TokenData[]
-  theme: Theme
   id: string
   colors: string[]
   colorsForLegend: string[]

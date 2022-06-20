@@ -1,7 +1,7 @@
 import { Connection } from '@solana/web3.js'
 
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { ProgramsMultiton, TWAMM_PROGRAM_ADDRESS } from '@core/solana'
+
 import { WalletAdapter } from '../types'
 import { loadPairSettings } from './loadPairSettings'
 import { PairSettings } from './types'

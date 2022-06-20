@@ -8,24 +8,22 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { initializeFaming } from '@sb/dexUtils/pools/actions/initializeFarming'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { initializeFarmingInstructions } from '@sb/dexUtils/pools/actions/initializeFarming'
+import { signTransactions } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { getPoolsProgramAddress } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
 import { getTokenName } from '../../../../dexUtils/markets'
+import { sendSignedSignleTransaction } from '../../../../dexUtils/transactions'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
 import { FarmingProcessingModal } from './FarmingProcessingModal'
-import {
-  ExtendFarmingModalProps,
-  FarmingModalProps,
-  TransactionStatus,
-} from './types'
+import { ExtendFarmingModalProps, FarmingModalProps } from './types'
 
 const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const { userTokens, onClose, onExtend, title, pool } = props
@@ -36,8 +34,11 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
 
   const [isProcessingFarmingPopupOpen, setIsProcessingFarmingPopupOpen] =
     useState(false)
-  const [farmingTransactionStatus, setFarmingTransactionStatus] =
-    useState<TransactionStatus | null>(null)
+  const [farmingTransactionStatus, setFarmingTransactionStatus] = useState<
+    string | null
+  >(null)
+  const [farmingTxId, setFarmingTxId] = useState<string | undefined>()
+
   const tokens: Token[] = userTokens
     // .filter(
     //   (ut) =>
@@ -62,9 +63,11 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
     },
   })
 
-  const prolongFarming = async (values) => {
-    setFarmingTransactionStatus('processing')
+  const prolongFarming = async (values: WithFarming) => {
+    setFarmingTransactionStatus('preparing')
+
     setIsProcessingFarmingPopupOpen(true)
+
     const farmingRewardAccount = userTokens.find(
       (ut) => ut.address === values.farming.token.account
     )
@@ -79,7 +82,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       if (!values.farming.token.account) {
         throw new Error('No token account selected')
       }
-      const result = await initializeFaming({
+      const [transaction, signers] = await initializeFarmingInstructions({
         farmingTokenMint: new PublicKey(values.farming.token.mint),
         farmingTokenAccount: new PublicKey(values.farming.token.account),
         tokenAmount: new BN(
@@ -100,11 +103,28 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
       })
 
+      setFarmingTransactionStatus('signing')
+      const [signedTransaction] = await signTransactions({
+        transactionsAndSigners: [{ transaction, signers }],
+        connection,
+        wallet,
+      })
+
+      setFarmingTransactionStatus('sending')
+
+      const { txId, result } = await sendSignedSignleTransaction({
+        transaction: signedTransaction,
+        connection,
+        wallet,
+      })
+
+      setFarmingTxId(txId)
+
       if (result === 'success') {
         onExtend()
       }
 
-      setFarmingTransactionStatus(result === 'success' ? 'success' : 'error')
+      setFarmingTransactionStatus(result)
     } catch (e) {
       console.warn('Unable to create farming: ', e)
       setFarmingTransactionStatus('error')
@@ -114,9 +134,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const form = useFormik<WithFarming>({
     validateOnMount: true,
     initialValues,
-    onSubmit: async (values) => {
-      prolongFarming(values)
-    },
+    onSubmit: prolongFarming,
     validate: async (values) => {
       if (
         values.farming.vestingEnabled &&
@@ -173,8 +191,10 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
           prolongFarming={async () => prolongFarming({ farming })}
           status={farmingTransactionStatus}
           open={isProcessingFarmingPopupOpen}
+          txId={farmingTxId}
           onClose={() => {
             setFarmingTransactionStatus(null)
+            setFarmingTxId(undefined)
             setIsProcessingFarmingPopupOpen(false)
           }}
         />

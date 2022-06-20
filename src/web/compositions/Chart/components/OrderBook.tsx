@@ -1,10 +1,9 @@
 import React from 'react'
 
-import { OrderBookTable } from '../Tables/Tables'
 import { OrderbookContainer } from '../Chart.styles'
+import { OrderBookTable } from '../Tables/Tables'
 
 export const OrderBook = ({
-  theme,
   chartProps,
   changeTable,
   aggregation,
@@ -27,11 +26,10 @@ export const OrderBook = ({
   terminalViewMode,
 }) => {
   return (
-    <OrderbookContainer key={`orderbook_table`} theme={theme}>
+    <OrderbookContainer key="orderbook_table">
       <OrderBookTable
         {...{
           quote,
-          theme,
           currencyPair: symbol,
           exchange,
           aggregation,

@@ -65,7 +65,7 @@ export const prepareCell = (
           <Text size="sm">
             {feesTotal > 0 ? `$${stripByAmountAndFormat(feesTotal, 4)}` : '-'}
           </Text>
-          <Text color="hint" size="sm" margin="10px 0">
+          <Text color="gray0" size="sm" margin="10px 0">
             {stripByAmountAndFormat(
               userAmountTokenA + feesEarnedByUserForPool.totalBaseTokenFee
             )}{' '}

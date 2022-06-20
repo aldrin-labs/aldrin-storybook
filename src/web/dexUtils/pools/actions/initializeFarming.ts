@@ -10,11 +10,16 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
+import {
+  AldrinConnection,
+  ProgramsMultiton,
+  defaultOptions,
+  POOLS_V2_PROGRAM_ADDRESS,
+} from '@core/solana'
+
 import { walletAdapterToWallet } from '../../common'
-import MultiEndpointsConnection from '../../MultiEndpointsConnection'
-import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
-import { POOLS_V2_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
-import { signAndSendSingleTransaction } from '../../transactions'
+import { signTransactions } from '../../send'
+import { sendSignedSignleTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
 
 export interface InitializeFarmingBase {
@@ -31,7 +36,7 @@ export interface InitializeFarmingBase {
 interface InitializeFarmingParams extends InitializeFarmingBase {
   pool: PublicKey
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   programAddress?: string
 }
 
@@ -113,13 +118,24 @@ export const initializeFarmingInstructions = async (
   return [transaction, [snapshots, farmingState, farmingTokenVault]]
 }
 
-export const initializeFaming = async (params: InitializeFarmingParams) => {
+export const initializeFaming = async (
+  params: InitializeFarmingParams
+): Promise<[string | undefined, string]> => {
   const [transaction, signers] = await initializeFarmingInstructions(params)
 
-  return signAndSendSingleTransaction({
-    transaction,
-    connection: params.connection,
-    wallet: params.wallet,
-    signers,
-  })
+  try {
+    const [signedTransaction] = await signTransactions({
+      transactionsAndSigners: [{ transaction, signers }],
+      connection: params.connection,
+      wallet: params.wallet,
+    })
+    const { txId, result } = await sendSignedSignleTransaction({
+      transaction: signedTransaction,
+      connection: params.connection,
+      wallet: params.wallet,
+    })
+    return [txId, result]
+  } catch (e) {
+    return [undefined, 'rejected']
+  }
 }

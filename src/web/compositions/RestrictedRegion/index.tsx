@@ -1,26 +1,27 @@
+import { withTheme, Theme } from '@material-ui/core'
+import useMobileSize from '@webhooks/useMobileSize'
 import React from 'react'
 import styled from 'styled-components'
-import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 
 import RedPlanetImg from '@sb/images/red_planet.png'
-import { withTheme, Theme } from '@material-ui/core'
+
+import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import {
   LinkToDiscord,
   LinkToTelegram,
   LinkToTwitter,
 } from '../Homepage/SocialsLinksComponents'
-import useMobileSize from '@webhooks/useMobileSize'
 
 const MainTitle = styled.h2`
   font-size: 2.4rem;
   font-family: Avenir Next Demi;
-  color: ${(props) => props.theme.palette.white.text};
+  color: ${(props) => props.theme.colors.gray0};
 `
 
 const Text = styled.span`
   font-size: 1.4rem;
   font-family: Avenir Next;
-  color: ${(props) => props.theme.palette.white.text};
+  color: ${(props) => props.theme.colors.gray0};
 `
 
 const Link = styled.a`
@@ -37,17 +38,15 @@ const RestrictedRegion = ({ theme }: { theme: Theme }) => {
         <img src={RedPlanetImg} alt="Red Planet" />
       </RowContainer>
       <RowContainer margin="0 0 2rem 0">
-        <MainTitle theme={theme}>
+        <MainTitle>
           Sorry, Aldrin.com is not available in your country.
         </MainTitle>
       </RowContainer>
       <RowContainer direction="column" margin="0 0 4rem 0">
-        <Text theme={theme}>
-          Aldrin.com doesn't offer its services in your region.
-        </Text>
+        <Text>Aldrin.com doesn't offer its services in your region.</Text>
       </RowContainer>
       <RowContainer margin="0 0 2rem 0">
-        <Text theme={theme}>
+        <Text>
           If you think your access is restricted by mistake or have another
           question, please contact us via:
         </Text>
@@ -60,8 +59,8 @@ const RestrictedRegion = ({ theme }: { theme: Theme }) => {
         >
           contact@aldrin.com
         </Link>
-        <Text theme={theme}>or</Text>
-        <Row>
+        <Text>or</Text>
+        <Row width="30%" justify="space-between">
           <LinkToTwitter />
           <LinkToTelegram />
           <LinkToDiscord />

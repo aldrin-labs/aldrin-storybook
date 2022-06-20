@@ -8,13 +8,15 @@ import {
   createSOLAccountAndClose,
   getMaxWithdrawAmount,
 } from '@sb/dexUtils/pools'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+
+
 import { createTokenAccountTransaction } from '@sb/dexUtils/send'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
+import { ProgramsMultiton } from '@core/solana'
+import { getPoolsProgramAddress } from '@core/solana'
+import { AldrinConnection } from '@core/solana'
 
-import MultiEndpointsConnection from '../../MultiEndpointsConnection'
 import { VestingWithPk } from '../../vesting/types'
 import { withrawVestingInstruction } from '../../vesting/withdrawVesting'
 import {
@@ -36,7 +38,7 @@ interface Pool {
 
 export async function redeemBasket(params: {
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   curveType: number | null
   poolPublicKey: PublicKey
   userPoolTokenAccount?: PublicKey

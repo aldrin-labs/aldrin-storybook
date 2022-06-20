@@ -1,18 +1,16 @@
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import {
-  PublicKey,
   SystemProgram,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
 
+import { PLUTONIANS_STAKING_ADDRESS, ProgramsMultiton } from '@core/solana'
+
 import { walletAdapterToWallet } from '../../common'
-import {
-  PLUTONIANS_STAKING_ADDRESS,
-  ProgramsMultiton,
-} from '../../ProgramsMultiton'
 import { signAndSendSingleTransaction } from '../../transactions'
 import { StartSrinStakingParams } from './types'
+import { getStakingAccount } from './utils'
 
 export const startSrinStakingInstructions = async (
   params: StartSrinStakingParams
@@ -24,7 +22,7 @@ export const startSrinStakingInstructions = async (
     wallet,
     amount,
     userStakeTokenaccount,
-    poolStakeTokenaccount,
+    stakeVault,
   } = params
   const w = walletAdapterToWallet(wallet)
 
@@ -34,22 +32,14 @@ export const startSrinStakingInstructions = async (
     programAddress: PLUTONIANS_STAKING_ADDRESS,
   })
 
-  const [userStakingAccount, bumpUserStakingAccount] =
-    await PublicKey.findProgramAddress(
-      [
-        Buffer.from('user_staking_account'),
-        w.publicKey.toBytes(),
-        stakingTier.toBytes(),
-      ],
-      new PublicKey(PLUTONIANS_STAKING_ADDRESS)
-    )
+  const [userStakingAccount] = await getStakingAccount(w.publicKey, stakingTier)
 
-  return program.instruction.deposit(amount, bumpUserStakingAccount, {
+  return program.instruction.deposit(amount, {
     accounts: {
       user: w.publicKey,
       userStakingAccount,
-      userStakeTokenaccount,
-      poolStakeTokenaccount,
+      userStakeWallet: userStakeTokenaccount,
+      stakeVault,
       stakingPool,
       stakingTier,
       tokenProgram: TOKEN_PROGRAM_ID,

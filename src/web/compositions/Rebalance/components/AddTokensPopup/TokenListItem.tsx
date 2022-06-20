@@ -1,4 +1,3 @@
-import { Theme } from '@material-ui/core'
 import React from 'react'
 
 import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
@@ -15,7 +14,6 @@ export function TokenListItem({
   existingAccount,
   selectedTokens,
   setSelectedTokens,
-  theme,
 }: {
   name: string
   symbol: string
@@ -24,7 +22,6 @@ export function TokenListItem({
   existingAccount: boolean
   selectedTokens: any[]
   setSelectedTokens: any
-  theme: Theme
 }) {
   const alreadyExists = !!existingAccount
 
@@ -59,16 +56,12 @@ export function TokenListItem({
       >
         <Row>
           <TokenIcon mint={mintAddress} width="2.5rem" height="2.5rem" />
-          <WhiteText theme={theme} style={{ marginLeft: '1rem' }}>
+          <WhiteText style={{ marginLeft: '1rem' }}>
             {tokenName.replace('(Sollet)', '')}
             {tokenSymbol ? ` (${tokenSymbol})` : null}
           </WhiteText>
         </Row>
-        <SCheckbox
-          theme={theme}
-          checked={checked || alreadyExists}
-          disabled={isDisabled}
-        />
+        <SCheckbox checked={checked || alreadyExists} disabled={isDisabled} />
       </RowContainer>
     </>
   )

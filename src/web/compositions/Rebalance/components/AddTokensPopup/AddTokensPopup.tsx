@@ -11,7 +11,6 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { createTokens } from '@sb/dexUtils/createTokens'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { Theme } from '@sb/types/materialUI'
 
 import {
   formatNumberToUSFormat,
@@ -31,13 +30,11 @@ export default function TokenDialog({
   open,
   onClose,
   userTokens,
-  theme,
   softRefresh,
 }: {
   open: boolean
   onClose: () => void
   userTokens: any[]
-  theme: Theme
   softRefresh: () => void
 }) {
   const { wallet } = useWallet()
@@ -91,7 +88,6 @@ export default function TokenDialog({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       maxWidth="md"
       open={open}
@@ -103,20 +99,17 @@ export default function TokenDialog({
     >
       <RowContainer direction="column">
         <RowContainer margin="0 0 0 0">
-          <WhiteText theme={theme}>
+          <WhiteText>
             Add a token to your wallet. This will cost{' '}
-            <GreenText theme={theme}>0.002039 SOL</GreenText> per token.
+            <GreenText>0.002039 SOL</GreenText> per token.
           </WhiteText>
         </RowContainer>
 
         <RowContainer width="90%">
           <RowContainer justify="flex-start" direction="column">
-            <WhiteText theme={theme}>
-              Select tokens you want to add to your wallet
-            </WhiteText>
+            <WhiteText>Select tokens you want to add to your wallet</WhiteText>
             <RowContainer margin="2rem 0">
               <InputWithSearch
-                theme={theme}
                 type="text"
                 value={searchValue}
                 onChange={(e) => {
@@ -141,8 +134,8 @@ export default function TokenDialog({
                 .map((el) => {
                   return (
                     <TokenListItem
+                      name={el.name || ''}
                       symbol={el.symbol}
-                      theme={theme}
                       key={el?.address}
                       mintAddress={el?.address}
                       existingAccount={userTokensMap.has(el?.address)}
@@ -157,10 +150,9 @@ export default function TokenDialog({
         </RowContainer>
 
         <RowContainer width="90%" justify="space-between" margin="2rem 0 0 0">
-          <WhiteText theme={theme}>
+          <WhiteText>
             Your SOL Balance:{' '}
             <WhiteText
-              theme={theme}
               style={{
                 color: isBalanceLowerCost ? '#F2ABB1' : '#53DF11',
               }}
@@ -168,21 +160,16 @@ export default function TokenDialog({
               {formatNumberToUSFormat(stripDigitPlaces(SOLBalance, 8))} SOL
             </WhiteText>
           </WhiteText>
-          <WhiteText theme={theme}>
-            Cost: <GreenText theme={theme}>{cost} SOL</GreenText>
+          <WhiteText>
+            Cost: <GreenText>{cost} SOL</GreenText>
           </WhiteText>
         </RowContainer>
         <RowContainer width="90%" justify="space-between" margin="2rem 0 0 0">
-          <WhiteButton
-            width="calc(50% - .5rem)"
-            theme={theme}
-            onClick={onClose}
-          >
+          <WhiteButton width="calc(50% - .5rem)" onClick={onClose}>
             Cancel
           </WhiteButton>
           <BlueButton
             isUserConfident={!isDisabled}
-            theme={theme}
             width="calc(50% - .5rem)"
             disabled={isDisabled}
             onClick={async () => {

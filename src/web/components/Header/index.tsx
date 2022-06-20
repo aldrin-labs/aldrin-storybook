@@ -1,7 +1,4 @@
 import React, { useState } from 'react'
-
-import AldrinLogo from '@icons/Aldrin.svg'
-
 // TODO: Refactor popup
 
 import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
@@ -23,6 +20,7 @@ import {
   RequestListingIcon,
   CreatePoolIcon,
   MoreIcon,
+  AldrinLogo,
 } from './MenuIcons'
 import { RewardsBlock } from './RewardsBlock/RewardsBlock'
 import {
@@ -30,15 +28,21 @@ import {
   LogoLink,
   LogoBlock,
   WalletContainer,
-  Logo,
   NavLink,
   MainLinksWrap,
   MainLinksBlock,
   Wrap,
 } from './styles'
+import { ThemeSwitcher } from './ThemeSwitcher'
 import { WalletBlock } from './WalletBlock'
 
-export const Header = () => {
+export const Header = ({
+  currentTheme,
+  setCurrentTheme,
+}: {
+  currentTheme: string
+  setCurrentTheme: (a: string) => void
+}) => {
   const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
   const [listingPopupOpen, setListingPopupOpen] = useState(false)
   return (
@@ -47,24 +51,40 @@ export const Header = () => {
         <HeaderWrap>
           <LogoBlock>
             <LogoLink to="/">
-              <Logo src={AldrinLogo} />
+              <AldrinLogo />
             </LogoLink>
           </LogoBlock>
           <MainLinksWrap>
             <MainLinksBlock>
-              <NavLink to="/chart" activeClassName="selected">
+              <NavLink
+                data-testid="header-link-to-trade"
+                to="/chart"
+                activeClassName="selected"
+              >
                 <TradeIcon />
                 Trade
               </NavLink>
-              <NavLink to="/swap" activeClassName="selected">
+              <NavLink
+                data-testid="header-link-to-swap"
+                to="/swap"
+                activeClassName="selected"
+              >
                 <SwapIcon />
                 Swap
               </NavLink>
-              <NavLink to="/pools" activeClassName="selected">
+              <NavLink
+                data-testid="header-link-to-pools"
+                to="/pools"
+                activeClassName="selected"
+              >
                 <PoolsIcon />
                 Pools &amp; Farms
               </NavLink>
-              <NavLink to="/staking" activeClassName="selected">
+              <NavLink
+                data-testid="header-link-to-staking"
+                to="/staking"
+                activeClassName="selected"
+              >
                 <StakingIcon />
                 Staking
               </NavLink>
@@ -152,6 +172,10 @@ export const Header = () => {
               </DropDown>
             </MainLinksBlock>
           </MainLinksWrap>
+          <ThemeSwitcher
+            currentTheme={currentTheme}
+            setCurrentTheme={setCurrentTheme}
+          />
           <WalletContainer>
             <RewardsBlock />
             <WalletBlock />

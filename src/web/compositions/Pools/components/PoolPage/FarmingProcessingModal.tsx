@@ -12,20 +12,35 @@ import {
 } from '../Popups/CreatePool/styles'
 import { FarmingProcessingModalProps } from './types'
 
+const PROCESSING_STATUSES = new Set(['preparing', 'signing', 'sending'])
+const OK_STATUSES = new Set([...PROCESSING_STATUSES.values(), 'success'])
+const STATUS_MESSAGES: { [k: string]: string } = {
+  preparing: 'Preparing transaction...',
+  signing: 'Signing transaction...',
+  sending: 'Waiting for transaction confirmation...',
+}
 export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
   props
 ) => {
-  const { onClose, open, status, prolongFarming } = props
+  const { onClose, open, status, prolongFarming, txId } = props
+
+  const isProcessing = PROCESSING_STATUSES.has(status)
+  const isTransactionFailed = !OK_STATUSES.has(status)
 
   return (
     <Modal backdrop="dark" open={open} onClose={() => {}}>
       <PoolProcessingBlock>
-        {status === 'processing' && (
+        {isProcessing && (
           <>
             <FlexBlock justifyContent="space-between">
-              <Title>Setup Farming...</Title>
+              <Title>Setup Farming</Title>
             </FlexBlock>
             <PoolProcessingContent>
+              <div>
+                {STATUS_MESSAGES[status] && (
+                  <Text>{STATUS_MESSAGES[status]}</Text>
+                )}
+              </div>
               <Text size="sm">Please do not close browser window.</Text>
             </PoolProcessingContent>
           </>
@@ -43,14 +58,36 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
             </PoolProcessingContent>
           </>
         )}
-        {status === 'error' && (
+        {isTransactionFailed && (
           <>
             <FlexBlock justifyContent="space-between">
-              <Title>Farming prolongation failed...</Title>
+              {status === 'timeout' ? (
+                <div>
+                  <Title>Farming prolongation timeout.</Title>
+                  <Text>Please, try again later.</Text>
+                </div>
+              ) : (
+                <div>
+                  <Title>Farming prolongation failed.</Title>
+                  <>
+                    {!!txId && (
+                      <Text>
+                        <a
+                          target="_blank"
+                          href={`https://solscan.io/tx/${txId}`}
+                          rel="noreferrer"
+                        >
+                          View on SolScan.
+                        </a>
+                      </Text>
+                    )}
+                  </>
+                </div>
+              )}
             </FlexBlock>
             <PoolProcessingContent>
               <Text size="sm">
-                Please check your transactions or contact us via{' '}
+                Please check your transaction or contact us via{' '}
                 <a
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"
@@ -64,22 +101,24 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
           </>
         )}
         <PoolProcessingContent>
-          <PoolProcessingButton
-            $width="rg"
-            $loading={status === 'processing'}
-            disabled={status === 'processing'}
-            onClick={() => prolongFarming()}
-          >
-            Try again
-          </PoolProcessingButton>
-          <PoolProcessingButton
-            $width="rg"
-            $loading={status === 'processing'}
-            disabled={status === 'processing'}
-            onClick={onClose}
-          >
-            OK
-          </PoolProcessingButton>
+          <FlexBlock flex="1" justifyContent="space-between" direction="row">
+            <PoolProcessingButton
+              $width="rg"
+              $loading={status === 'processing'}
+              disabled={status === 'processing'}
+              onClick={() => prolongFarming()}
+            >
+              Try again
+            </PoolProcessingButton>
+            <PoolProcessingButton
+              $width="rg"
+              $loading={status === 'processing'}
+              disabled={status === 'processing'}
+              onClick={onClose}
+            >
+              OK
+            </PoolProcessingButton>
+          </FlexBlock>
         </PoolProcessingContent>
       </PoolProcessingBlock>
     </Modal>

@@ -83,11 +83,11 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
         <LiquidityTitle>Your Liquidity:</LiquidityTitle>
         <div>
           <LiquidityText weight={600}>
-            <LiquidityText color="success">
+            <LiquidityText color="green7">
               {stripByAmountAndFormat(baseUserTokenAmount, 6)}
             </LiquidityText>{' '}
             {baseTokenName}
-            <LiquidityText color="success">
+            <LiquidityText color="green7">
               {' '}
               / {stripByAmountAndFormat(quoteUserTokenAmount, 6)}
             </LiquidityText>{' '}
@@ -95,7 +95,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
           </LiquidityText>
         </div>
         <div>
-          <LiquidityText color="success">
+          <LiquidityText color="green7">
             ${stripByAmountAndFormat(userLiquidityUsd, 2)}
           </LiquidityText>
         </div>
@@ -112,11 +112,11 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
         <LiquidityTitle>Fees Earned:</LiquidityTitle>
         <div>
           <LiquidityText weight={600}>
-            <LiquidityText color="success">
+            <LiquidityText color="green7">
               {stripByAmountAndFormat(earnedPoolFees.totalBaseTokenFee, 6)}
             </LiquidityText>{' '}
             {baseTokenName}
-            <LiquidityText color="success">
+            <LiquidityText color="green7">
               {' '}
               /{stripByAmountAndFormat(earnedPoolFees.totalQuoteTokenFee, 6)}
             </LiquidityText>{' '}
@@ -124,7 +124,7 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
           </LiquidityText>
         </div>
         <div>
-          <LiquidityText color="success">
+          <LiquidityText color="green7">
             ${stripByAmountAndFormat(earnedFeesUd, 2)}
           </LiquidityText>
         </div>

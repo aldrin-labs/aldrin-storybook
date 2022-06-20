@@ -1,11 +1,14 @@
 import { Connection } from '@solana/web3.js'
+
 import { SnapshotQueue } from '@sb/dexUtils/common/types'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
 import {
+  ProgramsMultiton,
   POOLS_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
-} from '@sb/dexUtils/ProgramsMultiton/utils'
-import { WalletAdapter } from '@sb/dexUtils/types'
+} from '@core/solana'
+
 import { loadSnapshotQueues } from './loadSnapshotQueues'
 import { parseSnapshotQueues } from './parseSnapshotQueues'
 

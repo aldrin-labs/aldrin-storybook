@@ -21,7 +21,9 @@ import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
 import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import { BtnCustom } from '../BtnCustom/BtnCustom.styles'
+import { formatNumberWithSpaces } from '../../dexUtils/utils'
+import { Button } from '../Button'
+import { INPUT_FORMATTERS } from '../Input'
 import CustomSwitcher from '../SwitchOnOff/CustomSwitcher'
 import { ButtonsWithAmountFieldRowForBasic } from './AmountButtons'
 import { ConfirmationPopup } from './ConfirmationPopup'
@@ -175,6 +177,11 @@ export const TradeInputContent = ({
     e.target.select()
   }
 
+  const changeHandler = (e) => {
+    const { value: newValue } = e.target
+    onChange({ target: { value: INPUT_FORMATTERS.DECIMAL(newValue, value) } })
+  }
+
   return (
     <InputRowContainer
       padding={padding}
@@ -198,12 +205,12 @@ export const TradeInputContent = ({
         <>
           {needTooltip ? (
             <DarkTooltip title={titleForTooltip}>
-              <TitleForInput theme={theme} textDecoration={textDecoration}>
+              <TitleForInput textDecoration={textDecoration}>
                 {header}
               </TitleForInput>
             </DarkTooltip>
           ) : (
-            <TitleForInput theme={theme} textDecoration={textDecoration}>
+            <TitleForInput textDecoration={textDecoration}>
               {header}
             </TitleForInput>
           )}
@@ -211,7 +218,6 @@ export const TradeInputContent = ({
       ) : null}
 
       <TradeInput
-        theme={theme}
         align={textAlign}
         type={type}
         pattern={pattern}
@@ -221,14 +227,13 @@ export const TradeInputContent = ({
         value={value}
         symbolLength={symbol.length}
         disabled={disabled}
-        onChange={onChange}
+        onChange={changeHandler}
         needPadding={symbol !== ''}
         haveSelector={haveSelector}
         style={{ ...inputStyles, ...(fontSize ? { fontSize } : {}) }}
         onClick={(e) => handleSelect(e)}
       />
       <UpdatedCoin
-        theme={theme}
         right={symbolRightIndent || (symbol.length <= 2 ? '2.5rem' : '1rem')}
       >
         {symbol}
@@ -542,6 +547,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
       baseCurrencyAccount,
       quoteCurrencyAccount,
       isButtonLoaderShowing,
+      newTheme,
     } = this.props
 
     const needCreateOpenOrdersAccount = !openOrdersAccount
@@ -605,21 +611,21 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: '#383B45',
+                background: newTheme.colors.gray5,
                 borderRadius: '2rem',
                 alignItems: 'center',
               }}
               firstHalfStyleProperties={{
-                activeColor: '#53DF11',
-                activeBackgroundColor: '#222429',
+                activeColor: newTheme.colors.green7,
+                activeBackgroundColor: newTheme.colors.gray10,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: '#F69894',
-                activeBackgroundColor: '#222429',
+                activeColor: newTheme.colors.red4,
+                activeBackgroundColor: newTheme.colors.gray10,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
@@ -647,22 +653,22 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: '#383B45',
+                background: newTheme.colors.gray5,
                 borderRadius: '2rem',
                 alignItems: 'center',
                 marginTop: '2rem',
               }}
               firstHalfStyleProperties={{
-                activeColor: '#fff',
-                activeBackgroundColor: '#222429',
+                activeColor: newTheme.colors.gray0,
+                activeBackgroundColor: newTheme.colors.gray10,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: '#fff',
-                activeBackgroundColor: '#222429',
+                activeColor: newTheme.colors.gray0,
+                activeBackgroundColor: newTheme.colors.gray10,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
@@ -698,11 +704,12 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                   direction="column"
                 >
                   <TradeInputContent
+                    data-testid="trading-terminal-price-field"
                     theme={theme}
                     needTitle
                     type="text"
                     title="price"
-                    value={values.price || ''}
+                    value={formatNumberWithSpaces(values.price || '')}
                     onChange={this.onPriceChange}
                     symbol={pair[1]}
                   />
@@ -855,50 +862,30 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               {!connected ? (
                 <>
                   <ConnectWalletDropdownContainer>
-                    <BtnCustom
+                    <Button
+                      $variant="primary"
+                      $width="xl"
+                      $padding="lg"
+                      $fontSize="lg"
                       onClick={() => {
                         this.setState({
                           isConnectWalletPopupOpen: true,
                         })
                       }}
-                      btnColor="#F8FAFF"
-                      backgroundColor={theme.palette.blue.serum}
-                      btnWidth="35rem"
-                      borderColor={theme.palette.blue.serum}
-                      textTransform="capitalize"
-                      height="4.5rem"
-                      borderRadius="1rem"
-                      fontSize="1.5rem"
-                      style={{
-                        display: 'flex',
-                        textTransform: 'none',
-                        padding: '1rem',
-                        whiteSpace: 'nowrap',
-                      }}
                     >
                       Connect wallet
-                    </BtnCustom>
+                    </Button>
                   </ConnectWalletDropdownContainer>
                   <ConnectWalletButtonContainer>
-                    <BtnCustom
-                      theme={theme}
+                    <Button
+                      $variant="primary"
+                      $width="xl"
+                      $padding="lg"
+                      $fontSize="lg"
                       onClick={() => this.setState({ isWalletPopupOpen: true })}
-                      needMinWidth={false}
-                      btnWidth="100%"
-                      height="6rem"
-                      fontSize="1.6rem"
-                      padding="2rem 8rem"
-                      borderRadius="1.5rem"
-                      borderColor={theme.palette.blue.serum}
-                      btnColor="#fff"
-                      backgroundColor={theme.palette.blue.serum}
-                      textTransform="none"
-                      margin="1rem 0 0 0"
-                      transition="all .4s ease-out"
-                      style={{ whiteSpace: 'nowrap' }}
                     >
                       Connect wallet
-                    </BtnCustom>
+                    </Button>
                   </ConnectWalletButtonContainer>
                 </>
               ) : (
