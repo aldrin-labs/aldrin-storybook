@@ -64,6 +64,10 @@ export const SelectSeveralAddressesPopup = ({
       </RowContainer>
       <RowContainer>
         {tokens.map((token: TokenInfo) => {
+          const tokenName = getTokenName({
+            address: token.mint,
+            tokensInfoMap: tokensMap,
+          })
           return (
             <SelectorRow
               justify="space-between"
@@ -76,20 +80,11 @@ export const SelectSeveralAddressesPopup = ({
             >
               <Row wrap="nowrap">
                 <TokenIcon mint={token.mint} width="2rem" height="2rem" />
-                <StyledText>
-                  {getTokenName({
-                    address: token.mint,
-                    tokensInfoMap: tokensMap,
-                  })}
-                </StyledText>
+                <StyledText>{tokenName}</StyledText>
               </Row>
               <Row wrap="nowrap">
                 <StyledText>
-                  {token.amount}{' '}
-                  {getTokenName({
-                    address: token.mint,
-                    tokensInfoMap: tokensMap,
-                  })}
+                  {token.amount} {tokenName}
                 </StyledText>
               </Row>
             </SelectorRow>
