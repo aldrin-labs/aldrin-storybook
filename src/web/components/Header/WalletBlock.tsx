@@ -56,6 +56,7 @@ export const WalletBlock = () => {
         <TooltipRegionBlocker isFromRestrictedRegion={isFromRestrictedRegion}>
           <span>
             <WalletButton
+              data-testid="header-connect-wallet-btn"
               disabled={isFromRestrictedRegion}
               onClick={() => {
                 if (isFromRestrictedRegion || isRegionCheckIsLoading) {
@@ -91,6 +92,7 @@ export const WalletBlock = () => {
           </WalletData>
           <WalletDisconnectBlock className="disconnect-wallet">
             <WalletDisconnectButton
+              data-testid="header-disconnect-wallet-btn"
               onClick={() => {
                 if (wallet?.disconnect) {
                   wallet.disconnect()
@@ -100,6 +102,7 @@ export const WalletBlock = () => {
               Disconnect
             </WalletDisconnectButton>
             <CopyAddressButton
+              data-testid="header-copy-address-btn"
               isCopied={isCopied}
               onClick={() => {
                 setIsCopied(true)

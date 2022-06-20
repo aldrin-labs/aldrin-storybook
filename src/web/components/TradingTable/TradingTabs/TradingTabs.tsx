@@ -26,24 +26,28 @@ const TradingTabs = ({
           Balances
         </StyledTitleTabForMobile>
         <TitleTab
+          data-testid="trading-table-open-orders"
           active={tab === 'openOrders'}
           onClick={() => handleTabChange('openOrders')}
         >
           Open orders{' '}
         </TitleTab>
         <TitleTab
+          data-testid="trading-table-recent-trade-history"
           active={tab === 'tradeHistory'}
           onClick={() => handleTabChange('tradeHistory')}
         >
           Recent Trade history
         </TitleTab>
         <StyledTitleTab
+          data-testid="trading-table-fee"
           active={tab === 'feeTiers'}
           onClick={() => handleTabChange('feeTiers')}
         >
           Fee Tiers
         </StyledTitleTab>
         <StyledTitleTab
+          data-testid="trading-table-balances"
           active={tab === 'balances'}
           onClick={() => handleTabChange('balances')}
         >

@@ -19,7 +19,7 @@ export const Footer = () => {
   const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
   const [listingPopupOpen, setListingPopupOpen] = useState(false)
   return (
-    <FooterContainer>
+    <FooterContainer data-testid="footer">
       <MediaContainer>
         <LinkToTwitter />
         <LinkToCoinGecko />
@@ -29,24 +29,36 @@ export const Footer = () => {
         <LinkToDiscord />
       </MediaContainer>
       <Row width="35%" justify="flex-end">
-        <FooterButton onClick={() => setListingPopupOpen(true)}>
+        <FooterButton
+          data-testid="footer-request-listing-btn"
+          onClick={() => setListingPopupOpen(true)}
+        >
           Request Listing
         </FooterButton>{' '}
-        <FooterButton as={Link} to="/pools/create">
+        <FooterButton
+          data-testid="footer-create-pool-btn"
+          as={Link}
+          to="/pools/create"
+        >
           Create Pool
         </FooterButton>
-        <FooterButton onClick={() => setFeedbackPopupOpen(true)}>
+        <FooterButton
+          data-testid="footer-feedback-btn"
+          onClick={() => setFeedbackPopupOpen(true)}
+        >
           Feedback &amp; Support
         </FooterButton>{' '}
       </Row>
 
       <FeedbackPopup
+        data-testid="footer-feedback-popup"
         open={feedbackPopupOpen}
         onClose={() => {
           setFeedbackPopupOpen(false)
         }}
       />
       <ListingRequestPopup
+        data-testid="footer-listing-btn"
         open={listingPopupOpen}
         onClose={() => {
           setListingPopupOpen(false)

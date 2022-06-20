@@ -271,6 +271,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               <InputWrapper style={{ position: 'relative' }}>
                 {' '}
                 <AmountInput
+                  data-testid="marinade-staking-amount-from-field"
                   value={formatNumberWithSpaces(amount)}
                   onChange={setAmountFrom}
                   placeholder="0"
@@ -284,6 +285,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
             <RowContainer margin="2rem 0">
               <InputWrapper style={{ position: 'relative' }}>
                 <AmountInput
+                  data-testid="marinade-staking-receive-amount-field"
                   value={formatNumberWithSpaces(amountGet)}
                   onChange={setAmountTo}
                   placeholder="0"
@@ -299,11 +301,16 @@ const Block: React.FC<StakingBlockProps> = (props) => {
             <RowContainer>
               <ConnectWalletWrapper size="button-only">
                 {isStakeModeOn ? (
-                  <StakeButton onClick={stake} disabled={!isValid || loading}>
+                  <StakeButton
+                    data-testid="marinade-staking-submit-btn"
+                    onClick={stake}
+                    disabled={!isValid || loading}
+                  >
                     Stake
                   </StakeButton>
                 ) : (
                   <UnStakeButton
+                    data-testid="marinade-unstaking-submit-btn"
                     onClick={unstake}
                     disabled={!isValid || loading}
                   >
