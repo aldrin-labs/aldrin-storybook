@@ -93,7 +93,7 @@ const TopBar = ({
       </Row>
       <Row>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>RIN Marketcap</TopBarTitle>{' '}
+          <TopBarTitle>RIN Marketcap</TopBarTitle>{' '}
           <Text theme={theme}>
             {CCAImarketcap === 0
               ? '-'
@@ -101,7 +101,7 @@ const TopBar = ({
           </Text>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>RIN Total Supply</TopBarTitle>
+          <TopBarTitle>RIN Total Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
               {formatNumberToUSFormat(totalySupply.toFixed(0))} RIN
@@ -109,7 +109,7 @@ const TopBar = ({
           </BlockContainer>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>RIN Circulating Supply</TopBarTitle>
+          <TopBarTitle>RIN Circulating Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
               {formatNumberToUSFormat(CCAICirculatingSupply.toFixed(0))} RIN

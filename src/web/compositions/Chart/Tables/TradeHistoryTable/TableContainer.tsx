@@ -2,6 +2,7 @@ import dayjs from 'dayjs'
 import React, { Component } from 'react'
 
 import ChartCardHeader from '@sb/components/ChartCardHeader'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { withErrorFallback } from '@sb/hoc'
 
 import { client } from '@core/graphql/apolloClient'
@@ -71,6 +72,7 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   componentDidMount() {
+    console.log('trade history inside didMount')
     this.subscribe()
   }
 
@@ -175,19 +177,28 @@ class TableContainer extends Component<IProps, IState> {
       quote,
       currencyPair,
       updateTerminalPriceFromOrderbook,
-      theme,
       sizeDigits,
     } = this.props
+
+    console.log('trade history inside render')
+
     const { data = [], numbersAfterDecimalForPrice } = this.state
     const amountForBackground =
       data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
 
+    const formattedData = data.map((el) => {
+      return {
+        ...el,
+        price: formatNumberWithSpaces(el.price),
+        size: formatNumberWithSpaces(el.size),
+      }
+    })
+
     return (
       <>
-        <ChartCardHeader theme={theme}>Trade history</ChartCardHeader>
+        <ChartCardHeader>Trade history</ChartCardHeader>
         <TradeHistoryTable
-          data={data}
-          theme={theme}
+          data={formattedData}
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}
           quote={quote}

@@ -1,7 +1,6 @@
+import { Tooltip as MUTooltip } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
-
-import { Tooltip as MUTooltip } from '@material-ui/core'
 
 export const TooltipContainer = styled.div`
   & > div[datatype='tooltip'] {
@@ -26,8 +25,8 @@ export const Tooltip = styled(({ ...props }) => (
   position: absolute;
   top: 150%;
   padding: 0.4rem 2rem;
-  background: rgba(22, 37, 61);
-  color: #fff;
+  background: ${(props) => props.theme.colors.tooltip};
+  color: ${(props) => props.theme.colors.white};
   border-radius: 1.6rem;
   box-shadow: 0px 0px 1.6rem rgba(8, 22, 58, 0.1);
   z-index: 10;
@@ -52,8 +51,8 @@ export const DarkTooltip = styled((props) => {
   )
 })`
   & .tooltip {
-    background: #222429;
-    border: 1px solid #3a475c;
+    background: ${(props) => props.theme.colors.tooltip};
+    color: ${(props) => props.theme.colors.white};
     font-family: Avenir Next Medium;
     font-size: 13px;
     display: flex;
@@ -62,7 +61,6 @@ export const DarkTooltip = styled((props) => {
     align-items: right;
     letter-spacing: -0.523077px;
     border-radius: 1.2rem;
-    color: #f8faff;
     font-size: 1.3rem;
     opacity: 1;
     max-width: ${(props) => props.maxWidth || 'auto'};

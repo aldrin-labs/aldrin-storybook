@@ -1,4 +1,4 @@
-import { Program, ProgramAccount } from 'anchor020'
+import { Program, ProgramAccount } from 'anchor024'
 import useSWR from 'swr'
 
 import { PLUTONIANS_STAKING_ADDRESS, ProgramsMultiton } from '@core/solana'
@@ -34,7 +34,6 @@ export const useSrinStakingAccounts = () => {
       },
     ]) as Promise<any> as Promise<ProgramAccount<SRinUserAccount>[]>)
 
-    console.log('saccounts: ', accounts)
     return toMap(accounts, (acc) => acc.account.stakingTier.toString())
   }
 

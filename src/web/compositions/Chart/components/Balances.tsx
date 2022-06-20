@@ -5,7 +5,6 @@ import styled from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { Loading } from '@sb/components/Loading/Loading'
-import SvgIcon from '@sb/components/SvgIcon'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import DepositPopup from '@sb/compositions/Chart/components/DepositPopup'
@@ -18,12 +17,10 @@ import {
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { settleFunds } from '@sb/dexUtils/send'
-import { RINProviderURL } from '@sb/dexUtils/utils'
+import { RINProviderURL, formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { Key, FundsType } from '@core/types/ChartTypes'
-
-import RefreshBtn from '@icons/refresh.svg'
 
 export const BalanceTitle = styled.div`
   display: flex;
@@ -44,7 +41,7 @@ export const BalanceValues = styled.div`
 `
 
 export const BalanceQuantity = styled.span`
-  color: ${(props) => props.theme.palette.dark.main};
+  color: ${(props) => props.theme.colors.gray1};
   font-size: 1.2rem;
   font-family: Avenir Next Demi;
   letter-spacing: 0.01rem;
@@ -91,7 +88,7 @@ export const BalanceFuturesTypography = styled.span`
 `
 
 export const BalanceFuturesTitle = styled(BalanceFuturesTypography)`
-  color: ${(props) => props.theme.palette.grey.text};
+  color: ${(props) => props.theme.colors.gray0};
 `
 
 export const BalanceFuturesValue = styled(BalanceFuturesTypography)`
@@ -104,7 +101,7 @@ export const BalanceFuturesSymbol = styled(BalanceFuturesTypography)`
 
 const BalanceValuesContainer = styled(RowContainer)`
   padding: 0.4rem;
-  background: ${(props) => props.theme.palette.grey.terminal};
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 0.4rem;
   justify-content: flex-start;
   margin-bottom: ${(props) => (props.needMargin ? '0.8rem' : '0')};
@@ -175,6 +172,8 @@ export const Balances = ({
 
   const balances = useBalances()
   const connection = useConnection()
+
+  const newTheme = useTheme()
 
   const { wallet, providerUrl } = useWallet()
   const { market, baseCurrency, quoteCurrency } = useMarket()
@@ -268,38 +267,18 @@ export const Balances = ({
       />
       <CustomCard
         data-tut="balances"
-        theme={theme}
         style={{ borderRight: 'none', borderTop: '0' }}
       >
         <ChartCardHeader
           padding="0.6rem 0"
-          theme={theme}
           style={{
             display: 'flex',
             justifyContent: 'space-around',
             alignItems: 'center',
-            paddingLeft: '2rem',
+            padding: '0.5rem 0',
           }}
         >
           Balances
-          <SvgIcon
-            src={RefreshBtn}
-            style={{ cursor: 'pointer' }}
-            width="15%"
-            height="auto"
-            onClick={async () => {
-              await baseBalances.refreshBase()
-              await quoteBalances.refreshQuote()
-              await notify(
-                wallet.connected
-                  ? {
-                      message: 'Your balances successfully updated',
-                      type: 'success',
-                    }
-                  : { message: 'Connect your wallet first', type: 'error' }
-              )
-            }}
-          />
         </ChartCardHeader>
         <Grid
           container
@@ -321,7 +300,7 @@ export const Balances = ({
               align="flex-start"
               xs={6}
               style={{
-                borderBottom: theme.palette.border.main,
+                borderBottom: newTheme.colors.border,
                 maxWidth: '100%',
               }}
             >
@@ -335,13 +314,11 @@ export const Balances = ({
                 />
               </BalanceTitle> */}
               <BalanceValues>
-                <BalanceValuesContainer needMargin theme={theme}>
-                  <BalanceFuturesTitle theme={theme}>
-                    {pair[0]} Wallet
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
+                <BalanceValuesContainer needMargin>
+                  <BalanceFuturesTitle>{pair[0]} Wallet</BalanceFuturesTitle>
+                  <BalanceQuantity>
                     {balances[0]?.wallet
-                      ? balances[0].wallet.toFixed(8)
+                      ? formatNumberWithSpaces(balances[0].wallet.toFixed(8))
                       : (0).toFixed(8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>
@@ -350,14 +327,11 @@ export const Balances = ({
                     wallet.connected &&
                     (showSettle || !isBaseCoinExistsInWallet)
                   }
-                  theme={theme}
                 >
-                  <BalanceFuturesTitle theme={theme}>
-                    {pair[0]} Unsettled
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
+                  <BalanceFuturesTitle>{pair[0]} Unsettled</BalanceFuturesTitle>
+                  <BalanceQuantity>
                     {balances[0]?.unsettled
-                      ? balances[0].unsettled.toFixed(8)
+                      ? formatNumberWithSpaces(balances[0].unsettled.toFixed(8))
                       : (0).toFixed(8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>
@@ -439,13 +413,13 @@ export const Balances = ({
                 />
               </BalanceTitle> */}
               <BalanceValues>
-                <BalanceValuesContainer needMargin theme={theme}>
-                  <BalanceFuturesTitle theme={theme}>
-                    {pair[1]} Wallet
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
+                <BalanceValuesContainer needMargin>
+                  <BalanceFuturesTitle>{pair[1]} Wallet</BalanceFuturesTitle>
+                  <BalanceQuantity>
                     {balances[1]?.wallet
-                      ? balances[1].wallet.toFixed(isQuoteUSDT ? 2 : 8)
+                      ? formatNumberWithSpaces(
+                          balances[1].wallet.toFixed(isQuoteUSDT ? 2 : 8)
+                        )
                       : (0).toFixed(isQuoteUSDT ? 2 : 8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>
@@ -454,14 +428,13 @@ export const Balances = ({
                     wallet.connected &&
                     (showSettle || isQuoteCoinExistsInWallet)
                   }
-                  theme={theme}
                 >
-                  <BalanceFuturesTitle theme={theme}>
-                    {pair[1]} Unsettled
-                  </BalanceFuturesTitle>
-                  <BalanceQuantity theme={theme}>
+                  <BalanceFuturesTitle>{pair[1]} Unsettled</BalanceFuturesTitle>
+                  <BalanceQuantity>
                     {balances[1]?.unsettled
-                      ? balances[1].unsettled.toFixed(isQuoteUSDT ? 2 : 8)
+                      ? formatNumberWithSpaces(
+                          balances[1].unsettled.toFixed(isQuoteUSDT ? 2 : 8)
+                        )
                       : (0).toFixed(isQuoteUSDT ? 2 : 8)}
                   </BalanceQuantity>
                 </BalanceValuesContainer>
