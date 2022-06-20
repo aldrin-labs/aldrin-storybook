@@ -34,7 +34,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { PU238_TOKEN_MINT } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -182,6 +181,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     return undefined
   }, [nftReceipes, stakingPool])
 
+  console.log('reward:', reward, nftReceipes, stakingPool)
   const unclaimedNftCount = reward
     ? reward.account.nfts.reduce((acc, nft) => nft.quantity + acc, 0)
     : 0
