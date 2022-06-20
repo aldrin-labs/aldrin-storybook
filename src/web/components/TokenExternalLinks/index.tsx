@@ -1,4 +1,5 @@
 import React from 'react'
+import useSWR from 'swr'
 
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
@@ -9,6 +10,7 @@ import Inform from '@icons/inform.svg'
 import Nomics from '@icons/nomics.svg'
 import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 import SolanaFm from '@icons/solanafm.svg'
+import SolanaFmDark from '@icons/solanafmDark.svg'
 import Solscan from '@icons/solscan.svg'
 
 import SvgIcon from '../SvgIcon'
@@ -37,29 +39,35 @@ const resolveExplorerIcon = (link: string) => {
   return Nomics
 }
 
-export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => (
-  <IconsContainer>
-    <Icon alt="View on Solan explorer" src={SolanaExplorerIcon} />
-    <div className="explorers-dropdown">
-      <Anchor
-        className="explorers-dropdown-item"
-        href={`https://solscan.io/account/${props.mint}`}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <SvgIcon src={Solscan} alt="solscan" />
-      </Anchor>
-      <Anchor
-        className="explorers-dropdown-item"
-        href={`https://solana.fm/account/${props.mint}`}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        <SvgIcon src={SolanaFm} alt="solana.fm" />
-      </Anchor>
-    </div>
-  </IconsContainer>
-)
+export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => {
+  const { data: theme } = useSWR('theme')
+  return (
+    <IconsContainer>
+      <Icon alt="View on Solan explorer" src={SolanaExplorerIcon} />
+      <div className="explorers-dropdown">
+        <Anchor
+          className="explorers-dropdown-item"
+          href={`https://solscan.io/account/${props.mint}`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <SvgIcon src={Solscan} alt="solscan" />
+        </Anchor>
+        <Anchor
+          className="explorers-dropdown-item"
+          href={`https://solana.fm/account/${props.mint}`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <SvgIcon
+            src={theme === 'dark' ? SolanaFm : SolanaFmDark}
+            alt="solana.fm"
+          />
+        </Anchor>
+      </div>
+    </IconsContainer>
+  )
+}
 
 export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (
   props
