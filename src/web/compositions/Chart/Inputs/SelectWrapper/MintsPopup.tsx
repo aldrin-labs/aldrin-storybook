@@ -1,16 +1,9 @@
 import React from 'react'
 
-import styled from 'styled-components'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 
 import { CoinAddressWithLabel, MarketAddressWithLabel } from './MintsPopupRow'
 import { StyledPaper } from './SelectWrapperStyles'
-
-export const Dialog = styled(DialogWrapper)`
-  div[class^='MuiPaper-root-'] {
-    overflow: visible;
-  }
-`
 
 export const MintsPopup = ({
   onClose,
@@ -26,7 +19,7 @@ export const MintsPopup = ({
   const [base, quote] = symbol.split('/')
 
   return (
-    <Dialog
+    <DialogWrapper
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
@@ -37,6 +30,6 @@ export const MintsPopup = ({
       <MarketAddressWithLabel marketAddress={marketAddress} />
       <CoinAddressWithLabel symbol={base} />
       <CoinAddressWithLabel symbol={quote} />
-    </Dialog>
+    </DialogWrapper>
   )
 }

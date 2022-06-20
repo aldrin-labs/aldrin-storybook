@@ -21,12 +21,7 @@ const StyledPaper = styled(Paper)`
   border-radius: 0.8rem;
   overflow: hidden;
   padding: 3rem 2rem;
-`
-
-export const Dialog = styled(DialogWrapper)`
-  div[class^='MuiPaper-root-'] {
-    overflow: visible;
-  }
+  overflow: visible;
 `
 
 const Container = styled.div`
@@ -45,7 +40,7 @@ export const TokenAddressesPopup = ({
   quoteTokenMintAddress: string
 }) => {
   return (
-    <Dialog
+    <DialogWrapper
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -105,6 +100,6 @@ export const TokenAddressesPopup = ({
           </Row>
         </RowContainer>
       </Container>
-    </Dialog>
+    </DialogWrapper>
   )
 }
