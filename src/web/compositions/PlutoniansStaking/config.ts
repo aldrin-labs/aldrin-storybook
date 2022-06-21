@@ -5,8 +5,7 @@ import {
   PLUTONIANS_RPC_STAKING_POOL_ADDRESS,
   PLUTONIANS_PU_STAKING_POOL_ADDRESS,
   PLUTONIANS_STAKING_ADDRESS,
-} from '@sb/dexUtils/ProgramsMultiton'
-
+} from '@core/solana'
 import { MASTER_BUILD } from '@core/utils/config'
 
 import Centuria from './assets/Centuria.png'
@@ -24,7 +23,6 @@ export const EXTRA_REWARDS = [
 
 export const REWARDS_BG = [Centuria, Colossus, Venator, Leviathan]
 
-export const REWARD_TOKEN_NAME = 'PU238' // For getDexTokenPrices
 export const REWARD_TOKEN_MULTIPLIER = 1
 
 export const REWARD_APR_DENOMINATOR = 1_000_000
@@ -33,7 +31,6 @@ export const REWARD_APR_DENOMINATOR = 1_000_000
 export const PLD_DENOMINATOR = MASTER_BUILD ? 1_000_000 : 1_000_000_000
 export const PLD_DECIMALS = MASTER_BUILD ? 6 : 9
 
-export const NFT_REWARD_MIN_STAKE_AMOUNT = 1_000
 const TOKEN_MULTIPLIER = new BN(10).pow(new BN(PLD_DECIMALS))
 
 export const STAKINGS: { [c: string]: StakingDescription } = {

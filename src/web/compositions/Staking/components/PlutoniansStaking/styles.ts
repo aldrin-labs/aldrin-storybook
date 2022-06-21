@@ -45,7 +45,7 @@ export const StakePoolText = styled.div`
 `
 
 export const StakePoolWrap = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 32px;
 
   &:last-child {
     margin-bottom: 0;

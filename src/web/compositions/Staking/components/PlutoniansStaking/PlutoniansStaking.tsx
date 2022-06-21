@@ -16,22 +16,18 @@ import {
   StakePoolLink,
   StakePoolText,
   StakePoolWrap,
+  RootFlexBlock,
 } from './styles'
 
 export const PlutoniasStakingBlock: React.FC = () => {
-  // const { data: stakingPool } = usePlutoniansStaking()
-  // const tiers = stakingPool?.tiers.slice(0, 4).reverse() || []
-  // const tiersGroup1 = tiers.slice(0, 2)
-  // const tiersGroup2 = tiers.slice(2)
-
   return (
     <StakingBlock>
       <LogoWrap />
       <BlockContent>
-        <FlexBlock justifyContent="space-between">
+        <RootFlexBlock justifyContent="space-between">
           <BlockTitle>Plutonians</BlockTitle>
           <NumberWithLabel padding="0" value={null} label="Exclusive" />
-        </FlexBlock>
+        </RootFlexBlock>
 
         <FlexBlock flex="1" direction="column" justifyContent="space-between">
           <StakePoolWrap>

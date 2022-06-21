@@ -2,9 +2,8 @@ import { PublicKey } from '@solana/web3.js'
 import { COLORS, FONT_SIZES } from '@variables/variables'
 import { ProgramAccount } from 'anchor024'
 import { BN } from 'bn.js'
-import { useParams } from 'react-router-dom'
 import React, { useMemo, useState } from 'react'
-
+import { useParams } from 'react-router-dom'
 
 import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
@@ -149,7 +148,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const isRewardsUnlocked =
     selectedTier && stakeAccountForTier
       ? stakeAccountForTier.account.depositedAt
-          .add(selectedTier.account.lockDuration.)
+          .add(selectedTier.account.lockDuration.seconds)
           .toNumber() <
         Date.now() / 1000
       : false
@@ -184,7 +183,6 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     return undefined
   }, [nftReceipes, stakingPool])
 
-  console.log('reward:', reward, nftReceipes, stakingPool)
   const unclaimedNftCount = reward
     ? reward.account.nfts.reduce((acc, nft) => nft.quantity + acc, 0)
     : 0
@@ -347,7 +345,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const isUnstakeDisabled = loading || !selectedTokenAccount || timeLeft > 0
 
-  const timeProgresss = timePassed / lockDuration.toNumber()
+  // const timeProgresss = timePassed / lockDuration.toNumber()
 
   const estimateRewardsInStakeTokens =
     selectedTier && stakeAccountForTier
