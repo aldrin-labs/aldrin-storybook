@@ -38,6 +38,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
   } = props
 
   const farmings = filterOpenFarmingStates(farming || [])
+
   const farmingsMap = groupBy(farmings, (f) => f.farmingTokenMint)
 
   const tokenMap = useTokenInfos()
