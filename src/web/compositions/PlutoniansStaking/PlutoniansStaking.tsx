@@ -45,7 +45,6 @@ import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 import ClockIcon from '@icons/clock.svg'
 import InfoIcon from '@icons/infoIcon.svg'
 
-import { formatNumberToUSFormat } from '../../../../../core/src/utils/PortfolioTableUtils'
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
 import { claimSrinNFTs } from '../../dexUtils/staking/actions/claimSrinNFTs'
