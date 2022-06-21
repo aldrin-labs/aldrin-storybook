@@ -1,9 +1,3 @@
-import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
-import {
-  AWESOME_TOKENS,
-  useAwesomeMarkets,
-} from '@core/utils/awesomeMarkets/serum'
-import { Metrics } from '@core/utils/metrics'
 import {
   Market,
   MARKETS,
@@ -12,11 +6,18 @@ import {
   TokenInstructions,
   TOKEN_MINTS,
 } from '@project-serum/serum'
-import { OrderWithMarket } from '@sb/dexUtils/send'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
+
+import { OrderWithMarket } from '@sb/dexUtils/send'
+
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import { AWESOME_TOKENS } from '@core/utils/awesomeMarkets/dictionaries'
+import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
+import { Metrics } from '@core/utils/metrics'
+
 import {
   getProviderNameFromUrl,
   useAccountData,

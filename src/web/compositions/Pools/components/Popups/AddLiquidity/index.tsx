@@ -339,6 +339,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       </RowContainer>
       <RowContainer>
         <InputWithCoins
+          data-testid="deposit-liquidity-base-token-field"
           placeholder="0"
           theme={theme}
           value={formatNumberWithSpaces(baseAmount)}
@@ -377,6 +378,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           </Row>
         </RowContainer>
         <InputWithCoins
+          data-testid="deposit-liquidity-quote-token-field"
           placeholder="0"
           theme={theme}
           value={formatNumberWithSpaces(quoteAmount)}
@@ -519,6 +521,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           )}
         </Row>
         <Button
+          data-testid="deposit-liquidity-submit-btn"
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident

@@ -17,6 +17,7 @@ export const ModalBlock = styled(BlockContent)`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  overflow: visible;
 
   @media (min-width: ${BREAKPOINTS.lg}) {
     flex-direction: row;

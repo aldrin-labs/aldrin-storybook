@@ -5,11 +5,9 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
+import { PLUTONIANS_STAKING_ADDRESS, ProgramsMultiton } from '@core/solana'
+
 import { walletAdapterToWallet } from '../../common'
-import {
-  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
-  ProgramsMultiton,
-} from '../../ProgramsMultiton'
 import { signAndSendSingleTransaction } from '../../transactions'
 import { StartSrinStakingParams } from './types'
 import { getStakingAccount } from './utils'
@@ -31,7 +29,7 @@ export const startSrinStakingInstructions = async (
   const program = ProgramsMultiton.getProgramByAddress({
     wallet,
     connection,
-    programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+    programAddress: PLUTONIANS_STAKING_ADDRESS,
   })
 
   const [userStakingAccount] = await getStakingAccount(w.publicKey, stakingTier)

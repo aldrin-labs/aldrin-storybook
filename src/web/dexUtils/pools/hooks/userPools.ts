@@ -1,13 +1,16 @@
+import { useCallback } from 'react'
 import useSwr from 'swr'
+
 import { Pool, PoolV2 } from '@sb/dexUtils/common/types'
 import { RefreshFunction } from '@sb/dexUtils/types'
-import { useCallback } from 'react'
-import { useConnection } from '../../connection'
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+
 import {
+  ProgramsMultiton,
   POOLS_PROGRAM_ADDRESS,
   POOLS_V2_PROGRAM_ADDRESS,
-} from '../../ProgramsMultiton/utils'
+} from '@core/solana'
+
+import { useConnection } from '../../connection'
 import { useWallet } from '../../wallet'
 
 export const usePools = (): [(Pool | PoolV2)[], RefreshFunction] => {

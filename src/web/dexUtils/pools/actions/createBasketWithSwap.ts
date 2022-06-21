@@ -2,7 +2,6 @@ import { PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
 
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import MultiEndpointsConnection from '@sb/dexUtils/MultiEndpointsConnection'
 import {
   getPoolsProgramAddress,
   ProgramsMultiton,
@@ -11,6 +10,8 @@ import { isTransactionFailed } from '@sb/dexUtils/send'
 import { Token, TOKEN_PROGRAM_ID } from '@sb/dexUtils/token/token'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { AldrinConnection } from '@core/solana'
 
 import { PoolBalances } from '../hooks/usePoolBalances'
 import { findClosestAmountToSwapForDeposit } from '../swap/findClosestAmountToSwapForDeposit'
@@ -30,7 +31,7 @@ export async function createBasketWithSwap({
   transferSOLToWrapped,
 }: {
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   pool: PoolInfo
   poolBalances: PoolBalances
   userPoolTokenAccount: PublicKey | null

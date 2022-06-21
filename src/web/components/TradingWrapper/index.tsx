@@ -250,6 +250,7 @@ class SimpleTabs extends React.Component<any, any> {
             >
               <div>
                 <TerminalModeButton
+                  data-testid="trading-mode-limit"
                   style={{ width: '10rem' }}
                   active={mode === 'limit'}
                   onClick={() => {
@@ -266,6 +267,7 @@ class SimpleTabs extends React.Component<any, any> {
                   Limit
                 </TerminalModeButton>
                 <TerminalModeButton
+                  data-testid="trading-mode-market"
                   style={{ width: '10rem' }}
                   active={mode === 'market'}
                   onClick={() => {

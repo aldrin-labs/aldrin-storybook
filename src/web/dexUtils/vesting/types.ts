@@ -1,7 +1,8 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import BN from 'bn.js'
 
-import MultiEndpointsConnection from '../MultiEndpointsConnection'
+import { AldrinConnection } from '@core/solana'
+
 import { WalletAdapter } from '../types'
 
 export interface Vesting {
@@ -32,7 +33,7 @@ export interface CreateVestingParams {
   depositorAccount: PublicKey
   wallet: WalletAdapter
   depositAmount: BN
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   tokenMint: PublicKey
   accountLamports?: number
 }

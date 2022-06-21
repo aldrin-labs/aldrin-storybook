@@ -8,13 +8,15 @@ import {
   createSOLAccountAndClose,
   transferSOLToWrappedAccountAndClose,
 } from '@sb/dexUtils/pools'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+
+
 import {
   createTokenAccountTransaction,
   isTransactionFailed,
 } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
+import { ProgramsMultiton } from '@core/solana'
+import { getPoolsProgramAddress } from '@core/solana'
 
 import { signAndSendSingleTransaction } from '../../transactions'
 

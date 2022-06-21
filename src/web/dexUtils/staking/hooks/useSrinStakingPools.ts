@@ -1,14 +1,11 @@
 import { ProgramAccount } from '@project-serum/anchor'
 import useSWR from 'swr'
 
+import { PLUTONIANS_STAKING_ADDRESS, ProgramsMultiton } from '@core/solana'
 import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 
 import { groupBy, toMap } from '../../../utils'
 import { useConnection } from '../../connection'
-import {
-  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
-  ProgramsMultiton,
-} from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
 import {
   SRinStakingPool,
@@ -26,7 +23,7 @@ export const useSrinStakingPools = () => {
   const fetcher = async (): Promise<SRinStakingPoolUI[]> => {
     try {
       const program = ProgramsMultiton.getProgramByAddress({
-        programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+        programAddress: PLUTONIANS_STAKING_ADDRESS,
         wallet,
         connection,
       })

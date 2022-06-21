@@ -8,11 +8,11 @@ import {
 } from '@solana/web3.js'
 import { BN } from 'anchor019'
 
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
+import { ProgramsMultiton, TWAMM_PROGRAM_ADDRESS } from '@core/solana'
+
 import { createSOLAccountAndClose } from '../pools'
-import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton'
 import { signAndSendSingleTransaction } from '../transactions'
 import { WRAPPED_SOL_MINT } from '../wallet'
 import { PairSettings, TwammOrder } from './types'

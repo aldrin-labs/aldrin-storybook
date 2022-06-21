@@ -1,5 +1,6 @@
+import { signTransactions } from '@core/solana'
+
 import { sendSignedTransactions } from '.'
-import { signTransactions } from './signTransactions'
 import { SendTransactionsParams } from './types'
 
 export const signAndSendTransactions = async (
@@ -10,7 +11,6 @@ export const signAndSendTransactions = async (
     connection,
     wallet,
     focusPopup,
-    sentMessage,
     successMessage,
     commitment,
   } = params
@@ -24,18 +24,10 @@ export const signAndSendTransactions = async (
     )
 
     return await sendSignedTransactions(signedTransactions, connection, {
-      sentMessage,
       successMessage,
       commitment,
     })
-  } catch (e) {
-    console.warn('Error sign or send transactions:', e)
-    if (e instanceof Error) {
-      const errorText = e.message
-      if (errorText.includes('rejected') || errorText.includes('cancelled')) {
-        return 'cancelled'
-      }
-    }
-    return 'rejected'
+  } catch (e: any) {
+    return e.message || e || 'failed'
   }
 }
