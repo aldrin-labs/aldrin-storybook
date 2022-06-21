@@ -1,10 +1,12 @@
 import React from 'react'
+import { DefaultTheme } from 'styled-components'
+
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { OrderType } from '@core/types/ChartTypes'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-import { Theme } from '@material-ui/core'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+
 import { StyledTitle } from '../TradingTable.styles'
 import { CloseButton, isBuyTypeOrder } from '../TradingTable.utils'
 
@@ -37,7 +39,7 @@ export const filterOpenOrders = ({
 export const combineOpenOrdersTable = (
   openOrdersData: OrderType[],
   cancelOrderFunc: (el: OrderType) => Promise<any>,
-  theme: Theme,
+  theme: DefaultTheme,
   handlePairChange: (pair: string) => void,
   isCancellingAllOrders: boolean,
   needShowValue: boolean
@@ -118,8 +120,8 @@ export const combineOpenOrdersTable = (
                       textTransform: 'capitalize',
                       color:
                         side === 'buy'
-                          ? theme.palette.green.main
-                          : theme.palette.red.main,
+                          ? theme.colors.green7
+                          : theme.colors.red4,
                     }}
                   >
                     {side}
@@ -166,8 +168,8 @@ export const combineOpenOrdersTable = (
                   display: 'block',
                   textTransform: 'uppercase',
                   color: isBuyTypeOrder(orderSide)
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                    ? theme.colors.green7
+                    : theme.colors.red4,
                 }}
               >
                 {orderSide}
@@ -185,8 +187,8 @@ export const combineOpenOrdersTable = (
           ),
           style: {
             color: isBuyTypeOrder(orderSide)
-              ? theme.customPalette.green.main
-              : theme.customPalette.red.main,
+              ? theme.colors.green7
+              : theme.colors.red4,
             opacity: needOpacity ? 0.75 : 1,
           },
           showOnMobile: false,

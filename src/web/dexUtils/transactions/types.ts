@@ -1,15 +1,16 @@
 import {
   Commitment,
-  Connection,
   Signer,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
 
+import { AldrinConnection } from '@core/solana'
+
 import { WalletAdapter } from '../types'
 
 interface SendTransactionParamsBase {
-  connection: Connection
+  connection: AldrinConnection
 }
 
 export interface NotificationParams {

@@ -13,7 +13,7 @@ export const LogoWrap = styled.div<LogoContainer>`
   position: relative;
   background: linear-gradient(
     276.63deg,
-    #651ce4 4.95%,
+    #5e55f2 4.95%,
     #ab0899 38.28%,
     #e00b21 70.65%,
     #da6239 97.71%

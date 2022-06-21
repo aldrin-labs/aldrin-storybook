@@ -1,9 +1,10 @@
 import useSwr from 'swr'
 
+import { ProgramsMultiton, STAKING_PROGRAM_ADDRESS } from '@core/solana'
+
 import { getCalcAccounts } from '../common/getCalcAccountsForWallet'
 import { FarmingCalc } from '../common/types'
 import { useConnection } from '../connection'
-import { ProgramsMultiton, STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton'
 import { useWallet } from '../wallet'
 
 export const useStakingCalcAccounts = () => {

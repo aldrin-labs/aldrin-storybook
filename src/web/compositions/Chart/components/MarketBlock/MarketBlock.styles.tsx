@@ -1,11 +1,10 @@
-import { COLORS } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
 export const ExclamationMark = styled(({ fontSize, lineHeight, ...props }) => (
   <span {...props}>!</span>
 ))`
-  color: ${(props) => props.color || props.theme.palette.orange.dark};
+  color: ${(props) => props.color || props.theme.colors.red3};
   font-family: Avenir Next Demi;
   font-size: ${(props) => props.fontSize || '5rem'};
   line-height: ${(props) => props.lineHeight || '6rem'};
@@ -35,9 +34,9 @@ export const MarketStatsContainer = styled.div`
   justify-content: space-between;
   height: 6rem;
   padding: 0 3rem;
-  border-top: ${(props) => props.theme.palette.border.new};
-  border-bottom: ${(props) => props.theme.palette.border.new};
-  background: ${COLORS.mainBlack};
+  border-top: 0.1rem solid ${(props) => props.theme.colors.gray5};
+  border-bottom: 0.1rem solid ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.gray10};
 
   @media (max-width: 600px) {
     display: none;
@@ -50,8 +49,8 @@ export const MobileMarketStatsContainer = styled.div`
   justify-content: space-between;
   height: 10rem;
   padding: 0 3rem;
-  background: #17181a;
-  border-bottom: ${(props) => props.theme.palette.border.new};
+  background: ${(props) => props.theme.colors.gray6};
+  border-bottom: ${(props) => props.theme.colors.gray1};
   @media (min-width: 600px) {
     display: none;
   }

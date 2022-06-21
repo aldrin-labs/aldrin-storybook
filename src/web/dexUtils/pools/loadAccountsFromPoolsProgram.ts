@@ -1,6 +1,8 @@
 import { Connection, GetProgramAccountsFilter } from '@solana/web3.js'
+
+import { POOLS_PROGRAM_ADDRESS } from '@core/solana'
+
 import { loadAccountsFromProgram } from '../common/loadAccountsFromProgram'
-import { POOLS_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 
 export const loadAccountsFromPoolsProgram = async ({
   connection,

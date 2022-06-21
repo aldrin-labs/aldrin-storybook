@@ -6,8 +6,8 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { VESTING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { ProgramsMultiton, VESTING_PROGRAM_ADDRESS } from '@core/solana'
+
 import { createTokenAccountTransaction } from '../send'
 import { WithdrawVestingParams } from './types'
 

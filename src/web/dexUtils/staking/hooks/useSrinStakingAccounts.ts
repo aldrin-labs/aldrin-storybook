@@ -1,12 +1,10 @@
-import { Program, ProgramAccount } from 'anchor020'
+import { Program, ProgramAccount } from 'anchor024'
 import useSWR from 'swr'
+
+import { PLUTONIANS_STAKING_ADDRESS, ProgramsMultiton } from '@core/solana'
 
 import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
-import {
-  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
-  ProgramsMultiton,
-} from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
 import { SRinUserAccount } from './types'
 
@@ -22,7 +20,7 @@ export const useSrinStakingAccounts = () => {
       return new Map<string, ProgramAccount<SRinUserAccount>>()
     }
     const program = ProgramsMultiton.getProgramByAddress({
-      programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+      programAddress: PLUTONIANS_STAKING_ADDRESS,
       wallet,
       connection,
     }) as any as Program // TODO:

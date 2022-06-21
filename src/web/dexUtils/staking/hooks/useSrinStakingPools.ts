@@ -1,20 +1,18 @@
 import { ProgramAccount } from '@project-serum/anchor'
 import useSWR from 'swr'
 
+import { PLUTONIANS_STAKING_ADDRESS, ProgramsMultiton } from '@core/solana'
 import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 
-import { toMap } from '../../../utils'
+import { groupBy, toMap } from '../../../utils'
 import { useConnection } from '../../connection'
-import {
-  PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
-  ProgramsMultiton,
-} from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
 import {
   SRinStakingPool,
   SRinStakingPoolUI,
   SRinStakingTier,
   SRinNftRewardGroup,
+  SRinStakeToRewardConversionPath,
 } from './types'
 
 const HIDE_TIERS = ['EhMoc44x7GjGadBaFf1CM6GZzJVKSGotwxovrcwsnQek']
@@ -25,32 +23,39 @@ export const useSrinStakingPools = () => {
   const fetcher = async (): Promise<SRinStakingPoolUI[]> => {
     try {
       const program = ProgramsMultiton.getProgramByAddress({
-        programAddress: PLUTONIANS_STAKING_PROGRAMM_ADDRESS,
+        programAddress: PLUTONIANS_STAKING_ADDRESS,
         wallet,
         connection,
       })
-      const [pools, tiers, nftRewards] = await Promise.all([
+
+      const [pools, tiers, nftRewards, paths] = await Promise.all([
         program.account.stakingPool.all() as Promise<
           ProgramAccount<SRinStakingPool>[]
         >,
         program.account.stakingTier.all() as Promise<
           ProgramAccount<SRinStakingTier>[]
         >,
-        program.account.nftRewardGroup.all() as Promise<
+        program.account.nftTierReward.all() as Promise<
           ProgramAccount<SRinNftRewardGroup>[]
         >,
+        program.account.stakeToRewardConversionPath.all() as Promise<
+          ProgramAccount<SRinStakeToRewardConversionPath>[]
+        >,
       ])
-
-      // console.log('tiers: ', tiers)
 
       const tiersByKey = toMap(
         tiers.filter((t) => !HIDE_TIERS.includes(t.publicKey.toString())),
         (t) => t.publicKey.toString()
       )
-      const nftRewardsByKey = toMap(nftRewards, (t) => t.publicKey.toString())
+      const nftRewardsByTier = groupBy(nftRewards, (t) =>
+        t.account.tier.toString()
+      )
       const poolsWithTiers = pools.map((p) => ({
         ...p.account,
         stakingPool: p.publicKey,
+        stakeToRewardConversionPath: paths.find((path) =>
+          path.account.stakingPool.equals(p.publicKey)
+        ),
         tiers: p.account.tiers
           .filter((t) => !HIDE_TIERS.includes(t.toString()))
           .map((t) => {
@@ -66,15 +71,12 @@ export const useSrinStakingPools = () => {
             }
             return {
               ...tier,
-              account: {
-                ...tier.account,
-                nftRewardGroupsData: tier.account.nftRewardGroups
-                  .map((nrg) => nftRewardsByKey.get(nrg.toString()))
-                  .filter((g): g is ProgramAccount<SRinNftRewardGroup> => !!g),
-              },
+              nftRewards: nftRewardsByTier.get(t.toString()) || [],
             }
           })
-          .sort((a, b) => b.account.lockDuration.cmp(a.account.lockDuration)),
+          .sort((a, b) =>
+            b.account.lockDuration.seconds.cmp(a.account.lockDuration.seconds)
+          ),
       }))
       return poolsWithTiers
     } catch (e) {

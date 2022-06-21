@@ -15,9 +15,10 @@ import {
 } from '@solana/web3.js'
 
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
+import { ProgramsMultiton } from '@core/solana'
+
 import { WalletAdapter } from '@sb/dexUtils/types'
+import { getPoolsProgramAddress } from '@core/solana'
 
 import { sleep } from '@core/utils/helpers'
 

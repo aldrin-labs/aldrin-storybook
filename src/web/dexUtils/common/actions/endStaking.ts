@@ -6,10 +6,11 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { ProgramsMultiton } from '../../ProgramsMultiton/ProgramsMultiton'
+import { buildTransactions, ProgramsMultiton } from '@core/solana'
+
 import { createTokenAccountTransaction } from '../../send'
 import { getCurrentFarmingStateFromAll } from '../../staking/getCurrentFarmingStateFromAll'
-import { buildTransactions, signAndSendTransactions } from '../../transactions'
+import { signAndSendTransactions } from '../../transactions'
 import { filterOpenFarmingTickets } from '../filterOpenFarmingTickets'
 import { getCalcAccounts } from '../getCalcAccountsForWallet'
 import { getTicketsAvailableToClose } from '../getTicketsAvailableToClose'

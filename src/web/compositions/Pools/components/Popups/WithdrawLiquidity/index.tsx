@@ -1,7 +1,9 @@
-import Close from '@icons/closeIcon.svg'
-import { Theme, withTheme } from '@material-ui/core'
+import { PublicKey } from '@solana/web3.js'
+import { COLORS } from '@variables/variables'
+import React, { useEffect, useState } from 'react'
+import { useTheme } from 'styled-components'
+
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import SvgIcon from '@sb/components/SvgIcon'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -23,18 +25,21 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+} from '@sb/dexUtils/utils'
 import { VestingWithPk } from '@sb/dexUtils/vesting/types'
 import { useWallet } from '@sb/dexUtils/wallet'
-import { PublicKey } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
-import React, { useEffect, useState } from 'react'
+import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
+
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
 
 interface WithdrawalProps {
-  theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
   farmingTicketsMap: Map<string, FarmingTicket[]>
   // earnedFeesInPoolForUserMap: Map<string, FeesEarned>
@@ -59,7 +64,6 @@ const resolveWithdrawStatus = (result: string) => {
 
 const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   const {
-    theme,
     dexTokensPricesMap,
     farmingTicketsMap,
     // earnedFeesInPoolForUserMap,
@@ -72,12 +76,13 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     vesting,
   } = props
   const { wallet } = useWallet()
+  const theme = useTheme()
   const connection = useConnection()
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
-  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
-  const [baseAmount, setBaseAmount] = useState<string | number>('')
+  const [quoteAmount, setQuoteAmount] = useState<string | number>('--')
+  const [baseAmount, setBaseAmount] = useState<string | number>('--')
 
   const {
     baseTokenAmount: poolAmountTokenA,
@@ -99,15 +104,21 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   }, [poolBalances])
 
   const setBaseAmountWithQuote = (ba: string | number) => {
-    const qa = stripDigitPlaces(+ba * (poolAmountTokenB / poolAmountTokenA), 8)
-    setBaseAmount(ba)
+    const qa =
+      stripDigitPlaces(+ba * (poolAmountTokenB / poolAmountTokenA), 8) || '--'
+    const v = formatNumbersForState(ba)
+
+    setBaseAmount(v)
     setQuoteAmount(qa)
   }
 
   const setQuoteAmountWithBase = (qa: string | number) => {
-    const ba = stripDigitPlaces(+qa * (poolAmountTokenA / poolAmountTokenB), 8)
+    const ba =
+      stripDigitPlaces(+qa * (poolAmountTokenA / poolAmountTokenB), 8) || '--'
+    const v = formatNumbersForState(qa)
+
     setBaseAmount(ba)
-    setQuoteAmount(qa)
+    setQuoteAmount(v)
   }
 
   const [operationLoading, setOperationLoading] = useState<boolean>(false)
@@ -181,11 +192,11 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     +baseAmount > withdrawAmountTokenA ||
     +quoteAmount > withdrawAmountTokenB
 
-  const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
+  const total =
+    +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice || '--'
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -209,15 +220,34 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               }
             }}
           />
-          <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+          <CloseIconContainer
+            onClick={() => {
+              close()
+            }}
+          >
+            <svg
+              width="19"
+              height="19"
+              viewBox="0 0 19 19"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+                stroke="#F5F5FB"
+                strokeWidth="2"
+              />
+            </svg>
+          </CloseIconContainer>
         </Row>
       </Row>
       <RowContainer>
         <SimpleInput
+          data-testid="withdraw-liquidity-base-token-field"
           placeholder="0"
           theme={theme}
           symbol={baseSymbol}
-          value={baseAmount}
+          value={formatNumberWithSpaces(baseAmount)}
           onChange={setBaseAmountWithQuote}
           maxBalance={withdrawAmountTokenA}
         />
@@ -227,10 +257,11 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
           </Text>
         </Row>
         <SimpleInput
+          data-testid="withdraw-liquidity-quote-token-field"
           placeholder="0"
           theme={theme}
           symbol={quoteSymbol}
-          value={quoteAmount}
+          value={formatNumberWithSpaces(quoteAmount)}
           onChange={setQuoteAmountWithBase}
           maxBalance={withdrawAmountTokenB}
         />
@@ -251,6 +282,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
 
       <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
+          data-testid="withdraw-liquidity-submit-btn"
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident
@@ -369,6 +401,4 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   )
 }
 
-const WithTheme = withTheme()(WithdrawalPopup)
-
-export { WithTheme as WithdrawalPopup }
+export { WithdrawalPopup }

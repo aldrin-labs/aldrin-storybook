@@ -10,8 +10,8 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { VESTING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { ProgramsMultiton, VESTING_PROGRAM_ADDRESS } from '@core/solana'
+
 import { CreateVestingParams } from './types'
 
 export const createVestingTransaction = async (

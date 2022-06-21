@@ -1,21 +1,21 @@
 import React from 'react'
 
 import { BlockTitle, BlockContent } from '@sb/components/Block'
+import { FlexBlock } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { FlexBlock } from '../../../../components/Layout'
-import { StakingBlock, PLDContentBlock } from '../../styles'
+import { StakingBlock } from '../../styles'
 import { NumberWithLabel } from '../NumberWithLabel/NumberWithLabel'
 import PldIcon from './assets/stake-pld.png'
 import PuIcon from './assets/stake-pu238.png'
 import RpcIcon from './assets/stake-rpc.png'
 import {
+  ContentBlock,
   LogoWrap,
-  StakePoolWrap,
-  StakePoolText,
   StakePoolButtonContainer,
   StakePoolLink,
+  StakePoolText,
+  StakePoolWrap,
 } from './styles'
 
 export const PlutoniasStakingBlock: React.FC = () => {
@@ -28,13 +28,14 @@ export const PlutoniasStakingBlock: React.FC = () => {
     <StakingBlock>
       <LogoWrap />
       <BlockContent>
-        <RowContainer justify="space-between">
-          <BlockTitle>Stake PLD</BlockTitle>
+        <FlexBlock justifyContent="space-between">
+          <BlockTitle>Plutonians</BlockTitle>
           <NumberWithLabel padding="0" value={null} label="Exclusive" />
-        </RowContainer>
+        </FlexBlock>
+
         <FlexBlock flex="1" direction="column" justifyContent="space-between">
           <StakePoolWrap>
-            <PLDContentBlock>
+            <ContentBlock>
               <FlexBlock alignItems="center">
                 <img src={PldIcon} alt="Stake PLD" />
                 <StakePoolText>
@@ -49,10 +50,10 @@ export const PlutoniasStakingBlock: React.FC = () => {
                   </StakePoolLink>
                 </StakePoolButtonContainer>
               </FlexBlock>
-            </PLDContentBlock>
+            </ContentBlock>
           </StakePoolWrap>
           <StakePoolWrap>
-            <PLDContentBlock>
+            <ContentBlock>
               <FlexBlock alignItems="center">
                 <img src={RpcIcon} alt="Stake RPC" />
                 <StakePoolText>
@@ -67,10 +68,10 @@ export const PlutoniasStakingBlock: React.FC = () => {
                   </StakePoolLink>
                 </StakePoolButtonContainer>
               </FlexBlock>
-            </PLDContentBlock>
+            </ContentBlock>
           </StakePoolWrap>
           <StakePoolWrap>
-            <PLDContentBlock>
+            <ContentBlock>
               <FlexBlock alignItems="center">
                 <img src={PuIcon} alt="Stake PU238" />
                 <StakePoolText>
@@ -85,48 +86,9 @@ export const PlutoniasStakingBlock: React.FC = () => {
                   </StakePoolLink>
                 </StakePoolButtonContainer>
               </FlexBlock>
-            </PLDContentBlock>
+            </ContentBlock>
           </StakePoolWrap>
         </FlexBlock>
-        {/* <StretchedContent>
-          {tiersGroup1.map((tier) => (
-            <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
-              <Row justify="space-between" margin="0 0 0.7em 0">
-                <InlineText size="md" weight={700}>
-                  {tier?.account.lockDuration.divn(DAY).toString()} Days
-                </InlineText>{' '}
-                <SvgIcon src={Lock} alt="locked" />
-              </Row>
-              <NumberWithLabel
-                size={FONT_SIZES.es}
-                value={null}
-                label="APR + NFT"
-                center
-              />
-            </ContentBlock>
-          ))}
-        </StretchedContent>
-        <StretchedContent style={{ margin: '1.6em 0 0 0' }}>
-          {tiersGroup2.map((tier) => (
-            <ContentBlock width="48%" key={`tier_${tier.publicKey.toString()}`}>
-              <Row justify="space-between" margin="0 0 0.7em 0">
-                <InlineText size="md" weight={700}>
-                  {tier?.account.lockDuration.divn(DAY).toString()} Days
-                </InlineText>{' '}
-                <SvgIcon src={Lock} alt="locked" />
-              </Row>
-              <NumberWithLabel
-                size={FONT_SIZES.es}
-                value={null}
-                label="APR + NFT"
-                center
-              />
-            </ContentBlock>
-          ))}
-        </StretchedContent>
-        <RowContainer>
-          <GrayLink to="/staking/plutonians">View</GrayLink>
-        </RowContainer> */}
       </BlockContent>
     </StakingBlock>
   )

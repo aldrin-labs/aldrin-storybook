@@ -1,6 +1,8 @@
 import { PublicKey, Transaction } from '@solana/web3.js'
 import BN from 'bn.js'
-import MultiEndpointsConnection from '../MultiEndpointsConnection'
+
+import { AldrinConnection } from '@core/solana'
+
 import { WalletAdapter } from '../types'
 import { InitializeFarmingBase } from './actions/initializeFarming'
 
@@ -14,7 +16,7 @@ export interface CreatePoolDeposit {
 
 export interface CreatePoolParams {
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   baseTokenMint: PublicKey
   quoteTokenMint: PublicKey
   firstDeposit: CreatePoolDeposit

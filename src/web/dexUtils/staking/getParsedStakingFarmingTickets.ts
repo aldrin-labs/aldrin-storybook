@@ -1,9 +1,9 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 
+import { ProgramsMultiton, STAKING_PROGRAM_ADDRESS } from '@core/solana'
+
 import { MINIMAL_STAKING_AMOUNT } from '../common/config'
 import { FarmingTicket } from '../common/types'
-import { ProgramsMultiton } from '../ProgramsMultiton/ProgramsMultiton'
-import { STAKING_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
 import { WalletAdapter } from '../types'
 import { loadStakingFarmingTickets } from './loadStakingFarmingTickets'
 
