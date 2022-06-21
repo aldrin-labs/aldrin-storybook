@@ -332,7 +332,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           earnedFees={earnedFeesInPoolForUserMap}
           refreshUserTokensData={refreshUserTokensData}
           refreshAll={refreshAll}
-          snapshotQueues={snapshotQueues}
           vestingsForWallet={vestingsByMintForUser}
           refetchPools={getPoolsInfoQueryRefetch}
         />

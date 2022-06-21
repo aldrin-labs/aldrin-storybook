@@ -70,7 +70,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     userTokensData,
     farmingTickets,
     earnedFees,
-    snapshotQueues,
     refreshUserTokensData,
     refreshAll,
     vestingsForWallet,
@@ -102,11 +101,17 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const goBack = () => history.push('/pools')
 
-  const pool = pools?.find(
-    (p) =>
-      `${tokenMap.get(p.tokenA)?.symbol}_${tokenMap.get(p.tokenB)?.symbol}` ===
-      symbol
-  )
+  const pool = pools?.find((p) => {
+    const tokenAName = getTokenName({
+      address: p.tokenA,
+      tokensInfoMap: tokenMap,
+    })
+    const tokenBName = getTokenName({
+      address: p.tokenB,
+      tokensInfoMap: tokenMap,
+    })
+    return `${tokenAName}_${tokenBName}` === symbol
+  })
 
   const [poolBalances] = usePoolBalances(pool || {})
 
