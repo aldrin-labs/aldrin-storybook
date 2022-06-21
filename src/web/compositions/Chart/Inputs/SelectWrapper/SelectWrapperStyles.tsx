@@ -314,6 +314,7 @@ export const SubmitButton = styled.button`
   }
 `
 export const StyledPaper = styled(Paper)`
+  overflow: visible;
   border-radius: 2rem;
   width: ${(props) => props.width || '91rem'};
   height: ${(props) => props.height || 'auto'};

@@ -42,15 +42,33 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
 
   const walletPk = wallet.wallet.publicKey?.toBase58() || ''
 
-  const data = pools
-    .filter((pool) =>
+  const generateTestId = (extraData?: string) => {
+    return `amm-pools-table-${suffix}-${extraData}`
+  }
+
+  const filterPools = ({
+    tokenA,
+    tokenB,
+  }: {
+    tokenA: string
+    tokenB: string
+  }) => {
+    return (
       symbolIncludesSearch(
-        `${getTokenNameByMintAddress(pool.tokenA)}_${getTokenNameByMintAddress(
-          pool.tokenB
+        `${tokenMap.get(tokenA)?.symbol}_${tokenMap.get(tokenB)?.symbol}`,
+        searchValue
+      ) ||
+      symbolIncludesSearch(
+        `${getTokenNameByMintAddress(tokenA)}_${getTokenNameByMintAddress(
+          tokenB
         )}`,
         searchValue
       )
     )
+  }
+
+  const data = pools
+    .filter((pool) => filterPools({ tokenA: pool.tokenA, tokenB: pool.tokenB }))
     .map((pool) =>
       preparePoolTableCell({
         pool,
@@ -67,13 +85,17 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
   return (
     <DataTable
       name={`amm_pools_table_${suffix}`}
+      generateTestId={generateTestId}
       data={data}
       columns={columns}
       defaultSortColumn="tvl"
       defaultSortOrder={SORT_ORDER.DESC}
       onRowClick={(e, row) => {
         e.preventDefault()
-        history.push(`/pools/${row.extra.parsedName}`)
+        const tokenA = tokenMap.get(row.extra.tokenA)?.symbol
+        const tokenB = tokenMap.get(row.extra.tokenB)?.symbol
+
+        history.push(`/pools/${tokenA}_${tokenB}`)
       }}
       noDataText={
         noDataText || (

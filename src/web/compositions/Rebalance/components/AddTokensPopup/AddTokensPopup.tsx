@@ -1,3 +1,5 @@
+import marketsList from 'aldrin-registry/src/markets.json'
+import tokensList from 'aldrin-registry/src/tokens.json'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -7,12 +9,7 @@ import { InputWithSearch } from '@sb/compositions/Chart/components/Inputs/Inputs
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { useConnection } from '@sb/dexUtils/connection'
 import { createTokens } from '@sb/dexUtils/createTokens'
-import {
-  ALL_TOKENS_MINTS,
-  getTokenNameByMintAddress,
-} from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-import { abbreviateAddress } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import {
@@ -41,11 +38,10 @@ export default function TokenDialog({
   softRefresh: () => void
 }) {
   const { wallet } = useWallet()
+  const tokensInfo = useTokenInfos()
 
   const [sending, setSending] = useState(false)
-  const tokenMap = useTokenInfos()
 
-  const allTokens = ALL_TOKENS_MINTS
   const connection = useConnection()
 
   const [searchValue, setSearchValue] = useState('')
@@ -53,10 +49,9 @@ export default function TokenDialog({
 
   const valid = selectedTokens.length > 0
 
-  const cost = stripDigitPlaces(
-    +feeFormat.format(0.002039) * selectedTokens.length,
-    8
-  )
+  const cost =
+    stripDigitPlaces(+feeFormat.format(0.002039) * selectedTokens.length, 8) ||
+    0
 
   const SOLBalance = userTokens?.find((el) => el.symbol === 'SOL')?.amount || 0
 
@@ -67,6 +62,29 @@ export default function TokenDialog({
 
   const isBalanceLowerCost = SOLBalance < cost
   const isDisabled = !valid || isBalanceLowerCost || sending
+
+  const uniqueTokensFromMarkets = [
+    ...new Set([
+      ...marketsList
+        .map((el) => {
+          const [tokenA, tokenB] = el.name.split('/')
+          return [tokenA, tokenB]
+        })
+        .flat(),
+    ]),
+  ]
+
+  const filteredTokens = searchValue
+    ? tokensList.filter((el) => {
+        const searchValueLowerCase = searchValue.toLowerCase()
+
+        return (
+          el.name?.toLowerCase().includes(searchValueLowerCase) ||
+          el.symbol.toLowerCase().includes(searchValueLowerCase) ||
+          el.address.includes(searchValueLowerCase)
+        )
+      })
+    : tokensList
 
   return (
     <DialogWrapper
@@ -109,42 +127,18 @@ export default function TokenDialog({
               />
             </RowContainer>
             <ListCard>
-              {allTokens
-                .filter((el) => {
-                  const tokenInfo = tokenMap.has(el.address?.toString())
-                    ? tokenMap.get(el.address?.toString())
-                    : {
-                        address: el.address?.toString(),
-                        name: getTokenNameByMintAddress(el.address?.toString()),
-                        symbol: '',
-                      }
-
-                  return searchValue !== ''
-                    ? (tokenInfo.name ?? abbreviateAddress(el.address))
-                        .toLowerCase()
-                        .includes(searchValue.toLowerCase()) ||
-                        tokenInfo.symbol
-                          .toLowerCase()
-                          .includes(searchValue.toLowerCase())
-                    : true
-                })
+              {filteredTokens
+                .filter((el) =>
+                  uniqueTokensFromMarkets.find((token) => token === el.name)
+                )
                 .map((el) => {
-                  const tokenInfo = tokenMap.has(el.address?.toString())
-                    ? tokenMap.get(el.address?.toString())
-                    : {
-                        address: el.address?.toString(),
-                        name: getTokenNameByMintAddress(el.address?.toString()),
-                        symbol: '',
-                      }
-
                   return (
                     <TokenListItem
-                      key={tokenInfo?.address}
-                      {...tokenInfo}
-                      mintAddress={
-                        tokenInfo ? tokenInfo?.address : el.address?.toString()
-                      }
-                      existingAccount={userTokensMap.has(tokenInfo?.address)}
+                      name={el.name || ''}
+                      symbol={el.symbol}
+                      key={el?.address}
+                      mintAddress={el?.address}
+                      existingAccount={userTokensMap.has(el?.address)}
                       disabled={sending}
                       selectedTokens={selectedTokens}
                       setSelectedTokens={setSelectedTokens}

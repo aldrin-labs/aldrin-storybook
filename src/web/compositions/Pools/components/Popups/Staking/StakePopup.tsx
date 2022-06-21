@@ -206,6 +206,7 @@ const Popup = (props: StakePopupProps) => {
       </RowContainer>
       <RowContainer>
         <InputWithCoins
+          data-testid="stake-lp-tokens-field"
           placeholder="0"
           theme={theme}
           onChange={(v) => {
@@ -294,6 +295,7 @@ const Popup = (props: StakePopupProps) => {
       )}
       <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
+          data-testid="stake-lp-tokens-submit-btn"
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident

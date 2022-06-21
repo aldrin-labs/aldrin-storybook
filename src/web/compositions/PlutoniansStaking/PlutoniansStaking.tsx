@@ -482,6 +482,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   <>
                     <InputWrapper style={{ width: '100%' }}>
                       <AmountInput
+                        data-testid="plutonians-staking-amount-field"
                         label="Stake"
                         placeholder="0"
                         amount={selectedTokenAccount?.amount || 0}
@@ -675,6 +676,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                 <ConnectWalletWrapper size="button-only">
                   {isStaked ? (
                     <Button
+                      data-testid="plutonians-unstake-submit-btn"
                       $width="xl"
                       $fontSize="sm"
                       disabled={isUnstakeDisabled}
@@ -701,6 +703,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                     </Button>
                   ) : (
                     <Button
+                      data-testid="plutonians-stake-submit-btn"
                       onClick={stake}
                       $width="xl"
                       $fontSize="sm"

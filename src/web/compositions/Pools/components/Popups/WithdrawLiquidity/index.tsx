@@ -18,11 +18,12 @@ import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import {
   formatNumbersForState,
@@ -77,6 +78,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   const { wallet } = useWallet()
   const theme = useTheme()
   const connection = useConnection()
+  const tokensInfo = useTokenInfos()
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
@@ -138,9 +140,14 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
 
-  const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
-  const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-
+  const baseSymbol = getTokenName({
+    address: selectedPool.tokenA,
+    tokensInfoMap: tokensInfo,
+  })
+  const quoteSymbol = getTokenName({
+    address: selectedPool.tokenB,
+    tokensInfoMap: tokensInfo,
+  })
   const baseTokenPrice =
     (
       dexTokensPricesMap.get(selectedPool.tokenA) ||
@@ -242,6 +249,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
       </Row>
       <RowContainer>
         <SimpleInput
+          data-testid="withdraw-liquidity-base-token-field"
           placeholder="0"
           theme={theme}
           symbol={baseSymbol}
@@ -255,6 +263,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
           </Text>
         </Row>
         <SimpleInput
+          data-testid="withdraw-liquidity-quote-token-field"
           placeholder="0"
           theme={theme}
           symbol={quoteSymbol}
@@ -279,6 +288,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
 
       <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
+          data-testid="withdraw-liquidity-submit-btn"
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident

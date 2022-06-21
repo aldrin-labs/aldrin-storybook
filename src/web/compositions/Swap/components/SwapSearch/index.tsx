@@ -4,7 +4,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
 import Loop from '@icons/loop.svg'
@@ -53,8 +53,10 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
       }
 
       const tokensWithSymbol = tokens.map((t) => {
-        const symbol =
-          tokensMap.get(t.mint)?.symbol || getTokenNameByMintAddress(t.mint)
+        const symbol = getTokenName({
+          address: t.mint,
+          tokensInfoMap: tokensMap,
+        })
         return { ...t, symbol }
       })
 

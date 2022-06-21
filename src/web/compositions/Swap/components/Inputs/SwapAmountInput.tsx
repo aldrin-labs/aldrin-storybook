@@ -63,6 +63,7 @@ export const SwapAmountInput = ({
       <RowContainer wrap="nowrap" justify="space-between">
         <AmountInputContainer>
           <InvisibleInput
+            data-testid={`swap-${title.replaceAll(' ', '-')}-field`}
             type="text"
             value={amount || ''}
             disabled={disabled}

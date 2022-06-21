@@ -596,6 +596,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <CoinSelectors>
                   <CoinWrap>
                     <TokenSelectorField
+                      data-testid="create-pool-base-token-field"
                       tokens={tokens}
                       label="Select Base Token"
                       name="baseToken"
@@ -604,6 +605,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   <Slash>/</Slash>
                   <CoinWrap>
                     <TokenSelectorField
+                      data-testid="create-pool-quote-token-field"
                       tokens={tokens}
                       label="Select Quote Token"
                       name="quoteToken"
@@ -637,6 +639,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   </RadioGroupContainer>
                   <div>
                     <InputField
+                      data-testid="create-pool-lock-period-field"
                       placeholder="0"
                       borderRadius="lg"
                       variant="outline"
@@ -705,6 +708,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   </FlexBlock>
                   <NumberInputContainer>
                     <TokenAmountInputField
+                      data-testid="create-pool-price-field"
                       disabled={values.stableCurve}
                       name="price"
                       mint={form.values.quoteToken.mint}
@@ -741,6 +745,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <GroupLabel label="Add Initial Liquidity" />
                 <Centered>
                   <TokenAmountInputField
+                    data-testid="create-pool-base-token-amount-field"
                     name="firstDeposit.baseTokenAmount"
                     value={formatNumberWithSpaces(
                       form.values.firstDeposit.baseTokenAmount
@@ -767,6 +772,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 </Centered>
                 <Centered>
                   <TokenAmountInputField
+                    data-testid="create-pool-quote-token-amount-field"
                     name="firstDeposit.quoteTokenAmount"
                     value={formatNumberWithSpaces(
                       form.values.firstDeposit.quoteTokenAmount
@@ -841,12 +847,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
               )}
               <ButtonContainer>
                 {isLastStep ? (
-                  <Button $padding="lg" type="submit">
+                  <Button
+                    data-testid="create-pool-submit-btn"
+                    $padding="lg"
+                    type="submit"
+                  >
                     Create Pool
                   </Button>
                 ) : (
                   <ConnectWalletWrapper size="button-only">
                     <Button
+                      data-testid="create-pool-next-step-btn"
                       $padding="lg"
                       type="button"
                       disabled={!form.isValid}

@@ -138,7 +138,12 @@ export const InsufficientBalancePlaceholder = ({
           </DarkTooltip>
         )
       ) : (
-        <SendButton type={sideType} onClick={onClick} disabled={isLoading}>
+        <SendButton
+          data-testid="trading-terminal-place-order-btn"
+          type={sideType}
+          onClick={onClick}
+          disabled={isLoading}
+        >
           {isLoading ? (
             <Loader text="Transaction Pending" />
           ) : sideType === 'buy' ? (
