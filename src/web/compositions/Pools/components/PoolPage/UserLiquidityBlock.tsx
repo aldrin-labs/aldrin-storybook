@@ -4,7 +4,7 @@ import React from 'react'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
@@ -33,8 +33,8 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
     onWithdrawClick,
     processing,
     vesting,
+    tokenMap,
   } = props
-
   const { amount } = getTokenDataByMint(userTokensData, pool.poolTokenMint)
 
   // Hide tiny balances (we cannot withdraw all LP tokens so...)
@@ -56,8 +56,14 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
   const availableTowithdraw =
     poolTokenAmount + stakedTokens + (vestingFinished ? vestedTokens : 0)
 
-  const baseTokenName = getTokenNameByMintAddress(pool.tokenA)
-  const quoteTokenName = getTokenNameByMintAddress(pool.tokenB)
+  const baseTokenName = getTokenName({
+    address: pool.tokenA,
+    tokensInfoMap: tokenMap,
+  })
+  const quoteTokenName = getTokenName({
+    address: pool.tokenB,
+    tokensInfoMap: tokenMap,
+  })
 
   const userLiquidityUsd =
     basePrice * baseUserTokenAmount + quotePrice * quoteUserTokenAmount

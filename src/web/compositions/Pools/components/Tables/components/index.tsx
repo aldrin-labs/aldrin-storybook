@@ -4,8 +4,8 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 // import { Text } from '@sb/compositions/Addressƒbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { getTokenName } from '@sb/dexUtils/markets'
+import { TokenInfo } from '@sb/dexUtils/types'
 
 import Loop from '@icons/loop.svg'
 
@@ -55,19 +55,16 @@ export const SearchInputWithLoop = ({
 interface TokenIconContainerProps {
   tokenA: string
   tokenB: string
+  tokenMap: Map<string, TokenInfo>
 }
 
 export const TokenIconsContainer: React.FC<TokenIconContainerProps> = (
   props
 ) => {
-  const { tokenA, tokenB, children } = props
-  const tokenMap = useTokenInfos()
+  const { tokenA, tokenB, children, tokenMap } = props
 
-  const baseInfo = tokenMap.get(tokenA)
-  const quoteInfo = tokenMap.get(tokenB)
-
-  const base = baseInfo?.symbol || getTokenNameByMintAddress(tokenA)
-  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(tokenB)
+  const base = getTokenName({ address: tokenA, tokensInfoMap: tokenMap })
+  const quote = getTokenName({ address: tokenB, tokensInfoMap: tokenMap })
 
   return (
     <Row wrap="nowrap" justify="end">

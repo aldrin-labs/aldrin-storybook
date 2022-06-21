@@ -1,5 +1,5 @@
-import withTheme from '@material-ui/core/styles/withTheme'
 import { FONT_SIZES } from '@variables/variables'
+import tokensList from 'aldrin-registry/src/tokens.json'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
@@ -14,7 +14,6 @@ import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
-  ALL_TOKENS_MINTS,
   getTokenMintAddressByName,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
@@ -304,7 +303,7 @@ const SwapPage = ({
   const mints = [
     ...new Set([
       ...pools.map((i) => [i.tokenA, i.tokenB]).flat(),
-      ...ALL_TOKENS_MINTS.map(({ address }) => address.toString()),
+      ...tokensList.map(({ address }) => address.toString()),
     ]),
   ]
 
@@ -874,7 +873,6 @@ const SwapPage = ({
 }
 
 export default compose(
-  withTheme(),
   withPublicKey,
   withRegionCheck,
   queryRendererHoc({

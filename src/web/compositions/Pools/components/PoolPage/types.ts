@@ -25,6 +25,7 @@ export interface ExtendFarmingModalProps {
   onExtend: () => void
   pool: PoolInfo
   title?: string
+  tokensInfo: Map<string, TokenInfo>
 }
 
 export interface FarmingModalProps extends ExtendFarmingModalProps {
@@ -104,4 +105,5 @@ export interface UserLiquidityBlockProps {
   onDepositClick: () => void
   onWithdrawClick: () => void
   vesting?: Vesting
+  tokenMap: Map<string, any>
 }

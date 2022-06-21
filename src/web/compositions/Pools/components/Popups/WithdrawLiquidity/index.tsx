@@ -19,11 +19,12 @@ import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import {
   formatNumbersForState,
@@ -78,6 +79,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   const { wallet } = useWallet()
   const theme = useTheme()
   const connection = useConnection()
+  const tokensInfo = useTokenInfos()
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
@@ -139,9 +141,14 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
 
-  const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
-  const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-
+  const baseSymbol = getTokenName({
+    address: selectedPool.tokenA,
+    tokensInfoMap: tokensInfo,
+  })
+  const quoteSymbol = getTokenName({
+    address: selectedPool.tokenB,
+    tokensInfoMap: tokensInfo,
+  })
   const baseTokenPrice =
     (
       dexTokensPricesMap.get(selectedPool.tokenA) ||
