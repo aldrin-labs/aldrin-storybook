@@ -12,6 +12,7 @@ import {
 } from '@sb/components/DataTable'
 import { FlexBlock } from '@sb/components/Layout'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { getNumberOfPrecisionDigitsForSymbol } from '@sb/components/TradingTable/TradingTable.utils'
 import { InlineText, Text } from '@sb/components/Typography'
 import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
 import { FarmingCalc } from '@sb/dexUtils/common/types'
@@ -219,8 +220,16 @@ export const preparePoolTableCell = (params: {
               {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD, 4)}` : '-'}
             </Text>
             <Text size="sm" margin="10px 0" color="gray1">
-              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseName} /{' '}
-              {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteName}
+              {stripByAmountAndFormat(
+                pool.tvl.tokenA,
+                getNumberOfPrecisionDigitsForSymbol(baseName)
+              )}{' '}
+              {baseName} /{' '}
+              {stripByAmountAndFormat(
+                pool.tvl.tokenB,
+                getNumberOfPrecisionDigitsForSymbol(quoteName)
+              )}{' '}
+              {quoteName}
             </Text>
           </>
         ),

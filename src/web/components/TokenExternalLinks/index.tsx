@@ -1,4 +1,5 @@
 import React from 'react'
+import useSWR from 'swr'
 
 import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
@@ -8,9 +9,20 @@ import Coinmarketcap from '@icons/coinmarketcap.svg'
 import Inform from '@icons/inform.svg'
 import Nomics from '@icons/nomics.svg'
 import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
+import SolanaFm from '@icons/solanafm.svg'
+import SolanaFmDark from '@icons/solanafmDark.svg'
+import Solscan from '@icons/solscan.svg'
 
+import SvgIcon from '../SvgIcon'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
-import { Container, Anchor, Icon } from './styles'
+import {
+  Container,
+  Anchor,
+  Wrap,
+  Icon,
+  IconsInner,
+  IconsContainer,
+} from './styles'
 
 interface TokenExternalLinksProps {
   tokenName: string
@@ -34,15 +46,35 @@ const resolveExplorerIcon = (link: string) => {
   return Nomics
 }
 
-export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => (
-  <Anchor
-    href={`https://solscan.io/account/${props.mint}`}
-    rel="noopener noreferrer"
-    target="_blank"
-  >
-    <Icon alt="View on Solan explorer" src={SolanaExplorerIcon} />
-  </Anchor>
-)
+export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => {
+  const { data: theme } = useSWR('theme')
+  return (
+    <IconsContainer>
+      <Icon alt="View on Solana explorer" src={SolanaExplorerIcon} />
+      <IconsInner>
+        <Wrap>
+          <Anchor
+            href={`https://solscan.io/account/${props.mint}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <SvgIcon src={Solscan} alt="solscan" />
+          </Anchor>
+          <Anchor
+            href={`https://solana.fm/account/${props.mint}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <SvgIcon
+              src={theme === 'dark' ? SolanaFm : SolanaFmDark}
+              alt="solana.fm"
+            />
+          </Anchor>
+        </Wrap>
+      </IconsInner>
+    </IconsContainer>
+  )
+}
 
 export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (
   props
