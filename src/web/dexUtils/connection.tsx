@@ -33,7 +33,6 @@ const connection = new MultiEndpointsConnection(
   'confirmed'
 )
 
-connection.getConnection().getTransaction()
 connection.connections.forEach((c) => {
   c.onSlotChange(() => null)
   c.onAccountChange(new Account().publicKey, () => {})
