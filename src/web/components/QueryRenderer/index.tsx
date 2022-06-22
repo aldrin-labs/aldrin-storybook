@@ -28,7 +28,7 @@ const QueryRenderer = (props: IProps) => {
     includeVariables = false,
     includeQueryBody = false,
     name = 'data',
-    loaderColor = '#651CE4',
+    loaderColor = '#5E55F2',
     loaderSize = 64,
     skip,
     ...rest
