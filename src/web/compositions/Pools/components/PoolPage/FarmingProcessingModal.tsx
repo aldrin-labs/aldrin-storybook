@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 import { FlexBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
@@ -11,7 +12,6 @@ import {
   Title,
 } from '../Popups/CreatePool/styles'
 import { FarmingProcessingModalProps } from './types'
-import { UCOLORS } from '@variables/variables'
 
 const PROCESSING_STATUSES = new Set(['preparing', 'signing', 'sending'])
 const OK_STATUSES = new Set([...PROCESSING_STATUSES.values(), 'success'])
@@ -23,6 +23,8 @@ const STATUS_MESSAGES: { [k: string]: string } = {
 export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
   props
 ) => {
+  const theme = useTheme()
+
   const { onClose, open, status, prolongFarming, txId } = props
 
   const isProcessing = PROCESSING_STATUSES.has(status)
@@ -77,7 +79,7 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
                           target="_blank"
                           href={`https://solscan.io/tx/${txId}`}
                           rel="noreferrer"
-                          style={{ color: UCOLORS.violet5 }}
+                          style={{ color: theme.colors.violet5 }}
                         >
                           View on SolScan.
                         </a>
@@ -94,7 +96,7 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: UCOLORS.violet5 }}
+                  style={{ color: theme.colors.violet5 }}
                 >
                   Telegram
                 </a>

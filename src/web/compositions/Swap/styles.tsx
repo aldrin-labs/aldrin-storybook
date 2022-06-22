@@ -228,12 +228,12 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
     transition: ${TRANSITION};
 
     &:hover {
-      background: ${UCOLORS.blue4};
+      background: ${(props) => props.theme.colors.blue4};
       border: 1px solid transparent;
     }
 
     &:active {
-      background: ${COLORS.darkBlue};
+      background: ${(props) => props.theme.colors.blue5};
       border: 1px solid transparent;
     }
   }

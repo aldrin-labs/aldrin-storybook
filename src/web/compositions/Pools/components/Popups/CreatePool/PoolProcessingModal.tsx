@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 import { FlexBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
@@ -10,7 +11,6 @@ import {
   PoolProcessingContent,
   Title,
 } from './styles'
-import { UCOLORS } from '@variables/variables'
 
 export type TransactionStatus = 'processing' | 'success' | 'error'
 
@@ -49,6 +49,8 @@ export enum POOL_ERRORS {
 export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
   props
 ) => {
+  const theme = useTheme()
+
   const { step, onSuccess, onError, status, error, txId } = props
 
   return (
@@ -79,7 +81,7 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
                     <a
                       target="blank"
                       href={`https://solscan.io/tx/${txId}`}
-                      style={{ color: UCOLORS.violet5 }}
+                      style={{ color: theme.colors.violet5 }}
                     >
                       View on SolScan.
                     </a>
@@ -92,7 +94,7 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: UCOLORS.violet5 }}
+                  style={{ color: theme.colors.violet5 }}
                 >
                   Telegram
                 </a>
