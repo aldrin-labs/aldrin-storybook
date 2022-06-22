@@ -1,30 +1,18 @@
-import { PublicKey } from '@solana/web3.js'
 
-import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { isTransactionFailed } from '@sb/dexUtils/send'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 import {
-  AldrinConnection,
   buildCreateBasketWithSwapTransaction,
+  CreateBasketWithSwapParams,
 } from '@core/solana'
 
 import { walletAdapterToWallet } from '../../common'
-import { PoolBalances } from '../hooks/usePoolBalances'
 
-export async function createBasketWithSwap(params: {
-  wallet: WalletAdapter
-  connection: AldrinConnection
-  pool: PoolInfo
-  poolBalances: PoolBalances
-  userPoolTokenAccount: PublicKey | null
-  userBaseTokenAccount: PublicKey | null
-  userQuoteTokenAccount: PublicKey | null
-  userBaseTokenAmount: number
-  userQuoteTokenAmount: number
-  transferSOLToWrapped: boolean
-}) {
+export async function createBasketWithSwap(
+  params: CreateBasketWithSwapParams<WalletAdapter>
+) {
   try {
     const wallet = walletAdapterToWallet(params.wallet)
     const { transaction, signers } = await buildCreateBasketWithSwapTransaction(
