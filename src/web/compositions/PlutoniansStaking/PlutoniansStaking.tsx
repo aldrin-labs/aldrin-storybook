@@ -308,7 +308,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
         message: result === 'success' ? 'Succesfully staked' : 'Staking failed',
       })
       const refreshAllResult = await refreshAll()
-      console.log('refreshAllResult: ', refreshAllResult)
+      // console.log('refreshAllResult: ', refreshAllResult)
       setLoading(false)
     } catch (e) {
       console.warn(`Unable to stake ${stakeTokenName}`, e)
