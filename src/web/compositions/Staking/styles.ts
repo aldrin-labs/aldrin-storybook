@@ -106,7 +106,7 @@ export const GrayLink = styled(Link)`
 
   &:hover {
     background: ${(props) => props.theme.colors.blue5};
-    color: #fff;
+    color: ${(props) => props.theme.colors.primaryWhite};
     transition: 0.3s;
   }
 

@@ -58,14 +58,17 @@ export const StakePoolButtonContainer = styled.div`
 
 export const StakePoolLink = styled(Link)`
   background: ${(props) => props.theme.colors.gray4};
-  border-radius: ${BORDER_RADIUS.md};
   color: ${(props) => props.theme.colors.gray0};
+  border-radius: ${BORDER_RADIUS.md};
   text-decoration: none;
   padding: 10px;
   margin-left: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
 
   &:hover {
-    background: ${COLORS.primary};
+    background: ${(props) => props.theme.colors.blue5};
+    color: ${(props) => props.theme.colors.primaryWhite};
   }
 `
 
