@@ -57,9 +57,9 @@ export const StakePoolButtonContainer = styled.div`
 `
 
 export const StakePoolLink = styled(Link)`
-  background: ${COLORS.lightButtonBg};
+  background: ${(props) => props.theme.colors.gray4};
   border-radius: ${BORDER_RADIUS.md};
-  color: ${COLORS.main};
+  color: ${(props) => props.theme.colors.gray0};
   text-decoration: none;
   padding: 10px;
   margin-left: 20px;

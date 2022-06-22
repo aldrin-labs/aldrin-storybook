@@ -43,13 +43,13 @@ export const STAKINGS: { [c: string]: StakingDescription } = {
   RPC: {
     programAddress: PLUTONIANS_STAKING_ADDRESS,
     stakingPool: PLUTONIANS_RPC_STAKING_POOL_ADDRESS,
-    minStakeTokensForRewardBn: new BN(50_000_000).mul(TOKEN_MULTIPLIER),
-    minStakeTokensForReward: 50_000_000,
+    minStakeTokensForRewardBn: new BN(100_000).mul(TOKEN_MULTIPLIER),
+    minStakeTokensForReward: 100_000,
   },
   PU238: {
     programAddress: PLUTONIANS_STAKING_ADDRESS,
     stakingPool: PLUTONIANS_PU_STAKING_POOL_ADDRESS,
-    minStakeTokensForRewardBn: new BN(1_000_000).mul(TOKEN_MULTIPLIER),
-    minStakeTokensForReward: 1_000_000,
+    minStakeTokensForRewardBn: new BN(50_000_000).mul(TOKEN_MULTIPLIER),
+    minStakeTokensForReward: 50_000_000,
   },
 }
