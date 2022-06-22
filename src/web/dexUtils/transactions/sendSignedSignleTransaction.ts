@@ -11,6 +11,7 @@ export const sendSignedSignleTransaction = async (
 
   const messages = {
     sent: 'Transaction sent',
+    confirming: 'Confirming transaction...',
     success: successMessage,
   }
 
