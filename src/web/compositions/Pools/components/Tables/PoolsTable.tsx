@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import { DataTable, SORT_ORDER, NoDataBlock } from '@sb/components/DataTable'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName, getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useVestings } from '@sb/dexUtils/vesting'
@@ -42,15 +42,38 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
 
   const walletPk = wallet.wallet.publicKey?.toBase58() || ''
 
-  const data = pools
-    .filter((pool) =>
+  const generateTestId = (extraData?: string) => {
+    return `amm-pools-table-${suffix}-${extraData}`
+  }
+
+  const filterPools = ({
+    tokenA,
+    tokenB,
+  }: {
+    tokenA: string
+    tokenB: string
+  }) => {
+    const tokenAName = getTokenName({
+      address: tokenA,
+      tokensInfoMap: tokenMap,
+    })
+    const tokenBName = getTokenName({
+      address: tokenB,
+      tokensInfoMap: tokenMap,
+    })
+    return (
+      symbolIncludesSearch(`${tokenAName}_${tokenBName}`, searchValue) ||
       symbolIncludesSearch(
-        `${getTokenNameByMintAddress(pool.tokenA)}_${getTokenNameByMintAddress(
-          pool.tokenB
+        `${getTokenNameByMintAddress(tokenA)}_${getTokenNameByMintAddress(
+          tokenB
         )}`,
         searchValue
       )
     )
+  }
+
+  const data = pools
+    .filter((pool) => filterPools({ tokenA: pool.tokenA, tokenB: pool.tokenB }))
     .map((pool) =>
       preparePoolTableCell({
         pool,
@@ -67,13 +90,23 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
   return (
     <DataTable
       name={`amm_pools_table_${suffix}`}
+      generateTestId={generateTestId}
       data={data}
       columns={columns}
       defaultSortColumn="tvl"
       defaultSortOrder={SORT_ORDER.DESC}
       onRowClick={(e, row) => {
         e.preventDefault()
-        history.push(`/pools/${row.extra.parsedName}`)
+        const tokenAName = getTokenName({
+          address: row.extra.tokenA,
+          tokensInfoMap: tokenMap,
+        })
+        const tokenBName = getTokenName({
+          address: row.extra.tokenB,
+          tokensInfoMap: tokenMap,
+        })
+
+        history.push(`/pools/${tokenAName}_${tokenBName}`)
       }}
       noDataText={
         noDataText || (

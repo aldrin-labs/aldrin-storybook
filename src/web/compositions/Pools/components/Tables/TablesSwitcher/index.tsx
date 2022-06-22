@@ -173,18 +173,21 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
       <TabContainer>
         <div>
           <TableModeButton
+            data-testid="pools-mode-all-pools"
             isActive={selectedTable === 'all'}
             onClick={() => setSelectedTable('all')}
           >
             All Pools ({pools.length})
           </TableModeButton>
           <TableModeButton
+            data-testid="pools-mode-aldrin-led-pools"
             isActive={selectedTable === 'authorized'}
             onClick={() => setSelectedTable('authorized')}
           >
             Aldrin-led Pools ({authorizedPools.length})
           </TableModeButton>
           <TableModeButton
+            data-testid="pools-mode-eco-led-pools"
             isActive={selectedTable === 'nonAuthorized'}
             onClick={() => setSelectedTable('nonAuthorized')}
           >
@@ -192,6 +195,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           </TableModeButton>
 
           <TableModeButton
+            data-testid="pools-mode-stable-pools"
             isActive={selectedTable === 'stablePools'}
             onClick={() => setSelectedTable('stablePools')}
           >
@@ -199,6 +203,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           </TableModeButton>
 
           <TableModeButton
+            data-testid="pools-mode-user-liquidity-pools"
             isActive={selectedTable === 'userLiquidity'}
             onClick={() => setSelectedTable('userLiquidity')}
           >
@@ -208,6 +213,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         <InputWrap>
           <FlexBlock alignItems="center">
             <SearchInput
+              data-testid="pools-search-field"
               name="search"
               placeholder="Search..."
               size="8"
@@ -230,7 +236,11 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
                 </IconWrap>
               }
             />
-            <AddPoolButton as={Link} to={`${path}/create`}>
+            <AddPoolButton
+              data-testid="pools-create-pool-btn"
+              as={Link}
+              to={`${path}/create`}
+            >
               <SvgIcon src={PlusIcon} width="1.2em" />
               &nbsp;Create a Pool
             </AddPoolButton>
@@ -322,7 +332,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           earnedFees={earnedFeesInPoolForUserMap}
           refreshUserTokensData={refreshUserTokensData}
           refreshAll={refreshAll}
-          snapshotQueues={snapshotQueues}
           vestingsForWallet={vestingsByMintForUser}
           refetchPools={getPoolsInfoQueryRefetch}
         />

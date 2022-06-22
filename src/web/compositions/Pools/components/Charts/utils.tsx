@@ -135,6 +135,7 @@ const createTotalVolumeLockedChart = ({
   chart,
   theme,
 }: ChartParams) => {
+  // const theme = useTheme()
   if (container) {
     container.height = CHART_HEIGHT
   }
@@ -188,6 +189,8 @@ const createTotalVolumeLockedChart = ({
     ],
   }
   chart.options.scales.y.ticks.stepSize = (maxVol - maxVol * 0.2) / 5
+  chart.options.scales.x?.grid?.display = false
+  chart.options.scales.y?.grid?.display = false
   chart.options.scales.y.suggestedMin = 0
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
   return chart
@@ -252,7 +255,8 @@ const createTradingVolumeChart = ({
       },
     ],
   }
-
+  chart.options.scales.x?.grid?.display = false
+  chart.options.scales.y?.grid?.display = false
   chart.options.scales.y.ticks.stepSize = (maxVol - minVol) / 3
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
 

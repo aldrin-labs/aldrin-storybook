@@ -8,11 +8,12 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
-import { ProgramsMultiton } from '@sb/dexUtils/ProgramsMultiton/ProgramsMultiton'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton/utils'
 import { WalletAdapter } from '@sb/dexUtils/types'
+import { ProgramsMultiton } from '@core/solana'
 
-import MultiEndpointsConnection from '../../MultiEndpointsConnection'
+import { getPoolsProgramAddress } from '@core/solana'
+import { AldrinConnection } from '@core/solana'
+
 import { signAndSendTransactions } from '../../transactions/signAndSendTransactions'
 
 export const getStartFarmingTransactions = async ({
@@ -25,7 +26,7 @@ export const getStartFarmingTransactions = async ({
   curveType,
 }: {
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   poolTokenAmount: number
   poolPublicKey: PublicKey
   userPoolTokenAccount: PublicKey | null

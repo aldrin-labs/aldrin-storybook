@@ -24,7 +24,7 @@ import {
 import { notify } from '@sb/dexUtils/notifications'
 import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
-import { sendSignedSignleTransactionRaw } from '@sb/dexUtils/transactions'
+import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { SendSignedTransactionResult } from '@sb/dexUtils/types'
 import {
   sleep,
@@ -283,8 +283,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(1)
         console.log('Create accounts...')
-        const [createAccountsTxId, createAccountsStatus] =
-          await sendSignedSignleTransactionRaw({
+        const { txId: createAccountsTxId, result: createAccountsStatus } =
+          await sendSignedSignleTransaction({
             transaction: generatedTransactions.createAccounts,
             connection,
           })
@@ -302,8 +302,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(2)
         console.log('Set authorities...')
-        const [setAuthoritiesTxId, setAuthoritiesStatus] =
-          await sendSignedSignleTransactionRaw({
+        const { txId: setAuthoritiesTxId, result: setAuthoritiesStatus } =
+          await sendSignedSignleTransaction({
             transaction: generatedTransactions.setAuthorities,
             connection,
           })
@@ -321,8 +321,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         console.log('Initialize pool...')
         setProcessingStep(3)
-        const [initPoolTxId, initPoolStatus] =
-          await sendSignedSignleTransactionRaw({
+        const { txId: initPoolTxId, result: initPoolStatus } =
+          await sendSignedSignleTransaction({
             transaction: generatedTransactions.createPool,
             connection,
           })
@@ -340,8 +340,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         console.log('First deposit...')
         setProcessingStep(4)
-        const [firstDepositTxId, firstDepositStatus] =
-          await sendSignedSignleTransactionRaw({
+        const { txId: firstDepositTxId, result: firstDepositStatus } =
+          await sendSignedSignleTransaction({
             transaction: generatedTransactions.firstDeposit,
             connection,
           })
@@ -361,8 +361,8 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
           setProcessingStep(5)
-          const [farmingTxId, farmingStatus] =
-            await sendSignedSignleTransactionRaw({
+          const { txId: farmingTxId, result: farmingStatus } =
+            await sendSignedSignleTransaction({
               transaction: generatedTransactions.farming,
               connection,
             })
@@ -598,6 +598,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <CoinSelectors>
                   <CoinWrap>
                     <TokenSelectorField
+                      data-testid="create-pool-base-token-field"
                       tokens={tokens}
                       label="Select Base Token"
                       name="baseToken"
@@ -606,6 +607,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   <Slash>/</Slash>
                   <CoinWrap>
                     <TokenSelectorField
+                      data-testid="create-pool-quote-token-field"
                       tokens={tokens}
                       label="Select Quote Token"
                       name="quoteToken"
@@ -639,6 +641,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   </RadioGroupContainer>
                   <div>
                     <InputField
+                      data-testid="create-pool-lock-period-field"
                       placeholder="0"
                       borderRadius="lg"
                       variant="outline"
@@ -707,6 +710,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   </FlexBlock>
                   <NumberInputContainer>
                     <TokenAmountInputField
+                      data-testid="create-pool-price-field"
                       disabled={values.stableCurve}
                       name="price"
                       mint={form.values.quoteToken.mint}
@@ -743,6 +747,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <GroupLabel label="Add Initial Liquidity" />
                 <Centered>
                   <TokenAmountInputField
+                    data-testid="create-pool-base-token-amount-field"
                     name="firstDeposit.baseTokenAmount"
                     value={formatNumberWithSpaces(
                       form.values.firstDeposit.baseTokenAmount
@@ -769,6 +774,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 </Centered>
                 <Centered>
                   <TokenAmountInputField
+                    data-testid="create-pool-quote-token-amount-field"
                     name="firstDeposit.quoteTokenAmount"
                     value={formatNumberWithSpaces(
                       form.values.firstDeposit.quoteTokenAmount
@@ -843,12 +849,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
               )}
               <ButtonContainer>
                 {isLastStep ? (
-                  <Button $padding="lg" type="submit">
+                  <Button
+                    data-testid="create-pool-submit-btn"
+                    $padding="lg"
+                    type="submit"
+                  >
                     Create Pool
                   </Button>
                 ) : (
                   <ConnectWalletWrapper size="button-only">
                     <Button
+                      data-testid="create-pool-next-step-btn"
                       $padding="lg"
                       type="button"
                       disabled={!form.isValid}

@@ -1,9 +1,10 @@
+import { buildTransactions, STAKING_PROGRAM_ADDRESS } from '@core/solana'
+
 import {
   startStakingInstructions,
   withdrawStakedInstructions,
 } from '../../common/actions'
-import { STAKING_PROGRAM_ADDRESS } from '../../ProgramsMultiton'
-import { buildTransactions, signAndSendTransactions } from '../../transactions'
+import { signAndSendTransactions } from '../../transactions'
 import { RestakeParams } from './types'
 
 export const restake = async (params: RestakeParams) => {

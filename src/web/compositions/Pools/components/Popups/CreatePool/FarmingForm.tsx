@@ -97,6 +97,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
       <CoinSelectors>
         <CoinWrap>
           <TokenSelectorField
+            data-testid="farming-select-token-field"
             disabled={tokens.length === 0}
             tokens={tokens}
             label="Choose the token you want to give to the farming"
@@ -107,6 +108,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
       <GroupLabel label="Specify the amount of tokens you want to allocate to farming" />
       <TokenAmountInputField
         name="farming.tokenAmount"
+        data-testid="farming-token-amount-field"
         setFieldValue={form.setFieldValue}
         available={resolveFarmingAvailableAmount(userTokens, form.values)}
         mint={form.values.farming.token.mint}
@@ -127,6 +129,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
         <NumberInputContainer>
           <GroupLabel label="Specify the farming period" />
           <InputField
+            data-testid="farming-period-field"
             borderRadius="lg"
             variant="outline"
             name="farming.farmingPeriod"
@@ -145,6 +148,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
         <NumberInputContainer>
           <GroupLabel label="Estimated reward per day" />
           <TokenAmountInput
+            data-testid="farming-est-farming-token-day-reward-field"
             name="farming.tokenDayReward"
             value={farmingRewardFormatted}
             mint={form.values.farming.token?.mint}
@@ -185,6 +189,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             borderRadius="lg"
             variant="outline"
             name="initialLiquidityLockPeriod"
+            data-testid="farming-initial-liquidity-lock-period-field"
             append={
               <InputAppendContainer>
                 <InlineText color="gray1" weight={600}>
@@ -201,6 +206,7 @@ export const FarmingForm: React.FC<FarmingFormProps> = (props) => {
             borderRadius="lg"
             variant="outline"
             name="farming.vestingPeriod"
+            data-testid="farming-vesting-period-field"
             disabled={!farming.vestingEnabled}
             append={
               <InputAppendContainer>

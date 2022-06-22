@@ -161,6 +161,7 @@ class OrderBookTableContainer extends Component<IProps, IState> {
         />
         <OrderBookStyledContainer terminalViewMode={terminalViewMode}>
           <OrderBookTable
+            data-testid="orderbook"
             data={data}
             mode={mode}
             marketType={marketType}

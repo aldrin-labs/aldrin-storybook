@@ -1,22 +1,23 @@
-import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
-import {
-  AWESOME_TOKENS,
-  useAwesomeMarkets,
-} from '@core/utils/awesomeMarkets/serum'
-import { Metrics } from '@core/utils/metrics'
 import {
   Market,
   MARKETS,
   OpenOrders,
   Orderbook,
   TokenInstructions,
-  TOKEN_MINTS,
 } from '@project-serum/serum'
-import { OrderWithMarket } from '@sb/dexUtils/send'
+import { TokenInfo } from '@solana/spl-token-registry'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
+import tokensList from 'aldrin-registry/src/tokens.json'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
+
+import { OrderWithMarket } from '@sb/dexUtils/send'
+
+import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
+import { Metrics } from '@core/utils/metrics'
+
 import {
   getProviderNameFromUrl,
   useAccountData,
@@ -32,19 +33,20 @@ import {
   TOKEN_PROGRAM_ID,
 } from './token/token'
 import { getTokenAccountInfo } from './tokens'
-import { getUniqueListBy, useLocalStorageState } from './utils'
+import { useLocalStorageState } from './utils'
 import { useWallet } from './wallet'
 
-export const ALL_TOKENS_MINTS = getUniqueListBy(
-  [...TOKEN_MINTS, ...AWESOME_TOKENS],
-  'name'
-)
+export const ALL_TOKENS_MINTS = tokensList.map((el) => {
+  return { ...el, address: new PublicKey(el.address) }
+})
 
-console.log('ALL_TOKENS_MINTS', ALL_TOKENS_MINTS)
-
-export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce((acc, el) => {
-  acc[el.address] = el.name
-  acc[el.name] = el.address
+export const ALL_TOKENS_MINTS_MAP = ALL_TOKENS_MINTS.reduce<{
+  [key: string]: string
+}>((acc, el) => {
+  if (el.symbol) {
+    acc[el.address.toString()] = el.symbol
+    acc[el.symbol] = el.address.toString()
+  }
 
   return acc
 }, {})
@@ -1264,11 +1266,27 @@ export const getTokenNameByMintAddress = (address?: string): string => {
     return '--'
   }
 
-  const tokenName = ALL_TOKENS_MINTS_MAP[address]
-
+  const tokenName = tokensList.find((el) => el.address === address)?.symbol
   if (tokenName) {
     return tokenName
   }
 
   return `${address.slice(0, 3)}...${address.slice(address.length - 3)}`
+}
+
+export const getTokenName = ({
+  address,
+  tokensInfoMap,
+}: {
+  address: string
+  tokensInfoMap: Map<string, TokenInfo>
+}): string => {
+  if (!address) {
+    return '--'
+  }
+
+  const tokenName =
+    tokensInfoMap.get(address)?.symbol || getTokenNameByMintAddress(address)
+
+  return tokenName
 }

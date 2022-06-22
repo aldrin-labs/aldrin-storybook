@@ -1,4 +1,5 @@
-import { PLUTONIANS_STAKING_POOL_ADDRESS } from '../../ProgramsMultiton'
+import { PLUTONIANS_STAKING_POOL_ADDRESS } from '@core/solana'
+
 import { useSrinStakingPools } from './useSrinStakingPools'
 
 export const usePlutoniansStaking = (

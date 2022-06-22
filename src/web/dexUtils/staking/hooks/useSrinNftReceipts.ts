@@ -2,7 +2,10 @@ import { ProgramAccount } from 'anchor024'
 import useSWR from 'swr'
 
 import { useConnection } from '../../connection'
-import { ProgramsMultiton } from '../../ProgramsMultiton'
+import {
+  PLUTONIANS_STAKING_ADDRESS,
+  ProgramsMultiton,
+} from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
 import { LoadReceiptsParams, SrinNftReceipt } from './types'
 
@@ -11,7 +14,8 @@ const USER_KEY_OFFSET = 8
 export const loadNftReceipts = async (
   params: LoadReceiptsParams
 ): Promise<ProgramAccount<SrinNftReceipt>[]> => {
-  const program = ProgramsMultiton.getPlutoniansStakingProgram({
+  const program = ProgramsMultiton.getProgramByAddress({
+    programAddress: PLUTONIANS_STAKING_ADDRESS,
     wallet: params.wallet,
     connection: params.connection,
   })

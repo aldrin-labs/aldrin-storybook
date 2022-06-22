@@ -10,7 +10,7 @@ import {
   formatNumbersForState,
 } from '@sb/dexUtils/utils'
 
-import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
+import { limitDecimalsCustom } from '@core/utils/numberUtils'
 
 import { AmountInput } from '../../../components/AmountInput'
 import { ButtonWrapper, FormItemFull, FormWrap, InputWrapper } from '../styles'
@@ -58,6 +58,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       <FormItemFull>
         <InputWrapper>
           <AmountInput
+            data-testid="rin-staking-amount-field"
             label="Stake"
             placeholder="0"
             amount={tokenData?.amount || 0}
@@ -74,6 +75,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
         </InputWrapper>
         <ButtonWrapper>
           <StakingFormButton
+            data-testid="rin-staking-submit-btn"
             backgroundColor={COLORS.primaryBlue}
             $fontSize="sm"
             $borderRadius="md"

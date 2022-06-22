@@ -10,12 +10,16 @@ import {
 } from '@solana/web3.js'
 import BN from 'bn.js'
 
+import {
+  AldrinConnection,
+  ProgramsMultiton,
+  defaultOptions,
+  POOLS_V2_PROGRAM_ADDRESS,
+} from '@core/solana'
+
 import { walletAdapterToWallet } from '../../common'
-import MultiEndpointsConnection from '../../MultiEndpointsConnection'
-import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
-import { POOLS_V2_PROGRAM_ADDRESS } from '../../ProgramsMultiton/utils'
 import { signTransactions } from '../../send'
-import { sendSignedSignleTransactionRaw } from '../../transactions'
+import { sendSignedSignleTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
 
 export interface InitializeFarmingBase {
@@ -32,7 +36,7 @@ export interface InitializeFarmingBase {
 interface InitializeFarmingParams extends InitializeFarmingBase {
   pool: PublicKey
   wallet: WalletAdapter
-  connection: MultiEndpointsConnection
+  connection: AldrinConnection
   programAddress?: string
 }
 
@@ -125,11 +129,12 @@ export const initializeFaming = async (
       connection: params.connection,
       wallet: params.wallet,
     })
-    return sendSignedSignleTransactionRaw({
+    const { txId, result } = await sendSignedSignleTransaction({
       transaction: signedTransaction,
       connection: params.connection,
       wallet: params.wallet,
     })
+    return [txId, result]
   } catch (e) {
     return [undefined, 'rejected']
   }

@@ -13,16 +13,18 @@ import {
   Signer,
 } from '@solana/web3.js'
 
-import { walletAdapterToWallet } from '../../common'
-import { ProgramsMultiton, defaultOptions } from '../../ProgramsMultiton'
 import {
+  signTransactions,
   FEE_OWNER_ACCOUNT,
   POOLS_PROGRAM_ADDRESS,
   POOL_AUTHORITY,
   POOLS_V2_PROGRAM_ADDRESS,
-} from '../../ProgramsMultiton/utils'
+  ProgramsMultiton,
+  defaultOptions,
+} from '@core/solana'
+
+import { walletAdapterToWallet } from '../../common'
 import { createTokenAccountTransaction } from '../../send'
-import { signTransactions } from '../../transactions'
 import { createVestingTransaction } from '../../vesting'
 import {
   AUTHORITY_TYPE,

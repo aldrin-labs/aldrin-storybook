@@ -13,6 +13,7 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { UNLOCK_STAKED_AFTER } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { uniq } from '@sb/utils/collection'
@@ -82,7 +83,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     processing,
     refetchPools,
   } = props
-
+  const tokensInfo = useTokenInfos()
   const { wallet } = useWallet()
 
   const [farmingExtending, setFarmingExtending] = useState(false)
@@ -189,6 +190,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               onClose={() => setExtendFarmingModalOpen(false)}
               title="Create Farming"
               onExtend={onExtendSuccess}
+              tokensInfo={tokensInfo}
             />
           )}
         </LoadingBlock>
@@ -410,6 +412,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             pool={pool}
             onClose={() => setExtendFarmingModalOpen(false)}
             onExtend={onExtendSuccess}
+            tokensInfo={tokensInfo}
           />
         )}
       </LoadingBlock>

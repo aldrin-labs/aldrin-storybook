@@ -704,6 +704,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                   direction="column"
                 >
                   <TradeInputContent
+                    data-testid="trading-terminal-price-field"
                     theme={theme}
                     needTitle
                     type="text"
