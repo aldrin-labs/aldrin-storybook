@@ -15,6 +15,8 @@ import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { withPublicKey } from '@sb/hoc/withPublicKey'
 
+import { getAllTokensData } from '@core/solana'
+
 import BalanceDistributedComponent from './components/BalanceDistributed'
 import RebalanceHeaderComponent from './components/Header'
 import { MeetRebalancePopup } from './components/MeetRebalancePopup/MeetRebalancePopup'
@@ -25,7 +27,6 @@ import {
   getPricesForTokens,
   getTokenValuesForTokens,
   getTotalTokenValue,
-  getAllTokensData,
 } from './utils'
 import {
   generateLegendColors,

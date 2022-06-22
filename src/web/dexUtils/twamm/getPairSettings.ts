@@ -1,11 +1,9 @@
 import { Connection } from '@solana/web3.js'
 
 import { loadAccountsFromProgram } from '@sb/dexUtils/common/loadAccountsFromProgram'
-
 import { WalletAdapter } from '@sb/dexUtils/types'
-import { TWAMM_PROGRAM_ADDRESS } from '@core/solana'
 
-import { ProgramsMultiton } from '@core/solana'
+import { TWAMM_PROGRAM_ADDRESS, ProgramsMultiton } from '@core/solana'
 
 export const getPairSettings = async ({
   wallet,

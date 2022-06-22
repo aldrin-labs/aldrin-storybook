@@ -34,21 +34,21 @@ import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { SRinNftRewardGroup } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 import { DAY, YEAR, estimateTime } from '@core/utils/dateUtils'
+import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
 import ClockIcon from '@icons/clock.svg'
 import InfoIcon from '@icons/infoIcon.svg'
 
-import { formatNumberToUSFormat } from '../../../../../core/src/utils/PortfolioTableUtils'
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
 import { claimSrinNFTs } from '../../dexUtils/staking/actions/claimSrinNFTs'
 import { endSrinStaking } from '../../dexUtils/staking/actions/endSrinStaking'
-import { SRinNftRewardGroup } from '../../dexUtils/staking/hooks/types'
 import { useSrinNftReceipts } from '../../dexUtils/staking/hooks/useSrinNftReceipts'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
@@ -308,7 +308,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
         message: result === 'success' ? 'Succesfully staked' : 'Staking failed',
       })
       const refreshAllResult = await refreshAll()
-      console.log('refreshAllResult: ', refreshAllResult)
+      // console.log('refreshAllResult: ', refreshAllResult)
       setLoading(false)
     } catch (e) {
       console.warn(`Unable to stake ${stakeTokenName}`, e)

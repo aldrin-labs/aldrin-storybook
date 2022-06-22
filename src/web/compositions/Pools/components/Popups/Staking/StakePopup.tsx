@@ -27,7 +27,6 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import {
@@ -37,6 +36,7 @@ import {
 import { useWallet } from '@sb/dexUtils/wallet'
 import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
+import { filterOpenFarmingStates } from '@core/solana'
 import { estimatedTime } from '@core/utils/dateUtils'
 import {
   formatNumberToUSFormat,
