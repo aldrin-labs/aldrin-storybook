@@ -4,7 +4,7 @@ import { estimateTime } from '@core/utils/dateUtils'
 
 import { InlineText } from '../Typography'
 import { Progress, ProgressBarContainer } from './styles'
-import { ProgressBarProps, TimeProgressBarProps } from './types'
+import { TimeProgressBarProps, ProgressBarProps } from './types'
 
 export const ProgressBar: React.FC<ProgressBarProps> = (props) => {
   const { children, width, background, padding } = props

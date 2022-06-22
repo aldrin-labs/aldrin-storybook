@@ -5,7 +5,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { PLUTONIANS_STAKING_ADDRESS, ProgramsMultiton } from '@core/solana'
+import { ProgramsMultiton, PLUTONIANS_STAKING_ADDRESS } from '@core/solana'
 
 import { walletAdapterToWallet } from '../../common'
 import { signAndSendSingleTransaction } from '../../transactions'
