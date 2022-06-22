@@ -1,7 +1,6 @@
+import tokens from 'aldrin-registry/src/tokens.json'
 import React from 'react'
 import useSWR from 'swr'
-
-import tokensLinksMap from '@core/config/tokensTwitterLinks'
 
 import BlueTwitterIcon from '@icons/blueTwitter.svg'
 import CoinGecko from '@icons/coingecko.svg'
@@ -79,12 +78,15 @@ export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => {
 export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (
   props
 ) => {
-  const { tokenName, marketAddress, marketPair, onInfoClick } = props
-  const token = tokensLinksMap.get(tokenName.toUpperCase()) || {
-    marketCapLink: '',
+  const { tokenName, marketAddress, onInfoClick } = props
+
+  const tokensMap = new Map<string, any>()
+  tokens.forEach((el) => tokensMap.set(el.symbol.toUpperCase(), el))
+
+  const token = tokensMap.get(tokenName.toUpperCase()) || {
     twitterLink: '',
+    marketCapLink: '',
   }
-  const { twitterLink = '', marketCapLink = '' } = token
 
   return (
     <Container>
@@ -104,16 +106,24 @@ export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (
         </DarkTooltip>
       } */}
 
-      {twitterLink && (
+      {token.twitterLink && (
         <DarkTooltip title="Twitter profile of the token.">
-          <Anchor target="_blank" rel="noopener noreferrer" href={twitterLink}>
+          <Anchor
+            target="_blank"
+            rel="noopener noreferrer"
+            href={token.twitterLink}
+          >
             <Icon src={BlueTwitterIcon} />
           </Anchor>
         </DarkTooltip>
       )}
-      {marketCapLink && (
-        <Anchor target="_blank" rel="noopener noreferrer" href={marketCapLink}>
-          <Icon src={resolveExplorerIcon(marketCapLink)} />
+      {token.marketCapLink && (
+        <Anchor
+          target="_blank"
+          rel="noopener noreferrer"
+          href={token.marketCapLink}
+        >
+          <Icon src={resolveExplorerIcon(token.marketCapLink)} />
         </Anchor>
       )}
     </Container>
