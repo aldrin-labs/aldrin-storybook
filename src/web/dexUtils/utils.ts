@@ -2,6 +2,7 @@ import { PublicKey, PublicKeyInitData } from '@solana/web3.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { MASTER_BUILD } from '@core/utils/config'
+import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
 export function isValidPublicKey(key: PublicKeyInitData) {
   if (!key) {
@@ -174,4 +175,29 @@ export const stripInputNumber = (
 
   // change comma to dot
   return value.replaceAll(',', '')
+}
+
+export const formatNumberWithSpaces = (n: number | string) => {
+  if (n === '') {
+    return ''
+  }
+
+  let stringValue = n.toString()
+
+  if (stringValue[stringValue.length - 1] === ',') {
+    stringValue = `${stringValue.slice(0, stringValue.length - 1)}.`
+  }
+
+  const res = formatNumberToUSFormat(stringValue).replaceAll(',', ' ')
+  return res
+}
+
+export const formatNumbersForState = (n: number | string) => {
+  if (n === '') {
+    return ''
+  }
+
+  const num = n.toString()
+  const res = num.replaceAll(' ', '')
+  return res
 }

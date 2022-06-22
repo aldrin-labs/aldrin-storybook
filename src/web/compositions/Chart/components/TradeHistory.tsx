@@ -26,40 +26,41 @@ export const TradeHistory = ({
   pair,
 }) => {
   return (
-    <TradeHistoryWrapper
-      theme={theme}
-      key="tradehistory_table"
-      className="ExchangesTable"
-      variant={{
-        show: showTableOnMobile === 'TRADE',
-      }}
-    >
-      <QueryRenderer
-        component={TradeHistoryTable}
-        withOutSpinner
-        query={MARKET_QUERY}
-        variables={{ symbol, exchange: 'serum', marketType }}
-        fetchPolicy="network-only"
-        {...{
-          quote,
-          activeExchange,
-          exchange,
-          pricePrecision,
-          quantityPrecision,
-          currencyPair: pair,
-          showTableOnMobile,
-          minPriceDigits,
-          changeTable,
-          chartProps,
-          marketType,
-          sizeDigits,
-          symbol,
-          theme,
-          updateTerminalPriceFromOrderbook,
-          key: 'tradeyistory_table_query_render',
+    <>
+      <TradeHistoryWrapper
+        key="tradehistory_table"
+        className="ExchangesTable"
+        variant={{
+          show: showTableOnMobile === 'TRADE',
         }}
-        // isDataLoading={isPairDataLoading}
-      />
-    </TradeHistoryWrapper>
+      >
+        <QueryRenderer
+          component={TradeHistoryTable}
+          withOutSpinner
+          query={MARKET_QUERY}
+          variables={{ symbol, exchange: 'serum', marketType }}
+          fetchPolicy="network-only"
+          {...{
+            quote,
+            activeExchange,
+            exchange,
+            pricePrecision,
+            quantityPrecision,
+            currencyPair: pair,
+            showTableOnMobile,
+            minPriceDigits,
+            changeTable,
+            chartProps,
+            marketType,
+            sizeDigits,
+            symbol,
+            theme,
+            updateTerminalPriceFromOrderbook,
+            key: 'tradeyistory_table_query_render',
+          }}
+          // isDataLoading={isPairDataLoading}
+        />
+      </TradeHistoryWrapper>
+    </>
   )
 }

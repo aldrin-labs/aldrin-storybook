@@ -1,8 +1,9 @@
-import { COLORS, MAIN_FONT } from '@variables/variables'
+import { COLORS, MAIN_FONT, UCOLORS } from '@variables/variables'
 import Chart from 'chart.js/auto'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
+import { DefaultTheme } from 'styled-components'
 
 import {
   dayDuration,
@@ -10,6 +11,8 @@ import {
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
+import { formatNumberToUSFormat } from '../../../../../../../core/src/utils/PortfolioTableUtils'
 
 dayjs.extend(timezone)
 dayjs.extend(utc)
@@ -21,9 +24,18 @@ interface ChartParams<T = { date: number; vol?: number }[]> {
   chart: Chart | null
   data: T
   container: HTMLCanvasElement | null
+  theme: DefaultTheme
 }
 
-const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
+const createChart = ({
+  ctx,
+  type = 'line',
+  theme,
+}: {
+  ctx: CanvasRenderingContext2D
+  type: ChartType
+  theme: DefaultTheme
+}) =>
   new Chart(ctx, {
     type,
     data: {
@@ -39,7 +51,7 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
           },
           ticks: {
             align: 'center',
-            color: COLORS.textAlt,
+            color: theme.colors.gray1,
             maxRotation: 0,
             font: {
               size: 12,
@@ -57,7 +69,7 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
           ticks: {
             padding: 15,
             callback: (value) => `$${stripByAmountAndFormat(value)}`,
-            color: COLORS.textAlt,
+            color: theme.colors.gray1,
             font: {
               size: 12,
               family: MAIN_FONT,
@@ -77,9 +89,8 @@ const createChart = (ctx: CanvasRenderingContext2D, type: ChartType = 'line') =>
           enabled: true,
           intersect: false,
           callbacks: {
-            label: (model: any, item: TooltipItem) => {
-              const [int, dec] = (model.formattedValue || '0').split('.')
-              return ` $${int}`
+            label: (model: any) => {
+              return ` $${formatNumberToUSFormat(model.raw.y.toFixed(0))}`
             },
           },
         },
@@ -122,7 +133,9 @@ const createTotalVolumeLockedChart = ({
   container,
   data,
   chart,
+  theme,
 }: ChartParams) => {
+  // const theme = useTheme()
   if (container) {
     container.height = CHART_HEIGHT
   }
@@ -133,9 +146,8 @@ const createTotalVolumeLockedChart = ({
   }
 
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
-  gradient.addColorStop(0, 'rgba(101, 28, 228, 0.9)')
-  gradient.addColorStop(0.55, 'rgba(101, 28, 228, 0)')
-  gradient.addColorStop(1, COLORS.blockBackground)
+  gradient.addColorStop(0, theme.colors.greenChart[0])
+  gradient.addColorStop(0.55, theme.colors.greenChart[1])
 
   const transformedData = getEmptyData()
     .map((value) => ({
@@ -159,14 +171,15 @@ const createTotalVolumeLockedChart = ({
   if (chart) {
     chart.destroy()
   }
-  chart = createChart(ctx)
+
+  chart = createChart({ ctx, theme })
   chart.data = {
     labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
     datasets: [
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: COLORS.primaryBlue,
+        borderColor: theme.colors.green6,
         backgroundColor: gradient,
         borderWidth: 2,
         pointRadius: 0,
@@ -176,12 +189,19 @@ const createTotalVolumeLockedChart = ({
     ],
   }
   chart.options.scales.y.ticks.stepSize = (maxVol - maxVol * 0.2) / 5
+  chart.options.scales.x?.grid?.display = false
+  chart.options.scales.y?.grid?.display = false
   chart.options.scales.y.suggestedMin = 0
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
   return chart
 }
 
-const createTradingVolumeChart = ({ chart, container, data }: ChartParams) => {
+const createTradingVolumeChart = ({
+  chart,
+  container,
+  data,
+  theme,
+}: ChartParams) => {
   const ctx = container?.getContext('2d')
 
   if (!ctx) {
@@ -212,17 +232,18 @@ const createTradingVolumeChart = ({ chart, container, data }: ChartParams) => {
   if (chart) {
     chart.destroy()
   }
-  chart = createChart(ctx, 'bar')
+  chart = createChart({ ctx, type: 'bar', theme })
   chart.data = {
     labels: transformedData.map((item) => dayjs(item.date).format('MMM, D')),
     datasets: [
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: COLORS.success,
-        backgroundColor: COLORS.success,
+        borderColor: UCOLORS.violet3,
+        backgroundColor: UCOLORS.violet3,
         borderWidth: 0,
         pointRadius: 0,
+        hoverBackgroundColor: UCOLORS.violet1,
         borderRadius: {
           topLeft: 4,
           topRight: 4,
@@ -234,7 +255,8 @@ const createTradingVolumeChart = ({ chart, container, data }: ChartParams) => {
       },
     ],
   }
-
+  chart.options.scales.x?.grid?.display = false
+  chart.options.scales.y?.grid?.display = false
   chart.options.scales.y.ticks.stepSize = (maxVol - minVol) / 3
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
 

@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
-import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
-import { Theme } from '@material-ui/core'
 import { Market, OpenOrders } from '@project-serum/serum'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import React, { useState } from 'react'
+import { DefaultTheme } from 'styled-components'
+
 import { Loading } from '@sb/components'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { StyledTitle } from '@sb/components/TradingTable/TradingTable.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
+
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 const SettleButton = ({
   theme,
@@ -14,7 +16,7 @@ const SettleButton = ({
   onSettleFunds,
   showLoader,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   el: UnsettledBalance
   onSettleFunds: (
     unsettledBalances: UnsettledBalance
@@ -38,7 +40,7 @@ const SettleButton = ({
           setIsBalancesSettling(false)
         }
       }}
-      btnColor={theme.palette.green.main}
+      btnColor={theme.colors.green7}
       btnWidth="10rem"
       height="3.5rem"
       borderRadius="1.8rem"
@@ -60,7 +62,7 @@ export const getUnsettledBalancesColumnNames = ({
   theme,
   onSettleAll,
 }: {
-  theme: Theme
+  theme: DefaultTheme
   onSettleAll: () => void
 }) => [
   { label: 'Market', id: 'marketName' },
@@ -72,7 +74,7 @@ export const getUnsettledBalancesColumnNames = ({
     label: (
       <BtnCustom
         onClick={() => onSettleAll()}
-        btnColor={theme.palette.green.main}
+        btnColor={theme.colors.green7}
         btnWidth="12rem"
         height="3.5rem"
         borderRadius="1.8rem"
@@ -110,7 +112,7 @@ export const combineUnsettledBalances = ({
     unsettledBalances: UnsettledBalance
   ) => Promise<string | null | undefined>
   dexTokensPrices: Map<string, DexTokensPrices>
-  theme: Theme
+  theme: DefaultTheme
 }) => {
   if (!unsettledBalances && !Array.isArray(unsettledBalances)) {
     return []

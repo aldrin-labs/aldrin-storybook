@@ -1,12 +1,12 @@
-import { withTheme, Theme } from '@material-ui/core/styles'
+import { withTheme } from '@material-ui/core/styles'
 import { Connection } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
 import React, { useEffect, useState, useCallback } from 'react'
 import debounceRender from 'react-debounce-render'
 import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import DonutChartWithLegend from '@sb/components/AllocationBlock/index'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Button } from '@sb/components/Button'
 import { ConnectWalletScreen } from '@sb/components/ConnectWalletScreen'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -100,13 +100,8 @@ const DebouncedBalanceDistributedComponent = debounceRender(
   { leading: false }
 )
 
-const RebalanceComposition = ({
-  publicKey,
-  theme,
-}: {
-  publicKey: string
-  theme: Theme
-}) => {
+const RebalanceComposition = ({ publicKey }: { publicKey: string }) => {
+  const theme = useTheme()
   const { wallet } = useWallet()
   const connection: Connection = useConnection()
   const allMarketsMap = useAllMarketsList()
@@ -236,10 +231,9 @@ const RebalanceComposition = ({
 
   return (
     <RowContainer
-      theme={theme}
       height="calc(100vh - 120px)"
       style={{
-        background: COLORS.mainBlack,
+        background: theme.colors.gray9,
         minWidth: '1000px',
         overflow: 'auto',
         minHeight: '500px',
@@ -247,9 +241,9 @@ const RebalanceComposition = ({
       }}
     >
       {!isWalletConnected ? (
-        <ConnectWalletScreen theme={theme} />
+        <ConnectWalletScreen />
       ) : (
-        <RowContainer theme={theme} height="100%" padding="6rem 0">
+        <RowContainer height="100%" padding="6rem 0">
           <Row
             height="100%"
             direction="column"
@@ -289,6 +283,7 @@ const RebalanceComposition = ({
                 colorsForLegend={colorsForLegend}
                 id="current"
               />
+
               <DebouncedMemoizedTargetValueChartWithLegend
                 data={tokensMap}
                 colors={colors}
@@ -304,27 +299,16 @@ const RebalanceComposition = ({
                   theme={theme}
                 />
               </Row>
-              <BtnCustom
-                theme={theme}
+              <Button
                 onClick={() => {
                   changeRebalancePopupState(true)
                 }}
-                needMinWidth={false}
-                btnWidth="calc(55% - 1rem)"
-                height="100%"
-                fontSize="1.4rem"
-                borderRadius="1.6rem"
-                borderColor={theme.palette.blue.serum}
-                btnColor="#fff"
-                backgroundColor={theme.palette.blue.serum}
-                textTransform="none"
-                transition="all .4s ease-out"
-                padding="2rem"
-                style={{ whiteSpace: 'nowrap' }}
                 disabled={isButtonDisabled}
+                $variant="primary"
+                style={{ width: 'calc(55% - 1rem)', height: '100%' }}
               >
                 Rebalance Now
-              </BtnCustom>
+              </Button>
             </RowContainer>
           </Row>
         </RowContainer>
@@ -337,13 +321,11 @@ const RebalanceComposition = ({
           tokensMap={tokensMap}
           refreshRebalance={refreshRebalance}
           setLoadingRebalanceData={setLoadingRebalanceData}
-          theme={theme}
           open={isRebalancePopupOpen}
           close={() => changeRebalancePopupState(false)}
         />
       )}
       <MeetRebalancePopup
-        theme={theme}
         open={isMeetRebalancePopupOpen}
         onClose={() => setIsMeetRebalancePopupOpen(false)}
       />

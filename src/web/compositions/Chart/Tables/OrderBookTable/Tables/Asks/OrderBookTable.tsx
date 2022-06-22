@@ -1,16 +1,17 @@
+import useMobileSize from '@webhooks/useMobileSize'
 import React from 'react'
 import { Column, Table } from 'react-virtualized'
+
 import 'react-virtualized/styles.css'
 
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 import { useOpenOrders } from '@sb/dexUtils/markets'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { withErrorFallback } from '@sb/hoc'
 
 import { getDataFromTree } from '@core/utils/chartPageUtils'
-
-import useMobileSize from '@webhooks/useMobileSize'
 
 import { AsksWrapper } from '../../OrderBookTableContainer.styles'
 import defaultRowRenderer, { getRowHeight } from '../../utils'
@@ -29,7 +30,6 @@ const StyledTable = styled(Table)`
 
 const OrderBookTable = ({
   data,
-  theme,
   mode,
   aggregation,
   openOrderHistory,
@@ -40,13 +40,31 @@ const OrderBookTable = ({
   terminalViewMode,
 }) => {
   const isMobile = useMobileSize()
+  const theme = useTheme()
   const openOrders = useOpenOrders()
   const tableData =
     isMobile && terminalViewMode === 'mobileChart'
       ? getDataFromTree(data.asks, 'asks')
       : getDataFromTree(data.asks, 'asks').reverse()
+
+  const formattedData = tableData.map((el) => {
+    return {
+      ...el,
+      price: formatNumberWithSpaces(el.price),
+      size: formatNumberWithSpaces(el.size),
+      total: formatNumberWithSpaces(el.total),
+    }
+  })
+
+  const dataForCalcBackgroundAmount = tableData.map((el) => {
+    return {
+      size: el.size,
+    }
+  })
+
   const amountForBackground =
-    tableData.reduce((acc, curr) => acc + +curr.size, 0) / tableData.length
+    dataForCalcBackgroundAmount.reduce((acc, curr) => acc + +curr.size, 0) /
+    dataForCalcBackgroundAmount.length
 
   const [base, quote] = currencyPair.split('_')
 
@@ -63,7 +81,7 @@ const OrderBookTable = ({
               mode={mode}
               width={width}
               height={height}
-              rowCount={tableData.length}
+              rowCount={formattedData.length}
               onRowClick={({ event, index, rowData }) => {
                 updateTerminalPriceFromOrderbook(+rowData.price)
               }}
@@ -75,7 +93,7 @@ const OrderBookTable = ({
                 terminalViewMode,
               })}
               headerStyle={{
-                color: theme.palette.grey.text,
+                color: theme.colors.gray1,
                 paddingLeft: '.5rem',
                 paddingTop: '.25rem',
                 marginLeft: 0,
@@ -98,7 +116,7 @@ const OrderBookTable = ({
                   ? 0
                   : tableData.length - 1
               }
-              rowGetter={({ index }) => tableData[index]}
+              rowGetter={({ index }) => formattedData[index]}
               rowRenderer={(...rest) =>
                 defaultRowRenderer({
                   theme,
@@ -118,7 +136,7 @@ const OrderBookTable = ({
                 headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
                 width={width}
                 style={{
-                  color: theme.palette.red.main,
+                  color: theme.colors.obRedFont,
                   fontFamily: 'Avenir Next Demi',
                   ...(isMobile ? { fontSize: '1.8rem' } : {}),
                 }}
@@ -131,7 +149,7 @@ const OrderBookTable = ({
                   width={width}
                   style={{
                     textAlign: 'left',
-                    color: theme.palette.white.primary,
+                    color: theme.colors.white,
                   }}
                 />
               )}
@@ -146,7 +164,7 @@ const OrderBookTable = ({
                 width={width}
                 style={{
                   textAlign: 'right',
-                  color: theme.palette.white.primary,
+                  color: theme.colors.white,
                   ...(isMobile ? { fontSize: '1.8rem' } : {}),
                 }}
               />
@@ -154,92 +172,6 @@ const OrderBookTable = ({
           )
         }}
       </StyledAutoSizer>
-      {/* <AutoSizerMobile>
-        {({ width, height }: { width: number; height: number }) => {
-          return (
-            <StyledTable
-              mode={mode}
-              width={width}
-              height={height}
-              rowCount={tableData.length}
-              onRowClick={({ event, index, rowData }) => {
-                updateTerminalPriceFromOrderbook(+rowData.price)
-              }}
-              headerHeight={getRowHeight({
-                mode,
-                height,
-                isMobile,
-                side: 'asks',
-                terminalViewMode,
-              })}
-              headerStyle={{
-                color: theme.palette.grey.text,
-                paddingLeft: '.5rem',
-                paddingTop: '.25rem',
-                marginLeft: 0,
-                marginRight: 0,
-                letterSpacing: '.01rem',
-                fontSize: '2rem',
-                fontFamily: 'Avenir Next Light',
-                textTransform: 'capitalize',
-              }}
-              rowHeight={getRowHeight({
-                mode,
-                height,
-                isMobile,
-                side: 'asks',
-                terminalViewMode,
-              })}
-              overscanRowCount={0}
-              scrollToIndex={
-                isMobile && terminalViewMode === 'mobileChart'
-                  ? 0
-                  : tableData.length - 1
-              }
-              rowGetter={({ index }) => tableData[index]}
-              rowRenderer={(...rest) =>
-                defaultRowRenderer({
-                  theme,
-                  ...rest[0],
-                  side: 'asks',
-                  marketType,
-                  aggregation,
-                  arrayOfMarketIds,
-                  openOrderHistory,
-                  amountForBackground,
-                })
-              }
-            >
-              <Column
-                label="Price"
-                dataKey="price"
-                headerStyle={{ paddingLeft: 'calc(.5rem + 10px)' }}
-                width={width}
-                style={{
-                  color: theme.palette.red.main,
-                  fontFamily: 'Avenir Next Demi',
-                  fontSize: '1.8rem',
-                }}
-              />
-
-              <Column
-                label={`Total (${quote})`}
-                dataKey="total"
-                headerStyle={{
-                  paddingRight: 'calc(10px)',
-                  textAlign: 'right',
-                }}
-                width={width}
-                style={{
-                  textAlign: 'right',
-                  color: theme.palette.white.primary,
-                  fontSize: '1.8rem',
-                }}
-              />
-            </StyledTable>
-          )
-        }}
-      </AutoSizerMobile> */}
     </AsksWrapper>
   )
 }

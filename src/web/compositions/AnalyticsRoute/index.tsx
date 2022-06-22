@@ -40,7 +40,6 @@ const AnalyticsRoute = ({
             width="calc(17% - .4rem)"
             height="calc(100% - .1rem)"
             margin="0 0.4rem 0 0"
-            theme={theme}
           >
             <PairSelector
               theme={theme}
@@ -70,7 +69,6 @@ const AnalyticsRoute = ({
                 width="calc(50% - .4rem)"
                 height="100%"
                 margin="0 .4rem 0 0"
-                theme={theme}
                 style={{ position: 'relative' }}
               >
                 <CountButterflyChart
@@ -82,7 +80,6 @@ const AnalyticsRoute = ({
                 width="calc(50% - .4rem)"
                 height="100%"
                 margin="0 0 0 .4rem"
-                theme={theme}
                 style={{ position: 'relative' }}
               >
                 <AverageButterflyChart
@@ -95,7 +92,6 @@ const AnalyticsRoute = ({
               width="100%"
               height="calc(50% - 0.4rem)"
               margin=".4rem 0 0 0"
-              theme={theme}
               style={{ position: 'relative' }}
             >
               <AreaVolumeChart

@@ -1,12 +1,11 @@
-import { Theme } from '@material-ui/core'
-import withTheme from '@material-ui/core/styles/withTheme'
 import { FONT_SIZES } from '@variables/variables'
+import tokensList from 'aldrin-registry/src/tokens.json'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import { Loading, TooltipRegionBlocker } from '@sb/components'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import { Button } from '@sb/components/Button'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -15,7 +14,6 @@ import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
-  ALL_TOKENS_MINTS,
   getTokenMintAddressByName,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
@@ -29,6 +27,7 @@ import {
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { signAndSendTransactions } from '@sb/dexUtils/transactions'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { withRegionCheck } from '@sb/hoc'
 import { withPublicKey } from '@sb/hoc/withPublicKey'
@@ -48,9 +47,8 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 
 import ArrowRightIcon from '@icons/arrowRight.svg'
-import ReverseArrows from '@icons/reverseArrows.svg'
-import Arrows from '@icons/switchArrows.svg'
 
+import { INPUT_FORMATTERS } from '../../components/Input'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
@@ -81,18 +79,18 @@ import {
   getSwapButtonText,
   getSwapNetworkFee,
 } from './utils'
+import { queryRendererHoc } from '../../components/QueryRenderer'
 
 const SwapPage = ({
-  theme,
   publicKey,
   getPoolsInfoQuery,
   getDexTokensPricesQuery,
 }: {
-  theme: Theme
   publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
+  const theme = useTheme()
   const { wallet } = useWallet()
   const connection = useConnection()
   const tokenInfos = useTokenInfos()
@@ -305,7 +303,7 @@ const SwapPage = ({
   const mints = [
     ...new Set([
       ...pools.map((i) => [i.tokenA, i.tokenB]).flat(),
-      ...ALL_TOKENS_MINTS.map(({ address }) => address.toString()),
+      ...tokensList.map(({ address }) => address.toString()),
     ]),
   ]
 
@@ -347,9 +345,10 @@ const SwapPage = ({
   return (
     <SwapPageLayout>
       <SwapPageContainer direction="column" height="100%" wrap="nowrap">
-        <SwapContentContainer direction="column">
+        <SwapContentContainer data-testid="swap-container" direction="column">
           <RowContainer justify="flex-start" margin="0 0 2rem 0">
             <SwapSearch
+              data-testid="swap-search-field"
               tokens={mints.map((mint) => ({ mint }))}
               onSelect={(args) => {
                 const { amountFrom, tokenFrom, tokenTo } = args
@@ -361,11 +360,12 @@ const SwapPage = ({
               }}
             />
           </RowContainer>
-          <SwapBlockTemplate theme={theme} width="100%" background="#1A1A1A">
+          <SwapBlockTemplate width="100%">
             <RowContainer margin="0 0 .5em 0" justify="space-between">
               <Row>
                 <ValueButton>
                   <ReloadTimer
+                    data-testid="swap-reload-data-timer"
                     duration={15}
                     initialRemainingTime={15}
                     callback={refreshAll}
@@ -375,7 +375,10 @@ const SwapPage = ({
                   />
                 </ValueButton>
                 {baseTokenMintAddress && quoteTokenMintAddress && (
-                  <ValueButton onClick={() => openTokensAddressesPopup(true)}>
+                  <ValueButton
+                    data-testid="swap-open-tokens-info-tooltip"
+                    onClick={() => openTokensAddressesPopup(true)}
+                  >
                     i
                   </ValueButton>
                 )}
@@ -384,6 +387,7 @@ const SwapPage = ({
                 <Text padding="0 0.8rem 0 0">Slippage Tolerance:</Text>
                 <Row style={{ position: 'relative' }}>
                   <ValueInput
+                    data-testid="slippage-tolerance-field"
                     onChange={(e) => {
                       if (
                         numberWithOneDotRegexp.test(e.target.value) &&
@@ -405,7 +409,7 @@ const SwapPage = ({
                     style={{
                       position: 'absolute',
                       fontFamily: 'Avenir Next Medium',
-                      color: '#fbf2f2',
+                      color: theme.colors.gray1,
                       fontSize: FONT_SIZES.sm,
                       right: '1.5rem',
                     }}
@@ -414,6 +418,7 @@ const SwapPage = ({
                   </div>
                 </Row>
                 <ValueButton
+                  data-testid="decreace-slippage-tolerance"
                   onClick={() => {
                     const newSlippage = +(+slippage - SLIPPAGE_STEP).toFixed(2)
 
@@ -425,6 +430,7 @@ const SwapPage = ({
                   -
                 </ValueButton>
                 <ValueButton
+                  data-testid="increace-slippage-tolerance"
                   onClick={() => {
                     const newSlippage = +(+slippage + SLIPPAGE_STEP).toFixed(2)
 
@@ -445,49 +451,43 @@ const SwapPage = ({
                   <SwapAmountInput
                     title="You Pay"
                     maxAmount={maxBaseAmount}
-                    amount={formatNumberToUSFormat(inputAmount)}
+                    amount={formatNumberWithSpaces(inputAmount)}
                     disabled={false}
                     onChange={(v) => {
                       if (v === '') {
                         setInputAmount(v)
                         return
                       }
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
 
                       if (
-                        numberWithOneDotRegexp.test(v) &&
-                        getNumberOfIntegersFromNumber(v) <= 8 &&
-                        getNumberOfDecimalsFromNumber(v) <= 8
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
                       ) {
-                        setInputAmount(v)
+                        setInputAmount(parsedValue)
                       }
                     }}
                     roundSides={['top-left']}
                     appendComponent={
                       <Row>
                         <SetAmountButton
-                          minWidth="0"
-                          $fontSize="xs"
-                          $fontFamily="demi"
-                          $borderRadius="xxl"
+                          data-testid="swap-half-btn"
                           onClick={halfButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $color="halfWhite"
-                          backgroundColor="#383B45"
                           style={{ marginRight: '0.8rem' }}
                         >
                           Half
                         </SetAmountButton>
                         <SetAmountButton
-                          minWidth="0"
-                          $fontSize="xs"
-                          $fontFamily="demi"
-                          $borderRadius="xxl"
+                          data-testid="swap-max-btn"
                           onClick={maxButtonOnClick}
                           type="button"
                           $variant="secondary"
-                          $color="halfWhite"
-                          backgroundColor="#383B45"
                         >
                           Max
                         </SetAmountButton>
@@ -497,6 +497,7 @@ const SwapPage = ({
                 </Row>
                 <Row width="calc(35% - 0.2rem)">
                   <TokenSelector
+                    data-testid="swap-token-selector"
                     mint={baseTokenMintAddress}
                     roundSides={['top-right']}
                     onClick={() => {
@@ -507,7 +508,19 @@ const SwapPage = ({
                 </Row>
               </RowContainer>
               <ReverseTokensContainer onClick={reverseTokens}>
-                <SvgIcon src={Arrows} width="1em" height="1em" />
+                <svg
+                  width="11"
+                  height="10"
+                  viewBox="0 0 11 10"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5.40138 2.6212L8.00836 0.0142284L10.6153 2.6212L9.87064 3.3659L8.53449 2.03029L8.53502 8.96748L7.4817 8.96748L7.4817 2.03029L6.14608 3.3659L5.40138 2.6212ZM0.134766 6.88716L0.879465 6.14246L2.21508 7.47808L2.21508 0.54089L3.2684 0.54089L3.2684 7.47808L4.60402 6.14246L5.34872 6.88716L2.74174 9.49414L0.134766 6.88716Z"
+                    fill="white"
+                    fillOpacity="0.7"
+                  />
+                </svg>
               </ReverseTokensContainer>
               <RowContainer justify="space-between" margin=".4rem 0 0 0">
                 <Row width="calc(65% - .2rem)">
@@ -516,7 +529,7 @@ const SwapPage = ({
                     maxAmount={maxQuoteAmount}
                     amount={
                       outputAmount
-                        ? formatNumberToUSFormat(stripByAmount(outputAmount))
+                        ? formatNumberWithSpaces(stripByAmount(outputAmount))
                         : ''
                     }
                     disabled
@@ -525,7 +538,7 @@ const SwapPage = ({
                       <Text
                         fontFamily="Avenir Next"
                         fontSize={FONT_SIZES.sm}
-                        color="#A6A6A6"
+                        color="gray1"
                       >
                         ≈$
                         {outputUSD
@@ -563,27 +576,18 @@ const SwapPage = ({
                   isFromRestrictedRegion={isFromRestrictedRegion}
                 >
                   <span style={{ width: '100%' }}>
-                    <BtnCustom
+                    <Button
+                      $width="xl"
+                      $padding="lg"
                       theme={theme}
                       disabled={isFromRestrictedRegion}
+                      style={{ height: '4em' }}
                       onClick={() => {
                         if (isFromRestrictedRegion || isRegionCheckIsLoading) {
                           return
                         }
                         setIsConnectWalletPopupOpen(true)
                       }}
-                      needMinWidth={false}
-                      btnWidth="100%"
-                      height="4em"
-                      fontSize="1em"
-                      padding="1.4em 5em"
-                      borderRadius="1.1rem"
-                      borderColor={theme.palette.blue.serum}
-                      btnColor="#fff"
-                      backgroundColor={theme.palette.blue.serum}
-                      textTransform="none"
-                      transition="all .4s ease-out"
-                      style={{ whiteSpace: 'nowrap' }}
                     >
                       {isRegionCheckIsLoading && (
                         <Loading
@@ -596,11 +600,12 @@ const SwapPage = ({
                         (isFromRestrictedRegion
                           ? `Restricted region`
                           : `Connect wallet`)}
-                    </BtnCustom>
+                    </Button>
                   </span>
                 </TooltipRegionBlocker>
               ) : (
                 <SwapButton
+                  theme={theme}
                   disabled={isButtonDisabled}
                   onClick={async () => {
                     if (!jupiter || !swapRoute) return
@@ -721,21 +726,19 @@ const SwapPage = ({
                         <RowAmountValue>1</RowAmountValue>
                         {priceShowField === 'input' ? baseSymbol : quoteSymbol}
                       </RowValue>
-                      <SvgIcon
-                        src={ReverseArrows}
-                        height="0.9em"
-                        width="0.9em"
+                      <span
                         style={{
-                          transform: 'rotate(90deg)',
-                          margin: '0 0.5rem',
-                          cursor: 'pointer',
+                          color: theme.colors.white,
+                          padding: '0 0.5rem',
                         }}
                         onClick={() =>
                           setPriceShowField(
                             priceShowField === 'input' ? 'output' : 'input'
                           )
                         }
-                      />
+                      >
+                        ⇌
+                      </span>
                       <RowValue>
                         <RowAmountValue>
                           {formatNumberToUSFormat(estimatedPrice)}
@@ -815,6 +818,7 @@ const SwapPage = ({
         </SwapContentContainer>
 
         <SelectCoinPopup
+          data-testid="swap-select-token-popup"
           theme={theme}
           mints={mints}
           allTokensData={allTokensData}
@@ -852,7 +856,6 @@ const SwapPage = ({
         />
 
         <TokenAddressesPopup
-          theme={theme}
           quoteTokenMintAddress={quoteTokenMintAddress}
           baseTokenMintAddress={baseTokenMintAddress}
           allTokensData={allTokensData}
@@ -870,7 +873,6 @@ const SwapPage = ({
 }
 
 export default compose(
-  withTheme(),
   withPublicKey,
   withRegionCheck,
   queryRendererHoc({

@@ -1,7 +1,7 @@
-import { Theme, withTheme } from '@material-ui/core'
 import { OpenOrders } from '@project-serum/serum'
 import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
 import { Loading } from '@sb/components'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
@@ -47,14 +47,12 @@ import { settleUnsettledBalancesForAllMarkets } from './utils/settleUnsettledBal
 it gives you ability to settle your funds and cancel orders */
 
 const Dashboard = ({
-  theme,
   getDexTokensPricesQuery,
 }: {
-  theme: Theme
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }) => {
   const [isDataLoading, setIsDataLoading] = useState(false)
-
+  const theme = useTheme()
   const [openOrdersAccounts, setOpenOrdersAccounts] = useState<OpenOrders[]>([])
   const [loadedMarketsMap, setLoadedMarketsMap] = useState<LoadedMarketsMap>(
     new Map()
@@ -240,7 +238,7 @@ const Dashboard = ({
       direction="column"
       justify="flex-start"
       style={{
-        background: theme.palette.grey.additional,
+        background: theme.colors.gray9,
         flexWrap: 'nowrap',
         overflow: 'auto',
         padding: '0 0 6rem 0',
@@ -252,7 +250,7 @@ const Dashboard = ({
           margin="0 0 3rem 0"
         >
           <Title
-            color={theme.palette.white.primary}
+            color={theme.colors.white}
             fontFamily="Avenir Next Demi"
             fontSize="3rem"
           >
@@ -263,7 +261,6 @@ const Dashboard = ({
         <TableContainer>
           <OpenOrdersTable
             tab="openOrders"
-            theme={theme}
             show
             needShowValue
             isCancellingAllOrders={isCancellingAllOrders}
@@ -292,6 +289,7 @@ const Dashboard = ({
             openOrders={openOrders}
             stylesForTable={{ borderRadius: '1.5rem' }}
             styles={{
+              background: theme.colors.gray6,
               height: '100%',
             }}
           />
@@ -303,7 +301,7 @@ const Dashboard = ({
           margin="0 0 3rem 0"
         >
           <Title
-            color={theme.palette.white.primary}
+            color={theme.colors.white}
             fontFamily="Avenir Next Demi"
             fontSize="3rem"
           >
@@ -348,7 +346,6 @@ const Dashboard = ({
 }
 
 const WithQueries = compose(
-  withTheme(),
   queryRendererHoc({
     query: getDexTokensPrices,
     name: 'getDexTokensPricesQuery',

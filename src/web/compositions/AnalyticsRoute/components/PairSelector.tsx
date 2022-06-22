@@ -1,10 +1,12 @@
-import { Grid, Input, InputAdornment, Theme } from '@material-ui/core'
+import { Grid, Input, InputAdornment } from '@material-ui/core'
 import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Column, Table, SortDirection } from 'react-virtualized'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import { compose } from 'recompose'
 import 'react-virtualized/styles.css'
+
+import { useTheme } from 'styled-components'
 
 import { SvgIcon } from '@sb/components'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
@@ -124,8 +126,6 @@ export const defaultRowRenderer = ({
       (rowData.symbol.contentToSort.toLowerCase().includes('all') &&
         selectedPair === 'all'))
 
-  console.log('className', className)
-
   return (
     <div
       {...a11yProps}
@@ -143,12 +143,10 @@ export const defaultRowRenderer = ({
 }
 
 const PairSelector = ({
-  theme,
   history,
   selectedPair,
   getSerumMarketDataQuery,
 }: {
-  theme: Theme
   selectedPair: string
   getSerumMarketDataQuery: {
     getSerumMarketData: {
@@ -169,6 +167,7 @@ const PairSelector = ({
     }[]
   }
 }) => {
+  const theme = useTheme()
   const [searchValue, onChangeSearch] = useState('')
   const [sortBy, updateSortBy] = useState('volume24hChange')
   const [sortDirection, updateSortDirection] = useState(SortDirection.DESC)
@@ -240,10 +239,10 @@ const PairSelector = ({
 
   useEffect(() => {
     const processedSelectData = combineSelectWrapperData({
+      theme,
       data: filtredMarketsByExchange,
       onSelectPair: ({ value }) =>
         history.push(`/analytics/${value === 'All markets' ? 'all' : value}`),
-      theme,
       searchValue,
       tab: 'all',
       tabSpecificCoin: '',
@@ -262,8 +261,8 @@ const PairSelector = ({
   }, [searchValue])
   return (
     <>
-      <HeaderContainer theme={theme}>
-        <WhiteTitle theme={theme}>Markets</WhiteTitle>
+      <HeaderContainer>
+        <WhiteTitle>Markets</WhiteTitle>
       </HeaderContainer>
       <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
         <Input
@@ -274,8 +273,8 @@ const PairSelector = ({
             height: '3rem',
             background: '#3A475C',
             // borderRadius: '0.3rem',
-            color: theme.palette.grey.placeholder,
-            borderBottom: `.1rem solid ${theme.palette.grey.newborder}`,
+            color: theme.colors.disabled,
+            borderBottom: `.1rem solid ${theme.colors.grey6}`,
             paddingLeft: '1rem',
           }}
           value={searchValue}
@@ -334,12 +333,12 @@ const PairSelector = ({
                 outline: 'none',
                 cursor: 'pointer',
                 fontSize: '1.4rem',
-                color: theme.palette.dark.main,
-                borderBottom: `0.05rem solid ${theme.palette.grey.newborder}`,
+                color: theme.colors.gray1,
+                borderBottom: `0.05rem solid ${theme.colors.disabled}`,
               }}
               headerHeight={window.outerHeight / 40}
               headerStyle={{
-                color: theme.palette.grey.light,
+                color: theme.colors.gray1,
                 paddingLeft: '.5rem',
                 paddingTop: '.25rem',
                 marginLeft: 0,
@@ -358,7 +357,7 @@ const PairSelector = ({
                 dataKey="emoji"
                 headerStyle={{
                   textTransform: 'capitalize',
-                  color: theme.palette.grey.title,
+                  color: theme.colors.gray1,
                   paddingRight: '6px',
                   paddingLeft: '1rem',
                   fontSize: '1.2rem',
@@ -372,7 +371,7 @@ const PairSelector = ({
                 dataKey="symbol"
                 headerStyle={{
                   textTransform: 'capitalize',
-                  color: theme.palette.grey.title,
+                  color: theme.colors.gray1,
                   paddingRight: '6px',
                   paddingLeft: '1rem',
                   fontSize: '1.4rem',
@@ -391,7 +390,7 @@ const PairSelector = ({
                 dataKey="volume24hChange"
                 headerStyle={{
                   textTransform: 'capitalize',
-                  color: theme.palette.grey.title,
+                  color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.4rem',
                   textAlign: 'left',

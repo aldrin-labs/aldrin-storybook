@@ -223,6 +223,7 @@ class SimpleTabs extends React.Component<any, any> {
       baseCurrencyAccount,
       quoteCurrencyAccount,
       isButtonLoaderShowing,
+      newTheme,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
@@ -233,13 +234,12 @@ class SimpleTabs extends React.Component<any, any> {
         id="tradingTerminal"
         item
         xs={12}
-        style={{ height: '100%', padding: '0 0 0 0' }}
+        style={{ height: '100%', padding: '0' }}
       >
-        <CustomCard theme={theme} style={{ borderTop: 0, overflow: 'unset' }}>
+        <CustomCard style={{ borderTop: 0, overflow: 'unset' }}>
           <TerminalHeader
             key="spotTerminal"
             // style={{ display: 'flex' }}
-            theme={theme}
           >
             <div
               style={{
@@ -250,8 +250,8 @@ class SimpleTabs extends React.Component<any, any> {
             >
               <div>
                 <TerminalModeButton
+                  data-testid="trading-mode-limit"
                   style={{ width: '10rem' }}
-                  theme={theme}
                   active={mode === 'limit'}
                   onClick={() => {
                     this.setState({
@@ -267,8 +267,8 @@ class SimpleTabs extends React.Component<any, any> {
                   Limit
                 </TerminalModeButton>
                 <TerminalModeButton
+                  data-testid="trading-mode-market"
                   style={{ width: '10rem' }}
-                  theme={theme}
                   active={mode === 'market'}
                   onClick={() => {
                     this.setState({
@@ -312,7 +312,7 @@ class SimpleTabs extends React.Component<any, any> {
                           padding: '0 0.8rem 0 0',
                         }}
                       />
-                      <SettingsLabel theme={theme} htmlFor="takeProfitButton">
+                      <SettingsLabel htmlFor="takeProfitButton">
                         Take Profit
                       </SettingsLabel>
                     </FuturesSettings>
@@ -323,7 +323,6 @@ class SimpleTabs extends React.Component<any, any> {
                   <TerminalHeader
                     key="futuresTerminal"
                     style={{ display: 'flex', border: 'none' }}
-                    theme={theme}
                   >
                     <SettingsContainer>
                       <FuturesSettings key="postOnlyTerminalController">
@@ -339,7 +338,7 @@ class SimpleTabs extends React.Component<any, any> {
                             })
                           }
                         />
-                        <SettingsLabel theme={theme} htmlFor="postOnly">
+                        <SettingsLabel htmlFor="postOnly">
                           post only
                         </SettingsLabel>
                       </FuturesSettings>
@@ -359,7 +358,6 @@ class SimpleTabs extends React.Component<any, any> {
                           }
                         />
                         <SettingsLabel
-                          theme={theme}
                           htmlFor="ioc"
                           style={{ textTransform: 'uppercase' }}
                         >
@@ -472,14 +470,10 @@ class SimpleTabs extends React.Component<any, any> {
                 />
               ) : (
                 <>
-                  <BuyTerminal
-                    theme={theme}
-                    xs={6}
-                    item
-                    needBorderRight={!tradingBotEnabled}
-                  >
+                  <BuyTerminal xs={6} item needBorderRight={!tradingBotEnabled}>
                     <TerminalContainer>
                       <TraidingTerminal
+                        newTheme={newTheme}
                         isButtonLoaderShowing={isButtonLoaderShowing}
                         baseCurrencyAccount={baseCurrencyAccount}
                         quoteCurrencyAccount={quoteCurrencyAccount}
@@ -684,6 +678,7 @@ class SimpleTabs extends React.Component<any, any> {
                     <SellTerminal theme={theme} xs={6} item>
                       <TerminalContainer>
                         <TraidingTerminal
+                          newTheme={newTheme}
                           isButtonLoaderShowing={isButtonLoaderShowing}
                           baseCurrencyAccount={baseCurrencyAccount}
                           quoteCurrencyAccount={quoteCurrencyAccount}

@@ -18,7 +18,8 @@ import {
 } from '@core/solana'
 
 import { walletAdapterToWallet } from '../../common'
-import { signAndSendSingleTransaction } from '../../transactions'
+import { signTransactions } from '../../send'
+import { sendSignedSignleTransaction } from '../../transactions'
 import { WalletAdapter } from '../../types'
 
 export interface InitializeFarmingBase {
@@ -117,13 +118,24 @@ export const initializeFarmingInstructions = async (
   return [transaction, [snapshots, farmingState, farmingTokenVault]]
 }
 
-export const initializeFaming = async (params: InitializeFarmingParams) => {
+export const initializeFaming = async (
+  params: InitializeFarmingParams
+): Promise<[string | undefined, string]> => {
   const [transaction, signers] = await initializeFarmingInstructions(params)
 
-  return signAndSendSingleTransaction({
-    transaction,
-    connection: params.connection,
-    wallet: params.wallet,
-    signers,
-  })
+  try {
+    const [signedTransaction] = await signTransactions({
+      transactionsAndSigners: [{ transaction, signers }],
+      connection: params.connection,
+      wallet: params.wallet,
+    })
+    const { txId, result } = await sendSignedSignleTransaction({
+      transaction: signedTransaction,
+      connection: params.connection,
+      wallet: params.wallet,
+    })
+    return [txId, result]
+  } catch (e) {
+    return [undefined, 'rejected']
+  }
 }

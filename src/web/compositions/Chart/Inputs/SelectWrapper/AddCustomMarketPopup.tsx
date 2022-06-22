@@ -34,7 +34,7 @@ import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCust
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
 import { writeQueryData } from '@core/utils/TradingTable.utils'
 
-import ListNewMarketPopup, { Input } from './ListNewMarketPopup'
+import ListNewMarketPopup from './ListNewMarketPopup'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -272,7 +272,6 @@ const CustomMarketDialog = ({
   // console.log('getUserCustomMarketsQuery', getUserCustomMarketsQuery)
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       style={{ width: '85rem', margin: 'auto' }}
       fullScreen={false}

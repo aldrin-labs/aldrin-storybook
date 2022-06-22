@@ -25,8 +25,8 @@ export const sendSignedTransactions = async (
       connection,
     })
 
-    if (result !== 'success') {
-      return result
+    if (result.result !== 'success') {
+      return result.result
     }
   }
 

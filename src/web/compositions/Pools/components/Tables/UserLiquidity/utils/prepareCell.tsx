@@ -3,8 +3,9 @@ import React from 'react'
 import { DataCellValue } from '@sb/components/DataTable'
 import { Text } from '@sb/components/Typography'
 import { getStakedTokensForPool } from '@sb/dexUtils/common/getStakedTokensForPool'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
@@ -16,9 +17,15 @@ export const prepareCell = (
 ): { [c: string]: DataCellValue } => {
   const { pool, tokenPrices, allTokensData, farmingTicketsMap, feesByPool } =
     params
-
-  const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
-  const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
+  const tokensMap = useTokenInfos()
+  const baseSymbol = getTokenName({
+    address: pool.tokenA,
+    tokensInfoMap: tokensMap,
+  })
+  const quoteSymbol = getTokenName({
+    address: pool.tokenB,
+    tokensInfoMap: tokensMap,
+  })
 
   const baseTokenPrice = tokenPrices.get(baseSymbol)?.price || 0
   const quoteTokenPrice = tokenPrices.get(quoteSymbol)?.price || 0
@@ -58,15 +65,15 @@ export const prepareCell = (
           <Text size="sm">
             {feesTotal > 0 ? `$${stripByAmountAndFormat(feesTotal, 4)}` : '-'}
           </Text>
-          <Text color="hint" size="sm" margin="10px 0">
+          <Text color="gray0" size="sm" margin="10px 0">
             {stripByAmountAndFormat(
               userAmountTokenA + feesEarnedByUserForPool.totalBaseTokenFee
             )}{' '}
-            {getTokenNameByMintAddress(pool.tokenA)} /{' '}
+            {baseSymbol} /{' '}
             {stripByAmountAndFormat(
               userAmountTokenB + feesEarnedByUserForPool.totalQuoteTokenFee
             )}{' '}
-            {getTokenNameByMintAddress(pool.tokenB)}
+            {quoteSymbol}
           </Text>
         </>
       ),

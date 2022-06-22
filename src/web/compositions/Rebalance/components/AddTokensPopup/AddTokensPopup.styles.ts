@@ -12,8 +12,7 @@ export const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
   height: 55rem;
-  background: #222429;
-  border: 0.1rem solid #3a475c;
+  background: ${(props) => props.theme.colors.gray6};
   display: flex;
   justify-content: space-between;
   align-items: center;

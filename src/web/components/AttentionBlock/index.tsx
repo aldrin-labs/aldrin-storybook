@@ -1,8 +1,10 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import Attention from '@icons/attention.svg'
+
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+
 import { SvgIcon } from '..'
 
 export const ColorTextBlock = styled.div`
@@ -24,7 +26,7 @@ export const Title = styled(
 )`
   font-family: Avenir Next Medium;
   font-size: ${(props) => props.fontSize || '1.4rem'};
-  color: ${(props) => props.color || '#ecf0f3'};
+  color: ${(props) => props.color || props.theme.colors.gray4};
   text-align: ${(props) => props.textAlign || 'center'};
 
   ${(props) => props.style};
@@ -38,46 +40,47 @@ const AttentionComponent = ({
   text = '',
   header,
 }) => {
+  const theme = useTheme()
   return (
     <RowContainer>
       <ColorTextBlock
-        width={'100%'}
+        width="100%"
         height={blockHeight}
-        background={'rgba(242, 154, 54, 0.5)'}
+        background={theme.colors.red1}
       >
         <SvgIcon
           src={iconSrc}
           height={`${parseInt(blockHeight) / 2}rem`}
-          width={'auto'}
+          width="auto"
           style={{ margin: '0 2rem 0 3rem', ...iconStyle }}
         />
         <Row
-          direction='column'
-          width='85%'
-          margin={'0 0 0 5rem'}
-          justify='space-around'
-          align={'flex-start'}
-          style={{     
+          direction="column"
+          width="85%"
+          margin="0 0 0 5rem"
+          justify="space-around"
+          align="flex-start"
+          style={{
             padding: '.5rem 0',
           }}
         >
-          {header && 
+          {header && (
             <Title
-            fontSize={'2rem'}
-            textAlign={'inherit'} 
-            style={{
-              ...textStyle,
-              paddingRight: '1rem',
-              fontFamily: 'Avenir Next Bold',
-              margin: '0 0 1rem 0'
+              fontSize="2rem"
+              textAlign="inherit"
+              style={{
+                ...textStyle,
+                paddingRight: '1rem',
+                fontFamily: 'Avenir Next Bold',
+                margin: '0 0 1rem 0',
               }}
-              >
+            >
               {header}
             </Title>
-              }
+          )}
           <Title
-            fontSize={'1.4rem'}
-            textAlign={'inherit'}
+            fontSize="1.4rem"
+            textAlign="inherit"
             style={{ ...textStyle, paddingRight: '1rem' }}
           >
             {text}

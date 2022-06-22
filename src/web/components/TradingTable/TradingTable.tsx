@@ -67,23 +67,25 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   render() {
     const { tab, canceledOrders } = this.state
 
-    const { theme, marketType, updateTerminalViewMode, terminalViewMode } =
-      this.props
-
+    const {
+      theme,
+      marketType,
+      updateTerminalViewMode,
+      terminalViewMode,
+      newTheme,
+    } = this.props
     return (
       <div
         id="tables"
         style={{
           height: '100%',
-          backgroundColor: theme.palette.dark.background,
-          borderLeft: theme.palette.border.main,
-          borderBottom: theme.palette.border.main,
+          backgroundColor: newTheme?.colors?.gray6,
+          borderLeft: newTheme?.colors?.gray2,
         }}
       >
         <TradingTabs
           {...{
             tab,
-            theme,
             marketType,
             handleTabChange: this.handleTabChange,
             updateTerminalViewMode,
@@ -142,7 +144,8 @@ export default React.memo(TradingTableWrapper, (prevProps, nextProps) => {
   if (
     prevProps.marketType === nextProps.marketType &&
     prevProps.terminalViewMode === nextProps.terminalViewMode &&
-    prevProps.isMobile === nextProps.isMobile
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.newTheme === nextProps.newTheme
   ) {
     return true
   }
