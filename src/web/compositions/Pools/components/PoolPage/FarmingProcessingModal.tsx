@@ -11,6 +11,7 @@ import {
   Title,
 } from '../Popups/CreatePool/styles'
 import { FarmingProcessingModalProps } from './types'
+import { UCOLORS } from '@variables/variables'
 
 const PROCESSING_STATUSES = new Set(['preparing', 'signing', 'sending'])
 const OK_STATUSES = new Set([...PROCESSING_STATUSES.values(), 'success'])
@@ -76,6 +77,7 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
                           target="_blank"
                           href={`https://solscan.io/tx/${txId}`}
                           rel="noreferrer"
+                          style={{ color: UCOLORS.violet5 }}
                         >
                           View on SolScan.
                         </a>
@@ -92,6 +94,7 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"
                   rel="noreferrer"
+                  style={{ color: UCOLORS.violet5 }}
                 >
                   Telegram
                 </a>
