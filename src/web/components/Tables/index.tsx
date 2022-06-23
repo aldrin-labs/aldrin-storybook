@@ -43,6 +43,9 @@ import { StyledTableHead } from './styles'
 import { StyledTable, StyledTableSortLabel } from './Table.styles'
 import withPagination from './withPagination/withPagination'
 import withStandartSettings from './withStandartSettings/withStandartSettings'
+import { useTheme } from 'styled-components'
+
+const Utheme = useTheme()
 
 const CustomTableCell = withStyles((theme) => ({
   head: {
@@ -61,7 +64,7 @@ const CustomTableCell = withStyles((theme) => ({
     boxShadow: 'none',
   },
   body: {
-    color: theme.palette.dark.main,
+    color: Utheme.colors.openOrderBody,
     borderBottom: 'none',
     fontSize: 14,
     padding: '0.2rem 1.6rem 0.2rem 0.6rem',
