@@ -13,7 +13,6 @@ import {
   PoolInfo,
   TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
-import { fixCorruptedFarmingStates } from '@sb/compositions/Pools/utils/fixCorruptedFarmingStates'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
@@ -33,6 +32,7 @@ import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql
 import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { fixCorruptedFarmingStates } from '@core/solana'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 

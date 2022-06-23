@@ -1,5 +1,5 @@
 import { COLORS } from '@variables/variables'
-import React, { useEffect, useState } from 'react'
+import React, { useMemo } from 'react'
 import { Column, Table } from 'react-virtualized'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 
@@ -9,7 +9,6 @@ import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { Hint, SortButton } from './components'
 import { NoDataBlock } from './styles'
 import {
-  DataCellValues,
   DataTableProps,
   DataTableState,
   SORT_ORDER,
@@ -49,11 +48,10 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
     }
   )
 
-  const [sortedData, setSortedData] = useState<DataCellValues<E>[]>([])
-
-  useEffect(() => {
-    setSortedData(sortData(data, state.sort.field, state.sort.direction))
-  }, [state.sort])
+  const sortedData = useMemo(
+    () => sortData(data, state.sort.field, state.sort.direction),
+    [state.sort, data]
+  )
 
   return (
     <AutoSizer>

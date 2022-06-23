@@ -78,6 +78,7 @@ export function useAccountInfo(publicKey: PublicKey | undefined | null): {
   data: AccountInfo<Buffer> | null | undefined
   isLoading: boolean
   error: Error | undefined
+  refresh: () => void
 } {
   const connection = useConnection()
 
@@ -86,7 +87,7 @@ export function useAccountInfo(publicKey: PublicKey | undefined | null): {
     [publicKey]
   )
 
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     `userAccountInfo_${publicKey?.toBase58()}`,
     fetcher,
     {
@@ -98,6 +99,7 @@ export function useAccountInfo(publicKey: PublicKey | undefined | null): {
     data,
     isLoading: typeof data === 'undefined',
     error,
+    refresh: mutate,
   }
 }
 

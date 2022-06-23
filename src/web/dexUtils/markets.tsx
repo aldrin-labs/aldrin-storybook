@@ -929,9 +929,11 @@ export function useQuoteCurrencyBalances() {
 export function useBaseCurrencyBalances() {
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
   const { market } = useMarket()
-  const { data: accountInfo, isLoading } = useAccountInfo(
-    baseCurrencyAccount?.pubkey
-  )
+  const {
+    data: accountInfo,
+    isLoading,
+    refresh,
+  } = useAccountInfo(baseCurrencyAccount?.pubkey)
   if (!market || !baseCurrencyAccount || isLoading) {
     return [null]
   }
@@ -950,7 +952,9 @@ export function useBaseCurrencyBalances() {
 export function useSelectedQuoteCurrencyBalances() {
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const { market } = useMarket()
-  const { data: accountInfo, isLoading } = useAccountInfo(quoteCurrencyAccount?.pubkey)
+  const { data: accountInfo, isLoading } = useAccountInfo(
+    quoteCurrencyAccount?.pubkey
+  )
   if (!market || !quoteCurrencyAccount || isLoading || !accountInfo) {
     return null
   }
@@ -966,7 +970,9 @@ export function useSelectedQuoteCurrencyBalances() {
 export function useSelectedBaseCurrencyBalances() {
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
   const { market } = useMarket()
-  const { data: accountInfo, isLoading } = useAccountInfo(baseCurrencyAccount?.pubkey)
+  const { data: accountInfo, isLoading } = useAccountInfo(
+    baseCurrencyAccount?.pubkey
+  )
   if (!market || !baseCurrencyAccount || isLoading || !accountInfo) {
     return null
   }

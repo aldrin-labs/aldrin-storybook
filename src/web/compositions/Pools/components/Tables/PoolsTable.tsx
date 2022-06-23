@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import { DataTable, NoDataBlock } from '@sb/components/DataTable'
@@ -72,20 +72,34 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
     )
   }
 
-  const data = pools
-    .filter((pool) => filterPools({ tokenA: pool.tokenA, tokenB: pool.tokenB }))
-    .map((pool) =>
-      preparePoolTableCell({
-        pool,
-        tokenPrices,
-        prepareMore,
-        walletPk,
-        calcAccounts,
-        vestings: vestingsByMint,
-        farmingTicketsMap,
-        tokenMap,
-      })
-    )
+  const data = useMemo(
+    () =>
+      pools
+        .filter((pool) =>
+          filterPools({ tokenA: pool.tokenA, tokenB: pool.tokenB })
+        )
+        .map((pool) =>
+          preparePoolTableCell({
+            pool,
+            tokenPrices,
+            prepareMore,
+            walletPk,
+            calcAccounts,
+            vestings: vestingsByMint,
+            farmingTicketsMap,
+            tokenMap,
+          })
+        ),
+    [
+      pools,
+      tokenPrices,
+      walletPk,
+      calcAccounts,
+      vestingsByMint,
+      farmingTicketsMap,
+      tokenMap,
+    ]
+  )
 
   return (
     <DataTable
