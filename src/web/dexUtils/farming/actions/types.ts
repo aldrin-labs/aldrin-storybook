@@ -1,5 +1,4 @@
 import { PublicKey } from '@solana/web3.js'
-import { ProgramAccount } from 'anchor024'
 
 import { AldrinConnection, Farm } from '@core/solana'
 
@@ -14,7 +13,7 @@ export interface InitializeFarmingParams {
 export interface StartFarmingV2Params {
   wallet: WalletAdapter
   connection: AldrinConnection
-  farm: ProgramAccount<Farm>
+  farm: Farm
   userTokens: TokenInfo[]
   amount: number
   farmer?: PublicKey
@@ -23,7 +22,7 @@ export interface StartFarmingV2Params {
 export interface StopFarmingParams {
   wallet: WalletAdapter
   connection: AldrinConnection
-  farm: ProgramAccount<Farm>
+  farm: Farm
   userTokens: TokenInfo[]
   amount: number
 }

@@ -13,7 +13,7 @@ import { StartFarmingV2Params } from './types'
 export const startFarmingV2 = async (params: StartFarmingV2Params) => {
   const wallet = walletAdapterToWallet(params.wallet)
   const { farm, userTokens, amount, connection, farmer } = params
-  const stakeMint = farm.account.stakeMint.toString()
+  const stakeMint = farm.stakeMint.toString()
   const userTokenAccount = userTokens.find((ut) => ut.mint === stakeMint)
   if (!userTokenAccount) {
     throw new Error('Token account not found!')
@@ -38,7 +38,7 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
   const { instruction } = await buildStartFarmingV2Instruction({
     tokenAmount,
     farm: farm.publicKey,
-    stakeVault: farm.account.stakeVault,
+    stakeVault: farm.stakeVault,
     stakeWallet: new PublicKey(userTokenAccount.address),
     wallet,
     connection,

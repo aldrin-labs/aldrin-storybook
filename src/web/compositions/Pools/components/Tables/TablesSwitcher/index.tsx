@@ -171,7 +171,11 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
   const { data: farms } = useFarmInfo()
-  console.log('farms:', farms)
+  console.log(
+    'farms',
+    farms?.get('GkFSmZB5P9bzbDKnUi7dNpJSyjGdru6sxGWhNPupKs1v') || {}
+  )
+
   return (
     <>
       <button
@@ -185,7 +189,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             wallet,
             connection,
             amount: 10000,
-            farm: farms[0],
+            farm:
+              farms?.get('GkFSmZB5P9bzbDKnUi7dNpJSyjGdru6sxGWhNPupKs1v') || {},
             userTokens: userTokensData,
           })
         }}
@@ -204,7 +209,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             wallet,
             connection,
             amount: 10000,
-            farm: farms[0],
+            farm:
+              farms?.get('GkFSmZB5P9bzbDKnUi7dNpJSyjGdru6sxGWhNPupKs1v') || {},
             userTokens: userTokensData,
           })
         }}

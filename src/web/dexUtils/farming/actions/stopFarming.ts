@@ -14,7 +14,7 @@ import { StopFarmingParams } from './types'
 export const stopFarmingV2 = async (params: StopFarmingParams) => {
   const wallet = walletAdapterToWallet(params.wallet)
   const { farm, userTokens, connection, amount } = params
-  const stakeMint = farm.account.stakeMint.toString()
+  const stakeMint = farm.stakeMint.toString()
   const existingTokenAccount = userTokens.find((ut) => ut.mint === stakeMint)
   let userTokenAccount = userTokens.find((ut) => ut.mint === stakeMint)?.address
 
@@ -23,7 +23,7 @@ export const stopFarmingV2 = async (params: StopFarmingParams) => {
     const { newAccountPubkey, transaction } =
       await createAssociatedTokenAccountTransaction({
         wallet,
-        mintPublicKey: farm.account.stakeMint,
+        mintPublicKey: farm.stakeMint,
       })
     userTokenAccount = newAccountPubkey.toString()
 
@@ -34,7 +34,7 @@ export const stopFarmingV2 = async (params: StopFarmingParams) => {
 
   let decimals = existingTokenAccount?.decimals
   if (decimals === undefined) {
-    const tokenInfo = await connection.getAccountInfo(farm.account.stakeMint)
+    const tokenInfo = await connection.getAccountInfo(farm.stakeMint)
     if (!tokenInfo) {
       throw new Error('Token does not exist!')
     }
@@ -49,7 +49,7 @@ export const stopFarmingV2 = async (params: StopFarmingParams) => {
     connection,
     farm: farm.publicKey,
     stakeWallet: new PublicKey(userTokenAccount),
-    stakeVault: farm.account.stakeVault,
+    stakeVault: farm.stakeVault,
     tokenAmount,
   })
 
