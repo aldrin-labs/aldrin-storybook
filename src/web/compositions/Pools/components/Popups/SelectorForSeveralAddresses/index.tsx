@@ -31,14 +31,12 @@ const StyledText = styled(({ ...props }) => <Text {...props} />)`
 `
 
 export const SelectSeveralAddressesPopup = ({
-  theme,
   open,
   tokens,
   close,
   selectTokenMintAddress,
   selectTokenAddressFromSeveral,
 }: {
-  theme: DefaultTheme
   open: boolean
   tokens: TokenInfo[]
   close: () => void
@@ -79,7 +77,7 @@ export const SelectSeveralAddressesPopup = ({
               }}
             >
               <Row wrap="nowrap">
-                <TokenIcon mint={token.mint} width="2rem" height="2rem" />
+                <TokenIcon mint={token.mint} size={32} />
                 <StyledText>{tokenName}</StyledText>
               </Row>
               <Row wrap="nowrap">

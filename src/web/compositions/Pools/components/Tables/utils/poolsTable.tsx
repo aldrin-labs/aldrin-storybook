@@ -18,11 +18,10 @@ import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
 import { FarmingCalc } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { Vesting } from '@sb/dexUtils/vesting/types'
 import { groupBy } from '@sb/utils'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
+import { filterOpenFarmingStates, Vesting } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -292,8 +291,18 @@ export const preparePoolTableCell = (params: {
 }
 
 export const mergeColumns = (columns: DataHeadColumn[]) => [
-  { key: 'pool', title: 'Pool', sortable: true },
-  { key: 'tvl', title: 'Total Value Locked', sortable: true },
+  {
+    key: 'pool',
+    title: 'Pool',
+    sortable: true,
+    getWidth: (width: number) => width * 2,
+  },
+  {
+    key: 'tvl',
+    title: 'Total Value Locked',
+    sortable: true,
+    getWidth: (width: number) => width * 2,
+  },
   ...columns,
   {
     key: 'apr',

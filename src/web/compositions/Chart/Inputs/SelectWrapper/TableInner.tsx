@@ -1,7 +1,7 @@
+import { useTheme } from 'styled-components'
 import useMobileSize from '@webhooks/useMobileSize'
 import React from 'react'
 import { Column, Table } from 'react-virtualized'
-import { useTheme } from 'styled-components'
 
 import { StyledTable, StyledAutoSizer } from './SelectWrapperStyles'
 
@@ -35,7 +35,7 @@ export const TableInner = ({
             sort={sort}
             sortBy={sortBy}
             sortDirection={sortDirection}
-            onRowClick={({ event, index, rowData }) => {
+            onRowClick={({ rowData }) => {
               rowData.symbol.onClick()
             }}
             gridStyle={{
@@ -71,8 +71,9 @@ export const TableInner = ({
               <Column
                 label={` `}
                 dataKey="favourite"
+                disableSort
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.primaryWhite,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -90,6 +91,7 @@ export const TableInner = ({
             <Column
               label={` `}
               dataKey="emoji"
+              disableSort
               headerStyle={{
                 color: theme.colors.gray1,
                 paddingRight: 'calc(10px)',
@@ -127,7 +129,7 @@ export const TableInner = ({
               label="last price"
               dataKey="price"
               headerStyle={{
-                color: theme.colors.gray1,
+                color: theme.colors.primaryWhite,
                 paddingRight: 'calc(10px)',
                 fontSize: '1.5rem',
                 textAlign: 'left',
@@ -146,7 +148,7 @@ export const TableInner = ({
                 label="change 24h"
                 dataKey="price24hChange"
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.primaryWhite,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -285,6 +287,7 @@ export const TableInner = ({
               <Column
                 label="Links"
                 dataKey="links"
+                disableSort
                 headerStyle={{
                   color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',

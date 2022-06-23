@@ -1,31 +1,38 @@
-import { Connection } from '@solana/web3.js'
 import { useEffect, useState, useCallback } from 'react'
 
 import { SnapshotQueue } from '@sb/dexUtils/common/types'
-import { getParsedSnapshotQueues } from '@sb/dexUtils/pools/snapshotQueue/getParsedSnapshotQueues'
-import { WalletAdapter, AsyncRefreshFunction } from '@sb/dexUtils/types'
+import { AsyncRefreshFunction } from '@sb/dexUtils/types'
 
-export const useSnapshotQueues = ({
-  wallet,
-  connection,
-}: {
-  wallet: WalletAdapter
-  connection: Connection
-}): [SnapshotQueue[], AsyncRefreshFunction] => {
+import { getParsedAmmFarmingSnapshotQueues } from '@core/solana'
+
+import { walletAdapterToWallet } from '../../common'
+import { useConnection } from '../../connection'
+import { useWallet } from '../../wallet'
+
+export const useSnapshotQueues = (): [
+  SnapshotQueue[],
+  AsyncRefreshFunction
+] => {
   const [allSnapshotQueues, setAllSnapshotQueues] = useState<SnapshotQueue[]>(
     []
   )
 
+  const connection = useConnection()
+  const { wallet } = useWallet()
+
   const loadSnapshotQueues = useCallback(async () => {
-    if (!wallet.publicKey) {
+    try {
+      const w = walletAdapterToWallet(wallet)
+
+      const allSnapshots = await getParsedAmmFarmingSnapshotQueues({
+        wallet: w,
+        connection,
+      })
+
+      setAllSnapshotQueues(allSnapshots)
+    } catch (e) {
       return false
     }
-    const allSnapshots = await getParsedSnapshotQueues({
-      wallet,
-      connection,
-    })
-
-    setAllSnapshotQueues(allSnapshots)
 
     return true
   }, [wallet.publicKey?.toBase58()])

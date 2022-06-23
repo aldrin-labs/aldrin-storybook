@@ -10,7 +10,6 @@ export const signAndSendTransactions = async (
     transactionsAndSigners,
     connection,
     wallet,
-    focusPopup,
     successMessage,
     commitment,
   } = params
@@ -19,8 +18,7 @@ export const signAndSendTransactions = async (
     const signedTransactions = await signTransactions(
       transactionsAndSigners,
       connection,
-      wallet,
-      focusPopup
+      wallet
     )
 
     return await sendSignedTransactions(signedTransactions, connection, {
@@ -28,6 +26,8 @@ export const signAndSendTransactions = async (
       commitment,
     })
   } catch (e: any) {
-    return e.message || e || 'failed'
+    return `${e?.message.toString()}`.includes('cancelled')
+      ? 'cancelled'
+      : 'failed'
   }
 }

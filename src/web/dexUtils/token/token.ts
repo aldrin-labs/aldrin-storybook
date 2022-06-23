@@ -1,5 +1,3 @@
-import { Buffer } from 'buffer'
-import assert from 'assert'
 import BN from 'bn.js'
 import * as BufferLayout from '@solana/buffer-layout'
 import {
@@ -15,8 +13,11 @@ import type {
   Commitment,
   TransactionSignature,
 } from '@solana/web3.js'
+import assert from 'assert'
+import { Buffer } from 'buffer'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
+
 import * as Layout from './layout'
 import { sendAndConfirmTransaction } from './utils/send-and-confirm-transaction'
 import { sendAndConfirmTransactionViaWallet } from './utils/send-and-confirm-transaction-via-wallet'
@@ -376,7 +377,7 @@ export class Token {
    * @param freezeAuthority Optional account or multisig that can freeze token accounts
    * @param decimals Location of the decimal place
    * @param programId Optional token programId, uses the system programId by default
-  //  * @param transaction Transaction that will used for adding new transactions 
+  //  * @param transaction Transaction that will used for adding new transactions
    * @return Token object for the newly minted token
    */
   static async createMint(
@@ -572,78 +573,6 @@ export class Token {
       }
       throw err
     }
-  }
-
-  /**
-   * Create and initialize a new account on the special native token mint.
-   *
-   * In order to be wrapped, the account must have a balance of native tokens
-   * when it is initialized with the token program.
-   *
-   * This function sends lamports to the new account before initializing it.
-   *
-   * @param wallet The wallet that will sign the transaction
-   * @param connection A solana web3 connection
-   * @param programId The token program ID
-   * @param owner The owner of the new token account
-   * @param amount The amount of lamports to wrap
-   * @return {Promise<PublicKey>} The new token account
-   */
-  static async createWrappedNativeAccount(
-    wallet: WalletAdapter,
-    connection: Connection,
-    programId: PublicKey,
-    owner: PublicKey,
-    amount: number
-  ): Promise<[PublicKey, Transaction, Account]> {
-    // Allocate memory for the account
-    const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
-      connection
-    )
-
-    // Create a new account
-    const newAccount = new Account()
-    const transaction = new Transaction()
-    transaction.add(
-      SystemProgram.createAccount({
-        fromPubkey: wallet.publicKey,
-        newAccountPubkey: newAccount.publicKey,
-        lamports: balanceNeeded,
-        space: AccountLayout.span,
-        programId,
-      })
-    )
-
-    // Send lamports to it (these will be wrapped into native tokens by the token program)
-    transaction.add(
-      SystemProgram.transfer({
-        fromPubkey: wallet.publicKey,
-        toPubkey: newAccount.publicKey,
-        lamports: amount,
-      })
-    )
-
-    // Assign the new account to the native token mint.
-    // the account will be initialized with a balance equal to the native token balance.
-    // (i.e. amount)
-    transaction.add(
-      Token.createInitAccountInstruction(
-        programId,
-        NATIVE_MINT,
-        newAccount.publicKey,
-        owner
-      )
-    )
-
-    // Send the three instructions
-    // await sendAndConfirmTransactionViaWallet(
-    //   wallet,
-    //   connection,
-    //   transaction,
-    //   newAccount,
-    // );
-
-    return [newAccount.publicKey, transaction, newAccount]
   }
 
   /**

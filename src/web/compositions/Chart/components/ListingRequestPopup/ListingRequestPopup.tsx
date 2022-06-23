@@ -598,6 +598,7 @@ const ListingRequestPopup = ({
                   {categoriesOfMarkets.map((el) => {
                     return (
                       <StyledTab
+                        key={el}
                         isSelected={requestData.category.includes(el)}
                         onClick={() => {
                           if (requestData.category.includes(el)) {

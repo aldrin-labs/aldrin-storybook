@@ -103,10 +103,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const { data: calcAccounts, mutate: refreshCalcAccounts } =
     useFarmingCalcAccounts()
 
-  const [snapshotQueues] = useSnapshotQueues({
-    wallet,
-    connection,
-  })
+  const [snapshotQueues] = useSnapshotQueues()
 
   const pools = rawPools.map((pool) => {
     return {
@@ -265,7 +262,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           </AuditInfo>
         </InputWrap>
       </TabContainer>
-      <TableContainer>
+
+      <TableContainer $height="80rem">
         {selectedTable === 'authorized' && (
           <AllPoolsTable
             searchValue={searchValue}

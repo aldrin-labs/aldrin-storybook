@@ -7,9 +7,12 @@ import {
   PoolAddress,
   SnapshotQueue,
 } from '@sb/dexUtils/common/types'
-import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
 import { RefreshFunction, WalletAdapter } from '@sb/dexUtils/types'
+
+import {
+  getParsedUserFarmingTickets,
+  addFarmingRewardsToTickets,
+} from '@core/solana'
 
 import { groupBy } from '../../../utils'
 

@@ -26,7 +26,14 @@ const WebIcon = styled.img<WebIconProps>`
 
 const SvgIcon: React.FC<Props> = (props) => {
   const {
-    alt = '', src, onClick, onError, style, width, height, className
+    alt = '',
+    src,
+    onClick,
+    onError,
+    style,
+    width,
+    height,
+    className,
   } = props
   return (
     <WebIcon

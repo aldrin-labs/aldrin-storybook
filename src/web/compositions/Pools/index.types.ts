@@ -1,39 +1,8 @@
-import { FarmingState, FarmingTicket } from '@sb/dexUtils/common/types'
+import { FarmingTicket } from '@sb/dexUtils/common/types'
 
-export type PoolInfo = {
-  name: string
-  parsedName: string
-  tokenA: string
-  tokenB: string
-  curveType: number
-  tokenADecimals: number
-  tokenBDecimals: number
-  poolTokenAccountA: string
-  poolTokenAccountB: string
-  initializerAccount: string
-  swapToken: string
-  poolTokenMint: string
-  lpTokenFreezeVaultBalance: number
-  lpTokenFreezeVault: string
-  farming: FarmingState[] | null
-  tvl: {
-    tokenA: number
-    tokenB: number
-  }
-  apy24h: number // %
-  supply: number
-  curve?: string
-  amp?: number
-  fees: PoolFees
-}
+import { PoolFees, PoolInfo } from '@core/types/pools.types'
 
-export type PoolFees = {
-  tradeFeeNumerator: number
-  ownerTradeFeeNumerator: number
-  tradeFeeDenominator: number
-  ownerTradeFeeDenominator: number
-}
-
+export { PoolFees, PoolInfo }
 export type DexTokensPrices = {
   symbol: string
   price: number

@@ -3,9 +3,9 @@ import React from 'react'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { getTokenName } from '@sb/dexUtils/markets'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
+import { filterOpenFarmingStates } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import { groupBy } from '../../../../utils'
@@ -23,7 +23,7 @@ export const FarmingRewardsIcons: React.FC<FarmingRewardsIconsProps> = (
       {mints.map((mint) => {
         return (
           <FarmingIconWrap key={`farming_icon_${poolMint}_${mint}`}>
-            <TokenIcon mint={mint} width="1.3em" emojiIfNoLogo={false} />
+            <TokenIcon mint={mint} />
           </FarmingIconWrap>
         )
       })}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { DataTable, SORT_ORDER, NoDataBlock } from '@sb/components/DataTable'
+import { DataTable, NoDataBlock } from '@sb/components/DataTable'
 import { getTokenName, getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -93,16 +93,13 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
       generateTestId={generateTestId}
       data={data}
       columns={columns}
-      defaultSortColumn="tvl"
-      defaultSortOrder={SORT_ORDER.DESC}
-      onRowClick={(e, row) => {
-        e.preventDefault()
+      onRowClick={({ rowData }) => {
         const tokenAName = getTokenName({
-          address: row.extra.tokenA,
+          address: rowData.extra.tokenA,
           tokensInfoMap: tokenMap,
         })
         const tokenBName = getTokenName({
-          address: row.extra.tokenB,
+          address: rowData.extra.tokenB,
           tokensInfoMap: tokenMap,
         })
 

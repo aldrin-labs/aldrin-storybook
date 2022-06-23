@@ -24,7 +24,7 @@ export const TokenIconWithName: React.FC<TokenIconWithNameProps> = (props) => {
   const tokenName = getTokenName({ address: mint, tokensInfoMap: tokensInfo })
   return (
     <FlexBlock alignItems="center">
-      <TokenIcon mint={mint} width="32px" height="32px" />
+      <TokenIcon mint={mint} size={32} />
       <TokenName>{tokenName}</TokenName>
     </FlexBlock>
   )

@@ -1,8 +1,9 @@
 import { PublicKey } from '@solana/web3.js'
-import useSwr from 'swr'
-import { RefreshFunction } from '@sb/dexUtils/types'
 import BN from 'bn.js'
+import useSwr from 'swr'
+
 import { useConnection } from '@sb/dexUtils/connection'
+import { RefreshFunction } from '@sb/dexUtils/types'
 
 interface PoolTokens {
   poolTokenAccountA?: string

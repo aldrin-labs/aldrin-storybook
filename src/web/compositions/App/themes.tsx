@@ -34,7 +34,7 @@ export const dark = {
     violet1: '#D2B0FFFF',
     violet0: '#F1E6FFFF',
     green9: '#006B37FF',
-    green8: '#00ff8426', //
+    green8: '#00ff8426',
     green7: '#00B55EFF',
     green6: '#47FFA7FF',
     green5: '#00F47EFF',

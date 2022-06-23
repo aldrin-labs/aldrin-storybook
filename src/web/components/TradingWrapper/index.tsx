@@ -230,7 +230,7 @@ class SimpleTabs extends React.Component<any, any> {
     const maxAmount = [funds[1].quantity, funds[0].quantity]
     return (
       <TerminalComponentsContainer
-        terminalViewMode={terminalViewMode}
+        $terminalViewMode={terminalViewMode}
         id="tradingTerminal"
         item
         xs={12}

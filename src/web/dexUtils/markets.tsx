@@ -828,7 +828,7 @@ export function useSelectedQuoteCurrencyAccount() {
   const mintAddress = market?.quoteMintAddress
 
   const [associatedTokenAddress] = useAssociatedTokenAddressByMint(mintAddress)
-  const [associatedTokenInfo] = useAccountInfo(associatedTokenAddress)
+  const { data: associatedTokenInfo } = useAccountInfo(associatedTokenAddress)
 
   const quoteTokenAddress = getSelectedTokenAccountForMint(
     market,
@@ -884,7 +884,7 @@ export function useSelectedBaseCurrencyAccount() {
   const mintAddress = market?.baseMintAddress
 
   const [associatedTokenAddress] = useAssociatedTokenAddressByMint(mintAddress)
-  const [associatedTokenInfo] = useAccountInfo(associatedTokenAddress)
+  const { data: associatedTokenInfo } = useAccountInfo(associatedTokenAddress)
 
   const baseTokenAddress = getSelectedTokenAccountForMint(
     market,
@@ -909,20 +909,19 @@ export function useQuoteCurrencyBalances() {
   // or accos here - try get account info
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const { market } = useMarket()
-  const [accountInfo, loaded, refresh] = useAccountInfo(
+  const { data: accountInfo, isLoading } = useAccountInfo(
     quoteCurrencyAccount?.pubkey
   )
-  if (!market || !quoteCurrencyAccount || !loaded) {
-    return [null, refresh]
+  if (!market || !quoteCurrencyAccount || isLoading) {
+    return [null]
   }
   if (market.quoteMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
-    return [accountInfo?.lamports / 1e9 ?? 0, refresh]
+    return [accountInfo?.lamports / 1e9 ?? 0]
   }
   return [
     market.quoteSplSizeToNumber(
       new BN(accountInfo.data.slice(64, 72), 10, 'le')
     ),
-    refresh,
   ]
 }
 
@@ -930,20 +929,20 @@ export function useQuoteCurrencyBalances() {
 export function useBaseCurrencyBalances() {
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
   const { market } = useMarket()
-  const [accountInfo, loaded, refresh] = useAccountInfo(
+  const { data: accountInfo, isLoading } = useAccountInfo(
     baseCurrencyAccount?.pubkey
   )
-  if (!market || !baseCurrencyAccount || !loaded) {
-    return [null, refresh]
+  if (!market || !baseCurrencyAccount || isLoading) {
+    return [null]
   }
   if (market.baseMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
-    return [accountInfo?.lamports / 1e9 ?? 0, refresh]
+    return [accountInfo?.lamports / 1e9 ?? 0]
   }
   return [
     market.baseSplSizeToNumber(
       new BN(accountInfo.data.slice(64, 72), 10, 'le')
     ),
-    refresh,
+    // refresh,
   ]
 }
 
@@ -951,8 +950,10 @@ export function useBaseCurrencyBalances() {
 export function useSelectedQuoteCurrencyBalances() {
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const { market } = useMarket()
-  const [accountInfo, loaded] = useAccountInfo(quoteCurrencyAccount?.pubkey)
-  if (!market || !quoteCurrencyAccount || !loaded || !accountInfo) {
+  const { data: accountInfo, isLoading } = useAccountInfo(
+    quoteCurrencyAccount?.pubkey
+  )
+  if (!market || !quoteCurrencyAccount || isLoading || !accountInfo) {
     return null
   }
   if (market.quoteMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
@@ -967,8 +968,10 @@ export function useSelectedQuoteCurrencyBalances() {
 export function useSelectedBaseCurrencyBalances() {
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
   const { market } = useMarket()
-  const [accountInfo, loaded] = useAccountInfo(baseCurrencyAccount?.pubkey)
-  if (!market || !baseCurrencyAccount || !loaded || !accountInfo) {
+  const { data: accountInfo, isLoading } = useAccountInfo(
+    baseCurrencyAccount?.pubkey
+  )
+  if (!market || !baseCurrencyAccount || isLoading || !accountInfo) {
     return null
   }
   if (market.baseMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {

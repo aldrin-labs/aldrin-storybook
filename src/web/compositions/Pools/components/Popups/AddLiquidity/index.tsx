@@ -28,26 +28,28 @@ import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { createBasket } from '@sb/dexUtils/pools/actions/createBasket'
 import { createBasketWithSwap } from '@sb/dexUtils/pools/actions/createBasketWithSwap'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
-import { findClosestAmountToSwapForDeposit } from '@sb/dexUtils/pools/swap/findClosestAmountToSwapForDeposit'
-import { getFeesAmount } from '@sb/dexUtils/pools/swap/getFeesAmount'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+  sleep,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
 import { STABLE_POOLS_WITH_IMPERMANENT_LOSS } from '@core/config/dex'
+import {
+  filterOpenFarmingStates,
+  findClosestAmountToSwapForDeposit,
+  getFeesAmount,
+} from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import Info from '@icons/TooltipImg.svg'
 
-import {
-  formatNumbersForState,
-  formatNumberWithSpaces,
-  sleep,
-} from '../../../../../dexUtils/utils'
 import { Button } from '../../Tables/index.styles'
 import { InputWithCoins, InputWithTotal } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
