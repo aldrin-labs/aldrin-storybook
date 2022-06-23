@@ -127,8 +127,8 @@ export const combineRunningOrdersTable = ({
         parseInt(currentPairSettings.fees.cancellingFeeNumerator.toString()) /
         parseInt(currentPairSettings.fees.cancellingFeeDenominator.toString())
 
-      const side = runningOrder.side.ask ? 'Sell' : 'Buy'
-      const isSellSide = side === 'Sell'
+      const side = runningOrder.side.ask ? 'ask' : 'bid'
+      const isSellSide = side === 'ask'
       const [baseTokenMint, quoteTokenMint] = isSellSide
         ? [
             currentPairSettings.baseTokenMint,

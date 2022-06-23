@@ -103,10 +103,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const { data: calcAccounts, mutate: refreshCalcAccounts } =
     useFarmingCalcAccounts()
 
-  const [snapshotQueues] = useSnapshotQueues({
-    wallet,
-    connection,
-  })
+  const [snapshotQueues] = useSnapshotQueues()
 
   const pools = rawPools.map((pool) => {
     return {

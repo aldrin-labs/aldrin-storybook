@@ -18,11 +18,10 @@ import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
 import { FarmingCalc } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { Vesting } from '@sb/dexUtils/vesting/types'
 import { groupBy } from '@sb/utils'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
+import { filterOpenFarmingStates, Vesting } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,

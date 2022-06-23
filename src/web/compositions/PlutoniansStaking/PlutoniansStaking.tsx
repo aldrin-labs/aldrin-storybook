@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { COLORS, FONT_SIZES } from '@variables/variables'
-import { ProgramAccount } from 'anchor024'
+import { ProgramAccount } from 'anchor020'
 import { BN } from 'bn.js'
 import React, { useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
@@ -34,6 +34,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { SRinNftRewardGroup } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -48,7 +49,6 @@ import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
 import { claimSrinNFTs } from '../../dexUtils/staking/actions/claimSrinNFTs'
 import { endSrinStaking } from '../../dexUtils/staking/actions/endSrinStaking'
-import { SRinNftRewardGroup } from '../../dexUtils/staking/hooks/types'
 import { useSrinNftReceipts } from '../../dexUtils/staking/hooks/useSrinNftReceipts'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'
@@ -310,7 +310,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
         message: result === 'success' ? 'Succesfully staked' : 'Staking failed',
       })
       const refreshAllResult = await refreshAll()
-      console.log('refreshAllResult: ', refreshAllResult)
+      // console.log('refreshAllResult: ', refreshAllResult)
       setLoading(false)
     } catch (e) {
       console.warn(`Unable to stake ${stakeTokenName}`, e)

@@ -1,9 +1,11 @@
-import { buildTransactions, STAKING_PROGRAM_ADDRESS } from '@core/solana'
-
 import {
-  startStakingInstructions,
-  withdrawStakedInstructions,
-} from '../../common/actions'
+  buildTransactions,
+  STAKING_PROGRAM_ADDRESS,
+  buildStartStakingInstructions,
+  buildWithdrawStakedInstructions,
+} from '@core/solana'
+
+import { walletAdapterToWallet } from '../../common'
 import { signAndSendTransactions } from '../../transactions'
 import { RestakeParams } from './types'
 
@@ -19,23 +21,19 @@ export const restake = async (params: RestakeParams) => {
     allTokensData,
   } = params
 
-  const creatorPk = wallet.publicKey
-  if (!creatorPk) {
-    throw new Error('no pubkey')
-  }
-
-  const claimInstructions = await withdrawStakedInstructions({
+  const w = walletAdapterToWallet(wallet)
+  const claimInstructions = await buildWithdrawStakedInstructions({
     connection,
-    wallet,
+    wallet: w,
     stakingPool,
     farmingTickets,
     programAddress,
     allTokensData,
   })
 
-  const startInstructions = await startStakingInstructions({
+  const startInstructions = await buildStartStakingInstructions({
     connection,
-    wallet,
+    wallet: w,
     amount,
     userPoolTokenAccount,
     stakingPool,
@@ -50,17 +48,17 @@ export const restake = async (params: RestakeParams) => {
     instruction,
   }))
 
-  const signers = [...claimInstructions.signers, ...startInstructions.signers]
+  const signers = [...startInstructions.signers]
 
   const transactionsAndSigners = buildTransactions(
     instructions,
-    creatorPk,
+    w.publicKey,
     signers
   )
 
   return signAndSendTransactions({
     transactionsAndSigners,
     connection,
-    wallet,
+    wallet: w,
   })
 }

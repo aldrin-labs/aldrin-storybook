@@ -5,10 +5,10 @@ import useSWR from 'swr'
 import { getRINCirculationSupply } from '@core/api'
 import { client } from '@core/graphql/apolloClient'
 import { getStakingPoolInfo } from '@core/graphql/queries/staking/getStakingPool'
+import { getCurrentFarmingStateFromAll } from '@core/solana'
 import { DAY } from '@core/utils/dateUtils'
 
 import { STAKING_FARMING_TOKEN_DIVIDER } from '../config'
-import { getCurrentFarmingStateFromAll } from '../getCurrentFarmingStateFromAll'
 import { StakingPool } from '../types'
 
 dayjs.extend(utc)
