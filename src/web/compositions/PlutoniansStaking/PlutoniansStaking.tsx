@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { COLORS, FONT_SIZES } from '@variables/variables'
-import { ProgramAccount } from 'anchor024'
+import { ProgramAccount } from 'anchor020'
 import { BN } from 'bn.js'
 import React, { useMemo, useState } from 'react'
 import { useParams } from 'react-router'
