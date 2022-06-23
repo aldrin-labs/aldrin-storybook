@@ -104,7 +104,7 @@ const CustomMarketDialog = ({
 
   const wellFormedMarketId = isValidPublicKey(marketId)
 
-  const [marketAccountInfo] = useAccountInfo(
+  const { data: marketAccountInfo } = useAccountInfo(
     wellFormedMarketId ? new PublicKey(marketId) : null
   )
   const programId = marketAccountInfo

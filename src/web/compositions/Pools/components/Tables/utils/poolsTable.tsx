@@ -291,8 +291,18 @@ export const preparePoolTableCell = (params: {
 }
 
 export const mergeColumns = (columns: DataHeadColumn[]) => [
-  { key: 'pool', title: 'Pool', sortable: true },
-  { key: 'tvl', title: 'Total Value Locked', sortable: true },
+  {
+    key: 'pool',
+    title: 'Pool',
+    sortable: true,
+    getWidth: (width: number) => width * 2,
+  },
+  {
+    key: 'tvl',
+    title: 'Total Value Locked',
+    sortable: true,
+    getWidth: (width: number) => width * 2,
+  },
   ...columns,
   {
     key: 'apr',

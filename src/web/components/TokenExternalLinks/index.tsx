@@ -9,12 +9,12 @@ import Coinmarketcap from '@icons/coinmarketcap.svg'
 import Inform from '@icons/inform.svg'
 import Nomics from '@icons/nomics.svg'
 import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
-import SolanaFm from '@icons/solanafm.svg'
-import SolanaFmDark from '@icons/solanafmDark.svg'
-import Solscan from '@icons/solscan.svg'
 
 import SvgIcon from '../SvgIcon'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
+import SolanaFm from './assets/solanafm.png'
+import SolanaFmDark from './assets/solanafmdark.png'
+import Solscan from './assets/solscan.png'
 import {
   Container,
   Anchor,

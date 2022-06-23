@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
-import { DefaultTheme } from 'styled-components'
 
 import { FlexBlock } from '@sb/components/Layout'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -14,6 +13,7 @@ import {
   PoolInfo,
   TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
+import { fixCorruptedFarmingStates } from '@sb/compositions/Pools/utils/fixCorruptedFarmingStates'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
@@ -67,18 +67,16 @@ interface TableSwitcherProps {
   getWeeklyAndDailyTradingVolumesForPoolsQuery: {
     getWeeklyAndDailyTradingVolumesForPools?: TradingVolumeStats[]
   }
-  theme: DefaultTheme
 }
 
 const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const {
     getPoolsInfoQueryRefetch,
-    getPoolsInfoQuery: { getPoolsInfo: pools = [] },
+    getPoolsInfoQuery: { getPoolsInfo: rawPools = [] },
     getDexTokensPricesQuery: { getDexTokensPrices = [] },
     getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
     getFeesEarnedByPoolQuery: { getFeesEarnedByPool = [] },
     getWeeklyAndDailyTradingVolumesForPoolsQuery,
-    theme,
   } = props
 
   const [searchValue, setSearchValue] = useState('')
@@ -106,6 +104,13 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     useFarmingCalcAccounts()
 
   const [snapshotQueues] = useSnapshotQueues()
+
+  const pools = rawPools.map((pool) => {
+    return {
+      ...pool,
+      farming: fixCorruptedFarmingStates(pool.farming),
+    }
+  })
 
   const [farmingTicketsMap, refreshFarmingTickets] = useFarmingTicketsMap({
     wallet,
@@ -257,7 +262,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           </AuditInfo>
         </InputWrap>
       </TabContainer>
-      <TableContainer>
+
+      <TableContainer $height="80rem">
         {selectedTable === 'authorized' && (
           <AllPoolsTable
             searchValue={searchValue}
@@ -329,7 +335,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           earnedFees={earnedFeesInPoolForUserMap}
           refreshUserTokensData={refreshUserTokensData}
           refreshAll={refreshAll}
-          snapshotQueues={snapshotQueues}
           vestingsForWallet={vestingsByMintForUser}
           refetchPools={getPoolsInfoQueryRefetch}
         />

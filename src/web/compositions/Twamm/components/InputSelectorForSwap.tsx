@@ -77,8 +77,7 @@ export const InputWithSelectorForSwaps = ({
         >
           <TokenIcon
             mint={getTokenMintAddressByName(symbol)}
-            width="2rem"
-            height="2rem"
+            size={32}
           />
           <Text
             style={{ margin: '0 0.5rem' }}

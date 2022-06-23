@@ -11,7 +11,6 @@ import { useTheme } from 'styled-components'
 import { SvgIcon } from '@sb/components'
 import {
   datesForQuery,
-  excludedPairs,
   fiatRegexp,
 } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 import { combineSelectWrapperData } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
@@ -126,7 +125,6 @@ export const defaultRowRenderer = ({
       (rowData.symbol.contentToSort.toLowerCase().includes('all') &&
         selectedPair === 'all'))
 
-
   return (
     <div
       {...a11yProps}
@@ -177,10 +175,7 @@ const PairSelector = ({
 
   const filtredMarketsByExchange =
     getSerumMarketDataQuery.getSerumMarketData.filter(
-      (el) =>
-        el.symbol &&
-        !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !excludedPairs.includes(el.symbol)
+      (el) => el.symbol && !Array.isArray(el.symbol.match(fiatRegexp))
     )
 
   const allMarketsValue = filtredMarketsByExchange

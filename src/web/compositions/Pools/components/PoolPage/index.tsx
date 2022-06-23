@@ -70,7 +70,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     userTokensData,
     farmingTickets,
     earnedFees,
-    snapshotQueues,
     refreshUserTokensData,
     refreshAll,
     vestingsForWallet,
@@ -102,11 +101,17 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const goBack = () => history.push('/pools')
 
-  const pool = pools?.find(
-    (p) =>
-      `${tokenMap.get(p.tokenA)?.symbol}_${tokenMap.get(p.tokenB)?.symbol}` ===
-      symbol
-  )
+  const pool = pools?.find((p) => {
+    const tokenAName = getTokenName({
+      address: p.tokenA,
+      tokensInfoMap: tokenMap,
+    })
+    const tokenBName = getTokenName({
+      address: p.tokenB,
+      tokensInfoMap: tokenMap,
+    })
+    return `${tokenAName}_${tokenBName}` === symbol
+  })
 
   const [poolBalances] = usePoolBalances(pool || {})
 
@@ -177,11 +182,14 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
         <TokenInfos>
           <TokenInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
-              <InlineText color="green4">1</InlineText>
-              <InlineText>{base}&nbsp;=&nbsp;</InlineText>
-              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
-              <InlineText color="green4">
+              <TokenIcon mint={pool.tokenA} />
+              <InlineText color="success">1</InlineText>
+              <InlineText>
+                {base}
+                {` = `}
+              </InlineText>
+              <TokenIcon mint={pool.tokenB} />
+              <InlineText color="success">
                 {stripByAmountAndFormat(basePrice, 4)}
               </InlineText>
               <InlineText>{quote}</InlineText>
@@ -189,10 +197,13 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenInfo>
           <TokenInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenB} />
               <InlineText color="green4">1</InlineText>
-              <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
-              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
+              <InlineText>
+                {quote}
+                {` = `}
+              </InlineText>
+              <TokenIcon mint={pool.tokenA} />
               <InlineText color="green4">
                 {stripByAmountAndFormat(quotePrice, 4)}
               </InlineText>
@@ -201,7 +212,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenInfo>
           <TokenGlobalInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenA} />
               <TokenInfoTextWrap>
                 <TokenInfoText weight={700}>
                   {base}
@@ -221,7 +232,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenGlobalInfo>
           <TokenGlobalInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenB} />
               <TokenInfoTextWrap>
                 <TokenInfoText weight={700}>
                   {quote}

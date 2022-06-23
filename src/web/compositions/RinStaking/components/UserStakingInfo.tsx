@@ -213,7 +213,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const claimUnlockDataTimestamp = dayjs.unix(
     currentFarmingState.startTime +
-      DAY * daysInMonthForDate(currentFarmingState.startTime)
+    DAY * daysInMonthForDate(currentFarmingState.startTime)
   )
   const claimUnlockData = dayjs(claimUnlockDataTimestamp)
     .format('D-MMMM-YYYY')

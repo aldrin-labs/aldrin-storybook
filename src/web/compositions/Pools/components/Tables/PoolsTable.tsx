@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-import { DataTable, SORT_ORDER, NoDataBlock } from '@sb/components/DataTable'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { DataTable, NoDataBlock } from '@sb/components/DataTable'
+import { getTokenName, getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useVestings } from '@sb/dexUtils/vesting'
@@ -53,11 +53,16 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
     tokenA: string
     tokenB: string
   }) => {
+    const tokenAName = getTokenName({
+      address: tokenA,
+      tokensInfoMap: tokenMap,
+    })
+    const tokenBName = getTokenName({
+      address: tokenB,
+      tokensInfoMap: tokenMap,
+    })
     return (
-      symbolIncludesSearch(
-        `${tokenMap.get(tokenA)?.symbol}_${tokenMap.get(tokenB)?.symbol}`,
-        searchValue
-      ) ||
+      symbolIncludesSearch(`${tokenAName}_${tokenBName}`, searchValue) ||
       symbolIncludesSearch(
         `${getTokenNameByMintAddress(tokenA)}_${getTokenNameByMintAddress(
           tokenB
@@ -88,14 +93,17 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
       generateTestId={generateTestId}
       data={data}
       columns={columns}
-      defaultSortColumn="tvl"
-      defaultSortOrder={SORT_ORDER.DESC}
-      onRowClick={(e, row) => {
-        e.preventDefault()
-        const tokenA = tokenMap.get(row.extra.tokenA)?.symbol
-        const tokenB = tokenMap.get(row.extra.tokenB)?.symbol
+      onRowClick={({ rowData }) => {
+        const tokenAName = getTokenName({
+          address: rowData.extra.tokenA,
+          tokensInfoMap: tokenMap,
+        })
+        const tokenBName = getTokenName({
+          address: rowData.extra.tokenB,
+          tokensInfoMap: tokenMap,
+        })
 
-        history.push(`/pools/${tokenA}_${tokenB}`)
+        history.push(`/pools/${tokenAName}_${tokenBName}`)
       }}
       noDataText={
         noDataText || (
