@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
+import { compose } from 'recompose'
+import { DefaultTheme, useTheme } from 'styled-components'
+
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
+import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
+import { useInterval } from '@sb/dexUtils/useInterval'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+
+import { getRINCirculationSupply } from '@core/api'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
-import { Theme } from '@material-ui/core'
-import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
-import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
-import { compose } from 'recompose'
-import { useInterval } from '@sb/dexUtils/useInterval'
+
 import {
   MarketStatsContainer,
   MobileMarketStatsContainer,
@@ -19,7 +24,6 @@ import {
   PanelCardTitle,
   PanelCardValue,
 } from '../../Chart.styles'
-import { getRINCirculationSupply } from '@core/api'
 
 export interface MarketDataByTicker {
   tradesCount: number
@@ -32,7 +36,7 @@ export interface MarketDataByTicker {
 }
 
 interface IProps {
-  theme: Theme
+  theme: DefaultTheme
   symbol: string
   marketType: number
   marketDataByTickersQuery: {
@@ -89,7 +93,6 @@ const MarketStats: React.FC<IProps> = (props) => {
     marketDataByTickersQuery,
     marketDataByTickersQueryRefetch,
     symbol = ' _ ',
-    theme,
     marketType,
     isRINPair,
     pricePrecision,
@@ -112,6 +115,8 @@ const MarketStats: React.FC<IProps> = (props) => {
       maxPrice: 0,
     },
   }
+
+  const theme = useTheme()
 
   useInterval(() => {
     const variables = {
@@ -175,97 +180,94 @@ const MarketStats: React.FC<IProps> = (props) => {
   return (
     <>
       <MarketStatsContainer>
-        <PanelCard marketType={marketType} theme={theme}>
+        <PanelCard marketType={marketType}>
           <PanelCardValue
-            theme={theme}
             style={{
-              color: showGreen
-                ? theme.palette.green.main
-                : theme.palette.red.main,
+              color: showGreen ? theme.colors.green7 : theme.colors.red3,
               fontSize: '2.3rem',
               letterSpacing: '0.01rem',
               fontFamily: 'Avenir Next Demi',
             }}
           >
-            {markPrice === 0 ? '--' : formatNumberToUSFormat(strippedMarkPrice)}
+            {markPrice === 0 ? '--' : formatNumberWithSpaces(strippedMarkPrice)}
           </PanelCardValue>
         </PanelCard>
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardTitle theme={theme}>24h change</PanelCardTitle>
+        <PanelCard marketType={marketType}>
+          <PanelCardTitle>24h change</PanelCardTitle>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue
-              theme={theme}
+              data-testid="market-stats-24h-change"
               style={{
                 color:
                   +priceChangePercentage > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                    ? theme.colors.green7
+                    : theme.colors.red3,
               }}
             >
-              {formatNumberToUSFormat(strippedLastPriceDiff)}
+              {formatNumberWithSpaces(strippedLastPriceDiff)}
             </PanelCardValue>
             <PanelCardSubValue
-              theme={theme}
+              data-testid="market-stats-24h-change-percentage"
               style={{
                 color:
                   +priceChangePercentage > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
+                    ? theme.colors.green7
+                    : theme.colors.red3,
               }}
             >
               {!priceChangePercentage
                 ? '--'
-                : `${sign24hChange}${formatNumberToUSFormat(
+                : `${sign24hChange}${formatNumberWithSpaces(
                     stripDigitPlaces(+priceChangePercentage)
                   )}%`}
             </PanelCardSubValue>
           </span>
         </PanelCard>
 
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardTitle theme={theme}>24h high</PanelCardTitle>
-          <PanelCardValue theme={theme}>
-            {formatNumberToUSFormat(stripDigitPlaces(maxPrice, pricePrecision))}
+        <PanelCard marketType={marketType}>
+          <PanelCardTitle>24h high</PanelCardTitle>
+          <PanelCardValue data-testid="market-stats-24h-high">
+            {formatNumberWithSpaces(stripDigitPlaces(maxPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
 
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardTitle theme={theme}>24h low</PanelCardTitle>
-          <PanelCardValue theme={theme}>
-            {formatNumberToUSFormat(stripDigitPlaces(minPrice, pricePrecision))}
+        <PanelCard marketType={marketType}>
+          <PanelCardTitle>24h low</PanelCardTitle>
+          <PanelCardValue data-testid="market-stats-24h-low">
+            {formatNumberWithSpaces(stripDigitPlaces(minPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
-        <PanelCard marketType={marketType} theme={theme}>
-          <PanelCardTitle theme={theme}>24hr volume</PanelCardTitle>
-          <PanelCardValue theme={theme}>
-            {formatNumberToUSFormat(stripDigitPlaces(volume, 2))} {quote}
+        <PanelCard marketType={marketType}>
+          <PanelCardTitle>24hr volume</PanelCardTitle>
+          <PanelCardValue data-testid="market-stats-24h-volume">
+            {formatNumberWithSpaces(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
         </PanelCard>
         {isRINPair && (
           <>
-            {/* <PanelCard marketType={marketType} theme={theme}>
-              <PanelCardTitle theme={theme}>Circulating Supply</PanelCardTitle>
-              <PanelCardValue theme={theme}>
+            {/* <PanelCard marketType={marketType} >
+              <PanelCardTitle >Circulating Supply</PanelCardTitle>
+              <PanelCardValue >
                 {formatNumberToUSFormat(stripDigitPlaces(circulatingSupply, 2))}{' '}
                 CCAI
               </PanelCardValue>
             </PanelCard> */}
-            <PanelCard marketType={marketType} theme={theme}>
-              <PanelCardTitle theme={theme}>Marketcap</PanelCardTitle>
-              <PanelCardValue theme={theme}>
-                ${formatNumberToUSFormat(stripDigitPlaces(marketcap, 2))}
+            <PanelCard marketType={marketType}>
+              <PanelCardTitle>Marketcap</PanelCardTitle>
+              <PanelCardValue data-testid="market-stats-marketcap">
+                ${formatNumberWithSpaces(stripDigitPlaces(marketcap, 2))}
               </PanelCardValue>
             </PanelCard>
           </>
-        )} 
+        )}
       </MarketStatsContainer>
       <MobileMarketStatsContainer>
         <Title
           style={{
             color:
               +priceChangePercentage > 0
-                ? theme.palette.green.main
-                : theme.palette.red.main,
+                ? theme.colors.green7
+                : theme.colors.red3,
             fontSize: '2rem',
             margin: '0 2.5rem 0 0',
           }}
@@ -278,8 +280,8 @@ const MarketStats: React.FC<IProps> = (props) => {
           style={{
             color:
               +priceChangePercentage > 0
-                ? theme.palette.green.main
-                : theme.palette.red.main,
+                ? theme.colors.green7
+                : theme.colors.red3,
             fontSize: '2rem',
           }}
         >

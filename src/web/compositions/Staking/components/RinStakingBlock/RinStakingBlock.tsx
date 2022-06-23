@@ -2,10 +2,10 @@ import { PublicKey } from '@solana/web3.js'
 import React from 'react'
 
 import { BlockTitle, BlockContent } from '@sb/components/Block'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
@@ -85,15 +85,15 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
             justify="space-between"
             align="flex-start"
           >
-            <InlineText color="primaryGray" size="sm">
+            <InlineText color="gray1" size="sm">
               Total Staked
             </InlineText>
-            <InlineText size="xmd" weight={700}>
+            <InlineText size="xmd" weight={700} color="gray0">
               {totalStakedRIN
                 ? stripByAmountAndFormat(totalStakedRIN, 2)
                 : ' ---'}
               &nbsp;
-              <InlineText color="primaryGray" weight={600}>
+              <InlineText color="gray1" weight={600}>
                 RIN
               </InlineText>
             </InlineText>
@@ -103,7 +103,7 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
               {stakedPercentage.toFixed(2)}% of circulating supply
             </InlineText>{' '}
             <InlineText size="sm" weight={700}>
-              <InlineText color="primaryGray">$</InlineText>
+              <InlineText color="gray1">$</InlineText>
               {totalStakedUsdValue
                 ? stripByAmountAndFormat(totalStakedUsdValue, 2)
                 : ' ---'}
@@ -114,12 +114,12 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
         <StretchedContent>
           <StatsBlock width="31%">
             <Row justify="flex-start" margin="0 0 1em 0">
-              <InlineText color="primaryGray" size="sm">
+              <InlineText color="gray1" size="sm">
                 RIN Price
               </InlineText>{' '}
             </Row>
-            <InlineText size="xmd" weight={700}>
-              <InlineText color="primaryGray" weight={700}>
+            <InlineText color="gray0" size="xmd" weight={700}>
+              <InlineText color="gray1" weight={700}>
                 $
               </InlineText>
               {rinPrice ? rinPrice.toFixed(2) : ' ---'}
@@ -127,11 +127,11 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
           </StatsBlock>
           <StatsBlock width="31%">
             <Row justify="flex-start" margin="0 0 1em 0">
-              <InlineText color="primaryGray" size="sm">
+              <InlineText color="gray1" size="sm">
                 Circulating Supply
               </InlineText>{' '}
             </Row>
-            <InlineText size="xmd" weight={700}>
+            <InlineText color="gray0" size="xmd" weight={700}>
               {poolInfo
                 ? stripByAmountAndFormat(poolInfo.rinCirculationSupply, 2)
                 : ' ---'}
@@ -139,12 +139,12 @@ const Block: React.FC<RinStakingBlockProps> = (props) => {
           </StatsBlock>
           <MarketcapBlock width="31%">
             <Row justify="flex-start" margin="0 0 1em 0">
-              <InlineText color="primaryGray" size="sm">
+              <InlineText color="gray1" size="sm">
                 Marketcap
               </InlineText>{' '}
             </Row>
-            <InlineText size="xmd" weight={700}>
-              <InlineText color="primaryGray" weight={700}>
+            <InlineText color="gray0" size="xmd" weight={700}>
+              <InlineText color="gray1" weight={700}>
                 $
               </InlineText>
               {marketCap ? stripByAmountAndFormat(marketCap, 2) : ' ---'}

@@ -1,50 +1,17 @@
-import { PublicKey } from '@solana/web3.js'
-import BN from 'bn.js'
-
 import { isTransactionFailed } from '@sb/dexUtils/send'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import { buildSwapTransaction, AldrinConnection } from '@core/solana'
+import { buildSwapTransaction, SwapTransactionParams } from '@core/solana'
 
 import { walletAdapterToWallet } from '../../common'
 import { signAndSendSingleTransaction } from '../../transactions'
 
-export const swap = async ({
-  wallet,
-  connection,
-  poolPublicKey,
-  userBaseTokenAccount,
-  userQuoteTokenAccount,
-  swapAmountIn,
-  swapAmountOut,
-  isSwapBaseToQuote,
-  transferSOLToWrapped,
-  curveType,
-}: {
-  wallet: WalletAdapter
-  connection: AldrinConnection
-  poolPublicKey: PublicKey
-  userBaseTokenAccount: PublicKey | null
-  userQuoteTokenAccount: PublicKey | null
-  swapAmountIn: BN
-  swapAmountOut: BN
-  isSwapBaseToQuote: boolean
-  transferSOLToWrapped: boolean
-  curveType: number | null
-}) => {
+export const swap = async (params: SwapTransactionParams<WalletAdapter>) => {
   try {
-    const w = walletAdapterToWallet(wallet)
+    const w = walletAdapterToWallet(params.wallet)
     const swapTransactionAndSigners = await buildSwapTransaction({
+      ...params,
       wallet: w,
-      connection,
-      poolPublicKey,
-      userBaseTokenAccount,
-      userQuoteTokenAccount,
-      swapAmountIn,
-      swapAmountOut,
-      isSwapBaseToQuote,
-      transferSOLToWrapped,
-      curveType,
     })
 
     if (!swapTransactionAndSigners) {
@@ -55,7 +22,7 @@ export const swap = async ({
 
     const tx = await signAndSendSingleTransaction({
       wallet: w,
-      connection,
+      connection: params.connection,
       signers,
       transaction,
       focusPopup: true,

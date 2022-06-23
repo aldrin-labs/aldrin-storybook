@@ -7,11 +7,11 @@ import { ShareButton } from '@sb/components/ShareButton'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName, getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
+import { filterOpenFarmingStates } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
@@ -48,13 +48,18 @@ import { PoolStatsProps } from './types'
 
 export const PoolStats: React.FC<PoolStatsProps> = (props) => {
   const { title, value, additionalInfo } = props
+  const roundedValue = Math.round(value * 100) / 100
   return (
     <PoolStatsWrap>
       <PoolStatsTitle>{title}</PoolStatsTitle>
       <PoolStatsData>
         <PoolStatsText>
-          <DarkTooltip title={`$${formatNumberToUSFormat(Math.round(value))}`}>
-            <span>{value > 0 ? `$${stripByAmountAndFormat(value)}` : '-'}</span>
+          <DarkTooltip
+            title={`$${formatNumberToUSFormat(roundedValue.toFixed(2))}`}
+          >
+            <span>
+              {value > 0 ? `$${stripByAmountAndFormat(roundedValue, 2)}` : '-'}
+            </span>
           </DarkTooltip>
         </PoolStatsText>
         {additionalInfo ? (
@@ -103,11 +108,8 @@ export const PoolStatsBlock: React.FC<PoolStatsBlockProps> = (props) => {
     totalQuoteTokenFee: 0,
   }
 
-  const baseInfo = tokenMap.get(pool.tokenA)
-  const quoteInfo = tokenMap.get(pool.tokenB)
-
-  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
-  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
+  const base = getTokenName({ address: pool.tokenA, tokensInfoMap: tokenMap })
+  const quote = getTokenName({ address: pool.tokenB, tokensInfoMap: tokenMap })
 
   const feesUsd =
     feesForPool.totalBaseTokenFee * baseUsdPrice +
@@ -244,7 +246,7 @@ Don't miss your chance.`
         <PoolStatsWrap>
           <PoolStatsTitle>APR</PoolStatsTitle>
           <PoolStatsData>
-            <PoolStatsText color="success">{aprFormatted}%</PoolStatsText>
+            <PoolStatsText color="green7">{aprFormatted}%</PoolStatsText>
           </PoolStatsData>
         </PoolStatsWrap>
         <PoolStatsWrap>

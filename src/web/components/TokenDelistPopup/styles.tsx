@@ -1,10 +1,10 @@
+import { Paper } from '@material-ui/core'
+import React from 'react'
 import styled from 'styled-components'
 
-import { Paper, Theme } from '@material-ui/core'
-
-import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-import React from 'react'
+import { MainTitle } from '@sb/components/TraidingTerminal/ConfirmationPopup'
+
 import { Loading } from '../Loading/Loading'
 
 export const StyledPaper = styled(Paper)`
@@ -29,7 +29,7 @@ export const BlueButton = styled(
     <BtnCustom {...props}>
       {showLoader ? (
         <Loading
-          color={'#fff'}
+          color="#fff"
           size={24}
           style={{ display: 'flex', alignItems: 'center', height: '4.5rem' }}
         />
@@ -42,10 +42,10 @@ export const BlueButton = styled(
   font-size: 1.4rem;
   height: 4.5rem;
   text-transform: capitalize;
-  background-color: ${(props: { isUserConfident: boolean; theme: Theme }) =>
+  background-color: ${(props) =>
     props.isUserConfident
-      ? props.theme.palette.blue.serum
-      : props.theme.palette.grey.title};
+      ? props.theme.colors.blue5
+      : props.theme.colors.disabled};
   border-radius: 1rem;
   border-color: none;
   cursor: pointer;

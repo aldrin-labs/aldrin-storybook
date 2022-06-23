@@ -1,7 +1,12 @@
 import { useFormik } from 'formik'
 import React from 'react'
 
-import { limitDecimalsCustom } from '@core/utils/numberUtils'
+import {
+  formatNumberWithSpaces,
+  formatNumbersForState,
+} from '@sb/dexUtils/utils'
+
+import { limitDecimalsCustom } from '@core/utils/chartPageUtils'
 
 import { AmountInput } from '../../../components/AmountInput'
 import {
@@ -63,21 +68,24 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
       <FormItemFull>
         <InputWrapper>
           <AmountInput
+            data-testid="rin-unstaking-amount-field"
             placeholder="0"
             amount={totalStaked}
             mint={mint}
             name="amount"
             label="Unstake"
-            value={`${form.values.amount}`}
+            value={formatNumberWithSpaces(form.values.amount)}
             onChange={async (v) => {
               const value = limitDecimalsCustom(v)
-              await form.setFieldValue('amount', value)
+              const valueForState = formatNumbersForState(value)
+              await form.setFieldValue('amount', valueForState)
               form.validateForm()
             }}
           />
         </InputWrapper>
         <ButtonWrapper>
           <UnStakingFormButton
+            data-testid="rin-unstaking-submit-btn"
             minWidth="14rem"
             $fontSize="sm"
             $borderRadius="md"

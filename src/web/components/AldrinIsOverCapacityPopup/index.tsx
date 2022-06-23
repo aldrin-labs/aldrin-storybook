@@ -1,18 +1,19 @@
-import React, { useState } from 'react'
 import { Theme } from '@material-ui/core'
-
-import { useLocalStorageState } from '@sb/dexUtils/utils'
 import useMobileSize from '@webhooks/useMobileSize'
+import React, { useState } from 'react'
 
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+
+import DarkLogo from '@icons/DarkLogo.svg'
+
+import SvgIcon from '../SvgIcon'
 import {
   Container,
   Text,
   DemiText,
   BlackButton,
 } from '../TransactionsConfirmationWarningPopup/TransactionsConfirmationWarningPopup.styles'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import DarkLogo from '@icons/DarkLogo.svg'
-import SvgIcon from '../SvgIcon'
 
 export const AldrinIsOverCapacityPopup = ({ theme }: { theme: Theme }) => {
   const [isPopupTemporaryHidden, setIsPopupTemporaryHidden] = useState(false)
@@ -28,7 +29,7 @@ export const AldrinIsOverCapacityPopup = ({ theme }: { theme: Theme }) => {
 
   return (
     <Container
-      showOnTheTop={true}
+      showOnTheTop
       style={{ height: '64%', flexWrap: 'nowrap' }}
       direction="column"
       align="flex-start"
@@ -51,7 +52,7 @@ export const AldrinIsOverCapacityPopup = ({ theme }: { theme: Theme }) => {
       <RowContainer align="flex-start" justify="space-between">
         <Row
           width="60%"
-          direction={'column'}
+          direction="column"
           justify="flex-start"
           align="flex-start"
         >
@@ -72,7 +73,6 @@ export const AldrinIsOverCapacityPopup = ({ theme }: { theme: Theme }) => {
               marginBottom: '1rem',
               fontSize: '1.8rem',
             }}
-            theme={theme}
           >
             We’re having some issues and team is working on it right now. We’re
             having a spike in users and getting our RPC capacity increased as
@@ -84,7 +84,6 @@ export const AldrinIsOverCapacityPopup = ({ theme }: { theme: Theme }) => {
               marginBottom: '1rem',
               fontSize: '1.8rem',
             }}
-            theme={theme}
           >
             In the next 2-3 days all should smooth out for a lot more users.
           </Text>
@@ -94,7 +93,6 @@ export const AldrinIsOverCapacityPopup = ({ theme }: { theme: Theme }) => {
               marginBottom: '1rem',
               fontSize: '1.8rem',
             }}
-            theme={theme}
           >
             We know this is frustrating for everyone and the last thing we want
             our users to be experiencing but these issues will get fixed really
@@ -106,14 +104,13 @@ export const AldrinIsOverCapacityPopup = ({ theme }: { theme: Theme }) => {
               marginTop: '2rem',
               fontSize: '1.8rem',
             }}
-            theme={theme}
           >
             The biggest positive from all of this is that Aldrin is growing and
             once we’re stable it is going to be exciting times ahead.
           </Text>
         </Row>
-        <Row width={'40%'} height={'100%'}>
-          <SvgIcon width={'13rem'} height={'auto'} src={DarkLogo} />
+        <Row width="40%" height="100%">
+          <SvgIcon width="13rem" height="auto" src={DarkLogo} />
         </Row>
       </RowContainer>
       <Row
@@ -123,10 +120,9 @@ export const AldrinIsOverCapacityPopup = ({ theme }: { theme: Theme }) => {
       >
         <BlackButton
           disabled={false}
-          theme={theme}
-          hoverBackground={'#20292d'}
-          width={'auto'}
-          fontSize={'1.5rem'}
+          hoverBackground="#20292d"
+          width="auto"
+          fontSize="1.5rem"
           style={{ padding: '1rem 5rem', margin: '0 2rem 0 0' }}
           onClick={onClose}
         >
@@ -134,10 +130,9 @@ export const AldrinIsOverCapacityPopup = ({ theme }: { theme: Theme }) => {
         </BlackButton>
         <BlackButton
           disabled={false}
-          theme={theme}
-          hoverBackground={'#20292d'}
-          width={'auto'}
-          fontSize={'1.5rem'}
+          hoverBackground="#20292d"
+          width="auto"
+          fontSize="1.5rem"
           style={{ padding: '1rem 5rem' }}
           onClick={() => setIsPopupTemporaryHidden(true)}
         >

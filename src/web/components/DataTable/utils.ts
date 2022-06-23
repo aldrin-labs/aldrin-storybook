@@ -4,8 +4,6 @@ export const nextSortOrder = (so: SORT_ORDER) => {
   switch (so) {
     case SORT_ORDER.DESC:
       return SORT_ORDER.ASC
-    case SORT_ORDER.ASC:
-      return SORT_ORDER.NONE
     default:
       return SORT_ORDER.DESC
   }

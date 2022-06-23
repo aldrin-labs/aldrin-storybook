@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 
-import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
-
+import { getAllTokensData } from '@core/solana'
 import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 
 import { useConnection } from '../../connection'

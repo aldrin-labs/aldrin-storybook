@@ -1,39 +1,36 @@
+import { withTheme } from '@material-ui/core'
+import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
+import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useState } from 'react'
+import { graphql } from 'react-apollo'
+import { Link, useHistory } from 'react-router-dom'
+import { compose } from 'recompose'
+import { useTheme } from 'styled-components'
 
-import { Text } from '@sb/compositions/Addressbook/index'
-import { Theme, withTheme } from '@material-ui/core'
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { Loading } from '@sb/components/Loading'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-
+import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
+import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
+import { useConnection, useConnectionConfig } from '@sb/dexUtils/connection'
+import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
+import { notify } from '@sb/dexUtils/notifications'
+import { encode, isValidPublicKey } from '@sb/dexUtils/utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+import { withMarketUtilsHOC } from '@sb/hoc'
+import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
-import CloseIcon from '@icons/closeIcon.svg'
+import { getDexProgramIdByEndpoint } from '@core/config/dex'
+import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
+import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
+import { writeQueryData } from '@core/utils/TradingTable.utils'
+
 import CoolIcon from '@icons/coolIcon.svg'
 
-import { Line } from '@sb/compositions/Pools/components/Popups/index.styles'
-import { encode, isValidPublicKey } from '@sb/dexUtils/utils'
-import { notify } from '@sb/dexUtils/notifications'
-import { SRadio } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import { useWallet } from '@sb/dexUtils/wallet'
-import { useConnection, useConnectionConfig } from '@sb/dexUtils/connection'
-import { PublicKey } from '@solana/web3.js'
-import { getDexProgramIdByEndpoint } from '@core/config/dex'
-import { Market, MARKETS, TOKEN_MINTS } from '@project-serum/serum'
-import { useAllMarketsList, useAllMarketsMapById } from '@sb/dexUtils/markets'
-import { compose } from 'recompose'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
-import { writeQueryData } from '@core/utils/TradingTable.utils'
-import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-import { Link, useHistory } from 'react-router-dom'
-import { Loading } from '@sb/components/Loading'
-import { checkForLinkOrUsername } from '@sb/dexUtils/checkForLinkOrUsername'
-import { graphql } from 'react-apollo'
-import {
-  categoriesOfMarkets,
-  defaultRequestDataState,
-} from './ListingRequestPopup.config'
 import {
   BlueButton,
   Form,
@@ -45,6 +42,10 @@ import {
   StyledTab,
 } from '../../Inputs/SelectWrapper/SelectWrapperStyles'
 import {
+  categoriesOfMarkets,
+  defaultRequestDataState,
+} from './ListingRequestPopup.config'
+import {
   BannerContainer,
   BT1,
   BT2,
@@ -55,7 +56,6 @@ import {
 } from './styles'
 
 const ListingRequestPopup = ({
-  theme,
   onClose,
   open,
   customMarkets,
@@ -63,7 +63,6 @@ const ListingRequestPopup = ({
   addSerumCustomMarketMutation,
   getUserCustomMarketsQuery,
 }: {
-  theme: Theme
   onClose: () => void
   open: boolean
   customMarkets: any
@@ -77,7 +76,7 @@ const ListingRequestPopup = ({
   const [loading, changeLoading] = useState(false)
   const [newMarketAccountInfo, setNewMarketAccountInfo] = useState(null)
   const [requestData, setRequestData] = useState(defaultRequestDataState)
-
+  const theme = useTheme()
   const { wallet } = useWallet()
   const connection = useConnection()
   const history = useHistory()
@@ -301,7 +300,6 @@ const ListingRequestPopup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={onClose}
@@ -318,13 +316,25 @@ const ListingRequestPopup = ({
         <Title>
           {isRequestSubmitted ? 'Request Submitted!' : 'List New Market'}
         </Title>
-        <SvgIcon
-          onClick={() => onClose()}
-          src={CloseIcon}
-          style={{ cursor: 'pointer' }}
-          width="2rem"
-          height="2rem"
-        />
+        <CloseIconContainer
+          onClick={() => {
+            onClose()
+          }}
+        >
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 19 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+              stroke="#F5F5FB"
+              strokeWidth="2"
+            />
+          </svg>
+        </CloseIconContainer>
       </RowContainer>
       {isRequestSubmitted ? (
         <RowContainer direction="column">
@@ -349,7 +359,6 @@ const ListingRequestPopup = ({
           <BlueButton
             style={{ width: '100%', margin: '6rem 0 0 0' }}
             disabled={false}
-            theme={theme}
             onClick={() => {
               submitRequest(false)
               onClose()
@@ -396,7 +405,6 @@ const ListingRequestPopup = ({
                       name="baseTokenName"
                       id="baseTokenName"
                       autoComplete="off"
-                      theme={theme}
                       placeholder="e.g. RIN"
                       value={requestData.baseTokenName}
                       onChange={(e) =>
@@ -427,7 +435,6 @@ const ListingRequestPopup = ({
                       name="quoteTokenName"
                       id="quoteTokenName"
                       autoComplete="off"
-                      theme={theme}
                       placeholder="e.g. USDC"
                       value={requestData.quoteTokenName}
                       onChange={(e) =>
@@ -456,7 +463,7 @@ const ListingRequestPopup = ({
                       rel="noopener noreferrer"
                       href="https://docs.aldrin.com/dex/how-to-list-a-market-on-aldrin-dex"
                       style={{
-                        color: theme.palette.blue.serum,
+                        color: theme.colors.green7,
                         textDecoration: 'none',
                       }}
                     >
@@ -472,7 +479,6 @@ const ListingRequestPopup = ({
                     name="marketID"
                     id="marketID"
                     autoComplete="off"
-                    theme={theme}
                     placeholder="e.g. 7gZNLDbWE73ueAoHuAeFoSu7JqmorwCLpNTBXHtYSFTa"
                     value={requestData.marketID}
                     onChange={(e) =>
@@ -536,7 +542,6 @@ const ListingRequestPopup = ({
                       name="twitterLink"
                       id="twitterLink"
                       autoComplete="off"
-                      theme={theme}
                       placeholder="e.g. https://twitter.com/Aldrin_Exchange"
                       value={requestData.twitterLink}
                       onChange={(e) =>
@@ -566,7 +571,6 @@ const ListingRequestPopup = ({
                       name="coinMarketCapLink"
                       id="coinMarketCapLink"
                       autoComplete="off"
-                      theme={theme}
                       placeholder="e.g. https://coinmarketcap.com/currencies/aldrin/"
                       value={requestData.coinMarketCapLink}
                       onChange={(e) =>
@@ -647,7 +651,6 @@ const ListingRequestPopup = ({
                       name="contact"
                       id="contact"
                       autoComplete="off"
-                      theme={theme}
                       placeholder="e.g. contact@aldrin.com"
                       value={requestData.contact}
                       onChange={(e) =>
@@ -672,7 +675,7 @@ const ListingRequestPopup = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
-                          color: theme.palette.blue.serum,
+                          color: theme.colors.green7,
                           textDecoration: 'none',
                         }}
                       >
@@ -698,9 +701,7 @@ const ListingRequestPopup = ({
                           })
                         }
                       />
-                      <StyledLabel htmlFor="noDefiShow" color="#fbf2f2">
-                        No
-                      </StyledLabel>
+                      <StyledLabel htmlFor="noDefiShow">No</StyledLabel>
                     </Row>{' '}
                     <Row>
                       <SRadio
@@ -713,9 +714,7 @@ const ListingRequestPopup = ({
                         }
                         checked={requestData.defiShow === 'Yes'}
                       />
-                      <StyledLabel htmlFor="yesDefiShow" color="#fbf2f2">
-                        Yes
-                      </StyledLabel>
+                      <StyledLabel htmlFor="yesDefiShow">Yes</StyledLabel>
                     </Row>
                   </RowContainer>
                 </Row>{' '}

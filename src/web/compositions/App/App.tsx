@@ -4,7 +4,7 @@ import { createGenerateClassName, jssPreset } from '@material-ui/core/styles'
 import { syncStorage } from '@storage'
 import useWindowSize from '@webhooks/useWindowSize'
 import { create } from 'jss'
-import React from 'react'
+import React, { useState } from 'react'
 import JssProvider from 'react-jss/lib/JssProvider'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
@@ -13,6 +13,7 @@ import styled from 'styled-components'
 import { Footer } from '@sb/components/Footer'
 import { Header } from '@sb/components/Header'
 import DevUrlPopup from '@sb/components/PopupForDevUrl'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { SolanaNetworkDegradedPerformanceBanner } from '@sb/components/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner/SolanaNetworkDegradedPerformanceBanner'
 import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
@@ -28,7 +29,6 @@ import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 // https://material-ui.com/customization/css-in-js/#other-html-element
 // import './app.styles.global.css';
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
@@ -38,8 +38,9 @@ import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import { AppGridLayout, AppInnerContainer } from './App.styles'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
-// import Footer from '@sb/components/Footer'
+import { Theme } from './themes'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
+// import Footer from '@sb/components/Footer'
 
 const generateClassName = createGenerateClassName({
   dangerouslyUseGlobalCSS: false,
@@ -90,6 +91,12 @@ const AppRaw = ({
     'isDevUrlPopupOpen',
     true
   )
+  const theme = localStorage.getItem('theme')
+
+  const [currentTheme, setCurrentTheme] = useState(theme)
+  if (!theme) {
+    localStorage.setItem('theme', 'dark')
+  }
   // const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
   //   useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
@@ -104,7 +111,6 @@ const AppRaw = ({
     themeMode = 'dark'
     localStorage.setItem('themeMode', 'dark')
   }
-
   // const chartPageView =
   //   getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
@@ -132,50 +138,54 @@ const AppRaw = ({
     <ApolloPersistWrapper>
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
-          <SnackbarWrapper>
-            <SnackbarUtilsConfigurator />
-            <CssBaseline />
-            <ConnectionProvider>
-              <TokenRegistryProvider>
-                <MarketProvider>
-                  <WalletProvider>
-                    <PreferencesProvider>
-                      <AppGridLayout
-                        id="react-notification"
-                        showFooter={showFooter}
-                        isRewards={isRewards}
-                        isPNL={isPNL}
-                        isChartPage={isChartPage}
-                      >
-                        <SolanaNetworkDegradedPerformanceBanner />
-                        <Header />
-                        <AppInnerContainer
+          <Theme theme={currentTheme}>
+            <SnackbarWrapper>
+              <SnackbarUtilsConfigurator />
+              <CssBaseline />
+              <ConnectionProvider>
+                <TokenRegistryProvider>
+                  <MarketProvider>
+                    <WalletProvider>
+                      <PreferencesProvider>
+                        <AppGridLayout
+                          id="react-notification"
                           showFooter={showFooter}
+                          isRewards={isRewards}
+                          isPNL={isPNL}
                           isChartPage={isChartPage}
-                          currentPage={currentPage}
                         >
-                          {children}
-                        </AppInnerContainer>
-                        {/* {showFooter && (
+                          <SolanaNetworkDegradedPerformanceBanner />
+                          <Header
+                            currentTheme={currentTheme}
+                            setCurrentTheme={setCurrentTheme}
+                          />
+                          <AppInnerContainer
+                            showFooter={showFooter}
+                            isChartPage={isChartPage}
+                            currentPage={currentPage}
+                          >
+                            {children}
+                          </AppInnerContainer>
+                          {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )} */}
-                        {!isChartPage && <Footer />}
-                        <MobileFooter />
-                        {/*
+                          {!isChartPage && <Footer />}
+                          <MobileFooter />
+                          {/*
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
-                        {!MASTER_BUILD && !LOCAL_BUILD && (
-                          <DevUrlPopup
-                            open={isDevUrlPopupOpen}
-                            close={() => {
-                              openDevUrlPopup(false)
-                            }}
-                          />
-                        )}
-                        {/* <WarningBanner
+                          {!MASTER_BUILD && !LOCAL_BUILD && (
+                            <DevUrlPopup
+                              open={isDevUrlPopupOpen}
+                              close={() => {
+                                openDevUrlPopup(false)
+                              }}
+                            />
+                          )}
+                          {/* <WarningBanner
                           localStorageProperty={'isPhantomIssuesPopupOpen'}
                           notification={[
                             'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
@@ -183,11 +193,11 @@ const AppRaw = ({
                           ]}
                           needMobile={false}
                         /> */}
-                        {/* <RebrandingPopup
+                          {/* <RebrandingPopup
                           open={isRebrandingPopupOpen}
                           onClose={() => setIsRebrandingPopupOpen(false)}
                         /> */}
-                        {/* {!isWalletMigrationToNewUrlPopupDone && (
+                          {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}
                           close={() => {
@@ -195,17 +205,18 @@ const AppRaw = ({
                           }}
                         />
                       )} */}
-                        <DetermineMobileWindowHeight />
-                      </AppGridLayout>
-                      {/* <ShowWarningOnMoblieDevice /> */}
-                    </PreferencesProvider>
-                  </WalletProvider>
-                </MarketProvider>
-              </TokenRegistryProvider>
-            </ConnectionProvider>
-            <GlobalStyle />
-            <GlobalStyles />
-          </SnackbarWrapper>
+                          <DetermineMobileWindowHeight />
+                        </AppGridLayout>
+                        {/* <ShowWarningOnMoblieDevice /> */}
+                      </PreferencesProvider>
+                    </WalletProvider>
+                  </MarketProvider>
+                </TokenRegistryProvider>
+              </ConnectionProvider>
+              <GlobalStyle />
+              <GlobalStyles />
+            </SnackbarWrapper>
+          </Theme>
         </ThemeWrapper>
       </JssProvider>
     </ApolloPersistWrapper>

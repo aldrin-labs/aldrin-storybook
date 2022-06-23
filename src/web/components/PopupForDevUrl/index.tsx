@@ -7,19 +7,20 @@ import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { BlueButton } from '@sb/compositions/Chart/components/WarningPopup'
 import { BoldHeader } from '@sb/compositions/Pools/components/Popups/index.styles'
 
 import Warning from '@icons/newWarning.svg'
 
+import { InlineText } from '../Typography'
+
 const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   height: auto;
   padding: 2rem 4rem;
   width: 55rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
+  background: ${(props) => props.theme.colors.gray6};
   border-radius: 0.8rem;
 `
 
@@ -56,7 +57,7 @@ const DevUrlPopup = ({
         <BoldHeader style={{ textAlign: 'left', marginBottom: '6rem' }}>
           Hello, this page is for developers only.
         </BoldHeader>
-        <Text>
+        <InlineText size="md">
           To avoid loss of funds or confusing situations, please leave it. You
           probably wanted to get to
           <a
@@ -72,7 +73,7 @@ const DevUrlPopup = ({
             dex.aldrin.com
           </a>
           .
-        </Text>
+        </InlineText>
       </RowContainer>
       <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <a
@@ -89,7 +90,6 @@ const DevUrlPopup = ({
               textTransform: 'none',
             }}
             isUserConfident
-            theme={theme}
             onClick={() => {}}
           >
             Go to dex.aldrin.com

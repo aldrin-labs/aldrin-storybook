@@ -24,8 +24,8 @@ import {
   useBalanceInfo,
   useWallet,
 } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import greenDoneMark from '@icons/greenDoneMark.svg'
@@ -160,7 +160,6 @@ const TokenNotAddedDialog = ({ open, pair, onClose, theme }) => {
             <BlueButton
               color="#17181A"
               background="#53DF11"
-              theme={theme}
               onClick={() => onClose()}
             >
               Ok

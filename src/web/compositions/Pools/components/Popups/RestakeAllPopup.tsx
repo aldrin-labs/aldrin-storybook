@@ -1,25 +1,26 @@
-import { withTheme } from '@material-ui/core'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { Connection } from '@solana/web3.js'
 import React, { useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { Button } from '@sb/components/Button'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
-import { filterOldFarmingTickets } from '@sb/dexUtils/common/filterOldFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
-import { Theme } from '@sb/types/materialUI'
 
+import {
+  filterTicketsAvailableForUnstake,
+  filterOldFarmingTickets,
+} from '@core/solana'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { PoolInfo } from '../../index.types'
 import { restakeAll } from '../../utils/restakeAll'
-import { Button } from '../Tables/index.styles'
 import { BoldHeader, ClaimRewardsStyledPaper } from './index.styles'
 
 const getSOLFeesAmountToRestake = ({
@@ -53,7 +54,6 @@ const getSOLFeesAmountToRestake = ({
 }
 
 const Popup = ({
-  theme,
   //   open,
   //   close,
   wallet,
@@ -63,7 +63,6 @@ const Popup = ({
   allTokensData,
   refreshTokensWithFarmingTickets,
 }: {
-  theme: Theme
   //   open: boolean
   //   close: () => void
   wallet: WalletAdapter
@@ -77,6 +76,7 @@ const Popup = ({
   const [showRetryMessage, setShowRetryMessage] = useState(false)
   const [operationLoading, setOperationLoading] = useState(false)
   const [isTransactionFailed, setIsTransactionFailed] = useState(false)
+  const theme = useTheme()
 
   // first result for sol mint is native sol account which is using to cover fees
   const { amount: userSOLAmount } = allTokensData.find(
@@ -137,7 +137,6 @@ const Popup = ({
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={ClaimRewardsStyledPaper}
       fullScreen={false}
       onClose={() => setIsPopupTemporaryHidden(true)}
@@ -173,7 +172,7 @@ const Popup = ({
       {showRetryMessage && (
         <RowContainer margin="3rem 0 0 0" justify="flex-start">
           <Text
-            style={{ color: theme.palette.red.main, margin: '1rem 0' }}
+            style={{ color: theme.colors.red3, margin: '1rem 0' }}
             fontSize="1.8rem"
           >
             {isTransactionFailed
@@ -186,7 +185,7 @@ const Popup = ({
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
-            color: theme.palette.green.main,
+            color: theme.colors.green7,
           }}
         >
           {stripDigitPlaces(SOLFeesForRestake, 8)} SOL
@@ -195,14 +194,12 @@ const Popup = ({
 
       <RowContainer justify="space-between" margin="7rem 0 2rem 0">
         <Button
-          color="inherit"
-          height="5.5rem"
-          borderColor="#fff"
-          fontSize="1.7rem"
-          btnWidth="calc(35% - 1rem)"
+          $variant="outline-white"
           disabled={false}
+          $width="md"
+          $fontSize="lg"
+          $padding="lg"
           isUserConfident
-          theme={theme}
           onClick={() => {
             setIsPopupTemporaryHidden(true)
           }}
@@ -210,10 +207,10 @@ const Popup = ({
           Remind me later
         </Button>
         <Button
-          color="#651CE4"
-          height="5.5rem"
-          fontSize="1.7rem"
-          btnWidth="calc(65% - 1rem)"
+          $variant="primary"
+          $width="lg"
+          $fontSize="lg"
+          $padding="lg"
           disabled={operationLoading || isNotEnoughSOL}
           isUserConfident
           showLoader={operationLoading}
@@ -232,4 +229,4 @@ const Popup = ({
   )
 }
 
-export const RestakeAllPopup = withTheme()(Popup)
+export { Popup as RestakeAllPopup }

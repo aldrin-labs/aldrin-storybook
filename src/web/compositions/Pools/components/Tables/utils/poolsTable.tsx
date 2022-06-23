@@ -12,16 +12,16 @@ import {
 } from '@sb/components/DataTable'
 import { FlexBlock } from '@sb/components/Layout'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { getNumberOfPrecisionDigitsForSymbol } from '@sb/components/TradingTable/TradingTable.utils'
 import { InlineText, Text } from '@sb/components/Typography'
 import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
 import { FarmingCalc } from '@sb/dexUtils/common/types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { groupBy } from '@sb/utils'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
-import { Vesting } from '@core/solana'
+import { filterOpenFarmingStates, Vesting } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -169,11 +169,15 @@ export const preparePoolTableCell = (params: {
         rendered: (
           <FlexBlock alignItems="center">
             <Link
-              to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
+              to={`/swap?base=${baseName}&quote=${quoteName}`}
               style={{ textDecoration: 'none' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <TokenIconsContainer tokenA={pool.tokenA} tokenB={pool.tokenB}>
+              <TokenIconsContainer
+                tokenMap={tokenMap}
+                tokenA={pool.tokenA}
+                tokenB={pool.tokenB}
+              >
                 {isPoolOwner && (
                   <Text color="success" size="sm">
                     Your pool
@@ -214,9 +218,17 @@ export const preparePoolTableCell = (params: {
             <Text size="sm">
               {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD, 4)}` : '-'}
             </Text>
-            <Text size="sm" margin="10px 0" color="hint">
-              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseName} /{' '}
-              {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteName}
+            <Text size="sm" margin="10px 0" color="gray1">
+              {stripByAmountAndFormat(
+                pool.tvl.tokenA,
+                getNumberOfPrecisionDigitsForSymbol(baseName)
+              )}{' '}
+              {baseName} /{' '}
+              {stripByAmountAndFormat(
+                pool.tvl.tokenB,
+                getNumberOfPrecisionDigitsForSymbol(quoteName)
+              )}{' '}
+              {quoteName}
             </Text>
           </>
         ),
@@ -224,7 +236,7 @@ export const preparePoolTableCell = (params: {
       apr: {
         rawValue: totalApr,
         rendered: (
-          <Text color="success" size="sm" weight={700}>
+          <Text color="green3" size="sm" weight={700}>
             {totalApr >= 1 ? `${stripByAmount(totalApr, 2)}%` : '< 1%'}
           </Text>
         ),
@@ -239,16 +251,18 @@ export const preparePoolTableCell = (params: {
                   mints={openFarmingsKeys}
                 />
                 <div>
-                  <InlineText size="sm">
+                  <InlineText color="gray0" size="sm">
                     {openFarmingsKeys
                       .map((ft) => getTokenNameByMintAddress(ft))
                       .join(' x ')}
                   </InlineText>
                   <div>
-                    <InlineText size="sm">Available to claim:</InlineText>
+                    <InlineText color="gray0" size="sm">
+                      Available to claim:
+                    </InlineText>
                   </div>
                   <div>
-                    <InlineText size="sm" color="success">
+                    <Text color="green3" size="sm">
                       {availableToClaim
                         .map(
                           (atc) =>
@@ -257,7 +271,7 @@ export const preparePoolTableCell = (params: {
                             }`
                         )
                         .join(' + ')}
-                    </InlineText>
+                    </Text>
                   </div>
                 </div>
               </>

@@ -10,7 +10,7 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
@@ -70,7 +70,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     userTokensData,
     farmingTickets,
     earnedFees,
-    snapshotQueues,
     refreshUserTokensData,
     refreshAll,
     vestingsForWallet,
@@ -102,7 +101,17 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
 
   const goBack = () => history.push('/pools')
 
-  const pool = pools?.find((p) => p.parsedName === symbol)
+  const pool = pools?.find((p) => {
+    const tokenAName = getTokenName({
+      address: p.tokenA,
+      tokensInfoMap: tokenMap,
+    })
+    const tokenBName = getTokenName({
+      address: p.tokenB,
+      tokensInfoMap: tokenMap,
+    })
+    return `${tokenAName}_${tokenBName}` === symbol
+  })
 
   const [poolBalances] = usePoolBalances(pool || {})
 
@@ -115,8 +124,8 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const baseInfo = tokenMap.get(pool.tokenA)
   const quoteInfo = tokenMap.get(pool.tokenB)
 
-  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
-  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
+  const base = getTokenName({ address: pool.tokenA, tokensInfoMap: tokenMap })
+  const quote = getTokenName({ address: pool.tokenB, tokensInfoMap: tokenMap })
 
   const baseTokenName = trimTo(baseInfo?.symbol || '')
   const quoteTokenName = trimTo(quoteInfo?.symbol || '')
@@ -174,10 +183,10 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           <TokenInfo>
             <TokenInfoRow>
               <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
-              <InlineText color="success">1</InlineText>
+              <InlineText color="green4">1</InlineText>
               <InlineText>{base}&nbsp;=&nbsp;</InlineText>
               <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
-              <InlineText color="success">
+              <InlineText color="green4">
                 {stripByAmountAndFormat(basePrice, 4)}
               </InlineText>
               <InlineText>{quote}</InlineText>
@@ -186,10 +195,10 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           <TokenInfo>
             <TokenInfoRow>
               <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
-              <InlineText color="success">1</InlineText>
+              <InlineText color="green4">1</InlineText>
               <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
               <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
-              <InlineText color="success">
+              <InlineText color="green4">
                 {stripByAmountAndFormat(quotePrice, 4)}
               </InlineText>
               <InlineText>{base}</InlineText>
@@ -253,6 +262,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
             <Row>
               <Cell col={12} colLg={6}>
                 <UserLiquidityBlock
+                  tokenMap={tokenMap}
                   pool={pool}
                   userTokensData={userTokensData}
                   farmingTickets={farmingTickets}

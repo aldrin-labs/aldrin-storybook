@@ -1,10 +1,9 @@
-import { Theme, withTheme } from '@material-ui/core'
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import SvgIcon from '@sb/components/SvgIcon'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -17,28 +16,30 @@ import {
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { redeemBasket } from '@sb/dexUtils/pools/actions/redeemBasket'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
-import { VestingWithPk } from '@core/solana'
+import { getStakedTokensTotal, VestingWithPk } from '@core/solana'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
-
-import Close from '@icons/closeIcon.svg'
 
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
 
 interface WithdrawalProps {
-  theme: Theme
   dexTokensPricesMap: Map<string, DexTokensPrices>
   farmingTicketsMap: Map<string, FarmingTicket[]>
   // earnedFeesInPoolForUserMap: Map<string, FeesEarned>
@@ -63,7 +64,6 @@ const resolveWithdrawStatus = (result: string) => {
 
 const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   const {
-    theme,
     dexTokensPricesMap,
     farmingTicketsMap,
     // earnedFeesInPoolForUserMap,
@@ -76,12 +76,14 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     vesting,
   } = props
   const { wallet } = useWallet()
+  const theme = useTheme()
   const connection = useConnection()
+  const tokensInfo = useTokenInfos()
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
 
-  const [quoteAmount, setQuoteAmount] = useState<string | number>('')
-  const [baseAmount, setBaseAmount] = useState<string | number>('')
+  const [quoteAmount, setQuoteAmount] = useState<string | number>('--')
+  const [baseAmount, setBaseAmount] = useState<string | number>('--')
 
   const {
     baseTokenAmount: poolAmountTokenA,
@@ -103,15 +105,21 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   }, [poolBalances])
 
   const setBaseAmountWithQuote = (ba: string | number) => {
-    const qa = stripDigitPlaces(+ba * (poolAmountTokenB / poolAmountTokenA), 8)
-    setBaseAmount(ba)
+    const qa =
+      stripDigitPlaces(+ba * (poolAmountTokenB / poolAmountTokenA), 8) || '--'
+    const v = formatNumbersForState(ba)
+
+    setBaseAmount(v)
     setQuoteAmount(qa)
   }
 
   const setQuoteAmountWithBase = (qa: string | number) => {
-    const ba = stripDigitPlaces(+qa * (poolAmountTokenA / poolAmountTokenB), 8)
+    const ba =
+      stripDigitPlaces(+qa * (poolAmountTokenA / poolAmountTokenB), 8) || '--'
+    const v = formatNumbersForState(qa)
+
     setBaseAmount(ba)
-    setQuoteAmount(qa)
+    setQuoteAmount(v)
   }
 
   const [operationLoading, setOperationLoading] = useState<boolean>(false)
@@ -132,9 +140,14 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
 
-  const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
-  const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
-
+  const baseSymbol = getTokenName({
+    address: selectedPool.tokenA,
+    tokensInfoMap: tokensInfo,
+  })
+  const quoteSymbol = getTokenName({
+    address: selectedPool.tokenB,
+    tokensInfoMap: tokensInfo,
+  })
   const baseTokenPrice =
     (
       dexTokensPricesMap.get(selectedPool.tokenA) ||
@@ -148,7 +161,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     )?.price || 0
 
   const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
-  const stakedTokens = getStakedTokensFromOpenFarmingTickets(farmingTickets)
+  const stakedTokens = getStakedTokensTotal(farmingTickets)
   const lockedTokens = parseFloat(vesting?.outstanding.toString() || '0') // Vesting
 
   const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
@@ -185,11 +198,11 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
     +baseAmount > withdrawAmountTokenA ||
     +quoteAmount > withdrawAmountTokenB
 
-  const total = +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice
+  const total =
+    +baseAmount * baseTokenPrice + +quoteAmount * quoteTokenPrice || '--'
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -213,15 +226,34 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
               }
             }}
           />
-          <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+          <CloseIconContainer
+            onClick={() => {
+              close()
+            }}
+          >
+            <svg
+              width="19"
+              height="19"
+              viewBox="0 0 19 19"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+                stroke="#F5F5FB"
+                strokeWidth="2"
+              />
+            </svg>
+          </CloseIconContainer>
         </Row>
       </Row>
       <RowContainer>
         <SimpleInput
+          data-testid="withdraw-liquidity-base-token-field"
           placeholder="0"
           theme={theme}
           symbol={baseSymbol}
-          value={baseAmount}
+          value={formatNumberWithSpaces(baseAmount)}
           onChange={setBaseAmountWithQuote}
           maxBalance={withdrawAmountTokenA}
         />
@@ -231,10 +263,11 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
           </Text>
         </Row>
         <SimpleInput
+          data-testid="withdraw-liquidity-quote-token-field"
           placeholder="0"
           theme={theme}
           symbol={quoteSymbol}
-          value={quoteAmount}
+          value={formatNumberWithSpaces(quoteAmount)}
           onChange={setQuoteAmountWithBase}
           maxBalance={withdrawAmountTokenB}
         />
@@ -255,6 +288,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
 
       <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
+          data-testid="withdraw-liquidity-submit-btn"
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident
@@ -373,6 +407,4 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
   )
 }
 
-const WithTheme = withTheme()(WithdrawalPopup)
-
-export { WithTheme as WithdrawalPopup }
+export { WithdrawalPopup }

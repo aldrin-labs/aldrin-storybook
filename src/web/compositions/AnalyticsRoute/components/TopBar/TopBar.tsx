@@ -2,12 +2,12 @@ import { Theme } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
 import { useMarket } from '@sb/dexUtils/markets'
 
 import { getRINCirculationSupply } from '@core/api'
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   formatNumberToUSFormat,
@@ -93,7 +93,7 @@ const TopBar = ({
       </Row>
       <Row>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>RIN Marketcap</TopBarTitle>{' '}
+          <TopBarTitle>RIN Marketcap</TopBarTitle>{' '}
           <Text theme={theme}>
             {CCAImarketcap === 0
               ? '-'
@@ -101,7 +101,7 @@ const TopBar = ({
           </Text>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>RIN Total Supply</TopBarTitle>
+          <TopBarTitle>RIN Total Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
               {formatNumberToUSFormat(totalySupply.toFixed(0))} RIN
@@ -109,7 +109,7 @@ const TopBar = ({
           </BlockContainer>
         </TokenTitleBlockContainer>
         <TokenTitleBlockContainer>
-          <TopBarTitle theme={theme}>RIN Circulating Supply</TopBarTitle>
+          <TopBarTitle>RIN Circulating Supply</TopBarTitle>
           <BlockContainer>
             <Text theme={theme}>
               {formatNumberToUSFormat(CCAICirculatingSupply.toFixed(0))} RIN

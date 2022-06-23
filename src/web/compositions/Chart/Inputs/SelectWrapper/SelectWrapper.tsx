@@ -1,5 +1,4 @@
 import { Grid, InputAdornment } from '@material-ui/core'
-import { withTheme } from '@material-ui/core/styles'
 import dayjs from 'dayjs'
 import { sortBy as sort } from 'lodash-es'
 import React, { useState } from 'react'
@@ -7,18 +6,17 @@ import { withRouter } from 'react-router'
 import { SortDirection } from 'react-virtualized'
 
 import { SvgIcon } from '@sb/components'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
-import CustomMarketDialog from '@sb/compositions/Chart/Inputs/SelectWrapper/AddCustomMarketPopup'
 import { notify } from '@sb/dexUtils/notifications'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
+import { withMarketUtilsHOC } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { fiatPairs } from '@core/config/stableCoins'
 import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 
 import search from '@icons/search.svg'
 
@@ -175,7 +173,6 @@ class SelectPairListComponent extends React.PureComponent<
       data,
       toggleFavouriteMarket,
       onSelectPair,
-      theme,
       searchValue,
       tab,
       getSerumTradesDataQuery,
@@ -206,7 +203,6 @@ class SelectPairListComponent extends React.PureComponent<
       toggleFavouriteMarket,
       onSelectPair,
       favouritePairsMap,
-      theme,
       searchValue,
       tab,
       marketType,
@@ -238,7 +234,6 @@ class SelectPairListComponent extends React.PureComponent<
       data,
       toggleFavouriteMarket,
       onSelectPair,
-      theme,
       searchValue,
       tab,
       favouritePairsMap,
@@ -266,7 +261,6 @@ class SelectPairListComponent extends React.PureComponent<
       toggleFavouriteMarket,
       previousData: prevPropsData,
       onSelectPair,
-      theme,
       searchValue,
       tab,
       favouritePairsMap,
@@ -371,7 +365,6 @@ class SelectPairListComponent extends React.PureComponent<
     } = this.state
 
     const {
-      theme,
       searchValue,
       tab,
       id,
@@ -418,13 +411,8 @@ class SelectPairListComponent extends React.PureComponent<
 
     return (
       <>
-        <StyledGrid
-          theme={theme}
-          id={id}
-          isAdvancedSelectorMode={isAdvancedSelectorMode}
-        >
+        <StyledGrid id={id} isAdvancedSelectorMode={isAdvancedSelectorMode}>
           <TableHeader
-            theme={theme}
             tab={tab}
             favouritePairsMap={favouritePairsMap}
             tokenMap={tokenMap}
@@ -464,7 +452,6 @@ class SelectPairListComponent extends React.PureComponent<
             />
           </Grid>
           <TableInner
-            theme={theme}
             selectorMode={selectorMode}
             processedSelectData={processedSelectData}
             isAdvancedSelectorMode={isAdvancedSelectorMode}
@@ -479,7 +466,6 @@ class SelectPairListComponent extends React.PureComponent<
                 padding: '0 2rem',
                 height: '4rem',
                 fontFamily: 'Avenir Next Medium',
-                color: theme.palette.blue.serum,
                 alignItems: 'center',
                 fontSize: '1.5rem',
                 textTransform: 'none',
@@ -520,23 +506,20 @@ class SelectPairListComponent extends React.PureComponent<
               + Add Market
             </Row> */}
           </TableFooter>
-          <CustomMarketDialog
-            theme={theme}
+          {/* <CustomMarketDialog
             open={showAddMarketPopup}
             onClose={() => this.setState({ showAddMarketPopup: false })}
             onAddCustomMarket={onAddCustomMarket}
             getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
-          />
-          <WarningPopup theme={theme} />
+          /> */}
+          <WarningPopup />
           <MintsPopup
-            theme={theme}
             symbol={choosenMarketData?.symbol}
             marketAddress={choosenMarketData?.marketAddress}
             open={isMintsPopupOpen}
             onClose={() => this.setIsMintsPopupOpen(false)}
           />
           <MarketsFeedbackPopup
-            theme={theme}
             open={isFeedBackPopupOpen}
             onClose={() => this.setIsFeedbackPopupOpen(false)}
           />
@@ -551,7 +534,6 @@ export default compose(
   withRouter,
   withAuthStatus,
   withPublicKey,
-  withTheme(),
   queryRendererHoc({
     query: getSerumMarketData,
     name: 'getSerumMarketDataQuery',

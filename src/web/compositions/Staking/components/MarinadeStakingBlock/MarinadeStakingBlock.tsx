@@ -2,13 +2,13 @@ import React from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { BlockTitle, BlockContent } from '@sb/components/Block'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { useMarinadeStakingInfo } from '@sb/dexUtils/staking/hooks/useMarinadeStakingInfo'
 import { toMap } from '@sb/utils/collection'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
@@ -56,25 +56,25 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
         </RowContainer>
         <ContentBlock>
           <RowContainer margin="0 0 1em 0" justify="space-between">
-            <InlineText color="primaryGray" size="sm">
+            <InlineText color="gray1" size="sm">
               Total Staked
             </InlineText>
-            <InlineText size="xmd" weight={700}>
+            <InlineText color="gray0" size="xmd" weight={700}>
               {totalStakedSol
                 ? stripByAmountAndFormat(totalStakedSol, 2)
                 : ' ---'}
-              <InlineText color="primaryGray" weight={600}>
+              <InlineText color="gray1" weight={600}>
                 {' '}
                 SOL{' '}
               </InlineText>
             </InlineText>
           </RowContainer>
           <RowContainer justify="space-between">
-            <InlineText size="sm" color="primaryGray">
+            <InlineText size="sm" color="gray1">
               to {mSolInfo?.stats.validators_count || '---'} Validators{' '}
             </InlineText>{' '}
-            <InlineText size="sm" weight={700}>
-              <InlineText color="primaryGray">$</InlineText>
+            <InlineText size="sm" weight={700} color="gray0">
+              <InlineText color="gray0">$</InlineText>
               {totalStakedUsdValue
                 ? stripByAmountAndFormat(totalStakedUsdValue, 2)
                 : ' ---'}
@@ -85,7 +85,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
         <StretchedContent>
           <ContentBlock width="48%">
             <Row justify="space-between" margin="0 0 1em 0">
-              <InlineText color="primaryGray" size="sm">
+              <InlineText color="gray1" size="sm">
                 mSOL Price
               </InlineText>{' '}
               <DarkTooltip title="mSOL/SOL price increases every epoch because staking rewards are accumulated into the SOL staked pool. Therefore, the ratio is not 1:1. This ratio only goes up with time.">
@@ -98,11 +98,12 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
               size="xmd"
               weight={700}
               style={{ whiteSpace: 'nowrap' }}
+              color="gray0"
             >
               {mSolInfo?.stats.m_sol_price
                 ? stripByAmountAndFormat(mSolInfo.stats.m_sol_price, 3)
                 : ' ---'}{' '}
-              <InlineText color="primaryGray" weight={600}>
+              <InlineText color="gray1" weight={600}>
                 SOL
               </InlineText>
             </InlineText>
@@ -114,7 +115,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
               style={{ position: 'absolute', padding: '1em' }}
             >
               <RowContainer justify="space-between" margin="0 0 1em 0">
-                <InlineText color="primaryGray" size="sm">
+                <InlineText color="gray1" size="sm">
                   Epoch
                 </InlineText>{' '}
                 <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
@@ -123,7 +124,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = (props) => {
                   </span>
                 </DarkTooltip>
               </RowContainer>
-              <InlineText size="xmd" weight={700}>
+              <InlineText color="gray0" size="xmd" weight={700}>
                 {mSolInfo?.epochInfo.epochPct
                   ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
                   : '---'}

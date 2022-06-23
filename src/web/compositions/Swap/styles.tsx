@@ -1,6 +1,7 @@
 import {
+  BORDER_RADIUS,
   BREAKPOINTS,
-  COLORS,
+  FONTS,
   FONT_SIZES,
   MAIN_FONT,
 } from '@variables/variables'
@@ -15,7 +16,7 @@ import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 
 export const SwapPageContainer = styled(RowContainer)`
-  background: ${COLORS.mainBlack};
+  background: ${(props) => props.theme.colors.gray9};
   overflow-y: auto;
 `
 
@@ -65,11 +66,11 @@ export const ValueButton = styled.button`
   padding: 0.5em 0.8em;
   font-family: Avenir Next Bold;
   color: #a7a7ae;
-  background-color: #2b2d32;
+  background-color: ${(props) => props.theme.colors.gray5};
   margin-left: 0.5rem;
   font-size: ${(props) => FONT_SIZES[props.$fontSize || 'sm']};
   line-height: 2em;
-  border: 0.1rem solid #3a475c;
+  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
   border-radius: 0.8rem;
 `
 
@@ -78,10 +79,10 @@ export const ValueInput = styled.input`
   height: 2em;
   padding: 0.5em 0.8em;
   font-family: Avenir Next Medium;
-  color: #fbf2f2;
-  background-color: transparent;
+  color: ${(props) => props.theme.colors.gray0};
+  background-color: ${(props) => props.theme.colors.gray5};
+  border: none;
   font-size: ${FONT_SIZES.sm};
-  border: 0.1rem solid #3a475c;
   border-radius: 0.8rem;
   outline: none;
 `
@@ -89,7 +90,7 @@ export const ValueInput = styled.input`
 export const BlackRow = styled((props) => (
   <Row justify="space-between" {...props} />
 ))`
-  background: ${COLORS.cardsBack};
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 1.2rem;
   height: 3em;
   padding: 1em 0.8em;
@@ -99,17 +100,17 @@ export const BlackRow = styled((props) => (
 export const RowTitle = styled.span`
   font-family: ${MAIN_FONT};
   font-size: ${FONT_SIZES.xsm};
-  color: #c9c8cd;
+  color: ${(props) => props.theme.colors.gray0};
 `
 
 export const RowValue = styled(RowTitle)`
   font-weight: 500;
-  color: #fff;
+  color: ${(props) => props.theme.colors.white};
 `
 
 export const RowAmountValue = styled(RowValue)`
   margin-right: 0.4rem;
-  color: #91e073;
+  color: ${(props) => props.theme.colors.green3};
 `
 
 export const SwapButton = styled((props) => (
@@ -120,36 +121,45 @@ export const SwapButton = styled((props) => (
     padding="0.7em 1.2em"
     borderRadius=".8rem"
     borderColor="none"
-    btnColor={COLORS.primaryWhite}
-    backgroundColor={props.disabled ? '#3A475C' : COLORS.primaryBlue}
+    btnColor="#fff"
+    backgroundColor={
+      props.disabled ? props.theme.colors.disabled : props.theme.colors.blue5
+    }
     textTransform="none"
     transition="all .4s ease-out"
     {...props}
   />
 ))`
   &:disabled {
-    color: ${COLORS.primaryWhite};
+    color: #fff;
   }
 `
 
 export const CircleIconContainer = styled(Row)`
   width: ${(props) => props.size || '1.6em'};
   height: ${(props) => props.size || '1.6em'};
-  background: #2b2d36;
+  background: ${(props) => props.theme.colors.gray7};
   border-radius: 50%;
   font-family: Avenir Next Bold;
-  color: #a7a7ae;
+  color: ${(props) => props.theme.colors.gray0};
   line-height: ${(props) => props.size || '1.6em'};
 `
 
 export const ReverseTokensContainer = styled(CircleIconContainer)`
-  box-shadow: 0px 0px 0.8rem rgba(0, 0, 0, 0.45);
   position: absolute;
   right: 1rem;
   top: 50%;
+  box-shadow: ${(props) => props.theme.colors.shadow};
   transform: translateY(-50%);
   cursor: pointer;
   z-index: 2;
+  svg {
+    width: 10px;
+    height: auto;
+    path {
+      fill: ${(props) => props.theme.colors.gray0};
+    }
+  }
 `
 
 export const SwapPageLayout = styled(Page)`
@@ -185,6 +195,8 @@ export const SwapContentContainer = styled(Row)`
 `
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
+  box-shadow: 0px 0px 48px rgba(0, 0, 0, 0);
+  background: ${({ theme }) => theme.colors.gray6};
   padding: 2.4rem 1.6rem;
   z-index: 10;
 
@@ -194,6 +206,13 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
 `
 
 export const SetAmountButton = styled(Button)`
+  min-width: 0;
+  font-size: ${FONT_SIZES.xs};
+  font-family: ${FONTS.demi};
+  border-radius: ${BORDER_RADIUS.xxl};
+  color: ${(props) => props.theme.colors.gray1};
+  background-color: ${(props) => props.theme.colors.gray11};
+  border: none;
   padding: ${PADDINGS.xs};
 
   @media (min-width: ${BREAKPOINTS.sm}) {

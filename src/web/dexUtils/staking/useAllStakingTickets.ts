@@ -1,9 +1,10 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { useEffect, useState, useCallback } from 'react'
 
+import { getParsedUserStakingTickets } from '@core/solana'
+
 import { FarmingTicket } from '../common/types'
 import { WalletAdapter, AsyncRefreshFunction } from '../types'
-import { getParsedStakingFarmingTickets } from './getParsedStakingFarmingTickets'
 
 export const useAllStakingTickets = ({
   wallet,
@@ -25,10 +26,9 @@ export const useAllStakingTickets = ({
       setAllStakingFarmingTickets([])
       return false
     }
-    const allTickets = await getParsedStakingFarmingTickets({
+    const allTickets = await getParsedUserStakingTickets({
       wallet,
       connection,
-      walletPublicKey,
     })
 
     setAllStakingFarmingTickets(allTickets)

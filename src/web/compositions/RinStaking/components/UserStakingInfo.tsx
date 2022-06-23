@@ -6,22 +6,19 @@ import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
-import { getAvailableToClaimFarmingTokens } from '@sb/dexUtils/pools/getAvailableToClaimFarmingTokens'
 import {
   BUY_BACK_RIN_ACCOUNT_ADDRESS,
   DAYS_TO_CHECK_BUY_BACK,
 } from '@sb/dexUtils/staking/config'
-import { isOpenFarmingState } from '@sb/dexUtils/staking/filterOpenFarmingStates'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
@@ -35,9 +32,15 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { getRINCirculationSupply } from '@core/api'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { STAKING_PROGRAM_ADDRESS } from '@core/solana'
+import {
+  getAvailableToClaimFarmingTokens,
+  getStakedTokensTotal,
+  isOpenFarmingState,
+  STAKING_PROGRAM_ADDRESS,
+  addFarmingRewardsToTickets,
+  getSnapshotQueueWithAMMFees,
+} from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -51,7 +54,6 @@ import ClockIcon from '@icons/clock.svg'
 import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
 import { restake } from '../../../dexUtils/staking/actions'
-import { getSnapshotQueueWithAMMFees } from '../../../dexUtils/staking/getSnapshotQueueWithAMMFees'
 import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
@@ -115,7 +117,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       connection,
     })
 
-  const totalStaked = getStakedTokensFromOpenFarmingTickets(
+  const totalStaked = getStakedTokensTotal(
     getTicketsWithUiValues({
       tickets: userFarmingTickets,
       farmingTokenMintDecimals: currentFarmingState.farmingTokenMintDecimals,
@@ -406,7 +408,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   )
 
   const userEstRewardsUSD = isBalancesShowing
-    ? stripByAmountAndFormat(estimatedRewards, 2)
+    ? strippedEstRewardsUSD
     : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
 
   return (
@@ -416,9 +418,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           <GreenBlock>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
-                <InlineText color="lightGray" size="sm">
-                  Estimated Rewards
-                </InlineText>
+                <InlineText size="sm">Estimated Rewards</InlineText>
                 <DarkTooltip
                   title={
                     <p>
@@ -439,7 +439,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
 
               <FlexBlock alignItems="flex-end">
-                <InlineText size="lg" weight={700} color="newGreen">
+                <InlineText size="lg" weight={700} color="green7">
                   {formattedAPR}%{' '}
                   <InlineText
                     weight={400}
@@ -455,7 +455,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <FlexBlock alignItems="center">
                   <InlineText
                     size="sm"
-                    color="lightGray"
                     style={{
                       lineHeight: 'normal',
                       whiteSpace: 'nowrap',
@@ -481,18 +480,16 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           </GreenBlock>
         </Cell>
         <Cell colMd={6} colXl={3} col={12}>
-          <Block>
+          <Block inner>
             <BlockContentStretched>
-              <InlineText color="lightGray" size="sm">
-                Total staked{' '}
-              </InlineText>{' '}
+              <InlineText size="sm">Total staked </InlineText>{' '}
               <BigNumber>
                 <InlineText>{stripToMillions(totalStakedRIN)} </InlineText>{' '}
-                <InlineText color="primaryGray">RIN</InlineText>
+                <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
-                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  <InlineText>$</InlineText>&nbsp;
                   {stripToMillions(totalStakedUSD)}
                 </InlineText>{' '}
                 <InlineText margin="0" size="sm">
@@ -505,12 +502,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         </Cell>
 
         <Cell colMd={6} colXl={3} col={12}>
-          <Block>
+          <Block inner>
             <BlockContentStretched>
               <FlexBlock justifyContent="space-between" alignItems="center">
-                <InlineText color="lightGray" size="sm">
-                  Your stake
-                </InlineText>{' '}
+                <InlineText size="sm">Your stake</InlineText>{' '}
                 <SvgIcon
                   style={{ cursor: 'pointer' }}
                   src={
@@ -525,11 +520,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
               <BigNumber>
                 <InlineText>{totalStakedValue} </InlineText>{' '}
-                <InlineText color="primaryGray">RIN</InlineText>
+                <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
-                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  <InlineText>$</InlineText>&nbsp;
                   {totalStakedUsdValue}
                 </InlineText>{' '}
               </StretchedBlock>
@@ -537,12 +532,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           </Block>
         </Cell>
         <Cell colMd={6} colXl={3} col={12}>
-          <Block>
+          <Block inner>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
-                <InlineText color="lightGray" size="sm">
-                  Your rewards
-                </InlineText>
+                <InlineText size="sm">Your rewards</InlineText>
                 <DarkTooltip
                   title={
                     <>
@@ -564,11 +557,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               </FlexBlock>
               <BigNumber>
                 <InlineText>{userEstRewards} </InlineText>{' '}
-                <InlineText color="primaryGray">RIN</InlineText>
+                <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
-                  <InlineText color="lightGray">$</InlineText>&nbsp;
+                  <InlineText>$</InlineText>&nbsp;
                   {userEstRewardsUSD}
                 </InlineText>{' '}
                 <FlexBlock>

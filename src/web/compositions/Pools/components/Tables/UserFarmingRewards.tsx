@@ -1,6 +1,9 @@
 import React from 'react'
-import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
+
 import { LiquidityText } from '../PoolPage/styles'
 
 interface UserFarmingRewardsProps {
@@ -31,7 +34,7 @@ export const UserFarmingRewards: React.FC<UserFarmingRewardsProps> = (
               key={`farming_available_to_claim_${atc.farmingTokenMint}`}
             >
               {idx !== 0 ? ' + ' : ''}
-              <LiquidityText color="success">
+              <LiquidityText color="green7">
                 {stripByAmountAndFormat(atc.amount, 6)}
               </LiquidityText>
               &nbsp;
@@ -41,7 +44,7 @@ export const UserFarmingRewards: React.FC<UserFarmingRewardsProps> = (
         </LiquidityText>
       </div>
       <div>
-        <LiquidityText color="success">
+        <LiquidityText color="green7">
           ${stripByAmountAndFormat(availableToClaimUsd, 2)}
         </LiquidityText>
       </div>

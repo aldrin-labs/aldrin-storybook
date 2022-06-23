@@ -4,8 +4,9 @@ import React, { ReactNode } from 'react'
 import { SvgIcon } from '@sb/components'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
+import { getTokenName } from '@sb/dexUtils/markets'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import Attention from '@icons/attention.svg'
 import ScalesIcon from '@icons/scales.svg'
 
@@ -42,9 +43,20 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
     farmingRewardPerDay,
   } = props
 
-  const baseName = getTokenNameByMintAddress(values.baseToken.mint)
-  const quoteName = getTokenNameByMintAddress(values.quoteToken.mint)
-  const farmingTokenName = getTokenNameByMintAddress(values.farming.token.mint)
+  const tokenInfo = useTokenInfos()
+
+  const baseName = getTokenName({
+    address: values.baseToken.mint,
+    tokensInfoMap: tokenInfo,
+  })
+  const quoteName = getTokenName({
+    address: values.quoteToken.mint,
+    tokensInfoMap: tokenInfo,
+  })
+  const farmingTokenName = getTokenName({
+    address: values.farming.token.mint,
+    tokensInfoMap: tokenInfo,
+  })
 
   return (
     <div>
@@ -140,7 +152,7 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
         <WarningIcon>
           <SvgIcon src={Attention} height="40px" />
         </WarningIcon>
-        <InlineText size="sm">
+        <InlineText color="primaryWhite" size="sm">
           Please make sure you have enough SOL to proceed transaction. You will
           need to sign several transactions, and then your pool will appear in
           the list of pools and in the &quot;Your Liquidity&quot; tab.

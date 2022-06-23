@@ -77,7 +77,6 @@ export const WalletProvider: React.FC = ({ children }) => {
       endpoint
     ) as any as WalletAdapter
 
-    console.log('adapter:', adapter)
     return adapter
   }, [provider, endpoint])
 

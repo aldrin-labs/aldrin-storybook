@@ -13,7 +13,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-import SearchUsername from '@core/components/SearchUsername/SearchUsername'
+import SearchUsername from './SearchUsername/SearchUsername'
 
 export const StyledDialogContent = styled(DialogContent)`
   border-radius: none;
@@ -83,7 +83,7 @@ export const StyledPaper = styled(Paper)`
 `
 
 export const ButtonShare = styled(Button)`
-  background: ${(props) => (props.active ? '#651CE4' : '#FFFFFF')};
+  background: ${(props) => (props.active ? '#0E02EC' : '#FFFFFF')};
   color: ${(props) => (props.active ? '#fff' : '#7284A0')};
   box-shadow: ${(props) =>
     props.active ? 'none' : '0px 0px .5rem rgba(10,19,43,0.1)'};
@@ -95,8 +95,8 @@ export const ButtonShare = styled(Button)`
 
   &:hover {
     color: #fff;
-    background-color: #651ce4;
-    border: 1.5px solid #651ce4;
+    background-color: #0e02ec;
+    border: 1.5px solid #0e02ec;
   }
 
   @media (min-width: 1440px) {
@@ -131,8 +131,8 @@ export const StyledButton = styled(({ padding, ...rest }) => (
   font-weight: bold;
   border-radius: 1.2rem;
   border: ${(props) =>
-    props.disabled ? '1.5px solid #E0E5EC' : '1.5px solid #651CE4'};
-  color: #651ce4;
+    props.disabled ? '1.5px solid #E0E5EC' : '1.5px solid #0E02EC'};
+  color: #0e02ec;
   letter-spacing: 1.5px;
 
   @media (min-width: 1440px) {
@@ -182,13 +182,13 @@ export const Line = styled.div`
 
 export const SButton = styled.span`
   text-decoration: none;
-  color: #651ce4;
+  color: #0e02ec;
   cursor: pointer;
 `
 
 export const SRadio = styled(Radio)`
   svg {
-    color: #651ce4;
+    color: #0e02ec;
   }
 
   @media (min-width: 1440px) {
@@ -216,6 +216,10 @@ export const SRadio = styled(Radio)`
 `
 
 export const SCheckbox = styled(Checkbox)`
+  & svg {
+    color: ${(props) => props.theme.colors.blue4};
+  }
+  color: ${(props) => props.theme.colors.blue4};
   @media (min-width: 1440px) {
     & svg {
       font-size: 2.2rem;

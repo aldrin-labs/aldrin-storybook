@@ -8,18 +8,21 @@ import { LoadingBlock } from '@sb/components/Loader/LoadingBlock'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Text } from '@sb/components/Typography'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
-import { getStakedTokensFromOpenFarmingTickets } from '@sb/dexUtils/common/getStakedTokensFromOpenFarmingTickets'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
-import { UNLOCK_STAKED_AFTER } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { uniq } from '@sb/utils/collection'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
+import {
+  UNLOCK_STAKED_AFTER,
+  getStakedTokensTotal,
+  filterOpenFarmingStates,
+} from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { estimateTime, MINUTE } from '@core/utils/dateUtils'
-import { sleep } from '@core/utils/helpers'
 
 import LightLogo from '@icons/lightLogo.svg'
 
@@ -48,27 +51,26 @@ const waitForPoolsUpdate = async (
   refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
   poolSwapToken: string,
   statesSize: number,
-  retries: number = 20
+  retries: number = 15
 ): Promise<boolean> => {
   if (retries === 0) {
     return false
   }
-  const {
-    data: { getPoolsInfo },
-  } = await refetchPools()
-  const newSize =
-    getPoolsInfo.find((p) => p.swapToken === poolSwapToken)?.farming?.length ||
-    0
-  if (newSize > statesSize) {
-    return true
+  let retriesMade = 0
+  while (retriesMade < retries) {
+    const {
+      data: { getPoolsInfo },
+    } = await refetchPools()
+    const newSize =
+      getPoolsInfo.find((p) => p.swapToken === poolSwapToken)?.farming
+        ?.length || 0
+    if (newSize > statesSize) {
+      return true
+    }
+    await sleep(20_000)
+    retriesMade += 1
   }
-  await sleep(20_000)
-  return waitForPoolsUpdate(
-    refetchPools,
-    poolSwapToken,
-    statesSize,
-    retries - 1
-  )
+  return false
 }
 
 export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
@@ -83,7 +85,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     processing,
     refetchPools,
   } = props
-
+  const tokensInfo = useTokenInfos()
   const { wallet } = useWallet()
 
   const [farmingExtending, setFarmingExtending] = useState(false)
@@ -124,7 +126,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const unstakeLocked = claimAvailableTs > now
 
-  const stakedAmount = getStakedTokensFromOpenFarmingTickets(ticketsForPool)
+  const stakedAmount = getStakedTokensTotal(ticketsForPool)
 
   const availableToClaimMap = getUniqueAmountsToClaimMap({
     farmingTickets: ticketsForPool,
@@ -190,6 +192,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               onClose={() => setExtendFarmingModalOpen(false)}
               title="Create Farming"
               onExtend={onExtendSuccess}
+              tokensInfo={tokensInfo}
             />
           )}
         </LoadingBlock>
@@ -234,9 +237,11 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const estimatedTime = estimateTime(timeRemainMax)
 
   // Have pool ending soon
-  const prolongationEnabled = !!(pool.farming || []).find(
-    (fs) => fs.tokensTotal - fs.tokensUnlocked <= fs.tokensPerPeriod
-  )
+  // const prolongationEnabled = !!(pool.farming || []).find(
+  //   (fs) => fs.tokensTotal - fs.tokensUnlocked <= fs.tokensPerPeriod
+  // )
+
+  const prolongationEnabled = true
 
   const unstakeTooltipText = unstakeLocked
     ? `Locked until ${dayjs
@@ -258,7 +263,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                 {farmingTokens.map((mint) => (
                   <div key={`farming_reward_${mint}`}>
                     <LiquidityText weight={600}>
-                      <LiquidityText color="success">
+                      <LiquidityText color="green7">
                         {stripByAmountAndFormat(
                           farmingRemain.get(mint)?.tokensRemain || 0
                         )}{' '}
@@ -278,7 +283,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                     <>
                       {!!estimatedTime.days && (
                         <LiquidityText>
-                          <LiquidityText color="success">
+                          <LiquidityText color="green7">
                             {estimatedTime.days}{' '}
                           </LiquidityText>
                           <LiquidityText>
@@ -288,7 +293,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                       )}
                       {!!estimatedTime.hours && (
                         <LiquidityText>
-                          <LiquidityText color="success">
+                          <LiquidityText color="green7">
                             {' '}
                             {estimatedTime.hours}{' '}
                           </LiquidityText>
@@ -299,7 +304,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                       )}
                       {!!estimatedTime.minutes && (
                         <LiquidityText>
-                          <LiquidityText color="success">
+                          <LiquidityText color="green7">
                             {' '}
                             {estimatedTime.minutes}{' '}
                           </LiquidityText>
@@ -335,7 +340,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               <LiquidityTitle>Stake LP Tokens</LiquidityTitle>
               <div>
                 <LiquidityText weight={600}>
-                  <LiquidityText color="success">
+                  <LiquidityText color="green7">
                     {stripByAmountAndFormat(poolTokenAmount)}
                   </LiquidityText>{' '}
                   Unstaked
@@ -343,7 +348,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               </div>
               <div>
                 <LiquidityText weight={600}>
-                  <LiquidityText color="success">
+                  <LiquidityText color="green7">
                     {stripByAmountAndFormat(stakedAmount)}
                   </LiquidityText>{' '}
                   Staked
@@ -409,6 +414,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             pool={pool}
             onClose={() => setExtendFarmingModalOpen(false)}
             onExtend={onExtendSuccess}
+            tokensInfo={tokensInfo}
           />
         )}
       </LoadingBlock>

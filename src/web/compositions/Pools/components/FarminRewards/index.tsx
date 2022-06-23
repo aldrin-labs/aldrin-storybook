@@ -2,10 +2,10 @@ import React from 'react'
 
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
+import { filterOpenFarmingStates } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import { groupBy } from '../../../../utils'
@@ -62,9 +62,10 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
               0
             )
 
-            const info = tokenMap.get(farmingStateMint)
-            const tokenName =
-              info?.symbol || getTokenNameByMintAddress(farmingStateMint)
+            const tokenName = getTokenName({
+              address: farmingStateMint,
+              tokensInfoMap: tokenMap,
+            })
             return (
               <FarmingText
                 key={`fs_reward_${poolTokenMint}_${farmingStateMint}`}
