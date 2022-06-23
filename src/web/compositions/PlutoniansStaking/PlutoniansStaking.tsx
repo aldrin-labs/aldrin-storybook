@@ -87,8 +87,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     getDexTokensPricesQuery: { getDexTokensPrices: prices = [] },
   } = props
 
-  const { symbol = 'PLD' } = useParams<{ symbol: string }>()
-
+  const params = useParams<{ symbol: string }>()
+  const { symbol = 'PLD' } = params
   const staking = STAKINGS[symbol.toUpperCase()] || STAKINGS.PLD
 
   const { wallet } = useWallet()
