@@ -39,12 +39,16 @@ const MOBILE_WIDTH = 800
 export const DataTable = <E,>(props: DataTableProps<E>) => {
   const { columns, data, name, onRowClick, noDataText } = props
 
-  const [state, setState] = useLocalStorageState<DataTableState>(`dt_${name}`, {
-    sort: {
-      field: 'tvl',
-      direction: SORT_ORDER.DESC,
-    },
-  })
+  const [state, setState] = useLocalStorageState<DataTableState>(
+    `dtable_${name}`,
+    {
+      sort: {
+        field: 'tvl',
+        direction: SORT_ORDER.DESC,
+      },
+    }
+  )
+
   const [sortedData, setSortedData] = useState<DataCellValues<E>[]>([])
 
   useEffect(() => {
