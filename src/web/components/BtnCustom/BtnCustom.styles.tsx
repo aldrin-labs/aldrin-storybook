@@ -1,6 +1,6 @@
+import { Button } from '@material-ui/core'
 import React from 'react'
 import styled from 'styled-components'
-import { Button } from '@material-ui/core'
 
 export const BtnCustom = styled(
   ({
@@ -21,6 +21,7 @@ export const BtnCustom = styled(
     transition,
     needMinWidth,
     style,
+    textTransform,
     ...rest
   }) => <Button {...rest} />
 )`

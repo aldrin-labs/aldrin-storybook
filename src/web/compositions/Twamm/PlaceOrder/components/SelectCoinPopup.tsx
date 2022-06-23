@@ -137,7 +137,7 @@ export const SelectCoinPopup = ({
                 }}
               >
                 <Row wrap="nowrap">
-                  <TokenIcon mint={mint} width="2rem" height="2rem" />
+                  <TokenIcon mint={mint} size={32} />
                   <StyledText>{getTokenNameByMintAddress(mint)}</StyledText>
                 </Row>
                 <Row wrap="nowrap">

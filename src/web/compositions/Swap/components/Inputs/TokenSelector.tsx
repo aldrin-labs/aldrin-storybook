@@ -31,7 +31,7 @@ export const TokenSelector = ({
       style={{ cursor: 'pointer' }}
     >
       <Row>
-        <TokenIcon mint={mint} width={FONT_SIZES.xl} height={FONT_SIZES.xl} />
+        <TokenIcon mint={mint} size={32} />
         <Text
           style={{ margin: '0 0.8rem' }}
           fontSize={

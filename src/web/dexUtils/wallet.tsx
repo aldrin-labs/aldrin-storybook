@@ -341,13 +341,13 @@ export function parseMintData(data) {
 // }
 
 export function useBalanceInfo(publicKey) {
-  const [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey)
+  const { data: accountInfo, isLoading: accountInfoLoading } = useAccountInfo(publicKey)
   const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
     : {}
-  const [mintInfo, mintInfoLoaded] = useAccountInfo(mint)
+  const { data: mintInfo, isLoading: mintInfoLoading } = useAccountInfo(mint)
 
-  if (!accountInfoLoaded) {
+  if (accountInfoLoading) {
     return null
   }
 
@@ -363,7 +363,7 @@ export function useBalanceInfo(publicKey) {
     }
   }
 
-  if (mint && mintInfoLoaded) {
+  if (mint && !mintInfoLoading) {
     try {
       const { decimals } = parseMintData(mintInfo.data)
       return {

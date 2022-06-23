@@ -12,14 +12,16 @@ export const NumberWithLabel: React.FC<NumberWithLabelProps> = (props) => {
     padding = '0 0 0 0.25em',
   } = props
 
+  const isValidValue = Number.isFinite(value)
+
   return (
     <Container>
-      {value ? `${value.toFixed(2)}%` : ''}
+      {isValidValue ? `${value.toFixed(2)}%` : ''}
       <Label
         padding={padding}
         style={center ? { margin: '0 auto' } : undefined}
         size={size}
-        weight={value ? '400' : '600'}
+        weight={isValidValue ? '400' : '600'}
       >
         {label}
       </Label>
