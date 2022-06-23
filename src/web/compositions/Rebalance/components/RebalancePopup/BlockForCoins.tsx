@@ -27,8 +27,7 @@ export const BlockForCoins = ({
     <BlockForIcons>
       <TokenIcon
         mint={getTokenMintAddressByName(base)}
-        width="2.5rem"
-        height="2.5rem"
+        size={32}
         margin="0 .5rem 0 0"
       />
       <Text
@@ -41,8 +40,7 @@ export const BlockForCoins = ({
       <SvgIcon src={Arrow} />
       <TokenIcon
         mint={getTokenMintAddressByName(quote)}
-        width="2.5rem"
-        height="2.5rem"
+        size={32}
         margin="0 .5rem 0 .5rem"
       />
       <Text

@@ -70,14 +70,14 @@ export const TokenIconsContainer: React.FC<TokenIconContainerProps> = (
     <Row wrap="nowrap" justify="end">
       <IconsContainer>
         <TokenIconContainer zIndex="1" left="0">
-          <TokenIcon width="1.5em" height="1.5em" mint={tokenA} />
+          <TokenIcon mint={tokenA} />
         </TokenIconContainer>
         <TokenIconContainer
           left="0"
           zIndex="0"
           style={{ transform: 'translateX(70%)' }}
         >
-          <TokenIcon width="1.5em" height="1.5em" mint={tokenB} />
+          <TokenIcon mint={tokenB} />
         </TokenIconContainer>
       </IconsContainer>
       <div style={{ marginLeft: '2rem' }}>

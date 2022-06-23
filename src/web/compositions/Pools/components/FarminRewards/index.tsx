@@ -23,7 +23,7 @@ export const FarmingRewardsIcons: React.FC<FarmingRewardsIconsProps> = (
       {mints.map((mint) => {
         return (
           <FarmingIconWrap key={`farming_icon_${poolMint}_${mint}`}>
-            <TokenIcon mint={mint} width="1.3em" emojiIfNoLogo={false} />
+            <TokenIcon mint={mint} />
           </FarmingIconWrap>
         )
       })}

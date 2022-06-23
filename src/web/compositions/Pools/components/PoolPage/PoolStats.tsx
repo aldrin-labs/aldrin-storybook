@@ -174,15 +174,13 @@ Don't miss your chance.`
           <TokenIcons>
             <TokenIcon
               mint={pool.tokenA}
-              width="3em"
-              emojiIfNoLogo={false}
+              size={48}
               margin="0 0.5em 0 0"
             />{' '}
             /
             <TokenIcon
               mint={pool.tokenB}
-              width="3em"
-              emojiIfNoLogo={false}
+              size={48}
               margin="0 0 0 0.5em"
             />
           </TokenIcons>

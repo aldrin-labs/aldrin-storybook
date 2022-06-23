@@ -92,7 +92,7 @@ export function useMintInput({
   theme,
 }): [ReactElement, MintInfo | null] {
   const [address, setAddress] = useState('')
-  const [accountInfo, loaded] = useAccountInfo(
+  const { data: accountInfo, isLoading } = useAccountInfo(
     isValidPublicKey(address) ? new PublicKey(address) : null
   )
 
@@ -123,7 +123,7 @@ export function useMintInput({
           validateStatus = 'error'
           help = 'Invalid SPL mint address'
         }
-      } else if (isValidPublicKey(address) && !loaded) {
+      } else if (isValidPublicKey(address) && isLoading) {
         validateStatus = 'validating'
       } else {
         validateStatus = 'error'
@@ -131,7 +131,7 @@ export function useMintInput({
       }
     }
     return { validateStatus, hasFeedback, help, mintInfo }
-  }, [address, accountInfo, loaded])
+  }, [address, accountInfo, isLoading])
 
   const input = (
     <>
