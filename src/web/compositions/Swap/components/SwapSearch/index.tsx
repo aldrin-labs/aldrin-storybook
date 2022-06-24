@@ -5,6 +5,7 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { notEmpty } from '@sb/dexUtils/utils'
 
@@ -50,22 +51,21 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
         (item) => !parseFloat(item)
       )
 
-      let [tokenFromSearch, tokenToSearch] = symbolsSearchTextItems
+      let [tokenFromSearch] = symbolsSearchTextItems
+      const [_, tokenToSearch] = symbolsSearchTextItems
 
       if (!tokenFromSearch) {
         const topTradingMint = topTradingMints[0]
-        tokenFromSearch = tokensMap.get(topTradingMint).symbol
+        tokenFromSearch = tokensMap.get(topTradingMint)?.symbol || ''
       }
 
-      const tokensWithSymbol = tokens
-        .map((t) => {
-          const symbol = tokensMap.get(t.mint)?.symbol
-
-          if (!symbol) return null
-
-          return { ...t, symbol }
+      const tokensWithSymbol = tokens.map((t) => {
+        const symbol = getTokenName({
+          address: t.mint,
+          tokensInfoMap: tokensMap,
         })
-        .filter(notEmpty)
+        return { ...t, symbol }
+      })
 
       const tokenFromSearchLowerCase =
         tokenFromSearch && tokenFromSearch.toLowerCase()
@@ -125,9 +125,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
       const swapOptions = tokensTo.map((tokenTo) => ({
         tokenTo,
         tokenFrom,
-        amountFrom: Number.isNaN(amountFrom)
-          ? undefined
-          : amountFrom.toString(),
+        amountFrom: Number.isNaN(amountFrom) ? 0 : amountFrom.toString(),
       }))
 
       return swapOptions
@@ -146,15 +144,14 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
     searchValue !== ''
       ? searchItems
       : topTradingPairs.slice(0, 5).map((pair) => ({
+          amountFrom: 0,
           tokenFrom: {
             symbol: pair.baseSymbol,
             mint: pair.baseMint,
-            amountFrom: 0,
           },
           tokenTo: {
             symbol: pair.quoteSymbol,
             mint: pair.quoteMint,
-            amountFrom: 0,
           },
         }))
 
@@ -228,14 +225,13 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
 
             return (
               <SwapItem
-                $color="gray0"
                 className={isOptionSelectedFromKeyboard ? 'focused' : ''}
                 onClick={() => selectRow(option)}
                 key={`search_item_${tokenFrom.mint}_${tokenTo.mint}`}
               >
                 <Row>
-                  <TokenIcon mint={tokenFrom.mint} height="1.5em" />{' '}
-                  <TokenIcon mint={tokenTo.mint} height="1.5em" />{' '}
+                  <TokenIcon mint={tokenFrom.mint} size={24} />{' '}
+                  <TokenIcon mint={tokenTo.mint} size={24} />{' '}
                 </Row>
                 <Row direction="column" align="flex-start" margin="0 0 0 1em">
                   <InlineText weight={600}>

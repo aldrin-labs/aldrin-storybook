@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
-import { DefaultTheme } from 'styled-components'
 
 import { FlexBlock } from '@sb/components/Layout'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -33,6 +32,7 @@ import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql
 import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
 import { withPublicKey } from '@core/hoc/withPublicKey'
+import { fixCorruptedFarmingStates } from '@core/solana'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 
@@ -67,18 +67,16 @@ interface TableSwitcherProps {
   getWeeklyAndDailyTradingVolumesForPoolsQuery: {
     getWeeklyAndDailyTradingVolumesForPools?: TradingVolumeStats[]
   }
-  theme: DefaultTheme
 }
 
 const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const {
     getPoolsInfoQueryRefetch,
-    getPoolsInfoQuery: { getPoolsInfo: pools = [] },
+    getPoolsInfoQuery: { getPoolsInfo: rawPools = [] },
     getDexTokensPricesQuery: { getDexTokensPrices = [] },
     getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
     getFeesEarnedByPoolQuery: { getFeesEarnedByPool = [] },
     getWeeklyAndDailyTradingVolumesForPoolsQuery,
-    theme,
   } = props
 
   const [searchValue, setSearchValue] = useState('')
@@ -105,9 +103,13 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const { data: calcAccounts, mutate: refreshCalcAccounts } =
     useFarmingCalcAccounts()
 
-  const [snapshotQueues] = useSnapshotQueues({
-    wallet,
-    connection,
+  const [snapshotQueues] = useSnapshotQueues()
+
+  const pools = rawPools.map((pool) => {
+    return {
+      ...pool,
+      farming: fixCorruptedFarmingStates(pool.farming),
+    }
   })
 
   const [farmingTicketsMap, refreshFarmingTickets] = useFarmingTicketsMap({
@@ -260,7 +262,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           </AuditInfo>
         </InputWrap>
       </TabContainer>
-      <TableContainer>
+
+      <TableContainer $height="80rem">
         {selectedTable === 'authorized' && (
           <AllPoolsTable
             searchValue={searchValue}
@@ -332,7 +335,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           earnedFees={earnedFeesInPoolForUserMap}
           refreshUserTokensData={refreshUserTokensData}
           refreshAll={refreshAll}
-          snapshotQueues={snapshotQueues}
           vestingsForWallet={vestingsByMintForUser}
           refetchPools={getPoolsInfoQueryRefetch}
         />

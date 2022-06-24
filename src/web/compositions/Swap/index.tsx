@@ -1,4 +1,3 @@
-import withTheme from '@material-ui/core/styles/withTheme'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
@@ -668,7 +667,6 @@ const SwapPage = ({
 
 // @ts-ignore
 export default compose(
-  withTheme(),
   withPublicKey,
   withRegionCheck,
   queryRendererHoc({

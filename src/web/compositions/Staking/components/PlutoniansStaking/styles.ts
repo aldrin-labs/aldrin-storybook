@@ -1,4 +1,4 @@
-import { BORDER_RADIUS, COLORS } from '@variables/variables'
+import { COLORS, BORDER_RADIUS, FONT_SIZES } from '@variables/variables'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -41,10 +41,11 @@ export const ButtonContainer = styled(RowContainer)`
 
 export const StakePoolText = styled.div`
   margin-left: 20px;
+  font-size: ${FONT_SIZES.xsm};
 `
 
 export const StakePoolWrap = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 32px;
 
   &:last-child {
     margin-bottom: 0;
@@ -56,15 +57,18 @@ export const StakePoolButtonContainer = styled.div`
 `
 
 export const StakePoolLink = styled(Link)`
-  background: ${COLORS.lightButtonBg};
+  background: ${(props) => props.theme.colors.gray4};
+  color: ${(props) => props.theme.colors.gray0};
   border-radius: ${BORDER_RADIUS.md};
-  color: ${COLORS.main};
   text-decoration: none;
   padding: 10px;
   margin-left: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
 
   &:hover {
-    background: ${COLORS.primary};
+    background: ${(props) => props.theme.colors.blue5};
+    color: ${(props) => props.theme.colors.primaryWhite};
   }
 `
 

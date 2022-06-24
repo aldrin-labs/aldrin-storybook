@@ -5,9 +5,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { AldrinConnection } from '@core/solana'
-
-import { WalletAdapter } from '../types'
+import { AldrinConnection, AuthorizedWalletAdapter } from '@core/solana'
 
 interface SendTransactionParamsBase {
   connection: AldrinConnection
@@ -40,7 +38,7 @@ export interface WaitConfirmationParams extends SendTransactionParamsBase {
 }
 
 export interface SendTransactionParams extends SendSignedTransactionParams {
-  wallet: WalletAdapter
+  wallet: AuthorizedWalletAdapter
   signers?: Signer[]
   focusPopup?: boolean
 }
@@ -68,7 +66,7 @@ export interface SendTransactionsParams
   extends SendTransactionParamsBase,
     NotificationParams,
     TransactionParams {
-  wallet: WalletAdapter
+  wallet: AuthorizedWalletAdapter
   transactionsAndSigners: TransactionAndSigners[]
   focusPopup?: boolean
 }

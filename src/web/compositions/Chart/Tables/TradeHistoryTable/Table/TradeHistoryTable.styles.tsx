@@ -1,27 +1,9 @@
+import MdArrowUpward from '@material-ui/icons/ArrowUpward'
 import React from 'react'
 import styled from 'styled-components'
-import MdArrowUpward from '@material-ui/icons/ArrowUpward'
 
-import { TypographyFullWidth } from '@sb/styles/cssUtils'
 import { Table, Cell, Row } from '@sb/components/OldTable/Table'
-
-export const StyledTypography = styled(
-  ({ textColor, ...rest }: { textColor: string; rest: any }) => (
-    <TypographyFullWidth {...rest} />
-  )
-)`
-  && {
-    font-size: 1rem;
-    color: ${(props) => props.textColor};
-    font-variant-numeric: lining-nums tabular-nums;
-  }
-
-  @media (min-width: 1921px) {
-    && {
-      font-size: 0.8rem;
-    }
-  }
-`
+import { TypographyFullWidth } from '@sb/styles/cssUtils'
 
 export const StyledRow = styled(Row)`
   height: 1.5rem;

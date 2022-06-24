@@ -1,18 +1,17 @@
 import { sendSignedSignleTransaction as sendSingle } from '@core/solana'
 
-import { SendSignedTransactionResult } from '../types'
 import { getNotifier } from './notifier'
 import { SendSignedTransactionParams } from './types'
 
 export const sendSignedSignleTransaction = async (
   params: SendSignedTransactionParams
-): Promise<{ result: SendSignedTransactionResult; txId?: string }> => {
+) => {
   const { successMessage = 'Transaction confirmed' } = params
 
   const messages = {
-    sent: 'Transaction sent',
     confirming: 'Confirming transaction...',
-    success: successMessage,
+    confirmed: successMessage,
+    failed: 'Operation failed',
   }
 
   return sendSingle({

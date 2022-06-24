@@ -53,7 +53,7 @@ export const SelectCoinPopup = ({
   setQuoteTokenAddressFromSeveral: (address: string) => void
 }) => {
   const tokenInfos = useTokenInfos()
-  const { wallet, connected } = useWallet()
+  const { connected } = useWallet()
 
   const [searchValue, onChangeSearch] = useState<string>('')
   const [selectedMint, setSelectedMint] = useState<string>('')
@@ -156,12 +156,7 @@ export const SelectCoinPopup = ({
           {/* top-8 tokens */}
           {topTradingMints.slice(0, 8).map((mint) => (
             <TokenButton onClick={() => selectMint(mint)}>
-              <TokenIcon
-                mint={mint}
-                width="1.5em"
-                height="1.5em"
-                margin="0 0.5em 0 0"
-              />
+              <TokenIcon mint={mint} size={24} margin="0 0.5em 0 0" />
               <TokenButtonText>{tokenInfos.get(mint)?.symbol}</TokenButtonText>
             </TokenButton>
           ))}
@@ -170,12 +165,13 @@ export const SelectCoinPopup = ({
           {sortedMints.map(({ mint, amount, name, symbol, total }) => {
             return (
               <SelectorRow
+                key={mint}
                 justify="space-between"
                 style={{ cursor: 'pointer' }}
                 onClick={() => selectMint(mint)}
               >
                 <Row wrap="nowrap">
-                  <TokenIcon mint={mint} width="3em" height="3em" />
+                  <TokenIcon mint={mint} size={32} />
                   <Row
                     margin="0 0 0 0.5em"
                     align="flex-start"
@@ -210,7 +206,6 @@ export const SelectCoinPopup = ({
             </RowContainer>
           )}
           <SelectSeveralAddressesPopup
-            theme={theme}
             tokens={allTokensData.filter((el) => el.mint === selectedMint)}
             open={isSelectorForSeveralAddressesOpen}
             close={() => setIsSelectorForSeveralAddressesOpen(false)}

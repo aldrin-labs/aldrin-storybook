@@ -1,9 +1,9 @@
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 
 export interface SearchItem {
-  tokenFrom: Token & { symbol: string }
-  tokenTo: Token & { symbol: string }
-  amountFrom?: string
+  tokenFrom: { symbol: string; mint: string }
+  tokenTo: { symbol: string; mint: string }
+  amountFrom?: string | number
 }
 
 export interface SwapSearchProps {

@@ -63,7 +63,7 @@ export const SwapItem = styled.div`
   align-items: center;
   padding: 15px 24px;
   cursor: pointer;
-  color: ${(props) => props.theme.colors[props.$color]};
+  color: ${(props) => props.theme.colors.gray0};
   background: ${(props) => props.theme.colors.gray8};
 
   &:hover,

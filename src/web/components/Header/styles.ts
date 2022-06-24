@@ -45,8 +45,9 @@ interface ShowHideProps {
 }
 
 interface LinkProps extends ShowHideProps {
-  new?: boolean
-  left?: boolean
+  $new?: boolean
+  $left?: boolean
+  $beta?: boolean
 }
 
 type CopyButton = {
@@ -58,7 +59,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   font-size: 0.8em;
   padding: 4px 0;
   margin: 0;
-  text-align: ${(props: LinkProps) => (props.left ? 'left' : 'center')};
+  text-align: ${(props: LinkProps) => (props.$left ? 'left' : 'center')};
   color: ${(props) => props.theme.colors.gray1};
   background: transparent;
   border: 0;
@@ -129,7 +130,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
       : ''}
 
   ${(props: LinkProps) =>
-    props.new
+    props.$new
       ? `
     &:after {
       content: "NEW";
@@ -144,7 +145,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
       : ''}
 
   ${(props: LinkProps) =>
-    props.beta
+    props.$beta
       ? `
       &:after {
         content: "BETA";
