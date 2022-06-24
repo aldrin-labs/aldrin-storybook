@@ -1,9 +1,10 @@
-import { COLORS } from '@variables/variables'
 import React, { useMemo } from 'react'
 import { Column, Table } from 'react-virtualized'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 
 import 'react-virtualized/styles.css'
+import { DefaultTheme, useTheme } from 'styled-components'
+
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
 import { InlineText } from '../Typography'
@@ -14,13 +15,13 @@ import { nextSortOrder, sortData } from './utils'
 
 export * from './types'
 
-const rowStyle = {
+const rowStyle = (theme: DefaultTheme) => ({
   outline: 'none',
   cursor: 'pointer',
   fontSize: '16px',
-  borderBottom: `1px solid ${COLORS.tableBorderColor}`,
+  borderBottom: `1px solid ${theme.colors.border}`,
   overflow: 'initial',
-}
+})
 
 const headerStyle = {
   textTransform: 'capitalize',
@@ -51,6 +52,9 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
     [state.sort, data]
   )
 
+  const theme = useTheme()
+  const preparedStyle = rowStyle(theme)
+
   return (
     <AutoSizer>
       {({ height, width }) => (
@@ -77,7 +81,7 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
           rowCount={sortedData.length}
           noRowsRenderer={() => <>{noDataText}</>}
           onRowClick={onRowClick}
-          rowStyle={rowStyle}
+          rowStyle={preparedStyle}
           headerHeight={40}
           rowHeight={100}
           rowGetter={({ index }) => sortedData[index]}
