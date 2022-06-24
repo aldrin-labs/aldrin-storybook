@@ -10,7 +10,7 @@ export const UpdatedPaper = styled(({ ...props }) => (
   <StyledPaper {...props} />
 ))`
   font-size: 16px;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.gray8};
   width: 30em;
 
   @media (max-width: ${BREAKPOINTS.sm}) {
@@ -23,13 +23,13 @@ export const UpdatedPaper = styled(({ ...props }) => (
 export const SelectorRow = styled(({ ...props }) => (
   <RowContainer {...props} />
 ))`
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.gray7};
   border-radius: 1.2rem;
   margin-bottom: 0.8em;
   padding: 1.5em;
 
   &:hover {
-    background: ${(props) => props.theme.colors.gray3};
+    background: ${(props) => props.theme.colors.gray6};
     transition: all 0.4s ease-out;
   }
 `
@@ -42,7 +42,7 @@ export const StyledText = styled(({ ...props }) => <Text {...props} />)`
 export const TokenButton = styled.button`
   display: flex;
   align-items: center;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.gray7};
   cursor: pointer;
 
   padding: 0.5em 0.75em;

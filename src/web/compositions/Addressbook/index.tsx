@@ -60,7 +60,7 @@ export type TextProps = {
 
 export const Text = styled.span`
   font-size: ${(props: TextProps) => props.fontSize || FONT_SIZES.sm};
-  padding-bottom: ${(props) => props.paddingBottom || '0'};
+  padding-bottom: ${(props: TextProps) => props.paddingBottom || '0'};
   text-transform: none;
   font-family: ${(props: TextProps) =>
     props.fontFamily || 'Avenir Next Medium'};

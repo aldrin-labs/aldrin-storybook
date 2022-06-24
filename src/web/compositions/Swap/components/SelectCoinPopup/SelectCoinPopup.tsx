@@ -1,10 +1,10 @@
-import { FONTS } from '@variables/variables'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { DefaultTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { EscapeButton } from '@sb/components/EscapeButton'
 import { TokenIcon } from '@sb/components/TokenIcon'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { SelectSeveralAddressesPopup } from '@sb/compositions/Pools/components/Popups/SelectorForSeveralAddresses'
 import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
@@ -114,16 +114,6 @@ export const SelectCoinPopup = ({
     .filter((token) => !!token.price)
     .sort((a, b) => b.total - a.total)
 
-  useEffect(() => {
-    const closePopup = (e) => {
-      if (e.code === 'Escape') {
-        close()
-      }
-    }
-    window.addEventListener('keydown', closePopup)
-    return () => window.removeEventListener('keydown', closePopup)
-  }, [])
-
   const selectMint = (mint: string) => {
     const isSeveralCoinsWithSameAddress =
       allTokensData.filter((el) => el.mint === mint).length > 1
@@ -158,18 +148,8 @@ export const SelectCoinPopup = ({
             placeholder="Search token or paste address"
             width="calc(100% - 4em)"
           />
-          <Row
-            width="3em"
-            height="3em"
-            margin="0 0 0 1em"
-            onClick={close}
-            style={{
-              border: '1px solid #383B45',
-              borderRadius: '1.2rem',
-              cursor: 'pointer',
-            }}
-          >
-            <Text>Esc</Text>
+          <Row margin="0 0 0 1em">
+            <EscapeButton close={close} />
           </Row>
         </RowContainer>
         <RowContainer justify="flex-start" padding="0.8em 0">
@@ -187,53 +167,43 @@ export const SelectCoinPopup = ({
           ))}
         </RowContainer>
         <RowContainer>
-          {sortedMints.map(
-            ({
-              mint,
-              amount,
-              price,
-              name,
-              symbol,
-              total,
-            }: {
-              mint: string
-              amount: number
-              price: number
-              symbol: string
-              name: string
-              total: number
-            }) => {
-              return (
-                <SelectorRow
-                  justify="space-between"
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => selectMint(mint)}
-                >
-                  <Row wrap="nowrap">
-                    <TokenIcon mint={mint} width="3em" height="3em" />
-                    <Row
-                      margin="0 0 0 0.5em"
-                      align="flex-start"
-                      direction="column"
-                    >
-                      <StyledText>{symbol}</StyledText>
-                      {name && <Text padding="0.5em 0 0 0">{name}</Text>}
+          {sortedMints.map(({ mint, amount, name, symbol, total }) => {
+            return (
+              <SelectorRow
+                justify="space-between"
+                style={{ cursor: 'pointer' }}
+                onClick={() => selectMint(mint)}
+              >
+                <Row wrap="nowrap">
+                  <TokenIcon mint={mint} width="3em" height="3em" />
+                  <Row
+                    margin="0 0 0 0.5em"
+                    align="flex-start"
+                    direction="column"
+                  >
+                    <StyledText>{symbol}</StyledText>
+                    {name && (
+                      <Row padding="0.5em 0 0 0">
+                        <InlineText>{name}</InlineText>
+                      </Row>
+                    )}
+                  </Row>
+                </Row>
+                {connected && (
+                  <Row direction="column" align="flex-end" wrap="nowrap">
+                    <InlineText color="white" weight={600}>
+                      ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
+                    </InlineText>
+                    <Row padding="0.5em 0 0 0">
+                      <InlineText color="gray1">
+                        {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
+                      </InlineText>
                     </Row>
                   </Row>
-                  {connected && (
-                    <Row direction="column" align="flex-end" wrap="nowrap">
-                      <Text fontFamily={FONTS.demi}>
-                        ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
-                      </Text>
-                      <Text color="#2C981E" padding="0.5em 0 0 0">
-                        {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
-                      </Text>
-                    </Row>
-                  )}
-                </SelectorRow>
-              )
-            }
-          )}
+                )}
+              </SelectorRow>
+            )
+          })}
           {mints.length === 0 && (
             <RowContainer>
               <StyledText>Loading...</StyledText>

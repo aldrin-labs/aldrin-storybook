@@ -4,26 +4,47 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { EscapeButton } from '@sb/components/EscapeButton'
 import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { InlineText } from '@sb/components/Typography'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
 import ExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 const StyledPaper = styled(Paper)`
-  font-size: 20px;
+  font-size: 16px;
   height: auto;
-  padding: 2rem 0;
+  padding: 2em 1.5em;
   width: auto;
-  min-width: 65rem;
+  min-width: 24em;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.gray8};
+  border: 1px solid ${(props) => props.theme.colors.gray7};
   border-radius: 0.8rem;
   overflow: hidden;
-  padding: 3rem 2rem;
 `
+
+const TokenInfoContainer = styled(RowContainer)`
+  background: ${(props) => props.theme.colors.gray7};
+  border-radius: 0.5em;
+`
+
+interface TokenInfoParams {
+  mint: string
+}
+
+const TokenInfo = (params: TokenInfoParams) => {
+  const { mint } = params
+
+  return (
+    <TokenInfoContainer direction="column">
+      <RowContainer>d</RowContainer>
+      <RowContainer>f</RowContainer>
+    </TokenInfoContainer>
+  )
+}
 
 export const TokenAddressesPopup = ({
   close,
@@ -46,28 +67,22 @@ export const TokenAddressesPopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer justify="space-between">
-        <Text>Selected tokens:</Text>
-        <CloseIconContainer onClick={() => close()}>
-          <svg
-            width="100%"
-            height="100%"
-            viewBox="0 0 19 19"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
-              stroke="#F5F5FB"
-              strokeWidth="2"
-            />
-          </svg>
-        </CloseIconContainer>
+        <InlineText color="gray0" size="md" weight={500}>
+          Swap Info
+        </InlineText>
+        <EscapeButton close={close} />
       </RowContainer>
       <RowContainer
+        direction="column"
         wrap="nowrap"
-        margin="2rem 0 1rem 0"
+        margin="1.5em 0 0 0"
         justify="space-between"
       >
+        <RowContainer justify="flex-start">
+          <InlineText color="gray3" size="esm">
+            Tokens
+          </InlineText>
+        </RowContainer>
         <Row>
           <TokenIcon
             mint={baseTokenMintAddress}

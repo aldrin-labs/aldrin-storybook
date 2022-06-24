@@ -1,7 +1,7 @@
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
 import { getFeesAmount } from './getFeesAmount'
-import { SwapStep } from './getSwapRoute'
+import { SwapStep, SwapRoute } from './getSwapRoute'
 
 export const getSwapStepFeesAmount = ({
   swapStep,
@@ -34,4 +34,17 @@ export const getSwapStepFeesAmount = ({
       return 0
     }
   }
+}
+
+export const getSwapRouteFeesAmount = ({
+  swapRoute,
+  pricesMap,
+}: {
+  swapRoute: SwapRoute
+  pricesMap: Map<string, number>
+}) => {
+  return swapRoute.reduce(
+    (acc, swapStep) => acc + getSwapStepFeesAmount({ swapStep, pricesMap }),
+    0
+  )
 }

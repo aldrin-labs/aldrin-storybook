@@ -9,7 +9,7 @@ import { formatNumbersForState } from '@sb/dexUtils/utils'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 
-import WalletIcon from '@icons/walletNew.svg'
+import WalletIcon from '@icons/walletIcon.svg'
 
 import { AmountInputContainer, InputContainer } from './styles'
 
@@ -19,7 +19,6 @@ export const SwapAmountInput = ({
   disabled = false,
   title = 'Title',
   placeholder = '0.00',
-  roundSides = [],
   onChange = () => {},
   appendComponent = null,
 }: {
@@ -28,7 +27,6 @@ export const SwapAmountInput = ({
   disabled?: boolean
   title?: string
   placeholder?: string
-  roundSides?: string[]
   onChange?: (value: number | string) => void
   appendComponent?: any
 }) => {
@@ -37,30 +35,34 @@ export const SwapAmountInput = ({
       disabled={disabled}
       direction="column"
       wrap="nowrap"
-      padding="0.3em 1em"
-      roundSides={roundSides}
+      padding="0em 1em"
     >
       <RowContainer justify="space-between">
-        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="gray1">
+        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="gray3">
           {title}
         </Text>
         <Row>
-          <Text
-            fontSize={FONT_SIZES.sm}
-            fontFamily="Avenir Next Demi"
-            color="green3"
-            padding="0 0.8rem 0 0"
-          >
-            {maxAmount ? stripByAmount(maxAmount) : '0.00'}
-          </Text>
           <SvgIcon
             src={WalletIcon}
             width={FONT_SIZES.sm}
             height={FONT_SIZES.sm}
           />
+          <Text
+            fontSize={FONT_SIZES.sm}
+            fontFamily="Avenir Next Demi"
+            color="gray1"
+            padding="0 0 0 0.2em"
+          >
+            {maxAmount ? stripByAmount(maxAmount) : '0.00'}
+          </Text>
         </Row>
       </RowContainer>
-      <RowContainer wrap="nowrap" justify="space-between">
+      <RowContainer
+        wrap="nowrap"
+        justify="space-between"
+        align="flex-end"
+        margin="0.6em 0 0 0"
+      >
         <AmountInputContainer>
           <InvisibleInput
             data-testid={`swap-${title.replaceAll(' ', '-')}-field`}

@@ -10,7 +10,7 @@ import { useOwnerTokenAccounts } from '@sb/dexUtils/token/hooks/useOwnerTokenAcc
 import { AsyncSendSignedTransactionResult } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+import { stripByAmount } from '@core/utils/numberUtils'
 
 import { SWAP_FEES_SETTINGS } from '.'
 import { getPoolsMintsEdges } from '../getPoolsMintsEdges'
@@ -177,7 +177,7 @@ export const useSwapRoute = ({
         const [newSwapRoute, swapAmountOut] = result
 
         const strippedSwapAmountOut =
-          swapAmountOut === 0 ? '' : stripDigitPlaces(swapAmountOut, 8)
+          swapAmountOut === 0 ? '' : stripByAmount(swapAmountOut)
         // const routeDepositAndFee = await swapRoute.getDepositAndFee()
 
         setSwapRoute(newSwapRoute)

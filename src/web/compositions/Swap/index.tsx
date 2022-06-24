@@ -7,8 +7,6 @@ import { useTheme } from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Text } from '@sb/compositions/Addressbook/index'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
@@ -21,7 +19,7 @@ import {
   getDefaultBaseToken,
   getDefaultQuoteToken,
 } from '@sb/dexUtils/pools/swap'
-import { getSwapStepFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
+import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useSwapRoute } from '@sb/dexUtils/pools/swap/useSwapRoute'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -44,11 +42,12 @@ import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { numberWithOneDotRegexp } from '@core/utils/helpers'
 import {
-  stripDigitPlaces,
   formatNumberToUSFormat,
+  stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import ArrowRightIcon from '@icons/arrowRight.svg'
+import ArrowsExchangeIcon from '@icons/arrowsExchange.svg'
+import SettingIcon from '@icons/settings.svg'
 
 import { INPUT_FORMATTERS } from '../../components/Input'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
@@ -57,29 +56,21 @@ import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
 import { SwapSearch } from './components/SwapSearch'
 import { TokenAddressesPopup } from './components/TokenAddressesPopup'
-import { SLIPPAGE_STEP } from './config'
 import {
   SwapPageContainer,
-  ValueButton,
-  ValueInput,
-  BlackRow,
-  RowTitle,
-  RowValue,
-  RowAmountValue,
-  SwapButton,
-  ReverseTokensContainer,
   SwapContentContainer,
   SwapBlockTemplate,
   SwapPageLayout,
-  CircleIconContainer,
-  SetAmountButton,
+  ReverseTokensContainer,
+  SwapButton,
+  BlackRow,
+  RowTitle,
+  RowValue,
+  RowImpactTitle,
+  SlippageButton,
+  InfoIconContainer,
 } from './styles'
-import {
-  getEstimatedPrice,
-  getOHLCVMarketTypeFromSwapRoute,
-  getRouteMintsPath,
-  getSwapButtonText,
-} from './utils'
+import { getOHLCVMarketTypeFromSwapRoute, getSwapButtonText } from './utils'
 
 const SwapPage = ({
   publicKey,
@@ -105,6 +96,8 @@ const SwapPage = ({
 
   const { getTradingVolumeForAllPools: poolsTradingVolume = [] } =
     getTradingVolumeForAllPoolsQuery || { getTradingVolumeForAllPools: [] }
+
+  // separate getting top pools
 
   const topPoolsByTradingVolume = [...poolsTradingVolume]
     .sort((a, b) => b.tradingVolume - a.tradingVolume)
@@ -164,7 +157,8 @@ const SwapPage = ({
   }, [])
 
   const [slippage, setSlippage] = useState<number>(0.3)
-  const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
+  const [isTokensAddressesPopupOpen, setIsTokensAddressesPopupOpen] =
+    useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
@@ -180,9 +174,24 @@ const SwapPage = ({
 
   const [isInputTokenSelecting, setIsInputTokenSelecting] = useState(false)
   const [isSwapInProgress, setIsSwapInProgress] = useState(false)
-  const [priceShowField, setPriceShowField] = useState<'input' | 'output'>(
-    'input'
-  )
+
+  // above chart
+  // const [priceShowField, setPriceShowField] = useState<'input' | 'output'>(
+  //   'input'
+  // )
+
+  // const basePrice = dexTokensPricesMap.get(inputSymbol) || 0
+  // const quotePrice = dexTokensPricesMap.get(outputSymbol) || 0
+
+  // const estimatedPrice = stripByAmount(
+  //   getEstimatedPrice({
+  //     inputAmount,
+  //     outputAmount,
+  //     inputPrice: basePrice,
+  //     outputPrice: quotePrice,
+  //     field: priceShowField,
+  //   })
+  // )
 
   const {
     mints: tokenSelectorMints,
@@ -203,8 +212,6 @@ const SwapPage = ({
     slippage,
   })
 
-  const isSwapRouteExists = swapRoute.length !== 0
-
   const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
   const outputSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
 
@@ -214,18 +221,10 @@ const SwapPage = ({
     selectedInputTokenAddressFromSeveral
   )
 
-  const totalFeeUSD = swapRoute.reduce((acc, step) => {
-    const stepFeeUSD = getSwapStepFeesAmount({
-      swapStep: step,
-      pricesMap: dexTokensPricesMap,
-    })
-
-    return acc + stepFeeUSD
-  }, 0)
-
-  const basePrice = dexTokensPricesMap.get(inputSymbol) || 0
-  const quotePrice = dexTokensPricesMap.get(outputSymbol) || 0
-  const outputUSD = quotePrice * outputAmount
+  const totalFeeUSD = getSwapRouteFeesAmount({
+    swapRoute,
+    pricesMap: dexTokensPricesMap,
+  })
 
   const { amount: maxQuoteAmount } = getTokenDataByMint(
     userTokensData,
@@ -247,20 +246,7 @@ const SwapPage = ({
     }
   }
 
-  const estimatedPrice = stripByAmount(
-    getEstimatedPrice({
-      inputAmount,
-      outputAmount,
-      inputPrice: basePrice,
-      outputPrice: quotePrice,
-      field: priceShowField,
-    })
-  )
-
-  const outputAmountWithSlippage =
-    +outputAmount - (+outputAmount / 100) * slippage * swapRoute.length
-
-  const needEnterAmount = +inputAmount === 0
+  const isEmptyInputAmount = +inputAmount === 0
   const isTokenABalanceInsufficient = inputAmount > +maxInputAmount
 
   const reverseTokens = () => {
@@ -270,20 +256,17 @@ const SwapPage = ({
     setInputTokenAddressFromSeveral(selectedOutputTokenAddressFromSeveral)
     setOutputTokenAddressFromSeveral(selectedInputTokenAddressFromSeveral)
 
-    setFieldAmount(
-      stripByAmount(outputAmount),
-      'input',
-      outputTokenMintAddress,
-      inputTokenMintAddress
-    )
+    if (outputAmount) {
+      setFieldAmount(
+        stripByAmount(outputAmount),
+        'input',
+        outputTokenMintAddress,
+        inputTokenMintAddress
+      )
+    }
   }
 
-  const isButtonDisabled =
-    // isLoadingSwapRoute ||
-    isTokenABalanceInsufficient ||
-    // +baseAmount === 0 ||
-    // +quoteAmount === 0 ||
-    isSwapInProgress
+  const isButtonDisabled = isTokenABalanceInsufficient || isSwapInProgress
 
   const priceImpact = swapRoute
     .filter((step) => step.ammLabel === 'Aldrin')
@@ -302,16 +285,29 @@ const SwapPage = ({
       return acc
     }, 0)
 
+  const isHighPriceImpact = priceImpact >= 1
+
+  const buttonText = getSwapButtonText({
+    baseSymbol: inputSymbol,
+    minInputAmount: 0,
+    isSwapRouteExists: swapRoute.length !== 0,
+    isEmptyInputAmount,
+    isTokenABalanceInsufficient,
+    isLoadingSwapRoute,
+    isTooSmallInputAmount: false,
+    isSwapInProgress,
+  })
+
   return (
     <SwapPageLayout>
       <SwapPageContainer
-        justify="space-around"
+        justify="center"
         direction="row"
         height="100%"
         wrap="nowrap"
       >
         <SwapContentContainer direction="column">
-          <RowContainer justify="flex-start" margin="0 0 2rem 0">
+          <RowContainer justify="flex-start" margin="0 0 1em 0">
             <SwapSearch
               topTradingMints={topTradingMints}
               topTradingPairs={topTradingPairs}
@@ -333,223 +329,189 @@ const SwapPage = ({
             />
           </RowContainer>
           <SwapBlockTemplate width="100%">
-            <RowContainer margin="0 0 .5em 0" justify="space-between">
+            <RowContainer margin="0 0 3em 0" justify="space-between">
               <Row>
-                <ValueButton>
-                  <ReloadTimer
-                    data-testid="swap-reload-data-timer"
-                    duration={15}
-                    initialRemainingTime={15}
-                    callback={refreshAll}
-                    showTime
-                    margin="0"
-                    timeStyles={{
-                      color: theme.colors.gray0,
-                    }}
-                    timerStyles={{
-                      background: 'transparent',
-                    }}
-                    color={theme.colors.blue5}
-                    trailColor={theme.colors.white}
-                  />
-                </ValueButton>
-                {inputTokenMintAddress && outputTokenMintAddress && (
-                  <ValueButton
-                    data-testid="swap-open-tokens-info-tooltip"
-                    onClick={() => openTokensAddressesPopup(true)}
-                  >
-                    i
-                  </ValueButton>
-                )}
+                <ReloadTimer
+                  data-testid="swap-reload-data-timer"
+                  duration={15}
+                  initialRemainingTime={15}
+                  callback={refreshAll}
+                  showTime
+                  margin="0"
+                  timeStyles={{
+                    color: theme.colors.gray0,
+                  }}
+                  timerStyles={{
+                    background: 'transparent',
+                  }}
+                  color={theme.colors.blue5}
+                  trailColor={theme.colors.white}
+                />
               </Row>
               <Row>
-                <Text padding="0 0.8rem 0 0">Slippage Tolerance:</Text>
                 <Row style={{ position: 'relative' }}>
-                  <ValueInput
-                    data-testid="slippage-tolerance-field"
-                    onChange={(e) => {
-                      if (
-                        numberWithOneDotRegexp.test(e.target.value) &&
-                        getNumberOfIntegersFromNumber(e.target.value) <= 2 &&
-                        getNumberOfDecimalsFromNumber(e.target.value) <= 2
-                      ) {
-                        setSlippage(e.target.value)
-                      }
-                    }}
-                    onBlur={() => {
-                      if (+slippage <= 0) {
-                        setSlippage(0.3)
-                      }
-                    }}
-                    value={slippage}
-                    placeholder="1.00"
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      fontFamily: 'Avenir Next Medium',
-                      color: theme.colors.gray1,
-                      fontSize: FONT_SIZES.sm,
-                      right: '1.5rem',
+                  <SlippageButton
+                    data-testid="increace-slippage-tolerance"
+                    onClick={() => {
+                      setIsTokensAddressesPopupOpen(true)
+
+                      // const newSlippage = +(+slippage + SLIPPAGE_STEP).toFixed(
+                      //   2
+                      // )
+
+                      // setSlippage(newSlippage)
                     }}
                   >
-                    %
-                  </div>
+                    <SvgIcon
+                      src={SettingIcon}
+                      height="0.75em"
+                      width="0.75em"
+                      style={{ marginRight: '0.4em' }}
+                    />{' '}
+                    <span style={{ fontSize: FONT_SIZES.esm }}>
+                      {slippage}%
+                    </span>
+                  </SlippageButton>
                 </Row>
-                <ValueButton
-                  data-testid="decreace-slippage-tolerance"
-                  onClick={() => {
-                    const newSlippage = +(+slippage - SLIPPAGE_STEP).toFixed(2)
-
-                    if (newSlippage > 0) {
-                      setSlippage(newSlippage)
-                    }
-                  }}
-                >
-                  -
-                </ValueButton>
-                <ValueButton
-                  data-testid="increace-slippage-tolerance"
-                  onClick={() => {
-                    const newSlippage = +(+slippage + SLIPPAGE_STEP).toFixed(2)
-
-                    setSlippage(newSlippage)
-                  }}
-                >
-                  +
-                </ValueButton>
               </Row>
             </RowContainer>
             <RowContainer
-              style={{ position: 'relative' }}
-              margin=".5em 0 1.6rem 0"
+              style={{
+                position: 'relative',
+                border: `1px solid ${theme.colors.gray6}`,
+                borderRadius: '0.8em',
+                padding: '0.8em 0',
+              }}
+              margin=".5em 0 0 0"
               direction="column"
             >
-              <RowContainer justify="space-between">
-                <Row width="calc(65% - .2rem)">
-                  <SwapAmountInput
-                    title="You Pay"
-                    maxAmount={maxInputAmount}
-                    amount={formatNumberWithSpaces(inputAmount)}
-                    disabled={false}
-                    onChange={(v) => {
-                      if (v === '') {
-                        setFieldAmount(v, 'input')
-                        return
-                      }
-                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
-                        v,
-                        inputAmount
-                      )
-
-                      if (
-                        numberWithOneDotRegexp.test(parsedValue) &&
-                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
-                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
-                      ) {
-                        setFieldAmount(parsedValue, 'input')
-                      }
-                    }}
-                    roundSides={['top-left']}
-                    appendComponent={
-                      <Row>
-                        <SetAmountButton
-                          data-testid="swap-half-btn"
-                          // onClick={halfButtonOnClick}
-                          type="button"
-                          $variant="secondary"
-                          style={{ marginRight: '0.8rem' }}
-                        >
-                          Half
-                        </SetAmountButton>
-                        <SetAmountButton
-                          data-testid="swap-max-btn"
-                          // onClick={maxButtonOnClick}
-                          type="button"
-                          $variant="secondary"
-                        >
-                          Max
-                        </SetAmountButton>
-                      </Row>
+              <RowContainer
+                wrap="nowrap"
+                justify="space-between"
+                padding="0 0 0.8em 0"
+                style={{ borderBottom: `1px solid ${theme.colors.gray6}` }}
+              >
+                <SwapAmountInput
+                  title="From"
+                  maxAmount={maxInputAmount}
+                  amount={formatNumberWithSpaces(inputAmount)}
+                  disabled={false}
+                  onChange={(v) => {
+                    if (v === '') {
+                      setFieldAmount(v, 'input')
+                      return
                     }
-                  />
-                </Row>
-                <Row width="calc(35% - 0.2rem)">
-                  <TokenSelector
-                    mint={inputTokenMintAddress}
-                    data-testid="swap-token-selector"
-                    roundSides={['top-right']}
-                    onClick={() => {
-                      setIsInputTokenSelecting(true)
-                      setIsSelectCoinPopupOpen(true)
-                    }}
-                  />
-                </Row>
+                    const parsedValue = INPUT_FORMATTERS.DECIMAL(v, inputAmount)
+
+                    if (
+                      numberWithOneDotRegexp.test(parsedValue) &&
+                      getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                      getNumberOfDecimalsFromNumber(parsedValue) <= 8
+                    ) {
+                      setFieldAmount(parsedValue, 'input')
+                    }
+                  }}
+                  appendComponent={
+                    <TokenSelector
+                      mint={inputTokenMintAddress}
+                      data-testid="swap-input-token-selector"
+                      onClick={() => {
+                        setIsInputTokenSelecting(true)
+                        setIsSelectCoinPopupOpen(true)
+                      }}
+                    />
+                  }
+                />
               </RowContainer>
               <ReverseTokensContainer onClick={reverseTokens}>
-                <svg
-                  width="11"
-                  height="10"
-                  viewBox="0 0 11 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5.40138 2.6212L8.00836 0.0142284L10.6153 2.6212L9.87064 3.3659L8.53449 2.03029L8.53502 8.96748L7.4817 8.96748L7.4817 2.03029L6.14608 3.3659L5.40138 2.6212ZM0.134766 6.88716L0.879465 6.14246L2.21508 7.47808L2.21508 0.54089L3.2684 0.54089L3.2684 7.47808L4.60402 6.14246L5.34872 6.88716L2.74174 9.49414L0.134766 6.88716Z"
-                    fill="white"
-                    fillOpacity="0.7"
-                  />
-                </svg>
+                <SvgIcon src={ArrowsExchangeIcon} />
               </ReverseTokensContainer>
-              <RowContainer justify="space-between" margin=".4rem 0 0 0">
-                <Row width="calc(65% - .2rem)">
-                  <SwapAmountInput
-                    title="You Receive"
-                    maxAmount={maxQuoteAmount}
-                    amount={outputAmount}
-                    onChange={(v) => {
-                      if (v === '') {
-                        setFieldAmount(v, 'output')
-                        return
-                      }
-
-                      if (
-                        numberWithOneDotRegexp.test(v) &&
-                        getNumberOfIntegersFromNumber(v) <= 8 &&
-                        getNumberOfDecimalsFromNumber(v) <= 8
-                      ) {
-                        setFieldAmount(v, 'output')
-                      }
-                    }}
-                    roundSides={['bottom-left']}
-                    appendComponent={
-                      <Text
-                        fontFamily="Avenir Next"
-                        fontSize={FONT_SIZES.sm}
-                        color="gray1"
-                      >
-                        ≈$
-                        {outputUSD
-                          ? formatNumberToUSFormat(
-                              stripDigitPlaces(outputUSD, 2)
-                            )
-                          : '0.00'}
-                      </Text>
+              <RowContainer
+                wrap="nowrap"
+                justify="space-between"
+                padding="0.8em 0 0 0"
+              >
+                <SwapAmountInput
+                  title="To (Estimated)"
+                  maxAmount={maxQuoteAmount}
+                  amount={outputAmount}
+                  onChange={(v) => {
+                    if (v === '') {
+                      setFieldAmount(v, 'output')
+                      return
                     }
-                  />
-                </Row>
-                <Row width="calc(35% - .2rem)">
-                  <TokenSelector
-                    mint={outputTokenMintAddress}
-                    roundSides={['bottom-right']}
-                    onClick={() => {
-                      setIsInputTokenSelecting(false)
-                      setIsSelectCoinPopupOpen(true)
-                    }}
-                  />
-                </Row>
+
+                    if (
+                      numberWithOneDotRegexp.test(v) &&
+                      getNumberOfIntegersFromNumber(v) <= 8 &&
+                      getNumberOfDecimalsFromNumber(v) <= 8
+                    ) {
+                      setFieldAmount(v, 'output')
+                    }
+                  }}
+                  appendComponent={
+                    <TokenSelector
+                      mint={outputTokenMintAddress}
+                      data-testid="swap-output-token-selector"
+                      onClick={() => {
+                        setIsInputTokenSelecting(false)
+                        setIsSelectCoinPopupOpen(true)
+                      }}
+                    />
+                  }
+                />
               </RowContainer>
             </RowContainer>
+            {!isEmptyInputAmount && (
+              <RowContainer justify="space-between" margin="1em 0 0 0">
+                <BlackRow width="calc(50% - 0.6em)">
+                  <RowTitle>Fee:</RowTitle>
+                  <RowValue>
+                    ${formatNumberToUSFormat(stripDigitPlaces(totalFeeUSD, 2))}
+                  </RowValue>
+                </BlackRow>
+                <BlackRow width="calc(50% - 0.6em)">
+                  <RowImpactTitle isHighPriceImpact={isHighPriceImpact}>
+                    {isHighPriceImpact ? 'High Price Impact' : 'Fair price'}
+                  </RowImpactTitle>
+
+                  <InfoIconContainer isHighPriceImpact={isHighPriceImpact}>
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 12 12"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                        stroke="currentColor"
+                      />
+                      <path
+                        d="M6 3.5H6.00656"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M6 5.5V8"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </InfoIconContainer>
+                </BlackRow>
+                {/* <BlackRow width="calc(50% - 0.8rem)">
+                    <RowTitle>Network fee:</RowTitle>
+                    <RowValue style={{ display: 'flex' }}>
+                      {wallet.connected
+                        ? stripDigitPlaces(depositAndFee, 6)
+                        : '-'}{' '}
+                      SOL{' '}
+                    </RowValue>
+                  </BlackRow> */}
+              </RowContainer>
+            )}
             {/* {!isLoadingSwapRoute && pctDiffUsedAndUIInputAmount >= 5 && (
               <RowContainer margin="0 0 .5em 0">
                 <Text>
@@ -558,7 +520,7 @@ const SwapPage = ({
                 </Text>
               </RowContainer>
             )} */}
-            <RowContainer>
+            <RowContainer margin="3em 0 0 0">
               {!publicKey ? (
                 <BtnCustom
                   theme={theme}
@@ -582,8 +544,11 @@ const SwapPage = ({
                 </BtnCustom>
               ) : (
                 <SwapButton
-                  theme={theme}
+                  isHighPriceImpact={isHighPriceImpact}
                   disabled={isButtonDisabled}
+                  $fontSize="md"
+                  minWidth="100%"
+                  $variant="none"
                   onClick={async () => {
                     if (!swapRoute) return
 
@@ -622,145 +587,10 @@ const SwapPage = ({
                     }
                   }}
                 >
-                  <RowContainer>
-                    <RowContainer>
-                      {getSwapButtonText({
-                        baseSymbol: inputSymbol,
-                        minInputAmount: 0,
-                        isSwapRouteExists,
-                        needEnterAmount,
-                        isTokenABalanceInsufficient,
-                        isLoadingSwapRoute,
-                        isTooSmallInputAmount: false,
-                        isSwapInProgress,
-                      })}
-                    </RowContainer>
-                    {!isSwapInProgress && (
-                      <RowContainer>
-                        {getRouteMintsPath(swapRoute).map(
-                          (mint, index, arr) => {
-                            const { symbol } = tokenInfos.get(mint) || {
-                              symbol: getTokenNameByMintAddress(mint),
-                            }
-                            return (
-                              <>
-                                <Text
-                                  color="rgba(248, 250, 255, 0.5)"
-                                  padding="0 0.4rem"
-                                >
-                                  {symbol}
-                                </Text>
-                                {arr.length - 1 !== index && (
-                                  <SvgIcon
-                                    src={ArrowRightIcon}
-                                    width="0.8em"
-                                    height="0.8em"
-                                  />
-                                )}
-                              </>
-                            )
-                          }
-                        )}
-                      </RowContainer>
-                    )}
-                  </RowContainer>
+                  <span>{buttonText}</span>
                 </SwapButton>
               )}
             </RowContainer>
-
-            {!needEnterAmount ? (
-              <RowContainer direction="column" margin="2.4rem 0 0 0">
-                <RowContainer justify="space-between">
-                  <BlackRow justify="center" width="calc(50% - 0.8rem)">
-                    <Row>
-                      <RowValue>
-                        <RowAmountValue>1</RowAmountValue>
-                        {priceShowField === 'input'
-                          ? inputSymbol
-                          : outputSymbol}
-                      </RowValue>
-                      <span
-                        style={{
-                          color: theme.colors.white,
-                          padding: '0 0.5rem',
-                        }}
-                        onClick={() =>
-                          setPriceShowField(
-                            priceShowField === 'input' ? 'output' : 'input'
-                          )
-                        }
-                      >
-                        ⇌
-                      </span>
-                      <RowValue>
-                        <RowAmountValue>
-                          {formatNumberToUSFormat(
-                            stripByAmount(estimatedPrice)
-                          )}
-                        </RowAmountValue>
-                        {priceShowField === 'input'
-                          ? outputSymbol
-                          : inputSymbol}
-                      </RowValue>
-                    </Row>
-                  </BlackRow>
-                  <BlackRow width="calc(50% - 0.8rem)">
-                    <RowTitle>Price Impact:</RowTitle>
-                    <RowAmountValue>
-                      {priceImpact < 0.1
-                        ? '< 0.1'
-                        : stripDigitPlaces(priceImpact, 2)}
-                      %
-                    </RowAmountValue>
-                  </BlackRow>
-                </RowContainer>
-
-                <RowContainer justify="space-between">
-                  <BlackRow width="calc(50% - 0.8rem)">
-                    <RowTitle>Trading fee:</RowTitle>
-                    <RowValue>
-                      $
-                      {formatNumberToUSFormat(stripDigitPlaces(totalFeeUSD, 2))}
-                    </RowValue>
-                  </BlackRow>
-                  <BlackRow width="calc(50% - 0.8rem)">
-                    <RowTitle>Network fee:</RowTitle>
-                    <RowValue style={{ display: 'flex' }}>
-                      {wallet.connected
-                        ? stripDigitPlaces(depositAndFee, 6)
-                        : '-'}{' '}
-                      SOL{' '}
-                      {false && isOpenOrdersCreationRequired ? (
-                        <DarkTooltip
-                          title={
-                            'The route includes the Serum market, which requires opening an "Open Order" account, which costs 0.024 SOL. You can close the account later and get the fee back.'
-                          }
-                        >
-                          <CircleIconContainer
-                            size="1em"
-                            style={{
-                              marginLeft: '.5rem',
-                            }}
-                          >
-                            i
-                          </CircleIconContainer>
-                        </DarkTooltip>
-                      ) : null}
-                    </RowValue>
-                  </BlackRow>
-                </RowContainer>
-
-                <BlackRow width="100%">
-                  <RowTitle>Minimum Received:</RowTitle>
-                  <RowValue>
-                    {formatNumberToUSFormat(
-                      stripByAmount(outputAmountWithSlippage)
-                    )}{' '}
-                    {outputSymbol}
-                  </RowValue>
-                </BlackRow>
-              </RowContainer>
-            ) : null}
           </SwapBlockTemplate>
         </SwapContentContainer>
 
@@ -808,20 +638,20 @@ const SwapPage = ({
           baseTokenMintAddress={inputTokenMintAddress}
           allTokensData={userTokensData}
           open={isTokensAddressesPopupOpen}
-          close={() => openTokensAddressesPopup(false)}
+          close={() => setIsTokensAddressesPopupOpen(false)}
         />
 
         <ConnectWalletPopup
           open={isConnectWalletPopupOpen}
           onClose={() => setIsConnectWalletPopupOpen(false)}
         />
-        <div style={{ height: '100%', width: 'calc(100% - 40em)' }}>
+        <div style={{ height: '15em', width: '30em', marginLeft: '0.6em' }}>
           <iframe
             allowFullScreen
             style={{ borderWidth: 0 }}
             src={`${PROTOCOL}//${CHARTS_API_URL}/?symbol=${inputSymbol}/${outputSymbol}&marketType=${getOHLCVMarketTypeFromSwapRoute(
               swapRoute
-            )}&exchange=serum&theme=serum&isMobile=false${
+            )}&exchange=serum&theme=serum&isMobile=true${
               wallet.connected ? `&user_id=${wallet.publicKey}` : ''
             }`}
             height="100%"

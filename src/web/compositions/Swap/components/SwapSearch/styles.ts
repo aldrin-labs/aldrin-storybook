@@ -1,4 +1,4 @@
-import { BORDER_RADIUS } from '@variables/variables'
+import { BORDER_RADIUS, FONT_SIZES } from '@variables/variables'
 import styled from 'styled-components'
 
 import { Input } from '@sb/components/Input'
@@ -8,6 +8,7 @@ export const Container = styled.div`
   width: 100%;
   margin: 10px 0;
   position: relative;
+  height: 4em;
 
   ${(props: { listOpened: boolean }) =>
     props.listOpened &&
@@ -24,23 +25,30 @@ export const Container = styled.div`
 export const SearchInput = styled(Input)`
   background: none;
   margin: 0;
-  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
-  background: ${(props) => props.theme.colors.gray5};
+  border: 0.1rem solid ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.gray8};
+  height: 100%;
 
   div {
     width: 100%;
   }
 
   input {
+    font-size: ${FONT_SIZES.sm};
     font-weight: normal;
     width: 100%;
+    height: 100%;
+
+    &::placeholder {
+      color: ${(props) => props.theme.colors.gray2};
+    }
   }
 `
 
 export const SwapsList = styled.div`
   position: absolute;
   width: 100%;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.gray8};
   border-bottom-left-radius: ${BORDER_RADIUS.md};
   border-bottom-right-radius: ${BORDER_RADIUS.md};
   z-index: 20;
@@ -56,7 +64,7 @@ export const SwapItem = styled.div`
   padding: 15px 24px;
   cursor: pointer;
   color: ${(props) => props.theme.colors[props.$color]};
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.gray8};
 
   &:hover,
   &.focused {

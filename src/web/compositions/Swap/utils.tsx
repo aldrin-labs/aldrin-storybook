@@ -1,10 +1,7 @@
 import { RouteInfo, TransactionFeeInfo } from '@jup-ag/core'
 import { TokenInfo } from '@solana/spl-token-registry'
 import { LAMPORTS_PER_SOL } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
-import React from 'react'
 
-import { Loading } from '@sb/components'
 import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/utils'
 import { AmmLabel, SwapRoute } from '@sb/dexUtils/pools/swap/getSwapRoute'
 
@@ -17,7 +14,7 @@ export const getSwapButtonText = ({
   minInputAmount,
   isTooSmallInputAmount,
   isSwapRouteExists,
-  needEnterAmount,
+  isEmptyInputAmount,
   isSwapInProgress,
 }: {
   isTokenABalanceInsufficient: boolean
@@ -26,44 +23,25 @@ export const getSwapButtonText = ({
   minInputAmount: number
   isTooSmallInputAmount: boolean
   isSwapRouteExists: boolean
-  needEnterAmount: boolean
+  isEmptyInputAmount: boolean
   isSwapInProgress: boolean
 }) => {
-  if (isSwapInProgress) {
-    return (
-      <>
-        <Loading
-          size="1em"
-          color={COLORS.white}
-          margin="0 0.6em 0 0"
-          style={{ display: 'flex' }}
-        />{' '}
-        <span>Swapping</span>
-      </>
-    )
+  switch (true) {
+    case isSwapInProgress:
+      return 'Swapping...'
+    case isEmptyInputAmount:
+      return 'Enter amount'
+    case isTooSmallInputAmount:
+      return `Min. input amount: ${minInputAmount} ${baseSymbol}`
+    case isLoadingSwapRoute:
+      return 'Searching the best route...'
+    case isTokenABalanceInsufficient:
+      return `Insufficient ${baseSymbol} Balance`
+    case !isSwapRouteExists:
+      return 'No route for swap'
+    default:
+      return 'Swap'
   }
-
-  if (needEnterAmount) {
-    return 'Enter amount'
-  }
-
-  if (isTooSmallInputAmount) {
-    return `Min. input amount: ${minInputAmount} ${baseSymbol}`
-  }
-
-  if (isLoadingSwapRoute) {
-    return 'Searching the best route...'
-  }
-
-  if (isTokenABalanceInsufficient) {
-    return `Insufficient ${baseSymbol} Balance`
-  }
-
-  if (!isSwapRouteExists) {
-    return 'No route for swap'
-  }
-
-  return 'Swap'
 }
 
 export const getEstimatedPrice = ({

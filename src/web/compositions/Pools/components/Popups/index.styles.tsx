@@ -1,5 +1,5 @@
 import { Paper } from '@material-ui/core'
-import { COLORS, FONT_SIZES } from '@variables/variables'
+import { FONTS, FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -43,14 +43,18 @@ export const Line = styled.div`
 `
 export const InvisibleInput = styled.input`
   width: 100%;
-  background: ${(props) => props.theme.colors.gray5};
+  background: inherit;
   color: ${(props) => props.theme.colors.gray0};
-  font-size: ${FONT_SIZES.xmd};
   outline: none;
   border: none;
-  font-family: Avenir Next Demi;
+
+  font-family: ${FONTS.main};
+  font-size: ${FONT_SIZES.md};
+  line-height: ${FONT_SIZES.xlmd};
+  font-weight: 600;
+
   &::placeholder {
-    color: ${COLORS.inputPlaceholder};
+    color: ${(props) => props.theme.colors.gray3};
   }
 `
 

@@ -238,13 +238,13 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
                   <TokenIcon mint={tokenTo.mint} height="1.5em" />{' '}
                 </Row>
                 <Row direction="column" align="flex-start" margin="0 0 0 1em">
-                  <InlineText weight={600} color="gray0">
+                  <InlineText weight={600}>
                     {amountFrom && `${amountFrom} `}
-                    <TokenName color="gray1">{baseTokenSymbol}</TokenName>{' '}
+                    <TokenName color="white">{baseTokenSymbol}</TokenName>{' '}
                     {`- `}
-                    <TokenName color="gray1">{quoteTokenSymbol}</TokenName>
+                    <TokenName color="white">{quoteTokenSymbol}</TokenName>
                   </InlineText>
-                  <InlineText size="sm" weight={400} color="gray0">
+                  <InlineText size="sm" weight={400}>
                     <TokenName color="gray1">{baseTokenName}</TokenName> {`- `}
                     <TokenName color="gray1">{quoteTokenName}</TokenName>
                   </InlineText>
