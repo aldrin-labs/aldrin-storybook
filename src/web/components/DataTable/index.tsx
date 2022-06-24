@@ -6,13 +6,10 @@ import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 import 'react-virtualized/styles.css'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
+import { InlineText } from '../Typography'
 import { Hint, SortButton } from './components'
 import { NoDataBlock } from './styles'
-import {
-  DataTableProps,
-  DataTableState,
-  SORT_ORDER,
-} from './types'
+import { DataTableProps, DataTableState, SORT_ORDER } from './types'
 import { nextSortOrder, sortData } from './utils'
 
 export * from './types'
@@ -31,6 +28,7 @@ const headerStyle = {
   fontSize: '0.8em',
   textAlign: 'left',
   display: 'flex',
+  alignItems: 'center',
 }
 
 const MOBILE_WIDTH = 800
@@ -93,7 +91,7 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
                 dataKey={item.key}
                 headerRenderer={({ label, columnData }) => (
                   <>
-                    {label}
+                    <InlineText>{label}</InlineText>
                     {columnData.hint && <Hint text={columnData.hint} />}
                     <SortButton
                       sortOrder={state.sort.direction}

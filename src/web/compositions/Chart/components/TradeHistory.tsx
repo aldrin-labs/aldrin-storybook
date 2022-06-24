@@ -24,7 +24,6 @@ export const TradeHistory = ({
   quote,
   pair,
 }) => {
-  console.log('trade history')
   return (
     <>
       <TradeHistoryWrapper

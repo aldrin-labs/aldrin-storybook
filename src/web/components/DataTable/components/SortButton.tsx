@@ -1,6 +1,7 @@
 import React from 'react'
-import { SORT_ORDER } from '../types'
+
 import { ArrowContainer } from '../styles'
+import { SORT_ORDER } from '../types'
 import { SortButtonProps } from './types'
 
 export const SortButton: React.FC<SortButtonProps> = (props) => {

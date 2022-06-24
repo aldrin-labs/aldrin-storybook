@@ -97,7 +97,7 @@ export function useAccountInfo(publicKey: PublicKey | undefined | null): {
 
   return {
     data,
-    isLoading: typeof data === 'undefined',
+    isLoading: !!data,
     error,
     refresh: mutate,
   }
