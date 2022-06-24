@@ -17,7 +17,6 @@ import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFr
 import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
-import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useVestings } from '@sb/dexUtils/vesting'
@@ -103,7 +102,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const { data: calcAccounts, mutate: refreshCalcAccounts } =
     useFarmingCalcAccounts()
 
-  const [snapshotQueues] = useSnapshotQueues()
+  // const [snapshotQueues] = useSnapshotQueues()
 
   const pools = rawPools.map((pool) => {
     return {
@@ -116,7 +115,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     wallet,
     connection,
     pools,
-    snapshotQueues,
+    snapshotQueues: [], // TODO:
   })
 
   const refreshAll = () => {
