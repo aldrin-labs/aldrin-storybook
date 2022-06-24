@@ -91,7 +91,7 @@ export function useAccountInfo(publicKey: PublicKey | undefined | null): {
     `userAccountInfo_${publicKey?.toBase58()}`,
     fetcher,
     {
-      refreshInterval: 3_000,
+      refreshInterval: 10_000,
     }
   )
 

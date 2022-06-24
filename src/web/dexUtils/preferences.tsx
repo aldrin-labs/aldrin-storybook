@@ -1,8 +1,7 @@
-import React, { useContext, useMemo } from 'react'
-import { useLocalStorageState } from './utils'
-import { useInterval } from './useInterval'
+import { OpenOrders } from '@project-serum/serum'
+import React from 'react'
+
 import { useConnection } from './connection'
-import { useWallet } from './wallet'
 import {
   useMarket,
   useSelectedBaseCurrencyAccount,
@@ -10,27 +9,24 @@ import {
   useSelectedQuoteCurrencyAccount,
 } from './markets'
 import { settleFunds } from './send'
+import { useInterval } from './useInterval'
+import { useWallet } from './wallet'
 
-const PreferencesContext = React.createContext(null)
-
-export function PreferencesProvider({ children }) {
-  const [autoSettleEnabled, setAutoSettleEnabled] = useLocalStorageState(
-    'autoSettleEnabled',
-    true
-  )
-
-  const { connected, wallet } = useWallet()
+// TODO: move to a separate file
+const AutoSettlmentHandlerInner: React.FC<{ openOrdersAccount: OpenOrders }> = (
+  props
+) => {
+  const { wallet } = useWallet()
   const connection = useConnection()
 
-  const { market, baseCurrency, quoteCurrency } = useMarket()
+  const { openOrdersAccount } = props
 
-  const openOrdersAccount = useSelectedOpenOrdersAccount()
   const baseTokenAccount = useSelectedBaseCurrencyAccount()
   const quoteTokenAccount = useSelectedQuoteCurrencyAccount()
+  const { market, baseCurrency, quoteCurrency } = useMarket()
 
   useInterval(() => {
     const autoSettle = async () => {
-      // const markets = (marketList || []).map((m) => m.market);
       try {
         const selectedOpenOrders = openOrdersAccount
 
@@ -68,32 +64,34 @@ export function PreferencesProvider({ children }) {
           })
         }
       } catch (e) {
-        // console.log('Error auto settling funds: ' + e.message)
+        // console.warn(`Unable to auto settling funds: ${e.message}`)
       }
     }
 
-    connected && wallet?.autoApprove && autoSettleEnabled && autoSettle()
+    autoSettle()
   }, 10000)
+  return null
+}
 
+const AutoSettlmentHandler = () => {
+  const openOrdersAccount = useSelectedOpenOrdersAccount()
   return (
-    <PreferencesContext.Provider
-      value={{
-        autoSettleEnabled,
-        setAutoSettleEnabled,
-      }}
-    >
-      {children}
-    </PreferencesContext.Provider>
+    <>
+      {/* Add inner handler to avoid unnecessary requests to RPC */}
+      {openOrdersAccount ? (
+        <AutoSettlmentHandlerInner openOrdersAccount={openOrdersAccount} />
+      ) : null}
+    </>
   )
 }
 
-export function usePreferences() {
-  const context = useContext(PreferencesContext)
-  if (!context) {
-    throw new Error('Missing preferences context')
-  }
-  return {
-    autoSettleEnabled: context.autoSettleEnabled,
-    setAutoSettleEnabled: context.setAutoSettleEnabled,
-  }
+export const PreferencesProvider: React.FC = ({ children }) => {
+  const { connected, wallet } = useWallet()
+
+  return (
+    <>
+      {connected && wallet?.autoApprove && <AutoSettlmentHandler />}
+      {children}
+    </>
+  )
 }
