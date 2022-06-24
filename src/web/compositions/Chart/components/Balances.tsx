@@ -1,6 +1,6 @@
 import { Grid, Theme } from '@material-ui/core'
 import React, { useState } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import ChartCardHeader from '@sb/components/ChartCardHeader'

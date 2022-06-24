@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
+import { BN } from 'anchor03'
 
 import { AldrinConnection, Farm } from '@core/solana'
 
@@ -22,6 +23,27 @@ export interface StartFarmingV2Params {
 export interface StopFarmingParams {
   wallet: WalletAdapter
   connection: AldrinConnection
+  farm: Farm
+  userTokens: TokenInfo[]
+  amount: number
+}
+
+export interface AddHarvestParams {
+  wallet: WalletAdapter
+  connection: AldrinConnection
+  farm: Farm
+  userTokens: TokenInfo[]
+  amount: number
+  harvestMint: PublicKey
+}
+
+export interface NewHarvestPeriodParams {
+  wallet: WalletAdapter
+  connection: AldrinConnection
+  tokenAmount: BN
+  harvestMint: PublicKey
+  startsAt: number
+  periodLengthInSlots: number
   farm: Farm
   userTokens: TokenInfo[]
   amount: number

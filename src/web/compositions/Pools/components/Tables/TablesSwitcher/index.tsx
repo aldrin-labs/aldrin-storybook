@@ -1,3 +1,4 @@
+import { PublicKey } from '@solana/web3.js'
 import { ApolloQueryResult } from 'apollo-client'
 import React, { useState } from 'react'
 import { Route, useHistory } from 'react-router'
@@ -17,6 +18,8 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
+import { addHarvestV2 } from '@sb/dexUtils/farming/actions/createNewHarvestPeriod'
+import { createNewHarvestPeriod } from '@sb/dexUtils/farming/actions/newHarvestPeriod'
 import { useFarmInfo } from '@sb/dexUtils/farming/useFarmInfo'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
@@ -40,6 +43,7 @@ import { getRandomInt } from '@core/utils/helpers'
 import KudelskiLogo from '@icons/kudelski.svg'
 
 import {
+  initializeFarmingV2,
   startFarmingV2,
   stopFarmingV2,
 } from '../../../../../dexUtils/farming/actions'
@@ -171,13 +175,27 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
   const { data: farms } = useFarmInfo()
-  console.log(
-    'farms',
-    farms?.get('GkFSmZB5P9bzbDKnUi7dNpJSyjGdru6sxGWhNPupKs1v') || {}
-  )
+  console.log('farms', farms)
 
   return (
     <>
+      <button
+        type="button"
+        onClick={async () => {
+          if (!farms) {
+            throw new Error('No farms')
+          }
+          await initializeFarmingV2({
+            stakeMint: new PublicKey(
+              '7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm'
+            ),
+            wallet,
+            connection,
+          })
+        }}
+      >
+        Create farm
+      </button>
       <button
         type="button"
         onClick={async () => {
@@ -190,14 +208,58 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             connection,
             amount: 10000,
             farm:
-              farms?.get('GkFSmZB5P9bzbDKnUi7dNpJSyjGdru6sxGWhNPupKs1v') || {},
+              farms?.get('7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm') || {},
             userTokens: userTokensData,
           })
         }}
       >
         Start farming
       </button>
-
+      <button
+        type="button"
+        onClick={async () => {
+          if (!farms) {
+            throw new Error('No farms')
+          }
+          // TODO: pass farmer address if it exists
+          await addHarvestV2({
+            wallet,
+            connection,
+            amount: 10000,
+            farm:
+              farms?.get('7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm') || {},
+            userTokens: userTokensData,
+            harvestMint: new PublicKey(
+              '7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm'
+            ),
+          })
+        }}
+      >
+        Add harvest
+      </button>
+      <button
+        type="button"
+        onClick={async () => {
+          if (!farms) {
+            throw new Error('No farms')
+          }
+          await createNewHarvestPeriod({
+            wallet,
+            connection,
+            amount: 10000,
+            farm:
+              farms?.get('7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm') || {},
+            userTokens: userTokensData,
+            harvestMint: new PublicKey(
+              '7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm'
+            ),
+            startsAt: 0,
+            periodLengthInSlots: 10,
+          })
+        }}
+      >
+        Add new harvest period
+      </button>
       <button
         type="button"
         onClick={async () => {
@@ -210,7 +272,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             connection,
             amount: 10000,
             farm:
-              farms?.get('GkFSmZB5P9bzbDKnUi7dNpJSyjGdru6sxGWhNPupKs1v') || {},
+              farms?.get('7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm') || {},
             userTokens: userTokensData,
           })
         }}

@@ -80,7 +80,9 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         throw new Error('No token account selected')
       }
       const result = await initializeFarmingV2({
-        stakeMint: new PublicKey(pool.poolTokenMint),
+        stakeMint: new PublicKey(
+          '7viVXMsJyMcdWMkZG3nRUYQtKALTR81XTEcKthXVsXjR'
+        ),
         // farmingTokenMint: new PublicKey(values.farming.token.mint),
         // farmingTokenAccount: new PublicKey(values.farming.token.account),
         // tokenAmount: new BN(
