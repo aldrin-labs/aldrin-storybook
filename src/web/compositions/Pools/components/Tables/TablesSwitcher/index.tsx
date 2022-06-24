@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
@@ -169,6 +169,26 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
+  const activePoolsList = useMemo(() => {
+    if (selectedTable === 'authorized') {
+      return authorizedPools
+    }
+    if (selectedTable === 'nonAuthorized') {
+      return nonAuthorizedPools
+    }
+    if (selectedTable === 'stablePools') {
+      return stablePools
+    }
+    if (selectedTable === 'userLiquidity') {
+      return userLiquidityPools
+    }
+    return pools
+  }, [selectedTable, pools])
+
+  const poolsLength = activePoolsList.length
+
+  const tableHeight = Math.min(poolsLength * 13, 80)
+
   return (
     <>
       <TabContainer>
@@ -262,7 +282,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         </InputWrap>
       </TabContainer>
 
-      <TableContainer $height="80rem">
+      <TableContainer $height={`${tableHeight}rem`}>
         {selectedTable === 'authorized' && (
           <AllPoolsTable
             searchValue={searchValue}
