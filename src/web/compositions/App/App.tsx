@@ -60,14 +60,12 @@ if (currentVersion !== version) {
   )
   const isNotificationDone = localStorage.getItem('isNotificationDone')
   const isOnboardingDone = localStorage.getItem('isOnboardingDone')
-  const isRebrandingPopupOpen = localStorage.getItem('isRebrandingPopupOpen')
 
   localStorage.clear()
 
   localStorage.setItem('isMeetRebalancePopupOpen', isMeetRebalancePopupOpen)
   localStorage.setItem('isNotificationDone', isNotificationDone)
   localStorage.setItem('isOnboardingDone', isOnboardingDone)
-  localStorage.setItem('isRebrandingPopupOpen', isRebrandingPopupOpen)
 
   localStorage.setItem('version', version)
   document.location.reload()
@@ -82,7 +80,6 @@ const DetermineMobileWindowHeight = () => {
 
 const AppRaw = ({
   children,
-  getViewModeQuery,
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useLocalStorageState(
@@ -95,8 +92,6 @@ const AppRaw = ({
   if (!theme) {
     localStorage.setItem('theme', 'dark')
   }
-  // const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
-  //   useLocalStorageState('isRebrandingPopupOpen', true)
   // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
   //   true
   // )
@@ -191,10 +186,7 @@ const AppRaw = ({
                           ]}
                           needMobile={false}
                         /> */}
-                          {/* <RebrandingPopup
-                          open={isRebrandingPopupOpen}
-                          onClose={() => setIsRebrandingPopupOpen(false)}
-                        /> */}
+
                           {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}

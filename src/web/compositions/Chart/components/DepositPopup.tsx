@@ -10,8 +10,6 @@ import {
   Link,
   Theme,
 } from '@material-ui/core'
-import Timer from 'react-compound-timer'
-import { Loading } from '@sb/components/index'
 
 import copyIcon from '@icons/copySerum.svg'
 import SvgIcon from '@sb/components/SvgIcon'
