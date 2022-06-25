@@ -48,7 +48,7 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
             </PoolProcessingContent>
           </>
         )}
-        {status === 'success' && (
+        {status === 'confirmed' && (
           <>
             <FlexBlock justifyContent="space-between">
               <Title>Farming prolonged</Title>

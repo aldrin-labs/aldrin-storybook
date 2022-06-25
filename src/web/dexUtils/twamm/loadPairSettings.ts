@@ -7,7 +7,7 @@ export const loadPairSettings = async ({
 }: {
   connection: Connection
 }) => {
-  return await loadAccountsFromTWAMMProgram({
+  return loadAccountsFromTWAMMProgram({
     connection,
     filters: [
       {

@@ -132,8 +132,9 @@ export const ButtonsWithAmountFieldRowForBasic = ({
             }}
           >
             <PercentageTabsContainer>
-              {percentages.map((el) => (
+              {percentages.map((el, index) => (
                 <PercentageTab
+                  key={index}
                   isActive={false}
                   onClick={() => {
                     onAfterSliderChange(el.value)

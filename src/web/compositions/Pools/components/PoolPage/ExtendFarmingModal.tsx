@@ -8,18 +8,21 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { initializeFarmingInstructions } from '@sb/dexUtils/pools/actions/initializeFarming'
 import { signTransactions } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { getPoolsProgramAddress } from '@core/solana'
+import {
+  getPoolsProgramAddress,
+  SendTransactionStatus,
+  SendTransactionDetails,
+  buildInitializeFarmingTransaction,
+} from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
-import { sendSignedSignleTransaction } from '../../../../dexUtils/transactions'
+import { getTokenName } from '../../../../dexUtils/markets'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
@@ -83,7 +86,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       if (!values.farming.token.account) {
         throw new Error('No token account selected')
       }
-      const [transaction, signers] = await initializeFarmingInstructions({
+      const [transaction, signers] = await buildInitializeFarmingTransaction({
         farmingTokenMint: new PublicKey(values.farming.token.mint),
         farmingTokenAccount: new PublicKey(values.farming.token.account),
         tokenAmount: new BN(
@@ -113,19 +116,23 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
 
       setFarmingTransactionStatus('sending')
 
-      const { txId, result } = await sendSignedSignleTransaction({
+      const result = await sendSignedSignleTransaction({
         transaction: signedTransaction,
         connection,
         wallet,
       })
 
-      setFarmingTxId(txId)
+      setFarmingTxId(result.transactionId)
 
-      if (result === 'success') {
+      if (result.status === SendTransactionStatus.CONFIRMED) {
         onExtend()
       }
 
-      setFarmingTransactionStatus(result)
+      setFarmingTransactionStatus(
+        result.details?.includes(SendTransactionDetails.TIMEOUT)
+          ? 'timeout'
+          : result.status
+      )
     } catch (e) {
       console.warn('Unable to create farming: ', e)
       setFarmingTransactionStatus('error')
@@ -208,14 +215,19 @@ export const ExtendFarmingModal: React.FC<ExtendFarmingModalProps> = (
   props
 ) => {
   const [userTokens] = useUserTokenAccounts()
-  const { title = 'Extend Farming', onClose, onExtend, pool } = props
-  const tokenMap = useTokenInfos()
+  const {
+    title = 'Extend Farming',
+    onClose,
+    onExtend,
+    pool,
+    tokensInfo,
+  } = props
 
-  const baseInfo = tokenMap.get(pool.tokenA)
-  const quoteInfo = tokenMap.get(pool.tokenB)
-
-  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
-  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
+  const base = getTokenName({ address: pool.tokenA, tokensInfoMap: tokensInfo })
+  const quote = getTokenName({
+    address: pool.tokenB,
+    tokensInfoMap: tokensInfo,
+  })
 
   return (
     <Modal open onClose={onClose} title={`${title} for ${base}/${quote} pool`}>

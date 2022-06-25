@@ -1,4 +1,7 @@
-import { SendTransactionStatus } from '@core/solana'
+import {
+  SendSignedTransactionResponse,
+  SendTransactionDetails,
+} from '@core/solana'
 
 import { notify } from '../notifications'
 
@@ -7,23 +10,31 @@ interface NotificationMessages {
 }
 export const getNotifier =
   (messages: NotificationMessages) =>
-  (status: SendTransactionStatus, txId?: string) => {
-    const notificationMessage = messages[status]
+  (status: SendSignedTransactionResponse) => {
+    const notificationMessage = messages[status.status]
 
     if (notificationMessage) {
       const message = Array.isArray(notificationMessage)
         ? notificationMessage[0]
         : notificationMessage
-      const description = Array.isArray(notificationMessage)
+      let description = Array.isArray(notificationMessage)
         ? notificationMessage[1]
         : undefined
+
+      if (status.details?.includes(SendTransactionDetails.TIMEOUT)) {
+        description = 'Transaction confirmation timeout. Try again later.'
+      } else if (
+        status.details?.includes(SendTransactionDetails.NOT_ENOUGH_SOL)
+      ) {
+        description = 'Not enough SOL. Please top up you balance.'
+      }
 
       if (message) {
         notify({
           message,
           description,
           type: 'success',
-          txid: txId,
+          txid: status.transactionId,
         })
       }
     }

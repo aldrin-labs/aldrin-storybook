@@ -48,58 +48,52 @@ export const TokenAddressesPopup = ({
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <Container>
-        <RowContainer justify="space-between">
-          <Text>Selected tokens:</Text>
-          <CloseIconContainer onClick={() => close()}>
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 19 19"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
-                stroke="#F5F5FB"
-                strokeWidth="2"
-              />
-            </svg>
-          </CloseIconContainer>
-        </RowContainer>
-        <RowContainer
-          wrap="nowrap"
-          margin="2rem 0 1rem 0"
-          justify="space-between"
-        >
-          <Row>
-            <TokenIcon
-              mint={baseTokenMintAddress}
-              width="1.2em"
-              height="1.2em"
-              margin="0 1rem 0 0"
+      <RowContainer justify="space-between">
+        <Text>Selected tokens:</Text>
+        <CloseIconContainer onClick={() => close()}>
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 19 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+              stroke="#F5F5FB"
+              strokeWidth="2"
             />
-            <Text fontSize={FONT_SIZES.xs}>{baseTokenMintAddress}</Text>
-          </Row>
-          <Row>
-            <SolExplorerLink mint={baseTokenMintAddress} />
-          </Row>
-        </RowContainer>
-        <RowContainer wrap="nowrap" margin="1rem 0" justify="space-between">
-          <Row>
-            <TokenIcon
-              mint={quoteTokenMintAddress}
-              width="1.2em"
-              height="1.2em"
-              margin="0 1rem 0 0"
-            />
-            <Text fontSize={FONT_SIZES.xs}>{quoteTokenMintAddress}</Text>
-          </Row>
-          <Row>
-            <SolExplorerLink mint={baseTokenMintAddress} />
-          </Row>
-        </RowContainer>
-      </Container>
+          </svg>
+        </CloseIconContainer>
+      </RowContainer>
+      <RowContainer
+        wrap="nowrap"
+        margin="2rem 0 1rem 0"
+        justify="space-between"
+      >
+        <Row>
+          <TokenIcon
+            mint={baseTokenMintAddress}
+            margin="0 1rem 0 0"
+          />
+          <Text fontSize={FONT_SIZES.xs}>{baseTokenMintAddress}</Text>
+        </Row>
+        <Row>
+          <SolExplorerLink mint={baseTokenMintAddress} />
+        </Row>
+      </RowContainer>
+      <RowContainer wrap="nowrap" margin="1rem 0" justify="space-between">
+        <Row>
+          <TokenIcon
+            mint={quoteTokenMintAddress}
+            margin="0 1rem 0 0"
+          />
+          <Text fontSize={FONT_SIZES.xs}>{quoteTokenMintAddress}</Text>
+        </Row>
+        <Row>
+          <SolExplorerLink mint={baseTokenMintAddress} />
+        </Row>
+      </RowContainer>
     </DialogWrapper>
   )
 }

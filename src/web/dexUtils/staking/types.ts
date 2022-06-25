@@ -6,4 +6,7 @@ export type StakingPool = {
   poolTokenMint: string
   stakingVault: string
   farming: FarmingState[]
+  apr: {
+    buyBackAmountWithoutDecimals: number
+  }
 }

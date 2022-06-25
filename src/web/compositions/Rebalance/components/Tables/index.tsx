@@ -105,8 +105,7 @@ export const TokenSymbolColumn = ({ symbol }: { symbol: string }) => (
     <Row justify="flex-start">
       <TokenIcon
         mint={getTokenMintAddressByName(symbol)}
-        width="2rem"
-        height="2rem"
+        size={32}
         margin="0 1rem 0 0"
       />
       <Text

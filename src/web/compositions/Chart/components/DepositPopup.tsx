@@ -16,25 +16,11 @@ import { Loading } from '@sb/components/index'
 import copyIcon from '@icons/copySerum.svg'
 import SvgIcon from '@sb/components/SvgIcon'
 
-import { StyledTypography } from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/AccountBlock.styles'
-import InputAmount from '@sb/compositions/Profile/compositions/DepositWithdrawalComponents/InputAmount'
-
-import {
-  CoinOption,
-  CoinSingleValue,
-} from '@sb/components/ReactSelectComponents/CoinOption'
-
-import {
-  AccountOption,
-  AccountSingleValue,
-} from '@sb/components/ReactSelectComponents/AccountOption'
-
 import {
   TypographyCustomHeading,
   DialogWrapper,
   DialogTitleCustom,
 } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { DialogContent } from '@sb/styles/Dialog.styles'
 
 import {
