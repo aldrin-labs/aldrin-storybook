@@ -355,3 +355,7 @@ export const NoFarmingBlock = styled.div`
 export const TooltipText = styled(Text)`
   margin: 5px 0;
 `
+
+export const Link = styled.a`
+  color: ${(props) => props.theme.colors[props.color || 'violet5']};
+`

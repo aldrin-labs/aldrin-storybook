@@ -12,6 +12,7 @@ import {
   Title,
 } from '../Popups/CreatePool/styles'
 import { FarmingProcessingModalProps } from './types'
+import { Link } from './styles'
 
 const PROCESSING_STATUSES = new Set(['preparing', 'signing', 'sending'])
 const OK_STATUSES = new Set([...PROCESSING_STATUSES.values(), 'success'])
@@ -75,14 +76,14 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
                   <>
                     {!!txId && (
                       <Text>
-                        <a
+                        <Link
                           target="_blank"
                           href={`https://solscan.io/tx/${txId}`}
                           rel="noreferrer"
-                          style={{ color: theme.colors.violet5 }}
+                          color="violet5"
                         >
                           View on SolScan.
-                        </a>
+                        </Link>
                       </Text>
                     )}
                   </>
@@ -92,14 +93,14 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
             <PoolProcessingContent>
               <Text size="sm">
                 Please check your transaction or contact us via{' '}
-                <a
+                <Link
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: theme.colors.violet5 }}
+                  color="violet5"
                 >
                   Telegram
-                </a>
+                </Link>
                 .
               </Text>
             </PoolProcessingContent>

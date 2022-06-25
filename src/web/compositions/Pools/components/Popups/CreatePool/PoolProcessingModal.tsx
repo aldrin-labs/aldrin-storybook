@@ -6,6 +6,7 @@ import { Modal } from '@sb/components/Modal'
 import { Text } from '@sb/components/Typography'
 
 import {
+  Link,
   PoolProcessingBlock,
   PoolProcessingButton,
   PoolProcessingContent,
@@ -78,26 +79,26 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
                 {error || 'Pool creation failed.'}
                 <>
                   {txId && (
-                    <a
+                    <Link
                       target="blank"
                       href={`https://solscan.io/tx/${txId}`}
-                      style={{ color: theme.colors.violet5 }}
+                      color="violet5"
                     >
                       View on SolScan.
-                    </a>
+                    </Link>
                   )}
                 </>
               </Text>
               <Text size="sm">
                 If you have any questions, contact us via{' '}
-                <a
+                <Link
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"
                   rel="noreferrer"
-                  style={{ color: theme.colors.violet5 }}
+                  color="violet5"
                 >
                   Telegram
-                </a>
+                </Link>
                 .
               </Text>
             </>
