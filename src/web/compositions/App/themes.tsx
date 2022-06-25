@@ -80,6 +80,7 @@ export const dark = {
     tooltip: '#222429',
     greenChart: ['rgba(143, 255, 200, 0.25)', 'rgba(143, 255, 200, 0)'],
     shadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.45)',
+    PURewardsBackground: 'rgba(0, 255, 132, 0.15)',
   },
 }
 
@@ -162,6 +163,7 @@ export const light = {
     tooltip: 'rgb(214, 216, 224)',
     greenChart: ['rgba(0, 181, 92, 0.39)', 'rgba(0, 181, 94, 0)'],
     shadow: '0px 0px 8px 0px rgba(169, 169, 178, 1)',
+    PURewardsBackground: 'rgba(0, 181, 94, 0.2)',
   },
 }
 

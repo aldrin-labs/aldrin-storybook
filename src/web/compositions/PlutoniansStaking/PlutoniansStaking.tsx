@@ -498,7 +498,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <Cell col={12} colMd={6}>
                         <RewardContentBlock>
                           <StretchedBlock width="xl">
-                            <InlineText color="primaryGray" size="sm">
+                            <InlineText color="gray1" size="sm">
                               APR
                             </InlineText>
                             {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
@@ -508,7 +508,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                             align="center"
                             width="xl"
                           >
-                            <InlineText color="newGreen" size="lg" weight={700}>
+                            <InlineText color="green4" size="lg" weight={700}>
                               {stripByAmount(apr, 2)} %
                             </InlineText>
                             <RewardDescription size="md" weight={600}>
@@ -520,7 +520,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <Cell col={12} colMd={6}>
                         <RewardContentBlock last>
                           <StretchedBlock width="xl">
-                            <InlineText color="primaryGray" size="sm">
+                            <InlineText color="gray1" size="sm">
                               NFT
                             </InlineText>
                             {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
@@ -550,7 +550,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                 {minStakeTokensForReward ? (
                                   <>
                                     <InlineText
-                                      color="newGreen"
+                                      color="gray0"
                                       size="md"
                                       weight={700}
                                     >
@@ -585,7 +585,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                   </>
                 ) : (
                   <StretchedBlock width="xl">
-                    <ContentBlock width="48%">
+                    <ContentBlock width="48%" background="PURewardsBackground">
                       <StretchedBlock width="xl">
                         <DarkTooltip
                           title={`Your actual rewards depend on the market price of the ${stakeTokenName} and ${rewardTokenName} at the time of claiming and their projection may change dynamically over time during the lockup period.`}
@@ -632,7 +632,10 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                         </StretchedBlock>
                       </RewardsComponent>
                     ) : (
-                      <ContentBlock width="48%">
+                      <ContentBlock
+                        width="48%"
+                        background="PURewardsBackground"
+                      >
                         <StretchedBlock width="xl">
                           <InlineText color="primaryGray" size="sm">
                             NFT
