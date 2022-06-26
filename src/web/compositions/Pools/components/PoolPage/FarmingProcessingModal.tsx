@@ -80,7 +80,6 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
                           target="_blank"
                           href={`https://solscan.io/tx/${txId}`}
                           rel="noreferrer"
-                          color="violet5"
                         >
                           View on SolScan.
                         </Link>
@@ -97,7 +96,6 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"
                   rel="noreferrer"
-                  color="violet5"
                 >
                   Telegram
                 </Link>

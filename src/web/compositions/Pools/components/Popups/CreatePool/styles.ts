@@ -196,5 +196,5 @@ export const AttentionIcon = styled.div`
 `
 
 export const Link = styled.a`
-  color: ${(props) => props.theme.colors[props.color || 'violet5']};
+  color: ${(props) => props.theme.colors.blue3};
 `

@@ -79,11 +79,7 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
                 {error || 'Pool creation failed.'}
                 <>
                   {txId && (
-                    <Link
-                      target="blank"
-                      href={`https://solscan.io/tx/${txId}`}
-                      color="violet5"
-                    >
+                    <Link target="blank" href={`https://solscan.io/tx/${txId}`}>
                       View on SolScan.
                     </Link>
                   )}
@@ -95,7 +91,6 @@ export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"
                   rel="noreferrer"
-                  color="violet5"
                 >
                   Telegram
                 </Link>
