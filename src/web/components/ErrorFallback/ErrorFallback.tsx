@@ -11,6 +11,7 @@ const Error = styled(Paper)`
   align-items: center;
   justify-content: center;
   border: 1px solid red;
+  background: ${(props) => props.theme.colors.gray5};
 `
 
 const FormatErrorToUser = (errorMessage: string) => {
