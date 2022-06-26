@@ -121,14 +121,15 @@ interface ConfirmationBlockProps {
 
 export const ConfirmationBlock = styled.div<ConfirmationBlockProps>`
   padding: 10px 24px;
+
   ${(props: ConfirmationBlockProps) =>
-    props.border
-      ? `
-  border-radius: ${BORDER_RADIUS.lg};
-  border: 1px solid ${COLORS.border};
-  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.45);
-  `
-      : ''}
+    props.border &&
+    `
+    border-radius: ${BORDER_RADIUS.lg};
+    border: 1px solid;
+    border-color: ${props.theme.colors.border};
+    box-shadow: ${props.theme.colors.shadow};
+  `}
 `
 // export const ConfirmationBlock = styled.div``
 
