@@ -1,4 +1,4 @@
-import { Transaction, TransactionInstruction } from '@solana/web3.js'
+import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
 import BN from 'bn.js'
 
 import { buildNewHarvestPeriodInstructions } from '@core/solana/programs/farming/instructions/newHarvestPeriodTransaction'
@@ -39,6 +39,7 @@ export const createNewHarvestPeriod = async (
     tokenAmount,
     farm: farm.publicKey,
     harvestMint,
+    harvestWallet: new PublicKey(userTokenAccount.address),
     startsAt,
     periodLengthInSlots,
   })

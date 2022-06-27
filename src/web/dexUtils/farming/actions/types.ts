@@ -42,6 +42,7 @@ export interface NewHarvestPeriodParams {
   connection: AldrinConnection
   tokenAmount: BN
   harvestMint: PublicKey
+  harversWallet: PublicKey
   startsAt: number
   periodLengthInSlots: number
   farm: Farm
