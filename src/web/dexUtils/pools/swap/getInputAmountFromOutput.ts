@@ -1,8 +1,8 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 
+import { createSwapOptions, SwapOptions } from '@core/solana'
+
 import { PoolBalances } from '../hooks'
-import { createSwapOptions } from './bruteForceSearch'
-import { SwapOptions } from './findClosestAmountToSwapForDeposit'
 
 interface SearchParams {
   pool: PoolInfo

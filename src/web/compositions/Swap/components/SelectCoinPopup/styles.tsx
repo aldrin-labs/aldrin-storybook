@@ -11,7 +11,7 @@ export const UpdatedPaper = styled(({ ...props }) => (
 ))`
   font-size: 16px;
   background: ${(props) => props.theme.colors.gray8};
-  width: 30em;
+  width: 25em;
 
   @media (max-width: ${BREAKPOINTS.sm}) {
     max-height: 100%;
@@ -35,7 +35,7 @@ export const SelectorRow = styled(({ ...props }) => (
 `
 
 export const StyledText = styled(({ ...props }) => <Text {...props} />)`
-  font-size: ${FONT_SIZES.md};
+  font-size: ${FONT_SIZES.xsm};
   font-family: ${FONTS.demi};
 `
 
@@ -55,4 +55,5 @@ export const TokenButton = styled.button`
 export const TokenButtonText = styled.span`
   color: ${(props) => props.theme.colors.white};
   font-family: ${FONTS.demi};
+  font-size: ${FONT_SIZES.xsm};
 `

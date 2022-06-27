@@ -15,7 +15,6 @@ import {
   TRANSACTION_COMMON_SOL_FEE,
 } from '@sb/components/TraidingTerminal/utils'
 import { DexTokensPrices } from '@sb/compositions/Pools/index.types'
-import { TokenAddressesPopup } from '@sb/compositions/Swap/components/TokenAddressesPopup'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
@@ -518,14 +517,15 @@ const PlaceOrder = ({
         close={() => setIsSelectCoinPopupOpen(false)}
       />
 
-      <TokenAddressesPopup
+      {/* Create token addresses popup */}
+      {/* <TokenAddressesPopup
         theme={theme}
         quoteTokenMintAddress={quoteTokenMintAddress}
         baseTokenMintAddress={baseTokenMintAddress}
         allTokensData={allTokensData}
         open={isTokensAddressesPopupOpen}
         close={() => openTokensAddressesPopup(false)}
-      />
+      /> */}
     </SwapPageContainer>
   )
 }

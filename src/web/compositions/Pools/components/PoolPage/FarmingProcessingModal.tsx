@@ -3,6 +3,7 @@ import React from 'react'
 import { FlexBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
 import { Text } from '@sb/components/Typography'
+import { socialLinks } from '@sb/compositions/Homepage/SocialsLinksComponents'
 
 import {
   PoolProcessingBlock,
@@ -88,11 +89,7 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
             <PoolProcessingContent>
               <Text size="sm">
                 Please check your transaction or contact us via{' '}
-                <a
-                  href="https://t.me/Aldrin_Exchange"
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={socialLinks.telegram} target="_blank" rel="noreferrer">
                   Telegram
                 </a>
                 .

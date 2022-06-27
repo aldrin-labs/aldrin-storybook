@@ -10,9 +10,7 @@ const useOutsideRef = (params: UseOutsideRefParams) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log('handle click outside')
       if (ref.current && !ref.current.contains(event.target)) {
-        console.log('callback')
         callback()
       }
     }

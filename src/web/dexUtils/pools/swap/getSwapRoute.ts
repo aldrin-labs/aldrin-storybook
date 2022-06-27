@@ -4,10 +4,14 @@ import { getShortestPaths } from '@sb/dexUtils/common/getShortestPaths'
 import { MarketsMap } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 
+import {
+  getMarketForSwap,
+  getMinimumReceivedAmountFromSwap,
+  getSelectedPoolForSwap,
+} from '@core/solana'
 import { toBNWithDecimals } from '@core/utils/helpers'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import { getMarketForSwap, getSelectedPoolForSwap } from '.'
 import { getPoolsMintsEdges } from '../getPoolsMintsEdges'
 import {
   LoadedMarketWithOrderbook,
@@ -16,7 +20,6 @@ import {
 import { PoolsBalancesMap } from '../hooks/usePoolsBalances'
 import { getInputAmountFromOutput } from './getInputAmountFromOutput'
 import { getInputAmountFromOutputForOrderbook } from './getInputAmountFromOutputForOrderbook'
-import { getMinimumReceivedAmountFromSwap } from './getMinimumReceivedAmountFromSwap'
 import { getMinimumReceivedFromOrderbook } from './getMinimumReceivedFromOrderbook'
 
 type MintSteps = [string, string][]

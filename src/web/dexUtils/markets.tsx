@@ -14,6 +14,7 @@ import React, { useContext, useEffect, useState } from 'react'
 
 import { OrderWithMarket } from '@sb/dexUtils/send'
 
+import { toMap } from '@core/collection'
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { Metrics } from '@core/utils/metrics'
@@ -35,6 +36,8 @@ import {
 import { getTokenAccountInfo } from './tokens'
 import { useLocalStorageState } from './utils'
 import { useWallet } from './wallet'
+
+export const tokensMap = toMap(tokensList, (token) => token.address)
 
 export const ALL_TOKENS_MINTS = tokensList.map((el) => {
   return { ...el, address: new PublicKey(el.address) }

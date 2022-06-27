@@ -3,7 +3,7 @@ import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 export interface SearchItem {
   tokenFrom: { symbol: string; mint: string }
   tokenTo: { symbol: string; mint: string }
-  amountFrom?: string | number
+  amountFrom: string | number | null
 }
 
 export interface SwapSearchProps {

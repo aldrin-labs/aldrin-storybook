@@ -14,10 +14,6 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import {
-  getDefaultBaseToken,
-  getDefaultQuoteToken,
-} from '@sb/dexUtils/pools/swap'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useSwapRoute } from '@sb/dexUtils/pools/swap/useSwapRoute'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
@@ -54,7 +50,8 @@ import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
 import { SwapSearch } from './components/SwapSearch'
-import { TokenAddressesPopup } from './components/TokenAddressesPopup'
+import { SwapSettingsPopup } from './components/SwapSettingsPopup'
+import { getDefaultBaseToken, getDefaultQuoteToken } from './config'
 import {
   SwapPageContainer,
   SwapContentContainer,
@@ -632,11 +629,12 @@ const SwapPage = ({
           close={() => setIsSelectCoinPopupOpen(false)}
         />
 
-        <TokenAddressesPopup
+        <SwapSettingsPopup
           quoteTokenMintAddress={outputTokenMintAddress}
           baseTokenMintAddress={inputTokenMintAddress}
-          allTokensData={userTokensData}
           open={isTokensAddressesPopupOpen}
+          slippage={slippage}
+          setSlippage={setSlippage}
           close={() => setIsTokensAddressesPopupOpen(false)}
         />
 

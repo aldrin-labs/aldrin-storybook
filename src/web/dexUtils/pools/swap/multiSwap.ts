@@ -1,10 +1,5 @@
 import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import {
-  Connection,
-  LAMPORTS_PER_SOL,
-  PublicKey,
-  SystemProgram,
-} from '@solana/web3.js'
+import { LAMPORTS_PER_SOL, PublicKey, SystemProgram } from '@solana/web3.js'
 
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { OpenOrdersMap } from '@sb/compositions/Rebalance/utils/loadOpenOrdersFromMarkets'
@@ -19,11 +14,15 @@ import { TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 import { notEmpty } from '@sb/dexUtils/utils'
 import { WRAPPED_SOL_MINT } from '@sb/dexUtils/wallet'
 
-import { buildTransactions } from '@core/solana'
+import {
+  AldrinConnection,
+  buildSwapTransaction,
+  buildTransactions,
+  SWAP_FEES_SETTINGS,
+  walletAdapterToWallet,
+} from '@core/solana'
 import { toBNWithDecimals } from '@core/utils/helpers'
 
-import { SWAP_FEES_SETTINGS } from '.'
-import { getSwapTransaction } from '../actions/swap'
 import { checkIsTransactionFromNativeSOL } from './checkIsTransactionFromNativeSOL'
 import { SwapRoute } from './getSwapRoute'
 import {
@@ -42,7 +41,7 @@ const multiSwap = async ({
   selectedOutputTokenAddressFromSeveral,
 }: {
   wallet: WalletAdapter
-  connection: Connection
+  connection: AldrinConnection
   swapRoute: SwapRoute
   openOrdersMap: OpenOrdersMap
   feeAccountTokens: TokenInfo[]
@@ -305,8 +304,10 @@ const multiSwap = async ({
         swapAmountOutWithDecimalsN: swapAmountOutWithDecimals.toNumber(),
       })
 
-      const swapTransactionAndSigners = await getSwapTransaction({
-        wallet,
+      const walletWithPk = walletAdapterToWallet(wallet)
+
+      const swapTransactionAndSigners = await buildSwapTransaction({
+        wallet: walletWithPk,
         connection,
         poolPublicKey: new PublicKey(swapToken),
         userBaseTokenAccount: new PublicKey(userBaseTokenAccount),
@@ -322,7 +323,7 @@ const multiSwap = async ({
         throw new Error('Swap transaction creation failed')
       }
 
-      const [transaction, signers] = swapTransactionAndSigners
+      const { transaction, signers } = swapTransactionAndSigners
 
       commonInstructions.push(...transaction.instructions)
       commonSigners.push(...signers)

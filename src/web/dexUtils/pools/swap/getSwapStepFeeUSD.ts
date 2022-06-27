@@ -1,6 +1,7 @@
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 
-import { getFeesAmount } from './getFeesAmount'
+import { getFeesAmount } from '@core/solana'
+
 import { SwapStep, SwapRoute } from './getSwapRoute'
 
 export const getSwapStepFeesAmount = ({

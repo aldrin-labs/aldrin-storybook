@@ -156,7 +156,7 @@ export const SelectCoinPopup = ({
           {/* top-8 tokens */}
           {topTradingMints.slice(0, 8).map((mint) => (
             <TokenButton onClick={() => selectMint(mint)}>
-              <TokenIcon mint={mint} size={24} margin="0 0.5em 0 0" />
+              <TokenIcon mint={mint} size={16} margin="0 0.5em 0 0" />
               <TokenButtonText>{tokenInfos.get(mint)?.symbol}</TokenButtonText>
             </TokenButton>
           ))}
@@ -180,18 +180,18 @@ export const SelectCoinPopup = ({
                     <StyledText>{symbol}</StyledText>
                     {name && (
                       <Row padding="0.5em 0 0 0">
-                        <InlineText>{name}</InlineText>
+                        <InlineText size="esm">{name}</InlineText>
                       </Row>
                     )}
                   </Row>
                 </Row>
                 {connected && (
                   <Row direction="column" align="flex-end" wrap="nowrap">
-                    <InlineText color="white" weight={600}>
+                    <InlineText size="esm" color="white" weight={600}>
                       ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
                     </InlineText>
                     <Row padding="0.5em 0 0 0">
-                      <InlineText color="gray1">
+                      <InlineText size="esm" color="gray1">
                         {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
                       </InlineText>
                     </Row>

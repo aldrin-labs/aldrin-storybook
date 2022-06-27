@@ -10,9 +10,9 @@ import { useOwnerTokenAccounts } from '@sb/dexUtils/token/hooks/useOwnerTokenAcc
 import { AsyncSendSignedTransactionResult } from '@sb/dexUtils/types'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { SWAP_FEES_SETTINGS } from '@core/solana'
 import { stripByAmount } from '@core/utils/numberUtils'
 
-import { SWAP_FEES_SETTINGS } from '.'
 import { getPoolsMintsEdges } from '../getPoolsMintsEdges'
 import { useAllMarketsOrderbooks } from '../hooks/useAllMarketsOrderbooks'
 import { usePoolsBalances } from '../hooks/usePoolsBalances'

@@ -3,7 +3,8 @@ import { getMarketsMintsEdges } from '@sb/dexUtils/common/getMarketsMintsEdges'
 import { getShortestPaths } from '@sb/dexUtils/common/getShortestPaths'
 import { getTokenNameByMintAddress, MarketsMap } from '@sb/dexUtils/markets'
 
-import { getSelectedPoolForSwap } from '.'
+import { getSelectedPoolForSwap } from '@core/solana'
+
 import { getPoolsMintsEdges } from '../getPoolsMintsEdges'
 
 export const getMarketsInSwapPaths = ({

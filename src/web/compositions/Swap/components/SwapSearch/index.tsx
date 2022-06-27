@@ -28,7 +28,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   const [listOpened, setListOpened] = useState(false)
   const [searchItems, setSearchItems] = useState<SearchItem[]>([])
   const [selectedKeyboardSwapOptionIndex, selectKeyboardSwapOptionIndex] =
-    useState(0)
+    useState<number>(0)
 
   const wrapperRef = useRef(null)
   const tokensMap = useTokenInfos()
@@ -48,7 +48,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
       const amountFrom = parseFloat(firstSearchTextItem)
 
       const symbolsSearchTextItems = searchTextItems.filter(
-        (item) => !parseFloat(item)
+        (item) => Number.isNaN(parseFloat(item)) // parseFloat return NaN if no number
       )
 
       let [tokenFromSearch] = symbolsSearchTextItems
@@ -125,7 +125,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
       const swapOptions = tokensTo.map((tokenTo) => ({
         tokenTo,
         tokenFrom,
-        amountFrom: Number.isNaN(amountFrom) ? 0 : amountFrom.toString(),
+        amountFrom: Number.isNaN(amountFrom) ? null : amountFrom.toString(),
       }))
 
       return swapOptions
@@ -144,7 +144,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
     searchValue !== ''
       ? searchItems
       : topTradingPairs.slice(0, 5).map((pair) => ({
-          amountFrom: 0,
+          amountFrom: null,
           tokenFrom: {
             symbol: pair.baseSymbol,
             mint: pair.baseMint,
@@ -155,7 +155,12 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
           },
         }))
 
-  useOutsideRef({ ref: wrapperRef, callback: () => setListOpened(false) })
+  useOutsideRef({
+    ref: wrapperRef,
+    callback: () => {
+      setListOpened(false)
+    },
+  })
 
   useEffect(() => {
     const onKeyDown = (event) => {
@@ -186,9 +191,13 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
       }
     }
 
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [selectedKeyboardSwapOptionIndex])
+    if (listOpened) {
+      document.addEventListener('keydown', onKeyDown)
+      return () => document.removeEventListener('keydown', onKeyDown)
+    }
+
+    return () => {}
+  }, [selectedKeyboardSwapOptionIndex, listOpened])
 
   return (
     <Container listOpened={listOpened} ref={wrapperRef}>
@@ -197,7 +206,9 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
         placeholder={'Try: "10 SOL to RIN"'}
         value={searchValue}
         onChange={onInput}
-        onFocus={() => setListOpened(true)}
+        onFocus={() => {
+          setListOpened(true)
+        }}
         append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
         borderRadius="md"
         className="inputWrapper"
@@ -235,7 +246,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
                 </Row>
                 <Row direction="column" align="flex-start" margin="0 0 0 1em">
                   <InlineText weight={600}>
-                    {amountFrom && `${amountFrom} `}
+                    {amountFrom !== null && `${amountFrom} `}
                     <TokenName color="white">{baseTokenSymbol}</TokenName>{' '}
                     {`- `}
                     <TokenName color="white">{quoteTokenSymbol}</TokenName>

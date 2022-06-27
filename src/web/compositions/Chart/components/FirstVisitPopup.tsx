@@ -1,16 +1,15 @@
+import Clear from '@material-ui/icons/Clear'
 import React from 'react'
 import styled from 'styled-components'
 
 import SvgIcon from '@sb/components/SvgIcon'
-import MediumIcon from '@icons/medium.svg'
-import YoutubeIcon from '@icons/youtube.svg'
-import Clear from '@material-ui/icons/Clear'
-import BigRightArrow from '@icons/bigRightArrow.svg'
-
+import { socialLinks } from '@sb/compositions/Homepage/SocialsLinksComponents'
 import CryptoCube from '@sb/images/Logo.png'
 import SmartTerminal from '@sb/images/SmartTerminal.png'
 
-import { finishJoyride } from '@core/utils/joyride'
+import BigRightArrow from '@icons/bigRightArrow.svg'
+import MediumIcon from '@icons/medium.svg'
+import YoutubeIcon from '@icons/youtube.svg'
 
 const Container = styled.div`
   position: absolute;
@@ -109,19 +108,19 @@ export default ({ closeChartPagePopup }) => {
           >
             learn more:
           </span>
-          <StyledLink href={'https://medium.com/@cryptocurrenies_ai'}>
-            <SvgIcon src={MediumIcon} width={'2rem'} />
+          <StyledLink href={socialLinks.medium}>
+            <SvgIcon src={MediumIcon} width="2rem" />
             <span style={{ paddingLeft: '1rem' }}>medium</span>
           </StyledLink>
-          <StyledLink
-            href={'https://www.youtube.com/channel/UCyUM72zWism4-LdA2J4bwew'}
-          >
-            <SvgIcon src={YoutubeIcon} width={'2rem'} />
+          <StyledLink href={socialLinks.youtube}>
+            <SvgIcon src={YoutubeIcon} width="2rem" />
             <span style={{ paddingLeft: '1rem' }}>youtube</span>
           </StyledLink>
-          <CloseIcon onClick={() => {
-            closeChartPagePopup()
-          }} />
+          <CloseIcon
+            onClick={() => {
+              closeChartPagePopup()
+            }}
+          />
         </div>
       </div>
       <div
@@ -169,7 +168,7 @@ export default ({ closeChartPagePopup }) => {
           >
             trade smartly now:
           </span>
-          <SvgIcon src={BigRightArrow} width={'100%'} height={'5rem'} />
+          <SvgIcon src={BigRightArrow} width="100%" height="5rem" />
         </div>
       </div>
     </Container>
