@@ -18,7 +18,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
-import { addHarvestV2 } from '@sb/dexUtils/farming/actions/createNewHarvestPeriod'
+import { addHarvestV2 } from '@sb/dexUtils/farming/actions/addHarvest'
 import { createNewHarvestPeriod } from '@sb/dexUtils/farming/actions/newHarvestPeriod'
 import { useFarmInfo } from '@sb/dexUtils/farming/useFarmInfo'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
@@ -246,7 +246,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           await createNewHarvestPeriod({
             wallet,
             connection,
-            amount: 10000,
+            amount: 1000,
             farm:
               farms?.get('7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm') || {},
             userTokens: userTokensData,

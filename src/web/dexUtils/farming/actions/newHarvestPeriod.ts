@@ -1,11 +1,11 @@
 import { Transaction, TransactionInstruction } from '@solana/web3.js'
 import BN from 'bn.js'
 
-import { NewHarvestPeriodParams } from '@core/solana'
 import { buildNewHarvestPeriodInstructions } from '@core/solana/programs/farming/instructions/newHarvestPeriodTransaction'
 
 import { walletAdapterToWallet } from '../../common'
 import { signAndSendTransactions } from '../../transactions'
+import { NewHarvestPeriodParams } from './types'
 
 export const createNewHarvestPeriod = async (
   params: NewHarvestPeriodParams
