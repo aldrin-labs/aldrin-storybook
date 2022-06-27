@@ -137,11 +137,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ])
   }
 
-  const { buyBackAmountWithDecimals } = stakingPool.apr
+  const { buyBackAmountWithoutDecimals } = stakingPool.apr
 
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
     farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
-    buyBackAmount: buyBackAmountWithDecimals,
+    buyBackAmount: buyBackAmountWithoutDecimals,
     snapshotQueues: allStakingSnapshotQueues,
   })
 
@@ -345,9 +345,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const totalStakedUSD = tokenPrice * totalStakedRIN
 
   const buyBackAPR =
-    (stakingPool.apr.buyBackAmountWithoutDecimals /
-      DAYS_TO_CHECK_BUY_BACK /
-      totalStakedRIN) *
+    (buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) *
     365 *
     100
 

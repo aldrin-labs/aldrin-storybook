@@ -77,7 +77,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
                 key={`fs_reward_${poolTokenMint}_${farmingStateMint}`}
               >
                 {i > 0 ? ' + ' : ''}
-                <FarmingText color="green0">
+                <FarmingText color="ggreen3reen0">
                   {stripByAmountAndFormat(rewardPerK)}&nbsp;
                 </FarmingText>
                 {tokenName}
@@ -88,7 +88,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
         </FarmingText>
         <div>
           <FarmingText>
-            Per each <FarmingText color="green0">$1000</FarmingText>
+            Per each <FarmingText color="green3">$1000</FarmingText>
           </FarmingText>
         </div>
       </Container>

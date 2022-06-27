@@ -179,7 +179,7 @@ export const preparePoolTableCell = (params: {
                 tokenB={pool.tokenB}
               >
                 {isPoolOwner && (
-                  <Text color="green0" size="sm">
+                  <Text color="green3" size="sm">
                     Your pool
                   </Text>
                 )}

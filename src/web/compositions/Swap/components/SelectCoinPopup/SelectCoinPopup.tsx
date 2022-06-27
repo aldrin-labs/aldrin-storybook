@@ -182,7 +182,7 @@ export const SelectCoinPopup = ({
                   <Text fontFamily={FONTS.demi}>
                     ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
                   </Text>
-                  <Text color="green0" padding="0.5em 0 0 0">
+                  <Text color="green3" padding="0.5em 0 0 0">
                     {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
                   </Text>
                 </Row>
