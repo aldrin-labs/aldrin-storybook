@@ -24,8 +24,6 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
-// https://material-ui.com/customization/css-in-js/#other-html-element
-import './app.styles.global.css'
 
 import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'

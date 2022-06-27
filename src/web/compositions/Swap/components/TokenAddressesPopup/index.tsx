@@ -72,10 +72,7 @@ export const TokenAddressesPopup = ({
         justify="space-between"
       >
         <Row>
-          <TokenIcon
-            mint={baseTokenMintAddress}
-            margin="0 1rem 0 0"
-          />
+          <TokenIcon mint={baseTokenMintAddress} margin="0 1rem 0 0" />
           <Text fontSize={FONT_SIZES.xs}>{baseTokenMintAddress}</Text>
         </Row>
         <Row>
@@ -84,14 +81,11 @@ export const TokenAddressesPopup = ({
       </RowContainer>
       <RowContainer wrap="nowrap" margin="1rem 0" justify="space-between">
         <Row>
-          <TokenIcon
-            mint={quoteTokenMintAddress}
-            margin="0 1rem 0 0"
-          />
+          <TokenIcon mint={quoteTokenMintAddress} margin="0 1rem 0 0" />
           <Text fontSize={FONT_SIZES.xs}>{quoteTokenMintAddress}</Text>
         </Row>
         <Row>
-          <SolExplorerLink mint={baseTokenMintAddress} />
+          <SolExplorerLink mint={quoteTokenMintAddress} />
         </Row>
       </RowContainer>
     </DialogWrapper>

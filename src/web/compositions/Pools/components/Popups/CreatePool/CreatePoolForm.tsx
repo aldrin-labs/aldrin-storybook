@@ -615,20 +615,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 {form.errors.baseToken && (
                   <ErrorText color="red3">{form.errors.baseToken}</ErrorText>
                 )}
-                {/* <CheckboxWrap>
-                  <CheckboxField
-                    label="Use Stable Curve for this pool. ATTENTION, ADVANCED USERS ONLY."
-                    name="stableCurve"
-                    color="primaryWhite"
-                  />
-
-                  <DarkTooltip title={STABLE_POOLS_TOOLTIP}>
-                    <InlineText cursor="help" color="success" size="sm">
-                      What is stable curve?
-                    </InlineText>
-                  </DarkTooltip>
-                </CheckboxWrap> */}
-
                 <GroupLabel label="Do you want to lock your initial liquidity for a set period of time?" />
                 <CheckboxWrap>
                   <RadioGroupContainer>
