@@ -4,13 +4,11 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import SvgIcon from '@sb/components/SvgIcon'
+import { SolExplorerLink } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
-
-import ExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
 const StyledPaper = styled(Paper)`
   font-size: 20px;
@@ -23,6 +21,11 @@ const StyledPaper = styled(Paper)`
   border-radius: 0.8rem;
   overflow: hidden;
   padding: 3rem 2rem;
+  overflow: visible;
+`
+
+const Container = styled.div`
+  padding: 10px 0;
 `
 
 export const TokenAddressesPopup = ({
@@ -69,52 +72,20 @@ export const TokenAddressesPopup = ({
         justify="space-between"
       >
         <Row>
-          <TokenIcon
-            mint={baseTokenMintAddress}
-            width="1.2em"
-            height="1.2em"
-            margin="0 1rem 0 0"
-          />
+          <TokenIcon mint={baseTokenMintAddress} margin="0 1rem 0 0" />
           <Text fontSize={FONT_SIZES.xs}>{baseTokenMintAddress}</Text>
         </Row>
         <Row>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`https://solscan.io/address/${baseTokenMintAddress}`}
-          >
-            <SvgIcon
-              style={{ cursor: 'pointer' }}
-              width="1.2em"
-              height="1.2em"
-              src={ExplorerIcon}
-            />
-          </a>
+          <SolExplorerLink mint={baseTokenMintAddress} />
         </Row>
       </RowContainer>
       <RowContainer wrap="nowrap" margin="1rem 0" justify="space-between">
         <Row>
-          <TokenIcon
-            mint={quoteTokenMintAddress}
-            width="1.2em"
-            height="1.2em"
-            margin="0 1rem 0 0"
-          />
+          <TokenIcon mint={quoteTokenMintAddress} margin="0 1rem 0 0" />
           <Text fontSize={FONT_SIZES.xs}>{quoteTokenMintAddress}</Text>
         </Row>
         <Row>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`https://solscan.io/address/${quoteTokenMintAddress}`}
-          >
-            <SvgIcon
-              style={{ cursor: 'pointer' }}
-              width="1.2em"
-              height="1.2em"
-              src={ExplorerIcon}
-            />
-          </a>
+          <SolExplorerLink mint={quoteTokenMintAddress} />
         </Row>
       </RowContainer>
     </DialogWrapper>

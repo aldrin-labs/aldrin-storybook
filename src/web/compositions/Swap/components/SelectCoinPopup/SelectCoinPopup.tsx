@@ -45,7 +45,7 @@ export const SelectCoinPopup = ({
   setQuoteTokenAddressFromSeveral: (address: string) => void
 }) => {
   const tokenInfos = useTokenInfos()
-  const { wallet, connected } = useWallet()
+  const { connected } = useWallet()
 
   const [searchValue, onChangeSearch] = useState<string>('')
   const [selectedMint, setSelectedMint] = useState<string>('')
@@ -152,63 +152,44 @@ export const SelectCoinPopup = ({
         </Row>
       </RowContainer>
       <RowContainer>
-        {sortedMints.map(
-          ({
-            mint,
-            amount,
-            price,
-            name,
-            symbol,
-            total,
-          }: {
-            mint: string
-            amount: number
-            price: number
-            symbol: string
-            name: string
-            total: number
-          }) => {
-            return (
-              <SelectorRow
-                justify="space-between"
-                style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  const isSeveralCoinsWithSameAddress =
-                    allTokensData.filter((el) => el.mint === mint).length > 1
+        {sortedMints.map(({ mint, amount, name, symbol, total }) => {
+          return (
+            <SelectorRow
+              key={mint}
+              justify="space-between"
+              style={{ cursor: 'pointer' }}
+              onClick={() => {
+                const isSeveralCoinsWithSameAddress =
+                  allTokensData.filter((el) => el.mint === mint).length > 1
 
-                  if (isSeveralCoinsWithSameAddress) {
-                    setSelectedMint(mint)
-                    setIsSelectorForSeveralAddressesOpen(true)
-                  } else {
-                    selectTokenMintAddress(mint)
-                  }
-                }}
-              >
-                <Row wrap="nowrap">
-                  <TokenIcon mint={mint} width="3em" height="3em" />
-                  <Row
-                    margin="0 0 0 0.5em"
-                    align="flex-start"
-                    direction="column"
-                  >
-                    <StyledText>{symbol}</StyledText>
-                    {name && <Text padding="0.5em 0 0 0">{name}</Text>}
-                  </Row>
+                if (isSeveralCoinsWithSameAddress) {
+                  setSelectedMint(mint)
+                  setIsSelectorForSeveralAddressesOpen(true)
+                } else {
+                  selectTokenMintAddress(mint)
+                }
+              }}
+            >
+              <Row wrap="nowrap">
+                <TokenIcon mint={mint} size={32} />
+                <Row margin="0 0 0 0.5em" align="flex-start" direction="column">
+                  <StyledText>{symbol}</StyledText>
+                  {name && <Text padding="0.5em 0 0 0">{name}</Text>}
                 </Row>
-                {connected && (
-                  <Row direction="column" align="flex-end" wrap="nowrap">
-                    <Text fontFamily={FONTS.demi}>
-                      ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
-                    </Text>
-                    <Text color="#2C981E" padding="0.5em 0 0 0">
-                      {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
-                    </Text>
-                  </Row>
-                )}
-              </SelectorRow>
-            )
-          }
-        )}
+              </Row>
+              {connected && (
+                <Row direction="column" align="flex-end" wrap="nowrap">
+                  <Text fontFamily={FONTS.demi}>
+                    ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
+                  </Text>
+                  <Text color="green3" padding="0.5em 0 0 0">
+                    {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
+                  </Text>
+                </Row>
+              )}
+            </SelectorRow>
+          )
+        })}
         {mints.length === 0 && (
           <RowContainer>
             <StyledText>Loading...</StyledText>

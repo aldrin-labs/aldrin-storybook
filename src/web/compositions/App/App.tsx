@@ -19,15 +19,12 @@ import { getSearchParamsObject } from '@sb/compositions/App/App.utils'
 import { GlobalStyles } from '@sb/compositions/Chart/Chart.styles'
 import { ConnectionProvider } from '@sb/dexUtils/connection'
 import { MarketProvider } from '@sb/dexUtils/markets'
-import { PreferencesProvider } from '@sb/dexUtils/preferences'
 import { TokenRegistryProvider } from '@sb/dexUtils/tokenRegistry'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { WalletProvider } from '@sb/dexUtils/wallet'
 // import ShowWarningOnMoblieDevice from '@sb/components/ShowWarningOnMoblieDevice'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
-// https://material-ui.com/customization/css-in-js/#other-html-element
-// import './app.styles.global.css';
 
 import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
@@ -61,7 +58,6 @@ if (currentVersion !== version) {
   const isNotificationDone = localStorage.getItem('isNotificationDone')
   const isOnboardingDone = localStorage.getItem('isOnboardingDone')
   const isRebrandingPopupOpen = localStorage.getItem('isRebrandingPopupOpen')
-  const isRpcWarningPopupOpen = localStorage.getItem('isRpcWarningPopupOpen')
 
   localStorage.clear()
 
@@ -69,7 +65,6 @@ if (currentVersion !== version) {
   localStorage.setItem('isNotificationDone', isNotificationDone)
   localStorage.setItem('isOnboardingDone', isOnboardingDone)
   localStorage.setItem('isRebrandingPopupOpen', isRebrandingPopupOpen)
-  // localStorage.setItem("isRpcWarningPopupOpen", isRpcWarningPopupOpen)
 
   localStorage.setItem('version', version)
   document.location.reload()
@@ -111,7 +106,6 @@ const AppRaw = ({
     themeMode = 'dark'
     localStorage.setItem('themeMode', 'dark')
   }
-
   // const chartPageView =
   //   getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
@@ -147,46 +141,45 @@ const AppRaw = ({
                 <TokenRegistryProvider>
                   <MarketProvider>
                     <WalletProvider>
-                      <PreferencesProvider>
-                        <AppGridLayout
-                          id="react-notification"
+                      <AppGridLayout
+                        id="react-notification"
+                        showFooter={showFooter}
+                        isRewards={isRewards}
+                        isPNL={isPNL}
+                        isChartPage={isChartPage}
+                      >
+                        <SolanaNetworkDegradedPerformanceBanner />
+                        <Header
+                          currentTheme={currentTheme}
+                          setCurrentTheme={setCurrentTheme}
+                        />
+                        <AppInnerContainer
                           showFooter={showFooter}
-                          isRewards={isRewards}
-                          isPNL={isPNL}
                           isChartPage={isChartPage}
+                          currentPage={currentPage}
                         >
-                          <SolanaNetworkDegradedPerformanceBanner />
-                          <Header
-                            currentTheme={currentTheme}
-                            setCurrentTheme={setCurrentTheme}
-                          />
-                          <AppInnerContainer
-                            showFooter={showFooter}
-                            isChartPage={isChartPage}
-                            currentPage={currentPage}
-                          >
-                            {children}
-                          </AppInnerContainer>
-                          {/* {showFooter && (
+                          {children}
+                        </AppInnerContainer>
+                        {/* {showFooter && (
                           <FooterWithTheme isRewards={isRewards} />
                         )} */}
-                          {!isChartPage && <Footer />}
-                          <MobileFooter />
-                          {/*
+                        {!isChartPage && <Footer />}
+                        <MobileFooter />
+                        {/*
                     <Footer
                       isChartPage={isChartPage}
                       fullscreenMode={fullscreen}
                       showFooter={showFooter}
                     /> */}
-                          {!MASTER_BUILD && !LOCAL_BUILD && (
-                            <DevUrlPopup
-                              open={isDevUrlPopupOpen}
-                              close={() => {
-                                openDevUrlPopup(false)
-                              }}
-                            />
-                          )}
-                          {/* <WarningBanner
+                        {!MASTER_BUILD && !LOCAL_BUILD && (
+                          <DevUrlPopup
+                            open={isDevUrlPopupOpen}
+                            close={() => {
+                              openDevUrlPopup(false)
+                            }}
+                          />
+                        )}
+                        {/* <WarningBanner
                           localStorageProperty={'isPhantomIssuesPopupOpen'}
                           notification={[
                             'Phantom Wallet users may currently be experiencing problems with any action in dApps such as Aldrin DEX. The Phantom team is currently working on fixing these issues.',
@@ -194,11 +187,11 @@ const AppRaw = ({
                           ]}
                           needMobile={false}
                         /> */}
-                          {/* <RebrandingPopup
+                        {/* <RebrandingPopup
                           open={isRebrandingPopupOpen}
                           onClose={() => setIsRebrandingPopupOpen(false)}
                         /> */}
-                          {/* {!isWalletMigrationToNewUrlPopupDone && (
+                        {/* {!isWalletMigrationToNewUrlPopupDone && (
                         <WalletMigrationPopup
                           open={isMigrationToNewUrlPopupOpen}
                           close={() => {
@@ -206,10 +199,9 @@ const AppRaw = ({
                           }}
                         />
                       )} */}
-                          <DetermineMobileWindowHeight />
-                        </AppGridLayout>
-                        {/* <ShowWarningOnMoblieDevice /> */}
-                      </PreferencesProvider>
+                        <DetermineMobileWindowHeight />
+                      </AppGridLayout>
+                      {/* <ShowWarningOnMoblieDevice /> */}
                     </WalletProvider>
                   </MarketProvider>
                 </TokenRegistryProvider>

@@ -32,6 +32,11 @@ export const ContentBlock = styled.div<ContentBlockProps>`
   background: ${(props) => props.theme.colors[props.background || 'gray5']};
   border-radius: ${BORDER_RADIUS.md};
 `
+
+export const PLDContentBlock = styled(ContentBlock)`
+  margin: 0.7em 0;
+`
+
 export const StretchedContent = styled.div`
   display: flex;
   justify-content: space-between;
@@ -101,7 +106,7 @@ export const GrayLink = styled(Link)`
 
   &:hover {
     background: ${(props) => props.theme.colors.blue5};
-    color: #fff;
+    color: ${(props) => props.theme.colors.primaryWhite};
     transition: 0.3s;
   }
 

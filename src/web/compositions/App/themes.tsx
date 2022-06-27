@@ -118,7 +118,7 @@ export const light = {
     green9: '#006B37FF',
     green8: '#00b55e33',
     green7: '#00B55EFF',
-    green6: '#00E878',
+    green6: 'rgba(0, 181, 94, 1)',
     green5: '#00F47EFF',
     green4: '#00B55EFF',
     green3: '#00B55E',
@@ -131,7 +131,7 @@ export const light = {
     blue6: '#0D02D7FF',
     blue5: '#0E02ECFF',
     blue4: '#3E35F0FF',
-    blue3: '#0E02ECFF', // #5E55F2FF
+    blue3: '#5E55F2', // #5E55F2FF
     blue2: '#908BF6FF',
     blue1: '#B4B1F9FF',
     blue0: '#E7E6FDFF',
@@ -160,7 +160,7 @@ export const light = {
     obRedBack: 'rgba(255, 103, 74, 0.2)',
     obRedFont: 'rgba(255, 65, 29, 1)',
     tooltip: 'rgb(214, 216, 224)',
-    greenChart: ['rgba(0, 232, 120, 0.31)', 'rgba(0, 244, 126, 0)'],
+    greenChart: ['rgba(0, 181, 92, 0.39)', 'rgba(0, 181, 94, 0)'],
     shadow: '0px 0px 8px 0px rgba(169, 169, 178, 1)',
   },
 }

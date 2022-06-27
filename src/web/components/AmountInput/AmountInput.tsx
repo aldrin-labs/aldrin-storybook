@@ -1,13 +1,12 @@
 import React from 'react'
-import { useTheme } from 'styled-components'
 
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
-import { getTokenNameByMintAddress } from '../../dexUtils/markets'
-import { useTokenInfos } from '../../dexUtils/tokenRegistry'
+import { getTokenName } from '../../dexUtils/markets'
 import { Button } from '../Button'
 import { INPUT_FORMATTERS } from '../Input'
 import { InlineText } from '../Typography'
@@ -36,7 +35,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
     usdValue,
     disabled,
   } = props
-  const theme = useTheme()
+  const tokensInfo = useTokenInfos()
   const inputSize = size || `${value}`.length || 1
 
   const maxButtonOnClick = () => {
@@ -47,10 +46,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
     onChange(`${amount / 2}`)
   }
 
-  const tokensMap = useTokenInfos()
-
-  const tokenName =
-    tokensMap.get(mint)?.symbol || getTokenNameByMintAddress(mint)
+  const tokenName = getTokenName({ address: mint, tokensInfoMap: tokensInfo })
 
   return (
     <AmountInputElement

@@ -2,7 +2,7 @@ import { Grid, Theme } from '@material-ui/core'
 import React, { useState } from 'react'
 import styled, { useTheme } from 'styled-components'
 
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { Button } from '@sb/components/Button'
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { Loading } from '@sb/components/Loading/Loading'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -347,36 +347,24 @@ export const Balances = ({
                 {!wallet.connected ? null : (
                   <>
                     {!isBaseCoinExistsInWallet ? (
-                      <BtnCustom
-                        btnWidth="100%"
-                        height="auto"
-                        fontSize=".8rem"
-                        padding=".5rem 0 .4rem 0;"
-                        borderRadius=".8rem"
-                        btnColor={theme.palette.dark.main}
-                        borderColor={theme.palette.blue.serum}
-                        backgroundColor={theme.palette.blue.serum}
-                        // hoverBackground="#3992a9"
-                        transition="all .4s ease-out"
+                      <Button
+                        $variant="primary"
+                        $fontSize="lg"
+                        $padding="sm"
+                        $width="xl"
                         onClick={() => {
                           setShowTokenNotAdded(true)
                         }}
                       >
                         Add to the wallet
-                      </BtnCustom>
+                      </Button>
                     ) : (
                       showSettle && (
-                        <BtnCustom
-                          btnWidth="100%"
-                          height="2.5rem"
-                          fontSize=".8rem"
-                          padding=".5rem 0 .4rem 0;"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.dark.main}
-                          borderColor={theme.palette.blue.serum}
-                          backgroundColor={theme.palette.blue.serum}
-                          // hoverBackground="#3992a9"
-                          transition="all .4s ease-out"
+                        <Button
+                          $variant="primary"
+                          $fontSize="lg"
+                          $padding="sm"
+                          $width="xl"
                           disabled={showLoading}
                           onClick={() => {
                             const { market, openOrders } = baseBalances
@@ -388,7 +376,7 @@ export const Balances = ({
                           ) : (
                             'settle'
                           )}
-                        </BtnCustom>
+                        </Button>
                       )
                     )}
                   </>
@@ -450,35 +438,24 @@ export const Balances = ({
                 {!wallet.connected ? null : (
                   <>
                     {!isQuoteCoinExistsInWallet ? (
-                      <BtnCustom
-                        btnWidth="100%"
-                        height="auto"
-                        fontSize=".8rem"
-                        padding=".5rem 0 .4rem 0;"
-                        borderRadius=".8rem"
-                        btnColor={theme.palette.dark.main}
-                        borderColor={theme.palette.blue.serum}
-                        backgroundColor={theme.palette.blue.serum}
-                        // hoverBackground="#3992a9"
-                        transition="all .4s ease-out"
+                      <Button
+                        $variant="primary"
+                        $fontSize="lg"
+                        $padding="sm"
+                        $width="xl"
                         onClick={() => {
                           setShowTokenNotAdded(true)
                         }}
                       >
                         Add to the wallet
-                      </BtnCustom>
+                      </Button>
                     ) : (
                       showSettle && (
-                        <BtnCustom
-                          btnWidth="100%"
-                          height="2.5rem"
-                          fontSize=".8rem"
-                          padding=".5rem 0 .4rem 0;"
-                          borderRadius=".8rem"
-                          btnColor={theme.palette.dark.main}
-                          borderColor={theme.palette.blue.serum}
-                          backgroundColor={theme.palette.blue.serum}
-                          transition="all .4s ease-out"
+                        <Button
+                          $variant="primary"
+                          $fontSize="lg"
+                          $padding="sm"
+                          $width="xl"
                           disabled={showLoading}
                           onClick={() => {
                             const { market, openOrders } = quoteBalances
@@ -490,7 +467,7 @@ export const Balances = ({
                           ) : (
                             'settle'
                           )}
-                        </BtnCustom>
+                        </Button>
                       )
                     )}
                   </>

@@ -8,14 +8,13 @@ import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { initializeFarmingV2 } from '@sb/dexUtils/farming'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
+import { getTokenName } from '../../../../dexUtils/markets'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
@@ -126,6 +125,11 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         setFarmingTransactionStatus('error')
       }
 
+      // setFarmingTransactionStatus(
+      //   result.details?.includes(SendTransactionDetails.TIMEOUT)
+      //     ? 'timeout'
+      //     : result.status
+      // )
       setFarmingTransactionStatus(result)
     } catch (e) {
       console.warn('Unable to create farming: ', e)
@@ -209,14 +213,19 @@ export const ExtendFarmingModal: React.FC<ExtendFarmingModalProps> = (
   props
 ) => {
   const [userTokens] = useUserTokenAccounts()
-  const { title = 'Extend Farming', onClose, onExtend, pool } = props
-  const tokenMap = useTokenInfos()
+  const {
+    title = 'Extend Farming',
+    onClose,
+    onExtend,
+    pool,
+    tokensInfo,
+  } = props
 
-  const baseInfo = tokenMap.get(pool.tokenA)
-  const quoteInfo = tokenMap.get(pool.tokenB)
-
-  const base = baseInfo?.symbol || getTokenNameByMintAddress(pool.tokenA)
-  const quote = quoteInfo?.symbol || getTokenNameByMintAddress(pool.tokenB)
+  const base = getTokenName({ address: pool.tokenA, tokensInfoMap: tokensInfo })
+  const quote = getTokenName({
+    address: pool.tokenB,
+    tokensInfoMap: tokensInfo,
+  })
 
   return (
     <Modal open onClose={onClose} title={`${title} for ${base}/${quote} pool`}>

@@ -22,14 +22,20 @@ import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 import { createBasket } from '@sb/dexUtils/pools/actions/createBasket'
 import { createBasketWithSwap } from '@sb/dexUtils/pools/actions/createBasketWithSwap'
 import { checkIsPoolStable } from '@sb/dexUtils/pools/checkIsPoolStable'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks/usePoolBalances'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+  sleep,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
@@ -44,11 +50,6 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import Info from '@icons/TooltipImg.svg'
 
-import {
-  formatNumbersForState,
-  formatNumberWithSpaces,
-  sleep,
-} from '../../../../../dexUtils/utils'
 import { Button } from '../../Tables/index.styles'
 import { InputWithCoins, InputWithTotal } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
@@ -76,6 +77,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     setIsRemindToStakePopupOpen,
   } = props
   const { wallet } = useWallet()
+  const tokensInfo = useTokenInfos()
   const connection = useMultiEndpointConnection()
   const theme = useTheme()
 
@@ -180,8 +182,14 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     decimals: poolTokenDecimals,
   } = getTokenDataByMint(allTokensData, selectedPool.poolTokenMint)
 
-  const baseSymbol = getTokenNameByMintAddress(selectedPool.tokenA)
-  const quoteSymbol = getTokenNameByMintAddress(selectedPool.tokenB)
+  const baseSymbol = getTokenName({
+    address: selectedPool.tokenA,
+    tokensInfoMap: tokensInfo,
+  })
+  const quoteSymbol = getTokenName({
+    address: selectedPool.tokenB,
+    tokensInfoMap: tokensInfo,
+  })
 
   // for cases with SOL token
   const isBaseTokenSOL = baseSymbol === 'SOL'
@@ -341,6 +349,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
       </RowContainer>
       <RowContainer>
         <InputWithCoins
+          data-testid="deposit-liquidity-base-token-field"
           placeholder="0"
           theme={theme}
           value={formatNumberWithSpaces(baseAmount)}
@@ -379,6 +388,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           </Row>
         </RowContainer>
         <InputWithCoins
+          data-testid="deposit-liquidity-quote-token-field"
           placeholder="0"
           theme={theme}
           value={formatNumberWithSpaces(quoteAmount)}
@@ -521,6 +531,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           )}
         </Row>
         <Button
+          data-testid="deposit-liquidity-submit-btn"
           style={{ width: '40%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident

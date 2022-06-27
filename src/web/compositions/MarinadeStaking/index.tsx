@@ -59,7 +59,7 @@ const SOL_GAP_AMOUNT = 0.0127 // to allow transaactions pass
 
 const Block: React.FC<StakingBlockProps> = (props) => {
   const {
-    getDexTokensPricesQuery: { getDexTokensPrices },
+    getDexTokensPricesQuery: { getDexTokensPrices = [] },
   } = props
   const pricesMap = toMap(getDexTokensPrices, (p) => p.symbol)
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
@@ -271,6 +271,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               <InputWrapper style={{ position: 'relative' }}>
                 {' '}
                 <AmountInput
+                  data-testid="marinade-staking-amount-from-field"
                   value={formatNumberWithSpaces(amount)}
                   onChange={setAmountFrom}
                   placeholder="0"
@@ -284,6 +285,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
             <RowContainer margin="2rem 0">
               <InputWrapper style={{ position: 'relative' }}>
                 <AmountInput
+                  data-testid="marinade-staking-receive-amount-field"
                   value={formatNumberWithSpaces(amountGet)}
                   onChange={setAmountTo}
                   placeholder="0"
@@ -299,11 +301,16 @@ const Block: React.FC<StakingBlockProps> = (props) => {
             <RowContainer>
               <ConnectWalletWrapper size="button-only">
                 {isStakeModeOn ? (
-                  <StakeButton onClick={stake} disabled={!isValid || loading}>
+                  <StakeButton
+                    data-testid="marinade-staking-submit-btn"
+                    onClick={stake}
+                    disabled={!isValid || loading}
+                  >
                     Stake
                   </StakeButton>
                 ) : (
                   <UnStakeButton
+                    data-testid="marinade-unstaking-submit-btn"
                     onClick={unstake}
                     disabled={!isValid || loading}
                   >
@@ -313,7 +320,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               </ConnectWalletWrapper>
             </RowContainer>
             <RowContainer justify="space-between">
-              <ContentBlock background="gray5" width="48%">
+              <ContentBlock width="48%">
                 <RowContainer justify="space-between">
                   {' '}
                   <StyledInlineText color="gray0" size="sm">
@@ -329,7 +336,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                 </RowContainer>
               </ContentBlock>
               {isStakeModeOn ? (
-                <ContentBlock background="gray5" width="48%">
+                <ContentBlock width="48%">
                   <Row justify="space-between">
                     {' '}
                     <InlineText size="sm">Stake fee: </InlineText>{' '}
@@ -348,7 +355,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                   </Row>
                 </ContentBlock>
               ) : (
-                <ContentBlock background="gray5" width="48%">
+                <ContentBlock width="48%">
                   <RowContainer justify="space-between">
                     <InlineText color="gray0" size="sm">
                       Unstake fee:{' '}

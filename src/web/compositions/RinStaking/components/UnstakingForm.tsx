@@ -68,6 +68,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
       <FormItemFull>
         <InputWrapper>
           <AmountInput
+            data-testid="rin-unstaking-amount-field"
             placeholder="0"
             amount={totalStaked}
             mint={mint}
@@ -84,6 +85,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
         </InputWrapper>
         <ButtonWrapper>
           <UnStakingFormButton
+            data-testid="rin-unstaking-submit-btn"
             minWidth="14rem"
             $fontSize="sm"
             $borderRadius="md"

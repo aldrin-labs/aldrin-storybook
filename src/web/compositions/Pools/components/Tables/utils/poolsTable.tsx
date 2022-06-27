@@ -12,6 +12,7 @@ import {
 } from '@sb/components/DataTable'
 import { FlexBlock } from '@sb/components/Layout'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { getNumberOfPrecisionDigitsForSymbol } from '@sb/components/TradingTable/TradingTable.utils'
 import { InlineText, Text } from '@sb/components/Typography'
 import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
 import { FarmingCalc } from '@sb/dexUtils/common/types'
@@ -168,13 +169,17 @@ export const preparePoolTableCell = (params: {
         rendered: (
           <FlexBlock alignItems="center">
             <Link
-              to={`/swap?base=${baseSymbol}&quote=${quoteSymbol}`}
+              to={`/swap?base=${baseName}&quote=${quoteName}`}
               style={{ textDecoration: 'none' }}
               onClick={(e) => e.stopPropagation()}
             >
-              <TokenIconsContainer tokenA={pool.tokenA} tokenB={pool.tokenB}>
+              <TokenIconsContainer
+                tokenMap={tokenMap}
+                tokenA={pool.tokenA}
+                tokenB={pool.tokenB}
+              >
                 {isPoolOwner && (
-                  <Text color="success" size="sm">
+                  <Text color="green3" size="sm">
                     Your pool
                   </Text>
                 )}
@@ -214,8 +219,16 @@ export const preparePoolTableCell = (params: {
               {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD, 4)}` : '-'}
             </Text>
             <Text size="sm" margin="10px 0" color="gray1">
-              {stripByAmountAndFormat(pool.tvl.tokenA)} {baseName} /{' '}
-              {stripByAmountAndFormat(pool.tvl.tokenB)} {quoteName}
+              {stripByAmountAndFormat(
+                pool.tvl.tokenA,
+                getNumberOfPrecisionDigitsForSymbol(baseName)
+              )}{' '}
+              {baseName} /{' '}
+              {stripByAmountAndFormat(
+                pool.tvl.tokenB,
+                getNumberOfPrecisionDigitsForSymbol(quoteName)
+              )}{' '}
+              {quoteName}
             </Text>
           </>
         ),
@@ -278,8 +291,18 @@ export const preparePoolTableCell = (params: {
 }
 
 export const mergeColumns = (columns: DataHeadColumn[]) => [
-  { key: 'pool', title: 'Pool', sortable: true },
-  { key: 'tvl', title: 'Total Value Locked', sortable: true },
+  {
+    key: 'pool',
+    title: 'Pool',
+    sortable: true,
+    getWidth: (width: number) => Math.round(width * 1.5),
+  },
+  {
+    key: 'tvl',
+    title: 'Total Value Locked',
+    sortable: true,
+    getWidth: (width: number) => Math.round(width * 1.5),
+  },
   ...columns,
   {
     key: 'apr',
@@ -292,5 +315,6 @@ export const mergeColumns = (columns: DataHeadColumn[]) => [
     title: 'Farming',
     sortable: true,
     hint: 'You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit into the pool), receiving a reward in tokens allocated by the creator of the pool. The amount of reward specified in the pool info is the amount you will receive daily for each $1,000 deposited into the pool.',
+    getWidth: (w: number) => Math.round(w * 1.2),
   },
 ]

@@ -1,5 +1,5 @@
-import withTheme from '@material-ui/core/styles/withTheme'
 import { FONT_SIZES } from '@variables/variables'
+import tokensList from 'aldrin-registry/src/tokens.json'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
@@ -15,7 +15,6 @@ import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
-  ALL_TOKENS_MINTS,
   getTokenMintAddressByName,
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
@@ -304,7 +303,7 @@ const SwapPage = ({
   const mints = [
     ...new Set([
       ...pools.map((i) => [i.tokenA, i.tokenB]).flat(),
-      ...ALL_TOKENS_MINTS.map(({ address }) => address.toString()),
+      ...tokensList.map(({ address }) => address.toString()),
     ]),
   ]
 
@@ -346,9 +345,10 @@ const SwapPage = ({
   return (
     <SwapPageLayout>
       <SwapPageContainer direction="column" height="100%" wrap="nowrap">
-        <SwapContentContainer direction="column">
+        <SwapContentContainer data-testid="swap-container" direction="column">
           <RowContainer justify="flex-start" margin="0 0 2rem 0">
             <SwapSearch
+              data-testid="swap-search-field"
               tokens={mints.map((mint) => ({ mint }))}
               onSelect={(args) => {
                 const { amountFrom, tokenFrom, tokenTo } = args
@@ -365,6 +365,7 @@ const SwapPage = ({
               <Row>
                 <ValueButton>
                   <ReloadTimer
+                    data-testid="swap-reload-data-timer"
                     duration={15}
                     initialRemainingTime={15}
                     callback={refreshAll}
@@ -374,7 +375,10 @@ const SwapPage = ({
                   />
                 </ValueButton>
                 {baseTokenMintAddress && quoteTokenMintAddress && (
-                  <ValueButton onClick={() => openTokensAddressesPopup(true)}>
+                  <ValueButton
+                    data-testid="swap-open-tokens-info-tooltip"
+                    onClick={() => openTokensAddressesPopup(true)}
+                  >
                     i
                   </ValueButton>
                 )}
@@ -383,6 +387,7 @@ const SwapPage = ({
                 <Text padding="0 0.8rem 0 0">Slippage Tolerance:</Text>
                 <Row style={{ position: 'relative' }}>
                   <ValueInput
+                    data-testid="slippage-tolerance-field"
                     onChange={(e) => {
                       if (
                         numberWithOneDotRegexp.test(e.target.value) &&
@@ -413,6 +418,7 @@ const SwapPage = ({
                   </div>
                 </Row>
                 <ValueButton
+                  data-testid="decreace-slippage-tolerance"
                   onClick={() => {
                     const newSlippage = +(+slippage - SLIPPAGE_STEP).toFixed(2)
 
@@ -424,6 +430,7 @@ const SwapPage = ({
                   -
                 </ValueButton>
                 <ValueButton
+                  data-testid="increace-slippage-tolerance"
                   onClick={() => {
                     const newSlippage = +(+slippage + SLIPPAGE_STEP).toFixed(2)
 
@@ -468,6 +475,7 @@ const SwapPage = ({
                     appendComponent={
                       <Row>
                         <SetAmountButton
+                          data-testid="swap-half-btn"
                           onClick={halfButtonOnClick}
                           type="button"
                           $variant="secondary"
@@ -476,6 +484,7 @@ const SwapPage = ({
                           Half
                         </SetAmountButton>
                         <SetAmountButton
+                          data-testid="swap-max-btn"
                           onClick={maxButtonOnClick}
                           type="button"
                           $variant="secondary"
@@ -488,6 +497,7 @@ const SwapPage = ({
                 </Row>
                 <Row width="calc(35% - 0.2rem)">
                   <TokenSelector
+                    data-testid="swap-token-selector"
                     mint={baseTokenMintAddress}
                     roundSides={['top-right']}
                     onClick={() => {
@@ -808,6 +818,7 @@ const SwapPage = ({
         </SwapContentContainer>
 
         <SelectCoinPopup
+          data-testid="swap-select-token-popup"
           theme={theme}
           mints={mints}
           allTokensData={allTokensData}
@@ -862,7 +873,6 @@ const SwapPage = ({
 }
 
 export default compose(
-  withTheme(),
   withPublicKey,
   withRegionCheck,
   queryRendererHoc({

@@ -196,6 +196,7 @@ const MarketStats: React.FC<IProps> = (props) => {
           <PanelCardTitle>24h change</PanelCardTitle>
           <span style={{ display: 'flex', justifyContent: 'space-between' }}>
             <PanelCardValue
+              data-testid="market-stats-24h-change"
               style={{
                 color:
                   +priceChangePercentage > 0
@@ -206,6 +207,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               {formatNumberWithSpaces(strippedLastPriceDiff)}
             </PanelCardValue>
             <PanelCardSubValue
+              data-testid="market-stats-24h-change-percentage"
               style={{
                 color:
                   +priceChangePercentage > 0
@@ -224,20 +226,20 @@ const MarketStats: React.FC<IProps> = (props) => {
 
         <PanelCard marketType={marketType}>
           <PanelCardTitle>24h high</PanelCardTitle>
-          <PanelCardValue>
+          <PanelCardValue data-testid="market-stats-24h-high">
             {formatNumberWithSpaces(stripDigitPlaces(maxPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
 
         <PanelCard marketType={marketType}>
           <PanelCardTitle>24h low</PanelCardTitle>
-          <PanelCardValue>
+          <PanelCardValue data-testid="market-stats-24h-low">
             {formatNumberWithSpaces(stripDigitPlaces(minPrice, pricePrecision))}
           </PanelCardValue>
         </PanelCard>
         <PanelCard marketType={marketType}>
           <PanelCardTitle>24hr volume</PanelCardTitle>
-          <PanelCardValue>
+          <PanelCardValue data-testid="market-stats-24h-volume">
             {formatNumberWithSpaces(stripDigitPlaces(volume, 2))} {quote}
           </PanelCardValue>
         </PanelCard>
@@ -252,7 +254,7 @@ const MarketStats: React.FC<IProps> = (props) => {
             </PanelCard> */}
             <PanelCard marketType={marketType}>
               <PanelCardTitle>Marketcap</PanelCardTitle>
-              <PanelCardValue>
+              <PanelCardValue data-testid="market-stats-marketcap">
                 ${formatNumberWithSpaces(stripDigitPlaces(marketcap, 2))}
               </PanelCardValue>
             </PanelCard>

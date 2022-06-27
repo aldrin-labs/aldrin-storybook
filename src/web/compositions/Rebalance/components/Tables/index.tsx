@@ -105,8 +105,7 @@ export const TokenSymbolColumn = ({ symbol }: { symbol: string }) => (
     <Row justify="flex-start">
       <TokenIcon
         mint={getTokenMintAddressByName(symbol)}
-        width="2rem"
-        height="2rem"
+        size={32}
         margin="0 1rem 0 0"
       />
       <Text
@@ -369,7 +368,7 @@ export const TableMainRow = ({
           sliderHeightAfter="2rem"
           borderRadius="3rem"
           borderRadiusAfter="3rem"
-          thumbBackground={el.disabled ? '#93A0B2' : '#0E02EC'}
+          thumbBackground={el.disabled ? '#93A0B2' : '#5E55F2'}
           borderThumb="2px solid #f2fbfb"
           trackAfterBackground={theme.colors.gray5}
           trackBeforeBackground={

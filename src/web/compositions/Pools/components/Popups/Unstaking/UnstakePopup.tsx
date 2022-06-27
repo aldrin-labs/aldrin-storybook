@@ -130,6 +130,7 @@ const Popup: React.FC<UnstakePopupProps> = (props) => {
         >
           <div style={{ width: '100%', cursor: 'help' }}>
             <Button
+              data-testid="unstake-lp-tokens-submit-btn"
               style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
               disabled={isUnstakeDisabled}
               isUserConfident

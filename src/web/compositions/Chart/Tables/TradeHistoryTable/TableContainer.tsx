@@ -72,7 +72,6 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    console.log('trade history inside didMount')
     this.subscribe()
   }
 
@@ -180,8 +179,6 @@ class TableContainer extends Component<IProps, IState> {
       sizeDigits,
     } = this.props
 
-    console.log('trade history inside render')
-
     const { data = [], numbersAfterDecimalForPrice } = this.state
     const amountForBackground =
       data.reduce((prev, curr) => prev + +curr.size, 0) / data.length
@@ -198,6 +195,7 @@ class TableContainer extends Component<IProps, IState> {
       <>
         <ChartCardHeader>Trade history</ChartCardHeader>
         <TradeHistoryTable
+          data-testid="trade-history"
           data={formattedData}
           numbersAfterDecimalForPrice={numbersAfterDecimalForPrice}
           updateTerminalPriceFromOrderbook={updateTerminalPriceFromOrderbook}

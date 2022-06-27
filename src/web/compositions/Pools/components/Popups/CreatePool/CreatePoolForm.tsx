@@ -35,6 +35,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import {
   SendTransactionStatus,
   buildCreatePoolTransactions,
+  SendTransactionDetails,
 } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
@@ -292,7 +293,14 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         })
         console.log('createAccountsTxId: ', createAccountsTxId)
         if (createAccountsTxId.status !== SendTransactionStatus.CONFIRMED) {
-          throw new Error('createAccountsTxId failed')
+          setTransactionError(
+            createAccountsTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+              ? POOL_ERRORS.ACCOUNTS_CREATION_TIMEOUT
+              : POOL_ERRORS.ACCOUNTS_CREATION_FAILED,
+            createAccountsTxId.status,
+            createAccountsTxId.transactionId
+          )
+          return
         }
 
         setProcessingStep(2)
@@ -302,9 +310,16 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (setAuthoritiesTxId.status !== SendTransactionStatus.CONFIRMED) {
-          throw new Error('setAuthoritiesTxId failed')
+          setTransactionError(
+            setAuthoritiesTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+              ? POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT
+              : POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT,
+            setAuthoritiesTxId.status,
+            setAuthoritiesTxId.transactionId
+          )
+          return
         }
-        console.log('setAuthoritiesTxId: ', setAuthoritiesTxId)
+        console.log('setAuthoritiesTxId: ', setAuthoritiesTxId.status)
 
         console.log('Initialize pool...')
         setProcessingStep(3)
@@ -313,9 +328,16 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (initPoolTxId.status !== SendTransactionStatus.CONFIRMED) {
-          throw new Error('initPoolTxId failed')
+          setTransactionError(
+            initPoolTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+              ? POOL_ERRORS.POOL_CREATION_TIMEOUT
+              : POOL_ERRORS.POOL_CREATION_FAILED,
+            initPoolTxId.status,
+            initPoolTxId.transactionId
+          )
+          return
         }
-        console.log('initPoolTxId: ', initPoolTxId)
+        console.log('initPoolTxId: ', initPoolTxId.status)
 
         console.log('First deposit...')
         setProcessingStep(4)
@@ -324,10 +346,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
           connection,
         })
         if (firstDepositTxId.status !== SendTransactionStatus.CONFIRMED) {
-          throw new Error('firstDepositTxId failed')
+          setTransactionError(
+            firstDepositTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+              ? POOL_ERRORS.DEPOSIT_TIMEOUT
+              : POOL_ERRORS.DEPOSIT_FAILED,
+            firstDepositTxId.status,
+            firstDepositTxId.transactionId
+          )
+          return
         }
 
-        console.log('firstDepositTxId: ', firstDepositTxId)
+        console.log('firstDepositTxId: ', firstDepositTxId.status)
 
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
@@ -337,10 +366,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             connection,
           })
           if (farmingTxId.status !== SendTransactionStatus.CONFIRMED) {
-            throw new Error('farmingTxId failed')
+            setTransactionError(
+              farmingTxId.details?.includes(SendTransactionDetails.TIMEOUT)
+                ? POOL_ERRORS.FARMING_CREATION_TIMEOUT
+                : POOL_ERRORS.FARMING_CREATION_FAILED,
+              farmingTxId.status,
+              farmingTxId.transactionId
+            )
+            return
           }
           await sleep(1000)
-          console.log('farmingTxId: ', farmingTxId)
+          console.log('farmingTxId: ', farmingTxId.status)
         }
 
         setProcessingStep(6)
@@ -560,6 +596,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <CoinSelectors>
                   <CoinWrap>
                     <TokenSelectorField
+                      data-testid="create-pool-base-token-field"
                       tokens={tokens}
                       label="Select Base Token"
                       name="baseToken"
@@ -568,6 +605,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   <Slash>/</Slash>
                   <CoinWrap>
                     <TokenSelectorField
+                      data-testid="create-pool-quote-token-field"
                       tokens={tokens}
                       label="Select Quote Token"
                       name="quoteToken"
@@ -577,20 +615,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 {form.errors.baseToken && (
                   <ErrorText color="red3">{form.errors.baseToken}</ErrorText>
                 )}
-                {/* <CheckboxWrap>
-                  <CheckboxField
-                    label="Use Stable Curve for this pool. ATTENTION, ADVANCED USERS ONLY."
-                    name="stableCurve"
-                    color="primaryWhite"
-                  />
-
-                  <DarkTooltip title={STABLE_POOLS_TOOLTIP}>
-                    <InlineText cursor="help" color="success" size="sm">
-                      What is stable curve?
-                    </InlineText>
-                  </DarkTooltip>
-                </CheckboxWrap> */}
-
                 <GroupLabel label="Do you want to lock your initial liquidity for a set period of time?" />
                 <CheckboxWrap>
                   <RadioGroupContainer>
@@ -601,6 +625,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   </RadioGroupContainer>
                   <div>
                     <InputField
+                      data-testid="create-pool-lock-period-field"
                       placeholder="0"
                       borderRadius="lg"
                       variant="outline"
@@ -669,6 +694,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   </FlexBlock>
                   <NumberInputContainer>
                     <TokenAmountInputField
+                      data-testid="create-pool-price-field"
                       disabled={values.stableCurve}
                       name="price"
                       mint={form.values.quoteToken.mint}
@@ -705,6 +731,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <GroupLabel label="Add Initial Liquidity" />
                 <Centered>
                   <TokenAmountInputField
+                    data-testid="create-pool-base-token-amount-field"
                     name="firstDeposit.baseTokenAmount"
                     value={formatNumberWithSpaces(
                       form.values.firstDeposit.baseTokenAmount
@@ -731,6 +758,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 </Centered>
                 <Centered>
                   <TokenAmountInputField
+                    data-testid="create-pool-quote-token-amount-field"
                     name="firstDeposit.quoteTokenAmount"
                     value={formatNumberWithSpaces(
                       form.values.firstDeposit.quoteTokenAmount
@@ -805,12 +833,17 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
               )}
               <ButtonContainer>
                 {isLastStep ? (
-                  <Button $padding="lg" type="submit">
+                  <Button
+                    data-testid="create-pool-submit-btn"
+                    $padding="lg"
+                    type="submit"
+                  >
                     Create Pool
                   </Button>
                 ) : (
                   <ConnectWalletWrapper size="button-only">
                     <Button
+                      data-testid="create-pool-next-step-btn"
                       $padding="lg"
                       type="button"
                       disabled={!form.isValid}

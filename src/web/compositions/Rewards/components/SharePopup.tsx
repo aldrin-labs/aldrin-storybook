@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CardText, Card } from '@sb/compositions/Rewards/index'
+import { CardText } from '@sb/compositions/Rewards'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import styled from 'styled-components'
 import { compose } from 'recompose'
@@ -15,14 +15,10 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import SvgIcon from '@sb/components/SvgIcon'
 import blackTwitter from '@icons/blackTwitter.svg'
 
-import connectDefiCefi from '@icons/conectDefiCefi.gif'
 import DecefiTemplate1 from '@icons/DecefiTemplate1.png'
 import { Paper } from '@material-ui/core'
-import farmDistrub from '@icons/farmDistrub.png'
-import speedGif from '@icons/speedGif.gif'
 import DecefiTemplate4 from '@icons/DecefiTemplate4.png'
 import DecefiTemplate3 from '@icons/DecefiTemplate3.png'
-import Solana from '@icons/Solana.gif'
 import DecefiTemplate2 from '@icons/DecefiTemplate2.png'
 
 const SharePop = styled.div`
@@ -60,13 +56,8 @@ const links = (dcfiEarnedForTwitter: number) => ({
   // ['pic.twitter.com/lFmV3DbndY']: `Here%20are%20some%20real%20numbers%20about%20%40projectserum%20trading%20on%20%40solana%20via%20%40CCAI_Official%20interface.%0AFast%20DEX%20trading%20is%20here%20already%2C%20check%20it%20out%20at%20https%3A%2F%2Fdex.cryptocurrencies.ai%2F%0D%0A%24DCFI%20%24SRM%20%24SOL%20%24UNI%20%24ETH%20%24DOT%20%24BNB%20%24LINK%20%24ADA%0Apic.twitter.com/lFmV3DbndY`,
 })
 
-const getHrefFromGifLink = (
-  gifLink: string,
-  dcfiEarnedForTwitter: number
-): string => links(dcfiEarnedForTwitter)[gifLink]
-
 export const SharePopup = (props) => {
-  const { theme, isSharePopupOpen, dcfiEarnedForTwitter, publicKey, wallet } = props
+  const { theme, isSharePopupOpen, publicKey, wallet } = props
   const [choosenPic, setChoosenPic] = useState('pic.twitter.com/upH1Fp3hkn')
   return (
     <DialogWrapper
@@ -109,7 +100,7 @@ export const SharePopup = (props) => {
               setChoosenPic('pic.twitter.com/upH1Fp3hkn')
             }}
           >
-            <Gif src={DecefiTemplate1}></Gif>
+            <Gif src={DecefiTemplate1} />
           </GifContainer>
           <GifContainer
             theme={theme}
@@ -118,7 +109,7 @@ export const SharePopup = (props) => {
               setChoosenPic('pic.twitter.com/DRi5iu3uTb')
             }}
           >
-            <Gif src={DecefiTemplate2}></Gif>
+            <Gif src={DecefiTemplate2} />
           </GifContainer>
           <RowContainer>
             <GifContainer
@@ -128,7 +119,7 @@ export const SharePopup = (props) => {
                 setChoosenPic('pic.twitter.com/3IyK2rW95D')
               }}
             >
-              <Gif src={DecefiTemplate3}></Gif>
+              <Gif src={DecefiTemplate3} />
             </GifContainer>
             <GifContainer
               theme={theme}
@@ -137,29 +128,11 @@ export const SharePopup = (props) => {
                 setChoosenPic('pic.twitter.com/qGH8wjbEXb')
               }}
             >
-              <Gif src={DecefiTemplate4}></Gif>
+              <Gif src={DecefiTemplate4} />
             </GifContainer>
           </RowContainer>
         </RowContainer>{' '}
-        {/* <GifContainer
-            theme={theme}
-            isChoosen={choosenPic === 'pic.twitter.com/lDKbpqSqk9'}
-            onClick={() => {
-              setChoosenPic('pic.twitter.com/lDKbpqSqk9')
-            }}
-          >
-            {' '}
-            <Gif src={Subtract}></Gif>
-          </GifContainer>
-          <GifContainer
-            theme={theme}
-            isChoosen={choosenPic === 'pic.twitter.com/1eTKx8xVv6'}
-            onClick={() => {
-              setChoosenPic('pic.twitter.com/1eTKx8xVv6')
-            }}
-          >
-            <Gif src={TwitterPost}></Gif>
-          </GifContainer> */}
+
         <RowContainer style={{ margin: '2rem auto' }}>
           <BtnCustom
             theme={theme}
