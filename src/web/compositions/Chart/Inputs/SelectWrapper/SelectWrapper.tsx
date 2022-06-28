@@ -1,4 +1,5 @@
 import { Grid, InputAdornment } from '@material-ui/core'
+import delistedMarketsList from 'aldrin-registry/src/delisted_markets.json'
 import dayjs from 'dayjs'
 import { sortBy, partition } from 'lodash-es'
 import React, { useState, useEffect, useCallback } from 'react'
@@ -37,9 +38,7 @@ import {
   IPropsSelectPairListComponent,
   SelectTabType,
 } from './SelectWrapper.types'
-import {
-  combineSelectWrapperData,
-} from './SelectWrapper.utils'
+import { combineSelectWrapperData } from './SelectWrapper.utils'
 import { StyledGrid, StyledInput, TableFooter } from './SelectWrapperStyles'
 import { TableHeader } from './TableHeader'
 import { TableInner } from './TableInner'
@@ -333,6 +332,11 @@ const SelectWrapper = (props: IProps) => {
     [favouriteMarkets]
   )
 
+  const delistedMarkets = new Map<string, any>()
+  delistedMarketsList.forEach((el) =>
+    delistedMarkets.set(el.name.toUpperCase(), el)
+  )
+
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!`${e.target.value}`.match(/[a-zA-Z1-9]/) && e.target.value !== '') {
       return
@@ -344,7 +348,10 @@ const SelectWrapper = (props: IProps) => {
   const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
   const filtredMarketsByExchange =
     getSerumMarketDataQuery.getSerumMarketData.filter(
-      (el) => el.symbol && !Array.isArray(el.symbol.match(fiatRegexp))
+      (el) =>
+        el.symbol &&
+        !Array.isArray(el.symbol.match(fiatRegexp)) &&
+        !delistedMarkets.has(el.symbol.replace('_', '/'))
     )
 
   return (
