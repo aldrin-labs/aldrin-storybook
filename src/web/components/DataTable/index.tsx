@@ -1,29 +1,27 @@
-import { COLORS } from '@variables/variables'
 import React, { useMemo } from 'react'
 import { Column, Table } from 'react-virtualized'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 
 import 'react-virtualized/styles.css'
+import { DefaultTheme, useTheme } from 'styled-components'
+
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
+import { InlineText } from '../Typography'
 import { Hint, SortButton } from './components'
 import { NoDataBlock } from './styles'
-import {
-  DataTableProps,
-  DataTableState,
-  SORT_ORDER,
-} from './types'
+import { DataTableProps, DataTableState, SORT_ORDER } from './types'
 import { nextSortOrder, sortData } from './utils'
 
 export * from './types'
 
-const rowStyle = {
+const rowStyle = (theme: DefaultTheme) => ({
   outline: 'none',
   cursor: 'pointer',
   fontSize: '16px',
-  borderBottom: `1px solid ${COLORS.tableBorderColor}`,
+  borderBottom: `1px solid ${theme.colors.border}`,
   overflow: 'initial',
-}
+})
 
 const headerStyle = {
   textTransform: 'capitalize',
@@ -31,6 +29,7 @@ const headerStyle = {
   fontSize: '0.8em',
   textAlign: 'left',
   display: 'flex',
+  alignItems: 'center',
 }
 
 const MOBILE_WIDTH = 800
@@ -52,6 +51,9 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
     () => sortData(data, state.sort.field, state.sort.direction),
     [state.sort, data]
   )
+
+  const theme = useTheme()
+  const preparedStyle = rowStyle(theme)
 
   return (
     <AutoSizer>
@@ -79,7 +81,7 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
           rowCount={sortedData.length}
           noRowsRenderer={() => <>{noDataText}</>}
           onRowClick={onRowClick}
-          rowStyle={rowStyle}
+          rowStyle={preparedStyle}
           headerHeight={40}
           rowHeight={100}
           rowGetter={({ index }) => sortedData[index]}
@@ -93,7 +95,7 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
                 dataKey={item.key}
                 headerRenderer={({ label, columnData }) => (
                   <>
-                    {label}
+                    <InlineText>{label}</InlineText>
                     {columnData.hint && <Hint text={columnData.hint} />}
                     <SortButton
                       sortOrder={state.sort.direction}

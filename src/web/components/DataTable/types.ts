@@ -34,9 +34,7 @@ export interface DataTableProps<E> {
   }
   name: string
   expandableContent?: (row: DataCellValues<E>) => ReactNode
-  onRowClick?: (
-    rowData: DataCellValues<E>
-  ) => void
+  onRowClick?: (params: { rowData: DataCellValues<E> }) => void
   noDataText?: ReactNode
   generateTestId: (a?: string) => string
 }
