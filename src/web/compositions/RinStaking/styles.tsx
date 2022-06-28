@@ -378,7 +378,7 @@ export const FormsWrap = styled.div`
 export const StakingContent = styled(Content)`
   width: auto;
   margin: 0 15px;
-  background: ${COLORS.newBlack};
+  background: ${(props) => props.theme.colors.gray6};
   border-radius: 2rem;
   @media (min-width: ${BREAKPOINTS.md}) {
     width: 50%;

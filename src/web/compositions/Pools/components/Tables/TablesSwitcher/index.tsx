@@ -18,6 +18,7 @@ import {
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
 import { addHarvestV2 } from '@sb/dexUtils/farming/actions/addHarvest'
+import { claimEligibleHarvest } from '@sb/dexUtils/farming/actions/claimEligibleHarvest'
 import { createNewHarvestPeriod } from '@sb/dexUtils/farming/actions/newHarvestPeriod'
 import { useFarmInfo } from '@sb/dexUtils/farming/useFarmInfo'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
@@ -211,7 +212,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           }
           await initializeFarmingV2({
             stakeMint: new PublicKey(
-              '7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm'
+              'B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh'
             ),
             wallet,
             connection,
@@ -230,9 +231,9 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           await startFarmingV2({
             wallet,
             connection,
-            amount: 10000,
+            amount: 100000,
             farm:
-              farms?.get('7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm') || {},
+              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
             userTokens: userTokensData,
           })
         }}
@@ -249,12 +250,12 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           await addHarvestV2({
             wallet,
             connection,
-            amount: 10000,
+            amount: 50000,
             farm:
-              farms?.get('7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm') || {},
+              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
             userTokens: userTokensData,
             harvestMint: new PublicKey(
-              '7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm'
+              'B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh'
             ),
           })
         }}
@@ -270,19 +271,36 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           await createNewHarvestPeriod({
             wallet,
             connection,
-            amount: 1000,
+            amount: 10000,
             farm:
-              farms?.get('7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm') || {},
+              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
             userTokens: userTokensData,
             harvestMint: new PublicKey(
-              '7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm'
+              'B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh'
             ),
             startsAt: 0,
-            periodLengthInSlots: 10,
+            periodLengthInSlots: 3,
           })
         }}
       >
         Add new harvest period
+      </button>
+      <button
+        type="button"
+        onClick={async () => {
+          if (!farms) {
+            throw new Error('No farms')
+          }
+          await claimEligibleHarvest({
+            wallet,
+            connection,
+            farm:
+              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
+            userTokens: userTokensData,
+          })
+        }}
+      >
+        Claim rewards
       </button>
       <button
         type="button"
@@ -296,7 +314,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             connection,
             amount: 10000,
             farm:
-              farms?.get('7bzpxU9RS9DNBgvRDGGYwoPcHjAYU8AyGjKB4eDQQuHm') || {},
+              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
             userTokens: userTokensData,
           })
         }}

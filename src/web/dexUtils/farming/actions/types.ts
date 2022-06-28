@@ -11,6 +11,12 @@ export interface InitializeFarmingParams {
   stakeMint: PublicKey
 }
 
+export interface ClaimEligibleHarvestParams {
+  wallet: WalletAdapter
+  connection: AldrinConnection
+  farm: Farm
+  userTokens: TokenInfo[]
+}
 export interface StartFarmingV2Params {
   wallet: WalletAdapter
   connection: AldrinConnection

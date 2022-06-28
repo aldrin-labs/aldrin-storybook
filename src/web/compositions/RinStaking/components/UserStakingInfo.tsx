@@ -405,7 +405,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     <>
       <Row style={{ height: 'auto' }}>
         <Cell colMd={12} colXl={6} col={12}>
-          <Block>
+          <Block inner>
             <BlockContentStretched>
               <FlexBlock justifyContent="space-between" alignItems="center">
                 <InlineText size="sm">Your stake</InlineText>{' '}
@@ -435,7 +435,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           </Block>
         </Cell>
         <Cell colMd={12} colXl={6} col={12}>
-          <Block>
+          <Block inner>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
                 <InlineText size="sm">Your rewards</InlineText>
