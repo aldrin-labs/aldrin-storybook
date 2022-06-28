@@ -1,9 +1,8 @@
-import { orderError } from '@core/utils/errorsConfig'
 import { isEqual } from 'lodash-es'
 import { useSnackbar } from 'notistack'
 import React from 'react'
+import { orderError } from '@core/utils/errorsConfig'
 import { DefaultView } from './DefaultView'
-
 
 const OrderStatusWrapper = (props) => {
   const { enqueueSnackbar } = useSnackbar()
@@ -73,7 +72,6 @@ const OrderStatusWrapper = (props) => {
     }
   }
 
-  console.log('status wrapper rerender', props)
   return (
     <DefaultView
       showOrderResult={showOrderResult}

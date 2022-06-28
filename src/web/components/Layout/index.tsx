@@ -159,5 +159,5 @@ export const FlexBlock = styled(Flex)<FlexBlockProps>`
   justify-content: ${(props: FlexBlockProps) =>
     props.justifyContent || 'normal'};
   align-items: ${(props: FlexBlockProps) => props.alignItems || 'normal'};
-  ${(props: FlexBlockProps) => (props.flex ? `flex: ${props.flex}` : '')};
+  ${(props: FlexBlockProps) => (props.flex ? `flex: ${props.flex};` : '')}
 `

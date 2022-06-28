@@ -18,19 +18,19 @@ export const ClaimTimeTooltip: React.FC<ClaimTimeTooltipProps> = (props) => {
     <div>
       <TooltipText>
         Rewards are updated once every{' '}
-        <InlineText color="success"> 60-80 minutes.</InlineText>{' '}
+        <InlineText color="green3"> 60-80 minutes.</InlineText>{' '}
       </TooltipText>
       {hasVesting && (
         <>
           <TooltipText>The pool creator set up the vesting.</TooltipText>
           <TooltipText>
             This means that you will receive&nbsp;
-            <InlineText color="success">33.33%</InlineText> of your reward&nbsp;
-            <InlineText color="success">every 24 hours,</InlineText>&nbsp; while
+            <InlineText color="green3">33.33%</InlineText> of your reward&nbsp;
+            <InlineText color="green3">every 24 hours,</InlineText>&nbsp; while
             the remaining &nbsp;
-            <InlineText color="success">66.67%</InlineText> of your reward will
+            <InlineText color="green3">66.67%</InlineText> of your reward will
             come&nbsp;
-            <InlineText color="success">
+            <InlineText color="green3">
               every{' '}
               {!!estimate.days && (
                 <>

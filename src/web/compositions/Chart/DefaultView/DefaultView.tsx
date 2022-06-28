@@ -46,8 +46,8 @@ const TerminalContainer = ({
     container
     theme={theme}
     xs={isDefaultTerminalViewMode ? 5 : 12}
-    isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-    terminalViewMode={terminalViewMode}
+    $isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+    $terminalViewMode={terminalViewMode}
   >
     {children}
   </TablesBlockWrapper>
@@ -124,23 +124,23 @@ export const DefaultViewComponent = (
         direction="column"
       >
         <ChartAndOrderbookContainer
-          terminalViewMode={terminalViewMode}
+          $terminalViewMode={terminalViewMode}
           item
           container
           xs={12}
         >
           <TopChartsContainer
-            isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+            $isDefaultTerminalViewMode={isDefaultTerminalViewMode}
             theme={theme}
-            terminalViewMode={terminalViewMode}
+            $terminalViewMode={terminalViewMode}
           >
             <ChartsContainer
-              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-              terminalViewMode={terminalViewMode}
-              hideDepthChart={hideDepthChart}
-              hideOrderbook={hideOrderbook}
+              $isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              $terminalViewMode={terminalViewMode}
+              $hideDepthChart={hideDepthChart}
+              $hideOrderbook={hideOrderbook}
+              $hideTradeHistory={hideTradeHistory}
               theme={theme}
-              hideTradeHistory={hideTradeHistory}
             >
               <SingleChartWithButtons
                 currencyPair={currencyPair}
@@ -151,19 +151,20 @@ export const DefaultViewComponent = (
               />
             </ChartsContainer>
             <TradingTerminalContainer
-              isDefaultTerminalViewMode={isDefaultTerminalViewMode}
-              hideDepthChart={hideDepthChart}
-              hideOrderbook={hideOrderbook}
-              hideTradeHistory={hideTradeHistory}
-              terminalViewMode={terminalViewMode}
+              theme={theme}
+              $isDefaultTerminalViewMode={isDefaultTerminalViewMode}
+              $hideDepthChart={hideDepthChart}
+              $hideOrderbook={hideOrderbook}
+              $hideTradeHistory={hideTradeHistory}
+              $terminalViewMode={terminalViewMode}
             >
               <Grid item container style={{ height: '100%' }}>
                 <OrderBookGrid
                   xs
                   item
                   container
-                  hideTradeHistory={hideTradeHistory}
-                  hideOrderbook={hideOrderbook}
+                  $hideTradeHistory={hideTradeHistory}
+                  $hideOrderbook={hideOrderbook}
                 >
                   {!hideOrderbook && (
                     <OrderbookAndDepthChart
@@ -193,8 +194,8 @@ export const DefaultViewComponent = (
                   )}
                 </OrderBookGrid>
                 <TradeHistoryGrid
-                  hideDepthChart={hideDepthChart}
-                  hideOrderbook={hideOrderbook}
+                  $hideDepthChart={hideDepthChart}
+                  $hideOrderbook={hideOrderbook}
                   item
                   xs={5}
                 >

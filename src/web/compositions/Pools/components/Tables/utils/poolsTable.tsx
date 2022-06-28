@@ -179,7 +179,7 @@ export const preparePoolTableCell = (params: {
                 tokenB={pool.tokenB}
               >
                 {isPoolOwner && (
-                  <Text color="success" size="sm">
+                  <Text color="green3" size="sm">
                     Your pool
                   </Text>
                 )}
@@ -291,8 +291,18 @@ export const preparePoolTableCell = (params: {
 }
 
 export const mergeColumns = (columns: DataHeadColumn[]) => [
-  { key: 'pool', title: 'Pool', sortable: true },
-  { key: 'tvl', title: 'Total Value Locked', sortable: true },
+  {
+    key: 'pool',
+    title: 'Pool',
+    sortable: true,
+    getWidth: (width: number) => Math.round(width * 1.5),
+  },
+  {
+    key: 'tvl',
+    title: 'Total Value Locked',
+    sortable: true,
+    getWidth: (width: number) => Math.round(width * 1.5),
+  },
   ...columns,
   {
     key: 'apr',
@@ -305,5 +315,6 @@ export const mergeColumns = (columns: DataHeadColumn[]) => [
     title: 'Farming',
     sortable: true,
     hint: 'You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit into the pool), receiving a reward in tokens allocated by the creator of the pool. The amount of reward specified in the pool info is the amount you will receive daily for each $1,000 deposited into the pool.',
+    getWidth: (w: number) => Math.round(w * 1.2),
   },
 ]

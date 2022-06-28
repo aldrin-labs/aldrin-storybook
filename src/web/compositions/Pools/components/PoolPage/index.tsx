@@ -182,10 +182,13 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
         <TokenInfos>
           <TokenInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenA} />
               <InlineText color="green4">1</InlineText>
-              <InlineText>{base}&nbsp;=&nbsp;</InlineText>
-              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
+              <InlineText>
+                {base}
+                {` = `}
+              </InlineText>
+              <TokenIcon mint={pool.tokenB} />
               <InlineText color="green4">
                 {stripByAmountAndFormat(basePrice, 4)}
               </InlineText>
@@ -194,10 +197,13 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenInfo>
           <TokenInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenB} />
               <InlineText color="green4">1</InlineText>
-              <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
-              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
+              <InlineText>
+                {quote}
+                {` = `}
+              </InlineText>
+              <TokenIcon mint={pool.tokenA} />
               <InlineText color="green4">
                 {stripByAmountAndFormat(quotePrice, 4)}
               </InlineText>
@@ -206,7 +212,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenInfo>
           <TokenGlobalInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenA} />
               <TokenInfoTextWrap>
                 <TokenInfoText weight={700}>
                   {base}
@@ -226,7 +232,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenGlobalInfo>
           <TokenGlobalInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenB} />
               <TokenInfoTextWrap>
                 <TokenInfoText weight={700}>
                   {quote}

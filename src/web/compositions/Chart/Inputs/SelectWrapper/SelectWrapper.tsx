@@ -1,12 +1,18 @@
 import { Grid, InputAdornment } from '@material-ui/core'
 import dayjs from 'dayjs'
-import { sortBy as sort } from 'lodash-es'
-import React, { useState } from 'react'
+import { sortBy, partition } from 'lodash-es'
+import React, { useState, useEffect, useCallback } from 'react'
 import { withRouter } from 'react-router'
+import { useHistory } from 'react-router-dom'
 import { SortDirection } from 'react-virtualized'
+import { compose } from 'recompose'
 
 import { SvgIcon } from '@sb/components'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import {
+  getTimezone,
+  endOfDayTimestamp,
+} from '@sb/compositions/AnalyticsRoute/components/utils'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
 import { notify } from '@sb/dexUtils/notifications'
@@ -16,27 +22,19 @@ import { withPublicKey } from '@sb/hoc/withPublicKey'
 
 import { fiatPairs } from '@core/config/stableCoins'
 import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
+import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
+import { dayDuration } from '@core/utils/dateUtils'
 
 import search from '@icons/search.svg'
 
 import 'react-virtualized/styles.css'
-import { compose } from 'recompose'
-
-import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
-import { dayDuration } from '@core/utils/dateUtils'
-
-import {
-  getTimezone,
-  endOfDayTimestamp,
-} from '@sb/compositions/AnalyticsRoute/components/utils'
 
 import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
 import {
   IProps,
   IPropsSelectPairListComponent,
-  IStateSelectPairListComponent,
   SelectTabType,
 } from './SelectWrapper.types'
 import { combineSelectWrapperData } from './SelectWrapper.utils'
@@ -46,262 +44,66 @@ import { TableInner } from './TableInner'
 
 const PINNED_LIST = ['RIN_USDC']
 
-export const excludedPairs = [
-  // 'USDC_ODOP',
-  // 'KIN_USDT',
-  // 'MIDBEAR_USDT',
-  // 'MIDBULL_USDT',
-  // 'XRPBEAR_USDT',
-  // 'XRPBULL_USDT',
-  // 'SWAG_USDT'
-]
-
 export const datesForQuery = {
   startOfTime: () => dayjs().startOf('hour').subtract(24, 'hour').unix(),
-
   endOfTime: () => dayjs().endOf('hour').unix(),
-
   prevStartTimestamp: () => dayjs().startOf('hour').subtract(48, 'hour').unix(),
-
   prevEndTimestamp: () => dayjs().startOf('hour').subtract(24, 'hour').unix(),
 }
 
 export const fiatRegexp = new RegExp(fiatPairs.join('|'), 'gi')
 
-const SelectWrapper = (props: IProps) => {
-  const [searchValue, setSearchValue] = useState('')
-  const [tab, setTab] = useState<SelectTabType>('all')
+const SelectPairListComponent = (props: IPropsSelectPairListComponent) => {
+  const history = useHistory()
+  const [displayedData, setDisplayedData] = useState([])
+  const [sort, setSort] = useState({
+    field: 'volume24hChange',
+    direction: SortDirection.DESC,
+  })
+  const [choosenMarketData, setChoosenMarketData] = useState({})
+  const [isMintsPopupOpen, setIsMintsPopupOpen] = useState(false)
+  const [isFeedbackPopupOpen, setIsFeedbackPopupOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState<boolean | null>(null)
 
-  // TODO: Uncomment once Postgres HA deployed
+  const {
+    data,
+    toggleFavouriteMarket,
+    onSelectPair,
+    theme,
+    searchValue,
+    tab,
+    getSerumTradesDataQuery,
+    customMarkets,
+    tokenMap,
+    allMarketsMap,
+    favouriteMarkets,
+    marketType,
+    id,
+    onChangeSearch,
+    selectorMode,
+    setSelectorMode,
+    setCustomMarkets,
+    getSerumMarketDataQueryRefetch,
+    onTabChange,
+    marketName,
+  } = props
 
-  const [selectorMode, setSelectorMode] = useLocalStorageState(
-    'selectorMode',
-    'basic'
-  )
+  const isLoaded = isLoading === false
 
-  // const selectorMode = 'advanced'
-  // const setSelectorMode = () => { }
+  const isAdvancedSelectorMode = selectorMode === 'advanced'
 
-  const [favouriteMarketsRaw, setFavouriteMarkets] = useLocalStorageState(
-    'favouriteMarkets',
-    JSON.stringify([])
-  )
-
-  const favouriteMarkets = JSON.parse(favouriteMarketsRaw)
-
-  const toggleFavouriteMarket = (pair) => {
-    if (favouriteMarkets.includes(pair)) {
-      setFavouriteMarkets(
-        JSON.stringify(favouriteMarkets.filter((el) => el !== pair))
-      )
-    } else {
-      setFavouriteMarkets(JSON.stringify([...favouriteMarkets, pair]))
-    }
+  const changeChoosenMarketData = ({ symbol, marketAddress }) => {
+    setChoosenMarketData({ symbol, marketAddress })
   }
 
-  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!`${e.target.value}`.match(/[a-zA-Z1-9]/) && e.target.value !== '') {
-      return
-    }
-
-    setSearchValue(e.target.value)
-  }
-
-  const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
-  const filtredMarketsByExchange =
-    getSerumMarketDataQuery.getSerumMarketData.filter(
-      (el) =>
-        el.symbol &&
-        !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !excludedPairs.includes(el.symbol)
-    )
-
-  const favouritePairsMap = favouriteMarkets.reduce(
-    (acc: Map<string, string>, el: string) => {
-      acc.set(el, el)
-
-      return acc
-    },
-    new Map()
-  )
-
-  return (
-    <SelectPairListComponent
-      tab={tab}
-      data={filtredMarketsByExchange}
-      favouritePairsMap={favouritePairsMap}
-      searchValue={searchValue}
-      selectorMode={selectorMode}
-      setSelectorMode={setSelectorMode}
-      onChangeSearch={onChangeSearch}
-      onTabChange={setTab}
-      toggleFavouriteMarket={toggleFavouriteMarket}
-      {...props}
-    />
-  )
-}
-
-class SelectPairListComponent extends React.PureComponent<
-  IPropsSelectPairListComponent,
-  IStateSelectPairListComponent
-> {
-  state: IStateSelectPairListComponent = {
-    processedSelectData: [],
-    showAddMarketPopup: false,
-    left: 0,
-    sortBy: 'volume24hChange',
-    sortDirection: SortDirection.DESC,
-    choosenMarketData: {},
-    isMintsPopupOpen: false,
-    isFeedBackPopupOpen: false,
-  }
-
-  changeChoosenMarketData = ({ symbol, marketAddress }) => {
-    this.setState({ choosenMarketData: { symbol, marketAddress } })
-  }
-
-  setIsMintsPopupOpen = (isMintsPopupOpen) => {
-    this.setState({ isMintsPopupOpen })
-  }
-
-  setIsFeedbackPopupOpen = (isFeedBackPopupOpen) => {
-    this.setState({ isFeedBackPopupOpen })
-  }
-
-  componentDidMount() {
-    const {
-      data,
-      toggleFavouriteMarket,
-      onSelectPair,
-      searchValue,
-      tab,
-      getSerumTradesDataQuery,
-      customMarkets,
-      market,
-      tokenMap,
-      markets,
-      allMarketsMap,
-      favouritePairsMap,
-      marketType,
-    } = this.props
-
-    const serumMarketsDataMap = new Map()
-
-    const { left } = document
-      .getElementById('ExchangePair')
-      ?.getBoundingClientRect()
-
-    const { sortBy, sortDirection, isMintsPopupOpen, isFeedBackPopupOpen } =
-      this.state
-
-    getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
-      serumMarketsDataMap.set(el.pair, el)
-    )
-
-    const processedSelectData = combineSelectWrapperData({
-      data,
-      toggleFavouriteMarket,
-      onSelectPair,
-      favouritePairsMap,
-      searchValue,
-      tab,
-      marketType,
-      customMarkets,
-      market,
-      tokenMap,
-      serumMarketsDataMap,
-      allMarketsMap,
-      isMintsPopupOpen,
-      setIsMintsPopupOpen: this.setIsMintsPopupOpen,
-      changeChoosenMarketData: this.changeChoosenMarketData,
-    })
-
-    const sortedData = this._sortList({
-      tab,
-      sortBy,
-      sortDirection,
-      data: processedSelectData,
-    })
-
-    this.setState({
-      processedSelectData: sortedData,
-      left,
-    })
-  }
-
-  componentWillReceiveProps(nextProps: IPropsSelectPairListComponent) {
-    const {
-      data,
-      toggleFavouriteMarket,
-      onSelectPair,
-      searchValue,
-      tab,
-      favouritePairsMap,
-      marketType,
-      markets,
-      customMarkets,
-      market,
-      tokenMap,
-      getSerumTradesDataQuery,
-      allMarketsMap,
-      onTabChange,
-    } = nextProps
-    const { data: prevPropsData } = this.props
-    const { sortBy, sortDirection, isMintsPopupOpen, isFeedBackPopupOpen } =
-      this.state
-
-    const serumMarketsDataMap = new Map()
-
-    getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
-      serumMarketsDataMap?.set(el.pair, el)
-    )
-
-    const processedSelectData = combineSelectWrapperData({
-      data,
-      toggleFavouriteMarket,
-      previousData: prevPropsData,
-      onSelectPair,
-      searchValue,
-      tab,
-      favouritePairsMap,
-      marketType,
-      market,
-      tokenMap,
-      serumMarketsDataMap,
-      allMarketsMap,
-      isMintsPopupOpen,
-      setIsMintsPopupOpen: this.setIsMintsPopupOpen,
-      changeChoosenMarketData: this.changeChoosenMarketData,
-    })
-
-    const sortedData = this._sortList({
-      tab,
-      sortBy,
-      sortDirection,
-      data: processedSelectData,
-    })
-
-    this.setState({
-      processedSelectData: sortedData,
-    })
-  }
-
-  _sortList = ({ sortBy, sortDirection, data, tab }) => {
-    let dataToSort = data
-
-    if (!dataToSort) {
-      dataToSort = this.state.processedSelectData
-    }
-
-    let newList = [...dataToSort]
+  const _sortList = (data) => {
+    let newList = [...data]
 
     if (tab === 'topGainers' || tab === 'topLosers') {
       return newList
     }
 
-    // const CCAIMarket = newList.find(v => v.symbol.contentToSort === 'RIN_USDC')
-
-    if (this.props.marketType === 0 && sortBy === 'volume24hChange') {
+    if (marketType === 0 && sort.field === 'volume24hChange') {
       newList.sort((pairObjectA, pairObjectB) => {
         const quoteA = pairObjectA.symbol.contentToSort.split('_')[1]
         const quoteB = pairObjectB.symbol.contentToSort.split('_')[1]
@@ -326,207 +128,237 @@ class SelectPairListComponent extends React.PureComponent<
         }
       })
     } else {
-      newList = sort(dataToSort, [`${sortBy}.contentToSort`])
-      if (sortDirection === SortDirection.DESC) {
+      newList = sortBy(data, [`${sort.field}.contentToSort`])
+      if (sort.direction === SortDirection.DESC) {
         newList = newList.reverse()
       }
     }
-
-    const topList = PINNED_LIST
-
-    const topMarkets = newList
-      .filter((v) => topList.includes(v.id))
-      .sort((a, b) => topList.indexOf(a.id) - topList.indexOf(b.id))
-
-    const withoutTop = newList.filter((v) => !topList.includes(v.id))
 
     const ccaiIndex = newList.findIndex(
       (v) => v.symbol.contentToSort === 'RIN_USDC'
     )
     if (ccaiIndex === -1) return newList
 
-    const updatedList = [...topMarkets, ...withoutTop]
+    const [topMarkets, regularMarkets] = partition(newList, (item) =>
+      PINNED_LIST.includes(item.id)
+    )
 
-    return updatedList
+    return [...topMarkets, ...regularMarkets]
   }
 
-  _sort = ({ sortBy, sortDirection }) => {
-    const processedSelectData = this._sortList({ sortBy, sortDirection })
-    this.setState({ sortBy, sortDirection, processedSelectData })
+  const _sort = ({ sortBy, sortDirection }) => {
+    setSort({ field: sortBy, direction: sortDirection })
   }
 
-  render() {
-    const {
-      processedSelectData,
-      showAddMarketPopup,
-      choosenMarketData,
-      isMintsPopupOpen,
-      isFeedBackPopupOpen,
-    } = this.state
+  const onAddCustomMarket = (customMarket: any) => {
+    const marketInfo = [...allMarketsMap.values()].some(
+      (m) => m.address.toBase58() === customMarket.address
+    )
 
-    const {
-      searchValue,
-      tab,
-      id,
-      onChangeSearch,
-      marketType,
-      publicKey,
-      wallet,
-      history,
-      tokenMap,
-      selectorMode,
-      favouritePairsMap,
-      setSelectorMode,
-      setCustomMarkets,
-      customMarkets,
-      allMarketsMap,
-      getSerumMarketDataQueryRefetch,
-      onTabChange,
-      marketName,
-      closeMenu,
-    } = this.props
+    if (marketInfo) {
+      notify({
+        message: `A market with the given ID already exists`,
+        type: 'error',
+      })
 
-    const isAdvancedSelectorMode = selectorMode === 'advanced'
-
-    const onAddCustomMarket = (customMarket: any) => {
-      const marketInfo = [...allMarketsMap.values()].some(
-        (m) => m.address.toBase58() === customMarket.address
-      )
-
-      if (marketInfo) {
-        notify({
-          message: `A market with the given ID already exists`,
-          type: 'error',
-        })
-
-        return false
-      }
-
-      const newCustomMarkets = [...customMarkets, customMarket]
-      setCustomMarkets(newCustomMarkets)
-      history.push(`/chart/spot/${customMarket.name.replace('/', '_')}`)
-      console.log('onAddCustomMarket', newCustomMarkets)
-      return true
+      return false
     }
 
-    return (
-      <>
-        <StyledGrid id={id} isAdvancedSelectorMode={isAdvancedSelectorMode}>
-          <TableHeader
-            tab={tab}
-            favouritePairsMap={favouritePairsMap}
-            tokenMap={tokenMap}
-            data={this.props.data}
-            onTabChange={onTabChange}
-            allMarketsMap={allMarketsMap}
-            isAdvancedSelectorMode={isAdvancedSelectorMode}
-            setSelectorMode={setSelectorMode}
-          />
-          <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
-            <StyledInput
-              placeholder="Search"
-              disableUnderline
-              value={searchValue}
-              onChange={onChangeSearch}
-              inputProps={{
-                style: {
-                  color: '#96999C',
-                  fontSize: '16px',
-                },
-              }}
-              endAdornment={
-                <InputAdornment
-                  style={{
-                    width: '10%',
-                    justifyContent: 'flex-end',
-                    cursor: 'pointer',
-                    color: '#96999C',
-                  }}
-                  disableTypography
-                  position="end"
-                  autoComplete="off"
-                >
-                  <SvgIcon src={search} width="1.5rem" height="auto" />
-                </InputAdornment>
-              }
-            />
-          </Grid>
-          <TableInner
-            selectorMode={selectorMode}
-            processedSelectData={processedSelectData}
-            isAdvancedSelectorMode={isAdvancedSelectorMode}
-            sort={this._sort}
-            sortBy={this.state.sortBy}
-            sortDirection={this.state.sortDirection}
-            selectedPair={marketName?.replace('/', '_')}
-          />
-          <TableFooter container>
-            <Row
-              style={{
-                padding: '0 2rem',
-                height: '4rem',
-                fontFamily: 'Avenir Next Medium',
-                alignItems: 'center',
-                fontSize: '1.5rem',
-                textTransform: 'none',
-                textDecoration: 'underline',
-              }}
-              onClick={async (e) => {
-                e.stopPropagation()
-                this.setIsFeedbackPopupOpen(true)
-              }}
-            >
-              Found an error in the catalog? Let us know!
-            </Row>
-            {/* <Row
-              style={{
-                padding: '0 2rem',
-                height: '4rem',
-                fontFamily: 'Avenir Next Medium',
-                color: theme.palette.blue.serum,
-                alignItems: 'center',
-                fontSize: '1.5rem',
-                textTransform: 'none',
-              }}
-              onClick={async (e) => {
-                e.stopPropagation()
-                if (publicKey === '') {
-                  notify({
-                    message: 'Connect your wallet first',
-                    type: 'error',
-                  })
-                  wallet.connect()
-                  return
-                }
+    const newCustomMarkets = [...customMarkets, customMarket]
+    setCustomMarkets(newCustomMarkets)
+    history.push(`/chart/spot/${customMarket.name.replace('/', '_')}`)
 
-                this.setState({ showAddMarketPopup: true })
-                closeMenu()
-              }}
-            >
-              + Add Market
-            </Row> */}
-          </TableFooter>
-          {/* <CustomMarketDialog
-            open={showAddMarketPopup}
-            onClose={() => this.setState({ showAddMarketPopup: false })}
-            onAddCustomMarket={onAddCustomMarket}
-            getSerumMarketDataQueryRefetch={getSerumMarketDataQueryRefetch}
-          /> */}
-          <WarningPopup />
-          <MintsPopup
-            symbol={choosenMarketData?.symbol}
-            marketAddress={choosenMarketData?.marketAddress}
-            open={isMintsPopupOpen}
-            onClose={() => this.setIsMintsPopupOpen(false)}
-          />
-          <MarketsFeedbackPopup
-            open={isFeedBackPopupOpen}
-            onClose={() => this.setIsFeedbackPopupOpen(false)}
-          />
-        </StyledGrid>
-      </>
+    return true
+  }
+
+  const getData = () => {
+    const serumMarketsDataMap = new Map()
+
+    getSerumTradesDataQuery?.getSerumTradesData?.forEach((el) =>
+      serumMarketsDataMap.set(el.pair, el)
+    )
+
+    return _sortList(
+      combineSelectWrapperData({
+        data,
+        toggleFavouriteMarket,
+        onSelectPair,
+        favouriteMarkets,
+        theme,
+        searchValue,
+        tab,
+        tokenMap,
+        serumMarketsDataMap,
+        allMarketsMap,
+        setIsMintsPopupOpen,
+        changeChoosenMarketData,
+      })
     )
   }
+
+  useEffect(() => {
+    setIsLoading(true)
+
+    setDisplayedData(getData())
+
+    setIsLoading(false)
+  }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      setDisplayedData(_sortList(getData()))
+    }
+  }, [sort])
+
+  useEffect(() => {
+    if (isLoaded) {
+      setDisplayedData(getData())
+    }
+  }, [tab, searchValue])
+
+  useEffect(() => {
+    if (isLoaded) {
+      setDisplayedData(getData())
+    }
+  }, [favouriteMarkets])
+
+  return (
+    <StyledGrid id={id} isAdvancedSelectorMode={isAdvancedSelectorMode}>
+      <TableHeader
+        tab={tab}
+        favouriteMarkets={favouriteMarkets}
+        tokenMap={tokenMap}
+        data={data}
+        onTabChange={onTabChange}
+        allMarketsMap={allMarketsMap}
+        isAdvancedSelectorMode={isAdvancedSelectorMode}
+        setSelectorMode={setSelectorMode}
+      />
+      <Grid container style={{ justifyContent: 'flex-end', width: '100%' }}>
+        <StyledInput
+          placeholder="Search"
+          disableUnderline
+          value={searchValue}
+          onChange={onChangeSearch}
+          inputProps={{
+            style: {
+              color: theme.palette.grey.new,
+              fontSize: '16px',
+            },
+          }}
+          endAdornment={
+            <InputAdornment
+              style={{
+                width: '10%',
+                justifyContent: 'flex-end',
+                cursor: 'pointer',
+                color: theme.palette.grey.new,
+              }}
+              disableTypography
+              position="end"
+              autoComplete="off"
+            >
+              <SvgIcon src={search} width="1.5rem" height="auto" />
+            </InputAdornment>
+          }
+        />
+      </Grid>
+      <TableInner
+        selectorMode={selectorMode}
+        processedSelectData={displayedData}
+        isAdvancedSelectorMode={isAdvancedSelectorMode}
+        sort={_sort}
+        sortBy={sort.field}
+        sortDirection={sort.direction}
+        selectedPair={marketName?.replace('/', '_')}
+      />
+      <TableFooter container>
+        <Row
+          style={{
+            padding: '0 2rem',
+            height: '4rem',
+            fontFamily: 'Avenir Next Medium',
+            color: theme.palette.blue.serum,
+            alignItems: 'center',
+            fontSize: '1.5rem',
+            textTransform: 'none',
+            textDecoration: 'underline',
+          }}
+          onClick={async (e) => {
+            e.stopPropagation()
+            setIsFeedbackPopupOpen(true)
+          }}
+        >
+          Found an error in the catalog? Let us know!
+        </Row>
+      </TableFooter>
+      <WarningPopup />
+      <MintsPopup
+        symbol={choosenMarketData?.symbol}
+        marketAddress={choosenMarketData?.marketAddress}
+        open={isMintsPopupOpen}
+        onClose={() => setIsMintsPopupOpen(false)}
+      />
+      <MarketsFeedbackPopup
+        open={isFeedbackPopupOpen}
+        onClose={() => setIsFeedbackPopupOpen(false)}
+      />
+    </StyledGrid>
+  )
+}
+
+const SelectWrapper = (props: IProps) => {
+  const [searchValue, setSearchValue] = useState('')
+  const [tab, setTab] = useState<SelectTabType>('all')
+
+  const [selectorMode, setSelectorMode] = useLocalStorageState(
+    'selectorMode',
+    'basic'
+  )
+
+  const [favouriteMarkets, setFavouriteMarkets] = useLocalStorageState<
+    string[]
+  >('favouriteMarkets', [])
+
+  const toggleFavouriteMarket = useCallback(
+    (pair: string) => {
+      const newFavouriteMarkets = favouriteMarkets.includes(pair)
+        ? favouriteMarkets.filter((el) => el !== pair)
+        : [...favouriteMarkets, pair]
+
+      setFavouriteMarkets(newFavouriteMarkets)
+    },
+    [favouriteMarkets]
+  )
+
+  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!`${e.target.value}`.match(/[a-zA-Z1-9]/) && e.target.value !== '') {
+      return
+    }
+
+    setSearchValue(e.target.value)
+  }
+
+  const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
+  const filtredMarketsByExchange =
+    getSerumMarketDataQuery.getSerumMarketData.filter(
+      (el) => el.symbol && !Array.isArray(el.symbol.match(fiatRegexp))
+    )
+
+  return (
+    <SelectPairListComponent
+      tab={tab}
+      data={filtredMarketsByExchange}
+      favouriteMarkets={favouriteMarkets}
+      toggleFavouriteMarket={toggleFavouriteMarket}
+      searchValue={searchValue}
+      selectorMode={selectorMode}
+      setSelectorMode={setSelectorMode}
+      onChangeSearch={onChangeSearch}
+      onTabChange={setTab}
+      {...props}
+    />
+  )
 }
 
 export default compose(
@@ -554,7 +386,7 @@ export default compose(
   queryRendererHoc({
     query: getSerumTradesData,
     name: 'getSerumTradesDataQuery',
-    variables: (props) => ({
+    variables: () => ({
       timezone: getTimezone(),
       timestampTo: endOfDayTimestamp(),
       timestampFrom: endOfDayTimestamp() - dayDuration * 14,

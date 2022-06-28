@@ -1,9 +1,8 @@
 import { ApolloQueryResult } from 'apollo-client'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
-import { DefaultTheme } from 'styled-components'
 
 import { FlexBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
@@ -19,7 +18,6 @@ import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFr
 import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
-import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useVestings } from '@sb/dexUtils/vesting'
@@ -33,6 +31,7 @@ import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/g
 import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql/queries/pools/getFeesEarnedByPool'
 import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
+import { fixCorruptedFarmingStates } from '@core/solana'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
 
@@ -67,18 +66,16 @@ interface TableSwitcherProps {
   getWeeklyAndDailyTradingVolumesForPoolsQuery: {
     getWeeklyAndDailyTradingVolumesForPools?: TradingVolumeStats[]
   }
-  theme: DefaultTheme
 }
 
 const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const {
     getPoolsInfoQueryRefetch,
-    getPoolsInfoQuery: { getPoolsInfo: pools = [] },
+    getPoolsInfoQuery: { getPoolsInfo: rawPools = [] },
     getDexTokensPricesQuery: { getDexTokensPrices = [] },
     getFeesEarnedByAccountQuery: { getFeesEarnedByAccount = [] },
     getFeesEarnedByPoolQuery: { getFeesEarnedByPool = [] },
     getWeeklyAndDailyTradingVolumesForPoolsQuery,
-    theme,
   } = props
 
   const [searchValue, setSearchValue] = useState('')
@@ -105,13 +102,20 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const { data: calcAccounts, mutate: refreshCalcAccounts } =
     useFarmingCalcAccounts()
 
-  const [snapshotQueues] = useSnapshotQueues()
+  // const [snapshotQueues] = useSnapshotQueues()
+
+  const pools = rawPools.map((pool) => {
+    return {
+      ...pool,
+      farming: fixCorruptedFarmingStates(pool.farming),
+    }
+  })
 
   const [farmingTicketsMap, refreshFarmingTickets] = useFarmingTicketsMap({
     wallet,
     connection,
     pools,
-    snapshotQueues,
+    snapshotQueues: [], // TODO:
   })
 
   const refreshAll = () => {
@@ -164,6 +168,26 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     []
 
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
+
+  const activePoolsList = useMemo(() => {
+    if (selectedTable === 'authorized') {
+      return authorizedPools
+    }
+    if (selectedTable === 'nonAuthorized') {
+      return nonAuthorizedPools
+    }
+    if (selectedTable === 'stablePools') {
+      return stablePools
+    }
+    if (selectedTable === 'userLiquidity') {
+      return userLiquidityPools
+    }
+    return pools
+  }, [selectedTable, pools])
+
+  const poolsLength = activePoolsList.length
+
+  const tableHeight = Math.min(poolsLength * 13, 80)
 
   return (
     <>
@@ -257,7 +281,8 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           </AuditInfo>
         </InputWrap>
       </TabContainer>
-      <TableContainer>
+
+      <TableContainer $height={`${tableHeight}rem`}>
         {selectedTable === 'authorized' && (
           <AllPoolsTable
             searchValue={searchValue}

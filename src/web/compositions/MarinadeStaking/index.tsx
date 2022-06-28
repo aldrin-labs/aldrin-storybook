@@ -59,7 +59,7 @@ const SOL_GAP_AMOUNT = 0.0127 // to allow transaactions pass
 
 const Block: React.FC<StakingBlockProps> = (props) => {
   const {
-    getDexTokensPricesQuery: { getDexTokensPrices },
+    getDexTokensPricesQuery: { getDexTokensPrices = [] },
   } = props
   const pricesMap = toMap(getDexTokensPrices, (p) => p.symbol)
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
@@ -320,7 +320,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               </ConnectWalletWrapper>
             </RowContainer>
             <RowContainer justify="space-between">
-              <ContentBlock background="gray5" width="48%">
+              <ContentBlock width="48%">
                 <RowContainer justify="space-between">
                   {' '}
                   <StyledInlineText color="gray0" size="sm">
@@ -336,7 +336,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                 </RowContainer>
               </ContentBlock>
               {isStakeModeOn ? (
-                <ContentBlock background="gray5" width="48%">
+                <ContentBlock width="48%">
                   <Row justify="space-between">
                     {' '}
                     <InlineText size="sm">Stake fee: </InlineText>{' '}
@@ -355,7 +355,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                   </Row>
                 </ContentBlock>
               ) : (
-                <ContentBlock background="gray5" width="48%">
+                <ContentBlock width="48%">
                   <RowContainer justify="space-between">
                     <InlineText color="gray0" size="sm">
                       Unstake fee:{' '}

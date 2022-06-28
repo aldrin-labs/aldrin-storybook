@@ -1,9 +1,9 @@
 import { PublicKey } from '@solana/web3.js'
 import { COLORS, FONT_SIZES } from '@variables/variables'
-import { ProgramAccount } from 'anchor024'
+import { ProgramAccount } from 'anchor020'
 import { BN } from 'bn.js'
 import React, { useMemo, useState } from 'react'
-import { useParams } from 'react-router'
+import { useParams } from 'react-router-dom'
 
 import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
@@ -39,7 +39,7 @@ import {
   stripByAmount,
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
-import { DAY, YEAR, estimateTime } from '@core/utils/dateUtils'
+import { DAY, YEAR } from '@core/utils/dateUtils'
 import { formatNumberToUSFormat } from '@core/utils/PortfolioTableUtils'
 
 import ClockIcon from '@icons/clock.svg'
@@ -87,8 +87,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     getDexTokensPricesQuery: { getDexTokensPrices: prices = [] },
   } = props
 
-  const { symbol = 'PLD' } = useParams<{ symbol: string }>()
-
+  const params = useParams<{ symbol: string }>()
+  const { symbol = 'PLD' } = params
   const staking = STAKINGS[symbol.toUpperCase()] || STAKINGS.PLD
 
   const { wallet } = useWallet()
@@ -128,14 +128,16 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const selectedTier = tiers[selectedTierIndex]
 
-  const nftReward = selectedTier?.nftRewards
-    ? selectedTier.nftRewards[0]
-    : undefined
+  // const nftReward = selectedTier?.nftRewards
+  //   ? selectedTier.nftRewards[0]
+  //   : undefined
 
-  const minStakeTokensForRewardBn = nftReward?.account.minStakeTokensForReward
+  // const minStakeTokensForRewardBn = nftReward?.account.minStakeTokensForReward
+  const { minStakeTokensForRewardBn, minStakeTokensForReward } = staking
 
-  const minStakeTokensForReward =
-    parseFloat(minStakeTokensForRewardBn?.toString() || '0') / PLD_DENOMINATOR
+  // const minStakeTokensForReward = parseFloat(
+  //   minStakeTokensForRewardBn?.toString() || '0'
+  // )
 
   const stakeAccountForTier = stakingAccounts?.get(
     selectedTier?.publicKey.toString() || ''
@@ -327,13 +329,13 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
   const unlockDate =
     stakeAccountForTier?.account.depositedAt.add(lockDuration).toNumber() || 0
 
-  const timePassed =
-    Date.now() / 1000 -
-    (stakeAccountForTier?.account.depositedAt.toNumber() || 0)
+  // const timePassed =
+  //   Date.now() / 1000 -
+  //   (stakeAccountForTier?.account.depositedAt.toNumber() || 0)
 
   const timeLeft = Math.max(0, unlockDate - Date.now() / 1000)
 
-  const estimate = estimateTime(timeLeft)
+  // const estimate = estimateTime(timeLeft)
 
   const isStakingDisabled =
     loading ||
@@ -343,7 +345,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
 
   const isUnstakeDisabled = loading || !selectedTokenAccount || timeLeft > 0
 
-  const timeProgresss = timePassed / lockDuration.toNumber()
+  // const timeProgresss = timePassed / lockDuration.toNumber()
 
   const estimateRewardsInStakeTokens =
     selectedTier && stakeAccountForTier

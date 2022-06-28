@@ -15,9 +15,7 @@ export const useUserTokenAccounts = (): [TokenInfo[], RefreshFunction] => {
     if (!wallet.publicKey) {
       return []
     }
-    const data = await getAllTokensData(wallet.publicKey, connection)
-
-    return data
+    return getAllTokensData(wallet.publicKey, connection)
   }
 
   const swr = useSWR(`usertokens-${wallet.publicKey?.toBase58()}`, fetcher, {

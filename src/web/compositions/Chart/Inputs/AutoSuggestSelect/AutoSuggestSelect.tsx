@@ -63,15 +63,17 @@ const IntegrationReactSelect = (props: IProps) => {
         border={divider}
         selectStyles={selectStyles}
         fixed={isMenuOpen}
+        onMouseEnter={!isMobile && toggleMenu}
+        onMouseLeave={!isMobile && toggleMenu}
       >
         <div
+          role="button"
           onClick={isMobile && toggleMenu}
           style={{ display: 'flex', width: '100%' }}
         >
           <SelectR
             style={{ width: '100%' }}
             value={
-              !isMenuOpen &&
               marketName && {
                 marketName,
                 label: marketName,
@@ -81,21 +83,24 @@ const IntegrationReactSelect = (props: IProps) => {
             isDisabled
           />
         </div>
-        <SelectWrapper
-          id="selectWrapper"
-          theme={theme}
-          onSelectPair={handleChange}
-          closeMenu={closeMenu}
-          marketType={1}
-          activeExchange={activeExchange}
-          markets={markets}
-          allMarketsMap={allMarketsMap}
-          market={market}
-          tokenMap={tokenMap}
-          isMintsPopupOpen={isMintsPopupOpen}
-          setIsMintsPopupOpen={setIsMintsPopupOpen}
-          marketName={marketName}
-        />
+
+        {isMenuOpen && (
+          <SelectWrapper
+            id="selectWrapper"
+            theme={theme}
+            onSelectPair={handleChange}
+            closeMenu={closeMenu}
+            marketType={1}
+            activeExchange={activeExchange}
+            markets={markets}
+            allMarketsMap={allMarketsMap}
+            market={market}
+            tokenMap={tokenMap}
+            isMintsPopupOpen={isMintsPopupOpen}
+            setIsMintsPopupOpen={setIsMintsPopupOpen}
+            marketName={marketName}
+          />
+        )}
       </ExchangePair>
     </>
   )
