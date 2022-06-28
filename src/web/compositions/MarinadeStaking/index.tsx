@@ -59,7 +59,7 @@ const SOL_GAP_AMOUNT = 0.0127 // to allow transaactions pass
 
 const Block: React.FC<StakingBlockProps> = (props) => {
   const {
-    getDexTokensPricesQuery: { getDexTokensPrices },
+    getDexTokensPricesQuery: { getDexTokensPrices = [] },
   } = props
   const pricesMap = toMap(getDexTokensPrices, (p) => p.symbol)
   const [isStakeModeOn, setIsStakeModeOn] = useState(true)
