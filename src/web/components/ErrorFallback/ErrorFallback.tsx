@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import { ApolloError } from 'apollo-client'
+
 import { MASTER_BUILD } from '@core/utils/config'
 
 const Error = styled(Paper)`
