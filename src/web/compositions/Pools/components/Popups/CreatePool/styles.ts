@@ -32,6 +32,7 @@ export const Footer = styled(Flex)`
       margin-right: 0;
     }
   }
+
   ${Button} {
     width: 100%;
   }
