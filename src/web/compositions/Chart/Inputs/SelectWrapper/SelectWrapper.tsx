@@ -347,10 +347,12 @@ const SelectWrapper = (props: IProps) => {
   const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
   const filtredMarketsByExchange =
     getSerumMarketDataQuery.getSerumMarketData.filter((el) => {
+      const isMarketDelisted =
+        markets.get(el.symbol.replace('_', '/'))?.delisted || false
       return (
         el.symbol &&
         !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !markets.get(el.symbol.replace('_', '/'))?.delisted
+        !isMarketDelisted
       )
     })
 
