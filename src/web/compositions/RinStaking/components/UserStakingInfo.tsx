@@ -9,9 +9,10 @@ import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
-import { withdrawStaked } from '@sb/dexUtils/common/actions'
-import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
+import { startFarmingV2, stopFarmingV2 } from '@sb/dexUtils/farming'
+import { claimEligibleHarvest } from '@sb/dexUtils/farming/actions/claimEligibleHarvest'
+import { useFarmInfo } from '@sb/dexUtils/farming/useFarmInfo'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
@@ -33,7 +34,6 @@ import {
   getAvailableToClaimFarmingTokens,
   getStakedTokensTotal,
   isOpenFarmingState,
-  STAKING_PROGRAM_ADDRESS,
   addFarmingRewardsToTickets,
   getSnapshotQueueWithAMMFees,
 } from '@core/solana'
@@ -209,6 +209,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     .replaceAll('-', ' ')
 
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
+  const { data: farms } = useFarmInfo()
+  const farm = farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {}
 
   const start = useCallback(
     async (amount: number) => {
@@ -217,15 +219,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         return false
       }
 
+      if (!farms) {
+        throw new Error('No farms')
+      }
+
       setLoading((prev) => ({ ...prev, stake: true }))
-      const result = await startStaking({
-        connection,
+      const result = await startFarmingV2({
         wallet,
+        connection,
         amount,
-        userPoolTokenAccount: new PublicKey(tokenData.address),
-        stakingPool,
-        farmingTickets: userFarmingTickets,
-        programAddress: STAKING_PROGRAM_ADDRESS,
+        farm,
+        userTokens: allTokenData,
       })
 
       notify({
@@ -250,16 +254,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
     setLoading((prev) => ({ ...prev, unstake: true }))
 
-    // startStaking close all tickets and create one with added amount
-    // partial end(amount) = start(-amount)
-    const result = await startStaking({
-      connection,
+    const result = await stopFarmingV2({
       wallet,
-      amount: -amount,
-      userPoolTokenAccount: new PublicKey(tokenData.address),
-      stakingPool,
-      farmingTickets: userFarmingTickets,
-      programAddress: STAKING_PROGRAM_ADDRESS,
+      connection,
+      amount,
+      farm,
+      userTokens: allTokenData,
     })
 
     notify({
@@ -277,13 +277,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const claimRewards = async () => {
     setLoading((prev) => ({ ...prev, claim: true }))
-    const result = await withdrawStaked({
-      connection,
+    const result = await claimEligibleHarvest({
       wallet,
-      stakingPool,
-      farmingTickets: userFarmingTickets,
-      programAddress: STAKING_PROGRAM_ADDRESS,
-      allTokensData: allTokenData,
+      connection,
+      farm,
+      userTokens: allTokenData,
     })
 
     notify({
