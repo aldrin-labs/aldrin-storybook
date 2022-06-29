@@ -58,6 +58,7 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
       <FormItemFull>
         <InputWrapper>
           <AmountInput
+            usdValue={1}
             data-testid="rin-staking-amount-field"
             label="Stake"
             placeholder="0"

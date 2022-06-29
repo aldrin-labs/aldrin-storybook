@@ -44,6 +44,7 @@ import {
 import { DAY, daysInMonthForDate } from '@core/utils/dateUtils'
 
 import ClockIcon from '@icons/clock.svg'
+import EyeIcon from '@icons/eye.svg'
 
 import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
@@ -411,9 +412,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 <InlineText size="sm">Your stake</InlineText>{' '}
                 <SvgIcon
                   style={{ cursor: 'pointer' }}
-                  src={
-                    isBalancesShowing ? ImagesPath.eye : ImagesPath.closedEye
-                  }
+                  src={isBalancesShowing ? EyeIcon : ImagesPath.closedEye}
                   width="0.9em"
                   height="auto"
                   onClick={() => {
@@ -438,17 +437,13 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
           <Block inner>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
-                <InlineText size="sm">Your rewards</InlineText>
+                <InlineText size="sm">Rewards Earned</InlineText>
                 <DarkTooltip
                   title={
                     <>
                       <p>
-                        The first APR is calculated based on fixed “treasury”
-                        rewards. These rewards estimation are updated hourly.
-                      </p>
-                      <p>
-                        The second APR is calculated based on last RIN buyback
-                        which are weekly.
+                        Staking rewards are autocompounded to your total stake
+                        once per 10 minutes.
                       </p>
                     </>
                   }

@@ -47,7 +47,6 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
   }
 
   const tokenName = getTokenName({ address: mint, tokensInfoMap: tokensInfo })
-
   return (
     <AmountInputElement
       className={className}
