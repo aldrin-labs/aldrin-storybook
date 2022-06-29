@@ -1,5 +1,5 @@
 import { Grid, InputAdornment } from '@material-ui/core'
-import delistedMarketsList from 'aldrin-registry/src/delisted_markets.json'
+import marketsList from 'aldrin-registry/src/markets.json'
 import dayjs from 'dayjs'
 import { sortBy, partition } from 'lodash-es'
 import React, { useState, useEffect, useCallback } from 'react'
@@ -30,6 +30,8 @@ import { dayDuration } from '@core/utils/dateUtils'
 import search from '@icons/search.svg'
 
 import 'react-virtualized/styles.css'
+
+import { toMap } from '@core/collection'
 
 import { MarketsFeedbackPopup } from './MarketsFeedbackPopup'
 import { MintsPopup } from './MintsPopup'
@@ -332,11 +334,6 @@ const SelectWrapper = (props: IProps) => {
     [favouriteMarkets]
   )
 
-  const delistedMarkets = new Map<string, any>()
-  delistedMarketsList.forEach((el) =>
-    delistedMarkets.set(el.name.toUpperCase(), el)
-  )
-
   const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!`${e.target.value}`.match(/[a-zA-Z1-9]/) && e.target.value !== '') {
       return
@@ -345,14 +342,17 @@ const SelectWrapper = (props: IProps) => {
     setSearchValue(e.target.value)
   }
 
+  const markets = toMap(marketsList, (market) => market.name)
+
   const { getSerumMarketDataQuery = { getSerumMarketData: [] } } = props
   const filtredMarketsByExchange =
-    getSerumMarketDataQuery.getSerumMarketData.filter(
-      (el) =>
+    getSerumMarketDataQuery.getSerumMarketData.filter((el) => {
+      return (
         el.symbol &&
         !Array.isArray(el.symbol.match(fiatRegexp)) &&
-        !delistedMarkets.has(el.symbol.replace('_', '/'))
-    )
+        !markets.get(el.symbol.replace('_', '/'))?.delisted
+      )
+    })
 
   return (
     <SelectPairListComponent
