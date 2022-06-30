@@ -1,13 +1,10 @@
 import useSWR from 'swr'
 
-import {
-  useWallet,
-  walletAdapterToWallet,
-  loadFarmerAccountsData,
-} from '@core/solana'
+import { walletAdapterToWallet, loadFarmerAccountsData } from '@core/solana'
 
 import { toMap } from '../../utils'
 import { useConnection } from '../connection'
+import { useWallet } from '../wallet'
 
 export const useFarmersAccountInfo = () => {
   const { wallet } = useWallet()
@@ -24,6 +21,7 @@ export const useFarmersAccountInfo = () => {
       connection,
       wallet: walletWithPk,
     })
+
     return toMap(accountInfo, (acc) => acc.account.farm.toString())
   }
 
