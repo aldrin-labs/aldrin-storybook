@@ -1,11 +1,13 @@
 import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
 
-import { buildClaimEligibleHarvestInstruction } from '@core/solana/programs/farming/instructions/claimEligibleHarvestTransaction'
+import {
+  createAssociatedTokenAccountTransaction,
+  buildClaimEligibleHarvestInstruction,
+} from '@core/solana'
 
 import { walletAdapterToWallet } from '../../common'
 import { signAndSendTransactions } from '../../transactions'
 import { ClaimEligibleHarvestParams } from './types'
-import { createAssociatedTokenAccountTransaction } from '@core/solana'
 
 export const claimEligibleHarvest = async (
   params: ClaimEligibleHarvestParams
