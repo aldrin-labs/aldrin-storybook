@@ -20,7 +20,7 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { addHarvestV2 } from '@sb/dexUtils/farming/actions/addHarvest'
 import { claimEligibleHarvest } from '@sb/dexUtils/farming/actions/claimEligibleHarvest'
 import { createNewHarvestPeriod } from '@sb/dexUtils/farming/actions/newHarvestPeriod'
-import { useFarmInfo } from '@sb/dexUtils/farming/useFarmInfo'
+import { useFarmInfo } from '@sb/dexUtils/farming/hooks/useFarmInfo'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { CURVE } from '@sb/dexUtils/pools/types'
@@ -250,7 +250,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           await addHarvestV2({
             wallet,
             connection,
-            amount: 50000,
             farm:
               farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
             userTokens: userTokensData,

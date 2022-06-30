@@ -12,17 +12,7 @@ import { StartFarmingV2Params } from './types'
 
 export const startFarmingV2 = async (params: StartFarmingV2Params) => {
   const wallet = walletAdapterToWallet(params.wallet)
-  const { farm, userTokens, amount, connection, farmer } = params
-  const stakeMint = farm.stakeMint.toString()
-  const userTokenAccount = userTokens.find((ut) => ut.mint === stakeMint)
-  if (!userTokenAccount) {
-    throw new Error('Token account not found!')
-  }
-  const amountWithDecimals = (amount * 10 ** userTokenAccount.decimals).toFixed(
-    0
-  )
-
-  const tokenAmount = new BN(amountWithDecimals)
+  const { farm, connection, farmer, userTokens, amount } = params
 
   const instructions: TransactionInstruction[] = []
 
@@ -36,13 +26,14 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
   }
 
   const { instruction } = await buildStartFarmingV2Instruction({
-    tokenAmount,
-    farm: farm.publicKey,
+    farm: farm,
     stakeVault: farm.stakeVault,
-    stakeWallet: new PublicKey(userTokenAccount.address),
     wallet,
     connection,
+    userTokens, 
+    amount,
   })
+
   instructions.push(instruction)
 
   return signAndSendTransactions({
