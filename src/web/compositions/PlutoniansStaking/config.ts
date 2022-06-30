@@ -14,11 +14,17 @@ import Leviathan from './assets/Leviathan.png'
 import Venator from './assets/Venator.png'
 import { StakingDescription } from './types'
 
-export const EXTRA_REWARDS = [
+const EXTRA_REWARDS = [
   'Aldrin Skin + 2 components',
   'Aldrin Skin + 4 components',
   'Venator + Aldrin Skin + 4 components',
   'Star Hunter + Aldrin Skin + 4 components + 1 exotic component',
+]
+const EXTRA_PU_RPC_REWARDS = [
+  'Aldrin Skin ',
+  'Aldrin Skin',
+  'Aldrin Skin',
+  'Aldrin Skin',
 ]
 
 export const REWARDS_BG = [Centuria, Colossus, Venator, Leviathan]
@@ -39,17 +45,20 @@ export const STAKINGS: { [c: string]: StakingDescription } = {
     stakingPool: PLUTONIANS_STAKING_POOL_ADDRESS,
     minStakeTokensForRewardBn: new BN(1_000).mul(TOKEN_MULTIPLIER),
     minStakeTokensForReward: 1_000,
+    nftRewards: EXTRA_REWARDS,
   },
   RPC: {
     programAddress: PLUTONIANS_STAKING_ADDRESS,
     stakingPool: PLUTONIANS_RPC_STAKING_POOL_ADDRESS,
     minStakeTokensForRewardBn: new BN(100_000).mul(TOKEN_MULTIPLIER),
     minStakeTokensForReward: 100_000,
+    nftRewards: EXTRA_PU_RPC_REWARDS,
   },
   PU238: {
     programAddress: PLUTONIANS_STAKING_ADDRESS,
     stakingPool: PLUTONIANS_PU_STAKING_POOL_ADDRESS,
     minStakeTokensForRewardBn: new BN(50_000_000).mul(TOKEN_MULTIPLIER),
     minStakeTokensForReward: 50_000_000,
+    nftRewards: EXTRA_PU_RPC_REWARDS,
   },
 }
