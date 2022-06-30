@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 
+import { findTokenAccount } from '@core/solana'
+
 import { TokenInfo } from '../../types'
 import { useWallet } from '../../wallet'
-import { findTokenAccount } from '../utils/findTokenAccount'
 import { useUserTokenAccounts } from './useUserTokenAccounts'
 
 export const useAssociatedTokenAccount = (

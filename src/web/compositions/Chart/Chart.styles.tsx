@@ -60,8 +60,8 @@ html {
   html {
     font-size: 15px !important;
   }
-}  
-        
+}
+
   .virtualized-row {
     font-family: Avenir Next Demi;
     font-size: 1.3rem;
@@ -285,12 +285,7 @@ export const TablesContainer = styled(Grid)`
 
 export const TradingTerminalContainer = styled(
   ({
-    isDefaultTerminalViewMode,
     MASTER_BUILD,
-    hideDepthChart,
-    hideOrderbook,
-    hideTradeHistory,
-    terminalViewMode,
     ...rest
   }) => <div {...rest} />
 )`
@@ -299,11 +294,11 @@ export const TradingTerminalContainer = styled(
   position: relative;
   // 60% - 3%, the half of height cards, will fix in future
   width: ${(props) =>
-    props.hideTradeHistory
+    props.$hideTradeHistory
       ? '17%'
-      : props.hideOrderbook
+      : props.$hideOrderbook
       ? '17%'
-      : props.hideDepthChart
+      : props.$hideDepthChart
       ? '35%'
       : '32%'};
   overflow: hidden;
@@ -316,20 +311,18 @@ export const TradingTerminalContainer = styled(
   @media (max-width: 600px) {
     width: 100%;
     display: ${(props) =>
-      props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
+      props.$terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
     height: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? '35%' : '100%'};
+      props.$terminalViewMode === 'mobileChart' ? '35%' : '100%'};
   }
 `
 
 export const TopChartsContainer = styled(
   ({
-    isDefaultTerminalViewMode,
     MASTER_BUILD,
     hideDepthChart,
     hideOrderbook,
     hideTradeHistory,
-    terminalViewMode,
     ...rest
   }) => <div {...rest} />
 )`
@@ -342,48 +335,40 @@ export const TopChartsContainer = styled(
   max-width: 100%;
   flex-basis: 100%;
   height: ${(props) =>
-    props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
+    props.$isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   @media screen and (max-width: 1440px) {
     height: ${(props) =>
-      props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
+      props.$isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   }
 
   @media screen and (max-width: 1140px) {
     height: ${(props) =>
-      props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
+      props.$isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
   }
 
   @media screen and (max-width: 600px) {
     flex-basis: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? '100%' : '50%'};
+      props.$terminalViewMode === 'mobileChart' ? '100%' : '50%'};
     height: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? '100%' : '60%'};
+      props.$terminalViewMode === 'mobileChart' ? '100%' : '60%'};
     display: ${(props) =>
-      props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
+      props.$terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
   }
 `
 
-export const ChartsContainer = styled(
-  ({
-    isDefaultTerminalViewMode,
-    MASTER_BUILD,
-    hideDepthChart,
-    hideOrderbook,
-    hideTradeHistory,
-    terminalViewMode,
-    ...rest
-  }) => <div {...rest} />
-)`
+export const ChartsContainer = styled(({ MASTER_BUILD, ...rest }) => (
+  <div {...rest} />
+))`
   height: 100%;
   transition: all 0.5s ease;
   position: relative;
   display: flex;
   width: ${(props) =>
-    props.hideTradeHistory
+    props.$hideTradeHistory
       ? '83%'
-      : props.hideOrderbook
+      : props.$hideOrderbook
       ? '83%'
-      : props.hideDepthChart
+      : props.$hideDepthChart
       ? '65%'
       : '68%'};
   justify-content: flex-end;
@@ -395,9 +380,9 @@ export const ChartsContainer = styled(
 
   @media (max-width: 600px) {
     display: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
+      props.$terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
     width: 100%;
-    height: ${(props) => props.terminalViewMode === 'mobileChart' && '65%'};
+    height: ${(props) => props.$terminalViewMode === 'mobileChart' && '65%'};
   }
 
   background-color: ${(props) => props.theme.palette.white.background};
@@ -539,7 +524,7 @@ export const MarketStatsContainer = styled.div`
 `
 
 export const MobileMarketStatsContainer = styled.div`
-  dispay: flex;
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
   @media (min-width: 600px) {
@@ -550,9 +535,9 @@ export const ChartAndOrderbookContainer = styled(Grid)`
   height: 100%;
   @media (max-width: 600px) {
     dispay: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? 'flex' : 'auto'};
+    props.$terminalViewMode === 'mobileChart' ? 'flex' : 'auto'};
     flex-direction: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
+    props.$terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
   }
 `
 export const RoundLink = styled(Link)`

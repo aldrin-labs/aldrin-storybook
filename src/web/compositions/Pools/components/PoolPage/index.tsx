@@ -13,11 +13,11 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks'
-import { getMinimumReceivedAmountFromSwap } from '@sb/dexUtils/pools/swap/getMinimumReceivedAmountFromSwap'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import { getMinimumReceivedAmountFromSwap } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -182,10 +182,13 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
         <TokenInfos>
           <TokenInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenA} />
               <InlineText color="green4">1</InlineText>
-              <InlineText>{base}&nbsp;=&nbsp;</InlineText>
-              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
+              <InlineText>
+                {base}
+                {` = `}
+              </InlineText>
+              <TokenIcon mint={pool.tokenB} />
               <InlineText color="green4">
                 {stripByAmountAndFormat(basePrice, 4)}
               </InlineText>
@@ -194,10 +197,13 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenInfo>
           <TokenInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenB} />
               <InlineText color="green4">1</InlineText>
-              <InlineText>{quote}&nbsp;=&nbsp;</InlineText>
-              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
+              <InlineText>
+                {quote}
+                {` = `}
+              </InlineText>
+              <TokenIcon mint={pool.tokenA} />
               <InlineText color="green4">
                 {stripByAmountAndFormat(quotePrice, 4)}
               </InlineText>
@@ -206,7 +212,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenInfo>
           <TokenGlobalInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenA} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenA} />
               <TokenInfoTextWrap>
                 <TokenInfoText weight={700}>
                   {base}
@@ -226,7 +232,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
           </TokenGlobalInfo>
           <TokenGlobalInfo>
             <TokenInfoRow>
-              <TokenIcon mint={pool.tokenB} width="1.2em" height="1.2em" />
+              <TokenIcon mint={pool.tokenB} />
               <TokenInfoTextWrap>
                 <TokenInfoText weight={700}>
                   {quote}

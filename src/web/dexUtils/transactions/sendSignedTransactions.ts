@@ -1,9 +1,23 @@
 import { Transaction } from '@solana/web3.js'
 
-import { AldrinConnection } from '@core/solana'
+import {
+  AldrinConnection,
+  SendTransactionStatus,
+  SendSignedTransactionResponse,
+} from '@core/solana'
 
 import { sendSignedSignleTransaction } from './sendSignedSignleTransaction'
 import { NotificationParams, TransactionParams } from './types'
+
+const resposneToStatus = (
+  response: SendSignedTransactionResponse
+): 'success' | 'failed' => {
+  if (response.status === SendTransactionStatus.CONFIRMED) {
+    return 'success'
+  }
+
+  return 'failed'
+}
 
 /** Send batch of signed transactions, wait for finalizing of last transaction */
 export const sendSignedTransactions = async (
@@ -25,8 +39,8 @@ export const sendSignedTransactions = async (
       connection,
     })
 
-    if (result.result !== 'success') {
-      return result.result
+    if (result.status !== SendTransactionStatus.CONFIRMED) {
+      return resposneToStatus(result)
     }
   }
 

@@ -22,7 +22,6 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { createPoolTransactions } from '@sb/dexUtils/pools/actions/createPool'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { SendSignedTransactionResult } from '@sb/dexUtils/types'
@@ -33,6 +32,11 @@ import {
 } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
+import {
+  SendTransactionStatus,
+  buildCreatePoolTransactions,
+  SendTransactionDetails,
+} from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
 
@@ -227,7 +231,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
       try {
         const { transactions: generatedTransactions, pool } =
-          await createPoolTransactions({
+          await buildCreatePoolTransactions({
             wallet,
             connection,
             baseTokenMint: new PublicKey(values.baseToken.mint),
@@ -283,102 +287,96 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(1)
         console.log('Create accounts...')
-        const { txId: createAccountsTxId, result: createAccountsStatus } =
-          await sendSignedSignleTransaction({
-            transaction: generatedTransactions.createAccounts,
-            connection,
-          })
-        console.log('createAccountsTxId: ', createAccountsStatus)
-        if (createAccountsStatus !== 'success') {
+        const createAccountsTxId = await sendSignedSignleTransaction({
+          transaction: generatedTransactions.createAccounts,
+          connection,
+        })
+        console.log('createAccountsTxId: ', createAccountsTxId)
+        if (createAccountsTxId.status !== SendTransactionStatus.CONFIRMED) {
           setTransactionError(
-            createAccountsStatus === 'timeout'
+            createAccountsTxId.details?.includes(SendTransactionDetails.TIMEOUT)
               ? POOL_ERRORS.ACCOUNTS_CREATION_TIMEOUT
               : POOL_ERRORS.ACCOUNTS_CREATION_FAILED,
-            createAccountsStatus,
-            createAccountsTxId
+            createAccountsTxId.status,
+            createAccountsTxId.transactionId
           )
           return
         }
 
         setProcessingStep(2)
         console.log('Set authorities...')
-        const { txId: setAuthoritiesTxId, result: setAuthoritiesStatus } =
-          await sendSignedSignleTransaction({
-            transaction: generatedTransactions.setAuthorities,
-            connection,
-          })
-        if (setAuthoritiesStatus !== 'success') {
+        const setAuthoritiesTxId = await sendSignedSignleTransaction({
+          transaction: generatedTransactions.setAuthorities,
+          connection,
+        })
+        if (setAuthoritiesTxId.status !== SendTransactionStatus.CONFIRMED) {
           setTransactionError(
-            setAuthoritiesStatus === 'timeout'
+            setAuthoritiesTxId.details?.includes(SendTransactionDetails.TIMEOUT)
               ? POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT
-              : POOL_ERRORS.SETTING_AUTHORITIES_FAILED,
-            setAuthoritiesStatus,
-            setAuthoritiesTxId
+              : POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT,
+            setAuthoritiesTxId.status,
+            setAuthoritiesTxId.transactionId
           )
           return
         }
-        console.log('setAuthoritiesTxId: ', setAuthoritiesStatus)
+        console.log('setAuthoritiesTxId: ', setAuthoritiesTxId.status)
 
         console.log('Initialize pool...')
         setProcessingStep(3)
-        const { txId: initPoolTxId, result: initPoolStatus } =
-          await sendSignedSignleTransaction({
-            transaction: generatedTransactions.createPool,
-            connection,
-          })
-        if (initPoolStatus !== 'success') {
+        const initPoolTxId = await sendSignedSignleTransaction({
+          transaction: generatedTransactions.createPool,
+          connection,
+        })
+        if (initPoolTxId.status !== SendTransactionStatus.CONFIRMED) {
           setTransactionError(
-            initPoolStatus === 'timeout'
+            initPoolTxId.details?.includes(SendTransactionDetails.TIMEOUT)
               ? POOL_ERRORS.POOL_CREATION_TIMEOUT
               : POOL_ERRORS.POOL_CREATION_FAILED,
-            initPoolStatus,
-            initPoolTxId
+            initPoolTxId.status,
+            initPoolTxId.transactionId
           )
           return
         }
-        console.log('initPoolTxId: ', initPoolStatus)
+        console.log('initPoolTxId: ', initPoolTxId.status)
 
         console.log('First deposit...')
         setProcessingStep(4)
-        const { txId: firstDepositTxId, result: firstDepositStatus } =
-          await sendSignedSignleTransaction({
-            transaction: generatedTransactions.firstDeposit,
-            connection,
-          })
-        if (firstDepositStatus !== 'success') {
+        const firstDepositTxId = await sendSignedSignleTransaction({
+          transaction: generatedTransactions.firstDeposit,
+          connection,
+        })
+        if (firstDepositTxId.status !== SendTransactionStatus.CONFIRMED) {
           setTransactionError(
-            firstDepositStatus === 'timeout'
+            firstDepositTxId.details?.includes(SendTransactionDetails.TIMEOUT)
               ? POOL_ERRORS.DEPOSIT_TIMEOUT
               : POOL_ERRORS.DEPOSIT_FAILED,
-            firstDepositStatus,
-            firstDepositTxId
+            firstDepositTxId.status,
+            firstDepositTxId.transactionId
           )
           return
         }
 
-        console.log('firstDepositTxId: ', firstDepositStatus)
+        console.log('firstDepositTxId: ', firstDepositTxId.status)
 
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
           setProcessingStep(5)
-          const { txId: farmingTxId, result: farmingStatus } =
-            await sendSignedSignleTransaction({
-              transaction: generatedTransactions.farming,
-              connection,
-            })
-          if (farmingStatus !== 'success') {
+          const farmingTxId = await sendSignedSignleTransaction({
+            transaction: generatedTransactions.farming,
+            connection,
+          })
+          if (farmingTxId.status !== SendTransactionStatus.CONFIRMED) {
             setTransactionError(
-              farmingStatus === 'timeout'
+              farmingTxId.details?.includes(SendTransactionDetails.TIMEOUT)
                 ? POOL_ERRORS.FARMING_CREATION_TIMEOUT
                 : POOL_ERRORS.FARMING_CREATION_FAILED,
-
-              farmingStatus,
-              farmingTxId
+              farmingTxId.status,
+              farmingTxId.transactionId
             )
             return
           }
           await sleep(1000)
-          console.log('farmingTxId: ', farmingStatus)
+          console.log('farmingTxId: ', farmingTxId.status)
         }
 
         setProcessingStep(6)
@@ -617,20 +615,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 {form.errors.baseToken && (
                   <ErrorText color="red3">{form.errors.baseToken}</ErrorText>
                 )}
-                {/* <CheckboxWrap>
-                  <CheckboxField
-                    label="Use Stable Curve for this pool. ATTENTION, ADVANCED USERS ONLY."
-                    name="stableCurve"
-                    color="primaryWhite"
-                  />
-
-                  <DarkTooltip title={STABLE_POOLS_TOOLTIP}>
-                    <InlineText cursor="help" color="success" size="sm">
-                      What is stable curve?
-                    </InlineText>
-                  </DarkTooltip>
-                </CheckboxWrap> */}
-
                 <GroupLabel label="Do you want to lock your initial liquidity for a set period of time?" />
                 <CheckboxWrap>
                   <RadioGroupContainer>

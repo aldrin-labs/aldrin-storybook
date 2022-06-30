@@ -24,7 +24,6 @@ const StakingComponent = () => {
       <RootRow style={{ height: 'auto' }}>
         <Cell col={12} colLg={12}>
           <UserStakingInfo
-            buyBackAmount={poolInfo.buyBackAmount}
             stakingPool={poolInfo.poolInfo}
             currentFarmingState={poolInfo.currentFarmingState}
             treasuryDailyRewards={poolInfo.treasuryDailyRewards}

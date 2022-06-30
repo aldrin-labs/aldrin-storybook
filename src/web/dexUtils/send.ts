@@ -6,11 +6,6 @@ import {
 } from '@project-serum/serum'
 import { OrderParams } from '@project-serum/serum/lib/market'
 import {
-  ASSOCIATED_TOKEN_PROGRAM_ID,
-  Token,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token'
-import {
   Account,
   Connection,
   PublicKey,
@@ -29,7 +24,10 @@ import {
   CancelOrderParams,
 } from '@sb/dexUtils/types'
 
-import { mergeTransactions } from '@core/solana'
+import {
+  createAssociatedTokenAccountTransaction,
+  mergeTransactions,
+} from '@core/solana'
 
 import { getCache } from './fetch-loop'
 import { getReferrerQuoteWallet } from './getReferrerQuoteWallet'
@@ -69,39 +67,6 @@ export async function cancelOrder(params: CancelOrderParams) {
       operationType: 'cancelOrder',
     }),
   })
-}
-
-export async function createTokenAccountTransaction({
-  wallet,
-  mintPublicKey,
-}: {
-  wallet: WalletAdapter
-  mintPublicKey: PublicKey
-}): Promise<{
-  transaction: Transaction
-  newAccountPubkey: PublicKey
-}> {
-  const ata = await Token.getAssociatedTokenAddress(
-    ASSOCIATED_TOKEN_PROGRAM_ID,
-    TOKEN_PROGRAM_ID,
-    mintPublicKey,
-    wallet.publicKey
-  )
-  const transaction = new Transaction()
-  transaction.add(
-    Token.createAssociatedTokenAccountInstruction(
-      ASSOCIATED_TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
-      mintPublicKey,
-      ata,
-      wallet.publicKey,
-      wallet.publicKey
-    )
-  )
-  return {
-    transaction,
-    newAccountPubkey: ata,
-  }
 }
 
 export async function getSettleFundsTransaction({
@@ -170,7 +135,7 @@ export async function getSettleFundsTransaction({
   let quoteCurrencyAccountPubkey = quoteTokenAccount?.pubkey
 
   if (!baseCurrencyAccountPubkey) {
-    const result = await createTokenAccountTransaction({
+    const result = await createAssociatedTokenAccountTransaction({
       wallet,
       mintPublicKey: market.baseMintAddress,
     })
@@ -178,7 +143,7 @@ export async function getSettleFundsTransaction({
     createAccountTransaction = result?.transaction
   }
   if (!quoteCurrencyAccountPubkey) {
-    const result = await createTokenAccountTransaction({
+    const result = await createAssociatedTokenAccountTransaction({
       wallet,
       mintPublicKey: market.quoteMintAddress,
     })
@@ -413,7 +378,7 @@ const createTokenAccount = async (
   transaction?: Transaction
 ) => {
   const { transaction: createAccountTransaction, newAccountPubkey } =
-    await createTokenAccountTransaction({
+    await createAssociatedTokenAccountTransaction({
       wallet,
       mintPublicKey,
     })
@@ -777,3 +742,5 @@ export async function listMarket({
 
 export const isTransactionFailed = (result: SendSignedTransactionResult) =>
   result === 'failed' || result === 'timeout'
+
+export { createAssociatedTokenAccountTransaction as createTokenAccountTransaction }

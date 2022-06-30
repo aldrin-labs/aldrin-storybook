@@ -10,11 +10,13 @@ import { TRANSACTION_COMMON_SOL_FEE } from '@sb/components/TraidingTerminal/util
 import { Text } from '@sb/compositions/Addressbook/index'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { CREATE_FARMING_TICKET_SOL_FEE } from '@sb/dexUtils/common/config'
-import { filterOldFarmingTickets } from '@sb/dexUtils/common/filterOldFarmingTickets'
 import { FarmingTicket } from '@sb/dexUtils/common/types'
-import { filterTicketsAvailableForUnstake } from '@sb/dexUtils/pools/filterTicketsAvailableForUnstake'
 import { RefreshFunction, TokenInfo, WalletAdapter } from '@sb/dexUtils/types'
 
+import {
+  filterTicketsAvailableForUnstake,
+  filterOldFarmingTickets,
+} from '@core/solana'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { PoolInfo } from '../../index.types'

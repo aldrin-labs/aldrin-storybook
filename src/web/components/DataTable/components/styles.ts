@@ -16,6 +16,7 @@ export const TooltipText = styled.div`
   color: ${(props) => props.theme.colors.gray0};
   padding: 5px;
   line-height: 1.4;
+  z-index: 1;
 `
 
 export const Container = styled.div`

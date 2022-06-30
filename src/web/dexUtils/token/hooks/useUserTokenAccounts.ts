@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 
-import { getAllTokensData } from '@sb/compositions/Rebalance/utils'
-
+import { getAllTokensData } from '@core/solana'
 import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 
 import { useConnection } from '../../connection'
@@ -16,9 +15,7 @@ export const useUserTokenAccounts = (): [TokenInfo[], RefreshFunction] => {
     if (!wallet.publicKey) {
       return []
     }
-    const data = await getAllTokensData(wallet.publicKey, connection)
-
-    return data
+    return getAllTokensData(wallet.publicKey, connection)
   }
 
   const swr = useSWR(`usertokens-${wallet.publicKey?.toBase58()}`, fetcher, {

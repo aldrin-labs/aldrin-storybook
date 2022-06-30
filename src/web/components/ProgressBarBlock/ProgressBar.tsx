@@ -4,13 +4,13 @@ import { estimateTime } from '@core/utils/dateUtils'
 
 import { InlineText } from '../Typography'
 import { Progress, ProgressBarContainer } from './styles'
-import { ProgressBarProps, TimeProgressBarProps } from './types'
+import { TimeProgressBarProps, ProgressBarProps } from './types'
 
 export const ProgressBar: React.FC<ProgressBarProps> = (props) => {
   const { children, width, background, padding } = props
   return (
     <ProgressBarContainer background={background}>
-      <Progress padding={padding} width={width} />
+      <Progress padding={padding} $width={width} />
       <InlineText size="sm" weight={600}>
         {children}
       </InlineText>
@@ -43,7 +43,7 @@ export const TimeProgressBar: React.FC<TimeProgressBarProps> = (props) => {
     <ProgressBar
       background={background}
       padding={padding}
-      width={`${Math.min(1, progress) * 100}%`}
+      width={`${Math.round(Math.min(1, progress) * 100)}%`}
     >
       {isFinished ? (
         finishedText

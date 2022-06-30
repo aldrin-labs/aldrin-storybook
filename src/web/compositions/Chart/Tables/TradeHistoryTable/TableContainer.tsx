@@ -72,7 +72,6 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    console.log('trade history inside didMount')
     this.subscribe()
   }
 
@@ -179,8 +178,6 @@ class TableContainer extends Component<IProps, IState> {
       updateTerminalPriceFromOrderbook,
       sizeDigits,
     } = this.props
-
-    console.log('trade history inside render')
 
     const { data = [], numbersAfterDecimalForPrice } = this.state
     const amountForBackground =

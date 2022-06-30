@@ -3,15 +3,20 @@ import React from 'react'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { getTokenName } from '@sb/dexUtils/markets'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
+import { filterOpenFarmingStates } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import { groupBy } from '../../../../utils'
 import { PoolStatsText } from '../PoolPage/styles'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-import { FarmingIconWrap, FarmingDataIcons, FarmingText } from './styles'
+import {
+  FarmingIconWrap,
+  FarmingDataIcons,
+  FarmingText,
+  Container,
+} from './styles'
 import { FarmingRewardsIconsProps, FarmingRewardsProps } from './types'
 
 export const FarmingRewardsIcons: React.FC<FarmingRewardsIconsProps> = (
@@ -23,7 +28,7 @@ export const FarmingRewardsIcons: React.FC<FarmingRewardsIconsProps> = (
       {mints.map((mint) => {
         return (
           <FarmingIconWrap key={`farming_icon_${poolMint}_${mint}`}>
-            <TokenIcon mint={mint} width="1.3em" emojiIfNoLogo={false} />
+            <TokenIcon mint={mint} />
           </FarmingIconWrap>
         )
       })}
@@ -38,6 +43,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
   } = props
 
   const farmings = filterOpenFarmingStates(farming || [])
+
   const farmingsMap = groupBy(farmings, (f) => f.farmingTokenMint)
 
   const tokenMap = useTokenInfos()
@@ -46,7 +52,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
   return farmings.length > 0 ? (
     <>
       <FarmingRewardsIcons poolMint={poolTokenMint} mints={openFarmingsKeys} />
-      <div>
+      <Container>
         <FarmingText>
           {openFarmingsKeys.map((farmingStateMint, i) => {
             const rewardPerK = (farmingsMap.get(farmingStateMint) || []).reduce(
@@ -71,7 +77,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
                 key={`fs_reward_${poolTokenMint}_${farmingStateMint}`}
               >
                 {i > 0 ? ' + ' : ''}
-                <FarmingText color="success">
+                <FarmingText color="ggreen3reen0">
                   {stripByAmountAndFormat(rewardPerK)}&nbsp;
                 </FarmingText>
                 {tokenName}
@@ -82,10 +88,10 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
         </FarmingText>
         <div>
           <FarmingText>
-            Per each <FarmingText color="success">$1000</FarmingText>
+            Per each <FarmingText color="green3">$1000</FarmingText>
           </FarmingText>
         </div>
-      </div>
+      </Container>
     </>
   ) : (
     <div>
