@@ -8,7 +8,6 @@ import { StakingPool } from '../../../dexUtils/staking/types'
 export interface OuterProps {
   currentFarmingState: FarmingState
   stakingPool: StakingPool
-  buyBackAmount: number
   treasuryDailyRewards: number
 }
 
@@ -22,7 +21,12 @@ export interface UserBalanceProps {
   decimals?: number
 }
 
-export type StakingInfoProps = InnerProps & OuterProps
+export type StakingInfoProps = {
+  currentFarmingState: FarmingState
+  stakingPool: StakingPool
+  treasuryDailyRewards: number
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
+}
 
 export interface StakingFormProps {
   loading: { stake: boolean; unstake: boolean }

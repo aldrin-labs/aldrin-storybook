@@ -18,12 +18,6 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import {
-  getPoolsForSwapActiveTab,
-  getSelectedPoolForSwap,
-  getDefaultBaseToken,
-  getDefaultQuoteToken,
-} from '@sb/dexUtils/pools/swap/index'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { signAndSendTransactions } from '@sb/dexUtils/transactions'
@@ -36,6 +30,12 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { useJupiterSwap } from '@core/hooks/useJupiter/useJupiterSwap'
+import {
+  getPoolsForSwapActiveTab,
+  getSelectedPoolForSwap,
+  getDefaultBaseToken,
+  getDefaultQuoteToken,
+} from '@core/solana'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,

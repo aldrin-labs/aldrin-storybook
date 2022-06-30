@@ -9,9 +9,9 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { getTokenName, getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
+import { filterOpenFarmingStates } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import {
   formatNumberToUSFormat,
@@ -174,15 +174,13 @@ Don't miss your chance.`
           <TokenIcons>
             <TokenIcon
               mint={pool.tokenA}
-              width="3em"
-              emojiIfNoLogo={false}
+              size={48}
               margin="0 0.5em 0 0"
             />{' '}
             /
             <TokenIcon
               mint={pool.tokenB}
-              width="3em"
-              emojiIfNoLogo={false}
+              size={48}
               margin="0 0 0 0.5em"
             />
           </TokenIcons>

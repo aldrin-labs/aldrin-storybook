@@ -1,5 +1,4 @@
-import { Connection } from '@solana/web3.js'
-import { useEffect, useState } from 'react'
+import useSwr from 'swr'
 
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import {
@@ -7,67 +6,66 @@ import {
   PoolAddress,
   SnapshotQueue,
 } from '@sb/dexUtils/common/types'
-import { addFarmingRewardsToTickets } from '@sb/dexUtils/pools/addFarmingRewardsToTickets/addFarmingRewardsToTickets'
-import { getParsedUserFarmingTickets } from '@sb/dexUtils/pools/farmingTicket/getParsedUserFarmingTickets'
-import { RefreshFunction, WalletAdapter } from '@sb/dexUtils/types'
+import { RefreshFunction } from '@sb/dexUtils/types'
+
+import {
+  getParsedUserFarmingTickets,
+  addFarmingRewardsToTickets,
+} from '@core/solana'
+import { COMMON_REFRESH_INTERVAL } from '@core/utils/config'
 
 import { groupBy } from '../../../utils'
+import { walletAdapterToWallet } from '../../common'
+import { useConnection } from '../../connection'
+import { useWallet } from '../../wallet'
 
 /**
  *
  * @param
  * @returns tickets groupped by pool address
  */
-export const useFarmingTicketsMap = ({
-  wallet,
-  connection,
-  pools,
-  snapshotQueues,
-}: {
-  wallet: WalletAdapter
-  connection: Connection
+
+interface UseFarmingTicketsMapParams {
   pools: PoolInfo[]
   snapshotQueues: SnapshotQueue[]
-}): [Map<string, FarmingTicket[]>, RefreshFunction] => {
-  const [farmingTicketsMap, setFarmingTicketsMap] = useState(
-    new Map<PoolAddress, FarmingTicket[]>()
+}
+
+const EMPTY_MAP = new Map<PoolAddress, FarmingTicket[]>()
+
+export const useFarmingTicketsMap = (
+  params: UseFarmingTicketsMapParams
+): [Map<string, FarmingTicket[]>, RefreshFunction] => {
+  const { pools, snapshotQueues } = params
+  const { wallet } = useWallet()
+  const connection = useConnection()
+  const fetcher = async () => {
+    if (!wallet.publicKey || !pools?.length) {
+      return EMPTY_MAP
+    }
+    const w = walletAdapterToWallet(wallet)
+    const allUserFarmingTickets = await getParsedUserFarmingTickets({
+      wallet: w,
+      connection,
+    })
+
+    const allUserFarmingTicketsWithAmountsToClaim = addFarmingRewardsToTickets({
+      pools,
+      farmingTickets: allUserFarmingTickets,
+      snapshotQueues,
+    })
+
+    return groupBy(
+      allUserFarmingTicketsWithAmountsToClaim,
+      (ticket) => ticket.pool
+    )
+  }
+  const swr = useSwr(
+    `farming-tickets-${wallet.publicKey?.toString()}`,
+    fetcher,
+    {
+      refreshInterval: COMMON_REFRESH_INTERVAL,
+    }
   )
 
-  const [refreshCounter, setRefreshCounter] = useState(0)
-  const refresh: RefreshFunction = () => setRefreshCounter(refreshCounter + 1)
-
-  useEffect(() => {
-    const loadFarmingTickets = async () => {
-      const allUserFarmingTickets = await getParsedUserFarmingTickets({
-        wallet,
-        connection,
-      })
-
-      const allUserFarmingTicketsWithAmountsToClaim =
-        addFarmingRewardsToTickets({
-          pools,
-          farmingTickets: allUserFarmingTickets,
-          snapshotQueues,
-        })
-
-      const ticketMap = groupBy(
-        allUserFarmingTicketsWithAmountsToClaim,
-        (ticket) => ticket.pool
-      )
-
-      setFarmingTicketsMap(ticketMap)
-    }
-
-    if (
-      pools &&
-      pools.length > 0 &&
-      snapshotQueues &&
-      snapshotQueues.length > 0 &&
-      wallet.publicKey
-    ) {
-      loadFarmingTickets()
-    }
-  }, [wallet.publicKey, pools, snapshotQueues, refreshCounter])
-
-  return [farmingTicketsMap, refresh]
+  return [swr.data || EMPTY_MAP, swr.mutate]
 }

@@ -22,7 +22,6 @@ import {
 import { IProps } from './index.types'
 
 const AnalyticsRoute = ({
-  markets,
   theme,
   publicKey,
   selectedPair,

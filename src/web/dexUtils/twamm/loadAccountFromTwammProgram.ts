@@ -13,10 +13,7 @@ export const loadAccountsFromTWAMMProgram = async ({
   connection: Connection
   filters: GetProgramAccountsFilter[]
 }) => {
-  return await connection.getProgramAccounts(
-    new PublicKey(TWAMM_PROGRAM_ADDRESS),
-    {
-      filters,
-    }
-  )
+  return connection.getProgramAccounts(new PublicKey(TWAMM_PROGRAM_ADDRESS), {
+    filters,
+  })
 }

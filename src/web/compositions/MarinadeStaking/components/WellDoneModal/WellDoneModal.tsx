@@ -27,7 +27,7 @@ export const WellDoneModal: React.FC<WellDoneModalProps> = (props) => {
           <Text>You’re now staking with Marinade!</Text>
           <Text>
             You can deposit your{' '}
-            <InlineText color="success">
+            <InlineText color="green3">
               {stripByAmount(mSolWallet?.amount || 0)} mSOL
             </InlineText>{' '}
             into one of Aldrin liquidity pools to earn more rewards.
