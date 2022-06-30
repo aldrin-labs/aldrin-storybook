@@ -8,7 +8,7 @@ import {
 } from '@variables/variables'
 import styled, { css } from 'styled-components'
 
-import RinLogo from '@icons/DarkLogo.svg'
+import RinLogo from '@icons/blueRINLogo.svg'
 
 const VARIANTS = {
   primary: css`

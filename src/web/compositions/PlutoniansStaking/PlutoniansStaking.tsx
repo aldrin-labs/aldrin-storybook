@@ -61,7 +61,6 @@ import {
   REWARDS_BG,
   REWARD_TOKEN_MULTIPLIER,
   REWARD_APR_DENOMINATOR,
-  EXTRA_REWARDS,
   PLD_DENOMINATOR,
   PLD_DECIMALS,
   STAKINGS,
@@ -440,7 +439,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                     />
                   ) : (
                     <InlineText size="sm" weight={600}>
-                      {EXTRA_REWARDS[idx]}
+                      {staking.nftRewards[idx]}
                     </InlineText>
                   )}
                 </ModeContainer>
@@ -542,7 +541,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                   Eligible
                                 </InlineText>
                                 <RewardDescription size="sm" weight={600}>
-                                  {EXTRA_REWARDS[selectedTierIndex]}
+                                  {staking.nftRewards[selectedTierIndex]}
                                 </RewardDescription>
                               </>
                             ) : (
@@ -561,7 +560,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                       {stakeTokenName}
                                     </InlineText>
                                     <InlineText size="sm">
-                                      to get {EXTRA_REWARDS[selectedTierIndex]}
+                                      to get{' '}
+                                      {staking.nftRewards[selectedTierIndex]}
                                     </InlineText>
                                   </>
                                 ) : (
@@ -627,7 +627,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <RewardsComponent imgSrc={Plutonians}>
                         <StretchedBlock style={{ padding: '1.3em 1em' }}>
                           <RewardDescription weight={700} size="sm">
-                            {EXTRA_REWARDS[selectedTierIndex]}
+                            {staking.nftRewards[selectedTierIndex]}
                           </RewardDescription>
                         </StretchedBlock>
                       </RewardsComponent>
@@ -650,7 +650,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                               width="xl"
                             >
                               <RewardDescription size="sm" weight={600}>
-                                {EXTRA_REWARDS[selectedTierIndex]}
+                                {staking.nftRewards[selectedTierIndex]}
                               </RewardDescription>
                             </StretchedBlock>
                           </>

@@ -39,7 +39,7 @@ export const useFarmingTicketsMap = (
   const { wallet } = useWallet()
   const connection = useConnection()
   const fetcher = async () => {
-    if (!wallet.publicKey || !pools?.length || !snapshotQueues?.length) {
+    if (!wallet.publicKey || !pools?.length) {
       return EMPTY_MAP
     }
     const w = walletAdapterToWallet(wallet)
