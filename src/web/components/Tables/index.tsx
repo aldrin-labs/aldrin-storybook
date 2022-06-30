@@ -980,7 +980,7 @@ const CustomTable = (props: Props) => {
               }}
             >
               <div>{additionalBlock}</div>
-              {showPagination !== false ? (
+              {showPagination !== false && (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <PaginationBlock
                     theme={theme}
@@ -1035,7 +1035,7 @@ const CustomTable = (props: Props) => {
                     />
                   </PaginationBlock>
                 </div>
-              ) : null}
+              )}
             </div>
           </div>
         </div>

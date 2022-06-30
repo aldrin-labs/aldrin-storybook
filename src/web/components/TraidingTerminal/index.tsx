@@ -196,12 +196,12 @@ export const TradeInputContent = ({
           {title}
         </AbsoluteInputTitle>
       )}
-      {needPreSymbol ? (
+      {needPreSymbol && (
         <UpdatedCoin style={{ width: 0 }} left="2rem">
           {preSymbol}
         </UpdatedCoin>
-      ) : null}
-      {needTitleBlock ? (
+      )}
+      {needTitleBlock && (
         <>
           {needTooltip ? (
             <DarkTooltip title={titleForTooltip}>
@@ -215,7 +215,7 @@ export const TradeInputContent = ({
             </TitleForInput>
           )}
         </>
-      ) : null}
+      )}
 
       <TradeInput
         align={textAlign}
@@ -697,7 +697,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
             <InputsBlock direction="column">
               {priceType !== 'market' &&
               priceType !== 'stop-market' &&
-              priceType !== 'maker-only' ? (
+              priceType !== 'maker-only' && (
                 <InputRowContainer
                   key="limit-price"
                   padding=".6rem 0"
@@ -714,7 +714,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                     symbol={pair[1]}
                   />
                 </InputRowContainer>
-              ) : null}
+              )}
               {/* {priceType === 'market' && !tradingBotEnabled && (
                 <InputRowContainer
                   style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}
