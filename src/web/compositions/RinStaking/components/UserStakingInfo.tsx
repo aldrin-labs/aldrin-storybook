@@ -1,14 +1,17 @@
 import { PublicKey } from '@solana/web3.js'
 import { COLORS } from '@variables/variables'
 import dayjs from 'dayjs'
+import { toNumber } from 'lodash-es'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
-import { Block, BlockContentStretched } from '@sb/components/Block'
+import { Block, BlockContentStretched, BlockTitle } from '@sb/components/Block'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { NumberWithLabel } from '@sb/compositions/Staking/components/NumberWithLabel/NumberWithLabel'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { startFarmingV2, stopFarmingV2 } from '@sb/dexUtils/farming'
 import { claimEligibleHarvest } from '@sb/dexUtils/farming/actions/claimEligibleHarvest'
@@ -210,7 +213,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
   const { data: farms } = useFarmInfo()
-  const farm = farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {}
+  const farm = farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {}
 
   const start = useCallback(
     async (amount: number) => {
@@ -402,6 +405,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   return (
     <>
+      <RowContainer justify="space-between">
+        <BlockTitle>Stake RIN</BlockTitle>
+        <NumberWithLabel value={toNumber(formattedAPR)} label="APR" />
+      </RowContainer>
       <Row style={{ height: 'auto' }}>
         <Cell colMd={12} colXl={6} col={12}>
           <Block inner>
@@ -488,7 +495,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   >
                     <span>
                       <ClaimButton
-                        disabled={isClaimDisabled || loading.claim}
+                        // disabled={isClaimDisabled || loading.claim}
                         $loading={loading.claim}
                         $fontSize="sm"
                         onClick={claimRewards}

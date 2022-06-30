@@ -212,7 +212,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           }
           await initializeFarmingV2({
             stakeMint: new PublicKey(
-              'B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh'
+              '8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD'
             ),
             wallet,
             connection,
@@ -233,7 +233,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             connection,
             amount: 100000,
             farm:
-              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
+              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
             userTokens: userTokensData,
           })
         }}
@@ -252,7 +252,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             connection,
             amount: 50000,
             farm:
-              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
+              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
             userTokens: userTokensData,
             harvestMint: new PublicKey(
               'B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh'
@@ -273,10 +273,10 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             connection,
             amount: 10000,
             farm:
-              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
+              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
             userTokens: userTokensData,
             harvestMint: new PublicKey(
-              'B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh'
+              '8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD'
             ),
             startsAt: 0,
             periodLengthInSlots: 3,
@@ -295,7 +295,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             wallet,
             connection,
             farm:
-              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
+              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
             userTokens: userTokensData,
           })
         }}
@@ -314,7 +314,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             connection,
             amount: 10000,
             farm:
-              farms?.get('B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh') || {},
+              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
             userTokens: userTokensData,
           })
         }}
