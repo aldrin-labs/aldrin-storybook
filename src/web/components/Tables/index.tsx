@@ -948,12 +948,12 @@ const CustomTable = (props: Props) => {
               ...paginationStyles,
             }}
           >
-            {needRefetch ? (
+            {needRefetch && (
               <AutoRefetch
                 autoRefetch={autoRefetch}
                 toggleAutoRefetch={toggleAutoRefetch}
               />
-            ) : null}
+            )}
             {/* <StyledTablePagination
             component="div"
             count={pagination.totalCount || data.body.length}

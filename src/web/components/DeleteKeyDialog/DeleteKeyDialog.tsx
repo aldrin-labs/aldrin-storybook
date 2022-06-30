@@ -61,7 +61,7 @@ const DeleteAccountDialogComponent = ({
         const { status, errorMessage } = response.data.deleteExchangeKey
 
         showDeleteKeyStatus({ status, errorMessage })
-        
+
         if (status !== 'OK') {
           setError('Something went wrong')
           return
@@ -125,9 +125,9 @@ const DeleteAccountDialogComponent = ({
                   style={{ marginLeft: '0rem' }}
                 />
               </Grid>
-              {error ? (
+              {error && (
                 <ErrorText style={{ paddingTop: '.5rem' }}>{error}</ErrorText>
-              ) : null}
+              )}
             </FormControl>
             <Grid
               container

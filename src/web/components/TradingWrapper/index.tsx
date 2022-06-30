@@ -290,7 +290,7 @@ class SimpleTabs extends React.Component<any, any> {
                   flexDirection: 'row',
                 }}
               >
-                {mode === 'market' ? (
+                {mode === 'market' && (
                   <DarkTooltip
                     maxWidth="35rem"
                     title="A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading."
@@ -317,9 +317,9 @@ class SimpleTabs extends React.Component<any, any> {
                       </SettingsLabel>
                     </FuturesSettings>
                   </DarkTooltip>
-                ) : null}
+                )}
 
-                {mode === 'limit' ? (
+                {mode === 'limit' && (
                   <TerminalHeader
                     key="futuresTerminal"
                     style={{ display: 'flex', border: 'none' }}
@@ -366,7 +366,7 @@ class SimpleTabs extends React.Component<any, any> {
                       </FuturesSettings>
                     </SettingsContainer>
                   </TerminalHeader>
-                ) : null}
+                )}
                 {/* <TerminalModeButton
                   theme={theme}
                   style={{

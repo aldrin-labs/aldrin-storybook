@@ -202,9 +202,9 @@ const SignalPreferencesDialog = ({
                   </SignalPropertyGrid>
                 )
               })}
-              {isInvalidField ? (
+              {isInvalidField && (
                 <ErrorText>Please write correct data</ErrorText>
-              ) : null}
+              )}
             </StyledDialogContent>
             <Grid
               item

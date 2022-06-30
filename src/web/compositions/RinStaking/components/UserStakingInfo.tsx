@@ -590,7 +590,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         $fontSize="sm"
                         onClick={claimRewards}
                       >
-                        {isClaimDisabled ? <SvgIcon src={ClockIcon} /> : null}
+                        {isClaimDisabled && <SvgIcon src={ClockIcon} />}
                         Claim
                       </ClaimButton>
                     </span>
