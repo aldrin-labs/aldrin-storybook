@@ -17,6 +17,7 @@ import {
   Cell,
   Column,
 } from '@sb/components/Layout'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { Modal } from '@sb/components/Modal'
 import { TimeProgressBar } from '@sb/components/ProgressBarBlock/ProgressBar'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
@@ -32,7 +33,6 @@ import {
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { SRinNftRewardGroup } from '@core/solana'
 import {

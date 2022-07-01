@@ -2,9 +2,9 @@ import { Theme } from '@material-ui/core'
 import React, { useState, useEffect } from 'react'
 import { compose } from 'recompose'
 
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { updatePriceQuerryFunction } from '@sb/compositions/Chart/components/MarketStats/MarketStats.utils'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getPrice } from '@core/graphql/queries/chart/getPrice'
 import { LISTEN_PRICE } from '@core/graphql/subscriptions/LISTEN_PRICE'
 import {

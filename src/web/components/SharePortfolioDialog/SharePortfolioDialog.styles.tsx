@@ -13,7 +13,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-import SearchUsername from '@core/components/SearchUsername/SearchUsername'
+import SearchUsername from './SearchUsername/SearchUsername'
 
 export const StyledDialogContent = styled(DialogContent)`
   border-radius: none;

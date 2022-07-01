@@ -9,6 +9,7 @@ import { SortDirection } from 'react-virtualized'
 import { compose } from 'recompose'
 
 import { SvgIcon } from '@sb/components'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import {
   getTimezone,
   endOfDayTimestamp,
@@ -17,14 +18,13 @@ import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { WarningPopup } from '@sb/compositions/Chart/components/WarningPopup'
 import { notify } from '@sb/dexUtils/notifications'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
+import { withMarketUtilsHOC } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { fiatPairs } from '@core/config/stableCoins'
 import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
 import { getSerumTradesData } from '@core/graphql/queries/chart/getSerumTradesData'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { dayDuration } from '@core/utils/dateUtils'
 
 import search from '@icons/search.svg'
