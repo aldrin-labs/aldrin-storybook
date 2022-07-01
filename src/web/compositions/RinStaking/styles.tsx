@@ -45,7 +45,7 @@ export const StyledTextDiv = styled.div`
 `
 
 export const RootRow = styled(Row)`
-  margin: 40px 0;
+  margin: 0;
   background: ${(props) => props.theme.colors.gray6};
   border-radius: 2rem;
   padding: 2rem;

@@ -8,18 +8,14 @@ import { AddHarvestParams } from './types'
 
 export const addHarvestV2 = async (params: AddHarvestParams) => {
   const wallet = walletAdapterToWallet(params.wallet)
-  const { farm, connection, userTokens, amount, harvestMint } = params
-  const stakeMint = farm.stakeMint.toString()
-  const userTokenAccount = userTokens.find((ut) => ut.mint === stakeMint)
-  if (!userTokenAccount) {
-    throw new Error('Token account not found!')
-  }
+  const { farm, connection, userTokens, harvestMint } = params
 
   const instructions: TransactionInstruction[] = []
 
   const { instruction } = await buildAddHarvestInstructions({
     wallet,
     connection,
+    userTokens,
     farm,
     harvestMint,
   })
