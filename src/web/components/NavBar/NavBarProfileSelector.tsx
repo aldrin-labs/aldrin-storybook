@@ -1,15 +1,16 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Grid, Theme } from '@material-ui/core'
+import React, { useState } from 'react'
 import { graphql } from 'react-apollo'
+import { Link } from 'react-router-dom'
 import { compose } from 'recompose'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
-
-import { GET_MY_PROFILE } from '@core/graphql/queries/profile/getMyProfile'
-import { getMyAccount } from '@core/graphql/queries/profile/getMyAccount'
 
 import Dropdown from '@sb/components/Dropdown'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
+
+import { getMyAccount } from '@core/graphql/queries/profile/getMyAccount'
+import { GET_MY_PROFILE } from '@core/graphql/queries/profile/getMyProfile'
+
 import ArrowBottom from '@icons/arrowBottom.svg'
 
 const NavBarProfileSelector = ({
@@ -36,9 +37,9 @@ const NavBarProfileSelector = ({
   return (
     <Grid
       item
-      direction={'column'}
-      alignItems={'center'}
-      justify={'center'}
+      direction="column"
+      alignItems="center"
+      justify="center"
       style={{
         display: 'flex',
         height: '100%',
@@ -53,10 +54,19 @@ const NavBarProfileSelector = ({
         id="profile-page"
         key="profile-page"
         pathname={pathname}
-        page={`profile`}
+        page="profile"
         buttonText={
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <span style={{ maxWidth: '15rem', overflow: 'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{accountData.email}</span>
+            <span
+              style={{
+                maxWidth: '15rem',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {accountData.email}
+            </span>
             <SvgIcon
               width="1rem"
               height="1rem"

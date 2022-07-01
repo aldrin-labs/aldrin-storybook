@@ -6,6 +6,7 @@ import { useTheme } from 'styled-components'
 import { Loading } from '@sb/components'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { LoadingScreenWithHint } from '@sb/components/LoadingScreenWithHint/LoadingScreenWithHint'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import OpenOrdersTable from '@sb/components/TradingTable/OpenOrdersTable/OpenOrdersTable'
 import { useConnection, useSerumConnection } from '@sb/dexUtils/connection'
 import {
@@ -18,7 +19,6 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { notEmpty, onlyUnique, sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { DEX_PID } from '@core/config/dex'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 

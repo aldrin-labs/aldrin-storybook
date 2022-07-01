@@ -18,7 +18,7 @@ import {
   WarningIcon,
 } from './styles'
 import { CreatePoolFormType } from './types'
-
+import { useTheme } from 'styled-components'
 interface PoolConfirmationDataProps {
   values: CreatePoolFormType
   price: ReactNode
@@ -42,6 +42,8 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
     price,
     farmingRewardPerDay,
   } = props
+
+  const theme = useTheme()
 
   const tokenInfo = useTokenInfos()
 
@@ -140,7 +142,7 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
         <ConfirmationRow>
           <InlineText size="sm">Est. pool creation fee:</InlineText>
           <InlineText size="sm" weight={600}>
-            <InlineText size="sm" color="success">
+            <InlineText size="sm" color="green3">
               {values.farmingEnabled ? '0.3' : '0.03'}
             </InlineText>
             <InlineText size="sm"> SOL</InlineText>

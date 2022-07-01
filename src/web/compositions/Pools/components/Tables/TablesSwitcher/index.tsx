@@ -1,10 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
 
 import { FlexBlock } from '@sb/components/Layout'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/components/Typography'
 import {
@@ -17,21 +18,19 @@ import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFr
 import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
-import { useSnapshotQueues } from '@sb/dexUtils/pools/hooks/useSnapshotQueues'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useVestings } from '@sb/dexUtils/vesting'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 import { toMap } from '@sb/utils'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { AUTHORIZED_POOLS } from '@core/config/dex'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql/queries/pools/getFeesEarnedByPool'
 import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { fixCorruptedFarmingStates } from '@core/solana'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
@@ -103,7 +102,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const { data: calcAccounts, mutate: refreshCalcAccounts } =
     useFarmingCalcAccounts()
 
-  const [snapshotQueues] = useSnapshotQueues()
+  // const [snapshotQueues] = useSnapshotQueues()
 
   const pools = rawPools.map((pool) => {
     return {
@@ -116,7 +115,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     wallet,
     connection,
     pools,
-    snapshotQueues,
+    snapshotQueues: [], // TODO:
   })
 
   const refreshAll = () => {
@@ -169,6 +168,26 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     []
 
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
+
+  const activePoolsList = useMemo(() => {
+    if (selectedTable === 'authorized') {
+      return authorizedPools
+    }
+    if (selectedTable === 'nonAuthorized') {
+      return nonAuthorizedPools
+    }
+    if (selectedTable === 'stablePools') {
+      return stablePools
+    }
+    if (selectedTable === 'userLiquidity') {
+      return userLiquidityPools
+    }
+    return pools
+  }, [selectedTable, pools])
+
+  const poolsLength = activePoolsList.length
+
+  const tableHeight = Math.min(poolsLength * 13, 80)
 
   return (
     <>
@@ -263,7 +282,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         </InputWrap>
       </TabContainer>
 
-      <TableContainer $height="80rem">
+      <TableContainer>
         {selectedTable === 'authorized' && (
           <AllPoolsTable
             searchValue={searchValue}

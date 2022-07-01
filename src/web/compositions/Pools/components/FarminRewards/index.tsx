@@ -11,7 +11,12 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import { groupBy } from '../../../../utils'
 import { PoolStatsText } from '../PoolPage/styles'
 import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
-import { FarmingIconWrap, FarmingDataIcons, FarmingText } from './styles'
+import {
+  FarmingIconWrap,
+  FarmingDataIcons,
+  FarmingText,
+  Container,
+} from './styles'
 import { FarmingRewardsIconsProps, FarmingRewardsProps } from './types'
 
 export const FarmingRewardsIcons: React.FC<FarmingRewardsIconsProps> = (
@@ -47,7 +52,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
   return farmings.length > 0 ? (
     <>
       <FarmingRewardsIcons poolMint={poolTokenMint} mints={openFarmingsKeys} />
-      <div>
+      <Container>
         <FarmingText>
           {openFarmingsKeys.map((farmingStateMint, i) => {
             const rewardPerK = (farmingsMap.get(farmingStateMint) || []).reduce(
@@ -72,7 +77,7 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
                 key={`fs_reward_${poolTokenMint}_${farmingStateMint}`}
               >
                 {i > 0 ? ' + ' : ''}
-                <FarmingText color="success">
+                <FarmingText color="ggreen3reen0">
                   {stripByAmountAndFormat(rewardPerK)}&nbsp;
                 </FarmingText>
                 {tokenName}
@@ -83,10 +88,10 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
         </FarmingText>
         <div>
           <FarmingText>
-            Per each <FarmingText color="success">$1000</FarmingText>
+            Per each <FarmingText color="green3">$1000</FarmingText>
           </FarmingText>
         </div>
-      </div>
+      </Container>
     </>
   ) : (
     <div>

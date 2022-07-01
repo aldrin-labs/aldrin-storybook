@@ -2,8 +2,8 @@ import { withTheme } from '@material-ui/core/styles'
 import React from 'react'
 import { compose } from 'recompose'
 
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-import { withPublicKey } from '@core/hoc/withPublicKey'
+import { withMarketUtilsHOC } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
 import { BlockTemplate } from '../Pools/index.styles'
 import AreaVolumeChart from './components/AreaCharts/AreaVolumeChart'

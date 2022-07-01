@@ -1,7 +1,9 @@
+import { Theme } from '@material-ui/core'
 import React from 'react'
 import { compose } from 'recompose'
-import { Theme } from '@material-ui/core'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+
 import { getSerumAvgTotalStats } from '@core/graphql/queries/analytics/getSerumAvgTotalStats'
 
 import {
@@ -10,7 +12,6 @@ import {
   generateIDFromValues,
   getTimezone,
 } from '../utils'
-
 import ButterflyChart from './ButterflyChart'
 
 const CountButterflyChart = ({
@@ -27,14 +28,11 @@ const CountButterflyChart = ({
       theme={theme}
       selectedPair={selectedPair}
       data={getSerumAvgTotalStatsQuery.getSerumAvgTotalStats}
-      id={
-        'getSerumAvgTotalStatsQuery' +
-        generateIDFromValues(getSerumAvgTotalStatsQuery.getSerumAvgTotalStats) +
-        selectedPair +
-        getSerumAvgTotalStatsQuery.loading
-      }
-      title={'Average Trade Value'}
-      needQuoteInLabel={true}
+      id={`getSerumAvgTotalStatsQuery${generateIDFromValues(
+        getSerumAvgTotalStatsQuery.getSerumAvgTotalStats
+      )}${selectedPair}${getSerumAvgTotalStatsQuery.loading}`}
+      title="Average Trade Value"
+      needQuoteInLabel
     />
   )
 }

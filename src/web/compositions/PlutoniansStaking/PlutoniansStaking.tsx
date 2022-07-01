@@ -17,6 +17,7 @@ import {
   Cell,
   Column,
 } from '@sb/components/Layout'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { Modal } from '@sb/components/Modal'
 import { TimeProgressBar } from '@sb/components/ProgressBarBlock/ProgressBar'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
@@ -32,7 +33,6 @@ import {
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { SRinNftRewardGroup } from '@core/solana'
 import {
@@ -61,7 +61,6 @@ import {
   REWARDS_BG,
   REWARD_TOKEN_MULTIPLIER,
   REWARD_APR_DENOMINATOR,
-  EXTRA_REWARDS,
   PLD_DENOMINATOR,
   PLD_DECIMALS,
   STAKINGS,
@@ -87,8 +86,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
     getDexTokensPricesQuery: { getDexTokensPrices: prices = [] },
   } = props
 
-  const { symbol = 'PLD' } = useParams<{ symbol: string }>()
-
+  const params = useParams<{ symbol: string }>()
+  const { symbol = 'PLD' } = params
   const staking = STAKINGS[symbol.toUpperCase()] || STAKINGS.PLD
 
   const { wallet } = useWallet()
@@ -440,7 +439,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                     />
                   ) : (
                     <InlineText size="sm" weight={600}>
-                      {EXTRA_REWARDS[idx]}
+                      {staking.nftRewards[idx]}
                     </InlineText>
                   )}
                 </ModeContainer>
@@ -542,7 +541,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                   Eligible
                                 </InlineText>
                                 <RewardDescription size="sm" weight={600}>
-                                  {EXTRA_REWARDS[selectedTierIndex]}
+                                  {staking.nftRewards[selectedTierIndex]}
                                 </RewardDescription>
                               </>
                             ) : (
@@ -561,7 +560,8 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                       {stakeTokenName}
                                     </InlineText>
                                     <InlineText size="sm">
-                                      to get {EXTRA_REWARDS[selectedTierIndex]}
+                                      to get{' '}
+                                      {staking.nftRewards[selectedTierIndex]}
                                     </InlineText>
                                   </>
                                 ) : (
@@ -627,7 +627,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                       <RewardsComponent imgSrc={Plutonians}>
                         <StretchedBlock style={{ padding: '1.3em 1em' }}>
                           <RewardDescription weight={700} size="sm">
-                            {EXTRA_REWARDS[selectedTierIndex]}
+                            {staking.nftRewards[selectedTierIndex]}
                           </RewardDescription>
                         </StretchedBlock>
                       </RewardsComponent>
@@ -650,7 +650,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                               width="xl"
                             >
                               <RewardDescription size="sm" weight={600}>
-                                {EXTRA_REWARDS[selectedTierIndex]}
+                                {staking.nftRewards[selectedTierIndex]}
                               </RewardDescription>
                             </StretchedBlock>
                           </>

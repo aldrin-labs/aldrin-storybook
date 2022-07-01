@@ -11,4 +11,5 @@ export interface StakingDescription {
   stakingPool: string
   minStakeTokensForRewardBn: BN
   minStakeTokensForReward: number
+  nftRewards: [string, string, string, string]
 }
