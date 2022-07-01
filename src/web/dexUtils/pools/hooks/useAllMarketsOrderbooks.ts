@@ -11,7 +11,6 @@ import {
 } from '@sb/compositions/Rebalance/utils/loadMarketsWithDataForTransactions'
 import { useOpenOrdersFromMarkets } from '@sb/compositions/Rebalance/utils/useOpenOrdersFromMarkets'
 import { useConnection } from '@sb/dexUtils/connection'
-import { useAllMarketsList } from '@sb/dexUtils/markets'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 export type LoadedMarketWithOrderbook =
@@ -31,7 +30,6 @@ export const useAllMarketsOrderbooks = ({
 }): [LoadedMarketWithOrderbookMap, () => void] => {
   const { wallet } = useWallet()
   const connection = useConnection()
-  const allMarketsMap = useAllMarketsList()
   const [openOrdersFromMarketsMap] = useOpenOrdersFromMarkets()
 
   const fetcher = async (): Promise<LoadedMarketWithOrderbookMap> => {
@@ -41,10 +39,8 @@ export const useAllMarketsOrderbooks = ({
     }
 
     const loadedMarketsMap = await loadMarketsWithDataForTransactions({
-      wallet,
       connection,
       marketsNames,
-      allMarketsMap,
       openOrdersFromMarketsMap,
     })
 

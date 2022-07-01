@@ -7,6 +7,7 @@ import {
 } from '@project-serum/serum'
 import { TokenInfo } from '@solana/spl-token-registry'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
+import marketsList from 'aldrin-registry/src/markets.json'
 import tokensList from 'aldrin-registry/src/tokens.json'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
@@ -38,6 +39,9 @@ import { useLocalStorageState } from './utils'
 import { useWallet } from './wallet'
 
 export const tokensMap = toMap(tokensList, (token) => token.address)
+export const marketsMap = toMap(marketsList, (market) =>
+  market.name.replace('/', '_')
+)
 
 export const ALL_TOKENS_MINTS = tokensList.map((el) => {
   return { ...el, address: new PublicKey(el.address) }

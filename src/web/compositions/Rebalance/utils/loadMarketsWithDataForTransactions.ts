@@ -1,9 +1,6 @@
 import { OpenOrders } from '@project-serum/serum'
 import { Connection, PublicKey } from '@solana/web3.js'
 
-import { MarketsMap } from '@sb/dexUtils/markets'
-import { WalletAdapter } from '@sb/dexUtils/types'
-
 import { LoadedMarket, loadMarketsByNames } from './loadMarketsByNames'
 import { OpenOrdersMap } from './loadOpenOrdersFromMarkets'
 import { loadVaultSignersFromMarkets } from './loadVaultSignersFromMarkets'
@@ -18,28 +15,22 @@ export type LoadedMarketsWithDataForTransactionsMap = Map<
 >
 
 export const loadMarketsWithDataForTransactions = async ({
-  wallet,
   connection,
   marketsNames,
-  allMarketsMap,
   openOrdersFromMarketsMap,
 }: {
-  wallet: WalletAdapter
   connection: Connection
   marketsNames: string[]
-  allMarketsMap: MarketsMap
   openOrdersFromMarketsMap: OpenOrdersMap
 }): Promise<LoadedMarketsWithDataForTransactionsMap> => {
   const [loadedMarketsMap] = await Promise.all([
     loadMarketsByNames({
       connection,
       marketsNames,
-      allMarketsMap,
     }),
   ])
 
   const vaultSignersMap = await loadVaultSignersFromMarkets({
-    allMarketsMap,
     marketsNames,
   })
 

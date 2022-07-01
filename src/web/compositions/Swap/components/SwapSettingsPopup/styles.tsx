@@ -20,8 +20,20 @@ const CustomSlippageContainer = styled(RowContainer)`
   height: 2.5em;
   background: ${({ theme }) => theme.colors.gray7};
   border: 1px solid
-    ${({ theme, isActive }: { isActive: boolean; theme: DefaultTheme }) =>
-      isActive ? theme.colors.blue7 : theme.colors.gray7};
+    ${({
+      theme,
+      isActive,
+      isCustomSlippageCorrect,
+    }: {
+      isCustomSlippageCorrect: boolean
+      isActive: boolean
+      theme: DefaultTheme
+    }) =>
+      !isCustomSlippageCorrect
+        ? theme.colors.red7
+        : isActive
+        ? theme.colors.blue7
+        : theme.colors.gray7};
 `
 
 const CustomSlippageInput = styled(InvisibleInput)`
@@ -29,6 +41,7 @@ const CustomSlippageInput = styled(InvisibleInput)`
   text-align: right;
   font-size: ${FONT_SIZES.esm};
   padding-right: 1em;
+  color: ${({ theme }) => theme.colors.gray2};
 
   &::placeholder {
     color: ${({ theme }) => theme.colors.gray2};

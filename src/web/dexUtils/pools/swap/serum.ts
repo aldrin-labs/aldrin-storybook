@@ -235,7 +235,7 @@ export const calculateTransactionDepositAndFee = ({
   swapRoute: SwapRoute
   openOrdersMap: OpenOrdersMap
   userTokensData: TokenInfo[]
-}) => {
+}): number => {
   if (!swapRoute || swapRoute.length === 0) return 0
 
   const SERUM_OPEN_ACCOUNT_LAMPORTS = 23352760

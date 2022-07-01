@@ -5,19 +5,15 @@ import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { PieTimer } from '@sb/components/PieTimer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
-import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
-import {
-  getTokenMintAddressByName,
-  getTokenNameByMintAddress,
-} from '@sb/dexUtils/markets'
+import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useSwapRoute } from '@sb/dexUtils/pools/swap/useSwapRoute'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { formatNumberWithSpaces, notEmpty } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { toMap } from '@sb/utils'
@@ -28,12 +24,12 @@ import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
 import { withPublicKey } from '@core/hoc/withPublicKey'
 import { withRegionCheck } from '@core/hoc/withRegionCheck'
+import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
   stripByAmount,
 } from '@core/utils/chartPageUtils'
-import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { numberWithOneDotRegexp } from '@core/utils/helpers'
 import {
@@ -49,6 +45,7 @@ import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
+import { SwapChartWithPrice } from './components/SwapChart'
 import { SwapSearch } from './components/SwapSearch'
 import { SwapSettingsPopup } from './components/SwapSettingsPopup'
 import { getDefaultBaseToken, getDefaultQuoteToken } from './config'
@@ -66,7 +63,11 @@ import {
   SlippageButton,
   InfoIconContainer,
 } from './styles'
-import { getOHLCVMarketTypeFromSwapRoute, getSwapButtonText } from './utils'
+import {
+  getOHLCVMarketTypeFromSwapRoute,
+  getOHLCVSymbols,
+  getSwapButtonText,
+} from './utils'
 
 const SwapPage = ({
   publicKey,
@@ -83,7 +84,6 @@ const SwapPage = ({
 }) => {
   const theme = useTheme()
   const { wallet } = useWallet()
-  const tokenInfos = useTokenInfos()
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
@@ -101,8 +101,8 @@ const SwapPage = ({
     .filter(notEmpty)
 
   const topTradingPairs = topPoolsByTradingVolume.map((pool) => {
-    const baseSymbol = tokenInfos.get(pool.tokenA)?.symbol
-    const quoteSymbol = tokenInfos.get(pool.tokenB)?.symbol
+    const baseSymbol = getTokenNameByMintAddress(pool.tokenA)
+    const quoteSymbol = getTokenNameByMintAddress(pool.tokenB)
 
     return {
       baseMint: pool.tokenA,
@@ -171,24 +171,6 @@ const SwapPage = ({
   const [isInputTokenSelecting, setIsInputTokenSelecting] = useState(false)
   const [isSwapInProgress, setIsSwapInProgress] = useState(false)
 
-  // above chart
-  // const [priceShowField, setPriceShowField] = useState<'input' | 'output'>(
-  //   'input'
-  // )
-
-  // const basePrice = dexTokensPricesMap.get(inputSymbol) || 0
-  // const quotePrice = dexTokensPricesMap.get(outputSymbol) || 0
-
-  // const estimatedPrice = stripByAmount(
-  //   getEstimatedPrice({
-  //     inputAmount,
-  //     outputAmount,
-  //     inputPrice: basePrice,
-  //     outputPrice: quotePrice,
-  //     field: priceShowField,
-  //   })
-  // )
-
   const {
     mints: tokenSelectorMints,
     swapRoute,
@@ -209,7 +191,6 @@ const SwapPage = ({
   })
 
   const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
-  const outputSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
 
   let { amount: maxInputAmount } = getTokenDataByMint(
     userTokensData,
@@ -326,36 +307,13 @@ const SwapPage = ({
           </RowContainer>
           <SwapBlockTemplate width="100%">
             <RowContainer margin="0 0 3em 0" justify="space-between">
-              <Row>
-                <ReloadTimer
-                  data-testid="swap-reload-data-timer"
-                  duration={15}
-                  initialRemainingTime={15}
-                  callback={refreshAll}
-                  showTime
-                  margin="0"
-                  timeStyles={{
-                    color: theme.colors.gray0,
-                  }}
-                  timerStyles={{
-                    background: 'transparent',
-                  }}
-                  color={theme.colors.blue5}
-                  trailColor={theme.colors.white}
-                />
-              </Row>
+              <PieTimer duration={15} callback={refreshAll} />
               <Row>
                 <Row style={{ position: 'relative' }}>
                   <SlippageButton
                     data-testid="increace-slippage-tolerance"
                     onClick={() => {
                       setIsTokensAddressesPopupOpen(true)
-
-                      // const newSlippage = +(+slippage + SLIPPAGE_STEP).toFixed(
-                      //   2
-                      // )
-
-                      // setSlippage(newSlippage)
                     }}
                   >
                     <SvgIcon
@@ -497,15 +455,6 @@ const SwapPage = ({
                     </svg>
                   </InfoIconContainer>
                 </BlackRow>
-                {/* <BlackRow width="calc(50% - 0.8rem)">
-                    <RowTitle>Network fee:</RowTitle>
-                    <RowValue style={{ display: 'flex' }}>
-                      {wallet.connected
-                        ? stripDigitPlaces(depositAndFee, 6)
-                        : '-'}{' '}
-                      SOL{' '}
-                    </RowValue>
-                  </BlackRow> */}
               </RowContainer>
             )}
             {/* {!isLoadingSwapRoute && pctDiffUsedAndUIInputAmount >= 5 && (
@@ -516,7 +465,7 @@ const SwapPage = ({
                 </Text>
               </RowContainer>
             )} */}
-            <RowContainer margin="3em 0 0 0">
+            <RowContainer margin="3.5em 0 0 0">
               {!publicKey ? (
                 <BtnCustom
                   theme={theme}
@@ -629,35 +578,29 @@ const SwapPage = ({
           close={() => setIsSelectCoinPopupOpen(false)}
         />
 
-        <SwapSettingsPopup
-          quoteTokenMintAddress={outputTokenMintAddress}
-          baseTokenMintAddress={inputTokenMintAddress}
-          open={isTokensAddressesPopupOpen}
-          slippage={slippage}
-          setSlippage={setSlippage}
-          close={() => setIsTokensAddressesPopupOpen(false)}
-        />
+        {isTokensAddressesPopupOpen && (
+          <SwapSettingsPopup
+            quoteTokenMintAddress={outputTokenMintAddress}
+            baseTokenMintAddress={inputTokenMintAddress}
+            open={isTokensAddressesPopupOpen}
+            slippage={slippage}
+            setSlippage={setSlippage}
+            close={() => setIsTokensAddressesPopupOpen(false)}
+          />
+        )}
 
         <ConnectWalletPopup
           open={isConnectWalletPopupOpen}
           onClose={() => setIsConnectWalletPopupOpen(false)}
         />
-        <div style={{ height: '15em', width: '30em', marginLeft: '0.6em' }}>
-          <iframe
-            allowFullScreen
-            style={{ borderWidth: 0 }}
-            src={`${PROTOCOL}//${CHARTS_API_URL}/?symbol=${inputSymbol}/${outputSymbol}&marketType=${getOHLCVMarketTypeFromSwapRoute(
-              swapRoute
-            )}&exchange=serum&theme=serum&isMobile=true${
-              wallet.connected ? `&user_id=${wallet.publicKey}` : ''
-            }`}
-            height="100%"
-            width="100%"
-            id="tv_chart_serum"
-            title="Chart"
-            key={`${inputSymbol}/${outputSymbol}`}
+        <Row style={{ height: '17.5em', width: '30em', marginLeft: '0.6em' }}>
+          <SwapChartWithPrice
+            marketType={getOHLCVMarketTypeFromSwapRoute(swapRoute)}
+            inputTokenMintAddress={getOHLCVSymbols(swapRoute)[0]}
+            outputTokenMintAddress={getOHLCVSymbols(swapRoute)[1]}
+            pricesMap={dexTokensPricesMap}
           />
-        </div>
+        </Row>
       </SwapPageContainer>
     </SwapPageLayout>
   )

@@ -163,3 +163,12 @@ export const getOHLCVMarketTypeFromSwapRoute = (swapRoute: SwapRoute) => {
   // as default
   return marketTypeFromAmm.Aldrin
 }
+
+export const getOHLCVSymbols = (swapRoute: SwapRoute) => {
+  if (swapRoute.length === 1) {
+    const { isSwapBaseToQuote, inputMint, outputMint } = swapRoute[0]
+    return isSwapBaseToQuote ? [inputMint, outputMint] : [outputMint, inputMint]
+  }
+
+  return [null, null]
+}

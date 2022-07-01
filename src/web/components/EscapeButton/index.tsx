@@ -31,7 +31,7 @@ export const EscapeButton = (params: EscapeButtonParams) => {
   }, [])
 
   return (
-    <EscapeButtonSC>
+    <EscapeButtonSC onClick={close}>
       <InlineText size="esm" weight={500} color="gray0">
         Esc
       </InlineText>

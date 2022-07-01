@@ -45,20 +45,13 @@ const multiSwap = async ({
   swapRoute: SwapRoute
   openOrdersMap: OpenOrdersMap
   feeAccountTokens: TokenInfo[]
-  selectedInputTokenAddressFromSeveral: string
-  selectedOutputTokenAddressFromSeveral: string
+  selectedInputTokenAddressFromSeveral?: string
+  selectedOutputTokenAddressFromSeveral?: string
 }) => {
   if (!wallet.publicKey) return 'failed'
 
   const commonInstructions = []
   const commonSigners = []
-
-  console.log('multiSwap', {
-    swapRoute,
-    openOrdersMap,
-    selectedInputTokenAddressFromSeveral,
-    selectedOutputTokenAddressFromSeveral,
-  })
 
   const firstSwapStep = swapRoute[0]
   const lastSwapStep = swapRoute[swapRoute.length - 1]

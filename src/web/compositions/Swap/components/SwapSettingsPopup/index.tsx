@@ -1,3 +1,4 @@
+import { useInputFocus } from '@webhooks/useInputFocus'
 import React, { useState } from 'react'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
@@ -37,7 +38,10 @@ export const SwapSettingsPopup = ({
   baseTokenMintAddress: string
   quoteTokenMintAddress: string
 }) => {
-  const [localSlippage, setLocalSlippage] = useState('')
+  const [localSlippage, setLocalSlippage] = useState<string | number>(slippage)
+  const [isCustomSlippageFocused, setIsCustomSlippageFocused] = useState(false)
+
+  const [inputRef, focusInput] = useInputFocus()
 
   const setLocalSlippageWithChecks = (slippageFromInput: string) => {
     if (slippageFromInput === '') setLocalSlippage(slippageFromInput)
@@ -51,18 +55,28 @@ export const SwapSettingsPopup = ({
     }
   }
 
+  const resetState = () => {
+    setLocalSlippage('')
+  }
+
+  const closeWithUpdatingSlippage = () => {
+    if (+localSlippage > 0) {
+      setSlippage(+localSlippage)
+    }
+
+    resetState()
+    close()
+  }
+
+  const isSlippageMatchWithButtons = slippageButtonsValues.includes(
+    +localSlippage
+  )
+
   return (
     <DialogWrapper
       PaperComponent={CommonPaper}
       fullScreen={false}
-      onClose={() => {
-        if (+localSlippage > 0) {
-          setSlippage(+localSlippage)
-        }
-
-        setLocalSlippage('')
-        close()
-      }}
+      onClose={closeWithUpdatingSlippage}
       maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
@@ -71,6 +85,7 @@ export const SwapSettingsPopup = ({
         <InlineText color="gray0" size="md" weight={500}>
           Swap Info
         </InlineText>
+
         <EscapeButton close={close} />
       </RowContainer>
       <RowContainer
@@ -99,13 +114,15 @@ export const SwapSettingsPopup = ({
         </RowContainer>
         <RowContainer justify="space-between" margin="0.75em 0 0 0">
           {slippageButtonsValues.map((value) => {
-            const isActive = value === slippage
+            const isActive =
+              !isCustomSlippageFocused && value === +localSlippage
+
             return (
               <SlippageButton
                 isActive={isActive}
                 onClick={() => {
                   setSlippage(value)
-                  setLocalSlippage('')
+                  resetState()
                   close()
                 }}
                 $variant="none"
@@ -125,14 +142,29 @@ export const SwapSettingsPopup = ({
           padding="0 0.75em"
           justify="space-between"
           margin="1em 0 0 0"
+          onClick={() => focusInput()}
+          isActive={isCustomSlippageFocused || !isSlippageMatchWithButtons}
+          isCustomSlippageCorrect={+localSlippage > 0}
         >
           <InlineText size="esm" color="gray2" weight={400}>
             Custom Slippage
           </InlineText>
           <CustomSlippageInput
+            ref={inputRef}
             value={localSlippage}
+            onFocus={() => setIsCustomSlippageFocused(true)}
+            onBlur={() => {
+              setIsCustomSlippageFocused(false)
+            }}
             onChange={(e) => setLocalSlippageWithChecks(e.target.value)}
-            placeholder="0.5"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                if (+localSlippage > 0) {
+                  closeWithUpdatingSlippage()
+                  setTimeout(() => close(), 0) // idk why but without timeout it doesn't work
+                }
+              }
+            }}
           />
           <PercentageSymbol>
             <InlineText size="esm" color="gray2" weight={400}>

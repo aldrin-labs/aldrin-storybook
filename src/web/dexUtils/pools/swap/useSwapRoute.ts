@@ -4,7 +4,7 @@ import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { useOpenOrdersFromMarkets } from '@sb/compositions/Rebalance/utils/useOpenOrdersFromMarkets'
 import { getMarketsMintsEdges } from '@sb/dexUtils/common/getMarketsMintsEdges'
 import { useConnection } from '@sb/dexUtils/connection'
-import { useAllMarketsList } from '@sb/dexUtils/markets'
+import { marketsMap } from '@sb/dexUtils/markets'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useOwnerTokenAccounts } from '@sb/dexUtils/token/hooks/useOwnerTokenAccounts'
 import { AsyncSendSignedTransactionResult } from '@sb/dexUtils/types'
@@ -36,7 +36,7 @@ type UseSwapRouteResponse = {
   loading: boolean
   inputAmount: string | number
   outputAmount: string | number
-  depositAndFee: null
+  depositAndFee: number
   mints: string[]
   refresh: () => void
   setFieldAmount: (
@@ -58,8 +58,6 @@ export const useSwapRoute = ({
 }: UseSwapRouteProps): UseSwapRouteResponse => {
   const { wallet } = useWallet()
   const connection = useConnection()
-
-  const allMarketsMap = useAllMarketsList()
 
   const [lastEnteredField, setLastEnteredField] = useState<'input' | 'output'>(
     'input'
@@ -83,7 +81,6 @@ export const useSwapRoute = ({
 
   const marketsInSwapPaths = getMarketsInSwapPaths({
     pools,
-    allMarketsMap,
     startNode: inputMint,
     endNode: outputMint,
   })
@@ -165,7 +162,6 @@ export const useSwapRoute = ({
           pools,
           field,
           slippage,
-          allMarketsMap,
           baseTokenMint: inputMintForRoute,
           quoteTokenMint: outputMintForRoute,
           amountIn: +newAmount,
@@ -199,7 +195,6 @@ export const useSwapRoute = ({
 
   const [_, price] = getSwapRoute({
     pools,
-    allMarketsMap,
     baseTokenMint: inputMint,
     quoteTokenMint: outputMint,
     amountIn: 1,
@@ -211,7 +206,7 @@ export const useSwapRoute = ({
     ...new Set(
       [
         ...getPoolsMintsEdges(pools),
-        ...getMarketsMintsEdges([...allMarketsMap.keys()]),
+        ...getMarketsMintsEdges([...marketsMap.keys()]),
       ].flat()
     ),
   ]

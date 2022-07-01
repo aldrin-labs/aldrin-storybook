@@ -16,7 +16,7 @@ export const FooterContainer = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  padding: 3.5em;
+  padding: 2em 3.5em;
   flex-wrap: nowrap;
   background: ${(props) => props.theme.colors.gray9};
 

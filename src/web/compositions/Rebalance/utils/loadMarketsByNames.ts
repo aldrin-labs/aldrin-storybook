@@ -1,7 +1,7 @@
 import { Market } from '@project-serum/serum'
 import { Connection, PublicKey } from '@solana/web3.js'
 
-import { getTokenMintAddressByName, MarketsMap } from '@sb/dexUtils/markets'
+import { getTokenMintAddressByName, marketsMap } from '@sb/dexUtils/markets'
 import { notifyForDevelop, notifyWithLog } from '@sb/dexUtils/notifications'
 import { notEmpty, onlyUnique } from '@sb/dexUtils/utils'
 
@@ -16,18 +16,16 @@ export type LoadedMarketsMap = Map<string, LoadedMarket>
 export const loadMarketsByNames = async ({
   connection,
   marketsNames,
-  allMarketsMap,
 }: {
   connection: Connection
   marketsNames: string[]
-  allMarketsMap: MarketsMap
 }): Promise<LoadedMarketsMap> => {
   console.time('markets')
 
-  const marketsMap: LoadedMarketsMap = new Map()
+  const loadedMarketsMap: LoadedMarketsMap = new Map()
 
   const filteredMarkets = [...new Set(marketsNames)].map((name) => ({
-    address: allMarketsMap.get(name)?.address.toString(),
+    address: marketsMap.get(name)?.address.toString(),
     name,
   }))
 
@@ -57,7 +55,7 @@ export const loadMarketsByNames = async ({
       result: loadedMarkets.result,
     })
 
-    return marketsMap
+    return loadedMarketsMap
   }
 
   loadedMarkets.result.value.forEach((encodedMarket, index) => {
@@ -118,10 +116,10 @@ export const loadMarketsByNames = async ({
       return
     }
 
-    marketsMap.set(name, { market, marketName: name })
+    loadedMarketsMap.set(name, { market, marketName: name })
   })
 
   console.timeEnd('markets')
 
-  return marketsMap
+  return loadedMarketsMap
 }

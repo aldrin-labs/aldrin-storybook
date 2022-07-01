@@ -1,7 +1,7 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getMarketsMintsEdges } from '@sb/dexUtils/common/getMarketsMintsEdges'
 import { getShortestPaths } from '@sb/dexUtils/common/getShortestPaths'
-import { MarketsMap } from '@sb/dexUtils/markets'
+import { marketsMap } from '@sb/dexUtils/markets'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 
 import {
@@ -90,7 +90,10 @@ const createRouteFromInputField = ({
     let swapAmountOutWithSlippage = 0
 
     // if no pool - try to find market
-    if (!pool && marketsWithOrderbookMap) {
+    if (!pool) {
+      if (!marketsWithOrderbookMap) {
+        return EMPTY_ROUTE_RESPONSE
+      }
       const [market, isMarketSwapBaseToQuote]: [
         LoadedMarketWithOrderbook | null,
         boolean | null
@@ -98,6 +101,14 @@ const createRouteFromInputField = ({
         marketsMap: marketsWithOrderbookMap,
         baseTokenMintAddress: baseMint,
         quoteTokenMintAddress: quoteMint,
+      })
+
+      console.log('market', {
+        market,
+        isMarketSwapBaseToQuote,
+        marketsWithOrderbookMap,
+        baseMint,
+        quoteMint,
       })
 
       if (!market || isMarketSwapBaseToQuote === null) {
@@ -242,7 +253,10 @@ const createRouteFromOutputField = ({
     let swapAmountIn = 0
 
     // if no pool - try to find market
-    if (!pool && marketsWithOrderbookMap) {
+    if (!pool) {
+      if (!marketsWithOrderbookMap) {
+        return EMPTY_ROUTE_RESPONSE
+      }
       const [market, isMarketSwapBaseToQuote]: [
         LoadedMarketWithOrderbook | null,
         boolean | null
@@ -381,14 +395,11 @@ const createRouteFromOutputField = ({
     return swapStep
   })
 
-  console.log('reversedPath', reversedPath)
-
   return [reversedPath, tempSwapAmountOut]
 }
 
 const getSwapRoute = ({
   pools,
-  allMarketsMap,
   amountIn,
   field = 'input',
   baseTokenMint,
@@ -398,7 +409,6 @@ const getSwapRoute = ({
   marketsWithOrderbookMap,
 }: {
   pools: PoolInfo[]
-  allMarketsMap?: MarketsMap
   amountIn: number
   field?: 'input' | 'output'
   baseTokenMint: string
@@ -408,9 +418,7 @@ const getSwapRoute = ({
   marketsWithOrderbookMap?: LoadedMarketWithOrderbookMap
 }): [SwapRoute, number] => {
   const poolsEdges = getPoolsMintsEdges(pools)
-  const marketsEdges = allMarketsMap
-    ? getMarketsMintsEdges([...allMarketsMap.keys()])
-    : []
+  const marketsEdges = getMarketsMintsEdges([...marketsMap.keys()])
 
   const shortPaths: string[][] = getShortestPaths({
     edges: [...poolsEdges, ...marketsEdges],
@@ -477,8 +485,6 @@ const getSwapRoute = ({
         })
       }
     )
-
-    console.log('swapResults routes', routes)
 
     const bestRoute = routes
       .filter(([route]) => {

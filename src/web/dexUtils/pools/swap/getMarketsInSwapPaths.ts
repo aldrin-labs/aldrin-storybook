@@ -1,7 +1,7 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 import { getMarketsMintsEdges } from '@sb/dexUtils/common/getMarketsMintsEdges'
 import { getShortestPaths } from '@sb/dexUtils/common/getShortestPaths'
-import { getTokenNameByMintAddress, MarketsMap } from '@sb/dexUtils/markets'
+import { getTokenNameByMintAddress, marketsMap } from '@sb/dexUtils/markets'
 
 import { getSelectedPoolForSwap } from '@core/solana'
 
@@ -9,12 +9,10 @@ import { getPoolsMintsEdges } from '../getPoolsMintsEdges'
 
 export const getMarketsInSwapPaths = ({
   pools,
-  allMarketsMap,
   startNode,
   endNode,
 }: {
   pools: PoolInfo[]
-  allMarketsMap: MarketsMap
   startNode: string
   endNode: string
 }): string[] => {
@@ -30,7 +28,7 @@ export const getMarketsInSwapPaths = ({
     return []
   }
 
-  const marketsEdges = getMarketsMintsEdges([...allMarketsMap.keys()])
+  const marketsEdges = getMarketsMintsEdges([...marketsMap.keys()])
 
   const edges = [...poolsEdges, ...marketsEdges]
 
@@ -82,9 +80,9 @@ export const getMarketsInSwapPaths = ({
         const marketName = `${baseSymbol}_${quoteSymbol}`
         const reversedMarketName = `${quoteSymbol}_${baseSymbol}`
 
-        if (allMarketsMap.has(marketName)) {
+        if (marketsMap.has(marketName)) {
           marketsInSwapPaths.push(marketName)
-        } else if (allMarketsMap.has(reversedMarketName)) {
+        } else if (marketsMap.has(reversedMarketName)) {
           marketsInSwapPaths.push(reversedMarketName)
         }
       }
