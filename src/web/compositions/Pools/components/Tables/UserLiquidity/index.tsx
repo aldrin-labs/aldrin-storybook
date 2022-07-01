@@ -6,6 +6,7 @@ import { DataHeadColumn, NoDataBlock } from '@sb/components/DataTable'
 import { PoolsTable } from '../PoolsTable'
 import { LiquidityTableProps } from './types'
 import { prepareCell } from './utils/prepareCell'
+import { useTokenInfos } from '../../../../../dexUtils/tokenRegistry'
 
 const COLUMNS: DataHeadColumn[] = [
   {
@@ -26,6 +27,7 @@ export const UserLiquidityTable: React.FC<LiquidityTableProps> = (props) => {
     farmingTicketsMap,
   } = props
 
+  const tokensMap = useTokenInfos()
   return (
     <PoolsTable
       addColumns={COLUMNS}
@@ -40,6 +42,7 @@ export const UserLiquidityTable: React.FC<LiquidityTableProps> = (props) => {
           tokenPrices: dexTokensPricesMap,
           allTokensData,
           farmingTicketsMap,
+          tokensMap,
         })
       }
       noDataText={

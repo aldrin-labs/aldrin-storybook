@@ -1,4 +1,3 @@
-import { TokenInfo } from '@solana/spl-token-registry'
 import { BN } from 'bn.js'
 import dayjs from 'dayjs'
 import React from 'react'
@@ -13,34 +12,29 @@ import {
 import { FlexBlock } from '@sb/components/Layout'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { getNumberOfPrecisionDigitsForSymbol } from '@sb/components/TradingTable/TradingTable.utils'
-import { InlineText, Text } from '@sb/components/Typography'
-import { DEFAULT_FARMING_TICKET_END_TIME } from '@sb/dexUtils/common/config'
-import { FarmingCalc } from '@sb/dexUtils/common/types'
+import { Text } from '@sb/components/Typography'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { groupBy } from '@sb/utils'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
-import { filterOpenFarmingStates, Vesting } from '@core/solana'
 import {
-  stripByAmount,
-  stripByAmountAndFormat,
-} from '@core/utils/chartPageUtils'
+  Farm,
+  filterOpenFarmingStates,
+  Vesting,
+  Farmer,
+  TokenInfo,
+} from '@core/solana'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import CrownIcon from '@icons/crownIcon.svg'
 import ScalesIcon from '@icons/scales.svg'
 
-import {
-  DexTokensPrices,
-  FarmingTicketsMap,
-  PoolInfo,
-} from '../../../index.types'
-import { FarmingRewards, FarmingRewardsIcons } from '../../FarminRewards'
+import { DexTokensPrices, PoolInfo } from '../../../index.types'
+import { FarmingRewards } from '../../FarminRewards'
 import { STABLE_POOLS_TOOLTIP } from '../../Popups/CreatePool/PoolConfirmationData'
 import { TokenIconsContainer } from '../components'
 import { PoolsTableIcons } from '../index.styles'
 import { getFarmingStateDailyFarmingValue } from '../UserLiquidity/utils/getFarmingStateDailyFarmingValue'
-import { getUniqueAmountsToClaimMap } from './getUniqueAmountsToClaimMap'
 
 const EMPTY_VESTING = {
   endTs: 0,
@@ -53,9 +47,9 @@ export const preparePoolTableCell = (params: {
   prepareMore: (pool: PoolInfo) => { [c: string]: DataCellValue }
   walletPk: string
   vestings: Map<string, Vesting>
-  farmingTicketsMap: FarmingTicketsMap
-  calcAccounts?: Map<string, FarmingCalc[]>
   tokenMap: Map<string, TokenInfo>
+  farms?: Map<string, Farm>
+  farmers?: Map<string, Farmer>
 }): DataCellValues<PoolInfo> => {
   const {
     pool,
@@ -63,9 +57,9 @@ export const preparePoolTableCell = (params: {
     prepareMore,
     walletPk,
     vestings,
-    calcAccounts = new Map<string, FarmingCalc[]>(),
-    farmingTicketsMap,
     tokenMap,
+    farms,
+    farmers,
   } = params
 
   const baseInfo = tokenMap.get(pool.tokenA)
@@ -80,6 +74,11 @@ export const preparePoolTableCell = (params: {
   const baseTokenPrice = tokenPrices.get(baseSymbol)?.price || 0
   const quoteTokenPrice = tokenPrices.get(quoteSymbol)?.price || 0
 
+  const farm = farms?.get(pool.poolTokenMint)
+  const farmer = farm ? farmers?.get(farm.publicKey.toString()) : undefined
+
+  const userInFarming = !!farmer && farmer?.staked > 0
+
   const tvlUSD =
     baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
 
@@ -89,10 +88,8 @@ export const preparePoolTableCell = (params: {
       dexTokensPricesMap: tokenPrices,
     }) || 0
 
-  const totalStakedLpTokensUSD = Math.max(
-    pool.lpTokenFreezeVaultBalance * poolTokenPrice,
-    1000
-  ) // When no liquidity staked - estimate APR for $1000
+  // TODO: pass correct tokens amount
+  const totalStakedLpTokensUSD = Math.max(0, 1000) // When no liquidity staked - estimate APR for $1000
 
   const openFarmings = filterOpenFarmingStates(pool.farming || [])
 
@@ -124,36 +121,6 @@ export const preparePoolTableCell = (params: {
     ((totalDailyRewardUsd * 365) / totalStakedLpTokensUSD) * 100 || 0
 
   const totalApr = farmingAPR + pool.apy24h
-  const ticketsForPool = farmingTicketsMap.get(pool.swapToken) || []
-
-  const availableToClaimMap = getUniqueAmountsToClaimMap({
-    farmingTickets: ticketsForPool,
-    farmingStates: pool.farming || [],
-    calcAccounts,
-  })
-
-  const availableToClaim = Array.from(availableToClaimMap.values())
-    .map((atc) => {
-      const name = getTokenNameByMintAddress(atc.farmingTokenMint)
-      const usdValue = (tokenPrices.get(name)?.price || 0) * atc.amount
-
-      return { ...atc, name, usdValue }
-    })
-    .filter((atc) => atc.amount > 0)
-
-  const availableToClaimUsd = availableToClaim.reduce(
-    (acc, atc) => acc + atc.usdValue,
-    0
-  )
-
-  const userInFarming =
-    !!ticketsForPool.find(
-      (t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME
-    ) || availableToClaimUsd > 0
-
-  const farmingsMap = groupBy(openFarmings, (f) => f.farmingTokenMint)
-
-  const openFarmingsKeys = Array.from(farmingsMap.keys())
 
   const additionalPoolOwners = ADDITIONAL_POOL_OWNERS[pool.poolTokenMint] || []
 
@@ -237,7 +204,7 @@ export const preparePoolTableCell = (params: {
         rawValue: totalApr,
         rendered: (
           <Text color="green3" size="sm" weight={700}>
-            {totalApr >= 1 ? `${stripByAmount(totalApr, 2)}%` : '< 1%'}
+            {totalApr >= 1 ? `${stripByAmountAndFormat(totalApr, 2)}%` : '< 1%'}
           </Text>
         ),
       },
@@ -246,7 +213,8 @@ export const preparePoolTableCell = (params: {
           <FlexBlock alignItems="center">
             {userInFarming && walletPk !== pool.initializerAccount ? (
               <>
-                <FarmingRewardsIcons
+                TODO
+                {/* <FarmingRewardsIcons
                   poolMint={pool.swapToken}
                   mints={openFarmingsKeys}
                 />
@@ -273,11 +241,13 @@ export const preparePoolTableCell = (params: {
                         .join(' + ')}
                     </Text>
                   </div>
-                </div>
+                </div> */}
               </>
             ) : (
               <FarmingRewards
                 pool={pool}
+                farm={farm}
+                farmer={farmer}
                 farmingUsdValue={totalStakedLpTokensUSD}
               />
             )}

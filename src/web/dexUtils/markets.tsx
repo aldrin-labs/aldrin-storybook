@@ -5,7 +5,6 @@ import {
   Orderbook,
   TokenInstructions,
 } from '@project-serum/serum'
-import { TokenInfo } from '@solana/spl-token-registry'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
 import tokensList from 'aldrin-registry/src/tokens.json'
 import { BN } from 'bn.js'
@@ -33,6 +32,7 @@ import {
   TOKEN_PROGRAM_ID,
 } from './token/token'
 import { getTokenAccountInfo } from './tokens'
+import { TokenInfo } from './types'
 import { useLocalStorageState } from './utils'
 import { useWallet } from './wallet'
 

@@ -1,8 +1,9 @@
-import { TokenListProvider, TokenInfo } from '@solana/spl-token-registry'
+import { TokenListProvider } from '@solana/spl-token-registry'
 import React, { useContext, useEffect, useState } from 'react'
 
 import { clusterForEndpoint } from './clusters'
 import { useConnectionConfig } from './connection'
+import { TokenInfo } from './types'
 
 const TokenListContext = React.createContext({
   tokenInfos: new Map<string, TokenInfo>(),

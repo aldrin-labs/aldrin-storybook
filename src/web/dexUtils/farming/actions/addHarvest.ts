@@ -1,5 +1,4 @@
 import { Transaction, TransactionInstruction } from '@solana/web3.js'
-import BN from 'bn.js'
 
 import { buildAddHarvestInstructions } from '@core/solana'
 
@@ -15,19 +14,13 @@ export const addHarvestV2 = async (params: AddHarvestParams) => {
   if (!userTokenAccount) {
     throw new Error('Token account not found!')
   }
-  const amountWithDecimals = (amount * 10 ** userTokenAccount.decimals).toFixed(
-    0
-  )
-
-  const tokenAmount = new BN(amountWithDecimals)
 
   const instructions: TransactionInstruction[] = []
 
   const { instruction } = await buildAddHarvestInstructions({
     wallet,
     connection,
-    tokenAmount,
-    farm: farm.publicKey,
+    farm,
     harvestMint,
   })
 

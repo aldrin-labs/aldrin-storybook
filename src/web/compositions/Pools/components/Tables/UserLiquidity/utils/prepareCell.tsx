@@ -4,7 +4,6 @@ import { DataCellValue } from '@sb/components/DataTable'
 import { Text } from '@sb/components/Typography'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
 import { getStakedTokensTotal } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
@@ -15,9 +14,15 @@ import { PrepareCellParams } from '../types'
 export const prepareCell = (
   params: PrepareCellParams
 ): { [c: string]: DataCellValue } => {
-  const { pool, tokenPrices, allTokensData, farmingTicketsMap, feesByPool } =
-    params
-  const tokensMap = useTokenInfos()
+  const {
+    pool,
+    tokenPrices,
+    allTokensData,
+    farmingTicketsMap,
+    feesByPool,
+    tokensMap,
+  } = params
+
   const baseSymbol = getTokenName({
     address: pool.tokenA,
     tokensInfoMap: tokensMap,

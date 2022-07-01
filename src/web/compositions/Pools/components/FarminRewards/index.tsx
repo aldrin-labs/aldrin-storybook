@@ -5,12 +5,9 @@ import { InlineText } from '@sb/components/Typography'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
-import { filterOpenFarmingStates } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
-import { groupBy } from '../../../../utils'
 import { PoolStatsText } from '../PoolPage/styles'
-import { getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity } from '../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity'
 import {
   FarmingIconWrap,
   FarmingDataIcons,
@@ -39,34 +36,34 @@ export const FarmingRewardsIcons: React.FC<FarmingRewardsIconsProps> = (
 export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
   const {
     farmingUsdValue,
-    pool: { poolTokenMint, farming },
+    pool: { poolTokenMint },
+    farm,
+    farmer,
   } = props
 
-  const farmings = filterOpenFarmingStates(farming || [])
-
-  const farmingsMap = groupBy(farmings, (f) => f.farmingTokenMint)
-
   const tokenMap = useTokenInfos()
-  const openFarmingsKeys = Array.from(farmingsMap.keys())
 
-  return farmings.length > 0 ? (
+  const openFarmingsKeys =
+    farm?.harvests.map((harvest) => harvest.mint.toString()) || []
+  return farm ? (
     <>
       <FarmingRewardsIcons poolMint={poolTokenMint} mints={openFarmingsKeys} />
       <Container>
         <FarmingText>
           {openFarmingsKeys.map((farmingStateMint, i) => {
-            const rewardPerK = (farmingsMap.get(farmingStateMint) || []).reduce(
-              (acc, farmingState) => {
-                return (
-                  acc +
-                  getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
-                    farmingState,
-                    totalStakedLpTokensUSD: farmingUsdValue,
-                  })
-                )
-              },
-              0
-            )
+            // const rewardPerK = (farmingsMap.get(farmingStateMint) || []).reduce(
+            //   (acc, farmingState) => {
+            //     return (
+            //       acc +
+            //       getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
+            //         farmingState,
+            //         totalStakedLpTokensUSD: farmingUsdValue,
+            //       })
+            //     )
+            //   },
+            //   0
+            // )
+            const rewardPerK = 0
 
             const tokenName = getTokenName({
               address: farmingStateMint,

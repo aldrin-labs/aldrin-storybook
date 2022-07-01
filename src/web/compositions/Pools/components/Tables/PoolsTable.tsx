@@ -2,6 +2,8 @@ import React, { useMemo, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import { DataTable, NoDataBlock } from '@sb/components/DataTable'
+import { useFarmersAccountInfo } from '@sb/dexUtils/farming/useFarmersAccountInfo'
+import { useFarmInfo } from '@sb/dexUtils/farming/useFarmInfo'
 import { getTokenName, getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -35,6 +37,9 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
 
   const wallet = useWallet()
   const history = useHistory()
+  const { data: farms } = useFarmInfo()
+  const { data: farmers } = useFarmersAccountInfo()
+
 
   const [vestings] = useVestings()
 

@@ -24,4 +24,5 @@ export interface PrepareCellParams {
   allTokensData: TokenInfo[]
   feesByPool: FeesMap
   farmingTicketsMap: FarmingTicketsMap
+  tokensMap: Map<string, TokenInfo>
 }
