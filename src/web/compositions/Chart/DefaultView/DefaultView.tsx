@@ -6,11 +6,13 @@ import { useTheme } from 'styled-components'
 import SingleChartWithButtons from '@sb/components/Chart'
 import TradingTable from '@sb/components/TradingTable/TradingTable'
 import { TablesBlockWrapper } from '@sb/components/TradingWrapper/styles'
+import {
+  BalancesWrapper as Balances,
+  OrderbookAndDepthChart,
+  TradeHistory,
+} from '@sb/compositions/Chart/components'
 import TokenNotAddedPopup from '@sb/compositions/Chart/components/TokenNotAdded'
 import { isCCAITradingEnabled } from '@sb/dexUtils/utils'
-
-import Balances from '@core/components/Balances'
-import TradingComponent from '@core/components/TradingComponent'
 
 import {
   BalancesContainer,
@@ -22,11 +24,11 @@ import {
   TradingTabelContainer,
   TradingTerminalContainer,
 } from '../Chart.styles'
-import { OrderbookAndDepthChart, TradeHistory } from '../components'
 import {
   OrderBookGrid,
   TradeHistoryGrid,
 } from '../Inputs/SelectWrapper/SelectWrapperStyles'
+import TradingComponent from '../TradingComponent'
 
 const TerminalContainer = ({
   isDefaultTerminalViewMode,

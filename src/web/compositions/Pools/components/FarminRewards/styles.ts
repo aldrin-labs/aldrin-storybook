@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+
 import { InlineText } from '../../../../components/Typography'
 
 export const FarmingIconWrap = styled.div`
@@ -17,4 +18,9 @@ export const FarmingDataIcons = styled.div`
 export const FarmingText = styled(InlineText)`
   font-size: 0.9em;
   line-height: 1.5;
+  white-space: break-spaces;
+`
+
+export const Container = styled.div`
+  white-space: break-spaces;
 `

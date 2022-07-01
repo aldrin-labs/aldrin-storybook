@@ -18,12 +18,9 @@ import { formatNumberWithSpaces, notEmpty } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { toMap } from '@sb/utils'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
 import {
   getNumberOfDecimalsFromNumber,
@@ -41,6 +38,7 @@ import ArrowsExchangeIcon from '@icons/arrowsExchange.svg'
 import SettingIcon from '@icons/settings.svg'
 
 import { INPUT_FORMATTERS } from '../../components/Input'
+import { queryRendererHoc } from '../../components/QueryRenderer'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
@@ -70,12 +68,10 @@ import {
 } from './utils'
 
 const SwapPage = ({
-  publicKey,
   getPoolsInfoQuery,
   getDexTokensPricesQuery,
   getTradingVolumeForAllPoolsQuery,
 }: {
-  publicKey: string
   getPoolsInfoQuery: { getPoolsInfo: PoolInfo[] }
   getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
   getTradingVolumeForAllPoolsQuery: {
@@ -466,7 +462,7 @@ const SwapPage = ({
               </RowContainer>
             )} */}
             <RowContainer margin="3.5em 0 0 0">
-              {!publicKey ? (
+              {!wallet.publicKey ? (
                 <BtnCustom
                   theme={theme}
                   onClick={() => {
@@ -608,8 +604,7 @@ const SwapPage = ({
 
 // @ts-ignore
 export default compose(
-  withPublicKey,
-  withRegionCheck,
+  // withRegionCheck,
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,

@@ -9,6 +9,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { InputWithType } from '@sb/components/InputWithType/InputWithType'
 import { Cell } from '@sb/components/Layout'
 import { Loader } from '@sb/components/Loader/Loader'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import {
   costOfAddingToken,
@@ -24,11 +25,10 @@ import { addOrder } from '@sb/dexUtils/twamm/addOrder'
 import { PairSettings } from '@sb/dexUtils/twamm/types'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withRegionCheck } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
 import { limitDecimalsCustom, stripByAmount } from '@core/utils/numberUtils'
 
 import Arrows from '@icons/switchArrows.svg'

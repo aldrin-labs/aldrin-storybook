@@ -9,6 +9,7 @@ import 'react-virtualized/styles.css'
 import { useTheme } from 'styled-components'
 
 import { SvgIcon } from '@sb/components'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import {
   datesForQuery,
   fiatRegexp,
@@ -16,7 +17,6 @@ import {
 import { combineSelectWrapperData } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import { useAllMarketsList } from '@sb/dexUtils/markets'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getSerumMarketData } from '@core/graphql/queries/chart/getSerumMarketData'
 
 import search from '@icons/search.svg'

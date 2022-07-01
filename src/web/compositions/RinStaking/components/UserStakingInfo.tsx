@@ -6,6 +6,7 @@ import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
@@ -14,10 +15,7 @@ import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import {
-  BUY_BACK_RIN_ACCOUNT_ADDRESS,
-  DAYS_TO_CHECK_BUY_BACK,
-} from '@sb/dexUtils/staking/config'
+import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
@@ -31,7 +29,6 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { getRINCirculationSupply } from '@core/api'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   getAvailableToClaimFarmingTokens,
@@ -74,7 +71,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const {
     stakingPool,
     currentFarmingState,
-    buyBackAmount,
     getDexTokensPricesQuery,
     treasuryDailyRewards,
   } = props
@@ -141,16 +137,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ])
   }
 
-  const [buyBackAmountOnAccount] = useAccountBalance({
-    publicKey: new PublicKey(BUY_BACK_RIN_ACCOUNT_ADDRESS),
-  })
-
-  const buyBackAmountWithDecimals =
-    buyBackAmountOnAccount * 10 ** currentFarmingState.farmingTokenMintDecimals
+  const { buyBackAmountWithoutDecimals } = stakingPool.apr
 
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
     farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
-    buyBackAmount: buyBackAmountWithDecimals,
+    buyBackAmount: buyBackAmountWithoutDecimals,
     snapshotQueues: allStakingSnapshotQueues,
   })
 
@@ -213,7 +204,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const claimUnlockDataTimestamp = dayjs.unix(
     currentFarmingState.startTime +
-    DAY * daysInMonthForDate(currentFarmingState.startTime)
+      DAY * daysInMonthForDate(currentFarmingState.startTime)
   )
   const claimUnlockData = dayjs(claimUnlockDataTimestamp)
     .format('D-MMMM-YYYY')
@@ -354,7 +345,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const totalStakedUSD = tokenPrice * totalStakedRIN
 
   const buyBackAPR =
-    (buyBackAmount / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) * 365 * 100
+    (buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) *
+    365 *
+    100
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
@@ -639,7 +632,6 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
   const {
     stakingPool,
     currentFarmingState,
-    buyBackAmount,
     getDexTokensPricesQuery,
     treasuryDailyRewards,
   } = props
@@ -649,7 +641,6 @@ const UserStakingInfo: React.FC<StakingInfoProps> = (props) => {
       <UserStakingInfoContent
         stakingPool={stakingPool}
         currentFarmingState={currentFarmingState}
-        buyBackAmount={buyBackAmount}
         getDexTokensPricesQuery={getDexTokensPricesQuery}
         treasuryDailyRewards={treasuryDailyRewards}
       />

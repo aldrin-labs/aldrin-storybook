@@ -1,29 +1,27 @@
-import { COLORS } from '@variables/variables'
 import React, { useMemo } from 'react'
 import { Column, Table } from 'react-virtualized'
 import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
 
 import 'react-virtualized/styles.css'
+import { DefaultTheme, useTheme } from 'styled-components'
+
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 
+import { InlineText } from '../Typography'
 import { Hint, SortButton } from './components'
 import { NoDataBlock } from './styles'
-import {
-  DataTableProps,
-  DataTableState,
-  SORT_ORDER,
-} from './types'
+import { DataTableProps, DataTableState, SORT_ORDER } from './types'
 import { nextSortOrder, sortData } from './utils'
 
 export * from './types'
 
-const rowStyle = {
+const rowStyle = (theme: DefaultTheme) => ({
   outline: 'none',
   cursor: 'pointer',
   fontSize: '16px',
-  borderBottom: `1px solid ${COLORS.tableBorderColor}`,
+  borderBottom: `1px solid ${theme.colors.border}`,
   overflow: 'initial',
-}
+})
 
 const headerStyle = {
   textTransform: 'capitalize',
@@ -31,9 +29,19 @@ const headerStyle = {
   fontSize: '0.8em',
   textAlign: 'left',
   display: 'flex',
+  alignItems: 'center',
 }
 
+const noRowsStyles = {
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+}
+
+const TABLE_HEIGHT = 600
 const MOBILE_WIDTH = 800
+const HEADER_HEIGHT = 40
+const ROW_HEIGHT = 100
 
 export const DataTable = <E,>(props: DataTableProps<E>) => {
   const { columns, data, name, onRowClick, noDataText } = props
@@ -53,12 +61,22 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
     [state.sort, data]
   )
 
+  const theme = useTheme()
+  const preparedStyle = rowStyle(theme)
+
   return (
-    <AutoSizer>
-      {({ height, width }) => (
+    <AutoSizer disableHeight>
+      {({ width }) => (
         <Table
           width={Math.max(MOBILE_WIDTH, width)}
-          height={height}
+          height={
+            sortedData.length
+              ? Math.min(
+                  TABLE_HEIGHT,
+                  HEADER_HEIGHT + sortedData.length * ROW_HEIGHT
+                )
+              : HEADER_HEIGHT + ROW_HEIGHT * 2
+          }
           sort={({ sortBy: field }) => {
             const nextDirection = nextSortOrder(state.sort.direction)
 
@@ -77,11 +95,11 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
               : state.sort.direction
           }
           rowCount={sortedData.length}
-          noRowsRenderer={() => <>{noDataText}</>}
+          noRowsRenderer={() => <div style={noRowsStyles}>{noDataText}</div>}
           onRowClick={onRowClick}
-          rowStyle={rowStyle}
-          headerHeight={40}
-          rowHeight={100}
+          rowStyle={preparedStyle}
+          headerHeight={HEADER_HEIGHT}
+          rowHeight={ROW_HEIGHT}
           rowGetter={({ index }) => sortedData[index]}
         >
           {columns.map((item) => {
@@ -93,7 +111,7 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
                 dataKey={item.key}
                 headerRenderer={({ label, columnData }) => (
                   <>
-                    {label}
+                    <InlineText>{label}</InlineText>
                     {columnData.hint && <Hint text={columnData.hint} />}
                     <SortButton
                       sortOrder={state.sort.direction}
