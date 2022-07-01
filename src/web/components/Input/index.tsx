@@ -50,6 +50,7 @@ export const Input: React.FC<InputProps> = (props) => {
     borderRadius = 'xxl',
     disabled,
     label,
+    autoFocus,
   } = props
 
   const setFocus = () => {
@@ -78,6 +79,7 @@ export const Input: React.FC<InputProps> = (props) => {
           disabled={disabled}
           ref={input}
           autoComplete="off"
+          {...(autoFocus ? { autoFocus } : {})}
         />
       </InputContainer>
 
