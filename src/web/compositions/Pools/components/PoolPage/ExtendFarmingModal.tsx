@@ -7,14 +7,15 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { initializeFarmingV2 } from '@sb/dexUtils/farming'
+import { createNewHarvestPeriod } from '@sb/dexUtils/farming'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { stripByAmount } from '@core/utils/chartPageUtils'
-import { DAY, HOUR } from '@core/utils/dateUtils'
+import { DAY } from '@core/utils/dateUtils'
 
 import { getTokenName } from '../../../../dexUtils/markets'
+import { useTokenInfos } from '../../../../dexUtils/tokenRegistry'
 import { FarmingForm } from '../Popups/CreatePool/FarmingForm'
 import { Body, ButtonContainer, Footer } from '../Popups/CreatePool/styles'
 import { WithFarming } from '../Popups/CreatePool/types'
@@ -22,8 +23,9 @@ import { FarmingProcessingModal } from './FarmingProcessingModal'
 import { ExtendFarmingModalProps, FarmingModalProps } from './types'
 
 const FarmingModal: React.FC<FarmingModalProps> = (props) => {
-  const { userTokens, onClose, onExtend, title, pool } = props
+  const { onClose, onExtend, title, pool } = props
 
+  const [userTokens] = useUserTokenAccounts()
   const farmingTokens = (pool.farming || []).map((fs) => fs.farmingTokenMint)
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
@@ -68,57 +70,20 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       (ut) => ut.address === values.farming.token.account
     )
 
-    const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
-    const tokensPerPeriod =
-      (parseFloat(values.farming.tokenAmount) * HOUR) /
-      DAY /
-      parseFloat(values.farming.farmingPeriod)
-
     try {
-      if (!values.farming.token.account) {
+      if (!farmingRewardAccount) {
         throw new Error('No token account selected')
       }
-      const result = await initializeFarmingV2({
-        stakeMint: new PublicKey(
-          '7viVXMsJyMcdWMkZG3nRUYQtKALTR81XTEcKthXVsXjR'
-        ),
-        // farmingTokenMint: new PublicKey(values.farming.token.mint),
-        // farmingTokenAccount: new PublicKey(values.farming.token.account),
-        // tokenAmount: new BN(
-        //   (parseFloat(values.farming.tokenAmount) * tokensMultiplier).toFixed(0)
-        // ),
-        // periodLength: new BN(HOUR),
-        // tokensPerPeriod: new BN(
-        //   (tokensPerPeriod * tokensMultiplier).toFixed(0)
-        // ),
-        // noWithdrawPeriodSeconds: new BN(0),
-        // vestingPeriodSeconds:
-        //   values.farming.vestingEnabled && values.farming.vestingPeriod
-        //     ? new BN(parseFloat(values.farming.vestingPeriod) * DAY)
-        //     : new BN(0),
-        // pool: new PublicKey(pool.swapToken),
-        wallet,
+
+      const result = await createNewHarvestPeriod({
         connection,
-        // programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
+        wallet,
+        stakeMint: new PublicKey(pool.poolTokenMint),
+        harvestMint: new PublicKey(farmingRewardAccount.mint),
+        duration: parseFloat(values.farming.farmingPeriod) * DAY,
+        userTokens,
+        amount: parseFloat(values.farming.tokenAmount),
       })
-
-      // setFarmingTransactionStatus('signing')
-      // const [signedTransaction] = await signTransactions({
-      //   transactionsAndSigners: [{ transaction, signers }],
-      //   connection,
-      //   wallet,
-      // })
-
-      // setFarmingTransactionStatus('sending')
-
-      // const { transactionId, status } = await sendSignedSignleTransaction({
-      //   transaction: signedTransaction,
-      //   connection,
-      //   wallet,
-      // })
-
-      // setFarmingTxId(txId)
-
       if (result === 'success') {
         onExtend()
       } else {
@@ -194,7 +159,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
       </FormikProvider>
       {farmingTransactionStatus && (
         <FarmingProcessingModal
-          prolongFarming={async () => prolongFarming({ farming })}
+          prolongFarming={() => prolongFarming({ farming })}
           status={farmingTransactionStatus}
           open={isProcessingFarmingPopupOpen}
           txId={farmingTxId}
@@ -213,14 +178,9 @@ export const ExtendFarmingModal: React.FC<ExtendFarmingModalProps> = (
   props
 ) => {
   const [userTokens] = useUserTokenAccounts()
-  const {
-    title = 'Extend Farming',
-    onClose,
-    onExtend,
-    pool,
-    tokensInfo,
-  } = props
+  const { title = 'Extend Farming', onClose, onExtend, pool } = props
 
+  const tokensInfo = useTokenInfos()
   const base = getTokenName({ address: pool.tokenA, tokensInfoMap: tokensInfo })
   const quote = getTokenName({
     address: pool.tokenB,
@@ -234,7 +194,6 @@ export const ExtendFarmingModal: React.FC<ExtendFarmingModalProps> = (
           <Loader />
         ) : (
           <FarmingModal
-            userTokens={userTokens}
             onClose={onClose}
             pool={pool}
             title={title}

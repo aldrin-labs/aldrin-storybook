@@ -26,11 +26,9 @@ export interface ExtendFarmingModalProps {
   onExtend: () => void
   pool: PoolInfo
   title?: string
-  tokensInfo: Map<string, TokenInfo>
 }
 
 export interface FarmingModalProps extends ExtendFarmingModalProps {
-  userTokens: TokenInfo[]
   title: string
 }
 

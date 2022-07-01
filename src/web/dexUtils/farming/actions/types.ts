@@ -37,8 +37,7 @@ export interface StopFarmingParams {
 export interface AddHarvestParams {
   wallet: WalletAdapter
   connection: AldrinConnection
-  farm: Farm
-  userTokens: TokenInfo[]
+  farm: PublicKey
   amount: number
   harvestMint: PublicKey
 }
@@ -47,10 +46,10 @@ export interface NewHarvestPeriodParams {
   wallet: WalletAdapter
   connection: AldrinConnection
   tokenAmount: BN
+  stakeMint: PublicKey
   harvestMint: PublicKey
   harversWallet: PublicKey
-  startsAt: number
-  periodLengthInSlots: number
+  duration: number // Period of farming in seconds
   farm: Farm
   userTokens: TokenInfo[]
   amount: number

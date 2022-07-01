@@ -1,5 +1,4 @@
 import {
-  Account,
   AccountInfo,
   clusterApiUrl,
   Connection,
@@ -23,10 +22,10 @@ const connection = new MultiEndpointsConnection(
   'confirmed'
 )
 
-connection.connections.forEach((c) => {
-  c.onSlotChange(() => null)
-  c.onAccountChange(new Account().publicKey, () => {})
-})
+// connection.connections.forEach((c) => {
+//   c.onSlotChange(() => null)
+//   c.onAccountChange(new Account().publicKey, () => {})
+// })
 
 const serumConnection = new MultiEndpointsConnection([
   { url: 'https://solana-api.projectserum.com', weight: 2 },

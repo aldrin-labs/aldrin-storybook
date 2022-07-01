@@ -6,16 +6,15 @@ import { walletAdapterToWallet } from '../../common'
 import { signAndSendTransactions } from '../../transactions'
 import { AddHarvestParams } from './types'
 
-export const addHarvestV2 = async (params: AddHarvestParams) => {
+export const addHarvest = async (params: AddHarvestParams) => {
   const wallet = walletAdapterToWallet(params.wallet)
-  const { farm, connection, userTokens, harvestMint } = params
+  const { farm, connection, harvestMint } = params
 
   const instructions: TransactionInstruction[] = []
 
   const { instruction } = await buildAddHarvestInstructions({
     wallet,
     connection,
-    userTokens,
     farm,
     harvestMint,
   })

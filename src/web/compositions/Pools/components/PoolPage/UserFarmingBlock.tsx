@@ -10,7 +10,6 @@ import { Text } from '@sb/components/Typography'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
-import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { uniq } from '@sb/utils/collection'
@@ -85,7 +84,6 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     processing,
     refetchPools,
   } = props
-  const tokensInfo = useTokenInfos()
   const { wallet } = useWallet()
 
   const [farmingExtending, setFarmingExtending] = useState(false)
@@ -192,7 +190,6 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
               onClose={() => setExtendFarmingModalOpen(false)}
               title="Create Farming"
               onExtend={onExtendSuccess}
-              tokensInfo={tokensInfo}
             />
           )}
         </LoadingBlock>
@@ -414,7 +411,6 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             pool={pool}
             onClose={() => setExtendFarmingModalOpen(false)}
             onExtend={onExtendSuccess}
-            tokensInfo={tokensInfo}
           />
         )}
       </LoadingBlock>

@@ -1,13 +1,16 @@
-import { Transaction, TransactionInstruction } from '@solana/web3.js'
+import { Transaction } from '@solana/web3.js'
 
-import { buildNewHarvestPeriodInstructions } from '@core/solana/programs/farming/instructions/newHarvestPeriodTransaction'
+import {
+  buildNewHarvestPeriodInstructions,
+  BuildNewHarvestPeriodInstructionsParams,
+} from '@core/solana'
 
 import { walletAdapterToWallet } from '../../common'
 import { signAndSendTransactions } from '../../transactions'
-import { NewHarvestPeriodParams } from './types'
+import { WalletAdapter } from '../../types'
 
 export const createNewHarvestPeriod = async (
-  params: NewHarvestPeriodParams
+  params: BuildNewHarvestPeriodInstructionsParams<WalletAdapter>
 ) => {
   const wallet = walletAdapterToWallet(params.wallet)
   const {
@@ -16,29 +19,26 @@ export const createNewHarvestPeriod = async (
     userTokens,
     amount,
     harvestMint,
-    startsAt,
-    periodLengthInSlots,
+    duration,
+    stakeMint,
   } = params
 
-  const instructions: TransactionInstruction[] = []
-
-  const { instruction } = await buildNewHarvestPeriodInstructions({
+  const { instructions, signers } = await buildNewHarvestPeriodInstructions({
     wallet,
     connection,
     amount,
     userTokens,
     farm,
     harvestMint,
-    startsAt,
-    periodLengthInSlots,
+    duration,
+    stakeMint,
   })
-  instructions.push(instruction)
 
   return signAndSendTransactions({
     wallet,
     connection,
     transactionsAndSigners: [
-      { transaction: new Transaction().add(...instructions) },
+      { transaction: new Transaction().add(...instructions), signers },
     ],
   })
 }

@@ -17,7 +17,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
-import { addHarvestV2 } from '@sb/dexUtils/farming/actions/addHarvest'
+import { addHarvest } from '@sb/dexUtils/farming/actions/addHarvest'
 import { claimEligibleHarvest } from '@sb/dexUtils/farming/actions/claimEligibleHarvest'
 import { createNewHarvestPeriod } from '@sb/dexUtils/farming/actions/newHarvestPeriod'
 import { useFarmInfo } from '@sb/dexUtils/farming/hooks/useFarmInfo'
@@ -181,7 +181,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
   const { data: farms } = useFarmInfo()
-  console.log('farms', farms)
+
   const activePoolsList = useMemo(() => {
     if (selectedTable === 'authorized') {
       return authorizedPools
@@ -247,7 +247,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             throw new Error('No farms')
           }
           // TODO: pass farmer address if it exists
-          await addHarvestV2({
+          await addHarvest({
             wallet,
             connection,
             farm:

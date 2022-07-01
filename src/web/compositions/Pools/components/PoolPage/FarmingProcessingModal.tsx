@@ -100,26 +100,31 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
             </PoolProcessingContent>
           </>
         )}
-        <PoolProcessingContent>
-          <FlexBlock flex="1" justifyContent="space-between" direction="row">
-            <PoolProcessingButton
-              $width="rg"
-              $loading={status === 'processing'}
-              disabled={status === 'processing'}
-              onClick={() => prolongFarming()}
-            >
-              Try again
-            </PoolProcessingButton>
-            <PoolProcessingButton
-              $width="rg"
-              $loading={status === 'processing'}
-              disabled={status === 'processing'}
-              onClick={onClose}
-            >
-              OK
-            </PoolProcessingButton>
-          </FlexBlock>
-        </PoolProcessingContent>
+        {!isProcessing && (
+          <PoolProcessingContent>
+            <FlexBlock flex="1" justifyContent="space-between" direction="row">
+              {isTransactionFailed && (
+                <PoolProcessingButton
+                  $width="rg"
+                  $loading={status === 'processing'}
+                  disabled={status === 'processing'}
+                  onClick={prolongFarming}
+                >
+                  Try again
+                </PoolProcessingButton>
+              )}
+
+              <PoolProcessingButton
+                $width="rg"
+                $loading={status === 'processing'}
+                disabled={status === 'processing'}
+                onClick={onClose}
+              >
+                OK
+              </PoolProcessingButton>
+            </FlexBlock>
+          </PoolProcessingContent>
+        )}
       </PoolProcessingBlock>
     </Modal>
   )

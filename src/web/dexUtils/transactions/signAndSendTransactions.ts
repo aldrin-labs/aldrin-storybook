@@ -26,6 +26,7 @@ export const signAndSendTransactions = async (
       commitment,
     })
   } catch (e: any) {
+    console.warn('Unable sot sign or send transaction', e)
     return `${e?.message.toString()}`.includes('cancelled')
       ? 'cancelled'
       : 'failed'
