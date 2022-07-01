@@ -282,7 +282,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         </InputWrap>
       </TabContainer>
 
-      <TableContainer $height={`${tableHeight}rem`}>
+      <TableContainer>
         {selectedTable === 'authorized' && (
           <AllPoolsTable
             searchValue={searchValue}

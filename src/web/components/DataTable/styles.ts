@@ -61,7 +61,8 @@ export const ArrowContainer = styled.div`
 
 export const NoDataBlock = styled(FlexBlock)`
   font-size: 24px;
-  padding: 40px 0;
+  height: 100%;
+  align-items: center;
   font-weight: 600;
   color: ${COLORS.hint};
   text-align: center;
