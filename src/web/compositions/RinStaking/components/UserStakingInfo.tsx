@@ -351,17 +351,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
-  const formattedBuyBackAPR =
-    Number.isFinite(buyBackAPR) && buyBackAPR > 0
-      ? stripByAmount(buyBackAPR, 2)
-      : '--'
+  // const formattedBuyBackAPR =
+  //   Number.isFinite(buyBackAPR) && buyBackAPR > 0
+  //     ? stripByAmount(buyBackAPR, 2)
+  //     : '--'
 
   const totalStakedPercentageToCircSupply =
     (totalStakedRIN * 100) / RINCirculatingSupply
 
-  const formattedTreasuryAPR = Number.isFinite(treasuryAPR)
-    ? stripByAmount(treasuryAPR, 2)
-    : '--'
+  // const formattedTreasuryAPR = Number.isFinite(treasuryAPR)
+  //   ? stripByAmount(treasuryAPR, 2)
+  //   : '--'
 
   const formattedAPR =
     Number.isFinite(buyBackAPR) &&
@@ -418,10 +418,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       Staking rewards are paid on the{' '}
                       <strong> 27th of the every month</strong> based on RIN
                       weekly buy-backs on 1/6th of AMM fees . Estimated rewards
-                      are updated{' '}
-                      <strong>hourly based on treasury rewards</strong>{' '}
-                      and&nbsp;
-                      <strong>weekly based on RIN buyback</strong>.
+                      are updated <strong>weekly based on RIN buyback</strong>.
                     </p>
                   }
                 >
@@ -431,32 +428,20 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 </DarkTooltip>
               </FlexBlock>
 
-              <FlexBlock alignItems="flex-end">
-                <InlineText size="lg" weight={700} color="green7">
-                  {formattedAPR}%{' '}
-                  <InlineText
-                    weight={400}
-                    size="es"
-                    style={{ color: 'rgba(38, 159, 19, 50%)' }}
-                  >
-                    APR
-                  </InlineText>
-                </InlineText>
-              </FlexBlock>
-
               <StretchedBlock>
-                <FlexBlock alignItems="center">
-                  <InlineText
-                    size="sm"
-                    style={{
-                      lineHeight: 'normal',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {formattedTreasuryAPR}% + {formattedBuyBackAPR}%
+                <FlexBlock alignItems="flex-end">
+                  <InlineText size="lg" weight={700} color="green7">
+                    {formattedAPR}%{' '}
+                    <InlineText
+                      weight={400}
+                      size="es"
+                      style={{ color: 'rgba(38, 159, 19, 50%)' }}
+                    >
+                      APR
+                    </InlineText>
                   </InlineText>
                 </FlexBlock>
-                <div>
+                <FlexBlock alignItems="flex-end">
                   <ShareButton
                     iconFirst
                     text={shareText}
@@ -467,7 +452,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                       padding: '0',
                     }}
                   />
-                </div>
+                </FlexBlock>
               </StretchedBlock>
             </BlockContentStretched>
           </GreenBlock>
@@ -533,12 +518,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   title={
                     <>
                       <p>
-                        The first APR is calculated based on fixed “treasury”
-                        rewards. These rewards estimation are updated hourly.
-                      </p>
-                      <p>
-                        The second APR is calculated based on last RIN buyback
-                        which are weekly.
+                        APR is calculated based on last RIN buyback which are
+                        weekly.
                       </p>
                     </>
                   }
