@@ -239,8 +239,6 @@ const SwapPage = ({
     }
   }
 
-  const isButtonDisabled = isTokenABalanceInsufficient || isSwapInProgress
-
   const priceImpact = swapRoute
     .filter((step) => step.ammLabel === 'Aldrin')
     .reduce((acc, step) => {
@@ -270,6 +268,11 @@ const SwapPage = ({
     isTooSmallInputAmount: false,
     isSwapInProgress,
   })
+
+  const isButtonDisabled =
+    isEmptyInputAmount || isTokenABalanceInsufficient || isSwapInProgress
+
+  console.log('swapRoute', swapRoute)
 
   return (
     <SwapPageLayout>
@@ -591,6 +594,7 @@ const SwapPage = ({
         />
         <Row style={{ height: '17.5em', width: '30em', marginLeft: '0.6em' }}>
           <SwapChartWithPrice
+            isCrossOHLCV={swapRoute.length > 1}
             marketType={getOHLCVMarketTypeFromSwapRoute(swapRoute)}
             inputTokenMintAddress={getOHLCVSymbols(swapRoute)[0]}
             outputTokenMintAddress={getOHLCVSymbols(swapRoute)[1]}

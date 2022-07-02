@@ -1,15 +1,21 @@
+import { BORDER_RADIUS } from '@variables/variables'
 import React from 'react'
 import useSWR from 'swr'
 
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { SvgIcon } from '@sb/components'
+import { InlineText } from '@sb/components/Typography'
+import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
 
+import OHLCVCandlesIcon from '@icons/ohlcvCandles.svg'
+
 import { SwapChartPrice } from './SwapChartPrice'
 
 interface SwapChartProps {
+  isCrossOHLCV: boolean
   marketType: number
   inputTokenMintAddress: string
   outputTokenMintAddress: string
@@ -18,6 +24,7 @@ interface SwapChartProps {
 
 const SwapChartWithPrice = (props: SwapChartProps) => {
   const {
+    isCrossOHLCV,
     marketType,
     inputTokenMintAddress,
     outputTokenMintAddress,
@@ -47,18 +54,38 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
           outputTokenMintAddress={outputTokenMintAddress}
         />
       </RowContainer>
-      <iframe
-        allowFullScreen
-        style={{ borderWidth: 0 }}
-        src={`${PROTOCOL}//${CHARTS_API_URL}/?symbol=${inputSymbol}/${outputSymbol}&marketType=${marketType}&exchange=serum&theme=swap-${themeMode}&isMobile=true${
-          wallet.connected ? `&user_id=${wallet.publicKey}` : ''
-        }`}
-        height="100%"
-        width="100%"
-        id="tv_chart_serum"
-        title="Chart"
-        key={`${inputSymbol}/${outputSymbol}`}
-      />
+      {isCrossOHLCV ? (
+        <RowContainer
+          direction="column"
+          height="100%"
+          style={{
+            border: '1px solid yellow',
+            borderLeft: '0',
+            borderTopRightRadius: BORDER_RADIUS.lg,
+            borderBottomRightRadius: BORDER_RADIUS.lg,
+          }}
+        >
+          <SvgIcon src={OHLCVCandlesIcon} />
+          <Row margin="1em 0 0 0">
+            <InlineText size="md" color="yellow7">
+              There is not enough data for this pair. Try later.
+            </InlineText>
+          </Row>
+        </RowContainer>
+      ) : (
+        <iframe
+          allowFullScreen
+          style={{ borderWidth: 0 }}
+          src={`${PROTOCOL}//${CHARTS_API_URL}/?symbol=${inputSymbol}/${outputSymbol}&marketType=${marketType}&exchange=serum&theme=swap-${themeMode}&isMobile=true${
+            wallet.connected ? `&user_id=${wallet.publicKey}` : ''
+          }`}
+          height="100%"
+          width="100%"
+          id="tv_chart_serum"
+          title="Chart"
+          key={`${inputSymbol}/${outputSymbol}`}
+        />
+      )}
     </RowContainer>
   )
 }
