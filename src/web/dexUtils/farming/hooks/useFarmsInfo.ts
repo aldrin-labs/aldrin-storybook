@@ -6,7 +6,7 @@ import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
 import { useWallet } from '../../wallet'
 
-export const useFarmInfo = () => {
+export const useFarmsInfo = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
 

@@ -1,3 +1,4 @@
+import { ProgramAccount } from 'anchor024'
 import { BN } from 'bn.js'
 import dayjs from 'dayjs'
 import React from 'react'
@@ -15,15 +16,10 @@ import { getNumberOfPrecisionDigitsForSymbol } from '@sb/components/TradingTable
 import { Text } from '@sb/components/Typography'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
+import { TokenInfo } from '@sb/dexUtils/types'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
-import {
-  Farm,
-  filterOpenFarmingStates,
-  Vesting,
-  Farmer,
-  TokenInfo,
-} from '@core/solana'
+import { Farm, filterOpenFarmingStates, Vesting, Farmer } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import CrownIcon from '@icons/crownIcon.svg'
@@ -49,7 +45,7 @@ export const preparePoolTableCell = (params: {
   vestings: Map<string, Vesting>
   tokenMap: Map<string, TokenInfo>
   farms?: Map<string, Farm>
-  farmers?: Map<string, Farmer>
+  farmers?: Map<string, ProgramAccount<Farmer>>
 }): DataCellValues<PoolInfo> => {
   const {
     pool,
@@ -77,7 +73,7 @@ export const preparePoolTableCell = (params: {
   const farm = farms?.get(pool.poolTokenMint)
   const farmer = farm ? farmers?.get(farm.publicKey.toString()) : undefined
 
-  const userInFarming = !!farmer && farmer?.staked > 0
+  const userInFarming = !!farmer && farmer.account.staked > 0
 
   const tvlUSD =
     baseTokenPrice * pool.tvl.tokenA + quoteTokenPrice * pool.tvl.tokenB
@@ -247,7 +243,7 @@ export const preparePoolTableCell = (params: {
               <FarmingRewards
                 pool={pool}
                 farm={farm}
-                farmer={farmer}
+                farmer={farmer?.account}
                 farmingUsdValue={totalStakedLpTokensUSD}
               />
             )}

@@ -2,11 +2,11 @@ import React from 'react'
 
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { DataHeadColumn, NoDataBlock } from '@sb/components/DataTable'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
 import { PoolsTable } from '../PoolsTable'
 import { LiquidityTableProps } from './types'
 import { prepareCell } from './utils/prepareCell'
-import { useTokenInfos } from '../../../../../dexUtils/tokenRegistry'
 
 const COLUMNS: DataHeadColumn[] = [
   {

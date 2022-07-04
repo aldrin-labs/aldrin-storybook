@@ -75,7 +75,6 @@ const waitForPoolsUpdate = async (
 export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const {
     pool,
-    farmingTickets,
     userTokensData,
     prices,
     onStakeClick,
@@ -107,7 +106,8 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   // Hide tiny balances (we cannot withdraw all LP tokens so...)
   const poolTokenAmount =
     amount <= MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ? 0 : amount
-  const ticketsForPool = farmingTickets.get(pool.swapToken) || []
+  // const ticketsForPool = farmingTickets.get(pool.swapToken) || []
+  const ticketsForPool = []
 
   const lastFarmingTicket = ticketsForPool.sort(
     (a, b) => parseInt(b.startTime, 10) - parseInt(a.startTime, 10)

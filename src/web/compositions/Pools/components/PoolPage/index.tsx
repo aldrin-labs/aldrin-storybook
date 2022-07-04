@@ -68,7 +68,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
     tradingVolumes,
     fees,
     userTokensData,
-    farmingTickets,
     earnedFees,
     refreshUserTokensData,
     refreshAll,
@@ -120,7 +119,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   if (!pool) {
     return null
   }
-
   const baseInfo = tokenMap.get(pool.tokenA)
   const quoteInfo = tokenMap.get(pool.tokenB)
 
@@ -271,7 +269,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
                   tokenMap={tokenMap}
                   pool={pool}
                   userTokensData={userTokensData}
-                  farmingTickets={farmingTickets}
                   basePrice={baseUsdPrice.price}
                   quotePrice={quoteUsdPrice.price}
                   earnedFees={earnedFees}
@@ -284,7 +281,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
               <Cell col={12} colLg={6}>
                 <UserFarmingBlock
                   pool={pool}
-                  farmingTickets={farmingTickets}
                   userTokensData={userTokensData}
                   prices={prices}
                   onStakeClick={() => setOpenedPopup('stake')}
@@ -317,8 +313,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
         <WithdrawalPopup
           selectedPool={pool}
           dexTokensPricesMap={prices}
-          farmingTicketsMap={farmingTickets}
-          // earnedFeesInPoolForUserMap={earnedFees}
           allTokensData={userTokensData}
           close={closePopup}
           setIsUnstakePopupOpen={() => setOpenedPopup('unstake')}
@@ -332,7 +326,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
         <StakePopup
           selectedPool={pool}
           dexTokensPricesMap={prices}
-          farmingTicketsMap={farmingTickets}
           refreshTokensWithFarmingTickets={refreshAll}
           setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}
           isReminderPopup={openedPopup === 'remindToStake'}
@@ -345,7 +338,7 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
         <UnstakePopup
           selectedPool={pool}
           close={closePopup}
-          farmingTicketsMap={farmingTickets}
+          // farmingTicketsMap={farmingTickets}
           allTokensData={userTokensData}
           refreshTokensWithFarmingTickets={refreshAll}
           setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}

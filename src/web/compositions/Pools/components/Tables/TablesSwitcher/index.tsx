@@ -17,10 +17,10 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
+import { useFarmsInfo } from '@sb/dexUtils/farming'
 import { addHarvest } from '@sb/dexUtils/farming/actions/addHarvest'
 import { claimEligibleHarvest } from '@sb/dexUtils/farming/actions/claimEligibleHarvest'
 import { createNewHarvestPeriod } from '@sb/dexUtils/farming/actions/newHarvestPeriod'
-import { useFarmInfo } from '@sb/dexUtils/farming/hooks/useFarmInfo'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { CURVE } from '@sb/dexUtils/pools/types'
@@ -36,7 +36,6 @@ import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/g
 import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql/queries/pools/getFeesEarnedByPool'
 import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { fixCorruptedFarmingStates } from '@core/solana'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
@@ -180,7 +179,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
-  const { data: farms } = useFarmInfo()
+  const { data: farms } = useFarmsInfo()
 
   const activePoolsList = useMemo(() => {
     if (selectedTable === 'authorized') {
@@ -420,7 +419,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
             farmingTicketsMap={farmingTicketsMap}
-            farms={farms}
           />
         )}
 
@@ -432,7 +430,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
             farmingTicketsMap={farmingTicketsMap}
-            farms={farms}
           />
         )}
         {selectedTable === 'all' && (
@@ -443,7 +440,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
             farmingTicketsMap={farmingTicketsMap}
-            farms={farms}
           />
         )}
         {selectedTable === 'stablePools' && (
@@ -454,7 +450,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
             farmingTicketsMap={farmingTicketsMap}
-            farms={farms}
           />
         )}
         {selectedTable === 'userLiquidity' && (
@@ -465,7 +460,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             allTokensData={userTokensData}
             farmingTicketsMap={farmingTicketsMap}
             feesByPoolForUser={earnedFeesInPoolForUserMap}
-            farms={farms}
           />
         )}
       </TableContainer>
@@ -483,7 +477,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
           prices={dexTokensPricesMap}
           tradingVolumes={tradingVolumesMap}
           fees={getFeesEarnedByPool}
-          farmingTickets={farmingTicketsMap}
           userTokensData={userTokensData}
           earnedFees={earnedFeesInPoolForUserMap}
           refreshUserTokensData={refreshUserTokensData}

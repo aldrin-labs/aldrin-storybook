@@ -1,3 +1,5 @@
+import { ProgramAccount } from 'anchor024'
+
 import {
   FeesMap,
   PoolInfo,
@@ -15,5 +17,5 @@ export interface AllPoolsProps {
   feesByPool: FeesMap
   tradingVolumes: VolumesMap
   farmingTicketsMap: FarmingTicketsMap
-  farms?: Map<string, Farm>
+  farms?: Map<string, ProgramAccount<Farm>>
 }

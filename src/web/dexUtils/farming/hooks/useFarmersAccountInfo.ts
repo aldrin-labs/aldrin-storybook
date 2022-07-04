@@ -1,18 +1,24 @@
+import { ProgramAccount } from 'anchor024'
 import useSWR from 'swr'
 
-import { walletAdapterToWallet, loadFarmerAccountsData } from '@core/solana'
+import {
+  walletAdapterToWallet,
+  loadFarmerAccountsData,
+  Farmer,
+} from '@core/solana'
 
 import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
 import { useWallet } from '../../wallet'
 
+const NO_DATA = new Map<string, ProgramAccount<Farmer>>()
 export const useFarmersAccountInfo = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
 
   const fetcher = async () => {
     if (!wallet.publicKey) {
-      return []
+      return NO_DATA
     }
 
     const walletWithPk = walletAdapterToWallet(wallet)

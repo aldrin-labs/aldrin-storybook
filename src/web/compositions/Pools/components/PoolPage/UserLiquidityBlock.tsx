@@ -25,7 +25,6 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
   const {
     userTokensData,
     pool,
-    farmingTickets: farmingTicketsMap,
     basePrice,
     quotePrice,
     earnedFees,
@@ -41,7 +40,8 @@ export const UserLiquidityBlock: React.FC<UserLiquidityBlockProps> = (
   const poolTokenAmount =
     amount <= MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ? 0 : amount
 
-  const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
+  // const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
+  const farmingTickets = []
 
   const stakedTokens = getStakedTokensTotal(farmingTickets)
 

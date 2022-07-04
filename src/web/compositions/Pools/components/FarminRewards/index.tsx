@@ -1,3 +1,4 @@
+import BN from 'bn.js'
 import React from 'react'
 
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -16,6 +17,7 @@ import {
 } from './styles'
 import { FarmingRewardsIconsProps, FarmingRewardsProps } from './types'
 
+const ZERO = new BN(0)
 export const FarmingRewardsIcons: React.FC<FarmingRewardsIconsProps> = (
   props
 ) => {
@@ -43,14 +45,24 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
 
   const tokenMap = useTokenInfos()
 
-  const openFarmingsKeys =
-    farm?.harvests.map((harvest) => harvest.mint.toString()) || []
-  return farm ? (
+  const openFarmings =
+    farm?.harvests.filter(
+      (h) => h.periods.length === 1 && h.periods[0].tps.amount.gt(ZERO)
+    ) || []
+
+  const openFarmingsKeys = openFarmings.map((harvest) =>
+    harvest.mint.toString()
+  )
+
+  if (farm) {
+    console.log('openFarmingsKeys:', farm)
+  }
+  return openFarmings.length > 0 ? (
     <>
       <FarmingRewardsIcons poolMint={poolTokenMint} mints={openFarmingsKeys} />
       <Container>
         <FarmingText>
-          {openFarmingsKeys.map((farmingStateMint, i) => {
+          {openFarmings.map((harvest, i) => {
             // const rewardPerK = (farmingsMap.get(farmingStateMint) || []).reduce(
             //   (acc, farmingState) => {
             //     return (
@@ -64,15 +76,14 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
             //   0
             // )
             const rewardPerK = 0
+            const address = harvest.mint.toString()
 
             const tokenName = getTokenName({
-              address: farmingStateMint,
+              address,
               tokensInfoMap: tokenMap,
             })
             return (
-              <FarmingText
-                key={`fs_reward_${poolTokenMint}_${farmingStateMint}`}
-              >
+              <FarmingText key={`fs_reward_${poolTokenMint}_${address}`}>
                 {i > 0 ? ' + ' : ''}
                 <FarmingText color="ggreen3reen0">
                   {stripByAmountAndFormat(rewardPerK)}&nbsp;

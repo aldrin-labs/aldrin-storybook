@@ -11,8 +11,11 @@ import { InlineText } from '@sb/components/Typography'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { NumberWithLabel } from '@sb/compositions/Staking/components/NumberWithLabel/NumberWithLabel'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { startFarmingV2, stopFarmingV2 } from '@sb/dexUtils/farming'
-import { useFarmInfo } from '@sb/dexUtils/farming/hooks/useFarmInfo'
+import {
+  startFarmingV2,
+  stopFarmingV2,
+  useFarmsInfo,
+} from '@sb/dexUtils/farming'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
@@ -160,7 +163,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   }, 30_000)
 
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
-  const { data: farms } = useFarmInfo()
+  const { data: farms } = useFarmsInfo()
   const farm = farms?.get(FARMING_V2_TEST_TOKEN)
 
   const start = useCallback(

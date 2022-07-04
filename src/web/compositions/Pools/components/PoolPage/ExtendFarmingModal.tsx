@@ -7,7 +7,7 @@ import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
-import { createNewHarvestPeriod } from '@sb/dexUtils/farming'
+import { createNewHarvestPeriod, useFarm } from '@sb/dexUtils/farming'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -27,6 +27,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
 
   const [userTokens] = useUserTokenAccounts()
   const farmingTokens = (pool.farming || []).map((fs) => fs.farmingTokenMint)
+  const farm = useFarm(pool.poolTokenMint)
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
 
@@ -83,6 +84,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         duration: parseFloat(values.farming.farmingPeriod) * DAY,
         userTokens,
         amount: parseFloat(values.farming.tokenAmount),
+        farm,
       })
       if (result === 'success') {
         onExtend()

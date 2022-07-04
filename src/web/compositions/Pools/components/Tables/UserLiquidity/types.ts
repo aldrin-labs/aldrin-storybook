@@ -6,7 +6,6 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 
-import { Farm } from '@core/solana'
 
 export interface LiquidityTableProps {
   searchValue: string
@@ -15,7 +14,6 @@ export interface LiquidityTableProps {
   dexTokensPricesMap: TokenPricesMap
   farmingTicketsMap: FarmingTicketsMap
   feesByPoolForUser: FeesMap
-  farms?: Map<string, Farm>
 }
 
 export interface PrepareCellParams {
