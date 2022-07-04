@@ -1,5 +1,4 @@
-import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
-import BN from 'bn.js'
+import { Transaction, TransactionInstruction } from '@solana/web3.js'
 
 import {
   buildStartFarmingV2Instruction,
@@ -26,11 +25,11 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
   }
 
   const { instruction } = await buildStartFarmingV2Instruction({
-    farm: farm,
+    farm,
     stakeVault: farm.stakeVault,
     wallet,
     connection,
-    userTokens, 
+    userTokens,
     amount,
   })
 

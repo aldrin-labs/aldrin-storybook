@@ -1,6 +1,4 @@
 import { ApolloQueryResult } from 'apollo-client'
-import dayjs from 'dayjs'
-import pluralize from 'pluralize'
 import React, { useState } from 'react'
 
 import { SvgIcon } from '@sb/components'
@@ -9,28 +7,19 @@ import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Text } from '@sb/components/Typography'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { uniq } from '@sb/utils/collection'
 
 import { ADDITIONAL_POOL_OWNERS } from '@core/config/dex'
-import {
-  UNLOCK_STAKED_AFTER,
-  getStakedTokensTotal,
-  filterOpenFarmingStates,
-} from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
-import { estimateTime, MINUTE } from '@core/utils/dateUtils'
 
 import LightLogo from '@icons/lightLogo.svg'
 
+import { useFarm, useFarmer } from '../../../../dexUtils/farming'
 import { PoolInfo } from '../../index.types'
 import { getTokenDataByMint } from '../../utils'
-import { UserFarmingRewards } from '../Tables/UserFarmingRewards'
-import { getUniqueAmountsToClaimMap } from '../Tables/utils/getUniqueAmountsToClaimMap'
 import { ExtendFarmingModal } from './ExtendFarmingModal'
-import ClockIcon from './icons/whiteClock.svg'
 import {
   ExtendFarmingButton,
   FarmingBlock,
@@ -43,8 +32,7 @@ import {
   LiquidityTitle,
   NoFarmingBlock,
 } from './styles'
-import { ClaimTimeTooltip } from './Tooltips'
-import { PoolRewardRemain, UserFarmingBlockProps } from './types'
+import { UserFarmingBlockProps } from './types'
 
 const waitForPoolsUpdate = async (
   refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
@@ -88,18 +76,15 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const [farmingExtending, setFarmingExtending] = useState(false)
   const [extendFarmingModalOpen, setExtendFarmingModalOpen] = useState(false)
 
-  const { data: calcAccounts } = useFarmingCalcAccounts()
-
-  const farmings = filterOpenFarmingStates(pool.farming || [])
-  const hasFarming = farmings.length > 0
-  const hadFarming = (pool.farming || []).length > 0
+  const farm = useFarm(pool.poolTokenMint)
+  const farmer = useFarmer(farm?.publicKey?.toString())
+  const hadFarming = !!farm // TODO
+  const hasFarming = !!farm // TODO
 
   const additionalPoolOwners = ADDITIONAL_POOL_OWNERS[pool.poolTokenMint] || []
   const isPoolOwner =
     wallet.publicKey?.toString() === pool.initializerAccount ||
-    additionalPoolOwners.includes(wallet.publicKey?.toString())
-
-  const farming = farmings[0]
+    additionalPoolOwners.includes(wallet.publicKey?.toString() || '')
 
   const { amount } = getTokenDataByMint(userTokensData, pool.poolTokenMint)
 
@@ -107,42 +92,22 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   const poolTokenAmount =
     amount <= MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ? 0 : amount
   // const ticketsForPool = farmingTickets.get(pool.swapToken) || []
-  const ticketsForPool = []
 
-  const lastFarmingTicket = ticketsForPool.sort(
-    (a, b) => parseInt(b.startTime, 10) - parseInt(a.startTime, 10)
-  )[0]
-
-  const claimAvailableTs =
-    lastFarmingTicket && farming
-      ? parseInt(lastFarmingTicket.startTime, 10) +
-        farming.periodLength +
-        UNLOCK_STAKED_AFTER
-      : 0
-
-  const now = Date.now() / 1000
-
-  const unstakeLocked = claimAvailableTs > now
-
-  const stakedAmount = getStakedTokensTotal(ticketsForPool)
-
-  const availableToClaimMap = getUniqueAmountsToClaimMap({
-    farmingTickets: ticketsForPool,
-    farmingStates: pool.farming || [],
-    calcAccounts,
-  })
+  const stakedAmount = 0 // TODO
 
   const hasUnstaked = poolTokenAmount > 0
   const hasStaked = stakedAmount > 0
 
-  const availableToClaim = Array.from(availableToClaimMap.values())
-    .map((atc) => {
-      const name = getTokenNameByMintAddress(atc.farmingTokenMint)
-      const usdValue = (prices.get(name)?.price || 0) * atc.amount
+  // const availableToClaim = Array.from(availableToClaimMap.values())
+  //   .map((atc) => {
+  //     const name = getTokenNameByMintAddress(atc.farmingTokenMint)
+  //     const usdValue = (prices.get(name)?.price || 0) * atc.amount
 
-      return { ...atc, name, usdValue }
-    })
-    .filter((atc) => atc.amount > 0)
+  //     return { ...atc, name, usdValue }
+  //   })
+  //   .filter((atc) => atc.amount > 0)
+
+  const availableToClaim = [] // TODO
 
   const availableToClaimUsd = availableToClaim.reduce(
     (acc, atc) => acc + atc.usdValue,
@@ -198,7 +163,9 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   }
 
   const tokenNames = uniq(
-    farmings.map((fs) => getTokenNameByMintAddress(fs.farmingTokenMint))
+    farm?.harvests.map((harvest) =>
+      getTokenNameByMintAddress(harvest.mint.toString())
+    ) || []
   ).join(' and ')
 
   const showTooltip = !hasUnstaked && !hasStaked
@@ -206,32 +173,32 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     ? `Deposit Liquidity and stake pool tokens to farm ${tokenNames}`
     : null
 
-  const farmingRemain = farmings.reduce((acc, fs) => {
-    const value = acc.get(fs.farmingTokenMint) || {
-      timeRemain: 0,
-      tokensRemain: 0,
-    }
+  // const farmingRemain = farmings.reduce((acc, fs) => {
+  //   const value = acc.get(fs.farmingTokenMint) || {
+  //     timeRemain: 0,
+  //     tokensRemain: 0,
+  //   }
 
-    const tokensRemain = fs.tokensTotal - fs.tokensUnlocked
-    const timeRemain =
-      Math.round(tokensRemain / fs.tokensPerPeriod) * fs.periodLength
+  //   const tokensRemain = fs.tokensTotal - fs.tokensUnlocked
+  //   const timeRemain =
+  //     Math.round(tokensRemain / fs.tokensPerPeriod) * fs.periodLength
 
-    value.tokensRemain =
-      tokensRemain / 10 ** fs.farmingTokenMintDecimals + value.tokensRemain
-    value.timeRemain = Math.max(value.timeRemain, timeRemain)
+  //   value.tokensRemain =
+  //     tokensRemain / 10 ** fs.farmingTokenMintDecimals + value.tokensRemain
+  //   value.timeRemain = Math.max(value.timeRemain, timeRemain)
 
-    acc.set(fs.farmingTokenMint, value)
-    return acc
-  }, new Map<string, PoolRewardRemain>())
+  //   acc.set(fs.farmingTokenMint, value)
+  //   return acc
+  // }, new Map<string, PoolRewardRemain>())
 
-  const farmingTokens = Array.from(farmingRemain.keys())
+  // const farmingTokens = Array.from(farmingRemain.keys())
 
-  const timesRemain = Array.from(farmingRemain.values()).map(
-    (fr) => fr.timeRemain
-  )
-  const timeRemainMax = Math.max(...timesRemain)
+  // const timesRemain = Array.from(farmingRemain.values()).map(
+  //   (fr) => fr.timeRemain
+  // )
+  // const timeRemainMax = Math.max(...timesRemain)
 
-  const estimatedTime = estimateTime(timeRemainMax)
+  // const estimatedTime = estimateTime(timeRemainMax)
 
   // Have pool ending soon
   // const prolongationEnabled = !!(pool.farming || []).find(
@@ -240,18 +207,14 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
 
   const prolongationEnabled = true
 
-  const unstakeTooltipText = unstakeLocked
-    ? `Locked until ${dayjs
-        .unix(claimAvailableTs)
-        .format('HH:mm:ss MMM DD, YYYY')}`
-    : tooltipText
+  const unstakeTooltipText = tooltipText
 
   return (
     <FarmingBlock>
       <LoadingBlock loading={farmingExtending}>
         {isPoolOwner ? (
           <>
-            <FarmingBlockInner>
+            {/* <FarmingBlockInner>
               <LiquidityItem>
                 <LiquidityTitle>Remaining Supply</LiquidityTitle>
                 {farmingTokens.length === 0 && (
@@ -329,7 +292,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                   </div>
                 </DarkTooltip>
               )}
-            </FarmingButtonWrap>
+            </FarmingButtonWrap> */}
           </>
         ) : (
           <FarmingBlockInner>
@@ -368,7 +331,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                   <span>
                     <FarmingButton
                       $variant="error"
-                      disabled={!hasStaked || processing || unstakeLocked}
+                      disabled={!hasStaked || processing}
                       $loading={processing}
                       onClick={onUnstakeClick}
                     >
@@ -380,7 +343,8 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             </LiquidityItem>
             <LiquidityItem>
               <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
-              <UserFarmingRewards availableToClaim={availableToClaim} />
+              TBD
+              {/* <UserFarmingRewards availableToClaim={availableToClaim} /> */}
               <FarmingButtonWrap>
                 <DarkTooltip title={tooltipText}>
                   <span>
@@ -394,13 +358,13 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                     </FarmingButton>
                   </span>
                 </DarkTooltip>
-                <DarkTooltip
+                {/* <DarkTooltip
                   title={<ClaimTimeTooltip farmingState={farming} />}
                 >
                   <div style={{ height: '1em', cursor: 'help' }}>
                     <SvgIcon src={ClockIcon} width="1em" height="1em" />
                   </div>
-                </DarkTooltip>
+                </DarkTooltip> */}
               </FarmingButtonWrap>
             </LiquidityItem>
           </FarmingBlockInner>

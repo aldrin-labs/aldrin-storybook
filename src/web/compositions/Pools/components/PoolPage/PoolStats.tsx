@@ -172,17 +172,8 @@ Don't miss your chance.`
       <PoolInfoBlock>
         <PoolName>
           <TokenIcons>
-            <TokenIcon
-              mint={pool.tokenA}
-              size={48}
-              margin="0 0.5em 0 0"
-            />{' '}
-            /
-            <TokenIcon
-              mint={pool.tokenB}
-              size={48}
-              margin="0 0 0 0.5em"
-            />
+            <TokenIcon mint={pool.tokenA} size={48} margin="0 0.5em 0 0" /> /
+            <TokenIcon mint={pool.tokenB} size={48} margin="0 0 0 0.5em" />
           </TokenIcons>
           <div>
             <TokenSymbols>

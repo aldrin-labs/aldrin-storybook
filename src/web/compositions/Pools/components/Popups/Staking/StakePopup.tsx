@@ -1,5 +1,3 @@
-import { PublicKey } from '@solana/web3.js'
-import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { useTheme } from 'styled-components'
 
@@ -16,7 +14,6 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { startStaking } from '@sb/dexUtils/common/actions'
 import {
   CREATE_FARMING_TICKET_SOL_FEE,
   MIN_POOL_TOKEN_AMOUNT_TO_STAKE,
@@ -24,10 +21,7 @@ import {
 import { FarmingTicket } from '@sb/dexUtils/common/types'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
-import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction } from '@sb/dexUtils/types'
 import {
   formatNumbersForState,
@@ -36,15 +30,14 @@ import {
 import { useWallet } from '@sb/dexUtils/wallet'
 import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
-import { filterOpenFarmingStates } from '@core/solana'
 import { estimatedTime } from '@core/utils/dateUtils'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces,
-} from '@core/utils/PortfolioTableUtils'
 
+import {
+  startFarmingV2,
+  useFarm,
+  useFarmer,
+} from '../../../../../dexUtils/farming'
 import { Button } from '../../Tables/index.styles'
-import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
 import { InputWithCoins } from '../components'
 import { BoldHeader, StyledPaper } from '../index.styles'
 import { HintContainer } from './styles'
@@ -65,7 +58,6 @@ const Popup = (props: StakePopupProps) => {
     close,
     selectedPool,
     allTokensData,
-    farmingTicketsMap,
     dexTokensPricesMap,
     refreshTokensWithFarmingTickets,
     setPoolWaitingForUpdateAfterOperation,
@@ -79,6 +71,10 @@ const Popup = (props: StakePopupProps) => {
   const [poolTokenAmount, setPoolTokenAmount] = useState<number | string>(
     maxPoolTokenAmount
   )
+
+  const farm = useFarm(selectedPool.poolTokenMint)
+  const farmer = useFarmer(farm?.publicKey.toString())
+  console.log('farmer:', farmer)
   const [operationLoading, setOperationLoading] = useState(false)
   const theme = useTheme()
   const { wallet } = useWallet()
@@ -87,7 +83,7 @@ const Popup = (props: StakePopupProps) => {
   const isNotEnoughPoolTokens = +poolTokenAmount > maxPoolTokenAmount
   const farmingState = selectedPool.farming && selectedPool.farming[0]
 
-  const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
+  // const farmingTickets = farmingTicketsMap.get(selectedPool.swapToken) || []
 
   const poolTokenPrice = calculatePoolTokenPrice({
     pool: selectedPool,
@@ -104,38 +100,38 @@ const Popup = (props: StakePopupProps) => {
 
   const isPoolWithFarming =
     selectedPool.farming && selectedPool.farming.length > 0
-  const openFarmings = isPoolWithFarming
-    ? filterOpenFarmingStates(selectedPool.farming)
-    : []
+  // const openFarmings = isPoolWithFarming
+  //   ? filterOpenFarmingStates(selectedPool.farming)
+  //   : []
 
   if (!farmingState) return null
 
-  const totalFarmingDailyRewardsUSD = openFarmings.reduce(
-    (acc, farmingState) => {
-      const farmingStateDailyFarmingValuePerThousandDollarsLiquidity =
-        getFarmingStateDailyFarmingValue({
-          farmingState,
-          totalStakedLpTokensUSD,
-        })
+  // const totalFarmingDailyRewardsUSD = openFarmings.reduce(
+  //   (acc, farmingState) => {
+  //     const farmingStateDailyFarmingValuePerThousandDollarsLiquidity =
+  //       getFarmingStateDailyFarmingValue({
+  //         farmingState,
+  //         totalStakedLpTokensUSD,
+  //       })
 
-      const farmingTokenSymbol = getTokenNameByMintAddress(
-        farmingState.farmingTokenMint
-      )
+  //     const farmingTokenSymbol = getTokenNameByMintAddress(
+  //       farmingState.farmingTokenMint
+  //     )
 
-      const farmingTokenPrice =
-        dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
+  //     const farmingTokenPrice =
+  //       dexTokensPricesMap.get(farmingTokenSymbol)?.price || 0
 
-      const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
-        farmingStateDailyFarmingValuePerThousandDollarsLiquidity *
-        farmingTokenPrice
+  //     const farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD =
+  //       farmingStateDailyFarmingValuePerThousandDollarsLiquidity *
+  //       farmingTokenPrice
 
-      return acc + farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD
-    },
-    0
-  )
+  //     return acc + farmingStateDailyFarmingValuePerThousandDollarsLiquidityUSD
+  //   },
+  //   0
+  // )
 
-  const farmingAPR =
-    ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
+  // const farmingAPR =
+  //   ((totalFarmingDailyRewardsUSD * 365) / totalStakedLpTokensUSD) * 100
 
   const farmingTokens = [
     ...new Set(
@@ -151,6 +147,57 @@ const Popup = (props: StakePopupProps) => {
     })
     .join('')
     .replace(',', '')
+
+  const startStaking = async () => {
+    if (!farm) {
+      throw new Error('No farm!')
+    }
+    // loader in popup button
+    setOperationLoading(true)
+    // loader in table button
+    setPoolWaitingForUpdateAfterOperation({
+      pool: selectedPool.swapToken,
+      operation: 'stake',
+    })
+
+    const poolTokenAmountWithDecimals =
+      +poolTokenAmount * 10 ** poolTokenDecimals
+
+    const result = await startFarmingV2({
+      wallet,
+      connection,
+      amount: poolTokenAmountWithDecimals,
+      userTokens: allTokensData,
+      farm,
+    })
+
+    setOperationLoading(false)
+
+    // notify({
+    //   type: result === 'success' ? 'success' : 'error',
+    //   message:
+    //     result === 'success'
+    //       ? 'Successfully staked.'
+    //       : result === 'failed'
+    //       ? 'Staking failed, please try again later or contact us in telegram.'
+    //       : 'Staking cancelled.',
+    // })
+
+    const clearPoolWaitingForUpdate = () =>
+      setPoolWaitingForUpdateAfterOperation({
+        pool: '',
+        operation: '',
+      })
+
+    if (result === 'success') {
+      refreshTokensWithFarmingTickets()
+      clearPoolWaitingForUpdate()
+    } else {
+      clearPoolWaitingForUpdate()
+    }
+
+    close()
+  }
 
   const isLessThanMinPoolTokenAmountToStake =
     poolTokenAmount < MIN_POOL_TOKEN_AMOUNT_TO_STAKE
@@ -231,7 +278,8 @@ const Popup = (props: StakePopupProps) => {
                   fontFamily: 'Avenir Next Demi',
                 }}
               >
-                {formatNumberToUSFormat(stripDigitPlaces(farmingAPR, 2))}% APR
+                TBD
+                {/* {formatNumberToUSFormat(stripDigitPlaces(farmingAPR, 2))}% APR */}
               </span>
             </Row>
           </Text>
@@ -260,16 +308,17 @@ const Popup = (props: StakePopupProps) => {
           <Row width="80%" align="flex-start" direction="column">
             <Text style={{ margin: '0 0 1.5rem 0' }}>
               Pool tokens will be locked for{' '}
-              <span style={{ color: '#53DF11' }}>
+              <span style={{ color: theme.colors.green4 }}>
                 {estimatedTime(farmingState.periodLength + 20 * 60)}.
               </span>{' '}
             </Text>
             <Text>
               Withdrawal will not be available until{' '}
-              <span style={{ color: '#53DF11' }}>
-                {dayjs
+              <span style={{ color: theme.colors.green4 }}>
+                {/* {dayjs
                   .unix(Date.now() / 1000 + farmingState.periodLength)
-                  .format('MMM DD, YYYY')}
+                  .format('MMM DD, YYYY')} */}
+                TBD
               </span>
             </Text>
           </Row>
@@ -301,58 +350,7 @@ const Popup = (props: StakePopupProps) => {
           isUserConfident
           theme={theme}
           showLoader={operationLoading}
-          onClick={async () => {
-            // loader in popup button
-            setOperationLoading(true)
-            // loader in table button
-            setPoolWaitingForUpdateAfterOperation({
-              pool: selectedPool.swapToken,
-              operation: 'stake',
-            })
-
-            const poolTokenAmountWithDecimals =
-              +poolTokenAmount * 10 ** poolTokenDecimals
-
-            const result = await startStaking({
-              wallet,
-              connection,
-              amount: poolTokenAmountWithDecimals,
-              stakingPool: selectedPool,
-              userPoolTokenAccount: new PublicKey(userPoolTokenAccount),
-              programAddress: getPoolsProgramAddress({
-                curveType: selectedPool.curveType,
-              }),
-              farmingTickets,
-              decimals: POOL_TOKENS_MINT_DECIMALS,
-            })
-
-            setOperationLoading(false)
-
-            notify({
-              type: result === 'success' ? 'success' : 'error',
-              message:
-                result === 'success'
-                  ? 'Successfully staked.'
-                  : result === 'failed'
-                  ? 'Staking failed, please try again later or contact us in telegram.'
-                  : 'Staking cancelled.',
-            })
-
-            const clearPoolWaitingForUpdate = () =>
-              setPoolWaitingForUpdateAfterOperation({
-                pool: '',
-                operation: '',
-              })
-
-            if (result === 'success') {
-              refreshTokensWithFarmingTickets()
-              clearPoolWaitingForUpdate()
-            } else {
-              clearPoolWaitingForUpdate()
-            }
-
-            close()
-          }}
+          onClick={startStaking}
         >
           Stake
         </Button>

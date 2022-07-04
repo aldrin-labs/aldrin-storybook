@@ -242,8 +242,6 @@ export const preparePoolTableCell = (params: {
             ) : (
               <FarmingRewards
                 pool={pool}
-                farm={farm}
-                farmer={farmer?.account}
                 farmingUsdValue={totalStakedLpTokensUSD}
               />
             )}

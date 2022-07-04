@@ -3,9 +3,11 @@ import React from 'react'
 
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
+import { useFarm } from '@sb/dexUtils/farming'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
+import { calculateRewardsPerUsd } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import { PoolStatsText } from '../PoolPage/styles'
@@ -39,12 +41,11 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
   const {
     farmingUsdValue,
     pool: { poolTokenMint },
-    farm,
-    farmer,
   } = props
 
   const tokenMap = useTokenInfos()
 
+  const farm = useFarm(poolTokenMint)
   const openFarmings =
     farm?.harvests.filter(
       (h) => h.periods.length === 1 && h.periods[0].tps.amount.gt(ZERO)
@@ -54,28 +55,18 @@ export const FarmingRewards: React.FC<FarmingRewardsProps> = (props) => {
     harvest.mint.toString()
   )
 
-  if (farm) {
-    console.log('openFarmingsKeys:', farm)
-  }
   return openFarmings.length > 0 ? (
     <>
       <FarmingRewardsIcons poolMint={poolTokenMint} mints={openFarmingsKeys} />
       <Container>
         <FarmingText>
           {openFarmings.map((harvest, i) => {
-            // const rewardPerK = (farmingsMap.get(farmingStateMint) || []).reduce(
-            //   (acc, farmingState) => {
-            //     return (
-            //       acc +
-            //       getFarmingStateDailyFarmingValuePerThousandDollarsLiquidity({
-            //         farmingState,
-            //         totalStakedLpTokensUSD: farmingUsdValue,
-            //       })
-            //     )
-            //   },
-            //   0
-            // )
-            const rewardPerK = 0
+            const rewardPerK = calculateRewardsPerUsd({
+              tokensPerSlot: parseFloat(
+                harvest.periods[0].tps.amount.toString()
+              ),
+              totalUsdValue: farmingUsdValue,
+            })
             const address = harvest.mint.toString()
 
             const tokenName = getTokenName({

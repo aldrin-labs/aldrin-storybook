@@ -1,4 +1,3 @@
-import { PublicKey } from '@solana/web3.js'
 import { ApolloQueryResult } from 'apollo-client'
 import React, { useMemo, useState } from 'react'
 import { Route, useHistory } from 'react-router'
@@ -17,10 +16,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
-import { useFarmsInfo } from '@sb/dexUtils/farming'
-import { addHarvest } from '@sb/dexUtils/farming/actions/addHarvest'
-import { claimEligibleHarvest } from '@sb/dexUtils/farming/actions/claimEligibleHarvest'
-import { createNewHarvestPeriod } from '@sb/dexUtils/farming/actions/newHarvestPeriod'
+import { useFarmersAccountInfo, useFarmsInfo } from '@sb/dexUtils/farming'
 import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { CURVE } from '@sb/dexUtils/pools/types'
@@ -42,11 +38,6 @@ import { getRandomInt } from '@core/utils/helpers'
 
 import KudelskiLogo from '@icons/kudelski.svg'
 
-import {
-  initializeFarmingV2,
-  startFarmingV2,
-  stopFarmingV2,
-} from '../../../../../dexUtils/farming/actions'
 import { PoolPage } from '../../PoolPage'
 import { CreatePoolModal } from '../../Popups'
 import { AMMAuditPopup } from '../../Popups/AMMAuditPopup/AMMAuditPopup'
@@ -155,13 +146,16 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     (v) => v.mint.toBase58()
   )
 
+  const { data: farms } = useFarmsInfo()
+  const { data: farmers } = useFarmersAccountInfo()
+
   const userLiquidityPools = getUserPoolsFromAll({
     poolsInfo: pools,
     allTokensData: userTokensData,
-    farmingTicketsMap,
     vestings: vestingsByMintForUser,
     walletPublicKey: wallet.publicKey,
-    calcAccounts,
+    farms,
+    farmers,
   })
 
   const stablePools = pools.filter((pool) => pool.curveType === CURVE.STABLE)
@@ -178,8 +172,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     []
 
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
-
-  const { data: farms } = useFarmsInfo()
 
   const activePoolsList = useMemo(() => {
     if (selectedTable === 'authorized') {
@@ -203,122 +195,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={async () => {
-          if (!farms) {
-            throw new Error('No farms')
-          }
-          await initializeFarmingV2({
-            stakeMint: new PublicKey(
-              '8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD'
-            ),
-            wallet,
-            connection,
-          })
-        }}
-      >
-        Create farm
-      </button>
-      <button
-        type="button"
-        onClick={async () => {
-          if (!farms) {
-            throw new Error('No farms')
-          }
-          // TODO: pass farmer address if it exists
-          await startFarmingV2({
-            wallet,
-            connection,
-            amount: 100000,
-            farm:
-              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
-            userTokens: userTokensData,
-          })
-        }}
-      >
-        Start farming
-      </button>
-      <button
-        type="button"
-        onClick={async () => {
-          if (!farms) {
-            throw new Error('No farms')
-          }
-          // TODO: pass farmer address if it exists
-          await addHarvest({
-            wallet,
-            connection,
-            farm:
-              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
-            userTokens: userTokensData,
-            harvestMint: new PublicKey(
-              'B3LrkAzC1vj58t69RNcv3pDVnWPHnafEeXDqX5ChHWSh'
-            ),
-          })
-        }}
-      >
-        Add harvest
-      </button>
-      <button
-        type="button"
-        onClick={async () => {
-          if (!farms) {
-            throw new Error('No farms')
-          }
-          await createNewHarvestPeriod({
-            wallet,
-            connection,
-            amount: 10000,
-            farm:
-              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
-            userTokens: userTokensData,
-            harvestMint: new PublicKey(
-              '8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD'
-            ),
-            startsAt: 0,
-            periodLengthInSlots: 3,
-          })
-        }}
-      >
-        Add new harvest period
-      </button>
-      <button
-        type="button"
-        onClick={async () => {
-          if (!farms) {
-            throw new Error('No farms')
-          }
-          await claimEligibleHarvest({
-            wallet,
-            connection,
-            farm:
-              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
-            userTokens: userTokensData,
-          })
-        }}
-      >
-        Claim rewards
-      </button>
-      <button
-        type="button"
-        onClick={async () => {
-          if (!farms) {
-            throw new Error('No farms')
-          }
-          // TODO: pass farmer address if it exists
-          await stopFarmingV2({
-            wallet,
-            connection,
-            amount: 10000,
-            farm:
-              farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
-            userTokens: userTokensData,
-          })
-        }}
-      >
-        Stop farming
-      </button>
       <TabContainer>
         <div>
           <TableModeButton
