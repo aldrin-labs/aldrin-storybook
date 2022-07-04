@@ -2,8 +2,7 @@ import React from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { Text } from '@sb/components/Typography'
-
-import { useSolanaTPS } from '@core/hooks/useSolanaTPS'
+import { useSolanaTPS } from '@sb/hooks/useSolanaTPS'
 
 import BlackWarningIcon from '@icons/blackWarning.svg'
 

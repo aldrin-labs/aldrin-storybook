@@ -13,8 +13,8 @@ import { useConnection } from '@sb/dexUtils/connection'
 import { MarketsMap, useAllMarketsList } from '@sb/dexUtils/markets'
 import { useLocalStorageState } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { getAllTokensData } from '@core/solana'
 
 import BalanceDistributedComponent from './components/BalanceDistributed'
