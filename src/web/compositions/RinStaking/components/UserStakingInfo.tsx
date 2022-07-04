@@ -1,4 +1,3 @@
-import { PublicKey } from '@solana/web3.js'
 import { toNumber } from 'lodash-es'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -67,12 +66,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     treasuryDailyRewards,
   } = props
 
-  const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
-    publicKey: new PublicKey(FARMING_V2_TEST_TOKEN),
-  })
-
   const { data: farms } = useFarmInfo()
   const farm = farms?.get(FARMING_V2_TEST_TOKEN)
+
+  const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
+    publicKey: farm ? farm.stakeVault : undefined,
+  })
   const tokenData = useAssociatedTokenAccount(farm?.stakeMint.toString())
 
   useInterval(() => {
@@ -242,12 +241,22 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
+  const totalApr = buyBackAPR + treasuryAPR
+
   const formattedAPR =
     Number.isFinite(buyBackAPR) &&
     buyBackAPR > 0 &&
     Number.isFinite(treasuryAPR)
-      ? stripByAmount(buyBackAPR + treasuryAPR, 2)
+      ? stripByAmount(totalApr, 2)
       : '--'
+
+  console.log({
+    buyBackAPR,
+    treasuryAPR,
+    buyBackAmountWithoutDecimals,
+    DAYS_TO_CHECK_BUY_BACK,
+    totalStakedRIN,
+  })
 
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`
