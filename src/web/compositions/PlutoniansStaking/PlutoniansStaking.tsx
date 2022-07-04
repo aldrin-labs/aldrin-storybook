@@ -17,9 +17,9 @@ import {
   Cell,
   Column,
 } from '@sb/components/Layout'
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { Modal } from '@sb/components/Modal'
 import { TimeProgressBar } from '@sb/components/ProgressBarBlock/ProgressBar'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { Radio } from '@sb/components/RadioButton/RadioButton'
 import { InlineText, Text } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -553,7 +553,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                       size="md"
                                       weight={700}
                                     >
-                                      Stake more than{' '}
+                                      Stake at least{' '}
                                       {formatNumberToUSFormat(
                                         minStakeTokensForReward
                                       )}{' '}
@@ -640,7 +640,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                           {/* <SvgIcon src={InfoIcon} width="12px" height="12px" /> */}
                         </StretchedBlock>
                         {minStakeTokensForRewardBn &&
-                        stakeAccountForTier.account.amount.gt(
+                        stakeAccountForTier.account.amount.gte(
                           minStakeTokensForRewardBn
                         ) ? (
                           <>
@@ -662,7 +662,7 @@ const Block: React.FC<PlutoniansBlockProps> = (props) => {
                                 size="md"
                                 weight={700}
                               >
-                                Stake more than{' '}
+                                Stake at least{' '}
                                 {formatNumberToUSFormat(
                                   minStakeTokensForReward
                                 )}{' '}
