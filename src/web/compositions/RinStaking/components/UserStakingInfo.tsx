@@ -107,7 +107,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       connection,
     })
 
-  const totalStaked = farmer?.account.vested.amount.toString() || '0'
+  const totalStaked = farmer?.totalStaked || '0'
 
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
@@ -289,6 +289,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const userEstRewardsUSD = isBalancesShowing
     ? strippedEstRewardsUSD
     : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
+
+  console.log('farmer', farmer)
 
   return (
     <>

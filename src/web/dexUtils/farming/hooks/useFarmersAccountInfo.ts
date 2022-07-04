@@ -17,7 +17,6 @@ export const useFarmersAccountInfo = () => {
       connection,
       wallet: walletWithPk,
     })
-
     return toMap(accountInfo, (acc) => acc.account.farm.toString())
   }
 
