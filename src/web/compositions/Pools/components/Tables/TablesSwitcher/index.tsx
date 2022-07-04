@@ -17,6 +17,7 @@ import {
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
 import { useConnection } from '@sb/dexUtils/connection'
+import { useFarmersAccountInfo } from '@sb/dexUtils/farming'
 import { addHarvestV2 } from '@sb/dexUtils/farming/actions/addHarvest'
 import { claimEligibleHarvest } from '@sb/dexUtils/farming/actions/claimEligibleHarvest'
 import { createNewHarvestPeriod } from '@sb/dexUtils/farming/actions/newHarvestPeriod'
@@ -181,7 +182,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
 
   const { data: farms } = useFarmInfo()
-  console.log('farms', farms)
+
   const activePoolsList = useMemo(() => {
     if (selectedTable === 'authorized') {
       return authorizedPools
@@ -201,6 +202,10 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const poolsLength = activePoolsList.length
 
   const tableHeight = Math.min(poolsLength * 13, 80)
+
+  const { data: farmersInfo } = useFarmersAccountInfo()
+  const farm = farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD')
+  const farmer = farmersInfo?.get(farm?.publicKey.toString())
 
   return (
     <>
@@ -232,6 +237,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             wallet,
             connection,
             amount: 100000,
+            farmer,
             farm:
               farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD') || {},
             userTokens: userTokensData,

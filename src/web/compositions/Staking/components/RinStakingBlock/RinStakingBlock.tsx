@@ -1,16 +1,17 @@
-import { PublicKey } from '@solana/web3.js'
 import React from 'react'
 
 import { BlockTitle, BlockContent } from '@sb/components/Block'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { useFarmInfo } from '@sb/dexUtils/farming'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { useStakingPoolInfo } from '@sb/dexUtils/staking/hooks'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { FARMING_V2_TEST_TOKEN } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import AldrinLogo from '@icons/Aldrin.svg'
@@ -38,17 +39,19 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
       getDexTokensPricesQuery: { getDexTokensPrices },
     } = props
 
+    const { data: farms } = useFarmInfo()
     const { data: poolInfo } = useStakingPoolInfo()
 
+    const farm = farms?.get(FARMING_V2_TEST_TOKEN)
+
     const [totalStakedRIN] = useAccountBalance({
-      publicKey: poolInfo
-        ? new PublicKey(poolInfo.poolInfo.stakingVault)
-        : undefined,
+      publicKey: farm ? farm.stakeVault : undefined,
     })
 
     const tokenName = getTokenNameByMintAddress(
-      poolInfo?.currentFarmingState.farmingTokenMint
-    )
+      'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
+    ) // getTokenNameByMintAddress(farm?.stakeMint.toString())
+
     const rinPrice =
       getDexTokensPrices?.find((v) => v.symbol === tokenName)?.price || 0
 
@@ -67,7 +70,7 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
       365 *
       100
 
-    console.log('buyBackAPR:', buyBackAPR, poolInfo)
+    console.log('buyBackAPR:', buyBackAPR, totalStakedRIN)
 
     const treasuryAPR =
       ((poolInfo?.treasuryDailyRewards || 0) / totalStakedRIN) * 365 * 100

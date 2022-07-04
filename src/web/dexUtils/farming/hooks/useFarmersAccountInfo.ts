@@ -11,10 +11,6 @@ export const useFarmersAccountInfo = () => {
   const connection = useConnection()
 
   const fetcher = async () => {
-    if (!wallet.publicKey) {
-      return []
-    }
-
     const walletWithPk = walletAdapterToWallet(wallet)
 
     const accountInfo = await loadFarmerAccountsData({
