@@ -19,6 +19,7 @@ export const initializeFaming = async (
   return signAndSendSingleTransaction({
     transaction,
     connection: params.connection,
+    fallbackConnection: params.fallbackConnection,
     wallet: walletWithPk,
     signers,
   })

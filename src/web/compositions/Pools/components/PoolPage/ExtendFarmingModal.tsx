@@ -7,7 +7,10 @@ import { Button } from '@sb/components/Button'
 import { Loader } from '@sb/components/Loader/Loader'
 import { Modal } from '@sb/components/Modal'
 import { Token } from '@sb/components/TokenSelector/SelectTokenModal'
-import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
+import {
+  useFallbackConnection,
+  useMultiEndpointConnection,
+} from '@sb/dexUtils/connection'
 import { signTransactions } from '@sb/dexUtils/send'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
@@ -35,6 +38,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
   const farmingTokens = (pool.farming || []).map((fs) => fs.farmingTokenMint)
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
+  const fallbackConnection = useFallbackConnection()
 
   const [isProcessingFarmingPopupOpen, setIsProcessingFarmingPopupOpen] =
     useState(false)
@@ -104,6 +108,7 @@ const FarmingModal: React.FC<FarmingModalProps> = (props) => {
         pool: new PublicKey(pool.swapToken),
         wallet,
         connection,
+        fallbackConnection,
         programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
       })
 

@@ -9,6 +9,7 @@ export const signAndSendTransactions = async (
   const {
     transactionsAndSigners,
     connection,
+    fallbackConnection,
     wallet,
     successMessage,
     commitment,
@@ -21,7 +22,10 @@ export const signAndSendTransactions = async (
       wallet
     )
 
-    return await sendSignedTransactions(signedTransactions, connection, {
+    return await sendSignedTransactions({
+      transactions: signedTransactions,
+      connection,
+      fallbackConnection,
       successMessage,
       commitment,
     })
