@@ -1,8 +1,8 @@
-import React from 'react'
-import styled from 'styled-components'
-import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
 import { ApolloError } from 'apollo-client'
+import React, { ReactNode } from 'react'
+import styled from 'styled-components'
 
 import { MASTER_BUILD } from '@core/utils/config'
 
@@ -19,9 +19,7 @@ const FormatErrorToUser = (errorMessage: string) => {
   switch (errorMessage) {
     case 'GraphQL error: You must supply a JWT for authorization!':
       console.log(errorMessage)
-
       return 'You are not authorized, click Log In and then refresh the page.'
-      break
 
     default:
       break
@@ -30,20 +28,23 @@ const FormatErrorToUser = (errorMessage: string) => {
   return errorMessage
 }
 
-export const CustomError = (props: {
+export const CustomError = ({
+  error,
+  children,
+}: {
   error?: string
-  children?: React.ReactNode
+  children?: ReactNode
 }) => (
   <Error>
     <Typography variant="h5" color="error">
-      {props.error || props.children || 'Error'}
+      {error || children || 'Error'}
     </Typography>
   </Error>
 )
 
-const SimpleError = (props: { error?: ApolloError }) => (
+const SimpleError = ({ error }: { error?: ApolloError }) => (
   <Typography variant="h5" color="error">
-    {props.error ? FormatErrorToUser(props.error.message) : 'Error'}
+    {error ? FormatErrorToUser(error.message) : 'Error'}
   </Typography>
 )
 
@@ -58,15 +59,6 @@ export const ErrorFallback = (props: {
   error?: ApolloError
   refetch?: Function
 }) => {
-  // useEffect(() => {
-
-  //   try {
-  //     props.refetch && props.refetch()
-  //   } catch(e) {
-  //     console.log('refetch error', e)
-  //   }
-  // })
-
   return (
     <Error style={{ margin: 'auto' }} elevation={10}>
       {MASTER_BUILD ? <ErrorWithoutMessage /> : <SimpleError {...props} />}
@@ -74,33 +66,22 @@ export const ErrorFallback = (props: {
   )
 }
 
-export default class ErrorBoundary extends React.Component {
-  state = { hasError: false, error: null }
+interface IProps {
+  children: React.ReactNode
+}
 
-  /*  static getDerivedStateFromError(error: any) {
-      // Update state so the next render will show the fallback UI.
-      return { error, hasError: true }
-    } */
-
+class ErrorBoundary extends React.Component<IProps> {
   componentDidCatch(error: any, info: any) {
-    // imlement service/component to send errors to our database
+    // implement service/component to send errors to our database
     console.log(error)
     console.log(info)
   }
 
   render() {
-    if (this.state.hasError) {
-      const { error } = this.state
-      if (
-        error.split(' ')[1] === 'Loading' &&
-        error.split(' ')[2] === 'chunk'
-      ) {
-        window.location.reload()
-      }
-      // You can render any custom fallback UI
-      return <ErrorFallback error={error} />
-    }
+    const { children } = this.props
 
-    return this.props.children
+    return children
   }
 }
+
+export default ErrorBoundary
