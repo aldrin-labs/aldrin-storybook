@@ -58,6 +58,7 @@ export const Input: React.FC<InputProps> = (props) => {
       input.current.focus()
     }
   }
+
   return (
     <InputWrap
       $borderRadius={borderRadius}
@@ -79,7 +80,7 @@ export const Input: React.FC<InputProps> = (props) => {
           disabled={disabled}
           ref={input}
           autoComplete="off"
-          {...(autoFocus ? { autoFocus } : {})}
+          autoFocus={autoFocus}
         />
       </InputContainer>
 
