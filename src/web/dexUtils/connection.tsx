@@ -24,7 +24,7 @@ const connection = new MultiEndpointsConnection(
 )
 
 const fallbackConnection = new MultiEndpointsConnection(
-  [{ url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 }],
+  [{ url: 'https://frontend-solana-api-1.aldrin.com', weight: 20 }],
   'confirmed'
 )
 
