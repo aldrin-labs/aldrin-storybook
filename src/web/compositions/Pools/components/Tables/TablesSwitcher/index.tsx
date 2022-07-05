@@ -41,7 +41,6 @@ import KudelskiLogo from '@icons/kudelski.svg'
 import { PoolPage } from '../../PoolPage'
 import { CreatePoolModal } from '../../Popups'
 import { AMMAuditPopup } from '../../Popups/AMMAuditPopup/AMMAuditPopup'
-import { RestakeAllPopup } from '../../Popups/RestakeAllPopup'
 import { AllPoolsTable } from '../AllPools'
 import { UserLiquidityTable } from '../UserLiquidity'
 import PlusIcon from './icons/plus.svg'
@@ -83,7 +82,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const [isAuditPopupOpen, setIsAuditPopupOpen] = useState(false)
   const [selectedTable, setSelectedTable] = useState<
     'authorized' | 'nonAuthorized' | 'stablePools' | 'userLiquidity' | 'all'
-  >('all')
+  >('userLiquidity') // TODO: switch to all
 
   const { path } = useRouteMatch()
 
@@ -192,6 +191,10 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   const poolsLength = activePoolsList.length
 
   const tableHeight = Math.min(poolsLength * 13, 80)
+
+  const { data: farmersInfo } = useFarmersAccountInfo()
+  const farm = farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD')
+  const farmer = farmersInfo?.get(farm?.publicKey.toString())
 
   return (
     <>
@@ -366,17 +369,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         open={isAuditPopupOpen}
         close={() => setIsAuditPopupOpen(false)}
       />
-
-      {wallet.publicKey && (
-        <RestakeAllPopup
-          wallet={wallet}
-          connection={connection}
-          allPoolsData={pools}
-          allTokensData={userTokensData}
-          farmingTicketsMap={farmingTicketsMap}
-          refreshTokensWithFarmingTickets={refreshAll}
-        />
-      )}
     </>
   )
 }

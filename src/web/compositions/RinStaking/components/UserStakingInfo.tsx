@@ -1,4 +1,3 @@
-import { PublicKey } from '@solana/web3.js'
 import { toNumber } from 'lodash-es'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -14,12 +13,12 @@ import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import {
   startFarmingV2,
   stopFarmingV2,
+  useFarmersAccountInfo,
   useFarmsInfo,
 } from '@sb/dexUtils/farming'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
-import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useStakingCalcAccounts } from '@sb/dexUtils/staking/useCalcAccounts'
@@ -34,7 +33,6 @@ import { useWallet } from '@sb/dexUtils/wallet'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   getAvailableToClaimFarmingTokens,
-  getStakedTokensTotal,
   addFarmingRewardsToTickets,
   getSnapshotQueueWithAMMFees,
   FARMING_V2_TEST_TOKEN,
@@ -68,13 +66,13 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     treasuryDailyRewards,
   } = props
 
-  const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
-    publicKey: new PublicKey(stakingPool.stakingVault),
-  })
+  const { data: farms } = useFarmsInfo()
+  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
 
-  const tokenData = useAssociatedTokenAccount(
-    currentFarmingState.farmingTokenMint
-  )
+  const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
+    publicKey: farm ? farm.stakeVault : undefined,
+  })
+  const tokenData = useAssociatedTokenAccount(farm?.stakeMint.toString())
 
   useInterval(() => {
     refreshTotalStaked()
@@ -88,6 +86,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
+  const { data: farmersInfo } = useFarmersAccountInfo()
+
+  const farmer = farmersInfo?.get(farm?.publicKey.toString())
 
   const [userFarmingTickets, refreshUserFarmingTickets] = useAllStakingTickets({
     wallet,
@@ -106,12 +107,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       connection,
     })
 
-  const totalStaked = getStakedTokensTotal(
-    getTicketsWithUiValues({
-      tickets: userFarmingTickets,
-      farmingTokenMintDecimals: currentFarmingState.farmingTokenMintDecimals,
-    })
-  )
+  const totalStaked = farmer?.account.vested.amount.toString() || '0'
 
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
@@ -163,8 +159,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   }, 30_000)
 
   const [isBalancesShowing, setIsBalancesShowing] = useState(true)
-  const { data: farms } = useFarmsInfo()
-  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
 
   const start = useCallback(
     async (amount: number) => {
@@ -184,6 +178,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         amount,
         farm,
         userTokens: allTokenData,
+        farmer,
       })
 
       notify({
@@ -246,12 +241,22 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
+  const totalApr = buyBackAPR + treasuryAPR
+
   const formattedAPR =
     Number.isFinite(buyBackAPR) &&
     buyBackAPR > 0 &&
     Number.isFinite(treasuryAPR)
-      ? stripByAmount(buyBackAPR + treasuryAPR, 2)
+      ? stripByAmount(totalApr, 2)
       : '--'
+
+  console.log({
+    buyBackAPR,
+    treasuryAPR,
+    buyBackAmountWithoutDecimals,
+    DAYS_TO_CHECK_BUY_BACK,
+    totalStakedRIN,
+  })
 
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`

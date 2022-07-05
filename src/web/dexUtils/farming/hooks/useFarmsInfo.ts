@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 
-import { loadFarmAccountsData, walletAdapterToWallet } from '@core/solana'
+import { loadFarmAccountsData } from '@core/solana'
 
 import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
@@ -11,10 +11,9 @@ export const useFarmsInfo = () => {
   const connection = useConnection()
 
   const fetcher = async () => {
-    const walletWithPk = walletAdapterToWallet(wallet)
     const farms = await loadFarmAccountsData({
       connection,
-      wallet: walletWithPk,
+      wallet,
     })
 
     return toMap(farms, (farm) => farm.stakeMint.toString())

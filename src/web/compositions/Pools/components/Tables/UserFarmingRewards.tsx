@@ -9,7 +9,7 @@ import { LiquidityText } from '../PoolPage/styles'
 interface UserFarmingRewardsProps {
   availableToClaim: {
     name: string
-    farmingTokenMint: string
+    mint: string
     usdValue: number
     amount: number
   }[]
@@ -30,15 +30,13 @@ export const UserFarmingRewards: React.FC<UserFarmingRewardsProps> = (
       <div>
         <LiquidityText weight={600}>
           {availableToClaim.map((atc, idx) => (
-            <React.Fragment
-              key={`farming_available_to_claim_${atc.farmingTokenMint}`}
-            >
+            <React.Fragment key={`farming_available_to_claim_${atc.mint}`}>
               {idx !== 0 ? ' + ' : ''}
               <LiquidityText color="green7">
                 {stripByAmountAndFormat(atc.amount, 6)}
               </LiquidityText>
               &nbsp;
-              {getTokenNameByMintAddress(atc.farmingTokenMint)}
+              {getTokenNameByMintAddress(atc.mint)}
             </React.Fragment>
           ))}
         </LiquidityText>

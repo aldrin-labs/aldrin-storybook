@@ -1,4 +1,5 @@
 import { PublicKey } from '@solana/web3.js'
+import { ProgramAccount } from 'anchor024'
 
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY } from '@sb/dexUtils/common/config'
@@ -15,7 +16,7 @@ interface GetUserPoolsParams {
   vestings: Map<string, Vesting>
   walletPublicKey?: PublicKey | null
   farms?: Map<string, Farm>
-  farmers?: Map<String, Farmer>
+  farmers?: Map<String, ProgramAccount<Farmer>>
 }
 
 export const getUserPoolsFromAll = (params: GetUserPoolsParams) => {
@@ -68,8 +69,8 @@ export const getUserPoolsFromAll = (params: GetUserPoolsParams) => {
 
     return (
       poolTokenAmount > MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ||
-      // openFarmingTickets.length > 0 ||
-      // availableToClaimAmount > 0 ||
+      farmer?.account.totalStaked.gtn(0) ||
+      farmer?.account.harvests.find((h) => h.tokens.amount.gtn(0)) ||
       vesting?.outstanding.gtn(0) ||
       // !!calcAmounts?.find((ca) => ca.gtn(0)) ||
       isPoolOwner

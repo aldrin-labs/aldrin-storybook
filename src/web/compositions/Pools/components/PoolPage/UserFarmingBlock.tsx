@@ -16,6 +16,7 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import LightLogo from '@icons/lightLogo.svg'
 
+import { useConnection } from '../../../../dexUtils/connection'
 import { useFarm, useFarmer } from '../../../../dexUtils/farming'
 import { PoolInfo } from '../../index.types'
 import { getTokenDataByMint } from '../../utils'
@@ -33,6 +34,7 @@ import {
   NoFarmingBlock,
 } from './styles'
 import { UserFarmingBlockProps } from './types'
+import { UserFarmingRewards } from '../Tables/UserFarmingRewards'
 
 const waitForPoolsUpdate = async (
   refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
@@ -93,10 +95,13 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     amount <= MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ? 0 : amount
   // const ticketsForPool = farmingTickets.get(pool.swapToken) || []
 
-  const stakedAmount = 0 // TODO
+  const stakedAmount = parseFloat(farmer?.account.totalStaked.toString() || '0') // TODO
+  const vestedAmount = parseFloat(
+    farmer?.account.vested.amount.toString() || '0'
+  ) // TODO
 
   const hasUnstaked = poolTokenAmount > 0
-  const hasStaked = stakedAmount > 0
+  const hasStaked = stakedAmount > 0 && vestedAmount === 0
 
   // const availableToClaim = Array.from(availableToClaimMap.values())
   //   .map((atc) => {
@@ -107,12 +112,17 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
   //   })
   //   .filter((atc) => atc.amount > 0)
 
-  const availableToClaim = [] // TODO
+  const availableToClaim =
+    farmer?.account.harvests
+      .filter((_) => _.tokens.amount.gtn(0))
+      .map((harvest) => {
+        const mint = harvest.mint.toString()
+        const a = parseFloat(harvest.tokens.amount.toString())
+        const name = getTokenNameByMintAddress(mint)
+        const usdValue = (prices.get(name)?.price || 0) * a
 
-  const availableToClaimUsd = availableToClaim.reduce(
-    (acc, atc) => acc + atc.usdValue,
-    0
-  )
+        return { mint, amount: a, name, usdValue }
+      }) || []
 
   const haveTokensToClaim = !!availableToClaim.find((atc) => atc.amount > 0)
 
@@ -124,9 +134,10 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     setFarmingExtending(false)
   }
 
+  const connection = useConnection()
   if (
     !hadFarming || // No farming were created
-    (!hasFarming && !availableToClaimUsd && !hasStaked && !isPoolOwner) // Farming ended and nothing to withdraw/claim
+    (!hasFarming && availableToClaim.length === 0 && !hasStaked && !isPoolOwner) // Farming ended and nothing to withdraw/claim
   ) {
     return (
       <FarmingBlock>
@@ -315,6 +326,32 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
                 </LiquidityText>
               </div>
               <FarmingButtonsContainer>
+                {/* <button
+                  type="button"
+                  onClick={() => {
+                    takeSnapshots({
+                      wallet,
+                      connection,
+                      farm: farm?.publicKey,
+                      stakeVault: farm.stakeVault,
+                    })
+                  }}
+                >
+                  Take snapshots
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateEligibleHarvest({
+                      wallet,
+                      connection,
+                      farm: farm?.publicKey,
+                      farmer: farmer?.publicKey,
+                    })
+                  }}
+                >
+                  Update harvest
+                </button> */}
                 <DarkTooltip title={tooltipText}>
                   <span>
                     <FarmingButton
@@ -343,8 +380,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
             </LiquidityItem>
             <LiquidityItem>
               <LiquidityTitle>Claimable Rewards:</LiquidityTitle>
-              TBD
-              {/* <UserFarmingRewards availableToClaim={availableToClaim} /> */}
+              <UserFarmingRewards availableToClaim={availableToClaim} />
               <FarmingButtonWrap>
                 <DarkTooltip title={tooltipText}>
                   <span>
