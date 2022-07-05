@@ -5,17 +5,13 @@ import { graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
 
-// import stableCoins from '@core/config/stableCoins'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+import { withMarketUtilsHOC } from '@sb/hoc'
+
 import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
-import { withMarketUtilsHOC } from '@core/hoc/withMarketUtilsHOC'
-// import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
-// import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
-
-// import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
 import SelectWrapper from '../SelectWrapper/SelectWrapper'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'

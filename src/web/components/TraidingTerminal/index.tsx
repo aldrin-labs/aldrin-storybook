@@ -17,8 +17,8 @@ import {
 } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
 import { notify } from '@sb/dexUtils/notifications'
 import { validateVariablesForPlacingOrder } from '@sb/dexUtils/send'
+import { withErrorFallback } from '@sb/hoc'
 
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import { formatNumberWithSpaces } from '../../dexUtils/utils'

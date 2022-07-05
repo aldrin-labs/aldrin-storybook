@@ -43,7 +43,7 @@ export const UserLiquidityTable: React.FC<LiquidityTableProps> = (props) => {
         })
       }
       noDataText={
-        <ConnectWalletWrapper>
+        <ConnectWalletWrapper size="sm">
           <NoDataBlock justifyContent="center">No pools available</NoDataBlock>
         </ConnectWalletWrapper>
       }

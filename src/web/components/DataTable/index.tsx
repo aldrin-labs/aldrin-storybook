@@ -32,7 +32,16 @@ const headerStyle = {
   alignItems: 'center',
 }
 
+const noRowsStyles = {
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+}
+
+const TABLE_HEIGHT = 600
 const MOBILE_WIDTH = 800
+const HEADER_HEIGHT = 40
+const ROW_HEIGHT = 100
 
 export const DataTable = <E,>(props: DataTableProps<E>) => {
   const { columns, data, name, onRowClick, noDataText } = props
@@ -56,11 +65,18 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
   const preparedStyle = rowStyle(theme)
 
   return (
-    <AutoSizer>
-      {({ height, width }) => (
+    <AutoSizer disableHeight>
+      {({ width }) => (
         <Table
           width={Math.max(MOBILE_WIDTH, width)}
-          height={height}
+          height={
+            sortedData.length
+              ? Math.min(
+                  TABLE_HEIGHT,
+                  HEADER_HEIGHT + sortedData.length * ROW_HEIGHT
+                )
+              : HEADER_HEIGHT + ROW_HEIGHT * 2
+          }
           sort={({ sortBy: field }) => {
             const nextDirection = nextSortOrder(state.sort.direction)
 
@@ -79,11 +95,11 @@ export const DataTable = <E,>(props: DataTableProps<E>) => {
               : state.sort.direction
           }
           rowCount={sortedData.length}
-          noRowsRenderer={() => <>{noDataText}</>}
+          noRowsRenderer={() => <div style={noRowsStyles}>{noDataText}</div>}
           onRowClick={onRowClick}
           rowStyle={preparedStyle}
-          headerHeight={40}
-          rowHeight={100}
+          headerHeight={HEADER_HEIGHT}
+          rowHeight={ROW_HEIGHT}
           rowGetter={({ index }) => sortedData[index]}
         >
           {columns.map((item) => {

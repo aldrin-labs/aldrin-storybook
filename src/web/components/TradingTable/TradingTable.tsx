@@ -5,8 +5,8 @@ import { compose } from 'recompose'
 
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
+import { withErrorFallback } from '@sb/hoc'
 
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import withMobileSize from '@core/hoc/withMobileSize'
 
 import Balances from './Balances/Balances'

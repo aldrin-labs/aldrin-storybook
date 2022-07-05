@@ -5,6 +5,7 @@ import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
 
 import { FlexBlock } from '@sb/components/Layout'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/components/Typography'
 import {
@@ -21,16 +22,15 @@ import { CURVE } from '@sb/dexUtils/pools/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useVestings } from '@sb/dexUtils/vesting'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 import { toMap } from '@sb/utils'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { AUTHORIZED_POOLS } from '@core/config/dex'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getFeesEarnedByAccount as getFeesEarnedByAccountRequest } from '@core/graphql/queries/pools/getFeesEarnedByAccount'
 import { getFeesEarnedByPool as getFeesEarnedByPoolRequest } from '@core/graphql/queries/pools/getFeesEarnedByPool'
 import { getPoolsInfo as getPoolsInfoRequest } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getWeeklyAndDailyTradingVolumesForPools as getWeeklyAndDailyTradingVolumesForPoolsRequest } from '@core/graphql/queries/pools/getWeeklyAndDailyTradingVolumesForPools'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { fixCorruptedFarmingStates } from '@core/solana'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
@@ -282,7 +282,7 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
         </InputWrap>
       </TabContainer>
 
-      <TableContainer $height={`${tableHeight}rem`}>
+      <TableContainer>
         {selectedTable === 'authorized' && (
           <AllPoolsTable
             searchValue={searchValue}

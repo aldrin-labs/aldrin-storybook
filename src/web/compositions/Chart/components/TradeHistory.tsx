@@ -1,6 +1,7 @@
 import React from 'react'
 
-import QueryRenderer from '@core/components/QueryRenderer'
+import QueryRenderer from '@sb/components/QueryRenderer'
+
 import { MARKET_QUERY } from '@core/graphql/queries/chart/MARKET_QUERY'
 
 import { TradeHistoryWrapper } from '../Chart.styles'

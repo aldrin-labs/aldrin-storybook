@@ -1,17 +1,17 @@
-import React from 'react'
-import styled from 'styled-components'
 import { Grid } from '@material-ui/core'
-
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+import React from 'react'
 import { compose } from 'recompose'
-import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
+import styled from 'styled-components'
 
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+
+import { getPortfolioAssets } from '@core/graphql/queries/portfolio/getPortfolioAssets'
+import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
 import {
+  stripDigitPlaces,
   combineTableData,
   formatNumberToUSFormat,
-} from '@core/utils/PortfolioTableUtils.ts'
-import { getPortfolioAssetsData } from '@core/utils/Overview.utils'
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+} from '@core/utils/PortfolioTableUtils'
 
 const Title = styled.span`
   font-family: Avenir Next Demi;
@@ -34,9 +34,9 @@ const TotalBalance = ({ portfolioAssets, theme }) => {
   return (
     <Grid
       item
-      direction={'column'}
-      alignItems={'center'}
-      justify={'center'}
+      direction="column"
+      alignItems="center"
+      justify="center"
       style={{
         display: 'flex',
         height: '100%',

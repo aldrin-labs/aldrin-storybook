@@ -6,6 +6,7 @@ import { SvgIcon } from '@sb/components'
 import { AmountInput } from '@sb/components/AmountInput'
 import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Page } from '@sb/components/Layout'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
@@ -27,7 +28,6 @@ import {
 import { useWallet } from '@sb/dexUtils/wallet'
 import { toMap } from '@sb/utils'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import {
   stripByAmount,

@@ -9,6 +9,7 @@ import { compose } from 'recompose'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import {
   StyledDialogContent,
   ClearButton,
@@ -26,15 +27,14 @@ import {
   useConnectionConfig,
 } from '@sb/dexUtils/connection'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexProgramIdByEndpoint } from '@core/config/dex'
 import { addSerumCustomMarket } from '@core/graphql/mutations/chart/addSerumCustomMarket'
 import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomMarkets'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { writeQueryData } from '@core/utils/TradingTable.utils'
 
-import ListNewMarketPopup, { Input } from './ListNewMarketPopup'
+import ListNewMarketPopup from './ListNewMarketPopup'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
