@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import { ApolloError } from 'apollo-client'
+
 import { MASTER_BUILD } from '@core/utils/config'
 
 const Error = styled(Paper)`
@@ -11,6 +12,7 @@ const Error = styled(Paper)`
   align-items: center;
   justify-content: center;
   border: 1px solid red;
+  background: ${(props) => props.theme.colors.gray5};
 `
 
 const FormatErrorToUser = (errorMessage: string) => {

@@ -6,7 +6,6 @@ import { useTheme } from 'styled-components'
 
 import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { Button } from '@sb/components/Button'
-import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { Text } from '@sb/compositions/Addressbook/index'
@@ -50,6 +49,7 @@ import {
 import ArrowRightIcon from '@icons/arrowRight.svg'
 
 import { INPUT_FORMATTERS } from '../../components/Input'
+import { queryRendererHoc } from '../../components/QueryRenderer'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'

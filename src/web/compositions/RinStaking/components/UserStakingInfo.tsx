@@ -241,7 +241,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
-  const totalApr = buyBackAPR + treasuryAPR
+  // const formattedBuyBackAPR =
+  //   Number.isFinite(buyBackAPR) && buyBackAPR > 0
+  //     ? stripByAmount(buyBackAPR, 2)
+  //     : '--'
+
+  const totalStakedPercentageToCircSupply =
+    (totalStakedRIN * 100) / RINCirculatingSupply
+
+  // const formattedTreasuryAPR = Number.isFinite(treasuryAPR)
+  //   ? stripByAmount(treasuryAPR, 2)
+  //   : '--'
 
   const formattedAPR =
     Number.isFinite(buyBackAPR) &&
@@ -297,7 +307,79 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         <NumberWithLabel value={toNumber(formattedAPR)} label="APR" />
       </RowContainer>
       <Row style={{ height: 'auto' }}>
-        <Cell colMd={12} colXl={6} col={12}>
+        <Cell colMd={6} colXl={3} col={12}>
+          <GreenBlock>
+            <BlockContentStretched>
+              <FlexBlock alignItems="center" justifyContent="space-between">
+                <InlineText size="sm">Estimated Rewards</InlineText>
+                <DarkTooltip
+                  title={
+                    <p>
+                      Staking rewards are paid on the{' '}
+                      <strong> 27th of the every month</strong> based on RIN
+                      weekly buy-backs on 1/6th of AMM fees . Estimated rewards
+                      are updated <strong>weekly based on RIN buyback</strong>.
+                    </p>
+                  }
+                >
+                  <span>
+                    <SvgIcon src={InfoIcon} width="0.8em" />
+                  </span>
+                </DarkTooltip>
+              </FlexBlock>
+
+              <StretchedBlock>
+                <FlexBlock alignItems="flex-end">
+                  <InlineText size="lg" weight={700} color="green7">
+                    {formattedAPR}%{' '}
+                    <InlineText
+                      weight={400}
+                      size="es"
+                      style={{ color: 'rgba(38, 159, 19, 50%)' }}
+                    >
+                      APR
+                    </InlineText>
+                  </InlineText>
+                </FlexBlock>
+                <FlexBlock alignItems="flex-end">
+                  <ShareButton
+                    iconFirst
+                    text={shareText}
+                    buttonStyle={{
+                      minWidth: 'auto',
+                      border: 'none',
+                      fontSize: FONT_SIZES.sm,
+                      padding: '0',
+                    }}
+                  />
+                </FlexBlock>
+              </StretchedBlock>
+            </BlockContentStretched>
+          </GreenBlock>
+        </Cell>
+        <Cell colMd={6} colXl={3} col={12}>
+          <Block inner>
+            <BlockContentStretched>
+              <InlineText size="sm">Total staked </InlineText>{' '}
+              <BigNumber>
+                <InlineText>{stripToMillions(totalStakedRIN)} </InlineText>{' '}
+                <InlineText>RIN</InlineText>
+              </BigNumber>
+              <StretchedBlock align="flex-end">
+                <InlineText size="sm">
+                  <InlineText>$</InlineText>&nbsp;
+                  {stripToMillions(totalStakedUSD)}
+                </InlineText>{' '}
+                <InlineText margin="0" size="sm">
+                  {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
+                  circulating supply
+                </InlineText>
+              </StretchedBlock>
+            </BlockContentStretched>
+          </Block>
+        </Cell>
+
+        <Cell colMd={6} colXl={3} col={12}>
           <Block inner>
             <BlockContentStretched>
               <FlexBlock justifyContent="space-between" alignItems="center">
@@ -334,8 +416,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   title={
                     <>
                       <p>
-                        Staking rewards are autocompounded to your total stake
-                        once per 10 minutes.
+                        APR is calculated based on last RIN buyback which are
+                        weekly.
                       </p>
                     </>
                   }

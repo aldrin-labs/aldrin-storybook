@@ -1,4 +1,3 @@
-import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
 import { roundDown } from '@core/utils/chartPageUtils'
 import { addGAEvent } from '@core/utils/ga.utils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
@@ -21,9 +20,9 @@ import { withSnackbar } from 'notistack'
 import React, { useEffect, useState } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
+import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
 import { IProps } from './types'
 import { getPriceForMarketOrderBasedOnOrderbook } from './utils'
-
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -57,6 +56,7 @@ const TradingComponent = (props: IProps) => {
     addSerumTransactionMutation,
     setShowTokenNotAdded,
     terminalViewMode,
+    newTheme,
   } = props
 
   const { baseCurrency, quoteCurrency, market } = useMarket()
@@ -78,9 +78,9 @@ const TradingComponent = (props: IProps) => {
     ? market.quoteSplSizeToNumber(openOrdersAccount.quoteTokenFree)
     : 0
 
-  let quoteBalance = (quoteCurrencyBalances || 0) + (availableQuote || 0)
-  let baseBalance = baseCurrencyBalances || 0
-  let priceDecimalCount = market?.tickSize && getDecimalCount(market.tickSize)
+  const quoteBalance = (quoteCurrencyBalances || 0) + (availableQuote || 0)
+  const baseBalance = baseCurrencyBalances || 0
+  const priceDecimalCount = market?.tickSize && getDecimalCount(market.tickSize)
 
   const currencyPair = pair.join('_')
 
@@ -95,7 +95,7 @@ const TradingComponent = (props: IProps) => {
     }
   }, [])
 
-  let { amount, decimals } = balanceInfo || {
+  const { amount, decimals } = balanceInfo || {
     amount: 0,
     decimals: 8,
     mint: null,
@@ -128,7 +128,7 @@ const TradingComponent = (props: IProps) => {
     { positionAmt: 0, positionSide: 'SHORT' },
   ]
 
-  const hedgeMode = selectedKey.hedgeMode
+  const {hedgeMode} = selectedKey
 
   const processedFunds =
     marketType === 0 ? funds : [funds[0], USDTFuturesFund, currentPositions]
@@ -209,7 +209,7 @@ const TradingComponent = (props: IProps) => {
 
     const minOrderSize = market?.minOrderSize
 
-    let funcToRound =
+    const funcToRound =
       minOrderSize >= 1
         ? (num) => roundDown(num, minOrderSize)
         : (num, precision) => stripDigitPlaces(num, precision)
@@ -281,7 +281,7 @@ const TradingComponent = (props: IProps) => {
                   +funcToRound(values.amount, sizeDigits)
 
                 if (fill.side === byType && isAmountEqual && !orderPlaced) {
-                  const price = fill.price
+                  const {price} = fill
                   let takeProfitOrderPrice = 0
 
                   if (takeProfit) {
@@ -388,7 +388,7 @@ const TradingComponent = (props: IProps) => {
         type: 'error',
       })
 
-      return
+
     }
   }
 
@@ -408,6 +408,7 @@ const TradingComponent = (props: IProps) => {
 
   return (
     <TradingWrapper
+      newTheme={newTheme}
       isButtonLoaderShowing={isButtonLoaderShowing}
       minOrderSize={market?.minOrderSize}
       key={`${pair}${processedFunds}`}

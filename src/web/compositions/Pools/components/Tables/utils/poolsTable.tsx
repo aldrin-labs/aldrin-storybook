@@ -278,6 +278,7 @@ export const mergeColumns = (columns: DataHeadColumn[]) => [
     key: 'farming',
     title: 'Farming',
     sortable: true,
+    getWidth: (width: number) => width * 2,
     hint: 'You can stake your pool tokens (derivatives received as a guarantee that you are a liquidity provider after a deposit into the pool), receiving a reward in tokens allocated by the creator of the pool. The amount of reward specified in the pool info is the amount you will receive daily for each $1,000 deposited into the pool.',
     getWidth: (w: number) => Math.round(w * 1.2),
   },
