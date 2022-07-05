@@ -26,6 +26,7 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
     isUnstakeLocked,
     unlockAvailableDate,
     mint,
+    tokenPrice,
   } = props
 
   const now = Date.now() / 1000
@@ -63,12 +64,14 @@ export const UnstakingForm: React.FC<StakingFormProps> = (props) => {
     loading.unstake ||
     unlockAvailableDate > now
 
+  const usdAmountValue = +form.values.amount * tokenPrice
+
   return (
     <UnstakingFormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
         <InputWrapper>
           <AmountInput
-            usdValue={1}
+            usdValue={usdAmountValue}
             data-testid="rin-unstaking-amount-field"
             placeholder="0"
             amount={totalStaked}

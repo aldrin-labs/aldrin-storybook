@@ -19,10 +19,6 @@ export const StakingPage = styled(BlackPage)`
   display: flex;
   justify-content: center;
   align-items: center;
-  // height: 100%;
-  @media (max-width: ${BREAKPOINTS.lg}) {
-    align-items: flex-start;
-  }
 `
 
 export const StyledTextDiv = styled.div`

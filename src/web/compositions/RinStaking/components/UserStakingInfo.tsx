@@ -7,7 +7,6 @@ import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { NumberWithLabel } from '@sb/compositions/Staking/components/NumberWithLabel/NumberWithLabel'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import {
@@ -21,8 +20,6 @@ import { notify } from '@sb/dexUtils/notifications'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
-import { useStakingCalcAccounts } from '@sb/dexUtils/staking/useCalcAccounts'
-import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
 import {
   useUserTokenAccounts,
   useAssociatedTokenAccount,
@@ -31,12 +28,7 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import {
-  getAvailableToClaimFarmingTokens,
-  addFarmingRewardsToTickets,
-  getSnapshotQueueWithAMMFees,
-  FARMING_V2_TEST_TOKEN,
-} from '@core/solana'
+import { FARMING_V2_TEST_TOKEN } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -51,6 +43,7 @@ import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import InfoIcon from './assets/info.svg'
 import { StakingForm } from './StakingForm'
+import { StretchedRow } from './styles'
 import { StakingInfoProps } from './types'
 import { UnstakingForm } from './UnstakingForm'
 import {
@@ -98,15 +91,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     // walletPublicKey,
   })
 
-  const { data: calcAccounts, mutate: reloadCalcAccounts } =
-    useStakingCalcAccounts()
-
-  const [allStakingSnapshotQueues, refreshAllStakingSnapshotQueues] =
-    useStakingSnapshotQueues({
-      wallet,
-      connection,
-    })
-
   const totalStaked = farmer?.totalStaked || '0'
 
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
@@ -115,31 +99,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     await Promise.all([
       refreshTotalStaked(),
       refreshUserFarmingTickets(),
-      refreshAllStakingSnapshotQueues(),
       refreshAllTokenData(),
-      reloadCalcAccounts(),
     ])
   }
 
   const { buyBackAmountWithoutDecimals } = stakingPool.apr
-
-  const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
-    farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
-    buyBackAmount: buyBackAmountWithoutDecimals,
-    snapshotQueues: allStakingSnapshotQueues,
-  })
-
-  const estimateRewardsTickets = addFarmingRewardsToTickets({
-    farmingTickets: userFarmingTickets,
-    pools: [stakingPool],
-    snapshotQueues: snapshotQueueWithAMMFees,
-  })
-
-  const estimatedRewards = getAvailableToClaimFarmingTokens(
-    estimateRewardsTickets,
-    calcAccounts,
-    currentFarmingState.farmingTokenMintDecimals
-  )
 
   // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
   // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
@@ -250,14 +214,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       ? stripByAmount(totalApr, 2)
       : '--'
 
-  console.log({
-    buyBackAPR,
-    treasuryAPR,
-    buyBackAmountWithoutDecimals,
-    DAYS_TO_CHECK_BUY_BACK,
-    totalStakedRIN,
-  })
-
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`
     return () => {
@@ -275,31 +231,14 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ? stakedInUsd
     : new Array(stakedInUsd.length).fill('∗').join('')
 
-  const strippedEstRewards = stripByAmountAndFormat(estimatedRewards || 0, 4)
-
-  const userEstRewards = isBalancesShowing
-    ? stripByAmountAndFormat(estimatedRewards, 4)
-    : new Array(strippedEstRewards.length).fill('∗').join('')
-
-  const strippedEstRewardsUSD = stripByAmountAndFormat(
-    estimatedRewards * tokenPrice || 0,
-    2
-  )
-
-  const userEstRewardsUSD = isBalancesShowing
-    ? strippedEstRewardsUSD
-    : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
-
-  console.log('farmer', farmer)
-
   return (
     <>
-      <RowContainer justify="space-between">
+      <StretchedRow>
         <BlockTitle>Stake RIN</BlockTitle>
         <NumberWithLabel value={toNumber(formattedAPR)} label="APR" />
-      </RowContainer>
+      </StretchedRow>
       <Row style={{ height: 'auto' }}>
-        <Cell colMd={12} colXl={6} col={12}>
+        <Cell colMd={12} colXl={6} col={12} colSm={12}>
           <Block inner>
             <BlockContentStretched>
               <FlexBlock justifyContent="space-between" alignItems="center">
@@ -327,7 +266,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </Block>
         </Cell>
-        <Cell colMd={12} colXl={6} col={12}>
+        <Cell colMd={12} colXl={6} col={12} colSm={12}>
           <Block inner>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
@@ -348,13 +287,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 </DarkTooltip>
               </FlexBlock>
               <BigNumber>
-                <InlineText>{userEstRewards} </InlineText>{' '}
-                <InlineText>RIN</InlineText>
+                <InlineText>{0} </InlineText> <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
                   <InlineText>$</InlineText>&nbsp;
-                  {userEstRewardsUSD}
+                  {0}
                 </InlineText>{' '}
               </StretchedBlock>
             </BlockContentStretched>
@@ -369,6 +307,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 tokenData={tokenData}
                 start={start}
                 loading={loading}
+                tokenPrice={tokenPrice}
               />{' '}
               <UnstakingForm
                 isUnstakeLocked={isUnstakeLocked}
@@ -377,6 +316,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 end={end}
                 loading={loading}
                 mint={currentFarmingState.farmingTokenMint}
+                tokenPrice={tokenPrice}
               />
             </Cell>
           </Row>
