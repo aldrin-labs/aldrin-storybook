@@ -103,14 +103,6 @@ const createRouteFromInputField = ({
         quoteTokenMintAddress: quoteMint,
       })
 
-      console.log('market', {
-        market,
-        isMarketSwapBaseToQuote,
-        marketsWithOrderbookMap,
-        baseMint,
-        quoteMint,
-      })
-
       if (!market || isMarketSwapBaseToQuote === null) {
         return EMPTY_ROUTE_RESPONSE
       }

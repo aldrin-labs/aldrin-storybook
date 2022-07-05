@@ -20,6 +20,7 @@ export const SwapAmountInput = ({
   title = 'Title',
   placeholder = '0.00',
   onChange = () => {},
+  onMaxAmountClick = () => {},
   appendComponent = null,
 }: {
   amount?: string | number
@@ -28,6 +29,7 @@ export const SwapAmountInput = ({
   title?: string
   placeholder?: string
   onChange?: (value: number | string) => void
+  onMaxAmountClick?: () => void
   appendComponent?: any
 }) => {
   return (
@@ -41,7 +43,7 @@ export const SwapAmountInput = ({
         <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="gray3">
           {title}
         </Text>
-        <Row>
+        <Row onClick={onMaxAmountClick}>
           <SvgIcon
             src={WalletIcon}
             width={FONT_SIZES.sm}

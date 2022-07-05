@@ -21,10 +21,13 @@ import {
   SWAP_FEES_SETTINGS,
   walletAdapterToWallet,
 } from '@core/solana'
-import { toBNWithDecimals } from '@core/utils/helpers'
+import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
+import { addDecimals, toBNWithDecimals } from '@core/utils/helpers'
+import { Metrics } from '@core/utils/metrics'
 
 import { checkIsTransactionFromNativeSOL } from './checkIsTransactionFromNativeSOL'
 import { SwapRoute } from './getSwapRoute'
+import { getSwapRouteFeesAmount } from './getSwapStepFeeUSD'
 import {
   createAndCloseWSOLAccount,
   getOrCreateOpenOrdersAddress,
@@ -35,6 +38,7 @@ const multiSwap = async ({
   wallet,
   connection,
   swapRoute,
+  pricesMap,
   openOrdersMap,
   feeAccountTokens,
   selectedInputTokenAddressFromSeveral,
@@ -43,12 +47,15 @@ const multiSwap = async ({
   wallet: WalletAdapter
   connection: AldrinConnection
   swapRoute: SwapRoute
+  pricesMap: Map<string, number>
   openOrdersMap: OpenOrdersMap
   feeAccountTokens: TokenInfo[]
   selectedInputTokenAddressFromSeveral?: string
   selectedOutputTokenAddressFromSeveral?: string
 }) => {
   if (!wallet.publicKey) return 'failed'
+
+  const startTime = Date.now()
 
   const commonInstructions = []
   const commonSigners = []
@@ -312,6 +319,8 @@ const multiSwap = async ({
         curveType,
       })
 
+      // calc sum fees for pool, send after sign
+
       if (!swapTransactionAndSigners) {
         throw new Error('Swap transaction creation failed')
       }
@@ -333,19 +342,34 @@ const multiSwap = async ({
     getTokenDataByMint(feeAccountTokens, lastSwapStep.outputMint)
 
   const refFeeAmount =
-    ((lastSwapStep.swapAmountOutWithSlippage * SWAP_FEES_SETTINGS.percentage) /
-      100) *
-    10 ** feesDestinationTokenDecimals
+    (lastSwapStep.swapAmountOutWithSlippage * SWAP_FEES_SETTINGS.percentage) /
+    100
+
+  const refFeeAmountWithDecimals = addDecimals(
+    refFeeAmount,
+    feesDestinationTokenDecimals
+  )
+
+  const serumSteps = swapRoute.filter(
+    (step) => step.ammLabel === 'Serum'
+  ).length
 
   // add check if serum was in route, mul by serum steps in route
-  if (SWAP_FEES_SETTINGS.enabled && feesDestination) {
+  if (
+    serumSteps > 0 &&
+    SWAP_FEES_SETTINGS.enabled &&
+    feesDestination &&
+    !!pricesMap
+  ) {
+    const feeAmount = parseInt(refFeeAmountWithDecimals.toString(), 10)
+
     // charge extra fees
     if (lastSwapStep.outputMint === WRAPPED_SOL_MINT.toString()) {
       commonInstructions.push(
         SystemProgram.transfer({
           fromPubkey: wallet.publicKey,
           toPubkey: new PublicKey(feesDestination),
-          lamports: parseInt(refFeeAmount.toString(), 10),
+          lamports: feeAmount,
         })
       )
     } else {
@@ -356,10 +380,20 @@ const multiSwap = async ({
           new PublicKey(feesDestination),
           wallet.publicKey,
           [],
-          parseInt(refFeeAmount.toString(), 10)
+          feeAmount
         )
       )
     }
+
+    const outputTokenSymbol = getTokenNameByMintAddress(lastSwapStep.outputMint)
+    const outputTokenPrice = pricesMap.get(outputTokenSymbol) || 0
+
+    // get number of swap steps
+    Metrics.sendMetrics({
+      metricName: 'fees',
+      metricScope: 'serum',
+      metricValue: refFeeAmount * serumSteps * outputTokenPrice,
+    })
   }
 
   // add close wSOL & OpenOrders ix
@@ -373,6 +407,14 @@ const multiSwap = async ({
 
   console.log('buildedTransactions', buildedTransactions)
 
+  Metrics.sendMetrics({
+    metricName: 'txCreate',
+    metricScope: 'multiSwap',
+    metricTimingData: Date.now() - startTime,
+  })
+
+  const poolFeesUSD = getSwapRouteFeesAmount({ swapRoute, pricesMap })
+
   try {
     const tx = await signAndSendTransactions({
       wallet,
@@ -380,6 +422,12 @@ const multiSwap = async ({
       transactionsAndSigners: buildedTransactions,
       commitment: 'confirmed',
       skipPreflight: false,
+    })
+
+    Metrics.sendMetrics({
+      metricName: 'fees',
+      metricScope: 'pools',
+      metricValue: poolFeesUSD,
     })
 
     if (!isTransactionFailed(tx)) {

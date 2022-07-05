@@ -148,7 +148,7 @@ const SwapPage = ({
     setOutputTokenMintAddress(outputTokenMint)
   }, [])
 
-  const [slippage, setSlippage] = useState<number>(0.3)
+  const [slippage, setSlippage] = useState<number>(0.5)
   const [isTokensAddressesPopupOpen, setIsTokensAddressesPopupOpen] =
     useState(false)
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
@@ -194,12 +194,19 @@ const SwapPage = ({
     selectedInputTokenAddressFromSeveral
   )
 
-  const totalFeeUSD = getSwapRouteFeesAmount({
+  const depositAndFeeUSD = depositAndFee * dexTokensPricesMap.get('SOL')
+  const poolsFeeUSD = getSwapRouteFeesAmount({
     swapRoute,
     pricesMap: dexTokensPricesMap,
   })
 
-  const { amount: maxQuoteAmount } = getTokenDataByMint(
+  const totalFeeUSD = depositAndFeeUSD + poolsFeeUSD
+
+  const formattedTotalFeeUSD = formatNumberToUSFormat(
+    stripDigitPlaces(totalFeeUSD, 2)
+  )
+
+  const { amount: maxOutputAmount } = getTokenDataByMint(
     userTokensData,
     outputTokenMintAddress,
     selectedOutputTokenAddressFromSeveral
@@ -271,8 +278,6 @@ const SwapPage = ({
 
   const isButtonDisabled =
     isEmptyInputAmount || isTokenABalanceInsufficient || isSwapInProgress
-
-  console.log('swapRoute', swapRoute)
 
   return (
     <SwapPageLayout>
@@ -348,6 +353,9 @@ const SwapPage = ({
                   title="From"
                   maxAmount={maxInputAmount}
                   amount={formatNumberWithSpaces(inputAmount)}
+                  onMaxAmountClick={() =>
+                    setFieldAmount(maxInputAmount, 'input')
+                  }
                   disabled={false}
                   onChange={(v) => {
                     if (v === '') {
@@ -386,8 +394,11 @@ const SwapPage = ({
               >
                 <SwapAmountInput
                   title="To (Estimated)"
-                  maxAmount={maxQuoteAmount}
+                  maxAmount={maxOutputAmount}
                   amount={outputAmount}
+                  onMaxAmountClick={() =>
+                    setFieldAmount(maxOutputAmount, 'output')
+                  }
                   onChange={(v) => {
                     if (v === '') {
                       setFieldAmount(v, 'output')
@@ -420,7 +431,9 @@ const SwapPage = ({
                 <BlackRow width="calc(50% - 0.6em)">
                   <RowTitle>Fee:</RowTitle>
                   <RowValue>
-                    ${formatNumberToUSFormat(stripDigitPlaces(totalFeeUSD, 2))}
+                    {totalFeeUSD < 0.01
+                      ? `< $0.01`
+                      : `$${formattedTotalFeeUSD}`}
                   </RowValue>
                 </BlackRow>
                 <BlackRow width="calc(50% - 0.6em)">
@@ -499,7 +512,7 @@ const SwapPage = ({
                     setIsSwapInProgress(true)
 
                     try {
-                      const result = await exchange()
+                      const result = await exchange(dexTokensPricesMap)
 
                       if (result !== 'success') {
                         notify({

@@ -174,10 +174,8 @@ export const useSwapRoute = ({
 
         const strippedSwapAmountOut =
           swapAmountOut === 0 ? '' : stripByAmount(swapAmountOut)
-        // const routeDepositAndFee = await swapRoute.getDepositAndFee()
 
         setSwapRoute(newSwapRoute)
-        // setDepositAndFee(routeDepositAndFee)
 
         // do not set 0, leave 0 placeholder
         if (isInputFieldEntered) {
@@ -272,11 +270,12 @@ export const useSwapRoute = ({
     refresh()
   }, [inputMint, outputMint, wallet.publicKey, slippage])
 
-  const exchange = async () => {
+  const exchange = async (pricesMap: Map<string, number>) => {
     const result = await multiSwap({
       wallet,
       connection,
       swapRoute,
+      pricesMap,
       openOrdersMap,
       feeAccountTokens,
       selectedInputTokenAddressFromSeveral,
@@ -288,13 +287,15 @@ export const useSwapRoute = ({
     return result
   }
 
+  const isLoading =
+    loading ||
+    !isAllMarketsInSwapPathLoaded ||
+    (isLoadingOpenOrdersMap && marketsInSwapPaths.length > 0)
+
   return {
     price,
     swapRoute,
-    loading:
-      loading ||
-      !isAllMarketsInSwapPathLoaded ||
-      (isLoadingOpenOrdersMap && marketsInSwapPaths.length > 0),
+    loading: isLoading,
     inputAmount,
     outputAmount,
     depositAndFee,
