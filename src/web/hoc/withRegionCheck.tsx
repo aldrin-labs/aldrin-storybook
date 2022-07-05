@@ -5,7 +5,7 @@ import { Redirect } from '@sb/components/Redirect'
 import { sleep } from '@core/utils/helpers'
 import { Metrics } from '@core/utils/metrics'
 
-const restrictedContriesCodes = ['US', 'IR', 'KP', 'YE', 'VE', 'YV', 'SD', 'SO']
+const restrictedContriesCodes = ['IR', 'KP', 'YE', 'VE', 'YV', 'SD', 'SO']
 
 const getRegionData = async ({
   setIsFromRestrictedRegion,

@@ -5,6 +5,7 @@ import {
   FundsType,
   IResult,
 } from '@core/types/ChartTypes'
+import { DefaultTheme } from 'styled-components'
 
 export interface IDataWrapperProps {
   activeExchange: {
@@ -21,6 +22,7 @@ export interface IDataWrapperProps {
 }
 
 export interface IProps extends IDataWrapperProps {
+  newTheme: DefaultTheme
   cancelOrderMutation: CancelOrderMutationType
   marketType: 0 | 1
   getTerminalDataQuery: {

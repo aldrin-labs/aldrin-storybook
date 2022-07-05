@@ -2,10 +2,10 @@ import React from 'react'
 
 import { SvgIcon } from '@sb/components'
 import { Text } from '@sb/components/Typography'
+import { useSolanaTPS } from '@sb/hooks/useSolanaTPS'
 
 import BlackWarningIcon from '@icons/blackWarning.svg'
 
-import { useSolanaTPS } from '../../../hooks/useSolanaTPS'
 import { Link, Container, StyledRowContainer } from './styles'
 
 const MAX_TPS_TO_SHOW_BANNER = 1500

@@ -12,10 +12,6 @@ import { ADD_CHART } from '@core/graphql/mutations/chart/addChart'
 import { CHANGE_CURRENCY_PAIR } from '@core/graphql/mutations/chart/changeCurrencyPair'
 import { GET_CHARTS } from '@core/graphql/queries/chart/getCharts'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
-// import { getSelectorSettings } from '@core/graphql/queries/chart/getSelectorSettings'
-// import { MARKETS_BY_EXCHANE_QUERY } from '@core/graphql/queries/chart/MARKETS_BY_EXCHANE_QUERY'
-
-// import TextInputLoader from '@sb/components/Placeholders/TextInputLoader'
 
 import SelectWrapper from '../SelectWrapper/SelectWrapper'
 import { ExchangePair, SelectR } from './AutoSuggestSelect.styles'

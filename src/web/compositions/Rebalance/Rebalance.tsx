@@ -1,6 +1,5 @@
 import { withTheme } from '@material-ui/core/styles'
 import { Connection } from '@solana/web3.js'
-import { COLORS } from '@variables/variables'
 import React, { useEffect, useState, useCallback } from 'react'
 import debounceRender from 'react-debounce-render'
 import { compose } from 'recompose'
