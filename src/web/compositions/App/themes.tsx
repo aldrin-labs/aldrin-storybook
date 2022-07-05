@@ -58,7 +58,7 @@ export const dark = {
     gray9: '#0B0B12FF',
     gray8: '#2b2d36',
     gray7: '#14141F',
-    gray6: '#212030FF',
+    gray6: '#181825FF',
     gray5: '#2F2F40FF',
     gray4: '#3F3E4FFF',
     gray3: '#5B5A72',
@@ -80,6 +80,7 @@ export const dark = {
     tooltip: '#222429',
     greenChart: ['rgba(143, 255, 200, 0.25)', 'rgba(143, 255, 200, 0)'],
     shadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.45)',
+    header: '#0B0B13',
   },
 }
 

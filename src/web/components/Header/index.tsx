@@ -23,7 +23,7 @@ import {
   MoreIcon,
   AldrinLogo,
 } from './MenuIcons'
-import { RewardsBlock } from './RewardsBlock/RewardsBlock'
+import { RinBalance } from './RinBalance'
 import {
   HeaderWrap,
   LogoLink,
@@ -57,6 +57,9 @@ export const Header = React.memo(
                 <AldrinLogo />
               </LogoLink>
             </LogoBlock>
+
+            <RinBalance />
+
             <MainLinksWrap>
               <MainLinksBlock>
                 <NavLink
@@ -65,7 +68,7 @@ export const Header = React.memo(
                   activeClassName="selected"
                 >
                   <TradeIcon />
-                  Trade
+                  <span>Trade</span>
                 </NavLink>
                 <NavLink
                   data-testid="header-link-to-swap"
@@ -73,7 +76,7 @@ export const Header = React.memo(
                   activeClassName="selected"
                 >
                   <SwapIcon />
-                  Swap
+                  <span>Swap</span>
                 </NavLink>
                 <NavLink
                   data-testid="header-link-to-pools"
@@ -81,7 +84,7 @@ export const Header = React.memo(
                   activeClassName="selected"
                 >
                   <PoolsIcon />
-                  Pools &amp; Farms
+                  <span>Pools &amp; Farms</span>
                 </NavLink>
                 <NavLink
                   data-testid="header-link-to-staking"
@@ -89,13 +92,13 @@ export const Header = React.memo(
                   activeClassName="selected"
                 >
                   <StakingIcon />
-                  Staking
+                  <span>Staking</span>
                 </NavLink>
                 <DropDown
                   text={
                     <>
                       <MoreIcon />
-                      More
+                      <span>More</span>
                     </>
                   }
                 >
@@ -105,7 +108,7 @@ export const Header = React.memo(
                     activeClassName="selected-from-dropdown"
                   >
                     <RebalanceIcon />
-                    Rebalancer
+                    <span>Rebalancer</span>
                   </NavLink>
                   <NavLink
                     $left
@@ -113,7 +116,7 @@ export const Header = React.memo(
                     activeClassName="selected-from-dropdown"
                   >
                     <DashboardIcon />
-                    Dashboard
+                    <span>Dashboard</span>
                   </NavLink>
 
                   <NavLink
@@ -123,7 +126,7 @@ export const Header = React.memo(
                     href="https://wallet.aldrin.com"
                   >
                     <WalletIcon />
-                    Wallet
+                    <span>Wallet</span>
                   </NavLink>
                   <NavLink
                     $left
@@ -132,7 +135,7 @@ export const Header = React.memo(
                     href="https://github.com/aldrin-exchange/aldrin-sdk"
                   >
                     <SDKIcon />
-                    SDK
+                    <span>SDK</span>
                   </NavLink>
                   <NavLink
                     $left
@@ -141,7 +144,7 @@ export const Header = React.memo(
                     href="https://docs.aldrin.com"
                   >
                     <ReadmeIcon />
-                    Read Me
+                    <span>Read Me</span>
                   </NavLink>
                   <NavLink
                     $left
@@ -150,7 +153,7 @@ export const Header = React.memo(
                     href="https://rin.aldrin.com/"
                   >
                     <RoadmapIcon />
-                    Roadmap
+                    <span>Roadmap</span>
                   </NavLink>
                   <NavLink
                     $left
@@ -158,7 +161,7 @@ export const Header = React.memo(
                     onClick={() => setFeedbackPopupOpen(true)}
                   >
                     <SupportIcon />
-                    Feedback &amp; Support
+                    <span>Feedback &amp; Support</span>
                   </NavLink>
                   <NavLink
                     $left
@@ -166,11 +169,11 @@ export const Header = React.memo(
                     onClick={() => setListingPopupOpen(true)}
                   >
                     <RequestListingIcon />
-                    Request Listing
+                    <span>Request Listing</span>
                   </NavLink>
                   <NavLink $left to="/pools/create">
                     <CreatePoolIcon />
-                    Create Pool
+                    <span>Create Pool</span>
                   </NavLink>
                 </DropDown>
               </MainLinksBlock>
@@ -180,7 +183,6 @@ export const Header = React.memo(
               setCurrentTheme={setCurrentTheme}
             />
             <WalletContainer>
-              <RewardsBlock />
               <WalletBlock />
             </WalletContainer>
           </HeaderWrap>

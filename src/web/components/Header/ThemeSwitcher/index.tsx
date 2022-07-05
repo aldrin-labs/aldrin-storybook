@@ -1,13 +1,17 @@
 import React from 'react'
-import Switch from 'react-switch'
 import useSWR from 'swr'
 
 import SvgIcon from '@sb/components/SvgIcon'
 
-import Moon from '@icons/moon.svg'
-import Sun from '@icons/sun.svg'
+import Moon from './images/moon.svg'
+import MoonActive from './images/moon_active.svg'
+import Sun from './images/sun.svg'
+import SunActive from './images/sun_active.svg'
 
-import { SwitcherContainer, IconContainer } from './styles'
+import { SwitcherContainer, SwitchControl } from './styles'
+
+const DARK_THEME = 'dark'
+const LIGHT_THEME = 'light'
 
 export const ThemeSwitcher = ({
   currentTheme,
@@ -19,42 +23,31 @@ export const ThemeSwitcher = ({
   const { mutate } = useSWR('theme', () => localStorage.getItem('theme'))
 
   const handleChange = () => {
-    if (currentTheme === 'dark') {
-      setCurrentTheme('light')
-      localStorage.setItem('theme', 'light')
+    if (currentTheme === DARK_THEME) {
+      setCurrentTheme(LIGHT_THEME)
+      localStorage.setItem('theme', LIGHT_THEME)
       mutate()
     } else {
-      setCurrentTheme('dark')
-      localStorage.setItem('theme', 'dark')
+      setCurrentTheme(DARK_THEME)
+      localStorage.setItem('theme', DARK_THEME)
       mutate()
     }
   }
 
   return (
     <SwitcherContainer>
-      <Switch
-        onChange={handleChange}
-        checked={currentTheme === 'dark'}
-        className="theme-switch"
-        width={50}
-        offColor="#F0F0F2"
-        onColor="#47FFA7"
-        offHandleColor="#fff"
-        onHandleColor="#14141F"
-        activeBoxShadow="0px 3px 7px rgba(0, 107, 55, 0.8)"
-        uncheckedIcon={<div />}
-        checkedIcon={<div />}
-        uncheckedHandleIcon={
-          <IconContainer>
-            <SvgIcon src={Sun} />
-          </IconContainer>
-        }
-        checkedHandleIcon={
-          <IconContainer>
-            <SvgIcon src={Moon} />
-          </IconContainer>
-        }
-      />
+      <SwitchControl
+        $active={currentTheme === DARK_THEME}
+        onClick={handleChange}
+      >
+        <SvgIcon src={currentTheme === DARK_THEME ? MoonActive : Moon} />
+      </SwitchControl>
+      <SwitchControl
+        $active={currentTheme === LIGHT_THEME}
+        onClick={handleChange}
+      >
+        <SvgIcon src={currentTheme === LIGHT_THEME ? SunActive : Sun} />
+      </SwitchControl>
     </SwitcherContainer>
   )
 }

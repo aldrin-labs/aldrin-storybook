@@ -6,7 +6,6 @@ export { default as SvgIcon } from './SvgIcon'
 export { addMainSymbol } from './AddMainSymbol'
 export { default as PrivacyPolicy } from './PrivacyPolicy'
 export { default as TermsOfUse } from './TermsOfUse/TermsOfUse'
-export { default as CardHeader } from './CardHeader'
 export {
   default as ErrorBoundary,
   ErrorFallback,
@@ -19,4 +18,3 @@ export { default as Slider } from './Slider/Slider'
 export { default as IconButtonWithHover } from './IconButtonWithHover/IconButtonWithHover'
 export { default as SwitchButtons } from './SwitchButtons/SwitchButtons'
 export { LinearProgressCustom } from './LinearProgressCustom/LinearProgressCustom'
-export { TooltipRegionBlocker } from './TooltipRegionBlocker/TooltipRegionBlocker'

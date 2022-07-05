@@ -18,25 +18,15 @@ import { Text } from '../Typography'
 export const HeaderWrap = styled.header`
   display: flex;
   flex-direction: row;
-  height: 60px;
-  background: ${(props) => props.theme.colors.gray9};
+  height: 96px;
+  background: ${(props) => props.theme.colors.header};
+  border-bottom: 1px solid #212131;
+  padding: 0 24px;
 `
 
 export const LogoBlock = styled.div`
   display: flex;
-  flex-direction: row;
   align-items: center;
-  padding-right: ${SIZE.defaultPadding};
-  margin: 8px 0;
-  flex: 0 1 auto;
-`
-
-export const StakeButton = styled(Button)`
-  display: none;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    display: block;
-  }
 `
 
 interface ShowHideProps {
@@ -55,6 +45,8 @@ type CopyButton = {
 }
 
 export const NavLink = styled(RouterNavLink)<LinkProps>`
+  display: flex;
+  align-items: center;
   text-decoration: none;
   font-size: 0.8em;
   padding: 4px 0;
@@ -68,6 +60,10 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   font-weight: 500;
   transition: 0.3s;
 
+  svg + * {
+    margin-left: 0.2em;
+  }
+
   &.dropdown {
     &:hover {
       border-bottom: none;
@@ -76,6 +72,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
 
   &.selected-from-dropdown {
     color: ${(props) => props.theme.colors.gray0};
+
     svg {
       path {
         fill: ${(props) => props.theme.colors.gray0};
@@ -83,18 +80,11 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
     }
   }
 
-  svg,
-  img {
-    margin: 0 0.5rem;
-  }
-
   &:hover {
     color: ${(props) => props.theme.colors.gray0};
-    transition: 0.3s;
-    svg {
-      path {
-        fill: ${(props) => props.theme.colors.gray0};
-      }
+
+    svg path {
+      fill: ${(props) => props.theme.colors.gray0};
     }
   }
 
@@ -102,6 +92,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
     color: ${(props) => props.theme.colors.gray0};
     border-bottom: 1px solid ${(props) => props.theme.colors.gray0};
     transition: all ease-in 0.2s;
+
     svg {
       path {
         fill: ${(props) => props.theme.colors.gray0};
@@ -203,8 +194,6 @@ export const WalletContainer = styled.div`
 `
 
 export const LogoLink = styled(Link)`
-  // height: 100%;
-  margin-right: 60px;
   display: block;
 `
 
@@ -299,38 +288,22 @@ export const WalletButton = styled(Button)`
 `
 
 export const WalletDataContainer = styled.div`
-  width: 8.5em;
   border-radius: ${BORDER_RADIUS.md};
+  height: 40px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  max-width: 120px;
+  max-width: 140px;
+  cursor: pointer;
+  background-color: ${(props) => props.theme.colors.gray6};
 
   @media (min-width: ${BREAKPOINTS.md}) {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .disconnect-wallet {
-    display: none;
-  }
-
-  &:hover {
-    .disconnect-wallet {
-      display: flex;
-      justify-content: space-between;
-      flex-direction: row;
-    }
-  }
-
   .wallet-data {
     display: flex;
-  }
-
-  &:hover {
-    .wallet-data {
-      display: none;
-    }
   }
 `
 
@@ -340,8 +313,8 @@ export const WalletData = styled.div`
   justify-content: space-between;
   padding: 0.5rem 1rem;
   border-radius: ${BORDER_RADIUS.md};
-  background: ${(props) => props.theme.colors.gray6};
   align-items: center;
+
   img {
     border-radius: 50%;
   }
@@ -355,12 +328,19 @@ export const WalletData = styled.div`
     }
   }
 `
+
 export const Column = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  align-items: flex-end;
   margin-left: 0.4em;
+`
+
+export const DownArrowWrapper = styled.div`
+  margin-left: 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 export const WalletName = styled(Text)`
@@ -375,7 +355,7 @@ export const WalletName = styled(Text)`
 `
 
 export const WalletAddress = styled(WalletName)`
-  opacity: 0.5;
+  color: ${(props) => props.theme.colors.gray3};
   font-weight: 400;
   display: block;
   font-size: ${FONT_SIZES.sm};
@@ -385,87 +365,28 @@ export const WalletAddress = styled(WalletName)`
   }
 `
 
-export const WalletDisconnectButton = styled(Button)`
-  width: calc(100% - 5rem);
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.75em;
-  background-color: ${COLORS.newOrange};
-  border: none;
-  font-weight: 600;
-  height: 100%;
-  transition: ${TRANSITION};
-  border-radius: 8px 0 0 8px;
-  min-width: 2rem;
-
-  &:hover {
-    background-color: ${COLORS.primaryRed};
-  }
-
-  &:active {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-      ${COLORS.primaryRed};
-  }
-`
 export const BalanceTitle = styled.span`
-  font-size: ${FONT_SIZES.sm};
-  color: ${(props) => props.theme.colors.green7};
+  font-size: 12px;
+  color: ${(props) => props.theme.colors.primaryWhite};
   font-weight: 600;
   white-space: nowrap;
+
   @media (max-width: 1200px) {
     font-size: 0.7125em;
   }
 `
 
-export const Wrap = styled.div`
-  padding: 0 15px;
-  background: ${(props) => props.theme.colors.gray9};
+export const Wrap = styled.div``
 
-  @media (min-width: ${BREAKPOINTS.lg}) {
-    padding: 0 1.5em;
-  }
-`
 export const WalletDisconnectBlock = styled.div`
   width: 100%;
   height: 5rem;
 `
 
-export const CopyAddressButton = styled(Button)<CopyButton>`
-  width: 5rem;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.75em;
-  background: ${(props) => (props.isCopied ? '#269F13' : '#434343')};
-  border: none;
-  font-weight: 600;
-  height: 100%;
-  transition: ${TRANSITION};
-  border-radius: 0 8px 8px 0;
-  min-width: 2rem;
-  border-left: 2px solid #191919;
-
-  &:hover {
-    background: ${(props) => (props.isCopied ? '#269F13' : '#363636')};
-
-    svg {
-      path {
-        stroke: #fff;
-      }
-    }
-  }
-
-  &:active {
-    background: #363636;
-  }
-`
 export const LogoContainer = styled.div`
-  width: 4em;
-
   svg {
+    height: 2.5em;
+
     path {
       fill: ${(props) => props.theme.colors.logo};
     }

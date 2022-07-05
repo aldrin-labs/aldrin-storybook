@@ -10,10 +10,10 @@ export const WalletSelectorRow = styled(RowContainer)`
   text-align: right;
   border-bottom: 0.1rem solid ${(props) => props.theme.colors.gray5};
   font-size: 1.5rem;
-  color: ${(props) => props.theme.colors.gray1};
   font-family: Avenir Next Medium;
-  height: 6rem;
-  padding: 0 2rem;
+  height: 8rem;
+  padding: 1.2rem;
+  border-radius: 12px;
   transition: 0.3s;
   cursor: pointer;
   &:last-child {
@@ -25,14 +25,17 @@ export const WalletSelectorRow = styled(RowContainer)`
   }
 `
 export const CloseIcon = styled.div`
-  width: 2rem;
-  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #212131;
+  width: 6rem;
+  height: 6rem;
   cursor: pointer;
-  svg {
-    path {
-      stroke: ${(props) => props.theme.colors.white};
-    }
-  }
+  color: #fff;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
 `
 export const WalletIcon = styled.div`
   width: 2.7em;
@@ -42,4 +45,22 @@ export const WalletIcon = styled.div`
   justify-content: center;
   align-items: center;
   background: #000;
+`
+
+export const WalletRight = styled.div``
+
+export const WalletTitle = styled.div`
+  font-weight: 600;
+  font-size: 14px;
+  color: #fff;
+`
+
+export const WalletSubtitle = styled.div`
+  color: ${(props) => props.theme.colors.gray3};
+  font-size: 12px;
+`
+
+export const WalletsList = styled.div`
+  overflow: auto;
+  padding: 1.2rem;
 `
