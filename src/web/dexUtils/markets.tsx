@@ -417,7 +417,6 @@ export function MarketProvider({ children }) {
       marketInfo &&
       market._decoded.ownAddress?.equals(marketInfo?.address)
     ) {
-      console.log('useEffect in market - first return')
       return
     }
 
@@ -435,12 +434,6 @@ export function MarketProvider({ children }) {
     // console.log('useEffect in market - load market')
     Market.load(connection, marketInfo.address, {}, marketInfo.programId)
       .then((data) => {
-        console.log(
-          'useEffect in market - set market in load',
-          marketInfo.address,
-          marketInfo.name,
-          data
-        )
         return setMarket(data)
       })
       .catch((e) => {
@@ -909,18 +902,17 @@ export function useQuoteCurrencyBalances() {
   // or accos here - try get account info
   const quoteCurrencyAccount = useSelectedQuoteCurrencyAccount()
   const { market } = useMarket()
-  const { data: accountInfo, isLoading } = useAccountInfo(
-    quoteCurrencyAccount?.pubkey
-  )
-  if (!market || !quoteCurrencyAccount || isLoading) {
+  const { data: accountInfo } = useAccountInfo(quoteCurrencyAccount?.pubkey)
+  if (!market || !quoteCurrencyAccount || !accountInfo) {
     return [null]
   }
   if (market.quoteMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
-    return [accountInfo?.lamports / 1e9 ?? 0]
+    return [accountInfo.lamports / 1e9 ?? 0]
   }
+
   return [
     market.quoteSplSizeToNumber(
-      new BN(accountInfo.data.slice(64, 72), 10, 'le')
+      new BN(accountInfo.data.subarray(64, 72), 10, 'le')
     ),
   ]
 }
@@ -929,16 +921,14 @@ export function useQuoteCurrencyBalances() {
 export function useBaseCurrencyBalances() {
   const baseCurrencyAccount = useSelectedBaseCurrencyAccount()
   const { market } = useMarket()
-  const {
-    data: accountInfo,
-    isLoading,
-    refresh,
-  } = useAccountInfo(baseCurrencyAccount?.pubkey)
-  if (!market || !baseCurrencyAccount || isLoading) {
+  const { data: accountInfo, refresh } = useAccountInfo(
+    baseCurrencyAccount?.pubkey
+  )
+  if (!market || !baseCurrencyAccount || !accountInfo) {
     return [null]
   }
   if (market.baseMintAddress.equals(TokenInstructions.WRAPPED_SOL_MINT)) {
-    return [accountInfo?.lamports / 1e9 ?? 0]
+    return [accountInfo.lamports / 1e9 ?? 0]
   }
   return [
     market.baseSplSizeToNumber(

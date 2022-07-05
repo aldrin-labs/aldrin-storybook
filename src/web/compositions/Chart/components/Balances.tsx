@@ -107,6 +107,35 @@ const BalanceValuesContainer = styled(RowContainer)`
   margin-bottom: ${(props) => (props.needMargin ? '0.8rem' : '0')};
 `
 
+export interface IProps {
+  pair: string
+  selectedKey: {
+    keyId: string
+    hedgeMode: boolean
+    isFuturesWarsKey: boolean
+  }
+  marketType: number
+  showFuturesTransfer: boolean
+  isFuturesWarsKeyQuery: {
+    isFuturesWarsKey: boolean
+  }
+  getPlannedRoundByKeyIdQuery: {
+    getPlannedRoundByKeyId: {
+      isAlreadyJoined: boolean
+      plannedRounds: any
+      plannedRoundInfo: {
+        startedAt: number
+        endedAt: number
+        bet: number
+      }
+    }
+  }
+}
+
+export interface IPropsBalancesWrapper extends IProps {
+  subscribeToMore: () => () => void
+}
+
 export const Balances = ({
   getFundsQuery,
   pair,
@@ -450,4 +479,17 @@ export const Balances = ({
       </CustomCard>
     </>
   )
+}
+
+export const BalancesWrapper = (props: IPropsBalancesWrapper) => {
+  const propsObject = {
+    isAlreadyJoined: false,
+    futuresWarsRoundBet: 0,
+    isFuturesWarsKey: false,
+    getFundsQuery: {
+      getFunds: [],
+    },
+  }
+
+  return <Balances {...props} {...propsObject} />
 }

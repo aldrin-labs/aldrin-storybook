@@ -3,10 +3,10 @@ import React, { Component } from 'react'
 
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+import { withErrorFallback } from '@sb/hoc'
 
 import { client } from '@core/graphql/apolloClient'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import {
   reduceArrayLength,
   getNumberOfDigitsAfterDecimal,
@@ -72,7 +72,6 @@ class TableContainer extends Component<IProps, IState> {
   }
 
   componentDidMount() {
-    console.log('trade history inside didMount')
     this.subscribe()
   }
 
@@ -179,8 +178,6 @@ class TableContainer extends Component<IProps, IState> {
       updateTerminalPriceFromOrderbook,
       sizeDigits,
     } = this.props
-
-    console.log('trade history inside render')
 
     const { data = [], numbersAfterDecimalForPrice } = this.state
     const amountForBackground =

@@ -5,6 +5,7 @@ import { compose } from 'recompose'
 import styled from 'styled-components'
 
 import { SvgIcon } from '@sb/components/index'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 import { getIsNotUSDTQuote } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper.utils'
 import { BlockTemplate } from '@sb/compositions/Pools/index.styles'
@@ -12,7 +13,6 @@ import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import {
   stripDigitPlaces,

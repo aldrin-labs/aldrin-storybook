@@ -67,7 +67,7 @@ export const notify = ({
         <span
           style={{
             color: '#fff',
-            fontFamily: 'Avenir Next Demi',
+            fontFamily: 'Avenir Next',
             fontSize: '1.6rem',
           }}
         >

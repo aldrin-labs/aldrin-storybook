@@ -22,11 +22,10 @@ export interface UserBalanceProps {
 }
 
 export type StakingInfoProps = {
-  tokenPrice: number
   currentFarmingState: FarmingState
   stakingPool: StakingPool
-  buyBackAmount: number
   treasuryDailyRewards: number
+  getDexTokensPricesQuery: { getDexTokensPrices: DexTokensPrices[] }
 }
 
 export interface StakingFormProps {
