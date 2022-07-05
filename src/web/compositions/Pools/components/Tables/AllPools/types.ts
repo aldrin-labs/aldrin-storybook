@@ -16,6 +16,5 @@ export interface AllPoolsProps {
   dexTokensPricesMap: TokenPricesMap
   feesByPool: FeesMap
   tradingVolumes: VolumesMap
-  farmingTicketsMap: FarmingTicketsMap
   farms?: Map<string, ProgramAccount<Farm>>
 }

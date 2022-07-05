@@ -1,5 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client'
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { Route, useHistory } from 'react-router'
 import { Link, useRouteMatch } from 'react-router-dom'
 import { compose } from 'recompose'
@@ -15,10 +15,7 @@ import {
   TradingVolumeStats,
 } from '@sb/compositions/Pools/index.types'
 import { getUserPoolsFromAll } from '@sb/compositions/Pools/utils/getUserPoolsFromAll'
-import { useConnection } from '@sb/dexUtils/connection'
 import { useFarmersAccountInfo, useFarmsInfo } from '@sb/dexUtils/farming'
-import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
-import { useFarmingTicketsMap } from '@sb/dexUtils/pools/hooks/useFarmingTicketsMap'
 import { CURVE } from '@sb/dexUtils/pools/types'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useVestings } from '@sb/dexUtils/vesting'
@@ -95,15 +92,12 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
   }
 
   const { wallet } = useWallet()
-  const connection = useConnection()
   const history = useHistory()
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
-  const { data: calcAccounts, mutate: refreshCalcAccounts } =
-    useFarmingCalcAccounts()
 
-  // const [snapshotQueues] = useSnapshotQueues()
-
+  const { data: farms, mutate: refreshFarms } = useFarmsInfo()
+  const { data: farmers, mutate: refreshFarmers } = useFarmersAccountInfo()
   const pools = rawPools.map((pool) => {
     return {
       ...pool,
@@ -111,17 +105,10 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     }
   })
 
-  const [farmingTicketsMap, refreshFarmingTickets] = useFarmingTicketsMap({
-    wallet,
-    connection,
-    pools,
-    snapshotQueues: [], // TODO:
-  })
-
   const refreshAll = () => {
     refreshUserTokensData()
-    refreshFarmingTickets()
-    refreshCalcAccounts()
+    refreshFarms()
+    refreshFarmers()
   }
 
   const dexTokensPricesMap = toMap(
@@ -144,9 +131,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     ),
     (v) => v.mint.toBase58()
   )
-
-  const { data: farms } = useFarmsInfo()
-  const { data: farmers } = useFarmersAccountInfo()
 
   const userLiquidityPools = getUserPoolsFromAll({
     poolsInfo: pools,
@@ -171,30 +155,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
     []
 
   const tradingVolumesMap = toMap(tradingVolumes, (tv) => tv.pool.trim())
-
-  const activePoolsList = useMemo(() => {
-    if (selectedTable === 'authorized') {
-      return authorizedPools
-    }
-    if (selectedTable === 'nonAuthorized') {
-      return nonAuthorizedPools
-    }
-    if (selectedTable === 'stablePools') {
-      return stablePools
-    }
-    if (selectedTable === 'userLiquidity') {
-      return userLiquidityPools
-    }
-    return pools
-  }, [selectedTable, pools])
-
-  const poolsLength = activePoolsList.length
-
-  const tableHeight = Math.min(poolsLength * 13, 80)
-
-  const { data: farmersInfo } = useFarmersAccountInfo()
-  const farm = farms?.get('8yRDnJwirkTnNaw4TsyzwTfZzs81Vvn7hkoF7pbkBiRD')
-  const farmer = farmersInfo?.get(farm?.publicKey.toString())
 
   return (
     <>
@@ -297,7 +257,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             dexTokensPricesMap={dexTokensPricesMap}
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
-            farmingTicketsMap={farmingTicketsMap}
           />
         )}
 
@@ -308,7 +267,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             dexTokensPricesMap={dexTokensPricesMap}
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
-            farmingTicketsMap={farmingTicketsMap}
           />
         )}
         {selectedTable === 'all' && (
@@ -318,7 +276,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             dexTokensPricesMap={dexTokensPricesMap}
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
-            farmingTicketsMap={farmingTicketsMap}
           />
         )}
         {selectedTable === 'stablePools' && (
@@ -328,7 +285,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             dexTokensPricesMap={dexTokensPricesMap}
             feesByPool={feesByPoolMap}
             tradingVolumes={tradingVolumesMap}
-            farmingTicketsMap={farmingTicketsMap}
           />
         )}
         {selectedTable === 'userLiquidity' && (
@@ -337,7 +293,6 @@ const TableSwitcherComponent: React.FC<TableSwitcherProps> = (props) => {
             pools={userLiquidityPools}
             dexTokensPricesMap={dexTokensPricesMap}
             allTokensData={userTokensData}
-            farmingTicketsMap={farmingTicketsMap}
             feesByPoolForUser={earnedFeesInPoolForUserMap}
           />
         )}

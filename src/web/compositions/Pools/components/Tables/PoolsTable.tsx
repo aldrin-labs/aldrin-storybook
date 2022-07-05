@@ -26,7 +26,6 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
     prepareCell: prepareMore,
     suffix,
     noDataText,
-    farmingTicketsMap,
   } = props
 
   const tokenMap = useTokenInfos()
@@ -93,15 +92,7 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
             farmers,
           })
         ),
-    [
-      pools,
-      tokenPrices,
-      walletPk,
-      calcAccounts,
-      vestingsByMint,
-      farmingTicketsMap,
-      tokenMap,
-    ]
+    [pools, tokenPrices, walletPk, calcAccounts, vestingsByMint, tokenMap]
   )
 
   return (

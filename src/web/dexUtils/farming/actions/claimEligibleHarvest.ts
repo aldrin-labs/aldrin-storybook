@@ -28,7 +28,7 @@ export const claimEligibleHarvest = async (
       const { newAccountPubkey, transaction } =
         await createAssociatedTokenAccountTransaction({
           wallet,
-          mintPublicKey: farm.stakeMint,
+          mintPublicKey: harvest.mint,
         })
       userTokenAccount = newAccountPubkey.toString()
 

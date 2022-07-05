@@ -1,18 +1,19 @@
+import { ProgramAccount } from 'anchor024'
+
 import {
-  FarmingTicketsMap,
   FeesMap,
   PoolInfo,
   TokenPricesMap,
 } from '@sb/compositions/Pools/index.types'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 
+import { Farm, Farmer } from '@core/solana'
 
 export interface LiquidityTableProps {
   searchValue: string
   pools: PoolInfo[]
   allTokensData: TokenInfo[]
   dexTokensPricesMap: TokenPricesMap
-  farmingTicketsMap: FarmingTicketsMap
   feesByPoolForUser: FeesMap
 }
 
@@ -21,6 +22,7 @@ export interface PrepareCellParams {
   tokenPrices: TokenPricesMap
   allTokensData: TokenInfo[]
   feesByPool: FeesMap
-  farmingTicketsMap: FarmingTicketsMap
   tokensMap: Map<string, TokenInfo>
+  farms?: Map<string, Farm>
+  farmers?: Map<string, ProgramAccount<Farmer>>
 }

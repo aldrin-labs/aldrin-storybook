@@ -8,12 +8,10 @@ import { Modal } from '@sb/components/Modal'
 import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
-import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { usePoolBalances } from '@sb/dexUtils/pools/hooks'
-import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -23,6 +21,7 @@ import {
   stripByAmountAndFormat,
 } from '@core/utils/chartPageUtils'
 
+import { claimEligibleHarvest, useFarm } from '../../../../dexUtils/farming'
 import { PoolWithOperation } from '../../index.types'
 import { AddLiquidityPopup } from '../Popups/AddLiquidity'
 import { StakePopup } from '../Popups/Staking/StakePopup'
@@ -150,15 +149,19 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
   const baseUsdPrice = prices.get(baseTokenName) || { price: 0 }
   const quoteUsdPrice = prices.get(quoteTokenName) || { price: 0 }
 
+  const farm = useFarm(pool.poolTokenMint)
+
   const claimRewards = async () => {
+    if (!farm) {
+      throw new Error('no Farm!')
+    }
     setPoolUpdateOperation({ pool: '', operation: 'claim' })
-    const result = await withdrawStaked({
-      connection,
+    console.log('userTokensData:', userTokensData)
+    const result = await claimEligibleHarvest({
       wallet,
-      stakingPool: pool,
-      farmingTickets: farmingTickets.get(pool.swapToken) || [],
-      programAddress: getPoolsProgramAddress({ curveType: pool.curveType }),
-      allTokensData: userTokensData,
+      connection,
+      userTokens: userTokensData,
+      farm,
     })
 
     notify({
@@ -338,7 +341,6 @@ export const PoolPage: React.FC<PoolPageProps> = (props) => {
         <UnstakePopup
           selectedPool={pool}
           close={closePopup}
-          // farmingTicketsMap={farmingTickets}
           allTokensData={userTokensData}
           refreshTokensWithFarmingTickets={refreshAll}
           setPoolWaitingForUpdateAfterOperation={setPoolUpdateOperation}

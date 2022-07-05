@@ -5,7 +5,6 @@ import { Text } from '@sb/components/Typography'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
 
-import { getStakedTokensTotal } from '@core/solana'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import { getTokenDataByMint } from '../../../../utils'
@@ -18,9 +17,10 @@ export const prepareCell = (
     pool,
     tokenPrices,
     allTokensData,
-    farmingTicketsMap,
     feesByPool,
     tokensMap,
+    farmers,
+    farms,
   } = params
 
   const baseSymbol = getTokenName({
@@ -38,9 +38,11 @@ export const prepareCell = (
   const { amount: poolTokenRawAmount, decimals: poolTokenDecimals } =
     getTokenDataByMint(allTokensData, pool.poolTokenMint)
 
-  const farmingTickets = farmingTicketsMap.get(pool.swapToken) || []
-
-  const stakedTokens = getStakedTokensTotal(farmingTickets)
+  const farm = farms?.get(pool.poolTokenMint)
+  const farmer = farmers?.get(farm?.publicKey.toString() || '')
+  const stakedTokens = parseFloat(
+    farmer?.account.staked.amount.toString() || '0'
+  )
 
   const poolTokenAmount = poolTokenRawAmount * 10 ** poolTokenDecimals
 

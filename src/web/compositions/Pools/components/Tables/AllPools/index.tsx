@@ -40,24 +40,15 @@ const COLUMNS: DataHeadColumn[] = [
 ]
 
 export const AllPoolsTable: React.FC<AllPoolsProps> = (props) => {
-  const {
-    farmingTicketsMap,
-    searchValue,
-    dexTokensPricesMap,
-    pools,
-    feesByPool,
-    tradingVolumes,
-    farms,
-  } = props
+  const { searchValue, dexTokensPricesMap, pools, feesByPool, tradingVolumes } =
+    props
 
   return (
     <PoolsTable
       addColumns={COLUMNS}
       pools={pools.filter((pool) => !HIDE_POOLS.includes(pool.poolTokenMint))}
-      farmingTicketsMap={farmingTicketsMap}
       tokenPrices={dexTokensPricesMap}
       searchValue={searchValue}
-      farms={farms}
       prepareCell={(pool) =>
         prepareCell(pool, dexTokensPricesMap, feesByPool, tradingVolumes)
       }

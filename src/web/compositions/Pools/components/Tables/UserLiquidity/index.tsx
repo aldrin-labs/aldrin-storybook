@@ -4,6 +4,7 @@ import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { DataHeadColumn, NoDataBlock } from '@sb/components/DataTable'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
+import { useFarmersAccountInfo, useFarmsInfo } from '../../../../../dexUtils/farming'
 import { PoolsTable } from '../PoolsTable'
 import { LiquidityTableProps } from './types'
 import { prepareCell } from './utils/prepareCell'
@@ -24,8 +25,10 @@ export const UserLiquidityTable: React.FC<LiquidityTableProps> = (props) => {
     pools,
     feesByPoolForUser,
     allTokensData,
-    farmingTicketsMap,
   } = props
+
+  const { data: farms } = useFarmsInfo()
+  const { data: farmers } = useFarmersAccountInfo()
 
   const tokensMap = useTokenInfos()
   return (
@@ -34,15 +37,15 @@ export const UserLiquidityTable: React.FC<LiquidityTableProps> = (props) => {
       pools={pools}
       tokenPrices={dexTokensPricesMap}
       searchValue={searchValue}
-      farmingTicketsMap={farmingTicketsMap}
       prepareCell={(pool) =>
         prepareCell({
           pool,
           feesByPool: feesByPoolForUser,
           tokenPrices: dexTokensPricesMap,
           allTokensData,
-          farmingTicketsMap,
           tokensMap,
+          farms,
+          farmers,
         })
       }
       noDataText={
