@@ -2,7 +2,7 @@ import useMobileSize from '@webhooks/useMobileSize'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import Logo from '@sb/components/Logo/Logo'
+import Index from '@sb/components/Logo'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
@@ -33,7 +33,7 @@ export const Footer = () => {
     <FooterContainer data-testid="footer">
       {!isMobile && (
         <FooterLeft>
-          <Logo />
+          <Index />
           <Copyright>Aldrin.com 2021 - ∞</Copyright>
         </FooterLeft>
       )}

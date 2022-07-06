@@ -34,9 +34,9 @@ export const Title = styled.span`
 `
 
 const ConnectWalletPopup = ({
-                              onClose,
-                              open,
-                            }: {
+  onClose,
+  open,
+}: {
   onClose: () => void
   open: boolean
 }) => {

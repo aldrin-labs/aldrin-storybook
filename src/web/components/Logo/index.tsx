@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { LogoLink, LogoBlock } from './Logo.styles'
+import { LogoLink, LogoBlock } from './styles'
 
 const AldrinLogoIcon = () => (
   <svg
@@ -16,7 +16,7 @@ const AldrinLogoIcon = () => (
   </svg>
 )
 
-const Logo = ({ width }: { width?: number }) => {
+const Index = ({ width }: { width?: number }) => {
   return (
     <LogoBlock $width={width}>
       <LogoLink to="/">
@@ -26,4 +26,4 @@ const Logo = ({ width }: { width?: number }) => {
   )
 }
 
-export default Logo
+export default Index
