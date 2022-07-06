@@ -35,7 +35,7 @@ import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import { AppGridLayout, AppInnerContainer } from './App.styles'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
-import { Theme } from './themes'
+import { Theme, THEME_DARK } from "./themes"
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 // import Footer from '@sb/components/Footer'
 
@@ -89,7 +89,7 @@ const AppRaw = ({
 
   const [currentTheme, setCurrentTheme] = useState(theme)
   if (!theme) {
-    localStorage.setItem('theme', 'dark')
+    localStorage.setItem('theme', THEME_DARK)
   }
 
   const isChartPage = /chart/.test(currentPage)
@@ -98,7 +98,7 @@ const AppRaw = ({
 
   if (!themeMode) {
     themeMode = 'dark'
-    localStorage.setItem('themeMode', 'dark')
+    localStorage.setItem('themeMode', THEME_DARK)
   }
 
   const showFooter = false

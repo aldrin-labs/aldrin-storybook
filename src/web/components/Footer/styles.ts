@@ -1,9 +1,10 @@
 import { FONT_SIZES, BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
+import { THEME_DARK } from '@sb/compositions/App/themes'
+
 import { Button } from '../Button'
 import { Row } from '../Layout'
-import { THEME_DARK } from "@sb/compositions/App/themes"
 
 export const FooterContainer = styled.div`
   border-top-width: 1px;

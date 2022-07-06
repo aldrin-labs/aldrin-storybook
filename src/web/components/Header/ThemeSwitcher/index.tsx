@@ -1,17 +1,15 @@
 import React from 'react'
-import useSWR from 'swr'
 import { useTheme } from 'styled-components'
+import useSWR from 'swr'
 
 import SvgIcon from '@sb/components/SvgIcon'
+import { THEME_DARK, THEME_LIGHT } from '@sb/compositions/App/themes'
 
 import MoonActive from './images/moon_active.svg'
 import Moon from './images/moon.svg'
 import SunActive from './images/sun_active.svg'
 import Sun from './images/sun.svg'
 import { SwitcherContainer, SwitchControl } from './styles'
-
-const DARK_THEME = 'dark'
-const LIGHT_THEME = 'light'
 
 export const ThemeSwitcher = ({
   setCurrentTheme,
@@ -22,27 +20,27 @@ export const ThemeSwitcher = ({
   const { mutate } = useSWR('theme', () => localStorage.getItem('theme'))
 
   const handleChange = () => {
-    if (theme.name === DARK_THEME) {
-      setCurrentTheme(LIGHT_THEME)
-      localStorage.setItem('theme', LIGHT_THEME)
+    if (theme.name === THEME_DARK) {
+      setCurrentTheme(THEME_LIGHT)
+      localStorage.setItem('theme', THEME_LIGHT)
       mutate()
     } else {
-      setCurrentTheme(DARK_THEME)
-      localStorage.setItem('theme', DARK_THEME)
+      setCurrentTheme(THEME_DARK)
+      localStorage.setItem('theme', THEME_DARK)
       mutate()
     }
   }
 
   return (
     <SwitcherContainer>
-      <SwitchControl $active={theme.name === DARK_THEME} onClick={handleChange}>
-        <SvgIcon src={theme.name === DARK_THEME ? MoonActive : Moon} />
+      <SwitchControl $active={theme.name === THEME_DARK} onClick={handleChange}>
+        <SvgIcon src={theme.name === THEME_DARK ? MoonActive : Moon} />
       </SwitchControl>
       <SwitchControl
-        $active={theme.name === LIGHT_THEME}
+        $active={theme.name === THEME_LIGHT}
         onClick={handleChange}
       >
-        <SvgIcon src={theme.name === LIGHT_THEME ? SunActive : Sun} />
+        <SvgIcon src={theme.name === THEME_LIGHT ? SunActive : Sun} />
       </SwitchControl>
     </SwitcherContainer>
   )

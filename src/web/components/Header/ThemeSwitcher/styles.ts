@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { THEME_DARK } from "@sb/compositions/App/themes"
+
+import { THEME_DARK } from '@sb/compositions/App/themes'
 
 export const SwitcherContainer = styled.div`
   display: flex;
