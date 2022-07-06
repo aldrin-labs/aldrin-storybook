@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-// TODO: Refactor popup
 
+import Logo from '@sb/components/Logo/Logo'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
 
 import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
@@ -21,13 +21,10 @@ import {
   RequestListingIcon,
   CreatePoolIcon,
   MoreIcon,
-  AldrinLogo,
 } from './MenuIcons'
 import { RinBalance } from './RinBalance'
 import {
   HeaderWrap,
-  LogoLink,
-  LogoBlock,
   WalletContainer,
   NavLink,
   MainLinksWrap,
@@ -38,13 +35,7 @@ import { ThemeSwitcher } from './ThemeSwitcher'
 import { WalletBlock } from './WalletBlock'
 
 export const Header = React.memo(
-  ({
-    currentTheme,
-    setCurrentTheme,
-  }: {
-    currentTheme: string
-    setCurrentTheme: (a: string) => void
-  }) => {
+  ({ setCurrentTheme }: { setCurrentTheme: (a: string) => void }) => {
     const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
     const [listingPopupOpen, setListingPopupOpen] = useState(false)
 
@@ -52,11 +43,7 @@ export const Header = React.memo(
       <Body>
         <Wrap>
           <HeaderWrap>
-            <LogoBlock>
-              <LogoLink to="/">
-                <AldrinLogo />
-              </LogoLink>
-            </LogoBlock>
+            <Logo />
 
             <RinBalance />
 
@@ -178,10 +165,9 @@ export const Header = React.memo(
                 </DropDown>
               </MainLinksBlock>
             </MainLinksWrap>
-            <ThemeSwitcher
-              currentTheme={currentTheme}
-              setCurrentTheme={setCurrentTheme}
-            />
+
+            <ThemeSwitcher setCurrentTheme={setCurrentTheme} />
+
             <WalletContainer>
               <WalletBlock />
             </WalletContainer>

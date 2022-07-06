@@ -5,16 +5,19 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
+import { restake } from '@sb/dexUtils/staking/actions'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
@@ -27,6 +30,7 @@ import {
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
 import { getRINCirculationSupply } from '@core/api'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
@@ -48,10 +52,6 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import ClockIcon from '@icons/clock.svg'
 
-import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
-import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
-import { restake } from '../../../dexUtils/staking/actions'
-import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
@@ -101,7 +101,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
     walletPublicKey: wallet.publicKey,
     onlyUserTickets: true,
-    // walletPublicKey,
   })
 
   const { data: calcAccounts, mutate: reloadCalcAccounts } =
@@ -457,6 +456,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </GreenBlock>
         </Cell>
+
         <Cell colMd={6} colXl={3} col={12}>
           <Block inner>
             <BlockContentStretched>
@@ -509,6 +509,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </Block>
         </Cell>
+
         <Cell colMd={6} colXl={3} col={12}>
           <Block inner>
             <BlockContentStretched>

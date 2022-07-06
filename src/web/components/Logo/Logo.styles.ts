@@ -1,8 +1,24 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-export const StyledLogo = styled.img`
-  z-index: 1;
-  position: relative;
-  width: 100%;
-  height: 100%;
+type LogoBlockProps = {
+  $width?: number
+}
+
+export const LogoBlock = styled.div<LogoBlockProps>`
+  display: flex;
+  align-items: center;
+
+  svg {
+    width: ${(props) => props.$width || '96px'};
+    height: auto;
+
+    path {
+      fill: ${(props) => props.theme.colors.logo};
+    }
+  }
+`
+
+export const LogoLink = styled(Link)`
+  display: block;
 `

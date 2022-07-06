@@ -79,7 +79,6 @@ const DetermineMobileWindowHeight = () => {
 
 const AppRaw = ({
   children,
-  getViewModeQuery,
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useLocalStorageState(
@@ -92,11 +91,6 @@ const AppRaw = ({
   if (!theme) {
     localStorage.setItem('theme', 'dark')
   }
-  // const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
-  //   useLocalStorageState('isRebrandingPopupOpen', true)
-  // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
-  //   true
-  // )
 
   const isChartPage = /chart/.test(currentPage)
 
@@ -106,15 +100,10 @@ const AppRaw = ({
     themeMode = 'dark'
     localStorage.setItem('themeMode', 'dark')
   }
-  // const chartPageView =
-  //   getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
-  // const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
-  // TODO: Check this variable
-  // const pageIsRegistration = currentPage.includes('regist')
   const isRewards = currentPage.includes('rewards')
 
   const searchParamsObject = getSearchParamsObject({ search })
@@ -149,10 +138,7 @@ const AppRaw = ({
                         isChartPage={isChartPage}
                       >
                         <SolanaNetworkDegradedPerformanceBanner />
-                        <Header
-                          currentTheme={currentTheme}
-                          setCurrentTheme={setCurrentTheme}
-                        />
+                        <Header setCurrentTheme={setCurrentTheme} />
                         <AppInnerContainer
                           showFooter={showFooter}
                           isChartPage={isChartPage}

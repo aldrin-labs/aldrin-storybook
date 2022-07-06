@@ -11,16 +11,13 @@ import {
   WalletSelectorRow,
   CloseIcon,
   WalletIcon,
-  WalletRight,
-  WalletTitle,
-  WalletSubtitle,
-  WalletsList,
 } from './ConnectWalletPopup.styles'
 
 export const StyledPaper = styled(Paper)`
   height: auto;
+  padding: 2rem;
   width: 45rem;
-  box-shadow: 0 0 0.8rem 0 rgba(0, 0, 0, 0.45);
+  box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
   background: ${(props) => props.theme.colors.gray6};
   border-radius: 1.6rem;
 `
@@ -37,9 +34,9 @@ export const Title = styled.span`
 `
 
 const ConnectWalletPopup = ({
-  onClose,
-  open,
-}: {
+                              onClose,
+                              open,
+                            }: {
   onClose: () => void
   open: boolean
 }) => {
@@ -53,37 +50,52 @@ const ConnectWalletPopup = ({
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer
-        style={{ padding: '3rem', borderBottom: '1px solid #000' }}
-        justify="space-between"
-      >
-        <Title>Connect Wallet</Title>
-        <CloseIcon onClick={onClose}>Esc</CloseIcon>
+      <RowContainer style={{ marginBottom: '2rem' }} justify="space-between">
+        <Title>Select Wallet</Title>
+        <CloseIcon onClick={() => onClose()}>
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 19 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+              stroke="#F5F5FB"
+              strokeWidth="2"
+            />
+          </svg>
+        </CloseIcon>
       </RowContainer>
-
-      <WalletsList>
+      <RowContainer direction="column">
         {WALLET_PROVIDERS.map((provider) => {
           return (
             <WalletSelectorRow
-              key={`wallet_${provider.providerName}`}
+              key={`wallet_${provider.name}`}
               onClick={async () => {
                 await setProvider(provider.url)
                 await setAutoConnect(true)
                 await onClose()
               }}
             >
-              <WalletIcon>
-                <SvgIcon src={provider.icon} width="3rem" height="100%" />
-              </WalletIcon>
+              {provider.name.includes('Wallet™') ||
+              provider.name.includes('MathWallet') ||
+              provider.name.includes('Ledger') ? (
+                <WalletIcon
+                  radius={provider.name.includes('Ledger') ? '10px' : '50%'}
+                >
+                  <SvgIcon src={provider.icon} width="3rem" height="100%" />
+                </WalletIcon>
+              ) : (
+                <SvgIcon src={provider.icon} width="4rem" height="100%" />
+              )}
 
-              <WalletRight>
-                <WalletTitle>{provider.name}</WalletTitle>
-                <WalletSubtitle>{provider.fullName}</WalletSubtitle>
-              </WalletRight>
+              {provider.name}
             </WalletSelectorRow>
           )
         })}
-      </WalletsList>
+      </RowContainer>
     </DialogWrapper>
   )
 }

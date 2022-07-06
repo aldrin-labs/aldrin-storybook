@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { THEME_DARK } from '@sb/compositions/App/themes'
+
 export const RinBalanceContainer = styled.div`
   display: flex;
   align-items: center;
@@ -20,4 +22,8 @@ export const RinBalanceLabel = styled.div`
   margin-left: 0.25em;
   font-weight: 600;
   line-height: 1em;
+  color: ${(props) =>
+    props.theme.name === THEME_DARK
+      ? props.theme.colors.gray0
+      : props.theme.colors.gray1};
 `
