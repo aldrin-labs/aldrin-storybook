@@ -69,7 +69,7 @@ export const getUserPoolsFromAll = (params: GetUserPoolsParams) => {
 
     return (
       poolTokenAmount > MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ||
-      farmer?.account.totalStaked.gtn(0) ||
+      (farmer?.account.totalStaked || 0) > 0 ||
       farmer?.account.harvests.find((h) => h.tokens.amount.gtn(0)) ||
       vesting?.outstanding.gtn(0) ||
       // !!calcAmounts?.find((ca) => ca.gtn(0)) ||

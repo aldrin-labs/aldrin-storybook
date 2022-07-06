@@ -20,6 +20,7 @@ import { useConnection } from '../../../../dexUtils/connection'
 import { useFarm, useFarmer } from '../../../../dexUtils/farming'
 import { PoolInfo } from '../../index.types'
 import { getTokenDataByMint } from '../../utils'
+import { UserFarmingRewards } from '../Tables/UserFarmingRewards'
 import { ExtendFarmingModal } from './ExtendFarmingModal'
 import {
   ExtendFarmingButton,
@@ -34,7 +35,6 @@ import {
   NoFarmingBlock,
 } from './styles'
 import { UserFarmingBlockProps } from './types'
-import { UserFarmingRewards } from '../Tables/UserFarmingRewards'
 
 const waitForPoolsUpdate = async (
   refetchPools: () => Promise<ApolloQueryResult<{ getPoolsInfo: PoolInfo[] }>>,
@@ -95,7 +95,7 @@ export const UserFarmingBlock: React.FC<UserFarmingBlockProps> = (props) => {
     amount <= MIN_POOL_TOKEN_AMOUNT_TO_SHOW_LIQUIDITY ? 0 : amount
   // const ticketsForPool = farmingTickets.get(pool.swapToken) || []
 
-  const stakedAmount = parseFloat(farmer?.account.totalStaked.toString() || '0') // TODO
+  const stakedAmount = farmer?.account.totalStaked
   const vestedAmount = parseFloat(
     farmer?.account.vested.amount.toString() || '0'
   ) // TODO
