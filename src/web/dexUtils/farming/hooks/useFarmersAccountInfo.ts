@@ -1,6 +1,10 @@
 import useSWR from 'swr'
 
-import { walletAdapterToWallet, loadFarmerAccountsData } from '@core/solana'
+import {
+  walletAdapterToWallet,
+  loadFarmerAccountsData,
+  FarmerAccounts,
+} from '@core/solana'
 
 import { toMap } from '../../../utils'
 import { useConnection } from '../../connection'
@@ -17,7 +21,10 @@ export const useFarmersAccountInfo = () => {
       connection,
       wallet: walletWithPk,
     })
-    return toMap(accountInfo, (acc) => acc.account.farm.toString())
+
+    return toMap(accountInfo, (acc: FarmerAccounts) =>
+      acc.account.farm.toString()
+    )
   }
 
   return useSWR(`farmers-account-info-${wallet.publicKey?.toString()}`, fetcher) // .data

@@ -19,7 +19,6 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
-import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import {
   useUserTokenAccounts,
   useAssociatedTokenAccount,
@@ -81,42 +80,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const connection = useMultiEndpointConnection()
   const { data: farmersInfo } = useFarmersAccountInfo()
 
-  const farmer = farmersInfo?.get(farm?.publicKey.toString())
-
-  const [userFarmingTickets, refreshUserFarmingTickets] = useAllStakingTickets({
-    wallet,
-    connection,
-    walletPublicKey: wallet.publicKey,
-    onlyUserTickets: true,
-    // walletPublicKey,
-  })
+  const farmer = farmersInfo?.get(farm?.publicKey.toString() || '')
 
   const totalStaked = farmer?.totalStaked || '0'
 
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
   const refreshAll = async () => {
-    await Promise.all([
-      refreshTotalStaked(),
-      refreshUserFarmingTickets(),
-      refreshAllTokenData(),
-    ])
+    await Promise.all([refreshTotalStaked(), refreshAllTokenData()])
   }
 
   const { buyBackAmountWithoutDecimals } = stakingPool.apr
-
-  // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
-  // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
-
-  const lastFarmingTicket = userFarmingTickets.sort(
-    (ticketA, ticketB) => +ticketB.startTime - +ticketA.startTime
-  )[0]
-
-  const unlockAvailableDate = lastFarmingTicket
-    ? +lastFarmingTicket.startTime + +currentFarmingState?.periodLength
-    : 0
-
-  const isUnstakeLocked = unlockAvailableDate > Date.now() / 1000
 
   useInterval(() => {
     refreshAll()
@@ -226,10 +200,17 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ? rinValue
     : new Array(rinValue.length).fill('∗').join('')
 
-  const stakedInUsd = stripByAmountAndFormat(totalStaked * tokenPrice || 0, 2)
+  const stakedInUsd = stripByAmountAndFormat(+totalStaked * tokenPrice || 0, 2)
   const totalStakedUsdValue = isBalancesShowing
     ? stakedInUsd
     : new Array(stakedInUsd.length).fill('∗').join('')
+
+  const isUnstakeLocked =
+    parseFloat(farmer?.account.staked.amount.toString() || '0') === 0
+
+  const availableForUnstake = parseFloat(
+    farmer?.account.staked.amount.toString() || '0'
+  )
 
   return (
     <>
@@ -311,8 +292,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
               />{' '}
               <UnstakingForm
                 isUnstakeLocked={isUnstakeLocked}
-                unlockAvailableDate={unlockAvailableDate}
-                totalStaked={totalStaked}
+                totalStaked={+availableForUnstake}
                 end={end}
                 loading={loading}
                 mint={currentFarmingState.farmingTokenMint}
