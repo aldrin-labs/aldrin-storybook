@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 
 import { Page, WideContent } from '@sb/components/Layout'
 
+import { Switcher } from './components/TablesSwitcher'
 import { RootRow } from './index.styles'
 
 export const PoolsComponent: React.FC = () => {
@@ -15,7 +16,9 @@ export const PoolsComponent: React.FC = () => {
   return (
     <Page>
       <WideContent>
-        <RootRow />
+        <RootRow>
+          <Switcher />
+        </RootRow>
       </WideContent>
     </Page>
   )
