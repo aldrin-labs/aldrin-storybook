@@ -12,8 +12,8 @@ import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import {
   startFarmingV2,
   stopFarmingV2,
-  useFarmersAccountInfo,
-  useFarmsInfo,
+  useFarm,
+  useFarmer,
 } from '@sb/dexUtils/farming'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
@@ -59,8 +59,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     treasuryDailyRewards,
   } = props
 
-  const { data: farms } = useFarmsInfo()
-  const farm = farms?.get(FARMING_V2_TEST_TOKEN)
+  const farm = useFarm(FARMING_V2_TEST_TOKEN)
 
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
     publicKey: farm ? farm.stakeVault : undefined,
@@ -79,9 +78,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
-  const { data: farmersInfo } = useFarmersAccountInfo()
 
-  const farmer = farmersInfo?.get(farm?.publicKey.toString())
+  const farmer = useFarmer(farm?.publicKey.toString())
 
   const [userFarmingTickets, refreshUserFarmingTickets] = useAllStakingTickets({
     wallet,
@@ -91,7 +89,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     // walletPublicKey,
   })
 
-  const totalStaked = farmer?.totalStaked || '0'
+  const totalStaked = farmer?.account.totalStaked || 0
 
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
@@ -131,8 +129,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         return false
       }
 
-      if (!farms) {
-        throw new Error('No farms')
+      if (!farm) {
+        throw new Error('No farm')
       }
 
       setLoading((prev) => ({ ...prev, stake: true }))
@@ -142,7 +140,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
         amount,
         farm,
         userTokens: allTokenData,
-        farmer,
+        farmer: farmer?.publicKey,
       })
 
       notify({
@@ -163,6 +161,10 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     if (!tokenData?.address) {
       notify({ message: 'Create RIN token account please.' })
       return false
+    }
+
+    if (!farm) {
+      throw new Error('No farm')
     }
 
     setLoading((prev) => ({ ...prev, unstake: true }))

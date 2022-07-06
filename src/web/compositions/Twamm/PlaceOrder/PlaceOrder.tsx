@@ -20,11 +20,10 @@ import { TokenAddressesPopup } from '@sb/compositions/Swap/components/TokenAddre
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { addOrder } from '@sb/dexUtils/twamm/addOrder'
 import { PairSettings } from '@sb/dexUtils/twamm/types'
-import { sleep } from '@sb/dexUtils/utils'
+import { RIN_MINT, sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { withRegionCheck } from '@sb/hoc'
 import { withPublicKey } from '@sb/hoc/withPublicKey'
@@ -37,7 +36,7 @@ import Arrows from '@icons/switchArrows.svg'
 // TODO: imports
 
 import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
-import { DEFAULT_FARMING_TICKET_END_TIME } from '../../../dexUtils/common/config'
+import { useFarm, useFarmer } from '../../../dexUtils/farming'
 import { Row, RowContainer } from '../../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../../Pools/index.styles'
 import { getTokenDataByMint } from '../../Pools/utils'
@@ -162,26 +161,19 @@ const PlaceOrder = ({
 
   const isTokenABalanceInsufficient = baseAmount > +maxBaseAmount
 
-  const needEnterAmount = baseAmount == 0 || quoteAmount == 0
+  const needEnterAmount = baseAmount === 0 || quoteAmount === 0
 
-  const [tickets] = useAllStakingTickets({
-    wallet,
-    connection,
-    walletPublicKey: wallet.publicKey,
-    onlyUserTickets: true,
-  })
+  const farm = useFarm(RIN_MINT)
+  const farmer = useFarmer(farm?.publicKey.toString())
 
-  const hasActiveTickets =
-    tickets
-      .filter((t) => t.endTime === DEFAULT_FARMING_TICKET_END_TIME)
-      .reduce((acc, t) => acc + t.tokensFrozen, 0) >= MIN_RIN
+  const hasActiveTickets = farmer?.account.totalStaked > 0
 
   const isButtonDisabled =
     !hasActiveTickets ||
     isTokenABalanceInsufficient ||
-    baseAmount == 0 ||
-    quoteAmount == 0 ||
-    orderLength == 0 ||
+    baseAmount === 0 ||
+    quoteAmount === 0 ||
+    orderLength === 0 ||
     isOrderInProgress
 
   const setValueBasedOnRange = (value: number | string, max: number) => {
