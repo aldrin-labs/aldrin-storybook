@@ -1,4 +1,4 @@
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, Transaction } from '@solana/web3.js'
 import { ApolloQueryResult } from 'apollo-client'
 import BN from 'bn.js'
 import { FormikProvider, useFormik } from 'formik'
@@ -38,10 +38,11 @@ import {
   CURVE,
 } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
-import { DAY, HOUR } from '@core/utils/dateUtils'
+import { DAY } from '@core/utils/dateUtils'
 
 import CrownIcon from '@icons/crownIcon.svg'
 
+import { walletAdapterToWallet } from '../../../../../dexUtils/common'
 import { PoolInfo } from '../../../index.types'
 import { FarmingForm, YES_NO } from './FarmingForm'
 import { PoolConfirmationData } from './PoolConfirmationData'
@@ -192,50 +193,68 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
       vestingPeriod: '7',
     },
   })
+
+  const proceedTransaction = async (transaction: Transaction) => {
+    const result = await sendSignedSignleTransaction({
+      transaction,
+      connection,
+    })
+    console.log('Transaction result:', result)
+    if (result.status !== SendTransactionStatus.CONFIRMED) {
+      setTransactionError(
+        result.details?.includes(SendTransactionDetails.TIMEOUT)
+          ? POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT
+          : POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT,
+        result.status,
+        result.transactionId
+      )
+      return false
+    }
+    return true
+  }
+
   const form = useFormik<CreatePoolFormType>({
     validateOnMount: true,
     initialValues,
     onSubmit: async (values) => {
-      if (!values.baseToken) {
+      const { baseToken } = values
+      if (!baseToken) {
         throw new Error('No base token selected!')
       }
-      if (!values.baseToken.account) {
-        throw new Error('No base token selected!')
-      }
-      if (!values.quoteToken) {
+
+      const { quoteToken } = values
+
+      if (!quoteToken) {
         throw new Error('No quote token selected!')
       }
-      if (!values.quoteToken.account) {
-        throw new Error('No quote token selected!')
-      }
+      const w = walletAdapterToWallet(wallet)
       setProcessing(true)
       setError(undefined)
       setProcessingStatus('processing')
       setProcessingStep(0)
 
       const selectedBaseAccount = userTokens.find(
-        (ut) => ut.address === values.baseToken.account
+        (ut) => ut.address === baseToken.account
       )
       const selectedQuoteAccount = userTokens.find(
-        (ut) => ut.address === values.quoteToken.account
-      )
-      const farmingRewardAccount = userTokens.find(
-        (ut) => ut.address === values.farming.token.account
+        (ut) => ut.address === quoteToken.account
       )
 
-      const tokensPerPeriod =
-        (parseFloat(values.farming.tokenAmount) * HOUR) /
-        DAY /
-        parseFloat(values.farming.farmingPeriod)
+      if (!baseToken.account) {
+        throw new Error('No base token account selected!')
+      }
 
-      const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
+      if (!quoteToken.account) {
+        throw new Error('No quote token account selected!')
+      }
+
       try {
         const { transactions: generatedTransactions, pool } =
           await buildCreatePoolTransactions({
-            wallet,
+            wallet: w,
             connection,
-            baseTokenMint: new PublicKey(values.baseToken.mint),
-            quoteTokenMint: new PublicKey(values.quoteToken.mint),
+            baseTokenMint: new PublicKey(baseToken.mint),
+            quoteTokenMint: new PublicKey(quoteToken.mint),
             firstDeposit: {
               baseTokenAmount: new BN(
                 (
@@ -243,14 +262,14 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                   10 ** (selectedBaseAccount?.decimals || 0)
                 ).toFixed(0)
               ),
-              userBaseTokenAccount: new PublicKey(values.baseToken.account),
+              userBaseTokenAccount: new PublicKey(baseToken.account),
               quoteTokenAmount: new BN(
                 (
                   parseFloat(values.firstDeposit.quoteTokenAmount) *
                   10 ** (selectedQuoteAccount?.decimals || 0)
                 ).toFixed(0)
               ),
-              userQuoteTokenAccount: new PublicKey(values.quoteToken.account),
+              userQuoteTokenAccount: new PublicKey(quoteToken.account),
               vestingPeriod: values.lockInitialLiquidity
                 ? new BN(values.initialLiquidityLockPeriod).muln(DAY)
                 : undefined,
@@ -258,26 +277,10 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
             farming:
               values.farmingEnabled && values.farming.token.account
                 ? {
-                    farmingTokenMint: new PublicKey(values.farming.token.mint),
-                    farmingTokenAccount: new PublicKey(
-                      values.farming.token.account
-                    ),
-                    tokenAmount: new BN(
-                      (
-                        parseFloat(values.farming.tokenAmount) *
-                        tokensMultiplier
-                      ).toFixed(0)
-                    ),
-                    periodLength: new BN(HOUR),
-                    tokensPerPeriod: new BN(
-                      (tokensPerPeriod * tokensMultiplier).toFixed(0)
-                    ),
-                    noWithdrawPeriodSeconds: new BN(0),
-                    vestingPeriodSeconds: values.farming.vestingEnabled
-                      ? new BN(
-                          parseFloat(values.farming.vestingPeriod || '0') * DAY
-                        )
-                      : new BN(0),
+                    harvestMint: new PublicKey(values.farming.token.mint),
+                    userTokens,
+                    amount: parseFloat(values.farming.tokenAmount),
+                    duration: parseFloat(values.farming.farmingPeriod) * DAY,
                   }
                 : undefined,
             curveType: values.stableCurve ? CURVE.STABLE : CURVE.PRODUCT,
@@ -287,96 +290,36 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
         setProcessingStep(1)
         console.log('Create accounts...')
-        const createAccountsTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.createAccounts,
-          connection,
-        })
-        console.log('createAccountsTxId: ', createAccountsTxId)
-        if (createAccountsTxId.status !== SendTransactionStatus.CONFIRMED) {
-          setTransactionError(
-            createAccountsTxId.details?.includes(SendTransactionDetails.TIMEOUT)
-              ? POOL_ERRORS.ACCOUNTS_CREATION_TIMEOUT
-              : POOL_ERRORS.ACCOUNTS_CREATION_FAILED,
-            createAccountsTxId.status,
-            createAccountsTxId.transactionId
-          )
+
+        if (!(await proceedTransaction(generatedTransactions.createAccounts))) {
           return
         }
 
         setProcessingStep(2)
         console.log('Set authorities...')
-        const setAuthoritiesTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.setAuthorities,
-          connection,
-        })
-        if (setAuthoritiesTxId.status !== SendTransactionStatus.CONFIRMED) {
-          setTransactionError(
-            setAuthoritiesTxId.details?.includes(SendTransactionDetails.TIMEOUT)
-              ? POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT
-              : POOL_ERRORS.SETTING_AUTHORITIES_TIMEOUT,
-            setAuthoritiesTxId.status,
-            setAuthoritiesTxId.transactionId
-          )
+
+        if (!(await proceedTransaction(generatedTransactions.setAuthorities))) {
           return
         }
-        console.log('setAuthoritiesTxId: ', setAuthoritiesTxId.status)
 
         console.log('Initialize pool...')
         setProcessingStep(3)
-        const initPoolTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.createPool,
-          connection,
-        })
-        if (initPoolTxId.status !== SendTransactionStatus.CONFIRMED) {
-          setTransactionError(
-            initPoolTxId.details?.includes(SendTransactionDetails.TIMEOUT)
-              ? POOL_ERRORS.POOL_CREATION_TIMEOUT
-              : POOL_ERRORS.POOL_CREATION_FAILED,
-            initPoolTxId.status,
-            initPoolTxId.transactionId
-          )
+        if (!(await proceedTransaction(generatedTransactions.createPool))) {
           return
         }
-        console.log('initPoolTxId: ', initPoolTxId.status)
 
         console.log('First deposit...')
         setProcessingStep(4)
-        const firstDepositTxId = await sendSignedSignleTransaction({
-          transaction: generatedTransactions.firstDeposit,
-          connection,
-        })
-        if (firstDepositTxId.status !== SendTransactionStatus.CONFIRMED) {
-          setTransactionError(
-            firstDepositTxId.details?.includes(SendTransactionDetails.TIMEOUT)
-              ? POOL_ERRORS.DEPOSIT_TIMEOUT
-              : POOL_ERRORS.DEPOSIT_FAILED,
-            firstDepositTxId.status,
-            firstDepositTxId.transactionId
-          )
+        if (!(await proceedTransaction(generatedTransactions.firstDeposit))) {
           return
         }
-
-        console.log('firstDepositTxId: ', firstDepositTxId.status)
 
         if (generatedTransactions.farming) {
           console.log('Initialize farming...')
           setProcessingStep(5)
-          const farmingTxId = await sendSignedSignleTransaction({
-            transaction: generatedTransactions.farming,
-            connection,
-          })
-          if (farmingTxId.status !== SendTransactionStatus.CONFIRMED) {
-            setTransactionError(
-              farmingTxId.details?.includes(SendTransactionDetails.TIMEOUT)
-                ? POOL_ERRORS.FARMING_CREATION_TIMEOUT
-                : POOL_ERRORS.FARMING_CREATION_FAILED,
-              farmingTxId.status,
-              farmingTxId.transactionId
-            )
+          if (!(await proceedTransaction(generatedTransactions.farming))) {
             return
           }
-          await sleep(1000)
-          console.log('farmingTxId: ', farmingTxId.status)
         }
 
         setProcessingStep(6)
@@ -469,9 +412,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   )
   const selectedQuoteAccount = userTokens.find(
     (ut) => ut.address === values.quoteToken?.account
-  )
-  const farmingRewardAccount = userTokens.find(
-    (ut) => ut.address === values.farming.token?.account
   )
 
   const isLastStep = step === stepsSize
