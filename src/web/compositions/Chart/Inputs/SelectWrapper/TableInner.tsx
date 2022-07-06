@@ -43,6 +43,7 @@ export const TableInner = ({
             }}
             rowClassName="pairSelectorRow"
             rowStyle={{
+              overflow: 'visible',
               outline: 'none',
               cursor: 'pointer',
               fontSize: '2rem',
