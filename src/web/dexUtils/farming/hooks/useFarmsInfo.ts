@@ -15,7 +15,6 @@ export const useFarmsInfo = () => {
       connection,
       wallet,
     })
-
     return toMap(farms, (farm) => farm.stakeMint.toString())
   }
 

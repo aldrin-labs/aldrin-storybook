@@ -20,10 +20,11 @@ interface StakingFormProps {
   tokenData: TokenInfo | undefined
   loading: { stake: boolean; unstake: boolean }
   start: (amount: number) => any
+  tokenPrice: number
 }
 
 export const StakingForm: React.FC<StakingFormProps> = (props) => {
-  const { tokenData, loading, start } = props
+  const { tokenData, loading, start, tokenPrice } = props
 
   const form = useFormik({
     // validateOnMount: true,
@@ -53,12 +54,14 @@ export const StakingForm: React.FC<StakingFormProps> = (props) => {
     },
   })
 
+  const usdAmountValue = +form.values.amount * tokenPrice
+
   return (
     <FormWrap onSubmit={form.handleSubmit}>
       <FormItemFull>
         <InputWrapper>
           <AmountInput
-            usdValue={1}
+            usdValue={usdAmountValue}
             data-testid="rin-staking-amount-field"
             label="Stake"
             placeholder="0"

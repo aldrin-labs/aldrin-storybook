@@ -35,4 +35,5 @@ export interface StakingFormProps {
   isUnstakeLocked: boolean
   unlockAvailableDate: number
   mint: string
+  tokenPrice: number
 }

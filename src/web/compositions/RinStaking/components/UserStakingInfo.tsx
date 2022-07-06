@@ -7,7 +7,6 @@ import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { InlineText } from '@sb/components/Typography'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { NumberWithLabel } from '@sb/compositions/Staking/components/NumberWithLabel/NumberWithLabel'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import {
@@ -21,8 +20,6 @@ import { notify } from '@sb/dexUtils/notifications'
 import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
-import { useStakingCalcAccounts } from '@sb/dexUtils/staking/useCalcAccounts'
-import { useStakingSnapshotQueues } from '@sb/dexUtils/staking/useStakingSnapshotQueues'
 import {
   useUserTokenAccounts,
   useAssociatedTokenAccount,
@@ -31,12 +28,7 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import {
-  getAvailableToClaimFarmingTokens,
-  addFarmingRewardsToTickets,
-  getSnapshotQueueWithAMMFees,
-  FARMING_V2_TEST_TOKEN,
-} from '@core/solana'
+import { FARMING_V2_TEST_TOKEN } from '@core/solana'
 import {
   stripByAmount,
   stripByAmountAndFormat,
@@ -51,6 +43,7 @@ import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import InfoIcon from './assets/info.svg'
 import { StakingForm } from './StakingForm'
+import { StretchedRow } from './styles'
 import { StakingInfoProps } from './types'
 import { UnstakingForm } from './UnstakingForm'
 import {
@@ -98,16 +91,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     // walletPublicKey,
   })
 
-  const { data: calcAccounts, mutate: reloadCalcAccounts } =
-    useStakingCalcAccounts()
-
-  const [allStakingSnapshotQueues, refreshAllStakingSnapshotQueues] =
-    useStakingSnapshotQueues({
-      wallet,
-      connection,
-    })
-
-  const totalStaked = farmer?.account.vested.amount.toString() || '0'
+  const totalStaked = farmer?.totalStaked || '0'
 
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
 
@@ -115,31 +99,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     await Promise.all([
       refreshTotalStaked(),
       refreshUserFarmingTickets(),
-      refreshAllStakingSnapshotQueues(),
       refreshAllTokenData(),
-      reloadCalcAccounts(),
     ])
   }
 
   const { buyBackAmountWithoutDecimals } = stakingPool.apr
-
-  const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
-    farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
-    buyBackAmount: buyBackAmountWithoutDecimals,
-    snapshotQueues: allStakingSnapshotQueues,
-  })
-
-  const estimateRewardsTickets = addFarmingRewardsToTickets({
-    farmingTickets: userFarmingTickets,
-    pools: [stakingPool],
-    snapshotQueues: snapshotQueueWithAMMFees,
-  })
-
-  const estimatedRewards = getAvailableToClaimFarmingTokens(
-    estimateRewardsTickets,
-    calcAccounts,
-    currentFarmingState.farmingTokenMintDecimals
-  )
 
   // userFarmingTickets.forEach((ft) => console.log('ft: ', ft))
   // calcAccounts.forEach((ca) => console.log('ca: ', ca.farmingState, ca.tokenAmount.toString()))
@@ -241,17 +205,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
 
-  // const formattedBuyBackAPR =
-  //   Number.isFinite(buyBackAPR) && buyBackAPR > 0
-  //     ? stripByAmount(buyBackAPR, 2)
-  //     : '--'
-
-  const totalStakedPercentageToCircSupply =
-    (totalStakedRIN * 100) / RINCirculatingSupply
-
-  // const formattedTreasuryAPR = Number.isFinite(treasuryAPR)
-  //   ? stripByAmount(treasuryAPR, 2)
-  //   : '--'
+  const totalApr = buyBackAPR + treasuryAPR
 
   const formattedAPR =
     Number.isFinite(buyBackAPR) &&
@@ -259,14 +213,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     Number.isFinite(treasuryAPR)
       ? stripByAmount(totalApr, 2)
       : '--'
-
-  console.log({
-    buyBackAPR,
-    treasuryAPR,
-    buyBackAmountWithoutDecimals,
-    DAYS_TO_CHECK_BUY_BACK,
-    totalStakedRIN,
-  })
 
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`
@@ -285,101 +231,14 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     ? stakedInUsd
     : new Array(stakedInUsd.length).fill('∗').join('')
 
-  const strippedEstRewards = stripByAmountAndFormat(estimatedRewards || 0, 4)
-
-  const userEstRewards = isBalancesShowing
-    ? stripByAmountAndFormat(estimatedRewards, 4)
-    : new Array(strippedEstRewards.length).fill('∗').join('')
-
-  const strippedEstRewardsUSD = stripByAmountAndFormat(
-    estimatedRewards * tokenPrice || 0,
-    2
-  )
-
-  const userEstRewardsUSD = isBalancesShowing
-    ? strippedEstRewardsUSD
-    : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
-
   return (
     <>
-      <RowContainer justify="space-between">
+      <StretchedRow>
         <BlockTitle>Stake RIN</BlockTitle>
         <NumberWithLabel value={toNumber(formattedAPR)} label="APR" />
-      </RowContainer>
+      </StretchedRow>
       <Row style={{ height: 'auto' }}>
-        <Cell colMd={6} colXl={3} col={12}>
-          <GreenBlock>
-            <BlockContentStretched>
-              <FlexBlock alignItems="center" justifyContent="space-between">
-                <InlineText size="sm">Estimated Rewards</InlineText>
-                <DarkTooltip
-                  title={
-                    <p>
-                      Staking rewards are paid on the{' '}
-                      <strong> 27th of the every month</strong> based on RIN
-                      weekly buy-backs on 1/6th of AMM fees . Estimated rewards
-                      are updated <strong>weekly based on RIN buyback</strong>.
-                    </p>
-                  }
-                >
-                  <span>
-                    <SvgIcon src={InfoIcon} width="0.8em" />
-                  </span>
-                </DarkTooltip>
-              </FlexBlock>
-
-              <StretchedBlock>
-                <FlexBlock alignItems="flex-end">
-                  <InlineText size="lg" weight={700} color="green7">
-                    {formattedAPR}%{' '}
-                    <InlineText
-                      weight={400}
-                      size="es"
-                      style={{ color: 'rgba(38, 159, 19, 50%)' }}
-                    >
-                      APR
-                    </InlineText>
-                  </InlineText>
-                </FlexBlock>
-                <FlexBlock alignItems="flex-end">
-                  <ShareButton
-                    iconFirst
-                    text={shareText}
-                    buttonStyle={{
-                      minWidth: 'auto',
-                      border: 'none',
-                      fontSize: FONT_SIZES.sm,
-                      padding: '0',
-                    }}
-                  />
-                </FlexBlock>
-              </StretchedBlock>
-            </BlockContentStretched>
-          </GreenBlock>
-        </Cell>
-        <Cell colMd={6} colXl={3} col={12}>
-          <Block inner>
-            <BlockContentStretched>
-              <InlineText size="sm">Total staked </InlineText>{' '}
-              <BigNumber>
-                <InlineText>{stripToMillions(totalStakedRIN)} </InlineText>{' '}
-                <InlineText>RIN</InlineText>
-              </BigNumber>
-              <StretchedBlock align="flex-end">
-                <InlineText size="sm">
-                  <InlineText>$</InlineText>&nbsp;
-                  {stripToMillions(totalStakedUSD)}
-                </InlineText>{' '}
-                <InlineText margin="0" size="sm">
-                  {stripDigitPlaces(totalStakedPercentageToCircSupply, 0)}% of
-                  circulating supply
-                </InlineText>
-              </StretchedBlock>
-            </BlockContentStretched>
-          </Block>
-        </Cell>
-
-        <Cell colMd={6} colXl={3} col={12}>
+        <Cell colMd={12} colXl={6} col={12} colSm={12}>
           <Block inner>
             <BlockContentStretched>
               <FlexBlock justifyContent="space-between" alignItems="center">
@@ -407,7 +266,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </Block>
         </Cell>
-        <Cell colMd={12} colXl={6} col={12}>
+        <Cell colMd={12} colXl={6} col={12} colSm={12}>
           <Block inner>
             <BlockContentStretched>
               <FlexBlock alignItems="center" justifyContent="space-between">
@@ -416,8 +275,8 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                   title={
                     <>
                       <p>
-                        APR is calculated based on last RIN buyback which are
-                        weekly.
+                        Staking rewards are autocompounded to your total stake
+                        once per 10 minutes.
                       </p>
                     </>
                   }
@@ -428,13 +287,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 </DarkTooltip>
               </FlexBlock>
               <BigNumber>
-                <InlineText>{userEstRewards} </InlineText>{' '}
-                <InlineText>RIN</InlineText>
+                <InlineText>{0} </InlineText> <InlineText>RIN</InlineText>
               </BigNumber>
               <StretchedBlock align="flex-end">
                 <InlineText size="sm">
                   <InlineText>$</InlineText>&nbsp;
-                  {userEstRewardsUSD}
+                  {0}
                 </InlineText>{' '}
               </StretchedBlock>
             </BlockContentStretched>
@@ -449,6 +307,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 tokenData={tokenData}
                 start={start}
                 loading={loading}
+                tokenPrice={tokenPrice}
               />{' '}
               <UnstakingForm
                 isUnstakeLocked={isUnstakeLocked}
@@ -457,6 +316,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                 end={end}
                 loading={loading}
                 mint={currentFarmingState.farmingTokenMint}
+                tokenPrice={tokenPrice}
               />
             </Cell>
           </Row>
