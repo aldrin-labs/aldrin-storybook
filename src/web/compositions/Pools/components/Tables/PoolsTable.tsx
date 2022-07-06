@@ -4,7 +4,6 @@ import { useHistory } from 'react-router-dom'
 import { DataTable, NoDataBlock } from '@sb/components/DataTable'
 import { useFarmersAccountInfo, useFarmsInfo } from '@sb/dexUtils/farming'
 import { getTokenName, getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { useFarmingCalcAccounts } from '@sb/dexUtils/pools/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useVestings } from '@sb/dexUtils/vesting'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -30,8 +29,6 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
 
   const tokenMap = useTokenInfos()
   const [columns] = useState(mergeColumns(addColumns))
-
-  const { data: calcAccounts } = useFarmingCalcAccounts()
 
   const wallet = useWallet()
   const history = useHistory()
@@ -92,7 +89,7 @@ export const PoolsTable: React.FC<PoolsTableProps> = (props) => {
             farmers,
           })
         ),
-    [pools, tokenPrices, walletPk, calcAccounts, vestingsByMint, tokenMap]
+    [pools, tokenPrices, walletPk, vestingsByMint, tokenMap]
   )
 
   return (

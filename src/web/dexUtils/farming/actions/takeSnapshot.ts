@@ -1,8 +1,7 @@
 import { PublicKey } from '@solana/web3.js'
 
-import { AldrinConnection } from '@core/solana'
+import { AldrinConnection, ProgramsMultiton } from '@core/solana'
 
-import { ProgramsMultiton } from '../../ProgramsMultiton'
 import { WalletAdapter } from '../../types'
 
 export const takeSnapshots = async ({

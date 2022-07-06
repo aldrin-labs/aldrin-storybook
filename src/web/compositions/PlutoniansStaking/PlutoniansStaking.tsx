@@ -25,7 +25,11 @@ import { InlineText, Text } from '@sb/components/Typography'
 import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { startSrinStaking } from '@sb/dexUtils/staking/actions'
+import {
+  startSrinStaking,
+  claimSrinNFTs,
+  endSrinStaking,
+} from '@sb/dexUtils/staking/actions'
 import {
   useSrinStakingAccounts,
   usePlutoniansStaking,
@@ -47,8 +51,6 @@ import InfoIcon from '@icons/infoIcon.svg'
 
 import { ConnectWalletWrapper } from '../../components/ConnectWalletWrapper'
 import { DarkTooltip } from '../../components/TooltipCustom/Tooltip'
-import { claimSrinNFTs } from '../../dexUtils/staking/actions/claimSrinNFTs'
-import { endSrinStaking } from '../../dexUtils/staking/actions/endSrinStaking'
 import { useSrinNftReceipts } from '../../dexUtils/staking/hooks/useSrinNftReceipts'
 import { InputWrapper } from '../RinStaking/styles'
 import { NumberWithLabel } from '../Staking/components/NumberWithLabel/NumberWithLabel'

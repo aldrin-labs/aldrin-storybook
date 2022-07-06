@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Loader } from '@sb/components/Loader/Loader'
 import { Modal, ModalTitleBlock } from '@sb/components/Modal'
-import { usePools } from '@sb/dexUtils/pools/hooks/userPools'
+import { usePools } from '@sb/dexUtils/pools/hooks/usePools'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useWallet } from '@sb/dexUtils/wallet'
 

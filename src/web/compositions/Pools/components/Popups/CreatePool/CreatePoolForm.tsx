@@ -22,7 +22,6 @@ import {
   getTokenNameByMintAddress,
 } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { CURVE } from '@sb/dexUtils/pools/types'
 import { sendSignedSignleTransaction } from '@sb/dexUtils/transactions'
 import { SendSignedTransactionResult } from '@sb/dexUtils/types'
 import {
@@ -36,6 +35,7 @@ import {
   SendTransactionStatus,
   buildCreatePoolTransactions,
   SendTransactionDetails,
+  CURVE,
 } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { DAY, HOUR } from '@core/utils/dateUtils'
