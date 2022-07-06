@@ -18,8 +18,9 @@ export const ENDPOINTS = [
   },
 ]
 
+// TODO: change back to frontend solana
 const connection = new MultiEndpointsConnection(
-  [{ url: 'https://frontend-solana-api-1.aldrin.com', weight: 20 }],
+  [{ url: 'https://solana-api.projectserum.com', weight: 20 }],
   'confirmed'
 )
 
