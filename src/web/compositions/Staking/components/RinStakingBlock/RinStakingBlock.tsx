@@ -6,8 +6,8 @@ import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { useFarmInfo } from '@sb/dexUtils/farming'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { useStakingPoolInfo } from '@sb/dexUtils/staking/hooks'
+import { useRinStakingApr } from '@sb/dexUtils/staking/hooks/useRinStakingApr'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
@@ -47,6 +47,14 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
     const [totalStakedRIN] = useAccountBalance({
       publicKey: farm ? farm.stakeVault : undefined,
     })
+    const rinHarvest = farm?.harvests.find(
+      (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
+    )
+
+    const { data: apr } = useRinStakingApr({
+      totalStaked: totalStakedRIN,
+      harvest: rinHarvest,
+    })
 
     const tokenName = getTokenNameByMintAddress(
       'E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp'
@@ -63,20 +71,6 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
       (totalStakedRIN / (poolInfo?.rinCirculationSupply || totalStakedRIN)) *
       100
 
-    const buyBackAPR =
-      ((poolInfo?.poolInfo.apr.buyBackAmountWithoutDecimals || 0) /
-        DAYS_TO_CHECK_BUY_BACK /
-        totalStakedRIN) *
-      365 *
-      100
-
-    console.log('buyBackAPR:', buyBackAPR, totalStakedRIN)
-
-    const treasuryAPR =
-      ((poolInfo?.treasuryDailyRewards || 0) / totalStakedRIN) * 365 * 100
-
-    const totalApr = buyBackAPR + treasuryAPR
-
     return (
       <StakingBlock>
         <LogoWrap>
@@ -87,7 +81,7 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
         <BlockContent>
           <RowContainer justify="space-between">
             <BlockTitle>Stake RIN</BlockTitle>
-            <NumberWithLabel value={totalApr} label="APR" />
+            <NumberWithLabel value={apr || 0} label="APR" />
           </RowContainer>
           <ContentBlock>
             <RowContainer

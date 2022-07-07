@@ -17,7 +17,7 @@ import {
 import { useFarmInfo } from '@sb/dexUtils/farming/hooks/useFarmInfo'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
+import { useRinStakingApr } from '@sb/dexUtils/staking/hooks/useRinStakingApr'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import {
   useUserTokenAccounts,
@@ -28,10 +28,7 @@ import { useWallet } from '@sb/dexUtils/wallet'
 
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { FARMING_V2_TEST_TOKEN } from '@core/solana'
-import {
-  stripByAmount,
-  stripByAmountAndFormat,
-} from '@core/utils/chartPageUtils'
+import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 
 import EyeIcon from '@icons/eye.svg'
 
@@ -64,6 +61,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
     publicKey: farm ? farm.stakeVault : undefined,
   })
+
   const tokenData = useAssociatedTokenAccount(farm?.stakeMint.toString())
 
   useInterval(() => {
@@ -85,6 +83,15 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const totalStaked = farmer?.totalStaked || '0'
 
   const [allTokenData, refreshAllTokenData] = useUserTokenAccounts()
+
+  const rinHarvest = farm?.harvests.find(
+    (harvest) => harvest.mint.toString() === FARMING_V2_TEST_TOKEN
+  )
+
+  const { data: apr } = useRinStakingApr({
+    totalStaked: totalStakedRIN,
+    harvest: rinHarvest,
+  })
 
   const refreshAll = async () => {
     await Promise.all([refreshTotalStaked(), refreshAllTokenData()])
@@ -172,28 +179,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
       getTokenNameByMintAddress(currentFarmingState.farmingTokenMint)
     )?.price || 0
 
-  const buyBackAPR =
-    (buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) *
-    365 *
-    100
-
-  const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
-
-  const totalApr = buyBackAPR + treasuryAPR
-
-  const formattedAPR =
-    Number.isFinite(buyBackAPR) &&
-    buyBackAPR > 0 &&
-    Number.isFinite(treasuryAPR)
-      ? stripByAmount(totalApr, 2)
-      : '--'
-
   useEffect(() => {
-    document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`
+    document.title = `Aldrin | Stake RIN | ${apr}% APR`
     return () => {
       document.title = 'Aldrin'
     }
-  }, [formattedAPR])
+  }, [apr])
 
   const rinValue = stripByAmountAndFormat(totalStaked)
   const totalStakedValue = isBalancesShowing
@@ -216,7 +207,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     <>
       <StretchedRow>
         <BlockTitle>Stake RIN</BlockTitle>
-        <NumberWithLabel value={toNumber(formattedAPR)} label="APR" />
+        <NumberWithLabel value={toNumber(apr || 0)} label="APR" />
       </StretchedRow>
       <Row style={{ height: 'auto' }}>
         <Cell colMd={12} colXl={6} col={12} colSm={12}>
