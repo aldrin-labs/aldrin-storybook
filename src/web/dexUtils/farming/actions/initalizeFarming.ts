@@ -1,5 +1,5 @@
 import {
-  buildInitializefarmingV2Instruction,
+  buildInitializefarmingInstruction,
   buildTransactions,
 } from '@core/solana'
 
@@ -11,7 +11,7 @@ export const initializeFarmingV2 = async (params: InitializeFarmingParams) => {
   const { connection } = params
   const wallet = walletAdapterToWallet(params.wallet)
 
-  const { instructions, signers } = await buildInitializefarmingV2Instruction({
+  const { instructions, signers } = await buildInitializefarmingInstruction({
     ...params,
     wallet,
   })

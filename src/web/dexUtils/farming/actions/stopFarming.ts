@@ -4,7 +4,7 @@ import { BN } from 'bn.js'
 
 import {
   createAssociatedTokenAccountTransaction,
-  buildStopFarmingV2Instruction,
+  buildStopFarmingInstruction,
 } from '@core/solana'
 
 import { walletAdapterToWallet } from '../../common'
@@ -44,13 +44,13 @@ export const stopFarmingV2 = async (params: StopFarmingParams) => {
 
   const tokenAmount = new BN((amount * 10 ** decimals).toFixed(0))
 
-  const { instruction } = await buildStopFarmingV2Instruction({
+  const { instruction } = await buildStopFarmingInstruction({
     wallet,
     connection,
     farm: farm.publicKey,
     stakeWallet: new PublicKey(userTokenAccount),
     stakeVault: farm.stakeVault,
-    tokenAmount,
+    amount: tokenAmount,
   })
 
   instructions.push(instruction)

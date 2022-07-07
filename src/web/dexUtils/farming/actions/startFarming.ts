@@ -1,7 +1,8 @@
 import { PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
+import { BN } from 'bn.js'
 
 import {
-  buildStartFarmingV2Instruction,
+  buildStartFarmingInstruction,
   buildCreateFarmerInstruction,
 } from '@core/solana'
 
@@ -17,7 +18,9 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
   if (!userTokenAccount) {
     throw new Error('Token account not found!')
   }
-  const amountWithDecimals = amount * 10 ** userTokenAccount.decimals
+  const amountWithDecimals = new BN(
+    (amount * 10 ** userTokenAccount.decimals).toFixed()
+  )
 
   const instructions: TransactionInstruction[] = []
 
@@ -30,7 +33,7 @@ export const startFarmingV2 = async (params: StartFarmingV2Params) => {
     instructions.push(newFarmer.instruction)
   }
 
-  const { instruction } = await buildStartFarmingV2Instruction({
+  const { instruction } = await buildStartFarmingInstruction({
     amount: amountWithDecimals,
     farm: farm.publicKey,
     stakeVault: farm.stakeVault,
