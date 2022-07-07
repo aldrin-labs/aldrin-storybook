@@ -9,7 +9,7 @@ export const RinBalanceContainer = styled.div`
   background-color: ${(props) => props.theme.colors.gray7};
   height: 2.5em;
   margin-left: 1em;
-  padding: calc(1em * 3 / 4);
+  padding: 0.75em;
   border-radius: 8px;
 `
 

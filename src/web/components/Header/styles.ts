@@ -22,10 +22,9 @@ export const HeaderWrap = styled.header`
   height: 96px;
   background: ${(props) => props.theme.colors.header};
   padding: 0 24px;
-  border-bottom: ${(props) =>
-    props.theme.name === THEME_DARK
-      ? '1px solid #212131'
-      : '1px solid rgba(169, 169, 178, 0.3)'};
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: ${(props) => props.theme.colors.border1};
 `
 
 interface ShowHideProps {

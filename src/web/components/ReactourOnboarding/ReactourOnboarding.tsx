@@ -139,14 +139,18 @@ export const HeadingBoldText = styled.p`
 `
 
 export const GotItButton = styled.button`
+  width: 8rem;
+  height: 3.5rem;
   border: none;
+  background-color: #c7ffd0;
   color: #fff;
   font-size: 1.2rem;
   font-weight: bolder;
+  border-radius: 0.5rem;
   width: 184px;
   height: 40px;
 
-  background-color: #0E02EC;
+  background: #0E02EC;
   border-radius: 8px;
 `
 

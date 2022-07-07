@@ -24,7 +24,7 @@ export const SwitchControl = styled.div<SwitchControlProps>`
   background-color: ${(props) =>
     props.$active
       ? props.theme.name === THEME_DARK
-        ? '#303041'
+        ? props.theme.colors.gray12
         : props.theme.colors.gray9
       : 'inherit'};
   width: 2em;
