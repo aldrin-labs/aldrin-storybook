@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from 'react'
 import { useTheme } from 'styled-components'
+
 import {
   RowContainer,
   Title,
@@ -61,9 +62,7 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
           onClick={() => {
             setIsConnectWalletPopupOpen(true)
           }}
-        >
-          Connect Wallet
-        </Button>
+        />
       </span>
 
       <ConnectWalletPopup
