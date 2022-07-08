@@ -141,7 +141,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
     farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
-    buyBackAmount: buyBackAmountWithoutDecimals,
+    buyBackAmount:
+      buyBackAmountWithoutDecimals *
+      10 ** currentFarmingState.farmingTokenMintDecimals,
     snapshotQueues: allStakingSnapshotQueues,
   })
 
