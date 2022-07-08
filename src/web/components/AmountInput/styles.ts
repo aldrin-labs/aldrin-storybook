@@ -22,7 +22,8 @@ export const AmountInputElement = styled(Input)`
     flex: 0 1 auto;
     min-width: 0;
     overflow: visible;
-    padding-right: 0.5rem;
+    padding-right: 2.5em;
+    width: 125%;
   }
 
   ${Append} {
