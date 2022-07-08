@@ -128,21 +128,21 @@ export const combineOpenOrdersTable = (
                   </StyledTitle>
                 </RowContainer>
                 <RowContainer justify="space-between">
-                  <StyledTitle>Price(USDC)</StyledTitle>{' '}
-                  <StyledTitle color="#fbf2f2">{`${stripDigitPlaces(
+                  <StyledTitle>Price(${pair[1]})</StyledTitle>{' '}
+                  <StyledTitle color="#93939B">{`${stripDigitPlaces(
                     price,
                     pricePrecision
                   )}`}</StyledTitle>
                 </RowContainer>
                 <RowContainer justify="space-between">
-                  <StyledTitle>Amount (CCAI)</StyledTitle>
-                  <StyledTitle color="#fbf2f2">
+                  <StyledTitle>Amount (${pair[0]})</StyledTitle>
+                  <StyledTitle color="#93939B">
                     {stripDigitPlaces(size, quantityPrecision)}
                   </StyledTitle>
                 </RowContainer>
                 <RowContainer justify="space-between">
-                  <StyledTitle>Total (USDC)</StyledTitle>
-                  <StyledTitle color="#fbf2f2">
+                  <StyledTitle>Total (${pair[0]})</StyledTitle>
+                  <StyledTitle color="#93939B">
                     {stripDigitPlaces(+size * price, quantityPrecision)}
                   </StyledTitle>
                 </RowContainer>
