@@ -37,7 +37,9 @@ export interface OnChangeProps {
   onChange: (e: string) => void
 }
 
-export interface InputProps extends InputBase, OnChangeProps {}
+export interface InputProps extends InputBase, OnChangeProps {
+  maxLength?: number
+}
 
 export interface InputFieldProps extends InputBase {
   validate?: FieldValidator

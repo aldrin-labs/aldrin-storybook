@@ -196,3 +196,7 @@ export const AttentionIcon = styled.div`
     }
   }
 `
+
+export const Link = styled.a`
+  color: ${(props) => props.theme.colors.blue3};
+`
