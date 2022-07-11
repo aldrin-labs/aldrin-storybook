@@ -1,16 +1,30 @@
 import React from 'react'
 
-import { Button, Container } from './index.styles'
+import { Container, SwitcherButton } from './index.styles'
 
-const tables = ['All pools', 'Your pools']
+const tables = [
+  { name: 'Classic Liquidity', key: 'classicLiquidity' },
+  { name: 'Concentrated Liquidity', key: 'concentratedLiquidity' },
+]
 
-export const Switcher = () => {
+export const Switcher = ({
+  setTableView,
+  tableView,
+}: {
+  setTableView: (a: string) => void
+  tableView: string
+}) => {
   return (
     <Container>
       {tables.map((table) => (
-        <Button size={tables.length} onClick={() => {}}>
-          {table}
-        </Button>
+        <SwitcherButton
+          isActive={tableView === table.key}
+          onClick={() => {
+            setTableView(table.key)
+          }}
+        >
+          {table.name}
+        </SwitcherButton>
       ))}
     </Container>
   )

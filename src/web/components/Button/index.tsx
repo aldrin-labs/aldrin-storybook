@@ -118,6 +118,18 @@ const VARIANTS = {
     background: ${COLORS.hint};
     border-color: ${COLORS.hint};
   `,
+
+  violet: css`
+    background: ${(props) => props.theme.colors.blue6};
+    border: none;
+    color: ${(props) => props.theme.colors.blue2};
+    white-space: nowrap;
+    font-weight: 700;
+    line-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
 }
 
 export const PADDINGS = {
@@ -125,6 +137,7 @@ export const PADDINGS = {
   sm: '2px 8px',
   md: '4px 10px', // 16px
   lg: '8px 16px',
+  xl: '11px 10px',
 }
 
 export type ButtonVariants = keyof typeof VARIANTS

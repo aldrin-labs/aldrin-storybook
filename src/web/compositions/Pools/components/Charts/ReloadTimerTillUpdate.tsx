@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import { estimatedTime } from '@core/utils/dateUtils'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
+
+import { estimatedTime } from '@core/utils/dateUtils'
 
 export const ReloadTimerTillUpdate = ({
   duration,

@@ -1,12 +1,11 @@
-import { BREAKPOINTS, COLORS, FONT_SIZES } from '@variables/variables'
+import { BORDER_RADIUS, BREAKPOINTS, FONT_SIZES } from '@variables/variables'
 import styled from 'styled-components'
 
-import { PADDINGS } from '@sb/components/Button'
+import { Button, PADDINGS } from '@sb/components/Button'
 
 type StyledSwitcher = {
   isActive?: boolean
   radius?: string
-  size: number
 }
 
 export interface RadioContainer {
@@ -18,38 +17,34 @@ export interface RadioContainer {
 }
 
 export const Container = styled.div`
-  width: 100%;
-  color: ${COLORS.lightGray};
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  color: ${(props) => props.theme.colors.gray0};
+  background: ${(props) => props.theme.colors.gray7};
+  border-radius: ${BORDER_RADIUS.rg};
   font-size: ${FONT_SIZES.md};
   outline: none;
   border: none;
-  padding: 0.5rem;
   border-radius: none;
   cursor: pointer;
-  display: flex;
-  flex-wrap: nowrap;
-  margin: 0 0 2rem 0;
-  background: ${(props) => props.theme.colors.gray5};
-  justify-content: center;
+  padding: 0.2em;
+
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: auto;
-    min-width: 20%;
     font-size: ${FONT_SIZES.sm};
   }
 `
-export const Button = styled.button<StyledSwitcher>`
-  width: ${(props) => `calc(100% / ${props.size})`};
+export const SwitcherButton = styled(Button)<StyledSwitcher>`
   padding: ${PADDINGS.lg};
   background: ${(props) =>
-    props.isActive ? props.theme.colors.gray10 : props.theme.colors.gray5};
-  padding: 0.5rem;
+    props.isActive ? props.theme.colors.gray5 : 'transparent'};
+  white-space: nowrap;
   color: ${(props) =>
     props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray1};
-  font-size: ${FONT_SIZES.sm};
+  border-radius: ${BORDER_RADIUS.md};
   outline: none;
   border: none;
-  border-radius: 1rem;
   cursor: pointer;
-  height: 5rem;
   transition: 0.5s;
 `

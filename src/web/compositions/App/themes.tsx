@@ -46,7 +46,7 @@ export const dark = {
     blue9: '#060163FF',
     blue8: '#080182FF',
     blue7: '#0A01A8FF',
-    blue6: '#0D02D7FF',
+    blue6: 'rgba(94, 85, 242, 0.15)',
     blue5: '#0E02ECFF',
     blue4: '#3E35F0FF',
     blue3: '#5E55F2FF',
@@ -56,7 +56,7 @@ export const dark = {
     gray11: '#3F3F50',
     gray10: '#14131FFF',
     gray9: '#0B0B12FF',
-    gray8: '#2b2d36',
+    gray8: '#212131', // gray buttons
     gray7: '#14141F',
     gray6: '#212030FF',
     gray5: '#2F2F40FF',
@@ -128,7 +128,7 @@ export const light = {
     blue9: '#060163FF',
     blue8: '#080182FF',
     blue7: '#0A01A8FF',
-    blue6: '#0D02D7FF',
+    blue6: 'rgba(94, 85, 242, 0.15)',
     blue5: '#0E02ECFF',
     blue4: '#3E35F0FF',
     blue3: '#5E55F2', // #5E55F2FF
@@ -138,7 +138,7 @@ export const light = {
     gray11: '#D4D4D7',
     gray10: '#FAFAFA',
     gray9: '#FAFAFA',
-    gray8: '#A9A9B2', // gray buttons
+    gray8: '#212131', // gray buttons
     gray7: '#FFFFFF',
     gray6: '#F3F3F7', // inputs, hovers for gray5
     gray5: '#ECECF2', // popups, blocks, etc.

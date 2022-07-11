@@ -122,6 +122,7 @@ export const BORDER_RADIUS = {
   xs: '2px',
   sm: '4px',
   md: '8px',
+  rg: '11px',
   lg: '16px',
   xl: '32px',
   xxl: '56px',
@@ -155,6 +156,7 @@ export const SIZE = {
 
 export const WIDTH = {
   sm: '10%',
+  qu: '20%',
   md: '30%',
   hf: '50%',
   rg: '49%',
