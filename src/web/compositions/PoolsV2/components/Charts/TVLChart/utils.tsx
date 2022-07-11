@@ -136,15 +136,15 @@ export const createTotalVolumeLockedChart = ({
     throw Error('Not a canvas:')
   }
 
-  const gradient = ctx.createLinearGradient(0, 0, 0, 190)
+  const gradient = ctx.createLinearGradient(0, 0, 0, 185)
   gradient.addColorStop(0, 'rgba(135, 52, 120, 0.45)')
   gradient.addColorStop(0.55, 'rgba(157, 52, 129, 0)')
 
-  const borderGradient = ctx.createLinearGradient(0, 0, 0, 190)
-  borderGradient.addColorStop(0.8, 'rgba(200, 89, 77, 1)')
-  borderGradient.addColorStop(0.5, 'rgba(99, 53, 84, 1)')
-  borderGradient.addColorStop(0.25, 'rgba(151, 51, 135, 1)')
-  borderGradient.addColorStop(0, 'rgba(217, 62, 56, 1)')
+  const borderGradient = ctx.createLinearGradient(480, 0, 0, 0)
+  borderGradient.addColorStop(0.9, 'rgba(99, 53, 84, 1)')
+  borderGradient.addColorStop(0.5, 'rgba(151, 51, 135, 1)')
+  borderGradient.addColorStop(0.25, 'rgba(200, 89, 77, 1)')
+  borderGradient.addColorStop(0.0, 'rgba(217, 62, 56, 1)')
 
   const transformedData = getEmptyData()
     .map((value) => ({
@@ -178,6 +178,7 @@ export const createTotalVolumeLockedChart = ({
         borderColor: borderGradient,
         backgroundColor: gradient,
         borderWidth: 4,
+        borderCapStyle: 'square',
         pointRadius: 0,
         pointHoverRadius: 6,
         pointHoverBorderColor: '#9C338D',
@@ -191,6 +192,9 @@ export const createTotalVolumeLockedChart = ({
   chart.options.scales.y.ticks.stepSize = (maxVol - maxVol * 0.2) / 5
   chart.options.scales.x?.grid?.display = false
   chart.options.scales.y?.grid?.display = false
+  chart.options.layout?.padding = 0
+  chart.options.scales.y?.grid?.drawBorder = false
+  chart.options.scales.x?.grid?.drawBorder = false
 
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
   return chart

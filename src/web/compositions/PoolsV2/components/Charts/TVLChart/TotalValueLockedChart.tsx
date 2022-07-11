@@ -71,8 +71,14 @@ const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
   }, [JSON.stringify(data)])
 
   return (
-    <CanvasContainer>
-      <Canvas id="tvl-chart-inner" height="250" ref={canvasRef} />
+    <CanvasContainer padding="6px">
+      <Canvas
+        bottom="0"
+        left="6px"
+        id="tvl-chart-inner"
+        height="250"
+        ref={canvasRef}
+      />
     </CanvasContainer>
   )
 }
@@ -119,12 +125,13 @@ export const TVLChart: React.FC = () => {
 
   return (
     <ChartContainer>
-      <TooltipContainer>
+      <TooltipContainer padding="6px">
         <InlineText color="gray0" size="xs">
           TVL {isMouseOverTheChart ? `at ${balanceData.date}` : `Now`}
         </InlineText>
         <ValueTitle color="gray0" size="xl" weight={600}>
-          $ {isMouseOverTheChart ? `${balanceData.balance}` : `${firstBalance}`}
+          <InlineText color="gray1">$</InlineText>{' '}
+          {isMouseOverTheChart ? `${balanceData.balance}` : `${firstBalance}`}
         </ValueTitle>
       </TooltipContainer>
       <TotalVolumeLockedChartInner

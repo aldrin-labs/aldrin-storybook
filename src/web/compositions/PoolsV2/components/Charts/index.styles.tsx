@@ -3,6 +3,14 @@ import styled from 'styled-components'
 
 import { InlineText } from '@sb/components/Typography'
 
+type CanvasProps = {
+  bottom?: string
+  left?: string
+}
+type CanvasContainerProps = {
+  padding?: string
+}
+
 export const ChartContainer = styled.div`
   width: 100%;
   background: ${(props) => props.theme.colors.gray7};
@@ -17,7 +25,7 @@ export const ChartContainer = styled.div`
 `
 
 export const TooltipContainer = styled.div`
-  width: 35%;
+  width: ${(props) => `calc(35% + ${props.padding})`};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,11 +36,15 @@ export const ValueTitle = styled(InlineText)`
   white-space: nowrap;
   line-height: 100%;
   margin-top: 0.3em;
+  letter-spacing: -1.5px;
 `
-export const CanvasContainer = styled.div`
-  width: 65%;
-  border-left: 0.1em solid ${(props) => props.theme.colors.gray8};
+export const CanvasContainer = styled.div<CanvasContainerProps>`
+  width: ${(props) => `calc(65% - ${props.padding})`};
 `
-export const Canvas = styled.canvas`
-  margin-bottom: -7px;
+export const Canvas = styled.canvas<CanvasProps>`
+  width: 100%;
+  margin: auto;
+  margin-bottom: ${(props) => props.bottom || '-7px'};
+  margin-left: ${(props) => props.left || '0px'};
+  border-left: 2px solid ${(props) => props.theme.colors.gray8};
 `

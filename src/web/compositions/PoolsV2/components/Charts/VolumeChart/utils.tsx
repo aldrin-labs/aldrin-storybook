@@ -163,18 +163,13 @@ const createTradingVolumeChart = ({
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: theme.colors.violet7,
         backgroundColor: theme.colors.violet7,
-        borderWidth: 0,
         pointRadius: 0,
+        borderWidth: 0,
+        borderRadius: 4,
+        borderSkipped: false,
+        borderColor: theme.colors.violet7,
         hoverBackgroundColor: theme.colors.violet5,
-        borderRadius: {
-          topLeft: 4,
-          topRight: 4,
-          bottomLeft: 4444,
-          bottomRight: 4444,
-        },
-
         data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),
       },
     ],
@@ -182,6 +177,8 @@ const createTradingVolumeChart = ({
   chart.options.scales.x?.grid?.display = false
   chart.options.scales.y?.grid?.display = false
   chart.options.scales.y.ticks.stepSize = (maxVol - minVol) / 3
+  chart.options.scales.y?.grid?.drawBorder = false
+  chart.options.scales.x?.grid?.drawBorder = false
   setTimeout(() => chart?.update()) // TODO: Remove after flickering issue
 
   return chart
