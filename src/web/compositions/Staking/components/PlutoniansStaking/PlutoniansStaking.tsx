@@ -33,7 +33,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
           <StakePoolWrap>
             <ContentBlock>
               <FlexBlock alignItems="center">
-                <img src={PldIcon} alt="Stake PLD" />
+                <img src={PuIcon} alt="Stake PLD" />
                 <StakePoolText>
                   <div>
                     <InlineText weight={700}>Stake PLD</InlineText>
@@ -69,7 +69,7 @@ export const PlutoniasStakingBlock: React.FC = () => {
           <StakePoolWrap>
             <ContentBlock>
               <FlexBlock alignItems="center">
-                <img src={PuIcon} alt="Stake PU238" />
+                <img src={PldIcon} alt="Stake PU238" />
                 <StakePoolText>
                   <div>
                     <InlineText weight={700}>Stake PU238</InlineText>
