@@ -11,6 +11,8 @@ import { BlockContent } from '../Block'
 import { Modal } from '../Modal'
 import { TokenIconWithName } from '../TokenIcon'
 import { Balance, SearchInput, TokenModalRow, IconContainer } from './styles'
+import { CloseIcon, ModalTitle, ModalTitleContainer } from '../Modal/styles'
+import styled from 'styled-components'
 
 export interface Token {
   mint: string
@@ -23,6 +25,26 @@ interface SelectTokenModalProps {
   onClose: () => void
   onSelect: (token: Token) => void
 }
+
+export const Test = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 20px 0px;
+`
+const Test2 = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 20px;
+  gap: 10px;
+  top: 20px;
+  position: sticky;
+  background: ${(props) => props.theme.colors.gray6};
+  overflow: hidden;
+  z-index: 3;
+`
+
 export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
   const { onClose, tokens, onSelect } = props
 
@@ -33,8 +55,30 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
     .filter((t) => t.name.toLowerCase().includes(search.toLowerCase()))
 
   return (
-    <Modal backdrop="dark" onClose={onClose} open title="Select Token">
-      <BlockContent>
+    <Modal backdrop="dark" onClose={onClose} open>
+      <Test2>
+        <Test style={{ top: '5px', position: 'sticky' }}>
+          <ModalTitle>Select Token</ModalTitle>
+          <CloseIcon
+            onClick={() => {
+              props.onClose()
+            }}
+          >
+            <svg
+              width="100%"
+              height="100%"
+              viewBox="0 0 19 19"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+                stroke="#F5F5FB"
+                strokeWidth="2"
+              />
+            </svg>
+          </CloseIcon>
+        </Test>
         <SearchInput
           name="token_search"
           append={
@@ -46,6 +90,9 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
           onChange={setSearch}
           placeholder="Search..."
         />
+      </Test2>
+
+      <BlockContent>
         {tokensWithName.map((t, idx) => (
           <TokenModalRow
             key={`token_selector_${t.mint}_${t.account || idx}`}

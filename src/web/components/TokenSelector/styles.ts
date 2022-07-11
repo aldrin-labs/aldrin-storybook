@@ -46,6 +46,8 @@ export const TokenRow = styled(FlexBlock)`
 `
 
 export const TokenModalRow = styled(TokenRow)`
+  position: sticky;
+  overflow: hidden;
   border-bottom: 1px solid ${COLORS.background};
   &:hover {
     ${TokenName} {
