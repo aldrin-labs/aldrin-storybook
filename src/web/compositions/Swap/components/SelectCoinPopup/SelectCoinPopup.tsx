@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { DefaultTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import { EscapeButton } from '@sb/components/EscapeButton'
@@ -8,8 +7,8 @@ import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { SelectSeveralAddressesPopup } from '@sb/compositions/Pools/components/Popups/SelectorForSeveralAddresses'
 import { SearchInputWithLoop } from '@sb/compositions/Pools/components/Tables/components'
-import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -28,11 +27,9 @@ import {
 } from './styles'
 
 export const SelectCoinPopup = ({
-  theme,
   open,
   mints,
   topTradingMints,
-  allTokensData,
   pricesMap,
   isBaseTokenSelecting,
   close,
@@ -40,12 +37,10 @@ export const SelectCoinPopup = ({
   setBaseTokenAddressFromSeveral,
   setQuoteTokenAddressFromSeveral,
 }: {
-  theme: DefaultTheme
   open: boolean
   mints: string[]
   topTradingMints: string[]
   isBaseTokenSelecting: boolean
-  allTokensData: TokenInfo[]
   pricesMap: Map<string, number>
   close: () => void
   selectTokenMintAddress: (address: string) => void
@@ -53,7 +48,9 @@ export const SelectCoinPopup = ({
   setQuoteTokenAddressFromSeveral: (address: string) => void
 }) => {
   const tokenInfos = useTokenInfos()
+
   const { connected } = useWallet()
+  const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
   const [searchValue, onChangeSearch] = useState<string>('')
   const [selectedMint, setSelectedMint] = useState<string>('')
@@ -64,7 +61,7 @@ export const SelectCoinPopup = ({
 
   const sortedAllTokensData = new Map()
 
-  allTokensData.forEach((tokensData) => {
+  userTokensData.forEach((tokensData) => {
     if (sortedAllTokensData.has(tokensData.mint)) {
       sortedAllTokensData.set(
         tokensData.mint,
@@ -116,7 +113,7 @@ export const SelectCoinPopup = ({
 
   const selectMint = (mint: string) => {
     const isSeveralCoinsWithSameAddress =
-      allTokensData.filter((el) => el.mint === mint).length > 1
+      userTokensData.filter((el) => el.mint === mint).length > 1
 
     if (isSeveralCoinsWithSameAddress) {
       setSelectedMint(mint)
@@ -137,6 +134,7 @@ export const SelectCoinPopup = ({
         onChangeSearch('')
         setSelectedMint('')
         setIsSelectorForSeveralAddressesOpen(false)
+        refreshUserTokensData()
       }}
       aria-labelledby="responsive-dialog-title"
     >
@@ -206,7 +204,7 @@ export const SelectCoinPopup = ({
             </RowContainer>
           )}
           <SelectSeveralAddressesPopup
-            tokens={allTokensData.filter((el) => el.mint === selectedMint)}
+            tokens={userTokensData.filter((el) => el.mint === selectedMint)}
             open={isSelectorForSeveralAddressesOpen}
             close={() => setIsSelectorForSeveralAddressesOpen(false)}
             selectTokenMintAddress={selectTokenMintAddress}

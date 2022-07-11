@@ -1,6 +1,6 @@
 import { PoolInfo } from '@sb/compositions/Pools/index.types'
 
-import { createSwapOptions, SwapOptions } from '@core/solana'
+import { checkIsPoolStable, createSwapOptions, SwapOptions } from '@core/solana'
 
 import { PoolBalances } from '../hooks'
 
@@ -20,6 +20,7 @@ interface FindOptionParams extends SearchParams {
 const findBestOption = (params: FindOptionParams) => {
   const {
     pool,
+    slippage,
     poolBalances,
     outputAmount,
     isSwapBaseToQuote,
@@ -33,7 +34,7 @@ const findBestOption = (params: FindOptionParams) => {
   const swapResults = createSwapOptions({
     pool,
     poolBalances,
-    slippage: 0,
+    slippage,
     userAmountTokenA: isSwapBaseToQuote
       ? appproxInputAmount * maxAmountMultiplier
       : 0, // outputAmount * ratio * 2, to find the closest inputAmount to get outputAmount
@@ -79,11 +80,17 @@ const getInputAmountFromOutput = (params: SearchParams): SwapOptions => {
       userAmountsRatioAfterSwap: 0,
     }
   }
-  const appproxInputAmount = isSwapBaseToQuote
-    ? (poolBalances.baseTokenAmount / poolBalances.quoteTokenAmount) *
-      outputAmount
-    : (poolBalances.quoteTokenAmount / poolBalances.baseTokenAmount) *
-      outputAmount
+  let appproxInputAmount = 0
+
+  if (checkIsPoolStable(pool)) {
+    appproxInputAmount = outputAmount
+  } else {
+    appproxInputAmount = isSwapBaseToQuote // resolve for stable
+      ? (poolBalances.baseTokenAmount / poolBalances.quoteTokenAmount) *
+        outputAmount
+      : (poolBalances.quoteTokenAmount / poolBalances.baseTokenAmount) *
+        outputAmount
+  }
 
   // console.log('swapResults2', {
   //   userAmountTokenA: isSwapBaseToQuote ? appproxInputAmount * 2 : 0, // outputAmount * ratio * 2, to find the closest inputAmount to get outputAmount

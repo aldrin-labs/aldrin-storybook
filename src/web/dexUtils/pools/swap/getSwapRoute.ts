@@ -184,13 +184,14 @@ const createRouteFromInputField = ({
       isSwapBaseToQuote = pool.tokenA === baseMint
       swapAmountOut = getMinimumReceivedAmountFromSwap({
         pool,
+        slippage,
         swapAmountIn: tempSwapAmountIn,
         isSwapBaseToQuote,
         poolBalances,
       })
 
-      swapAmountOutWithSlippage =
-        swapAmountOut - (swapAmountOut / 100) * incrementedSlippage
+      // swapAmountOutWithSlippage =
+      //   swapAmountOut - (swapAmountOut / 100) * incrementedSlippage
 
       route.push({
         pool,
@@ -199,8 +200,8 @@ const createRouteFromInputField = ({
         outputMint: quoteMint,
         swapAmountIn: tempSwapAmountIn,
         swapAmountOut,
-        swapAmountInWithSlippage: tempSwapAmountInWithSlippage,
-        swapAmountOutWithSlippage,
+        swapAmountInWithSlippage: tempSwapAmountIn,
+        swapAmountOutWithSlippage: swapAmountOut,
         isSwapBaseToQuote,
       })
     }
@@ -309,9 +310,14 @@ const createRouteFromOutputField = ({
 
       const result = getInputAmountFromOutput({
         pool,
+        // slippage,
         poolBalances,
         outputAmount: tempSwapAmountOut,
         isSwapBaseToQuote,
+      })
+
+      console.log({
+        getInputAmountFromOutput: result,
       })
 
       swapAmountIn = result.swapAmountIn
@@ -338,9 +344,9 @@ const createRouteFromOutputField = ({
   const reversedPath = route.reverse().map((swapStep, index) => {
     const incrementedOutputAmountSlippage = slippage * (index + 1)
 
-    let swapAmountOutWithSlippage =
-      swapStep.swapAmountOut -
-      (swapStep.swapAmountOut / 100) * incrementedOutputAmountSlippage
+    let swapAmountOutWithSlippage = swapStep.swapAmountOut
+    // -
+    // (swapStep.swapAmountOut / 100) * incrementedOutputAmountSlippage
 
     if (swapStep.ammLabel === 'Aldrin') {
       const swapStepWithSlippage = {

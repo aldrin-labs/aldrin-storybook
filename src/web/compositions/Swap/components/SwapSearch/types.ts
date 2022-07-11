@@ -16,5 +16,7 @@ export interface SwapSearchProps {
     quoteSymbol: string
   }[]
   topTradingMints: string[]
+  setInputTokenAddressFromSeveral: (address: string) => void
+  setOutputTokenAddressFromSeveral: (address: string) => void
   onSelect: (selected: SearchItem) => void
 }

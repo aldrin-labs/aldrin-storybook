@@ -7,8 +7,11 @@ import { useTheme } from 'styled-components'
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PieTimer } from '@sb/components/PieTimer'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { InlineText, Text } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
+import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
@@ -60,6 +63,7 @@ import {
   RowImpactTitle,
   SlippageButton,
   InfoIconContainer,
+  SwapTooltip,
 } from './styles'
 import {
   getOHLCVMarketTypeFromSwapRoute,
@@ -167,6 +171,14 @@ const SwapPage = ({
   const [isInputTokenSelecting, setIsInputTokenSelecting] = useState(false)
   const [isSwapInProgress, setIsSwapInProgress] = useState(false)
 
+  const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
+  const outputSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
+
+  const { pricesMap: coingeckoPricesMap } = useCoingeckoPrices([
+    inputSymbol,
+    outputSymbol,
+  ])
+
   const {
     mints: tokenSelectorMints,
     swapRoute,
@@ -186,7 +198,25 @@ const SwapPage = ({
     slippage,
   })
 
-  const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
+  const inputDexTokenPrice = coingeckoPricesMap.get(inputSymbol) || 0
+  const outputDexTokenPrice = coingeckoPricesMap.get(outputSymbol) || 0
+
+  const estimatedPrice = inputDexTokenPrice / outputDexTokenPrice
+  const estimatedPriceFromRoute = +outputAmount / +inputAmount
+
+  const pricesDiffPct = stripDigitPlaces(
+    ((estimatedPriceFromRoute - estimatedPrice) / estimatedPrice) * 100,
+    2
+  )
+
+  const priceDiffText =
+    pricesDiffPct > 0
+      ? `${pricesDiffPct}% cheaper `
+      : pricesDiffPct < -1
+      ? `${-pricesDiffPct}% more expensive `
+      : `Within 1% of `
+
+  const isHighPriceDiff = pricesDiffPct < -1
 
   let { amount: maxInputAmount } = getTokenDataByMint(
     userTokensData,
@@ -227,6 +257,8 @@ const SwapPage = ({
   }
 
   const isEmptyInputAmount = +inputAmount === 0
+  const isEmptyOutputAmount = +outputAmount === 0
+
   const isTokenABalanceInsufficient = inputAmount > +maxInputAmount
 
   const reverseTokens = () => {
@@ -245,25 +277,6 @@ const SwapPage = ({
       )
     }
   }
-
-  const priceImpact = swapRoute
-    .filter((step) => step.ammLabel === 'Aldrin')
-    .reduce((acc, step) => {
-      const stepPriceImpact =
-        (step.isSwapBaseToQuote
-          ? step.swapAmountIn / step.pool.tvl.tokenA
-          : step.swapAmountIn / step.pool.tvl.tokenB) * 100
-
-      if (stepPriceImpact > 100) return 100
-
-      if (stepPriceImpact > acc) {
-        return stepPriceImpact
-      }
-
-      return acc
-    }, 0)
-
-  const isHighPriceImpact = priceImpact >= 1
 
   const buttonText = getSwapButtonText({
     baseSymbol: inputSymbol,
@@ -294,6 +307,10 @@ const SwapPage = ({
               topTradingPairs={topTradingPairs}
               data-testid="swap-search-field"
               tokens={tokenSelectorMints.map((mint) => ({ mint }))}
+              setInputTokenAddressFromSeveral={setInputTokenAddressFromSeveral}
+              setOutputTokenAddressFromSeveral={
+                setOutputTokenAddressFromSeveral
+              }
               onSelect={(args) => {
                 const { amountFrom, tokenFrom, tokenTo } = args
                 setInputTokenMintAddress(tokenFrom.mint)
@@ -426,46 +443,106 @@ const SwapPage = ({
                 />
               </RowContainer>
             </RowContainer>
-            {!isEmptyInputAmount && (
+            {!isEmptyInputAmount && !isEmptyOutputAmount && (
               <RowContainer justify="space-between" margin="1em 0 0 0">
                 <BlackRow width="calc(50% - 0.6em)">
                   <RowTitle>Fee:</RowTitle>
-                  <RowValue>
-                    {totalFeeUSD < 0.01
-                      ? `< $0.01`
-                      : `$${formattedTotalFeeUSD}`}
-                  </RowValue>
+                  <Row align="center" wrap="nowrap">
+                    <RowValue>
+                      {totalFeeUSD < 0.01
+                        ? `< $0.01`
+                        : `$${formattedTotalFeeUSD}`}
+                    </RowValue>
+                    {depositAndFee > 0.02 ? (
+                      <DarkTooltip title="Fee breakdown">
+                        <Row
+                          margin="0 0 0 0.3em"
+                          style={{ color: theme.colors.gray1 }}
+                        >
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                              stroke="currentColor"
+                            />
+                            <path
+                              d="M6 3.5H6.00656"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M6 5.5V8"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </Row>
+                      </DarkTooltip>
+                    ) : null}
+                  </Row>
                 </BlackRow>
                 <BlackRow width="calc(50% - 0.6em)">
-                  <RowImpactTitle isHighPriceImpact={isHighPriceImpact}>
-                    {isHighPriceImpact ? 'High Price Impact' : 'Fair price'}
+                  <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
+                    {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
                   </RowImpactTitle>
 
-                  <InfoIconContainer isHighPriceImpact={isHighPriceImpact}>
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
-                        stroke="currentColor"
-                      />
-                      <path
-                        d="M6 3.5H6.00656"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M6 5.5V8"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </InfoIconContainer>
+                  <SwapTooltip
+                    PopperProps={{ style: { opacity: 1 } }}
+                    title={
+                      <Row
+                        direction="column"
+                        align="flex-start"
+                        style={{ fontSize: '16px' }}
+                      >
+                        <Text color="white" size="esm" margin="0">
+                          <InlineText color="white" weight={600}>
+                            {stripByAmount(estimatedPriceFromRoute)}
+                          </InlineText>{' '}
+                          {outputSymbol} per {inputSymbol}.
+                        </Text>
+                        <Text color="white" size="esm" margin="0">
+                          <InlineText
+                            color={isHighPriceDiff ? 'red4' : 'green4'}
+                          >
+                            {priceDiffText}
+                          </InlineText>{' '}
+                          than CoinGecko price.
+                        </Text>
+                      </Row>
+                    }
+                  >
+                    <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                          stroke="currentColor"
+                        />
+                        <path
+                          d="M6 3.5H6.00656"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M6 5.5V8"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </InfoIconContainer>
+                  </SwapTooltip>
                 </BlackRow>
               </RowContainer>
             )}
@@ -501,7 +578,7 @@ const SwapPage = ({
                 </BtnCustom>
               ) : (
                 <SwapButton
-                  isHighPriceImpact={isHighPriceImpact}
+                  isHighPriceDiff={isHighPriceDiff}
                   disabled={isButtonDisabled}
                   $fontSize="md"
                   minWidth="100%"

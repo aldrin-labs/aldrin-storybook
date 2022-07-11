@@ -165,7 +165,11 @@ export const getOHLCVMarketTypeFromSwapRoute = (swapRoute: SwapRoute) => {
 }
 
 export const getOHLCVSymbols = (swapRoute: SwapRoute) => {
-  if (swapRoute.length >= 1) {
+  if (swapRoute.length > 1) {
+    return [swapRoute[0].inputMint, swapRoute[swapRoute.length - 1].outputMint]
+  }
+
+  if (swapRoute.length === 1) {
     const { isSwapBaseToQuote, inputMint, outputMint } = swapRoute[0]
     return isSwapBaseToQuote ? [inputMint, outputMint] : [outputMint, inputMint]
   }

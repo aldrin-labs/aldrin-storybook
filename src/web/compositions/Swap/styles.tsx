@@ -10,6 +10,7 @@ import styled, { DefaultTheme } from 'styled-components'
 
 import { Button, PADDINGS } from '@sb/components/Button'
 import { Page } from '@sb/components/Layout'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
@@ -75,8 +76,8 @@ export const SlippageButton = styled.button`
 `
 
 export const InfoIconContainer = styled.span`
-  color: ${({ isHighPriceImpact, theme }) =>
-    isHighPriceImpact ? theme.colors.red5 : theme.colors.green5};
+  color: ${({ isHighPriceDiff, theme }) =>
+    isHighPriceDiff ? theme.colors.red5 : theme.colors.green5};
 
   svg {
     width: 100%;
@@ -122,12 +123,12 @@ export const RowValue = styled(RowTitle)`
 export const RowImpactTitle = styled(RowTitle)`
   font-weight: 600;
   color: ${({
-    isHighPriceImpact,
+    isHighPriceDiff,
     theme,
   }: {
-    isHighPriceImpact: boolean
+    isHighPriceDiff: boolean
     theme: DefaultTheme
-  }) => (isHighPriceImpact ? theme.colors.red5 : theme.colors.green5)};
+  }) => (isHighPriceDiff ? theme.colors.red5 : theme.colors.green5)};
 `
 
 export const RowAmountValue = styled(RowValue)`
@@ -139,14 +140,14 @@ export const SwapButton = styled(Button)`
   height: 4em;
 
   color: ${({
-    isHighPriceImpact,
+    isHighPriceDiff,
     theme,
   }: {
-    isHighPriceImpact: boolean
+    isHighPriceDiff: boolean
     theme: DefaultTheme
-  }) => (isHighPriceImpact ? theme.colors.red5 : theme.colors.green5)};
-  background: ${({ isHighPriceImpact }: { isHighPriceImpact: boolean }) =>
-    isHighPriceImpact ? 'rgba(255, 103, 74, 0.15)' : 'rgba(0, 181, 94, 0.15)'};
+  }) => (isHighPriceDiff ? theme.colors.red5 : theme.colors.green5)};
+  background: ${({ isHighPriceDiff }: { isHighPriceDiff: boolean }) =>
+    isHighPriceDiff ? 'rgba(255, 103, 74, 0.15)' : 'rgba(0, 181, 94, 0.15)'};
   border: none;
 
   transition: all 0.4s ease-out;
@@ -249,5 +250,11 @@ export const SetAmountButton = styled(Button)`
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     padding: ${PADDINGS.sm};
+  }
+`
+
+export const SwapTooltip = styled(DarkTooltip)`
+  && .tooltip {
+    color: auto;
   }
 `

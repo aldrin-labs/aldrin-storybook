@@ -5,7 +5,9 @@ import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { SelectSeveralAddressesPopup } from '@sb/compositions/Pools/components/Popups/SelectorForSeveralAddresses'
 import { getTokenName } from '@sb/dexUtils/markets'
+import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { notEmpty } from '@sb/dexUtils/utils'
 
@@ -22,16 +24,35 @@ import {
 import { SearchItem, SwapSearchProps } from './types'
 
 export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
-  const { tokens, topTradingPairs, topTradingMints, onSelect } = props
+  const {
+    tokens,
+    topTradingPairs,
+    topTradingMints,
+    setInputTokenAddressFromSeveral,
+    setOutputTokenAddressFromSeveral,
+    onSelect,
+  } = props
 
   const [searchValue, setSearchValue] = useState('')
   const [listOpened, setListOpened] = useState(false)
+  const [selectedRow, setSelectedRow] = useState<SearchItem | null>(null)
   const [searchItems, setSearchItems] = useState<SearchItem[]>([])
   const [selectedKeyboardSwapOptionIndex, selectKeyboardSwapOptionIndex] =
     useState<number>(0)
 
+  const [
+    isSeveralTokenAccountsForInputMint,
+    setIsSeveralTokenAccountsForInputMint,
+  ] = useState(false)
+
+  const [
+    isSeveralTokenAccountsForOutputMint,
+    setIsSeveralTokenAccountsForOutputMint,
+  ] = useState(false)
+
   const wrapperRef = useRef(null)
   const tokensMap = useTokenInfos()
+  const [userTokensData] = useUserTokenAccounts()
 
   const onInput = (searchText: string) => {
     setSearchItems(() => {
@@ -136,7 +157,23 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   }
 
   const selectRow = (selected: SearchItem) => {
+    const { tokenFrom, tokenTo } = selected
+    const isSeveralTokenAccountsForSelectedInputMint =
+      userTokensData.filter((token) => token.mint === tokenFrom.mint).length > 1
+
+    const isSeveralTokenAccountsForSelectedOutputMint =
+      userTokensData.filter((token) => token.mint === tokenTo.mint).length > 1
+
     onSelect(selected)
+    setSelectedRow(selected)
+
+    setIsSeveralTokenAccountsForInputMint(
+      isSeveralTokenAccountsForSelectedInputMint
+    )
+    setIsSeveralTokenAccountsForOutputMint(
+      isSeveralTokenAccountsForSelectedOutputMint
+    )
+
     setListOpened(false)
   }
 
@@ -163,7 +200,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
   })
 
   useEffect(() => {
-    const onKeyDown = (event) => {
+    const onKeyDown = (event: any) => {
       switch (event.key) {
         case 'ArrowUp': {
           const newIndex =
@@ -261,11 +298,31 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
           })}
           {swapOptions.length === 0 && (
             <NoData>
-              <InlineText>That doesn't look like a supported swap!</InlineText>
+              <InlineText>
+                That doesn&apos;t look like a supported swap!
+              </InlineText>
             </NoData>
           )}
         </SwapsList>
       )}
+      <SelectSeveralAddressesPopup
+        tokens={userTokensData.filter(
+          (el) => el.mint === selectedRow?.tokenFrom.mint
+        )}
+        open={isSeveralTokenAccountsForInputMint}
+        close={() => setIsSeveralTokenAccountsForInputMint(false)}
+        selectTokenMintAddress={() => {}}
+        selectTokenAddressFromSeveral={setInputTokenAddressFromSeveral}
+      />
+      <SelectSeveralAddressesPopup
+        tokens={userTokensData.filter(
+          (el) => el.mint === selectedRow?.tokenTo.mint
+        )}
+        open={isSeveralTokenAccountsForOutputMint}
+        close={() => setIsSeveralTokenAccountsForOutputMint(false)}
+        selectTokenMintAddress={() => {}}
+        selectTokenAddressFromSeveral={setOutputTokenAddressFromSeveral}
+      />
     </Container>
   )
 }

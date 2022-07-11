@@ -55,6 +55,8 @@ const multiSwap = async ({
 }) => {
   if (!wallet.publicKey) return 'failed'
 
+  console.log('multi swap route', swapRoute)
+
   const startTime = Date.now()
 
   const commonInstructions = []

@@ -5,13 +5,23 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { AldrinConnection, AuthorizedWalletAdapter } from '@core/solana'
+import {
+  AldrinConnection,
+  AuthorizedWalletAdapter,
+  SendTransactionStatus,
+} from '@core/solana'
 
 interface SendTransactionParamsBase {
   connection: AldrinConnection
 }
 
+type FooType = Record<SendTransactionStatus, string>
+interface FooTypeI extends FooType {}
+
 export interface NotificationParams {
+  messages?: {
+    [key: keyof FooTypeI]: string | [string, string]
+  }
   sentMessage?: string | [string, string]
   successMessage?: string | [string, string]
   showNotification?: boolean
