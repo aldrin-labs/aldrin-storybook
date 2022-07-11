@@ -39,7 +39,7 @@ const Popup = ({
           href={AMMAudit}
           target="_blank"
           theme={theme}
-          color={UCOLORS.green4}
+          color={UCOLORS.blue3}
         >
           AMM Audit
         </Button>
@@ -52,7 +52,7 @@ const Popup = ({
           href={AMMV2_Audit}
           target="_blank"
           theme={theme}
-          color={UCOLORS.green4}
+          color={UCOLORS.blue3}
         >
           Stable Curve Audit
         </Button>
