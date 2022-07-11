@@ -18,7 +18,13 @@ export const ENDPOINTS = [
   },
 ]
 
+// TODO: change back to frontend solana
 const connection = new MultiEndpointsConnection(
+  [{ url: 'https://solana-api.projectserum.com', weight: 20 }],
+  'confirmed'
+)
+
+const fallbackConnection = new MultiEndpointsConnection(
   [{ url: 'https://frontend-solana-api-1.aldrin.com', weight: 20 }],
   'confirmed'
 )
@@ -35,6 +41,7 @@ const serumConnection = new MultiEndpointsConnection([
 const context = {
   connection,
   serumConnection,
+  fallbackConnection,
   endpoint: ENDPOINTS[0].endpoint,
   setEndpoint: () => null, // compatibility
 }
@@ -51,6 +58,10 @@ export const ConnectionProvider: React.FC = ({ children }) => {
 
 export function useConnection(): AldrinConnection {
   return useContext(ConnectionContext).connection as AldrinConnection
+}
+
+export function useFallbackConnection(): AldrinConnection {
+  return useContext(ConnectionContext).fallbackConnection as AldrinConnection
 }
 
 export function useMultiEndpointConnection(): AldrinConnection {

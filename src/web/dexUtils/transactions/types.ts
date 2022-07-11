@@ -7,8 +7,9 @@ import {
 
 import { AldrinConnection, AuthorizedWalletAdapter } from '@core/solana'
 
-interface SendTransactionParamsBase {
+export interface SendTransactionParamsBase {
   connection: AldrinConnection
+  fallbackConnection?: AldrinConnection
 }
 
 export interface NotificationParams {
@@ -28,6 +29,13 @@ export interface SendSignedTransactionParams
     NotificationParams,
     TransactionParams {
   transaction: Transaction
+}
+
+export interface SendSignedTransactionsParams
+  extends SendTransactionParamsBase,
+    NotificationParams,
+    TransactionParams {
+  transactions: Transaction[]
 }
 
 export interface WaitConfirmationParams extends SendTransactionParamsBase {
