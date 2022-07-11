@@ -51,6 +51,7 @@ export const Input: React.FC<InputProps> = (props) => {
     disabled,
     label,
     autoFocus,
+    maxLength,
   } = props
 
   const setFocus = () => {
@@ -81,6 +82,7 @@ export const Input: React.FC<InputProps> = (props) => {
           ref={input}
           autoComplete="off"
           autoFocus={autoFocus}
+          maxLength={maxLength}
         />
       </InputContainer>
 
