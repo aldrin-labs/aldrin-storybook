@@ -1,19 +1,17 @@
+import { Paper } from '@material-ui/core'
 import React from 'react'
-import styled from 'styled-components'
-import { withRouter } from 'react-router'
-import { compose } from 'recompose'
-import { Paper, withTheme } from '@material-ui/core'
-
-import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { VioletButton, Text } from './TokenNotAdded'
-import Warning from '@icons/newWarning.svg'
-import { SvgIcon } from '@sb/components'
 import Timer from 'react-compound-timer/build'
+import styled from 'styled-components'
+
+import { SvgIcon } from '@sb/components'
+import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { StyledDialogContent } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { CCAIListingTime } from '@sb/dexUtils/utils'
+
+import Warning from '@icons/newWarning.svg'
+
+import { VioletButton, Text } from './TokenNotAdded'
 
 const StyledPaper = styled(Paper)`
   border-radius: 2rem;
@@ -29,7 +27,7 @@ const TradingBlocked = ({ open, onClose, theme }) => {
       PaperComponent={StyledPaper}
       style={{ width: '85rem', margin: 'auto' }}
       fullScreen={false}
-      maxWidth={'md'}
+      maxWidth="md"
       open={open}
       aria-labelledby="responsive-dialog-title"
     >
@@ -46,7 +44,7 @@ const TradingBlocked = ({ open, onClose, theme }) => {
         <Row width="70%" direction="column" padding="2rem 0">
           <RowContainer justify="space-between" margin="0 0 6rem 0">
             <Text style={{ fontSize: '2.4rem' }}>Announcement!</Text>
-            <SvgIcon height={'5rem'} width={'5rem'} src={Warning} />
+            <SvgIcon height="5rem" width="5rem" src={Warning} />
           </RowContainer>
           <RowContainer
             direction="column"

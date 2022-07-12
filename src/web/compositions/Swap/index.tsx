@@ -23,13 +23,12 @@ import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withRegionCheck } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
+import { useJupiterSwap } from '@sb/hooks/useJupiter/useJupiterSwap'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { useJupiterSwap } from '@core/hooks/useJupiter/useJupiterSwap'
 import {
   getPoolsForSwapActiveTab,
   getSelectedPoolForSwap,
@@ -80,6 +79,7 @@ import {
   getSwapButtonText,
   getSwapNetworkFee,
 } from './utils'
+import { queryRendererHoc } from '../../components/QueryRenderer'
 
 const SwapPage = ({
   publicKey,
@@ -363,7 +363,7 @@ const SwapPage = ({
           <SwapBlockTemplate width="100%">
             <RowContainer margin="0 0 .5em 0" justify="space-between">
               <Row>
-                <ValueButton>
+                <ValueButton className="timer">
                   <ReloadTimer
                     data-testid="swap-reload-data-timer"
                     duration={15}
@@ -577,6 +577,7 @@ const SwapPage = ({
                 >
                   <span style={{ width: '100%' }}>
                     <Button
+                      className="btn"
                       $width="xl"
                       $padding="lg"
                       theme={theme}

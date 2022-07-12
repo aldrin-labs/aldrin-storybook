@@ -3,10 +3,10 @@ import React, { Component } from 'react'
 
 import ChartCardHeader from '@sb/components/ChartCardHeader'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+import { withErrorFallback } from '@sb/hoc'
 
 import { client } from '@core/graphql/apolloClient'
 import { MARKET_TICKERS } from '@core/graphql/subscriptions/MARKET_TICKERS'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import {
   reduceArrayLength,
   getNumberOfDigitsAfterDecimal,

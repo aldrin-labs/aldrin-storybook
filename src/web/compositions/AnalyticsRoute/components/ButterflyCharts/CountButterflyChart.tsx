@@ -2,7 +2,8 @@ import { Theme } from '@material-ui/core'
 import React from 'react'
 import { compose } from 'recompose'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+
 import { getSerumTradesCountStats } from '@core/graphql/queries/analytics/getSerumTradesCountStats'
 
 import {

@@ -4,6 +4,7 @@ import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
 
 import { Block, BlockContent } from '@sb/components/Block'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import {
   dayDuration,
   endOfDayTimestamp,
@@ -11,7 +12,6 @@ import {
   startOfDayTimestamp,
 } from '@sb/compositions/AnalyticsRoute/components/utils'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getTradingVolumeHistory } from '@core/graphql/queries/pools/getTradingVolumeHistory'
 import { msToNextHour } from '@core/utils/dateUtils'
 import { getRandomInt } from '@core/utils/helpers'
