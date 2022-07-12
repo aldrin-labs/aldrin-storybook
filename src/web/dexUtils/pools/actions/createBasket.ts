@@ -9,7 +9,7 @@ import { isTransactionFailed } from '../../send'
 import { signAndSendSingleTransaction } from '../../transactions'
 
 async function createBasket(params: CreateBasketParams) {
-  const { wallet, connection } = params
+  const { wallet, connection, fallbackConnection } = params
   try {
     const walletWithPk = walletAdapterToWallet(wallet)
 
@@ -22,6 +22,7 @@ async function createBasket(params: CreateBasketParams) {
     const result = await signAndSendSingleTransaction({
       wallet: walletWithPk,
       connection,
+      fallbackConnection,
       signers: commonSigners,
       transaction: commonTransaction,
     })

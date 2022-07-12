@@ -21,7 +21,10 @@ import {
 import { getTokenDataByMint } from '@sb/compositions/Pools/utils'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
+import {
+  useFallbackConnection,
+  useMultiEndpointConnection,
+} from '@sb/dexUtils/connection'
 import { getTokenName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculateWithdrawAmount } from '@sb/dexUtils/pools'
@@ -79,6 +82,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
   const { wallet } = useWallet()
   const tokensInfo = useTokenInfos()
   const connection = useMultiEndpointConnection()
+  const fallbackConnection = useFallbackConnection()
   const theme = useTheme()
 
   const [poolBalances, refreshPoolBalances] = usePoolBalances(selectedPool)
@@ -561,6 +565,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               result = await createBasketWithSwap({
                 wallet,
                 connection,
+                fallbackConnection,
                 pool: selectedPool,
                 poolBalances,
                 userBaseTokenAmount: +baseAmount,
@@ -580,6 +585,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
               result = await createBasket({
                 wallet,
                 connection,
+                fallbackConnection,
                 curveType: selectedPool.curveType,
                 poolPublicKey: new PublicKey(selectedPool.swapToken),
                 userBaseTokenAmount,

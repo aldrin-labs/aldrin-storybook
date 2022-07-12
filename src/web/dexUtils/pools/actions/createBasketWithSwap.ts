@@ -1,4 +1,3 @@
-
 import { isTransactionFailed } from '@sb/dexUtils/send'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { WalletAdapter } from '@sb/dexUtils/types'
@@ -25,6 +24,7 @@ export async function createBasketWithSwap(
     const result = await signAndSendSingleTransaction({
       wallet,
       connection: params.connection,
+      fallbackConnection: params.fallbackConnection,
       transaction,
       signers,
       focusPopup: true,
