@@ -10,9 +10,15 @@ import { getTokenNameByMintAddress } from '../../dexUtils/markets'
 import { BlockContent } from '../Block'
 import { Modal } from '../Modal'
 import { TokenIconWithName } from '../TokenIcon'
-import { Balance, SearchInput, TokenModalRow, IconContainer } from './styles'
-import { CloseIcon, ModalTitle, ModalTitleContainer } from '../Modal/styles'
-import styled from 'styled-components'
+import {
+  Balance,
+  SearchInput,
+  TokenModalRow,
+  IconContainer,
+  ModalHeader,
+  ModalTitleContainer,
+} from './styles'
+import { CloseIcon, ModalTitle } from '../Modal/styles'
 
 export interface Token {
   mint: string
@@ -26,25 +32,6 @@ interface SelectTokenModalProps {
   onSelect: (token: Token) => void
 }
 
-export const Test = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin: 20px 0px;
-`
-const Test2 = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 0 20px;
-  gap: 10px;
-  top: 20px;
-  position: sticky;
-  background: ${(props) => props.theme.colors.gray6};
-  overflow: hidden;
-  z-index: 3;
-`
-
 export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
   const { onClose, tokens, onSelect } = props
 
@@ -56,8 +43,8 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
 
   return (
     <Modal backdrop="dark" onClose={onClose} open>
-      <Test2>
-        <Test style={{ top: '5px', position: 'sticky' }}>
+      <ModalHeader>
+        <ModalTitleContainer>
           <ModalTitle>Select Token</ModalTitle>
           <CloseIcon
             onClick={() => {
@@ -78,7 +65,7 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
               />
             </svg>
           </CloseIcon>
-        </Test>
+        </ModalTitleContainer>
         <SearchInput
           name="token_search"
           append={
@@ -90,7 +77,7 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
           onChange={setSearch}
           placeholder="Search..."
         />
-      </Test2>
+      </ModalHeader>
 
       <BlockContent>
         {tokensWithName.map((t, idx) => (
