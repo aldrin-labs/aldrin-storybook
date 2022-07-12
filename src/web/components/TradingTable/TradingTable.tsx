@@ -1,19 +1,19 @@
+import { withTheme } from '@material-ui/styles'
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
-import { withTheme } from '@material-ui/styles'
 
-import { IProps, IState, IStateKeys } from './TradingTable.types'
 import { StyleForCalendar } from '@sb/components/GitTransactionCalendar/Calendar.styles'
 import TradingTabs from '@sb/components/TradingTable/TradingTabs/TradingTabs'
+import { withErrorFallback } from '@sb/hoc'
 
-import OpenOrdersTable from './OpenOrdersTable/OpenOrdersTable'
+import withMobileSize from '@core/hoc/withMobileSize'
+
 import Balances from './Balances/Balances'
 import FeeTiers from './Fee/FeeTiers'
-import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import withMobileSize from '@core/hoc/withMobileSize'
 import { OpenOrdersTableWrapper } from './OpenOrdersTable/OpenOrdersWrapper'
+import TradeHistoryTable from './TradeHistoryTable/TradeHistoryDataWrapper'
+import { IProps, IState, IStateKeys } from './TradingTable.types'
 
 class TradingTable extends React.PureComponent<IProps, IState> {
   state: IState = {
@@ -28,14 +28,14 @@ class TradingTable extends React.PureComponent<IProps, IState> {
   }
 
   handleChangePage = (tab: IStateKeys, value: number) => {
-    this.setState(({ [tab]: value } as unknown) as Pick<IState, keyof IState>)
+    this.setState({ [tab]: value } as unknown as Pick<IState, keyof IState>)
   }
 
   handleChangeRowsPerPage = (
     tab: IStateKeys,
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    this.setState(({ [tab]: +event.target.value } as unknown) as Pick<
+    this.setState({ [tab]: +event.target.value } as unknown as Pick<
       IState,
       keyof IState
     >)
@@ -72,22 +72,20 @@ class TradingTable extends React.PureComponent<IProps, IState> {
       marketType,
       updateTerminalViewMode,
       terminalViewMode,
+      newTheme,
     } = this.props
-
     return (
       <div
         id="tables"
         style={{
           height: '100%',
-          backgroundColor: theme.palette.dark.background,
-          borderLeft: theme.palette.border.main,
-          borderBottom: theme.palette.border.main,
+          backgroundColor: newTheme?.colors?.gray6,
+          borderLeft: newTheme?.colors?.gray2,
         }}
       >
         <TradingTabs
           {...{
             tab,
-            theme,
             marketType,
             handleTabChange: this.handleTabChange,
             updateTerminalViewMode,
@@ -146,7 +144,8 @@ export default React.memo(TradingTableWrapper, (prevProps, nextProps) => {
   if (
     prevProps.marketType === nextProps.marketType &&
     prevProps.terminalViewMode === nextProps.terminalViewMode &&
-    prevProps.isMobile === nextProps.isMobile
+    prevProps.isMobile === nextProps.isMobile &&
+    prevProps.newTheme === nextProps.newTheme
   ) {
     return true
   }

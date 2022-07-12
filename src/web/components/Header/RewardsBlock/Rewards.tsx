@@ -3,19 +3,17 @@ import { BN } from 'bn.js'
 import dayjs from 'dayjs'
 import React from 'react'
 
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { useConnection } from '@sb/dexUtils/connection'
 import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
 import { RIN_MINT } from '@sb/dexUtils/utils'
-import {
-  useUserVestings,
-  withrawVestingInstruction,
-} from '@sb/dexUtils/vesting'
+import { useUserVestings } from '@sb/dexUtils/vesting'
 import { useWallet } from '@sb/dexUtils/wallet'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
+import { withdrawVestingInstruction, walletAdapterToWallet } from '@core/solana'
 import { stripByAmount } from '@core/utils/chartPageUtils'
 import { estimateTime } from '@core/utils/dateUtils'
 
@@ -111,8 +109,9 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
       (availableToClaim * STAKING_FARMING_TOKEN_DIVIDER).toFixed(0)
     )
 
-    const [transaction] = await withrawVestingInstruction({
-      wallet,
+    const walletWithPk = walletAdapterToWallet(wallet)
+    const [transaction] = await withdrawVestingInstruction({
+      wallet: walletWithPk,
       connection,
       withdrawAccount: rinAccount
         ? new PublicKey(rinAccount.address)
@@ -122,7 +121,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
     })
 
     const result = await signAndSendSingleTransaction({
-      wallet,
+      wallet: walletWithPk,
       connection,
       transaction,
     })
@@ -149,7 +148,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
           RIN
         </InlineText>
         <FlexBlock alignItems="center">
-          <InlineText color="hint" weight={600}>
+          <InlineText color="gray1" weight={600}>
             Vested&nbsp;
           </InlineText>
 
@@ -164,46 +163,46 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
       <FlexBlock justifyContent="space-between" alignItems="center">
         <div>
           <div>
-            <InlineText color="hint" weight={600}>
+            <InlineText color="gray1" weight={600}>
               Total vested:
             </InlineText>
           </div>
           <div>
-            <InlineText weight={700} size="lg">
+            <InlineText color="gray1" weight={700} size="lg">
               {stripByAmount(startBalance, 2)}{' '}
-              <InlineText color="hint">RIN</InlineText>
+              <InlineText color="gray1">RIN</InlineText>
             </InlineText>
           </div>
           <div>
-            <InlineText color="hint">
+            <InlineText color="green7">
               ${stripByAmount(rinPrice * startBalance, 2)}
             </InlineText>
           </div>
         </div>
 
-        <ProgressBar $value={timeProgress * 100}>
+        <ProgressBar $value={Math.round(timeProgress * 100)}>
           <InlineText weight={600}>
             {timeLeft.days ? `${timeLeft.days}d` : `${timeLeft.hours}h`} &nbsp;
           </InlineText>
-          <InlineText color="hint">of vesting left</InlineText>{' '}
+          <InlineText color="gray1">of vesting left</InlineText>{' '}
         </ProgressBar>
       </FlexBlock>
       <Separator />
       <FlexBlock justifyContent="space-between" alignItems="center">
         <div>
           <div>
-            <InlineText color="hint" weight={600}>
+            <InlineText color="gray1" weight={600}>
               Available to claim:
             </InlineText>
           </div>
           <div>
-            <InlineText weight={700} size="lg">
+            <InlineText color="gray1" weight={700} size="lg">
               {stripByAmount(availableToClaim, 2)}{' '}
-              <InlineText color="hint">RIN</InlineText>
+              <InlineText color="gray1">RIN</InlineText>
             </InlineText>
           </div>
           <div>
-            <InlineText color="hint">
+            <InlineText color="green7">
               ${stripByAmount(rinPrice * availableToClaim, 2)}
             </InlineText>
           </div>

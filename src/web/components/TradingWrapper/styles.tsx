@@ -9,10 +9,10 @@ export const TablesBlockWrapper = styled(Grid)`
   border: none;
   position: relative;
   height: ${({
-    isDefaultTerminalViewMode,
+    $isDefaultTerminalViewMode,
   }: {
-    isDefaultTerminalViewMode: boolean
-  }) => (isDefaultTerminalViewMode ? '40%' : '50%')};
+    $isDefaultTerminalViewMode: boolean
+  }) => ($isDefaultTerminalViewMode ? '40%' : '50%')};
 
   && {
     box-shadow: none !important;
@@ -23,8 +23,8 @@ export const TablesBlockWrapper = styled(Grid)`
     flex-basis: 50%;
     height: 60%;
     display: ${(props) =>
-      props.terminalViewMode === 'fullScreenTablesMobile' ||
-      props.terminalViewMode === 'mobileChart'
+      props.$terminalViewMode === 'fullScreenTablesMobile' ||
+      props.$terminalViewMode === 'mobileChart'
         ? 'none'
         : 'flex'};
   }
@@ -65,13 +65,13 @@ export const StyledTab = styled(({ active, ...rest }) => <Button {...rest} />)`
   letter-spacing: 1.5px;
   transition: 0.3s all;
 
-  background: ${(props) => (props.active ? '#651CE4' : '#fff')};
-  color: ${(props) => (props.active ? '#fff' : '#651CE4')};
-  border: 1px solid #651ce4;
+  background: ${(props) => (props.active ? '#0E02EC' : '#fff')};
+  color: ${(props) => (props.active ? '#fff' : '#0E02EC')};
+  border: 1px solid #0e02ec;
   border-radius: 4px;
 
   &:hover {
-    background-color: ${(props) => (props.active ? '#651CE4' : '#F2F4F6')};
+    background-color: ${(props) => (props.active ? '#0E02EC' : '#F2F4F6')};
   }
 
   @media (max-width: 1400px) {
@@ -105,8 +105,8 @@ export const TerminalHeader = styled.div`
   width: 100%;
   display: flex;
   position: relative;
-  background-color: ${(props) => props.theme.palette.grey.main};
-  border-bottom: ${(props) => props.theme.palette.border.main};
+  background-color: ${(props) => props.theme.colors.gray10};
+  border-bottom: ${(props) => props.theme.colors.gray6};
 
   @media (max-width: 600px) {
     display: none;
@@ -129,7 +129,7 @@ export const FullHeightGrid = styled(({ needBorderRight, ...rest }) => (
 ))`
   height: 100%;
   border-right: ${(props) =>
-    props.needBorderRight && props.theme.palette.border.main};
+    props.needBorderRight && `0.1rem solid ${props.theme.colors.gray5}`};
 `
 export const BuyTerminal = styled(FullHeightGrid)`
   @media (max-width: 600px) {
@@ -168,21 +168,19 @@ export const TerminalModeButton = styled(
   font-weight: normal;
   letter-spacing: 0.05rem;
   width: 12.5%;
-  color: ${(props: { active: boolean; theme: Theme }) =>
-    props.active
-      ? props.theme.palette.blue.serum
-      : props.theme.palette.dark.main};
-  background-color: ${(props) => props.theme.palette.grey.main};
-  border-right: ${(props) => props.theme.palette.border.main};
+  color: ${(props) =>
+    props.active ? props.theme.colors.white : props.theme.colors.gray1};
+  background-color: ${(props) => props.theme.colors.gray10};
+  border-right: ${(props) => props.theme.colors.gray5};
   border-left: ${(props) => props.borderLeft || 'none'};
-  font-family: ${(props: { active: boolean; theme: Theme }) =>
+  font-family: ${(props) =>
     props.active ? 'Avenir Next Demi' : 'Avenir Next Medium'};
-  border-bottom: ${(props: { active: boolean; theme: Theme }) =>
-    props.active ? `0.2rem solid ${props.theme.palette.blue.serum}` : 'none'};
+  border-bottom: ${(props) =>
+    props.active ? `0.2rem solid ${props.theme.colors.gray1}` : 'none'};
   border-top: none;
   text-transform: none;
   white-space: nowrap;
-  padding: 1rem 0;
+  padding: 1.3rem 0;
   line-height: 1rem;
 
   &:hover {
@@ -191,10 +189,6 @@ export const TerminalModeButton = styled(
 
   &:focus {
     outline: none;
-  }
-
-  @media (max-width: 1600px) {
-    padding: 1rem 2rem;
   }
 `
 
@@ -245,19 +239,18 @@ export const SettingsLabel = styled(LeverageLabel)`
   font-size: 1.1rem;
   font-family: Avenir Next Medium;
   cursor: pointer;
-  color: ${(props) => props.theme.palette.grey.light || '#7284a0'};
+  color: ${(props) => props.theme.colors.gray1 || '#7284a0'};
 `
 
 export const StyledSelect = styled.select`
   width: 100%;
   background: ${(props) =>
-    (!props.disabled && props.theme.palette.white.background) || '#16253D'};
-  border: ${(props) =>
-    props.theme.palette.border.main || '.1rem solid #e0e5ec'};
+    (!props.disabled && props.theme.colors.gray5) || '#16253D'};
+  border: ${(props) => props.theme.colors.gray1 || '.1rem solid #e0e5ec'};
   border-radius: 0.2rem;
   padding: 0.2rem;
   margin: 0 0.5rem;
-  color: ${(props) => props.theme.palette.grey.light || '#7284a0'};
+  color: ${(props) => props.theme.colors.gray1 || '#7284a0'};
   font-weight: bold;
   font-size: 1rem;
   text-align: center;
@@ -315,6 +308,6 @@ export const SpotBalanceSpan = styled.span`
 export const TerminalComponentsContainer = styled(Grid)`
   @media (max-width: 600px) {
     display: ${(props) =>
-      props.terminalViewMode === 'mobileChart' ? 'none' : 'block'};
+      props.$terminalViewMode === 'mobileChart' ? 'none' : 'block'};
   }
 `

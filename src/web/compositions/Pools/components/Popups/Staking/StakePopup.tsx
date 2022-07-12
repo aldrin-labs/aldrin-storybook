@@ -1,11 +1,10 @@
-import { Theme, withTheme } from '@material-ui/core'
 import { PublicKey } from '@solana/web3.js'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
+import { useTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import AttentionComponent from '@sb/components/AttentionBlock'
-import SvgIcon from '@sb/components/SvgIcon'
 import { WhiteText } from '@sb/components/TraidingTerminal/ConfirmationPopup'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
@@ -28,18 +27,21 @@ import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { calculatePoolTokenPrice } from '@sb/dexUtils/pools/calculatePoolTokenPrice'
 import { POOL_TOKENS_MINT_DECIMALS } from '@sb/dexUtils/pools/config'
-import { filterOpenFarmingStates } from '@sb/dexUtils/pools/filterOpenFarmingStates'
 import { getPoolsProgramAddress } from '@sb/dexUtils/ProgramsMultiton'
 import { RefreshFunction } from '@sb/dexUtils/types'
+import {
+  formatNumbersForState,
+  formatNumberWithSpaces,
+} from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
+import { filterOpenFarmingStates } from '@core/solana'
 import { estimatedTime } from '@core/utils/dateUtils'
 import {
   formatNumberToUSFormat,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
-
-import Close from '@icons/closeIcon.svg'
 
 import { Button } from '../../Tables/index.styles'
 import { getFarmingStateDailyFarmingValue } from '../../Tables/UserLiquidity/utils/getFarmingStateDailyFarmingValue'
@@ -48,7 +50,6 @@ import { BoldHeader, StyledPaper } from '../index.styles'
 import { HintContainer } from './styles'
 
 interface StakePopupProps {
-  theme: Theme
   close: () => void
   selectedPool: PoolInfo
   allTokensData: TokenInfo[]
@@ -61,7 +62,6 @@ interface StakePopupProps {
 
 const Popup = (props: StakePopupProps) => {
   const {
-    theme,
     close,
     selectedPool,
     allTokensData,
@@ -80,7 +80,7 @@ const Popup = (props: StakePopupProps) => {
     maxPoolTokenAmount
   )
   const [operationLoading, setOperationLoading] = useState(false)
-
+  const theme = useTheme()
   const { wallet } = useWallet()
   const connection = useMultiEndpointConnection()
 
@@ -161,7 +161,6 @@ const Popup = (props: StakePopupProps) => {
 
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -178,7 +177,25 @@ const Popup = (props: StakePopupProps) => {
             ? 'Stake Pool Tokens'
             : 'Don’t forget to stake LP tokens'}
         </BoldHeader>
-        <SvgIcon style={{ cursor: 'pointer' }} onClick={close} src={Close} />
+        <CloseIconContainer
+          onClick={() => {
+            close()
+          }}
+        >
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 19 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+              stroke="#F5F5FB"
+              strokeWidth="2"
+            />
+          </svg>
+        </CloseIconContainer>
       </RowContainer>
       <RowContainer justify="flex-start">
         <Text style={{ marginBottom: '1rem' }} fontSize="1.4rem">
@@ -189,10 +206,14 @@ const Popup = (props: StakePopupProps) => {
       </RowContainer>
       <RowContainer>
         <InputWithCoins
+          data-testid="stake-lp-tokens-field"
           placeholder="0"
           theme={theme}
-          onChange={setPoolTokenAmount}
-          value={poolTokenAmount}
+          onChange={(v) => {
+            const valueForState = formatNumbersForState(v)
+            setPoolTokenAmount(valueForState)
+          }}
+          value={formatNumberWithSpaces(poolTokenAmount)}
           symbol="Pool Tokens"
           // alreadyInPool={0}
           maxBalance={maxPoolTokenAmount}
@@ -205,7 +226,10 @@ const Popup = (props: StakePopupProps) => {
           <Text>
             <Row align="flex-start">
               <span
-                style={{ color: '#53DF11', fontFamily: 'Avenir Next Demi' }}
+                style={{
+                  color: theme.colors.green7,
+                  fontFamily: 'Avenir Next Demi',
+                }}
               >
                 {formatNumberToUSFormat(stripDigitPlaces(farmingAPR, 2))}% APR
               </span>
@@ -217,7 +241,7 @@ const Popup = (props: StakePopupProps) => {
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
-            color: theme.palette.green.main,
+            color: theme.colors.green7,
           }}
         >
           {CREATE_FARMING_TICKET_SOL_FEE} SOL
@@ -230,7 +254,7 @@ const Popup = (props: StakePopupProps) => {
               theme={theme}
               margin="0 0 0 2rem"
               fontSize="5rem"
-              color="#fbf2f2"
+              color={theme.colors.gray0}
             />
           </Row>
           <Row width="80%" align="flex-start" direction="column">
@@ -271,6 +295,7 @@ const Popup = (props: StakePopupProps) => {
       )}
       <RowContainer justify="space-between" margin="3rem 0 2rem 0">
         <Button
+          data-testid="stake-lp-tokens-submit-btn"
           style={{ width: '100%', fontFamily: 'Avenir Next Medium' }}
           disabled={isDisabled}
           isUserConfident
@@ -336,4 +361,4 @@ const Popup = (props: StakePopupProps) => {
   )
 }
 
-export const StakePopup = withTheme()(Popup)
+export { Popup as StakePopup }

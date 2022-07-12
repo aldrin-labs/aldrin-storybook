@@ -1,22 +1,23 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
+
 import { TableWithSort } from '@sb/components'
-
 import { getEmptyTextPlaceholder } from '@sb/components/TradingTable/TradingTable.utils'
-
-import { notify } from '@sb/dexUtils/notifications'
 import { useConnection } from '@sb/dexUtils/connection'
-import { useWallet } from '@sb/dexUtils/wallet'
+import { notify } from '@sb/dexUtils/notifications'
 import { cancelOrder } from '@sb/dexUtils/send'
-import { combineOpenOrdersTable } from './OpenOrdersTable.utils'
+import { useWallet } from '@sb/dexUtils/wallet'
+
 import { openOrdersColumnNames } from '../TradingTable.mocks'
+import { combineOpenOrdersTable } from './OpenOrdersTable.utils'
 
 const OpenOrdersTable = (props) => {
   const { wallet } = useWallet()
   const connection = useConnection()
+  const theme = useTheme()
 
   const {
     tab,
-    theme,
     show,
     handlePairChange,
     openOrders,
@@ -46,8 +47,6 @@ const OpenOrdersTable = (props) => {
         description: e.message,
         type: 'error',
       })
-
-      return
     }
   }
 
@@ -73,7 +72,6 @@ const OpenOrdersTable = (props) => {
   return (
     <TableWithSort
       style={{
-        borderRadius: 'auto',
         height: 'calc(100% - 6rem)',
         overflowX: 'hidden',
         backgroundColor: 'inherit',
@@ -88,18 +86,21 @@ const OpenOrdersTable = (props) => {
       withCheckboxes={false}
       tableStyles={{
         cell: {
-          color: theme.palette.dark.main,
+          color: theme.colors.gray1,
           fontSize: '1.2rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
-          borderBottom: theme.palette.border.main,
+          borderBottom: theme.colors.gray5,
           backgroundColor: 'inherit',
           boxShadow: 'none',
           fontFamily: 'Avenir Next Light',
         },
         heading: {
-          backgroundColor: '#222429',
+          backgroundColor: theme.colors.gray6,
           fontSize: '1.3rem',
+          borderRadius: 'none',
+          color: theme.colors.gray1,
+          borderBottom: `0.1rem solid ${theme.colors.gray5}`,
         },
         tab: {
           padding: 0,

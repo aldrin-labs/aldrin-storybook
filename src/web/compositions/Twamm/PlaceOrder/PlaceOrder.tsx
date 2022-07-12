@@ -9,6 +9,7 @@ import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { InputWithType } from '@sb/components/InputWithType/InputWithType'
 import { Cell } from '@sb/components/Layout'
 import { Loader } from '@sb/components/Loader/Loader'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import {
   costOfAddingToken,
@@ -25,12 +26,11 @@ import { addOrder } from '@sb/dexUtils/twamm/addOrder'
 import { PairSettings } from '@sb/dexUtils/twamm/types'
 import { sleep } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { withRegionCheck } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
-import { withPublicKey } from '@core/hoc/withPublicKey'
-import { withRegionCheck } from '@core/hoc/withRegionCheck'
-import { limitDecimalsCustom, stripByAmount } from '@core/utils/chartPageUtils'
+import { limitDecimalsCustom, stripByAmount } from '@core/utils/numberUtils'
 
 import Arrows from '@icons/switchArrows.svg'
 
@@ -215,19 +215,19 @@ const PlaceOrder = ({
   }
 
   const checkSide = (mintTo, mintFrom) => {
-    let side = null
     if (
       mintFrom === selectedPairSettings.baseTokenMint &&
       mintTo === selectedPairSettings.quoteTokenMint
     ) {
-      side = 'ask'
-    } else if (
+      return 'ask'
+    }
+    if (
       mintTo === selectedPairSettings.baseTokenMint &&
       mintFrom === selectedPairSettings.quoteTokenMint
     ) {
-      side = 'bid'
+      return 'bid'
     }
-    return side
+    throw new Error('Unlnown side')
   }
 
   const mints = [
@@ -348,7 +348,6 @@ const PlaceOrder = ({
       wrap="nowrap"
     >
       <BlockTemplate
-        theme={theme}
         style={{ width: '100%', padding: '2rem 2rem 4rem 2rem', zIndex: '10' }}
       >
         <Row width="100%" align="stretch">
@@ -452,7 +451,7 @@ const PlaceOrder = ({
                   backgroundColor={
                     isButtonDisabled
                       ? '#3A475C'
-                      : 'linear-gradient(91.8deg, #651CE4 15.31%, #D44C32 89.64%)'
+                      : 'linear-gradient(91.8deg, #0E02EC 15.31%, #D44C32 89.64%)'
                   }
                   textTransform="none"
                   margin="0.5rem 0 0 0"

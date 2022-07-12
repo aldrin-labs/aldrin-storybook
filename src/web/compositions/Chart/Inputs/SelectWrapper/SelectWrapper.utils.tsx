@@ -5,12 +5,15 @@ import { TokenExternalLinks } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
 import { marketsByCategories } from '@core/config/marketsByCategories'
 import stableCoins from '@core/config/stableCoins'
-import { getNumberOfDecimalsFromNumber, stripByAmount } from '@core/utils/chartPageUtils'
 import {
-  formatNumberToUSFormat,
+  getNumberOfDecimalsFromNumber,
+  stripByAmount,
+} from '@core/utils/chartPageUtils'
+import {
   roundAndFormatNumber,
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
@@ -29,14 +32,6 @@ import {
   StyledTokenName,
 } from './SelectWrapperStyles'
 
-export const selectWrapperColumnNames = [
-  { label: '', id: 'favourite', isSortable: false },
-  { label: 'Pair', id: 'symbol', isSortable: true },
-  { label: 'Last price', id: 'lastPrice', isSortable: true },
-  { label: '24H change', id: '24hChange', isNumber: true, isSortable: true },
-  { label: '24H volume', id: '24hVolume', isNumber: true, isSortable: true },
-]
-
 export const filterNativeSolanaMarkets = (data, tokenMap) =>
   data.filter((el) => {
     const [base] = el.symbol.split('_')
@@ -50,13 +45,13 @@ export const filterSelectorDataByTab = ({
   data,
   tokenMap,
   allMarketsMap,
-  favouritePairsMap,
+  favouriteMarkets,
 }: {
   tab: SelectTabType
   data: ISelectData
   allMarketsMap: Map<string, any>
   tokenMap: Map<string, any>
-  favouritePairsMap: Map<string, string>
+  favouriteMarkets: string[]
 }) => {
   let processedData = [...data]
 
@@ -67,7 +62,7 @@ export const filterSelectorDataByTab = ({
   if (tab !== 'all') {
     if (tab === 'favourite') {
       processedData = processedData.filter((el) =>
-        favouritePairsMap.has(el.symbol)
+        favouriteMarkets.includes(el.symbol)
       )
     }
     if (tab === 'usdc') {
@@ -181,7 +176,7 @@ export const filterSelectorDataByTab = ({
   return processedData
 }
 
-export const filterDataBySymbolForDifferentDeviders = ({
+export const filterDataBySymbolForDifferentDividers = ({
   searchValue,
   symbol,
 }: {
@@ -274,15 +269,28 @@ export const getMarketsMapsByCoins = (markets) => {
   }
 }
 
+const FavouriteIcon = ({ symbol, onChange, value }) => {
+  return (
+    <SvgIcon
+      onClick={(e) => {
+        e.stopPropagation()
+        onChange(symbol)
+      }}
+      src={value ? favouriteSelected : favouriteUnselected}
+      width="2.5rem"
+      height="auto"
+    />
+  )
+}
+
 export const combineSelectWrapperData = ({
   data,
-  previousData,
   onSelectPair,
   theme,
-  searchValue,
   tab,
-  favouritePairsMap,
+  favouriteMarkets,
   tokenMap,
+  searchValue,
   serumMarketsDataMap,
   allMarketsMap,
   setIsMintsPopupOpen,
@@ -290,12 +298,11 @@ export const combineSelectWrapperData = ({
   toggleFavouriteMarket,
 }: {
   data: ISelectData
-  previousData?: ISelectData
+  searchValue: string
   onSelectPair: ({ value }: { value: string }) => void
   theme: any
-  searchValue: string
   tab: SelectTabType
-  favouritePairsMap: Map<string, string>
+  favouriteMarkets: string[]
   allMarketsMap: Map<string, any>
   tokenMap: Map<string, any>
   serumMarketsDataMap: Map<string, any>
@@ -309,373 +316,351 @@ export const combineSelectWrapperData = ({
   setIsMintsPopupOpen: (isOpen: boolean) => void
   toggleFavouriteMarket: (pair: string) => void
 }) => {
-  if (!data && !Array.isArray(data)) {
-    return []
-  }
-
-  let processedData = data.filter(
-    (market, index, arr) =>
-      arr.findIndex(
-        (marketInFindIndex) => marketInFindIndex.symbol === market.symbol
-      ) === index
+  let filteredData = data.filter((item) =>
+    filterDataBySymbolForDifferentDividers({ searchValue, symbol: item.symbol })
   )
 
-  processedData = filterSelectorDataByTab({
+  filteredData = filterSelectorDataByTab({
     tab,
-    data: processedData,
-    tokenMap,
+    data: filteredData,
     allMarketsMap,
-    favouritePairsMap,
+    favouriteMarkets,
+    tokenMap,
   })
 
-  processedData = processedData.filter((el) =>
-    filterDataBySymbolForDifferentDeviders({ searchValue, symbol: el.symbol })
-  )
+  return filteredData
+    .filter((item) => item.symbol !== 'CCAI_USDC')
+    .map((item) => {
+      const {
+        symbol = '',
+        closePrice = 0,
+        lastPriceDiff = 0,
+        volume = 0,
+        precentageTradesDiff = 0,
+        tradesCount = 0,
+        volumeChange = 0,
+        address = '',
+        programId = '',
+        minPrice = 0,
+        maxPrice = 0,
+      } = item || {
+        symbol: '',
+        closePrice: 0,
+        lastPriceDiff: 0,
+        volume: 0,
+        precentageTradesDiff: 0,
+        tradesCount: 0,
+        volumeChange: 0,
+        address: '',
+        programId: '',
+        minPrice: 0,
+        maxPrice: 0,
+      }
 
-  processedData = processedData.filter((el) => el.symbol !== 'CCAI_USDC')
+      const [base, quote] = symbol.split('_')
+      const pricePrecision = getNumberOfDecimalsFromNumber(closePrice)
 
-  const filtredData = processedData.map((el) => {
-    const {
-      symbol = '',
-      closePrice = 0,
-      lastPriceDiff = 0,
-      volume = 0,
-      precentageTradesDiff = 0,
-      tradesCount = 0,
-      volumeChange = 0,
-      address = '',
-      programId = '',
-      minPrice = 0,
-      maxPrice = 0,
-    } = el || {
-      symbol: '',
-      closePrice: 0,
-      lastPriceDiff: 0,
-      volume: 0,
-      precentageTradesDiff: 0,
-      tradesCount: 0,
-      volumeChange: 0,
-      address: '',
-      programId: '',
-      minPrice: 0,
-      maxPrice: 0,
-    }
+      const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
 
-    const [base, quote] = symbol.split('_')
-    const pricePrecision = getNumberOfDecimalsFromNumber(closePrice)
+      const strippedLastPriceDiff = +stripDigitPlaces(
+        lastPriceDiff,
+        pricePrecision
+      )
 
-    const isNotUSDTQuote = getIsNotUSDTQuote(symbol)
+      const strippedMarkPrice = +stripDigitPlaces(closePrice, pricePrecision)
 
-    const strippedLastPriceDiff = +stripDigitPlaces(
-      lastPriceDiff,
-      pricePrecision
-    )
+      const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
 
-    const strippedMarkPrice = +stripDigitPlaces(closePrice, pricePrecision)
+      const priceChangePercentage = !prevClosePrice
+        ? 0
+        : (closePrice - prevClosePrice) / (prevClosePrice / 100)
 
-    const prevClosePrice = strippedMarkPrice - strippedLastPriceDiff
+      const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
+      const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
 
-    const priceChangePercentage = !prevClosePrice
-      ? 0
-      : (closePrice - prevClosePrice) / (prevClosePrice / 100)
+      const marketName = symbol?.replace('_', '/')
+      const currentMarket = allMarketsMap?.get(symbol)
 
-    const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
-    const signTrades24hChange = +precentageTradesDiff > 0 ? '+' : '-'
+      const isAdditionalCustomUserMarket = item.isCustomUserMarket
+      const isAwesomeMarket = currentMarket?.isAwesomeMarket
 
-    const marketName = symbol?.replace('_', '/')
-    const currentMarket = allMarketsMap?.get(symbol)
+      const mint = getTokenMintAddressByName(base)
 
-    const isAdditionalCustomUserMarket = el.isCustomUserMarket
-    const isAwesomeMarket = currentMarket?.isAwesomeMarket
+      const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
+      const marketAddress = allMarketsMap?.get(item.symbol)?.address?.toBase58()
 
-    const mint = getTokenMintAddressByName(base)
+      const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || '--'
+      const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || '--'
 
-    const baseTokenInfo = tokenMap?.get(getTokenMintAddressByName(base))
-    const marketAddress = allMarketsMap?.get(el.symbol)?.address?.toBase58()
-
-    const avgBuy = serumMarketsDataMap?.get(symbol)?.avgBuy || '--'
-    const avgSell = serumMarketsDataMap?.get(symbol)?.avgSell || '--'
-
-    return {
-      id: `${symbol}`,
-      favourite: {
-        isSortable: false,
-        render: (
-          <SvgIcon
-            onClick={(e) => {
-              e.stopPropagation()
-              toggleFavouriteMarket(symbol)
-            }}
-            src={
-              favouritePairsMap.get(symbol)
-                ? favouriteSelected
-                : favouriteUnselected
-            }
-            width="2.5rem"
-            height="auto"
-          />
-        ),
-      },
-      emoji: {
-        render: (
-          <IconContainer>
-            <TokenIcon
-              mint={mint}
-              width="2.5rem"
-              emojiIfNoLogo
-              isAwesomeMarket={isAwesomeMarket}
-              isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
+      return {
+        id: `${symbol}`,
+        favourite: {
+          render: (
+            <FavouriteIcon
+              symbol={symbol}
+              value={favouriteMarkets.includes(symbol)}
+              onChange={toggleFavouriteMarket}
             />
-          </IconContainer>
-        ),
-      },
-      symbol: {
-        render: (
-          <Row direction="column" align="initial">
-            {baseTokenInfo && baseTokenInfo?.name && (
-              <StyledSymbol>
-                {baseTokenInfo?.name === 'Cryptocurrencies.Ai'
-                  ? 'Aldrin'
-                  : baseTokenInfo?.name.replace('(Sollet)', '')}
-              </StyledSymbol>
-            )}
-            <StyledTokenName>{marketName}</StyledTokenName>{' '}
-          </Row>
-        ),
-        onClick: () =>
-          onSelectPair({
-            value: symbol,
-            address,
-            programId,
-          }),
-        contentToSort: symbol,
-        color: theme.palette.dark.main,
-      },
-      price: {
-        contentToSort: +closePrice,
-        render: (
-          <>
-            <StyledColumn
-              style={{ flexDirection: 'row', justifyContent: 'flex-end' }}
-            >
-              <span
+          ),
+        },
+        emoji: {
+          render: (
+            <IconContainer>
+              <TokenIcon
+                mint={mint}
+                width="2.5rem"
+                emojiIfNoLogo
+                isAwesomeMarket={isAwesomeMarket}
+                isAdditionalCustomUserMarket={isAdditionalCustomUserMarket}
+              />
+            </IconContainer>
+          ),
+        },
+        symbol: {
+          render: (
+            <Row direction="column" align="initial">
+              {baseTokenInfo && baseTokenInfo?.name && (
+                <StyledSymbol>
+                  {baseTokenInfo?.name === 'Cryptocurrencies.Ai'
+                    ? 'Aldrin'
+                    : baseTokenInfo?.name.replace('(Sollet)', '')}
+                </StyledSymbol>
+              )}
+              <StyledTokenName>{marketName}</StyledTokenName>{' '}
+            </Row>
+          ),
+          onClick: () =>
+            onSelectPair({
+              value: symbol,
+              address,
+              programId,
+            }),
+          contentToSort: symbol,
+          color: theme.palette.dark.main,
+        },
+        price: {
+          contentToSort: +closePrice,
+          render: (
+            <>
+              <StyledColumn
+                style={{ flexDirection: 'row', justifyContent: 'flex-end' }}
+              >
+                <span
+                  style={{
+                    color: theme.palette.green.main,
+                  }}
+                >
+                  {closePrice === 0
+                    ? '-'
+                    : formatNumberWithSpaces(stripByAmount(closePrice))}
+                </span>
+                <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                  {quote}
+                </span>
+              </StyledColumn>
+              <StyledRow>
+                <span
+                  style={{
+                    color: theme.palette.green.main,
+                  }}
+                >
+                  {closePrice === 0
+                    ? '-'
+                    : formatNumberWithSpaces(stripByAmount(closePrice))}
+                </span>
+                <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                  {quote}
+                </span>
+              </StyledRow>
+            </>
+          ),
+
+          color: theme.palette.dark.main,
+        },
+        price24hChange: {
+          isNumber: true,
+          render: (
+            <>
+              <StyledRow
                 style={{
-                  color: theme.palette.green.main,
+                  color:
+                    +lastPriceDiff === 0
+                      ? ''
+                      : +lastPriceDiff > 0
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
                 }}
               >
-                {closePrice === 0
-                  ? '-'
-                  : formatNumberToUSFormat(stripByAmount(closePrice))}
-              </span>
-              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
-                {quote}
-              </span>
-            </StyledColumn>
-            <StyledRow>
-              <span
+                {`${sign24hChange}${formatNumberWithSpaces(
+                  stripDigitPlaces(lastPriceDiff, 2)
+                )}`}{' '}
+                <span style={{ color: '#96999C' }}> / </span>{' '}
+                {`${sign24hChange}${formatNumberWithSpaces(
+                  stripDigitPlaces(priceChangePercentage, 2)
+                )}%`}
+              </StyledRow>
+              <StyledColumn
                 style={{
-                  color: theme.palette.green.main,
+                  color:
+                    +lastPriceDiff === 0
+                      ? ''
+                      : +lastPriceDiff > 0
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
                 }}
               >
-                {closePrice === 0
-                  ? '-'
-                  : formatNumberToUSFormat(stripByAmount(closePrice))}
-              </span>
-              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
-                {quote}
-              </span>
-            </StyledRow>
-          </>
-        ),
+                <span>
+                  {`${formatNumberWithSpaces(
+                    stripDigitPlaces(closePrice, pricePrecision)
+                  )} ${quote}`}
+                </span>
+                <span
+                  style={{ fontFamily: 'Avenir Next Thin', marginTop: '1rem' }}
+                >{`${sign24hChange}${formatNumberWithSpaces(
+                  stripDigitPlaces(priceChangePercentage, 2)
+                )}%`}</span>
+              </StyledColumn>
+            </>
+          ),
 
-        color: theme.palette.dark.main,
-      },
-      price24hChange: {
-        isNumber: true,
-        render: (
-          <>
-            <StyledRow
-              style={{
-                color:
-                  +lastPriceDiff === 0
-                    ? ''
-                    : +lastPriceDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
-              }}
-            >
-              {`${sign24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(lastPriceDiff, 2)
-              )}`}{' '}
-              <span style={{ color: '#96999C' }}> / </span>{' '}
-              {`${sign24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(priceChangePercentage, 2)
-              )}%`}
-            </StyledRow>
-            <StyledColumn
-              style={{
-                color:
-                  +lastPriceDiff === 0
-                    ? ''
-                    : +lastPriceDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
-              }}
-            >
-              <span>
-                {`${formatNumberToUSFormat(
-                  stripDigitPlaces(closePrice, pricePrecision)
-                )} ${quote}`}
-              </span>
-              <span
-                style={{ fontFamily: 'Avenir Next Thin', marginTop: '1rem' }}
-              >{`${sign24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(priceChangePercentage, 2)
-              )}%`}</span>
-            </StyledColumn>
-          </>
-        ),
-
-        contentToSort: +priceChangePercentage,
-      },
-      volume24hChange: {
-        isNumber: true,
-        contentToSort: +volume || 0,
-        render: (
-          <span>
-            {`${isNotUSDTQuote ? '' : '$'}${formatNumberToUSFormat(
-              roundAndFormatNumber(volume, 2, false)
-            )}${isNotUSDTQuote ? ` ${quote}` : ''}`}
-          </span>
-        ),
-      },
-      trades24h: {
-        isNumber: true,
-        contentToSort: +tradesCount || 0,
-        render: (
-          <>
+          contentToSort: +priceChangePercentage,
+        },
+        volume24hChange: {
+          isNumber: true,
+          contentToSort: +volume || 0,
+          render: (
             <span>
-              {`${formatNumberToUSFormat(
-                roundAndFormatNumber(tradesCount, 0, false)
-              )} / `}
+              {`${isNotUSDTQuote ? '' : '$'}${formatNumberWithSpaces(
+                roundAndFormatNumber(volume, 2, false)
+              )}${isNotUSDTQuote ? ` ${quote}` : ''}`}
             </span>
-            <span
-              style={{
-                color:
-                  +precentageTradesDiff === 0
-                    ? ''
-                    : +precentageTradesDiff > 0
-                    ? theme.palette.green.main
-                    : theme.palette.red.main,
-              }}
-            >
-              {`${signTrades24hChange}${formatNumberToUSFormat(
-                stripDigitPlaces(Math.abs(precentageTradesDiff))
-              )}%`}
-            </span>
-          </>
-        ),
-      },
-      min24h: {
-        render: (
-          <span
-            style={{
-              color: theme.palette.red.main,
-            }}
-          >
+          ),
+        },
+        trades24h: {
+          isNumber: true,
+          contentToSort: +tradesCount || 0,
+          render: (
             <>
-              {' '}
-              {`${formatNumberToUSFormat(
-                stripDigitPlaces(minPrice, pricePrecision)
-              )}`}{' '}
-              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
-                {quote}
+              <span>
+                {`${formatNumberWithSpaces(
+                  roundAndFormatNumber(tradesCount, 0, false)
+                )} / `}
+              </span>
+              <span
+                style={{
+                  color:
+                    +precentageTradesDiff === 0
+                      ? ''
+                      : +precentageTradesDiff > 0
+                      ? theme.palette.green.main
+                      : theme.palette.red.main,
+                }}
+              >
+                {`${signTrades24hChange}${formatNumberWithSpaces(
+                  stripDigitPlaces(Math.abs(precentageTradesDiff))
+                )}%`}
               </span>
             </>
-          </span>
-        ),
-      },
-      max24h: {
-        render: (
-          <span
-            style={{
-              color: theme.palette.green.main,
-            }}
-          >
-            <>
-              {`${formatNumberToUSFormat(
-                stripDigitPlaces(maxPrice, pricePrecision)
-              )}`}{' '}
-              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
-                {quote}
-              </span>
-            </>
-          </span>
-        ),
-      },
-      avgSell14d: {
-        render: (
-          <>
+          ),
+        },
+        min24h: {
+          render: (
             <span
               style={{
                 color: theme.palette.red.main,
               }}
             >
-              {`${formatNumberToUSFormat(stripDigitPlaces(avgSell))}`}
+              <>
+                {' '}
+                {`${formatNumberWithSpaces(
+                  stripDigitPlaces(minPrice, pricePrecision)
+                )}`}{' '}
+                <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                  {quote}
+                </span>
+              </>
             </span>
-            <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
-              {quote}
-            </span>
-          </>
-        ),
-      },
-      avgBuy14d: {
-        render: (
-          <>
+          ),
+        },
+        max24h: {
+          render: (
             <span
               style={{
                 color: theme.palette.green.main,
               }}
             >
-              {`${formatNumberToUSFormat(stripDigitPlaces(avgBuy))}`}{' '}
-            </span>{' '}
-            <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
-              {quote}
+              <>
+                {`${formatNumberWithSpaces(
+                  stripDigitPlaces(maxPrice, pricePrecision)
+                )}`}{' '}
+                <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                  {quote}
+                </span>
+              </>
             </span>
-          </>
-        ),
-      },
-      links: {
-        render: (
-          <Row
-            style={{ flexWrap: 'nowrap' }}
-            justify="flex-start"
-            align="baseline"
-          >
-            <TokenExternalLinks
-              tokenName={base}
-              marketAddress={marketAddress}
-              onInfoClick={(e) => {
-                e.stopPropagation()
-                changeChoosenMarketData({ symbol: marketName, marketAddress })
-                setIsMintsPopupOpen(true)
-              }}
-              marketPair={symbol}
-            />
-          </Row>
-        ),
-      },
-
-      volume24hChangeIcon: {
-        render:
-          +volumeChange > 0 ? (
-            <SvgIcon src={MoreVolumeArrow} width="1rem" height="auto" />
-          ) : (
-            <SvgIcon src={LessVolumeArrow} width="1rem" height="auto" />
           ),
-      },
-    }
-  })
+        },
+        avgSell14d: {
+          render: (
+            <>
+              <span
+                style={{
+                  color: theme.palette.red.main,
+                }}
+              >
+                {`${formatNumberWithSpaces(stripDigitPlaces(avgSell))}`}
+              </span>
+              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                {quote}
+              </span>
+            </>
+          ),
+        },
+        avgBuy14d: {
+          render: (
+            <>
+              <span
+                style={{
+                  color: theme.palette.green.main,
+                }}
+              >
+                {`${formatNumberWithSpaces(stripDigitPlaces(avgBuy))}`}{' '}
+              </span>{' '}
+              <span style={{ color: '#96999C', marginLeft: '0.5rem' }}>
+                {quote}
+              </span>
+            </>
+          ),
+        },
+        links: {
+          render: (
+            <Row
+              style={{ flexWrap: 'nowrap' }}
+              justify="flex-start"
+              align="baseline"
+            >
+              <TokenExternalLinks
+                tokenName={base}
+                marketAddress={marketAddress}
+                onInfoClick={(e) => {
+                  e.stopPropagation()
+                  changeChoosenMarketData({ symbol: marketName, marketAddress })
+                  setIsMintsPopupOpen(true)
+                }}
+                marketPair={symbol}
+              />
+            </Row>
+          ),
+        },
 
-  return filtredData
+        volume24hChangeIcon: {
+          render:
+            +volumeChange > 0 ? (
+              <SvgIcon src={MoreVolumeArrow} width="1rem" height="auto" />
+            ) : (
+              <SvgIcon src={LessVolumeArrow} width="1rem" height="auto" />
+            ),
+        },
+      }
+    })
 }

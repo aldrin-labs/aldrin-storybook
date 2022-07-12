@@ -47,9 +47,9 @@ export const TokenIconContainer = styled.div`
 
 export const SearchInput = styled.input`
   font-size: ${FONT_SIZES.md};
-  color: #f2fbfb;
-  background: #17181a;
-  border: 0.1rem solid #383b45;
+  color: ${(props) => props.theme.colors.gray0};
+  background: ${(props) => props.theme.colors.gray5};
+  border: 0.1rem solid ${(props) => props.theme.colors.border};
   border-radius: 1.2rem;
   font-family: ${FONTS.main};
   width: ${(props) => props.width || '100%'};
@@ -118,6 +118,7 @@ export const DetailsLink = styled(Link)`
 `
 
 export const PoolName = styled(InlineText)`
+  color: ${(props) => props.theme.colors.white};
   &:hover {
     text-decoration: underline;
   }

@@ -1,34 +1,34 @@
+import { Theme } from '@material-ui/core'
 import React, { useMemo, useCallback } from 'react'
-import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { StyledTab, StyledHeader } from './SelectWrapperStyles'
-import { marketsByCategories } from '@core/config/marketsByCategories'
 
 import { SvgIcon } from '@sb/components'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+
+import { marketsByCategories } from '@core/config/marketsByCategories'
+
 import ExpandTableIcon from '@icons/expandIcon.svg'
 import SqueezeTableIcon from '@icons/squeezeIcon.svg'
 
-import { filterSelectorDataByTab } from './SelectWrapper.utils'
-import { Theme } from '@material-ui/core'
 import { ISelectData, SelectTabType } from './SelectWrapper.types'
+import { filterSelectorDataByTab } from './SelectWrapper.utils'
+import { StyledTab, StyledHeader } from './SelectWrapperStyles'
 
 const TableHeader = ({
-  theme,
   tab,
   data,
   tokenMap,
-  favouritePairsMap,
+  favouriteMarkets,
   isAdvancedSelectorMode,
   setSelectorMode,
   onTabChange,
   allMarketsMap,
 }: {
-  theme: Theme
   tab: SelectTabType
   data: ISelectData
   isAdvancedSelectorMode: boolean
   allMarketsMap: Map<string, any>
   tokenMap: Map<string, any>
-  favouritePairsMap: Map<string, string>
+  favouriteMarkets: string[]
   setSelectorMode: (mode: string) => void
   onTabChange: (tab: string) => void
 }) => {
@@ -38,11 +38,11 @@ const TableHeader = ({
         tab,
         data,
         allMarketsMap,
-        favouritePairsMap,
+        favouriteMarkets,
         tokenMap,
       })
     },
-    [data, allMarketsMap, favouritePairsMap, tokenMap]
+    [data, allMarketsMap, favouriteMarkets, tokenMap]
   )
 
   const dataWithoutCustomMarkets = useMemo(
@@ -51,7 +51,7 @@ const TableHeader = ({
   )
 
   return (
-    <StyledHeader theme={theme} isAdvancedSelectorMode={isAdvancedSelectorMode}>
+    <StyledHeader isAdvancedSelectorMode={isAdvancedSelectorMode}>
       <Row
         width="6rem"
         onClick={() => {
@@ -60,8 +60,8 @@ const TableHeader = ({
       >
         <SvgIcon
           src={isAdvancedSelectorMode ? SqueezeTableIcon : ExpandTableIcon}
-          width={'35%'}
-          height={'auto'}
+          width="35%"
+          height="auto"
         />
       </Row>
       <Row
@@ -71,7 +71,6 @@ const TableHeader = ({
         // style={{ borderLeft: '.1rem solid #383B45' }}
       >
         <StyledTab
-          theme={theme}
           isSelected={tab === 'all'}
           onClick={() => onTabChange('all')}
         >
@@ -86,7 +85,6 @@ const TableHeader = ({
           </span>
         </StyledTab>
         <StyledTab
-          theme={theme}
           isSelected={tab === 'favourite'}
           onClick={() => onTabChange('favourite')}
         >
@@ -97,11 +95,10 @@ const TableHeader = ({
               marginLeft: '0.5rem',
             }}
           >
-            {`(${favouritePairsMap.size})`}
+            {`(${favouriteMarkets.length})`}
           </span>
         </StyledTab>
         <StyledTab
-          theme={theme}
           isSelected={tab === 'solanaNative'}
           onClick={() => onTabChange('solanaNative')}
         >
@@ -116,7 +113,6 @@ const TableHeader = ({
           </span>
         </StyledTab>
         <StyledTab
-          theme={theme}
           isSelected={tab === 'usdt'}
           onClick={() => onTabChange('usdt')}
         >
@@ -131,7 +127,6 @@ const TableHeader = ({
           </span>
         </StyledTab>
         <StyledTab
-          theme={theme}
           isSelected={tab === 'usdc'}
           onClick={() => onTabChange('usdc')}
         >
@@ -146,7 +141,6 @@ const TableHeader = ({
           </span>
         </StyledTab>
         <StyledTab
-          theme={theme}
           isSelected={tab === 'sol'}
           onClick={() => onTabChange('sol')}
         >
@@ -184,7 +178,6 @@ const TableHeader = ({
               ([category, categoriesData]) => {
                 return (
                   <StyledTab
-                    theme={theme}
                     isSelected={tab === category}
                     onClick={() => onTabChange(category)}
                   >
@@ -203,7 +196,6 @@ const TableHeader = ({
               }
             )}
             <StyledTab
-              theme={theme}
               isSelected={tab === 'leveraged'}
               onClick={() => onTabChange('leveraged')}
             >

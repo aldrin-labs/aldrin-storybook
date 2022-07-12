@@ -1,10 +1,11 @@
-import { ReactNode, SyntheticEvent } from 'react'
+import { ReactNode } from 'react'
 
 export interface DataHeadColumn {
   key: string
   sortable?: boolean
   hint?: ReactNode
   title: ReactNode
+  getWidth?: (width: number) => number
 }
 
 export interface DataCellValue {
@@ -27,18 +28,20 @@ export interface DataTableProps<E> {
   // TODO: extract column names & pass to values
   columns: DataHeadColumn[]
   data: DataCellValues<E>[]
-  defaultSortColumn?: string
-  defaultSortOrder?: SORT_ORDER
+  sort?: {
+    field: string
+    direction: string
+  }
   name: string
   expandableContent?: (row: DataCellValues<E>) => ReactNode
-  onRowClick?: (
-    e: SyntheticEvent<HTMLTableRowElement>,
-    row: DataCellValues<E>
-  ) => void
+  onRowClick?: (params: { rowData: DataCellValues<E> }) => void
   noDataText?: ReactNode
+  generateTestId: (a?: string) => string
 }
 
 export interface DataTableState {
-  sortColumn: string
-  sortOrder: SORT_ORDER
+  sort: {
+    field: string
+    direction: SORT_ORDER.DESC | SORT_ORDER.ASC | SORT_ORDER.NONE
+  }
 }

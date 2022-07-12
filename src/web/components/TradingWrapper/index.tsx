@@ -1,21 +1,22 @@
+import { Grid } from '@material-ui/core'
 import React from 'react'
 import { compose } from 'recompose'
-import { Grid } from '@material-ui/core'
 
-import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-
-import { isSPOTMarketType } from '@core/utils/chartPageUtils'
-
-import TraidingTerminal from '../TraidingTerminal'
+import { SCheckbox } from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
+import BlueSlider from '@sb/components/Slider/BlueSlider'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import TraidingTerminal, {
+  TradeInputContent,
+} from '@sb/components/TraidingTerminal/index'
+import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
+import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
+import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import { withErrorFallback } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
 import { client } from '@core/graphql/apolloClient'
-
-import {
-  SRadio,
-  SCheckbox,
-} from '@sb/components/SharePortfolioDialog/SharePortfolioDialog.styles'
-import Bell from '@icons/bell.svg'
+import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
+import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 
 import {
   TerminalContainer,
@@ -30,27 +31,11 @@ import {
   SellTerminal,
   TerminalComponentsContainer,
 } from './styles'
-
-import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import SvgIcon from '@sb/components/SvgIcon'
-import { TradeInputContent } from '@sb/components/TraidingTerminal/index'
-import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
-import {
-  InputRowContainer,
-  AdditionalSettingsButton,
-} from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
-import BlueSlider from '@sb/components/Slider/BlueSlider'
 import { TradingViewBotTerminalMemo } from './TradingViewBotTerminal'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 
 const generateToken = () =>
-  Math.random()
-    .toString(36)
-    .substring(2, 15) +
-  Math.random()
-    .toString(36)
-    .substring(2, 15)
+  Math.random().toString(36).substring(2, 15) +
+  Math.random().toString(36).substring(2, 15)
 
 class SimpleTabs extends React.Component<any, any> {
   state: {
@@ -84,9 +69,8 @@ class SimpleTabs extends React.Component<any, any> {
       return {
         leverage: componentLeverage,
       }
-    } else {
-      return null
     }
+    return null
   }
 
   shouldComponentUpdate(nextProps) {
@@ -153,18 +137,14 @@ class SimpleTabs extends React.Component<any, any> {
       })
       .subscribe({
         next: (data: { loading: boolean; data: any }) => {
-          const {
-            type,
-            side,
-            amount,
-            price,
-          } = data.data.listenSerumOrdersByTVAlerts
+          const { type, side, amount, price } =
+            data.data.listenSerumOrdersByTVAlerts
 
           const variables =
             type === 'limit'
-              ? { limit: price, price, amount: amount }
+              ? { limit: price, price, amount }
               : type === 'market'
-              ? { amount: amount }
+              ? { amount }
               : {}
 
           that.props.placeOrder(side, type, variables, {
@@ -243,23 +223,23 @@ class SimpleTabs extends React.Component<any, any> {
       baseCurrencyAccount,
       quoteCurrencyAccount,
       isButtonLoaderShowing,
+      newTheme,
     } = this.props
 
     const isSPOTMarket = isSPOTMarketType(marketType)
     const maxAmount = [funds[1].quantity, funds[0].quantity]
     return (
       <TerminalComponentsContainer
-        terminalViewMode={terminalViewMode}
+        $terminalViewMode={terminalViewMode}
         id="tradingTerminal"
         item
         xs={12}
-        style={{ height: '100%', padding: '0 0 0 0' }}
+        style={{ height: '100%', padding: '0' }}
       >
-        <CustomCard theme={theme} style={{ borderTop: 0, overflow: 'unset' }}>
+        <CustomCard style={{ borderTop: 0, overflow: 'unset' }}>
           <TerminalHeader
-            key={'spotTerminal'}
+            key="spotTerminal"
             // style={{ display: 'flex' }}
-            theme={theme}
           >
             <div
               style={{
@@ -270,8 +250,8 @@ class SimpleTabs extends React.Component<any, any> {
             >
               <div>
                 <TerminalModeButton
+                  data-testid="trading-mode-limit"
                   style={{ width: '10rem' }}
-                  theme={theme}
                   active={mode === 'limit'}
                   onClick={() => {
                     this.setState({
@@ -287,8 +267,8 @@ class SimpleTabs extends React.Component<any, any> {
                   Limit
                 </TerminalModeButton>
                 <TerminalModeButton
+                  data-testid="trading-mode-market"
                   style={{ width: '10rem' }}
-                  theme={theme}
                   active={mode === 'market'}
                   onClick={() => {
                     this.setState({
@@ -312,10 +292,8 @@ class SimpleTabs extends React.Component<any, any> {
               >
                 {mode === 'market' ? (
                   <DarkTooltip
-                    maxWidth={'35rem'}
-                    title={
-                      'A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading.'
-                    }
+                    maxWidth="35rem"
+                    title="A limit order for a price higher than the purchase price of the percentage you specify will be placed immediately after purchase, so you take profit from SRM trading."
                   >
                     <FuturesSettings
                       theme={theme}
@@ -334,7 +312,7 @@ class SimpleTabs extends React.Component<any, any> {
                           padding: '0 0.8rem 0 0',
                         }}
                       />
-                      <SettingsLabel theme={theme} htmlFor="takeProfitButton">
+                      <SettingsLabel htmlFor="takeProfitButton">
                         Take Profit
                       </SettingsLabel>
                     </FuturesSettings>
@@ -343,9 +321,8 @@ class SimpleTabs extends React.Component<any, any> {
 
                 {mode === 'limit' ? (
                   <TerminalHeader
-                    key={'futuresTerminal'}
+                    key="futuresTerminal"
                     style={{ display: 'flex', border: 'none' }}
-                    theme={theme}
                   >
                     <SettingsContainer>
                       <FuturesSettings key="postOnlyTerminalController">
@@ -361,7 +338,7 @@ class SimpleTabs extends React.Component<any, any> {
                             })
                           }
                         />
-                        <SettingsLabel theme={theme} htmlFor="postOnly">
+                        <SettingsLabel htmlFor="postOnly">
                           post only
                         </SettingsLabel>
                       </FuturesSettings>
@@ -381,7 +358,6 @@ class SimpleTabs extends React.Component<any, any> {
                           }
                         />
                         <SettingsLabel
-                          theme={theme}
                           htmlFor="ioc"
                           style={{ textTransform: 'uppercase' }}
                         >
@@ -494,14 +470,10 @@ class SimpleTabs extends React.Component<any, any> {
                 />
               ) : (
                 <>
-                  <BuyTerminal
-                    theme={theme}
-                    xs={6}
-                    item
-                    needBorderRight={!tradingBotEnabled}
-                  >
+                  <BuyTerminal xs={6} item needBorderRight={!tradingBotEnabled}>
                     <TerminalContainer>
                       <TraidingTerminal
+                        newTheme={newTheme}
                         isButtonLoaderShowing={isButtonLoaderShowing}
                         baseCurrencyAccount={baseCurrencyAccount}
                         quoteCurrencyAccount={quoteCurrencyAccount}
@@ -590,8 +562,8 @@ class SimpleTabs extends React.Component<any, any> {
                                   </p>
                                 </>
                               }
-                              title={'Buy SRM Each'}
-                              lineMargin={'0 1.2rem 0 1rem'}
+                              title="Buy SRM Each"
+                              lineMargin="0 1.2rem 0 1rem"
                               style={{
                                 borderBottom: theme.palette.border.main,
                                 padding: '1rem 0',
@@ -601,12 +573,12 @@ class SimpleTabs extends React.Component<any, any> {
                                 <InputRowContainer>
                                   <TradeInputContent
                                     theme={theme}
-                                    padding={'0 1.5% 0 0'}
-                                    width={'calc(50%)'}
-                                    symbol={'%'}
-                                    title={'TP'}
-                                    textAlign={'right'}
-                                    needTitle={true}
+                                    padding="0 1.5% 0 0"
+                                    width="calc(50%)"
+                                    symbol="%"
+                                    title="TP"
+                                    textAlign="right"
+                                    needTitle
                                     value={takeProfitPercentage}
                                     onChange={(e) => {
                                       this.setState({
@@ -650,7 +622,7 @@ class SimpleTabs extends React.Component<any, any> {
                                 </>
                               }
                               title={"Bot's lifetime"}
-                              lineMargin={'0 1.2rem 0 1rem'}
+                              lineMargin="0 1.2rem 0 1rem"
                               style={{
                                 borderBottom: theme.palette.border.main,
                                 padding: '1rem 0',
@@ -660,8 +632,8 @@ class SimpleTabs extends React.Component<any, any> {
                                 <TradeInputContent
                                   theme={theme}
                                   haveSelector
-                                  symbol={'min'}
-                                  width={'calc(50% - .4rem)'}
+                                  symbol="min"
+                                  width="calc(50% - .4rem)"
                                   value={tradingBotTotalTime}
                                   onChange={(e) => {
                                     if (+e.target.value > 720) {
@@ -683,7 +655,7 @@ class SimpleTabs extends React.Component<any, any> {
                                   theme={theme}
                                   showMarks={false}
                                   value={tradingBotTotalTime}
-                                  valueSymbol={'min'}
+                                  valueSymbol="min"
                                   min={0}
                                   max={720}
                                   sliderContainerStyles={{
@@ -706,11 +678,12 @@ class SimpleTabs extends React.Component<any, any> {
                     <SellTerminal theme={theme} xs={6} item>
                       <TerminalContainer>
                         <TraidingTerminal
+                          newTheme={newTheme}
                           isButtonLoaderShowing={isButtonLoaderShowing}
                           baseCurrencyAccount={baseCurrencyAccount}
                           quoteCurrencyAccount={quoteCurrencyAccount}
-                          byType={'sell'}
-                          sideType={'sell'}
+                          byType="sell"
+                          sideType="sell"
                           setAutoConnect={setAutoConnect}
                           providerUrl={providerUrl}
                           setProvider={setProvider}

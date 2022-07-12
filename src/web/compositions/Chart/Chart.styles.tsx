@@ -1,4 +1,4 @@
-import { Card, Grid, Button, Theme } from '@material-ui/core'
+import { Card, Grid, Button } from '@material-ui/core'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled, { createGlobalStyle } from 'styled-components'
@@ -60,8 +60,8 @@ html {
   html {
     font-size: 15px !important;
   }
-}  
-        
+}
+
   .virtualized-row {
     font-family: Avenir Next Demi;
     font-size: 1.3rem;
@@ -121,13 +121,8 @@ export const PanelWrapper = styled.div`
 export const CustomCard = styled(Card)`
   width: 100%;
   height: 100%;
-  background-color: inherit;
-  border: ${(props) =>
-    (props.theme &&
-      props.theme.palette &&
-      props.theme.palette.border &&
-      props.theme.palette.border.main) ||
-    '.1rem solid #e0e5ec'};
+  background-color: ${(props) => props.theme.colors.gray6};
+  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
   border-radius: 0;
   box-shadow: none;
 `
@@ -140,8 +135,7 @@ export const PanelCard = styled.div`
   padding: 0.1rem;
   margin: 0;
   min-height: auto;
-  border-right: ${(props: { marketType: number; theme: Theme }) =>
-    props.theme.palette.border.new};
+  border-right: ${(props: { marketType: number }) => props.theme.colors.gray6};
   font-weight: bold;
   text-transform: capitalize;
   font-family: Avenir Next;
@@ -153,7 +147,7 @@ export const PanelCardTitle = styled.span`
   padding: 0.1rem 1rem 0.3rem 1rem;
   font-size: 1.3rem;
   font-family: Avenir Next Light;
-  color: ${(props) => props.theme.palette.grey.text};
+  color: ${(props) => props.theme.colors.gray1};
   letter-spacing: 0.01rem;
 
   @media (min-width: 1400px) {
@@ -164,7 +158,7 @@ export const PanelCardTitle = styled.span`
 export const PanelCardValue = styled.span`
   white-space: pre-line;
   font-family: Avenir Next Medium;
-  color: ${(props) => props.theme.palette.white.primary};
+  color: ${(props) => props.theme.colors.gray0};
   font-size: 1.3rem;
   padding: 0.1rem 1rem;
   letter-spacing: 0.01rem;
@@ -177,7 +171,7 @@ export const PanelCardValue = styled.span`
 export const PanelCardSubValue = styled.span`
   padding: 0.1rem 1rem;
   padding-left: 0.4rem;
-  color: ${(props) => props.theme.palette.dark.main};
+  color: ${(props) => props.theme.colors.gray0};
   letter-spacing: 0.01rem;
   font-size: 1.3rem;
 
@@ -198,8 +192,8 @@ export const RangesContainer = styled(Card)`
   border-radius: 0;
 `
 
-export const TablesBlockWrapper = styled(({ background = '', ...rest }) => (
-  <CustomCard {...rest} />
+export const TablesBlockWrapper = styled(({ background = '' }) => (
+  <CustomCard />
 ))`
   min-width: 150px;
   position: relative;
@@ -216,11 +210,8 @@ export const TablesBlockWrapper = styled(({ background = '', ...rest }) => (
     position: relative;
   }
 `
-// order book container
 
-export const OrderbookContainer = styled(({ background = '', ...rest }) => (
-  <CustomCard {...rest} />
-))`
+export const OrderbookContainer = styled(CustomCard)`
   border-right: 0;
   border-top: 0;
 
@@ -236,9 +227,7 @@ export const OrderbookContainer = styled(({ background = '', ...rest }) => (
   }
 `
 
-export const TradeHistoryWrapper = styled(({ background = '', ...rest }) => (
-  <CustomCard {...rest} />
-))`
+export const TradeHistoryWrapper = styled(CustomCard)`
   border-top: 0;
 
   && {
@@ -296,12 +285,7 @@ export const TablesContainer = styled(Grid)`
 
 export const TradingTerminalContainer = styled(
   ({
-    isDefaultTerminalViewMode,
     MASTER_BUILD,
-    hideDepthChart,
-    hideOrderbook,
-    hideTradeHistory,
-    terminalViewMode,
     ...rest
   }) => <div {...rest} />
 )`
@@ -310,13 +294,13 @@ export const TradingTerminalContainer = styled(
   position: relative;
   // 60% - 3%, the half of height cards, will fix in future
   width: ${(props) =>
-    props.hideTradeHistory
+    props.$hideTradeHistory
       ? '17%'
-      : props.hideOrderbook
-        ? '17%'
-        : props.hideDepthChart
-          ? '35%'
-          : '32%'};
+      : props.$hideOrderbook
+      ? '17%'
+      : props.$hideDepthChart
+      ? '35%'
+      : '32%'};
   overflow: hidden;
 
   flex-direction: column;
@@ -327,20 +311,18 @@ export const TradingTerminalContainer = styled(
   @media (max-width: 600px) {
     width: 100%;
     display: ${(props) =>
-    props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
+      props.$terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
     height: ${(props) =>
-    props.terminalViewMode === 'mobileChart' ? '35%' : '100%'};
+      props.$terminalViewMode === 'mobileChart' ? '35%' : '100%'};
   }
 `
 
 export const TopChartsContainer = styled(
   ({
-    isDefaultTerminalViewMode,
     MASTER_BUILD,
     hideDepthChart,
     hideOrderbook,
     hideTradeHistory,
-    terminalViewMode,
     ...rest
   }) => <div {...rest} />
 )`
@@ -353,50 +335,42 @@ export const TopChartsContainer = styled(
   max-width: 100%;
   flex-basis: 100%;
   height: ${(props) =>
-    props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
+    props.$isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   @media screen and (max-width: 1440px) {
     height: ${(props) =>
-    props.isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
+      props.$isDefaultTerminalViewMode ? 'calc(60%)' : 'calc(50%)'};
   }
 
   @media screen and (max-width: 1140px) {
     height: ${(props) =>
-    props.isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
+      props.$isDefaultTerminalViewMode ? 'calc(61%)' : 'calc(51%)'};
   }
 
   @media screen and (max-width: 600px) {
     flex-basis: ${(props) =>
-    props.terminalViewMode === 'mobileChart' ? '100%' : '50%'};
+      props.$terminalViewMode === 'mobileChart' ? '100%' : '50%'};
     height: ${(props) =>
-    props.terminalViewMode === 'mobileChart' ? '100%' : '60%'};
+      props.$terminalViewMode === 'mobileChart' ? '100%' : '60%'};
     display: ${(props) =>
-    props.terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
+      props.$terminalViewMode === 'fullScreenTablesMobile' ? 'none' : 'block'};
   }
 `
 
-export const ChartsContainer = styled(
-  ({
-    isDefaultTerminalViewMode,
-    MASTER_BUILD,
-    hideDepthChart,
-    hideOrderbook,
-    hideTradeHistory,
-    terminalViewMode,
-    ...rest
-  }) => <div {...rest} />
-)`
+export const ChartsContainer = styled(({ MASTER_BUILD, ...rest }) => (
+  <div {...rest} />
+))`
   height: 100%;
   transition: all 0.5s ease;
   position: relative;
   display: flex;
   width: ${(props) =>
-    props.hideTradeHistory
+    props.$hideTradeHistory
       ? '83%'
-      : props.hideOrderbook
-        ? '83%'
-        : props.hideDepthChart
-          ? '65%'
-          : '68%'};
+      : props.$hideOrderbook
+      ? '83%'
+      : props.$hideDepthChart
+      ? '65%'
+      : '68%'};
   justify-content: flex-end;
   flex-direction: column;
   border-radius: 0;
@@ -406,9 +380,9 @@ export const ChartsContainer = styled(
 
   @media (max-width: 600px) {
     display: ${(props) =>
-    props.terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
+      props.$terminalViewMode === 'mobileChart' ? 'flex' : 'none'};
     width: 100%;
-    height: ${(props) => props.terminalViewMode === 'mobileChart' && '65%'};
+    height: ${(props) => props.$terminalViewMode === 'mobileChart' && '65%'};
   }
 
   background-color: ${(props) => props.theme.palette.white.background};
@@ -417,7 +391,7 @@ export const ChartsContainer = styled(
 export const TradingTabelContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
 )`
-  background-color: ${(props) => props.theme.palette.white.background};
+  background-color: ${(props) => props.theme.colors.gray10};
   position: relative;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '0%')};
   justify-content: flex-start;
@@ -447,8 +421,8 @@ export const MobileTradingTabelContainer = styled(
     props.isDefaultTerminalViewMode
       ? '40%'
       : props.isTablesExpanded
-        ? '100%'
-        : '0%'};
+      ? '100%'
+      : '0%'};
   justify-content: flex-start;
   flex-direction: column;
   overflow: hidden;
@@ -550,7 +524,7 @@ export const MarketStatsContainer = styled.div`
 `
 
 export const MobileMarketStatsContainer = styled.div`
-  dispay: flex;
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
   @media (min-width: 600px) {
@@ -561,9 +535,9 @@ export const ChartAndOrderbookContainer = styled(Grid)`
   height: 100%;
   @media (max-width: 600px) {
     dispay: ${(props) =>
-    props.terminalViewMode === 'mobileChart' ? 'flex' : 'auto'};
+    props.$terminalViewMode === 'mobileChart' ? 'flex' : 'auto'};
     flex-direction: ${(props) =>
-    props.terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
+    props.$terminalViewMode === 'mobileChart' ? 'column' : 'auto'};
   }
 `
 export const RoundLink = styled(Link)`

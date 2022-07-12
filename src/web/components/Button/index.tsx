@@ -4,24 +4,25 @@ import {
   FONTS,
   BORDER_RADIUS,
   WIDTH,
+  UCOLORS,
 } from '@variables/variables'
 import styled, { css } from 'styled-components'
 
-import RinLogo from '@icons/DarkLogo.svg'
+import RinLogo from '@icons/blueRINLogo.svg'
 
 const VARIANTS = {
   primary: css`
-    background: ${COLORS.primary};
-    border-color: ${COLORS.primary};
+    background: ${(props) => props.theme.colors.blue3};
+    border-color: ${(props) => props.theme.colors.blue3};
 
     &:disabled {
-      background: ${COLORS.cardsBack};
-      border-color: ${COLORS.cardsBack};
+      background: ${(props) => props.theme.colors.gray2};
+      border-color: ${(props) => props.theme.colors.gray2};
     }
   `,
   secondary: css`
-    background: ${COLORS.background};
-    border-color: ${COLORS.background};
+    background: ${(props) => props.theme.colors.block};
+    border-color: ${(props) => props.theme.colors.block};
 
     &:disabled {
       background: ${COLORS.hint};
@@ -43,6 +44,19 @@ const VARIANTS = {
     }
   `,
 
+  border: css`
+    border-color: ${UCOLORS.blue2};
+    color: ${UCOLORS.blue2};
+    border-radius: ${BORDER_RADIUS.sm};
+    transition: 0.3s;
+
+    &:hover {
+      border-color: ${UCOLORS.blue1};
+      background-color: ${UCOLORS.blue1};
+      color: ${UCOLORS.blue5};
+    }
+  `,
+
   error: css`
     background: ${COLORS.error};
     border-color: ${COLORS.error};
@@ -55,7 +69,8 @@ const VARIANTS = {
 
   'outline-white': css`
     background: transparent;
-    border-color: ${COLORS.white};
+    border-color: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.white};
 
     &:disabled {
       color: ${COLORS.hint};
@@ -189,6 +204,8 @@ export const Button = styled.button<ButtonProps>`
     pointer-events: none;
     cursor: not-allowed;
     pointer-events: none;
+    border: none;
+    background-color: ${(props) => props.theme.colors.disabled};
   }
 
   ${({ $loading: loading }: ButtonProps) =>
@@ -198,6 +215,9 @@ export const Button = styled.button<ButtonProps>`
     position: relative;
     &, &:disabled {
       color: transparent;
+      img {
+        opacity: 0;
+      }
     }
     &:before {
       animation: 5s button-rotate-loading infinite linear;
@@ -209,8 +229,6 @@ export const Button = styled.button<ButtonProps>`
       left: 10%;
       top: 15%;
       background-size: contain;
-
-
     }
   `
       : ''}

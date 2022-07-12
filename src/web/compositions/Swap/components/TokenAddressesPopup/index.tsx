@@ -1,16 +1,14 @@
-import { Paper, Theme } from '@material-ui/core'
+import { Paper } from '@material-ui/core'
 import { FONT_SIZES } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
-import SvgIcon from '@sb/components/SvgIcon'
+import { SolExplorerLink } from '@sb/components/TokenExternalLinks'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { RowContainer, Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-
-import Close from '@icons/closeIcon.svg'
-import ExplorerIcon from '@icons/SolanaExplorerIcon.svg'
+import { CloseIconContainer } from '@sb/styles/StyledComponents/IconContainers'
 
 const StyledPaper = styled(Paper)`
   font-size: 20px;
@@ -19,20 +17,23 @@ const StyledPaper = styled(Paper)`
   width: auto;
   min-width: 65rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: #222429;
+  background: ${(props) => props.theme.colors.gray5};
   border-radius: 0.8rem;
   overflow: hidden;
   padding: 3rem 2rem;
+  overflow: visible;
+`
+
+const Container = styled.div`
+  padding: 10px 0;
 `
 
 export const TokenAddressesPopup = ({
-  theme,
   close,
   open,
   baseTokenMintAddress,
   quoteTokenMintAddress,
 }: {
-  theme: Theme
   close: () => void
   open: boolean
   baseTokenMintAddress: string
@@ -40,7 +41,6 @@ export const TokenAddressesPopup = ({
 }) => {
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={StyledPaper}
       fullScreen={false}
       onClose={close}
@@ -50,11 +50,21 @@ export const TokenAddressesPopup = ({
     >
       <RowContainer justify="space-between">
         <Text>Selected tokens:</Text>
-        <SvgIcon
-          src={Close}
-          style={{ cursor: 'pointer' }}
-          onClick={() => close()}
-        />
+        <CloseIconContainer onClick={() => close()}>
+          <svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 19 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
+              stroke="#F5F5FB"
+              strokeWidth="2"
+            />
+          </svg>
+        </CloseIconContainer>
       </RowContainer>
       <RowContainer
         wrap="nowrap"
@@ -62,52 +72,20 @@ export const TokenAddressesPopup = ({
         justify="space-between"
       >
         <Row>
-          <TokenIcon
-            mint={baseTokenMintAddress}
-            width="1.2em"
-            height="1.2em"
-            margin="0 1rem 0 0"
-          />
+          <TokenIcon mint={baseTokenMintAddress} margin="0 1rem 0 0" />
           <Text fontSize={FONT_SIZES.xs}>{baseTokenMintAddress}</Text>
         </Row>
         <Row>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`https://solscan.io/address/${baseTokenMintAddress}`}
-          >
-            <SvgIcon
-              style={{ cursor: 'pointer' }}
-              width="1.2em"
-              height="1.2em"
-              src={ExplorerIcon}
-            />
-          </a>
+          <SolExplorerLink mint={baseTokenMintAddress} />
         </Row>
       </RowContainer>
       <RowContainer wrap="nowrap" margin="1rem 0" justify="space-between">
         <Row>
-          <TokenIcon
-            mint={quoteTokenMintAddress}
-            width="1.2em"
-            height="1.2em"
-            margin="0 1rem 0 0"
-          />
+          <TokenIcon mint={quoteTokenMintAddress} margin="0 1rem 0 0" />
           <Text fontSize={FONT_SIZES.xs}>{quoteTokenMintAddress}</Text>
         </Row>
         <Row>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href={`https://solscan.io/address/${quoteTokenMintAddress}`}
-          >
-            <SvgIcon
-              style={{ cursor: 'pointer' }}
-              width="1.2em"
-              height="1.2em"
-              src={ExplorerIcon}
-            />
-          </a>
+          <SolExplorerLink mint={quoteTokenMintAddress} />
         </Row>
       </RowContainer>
     </DialogWrapper>

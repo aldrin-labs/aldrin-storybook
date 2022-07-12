@@ -4,7 +4,7 @@ import {
   PublicKey,
 } from '@solana/web3.js'
 
-import { TWAMM_PROGRAM_ADDRESS } from '../ProgramsMultiton/utils'
+import { TWAMM_PROGRAM_ADDRESS } from '@core/solana'
 
 export const loadAccountsFromTWAMMProgram = async ({
   connection,
@@ -13,10 +13,7 @@ export const loadAccountsFromTWAMMProgram = async ({
   connection: Connection
   filters: GetProgramAccountsFilter[]
 }) => {
-  return await connection.getProgramAccounts(
-    new PublicKey(TWAMM_PROGRAM_ADDRESS),
-    {
-      filters,
-    }
-  )
+  return connection.getProgramAccounts(new PublicKey(TWAMM_PROGRAM_ADDRESS), {
+    filters,
+  })
 }

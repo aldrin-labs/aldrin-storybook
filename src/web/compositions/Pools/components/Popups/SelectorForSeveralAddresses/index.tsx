@@ -1,6 +1,5 @@
-import { Theme } from '@material-ui/core'
 import React from 'react'
-import styled from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components'
 
 import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
 import SvgIcon from '@sb/components/SvgIcon'
@@ -8,7 +7,8 @@ import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { TokenInfo } from '@sb/compositions/Rebalance/Rebalance.types'
-import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
+import { getTokenName } from '@sb/dexUtils/markets'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 
 import Close from '@icons/closeIcon.svg'
 
@@ -31,23 +31,21 @@ const StyledText = styled(({ ...props }) => <Text {...props} />)`
 `
 
 export const SelectSeveralAddressesPopup = ({
-  theme,
   open,
   tokens,
   close,
   selectTokenMintAddress,
   selectTokenAddressFromSeveral,
 }: {
-  theme: Theme
   open: boolean
   tokens: TokenInfo[]
   close: () => void
   selectTokenMintAddress: (address: string) => void
   selectTokenAddressFromSeveral: (address: string) => void
 }) => {
+  const tokensMap = useTokenInfos()
   return (
     <DialogWrapper
-      theme={theme}
       PaperComponent={UpdatedPaper}
       fullScreen={false}
       onClose={close}
@@ -64,6 +62,10 @@ export const SelectSeveralAddressesPopup = ({
       </RowContainer>
       <RowContainer>
         {tokens.map((token: TokenInfo) => {
+          const tokenName = getTokenName({
+            address: token.mint,
+            tokensInfoMap: tokensMap,
+          })
           return (
             <SelectorRow
               justify="space-between"
@@ -75,12 +77,12 @@ export const SelectSeveralAddressesPopup = ({
               }}
             >
               <Row wrap="nowrap">
-                <TokenIcon mint={token.mint} width="2rem" height="2rem" />
-                <StyledText>{getTokenNameByMintAddress(token.mint)}</StyledText>
+                <TokenIcon mint={token.mint} size={32} />
+                <StyledText>{tokenName}</StyledText>
               </Row>
               <Row wrap="nowrap">
                 <StyledText>
-                  {token.amount} {getTokenNameByMintAddress(token.mint)}
+                  {token.amount} {tokenName}
                 </StyledText>
               </Row>
             </SelectorRow>

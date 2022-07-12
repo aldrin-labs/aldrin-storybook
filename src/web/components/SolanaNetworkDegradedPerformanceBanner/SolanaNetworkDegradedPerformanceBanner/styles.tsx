@@ -1,7 +1,7 @@
-import React from 'react'
 import styled from 'styled-components'
 
 import { WideContent } from '@sb/components/Layout'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const Link = styled.a`
   padding: 0 0 0 5px;
@@ -13,4 +13,7 @@ export const Container = styled(WideContent)`
   display: flex;
   justify-content: center;
   align-items: center;
+`
+export const StyledRowContainer = styled(RowContainer)`
+  background: ${(props) => props.theme.colors.red2};
 `

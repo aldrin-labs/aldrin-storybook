@@ -10,7 +10,7 @@ export const Title = styled.span`
   font-size: 32px;
   line-height: 1.4;
   font-weight: 700;
-
+  color: ${(props) => props.theme.colors.gray0};
   span {
     font-weight: 400;
   }
@@ -32,6 +32,7 @@ export const Footer = styled(Flex)`
       margin-right: 0;
     }
   }
+
   ${Button} {
     width: 100%;
   }
@@ -50,6 +51,7 @@ export const CoinSelectors = styled(Flex)`
 
 export const Slash = styled.div`
   padding: 25px 10px 0;
+  color: ${(props) => props.theme.colors.gray0};
 `
 
 export const CoinWrap = styled.div`
@@ -93,7 +95,7 @@ export const InputAppendContainer = styled.div`
 `
 
 export const TokensAvailableText = styled.div`
-  color: ${COLORS.primaryWhite};
+  color: ${(props) => props.theme.colors.gray1};
   font-size: 0.8em;
   line-height: 1.2;
   padding: 4px 0;
@@ -120,14 +122,15 @@ interface ConfirmationBlockProps {
 
 export const ConfirmationBlock = styled.div<ConfirmationBlockProps>`
   padding: 10px 24px;
+
   ${(props: ConfirmationBlockProps) =>
-    props.border
-      ? `
-  border-radius: ${BORDER_RADIUS.lg};
-  border: 1px solid ${COLORS.border};
-  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.45);
-  `
-      : ''}
+    props.border &&
+    `
+    border-radius: ${BORDER_RADIUS.lg};
+    border: 1px solid;
+    border-color: ${props.theme.colors.border};
+    box-shadow: ${props.theme.colors.shadow};
+  `}
 `
 // export const ConfirmationBlock = styled.div``
 
@@ -158,12 +161,12 @@ export const WarningIcon = styled.div`
 export const PoolProcessingBlock = styled(BlockContent)`
   width: 100vw;
   max-width: 400px;
+  flex-direction: column;
 `
 export const PoolProcessingContent = styled(Flex)`
   margin: 20px 0;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
 `
 
 export const PoolProcessingButton = styled(Button)`
@@ -171,14 +174,29 @@ export const PoolProcessingButton = styled(Button)`
 `
 
 export const VestingExplanation = styled.div`
-  border: 1px solid ${COLORS.background};
+  border: 1px solid ${(props) => props.theme.colors.gray1};
   padding: ${SIZE.defaultPadding} 30px;
   margin-top: ${SIZE.defaultPadding};
   border-radius: ${BORDER_RADIUS.md};
   display: flex;
   flex-direction: row;
+  align-items: center;
 
   ${InlineText} {
     margin-left: 30px;
   }
+`
+export const AttentionIcon = styled.div`
+  width: auto;
+  height: 55px;
+
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.gray0};
+    }
+  }
+`
+
+export const Link = styled.a`
+  color: ${(props) => props.theme.colors.blue3};
 `

@@ -1,14 +1,11 @@
 import { FONT_SIZES } from '@variables/variables'
 import React from 'react'
 
-import SvgIcon from '@sb/components/SvgIcon'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
-
-import Arrow from '@icons/arrowBottom.svg'
 
 import { DropdownIconContainer, InputContainer } from './styles'
 
@@ -34,7 +31,7 @@ export const TokenSelector = ({
       style={{ cursor: 'pointer' }}
     >
       <Row>
-        <TokenIcon mint={mint} width={FONT_SIZES.xl} height={FONT_SIZES.xl} />
+        <TokenIcon mint={mint} size={32} />
         <Text
           style={{ margin: '0 0.8rem' }}
           fontSize={
@@ -50,7 +47,15 @@ export const TokenSelector = ({
         </Text>
       </Row>
       <DropdownIconContainer>
-        <SvgIcon src={Arrow} width="0.6875em" height="0.6875em" />
+        <svg
+          width="18"
+          height="11"
+          viewBox="0 0 18 11"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M1 1L9 9L17 1" stroke="#ABBAD1" strokeWidth="2" />
+        </svg>
       </DropdownIconContainer>
     </InputContainer>
   )

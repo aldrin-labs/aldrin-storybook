@@ -7,7 +7,7 @@ export const loadOrdersArrayForTwamm = async ({
 }: {
   connection: Connection
 }) => {
-  return await loadAccountsFromTWAMMProgram({
+  return loadAccountsFromTWAMMProgram({
     connection,
     filters: [
       {

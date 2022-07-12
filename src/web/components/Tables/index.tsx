@@ -49,7 +49,7 @@ const CustomTableCell = withStyles((theme) => ({
     position: 'sticky',
     top: '3rem',
     backgroundColor: 'inherit',
-    color: theme.palette.dark.main,
+    color: '#93939B',
     textTransform: 'capitalize',
     fontFamily: 'Avenir Next Demi',
     fontSize: '1.2rem',
@@ -61,7 +61,7 @@ const CustomTableCell = withStyles((theme) => ({
     boxShadow: 'none',
   },
   body: {
-    color: theme.palette.dark.main,
+    color: '#93939B',
     borderBottom: 'none',
     fontSize: 14,
     padding: '0.2rem 1.6rem 0.2rem 0.6rem',
@@ -216,15 +216,15 @@ const styles = (theme: Theme) =>
       },
     },
     rowWithHover: {
-      '&:hover': {
-        borderRadius: '32px',
-        backgroundColor: theme.palette.hover[theme.palette.type], // TODO theme.palette.action.hover,
-      },
-      '&:hover td': {
-        backgroundColor: `${
-          theme.palette.hover[theme.palette.type]
-        } !important`, // TODO theme.palette.action.hover,
-      },
+      // '&:hover': {
+      //   borderRadius: '32px',
+      //   backgroundColor: theme.palette.hover[theme.palette.type], // TODO theme.palette.action.hover,
+      // },
+      // '&:hover td': {
+      //   backgroundColor: `${
+      //     theme.palette.hover[theme.palette.type]
+      //   } !important`, // TODO theme.palette.action.hover,
+      // },
     },
     rowWithHoverBorderRadius: {
       '& td:first-child': {
@@ -741,7 +741,7 @@ const CustomTable = (props: Props) => {
 
         <TableBody style={{ ...tableBodyStyles }}>
           {data.body.length === 0 ? (
-            <CustomPlaceholder theme={theme} text={emptyTableText} />
+            <CustomPlaceholder text={emptyTableText} />
           ) : (
             paginationFunc(
               data.body.filter(Boolean).map((row) => {

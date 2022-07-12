@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { useTheme } from 'styled-components'
 
 import { Block, BlockContent } from '@sb/components/Block'
 import { Cell, Page, WideContent } from '@sb/components/Layout'
@@ -9,6 +10,7 @@ import { TableSwitcher } from './components/Tables/TablesSwitcher'
 import { TableSwitcherWrap } from './index.styles'
 
 export const PoolsComponent: React.FC = () => {
+  const theme = useTheme()
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
     return () => {
@@ -23,12 +25,12 @@ export const PoolsComponent: React.FC = () => {
           Under maintenance, available to claim rewards may not be displayed
           correctly.
         </WaningBanner> */}
-        <RootRow height="auto">
+        <RootRow data-testid="pools-charts-row" height="auto">
           <Cell col={12} colLg={6}>
-            <TotalVolumeLockedChart />
+            <TotalVolumeLockedChart data-testid="pools-tvl-chart" />
           </Cell>
           <Cell col={12} colLg={6}>
-            <TradingVolumeChart />
+            <TradingVolumeChart data-testid="pools-volume-chart" />
           </Cell>
         </RootRow>
         <RootRow height="auto">
@@ -36,7 +38,7 @@ export const PoolsComponent: React.FC = () => {
             <Block>
               <BlockContent>
                 <TableSwitcherWrap>
-                  <TableSwitcher />
+                  <TableSwitcher theme={theme} />
                 </TableSwitcherWrap>
               </BlockContent>
             </Block>

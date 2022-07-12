@@ -1,18 +1,12 @@
-import { Program, ProgramAccount } from 'anchor020'
+import { ProgramAccount } from 'anchor020'
 import useSWR from 'swr'
 
-import { toMap } from '../../../utils'
+import { fetchSrinStakingAccount, SRinUserAccount } from '@core/solana'
+
+import { walletAdapterToWallet } from '../../common'
 import { useConnection } from '../../connection'
-import {
-  PLUTONIANS_STAKING_ADDRESS,
-  ProgramsMultiton,
-} from '../../ProgramsMultiton'
 import { useWallet } from '../../wallet'
-import { SRinUserAccount } from './types'
 
-const USER_KEY_OFFSET = 8
-
-// Returns staking accounts mapped by tier
 export const useSrinStakingAccounts = () => {
   const { wallet } = useWallet()
   const connection = useConnection()
@@ -21,23 +15,8 @@ export const useSrinStakingAccounts = () => {
     if (!wallet.publicKey) {
       return new Map<string, ProgramAccount<SRinUserAccount>>()
     }
-    const program = ProgramsMultiton.getProgramByAddress({
-      programAddress: PLUTONIANS_STAKING_ADDRESS,
-      wallet,
-      connection,
-    }) as any as Program // TODO:
-
-    const accounts = await (program.account.userStakingAccount.all([
-      {
-        memcmp: {
-          offset: USER_KEY_OFFSET,
-          bytes: wallet.publicKey.toString(),
-        },
-      },
-    ]) as Promise<any> as Promise<ProgramAccount<SRinUserAccount>[]>)
-
-    console.log('saccounts: ', accounts)
-    return toMap(accounts, (acc) => acc.account.stakingTier.toString())
+    const w = walletAdapterToWallet(wallet)
+    return fetchSrinStakingAccount(w, connection)
   }
 
   return useSWR(

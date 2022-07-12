@@ -1,47 +1,6 @@
-import React, { CSSProperties } from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import styled from 'styled-components'
-import { withTheme } from '@material-ui/core/styles'
-import { Theme } from '@material-ui/core'
-
-const RawLoading = ({
-  size = 64,
-  color,
-  margin = 0,
-  centerAligned = false,
-  theme,
-  style,
-  width,
-  height,
-}: {
-  color?: string
-  size?: number | string
-  margin?: string | number
-  centerAligned?: boolean
-  theme?: Theme
-  style?: CSSProperties
-}) => {
-  const isPixelSize = typeof size === 'number'
-
-  return (
-    <SpinnerContainer
-      size={size}
-      theme={theme}
-      margin={margin}
-      isPixelSize={isPixelSize}
-      centerAligned={centerAligned}
-      data-e2e="Loadig"
-      style={style}
-    >
-      <CircularProgress
-        style={{ color: color || theme.palette.secondary.main }}
-        size={size}
-      />
-    </SpinnerContainer>
-  )
-}
-
-export const Loading = withTheme()(RawLoading)
+import React, { CSSProperties } from 'react'
+import styled, { useTheme } from 'styled-components'
 
 const SpinnerContainer = styled.div`
   z-index: 10000;
@@ -68,3 +27,33 @@ const SpinnerContainer = styled.div`
         }`
       : null});
 `
+
+export const Loading = ({
+  size = 64,
+  color,
+  margin = 0,
+  centerAligned = false,
+  style,
+}: {
+  color?: string
+  size?: number | string
+  margin?: string | number
+  centerAligned?: boolean
+  style?: CSSProperties
+}) => {
+  const theme = useTheme()
+  const isPixelSize = typeof size === 'number'
+
+  return (
+    <SpinnerContainer
+      size={size}
+      margin={margin}
+      isPixelSize={isPixelSize}
+      centerAligned={centerAligned}
+      data-e2e="Loadig"
+      style={style}
+    >
+      <CircularProgress style={{ color: color || '#5E55F2FF' }} size={size} />
+    </SpinnerContainer>
+  )
+}

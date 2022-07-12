@@ -1,6 +1,6 @@
+import tokens from 'aldrin-registry/src/tokens.json'
 import React from 'react'
-
-import tokensLinksMap from '@core/config/tokensTwitterLinks'
+import useSWR from 'swr'
 
 import BlueTwitterIcon from '@icons/blueTwitter.svg'
 import CoinGecko from '@icons/coingecko.svg'
@@ -9,8 +9,19 @@ import Inform from '@icons/inform.svg'
 import Nomics from '@icons/nomics.svg'
 import SolanaExplorerIcon from '@icons/SolanaExplorerIcon.svg'
 
+import SvgIcon from '../SvgIcon'
 import { DarkTooltip } from '../TooltipCustom/Tooltip'
-import { Container, Anchor, Icon } from './styles'
+import SolanaFm from './assets/solanafm.png'
+import SolanaFmDark from './assets/solanafmdark.png'
+import Solscan from './assets/solscan.png'
+import {
+  Container,
+  Anchor,
+  Wrap,
+  Icon,
+  IconsInner,
+  IconsContainer,
+} from './styles'
 
 interface TokenExternalLinksProps {
   tokenName: string
@@ -34,25 +45,48 @@ const resolveExplorerIcon = (link: string) => {
   return Nomics
 }
 
-export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => (
-  <Anchor
-    href={`https://solscan.io/account/${props.mint}`}
-    rel="noopener noreferrer"
-    target="_blank"
-  >
-    <Icon alt="View on Solan explorer" src={SolanaExplorerIcon} />
-  </Anchor>
-)
+export const SolExplorerLink: React.FC<SolExplorerLinkProps> = (props) => {
+  const { data: theme } = useSWR('theme')
+  return (
+    <IconsContainer>
+      <Icon alt="View on Solana explorer" src={SolanaExplorerIcon} />
+      <IconsInner>
+        <Wrap>
+          <Anchor
+            href={`https://solscan.io/account/${props.mint}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <SvgIcon src={Solscan} alt="solscan" />
+          </Anchor>
+          <Anchor
+            href={`https://solana.fm/account/${props.mint}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <SvgIcon
+              src={theme === 'dark' ? SolanaFm : SolanaFmDark}
+              alt="solana.fm"
+            />
+          </Anchor>
+        </Wrap>
+      </IconsInner>
+    </IconsContainer>
+  )
+}
 
 export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (
   props
 ) => {
-  const { tokenName, marketAddress, marketPair, onInfoClick } = props
-  const token = tokensLinksMap.get(tokenName.toUpperCase()) || {
-    marketCapLink: '',
+  const { tokenName, marketAddress, onInfoClick } = props
+
+  const tokensMap = new Map<string, any>()
+  tokens.forEach((el) => tokensMap.set(el.symbol.toUpperCase(), el))
+
+  const token = tokensMap.get(tokenName.toUpperCase()) || {
     twitterLink: '',
+    marketCapLink: '',
   }
-  const { twitterLink = '', marketCapLink = '' } = token
 
   return (
     <Container>
@@ -72,16 +106,24 @@ export const TokenExternalLinks: React.FC<TokenExternalLinksProps> = (
         </DarkTooltip>
       } */}
 
-      {twitterLink && (
+      {token.twitterLink && (
         <DarkTooltip title="Twitter profile of the token.">
-          <Anchor target="_blank" rel="noopener noreferrer" href={twitterLink}>
+          <Anchor
+            target="_blank"
+            rel="noopener noreferrer"
+            href={token.twitterLink}
+          >
             <Icon src={BlueTwitterIcon} />
           </Anchor>
         </DarkTooltip>
       )}
-      {marketCapLink && (
-        <Anchor target="_blank" rel="noopener noreferrer" href={marketCapLink}>
-          <Icon src={resolveExplorerIcon(marketCapLink)} />
+      {token.marketCapLink && (
+        <Anchor
+          target="_blank"
+          rel="noopener noreferrer"
+          href={token.marketCapLink}
+        >
+          <Icon src={resolveExplorerIcon(token.marketCapLink)} />
         </Anchor>
       )}
     </Container>

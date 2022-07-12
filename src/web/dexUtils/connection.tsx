@@ -5,13 +5,10 @@ import {
   Connection,
   PublicKey,
 } from '@solana/web3.js'
-import tuple from 'immutable-tuple'
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useCallback } from 'react'
+import useSWR from 'swr'
 
-import { useAsyncData } from './fetch-loop'
-import MultiEndpointsConnection from './MultiEndpointsConnection'
-
-export type AldrinConnection = MultiEndpointsConnection & Connection
+import { MultiEndpointsConnection, AldrinConnection } from '@core/solana'
 
 export const MAINNET_BETA_ENDPOINT = clusterApiUrl('mainnet-beta')
 export const ENDPOINTS = [
@@ -23,7 +20,7 @@ export const ENDPOINTS = [
 
 const providers = process.env.RPC_PROVIDERS_ADDRESSES
   ? JSON.parse(process.env.RPC_PROVIDERS_ADDRESSES)
-  : [{ url: 'https://api-cryptocurrencies-ai.rpcpool.com', weight: 20 }]
+  : [{ url: 'https://frontend-solana-api-1.aldrin.com', weight: 20 }]
 
 const connection = new MultiEndpointsConnection(providers, 'confirmed')
 
@@ -69,75 +66,37 @@ export function useConnectionConfig() {
   const ctx = useContext(ConnectionContext)
   return { endpoint: ctx.endpoint, setEndpoint: ctx.setEndpoint }
 }
-export function useAccountInfo(
-  publicKey: PublicKey | undefined | null
-): [AccountInfo<Buffer> | null | undefined, boolean] {
+export function useAccountInfo(publicKey: PublicKey | undefined | null): {
+  data: AccountInfo<Buffer> | null | undefined
+  isLoading: boolean
+  error: Error | undefined
+  refresh: () => void
+} {
   const connection = useConnection()
-  const cacheKey = tuple('useAccountInfo', publicKey?.toBase58())
-  const [accountInfo, loaded] = useAsyncData(
-    async () => (publicKey ? connection.getAccountInfo(publicKey) : null),
-    cacheKey,
-    { refreshInterval: 3_000 }
+
+  const fetcher = useCallback(
+    () => (publicKey ? connection.getAccountInfo(publicKey) : null),
+    [publicKey]
   )
 
-  // useEffect(() => {
-  //   if (!publicKey) {
-  //     return
-  //   }
-  //   if (accountListenerCount.has(cacheKey)) {
-  //     let currentItem = accountListenerCount.get(cacheKey)
-  //     ++currentItem.count
-  //   } else {
-  //     let previousInfo: AccountInfo<Buffer> | null = null
-  //     const subscriptionId = connection.onAccountChange(publicKey, (info) => {
-  //       if (
-  //         !previousInfo ||
-  //         !previousInfo.data.equals(info.data) ||
-  //         previousInfo.lamports !== info.lamports
-  //       ) {
-  //         // probably here is memory leak, sometimes this code executes realy frequently and block whole page
-  //         // console.log('connection', connection, info)
-  //         // console.log(
-  //         //   'setCache useAccountInfo',
-  //         //   connection,
-  //         //   info,
-  //         //   previousInfo,
-  //         //   previousInfo?.data.equals(info.data),
-  //         //   previousInfo?.lamports === info.lamports
-  //         // )
-  //         previousInfo = info
-  //         setCache(cacheKey, info)
-  //       }
-  //     })
-  //     accountListenerCount.set(cacheKey, { count: 1, subscriptionId })
-  //   }
-  //   return () => {
-  //     let currentItem = accountListenerCount.get(cacheKey)
-  //     let nextCount = currentItem.count - 1
-  //     if (nextCount <= 0) {
-  //       connection.removeAccountChangeListener(currentItem.subscriptionId)
-  //       accountListenerCount.delete(cacheKey)
-  //     } else {
-  //       --currentItem.count
-  //     }
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [cacheKey])
+  const { data, error, mutate } = useSWR(
+    `userAccountInfo_${publicKey?.toBase58()}`,
+    fetcher,
+    {
+      refreshInterval: 10_000,
+    }
+  )
 
-  const previousInfoRef = useRef<AccountInfo<Buffer> | null | undefined>(null)
-  if (
-    !accountInfo ||
-    !previousInfoRef.current ||
-    !previousInfoRef.current.data.equals(accountInfo.data) ||
-    previousInfoRef.current.lamports !== accountInfo.lamports
-  ) {
-    previousInfoRef.current = accountInfo
+  return {
+    data,
+    isLoading: !data,
+    error,
+    refresh: mutate,
   }
-  return [previousInfoRef.current, loaded]
 }
 
 export function useAccountData(publicKey) {
-  const [accountInfo] = useAccountInfo(publicKey)
+  const { data: accountInfo } = useAccountInfo(publicKey)
   return accountInfo && accountInfo.data
 }
 

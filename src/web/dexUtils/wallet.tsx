@@ -1,5 +1,8 @@
 import { TokenInstructions } from '@project-serum/serum'
-import Wallet from '@project-serum/sol-wallet-adapter'
+import {
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from '@solana/spl-token'
 import {
   PublicKey,
   SystemProgram,
@@ -7,27 +10,13 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
+import { noop } from 'lodash-es'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 
-import {
-  CommonWalletAdapter,
-  LedgerWalletAdapter,
-  MathWalletAdapter,
-  PhantomWalletAdapter,
-  SolletExtensionAdapter,
-  SolongWalletAdapter,
-  SlopeWalletAdapter,
-} from '@sb/dexUtils/adapters'
 import { WalletAdapter } from '@sb/dexUtils/types'
 
-import Mathwallet from '@icons/mathwallet.svg'
-import WalletAldrin from '@icons/RINLogo.svg'
-import Slope from '@icons/slope.svg'
-import Sollet from '@icons/sollet.svg'
-import Solong from '@icons/solong.svg'
+import { WALLET_PROVIDERS, getMaxWithdrawAmount } from '@core/solana'
 
-import { Coin98WalletAdapter } from './adapters/Coin98WalletAdapter'
-import { SolflareExtensionWalletAdapter } from './adapters/SolflareWallet'
 import {
   useAccountInfo,
   useConnection,
@@ -36,7 +25,6 @@ import {
 import { useAsyncData } from './fetch-loop'
 import { _VERY_SLOW_REFRESH_INTERVAL } from './markets'
 import { notify } from './notifications'
-import { getMaxWithdrawAmount } from './pools'
 import {
   getTokenAccountInfo,
   MINT_LAYOUT,
@@ -45,121 +33,11 @@ import {
 import { signAndSendSingleTransaction } from './transactions'
 import { RINProviderURL, useLocalStorageState, useRefEqual } from './utils'
 
-export const WALLET_PROVIDERS = [
-  // { name: 'solflare.com', url: 'https://solflare.com/access-wallet' },
-  {
-    name: 'Wallet™',
-    fullName: 'Wallet™ by Aldrin.com',
-    url: RINProviderURL,
-    adapter: CommonWalletAdapter,
-    isExtension: false,
-    showOnMobile: true,
-    icon: WalletAldrin,
-  },
-  // {
-  //   name: 'Wallet™ Extension',
-  //   url: `${CCAIProviderURL}/extension`,
-  //   adapter: CcaiExtensionAdapter,
-  //   isExtension: true,
-  //   showOnMobile: false,
-  //   icon: WalletAldrin,
-  // },
-  {
-    name: 'Sollet.io',
-    fullName: 'Wallet™ by Aldrin.com',
-    url: 'https://www.sollet.io',
-    adapter: CommonWalletAdapter,
-    icon: Sollet,
-    isExtension: false,
-    showOnMobile: true,
-  },
-  {
-    name: 'Sollet Extension',
-    fullName: 'Sollet Extension Wallet',
-    url: 'https://www.sollet.io/extension',
-    adapter: SolletExtensionAdapter,
-    icon: Sollet,
-    isExtension: true,
-    showOnMobile: false,
-  },
-  {
-    name: 'Ledger',
-    fullName: 'Ledger Wallet',
-    url: 'https://www.ledger.com',
-    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/ledger.svg`,
-    adapter: LedgerWalletAdapter,
-    isExtension: false,
-    showOnMobile: false,
-  },
-  {
-    name: 'Phantom',
-    fullName: 'Phantom Wallet',
-    url: 'https://www.phantom.app',
-    icon: `https://www.phantom.app/img/logo.png`,
-    adapter: PhantomWalletAdapter,
-    isExtension: false,
-    showOnMobile: false,
-  },
-  {
-    name: 'MathWallet',
-    fullName: 'MathWallet',
-    url: 'https://www.mathwallet.org',
-    adapter: MathWalletAdapter,
-    icon: Mathwallet,
-    isExtension: false,
-    showOnMobile: false,
-  },
-  {
-    name: 'Solong',
-    fullName: 'Solong Wallet',
-    url: 'https://solongwallet.com',
-    adapter: SolongWalletAdapter,
-    icon: Solong,
-    isExtension: false,
-    showOnMobile: false,
-  },
-  {
-    name: 'Coin98',
-    fullName: 'Coin98 Wallet',
-    url: 'https://wallet.coin98.com/',
-    adapter: Coin98WalletAdapter,
-    icon: `https://gblobscdn.gitbook.com/spaces%2F-MLfdRENhXE4S22AEr9Q%2Favatar-1616412978424.png`,
-    isExtension: true,
-    showOnMobile: true,
-  },
-  {
-    name: 'Solflare',
-    fullName: 'Solflare Wallet',
-    url: 'https://solflare.com/',
-    adapter: SolflareExtensionWalletAdapter,
-    icon: `https://cdn.jsdelivr.net/gh/solana-labs/oyster@main/assets/wallets/solflare.svg`,
-    isExtension: true,
-    showOnMobile: true,
-  },
-  {
-    name: 'Slope',
-    fullName: 'Slope Wallet',
-    url: 'https://slope.finance/',
-    adapter: SlopeWalletAdapter,
-    icon: Slope,
-    isExtension: true,
-    showOnMobile: false,
-  },
-]
-
-export const TOKEN_PROGRAM_ID = new PublicKey(
-  'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'
-)
-
 export const WRAPPED_SOL_MINT = new PublicKey(
   'So11111111111111111111111111111111111111112'
 )
 
 export const MAINNET_URL = 'https://api.mainnet-beta.solana.com'
-
-export const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey(
-  'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'
-)
 
 export interface WalletContextType {
   wallet: WalletAdapter
@@ -194,12 +72,12 @@ export const WalletProvider: React.FC = ({ children }) => {
   )
 
   const wallet = useMemo(() => {
-    const wallet = new (provider?.adapter || Wallet)(
+    const adapter = (provider?.adapter || noop)(
       providerUrl,
       endpoint
-    ) as WalletAdapter
+    ) as any as WalletAdapter
 
-    return wallet
+    return adapter
   }, [provider, endpoint])
 
   const connectWalletHash = useMemo(
@@ -462,13 +340,13 @@ export function parseMintData(data) {
 // }
 
 export function useBalanceInfo(publicKey) {
-  const [accountInfo, accountInfoLoaded] = useAccountInfo(publicKey)
+  const { data: accountInfo, isLoading: accountInfoLoading } = useAccountInfo(publicKey)
   const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
     : {}
-  const [mintInfo, mintInfoLoaded] = useAccountInfo(mint)
+  const { data: mintInfo, isLoading: mintInfoLoading } = useAccountInfo(mint)
 
-  if (!accountInfoLoaded) {
+  if (accountInfoLoading) {
     return null
   }
 
@@ -484,7 +362,7 @@ export function useBalanceInfo(publicKey) {
     }
   }
 
-  if (mint && mintInfoLoaded) {
+  if (mint && !mintInfoLoading) {
     try {
       const { decimals } = parseMintData(mintInfo.data)
       return {
@@ -616,3 +494,5 @@ export async function findAssociatedTokenAddress(
     )
   )[0]
 }
+
+export { WALLET_PROVIDERS }

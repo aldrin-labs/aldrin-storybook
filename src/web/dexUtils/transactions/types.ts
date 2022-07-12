@@ -1,15 +1,14 @@
 import {
   Commitment,
-  Connection,
   Signer,
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { WalletAdapter } from '../types'
+import { AldrinConnection, AuthorizedWalletAdapter } from '@core/solana'
 
 interface SendTransactionParamsBase {
-  connection: Connection
+  connection: AldrinConnection
 }
 
 export interface NotificationParams {
@@ -39,7 +38,7 @@ export interface WaitConfirmationParams extends SendTransactionParamsBase {
 }
 
 export interface SendTransactionParams extends SendSignedTransactionParams {
-  wallet: WalletAdapter
+  wallet: AuthorizedWalletAdapter
   signers?: Signer[]
   focusPopup?: boolean
 }
@@ -67,7 +66,7 @@ export interface SendTransactionsParams
   extends SendTransactionParamsBase,
     NotificationParams,
     TransactionParams {
-  wallet: WalletAdapter
+  wallet: AuthorizedWalletAdapter
   transactionsAndSigners: TransactionAndSigners[]
   focusPopup?: boolean
 }

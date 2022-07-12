@@ -1,20 +1,32 @@
-import { Connection, Transaction } from '@solana/web3.js'
+import { Transaction } from '@solana/web3.js'
+
+import {
+  AldrinConnection,
+  SendTransactionStatus,
+  SendSignedTransactionResponse,
+} from '@core/solana'
 
 import { sendSignedSignleTransaction } from './sendSignedSignleTransaction'
 import { NotificationParams, TransactionParams } from './types'
 
+const resposneToStatus = (
+  response: SendSignedTransactionResponse
+): 'success' | 'failed' => {
+  if (response.status === SendTransactionStatus.CONFIRMED) {
+    return 'success'
+  }
+
+  return 'failed'
+}
+
 /** Send batch of signed transactions, wait for finalizing of last transaction */
 export const sendSignedTransactions = async (
   transactions: Transaction[],
-  connection: Connection,
+  connection: AldrinConnection,
   params: TransactionParams & NotificationParams = {}
 ) => {
-  const {
-    showNotification,
-    successMessage,
-    sentMessage,
-    commitment = 'confirmed',
-  } = params
+  const { successMessage } = params
+
   for (let i = 0; i < transactions.length; i += 1) {
     const signedTransaction = transactions[i]
     const isLastTransaction = i === transactions.length - 1
@@ -22,16 +34,13 @@ export const sendSignedTransactions = async (
     // send transaction and wait 1s before sending next
     const result = await sendSignedSignleTransaction({
       transaction: signedTransaction,
-      connection,
       timeout: 30_000,
-      commitment: isLastTransaction ? commitment : 'confirmed', // Wait for finalization of last transaction
-      successMessage: isLastTransaction ? successMessage : undefined,
-      sentMessage,
-      showNotification,
+      successMessage: isLastTransaction ? successMessage : '',
+      connection,
     })
 
-    if (result !== 'success') {
-      return result
+    if (result.status !== SendTransactionStatus.CONFIRMED) {
+      return resposneToStatus(result)
     }
   }
 

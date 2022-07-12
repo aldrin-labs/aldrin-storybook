@@ -26,15 +26,14 @@ export const PopupBody = styled(Body)`
 `
 
 export const Page = styled(Body)`
-  background: ${(props: { $background?: keyof typeof COLORS }) =>
-    COLORS[props.$background || 'mainBlack']};
+  background: ${(props) => props.theme.colors[props.$background || 'gray9']};
   flex: 1;
   display: flex;
   flex-direction: column;
 `
 
 export const BlackPage = styled(Page)`
-  background: ${COLORS.mainBlack};
+  background: ${(props) => props.theme.colors.gray9};
 `
 
 export const Content = styled.div`
@@ -148,6 +147,7 @@ export interface FlexBlockProps {
   direction?: 'row' | 'column' | 'row-reverse' | 'column-reverse'
   justifyContent?: Alignment
   alignItems?: Alignment
+  flex?: string
 }
 
 export const Flex = styled.div`
@@ -159,4 +159,5 @@ export const FlexBlock = styled(Flex)<FlexBlockProps>`
   justify-content: ${(props: FlexBlockProps) =>
     props.justifyContent || 'normal'};
   align-items: ${(props: FlexBlockProps) => props.alignItems || 'normal'};
+  ${(props: FlexBlockProps) => (props.flex ? `flex: ${props.flex};` : '')}
 `

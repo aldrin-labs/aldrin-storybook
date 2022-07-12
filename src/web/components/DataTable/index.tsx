@@ -1,129 +1,137 @@
-import React, { useState } from 'react'
-import { DataTableProps, DataTableState, SORT_ORDER } from './types'
-import {
-  Table,
-  Thead,
-  Tbody,
-  Th,
-  Tr,
-  Td,
-  ThContent,
-  NoDataBlock,
-  TableBody,
-} from './styles'
+import React, { useMemo } from 'react'
+import { Column, Table } from 'react-virtualized'
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+
+import 'react-virtualized/styles.css'
+import { DefaultTheme, useTheme } from 'styled-components'
+
+import { useLocalStorageState } from '@sb/dexUtils/utils'
+
+import { InlineText } from '../Typography'
 import { Hint, SortButton } from './components'
-import { useLocalStorageState } from '../../dexUtils/utils'
-import { sortData, nextSortOrder } from './utils'
+import { NoDataBlock } from './styles'
+import { DataTableProps, DataTableState, SORT_ORDER } from './types'
+import { nextSortOrder, sortData } from './utils'
 
 export * from './types'
 
-const nop = () => {}
+const rowStyle = (theme: DefaultTheme) => ({
+  outline: 'none',
+  cursor: 'pointer',
+  fontSize: '16px',
+  borderBottom: `1px solid ${theme.colors.border}`,
+  overflow: 'initial',
+})
 
-export function DataTable<E>(props: DataTableProps<E>) {
-  const {
-    columns,
-    data,
-    name,
-    defaultSortColumn = '',
-    defaultSortOrder = SORT_ORDER.NONE,
-    expandableContent,
-    onRowClick = nop,
-    noDataText,
-  } = props
-  const [state, setState] = useLocalStorageState<DataTableState>(`dt_${name}`, {
-    sortColumn: defaultSortColumn,
-    sortOrder: defaultSortOrder,
-  })
+const headerStyle = {
+  textTransform: 'capitalize',
+  fontWeight: 400,
+  fontSize: '0.8em',
+  textAlign: 'left',
+  display: 'flex',
+  alignItems: 'center',
+}
 
-  const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
+const noRowsStyles = {
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+}
 
-  const isExpandable = !!expandableContent
+const TABLE_HEIGHT = 600
+const MOBILE_WIDTH = 800
+const HEADER_HEIGHT = 40
+const ROW_HEIGHT = 100
 
-  const sortedData = sortData(data, state.sortColumn, state.sortOrder)
+export const DataTable = <E,>(props: DataTableProps<E>) => {
+  const { columns, data, name, onRowClick, noDataText } = props
 
-  const setSort = (column: string) => {
-    setExpandedIdx(null)
-    if (column !== state.sortColumn) {
-      setState({ ...state, sortColumn: column, sortOrder: SORT_ORDER.DESC })
-    } else {
-      setState({ ...state, sortOrder: nextSortOrder(state.sortOrder) })
+  const [state, setState] = useLocalStorageState<DataTableState>(
+    `dtable_${name}`,
+    {
+      sort: {
+        field: 'tvl',
+        direction: SORT_ORDER.DESC,
+      },
     }
-  }
+  )
 
-  const setExpanded = (idx: number) => {
-    if (expandedIdx === idx) {
-      setExpandedIdx(null)
-    } else {
-      setExpandedIdx(idx)
-    }
-  }
+  const sortedData = useMemo(
+    () => sortData(data, state.sort.field, state.sort.direction),
+    [state.sort, data]
+  )
 
-  const cols = columns.length + (isExpandable ? 1 : 0)
+  const theme = useTheme()
+  const preparedStyle = rowStyle(theme)
 
   return (
-    <TableBody>
-      <Table>
-        <Thead>
-          <Tr>
-            {columns.map((c) => (
-              <Th
-                className={`${c.sortable ? 'sortable ' : ''}`}
-                key={`datatable_${name}_head_${c.key}`}
-              >
-                <ThContent onClick={c.sortable ? () => setSort(c.key) : nop}>
-                  {c.title}
-                  {c.hint && <Hint text={c.hint} />}
-                  {c.sortable && (
+    <AutoSizer disableHeight>
+      {({ width }) => (
+        <Table
+          width={Math.max(MOBILE_WIDTH, width)}
+          height={
+            sortedData.length
+              ? Math.min(
+                  TABLE_HEIGHT,
+                  HEADER_HEIGHT + sortedData.length * ROW_HEIGHT
+                )
+              : HEADER_HEIGHT + ROW_HEIGHT * 2
+          }
+          sort={({ sortBy: field }) => {
+            const nextDirection = nextSortOrder(state.sort.direction)
+
+            setState({
+              ...state,
+              sort: {
+                field,
+                direction: nextDirection,
+              },
+            })
+          }}
+          sortBy={state.sort.field}
+          sortDirection={
+            state.sort.direction === SORT_ORDER.NONE
+              ? undefined
+              : state.sort.direction
+          }
+          rowCount={sortedData.length}
+          noRowsRenderer={() => <div style={noRowsStyles}>{noDataText}</div>}
+          onRowClick={onRowClick}
+          rowStyle={preparedStyle}
+          headerHeight={HEADER_HEIGHT}
+          rowHeight={ROW_HEIGHT}
+          rowGetter={({ index }) => sortedData[index]}
+        >
+          {columns.map((item) => {
+            return (
+              <Column
+                key={item.key}
+                label={item.title}
+                columnData={item}
+                dataKey={item.key}
+                headerRenderer={({ label, columnData }) => (
+                  <>
+                    <InlineText>{label}</InlineText>
+                    {columnData.hint && <Hint text={columnData.hint} />}
                     <SortButton
-                      sortOrder={state.sortOrder}
-                      sortColumn={state.sortColumn}
-                      columnName={c.key}
+                      sortOrder={state.sort.direction}
+                      sortColumn={state.sort.field}
+                      columnName={item.key}
                     />
-                  )}
-                </ThContent>
-              </Th>
-            ))}
-            {isExpandable && <Th />}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {sortedData.map((row, idx) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <React.Fragment key={`datatable_${name}_row_${idx}`}>
-              <Tr onClick={(e) => onRowClick(e, row)}>
-                {columns.map(({ key }) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <Td key={`datatable_${name}_cell_${idx}_${key}`}>
-                    {!!row.fields[key] && (
-                      <>
-                        {row.fields[key].rendered || row.fields[key].rawValue}
-                      </>
-                    )}
-                  </Td>
-                ))}
-                {isExpandable && (
-                  <Td onClick={() => setExpanded(idx)}>Details</Td>
+                  </>
                 )}
-              </Tr>
-              {!!expandableContent && expandedIdx === idx && (
-                <Tr>
-                  <Td colSpan={cols}>{expandableContent(row)}</Td>
-                </Tr>
-              )}
-            </React.Fragment>
-          ))}
-          {sortedData.length === 0 && (
-            <Tr className="no-hover">
-              <Td colSpan={cols}>
-                {noDataText || (
-                  <NoDataBlock justifyContent="center">No data</NoDataBlock>
-                )}
-              </Td>
-            </Tr>
-          )}
-        </Tbody>
-      </Table>
-    </TableBody>
+                headerStyle={headerStyle}
+                width={item.getWidth ? item.getWidth(width) : width}
+                cellRenderer={({ rowData, dataKey }) =>
+                  rowData.fields[dataKey].rendered ||
+                  rowData.fields[dataKey].rawValue
+                }
+              />
+            )
+          })}
+        </Table>
+      )}
+    </AutoSizer>
   )
 }
 

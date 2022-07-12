@@ -1,5 +1,6 @@
-import styled from 'styled-components'
 import { FONTS, COLORS, TRANSITION } from '@variables/variables'
+import styled from 'styled-components'
+
 import { FlexBlock, Body } from '../Layout'
 
 export const TableBody = styled(Body)`
@@ -15,8 +16,8 @@ export const Table = styled.table`
 
 export const Thead = styled.thead``
 export const Tr = styled.tr`
-  border-top: 1px solid ${COLORS.borderDark};
-  border-bottom: 1px solid ${COLORS.borderDark};
+  border-top: 1px solid ${(props) => props.theme.colors.gray5};
+  border-bottom: 1px solid ${(props) => props.theme.colors.gray5};
   background: rgba(0, 0, 0, 0);
   transition: ${TRANSITION};
 `
@@ -25,14 +26,15 @@ export const ThContent = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  color: ${(props) => props.theme.colors.gray1};
 `
 
 export const Th = styled.th`
   font-size: 0.8em;
   font-weight: normal;
   text-align: left;
-  border-bottom: 1px solid ${COLORS.borderDark};
-  border-top: 1px solid ${COLORS.borderDark};
+  border-bottom: 1px solid ${(props) => props.theme.colors.gray5};
+  border-top: 1px solid ${(props) => props.theme.colors.gray5};
   padding: 4px 8px;
 
   &.sortable {
@@ -43,7 +45,7 @@ export const Th = styled.th`
 
 export const Tbody = styled.tbody`
   ${Tr}:not(.no-hover):hover {
-    background: ${COLORS.tableHover};
+    background: ${(props) => props.theme.colors.gray5};
   }
 `
 
@@ -54,11 +56,13 @@ export const Td = styled.td`
 export const ArrowContainer = styled.div`
   width: 24px;
   text-align: center;
+  color: ${(props) => props.theme.colors.gray1};
 `
 
 export const NoDataBlock = styled(FlexBlock)`
   font-size: 24px;
-  padding: 40px 0;
+  height: 100%;
+  align-items: center;
   font-weight: 600;
   color: ${COLORS.hint};
   text-align: center;

@@ -11,7 +11,8 @@ import {
   RefreshFunction,
   TokenInfo as TokenInfoType,
 } from '@sb/dexUtils/types'
-import { VestingWithPk, Vesting } from '@sb/dexUtils/vesting/types'
+
+import { VestingWithPk, Vesting } from '@core/solana'
 
 import {
   DexTokensPrices,
@@ -25,6 +26,7 @@ export interface ExtendFarmingModalProps {
   onExtend: () => void
   pool: PoolInfo
   title?: string
+  tokensInfo: Map<string, TokenInfo>
 }
 
 export interface FarmingModalProps extends ExtendFarmingModalProps {
@@ -36,9 +38,10 @@ export type TransactionStatus = 'processing' | 'success' | 'error'
 
 export interface FarmingProcessingModalProps {
   onClose: () => void
-  status: TransactionStatus
+  status: string
   open: boolean
   prolongFarming: () => void
+  txId?: string
 }
 
 export interface PoolPageProps {
@@ -103,4 +106,5 @@ export interface UserLiquidityBlockProps {
   onDepositClick: () => void
   onWithdrawClick: () => void
   vesting?: Vesting
+  tokenMap: Map<string, any>
 }
