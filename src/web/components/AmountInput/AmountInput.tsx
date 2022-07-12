@@ -59,6 +59,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
       size={inputSize}
       label={label}
       disabled={disabled}
+      maxLength={31}
       append={
         <ButtonsBlock>
           <TokenNameWrap>{tokenName}</TokenNameWrap>
