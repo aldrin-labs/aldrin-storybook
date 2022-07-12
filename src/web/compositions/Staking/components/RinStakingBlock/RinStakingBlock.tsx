@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js'
 import React from 'react'
 
 import { BlockTitle, BlockContent } from '@sb/components/Block'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
@@ -9,7 +10,6 @@ import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { useStakingPoolInfo } from '@sb/dexUtils/staking/hooks'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 
-import { queryRendererHoc } from '@core/components/QueryRenderer'
 import { getDexTokensPrices as getDexTokensPricesQuery } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 

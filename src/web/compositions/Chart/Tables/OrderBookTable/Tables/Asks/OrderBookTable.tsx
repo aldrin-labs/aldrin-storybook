@@ -1,5 +1,7 @@
+import useMobileSize from '@webhooks/useMobileSize'
 import React from 'react'
 import { Column, Table } from 'react-virtualized'
+
 import 'react-virtualized/styles.css'
 
 import styled, { useTheme } from 'styled-components'
@@ -7,11 +9,9 @@ import styled, { useTheme } from 'styled-components'
 import { StyledAutoSizer } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapperStyles'
 import { useOpenOrders } from '@sb/dexUtils/markets'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
+import { withErrorFallback } from '@sb/hoc'
 
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
 import { getDataFromTree } from '@core/utils/chartPageUtils'
-
-import useMobileSize from '@webhooks/useMobileSize'
 
 import { AsksWrapper } from '../../OrderBookTableContainer.styles'
 import defaultRowRenderer, { getRowHeight } from '../../utils'

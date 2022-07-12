@@ -1,7 +1,9 @@
+import { Theme } from '@material-ui/core'
 import React from 'react'
 import { compose } from 'recompose'
-import { Theme } from '@material-ui/core'
-import { queryRendererHoc } from '@core/components/QueryRenderer'
+
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
+
 import { getSerumQuoteTradeVolumeStats } from '@core/graphql/queries/analytics/getSerumQuoteTradeVolumeStats'
 
 import {
@@ -10,7 +12,6 @@ import {
   generateIDFromValues,
   getTimezone,
 } from '../utils'
-
 import AreaChart from './AreaChart'
 
 const AreaVolumeChart = ({
@@ -27,15 +28,10 @@ const AreaVolumeChart = ({
       theme={theme}
       data={getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats}
       selectedPair={selectedPair}
-      id={
-        'getSerumQuoteTradeVolumeStatsQuery' +
-        generateIDFromValues(
-          getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats
-        ) +
-        selectedPair +
-        getSerumQuoteTradeVolumeStatsQuery.loading
-      }
-      title={'Volume'}
+      id={`getSerumQuoteTradeVolumeStatsQuery${generateIDFromValues(
+        getSerumQuoteTradeVolumeStatsQuery.getSerumQuoteTradeVolumeStats
+      )}${selectedPair}${getSerumQuoteTradeVolumeStatsQuery.loading}`}
+      title="Volume"
     />
   )
 }

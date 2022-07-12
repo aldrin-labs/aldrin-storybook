@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { DefaultTheme, useTheme } from 'styled-components'
 
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { ReusableTitle as Title } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { datesForQuery } from '@sb/compositions/Chart/Inputs/SelectWrapper/SelectWrapper'
 import { useMarket, useMarkPrice } from '@sb/dexUtils/markets'
@@ -9,7 +10,6 @@ import { useInterval } from '@sb/dexUtils/useInterval'
 import { formatNumberWithSpaces } from '@sb/dexUtils/utils'
 
 import { getRINCirculationSupply } from '@core/api'
-import { queryRendererHoc } from '@core/components/QueryRenderer/index'
 import { marketDataByTickers } from '@core/graphql/queries/chart/marketDataByTickers'
 import {
   formatNumberToUSFormat,

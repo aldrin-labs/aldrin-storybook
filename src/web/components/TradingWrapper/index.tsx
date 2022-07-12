@@ -11,11 +11,11 @@ import TraidingTerminal, {
 import { CustomCard } from '@sb/compositions/Chart/Chart.styles'
 import { FormInputContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/InputComponents'
 import { InputRowContainer } from '@sb/compositions/Chart/components/SmartOrderTerminal/styles'
+import { withErrorFallback } from '@sb/hoc'
+import { withPublicKey } from '@sb/hoc/withPublicKey'
 
 import { client } from '@core/graphql/apolloClient'
 import { SERUM_ORDERS_BY_TV_ALERTS } from '@core/graphql/subscriptions/SERUM_ORDERS_BY_TV_ALERTS'
-import { withErrorFallback } from '@core/hoc/withErrorFallback'
-import { withPublicKey } from '@core/hoc/withPublicKey'
 import { isSPOTMarketType } from '@core/utils/chartPageUtils'
 
 import {
