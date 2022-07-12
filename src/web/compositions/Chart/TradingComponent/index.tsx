@@ -1,5 +1,3 @@
-import { roundDown } from '@core/utils/chartPageUtils'
-import { addGAEvent } from '@core/utils/ga.utils'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { getFeeRates } from '@project-serum/serum'
 import TradingWrapper from '@sb/components/TradingWrapper'
@@ -21,6 +19,8 @@ import React, { useEffect, useState } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
 import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
+import { roundDown } from '@core/utils/chartPageUtils'
+import { addGAEvent } from '@core/utils/ga.utils'
 import { IProps } from './types'
 import { getPriceForMarketOrderBasedOnOrderbook } from './utils'
 
@@ -128,7 +128,7 @@ const TradingComponent = (props: IProps) => {
     { positionAmt: 0, positionSide: 'SHORT' },
   ]
 
-  const {hedgeMode} = selectedKey
+  const { hedgeMode } = selectedKey
 
   const processedFunds =
     marketType === 0 ? funds : [funds[0], USDTFuturesFund, currentPositions]
@@ -188,8 +188,6 @@ const TradingComponent = (props: IProps) => {
 
     let priceForOrder = +values.price
     const quoteBalanceWithoutFee = quoteBalance * 0.997
-
-    console.log('orderbook', orderbook)
 
     if (priceType === 'market') {
       if (byType === 'sell' && orderbook.bids) {
@@ -281,7 +279,7 @@ const TradingComponent = (props: IProps) => {
                   +funcToRound(values.amount, sizeDigits)
 
                 if (fill.side === byType && isAmountEqual && !orderPlaced) {
-                  const {price} = fill
+                  const { price } = fill
                   let takeProfitOrderPrice = 0
 
                   if (takeProfit) {
@@ -387,8 +385,6 @@ const TradingComponent = (props: IProps) => {
         description: e.message,
         type: 'error',
       })
-
-
     }
   }
 
