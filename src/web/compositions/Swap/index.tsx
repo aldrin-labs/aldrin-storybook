@@ -349,7 +349,7 @@ const SwapPage = ({
           <SwapBlockTemplate width="100%">
             <RowContainer margin="0 0 .5em 0" justify="space-between">
               <Row>
-                <ValueButton>
+                <ValueButton className="timer">
                   <ReloadTimer
                     data-testid="swap-reload-data-timer"
                     duration={15}

@@ -129,7 +129,7 @@ export const TableInner = ({
               label="last price"
               dataKey="price"
               headerStyle={{
-                color: theme.colors.primaryWhite,
+                color: theme.colors.gray1,
                 paddingRight: 'calc(10px)',
                 fontSize: '1.5rem',
                 textAlign: 'left',
@@ -148,7 +148,7 @@ export const TableInner = ({
                 label="change 24h"
                 dataKey="price24hChange"
                 headerStyle={{
-                  color: theme.colors.primaryWhite,
+                  color: theme.colors.gray1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',

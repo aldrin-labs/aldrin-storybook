@@ -51,6 +51,10 @@ const BASE_THEME = {
     blue1: '#B4B1F9FF',
     blue0: '#E7E6FDFF',
     primaryWhite: '#fff',
+    swapValueBtnHover: '#d4d4da',
+    swapValueBtnActive: '#bdbdc2',
+    swapSetAmountHover: '#bfbfc2',
+    swapSetAmountActive: '#aaaaac',
   },
 }
 
