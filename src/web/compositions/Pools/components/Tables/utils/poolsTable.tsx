@@ -262,7 +262,7 @@ export const preparePoolTableCell = (params: {
                     </InlineText>
                   </div>
                   <div>
-                    <Text color="green3" size="sm">
+                    <InlineText color="green3" size="sm">
                       {availableToClaim
                         .map(
                           (atc) =>
@@ -271,7 +271,7 @@ export const preparePoolTableCell = (params: {
                             }`
                         )
                         .join(' + ')}
-                    </Text>
+                    </InlineText>
                   </div>
                 </div>
               </>
