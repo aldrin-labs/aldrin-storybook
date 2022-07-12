@@ -1,4 +1,4 @@
-import { BORDER_RADIUS, BREAKPOINTS } from '@variables/variables'
+import { BORDER_RADIUS, BREAKPOINTS, FONT_SIZES } from '@variables/variables'
 import styled from 'styled-components'
 
 import { InlineText } from '@sb/components/Typography'
@@ -12,15 +12,18 @@ type CanvasContainerProps = {
 }
 
 export const ChartContainer = styled.div`
-  width: 100%;
+  width: 90%;
   background: ${(props) => props.theme.colors.gray7};
   border-radius: ${BORDER_RADIUS.lg};
   display: flex;
   flex-direction: row;
+  margin-bottom: 1em;
+  height: 8em;
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: 49%;
     min-height: 7em;
+    height: auto;
   }
 `
 
@@ -37,6 +40,11 @@ export const ValueTitle = styled(InlineText)`
   line-height: 100%;
   margin-top: 0.3em;
   letter-spacing: -1.5px;
+  font-size: ${FONT_SIZES.lg};
+
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    font-size: ${FONT_SIZES.xl};
+  }
 `
 export const CanvasContainer = styled.div<CanvasContainerProps>`
   width: ${(props) => `calc(65% - ${props.padding})`};

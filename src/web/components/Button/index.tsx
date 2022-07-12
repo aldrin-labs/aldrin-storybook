@@ -138,6 +138,7 @@ export const PADDINGS = {
   md: '4px 10px', // 16px
   lg: '8px 16px',
   xl: '11px 10px',
+  xxl: '13px 11px',
 }
 
 export type ButtonVariants = keyof typeof VARIANTS

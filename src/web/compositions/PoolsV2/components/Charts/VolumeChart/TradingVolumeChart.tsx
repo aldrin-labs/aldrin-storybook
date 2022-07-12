@@ -76,7 +76,7 @@ const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
   return (
     <CanvasContainer padding="0px">
       <Canvas
-        bottom="-2px"
+        bottom="0px"
         left="4px"
         id="trading-vol-chart-inner"
         height="250"
@@ -128,7 +128,7 @@ export const VolumeChart = () => {
 
   return (
     <ChartContainer>
-      <TooltipContainer padding="0px">
+      <TooltipContainer padding="8px">
         <InlineText color="gray0" size="xs">
           Volume {isMouseOverTheChart ? `at ${balanceData.date}` : `All Time`}
         </InlineText>

@@ -129,7 +129,7 @@ export const TVLChart: React.FC = () => {
         <InlineText color="gray0" size="xs">
           TVL {isMouseOverTheChart ? `at ${balanceData.date}` : `Now`}
         </InlineText>
-        <ValueTitle color="gray0" size="xl" weight={600}>
+        <ValueTitle color="gray0" weight={600}>
           <InlineText color="gray1">$</InlineText>{' '}
           {isMouseOverTheChart ? `${balanceData.balance}` : `${firstBalance}`}
         </ValueTitle>

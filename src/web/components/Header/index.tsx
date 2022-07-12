@@ -44,9 +44,7 @@ export const Header = React.memo(
         <Wrap>
           <HeaderWrap>
             <Index />
-
             <RinBalance />
-
             <MainLinksWrap>
               <MainLinksBlock>
                 <NavLink

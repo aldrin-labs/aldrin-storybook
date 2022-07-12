@@ -29,6 +29,8 @@ export const Container = styled.div`
   border-radius: none;
   cursor: pointer;
   padding: 0.2em;
+  width: 90%;
+  justify-content: space-between;
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: auto;
@@ -47,4 +49,9 @@ export const SwitcherButton = styled(Button)<StyledSwitcher>`
   border: none;
   cursor: pointer;
   transition: 0.5s;
+  width: 50%;
+
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    width: auto;
+  }
 `
