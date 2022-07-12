@@ -1,5 +1,8 @@
-import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { getFeeRates } from '@project-serum/serum'
+import { withSnackbar } from 'notistack'
+import React, { useEffect, useState } from 'react'
+
+import { graphql } from 'react-apollo'
 import TradingWrapper from '@sb/components/TradingWrapper'
 import { useConnection } from '@sb/dexUtils/connection'
 import {
@@ -14,13 +17,13 @@ import { notify } from '@sb/dexUtils/notifications'
 import { cancelOrder, placeOrder } from '@sb/dexUtils/send'
 import { getDecimalCount } from '@sb/dexUtils/utils'
 import { useBalanceInfo, useWallet } from '@sb/dexUtils/wallet'
-import { withSnackbar } from 'notistack'
-import React, { useEffect, useState } from 'react'
-import { graphql } from 'react-apollo'
 import { compose } from 'recompose'
+
 import { addSerumTransaction } from '@core/graphql/mutations/chart/addSerumTransaction'
 import { roundDown } from '@core/utils/chartPageUtils'
 import { addGAEvent } from '@core/utils/ga.utils'
+import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
+
 import { IProps } from './types'
 import { getPriceForMarketOrderBasedOnOrderbook } from './utils'
 
@@ -246,8 +249,6 @@ const TradingComponent = (props: IProps) => {
       feeAccounts,
       addSerumTransactionMutation,
     }
-
-    console.log('variables for placing', variables)
 
     const placeOrderWithTP = async () => {
       let resultEntryOrder // txId
