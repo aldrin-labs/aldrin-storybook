@@ -55,20 +55,7 @@ interface IProps {
       lowPrice: string
     }
   }
-  getFundingRateQuery: {
-    getFundingRate: {
-      exchange: string
-      symbol: string
-      fundingTime: number
-      fundingRate: string
-    }
-    subscribeToMoreFunction: () => () => void
-  }
-  getPriceQuery: {
-    getPrice: number
-    subscribeToMoreFunction: () => () => void
-  }
-  getFundingRateQueryRefetch: () => void
+
   getMarkPriceQuery: {
     getMarkPrice: {
       symbol: string

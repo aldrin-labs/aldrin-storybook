@@ -13,7 +13,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-import SearchUsername from '@core/components/SearchUsername/SearchUsername'
 
 export const StyledDialogContent = styled(DialogContent)`
   border-radius: none;
@@ -496,63 +495,5 @@ export const StyledTextArea = styled.textarea`
     &::placeholder {
       font-size: 1.2rem;
     }
-  }
-`
-
-export const StyledSearch = styled(SearchUsername)`
-  outline: none;
-  width: ${(props) => props.width}%;
-  padding: 0.5rem 0 0.5rem 1rem;
-  margin-left: -1.2rem;
-  border-radius: 1.2rem;
-  box-shadow: inset 0px 0px 0.5rem rgba(10, 19, 43, 0.1);
-  border: 1px solid #eaecee;
-  color: #7284a0;
-  font-size: 1.6rem;
-
-  .custom-async-select-box {
-    &__menu {
-      margin-left: -0.8rem;
-    }
-
-    &__single-value {
-      color: #7284a0;
-    }
-
-    &__placeholder {
-      color: #abbad1;
-    }
-  }
-
-  @media (min-width: 1440px) {
-    font-size: 1.2rem;
-    padding: 0.5rem 0rem 0.5rem 1.1rem;
-    width: ${(props) => props.width - 4}%;
-
-    &::placeholder {
-      font-size: 1.2rem;
-    }
-  }
-
-  @media (min-width: 1720px) {
-    font-size: 1.35rem;
-
-    &::placeholder {
-      font-size: 1.35rem;
-    }
-  }
-
-  @media (min-width: 1921px) {
-    font-size: 1.2rem;
-    padding: 0.7rem 0rem 0.5rem 1.1rem;
-
-    &::placeholder {
-      font-size: 1.2rem;
-    }
-  }
-
-  @media (min-width: 2560px) {
-    font-size: 1.2rem;
-    padding: 0.7rem 0rem 0.6rem 1.1rem;
   }
 `
