@@ -19,9 +19,13 @@ export const StyledGrid = styled(Grid)`
   min-width: ${(props) => (props.isAdvancedSelectorMode ? '160rem' : '90rem')};
   height: ${(props) => (props.isAdvancedSelectorMode ? '73rem' : '61rem')};
   border-radius: 2rem;
-  overflow: hidden;
+  overflow: visible;
   border: 0.1rem solid ${(props) => props.theme.colors.gray5};
   filter: drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2));
+
+  .ReactVirtualized__Table__rowColumn {
+    overflow: visible !important;
+  }
 
   @media (max-width: 600px) {
     top: 19rem;
