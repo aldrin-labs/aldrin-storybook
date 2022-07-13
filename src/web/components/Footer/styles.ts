@@ -1,8 +1,6 @@
 import { FONT_SIZES, BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
-import { THEME_DARK } from '@sb/compositions/App/themes'
-
 import { Button } from '../Button'
 import { Row } from '../Layout'
 
@@ -14,9 +12,9 @@ export const FooterContainer = styled.div`
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  min-height: 9em;
+  height: 9em;
   padding: 0 3em;
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.header};
 
   @media (max-width: ${BREAKPOINTS.md}) {
     flex-direction: column;

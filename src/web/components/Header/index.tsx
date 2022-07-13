@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import Index from '@sb/components/Logo'
+import Logo from '@sb/components/Logo'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
 
 import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
@@ -43,7 +43,7 @@ export const Header = React.memo(
       <Body>
         <Wrap>
           <HeaderWrap>
-            <Index />
+            <Logo />
 
             <RinBalance />
 

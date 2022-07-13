@@ -1,11 +1,10 @@
-import { Paper } from '@material-ui/core'
-import styled from 'styled-components'
 import { rgba } from 'polished'
+import styled from 'styled-components'
 
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-
-export const WalletSelectorRow = styled(RowContainer)`
+export const WalletSelectorRow = styled.div`
   background: transparent;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   text-transform: none;
   white-space: normal;
@@ -41,7 +40,7 @@ export const CloseIcon = styled.div`
   font-weight: 500;
 
   &:hover {
-   background-color: ${(props) => rgba(props.theme.colors.white3, 0.25)};
+    background-color: ${(props) => rgba(props.theme.colors.white3, 0.25)};
   }
 `
 export const WalletIcon = styled.div`
@@ -97,9 +96,10 @@ export const LearnMoreLink = styled.a`
 `
 
 export const Title = styled.span`
-  font-family: Avenir Next Bold;
-  font-size: 3rem;
-  line-height: 4rem;
+  font-family: Avenir Next Demi;
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 3rem;
   text-align: center;
   letter-spacing: 0.01rem;
   text-transform: none;

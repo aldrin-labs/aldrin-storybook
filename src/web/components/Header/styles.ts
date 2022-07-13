@@ -14,7 +14,6 @@ import styled from 'styled-components'
 
 import { Button } from '../Button'
 import { Text } from '../Typography'
-import { THEME_DARK } from "@sb/compositions/App/themes"
 
 export const HeaderWrap = styled.header`
   display: flex;

@@ -16,7 +16,7 @@ const AldrinLogoIcon = () => (
   </svg>
 )
 
-const Index = ({ width }: { width?: number }) => {
+const Logo = ({ width }: { width?: number }) => {
   return (
     <LogoBlock $width={width}>
       <LogoLink to="/">
@@ -26,4 +26,4 @@ const Index = ({ width }: { width?: number }) => {
   )
 }
 
-export default Index
+export default Logo
