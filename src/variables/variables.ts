@@ -1,7 +1,7 @@
-export const MAIN_FONT = 'Avenir Next'
+export const MAIN_FONT = 'Prompt'
 export const FONTS = {
-  main: `${MAIN_FONT}, sans-serif;`,
-  demi: `${MAIN_FONT} Demi, sans-serif`,
+  main: `${MAIN_FONT}`,
+  demi: `${MAIN_FONT}`,
 }
 
 export const COLORS = {
