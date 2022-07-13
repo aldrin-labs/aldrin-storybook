@@ -60,8 +60,6 @@ export const Copyright = styled.div`
   color: ${(props) => props.theme.colors.gray3};
   margin-top: 0.25em;
   font-size: 12px;
-  font-family: 'Prompt Medium';
-  font-weight: 600;
 `
 
 export const FooterLeft = styled.div`
