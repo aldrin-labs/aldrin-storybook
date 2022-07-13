@@ -62,11 +62,11 @@ export const PoolStats: React.FC<PoolStatsProps> = (props) => {
             </span>
           </DarkTooltip>
         </PoolStatsText>
-        {additionalInfo ? (
-          <InlineText weight={300} color="gray2" size="sm">
+        {additionalInfo && (
+          <InlineText weight={300} color="white2" size="sm">
             {additionalInfo}
           </InlineText>
-        ) : null}
+        )}
       </PoolStatsData>
     </PoolStatsWrap>
   )

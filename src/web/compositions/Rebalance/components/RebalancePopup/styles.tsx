@@ -7,7 +7,7 @@ import { TextColumnContainer } from '@sb/compositions/Pools/components/Tables/in
 export const BlockForIcons = styled(Row)`
   padding: 1rem;
   justify-content: space-around;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white3};
   box-sizing: border-box;
   border-radius: 8px;
   min-width: 22rem;
@@ -24,7 +24,7 @@ export const StyledPaper = styled(Paper)`
   height: auto;
   padding: 2rem 0;
   width: 60rem;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 0.8rem;
   overflow: hidden;
   min-height: auto;

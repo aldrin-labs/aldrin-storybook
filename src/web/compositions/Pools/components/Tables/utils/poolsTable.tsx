@@ -218,7 +218,7 @@ export const preparePoolTableCell = (params: {
             <Text size="sm">
               {tvlUSD > 0 ? `$${stripByAmountAndFormat(tvlUSD, 4)}` : '-'}
             </Text>
-            <Text size="sm" margin="10px 0" color="gray1">
+            <Text size="sm" margin="10px 0" color="white1">
               {stripByAmountAndFormat(
                 pool.tvl.tokenA,
                 getNumberOfPrecisionDigitsForSymbol(baseName)
@@ -251,13 +251,13 @@ export const preparePoolTableCell = (params: {
                   mints={openFarmingsKeys}
                 />
                 <div>
-                  <InlineText color="gray0" size="sm">
+                  <InlineText color="white1" size="sm">
                     {openFarmingsKeys
                       .map((ft) => getTokenNameByMintAddress(ft))
                       .join(' x ')}
                   </InlineText>
                   <div>
-                    <InlineText color="gray0" size="sm">
+                    <InlineText color="white1" size="sm">
                       Available to claim:
                     </InlineText>
                   </div>

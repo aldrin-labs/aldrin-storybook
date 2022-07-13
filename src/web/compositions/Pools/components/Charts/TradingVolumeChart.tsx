@@ -79,7 +79,7 @@ export const ChartBlockInnerWithData = compose(
     },
     fetchPolicy: 'cache-and-network',
     pollInterval: 60000 * getRandomInt(1, 3),
-    loaderColor: (props) => props.theme.colors.white,
+    loaderColor: (props) => props.theme.colors.white1,
   })
 )(ChartBlockInner)
 

@@ -46,12 +46,17 @@ export const ModalContainer = styled(Page)<ModalContainerProps>`
   ${(props: ModalContainerProps) => BackdropStyle[props.backdrop]}
 `
 
-export const ModalBody = styled(Block)`
+type ModalBodyProps = {
+  $width?: string
+}
+
+export const ModalBody = styled(Block)<ModalBodyProps>`
   height: auto;
   max-width: 80em;
   max-height: 95vh;
   overflow: auto;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
+  width: ${(props) => props.$width || 'auto'};
 `
 
 export const ModalContent = styled(BlockContent)`
@@ -60,7 +65,7 @@ export const ModalContent = styled(BlockContent)`
 
 export const ModalTitle = styled.h3`
   margin: 0;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const ModalTitleContainer = styled.div`
@@ -78,7 +83,7 @@ export const CloseIcon = styled.div`
 
   svg {
     path {
-      stroke: ${(props) => props.theme.colors.gray0};
+      stroke: ${(props) => props.theme.colors.white1};
     }
   }
 `

@@ -15,15 +15,15 @@ export const Container = styled(FlexBlock)`
   font-weight: 600;
   cursor: pointer;
   user-select: none;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
 `
 
 export const DropdownArrow = styled.span`
   display: block;
   height: 6px;
   width: 6px;
-  border-left: 1px solid ${(props) => props.theme.colors.gray1};
-  border-bottom: 1px solid ${(props) => props.theme.colors.gray1};
+  border-left: 1px solid ${(props) => props.theme.colors.white1};
+  border-bottom: 1px solid ${(props) => props.theme.colors.white1};
   transform: rotate(-45deg);
   margin-left: auto;
 `
@@ -34,7 +34,7 @@ export const TokenName = styled.span`
 
 export const Balance = styled.span`
   margin-left: auto;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const TokenRow = styled(FlexBlock)`

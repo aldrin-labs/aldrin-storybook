@@ -41,7 +41,7 @@ export const BalanceValues = styled.div`
 `
 
 export const BalanceQuantity = styled.span`
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   font-size: 1.2rem;
   font-family: Avenir Next Demi;
   letter-spacing: 0.01rem;
@@ -88,7 +88,7 @@ export const BalanceFuturesTypography = styled.span`
 `
 
 export const BalanceFuturesTitle = styled(BalanceFuturesTypography)`
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const BalanceFuturesValue = styled(BalanceFuturesTypography)`
@@ -101,7 +101,7 @@ export const BalanceFuturesSymbol = styled(BalanceFuturesTypography)`
 
 const BalanceValuesContainer = styled(RowContainer)`
   padding: 0.4rem;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 0.4rem;
   justify-content: flex-start;
   margin-bottom: ${(props) => (props.needMargin ? '0.8rem' : '0')};

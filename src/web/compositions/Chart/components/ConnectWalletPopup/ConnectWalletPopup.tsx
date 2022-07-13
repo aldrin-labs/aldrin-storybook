@@ -3,9 +3,8 @@ import { getWalletAdapters } from '@utils/wallets'
 import { orderBy } from 'lodash-es'
 import React from 'react'
 
-import { DialogWrapper } from '@sb/components/AddAccountDialog/AddAccountDialog.styles'
+import { Modal } from '@sb/components/Modal'
 import SvgIcon from '@sb/components/SvgIcon'
-import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
 
 import {
@@ -18,9 +17,16 @@ import {
   WalletsList,
   BottomText,
   LearnMoreLink,
-  StyledPaper,
   Title,
+  Header,
+  Footer,
 } from './ConnectWalletPopup.styles'
+
+const modalContentStyle = {
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+}
 
 const ConnectWalletPopup = ({
   onClose,
@@ -36,29 +42,26 @@ const ConnectWalletPopup = ({
     (item) => walletAdapters[item].readyState === WalletReadyState.Installed
   )
 
+  const walletProviders = orderBy(
+    WALLET_PROVIDERS,
+    (item) => installedWallets.includes(item.sysName),
+    ['desc']
+  )
+
   return (
-    <DialogWrapper
-      PaperComponent={StyledPaper}
-      fullScreen={false}
+    <Modal
       onClose={onClose}
-      maxWidth="md"
       open={open}
-      aria-labelledby="responsive-dialog-title"
+      width="24em"
+      modalContentStyle={modalContentStyle}
     >
-      <RowContainer
-        style={{ padding: '3rem', borderBottom: '1px solid #000' }}
-        justify="space-between"
-      >
+      <Header>
         <Title>Connect Wallet</Title>
         <CloseIcon onClick={onClose}>Esc</CloseIcon>
-      </RowContainer>
+      </Header>
 
       <WalletsList>
-        {orderBy(
-          WALLET_PROVIDERS,
-          (item) => installedWallets.includes(item.sysName),
-          ['desc']
-        ).map((provider) => {
+        {walletProviders.map((provider) => {
           return (
             <WalletSelectorRow
               key={`wallet_${provider.name}`}
@@ -90,14 +93,13 @@ const ConnectWalletPopup = ({
         })}
       </WalletsList>
 
-      <RowContainer
-        style={{ padding: '2.4rem 3rem', borderTop: '1px solid #000' }}
-        justify="space-between"
-      >
+      <Footer>
         <BottomText>First time using Solana?</BottomText>
-        <LearnMoreLink target="_blank" href="https://solana.com">Learn More</LearnMoreLink>
-      </RowContainer>
-    </DialogWrapper>
+        <LearnMoreLink target="_blank" href="https://solana.com">
+          Learn More
+        </LearnMoreLink>
+      </Footer>
+    </Modal>
   )
 }
 

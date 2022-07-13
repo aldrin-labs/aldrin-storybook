@@ -28,7 +28,7 @@ export const Img = styled.img`
 export const RewardsContent = styled(BlockContent)`
   max-width: 440px;
   width: 80vw;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white3};
   margin: 20px;
   border-radius: ${BORDER_RADIUS.md};
 `
@@ -40,7 +40,7 @@ export const Separator = styled.div`
 
 export const ProgressBar = styled.div<ProgressBarProps>`
   height: 80px;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: ${BORDER_RADIUS.md};
   flex: 1;
   margin-left: 30px;
@@ -64,5 +64,5 @@ export const ProgressBar = styled.div<ProgressBarProps>`
 `
 
 export const RewardsLink = styled(Link)`
-  color: ${(props) => props.theme.colors.green7};
+  color: ${(props) => props.theme.colors.green3};
 `

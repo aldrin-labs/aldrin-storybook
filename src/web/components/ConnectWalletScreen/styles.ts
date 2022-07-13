@@ -5,7 +5,7 @@ import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 export const LogoContainer = styled(RowContainer)`
   svg {
     path {
-      fill: ${(props) => props.theme.colors.gray0};
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
 `

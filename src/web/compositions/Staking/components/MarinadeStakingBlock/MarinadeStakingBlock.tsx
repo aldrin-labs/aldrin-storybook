@@ -58,25 +58,25 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = React.memo(
           </RowContainer>
           <ContentBlock>
             <RowContainer margin="0 0 1em 0" justify="space-between">
-              <InlineText color="gray1" size="sm">
+              <InlineText color="white1" size="sm">
                 Total Staked
               </InlineText>
-              <InlineText color="gray0" size="xmd" weight={700}>
+              <InlineText color="white1" size="xmd" weight={700}>
                 {totalStakedSol
                   ? stripByAmountAndFormat(totalStakedSol, 2)
                   : ' ---'}
-                <InlineText color="gray1" weight={600}>
+                <InlineText color="white1" weight={600}>
                   {' '}
                   SOL{' '}
                 </InlineText>
               </InlineText>
             </RowContainer>
             <RowContainer justify="space-between">
-              <InlineText size="sm" color="gray1">
+              <InlineText size="sm" color="white1">
                 to {mSolInfo?.stats.validators_count || '---'} Validators{' '}
               </InlineText>{' '}
-              <InlineText size="sm" weight={700} color="gray0">
-                <InlineText color="gray0">$</InlineText>
+              <InlineText size="sm" weight={700} color="white1">
+                <InlineText color="white1">$</InlineText>
                 {totalStakedUsdValue
                   ? stripByAmountAndFormat(totalStakedUsdValue, 2)
                   : ' ---'}
@@ -87,7 +87,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = React.memo(
           <StretchedContent>
             <ContentBlock width="48%">
               <Row justify="space-between" margin="0 0 1em 0">
-                <InlineText color="gray1" size="sm">
+                <InlineText color="white1" size="sm">
                   mSOL Price
                 </InlineText>{' '}
                 <DarkTooltip title="mSOL/SOL price increases every epoch because staking rewards are accumulated into the SOL staked pool. Therefore, the ratio is not 1:1. This ratio only goes up with time.">
@@ -100,12 +100,12 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = React.memo(
                 size="xmd"
                 weight={700}
                 style={{ whiteSpace: 'nowrap' }}
-                color="gray0"
+                color="white1"
               >
                 {mSolInfo?.stats.m_sol_price
                   ? stripByAmountAndFormat(mSolInfo.stats.m_sol_price, 3)
                   : ' ---'}{' '}
-                <InlineText color="gray1" weight={600}>
+                <InlineText color="white1" weight={600}>
                   SOL
                 </InlineText>
               </InlineText>
@@ -117,7 +117,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = React.memo(
                 style={{ position: 'absolute', padding: '1em' }}
               >
                 <RowContainer justify="space-between" margin="0 0 1em 0">
-                  <InlineText color="gray1" size="sm">
+                  <InlineText color="white1" size="sm">
                     Epoch
                   </InlineText>{' '}
                   <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
@@ -126,7 +126,7 @@ const MrndStakingBlock: React.FC<MarinadeStakingProps> = React.memo(
                     </span>
                   </DarkTooltip>
                 </RowContainer>
-                <InlineText color="gray0" size="xmd" weight={700}>
+                <InlineText color="white1" size="xmd" weight={700}>
                   {mSolInfo?.epochInfo.epochPct
                     ? stripByAmountAndFormat(mSolInfo.epochInfo.epochPct, 2)
                     : '---'}

@@ -217,9 +217,9 @@ export const SRadio = styled(Radio)`
 
 export const SCheckbox = styled(Checkbox)`
   & svg {
-    color: ${(props) => props.theme.colors.blue4};
+    color: ${(props) => props.theme.colors.blue2};
   }
-  color: ${(props) => props.theme.colors.blue4};
+  color: ${(props) => props.theme.colors.blue2};
   @media (min-width: 1440px) {
     & svg {
       font-size: 2.2rem;

@@ -16,7 +16,7 @@ export const FooterContainer = styled.div`
   align-items: center;
   min-height: 9em;
   padding: 0 3em;
-  background: ${(props) => props.theme.colors.gray9};
+  background: ${(props) => props.theme.colors.white6};
 
   @media (max-width: ${BREAKPOINTS.md}) {
     flex-direction: column;
@@ -33,7 +33,7 @@ export const MediaContainer = styled(Row)`
 `
 
 export const FooterButton = styled(Button)`
-  color: ${(props) => props.theme.colors.gray3};
+  color: ${(props) => props.theme.colors.white2};
   background: transparent;
   border: none;
   padding: 0.5em;
@@ -41,10 +41,7 @@ export const FooterButton = styled(Button)`
   transition: 0.3s;
 
   &:hover {
-    color: ${(props) =>
-      props.theme.name === THEME_DARK
-        ? props.theme.colors.white
-        : props.theme.colors.gray8};
+    color: ${(props) => props.theme.colors.white4};
   }
 
   &:last-child {
@@ -57,7 +54,7 @@ export const FooterButton = styled(Button)`
 `
 
 export const Copyright = styled.div`
-  color: ${(props) => props.theme.colors.gray3};
+  color: ${(props) => props.theme.colors.white2};
   margin-top: 0.25em;
   font-size: 12px;
 `

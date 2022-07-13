@@ -63,7 +63,7 @@ export const combineTradeHistoryTable = (
             style={{
               display: 'block',
               textTransform: 'uppercase',
-              color: side === 'buy' ? theme.colors.green7 : theme.colors.red3,
+              color: side === 'buy' ? theme.colors.green3 : theme.colors.red3,
             }}
           >
             {side}
@@ -112,7 +112,7 @@ export const combineTradeHistoryTable = (
                 style={{
                   textTransform: 'capitalize',
                   color:
-                    side === 'buy' ? theme.colors.green7 : theme.colors.red3,
+                    side === 'buy' ? theme.colors.green3 : theme.colors.red3,
                 }}
               >
                 {side}

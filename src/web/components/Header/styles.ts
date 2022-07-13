@@ -46,10 +46,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   padding: 4px 0;
   margin: 0;
   text-align: ${(props: LinkProps) => (props.$left ? 'left' : 'center')};
-  color: ${(props) =>
-    props.theme.name === THEME_DARK
-      ? props.theme.colors.gray1
-      : props.theme.colors.gray3};
+  color: ${(props) => props.theme.colors.white1};
   background: transparent;
   border: 0;
   cursor: pointer;
@@ -59,10 +56,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
 
   svg {
     path {
-      fill: ${(props) =>
-        props.theme.name === THEME_DARK
-          ? props.theme.colors.gray1
-          : props.theme.colors.gray3};
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
 
@@ -77,32 +71,32 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   }
 
   &.selected-from-dropdown {
-    color: ${(props) => props.theme.colors.gray0};
+    color: ${(props) => props.theme.colors.white1};
 
     svg {
       path {
-        fill: ${(props) => props.theme.colors.gray0};
+        fill: ${(props) => props.theme.colors.white1};
       }
     }
   }
 
   &:hover {
-    color: ${(props) => props.theme.colors.gray0};
+    color: ${(props) => props.theme.colors.white1};
 
     svg path {
-      fill: ${(props) => props.theme.colors.gray0};
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
 
   &.selected {
-    color: ${(props) => props.theme.colors.gray0};
-    border-bottom: 1px solid ${(props) => props.theme.colors.gray0};
+    color: ${(props) => props.theme.colors.white1};
+    border-bottom: 1px solid ${(props) => props.theme.colors.white1};
     transition: all ease-in 0.2s;
     font-weight: 600;
 
     svg {
       path {
-        fill: ${(props) => props.theme.colors.gray0};
+        fill: ${(props) => props.theme.colors.white1};
       }
     }
   }
@@ -243,7 +237,7 @@ export const DropdownWrap = styled.div<ShowHideProps>`
 
 export const DropdownInner = styled.div`
   min-width: 6em;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white3};
   display: flex;
   flex-direction: column;
   margin-top: 5px;
@@ -263,7 +257,7 @@ export const WalletButton = styled(Button)`
   white-space: nowrap;
   padding: 10px 20px;
   font-size: 0.75em;
-  background-color: ${(props) => props.theme.colors.blue3};
+  background-color: ${(props) => props.theme.colors.persistent.blue1};
   border: none;
   font-weight: 600;
   height: 3.5em;
@@ -292,7 +286,7 @@ export const WalletDataContainer = styled.div`
   flex-direction: row;
   align-items: center;
   cursor: pointer;
-  background-color: ${(props) => props.theme.colors.gray6};
+  background-color: ${(props) => props.theme.colors.white5};
 
   @media (min-width: ${BREAKPOINTS.md}) {
     flex-direction: column;
@@ -362,7 +356,7 @@ export const WalletName = styled(Text)`
   font-size: 0.6em;
   line-height: 1.3;
   margin: 0;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -370,10 +364,7 @@ export const WalletName = styled(Text)`
 `
 
 export const WalletAddress = styled(WalletName)`
-  color: ${(props) =>
-    props.theme.name === THEME_DARK
-      ? props.theme.colors.gray3
-      : props.theme.colors.gray8};
+  color: ${(props) => props.theme.colors.white1};
   font-weight: 400;
   display: block;
   font-size: ${FONT_SIZES.sm};
@@ -409,10 +400,7 @@ export const WalletDisconnectButton = styled(Button)`
 `
 export const BalanceTitle = styled.span`
   font-size: 12px;
-  color: ${(props) =>
-    props.theme.name === THEME_DARK
-      ? props.theme.colors.primaryWhite
-      : '#3F3F50'};
+  color: ${(props) => props.theme.colors.white1};
   font-weight: 600;
   white-space: nowrap;
 

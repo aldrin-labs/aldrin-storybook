@@ -6,8 +6,8 @@ const Container = styled.div`
   height: 4rem;
   svg {
     path: {
-      fill: ${(props) => props.theme.colors.white};
-      stroke: ${(props) => props.theme.colors.white};
+      fill: ${(props) => props.theme.colors.white1};
+      stroke: ${(props) => props.theme.colors.white1};
     }
   }
 `

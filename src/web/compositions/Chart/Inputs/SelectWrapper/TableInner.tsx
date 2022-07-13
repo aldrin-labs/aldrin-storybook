@@ -46,11 +46,11 @@ export const TableInner = ({
               outline: 'none',
               cursor: 'pointer',
               fontSize: '2rem',
-              borderBottom: `0.05rem solid ${theme.colors.gray10}`,
+              borderBottom: `0.05rem solid ${theme.colors.white6}`,
             }}
             headerHeight={isMobile ? 0 : window.outerHeight / 25}
             headerStyle={{
-              color: theme.colors.gray1,
+              color: theme.colors.white1,
               paddingLeft: '.5rem',
               paddingTop: '.25rem',
               marginLeft: 0,
@@ -73,7 +73,7 @@ export const TableInner = ({
                 dataKey="favourite"
                 disableSort
                 headerStyle={{
-                  color: theme.colors.primaryWhite,
+                  color: theme.colors.persistent.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -93,7 +93,7 @@ export const TableInner = ({
               dataKey="emoji"
               disableSort
               headerStyle={{
-                color: theme.colors.gray1,
+                color: theme.colors.white1,
                 paddingRight: 'calc(10px)',
                 fontSize: '1.5rem',
                 textAlign: 'left',
@@ -111,7 +111,7 @@ export const TableInner = ({
               label="Market"
               dataKey="symbol"
               headerStyle={{
-                color: theme.colors.gray1,
+                color: theme.colors.white1,
                 paddingRight: '6px',
                 fontSize: '1.5rem',
                 textAlign: 'left',
@@ -129,7 +129,7 @@ export const TableInner = ({
               label="last price"
               dataKey="price"
               headerStyle={{
-                color: theme.colors.gray1,
+                color: theme.colors.white1,
                 paddingRight: 'calc(10px)',
                 fontSize: '1.5rem',
                 textAlign: 'left',
@@ -148,7 +148,7 @@ export const TableInner = ({
                 label="change 24h"
                 dataKey="price24hChange"
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -168,7 +168,7 @@ export const TableInner = ({
                 label="Min 24h"
                 dataKey="min24h"
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -188,7 +188,7 @@ export const TableInner = ({
                 label="Max 24h"
                 dataKey="max24h"
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -208,7 +208,7 @@ export const TableInner = ({
                 label="volume 24h"
                 dataKey="volume24hChange"
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -228,7 +228,7 @@ export const TableInner = ({
                 label="trades 24h"
                 dataKey="trades24h"
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -248,7 +248,7 @@ export const TableInner = ({
                 label="Avg.Buy 14d"
                 dataKey="avgBuy14d"
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -268,7 +268,7 @@ export const TableInner = ({
                 label="Avg.Sell 14d"
                 dataKey="avgSell14d"
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',
@@ -289,7 +289,7 @@ export const TableInner = ({
                 dataKey="links"
                 disableSort
                 headerStyle={{
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.5rem',
                   textAlign: 'left',

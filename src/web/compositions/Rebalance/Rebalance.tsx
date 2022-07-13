@@ -234,7 +234,7 @@ const RebalanceComposition = ({ publicKey }: { publicKey: string }) => {
     <RowContainer
       height="calc(100vh - 120px)"
       style={{
-        background: theme.colors.gray9,
+        background: theme.colors.white6,
         minWidth: '1000px',
         overflow: 'auto',
         minHeight: '500px',

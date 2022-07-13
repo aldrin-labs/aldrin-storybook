@@ -395,7 +395,7 @@ const SwapPage = ({
                     style={{
                       position: 'absolute',
                       fontFamily: 'Avenir Next Medium',
-                      color: theme.colors.gray1,
+                      color: theme.colors.white1,
                       fontSize: FONT_SIZES.sm,
                       right: '1.5rem',
                     }}
@@ -524,7 +524,7 @@ const SwapPage = ({
                       <Text
                         fontFamily="Avenir Next"
                         fontSize={FONT_SIZES.sm}
-                        color="gray1"
+                        color="white1"
                       >
                         ≈$
                         {outputUSD
@@ -696,7 +696,7 @@ const SwapPage = ({
                       </RowValue>
                       <span
                         style={{
-                          color: theme.colors.white,
+                          color: theme.colors.white1,
                           padding: '0 0.5rem',
                         }}
                         onClick={() =>

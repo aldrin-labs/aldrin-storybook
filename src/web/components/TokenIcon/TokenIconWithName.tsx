@@ -14,7 +14,7 @@ interface TokenIconWithNameProps {
 export const TokenName = styled.span`
   margin-left: 10px;
   font-weight: 600;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const TokenIconWithName: React.FC<TokenIconWithNameProps> = (props) => {

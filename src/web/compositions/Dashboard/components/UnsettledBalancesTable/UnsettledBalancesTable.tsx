@@ -95,9 +95,9 @@ export const UnsettledBalancesTable = ({
       style={{
         overflowX: 'hidden',
         height: '100%',
-        background: theme.colors.gray6,
+        background: theme.colors.white5,
       }}
-      stylesForTable={{ backgroundColor: theme.colors.gray5 }}
+      stylesForTable={{ backgroundColor: theme.colors.white4 }}
       defaultSort={{
         sortColumn: 'date',
         sortDirection: 'desc',
@@ -105,21 +105,21 @@ export const UnsettledBalancesTable = ({
       withCheckboxes={false}
       tableStyles={{
         cell: {
-          color: theme.colors.gray1,
+          color: theme.colors.white1,
           fontSize: '1.2rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
-          borderBottom: theme.colors.gray5,
+          borderBottom: theme.colors.white4,
           backgroundColor: 'inherit',
           boxShadow: 'none',
           fontFamily: 'Avenir Next Light',
         },
         heading: {
-          backgroundColor: theme.colors.gray6,
+          backgroundColor: theme.colors.white5,
           fontSize: '1.3rem',
           borderRadius: 'none',
-          color: theme.colors.gray1,
-          borderBottom: `0.1rem solid ${theme.colors.gray5}`,
+          color: theme.colors.white1,
+          borderBottom: `0.1rem solid ${theme.colors.white4}`,
         },
         tab: {
           padding: 0,

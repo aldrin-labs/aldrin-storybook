@@ -62,7 +62,9 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
           onClick={() => {
             setIsConnectWalletPopupOpen(true)
           }}
-        />
+        >
+          Connect Wallet
+        </Button>
       </span>
 
       <ConnectWalletPopup
@@ -122,7 +124,7 @@ export const ConnectWalletScreen = () => {
     <RowContainer
       direction="column"
       height="100%"
-      style={{ background: theme.colors.gray9 }}
+      style={{ background: theme.colors.white6 }}
     >
       <ConnectWalletInner />
     </RowContainer>

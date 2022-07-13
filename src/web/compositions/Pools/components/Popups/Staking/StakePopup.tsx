@@ -227,7 +227,7 @@ const Popup = (props: StakePopupProps) => {
             <Row align="flex-start">
               <span
                 style={{
-                  color: theme.colors.green7,
+                  color: theme.colors.green3,
                   fontFamily: 'Avenir Next Demi',
                 }}
               >
@@ -241,7 +241,7 @@ const Popup = (props: StakePopupProps) => {
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
-            color: theme.colors.green7,
+            color: theme.colors.green3,
           }}
         >
           {CREATE_FARMING_TICKET_SOL_FEE} SOL
@@ -254,7 +254,7 @@ const Popup = (props: StakePopupProps) => {
               theme={theme}
               margin="0 0 0 2rem"
               fontSize="5rem"
-              color={theme.colors.gray0}
+              color={theme.colors.white1}
             />
           </Row>
           <Row width="80%" align="flex-start" direction="column">

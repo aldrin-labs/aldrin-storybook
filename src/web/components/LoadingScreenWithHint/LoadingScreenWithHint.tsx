@@ -13,7 +13,7 @@ export const LoadingScreenWithHint = ({
 }) => {
   const theme = useTheme()
   return (
-    <RowContainer height="100%" style={{ background: theme.colors.gray9 }}>
+    <RowContainer height="100%" style={{ background: theme.colors.white6 }}>
       <LoadingScreenWithHintContainer justify="center">
         <LoadingWithHint
           loadingText={loadingText}

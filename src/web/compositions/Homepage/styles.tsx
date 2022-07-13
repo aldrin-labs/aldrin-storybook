@@ -249,12 +249,12 @@ export const StyledPicture = styled.picture`
 export const StyledLink = styled.a`
   width: 36px;
   height: 36px;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: ${BORDER_RADIUS.md};
   transition: ${TRANSITION};
 
   &:hover {
-    background: ${(props) => props.theme.colors.blue5};
+    background: ${(props) => props.theme.colors.blue3};
 
     svg path:not(.not-fill) {
       fill: ${COLORS.white};

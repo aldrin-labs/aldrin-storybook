@@ -1,5 +1,6 @@
 import { Paper } from '@material-ui/core'
 import styled from 'styled-components'
+import { rgba } from 'polished'
 
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
@@ -9,7 +10,7 @@ export const WalletSelectorRow = styled(RowContainer)`
   text-transform: none;
   white-space: normal;
   text-align: right;
-  border-bottom: 0.1rem solid ${(props) => props.theme.colors.gray5};
+  border-bottom: 0.1rem solid ${(props) => props.theme.colors.white4};
   font-size: 1.5rem;
   font-family: Avenir Next Medium;
   height: 8rem;
@@ -21,7 +22,7 @@ export const WalletSelectorRow = styled(RowContainer)`
     border: none;
   }
   &:hover {
-    background: ${(props) => props.theme.colors.gray5};
+    background: ${(props) => props.theme.colors.white4};
     transition: 0.3s;
   }
 `
@@ -30,14 +31,18 @@ export const CloseIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${(props) => props.theme.colors.gray13};
+  background-color: ${(props) => rgba(props.theme.colors.white3, 0.5)};
   width: 6rem;
   height: 6rem;
   cursor: pointer;
-  color: #fff;
+  color: ${(props) => props.theme.colors.white1};
   border-radius: 8px;
   font-size: 12px;
   font-weight: 500;
+
+  &:hover {
+   background-color: ${(props) => rgba(props.theme.colors.white3, 0.25)};
+  }
 `
 export const WalletIcon = styled.div`
   width: 2.7em;
@@ -52,13 +57,13 @@ export const WalletIcon = styled.div`
 export const WalletRight = styled.div``
 
 export const WalletTitle = styled.div`
-  font-family: Avenir Next Bold;
+  font-weight: 600;
   font-size: 14px;
   color: ${(props) => props.theme.colors.white1};
 `
 
 export const WalletSubtitle = styled.div`
-  color: ${(props) => props.theme.colors.gray3};
+  color: ${(props) => props.theme.colors.white2};
   font-size: 12px;
 `
 
@@ -79,7 +84,7 @@ export const LearnMoreLink = styled.a`
   font-family: Avenir Next Medium;
   font-size: 14px;
   background-color: rgba(0, 181, 94, 0.15);
-  color: ${(props) => props.theme.colors.green4};
+  color: ${(props) => props.theme.colors.green2};
   padding: 12px;
   border-radius: 8px;
   border: none;
@@ -91,14 +96,6 @@ export const LearnMoreLink = styled.a`
   }
 `
 
-export const StyledPaper = styled(Paper)`
-  height: auto;
-  width: 45rem;
-  box-shadow: 0 0 0.8rem 0 rgba(0, 0, 0, 0.45);
-  background: ${(props) => props.theme.colors.gray6};
-  border-radius: 1.6rem;
-`
-
 export const Title = styled.span`
   font-family: Avenir Next Bold;
   font-size: 3rem;
@@ -108,4 +105,21 @@ export const Title = styled.span`
   text-transform: none;
   margin-bottom: 0;
   color: ${({ theme }) => theme.colors.white1};
+`
+
+export const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 2.4rem;
+  border-bottom: 1px solid #000;
+  align-items: center;
+`
+
+export const Footer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #000;
+  align-items: center;
+  padding: 1.4rem 2.4rem;
+  border-top: 1px solid #000;
 `

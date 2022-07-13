@@ -6,7 +6,7 @@ export const RinBalanceContainer = styled.div`
   display: flex;
   align-items: center;
   align-self: center;
-  background-color: ${(props) => props.theme.colors.gray7};
+  background-color: ${(props) => props.theme.colors.white6};
   height: 2.5em;
   margin-left: 1em;
   padding: 0.75em;
@@ -22,8 +22,5 @@ export const RinBalanceLabel = styled.div`
   margin-left: 0.25em;
   font-weight: 600;
   line-height: 1em;
-  color: ${(props) =>
-    props.theme.name === THEME_DARK
-      ? props.theme.colors.gray0
-      : props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
 `

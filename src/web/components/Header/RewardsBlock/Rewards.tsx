@@ -148,7 +148,7 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
           RIN
         </InlineText>
         <FlexBlock alignItems="center">
-          <InlineText color="gray1" weight={600}>
+          <InlineText color="white1" weight={600}>
             Vested&nbsp;
           </InlineText>
 
@@ -163,14 +163,14 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
       <FlexBlock justifyContent="space-between" alignItems="center">
         <div>
           <div>
-            <InlineText color="gray1" weight={600}>
+            <InlineText color="white1" weight={600}>
               Total vested:
             </InlineText>
           </div>
           <div>
-            <InlineText color="gray1" weight={700} size="lg">
+            <InlineText color="white1" weight={700} size="lg">
               {stripByAmount(startBalance, 2)}{' '}
-              <InlineText color="gray1">RIN</InlineText>
+              <InlineText color="white1">RIN</InlineText>
             </InlineText>
           </div>
           <div>
@@ -184,21 +184,21 @@ const RewardsBlock: React.FC<RewardsProps> = (props) => {
           <InlineText weight={600}>
             {timeLeft.days ? `${timeLeft.days}d` : `${timeLeft.hours}h`} &nbsp;
           </InlineText>
-          <InlineText color="gray1">of vesting left</InlineText>{' '}
+          <InlineText color="white1">of vesting left</InlineText>{' '}
         </ProgressBar>
       </FlexBlock>
       <Separator />
       <FlexBlock justifyContent="space-between" alignItems="center">
         <div>
           <div>
-            <InlineText color="gray1" weight={600}>
+            <InlineText color="white1" weight={600}>
               Available to claim:
             </InlineText>
           </div>
           <div>
-            <InlineText color="gray1" weight={700} size="lg">
+            <InlineText color="white1" weight={700} size="lg">
               {stripByAmount(availableToClaim, 2)}{' '}
-              <InlineText color="gray1">RIN</InlineText>
+              <InlineText color="white1">RIN</InlineText>
             </InlineText>
           </div>
           <div>

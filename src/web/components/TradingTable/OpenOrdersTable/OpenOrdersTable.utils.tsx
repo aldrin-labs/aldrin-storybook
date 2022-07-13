@@ -120,8 +120,8 @@ export const combineOpenOrdersTable = (
                       textTransform: 'capitalize',
                       color:
                         side === 'buy'
-                          ? theme.colors.green7
-                          : theme.colors.red4,
+                          ? theme.colors.green3
+                          : theme.colors.red3,
                     }}
                   >
                     {side}
@@ -168,8 +168,8 @@ export const combineOpenOrdersTable = (
                   display: 'block',
                   textTransform: 'uppercase',
                   color: isBuyTypeOrder(orderSide)
-                    ? theme.colors.green7
-                    : theme.colors.red4,
+                    ? theme.colors.green3
+                    : theme.colors.red3,
                 }}
               >
                 {orderSide}
@@ -187,8 +187,8 @@ export const combineOpenOrdersTable = (
           ),
           style: {
             color: isBuyTypeOrder(orderSide)
-              ? theme.colors.green7
-              : theme.colors.red4,
+              ? theme.colors.green3
+              : theme.colors.red3,
             opacity: needOpacity ? 0.75 : 1,
           },
           showOnMobile: false,
