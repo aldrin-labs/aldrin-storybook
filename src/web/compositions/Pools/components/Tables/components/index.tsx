@@ -41,6 +41,7 @@ export const SearchInputWithLoop = ({
         placeholder={placeholder}
         onFocus={onFocus}
         onBlur={onBlur}
+        autoFocus
       />
       <SvgIcon
         src={Loop}
