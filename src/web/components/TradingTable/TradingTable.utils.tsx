@@ -4,7 +4,11 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
 import { Key, OrderType, TradeType } from '@core/types/ChartTypes'
-import { StyledTitle, TableButton } from './TradingTable.styles'
+import {
+  StyledTitle,
+  StyledPriceText,
+  TableButton,
+} from './TradingTable.styles'
 
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
@@ -864,23 +868,23 @@ export const combineTradeHistoryTable = (
                 </StyledTitle>
               </RowContainer>
               <RowContainer justify={'space-between'}>
-                <StyledTitle>Price(${pair[1]})</StyledTitle>{' '}
-                <StyledTitle color={'#93939B'}>{`${stripDigitPlaces(
+                <StyledTitle>Price({pair[1]})</StyledTitle>{' '}
+                <StyledPriceText>{`${stripDigitPlaces(
                   price,
                   pricePrecision
-                )}`}</StyledTitle>
+                )}`}</StyledPriceText>
               </RowContainer>
               <RowContainer justify={'space-between'}>
-                <StyledTitle>Amount (${pair[0]})</StyledTitle>
-                <StyledTitle color={'#93939B'}>
+                <StyledTitle>Amount ({pair[0]})</StyledTitle>
+                <StyledPriceText>
                   {stripDigitPlaces(size, quantityPrecision)}
-                </StyledTitle>
+                </StyledPriceText>
               </RowContainer>
               <RowContainer justify={'space-between'}>
-                <StyledTitle>Total (${pair[0]})</StyledTitle>
-                <StyledTitle color={'##93939B'}>
+                <StyledTitle>Total ({pair[0]})</StyledTitle>
+                <StyledPriceText>
                   {stripDigitPlaces(size * price, quantityPrecision)}
-                </StyledTitle>
+                </StyledPriceText>
               </RowContainer>
             </RowContainer>
           ),

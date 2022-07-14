@@ -7,7 +7,7 @@ import { TradeType } from '@core/types/ChartTypes'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import { StyledTitle } from '../TradingTable.styles'
+import { StyledTitle, StyledPriceText } from '../TradingTable.styles'
 
 export const combineTradeHistoryTable = (
   tradeData: TradeType[],
@@ -119,23 +119,23 @@ export const combineTradeHistoryTable = (
               </StyledTitle>
             </RowContainer>
             <RowContainer justify="space-between">
-              <StyledTitle>Price(${pair[1]})</StyledTitle>{' '}
-              <StyledTitle color="#93939B">{`${stripDigitPlaces(
+              <StyledTitle>Price({pair[1]})</StyledTitle>{' '}
+              <StyledPriceText>{`${stripDigitPlaces(
                 price,
                 pricePrecision
-              )}`}</StyledTitle>
+              )}`}</StyledPriceText>
             </RowContainer>
             <RowContainer justify="space-between">
-              <StyledTitle>Amount (${pair[0]})</StyledTitle>
-              <StyledTitle color="#93939B">
+              <StyledTitle>Amount ({pair[0]})</StyledTitle>
+              <StyledPriceText>
                 {stripDigitPlaces(size, quantityPrecision)}
-              </StyledTitle>
+              </StyledPriceText>
             </RowContainer>
             <RowContainer justify="space-between">
-              <StyledTitle>Total (${pair[0]})</StyledTitle>
-              <StyledTitle color="#93939B">
+              <StyledTitle>Total ({pair[0]})</StyledTitle>
+              <StyledPriceText>
                 {stripDigitPlaces(size * price, quantityPrecision)}
-              </StyledTitle>
+              </StyledPriceText>
             </RowContainer>
           </RowContainer>
         ),
