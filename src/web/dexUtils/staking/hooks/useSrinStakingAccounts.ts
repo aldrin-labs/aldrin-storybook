@@ -1,4 +1,4 @@
-import { ProgramAccount } from 'anchor020'
+import { ProgramAccount } from '@project-serum/anchor'
 import useSWR from 'swr'
 
 import { fetchSrinStakingAccount, SRinUserAccount } from '@core/solana'
