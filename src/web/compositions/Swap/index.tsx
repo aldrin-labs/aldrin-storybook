@@ -12,7 +12,7 @@ import { Text } from '@sb/compositions/Addressbook/index'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
-import { useConnection } from '@sb/dexUtils/connection'
+import { useConnection, useFallbackConnection } from '@sb/dexUtils/connection'
 import {
   getTokenMintAddressByName,
   getTokenNameByMintAddress,
@@ -49,6 +49,7 @@ import {
 import ArrowRightIcon from '@icons/arrowRight.svg'
 
 import { INPUT_FORMATTERS } from '../../components/Input'
+import { queryRendererHoc } from '../../components/QueryRenderer'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
@@ -79,7 +80,6 @@ import {
   getSwapButtonText,
   getSwapNetworkFee,
 } from './utils'
-import { queryRendererHoc } from '../../components/QueryRenderer'
 
 const SwapPage = ({
   publicKey,
@@ -93,6 +93,7 @@ const SwapPage = ({
   const theme = useTheme()
   const { wallet } = useWallet()
   const connection = useConnection()
+  const fallbackConnection = useFallbackConnection()
   const tokenInfos = useTokenInfos()
 
   const [allTokensData, refreshAllTokensData] = useUserTokenAccounts()
@@ -296,8 +297,15 @@ const SwapPage = ({
     isSwapInProgress
 
   const refreshAll = async () => {
+    // TODO: return back before merge
     refreshAllTokensData()
-    await refreshAmountsWithSwapRoute()
+    refreshAmountsWithSwapRoute()
+    refreshAllTokensData()
+    refreshAmountsWithSwapRoute()
+    refreshAllTokensData()
+    refreshAmountsWithSwapRoute()
+    refreshAllTokensData()
+    refreshAmountsWithSwapRoute()
   }
 
   const mints = [
@@ -637,6 +645,7 @@ const SwapPage = ({
                     try {
                       const result = await signAndSendTransactions({
                         connection,
+                        fallbackConnection,
                         wallet,
                         transactionsAndSigners,
                       })
