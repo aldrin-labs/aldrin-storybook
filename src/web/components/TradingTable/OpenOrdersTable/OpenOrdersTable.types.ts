@@ -1,6 +1,6 @@
-import { ChangeEvent } from 'react'
 import { Theme } from '@material-ui/core'
 import { WithTheme } from '@material-ui/styles/withTheme'
+import { ChangeEvent } from 'react'
 
 import { OrderType, Key, CancelOrderMutationType } from '@core/types/ChartTypes'
 
@@ -13,13 +13,8 @@ export interface IProps extends WithTheme<Theme> {
   handleChangePage: (page: number) => void
   handleChangeRowsPerPage: (e: ChangeEvent) => void
   handleTabChange: (tab: string | any) => void
-  getOpenOrderHistoryQueryRefetch: () => void
   cancelOrderMutation: CancelOrderMutationType
-  getOpenOrderHistoryQuery: {
-    getOpenOrderHistory: {
-      orders: OrderType[]
-    }
-  }
+
   subscribeToMore: () => () => void
   addOrderToCanceled: (id: string) => void
   clearCanceledOrders: () => void

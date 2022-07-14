@@ -26,7 +26,6 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
@@ -256,14 +255,6 @@ export const App = compose(
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
-    fetchPolicy: 'cache-and-network',
-  }),
-  queryRendererHoc({
-    skip: (props: any) => {
-      return !props.authenticated
-    },
-    query: getThemeMode,
-    name: 'getThemeModeQuery',
     fetchPolicy: 'cache-and-network',
   })
 )(AppRaw)
