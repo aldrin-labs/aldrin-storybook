@@ -46,11 +46,7 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
       <ModalHeader>
         <ModalTitleContainer>
           <ModalTitle>Select Token</ModalTitle>
-          <CloseIcon
-            onClick={() => {
-              props.onClose()
-            }}
-          >
+          <CloseIcon onClick={onClose}>
             <svg
               width="100%"
               height="100%"

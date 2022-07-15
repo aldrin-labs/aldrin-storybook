@@ -12,7 +12,7 @@ export const UpdatedPaper = styled(({ ...props }) => (
   font-size: 16px;
   background: ${(props) => props.theme.colors.gray6};
   width: 30em;
-  overflow: scroll;
+  overflow: auto;
 
   @media (max-width: ${BREAKPOINTS.sm}) {
     max-height: 100%;
