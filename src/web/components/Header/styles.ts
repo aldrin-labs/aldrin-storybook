@@ -7,36 +7,24 @@ import {
   FONT_SIZES,
   TRANSITION,
 } from '@variables/variables'
-import { Link, NavLink as RouterNavLink } from 'react-router-dom'
+import { NavLink as RouterNavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
 // TODO: remove dat
 
 import { Button } from '../Button'
 import { Text } from '../Typography'
+import { THEME_DARK } from "@sb/compositions/App/themes"
 
 export const HeaderWrap = styled.header`
   display: flex;
   flex-direction: row;
-  height: 60px;
-  background: ${(props) => props.theme.colors.gray9};
-`
-
-export const LogoBlock = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-right: ${SIZE.defaultPadding};
-  margin: 8px 0;
-  flex: 0 1 auto;
-`
-
-export const StakeButton = styled(Button)`
-  display: none;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    display: block;
-  }
+  height: 96px;
+  background: ${(props) => props.theme.colors.header};
+  padding: 0 24px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: ${(props) => props.theme.colors.border1};
 `
 
 interface ShowHideProps {
@@ -50,11 +38,9 @@ interface LinkProps extends ShowHideProps {
   $beta?: boolean
 }
 
-type CopyButton = {
-  isCopied: boolean
-}
-
 export const NavLink = styled(RouterNavLink)<LinkProps>`
+  display: flex;
+  align-items: center;
   text-decoration: none;
   font-size: 0.8em;
   padding: 4px 0;
@@ -68,6 +54,16 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   font-weight: 500;
   transition: 0.3s;
 
+  svg {
+    path {
+      fill: ${(props) => props.theme.colors.gray1};
+    }
+  }
+
+  svg + * {
+    margin-left: 0.2em;
+  }
+
   &.dropdown {
     &:hover {
       border-bottom: none;
@@ -76,6 +72,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
 
   &.selected-from-dropdown {
     color: ${(props) => props.theme.colors.gray0};
+
     svg {
       path {
         fill: ${(props) => props.theme.colors.gray0};
@@ -83,18 +80,11 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
     }
   }
 
-  svg,
-  img {
-    margin: 0 0.5rem;
-  }
-
   &:hover {
     color: ${(props) => props.theme.colors.gray0};
-    transition: 0.3s;
-    svg {
-      path {
-        fill: ${(props) => props.theme.colors.gray0};
-      }
+
+    svg path {
+      fill: ${(props) => props.theme.colors.gray0};
     }
   }
 
@@ -102,6 +92,8 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
     color: ${(props) => props.theme.colors.gray0};
     border-bottom: 1px solid ${(props) => props.theme.colors.gray0};
     transition: all ease-in 0.2s;
+    font-weight: 600;
+
     svg {
       path {
         fill: ${(props) => props.theme.colors.gray0};
@@ -202,18 +194,6 @@ export const WalletContainer = styled.div`
   overflow: hidden;
 `
 
-export const LogoLink = styled(Link)`
-  // height: 100%;
-  margin-right: 60px;
-  display: block;
-`
-
-export const Logo = styled.img`
-  height: 31px;
-  display: block;
-  margin: 0;
-`
-
 export const DropdownContent = styled.div`
   position: absolute;
   top: 100%;
@@ -299,12 +279,14 @@ export const WalletButton = styled(Button)`
 `
 
 export const WalletDataContainer = styled.div`
-  width: 8.5em;
   border-radius: ${BORDER_RADIUS.md};
+  height: 40px;
+  width: 120px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  max-width: 120px;
+  cursor: pointer;
+  background-color: ${(props) => props.theme.colors.gray6};
 
   @media (min-width: ${BREAKPOINTS.md}) {
     flex-direction: column;
@@ -340,8 +322,8 @@ export const WalletData = styled.div`
   justify-content: space-between;
   padding: 0.5rem 1rem;
   border-radius: ${BORDER_RADIUS.md};
-  background: ${(props) => props.theme.colors.gray6};
   align-items: center;
+
   img {
     border-radius: 50%;
   }
@@ -355,12 +337,19 @@ export const WalletData = styled.div`
     }
   }
 `
+
 export const Column = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  align-items: flex-end;
   margin-left: 0.4em;
+`
+
+export const DownArrowWrapper = styled.div`
+  margin-left: 0.8em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
 export const WalletName = styled(Text)`
@@ -375,7 +364,7 @@ export const WalletName = styled(Text)`
 `
 
 export const WalletAddress = styled(WalletName)`
-  opacity: 0.5;
+  color: ${(props) => props.theme.colors.gray3};
   font-weight: 400;
   display: block;
   font-size: ${FONT_SIZES.sm};
@@ -410,27 +399,26 @@ export const WalletDisconnectButton = styled(Button)`
   }
 `
 export const BalanceTitle = styled.span`
-  font-size: ${FONT_SIZES.sm};
-  color: ${(props) => props.theme.colors.green7};
+  font-size: 12px;
+  color: ${(props) => props.theme.colors.primaryWhite};
   font-weight: 600;
   white-space: nowrap;
+
   @media (max-width: 1200px) {
     font-size: 0.7125em;
   }
 `
 
-export const Wrap = styled.div`
-  padding: 0 15px;
-  background: ${(props) => props.theme.colors.gray9};
+export const Wrap = styled.div``
 
-  @media (min-width: ${BREAKPOINTS.lg}) {
-    padding: 0 1.5em;
-  }
-`
 export const WalletDisconnectBlock = styled.div`
   width: 100%;
   height: 5rem;
 `
+
+type CopyButton = {
+  isCopied: boolean
+}
 
 export const CopyAddressButton = styled(Button)<CopyButton>`
   width: 5rem;

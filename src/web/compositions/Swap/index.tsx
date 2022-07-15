@@ -3,12 +3,10 @@ import tokensList from 'aldrin-registry/src/tokens.json'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
-
-import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { Button } from '@sb/components/Button'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/compositions/Addressbook'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
@@ -170,18 +168,6 @@ const SwapPage = ({
       setQuoteTokenMintAddress(defaultQuoteTokenMint)
     }
   }, [isStableSwapTabActive])
-
-  const [isRegionCheckIsLoading, setRegionCheckIsLoading] =
-    useState<boolean>(false)
-  const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
-    useState<boolean>(false)
-
-  // useEffect(() => {
-  //   setRegionCheckIsLoading(true)
-  //   getRegionData({ setIsFromRestrictedRegion }).then(() => {
-  //     setRegionCheckIsLoading(false)
-  //   })
-  // }, [setIsFromRestrictedRegion])
 
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
@@ -572,38 +558,19 @@ const SwapPage = ({
             )}
             <RowContainer>
               {!publicKey ? (
-                <TooltipRegionBlocker
-                  isFromRestrictedRegion={isFromRestrictedRegion}
-                >
-                  <span style={{ width: '100%' }}>
-                    <Button
-                      className="btn"
-                      $width="xl"
-                      $padding="lg"
-                      theme={theme}
-                      disabled={isFromRestrictedRegion}
-                      style={{ height: '4em' }}
-                      onClick={() => {
-                        if (isFromRestrictedRegion || isRegionCheckIsLoading) {
-                          return
-                        }
-                        setIsConnectWalletPopupOpen(true)
-                      }}
-                    >
-                      {isRegionCheckIsLoading && (
-                        <Loading
-                          color="#FFFFFF"
-                          size={16}
-                          style={{ height: '16px' }}
-                        />
-                      )}
-                      {!isRegionCheckIsLoading &&
-                        (isFromRestrictedRegion
-                          ? `Restricted region`
-                          : `Connect wallet`)}
-                    </Button>
-                  </span>
-                </TooltipRegionBlocker>
+                <span style={{ width: '100%' }}>
+                  <Button
+                    $width="xl"
+                    $padding="lg"
+                    theme={theme}
+                    style={{ height: '4em' }}
+                    onClick={() => {
+                      setIsConnectWalletPopupOpen(true)
+                    }}
+                  >
+                    Connect wallet
+                  </Button>
+                </span>
               ) : (
                 <SwapButton
                   theme={theme}

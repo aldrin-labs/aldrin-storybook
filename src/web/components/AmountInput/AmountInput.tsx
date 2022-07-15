@@ -67,7 +67,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
             <MaxValue color="green7" weight={600}>
               {formatNumberWithSpaces(amount)}
             </MaxValue>
-            {!!(showButtons || Number.isFinite(usdValue)) && (
+            {(showButtons || Number.isFinite(usdValue)) && (
               <ButtonsContainer>
                 <div>
                   {Number.isFinite(usdValue) && (
