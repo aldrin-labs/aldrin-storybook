@@ -6,7 +6,6 @@ import { InlineText } from '@sb/components/Typography'
 
 export const Container = styled.div`
   width: 100%;
-  margin: 10px 0;
   position: relative;
 `
 

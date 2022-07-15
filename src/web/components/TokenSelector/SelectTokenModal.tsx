@@ -67,6 +67,7 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
           </CloseIcon>
         </ModalTitleContainer>
         <SearchInput
+          autoFocus={true}
           name="token_search"
           append={
             <IconContainer>

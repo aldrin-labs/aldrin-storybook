@@ -62,11 +62,11 @@ export const PoolStats: React.FC<PoolStatsProps> = (props) => {
             </span>
           </DarkTooltip>
         </PoolStatsText>
-        {additionalInfo ? (
+        {additionalInfo && (
           <InlineText weight={300} color="gray2" size="sm">
             {additionalInfo}
           </InlineText>
-        ) : null}
+        )}
       </PoolStatsData>
     </PoolStatsWrap>
   )
@@ -172,17 +172,8 @@ Don't miss your chance.`
       <PoolInfoBlock>
         <PoolName>
           <TokenIcons>
-            <TokenIcon
-              mint={pool.tokenA}
-              size={48}
-              margin="0 0.5em 0 0"
-            />{' '}
-            /
-            <TokenIcon
-              mint={pool.tokenB}
-              size={48}
-              margin="0 0 0 0.5em"
-            />
+            <TokenIcon mint={pool.tokenA} size={48} margin="0 0.5em 0 0" /> /
+            <TokenIcon mint={pool.tokenB} size={48} margin="0 0 0 0.5em" />
           </TokenIcons>
           <div>
             <TokenSymbols>
@@ -209,7 +200,7 @@ Don't miss your chance.`
           <ShareButton iconFirst variant="primary" text={shareText} />
         </ButtonsContainer>
       </PoolInfoBlock>
-      {/* Pool stats */}
+
       <PoolStatsRow>
         <PoolStats
           title="Total Value Locked"

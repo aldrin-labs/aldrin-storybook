@@ -30,11 +30,4 @@ export interface IProps {
   publicKey: string
   selectedPair: string
   markets: { name: string; address: any }[]
-  getSerumDataQuery: {
-    getSerumData: {
-      circulatingSupply: number
-      totalySupply: number
-      burned: number
-    }
-  }
 }

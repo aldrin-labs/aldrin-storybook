@@ -1,7 +1,7 @@
 import React from 'react'
 
-import SunSvg from '@icons/sun.svg'
-import MoonSvg from '@icons/moon.svg'
+import SunSvg from '@sb/components/Header/ThemeSwitcher/images/sun.svg'
+import MoonSvg from '@sb/components/Header/ThemeSwitcher/images/moon.svg'
 
 import DisabledSunSvg from '@icons/sunDisabled.svg'
 import ActiveMoonSvg from '@icons/moonActive.svg'
