@@ -58,7 +58,7 @@ export function TokenListItem({
           <TokenIcon mint={mintAddress} size={32} />
           <WhiteText style={{ marginLeft: '1rem' }}>
             {tokenName.replace('(Sollet)', '')}
-            {tokenSymbol ? ` (${tokenSymbol})` : null}
+            {tokenSymbol && ` (${tokenSymbol})`}
           </WhiteText>
         </Row>
         <SCheckbox checked={checked || alreadyExists} disabled={isDisabled} />

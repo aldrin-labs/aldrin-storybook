@@ -229,6 +229,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         parseFloat(values.farming.farmingPeriod)
 
       const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
+
       try {
         const { transactions: generatedTransactions, pool } =
           await buildCreatePoolTransactions({
@@ -408,6 +409,29 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
         quoteToken: { mint: quoteTokenMint } = {},
       } = values
 
+      const farmingRewardAccount = userTokens.find(
+        (ut) => ut.address === values.farming.token.account
+      )
+
+      const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
+
+      const tokensPerPeriod =
+        (parseFloat(values.farming.tokenAmount) * HOUR) /
+        DAY /
+        parseFloat(values.farming.farmingPeriod)
+
+      const tokensPerPeriodWithMultiplier = new BN(
+        (tokensPerPeriod * tokensMultiplier).toFixed(0)
+      )
+
+      if (!tokensPerPeriodWithMultiplier.toNumber()) {
+        return {
+          farming: {
+            tokenAmount: 'Farming rewards for period is less than minimum',
+          },
+        }
+      }
+
       if (!baseTokenMint) {
         return { baseToken: 'No token selected' }
       }
@@ -469,9 +493,6 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
   )
   const selectedQuoteAccount = userTokens.find(
     (ut) => ut.address === values.quoteToken?.account
-  )
-  const farmingRewardAccount = userTokens.find(
-    (ut) => ut.address === values.farming.token?.account
   )
 
   const isLastStep = step === stepsSize

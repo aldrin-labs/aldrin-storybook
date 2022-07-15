@@ -26,14 +26,14 @@ const WarningBanner = ({
         title={title}
         notification={notification}
       />
-      {needMobile ? (
+      {needMobile && (
         <MobileBanner
           theme={theme}
           localStorageProperty={localStorageProperty}
           title={title}
           notification={notification}
         />
-      ) : null}
+      )}
     </>
   )
 }
