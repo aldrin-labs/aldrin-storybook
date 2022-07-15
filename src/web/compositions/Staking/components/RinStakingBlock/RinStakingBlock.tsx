@@ -67,8 +67,6 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
       365 *
       100
 
-    console.log('buyBackAPR:', buyBackAPR, poolInfo)
-
     const treasuryAPR =
       ((poolInfo?.treasuryDailyRewards || 0) / totalStakedRIN) * 365 * 100
 

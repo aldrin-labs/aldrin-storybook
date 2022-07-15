@@ -10,13 +10,13 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
-import { noop } from 'lodash-es'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
 
 import { WALLET_PROVIDERS, getMaxWithdrawAmount } from '@core/solana'
 
+import { DumbWalletAdapter } from '../../../../core/src/solana/wallets/adapters/DumbWaletAdapter'
 import {
   useAccountInfo,
   useConnection,
@@ -51,6 +51,8 @@ export interface WalletContextType {
 
 const WalletContext = React.createContext<WalletContextType | null>(null)
 
+const dumbWalletPubkey = localStorage.getItem('___dumbWalletPubkey')
+
 export const WalletProvider: React.FC = ({ children }) => {
   const { endpoint } = useConnectionConfig()
 
@@ -58,6 +60,7 @@ export const WalletProvider: React.FC = ({ children }) => {
     'walletConnectedUpdatedFinally',
     false
   )
+
   const [connected, setConnected] = useState(false)
   const [autoConnect, setAutoConnect] = useState(connectedPersist)
 
@@ -72,13 +75,24 @@ export const WalletProvider: React.FC = ({ children }) => {
   )
 
   const wallet = useMemo(() => {
-    const adapter = (provider?.adapter || noop)(
-      providerUrl,
-      endpoint
-    ) as any as WalletAdapter
+    console.log('dmbWalletPubkey', dumbWalletPubkey)
+    if (dumbWalletPubkey) {
+      const adapter = new DumbWalletAdapter(dumbWalletPubkey)
+      adapter.connect()
+      return adapter
+    }
+    if (provider) {
+      const adapter = (provider?.adapter)(
+        providerUrl,
+        endpoint
+      ) as any as WalletAdapter
 
-    return adapter
+      return adapter
+    }
+    return undefined
   }, [provider, endpoint])
+
+  console.log('wallet:', wallet)
 
   const connectWalletHash = useMemo(
     () => window.location.hash,
@@ -340,7 +354,8 @@ export function parseMintData(data) {
 // }
 
 export function useBalanceInfo(publicKey) {
-  const { data: accountInfo, isLoading: accountInfoLoading } = useAccountInfo(publicKey)
+  const { data: accountInfo, isLoading: accountInfoLoading } =
+    useAccountInfo(publicKey)
 
   const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
