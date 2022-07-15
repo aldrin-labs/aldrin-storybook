@@ -196,6 +196,7 @@ export const SwapPageLayout = styled(Page)`
 `
 
 export const SwapContentContainer = styled(Row)`
+  margin: 10px 0;
   width: 90%;
 
   @media (min-width: ${BREAKPOINTS.sm}) {
