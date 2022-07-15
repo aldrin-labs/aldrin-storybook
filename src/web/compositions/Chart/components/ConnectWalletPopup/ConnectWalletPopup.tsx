@@ -1,11 +1,13 @@
 import { WalletReadyState } from '@solana/wallet-adapter-base'
-import { getWalletAdapters } from '@utils/wallets'
 import { orderBy } from 'lodash-es'
 import React from 'react'
 
 import { Modal } from '@sb/components/Modal'
 import SvgIcon from '@sb/components/SvgIcon'
+import { useConnectionConfig } from '@sb/dexUtils/connection'
 import { useWallet, WALLET_PROVIDERS } from '@sb/dexUtils/wallet'
+
+import { ALDRIN_WALLET_SYSNAME } from '@core/solana'
 
 import {
   WalletSelectorRow,
@@ -36,15 +38,19 @@ const ConnectWalletPopup = ({
   open: boolean
 }) => {
   const { setAutoConnect, setProvider } = useWallet()
-  const walletAdapters = getWalletAdapters()
+  const { endpoint } = useConnectionConfig()
 
-  const installedWallets = Object.keys(walletAdapters).filter(
-    (item) => walletAdapters[item].readyState === WalletReadyState.Installed
-  )
+  const walletProviders = WALLET_PROVIDERS.map((item) => {
+    const adapter = item.adapter(item.url, endpoint)
+    return {
+      ...item,
+      status: adapter.readyState,
+    }
+  })
 
-  const walletProviders = orderBy(
-    WALLET_PROVIDERS,
-    (item) => installedWallets.includes(item.sysName),
+  const sortedWalletProviders = orderBy(
+    walletProviders,
+    (item) => item.status === WalletReadyState.Installed,
     ['desc']
   )
 
@@ -61,7 +67,17 @@ const ConnectWalletPopup = ({
       </Header>
 
       <WalletsList>
-        {walletProviders.map((provider) => {
+        {sortedWalletProviders.map((provider) => {
+          let meta
+
+          if (provider.status !== WalletReadyState.Installed) {
+            meta = 'Not Installed'
+          }
+
+          if (provider.sysName === ALDRIN_WALLET_SYSNAME) {
+            meta = 'Deprecated'
+          }
+
           return (
             <WalletSelectorRow
               key={`wallet_${provider.name}`}
@@ -78,14 +94,8 @@ const ConnectWalletPopup = ({
               <WalletRight>
                 <WalletTitle>{provider.name}</WalletTitle>
                 <WalletSubtitle>
-                  {provider.fullName}&nbsp;
-                  {walletAdapters[provider.sysName] &&
-                    `(${
-                      walletAdapters[provider.sysName].readyState ===
-                      WalletReadyState.Installed
-                        ? 'Connected'
-                        : 'Not connected'
-                    })`}
+                  {provider.fullName}
+                  {meta && ` (${meta})`}
                 </WalletSubtitle>
               </WalletRight>
             </WalletSelectorRow>
