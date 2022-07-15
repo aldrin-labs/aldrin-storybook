@@ -685,7 +685,7 @@ const SwapPage = ({
               )}
             </RowContainer>
 
-            {isAmountsEntered ? (
+            {isAmountsEntered && (
               <RowContainer direction="column" margin="2.4rem 0 0 0">
                 <RowContainer justify="space-between">
                   <BlackRow justify="center" width="calc(50% - 0.8rem)">
@@ -751,7 +751,7 @@ const SwapPage = ({
                         isOpenOrdersCreationRequired ? 4 : 6
                       )}{' '}
                       SOL{' '}
-                      {isOpenOrdersCreationRequired ? (
+                      {isOpenOrdersCreationRequired && (
                         <DarkTooltip
                           title={
                             'The route includes the Serum market, which requires opening an "Open Order" account, which costs 0.024 SOL. You can close the account later and get the fee back.'
@@ -766,7 +766,7 @@ const SwapPage = ({
                             i
                           </CircleIconContainer>
                         </DarkTooltip>
-                      ) : null}
+                      )}
                     </RowValue>
                   </BlackRow>
                 </RowContainer>
@@ -781,7 +781,7 @@ const SwapPage = ({
                   </RowValue>
                 </BlackRow>
               </RowContainer>
-            ) : null}
+            )}
           </SwapBlockTemplate>
         </SwapContentContainer>
 
