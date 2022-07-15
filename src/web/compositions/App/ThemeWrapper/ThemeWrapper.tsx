@@ -29,7 +29,7 @@ function createMyTheme(options: ThemeOptions) {
   })
 }
 
-export default ({ themeMode, isChartPage, children }) => {
+export default ({ themeMode, children }) => {
   const [mode, updateMode] = useState(themeMode)
 
   useEffect(() => {

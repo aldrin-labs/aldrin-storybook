@@ -7,7 +7,7 @@ import { OrderType } from '@core/types/ChartTypes'
 import { getPrecisionItem } from '@core/utils/getPrecisionItem'
 import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
-import { StyledTitle } from '../TradingTable.styles'
+import { StyledTitle, StyledPriceText } from '../TradingTable.styles'
 import { CloseButton, isBuyTypeOrder } from '../TradingTable.utils'
 
 export const filterOpenOrders = ({
@@ -128,23 +128,23 @@ export const combineOpenOrdersTable = (
                   </StyledTitle>
                 </RowContainer>
                 <RowContainer justify="space-between">
-                  <StyledTitle>Price(USDC)</StyledTitle>{' '}
-                  <StyledTitle color="#fbf2f2">{`${stripDigitPlaces(
+                  <StyledTitle>Price({pair[1]})</StyledTitle>{' '}
+                  <StyledPriceText>{`${stripDigitPlaces(
                     price,
                     pricePrecision
-                  )}`}</StyledTitle>
+                  )}`}</StyledPriceText>
                 </RowContainer>
                 <RowContainer justify="space-between">
-                  <StyledTitle>Amount (CCAI)</StyledTitle>
-                  <StyledTitle color="#fbf2f2">
+                  <StyledTitle>Amount ({pair[0]})</StyledTitle>
+                  <StyledPriceText>
                     {stripDigitPlaces(size, quantityPrecision)}
-                  </StyledTitle>
+                  </StyledPriceText>
                 </RowContainer>
                 <RowContainer justify="space-between">
-                  <StyledTitle>Total (USDC)</StyledTitle>
-                  <StyledTitle color="#fbf2f2">
+                  <StyledTitle>Total ({pair[0]})</StyledTitle>
+                  <StyledPriceText>
                     {stripDigitPlaces(+size * price, quantityPrecision)}
-                  </StyledTitle>
+                  </StyledPriceText>
                 </RowContainer>
               </RowContainer>
               <RowContainer style={{ width: '35%', padding: '0 0 0 4rem' }}>

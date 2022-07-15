@@ -1,6 +1,8 @@
+import useMobileSize from '@webhooks/useMobileSize'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import Logo from '@sb/components/Logo'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
 import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
@@ -13,13 +15,29 @@ import {
   LinkToTwitter,
 } from '@sb/compositions/Homepage/SocialsLinksComponents'
 
-import { FooterButton, FooterContainer, MediaContainer } from './styles'
+import {
+  FooterButton,
+  FooterContainer,
+  MediaContainer,
+  Copyright,
+  FooterLeft,
+} from './styles'
 
 export const Footer = () => {
+  const isMobile = useMobileSize()
+
   const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
   const [listingPopupOpen, setListingPopupOpen] = useState(false)
+
   return (
     <FooterContainer data-testid="footer">
+      {!isMobile && (
+        <FooterLeft>
+          <Logo width="64px" />
+          <Copyright>Aldrin.com 2021 - ∞</Copyright>
+        </FooterLeft>
+      )}
+
       <MediaContainer>
         <LinkToTwitter />
         <LinkToCoinGecko />
