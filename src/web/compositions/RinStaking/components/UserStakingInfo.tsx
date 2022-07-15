@@ -142,7 +142,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const snapshotQueueWithAMMFees = getSnapshotQueueWithAMMFees({
     farmingSnapshotsQueueAddress: currentFarmingState.farmingSnapshots,
-    buyBackAmount: buyBackAmountWithoutDecimals,
+    buyBackAmount:
+      buyBackAmountWithoutDecimals *
+      10 ** currentFarmingState.farmingTokenMintDecimals,
     snapshotQueues: allStakingSnapshotQueues,
   })
 
@@ -574,7 +576,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         $fontSize="sm"
                         onClick={claimRewards}
                       >
-                        {isClaimDisabled ? <SvgIcon src={ClockIcon} /> : null}
+                        {isClaimDisabled && <SvgIcon src={ClockIcon} />}
                         Claim
                       </ClaimButton>
                     </span>

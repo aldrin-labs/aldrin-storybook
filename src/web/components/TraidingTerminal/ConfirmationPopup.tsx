@@ -162,7 +162,7 @@ export const ConfirmationPopup = ({
         </RowContainer>
       </RowContainer>
       <RowContainer margin="2rem 0 0 0">
-        {priceType === 'market' ? (
+        {priceType === 'market' && (
           <RowContainer justify="space-between" margin="0 0 2rem 0">
             <WhiteText>Spread Percentage:</WhiteText>
             <WhiteText style={{ fontFamily: 'Avenir Next Demi' }}>
@@ -172,11 +172,11 @@ export const ConfirmationPopup = ({
               %
             </WhiteText>
           </RowContainer>
-        ) : null}
+        )}
         <RowContainer>
           {priceType !== 'market' &&
           priceType !== 'stop-market' &&
-          priceType !== 'maker-only' ? (
+          priceType !== 'maker-only' && (
             <InputRowContainer
               key="limit-price"
               padding=".6rem 0"
@@ -192,7 +192,7 @@ export const ConfirmationPopup = ({
                 symbol={pair[1]}
               />
             </InputRowContainer>
-          ) : null}
+          )}
           <ButtonsWithAmountFieldRowForBasic
             {...{
               pair,
@@ -268,7 +268,7 @@ export const ConfirmationPopup = ({
             )}
           </WhiteText>
         </RowContainer>
-        {priceType === 'market' && isSlippageHigh ? (
+        {priceType === 'market' && isSlippageHigh && (
           <span style={{ width: '100%' }}>
             <WarningBlock>
               <div style={{ width: '6%' }}>
@@ -305,7 +305,7 @@ export const ConfirmationPopup = ({
               </label>
             </RowContainer>
           </span>
-        ) : null}
+        )}
       </RowContainer>
 
       <RowContainer margin="2rem 0 0 0" justify="space-between">

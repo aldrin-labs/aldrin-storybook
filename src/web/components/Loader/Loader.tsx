@@ -40,7 +40,7 @@ export const Loader = ({
         />
       </AnimatedImage>
       {/* <AnimatedImage width={width} height="auto" src={} /> */}
-      {text ? (
+      {text && (
         <Text
           style={{ padding: '0 0 0 0.7rem' }}
           fontSize="1.3rem"
@@ -49,15 +49,15 @@ export const Loader = ({
         >
           {text}
         </Text>
-      ) : null}
-      {text ? (
+      )}
+      {text && (
         <img
           style={{ marginTop: '0.5rem' }}
           alt="Loading..."
           src={DottedLoader}
           width="4%"
         />
-      ) : null}
+      )}
     </Row>
   )
 }

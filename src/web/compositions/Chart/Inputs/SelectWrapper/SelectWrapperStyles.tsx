@@ -23,6 +23,10 @@ export const StyledGrid = styled(Grid)`
   border: 0.1rem solid ${(props) => props.theme.colors.white4};
   filter: drop-shadow(0px 0px 8px rgba(125, 125, 131, 0.2));
 
+  .ReactVirtualized__Table__rowColumn {
+    overflow: visible !important;
+  }
+
   @media (max-width: 600px) {
     top: 19rem;
     width: 100%;

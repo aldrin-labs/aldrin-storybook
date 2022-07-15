@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 
-import { THEME_DARK } from '@sb/compositions/App/themes'
-
 export const RinBalanceContainer = styled.div`
   display: flex;
   align-items: center;

@@ -38,6 +38,7 @@ export interface OnChangeProps {
 }
 
 export interface InputProps extends InputBase, OnChangeProps {
+  autoFocus?: boolean
   maxLength?: number
 }
 

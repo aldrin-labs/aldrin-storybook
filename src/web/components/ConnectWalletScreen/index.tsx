@@ -63,7 +63,7 @@ const ConnectWalletContent: React.FC<ConnectWalletContentProps> = (props) => {
             setIsConnectWalletPopupOpen(true)
           }}
         >
-          Connect Wallet
+          Connect wallet
         </Button>
       </span>
 

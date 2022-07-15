@@ -1086,7 +1086,7 @@ export const combineBalancesTable = (
                 </StyledTitle>
               </RowContainer>
             </RowContainer>
-            {showSettle ? (
+            {showSettle && (
               <RowContainer style={{ width: '60%' }} justify={'flex-end'}>
                 <BtnCustom
                   btnWidth={'50%'}
@@ -1105,7 +1105,7 @@ export const combineBalancesTable = (
                   Settle
                 </BtnCustom>
               </RowContainer>
-            ) : null}
+            )}
           </RowContainer>
         ),
         showOnMobile: true,

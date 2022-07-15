@@ -326,6 +326,7 @@ const PairSelector = ({
               }
               rowClassName="pairSelectorRow"
               rowStyle={{
+                overflow: 'visible',
                 outline: 'none',
                 cursor: 'pointer',
                 fontSize: '1.4rem',

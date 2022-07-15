@@ -25,6 +25,7 @@ export const MediaContainer = styled(Row)`
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
+
   @media (max-width: 1000px) {
     width: 100%;
   }
@@ -53,11 +54,12 @@ export const FooterButton = styled(Button)`
 
 export const Copyright = styled.div`
   color: ${(props) => props.theme.colors.white2};
-  margin-top: 0.25em;
+  margin-top: 0.5em;
   font-size: 12px;
 `
 
 export const FooterLeft = styled.div`
   display: flex;
   flex-direction: column;
+  font-family: Avenir Next, sans-serif;
 `
