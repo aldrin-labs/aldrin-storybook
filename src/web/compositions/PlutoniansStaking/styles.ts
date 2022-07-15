@@ -53,7 +53,7 @@ export const AprWrap = styled.div`
 `
 
 export const RewardContentBlock = styled(ContentBlock)`
-  background: ${(props) => props.theme.colors[props.background] || 'gray5 '};
+  background: ${(props) => props.theme.colors[props.background] || 'gray5'};
   width: auto;
   @media (min-width: ${BREAKPOINTS.md}) {
     ${(props: { last?: boolean }) =>
