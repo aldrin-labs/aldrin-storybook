@@ -263,13 +263,10 @@ export const WalletButton = styled(Button)`
   width: 17rem;
   white-space: nowrap;
   padding: 10px 20px;
-  font-size: 0.75em;
-  background-color: ${(props) => props.theme.colors.blue3};
-  border: none;
+  font-size: 0.7em;
   font-weight: 600;
   height: 3.5em;
   transition: ${TRANSITION};
-  color: white;
 
   &:hover {
     background: ${UCOLORS.blue4};

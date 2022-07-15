@@ -1,6 +1,5 @@
 import copy from 'clipboard-copy'
 import React, { useState } from 'react'
-import { PublicKey } from '@solana/web3.js'
 
 import { SvgIcon } from '@sb/components'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
@@ -12,7 +11,6 @@ import Astronaut from '@icons/astronaut.webp'
 import CheckMark from '@icons/checkmarkWhite.svg'
 
 import { formatSymbol } from '../AllocationBlock/DonutChart/utils'
-
 import {
   WalletButton,
   WalletDataContainer,
@@ -44,6 +42,7 @@ export const WalletBlock = () => {
       {!connected && (
         <span>
           <WalletButton
+            $variant="violet"
             data-testid="header-connect-wallet-btn"
             onClick={() => {
               setIsConnectWalletPopupOpen(true)

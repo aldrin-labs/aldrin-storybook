@@ -130,6 +130,18 @@ const VARIANTS = {
     align-items: center;
     justify-content: center;
   `,
+
+  green: css`
+    background: ${(props) => props.theme.colors.green0};
+    border: none;
+    color: ${(props) => props.theme.colors.green1};
+    white-space: nowrap;
+    font-weight: 700;
+    line-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `,
 }
 
 export const PADDINGS = {
@@ -139,6 +151,7 @@ export const PADDINGS = {
   lg: '8px 16px',
   xl: '11px 10px',
   xxl: '13px 11px',
+  xxxl: '18px 20px',
 }
 
 export type ButtonVariants = keyof typeof VARIANTS

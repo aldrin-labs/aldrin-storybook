@@ -25,9 +25,10 @@ export const LinkToTelegram = () => {
   )
 }
 
-export const LinkToTwitter = () => {
+export const LinkToTwitter = ({ margin }: { margin?: string }) => {
   return (
     <StyledLink
+      margin={margin}
       target="_blank"
       rel="noopener noreferrer"
       href="https://twitter.com/Aldrin_Exchange"
@@ -48,9 +49,10 @@ export const LinkToTwitter = () => {
   )
 }
 
-export const LinkToDiscord = () => {
+export const LinkToDiscord = ({ margin }: { margin?: string }) => {
   return (
     <StyledLink
+      margin={margin}
       target="_blank"
       rel="noopener noreferrer"
       href="https://discord.gg/4VZyNxT2WU"
@@ -195,9 +197,10 @@ export const LinkToCoinGecko = () => {
   )
 }
 
-export const LinkToCoinMarketcap = () => {
+export const LinkToCoinMarketcap = ({ margin }: { margin?: string }) => {
   return (
     <StyledLink
+      margin={margin}
       target="_blank"
       rel="noopener noreferrer"
       href="https://coinmarketcap.com/currencies/aldrin/"

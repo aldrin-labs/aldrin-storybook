@@ -8,6 +8,7 @@ import { VolumeChart } from './components/Charts/VolumeChart/TradingVolumeChart'
 import { ExtendedFiltersSection } from './components/FiltersSection/index'
 import { FilterIcon, PlusIcon } from './components/Icons'
 import { SearchInput } from './components/SearchInput'
+import { TableRow } from './components/TableRow'
 import { Switcher } from './components/TablesSwitcher'
 import {
   RootRow,
@@ -19,8 +20,9 @@ import {
 } from './index.styles'
 
 export const PoolsComponent: React.FC = () => {
-  const theme = useTheme()
   const [tableView, setTableView] = useState('classicLiquidity')
+  const [isFiltersShown, setIsFiltersShown] = useState(false)
+  const theme = useTheme()
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
     return () => {
@@ -50,18 +52,24 @@ export const PoolsComponent: React.FC = () => {
             </SButton>
           </ButtonsContainer>
         </RootRow>
-        <RootRow>
+        <RootRow margin="30px 0 0 0">
           <TVLChart />
           <VolumeChart />
         </RootRow>
-        <FilterRow>
+        <FilterRow margin="30px auto 15px auto">
           <SearchInput />
-          <FilterButton>
-            <FilterIcon />
+          <FilterButton
+            isActive={isFiltersShown}
+            onClick={() => {
+              setIsFiltersShown(!isFiltersShown)
+            }}
+          >
+            <FilterIcon isActive={isFiltersShown} />
             Filters
           </FilterButton>
         </FilterRow>
-        <ExtendedFiltersSection />
+        {isFiltersShown && <ExtendedFiltersSection />}
+        <TableRow isFiltersShown={isFiltersShown} />
       </StyledWideContent>
     </Page>
   )

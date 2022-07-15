@@ -1,4 +1,5 @@
-import { BORDER_RADIUS, FONT_SIZES } from '@variables/variables'
+/* eslint-disable no-nested-ternary */
+import { BORDER_RADIUS, BREAKPOINTS, FONT_SIZES } from '@variables/variables'
 import styled from 'styled-components'
 
 import { PADDINGS } from '@sb/components/Button'
@@ -22,8 +23,58 @@ type IconProps = {
   color: string
 }
 
+type ContainerProps = {
+  width?: string
+}
+
+type SortByLabelProps = {
+  isActive: boolean
+}
+
+export const SRootRow = styled(RootRow)`
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    width: auto;
+    justify-content: flex-start;
+    margin: 0;
+  }
+  width: ${(props) => props.width || '90%'};
+  justify-content: flex-start;
+  transition: 0.4s ease-in;
+  flex-direction: row;
+  margin: 0 auto;
+`
+export const Container = styled.div<ContainerProps>`
+  width: 100%;
+  background: ${(props) => props.theme.colors.gray7};
+  border-radius: ${BORDER_RADIUS.lg};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin-bottom: 1em;
+  height: 6em;
+  padding: ${PADDINGS.xxxl};
+
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    width: ${(props) => props.width || '58%'};
+    height: 8em;
+    justify-content: space-between;
+  }
+`
+
+export const StretchedRow = styled(RootRow)`
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0;
+
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    justify-content: space-between;
+    margin: 0;
+  }
+`
+
 export const LabelContainer = styled.div<LabelContainerProps>`
-  background: ${(props) => props.theme.colors[props.background || '']};
+  background: ${(props) => props.theme.colors[props.background || 'gray16']};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,7 +102,7 @@ export const StyledCheckbox = styled.div<SCheckboxProps>`
   width: 11px;
   height: 11px;
   background: transparent;
-  border: 1px solid ${(props) => props.theme.colors[props.color || '']};
+  border: 1px solid ${(props) => props.theme.colors[props.color || 'gray13']};
   border-radius: 2px;
   transition: all 150ms;
 `
@@ -63,16 +114,28 @@ export const CheckboxContainer = styled.div`
 `
 export const Icon = styled.svg<IconProps>`
   fill: none;
-  stroke: ${(props) => props.theme.colors[props.color || '']};
+  stroke: ${(props) => props.theme.colors[props.color || 'gray13']};
   stroke-width: 2px;
   display: ${(props) => (props.checked ? 'block' : 'none')};
 `
 export const Label = styled.label<LabelProps>`
-  color: ${(props) => props.theme.colors[props.color || '']};
+  color: ${(props) => props.theme.colors[props.color || 'gray13']};
   cursor: pointer;
   font-size: ${FONT_SIZES.sm};
   font-weight: 700;
 `
-export const SRootRow = styled(RootRow)`
-  justify-content: flex-start;
+export const SortByLabel = styled.div<SortByLabelProps>`
+  background: ${(props) =>
+    props.isActive ? props.theme.colors.gray14 : props.theme.colors.gray15};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: ${PADDINGS.sm};
+  border-radius: ${BORDER_RADIUS.md};
+  position: relative;
+  cursor: pointer;
+  margin-right: 1em;
+  font-size: ${FONT_SIZES.sm};
+  color: ${(props) =>
+    props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray13};
 `

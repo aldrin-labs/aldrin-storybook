@@ -24,6 +24,7 @@ export const ChartContainer = styled.div`
     width: 49%;
     min-height: 7em;
     height: auto;
+    margin: 0;
   }
 `
 
@@ -39,7 +40,6 @@ export const ValueTitle = styled(InlineText)`
   white-space: nowrap;
   line-height: 100%;
   margin-top: 0.3em;
-  letter-spacing: -1.5px;
   font-size: ${FONT_SIZES.lg};
 
   @media (min-width: ${BREAKPOINTS.sm}) {

@@ -4,19 +4,46 @@ import styled from 'styled-components'
 import { Button, PADDINGS } from '@sb/components/Button'
 import { StretchedBlock, WideContent } from '@sb/components/Layout'
 
-export const RootRow = styled.div`
+type FilterButtonType = {
+  isActive: boolean
+}
+
+type RootRowType = {
+  height?: string
+  width?: string
+  margin?: string
+}
+
+export const RootRow = styled.div<RootRowType>`
   height: ${(props) => props.height || 'auto'};
   display: flex;
   justify-content: space-between;
   flex-direction: column;
   align-items: center;
-  margin: 40px 0;
+  margin: ${(props) => props.margin || '30px 0'};
+  width: ${(props) => props.width || 'auto'};
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     flex-direction: row;
+    width: 100%;
   }
 `
+
+export const RootColumn = styled.div<RootRowType>`
+  height: ${(props) => props.height || 'auto'};
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+`
+
+export const SpacedColumn = styled(RootColumn)<RootRowType>`
+  justify-content: space-around;
+`
+
 export const StyledWideContent = styled(WideContent)`
+  margin: 0 auto;
+
   @media (min-width: ${BREAKPOINTS.xl}) {
     max-width: ${BREAKPOINTS.xl};
     margin: 0 auto;
@@ -31,12 +58,14 @@ export const ButtonsContainer = styled(StretchedBlock)`
     width: auto;
   }
 `
-export const FilterButton = styled(Button)`
+export const FilterButton = styled(Button)<FilterButtonType>`
   color: ${(props) => props.theme.colors.gray3};
   border: none;
-  background-color: ${(props) => props.theme.colors.gray7};
+  background-color: ${(props) =>
+    props.isActive ? props.theme.colors.violet2 : props.theme.colors.gray7};
   border-radius: 0.6em;
-  color: ${(props) => props.theme.colors.gray13};
+  color: ${(props) =>
+    props.isActive ? props.theme.colors.violet4 : props.theme.colors.gray13};
   font-size: ${FONT_SIZES.sm};
   padding: 0.66em 1.5em;
   display: flex;
@@ -59,7 +88,6 @@ export const SButton = styled(Button)`
 export const FilterRow = styled(RootRow)`
   width: 90%;
   flex-direction: row;
-  margin: 40px auto;
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: 100%;

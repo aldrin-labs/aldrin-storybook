@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { labels } from '../../config'
 import { TooltipIcon } from '../Icons'
 import {
   CheckboxContainer,
@@ -16,13 +17,15 @@ type LabelType = {
   color: string
 }
 
-const mock = [
-  { name: 'Moderated', backgroundColor: 'green9', color: 'green7' },
-  { name: 'Permissionless', backgroundColor: 'blue0', color: 'blue1' },
-  { name: 'Stable', backgroundColor: 'yellow0', color: 'yellow1' },
-]
-
-export const LabelComponent = ({ label }: { label: LabelType }) => {
+export const LabelComponent = ({
+  checkbox,
+  variant,
+  name,
+}: {
+  checkbox: boolean
+  variant: LabelType
+  name: string
+}) => {
   const [checked, setChecked] = useState(false)
 
   return (
@@ -30,18 +33,20 @@ export const LabelComponent = ({ label }: { label: LabelType }) => {
       onClick={() => {
         setChecked(!checked)
       }}
-      background={label.backgroundColor}
+      background={variant.backgroundColor}
     >
-      <CheckboxContainer>
-        <HiddenCheckbox id="checkboxtest" type="checkbox" checked={checked} />
-        <StyledCheckbox color={label.color}>
-          <Icon color={label.color} checked={checked} viewBox="0 0 24 24">
-            <polyline points="20 6 9 17 4 12" />
-          </Icon>
-        </StyledCheckbox>
-      </CheckboxContainer>
-      <Label color={label.color}>{label.name}</Label>
-      <TooltipIcon color={label.color} />
+      {checkbox && (
+        <CheckboxContainer>
+          <HiddenCheckbox id="checkboxtest" type="checkbox" checked={checked} />
+          <StyledCheckbox color={variant.color}>
+            <Icon color={variant.color} checked={checked} viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12" />
+            </Icon>
+          </StyledCheckbox>
+        </CheckboxContainer>
+      )}
+      <Label color={variant.color}>{name}</Label>
+      <TooltipIcon color={variant.color} />
     </LabelContainer>
   )
 }
@@ -49,9 +54,12 @@ export const LabelComponent = ({ label }: { label: LabelType }) => {
 export const FilterLabels = () => {
   return (
     <>
-      {mock.map((el: LabelType) => {
-        console.log({ el })
-        return <LabelComponent label={el} />
+      {labels.map((el: LabelType) => {
+        return (
+          !el.name.includes('Default') && (
+            <LabelComponent name={el.name} checkbox variant={el} />
+          )
+        )
       })}
     </>
   )
