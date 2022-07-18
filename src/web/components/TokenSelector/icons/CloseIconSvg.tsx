@@ -16,7 +16,7 @@ export const CloseIconSvg = () => {
     >
       <path
         d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
-        stroke={theme.colors.gray1}
+        stroke={theme.colors.gray0}
         strokeWidth="2"
       />
     </CloseIconContainer>
