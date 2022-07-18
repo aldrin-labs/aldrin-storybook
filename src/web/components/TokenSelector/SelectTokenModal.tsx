@@ -19,6 +19,7 @@ import {
   ModalTitleContainer,
 } from './styles'
 import { CloseIcon, ModalTitle } from '../Modal/styles'
+import { CloseIconSvg } from './icons/CloseIconSvg'
 
 export interface Token {
   mint: string
@@ -47,19 +48,7 @@ export const SelectTokenModal: React.FC<SelectTokenModalProps> = (props) => {
         <ModalTitleContainer>
           <ModalTitle>Select Token</ModalTitle>
           <CloseIcon onClick={onClose}>
-            <svg
-              width="100%"
-              height="100%"
-              viewBox="0 0 19 19"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M1 18L9.5 9.5M18 1L9.5 9.5M9.5 9.5L18 18L1 1"
-                stroke="#F5F5FB"
-                strokeWidth="2"
-              />
-            </svg>
+            <CloseIconSvg />
           </CloseIcon>
         </ModalTitleContainer>
         <SearchInput
