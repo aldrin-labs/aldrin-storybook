@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { labels } from '../../config'
+import { FILTER_LABELS, labels } from '../../config'
 import { TooltipIcon } from '../Icons'
 import {
   CheckboxContainer,
@@ -23,7 +23,7 @@ export const LabelComponent = ({
   name,
 }: {
   checkbox: boolean
-  variant: LabelType
+  variant: any
   name: string
 }) => {
   const [checked, setChecked] = useState(false)
@@ -33,20 +33,37 @@ export const LabelComponent = ({
       onClick={() => {
         setChecked(!checked)
       }}
-      background={variant.backgroundColor}
+      hoverColor={variant.hoverStyle.color}
+      hoverBackground={variant.hoverStyle.backgroundColor}
+      background={variant.labelStyle.backgroundColor}
     >
       {checkbox && (
         <CheckboxContainer>
-          <HiddenCheckbox id="checkboxtest" type="checkbox" checked={checked} />
-          <StyledCheckbox color={variant.color}>
-            <Icon color={variant.color} checked={checked} viewBox="0 0 24 24">
+          <HiddenCheckbox type="checkbox" checked={checked} />
+          <StyledCheckbox
+            hoverColor={variant.hoverStyle.color}
+            color={variant.labelStyle.color}
+          >
+            <Icon
+              hoverColor={variant.hoverStyle.color}
+              color={variant.labelStyle.color}
+              checked={checked}
+              viewBox="0 0 24 24"
+            >
               <polyline points="20 6 9 17 4 12" />
             </Icon>
           </StyledCheckbox>
         </CheckboxContainer>
       )}
-      <Label color={variant.color}>{name}</Label>
-      <TooltipIcon color={variant.color} />
+      <Label
+        hoverColor={variant.hoverStyle.color}
+        color={variant.labelStyle.color}
+      >
+        {name}
+      </Label>
+      <TooltipIcon
+        color={variant.labelStyle.color}
+      />
     </LabelContainer>
   )
 }
@@ -54,12 +71,8 @@ export const LabelComponent = ({
 export const FilterLabels = () => {
   return (
     <>
-      {labels.map((el: LabelType) => {
-        return (
-          !el.name.includes('Default') && (
-            <LabelComponent name={el.name} checkbox variant={el} />
-          )
-        )
+      {FILTER_LABELS.map((el) => {
+        return <LabelComponent name={el.text} checkbox variant={el} />
       })}
     </>
   )

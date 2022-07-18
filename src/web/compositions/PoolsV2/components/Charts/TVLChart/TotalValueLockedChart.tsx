@@ -5,7 +5,6 @@ import { DefaultTheme, useTheme } from 'styled-components'
 
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { InlineText } from '@sb/components/Typography'
-import { NUMBER_OF_DAYS_TO_SHOW } from '@sb/compositions/Pools/components/Charts/utils'
 
 import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTotalVolumeLockedHistory'
 import {
@@ -25,7 +24,7 @@ import {
   ValueTitle,
 } from '../index.styles'
 import { TotalVolumeLockedChartProps } from '../types'
-import { createTotalVolumeLockedChart } from './utils'
+import { createTotalVolumeLockedChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
 const ChartInner: React.FC<TotalVolumeLockedChartProps> = (props) => {
   const { getTotalVolumeLockedHistoryQuery, setBalanceData, setFirstBalance } =

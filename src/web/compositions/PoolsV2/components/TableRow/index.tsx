@@ -11,7 +11,7 @@ import {
 } from '@sb/compositions/Homepage/SocialsLinksComponents'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
-import { labelsMap } from '../../config'
+import { labelsMap, POOL_CARD_LABELS } from '../../config'
 import { RootRow, RootColumn, SpacedColumn } from '../../index.styles'
 import { BalanceLine } from '../BalanceLine'
 import { Container, StretchedRow } from '../FiltersSection/index.styles'
@@ -21,6 +21,7 @@ import { TokenIconsContainer } from '../TokenIconsContainer'
 
 export const TableRow = ({ isFiltersShown }: { isFiltersShown: boolean }) => {
   const theme = useTheme()
+  
   return (
     <RootRow margin={isFiltersShown ? 'auto' : '30px 0 0 0'}>
       <Container width="100%">
@@ -33,11 +34,11 @@ export const TableRow = ({ isFiltersShown }: { isFiltersShown: boolean }) => {
             <RootRow margin="10px 0 0 0">
               <LabelComponent
                 name="Moderated"
-                variant={labelsMap.get('Default')}
+                variant={POOL_CARD_LABELS[0]}
               />
               <LabelComponent
                 name="Permissionless"
-                variant={labelsMap.get('Default')}
+                variant={POOL_CARD_LABELS[0]}
               />
             </RootRow>
           </RootColumn>

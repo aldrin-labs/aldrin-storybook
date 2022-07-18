@@ -8,19 +8,24 @@ import { RootRow } from '../../index.styles'
 
 type LabelContainerProps = {
   background: string
+  hoverBackground: string
+  hoverColor: string
 }
 
 type SCheckboxProps = {
   color: string
+  hoverColor: string
 }
 
 type LabelProps = {
   color: string
+  hoverColor: string
 }
 
 type IconProps = {
   checked: boolean
   color: string
+  hoverColor: string
 }
 
 type ContainerProps = {
@@ -83,6 +88,20 @@ export const LabelContainer = styled.div<LabelContainerProps>`
   position: relative;
   cursor: pointer;
   margin-right: 1em;
+  transition: 0.5s;
+
+  &:hover {
+    label {
+      color: ${(props) => props.theme.colors[props.hoverColor || 'gray16']};
+    }
+    svg {
+      path {
+        stroke: ${(props) => props.theme.colors[props.hoverColor || 'gray16']};
+      }
+    }
+    background: ${(props) =>
+      props.theme.colors[props.hoverBackground || 'gray16']};
+  }
 `
 export const HiddenCheckbox = styled.input`
   border: 0;
@@ -105,6 +124,9 @@ export const StyledCheckbox = styled.div<SCheckboxProps>`
   border: 1px solid ${(props) => props.theme.colors[props.color || 'gray13']};
   border-radius: 2px;
   transition: all 150ms;
+  &:hover {
+    color: ${(props) => props.theme.colors[props.hoverColor || 'gray16']};
+  }
 `
 export const CheckboxContainer = styled.div`
   display: inline-block;
