@@ -9,7 +9,7 @@ import { ExtendedFiltersSection } from './components/FiltersSection/index'
 import { FilterIcon, PlusIcon } from './components/Icons'
 import { SearchInput } from './components/SearchInput'
 import { TableRow } from './components/TableRow'
-import { Switcher } from './components/TablesSwitcher'
+import { TablesSwitcher } from './components/TablesSwitcher'
 import {
   RootRow,
   StyledWideContent,
@@ -30,11 +30,19 @@ export const PoolsComponent: React.FC = () => {
     }
   }, [])
 
+  const isUserHavePools = true
+  const isUserHavePositions = false
+
   return (
     <Page>
       <StyledWideContent>
         <RootRow>
-          <Switcher tableView={tableView} setTableView={setTableView} />
+          <TablesSwitcher
+            isUserHavePools={isUserHavePools}
+            isUserHavePositions={isUserHavePositions}
+            tableView={tableView}
+            setTableView={setTableView}
+          />
           <ButtonsContainer>
             <SButton
               $borderRadius="md"
@@ -70,6 +78,7 @@ export const PoolsComponent: React.FC = () => {
         </FilterRow>
         {isFiltersShown && <ExtendedFiltersSection />}
         <TableRow isFiltersShown={isFiltersShown} />
+        {/* <EmptyRow /> */}
       </StyledWideContent>
     </Page>
   )

@@ -8,7 +8,7 @@ import { RootRow } from '../../index.styles'
 
 type LabelContainerProps = {
   background: string
-  hoverBackground: string
+  hoverBackground?: string
   hoverColor: string
 }
 
@@ -56,12 +56,12 @@ export const Container = styled.div<ContainerProps>`
   flex-direction: column;
   justify-content: space-around;
   margin-bottom: 1em;
-  height: 6em;
+  height: 8em;
   padding: ${PADDINGS.xxxl};
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: ${(props) => props.width || '58%'};
-    height: 8em;
+    height: 8.5em;
     justify-content: space-between;
   }
 `
@@ -92,15 +92,15 @@ export const LabelContainer = styled.div<LabelContainerProps>`
 
   &:hover {
     label {
-      color: ${(props) => props.theme.colors[props.hoverColor || 'gray16']};
+      color: ${(props) => props.theme.colors[props.hoverColor]};
     }
     svg {
       path {
-        stroke: ${(props) => props.theme.colors[props.hoverColor || 'gray16']};
+        stroke: ${(props) => props.theme.colors[props.hoverColor]};
       }
     }
     background: ${(props) =>
-      props.theme.colors[props.hoverBackground || 'gray16']};
+      props.theme.colors[props.hoverBackground || props.background]};
   }
 `
 export const HiddenCheckbox = styled.input`
@@ -125,7 +125,7 @@ export const StyledCheckbox = styled.div<SCheckboxProps>`
   border-radius: 2px;
   transition: all 150ms;
   &:hover {
-    color: ${(props) => props.theme.colors[props.hoverColor || 'gray16']};
+    color: ${(props) => props.theme.colors[props.hoverColor || props.color]};
   }
 `
 export const CheckboxContainer = styled.div`
@@ -145,6 +145,22 @@ export const Label = styled.label<LabelProps>`
   cursor: pointer;
   font-size: ${FONT_SIZES.sm};
   font-weight: 700;
+  display: flex;
+  align-items: center;
+
+  svg {
+    path {
+      stroke: ${(props) => props.theme.colors.gray13};
+    }
+  }
+
+  &:hover {
+    svg {
+      path {
+        stroke: ${(props) => props.theme.colors.yellow3};
+      }
+    }
+  }
 `
 export const SortByLabel = styled.div<SortByLabelProps>`
   background: ${(props) =>

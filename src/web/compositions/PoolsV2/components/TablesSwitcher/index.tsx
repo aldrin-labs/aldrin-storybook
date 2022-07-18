@@ -1,31 +1,50 @@
 import React from 'react'
 
+import { CLiquidityIcon } from '../Icons'
 import { Container, SwitcherButton } from './index.styles'
 
-const tables = [
-  { name: 'Classic Liquidity', key: 'classicLiquidity' },
-  { name: 'Concentrated Liquidity', key: 'concentratedLiquidity' },
-]
-
-export const Switcher = ({
+export const TablesSwitcher = ({
   setTableView,
   tableView,
+  isUserHavePools,
+  isUserHavePositions,
 }: {
   setTableView: (a: string) => void
   tableView: string
+  isUserHavePools: boolean
+  isUserHavePositions: boolean
 }) => {
   return (
     <Container>
-      {tables.map((table) => (
+      <SwitcherButton
+        isActive={tableView === 'classicLiquidity'}
+        onClick={() => {
+          setTableView('classicLiquidity')
+        }}
+      >
+        <CLiquidityIcon isActive={tableView === 'classicLiquidity'} /> Classic
+        Liquidity
+      </SwitcherButton>
+      {isUserHavePositions && (
         <SwitcherButton
-          isActive={tableView === table.key}
+          isActive={tableView === 'yourPositions'}
           onClick={() => {
-            setTableView(table.key)
+            setTableView('yourPositions')
           }}
         >
-          {table.name}
+          Your Positions
         </SwitcherButton>
-      ))}
+      )}
+      {isUserHavePools && (
+        <SwitcherButton
+          isActive={tableView === 'yourPools'}
+          onClick={() => {
+            setTableView('yourPools')
+          }}
+        >
+          Your Pools
+        </SwitcherButton>
+      )}
     </Container>
   )
 }

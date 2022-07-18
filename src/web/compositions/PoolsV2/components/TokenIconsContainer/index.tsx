@@ -14,6 +14,7 @@ export const TokenIconsContainer = ({ mint }: { mint: string }) => {
       </IconsContainer>
       <WaveElement>
         <svg
+          className="wave-icon"
           width="116"
           height="18"
           viewBox="0 0 116 18"

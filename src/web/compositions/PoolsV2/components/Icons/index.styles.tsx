@@ -8,3 +8,6 @@ export const SearchIconContainer = styled.svg`
 export const TooltipIconContainer = styled.svg`
   margin-left: 5px;
 `
+export const CLiquidityIconContainer = styled.svg`
+  margin-right: 0.2em;
+`

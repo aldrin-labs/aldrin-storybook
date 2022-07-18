@@ -3,25 +3,29 @@ import { useTheme } from 'styled-components'
 
 import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
-import {
-  LinkToTwitter,
-  LinkToDiscord,
-  LinkToCoinMarketcap,
-} from '@sb/compositions/Homepage/SocialsLinksComponents'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 
-import { labelsMap, POOL_CARD_LABELS } from '../../config'
+import { POOL_CARD_LABELS } from '../../config'
 import { RootRow, RootColumn, SpacedColumn } from '../../index.styles'
 import { BalanceLine } from '../BalanceLine'
-import { Container, StretchedRow } from '../FiltersSection/index.styles'
 import { LabelComponent } from '../FiltersSection/Labels'
 import { TooltipIcon, PlusIcon } from '../Icons'
 import { TokenIconsContainer } from '../TokenIconsContainer'
+import {
+  DepositRow,
+  LabelsRow,
+  Row,
+  Container,
+  StretchedRow,
+} from './index.styles'
+import { LinkToTwitter, LinkToDiscord, LinkToCoinMarketcap } from './Socials'
+import { LabelsTooltips } from './Tooltips'
 
 export const TableRow = ({ isFiltersShown }: { isFiltersShown: boolean }) => {
   const theme = useTheme()
-  
+
   return (
     <RootRow margin={isFiltersShown ? 'auto' : '30px 0 0 0'}>
       <Container width="100%">
@@ -31,16 +35,28 @@ export const TableRow = ({ isFiltersShown }: { isFiltersShown: boolean }) => {
             <InlineText size="md" weight={600} color="gray0">
               RIN/USDC
             </InlineText>
-            <RootRow margin="10px 0 0 0">
+            <LabelsRow>
               <LabelComponent
-                name="Moderated"
-                variant={POOL_CARD_LABELS[0]}
+                tooltipText={
+                  <LabelsTooltips
+                    type="Locked"
+                    period="72 May, 2022"
+                    amount="1 300 330"
+                  />
+                }
+                variant={
+                  POOL_CARD_LABELS.find((el) => el.text === 'Locked') ||
+                  POOL_CARD_LABELS[0]
+                }
               />
               <LabelComponent
-                name="Permissionless"
-                variant={POOL_CARD_LABELS[0]}
+                tooltipText={<LabelsTooltips type="New" period="5 days" />}
+                variant={
+                  POOL_CARD_LABELS.find((el) => el.text === 'New') ||
+                  POOL_CARD_LABELS[0]
+                }
               />
-            </RootRow>
+            </LabelsRow>
           </RootColumn>
           <SpacedColumn height="100%">
             <InlineText size="sm" weight={400} color="gray3">
@@ -64,14 +80,38 @@ export const TableRow = ({ isFiltersShown }: { isFiltersShown: boolean }) => {
             <InlineText size="sm" weight={400} color="gray3">
               Rewards
             </InlineText>
-            <RootRow margin="0">
+            <Row margin="0">
               <TokenIcon mint={getTokenMintAddressByName('RIN')} />
               <TokenIcon mint={getTokenMintAddressByName('mSOL')} />
-            </RootRow>
+            </Row>
           </SpacedColumn>
           <SpacedColumn height="100%">
             <InlineText size="sm" weight={400} color="gray3">
-              <TooltipIcon color="gray3" /> APR
+              <DarkTooltip
+                title={
+                  <InlineText color="gray0">
+                    <p>
+                      Estimation for growth of your deposit over a year
+                      projected on current farming rewards and past 7d trading
+                      activity.
+                    </p>
+                    <p>
+                      Farming APR:{' '}
+                      <InlineText weight={600} color="green4">
+                        119.90%
+                      </InlineText>{' '}
+                      Trading APR:{' '}
+                      <InlineText weight={600} color="green4">
+                        5.34%
+                      </InlineText>
+                    </p>
+                  </InlineText>
+                }
+              >
+                <span>
+                  <TooltipIcon color="gray3" /> APR
+                </span>
+              </DarkTooltip>
             </InlineText>
             <SpacedColumn>
               <InlineText size="md" weight={600} color="green1">
@@ -80,12 +120,12 @@ export const TableRow = ({ isFiltersShown }: { isFiltersShown: boolean }) => {
               <BalanceLine value1="30%" value2="70%" />
             </SpacedColumn>
           </SpacedColumn>
-          <SpacedColumn height="100%">
-            <RootRow margin="0">
+          <DepositRow>
+            <Row>
               <LinkToTwitter />
               <LinkToDiscord margin="0 0.5em" />
               <LinkToCoinMarketcap />
-            </RootRow>
+            </Row>
             <Button
               $width="xl"
               $borderRadius="md"
@@ -95,7 +135,7 @@ export const TableRow = ({ isFiltersShown }: { isFiltersShown: boolean }) => {
             >
               <PlusIcon color={theme.colors.green1} /> Deposit
             </Button>
-          </SpacedColumn>
+          </DepositRow>
         </StretchedRow>
       </Container>
     </RootRow>

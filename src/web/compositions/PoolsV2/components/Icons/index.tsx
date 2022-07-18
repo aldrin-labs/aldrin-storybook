@@ -1,7 +1,11 @@
 import React from 'react'
 import { useTheme } from 'styled-components'
 
-import { SearchIconContainer, TooltipIconContainer } from './index.styles'
+import {
+  CLiquidityIconContainer,
+  SearchIconContainer,
+  TooltipIconContainer,
+} from './index.styles'
 
 export const PlusIcon = ({ color }: { color?: stroke }) => {
   const theme = useTheme()
@@ -113,5 +117,44 @@ export const TooltipIcon = ({ color }: { color: string }) => {
         strokeLinejoin="round"
       />
     </TooltipIconContainer>
+  )
+}
+
+export const CLiquidityIcon = ({ isActive }: { isActive: boolean }) => {
+  const theme = useTheme()
+
+  return (
+    <CLiquidityIconContainer
+      width="12"
+      height="12"
+      viewBox="0 0 13 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.1104 7.54134H2.20024C2.33242 8.58844 2.84216 9.55132 3.6338 10.2493C4.42544 10.9473 5.44458 11.3324 6.49999 11.3324C7.5554 11.3324 8.57454 10.9473 9.36618 10.2493C10.1578 9.55132 10.6676 8.58844 10.7997 7.54134H11.8901C11.6182 10.2784 9.30853 12.4163 6.49999 12.4163C3.69145 12.4163 1.38178 10.2784 1.1104 7.54134ZM1.1104 6.45801C1.38124 3.72097 3.69091 1.58301 6.49999 1.58301C9.30907 1.58301 11.6182 3.72097 11.8896 6.45801H10.7997C10.6676 5.41091 10.1578 4.44803 9.36618 3.75004C8.57454 3.05205 7.5554 2.66692 6.49999 2.66692C5.44458 2.66692 4.42544 3.05205 3.6338 3.75004C2.84216 4.44803 2.33242 5.41091 2.20024 6.45801H1.10986H1.1104ZM6.49999 8.08301C6.21267 8.08301 5.93712 7.96887 5.73396 7.76571C5.53079 7.56254 5.41666 7.28699 5.41666 6.99967C5.41666 6.71236 5.53079 6.43681 5.73396 6.23364C5.93712 6.03048 6.21267 5.91634 6.49999 5.91634C6.78731 5.91634 7.06286 6.03048 7.26602 6.23364C7.46919 6.43681 7.58332 6.71236 7.58332 6.99967C7.58332 7.28699 7.46919 7.56254 7.26602 7.76571C7.06286 7.96887 6.78731 8.08301 6.49999 8.08301Z"
+        fill={isActive ? theme.colors.gray0 : theme.colors.gray1}
+      />
+    </CLiquidityIconContainer>
+  )
+}
+
+export const LockedIcon = () => {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1.33334 10.1933V3.80668C1.33334 2.92001 1.84668 2.70668 2.47334 3.33335L4.20001 5.06001C4.46001 5.32001 4.88668 5.32001 5.14001 5.06001L7.52668 2.66668C7.78668 2.40668 8.21334 2.40668 8.46668 2.66668L10.86 5.06001C11.12 5.32001 11.5467 5.32001 11.8 5.06001L13.5267 3.33335C14.1533 2.70668 14.6667 2.92001 14.6667 3.80668V10.2C14.6667 12.2 13.3333 13.5333 11.3333 13.5333H4.66668C2.82668 13.5267 1.33334 12.0333 1.33334 10.1933Z"
+        stroke="#ECD502"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   )
 }

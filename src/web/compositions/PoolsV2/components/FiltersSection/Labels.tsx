@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 
-import { FILTER_LABELS, labels } from '../../config'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { InlineText } from '@sb/components/Typography'
+
+import { FILTER_LABELS } from '../../config'
 import { TooltipIcon } from '../Icons'
 import {
   CheckboxContainer,
@@ -11,20 +14,22 @@ import {
   StyledCheckbox,
 } from './index.styles'
 
-type LabelType = {
-  name: string
-  backgroundColor: string
-  color: string
+type VariantType = {
+  labelStyle: { backgroundColor: string; color: string }
+  text: string
+  hoverStyle: { backgroundColor: string; color: string }
+  tooltipText?: any
+  icon?: any
 }
 
 export const LabelComponent = ({
-  checkbox,
+  checkbox = false,
   variant,
-  name,
+  tooltipText,
 }: {
-  checkbox: boolean
-  variant: any
-  name: string
+  checkbox?: boolean
+  variant: VariantType
+  tooltipText: any
 }) => {
   const [checked, setChecked] = useState(false)
 
@@ -59,11 +64,13 @@ export const LabelComponent = ({
         hoverColor={variant.hoverStyle.color}
         color={variant.labelStyle.color}
       >
-        {name}
+        {variant.icon || variant.text}
       </Label>
-      <TooltipIcon
-        color={variant.labelStyle.color}
-      />
+      <DarkTooltip title={<InlineText color="gray0">{tooltipText}</InlineText>}>
+        <span>
+          <TooltipIcon color={variant.labelStyle.color} />
+        </span>
+      </DarkTooltip>
     </LabelContainer>
   )
 }
@@ -72,7 +79,9 @@ export const FilterLabels = () => {
   return (
     <>
       {FILTER_LABELS.map((el) => {
-        return <LabelComponent name={el.text} checkbox variant={el} />
+        return (
+          <LabelComponent tooltipText={el.tooltipText} checkbox variant={el} />
+        )
       })}
     </>
   )

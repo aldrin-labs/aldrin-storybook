@@ -50,6 +50,9 @@ export const SwitcherButton = styled(Button)<StyledSwitcher>`
   cursor: pointer;
   transition: 0.5s;
   width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: auto;

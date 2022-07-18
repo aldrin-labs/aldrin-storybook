@@ -1,4 +1,5 @@
 export const MAIN_FONT = 'Prompt'
+export const SECOND_FONT = 'Syncopate'
 export const FONTS = {
   main: `${MAIN_FONT}`,
   demi: `${MAIN_FONT}`,
