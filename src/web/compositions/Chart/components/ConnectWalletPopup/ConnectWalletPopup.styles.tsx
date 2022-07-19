@@ -9,7 +9,6 @@ export const WalletSelectorRow = styled.div`
   text-transform: none;
   white-space: normal;
   text-align: right;
-  border-bottom: 0.1rem solid ${(props) => props.theme.colors.white4};
   font-size: 1.5rem;
   font-family: Avenir Next Medium;
   height: 8rem;
@@ -50,7 +49,6 @@ export const WalletIcon = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #000;
 `
 
 export const WalletRight = styled.div``
