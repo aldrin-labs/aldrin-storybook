@@ -400,7 +400,7 @@ export const WalletDisconnectButton = styled(Button)`
 `
 export const BalanceTitle = styled.span`
   font-size: 12px;
-  color: ${(props) => props.theme.colors.primaryWhite};
+  color: ${(props) => props.theme.colors.gray0};
   font-weight: 600;
   white-space: nowrap;
 
