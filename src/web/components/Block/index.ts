@@ -73,7 +73,7 @@ export interface BlockContentProps {
 export const BlockContent = styled.div<BlockContentProps>`
   padding: 16px 20px;
   position: relative;
-  overflow: hidden;
+
   ${(props) =>
     props.border ? `border-bottom: 1px solid ${props.theme.colors.gray10}` : ''}
 `

@@ -19,7 +19,12 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import { SelectorRow, StyledText, UpdatedPaper } from './styles'
+import {
+  SelectorRow,
+  StyledText,
+  UpdatedPaper,
+  HeaderContainer,
+} from './styles'
 
 export const SelectCoinPopup = ({
   theme,
@@ -130,7 +135,7 @@ export const SelectCoinPopup = ({
       }}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer padding="1.5em 0">
+      <HeaderContainer padding="1.5em 0">
         <SearchInputWithLoop
           searchValue={searchValue}
           onChangeSearch={onChangeSearch}
@@ -150,7 +155,7 @@ export const SelectCoinPopup = ({
         >
           <Text>Esc</Text>
         </Row>
-      </RowContainer>
+      </HeaderContainer>
       <RowContainer>
         {sortedMints.map(({ mint, amount, name, symbol, total }) => {
           return (
