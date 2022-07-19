@@ -1,3 +1,4 @@
+import { em, rgba } from 'polished'
 import styled from 'styled-components'
 
 export const RinBalanceContainer = styled.div`
@@ -9,6 +10,11 @@ export const RinBalanceContainer = styled.div`
   margin-left: 1em;
   padding: 0.75em;
   border-radius: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${(props) => rgba(props.theme.colors.white6, 0.75)};
+  }
 `
 
 export const RinBalanceLogo = styled.img`
@@ -18,6 +24,7 @@ export const RinBalanceLogo = styled.img`
 
 export const RinBalanceLabel = styled.div`
   margin-left: 0.25em;
+  font-size: ${em('12px')};
   font-weight: 600;
   line-height: 1em;
   color: ${(props) => props.theme.colors.white1};

@@ -5,6 +5,7 @@ import React from 'react'
 
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { useConnection } from '@sb/dexUtils/connection'
+import { notify } from '@sb/dexUtils/notifications'
 import { STAKING_FARMING_TOKEN_DIVIDER } from '@sb/dexUtils/staking/config'
 import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
 import { signAndSendSingleTransaction } from '@sb/dexUtils/transactions'
@@ -20,15 +21,17 @@ import { estimateTime } from '@core/utils/dateUtils'
 import Astronaut from '@icons/astronaut.webp'
 import ClockIcon from '@icons/clock.svg'
 
-import { notify } from '../../../dexUtils/notifications'
 import { Button } from '../../Button'
 import { FlexBlock } from '../../Layout'
 import SvgIcon from '../../SvgIcon'
 import { DarkTooltip } from '../../TooltipCustom/Tooltip'
 import { Text, InlineText } from '../../Typography'
-import { AVAILABLE_TO_CLAIM_THRESHOLD, rinMint } from './config'
 import { ProgressBar, RewardsLink, Separator, Img } from './styles'
 import { RewardsProps } from './types'
+
+export const rinMint = new PublicKey(RIN_MINT)
+
+export const AVAILABLE_TO_CLAIM_THRESHOLD = 0.1
 
 const RewardsBlock: React.FC<RewardsProps> = (props) => {
   const {

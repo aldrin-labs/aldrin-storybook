@@ -55,7 +55,7 @@ export const ModalBody = styled(Block)<ModalBodyProps>`
   max-width: 80em;
   max-height: 95vh;
   overflow: auto;
-  background: ${(props) => props.theme.colors.white5};
+  background: ${(props) => props.theme.colors.white6};
   width: ${(props) => props.$width || 'auto'};
 `
 

@@ -30,6 +30,23 @@ const modalContentStyle = {
   flexDirection: 'column',
 }
 
+const modalRootStyle = {
+  // background: 'transparent',
+  backdropFilter: 'none',
+  // alignItems: 'flex-end',
+  // width: 'auto',
+  // right: 0,
+  // left: 'auto',
+  // top: 65,
+  // height: 'calc(100vh - 65px)',
+}
+
+const modalBodyStyle = {
+  alignSelf: 'flex-end',
+  marginTop: '75px',
+  marginRight: '24px',
+}
+
 const ConnectWalletPopup = ({
   onClose,
   open,
@@ -59,7 +76,11 @@ const ConnectWalletPopup = ({
       onClose={onClose}
       open={open}
       width="24em"
-      modalContentStyle={modalContentStyle}
+      styles={{
+        root: modalRootStyle,
+        body: modalBodyStyle,
+        content: modalContentStyle,
+      }}
     >
       <Header>
         <Title>Connect Wallet</Title>
@@ -70,8 +91,10 @@ const ConnectWalletPopup = ({
         {sortedWalletProviders.map((provider) => {
           let meta
 
-          if (provider.status !== WalletReadyState.Installed) {
-            meta = 'Not Installed'
+          if (provider.status === WalletReadyState.Installed) {
+            meta = 'Connected'
+          } else {
+            meta = 'Not Connected'
           }
 
           if (provider.sysName === ALDRIN_WALLET_SYSNAME) {

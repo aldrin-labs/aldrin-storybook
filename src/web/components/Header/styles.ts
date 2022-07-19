@@ -1,12 +1,12 @@
 import {
-  UCOLORS,
   COLORS,
-  SIZE,
   BREAKPOINTS,
   BORDER_RADIUS,
   FONT_SIZES,
   TRANSITION,
+  UCOLORS,
 } from '@variables/variables'
+import { rgba, em } from 'polished'
 import { NavLink as RouterNavLink } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -14,7 +14,6 @@ import styled from 'styled-components'
 
 import { Button } from '../Button'
 import { Text } from '../Typography'
-import { THEME_DARK } from "@sb/compositions/App/themes"
 
 export const HeaderWrap = styled.header`
   display: flex;
@@ -186,12 +185,9 @@ export const MainLinksBlock = styled.div`
 `
 
 export const WalletContainer = styled.div`
-  margin: 5px 0 5px auto;
-  padding: 0 0 0 ${SIZE.defaultPadding};
   display: flex;
-  flex-direction: row;
   align-items: center;
-  overflow: hidden;
+  margin-left: 0.5em;
 `
 
 export const DropdownContent = styled.div`
@@ -213,26 +209,6 @@ export const DropdownWrap = styled.div<ShowHideProps>`
   &:hover ${DropdownContent} {
     display: flex;
   }
-
-  /*${(props: ShowHideProps) =>
-    props.show
-      ? `
-    display: none;
-
-    @media(min-width: ${BREAKPOINTS[props.show]}) {
-      display: flex;
-    }
-  `
-      : ''}
-
-  ${(props: ShowHideProps) =>
-    props.hide
-      ? `
-    @media(min-width: ${BREAKPOINTS[props.hide]}) {
-      display: none;
-    }
-  `
-      : ''}*/
 `
 
 export const DropdownInner = styled.div`
@@ -253,28 +229,17 @@ export const DropdownInner = styled.div`
 `
 
 export const WalletButton = styled(Button)`
-  width: 17rem;
-  white-space: nowrap;
-  padding: 10px 20px;
-  font-size: 0.75em;
-  background-color: ${(props) => props.theme.colors.persistent.blue1};
+  font-size: ${em('14px')};
+  width: ${em('144px', '14px')};
+  background-color: ${(props) => rgba(props.theme.colors.blue3, 0.15)};
   border: none;
   font-weight: 600;
-  height: 3.5em;
+  height: ${em('40px', '14px')};
   transition: ${TRANSITION};
-  color: white;
+  color: ${UCOLORS.blue2};
 
   &:hover {
-    background: ${UCOLORS.blue4};
-  }
-
-  &:active,
-  &:focus {
-    background: ${COLORS.darkBlue};
-  }
-
-  @media (max-width: 1100px) {
-    padding: 7px 10px;
+    background-color: ${(props) => rgba(props.theme.colors.blue3, 0.1)};
   }
 `
 

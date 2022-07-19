@@ -3,23 +3,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { BlockContent } from '../../Block'
-import { WalletButton } from '../styles'
 import { ProgressBarProps } from './types'
-
-export const RewardsButton = styled(WalletButton)`
-  color: ${COLORS.newOrange};
-  background: ${COLORS.newOrangeTransparent};
-  padding-left: 10px;
-  padding-right: 10px;
-  width: auto;
-  margin-right: 10px;
-  height: 3.5em;
-  &:hover,
-  &:active,
-  &:focus {
-    background: ${COLORS.newOrangeTransparent};
-  }
-`
 
 export const Img = styled.img`
   border-radius: ${BORDER_RADIUS.md};
@@ -28,7 +12,7 @@ export const Img = styled.img`
 export const RewardsContent = styled(BlockContent)`
   max-width: 440px;
   width: 80vw;
-  background: ${(props) => props.theme.colors.white3};
+  background: ${(props) => props.theme.colors.white4};
   margin: 20px;
   border-radius: ${BORDER_RADIUS.md};
 `

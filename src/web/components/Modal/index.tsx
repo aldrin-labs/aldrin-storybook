@@ -19,7 +19,11 @@ interface ModalProps extends ModalCommon {
   open: boolean
   backdrop?: ModalBackdropStyle
   width?: string
-  modalContentStyle?: Record<string, string>
+  styles?: {
+    root?: Record<string, any>
+    body?: Record<string, any>
+    content?: Record<string, any>
+  }
 }
 
 export const ModalTitleBlock: React.FC<ModalCommon> = (props) => {
@@ -55,7 +59,11 @@ export const Modal: React.FC<ModalProps> = (props) => {
     title,
     backdrop = 'blur',
     width,
-    modalContentStyle = {},
+    styles = {
+      root: {},
+      body: {},
+      content: {},
+    },
   } = props
 
   if (!open) {
@@ -77,9 +85,17 @@ export const Modal: React.FC<ModalProps> = (props) => {
   }, [])
 
   return (
-    <ModalContainer backdrop={backdrop} onClick={() => onClose()}>
-      <ModalBody onClick={(e) => e.stopPropagation()} $width={width}>
-        <ModalContent style={modalContentStyle}>
+    <ModalContainer
+      backdrop={backdrop}
+      onClick={() => onClose()}
+      style={styles.root}
+    >
+      <ModalBody
+        onClick={(e) => e.stopPropagation()}
+        $width={width}
+        style={styles.body}
+      >
+        <ModalContent style={styles.content}>
           <>
             {title && <ModalTitleBlock title={title} onClose={onClose} />}
             {children}
