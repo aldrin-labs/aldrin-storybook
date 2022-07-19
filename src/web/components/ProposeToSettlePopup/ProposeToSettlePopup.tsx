@@ -151,7 +151,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
               </span>
             </Text>
           </Row>
-          {!isMobile ? (
+          {!isMobile && (
             <Row>
               <TextButton onClick={() => setIsPopupOpen(false)}>
                 Never show again.
@@ -181,7 +181,7 @@ export const ProposeToSettlePopup = ({ theme }: { theme: Theme }) => {
                 Settle All
               </BlackButton>
             </Row>
-          ) : null}
+          )}
         </RowContainer>
         {isMobile && (
           <BlackButton

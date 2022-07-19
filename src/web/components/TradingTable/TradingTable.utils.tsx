@@ -4,7 +4,11 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 dayjs.extend(localizedFormat)
 
 import { Key, OrderType, TradeType } from '@core/types/ChartTypes'
-import { StyledTitle, TableButton } from './TradingTable.styles'
+import {
+  StyledTitle,
+  StyledPriceText,
+  TableButton,
+} from './TradingTable.styles'
 
 import { Loading } from '@sb/components/index'
 import stableCoins from '@core/config/stableCoins'
@@ -111,33 +115,16 @@ export const getTableHead = (
 
 export const getStartDate = (stringDate: string): number =>
   stringDate === '1Day'
-    ? dayjs()
-        .startOf('day')
-        .valueOf()
+    ? dayjs().startOf('day').valueOf()
     : stringDate === '1Week'
-    ? dayjs()
-        .startOf('day')
-        .subtract(1, 'week')
-        .valueOf()
+    ? dayjs().startOf('day').subtract(1, 'week').valueOf()
     : stringDate === '2Weeks'
-    ? dayjs()
-        .startOf('day')
-        .subtract(2, 'week')
-        .valueOf()
+    ? dayjs().startOf('day').subtract(2, 'week').valueOf()
     : stringDate === '1Month'
-    ? dayjs()
-        .startOf('day')
-        .subtract(1, 'month')
-        .valueOf()
+    ? dayjs().startOf('day').subtract(1, 'month').valueOf()
     : stringDate === '3Month'
-    ? dayjs()
-        .startOf('day')
-        .subtract(3, 'month')
-        .valueOf()
-    : dayjs()
-        .startOf('day')
-        .subtract(6, 'month')
-        .valueOf()
+    ? dayjs().startOf('day').subtract(3, 'month').valueOf()
+    : dayjs().startOf('day').subtract(6, 'month').valueOf()
 
 export const getEmptyTextPlaceholder = (tab: string): string =>
   tab === 'openOrders'
@@ -269,7 +256,11 @@ export const filterOpenOrders = ({
   order: OrderType
   canceledOrders: string[]
 }) => {
-  const { type = '', status = '', info = { orderId: '' } } = order || {
+  const {
+    type = '',
+    status = '',
+    info = { orderId: '' },
+  } = order || {
     type: '',
     status: '',
     info: { orderId: '' },
@@ -396,7 +387,7 @@ export const combineOpenOrdersTable = (
                   )}`}</StyledTitle>
                 </RowContainer>
                 <RowContainer justify={'space-between'}>
-                  <StyledTitle>Amount (CCAI)</StyledTitle>
+                  <StyledTitle>Amount (${})</StyledTitle>
                   <StyledTitle color={'#fbf2f2'}>
                     {stripDigitPlaces(size, quantityPrecision)}
                   </StyledTitle>
@@ -636,9 +627,11 @@ export const combineOrderHistoryTable = (
       const isMakerOnlyOrder = orderType === 'maker-only'
       const type = (orderType || 'type').toLowerCase().replace('-', '_')
 
-      const { orderId = 'id', stopPrice = 0, origQty = '0' } = info
-        ? info
-        : { orderId: 'id', stopPrice: 0, origQty: 0 }
+      const {
+        orderId = 'id',
+        stopPrice = 0,
+        origQty = '0',
+      } = info ? info : { orderId: 'id', stopPrice: 0, origQty: 0 }
 
       const keyName = keys ? keys[keyId] : ''
 
@@ -846,10 +839,7 @@ export const combineTradeHistoryTable = (
         symbol: marketName,
       })
 
-      const pair = marketName
-        .split('/')
-        .join('_')
-        .split('_')
+      const pair = marketName.split('/').join('_').split('_')
       // const isSmallProfit = Math.abs(realizedPnl) < 0.01 && realizedPnl !== 0
 
       return {
@@ -878,23 +868,23 @@ export const combineTradeHistoryTable = (
                 </StyledTitle>
               </RowContainer>
               <RowContainer justify={'space-between'}>
-                <StyledTitle>Price(USDC)</StyledTitle>{' '}
-                <StyledTitle color={'#fbf2f2'}>{`${stripDigitPlaces(
+                <StyledTitle>Price({pair[1]})</StyledTitle>{' '}
+                <StyledPriceText>{`${stripDigitPlaces(
                   price,
                   pricePrecision
-                )}`}</StyledTitle>
+                )}`}</StyledPriceText>
               </RowContainer>
               <RowContainer justify={'space-between'}>
-                <StyledTitle>Amount (CCAI)</StyledTitle>
-                <StyledTitle color={'#fbf2f2'}>
+                <StyledTitle>Amount ({pair[0]})</StyledTitle>
+                <StyledPriceText>
                   {stripDigitPlaces(size, quantityPrecision)}
-                </StyledTitle>
+                </StyledPriceText>
               </RowContainer>
               <RowContainer justify={'space-between'}>
-                <StyledTitle>Total (USDC)</StyledTitle>
-                <StyledTitle color={'#fbf2f2'}>
+                <StyledTitle>Total ({pair[0]})</StyledTitle>
+                <StyledPriceText>
                   {stripDigitPlaces(size * price, quantityPrecision)}
-                </StyledTitle>
+                </StyledPriceText>
               </RowContainer>
             </RowContainer>
           ),
@@ -1050,15 +1040,8 @@ export const combineBalancesTable = (
   const filtredFundsData = fundsData
 
   const processedFundsData = filtredFundsData.map((el: FundsType) => {
-    const {
-      marketName,
-      coin,
-      wallet,
-      orders,
-      unsettled,
-      market,
-      openOrders,
-    } = el
+    const { marketName, coin, wallet, orders, unsettled, market, openOrders } =
+      el
 
     return {
       id: `${coin}${wallet}`,
@@ -1086,7 +1069,7 @@ export const combineBalancesTable = (
                 </StyledTitle>
               </RowContainer>
             </RowContainer>
-            {showSettle ? (
+            {showSettle && (
               <RowContainer style={{ width: '60%' }} justify={'flex-end'}>
                 <BtnCustom
                   btnWidth={'50%'}
@@ -1105,7 +1088,7 @@ export const combineBalancesTable = (
                   Settle
                 </BtnCustom>
               </RowContainer>
-            ) : null}
+            )}
           </RowContainer>
         ),
         showOnMobile: true,
@@ -1236,10 +1219,11 @@ export const updateStrategiesHistoryQuerryFunction = (
 
   const prev = cloneDeep(previous)
 
-  const strategyHasTheSameIndex = prev.getStrategiesHistory.strategies.findIndex(
-    (el: TradeType) =>
-      el._id === subscriptionData.data.listenActiveStrategies._id
-  )
+  const strategyHasTheSameIndex =
+    prev.getStrategiesHistory.strategies.findIndex(
+      (el: TradeType) =>
+        el._id === subscriptionData.data.listenActiveStrategies._id
+    )
   const tradeAlreadyExists = strategyHasTheSameIndex !== -1
 
   let result

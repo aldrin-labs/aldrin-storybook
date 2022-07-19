@@ -26,7 +26,6 @@ import { WalletProvider } from '@sb/dexUtils/wallet'
 import { GlobalStyle } from '@sb/styles/global.styles'
 import { SnackbarUtilsConfigurator } from '@sb/utils/SnackbarUtils'
 
-import { getThemeMode } from '@core/graphql/queries/chart/getThemeMode'
 import { GET_VIEW_MODE } from '@core/graphql/queries/chart/getViewMode'
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
@@ -35,7 +34,7 @@ import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
 import { AppGridLayout, AppInnerContainer } from './App.styles'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
-import { Theme } from './themes'
+import { Theme, THEME_DARK } from "./themes"
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
 // import Footer from '@sb/components/Footer'
 
@@ -79,7 +78,6 @@ const DetermineMobileWindowHeight = () => {
 
 const AppRaw = ({
   children,
-  getViewModeQuery,
   location: { pathname: currentPage, search },
 }: any) => {
   const [isDevUrlPopupOpen, openDevUrlPopup] = useLocalStorageState(
@@ -90,13 +88,8 @@ const AppRaw = ({
 
   const [currentTheme, setCurrentTheme] = useState(theme)
   if (!theme) {
-    localStorage.setItem('theme', 'dark')
+    localStorage.setItem('theme', THEME_DARK)
   }
-  // const [isRebrandingPopupOpen, setIsRebrandingPopupOpen] =
-  //   useLocalStorageState('isRebrandingPopupOpen', true)
-  // const [isMigrationToNewUrlPopupOpen, openMigrationToNewUrlPopup] = useState(
-  //   true
-  // )
 
   const isChartPage = /chart/.test(currentPage)
 
@@ -104,17 +97,12 @@ const AppRaw = ({
 
   if (!themeMode) {
     themeMode = 'dark'
-    localStorage.setItem('themeMode', 'dark')
+    localStorage.setItem('themeMode', THEME_DARK)
   }
-  // const chartPageView =
-  //   getViewModeQuery && getViewModeQuery.chart && getViewModeQuery.chart.view
 
-  // const fullscreen: boolean = isChartPage && chartPageView !== 'default'
   const showFooter = false
 
   const isPNL = currentPage.includes('/portfolio/main')
-  // TODO: Check this variable
-  // const pageIsRegistration = currentPage.includes('regist')
   const isRewards = currentPage.includes('rewards')
 
   const searchParamsObject = getSearchParamsObject({ search })
@@ -149,10 +137,7 @@ const AppRaw = ({
                         isChartPage={isChartPage}
                       >
                         <SolanaNetworkDegradedPerformanceBanner />
-                        <Header
-                          currentTheme={currentTheme}
-                          setCurrentTheme={setCurrentTheme}
-                        />
+                        <Header setCurrentTheme={setCurrentTheme} />
                         <AppInnerContainer
                           showFooter={showFooter}
                           isChartPage={isChartPage}
@@ -256,14 +241,6 @@ export const App = compose(
   queryRendererHoc({
     query: GET_VIEW_MODE,
     name: 'getViewModeQuery',
-    fetchPolicy: 'cache-and-network',
-  }),
-  queryRendererHoc({
-    skip: (props: any) => {
-      return !props.authenticated
-    },
-    query: getThemeMode,
-    name: 'getThemeModeQuery',
     fetchPolicy: 'cache-and-network',
   })
 )(AppRaw)

@@ -249,7 +249,7 @@ export default function defaultRowRenderer({
           borderRadius: '.1rem',
           backgroundColor:
             side === 'bids' || fall === 0
-              ? theme.colors.obGreebBack
+              ? theme.colors.obGreenBack
               : theme.colors.obRedBack,
           transform: `translateX(calc(100% - ${orderPercentage}%))`,
           ...(fall === undefined

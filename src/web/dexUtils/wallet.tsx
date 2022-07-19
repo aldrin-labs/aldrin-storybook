@@ -341,6 +341,7 @@ export function parseMintData(data) {
 
 export function useBalanceInfo(publicKey) {
   const { data: accountInfo, isLoading: accountInfoLoading } = useAccountInfo(publicKey)
+
   const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
     : {}

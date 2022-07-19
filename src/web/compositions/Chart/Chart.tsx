@@ -26,7 +26,6 @@ import { getUserCustomMarkets } from '@core/graphql/queries/serum/getUserCustomM
 import { withAuthStatus } from '@core/hoc/withAuthStatus'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { finishJoyride } from '@core/utils/joyride'
-import { checkLoginStatus } from '@core/utils/loginUtils'
 // import Joyride from 'react-joyride'
 // import { Grid, Hidden } from '@material-ui/core'
 // import { ParticleRuggedPopup } from '@sb/components/ParticleRuggedPopup'
@@ -343,65 +342,7 @@ function ChartPageComponent(props: any) {
   )
 }
 
-const ChartPage = React.memo(ChartPageComponent, (prev, next) => {
-  // console.log('memo func chart page', prev, next)
-
-  const isAuthenticatedUser = checkLoginStatus()
-
-  if (!isAuthenticatedUser) {
-    return false
-  }
-
-  const prevIsPairDataLoading =
-    prev.loading ||
-    !prev.pairPropertiesQuery.marketByName ||
-    !prev.pairPropertiesQuery.marketByName[0] ||
-    prev.pairPropertiesQuery.networkStatus === 2 ||
-    prev.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      prev.selectedPair.replace('_', '')
-
-  const nextIsPairDataLoading =
-    next.loading ||
-    !next.pairPropertiesQuery.marketByName ||
-    !next.pairPropertiesQuery.marketByName[0] ||
-    next.pairPropertiesQuery.networkStatus === 2 ||
-    next.pairPropertiesQuery.marketByName[0].properties.binance.symbol !==
-      next.selectedPair.replace('_', '')
-
-  const tooltipQueryChanged =
-    (prev.getTooltipSettingsQuery.getTooltipSettings &&
-      prev.getTooltipSettingsQuery.getTooltipSettings.chartPage) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPage) &&
-    (prev.getTooltipSettingsQuery.getTooltipSettings &&
-      prev.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup) ===
-      (next.getTooltipSettingsQuery.getTooltipSettings &&
-        next.getTooltipSettingsQuery.getTooltipSettings.chartPagePopup)
-
-  return (
-    // prev.marketType === next.marketType &&
-    // prev.selectedPair === next.selectedPair &&
-    // prev.getChartDataQuery.getTradingSettings.selectedTradingKey ===
-    //   next.getChartDataQuery.getTradingSettings.selectedTradingKey &&
-    // prev.getChartDataQuery.getTradingSettings.hedgeMode ===
-    //   next.getChartDataQuery.getTradingSettings.hedgeMode &&
-    // prevIsPairDataLoading === nextIsPairDataLoading &&
-    // tooltipQueryChanged &&
-    // prev.getChartLayoutQuery.chart.layout.hideDepthChart ===
-    //   next.getChartLayoutQuery.chart.layout.hideDepthChart &&
-    // prev.getChartLayoutQuery.chart.layout.hideOrderbook ===
-    //   next.getChartLayoutQuery.chart.layout.hideOrderbook &&
-    // prev.getChartLayoutQuery.chart.layout.hideTradeHistory ===
-    //   next.getChartLayoutQuery.chart.layout.hideTradeHistory &&
-    // prev.theme.palette.type === next.theme.palette.type &&
-    // isEqual(prev.theme, next.theme) &&
-    // isEqual(
-    //   prev.pairPropertiesQuery.marketByName[0].properties,
-    //   next.pairPropertiesQuery.marketByName[0].properties
-    // )
-    false
-  )
-})
+const ChartPage = ChartPageComponent
 
 // TODO: combine all queries to one
 export default compose(

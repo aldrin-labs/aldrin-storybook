@@ -5,17 +5,19 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
 import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
+import { restake } from '@sb/dexUtils/staking/actions'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
@@ -27,6 +29,7 @@ import {
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
 import { getRINCirculationSupply } from '@core/api'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
@@ -48,10 +51,6 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import ClockIcon from '@icons/clock.svg'
 
-import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
-import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
-import { restake } from '../../../dexUtils/staking/actions'
-import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
@@ -101,7 +100,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
     walletPublicKey: wallet.publicKey,
     onlyUserTickets: true,
-    // walletPublicKey,
   })
 
   const { data: calcAccounts, mutate: reloadCalcAccounts } =
@@ -346,31 +344,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const totalStakedUSD = tokenPrice * totalStakedRIN
 
-  const buyBackAPR =
-    (buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) *
-    365 *
-    100
+  const totalApr = stakingPool.apr.totalStakingAPR || 0
 
-  const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
-
-  // const formattedBuyBackAPR =
-  //   Number.isFinite(buyBackAPR) && buyBackAPR > 0
-  //     ? stripByAmount(buyBackAPR, 2)
-  //     : '--'
-
-  const totalStakedPercentageToCircSupply =
-    (totalStakedRIN * 100) / RINCirculatingSupply
-
-  // const formattedTreasuryAPR = Number.isFinite(treasuryAPR)
-  //   ? stripByAmount(treasuryAPR, 2)
-  //   : '--'
-
-  const formattedAPR =
-    Number.isFinite(buyBackAPR) &&
-    buyBackAPR > 0 &&
-    Number.isFinite(treasuryAPR)
-      ? stripByAmount(buyBackAPR + treasuryAPR, 2)
-      : '--'
+  const formattedAPR = Number.isFinite(totalApr)
+    ? stripByAmount(totalApr, 2)
+    : '--'
 
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`
@@ -405,6 +383,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const userEstRewardsUSD = isBalancesShowing
     ? strippedEstRewardsUSD
     : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
+
+  const totalStakedPercentageToCircSupply =
+    (totalStakedRIN * 100) / RINCirculatingSupply
 
   return (
     <>
@@ -459,6 +440,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </GreenBlock>
         </Cell>
+
         <Cell colMd={6} colXl={3} col={12}>
           <Block inner>
             <BlockContentStretched>
@@ -511,6 +493,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </Block>
         </Cell>
+
         <Cell colMd={6} colXl={3} col={12}>
           <Block inner>
             <BlockContentStretched>
@@ -573,7 +556,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         $fontSize="sm"
                         onClick={claimRewards}
                       >
-                        {isClaimDisabled ? <SvgIcon src={ClockIcon} /> : null}
+                        {isClaimDisabled && <SvgIcon src={ClockIcon} />}
                         Claim
                       </ClaimButton>
                     </span>
