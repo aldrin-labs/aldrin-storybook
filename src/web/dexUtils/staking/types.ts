@@ -8,5 +8,6 @@ export type StakingPool = {
   farming: FarmingState[]
   apr: {
     buyBackAmountWithoutDecimals: number
+    totalStakingAPR: number
   }
 }
