@@ -237,7 +237,7 @@ export const SimpleInput = ({
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="3rem">
         <InvisibleInput
           disabled={disabled}
-          type="number"
+          type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}

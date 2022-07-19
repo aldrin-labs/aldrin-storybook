@@ -253,7 +253,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
           placeholder="0"
           theme={theme}
           symbol={baseSymbol}
-          value={baseAmount}
+          value={formatNumberWithSpaces(baseAmount)}
           onChange={setBaseAmountWithQuote}
           maxBalance={withdrawAmountTokenA}
         />
@@ -267,7 +267,7 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
           placeholder="0"
           theme={theme}
           symbol={quoteSymbol}
-          value={quoteAmount}
+          value={formatNumberWithSpaces(quoteAmount)}
           onChange={setQuoteAmountWithBase}
           maxBalance={withdrawAmountTokenB}
         />
