@@ -1,4 +1,5 @@
 import { WalletReadyState } from '@solana/wallet-adapter-base'
+import useMobileSize from '@webhooks/useMobileSize'
 import { orderBy } from 'lodash-es'
 import React from 'react'
 
@@ -31,20 +32,7 @@ const modalContentStyle = {
 }
 
 const modalRootStyle = {
-  // background: 'transparent',
   backdropFilter: 'none',
-  // alignItems: 'flex-end',
-  // width: 'auto',
-  // right: 0,
-  // left: 'auto',
-  // top: 65,
-  // height: 'calc(100vh - 65px)',
-}
-
-const modalBodyStyle = {
-  alignSelf: 'flex-end',
-  marginTop: '75px',
-  marginRight: '24px',
 }
 
 const ConnectWalletPopup = ({
@@ -56,6 +44,17 @@ const ConnectWalletPopup = ({
 }) => {
   const { setAutoConnect, setProvider } = useWallet()
   const { endpoint } = useConnectionConfig()
+  const isMobile = useMobileSize()
+
+  const modalBodyStyle = isMobile
+    ? {
+        maxHeight: '65vh',
+      }
+    : {
+        alignSelf: 'flex-end',
+        marginTop: '75px',
+        marginRight: '24px',
+      }
 
   const walletProviders = WALLET_PROVIDERS.map((item) => {
     const adapter = item.adapter(item.url, endpoint)
