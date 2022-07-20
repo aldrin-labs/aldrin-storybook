@@ -38,6 +38,12 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 import { Button } from '../../Tables/index.styles'
 import { InputWithTotal, SimpleInput } from '../components'
 import { BoldHeader, Line, StyledPaper } from '../index.styles'
+import { INPUT_FORMATTERS } from '@sb/components/Input'
+import { numberWithOneDotRegexp } from '@core/utils/helpers'
+import {
+  getNumberOfDecimalsFromNumber,
+  getNumberOfIntegersFromNumber,
+} from '@core/utils/numberUtils'
 
 interface WithdrawalProps {
   dexTokensPricesMap: Map<string, DexTokensPrices>
@@ -254,8 +260,22 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
           theme={theme}
           symbol={baseSymbol}
           value={formatNumberWithSpaces(baseAmount)}
-          onChange={setBaseAmountWithQuote}
           maxBalance={withdrawAmountTokenA}
+          onChange={(v) => {
+            if (v === '') {
+              setBaseAmountWithQuote(v)
+              return
+            }
+            const parsedValue = INPUT_FORMATTERS.DECIMAL(v, baseAmount)
+
+            if (
+              numberWithOneDotRegexp.test(parsedValue) &&
+              getNumberOfIntegersFromNumber(parsedValue) <= 24 &&
+              getNumberOfDecimalsFromNumber(parsedValue) <= 24
+            ) {
+              setBaseAmountWithQuote(parsedValue)
+            }
+          }}
         />
         <Row>
           <Text fontSize="4rem" fontFamily="Avenir Next Medium">
@@ -268,7 +288,21 @@ const WithdrawalPopup: React.FC<WithdrawalProps> = (props) => {
           theme={theme}
           symbol={quoteSymbol}
           value={formatNumberWithSpaces(quoteAmount)}
-          onChange={setQuoteAmountWithBase}
+          onChange={(v) => {
+            if (v === '') {
+              setQuoteAmountWithBase(v)
+              return
+            }
+            const parsedValue = INPUT_FORMATTERS.DECIMAL(v, quoteAmount)
+
+            if (
+              numberWithOneDotRegexp.test(parsedValue) &&
+              getNumberOfIntegersFromNumber(parsedValue) <= 24 &&
+              getNumberOfDecimalsFromNumber(parsedValue) <= 24
+            ) {
+              setQuoteAmountWithBase(parsedValue)
+            }
+          }}
           maxBalance={withdrawAmountTokenB}
         />
         <Line />
