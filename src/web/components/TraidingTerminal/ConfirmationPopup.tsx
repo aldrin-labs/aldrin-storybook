@@ -324,7 +324,7 @@ export const ConfirmationPopup = ({
             disabled={!isAwareOfHighSlippage}
             onClick={async () => {
               const result = await validateForm()
-              console.log('result', result)
+
               if (Object.keys(result).length === 0 || !isSPOTMarket) {
                 handleSubmit(values)
               }
@@ -363,7 +363,6 @@ export const ConfirmationPopup = ({
           <SendButton
             onClick={async () => {
               const result = await validateForm()
-              console.log('result', result)
               if (Object.keys(result).length === 0 || !isSPOTMarket) {
                 handleSubmit(values)
               }

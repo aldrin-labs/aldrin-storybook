@@ -102,6 +102,7 @@ const THEMES = {
       shadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.45)',
       header: '#0B0B13',
       border1: '#212131',
+      PURewardsBackground: 'rgba(0, 255, 132, 0.15)',
     },
   },
   [THEME_LIGHT]: {
@@ -144,6 +145,7 @@ const THEMES = {
       shadow: '0px 0px 8px 0px rgba(169, 169, 178, 1)',
       header: '#FAFAFA',
       border1: 'rgba(169, 169, 178, 0.3)',
+      PURewardsBackground: 'rgba(0, 181, 94, 0.2)',
     },
   },
 }
