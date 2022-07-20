@@ -21,6 +21,7 @@ import Arrow from '@icons/arrowBottom.svg'
 
 import { StyledInput, TokenContainer, InvisibleInput } from '../index.styles'
 import { BlueText } from './index.styles'
+import { INPUT_FORMATTERS } from '@sb/components/Input'
 
 export const InputWithCoins = ({
   theme,
@@ -219,6 +220,7 @@ export const SimpleInput = ({
   disabled,
   onChange,
   placeholder,
+  formatter = INPUT_FORMATTERS.DECIMAL,
 }: {
   theme: DefaultTheme
   value: string | number
@@ -226,6 +228,7 @@ export const SimpleInput = ({
   disabled?: boolean
   maxBalance: number
   placeholder: string
+  formatter?: (e: string | number, prevValue: string | number) => string
   onChange: (value: string | number) => void
 }) => {
   return (
@@ -239,7 +242,7 @@ export const SimpleInput = ({
           disabled={disabled}
           type="text"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(formatter(e.target.value, value))}
           placeholder={placeholder}
         />
       </TokenContainer>
