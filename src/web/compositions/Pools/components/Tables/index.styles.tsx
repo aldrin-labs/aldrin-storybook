@@ -46,9 +46,9 @@ export const TokenIconContainer = styled.div`
 `
 
 export const SearchInput = styled.input`
-  font-size: ${FONT_SIZES.md};
+  font-size: ${FONT_SIZES.xsm};
   color: ${(props) => props.theme.colors.gray0};
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.gray6};
   border: 0.1rem solid ${(props) => props.theme.colors.border};
   border-radius: 1.2rem;
   font-family: ${FONTS.main};

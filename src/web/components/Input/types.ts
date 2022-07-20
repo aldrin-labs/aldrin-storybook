@@ -37,7 +37,15 @@ export interface OnChangeProps {
   onChange: (e: string) => void
 }
 
-export interface InputProps extends InputBase, OnChangeProps {}
+export interface OnFocusBlurProps {
+  onBlur?: () => void
+  onFocus?: () => void
+}
+
+export interface InputProps
+  extends InputBase,
+    OnChangeProps,
+    OnFocusBlurProps {}
 
 export interface InputFieldProps extends InputBase {
   validate?: FieldValidator

@@ -1,6 +1,8 @@
 import { Orderbook } from '@project-serum/serum'
-import { notifyForDevelop, notifyWithLog } from '@sb/dexUtils/notifications'
 import { Connection } from '@solana/web3.js'
+
+import { notifyForDevelop, notifyWithLog } from '@sb/dexUtils/notifications'
+
 import { LoadedMarketsMap } from './loadMarketsByNames'
 
 export type OrderbooksMap = Map<string, { asks: Orderbook; bids: Orderbook }>

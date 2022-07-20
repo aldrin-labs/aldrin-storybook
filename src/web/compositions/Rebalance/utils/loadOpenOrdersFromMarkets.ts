@@ -1,48 +1,53 @@
-import { DEX_PID } from '@core/config/dex'
 import { OpenOrders } from '@project-serum/serum'
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { MarketsMap } from '@sb/dexUtils/markets'
 import { Connection } from '@solana/web3.js'
-import { LoadedMarket, LoadedMarketsMap } from './loadMarketsByNames'
+
+import { MarketsMap } from '@sb/dexUtils/markets'
+import { WalletAdapter } from '@sb/dexUtils/types'
+
+import { DEX_PID } from '@core/config/dex'
+
+import { LoadedMarket } from './loadMarketsByNames'
 
 export interface LoadedMarketWithOpenOrders extends LoadedMarket {
   openOrders: OpenOrders[]
 }
-export type LoadedMarketsWithOpenOrdersMap = Map<
-  string,
-  LoadedMarketWithOpenOrders
->
+export type OpenOrdersMap = Map<string, OpenOrders[]>
 
 export const loadOpenOrdersFromMarkets = async ({
   wallet,
   connection,
-  loadedMarketsMap,
+  allMarketsMap,
 }: {
   wallet: WalletAdapter
   connection: Connection
-  loadedMarketsMap: LoadedMarketsMap
-}): Promise<LoadedMarketsWithOpenOrdersMap> => {
-  const marketsWithSignersMap: LoadedMarketsWithOpenOrdersMap = new Map()
+  allMarketsMap: MarketsMap
+}): Promise<OpenOrdersMap> => {
+  const openOrdersMap: OpenOrdersMap = new Map()
 
   console.time('openOrders')
 
-  const openOrdersAccounts = await OpenOrders.findForOwner(
-    connection,
-    wallet.publicKey,
-    DEX_PID
-  )
+  let openOrdersAccounts: OpenOrders[] = []
 
-  for (let marketData of loadedMarketsMap.values()) {
-    const { market, marketName } = marketData
+  // add to markets load
+  if (wallet.publicKey) {
+    openOrdersAccounts = await OpenOrders.findForOwner(
+      connection,
+      wallet.publicKey,
+      DEX_PID
+    )
+  }
 
+  for (const [_, { address }] of allMarketsMap.entries()) {
     const openOrders = openOrdersAccounts.filter((account) =>
-      account.market.equals(market.address)
+      account.market.equals(address)
     )
 
-    marketsWithSignersMap.set(marketName, { ...marketData, openOrders })
+    if (openOrders.length > 0) {
+      openOrdersMap.set(address.toString(), openOrders)
+    }
   }
 
   console.timeEnd('openOrders')
 
-  return marketsWithSignersMap
+  return openOrdersMap
 }

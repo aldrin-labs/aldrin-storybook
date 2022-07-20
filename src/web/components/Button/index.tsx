@@ -142,6 +142,7 @@ const VARIANTS = {
     align-items: center;
     justify-content: center;
   `,
+  none: css``,
 }
 
 export const PADDINGS = {

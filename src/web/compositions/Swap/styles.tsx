@@ -6,11 +6,11 @@ import {
   MAIN_FONT,
 } from '@variables/variables'
 import React from 'react'
-import styled from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components'
 
-import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { Button, PADDINGS } from '@sb/components/Button'
 import { Page } from '@sb/components/Layout'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
@@ -55,23 +55,34 @@ export const InfoBox = styled(Row)`
   padding: 2rem;
 `
 
-export const ValueButton = styled.button`
+export const SlippageButton = styled.button`
   display: flex;
   align-items: center;
-  justify-content: center;
 
-  width: 2em;
   height: 2em;
   cursor: pointer;
-  padding: 0.5em 0.8em;
-  font-family: Avenir Next Bold;
-  color: #a7a7ae;
-  background-color: ${(props) => props.theme.colors.gray5};
-  margin-left: 0.5rem;
-  font-size: ${(props) => FONT_SIZES[props.$fontSize || 'sm']};
-  line-height: 2em;
-  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
-  border-radius: 0.8rem;
+
+  padding: 0 0.6em;
+
+  font-family: ${FONTS.main};
+  font-size: 1em;
+  font-weight: 600;
+
+  color: ${(props) => props.theme.colors.gray1};
+  background-color: ${(props) => props.theme.colors.gray7};
+
+  border: none;
+  border-radius: 2em;
+`
+
+export const InfoIconContainer = styled.span`
+  color: ${({ isHighPriceDiff, theme }) =>
+    isHighPriceDiff ? theme.colors.red5 : theme.colors.green5};
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `
 
 export const ValueInput = styled.input`
@@ -90,17 +101,18 @@ export const ValueInput = styled.input`
 export const BlackRow = styled((props) => (
   <Row justify="space-between" {...props} />
 ))`
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.gray7};
   border-radius: 1.2rem;
-  height: 3em;
-  padding: 1em 0.8em;
+  height: 2em;
+  padding: 0 0.6em;
   margin-top: 0.8rem;
 `
 
 export const RowTitle = styled.span`
   font-family: ${MAIN_FONT};
-  font-size: ${FONT_SIZES.xsm};
-  color: ${(props) => props.theme.colors.gray0};
+  font-size: ${FONT_SIZES.esm};
+  line-height: ${FONT_SIZES.md};
+  color: ${(props) => props.$color || props.theme.colors.gray0};
 `
 
 export const RowValue = styled(RowTitle)`
@@ -108,53 +120,70 @@ export const RowValue = styled(RowTitle)`
   color: ${(props) => props.theme.colors.white};
 `
 
+export const RowImpactTitle = styled(RowTitle)`
+  font-weight: 600;
+  color: ${({
+    isHighPriceDiff,
+    theme,
+  }: {
+    isHighPriceDiff: boolean
+    theme: DefaultTheme
+  }) => (isHighPriceDiff ? theme.colors.red5 : theme.colors.green5)};
+`
+
 export const RowAmountValue = styled(RowValue)`
   margin-right: 0.4rem;
   color: ${(props) => props.theme.colors.green3};
 `
 
-export const SwapButton = styled((props) => (
-  <BtnCustom
-    btnWidth="100%"
-    height="4em"
-    fontSize="initial"
-    padding="0.7em 1.2em"
-    borderRadius=".8rem"
-    borderColor="none"
-    btnColor="#fff"
-    backgroundColor={
-      props.disabled ? props.theme.colors.disabled : props.theme.colors.blue5
-    }
-    textTransform="none"
-    transition="all .4s ease-out"
-    {...props}
-  />
-))`
+export const SwapButton = styled(Button)`
+  height: 4em;
+
+  color: ${({
+    isHighPriceDiff,
+    theme,
+  }: {
+    isHighPriceDiff: boolean
+    theme: DefaultTheme
+  }) => (isHighPriceDiff ? theme.colors.red5 : theme.colors.green5)};
+  background: ${({ isHighPriceDiff }: { isHighPriceDiff: boolean }) =>
+    isHighPriceDiff ? 'rgba(255, 103, 74, 0.15)' : 'rgba(0, 181, 94, 0.15)'};
+  border: none;
+
+  transition: all 0.4s ease-out;
+
+  span {
+    font-size: ${FONT_SIZES.esm};
+    font-weight: 600;
+  }
+
   &:disabled {
-    color: #fff;
+    color: ${(props) => props.theme.colors.gray2};
+    background: rgba(91, 90, 114, 0.15); // too rare to add to theme
   }
 `
 
 export const CircleIconContainer = styled(Row)`
-  width: ${(props) => props.size || '1.6em'};
-  height: ${(props) => props.size || '1.6em'};
-  background: ${(props) => props.theme.colors.gray7};
+  width: ${(props) => props.size || '2em'};
+  height: ${(props) => props.size || '2em'};
+  background: ${(props) => props.theme.colors.gray8};
   border-radius: 50%;
   font-family: Avenir Next Bold;
   color: ${(props) => props.theme.colors.gray0};
-  line-height: ${(props) => props.size || '1.6em'};
+  line-height: ${(props) => props.size || '2em'};
 `
 
 export const ReverseTokensContainer = styled(CircleIconContainer)`
   position: absolute;
-  right: 1rem;
+  left: 50%;
   top: 50%;
-  box-shadow: ${(props) => props.theme.colors.shadow};
-  transform: translateY(-50%);
+  border: 1px solid ${(props) => props.theme.colors.gray6};
+  transform: translate(-50%, -50%);
   cursor: pointer;
   z-index: 2;
+
   svg {
-    width: 10px;
+    width: 1.2em;
     height: auto;
     path {
       fill: ${(props) => props.theme.colors.gray0};
@@ -185,20 +214,24 @@ export const SwapPageLayout = styled(Page)`
 export const SwapContentContainer = styled(Row)`
   margin: 10px 0;
   width: 90%;
+  margin-right: 0.6em;
 
   @media (min-width: ${BREAKPOINTS.sm}) {
-    width: 30em;
+    width: 24em;
+    margin-left: 6em;
   }
 
   @media (min-width: 1920px) {
-    width: 40em;
+    width: 30em;
+    margin-left: 8em;
   }
 `
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0);
-  background: ${({ theme }) => theme.colors.gray6};
-  padding: 2.4rem 1.6rem;
+  background: ${({ theme }) => theme.colors.gray8};
+  border: 1px solid ${({ theme }) => theme.colors.gray7};
+  padding: 1.5em 1em;
   z-index: 10;
 
   @media (min-width: 1920px) {
@@ -218,5 +251,11 @@ export const SetAmountButton = styled(Button)`
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     padding: ${PADDINGS.sm};
+  }
+`
+
+export const SwapTooltip = styled(DarkTooltip)`
+  && .tooltip {
+    color: auto;
   }
 `

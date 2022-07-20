@@ -7,6 +7,8 @@ import DiscordSvg from '@icons/smallDiscord.svg'
 import TechSvg from '@icons/tech.svg'
 import TelegramSvg from '@icons/telegram.svg'
 
+import { socialLinks } from '../Homepage/SocialsLinksComponents'
+
 const ButtonLink = styled.a`
   display: flex;
   align-items: center;
@@ -83,7 +85,7 @@ const TechIssues = () => {
         <ButtonLink
           target="_blank"
           rel="noopener noreferrer"
-          href="https://t.me/Aldrin_Exchange"
+          href={socialLinks.telegram}
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon
@@ -102,7 +104,7 @@ const TechIssues = () => {
           target="_blank"
           rel="noopener noreferrer"
           background="#886AED"
-          href="https://discord.gg/4VZyNxT2WU"
+          href={socialLinks.discord}
           style={{ marginRight: '1.5rem' }}
         >
           <SvgIcon

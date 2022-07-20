@@ -270,7 +270,7 @@ const PairSelector = ({
             background: '#3A475C',
             // borderRadius: '0.3rem',
             color: theme.colors.disabled,
-            borderBottom: `.1rem solid ${theme.colors.grey6}`,
+            borderBottom: `.1rem solid ${theme.colors.gray6}`,
             paddingLeft: '1rem',
           }}
           value={searchValue}

@@ -1,9 +1,6 @@
-import { useMemo } from 'react'
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import * as BufferLayout from '@solana/buffer-layout'
 import { Connection, PublicKey } from '@solana/web3.js'
-import { TOKEN_MINTS } from '@project-serum/serum'
-import { useAllMarkets, useCustomMarkets } from '@sb/dexUtils/markets'
-import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),
@@ -108,34 +105,4 @@ export async function getTokenAccountInfo(connection, ownerAddress) {
     account,
     effectiveMint: WRAPPED_SOL_MINT,
   })
-}
-
-export function useMintToTickers(): { [mint: string]: string } {
-  const { customMarkets } = useCustomMarkets()
-  const [markets] = useAllMarkets()
-  return useMemo(() => {
-    const mintsToTickers = Object.fromEntries(
-      TOKEN_MINTS.map((mint) => [mint.address.toBase58(), mint.name])
-    )
-    for (const market of markets || []) {
-      const customMarketInfo = customMarkets.find(
-        (customMarket) =>
-          customMarket.address === market.market.address.toBase58()
-      )
-      if (!(market.market.baseMintAddress.toBase58() in mintsToTickers)) {
-        if (customMarketInfo) {
-          mintsToTickers[market.market.baseMintAddress.toBase58()] =
-            customMarketInfo.baseLabel || `${customMarketInfo.name}_BASE`
-        }
-      }
-      if (!(market.market.quoteMintAddress.toBase58() in mintsToTickers)) {
-        if (customMarketInfo) {
-          mintsToTickers[market.market.quoteMintAddress.toBase58()] =
-            customMarketInfo.quoteLabel || `${customMarketInfo.name}_QUOTE`
-        }
-      }
-    }
-    return mintsToTickers
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [markets?.length, customMarkets.length])
 }

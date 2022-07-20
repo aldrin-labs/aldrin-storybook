@@ -9,7 +9,8 @@ export const sendSignedSignleTransaction = async (
   const { successMessage = 'Transaction confirmed' } = params
 
   const messages = {
-    sent: 'Transaction sent',
+    initializingTx: ['Doin tx', 'Initializing a transaction...'],
+    confirming: 'Confirming transaction...',
     confirmed: successMessage,
     failed: 'Operation failed',
   }
