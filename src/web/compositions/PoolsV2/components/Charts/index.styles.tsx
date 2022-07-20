@@ -34,7 +34,7 @@ export const TooltipContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: 0 1.3em;
+  padding: 0 1.2em;
 `
 export const ValueTitle = styled(InlineText)`
   white-space: nowrap;
@@ -54,5 +54,5 @@ export const Canvas = styled.canvas<CanvasProps>`
   margin: auto;
   margin-bottom: ${(props) => props.bottom || '-7px'};
   margin-left: ${(props) => props.left || '0px'};
-  border-left: 2px solid ${(props) => props.theme.colors.gray8};
+  border-left: 1px solid ${(props) => props.theme.colors.gray8};
 `

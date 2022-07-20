@@ -65,11 +65,17 @@ export const Modal: React.FC<ModalProps> = (props) => {
   }, [])
 
   return (
-    <ModalContainer backdrop={backdrop} onClick={() => onClose()}>
-      <ModalBody onClick={(e) => e.stopPropagation()}>
-        <ModalContent>
-          {title && <ModalTitleBlock title={title} onClose={onClose} />}
-          {children}
+    <ModalContainer
+      className="modal-container"
+      backdrop={backdrop}
+      onClick={() => onClose()}
+    >
+      <ModalBody className="modal-body" onClick={(e) => e.stopPropagation()}>
+        <ModalContent className="modal-content">
+          <>
+            {title && <ModalTitleBlock title={title} onClose={onClose} />}
+            {children}
+          </>
         </ModalContent>
       </ModalBody>
     </ModalContainer>

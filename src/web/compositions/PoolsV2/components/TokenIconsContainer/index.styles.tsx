@@ -6,6 +6,7 @@ export const IconsContainer = styled.div`
 
   div {
     margin-left: -10px;
+
     &:first-child {
       margin-left: 0px;
     }
@@ -21,4 +22,5 @@ export const WaveElement = styled.div`
 export const Container = styled.div`
   position: relative;
   max-width: 10%;
+  margin-right: 0.7em;
 `

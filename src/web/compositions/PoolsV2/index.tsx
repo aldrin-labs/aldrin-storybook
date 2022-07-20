@@ -3,10 +3,10 @@ import { useTheme } from 'styled-components'
 
 import { Page } from '@sb/components/Layout'
 
-import { TVLChart } from './components/Charts/TVLChart/TotalValueLockedChart'
-import { VolumeChart } from './components/Charts/VolumeChart/TradingVolumeChart'
-import { ExtendedFiltersSection } from './components/FiltersSection/index'
+import { TVLChart, VolumeChart } from './components/Charts'
+import { ExtendedFiltersSection } from './components/FiltersSection'
 import { FilterIcon, PlusIcon } from './components/Icons'
+import { PoolsDetails } from './components/Popups/PoolsDetails'
 import { SearchInput } from './components/SearchInput'
 import { TableRow } from './components/TableRow'
 import { TablesSwitcher } from './components/TablesSwitcher'
@@ -22,6 +22,7 @@ import {
 export const PoolsComponent: React.FC = () => {
   const [tableView, setTableView] = useState('classicLiquidity')
   const [isFiltersShown, setIsFiltersShown] = useState(false)
+  const [isPoolsDetailsPopupOpen, setIsPoolsDetailsPopupOpen] = useState(false)
   const theme = useTheme()
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
@@ -77,9 +78,18 @@ export const PoolsComponent: React.FC = () => {
           </FilterButton>
         </FilterRow>
         {isFiltersShown && <ExtendedFiltersSection />}
-        <TableRow isFiltersShown={isFiltersShown} />
+        <TableRow
+          setIsPoolsDetailsPopupOpen={setIsPoolsDetailsPopupOpen}
+          isFiltersShown={isFiltersShown}
+        />
         {/* <EmptyRow /> */}
       </StyledWideContent>
+      <PoolsDetails
+        open={isPoolsDetailsPopupOpen}
+        onClose={() => {
+          setIsPoolsDetailsPopupOpen(false)
+        }}
+      />
     </Page>
   )
 }

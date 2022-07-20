@@ -12,6 +12,7 @@ import { RootRow, RootColumn, SpacedColumn } from '../../index.styles'
 import { BalanceLine } from '../BalanceLine'
 import { LabelComponent } from '../FiltersSection/Labels'
 import { TooltipIcon, PlusIcon } from '../Icons'
+import { LinkToTwitter, LinkToDiscord, LinkToCoinMarketcap } from '../Socials'
 import { TokenIconsContainer } from '../TokenIconsContainer'
 import {
   DepositRow,
@@ -20,10 +21,15 @@ import {
   Container,
   StretchedRow,
 } from './index.styles'
-import { LinkToTwitter, LinkToDiscord, LinkToCoinMarketcap } from './Socials'
 import { LabelsTooltips } from './Tooltips'
 
-export const TableRow = ({ isFiltersShown }: { isFiltersShown: boolean }) => {
+export const TableRow = ({
+  isFiltersShown,
+  setIsPoolsDetailsPopupOpen,
+}: {
+  isFiltersShown: boolean
+  setIsPoolsDetailsPopupOpen: (a: boolean) => void
+}) => {
   const theme = useTheme()
 
   return (
@@ -127,13 +133,16 @@ export const TableRow = ({ isFiltersShown }: { isFiltersShown: boolean }) => {
               <LinkToCoinMarketcap />
             </Row>
             <Button
+              onClick={() => {
+                setIsPoolsDetailsPopupOpen(true)
+              }}
               $width="xl"
               $borderRadius="md"
               $padding="xl"
               $variant="green"
               $fontSize="sm"
             >
-              <PlusIcon color={theme.colors.green1} /> Deposit
+              <PlusIcon color="green1" /> Deposit
             </Button>
           </DepositRow>
         </StretchedRow>

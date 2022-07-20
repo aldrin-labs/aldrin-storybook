@@ -31,6 +31,7 @@ export const RootRow = styled.div<RootRowType>`
 
 export const RootColumn = styled.div<RootRowType>`
   height: ${(props) => props.height || 'auto'};
+  width: ${(props) => props.width || 'auto'};
   display: flex;
   justify-content: space-between;
   flex-direction: column;

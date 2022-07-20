@@ -61,7 +61,7 @@ export const Container = styled.div<ContainerProps>`
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: ${(props) => props.width || '58%'};
-    height: 8.5em;
+    height: 6em;
     justify-content: space-between;
   }
 `

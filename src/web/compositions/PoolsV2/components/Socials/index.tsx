@@ -2,9 +2,17 @@ import React from 'react'
 
 import { StyledLink } from './index.styles'
 
-export const LinkToCoinGecko = () => {
+export const LinkToCoinGecko = ({
+  margin,
+  height,
+}: {
+  margin?: string
+  height?: string
+}) => {
   return (
     <StyledLink
+      height={height}
+      margin={margin}
       target="_blank"
       rel="noopener noreferrer"
       href="https://www.coingecko.com/en/coins/aldrin"
@@ -67,9 +75,16 @@ export const LinkToCoinGecko = () => {
   )
 }
 
-export const LinkToCoinMarketcap = ({ margin }: { margin?: string }) => {
+export const LinkToCoinMarketcap = ({
+  margin,
+  height,
+}: {
+  margin?: string
+  height?: string
+}) => {
   return (
     <StyledLink
+      height={height}
       margin={margin}
       target="_blank"
       rel="noopener noreferrer"
@@ -103,9 +118,17 @@ export const LinkToCoinMarketcap = ({ margin }: { margin?: string }) => {
   )
 }
 
-export const LinkToTelegram = () => {
+export const LinkToTelegram = ({
+  margin,
+  height,
+}: {
+  margin?: string
+  height?: string
+}) => {
   return (
     <StyledLink
+      height={height}
+      margin={margin}
       target="_blank"
       rel="noopener noreferrer"
       href="https://t.me/Aldrin_Exchange"
@@ -126,9 +149,16 @@ export const LinkToTelegram = () => {
   )
 }
 
-export const LinkToTwitter = ({ margin }: { margin?: string }) => {
+export const LinkToTwitter = ({
+  margin,
+  height,
+}: {
+  margin?: string
+  height?: string
+}) => {
   return (
     <StyledLink
+      height={height}
       margin={margin}
       target="_blank"
       rel="noopener noreferrer"
@@ -150,9 +180,16 @@ export const LinkToTwitter = ({ margin }: { margin?: string }) => {
   )
 }
 
-export const LinkToDiscord = ({ margin }: { margin?: string }) => {
+export const LinkToDiscord = ({
+  margin,
+  height,
+}: {
+  margin?: string
+  height?: string
+}) => {
   return (
     <StyledLink
+      height={height}
       margin={margin}
       target="_blank"
       rel="noopener noreferrer"
