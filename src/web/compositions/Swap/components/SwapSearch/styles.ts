@@ -25,8 +25,8 @@ export const SearchInput = styled(Input)`
   background: none;
   margin: 0;
   height: 100%;
-  border: 0.1rem solid ${(props) => props.theme.colors.white4};
-  background: ${(props) => props.theme.colors.white4};
+  border: 0.1rem solid ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.white6};
 
   div {
     width: 100%;
@@ -39,7 +39,7 @@ export const SearchInput = styled(Input)`
     height: 100%;
 
     &::placeholder {
-      color: ${(props) => props.theme.colors.gray2};
+      color: ${(props) => props.theme.colors.white3};
     }
   }
 `
@@ -47,9 +47,9 @@ export const SearchInput = styled(Input)`
 export const SwapsList = styled.div`
   position: absolute;
   width: 100%;
-  border-bottom-left-radius: ${BORDER_RADIUS.md};
-  border-bottom-right-radius: ${BORDER_RADIUS.md};
-  background: ${(props) => props.theme.colors.white4};
+  border-bottom-left-radius: ${BORDER_RADIUS.lg};
+  border-bottom-right-radius: ${BORDER_RADIUS.lg};
+  background: ${(props) => props.theme.colors.white6};
   z-index: 20;
   padding: 10px 0;
   box-shadow: 0px 8px 8px -2px ${(props) => props.theme.colors.shadowColor};
@@ -62,12 +62,12 @@ export const SwapItem = styled.div`
   align-items: center;
   padding: 15px 24px;
   cursor: pointer;
-  color: ${(props) => props.theme.colors.gray0};
-  background: ${(props) => props.theme.colors.gray8};
+  color: ${(props) => props.theme.colors.white1};
+  background: ${(props) => props.theme.colors.white6};
 
   &:hover,
   &.focused {
-    background: ${(props) => props.theme.colors.gray6};
+    background: ${(props) => props.theme.colors.white5};
     transition: all 0.4s ease-out;
   }
 `

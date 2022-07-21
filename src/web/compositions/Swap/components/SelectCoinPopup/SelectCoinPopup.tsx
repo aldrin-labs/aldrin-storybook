@@ -139,27 +139,37 @@ export const SelectCoinPopup = ({
       aria-labelledby="responsive-dialog-title"
     >
       <RowContainer>
-        <RowContainer padding="1.5em 0 0 0">
-          <SearchInputWithLoop
-            searchValue={searchValue}
-            onChangeSearch={onChangeSearch}
-            placeholder="Search token or paste address"
-            width="calc(100% - 4em)"
-          />
-          <Row margin="0 0 0 1em">
-            <EscapeButton close={close} />
-          </Row>
+        <RowContainer direction="column">
+          <RowContainer padding="1.5em 0 0 0">
+            <SearchInputWithLoop
+              searchValue={searchValue}
+              onChangeSearch={onChangeSearch}
+              placeholder="Search token or paste address"
+              width="calc(100% - 4em)"
+            />
+            <Row margin="0 0 0 1em">
+              <EscapeButton close={close} />
+            </Row>
+          </RowContainer>
+          <RowContainer justify="flex-start" padding="0.8em 0">
+            {/* top-8 tokens */}
+            {topTradingMints.slice(0, 8).map((mint) => (
+              <TokenButton onClick={() => selectMint(mint)}>
+                <TokenIcon mint={mint} size={16} margin="0 0.5em 0 0" />
+                <TokenButtonText>
+                  {tokenInfos.get(mint)?.symbol}
+                </TokenButtonText>
+              </TokenButton>
+            ))}
+          </RowContainer>
         </RowContainer>
-        <RowContainer justify="flex-start" padding="0.8em 0">
-          {/* top-8 tokens */}
-          {topTradingMints.slice(0, 8).map((mint) => (
-            <TokenButton onClick={() => selectMint(mint)}>
-              <TokenIcon mint={mint} size={16} margin="0 0.5em 0 0" />
-              <TokenButtonText>{tokenInfos.get(mint)?.symbol}</TokenButtonText>
-            </TokenButton>
-          ))}
-        </RowContainer>
-        <RowContainer>
+        <RowContainer
+          justify="flex-start"
+          height="55vh"
+          direction="column"
+          wrap="nowrap"
+          style={{ overflow: 'auto' }}
+        >
           {sortedMints.map(({ mint, amount, name, symbol, total }) => {
             return (
               <SelectorRow
@@ -189,7 +199,7 @@ export const SelectCoinPopup = ({
                       ${formatNumberToUSFormat(stripDigitPlaces(total, 2))}
                     </InlineText>
                     <Row padding="0.5em 0 0 0">
-                      <InlineText size="esm" color="gray1">
+                      <InlineText size="esm" color="white1">
                         {formatNumberToUSFormat(stripByAmount(amount))} {symbol}
                       </InlineText>
                     </Row>

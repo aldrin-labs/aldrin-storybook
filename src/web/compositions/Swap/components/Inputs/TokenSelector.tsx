@@ -11,10 +11,16 @@ import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { DropdownIconContainer } from './styles'
 
 export const TokenSelectorContainer = styled(Row)`
-  background: ${({ theme }) => theme.colors.gray7};
+  background: ${({ theme }) => theme.colors.white5};
   cursor: pointer;
   padding: 0.4em;
   border-radius: 0.4em;
+  transition: all 0.3s ease-out;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.white4};
+    transition: all 0.3s ease-out;
+  }
 `
 
 export const TokenSelector = ({

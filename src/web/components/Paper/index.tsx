@@ -9,8 +9,7 @@ const CommonPaper = styled(Paper)`
   width: auto;
   min-width: 24em;
   box-shadow: 0px 0px 0.4em 0px rgba(0, 0, 0, 0.45);
-  background: ${(props) => props.theme.colors.gray8};
-  border: 1px solid ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.md};
   overflow: hidden;
   overflow: visible;

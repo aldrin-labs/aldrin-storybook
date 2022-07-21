@@ -11,7 +11,7 @@ export const AppGridLayout = styled.div`
   flex-direction: column;
   position: relative;
   overflow-x: hidden !important;
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.background1};
   height: ${(props) =>
     props.isRewards
       ? 'auto'

@@ -6,6 +6,7 @@ import {
   MAIN_FONT,
   TRANSITION,
 } from '@variables/variables'
+import { rgba } from 'polished'
 import React from 'react'
 import styled, { DefaultTheme } from 'styled-components'
 
@@ -17,7 +18,7 @@ import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 
 export const SwapPageContainer = styled(RowContainer)`
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.background1};
   overflow-y: auto;
 `
 
@@ -69,16 +70,22 @@ export const SlippageButton = styled.button`
   font-size: 1em;
   font-weight: 600;
 
-  color: ${(props) => props.theme.colors.white1};
-  background-color: ${(props) => props.theme.colors.white7};
+  color: ${(props) => props.theme.colors.white2};
+  background-color: ${(props) => props.theme.colors.white5};
 
   border: none;
   border-radius: 2em;
+  transition: all 0.3s ease-out;
+
+  &:hover {
+    background: ${(props) => props.theme.colors.white4};
+    transition: all 0.3s ease-out;
+  }
 `
 
 export const InfoIconContainer = styled.span`
   color: ${({ isHighPriceDiff, theme }) =>
-    isHighPriceDiff ? theme.colors.red5 : theme.colors.green5};
+    isHighPriceDiff ? theme.colors.red1 : theme.colors.green3};
 
   svg {
     width: 100%;
@@ -102,7 +109,7 @@ export const ValueInput = styled.input`
 export const BlackRow = styled((props) => (
   <Row justify="space-between" {...props} />
 ))`
-  background: ${(props) => props.theme.colors.white4};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 1.2rem;
   height: 2em;
   padding: 0 0.6em;
@@ -113,7 +120,7 @@ export const RowTitle = styled.span`
   font-family: ${MAIN_FONT};
   font-size: ${FONT_SIZES.esm};
   line-height: ${FONT_SIZES.md};
-  color: ${(props) => props.$color || props.theme.colors.white1};
+  color: ${(props) => props.$color || props.theme.colors.white2};
 `
 
 export const RowValue = styled(RowTitle)`
@@ -129,7 +136,7 @@ export const RowImpactTitle = styled(RowTitle)`
   }: {
     isHighPriceDiff: boolean
     theme: DefaultTheme
-  }) => (isHighPriceDiff ? theme.colors.red5 : theme.colors.green5)};
+  }) => (isHighPriceDiff ? theme.colors.red1 : theme.colors.green3)};
 `
 
 export const RowAmountValue = styled(RowValue)`
@@ -146,9 +153,13 @@ export const SwapButton = styled(Button)`
   }: {
     isHighPriceDiff: boolean
     theme: DefaultTheme
-  }) => (isHighPriceDiff ? theme.colors.red5 : theme.colors.green5)};
-  background: ${({ isHighPriceDiff }: { isHighPriceDiff: boolean }) =>
-    isHighPriceDiff ? 'rgba(255, 103, 74, 0.15)' : 'rgba(0, 181, 94, 0.15)'};
+  }) => (isHighPriceDiff ? theme.colors.red1 : theme.colors.green2)};
+
+  background: ${({ isHighPriceDiff, theme }: { isHighPriceDiff: boolean }) =>
+    isHighPriceDiff
+      ? rgba(theme.colors.red0, 0.15)
+      : rgba(theme.colors.green0, 0.15)};
+
   border: none;
 
   transition: all 0.4s ease-out;
@@ -159,8 +170,8 @@ export const SwapButton = styled(Button)`
   }
 
   &:disabled {
-    color: ${(props) => props.theme.colors.gray2};
-    background: rgba(91, 90, 114, 0.15); // too rare to add to theme
+    color: ${(props) => props.theme.colors.white3};
+    background: ${rgba('#5B5A72', 0.15)}; // too rare to add to theme
   }
 `
 
@@ -178,7 +189,7 @@ export const ReverseTokensContainer = styled(CircleIconContainer)`
   position: absolute;
   left: 50%;
   top: 50%;
-  border: 1px solid ${(props) => props.theme.colors.gray6};
+  border: 1px solid ${(props) => props.theme.colors.white4};
   transform: translate(-50%, -50%);
   cursor: pointer;
   z-index: 2;
@@ -228,8 +239,7 @@ export const SwapContentContainer = styled(Row)`
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0);
-  background: ${({ theme }) => theme.colors.white5};
-  border: 1px solid ${({ theme }) => theme.colors.white7};
+  background: ${({ theme }) => theme.colors.white6};
   padding: 1.5em 1em;
   z-index: 10;
 

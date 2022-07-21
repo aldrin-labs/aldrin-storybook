@@ -247,7 +247,7 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
           setListOpened(true)
         }}
         append={<SvgIcon src={Loop} height="1.6rem" width="1.6rem" />}
-        borderRadius="md"
+        borderRadius="lg"
         className="inputWrapper"
       />
 

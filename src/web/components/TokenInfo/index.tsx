@@ -12,7 +12,7 @@ import {
 import { tokensMap } from '@sb/dexUtils/markets'
 
 const TokenInfoContainer = styled(RowContainer)`
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 0.5em;
   padding: 0.75em;
 `
@@ -72,7 +72,7 @@ const TokenInfo = (params: TokenInfoParams) => {
             {mint}
           </MintAddressText>
         </Row>
-        <Row>
+        <Row width="2em" height="2em">
           <SolExplorerLink mint={mint} />
         </Row>
       </RowContainer>

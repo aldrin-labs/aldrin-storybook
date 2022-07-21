@@ -7,10 +7,16 @@ import { InlineText } from '../Typography'
 const EscapeButtonSC = styled((props) => (
   <Button $variant="none" minWidth="0" {...props} />
 ))`
-  background: ${(props) => props.theme.colors.gray6};
-  color: ${(props) => props.theme.colors.gray0};
+  background: ${(props) => props.theme.colors.white5};
+  color: ${(props) => props.theme.colors.white1};
   height: 3em;
   width: 3em;
+  transition: all 0.3s ease-out;
+
+  &:hover {
+    background: ${(props) => props.theme.colors.white4};
+    transition: all 0.3s ease-out;
+  }
 `
 
 interface EscapeButtonParams {

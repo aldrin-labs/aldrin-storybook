@@ -1,4 +1,11 @@
 import { AmmLabel, SwapRoute, SwapStep } from '@likbes_/swap-hook'
+import React from 'react'
+
+import { SvgIcon } from '@sb/components'
+import { Text } from '@sb/components/Typography'
+import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
+
+import SwapArrowsIcon from '@icons/swap-arrows.svg'
 
 export const getSwapButtonText = ({
   isTokenABalanceInsufficient,
@@ -9,6 +16,7 @@ export const getSwapButtonText = ({
   isSwapRouteExists,
   isEmptyInputAmount,
   isSwapInProgress,
+  pricesDiffPct,
 }: {
   isTokenABalanceInsufficient: boolean
   isLoadingSwapRoute: boolean
@@ -18,6 +26,7 @@ export const getSwapButtonText = ({
   isSwapRouteExists: boolean
   isEmptyInputAmount: boolean
   isSwapInProgress: boolean
+  pricesDiffPct: number
 }) => {
   switch (true) {
     case isSwapInProgress:
@@ -33,7 +42,21 @@ export const getSwapButtonText = ({
     case !isSwapRouteExists:
       return 'No route for swap'
     default:
-      return 'Swap'
+      return pricesDiffPct < -1 ? (
+        <Row direction="column">
+          <Text margin="0" weight={600} size="es" color="red1">
+            {Math.abs(pricesDiffPct)}% more expensive than CoinGecko price
+          </Text>
+          <Text margin="0" weight={600} size="md" color="red1">
+            Swap Anyway
+          </Text>
+        </Row>
+      ) : (
+        <Row align="center">
+          <SvgIcon src={SwapArrowsIcon} width="1em" height="1em" />
+          <Row margin="0 0 0 0.3em">Swap</Row>
+        </Row>
+      )
   }
 }
 

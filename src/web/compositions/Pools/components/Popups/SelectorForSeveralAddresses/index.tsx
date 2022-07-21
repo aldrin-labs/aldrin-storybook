@@ -79,7 +79,7 @@ export const SelectSeveralAddressesPopup = ({
               }}
             >
               <Row wrap="nowrap">
-                <TokenIcon mint={token.mint} size={32} />
+                <TokenIcon mint={token.mint} size={24} />
                 <StyledText>{tokenName}</StyledText>
               </Row>
               <Row wrap="nowrap">

@@ -1,14 +1,14 @@
 import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
 
+import { Text } from '@sb/compositions/Addressbook'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 export const InputContainer = styled(RowContainer)`
   position: relative;
   justify-content: space-between;
   height: 4em;
-  background: ${(props) =>
-    props.disabled ? props.theme.colors.white4 : props.theme.colors.white4};
+  background: ${(props) => props.theme.colors.white6};
   border: none;
   border-radius: 0;
 `
@@ -40,4 +40,8 @@ export const MaxAmountRow = styled(Row)`
   &:hover {
     cursor: pointer;
   }
+`
+
+export const MaxAmountText = styled(Text)`
+  letter-spacing: -0.005em;
 `

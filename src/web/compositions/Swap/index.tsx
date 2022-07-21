@@ -2,22 +2,16 @@ import { useSwapRoute } from '@likbes_/swap-hook'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES } from '@variables/variables'
+import { rgba } from 'polished'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
-<<<<<<< HEAD
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PieTimer } from '@sb/components/PieTimer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText, Text } from '@sb/components/Typography'
-=======
-import { Button } from '@sb/components/Button'
-import SvgIcon from '@sb/components/SvgIcon'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Text } from '@sb/compositions/Addressbook'
->>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
@@ -171,48 +165,9 @@ const SwapPage = ({
     )
   }, [])
 
-<<<<<<< HEAD
   const [slippage, setSlippage] = useState<number>(0.5)
   const [isTokensAddressesPopupOpen, setIsTokensAddressesPopupOpen] =
     useState(false)
-=======
-  useEffect(() => {
-    const updatedPoolsList = getPoolsForSwapActiveTab({
-      pools: allPools,
-      isStableSwapTabActive,
-    })
-
-    const isPoolExistInNewTab = getSelectedPoolForSwap({
-      pools: updatedPoolsList,
-      baseTokenMintAddress,
-      quoteTokenMintAddress,
-    })
-
-    // set tokens to default one if pool with selected tokens
-    // does not exist in new tab
-    if (!isPoolExistInNewTab) {
-      const defaultBaseTokenMint =
-        getTokenMintAddressByName(getDefaultBaseToken(isStableSwapTabActive)) ||
-        ''
-
-      const defaultQuoteTokenMint =
-        getTokenMintAddressByName(
-          getDefaultQuoteToken(isStableSwapTabActive)
-        ) || ''
-
-      setBaseTokenMintAddress(defaultBaseTokenMint)
-      setQuoteTokenMintAddress(defaultQuoteTokenMint)
-    }
-  }, [isStableSwapTabActive])
-
-  const pools = getPoolsForSwapActiveTab({
-    pools: allPools,
-    isStableSwapTabActive,
-  })
-
-  const [slippage, setSlippage] = useState<number>(0.3)
-  const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
->>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
@@ -264,11 +219,12 @@ const SwapPage = ({
   })
 
   console.log('swapRoute', { swapRoute, depositAndFee })
+  const outputDexTokenPrice = dexTokensPricesMap.get(outputSymbol) || 0
 
-  const inputDexTokenPrice = coingeckoPricesMap.get(inputSymbol) || 0
-  const outputDexTokenPrice = coingeckoPricesMap.get(outputSymbol) || 0
+  const inputCgcTokenPrice = coingeckoPricesMap.get(inputSymbol) || 0
+  const outputCgcTokenPrice = coingeckoPricesMap.get(outputSymbol) || 0
 
-  const estimatedPrice = inputDexTokenPrice / outputDexTokenPrice
+  const estimatedPrice = inputCgcTokenPrice / outputCgcTokenPrice
   const estimatedPriceFromRoute = +outputAmount / +inputAmount
 
   const pricesDiffPct = stripDigitPlaces(
@@ -355,6 +311,7 @@ const SwapPage = ({
     isLoadingSwapRoute,
     isTooSmallInputAmount: false,
     isSwapInProgress,
+    pricesDiffPct,
   })
 
   const isButtonDisabled =
@@ -371,303 +328,306 @@ const SwapPage = ({
         height="100%"
         wrap="nowrap"
       >
-        <Row style={{ height: '17.5em', width: '30em', marginRight: '0.6em' }}>
-          <SwapChartWithPrice
-            isCrossOHLCV={swapRoute.steps.length > 1}
-            marketType={getOHLCVMarketTypeFromSwapRoute(swapRoute)}
-            inputTokenMintAddress={getOHLCVSymbols(swapRoute.steps)[0]}
-            outputTokenMintAddress={getOHLCVSymbols(swapRoute.steps)[1]}
-            pricesMap={dexTokensPricesMap}
-          />
-        </Row>
-        <SwapContentContainer direction="column">
-          <RowContainer justify="flex-start" margin="0 0 1em 0">
-            <SwapSearch
-              topTradingMints={topTradingMints}
-              topTradingPairs={topTradingPairs}
-              data-testid="swap-search-field"
-              tokens={tokenSelectorMints.map((mint) => ({ mint }))}
-              setInputTokenAddressFromSeveral={setInputTokenAddressFromSeveral}
-              setOutputTokenAddressFromSeveral={
-                setOutputTokenAddressFromSeveral
-              }
-              onSelect={(args) => {
-                const { amountFrom, tokenFrom, tokenTo } = args
-                setInputTokenMintAddress(tokenFrom.mint)
-                setOutputTokenMintAddress(tokenTo.mint)
-                if (amountFrom) {
-                  setFieldAmount(
-                    +amountFrom,
-                    'input',
-                    tokenFrom.mint,
-                    tokenTo.mint
-                  )
-                }
-              }}
+        <Row width="50%" justify="flex-end">
+          <Row
+            style={{ height: '17.5em', width: '30em', marginRight: '0.6em' }}
+          >
+            <SwapChartWithPrice
+              isCrossOHLCV={swapRoute.steps.length > 1}
+              marketType={getOHLCVMarketTypeFromSwapRoute(swapRoute)}
+              inputTokenMintAddress={getOHLCVSymbols(swapRoute.steps)[0]}
+              outputTokenMintAddress={getOHLCVSymbols(swapRoute.steps)[1]}
+              pricesMap={dexTokensPricesMap}
             />
-          </RowContainer>
-          <SwapBlockTemplate width="100%">
-            <RowContainer margin="0 0 3em 0" justify="space-between">
-              <PieTimer duration={15} callback={refreshAll} />
-              <Row>
-<<<<<<< HEAD
-                <Row style={{ position: 'relative' }}>
-                  <SlippageButton
-                    data-testid="increace-slippage-tolerance"
-                    onClick={() => {
-                      setIsTokensAddressesPopupOpen(true)
-=======
-                <ValueButton className="timer">
-                  <ReloadTimer
-                    data-testid="swap-reload-data-timer"
-                    duration={15}
-                    initialRemainingTime={15}
-                    callback={refreshAll}
-                    showTime
-                    margin="0"
-                    timerStyles={{ background: 'transparent' }}
-                  />
-                </ValueButton>
-                {baseTokenMintAddress && quoteTokenMintAddress && (
-                  <ValueButton
-                    data-testid="swap-open-tokens-info-tooltip"
-                    onClick={() => openTokensAddressesPopup(true)}
-                  >
-                    i
-                  </ValueButton>
-                )}
-              </Row>
-              <Row>
-                <Text padding="0 0.8rem 0 0">Slippage Tolerance:</Text>
-                <Row style={{ position: 'relative' }}>
-                  <ValueInput
-                    data-testid="slippage-tolerance-field"
-                    onChange={(e) => {
-                      if (
-                        numberWithOneDotRegexp.test(e.target.value) &&
-                        getNumberOfIntegersFromNumber(e.target.value) <= 2 &&
-                        getNumberOfDecimalsFromNumber(e.target.value) <= 2
-                      ) {
-                        setSlippage(e.target.value)
-                      }
-                    }}
-                    onBlur={() => {
-                      if (+slippage <= 0) {
-                        setSlippage(0.3)
-                      }
-                    }}
-                    value={slippage}
-                    placeholder="1.00"
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      fontFamily: 'Avenir Next Medium',
-                      color: theme.colors.white1,
-                      fontSize: FONT_SIZES.sm,
-                      right: '1.5rem',
->>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
-                    }}
-                  >
-                    <SvgIcon
-                      src={SettingIcon}
-                      height="0.75em"
-                      width="0.75em"
-                      style={{ marginRight: '0.4em' }}
-                    />{' '}
-                    <span style={{ fontSize: FONT_SIZES.esm }}>
-                      {slippage}%
-                    </span>
-                  </SlippageButton>
-                </Row>
-              </Row>
+          </Row>
+        </Row>
+        <Row width="50%" justify="flex-start">
+          <SwapContentContainer direction="column">
+            <RowContainer justify="flex-start" margin="0 0 1em 0">
+              <SwapSearch
+                topTradingMints={topTradingMints}
+                topTradingPairs={topTradingPairs}
+                data-testid="swap-search-field"
+                tokens={tokenSelectorMints.map((mint) => ({ mint }))}
+                setInputTokenAddressFromSeveral={
+                  setInputTokenAddressFromSeveral
+                }
+                setOutputTokenAddressFromSeveral={
+                  setOutputTokenAddressFromSeveral
+                }
+                onSelect={(args) => {
+                  const { amountFrom, tokenFrom, tokenTo } = args
+                  setInputTokenMintAddress(tokenFrom.mint)
+                  setOutputTokenMintAddress(tokenTo.mint)
+                  if (amountFrom) {
+                    setFieldAmount(
+                      +amountFrom,
+                      'input',
+                      tokenFrom.mint,
+                      tokenTo.mint
+                    )
+                  }
+                }}
+              />
             </RowContainer>
-            <RowContainer
-              style={{
-                position: 'relative',
-                border: `1px solid ${theme.colors.gray6}`,
-                borderRadius: '0.8em',
-                padding: '0.8em 0',
-              }}
-              margin=".5em 0 0 0"
-              direction="column"
-            >
-              <RowContainer
-                wrap="nowrap"
-                justify="space-between"
-                padding="0 0 0.8em 0"
-                style={{ borderBottom: `1px solid ${theme.colors.gray6}` }}
-              >
-                <SwapAmountInput
-                  title="From"
-                  maxAmount={maxInputAmount}
-                  amount={formatNumberWithSpaces(inputAmount)}
-                  onMaxAmountClick={() =>
-                    setFieldAmount(maxInputAmount, 'input')
-                  }
-                  disabled={false}
-                  onChange={(v) => {
-                    if (v === '') {
-                      setFieldAmount(v, 'input')
-                      return
-                    }
-                    const parsedValue = INPUT_FORMATTERS.DECIMAL(v, inputAmount)
-
-                    if (
-                      numberWithOneDotRegexp.test(parsedValue) &&
-                      getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
-                      getNumberOfDecimalsFromNumber(parsedValue) <= 8
-                    ) {
-                      setFieldAmount(parsedValue, 'input')
-                    }
-                  }}
-                  appendComponent={
-                    <TokenSelector
-                      mint={inputTokenMintAddress}
-                      data-testid="swap-input-token-selector"
+            <SwapBlockTemplate width="100%">
+              <RowContainer margin="0 0 3em 0" justify="space-between">
+                <PieTimer duration={15} callback={refreshAll} />
+                <Row>
+                  <Row style={{ position: 'relative' }}>
+                    <SlippageButton
+                      data-testid="increace-slippage-tolerance"
                       onClick={() => {
-                        setIsInputTokenSelecting(true)
-                        setIsSelectCoinPopupOpen(true)
+                        setIsTokensAddressesPopupOpen(true)
                       }}
-                    />
-                  }
-                />
-              </RowContainer>
-              <ReverseTokensContainer onClick={reverseTokens}>
-                <SvgIcon src={ArrowsExchangeIcon} />
-              </ReverseTokensContainer>
-              <RowContainer
-                wrap="nowrap"
-                justify="space-between"
-                padding="0.8em 0 0 0"
-              >
-                <SwapAmountInput
-                  title="To (Estimated)"
-                  maxAmount={maxOutputAmount}
-                  amount={outputAmount}
-                  onMaxAmountClick={() =>
-                    setFieldAmount(maxOutputAmount, 'output')
-                  }
-                  onChange={(v) => {
-                    if (v === '') {
-                      setFieldAmount(v, 'output')
-                      return
-                    }
-<<<<<<< HEAD
-
-                    if (
-                      numberWithOneDotRegexp.test(v) &&
-                      getNumberOfIntegersFromNumber(v) <= 8 &&
-                      getNumberOfDecimalsFromNumber(v) <= 8
-                    ) {
-                      setFieldAmount(v, 'output')
-=======
-                    disabled
-                    roundSides={['bottom-left']}
-                    appendComponent={
-                      <Text
-                        fontFamily="Avenir Next"
-                        fontSize={FONT_SIZES.sm}
-                        color="white1"
-                      >
-                        ≈$
-                        {outputUSD
-                          ? formatNumberToUSFormat(
-                              stripDigitPlaces(outputUSD, 2)
-                            )
-                          : '0.00'}
-                      </Text>
->>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
-                    }
-                  }}
-                  appendComponent={
-                    <TokenSelector
-                      mint={outputTokenMintAddress}
-                      data-testid="swap-output-token-selector"
-                      onClick={() => {
-                        setIsInputTokenSelecting(false)
-                        setIsSelectCoinPopupOpen(true)
-                      }}
-                    />
-                  }
-                />
-              </RowContainer>
-            </RowContainer>
-            {!isEmptyInputAmount && !isEmptyOutputAmount && (
-              <RowContainer justify="space-between" margin="1em 0 0 0">
-                <BlackRow width="calc(50% - 0.6em)">
-                  <RowTitle>Fee:</RowTitle>
-                  <Row align="center" wrap="nowrap">
-                    <RowValue>
-                      {totalFeeUSD < 0.01
-                        ? `< $0.01`
-                        : `$${formattedTotalFeeUSD}`}
-                    </RowValue>
-                    {depositAndFee > 0.02 ? (
-                      <DarkTooltip title="Fee breakdown">
-                        <Row
-                          margin="0 0 0 0.3em"
-                          style={{ color: theme.colors.gray1 }}
-                        >
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
-                              stroke="currentColor"
-                            />
-                            <path
-                              d="M6 3.5H6.00656"
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                            />
-                            <path
-                              d="M6 5.5V8"
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </Row>
-                      </DarkTooltip>
-                    ) : null}
+                    >
+                      <SvgIcon
+                        src={SettingIcon}
+                        height="0.75em"
+                        width="0.75em"
+                        style={{ marginRight: '0.4em' }}
+                      />{' '}
+                      <span style={{ fontSize: FONT_SIZES.esm }}>
+                        {slippage}%
+                      </span>
+                    </SlippageButton>
                   </Row>
-                </BlackRow>
-                <BlackRow width="calc(50% - 0.6em)">
-                  <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
-                    {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
-                  </RowImpactTitle>
-
-                  <SwapTooltip
-                    PopperProps={{ style: { opacity: 1 } }}
-                    title={
-                      <Row
-                        direction="column"
-                        align="flex-start"
-                        style={{ fontSize: '16px' }}
-                      >
-                        <Text color="white" size="esm" margin="0">
-                          <InlineText color="white" weight={600}>
-                            {stripByAmount(estimatedPriceFromRoute)}
-                          </InlineText>{' '}
-                          {outputSymbol} per {inputSymbol}.
-                        </Text>
-                        <Text color="white" size="esm" margin="0">
-                          <InlineText
-                            color={isHighPriceDiff ? 'red4' : 'green4'}
-                          >
-                            {priceDiffText}
-                          </InlineText>{' '}
-                          than CoinGecko price.
-                        </Text>
-                      </Row>
+                </Row>
+              </RowContainer>
+              <RowContainer
+                style={{
+                  position: 'relative',
+                  border: `1px solid ${theme.colors.white4}`,
+                  borderRadius: '0.8em',
+                  padding: '0.8em 0',
+                }}
+                margin=".5em 0 0 0"
+                direction="column"
+              >
+                <RowContainer
+                  wrap="nowrap"
+                  justify="space-between"
+                  padding="0 0 0.8em 0"
+                  style={{ borderBottom: `1px solid ${theme.colors.white4}` }}
+                >
+                  <SwapAmountInput
+                    title="From"
+                    maxAmount={maxInputAmount}
+                    amount={formatNumberWithSpaces(inputAmount)}
+                    onMaxAmountClick={() =>
+                      setFieldAmount(maxInputAmount, 'input')
                     }
+                    disabled={false}
+                    onChange={(v) => {
+                      if (v === '') {
+                        setFieldAmount(v, 'input')
+                        return
+                      }
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
+
+                      if (
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
+                      ) {
+                        setFieldAmount(parsedValue, 'input')
+                      }
+                    }}
+                    appendComponent={
+                      <TokenSelector
+                        mint={inputTokenMintAddress}
+                        data-testid="swap-input-token-selector"
+                        onClick={() => {
+                          setIsInputTokenSelecting(true)
+                          setIsSelectCoinPopupOpen(true)
+                        }}
+                      />
+                    }
+                  />
+                </RowContainer>
+                <ReverseTokensContainer onClick={reverseTokens}>
+                  <SvgIcon src={ArrowsExchangeIcon} />
+                </ReverseTokensContainer>
+                <RowContainer
+                  wrap="nowrap"
+                  justify="space-between"
+                  padding="0.8em 0 0 0"
+                >
+                  <SwapAmountInput
+                    title="To (Estimated)"
+                    maxAmount={maxOutputAmount}
+                    amount={formatNumberWithSpaces(outputAmount)}
+                    amountUSD={+outputAmount * outputDexTokenPrice}
+                    onMaxAmountClick={() =>
+                      setFieldAmount(maxOutputAmount, 'output')
+                    }
+                    onChange={(v) => {
+                      if (v === '') {
+                        setFieldAmount(v, 'output')
+                        return
+                      }
+
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
+
+                      if (
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
+                      ) {
+                        setFieldAmount(parsedValue, 'output')
+                      }
+                    }}
+                    appendComponent={
+                      <TokenSelector
+                        mint={outputTokenMintAddress}
+                        data-testid="swap-output-token-selector"
+                        onClick={() => {
+                          setIsInputTokenSelecting(false)
+                          setIsSelectCoinPopupOpen(true)
+                        }}
+                      />
+                    }
+                  />
+                </RowContainer>
+              </RowContainer>
+              {!isEmptyInputAmount && !isEmptyOutputAmount && (
+                <RowContainer justify="space-between" margin="1em 0 0 0">
+                  <BlackRow width="calc(50% - 0.6em)">
+                    <RowTitle>Fee:</RowTitle>
+                    <Row align="center" wrap="nowrap">
+                      <RowValue>
+                        {totalFeeUSD < 0.01
+                          ? `< $0.01`
+                          : `$${formattedTotalFeeUSD}`}
+                      </RowValue>
+                      {depositAndFee > 0.02 ? (
+                        <DarkTooltip title="Fee breakdown">
+                          <Row
+                            margin="0 0 0 0.3em"
+                            style={{ color: theme.colors.white2 }}
+                          >
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 12 12"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                                stroke="currentColor"
+                              />
+                              <path
+                                d="M6 3.5H6.00656"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                              />
+                              <path
+                                d="M6 5.5V8"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </Row>
+                        </DarkTooltip>
+                      ) : null}
+                    </Row>
+                  </BlackRow>
+                  <BlackRow width="calc(50% - 0.6em)">
+                    <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
+                      {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
+                    </RowImpactTitle>
+
+                    <SwapTooltip
+                      PopperProps={{ style: { opacity: 1 } }}
+                      title={
+                        <Row
+                          direction="column"
+                          align="flex-start"
+                          style={{ fontSize: '16px' }}
+                        >
+                          <Text size="esm" margin="0">
+                            <InlineText color="white1" weight={600}>
+                              {stripByAmount(estimatedPriceFromRoute)}
+                            </InlineText>{' '}
+                            {outputSymbol} per {inputSymbol}.
+                          </Text>
+                          <Text color="white1" size="esm" margin="0">
+                            <InlineText
+                              color={isHighPriceDiff ? 'red1' : 'green2'}
+                            >
+                              {priceDiffText}
+                            </InlineText>{' '}
+                            than CoinGecko price.
+                          </Text>
+                        </Row>
+                      }
+                    >
+                      <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                            stroke="currentColor"
+                          />
+                          <path
+                            d="M6 3.5H6.00656"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M6 5.5V8"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </InfoIconContainer>
+                    </SwapTooltip>
+                  </BlackRow>
+                </RowContainer>
+              )}
+              {/* {!isLoadingSwapRoute && pctDiffUsedAndUIInputAmount >= 5 && (
+              <RowContainer margin="0 0 .5em 0">
+                <Text>
+                  This swap will only use {swapRouteInAmount} (out of{' '}
+                  {inputAmount}) USDC
+                </Text>
+              </RowContainer>
+            )} */}
+              <RowContainer margin="3.5em 0 0 0">
+                {!wallet.publicKey ? (
+                  <BtnCustom
+                    theme={theme}
+                    onClick={() => {
+                      setIsConnectWalletPopupOpen(true)
+                    }}
+                    needMinWidth={false}
+                    btnWidth="100%"
+                    height="4em"
+                    padding="1.4em 5em"
+                    fontSize="1em"
+                    borderRadius="1.1rem"
+                    borderColor="none"
+                    btnColor={theme.colors.blue1}
+                    backgroundColor={rgba('#5E55F2', 0.15)}
+                    textTransform="none"
+                    transition="all .4s ease-out"
+                    style={{ whiteSpace: 'nowrap' }}
                   >
-                    <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
+                    <Row>
                       <svg
                         width="12"
                         height="12"
@@ -676,241 +636,103 @@ const SwapPage = ({
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                          d="M6.5 4.5H3.5"
                           stroke="currentColor"
-                        />
-                        <path
-                          d="M6 3.5H6.00656"
-                          stroke="currentColor"
+                          strokeWidth="1.5"
                           strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
                         <path
-                          d="M6 5.5V8"
+                          d="M11 5.48495V6.51498C11 6.78998 10.78 7.01496 10.5 7.02496H9.52C8.98 7.02496 8.48502 6.62997 8.44002 6.08997C8.41002 5.77497 8.53001 5.47996 8.74001 5.27496C8.92501 5.08496 9.18001 4.97498 9.46001 4.97498H10.5C10.78 4.98498 11 5.20995 11 5.48495Z"
+                          fill="#14141F"
                           stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M8.73999 5.27499C8.52999 5.47999 8.41 5.775 8.44 6.09C8.485 6.63 8.97999 7.02499 9.51999 7.02499H10.5V7.75C10.5 9.25 9.5 10.25 8 10.25H3.5C2 10.25 1 9.25 1 7.75V4.25C1 2.89 1.82 1.94 3.095 1.78C3.225 1.76 3.36 1.75 3.5 1.75H8C8.13 1.75 8.255 1.75499 8.375 1.77499C9.665 1.92499 10.5 2.88 10.5 4.25V4.97501H9.45999C9.17999 4.97501 8.92499 5.08499 8.73999 5.27499Z"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </InfoIconContainer>
-                  </SwapTooltip>
-                </BlackRow>
-              </RowContainer>
-            )}
-            {/* {!isLoadingSwapRoute && pctDiffUsedAndUIInputAmount >= 5 && (
-              <RowContainer margin="0 0 .5em 0">
-                <Text>
-                  This swap will only use {swapRouteInAmount} (out of{' '}
-                  {inputAmount}) USDC
-                </Text>
-              </RowContainer>
-<<<<<<< HEAD
-            )} */}
-            <RowContainer margin="3.5em 0 0 0">
-              {!wallet.publicKey ? (
-                <BtnCustom
-                  theme={theme}
-                  onClick={() => {
-                    setIsConnectWalletPopupOpen(true)
-                  }}
-                  needMinWidth={false}
-                  btnWidth="100%"
-                  height="4em"
-                  fontSize="1em"
-                  padding="1.4em 5em"
-                  borderRadius="1.1rem"
-                  borderColor={theme.colors.blue5}
-                  btnColor="#fff"
-                  backgroundColor={theme.colors.blue5}
-                  textTransform="none"
-                  transition="all .4s ease-out"
-                  style={{ whiteSpace: 'nowrap' }}
-                >
-                  Connect wallet
-                </BtnCustom>
-=======
-            )}
-            <RowContainer>
-              {!publicKey ? (
-                <span style={{ width: '100%' }}>
-                  <Button
-                    $width="xl"
-                    $padding="lg"
-                    theme={theme}
-                    style={{ height: '4em' }}
-                    onClick={() => {
-                      setIsConnectWalletPopupOpen(true)
+                      <Row padding="0 0 0 0.3em">
+                        <InlineText color="blue1" size="esm">
+                          Connect wallet
+                        </InlineText>
+                      </Row>
+                    </Row>
+                  </BtnCustom>
+                ) : (
+                  <SwapButton
+                    isHighPriceDiff={isHighPriceDiff}
+                    disabled={isButtonDisabled}
+                    $fontSize="md"
+                    minWidth="100%"
+                    $variant="none"
+                    onClick={async () => {
+                      if (!swapRoute) return
+
+                      setIsSwapInProgress(true)
+
+                      try {
+                        const transactionsAndSigners = await buildTransactions(
+                          swapRoute
+                        )
+
+                        const result = await signAndSendTransactions({
+                          wallet: walletAdapterToWallet(wallet),
+                          connection,
+                          transactionsAndSigners,
+                        })
+
+                        if (result !== 'success') {
+                          notify({
+                            type: 'error',
+                            message:
+                              result !== 'failed'
+                                ? 'Transaction cancelled'
+                                : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
+                          })
+                        } else {
+                          notify({
+                            type: 'success',
+                            message: 'Swap executed successfully.',
+                          })
+                        }
+
+                        // reset fields
+                        if (result === 'success') {
+                          await setFieldAmount('', 'input')
+                        }
+
+                        // remove loader
+                        setIsSwapInProgress(false)
+
+                        refreshUserTokensData()
+                        refreshAll()
+
+                        if (
+                          swapRoute.steps.some(
+                            (amm) => amm.ammLabel === 'Serum'
+                          )
+                        ) {
+                          refreshOpenOrdersMap()
+                        }
+                      } catch (e) {
+                        console.log('error', e)
+                      }
                     }}
                   >
-                    Connect wallet
-                  </Button>
-                </span>
->>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
-              ) : (
-                <SwapButton
-                  isHighPriceDiff={isHighPriceDiff}
-                  disabled={isButtonDisabled}
-                  $fontSize="md"
-                  minWidth="100%"
-                  $variant="none"
-                  onClick={async () => {
-                    if (!swapRoute) return
-
-                    setIsSwapInProgress(true)
-
-                    try {
-                      const transactionsAndSigners = await buildTransactions(
-                        swapRoute
-                      )
-
-                      const result = await signAndSendTransactions({
-                        wallet: walletAdapterToWallet(wallet),
-                        connection,
-                        transactionsAndSigners,
-                      })
-
-                      if (result !== 'success') {
-                        notify({
-                          type: 'error',
-                          message:
-                            result !== 'failed'
-                              ? 'Transaction cancelled'
-                              : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
-                        })
-                      } else {
-                        notify({
-                          type: 'success',
-                          message: 'Swap executed successfully.',
-                        })
-                      }
-
-                      // reset fields
-                      if (result === 'success') {
-                        await setFieldAmount('', 'input')
-                      }
-
-                      // remove loader
-                      setIsSwapInProgress(false)
-
-                      refreshUserTokensData()
-                      refreshAll()
-
-                      if (
-                        swapRoute.steps.some((amm) => amm.ammLabel === 'Serum')
-                      ) {
-                        refreshOpenOrdersMap()
-                      }
-                    } catch (e) {
-                      console.log('error', e)
-                    }
-                  }}
-                >
-                  <span>{buttonText}</span>
-                </SwapButton>
-              )}
-            </RowContainer>
-<<<<<<< HEAD
-=======
-
-            {isAmountsEntered && (
-              <RowContainer direction="column" margin="2.4rem 0 0 0">
-                <RowContainer justify="space-between">
-                  <BlackRow justify="center" width="calc(50% - 0.8rem)">
-                    <Row>
-                      <RowValue>
-                        <RowAmountValue>1</RowAmountValue>
-                        {priceShowField === 'input' ? baseSymbol : quoteSymbol}
-                      </RowValue>
-                      <span
-                        style={{
-                          color: theme.colors.white1,
-                          padding: '0 0.5rem',
-                        }}
-                        onClick={() =>
-                          setPriceShowField(
-                            priceShowField === 'input' ? 'output' : 'input'
-                          )
-                        }
-                      >
-                        ⇌
-                      </span>
-                      <RowValue>
-                        <RowAmountValue>
-                          {formatNumberToUSFormat(estimatedPrice)}
-                        </RowAmountValue>
-                        {priceShowField === 'input' ? quoteSymbol : baseSymbol}
-                      </RowValue>
-                    </Row>
-                  </BlackRow>
-                  <BlackRow width="calc(50% - 0.8rem)">
-                    <RowTitle>Price Impact:</RowTitle>
-                    <RowAmountValue>
-                      {priceImpact < 0.1
-                        ? '< 0.1'
-                        : stripDigitPlaces(priceImpact, 2)}
-                      %
-                    </RowAmountValue>
-                  </BlackRow>
-                </RowContainer>
-
-                <RowContainer justify="space-between">
-                  <BlackRow width="calc(50% - 0.8rem)">
-                    <RowTitle>Trading fee:</RowTitle>
-                    <RowValue>
-                      $
-                      {formatNumberToUSFormat(
-                        stripDigitPlaces(
-                          getFeeFromSwapRoute({
-                            route: swapRoute,
-                            tokenInfos,
-                            pricesMap: dexTokensPricesMap,
-                          }),
-                          2
-                        )
-                      )}
-                    </RowValue>
-                  </BlackRow>
-                  <BlackRow width="calc(50% - 0.8rem)">
-                    <RowTitle>Network fee:</RowTitle>
-                    <RowValue style={{ display: 'flex' }}>
-                      {stripDigitPlaces(
-                        networkFee,
-                        isOpenOrdersCreationRequired ? 4 : 6
-                      )}{' '}
-                      SOL{' '}
-                      {isOpenOrdersCreationRequired && (
-                        <DarkTooltip
-                          title={
-                            'The route includes the Serum market, which requires opening an "Open Order" account, which costs 0.024 SOL. You can close the account later and get the fee back.'
-                          }
-                        >
-                          <CircleIconContainer
-                            size="1em"
-                            style={{
-                              marginLeft: '.5rem',
-                            }}
-                          >
-                            i
-                          </CircleIconContainer>
-                        </DarkTooltip>
-                      )}
-                    </RowValue>
-                  </BlackRow>
-                </RowContainer>
-
-                <BlackRow width="100%">
-                  <RowTitle>Minimum Received:</RowTitle>
-                  <RowValue>
-                    {formatNumberToUSFormat(
-                      stripByAmount(outAmountWithSlippageWithoutDecimals)
-                    )}{' '}
-                    {quoteSymbol}
-                  </RowValue>
-                </BlackRow>
+                    <span>{buttonText}</span>
+                  </SwapButton>
+                )}
               </RowContainer>
-            )}
->>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
-          </SwapBlockTemplate>
-        </SwapContentContainer>
+            </SwapBlockTemplate>
+          </SwapContentContainer>
+        </Row>
 
         <SelectCoinPopup
           data-testid="swap-select-token-popup"

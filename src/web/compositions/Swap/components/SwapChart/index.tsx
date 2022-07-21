@@ -24,7 +24,7 @@ interface SwapChartProps {
 }
 
 const CrossSwapChartContainer = styled(RowContainer)`
-  border: 1px solid ${({ theme }) => theme.colors.yellow7};
+  border: 1px solid ${({ theme }) => theme.colors.yellow4};
   border-right: 0;
   border-top-left-radius: ${BORDER_RADIUS.lg};
   border-bottom-left-radius: ${BORDER_RADIUS.lg};
@@ -66,7 +66,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
         <CrossSwapChartContainer direction="column" height="100%">
           <SvgIcon src={OHLCVCandlesIcon} />
           <Row margin="1em 0 0 0">
-            <InlineText size="md" color="yellow7">
+            <InlineText size="md" color="yellow4">
               There is not enough data for this pair. Try later.
             </InlineText>
           </Row>

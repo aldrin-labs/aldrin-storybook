@@ -229,6 +229,9 @@ export const DropdownInner = styled.div`
 `
 
 export const WalletButton = styled(Button)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: ${em('14px')};
   width: ${em('144px', '14px')};
   background-color: ${(props) => rgba(props.theme.colors.blue3, 0.15)};

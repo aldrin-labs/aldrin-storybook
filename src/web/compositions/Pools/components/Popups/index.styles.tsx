@@ -43,7 +43,8 @@ export const Line = styled.div`
 `
 export const InvisibleInput = styled.input`
   width: 100%;
-  background: ${(props) => props.theme.colors.white4};
+  padding: 0;
+  background: inherit;
   color: ${(props) => props.theme.colors.white1};
   font-size: ${FONT_SIZES.xmd};
   outline: none;
@@ -55,7 +56,7 @@ export const InvisibleInput = styled.input`
   font-weight: 600;
 
   &::placeholder {
-    color: ${(props) => props.theme.colors.gray3};
+    color: ${(props) => props.theme.colors.white3};
   }
 `
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import styled from 'styled-components'
 
 import { SvgIcon } from '@sb/components'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -10,6 +11,10 @@ import { stripByAmount } from '@core/utils/numberUtils'
 import HalfArrowsIcon from '@icons/halfArrows.svg'
 
 import { getEstimatedPrice } from '../../utils'
+
+const SymbolText = styled(InlineText)`
+  letter-spacing: -0.05em;
+`
 
 interface SwapChartPriceProps {
   inputSymbol: string
@@ -47,6 +52,15 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
 
   return (
     <RowContainer justify="space-between">
+      <Row>
+        <SymbolText color="white1" size="md" weight={700}>
+          {stripByAmount(estimatedPrice)}{' '}
+          <SymbolText color="white2" size="md" weight={600}>
+            {isInputPriceShowField ? outputSymbol : inputSymbol} per{' '}
+            {isInputPriceShowField ? inputSymbol : outputSymbol}
+          </SymbolText>
+        </SymbolText>
+      </Row>
       <Row align="center">
         <TokenIcon
           mint={
@@ -57,11 +71,11 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
           size={16}
           margin="0 0.2em 0 0"
         />
-        <InlineText color="gray1" size="md" weight={500}>
+        <InlineText color="white2" size="md" weight={500}>
           {isInputPriceShowField ? inputSymbol : outputSymbol}
         </InlineText>
         <Row margin="0 0.5em">
-          <InlineText color="gray3" size="md" weight={500}>
+          <InlineText color="white3" size="md" weight={500}>
             /
           </InlineText>
         </Row>
@@ -86,14 +100,6 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
         >
           <SvgIcon src={HalfArrowsIcon} width="0.8em" height="0.8em" />
         </Row>
-      </Row>
-      <Row>
-        <InlineText color="red3" size="md" weight={500}>
-          {stripByAmount(estimatedPrice)}{' '}
-          <InlineText color="gray1" size="md" weight={500}>
-            {isInputPriceShowField ? outputSymbol : inputSymbol}
-          </InlineText>
-        </InlineText>
       </Row>
     </RowContainer>
   )
