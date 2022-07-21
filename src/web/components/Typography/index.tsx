@@ -39,7 +39,7 @@ export interface InlineProps {
 export const InlineText = styled.span<InlineProps>`
   font-family: ${FONTS.main};
   color: ${(props) =>
-    get(props.theme.colors, props.color, props.theme.colors.white1)};
+    props.theme.colors[props.color] || props.theme.colors.white1};
   ${(props: InlineProps) =>
     props.size ? `font-size: ${FONT_SIZES[props.size]};` : ''}
   ${(props: InlineProps) =>
