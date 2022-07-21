@@ -12,7 +12,7 @@ export const StyledLink = styled.a<StyledLinkProps>`
   transition: ${TRANSITION};
   margin: ${(props) => props.margin || '0'};
   background: ${(props) => props.theme.colors.gray6};
-  border-radius: 0.4em;
+  border-radius: 0.5em;
   padding: 0.4em;
 
   &:hover {

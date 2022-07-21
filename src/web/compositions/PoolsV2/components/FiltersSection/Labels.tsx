@@ -31,7 +31,7 @@ export const LabelComponent = ({
   variant: VariantType
   tooltipText: any
 }) => {
-  const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState(true)
 
   return (
     <LabelContainer

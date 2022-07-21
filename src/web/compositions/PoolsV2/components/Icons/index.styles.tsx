@@ -12,6 +12,6 @@ export const SearchIconContainer = styled.svg`
 export const TooltipIconContainer = styled.svg<TooltipIconContainerType>`
   margin: ${(props) => props.margin || '0 0 0 5px'};
 `
-export const CLiquidityIconContainer = styled.svg`
+export const IconContainer = styled.svg`
   margin-right: 0.2em;
 `

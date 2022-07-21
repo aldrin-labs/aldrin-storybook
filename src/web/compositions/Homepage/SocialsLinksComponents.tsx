@@ -52,7 +52,7 @@ export const TwitterIcon = () => {
   )
 }
 
-export const LinkToTwitter = ({ margin }: { margin: string }) => {
+export const LinkToTwitter = ({ margin }: { margin?: string }) => {
   return (
     <StyledLink
       margin={margin}

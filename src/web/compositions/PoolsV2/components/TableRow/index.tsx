@@ -11,16 +11,11 @@ import { POOL_CARD_LABELS } from '../../config'
 import { RootRow, RootColumn, SpacedColumn } from '../../index.styles'
 import { BalanceLine } from '../BalanceLine'
 import { LabelComponent } from '../FiltersSection/Labels'
-import { TooltipIcon, PlusIcon } from '../Icons'
+import { TooltipIcon, PlusIcon, ArrowsIcon } from '../Icons'
+import { Row } from '../Popups/index.styles'
 import { LinkToTwitter, LinkToDiscord, LinkToCoinMarketcap } from '../Socials'
 import { TokenIconsContainer } from '../TokenIconsContainer'
-import {
-  DepositRow,
-  LabelsRow,
-  Row,
-  Container,
-  StretchedRow,
-} from './index.styles'
+import { DepositRow, LabelsRow, Container, StretchedRow } from './index.styles'
 import { LabelsTooltips } from './Tooltips'
 
 export const TableRow = ({
@@ -37,7 +32,10 @@ export const TableRow = ({
       <Container width="100%">
         <StretchedRow>
           <RootColumn height="100%">
-            <TokenIconsContainer mint="E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp" />
+            <TokenIconsContainer
+              needElement
+              mint="E5ndSkaB17Dm7CsD22dvcjfrYSDLCxFcMd6z8ddCk5wp"
+            />
             <InlineText size="md" weight={600} color="gray0">
               RIN/USDC
             </InlineText>
@@ -65,30 +63,68 @@ export const TableRow = ({
             </LabelsRow>
           </RootColumn>
           <SpacedColumn height="100%">
-            <InlineText size="sm" weight={400} color="gray3">
-              Liquidity
-            </InlineText>
-            <InlineText size="md" weight={600} color="gray0">
-              <InlineText color="gray1">$</InlineText>
-              10.42m
+            <Row>
+              <ArrowsIcon />
+              <InlineText size="sm" weight={400} color="gray3">
+                Liquidity
+              </InlineText>
+            </Row>
+
+            <InlineText size="xmd" weight={600} color="gray0">
+              <InlineText color="gray1">$</InlineText> 10.42m
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
             <InlineText size="sm" weight={400} color="gray3">
               Volume 7d
             </InlineText>
-            <InlineText size="md" weight={600} color="gray0">
-              <InlineText color="gray1">$</InlineText>
-              102.24k
+            <InlineText size="xmd" weight={600} color="gray0">
+              <InlineText color="gray1">$</InlineText> 102.24k
             </InlineText>
           </SpacedColumn>
           <SpacedColumn height="100%">
             <InlineText size="sm" weight={400} color="gray3">
-              Rewards
+              <DarkTooltip
+                title={<InlineText color="gray0">tooltip</InlineText>}
+              >
+                <span>
+                  <TooltipIcon color="gray3" /> Rewards
+                </span>
+              </DarkTooltip>
             </InlineText>
-            <Row margin="0">
-              <TokenIcon mint={getTokenMintAddressByName('RIN')} />
-              <TokenIcon mint={getTokenMintAddressByName('mSOL')} />
+            <Row width="75%" margin="0">
+              <DarkTooltip
+                title={
+                  <>
+                    <InlineText weight={600} color="gray0">
+                      RIN
+                    </InlineText>
+                    <InlineText weight={400} color="gray0">
+                      $0.54
+                    </InlineText>
+                  </>
+                }
+              >
+                <span>
+                  <TokenIcon mint={getTokenMintAddressByName('RIN')} />
+                </span>
+              </DarkTooltip>
+              <DarkTooltip
+                title={
+                  <>
+                    <InlineText weight={600} color="gray0">
+                      mSOL
+                    </InlineText>
+                    <InlineText weight={400} color="gray0">
+                      $0.54
+                    </InlineText>
+                  </>
+                }
+              >
+                <span>
+                  <TokenIcon mint={getTokenMintAddressByName('mSOL')} />
+                </span>
+              </DarkTooltip>
             </Row>
           </SpacedColumn>
           <SpacedColumn height="100%">
@@ -120,14 +156,14 @@ export const TableRow = ({
               </DarkTooltip>
             </InlineText>
             <SpacedColumn>
-              <InlineText size="md" weight={600} color="green1">
+              <InlineText size="xmd" weight={600} color="green1">
                 125.24%
               </InlineText>
               <BalanceLine value1="30%" value2="70%" />
             </SpacedColumn>
           </SpacedColumn>
           <DepositRow>
-            <Row>
+            <Row width="100%">
               <LinkToTwitter />
               <LinkToDiscord margin="0 0.5em" />
               <LinkToCoinMarketcap />
@@ -138,7 +174,7 @@ export const TableRow = ({
               }}
               $width="xl"
               $borderRadius="md"
-              $padding="xl"
+              $padding="xxl"
               $variant="green"
               $fontSize="sm"
             >

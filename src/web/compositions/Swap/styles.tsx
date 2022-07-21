@@ -69,7 +69,7 @@ export const SlippageButton = styled.button`
   font-weight: 600;
 
   color: ${(props) => props.theme.colors.gray1};
-  background-color: ${(props) => props.theme.colors.gray7};
+  background-color: ${(props) => props.theme.colors.gray6};
 
   border: none;
   border-radius: 2em;
@@ -166,7 +166,7 @@ export const SwapButton = styled(Button)`
 export const CircleIconContainer = styled(Row)`
   width: ${(props) => props.size || '2em'};
   height: ${(props) => props.size || '2em'};
-  background: ${(props) => props.theme.colors.gray8};
+  background: ${(props) => props.theme.colors.gray7};
   border-radius: 50%;
   font-family: Avenir Next Bold;
   color: ${(props) => props.theme.colors.gray0};
@@ -229,8 +229,8 @@ export const SwapContentContainer = styled(Row)`
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0);
-  background: ${({ theme }) => theme.colors.gray8};
-  border: 1px solid ${({ theme }) => theme.colors.gray7};
+  background: ${({ theme }) => theme.colors.gray7};
+  border: 1px solid ${({ theme }) => theme.colors.gray6};
   padding: 1.5em 1em;
   z-index: 10;
 

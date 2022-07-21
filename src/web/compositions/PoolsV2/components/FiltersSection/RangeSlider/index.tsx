@@ -9,7 +9,7 @@ const Track = (props, state) => <StyledTrack {...props} index={state.index} />
 export const Slider = ({ min, max, ...delegated }) => {
   return (
     <StyledSlider
-      min={100}
+      min={0}
       max={1000}
       defaultValue={[min, max]}
       renderTrack={Track}

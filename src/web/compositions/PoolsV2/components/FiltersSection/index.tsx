@@ -3,19 +3,27 @@ import React, { useState } from 'react'
 import { InlineText } from '@sb/components/Typography'
 
 import { RootColumn, RootRow } from '../../index.styles'
+import { ArrowsIcon } from '../Icons'
 import { Container, SortByLabel, SRootRow, StretchedRow } from './index.styles'
 import { FilterLabels } from './Labels'
 import { Slider } from './RangeSlider'
 
 const lablesForSorting = [
-  { name: 'Liquidity' },
+  {
+    name: (
+      <>
+        <ArrowsIcon />
+        Liquidity
+      </>
+    ),
+  },
   { name: 'APR' },
   { name: 'Volume 7d' },
   { name: 'Most Recent' },
 ]
 
 export const ExtendedFiltersSection = () => {
-  const [value, setValue] = useState([100, 1000])
+  const [value, setValue] = useState([200, 1000])
   const [sortingOption, chooseSortingOption] = useState('')
 
   return (
@@ -30,8 +38,8 @@ export const ExtendedFiltersSection = () => {
               TVL
             </InlineText>
             <InlineText size="sm" color="gray13">
-              from <InlineText color="gray0">{value[0]}</InlineText> to{' '}
-              <InlineText color="gray0">{value[1]}</InlineText>
+              from <InlineText color="gray0">${value[0]}</InlineText> to{' '}
+              <InlineText color="gray0">${value[1]}</InlineText>
             </InlineText>
           </StretchedRow>
           <StretchedRow height="23px">

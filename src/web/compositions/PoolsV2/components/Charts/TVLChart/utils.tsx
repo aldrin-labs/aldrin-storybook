@@ -136,11 +136,11 @@ export const createTotalVolumeLockedChart = ({
     throw Error('Not a canvas:')
   }
 
-  const gradient = ctx.createLinearGradient(0, 0, 0, 185)
+  const gradient = ctx.createLinearGradient(0, 0, 0, 200)
   gradient.addColorStop(0, 'rgba(135, 52, 120, 0.45)')
   gradient.addColorStop(0.55, 'rgba(157, 52, 129, 0)')
 
-  const borderGradient = ctx.createLinearGradient(480, 0, 0, 0)
+  const borderGradient = ctx.createLinearGradient(650, 0, 0, 0)
   borderGradient.addColorStop(0.9, 'rgba(99, 53, 84, 1)')
   borderGradient.addColorStop(0.5, 'rgba(151, 51, 135, 1)')
   borderGradient.addColorStop(0.25, 'rgba(200, 89, 77, 1)')

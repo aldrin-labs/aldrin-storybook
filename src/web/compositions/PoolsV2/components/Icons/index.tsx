@@ -2,7 +2,7 @@ import React from 'react'
 import { useTheme } from 'styled-components'
 
 import {
-  CLiquidityIconContainer,
+  IconContainer,
   SearchIconContainer,
   TooltipIconContainer,
 } from './index.styles'
@@ -131,7 +131,7 @@ export const CLiquidityIcon = ({ isActive }: { isActive: boolean }) => {
   const theme = useTheme()
 
   return (
-    <CLiquidityIconContainer
+    <IconContainer
       width="12"
       height="12"
       viewBox="0 0 13 14"
@@ -142,7 +142,7 @@ export const CLiquidityIcon = ({ isActive }: { isActive: boolean }) => {
         d="M1.1104 7.54134H2.20024C2.33242 8.58844 2.84216 9.55132 3.6338 10.2493C4.42544 10.9473 5.44458 11.3324 6.49999 11.3324C7.5554 11.3324 8.57454 10.9473 9.36618 10.2493C10.1578 9.55132 10.6676 8.58844 10.7997 7.54134H11.8901C11.6182 10.2784 9.30853 12.4163 6.49999 12.4163C3.69145 12.4163 1.38178 10.2784 1.1104 7.54134ZM1.1104 6.45801C1.38124 3.72097 3.69091 1.58301 6.49999 1.58301C9.30907 1.58301 11.6182 3.72097 11.8896 6.45801H10.7997C10.6676 5.41091 10.1578 4.44803 9.36618 3.75004C8.57454 3.05205 7.5554 2.66692 6.49999 2.66692C5.44458 2.66692 4.42544 3.05205 3.6338 3.75004C2.84216 4.44803 2.33242 5.41091 2.20024 6.45801H1.10986H1.1104ZM6.49999 8.08301C6.21267 8.08301 5.93712 7.96887 5.73396 7.76571C5.53079 7.56254 5.41666 7.28699 5.41666 6.99967C5.41666 6.71236 5.53079 6.43681 5.73396 6.23364C5.93712 6.03048 6.21267 5.91634 6.49999 5.91634C6.78731 5.91634 7.06286 6.03048 7.26602 6.23364C7.46919 6.43681 7.58332 6.71236 7.58332 6.99967C7.58332 7.28699 7.46919 7.56254 7.26602 7.76571C7.06286 7.96887 6.78731 8.08301 6.49999 8.08301Z"
         fill={isActive ? theme.colors.gray0 : theme.colors.gray1}
       />
-    </CLiquidityIconContainer>
+    </IconContainer>
   )
 }
 
@@ -163,5 +163,108 @@ export const LockedIcon = () => {
         strokeLinejoin="round"
       />
     </svg>
+  )
+}
+
+export const WalletIcon = () => {
+  const theme = useTheme()
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6.5 4.5H3.5"
+        stroke="#5B5A72"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M11 5.48495V6.51498C11 6.78998 10.78 7.01496 10.5 7.02496H9.52C8.98 7.02496 8.48502 6.62997 8.44002 6.08997C8.41002 5.77497 8.53001 5.47996 8.74001 5.27496C8.92501 5.08496 9.18001 4.97498 9.46001 4.97498H10.5C10.78 4.98498 11 5.20995 11 5.48495Z"
+        fill="#14141F"
+        stroke="#5B5A72"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.73999 5.27499C8.52999 5.47999 8.41 5.775 8.44 6.09C8.485 6.63 8.97999 7.02499 9.51999 7.02499H10.5V7.75C10.5 9.25 9.5 10.25 8 10.25H3.5C2 10.25 1 9.25 1 7.75V4.25C1 2.89 1.82 1.94 3.095 1.78C3.225 1.76 3.36 1.75 3.5 1.75H8C8.13 1.75 8.255 1.75499 8.375 1.77499C9.665 1.92499 10.5 2.88 10.5 4.25V4.97501H9.45999C9.17999 4.97501 8.92499 5.08499 8.73999 5.27499Z"
+        stroke="#5B5A72"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export const YourPositionsIcon = ({ isActive }: { isActive: boolean }) => {
+  const theme = useTheme()
+  return (
+    <IconContainer
+      width="12"
+      height="13"
+      viewBox="0 0 13 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.92333 7C11.3317 7 11.9167 6.45833 11.3967 4.68166C11.0446 3.48458 10.0154 2.45541 8.81833 2.10333C7.04167 1.58333 6.5 2.16833 6.5 3.57666V5.13666C6.5 6.45833 7.04167 7 8.125 7H9.92333Z"
+        stroke={isActive ? theme.colors.gray0 : theme.colors.gray1}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.8333 8.46251C10.3295 10.9704 7.92453 12.7904 5.18911 12.3463C3.13619 12.0158 1.48411 10.3638 1.14828 8.31084C0.709525 5.58626 2.51869 3.18126 5.01578 2.67209"
+        stroke={isActive ? theme.colors.gray0 : theme.colors.gray1}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </IconContainer>
+  )
+}
+
+export const ArrowsIcon = () => {
+  return (
+    <IconContainer
+      width="12"
+      height="12"
+      viewBox="0 0 13 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4.88042 11.1044L2.16125 8.39062"
+        stroke="#FAFAFA"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4.88037 1.89551V11.1038"
+        stroke="#FAFAFA"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.11963 1.89551L10.8388 4.60926"
+        stroke="#A9A9B2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.11963 11.1038V1.89551"
+        stroke="#A9A9B2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </IconContainer>
   )
 }

@@ -1,5 +1,4 @@
 import {
-  UCOLORS,
   COLORS,
   SIZE,
   BREAKPOINTS,
@@ -267,15 +266,6 @@ export const WalletButton = styled(Button)`
   font-weight: 600;
   height: 3.5em;
   transition: ${TRANSITION};
-
-  &:hover {
-    background: ${UCOLORS.blue4};
-  }
-
-  &:active,
-  &:focus {
-    background: ${COLORS.darkBlue};
-  }
 
   @media (max-width: 1100px) {
     padding: 7px 10px;

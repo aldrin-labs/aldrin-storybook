@@ -128,6 +128,8 @@ export const StretchedBlock = styled.div<StretchedBlockProps>`
     props.direction === 'column' ? `min-height: 100%` : ''};
   ${(props: StretchedBlockProps) =>
     props.width ? `width: ${WIDTH[props.width]}` : ''};
+  ${(props: StretchedBlockProps) =>
+    props.margin ? `margin: ${props.margin}` : ''};
 `
 export const LeftBlock = styled(StretchedBlock)`
   justify-content: flex-start;

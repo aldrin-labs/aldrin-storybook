@@ -5,15 +5,6 @@ import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
-
-import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
-import { numberWithOneDotRegexp } from '@core/utils/helpers'
-import {
-  formatNumberToUSFormat,
-  stripDigitPlaces
-} from '@core/utils/PortfolioTableUtils'
-import ArrowsExchangeIcon from '@icons/arrowsExchange.svg'
-import SettingIcon from '@icons/settings.svg'
 import { PieTimer } from '@sb/components/PieTimer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
@@ -30,6 +21,7 @@ import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { formatNumberWithSpaces, notEmpty } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { toMap } from '@sb/utils'
+
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
@@ -37,9 +29,17 @@ import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNa
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
-  stripByAmount
+  stripByAmount,
 } from '@core/utils/chartPageUtils'
+import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
+import { numberWithOneDotRegexp } from '@core/utils/helpers'
+import {
+  formatNumberToUSFormat,
+  stripDigitPlaces,
+} from '@core/utils/PortfolioTableUtils'
 
+import ArrowsExchangeIcon from '@icons/arrowsExchange.svg'
+import SettingIcon from '@icons/settings.svg'
 
 import { INPUT_FORMATTERS } from '../../components/Input'
 import { queryRendererHoc } from '../../components/QueryRenderer'

@@ -124,11 +124,20 @@ const VARIANTS = {
     border: none;
     color: ${(props) => props.theme.colors.blue2};
     white-space: nowrap;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: 0.3s;
+
+    &:hover {
+      background: ${(props) => props.theme.colors.violet6};
+    }
+
+    &:active {
+      background: ${(props) => props.theme.colors.violet7};
+    }
   `,
 
   green: css`
@@ -141,6 +150,15 @@ const VARIANTS = {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: 0.3s;
+
+    &:hover {
+      background: ${(props) => props.theme.colors.green11};
+    }
+
+    &:active {
+      background: ${(props) => props.theme.colors.green12};
+    }
   `,
   none: css``,
 }

@@ -35,6 +35,7 @@ export const DepositRow = styled(RootRow)`
   @media (min-width: ${BREAKPOINTS.sm}) {
     justify-content: space-between;
     flex-direction: column;
+    width: 12%;
   }
 `
 export const Container = styled.div<ContainerProps>`

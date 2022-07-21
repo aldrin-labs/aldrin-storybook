@@ -31,15 +31,13 @@ export const PoolsComponent: React.FC = () => {
     }
   }, [])
 
-  const isUserHavePools = true
-  const isUserHavePositions = false
+  const isUserHavePositions = true
 
   return (
     <Page>
       <StyledWideContent>
         <RootRow>
           <TablesSwitcher
-            isUserHavePools={isUserHavePools}
             isUserHavePositions={isUserHavePositions}
             tableView={tableView}
             setTableView={setTableView}

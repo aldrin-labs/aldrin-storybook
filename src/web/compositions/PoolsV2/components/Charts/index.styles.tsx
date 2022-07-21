@@ -6,13 +6,20 @@ import { InlineText } from '@sb/components/Typography'
 type CanvasProps = {
   bottom?: string
   left?: string
+  needPadding?: boolean
 }
+
 type CanvasContainerProps = {
+  padding?: string
+}
+
+type TooltipContainerProps = {
   padding?: string
 }
 
 export const ChartContainer = styled.div`
   width: 90%;
+  position: relative;
   background: ${(props) => props.theme.colors.gray7};
   border-radius: ${BORDER_RADIUS.lg};
   display: flex;
@@ -28,7 +35,7 @@ export const ChartContainer = styled.div`
   }
 `
 
-export const TooltipContainer = styled.div`
+export const TooltipContainer = styled.div<TooltipContainerProps>`
   width: ${(props) => `calc(35% + ${props.padding})`};
   display: flex;
   flex-direction: column;
@@ -55,4 +62,14 @@ export const Canvas = styled.canvas<CanvasProps>`
   margin-bottom: ${(props) => props.bottom || '-7px'};
   margin-left: ${(props) => props.left || '0px'};
   border-left: 1px solid ${(props) => props.theme.colors.gray8};
+  padding: ${(props) => (props.needPadding ? '0 0 0 8px' : '0')};
+`
+
+export const ChartMask = styled.div`
+  position: absolute;
+  height: 65%;
+  width: 2px;
+  background: #14141f;
+  right: 0;
+  top: 20%;
 `

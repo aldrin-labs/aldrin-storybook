@@ -20,6 +20,7 @@ import {
   Canvas,
   CanvasContainer,
   ChartContainer,
+  ChartMask,
   TooltipContainer,
   ValueTitle,
 } from '../index.styles'
@@ -124,6 +125,7 @@ export const TVLChart: React.FC = () => {
 
   return (
     <ChartContainer>
+      <ChartMask />
       <TooltipContainer padding="6px">
         <InlineText color="gray0" size="xs">
           TVL {isMouseOverTheChart ? `at ${balanceData.date}` : `Now`}

@@ -1,17 +1,15 @@
 import React from 'react'
 
-import { CLiquidityIcon } from '../Icons'
+import { CLiquidityIcon, YourPositionsIcon } from '../Icons'
 import { Container, SwitcherButton } from './index.styles'
 
 export const TablesSwitcher = ({
   setTableView,
   tableView,
-  isUserHavePools,
   isUserHavePositions,
 }: {
   setTableView: (a: string) => void
   tableView: string
-  isUserHavePools: boolean
   isUserHavePositions: boolean
 }) => {
   return (
@@ -32,17 +30,8 @@ export const TablesSwitcher = ({
             setTableView('yourPositions')
           }}
         >
-          Your Positions
-        </SwitcherButton>
-      )}
-      {isUserHavePools && (
-        <SwitcherButton
-          isActive={tableView === 'yourPools'}
-          onClick={() => {
-            setTableView('yourPools')
-          }}
-        >
-          Your Pools
+          <YourPositionsIcon isActive={tableView === 'yourPositions'} /> Your
+          Positions
         </SwitcherButton>
       )}
     </Container>

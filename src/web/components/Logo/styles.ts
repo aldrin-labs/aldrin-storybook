@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 type LogoBlockProps = {
-  $width?: number
+  $width?: string
 }
 
 export const LogoBlock = styled.div<LogoBlockProps>`

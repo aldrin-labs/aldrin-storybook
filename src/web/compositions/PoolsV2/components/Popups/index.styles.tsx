@@ -5,11 +5,13 @@ type RowType = {
   width?: string
   padding?: string
   height?: string
+  margin?: string
 }
 
 type BoxType = {
   height?: string
   width?: string
+  padding?: string
 }
 
 type ColumnType = {
@@ -23,14 +25,16 @@ export const StyledModal = styled.div`
     justify-content: flex-end;
   }
   .modal-body {
+    width: 39em;
     margin: 0;
     border-radius: 1.5em 1.5em 0 0;
     background: ${(props) => props.theme.colors.gray7};
-    padding: 0 1em;
+    padding: 0 1.5em;
     height: 90%;
   }
   .modal-content {
-    min-width: 35em;
+    height: 100%;
+    width: 100%;
   }
 `
 
@@ -64,6 +68,7 @@ export const Row = styled.div<RowType>`
   align-items: center;
   padding: ${(props) => props.padding || '0'};
   height: ${(props) => props.height || 'auto'};
+  margin: ${(props) => props.margin || '0'};
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     flex-direction: row;
@@ -80,7 +85,7 @@ export const Box = styled.div<BoxType>`
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 0.5em 1em;
+  padding: ${(props) => props.padding || '0.5em 1em'};
 `
 export const Column = styled.div<ColumnType>`
   height: ${(props) => props.height || '100%'};
@@ -89,4 +94,15 @@ export const Column = styled.div<ColumnType>`
   justify-content: space-between;
   flex-direction: column;
   align-items: flex-start;
+  margin: ${(props) => props.margin || '0'};
+`
+export const Container = styled.div`
+  background: ${(props) => props.theme.colors.gray8};
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.6em;
+  padding: 0.5em;
 `

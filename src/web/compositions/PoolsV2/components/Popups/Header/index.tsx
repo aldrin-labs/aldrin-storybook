@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { EscapeButton } from '@sb/components/EscapeButton'
 import { InlineText } from '@sb/components/Typography'
 
 import {
@@ -10,7 +11,13 @@ import {
 import { TokenIconsContainer } from '../../TokenIconsContainer'
 import { Header, Row } from '../index.styles'
 
-export const HeaderComponent = () => {
+export const HeaderComponent = ({
+  close,
+  arrow,
+}: {
+  close: () => void
+  arrow: boolean
+}) => {
   return (
     <Header>
       <Row>
@@ -23,7 +30,7 @@ export const HeaderComponent = () => {
         <LinkToTwitter height="40px" />
         <LinkToDiscord height="40px" />
         <LinkToCoinMarketcap height="40px" />
-        <LinkToTwitter height="40px" />
+        <EscapeButton arrow={arrow} size="2.5" close={() => close()} />
         {/* TODO: last button should be replaced with Esc when swaps merged */}
       </Row>
     </Header>

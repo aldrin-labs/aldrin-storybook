@@ -76,6 +76,7 @@ const ChartBlockInner: React.FC<TradingVolumeChartProps> = (props) => {
   return (
     <CanvasContainer padding="0px">
       <Canvas
+        needPadding
         bottom="0px"
         left="4px"
         id="trading-vol-chart-inner"

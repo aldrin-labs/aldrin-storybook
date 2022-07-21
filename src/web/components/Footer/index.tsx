@@ -33,7 +33,7 @@ export const Footer = () => {
     <FooterContainer data-testid="footer">
       {!isMobile && (
         <FooterLeft>
-          <Index />
+          <Index width="70px" />
           <Copyright>Aldrin.com 2021 - ∞</Copyright>
         </FooterLeft>
       )}

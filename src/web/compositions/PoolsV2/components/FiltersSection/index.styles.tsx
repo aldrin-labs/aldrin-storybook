@@ -36,6 +36,10 @@ type SortByLabelProps = {
   isActive: boolean
 }
 
+type CheckboxContainerProps = {
+  marginRight?: string
+}
+
 export const SRootRow = styled(RootRow)`
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: auto;
@@ -128,11 +132,12 @@ export const StyledCheckbox = styled.div<SCheckboxProps>`
     color: ${(props) => props.theme.colors[props.hoverColor || props.color]};
   }
 `
-export const CheckboxContainer = styled.div`
+export const CheckboxContainer = styled.div<CheckboxContainerProps>`
   display: inline-block;
   vertical-align: middle;
-  margin-right: 5px;
+  margin-right: ${(props) => props.marginRight || '5px'};
   position: relative;
+  cursor: pointer;
 `
 export const Icon = styled.svg<IconProps>`
   fill: none;
