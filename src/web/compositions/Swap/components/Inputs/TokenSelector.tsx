@@ -32,7 +32,7 @@ export const TokenSelector = ({
   return (
     <TokenSelectorContainer onClick={onClick}>
       <Row>
-        <TokenIcon mint={mint} size={32} />
+        <TokenIcon mint={mint} size={24} />
         <Text
           style={{ margin: '0 0.8rem' }}
           fontSize={

@@ -1,5 +1,6 @@
 import { BORDER_RADIUS } from '@variables/variables'
 import React from 'react'
+import styled from 'styled-components'
 import useSWR from 'swr'
 
 import { SvgIcon } from '@sb/components'
@@ -21,6 +22,13 @@ interface SwapChartProps {
   outputTokenMintAddress: string
   pricesMap: Map<string, number>
 }
+
+const CrossSwapChartContainer = styled(RowContainer)`
+  border: 1px solid ${({ theme }) => theme.colors.yellow7};
+  border-right: 0;
+  border-top-left-radius: ${BORDER_RADIUS.lg};
+  border-bottom-left-radius: ${BORDER_RADIUS.lg};
+`
 
 const SwapChartWithPrice = (props: SwapChartProps) => {
   const {
@@ -55,23 +63,14 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
         />
       </RowContainer>
       {isCrossOHLCV ? (
-        <RowContainer
-          direction="column"
-          height="100%"
-          style={{
-            border: '1px solid yellow',
-            borderLeft: '0',
-            borderTopRightRadius: BORDER_RADIUS.lg,
-            borderBottomRightRadius: BORDER_RADIUS.lg,
-          }}
-        >
+        <CrossSwapChartContainer direction="column" height="100%">
           <SvgIcon src={OHLCVCandlesIcon} />
           <Row margin="1em 0 0 0">
             <InlineText size="md" color="yellow7">
               There is not enough data for this pair. Try later.
             </InlineText>
           </Row>
-        </RowContainer>
+        </CrossSwapChartContainer>
       ) : (
         <iframe
           allowFullScreen

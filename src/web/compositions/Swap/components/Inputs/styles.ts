@@ -32,3 +32,9 @@ export const AmountInputContainer = styled(Row)`
     width: 50%;
   }
 `
+
+export const MaxAmountRow = styled(Row)`
+  &:hover {
+    cursor: pointer;
+  }
+`

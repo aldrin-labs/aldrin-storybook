@@ -1,4 +1,6 @@
+import { useSwapRoute } from '@likbes_/swap-hook'
 import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions'
+import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -14,8 +16,6 @@ import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
-import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
-import { useSwapRoute } from '@sb/dexUtils/pools/swap/useSwapRoute'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { formatNumberWithSpaces, notEmpty } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
@@ -24,6 +24,7 @@ import { toMap } from '@sb/utils'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
+import { walletAdapterToWallet } from '@core/solana'
 import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
 import {
   getNumberOfDecimalsFromNumber,
@@ -42,6 +43,10 @@ import SettingIcon from '@icons/settings.svg'
 
 import { INPUT_FORMATTERS } from '../../components/Input'
 import { queryRendererHoc } from '../../components/QueryRenderer'
+import { useConnection } from '../../dexUtils/connection'
+import { getSwapRouteFeesAmount } from '../../dexUtils/pools/swap/getSwapStepFeeUSD'
+import { useTokenInfos } from '../../dexUtils/tokenRegistry'
+import { signAndSendTransactions } from '../../dexUtils/transactions'
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { getTokenDataByMint } from '../Pools/utils'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
@@ -84,6 +89,8 @@ const SwapPage = ({
 }) => {
   const theme = useTheme()
   const { wallet } = useWallet()
+  const connection = useConnection()
+  const tokenInfosMap = useTokenInfos()
 
   const [userTokensData, refreshUserTokensData] = useUserTokenAccounts()
 
@@ -150,6 +157,11 @@ const SwapPage = ({
       : getTokenMintAddressByName(getDefaultQuoteToken(false)) || ''
 
     setOutputTokenMintAddress(outputTokenMint)
+
+    setTimeout(
+      () => setFieldAmount('', 'input', inputTokenMint, outputTokenMint),
+      250
+    )
   }, [])
 
   const [slippage, setSlippage] = useState<number>(0.5)
@@ -187,16 +199,25 @@ const SwapPage = ({
     loading: isLoadingSwapRoute,
     setFieldAmount,
     refresh: refreshAll,
-    exchange,
+    buildTransactions,
+    refreshOpenOrdersMap,
     depositAndFee,
   } = useSwapRoute({
-    pools,
+    wallet,
+    connection: connection.getConnection(),
+    pools: [],
     inputMint: inputTokenMintAddress,
     outputMint: outputTokenMintAddress,
-    selectedInputTokenAddressFromSeveral,
-    selectedOutputTokenAddressFromSeveral,
+    selectedInputTokenAddressFromSeveral: selectedInputTokenAddressFromSeveral
+      ? new PublicKey(selectedInputTokenAddressFromSeveral)
+      : undefined,
+    selectedOutputTokenAddressFromSeveral: selectedOutputTokenAddressFromSeveral
+      ? new PublicKey(selectedOutputTokenAddressFromSeveral)
+      : undefined,
     slippage,
   })
+
+  console.log('swapRoute', { swapRoute, depositAndFee })
 
   const inputDexTokenPrice = coingeckoPricesMap.get(inputSymbol) || 0
   const outputDexTokenPrice = coingeckoPricesMap.get(outputSymbol) || 0
@@ -226,8 +247,9 @@ const SwapPage = ({
 
   const depositAndFeeUSD = depositAndFee * dexTokensPricesMap.get('SOL')
   const poolsFeeUSD = getSwapRouteFeesAmount({
-    swapRoute,
+    swapSteps: swapRoute.steps,
     pricesMap: dexTokensPricesMap,
+    tokenInfosMap,
   })
 
   const totalFeeUSD = depositAndFeeUSD + poolsFeeUSD
@@ -281,7 +303,7 @@ const SwapPage = ({
   const buttonText = getSwapButtonText({
     baseSymbol: inputSymbol,
     minInputAmount: 0,
-    isSwapRouteExists: swapRoute.length !== 0,
+    isSwapRouteExists: swapRoute.steps.length !== 0,
     isEmptyInputAmount,
     isTokenABalanceInsufficient,
     isLoadingSwapRoute,
@@ -290,7 +312,10 @@ const SwapPage = ({
   })
 
   const isButtonDisabled =
-    isEmptyInputAmount || isTokenABalanceInsufficient || isSwapInProgress
+    isEmptyInputAmount ||
+    isTokenABalanceInsufficient ||
+    isSwapInProgress ||
+    isLoadingSwapRoute
 
   return (
     <SwapPageLayout>
@@ -300,6 +325,15 @@ const SwapPage = ({
         height="100%"
         wrap="nowrap"
       >
+        <Row style={{ height: '17.5em', width: '30em', marginRight: '0.6em' }}>
+          <SwapChartWithPrice
+            isCrossOHLCV={swapRoute.steps.length > 1}
+            marketType={getOHLCVMarketTypeFromSwapRoute(swapRoute)}
+            inputTokenMintAddress={getOHLCVSymbols(swapRoute.steps)[0]}
+            outputTokenMintAddress={getOHLCVSymbols(swapRoute.steps)[1]}
+            pricesMap={dexTokensPricesMap}
+          />
+        </Row>
         <SwapContentContainer direction="column">
           <RowContainer justify="flex-start" margin="0 0 1em 0">
             <SwapSearch
@@ -589,7 +623,15 @@ const SwapPage = ({
                     setIsSwapInProgress(true)
 
                     try {
-                      const result = await exchange(dexTokensPricesMap)
+                      const transactionsAndSigners = await buildTransactions(
+                        swapRoute
+                      )
+
+                      const result = await signAndSendTransactions({
+                        wallet: walletAdapterToWallet(wallet),
+                        connection,
+                        transactionsAndSigners,
+                      })
 
                       if (result !== 'success') {
                         notify({
@@ -606,9 +648,6 @@ const SwapPage = ({
                         })
                       }
 
-                      refreshUserTokensData()
-                      refreshAll()
-
                       // reset fields
                       if (result === 'success') {
                         await setFieldAmount('', 'input')
@@ -616,6 +655,15 @@ const SwapPage = ({
 
                       // remove loader
                       setIsSwapInProgress(false)
+
+                      refreshUserTokensData()
+                      refreshAll()
+
+                      if (
+                        swapRoute.steps.some((amm) => amm.ammLabel === 'Serum')
+                      ) {
+                        refreshOpenOrdersMap()
+                      }
                     } catch (e) {
                       console.log('error', e)
                     }
@@ -682,15 +730,6 @@ const SwapPage = ({
           open={isConnectWalletPopupOpen}
           onClose={() => setIsConnectWalletPopupOpen(false)}
         />
-        <Row style={{ height: '17.5em', width: '30em', marginLeft: '0.6em' }}>
-          <SwapChartWithPrice
-            isCrossOHLCV={swapRoute.length > 1}
-            marketType={getOHLCVMarketTypeFromSwapRoute(swapRoute)}
-            inputTokenMintAddress={getOHLCVSymbols(swapRoute)[0]}
-            outputTokenMintAddress={getOHLCVSymbols(swapRoute)[1]}
-            pricesMap={dexTokensPricesMap}
-          />
-        </Row>
       </SwapPageContainer>
     </SwapPageLayout>
   )

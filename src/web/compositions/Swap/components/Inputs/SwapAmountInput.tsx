@@ -3,7 +3,7 @@ import React from 'react'
 
 import SvgIcon from '@sb/components/SvgIcon'
 import { Text } from '@sb/compositions/Addressbook/index'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
+import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InvisibleInput } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { formatNumbersForState } from '@sb/dexUtils/utils'
 
@@ -11,7 +11,7 @@ import { stripByAmount } from '@core/utils/chartPageUtils'
 
 import WalletIcon from '@icons/walletIcon.svg'
 
-import { AmountInputContainer, InputContainer } from './styles'
+import { AmountInputContainer, InputContainer, MaxAmountRow } from './styles'
 
 export const SwapAmountInput = ({
   amount = '',
@@ -43,7 +43,7 @@ export const SwapAmountInput = ({
         <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="gray3">
           {title}
         </Text>
-        <Row onClick={onMaxAmountClick}>
+        <MaxAmountRow onClick={onMaxAmountClick}>
           <SvgIcon
             src={WalletIcon}
             width={FONT_SIZES.sm}
@@ -57,7 +57,7 @@ export const SwapAmountInput = ({
           >
             {maxAmount ? stripByAmount(maxAmount) : '0.00'}
           </Text>
-        </Row>
+        </MaxAmountRow>
       </RowContainer>
       <RowContainer
         wrap="nowrap"

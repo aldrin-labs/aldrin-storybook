@@ -217,12 +217,10 @@ export const SwapContentContainer = styled(Row)`
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: 24em;
-    margin-left: 6em;
   }
 
   @media (min-width: 1920px) {
     width: 30em;
-    margin-left: 8em;
   }
 `
 
