@@ -1,4 +1,5 @@
 import { COLORS } from '@variables/variables'
+import { rgba } from 'polished'
 import styled from 'styled-components'
 
 export interface BlockProps {
@@ -10,7 +11,7 @@ export interface BlockProps {
 
 export const Block = styled.div<BlockProps>`
   background: ${(props: BlockProps) =>
-    props.inner ? props.theme.colors.gray5 : props.theme.colors.gray6};
+    props.inner ? props.theme.colors.white4 : props.theme.colors.white5};
   border-radius: 12px;
   margin: ${(props) => props.margin || '8px'};
   height: 100%;
@@ -41,7 +42,7 @@ export const Block = styled.div<BlockProps>`
 `
 
 export const GreenBlock = styled(Block)`
-  background: ${(props) => props.theme.colors.green8};
+  background-color: ${(props) => rgba(props.theme.colors.green3, 0.15)};
 `
 
 export interface TitleProps {
@@ -54,7 +55,7 @@ export const BlockTitle = styled.h2`
   font-size: 1.25em;
   line-height: 150%;
   margin: 0.25rem 0 0.5rem;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const BlockSubtitle = styled.h3<TitleProps>`
@@ -73,9 +74,9 @@ export interface BlockContentProps {
 export const BlockContent = styled.div<BlockContentProps>`
   padding: 16px 20px;
   position: relative;
-  overflow: hidden;
+
   ${(props) =>
-    props.border ? `border-bottom: 1px solid ${props.theme.colors.gray10}` : ''}
+    props.border ? `border-bottom: 1px solid ${props.theme.colors.white6}` : ''}
 `
 
 export const BlockContentStretched = styled(BlockContent)`

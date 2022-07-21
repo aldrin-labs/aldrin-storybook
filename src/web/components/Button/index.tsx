@@ -12,12 +12,12 @@ import RinLogo from '@icons/blueRINLogo.svg'
 
 const VARIANTS = {
   primary: css`
-    background: ${(props) => props.theme.colors.blue3};
-    border-color: ${(props) => props.theme.colors.blue3};
+    background: ${(props) => props.theme.colors.persistent.blue1};
+    border-color: ${(props) => props.theme.colors.persistent.blue1};
 
     &:disabled {
-      background: ${(props) => props.theme.colors.gray2};
-      border-color: ${(props) => props.theme.colors.gray2};
+      background: ${(props) => props.theme.colors.white2};
+      border-color: ${(props) => props.theme.colors.white2};
     }
   `,
   secondary: css`
@@ -69,8 +69,8 @@ const VARIANTS = {
 
   'outline-white': css`
     background: transparent;
-    border-color: ${(props) => props.theme.colors.white};
-    color: ${(props) => props.theme.colors.white};
+    border-color: ${(props) => props.theme.colors.white1};
+    color: ${(props) => props.theme.colors.white1};
 
     &:disabled {
       color: ${COLORS.hint};

@@ -42,10 +42,10 @@ export interface OnFocusBlurProps {
   onFocus?: () => void
 }
 
-export interface InputProps
-  extends InputBase,
-    OnChangeProps,
-    OnFocusBlurProps {}
+export interface InputProps extends InputBase, OnChangeProps, OnFocusBlurProps {
+  autoFocus?: boolean
+  maxLength?: number
+}
 
 export interface InputFieldProps extends InputBase {
   validate?: FieldValidator

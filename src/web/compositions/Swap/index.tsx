@@ -5,12 +5,19 @@ import { FONT_SIZES } from '@variables/variables'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
+<<<<<<< HEAD
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { PieTimer } from '@sb/components/PieTimer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText, Text } from '@sb/components/Typography'
+=======
+import { Button } from '@sb/components/Button'
+import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
+import { Text } from '@sb/compositions/Addressbook'
+>>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
@@ -164,9 +171,48 @@ const SwapPage = ({
     )
   }, [])
 
+<<<<<<< HEAD
   const [slippage, setSlippage] = useState<number>(0.5)
   const [isTokensAddressesPopupOpen, setIsTokensAddressesPopupOpen] =
     useState(false)
+=======
+  useEffect(() => {
+    const updatedPoolsList = getPoolsForSwapActiveTab({
+      pools: allPools,
+      isStableSwapTabActive,
+    })
+
+    const isPoolExistInNewTab = getSelectedPoolForSwap({
+      pools: updatedPoolsList,
+      baseTokenMintAddress,
+      quoteTokenMintAddress,
+    })
+
+    // set tokens to default one if pool with selected tokens
+    // does not exist in new tab
+    if (!isPoolExistInNewTab) {
+      const defaultBaseTokenMint =
+        getTokenMintAddressByName(getDefaultBaseToken(isStableSwapTabActive)) ||
+        ''
+
+      const defaultQuoteTokenMint =
+        getTokenMintAddressByName(
+          getDefaultQuoteToken(isStableSwapTabActive)
+        ) || ''
+
+      setBaseTokenMintAddress(defaultBaseTokenMint)
+      setQuoteTokenMintAddress(defaultQuoteTokenMint)
+    }
+  }, [isStableSwapTabActive])
+
+  const pools = getPoolsForSwapActiveTab({
+    pools: allPools,
+    isStableSwapTabActive,
+  })
+
+  const [slippage, setSlippage] = useState<number>(0.3)
+  const [isTokensAddressesPopupOpen, openTokensAddressesPopup] = useState(false)
+>>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
@@ -364,11 +410,63 @@ const SwapPage = ({
             <RowContainer margin="0 0 3em 0" justify="space-between">
               <PieTimer duration={15} callback={refreshAll} />
               <Row>
+<<<<<<< HEAD
                 <Row style={{ position: 'relative' }}>
                   <SlippageButton
                     data-testid="increace-slippage-tolerance"
                     onClick={() => {
                       setIsTokensAddressesPopupOpen(true)
+=======
+                <ValueButton className="timer">
+                  <ReloadTimer
+                    data-testid="swap-reload-data-timer"
+                    duration={15}
+                    initialRemainingTime={15}
+                    callback={refreshAll}
+                    showTime
+                    margin="0"
+                    timerStyles={{ background: 'transparent' }}
+                  />
+                </ValueButton>
+                {baseTokenMintAddress && quoteTokenMintAddress && (
+                  <ValueButton
+                    data-testid="swap-open-tokens-info-tooltip"
+                    onClick={() => openTokensAddressesPopup(true)}
+                  >
+                    i
+                  </ValueButton>
+                )}
+              </Row>
+              <Row>
+                <Text padding="0 0.8rem 0 0">Slippage Tolerance:</Text>
+                <Row style={{ position: 'relative' }}>
+                  <ValueInput
+                    data-testid="slippage-tolerance-field"
+                    onChange={(e) => {
+                      if (
+                        numberWithOneDotRegexp.test(e.target.value) &&
+                        getNumberOfIntegersFromNumber(e.target.value) <= 2 &&
+                        getNumberOfDecimalsFromNumber(e.target.value) <= 2
+                      ) {
+                        setSlippage(e.target.value)
+                      }
+                    }}
+                    onBlur={() => {
+                      if (+slippage <= 0) {
+                        setSlippage(0.3)
+                      }
+                    }}
+                    value={slippage}
+                    placeholder="1.00"
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      fontFamily: 'Avenir Next Medium',
+                      color: theme.colors.white1,
+                      fontSize: FONT_SIZES.sm,
+                      right: '1.5rem',
+>>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
                     }}
                   >
                     <SvgIcon
@@ -455,6 +553,7 @@ const SwapPage = ({
                       setFieldAmount(v, 'output')
                       return
                     }
+<<<<<<< HEAD
 
                     if (
                       numberWithOneDotRegexp.test(v) &&
@@ -462,6 +561,23 @@ const SwapPage = ({
                       getNumberOfDecimalsFromNumber(v) <= 8
                     ) {
                       setFieldAmount(v, 'output')
+=======
+                    disabled
+                    roundSides={['bottom-left']}
+                    appendComponent={
+                      <Text
+                        fontFamily="Avenir Next"
+                        fontSize={FONT_SIZES.sm}
+                        color="white1"
+                      >
+                        ≈$
+                        {outputUSD
+                          ? formatNumberToUSFormat(
+                              stripDigitPlaces(outputUSD, 2)
+                            )
+                          : '0.00'}
+                      </Text>
+>>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
                     }
                   }}
                   appendComponent={
@@ -587,6 +703,7 @@ const SwapPage = ({
                   {inputAmount}) USDC
                 </Text>
               </RowContainer>
+<<<<<<< HEAD
             )} */}
             <RowContainer margin="3.5em 0 0 0">
               {!wallet.publicKey ? (
@@ -610,6 +727,24 @@ const SwapPage = ({
                 >
                   Connect wallet
                 </BtnCustom>
+=======
+            )}
+            <RowContainer>
+              {!publicKey ? (
+                <span style={{ width: '100%' }}>
+                  <Button
+                    $width="xl"
+                    $padding="lg"
+                    theme={theme}
+                    style={{ height: '4em' }}
+                    onClick={() => {
+                      setIsConnectWalletPopupOpen(true)
+                    }}
+                  >
+                    Connect wallet
+                  </Button>
+                </span>
+>>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
               ) : (
                 <SwapButton
                   isHighPriceDiff={isHighPriceDiff}
@@ -673,6 +808,107 @@ const SwapPage = ({
                 </SwapButton>
               )}
             </RowContainer>
+<<<<<<< HEAD
+=======
+
+            {isAmountsEntered && (
+              <RowContainer direction="column" margin="2.4rem 0 0 0">
+                <RowContainer justify="space-between">
+                  <BlackRow justify="center" width="calc(50% - 0.8rem)">
+                    <Row>
+                      <RowValue>
+                        <RowAmountValue>1</RowAmountValue>
+                        {priceShowField === 'input' ? baseSymbol : quoteSymbol}
+                      </RowValue>
+                      <span
+                        style={{
+                          color: theme.colors.white1,
+                          padding: '0 0.5rem',
+                        }}
+                        onClick={() =>
+                          setPriceShowField(
+                            priceShowField === 'input' ? 'output' : 'input'
+                          )
+                        }
+                      >
+                        ⇌
+                      </span>
+                      <RowValue>
+                        <RowAmountValue>
+                          {formatNumberToUSFormat(estimatedPrice)}
+                        </RowAmountValue>
+                        {priceShowField === 'input' ? quoteSymbol : baseSymbol}
+                      </RowValue>
+                    </Row>
+                  </BlackRow>
+                  <BlackRow width="calc(50% - 0.8rem)">
+                    <RowTitle>Price Impact:</RowTitle>
+                    <RowAmountValue>
+                      {priceImpact < 0.1
+                        ? '< 0.1'
+                        : stripDigitPlaces(priceImpact, 2)}
+                      %
+                    </RowAmountValue>
+                  </BlackRow>
+                </RowContainer>
+
+                <RowContainer justify="space-between">
+                  <BlackRow width="calc(50% - 0.8rem)">
+                    <RowTitle>Trading fee:</RowTitle>
+                    <RowValue>
+                      $
+                      {formatNumberToUSFormat(
+                        stripDigitPlaces(
+                          getFeeFromSwapRoute({
+                            route: swapRoute,
+                            tokenInfos,
+                            pricesMap: dexTokensPricesMap,
+                          }),
+                          2
+                        )
+                      )}
+                    </RowValue>
+                  </BlackRow>
+                  <BlackRow width="calc(50% - 0.8rem)">
+                    <RowTitle>Network fee:</RowTitle>
+                    <RowValue style={{ display: 'flex' }}>
+                      {stripDigitPlaces(
+                        networkFee,
+                        isOpenOrdersCreationRequired ? 4 : 6
+                      )}{' '}
+                      SOL{' '}
+                      {isOpenOrdersCreationRequired && (
+                        <DarkTooltip
+                          title={
+                            'The route includes the Serum market, which requires opening an "Open Order" account, which costs 0.024 SOL. You can close the account later and get the fee back.'
+                          }
+                        >
+                          <CircleIconContainer
+                            size="1em"
+                            style={{
+                              marginLeft: '.5rem',
+                            }}
+                          >
+                            i
+                          </CircleIconContainer>
+                        </DarkTooltip>
+                      )}
+                    </RowValue>
+                  </BlackRow>
+                </RowContainer>
+
+                <BlackRow width="100%">
+                  <RowTitle>Minimum Received:</RowTitle>
+                  <RowValue>
+                    {formatNumberToUSFormat(
+                      stripByAmount(outAmountWithSlippageWithoutDecimals)
+                    )}{' '}
+                    {quoteSymbol}
+                  </RowValue>
+                </BlackRow>
+              </RowContainer>
+            )}
+>>>>>>> 9302e154cf46c87e81b9678961074eabab97fbb8
           </SwapBlockTemplate>
         </SwapContentContainer>
 

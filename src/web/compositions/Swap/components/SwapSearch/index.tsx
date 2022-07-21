@@ -289,8 +289,8 @@ export const SwapSearch: React.FC<SwapSearchProps> = (props) => {
                     <TokenName color="white">{quoteTokenSymbol}</TokenName>
                   </InlineText>
                   <InlineText size="sm" weight={400}>
-                    <TokenName color="gray1">{baseTokenName}</TokenName> {`- `}
-                    <TokenName color="gray1">{quoteTokenName}</TokenName>
+                    <TokenName color="white1">{baseTokenName}</TokenName> {`- `}
+                    <TokenName color="white1">{quoteTokenName}</TokenName>
                   </InlineText>
                 </Row>
               </SwapItem>

@@ -238,7 +238,7 @@ const Dashboard = ({
       direction="column"
       justify="flex-start"
       style={{
-        background: theme.colors.gray9,
+        background: theme.colors.white6,
         flexWrap: 'nowrap',
         overflow: 'auto',
         padding: '0 0 6rem 0',
@@ -250,7 +250,7 @@ const Dashboard = ({
           margin="0 0 3rem 0"
         >
           <Title
-            color={theme.colors.white}
+            color={theme.colors.white1}
             fontFamily="Avenir Next Demi"
             fontSize="3rem"
           >
@@ -289,7 +289,7 @@ const Dashboard = ({
             openOrders={openOrders}
             stylesForTable={{ borderRadius: '1.5rem' }}
             styles={{
-              background: theme.colors.gray6,
+              background: theme.colors.white5,
               height: '100%',
             }}
           />
@@ -301,7 +301,7 @@ const Dashboard = ({
           margin="0 0 3rem 0"
         >
           <Title
-            color={theme.colors.white}
+            color={theme.colors.white1}
             fontFamily="Avenir Next Demi"
             fontSize="3rem"
           >

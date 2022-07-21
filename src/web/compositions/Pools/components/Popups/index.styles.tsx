@@ -7,10 +7,10 @@ export const BoldHeader = styled.h2`
   font-family: Avenir Next Bold;
   font-size: 2.5rem;
   letter-spacing: 0.01rem;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
 `
 export const StyledInput = styled.div`
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 1.5rem;
   color: #fbf2f2;
   font-size: 2rem;
@@ -36,15 +36,16 @@ export const TokenContainer = styled.div`
   left: ${(props: TokenContainerProps) => props.left};
 `
 export const Line = styled.div`
-  border-top: 0.1rem solid ${(props) => props.theme.colors.gray1};
-  height: 0rem;
+  border-top: 0.1rem solid ${(props) => props.theme.colors.white1};
+  height: 0;
   margin: 2rem 0;
   width: 100%;
 `
 export const InvisibleInput = styled.input`
   width: 100%;
-  background: inherit;
-  color: ${(props) => props.theme.colors.gray0};
+  background: ${(props) => props.theme.colors.white4};
+  color: ${(props) => props.theme.colors.white1};
+  font-size: ${FONT_SIZES.xmd};
   outline: none;
   border: none;
 
@@ -63,7 +64,7 @@ export const StyledPaper = styled(({ ...props }) => <Paper {...props} />)`
   padding: 2rem;
   width: 55rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   border-radius: 1.6rem;
   font-size: 16px;
 `
@@ -72,6 +73,6 @@ export const ClaimRewardsStyledPaper = styled(Paper)`
   height: auto;
   padding: 2rem 4rem;
   width: 80rem;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 1.6rem;
 `

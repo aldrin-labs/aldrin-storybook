@@ -51,7 +51,7 @@ const createChart = ({
           },
           ticks: {
             align: 'center',
-            color: theme.colors.gray1,
+            color: theme.colors.white1,
             maxRotation: 0,
             font: {
               size: 12,
@@ -69,7 +69,7 @@ const createChart = ({
           ticks: {
             padding: 15,
             callback: (value) => `$${stripByAmountAndFormat(value)}`,
-            color: theme.colors.gray1,
+            color: theme.colors.white1,
             font: {
               size: 12,
               family: MAIN_FONT,
@@ -179,7 +179,7 @@ const createTotalVolumeLockedChart = ({
       {
         fill: 'origin',
         tension: 0.5,
-        borderColor: theme.colors.green6,
+        borderColor: theme.colors.green1,
         backgroundColor: gradient,
         borderWidth: 2,
         pointRadius: 0,

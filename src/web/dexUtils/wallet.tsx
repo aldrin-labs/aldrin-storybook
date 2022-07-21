@@ -10,7 +10,6 @@ import {
   Transaction,
   TransactionInstruction,
 } from '@solana/web3.js'
-import { noop } from 'lodash-es'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 import { WalletAdapter } from '@sb/dexUtils/types'
@@ -46,7 +45,6 @@ export interface WalletContextType {
   setProviderUrl: (newState: string) => void
   setAutoConnect: (autoConnect: boolean) => void
   providerName: string
-  providerFullName?: string
 }
 
 const WalletContext = React.createContext<WalletContextType | null>(null)
@@ -71,14 +69,10 @@ export const WalletProvider: React.FC = ({ children }) => {
     [providerUrl]
   )
 
-  const wallet = useMemo(() => {
-    const adapter = (provider?.adapter || noop)(
-      providerUrl,
-      endpoint
-    ) as any as WalletAdapter
-
-    return adapter
-  }, [provider, endpoint])
+  const wallet = useMemo(
+    () => provider?.adapter(providerUrl, endpoint) as any as WalletAdapter,
+    [provider, endpoint]
+  )
 
   const connectWalletHash = useMemo(
     () => window.location.hash,
@@ -166,7 +160,6 @@ export const WalletProvider: React.FC = ({ children }) => {
     setProviderUrl,
     setAutoConnect,
     providerName: w?.name ?? providerUrl,
-    providerFullName: w?.fullName,
   }
   return (
     <WalletContext.Provider value={context}>{children}</WalletContext.Provider>
@@ -184,7 +177,6 @@ export function useWallet() {
     providerUrl: context.providerUrl,
     setProvider: context.setProviderUrl,
     providerName: context.providerName,
-    providerFullName: context.providerFullName,
     setAutoConnect: context.setAutoConnect,
   }
 }
@@ -341,6 +333,7 @@ export function parseMintData(data) {
 
 export function useBalanceInfo(publicKey) {
   const { data: accountInfo, isLoading: accountInfoLoading } = useAccountInfo(publicKey)
+
   const { mint, owner, amount } = accountInfo?.owner.equals(TOKEN_PROGRAM_ID)
     ? parseTokenAccountData(accountInfo.data)
     : {}

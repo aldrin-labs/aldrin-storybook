@@ -37,7 +37,7 @@ const TechIssues = () => {
           fontFamily: 'DM Sans',
           fontWeight: 'bold',
           fontSize: '2.5rem',
-          color: theme.colors.gray0,
+          color: theme.colors.white1,
           marginTop: '5rem',
         }}
       >
@@ -68,7 +68,7 @@ const TechIssues = () => {
         style={{
           fontFamily: 'DM Sans',
           fontSize: '2rem',
-          color: theme.colors.gray0,
+          color: theme.colors.white1,
           marginTop: '8rem',
         }}
       >

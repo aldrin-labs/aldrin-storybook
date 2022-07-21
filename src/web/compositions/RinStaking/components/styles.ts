@@ -4,25 +4,25 @@ import styled from 'styled-components'
 import { Button } from '@sb/components/Button'
 
 export const RestakeButton = styled(Button)`
-  color: ${(props) => props.theme.colors.green7};
+  color: ${(props) => props.theme.colors.green3};
   border: none;
   margin-right: 10px;
 
   &,
   &:disabled {
     color: ${(props) =>
-      props.$loading ? 'transparent' : props.theme.colors.gray1};
+      props.$loading ? 'transparent' : props.theme.colors.white1};
     background: none;
   }
 `
 
 export const ClaimButton = styled(Button)`
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   border: none;
 
   &,
   &:disabled {
-    background: ${(props) => props.theme.colors.gray10};
+    background: ${(props) => props.theme.colors.white6};
   }
 
   img {

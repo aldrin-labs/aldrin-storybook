@@ -199,7 +199,7 @@ export const FeedbackPopup = ({
           <StyledRowContainer margin="1rem 0">
             <RowContainer wrap="nowrap">
               <Text
-                color="gray1"
+                color="white1"
                 fontSize="1.5rem"
                 padding="0 1rem 0 0"
                 whiteSpace="nowrap"
@@ -231,7 +231,7 @@ export const FeedbackPopup = ({
           <RowContainer margin="1rem 0">
             <RowContainer wrap="nowrap">
               <Text
-                color="gray1"
+                color="white1"
                 fontSize="1.5rem"
                 padding="0 1rem 0 0"
                 whiteSpace="nowrap"
@@ -260,7 +260,7 @@ export const FeedbackPopup = ({
             </RowContainer>
           </RowContainer>
           <RowContainer justify="space-between">
-            {isMobile ? (
+            {isMobile && (
               <WhiteButton
                 style={{
                   width: '48%',
@@ -272,7 +272,7 @@ export const FeedbackPopup = ({
               >
                 Cancel
               </WhiteButton>
-            ) : null}
+            )}
             <SubmitButton
               isDisabled={isDisabled}
               disabled={isDisabled}

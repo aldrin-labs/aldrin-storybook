@@ -93,7 +93,7 @@ const OrderBookTable = ({
                 terminalViewMode,
               })}
               headerStyle={{
-                color: theme.colors.gray1,
+                color: theme.colors.white1,
                 paddingLeft: '.5rem',
                 paddingTop: '.25rem',
                 marginLeft: 0,
@@ -149,7 +149,7 @@ const OrderBookTable = ({
                   width={width}
                   style={{
                     textAlign: 'left',
-                    color: theme.colors.white,
+                    color: theme.colors.white1,
                   }}
                 />
               )}
@@ -164,7 +164,7 @@ const OrderBookTable = ({
                 width={width}
                 style={{
                   textAlign: 'right',
-                  color: theme.colors.white,
+                  color: theme.colors.white1,
                   ...(isMobile ? { fontSize: '1.8rem' } : {}),
                 }}
               />

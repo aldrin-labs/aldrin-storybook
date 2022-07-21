@@ -62,8 +62,8 @@ export const ClearButton = styled(TitleButton)`
   position: absolute;
   top: -2px;
   right: 1rem;
-  color: #0E02EC;
-  border-color: #0E02EC;
+  color: #0e02ec;
+  border-color: #0e02ec;
   font-size: 1.1rem;
   min-width: 70px;
   font-weight: bold;
@@ -100,4 +100,7 @@ export const StyledTitle = styled.span`
   padding: 0.7rem 0;
   letter-spacing: 0.01rem;
   color: ${(props) => props.color || '#93a0b2'};
+`
+export const StyledPriceText = styled(StyledTitle)`
+  color: #93939b;
 `

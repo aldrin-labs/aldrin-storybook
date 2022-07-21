@@ -185,7 +185,7 @@ const Popup = ({
         <WhiteText>Gas Fees</WhiteText>
         <WhiteText
           style={{
-            color: theme.colors.green7,
+            color: theme.colors.green3,
           }}
         >
           {stripDigitPlaces(SOLFeesForRestake, 8)} SOL

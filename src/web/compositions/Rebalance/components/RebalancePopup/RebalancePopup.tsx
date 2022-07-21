@@ -393,7 +393,7 @@ export const RebalancePopup = ({
         {rebalanceStep === 'done' && (
           <RowContainer height="100%" margin="4rem 0" direction="column">
             <SvgIcon src={GreenCheckMark} width="3rem" height="3rem" />{' '}
-            <Text color={theme.colors.green7} style={{ marginTop: '1rem' }}>
+            <Text color={theme.colors.green3} style={{ marginTop: '1rem' }}>
               Done
             </Text>
           </RowContainer>

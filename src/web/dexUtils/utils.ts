@@ -27,7 +27,7 @@ export const CCAIListingTime = 1623333600
 
 export const isCCAITradingEnabled = () => Date.now() / 1000 > CCAIListingTime
 
-export async function sleep(ms) {
+export async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
@@ -75,6 +75,7 @@ export function useLocalStorageState<T>(
     if (storedState) {
       return JSON.parse(storedState)
     }
+
     return defaultState
   })
 

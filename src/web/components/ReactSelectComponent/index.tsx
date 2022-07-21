@@ -91,14 +91,12 @@ class ReactSelectComponent extends Component<IProps> {
         ...base,
         color: textColor,
         fontSize: '1em',
-        fontFamily: fontFamily,
+        fontFamily,
         backgroundColor: state.isSelected
           ? theme.palette.action.selected
-          : // ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.2)
-          state.isFocused
+          : state.isFocused
           ? theme.palette.action.hover
-          : // ? hexToRgbAWithOpacity(theme.palette.primary.contrastText, 0.1)
-            background,
+          : background,
         [':active']: null,
         ...optionStyles,
       }),

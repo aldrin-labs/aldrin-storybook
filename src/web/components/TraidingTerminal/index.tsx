@@ -196,12 +196,12 @@ export const TradeInputContent = ({
           {title}
         </AbsoluteInputTitle>
       )}
-      {needPreSymbol ? (
+      {needPreSymbol && (
         <UpdatedCoin style={{ width: 0 }} left="2rem">
           {preSymbol}
         </UpdatedCoin>
-      ) : null}
-      {needTitleBlock ? (
+      )}
+      {needTitleBlock && (
         <>
           {needTooltip ? (
             <DarkTooltip title={titleForTooltip}>
@@ -215,7 +215,7 @@ export const TradeInputContent = ({
             </TitleForInput>
           )}
         </>
-      ) : null}
+      )}
 
       <TradeInput
         align={textAlign}
@@ -611,21 +611,21 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: newTheme.colors.gray5,
+                background: newtheme.colors.white4,
                 borderRadius: '2rem',
                 alignItems: 'center',
               }}
               firstHalfStyleProperties={{
-                activeColor: newTheme.colors.green7,
-                activeBackgroundColor: newTheme.colors.gray10,
+                activeColor: newheme.colors.green3,
+                activeBackgroundColor: newtheme.colors.white6,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: newTheme.colors.red4,
-                activeBackgroundColor: newTheme.colors.gray10,
+                activeColor: newTheme.colors.red3,
+                activeBackgroundColor: newtheme.colors.white6,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
@@ -653,22 +653,22 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: newTheme.colors.gray5,
+                background: newtheme.colors.white4,
                 borderRadius: '2rem',
                 alignItems: 'center',
                 marginTop: '2rem',
               }}
               firstHalfStyleProperties={{
-                activeColor: newTheme.colors.gray0,
-                activeBackgroundColor: newTheme.colors.gray10,
+                activeColor: newtheme.colors.white1,
+                activeBackgroundColor: newtheme.colors.white6,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: newTheme.colors.gray0,
-                activeBackgroundColor: newTheme.colors.gray10,
+                activeColor: newtheme.colors.white1,
+                activeBackgroundColor: newtheme.colors.white6,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
@@ -697,7 +697,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
             <InputsBlock direction="column">
               {priceType !== 'market' &&
               priceType !== 'stop-market' &&
-              priceType !== 'maker-only' ? (
+              priceType !== 'maker-only' && (
                 <InputRowContainer
                   key="limit-price"
                   padding=".6rem 0"
@@ -714,7 +714,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                     symbol={pair[1]}
                   />
                 </InputRowContainer>
-              ) : null}
+              )}
               {/* {priceType === 'market' && !tradingBotEnabled && (
                 <InputRowContainer
                   style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}

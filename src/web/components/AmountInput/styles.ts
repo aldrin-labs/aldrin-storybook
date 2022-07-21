@@ -9,18 +9,21 @@ import WalletIcon from './wallet.svg'
 
 export const AmountInputElement = styled(Input)`
   height: 4.25em;
-  background-color: ${(props) => props.theme.colors.gray5};
-  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
+  background-color: ${(props) => props.theme.colors.white3};
+  border: 0.1rem solid ${(props) => props.theme.colors.white3};
   user-select: none;
 
   &:focus {
-    border: 0.1rem solid ${(props) => props.theme.colors.gray2};
+    border: 0.1rem solid ${(props) => props.theme.colors.white2};
   }
 
   ${InputEl} {
     padding-left: 0.7em;
     flex: 0 1 auto;
     min-width: 0;
+    overflow: visible;
+    padding-right: 3em;
+    width: 115%;
   }
 
   ${Append} {
@@ -54,9 +57,9 @@ export const ButtonsContainer = styled.div`
 
   ${Button} {
     margin: 0 2px;
-    background: ${(props) => props.theme.colors.black};
+    background: ${(props) => props.theme.colors.white6};
     border: 0;
-    color: ${(props) => props.theme.colors.red5};
+    color: ${(props) => props.theme.colors.red1};
     font-weight: 600;
     text-align: center;
 

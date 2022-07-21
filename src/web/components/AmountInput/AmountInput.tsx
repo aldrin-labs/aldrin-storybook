@@ -59,6 +59,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
       size={inputSize}
       label={label}
       disabled={disabled}
+      maxLength={31}
       append={
         <ButtonsBlock>
           <TokenNameWrap>{tokenName}</TokenNameWrap>
@@ -66,11 +67,11 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
             <MaxValue color="green7" weight={600}>
               {formatNumberWithSpaces(amount)}
             </MaxValue>
-            {!!(showButtons || Number.isFinite(usdValue)) && (
+            {(showButtons || Number.isFinite(usdValue)) && (
               <ButtonsContainer>
                 <div>
                   {Number.isFinite(usdValue) && (
-                    <InlineText color="gray1">
+                    <InlineText color="white1">
                       ≈${stripByAmountAndFormat(usdValue || 0, 2)}
                     </InlineText>
                   )}

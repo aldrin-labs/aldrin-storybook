@@ -326,15 +326,16 @@ const PairSelector = ({
               }
               rowClassName="pairSelectorRow"
               rowStyle={{
+                overflow: 'visible',
                 outline: 'none',
                 cursor: 'pointer',
                 fontSize: '1.4rem',
-                color: theme.colors.gray1,
+                color: theme.colors.white1,
                 borderBottom: `0.05rem solid ${theme.colors.disabled}`,
               }}
               headerHeight={window.outerHeight / 40}
               headerStyle={{
-                color: theme.colors.gray1,
+                color: theme.colors.white1,
                 paddingLeft: '.5rem',
                 paddingTop: '.25rem',
                 marginLeft: 0,
@@ -353,7 +354,7 @@ const PairSelector = ({
                 dataKey="emoji"
                 headerStyle={{
                   textTransform: 'capitalize',
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: '6px',
                   paddingLeft: '1rem',
                   fontSize: '1.2rem',
@@ -367,7 +368,7 @@ const PairSelector = ({
                 dataKey="symbol"
                 headerStyle={{
                   textTransform: 'capitalize',
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: '6px',
                   paddingLeft: '1rem',
                   fontSize: '1.4rem',
@@ -386,7 +387,7 @@ const PairSelector = ({
                 dataKey="volume24hChange"
                 headerStyle={{
                   textTransform: 'capitalize',
-                  color: theme.colors.gray1,
+                  color: theme.colors.white1,
                   paddingRight: 'calc(10px)',
                   fontSize: '1.4rem',
                   textAlign: 'left',

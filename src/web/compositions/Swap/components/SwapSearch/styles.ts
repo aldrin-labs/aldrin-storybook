@@ -24,9 +24,9 @@ export const Container = styled.div`
 export const SearchInput = styled(Input)`
   background: none;
   margin: 0;
-  border: 0.1rem solid ${(props) => props.theme.colors.gray7};
-  background: ${(props) => props.theme.colors.gray8};
   height: 100%;
+  border: 0.1rem solid ${(props) => props.theme.colors.white4};
+  background: ${(props) => props.theme.colors.white4};
 
   div {
     width: 100%;
@@ -47,9 +47,9 @@ export const SearchInput = styled(Input)`
 export const SwapsList = styled.div`
   position: absolute;
   width: 100%;
-  background: ${(props) => props.theme.colors.gray8};
   border-bottom-left-radius: ${BORDER_RADIUS.md};
   border-bottom-right-radius: ${BORDER_RADIUS.md};
+  background: ${(props) => props.theme.colors.white4};
   z-index: 20;
   padding: 10px 0;
   box-shadow: 0px 8px 8px -2px ${(props) => props.theme.colors.shadowColor};

@@ -2,7 +2,7 @@ import { FONT_SIZES } from '@variables/variables'
 import React from 'react'
 
 import SvgIcon from '@sb/components/SvgIcon'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/compositions/Addressbook'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { InvisibleInput } from '@sb/compositions/Pools/components/Popups/index.styles'
 import { formatNumbersForState } from '@sb/dexUtils/utils'
@@ -40,7 +40,7 @@ export const SwapAmountInput = ({
       padding="0em 1em"
     >
       <RowContainer justify="space-between">
-        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="gray3">
+        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="white1">
           {title}
         </Text>
         <MaxAmountRow onClick={onMaxAmountClick}>

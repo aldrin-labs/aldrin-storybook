@@ -31,7 +31,7 @@ export const AnimatedImage = styled.svg`
   }
 
   .with-fill {
-    fill: ${(props) => props.color || props.theme.colors.gray0};
+    fill: ${(props) => props.color || props.theme.colors.white1};
   }
 `
 
