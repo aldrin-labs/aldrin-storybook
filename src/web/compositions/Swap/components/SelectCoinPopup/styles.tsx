@@ -10,7 +10,7 @@ export const UpdatedPaper = styled(({ ...props }) => (
   <StyledPaper {...props} />
 ))`
   font-size: 16px;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   width: 30em;
   overflow: auto;
 
@@ -24,7 +24,7 @@ export const UpdatedPaper = styled(({ ...props }) => (
 export const SelectorRow = styled(({ ...props }) => (
   <RowContainer {...props} />
 ))`
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 1.2rem;
   margin-bottom: 0.8em;
   padding: 1.5em;

@@ -43,7 +43,7 @@ export const IconsInner = styled.div`
 `
 
 export const Wrap = styled.div`
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   position: absolute;
   left: 3px;
   z-index: 1000;
@@ -64,7 +64,7 @@ export const IconsContainer = styled.div`
   height: 24px;
 
   ${Anchor} {
-    background: ${(props) => props.theme.colors.gray6};
+    background: ${(props) => props.theme.colors.white5};
     border-radius: 50%;
     width: 26px;
     height: 26px;

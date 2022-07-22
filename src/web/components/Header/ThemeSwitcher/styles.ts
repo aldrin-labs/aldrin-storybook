@@ -6,7 +6,7 @@ export const SwitcherContainer = styled.div`
   display: flex;
   align-items: center;
   align-self: center;
-  background-color: ${(props) => props.theme.colors.gray6};
+  background-color: ${(props) => props.theme.colors.white5};
   padding: 0.25em;
   border-radius: 12px;
   margin-left: 1em;
@@ -22,7 +22,7 @@ export const SwitchControl = styled.div<SwitchControlProps>`
   justify-content: center;
   cursor: pointer;
   background-color: ${(props) =>
-    props.$active ? props.theme.colors.gray12 : 'inherit'};
+    props.$active ? props.theme.colors.white4 : 'inherit'};
   width: 2em;
   height: 2em;
   padding: 0.6em;

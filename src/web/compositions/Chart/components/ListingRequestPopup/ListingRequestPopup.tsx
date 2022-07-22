@@ -463,7 +463,7 @@ const ListingRequestPopup = ({
                       rel="noopener noreferrer"
                       href="https://docs.aldrin.com/dex/how-to-list-a-market-on-aldrin-dex"
                       style={{
-                        color: theme.colors.green7,
+                        color: theme.colors.green3,
                         textDecoration: 'none',
                       }}
                     >
@@ -676,7 +676,7 @@ const ListingRequestPopup = ({
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
-                          color: theme.colors.green7,
+                          color: theme.colors.green3,
                           textDecoration: 'none',
                         }}
                       >

@@ -1,6 +1,5 @@
+import { BREAKPOINTS } from '@variables/variables'
 import styled from 'styled-components'
-
-import { BREAKPOINTS } from '../../../variables/variables'
 
 // put overflow-x hidden since
 // we dont need it to horizontal scrollbar
@@ -12,7 +11,7 @@ export const AppGridLayout = styled.div`
   flex-direction: column;
   position: relative;
   overflow-x: hidden !important;
-  background: ${(props) => props.theme.colors.gray9};
+  background: ${(props) => props.theme.colors.white6};
   height: ${(props) =>
     props.isRewards
       ? 'auto'

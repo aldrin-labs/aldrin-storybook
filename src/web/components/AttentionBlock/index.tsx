@@ -26,7 +26,7 @@ export const Title = styled(
 )`
   font-family: Avenir Next Medium;
   font-size: ${(props) => props.fontSize || '1.4rem'};
-  color: ${(props) => props.color || props.theme.colors.gray4};
+  color: ${(props) => props.color || props.theme.colors.white4};
   text-align: ${(props) => props.textAlign || 'center'};
 
   ${(props) => props.style};

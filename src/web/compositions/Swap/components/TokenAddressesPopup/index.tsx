@@ -17,7 +17,7 @@ const StyledPaper = styled(Paper)`
   width: auto;
   min-width: 65rem;
   box-shadow: 0px 0px 0.8rem 0px rgba(0, 0, 0, 0.45);
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 0.8rem;
   overflow: hidden;
   padding: 3rem 2rem;

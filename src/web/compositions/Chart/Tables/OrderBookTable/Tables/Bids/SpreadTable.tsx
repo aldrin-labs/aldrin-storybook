@@ -76,7 +76,7 @@ const SpreadTable = ({
               updateTerminalPriceFromOrderbook(+rowData.price)
             }}
             headerStyle={{
-              color: theme.colors.gray1,
+              color: theme.colors.white1,
               paddingLeft: '.5rem',
               paddingTop: '.25rem',
               marginLeft: 0,
@@ -128,7 +128,7 @@ const SpreadTable = ({
                 headerStyle={{ textAlign: 'left', paddingRight: '.9rem' }}
                 style={{
                   textAlign: 'left',
-                  color: theme.colors.white,
+                  color: theme.colors.white1,
                 }}
               />
             )}
@@ -142,7 +142,7 @@ const SpreadTable = ({
               }}
               style={{
                 textAlign: 'right',
-                color: theme.colors.white,
+                color: theme.colors.white1,
                 ...(isMobile ? { fontSize: '1.8rem' } : {}),
               }}
             />

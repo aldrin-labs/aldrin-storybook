@@ -8,7 +8,7 @@ export const InputContainer = styled(RowContainer)`
   justify-content: space-between;
   height: 4em;
   background: ${(props) =>
-    props.disabled ? props.theme.colors.gray5 : props.theme.colors.gray5};
+    props.disabled ? props.theme.colors.white4 : props.theme.colors.white4};
   border: none;
   border-radius: 0;
   ${(props) =>
@@ -21,13 +21,13 @@ export const DropdownIconContainer = styled(Row)`
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
 
   svg {
     width: 0.5875em;
     height: 0.5875em;
     path {
-      stroke: ${(props) => props.theme.colors.gray1};
+      stroke: ${(props) => props.theme.colors.white1};
     }
   }
 `

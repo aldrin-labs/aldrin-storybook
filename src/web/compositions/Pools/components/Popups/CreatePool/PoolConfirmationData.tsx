@@ -154,7 +154,7 @@ export const PoolConfirmationData: React.FC<PoolConfirmationDataProps> = (
         <WarningIcon>
           <SvgIcon src={Attention} height="40px" />
         </WarningIcon>
-        <InlineText color="primaryWhite" size="sm">
+        <InlineText color="persistent.white1" size="sm">
           Please make sure you have enough SOL to proceed transaction. You will
           need to sign several transactions, and then your pool will appear in
           the list of pools and in the &quot;Your Liquidity&quot; tab.

@@ -39,7 +39,6 @@ export const ReusableTitle = styled(
   font-style: normal;
   font-weight: normal;
   font-size: ${(props) => props.fontSize || '1.4rem'};
-  text-align: center;
   color: ${(props) => props.color || '#ecf0f3'};
   text-align: ${(props) => props.textAlign || 'center'};
   margin: ${(props) => props.margin || '0'};
@@ -119,7 +118,7 @@ export const HeaderContainer = styled((props) => <RowContainer {...props} />)`
 
 export const PairSelectorContainerGrid = styled((props) => <Grid {...props} />)`
   .pairSelectorRow:hover {
-    background: ${(props) => props.theme.colors.gray6};
+    background: ${(props) => props.theme.colors.white5};
   }
 `
 
@@ -153,7 +152,7 @@ export const Text = styled.div`
 export const Title = styled(({ color, fontSize, fontFamily, ...rest }) => (
   <span {...rest} />
 ))`
-  color: ${(props) => props.color || props.theme.colors.white};
+  color: ${(props) => props.color || props.theme.colors.white1};
   font-size: ${(props) => props.fontSize || '1.6rem'};
   font-family: ${(props) => props.fontFamily || 'Avenir Next'};
 `
@@ -172,7 +171,7 @@ export const TopBarTitle = styled((props) => <Title {...props} />)`
 
 export const WhiteTitle = styled((props) => <Title {...props} />)`
   font-size: 1.6rem;
-  color: ${(props) => props.color || props.theme.colors.gray0};
+  color: ${(props) => props.color || props.theme.colors.white1};
   font-weight: ${(props) => props.fontWeight || 'bold'};
   white-space: nowrap;
 

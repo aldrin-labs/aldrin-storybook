@@ -170,7 +170,7 @@ const MarketStats: React.FC<IProps> = (props) => {
         <PanelCard marketType={marketType}>
           <PanelCardValue
             style={{
-              color: showGreen ? theme.colors.green7 : theme.colors.red3,
+              color: showGreen ? theme.colors.green3 : theme.colors.red3,
               fontSize: '2.3rem',
               letterSpacing: '0.01rem',
               fontFamily: 'Avenir Next Demi',
@@ -187,7 +187,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               style={{
                 color:
                   +priceChangePercentage > 0
-                    ? theme.colors.green7
+                    ? theme.colors.green3
                     : theme.colors.red3,
               }}
             >
@@ -198,7 +198,7 @@ const MarketStats: React.FC<IProps> = (props) => {
               style={{
                 color:
                   +priceChangePercentage > 0
-                    ? theme.colors.green7
+                    ? theme.colors.green3
                     : theme.colors.red3,
               }}
             >
@@ -253,7 +253,7 @@ const MarketStats: React.FC<IProps> = (props) => {
           style={{
             color:
               +priceChangePercentage > 0
-                ? theme.colors.green7
+                ? theme.colors.green3
                 : theme.colors.red3,
             fontSize: '2rem',
             margin: '0 2.5rem 0 0',
@@ -267,7 +267,7 @@ const MarketStats: React.FC<IProps> = (props) => {
           style={{
             color:
               +priceChangePercentage > 0
-                ? theme.colors.green7
+                ? theme.colors.green3
                 : theme.colors.red3,
             fontSize: '2rem',
           }}

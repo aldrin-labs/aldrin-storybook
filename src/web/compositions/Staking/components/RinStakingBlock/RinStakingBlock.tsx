@@ -79,7 +79,7 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
               justify="space-between"
               align="flex-start"
             >
-              <InlineText color="gray1" size="sm">
+              <InlineText color="white1" size="sm">
                 Total Staked
               </InlineText>
               <InlineText size="xmd" weight={700}>
@@ -87,7 +87,7 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
                   ? stripByAmountAndFormat(totalStakedRIN, 2)
                   : ' ---'}
                 &nbsp;
-                <InlineText color="gray1" weight={600}>
+                <InlineText color="white1" weight={600}>
                   RIN
                 </InlineText>
               </InlineText>
@@ -98,7 +98,7 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
                 of circulating supply
               </InlineText>{' '}
               <InlineText size="sm" weight={700}>
-                <InlineText color="gray1">$</InlineText>
+                <InlineText color="white1">$</InlineText>
                 {totalStakedUsdValue
                   ? stripByAmountAndFormat(totalStakedUsdValue, 2)
                   : ' ---'}
@@ -109,12 +109,12 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
           <StretchedContent>
             <StatsBlock width="31%">
               <Row justify="flex-start" margin="0 0 1em 0">
-                <InlineText color="gray1" size="sm">
+                <InlineText color="white1" size="sm">
                   RIN Price
                 </InlineText>{' '}
               </Row>
-              <InlineText color="gray0" size="xmd" weight={700}>
-                <InlineText color="gray1" weight={700}>
+              <InlineText color="white1" size="xmd" weight={700}>
+                <InlineText color="white1" weight={700}>
                   $
                 </InlineText>
                 {rinPrice ? rinPrice.toFixed(2) : ' ---'}
@@ -122,11 +122,11 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
             </StatsBlock>
             <StatsBlock width="31%">
               <Row justify="flex-start" margin="0 0 1em 0">
-                <InlineText color="gray1" size="sm">
+                <InlineText color="white1" size="sm">
                   Circulating Supply
                 </InlineText>{' '}
               </Row>
-              <InlineText color="gray0" size="xmd" weight={700}>
+              <InlineText color="white1" size="xmd" weight={700}>
                 {poolInfo
                   ? stripByAmountAndFormat(poolInfo.rinCirculationSupply, 2)
                   : ' ---'}
@@ -134,12 +134,12 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
             </StatsBlock>
             <MarketcapBlock width="31%">
               <Row justify="flex-start" margin="0 0 1em 0">
-                <InlineText color="gray1" size="sm">
+                <InlineText color="white1" size="sm">
                   Marketcap
                 </InlineText>{' '}
               </Row>
-              <InlineText color="gray0" size="xmd" weight={700}>
-                <InlineText color="gray1" weight={700}>
+              <InlineText color="white1" size="xmd" weight={700}>
+                <InlineText color="white2" weight={700}>
                   $
                 </InlineText>
                 {marketCap ? stripByAmountAndFormat(marketCap, 2) : ' ---'}
