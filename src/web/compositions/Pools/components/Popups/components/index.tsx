@@ -21,6 +21,7 @@ import Arrow from '@icons/arrowBottom.svg'
 
 import { StyledInput, TokenContainer, InvisibleInput } from '../index.styles'
 import { BlueText } from './index.styles'
+import { INPUT_FORMATTERS } from '@sb/components/Input'
 
 export const InputWithCoins = ({
   theme,
@@ -76,10 +77,7 @@ export const InputWithCoins = ({
       </TokenContainer>
       <TokenContainer right="2rem" bottom="2rem">
         <Row style={{ flexWrap: 'nowrap' }}>
-          <TokenIcon
-            mint={getTokenMintAddressByName(symbol)}
-            size={32}
-          />
+          <TokenIcon mint={getTokenMintAddressByName(symbol)} size={32} />
           <Text
             style={{ marginLeft: '0.5rem' }}
             fontSize="2rem"
@@ -186,10 +184,7 @@ export const InputWithSelector = ({
       </TokenContainer>
       <TokenContainer style={{ cursor: 'pointer' }} right="2rem" bottom="3rem">
         <Row style={{ flexWrap: 'nowrap' }} onClick={openSelectCoinPopup}>
-          <TokenIcon
-            mint={getTokenMintAddressByName(symbol)}
-            size={32}
-          />
+          <TokenIcon mint={getTokenMintAddressByName(symbol)} size={32} />
           <Text
             style={{ margin: '0 0.5rem' }}
             fontSize="2rem"
@@ -225,6 +220,7 @@ export const SimpleInput = ({
   disabled,
   onChange,
   placeholder,
+  formatter = INPUT_FORMATTERS.DECIMAL,
 }: {
   theme: DefaultTheme
   value: string | number
@@ -232,6 +228,7 @@ export const SimpleInput = ({
   disabled?: boolean
   maxBalance: number
   placeholder: string
+  formatter?: (e: string | number, prevValue: string | number) => string
   onChange: (value: string | number) => void
 }) => {
   return (
@@ -243,18 +240,15 @@ export const SimpleInput = ({
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="3rem">
         <InvisibleInput
           disabled={disabled}
-          type="number"
+          type="text"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => onChange(formatter(e.target.value, value))}
           placeholder={placeholder}
         />
       </TokenContainer>
       <TokenContainer right="2rem" bottom="3rem">
         <Row style={{ flexWrap: 'nowrap' }}>
-          <TokenIcon
-            mint={getTokenMintAddressByName(symbol)}
-            size={32}
-          />
+          <TokenIcon mint={getTokenMintAddressByName(symbol)} size={32} />
           <Text
             style={{ margin: '0 0.5rem' }}
             fontSize="2rem"
