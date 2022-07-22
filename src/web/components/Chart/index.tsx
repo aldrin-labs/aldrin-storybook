@@ -176,7 +176,7 @@ const ChartTitle = styled.span`
   width: calc(100% - 20rem);
   white-space: pre-line;
   text-align: left;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
   text-transform: capitalize;
   font-size: 1.3rem;
   line-height: 1rem;

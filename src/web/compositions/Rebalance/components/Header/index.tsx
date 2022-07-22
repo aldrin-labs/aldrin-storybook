@@ -32,7 +32,7 @@ const HeaderNameRow = () => (
     direction="column"
     width="40%"
   >
-    <Header color="gray0">Rebalance</Header>
+    <Header color="white1">Rebalance</Header>
     <Text>Diversify your portfolio with ease.</Text>
   </Row>
 )

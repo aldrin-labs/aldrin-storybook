@@ -7,7 +7,7 @@ const BlueText = styled(({ ...props }) => (
   <Text fontSize="1.2rem" {...props} />
 ))`
   cursor: pointer;
-  color: ${(props) => props.theme.colors.green4};
+  color: ${(props) => props.theme.colors.green2};
 `
 
 export { BlueText }

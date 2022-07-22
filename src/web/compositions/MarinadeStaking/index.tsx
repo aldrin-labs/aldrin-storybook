@@ -190,9 +190,9 @@ const Block: React.FC<StakingBlockProps> = (props) => {
         {isStakeModeOn && (
           <Container>
             <StretchedContent>
-              <ContentBlock width="48%" background="green8">
+              <ContentBlock width="48%" background="green3">
                 <Row justify="space-between" margin="0 0 2rem 0">
-                  <InlineText color="gray0" size="sm">
+                  <InlineText color="white1" size="sm">
                     Epoch
                   </InlineText>{' '}
                   <DarkTooltip title="Epochs have variable length on the Solana blockchain. They are tied to the number of slots produced by the blockchain. Staking rewards are distributed at the end of each epoch.">
@@ -208,9 +208,9 @@ const Block: React.FC<StakingBlockProps> = (props) => {
                   %
                 </InlineText>
               </ContentBlock>
-              <ContentBlock background="gray6" width="48%">
+              <ContentBlock background="white5" width="48%">
                 <Row justify="space-between" margin="0 0 2rem 0">
-                  <InlineText color="gray0" size="sm">
+                  <InlineText color="white1" size="sm">
                     APY
                   </InlineText>{' '}
                   <DarkTooltip title="This annual percentage yield is based on the average APY of last months. See our stats for more details.">
@@ -230,7 +230,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
           </Container>
         )}
         <Container>
-          <ContentBlock background="gray6" style={{ margin: '0' }}>
+          <ContentBlock background="white5" style={{ margin: '0' }}>
             <Switcher
               setIsStakeModeOn={toggleStakeMode}
               isStakeModeOn={isStakeModeOn}
@@ -323,7 +323,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               <ContentBlock width="48%">
                 <RowContainer justify="space-between">
                   {' '}
-                  <StyledInlineText color="gray0" size="sm">
+                  <StyledInlineText color="white1" size="sm">
                     Rate:{' '}
                   </StyledInlineText>{' '}
                   <InlineText size="es">
@@ -357,7 +357,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
               ) : (
                 <ContentBlock width="48%">
                   <RowContainer justify="space-between">
-                    <InlineText color="gray0" size="sm">
+                    <InlineText color="white1" size="sm">
                       Unstake fee:{' '}
                     </InlineText>{' '}
                     <InlineText style={{ margin: '0 4px 0 auto' }} size="es">

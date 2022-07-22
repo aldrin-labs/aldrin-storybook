@@ -71,7 +71,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
               <ButtonsContainer>
                 <div>
                   {Number.isFinite(usdValue) && (
-                    <InlineText color="gray1">
+                    <InlineText color="white1">
                       ≈${stripByAmountAndFormat(usdValue || 0, 2)}
                     </InlineText>
                   )}

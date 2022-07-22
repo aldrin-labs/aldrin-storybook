@@ -10,7 +10,7 @@ export const LogoBlock = styled.div<LogoBlockProps>`
   align-items: center;
 
   svg {
-    width: ${(props) => props.$width || '96px'};
+    width: ${(props) => props.$width || '6em'};
     height: auto;
 
     path {

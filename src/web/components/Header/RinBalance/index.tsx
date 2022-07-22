@@ -1,23 +1,35 @@
-import React from 'react'
+import React, { useState } from 'react'
+
+import { RewardsModal } from '@sb/components/Header/Rewards/RewardsModal'
+import { useConnection } from '@sb/dexUtils/connection'
+import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
+import { useStakingPoolInfo } from '@sb/dexUtils/staking/hooks'
+import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
+import { useAssociatedTokenAccount } from '@sb/dexUtils/token/hooks'
+import { useWallet } from '@sb/dexUtils/wallet'
+
+import { getStakedTokensTotal } from '@core/solana'
+import { roundAndFormatNumber } from '@core/utils/PortfolioTableUtils'
 
 import RinLogo from '@icons/rin_logo.png'
 
 import { RinBalanceContainer, RinBalanceLogo, RinBalanceLabel } from './styles'
-import { useWallet } from "@sb/dexUtils/wallet"
-import { useStakingPoolInfo } from "@sb/dexUtils/staking/hooks"
-import { useAssociatedTokenAccount } from "@sb/dexUtils/token/hooks"
-import { roundAndFormatNumber } from "@core/utils/PortfolioTableUtils"
-import { getStakedTokensTotal } from "@core/solana"
-import { getTicketsWithUiValues } from "@sb/dexUtils/staking/getTicketsWithUiValues"
-import { useAllStakingTickets } from "@sb/dexUtils/staking/useAllStakingTickets"
-import { useConnection } from "@sb/dexUtils/connection"
 
 const RinBalanceContent = ({ children }) => {
+  const [isRewardsModalOpen, setIsRewardsModalOpen] = useState(false)
+
   return (
-    <RinBalanceContainer>
-      <RinBalanceLogo src={RinLogo} />
-      <RinBalanceLabel>{children}</RinBalanceLabel>
-    </RinBalanceContainer>
+    <>
+      <RinBalanceContainer onClick={() => setIsRewardsModalOpen(true)}>
+        <RinBalanceLogo src={RinLogo} />
+        <RinBalanceLabel>{children}</RinBalanceLabel>
+      </RinBalanceContainer>
+
+      <RewardsModal
+        open={isRewardsModalOpen}
+        onClose={() => setIsRewardsModalOpen(false)}
+      />
+    </>
   )
 }
 

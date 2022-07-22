@@ -407,7 +407,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
           <WhiteText>Gas Fees</WhiteText>
           <WhiteText
             style={{
-              color: theme.colors.green7,
+              color: theme.colors.green3,
             }}
           >
             {costOfAddingToken} SOL

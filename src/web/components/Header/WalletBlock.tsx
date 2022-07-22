@@ -42,16 +42,14 @@ export const WalletBlock = () => {
   return (
     <>
       {!connected && (
-        <span>
-          <WalletButton
-            data-testid="header-connect-wallet-btn"
-            onClick={() => {
-              setIsConnectWalletPopupOpen(true)
-            }}
-          >
-            Connect Wallet
-          </WalletButton>
-        </span>
+        <WalletButton
+          data-testid="header-connect-wallet-btn"
+          onClick={() => {
+            setIsConnectWalletPopupOpen(true)
+          }}
+        >
+          Connect Wallet
+        </WalletButton>
       )}
 
       {connected && (

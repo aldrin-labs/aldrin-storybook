@@ -653,7 +653,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       name="initialLiquidityLockPeriod"
                       append={
                         <InputAppendContainer>
-                          <InlineText color="gray1" weight={600}>
+                          <InlineText color="white1" weight={600}>
                             Days
                           </InlineText>
                         </InputAppendContainer>
@@ -705,11 +705,11 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                 <GroupLabel label="Set Base Token initial price" />
                 <FlexBlock>
                   <FlexBlock alignItems="center">
-                    <InlineText weight={600} color="gray1">
+                    <InlineText weight={600} color="white1">
                       1&nbsp;
                     </InlineText>
                     <TokenIconWithName mint={form.values.baseToken.mint} />{' '}
-                    <InlineText weight={600} color="gray1">
+                    <InlineText weight={600} color="white1">
                       &nbsp;=
                     </InlineText>
                   </FlexBlock>
@@ -773,7 +773,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                     </ErrorText>
                   )}
                 <Centered>
-                  <InlineText weight={600} color="gray1">
+                  <InlineText weight={600} color="white1">
                     +
                   </InlineText>
                 </Centered>

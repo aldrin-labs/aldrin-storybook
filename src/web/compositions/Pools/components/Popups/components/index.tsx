@@ -46,7 +46,7 @@ export const InputWithCoins = ({
     <Row style={{ position: 'relative' }} padding="1rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="2rem">
-        <Text color="gray1">{symbol}</Text>
+        <Text color="white1">{symbol}</Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="2rem">
         <InvisibleInput
@@ -92,7 +92,7 @@ export const InputWithCoins = ({
           {needAlreadyInPool && (
             <>
               {' '}
-              <Text color="gray1" fontSize="1.2rem">
+              <Text color="white1" fontSize="1.2rem">
                 Already in pool:
               </Text>
               &nbsp;
@@ -106,7 +106,7 @@ export const InputWithCoins = ({
               &nbsp;
             </>
           )}
-          <Text color="gray1" fontSize="1.2rem">
+          <Text color="white1" fontSize="1.2rem">
             &nbsp;Max:
           </Text>
           &nbsp;
@@ -130,7 +130,7 @@ export const InputWithTotal = ({
     <Row style={{ position: 'relative' }} padding="1rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="2rem">
-        <Text color="gray1">Total</Text>
+        <Text color="white1">Total</Text>
       </TokenContainer>
       <TokenContainer left="2rem" bottom="2rem">
         <Text fontSize="2rem" fontFamily="Avenir Next Demi">
@@ -171,7 +171,7 @@ export const InputWithSelector = ({
     <Row style={{ position: 'relative' }} padding="2rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="3rem">
-        <Text color={theme.colors.gray1}>{symbol}</Text>
+        <Text color={theme.colors.white1}>{symbol}</Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="3rem">
         <InvisibleInput
@@ -198,7 +198,7 @@ export const InputWithSelector = ({
       {!isSelectToken && (
         <TokenContainer right="2rem" top="3rem">
           <Row style={{ flexWrap: 'nowrap' }}>
-            <Text color={theme.colors.gray1} fontSize="1.2rem">
+            <Text color={theme.colors.white1} fontSize="1.2rem">
               &nbsp;Max:
             </Text>
             &nbsp;
@@ -235,7 +235,7 @@ export const SimpleInput = ({
     <Row style={{ position: 'relative' }} padding="2rem 0" width="100%">
       <StyledInput />
       <TokenContainer left="2rem" top="3rem">
-        <Text color="gray1">{symbol}</Text>
+        <Text color="white1">{symbol}</Text>
       </TokenContainer>
       <TokenContainer style={{ width: '80%' }} left="2rem" bottom="3rem">
         <InvisibleInput
@@ -260,7 +260,7 @@ export const SimpleInput = ({
       </TokenContainer>
       <TokenContainer right="2rem" top="3rem">
         <Row style={{ flexWrap: 'nowrap' }}>
-          <Text color="gray1" fontSize="1.2rem">
+          <Text color="white1" fontSize="1.2rem">
             &nbsp;Max:
           </Text>
           &nbsp;

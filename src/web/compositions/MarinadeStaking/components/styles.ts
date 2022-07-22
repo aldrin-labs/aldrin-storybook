@@ -26,16 +26,16 @@ export const Container = styled.div`
   display: flex;
   flex-wrap: nowrap;
   margin: 0 0 2rem 0;
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   justify-content: space-between;
 `
 export const Button = styled.button<StyledSwitcher>`
   width: 49.5%;
   background: ${(props) =>
-    props.isActive ? props.theme.colors.gray10 : props.theme.colors.gray5};
+    props.isActive ? props.theme.colors.white6 : props.theme.colors.white4};
   padding: 0.5rem;
   color: ${(props) =>
-    props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray1};
+    props.isActive ? props.theme.colors.white1 : props.theme.colors.white1};
   font-size: ${FONT_SIZES.sm};
   outline: none;
   border: none;
@@ -48,15 +48,15 @@ export const Button = styled.button<StyledSwitcher>`
 export const BlockWithRadio = styled.div<RadioContainer>`
   position: relative;
   width: ${(props) => props.width || '48%'};
-  background-color: ${(props) => props.theme.colors.gray5 || 'transparent'};
+  background-color: ${(props) => props.theme.colors.white4 || 'transparent'};
   display: flex;
   padding: 1.5rem;
   flex-direction: column;
   justify-content: space-between;
   border: ${(props) =>
     props.checked
-      ? `0.1rem solid ${props.theme.colors.green7}`
-      : `0.1rem solid ${props.theme.colors.gray5}`};
+      ? `0.1rem solid ${props.theme.colors.green3}`
+      : `0.1rem solid ${props.theme.colors.white4}`};
   border-radius: 8px;
   height: ${(props) => props.height || '10rem'};
   margin: ${(props) => props.margin || '0'};

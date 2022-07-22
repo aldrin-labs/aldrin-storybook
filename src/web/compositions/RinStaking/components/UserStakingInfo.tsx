@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES, COLORS } from '@variables/variables'
+import { useTheme } from 'styled-components'
 import dayjs from 'dayjs'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
@@ -73,6 +74,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     getDexTokensPricesQuery,
     treasuryDailyRewards,
   } = props
+  const theme = useTheme()
 
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
     publicKey: new PublicKey(stakingPool.stakingVault),
@@ -413,12 +415,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
               <StretchedBlock>
                 <FlexBlock alignItems="flex-end">
-                  <InlineText size="lg" weight={700} color="green7">
+                  <InlineText size="lg" weight={700} color="green2">
                     {formattedAPR}%{' '}
                     <InlineText
                       weight={400}
                       size="es"
-                      style={{ color: 'rgba(38, 159, 19, 50%)' }}
+                      style={{ color: theme.colors.green2 }}
                     >
                       APR
                     </InlineText>

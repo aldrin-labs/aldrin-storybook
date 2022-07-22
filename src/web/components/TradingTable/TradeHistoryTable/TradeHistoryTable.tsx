@@ -43,21 +43,21 @@ const TradeHistoryTable = (props) => {
       withCheckboxes={false}
       tableStyles={{
         cell: {
-          color: theme.colors.gray1,
+          color: theme.colors.white1,
           fontSize: '1rem', // 1.2 if bold
           fontWeight: 'bold',
           letterSpacing: '.1rem',
-          borderBottom: `0.1rem solid ${theme.colors.gray5}`,
+          borderBottom: `0.1rem solid ${theme.colors.white4}`,
           boxShadow: 'none',
           paddingTop: '.8rem',
           paddingBottom: '.8rem',
         },
         heading: {
-          backgroundColor: theme.colors.gray6,
+          backgroundColor: theme.colors.white5,
           fontSize: '1.3rem',
           borderRadius: 'none',
-          color: theme.colors.gray1,
-          borderBottom: `0.1rem solid ${theme.colors.gray5}`,
+          color: theme.colors.white1,
+          borderBottom: `0.1rem solid ${theme.colors.white4}`,
         },
         tab: {
           padding: 0,

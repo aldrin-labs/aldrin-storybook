@@ -10,7 +10,7 @@ import { ContentBlockProps } from './types'
 export const StakingBlock = styled(Block)`
   display: flex;
   flex-direction: column;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   @media (max-width: ${BREAKPOINTS.md}) {
     margin: 8px 15px;
   }
@@ -29,7 +29,7 @@ export const ContentBlock = styled.div<ContentBlockProps>`
   padding: 1em;
   flex-direction: column;
   justify-content: space-between;
-  background: ${(props) => props.theme.colors[props.background || 'gray5']};
+  background: ${(props) => props.theme.colors[props.background || 'white4']};
   border-radius: ${BORDER_RADIUS.md};
 `
 
@@ -47,7 +47,7 @@ export const GrayButton = styled.button`
   width: 100%;
   border: none;
   color: ${COLORS.newWhite};
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: ${BORDER_RADIUS.md};
   margin: ${(props) => props.margin || '1em 0 0 0'};
   height: 3em;
@@ -57,7 +57,7 @@ export const GrayButton = styled.button`
   transition: 0.3s;
 
   &:hover {
-    background: ${(props) => props.theme.colors.blue5};
+    background: ${(props) => props.theme.colors.persistent.blue1};
     color: #fff;
     transition: 0.3s;
   }
@@ -91,8 +91,8 @@ export const UnStakeButton = styled(GrayButton)`
 export const GrayLink = styled(Link)`
   width: 100%;
   border: none;
-  color: ${(props) => props.theme.colors.gray1};
-  background: ${(props) => props.theme.colors.gray5};
+  color: ${(props) => props.theme.colors.white1};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: ${BORDER_RADIUS.md};
   margin: 0.7em 0 0 0;
   line-height: 3em;
@@ -105,13 +105,13 @@ export const GrayLink = styled(Link)`
   font-size: 0.9em;
 
   &:hover {
-    background: ${(props) => props.theme.colors.blue5};
-    color: ${(props) => props.theme.colors.primaryWhite};
+    background: ${(props) => props.theme.colors.persistent.blue1};
+    color: ${(props) => props.theme.colors.persistent.white1};
     transition: 0.3s;
   }
 
   &:active {
-    background: ${(props) => props.theme.colors.blue2};
+    background: ${(props) => props.theme.colors.persistent.blue1};
   }
 
   @media (min-width: ${BREAKPOINTS.md}) {
@@ -121,7 +121,7 @@ export const GrayLink = styled(Link)`
 
 export const Line = styled.div`
   border-top: 0.05em solid ${(props) => props.theme.colors.line};
-  height: 0em;
+  height: 0;
   margin: 2em 0 1em 0;
   width: 100%;
 `
