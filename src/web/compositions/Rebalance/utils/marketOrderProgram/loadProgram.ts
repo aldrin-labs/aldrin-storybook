@@ -1,4 +1,4 @@
-import { Program, Provider } from '@project-serum/anchor'
+import { Program, AnchorProvider } from '@project-serum/anchor'
 import { Connection, PublicKey } from '@solana/web3.js'
 
 import { defaultOptions } from '@sb/dexUtils/ProgramsMultiton'
@@ -23,7 +23,7 @@ export const loadMarketOrderProgram = ({
   const marketOrderProgram = new Program(
     program_idl,
     marketOrderProgramId,
-    new Provider(connection, wallet, defaultOptions)
+    new AnchorProvider(connection, wallet, defaultOptions)
   )
 
   return marketOrderProgram
