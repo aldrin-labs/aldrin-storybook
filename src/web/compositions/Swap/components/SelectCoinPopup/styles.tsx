@@ -12,6 +12,7 @@ export const UpdatedPaper = styled(({ ...props }) => (
   font-size: 16px;
   background: ${(props) => props.theme.colors.gray6};
   width: 30em;
+  overflow: auto;
 
   @media (max-width: ${BREAKPOINTS.sm}) {
     max-height: 100%;
@@ -27,9 +28,20 @@ export const SelectorRow = styled(({ ...props }) => (
   border-radius: 1.2rem;
   margin-bottom: 0.8em;
   padding: 1.5em;
+  position: sticky;
+  top: 0px;
 `
 
 export const StyledText = styled(({ ...props }) => <Text {...props} />)`
   font-size: ${FONT_SIZES.md};
   font-family: ${FONTS.demi};
+`
+
+export const HeaderContainer = styled(({ ...props }) => (
+  <RowContainer {...props} />
+))`
+  top: 0px;
+  position: sticky;
+  z-index: 100;
+  background: ${(props) => props.theme.colors.gray6};
 `

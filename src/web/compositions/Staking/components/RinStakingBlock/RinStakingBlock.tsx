@@ -6,7 +6,6 @@ import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { InlineText } from '@sb/components/Typography'
 import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { useStakingPoolInfo } from '@sb/dexUtils/staking/hooks'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 
@@ -60,17 +59,7 @@ const Block: React.FC<RinStakingBlockProps> = React.memo(
       (totalStakedRIN / (poolInfo?.rinCirculationSupply || totalStakedRIN)) *
       100
 
-    const buyBackAPR =
-      ((poolInfo?.poolInfo.apr.buyBackAmountWithoutDecimals || 0) /
-        DAYS_TO_CHECK_BUY_BACK /
-        totalStakedRIN) *
-      365 *
-      100
-
-    const treasuryAPR =
-      ((poolInfo?.treasuryDailyRewards || 0) / totalStakedRIN) * 365 * 100
-
-    const totalApr = buyBackAPR + treasuryAPR
+    const totalApr = poolInfo?.poolInfo.apr.totalStakingAPR || 0
 
     return (
       <StakingBlock>

@@ -18,7 +18,6 @@ import { useMultiEndpointConnection } from '@sb/dexUtils/connection'
 import { getTokenNameByMintAddress } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { restake } from '@sb/dexUtils/staking/actions'
-import { DAYS_TO_CHECK_BUY_BACK } from '@sb/dexUtils/staking/config'
 import { getTicketsWithUiValues } from '@sb/dexUtils/staking/getTicketsWithUiValues'
 import { useAccountBalance } from '@sb/dexUtils/staking/useAccountBalance'
 import { useAllStakingTickets } from '@sb/dexUtils/staking/useAllStakingTickets'
@@ -345,31 +344,11 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
   const totalStakedUSD = tokenPrice * totalStakedRIN
 
-  const buyBackAPR =
-    (buyBackAmountWithoutDecimals / DAYS_TO_CHECK_BUY_BACK / totalStakedRIN) *
-    365 *
-    100
+  const totalApr = stakingPool.apr.totalStakingAPR || 0
 
-  const treasuryAPR = (treasuryDailyRewards / totalStakedRIN) * 365 * 100
-
-  // const formattedBuyBackAPR =
-  //   Number.isFinite(buyBackAPR) && buyBackAPR > 0
-  //     ? stripByAmount(buyBackAPR, 2)
-  //     : '--'
-
-  const totalStakedPercentageToCircSupply =
-    (totalStakedRIN * 100) / RINCirculatingSupply
-
-  // const formattedTreasuryAPR = Number.isFinite(treasuryAPR)
-  //   ? stripByAmount(treasuryAPR, 2)
-  //   : '--'
-
-  const formattedAPR =
-    Number.isFinite(buyBackAPR) &&
-    buyBackAPR > 0 &&
-    Number.isFinite(treasuryAPR)
-      ? stripByAmount(buyBackAPR + treasuryAPR, 2)
-      : '--'
+  const formattedAPR = Number.isFinite(totalApr)
+    ? stripByAmount(totalApr, 2)
+    : '--'
 
   useEffect(() => {
     document.title = `Aldrin | Stake RIN | ${formattedAPR}% APR`
@@ -404,6 +383,9 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
   const userEstRewardsUSD = isBalancesShowing
     ? strippedEstRewardsUSD
     : new Array(strippedEstRewardsUSD.length).fill('∗').join('')
+
+  const totalStakedPercentageToCircSupply =
+    (totalStakedRIN * 100) / RINCirculatingSupply
 
   return (
     <>
@@ -574,7 +556,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         $fontSize="sm"
                         onClick={claimRewards}
                       >
-                        {isClaimDisabled ? <SvgIcon src={ClockIcon} /> : null}
+                        {isClaimDisabled && <SvgIcon src={ClockIcon} />}
                         Claim
                       </ClaimButton>
                     </span>
