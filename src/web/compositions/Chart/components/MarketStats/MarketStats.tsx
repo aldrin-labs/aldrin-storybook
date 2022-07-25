@@ -160,6 +160,24 @@ const MarketStats: React.FC<IProps> = (props) => {
     ? 0
     : (markPrice - prevClosePrice) / (prevClosePrice / 100)
 
+  //Head
+
+  let priceChangeTest: number
+
+  if (priceChangePercentage < 0) {
+    priceChangeTest = parseFloat(
+      '' + priceChangePercentage.toString().substring(1)
+    )
+  } else {
+    priceChangeTest = priceChangePercentage
+  }
+
+  console.log(`–${stripDigitPlaces(priceChangeTest)}`)
+
+  console.log(stripDigitPlaces(priceChangePercentage))
+
+  //Tail
+
   const sign24hChange = +priceChangePercentage > 0 ? `+` : ``
 
   const marketcap = circulatingSupply * markPrice
@@ -204,8 +222,8 @@ const MarketStats: React.FC<IProps> = (props) => {
             >
               {!priceChangePercentage
                 ? '--'
-                : `${sign24hChange}${formatNumberWithSpaces(
-                    stripDigitPlaces(+priceChangePercentage)
+                : `${sign24hChange}–${formatNumberWithSpaces(
+                    stripDigitPlaces(priceChangeTest)
                   )}%`}
             </PanelCardSubValue>
           </span>
