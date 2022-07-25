@@ -255,14 +255,17 @@ export const WalletDataContainer = styled.div`
   height: 40px;
   width: 120px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
   cursor: pointer;
   background-color: ${(props) => props.theme.colors.white5};
 
-  @media (min-width: ${BREAKPOINTS.md}) {
-    flex-direction: column;
-    align-items: flex-start;
+  @media (max-width: ${BREAKPOINTS.md}) {
+    width: auto;
+  }
+
+  img {
+    @media (max-width: ${BREAKPOINTS.md}) {
+      display: none;
+    }
   }
 
   .disconnect-wallet {
