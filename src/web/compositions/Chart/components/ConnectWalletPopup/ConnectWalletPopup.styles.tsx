@@ -16,9 +16,7 @@ export const WalletSelectorRow = styled.div`
   border-radius: 12px;
   transition: 0.3s;
   cursor: pointer;
-  &:last-child {
-    border: none;
-  }
+
   &:hover {
     background: ${(props) => props.theme.colors.white4};
     transition: 0.3s;
