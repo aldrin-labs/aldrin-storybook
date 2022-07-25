@@ -51,6 +51,24 @@ export const FooterButton = styled(Button)`
     display: none;
   }
 `
+export const ListingButton = styled.a`
+  color: ${(props) => props.theme.colors.white2};
+  background: transparent;
+  border: none;
+  padding: 0.5em;
+  text-decoration: none;
+  font-family: 'Avenir Next', 'sans-serif';
+  font-size: ${FONT_SIZES.lg};
+  transition: 0.3s;
+
+  &:hover {
+    color: ${(props) => props.theme.colors.white4};
+  }
+
+  @media (max-width: ${BREAKPOINTS.md}) {
+    display: none;
+  }
+`
 
 export const Copyright = styled.div`
   color: ${(props) => props.theme.colors.white2};

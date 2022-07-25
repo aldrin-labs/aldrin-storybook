@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import Logo from '@sb/components/Logo'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
 
-import ListingRequestPopup from '../../compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 import { Body } from '../Layout'
 import { DropDown } from './Dropdown'
 import {
@@ -37,7 +36,6 @@ import { WalletBlock } from './WalletBlock'
 export const Header = React.memo(
   ({ setCurrentTheme }: { setCurrentTheme: (a: string) => void }) => {
     const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
-    const [listingPopupOpen, setListingPopupOpen] = useState(false)
 
     return (
       <Body>
@@ -152,8 +150,9 @@ export const Header = React.memo(
                   </NavLink>
                   <NavLink
                     $left
-                    as="span"
-                    onClick={() => setListingPopupOpen(true)}
+                    as="a"
+                    target="_blank"
+                    href="https://github.com/aldrin-exchange/aldrin-registry"
                   >
                     <RequestListingIcon />
                     <span>Request Listing</span>
@@ -177,12 +176,6 @@ export const Header = React.memo(
           open={feedbackPopupOpen}
           onClose={() => {
             setFeedbackPopupOpen(false)
-          }}
-        />
-        <ListingRequestPopup
-          open={listingPopupOpen}
-          onClose={() => {
-            setListingPopupOpen(false)
           }}
         />
       </Body>
