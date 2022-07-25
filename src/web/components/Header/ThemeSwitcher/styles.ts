@@ -6,7 +6,7 @@ export const SwitcherContainer = styled.div`
   display: flex;
   align-items: center;
   align-self: center;
-  background-color: ${(props) => props.theme.colors.white5};
+  background-color: ${(props) => props.theme.colors.white4};
   padding: 0.25em;
   border-radius: 12px;
   margin-left: 1em;

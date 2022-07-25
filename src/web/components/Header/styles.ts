@@ -60,7 +60,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   }
 
   svg + * {
-    margin-left: 0.2em;
+    margin-left: 0.4em;
   }
 
   &.dropdown {
@@ -213,17 +213,18 @@ export const DropdownWrap = styled.div<ShowHideProps>`
 
 export const DropdownInner = styled.div`
   min-width: 6em;
-  background: ${(props) => props.theme.colors.white3};
+  background: ${(props) => props.theme.colors.white5};
   display: flex;
   flex-direction: column;
   margin-top: 5px;
   padding: 0.5em;
   border-radius: ${BORDER_RADIUS.md};
+
   & ${NavLink} {
     margin: 4px;
 
     &:hover {
-      border: none;
+      opacity: 0.5;
     }
   }
 `
@@ -231,7 +232,7 @@ export const DropdownInner = styled.div`
 export const WalletButton = styled(Button)`
   font-size: ${em('14px')};
   width: ${em('144px', '14px')};
-  background-color: ${(props) => rgba(props.theme.colors.blue3, 0.15)};
+  background-color: ${(props) => props.theme.colors.white4};
   border: none;
   font-weight: 600;
   height: ${em('40px', '14px')};
