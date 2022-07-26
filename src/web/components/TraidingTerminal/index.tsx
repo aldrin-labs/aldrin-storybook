@@ -611,13 +611,13 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: newtheme.colors.white4,
+                background: newTheme.colors.white4,
                 borderRadius: '2rem',
                 alignItems: 'center',
               }}
               firstHalfStyleProperties={{
-                activeColor: newheme.colors.green3,
-                activeBackgroundColor: newtheme.colors.white6,
+                activeColor: newTheme.colors.green3,
+                activeBackgroundColor: newTheme.colors.white6,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
@@ -625,7 +625,7 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
               }}
               secondHalfStyleProperties={{
                 activeColor: newTheme.colors.red3,
-                activeBackgroundColor: newtheme.colors.white6,
+                activeBackgroundColor: newTheme.colors.white6,
                 borderRadius: '3rem',
                 width: '47%',
                 height: '80%',
@@ -653,22 +653,22 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
                 display: 'flex',
                 justifyContent: 'space-around',
                 height: '6rem',
-                background: newtheme.colors.white4,
+                background: newTheme.colors.white4,
                 borderRadius: '2rem',
                 alignItems: 'center',
                 marginTop: '2rem',
               }}
               firstHalfStyleProperties={{
-                activeColor: newtheme.colors.white1,
-                activeBackgroundColor: newtheme.colors.white6,
+                activeColor: newTheme.colors.white1,
+                activeBackgroundColor: newTheme.colors.white6,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
                 fontSize: '1.9rem',
               }}
               secondHalfStyleProperties={{
-                activeColor: newtheme.colors.white1,
-                activeBackgroundColor: newtheme.colors.white6,
+                activeColor: newTheme.colors.white1,
+                activeBackgroundColor: newTheme.colors.white6,
                 borderRadius: '4rem',
                 width: '47%',
                 height: '80%',
@@ -696,25 +696,25 @@ class TradingTerminal extends PureComponent<IPropsWithFormik> {
           <Grid item container xs={9} style={{ maxWidth: '100%' }}>
             <InputsBlock direction="column">
               {priceType !== 'market' &&
-              priceType !== 'stop-market' &&
-              priceType !== 'maker-only' && (
-                <InputRowContainer
-                  key="limit-price"
-                  padding=".6rem 0"
-                  direction="column"
-                >
-                  <TradeInputContent
-                    data-testid="trading-terminal-price-field"
-                    theme={theme}
-                    needTitle
-                    type="text"
-                    title="price"
-                    value={formatNumberWithSpaces(values.price || '')}
-                    onChange={this.onPriceChange}
-                    symbol={pair[1]}
-                  />
-                </InputRowContainer>
-              )}
+                priceType !== 'stop-market' &&
+                priceType !== 'maker-only' && (
+                  <InputRowContainer
+                    key="limit-price"
+                    padding=".6rem 0"
+                    direction="column"
+                  >
+                    <TradeInputContent
+                      data-testid="trading-terminal-price-field"
+                      theme={theme}
+                      needTitle
+                      type="text"
+                      title="price"
+                      value={formatNumberWithSpaces(values.price || '')}
+                      onChange={this.onPriceChange}
+                      symbol={pair[1]}
+                    />
+                  </InputRowContainer>
+                )}
               {/* {priceType === 'market' && !tradingBotEnabled && (
                 <InputRowContainer
                   style={{ visibility: !isBuyType ? 'hidden' : 'visible' }}
