@@ -26,7 +26,7 @@ export const PopupBody = styled(Body)`
 `
 
 export const Page = styled(Body)`
-  background: ${(props) => props.theme.colors[props.$background || 'white6']};
+  background: ${(props) => props.theme.colors[props.$background || 'header']};
   flex: 1;
   display: flex;
   flex-direction: column;
