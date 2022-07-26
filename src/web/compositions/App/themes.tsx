@@ -1,5 +1,5 @@
 import { merge } from 'lodash-es'
-import React from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { ThemeProvider } from 'styled-components'
 
 export const THEME_DARK = 'dark'
@@ -155,12 +155,23 @@ type ThemeProps = {
   theme: 'dark' | 'light'
 }
 
-export const Theme = (props: ThemeProps) => {
+const ThemeContext = React.createContext<{ themeName: string } | undefined>(
+  undefined
+)
+
+export const Theme: React.FC<ThemeProps> = (props) => {
   const { theme, children } = props
 
+  const [themeName, setThemeName] = useState(theme)
+  useEffect(() => {
+    setThemeName(theme)
+  }, [theme])
+  const t = useMemo(() => merge(BASE_THEME, THEMES[theme]), [theme])
   return (
-    <ThemeProvider theme={merge(BASE_THEME, THEMES[theme])}>
-      {children}
-    </ThemeProvider>
+    <ThemeContext.Provider value={{ themeName }}>
+      <ThemeProvider theme={t}>{children}</ThemeProvider>
+    </ThemeContext.Provider>
   )
 }
+
+export const useThemeName = () => useContext(ThemeContext)
