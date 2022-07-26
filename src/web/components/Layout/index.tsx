@@ -33,7 +33,7 @@ export const Page = styled(Body)`
 `
 
 export const BlackPage = styled(Page)`
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.header};
 `
 
 export const Content = styled.div`

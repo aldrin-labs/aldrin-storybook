@@ -4,8 +4,6 @@ import {
   FONTS,
   FONT_SIZES,
   MAIN_FONT,
-  UCOLORS,
-  COLORS,
   TRANSITION,
 } from '@variables/variables'
 import React from 'react'
@@ -19,7 +17,6 @@ import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 
 export const SwapPageContainer = styled(RowContainer)`
-  background: ${(props) => props.theme.colors.white6};
   overflow-y: auto;
 `
 
