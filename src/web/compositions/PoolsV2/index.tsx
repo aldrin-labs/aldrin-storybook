@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useTheme } from 'styled-components'
 
 import { Page } from '@sb/components/Layout'
 
@@ -10,6 +9,8 @@ import { PoolsDetails } from './components/Popups/PoolsDetails'
 import { SearchInput } from './components/SearchInput'
 import { TableRow } from './components/TableRow'
 import { TablesSwitcher } from './components/TablesSwitcher'
+import { PositionInfo } from './components/YourPositions'
+import { PositionsSwitcher } from './components/YourPositions/Switcher'
 import {
   RootRow,
   StyledWideContent,
@@ -21,9 +22,10 @@ import {
 
 export const PoolsComponent: React.FC = () => {
   const [tableView, setTableView] = useState('classicLiquidity')
+  const [positionsDataView, setPositionsDataView] = useState('simple')
   const [isFiltersShown, setIsFiltersShown] = useState(false)
   const [isPoolsDetailsPopupOpen, setIsPoolsDetailsPopupOpen] = useState(false)
-  const theme = useTheme()
+
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
     return () => {
@@ -59,10 +61,21 @@ export const PoolsComponent: React.FC = () => {
             </SButton>
           </ButtonsContainer>
         </RootRow>
-        <RootRow margin="30px 0 0 0">
-          <TVLChart />
-          <VolumeChart />
-        </RootRow>
+        {tableView === 'classicLiquidity' && (
+          <RootRow margin="30px 0 0 0">
+            <TVLChart />
+            <VolumeChart />
+          </RootRow>
+        )}
+        {tableView === 'yourPositions' && (
+          <>
+            <PositionsSwitcher
+              positionsDataView={positionsDataView}
+              setPositionsDataView={setPositionsDataView}
+            />
+            <PositionInfo />
+          </>
+        )}
         <FilterRow margin="30px auto 15px auto">
           <SearchInput />
           <FilterButton

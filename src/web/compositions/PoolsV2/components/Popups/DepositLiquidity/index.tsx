@@ -4,6 +4,7 @@ import { Button } from '@sb/components/Button'
 import { Modal } from '@sb/components/Modal'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
+import { useWallet } from '@sb/dexUtils/wallet'
 
 import {
   CheckboxContainer,
@@ -13,9 +14,9 @@ import {
 } from '../../FiltersSection/index.styles'
 import { PlusIcon, TooltipIcon } from '../../Icons'
 import { HeaderComponent } from '../Header'
-import { Box, Column, Row, StyledModal } from '../index.styles'
+import { Box, Column, Row } from '../index.styles'
 import { DepositContainer } from './DepositContainer'
-import { PeriodButton, PeriodSwitcher } from './index.styles'
+import { PeriodButton, PeriodSwitcher, ModalContainer } from './index.styles'
 
 export const DepositLiquidity = ({
   onClose,
@@ -27,8 +28,9 @@ export const DepositLiquidity = ({
   const [isRebalanceChecked, setIsRebalanceChecked] = useState(false)
   const [isUserVerified, setIsUserVerified] = useState(false)
   const [period, setPeriod] = useState('7D')
+  const wallet = useWallet()
   return (
-    <StyledModal>
+    <ModalContainer>
       <Modal open={open} onClose={onClose}>
         <HeaderComponent arrow close={onClose} />
         <Column height="calc(100% - 11em)" margin="2em 0">
@@ -205,7 +207,7 @@ export const DepositLiquidity = ({
               $padding="xxxl"
               $fontSize="sm"
             >
-              {isRebalanceChecked ? (
+              {isRebalanceChecked || !wallet.connected ? (
                 'Connect Wallet to Add Liquidity'
               ) : (
                 <>
@@ -217,6 +219,6 @@ export const DepositLiquidity = ({
           </Column>
         </Column>
       </Modal>
-    </StyledModal>
+    </ModalContainer>
   )
 }

@@ -7,6 +7,8 @@ import { RootRow } from '../../index.styles'
 
 type ContainerProps = {
   width?: string
+  margin?: string
+  height?: string
 }
 
 export const LabelsRow = styled(RootRow)`
@@ -45,7 +47,7 @@ export const Container = styled.div<ContainerProps>`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  margin-bottom: 1em;
+  margin-bottom: ${(props) => props.margin || '1em'};
   height: 12em;
   padding: ${PADDINGS.xxxl};
   transition: 0.3s;
@@ -53,7 +55,7 @@ export const Container = styled.div<ContainerProps>`
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: ${(props) => props.width || '58%'};
-    height: 8.5em;
+    height: ${(props) => props.height || '8.5em'};
     justify-content: space-between;
     overflow: hidden;
   }

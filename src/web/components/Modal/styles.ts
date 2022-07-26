@@ -15,7 +15,7 @@ const kf = keyframes`
 const BackdropStyle = {
   blur: css`
     background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(30px);
+    backdrop-filter: blur(5px);
   `,
   dark: css`
     background: rgba(0, 0, 0, 0.5);

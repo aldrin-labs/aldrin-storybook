@@ -15,7 +15,7 @@ import { stripByAmountAndFormat } from '@core/utils/numberUtils'
 dayjs.extend(timezone)
 dayjs.extend(utc)
 
-export const NUMBER_OF_DAYS_TO_SHOW = 35
+export const NUMBER_OF_DAYS_TO_SHOW = 28
 const CHART_HEIGHT = 80
 
 interface ChartParams<T = { date: number; vol?: number }[]> {
@@ -42,6 +42,9 @@ const createChart = ({
       datasets: [],
     },
     options: {
+      hover: {
+        intersect: false,
+      },
       scales: {
         x: {
           stacked: true,

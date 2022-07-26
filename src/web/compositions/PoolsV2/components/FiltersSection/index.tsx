@@ -10,12 +10,7 @@ import { Slider } from './RangeSlider'
 
 const lablesForSorting = [
   {
-    name: (
-      <>
-        <ArrowsIcon />
-        Liquidity
-      </>
-    ),
+    name: 'Liquidity',
   },
   { name: 'APR' },
   { name: 'Volume 7d' },
@@ -24,7 +19,7 @@ const lablesForSorting = [
 
 export const ExtendedFiltersSection = () => {
   const [value, setValue] = useState([200, 1000])
-  const [sortingOption, chooseSortingOption] = useState('')
+  const [sortingOption, chooseSortingOption] = useState('Liquidity')
 
   return (
     <RootColumn margin="0">
@@ -70,7 +65,13 @@ export const ExtendedFiltersSection = () => {
                 }}
                 isActive={sortingOption === el.name}
               >
-                {el.name}
+                {el.name.includes('Liquidity') ? (
+                  <>
+                    <ArrowsIcon /> {el.name}
+                  </>
+                ) : (
+                  el.name
+                )}
               </SortByLabel>
             ))}
           </SRootRow>

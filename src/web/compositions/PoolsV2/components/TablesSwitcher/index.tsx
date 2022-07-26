@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { CLiquidityIcon, YourPositionsIcon } from '../Icons'
+import { CLiquidityIcon, FlashIcon, YourPositionsIcon } from '../Icons'
 import { Container, SwitcherButton } from './index.styles'
 
 export const TablesSwitcher = ({
@@ -22,6 +22,15 @@ export const TablesSwitcher = ({
       >
         <CLiquidityIcon isActive={tableView === 'classicLiquidity'} /> Classic
         Liquidity
+      </SwitcherButton>
+      <SwitcherButton
+        isActive={tableView === 'concentratedLiquidity'}
+        onClick={() => {
+          setTableView('concentratedLiquidity')
+        }}
+      >
+        <FlashIcon isActive={tableView === 'concentratedLiquidity'} />
+        Concentrated Liquidity
       </SwitcherButton>
       {isUserHavePositions && (
         <SwitcherButton

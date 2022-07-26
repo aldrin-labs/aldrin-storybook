@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { StyledModal } from '../index.styles'
+
 type CircleIconContainerType = {
   size?: string
 }
@@ -27,7 +29,6 @@ export const PositionatedIconContainer = styled(CircleIconContainer)`
   top: 50%;
   border: 1px solid ${(props) => props.theme.colors.border2};
   transform: translate(-50%, -50%);
-  cursor: pointer;
   z-index: 2;
 
   svg {
@@ -99,5 +100,11 @@ export const PeriodButton = styled.div<PeriodButtonType>`
     color: ${(props) =>
       props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray1};
     font-weight: ${(props) => (props.isActive ? 600 : 400)};
+  }
+`
+export const ModalContainer = styled(StyledModal)`
+  .modal-container {
+    backdrop-filter: none;
+    background: none;
   }
 `

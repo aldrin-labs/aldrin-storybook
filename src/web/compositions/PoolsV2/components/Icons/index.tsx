@@ -268,3 +268,24 @@ export const ArrowsIcon = () => {
     </IconContainer>
   )
 }
+
+export const FlashIcon = ({ isActive }: { isActive: boolean }) => {
+  const theme = useTheme()
+  return (
+    <IconContainer
+      width="13"
+      height="14"
+      viewBox="0 0 13 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M3.29885 7.69333H4.9726V11.5933C4.9726 12.5033 5.46551 12.6875 6.06676 12.005L10.1672 7.34666C10.6709 6.77791 10.4597 6.30666 9.69593 6.30666H8.02218V2.40666C8.02218 1.49666 7.52926 1.3125 6.92801 1.995L2.8276 6.65333C2.32926 7.2275 2.54051 7.69333 3.29885 7.69333Z"
+        stroke={isActive ? theme.colors.gray0 : theme.colors.gray1}
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </IconContainer>
+  )
+}

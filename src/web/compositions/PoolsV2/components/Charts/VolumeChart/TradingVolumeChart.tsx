@@ -1,4 +1,5 @@
 import Chart from 'chart.js/auto'
+import dayjs from 'dayjs'
 import React, { useEffect, useRef, useState } from 'react'
 import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
@@ -127,11 +128,16 @@ export const VolumeChart = () => {
     return () => {}
   }, [])
 
+  const formattedTodayDate = dayjs().format('MMM, D')
+
+  const date =
+    formattedTodayDate === balanceData.date ? 'Today' : `at ${balanceData.date}`
+
   return (
     <ChartContainer>
       <TooltipContainer padding="8px">
         <InlineText color="gray0" size="xs">
-          Volume {isMouseOverTheChart ? `at ${balanceData.date}` : `All Time`}
+          Volume {isMouseOverTheChart ? `${date}` : `All Time`}
         </InlineText>
         <ValueTitle color="gray0" size="xl" weight={600}>
           <InlineText color="gray1">$</InlineText>{' '}

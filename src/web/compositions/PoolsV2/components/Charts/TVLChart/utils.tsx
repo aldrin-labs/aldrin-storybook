@@ -42,6 +42,9 @@ const createChart = ({
       datasets: [],
     },
     options: {
+      hover: {
+        intersect: false,
+      },
       scales: {
         x: {
           stacked: true,
@@ -182,7 +185,7 @@ export const createTotalVolumeLockedChart = ({
         pointRadius: 0,
         pointHoverRadius: 6,
         pointHoverBorderColor: '#9C338D',
-        pointHoverBackgroundColor: ' #FAFAFA',
+        pointHoverBackgroundColor: '#FAFAFA',
         pointHoverBorderWidth: 4,
         hoverBackgroundColor: 'rgba(14, 2, 236, 0.75)',
         data: transformedData.map((item, i) => ({ x: i, y: item?.vol })),

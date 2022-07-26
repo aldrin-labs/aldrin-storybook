@@ -1,5 +1,4 @@
 import React from 'react'
-import { useTheme } from 'styled-components'
 
 import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
@@ -25,8 +24,6 @@ export const TableRow = ({
   isFiltersShown: boolean
   setIsPoolsDetailsPopupOpen: (a: boolean) => void
 }) => {
-  const theme = useTheme()
-
   return (
     <RootRow margin={isFiltersShown ? 'auto' : '30px 0 0 0'}>
       <Container width="100%">
@@ -88,7 +85,7 @@ export const TableRow = ({
                 title={<InlineText color="gray0">tooltip</InlineText>}
               >
                 <span>
-                  <TooltipIcon color="gray3" /> Rewards
+                  <TooltipIcon margin="0" color="gray3" /> Rewards
                 </span>
               </DarkTooltip>
             </InlineText>
@@ -151,7 +148,7 @@ export const TableRow = ({
                 }
               >
                 <span>
-                  <TooltipIcon color="gray3" /> APR
+                  <TooltipIcon margin="0" color="gray3" /> APR
                 </span>
               </DarkTooltip>
             </InlineText>
