@@ -20,7 +20,6 @@ import {
   MediaContainer,
   Copyright,
   FooterLeft,
-  ListingButton,
 } from './styles'
 
 export const Footer = () => {
@@ -46,13 +45,14 @@ export const Footer = () => {
         <LinkToDiscord />
       </MediaContainer>
       <Row width="35%" justify="flex-end">
-        <ListingButton
+        <FooterButton
+          as="a"
           data-testid="footer-request-listing-btn"
           href="https://github.com/aldrin-exchange/aldrin-registry"
           target="_blank"
         >
           Request Listing
-        </ListingButton>{' '}
+        </FooterButton>{' '}
         <FooterButton
           data-testid="footer-create-pool-btn"
           as={Link}
