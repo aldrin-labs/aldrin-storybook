@@ -190,7 +190,7 @@ const Block: React.FC<StakingBlockProps> = (props) => {
         {isStakeModeOn && (
           <Container>
             <StretchedContent>
-              <ContentBlock width="48%" background="green3">
+              <ContentBlock width="48%" background="white5">
                 <Row justify="space-between" margin="0 0 2rem 0">
                   <InlineText color="white1" size="sm">
                     Epoch
