@@ -15,8 +15,9 @@ import {
 import { PlusIcon, TooltipIcon } from '../../Icons'
 import { HeaderComponent } from '../Header'
 import { Box, Column, Row } from '../index.styles'
-import { DepositContainer } from './DepositContainer'
-import { PeriodButton, PeriodSwitcher, ModalContainer } from './index.styles'
+import { ModalContainer } from '../WithdrawLiquidity/index.styles'
+import { PeriodButton, PeriodSwitcher } from './index.styles'
+import { ValuesContainer } from './ValuesContainer'
 
 export const DepositLiquidity = ({
   onClose,
@@ -30,7 +31,7 @@ export const DepositLiquidity = ({
   const [period, setPeriod] = useState('7D')
   const wallet = useWallet()
   return (
-    <ModalContainer>
+    <ModalContainer needBlur>
       <Modal open={open} onClose={onClose}>
         <HeaderComponent arrow close={onClose} />
         <Column height="calc(100% - 11em)" margin="2em 0">
@@ -67,7 +68,7 @@ export const DepositLiquidity = ({
             </Row>
           </Row>
           <Column height="auto" width="100%">
-            <DepositContainer />
+            <ValuesContainer />
             {isRebalanceChecked && (
               <Row margin="1em 0" width="100%">
                 <Box height="auto" width="48%">

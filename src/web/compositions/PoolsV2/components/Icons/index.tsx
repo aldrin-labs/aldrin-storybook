@@ -43,6 +43,35 @@ export const PlusIcon = ({ color }: { color?: string }) => {
   )
 }
 
+export const MinusIcon = ({ color }: { color?: string }) => {
+  const theme = useTheme()
+  return (
+    <svg
+      style={{ margin: '0 3px 2px 0' }}
+      width="12"
+      height="12"
+      viewBox="0 0 13 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M6.49992 12.4167C9.47909 12.4167 11.9166 9.97917 11.9166 7C11.9166 4.02084 9.47909 1.58334 6.49992 1.58334C3.52075 1.58334 1.08325 4.02084 1.08325 7C1.08325 9.97917 3.52075 12.4167 6.49992 12.4167Z"
+        stroke={theme.colors[color || 'blue2']}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M4.33325 7H8.66659"
+        stroke={theme.colors[color || 'blue2']}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 export const SearchIcon = () => {
   const theme = useTheme()
 

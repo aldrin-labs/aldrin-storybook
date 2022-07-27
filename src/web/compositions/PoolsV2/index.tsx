@@ -5,11 +5,14 @@ import { Page } from '@sb/components/Layout'
 import { TVLChart, VolumeChart } from './components/Charts'
 import { ExtendedFiltersSection } from './components/FiltersSection'
 import { FilterIcon, PlusIcon } from './components/Icons'
+import { Row } from './components/Popups/index.styles'
 import { PoolsDetails } from './components/Popups/PoolsDetails'
 import { SearchInput } from './components/SearchInput'
 import { TableRow } from './components/TableRow'
 import { TablesSwitcher } from './components/TablesSwitcher'
+import { Container as SwitcherContainer } from './components/TablesSwitcher/index.styles'
 import { PositionInfo } from './components/YourPositions'
+import { PositionsCharts } from './components/YourPositions/PositionsChart'
 import { PositionsSwitcher } from './components/YourPositions/Switcher'
 import {
   RootRow,
@@ -21,10 +24,14 @@ import {
 } from './index.styles'
 
 export const PoolsComponent: React.FC = () => {
-  const [tableView, setTableView] = useState('classicLiquidity')
+  const [tableView, setTableView] = useState('yourPositions')
   const [positionsDataView, setPositionsDataView] = useState('simple')
   const [isFiltersShown, setIsFiltersShown] = useState(false)
   const [isPoolsDetailsPopupOpen, setIsPoolsDetailsPopupOpen] = useState(false)
+
+  const positionsAmount = 2
+  const showPositionsChart =
+    tableView === 'yourPositions' && positionsAmount > 1
 
   useEffect(() => {
     document.title = 'Aldrin | Liquidity Pools'
@@ -67,27 +74,37 @@ export const PoolsComponent: React.FC = () => {
             <VolumeChart />
           </RootRow>
         )}
+        {showPositionsChart && <PositionsCharts />}
         {tableView === 'yourPositions' && (
           <>
             <PositionsSwitcher
               positionsDataView={positionsDataView}
               setPositionsDataView={setPositionsDataView}
             />
-            <PositionInfo />
+            <PositionInfo positionsDataView={positionsDataView} />
           </>
         )}
-        <FilterRow margin="30px auto 15px auto">
-          <SearchInput />
-          <FilterButton
-            isActive={isFiltersShown}
-            onClick={() => {
-              setIsFiltersShown(!isFiltersShown)
-            }}
-          >
-            <FilterIcon isActive={isFiltersShown} />
-            Filters
-          </FilterButton>
-        </FilterRow>
+        {tableView === 'classicLiquidity' && (
+          <FilterRow margin="30px auto 15px auto">
+            <SearchInput />
+            <FilterButton
+              isActive={isFiltersShown}
+              onClick={() => {
+                setIsFiltersShown(!isFiltersShown)
+              }}
+            >
+              <FilterIcon isActive={isFiltersShown} />
+              Filters
+            </FilterButton>
+          </FilterRow>
+        )}
+        {tableView === 'yourPositions' && (
+          <Row margin="30px 0 0 0" width="100%">
+            <SwitcherContainer $variant="text">
+              You can also try
+            </SwitcherContainer>
+          </Row>
+        )}
         {isFiltersShown && <ExtendedFiltersSection />}
         <TableRow
           setIsPoolsDetailsPopupOpen={setIsPoolsDetailsPopupOpen}

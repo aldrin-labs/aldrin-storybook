@@ -63,7 +63,8 @@ export const Container = styled.div<ContainerProps>`
   &:hover {
     background: ${(props) => props.theme.colors.gray6};
 
-    .wave-icon {
+    .wave-icon,
+    .small-wave-icon {
       path {
         fill: ${(props) => props.theme.colors.gray6};
       }

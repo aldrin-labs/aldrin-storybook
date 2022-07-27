@@ -4,7 +4,7 @@ import { Button } from '@sb/components/Button'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
 import { RootRow } from '@sb/compositions/PoolsV2/index.styles'
-import { MSOL_MINT, RIN_MINT } from '@sb/dexUtils/utils'
+import { RIN_MINT } from '@sb/dexUtils/utils'
 
 import { TooltipIcon } from '../../Icons'
 import {
@@ -12,12 +12,22 @@ import {
   LinkToDiscord,
   LinkToTwitter,
 } from '../../Socials'
-import { Card, ContainerWithBack, InnerBlock } from './index.styles'
+import {
+  TokenContainer,
+  Card,
+  ContainerWithBack,
+  InnerBlock,
+  TokensBackground,
+} from './index.styles'
 
-export const PositionCard = () => {
+export const PositionCard = ({
+  isPositionViewDetailed,
+}: {
+  isPositionViewDetailed: boolean
+}) => {
   return (
     <ContainerWithBack>
-      <Card>
+      <Card isPositionViewDetailed={isPositionViewDetailed}>
         <InnerBlock>
           <InlineText color="gray0" weight={600}>
             • RIN/USDC •
@@ -34,33 +44,22 @@ export const PositionCard = () => {
             <LinkToDiscord $variant="withoutBack" />
           </RootRow>
         </InnerBlock>
-        <div style={{ opacity: '0.1' }}>
-          <div
-            style={{
-              position: 'absolute',
-              transform: 'rotate(-20deg)',
-              top: '-1em',
-              right: '-2em',
-            }}
-          >
-            <TokenIcon size={160} mint={MSOL_MINT} />
-          </div>
-          <div
-            style={{
-              position: 'absolute',
-              transform: 'rotate(20deg)',
-              top: '2em',
-              right: '4em',
-            }}
-          >
+        <TokensBackground>
+          <TokenContainer isFirstIcon>
+            <TokenIcon
+              size={160}
+              mint="EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+            />
+          </TokenContainer>
+          <TokenContainer>
             <TokenIcon size={160} mint={RIN_MINT} />
-          </div>
-        </div>
+          </TokenContainer>
+        </TokensBackground>
       </Card>
       <Button
         $width="xl"
         $borderRadius="md"
-        $padding="xxl"
+        $padding="lg"
         $variant="green"
         $fontSize="sm"
       >

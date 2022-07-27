@@ -14,7 +14,7 @@ import {
   SecondInputContainer,
 } from './index.styles'
 
-export const DepositContainer = () => {
+export const ValuesContainer = () => {
   return (
     <InputsContainer>
       <FirstInputContainer>

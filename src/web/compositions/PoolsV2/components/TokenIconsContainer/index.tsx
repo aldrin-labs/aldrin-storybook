@@ -7,19 +7,23 @@ import { Container, IconsContainer, WaveElement } from './index.styles'
 
 export const TokenIconsContainer = ({
   mint,
+  size = 32,
   needElement = false,
+  elementSize = 'lg',
 }: {
   mint?: string
+  size: number
   needElement?: boolean
+  elementSize?: 'sm' | 'lg'
 }) => {
   return (
     <Container>
       <IconsContainer>
-        <TokenIcon mint={getTokenMintAddressByName('RIN')} size={32} />{' '}
-        <TokenIcon mint={getTokenMintAddressByName('USDC')} size={32} />{' '}
+        <TokenIcon mint={getTokenMintAddressByName('RIN')} size={size} />{' '}
+        <TokenIcon mint={getTokenMintAddressByName('USDC')} size={size} />{' '}
       </IconsContainer>
       {needElement && (
-        <WaveElement>
+        <WaveElement elementSize={elementSize}>
           <svg
             className="wave-icon"
             width="116"
@@ -38,6 +42,21 @@ export const TokenIconsContainer = ({
               fillRule="evenodd"
               clipRule="evenodd"
               d="M0.953379 1.5208L4.06228 3.74896C7.17118 5.97712 14.42 10.4262 20.5982 9.25764C27.8074 8.08184 33.938 0.163467 41.1631 1.23761C47.3492 1.19404 54.677 9.00131 60.8634 8.5C67.0495 8.99869 70.4228 6.27173 73.5 4L80.4559 2.48314L80.4527 16.7113L77.3597 16.7331C74.2666 16.7549 67.0495 16.8057 60.8634 16.8493C53.6462 16.9001 47.4601 16.9437 41.274 16.9872C34.0569 17.0381 27.8708 17.0816 20.6537 17.1324C14.4675 17.176 7.25041 17.2268 4.15736 17.2486L1.0643 17.2704L0.953379 1.5208Z"
+              fill="#14141F"
+            />
+          </svg>
+          <svg
+            className="small-wave-icon"
+            width="60"
+            height="auto"
+            viewBox="0 0 47 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M0 2.13961L1.83117 3.51299C3.66234 4.88636 7.93506 7.63312 11.5974 6.94643C15.8701 6.25974 19.5325 1.45292 23.8052 2.13961C27.4675 2.13961 31.1299 6.94643 35.4026 7.63312C39.0649 8.31981 43.3377 4.19968 45.1688 2.8263L47 0.766235V11.7532H45.1688C43.3377 11.7532 39.0649 11.7532 35.4026 11.7532C31.1299 11.7532 27.4675 11.7532 23.8052 11.7532C19.5325 11.7532 15.8701 11.7532 11.5974 11.7532C7.93506 11.7532 3.66234 11.7532 1.83117 11.7532H0V2.13961Z"
               fill="#14141F"
             />
           </svg>

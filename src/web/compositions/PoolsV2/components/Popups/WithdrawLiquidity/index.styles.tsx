@@ -1,11 +1,17 @@
 import styled from 'styled-components'
 
+import { StyledModal } from '../index.styles'
+
 type CircleIconContainerType = {
   size?: string
 }
 
 type PeriodButtonType = {
   isActive: boolean
+}
+
+type ModalType = {
+  needBlur?: boolean
 }
 
 export const CircleIconContainer = styled.div<CircleIconContainerType>`
@@ -98,5 +104,11 @@ export const PeriodButton = styled.div<PeriodButtonType>`
     color: ${(props) =>
       props.isActive ? props.theme.colors.gray0 : props.theme.colors.gray1};
     font-weight: ${(props) => (props.isActive ? 600 : 400)};
+  }
+`
+export const ModalContainer = styled(StyledModal)<ModalType>`
+  .modal-container {
+    backdrop-filter: ${(props) => (props.needBlur ? '5px' : 'none')};
+    background: ${(props) => (props.needBlur ? 'rgba(0, 0, 0, 0.5)' : 'none')};
   }
 `

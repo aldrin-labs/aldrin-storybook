@@ -1,4 +1,4 @@
-import { BREAKPOINTS, FONT_SIZES } from '@variables/variables'
+import { BORDER_RADIUS, BREAKPOINTS, FONT_SIZES } from '@variables/variables'
 import styled from 'styled-components'
 
 import { Button, PADDINGS } from '@sb/components/Button'
@@ -12,6 +12,7 @@ type RootRowType = {
   height?: string
   width?: string
   margin?: string
+  align?: string
 }
 
 export const RootRow = styled.div<RootRowType>`
@@ -19,7 +20,7 @@ export const RootRow = styled.div<RootRowType>`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  align-items: center;
+  align-items: ${(props) => props.align || 'center'};
   margin: ${(props) => props.margin || '30px 0'};
   width: ${(props) => props.width || 'auto'};
 
@@ -92,5 +93,24 @@ export const FilterRow = styled(RootRow)`
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     width: 100%;
+  }
+`
+export const GrayContainer = styled.div`
+  width: 90%;
+  position: relative;
+  background: ${(props) => props.theme.colors.gray7};
+  border-radius: ${BORDER_RADIUS.lg};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 1em;
+  height: 8em;
+  padding: 1em 1.5em;
+
+  @media (min-width: ${BREAKPOINTS.sm}) {
+    width: 48%;
+    min-height: 7em;
+    height: auto;
+    margin: 0;
   }
 `
