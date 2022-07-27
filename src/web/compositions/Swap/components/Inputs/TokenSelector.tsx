@@ -34,6 +34,10 @@ export const TokenSelector = ({
   const { symbol } = tokenInfos.get(mint) || {
     symbol: getTokenNameByMintAddress(mint),
   }
+  let fontSize = FONT_SIZES.md
+
+  if (symbol.length > 5) fontSize = FONT_SIZES.xs
+  else if (symbol.length === 4) fontSize = FONT_SIZES.sm
 
   return (
     <TokenSelectorContainer onClick={onClick}>
@@ -41,31 +45,23 @@ export const TokenSelector = ({
         <TokenIcon mint={mint} size={24} />
         <Text
           style={{ margin: '0 0.8rem' }}
-          fontSize={
-            symbol.length > 5
-              ? FONT_SIZES.xs
-              : symbol.length >= 4
-              ? FONT_SIZES.sm
-              : FONT_SIZES.md
-          }
+          fontSize={fontSize}
           fontFamily="Avenir Next Demi"
         >
           {symbol}
         </Text>
       </Row>
-      <Row>
-        <DropdownIconContainer>
-          <svg
-            width="18"
-            height="11"
-            viewBox="0 0 18 11"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M1 1L9 9L17 1" stroke="#ABBAD1" strokeWidth="2" />
-          </svg>
-        </DropdownIconContainer>
-      </Row>
+      <DropdownIconContainer>
+        <svg
+          width="18"
+          height="11"
+          viewBox="0 0 18 11"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M1 1L9 9L17 1" stroke="#ABBAD1" strokeWidth="2" />
+        </svg>
+      </DropdownIconContainer>
     </TokenSelectorContainer>
   )
 }

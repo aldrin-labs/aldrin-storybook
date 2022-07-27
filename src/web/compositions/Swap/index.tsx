@@ -42,14 +42,14 @@ import {
 import ArrowsExchangeIcon from '@icons/arrowsExchange.svg'
 import SettingIcon from '@icons/settings.svg'
 
-import { INPUT_FORMATTERS } from '../../components/Input'
-import { queryRendererHoc } from '../../components/QueryRenderer'
-import { useConnection } from '../../dexUtils/connection'
-import { getSwapRouteFeesAmount } from '../../dexUtils/pools/swap/getSwapStepFeeUSD'
-import { useTokenInfos } from '../../dexUtils/tokenRegistry'
-import { signAndSendTransactions } from '../../dexUtils/transactions'
+import { INPUT_FORMATTERS } from "@sb/components/Input"
+import { queryRendererHoc } from "@sb/components/QueryRenderer"
+import { useConnection } from "@sb/dexUtils/connection"
+import { getSwapRouteFeesAmount } from "@sb/dexUtils/pools/swap/getSwapStepFeeUSD"
+import { useTokenInfos } from "@sb/dexUtils/tokenRegistry"
+import { signAndSendTransactions } from "@sb/dexUtils/transactions"
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { getTokenDataByMint } from '../Pools/utils'
+import { getTokenDataByMint } from "@core/solana"
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
 import { SwapChartWithPrice } from './components/SwapChart'
@@ -69,7 +69,9 @@ import {
   RowImpactTitle,
   SlippageButton,
   InfoIconContainer,
-  SwapTooltip,
+  LeftColumn,
+  RightColumn,
+  ChartContainer,
 } from './styles'
 import {
   getOHLCVMarketTypeFromSwapRoute,
@@ -171,6 +173,7 @@ const SwapPage = ({
   const [isSelectCoinPopupOpen, setIsSelectCoinPopupOpen] = useState(false)
   const [isConnectWalletPopupOpen, setIsConnectWalletPopupOpen] =
     useState(false)
+  const [isExchangeReversed, setIsExchangeReversed] = useState(false)
 
   const [
     selectedInputTokenAddressFromSeveral,
@@ -218,11 +221,12 @@ const SwapPage = ({
     slippage,
   })
 
-  console.log('swapRoute', { swapRoute, depositAndFee })
   const outputDexTokenPrice = dexTokensPricesMap.get(outputSymbol) || 0
 
-  const inputCgcTokenPrice = coingeckoPricesMap.get(inputSymbol) || 0
-  const outputCgcTokenPrice = coingeckoPricesMap.get(outputSymbol) || 0
+  const inputCgcTokenPrice =
+    coingeckoPricesMap.get(inputSymbol.toUpperCase()) || 0
+  const outputCgcTokenPrice =
+    coingeckoPricesMap.get(outputSymbol.toUpperCase()) || 0
 
   const estimatedPrice = inputCgcTokenPrice / outputCgcTokenPrice
   const estimatedPriceFromRoute = +outputAmount / +inputAmount
@@ -232,14 +236,14 @@ const SwapPage = ({
     2
   )
 
+  const isHighPriceDiff = pricesDiffPct < -1
+
   const priceDiffText =
     pricesDiffPct > 0
       ? `${pricesDiffPct}% cheaper `
       : pricesDiffPct < -1
       ? `${-pricesDiffPct}% more expensive `
       : `Within 1% of `
-
-  const isHighPriceDiff = pricesDiffPct < -1
 
   let { amount: maxInputAmount } = getTokenDataByMint(
     userTokensData,
@@ -300,6 +304,8 @@ const SwapPage = ({
         inputTokenMintAddress
       )
     }
+
+    setIsExchangeReversed(!isExchangeReversed)
   }
 
   const buttonText = getSwapButtonText({
@@ -328,10 +334,8 @@ const SwapPage = ({
         height="100%"
         wrap="nowrap"
       >
-        <Row width="50%" justify="flex-end">
-          <Row
-            style={{ height: '17.5em', width: '30em', marginRight: '0.6em' }}
-          >
+        <LeftColumn>
+          <ChartContainer>
             <SwapChartWithPrice
               isCrossOHLCV={swapRoute.steps.length > 1}
               marketType={getOHLCVMarketTypeFromSwapRoute(swapRoute)}
@@ -339,9 +343,10 @@ const SwapPage = ({
               outputTokenMintAddress={getOHLCVSymbols(swapRoute.steps)[1]}
               pricesMap={dexTokensPricesMap}
             />
-          </Row>
-        </Row>
-        <Row width="50%" justify="flex-start">
+          </ChartContainer>
+        </LeftColumn>
+
+        <RightColumn>
           <SwapContentContainer direction="column">
             <RowContainer justify="flex-start" margin="0 0 1em 0">
               <SwapSearch
@@ -448,7 +453,10 @@ const SwapPage = ({
                     }
                   />
                 </RowContainer>
-                <ReverseTokensContainer onClick={reverseTokens}>
+                <ReverseTokensContainer
+                  onClick={reverseTokens}
+                  $isReversed={isExchangeReversed}
+                >
                   <SvgIcon src={ArrowsExchangeIcon} />
                 </ReverseTokensContainer>
                 <RowContainer
@@ -506,7 +514,7 @@ const SwapPage = ({
                           ? `< $0.01`
                           : `$${formattedTotalFeeUSD}`}
                       </RowValue>
-                      {depositAndFee > 0.02 ? (
+                      {depositAndFee > 0.02 && (
                         <DarkTooltip title="Fee breakdown">
                           <Row
                             margin="0 0 0 0.3em"
@@ -537,80 +545,74 @@ const SwapPage = ({
                             </svg>
                           </Row>
                         </DarkTooltip>
-                      ) : null}
+                      )}
                     </Row>
                   </BlackRow>
-                  <BlackRow width="calc(50% - 0.6em)">
-                    <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
-                      {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
-                    </RowImpactTitle>
 
-                    <SwapTooltip
-                      PopperProps={{ style: { opacity: 1 } }}
-                      title={
-                        <Row
-                          direction="column"
-                          align="flex-start"
-                          style={{ fontSize: '16px' }}
-                        >
-                          <Text size="esm" margin="0">
-                            <InlineText color="white1" weight={600}>
-                              {stripByAmount(estimatedPriceFromRoute)}
-                            </InlineText>{' '}
-                            {outputSymbol} per {inputSymbol}.
-                          </Text>
-                          <Text color="white1" size="esm" margin="0">
-                            <InlineText
-                              color={isHighPriceDiff ? 'red1' : 'green2'}
-                            >
-                              {priceDiffText}
-                            </InlineText>{' '}
-                            than CoinGecko price.
-                          </Text>
-                        </Row>
-                      }
-                    >
-                      <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
-                        <svg
-                          width="12"
-                          height="12"
-                          viewBox="0 0 12 12"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
-                            stroke="currentColor"
-                          />
-                          <path
-                            d="M6 3.5H6.00656"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                          />
-                          <path
-                            d="M6 5.5V8"
-                            stroke="currentColor"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </InfoIconContainer>
-                    </SwapTooltip>
-                  </BlackRow>
+                  {!isLoadingSwapRoute && (
+                    <BlackRow width="calc(50% - 0.6em)">
+                      <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
+                        {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
+                      </RowImpactTitle>
+
+                      <DarkTooltip
+                        PopperProps={{ style: { opacity: 1 } }}
+                        title={
+                          <Row
+                            direction="column"
+                            align="flex-start"
+                            style={{ fontSize: '16px' }}
+                          >
+                            <Text size="esm" margin="0">
+                              <InlineText color="white1" weight={600}>
+                                {stripByAmount(estimatedPriceFromRoute)}
+                              </InlineText>{' '}
+                              {outputSymbol} per {inputSymbol}.
+                            </Text>
+                            <Text color="white1" size="esm" margin="0">
+                              <InlineText
+                                color={isHighPriceDiff ? 'red1' : 'green2'}
+                              >
+                                {priceDiffText}
+                              </InlineText>{' '}
+                              than CoinGecko price.
+                            </Text>
+                          </Row>
+                        }
+                      >
+                        <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
+                          <svg
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                              stroke="currentColor"
+                            />
+                            <path
+                              d="M6 3.5H6.00656"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M6 5.5V8"
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </InfoIconContainer>
+                      </DarkTooltip>
+                    </BlackRow>
+                  )}
                 </RowContainer>
               )}
-              {/* {!isLoadingSwapRoute && pctDiffUsedAndUIInputAmount >= 5 && (
-              <RowContainer margin="0 0 .5em 0">
-                <Text>
-                  This swap will only use {swapRouteInAmount} (out of{' '}
-                  {inputAmount}) USDC
-                </Text>
-              </RowContainer>
-            )} */}
               <RowContainer margin="3.5em 0 0 0">
                 {!wallet.publicKey ? (
                   <BtnCustom
-                    theme={theme}
                     onClick={() => {
                       setIsConnectWalletPopupOpen(true)
                     }}
@@ -732,11 +734,10 @@ const SwapPage = ({
               </RowContainer>
             </SwapBlockTemplate>
           </SwapContentContainer>
-        </Row>
+        </RightColumn>
 
         <SelectCoinPopup
           data-testid="swap-select-token-popup"
-          theme={theme}
           mints={tokenSelectorMints}
           topTradingMints={topTradingMints}
           allTokensData={userTokensData}
@@ -795,7 +796,6 @@ const SwapPage = ({
 
 // @ts-ignore
 export default compose(
-  // withRegionCheck,
   queryRendererHoc({
     name: 'getPoolsInfoQuery',
     query: getPoolsInfo,

@@ -11,7 +11,6 @@ const CommonPaper = styled(Paper)`
   box-shadow: 0px 0px 0.4em 0px rgba(0, 0, 0, 0.45);
   background: ${(props) => props.theme.colors.white6};
   border-radius: ${BORDER_RADIUS.md};
-  overflow: hidden;
   overflow: visible;
 
   @media (max-width: ${BREAKPOINTS.sm}) {

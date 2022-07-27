@@ -18,7 +18,7 @@ import { Text } from '../Typography'
 export const HeaderWrap = styled.header`
   display: flex;
   flex-direction: row;
-  height: 96px;
+  height: 76px;
   background: ${(props) => props.theme.colors.header};
   padding: 0 24px;
   border-bottom-width: 1px;

@@ -61,10 +61,10 @@ export const SwapAmountInput = ({
             width={FONT_SIZES.sm}
             height={FONT_SIZES.sm}
           />
+
           <MaxAmountText
             fontSize={FONT_SIZES.sm}
             fontFamily="Avenir Next Demi"
-            color="white2"
             padding="0 0 0 0.2em"
           >
             {maxAmount ? stripByAmount(maxAmount) : '0.00'}

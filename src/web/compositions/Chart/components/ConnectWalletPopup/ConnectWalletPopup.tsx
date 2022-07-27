@@ -33,6 +33,7 @@ const modalContentStyle = {
 
 const modalRootStyle = {
   backdropFilter: 'none',
+  justifyContent: 'flex-start',
 }
 
 const ConnectWalletPopup = ({
@@ -54,6 +55,7 @@ const ConnectWalletPopup = ({
         alignSelf: 'flex-end',
         marginTop: '75px',
         marginRight: '24px',
+        maxHeight: '80vh',
       }
 
   const walletProviders = WALLET_PROVIDERS.map((item) => {

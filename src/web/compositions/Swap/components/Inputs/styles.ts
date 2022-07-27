@@ -17,11 +17,11 @@ export const DropdownIconContainer = styled(Row)`
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background: ${(props) => props.theme.colors.white6};
 
   svg {
     width: 0.5875em;
     height: 0.5875em;
+
     path {
       stroke: ${(props) => props.theme.colors.white1};
     }
@@ -36,12 +36,17 @@ export const AmountInputContainer = styled(Row)`
   }
 `
 
+export const MaxAmountText = styled(Text)`
+  color: ${(props) => props.theme.colors.white2};
+  letter-spacing: -0.005em;
+`
+
 export const MaxAmountRow = styled(Row)`
   &:hover {
     cursor: pointer;
-  }
-`
 
-export const MaxAmountText = styled(Text)`
-  letter-spacing: -0.005em;
+    ${MaxAmountText} {
+      color: ${(props) => props.theme.colors.white1};
+    }
+  }
 `

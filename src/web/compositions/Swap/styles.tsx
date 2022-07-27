@@ -1,25 +1,64 @@
 import {
-  BORDER_RADIUS,
   BREAKPOINTS,
   FONTS,
   FONT_SIZES,
   MAIN_FONT,
   TRANSITION,
 } from '@variables/variables'
-import { rgba } from 'polished'
+import { rgba, em } from 'polished'
 import React from 'react'
 import styled, { DefaultTheme } from 'styled-components'
 
-import { Button, PADDINGS } from '@sb/components/Button'
+import { Button } from '@sb/components/Button'
 import { Page } from '@sb/components/Layout'
-import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 
+export const LeftColumn = styled(Row)`
+  justify-content: flex-end;
+  order: 1;
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    order: 2;
+    justify-content: center;
+  }
+`
+
+export const RightColumn = styled(Row)`
+  justify-content: flex-start;
+  order: 2;
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    order: 1;
+    justify-content: center;
+  }
+`
+
+export const ChartContainer = styled(Row)`
+  width: 30em;
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    width: 100%;
+    margin: ${em('24px', '14px')};
+  }
+`
+
 export const SwapPageContainer = styled(RowContainer)`
   background: ${(props) => props.theme.colors.background1};
   overflow-y: auto;
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    flex-direction: column;
+  }
+
+  ${LeftColumn} + ${RightColumn} {
+    margin-left: 0.6em;
+
+    @media (max-width: ${BREAKPOINTS.xs}) {
+      margin-left: 0;
+    }
+  }
 `
 
 export const Card = styled(BlockTemplate)`
@@ -28,16 +67,6 @@ export const Card = styled(BlockTemplate)`
   border: 1px solid #383b45;
   border-top: none;
   box-shadow: none;
-`
-export const TokenLabel = styled.div`
-  width: auto;
-  padding: 0.5rem 1rem;
-  font-family: Avenir Next Medium;
-  color: #f8faff;
-  border-radius: 1.3rem;
-  background: #f69894;
-  font-size: 1.4rem;
-  margin-left: 1rem;
 `
 
 type BoxProps = {
@@ -83,27 +112,20 @@ export const SlippageButton = styled.button`
   }
 `
 
-export const InfoIconContainer = styled.span`
-  color: ${({ isHighPriceDiff, theme }) =>
-    isHighPriceDiff ? theme.colors.red1 : theme.colors.green3};
+type InfoIconContainerProps = {
+  isHighPriceDiff: boolean
+}
+
+export const InfoIconContainer = styled.span<InfoIconContainerProps>`
+  color: ${(props) =>
+    props.isHighPriceDiff
+      ? props.theme.colors.red1
+      : props.theme.colors.green3};
 
   svg {
     width: 100%;
     height: 100%;
   }
-`
-
-export const ValueInput = styled.input`
-  width: 5em;
-  height: 2em;
-  padding: 0.5em 0.8em;
-  font-family: Avenir Next Medium;
-  color: ${(props) => props.theme.colors.white1};
-  background-color: ${(props) => props.theme.colors.white4};
-  border: none;
-  font-size: ${FONT_SIZES.sm};
-  border-radius: 0.8rem;
-  outline: none;
 `
 
 export const BlackRow = styled((props) => (
@@ -137,11 +159,6 @@ export const RowImpactTitle = styled(RowTitle)`
     isHighPriceDiff: boolean
     theme: DefaultTheme
   }) => (isHighPriceDiff ? theme.colors.red1 : theme.colors.green3)};
-`
-
-export const RowAmountValue = styled(RowValue)`
-  margin-right: 0.4rem;
-  color: ${(props) => props.theme.colors.green3};
 `
 
 export const SwapButton = styled(Button)`
@@ -185,14 +202,27 @@ export const CircleIconContainer = styled(Row)`
   line-height: ${(props) => props.size || '2em'};
 `
 
-export const ReverseTokensContainer = styled(CircleIconContainer)`
+type ReverseTokensContainerProps = {
+  $isReversed: boolean
+}
+
+export const ReverseTokensContainer = styled(
+  CircleIconContainer
+)<ReverseTokensContainerProps>`
   position: absolute;
   left: 50%;
   top: 50%;
   border: 1px solid ${(props) => props.theme.colors.white4};
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%)
+    rotate(${(props) => (props.$isReversed ? 180 : 0)}deg);
   cursor: pointer;
   z-index: 2;
+  transition: all 0.3s ease-out;
+
+  &:hover {
+    transform: translate(-50%, -50%)
+      rotate(${(props) => (props.$isReversed ? 180 : 0)}deg) scale(1.2);
+  }
 
   svg {
     width: 1.2em;
@@ -204,13 +234,9 @@ export const ReverseTokensContainer = styled(CircleIconContainer)`
 `
 
 export const SwapPageLayout = styled(Page)`
-  font-size: 12px;
+  font-size: 13px;
 
-  @media (min-width: 380px) {
-    font-size: 13px;
-  }
-
-  @media (min-width: 480px) {
+  @media (min-width: ${BREAKPOINTS.xs}) {
     font-size: 14px;
   }
 
@@ -225,20 +251,20 @@ export const SwapPageLayout = styled(Page)`
 
 export const SwapContentContainer = styled(Row)`
   margin: 10px 0;
-  width: 90%;
-  margin-right: 0.6em;
+  width: 24em;
 
-  @media (min-width: ${BREAKPOINTS.sm}) {
-    width: 24em;
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    width: 100%;
+    margin: ${em('24px', '14px')};
   }
 
-  @media (min-width: 1920px) {
+  @media (min-width: ${BREAKPOINTS.xxl}) {
     width: 30em;
   }
 `
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
-  box-shadow: 0px 0px 48px rgba(0, 0, 0, 0);
+  box-shadow: 0 0 48px rgba(0, 0, 0, 0);
   background: ${({ theme }) => theme.colors.white6};
   padding: 1.5em 1em;
   z-index: 10;
@@ -268,35 +294,7 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
     }
   }
 
-  @media (min-width: 1920px) {
+  @media (min-width: ${BREAKPOINTS.xxl}) {
     font-size: 20px;
-  }
-`
-
-export const SetAmountButton = styled(Button)`
-  min-width: 0;
-  font-size: ${FONT_SIZES.xs};
-  font-family: ${FONTS.demi};
-  border-radius: ${BORDER_RADIUS.xxl};
-  color: ${(props) => props.theme.colors.white1};
-  background-color: ${(props) => props.theme.colors.white3};
-  border: none;
-  padding: ${PADDINGS.xs};
-
-  &:hover {
-    background-color: ${(props) => props.theme.colors.white3};
-  }
-  &:active {
-    background-color: ${(props) => props.theme.colors.white4};
-  }
-
-  @media (min-width: ${BREAKPOINTS.sm}) {
-    padding: ${PADDINGS.sm};
-  }
-`
-
-export const SwapTooltip = styled(DarkTooltip)`
-  && .tooltip {
-    color: auto;
   }
 `

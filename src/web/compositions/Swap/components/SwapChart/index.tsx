@@ -13,6 +13,7 @@ import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
 
 import OHLCVCandlesIcon from '@icons/ohlcvCandles.svg'
 
+import { SwapChartContainer } from './styles'
 import { SwapChartPrice } from './SwapChartPrice'
 
 interface SwapChartProps {
@@ -52,7 +53,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
   }
 
   return (
-    <RowContainer height="100%">
+    <SwapChartContainer>
       <RowContainer margin="0 0 1em 0">
         <SwapChartPrice
           pricesMap={pricesMap}
@@ -62,6 +63,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
           outputTokenMintAddress={outputTokenMintAddress}
         />
       </RowContainer>
+
       {isCrossOHLCV ? (
         <CrossSwapChartContainer direction="column" height="100%">
           <SvgIcon src={OHLCVCandlesIcon} />
@@ -85,7 +87,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
           key={`${inputSymbol}/${outputSymbol}`}
         />
       )}
-    </RowContainer>
+    </SwapChartContainer>
   )
 }
 
