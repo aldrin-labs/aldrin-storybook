@@ -5,4 +5,5 @@ export interface AmountInputProps extends InputCommon, OnChangeProps {
   mint: string
   showButtons?: boolean
   usdValue?: number
+  maxLength?: number
 }

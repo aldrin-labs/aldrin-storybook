@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTheme } from 'styled-components'
 
 import { FlexBlock } from '@sb/components/Layout'
 import { Modal } from '@sb/components/Modal'
@@ -11,6 +12,7 @@ import {
   Title,
 } from '../Popups/CreatePool/styles'
 import { FarmingProcessingModalProps } from './types'
+import { Link } from './styles'
 
 const PROCESSING_STATUSES = new Set(['preparing', 'signing', 'sending'])
 const OK_STATUSES = new Set([...PROCESSING_STATUSES.values(), 'success'])
@@ -22,6 +24,8 @@ const STATUS_MESSAGES: { [k: string]: string } = {
 export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
   props
 ) => {
+  const theme = useTheme()
+
   const { onClose, open, status, prolongFarming, txId } = props
 
   const isProcessing = PROCESSING_STATUSES.has(status)
@@ -72,13 +76,13 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
                   <>
                     {!!txId && (
                       <Text>
-                        <a
+                        <Link
                           target="_blank"
                           href={`https://solscan.io/tx/${txId}`}
                           rel="noreferrer"
                         >
                           View on SolScan.
-                        </a>
+                        </Link>
                       </Text>
                     )}
                   </>
@@ -88,13 +92,13 @@ export const FarmingProcessingModal: React.FC<FarmingProcessingModalProps> = (
             <PoolProcessingContent>
               <Text size="sm">
                 Please check your transaction or contact us via{' '}
-                <a
+                <Link
                   href="https://t.me/Aldrin_Exchange"
                   target="_blank"
                   rel="noreferrer"
                 >
                   Telegram
-                </a>
+                </Link>
                 .
               </Text>
             </PoolProcessingContent>

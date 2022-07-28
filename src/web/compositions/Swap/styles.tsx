@@ -4,6 +4,7 @@ import {
   FONTS,
   FONT_SIZES,
   MAIN_FONT,
+  TRANSITION,
 } from '@variables/variables'
 import React from 'react'
 import styled from 'styled-components'
@@ -16,7 +17,6 @@ import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import { BlockTemplate } from '../Pools/index.styles'
 
 export const SwapPageContainer = styled(RowContainer)`
-  background: ${(props) => props.theme.colors.gray9};
   overflow-y: auto;
 `
 
@@ -66,12 +66,22 @@ export const ValueButton = styled.button`
   padding: 0.5em 0.8em;
   font-family: Avenir Next Bold;
   color: #a7a7ae;
-  background-color: ${(props) => props.theme.colors.gray5};
+  background-color: ${(props) => props.theme.colors.white4};
   margin-left: 0.5rem;
   font-size: ${(props) => FONT_SIZES[props.$fontSize || 'sm']};
   line-height: 2em;
-  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
+  border: 0.1rem solid ${(props) => props.theme.colors.white4};
   border-radius: 0.8rem;
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.white5};
+    border: 0.1rem solid ${(props) => props.theme.colors.white5};
+  }
+
+  &:active {
+    background-color: ${(props) => props.theme.colors.white6};
+    border: 0.1rem solid ${(props) => props.theme.colors.white6};
+  }
 `
 
 export const ValueInput = styled.input`
@@ -79,8 +89,8 @@ export const ValueInput = styled.input`
   height: 2em;
   padding: 0.5em 0.8em;
   font-family: Avenir Next Medium;
-  color: ${(props) => props.theme.colors.gray0};
-  background-color: ${(props) => props.theme.colors.gray5};
+  color: ${(props) => props.theme.colors.white1};
+  background-color: ${(props) => props.theme.colors.white4};
   border: none;
   font-size: ${FONT_SIZES.sm};
   border-radius: 0.8rem;
@@ -90,7 +100,7 @@ export const ValueInput = styled.input`
 export const BlackRow = styled((props) => (
   <Row justify="space-between" {...props} />
 ))`
-  background: ${(props) => props.theme.colors.gray5};
+  background: ${(props) => props.theme.colors.white4};
   border-radius: 1.2rem;
   height: 3em;
   padding: 1em 0.8em;
@@ -100,12 +110,12 @@ export const BlackRow = styled((props) => (
 export const RowTitle = styled.span`
   font-family: ${MAIN_FONT};
   font-size: ${FONT_SIZES.xsm};
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const RowValue = styled(RowTitle)`
   font-weight: 500;
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.white1};
 `
 
 export const RowAmountValue = styled(RowValue)`
@@ -123,7 +133,7 @@ export const SwapButton = styled((props) => (
     borderColor="none"
     btnColor="#fff"
     backgroundColor={
-      props.disabled ? props.theme.colors.disabled : props.theme.colors.blue5
+      props.disabled ? props.theme.colors.disabled : props.theme.colors.blue3
     }
     textTransform="none"
     transition="all .4s ease-out"
@@ -138,10 +148,10 @@ export const SwapButton = styled((props) => (
 export const CircleIconContainer = styled(Row)`
   width: ${(props) => props.size || '1.6em'};
   height: ${(props) => props.size || '1.6em'};
-  background: ${(props) => props.theme.colors.gray7};
+  background: ${(props) => props.theme.colors.white6};
   border-radius: 50%;
   font-family: Avenir Next Bold;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
   line-height: ${(props) => props.size || '1.6em'};
 `
 
@@ -157,7 +167,7 @@ export const ReverseTokensContainer = styled(CircleIconContainer)`
     width: 10px;
     height: auto;
     path {
-      fill: ${(props) => props.theme.colors.gray0};
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
 `
@@ -183,6 +193,7 @@ export const SwapPageLayout = styled(Page)`
 `
 
 export const SwapContentContainer = styled(Row)`
+  margin: 10px 0;
   width: 90%;
 
   @media (min-width: ${BREAKPOINTS.sm}) {
@@ -196,9 +207,34 @@ export const SwapContentContainer = styled(Row)`
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
   box-shadow: 0px 0px 48px rgba(0, 0, 0, 0);
-  background: ${({ theme }) => theme.colors.gray6};
+  background: ${({ theme }) => theme.colors.white5};
   padding: 2.4rem 1.6rem;
   z-index: 10;
+
+  .timer {
+    &:hover {
+      background-color: ${(props) => props.theme.colors.white4};
+      border: 0.1rem solid ${(props) => props.theme.colors.white4};
+    }
+    &:active {
+      background-color: ${(props) => props.theme.colors.white4};
+      border: 0.1rem solid ${(props) => props.theme.colors.white4};
+    }
+  }
+
+  .btn {
+    transition: ${TRANSITION};
+
+    &:hover {
+      background: ${(props) => props.theme.colors.blue2};
+      border: 1px solid transparent;
+    }
+
+    &:active {
+      background: ${(props) => props.theme.colors.blue3};
+      border: 1px solid transparent;
+    }
+  }
 
   @media (min-width: 1920px) {
     font-size: 20px;
@@ -210,10 +246,17 @@ export const SetAmountButton = styled(Button)`
   font-size: ${FONT_SIZES.xs};
   font-family: ${FONTS.demi};
   border-radius: ${BORDER_RADIUS.xxl};
-  color: ${(props) => props.theme.colors.gray1};
-  background-color: ${(props) => props.theme.colors.gray11};
+  color: ${(props) => props.theme.colors.white1};
+  background-color: ${(props) => props.theme.colors.white3};
   border: none;
   padding: ${PADDINGS.xs};
+
+  &:hover {
+    background-color: ${(props) => props.theme.colors.white3};
+  }
+  &:active {
+    background-color: ${(props) => props.theme.colors.white4};
+  }
 
   @media (min-width: ${BREAKPOINTS.sm}) {
     padding: ${PADDINGS.sm};

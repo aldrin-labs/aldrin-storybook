@@ -26,7 +26,7 @@ export const Tooltip = styled(({ ...props }) => (
   top: 150%;
   padding: 0.4rem 2rem;
   background: ${(props) => props.theme.colors.tooltip};
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.white1};
   border-radius: 1.6rem;
   box-shadow: 0px 0px 1.6rem rgba(8, 22, 58, 0.1);
   z-index: 10;
@@ -52,7 +52,7 @@ export const DarkTooltip = styled((props) => {
 })`
   & .tooltip {
     background: ${(props) => props.theme.colors.tooltip};
-    color: ${(props) => props.theme.colors.white};
+    color: ${(props) => props.theme.colors.white1};
     font-family: Avenir Next Medium;
     font-size: 13px;
     display: flex;

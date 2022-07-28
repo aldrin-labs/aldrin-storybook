@@ -47,33 +47,3 @@ export const updateMarkPriceQuerryFunction = (
 
   return prev
 }
-
-export const updateFundingRateQuerryFunction = (
-  previous,
-  { subscriptionData }
-) => {
-  const isEmptySubscription =
-    !subscriptionData.data || !subscriptionData.data.listenFundingRate
-
-  if (isEmptySubscription) {
-    return previous
-  }
-
-  const fundingRateNewElement = subscriptionData.data.listenFundingRate
-  const fundingRateOldElement = previous.getFundingRate
-
-  const isFundingRatesIsTheSame =
-    fundingRateNewElement.fundingRate === fundingRateOldElement.fundingRate
-  const isFundingTimeIsTheSame =
-    fundingRateNewElement.fundingTime === fundingRateOldElement.fundingTime
-
-  if (isFundingRatesIsTheSame && isFundingTimeIsTheSame) {
-    return previous
-  }
-
-  const prev = JSON.parse(JSON.stringify(previous))
-
-  prev.getFundingRate = { ...prev.getFundingRate, ...fundingRateNewElement }
-
-  return prev
-}

@@ -3,12 +3,10 @@ import tokensList from 'aldrin-registry/src/tokens.json'
 import React, { useEffect, useState } from 'react'
 import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
-
-import { Loading, TooltipRegionBlocker } from '@sb/components'
 import { Button } from '@sb/components/Button'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
-import { Text } from '@sb/compositions/Addressbook/index'
+import { Text } from '@sb/compositions/Addressbook'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { ReloadTimer } from '@sb/compositions/Rebalance/components/ReloadTimer'
@@ -170,18 +168,6 @@ const SwapPage = ({
       setQuoteTokenMintAddress(defaultQuoteTokenMint)
     }
   }, [isStableSwapTabActive])
-
-  const [isRegionCheckIsLoading, setRegionCheckIsLoading] =
-    useState<boolean>(false)
-  const [isFromRestrictedRegion, setIsFromRestrictedRegion] =
-    useState<boolean>(false)
-
-  // useEffect(() => {
-  //   setRegionCheckIsLoading(true)
-  //   getRegionData({ setIsFromRestrictedRegion }).then(() => {
-  //     setRegionCheckIsLoading(false)
-  //   })
-  // }, [setIsFromRestrictedRegion])
 
   const pools = getPoolsForSwapActiveTab({
     pools: allPools,
@@ -363,7 +349,7 @@ const SwapPage = ({
           <SwapBlockTemplate width="100%">
             <RowContainer margin="0 0 .5em 0" justify="space-between">
               <Row>
-                <ValueButton>
+                <ValueButton className="timer">
                   <ReloadTimer
                     data-testid="swap-reload-data-timer"
                     duration={15}
@@ -409,7 +395,7 @@ const SwapPage = ({
                     style={{
                       position: 'absolute',
                       fontFamily: 'Avenir Next Medium',
-                      color: theme.colors.gray1,
+                      color: theme.colors.white1,
                       fontSize: FONT_SIZES.sm,
                       right: '1.5rem',
                     }}
@@ -538,7 +524,7 @@ const SwapPage = ({
                       <Text
                         fontFamily="Avenir Next"
                         fontSize={FONT_SIZES.sm}
-                        color="gray1"
+                        color="white1"
                       >
                         ≈$
                         {outputUSD
@@ -572,37 +558,19 @@ const SwapPage = ({
             )}
             <RowContainer>
               {!publicKey ? (
-                <TooltipRegionBlocker
-                  isFromRestrictedRegion={isFromRestrictedRegion}
-                >
-                  <span style={{ width: '100%' }}>
-                    <Button
-                      $width="xl"
-                      $padding="lg"
-                      theme={theme}
-                      disabled={isFromRestrictedRegion}
-                      style={{ height: '4em' }}
-                      onClick={() => {
-                        if (isFromRestrictedRegion || isRegionCheckIsLoading) {
-                          return
-                        }
-                        setIsConnectWalletPopupOpen(true)
-                      }}
-                    >
-                      {isRegionCheckIsLoading && (
-                        <Loading
-                          color="#FFFFFF"
-                          size={16}
-                          style={{ height: '16px' }}
-                        />
-                      )}
-                      {!isRegionCheckIsLoading &&
-                        (isFromRestrictedRegion
-                          ? `Restricted region`
-                          : `Connect wallet`)}
-                    </Button>
-                  </span>
-                </TooltipRegionBlocker>
+                <span style={{ width: '100%' }}>
+                  <Button
+                    $width="xl"
+                    $padding="lg"
+                    theme={theme}
+                    style={{ height: '4em' }}
+                    onClick={() => {
+                      setIsConnectWalletPopupOpen(true)
+                    }}
+                  >
+                    Connect wallet
+                  </Button>
+                </span>
               ) : (
                 <SwapButton
                   theme={theme}
@@ -717,7 +685,7 @@ const SwapPage = ({
               )}
             </RowContainer>
 
-            {isAmountsEntered ? (
+            {isAmountsEntered && (
               <RowContainer direction="column" margin="2.4rem 0 0 0">
                 <RowContainer justify="space-between">
                   <BlackRow justify="center" width="calc(50% - 0.8rem)">
@@ -728,7 +696,7 @@ const SwapPage = ({
                       </RowValue>
                       <span
                         style={{
-                          color: theme.colors.white,
+                          color: theme.colors.white1,
                           padding: '0 0.5rem',
                         }}
                         onClick={() =>
@@ -783,7 +751,7 @@ const SwapPage = ({
                         isOpenOrdersCreationRequired ? 4 : 6
                       )}{' '}
                       SOL{' '}
-                      {isOpenOrdersCreationRequired ? (
+                      {isOpenOrdersCreationRequired && (
                         <DarkTooltip
                           title={
                             'The route includes the Serum market, which requires opening an "Open Order" account, which costs 0.024 SOL. You can close the account later and get the fee back.'
@@ -798,7 +766,7 @@ const SwapPage = ({
                             i
                           </CircleIconContainer>
                         </DarkTooltip>
-                      ) : null}
+                      )}
                     </RowValue>
                   </BlackRow>
                 </RowContainer>
@@ -813,7 +781,7 @@ const SwapPage = ({
                   </RowValue>
                 </BlackRow>
               </RowContainer>
-            ) : null}
+            )}
           </SwapBlockTemplate>
         </SwapContentContainer>
 

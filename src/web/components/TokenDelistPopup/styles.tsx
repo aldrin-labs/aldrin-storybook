@@ -44,7 +44,7 @@ export const BlueButton = styled(
   text-transform: capitalize;
   background-color: ${(props) =>
     props.isUserConfident
-      ? props.theme.colors.blue5
+      ? props.theme.colors.blue3
       : props.theme.colors.disabled};
   border-radius: 1rem;
   border-color: none;

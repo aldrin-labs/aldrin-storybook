@@ -1,174 +1,177 @@
-import React from 'react'
+import { merge } from 'lodash-es'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { ThemeProvider } from 'styled-components'
 
-export const dark = {
+export const THEME_DARK = 'dark'
+export const THEME_LIGHT = 'light'
+
+export const THEME_COLORS = {
+  L1: '#3F3F50',
+  L2: '#82819C',
+  L3: '#A9A9B2',
+  L4: '#E8E8EA',
+  L5: '#ECECF2',
+  L6: '#F3F3F7',
+
+  D1: '#FAFAFA',
+  D2: '#A9A9B2',
+  D3: '#5B5A72',
+  D4: '#302F41',
+  D5: '#212131',
+  D6: '#181825',
+
+  BL3: '#080182',
+  BL2: '#0A01A8',
+  BL1: '#0D02D7',
+  BD1: '#0E02EC',
+  BD2: '#3E35F0',
+  BD3: '#5E55F2',
+  VL3: '#3D008C',
+  VL2: '#4F00B5',
+  VL1: '#6500E8',
+  VD1: '#6F00FF',
+  VD2: '#8C33FF',
+  VD3: '#9F54FF',
+  RL3: '#8C2410',
+  RL2: '#B52E15',
+  RL1: '#E83B1A',
+  RD1: '#FF411D',
+  RD2: '#FF674A',
+  RD3: '#FF8068',
+  YL3: '#827501',
+  YL2: '#A89701',
+  YL1: '#D7C202',
+  YD1: '#ECD502',
+  YD2: '#F0DD35',
+  YD3: '#F3E45E',
+  GL3: '#008C49',
+  GL2: '#00B55E',
+  GL1: '#00E878',
+  GD1: '#00F47E',
+  GD2: '#00FF84',
+  GD3: '#47FFA7',
+}
+
+const BASE_THEME = {
   colors: {
-    yellow9: '#635901FF',
-    yellow8: '#827501FF',
-    yellow7: '#A89701FF',
-    yellow6: '#D7C202FF',
-    yellow5: '#ECD401FF',
-    yellow4: '#F0DD35FF',
-    yellow3: '#F2E45DFF',
-    yellow2: '#F6ED96FF',
-    yellow1: '#FAF5C6FF',
-    yellow0: '#FDFBE6FF',
-    red9: '#6B1B0CFF',
-    red8: '#8C2410FF',
-    red7: '#B52E15FF',
-    red6: '#E83B1AFF',
-    red5: '#FF411DFF',
-    red4: '#FF674AFF',
-    red3: '#FF8068FF',
-    red2: '#FF8068FF',
-    red1: '#FFC4B9FF',
-    red0: '#FFECE8FF',
-    violet9: '#2F006BFF',
-    violet8: '#3D008CFF',
-    violet7: '#4F00B5FF',
-    violet6: '#6500E8FF',
-    violet5: '#6F00FFFF',
-    violet4: '#8B33FFFF',
-    violet3: '#9F54FFFF',
-    violet2: '#BD8AFFFF',
-    violet1: '#D2B0FFFF',
-    violet0: '#F1E6FFFF',
-    green9: '#006B37FF',
-    green8: '#00ff8426', //
-    green7: '#00B55EFF',
-    green6: '#47FFA7FF',
-    green5: '#00F47EFF',
-    green4: '#00FF84FF',
-    green3: '#47FFA7FF',
-    green2: '#70FFBAFF',
-    green1: '#8EFEC8FF',
-    green0: '#C1FFE1FF',
-    blue9: '#060163FF',
-    blue8: '#080182FF',
-    blue7: '#0A01A8FF',
-    blue6: '#0D02D7FF',
-    blue5: '#0E02ECFF',
-    blue4: '#3E35F0FF',
-    blue3: '#5E55F2FF',
-    blue2: '#908BF6FF',
-    blue1: '#B4B1F9FF',
-    blue0: '#E7E6FDFF',
-    gray11: '#3F3F50',
-    gray10: '#14131FFF',
-    gray9: '#0B0B12FF',
-    gray8: '#2b2d36',
-    gray7: '#14141F',
-    gray6: '#212030FF',
-    gray5: '#2F2F40FF',
-    gray4: '#3F3E4FFF',
-    gray3: '#5B5A72',
-    gray2: '#96999c',
-    gray1: '#A8A8B2FF',
-    gray0: '#E8E8E9FF',
-    white: '#F9F9F9FF',
-    black: '#050405FF',
-    logo: '#F5F5FB',
-    border: '#302F41',
-    block: '#383b45',
-    line: '#0B0B12FF',
-    disabled: 'rgba(48, 47, 65, 0.25)',
-    primaryWhite: '#fff',
-    obGreebBack: 'rgba(143, 255, 200, 0.25)',
-    obGreenFont: 'rgba(71, 255, 167, 1)',
-    obRedBack: 'rgba(255, 128, 104, 0.2)',
-    obRedFont: 'rgba(255, 128, 104, 1)',
-    tooltip: '#222429',
-    greenChart: ['rgba(143, 255, 200, 0.25)', 'rgba(143, 255, 200, 0)'],
-    shadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.45)',
+    persistent: {
+      white1: '#fff',
+      blue1: '#5E55F2',
+    },
   },
 }
 
-export const light = {
-  colors: {
-    yellow9: '#635901FF',
-    yellow8: '#827501FF',
-    yellow7: '#A89701FF',
-    yellow6: '#D7C202FF',
-    yellow5: '#ECD401FF',
-    yellow4: '#F0DD35FF',
-    yellow3: '#F2E45DFF',
-    yellow2: '#F6ED96FF',
-    yellow1: '#FAF5C6FF',
-    yellow0: '#FDFBE6FF',
-    red9: '#6B1B0CFF',
-    red8: '#8C2410FF',
-    red7: '#B52E15FF',
-    red6: '#E83B1AFF',
-    red5: '#FF411DFF',
-    red4: '#FF674AFF',
-    red3: '#E83B1AFF',
-    red2: '#FF8068FF',
-    red1: '#FFC4B9FF',
-    red0: '#FFECE8FF',
-    violet9: '#2F006BFF',
-    violet8: '#3D008CFF',
-    violet7: '#4F00B5FF',
-    violet6: '#6500E8FF',
-    violet5: '#6F00FFFF',
-    violet4: '#8B33FFFF',
-    violet3: '#6500E8FF',
-    violet2: '#BD8AFFFF',
-    violet1: '#D2B0FFFF',
-    violet0: '#F1E6FFFF',
-    green9: '#006B37FF',
-    green8: '#00b55e33',
-    green7: '#00B55EFF',
-    green6: 'rgba(0, 181, 94, 1)',
-    green5: '#00F47EFF',
-    green4: '#00B55EFF',
-    green3: '#00B55E',
-    green2: '#70FFBAFF',
-    green1: '#8EFEC8FF',
-    green0: '#C1FFE1FF',
-    blue9: '#060163FF',
-    blue8: '#080182FF',
-    blue7: '#0A01A8FF',
-    blue6: '#0D02D7FF',
-    blue5: '#0E02ECFF',
-    blue4: '#3E35F0FF',
-    blue3: '#5E55F2', // #5E55F2FF
-    blue2: '#908BF6FF',
-    blue1: '#B4B1F9FF',
-    blue0: '#E7E6FDFF',
-    gray11: '#D4D4D7',
-    gray10: '#FAFAFA',
-    gray9: '#FAFAFA',
-    gray8: '#A9A9B2', // gray buttons
-    gray7: '#FFFFFF',
-    gray6: '#F3F3F7', // inputs, hovers for gray5
-    gray5: '#ECECF2', // popups, blocks, etc.
-    gray4: '#FFFFFF',
-    gray3: '#A9A9B2',
-    gray2: '#A8A8B2FF',
-    gray1: '#82819CFF', // dark gray
-    gray0: '#65666E', // almost black
-    white: '#65666E',
-    black: '#F9F9F9FF',
-    logo: '#050505',
-    border: '#FAFAFA',
-    line: '#E8E8E9FF',
-    block: '#A9A9B2',
-    disabled: 'rgb(214, 216, 224)',
-    primaryWhite: '#fff',
-    obGreebBack: 'rgba(0, 232, 120, 0.2)',
-    obGreenFont: 'rgba(0, 181, 94, 1)',
-    obRedBack: 'rgba(255, 103, 74, 0.2)',
-    obRedFont: 'rgba(255, 65, 29, 1)',
-    tooltip: 'rgb(214, 216, 224)',
-    greenChart: ['rgba(0, 181, 92, 0.39)', 'rgba(0, 181, 94, 0)'],
-    shadow: '0px 0px 8px 0px rgba(169, 169, 178, 1)',
+const THEMES = {
+  [THEME_DARK]: {
+    name: THEME_DARK,
+    colors: {
+      red1: THEME_COLORS.RD1,
+      red2: THEME_COLORS.RD2,
+      red3: THEME_COLORS.RD3,
+
+      violet1: THEME_COLORS.VD1,
+      violet2: THEME_COLORS.VD2,
+      violet3: THEME_COLORS.VD3,
+
+      green1: THEME_COLORS.GD1,
+      green2: THEME_COLORS.GD2,
+      green3: THEME_COLORS.GD3,
+
+      blue1: THEME_COLORS.BD1,
+      blue2: THEME_COLORS.BD2,
+      blue3: THEME_COLORS.BD3,
+
+      white1: THEME_COLORS.D1,
+      white2: THEME_COLORS.D2,
+      white3: THEME_COLORS.D3,
+      white4: THEME_COLORS.D4,
+      white5: THEME_COLORS.D5,
+      white6: THEME_COLORS.D6,
+
+      logo: '#F5F5FB',
+      border: '#302F41',
+      block: '#383b45',
+      line: '#0B0B12FF',
+      disabled: 'rgba(48, 47, 65, 0.25)',
+      obGreenBack: 'rgba(143, 255, 200, 0.25)',
+      obGreenFont: 'rgba(71, 255, 167, 1)',
+      obRedBack: 'rgba(255, 128, 104, 0.2)',
+      obRedFont: 'rgba(255, 128, 104, 1)',
+      tooltip: '#222429',
+      greenChart: ['rgba(143, 255, 200, 0.25)', 'rgba(143, 255, 200, 0)'],
+      shadow: '0px 0px 8px 0px rgba(0, 0, 0, 0.45)',
+      header: '#0B0B13',
+      border1: '#212131',
+      PURewardsBackground: 'rgba(0, 255, 132, 0.15)',
+    },
+  },
+  [THEME_LIGHT]: {
+    name: THEME_LIGHT,
+    colors: {
+      red1: THEME_COLORS.RL1,
+      red2: THEME_COLORS.RL2,
+      red3: THEME_COLORS.RL3,
+
+      violet1: THEME_COLORS.VL1,
+      violet2: THEME_COLORS.VL2,
+      violet3: THEME_COLORS.VL3,
+
+      green1: THEME_COLORS.GL1,
+      green2: THEME_COLORS.GL2,
+      green3: THEME_COLORS.GL3,
+
+      blue1: THEME_COLORS.BL1,
+      blue2: THEME_COLORS.BL2,
+      blue3: THEME_COLORS.BL3,
+
+      white1: THEME_COLORS.L1,
+      white2: THEME_COLORS.L2,
+      white3: THEME_COLORS.L3,
+      white4: THEME_COLORS.L4,
+      white5: THEME_COLORS.L5,
+      white6: THEME_COLORS.L6,
+
+      logo: '#302F41',
+      border: '#FAFAFA',
+      line: '#E8E8E9',
+      block: '#A9A9B2',
+      disabled: 'rgb(214, 216, 224)',
+      obGreenBack: 'rgba(0, 232, 120, 0.2)',
+      obGreenFont: 'rgba(0, 181, 94, 1)',
+      obRedBack: 'rgba(255, 103, 74, 0.2)',
+      obRedFont: 'rgba(255, 65, 29, 1)',
+      tooltip: 'rgb(214, 216, 224)',
+      greenChart: ['rgba(0, 181, 92, 0.39)', 'rgba(0, 181, 94, 0)'],
+      shadow: '0px 0px 8px 0px rgba(169, 169, 178, 1)',
+      header: '#FAFAFA',
+      border1: 'rgba(169, 169, 178, 0.3)',
+      PURewardsBackground: 'rgba(0, 181, 94, 0.2)',
+    },
   },
 }
 
-export const Theme = ({ children, theme }) => {
+type ThemeProps = {
+  children: React.ReactNode
+  theme: 'dark' | 'light'
+}
+
+const ThemeContext = React.createContext<{ themeName: string } | undefined>(
+  undefined
+)
+
+export const Theme: React.FC<ThemeProps> = (props) => {
+  const { theme, children } = props
+
+  const [themeName, setThemeName] = useState(theme)
+  useEffect(() => {
+    setThemeName(theme)
+  }, [theme])
+  const t = useMemo(() => merge(BASE_THEME, THEMES[theme]), [theme])
   return (
-    <ThemeProvider theme={theme === 'dark' ? dark : light}>
-      {children}
-    </ThemeProvider>
+    <ThemeContext.Provider value={{ themeName }}>
+      <ThemeProvider theme={t}>{children}</ThemeProvider>
+    </ThemeContext.Provider>
   )
 }
+
+export const useThemeName = () => useContext(ThemeContext)

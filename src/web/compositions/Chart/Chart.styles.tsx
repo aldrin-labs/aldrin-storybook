@@ -121,8 +121,8 @@ export const PanelWrapper = styled.div`
 export const CustomCard = styled(Card)`
   width: 100%;
   height: 100%;
-  background-color: ${(props) => props.theme.colors.gray6};
-  border: 0.1rem solid ${(props) => props.theme.colors.gray5};
+  background-color: ${(props) => props.theme.colors.white5};
+  border: 0.1rem solid ${(props) => props.theme.colors.white4};
   border-radius: 0;
   box-shadow: none;
 `
@@ -135,7 +135,7 @@ export const PanelCard = styled.div`
   padding: 0.1rem;
   margin: 0;
   min-height: auto;
-  border-right: ${(props: { marketType: number }) => props.theme.colors.gray6};
+  border-right: ${(props: { marketType: number }) => props.theme.colors.white5};
   font-weight: bold;
   text-transform: capitalize;
   font-family: Avenir Next;
@@ -147,7 +147,7 @@ export const PanelCardTitle = styled.span`
   padding: 0.1rem 1rem 0.3rem 1rem;
   font-size: 1.3rem;
   font-family: Avenir Next Light;
-  color: ${(props) => props.theme.colors.gray1};
+  color: ${(props) => props.theme.colors.white1};
   letter-spacing: 0.01rem;
 
   @media (min-width: 1400px) {
@@ -158,7 +158,7 @@ export const PanelCardTitle = styled.span`
 export const PanelCardValue = styled.span`
   white-space: pre-line;
   font-family: Avenir Next Medium;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
   font-size: 1.3rem;
   padding: 0.1rem 1rem;
   letter-spacing: 0.01rem;
@@ -171,7 +171,7 @@ export const PanelCardValue = styled.span`
 export const PanelCardSubValue = styled.span`
   padding: 0.1rem 1rem;
   padding-left: 0.4rem;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
   letter-spacing: 0.01rem;
   font-size: 1.3rem;
 
@@ -391,7 +391,7 @@ export const ChartsContainer = styled(({ MASTER_BUILD, ...rest }) => (
 export const TradingTabelContainer = styled(
   ({ isDefaultTerminalViewMode, ...rest }) => <TablesContainer {...rest} />
 )`
-  background-color: ${(props) => props.theme.colors.gray10};
+  background-color: ${(props) => props.theme.colors.white6};
   position: relative;
   height: ${(props) => (props.isDefaultTerminalViewMode ? '40%' : '0%')};
   justify-content: flex-start;

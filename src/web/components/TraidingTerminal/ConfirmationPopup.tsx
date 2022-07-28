@@ -23,7 +23,7 @@ const StyledPaper = styled(Paper)`
   border-radius: 2rem;
   width: 55rem;
   height: auto;
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -45,7 +45,7 @@ export const MainTitle = styled.span`
   line-height: 4rem;
   text-align: center;
   letter-spacing: 0.01rem;
-  color: ${(props) => props.theme.colors.white};
+  color: ${(props) => props.theme.colors.white1};
   margin-bottom: 2rem;
 `
 export const Line = styled.div`
@@ -77,8 +77,8 @@ export const WhiteButton = styled((props) => (
   />
 ))`
   outline: none;
-  border-color:${(props) => props.background || props.theme.colors.white}
-  color:${(props) => props.color || props.theme.colors.white}
+  border-color:${(props) => props.background || props.theme.colors.white1}
+  color:${(props) => props.color || props.theme.colors.white1}
   @media (max-width: 600px) {
     height: 7.5rem;
     border-radius: 2rem;
@@ -92,7 +92,7 @@ export const WhiteText = styled.span`
   align-items: center;
   letter-spacing: 0.01rem;
   color: ${(props: { $color?: string }) =>
-    props.$color || props.theme.colors.gray0};
+    props.$color || props.theme.colors.white1};
 `
 const WarningBlock = styled.div`
   background: rgba(242, 156, 56, 0.5);
@@ -162,7 +162,7 @@ export const ConfirmationPopup = ({
         </RowContainer>
       </RowContainer>
       <RowContainer margin="2rem 0 0 0">
-        {priceType === 'market' ? (
+        {priceType === 'market' && (
           <RowContainer justify="space-between" margin="0 0 2rem 0">
             <WhiteText>Spread Percentage:</WhiteText>
             <WhiteText style={{ fontFamily: 'Avenir Next Demi' }}>
@@ -172,11 +172,11 @@ export const ConfirmationPopup = ({
               %
             </WhiteText>
           </RowContainer>
-        ) : null}
+        )}
         <RowContainer>
           {priceType !== 'market' &&
           priceType !== 'stop-market' &&
-          priceType !== 'maker-only' ? (
+          priceType !== 'maker-only' && (
             <InputRowContainer
               key="limit-price"
               padding=".6rem 0"
@@ -192,7 +192,7 @@ export const ConfirmationPopup = ({
                 symbol={pair[1]}
               />
             </InputRowContainer>
-          ) : null}
+          )}
           <ButtonsWithAmountFieldRowForBasic
             {...{
               pair,
@@ -268,7 +268,7 @@ export const ConfirmationPopup = ({
             )}
           </WhiteText>
         </RowContainer>
-        {priceType === 'market' && isSlippageHigh ? (
+        {priceType === 'market' && isSlippageHigh && (
           <span style={{ width: '100%' }}>
             <WarningBlock>
               <div style={{ width: '6%' }}>
@@ -305,7 +305,7 @@ export const ConfirmationPopup = ({
               </label>
             </RowContainer>
           </span>
-        ) : null}
+        )}
       </RowContainer>
 
       <RowContainer margin="2rem 0 0 0" justify="space-between">
@@ -324,7 +324,7 @@ export const ConfirmationPopup = ({
             disabled={!isAwareOfHighSlippage}
             onClick={async () => {
               const result = await validateForm()
-              console.log('result', result)
+
               if (Object.keys(result).length === 0 || !isSPOTMarket) {
                 handleSubmit(values)
               }
@@ -363,7 +363,6 @@ export const ConfirmationPopup = ({
           <SendButton
             onClick={async () => {
               const result = await validateForm()
-              console.log('result', result)
               if (Object.keys(result).length === 0 || !isSPOTMarket) {
                 handleSubmit(values)
               }

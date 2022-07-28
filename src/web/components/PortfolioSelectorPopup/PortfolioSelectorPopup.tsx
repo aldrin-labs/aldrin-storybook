@@ -137,7 +137,7 @@ class PortfolioSelectorPopup extends Component {
               }}
             />
           </span>
-          {isPopupOpen && isSideNavOpen ? (
+          {isPopupOpen && isSideNavOpen && (
             needPortalPopup ? (
               ReactDOM.createPortal(
                 <Popup
@@ -172,10 +172,10 @@ class PortfolioSelectorPopup extends Component {
                 }}
               />
             )
-          ) : null}
+          )}
         </PortfolioSelectorPopupWrapper>
         {/* portal to backdrop */}
-        {isPopupOpen && isSideNavOpen ? (
+        {isPopupOpen && isSideNavOpen && (
           needPortalMask ? (
             ReactDOM.createPortal(
               <PortfolioSelectorPopupMask
@@ -190,7 +190,7 @@ class PortfolioSelectorPopup extends Component {
               onClick={this.closePopup}
             />
           )
-        ) : null}
+        )}
       </>
     )
   }

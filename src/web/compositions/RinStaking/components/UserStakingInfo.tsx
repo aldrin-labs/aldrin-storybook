@@ -1,14 +1,17 @@
 import { PublicKey } from '@solana/web3.js'
 import { FONT_SIZES, COLORS } from '@variables/variables'
+import { useTheme } from 'styled-components'
 import dayjs from 'dayjs'
 import React, { useCallback, useEffect, useState } from 'react'
 import { compose } from 'recompose'
 
 import { Block, GreenBlock, BlockContentStretched } from '@sb/components/Block'
+import { ConnectWalletWrapper } from '@sb/components/ConnectWalletWrapper'
 import { Cell, FlexBlock, Row, StretchedBlock } from '@sb/components/Layout'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { ShareButton } from '@sb/components/ShareButton'
 import SvgIcon from '@sb/components/SvgIcon'
+import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText } from '@sb/components/Typography'
 import { withdrawStaked } from '@sb/dexUtils/common/actions'
 import { startStaking } from '@sb/dexUtils/common/actions/startStaking'
@@ -27,6 +30,7 @@ import {
 } from '@sb/dexUtils/token/hooks'
 import { useInterval } from '@sb/dexUtils/useInterval'
 import { useWallet } from '@sb/dexUtils/wallet'
+import { toMap } from '@sb/utils'
 
 import { getRINCirculationSupply } from '@core/api'
 import { getDexTokensPrices } from '@core/graphql/queries/pools/getDexTokensPrices'
@@ -48,9 +52,6 @@ import { stripDigitPlaces } from '@core/utils/PortfolioTableUtils'
 
 import ClockIcon from '@icons/clock.svg'
 
-import { ConnectWalletWrapper } from '../../../components/ConnectWalletWrapper'
-import { DarkTooltip } from '../../../components/TooltipCustom/Tooltip'
-import { toMap } from '../../../utils'
 import { ImagesPath } from '../../Chart/components/Inputs/Inputs.utils'
 import { BigNumber, FormsWrap } from '../styles'
 import { getShareText } from '../utils'
@@ -73,6 +74,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     getDexTokensPricesQuery,
     treasuryDailyRewards,
   } = props
+  const theme = useTheme()
 
   const [totalStakedRIN, refreshTotalStaked] = useAccountBalance({
     publicKey: new PublicKey(stakingPool.stakingVault),
@@ -100,7 +102,6 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
     connection,
     walletPublicKey: wallet.publicKey,
     onlyUserTickets: true,
-    // walletPublicKey,
   })
 
   const { data: calcAccounts, mutate: reloadCalcAccounts } =
@@ -414,12 +415,12 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
 
               <StretchedBlock>
                 <FlexBlock alignItems="flex-end">
-                  <InlineText size="lg" weight={700} color="green7">
+                  <InlineText size="lg" weight={700} color="green2">
                     {formattedAPR}%{' '}
                     <InlineText
                       weight={400}
                       size="es"
-                      style={{ color: 'rgba(38, 159, 19, 50%)' }}
+                      style={{ color: theme.colors.green2 }}
                     >
                       APR
                     </InlineText>
@@ -441,6 +442,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </GreenBlock>
         </Cell>
+
         <Cell colMd={6} colXl={3} col={12}>
           <Block inner>
             <BlockContentStretched>
@@ -493,6 +495,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
             </BlockContentStretched>
           </Block>
         </Cell>
+
         <Cell colMd={6} colXl={3} col={12}>
           <Block inner>
             <BlockContentStretched>
@@ -555,7 +558,7 @@ const UserStakingInfoContent: React.FC<StakingInfoProps> = (props) => {
                         $fontSize="sm"
                         onClick={claimRewards}
                       >
-                        {isClaimDisabled ? <SvgIcon src={ClockIcon} /> : null}
+                        {isClaimDisabled && <SvgIcon src={ClockIcon} />}
                         Claim
                       </ClaimButton>
                     </span>

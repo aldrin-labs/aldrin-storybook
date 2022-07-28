@@ -37,12 +37,12 @@ export const StyledLink = styled(NavLink)`
 
   svg {
     path {
-      fill: ${(props) => props.theme.colors.gray0};
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
 
   span {
-    color: ${(props) => props.theme.colors.gray0};
+    color: ${(props) => props.theme.colors.white1};
   }
 `
 export const StyledA = styled.a`
@@ -53,18 +53,18 @@ export const StyledA = styled.a`
   flex-direction: column;
   text-align: center;
   text-decoration: none;
-  color: ${(props) => props.theme.colors.gray0};
+  color: ${(props) => props.theme.colors.white1};
   font-family: Avenir Next Medium;
   font-size: 1.9rem;
 
   svg {
     path {
-      fill: ${(props) => props.theme.colors.gray0};
+      fill: ${(props) => props.theme.colors.white1};
     }
   }
   span {
     margin-top: 1rem;
-    color: ${(props) => props.theme.colors.gray0};
+    color: ${(props) => props.theme.colors.white1};
   }
 `
 
@@ -73,9 +73,9 @@ export const FooterComponent = styled(RowContainer)`
   bottom: 0;
   z-index: 999;
   display: flex;
-  background-color: ${(props) => props.theme.colors.gray6};
+  background-color: ${(props) => props.theme.colors.white5};
   height: 65px;
-  border-top: 1px solid ${(props) => props.theme.colors.gray5};
+  border-top: 1px solid ${(props) => props.theme.colors.white4};
 
   @media (min-width: ${BREAKPOINTS.md}) {
     display: none;
@@ -113,7 +113,7 @@ export const MoreLinksPopup = styled.div<MoreLinksPopupProps>`
 `
 
 export const MoreLinksContent = styled.div`
-  background: ${(props) => props.theme.colors.gray6};
+  background: ${(props) => props.theme.colors.white5};
   padding: 1em 1.5em;
   border-radius: ${BORDER_RADIUS.md};
   position: absolute;
@@ -121,7 +121,7 @@ export const MoreLinksContent = styled.div`
   left: 10px;
   bottom: 10px;
   h4 {
-    color: ${(props) => props.theme.colors.gray0};
+    color: ${(props) => props.theme.colors.white1};
   }
 `
 
@@ -135,7 +135,7 @@ export const MoreLinkContainer = styled.div`
   margin: 10px 0;
 
   span {
-    color: ${(props) => props.theme.colors.gray0};
+    color: ${(props) => props.theme.colors.white1};
     font-size: ${FONT_SIZES.sm};
     padding: 0 0 0 5px;
   }
