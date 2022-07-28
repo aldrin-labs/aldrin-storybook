@@ -53,7 +53,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
   }
 
   return (
-    <SwapChartContainer>
+    <>
       <RowContainer margin="0 0 1em 0">
         <SwapChartPrice
           pricesMap={pricesMap}
@@ -63,31 +63,32 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
           outputTokenMintAddress={outputTokenMintAddress}
         />
       </RowContainer>
-
-      {isCrossOHLCV ? (
-        <CrossSwapChartContainer direction="column" height="100%">
-          <SvgIcon src={OHLCVCandlesIcon} />
-          <Row margin="1em 0 0 0">
-            <InlineText size="md" color="yellow4">
-              There is not enough data for this pair. Try later.
-            </InlineText>
-          </Row>
-        </CrossSwapChartContainer>
-      ) : (
-        <iframe
-          allowFullScreen
-          style={{ borderWidth: 0 }}
-          src={`${PROTOCOL}//${CHARTS_API_URL}/?symbol=${inputSymbol}/${outputSymbol}&marketType=${marketType}&exchange=serum&theme=swap-${themeMode}&isMobile=true${
-            wallet.connected ? `&user_id=${wallet.publicKey}` : ''
-          }`}
-          height="100%"
-          width="100%"
-          id="tv_chart_serum"
-          title="Chart"
-          key={`${inputSymbol}/${outputSymbol}`}
-        />
-      )}
-    </SwapChartContainer>
+      <SwapChartContainer>
+        {isCrossOHLCV ? (
+          <CrossSwapChartContainer direction="column" height="100%">
+            <SvgIcon src={OHLCVCandlesIcon} />
+            <Row margin="1em 0 0 0">
+              <InlineText size="md" color="yellow4">
+                There is not enough data for this pair. Try later.
+              </InlineText>
+            </Row>
+          </CrossSwapChartContainer>
+        ) : (
+          <iframe
+            allowFullScreen
+            style={{ borderWidth: 0 }}
+            src={`${PROTOCOL}//${CHARTS_API_URL}/?symbol=${inputSymbol}/${outputSymbol}&marketType=${marketType}&exchange=serum&theme=swap-${themeMode}&isMobile=true${
+              wallet.connected ? `&user_id=${wallet.publicKey}` : ''
+            }`}
+            height="100%"
+            width="100%"
+            id="tv_chart_serum"
+            title="Chart"
+            key={`${inputSymbol}/${outputSymbol}`}
+          />
+        )}
+      </SwapChartContainer>
+    </>
   )
 }
 

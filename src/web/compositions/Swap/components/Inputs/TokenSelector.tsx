@@ -34,10 +34,10 @@ export const TokenSelector = ({
   const { symbol } = tokenInfos.get(mint) || {
     symbol: getTokenNameByMintAddress(mint),
   }
-  let fontSize = FONT_SIZES.md
+  let fontSize = FONT_SIZES.es
 
   if (symbol.length > 5) fontSize = FONT_SIZES.xs
-  else if (symbol.length === 4) fontSize = FONT_SIZES.sm
+  else if (symbol.length === 4) fontSize = FONT_SIZES.es
 
   return (
     <TokenSelectorContainer onClick={onClick}>

@@ -18,10 +18,13 @@ import { BlockTemplate } from '../Pools/index.styles'
 export const LeftColumn = styled(Row)`
   justify-content: flex-end;
   order: 1;
+  height: 20em;
+  margin-right: 1em;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     order: 2;
     justify-content: center;
+    margin-right: 0;
   }
 `
 
@@ -36,7 +39,8 @@ export const RightColumn = styled(Row)`
 `
 
 export const ChartContainer = styled(Row)`
-  width: 30em;
+  width: 33em;
+  height: 100%;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     width: 100%;
@@ -46,10 +50,13 @@ export const ChartContainer = styled(Row)`
 
 export const SwapPageContainer = styled(RowContainer)`
   background: ${(props) => props.theme.colors.background1};
-  overflow-y: auto;
-
+  height: calc(100% - 160px);
+  margin: 80px 0;
   @media (max-width: ${BREAKPOINTS.xs}) {
     flex-direction: column;
+    overflow-y: auto;
+    height: 100%;
+    margin: 20px 0;
   }
 
   ${LeftColumn} + ${RightColumn} {
@@ -90,7 +97,7 @@ export const SlippageButton = styled.button`
   display: flex;
   align-items: center;
 
-  height: 2em;
+  height: 32px;
   cursor: pointer;
 
   padding: 0 0.6em;
@@ -133,7 +140,7 @@ export const BlackRow = styled((props) => (
 ))`
   background: ${(props) => props.theme.colors.white5};
   border-radius: 1.2rem;
-  height: 2em;
+  height: 1.7em;
   padding: 0 0.6em;
   margin-top: 0.8rem;
 `
@@ -235,6 +242,7 @@ export const ReverseTokensContainer = styled(
 
 export const SwapPageLayout = styled(Page)`
   font-size: 13px;
+  height: calc(100vh - 76px);
 
   @media (min-width: ${BREAKPOINTS.xs}) {
     font-size: 14px;
@@ -259,14 +267,14 @@ export const SwapContentContainer = styled(Row)`
   }
 
   @media (min-width: ${BREAKPOINTS.xxl}) {
-    width: 30em;
+    width: 27em;
   }
 `
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
   box-shadow: 0 0 48px rgba(0, 0, 0, 0);
   background: ${({ theme }) => theme.colors.white6};
-  padding: 1.5em 1em;
+  padding: 1em 1em;
   z-index: 10;
 
   .timer {

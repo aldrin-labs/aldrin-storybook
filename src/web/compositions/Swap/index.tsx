@@ -8,16 +8,22 @@ import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { INPUT_FORMATTERS } from '@sb/components/Input'
 import { PieTimer } from '@sb/components/PieTimer'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText, Text } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
+import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
+import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { formatNumberWithSpaces, notEmpty } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { toMap } from '@sb/utils'
@@ -25,7 +31,7 @@ import { toMap } from '@sb/utils'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
-import { walletAdapterToWallet } from '@core/solana'
+import { walletAdapterToWallet, getTokenDataByMint } from '@core/solana'
 import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
 import {
   getNumberOfDecimalsFromNumber,
@@ -42,14 +48,7 @@ import {
 import ArrowsExchangeIcon from '@icons/arrowsExchange.svg'
 import SettingIcon from '@icons/settings.svg'
 
-import { INPUT_FORMATTERS } from "@sb/components/Input"
-import { queryRendererHoc } from "@sb/components/QueryRenderer"
-import { useConnection } from "@sb/dexUtils/connection"
-import { getSwapRouteFeesAmount } from "@sb/dexUtils/pools/swap/getSwapStepFeeUSD"
-import { useTokenInfos } from "@sb/dexUtils/tokenRegistry"
-import { signAndSendTransactions } from "@sb/dexUtils/transactions"
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { getTokenDataByMint } from "@core/solana"
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
 import { SwapChartWithPrice } from './components/SwapChart'
@@ -326,14 +325,11 @@ const SwapPage = ({
     isSwapInProgress ||
     isLoadingSwapRoute
 
+  const showPriceInfo = !isEmptyInputAmount && !isEmptyOutputAmount
+
   return (
     <SwapPageLayout>
-      <SwapPageContainer
-        justify="center"
-        direction="row"
-        height="100%"
-        wrap="nowrap"
-      >
+      <SwapPageContainer justify="center" direction="row" wrap="nowrap">
         <LeftColumn>
           <ChartContainer>
             <SwapChartWithPrice
@@ -376,7 +372,7 @@ const SwapPage = ({
               />
             </RowContainer>
             <SwapBlockTemplate width="100%">
-              <RowContainer margin="0 0 3em 0" justify="space-between">
+              <RowContainer margin="0 0 4em 0" justify="space-between">
                 <PieTimer duration={15} callback={refreshAll} />
                 <Row>
                   <Row style={{ position: 'relative' }}>
@@ -406,7 +402,6 @@ const SwapPage = ({
                   borderRadius: '0.8em',
                   padding: '0.8em 0',
                 }}
-                margin=".5em 0 0 0"
                 direction="column"
               >
                 <RowContainer
@@ -504,8 +499,8 @@ const SwapPage = ({
                   />
                 </RowContainer>
               </RowContainer>
-              {!isEmptyInputAmount && !isEmptyOutputAmount && (
-                <RowContainer justify="space-between" margin="1em 0 0 0">
+              {showPriceInfo && (
+                <RowContainer justify="space-between" margin="0.5em 0 0 0">
                   <BlackRow width="calc(50% - 0.6em)">
                     <RowTitle>Fee:</RowTitle>
                     <Row align="center" wrap="nowrap">
@@ -549,68 +544,68 @@ const SwapPage = ({
                     </Row>
                   </BlackRow>
 
-                  {!isLoadingSwapRoute && (
-                    <BlackRow width="calc(50% - 0.6em)">
-                      <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
-                        {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
-                      </RowImpactTitle>
+                  <BlackRow width="calc(50% - 0.6em)">
+                    <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
+                      {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
+                    </RowImpactTitle>
 
-                      <DarkTooltip
-                        PopperProps={{ style: { opacity: 1 } }}
-                        title={
-                          <Row
-                            direction="column"
-                            align="flex-start"
-                            style={{ fontSize: '16px' }}
-                          >
-                            <Text size="esm" margin="0">
-                              <InlineText color="white1" weight={600}>
-                                {stripByAmount(estimatedPriceFromRoute)}
-                              </InlineText>{' '}
-                              {outputSymbol} per {inputSymbol}.
-                            </Text>
-                            <Text color="white1" size="esm" margin="0">
-                              <InlineText
-                                color={isHighPriceDiff ? 'red1' : 'green2'}
-                              >
-                                {priceDiffText}
-                              </InlineText>{' '}
-                              than CoinGecko price.
-                            </Text>
-                          </Row>
-                        }
-                      >
-                        <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
-                              stroke="currentColor"
-                            />
-                            <path
-                              d="M6 3.5H6.00656"
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                            />
-                            <path
-                              d="M6 5.5V8"
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </InfoIconContainer>
-                      </DarkTooltip>
-                    </BlackRow>
-                  )}
+                    <DarkTooltip
+                      PopperProps={{ style: { opacity: 1 } }}
+                      title={
+                        <Row
+                          direction="column"
+                          align="flex-start"
+                          style={{ fontSize: '16px' }}
+                        >
+                          <Text size="esm" margin="0">
+                            <InlineText color="white1" weight={600}>
+                              {stripByAmount(estimatedPriceFromRoute)}
+                            </InlineText>{' '}
+                            {outputSymbol} per {inputSymbol}.
+                          </Text>
+                          <Text color="white1" size="esm" margin="0">
+                            <InlineText
+                              color={isHighPriceDiff ? 'red1' : 'green2'}
+                            >
+                              {priceDiffText}
+                            </InlineText>{' '}
+                            than CoinGecko price.
+                          </Text>
+                        </Row>
+                      }
+                    >
+                      <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                            stroke="currentColor"
+                          />
+                          <path
+                            d="M6 3.5H6.00656"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M6 5.5V8"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </InfoIconContainer>
+                    </DarkTooltip>
+                  </BlackRow>
                 </RowContainer>
               )}
-              <RowContainer margin="3.5em 0 0 0">
+              <RowContainer
+                margin={showPriceInfo ? '1.5em 0 0 0' : '4em 0 0 0'}
+              >
                 {!wallet.publicKey ? (
                   <BtnCustom
                     onClick={() => {

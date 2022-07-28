@@ -6,6 +6,11 @@ import styled from 'styled-components'
 // on whole page
 
 // implicitly we set overflow-y to scroll/auto
+
+type AppContainerProps = {
+  isSwapPage?: boolean
+}
+
 export const AppGridLayout = styled.div`
   display: flex;
   flex-direction: column;
@@ -13,7 +18,7 @@ export const AppGridLayout = styled.div`
   overflow-x: hidden !important;
   background: ${(props) => props.theme.colors.background1};
   height: ${(props) =>
-    props.isRewards
+    props.isRewards || props.isSwapPage
       ? 'auto'
       : props.isChartPage || !props.showFooter
       ? 'calc(100vh)'
@@ -32,9 +37,17 @@ export const AppGridLayout = styled.div`
   }
 `
 
-export const AppInnerContainer = styled.div`
+export const AppInnerContainer = styled.div<AppContainerProps>`
   display: flex;
   flex-direction: column;
   //min-height: calc(100vh - 160px); /* header + footer*/
   flex: 1 0 auto;
+
+  @media (max-width: ${BREAKPOINTS.xxxl}) {
+    ${(props) => props.isSwapPage && `height: calc(100vh - 76px)`};
+  }
+
+  @media (max-width: ${BREAKPOINTS.sm}) {
+    ${(props) => props.isSwapPage && `height:100%`};
+  }
 `
