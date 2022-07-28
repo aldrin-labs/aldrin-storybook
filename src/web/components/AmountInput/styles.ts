@@ -9,7 +9,7 @@ import WalletIcon from './wallet.svg'
 
 export const AmountInputElement = styled(Input)`
   height: 4.25em;
-  background-color: ${(props) => props.theme.colors.white3};
+  background-color: ${(props) => props.theme.colors.white5};
   border: 0.1rem solid ${(props) => props.theme.colors.white3};
   user-select: none;
 

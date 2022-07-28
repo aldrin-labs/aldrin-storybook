@@ -26,14 +26,14 @@ export const PopupBody = styled(Body)`
 `
 
 export const Page = styled(Body)`
-  background: ${(props) => props.theme.colors[props.$background || 'white6']};
+  background: ${(props) => props.theme.colors[props.$background || 'header']};
   flex: 1;
   display: flex;
   flex-direction: column;
 `
 
 export const BlackPage = styled(Page)`
-  background: ${(props) => props.theme.colors.white6};
+  background: ${(props) => props.theme.colors.header};
 `
 
 export const Content = styled.div`

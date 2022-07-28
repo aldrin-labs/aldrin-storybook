@@ -60,7 +60,7 @@ export const NavLink = styled(RouterNavLink)<LinkProps>`
   }
 
   svg + * {
-    margin-left: 0.2em;
+    margin-left: 0.4em;
   }
 
   &.dropdown {
@@ -213,17 +213,18 @@ export const DropdownWrap = styled.div<ShowHideProps>`
 
 export const DropdownInner = styled.div`
   min-width: 6em;
-  background: ${(props) => props.theme.colors.white3};
+  background: ${(props) => props.theme.colors.white5};
   display: flex;
   flex-direction: column;
   margin-top: 5px;
   padding: 0.5em;
   border-radius: ${BORDER_RADIUS.md};
+
   & ${NavLink} {
     margin: 4px;
 
     &:hover {
-      border: none;
+      opacity: 0.5;
     }
   }
 `
@@ -234,12 +235,18 @@ export const WalletButton = styled(Button)`
   align-items: center;
   font-size: ${em('14px')};
   width: ${em('144px', '14px')};
-  background-color: ${(props) => rgba(props.theme.colors.blue3, 0.15)};
+  background-color: ${(props) => props.theme.colors.white6};
   border: none;
   font-weight: 600;
   height: ${em('40px', '14px')};
   transition: ${TRANSITION};
   color: ${UCOLORS.blue2};
+
+  @media (max-width: ${BREAKPOINTS.xs}) {
+    font-size: ${em('11px')};
+    height: ${em('40px', '11px')};
+    width: auto;
+  }
 
   &:hover {
     background-color: ${(props) => rgba(props.theme.colors.blue3, 0.1)};
@@ -251,14 +258,17 @@ export const WalletDataContainer = styled.div`
   height: 40px;
   width: 120px;
   display: flex;
-  flex-direction: row;
-  align-items: center;
   cursor: pointer;
   background-color: ${(props) => props.theme.colors.white5};
 
-  @media (min-width: ${BREAKPOINTS.md}) {
-    flex-direction: column;
-    align-items: flex-start;
+  @media (max-width: ${BREAKPOINTS.md}) {
+    width: auto;
+  }
+
+  img {
+    @media (max-width: ${BREAKPOINTS.md}) {
+      display: none;
+    }
   }
 
   .disconnect-wallet {
@@ -381,7 +391,7 @@ export const Wrap = styled.div``
 
 export const WalletDisconnectBlock = styled.div`
   width: 100%;
-  height: 5rem;
+  height: 100%;
 `
 
 type CopyButton = {

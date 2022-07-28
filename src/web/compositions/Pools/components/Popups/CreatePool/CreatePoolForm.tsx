@@ -415,16 +415,15 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
 
       const tokensMultiplier = 10 ** (farmingRewardAccount?.decimals || 0)
 
+      const tokensTotal = parseFloat(values.farming.tokenAmount || '0')
       const tokensPerPeriod =
-        (parseFloat(values.farming.tokenAmount) * HOUR) /
-        DAY /
-        parseFloat(values.farming.farmingPeriod)
+        (tokensTotal * HOUR) / DAY / parseFloat(values.farming.farmingPeriod)
 
       const tokensPerPeriodWithMultiplier = new BN(
         (tokensPerPeriod * tokensMultiplier).toFixed(0)
       )
 
-      if (!tokensPerPeriodWithMultiplier.toNumber()) {
+      if (tokensTotal > 0 && !tokensPerPeriodWithMultiplier.toNumber()) {
         return {
           farming: {
             tokenAmount: 'Farming rewards for period is less than minimum',
@@ -788,7 +787,7 @@ export const CreatePoolForm: React.FC<CreatePoolFormProps> = (props) => {
                       form.setFieldValue(field, value)
                       onQuoteAmountChange(value)
                     }}
-                    available={selectedQuoteAccount.amount}
+                    available={selectedQuoteAccount?.amount || 0}
                     mint={form.values.quoteToken.mint}
                     onChange={onQuoteAmountChange}
                   />
