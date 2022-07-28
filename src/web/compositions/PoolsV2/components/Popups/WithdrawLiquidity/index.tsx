@@ -6,7 +6,7 @@ import { InlineText } from '@sb/components/Typography'
 import { useWallet } from '@sb/dexUtils/wallet'
 
 import { MinusIcon, TooltipIcon } from '../../Icons'
-import { ValuesContainer } from '../DepositLiquidity/ValuesContainer'
+import { ValuesContainer } from '../DepositLiquidity/DepositContainer'
 import { HeaderComponent } from '../Header'
 import { Box, Column, Row } from '../index.styles'
 import { PeriodButton, PeriodSwitcher, ModalContainer } from './index.styles'

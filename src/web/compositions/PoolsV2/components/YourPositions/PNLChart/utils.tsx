@@ -16,7 +16,7 @@ dayjs.extend(timezone)
 dayjs.extend(utc)
 
 export const NUMBER_OF_DAYS_TO_SHOW = 30
-const CHART_HEIGHT = 80
+const CHART_HEIGHT = 135
 
 interface ChartParams<T = { date: number; vol?: number }[]> {
   chart: Chart | null

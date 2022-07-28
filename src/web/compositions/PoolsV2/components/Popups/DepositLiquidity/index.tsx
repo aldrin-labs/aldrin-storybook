@@ -16,8 +16,8 @@ import { PlusIcon, TooltipIcon } from '../../Icons'
 import { HeaderComponent } from '../Header'
 import { Box, Column, Row } from '../index.styles'
 import { ModalContainer } from '../WithdrawLiquidity/index.styles'
+import { ValuesContainer } from './DepositContainer'
 import { PeriodButton, PeriodSwitcher } from './index.styles'
-import { ValuesContainer } from './ValuesContainer'
 
 export const DepositLiquidity = ({
   onClose,

@@ -1,20 +1,35 @@
-import { Chart } from 'chart.js'
+import Chart from 'chart.js/auto'
 import React, { useEffect, useRef } from 'react'
-import { useTheme } from 'styled-components'
+import { compose } from 'recompose'
+import { DefaultTheme, useTheme } from 'styled-components'
 
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import { InlineText } from '@sb/components/Typography'
 import { RootColumn } from '@sb/compositions/PoolsV2/index.styles'
 
+import { getTotalVolumeLockedHistory } from '@core/graphql/queries/pools/getTotalVolumeLockedHistory'
+import {
+  dayDuration,
+  endOfDayTimestamp,
+  getTimeZone,
+  startOfDayTimestamp,
+} from '@core/utils/dateUtils'
+import { getRandomInt } from '@core/utils/helpers'
+
 import { TooltipIcon } from '../../Icons'
 import { Row } from '../../Popups/index.styles'
-import { createPNLChart } from './utils'
+import { CanvasContainer } from './index.styles'
+import { createPNLChart, NUMBER_OF_DAYS_TO_SHOW } from './utils'
 
-export const ChartInner: React.FC = () => {
+const ChartInner: React.FC = (props) => {
+  const { getTotalVolumeLockedHistoryQuery } = props
+
+  const data =
+    getTotalVolumeLockedHistoryQuery?.getTotalVolumeLockedHistory?.volumes
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const chartRef = useRef<Chart | null>(null)
   const theme = useTheme()
-
-  const data = []
 
   useEffect(() => {
     if (!canvasRef.current) {
@@ -46,11 +61,27 @@ export const ChartInner: React.FC = () => {
   }, [JSON.stringify(data)])
 
   return (
-    <div>
-      <canvas id="tvl-chart-inner" height="250" ref={canvasRef} />
-    </div>
+    <CanvasContainer>
+      <canvas id="tvl-chart-inner" height="250" width="100%" ref={canvasRef} />
+    </CanvasContainer>
   )
 }
+
+const TotalVolumeLockedChartInner = compose(
+  queryRendererHoc({
+    query: getTotalVolumeLockedHistory,
+    name: 'getTotalVolumeLockedHistoryQuery',
+    variables: {
+      timezone: getTimeZone(),
+      timestampFrom:
+        startOfDayTimestamp() - dayDuration * NUMBER_OF_DAYS_TO_SHOW,
+      timestampTo: endOfDayTimestamp(),
+    },
+    fetchPolicy: 'cache-and-network',
+    pollInterval: 60000 * getRandomInt(1, 3),
+    loaderColor: ({ theme }: { theme: DefaultTheme }) => theme.colors.white,
+  })
+)(ChartInner)
 
 export const PNLChart = ({
   isPositionViewDetailed,
@@ -80,6 +111,15 @@ export const PNLChart = ({
             + 23.4%
           </InlineText>
         </Row>
+      </Row>
+      <TotalVolumeLockedChartInner />
+      <Row width="100%">
+        <InlineText color="gray3" weight={400} size="esm">
+          Past
+        </InlineText>
+        <InlineText color="gray3" weight={400} size="esm">
+          Future
+        </InlineText>
       </Row>
     </RootColumn>
   )
