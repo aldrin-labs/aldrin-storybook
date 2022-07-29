@@ -35,9 +35,16 @@ export const loadMarketsWithDataForTransactions = async ({
   })
 
   const marketsWithTransactionsDataMap: LoadedMarketsWithDataForTransactionsMap =
-    [...loadedMarketsMap.entries()].reduce((acc, loadedMarket) => {
+    [...loadedMarketsMap.entries()].reduce<
+      Map<string, LoadedMarketWithDataForTransactions>
+    >((acc, loadedMarket) => {
       const [marketName, loadedMarketData] = loadedMarket
       const vaultSigner = vaultSignersMap.get(marketName)
+
+      if (!vaultSigner) {
+        throw new Error(`No vaultSigner found for market: ${marketName}`)
+      }
+
       const openOrders =
         openOrdersFromMarketsMap.get(
           loadedMarketData.market.address.toString()

@@ -163,11 +163,6 @@ const SwapPage = ({
       : getTokenMintAddressByName(getDefaultQuoteToken(false)) || ''
 
     setOutputTokenMintAddress(outputTokenMint)
-
-    setTimeout(
-      () => setFieldAmount('', 'input', inputTokenMint, outputTokenMint),
-      250
-    )
   }, [])
 
   const [slippage, setSlippage] = useState<number>(0.5)
@@ -398,6 +393,87 @@ const SwapPage = ({
     ? marketsByMints.quoteMintAddress
     : selectedPoolForSwap?.tokenB
 
+  const changeInputField = (v) => {
+    if (v === '') {
+      setFieldAmount(v, 'input')
+      return
+    }
+    const parsedValue = INPUT_FORMATTERS.DECIMAL(v, inputAmount)
+
+    if (
+      numberWithOneDotRegexp.test(parsedValue) &&
+      getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+      getNumberOfDecimalsFromNumber(parsedValue) <= 8
+    ) {
+      setFieldAmount(parsedValue, 'input')
+    }
+  }
+
+  const changeOutputField = (v) => {
+    if (v === '') {
+      setFieldAmount(v, 'output')
+      return
+    }
+
+    const parsedValue = INPUT_FORMATTERS.DECIMAL(v, inputAmount)
+
+    if (
+      numberWithOneDotRegexp.test(parsedValue) &&
+      getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+      getNumberOfDecimalsFromNumber(parsedValue) <= 8
+    ) {
+      setFieldAmount(parsedValue, 'output')
+    }
+  }
+
+  const executeSwap = async () => {
+    if (!swapRoute) return
+
+    setIsSwapInProgress(true)
+
+    try {
+      const transactionsAndSigners = await buildTransactions(swapRoute)
+
+      const result = await signAndSendTransactions({
+        wallet: walletAdapterToWallet(wallet),
+        connection,
+        transactionsAndSigners,
+      })
+
+      if (result !== 'success') {
+        notify({
+          type: 'error',
+          message:
+            result !== 'failed'
+              ? 'Transaction cancelled'
+              : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
+        })
+      } else {
+        notify({
+          type: 'success',
+          message: 'Swap executed successfully.',
+        })
+      }
+
+      // reset fields
+      if (result === 'success') {
+        setFieldAmount('', 'input')
+      }
+
+      // remove loader
+      setIsSwapInProgress(false)
+
+      refreshUserTokensData()
+      refreshAll()
+
+      if (swapRoute.steps.some((amm) => amm.ammLabel === 'Serum')) {
+        refreshOpenOrdersMap()
+      }
+    } catch (e) {
+      console.error('Error executing swap', e)
+    }
+  }
+
   return (
     <SwapPageLayout>
       <SwapPageContainer justify="center" direction="row" wrap="nowrap">
@@ -497,24 +573,7 @@ const SwapPage = ({
                       setFieldAmount(maxInputAmount, 'input')
                     }
                     disabled={false}
-                    onChange={(v) => {
-                      if (v === '') {
-                        setFieldAmount(v, 'input')
-                        return
-                      }
-                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
-                        v,
-                        inputAmount
-                      )
-
-                      if (
-                        numberWithOneDotRegexp.test(parsedValue) &&
-                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
-                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
-                      ) {
-                        setFieldAmount(parsedValue, 'input')
-                      }
-                    }}
+                    onChange={changeInputField}
                     appendComponent={
                       <TokenSelector
                         mint={inputTokenMintAddress}
@@ -546,25 +605,7 @@ const SwapPage = ({
                     onMaxAmountClick={() =>
                       setFieldAmount(maxOutputAmount, 'output')
                     }
-                    onChange={(v) => {
-                      if (v === '') {
-                        setFieldAmount(v, 'output')
-                        return
-                      }
-
-                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
-                        v,
-                        inputAmount
-                      )
-
-                      if (
-                        numberWithOneDotRegexp.test(parsedValue) &&
-                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
-                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
-                      ) {
-                        setFieldAmount(parsedValue, 'output')
-                      }
-                    }}
+                    onChange={changeOutputField}
                     appendComponent={
                       <TokenSelector
                         mint={outputTokenMintAddress}
@@ -748,59 +789,7 @@ const SwapPage = ({
                     $fontSize="md"
                     minWidth="100%"
                     $variant="none"
-                    onClick={async () => {
-                      if (!swapRoute) return
-
-                      setIsSwapInProgress(true)
-
-                      try {
-                        const transactionsAndSigners = await buildTransactions(
-                          swapRoute
-                        )
-
-                        const result = await signAndSendTransactions({
-                          wallet: walletAdapterToWallet(wallet),
-                          connection,
-                          transactionsAndSigners,
-                        })
-
-                        if (result !== 'success') {
-                          notify({
-                            type: 'error',
-                            message:
-                              result !== 'failed'
-                                ? 'Transaction cancelled'
-                                : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
-                          })
-                        } else {
-                          notify({
-                            type: 'success',
-                            message: 'Swap executed successfully.',
-                          })
-                        }
-
-                        // reset fields
-                        if (result === 'success') {
-                          await setFieldAmount('', 'input')
-                        }
-
-                        // remove loader
-                        setIsSwapInProgress(false)
-
-                        refreshUserTokensData()
-                        refreshAll()
-
-                        if (
-                          swapRoute.steps.some(
-                            (amm) => amm.ammLabel === 'Serum'
-                          )
-                        ) {
-                          refreshOpenOrdersMap()
-                        }
-                      } catch (e) {
-                        console.log('error', e)
-                      }
-                    }}
+                    onClick={executeSwap}
                   >
                     <span>{buttonText}</span>
                   </SwapButton>

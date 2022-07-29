@@ -12,8 +12,6 @@ export const loadMintsDecimalsInfo = async ({
 }) => {
   const mintsMap = new Map()
 
-  console.time('mints')
-
   const loadedMints = await connection._rpcRequest('getMultipleAccounts', [
     mints,
     { encoding: 'base64' },
@@ -47,8 +45,6 @@ export const loadMintsDecimalsInfo = async ({
     // get mint by index for now, don't see any other way to match decimals with mint
     mintsMap.set(mint, { mint, decimals })
   })
-
-  console.timeEnd('mints')
 
   return mintsMap
 }
