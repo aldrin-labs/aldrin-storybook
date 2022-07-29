@@ -4,6 +4,12 @@ import styled from 'styled-components'
 import { Row } from '@sb/components/Layout'
 import { InlineText } from '@sb/components/Typography'
 
+export const SwapChartAndPriceContainer = styled(Row)`
+  width: 100%;
+  height: auto;
+  margin: 0 0 1em 0;
+`
+
 export const SwapChartContainer = styled(Row)`
   width: 100%;
   height: 100%;
@@ -15,6 +21,10 @@ export const SwapChartContainer = styled(Row)`
 
 export const CrossSwapChartContainer = styled(Row)`
   width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   border: 1px solid ${({ theme }) => theme.colors.yellow4};
   border-right: 0;
   border-top-left-radius: ${BORDER_RADIUS.lg};
@@ -32,4 +42,9 @@ export const PricesSymbolsContainer = styled(Row)`
 
 export const TokenIconsContainer = styled(Row)`
   align-items: center;
+`
+
+export const EmptyOHLCVTextContainer = styled(Row)`
+  margin: 1em 0 0 0;
+  height: auto;
 `

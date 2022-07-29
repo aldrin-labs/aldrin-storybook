@@ -3,7 +3,6 @@ import useSWR from 'swr'
 
 import { SvgIcon } from '@sb/components'
 import { InlineText } from '@sb/components/Typography'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -11,7 +10,12 @@ import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
 
 import OHLCVCandlesIcon from '@icons/ohlcvCandles.svg'
 
-import { CrossSwapChartContainer, SwapChartContainer } from './styles'
+import {
+  CrossSwapChartContainer,
+  EmptyOHLCVTextContainer,
+  SwapChartAndPriceContainer,
+  SwapChartContainer,
+} from './styles'
 import { SwapChartPrice } from './SwapChartPrice'
 import { SwapChartProps } from './types'
 
@@ -38,7 +42,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
 
   return (
     <>
-      <RowContainer margin="0 0 1em 0">
+      <SwapChartAndPriceContainer>
         <SwapChartPrice
           pricesMap={pricesMap}
           inputSymbol={inputSymbol}
@@ -46,16 +50,16 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
           inputTokenMintAddress={inputTokenMintAddress}
           outputTokenMintAddress={outputTokenMintAddress}
         />
-      </RowContainer>
+      </SwapChartAndPriceContainer>
       <SwapChartContainer>
         {isCrossOHLCV || !inputSymbol || !outputSymbol ? (
           <CrossSwapChartContainer direction="column" height="100%">
             <SvgIcon src={OHLCVCandlesIcon} />
-            <Row margin="1em 0 0 0">
+            <EmptyOHLCVTextContainer>
               <InlineText size="md" color="yellow4">
                 There is not enough data for this pair. Try later.
               </InlineText>
-            </Row>
+            </EmptyOHLCVTextContainer>
           </CrossSwapChartContainer>
         ) : (
           <iframe
