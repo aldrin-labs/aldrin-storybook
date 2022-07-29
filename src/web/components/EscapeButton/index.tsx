@@ -23,7 +23,9 @@ interface EscapeButtonParams {
   close: () => void
 }
 
-export const EscapeButton = (params: EscapeButtonParams) => {
+export const EscapeButton: React.FC<EscapeButtonParams> = (
+  params: EscapeButtonParams
+) => {
   const { close } = params
 
   useEffect(() => {

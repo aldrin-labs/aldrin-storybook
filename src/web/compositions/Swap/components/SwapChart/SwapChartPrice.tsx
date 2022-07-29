@@ -1,20 +1,16 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 
 import { SvgIcon } from '@sb/components'
+import { Row } from '@sb/components/Layout'
 import { TokenIcon } from '@sb/components/TokenIcon'
 import { InlineText } from '@sb/components/Typography'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 
 import { stripByAmount } from '@core/utils/numberUtils'
 
 import HalfArrowsIcon from '@icons/halfArrows.svg'
 
 import { getEstimatedPrice } from '../../utils'
-
-const SymbolText = styled(InlineText)`
-  letter-spacing: -0.05em;
-`
+import { PricesSymbolsContainer, SymbolText, TokenIconsContainer } from './styles'
 
 interface SwapChartPriceProps {
   inputSymbol: string
@@ -51,7 +47,7 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
   )
 
   return (
-    <RowContainer justify="space-between">
+    <PricesSymbolsContainer justify="space-between">
       <Row>
         <SymbolText color="white1" size="md" weight={700}>
           {stripByAmount(estimatedPrice)}{' '}
@@ -61,7 +57,7 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
           </SymbolText>
         </SymbolText>
       </Row>
-      <Row align="center">
+      <TokenIconsContainer align="center">
         <TokenIcon
           mint={
             isInputPriceShowField
@@ -100,8 +96,8 @@ const SwapChartPrice = (props: SwapChartPriceProps) => {
         >
           <SvgIcon src={HalfArrowsIcon} width="0.8em" height="0.8em" />
         </Row>
-      </Row>
-    </RowContainer>
+      </TokenIconsContainer>
+    </PricesSymbolsContainer>
   )
 }
 

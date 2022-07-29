@@ -1,3 +1,4 @@
+import { OpenOrders } from '@project-serum/serum/lib/market'
 import { Connection } from '@solana/web3.js'
 
 import { MarketsMap } from '@sb/dexUtils/markets'
@@ -20,11 +21,13 @@ export const getTransactionsListWithPrices = async ({
   connection,
   tokensMap,
   allMarketsMap,
+  openOrdersMap,
 }: {
   wallet: WalletAdapter
   connection: Connection
   tokensMap: TokensMapType
   allMarketsMap: MarketsMap
+  openOrdersMap: Map<string, OpenOrders>
 }): Promise<TransactionType[]> => {
   // getting names of markets to load
   const rebalanceTransactionsList = getTransactionsList({
@@ -41,6 +44,7 @@ export const getTransactionsListWithPrices = async ({
     connection,
     marketsNames,
     allMarketsMap,
+    openOrdersMap,
   })
 
   const orderbooksMap = await getOrderbookForMarkets({
@@ -55,8 +59,6 @@ export const getTransactionsListWithPrices = async ({
     percentage: TAKER_FEE + REBALANCE_CONFIG.SLIPPAGE / 100,
   })
 
-  console.log('rebalanceTransactionsList', rebalanceTransactionsList)
-
   // transactions with all prices
   const rebalanceAllTransactionsListWithPrices = getTransactionsList({
     allMarketsMap,
@@ -65,21 +67,11 @@ export const getTransactionsListWithPrices = async ({
     loadedMarketsMap,
   })
 
-  console.log(
-    'rebalanceAllTransactionsListWithPrices',
-    rebalanceAllTransactionsListWithPrices
-  )
-
   const mergedRebalanceTransactions = mergeRebalanceTransactions(
     rebalanceAllTransactionsListWithPrices
   )
 
   const sortedRebalanceTransactions = sortRebalanceTransactions(
-    mergedRebalanceTransactions
-  )
-
-  console.log(
-    'data second mergedRebalanceTransactions',
     mergedRebalanceTransactions
   )
 

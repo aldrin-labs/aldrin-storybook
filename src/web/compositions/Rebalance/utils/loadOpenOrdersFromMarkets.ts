@@ -24,8 +24,6 @@ export const loadOpenOrdersFromMarkets = async ({
 }): Promise<OpenOrdersMap> => {
   const openOrdersMap: OpenOrdersMap = new Map()
 
-  console.time('openOrders')
-
   let openOrdersAccounts: OpenOrders[] = []
 
   // add to markets load
@@ -46,8 +44,6 @@ export const loadOpenOrdersFromMarkets = async ({
       openOrdersMap.set(address.toString(), openOrders)
     }
   }
-
-  console.timeEnd('openOrders')
 
   return openOrdersMap
 }

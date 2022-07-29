@@ -1,11 +1,8 @@
-import { BORDER_RADIUS } from '@variables/variables'
 import React from 'react'
-import styled from 'styled-components'
 import useSWR from 'swr'
 
 import { SvgIcon } from '@sb/components'
 import { InlineText } from '@sb/components/Typography'
-import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
 import { useWallet } from '@sb/dexUtils/wallet'
 
@@ -13,23 +10,14 @@ import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
 
 import OHLCVCandlesIcon from '@icons/ohlcvCandles.svg'
 
-import { SwapChartContainer } from './styles'
+import {
+  CrossSwapChartContainer,
+  EmptyOHLCVTextContainer,
+  SwapChartAndPriceContainer,
+  SwapChartContainer,
+} from './styles'
 import { SwapChartPrice } from './SwapChartPrice'
-
-interface SwapChartProps {
-  isCrossOHLCV: boolean
-  marketType: number
-  inputTokenMintAddress: string
-  outputTokenMintAddress: string
-  pricesMap: Map<string, number>
-}
-
-const CrossSwapChartContainer = styled(RowContainer)`
-  border: 1px solid ${({ theme }) => theme.colors.yellow4};
-  border-right: 0;
-  border-top-left-radius: ${BORDER_RADIUS.lg};
-  border-bottom-left-radius: ${BORDER_RADIUS.lg};
-`
+import { SwapChartProps } from './types'
 
 const SwapChartWithPrice = (props: SwapChartProps) => {
   const {
@@ -54,7 +42,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
 
   return (
     <>
-      <RowContainer margin="0 0 1em 0">
+      <SwapChartAndPriceContainer>
         <SwapChartPrice
           pricesMap={pricesMap}
           inputSymbol={inputSymbol}
@@ -62,16 +50,16 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
           inputTokenMintAddress={inputTokenMintAddress}
           outputTokenMintAddress={outputTokenMintAddress}
         />
-      </RowContainer>
+      </SwapChartAndPriceContainer>
       <SwapChartContainer>
-        {(isCrossOHLCV  || !inputSymbol || !outputSymbol) ? (
+        {isCrossOHLCV || !inputSymbol || !outputSymbol ? (
           <CrossSwapChartContainer direction="column" height="100%">
             <SvgIcon src={OHLCVCandlesIcon} />
-            <Row margin="1em 0 0 0">
+            <EmptyOHLCVTextContainer>
               <InlineText size="md" color="yellow4">
                 There is not enough data for this pair. Try later.
               </InlineText>
-            </Row>
+            </EmptyOHLCVTextContainer>
           </CrossSwapChartContainer>
         ) : (
           <iframe

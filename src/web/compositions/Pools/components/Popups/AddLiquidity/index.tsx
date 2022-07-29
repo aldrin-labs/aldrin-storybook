@@ -263,16 +263,6 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
     userAmountTokenB: +quoteAmount,
   })
 
-  console.log(
-    'res',
-    findClosestAmountToSwapForDeposit({
-      pool: selectedPool,
-      poolBalances,
-      userAmountTokenA: +baseAmount,
-      userAmountTokenB: +quoteAmount,
-    })
-  )
-
   const isUserDepositHasHighSwapImpact =
     autoRebalanceEnabled && userDepositPercentageOfPoolAmounts >= 1
 

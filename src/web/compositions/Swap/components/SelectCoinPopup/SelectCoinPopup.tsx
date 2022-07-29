@@ -19,10 +19,12 @@ import {
 } from '@core/utils/PortfolioTableUtils'
 
 import {
+  Container,
   SelectorRow,
   StyledText,
   TokenButton,
   TokenButtonText,
+  TokensContainer,
   UpdatedPaper,
 } from './styles'
 
@@ -138,7 +140,7 @@ export const SelectCoinPopup = ({
       }}
       aria-labelledby="responsive-dialog-title"
     >
-      <RowContainer>
+      <Container>
         <RowContainer direction="column">
           <RowContainer padding="1.5em 0 0 0">
             <SearchInputWithLoop
@@ -163,13 +165,7 @@ export const SelectCoinPopup = ({
             ))}
           </RowContainer>
         </RowContainer>
-        <RowContainer
-          justify="flex-start"
-          height="55vh"
-          direction="column"
-          wrap="nowrap"
-          style={{ overflow: 'auto' }}
-        >
+        <TokensContainer justify="flex-start" direction="column" wrap="nowrap">
           {sortedMints.map(({ mint, amount, name, symbol, total }) => {
             return (
               <SelectorRow
@@ -224,8 +220,8 @@ export const SelectCoinPopup = ({
                 : setQuoteTokenAddressFromSeveral
             }
           />
-        </RowContainer>
-      </RowContainer>
+        </TokensContainer>
+      </Container>
     </DialogWrapper>
   )
 }
