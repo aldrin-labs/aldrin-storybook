@@ -59,8 +59,6 @@ export const getTransactionsListWithPrices = async ({
     percentage: TAKER_FEE + REBALANCE_CONFIG.SLIPPAGE / 100,
   })
 
-  console.log('rebalanceTransactionsList', rebalanceTransactionsList)
-
   // transactions with all prices
   const rebalanceAllTransactionsListWithPrices = getTransactionsList({
     allMarketsMap,
@@ -69,21 +67,11 @@ export const getTransactionsListWithPrices = async ({
     loadedMarketsMap,
   })
 
-  console.log(
-    'rebalanceAllTransactionsListWithPrices',
-    rebalanceAllTransactionsListWithPrices
-  )
-
   const mergedRebalanceTransactions = mergeRebalanceTransactions(
     rebalanceAllTransactionsListWithPrices
   )
 
   const sortedRebalanceTransactions = sortRebalanceTransactions(
-    mergedRebalanceTransactions
-  )
-
-  console.log(
-    'data second mergedRebalanceTransactions',
     mergedRebalanceTransactions
   )
 
