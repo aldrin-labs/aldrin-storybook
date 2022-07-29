@@ -276,6 +276,9 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
   background: ${({ theme }) => theme.colors.white6};
   padding: 1em 1em;
   z-index: 10;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 27em;
 
   .timer {
     &:hover {

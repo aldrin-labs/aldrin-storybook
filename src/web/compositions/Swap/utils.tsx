@@ -42,7 +42,7 @@ export const getSwapButtonText = ({
     case !isSwapRouteExists:
       return 'No route for swap'
     default:
-      return pricesDiffPct < -1 ? (
+      return pricesDiffPct ? (
         <Row direction="column">
           <Text margin="0" weight={600} size="es" color="red1">
             {Math.abs(pricesDiffPct)}% more expensive than CoinGecko price
