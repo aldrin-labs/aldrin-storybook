@@ -64,7 +64,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
         />
       </RowContainer>
       <SwapChartContainer>
-        {isCrossOHLCV ? (
+        {(isCrossOHLCV  || !inputSymbol || !outputSymbol) ? (
           <CrossSwapChartContainer direction="column" height="100%">
             <SvgIcon src={OHLCVCandlesIcon} />
             <Row margin="1em 0 0 0">

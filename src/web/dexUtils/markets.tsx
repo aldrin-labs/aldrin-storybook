@@ -39,6 +39,11 @@ import { useLocalStorageState } from './utils'
 import { useWallet } from './wallet'
 
 export const tokensMap = toMap(tokensList, (token) => token.address)
+export const aldrinTokensMapBySymbol = toMap(
+  tokensList,
+  (token) => token.symbol
+)
+
 export const marketsMap = toMap(marketsList, (market) =>
   market.name.replace('/', '_')
 )
@@ -84,7 +89,7 @@ export const REFFERER_ACCOUNT_ADDRESSES: { [key: string]: string | undefined } =
 
 const _IGNORE_DEPRECATED = false
 
-const USE_MARKETS = _IGNORE_DEPRECATED
+export const USE_MARKETS = _IGNORE_DEPRECATED
   ? MARKETS.map((m) => ({ ...m, deprecated: false }))
   : [
       {

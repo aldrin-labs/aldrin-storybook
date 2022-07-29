@@ -18,7 +18,11 @@ import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWal
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
 import { useConnection } from '@sb/dexUtils/connection'
-import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
+import {
+  aldrinTokensMapBySymbol,
+  getTokenMintAddressByName,
+  USE_MARKETS,
+} from '@sb/dexUtils/markets'
 import { notify } from '@sb/dexUtils/notifications'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
@@ -31,7 +35,11 @@ import { toMap } from '@sb/utils'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
-import { walletAdapterToWallet, getTokenDataByMint } from '@core/solana'
+import {
+  walletAdapterToWallet,
+  getTokenDataByMint,
+  RIN_MINT,
+} from '@core/solana'
 import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
 import {
   getNumberOfDecimalsFromNumber,
@@ -72,11 +80,7 @@ import {
   RightColumn,
   ChartContainer,
 } from './styles'
-import {
-  getOHLCVMarketTypeFromSwapRoute,
-  getOHLCVSymbols,
-  getSwapButtonText,
-} from './utils'
+import { getSwapButtonText } from './utils'
 
 const SwapPage = ({
   getPoolsInfoQuery,
@@ -234,8 +238,11 @@ const SwapPage = ({
     ((estimatedPriceFromRoute - estimatedPrice) / estimatedPrice) * 100,
     2
   )
-
-  const isHighPriceDiff = pricesDiffPct < -1
+  const isHighPriceImpact = swapRoute.priceImpact > 2
+  const isHighPriceDiff =
+    inputTokenMintAddress === RIN_MINT || outputTokenMintAddress === RIN_MINT
+      ? isHighPriceImpact
+      : pricesDiffPct < -1
 
   const priceDiffText =
     pricesDiffPct > 0
@@ -327,16 +334,88 @@ const SwapPage = ({
 
   const showPriceInfo = !isEmptyInputAmount && !isEmptyOutputAmount
 
+  // массив с маркетами (наши + серум), ищем маркет по минктам
+  // пулы могут не прогрузиться, ищем маркеты в пулах
+  // если не нашли то конец
+  const marketsList = USE_MARKETS
+
+  const marketsWithMints = marketsList
+    .filter((market) => !market.deprecated && !market.delisted)
+    .map((market) => {
+      const marketName = market.name
+      const [base, quote] = marketName.split('/')
+
+      const { address: baseMintAddress } = aldrinTokensMapBySymbol.get(
+        base
+      ) || {
+        address: '',
+      }
+      const { address: quoteMintAddress } = aldrinTokensMapBySymbol.get(
+        quote
+      ) || {
+        address: '',
+      }
+
+      return {
+        ...market,
+        baseMintAddress,
+        quoteMintAddress,
+      }
+    })
+
+  const findMarketByMints = () => {
+    return marketsWithMints.find(
+      (market) =>
+        (market.baseMintAddress === inputTokenMintAddress ||
+          market.baseMintAddress === outputTokenMintAddress) &&
+        (market.quoteMintAddress === inputTokenMintAddress ||
+          market.quoteMintAddress === outputTokenMintAddress)
+    )
+  }
+
+  const getSelectedPoolForSwap = () => {
+    return pools.find(
+      (pool) =>
+        (pool?.tokenA === inputTokenMintAddress ||
+          pool?.tokenA === outputTokenMintAddress) &&
+        (pool?.tokenB === inputTokenMintAddress ||
+          pool?.tokenB === outputTokenMintAddress)
+    )
+  }
+
+  const marketsByMints = findMarketByMints()
+  const selectedPoolForSwap = getSelectedPoolForSwap()
+
+  const marketType = marketsByMints ? 0 : 2
+
+  const isCrossOHLCV = !marketsByMints && !selectedPoolForSwap
+
+  const OHLCVinputTokenMintAddress = marketsByMints
+    ? marketsByMints.baseMintAddress
+    : selectedPoolForSwap?.tokenA
+
+  const OHLCVoutputTokenMintAddress = marketsByMints
+    ? marketsByMints.quoteMintAddress
+    : selectedPoolForSwap?.tokenB
+
   return (
     <SwapPageLayout>
       <SwapPageContainer justify="center" direction="row" wrap="nowrap">
         <LeftColumn>
           <ChartContainer>
             <SwapChartWithPrice
-              isCrossOHLCV={swapRoute.steps.length > 1}
-              marketType={getOHLCVMarketTypeFromSwapRoute(swapRoute)}
-              inputTokenMintAddress={getOHLCVSymbols(swapRoute.steps)[0]}
-              outputTokenMintAddress={getOHLCVSymbols(swapRoute.steps)[1]}
+              isCrossOHLCV={isCrossOHLCV}
+              marketType={marketType}
+              inputTokenMintAddress={
+                isCrossOHLCV
+                  ? inputTokenMintAddress
+                  : OHLCVinputTokenMintAddress
+              }
+              outputTokenMintAddress={
+                isCrossOHLCV
+                  ? outputTokenMintAddress
+                  : OHLCVoutputTokenMintAddress
+              }
               pricesMap={dexTokensPricesMap}
             />
           </ChartContainer>
