@@ -1,6 +1,4 @@
-import { BORDER_RADIUS } from '@variables/variables'
 import React from 'react'
-import styled from 'styled-components'
 import useSWR from 'swr'
 
 import { SvgIcon } from '@sb/components'
@@ -13,23 +11,9 @@ import { CHARTS_API_URL, PROTOCOL } from '@core/utils/config'
 
 import OHLCVCandlesIcon from '@icons/ohlcvCandles.svg'
 
-import { SwapChartContainer } from './styles'
+import { CrossSwapChartContainer, SwapChartContainer } from './styles'
 import { SwapChartPrice } from './SwapChartPrice'
-
-interface SwapChartProps {
-  isCrossOHLCV: boolean
-  marketType: number
-  inputTokenMintAddress: string
-  outputTokenMintAddress: string
-  pricesMap: Map<string, number>
-}
-
-const CrossSwapChartContainer = styled(RowContainer)`
-  border: 1px solid ${({ theme }) => theme.colors.yellow4};
-  border-right: 0;
-  border-top-left-radius: ${BORDER_RADIUS.lg};
-  border-bottom-left-radius: ${BORDER_RADIUS.lg};
-`
+import { SwapChartProps } from './types'
 
 const SwapChartWithPrice = (props: SwapChartProps) => {
   const {
@@ -64,7 +48,7 @@ const SwapChartWithPrice = (props: SwapChartProps) => {
         />
       </RowContainer>
       <SwapChartContainer>
-        {(isCrossOHLCV  || !inputSymbol || !outputSymbol) ? (
+        {isCrossOHLCV || !inputSymbol || !outputSymbol ? (
           <CrossSwapChartContainer direction="column" height="100%">
             <SvgIcon src={OHLCVCandlesIcon} />
             <Row margin="1em 0 0 0">

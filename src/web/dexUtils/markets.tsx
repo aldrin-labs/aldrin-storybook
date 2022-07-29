@@ -7,7 +7,6 @@ import {
 } from '@project-serum/serum'
 import { TokenInfo } from '@solana/spl-token-registry'
 import { Account, AccountInfo, PublicKey, SystemProgram } from '@solana/web3.js'
-import marketsList from 'aldrin-registry/src/markets.json'
 import tokensList from 'aldrin-registry/src/tokens.json'
 import { BN } from 'bn.js'
 import tuple from 'immutable-tuple'
@@ -17,6 +16,7 @@ import { OrderWithMarket } from '@sb/dexUtils/send'
 
 import { toMap } from '@core/collection'
 import { DEX_PID, getDexProgramIdByEndpoint } from '@core/config/dex'
+import { AWESOME_MARKETS } from '@core/utils/awesomeMarkets/dictionaries'
 import { useAwesomeMarkets } from '@core/utils/awesomeMarkets/serum'
 import { Metrics } from '@core/utils/metrics'
 
@@ -42,10 +42,6 @@ export const tokensMap = toMap(tokensList, (token) => token.address)
 export const aldrinTokensMapBySymbol = toMap(
   tokensList,
   (token) => token.symbol
-)
-
-export const marketsMap = toMap(marketsList, (market) =>
-  market.name.replace('/', '_')
 )
 
 export const ALL_TOKENS_MINTS = tokensList.map((el) => {
@@ -102,6 +98,10 @@ export const USE_MARKETS = _IGNORE_DEPRECATED
       },
     ].concat(MARKETS)
 // : MARKETS
+
+export const marketsMap = toMap(AWESOME_MARKETS.concat(USE_MARKETS), (market) =>
+  market.name.replace('/', '_')
+)
 
 export interface RawMarketData {
   name: string

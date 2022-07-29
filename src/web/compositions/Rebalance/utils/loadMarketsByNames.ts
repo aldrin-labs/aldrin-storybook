@@ -48,6 +48,8 @@ export const loadMarketsByNames = async ({
     ]),
   ])
 
+  console.log('loadedMarkets.result', loadedMarkets.result)
+
   if (loadedMarkets.result.error || !loadedMarkets.result.value) {
     notifyWithLog({
       message:
