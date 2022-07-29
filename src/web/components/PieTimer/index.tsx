@@ -16,7 +16,7 @@ interface PieTimerParams {
   callback: () => void
 }
 
-const PieTimer = (params: PieTimerParams) => {
+const PieTimer: React.FC<PieTimerParams> = (params: PieTimerParams) => {
   const { duration, size = 32, callback } = params
   const theme = useTheme()
 
