@@ -319,7 +319,7 @@ const SwapPage = ({
     isLoadingSwapRoute,
     isTooSmallInputAmount: false,
     isSwapInProgress,
-    pricesDiffPct: isHighPriceDiff,
+    pricesDiffPct: isHighPriceDiff ? +pricesDiffPct : 0,
   })
 
   const isButtonDisabled =
@@ -330,9 +330,6 @@ const SwapPage = ({
 
   const showPriceInfo = !isEmptyInputAmount && !isEmptyOutputAmount
 
-  // массив с маркетами (наши + серум), ищем маркет по минктам
-  // пулы могут не прогрузиться, ищем маркеты в пулах
-  // если не нашли то конец
   const marketsList = USE_MARKETS
 
   const marketsWithMints = marketsList
