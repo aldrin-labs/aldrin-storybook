@@ -1,9 +1,28 @@
 import { Link } from '@material-ui/core'
 import React from 'react'
+import { toast } from 'react-toastify'
 
 import SnackbarUtils from '@sb/utils/SnackbarUtils'
 
 import { MASTER_BUILD } from '@core/utils/config'
+
+export const callToast = (toastId, { render, options = {} }) => {
+  if (toast.isActive(toastId)) {
+    toast.update(toastId, {
+      render,
+      position: toast.POSITION.BOTTOM_LEFT,
+      autoClose: false,
+      ...options,
+    })
+  } else {
+    toast(render, {
+      toastId,
+      position: toast.POSITION.BOTTOM_LEFT,
+      autoClose: false,
+      ...options,
+    })
+  }
+}
 
 export const notify = ({
   message,
@@ -18,8 +37,7 @@ export const notify = ({
   type?: string
   persist?: boolean
 }) => {
-  let notificationDescription = null
-  console.log('notification: ', message)
+  let notificationDescription
 
   if (txid) {
     notificationDescription = (

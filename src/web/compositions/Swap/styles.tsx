@@ -28,6 +28,7 @@ export const LeftColumn = styled(Row)`
 export const RightColumn = styled(Row)`
   justify-content: flex-start;
   order: 2;
+  height: 100%;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     order: 1;
@@ -164,18 +165,15 @@ export const RowImpactTitle = styled(RowTitle)`
 export const SwapButton = styled(Button)`
   height: 4em;
 
-  color: ${({
-    isHighPriceDiff,
-    theme,
-  }: {
-    isHighPriceDiff: boolean
-    theme: DefaultTheme
-  }) => (isHighPriceDiff ? theme.colors.red1 : theme.colors.green2)};
+  color: ${(props: { isHighPriceDiff: boolean }) =>
+    props.isHighPriceDiff
+      ? props.theme.colors.red1
+      : props.theme.colors.green2};
 
-  background: ${({ isHighPriceDiff, theme }: { isHighPriceDiff: boolean }) =>
-    isHighPriceDiff
-      ? rgba(theme.colors.red0, 0.15)
-      : rgba(theme.colors.green0, 0.15)};
+  background: ${(props: { isHighPriceDiff: boolean }) =>
+    props.isHighPriceDiff
+      ? rgba(props.theme.colors.red0, 0.15)
+      : rgba(props.theme.colors.green2, 0.15)};
 
   border: none;
 
@@ -187,8 +185,8 @@ export const SwapButton = styled(Button)`
   }
 
   &:disabled {
-    color: ${(props) => props.theme.colors.white3};
-    background: ${rgba('#5B5A72', 0.15)}; // too rare to add to theme
+    color: ${(props) => props.theme.colors.green1};
+    background: ${(props) => rgba(props.theme.colors.green1, 0.15)};
   }
 `
 
@@ -250,8 +248,9 @@ export const SwapPageLayout = styled(Page)`
 `
 
 export const SwapContentContainer = styled(Row)`
-  margin: 10px 0;
+  padding: 10px 0;
   width: 24em;
+  height: 100%;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     width: 100%;
@@ -264,10 +263,11 @@ export const SwapContentContainer = styled(Row)`
 `
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
-  box-shadow: 0 0 48px rgba(0, 0, 0, 0);
+  box-shadow: 0 0 48px #000;
   background: ${({ theme }) => theme.colors.white6};
   padding: 1.5em 1em;
   z-index: 10;
+  flex: 1;
 
   .timer {
     &:hover {

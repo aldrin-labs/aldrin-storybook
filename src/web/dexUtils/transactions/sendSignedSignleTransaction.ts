@@ -16,7 +16,7 @@ export const sendSignedSignleTransaction = async (
   }
 
   return sendSingle({
-    ...params,
     onStatusChange: getNotifier(messages),
+    ...params,
   })
 }

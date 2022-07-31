@@ -8,16 +8,23 @@ import { compose } from 'recompose'
 import { useTheme } from 'styled-components'
 
 import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { INPUT_FORMATTERS } from '@sb/components/Input'
 import { PieTimer } from '@sb/components/PieTimer'
+import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
+import { Toast } from '@sb/components/Toast/Toast'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText, Text } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
 import { DexTokensPrices, PoolInfo } from '@sb/compositions/Pools/index.types'
 import { useCoingeckoPrices } from '@sb/dexUtils/coingecko/useCoingeckoPrices'
+import { useConnection } from '@sb/dexUtils/connection'
 import { getTokenMintAddressByName } from '@sb/dexUtils/markets'
-import { notify } from '@sb/dexUtils/notifications'
+import { callToast } from "@sb/dexUtils/notifications"
+import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
+import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
+import { signAndSendTransactions } from '@sb/dexUtils/transactions'
 import { formatNumberWithSpaces, notEmpty } from '@sb/dexUtils/utils'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { toMap } from '@sb/utils'
@@ -25,7 +32,7 @@ import { toMap } from '@sb/utils'
 import { getDexTokensPrices as getDexTokensPricesRequest } from '@core/graphql/queries/pools/getDexTokensPrices'
 import { getPoolsInfo } from '@core/graphql/queries/pools/getPoolsInfo'
 import { getTradingVolumeForAllPools } from '@core/graphql/queries/pools/getTradingVolumeForAllPools'
-import { walletAdapterToWallet } from '@core/solana'
+import { walletAdapterToWallet, getTokenDataByMint } from '@core/solana'
 import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNameByMintAddress'
 import {
   getNumberOfDecimalsFromNumber,
@@ -42,14 +49,7 @@ import {
 import ArrowsExchangeIcon from '@icons/arrowsExchange.svg'
 import SettingIcon from '@icons/settings.svg'
 
-import { INPUT_FORMATTERS } from "@sb/components/Input"
-import { queryRendererHoc } from "@sb/components/QueryRenderer"
-import { useConnection } from "@sb/dexUtils/connection"
-import { getSwapRouteFeesAmount } from "@sb/dexUtils/pools/swap/getSwapStepFeeUSD"
-import { useTokenInfos } from "@sb/dexUtils/tokenRegistry"
-import { signAndSendTransactions } from "@sb/dexUtils/transactions"
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import { getTokenDataByMint } from "@core/solana"
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
 import { SwapChartWithPrice } from './components/SwapChart'
@@ -185,7 +185,9 @@ const SwapPage = ({
   ] = useState<string>('')
 
   const [isInputTokenSelecting, setIsInputTokenSelecting] = useState(false)
-  const [isSwapInProgress, setIsSwapInProgress] = useState(false)
+  const [swapStatus, setSwapStatus] = useState<
+    'initialize' | 'pending-confirmation' | null
+  >(null)
 
   const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
   const outputSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
@@ -310,21 +312,118 @@ const SwapPage = ({
 
   const buttonText = getSwapButtonText({
     baseSymbol: inputSymbol,
-    minInputAmount: 0,
     isSwapRouteExists: swapRoute.steps.length !== 0,
     isEmptyInputAmount,
     isTokenABalanceInsufficient,
     isLoadingSwapRoute,
-    isTooSmallInputAmount: false,
-    isSwapInProgress,
+    swapStatus,
     pricesDiffPct,
   })
 
   const isButtonDisabled =
     isEmptyInputAmount ||
     isTokenABalanceInsufficient ||
-    isSwapInProgress ||
+    swapStatus ||
     isLoadingSwapRoute
+
+  const toastId = 'swap-toast-id'
+
+  useEffect(() => {
+    const makeTransaction = async () => {
+      try {
+        const transactionsAndSigners = await buildTransactions(swapRoute)
+
+        setSwapStatus('pending-confirmation')
+
+        const result = await signAndSendTransactions({
+          wallet: walletAdapterToWallet(wallet),
+          connection,
+          transactionsAndSigners,
+          swapStatus, // @todo temp
+          onStatusChange: (transaction) => {
+            if (transaction.status === 'confirming') {
+              for (let i = 0; i < swapRoute.steps.length; i++) {
+                const step = swapRoute.steps[i]
+                setTimeout(() => {
+                  const transactionInputSymbol = getTokenNameByMintAddress(step.inputMint)
+                  const transactionOutputSymbol = getTokenNameByMintAddress(step.outputMint)
+
+                  callToast(toastId, {
+                    render: () => (
+                      <Toast
+                        type="progress"
+                        progressOptions={{
+                          segments: swapRoute.steps.length + 1,
+                          value: i + 1,
+                        }}
+                        title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                        description={`Swapping ${transactionInputSymbol} to ${transactionOutputSymbol}`}
+                      />
+                    ),
+                  })
+                }, i * 1000)
+              }
+            }
+          },
+        })
+
+        if (result !== 'success') {
+          if (result === 'failed') {
+            callToast(toastId, {
+              render: () => (
+                <Toast
+                  type="error"
+                  title="Swap operation failed"
+                  description="Please, try to increase slippage or try a bit later"
+                />
+              ),
+            })
+          } else {
+            callToast(toastId, {
+              render: () => (
+                <Toast
+                  type="error"
+                  title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                  description="Transaction cancelled by user"
+                />
+              ),
+            })
+          }
+        } else {
+          callToast(toastId, {
+            render: () => (
+              <Toast
+                type="success"
+                title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                description="Swapped"
+              />
+            ),
+          })
+        }
+
+        // reset fields
+        if (result === 'success') {
+          await setFieldAmount('', 'input')
+        }
+
+        // remove loader
+        setSwapStatus(null)
+
+        refreshUserTokensData()
+        refreshAll()
+
+        if (swapRoute.steps.some((amm) => amm.ammLabel === 'Serum')) {
+          refreshOpenOrdersMap()
+        }
+      } catch (e) {
+        console.log('error', e)
+      }
+    }
+
+    if (swapStatus === 'initialize') {
+      makeTransaction()
+    }
+  }, [swapStatus])
 
   return (
     <SwapPageLayout>
@@ -376,7 +475,7 @@ const SwapPage = ({
               />
             </RowContainer>
             <SwapBlockTemplate width="100%">
-              <RowContainer margin="0 0 3em 0" justify="space-between">
+              <RowContainer justify="space-between">
                 <PieTimer duration={15} callback={refreshAll} />
                 <Row>
                   <Row style={{ position: 'relative' }}>
@@ -404,15 +503,15 @@ const SwapPage = ({
                   position: 'relative',
                   border: `1px solid ${theme.colors.white4}`,
                   borderRadius: '0.8em',
-                  padding: '0.8em 0',
+                  // padding: '0.8em 0',
+                  // marginTop: '2em',
                 }}
-                margin=".5em 0 0 0"
                 direction="column"
               >
                 <RowContainer
                   wrap="nowrap"
                   justify="space-between"
-                  padding="0 0 0.8em 0"
+                  padding="0.8em"
                   style={{ borderBottom: `1px solid ${theme.colors.white4}` }}
                 >
                   <SwapAmountInput
@@ -462,7 +561,7 @@ const SwapPage = ({
                 <RowContainer
                   wrap="nowrap"
                   justify="space-between"
-                  padding="0.8em 0 0 0"
+                  padding="0.8em"
                 >
                   <SwapAmountInput
                     title="To (Estimated)"
@@ -610,7 +709,7 @@ const SwapPage = ({
                   )}
                 </RowContainer>
               )}
-              <RowContainer margin="3.5em 0 0 0">
+              <RowContainer>
                 {!wallet.publicKey ? (
                   <BtnCustom
                     onClick={() => {
@@ -620,7 +719,7 @@ const SwapPage = ({
                     btnWidth="100%"
                     height="4em"
                     padding="1.4em 5em"
-                    fontSize="1em"
+                    fontSize="initial"
                     borderRadius="1.1rem"
                     borderColor="none"
                     btnColor={theme.colors.blue1}
@@ -677,55 +776,7 @@ const SwapPage = ({
                     onClick={async () => {
                       if (!swapRoute) return
 
-                      setIsSwapInProgress(true)
-
-                      try {
-                        const transactionsAndSigners = await buildTransactions(
-                          swapRoute
-                        )
-
-                        const result = await signAndSendTransactions({
-                          wallet: walletAdapterToWallet(wallet),
-                          connection,
-                          transactionsAndSigners,
-                        })
-
-                        if (result !== 'success') {
-                          notify({
-                            type: 'error',
-                            message:
-                              result !== 'failed'
-                                ? 'Transaction cancelled'
-                                : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
-                          })
-                        } else {
-                          notify({
-                            type: 'success',
-                            message: 'Swap executed successfully.',
-                          })
-                        }
-
-                        // reset fields
-                        if (result === 'success') {
-                          await setFieldAmount('', 'input')
-                        }
-
-                        // remove loader
-                        setIsSwapInProgress(false)
-
-                        refreshUserTokensData()
-                        refreshAll()
-
-                        if (
-                          swapRoute.steps.some(
-                            (amm) => amm.ammLabel === 'Serum'
-                          )
-                        ) {
-                          refreshOpenOrdersMap()
-                        }
-                      } catch (e) {
-                        console.log('error', e)
-                      }
+                      setSwapStatus('initialize')
                     }}
                   >
                     <span>{buttonText}</span>

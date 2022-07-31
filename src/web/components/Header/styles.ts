@@ -5,6 +5,8 @@ import {
   FONT_SIZES,
   TRANSITION,
   UCOLORS,
+  FONTS,
+  SIZE,
 } from '@variables/variables'
 import { rgba, em } from 'polished'
 import { NavLink as RouterNavLink } from 'react-router-dom'
@@ -15,7 +17,12 @@ import styled from 'styled-components'
 import { Button } from '../Button'
 import { Text } from '../Typography'
 
-export const HeaderWrap = styled.header`
+export const Wrapper = styled.header`
+  font-family: ${FONTS.main};
+  font-size: ${SIZE.fontSize};
+`
+
+export const Container = styled.div`
   display: flex;
   flex-direction: row;
   height: 76px;
@@ -387,8 +394,6 @@ export const BalanceTitle = styled.span`
   }
 `
 
-export const Wrap = styled.div``
-
 export const WalletDisconnectBlock = styled.div`
   width: 100%;
   height: 100%;
@@ -436,4 +441,13 @@ export const LogoContainer = styled.div`
       fill: ${(props) => props.theme.colors.logo};
     }
   }
+`
+
+export const Left = styled.div`
+  display: flex;
+  flex: 1;
+`
+
+export const Right = styled.div`
+  display: flex;
 `

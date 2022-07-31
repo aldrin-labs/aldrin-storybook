@@ -49,10 +49,10 @@ export const SwapAmountInput = ({
       disabled={disabled}
       direction="column"
       wrap="nowrap"
-      padding="0em 1em"
+      // padding="0em 1em"
     >
       <RowContainer justify="space-between">
-        <Text fontSize={FONT_SIZES.sm} fontFamily="Avenir Next" color="white3">
+        <Text fontSize="0.6em" fontFamily="Avenir Next" color="white3">
           {title}
         </Text>
         <MaxAmountRow onClick={onMaxAmountClick}>
@@ -75,7 +75,7 @@ export const SwapAmountInput = ({
         wrap="nowrap"
         justify="space-between"
         align="flex-end"
-        margin="0.6em 0 0 0"
+        // margin="0.6em 0 0 0"
       >
         <AmountInputContainer direction="column" align="flex-start">
           <InvisibleInput
@@ -88,11 +88,11 @@ export const SwapAmountInput = ({
             }}
             placeholder={placeholder}
           />
-          {amountUSD ? (
+          {!!amountUSD && (
             <InlineText color="white3" size="esm">
               ${formatNumberWithSpaces(stripDigitPlaces(amountUSD, 2))}
             </InlineText>
-          ) : null}
+          )}
         </AmountInputContainer>
         {appendComponent}
       </RowContainer>

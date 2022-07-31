@@ -21,13 +21,19 @@ export const signAndSendTransactions = async (
     successMessage,
     messages = defaultMessages,
     commitment,
+    swapStatus, // @todo temp
+    onStatusChange,
   } = params
 
   try {
-    const clearPendingSignNotification = getNotifier(messages)({
-      status: SendTransactionStatus.PENDING_SIGN,
-      persist: true,
-    })
+    let clearPendingSignNotification
+
+    if (!swapStatus) {
+      clearPendingSignNotification = getNotifier(messages)({
+        status: SendTransactionStatus.PENDING_SIGN,
+        persist: true,
+      })
+    }
 
     const signedTransactions = await signTransactions(
       transactionsAndSigners,
@@ -35,11 +41,14 @@ export const signAndSendTransactions = async (
       wallet
     )
 
-    await clearPendingSignNotification()
+    if (clearPendingSignNotification) {
+      await clearPendingSignNotification()
+    }
 
     return await sendSignedTransactions(signedTransactions, connection, {
       successMessage,
       commitment,
+      onStatusChange,
     })
   } catch (e: any) {
     return `${e?.message.toString()}`.includes('cancelled')

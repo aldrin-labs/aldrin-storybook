@@ -7,7 +7,7 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 export const InputContainer = styled(RowContainer)`
   position: relative;
   justify-content: space-between;
-  height: 4em;
+  height: 3em;
   background: ${(props) => props.theme.colors.white6};
   border: none;
   border-radius: 0;
@@ -39,6 +39,7 @@ export const AmountInputContainer = styled(Row)`
 export const MaxAmountText = styled(Text)`
   color: ${(props) => props.theme.colors.white2};
   letter-spacing: -0.005em;
+  font-size: 0.6em;
 `
 
 export const MaxAmountRow = styled(Row)`
