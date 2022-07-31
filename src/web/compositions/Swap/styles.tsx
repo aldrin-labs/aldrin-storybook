@@ -31,7 +31,6 @@ export const LeftColumn = styled(Row)`
 export const RightColumn = styled(Row)`
   justify-content: flex-start;
   order: 2;
-  height: 100%;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     order: 1;
@@ -277,7 +276,7 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
   z-index: 10;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 27em;
+  //min-height: 27em;
 
   .timer {
     &:hover {

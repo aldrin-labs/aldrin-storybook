@@ -601,216 +601,215 @@ const SwapPage = ({
                   </Row>
                 </Row>
               </RowContainer>
-              <RowContainer>
+              <RowContainer
+                style={{
+                  position: 'relative',
+                  border: `1px solid ${theme.colors.white4}`,
+                  borderRadius: '0.8em',
+                  marginTop: '1.5em',
+                }}
+                direction="column"
+              >
                 <RowContainer
-                  style={{
-                    position: 'relative',
-                    border: `1px solid ${theme.colors.white4}`,
-                    borderRadius: '0.8em',
-                    padding: '0.8em 0',
-                  }}
-                  direction="column"
+                  wrap="nowrap"
+                  justify="space-between"
+                  padding="1em"
+                  style={{ borderBottom: `1px solid ${theme.colors.white4}` }}
                 >
-                  <RowContainer
-                    wrap="nowrap"
-                    justify="space-between"
-                    padding="0 0 0.8em 0"
-                    style={{ borderBottom: `1px solid ${theme.colors.white4}` }}
-                  >
-                    <SwapAmountInput
-                      title="From"
-                      maxAmount={maxInputAmount}
-                      amount={formatNumberWithSpaces(inputAmount)}
-                      onMaxAmountClick={() =>
-                        setFieldAmount(maxInputAmount, 'input')
+                  <SwapAmountInput
+                    title="From"
+                    maxAmount={maxInputAmount}
+                    amount={formatNumberWithSpaces(inputAmount)}
+                    onMaxAmountClick={() =>
+                      setFieldAmount(maxInputAmount, 'input')
+                    }
+                    disabled={false}
+                    onChange={(v) => {
+                      if (v === '') {
+                        setFieldAmount(v, 'input')
+                        return
                       }
-                      disabled={false}
-                      onChange={(v) => {
-                        if (v === '') {
-                          setFieldAmount(v, 'input')
-                          return
-                        }
-                        const parsedValue = INPUT_FORMATTERS.DECIMAL(
-                          v,
-                          inputAmount
-                        )
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
 
-                        if (
-                          numberWithOneDotRegexp.test(parsedValue) &&
-                          getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
-                          getNumberOfDecimalsFromNumber(parsedValue) <= 8
-                        ) {
-                          setFieldAmount(parsedValue, 'input')
-                        }
-                      }}
-                      appendComponent={
-                        <TokenSelector
-                          mint={inputTokenMintAddress}
-                          data-testid="swap-input-token-selector"
-                          onClick={() => {
-                            setIsInputTokenSelecting(true)
-                            setIsSelectCoinPopupOpen(true)
-                          }}
-                        />
+                      if (
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
+                      ) {
+                        setFieldAmount(parsedValue, 'input')
                       }
-                    />
-                  </RowContainer>
-                  <ReverseTokensContainer
-                    onClick={reverseTokens}
-                    $isReversed={isExchangeReversed}
-                  >
-                    <SvgIcon src={ArrowsExchangeIcon} />
-                  </ReverseTokensContainer>
-                  <RowContainer
-                    wrap="nowrap"
-                    justify="space-between"
-                    padding="0.8em 0 0 0"
-                  >
-                    <SwapAmountInput
-                      title="To (Estimated)"
-                      maxAmount={maxOutputAmount}
-                      amount={formatNumberWithSpaces(outputAmount)}
-                      amountUSD={+outputAmount * outputDexTokenPrice}
-                      onMaxAmountClick={() =>
-                        setFieldAmount(maxOutputAmount, 'output')
-                      }
-                      onChange={(v) => {
-                        if (v === '') {
-                          setFieldAmount(v, 'output')
-                          return
-                        }
-
-                        const parsedValue = INPUT_FORMATTERS.DECIMAL(
-                          v,
-                          inputAmount
-                        )
-
-                        if (
-                          numberWithOneDotRegexp.test(parsedValue) &&
-                          getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
-                          getNumberOfDecimalsFromNumber(parsedValue) <= 8
-                        ) {
-                          setFieldAmount(parsedValue, 'output')
-                        }
-                      }}
-                      appendComponent={
-                        <TokenSelector
-                          mint={outputTokenMintAddress}
-                          data-testid="swap-output-token-selector"
-                          onClick={() => {
-                            setIsInputTokenSelecting(false)
-                            setIsSelectCoinPopupOpen(true)
-                          }}
-                        />
-                      }
-                    />
-                  </RowContainer>
+                    }}
+                    appendComponent={
+                      <TokenSelector
+                        mint={inputTokenMintAddress}
+                        data-testid="swap-input-token-selector"
+                        onClick={() => {
+                          setIsInputTokenSelecting(true)
+                          setIsSelectCoinPopupOpen(true)
+                        }}
+                      />
+                    }
+                  />
                 </RowContainer>
-                {showPriceInfo && (
-                  <RowContainer justify="space-between" margin="0.5em 0 0 0">
-                    <BlackRow width="calc(50% - 0.6em)">
-                      <RowTitle>Fee:</RowTitle>
-                      <Row align="center" wrap="nowrap">
-                        <RowValue>
-                          {totalFeeUSD < 0.01
-                            ? `< $0.01`
-                            : `$${formattedTotalFeeUSD}`}
-                        </RowValue>
-                        {depositAndFee > 0.02 && (
-                          <DarkTooltip title="Fee breakdown">
-                            <Row
-                              margin="0 0 0 0.3em"
-                              style={{ color: theme.colors.white2 }}
-                            >
-                              <svg
-                                width="12"
-                                height="12"
-                                viewBox="0 0 12 12"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
-                                  stroke="currentColor"
-                                />
-                                <path
-                                  d="M6 3.5H6.00656"
-                                  stroke="currentColor"
-                                  strokeLinecap="round"
-                                />
-                                <path
-                                  d="M6 5.5V8"
-                                  stroke="currentColor"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Row>
-                          </DarkTooltip>
-                        )}
-                      </Row>
-                    </BlackRow>
+                <ReverseTokensContainer
+                  onClick={reverseTokens}
+                  $isReversed={isExchangeReversed}
+                >
+                  <SvgIcon src={ArrowsExchangeIcon} />
+                </ReverseTokensContainer>
+                <RowContainer
+                  wrap="nowrap"
+                  justify="space-between"
+                  padding="1em"
+                >
+                  <SwapAmountInput
+                    title="To (Estimated)"
+                    maxAmount={maxOutputAmount}
+                    amount={formatNumberWithSpaces(outputAmount)}
+                    amountUSD={+outputAmount * outputDexTokenPrice}
+                    onMaxAmountClick={() =>
+                      setFieldAmount(maxOutputAmount, 'output')
+                    }
+                    onChange={(v) => {
+                      if (v === '') {
+                        setFieldAmount(v, 'output')
+                        return
+                      }
 
-                    <BlackRow width="calc(50% - 0.6em)">
-                      <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
-                        {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
-                      </RowImpactTitle>
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
 
-                      <DarkTooltip
-                        PopperProps={{ style: { opacity: 1 } }}
-                        title={
+                      if (
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
+                      ) {
+                        setFieldAmount(parsedValue, 'output')
+                      }
+                    }}
+                    appendComponent={
+                      <TokenSelector
+                        mint={outputTokenMintAddress}
+                        data-testid="swap-output-token-selector"
+                        onClick={() => {
+                          setIsInputTokenSelecting(false)
+                          setIsSelectCoinPopupOpen(true)
+                        }}
+                      />
+                    }
+                  />
+                </RowContainer>
+              </RowContainer>
+              {showPriceInfo && (
+                <RowContainer justify="space-between" margin="0.5em 0 0 0">
+                  <BlackRow width="calc(50% - 0.6em)">
+                    <RowTitle>Fee:</RowTitle>
+                    <Row align="center" wrap="nowrap">
+                      <RowValue>
+                        {totalFeeUSD < 0.01
+                          ? `< $0.01`
+                          : `$${formattedTotalFeeUSD}`}
+                      </RowValue>
+                      {depositAndFee > 0.02 && (
+                        <DarkTooltip title="Fee breakdown">
                           <Row
-                            direction="column"
-                            align="flex-start"
-                            style={{ fontSize: '16px' }}
+                            margin="0 0 0 0.3em"
+                            style={{ color: theme.colors.white2 }}
                           >
-                            <Text size="esm" margin="0">
-                              <InlineText color="white1" weight={600}>
-                                {stripByAmount(estimatedPriceFromRoute)}
-                              </InlineText>{' '}
-                              {outputSymbol} per {inputSymbol}.
-                            </Text>
-                            <Text color="white1" size="esm" margin="0">
-                              <InlineText
-                                color={isHighPriceDiff ? 'red1' : 'green2'}
-                              >
-                                {priceDiffText}
-                              </InlineText>{' '}
-                              than CoinGecko price.
-                            </Text>
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 12 12"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                                stroke="currentColor"
+                              />
+                              <path
+                                d="M6 3.5H6.00656"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                              />
+                              <path
+                                d="M6 5.5V8"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
                           </Row>
-                        }
-                      >
-                        <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
-                          <svg
-                            width="12"
-                            height="12"
-                            viewBox="0 0 12 12"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
-                              stroke="currentColor"
-                            />
-                            <path
-                              d="M6 3.5H6.00656"
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                            />
-                            <path
-                              d="M6 5.5V8"
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </InfoIconContainer>
-                      </DarkTooltip>
-                    </BlackRow>
-                  </RowContainer>
-                )}
-              <RowContainer>
+                        </DarkTooltip>
+                      )}
+                    </Row>
+                  </BlackRow>
+
+                  <BlackRow width="calc(50% - 0.6em)">
+                    <RowImpactTitle isHighPriceDiff={isHighPriceDiff}>
+                      {isHighPriceDiff ? 'High Price Impact' : 'Fair price'}
+                    </RowImpactTitle>
+
+                    <DarkTooltip
+                      PopperProps={{ style: { opacity: 1 } }}
+                      title={
+                        <Row
+                          direction="column"
+                          align="flex-start"
+                          style={{ fontSize: '16px' }}
+                        >
+                          <Text size="esm" margin="0">
+                            <InlineText color="white1" weight={600}>
+                              {stripByAmount(estimatedPriceFromRoute)}
+                            </InlineText>{' '}
+                            {outputSymbol} per {inputSymbol}.
+                          </Text>
+                          <Text color="white1" size="esm" margin="0">
+                            <InlineText
+                              color={isHighPriceDiff ? 'red1' : 'green2'}
+                            >
+                              {priceDiffText}
+                            </InlineText>{' '}
+                            than CoinGecko price.
+                          </Text>
+                        </Row>
+                      }
+                    >
+                      <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                            stroke="currentColor"
+                          />
+                          <path
+                            d="M6 3.5H6.00656"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M6 5.5V8"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </InfoIconContainer>
+                    </DarkTooltip>
+                  </BlackRow>
+                </RowContainer>
+              )}
+              <RowContainer style={{ marginTop: '1.5em' }}>
                 {!wallet.publicKey ? (
                   <BtnCustom
                     onClick={() => {
