@@ -52,7 +52,7 @@ export const SwapAmountInput = ({
       // padding="0em 1em"
     >
       <RowContainer justify="space-between">
-        <Text fontSize="0.6em" fontFamily="Avenir Next" color="white3">
+        <Text fontSize={FONT_SIZES.esm} fontFamily="Avenir Next" color="white3">
           {title}
         </Text>
         <MaxAmountRow onClick={onMaxAmountClick}>
@@ -63,7 +63,7 @@ export const SwapAmountInput = ({
           />
 
           <MaxAmountText
-            fontSize={FONT_SIZES.sm}
+            fontSize={FONT_SIZES.esm}
             fontFamily="Avenir Next Demi"
             padding="0 0 0 0.2em"
           >

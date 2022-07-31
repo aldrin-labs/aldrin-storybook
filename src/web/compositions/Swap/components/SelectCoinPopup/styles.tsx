@@ -17,6 +17,7 @@ export const UpdatedPaper = styled(({ ...props }) => (
     max-height: 100%;
     margin: 0;
     width: 100%;
+    height: 100%;
   }
 `
 
@@ -73,4 +74,16 @@ export const HeaderContainer = styled(({ ...props }) => (
   position: sticky;
   z-index: 100;
   background: ${(props) => props.theme.colors.white1};
+`
+
+export const Container = styled(RowContainer)`
+  height: 100%;
+`
+export const TokensContainer = styled(RowContainer)`
+  height: 55vh;
+  overflow: auto;
+
+  @media (max-width: ${BREAKPOINTS.sm}) {
+    height: 80%;
+  }
 `

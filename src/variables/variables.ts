@@ -148,6 +148,7 @@ export const BREAKPOINTS = {
   lg: '1024px',
   xl: '1200px',
   xxl: '1400px',
+  xxxl: '1560px',
 }
 
 export const SIZE = {

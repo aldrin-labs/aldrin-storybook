@@ -141,10 +141,16 @@ const AppRaw = ({
                         isRewards={isRewards}
                         isPNL={isPNL}
                         isChartPage={isChartPage}
+                        isSwapPage={isSwapPage}
                       >
                         <SolanaNetworkDegradedPerformanceBanner />
                         <Header setCurrentTheme={setCurrentTheme} />
-                        <AppInnerContainer $isSwapPage={isSwapPage}>{children}</AppInnerContainer>
+                        <AppInnerContainer isSwapPage={isSwapPage}>
+                          {children}
+                        </AppInnerContainer>
+                        {/* {showFooter && (
+                          <FooterWithTheme isRewards={isRewards} />
+                        )} */}
                         {!isChartPage && <Footer />}
                         <MobileFooter />
 

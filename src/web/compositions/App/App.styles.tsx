@@ -7,13 +7,23 @@ import styled from 'styled-components'
 // on whole page
 
 // implicitly we set overflow-y to scroll/auto
+
+type AppContainerProps = {
+  isSwapPage?: boolean
+}
+
 export const AppGridLayout = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
   overflow-x: hidden !important;
   background: ${(props) => props.theme.colors.background1};
-  height: ${(props) => (props.isRewards ? 'auto' : '100vh')};
+  height: ${(props) =>
+    props.isRewards || props.isSwapPage
+      ? 'auto'
+      : props.isChartPage || !props.showFooter
+      ? 'calc(100vh)'
+      : 'calc(100vh)'};
   min-height: 100vh;
 
   @media (max-width: 600px) {
@@ -26,12 +36,19 @@ export const AppGridLayout = styled.div`
   }
 `
 
-export const AppInnerContainer = styled.div`
+export const AppInnerContainer = styled.div<AppContainerProps>`
   display: flex;
   flex-direction: column;
+  //min-height: calc(100vh - 160px); /* header + footer*/
+  flex: 1 0 auto;
 
-  flex: ${(props) => (props.$isSwapPage ? '1' : '1 0 auto')};
-  overflow: ${(props) => (props.$isSwapPage ? 'auto' : 'inherit')};
+  @media (max-width: ${BREAKPOINTS.xxxl}) {
+    ${(props) => props.isSwapPage && `height: calc(100vh - 76px)`};
+  }
+
+  @media (max-width: ${BREAKPOINTS.sm}) {
+    ${(props) => props.isSwapPage && `height:100%`};
+  }
 `
 
 export const StyledToastContainer = styled(ToastContainer).attrs({

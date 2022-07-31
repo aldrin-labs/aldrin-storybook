@@ -1,27 +1,21 @@
-import { OpenOrders } from '@project-serum/serum'
-import { Connection, PublicKey } from '@solana/web3.js'
+import { OpenOrders } from '@project-serum/serum/lib/market'
+import { Connection } from '@solana/web3.js'
 
-import { LoadedMarket, loadMarketsByNames } from './loadMarketsByNames'
-import { OpenOrdersMap } from './loadOpenOrdersFromMarkets'
+import { loadMarketsByNames } from './loadMarketsByNames'
 import { loadVaultSignersFromMarkets } from './loadVaultSignersFromMarkets'
-
-export type LoadedMarketWithDataForTransactions = Partial<LoadedMarket> & {
-  vaultSigner: PublicKey
-  openOrders: OpenOrders[]
-}
-export type LoadedMarketsWithDataForTransactionsMap = Map<
-  string,
-  LoadedMarketWithDataForTransactions
->
+import {
+  LoadedMarketsWithDataForTransactionsMap,
+  LoadedMarketWithDataForTransactions,
+} from './types'
 
 export const loadMarketsWithDataForTransactions = async ({
   connection,
   marketsNames,
-  openOrdersFromMarketsMap,
+  openOrdersMap,
 }: {
   connection: Connection
   marketsNames: string[]
-  openOrdersFromMarketsMap: OpenOrdersMap
+  openOrdersMap: Map<string, OpenOrders>
 }): Promise<LoadedMarketsWithDataForTransactionsMap> => {
   const [loadedMarketsMap] = await Promise.all([
     loadMarketsByNames({
@@ -35,13 +29,18 @@ export const loadMarketsWithDataForTransactions = async ({
   })
 
   const marketsWithTransactionsDataMap: LoadedMarketsWithDataForTransactionsMap =
-    [...loadedMarketsMap.entries()].reduce((acc, loadedMarket) => {
+    [...loadedMarketsMap.entries()].reduce<
+      Map<string, LoadedMarketWithDataForTransactions>
+    >((acc, loadedMarket) => {
       const [marketName, loadedMarketData] = loadedMarket
       const vaultSigner = vaultSignersMap.get(marketName)
+
+      if (!vaultSigner) {
+        throw new Error(`No vaultSigner found for market: ${marketName}`)
+      }
+
       const openOrders =
-        openOrdersFromMarketsMap.get(
-          loadedMarketData.market.address.toString()
-        ) || []
+        openOrdersMap.get(loadedMarketData.market.address.toString()) || []
 
       return acc.set(marketName, {
         ...loadedMarketData,

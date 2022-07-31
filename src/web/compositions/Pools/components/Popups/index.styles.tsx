@@ -46,7 +46,7 @@ export const InvisibleInput = styled.input`
   padding: 0;
   background: inherit;
   color: ${(props) => props.theme.colors.white1};
-  font-size: ${FONT_SIZES.xmd};
+  font-size: ${FONT_SIZES.sm};
   outline: none;
   border: none;
 
