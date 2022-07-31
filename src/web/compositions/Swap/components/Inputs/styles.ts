@@ -7,7 +7,6 @@ import { Row, RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
 export const InputContainer = styled(RowContainer)`
   position: relative;
   justify-content: space-between;
-  height: 3em;
   background: ${(props) => props.theme.colors.white6};
   border: none;
   border-radius: 0;
