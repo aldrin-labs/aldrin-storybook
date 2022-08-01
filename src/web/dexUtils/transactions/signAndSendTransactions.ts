@@ -56,6 +56,7 @@ export const signAndSendTransactions = async (
       onStatusChange,
     })
   } catch (e: any) {
+    console.warn('transaction failed: ', e)
     return `${e?.message.toString()}`.includes('cancelled')
       ? 'cancelled'
       : 'failed'
