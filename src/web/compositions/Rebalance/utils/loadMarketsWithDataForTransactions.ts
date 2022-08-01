@@ -1,49 +1,53 @@
-import { WalletAdapter } from '@sb/dexUtils/types'
-import { MarketsMap } from '@sb/dexUtils/markets'
+import { OpenOrders } from '@project-serum/serum/lib/market'
 import { Connection } from '@solana/web3.js'
-import { loadMarketsByNames } from './loadMarketsByNames'
-import {
-  loadOpenOrdersFromMarkets,
-  LoadedMarketsWithOpenOrdersMap,
-} from './loadOpenOrdersFromMarkets'
-import {
-  loadVaultSignersFromMarkets,
-  LoadedMarketsWithVaultSignersMap,
-} from './loadVaultSignersFromMarkets'
 
-export type LoadedMarketsWithVaultSignersAndOpenOrdersMap =
-  | LoadedMarketsWithVaultSignersMap
-  | LoadedMarketsWithOpenOrdersMap
+import { loadMarketsByNames } from './loadMarketsByNames'
+import { loadVaultSignersFromMarkets } from './loadVaultSignersFromMarkets'
+import {
+  LoadedMarketsWithDataForTransactionsMap,
+  LoadedMarketWithDataForTransactions,
+} from './types'
 
 export const loadMarketsWithDataForTransactions = async ({
-  wallet,
   connection,
   marketsNames,
-  allMarketsMap,
-  allMarketsMapById
+  openOrdersMap,
 }: {
-  wallet: WalletAdapter
   connection: Connection
   marketsNames: string[]
-  allMarketsMap: MarketsMap
-  allMarketsMapById: MarketsMap
-}): Promise<LoadedMarketsWithVaultSignersAndOpenOrdersMap> => {
-  const loadedMarketsMap = await loadMarketsByNames({
-    connection,
+  openOrdersMap: Map<string, OpenOrders>
+}): Promise<LoadedMarketsWithDataForTransactionsMap> => {
+  const [loadedMarketsMap] = await Promise.all([
+    loadMarketsByNames({
+      connection,
+      marketsNames,
+    }),
+  ])
+
+  const vaultSignersMap = await loadVaultSignersFromMarkets({
     marketsNames,
-    allMarketsMap,
-    allMarketsMapById
   })
 
-  const loadedMarketMapWithVaultSigners = await loadVaultSignersFromMarkets({
-    wallet,
-    connection,
-    loadedMarketsMap,
-  })
+  const marketsWithTransactionsDataMap: LoadedMarketsWithDataForTransactionsMap =
+    [...loadedMarketsMap.entries()].reduce<
+      Map<string, LoadedMarketWithDataForTransactions>
+    >((acc, loadedMarket) => {
+      const [marketName, loadedMarketData] = loadedMarket
+      const vaultSigner = vaultSignersMap.get(marketName)
 
-  const loadedMarketMapWithVaultSignersAndOpenOrders = await loadOpenOrdersFromMarkets(
-    { wallet, connection, loadedMarketsMap: loadedMarketMapWithVaultSigners }
-  )
+      if (!vaultSigner) {
+        throw new Error(`No vaultSigner found for market: ${marketName}`)
+      }
 
-  return loadedMarketMapWithVaultSignersAndOpenOrders
+      const openOrders =
+        openOrdersMap.get(loadedMarketData.market.address.toString()) || []
+
+      return acc.set(marketName, {
+        ...loadedMarketData,
+        vaultSigner,
+        openOrders,
+      })
+    }, new Map())
+
+  return marketsWithTransactionsDataMap
 }

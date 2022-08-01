@@ -1,5 +1,4 @@
-import { IconButton } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close'
+
 import { withStyles } from '@material-ui/styles'
 import { COLORS } from '@variables/variables'
 import { SnackbarProvider } from 'notistack'
@@ -12,18 +11,6 @@ import errorIcon from '@icons/errorIcon.svg'
 import infoIcon from '@icons/infoIcon.svg'
 import successIcon from '@icons/successIcon.svg'
 
-const canselStyeles = (theme) => ({
-  icon: {
-    fontSize: 20,
-  },
-})
-
-const CloseButton = withStyles(canselStyeles)((props) => (
-  <IconButton key="close" aria-label="Close" color="inherit">
-    <CloseIcon className={props.classes.icon} />
-  </IconButton>
-))
-
 const commonStyles = {
   background: COLORS.cardsBack,
   border: '1px solid #5b5b5b',
@@ -35,7 +22,7 @@ const commonStyles = {
   maxWidth: '100%',
 }
 
-const snackStyeles = (theme) => ({
+const snackStyeles = () => ({
   success: {
     ...commonStyles,
   },
@@ -50,7 +37,6 @@ const snackStyeles = (theme) => ({
 const IntegrationNotistack = ({ ...props }) => {
   return (
     <SnackbarProvider
-      // domRoot={document.getElementById('react-notification')}
       iconVariant={{
         success: (
           <SvgIcon
@@ -92,7 +78,6 @@ const IntegrationNotistack = ({ ...props }) => {
         vertical: 'bottom',
         horizontal: 'left',
       }}
-      // action={<CloseButton />}
       classes={{
         variantWarning: props.classes.warning,
         variantSuccess: props.classes.success,

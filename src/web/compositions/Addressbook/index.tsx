@@ -3,21 +3,21 @@ import { FONT_SIZES, UCOLORS } from '@variables/variables'
 import { AES, enc, MD5 } from 'crypto-js'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { compose } from 'recompose'
 import styled from 'styled-components'
 
 import { TableWithSort } from '@sb/components'
-import { BtnCustom, BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
+import { BtnCustom } from '@sb/components/BtnCustom/BtnCustom.styles'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import CustomSwitcher from '@sb/components/SwitchOnOff/CustomSwitcher'
 import { addressBookColumnNames } from '@sb/components/TradingTable/TradingTable.mocks'
 import { RowContainer } from '@sb/compositions/AnalyticsRoute/index.styles'
-import { Card } from '@sb/compositions/Rewards/index'
+import { Card } from '@sb/compositions/Rewards'
 import { notify } from '@sb/dexUtils/notifications'
 import { useWallet } from '@sb/dexUtils/wallet'
 import { withPublicKey } from '@sb/hoc/withPublicKey'
 import { Icon } from '@sb/styles/cssUtils'
+
 import { getUserAddressbook } from '@core/graphql/queries/chart/getUserAddressbook'
 import { withAddressbookPassword } from '@core/hoc/withAddressbookPassword'
 import { onCheckBoxClick } from '@core/utils/PortfolioTableUtils'
@@ -57,34 +57,16 @@ export type TextProps = {
   needHover?: boolean
 }
 
-export const Text = styled.span`
-  font-size: ${(props: TextProps) => props.fontSize || FONT_SIZES.sm};
+export const Text = styled.span<TextProps>`
+  font-size: ${(props) => props.fontSize || FONT_SIZES.sm};
   padding-bottom: ${(props) => props.paddingBottom || '0'};
   text-transform: none;
-  font-family: ${(props: TextProps) =>
-    props.fontFamily || 'Avenir Next Medium'};
-  color: ${(props: TextProps) => props.theme.colors[props.color || 'white1']};
-  white-space: ${(props: TextProps) => props.whiteSpace || 'normal'};
-  padding: ${(props: TextProps) => props.padding || '0'};
+  font-family: ${(props) => props.fontFamily || 'Avenir Next Medium'};
+  color: ${(props) => props.theme.colors[props.color || 'white1']};
+  white-space: ${(props) => props.whiteSpace || 'normal'};
+  padding: ${(props) => props.padding || '0'};
   letter-spacing: 0.01rem;
-  &:hover {
-    text-decoration: ${(props: TextProps) =>
-      props.needHover ? 'underline' : 'none'};
-  }
-`
 
-export const StyledLink = styled(Link)`
-  font-size: ${(props: TextProps) => props.fontSize || '1.5rem'};
-  padding-bottom: ${(props) => props.paddingBottom || '0'};
-  text-transform: none;
-  font-family: ${(props: TextProps) =>
-    props.fontFamily || 'Avenir Next Medium'};
-  color: ${(props: TextProps) => props.color || '#ecf0f3'};
-  white-space: ${(props: TextProps) => props.whiteSpace || 'normal'};
-  padding: ${(props: TextProps) => props.padding || '0'};
-  letter-spacing: 0.01rem;
-  cursor: pointer;
-  text-decoration: none;
   &:hover {
     text-decoration: ${(props: TextProps) =>
       props.needHover ? 'underline' : 'none'};

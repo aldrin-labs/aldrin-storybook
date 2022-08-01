@@ -555,6 +555,7 @@ const AddLiquidityPopup: React.FC<AddLiquidityPopupProps> = (props) => {
 
             const transferSOLToWrapped =
               isPoolWithSOLToken && isNativeSOLSelected
+
             let result = 'failed'
 
             if (autoRebalanceEnabled) {

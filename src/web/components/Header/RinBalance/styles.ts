@@ -24,7 +24,7 @@ export const RinBalanceLogo = styled.img`
 
 export const RinBalanceLabel = styled.div`
   margin-left: 0.25em;
-  font-size: ${em('12px')};
+  font-size: 0.75em;
   font-weight: 600;
   line-height: 1em;
   color: ${(props) => props.theme.colors.white1};

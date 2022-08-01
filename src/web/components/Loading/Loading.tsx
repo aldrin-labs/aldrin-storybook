@@ -41,7 +41,6 @@ export const Loading = ({
   centerAligned?: boolean
   style?: CSSProperties
 }) => {
-  const theme = useTheme()
   const isPixelSize = typeof size === 'number'
 
   return (

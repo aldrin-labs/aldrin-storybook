@@ -6,7 +6,7 @@ type Weight = 100 | 200 | 300 | 400 | 500 | 600 | 700
 
 export interface TextProps {
   size?: keyof typeof FONT_SIZES
-  color?: keyof typeof UCOLORS
+  color?: string
   weight?: Weight
   maxWidth?: string
   noWrap?: boolean

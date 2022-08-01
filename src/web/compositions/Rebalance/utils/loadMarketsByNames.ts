@@ -1,12 +1,12 @@
 import { Market } from '@project-serum/serum'
-import { getTokenMintAddressByName, MarketsMap } from '@sb/dexUtils/markets'
-import {
-  notifyForDevelop,
-  notifyWithLog,
-} from '@sb/dexUtils/notifications'
-import { notEmpty, onlyUnique } from '@sb/dexUtils/utils'
 import { Connection, PublicKey } from '@solana/web3.js'
+
+import { getTokenMintAddressByName, marketsMap } from '@sb/dexUtils/markets'
+import { notifyForDevelop, notifyWithLog } from '@sb/dexUtils/notifications'
+import { notEmpty, onlyUnique } from '@sb/dexUtils/utils'
+
 import { loadMintsDecimalsInfo } from './loadMintsDecimalsInfo'
+
 export interface LoadedMarket {
   market: Market
   marketName: string
@@ -16,19 +16,20 @@ export type LoadedMarketsMap = Map<string, LoadedMarket>
 export const loadMarketsByNames = async ({
   connection,
   marketsNames,
-  allMarketsMap,
-  allMarketsMapById,
 }: {
   connection: Connection
   marketsNames: string[]
-  allMarketsMap: MarketsMap
-  allMarketsMapById: MarketsMap
 }): Promise<LoadedMarketsMap> => {
-  const marketsMap: LoadedMarketsMap = new Map()
+  console.time('markets')
 
-  const filteredMarketIds = [...new Set(marketsNames)].map((name) =>
-    allMarketsMap.get(name)?.address.toString()
-  )
+  const loadedMarketsMap: LoadedMarketsMap = new Map()
+
+  const filteredMarkets = [...new Set(marketsNames)].map((name) => ({
+    address: marketsMap.get(name)?.address.toString(),
+    name,
+  }))
+
+  const filteredMarketIds = filteredMarkets.map((market) => market.address)
 
   const mints = marketsNames
     .flatMap((name) => {
@@ -39,11 +40,12 @@ export const loadMarketsByNames = async ({
     .map((tokenName) => getTokenMintAddressByName(tokenName))
     .filter(notEmpty)
 
-  const mintsMap = await loadMintsDecimalsInfo({ connection, mints })
-
-  const loadedMarkets = await connection._rpcRequest('getMultipleAccounts', [
-    filteredMarketIds,
-    { encoding: 'base64' },
+  const [mintsMap, loadedMarkets] = await Promise.all([
+    loadMintsDecimalsInfo({ connection, mints }),
+    connection._rpcRequest('getMultipleAccounts', [
+      filteredMarketIds,
+      { encoding: 'base64' },
+    ]),
   ])
 
   if (loadedMarkets.result.error || !loadedMarkets.result.value) {
@@ -53,10 +55,10 @@ export const loadMarketsByNames = async ({
       result: loadedMarkets.result,
     })
 
-    return marketsMap
+    return loadedMarketsMap
   }
 
-  loadedMarkets.result.value.forEach((encodedMarket) => {
+  loadedMarkets.result.value.forEach((encodedMarket, index) => {
     const arrayFromBase64 = new Buffer(encodedMarket.data[0], 'base64')
 
     const decoded = Market.getLayout(new PublicKey(encodedMarket.owner)).decode(
@@ -103,22 +105,21 @@ export const loadMarketsByNames = async ({
       new PublicKey(encodedMarket.owner)
     )
 
-    const name = allMarketsMapById.get(market.address.toString())?.name
+    const { name } = filteredMarkets[index]
 
     if (!name) {
       notifyForDevelop({
         message: 'No name for loaded market.',
         market,
-        allMarketsMapById,
       })
 
       return
     }
 
-    marketsMap.set(name, { market, marketName: name })
+    loadedMarketsMap.set(name, { market, marketName: name })
   })
 
   console.timeEnd('markets')
 
-  return marketsMap
+  return loadedMarketsMap
 }

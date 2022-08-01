@@ -5,6 +5,8 @@ import {
   FONT_SIZES,
   TRANSITION,
   UCOLORS,
+  FONTS,
+  SIZE,
 } from '@variables/variables'
 import { rgba, em } from 'polished'
 import { NavLink as RouterNavLink } from 'react-router-dom'
@@ -13,12 +15,18 @@ import styled from 'styled-components'
 // TODO: remove dat
 
 import { Button } from '../Button'
+import { Row } from '../Layout'
 import { Text } from '../Typography'
 
-export const HeaderWrap = styled.header`
+export const Wrapper = styled.header`
+  font-family: ${FONTS.main};
+  font-size: ${SIZE.fontSize};
+`
+
+export const Container = styled.div`
   display: flex;
   flex-direction: row;
-  height: 96px;
+  height: 76px;
   background: ${(props) => props.theme.colors.header};
   padding: 0 24px;
   border-bottom-width: 1px;
@@ -230,6 +238,9 @@ export const DropdownInner = styled.div`
 `
 
 export const WalletButton = styled(Button)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: ${em('14px')};
   width: ${em('144px', '14px')};
   background-color: ${(props) => props.theme.colors.white6};
@@ -253,7 +264,7 @@ export const WalletButton = styled(Button)`
 export const WalletDataContainer = styled.div`
   border-radius: ${BORDER_RADIUS.md};
   height: 40px;
-  width: 120px;
+  width: 140px;
   display: flex;
   cursor: pointer;
   background-color: ${(props) => props.theme.colors.white5};
@@ -268,49 +279,27 @@ export const WalletDataContainer = styled.div`
     }
   }
 
-  .disconnect-wallet {
-    display: none;
-  }
-
   &:hover {
-    .disconnect-wallet {
-      display: flex;
-      justify-content: space-between;
-      flex-direction: row;
-    }
+    background-color: ${(props) => props.theme.colors.white4};
   }
 
   .wallet-data {
     display: flex;
-  }
-
-  &:hover {
-    .wallet-data {
-      display: none;
-    }
   }
 `
 
 export const WalletData = styled.div`
   width: 100%;
   display: flex;
+  flex: 1;
   justify-content: space-between;
   padding: 0.5rem 1rem;
   border-radius: ${BORDER_RADIUS.md};
   align-items: center;
+`
 
-  img {
-    border-radius: 50%;
-  }
-
-  @media (max-width: 1200px) {
-    padding: 1rem 1.5rem;
-    height: 7rem;
-    img {
-      width: 25px;
-      height: 25px;
-    }
-  }
+export const AstronautImage = styled.img`
+  border-radius: 50%;
 `
 
 export const Column = styled.div`
@@ -349,30 +338,6 @@ export const WalletAddress = styled(WalletName)`
   }
 `
 
-export const WalletDisconnectButton = styled(Button)`
-  width: calc(100% - 5rem);
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.75em;
-  background-color: ${COLORS.newOrange};
-  border: none;
-  font-weight: 600;
-  height: 100%;
-  transition: ${TRANSITION};
-  border-radius: 8px 0 0 8px;
-  min-width: 2rem;
-
-  &:hover {
-    background-color: ${COLORS.primaryRed};
-  }
-
-  &:active {
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
-      ${COLORS.primaryRed};
-  }
-`
 export const BalanceTitle = styled.span`
   font-size: 12px;
   color: ${(props) => props.theme.colors.white1};
@@ -384,47 +349,11 @@ export const BalanceTitle = styled.span`
   }
 `
 
-export const Wrap = styled.div``
-
 export const WalletDisconnectBlock = styled.div`
   width: 100%;
   height: 100%;
 `
 
-type CopyButton = {
-  isCopied: boolean
-}
-
-export const CopyAddressButton = styled(Button)<CopyButton>`
-  width: 5rem;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.75em;
-  background: ${(props) => (props.isCopied ? '#269F13' : '#434343')};
-  border: none;
-  font-weight: 600;
-  height: 100%;
-  transition: ${TRANSITION};
-  border-radius: 0 8px 8px 0;
-  min-width: 2rem;
-  border-left: 2px solid #191919;
-
-  &:hover {
-    background: ${(props) => (props.isCopied ? '#269F13' : '#363636')};
-
-    svg {
-      path {
-        stroke: #fff;
-      }
-    }
-  }
-
-  &:active {
-    background: #363636;
-  }
-`
 export const LogoContainer = styled.div`
   width: 4em;
 
@@ -433,4 +362,24 @@ export const LogoContainer = styled.div`
       fill: ${(props) => props.theme.colors.logo};
     }
   }
+`
+
+export const ArrowDownIconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 0.5em;
+`
+
+export const Left = styled.div`
+  display: flex;
+  flex: 1;
+`
+
+export const Right = styled.div`
+  display: flex;
+`
+
+export const WalletIconContainer = styled(Row)`
+  margin-right: 0.3em;
+  align-items: center;
 `
