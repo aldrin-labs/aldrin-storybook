@@ -620,7 +620,7 @@ export const useOpenOrdersPubkeys = (): string[] => {
 
 // Want the balances table to be fast-updating, dont want open orders to flicker
 // TODO: Update to use websocket
-export function useOpenOrdersAccounts(fast = false) {
+export function useOpenOrdersAccounts() {
   const { market } = useMarket()
   const { connected, wallet } = useWallet()
   const connection = useConnection()
@@ -718,8 +718,8 @@ export function useAllOpenOrdersAccounts() {
   )
 }
 
-export function useSelectedOpenOrdersAccount(fast = false) {
-  const [accounts] = useOpenOrdersAccounts(fast)
+export function useSelectedOpenOrdersAccount() {
+  const [accounts] = useOpenOrdersAccounts()
 
   if (!accounts) {
     return null
@@ -976,7 +976,7 @@ export function useSelectedBaseCurrencyBalances() {
 
 export function useOpenOrders(): OrderWithMarket[] | null {
   const { market, marketName } = useMarket()
-  const [openOrdersAccounts] = useOpenOrdersAccounts(false)
+  const [openOrdersAccounts] = useOpenOrdersAccounts()
   const { bidOrderbook, askOrderbook } = useOrderbookAccounts()
   if (!market || !openOrdersAccounts || !bidOrderbook || !askOrderbook) {
     return null
@@ -1280,8 +1280,7 @@ export const getTokenName = ({
     return '--'
   }
 
-  const tokenName =
+  return (
     tokensInfoMap.get(address)?.symbol || getTokenNameByMintAddress(address)
-
-  return tokenName
+  )
 }
