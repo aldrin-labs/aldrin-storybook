@@ -23,11 +23,15 @@ export const getSwapButtonText = ({
   isEmptyInputAmount: boolean
   isSwapInProgress: boolean
   pricesDiffPct: number
-  swapStatus: string
+  swapStatus: string | null
 }) => {
+  if (swapStatus === 'initializing-transaction') {
+    return 'Initializing transaction...'
+  }
   if (swapStatus === 'pending-confirmation') {
     return 'Transaction pending confirmation in the wallet...'
-  } else if (swapStatus === 'initialize') {
+  }
+  if (swapStatus === 'initialize') {
     return 'Swapping...'
   }
 

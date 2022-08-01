@@ -24,8 +24,7 @@ import {
   getTokenMintAddressByName,
   USE_MARKETS,
 } from '@sb/dexUtils/markets'
-import { callToast } from "@sb/dexUtils/notifications"
-import { notify } from '@sb/dexUtils/notifications'
+import { callToast } from '@sb/dexUtils/notifications'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
 import { useTokenInfos } from '@sb/dexUtils/tokenRegistry'
@@ -55,11 +54,11 @@ import {
   stripDigitPlaces,
 } from '@core/utils/PortfolioTableUtils'
 
-import ArrowsExchangeIcon from '@icons/arrowsExchange.svg'
 import SettingIcon from '@icons/settings.svg'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
 import WalletIcon from './assets/WalletIcon'
+import { ArrowsExchangeIcon } from './components/Inputs/images/arrowsExchangeIcon'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
 import { SwapChartWithPrice } from './components/SwapChart'
@@ -187,7 +186,7 @@ const SwapPage = ({
 
   const [isInputTokenSelecting, setIsInputTokenSelecting] = useState(false)
   const [swapStatus, setSwapStatus] = useState<
-    'initialize' | 'pending-confirmation' | null
+    'initialize' | 'pending-confirmation' | 'initializing-transaction' | null
   >(null)
 
   const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
@@ -314,9 +313,11 @@ const SwapPage = ({
     setIsExchangeReversed(!isExchangeReversed)
   }
 
+  const isSwapRouteExists = swapRoute.steps.length !== 0
+
   const buttonText = getSwapButtonText({
     baseSymbol: inputSymbol,
-    isSwapRouteExists: swapRoute.steps.length !== 0,
+    isSwapRouteExists,
     isEmptyInputAmount,
     isTokenABalanceInsufficient,
     isLoadingSwapRoute,
@@ -328,7 +329,8 @@ const SwapPage = ({
     isEmptyInputAmount ||
     isTokenABalanceInsufficient ||
     swapStatus ||
-    isLoadingSwapRoute
+    isLoadingSwapRoute ||
+    !isSwapRouteExists
 
   const showPriceInfo = !isEmptyInputAmount && !isEmptyOutputAmount
 
@@ -431,6 +433,7 @@ const SwapPage = ({
   useEffect(() => {
     const makeTransaction = async () => {
       try {
+        setSwapStatus('initializing-transaction')
         const transactionsAndSigners = await buildTransactions(swapRoute)
 
         setSwapStatus('pending-confirmation')
@@ -440,13 +443,18 @@ const SwapPage = ({
           connection,
           transactionsAndSigners,
           swapStatus, // @todo temp
+          setSwapStatus,
           onStatusChange: (transaction) => {
             if (transaction.status === 'confirming') {
               for (let i = 0; i < swapRoute.steps.length; i++) {
                 const step = swapRoute.steps[i]
                 setTimeout(() => {
-                  const transactionInputSymbol = getTokenNameByMintAddress(step.inputMint)
-                  const transactionOutputSymbol = getTokenNameByMintAddress(step.outputMint)
+                  const transactionInputSymbol = getTokenNameByMintAddress(
+                    step.inputMint
+                  )
+                  const transactionOutputSymbol = getTokenNameByMintAddress(
+                    step.outputMint
+                  )
 
                   callToast(toastId, {
                     render: () => (
@@ -520,7 +528,7 @@ const SwapPage = ({
       }
     }
 
-    if (swapStatus === 'initialize') {
+    if (swapStatus === 'initializing-transaction') {
       makeTransaction()
     }
   }, [swapStatus])
@@ -621,7 +629,7 @@ const SwapPage = ({
                     maxAmount={maxInputAmount}
                     amount={formatNumberWithSpaces(inputAmount)}
                     onMaxAmountClick={() =>
-                      setFieldAmount(maxInputAmount, 'input')
+                      setFieldAmount(stripByAmount(maxInputAmount), 'input')
                     }
                     disabled={false}
                     onChange={(v) => {
@@ -658,7 +666,7 @@ const SwapPage = ({
                   onClick={reverseTokens}
                   $isReversed={isExchangeReversed}
                 >
-                  <SvgIcon src={ArrowsExchangeIcon} />
+                  <ArrowsExchangeIcon />
                 </ReverseTokensContainer>
                 <RowContainer
                   wrap="nowrap"
@@ -671,7 +679,7 @@ const SwapPage = ({
                     amount={formatNumberWithSpaces(outputAmount)}
                     amountUSD={+outputAmount * outputDexTokenPrice}
                     onMaxAmountClick={() =>
-                      setFieldAmount(maxOutputAmount, 'output')
+                      setFieldAmount(stripByAmount(maxOutputAmount), 'output')
                     }
                     onChange={(v) => {
                       if (v === '') {
@@ -831,7 +839,7 @@ const SwapPage = ({
                     <Row>
                       <WalletIcon />
                       <Row padding="0 0 0 0.3em">
-                        <InlineText color="blue1" size="esm">
+                        <InlineText color="blue1" size="sm">
                           Connect wallet
                         </InlineText>
                       </Row>
@@ -847,7 +855,7 @@ const SwapPage = ({
                     onClick={async () => {
                       if (!swapRoute) return
 
-                      setSwapStatus('initialize')
+                      setSwapStatus('initializing-transaction')
                     }}
                   >
                     <span>{buttonText}</span>

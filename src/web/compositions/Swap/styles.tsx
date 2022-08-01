@@ -174,7 +174,7 @@ export const SwapButton = styled(Button)`
   color: ${(props: { isHighPriceDiff: boolean }) =>
     props.isHighPriceDiff
       ? props.theme.colors.red1
-      : props.theme.colors.green2};
+      : props.theme.colors.green3};
 
   background: ${(props: { isHighPriceDiff: boolean }) =>
     props.isHighPriceDiff
@@ -191,8 +191,22 @@ export const SwapButton = styled(Button)`
   }
 
   &:disabled {
-    color: ${(props) => props.theme.colors.green1};
-    background: ${(props) => rgba(props.theme.colors.green1, 0.15)};
+    color: ${(props) => props.theme.colors.white3};
+    background: ${(props) => rgba(props.theme.colors.white3, 0.15)};
+  }
+
+  &:hover {
+    background: ${(props: { isHighPriceDiff: boolean }) =>
+      props.isHighPriceDiff
+        ? rgba(props.theme.colors.red0, 0.2)
+        : rgba(props.theme.colors.green2, 0.2)};
+  }
+
+  &:active {
+    background: ${(props: { isHighPriceDiff: boolean }) =>
+      props.isHighPriceDiff
+        ? rgba(props.theme.colors.red0, 0.25)
+        : rgba(props.theme.colors.green2, 0.25)};
   }
 `
 
@@ -229,7 +243,7 @@ export const ReverseTokensContainer = styled(
   }
 
   svg {
-    width: 1.2em;
+    width: 0.8em;
     height: auto;
     path {
       fill: ${(props) => props.theme.colors.white1};
@@ -270,13 +284,12 @@ export const SwapContentContainer = styled(Row)`
 `
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
-  box-shadow: 0 0 48px #000;
   background: ${({ theme }) => theme.colors.white6};
   padding: 1em 1em;
   z-index: 10;
   flex-direction: column;
   justify-content: space-between;
-  //min-height: 27em;
+  min-height: 27em;
 
   .timer {
     &:hover {
