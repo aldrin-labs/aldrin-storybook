@@ -1722,8 +1722,8 @@
       }
     },
     {
-      "token": "SAMU",
-      "address": "7PX2k66ecaUJHJweNbdCocR4kvPotvDn2FPu69svCsnu",
+      "token": "NOCH",
+      "address": "EcFyPDjqpnyMvh1LhACtC6rrCZ41DMez7RZYocjhmUVS",
       "styles": {
         "width": "64px",
         "height": "64px",
@@ -2793,8 +2793,8 @@
       }
     },
     {
-      "token": "TULIP",
-      "address": "8GufnKq7YnXKhnB3WNhgy5PzU9uvHbaaRrZWQK6ixPxW",
+      "token": "USDC",
+      "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
       "styles": {
         "width": "64px",
         "height": "64px",
@@ -2802,8 +2802,8 @@
       }
     },
     {
-      "token": "UPS",
-      "address": "DByPstQRx18RU2A8DH6S9mT7bpT6xuLgD2TTFiZJTKZP",
+      "token": "USDT",
+      "address": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
       "styles": {
         "width": "64px",
         "height": "64px",
@@ -2811,8 +2811,8 @@
       }
     },
     {
-      "token": "USDC",
-      "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "token": "UST",
+      "address": "9vMJfxuKxXBoEa7rM12mYLMwTacLMLDJqHozw96WQL8i",
       "styles": {
         "width": "64px",
         "height": "64px",
@@ -2857,7 +2857,7 @@
     },
     {
       "token": "WAGMI",
-      "address": "eju5JDyaf29jYNfq7VrVAocVxGayDEHVHHiM7MYc331",
+      "address": "3m7A2A8HHdqmiDrjAfaddj7Hxd88FrBHA1KSoqjoELtu",
       "styles": {
         "width": "64px",
         "height": "64px",
@@ -3010,7 +3010,7 @@
     },
     {
       "token": "mSOL",
-      "address": "6oGsL2puUgySccKzn9XA9afqF217LfxP5ocq4B3LWsjy",
+      "address": "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
       "styles": {
         "width": "64px",
         "height": "64px",

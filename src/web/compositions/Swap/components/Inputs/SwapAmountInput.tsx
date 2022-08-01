@@ -45,12 +45,7 @@ export const SwapAmountInput = ({
   appendComponent?: any
 }) => {
   return (
-    <InputContainer
-      disabled={disabled}
-      direction="column"
-      wrap="nowrap"
-      padding="0em 1em"
-    >
+    <InputContainer disabled={disabled} direction="column" wrap="nowrap">
       <RowContainer justify="space-between">
         <Text fontSize={FONT_SIZES.esm} fontFamily="Avenir Next" color="white3">
           {title}
@@ -74,8 +69,8 @@ export const SwapAmountInput = ({
       <RowContainer
         wrap="nowrap"
         justify="space-between"
-        align="flex-end"
-        margin="0.6em 0 0 0"
+        margin="0.8em 0 0 0"
+        align="center"
       >
         <AmountInputContainer direction="column" align="flex-start">
           <InvisibleInput
@@ -88,11 +83,11 @@ export const SwapAmountInput = ({
             }}
             placeholder={placeholder}
           />
-          {amountUSD ? (
+          {!!amountUSD && (
             <InlineText color="white3" size="esm">
               ${formatNumberWithSpaces(stripDigitPlaces(amountUSD, 2))}
             </InlineText>
-          ) : null}
+          )}
         </AmountInputContainer>
         {appendComponent}
       </RowContainer>

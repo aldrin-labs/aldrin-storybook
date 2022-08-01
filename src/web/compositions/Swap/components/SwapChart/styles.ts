@@ -12,7 +12,7 @@ export const SwapChartAndPriceContainer = styled(Row)`
 
 export const SwapChartContainer = styled(Row)`
   width: 100%;
-  height: 100%;
+  height: 90%;
   padding: 1em 0 1em 1em;
   border: 1px solid ${(props) => props.theme.colors.white6};
   border-right: none;

@@ -17,14 +17,6 @@ export const Body = styled.div`
   font-size: ${SIZE.fontSize};
 `
 
-export const PopupBody = styled(Body)`
-  max-width: 65rem;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    padding: 0 10px;
-  }
-`
-
 export const Page = styled(Body)`
   background: ${(props) => props.theme.colors[props.$background || 'header']};
   flex: 1;

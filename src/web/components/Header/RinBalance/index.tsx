@@ -66,8 +66,6 @@ export const RinBalance = () => {
   const totalRin = rinBalance + rinStaked
 
   return (
-    <RinBalanceContent>
-      {roundAndFormatNumber(totalRin, 2)} RIN
-    </RinBalanceContent>
+    <RinBalanceContent>{roundAndFormatNumber(totalRin, 2)}</RinBalanceContent>
   )
 }

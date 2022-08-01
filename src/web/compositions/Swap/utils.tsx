@@ -11,30 +11,29 @@ export const getSwapButtonText = ({
   isTokenABalanceInsufficient,
   isLoadingSwapRoute,
   baseSymbol,
-  minInputAmount,
-  isTooSmallInputAmount,
   isSwapRouteExists,
   isEmptyInputAmount,
-  isSwapInProgress,
   pricesDiffPct,
+  swapStatus,
 }: {
   isTokenABalanceInsufficient: boolean
   isLoadingSwapRoute: boolean
   baseSymbol: string
-  minInputAmount: number
-  isTooSmallInputAmount: boolean
   isSwapRouteExists: boolean
   isEmptyInputAmount: boolean
   isSwapInProgress: boolean
   pricesDiffPct: number
+  swapStatus: string
 }) => {
+  if (swapStatus === 'pending-confirmation') {
+    return 'Transaction pending confirmation in the wallet...'
+  } else if (swapStatus === 'initialize') {
+    return 'Swapping...'
+  }
+
   switch (true) {
-    case isSwapInProgress:
-      return 'Swapping...'
     case isEmptyInputAmount:
       return 'Enter amount'
-    case isTooSmallInputAmount:
-      return `Min. input amount: ${minInputAmount} ${baseSymbol}`
     case isLoadingSwapRoute:
       return 'Searching the best route...'
     case isTokenABalanceInsufficient:

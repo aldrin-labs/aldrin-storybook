@@ -12,6 +12,7 @@ import { INPUT_FORMATTERS } from '@sb/components/Input'
 import { PieTimer } from '@sb/components/PieTimer'
 import { queryRendererHoc } from '@sb/components/QueryRenderer'
 import SvgIcon from '@sb/components/SvgIcon'
+import { Toast } from '@sb/components/Toast/Toast'
 import { DarkTooltip } from '@sb/components/TooltipCustom/Tooltip'
 import { InlineText, Text } from '@sb/components/Typography'
 import { ConnectWalletPopup } from '@sb/compositions/Chart/components/ConnectWalletPopup/ConnectWalletPopup'
@@ -23,6 +24,7 @@ import {
   getTokenMintAddressByName,
   USE_MARKETS,
 } from '@sb/dexUtils/markets'
+import { callToast } from "@sb/dexUtils/notifications"
 import { notify } from '@sb/dexUtils/notifications'
 import { getSwapRouteFeesAmount } from '@sb/dexUtils/pools/swap/getSwapStepFeeUSD'
 import { useUserTokenAccounts } from '@sb/dexUtils/token/hooks'
@@ -57,7 +59,6 @@ import ArrowsExchangeIcon from '@icons/arrowsExchange.svg'
 import SettingIcon from '@icons/settings.svg'
 
 import { Row, RowContainer } from '../AnalyticsRoute/index.styles'
-import InfoIcon from './assets/InfoIcon'
 import WalletIcon from './assets/WalletIcon'
 import { TokenSelector, SwapAmountInput } from './components/Inputs/index'
 import { SelectCoinPopup } from './components/SelectCoinPopup/SelectCoinPopup'
@@ -185,7 +186,9 @@ const SwapPage = ({
   ] = useState<string>('')
 
   const [isInputTokenSelecting, setIsInputTokenSelecting] = useState(false)
-  const [isSwapInProgress, setIsSwapInProgress] = useState(false)
+  const [swapStatus, setSwapStatus] = useState<
+    'initialize' | 'pending-confirmation' | null
+  >(null)
 
   const inputSymbol = getTokenNameByMintAddress(inputTokenMintAddress)
   const outputSymbol = getTokenNameByMintAddress(outputTokenMintAddress)
@@ -313,27 +316,22 @@ const SwapPage = ({
 
   const buttonText = getSwapButtonText({
     baseSymbol: inputSymbol,
-    minInputAmount: 0,
     isSwapRouteExists: swapRoute.steps.length !== 0,
     isEmptyInputAmount,
     isTokenABalanceInsufficient,
     isLoadingSwapRoute,
-    isTooSmallInputAmount: false,
-    isSwapInProgress,
-    pricesDiffPct,
+    pricesDiffPct: isHighPriceDiff ? +pricesDiffPct : 0,
+    swapStatus,
   })
 
   const isButtonDisabled =
     isEmptyInputAmount ||
     isTokenABalanceInsufficient ||
-    isSwapInProgress ||
+    swapStatus ||
     isLoadingSwapRoute
 
   const showPriceInfo = !isEmptyInputAmount && !isEmptyOutputAmount
 
-  // массив с маркетами (наши + серум), ищем маркет по минктам
-  // пулы могут не прогрузиться, ищем маркеты в пулах
-  // если не нашли то конец
   const marketsList = USE_MARKETS
 
   const marketsWithMints = marketsList
@@ -428,53 +426,104 @@ const SwapPage = ({
     }
   }
 
-  const executeSwap = async () => {
-    if (!swapRoute) return
+  const toastId = 'swap-toast-id'
 
-    setIsSwapInProgress(true)
+  useEffect(() => {
+    const makeTransaction = async () => {
+      try {
+        const transactionsAndSigners = await buildTransactions(swapRoute)
 
-    try {
-      const transactionsAndSigners = await buildTransactions(swapRoute)
+        setSwapStatus('pending-confirmation')
 
-      const result = await signAndSendTransactions({
-        wallet: walletAdapterToWallet(wallet),
-        connection,
-        transactionsAndSigners,
-      })
+        const result = await signAndSendTransactions({
+          wallet: walletAdapterToWallet(wallet),
+          connection,
+          transactionsAndSigners,
+          swapStatus, // @todo temp
+          onStatusChange: (transaction) => {
+            if (transaction.status === 'confirming') {
+              for (let i = 0; i < swapRoute.steps.length; i++) {
+                const step = swapRoute.steps[i]
+                setTimeout(() => {
+                  const transactionInputSymbol = getTokenNameByMintAddress(step.inputMint)
+                  const transactionOutputSymbol = getTokenNameByMintAddress(step.outputMint)
 
-      if (result !== 'success') {
-        notify({
-          type: 'error',
-          message:
-            result !== 'failed'
-              ? 'Transaction cancelled'
-              : 'Swap operation failed. Please, try to increase slippage or try a bit later.',
+                  callToast(toastId, {
+                    render: () => (
+                      <Toast
+                        type="progress"
+                        progressOptions={{
+                          segments: swapRoute.steps.length + 1,
+                          value: i + 1,
+                        }}
+                        title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                        description={`Swapping ${transactionInputSymbol} to ${transactionOutputSymbol}`}
+                      />
+                    ),
+                  })
+                }, i * 1000)
+              }
+            }
+          },
         })
-      } else {
-        notify({
-          type: 'success',
-          message: 'Swap executed successfully.',
-        })
+
+        if (result !== 'success') {
+          if (result === 'failed') {
+            callToast(toastId, {
+              render: () => (
+                <Toast
+                  type="error"
+                  title="Swap operation failed"
+                  description="Please, try to increase slippage or try a bit later"
+                />
+              ),
+            })
+          } else {
+            callToast(toastId, {
+              render: () => (
+                <Toast
+                  type="error"
+                  title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                  description="Transaction cancelled by user"
+                />
+              ),
+            })
+          }
+        } else {
+          callToast(toastId, {
+            render: () => (
+              <Toast
+                type="success"
+                title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                description="Swapped"
+              />
+            ),
+          })
+        }
+
+        // reset fields
+        if (result === 'success') {
+          await setFieldAmount('', 'input')
+        }
+
+        // remove loader
+        setSwapStatus(null)
+
+        refreshUserTokensData()
+        refreshAll()
+
+        if (swapRoute.steps.some((amm) => amm.ammLabel === 'Serum')) {
+          refreshOpenOrdersMap()
+        }
+      } catch (e) {
+        console.log('error', e)
       }
-
-      // reset fields
-      if (result === 'success') {
-        setFieldAmount('', 'input')
-      }
-
-      // remove loader
-      setIsSwapInProgress(false)
-
-      refreshUserTokensData()
-      refreshAll()
-
-      if (swapRoute.steps.some((amm) => amm.ammLabel === 'Serum')) {
-        refreshOpenOrdersMap()
-      }
-    } catch (e) {
-      console.error('Error executing swap', e)
     }
-  }
+
+    if (swapStatus === 'initialize') {
+      makeTransaction()
+    }
+  }, [swapStatus])
 
   return (
     <SwapPageLayout>
@@ -529,7 +578,7 @@ const SwapPage = ({
               />
             </RowContainer>
             <SwapBlockTemplate width="100%">
-              <RowContainer margin="0 0 4em 0" justify="space-between">
+              <RowContainer margin="0" justify="space-between">
                 <PieTimer duration={15} callback={refreshAll} />
                 <Row>
                   <Row style={{ position: 'relative' }}>
@@ -557,14 +606,14 @@ const SwapPage = ({
                   position: 'relative',
                   border: `1px solid ${theme.colors.white4}`,
                   borderRadius: '0.8em',
-                  padding: '0.8em 0',
+                  marginTop: '1.5em',
                 }}
                 direction="column"
               >
                 <RowContainer
                   wrap="nowrap"
                   justify="space-between"
-                  padding="0 0 0.8em 0"
+                  padding="1em"
                   style={{ borderBottom: `1px solid ${theme.colors.white4}` }}
                 >
                   <SwapAmountInput
@@ -575,7 +624,24 @@ const SwapPage = ({
                       setFieldAmount(maxInputAmount, 'input')
                     }
                     disabled={false}
-                    onChange={changeInputField}
+                    onChange={(v) => {
+                      if (v === '') {
+                        setFieldAmount(v, 'input')
+                        return
+                      }
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
+
+                      if (
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
+                      ) {
+                        setFieldAmount(parsedValue, 'input')
+                      }
+                    }}
                     appendComponent={
                       <TokenSelector
                         mint={inputTokenMintAddress}
@@ -597,7 +663,7 @@ const SwapPage = ({
                 <RowContainer
                   wrap="nowrap"
                   justify="space-between"
-                  padding="0.8em 0 0 0"
+                  padding="1em"
                 >
                   <SwapAmountInput
                     title="To (Estimated)"
@@ -607,7 +673,25 @@ const SwapPage = ({
                     onMaxAmountClick={() =>
                       setFieldAmount(maxOutputAmount, 'output')
                     }
-                    onChange={changeOutputField}
+                    onChange={(v) => {
+                      if (v === '') {
+                        setFieldAmount(v, 'output')
+                        return
+                      }
+
+                      const parsedValue = INPUT_FORMATTERS.DECIMAL(
+                        v,
+                        inputAmount
+                      )
+
+                      if (
+                        numberWithOneDotRegexp.test(parsedValue) &&
+                        getNumberOfIntegersFromNumber(parsedValue) <= 8 &&
+                        getNumberOfDecimalsFromNumber(parsedValue) <= 8
+                      ) {
+                        setFieldAmount(parsedValue, 'output')
+                      }
+                    }}
                     appendComponent={
                       <TokenSelector
                         mint={outputTokenMintAddress}
@@ -637,7 +721,29 @@ const SwapPage = ({
                             margin="0 0 0 0.3em"
                             style={{ color: theme.colors.white2 }}
                           >
-                            <InfoIcon />
+                            <svg
+                              width="12"
+                              height="12"
+                              viewBox="0 0 12 12"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                                stroke="currentColor"
+                              />
+                              <path
+                                d="M6 3.5H6.00656"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                              />
+                              <path
+                                d="M6 5.5V8"
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
                           </Row>
                         </DarkTooltip>
                       )}
@@ -675,15 +781,35 @@ const SwapPage = ({
                       }
                     >
                       <InfoIconContainer isHighPriceDiff={isHighPriceDiff}>
-                        <InfoIcon />
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 12 12"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6 11C8.76142 11 11 8.76142 11 6C11 3.23858 8.76142 1 6 1C3.23858 1 1 3.23858 1 6C1 8.76142 3.23858 11 6 11Z"
+                            stroke="currentColor"
+                          />
+                          <path
+                            d="M6 3.5H6.00656"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M6 5.5V8"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
                       </InfoIconContainer>
                     </DarkTooltip>
                   </BlackRow>
                 </RowContainer>
               )}
-              <RowContainer
-                margin={showPriceInfo ? '1.5em 0 0 0' : '4em 0 0 0'}
-              >
+              <RowContainer style={{ marginTop: '1.5em' }}>
                 {!wallet.publicKey ? (
                   <BtnCustom
                     onClick={() => {
@@ -693,7 +819,7 @@ const SwapPage = ({
                     btnWidth="100%"
                     height="4em"
                     padding="1.4em 5em"
-                    fontSize="1em"
+                    fontSize="initial"
                     borderRadius="1.1rem"
                     borderColor="none"
                     btnColor={theme.colors.blue1}
@@ -718,7 +844,11 @@ const SwapPage = ({
                     $fontSize="md"
                     minWidth="100%"
                     $variant="none"
-                    onClick={executeSwap}
+                    onClick={async () => {
+                      if (!swapRoute) return
+
+                      setSwapStatus('initialize')
+                    }}
                   >
                     <span>{buttonText}</span>
                   </SwapButton>
@@ -741,7 +871,7 @@ const SwapPage = ({
           selectTokenMintAddress={(address: string) => {
             if (isInputTokenSelecting) {
               if (outputTokenMintAddress === address) {
-                setOutputTokenMintAddress('')
+                setOutputTokenMintAddress(inputTokenMintAddress)
               }
 
               if (selectedInputTokenAddressFromSeveral) {
@@ -752,7 +882,7 @@ const SwapPage = ({
               setIsSelectCoinPopupOpen(false)
             } else {
               if (inputTokenMintAddress === address) {
-                setInputTokenMintAddress('')
+                setInputTokenMintAddress(outputTokenMintAddress)
               }
 
               if (selectedOutputTokenAddressFromSeveral) {

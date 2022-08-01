@@ -8,7 +8,6 @@ import React, { useState } from 'react'
 import JssProvider from 'react-jss/lib/JssProvider'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'recompose'
-import styled from 'styled-components'
 
 import { Footer } from '@sb/components/Footer'
 import { Header } from '@sb/components/Header'
@@ -32,11 +31,16 @@ import { LOCAL_BUILD, MASTER_BUILD } from '@core/utils/config'
 
 import { MobileFooter } from '../Chart/components/MobileFooter/MobileFooter'
 import ApolloPersistWrapper from './ApolloPersistWrapper/ApolloPersistWrapper'
-import { AppGridLayout, AppInnerContainer } from './App.styles'
+import {
+  AppGridLayout,
+  AppInnerContainer,
+  StyledToastContainer,
+} from './App.styles'
 import SnackbarWrapper from './SnackbarWrapper/SnackbarWrapper'
 import { Theme, THEME_DARK } from './themes'
 import ThemeWrapper from './ThemeWrapper/ThemeWrapper'
-// import Footer from '@sb/components/Footer'
+
+import 'react-toastify/dist/ReactToastify.min.css'
 
 const generateClassName = createGenerateClassName({
   dangerouslyUseGlobalCSS: false,
@@ -123,6 +127,7 @@ const AppRaw = ({
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <ThemeWrapper themeMode={themeMode} isChartPage={isChartPage}>
           <Theme theme={currentTheme}>
+            <StyledToastContainer />
             <SnackbarWrapper>
               <SnackbarUtilsConfigurator />
               <CssBaseline />
@@ -148,12 +153,7 @@ const AppRaw = ({
                         )} */}
                         {!isChartPage && <Footer />}
                         <MobileFooter />
-                        {/*
-                    <Footer
-                      isChartPage={isChartPage}
-                      fullscreenMode={fullscreen}
-                      showFooter={showFooter}
-                    /> */}
+
                         {!MASTER_BUILD && !LOCAL_BUILD && (
                           <DevUrlPopup
                             open={isDevUrlPopupOpen}
@@ -198,40 +198,6 @@ const AppRaw = ({
     </ApolloPersistWrapper>
   )
 }
-
-const Row = styled.div`
-  display: flex;
-  flex-wrap: ${(props) => props.wrap || 'wrap'};
-  justify-content: ${(props) => props.justify || 'center'};
-  flex-direction: ${(props) => props.direction || 'row'};
-  align-items: ${(props) => props.align || 'center'};
-`
-const RowContainer = styled(Row)`
-  width: 100%;
-`
-const Line = styled.div`
-  position: absolute;
-  top: ${(props) => props.top || 'none'};
-  bottom: ${(props) => props.bottom || 'none'};
-  width: 100%;
-  height: 0.1rem;
-  background: ${(props) => props.background || theme.palette.grey.block};
-`
-const Link = styled.a`
-  display: block;
-  width: fit-content;
-  color: ${(props) => props.color || theme.palette.blue.serum};
-
-  text-decoration: none;
-  text-transform: ${(props) => props.textTransform || 'capitalize'};
-
-  font-family: 'DM Sans', sans-serif;
-  font-weight: bold;
-  font-size: 1.2rem;
-  line-height: 109.6%;
-  letter-spacing: 0.1rem;
-  padding: 0 1rem;
-`
 
 export const App = compose(
   withRouter,

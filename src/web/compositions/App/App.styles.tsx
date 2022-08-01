@@ -1,4 +1,5 @@
-import { BREAKPOINTS } from '@variables/variables'
+import { BREAKPOINTS, FONTS } from "@variables/variables"
+import { ToastContainer } from 'react-toastify'
 import styled from 'styled-components'
 
 // put overflow-x hidden since
@@ -24,16 +25,14 @@ export const AppGridLayout = styled.div`
       ? 'calc(100vh)'
       : 'calc(100vh)'};
   min-height: 100vh;
+
   @media (max-width: 600px) {
     height: calc(var(--vh, 1vh) * 100);
     min-height: auto;
   }
 
-  /* Mobile footer */
-  padding-bottom: 70px;
-
-  @media (min-width: ${BREAKPOINTS.md}) {
-    padding-bottom: 0;
+  @media (max-width: ${BREAKPOINTS.md}) {
+    padding-bottom: 70px;
   }
 `
 
@@ -49,5 +48,33 @@ export const AppInnerContainer = styled.div<AppContainerProps>`
 
   @media (max-width: ${BREAKPOINTS.sm}) {
     ${(props) => props.isSwapPage && `height:100%`};
+  }
+`
+
+export const StyledToastContainer = styled(ToastContainer).attrs({
+  className: 'toast-container',
+  toastClassName: 'toast',
+  bodyClassName: 'toast-body',
+  progressClassName: 'toast-progress',
+})`
+  font-size: 1.5em;
+
+  --toastify-font-family: ${FONTS.main};
+
+  .toast {
+    background-color: ${(props) => props.theme.colors.white6};
+    border: 1px solid ${(props) => props.theme.colors.white5};
+    border-radius: 16px;
+    padding: 1.75em;
+  }
+
+  button[aria-label='close'] {
+    display: none;
+  }
+
+  .toast-body {
+    color: ${(props) => props.theme.colors.white1};
+    padding: 0;
+    min-height: 3em;
   }
 `
