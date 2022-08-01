@@ -373,6 +373,10 @@ const Success3SegmentsIcon = () => {
 export const Toast = (props: ToastProps) => {
   const { title, description, type, progressOptions } = props
 
+  const theme = useTheme()
+
+  console.log('debug theme', theme)
+
   return (
     <Container>
       <Left>

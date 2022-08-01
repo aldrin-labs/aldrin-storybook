@@ -11,7 +11,7 @@ export const callToast = (toastId, { render, options = {} }) => {
     toast.update(toastId, {
       render,
       position: toast.POSITION.BOTTOM_LEFT,
-      autoClose: false,
+      autoClose: 3000,
       ...options,
     })
   } else {
