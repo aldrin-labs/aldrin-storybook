@@ -52,11 +52,12 @@ export const SwapPageContainer = styled(RowContainer)`
   background: ${(props) => props.theme.colors.background1};
   height: calc(100% - 160px);
   margin: 80px 0;
+
   @media (max-width: ${BREAKPOINTS.xs}) {
     flex-direction: column;
-    overflow-y: auto;
     height: 100%;
-    margin: 20px 0;
+    margin: 0;
+    justify-content: flex-start;
   }
 
   ${LeftColumn} + ${RightColumn} {
@@ -275,7 +276,6 @@ export const SwapContentContainer = styled(Row)`
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     width: 100%;
-    margin: ${em('24px', '14px')};
   }
 
   @media (min-width: ${BREAKPOINTS.xxl}) {
