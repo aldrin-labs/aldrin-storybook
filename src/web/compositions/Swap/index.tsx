@@ -81,6 +81,7 @@ import {
   LeftColumn,
   RightColumn,
   ChartContainer,
+  TextButton,
 } from './styles'
 import { getSwapButtonText } from './utils'
 
