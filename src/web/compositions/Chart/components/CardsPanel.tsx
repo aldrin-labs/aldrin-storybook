@@ -31,15 +31,12 @@ import AldrinLogo from '@icons/Aldrin.svg'
 import LightLogo from '@icons/lightLogo.svg'
 import WalletIcon from '@icons/walletIcon.svg'
 
-import ListingRequestPopup from './ListingRequestPopup/ListingRequestPopup'
 import { RedButton } from './styles'
 import { FeedbackPopup } from './UsersFeedbackPopup'
 
 export const CardsPanel = ({ theme }) => {
   const location = useLocation()
   const [isFeedBackPopupOpen, setIsFeedBackPopupOpen] = useState(false)
-  const [isListingRequestPopupOpen, setIsListingRequestPopupOpen] =
-    useState(false)
 
   const [tradingMenuOpen, setTradingMenuOpen] = useState(false)
 
@@ -58,7 +55,9 @@ export const CardsPanel = ({ theme }) => {
     marginRight: '4rem',
   }
 
-  const NAV_LINK_STYLE: React.CSSProperties = { width: '13rem' }
+  const NAV_LINK_STYLE: React.CSSProperties = {
+    width: '13rem',
+  }
 
   const isDarkTheme = theme.palette.type === 'dark'
   // const isAnalytics = location.pathname.includes('analytics')
@@ -93,11 +92,7 @@ export const CardsPanel = ({ theme }) => {
             >
               Feedback &amp; Support
             </NavLinkButton>
-            <NavLinkButton
-              theme={theme}
-              style={NAV_LINK_STYLE}
-              onClick={() => setIsListingRequestPopupOpen(true)}
-            >
+            <NavLinkButton theme={theme} style={NAV_LINK_STYLE}>
               Request listing
             </NavLinkButton>
           </Row>
@@ -210,13 +205,6 @@ export const CardsPanel = ({ theme }) => {
         open={isFeedBackPopupOpen}
         onClose={() => {
           setIsFeedBackPopupOpen(false)
-        }}
-      />
-      <ListingRequestPopup
-        theme={theme}
-        open={isListingRequestPopupOpen}
-        onClose={() => {
-          setIsListingRequestPopupOpen(false)
         }}
       />
     </ChartGridContainer>

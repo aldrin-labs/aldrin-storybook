@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 
 import Logo from '@sb/components/Logo'
 import { Row } from '@sb/compositions/AnalyticsRoute/index.styles'
-import ListingRequestPopup from '@sb/compositions/Chart/components/ListingRequestPopup/ListingRequestPopup'
 import { FeedbackPopup } from '@sb/compositions/Chart/components/UsersFeedbackPopup'
 import {
   LinkToCoinGecko,
@@ -27,7 +26,6 @@ export const Footer = () => {
   const isMobile = useMobileSize()
 
   const [feedbackPopupOpen, setFeedbackPopupOpen] = useState(false)
-  const [listingPopupOpen, setListingPopupOpen] = useState(false)
 
   return (
     <FooterContainer data-testid="footer">
@@ -48,8 +46,10 @@ export const Footer = () => {
       </MediaContainer>
       <Row width="35%" justify="flex-end">
         <FooterButton
+          as="a"
           data-testid="footer-request-listing-btn"
-          onClick={() => setListingPopupOpen(true)}
+          href="https://github.com/aldrin-exchange/aldrin-registry"
+          target="_blank"
         >
           Request Listing
         </FooterButton>{' '}
@@ -73,13 +73,6 @@ export const Footer = () => {
         open={feedbackPopupOpen}
         onClose={() => {
           setFeedbackPopupOpen(false)
-        }}
-      />
-      <ListingRequestPopup
-        data-testid="footer-listing-btn"
-        open={listingPopupOpen}
-        onClose={() => {
-          setListingPopupOpen(false)
         }}
       />
     </FooterContainer>
