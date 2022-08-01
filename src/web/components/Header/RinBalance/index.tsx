@@ -45,7 +45,7 @@ export const RinBalance = () => {
   const [tickets] = useAllStakingTickets({
     wallet,
     connection,
-    walletPublicKey: wallet.publicKey,
+    walletPublicKey: wallet?.publicKey,
     onlyUserTickets: true,
   })
 

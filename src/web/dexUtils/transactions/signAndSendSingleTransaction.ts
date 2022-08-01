@@ -15,7 +15,7 @@ export const signAndSendSingleTransaction = async (
     commitment,
   } = params
 
-  const result = await signAndSendTransactions({
+  return signAndSendTransactions({
     transactionsAndSigners: [{ transaction, signers }],
     wallet,
     focusPopup,
@@ -24,6 +24,4 @@ export const signAndSendSingleTransaction = async (
     successMessage,
     commitment,
   })
-
-  return result
 }

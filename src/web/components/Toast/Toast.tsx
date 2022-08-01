@@ -42,21 +42,21 @@ const Progress = (props: ProgressProps) => {
             <path
               d="M32.1244 27C33.3531 24.8717 34 22.4575 34 20C34 17.5425 33.3531 15.1283 32.1244 13C30.8956 10.8717 29.1283 9.1044 27 7.87564C24.8717 6.64689 22.4575 6 20 6"
               stroke={
-                options.value >= 1 ? theme.colors.green2 : theme.colors.white4
+                options.value >= 1 ? theme.colors.green2 : theme.colors.red4
               }
               strokeWidth="2"
             />
             <path
               d="M7.87564 27C9.1044 29.1283 10.8717 30.8956 13 32.1244C15.1283 33.3531 17.5425 34 20 34C22.4575 34 24.8717 33.3531 27 32.1244C29.1283 30.8956 30.8956 29.1283 32.1244 27"
               stroke={
-                options.value >= 2 ? theme.colors.green2 : theme.colors.white4
+                options.value >= 2 ? theme.colors.green2 : theme.colors.red4
               }
               strokeWidth="2"
             />
             <path
               d="M20 6C17.5425 6 15.1283 6.64689 13 7.87564C10.8717 9.1044 9.1044 10.8717 7.87564 13C6.64689 15.1283 6 17.5425 6 20C6 22.4575 6.64689 24.8717 7.87564 27"
               stroke={
-                options.value >= 3 ? theme.colors.green2 : theme.colors.white4
+                options.value >= 3 ? theme.colors.green2 : theme.colors.red4
               }
               strokeWidth="2"
             />
@@ -90,14 +90,14 @@ const Progress = (props: ProgressProps) => {
             <path
               d="M20 34C23.713 34 27.274 32.525 29.8995 29.8995C32.525 27.274 34 23.713 34 20C34 16.287 32.525 12.726 29.8995 10.1005C27.274 7.475 23.713 6 20 6"
               stroke={
-                options.value >= 1 ? theme.colors.green2 : theme.colors.white4
+                options.value >= 1 ? theme.colors.green2 : theme.colors.red4
               }
               strokeWidth="2"
             />
             <path
               d="M20 6C18.1615 6 16.341 6.36212 14.6424 7.06568C12.9439 7.76925 11.4005 8.80048 10.1005 10.1005C8.80048 11.4005 7.76925 12.9439 7.06569 14.6424C6.36212 16.341 6 18.1615 6 20C6 21.8385 6.36212 23.659 7.06568 25.3576C7.76925 27.0561 8.80048 28.5995 10.1005 29.8995C11.4005 31.1995 12.9439 32.2307 14.6424 32.9343C16.341 33.6379 18.1615 34 20 34"
               stroke={
-                options.value >= 2 ? theme.colors.green2 : theme.colors.white4
+                options.value >= 2 ? theme.colors.green2 : theme.colors.red4
               }
               strokeWidth="2"
             />
