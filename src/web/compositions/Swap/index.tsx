@@ -555,8 +555,8 @@ const SwapPage = ({
             <Toast
               type="success"
               progressOptions={{
-                segments: swapRoute.steps.length + 1,
-                value: swapRoute.steps.length + 1,
+                segments: 2,
+                value: 2,
               }}
               title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
               description="Swapped successfully"
