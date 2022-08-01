@@ -15,6 +15,7 @@ import styled from 'styled-components'
 // TODO: remove dat
 
 import { Button } from '../Button'
+import { Row } from '../Layout'
 import { Text } from '../Typography'
 
 export const Wrapper = styled.header`
@@ -376,4 +377,9 @@ export const Left = styled.div`
 
 export const Right = styled.div`
   display: flex;
+`
+
+export const WalletIconContainer = styled(Row)`
+  margin-right: 0.3em;
+  align-items: center;
 `

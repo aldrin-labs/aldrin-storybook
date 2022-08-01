@@ -10,7 +10,6 @@ import { stripByAmountAndFormat } from '@core/utils/chartPageUtils'
 import Astronaut from '@icons/astronaut.webp'
 
 import { formatSymbol } from '../AllocationBlock/DonutChart/utils'
-import { Row } from '../Layout'
 import WalletIcon from './assets/WalletIcon'
 import ArrowDown from './images/arrow-down.svg'
 import {
@@ -22,6 +21,7 @@ import {
   BalanceTitle,
   ArrowDownIconContainer,
   AstronautImage,
+  WalletIconContainer,
 } from './styles'
 
 export const WalletBlock = () => {
@@ -80,9 +80,9 @@ export const WalletBlock = () => {
             setIsConnectWalletPopupOpen(true)
           }}
         >
-          <Row margin="0 0.3em 0 0">
+          <WalletIconContainer>
             <WalletIcon />
-          </Row>
+          </WalletIconContainer>
           Connect Wallet
         </WalletButton>
       )}
