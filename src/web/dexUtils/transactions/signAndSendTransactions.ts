@@ -24,6 +24,7 @@ export const signAndSendTransactions = async (
     swapStatus, // @todo temp
     setSwapStatus,
     onStatusChange,
+    onSign,
   } = params
 
   try {
@@ -42,6 +43,7 @@ export const signAndSendTransactions = async (
       wallet
     )
 
+    onSign()
     setSwapStatus('initialize')
 
     if (clearPendingSignNotification) {
@@ -51,9 +53,10 @@ export const signAndSendTransactions = async (
     return await sendSignedTransactions(signedTransactions, connection, {
       successMessage,
       commitment,
-      onStatusChange,
+      // onStatusChange,
     })
   } catch (e: any) {
+    console.error('signAndSendTransactions error: ', e)
     return `${e?.message.toString()}`.includes('cancelled')
       ? 'cancelled'
       : 'failed'

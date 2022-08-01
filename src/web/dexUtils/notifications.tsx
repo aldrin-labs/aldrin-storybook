@@ -19,11 +19,17 @@ export const callToast = (toastId, { render, options = {} }) => {
       toastId,
       position: toast.POSITION.BOTTOM_LEFT,
       hideProgressBar: true,
-      autoClose: 3000,
+      autoClose: false,
+      // autoClose: 3000,
       ...options,
     })
   }
 }
+
+export const closeToast = (toastId) =>
+  toast.update(toastId, {
+    autoClose: 3000,
+  })
 
 export const notify = ({
   message,

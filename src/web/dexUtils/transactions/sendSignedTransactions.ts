@@ -37,7 +37,8 @@ export const sendSignedTransactions = async (
       timeout: 30_000,
       successMessage: isLastTransaction ? successMessage : '',
       connection,
-      onStatusChange: (transaction) => onStatusChange(transaction, i),
+      onStatusChange: () => {},
+      // (transaction) => onStatusChange(transaction, i),
     })
 
     if (result.status !== SendTransactionStatus.CONFIRMED) {

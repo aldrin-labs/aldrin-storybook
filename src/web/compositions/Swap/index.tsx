@@ -45,8 +45,9 @@ import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNa
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
-  stripByAmount, stripByAmountAndFormat
-} from "@core/utils/chartPageUtils"
+  stripByAmount,
+  stripByAmountAndFormat,
+} from '@core/utils/chartPageUtils'
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { numberWithOneDotRegexp } from '@core/utils/helpers'
 import {
@@ -430,134 +431,139 @@ const SwapPage = ({
 
   const toastId = 'swap-toast-id'
 
-  useEffect(() => {
-    const makeTransaction = async () => {
-      try {
-        setSwapStatus('initializing-transaction')
-        const transactionsAndSigners = await buildTransactions(swapRoute)
+  const makeTransaction = async () => {
+    try {
+      setSwapStatus('initializing-transaction')
 
-        setSwapStatus('pending-confirmation')
+      const transactionsAndSigners = await buildTransactions(swapRoute)
 
-        const result = await signAndSendTransactions({
-          wallet: walletAdapterToWallet(wallet),
-          connection,
-          transactionsAndSigners,
-          swapStatus, // @todo temp
-          setSwapStatus,
-          onStatusChange: (transaction) => {
-            if (transaction.status === 'confirming') {
-              for (let i = 0; i < swapRoute.steps.length; i++) {
-                const step = swapRoute.steps[i]
-                setTimeout(() => {
-                  const transactionInputSymbol = getTokenNameByMintAddress(
-                    step.inputMint
-                  )
-                  const transactionOutputSymbol = getTokenNameByMintAddress(
-                    step.outputMint
-                  )
+      setSwapStatus('pending-confirmation')
 
-                  callToast(toastId, {
-                    render: () => (
-                      <Toast
-                        type="progress"
-                        progressOptions={{
-                          segments: swapRoute.steps.length + 1,
-                          value: i + 1,
-                        }}
-                        title={`Swap ${stripByAmountAndFormat(
-                          inputAmount,
-                          4
-                        )} ${inputSymbol} to ${stripByAmountAndFormat(
-                          outputAmount,
-                          4
-                        )} ${outputSymbol}`}
-                        description={`Swapping ${transactionInputSymbol} to ${transactionOutputSymbol}`}
-                      />
-                    ),
-                  })
-                }, i * 1000)
-              }
-            }
-          },
+      const onSign = () => {
+        const transactionInputSymbol = getTokenNameByMintAddress(
+          swapRoute.inputMint
+        )
+
+        const transactionOutputSymbol = getTokenNameByMintAddress(
+          swapRoute.outputMint
+        )
+
+        callToast(toastId, {
+          render: () => (
+            <Toast
+              type="progress"
+              progressOptions={{
+                segments: swapRoute.steps.length + 1,
+                value: 1,
+              }}
+              title={`Swap ${stripByAmountAndFormat(
+                inputAmount,
+                4
+              )} ${inputSymbol} to ${stripByAmountAndFormat(
+                outputAmount,
+                4
+              )} ${outputSymbol}`}
+              description={`Swapping ${transactionInputSymbol} to ${transactionOutputSymbol}`}
+            />
+          ),
         })
+      }
 
-        console.log('debug result', result)
+      const result = await signAndSendTransactions({
+        wallet: walletAdapterToWallet(wallet),
+        connection,
+        transactionsAndSigners,
+        swapStatus: 'initializing-transaction', // @todo temp
+        setSwapStatus,
+        onSign,
+        // onStatusChange: (transaction) => {
+        //   if (transaction.status === 'confirming') {
+        //     for (let i = 0; i < swapRoute.steps.length; i++) {
+        //       const step = swapRoute.steps[i]
+        //       setTimeout(() => {}, i * 1000)
+        //     }
+        //   }
+        // },
+      })
 
-        if (result !== 'success') {
-          if (result === 'failed') {
-            callToast(toastId, {
-              render: () => (
-                <Toast
-                  type="error"
-                  progressOptions={{
-                    segments: swapRoute.steps.length + 1,
-                    value: swapRoute.steps.length + 1,
-                  }}
-                  title="Swap operation failed"
-                  description="Please, try to increase slippage or try a bit later"
-                />
-              ),
-            })
-          } else {
-            callToast(toastId, {
-              render: () => (
-                <Toast
-                  type="error"
-                  progressOptions={{
-                    segments: swapRoute.steps.length + 1,
-                    value: swapRoute.steps.length + 1,
-                  }}
-                  title={`Swap ${stripByAmountAndFormat(
-                    inputAmount,
-                    4
-                  )} ${inputSymbol} to ${stripByAmountAndFormat(
-                    outputAmount,
-                    4
-                  )} ${outputSymbol}`}
-                  description="Transaction cancelled by user"
-                />
-              ),
-            })
-          }
-        } else {
+      console.log('debug result', result)
+
+      if (result !== 'success') {
+        if (result === 'failed') {
           callToast(toastId, {
             render: () => (
               <Toast
-                type="success"
+                type="error"
                 progressOptions={{
                   segments: swapRoute.steps.length + 1,
                   value: swapRoute.steps.length + 1,
                 }}
-                title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
-                description="Swapped"
+                title="Swap operation failed"
+                description="Please, try to increase slippage."
               />
             ),
+            options: { autoClose: 3000 },
           })
+          // closeToast(toastId)
+        } else {
+          callToast(toastId, {
+            render: () => (
+              <Toast
+                type="error"
+                progressOptions={{
+                  segments: swapRoute.steps.length + 1,
+                  value: swapRoute.steps.length + 1,
+                }}
+                title={`Swap ${stripByAmountAndFormat(
+                  inputAmount,
+                  4
+                )} ${inputSymbol} to ${stripByAmountAndFormat(
+                  outputAmount,
+                  4
+                )} ${outputSymbol}`}
+                description="Transaction cancelled by user"
+              />
+            ),
+            options: { autoClose: 3000 },
+          })
+          // closeToast(toastId)
         }
-
-        // reset fields
-        if (result === 'success') {
-          await setFieldAmount('', 'input')
-        }
-
-        // remove loader
-        setSwapStatus(null)
-
-        refreshUserTokensData()
-        refreshAll()
-
-        if (swapRoute.steps.some((amm) => amm.ammLabel === 'Serum')) {
-          refreshOpenOrdersMap()
-        }
-      } catch (e) {
-        console.log('error', e)
+      } else {
+        callToast(toastId, {
+          render: () => (
+            <Toast
+              type="success"
+              progressOptions={{
+                segments: swapRoute.steps.length + 1,
+                value: swapRoute.steps.length + 1,
+              }}
+              title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+              description="Swapped"
+            />
+          ),
+          options: { autoClose: 3000 },
+        })
+        // closeToast(toastId)
       }
-    }
 
-    if (swapStatus === 'initializing-transaction') {
-      makeTransaction()
+      // reset fields
+      if (result === 'success') {
+        await setFieldAmount('', 'input')
+      }
+
+      // remove loader
+      setSwapStatus(null)
+
+      refreshUserTokensData()
+      refreshAll()
+
+      if (swapRoute.steps.some((amm) => amm.ammLabel === 'Serum')) {
+        refreshOpenOrdersMap()
+      }
+    } catch (e) {
+      console.log('error', e)
     }
-  }, [swapStatus])
+  }
 
   return (
     <SwapPageLayout>
@@ -881,7 +887,7 @@ const SwapPage = ({
                     onClick={async () => {
                       if (!swapRoute) return
 
-                      setSwapStatus('initializing-transaction')
+                      makeTransaction()
                     }}
                   >
                     <span>{buttonText}</span>
