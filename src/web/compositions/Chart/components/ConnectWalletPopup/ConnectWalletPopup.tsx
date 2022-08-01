@@ -49,7 +49,8 @@ const ConnectWalletPopup = ({
 
   const modalBodyStyle = isMobile
     ? {
-        maxHeight: '65vh',
+        height: '100%',
+        width: '100%',
       }
     : {
         alignSelf: 'flex-end',
@@ -93,9 +94,9 @@ const ConnectWalletPopup = ({
           let meta
 
           if (provider.status === WalletReadyState.Installed) {
-            meta = 'Connected'
-          } else {
-            meta = 'Not Connected'
+            meta = 'Installed'
+          } else if (provider.isExtension) {
+            meta = 'Not Installed'
           }
 
           if (provider.sysName === ALDRIN_WALLET_SYSNAME) {

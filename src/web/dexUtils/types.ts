@@ -11,6 +11,7 @@ import {
 } from '@solana/web3.js'
 
 export interface WalletAdapter {
+  icon: string
   publicKey: PublicKey | null
   autoApprove: boolean
   connected: boolean
