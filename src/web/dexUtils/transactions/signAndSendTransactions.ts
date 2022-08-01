@@ -22,6 +22,7 @@ export const signAndSendTransactions = async (
     messages = defaultMessages,
     commitment,
     swapStatus, // @todo temp
+    setSwapStatus,
     onStatusChange,
   } = params
 
@@ -40,6 +41,8 @@ export const signAndSendTransactions = async (
       connection,
       wallet
     )
+
+    setSwapStatus('initialize')
 
     if (clearPendingSignNotification) {
       await clearPendingSignNotification()
