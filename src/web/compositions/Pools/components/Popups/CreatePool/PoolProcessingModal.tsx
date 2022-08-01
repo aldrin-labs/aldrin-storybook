@@ -51,8 +51,6 @@ export enum POOL_ERRORS {
 export const PoolProcessingModal: React.FC<PoolProcessingModalProps> = (
   props
 ) => {
-  const theme = useTheme()
-
   const { step, onSuccess, onError, status, error, txId } = props
 
   return (

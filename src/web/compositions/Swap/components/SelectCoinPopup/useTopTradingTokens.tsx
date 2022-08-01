@@ -6,8 +6,6 @@ export const useTopTradingTokens = (): [string[], () => Promise<string[]>] => {
       await fetch('https://cache.jup.ag/top-tokens')
     ).json()
 
-    console.log('topTokens', topTokens)
-
     return topTokens
   }
 

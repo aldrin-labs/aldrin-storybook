@@ -270,7 +270,6 @@ export const SwapContentContainer = styled(Row)`
 `
 
 export const SwapBlockTemplate = styled(BlockTemplate)`
-  box-shadow: 0 0 48px #000;
   background: ${({ theme }) => theme.colors.white6};
   padding: 1em 1em;
   z-index: 10;

@@ -46,8 +46,8 @@ import { getTokenNameByMintAddress } from '@core/utils/awesomeMarkets/getTokenNa
 import {
   getNumberOfDecimalsFromNumber,
   getNumberOfIntegersFromNumber,
-  stripByAmount,
-} from '@core/utils/chartPageUtils'
+  stripByAmount, stripByAmountAndFormat
+} from "@core/utils/chartPageUtils"
 import { DAY, endOfHourTimestamp } from '@core/utils/dateUtils'
 import { numberWithOneDotRegexp } from '@core/utils/helpers'
 import {
@@ -456,7 +456,13 @@ const SwapPage = ({
                           segments: swapRoute.steps.length + 1,
                           value: i + 1,
                         }}
-                        title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                        title={`Swap ${stripByAmountAndFormat(
+                          inputAmount,
+                          4
+                        )} ${inputSymbol} to ${stripByAmountAndFormat(
+                          outputAmount,
+                          4
+                        )} ${outputSymbol}`}
                         description={`Swapping ${transactionInputSymbol} to ${transactionOutputSymbol}`}
                       />
                     ),
@@ -467,12 +473,18 @@ const SwapPage = ({
           },
         })
 
+        console.log('debug result', result)
+
         if (result !== 'success') {
           if (result === 'failed') {
             callToast(toastId, {
               render: () => (
                 <Toast
                   type="error"
+                  progressOptions={{
+                    segments: swapRoute.steps.length + 1,
+                    value: swapRoute.steps.length + 1,
+                  }}
                   title="Swap operation failed"
                   description="Please, try to increase slippage or try a bit later"
                 />
@@ -483,7 +495,17 @@ const SwapPage = ({
               render: () => (
                 <Toast
                   type="error"
-                  title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                  progressOptions={{
+                    segments: swapRoute.steps.length + 1,
+                    value: swapRoute.steps.length + 1,
+                  }}
+                  title={`Swap ${stripByAmountAndFormat(
+                    inputAmount,
+                    4
+                  )} ${inputSymbol} to ${stripByAmountAndFormat(
+                    outputAmount,
+                    4
+                  )} ${outputSymbol}`}
                   description="Transaction cancelled by user"
                 />
               ),
@@ -494,6 +516,10 @@ const SwapPage = ({
             render: () => (
               <Toast
                 type="success"
+                progressOptions={{
+                  segments: swapRoute.steps.length + 1,
+                  value: swapRoute.steps.length + 1,
+                }}
                 title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
                 description="Swapped"
               />
