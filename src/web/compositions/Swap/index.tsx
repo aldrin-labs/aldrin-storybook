@@ -490,7 +490,13 @@ const SwapPage = ({
                   segments: swapRoute.steps.length + 1,
                   value: swapRoute.steps.length + 1,
                 }}
-                title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                title={`Swap ${stripByAmountAndFormat(
+                  inputAmount,
+                  4
+                )} ${inputSymbol} to ${stripByAmountAndFormat(
+                  outputAmount,
+                  4
+                )} ${outputSymbol}`}
                 description="Swapped"
               />
             ),
