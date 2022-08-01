@@ -50,8 +50,8 @@ export const ChartContainer = styled(Row)`
 
 export const SwapPageContainer = styled(RowContainer)`
   background: ${(props) => props.theme.colors.background1};
-  //height: calc(100% - 160px);
-  //margin: 80px 0;
+  height: calc(100% - 160px);
+  margin: 80px 0;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     flex-direction: column;
@@ -254,7 +254,7 @@ export const ReverseTokensContainer = styled(
 
 export const SwapPageLayout = styled(Page)`
   font-size: 13px;
-  //height: calc(100vh - 76px);
+  height: calc(100vh - 76px);
 
   @media (min-width: ${BREAKPOINTS.xs}) {
     font-size: 14px;
@@ -272,7 +272,7 @@ export const SwapPageLayout = styled(Page)`
 export const SwapContentContainer = styled(Row)`
   padding: 10px 0;
   width: 24em;
-  //height: 100%;
+  height: 100%;
 
   @media (max-width: ${BREAKPOINTS.xs}) {
     width: 100%;
@@ -289,7 +289,7 @@ export const SwapBlockTemplate = styled(BlockTemplate)`
   z-index: 10;
   flex-direction: column;
   justify-content: space-between;
-  //min-height: 27em;
+  min-height: 27em;
 
   .timer {
     &:hover {
