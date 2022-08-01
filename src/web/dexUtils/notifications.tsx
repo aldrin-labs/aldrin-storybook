@@ -18,7 +18,8 @@ export const callToast = (toastId, { render, options = {} }) => {
     toast(render, {
       toastId,
       position: toast.POSITION.BOTTOM_LEFT,
-      autoClose: false,
+      hideProgressBar: true,
+      autoClose: 3000,
       ...options,
     })
   }
