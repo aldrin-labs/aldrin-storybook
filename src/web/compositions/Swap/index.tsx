@@ -256,7 +256,10 @@ const SwapPage = ({
     selectedInputTokenAddressFromSeveral
   )
 
-  const depositAndFeeUSD = depositAndFee * dexTokensPricesMap.get('SOL')
+  const depositAndFeeAmount =
+    depositAndFee.signers + depositAndFee.tokenAccounts
+
+  const depositAndFeeUSD = depositAndFeeAmount * dexTokensPricesMap.get('SOL')
   const poolsFeeUSD = getSwapRouteFeesAmount({
     swapSteps: swapRoute.steps,
     pricesMap: dexTokensPricesMap,
@@ -277,13 +280,13 @@ const SwapPage = ({
 
   // if we swap native sol to smth, we need to leave some SOL for covering fees
   if (
-    depositAndFee &&
+    depositAndFeeAmount &&
     inputTokenMintAddress === WRAPPED_SOL_MINT.toString() &&
     (!selectedInputTokenAddressFromSeveral ||
       wallet.publicKey?.toString() === selectedInputTokenAddressFromSeveral)
   ) {
-    if (maxInputAmount >= depositAndFee) {
-      maxInputAmount -= depositAndFee
+    if (maxInputAmount >= depositAndFeeAmount) {
+      maxInputAmount -= depositAndFeeAmount
     } else {
       maxInputAmount = 0
     }
@@ -510,8 +513,18 @@ const SwapPage = ({
                   segments: swapRoute.steps.length + 1,
                   value: swapRoute.steps.length + 1,
                 }}
-                title="Swap operation failed"
-                description="Please, try to increase slippage or try a bit later"
+                title={`Swap ${inputAmount} ${inputSymbol} to ${outputAmount} ${outputSymbol}`}
+                description={
+                  <RowContainer justify="space-between">
+                    <span>Failed.</span>
+                    <Row justify="space-between" width="40%">
+                      <TextButton color="white3">Cancel</TextButton>
+                      <TextButton onClick={() => makeTransaction()}>
+                        Try again
+                      </TextButton>
+                    </Row>
+                  </RowContainer>
+                }
               />
             ),
           })
@@ -751,7 +764,7 @@ const SwapPage = ({
                           ? `< $0.01`
                           : `$${formattedTotalFeeUSD}`}
                       </RowValue>
-                      {depositAndFee > 0.02 && (
+                      {depositAndFeeAmount > 0.02 && (
                         <DarkTooltip title="Fee breakdown">
                           <Row
                             margin="0 0 0 0.3em"
